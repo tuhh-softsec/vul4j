@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.23 2003/04/24 09:30:24 rdonkin Exp $
- * $Revision: 1.23 $
- * $Date: 2003/04/24 09:30:24 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.24 2003/07/13 15:57:36 rdonkin Exp $
+ * $Revision: 1.24 $
+ * $Date: 2003/07/13 15:57:36 $
  *
  * ====================================================================
  *
@@ -93,7 +93,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.23 $ $Date: 2003/04/24 09:30:24 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/13 15:57:36 $
  */
 
 public class CallMethodRule extends Rule {
@@ -495,16 +495,19 @@ public class CallMethodRule extends Rule {
             digester.log.debug(sb.toString());
         }
         
+        Object result = null;
         if (useExactMatch) {
             // invoke using exact match
-            MethodUtils.invokeExactMethod(top, methodName,
+            result = MethodUtils.invokeExactMethod(top, methodName,
                 paramValues, paramTypes);
                 
         } else {
             // invoke using fuzzier match
-            MethodUtils.invokeMethod(top, methodName,
+            result = MethodUtils.invokeMethod(top, methodName,
                 paramValues, paramTypes);            
         }
+        
+        processMethodCallResult(result);
     }
 
 
@@ -517,6 +520,15 @@ public class CallMethodRule extends Rule {
 
     }
 
+    /**
+     * Subclasses may override this method to perform additional processing of the 
+     * invoked method's result.
+     *
+     * @param result the Object returned by the method invoked, possibly null
+     */
+    protected void processMethodCallResult(Object result) {
+        // do nothing
+    }
 
     /**
      * Render a printable version of this Rule.

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/ParamBean.java,v 1.1 2003/04/17 11:08:17 rdonkin Exp $
- * $Revision: 1.1 $
- * $Date: 2003/04/17 11:08:17 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/ParamBean.java,v 1.2 2003/07/13 15:57:36 rdonkin Exp $
+ * $Revision: 1.2 $
+ * $Date: 2003/07/13 15:57:36 $
  *
  * ====================================================================
  *
@@ -92,8 +92,9 @@ public class ParamBean {
         return that;
     }
     
-    public void setThisAndThat(String _this, String that) {
+    public String setThisAndThat(String _this, String that) {
         this._this = _this;
         this.that = that;
+        return "The Other";
     }
 }

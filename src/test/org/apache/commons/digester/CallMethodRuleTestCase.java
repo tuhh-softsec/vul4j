@@ -527,6 +527,44 @@ public class CallMethodRuleTestCase extends TestCase {
         bean = (NamedBean) list.get(1);
         assertEquals("Wrong name (5)", "Deepest", bean.getName());
     }
+    
+    public void testProcessingHook() throws Exception {
+        
+        class TestCallMethodRule extends CallMethodRule {
+            Object result;
+            TestCallMethodRule(String methodName, int paramCount)
+            {
+                super(methodName, paramCount);
+            }
+            protected void processMethodCallResult(Object result) {
+                this.result = result;
+            }
+        }
+    
+        StringReader reader = new StringReader(
+            "<?xml version='1.0' ?><root>"
+            + "<param class='float' coolness='false'>90</param></root>");
+        
+            
+        Digester digester = new Digester();
+        //SimpleLog log = new SimpleLog("{testTwoCalls:Digester]");
+        //log.setLevel(SimpleLog.LOG_LEVEL_TRACE);
+        //digester.setLogger(log);
+        
+        digester.addObjectCreate( "root/param", ParamBean.class );
+        digester.addSetNext( "root/param", "add" );
+        TestCallMethodRule rule = new TestCallMethodRule( "setThisAndThat" , 2 );
+        digester.addRule( "root/param", rule );
+        digester.addCallParam( "root/param", 0, "class" );
+        digester.addCallParam( "root/param", 1, "coolness" );
+        
+        ArrayList list = new ArrayList();
+        digester.push(list);
+        digester.parse(reader);
+    
+        assertEquals("Wrong number of objects created", 1, list.size());
+        assertEquals("Result not passed into hook", "The Other", rule.result);
+    }
 
     // ------------------------------------------------ Utility Support Methods
 
