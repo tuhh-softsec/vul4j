@@ -141,8 +141,7 @@ public class XMLSignatureInputDebugger {
 	 * Constructor XMLSignatureInputDebugger
 	 * 
 	 * @param xmlSignatureInput
-	 * @param input
-	 *            TODO
+	 * @param input the signatur to pretty print
 	 */
 	public XMLSignatureInputDebugger(XMLSignatureInput input,
 			XMLSignatureInput xmlSignatureInput) {
@@ -160,8 +159,7 @@ public class XMLSignatureInputDebugger {
 	 * 
 	 * @param xmlSignatureInput
 	 * @param inclusiveNamespace
-	 * @param input
-	 *            TODO
+	 * @param input the signatur to pretty print
 	 */
 	public XMLSignatureInputDebugger(XMLSignatureInput input,
 			XMLSignatureInput xmlSignatureInput, Set inclusiveNamespace) {

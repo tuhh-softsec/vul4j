@@ -592,7 +592,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * Outputs a PI to the internal Writer.
     *
     * @param currentPI
-    * @param writer TODO
+    * @param writer where to write the things
     * @throws IOException
     */
    static final void outputPItoWriter(ProcessingInstruction currentPI, OutputStream writer) throws IOException {
@@ -642,7 +642,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * Method outputCommentToWriter
     *
     * @param currentComment
-    * @param writer TODO
+    * @param writer writer where to write the things
     * @throws IOException
     */
    static final void outputCommentToWriter(Comment currentComment, OutputStream writer) throws IOException {
@@ -674,7 +674,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * Outputs a Text of CDATA section to the internal Writer.
     *
     * @param text
-    * @param writer TODO
+    * @param writer writer where to write the things
     * @throws IOException
     */
    static final void outputTextToWriter(final String text, final OutputStream writer) throws IOException {

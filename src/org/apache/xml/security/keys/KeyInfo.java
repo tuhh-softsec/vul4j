@@ -71,7 +71,7 @@ import org.w3c.dom.NodeList;
  * for child elements of <CODE>ds:KeyInfo</CODE> for known types. </LI>
  * <LI>If the <CODE>KeyInfo</CODE> was constructed from scratch (during
  * Signature generation), the <CODE>lengthXXX()</CODE> methods return the number
- * of <CODE>XXX</CODE> objects already passed to the KeyInfo</LI>
+ * of <CODE>XXXs</CODE> objects already passed to the KeyInfo</LI>
  * </UL>
  * <BR />
  * The <CODE>addXXX()</CODE> methods are used for adding Objects of the

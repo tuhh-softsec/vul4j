@@ -591,7 +591,7 @@ public class Reference extends SignatureElementProxy {
    /**
     * This method returns the {@link XMLSignatureInput} which is referenced by the
     * <CODE>URI</CODE> Attribute.
-    * @param os TODO
+    * @param os where to write the transformation can be null.
     * @return
     *
     * @throws XMLSignatureException

@@ -36,13 +36,11 @@ public class DigesterOutputStream extends ByteArrayOutputStream {
 
     /** @inheritDoc */ 
 	public byte[] toByteArray() {
-		// TODO Auto-generated method stub
 		return none;
 	}
     
 	/** @inheritDoc */
 	public void write(byte[] arg0) {
-		// TODO Auto-generated method stub
 		mda.update(arg0);
 	}
     
@@ -53,7 +51,6 @@ public class DigesterOutputStream extends ByteArrayOutputStream {
     
     /** @inheritDoc */
 	public void write(byte[] arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
 		mda.update(arg0, arg1, arg2);
 	}
     

@@ -353,7 +353,6 @@ public class Canonicalizer20010315Test extends TestCase {
                   InvalidCanonicalizerException, TransformerException
    {
    	
-   	  //TODO Check what we have to do to get this f*cking test working!!!
 
       String descri =
          "3.4 Character Modifications and Character References. (uncommented)";
