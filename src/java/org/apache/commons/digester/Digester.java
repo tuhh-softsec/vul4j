@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.80 2003/08/02 09:54:06 rdonkin Exp $
- * $Revision: 1.80 $
- * $Date: 2003/08/02 09:54:06 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.81 2003/08/13 22:05:31 rdonkin Exp $
+ * $Revision: 1.81 $
+ * $Date: 2003/08/13 22:05:31 $
  *
  * ====================================================================
  *
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.80 $ $Date: 2003/08/02 09:54:06 $
+ * @version $Revision: 1.81 $ $Date: 2003/08/13 22:05:31 $
  */
 
 public class Digester extends DefaultHandler {
@@ -858,7 +858,7 @@ public class Digester extends DefaultHandler {
      * using Context ClassLoader, then the class-loading defaults to
      * using the calling-class' ClassLoader.
      *
-     * @param boolean determines whether to use Context ClassLoader.
+     * @param use determines whether to use Context ClassLoader.
      */
     public void setUseContextClassLoader(boolean use) {
 
@@ -985,7 +985,7 @@ public class Digester extends DefaultHandler {
     /**
      * Process notification of the end of an XML element being reached.
      *
-     * @param uri - The Namespace URI, or the empty string if the
+     * @param namespaceURI - The Namespace URI, or the empty string if the
      *   element has no Namespace URI or if Namespace processing is not
      *   being performed.
      * @param localName - The local name (without prefix), or the empty
@@ -1112,7 +1112,7 @@ public class Digester extends DefaultHandler {
      *
      * @param buffer The characters from the XML document
      * @param start Starting offset into the buffer
-     * @param length Number of characters from the buffer
+     * @param len Number of characters from the buffer
      *
      * @exception SAXException if a parsing error is to be reported
      */
@@ -1215,7 +1215,7 @@ public class Digester extends DefaultHandler {
     /**
      * Process notification of the start of an XML element being reached.
      *
-     * @param uri The Namespace URI, or the empty string if the element
+     * @param namespaceURI The Namespace URI, or the empty string if the element
      *   has no Namespace URI or if Namespace processing is not being performed.
      * @param localName The local name (without prefix), or the empty
      *   string if Namespace processing is not being performed.
@@ -1841,7 +1841,6 @@ public class Digester extends DefaultHandler {
      * This takes a parameter from the given position on the stack.
      *
      * @param paramIndex The zero-relative parameter number
-     * @param fromStack Should the call parameter be taken from the top of the stack?
      * @param stackIndex set the call parameter to the stackIndex'th object down the stack,
      * where 0 is the top of the stack, 1 the next element down and so on
      * @see CallMethodRule
@@ -1864,6 +1863,32 @@ public class Digester extends DefaultHandler {
      */
     public void addCallParamPath(String pattern,int paramIndex) {
         addRule(pattern, new PathCallParamRule(paramIndex));
+    }
+    
+    /**
+     * Add a "call parameter" rule that sets a parameter from a 
+     * caller-provided object. This can be used to pass constants such as
+     * strings to methods; it can also be used to pass mutable objects,
+     * providing ways for objects to do things like "register" themselves
+     * with some shared object.
+     * <p>
+     * Note that when attempting to locate a matching method to invoke,
+     * the true type of the paramObj is used, so that despite the paramObj
+     * being passed in here as type Object, the target method can declare
+     * its parameters as being the true type of the object (or some ancestor
+     * type, according to the usual type-conversion rules).
+     *
+     * @param paramIndex The zero-relative parameter number
+     * @param paramObj Any arbitrary object to be passed to the target
+     * method.
+     * @see CallMethodRule
+     */    
+    public void addObjectParam(String pattern, int paramIndex, 
+                               Object paramObj) {
+    
+        addRule(pattern,
+                new ObjectParamRule(paramIndex, paramObj));
+      
     }
     
     /**
@@ -2210,7 +2235,7 @@ public class Digester extends DefaultHandler {
      *
      * @param pattern Element matching pattern
      * @param attributeName map this attribute
-     * @param propertyNames to this property
+     * @param propertyName to this property
      * @see SetPropertiesRule
      */
     public void addSetProperties(
