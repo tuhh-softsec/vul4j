@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -60,7 +59,7 @@
 package org.apache.xml.security.utils;
 
 
-
+import java.io.*;
 import sun.misc.HexDumpEncoder;
 
 
@@ -69,6 +68,9 @@ import sun.misc.HexDumpEncoder;
  * @author Niko Schweitzer
  */
 public class HexDump {
+   /** {@link org.apache.log4j} logging facility */
+   static org.apache.log4j.Category cat =
+      org.apache.log4j.Category.getInstance(HexDump.class.getName());
 
    /**
     * Method prettyPrintHex
@@ -511,117 +513,206 @@ public class HexDump {
 
    /**
     * Converts readable hex-String to byteArray
+    *
     * @param strA
     * @return
     */
    public static byte[] hexStringToByteArray(String strA) {
-
-      int iLen = strA.length();
-      byte[] baTEMP = new byte[iLen];
+      ByteArrayOutputStream result = new ByteArrayOutputStream();
 
       // alle Hex-Zeichen konvertieren, den Rest Ignorieren
       // jedes Zeichen stellt einen 4-Bit Wert dar
-      for (int i = 0; i < iLen; i++) {
-         int c = (int) strA.charAt(i);
+      byte sum = (byte) 0x00;
+      boolean nextCharIsUpper = true;
 
-         switch (c) {
+      for (int i = 0; i < strA.length(); i++) {
+         char c = strA.charAt(i);
+
+         switch (Character.toUpperCase(c)) {
 
          case '0' :
-            baTEMP[i] = (byte) 0x00;
+            if (nextCharIsUpper) {
+               sum = (byte) 0x00;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x00;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case '1' :
-            baTEMP[i] = (byte) 0x10;
+            if (nextCharIsUpper) {
+               sum = (byte) 0x10;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x01;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case '2' :
-            baTEMP[i] = (byte) 0x20;
+            if (nextCharIsUpper) {
+               sum = (byte) 0x20;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x02;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case '3' :
-            baTEMP[i] = (byte) 0x30;
+            if (nextCharIsUpper) {
+               sum = (byte) 0x30;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x03;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case '4' :
-            baTEMP[i] = (byte) 0x40;
+            if (nextCharIsUpper) {
+               sum = (byte) 0x40;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x04;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case '5' :
-            baTEMP[i] = (byte) 0x50;
+            if (nextCharIsUpper) {
+               sum = (byte) 0x50;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x05;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case '6' :
-            baTEMP[i] = (byte) 0x60;
+            if (nextCharIsUpper) {
+               sum = (byte) 0x60;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x06;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case '7' :
-            baTEMP[i] = (byte) 0x70;
+            if (nextCharIsUpper) {
+               sum = (byte) 0x70;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x07;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case '8' :
-            baTEMP[i] = (byte) 0x80;
+            if (nextCharIsUpper) {
+               sum = (byte) 0x80;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x08;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case '9' :
-            baTEMP[i] = (byte) 0x90;
+            if (nextCharIsUpper) {
+               sum = (byte) 0x90;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x09;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case 'A' :
-            baTEMP[i] = (byte) 0xA0;
+            if (nextCharIsUpper) {
+               sum = (byte) 0xA0;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x0A;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case 'B' :
-            baTEMP[i] = (byte) 0xB0;
+            if (nextCharIsUpper) {
+               sum = (byte) 0xB0;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x0B;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case 'C' :
-            baTEMP[i] = (byte) 0xC0;
+            if (nextCharIsUpper) {
+               sum = (byte) 0xC0;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x0C;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case 'D' :
-            baTEMP[i] = (byte) 0xD0;
+            if (nextCharIsUpper) {
+               sum = (byte) 0xD0;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x0D;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case 'E' :
-            baTEMP[i] = (byte) 0xE0;
+            if (nextCharIsUpper) {
+               sum = (byte) 0xE0;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x0E;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
 
          case 'F' :
-            baTEMP[i] = (byte) 0xF0;
+            if (nextCharIsUpper) {
+               sum = (byte) 0xF0;
+               nextCharIsUpper = false;
+            } else {
+               sum |= (byte) 0x0F;
+               result.write(sum);
+               nextCharIsUpper = true;
+            }
             break;
-
-         case 'a' :
-            baTEMP[i] = (byte) 0xA0;
-            break;
-
-         case 'b' :
-            baTEMP[i] = (byte) 0xB0;
-            break;
-
-         case 'c' :
-            baTEMP[i] = (byte) 0xC0;
-            break;
-
-         case 'd' :
-            baTEMP[i] = (byte) 0xD0;
-            break;
-
-         case 'e' :
-            baTEMP[i] = (byte) 0xE0;
-            break;
-
-         case 'f' :
-            baTEMP[i] = (byte) 0xF0;
-            break;
-
-         default :
-            System.out.println("ERROR: Sting is not in hex format");
-
-            baTEMP[i] = (byte) 0x00;
          }
       }
 
-      return baTEMP;
+      if (!nextCharIsUpper) {
+         throw new RuntimeException("The String did not contain an equal number of hex digits");
+      }
+
+      return result.toByteArray();
    }
 
    /*
@@ -813,5 +904,9 @@ public class HexDump {
       baConverted = hexStringToByteArray(strToConvert);
 
       System.out.println("ba = " + toHexString(ba));
+   }
+
+   static {
+      org.apache.xml.security.Init.init();
    }
 }

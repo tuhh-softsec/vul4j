@@ -46,7 +46,7 @@
       <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#aes128-cbc">
          <ProviderAlgo ProviderId="BC"
                        JCEName="RIJNDAEL"
-                       JAVACLASS="org.apache.xml.security.algorithms.implementations.cipher.Encryption_AES128_BC" />
+                       JAVACLASS="org.apache.xml.security.algorithms.encryption.implementations.Encryption_AES128_BC" />
       </EncryptionMethod>
    </EncryptionMethods>
    <JCEAlgorithmMappings>
@@ -167,7 +167,7 @@
                     AlgorithmClass="BlockEncryption"
                     RequirementLevel="REQUIRED">
             <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL" />
+                          JCEName="RIJNDAEL/CBC/PKCS5Padding" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="Rijndael" />
          </Algorithm>
@@ -193,15 +193,17 @@
                     Description="Key Transport RSA-v1.5"
                     AlgorithmClass="KeyTransport"
                     RequirementLevel="REQUIRED">
-            <!-- <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL" /> -->
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="RSA/PKCS1" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="RSA/ECB/PKCS#1" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"
                     Description="Key Transport RSA-OAEP"
                     AlgorithmClass="KeyTransport"
                     RequirementLevel="REQUIRED">
-            <!-- <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL" /> -->
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="RSA/OAEP" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#dh"
                     Description="Key Agreement Diffie-Hellman"
@@ -214,8 +216,8 @@
                     Description="Symmetric Key Wrap using Triple DES"
                     AlgorithmClass="SymmetricKeyWrap"
                     RequirementLevel="REQUIRED">
-            <!-- <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL" /> -->
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="DESEDE/CBC/NOPADDING" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes128"
                     Description="Symmetric Key Wrap using AES with a key length of 128 bit"
