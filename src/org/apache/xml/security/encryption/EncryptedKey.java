@@ -59,8 +59,6 @@
 package org.apache.xml.security.encryption;
 
 
-import java.util.Iterator;
-
 
 /**
  * The <code>EncryptedKey</code> element is used to transport encryption keys

@@ -352,8 +352,6 @@ public class TripleDESWrapper {
          return result;
       } catch (InvalidCipherTextException ex) {
          throw ex;
-      } catch (XMLSecurityException ex) {
-         throw ex;
       } catch (Exception ex) {
          throw new XMLSecurityException("empty", ex);
       }

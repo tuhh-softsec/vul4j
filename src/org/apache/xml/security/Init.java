@@ -73,7 +73,6 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.implementations.FuncHere;
-import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xpath.XPathAPI;

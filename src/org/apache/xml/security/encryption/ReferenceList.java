@@ -193,7 +193,7 @@ public class ReferenceList {
         private List referenceInformation;
 
         ReferenceImpl(String uri) {
-            uri = uri;
+            this.uri = uri;
             referenceInformation = new LinkedList();
         }
 
