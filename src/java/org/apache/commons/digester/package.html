@@ -20,6 +20,7 @@ XML documents.
 <a href="#doc.Pluggable">[Pluggable Rules Processing]</a>
 <a href="#doc.RuleSets">[Encapsulated Rule Sets]</a>
 <a href="#doc.FAQ">[FAQ]</a>
+<a href="#doc.Limits">[Known Limitations]</a>
 </div>
 
 <a name="doc.Depend"></a>
@@ -858,5 +859,21 @@ for the Servlet Spec. 2.4 but is not recognized by JAXP 1.1 parsers.
 This warning is harmless.
 </p></li>
 </ul>
+<a name="doc.Limits"></a>
+<h3>Known Limitations</h3>
+<h4>Accessing Public Methods In A Default Access Superclass</h4>
+<p>There is an issue when invoking public methods contained in a default access superclass.
+Reflection locates these methods fine and correctly assigns them as public.
+However, an <code>IllegalAccessException</code> is thrown if the method is invoked.</p>
+
+<p><code>MethodUtils</code> contains a workaround for this situation. 
+It will attempt to call <code>setAccessible</code> on this method.
+If this call succeeds, then the method can be invoked as normal.
+This call will only succeed when the application has sufficient security privilages. 
+If this call fails then a warning will be logged and the method may fail.</p>
+
+<p><code>Digester</code> uses <code>MethodUtils</code> and so there may be an issue accessing methods
+of this kind from a high security environment. If you think that you might be experiencing this 
+problem, please ask on the mailing list.</p>
 </body>
 </html>
