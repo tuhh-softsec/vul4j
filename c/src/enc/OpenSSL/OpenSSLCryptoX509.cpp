@@ -187,6 +187,12 @@ void OpenSSLCryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
 
 // Info functions
 
+const XMLCh * OpenSSLCryptoX509::getProviderName() {
+
+	return DSIGConstants::s_unicodeStrPROVOpenSSL;
+
+}
+
 XSECCryptoKey::KeyType OpenSSLCryptoX509::getPublicKeyType() {
 
 	if (mp_X509 == NULL) {

@@ -114,6 +114,12 @@ public :
 	virtual XSECCryptoKey::KeyType getPublicKeyType();
 
 	/**
+	 * \brief Returns a string that identifies the crypto owner of this library.
+	 */
+
+	virtual const XMLCh * getProviderName();
+
+	/**
 	 * \brief Get a copy of the public key.
 	 *
 	 * Extracts the public key from the certificate and returns the appropriate
@@ -159,6 +165,12 @@ public :
 	 */
 
 	OpenSSLCryptoX509(X509 * x);
+
+	/**
+	 * \brief Get OpenSSL certificate structure
+	 */
+
+	X509 * getOpenSSLX509(void) {return mp_X509;}
 
 	//@}
 

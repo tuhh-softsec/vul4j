@@ -361,7 +361,128 @@ unsigned int OpenSSLCryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 	return sigValLen;
 }
 
+// --------------------------------------------------------------------------------
+//           decrypt a buffer
+// --------------------------------------------------------------------------------
 
+unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
+								 unsigned char * plainBuf, 
+								 unsigned int inLength,
+								 unsigned int maxOutLength,
+								 PaddingType padding,
+								 hashMethod hm,
+								 const unsigned char * OEAPParam,
+								 unsigned int OAPEParamLen) {
+
+	// Perform a decrypt
+	if (mp_rsaKey == NULL) {
+
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"OpenSSL:RSA - Attempt to encrypt data with empty key");
+	}
+
+	int decryptSize;
+
+	switch (padding) {
+
+	case XSECCryptoKeyRSA::PAD_PKCS_1_5 :
+
+		decryptSize = RSA_private_decrypt(inLength,
+							inBuf,
+							plainBuf,
+							mp_rsaKey,
+							RSA_PKCS1_PADDING);
+		
+		if (decryptSize < 0) {
+
+			throw XSECCryptoException(XSECCryptoException::RSAError,
+				"OpenSSL:RSA privateKeyDecrypt - Error Decrypting PKCS1_5 padded RSA encrypt");
+
+		}
+
+		break;
+
+	default :
+
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"OpenSSL:RSA - Unknown padding method");
+
+	}
+
+
+	return decryptSize;
+
+}
+
+// --------------------------------------------------------------------------------
+//           encrypt a buffer
+// --------------------------------------------------------------------------------
+
+unsigned int OpenSSLCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
+								 unsigned char * cipherBuf, 
+								 unsigned int inLength,
+								 unsigned int maxOutLength,
+								 PaddingType padding,
+								 hashMethod hm,
+								 const unsigned char * OEAPParam,
+								 unsigned int OAPEParamLen) {
+
+	// Perform an encrypt
+	if (mp_rsaKey == NULL) {
+
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"OpenSSL:RSA - Attempt to encrypt data with empty key");
+	}
+
+	int encryptSize;
+
+	switch (padding) {
+
+	case XSECCryptoKeyRSA::PAD_PKCS_1_5 :
+
+		encryptSize = RSA_public_encrypt(inLength,
+							inBuf,
+							cipherBuf,
+							mp_rsaKey,
+							RSA_PKCS1_PADDING);
+		
+		if (encryptSize < 0) {
+
+			throw XSECCryptoException(XSECCryptoException::RSAError,
+				"OpenSSL:RSA publicKeyDecrypt - Error performing PKCS1_5 padded RSA encrypt");
+
+		}
+
+		break;
+
+	default :
+
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"OpenSSL:RSA - Unknown padding method");
+
+	}
+
+
+	return encryptSize;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Size in bytes
+// --------------------------------------------------------------------------------
+
+unsigned int OpenSSLCryptoKeyRSA::getLength(void) {
+
+	if (mp_rsaKey != NULL)
+		return RSA_size(mp_rsaKey);
+
+	return 0;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Clone this key
+// --------------------------------------------------------------------------------
 
 XSECCryptoKey * OpenSSLCryptoKeyRSA::clone() {
 

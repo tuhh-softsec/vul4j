@@ -133,6 +133,12 @@ public :
 
 	virtual XSECCryptoKey * clonePublicKey();
 
+	/**
+	 * \brief Returns a string that identifies the crypto owner of this library.
+	 */
+
+	virtual const XMLCh * getProviderName();
+
 	//@}
 
 	/** @name Load and Get the certificate */

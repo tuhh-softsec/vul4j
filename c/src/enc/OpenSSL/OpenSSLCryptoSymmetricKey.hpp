@@ -83,7 +83,7 @@
 
 #include <openssl/evp.h>
 
-#define MAX_BLOCK_SIZE		8
+#define MAX_BLOCK_SIZE		32
 
 /**
  * \ingroup opensslcrypto

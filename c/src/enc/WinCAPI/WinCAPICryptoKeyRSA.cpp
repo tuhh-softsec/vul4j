@@ -495,6 +495,28 @@ XSECCryptoKey * WinCAPICryptoKeyRSA::clone() {
 
 }
 // --------------------------------------------------------------------------------
+//           Size in bytes
+// --------------------------------------------------------------------------------
+
+unsigned int WinCAPICryptoKeyRSA::getLength(void) {
+
+	DWORD len;
+	DWORD pLen = 4;
+
+	if (!CryptGetKeyParam(m_key,
+					 KP_BLOCKLEN,
+					 (BYTE *) &len,
+					 &pLen,
+					 0)) {
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"WinCAPI:RSA - Error determining key size");
+	}
+
+	return len / 8;
+
+}
+
+// --------------------------------------------------------------------------------
 //           Some utility functions
 // --------------------------------------------------------------------------------
 

@@ -89,6 +89,20 @@ class DSIG_EXPORT XSECCryptoKeyRSA : public XSECCryptoKey {
 
 public :
 
+	/**
+	 * \brief Padding type
+	 *
+	 * Type of padding to be used for RSA encrypt/decrypt operations
+	 */
+
+	enum PaddingType {
+
+		PAD_NONE		= 0,		/** No padding (Illegal for all enc ops) */
+		PAD_PKCS_1_5	= 1,		/** PKCS 1.5 padding */
+		PAD_OAEP		= 2			/** OAEP */
+
+	};
+
 	/** @name Constructors and Destructors */
 	//@{
 
@@ -164,6 +178,64 @@ public :
 		unsigned int hashLen,
 		char * base64SignatureBuf,
 		unsigned int base64SignatureBufLen) = 0;
+
+	/**
+	 * \brief Decrypt using private key
+	 *
+	 * The library will call this function to decrypt a piece of cipher
+	 * text using the private component of this key.
+	 *
+	 * @param inBuf cipher text to decrypt
+	 * @param plainBuf output buffer for decrypted bytes
+	 * @param inLength bytes of cipher text to decrypt
+	 * @param maxOutLength size of outputBuffer
+	 * @param padding Type of padding (PKCS 1.5 or OAEP)
+	 * @param hm Hash Method for OAEP encryption
+	 * @param OAEPParam OAEP Parameter String (NULL if none)
+	 * @param OEAPParamLen Length of OAEPParam string
+	 */
+
+	virtual unsigned int privateDecrypt(const unsigned char * inBuf,
+								 unsigned char * plainBuf, 
+								 unsigned int inLength,
+								 unsigned int maxOutLength,
+								 PaddingType padding,
+								 hashMethod hm,
+								 const unsigned char * OEAPParam,
+								 unsigned int OAPEParamLen) = 0;
+
+	/**
+	 * \brief Encrypt using a public key
+	 *
+	 * The library will call this function to encrypt a plain text buffer
+	 * using the public component of this key.
+	 *
+	 * @param inBuf plain text to decrypt
+	 * @param cipherBuf output buffer for decrypted bytes
+	 * @param inLength bytes of plain text to encrypt
+	 * @param maxOutLength size of outputBuffer
+	 * @param padding Type of padding (PKCS 1.5 or OAEP)
+	 * @param hm Hash Method for OAEP encryption
+	 * @param OAEPParam OAEP Parameter String (NULL if none)
+	 * @param OEAPParamLen Length of OAEPParam string
+	 */
+
+	virtual unsigned int publicEncrypt(const unsigned char * inBuf,
+								 unsigned char * cipherBuf, 
+								 unsigned int inLength,
+								 unsigned int maxOutLength,
+								 PaddingType padding,
+								 hashMethod hm,
+								 const unsigned char * OEAPParam,
+								 unsigned int OAPEParamLen) = 0;
+
+	/**
+	 * \brief Obtain the length of an RSA key
+	 *
+	 * @returns The length of the rsa key (in bytes)
+	 */
+
+	virtual unsigned int getLength(void) = 0;
 
 	//@}
 

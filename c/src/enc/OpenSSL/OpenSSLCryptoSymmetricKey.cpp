@@ -197,12 +197,68 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 		m_ivSize = 16;
 
 		break;
+	
+	case (XSECCryptoSymmetricKey::KEY_AES_CBC_192) :
+
+		// An AES key
+
+		if (iv == NULL) {
+
+			return 0;	// Cannot initialise without an IV
+
+		}
+
+		EVP_DecryptInit_ex(&m_ctx, EVP_aes_192_cbc(), NULL, m_keyBuf.rawBuffer(), iv);
+
+		m_blockSize = 16;
+		m_ivSize = 16;
+
+		break;
+
+	case (XSECCryptoSymmetricKey::KEY_AES_CBC_256) :
+
+		// An AES key
+
+		if (iv == NULL) {
+
+			return 0;	// Cannot initialise without an IV
+
+		}
+
+		EVP_DecryptInit_ex(&m_ctx, EVP_aes_256_cbc(), NULL, m_keyBuf.rawBuffer(), iv);
+
+		m_blockSize = 16;
+		m_ivSize = 16;
+
+		break;
 
 	case (XSECCryptoSymmetricKey::KEY_AES_ECB_128) :
 
 		// An AES key
 
 		EVP_DecryptInit_ex(&m_ctx, EVP_aes_128_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
+
+		m_blockSize = 16;
+		m_ivSize = 0;
+
+		break;
+	
+	case (XSECCryptoSymmetricKey::KEY_AES_ECB_192) :
+
+		// An AES key
+
+		EVP_DecryptInit_ex(&m_ctx, EVP_aes_192_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
+
+		m_blockSize = 16;
+		m_ivSize = 0;
+
+		break;
+	
+	case (XSECCryptoSymmetricKey::KEY_AES_ECB_256) :
+
+		// An AES key
+
+		EVP_DecryptInit_ex(&m_ctx, EVP_aes_256_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
 
 		m_blockSize = 16;
 		m_ivSize = 0;
@@ -232,6 +288,7 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 bool OpenSSLCryptoSymmetricKey::decryptInit(bool doPad, const unsigned char * iv) {
 
 	m_doPad = doPad;
+	m_initialised = false;
 	decryptCtxInit(iv);
 	return true;
 
@@ -294,6 +351,7 @@ unsigned int OpenSSLCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 													  unsigned int maxOutLength) {
 
 	int outl = maxOutLength;
+	m_initialised = false;
 
 	if (EVP_DecryptFinal_ex(&m_ctx, plainBuf, &outl) == 0) {
 
@@ -420,11 +478,85 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(bool doPad, const unsigned char * iv
 
 		break;
 
+	case (XSECCryptoSymmetricKey::KEY_AES_CBC_192) :
+
+		// An AES key
+
+		if (iv == NULL) {
+			
+			bool res = ((RAND_status() == 1) && (RAND_bytes(genIV, 16) == 1));
+			if (res == false) {
+				throw XSECCryptoException(XSECCryptoException::SymmetricError,
+					"OpenSSL:SymmetricKey - Error generating random IV");
+			}
+
+			usedIV = genIV;
+
+		}
+		else
+			usedIV = iv;
+
+		EVP_EncryptInit_ex(&m_ctx, EVP_aes_192_cbc(), NULL, m_keyBuf.rawBuffer(), usedIV);
+
+		m_blockSize = 16;
+		m_ivSize = 16;
+		memcpy(m_lastBlock, usedIV, m_ivSize);
+
+		break;
+
+	case (XSECCryptoSymmetricKey::KEY_AES_CBC_256) :
+
+		// An AES key
+
+		if (iv == NULL) {
+			
+			bool res = ((RAND_status() == 1) && (RAND_bytes(genIV, 16) == 1));
+			if (res == false) {
+				throw XSECCryptoException(XSECCryptoException::SymmetricError,
+					"OpenSSL:SymmetricKey - Error generating random IV");
+			}
+
+			usedIV = genIV;
+
+		}
+		else
+			usedIV = iv;
+
+		EVP_EncryptInit_ex(&m_ctx, EVP_aes_256_cbc(), NULL, m_keyBuf.rawBuffer(), usedIV);
+
+		m_blockSize = 16;
+		m_ivSize = 16;
+		memcpy(m_lastBlock, usedIV, m_ivSize);
+
+		break;
+
 	case (XSECCryptoSymmetricKey::KEY_AES_ECB_128) :
 
 		// An AES key
 
 		EVP_EncryptInit_ex(&m_ctx, EVP_aes_128_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
+
+		m_blockSize = 16;
+		m_ivSize = 0;
+
+		break;
+	
+	case (XSECCryptoSymmetricKey::KEY_AES_ECB_192) :
+
+		// An AES key
+
+		EVP_EncryptInit_ex(&m_ctx, EVP_aes_192_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
+
+		m_blockSize = 16;
+		m_ivSize = 0;
+
+		break;
+	
+	case (XSECCryptoSymmetricKey::KEY_AES_ECB_256) :
+
+		// An AES key
+
+		EVP_EncryptInit_ex(&m_ctx, EVP_aes_256_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
 
 		m_blockSize = 16;
 		m_ivSize = 0;
@@ -499,6 +631,7 @@ unsigned int OpenSSLCryptoSymmetricKey::encryptFinish(unsigned char * cipherBuf,
 													  unsigned int maxOutLength) {
 
 	int outl = maxOutLength;
+	m_initialised = false;
 
 	if (EVP_EncryptFinal_ex(&m_ctx, cipherBuf, &outl) == 0) {
 
