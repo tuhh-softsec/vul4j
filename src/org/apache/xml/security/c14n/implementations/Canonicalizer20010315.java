@@ -835,9 +835,10 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   ;
                } else {
                   Document doc = ctxNode.getOwnerDocument();
-                  Attr newAttr = doc.createAttribute("xmlns");
+                  Attr newAttr =
+                     doc.createAttributeNS(Constants.NamespaceSpecNS, "xmlns");
 
-                  newAttr.setValue(invisDefNS.getValue());
+                  newAttr.setNodeValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
                   this._attrsToBeRemovedAfterC14n.add(newAttr);
@@ -845,7 +846,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
             } else {
                if (((Element) ctxNode).getAttributeNode("xmlns") == null) {
                   Document doc = ctxNode.getOwnerDocument();
-                  Attr newAttr = doc.createAttribute("xmlns");
+                  Attr newAttr =
+                     doc.createAttributeNS(Constants.NamespaceSpecNS, "xmlns");
 
                   newAttr.setValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
@@ -871,7 +873,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   ;
                } else {
                   Document doc = ctxNode.getOwnerDocument();
-                  Attr newAttr = doc.createAttribute("xmlns");
+                  Attr newAttr =
+                     doc.createAttributeNS(Constants.NamespaceSpecNS, "xmlns");
 
                   newAttr.setValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
@@ -912,7 +915,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                      ;
                   } else {
                      Document doc = ctxNode.getOwnerDocument();
-                     Attr newAttr = doc.createAttribute(invisAttrName);
+                     Attr newAttr =
+                        doc.createAttributeNS(Constants.NamespaceSpecNS,
+                                              invisAttrName);
 
                      newAttr.setValue(invisAttr.getValue());
                      ((Element) ctxNode).setAttributeNode(newAttr);
@@ -921,7 +926,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   }
                } else {
                   Document doc = ctxNode.getOwnerDocument();
-                  Attr newAttr = doc.createAttribute(invisAttrName);
+                  Attr newAttr =
+                     doc.createAttributeNS(Constants.NamespaceSpecNS,
+                                           invisAttrName);
 
                   newAttr.setValue(invisAttr.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
@@ -1085,7 +1092,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
             (Attr) this._attrsToBeRemovedAfterC14n.elementAt(i);
          Element ownerElem = currentNSdecl.getOwnerElement();
 
-         ownerElem.removeAttributeNode(currentNSdecl);
+         if (ownerElem != null) {
+            ownerElem.removeAttributeNode(currentNSdecl);
+         }
       }
    }
 

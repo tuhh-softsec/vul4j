@@ -129,7 +129,7 @@
     <patternset id="dataFiles">
        <include name="data/**" />
        <exclude name="data/de/uni-siegen/**" />
-       <exclude name="data/com/ibm/xss4j-20011029/**" />
+       <exclude name="data/com/ibm/xss4j-20011029/**/*" />
     </patternset>
 
     <patternset id="srcFiles">
@@ -182,7 +182,11 @@ org.apache.xml.security.transforms.*,
 org.apache.xml.security.transforms.implementations.*, 
 org.apache.xml.security.utils.*, 
 org.apache.xml.security.utils.resolver.*, 
-org.apache.xml.security.utils.resolver.implementations.*
+org.apache.xml.security.utils.resolver.implementations.*,
+org.apache.xml.security.test.AllTests,
+org.apache.xml.security.test.ModuleTest,
+org.apache.xml.security.test.InteropTest,
+org.apache.xml.security.test.interop.*
 " />
 
     <echo message="-------------------------------------------------------------------" />
@@ -262,7 +266,7 @@ org.apache.xml.security.utils.resolver.implementations.*
     <copy todir="${build.src}">
         <fileset
             dir="${dir.src}"
-            includes="org/**" />
+            includes="org/**,ant/**" />
     </copy>
 
     <!-- substitute tokens as needed -->
@@ -305,10 +309,15 @@ org.apache.xml.security.utils.resolver.implementations.*
     <mkdir dir="${build.doc.html}" />
     <mkdir dir="${build.javadoc}" />
 
-    <javadoc sourcepath="${build.src}"
-             destdir="${build.javadoc}"
+    <javadoc destdir="${build.javadoc}"
              packagenames="${javadoc.packages}"
-             classpathref="classpath.test" />
+             classpathref="classpath.test">
+       <sourcepath>
+          <pathelement location="${build.src}" />
+          <pathelement location="${dir.src.unitTests}" />
+          <pathelement location="${dir.src.samples}" />
+       </sourcepath>
+    </javadoc>
   </target>
 
   <target name="doc" depends="prepare-doc">
@@ -360,18 +369,20 @@ org.apache.xml.security.utils.resolver.implementations.*
   <target name="javadocs" depends="javadoc" />
   <target name="docs" depends="doc" />
   <target name="jars" depends="jar" />
+  <target name="distbin" depends="bindist" />
+  <target name="distsrc" depends="srcdist" />
 
   <!-- Collections -->
   <target name="dist" depends="srcdist,bindist" />
   <target name="gump" depends="clean,javadoc,jar,test" description="Target for the gump run" />
   <target name="compile" depends="compile.library, compile.samples, compile.tests" description="compile everything" />
 
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
 
-  <!-- #################################################################### -->
-  <!-- #################################################################### -->
-  <!-- #################################################################### -->
-  <!-- #################################################################### -->
-  <!-- #################################################################### -->
 
   <target name="get-jce"
           depends="prepare"
@@ -382,7 +393,13 @@ org.apache.xml.security.utils.resolver.implementations.*
 	 usetimestamp="true" />
   </target>
 
-  <target name="compile.library" depends="prepare-src, get-jce">
+  <taskdef name="md5" classname="ant.Md5Task"/>
+  <target name="check-bc" depends="get-jce" description="This target checks that the digest values of the JCE library are valid">
+      <!-- http://www.bouncycastle.org/checksums.html -->
+      <md5 Md5="eeb940217876bcd83a55d799ee5db7ca" Sha1="106e97a5ad7a57aa2cbc48074db80225d3c0972a" file="${lib.jce}" />
+  </target>
+
+  <target name="compile.library" depends="prepare-src, check-bc">
     <!-- Compile the branded java code from ${build.src} into ${build.classes} -->
     <javac srcdir="${build.src}" destdir="${build.classes}">
       <classpath refid="classpath.library" />
@@ -433,7 +450,7 @@ org.apache.xml.security.utils.resolver.implementations.*
   </target>
 
   <target name="testjar"
-          depends="prepare,get-jce"
+          depends="prepare,check-bc"
           if="xmlsec.build.present"
           description="Starts all JUnit test cases and uses the compiled JARs">
      <java classname="junit.textui.TestRunner"
@@ -475,6 +492,7 @@ org.apache.xml.security.utils.resolver.implementations.*
            <patternset refid="dataFiles" />
 
            <include name="doc/xml/**/*" />
+           <include name="ant/**/*" />
            <exclude name="**/CVS/**" />
        </fileset>
     </copy>
@@ -486,42 +504,40 @@ org.apache.xml.security.utils.resolver.implementations.*
          basedir="${build.srcdist}" />
   </target>
 
-  <!--
-  <target name="bindist" depends="jar" description="Creates the binary distribution">
-  -->
   <target name="bindist" depends="compile,jar,doc,javadoc" description="Creates the binary distribution">
      <mkdir dir="${build.bindist}" />
      <copy todir="${build.bindist}">
-      <fileset dir=".">
-        <patternset refid="distFiles" />
-        <patternset refid="dataFiles" />
-        <patternset refid="srcSamplesFiles" />
+        <fileset dir=".">
+           <patternset refid="distFiles" />
+           <patternset refid="dataFiles" />
+           <patternset refid="srcSamplesFiles" />
 
-        <exclude name="**/CVS/**" />
-      </fileset>
-    </copy>
+           <include name="ant/**/*" />
+           <exclude name="**/CVS/**" />
+        </fileset>
+     </copy>
 
-    <mkdir  dir="${build.bindist}/${dir.libs}" />
-    <copy todir="${build.bindist}/${dir.libs}" file="${lib.junit}" />
-    <copy todir="${build.bindist}/${dir.libs}" file="${lib.xerces.1}" />
-    <copy todir="${build.bindist}/${dir.libs}" file="${lib.xerces.2}" />
-    <copy todir="${build.bindist}/${dir.libs}" file="${lib.xalan.1}" />
-    <copy todir="${build.bindist}/${dir.libs}" file="${lib.xalan.2}" />
-    <copy todir="${build.bindist}/${dir.libs}" file="${lib.log4j}" />
+     <mkdir  dir="${build.bindist}/${dir.libs}" />
+     <copy todir="${build.bindist}/${dir.libs}" file="${lib.junit}" />
+     <copy todir="${build.bindist}/${dir.libs}" file="${lib.xerces.1}" />
+     <copy todir="${build.bindist}/${dir.libs}" file="${lib.xerces.2}" />
+     <copy todir="${build.bindist}/${dir.libs}" file="${lib.xalan.1}" />
+     <copy todir="${build.bindist}/${dir.libs}" file="${lib.xalan.2}" />
+     <copy todir="${build.bindist}/${dir.libs}" file="${lib.log4j}" />
 
-    <mkdir  dir="${build.bindist}/${build.dir}" />
-    <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.library}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
-    <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.samples}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
-    <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.tests}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
+     <mkdir  dir="${build.bindist}/${build.dir}" />
+     <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.library}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
+     <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.samples}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
+     <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.tests}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" /> 
 
-    <mkdir dir="${build.bindist}/${build.doc}" />
-    <mkdir dir="${build.bindist}/${build.doc.html}" />
-    <copy todir="${build.bindist}/${build.doc.html}">
-      <fileset dir="${build.doc.html}" />
-    </copy>
-
-    <zip zipfile="${build.dir}/${product.name}-bin-${product_version}.zip" 
-         basedir="${build.bindist}" />
+     <mkdir dir="${build.bindist}/${build.doc}" />
+     <mkdir dir="${build.bindist}/${build.doc.html}" />
+     <copy todir="${build.bindist}/${build.doc.html}">
+        <fileset dir="${build.doc.html}" />
+     </copy>
+ 
+     <zip zipfile="${build.dir}/${product.name}-bin-${product_version}.zip" 
+          basedir="${build.bindist}" />
   </target>
   
   <!-- #################################################################### -->

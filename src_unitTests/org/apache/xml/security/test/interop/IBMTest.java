@@ -94,8 +94,11 @@ import org.xml.sax.SAXException;
 
 /**
  * This test is to ensure interoperability with the examples provided by the IBM
- * XML Security Suite. They are located in the directory
+ * XML Security Suite. They have to be located in the directory
  * <CODE>data/com/ibm/xss4j-20011029/</CODE>.
+ * <BR />
+ * For license issues, the vectors are not included in the distibution. See
+ * <A HREF="../../../../../../../interop.html">the interop page</A> for more on this.
  *
  * @author $Author$
  * @see <A HREF="http://www.alphaworks.ibm.com/tech/xmlsecuritysuite">The IBM alphaWorks Website</A>

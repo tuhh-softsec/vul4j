@@ -8,6 +8,8 @@
   <document label="Readme"       
             id="index"
             source="readme.xml" />
+  <external label="Download"
+            href="http://xml.apache.org/security/dist/" />
   <external label="Repository"
             href="http://cvs.apache.org/viewcvs.cgi/xml-security/" />
   <document label="Installation" 
@@ -16,7 +18,9 @@
   <document label="Resolver-Mania" 
             id="resolvermania"     
             source="resolvermania.xml" />
-
+  <document label="Interoperability" 
+            id="interop"     
+            source="interop.xml" />
   <!-- 
   <group    label="FAQs"
             id="faqs"

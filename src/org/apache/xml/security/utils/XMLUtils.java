@@ -583,7 +583,7 @@ public class XMLUtils {
          attr = doc.createAttribute(QName);
       }
 
-      attr.appendChild(doc.createTextNode(Value));
+      attr.setNodeValue(Value);
 
       return attr;
    }
@@ -600,7 +600,7 @@ public class XMLUtils {
       Document doc = elem.getOwnerDocument();
       Attr attr = doc.createAttributeNS(Constants.SignatureSpecNS, QName);
 
-      attr.appendChild(doc.createTextNode(Value));
+      attr.setNodeValue(Value);
       elem.setAttributeNode(attr);
    }
 
