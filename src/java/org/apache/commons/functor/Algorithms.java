@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.14 2003/11/25 21:07:34 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.15 2003/11/25 21:16:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -73,9 +73,10 @@ import org.apache.commons.functor.generator.Generator;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
 /**
- * Utility methods and algorithms for applying functors to {@link Generator}s.
- * {@link Generator}s also define these utility methods as instance methods. The
- * {@link #apply apply}, {@link #select select}, and {@link #reject reject} methods 
+ * Utility methods and algorithms for applying functors to {@link Generator}s
+ * and {@link Iterator}s.
+ * {@link Generator}s also many of these utility methods as instance methods. 
+ * The {@link #select select} and {@link #reject reject} methods 
  * return new Generators. This becomes useful for constructing nested expressions. 
  * For example:
  *
@@ -83,12 +84,12 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  *      Algorithms.apply(new EachElement(list), func1)
  *          .filter(pred)
  *              .apply(func2)
- *                  .reject(func2)
+ *                  .reject(pred2)
  *                      .to();
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.14 $ $Date: 2003/11/25 21:07:34 $
+ * @version $Revision: 1.15 $ $Date: 2003/11/25 21:16:15 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -162,6 +163,23 @@ public final class Algorithms {
         return TransformedIterator.transform(iter,func);
     }
 
+    /**
+     * Returns a {@link Generator} that will apply the given {@link UnaryFunction} to each
+     * generated element.
+     */
+    public static final Generator apply(final Generator gen, final UnaryFunction func) {
+        return new BaseGenerator(gen) {
+        public void run(final UnaryProcedure proc) {
+            gen.run(
+                new UnaryProcedure() {
+                    public void run(Object obj) {
+                        proc.run(func.evaluate(obj));
+                    }
+                });
+            }
+        };
+    }
+    
     /**
      * Equivalent to 
      * <code>{@link #contains(Generator,UnaryPredicate) contains}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred)</code>.

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseGenerator.java,v 1.3 2003/11/25 21:07:34 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseGenerator.java,v 1.4 2003/11/25 21:16:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,6 +61,7 @@ import java.util.Collection;
 
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.generator.util.CollectionTransformer;
@@ -70,7 +71,7 @@ import org.apache.commons.functor.generator.util.CollectionTransformer;
  * each subclass.
  *
  * @since 1.0
- * @version $Revision: 1.3 $ $Date: 2003/11/25 21:07:34 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/25 21:16:15 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
@@ -114,6 +115,11 @@ public abstract class BaseGenerator implements Generator {
     /** Set to true when the generator is {@link #stop stopped}. */
     private boolean stopped = false;
 
+    /*** See {@link Algorithms#apply}. */
+    public final Generator apply(UnaryFunction func) {
+        return Algorithms.apply(this,func);
+    }
+    
     /** See {@link Algorithms#contains}. */
     public final boolean contains(UnaryPredicate pred) {
         return Algorithms.contains(this, pred);

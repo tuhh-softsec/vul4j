@@ -1,5 +1,5 @@
 /*
- * $Id: Generator.java,v 1.6 2003/11/25 21:07:34 rwaldhoff Exp $
+ * $Id: Generator.java,v 1.7 2003/11/25 21:16:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,11 +59,12 @@ package org.apache.commons.functor.generator;
 import java.util.Collection;
 
 import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2003/11/25 21:07:34 $
+ * @version $Revision: 1.7 $ $Date: 2003/11/25 21:16:15 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -74,6 +75,8 @@ public interface Generator {
     public abstract void stop();
     /** Check if the generator is stopped. */
     public abstract boolean isStopped();
+    /*** See {@link org.apache.commons.functor.Algorithms#apply}. */
+    public abstract Generator apply(UnaryFunction func);
     /** See {@link org.apache.commons.functor.Algorithms#contains}. */
     public abstract boolean contains(UnaryPredicate pred);
     /** See {@link org.apache.commons.functor.Algorithms#detect}. */
