@@ -1,0 +1,23 @@
+<html>
+<head>
+<title>Package Documentation for org.apache.commons.digester.substitution Package</title>
+</head>
+<body bgcolor="white">
+Provides for manipulation of xml attributes and element body text before
+the data is processed by any Rule objects.
+<br><br>
+<p>
+The class org.apache.commons.digester.Substitutor defines an abstract
+interface for mechanisms which manipulate xml attributes and body text.
+The Digester method setSubstitutor can be used to define a concrete
+substitutor that will be applied to the data before it is passed to the
+matching rules.
+</p>
+<p>
+This package provides some useful concrete implementations of the abstract
+Substitutor class. In particular, it provides an implementation that allows
+the application to define "variables" which the input data can reference
+using a syntax such as "${user.name}".
+</p>
+</body>
+</html>
