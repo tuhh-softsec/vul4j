@@ -46,7 +46,7 @@ public class SignerOutputStream extends ByteArrayOutputStream {
         try {
 			sa.update(arg0);
 		} catch (XMLSignatureException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(""+e);
 		}
     }
     
@@ -55,7 +55,7 @@ public class SignerOutputStream extends ByteArrayOutputStream {
         try {
             sa.update((byte)arg0);
         } catch (XMLSignatureException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(""+e);
         }
     }
     
@@ -65,7 +65,7 @@ public class SignerOutputStream extends ByteArrayOutputStream {
         try {
             sa.update(arg0,arg1,arg2);
         } catch (XMLSignatureException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(""+e);
         }
     }
     

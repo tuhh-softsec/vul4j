@@ -79,7 +79,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             newDocumentBuilder().newDocument().createAttributeNS(Constants.NamespaceSpecNS,XMLNS);
         nullNode.setValue("");
     } catch (Exception e) {
-        throw new RuntimeException("Unable to create nullNode",e);
+        throw new RuntimeException("Unable to create nullNode"/*,*/+e);
     }
    }
    
@@ -677,7 +677,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             break;
 
          default :
-            writeCharToUtf8(c,writer);;
+            writeCharToUtf8(c,writer);
             break;
          }
       }

@@ -272,7 +272,7 @@ public class SignedInfo extends Manifest {
         try {
 			os.write(this._c14nizedBytes);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException(""+e);
 		}  
     }    
    }
