@@ -66,6 +66,11 @@
     <property name="lib.junit"			value="${dir.libs}/junit.jar" />
     <property name="lib.clover"			value="${dir.libs}/clover.jar" />
 
+	<!-- XML Security libraries (for bin distribution) -->
+	<property name="lib.xmlsec"         value="${dir.libs}/xmlsec.jar" />
+	<property name="lib.xmlsec.samples" value="${dir.libs}/xmlsecSamples.jar"/>
+	<property name="lib.xmlsec.tests"   value="${dir.libs}/xmlsecTests.jar" />
+
 	<!-- JAR properties -->
 	<property name="jar.library"        value="${dir.build}/xmlsec.jar" />
 	<property name="jar.samples"        value="${dir.build}/xmlsecSamples.jar" />
@@ -131,11 +136,17 @@
         <pathelement location="${dir.build.bin}" />
         <pathelement location="${dir.build.test}" />
         <path refid="id.classpath.coverage" />
+        <pathelement location="${lib.xmlsec}" />
+        <pathelement location="${lib.xmlsec.samples}" />
+        <pathelement location="${lib.xmlsec.tests}" />
     </path>
     <path id="id.classpath.samples" >
         <path refid="id.classpath" />
         <pathelement location="${dir.build.bin}" />
         <pathelement location="${dir.build.samples}" />
+        <pathelement location="${lib.xmlsec}" />
+        <pathelement location="${lib.xmlsec.samples}" />
+        <pathelement location="${lib.xmlsec.tests}" />
     </path>
 
 
@@ -263,16 +274,32 @@
 		</condition>
 	</target>
 
+	<target name="do.check.bindist">
+		<condition property="is.bin.dist">
+			<and>
+				<available file="${lib.xmlsec}" />
+				<available file="${lib.xmlsec.samples}" />
+				<available file="${lib.xmlsec.tests}" />
+				<not>
+					<available type="dir" file="src" />
+				</not>
+			</and>
+		</condition>
+	</target>
+
+
     <!-- B U I L D  T A R G E T S -->
     <!-- source -->
     <target name="build.src"
-            depends="do.check.libs,do.build.src,env.mk.dirs"
+            depends="do.check.libs,do.build.src,env.mk.dirs,do.check.bindist"
+			unless="is.bin.dist"
             if="has.jce.provider" >
         <javac srcdir="${dir.src}"
                destdir="${dir.build.bin}" >
             <classpath refid="id.classpath" />
             <include name="**/org/apache/xml/security/**/*.java" />
         </javac >
+
         <copy todir="${dir.build.bin}" >
             <fileset dir="${dir.src}"
                      includes="**/org/apache/xml/security/resource/*,
@@ -284,7 +311,8 @@
     
     <!-- tests -->
     <target name="build.test"
-    		depends="build.src">
+    		depends="build.src"
+			unless="is.bin.dist">
     	<javac srcdir="${dir.src.test}"
                destdir="${dir.build.test}">
         	<classpath refid="id.classpath.test" />
@@ -299,7 +327,8 @@
 
 	<!-- samples -->
 	<target name="build.samples"
-			depends="build.src">
+			depends="build.src"
+			unless="is.bin.dist">
 		<javac srcdir="${dir.src.samples}"
 			   destdir="${dir.build.samples}"
 			   debug="${build.compile.debug}">
@@ -578,6 +607,7 @@
 			<fileset dir=".">
 				<patternset refid="id.patternset.distFiles"/>
 				<patternset refid="id.patternset.dataFiles"/>
+				<patternset refid="id.patternset.srcUnitTestsFiles"/>
 				<patternset refid="id.patternset.srcSamplesFiles"/>
 				
 				<include name="ant/**/*"/>
@@ -604,16 +634,15 @@
 		<copy file="${lib.logging.api}" 
 			todir="${dir.build.bindist}/libs"/>
 		
-		<mkdir dir="${dir.build.bindist}/bin"/>
 		<copy description="copy xmlsec JAR" 
 			file="${jar.library}" 
-			todir="${dir.build.bindist}/bin"/>
+			todir="${dir.build.bindist}/libs"/>
 		<copy description="copy xmlsec sample JAR" 
 			file="${jar.samples}" 
-			todir="${dir.build.bindist}/bin"/>
+			todir="${dir.build.bindist}/libs"/>
 		<copy description="copy xmlsec test JAR" 
 			file="${jar.tests}" 
-			todir="${dir.build.bindist}/bin"/>
+			todir="${dir.build.bindist}/libs"/>
 
 		<mkdir dir="${dir.build.bindist}/doc"/>
 		<copy todir="${dir.build.bindist}/doc">
