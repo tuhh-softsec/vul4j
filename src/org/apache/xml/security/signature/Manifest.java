@@ -546,7 +546,7 @@ public class Manifest extends SignatureElementProxy {
     * @param i
     * @return
     */
-   public XMLSignatureInput getReferencedContentPriorTransformsItem(int i) {
+   public XMLSignatureInput getReferencedContentBeforeTransformsItem(int i) {
       return this.item(i).getTransformsInput();
    }
 

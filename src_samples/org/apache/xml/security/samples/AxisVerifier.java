@@ -132,7 +132,7 @@ public class AxisVerifier {
       }
       System.out.println("");
       System.out.println("Prior transforms");
-      System.out.println(new String(sig.getSignedInfo().getReferencedContentPriorTransformsItem(0).getBytes()));
+      System.out.println(new String(sig.getSignedInfo().getReferencedContentBeforeTransformsItem(0).getBytes()));
 
 
    }
