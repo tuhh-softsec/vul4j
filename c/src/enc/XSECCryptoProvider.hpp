@@ -94,10 +94,39 @@
  * the virtual class XSECCryptoProvider, which returns pointers to 
  * particular virtual class objects.</p>
  *
+ * <p>The cryptographic interface has been kept as thin as possible.
+ * In particular, the classes are not meant to provide a complete
+ * wrapper for the cryptographic libraries involved.  The application
+ * program is expected to deal directly with the chosen library.  This
+ * ensures that the xml-security library can perform the functions it
+ * needs to, but does not constrain the application in what it can do.</p>
+ *
+ * <p>Thus three type of methods are available on any cryptographic
+ * object.</p>
+ *
+ * <ul>
+ * <li><em>Required</em> methods are those absolutely necessary for
+ * the library to operate.  For example, these include the methods 
+ * necessary for the library to decode a base64 encoded signature 
+ * and validate it against a defined key.</li>
+ * <li><em>Optional</em> methods are used by the ancillary classes
+ * in the library.  For example, the default KeyInfoResolver can
+ * use an optional method to extract a public key from a certificate.
+ * This is not strictly necessary, as the calling application could
+ * provide a resolver that does this work directly rather than using
+ * the XSECCryptoX509 class.</li>
+ * <li><em>Library Specific</em> methods are those methods that are
+ * unique to a particular library.  For example, the OpenSSLCryptoX509
+ * class has a Library Specific constructor that takes an OpenSSL
+ * X509 structure as its argument.
+ * </ul>
+ *
  * <p>The particular instantiation of XSECCryptoProvider that is to 
  * be used is set via the XSECPlatformUtils#Initialise() function 
  * call.  If no provider is passed in, the Initialise function 
- * generates an OpenSSLCryptoProvider class for use.</p>
+ * generates an OpenSSLCryptoProvider class for use.  If OpenSSL
+ * is not available under windows, the library will use the Windows
+ * CAPI instead.</p>
  *
  * <p>The provider is kept in a global variable, and is used by 
  * all signature objects created by a particular application.  At 
