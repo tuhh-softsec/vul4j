@@ -23,6 +23,11 @@
     <property name="year"              value="2000-2002" />
     <property name="copyright"         value="Copyright &#169; ${year} Apache XML Project. All Rights Reserved." />
 
+    <!-- Give user a chance to override without editing this file
+         (and without typing -D each time it compiles it) -->
+    <property file="./build.properties"/>
+    <property file="${user.home}/build.properties"/>
+
 <!--<property name="build.compiler"        value="classic" />
     <property name="build.compiler"        value="jikes" />-->
 
@@ -54,6 +59,8 @@
     <property name="build.javadoc"         value="${build.doc.html}/api" />
     <property name="build.junit.xml"       value="${build.doc.xml}/junit" />
     <property name="build.junit.html"      value="${build.doc.html}/junit" />
+
+	<property name = "build.compile.debug" value="on" />
 
     <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}public" />
     <property name="cvs.cvsRoot.developer" value=":ext:${cvs.user.developer}@${cvs.server}:${cvs.path}" />
@@ -447,7 +454,7 @@ org.apache.xml.security.utils.resolver
 
   <target name="compile.library" depends="prepare-src, check-bc">
     <!-- Compile the branded java code from ${build.src} into ${build.classes} -->
-    <javac srcdir="${build.src}" destdir="${build.classes}">
+    <javac srcdir="${build.src}" destdir="${build.classes}" debug="${build.compile.debug}">
       <classpath refid="classpath.library" />
     </javac>
     <!-- Copy Property files -->
@@ -462,7 +469,7 @@ org.apache.xml.security.utils.resolver
           depends="compile.library"
           if="junit.present">
     <!-- Compile the java code from ${dir.src} into ${build.classes} -->
-    <javac srcdir="${dir.src.unitTests}" destdir="${build.classes}">
+    <javac srcdir="${dir.src.unitTests}" destdir="${build.classes}" debug="${build.compile.debug}">
       <classpath refid="classpath.test" />
     </javac>
     <!-- Copy Property files -->
@@ -477,7 +484,7 @@ org.apache.xml.security.utils.resolver
           depends="compile.library">
     <!-- Compile the java code from ${dir.src} into ${build.classes} -->
     <javac srcdir="${dir.src.samples}"
-           destdir="${build.classes}">
+           destdir="${build.classes}" debug="${build.compile.debug}">
       <classpath refid="classpath.library" />
     </javac>
   </target>
