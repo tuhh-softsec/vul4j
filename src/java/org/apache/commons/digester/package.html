@@ -888,9 +888,10 @@ following as part of your Digester initialization:</p>
 <h4>RegexRules</h4>
 <p><a href="RegexRules.html">RegexRules</a> is an advanced <code>Rules</code> 
 implementation which does not build on the default pattern matching rules.
-It uses a pluggable RegexMatcher implementation to test if a path matches the pattern
-for a Rule. All matching rules are returned (note that this behaviour differs from 
-longest matching rule of the default pattern matching rules). See the Java Docs for more details.
+It uses a pluggable <a href="RegexMatcher.html">RegexMatcher</a> implementation to test 
+if a path matches the pattern for a Rule. All matching rules are returned 
+(note that this behaviour differs from longest matching rule of the default
+ pattern matching rules). See the Java Docs for more details.
 </p>
 <p>
 Example usage:
@@ -902,6 +903,35 @@ Example usage:
   digester.setRules(new RegexRules(new SimpleRegexMatcher()));
   ...
 </pre>
+<h5>RegexMatchers</h5>
+<p>
+<code>Digester</code> ships only with one <code>RegexMatcher</code>
+implementation: <a href='SimpleRegexMatcher.html'>SimpleRegexMatcher</a>.
+This implementation is unsophisticated and lacks many good features
+lacking in more power Regex libraries. There are some good reasons
+why this approach was adopted. The first is that <code>SimpleRegexMatcher</code>
+is simple, it is easy to write and runs quickly. The second has to do with 
+the way that <code>RegexRules</code> is intended to be used.
+</p>
+<p>
+There are many good regex libraries available. (For example 
+<a href='http://jakarta.apache.org/oro/index.html'>Jakarta ORO</a>,
+<a href='http://jakarta.apache.org/regexp/index.html'>Jakarta Regex</a>,
+<a href='http://www.cacas.org/java/gnu/regexp/'>GNU Regex</a> and
+<a href='http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/package-summary.html'>
+Java 1.4 Regex</a>)
+Not only do different people have different personal tastes when it comes to
+regular expression matching but these products all offer different functionality
+and different strengths.
+</p>
+<p>
+The pluggable <code>RegexMatcher</code> is a thin bridge
+designed to adapt other Regex systems. This allows any Regex library the user
+desires to be plugged in and used just by creating one class.
+<code>Digester</code> does not (currently) ship with bridges to the major
+regex (to allow the dependencies required by <code>Digester</code>
+to be kept to a minimum).
+</p>
 
 <h4>WithDefaultsRulesWrapper</h4>
 <p>
