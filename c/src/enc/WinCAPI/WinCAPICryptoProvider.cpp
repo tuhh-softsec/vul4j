@@ -67,7 +67,7 @@ WinCAPICryptoProvider::WinCAPICryptoProvider(
 		// Check of we maybe don't understand AES
 
 		DWORD error = GetLastError();
-		if (error == NTE_PROV_TYPE_NOT_DEF) {
+		if (error == NTE_PROV_TYPE_NOT_DEF || error == 0) {
 
 			// This system does not have AES!
 			m_haveAES = false;
