@@ -1,4 +1,5 @@
-/*
+/* $Id: PluginContext.java,v 1.4 2004/05/10 06:30:07 skitching Exp $
+ *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
