@@ -248,11 +248,19 @@ org.apache.xml.security.utils.resolver
     <echo message="                                                                   " />
   </target>
 
-  <target name="clean" depends="init"
+  <target name="clean" depends="init, clean-testdata"
           description="Clean up all temporary build files">
     <delete dir="${build.dir}" />
     <delete dir="./bak" />
     <delete file="log.txt" />
+  </target>
+
+  <target name="clean-testdata" depends="init"
+          description="Clean up all temporary test vectors">
+    <delete file="log.txt" />
+    <delete>
+       <fileset dir="${dir.data}/interop/c14n" includes="**/c14n-*.apache.txt" />
+    </delete>
   </target>
 
   <target name="prepare" depends="init"
