@@ -1,6 +1,6 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/xmlrules/DigesterLoaderTestSuite.java,v 1.7 2003/10/28 22:31:54 rdonkin Exp $
- * $Revision: 1.7 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/xmlrules/IncludeTest.java,v 1.1 2003/10/28 22:31:54 rdonkin Exp $
+ * $Revision: 1.1 $
  * $Date: 2003/10/28 22:31:54 $
  *
  * ====================================================================
@@ -59,37 +59,56 @@
  *
  */ 
 
-
 package org.apache.commons.digester.xmlrules;
 
+import java.util.ArrayList;
+
+import java.io.StringReader;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.xml.sax.InputSource;
+
+import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.Rule;
 
 /**
- * Tests loading Digester rules from an XML file.
- *
- * @author Scott Sanders
+ * Test for the include class functionality
  */
+public class IncludeTest extends TestCase {
 
-public class DigesterLoaderTestSuite extends TestCase {
+    public static class TestDigesterRuleSource implements DigesterRulesSource {
+        public void getRules(Digester digester) {
+            digester.addRule("bar", 
+                new Rule() {
+                    public void body(String namespace, String name, String text) {
+                        ((ArrayList) this.digester.peek()).add(text);
+                    }
+                });
+        }
+    }
 
-    public DigesterLoaderTestSuite(java.lang.String testName) {
+    public IncludeTest(String testName) {
         super(testName);
     }
-
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public static junit.framework.Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(DigesterLoaderTest.class);
-        suite.addTestSuite(DigesterPatternStackTest.class);
-        suite.addTestSuite(DigesterLoaderRulesTest.class);
-        suite.addTestSuite(IncludeTest.class);
-
-        return suite;
-    }
+    
+    public void testBasicInclude() throws Exception {
+        String rulesXml = "<?xml version='1.0'?>"
+                + "<digester-rules>"
+                + " <pattern value='root/foo'>"
+		+ "   <include class='org.apache.commons.digester.xmlrules.IncludeTest$TestDigesterRuleSource'/>"
+                + " </pattern>"
+                + "</digester-rules>";
+                
+        String xml = "<?xml version='1.0' ?><root><foo><bar>short</bar></foo></root>";
+        
+        ArrayList list = new ArrayList();
+        Digester digester = DigesterLoader.createDigester(new InputSource(new StringReader(rulesXml)));
+        digester.push(list);
+        digester.parse(new StringReader(xml));        
+                                                                        
+        assertEquals("Number of entries", 1, list.size());
+        assertEquals("Entry value", "short", list.get(0));
+    }	
 }
