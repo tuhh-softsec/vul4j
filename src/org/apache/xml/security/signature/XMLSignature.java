@@ -192,7 +192,8 @@ public class XMLSignature extends SignatureElementProxy {
 
       // check out SignatureValue child
       Element signatureValueElement = this.getChildElementLocalName(0,
-              Constants.SignatureSpecNS, Constants._TAG_SIGNATUREVALUE);
+                                         Constants.SignatureSpecNS,
+                                         Constants._TAG_SIGNATUREVALUE);
 
       if (signatureValueElement == null) {
          Object exArgs[] = { Constants._TAG_SIGNATUREVALUE,
@@ -249,8 +250,10 @@ public class XMLSignature extends SignatureElementProxy {
     * @throws XMLSignatureException
     */
    public byte[] getSignatureValue() throws XMLSignatureException {
-      Element signatureValueElem = this.getChildElementLocalName(0, Constants.SignatureSpecNS, Constants._TAG_SIGNATUREVALUE);
 
+      Element signatureValueElem = this.getChildElementLocalName(0,
+                                      Constants.SignatureSpecNS,
+                                      Constants._TAG_SIGNATUREVALUE);
       byte[] signatureValue = Base64.decode(signatureValueElem);
 
       return signatureValue;
@@ -266,7 +269,9 @@ public class XMLSignature extends SignatureElementProxy {
            throws XMLSignatureException {
 
       if (this._state == MODE_SIGN) {
-         Element signatureValueElem = this.getChildElementLocalName(0, Constants.SignatureSpecNS, Constants._TAG_SIGNATUREVALUE);
+         Element signatureValueElem = this.getChildElementLocalName(0,
+                                         Constants.SignatureSpecNS,
+                                         Constants._TAG_SIGNATUREVALUE);
          NodeList children = signatureValueElem.getChildNodes();
 
          while (signatureValueElem.hasChildNodes()) {

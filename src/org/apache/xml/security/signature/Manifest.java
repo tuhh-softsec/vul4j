@@ -170,25 +170,26 @@ public class Manifest extends SignatureElementProxy {
               throws XMLSignatureException {
 
       if (this._state == MODE_SIGN) {
-      // the this._doc is handed implicitly by the this.getOwnerDocument()
-      Reference ref = new Reference(this._doc, BaseURI, referenceURI, this,
-                                    transforms, digestURI);
 
-      if (ReferenceId != null) {
-         ref.setId(ReferenceId);
-      }
+         // the this._doc is handed implicitly by the this.getOwnerDocument()
+         Reference ref = new Reference(this._doc, BaseURI, referenceURI, this,
+                                       transforms, digestURI);
 
-      if (ReferenceType != null) {
-         ref.setType(ReferenceType);
-      }
+         if (ReferenceId != null) {
+            ref.setId(ReferenceId);
+         }
 
-      if (this._references == null) {
-         this._references = new Vector();
-      }
+         if (ReferenceType != null) {
+            ref.setType(ReferenceType);
+         }
 
-      this._references.add(ref);
-      this._constructionElement.appendChild(ref.getElement());
-      XMLUtils.addReturnToElement(this._constructionElement);
+         if (this._references == null) {
+            this._references = new Vector();
+         }
+
+         this._references.add(ref);
+         this._constructionElement.appendChild(ref.getElement());
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -237,13 +238,18 @@ public class Manifest extends SignatureElementProxy {
     *
     * @param i Index of the requested {@link Reference}
     * @return the <it>i</it><sup>th</sup> reference
+    * @throws XMLSecurityException
     */
    public Reference item(int i) throws XMLSecurityException {
+
       if (this._state == MODE_SIGN) {
          return (Reference) this._references.elementAt(i);
       } else {
-         Element refElem = this.getChildElementLocalName(0, Constants.SignatureSpecNS, Constants._TAG_REFERENCE);
+         Element refElem = this.getChildElementLocalName(0,
+                              Constants.SignatureSpecNS,
+                              Constants._TAG_REFERENCE);
          Reference ref = new Reference(refElem, this._baseURI, this);
+
          return ref;
       }
    }
@@ -572,8 +578,10 @@ public class Manifest extends SignatureElementProxy {
     *
     * @param i
     * @return
+    * @throws XMLSecurityException
     */
-   public XMLSignatureInput getReferencedContentBeforeTransformsItem(int i) throws XMLSecurityException {
+   public XMLSignatureInput getReferencedContentBeforeTransformsItem(int i)
+           throws XMLSecurityException {
       return this.item(i).getTransformsInput();
    }
 
@@ -582,8 +590,10 @@ public class Manifest extends SignatureElementProxy {
     *
     * @param i
     * @return
+    * @throws XMLSecurityException
     */
-   public XMLSignatureInput getReferencedContentAfterTransformsItem(int i) throws XMLSecurityException {
+   public XMLSignatureInput getReferencedContentAfterTransformsItem(int i)
+           throws XMLSecurityException {
       return this.item(i).getTransformsOutput();
    }
 
