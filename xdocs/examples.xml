@@ -46,16 +46,67 @@
       <p>or</p>
       <pre>maven -Dtestcase=org.apache.commons.functor.example.TestAll test:single</pre>    
       <p>
-         Each example is written in something like a literate programming style.
-         In other words, with descriptive prose mixed right in with the source, as 
+         Each example is has descriptive prose mixed right in with the source, as 
          <code>/* C++ style */</code> comments.
       </p>
+      <subsection name="Code Katas">        
+        <p>
+          "Pragmatic" Dave Thomas has been 
+          <a href="http://pragprog.com/pragdave/">blogging</a> 
+          a series of programming exercises he calls 
+          <a href="http://pragprog.com/pragdave/Practices/Kata">Code Katas</a>.
+          These exercises are intended to provide "practice sesssions" that allow
+          programmers to hone their craft.  The notion is borrowed from the 
+          practice of Karate, where, in Dave's words 
+          "a kata is an exercise where you repeat a form many, many times, 
+          making little improvements in each".
+        </p>
+        <p>
+          Here we use several of Dave's Code Katas to explore the
+          Commons-Functor library.
+        </p>
+        <dl>
+          <dt><a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/one/package-summary.html">Kata One: Supermarket Pricing</a></dt>
+          <dd>
+            Dave's <a href="http://pragprog.com/pragdave/Practices/Kata/KataOne.rdoc,v">Kata One</a> asks how
+            one might implement supermarket pricing rules, like "three for a dollar" or "buy two get one free".
+            By encapsulating tiny bits of logic, functors provide a useful solution to this problem, as 
+            illustrated in the 
+            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/one/SupermarketPricingExample.html">SupermarketPricingExample</a>.
+          </dd>
+
+          <dt><a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/two/package-summary.html">Kata Two: Binary Chop</a></dt>
+          <dd>
+            <a href="http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v">Kata Two</a> asks us
+            to create several different implemenations of the binary search algorithm, which once you
+            get past three or four implemenations, is more difficult that it sounds.            
+            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/two/TestBinaryChop.html">TestBinaryChop</a>
+            presents several implementations, with functor and non-functor variations.
+          </dd>
+
+
+          <dt><a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/four/package-summary.html">Kata Four: Data Munging</a></dt>
+          <dd>
+            <a href="http://pragprog.com/pragdave/Practices/Kata/KataFour.doc,v">Kata Four</a> asks us
+            to explore extreme reuse.  Our
+            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/four/DataMunger.html">DataMunger</a>
+            allows for very small implementations of the 
+            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/four/TestWeather.html">weather</a>
+            and
+            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/four/TestSoccer.html">soccer (football)</a>
+            parsers.
+          </dd>
+
+        </dl>
+      </subsection>      
+      
       <subsection name="Generators">        
         <p>
           The <a href="xref-test/org/apache/commons/functor/example/lines/package-summary.html">lines</a>
           package demonstrates a functional approach to IO using Generators and the Algorithms class.
         </p>
       </subsection>      
+      
       <subsection name="Reuse Through Composition">
          <p>
             The Functor package, and more generally, a functional approach

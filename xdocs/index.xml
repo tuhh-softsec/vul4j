@@ -2,20 +2,16 @@
 <document>
   <properties>
     <title>Overview</title>
-    <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
-    <author email="rwaldhoff@apache.org">Rodney Waldhoff</author>
+    <author email="commons-dev AT jakarta DOT apache DOT org">Jakarta Commons Development Team</author>
+    <author email="rwaldhoff AT apache DOT org">Rodney Waldhoff</author>
   </properties>
 
   <body>
     <section name="Functor: Function Objects for Java">
       <p>
          A <em>functor</em> is a function that can be manipulated 
-         as an object.  
-      </p>
-      <p>
-         In Java, functors are typically implemented as interfaces defined 
-         by a single, generic member function, and that is the approach taken
-         here.
+         as an object, or an object representing a single, generic
+         function.
       </p>
       <p>
          Functors support and encourage a number of powerful programming 
@@ -36,6 +32,17 @@
       <p>
          See the <a href="examples.html">examples</a> for more information on some of 
          these techniques.
+      </p>
+    </section>
+    <section name="Status">
+      <p>
+         Functor has not yet had an official binary release, but
+         daily binary and source snapshots are available from 
+         <a href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/">http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/</a>.
+      </p>
+      <p>
+         See the <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/STATUS.txt">STATUS</a> file for 
+         the official project status.
       </p>
     </section>
     <section name="Overview">

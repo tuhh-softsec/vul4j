@@ -33,12 +33,12 @@
             <a href="http://nagoya.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/">http://nagoya.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/</a>.
          </dd>
       </dl>
--->
       <p>
          See 
          <a href="http://cvs.apache.org/builds/gump/latest/commons-functor.html">http://cvs.apache.org/builds/gump/latest/commons-functor.html</a>
          for the status of the latest <a href="http://jakarta.apache.org/gump">Gump</a> generated build.
       </p>
+-->
     </section>
   </body>
 </document>

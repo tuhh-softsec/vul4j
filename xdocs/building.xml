@@ -11,17 +11,20 @@
       <p>
          To build Commons Functor from scratch, you must first obtain the source, either
          from 
-         <a href="http://jakarta.apache.org/site/cvsindex.html">the CVS server</a>
+         <a href="./cvs-usage.html#Anonymous+CVS+Access">the CVS server</a>
          or from
          <a href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/">a source snapshot</a>.
       </p>
       <p>
          Commons Functor can be built using <a href="http://jakarta.apache.org/turbine/maven/">Maven</a>
-         or <a href="http://ant.apache.org/">Ant</a>.  The <a href="http://jakarta.apache.org/gump">Gump</a>
+         or <a href="http://ant.apache.org/">Ant</a>.  
+         <!--
+         The <a href="http://jakarta.apache.org/gump">Gump</a>
          continuous integration process attempts to build Functor several times a day (against the built-from-scratch
          versions of all of it's dependencies), and notifies the development team if it does not succeed. 
          You can 
          <a href="http://cvs.apache.org/builds/gump/latest/commons-functor.html">view the status of the latest gump build here</a>.
+         -->
       </p>
       <subsection name="Building with Maven">
         <ol>
