@@ -315,7 +315,7 @@ void DSIGTransformC14n::createInclusiveNamespaceNode(void) {
 
 	// Create the transform node
 	makeQName(str, prefix, "InclusiveNamespaces");
-	mp_inclNSNode = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
+	mp_inclNSNode = doc->createElementNS(DSIGConstants::s_unicodeStrURIEC, str.rawXMLChBuffer());
 
 	// Add the node to the owner element
 	mp_txfmNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));

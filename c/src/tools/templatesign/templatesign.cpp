@@ -1165,8 +1165,13 @@ int main(int argc, char **argv) {
 
 	
 	
+#if defined(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)
+	gFormatter = new XMLFormatter("UTF-8", 0, formatTarget,
+                                          XMLFormatter::NoEscapes, gUnRepFlags);
+#else
 	gFormatter = new XMLFormatter("UTF-8", formatTarget,
                                           XMLFormatter::NoEscapes, gUnRepFlags);
+#endif
 
 	cout << doc;
 

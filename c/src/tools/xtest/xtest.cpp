@@ -287,7 +287,7 @@ int main(int argc, char **argv) {
 	/* We output a version number to overcome a "feature" in Microsoft's memory
 	   leak detection */
 
-	cout << "DSIG Info (Using Apache XML-Security-C Library v" << XSEC_VERSION_MAJOR <<
+	cerr << "DSIG Info (Using Apache XML-Security-C Library v" << XSEC_VERSION_MAJOR <<
 		"." << XSEC_VERSION_MEDIUM << "." << XSEC_VERSION_MINOR << ")\n";
 
 #if defined (_DEBUG) && defined (_MSC_VER)
@@ -563,7 +563,9 @@ int main(int argc, char **argv) {
 			char * mbuf = new char [len + 1];
 			memcpy(mbuf, formatTarget->getRawBuffer(), len);
 			mbuf[len] = '\0';
-
+#if 0
+			cout << mbuf << endl;
+#endif
 			delete theSerializer;
 			delete formatTarget;
 
