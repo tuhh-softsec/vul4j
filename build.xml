@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.19 2002/01/05 00:34:46 craigmcc Exp $
+        $Id: build.xml,v 1.20 2002/01/31 20:25:11 rdonkin Exp $
 -->
 
 
@@ -212,7 +212,7 @@
                 version="true"
                doctitle="&lt;h1&gt;${component.title}&lt;/h1&gt;"
             windowtitle="${component.title} (Version ${component.version})"
-                 bottom="Copyright (c) 2001 - Apache Software Foundation">
+                 bottom="Copyright (c) 2001-2002 - Apache Software Foundation">
       <link     offline="true" packagelistLoc="${commons-beanutils.api}"
                    href="http://jakarta.apache.org/commons/beanutils/api/"/>
       <link     offline="true" packagelistLoc="${commons-collections.api}"
