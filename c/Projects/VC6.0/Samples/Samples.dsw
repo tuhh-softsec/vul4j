@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "simpleHMAC"=.\simpleHMAC\simpleHMAC.dsp - Package Owner=<4>
+Project: "simpleDecrypt"=".\simpleDecrypt\simpleDecrypt.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,31 @@ Package=<4>
 
 ###############################################################################
 
-Project: "simpleValidate"=.\simpleValidate\simpleValidate.dsp - Package Owner=<4>
+Project: "simpleEncrypt"=".\simpleEncrypt\simpleEncrypt.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "simpleHMAC"=".\simpleHMAC\simpleHMAC.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "simpleValidate"=".\simpleValidate\simpleValidate.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
