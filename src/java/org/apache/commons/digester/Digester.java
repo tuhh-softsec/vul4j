@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.64 2002/08/15 16:42:08 patrickl Exp $
- * $Revision: 1.64 $
- * $Date: 2002/08/15 16:42:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.65 2002/08/20 00:58:55 patrickl Exp $
+ * $Revision: 1.65 $
+ * $Date: 2002/08/20 00:58:55 $
  *
  * ====================================================================
  *
@@ -92,6 +92,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
@@ -123,7 +124,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.64 $ $Date: 2002/08/15 16:42:08 $
+ * @version $Revision: 1.65 $ $Date: 2002/08/20 00:58:55 $
  */
 
 public class Digester extends DefaultHandler {
@@ -205,6 +206,11 @@ public class Digester extends DefaultHandler {
 
 
     /**
+     * The EntityResolver used by the SAX parser. By default it use this class
+     */
+    protected EntityResolver entityResolver;
+    
+    /**
      * The URLs of entityValidator that have been registered, keyed by the public
      * identifier that corresponds.
      */
@@ -233,7 +239,7 @@ public class Digester extends DefaultHandler {
     /**
      * The JAXP 1.2 property to set up the schemaLanguage used.
      */
-    private String JAXP_SCHEMA_LANGUAGE =
+    protected String JAXP_SCHEMA_LANGUAGE =
         "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 
     
@@ -311,13 +317,13 @@ public class Digester extends DefaultHandler {
      * The XML schema language to use for validating an XML instance. By
      * default this value is set to <code>W3C_XML_SCHEMA</code>
      */
-    private String schemaLanguage = W3C_XML_SCHEMA;
+    protected String schemaLanguage = W3C_XML_SCHEMA;
     
         
     /**
      * The XML schema to use for validating an XML instance.
      */
-    private String schemaLocation = null;
+    protected String schemaLocation = null;
     
     
     /**
@@ -349,14 +355,14 @@ public class Digester extends DefaultHandler {
     /**
      * The Log to which all SAX event related logging calls will be made.
      */
-    private Log saxLog =
+    protected Log saxLog =
         LogFactory.getLog("org.apache.commons.digester.Digester.sax");
     
         
     /**
      * The schema language supported. By default, we use this one.
      */
-    private static final String W3C_XML_SCHEMA =
+    protected static final String W3C_XML_SCHEMA =
         "http://www.w3.org/2001/XMLSchema";
     
 
@@ -895,7 +901,12 @@ public class Digester extends DefaultHandler {
         reader.setDTDHandler(this);           
         reader.setContentHandler(this);        
         
-        reader.setEntityResolver(this);
+        if (entityResolver == null){
+            reader.setEntityResolver(this);
+        } else {
+            reader.setEntityResolver(entityResolver);           
+        }
+        
         reader.setErrorHandler(this);
         return reader;
     }
@@ -1189,7 +1200,7 @@ public class Digester extends DefaultHandler {
      * @param qName The qualified name (with prefix), or the empty
      *   string if qualified names are not available.\
      * @param list The attributes attached to the element. If there are
-     *   no attributes, it shall be an empty Attributes object.
+     *   no attributes, it shall be an empty Attributes object. 
      * @exception SAXException if a parsing error is to be reported
      */
     public void startElement(String namespaceURI, String localName,
@@ -1319,6 +1330,24 @@ public class Digester extends DefaultHandler {
 
     // ----------------------------------------------- EntityResolver Methods
 
+    /**
+     * Set the <code>EntityResolver</code> used by SAX when resolving
+     * public id and system id.
+     * This must be called before the first call to <code>parse()</code>.
+     * @param entityResolver a class that implement the <code>EntityResolver</code> interface.
+     */
+    public void setEntityResolver(EntityResolver entityResolver){
+        this.entityResolver = entityResolver;
+    }
+    
+    
+    /**
+     * Return the Entity Resolver used by the SAX parser.
+     * @return Return the Entity Resolver used by the SAX parser.
+     */
+    public EntityResolver getEntityResolver(){
+        return entityResolver;
+    }
 
     /**
      * Resolve the requested external entity.
@@ -1337,6 +1366,7 @@ public class Digester extends DefaultHandler {
         if (saxLog.isDebugEnabled()) {
             saxLog.debug("resolveEntity('" + publicId + "', '" + systemId + "')");
         }
+        
         if (publicId != null)
             this.publicId = publicId;
                                        
@@ -1351,23 +1381,20 @@ public class Digester extends DefaultHandler {
             entityURL = (String)entityValidator.get(systemId);
         } 
 
-        if (entityURL == null){
+        if (entityURL == null){ 
            return (null); 
         }
         
         // Return an input source to our alternative URL
         if (debug) {
             log.debug(" Resolving to alternate DTD '" + entityURL + "'");
-        }
+        }  
         
         try {
-            URL url = new URL(entityURL);
-            InputStream stream = url.openStream();
-            return (new InputSource(stream));
+            return (new InputSource(entityURL));
         } catch (Exception e) {
             throw createSAXException(e);
         }
- 
     }
 
 
@@ -1423,11 +1450,11 @@ public class Digester extends DefaultHandler {
      * @exception SAXException if a parsing exception occurs
      */
     public void warning(SAXParseException exception) throws SAXException {
-
-        log.error("Parse Warning at line " + exception.getLineNumber() +
+         if (errorHandler != null) {
+            log.warn("Parse Warning Error at line " + exception.getLineNumber() +
                 " column " + exception.getColumnNumber() + ": " +
                 exception.getMessage(), exception);
-        if (errorHandler != null) {
+            
             errorHandler.warning(exception);
         }
 
