@@ -92,7 +92,7 @@ public:
 	XENCEncryptedTypeImpl(const XSECEnv * env);
 	XENCEncryptedTypeImpl(
 		const XSECEnv * env, 
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node
 	);
 
 	virtual ~XENCEncryptedTypeImpl();
@@ -109,25 +109,24 @@ public:
 						const XMLCh * value);
 
 	// Interface Methods
-	virtual XENCCipherData * getCipherData(void);
-	//virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getDOMNode();
+	virtual XENCCipherData * getCipherData(void) const;
 	virtual DSIGKeyInfoList * getKeyInfoList(void) {return &m_keyInfoList;}
-	virtual XENCEncryptionMethod * getEncryptionMethod(void);
+	virtual XENCEncryptionMethod * getEncryptionMethod(void) const;
 	virtual void clearKeyInfo(void);
 	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false);
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
-		{return mp_encryptedTypeNode;}
 	virtual void appendEncryptedKey(XENCEncryptedKey * encryptedKey);
 
 	// Get methods
-	virtual const XMLCh * getTypeURI(void) const;
+	virtual const XMLCh * getType(void) const;
 	virtual const XMLCh * getMimeType(void) const;
-	virtual const XMLCh * getEncodingURI(void) const;
+	virtual const XMLCh * getEncoding(void) const;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const
+		{return mp_encryptedTypeElement;};
 
 	// Set methods
-	virtual void setTypeURI(const XMLCh * uri);
+	virtual void setType(const XMLCh * uri);
 	virtual void setMimeType(const XMLCh * mimeType);
-	virtual void setEncodingURI(const XMLCh * uri);
+	virtual void setEncoding(const XMLCh * uri);
 
 protected:
 
@@ -140,12 +139,12 @@ protected:
 	void createKeyInfoElement(void);
 
 	const XSECEnv				* mp_env;
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
-								* mp_encryptedTypeNode;		// Node at head of structure
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement					
+								* mp_encryptedTypeElement;	// Node at head of structure
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement
+								* mp_keyInfoElement;		// Any underlying KeyInfo
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
-								* mp_keyInfoNode;			// Any underlying KeyInfo
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
-								* mp_cipherDataNode;		// CipherData structure
+								* mp_cipherDataElement;		// CipherData structure
 	XENCCipherDataImpl			* mp_cipherData;
 	XENCEncryptionMethodImpl	* mp_encryptionMethod;
 
@@ -154,13 +153,21 @@ protected:
 
 	// Type URI
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
-								* mp_typeAttributeNode;
+								* mp_typeAttr;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
-								* mp_mimeTypeAttributeNode;
+								* mp_mimeTypeAttr;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
-								* mp_encodingAttributeNode;
+								* mp_encodingAttr;
 
 	friend class XENCCipherImpl;
+
+private:
+
+	// Un-implemented
+
+	XENCEncryptedTypeImpl();
+	XENCEncryptedTypeImpl(const XENCEncryptedTypeImpl &);
+	XENCEncryptedTypeImpl & operator = (const XENCEncryptedTypeImpl &);
 };
 
 #endif /* XENCENCRYPTEDTYPEIMPL_INCLUDE */

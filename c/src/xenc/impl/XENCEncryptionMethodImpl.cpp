@@ -284,7 +284,7 @@ DOMElement * XENCEncryptionMethodImpl::createBlankEncryptedMethod(const XMLCh * 
 //			Getter functions
 // --------------------------------------------------------------------------------
 
-const XMLCh * XENCEncryptionMethodImpl::getDigestMethod(void) {
+const XMLCh * XENCEncryptionMethodImpl::getDigestMethod(void) const {
 
 	if (mp_digestAlgorithmAttr != NULL)
 		return mp_digestAlgorithmAttr->getNodeValue();
@@ -293,7 +293,7 @@ const XMLCh * XENCEncryptionMethodImpl::getDigestMethod(void) {
 
 }
 
-const XMLCh * XENCEncryptionMethodImpl::getOAEPparams(void) {
+const XMLCh * XENCEncryptionMethodImpl::getOAEPparams(void) const {
 
 	if (mp_oaepParamsTextNode != NULL) {
 		return mp_oaepParamsTextNode->getNodeValue();
@@ -303,7 +303,7 @@ const XMLCh * XENCEncryptionMethodImpl::getOAEPparams(void) {
 
 }
 
-const XMLCh * XENCEncryptionMethodImpl::getAlgorithm(void) {
+const XMLCh * XENCEncryptionMethodImpl::getAlgorithm(void) const {
 
 	if (mp_algorithmAttr != NULL) {
 		return mp_algorithmAttr->getNodeValue();
@@ -313,7 +313,7 @@ const XMLCh * XENCEncryptionMethodImpl::getAlgorithm(void) {
 
 }
 
-int XENCEncryptionMethodImpl::getKeySize(void) {
+int XENCEncryptionMethodImpl::getKeySize(void) const {
 
 	if(mp_keySizeTextNode != NULL) {
 

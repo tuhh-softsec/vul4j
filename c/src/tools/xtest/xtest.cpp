@@ -1050,7 +1050,7 @@ void unitTestCipherReference(DOMImplementation * impl) {
 		XENCEncryptedData * xenc = 
 			cipher->createEncryptedData(XENCCipherData::REFERENCE_TYPE, DSIGConstants::s_unicodeStrURIAES128_CBC, MAKE_UNICODE_STRING("#CipherText"));
 
-		rootElem->appendChild(xenc->getDOMNode());
+		rootElem->appendChild(xenc->getElement());
 
 		// Now create the data that is referenced
 		DOMElement * cipherVal = doc->createElement(MAKE_UNICODE_STRING("MyCipherValue"));
@@ -1270,7 +1270,7 @@ void unitTestKeyEncrypt(DOMImplementation *impl, XSECCryptoKey * k, encryptionMe
 		encryptedKey = cipher->encryptKey(toEncryptStr, strlen((char *) toEncryptStr), em);
 		Janitor<XENCEncryptedKey> j_encryptedKey(encryptedKey);
 
-		rootElem->appendChild(encryptedKey->getDOMNode());
+		rootElem->appendChild(encryptedKey->getElement());
 
 		// Decrypt
 		cerr << "decrypt ... ";
@@ -1531,7 +1531,7 @@ void testEncrypt(DOMImplementation *impl) {
 		cerr << "done\nAdding Encoding and MimeType ... ";
 
 		// Add MimeType and Encoding
-		encryptedData->setEncodingURI(s_tstEncoding);
+		encryptedData->setEncoding(s_tstEncoding);
 		encryptedData->setMimeType(s_tstMimeType);
 
 		// Set a KeySize
@@ -1673,7 +1673,7 @@ void testEncrypt(DOMImplementation *impl) {
 			cerr << "Bad MimeType" << endl;
 			exit(1);
 		}
-		if (encryptedData->getEncodingURI() == NULL || !strEquals(encryptedData->getEncodingURI(), s_tstEncoding)) {
+		if (encryptedData->getEncoding() == NULL || !strEquals(encryptedData->getEncoding(), s_tstEncoding)) {
 			cerr << "Bad Encoding" << endl;
 			exit(1);
 		}

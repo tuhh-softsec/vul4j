@@ -106,14 +106,14 @@ static XMLCh s_CipherValue[] = {
 
 XENCCipherValueImpl::XENCCipherValueImpl(const XSECEnv * env) :
 mp_env(env),
-mp_cipherValueNode(NULL),
+mp_cipherValueElement(NULL),
 mp_cipherString(NULL) {
 
 }
 
-XENCCipherValueImpl::XENCCipherValueImpl(const XSECEnv * env, DOMNode * node) :
+XENCCipherValueImpl::XENCCipherValueImpl(const XSECEnv * env, DOMElement * node) :
 mp_env(env),
-mp_cipherValueNode(node),
+mp_cipherValueElement(node),
 mp_cipherString(NULL) {
 
 }
@@ -132,7 +132,7 @@ XENCCipherValueImpl::~XENCCipherValueImpl() {
 
 void XENCCipherValueImpl::load(void) {
 
-	if (mp_cipherValueNode == NULL) {
+	if (mp_cipherValueElement == NULL) {
 
 		// Attempt to load an empty encryptedType element
 		throw XSECException(XSECException::CipherValueError,
@@ -140,17 +140,17 @@ void XENCCipherValueImpl::load(void) {
 
 	}
 
-	if (!strEquals(getXENCLocalName(mp_cipherValueNode), s_CipherValue)) {
+	if (!strEquals(getXENCLocalName(mp_cipherValueElement), s_CipherValue)) {
 	
 		throw XSECException(XSECException::CipherValueError,
 			"XENCCipherData::load - called incorrect node");
 	
 	}
 
-	// JUst gather the text children and continue
+	// Just gather the text children and continue
 	safeBuffer txt;
 
-	gatherChildrenText(mp_cipherValueNode, txt);
+	gatherChildrenText(mp_cipherValueElement, txt);
 
 	// Get a copy
 	mp_cipherString = XMLString::replicate(txt.rawXMLChBuffer());
@@ -178,7 +178,7 @@ DOMElement * XENCCipherValueImpl::createBlankCipherValue(
 	makeQName(str, prefix, s_CipherValue);
 
 	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
-	mp_cipherValueNode = ret;
+	mp_cipherValueElement = ret;
 
 	// Append the value
 	ret->appendChild(doc->createTextNode(value));
@@ -193,7 +193,7 @@ DOMElement * XENCCipherValueImpl::createBlankCipherValue(
 //			Interface Methods
 // --------------------------------------------------------------------------------
 
-const XMLCh * XENCCipherValueImpl::getCipherString(void) {
+const XMLCh * XENCCipherValueImpl::getCipherString(void) const {
 
 	return mp_cipherString;
 
@@ -201,7 +201,7 @@ const XMLCh * XENCCipherValueImpl::getCipherString(void) {
 
 void XENCCipherValueImpl::setCipherString(const XMLCh * value) {
 
-	if (mp_cipherValueNode == NULL) {
+	if (mp_cipherValueElement == NULL) {
 
 		throw XSECException(XSECException::CipherValueError,
 			"XENCCipherData::setCipherString - called on empty DOM");
@@ -209,7 +209,7 @@ void XENCCipherValueImpl::setCipherString(const XMLCh * value) {
 	}
 
 	// Find first text child
-	DOMNode * txt = findFirstChildOfType(mp_cipherValueNode, DOMNode::TEXT_NODE);
+	DOMNode * txt = findFirstChildOfType(mp_cipherValueElement, DOMNode::TEXT_NODE);
 	
 	if (txt == NULL) {
 		throw XSECException(XSECException::CipherValueError,

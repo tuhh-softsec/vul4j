@@ -87,7 +87,7 @@ public:
 	XENCCipherReferenceImpl(const XSECEnv * env);
 	XENCCipherReferenceImpl(
 		const XSECEnv * env, 
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node
 	);
 
 	virtual ~XENCCipherReferenceImpl();
@@ -99,9 +99,9 @@ public:
 		createBlankCipherReference(const XMLCh * URI);
 
 	// Get methods
-	virtual DSIGTransformList * getTransforms(void);
-	virtual const XMLCh * getURI (void);
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void);
+	virtual DSIGTransformList * getTransforms(void) const;
+	virtual const XMLCh * getURI (void) const;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const;
 
 	// Set methods
 	virtual DSIGTransformBase64 * appendBase64Transform();
@@ -124,12 +124,13 @@ private:
 
 
 	const XSECEnv			* mp_env;
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
-							* mp_cipherReferenceNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement					
+							* mp_cipherReferenceElement;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
-							* mp_uriAttributeNode;
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
-							* mp_transformsNode;
+							* mp_uriAttr;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement
+							* mp_transformsElement;
+
 	DSIGTransformList		* mp_transformList;
 
 

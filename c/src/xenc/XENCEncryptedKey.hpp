@@ -91,6 +91,23 @@
  * In general, this class should not be used directly.  For most
  * applications, callers will want to use the XENCCipher class
  * instead.
+ *
+ * The schema definition for EncryptedKey is as follows:
+ *
+ * \verbatim
+  <element name='EncryptedKey' type='xenc:EncryptedKeyType'/>
+  <complexType name='EncryptedKeyType'>
+    <complexContent>
+      <extension base='xenc:EncryptedType'>
+        <sequence>
+          <element ref='xenc:ReferenceList' minOccurs='0'/>
+          <element name='CarriedKeyName' type='string' minOccurs='0'/>
+        </sequence>
+        <attribute name='Recipient' type='string' use='optional'/>
+      </extension>
+    </complexContent>   
+  </complexType>
+\endverbatim
  */
 
 
@@ -127,7 +144,7 @@ public:
 	 * (or NULL if none)
 	 */
 
-	virtual const XMLCh * getCarriedKeyName(void) = 0;
+	virtual const XMLCh * getCarriedKeyName(void) const = 0;
 
 	/**
 	 * \brief Get the Recipient name
@@ -142,7 +159,7 @@ public:
 	 * (or NULL if none provided).
 	 */
 
-	virtual const XMLCh * getRecipient(void) = 0;
+	virtual const XMLCh * getRecipient(void) const = 0;
 
 	//@}
 

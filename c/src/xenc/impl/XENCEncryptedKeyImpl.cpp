@@ -143,15 +143,15 @@ XENCEncryptedKeyImpl::XENCEncryptedKeyImpl(const XSECEnv * env) :
 XENCEncryptedTypeImpl(env),
 XENCEncryptedKey(env),
 mp_carriedKeyNameTextNode(NULL),
-mp_recipientAttributeNode(NULL) {
+mp_recipientAttr(NULL) {
 	
 }
 
-XENCEncryptedKeyImpl::XENCEncryptedKeyImpl(const XSECEnv * env, DOMNode * node) :
+XENCEncryptedKeyImpl::XENCEncryptedKeyImpl(const XSECEnv * env, DOMElement * node) :
 XENCEncryptedTypeImpl(env, node),
 XENCEncryptedKey(env),
 mp_carriedKeyNameTextNode(NULL),
-mp_recipientAttributeNode(NULL) {
+mp_recipientAttr(NULL) {
 
 }
 
@@ -165,7 +165,7 @@ XENCEncryptedKeyImpl::~XENCEncryptedKeyImpl() {
 
 void XENCEncryptedKeyImpl::load(void) {
 
-	if (mp_encryptedTypeNode == NULL) {
+	if (mp_encryptedTypeElement == NULL) {
 
 		// Attempt to load an empty encryptedData element
 		throw XSECException(XSECException::EncryptedTypeError,
@@ -173,7 +173,7 @@ void XENCEncryptedKeyImpl::load(void) {
 
 	}
 
-	if (!strEquals(getXENCLocalName(mp_encryptedTypeNode), s_EncryptedKey)) {
+	if (!strEquals(getXENCLocalName(mp_encryptedTypeElement), s_EncryptedKey)) {
 
 		// Attempt to load an empty encryptedKey element
 		throw XSECException(XSECException::EncryptedTypeError,
@@ -185,19 +185,13 @@ void XENCEncryptedKeyImpl::load(void) {
 	XENCEncryptedTypeImpl::load();
 
 	// Set up the keyInfo node
-	mp_keyInfoDOMNode = mp_encryptedTypeNode;
+	mp_keyInfoDOMNode = mp_encryptedTypeElement;
 
 	// Find the Recipient Attribute
-	DOMNamedNodeMap * tmpAtts = mp_encryptedTypeNode->getAttributes();
-
-	if (tmpAtts != NULL) {
-
-		mp_recipientAttributeNode = tmpAtts->getNamedItem(s_Recipient);
-
-	}
+	mp_recipientAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_Recipient);
 
 	// Now load specific EncryptedKey elements
-	DOMNode * c = findFirstChildOfType(mp_encryptedTypeNode, DOMNode::ELEMENT_NODE);
+	DOMNode * c = findFirstChildOfType(mp_encryptedTypeElement, DOMNode::ELEMENT_NODE);
 
 	while (c != NULL) {
 
@@ -208,7 +202,7 @@ void XENCEncryptedKeyImpl::load(void) {
 
 		}
 
-		c = findNextChildOfType(c, DOMNode::ELEMENT_NODE);
+		c = findNextElementChild(c);
 
 	}
 
@@ -225,7 +219,7 @@ DOMElement * XENCEncryptedKeyImpl::createBlankEncryptedKey(
 	DOMElement * ret = createBlankEncryptedType(s_EncryptedKey, type, algorithm, value);
 
 	// Set up the KeyInfo information
-	mp_keyInfoDOMNode = mp_encryptedTypeNode;
+	mp_keyInfoDOMNode = mp_encryptedTypeElement;
 
 	return ret;
 
@@ -236,7 +230,7 @@ DOMElement * XENCEncryptedKeyImpl::createBlankEncryptedKey(
 // --------------------------------------------------------------------------------
 
 
-const XMLCh * XENCEncryptedKeyImpl::getCarriedKeyName(void) {
+const XMLCh * XENCEncryptedKeyImpl::getCarriedKeyName(void) const {
 
 	if (mp_carriedKeyNameTextNode != NULL)
 		return mp_carriedKeyNameTextNode->getNodeValue();
@@ -245,10 +239,10 @@ const XMLCh * XENCEncryptedKeyImpl::getCarriedKeyName(void) {
 
 }
 
-const XMLCh * XENCEncryptedKeyImpl::getRecipient(void) {
+const XMLCh * XENCEncryptedKeyImpl::getRecipient(void) const {
 
-	if (mp_recipientAttributeNode != NULL)
-		return mp_recipientAttributeNode->getNodeValue();
+	if (mp_recipientAttr != NULL)
+		return mp_recipientAttr->getNodeValue();
 
 	return NULL;
 
@@ -267,8 +261,8 @@ void XENCEncryptedKeyImpl::setCarriedKeyName(const XMLCh * name) {
 
 		DOMElement *e = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
 
-		mp_encryptedTypeNode->appendChild(e);
-		XENCEncryptedTypeImpl::mp_env->doPrettyPrint(mp_encryptedTypeNode);
+		mp_encryptedTypeElement->appendChild(e);
+		XENCEncryptedTypeImpl::mp_env->doPrettyPrint(mp_encryptedTypeElement);
 
 		mp_carriedKeyNameTextNode = doc->createTextNode(name);
 		e->appendChild(mp_carriedKeyNameTextNode);
@@ -284,27 +278,20 @@ void XENCEncryptedKeyImpl::setCarriedKeyName(const XMLCh * name) {
 
 void XENCEncryptedKeyImpl::setRecipient(const XMLCh * recipient) {
 
-	if (mp_recipientAttributeNode == NULL) {
+	if (mp_recipientAttr == NULL) {
 
-		if (mp_encryptedTypeNode->getNodeType() != DOMNode::ELEMENT_NODE) {
+		if (mp_encryptedTypeElement->getNodeType() != DOMNode::ELEMENT_NODE) {
 			throw XSECException(XSECException::EncryptedTypeError,
 				"XENCEncryptedKeyImpl::setRecipient - encryptedTypeNode is not an Element");
 		}
 
-		DOMElement * e = static_cast<DOMElement*> (mp_encryptedTypeNode);
-		e->setAttributeNS(DSIGConstants::s_unicodeStrURIXENC, 
+		mp_encryptedTypeElement->setAttributeNS(NULL, 
 											 s_Recipient,
 											 recipient);
 		// Now retrieve for later use
-		DOMNamedNodeMap * tmpAtts = e->getAttributes();
+		mp_recipientAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_Recipient);
 
-		if (tmpAtts != NULL) {
-
-			mp_recipientAttributeNode = tmpAtts->getNamedItem(s_Recipient);
-
-		}
-
-		if (mp_recipientAttributeNode == NULL) {
+		if (mp_recipientAttr == NULL) {
 
 			throw XSECException(XSECException::EncryptionMethodError,
 				"XENCEncryptionKey::setRecipient - Error creating Recipient Attribute");
@@ -313,7 +300,7 @@ void XENCEncryptedKeyImpl::setRecipient(const XMLCh * recipient) {
 	
 	else {
 
-		mp_recipientAttributeNode->setNodeValue(recipient);
+		mp_recipientAttr->setNodeValue(recipient);
 
 	}
 

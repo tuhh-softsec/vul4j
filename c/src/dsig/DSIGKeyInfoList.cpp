@@ -201,7 +201,7 @@ bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
 
 	else if (strEquals(getXENCLocalName(ki), "EncryptedKey")) {
 
-		XSECnew(k, XENCEncryptedKeyImpl(mp_env, ki));
+		XSECnew(k, XENCEncryptedKeyImpl(mp_env, (DOMElement *) ki));
 		
 	}
 

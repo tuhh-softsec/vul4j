@@ -91,6 +91,18 @@
  * In general, this class should not be used directly.  For most
  * applications, callers will want to use the XENCCipher class
  * instead.
+ *
+ * The schema for EncryptedData is as follows:
+ * 
+ * \verbatim
+  <element name='EncryptedData' type='xenc:EncryptedDataType'/>
+  <complexType name='EncryptedDataType'>
+    <complexContent>
+     <extension base='xenc:EncryptedType'>
+     </extension>
+    </complexContent>
+  </complexType>
+\endverbatim
  */
 
 

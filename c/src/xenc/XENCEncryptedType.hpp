@@ -100,6 +100,24 @@ class XENCEncryptedKey;
  *
  * In general derived objects should not be used directly.
  * The XENCCipher class should be used to operate on them.
+ *
+ * The schema definition for EncryptedType is as follows :
+ *
+ * \verbatim
+  <complexType name='EncryptedType' abstract='true'>
+    <sequence>
+      <element name='EncryptionMethod' type='xenc:EncryptionMethodType' 
+               minOccurs='0'/>
+      <element ref='ds:KeyInfo' minOccurs='0'/>
+      <element ref='xenc:CipherData'/>
+      <element ref='xenc:EncryptionProperties' minOccurs='0'/>
+    </sequence>
+    <attribute name='Id' type='ID' use='optional'/>
+    <attribute name='Type' type='anyURI' use='optional'/>
+    <attribute name='MimeType' type='string' use='optional'/>
+    <attribute name='Encoding' type='anyURI' use='optional'/> 
+   </complexType>
+  \endverbatim
  */
 
 
@@ -128,7 +146,7 @@ public:
 	 * @returns The CipherData object
 	 */
 
-	virtual XENCCipherData * getCipherData(void) = 0;
+	virtual XENCCipherData * getCipherData(void) const = 0;
 
 	/**
 	 * \brief Retrieve the EncryptionMethod element
@@ -142,18 +160,15 @@ public:
 	 * @returns The EncryptionMethod element
 	 */
 
-	virtual XENCEncryptionMethod * getEncryptionMethod(void) = 0;
+	virtual XENCEncryptionMethod * getEncryptionMethod(void) const = 0;
 
 	/**
-	 * \brief Retrieve the DOM Node that heads up the structure
+	 * \brief Get the DOM Element Node of this structure
 	 *
-	 * If this object has been fully created, this call will provide
-	 * the element node that heads up this structure
-	 *
-	 * @returns the DOMNode that heads up this structure
+	 * @returns the DOM Element Node representing the \<EncryptionType\> element
 	 */
 
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode() = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const = 0;
 
 	//@}
 
@@ -172,7 +187,7 @@ public:
 	 * or NULL if no type is set
 	 */
 
-	virtual const XMLCh * getTypeURI(void) const = 0;
+	virtual const XMLCh * getType(void) const = 0;
 
 	/**
 	 * \brief Get the MimeType of the EncryptedType
@@ -203,7 +218,7 @@ public:
 	 * @returns A string (owned by the library) providing the encoding URI
 	 */
 
-	virtual const XMLCh * getEncodingURI(void) const = 0;
+	virtual const XMLCh * getEncoding(void) const = 0;
 
 	//@}
 
@@ -222,7 +237,7 @@ public:
 	 * @param uri The URI to set
 	 */
 
-	virtual void setTypeURI(const XMLCh * uri) = 0;
+	virtual void setType(const XMLCh * uri) = 0;
 
 	/**
 	 * \brief Set the MimeType of the EncryptedType
@@ -256,7 +271,7 @@ public:
 	 * simply sets the value of the Encoding attribute to this value.
 	 */
 
-	virtual void setEncodingURI(const XMLCh * uri) = 0;
+	virtual void setEncoding(const XMLCh * uri) = 0;
 
 	//@}
 

@@ -184,30 +184,30 @@ static XMLCh s_Encoding[] = {
 
 XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(const XSECEnv * env) :
 mp_env(env),
-mp_encryptedTypeNode(NULL),
-mp_keyInfoNode(NULL),
-mp_cipherDataNode(NULL),
+mp_encryptedTypeElement(NULL),
+mp_keyInfoElement(NULL),
+mp_cipherDataElement(NULL),
 mp_cipherData(NULL),
 mp_encryptionMethod(NULL),
 m_keyInfoList(env),
-mp_typeAttributeNode(NULL),
-mp_mimeTypeAttributeNode(NULL),
-mp_encodingAttributeNode(NULL) {
+mp_typeAttr(NULL),
+mp_mimeTypeAttr(NULL),
+mp_encodingAttr(NULL) {
 
 }
 
 
-XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(const XSECEnv * env, DOMNode * node) :
+XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(const XSECEnv * env, DOMElement * node) :
 mp_env(env),
-mp_encryptedTypeNode(node),
-mp_keyInfoNode(NULL),
-mp_cipherDataNode(NULL),
+mp_encryptedTypeElement(node),
+mp_keyInfoElement(NULL),
+mp_cipherDataElement(NULL),
 mp_cipherData(NULL),
 mp_encryptionMethod(NULL),
 m_keyInfoList(env),
-mp_typeAttributeNode(NULL),
-mp_mimeTypeAttributeNode(NULL),
-mp_encodingAttributeNode(NULL) {
+mp_typeAttr(NULL),
+mp_mimeTypeAttr(NULL),
+mp_encodingAttr(NULL) {
 
 }
 
@@ -227,7 +227,7 @@ XENCEncryptedTypeImpl::~XENCEncryptedTypeImpl() {
 
 void XENCEncryptedTypeImpl::load() {
 
-	if (mp_encryptedTypeNode == NULL) {
+	if (mp_encryptedTypeElement == NULL) {
 
 		// Attempt to load an empty encryptedType element
 		throw XSECException(XSECException::EncryptedTypeError,
@@ -235,52 +235,46 @@ void XENCEncryptedTypeImpl::load() {
 
 	}
 
-	// See if any attributes of interest are set
-	DOMNamedNodeMap *atts = mp_encryptedTypeNode->getAttributes();
-
 	// Type
-	mp_typeAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
-												s_Type);
+	mp_typeAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_Type);
 	// MimeType
-	mp_mimeTypeAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
-												s_MimeType);
+	mp_mimeTypeAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_MimeType);
 	// Encoding
-	mp_encodingAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
-												s_Encoding);
+	mp_encodingAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_Encoding);
 
 	// Don't know what the node name should be (held by super class), 
 	// so go straight to the children
 	
-	DOMElement *tmpElt = (DOMElement *) findFirstChildOfType(mp_encryptedTypeNode, DOMNode::ELEMENT_NODE);
+	DOMElement *tmpElt = (DOMElement *) findFirstChildOfType(mp_encryptedTypeElement, DOMNode::ELEMENT_NODE);
 
 	if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_EncryptionMethod)) {
 
 		XSECnew(mp_encryptionMethod, XENCEncryptionMethodImpl(mp_env, tmpElt));
 		mp_encryptionMethod->load();
 
-		tmpElt = (DOMElement *) findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
+		tmpElt = findNextElementChild(tmpElt);
 
 	}
 
 	if (tmpElt != NULL && strEquals(getDSIGLocalName(tmpElt), s_KeyInfo)) {
 
 		// Load
-		mp_keyInfoNode = tmpElt;
+		mp_keyInfoElement = tmpElt;
 		m_keyInfoList.loadListFromXML(tmpElt);
 
 		// Find the next node
 
-		tmpElt = (DOMElement *) findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
+		tmpElt = findNextElementChild(tmpElt);
 
 	}
 
 	if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_CipherData)) {
 
-		mp_cipherDataNode = tmpElt;
+		mp_cipherDataElement = tmpElt;
 
 		XSECnew(mp_cipherData, XENCCipherDataImpl(mp_env, tmpElt));
 		mp_cipherData->load();
-		tmpElt = (DOMElement *) findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
+		tmpElt = findNextElementChild(tmpElt);
 
 	}
 
@@ -316,8 +310,7 @@ DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
 
 	makeQName(str, prefix, localName);
 
-	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
-	mp_encryptedTypeNode = ret;
+	mp_encryptedTypeElement = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
 
 	// Set namespace
 	if (prefix[0] == XERCES_CPP_NAMESPACE::chNull) {
@@ -328,11 +321,11 @@ DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
 		str.sbXMLChCat(prefix);
 	}
 
-	ret->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
+	mp_encryptedTypeElement->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
 							str.rawXMLChBuffer(), 
 							DSIGConstants::s_unicodeStrURIXENC);
 
-	mp_env->doPrettyPrint(ret);
+	mp_env->doPrettyPrint(mp_encryptedTypeElement);
 
 	// Create the EncryptionMethod
 	if (algorithm != NULL) {
@@ -341,22 +334,22 @@ DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
 		DOMNode * encryptionMethodNode = 
 			mp_encryptionMethod->createBlankEncryptedMethod(algorithm);
 
-		ret->appendChild(encryptionMethodNode);
+		mp_encryptedTypeElement->appendChild(encryptionMethodNode);
 
-		mp_env->doPrettyPrint(ret);
+		mp_env->doPrettyPrint(mp_encryptedTypeElement);
 
 	}
 
 	// Create the cipher Data
 	XSECnew(mp_cipherData, XENCCipherDataImpl(mp_env));
-	mp_cipherDataNode = mp_cipherData->createBlankCipherData(type, value);
+	mp_cipherDataElement = mp_cipherData->createBlankCipherData(type, value);
 
 	// Add to EncryptedType
-	ret->appendChild(mp_cipherDataNode);
+	mp_encryptedTypeElement->appendChild(mp_cipherDataElement);
 
-	mp_env->doPrettyPrint(ret);
+	mp_env->doPrettyPrint(mp_encryptedTypeElement);
 
-	return ret;
+	return mp_encryptedTypeElement;
 
 }
 
@@ -429,13 +422,13 @@ TXFMChain * XENCEncryptedTypeImpl::createCipherTXFMChain(void) {
 //			Get Methods
 // --------------------------------------------------------------------------------
 
-XENCCipherData * XENCEncryptedTypeImpl::getCipherData(void) {
+XENCCipherData * XENCEncryptedTypeImpl::getCipherData(void) const {
 
 	return mp_cipherData;
 
 }
 
-XENCEncryptionMethod * XENCEncryptedTypeImpl::getEncryptionMethod(void) {
+XENCEncryptionMethod * XENCEncryptedTypeImpl::getEncryptionMethod(void) const {
 	
 	return mp_encryptionMethod;
 
@@ -447,19 +440,19 @@ XENCEncryptionMethod * XENCEncryptedTypeImpl::getEncryptionMethod(void) {
 
 void XENCEncryptedTypeImpl::clearKeyInfo(void) {
 
-	if (mp_keyInfoNode == NULL)
+	if (mp_keyInfoElement == NULL)
 		return;
 
-	if (mp_encryptedTypeNode->removeChild(mp_keyInfoNode) != mp_keyInfoNode) {
+	if (mp_encryptedTypeElement->removeChild(mp_keyInfoElement) != mp_keyInfoElement) {
 
 		throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 			"Attempted to remove KeyInfo node but it is no longer a child of <EncryptedType>");
 
 	}
 
-	mp_keyInfoNode->release();		// No longer required
+	mp_keyInfoElement->release();		// No longer required
 
-	mp_keyInfoNode = NULL;
+	mp_keyInfoElement = NULL;
 
 	// Clear out the list
 	m_keyInfoList.empty();
@@ -468,7 +461,7 @@ void XENCEncryptedTypeImpl::clearKeyInfo(void) {
 
 void XENCEncryptedTypeImpl::createKeyInfoElement(void) {
 
-	if (mp_keyInfoNode != NULL)
+	if (mp_keyInfoElement != NULL)
 		return;
 
 	safeBuffer str;
@@ -476,20 +469,20 @@ void XENCEncryptedTypeImpl::createKeyInfoElement(void) {
 	const XMLCh * prefixNS = mp_env->getDSIGNSPrefix();
 	makeQName(str, prefixNS, "KeyInfo");
 
-	mp_keyInfoNode = m_keyInfoList.createKeyInfo();
+	mp_keyInfoElement = m_keyInfoList.createKeyInfo();
 
 	// Place the node before the CipherData node
-	if (mp_cipherDataNode == NULL) {
+	if (mp_cipherDataElement == NULL) {
 
 		throw XSECException(XSECException::EncryptedTypeError,
 			"XENCEncryptedTypeImpl::createKeyInfoElement - unable to find CipherData node");
 
 	}
 
-	mp_encryptedTypeNode->insertBefore(mp_keyInfoNode, mp_cipherDataNode);
+	mp_encryptedTypeElement->insertBefore(mp_keyInfoElement, mp_cipherDataElement);
 
 	if (mp_env->getPrettyPrintFlag() == true)
-		mp_encryptedTypeNode->insertBefore(mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), mp_cipherDataNode);
+		mp_encryptedTypeElement->insertBefore(mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), mp_cipherDataElement);
 	
 	// Need to add the DS namespace
 
@@ -501,7 +494,7 @@ void XENCEncryptedTypeImpl::createKeyInfoElement(void) {
 		str.sbXMLChCat(prefixNS);
 	}
 
-	static_cast<DOMElement *>(mp_keyInfoNode)->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
+	mp_keyInfoElement->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
 							str.rawXMLChBuffer(), 
 							DSIGConstants::s_unicodeStrURIDSIG);
 
@@ -526,31 +519,27 @@ void XENCEncryptedTypeImpl::appendEncryptedKey(XENCEncryptedKey * encryptedKey) 
 //			Type URI handling
 // --------------------------------------------------------------------------------
 
-const XMLCh * XENCEncryptedTypeImpl::getTypeURI(void) const {
+const XMLCh * XENCEncryptedTypeImpl::getType(void) const {
 
-	if (mp_typeAttributeNode != NULL)
-		return mp_typeAttributeNode->getNodeValue();
+	if (mp_typeAttr != NULL)
+		return mp_typeAttr->getNodeValue();
 
 	return NULL;
 
 }
 
-void XENCEncryptedTypeImpl::setTypeURI(const XMLCh * uri) {
+void XENCEncryptedTypeImpl::setType(const XMLCh * uri) {
 
-	if (mp_typeAttributeNode != NULL) {
-		mp_typeAttributeNode->setNodeValue(uri);
+	if (mp_typeAttr != NULL) {
+		mp_typeAttr->setNodeValue(uri);
 	}
 	else {
 
 		// Need to create the node
-		DOMElement * typeElt = static_cast<DOMElement *>(mp_encryptedTypeNode);
+		mp_encryptedTypeElement->setAttributeNS(NULL, s_Type, uri);
+		mp_typeAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_Type);
 
-		typeElt->setAttributeNS(DSIGConstants::s_unicodeStrURIXENC, s_Type, uri);
-
-		DOMNamedNodeMap *atts = mp_encryptedTypeNode->getAttributes();
-		mp_typeAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
-												s_Type);
-		if (mp_typeAttributeNode = NULL) {
+		if (mp_typeAttr = NULL) {
 
 			throw XSECException(XSECException::InternalError,
 				"XENCEncryptedTypeImpl::setTypeURI - Cannot find the attribute I just added");
@@ -566,8 +555,8 @@ void XENCEncryptedTypeImpl::setTypeURI(const XMLCh * uri) {
 
 const XMLCh * XENCEncryptedTypeImpl::getMimeType(void) const {
 
-	if (mp_mimeTypeAttributeNode != NULL)
-		return mp_mimeTypeAttributeNode->getNodeValue();
+	if (mp_mimeTypeAttr != NULL)
+		return mp_mimeTypeAttr->getNodeValue();
 
 	return NULL;
 
@@ -575,20 +564,15 @@ const XMLCh * XENCEncryptedTypeImpl::getMimeType(void) const {
 
 void XENCEncryptedTypeImpl::setMimeType(const XMLCh * mimeType) {
 
-	if (mp_mimeTypeAttributeNode != NULL) {
-		mp_mimeTypeAttributeNode->setNodeValue(mimeType);
+	if (mp_mimeTypeAttr != NULL) {
+		mp_mimeTypeAttr->setNodeValue(mimeType);
 	}
 	else {
 
 		// Need to create the node
-		DOMElement * typeElt = static_cast<DOMElement *>(mp_encryptedTypeNode);
-
-		typeElt->setAttributeNS(DSIGConstants::s_unicodeStrURIXENC, s_MimeType, mimeType);
-
-		DOMNamedNodeMap *atts = mp_encryptedTypeNode->getAttributes();
-		mp_mimeTypeAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
-												s_MimeType);
-		if (mp_mimeTypeAttributeNode = NULL) {
+		mp_encryptedTypeElement->setAttributeNS(NULL, s_MimeType, mimeType);
+		mp_mimeTypeAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_MimeType);
+		if (mp_mimeTypeAttr = NULL) {
 
 			throw XSECException(XSECException::InternalError,
 				"XENCEncryptedTypeImpl::setMimeType - Cannot find the attribute I just added");
@@ -602,31 +586,27 @@ void XENCEncryptedTypeImpl::setMimeType(const XMLCh * mimeType) {
 //			Encoding handling
 // --------------------------------------------------------------------------------
 
-const XMLCh * XENCEncryptedTypeImpl::getEncodingURI(void) const {
+const XMLCh * XENCEncryptedTypeImpl::getEncoding(void) const {
 
-	if (mp_encodingAttributeNode != NULL)
-		return mp_encodingAttributeNode->getNodeValue();
+	if (mp_encodingAttr != NULL)
+		return mp_encodingAttr->getNodeValue();
 
 	return NULL;
 
 }
 
-void XENCEncryptedTypeImpl::setEncodingURI(const XMLCh * uri) {
+void XENCEncryptedTypeImpl::setEncoding(const XMLCh * uri) {
 
-	if (mp_encodingAttributeNode != NULL) {
-		mp_encodingAttributeNode->setNodeValue(uri);
+	if (mp_encodingAttr != NULL) {
+		mp_encodingAttr->setNodeValue(uri);
 	}
 	else {
 
 		// Need to create the node
-		DOMElement * typeElt = static_cast<DOMElement *>(mp_encryptedTypeNode);
+		mp_encryptedTypeElement->setAttributeNS(NULL, s_Encoding, uri);
+		mp_encodingAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_Encoding);
 
-		typeElt->setAttributeNS(DSIGConstants::s_unicodeStrURIXENC, s_Encoding, uri);
-
-		DOMNamedNodeMap *atts = mp_encryptedTypeNode->getAttributes();
-		mp_encodingAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
-												s_Encoding);
-		if (mp_encodingAttributeNode = NULL) {
+		if (mp_encodingAttr = NULL) {
 
 			throw XSECException(XSECException::InternalError,
 				"XENCEncryptedTypeImpl::setEncodingURI - Cannot find the attribute I just added");

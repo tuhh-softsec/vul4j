@@ -73,7 +73,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 
-XSEC_DECLARE_XERCES_CLASS(DOMNode);
+XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
 /**
  * @ingroup xenc
@@ -115,7 +115,7 @@ public:
 	 * @returns The Encrypted information in a base64 encoded string
 	 */
 
-	virtual const XMLCh * getCipherString(void) = 0;
+	virtual const XMLCh * getCipherString(void) const = 0;
 
 	/**
 	 * \brief Get the DOM Node of this structure
@@ -123,7 +123,7 @@ public:
 	 * @returns the DOM Node representing the <CipherValue> element
 	 */
 
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void) = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const = 0;
 
 	//@}
 
@@ -144,6 +144,7 @@ public:
 	virtual void setCipherString(const XMLCh * value) = 0;
 
 	//@}
+
 private:
 
 	// Unimplemented

@@ -111,7 +111,7 @@ XENCEncryptedTypeImpl(env) {
 	
 }
 
-XENCEncryptedDataImpl::XENCEncryptedDataImpl(const XSECEnv * env, DOMNode * node) :
+XENCEncryptedDataImpl::XENCEncryptedDataImpl(const XSECEnv * env, DOMElement * node) :
 XENCEncryptedTypeImpl(env, node) {
 
 }
@@ -126,7 +126,7 @@ XENCEncryptedDataImpl::~XENCEncryptedDataImpl() {
 
 void XENCEncryptedDataImpl::load(void) {
 
-	if (mp_encryptedTypeNode == NULL) {
+	if (mp_encryptedTypeElement == NULL) {
 
 		// Attempt to load an empty encryptedData element
 		throw XSECException(XSECException::EncryptedTypeError,
@@ -134,7 +134,7 @@ void XENCEncryptedDataImpl::load(void) {
 
 	}
 
-	if (!strEquals(getXENCLocalName(mp_encryptedTypeNode), s_EncryptedData)) {
+	if (!strEquals(getXENCLocalName(mp_encryptedTypeElement), s_EncryptedData)) {
 
 		// Attempt to load an empty encryptedData element
 		throw XSECException(XSECException::EncryptedTypeError,

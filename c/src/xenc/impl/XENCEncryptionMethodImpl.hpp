@@ -97,12 +97,12 @@ public:
 						const XMLCh * algorithm);
 
 	// Interface
-	const XMLCh * getAlgorithm(void);
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void)
+	const XMLCh * getAlgorithm(void) const;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const
 		{return mp_encryptionMethodElement;}
-	virtual const XMLCh * getDigestMethod(void);
-	virtual const XMLCh * getOAEPparams(void);
-	virtual int getKeySize(void);
+	virtual const XMLCh * getDigestMethod(void) const;
+	virtual const XMLCh * getOAEPparams(void) const;
+	virtual int getKeySize(void) const;
 	virtual void setDigestMethod(const XMLCh * method);
 	virtual void setOAEPparams(const XMLCh * params);
 	virtual void setKeySize(int size);

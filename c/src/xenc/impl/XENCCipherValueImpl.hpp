@@ -88,7 +88,7 @@ public:
 	XENCCipherValueImpl(const XSECEnv * env);
 	XENCCipherValueImpl(
 		const XSECEnv * env, 
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node
 	);
 
 	virtual ~XENCCipherValueImpl();
@@ -101,10 +101,10 @@ public:
 
 	// Interface methods
 
-	virtual const XMLCh * getCipherString(void);
+	virtual const XMLCh * getCipherString(void) const;
 	virtual void setCipherString(const XMLCh * value);
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
-		{return mp_cipherValueNode;}
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const
+		{return mp_cipherValueElement;}
 
 private:
 
@@ -113,9 +113,13 @@ private:
 	XENCCipherValueImpl & operator = (const XENCCipherValueImpl &);
 
 	const XSECEnv			* mp_env;
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
-							* mp_cipherValueNode;
-	XMLCh					* mp_cipherString;		// EncryptedData
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement					
+							* mp_cipherValueElement;
+	
+	// This is held as a string, not a node as we might have multiple text
+	// nodes making up the string
+
+	XMLCh 					* mp_cipherString;
 };
 
 #endif /* XENCCIPHERVALUEIMPL_INCLUDE */

@@ -86,7 +86,7 @@ public:
 	XENCEncryptedKeyImpl(const XSECEnv * env);
 	XENCEncryptedKeyImpl(
 		const XSECEnv * env, 
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node
 	);
 	virtual ~XENCEncryptedKeyImpl();
 
@@ -105,40 +105,40 @@ public:
 
 
 	// Inherited from XENCEncryptedData - need to re-implement
-	virtual XENCCipherData * getCipherData(void) 
+	virtual XENCCipherData * getCipherData(void) const
 		{return XENCEncryptedTypeImpl::getCipherData();}
 	virtual DSIGKeyInfoList * getKeyInfoList(void)
 		{return XENCEncryptedTypeImpl::getKeyInfoList();}
-	virtual XENCEncryptionMethod * getEncryptionMethod(void)
+	virtual XENCEncryptionMethod * getEncryptionMethod(void) const
 		{return XENCEncryptedTypeImpl::getEncryptionMethod();}
 	virtual void clearKeyInfo(void)
 		{XENCEncryptedTypeImpl::clearKeyInfo();}
 	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false)
 		{return XENCEncryptedTypeImpl::appendKeyName(name, isDName);}
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
-		{return XENCEncryptedTypeImpl::getDOMNode();}
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const
+		{return XENCEncryptedTypeImpl::getElement();}
 	virtual void appendEncryptedKey(XENCEncryptedKey * encryptedKey)
 		{XENCEncryptedTypeImpl::appendEncryptedKey(encryptedKey);}
 
 	// Get methods
-	virtual const XMLCh * getTypeURI(void) const
-		{return XENCEncryptedTypeImpl::getTypeURI();}
+	virtual const XMLCh * getType(void) const
+		{return XENCEncryptedTypeImpl::getType();}
 	virtual const XMLCh * getMimeType(void) const
 		{return XENCEncryptedTypeImpl::getMimeType();}
-	virtual const XMLCh * getEncodingURI(void) const
-		{return XENCEncryptedTypeImpl::getEncodingURI();}
+	virtual const XMLCh * getEncoding(void) const
+		{return XENCEncryptedTypeImpl::getEncoding();}
 
 	// Set methods
-	virtual void setTypeURI(const XMLCh * uri)
-		{XENCEncryptedTypeImpl::setTypeURI(uri);}
+	virtual void setType(const XMLCh * uri)
+		{XENCEncryptedTypeImpl::setType(uri);}
 	virtual void setMimeType(const XMLCh * mimeType)
 		{XENCEncryptedTypeImpl::setMimeType(mimeType);}
-	virtual void setEncodingURI(const XMLCh * uri)
-		{XENCEncryptedTypeImpl::setEncodingURI(uri);}
+	virtual void setEncoding(const XMLCh * uri)
+		{XENCEncryptedTypeImpl::setEncoding(uri);}
 
 	// EncryptedKey specific Getter Methods
-	virtual const XMLCh * getCarriedKeyName(void);
-	virtual const XMLCh * getRecipient(void);
+	virtual const XMLCh * getCarriedKeyName(void) const;
+	virtual const XMLCh * getRecipient(void) const;
 
 	// EncryptedKey specific setter methods
 	virtual void setCarriedKeyName(const XMLCh * name);
@@ -155,7 +155,7 @@ private:
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
 								* mp_carriedKeyNameTextNode;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
-								* mp_recipientAttributeNode;
+								* mp_recipientAttr;
 
 };
 

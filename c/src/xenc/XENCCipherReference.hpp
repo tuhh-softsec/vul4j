@@ -81,6 +81,7 @@ class DSIGTransformXPathFilter;
 class DSIGTransformXSL;
 class DSIGTransformC14n;
 
+XSEC_DECLARE_XERCES_CLASS(DOMElement);
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
 /**
@@ -89,11 +90,34 @@ XSEC_DECLARE_XERCES_CLASS(DOMNode);
  */
 
 /**
- * @brief Interface definition for the CipherValue object
+ * @brief Interface definition for the CipherReference object
  *
- * The \<CipherValue\> element holds the base64 encoded, encrypted data.
- * This is a very simple class that acts purely as a holder of data.
+ * The \<CipherReference\> element provides the information necessary for
+ * an application to find the data being referenced.  Like a Reference in
+ * XML-DSIG, the CipherReference starts with a URI that provides the base
+ * location of the data in question.
  *
+ * A list of transforms may then be provided, which the library will apply
+ * to the data found at the provided URI.  It is expected that the result of
+ * these transforms will be the raw encrypted octets,
+ *
+ * The schema for CipherReference is as follows:
+ *
+ * \verbatim
+  <element name='CipherReference' type='xenc:CipherReferenceType'/>
+   <complexType name='CipherReferenceType'>
+       <sequence>
+         <element name='Transforms' type='xenc:TransformsType' minOccurs='0'/>
+       </sequence>
+       <attribute name='URI' type='anyURI' use='required'/>
+   </complexType>
+
+    <complexType name='TransformsType'>
+       <sequence>
+         <element ref='ds:Transform' maxOccurs='unbounded'/> 
+       </sequence>
+     </complexType>
+\endverbatim
  */
 
 
@@ -120,7 +144,7 @@ public:
 	 * obtain information about the transforms and also change the the transforms
 	 */
 
-	virtual DSIGTransformList * getTransforms(void) = 0;
+	virtual DSIGTransformList * getTransforms(void) const = 0;
 
 	/**
 	 * \brief Obtain the URI for this CipherReference
@@ -128,7 +152,7 @@ public:
 	 * @returns A pointer to the URI string for this CipherReference
 	 */
 
-	virtual const XMLCh * getURI (void) = 0;
+	virtual const XMLCh * getURI (void) const = 0;
 	
 	/**
 	 * \brief Get the DOM Node of this structure
@@ -136,7 +160,7 @@ public:
 	 * @returns the DOM Node representing the <CipherValue> element
 	 */
 
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void) = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const = 0;
 
 	//@}
 

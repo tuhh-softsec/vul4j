@@ -123,7 +123,7 @@ public:
 	 * @returns the URI representing the algorithm
 	 */
 
-	virtual const XMLCh * getAlgorithm(void) = 0;
+	virtual const XMLCh * getAlgorithm(void) const = 0;
 
 	/**
 	 * \brief Get the digest method URI
@@ -134,7 +134,7 @@ public:
 	 * @returns the URI representing the digest method algorithm
 	 */
 
-	virtual const XMLCh * getDigestMethod(void) = 0;
+	virtual const XMLCh * getDigestMethod(void) const = 0;
 
 	/**
 	 * \brief Get the value of the OAEPparams string
@@ -145,7 +145,7 @@ public:
 	 * @returns The string (base64 encoded value) representing the OAEP params
 	 */
 
-	virtual const XMLCh * getOAEPparams(void) = 0;
+	virtual const XMLCh * getOAEPparams(void) const = 0;
 
 	/**
 	 * \brief Get the KeySize that was set in this EncryptionMethod.
@@ -155,7 +155,7 @@ public:
 	 * mainly for stream ciphers that have a variable key length
 	 */
 
-	virtual int getKeySize(void) = 0;
+	virtual int getKeySize(void) const = 0;
 
 	/**
 	 * \brief Get the DOM Element Node of this structure
@@ -163,7 +163,7 @@ public:
 	 * @returns the DOM Element Node representing the \<EncryptionMethod\> element
 	 */
 
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const = 0;
 
 
 	//@}

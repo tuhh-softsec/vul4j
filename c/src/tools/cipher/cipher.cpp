@@ -699,7 +699,7 @@ int evaluate(int argc, char ** argv) {
 
 				// Replace the document element
 				DOMElement * elt = doc->getDocumentElement();
-				doc->replaceChild(xenc->getDOMNode(), elt);
+				doc->replaceChild(xenc->getElement(), elt);
 				elt->release();
 			}
 			else {

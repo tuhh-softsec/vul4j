@@ -132,18 +132,18 @@ static XMLCh s_Transforms[] = {
 
 XENCCipherReferenceImpl::XENCCipherReferenceImpl(const XSECEnv * env) :
 mp_env(env),
-mp_cipherReferenceNode(NULL),
-mp_uriAttributeNode(NULL),
-mp_transformsNode(NULL),
+mp_cipherReferenceElement(NULL),
+mp_uriAttr(NULL),
+mp_transformsElement(NULL),
 mp_transformList(NULL) {
 
 }
 
-XENCCipherReferenceImpl::XENCCipherReferenceImpl(const XSECEnv * env, DOMNode * node) :
+XENCCipherReferenceImpl::XENCCipherReferenceImpl(const XSECEnv * env, DOMElement * node) :
 mp_env(env),
-mp_cipherReferenceNode(node),
-mp_uriAttributeNode(NULL),
-mp_transformsNode(NULL),
+mp_cipherReferenceElement(node),
+mp_uriAttr(NULL),
+mp_transformsElement(NULL),
 mp_transformList(NULL) {
 
 }
@@ -169,15 +169,15 @@ void XENCCipherReferenceImpl::createTransformList(void) {
 
 	prefix = mp_env->getXENCNSPrefix();
 	
-	if (mp_transformsNode == NULL) {
+	if (mp_transformsElement == NULL) {
 
 		// Need to create a transforms node
 		makeQName(str, prefix, "Transforms");
-		mp_transformsNode = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
-		mp_env->doPrettyPrint(mp_cipherReferenceNode);
-		mp_cipherReferenceNode->appendChild(mp_transformsNode);
-		mp_env->doPrettyPrint(mp_transformsNode);
-		mp_env->doPrettyPrint(mp_cipherReferenceNode);
+		mp_transformsElement = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
+		mp_env->doPrettyPrint(mp_cipherReferenceElement);
+		mp_cipherReferenceElement->appendChild(mp_transformsElement);
+		mp_env->doPrettyPrint(mp_transformsElement);
+		mp_env->doPrettyPrint(mp_cipherReferenceElement);
 
 		// Create the list
 		XSECnew(mp_transformList, DSIGTransformList());
@@ -192,8 +192,8 @@ void XENCCipherReferenceImpl::addTransform(DSIGTransform * txfm, DOMElement * tx
 	if (mp_transformList == NULL)
 		createTransformList();
 
-	mp_transformsNode->appendChild(txfmElt);
-	mp_env->doPrettyPrint(mp_transformsNode);
+	mp_transformsElement->appendChild(txfmElt);
+	mp_env->doPrettyPrint(mp_transformsElement);
 
 	mp_transformList->addTransform(txfm);
 }
@@ -277,7 +277,7 @@ DSIGTransformXPathFilter * XENCCipherReferenceImpl::appendXPathFilterTransform(v
 
 void XENCCipherReferenceImpl::load(void) {
 
-	if (mp_cipherReferenceNode == NULL) {
+	if (mp_cipherReferenceElement == NULL) {
 
 		// Attempt to load an empty encryptedType element
 		throw XSECException(XSECException::CipherReferenceError,
@@ -285,7 +285,7 @@ void XENCCipherReferenceImpl::load(void) {
 
 	}
 
-	if (!strEquals(getXENCLocalName(mp_cipherReferenceNode), s_CipherReference)) {
+	if (!strEquals(getXENCLocalName(mp_cipherReferenceElement), s_CipherReference)) {
 	
 		throw XSECException(XSECException::CipherReferenceError,
 			"XENCCipherReference::load - called incorrect node");
@@ -293,15 +293,9 @@ void XENCCipherReferenceImpl::load(void) {
 	}
 
 	// Find the URI attribute
-	DOMNamedNodeMap * tmpAtts = mp_cipherReferenceNode->getAttributes();
+	mp_uriAttr = mp_cipherReferenceElement->getAttributeNodeNS(NULL, DSIGConstants::s_unicodeStrURI);
 
-	if (tmpAtts != NULL) {
-
-		mp_uriAttributeNode = tmpAtts->getNamedItem(DSIGConstants::s_unicodeStrURI);
-
-	}
-
-	if (mp_uriAttributeNode == NULL) {
+	if (mp_uriAttr == NULL) {
 
 		throw XSECException(XSECException::CipherReferenceError,
 			"XENCCipherReference::load - URI attribute not found");
@@ -309,7 +303,7 @@ void XENCCipherReferenceImpl::load(void) {
 	}
 
 	// See if there are any transforms
-	DOMNode * c = findFirstChildOfType(mp_cipherReferenceNode, DOMNode::ELEMENT_NODE);
+	DOMElement * c = findFirstElementChild(mp_cipherReferenceElement);
 	if (c != NULL) {
 
 		if (!strEquals(getXENCLocalName(c), s_Transforms)) {
@@ -319,7 +313,7 @@ void XENCCipherReferenceImpl::load(void) {
 
 		}
 
-		mp_transformsNode = c;
+		mp_transformsElement = c;
 
 		XSECSafeBufferFormatter * formatter;
 		XSECnew(formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
@@ -346,7 +340,7 @@ DOMElement * XENCCipherReferenceImpl::createBlankCipherReference(
 		mp_transformList = NULL;
 	}
 
-	mp_uriAttributeNode = NULL;
+	mp_uriAttr = NULL;
 
 	// Get some setup values
 	safeBuffer str;
@@ -355,29 +349,22 @@ DOMElement * XENCCipherReferenceImpl::createBlankCipherReference(
 
 	makeQName(str, prefix, s_CipherReference);
 
-	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
-	mp_cipherReferenceNode = ret;
+	mp_cipherReferenceElement = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
 
 	// Set the URI Attribute
-	ret->setAttributeNS(DSIGConstants::s_unicodeStrURIXENC, DSIGConstants::s_unicodeStrURI, URI);
+	mp_cipherReferenceElement->setAttributeNS(NULL, DSIGConstants::s_unicodeStrURI, URI);
 
 	// Find the URI
-	DOMNamedNodeMap * tmpAtts = mp_cipherReferenceNode->getAttributes();
+	mp_uriAttr = mp_cipherReferenceElement->getAttributeNodeNS(NULL, DSIGConstants::s_unicodeStrURI);
 
-	if (tmpAtts != NULL) {
-
-		mp_uriAttributeNode = tmpAtts->getNamedItem(DSIGConstants::s_unicodeStrURI);
-
-	}
-
-	if (mp_uriAttributeNode == NULL) {
+	if (mp_uriAttr == NULL) {
 
 		throw XSECException(XSECException::CipherReferenceError,
 			"XENCCipherReference::createBlankReference - URI attribute not found after creation");
 	
 	}
 
-	return ret;
+	return mp_cipherReferenceElement;
 
 }
 
@@ -385,23 +372,23 @@ DOMElement * XENCCipherReferenceImpl::createBlankCipherReference(
 //			Get Interface methods
 // --------------------------------------------------------------------------------
 
-DSIGTransformList * XENCCipherReferenceImpl::getTransforms(void) {
+DSIGTransformList * XENCCipherReferenceImpl::getTransforms(void) const {
 
 	return mp_transformList;
 
 }
 
-const XMLCh * XENCCipherReferenceImpl::getURI (void) {
+const XMLCh * XENCCipherReferenceImpl::getURI (void) const {
 
-	if (mp_uriAttributeNode != NULL)
-		return mp_uriAttributeNode->getNodeValue();
+	if (mp_uriAttr != NULL)
+		return mp_uriAttr->getNodeValue();
 
 	return NULL;
 
 }
 
-DOMNode * XENCCipherReferenceImpl::getDOMNode(void) {
+DOMElement * XENCCipherReferenceImpl::getElement(void) const {
 
-	return mp_cipherReferenceNode;
+	return mp_cipherReferenceElement;
 
 }

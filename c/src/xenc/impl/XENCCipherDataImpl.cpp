@@ -188,7 +188,7 @@ void XENCCipherDataImpl::load() {
 	// Find out whether this is a CipherValue or CipherReference and load
 	// appropriately
 
-	DOMNode *tmpElt = findFirstChildOfType(mp_cipherDataNode, DOMNode::ELEMENT_NODE);
+	DOMElement *tmpElt = findFirstElementChild(mp_cipherDataNode);
 
 	if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_CipherValue)) {
 

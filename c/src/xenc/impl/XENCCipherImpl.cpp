@@ -449,13 +449,13 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 		delete mp_encryptedData;
 
 	XSECnew(mp_encryptedData, 
-		XENCEncryptedDataImpl(mp_env, dynamic_cast<DOMNode *>(element)));
+		XENCEncryptedDataImpl(mp_env, element));
 
 	// Load
 	mp_encryptedData->load();
 
 	// Check that this is a valid type
-	const XMLCh * typeURI = mp_encryptedData->getTypeURI();
+	const XMLCh * typeURI = mp_encryptedData->getType();
 
 	if (typeURI != NULL && 
 		!strEquals(typeURI, DSIGConstants::s_unicodeStrURIXENC_ELEMENT) &&
@@ -566,7 +566,7 @@ XSECBinTXFMInputStream * XENCCipherImpl::decryptToBinInputStream(
 		delete mp_encryptedData;
 
 	XSECnew(mp_encryptedData, 
-		XENCEncryptedDataImpl(mp_env, dynamic_cast<DOMNode *>(element)));
+		XENCEncryptedDataImpl(mp_env, element));
 
 	// Load
 	mp_encryptedData->load();
@@ -736,7 +736,7 @@ XENCEncryptedKey * XENCCipherImpl::loadEncryptedKey(DOMElement * keyNode) {
 
 	XENCEncryptedKeyImpl * encryptedKey;
 	XSECnew(encryptedKey, 
-		XENCEncryptedKeyImpl(mp_env, dynamic_cast<DOMNode *>(keyNode)));
+		XENCEncryptedKeyImpl(mp_env, keyNode));
 	Janitor<XENCEncryptedKeyImpl> j_encryptedKey(encryptedKey);
 
 	// Load
@@ -1018,7 +1018,7 @@ DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element,
 
 	encryptTXFMChain(c, em, algorithmURI);
 
-	mp_encryptedData->setTypeURI(DSIGConstants::s_unicodeStrURIXENC_ELEMENT);
+	mp_encryptedData->setType(DSIGConstants::s_unicodeStrURIXENC_ELEMENT);
 
 	// Replace original element
 	DOMNode * p = element->getParentNode();
@@ -1028,7 +1028,7 @@ DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element,
 			"XENCCipherImpl::encryptElement - Passed in element has no parent");
 	}
 
-	p->replaceChild(mp_encryptedData->getDOMNode(), element);
+	p->replaceChild(mp_encryptedData->getElement(), element);
 
 	// Clear up the old child
 	element->release();
@@ -1091,7 +1091,7 @@ DOMDocument * XENCCipherImpl::encryptElementContent(
 
 	encryptTXFMChain(c, em, algorithmURI);
 
-	mp_encryptedData->setTypeURI(DSIGConstants::s_unicodeStrURIXENC_CONTENT);
+	mp_encryptedData->setType(DSIGConstants::s_unicodeStrURIXENC_CONTENT);
 
 	// Delete current children 
 	n = element->getFirstChild();
@@ -1105,7 +1105,7 @@ DOMDocument * XENCCipherImpl::encryptElementContent(
 	}
 	
 	// Now add the EncryptedData
-	element->appendChild(mp_encryptedData->getDOMNode());
+	element->appendChild(mp_encryptedData->getElement());
 
 	return mp_doc;
 
