@@ -345,7 +345,7 @@
             <!-- You have to provide a core RSA mechanism here, even for
                  the bouncy castle -->
             <ProviderAlgo ProviderId="BC"
-                          JCEName="RSA"
+                          JCEName="RSA/ECB/PKCS1PADDING"
                           RequiredKey="RSA" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="RSA"
@@ -363,7 +363,7 @@
             <!-- You have to provide a core RSA mechanism here, even for
                  the bouncy castle -->
             <ProviderAlgo ProviderId="BC"
-                          JCEName="RSA"
+                          JCEName="RSA/ECB/OAEPPADDING"
                           RequiredKey="RSA" />
             <!-- <ProviderAlgo ProviderId="BC" JCEName="RSA/OAEP" RequiredKey="RSA" /> -->
          </Algorithm>
@@ -382,7 +382,7 @@
             <!-- We need a Triple DES in CipherBlockChaining (CBC) mode here without padding -->
             <ProviderAlgo ProviderId="BC"
                           RequiredKey="DESEDE"
-                          JCEName="DESEDE/CBC/NOPADDING" />
+                          JCEName="DESEDEWrap" />
             <!-- <ProviderAlgo ProviderId="BC" JCEName="DESEDEWrap" RequiredKey="DESEDE" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes128"
