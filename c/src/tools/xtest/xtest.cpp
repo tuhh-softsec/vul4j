@@ -89,10 +89,6 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
-#if defined(_WIN32)
-#    include <xsec/utils/winutils/XSECSOAPRequestorSimpleWin32.hpp>
-#endif
-
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
@@ -861,7 +857,10 @@ count(ancestor-or-self::dsig:Signature)");
 		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
 		sig->sign();
 
-		cerr << "Doc signed OK - Checking values against Known Good" << endl;
+		// Output the document post signature if necessary
+		outputDoc(impl, doc);
+
+		cerr << endl << "Doc signed OK - Checking values against Known Good" << endl;
 
 		unsigned char buf[128];
 		int len;
