@@ -1,4 +1,4 @@
-<project default="java:jar">
+<project default="jar:jar">
 
   <postGoal name="java:compile">
     
