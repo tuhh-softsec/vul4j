@@ -15,7 +15,7 @@ public class ZipArchiverTest extends PlexusTestCase
     {
         ZipArchiver archiver = new ZipArchiver();
         archiver.addDirectory( new File( "src" ) );
-        archiver.setDestFile( new File( "target/toto.zip" ) );
+        archiver.setDestFile( new File( "target/output/archive.zip" ) );
         archiver.createArchive();
     }
 }

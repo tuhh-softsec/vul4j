@@ -18,6 +18,7 @@ package org.codehaus.plexus.archiver.gzip;
  */
 
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.util.Compressor;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,29 +32,29 @@ public class GZipCompressor extends Compressor
     /**
      * perform the GZip compression operation.
      */
-    protected void pack() throws ArchiverException
+    protected void compress() throws ArchiverException
     {
         GZIPOutputStream zOut = null;
         try
         {
-            zOut = new GZIPOutputStream(new FileOutputStream(zipFile));
-            zipFile(source, zOut);
+            zOut = new GZIPOutputStream( new FileOutputStream( getDestFile() ) );
+            compressFile( getSourceFile(), zOut );
         }
-        catch (IOException ioe)
+        catch ( IOException ioe )
         {
             String msg = "Problem creating gzip " + ioe.getMessage();
-            throw new ArchiverException(msg, ioe);
+            throw new ArchiverException( msg, ioe );
         }
         finally
         {
-            if (zOut != null)
+            if ( zOut != null )
             {
                 try
                 {
                     // close up
                     zOut.close();
                 }
-                catch (IOException e)
+                catch ( IOException e )
                 {
                     // do nothing
                 }

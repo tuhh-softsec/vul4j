@@ -39,20 +39,29 @@ public abstract class Compressor extends AbstractLogEnabled
      * the required destination file.
      * @param compressFile
      */
-    public void setDestfile(File compressFile)
+    public void setDestFile( File compressFile )
     {
         this.destFile = compressFile;
+    }
+
+    public File getDestFile()
+    {
+        return destFile;
     }
 
     /**
      * the file to compress; required.
      * @param srcFile
      */
-    public void setSrc(File srcFile)
+    public void setSourceFile( File srcFile )
     {
         this.sourceFile = srcFile;
     }
 
+    public File getSourceFile()
+    {
+        return sourceFile;
+    }
 
     /**
      * validation routine
@@ -60,26 +69,26 @@ public abstract class Compressor extends AbstractLogEnabled
      */
     private void validate() throws ArchiverException
     {
-        if (destFile == null)
+        if ( destFile == null )
         {
-            throw new ArchiverException("Destination file attribute is required");
+            throw new ArchiverException( "Destination file attribute is required" );
         }
 
-        if (destFile.isDirectory())
+        if ( destFile.isDirectory() )
         {
-            throw new ArchiverException("Destination file attribute must not "
-                + "represent a directory!");
+            throw new ArchiverException( "Destination file attribute must not "
+                + "represent a directory!" );
         }
 
-        if (sourceFile == null)
+        if ( sourceFile == null )
         {
-            throw new ArchiverException("Source file attribute is required");
+            throw new ArchiverException( "Source file attribute is required" );
         }
 
-        if (sourceFile.isDirectory())
+        if ( sourceFile.isDirectory() )
         {
-            throw new ArchiverException("Source file attribute must not "
-                + "represent a directory!");
+            throw new ArchiverException( "Source file attribute must not "
+                + "represent a directory!" );
         }
     }
 
@@ -91,20 +100,20 @@ public abstract class Compressor extends AbstractLogEnabled
     {
         validate();
 
-        if (!sourceFile.exists())
+        if ( !sourceFile.exists() )
         {
-            getLogger().info("Nothing to do: " + sourceFile.getAbsolutePath()
-                + " doesn't exist.");
+//            getLogger().info( "Nothing to do: " + sourceFile.getAbsolutePath()
+//                + " doesn't exist." );
         }
-        else if (destFile.lastModified() < sourceFile.lastModified())
+        else if ( destFile.lastModified() < sourceFile.lastModified() )
         {
-            getLogger().info("Building: " + destFile.getAbsolutePath());
+//            getLogger().info( "Building: " + destFile.getAbsolutePath() );
             compress();
         }
         else
         {
-            getLogger().info("Nothing to do: " + destFile.getAbsolutePath()
-                + " is up to date.");
+//            getLogger().info( "Nothing to do: " + destFile.getAbsolutePath()
+//                + " is up to date." );
         }
     }
 
@@ -114,16 +123,17 @@ public abstract class Compressor extends AbstractLogEnabled
      * @param zOut
      * @throws IOException
      */
-    private void compressFile(InputStream in, OutputStream zOut)
-        throws IOException {
+    private void compressFile( InputStream in, OutputStream zOut )
+        throws IOException
+    {
         byte[] buffer = new byte[8 * 1024];
         int count = 0;
         do
         {
-            zOut.write(buffer, 0, count);
-            count = in.read(buffer, 0, buffer.length);
+            zOut.write( buffer, 0, count );
+            count = in.read( buffer, 0, buffer.length );
         }
-        while (count != -1);
+        while ( count != -1 );
     }
 
     /**
@@ -132,13 +142,13 @@ public abstract class Compressor extends AbstractLogEnabled
      * @param zOut
      * @throws IOException
      */
-    protected void compressFile(File file, OutputStream zOut)
+    protected void compressFile( File file, OutputStream zOut )
         throws IOException
     {
-        FileInputStream fIn = new FileInputStream(file);
+        FileInputStream fIn = new FileInputStream( file );
         try
         {
-            compressFile(fIn, zOut);
+            compressFile( fIn, zOut );
         }
         finally
         {

@@ -156,5 +156,6 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     public void setDestFile( File destFile )
     {
         this.destFile = destFile;
+        destFile.getParentFile().mkdirs();
     }
 }

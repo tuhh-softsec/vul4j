@@ -18,7 +18,9 @@ package org.codehaus.plexus.archiver.bzip2;
  */
 
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.util.Compressor;
 
+import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -30,26 +32,26 @@ public class BZip2Compressor extends Compressor
     /**
      * perform the GZip compression operation.
      */
-    protected void pack() throws ArchiverException
+    protected void compress() throws ArchiverException
     {
         CBZip2OutputStream zOut = null;
         try
         {
             BufferedOutputStream bos =
-                new BufferedOutputStream(new FileOutputStream(zipFile));
-            bos.write('B');
-            bos.write('Z');
-            zOut = new CBZip2OutputStream(bos);
-            zipFile(source, zOut);
+                new BufferedOutputStream( new FileOutputStream( getDestFile() ) );
+            bos.write( 'B' );
+            bos.write( 'Z' );
+            zOut = new CBZip2OutputStream( bos );
+            compressFile( getSourceFile(), zOut );
         }
-        catch (IOException ioe)
+        catch ( IOException ioe )
         {
             String msg = "Problem creating bzip2 " + ioe.getMessage();
-            throw new ArchiverException(msg, ioe);
+            throw new ArchiverException( msg, ioe );
         }
         finally
         {
-            if (zOut != null)
+            if ( zOut != null )
             {
                 try
                 {
