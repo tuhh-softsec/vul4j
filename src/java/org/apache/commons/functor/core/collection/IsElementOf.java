@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/IsElementOf.java,v 1.2 2003/06/24 15:49:58 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/IsElementOf.java,v 1.3 2003/11/24 20:29:23 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,65 +57,70 @@
 
 package org.apache.commons.functor.core.collection;
 
-import org.apache.commons.functor.UnaryPredicate;
-
-import java.util.Collection;
 import java.io.Serializable;
+import java.util.Collection;
+
+import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.adapter.RightBoundPredicate;
 
 /**
- * A {@link UnaryPredicate} that checks to see if elements are
- * part of a Collection.
+ * A {@link BinaryPredicate} that checks to see if the
+ * specified object is an element of the specified
+ * Collection.
  *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:58 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:29:23 $
  * @author  Jason Horman (jason@jhorman.org)
+ * @author  Rodney Waldhoff
  */
+public final class IsElementOf implements BinaryPredicate, Serializable {
 
-public class IsElementOf implements UnaryPredicate, Serializable {
-
-    /***************************************************
-     *  Instance variables
-     ***************************************************/
-
-    /** The collection that will be checked, .contains'd */
-    private Collection c = null;
-
-    /** Hashcode of the name of this Predicate. */
-    private static final int nameHashCode = "IsElementOf".hashCode();
-
-    /***************************************************
-     *  Constructors
-     ***************************************************/
-
-    public IsElementOf(Collection c) {
-        if (c == null) {
-            throw new IllegalArgumentException("collection must not be null");
-        }
-
-        this.c = c;
+    // constructors
+    //---------------------------------------------------------------
+    public IsElementOf() {
     }
 
-    /***************************************************
-     *  Instance methods
-     ***************************************************/
-
-    public boolean test(Object o) {
-        return c.contains(o);
+    // instance methods
+    //---------------------------------------------------------------
+    
+    public boolean test(Object obj, Object col) {
+        return test(obj,(Collection)col);
+    }
+    
+    public boolean test(Object obj, Collection col) {
+        return col.contains(obj);
     }
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof IsElementOf)) return false;
-        final IsElementOf isElementOf = (IsElementOf) o;
-        if (!c.equals(isElementOf.c)) return false;
-        return true;
+    public boolean equals(Object obj) {
+        return (obj instanceof IsElementOf);
     }
 
     public int hashCode() {
-        return 29 * c.hashCode() + nameHashCode;
+        return "IsElementOf".hashCode();
     }
 
     public String toString() {
-        return "IsElementOf(" + c + ")";
+        return "IsElementOf";
     }
+
+    // class methods
+    //---------------------------------------------------------------
+    
+    public static IsElementOf instance() {
+        return INSTANCE;
+    }
+    
+    public static UnaryPredicate instance(Collection col) {
+        if(null == col) {
+            throw new IllegalArgumentException("Collection must not be null");
+        }
+        return new RightBoundPredicate(instance(),col);
+    }
+    
+    // class variables
+    //---------------------------------------------------------------
+    
+    private static IsElementOf INSTANCE = new IsElementOf();
+
 }

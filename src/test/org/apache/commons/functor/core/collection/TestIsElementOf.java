@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsElementOf.java,v 1.3 2003/06/29 21:46:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsElementOf.java,v 1.4 2003/11/24 20:29:23 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,9 +62,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/06/29 21:46:12 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/24 20:29:23 $
  * @author Rodney Waldhoff
  * @author Jason Horman
  */
@@ -85,19 +87,11 @@ public class TestIsElementOf extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IsElementOf(new ArrayList());
+        return new IsElementOf();
     }
 
     // Lifecycle
     // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     // Tests
     // ------------------------------------------------------------------------
@@ -108,7 +102,7 @@ public class TestIsElementOf extends BaseFunctorTest {
         list.add(new Integer(10));
         list.add(new Integer(15));
 
-        IsElementOf p = new IsElementOf(list);
+        UnaryPredicate p = IsElementOf.instance(list);
         assertTrue(p.test(new Integer(5)));
         assertTrue(p.test(new Integer(10)));
         assertTrue(p.test(new Integer(15)));
@@ -118,39 +112,21 @@ public class TestIsElementOf extends BaseFunctorTest {
 
     }
 
-    public void testNullConstructor() {
+    public void testNullWrapper() {
         try {
-            new IsElementOf(null);
-            fail("should have thrown IllegalArgumentException");
+            IsElementOf.instance(null);
+            fail("expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // good
-        } catch (Exception e) {
-            fail("should have thrown IllegalArgumentException, not " + e);
         }
     }
 
     public void testEquals() throws Exception {
-        ArrayList list1 = new ArrayList();
-        list1.add(new Integer(5));
-
-        IsElementOf p1 = new IsElementOf(list1);
-        IsElementOf p2 = new IsElementOf(list1);
-
-        assertEquals(p1, p2);
-
-        ArrayList list2 = new ArrayList();
-        list2.add(new Integer(5));
-        p2 = new IsElementOf(list2);
-
-        assertEquals(p1, p2);
-
-        list1.add(new Integer(6));
-        assertTrue(!p1.equals(p2));
-
-        list2.add(new Integer(6));
-        assertEquals(p1, p2);
-
-        list2.add(new Integer(7));
-        assertTrue(!p1.equals(p2));
+        IsElementOf p1 = new IsElementOf();
+        assertObjectsAreEqual(p1, p1);
+        assertObjectsAreEqual(p1, new IsElementOf());
+        assertObjectsAreEqual(p1, IsElementOf.instance());
+        assertSame(IsElementOf.instance(), IsElementOf.instance());
+        assertObjectsAreNotEqual(p1, ConstantPredicate.getFalsePredicate());
     }
 }
