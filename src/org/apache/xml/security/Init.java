@@ -93,9 +93,9 @@ import org.w3c.dom.*;
  */
 public class Init {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Init.class.getName());
+  /** {@link org.apache.commons.logging} logging facility */
+  static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Init.class.getName());
 
    /** Field _initialized */
    private static boolean _alreadyInitialized = false;
@@ -146,49 +146,7 @@ public class Init {
 
             context.setAttributeNS(
                Constants.NamespaceSpecNS, "xmlns:x",
-               "http://www.xmlsecurity.org/NS/#configuration");
-            context.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:log4j",
-                                   "http://jakarta.apache.org/log4j/");
-
-            long XX_configure_log4j_start = System.currentTimeMillis();
-
-            /* Cliff Collins <collinsc@sybase.com> suggested the following change
-             * in order to let existing log4j systems work (2002-08-19).
-             */
-            org.apache.log4j.Logger root =
-               org.apache.log4j.Logger.getRootLogger();
-            Enumeration enum = root.getAllAppenders();
-
-            if (enum instanceof org.apache.log4j.helpers.NullEnumeration) {
-
-               /* configure logging */
-               Element log4jElem = (Element) XPathAPI.selectSingleNode(doc,
-                                      "//log4j:configuration[1]", context);
-
-               try {
-                  Attr logfile = (Attr) XPathAPI.selectSingleNode(
-                     log4jElem,
-                     "./x:appender[@name='STDOUT']/x:param[@name='File']/@value",
-                     context);
-
-                  if (logfile != null) {
-                     String logFileName = logfile.getNodeValue();
-                     File f = new File(logFileName);
-
-                     if (f.exists()) {
-                        f.delete();
-                     }
-                  }
-               } catch (Exception ex) {}
-
-               org.apache.log4j.xml.DOMConfigurator.configure(log4jElem);
-               cat.info("Logging is working");
-               cat.info("Date: "
-                        + new Date(System.currentTimeMillis()).toString());
-               cat.info("Version: " + Version.getVersion());
-            }
-
-            long XX_configure_log4j_end = System.currentTimeMillis();
+                    "http://www.xmlsecurity.org/NS/#configuration");
             long XX_configure_i18n_start = System.currentTimeMillis();
 
             {
@@ -221,7 +179,7 @@ public class Init {
 
             {
                FunctionTable.installFunction("here", new FuncHere());
-               cat.debug(
+               log.debug(
                   "Registered class " + FuncHere.class.getName()
                   + " for XPath function 'here()' function in internal table");
 
@@ -235,7 +193,7 @@ public class Init {
                   FuncLoader loader = FunctionTable.m_functions[i];
 
                   if (loader != null) {
-                     cat.debug("Func " + i + " " + loader.getName());
+                     log.debug("Func " + i + " " + loader.getName());
 
                      if (loader.getName().equals(funcHereLoader.getName())) {
                         FunctionTable.m_functions[i] = funcHereLoader;
@@ -272,20 +230,20 @@ public class Init {
 
                         if (currMeth.getDeclaringClass().getName()
                                 .equals(JAVACLASS)) {
-                           cat.debug(currMeth.getDeclaringClass());
+                           log.debug(currMeth.getDeclaringClass());
                         }
                      }
                   } catch (ClassNotFoundException e) {
                      Object exArgs[] = { URI, JAVACLASS };
 
-                     cat.fatal(I18n.translate("algorithm.classDoesNotExist",
+                     log.fatal(I18n.translate("algorithm.classDoesNotExist",
                                               exArgs));
 
                      registerClass = false;
                   }
 
                   if (registerClass) {
-                     cat.debug("Canonicalizer.register(" + URI + ", "
+                     log.debug("Canonicalizer.register(" + URI + ", "
                                + JAVACLASS + ")");
                      Canonicalizer.register(URI, JAVACLASS);
                   }
@@ -316,14 +274,14 @@ public class Init {
                   } catch (ClassNotFoundException e) {
                      Object exArgs[] = { URI, JAVACLASS };
 
-                     cat.fatal(I18n.translate("algorithm.classDoesNotExist",
+                     log.fatal(I18n.translate("algorithm.classDoesNotExist",
                                               exArgs));
 
                      registerClass = false;
                   }
 
                   if (registerClass) {
-                     cat.debug("Transform.register(" + URI + ", " + JAVACLASS
+                     log.debug("Transform.register(" + URI + ", " + JAVACLASS
                                + ")");
                      Transform.register(URI, JAVACLASS);
                   }
@@ -370,20 +328,20 @@ public class Init {
 
                         if (currMeth.getDeclaringClass().getName()
                                 .equals(JAVACLASS)) {
-                           cat.debug(currMeth.getDeclaringClass());
+                           log.debug(currMeth.getDeclaringClass());
                         }
                      }
                   } catch (ClassNotFoundException e) {
                      Object exArgs[] = { URI, JAVACLASS };
 
-                     cat.fatal(I18n.translate("algorithm.classDoesNotExist",
+                     log.fatal(I18n.translate("algorithm.classDoesNotExist",
                                               exArgs));
 
                      registerClass = false;
                   }
 
                   if (registerClass) {
-                     cat.debug("SignatureAlgorithm.register(" + URI + ", "
+                     log.debug("SignatureAlgorithm.register(" + URI + ", "
                                + JAVACLASS + ")");
                      SignatureAlgorithm.register(URI, JAVACLASS);
                   }
@@ -410,10 +368,10 @@ public class Init {
                         "DESCRIPTION");
 
                   if ((Description != null) && (Description.length() > 0)) {
-                     cat.debug("Register Resolver: " + JAVACLASS + ": "
+                     log.debug("Register Resolver: " + JAVACLASS + ": "
                                + Description);
                   } else {
-                     cat.debug("Register Resolver: " + JAVACLASS
+                     log.debug("Register Resolver: " + JAVACLASS
                                + ": For unknown purposes");
                   }
 
@@ -447,7 +405,7 @@ public class Init {
                            ((Element) keyElem.item(i)).getAttributeNS(null,
                               "JAVACLASS");
 
-                        cat.debug("KeyInfoContent: " + namespace + " "
+                        log.debug("KeyInfoContent: " + namespace + " "
                                   + localname + " " + JAVACLASS);
                         Init.registerKeyInfoContentHandler(namespace,
                                                            localname,
@@ -480,10 +438,10 @@ public class Init {
                         "DESCRIPTION");
 
                   if ((Description != null) && (Description.length() > 0)) {
-                     cat.debug("Register Resolver: " + JAVACLASS + ": "
+                     log.debug("Register Resolver: " + JAVACLASS + ": "
                                + Description);
                   } else {
-                     cat.debug("Register Resolver: " + JAVACLASS
+                     log.debug("Register Resolver: " + JAVACLASS
                                + ": For unknown purposes");
                   }
 
@@ -495,7 +453,7 @@ public class Init {
             long XX_configure_reg_prefixes_start = System.currentTimeMillis();
 
             {
-               cat.debug("Now I try to bind prefixes:");
+               log.debug("Now I try to bind prefixes:");
 
                NodeList nl = XPathAPI.selectNodeList(
                   doc, "/x:Configuration/x:PrefixMappings/x:PrefixMapping",
@@ -507,7 +465,7 @@ public class Init {
                   String prefix = ((Element) nl.item(i)).getAttributeNS(null,
                                      "prefix");
 
-                  cat.debug("Now I try to bind " + prefix + " to " + namespace);
+                  log.debug("Now I try to bind " + prefix + " to " + namespace);
                   org.apache.xml.security.utils.ElementProxy
                      .setDefaultPrefix(namespace, prefix);
                }
@@ -517,23 +475,22 @@ public class Init {
             long XX_init_end = System.currentTimeMillis();
 
             //J-
-            cat.debug("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
-            cat.debug("  XX_prng                           " + ((int)(XX_prng_end - XX_prng_start)) + " ms");
-            cat.debug("  XX_parsing                        " + ((int)(XX_parsing_end - XX_parsing_start)) + " ms");
-            cat.debug("  XX_configure_i18n                 " + ((int)(XX_configure_i18n_end- XX_configure_i18n_start)) + " ms");
-            cat.debug("  XX_configure_log4j                " + ((int)(XX_configure_log4j_end- XX_configure_log4j_start)) + " ms");
-            cat.debug("  XX_configure_reg_c14n             " + ((int)(XX_configure_reg_c14n_end- XX_configure_reg_c14n_start)) + " ms");
-            cat.debug("  XX_configure_reg_here             " + ((int)(XX_configure_reg_here_end- XX_configure_reg_here_start)) + " ms");
-            cat.debug("  XX_configure_reg_jcemapper        " + ((int)(XX_configure_reg_jcemapper_end- XX_configure_reg_jcemapper_start)) + " ms");
-            cat.debug("  XX_configure_reg_keyInfo          " + ((int)(XX_configure_reg_keyInfo_end- XX_configure_reg_keyInfo_start)) + " ms");
-            cat.debug("  XX_configure_reg_keyResolver      " + ((int)(XX_configure_reg_keyResolver_end- XX_configure_reg_keyResolver_start)) + " ms");
-            cat.debug("  XX_configure_reg_prefixes         " + ((int)(XX_configure_reg_prefixes_end- XX_configure_reg_prefixes_start)) + " ms");
-            cat.debug("  XX_configure_reg_resourceresolver " + ((int)(XX_configure_reg_resourceresolver_end- XX_configure_reg_resourceresolver_start)) + " ms");
-            cat.debug("  XX_configure_reg_sigalgos         " + ((int)(XX_configure_reg_sigalgos_end- XX_configure_reg_sigalgos_start)) + " ms");
-            cat.debug("  XX_configure_reg_transforms       " + ((int)(XX_configure_reg_transforms_end- XX_configure_reg_transforms_start)) + " ms");
+            log.debug("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
+            log.debug("  XX_prng                           " + ((int)(XX_prng_end - XX_prng_start)) + " ms");
+            log.debug("  XX_parsing                        " + ((int)(XX_parsing_end - XX_parsing_start)) + " ms");
+            log.debug("  XX_configure_i18n                 " + ((int)(XX_configure_i18n_end- XX_configure_i18n_start)) + " ms");
+            log.debug("  XX_configure_reg_c14n             " + ((int)(XX_configure_reg_c14n_end- XX_configure_reg_c14n_start)) + " ms");
+            log.debug("  XX_configure_reg_here             " + ((int)(XX_configure_reg_here_end- XX_configure_reg_here_start)) + " ms");
+            log.debug("  XX_configure_reg_jcemapper        " + ((int)(XX_configure_reg_jcemapper_end- XX_configure_reg_jcemapper_start)) + " ms");
+            log.debug("  XX_configure_reg_keyInfo          " + ((int)(XX_configure_reg_keyInfo_end- XX_configure_reg_keyInfo_start)) + " ms");
+            log.debug("  XX_configure_reg_keyResolver      " + ((int)(XX_configure_reg_keyResolver_end- XX_configure_reg_keyResolver_start)) + " ms");
+            log.debug("  XX_configure_reg_prefixes         " + ((int)(XX_configure_reg_prefixes_end- XX_configure_reg_prefixes_start)) + " ms");
+            log.debug("  XX_configure_reg_resourceresolver " + ((int)(XX_configure_reg_resourceresolver_end- XX_configure_reg_resourceresolver_start)) + " ms");
+            log.debug("  XX_configure_reg_sigalgos         " + ((int)(XX_configure_reg_sigalgos_end- XX_configure_reg_sigalgos_start)) + " ms");
+            log.debug("  XX_configure_reg_transforms       " + ((int)(XX_configure_reg_transforms_end- XX_configure_reg_transforms_start)) + " ms");
             //J+
          } catch (Exception e) {
-            cat.fatal("Bad: ", e);
+            log.fatal("Bad: ", e);
             e.printStackTrace();
          }
       }
@@ -653,7 +610,7 @@ public class Init {
 
       // are we already registered?
       if (Init._contentHandlerHash.containsKey(namespacequali)) {
-         cat.error("Already registered");
+         log.error("Already registered");
 
          Object exArgs[] = { namespacequali,
                              ((String) Init._contentHandlerHash
@@ -665,9 +622,9 @@ public class Init {
 
       synchronized (Init._contentHandlerHash) {
          Init._contentHandlerHash.put(namespacequali, implementingClass);
-         cat.debug("Init._contentHandlerHash.put(\"" + namespacequali
+         log.debug("Init._contentHandlerHash.put(\"" + namespacequali
                    + "\", \"" + implementingClass + "\")");
-         cat.debug("Init._contentHandlerHash.size()="
+         log.debug("Init._contentHandlerHash.size()="
                    + Init._contentHandlerHash.size());
       }
    }
@@ -705,16 +662,16 @@ public class Init {
       */
       String namespacequali = Init.qualifyNamespace(namespace, localname);
 
-      cat.debug("Asked for handler for " + namespacequali);
+      log.debug("Asked for handler for " + namespacequali);
 
       if (Init._contentHandlerHash == null) {
-         cat.debug("But I can't help (hash==null) ");
+         log.debug("But I can't help (hash==null) ");
 
          return null;
       }
 
       if (Init._contentHandlerHash.size() == 0) {
-         cat.debug("But I can't help (size()==0)");
+         log.debug("But I can't help (size()==0)");
 
          return null;
       }

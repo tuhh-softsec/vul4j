@@ -284,6 +284,9 @@ org.apache.xml.security.utils.resolver
     <copy file="./LICENSE.txt"
           tofile="${build.classes}/Apache-${product.shortname}-${product_version}-LICENSE.txt" />
 
+     <!-- copy log4j.properties file so that it is in the classpath -->
+     <copy file="${dir.src}/org/apache/xml/security/resource/log4j.properties"
+          tofile="${build.classes}/log4j.properties" />
 
     <!-- copy src files -->
     <copy todir="${build.src}">

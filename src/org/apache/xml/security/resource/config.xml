@@ -480,76 +480,7 @@
       <Resolver JAVACLASS="org.apache.xml.security.keys.keyresolver.implementations.X509IssuerSerialResolver"
                 DESCRIPTION="Uses an X509 IssuerName and IssuerSerial to retrieve a certificate from the storages" />
    </KeyResolver>
-   <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-        <!-- http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/xml/DOMConfigurator.html -->
-        <appender name="LOGTXT" class="org.apache.log4j.FileAppender">
-                <param name="File" value="log.txt" />
-                <!--
-                <param name="File" value="System.out" />
-                -->
-
-                <layout class="org.apache.log4j.PatternLayout">
-
-                <param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
-                <!--
-                <param name="ConversionPattern" value="%d %-5p %C{10}:%-4L - %m\n"/>
-                -->
-                </layout>
-        </appender>
-
-        <appender name="NULL" class="org.apache.xml.security.utils.NullAppender" />
-
-        <!--
-        <appender name="chainsaw" class="org.apache.log4j.net.SocketAppender">
-                <param name="RemoteHost" value="localhost" />
-                <param name="Port" value="4445" />
-                <layout class="org.apache.log4j.PatternLayout">
-                    <param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
-                </layout>
-        </appender>
-        -->
-
-        <!-- if you use the LOGTXT appender-ref, a log.txt file is created in
-             your working directory.
-             If you use the NULL appender-ref, all logging is disabled.
-          -->
-        <root>
-                <priority value ="debug" />
-                <!-- appender-ref ref="LOGTXT" /--> 
-                <appender-ref ref="NULL" />
-                <!-- <appender-ref ref="chainsaw" /> -->
-        </root>
-
-        <category name="org.apache.log4j.xml">
-                <priority value="info" />
-        </category>
-
-        <category name="org.apache.xml.security">
-                <priority value="debug" />
-        </category>
-
-        <category name="org.apache.xml.security.test.AllTests">
-                <priority value="debug" />
-        </category>
-
-        <!--
-        <category name="org.apache.xml.security.test.AllTests">
-                <priority value="debug" />
-        </category>
-        <category name="org.apache.xml.security.utils">
-                <priority value="fatal" />
-        </category>
-        <category name="org.apache.xml.security.test">
-                <priority value="debug" />
-        </category>
-        <category name="org.apache.xml.security.util.IgnoreAllErrorHandler">
-                <priority value="fatal" />
-        </category>
-        <category name="org.apache.xml.security.Init">
-                <priority value="error" />
-        </category>
-        -->
-   </log4j:configuration>
+ 
    <PrefixMappings>
       <!-- Many classes create Elements which are in a specific namespace;
            here, the prefixes for these namespaces are defined. But this

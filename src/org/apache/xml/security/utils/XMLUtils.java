@@ -341,15 +341,6 @@ public class XMLUtils {
       }
    }
 
-  /**
-    * Method spitOutVersions
-    *
-    * @param cat
-    */
-   public static void spitOutVersions(org.apache.log4j.Category cat) {
-      cat.debug(XMLUtils.getXercesVersion());
-      cat.debug(XMLUtils.getXalanVersion());
-   }
    
    /**
     * Method spitOutVersions

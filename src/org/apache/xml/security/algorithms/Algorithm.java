@@ -73,9 +73,9 @@ import org.w3c.dom.Element;
  */
 public abstract class Algorithm extends ElementProxy {
 
-   /** Field cat */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Algorithm.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Algorithm.class.getName());
 
    /**
     *
