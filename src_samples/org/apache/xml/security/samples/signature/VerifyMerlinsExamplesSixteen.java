@@ -196,8 +196,6 @@ public class VerifyMerlinsExamplesSixteen {
 
       org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
 
-      System.out.println(db.isNamespaceAware());
-
       Element nscontext = XMLUtils.createDSctx(doc, "ds",
                                                Constants.SignatureSpecNS);
       Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
@@ -206,35 +204,38 @@ public class VerifyMerlinsExamplesSixteen {
                                                 f.toURL().toString());
       signature.setFollowNestedManifests(false);
 
-      signature.addResourceResolver(new OfflineResolver());
+      // signature.addResourceResolver(new OfflineResolver());
 
       // XMLUtils.outputDOMc14nWithComments(signature.getElement(), System.out);
       KeyInfo ki = signature.getKeyInfo();
 
       if (ki != null) {
+         /*
          if (ki.containsX509Data()) {
             System.out.println("Could find a X509Data element in the KeyInfo");
          }
+         */
 
          X509Certificate cert = signature.getKeyInfo().getX509Certificate();
 
          if (cert != null) {
+            /*
             System.out.println(
                "I try to verify the signature using the X509 Certificate: "
                + cert);
+            */
             System.out.println("The XML signature in file "
                                + f.toURL().toString() + " is "
                                + (signature.checkSignatureValue(cert)
                                   ? "valid (good)"
                                   : "invalid !!!!! (bad)"));
          } else {
-            System.out.println("Did not find a Certificate");
+            // System.out.println("Did not find a Certificate");
 
             PublicKey pk = signature.getKeyInfo().getPublicKey();
 
             if (pk != null) {
-               System.out.println(
-                  "I try to verify the signature using the public key: " + pk);
+               // System.out.println("I try to verify the signature using the public key: " + pk);
                System.out.println("The XML signature in file "
                                   + f.toURL().toString() + " is "
                                   + (signature.checkSignatureValue(pk)
@@ -249,6 +250,7 @@ public class VerifyMerlinsExamplesSixteen {
          System.out.println("Did not find a KeyInfo");
       }
 
+      /*
       SignedInfo s = signature.getSignedInfo();
       for (int i=0; i<s.getSignedContentLength(); i++) {
          System.out.println("################ Signed Resource " + i + " ################");
@@ -260,6 +262,7 @@ public class VerifyMerlinsExamplesSixteen {
          System.out.println(new String(data));
          System.out.println();
       }
+      */
    }
 
    static {
