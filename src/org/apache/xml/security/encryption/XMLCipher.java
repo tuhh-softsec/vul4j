@@ -2432,7 +2432,8 @@ public class XMLCipher {
                     EncryptionConstants._TAG_KEYSIZE).item(0);
             if (null != keySizeElement) {
                 result.setKeySize(
-                    Integer.valueOf(keySizeElement.getNodeValue()).intValue());
+                    Integer.valueOf(
+                        keySizeElement.getFirstChild().getNodeValue()).intValue());
             }
 
             Element oaepParamsElement =
