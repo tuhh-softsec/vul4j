@@ -124,7 +124,17 @@ public:
 		encryptionMethod em,
 		const XMLCh * algorithmURI = NULL
 	);
-
+	// Encrypt octet streams
+	virtual XENCEncryptedData * encryptBinInputStream(
+		XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * plainText,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL
+	);
+	virtual XENCEncryptedData * encryptTXFMChain(
+		TXFMChain * plainText,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL
+	);
 
 	// Getter methods
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * getDocument(void) 

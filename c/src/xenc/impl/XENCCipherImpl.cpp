@@ -75,6 +75,7 @@
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/transformers/TXFMC14n.hpp>
 #include <xsec/transformers/TXFMSB.hpp>
+#include <xsec/transformers/TXFMURL.hpp>
 #include <xsec/transformers/TXFMDocObject.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECEnv.hpp>
@@ -767,6 +768,114 @@ int XENCCipherImpl::decryptKey(
 
 }
 
+// --------------------------------------------------------------------------------
+//			Encrypt a BinInputStream
+// --------------------------------------------------------------------------------
+
+XENCEncryptedData * XENCCipherImpl::encryptBinInputStream(
+	XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * plainText,
+	encryptionMethod em,
+	const XMLCh * algorithmURI) {
+
+	TXFMURL * uri;
+	XSECnew(uri, TXFMURL(mp_doc, NULL));
+
+	uri->setInput(plainText);
+	TXFMChain c(uri);
+
+	return encryptTXFMChain(&c, em, algorithmURI);
+
+}
+
+// --------------------------------------------------------------------------------
+//			Encrypt a TXFMChain
+// --------------------------------------------------------------------------------
+
+XENCEncryptedData * XENCCipherImpl::encryptTXFMChain(
+	TXFMChain * plainText,
+	encryptionMethod em,
+	const XMLCh * algorithmURI) {
+
+	// Make sure we have a key before we do anything too drastic
+	if (mp_key == NULL) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCCipherImpl::encryptElement - No key set");
+	}
+
+	// Map the encryption method to a URI
+	safeBuffer algorithmSB;
+	const XMLCh * algorithm;
+
+	if (em == ENCRYPT_NONE) {
+		algorithm = algorithmURI;
+	}
+	else {
+		if (encryptionMethod2URI(algorithmSB, em) != true) {
+			throw XSECException(XSECException::CipherError, 
+				"XENCCipherImpl::encryptElement - Unknown encryption method");
+		}
+		algorithm = algorithmSB.sbStrToXMLCh();
+	}
+
+	// Create the element with a dummy encrypted value
+
+	if (mp_encryptedData != NULL) {
+		delete mp_encryptedData;
+		mp_encryptedData = NULL;
+	}
+	
+	XSECnew(mp_encryptedData, XENCEncryptedDataImpl(mp_env));
+	mp_encryptedData->createBlankEncryptedData(
+		XENCCipherData::VALUE_TYPE, 
+		algorithm,
+		s_noData);
+
+	// Perform the encryption
+	XSECAlgorithmHandler *handler;
+
+	if (algorithm != NULL) {
+		
+		handler = 
+			XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(algorithm);
+	
+	}
+
+	else {
+
+		handler =
+			XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
+				XSECAlgorithmMapper::s_defaultEncryptionMapping);
+
+	}
+
+	safeBuffer sb;
+
+	if (handler != NULL) {
+
+		handler->encryptToSafeBuffer(plainText, 
+			mp_encryptedData->getEncryptionMethod(), 
+			mp_key,
+			mp_env->getParentDocument(),
+			sb);
+	}
+	else {
+
+		// Very strange if we get here - any problems should throw an
+		// exception in the AlgorithmMapper.
+
+		throw XSECException(XSECException::CipherError, 
+			"XENCCipherImpl::encryptTXFMChain - Error retrieving a handler for algorithm");
+
+	}
+
+	// Set the value
+	XENCCipherValue * val = mp_encryptedData->getCipherData()->getCipherValue();
+
+	val->setCipherString(sb.sbStrToXMLCh());
+
+	return mp_encryptedData;
+
+}
 
 // --------------------------------------------------------------------------------
 //			Encrypt a key
@@ -909,35 +1018,6 @@ DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element,
 			"XENCCipherImpl::encryptElement - No key set");
 	}
 
-	// Map the encryption method to a URI
-	safeBuffer algorithmSB;
-	const XMLCh * algorithm;
-
-	if (em == ENCRYPT_NONE) {
-		algorithm = algorithmURI;
-	}
-	else {
-		if (encryptionMethod2URI(algorithmSB, em) != true) {
-			throw XSECException(XSECException::CipherError, 
-				"XENCCipherImpl::encryptElement - Unknown encryption method");
-		}
-		algorithm = algorithmSB.sbStrToXMLCh();
-	}
-
-	// Create the element with a dummy encrypted value
-
-	if (mp_encryptedData != NULL) {
-		delete mp_encryptedData;
-		mp_encryptedData = NULL;
-	}
-	
-	XSECnew(mp_encryptedData, XENCEncryptedDataImpl(mp_env));
-	mp_encryptedData->createBlankEncryptedData(
-		XENCCipherData::VALUE_TYPE, 
-		algorithm,
-		s_noData);
-
-
 	// Create a transform chain to do the encryption
 	TXFMDocObject * tdocObj;
 	XSECnew(tdocObj, TXFMDocObject(mp_doc));
@@ -956,48 +1036,9 @@ DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element,
 	tc14n->activateComments();
 	tc14n->setExclusive();
 
-	// Perform the encryption
-	XSECAlgorithmHandler *handler;
+	// Do the hard work
 
-	if (algorithm != NULL) {
-		
-		handler = 
-			XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(algorithm);
-	
-	}
-
-	else {
-
-		handler =
-			XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
-				XSECAlgorithmMapper::s_defaultEncryptionMapping);
-
-	}
-
-	safeBuffer sb;
-
-	if (handler != NULL) {
-
-		handler->encryptToSafeBuffer(c, 
-			mp_encryptedData->getEncryptionMethod(), 
-			mp_key,
-			mp_env->getParentDocument(),
-			sb);
-	}
-	else {
-
-		// Very strange if we get here - any problems should throw an
-		// exception in the AlgorithmMapper.
-
-		throw XSECException(XSECException::CipherError, 
-			"XENCCipherImpl::decryptElement - Error retrieving a handler for algorithm");
-
-	}
-
-	// Set the value
-	XENCCipherValue * val = mp_encryptedData->getCipherData()->getCipherValue();
-
-	val->setCipherString(sb.sbStrToXMLCh());
+	encryptTXFMChain(c, em, algorithmURI);
 
 	// Replace original element
 	DOMNode * p = element->getParentNode();

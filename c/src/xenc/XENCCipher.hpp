@@ -79,12 +79,14 @@
 
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 XSEC_DECLARE_XERCES_CLASS(DOMDocument);
+XSEC_DECLARE_XERCES_CLASS(BinInputStream);
 
 class XSECCryptoKey;
 class XENCEncryptedData;
 class XENCEncryptedKey;
 class XSECKeyInfoResolver;
 class XSECBinTXFMInputStream;
+class TXFMChain;
 
 /**
  * @defgroup xenc XML Encryption Implementation
@@ -254,6 +256,51 @@ public:
 	virtual XENCEncryptedKey * encryptKey(
 		const unsigned char * keyBuffer,
 		unsigned int keyLen,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL
+	) = 0;
+
+	/**
+	 * \brief Encrypt an input stream to a CipherValue
+	 *
+	 * Encrypts the data passed in via a Xerces BinInputStream and places it
+	 * directly into a new EncryptedData element that contains a CipherValue
+	 *
+	 * @param plainText The InputStream to read the plain text from
+	 * @param em The encryptionMethod to use for this encryption.  Use
+	 * ENCRYPT_NONE if a user defined type is required.
+	 * @param algorithmURI if ENCRYPT_NONE is used for em, this will be used
+	 * as the algorithm URI
+	 *
+	 * @returns the EncryptedData element containing the CipherValue of the data
+	 */
+
+	virtual XENCEncryptedData * encryptBinInputStream(
+		XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * plainText,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL
+	) = 0;
+
+	/**
+	 * \brief Encrypt a TXFMChain to a CipherValue
+	 *
+	 * Encrypts the data passed in via a TXFMChain and places it
+	 * directly into a new EncryptedData element that contains a CipherValue.
+	 *
+	 * @note This is not really intended for client apps, but is used internally
+	 * and is provided for flexibility.  The "formal" method is encryptBinInputStream
+	 *
+	 * @param plainText The TXFMChain to read the plain text from
+	 * @param em The encryptionMethod to use for this encryption.  Use
+	 * ENCRYPT_NONE if a user defined type is required.
+	 * @param algorithmURI if ENCRYPT_NONE is used for em, this will be used
+	 * as the algorithm URI
+	 *
+	 * @returns the EncryptedData element containing the CipherValue of the data
+	 */
+
+	virtual XENCEncryptedData * encryptTXFMChain(
+		TXFMChain * plainText,
 		encryptionMethod em,
 		const XMLCh * algorithmURI = NULL
 	) = 0;
