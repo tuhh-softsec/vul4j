@@ -44,4 +44,12 @@ public class XmlLoadException extends RuntimeException {
         this(msg);
         this.cause = cause;
     }
+    
+    /** 
+     * Returns the cause of this throwable or null if the cause is 
+     * nonexistent or unknown. 
+     */
+    public Throwable getCause() {
+        return cause;
+    }
 }
