@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+  <SignedInfo>
+    <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+    <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+    <Reference URI="http://www.w3.org/TR/xml-stylesheet">
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <DigestValue>60NvZvtdTB+7UnlLp/H24p7h4bs=</DigestValue>
+    </Reference>
+  </SignedInfo>
+  <SignatureValue>
+    KTe1H5Hjp8hwahNFoUqHDuPJNNqhS1U3BBBH5/gByItNIwV18nMiLq4KunzFnOqD
+    xzTuO0/T+wsoYC1xOEuCDxyIujNCaJfLh+rCi5THulnc8KSHHEoPQ+7fA1VjmO31
+    2iw1iENOi7m//wzKlIHuxZCJ5nvolT21PV6nSE4DHlA=
+  </SignatureValue>
+  <KeyInfo>
+    <KeyName>Lugh</KeyName>
+  </KeyInfo>
+</Signature>

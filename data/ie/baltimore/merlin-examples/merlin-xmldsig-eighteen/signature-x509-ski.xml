@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+  <SignedInfo>
+    <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+    <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+    <Reference URI="http://www.w3.org/TR/xml-stylesheet">
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <DigestValue>60NvZvtdTB+7UnlLp/H24p7h4bs=</DigestValue>
+    </Reference>
+  </SignedInfo>
+  <SignatureValue>
+    odQDs0dMckjo3hrQVZfx73SBDAR75bKaa/voefbB2f+uKvLMQDF1CeB8wA7vmlDV
+    oJJe3/18vvawSjWgIowN/KR7EZwkcvtw9hnb1QYEddX+CueeCfdEvp553nIPtibg
+    z+77wAbVq1VCOEspx3gn9DZcLJeGHkaeeTQNplYkn84=
+  </SignatureValue>
+  <KeyInfo>
+    <X509Data>
+      <X509SKI>
+        iIg+zElCPZ0=
+      </X509SKI>
+    </X509Data>
+  </KeyInfo>
+</Signature>
