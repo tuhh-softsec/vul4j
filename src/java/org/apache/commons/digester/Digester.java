@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.51 2002/04/18 21:23:44 rdonkin Exp $
- * $Revision: 1.51 $
- * $Date: 2002/04/18 21:23:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.52 2002/04/27 23:39:50 craigmcc Exp $
+ * $Revision: 1.52 $
+ * $Date: 2002/04/27 23:39:50 $
  *
  * ====================================================================
  *
@@ -64,6 +64,7 @@ package org.apache.commons.digester;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
@@ -112,7 +113,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.51 $ $Date: 2002/04/18 21:23:44 $
+ * @version $Revision: 1.52 $ $Date: 2002/04/27 23:39:50 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1260,7 +1261,9 @@ public class Digester extends DefaultHandler {
     public Object parse(File file) throws IOException, SAXException {
 
         configure();
-        getXMLReader().parse(new InputSource(new FileReader(file)));
+        InputSource input = new InputSource(new FileInputStream(file));
+        input.setSystemId("file://" + file.getAbsolutePath());
+        getXMLReader().parse(input);
         return (root);
 
     }
