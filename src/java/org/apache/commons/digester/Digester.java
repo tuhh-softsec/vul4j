@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.55 2002/07/16 21:23:27 rdonkin Exp $
- * $Revision: 1.55 $
- * $Date: 2002/07/16 21:23:27 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.56 2002/07/29 21:05:15 rdonkin Exp $
+ * $Revision: 1.56 $
+ * $Date: 2002/07/29 21:05:15 $
  *
  * ====================================================================
  *
@@ -113,7 +113,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.55 $ $Date: 2002/07/16 21:23:27 $
+ * @version $Revision: 1.56 $ $Date: 2002/07/29 21:05:15 $
  */
 
 public class Digester extends DefaultHandler {
@@ -2044,6 +2044,9 @@ public class Digester extends DefaultHandler {
     Object popParams() {
 
         try {
+            if (log.isTraceEnabled()) {
+                log.trace("Popping params");
+            }
             return (params.pop());
         } catch (EmptyStackException e) {
             log.warn("Empty stack (returning null)");
@@ -2062,7 +2065,9 @@ public class Digester extends DefaultHandler {
      * @param object The new object
      */
     void pushParams(Object object) {
-
+        if (log.isTraceEnabled()) {
+            log.trace("Pushing params");
+        }
         params.push(object);
 
     }

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/Employee.java,v 1.4 2002/07/08 18:26:13 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2002/07/08 18:26:13 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/Employee.java,v 1.5 2002/07/29 21:05:15 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2002/07/29 21:05:15 $
  *
  * ====================================================================
  *
@@ -124,7 +124,9 @@ public class Employee {
 
     // this is to allow testing of primitive convertion 
     private int age;
-    
+    private boolean active;  
+    private float salary;
+        
     public int getAge()
     {
         return age;
@@ -133,6 +135,26 @@ public class Employee {
     public void setAge(int age)
     {
         this.age = age;
+    }
+    
+    public boolean isActive()
+    {
+        return active;
+    }
+    
+    public void setActive(boolean active)
+    {
+        this.active = active;
+    }
+    
+    public float getSalary()
+    {
+        return salary;
+    }
+    
+    public void setSalary(float salary)
+    {
+        this.salary = salary;
     }
 
     public String toString() {

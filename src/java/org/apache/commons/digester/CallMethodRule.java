@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.17 2002/06/05 21:23:23 rdonkin Exp $
- * $Revision: 1.17 $
- * $Date: 2002/06/05 21:23:23 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.18 2002/07/29 21:05:15 rdonkin Exp $
+ * $Revision: 1.18 $
+ * $Date: 2002/07/29 21:05:15 $
  *
  * ====================================================================
  *
@@ -72,17 +72,26 @@ import org.apache.commons.beanutils.MethodUtils;
 
 
 /**
- * Rule implementation that calls a method on the top (parent)
+ * <p>Rule implementation that calls a method on the top (parent)
  * object, passing arguments collected from subsequent
  * <code>CallParamRule</code> rules or from the body of this
  * element. 
  * By using {@link #CallMethodRule(String methodName)} 
  * a method call can be made to a method which accepts no
- * arguments.
+ * arguments.</p>
+ *
+ * <p>This rule now uses {@link MethodUtils#invokeMethod} by default.
+ * This increases the kinds of methods successfully and allows primitives
+ * to be matched by passing in wrapper classes.
+ * There are rare cases when {@link MethodUtils#invokeExactMethod} 
+ * (the old defualt) is required.
+ * This method is much stricter in it's reflection.
+ * Setting the <code>UseExactMatch</code> to true reverts to the use of this 
+ * method.</p>
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.17 $ $Date: 2002/06/05 21:23:23 $
+ * @version $Revision: 1.18 $ $Date: 2002/07/29 21:05:15 $
  */
 
 public class CallMethodRule extends Rule {
@@ -306,7 +315,29 @@ public class CallMethodRule extends Rule {
      */
     private String paramClassNames[] = null;
     
+    /**
+     * Should <code>MethodUtils.invokeExactMethod</code> be used for reflection.
+     */
+    protected boolean useExactMatch = false;
+    
     // --------------------------------------------------------- Public Methods
+    
+    /**
+     * Should <code>MethodUtils.invokeExactMethod</code>
+     * be used for the reflection.
+     */
+    public boolean getUseExactMatch() {
+        return useExactMatch;
+    }
+    
+    /**
+     * Set whether <code>MethodUtils.invokeExactMethod</code>
+     * should be used for the reflection.
+     */    
+    public void setUseExactMatch(boolean useExactMatch)
+    { 
+        this.useExactMatch = useExactMatch;
+    }
 
     /**
      * Set the associated digester.
@@ -375,7 +406,13 @@ public class CallMethodRule extends Rule {
         if (paramCount > 0) {
 
             parameters = (String[]) digester.popParams();
-
+            
+            if (digester.log.isTraceEnabled()) {
+                for (int i=0,size=parameters.length;i<size;i++) {
+                    digester.log.trace("[CallMethodRule](" + i + ")" + parameters[i]) ;
+                }
+            }
+            
             // In the case where the parameter for the method
             // is taken from an attribute, and that attribute
             // isn't actually defined in the source XML file,
@@ -443,9 +480,17 @@ public class CallMethodRule extends Rule {
             sb.append(")");
             digester.log.debug(sb.toString());
         }
-        MethodUtils.invokeExactMethod(top, methodName,
+        
+        if (useExactMatch) {
+            // invoke using exact match
+            MethodUtils.invokeExactMethod(top, methodName,
                 paramValues, paramTypes);
-
+                
+        } else {
+            // invoke using fuzzier match
+            MethodUtils.invokeMethod(top, methodName,
+                paramValues, paramTypes);            
+        }
     }
 
 
