@@ -64,25 +64,23 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
 import javax.xml.parsers.*;
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.compiler.FuncLoader;
-import org.apache.xpath.functions.Function;
-import org.w3c.dom.*;
-import org.apache.xml.security.algorithms.encryption.EncryptionMethod;
-import org.apache.xml.security.algorithms.SignatureAlgorithm;
-import org.apache.xml.security.algorithms.encryption.EncryptionMethod;
 import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.keys.ContentHandlerAlreadyRegisteredException;
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.implementations.FuncHere;
+import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
-import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.security.keys.ContentHandlerAlreadyRegisteredException;
-import org.apache.xml.security.keys.keyresolver.KeyResolver;
+import org.apache.xpath.XPathAPI;
+import org.apache.xpath.compiler.FuncLoader;
+import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.functions.Function;
+import org.w3c.dom.*;
 
 
 /**
@@ -513,26 +511,10 @@ public class Init {
             }
 
             long XX_configure_reg_prefixes_end = System.currentTimeMillis();
-            //J-
-            long XX_configure_reg_encryption_start = System.currentTimeMillis();
-            EncryptionMethod.providerInit();
-            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_TRIPLEDES,     "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_TRIPLEDES_BC");
-            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES128,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES128_BC");
-            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES192,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES192_BC");
-            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES256,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES256_BC");
-            EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_TRIPLEDES, "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_TRIPLEDES_BC");
-            EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES128_BC");
-            EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES192_BC");
-            EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES256_BC");
-            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP,  "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyTransportImpl_RSAOAEP_BC");
-            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSA15,    "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyTransportImpl_RSAPKCS15_BC");
-            long XX_configure_reg_encryption_end = System.currentTimeMillis();
-            //J+
             long XX_init_end = System.currentTimeMillis();
 
             //J-
             cat.debug("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
-            cat.debug("  XX_configure_reg_encryption       " + ((int)(XX_configure_reg_encryption_end- XX_configure_reg_encryption_start)) + " ms");
             cat.debug("  XX_prng                           " + ((int)(XX_prng_end - XX_prng_start)) + " ms");
             cat.debug("  XX_parsing                        " + ((int)(XX_parsing_end - XX_parsing_start)) + " ms");
             cat.debug("  XX_configure_i18n                 " + ((int)(XX_configure_i18n_end- XX_configure_i18n_start)) + " ms");
