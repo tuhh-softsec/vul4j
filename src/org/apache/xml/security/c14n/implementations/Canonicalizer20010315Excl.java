@@ -52,6 +52,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
       * the inclusive namespaces.
       */
     TreeSet _inclusiveNSSet = null;
+    static final String XMLNS_URI=Constants.NamespaceSpecNS;
 	/**
 	 * Constructor Canonicalizer20010315Excl
 	 * 
@@ -127,7 +128,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 			String NName=N.getLocalName();
 			String NNodeValue=N.getNodeValue();
 						
-			if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
+			if (!XMLNS_URI.equals(N.getNamespaceURI())) {
 				//Not a namespace definition.
 				//The Element is output element, add his prefix(if used) to visibyUtilized
 				String prefix = N.getPrefix();
@@ -223,8 +224,6 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 			visiblyUtilized =  (Set) this._inclusiveNSSet.clone();
 		}
 		
-		//Is the xmlns defined in this node?
-		boolean xmlnsDef=false;
 		for (int i = 0; i < attrsLength; i++) {
 			Attr N = (Attr) attrs.item(i);
 			String NName=N.getLocalName();
@@ -234,7 +233,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 				continue;
 			}			
 						
-			if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
+			if (!XMLNS_URI.equals(N.getNamespaceURI())) {
 				//Not a namespace definition.
 				if (isOutputElement) {
 					//The Element is output element, add his prefix(if used) to visibyUtilized
@@ -249,9 +248,6 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 			}
 						
 			
-			if (XMLNS.equals(NName)) {				
-				xmlnsDef=true;
-			}
 			if (ns.addMapping(NName, NNodeValue,N)) {
                 //New definiton check if it is relative
                 if (C14nHelper.namespaceIsRelative(NNodeValue)) {
@@ -262,11 +258,16 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
                 }    
             }
 		}
-		if (!xmlnsDef ) {
-			ns.addMapping(XMLNS,"",nullNode);
-		}
-		
-		if (isOutputElement) {			
+
+		if (isOutputElement) {	               
+           //The element is visible, handle the xmlns definition    
+           Attr xmlns = E.getAttributeNodeNS(XMLNS_URI, XMLNS);
+           if ((xmlns!=null) &&  (!this._xpathNodeSet.contains(xmlns))) {
+              //There is a definition but the xmlns is not selected by the xpath.
+              //then xmlns=""
+              ns.addMapping(XMLNS,"",nullNode);                               
+            }
+
 			if (E.getNamespaceURI() != null) {
 				String prefix = E.getPrefix();
 				if ((prefix == null) || (prefix.length() == 0)) {
