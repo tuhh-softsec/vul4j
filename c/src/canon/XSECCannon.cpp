@@ -141,7 +141,7 @@ int XSECCanon::outputBuffer(unsigned char *outBuffer, int numBytes) {
 
 	}
 
-	if (m_allNodesDone) {
+	if (m_allNodesDone && (remaining < bytesToGo)) {
 
 		// Was not enough data to fill everything up
 		memcpy (&outBuffer[i], &m_buffer[m_bufferPoint], remaining);
