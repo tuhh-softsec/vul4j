@@ -209,11 +209,11 @@ public class EncryptionMethod extends Algorithm {
 
          if ((this._keySize != -1)
                  && (this._keySize
-                     != this._cipherAlgorithmSpi.getImplementedKeySize())) {
+                     != this._cipherAlgorithmSpi.engineGetKeySize())) {
             Object exArgs[] = { Integer.toString(this._keySize),
                                 Integer
                                    .toString(this._cipherAlgorithmSpi
-                                      .getImplementedKeySize()) };
+                                      .engineGetKeySize()) };
 
             throw new XMLSecurityException("encryption.ExplicitKeySizeMismatch",
                                            exArgs);
@@ -304,13 +304,17 @@ public class EncryptionMethod extends Algorithm {
             }
          }
       } catch (TransformerException ex) {
+         Object exArgs[] = { AlgorithmURI };
+
          throw new XMLSecurityException("empty", ex);
       }
 
       if (encryptionMethodSpi == null) {
 
          // no Provider found who could do the job?
-         throw new XMLSecurityException("empty");
+         Object exArgs[] = { AlgorithmURI };
+
+         throw new XMLSecurityException("algorithms.NoSuchAlgorithm", exArgs);
       }
 
       return encryptionMethodSpi;
@@ -465,9 +469,7 @@ public class EncryptionMethod extends Algorithm {
       //J-
       final String xmlStr = "" +
       "<EncryptionMethod Algorithm='http://www.w3.org/2001/04/xmlenc#aes128-cbc' xmlns='http://www.w3.org/2001/04/xmlenc#'>" + "\n" +
-      "  <KeySize>192</KeySize>" + "\n" +
-      "  <DigestMethod Algorithm='http://www.w3.org/2000/09/xmldsig#sha1' xmlns='http://www.w3.org/2000/09/xmldsig#' />" + "\n" +
-      "  <OAEPparams> 91Wu3Q== </OAEPparams>" + "\n" +
+      "  <KeySize>128</KeySize>" + "\n" +
       "</EncryptionMethod>" + "\n" +
       "" + "\n" +
       "";
@@ -485,7 +487,10 @@ public class EncryptionMethod extends Algorithm {
 
       System.out.println(c.getAlgorithmURI());
       System.out.println(c.getKeySize());
-      System.out.println(c.getOAEPMessageDigest().getAlgorithmURI());
+
+      if (c.getOAEPMessageDigest() != null) {
+         System.out.println(c.getOAEPMessageDigest().getAlgorithmURI());
+      }
 
       if (c.getOAEPParams() != null) {
          System.out.println("OAEPParams.length=" + c.getOAEPParams().length);

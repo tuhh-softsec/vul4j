@@ -140,49 +140,9 @@ public abstract class EncryptionMethodSpi {
       return this._cipherAlgorithm.getExemptionMechanism();
    }
 
-   /**
-    * Method engineGetBlockSize
-    *
-    * @return
-    */
-   protected int engineGetBlockSize() {
-      return this._cipherAlgorithm.getBlockSize();
-   }
-
-   /**
-    * Proxy method for {@link javax.crypto.Cipher#update(byte[])}
-    * which is executed on the internal {@link javax.crypto.Cipher} object.
-    *
-    * @param input
-    * @throws XMLSecurityException
-    */
-   protected void engineUpdate(byte[] input) throws XMLSecurityException {
-
-      try {
-         this._cipherAlgorithm.update(input);
-      } catch (IllegalStateException ex) {
-         throw new XMLSecurityException("empty", ex);
-      }
-   }
-
-   /**
-    * Proxy method for {@link javax.crypto.Cipher#update(byte[],int,int)}
-    * which is executed on the internal {@link javax.crypto.Cipher} object.
-    *
-    * @param buf
-    * @param offset
-    * @param len
-    * @throws XMLSecurityException
-    */
-   protected void engineUpdate(byte buf[], int offset, int len)
-           throws XMLSecurityException {
-
-      try {
-         this._cipherAlgorithm.update(buf, offset, len);
-      } catch (IllegalStateException ex) {
-         throw new XMLSecurityException("empty", ex);
-      }
-   }
+   protected abstract byte[] engineUpdate(byte buf[])
+           throws XMLSecurityException;
+   protected abstract byte[] engineUpdate(byte buf[], int offset, int len) throws XMLSecurityException;
 
    /** Field _doc */
    Document _doc = null;
@@ -231,7 +191,21 @@ public abstract class EncryptionMethodSpi {
     *
     * @return the key size which is implemented by the instantiated encryption method.
     */
-   protected abstract int getImplementedKeySize();
+   protected abstract int  engineGetKeySize();
+   protected abstract int  engineGetBlockSize();
+
+   /**
+    * Der init kann durchgeführt werden:
+    *
+    * init(Cipher.ENCRYPT_MODE, byte[] key, SecureRandom sr)
+    * init(Cipher.ENCRYPT_MODE, byte[] key, byte[] iv)
+    * init(Cipher.ENCRYPT_MODE, PublicKey pk,
+    * init(Cipher.ENCRYPT_MODE, Certificate cert,
+    * init(Cipher.DECRYPT_MODE, byte[] key,
+    * init(Cipher.DECRYPT_MODE, PrivateKey pk,
+    */
+   protected abstract void engineInit(int opmode, byte[] key, SecureRandom sr) throws XMLSecurityException;
+   protected abstract void engineInit(int opmode, byte[] key) throws XMLSecurityException;
 
    static {
       org.apache.xml.security.Init.init();

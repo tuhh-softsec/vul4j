@@ -59,7 +59,8 @@
 package org.apache.xml.security.algorithms.encryption.implementations;
 
 
-
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.security.*;
 import java.security.spec.*;
 import javax.crypto.*;
@@ -80,34 +81,14 @@ public class Encryption_AES128_BC extends EncryptionMethodSpi {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(Encryption_AES128_BC.class.getName());
 
-   /** Field _URI */
    public static final String _URI =
       EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128;
-
-   /** Field _ProviderId */
    private static final String _ProviderId = "BC";
-
-   /** Field _keyBits */
    private static final int _keyBits = 128;
+   private static final int _blockSize = 128;
 
-   /**
-    * Method engineGetURI
-    *
-    * @return
-    */
-   protected String engineGetURI() {
-      return this._URI;
-   }
+   private String _JCEalgorithmID = null;
 
-   protected int getImplementedKeySize() {
-      return this._keyBits;
-   }
-
-   /**
-    * Constructor Encryption_AES128_BC
-    *
-    * @throws XMLSecurityException
-    */
    public Encryption_AES128_BC() throws XMLSecurityException {
 
       JCEMapper.ProviderIdClass algorithmID =
@@ -121,8 +102,8 @@ public class Encryption_AES128_BC extends EncryptionMethodSpi {
          this._cipherAlgorithm =
             Cipher.getInstance(algorithmID.getAlgorithmID(),
                                algorithmID.getProviderId());
-
-         cat.debug(this._cipherAlgorithm.getAlgorithm());
+         this._JCEalgorithmID = this._cipherAlgorithm.getAlgorithm();
+         cat.debug(this._JCEalgorithmID);
       } catch (java.security.NoSuchAlgorithmException ex) {
          Object[] exArgs = { algorithmID.getAlgorithmID(),
                              ex.getLocalizedMessage() };
@@ -136,6 +117,95 @@ public class Encryption_AES128_BC extends EncryptionMethodSpi {
       } catch (NoSuchPaddingException ex) {
          throw new XMLSecurityException("empty", ex);
       }
+   }
+
+   private int _opmode = 0;
+   private byte[] _key = null;
+   private SecureRandom _secureRandom = null;
+   private byte[] _iv = null;
+   private byte[] _databuffer = new byte[0];
+
+   protected void engineInit(int opmode, byte[] key, SecureRandom sr) throws XMLSecurityException {
+      if (opmode != Cipher.ENCRYPT_MODE && opmode != Cipher.DECRYPT_MODE) {
+         throw new XMLSecurityException("empty");
+      }
+      this._opmode = opmode;
+      this._key = key;
+      this._secureRandom = sr;
+   }
+   protected void engineInit(int opmode, byte[] key) throws XMLSecurityException {
+      this.engineInit(opmode, key, new SecureRandom());
+   }
+
+
+   /**
+    * If we start encrypting, we need a double block length because we have to prepend
+    * the ciphertext block with our IV.
+    *
+    */
+   protected int engineGetOutputSize(int inputLen) {
+      if (this._opmode == Cipher.ENCRYPT_MODE && this._iv == null) {
+         return this.engineGetBlockSize() * 2;
+      } else {
+         return this._cipherAlgorithm.getOutputSize(inputLen);
+      }
+   }
+
+   /**
+    * encrypt:
+    *    create IV
+    *    output IV
+    *
+    */
+   protected byte[] engineUpdate(byte[] data) throws XMLSecurityException {
+      try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      if (this._opmode == Cipher.ENCRYPT_MODE) {
+         // if we encrypt
+         if (this._iv == null) {
+            // and do not yet created an IV
+            this._iv = new byte[this.engineGetBlockSize()];
+            this._secureRandom.nextBytes(this._iv);
+            baos.write(this._iv);
+            AlgorithmParameterSpec iv = new IvParameterSpec(this._iv);
+
+            Key secretKeySpec = new SecretKeySpec(this._key, this._JCEalgorithmID);
+            this._cipherAlgorithm.init(this._opmode, secretKeySpec, iv);
+         }
+      } else {
+         if (this._iv == null) {
+            if (this._databuffer.length + data.length >= this.engineGetBlockSize()) {
+               // we have enough stuff
+            }
+         }
+      }
+
+      byte[] result = baos.toByteArray();
+      baos = null;
+      return result;
+      } catch (IOException ex) {
+         throw new XMLSecurityException ("empty", ex);
+      } catch (java.security.InvalidKeyException ex) {
+         throw new XMLSecurityException ("empty", ex);
+      } catch (java.security.InvalidAlgorithmParameterException ex) {
+         throw new XMLSecurityException ("empty", ex);
+      }
+   }
+
+   protected byte[] engineUpdate(byte buf[], int offset, int len) throws XMLSecurityException {
+   return null;
+   }
+
+   protected String engineGetURI() {
+      return this._URI;
+   }
+
+   protected int engineGetKeySize() {
+      return this._keyBits;
+   }
+
+   protected int engineGetBlockSize() {
+      return this._blockSize;
    }
 
    static {
