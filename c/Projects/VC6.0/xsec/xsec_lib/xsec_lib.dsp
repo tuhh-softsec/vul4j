@@ -506,6 +506,14 @@ SOURCE=..\..\..\..\src\utils\XSECSafeBufferFormatter.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\utils\XSECTXFMInputSource.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\utils\XSECTXFMInputSource.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\utils\XSECXPathNodeList.cpp
 # End Source File
 # Begin Source File
@@ -666,6 +674,14 @@ SOURCE=..\..\..\..\src\transformers\TXFMOutputFile.cpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\transformers\TXFMOutputFile.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\transformers\TXFMParser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\transformers\TXFMParser.hpp
 # End Source File
 # Begin Source File
 

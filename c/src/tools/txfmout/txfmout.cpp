@@ -65,9 +65,12 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
+ * $Id$
  *
- * $LOG$
+ * $Log$
+ * Revision 1.3  2003/02/17 11:22:39  blautenb
+ * Now handle relative file URIs in references
+ *
  *
  */
 
@@ -84,12 +87,19 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #include <xsec/utils/XSECBinTXFMInputStream.hpp>
 
+#if defined(_WIN32)
+#include <xsec/utils/winutils/XSECURIResolverGenericWin32.hpp>
+#else
+#include <xsec/utils/unixutils/XSECURIResolverGenericUnix.hpp>
+#endif
+
 // General
 
 #include <memory.h>
 #include <string.h>
 #include <iostream.h>
 #include <stdlib.h>
+#include <direct.h>
 
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
@@ -98,12 +108,14 @@
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/util/XMLException.hpp>
 #include <xercesc/util/XMLNetAccessor.hpp>
+#include <xercesc/util/XMLUri.hpp>
 
 XSEC_USING_XERCES(NetAccessorException);
 XSEC_USING_XERCES(DOMException);
 XSEC_USING_XERCES(XMLException);
 XSEC_USING_XERCES(XercesDOMParser);
 XSEC_USING_XERCES(XMLPlatformUtils);
+XSEC_USING_XERCES(XMLUri);
 
 #ifndef XSEC_NO_XALAN
 
@@ -519,6 +531,44 @@ int main(int argc, char **argv) {
 
 	XSECProvider prov;
 	DSIGSignature * sig = prov.newSignatureFromDOM(theDOM, sigNode);
+
+#if defined(_WIN32)
+	XSECURIResolverGenericWin32 
+#else
+	XSECURIResolverGenericUnix 
+#endif
+		theResolver;
+		 
+	// Map out base path of the file
+	char path[_MAX_PATH];
+	char baseURI[(_MAX_PATH * 2) + 10];
+	getcwd(path, _MAX_PATH);
+
+	strcpy(baseURI, "file:///");
+	strcat(baseURI, path);
+	strcat(baseURI, "/");
+	strcat(baseURI, filename);
+
+	// Find any ':' and "\" characters
+	int lastSlash;
+	for (int i = 8; i < strlen(baseURI); ++i) {
+		if (baseURI[i] == '\\') {
+			lastSlash = i;
+			baseURI[i] = '/';
+		}
+		else if (baseURI[i] == '/')
+			lastSlash = i;
+	}
+
+	// The last "\\" must prefix the filename
+	baseURI[lastSlash + 1] = '\0';
+
+	XMLUri uri(MAKE_UNICODE_STRING(baseURI));
+
+	theResolver.setBaseURI(uri.getUriText());
+
+	sig->setURIResolver(&theResolver);
+
 
 	try {
 

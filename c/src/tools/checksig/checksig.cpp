@@ -67,6 +67,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.5  2003/02/17 11:22:39  blautenb
+ * Now handle relative file URIs in references
+ *
  * Revision 1.4  2003/02/12 11:21:03  blautenb
  * UNIX generic URI resolver
  *
@@ -99,6 +102,7 @@
 #include <string.h>
 #include <iostream.h>
 #include <stdlib.h>
+#include <direct.h>
 
 #if defined (_DEBUG) && defined (_MSC_VER)
 #include <crtdbg.h>
@@ -111,11 +115,15 @@
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/util/XMLException.hpp>
+#include <xercesc/util/XMLUri.hpp>
+#include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(XercesDOMParser);
 XSEC_USING_XERCES(XMLException);
 XSEC_USING_XERCES(XMLPlatformUtils);
 XSEC_USING_XERCES(DOMException);
+XSEC_USING_XERCES(XMLUri);
+XSEC_USING_XERCES(Janitor);
 
 #ifndef XSEC_NO_XALAN
 
@@ -210,7 +218,8 @@ int evaluate(int argc, char ** argv) {
 	// Create and set up the parser
 
 	XercesDOMParser * parser = new XercesDOMParser;
-	
+	Janitor<XercesDOMParser> j_parser(parser);
+
 	parser->setDoNamespaces(true);
 	parser->setCreateEntityReferenceNodes(true);
 
@@ -269,7 +278,7 @@ int evaluate(int argc, char ** argv) {
 	if (sigNode == 0) {
 
 		cerr << "Could not find <Signature> node in " << argv[argc-1] << endl;
-		exit(2);
+		return 2;
 	}
 
 	XSECProvider prov;
@@ -294,6 +303,36 @@ int evaluate(int argc, char ** argv) {
 #endif
 			theResolver;
 		     
+		// Map out base path of the file
+		char path[_MAX_PATH];
+		char baseURI[(_MAX_PATH * 2) + 10];
+		getcwd(path, _MAX_PATH);
+
+		strcpy(baseURI, "file:///");
+		strcat(baseURI, path);
+		strcat(baseURI, "/");
+		strcat(baseURI, filename);
+
+		// Find any ':' and "\" characters
+		int lastSlash;
+		for (int i = 8; i < strlen(baseURI); ++i) {
+//			if (path[i] == ':')
+//				path[i] = '|';
+			if (baseURI[i] == '\\') {
+				lastSlash = i;
+				baseURI[i] = '/';
+			}
+			else if (baseURI[i] == '/')
+				lastSlash = i;
+		}
+
+		// The last "\\" must prefix the filename
+		baseURI[lastSlash + 1] = '\0';
+
+		XMLUri uri(MAKE_UNICODE_STRING(baseURI));
+
+		theResolver.setBaseURI(uri.getUriText());
+
 		sig->setURIResolver(&theResolver);
 	}
 
@@ -325,7 +364,7 @@ int evaluate(int argc, char ** argv) {
 		<< msg << endl;
 		delete [] msg;
 		errorsOccured = true;
-		exit (2);
+		return 2;
 	}
 	catch (XSECCryptoException &e) {
 		cerr << "An error occured during signature verification\n   Message: "
@@ -338,7 +377,7 @@ int evaluate(int argc, char ** argv) {
 			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
 
 		ERR_print_errors(bio_err);
-		exit (2);
+		return 2;
 	}
 
 	int retResult;
@@ -357,9 +396,7 @@ int evaluate(int argc, char ** argv) {
 	}
 
 	prov.releaseSignature(sig);
-
-	delete parser;
-
+	// Janitor will clean up the parser
 	return retResult;
 
 }
