@@ -1,7 +1,7 @@
 <project name="Functor" default="test" basedir=".">
 <!--
   Commons-Functor Ant Build File
-  $Id: build.xml,v 1.3 2003/01/28 20:36:44 rwaldhoff Exp $
+  $Id: build.xml,v 1.4 2003/01/31 12:02:43 rwaldhoff Exp $
 -->
 
 <!-- ========== Initialize Properties ===================================== -->
@@ -83,7 +83,7 @@
   <!-- Construct unit test classpath -->
   <path id="test.classpath">
     <pathelement location="${build.home}/classes"/>
-    <pathelement location="${build.home}/tests"/>
+    <pathelement location="${build.home}/test-classes"/>
     <pathelement location="${junit.jar}"/>
   </path>
 
@@ -111,7 +111,7 @@
     <mkdir dir="${build.home}"/>
     <mkdir dir="${build.home}/classes"/>
     <mkdir dir="${build.home}/conf"/>
-    <mkdir dir="${build.home}/tests"/>
+    <mkdir dir="${build.home}/test-classes"/>
   </target>
 
 
@@ -142,13 +142,13 @@
   <target name="compile.tests" depends="compile"
    description="Compile unit test cases">
     <javac  srcdir="${test.home}"
-           destdir="${build.home}/tests"
+           destdir="${build.home}/test-classes"
              debug="${compile.debug}"
        deprecation="${compile.deprecation}"
           optimize="${compile.optimize}">
       <classpath refid="test.classpath"/>
     </javac>
-    <copy    todir="${build.home}/tests" filtering="on">
+    <copy    todir="${build.home}/test-classes" filtering="on">
       <fileset dir="${test.home}" excludes="**/*.java"/>
     </copy>
   </target>
