@@ -393,6 +393,31 @@ public class DigesterTestCase extends TestCase {
         assertEquals("Peeked value:", archimedesAveragePi, digester.peek(testStackName));
         assertEquals("Popped value:", archimedesAveragePi, digester.pop(testStackName));
         assertTrue("Stack ends empty:", digester.isEmpty(testStackName));
+        
+        digester.push(testStackName, "1");
+        digester.push(testStackName, "2");
+        digester.push(testStackName, "3");
+        
+        assertEquals("Peek#1", "1", digester.peek(testStackName, 2));
+        assertEquals("Peek#2", "2", digester.peek(testStackName, 1));
+        assertEquals("Peek#3", "3", digester.peek(testStackName, 0));
+        assertEquals("Peek#3a", "3", digester.peek(testStackName));
+        
+        try {
+            // peek beyond stack
+            digester.peek(testStackName, 3);
+            fail("Peek#4 failed to throw an exception.");
+        } catch(EmptyStackException ex) {
+            // ok, expected
+        }
+        
+        try {
+            // peek a nonexistent named stack
+            digester.peek("no.such.stack", 0);
+            fail("Peeking a non-existent stack failed to throw an exception.");
+        } catch(EmptyStackException ex) {
+            // ok, expected
+        }
     }
     
     /** Tests that values are stored independently */

@@ -962,10 +962,6 @@ public class Digester extends DefaultHandler {
             }
         }
 
-        while (getCount() > 1) {
-            pop();
-        }
-
         // Fire "finish" events for all defined rules
         Iterator rules = getRules().rules().iterator();
         while (rules.hasNext()) {
@@ -2419,6 +2415,7 @@ public class Digester extends DefaultHandler {
         params.clear();
         publicId = null;
         stack.clear();
+        stacksByName.clear();
     }
 
 
@@ -2550,6 +2547,25 @@ public class Digester extends DefaultHandler {
      * @since 1.6
      */
     public Object peek(String stackName) {
+        return peek(stackName, 0);
+    }
+
+    /**
+     * <p>Gets the top object from the stack with the given name.
+     * This method does not remove the object from the stack.
+     * </p>
+     * <p><strong>Note:</strong> a stack is considered empty
+     * if no objects have been pushed onto it yet.</p>
+     *
+     * @param stackName the name of the stack to be peeked
+     * @param n Index of the desired element, where 0 is the top of the stack,
+     *  1 is the next element down, and so on.
+     * @return the specified <code>Object</code> on the stack.
+     * @throws EmptyStackException if the named stack is empty 
+     *
+     * @since 1.6
+     */
+    public Object peek(String stackName, int n) {
         Object result = null;
         ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
         if (namedStack == null ) {
@@ -2560,7 +2576,7 @@ public class Digester extends DefaultHandler {
         
         } else {
         
-            result = namedStack.peek();
+            result = namedStack.peek(n);
         }
         return result;
     }
