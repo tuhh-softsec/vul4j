@@ -267,45 +267,6 @@ public abstract class ResourceResolverSpi {
    }
 
    /**
-    * Method makeFilesystemToURI
-    *
-    * @param str
-    *
-    */
-   public static String makeFilesystemToURI(String str) {
-
-      final String filePrefix = "file:/";
-
-      return "";
-   }
-
-   /**
-    * Method isDosFilename
-    *
-    * @param str
-    *
-    */
-   private static boolean isDosFilename(String str) {
-
-      if (str.length() >= 4) {
-
-         // str =~ /^\W:\/([^/])/ # to speak perl ;-))
-         //J-
-         char ch0 = Character.toUpperCase(str.charAt(0));
-         boolean isDriveLetter     = (('A' <= ch0) && (ch0 <= 'Z'));
-         boolean isColon           = str.charAt(1) == ':';
-         boolean isSlashAfterColon = str.charAt(2) == '/';
-         boolean isOnlyOneSlash    = str.charAt(3) != '/';
-         boolean isDosFilename = (isDriveLetter && isColon &&
-                                  isSlashAfterColon && isOnlyOneSlash);
-         //J+
-         return isDosFilename;
-      }
-
-      return false;
-   }
-
-   /**
     * Fixes a platform dependent filename to standard URI form.
     *
     * @param str The string to fix.
