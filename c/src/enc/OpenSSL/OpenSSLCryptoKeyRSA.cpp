@@ -249,8 +249,10 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 
 	if (decryptSize < 0) {
 
-		throw XSECCryptoException(XSECCryptoException::RSAError,
-			"OpenSSL:RSA::verify() - Error decrypting signature");
+/*		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"OpenSSL:RSA::verify() - Error decrypting signature"); */
+		// Really - this is a failed signature check, not an exception!
+		return false;
 	}
 
 	if (decryptSize != (int) (sha1OIDLen + hashLen)) {
