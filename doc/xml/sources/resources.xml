@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE resources [
+  <!ENTITY % externalEntity SYSTEM "./entities.ent">
+  %externalEntity;
+  <!ELEMENT resources (resource|human-resource)+>
+  <!ELEMENT resource EMPTY>
+  <!ATTLIST resource 		
+        id CDATA #IMPLIED
+				title CDATA #IMPLIED
+				location CDATA #IMPLIED>
+  <!ELEMENT human-resource EMPTY>
+  <!ATTLIST human-resource 	
+        id CDATA #IMPLIED
+				name CDATA #IMPLIED
+				mailto CDATA #IMPLIED>
+   ]>  
+<resources> 	
+
+  <resource id="mail-arch-gmane" title="Gmane" location="http://www.gmane.org/"/>
+  <resource id="xmldsig" title="&xmldsig;" location="http://www.w3c.org/Signature"/>
+  <resource id="xmlenc" title="&xmlenc;" location="http://www.w3c.org/Encryption"/>
+  <resource id="hac" title="&hac;" location="http://www.cacr.math.uwaterloo.ca/hac/"/>
+  <resource id="bouncy" title="Bouncy Castle Crypto API" location="http://www.bouncycastle.org/"/>
+  <human-resource id="mailhelp" name="security-dev-help@xml.apache.org" mailto="security-dev-help@xml.apache.org"/>
+  <resource id="zvon" title="http://www.zvon.org/" location="http://www.zvon.org/"/>
+  <resource id="xmlfaq" title="The XML FAQ" location="http://www.ucc.ie/xml/"/>
+  <resource id="christ-page" title="the XML Security Page" location="http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/xml_security.html"/>
+  <resource id="javaforum" title="Java Technology Forums" location="http://forum.java.sun.com/"/>
+
+
+  <resource id="xslt4j-current" 
+            title="&xslt4j-current;" 
+            location="http://xml.apache.org/xalan-j"/>
+
+  <resource id="xslt4j-distdir" 
+            title="xalan-j distribution directory" 
+            location="&xslt4j-distdir;"/>
+
+  <resource id="xslt4j-distdir-previous" 
+            title="xalan-j previously posted builds directory" 
+            location="&xslt4j-distdir;old"/>
+
+  <resource id="xslt4j-dist-zip" 
+            title="&xslt4j-dist;.zip" 
+            location="&xslt4j-distdir;&xslt4j-dist;.zip"/>
+  <resource id="xslt4j-dist-targz" 
+            title="&xslt4j-dist;.tar.gz" 
+            location="&xslt4j-distdir;&xslt4j-dist;.tar.gz"/>
+
+  <resource id="xslt4j-dist-bin-zip" 
+            title="&xslt4j-dist-bin;.zip" 
+            location="&xslt4j-distdir;&xslt4j-dist-bin;.zip"/>
+  <resource id="xslt4j-dist-bin-targz" 
+            title="&xslt4j-dist-bin;.tar.gz" 
+            location="&xslt4j-distdir;&xslt4j-dist-bin;.tar.gz"/>
+  <resource id="xslt4j-dist-src-zip" 
+            title="&xslt4j-dist-src;.zip" 
+            location="&xslt4j-distdir;&xslt4j-dist-src;.zip"/>
+  <resource id="xslt4j-dist-src-targz" 
+            title="&xslt4j-dist-src;.tar.gz" 
+            location="&xslt4j-distdir;&xslt4j-dist-src;.tar.gz"/>
+
+  <resource id="xml4j-current" 
+            title="&xml4j;" 
+            location="http://xml.apache.org/xerces-j/index.html"/>
+  <resource id="xml4j-used" 
+            title="&xml4j-used;" 
+            location="http://xml.apache.org/xerces-j/index.html"/>
+  <resource id="xml4j-distdir" 
+            title="xerces-j distribution directory" 
+            location="http://xml.apache.org/dist/xerces-j/"/>
+  <resource id="ant" title="Ant" 
+            location="http://jakarta.apache.org/ant/index.html"/>
+  <resource id="ApacheLicense" 
+            title="The Apache Software License, Version 1.1" 
+            location="http://xml.apache.org/dist/LICENSE.txt"/>
+  <resource id="bugzilla"
+            title="Bugzilla (the Apache bug database)"
+            location="http://nagoya.apache.org/bugzilla"/>
+  <resource id="buglist"
+            title="XalanJ2 open bugs"         
+            location="http://nagoya.apache.org/bugzilla/buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;email1=&amp;emailtype1=substring&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=substring&amp;emailreporter2=1&amp;bugidtype=include&amp;bug_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;product=XalanJ2&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;bug_file_loc=&amp;bug_file_loc_type=substring&amp;keywords=&amp;keywords_type=anywords&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=%27Importance%27"/>                   
+  <resource id="bsf"
+            title="Bean Scripting Framework (BSF)"
+            location="http://oss.software.ibm.com/developerworks/projects/bsf"/>     
+	
+  <resource id="Readme" 
+            title="Xalan Repository Release Notes" 
+            location="http://www.apache.org/websrc/cvsweb.cgi/xml-xalan/README"/>
+            
+  <resource id="dpawsonxslfaq" title="XSL Frequently Asked Questions" location="http://www.dpawson.co.uk/xsl/xslfaq.html"/>
+  
+  <resource id="xsl" 
+            title="Extensible Stylesheet Language (XSL) Version 1.0"
+            location="http://www.w3.org/TR/xsl"/>
+
+  <resource id="xslt" 
+            title="XSL Transformations (XSLT) Version 1.0"
+            location="http://www.w3.org/TR/xslt"/>
+  
+  <resource id="xpath" 
+            title="XML Path Language (XPath) Version 1.0" 
+            location="http://www.w3.org/TR/xpath"/>            
+            
+  <resource id="dom" 
+            title="DOM" 
+            location="http://www.w3.org/DOM"/>
+  <resource id="dom2" 
+            title="DOM level 2" 
+            location="http://www.w3.org/TR/DOM-Level-2/"/>
+
+  <resource id="sax" 
+            title="SAX" 
+            location="http://www.megginson.com/SAX/sax.html"/>
+  <resource id="sax2" 
+            title="SAX 2" 
+            location="http://www.megginson.com/SAX/Java/index.html"/>
+  <resource id="jaxp" 
+            title="Java API for XML Parsing 1.0" 
+            location="http://java.sun.com/xml/docs/api/index.html"/>
+  <resource id="jaxp11" 
+            title="Java API for XML Processing 1.1 Public Review 2" 
+            location="http://java.sun.com/aboutJava/communityprocess/review/jsr063/jaxp-pd2.pdf"/>
+  <resource id="jsr063"
+            title="Java Specification Request 63"
+            location="http://java.sun.com/aboutJava/communityprocess/review/jsr063"/>
+            
+  <resource id="xmlapirepository"
+            title="xml-commons/java/external/src"
+            location="http://cvs.apache.org/viewcvs.cgi/xml-commons/java/external/src/"/>
+            
+           
+  <human-resource id="xalandev" 
+                  name="Xalan Development Mailing List" 
+                  mailto="xalan-dev@xml.apache.org"/>
+                  
+  <human-resource id="sboag"
+                  name="Scott Boag"
+                  mailto="scott_boag@us.ibm.com"/>
+  <human-resource id="scurcuru"
+                  name="Shane Curcuru"
+                  mailto="Shane_Curcuru@us.ibm.com"/>
+  <human-resource id="pdick"
+                  name="Paul Dick"
+                  mailto="Paul_Dick@us.ibm.com"/>
+  <human-resource id="jkesselman"
+                  name="Joseph Kesselman"
+                  mailto="keshlam@us.ibm.com"/>
+  <human-resource id="dleslie"
+                  name="Donald Leslie"
+                  mailto="donald_leslie@us.ibm.com"/>
+  <human-resource id="cmanolache"
+                  name="Costin Manolache"
+                  mailto="cmanolache@yahoo.com"/>
+  <human-resource id="dmarston"
+                  name="David Marston"
+                  mailto="David_Marston@us.ibm.com"/>
+  <human-resource id="mmidy"
+                  name="Myriam Midy"
+                  mailto="myriam_midy@us.ibm.com"/>
+  <human-resource id="gpeskin"
+                  name="Gary L Peskin"
+                  mailto="garyp@firstech.com"/>
+  <human-resource id="jgentilin"
+                  name="John Gentilin"
+                  mailto="johng@apache.org"/>
+                  
+</resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE book SYSTEM "../style/dtd/book.dtd">
+<book title="XML-Security Documentation" 
+      copyright="2001 The Apache Software Foundation">
+  <resources source="sbk:/sources/resources.xml"/>
+  <external label="Home"
+            href="http://xml.apache.org/" />
+  <separator />
+  <document label="Readme"       
+            id="index"
+            source="readme.xml" />
+  <faqs     label='FAQs'
+            title='Frequently Asked Questions' 
+            id='faqs'
+            source='faq.xml'>
+  </faqs>
+  <external label="Download"
+            href="http://xml.apache.org/security/dist/" />
+  <external label="Repository"
+            href="http://cvs.apache.org/viewcvs.cgi/xml-security/" />
+  <document label="Installation" 
+            id="install"     
+            source="install.xml" />
+  <document label="Resolver-Mania" 
+            id="resolvermania"     
+            source="resolvermania.xml" />
+  <document label="Interoperability" 
+            id="interop"     
+            source="interop.xml" />
+  <!-- 
+  <group    label="FAQs"
+            id="faqs"
+            title="Frequently Asked Questions">
+    <entry  id="faq-resolvers"
+            source="faq-resolvers.xml" />
+  </group>
+  -->
+  <separator />
+  <document label="API Docs"     
+            id="api"         
+            source="api.xml" />
+  <separator />
+  <document label="History" 
+            id="history"     
+            source="history.xml" />
+  <external label="Latest GUMP"
+            href="http://jakarta.apache.org/builds/gump/latest/xml-security.html" />
+</book>

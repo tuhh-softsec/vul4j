@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE faqs SYSTEM '../style/dtd/faqs.dtd'>
+<faqs title='Common Problems FAQs'>
+ <faq title='Get some exception'>
+  <q>
+   When I run the samples, I get the following Exception. Why?
+   <code>java.lang.ClassCastException: org.apache.crimson.tree.XmlDocument</code>
+  </q>
+  <a>
+   <p>
+    You try to use Crimson as XML Parser. This library requires Xerces. 
+   </p>
+  </a>
+ </faq>
+</faqs>
