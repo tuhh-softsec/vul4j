@@ -32,6 +32,7 @@
 // Name Spaces
 
 #define URI_ID_XKMS		"http://www.w3.org/2002/03/xkms#"
+//#define URI_ID_XKMS		"http://www.w3.org/2004/07/xkms#"
 #define URI_ID_SOAP11   "http://schemas.xmlsoap.org/soap/envelope/"
 #define URI_ID_SOAP12   "http://www.w3.org/2002/06/soap-envelope/"
 

@@ -31,6 +31,7 @@
 #include <xsec/dsig/DSIGKeyInfoList.hpp>
 
 #include <xercesc/dom/DOM.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
 
 #include "XKMSKeyBindingAbstractTypeImpl.hpp"
 #include "XKMSUseKeyWithImpl.hpp"
@@ -122,6 +123,10 @@ void XKMSKeyBindingAbstractTypeImpl::load(void) {
 		}
 
 		const XMLCh * usageStr = txt->getNodeValue();
+		int index = XMLString::indexOf(usageStr, chColon);
+		if (index >= 0)
+			usageStr = &usageStr[index+1];
+
 
 		if (strEquals(usageStr, XKMSConstants::s_tagEncryption)) {
 			mp_keyUsageEncryptionElement = tmpElt;
@@ -353,11 +358,75 @@ DSIGKeyInfoMgmtData * XKMSKeyBindingAbstractTypeImpl::appendMgmtData(const XMLCh
 
 void XKMSKeyBindingAbstractTypeImpl::setId(const XMLCh * id) {
 }
+
+DOMElement * XKMSKeyBindingAbstractTypeImpl::setKeyUsage(const XMLCh * usage) {
+
+	/* Create the element and string*/
+	safeBuffer str;
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getXKMSNSPrefix();
+
+	makeQName(str, prefix, XKMSConstants::s_tagKeyUsage);
+
+	/* Create the element */
+	DOMElement * e = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
+		str.rawXMLChBuffer());
+
+	makeQName(str, prefix, usage);
+	e->appendChild(doc->createTextNode(str.rawXMLChBuffer()));
+
+	/* Now find where it goes */
+
+	DOMElement * t = findFirstElementChild(mp_keyBindingAbstractTypeElement);
+	while (t != NULL) {
+		if (!strEquals(getDSIGLocalName(t), XKMSConstants::s_tagKeyInfo) &&
+			!strEquals(getXKMSLocalName(t), XKMSConstants::s_tagKeyUsage))
+			break;
+
+		t = findNextElementChild(t);
+	}
+
+	// Append the element
+	if (t == NULL) {
+		mp_keyBindingAbstractTypeElement->appendChild(e);
+		mp_env->doPrettyPrint(mp_keyBindingAbstractTypeElement);
+	}
+	else {
+		mp_keyBindingAbstractTypeElement->insertBefore(e, t);
+		if (mp_env->getPrettyPrintFlag()) {
+			mp_keyBindingAbstractTypeElement->insertBefore(
+				mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL),
+				t);
+		}
+	}
+
+	return e;
+
+}
+
 void XKMSKeyBindingAbstractTypeImpl::setEncryptionKeyUsage(void) {
+
+	if (mp_keyUsageEncryptionElement != NULL)
+		return;
+
+	mp_keyUsageEncryptionElement = setKeyUsage(XKMSConstants::s_tagEncryption);
+
 }
 void XKMSKeyBindingAbstractTypeImpl::setSignatureKeyUsage(void) {
+
+	if (mp_keyUsageSignatureElement != NULL)
+		return;
+
+	mp_keyUsageSignatureElement = setKeyUsage(XKMSConstants::s_tagSignature);
+
 }
 void XKMSKeyBindingAbstractTypeImpl::setExchangeKeyUsage(void) {
+
+	if (mp_keyUsageExchangeElement != NULL)
+		return;
+
+	mp_keyUsageExchangeElement = setKeyUsage(XKMSConstants::s_tagExchange);
+
 }
 
 

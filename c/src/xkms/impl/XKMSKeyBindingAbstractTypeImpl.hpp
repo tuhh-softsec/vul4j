@@ -111,6 +111,9 @@ protected:
 
 private:
 
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *
+		setKeyUsage(const XMLCh * usage);
+
 #if defined(XSEC_NO_NAMESPACES)
 	typedef vector<XKMSUseKeyWithImpl *>		UseKeyWithVectorType;
 #else
