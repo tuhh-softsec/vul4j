@@ -374,7 +374,8 @@ m_errStr("") {
 	mp_doc = doc;
 	mp_sigNode = sigNode;
 	mp_signingKey = NULL;
-	mp_prefixNS = NULL;
+	mp_prefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
+	mp_ecPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
 	mp_URIResolver = NULL;
 	mp_KeyInfoResolver = NULL;
 	mp_KeyInfoNode = NULL;
@@ -395,7 +396,8 @@ m_errStr("") {
 	mp_doc = NULL;
 	mp_sigNode = NULL;
 	mp_signingKey = NULL;
-	mp_prefixNS = NULL;
+	mp_prefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
+	mp_ecPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
 	mp_URIResolver = NULL;
 	mp_KeyInfoResolver = NULL;
 	mp_KeyInfoNode = NULL;
@@ -466,6 +468,15 @@ void DSIGSignature::setDSIGNSPrefix(const XMLCh * prefix) {
 		delete[] mp_prefixNS;
 
 	mp_prefixNS = XMLString::replicate(prefix);
+
+}
+
+void DSIGSignature::setECNSPrefix(const XMLCh * prefix) {
+
+	if (mp_ecPrefixNS != NULL)
+		delete[] mp_ecPrefixNS;
+
+	mp_ecPrefixNS = XMLString::replicate(prefix);
 
 }
 

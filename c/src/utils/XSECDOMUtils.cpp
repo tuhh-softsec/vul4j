@@ -83,8 +83,20 @@
 
 const XMLCh * getDSIGLocalName(const DOMNode *node) {
 
-	if (!strEquals(node->getNamespaceURI(), URI_ID_DSIG))
+	if (!strEquals(node->getNamespaceURI(), DSIGConstants::s_unicodeStrURIDSIG))
 		return NULL; //DOMString("");
+	else
+		return node->getLocalName();
+
+}
+
+const XMLCh * getECLocalName(const DOMNode * node) {
+
+	// Exclusive Canonicalisation namespace
+	// Probably should have a generic function
+
+	if (!strEquals(node->getNamespaceURI(), DSIGConstants::s_unicodeStrURIEC))
+		return NULL;
 	else
 		return node->getLocalName();
 

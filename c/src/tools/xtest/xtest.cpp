@@ -87,8 +87,7 @@
 
 #include <xsec/transformers/TXFMOutputFile.hpp>
 #include <xsec/dsig/DSIGTransformXPath.hpp>
-
-
+#include <xsec/dsig/DSIGTransformC14n.hpp>
 
 // XALAN
 
@@ -140,7 +139,7 @@ XERCES_CPP_NAMESPACE_USE
 //           Known "Good" Values
 // --------------------------------------------------------------------------------
 
-unsigned char createdDocRefs [6][20] = {
+unsigned char createdDocRefs [8][20] = {
 	{ 0x51, 0x3c, 0xb5, 0xdf, 0xb9, 0x1e, 0x9d, 0xaf, 0xd4, 0x4a,
 	  0x95, 0x79, 0xf1, 0xd6, 0x54, 0xe, 0xb0, 0xb0, 0x29, 0xe3, },
 	{ 0x51, 0x3c, 0xb5, 0xdf, 0xb9, 0x1e, 0x9d, 0xaf, 0xd4, 0x4a, 
@@ -151,8 +150,12 @@ unsigned char createdDocRefs [6][20] = {
 	  0x85, 0x44, 0xc7, 0x2a, 0xd3, 0xd2, 0x2, 0xed, 0x67, 0xb4, },
 	{ 0x88, 0xd1, 0x65, 0xed, 0x2a, 0xe7, 0xc0, 0xbd, 0xea, 0x3e, 
 	  0xe6, 0xf3, 0xd4, 0x8c, 0xf7, 0xdd, 0xc8, 0x85, 0xa9, 0x6d, },
-	{ 0x51, 0x3c, 0xb5, 0xdf, 0xb9, 0x1e, 0x9d, 0xaf, 0xd4, 0x4a, 
-	  0x95, 0x79, 0xf1, 0xd6, 0x54, 0xe, 0xb0, 0xb0, 0x29, 0xe3, },
+	{ 0x52, 0x74, 0xc3, 0xe4, 0xc5, 0xf7, 0x20, 0xb0, 0xd9, 0x52, 
+	  0xdb, 0xb3, 0xee, 0x46, 0x66, 0x8f, 0xe1, 0xb6, 0x30, 0x9d, },
+	{ 0x52, 0x74, 0xc3, 0xe4, 0xc5, 0xf7, 0x20, 0xb0, 0xd9, 0x52, 
+	  0xdb, 0xb3, 0xee, 0x46, 0x66, 0x8f, 0xe1, 0xb6, 0x30, 0x9d, },
+  	{ 0x51, 0x3c, 0xb5, 0xdf, 0xb9, 0x1e, 0x9d, 0xaf, 0xd4, 0x4a, 
+	  0x95, 0x79, 0xf1, 0xd6, 0x54, 0xe, 0xb0, 0xb0, 0x29, 0xe3, }
 
 };
 
@@ -638,12 +641,6 @@ int attributeNodeCount(DOMElement *d) {
 
 void outputHex(unsigned char * buf, int len) {
 
-//	for (int i = 0; i < len; ++i) {
-
-//		printf("0x%0X, ", buf[i]);
-//
-//	}
-
 	cout << std::ios::hex;
 	for (int i = 0; i < len; ++i) {
 		cout << "0x" << (unsigned int) buf[i] << ", ";
@@ -711,7 +708,7 @@ int main(int argc, char **argv) {
 
 	XSECProvider prov;
 	DSIGSignature *sig;
-	DSIGReference *ref[8];
+	DSIGReference *ref[10];
 	DOMElement *sigNode;
 	int refCount;
 
@@ -744,23 +741,34 @@ int main(int argc, char **argv) {
 		ref[4]->appendEnvelopedSignatureTransform();
 		ref[4]->appendCanonicalizationTransform(CANON_C14NE_COM);
 
+		ref[5] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+		ref[5]->appendEnvelopedSignatureTransform();
+		DSIGTransformC14n * ce = ref[5]->appendCanonicalizationTransform(CANON_C14NE_COM);
+		ce->addInclusiveNamespace("foo");
+
+		sig->setECNSPrefix(MAKE_UNICODE_STRING("ec"));
+		ref[6] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+		ref[6]->appendEnvelopedSignatureTransform();
+		ce = ref[6]->appendCanonicalizationTransform(CANON_C14NE_COM);
+		ce->addInclusiveNamespace("foo");
+
 #ifdef XSEC_NO_XALAN
 
 		cerr << "WARNING : No testing of XPath being performed as Xalan not present" << endl;
-		refCount = 5;
+		refCount = 7;
 
 #else
 
-		ref[5] = sig->createReference(MAKE_UNICODE_STRING(""));
+		ref[7] = sig->createReference(MAKE_UNICODE_STRING(""));
 		/*		ref[5]->appendXPathTransform("ancestor-or-self::dsig:Signature", 
 				"xmlns:dsig=http://www.w3.org/2000/09/xmldsig#"); */
 
-		DSIGTransformXPath * x = ref[5]->appendXPathTransform("count(ancestor-or-self::dsig:Signature | \
+		DSIGTransformXPath * x = ref[7]->appendXPathTransform("count(ancestor-or-self::dsig:Signature | \
 here()/ancestor::dsig:Signature[1]) > \
 count(ancestor-or-self::dsig:Signature)");
 		x->setNamespace("dsig", "http://www.w3.org/2000/09/xmldsig#");
 
-		refCount = 6;
+		refCount = 8;
 
 #endif
 	
@@ -803,7 +811,7 @@ count(ancestor-or-self::dsig:Signature)");
 
 				if (buf[j] != createdDocRefs[i][j]) {
 					cerr << "Bad at location " << j << endl;
-//					exit (1);
+					exit (1);
 				}
 			
 			}

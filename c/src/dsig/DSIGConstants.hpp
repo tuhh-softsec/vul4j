@@ -81,7 +81,7 @@ XSEC_USING_XERCES(XMLString);
 // Name Spaces
 
 #define URI_ID_DSIG		"http://www.w3.org/2000/09/xmldsig#"
-
+#define URI_ID_EC		"http://www.w3.org/2001/10/xml-exc-c14n#"
 
 // Hashing Algorithms
 
@@ -291,6 +291,7 @@ public:
 
 	// URI_IDs
 	static const XMLCh * const & s_unicodeStrURIDSIG;
+	static const XMLCh * const & s_unicodeStrURIEC;
 	static const XMLCh * const & s_unicodeStrURISHA1;
 	static const XMLCh * const & s_unicodeStrURIMD5;		// Not recommended
 	static const XMLCh * const & s_unicodeStrURIBASE64;

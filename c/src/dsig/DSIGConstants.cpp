@@ -34,8 +34,7 @@
  *    permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
  * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
@@ -81,6 +80,7 @@ static XMLCh * s_unicodeStrXmlns;
 static XMLCh * s_unicodeStrAlgorithm;
 
 static XMLCh * s_unicodeStrURIDSIG;
+static XMLCh * s_unicodeStrURIEC;
 static XMLCh * s_unicodeStrURISHA1;
 static XMLCh * s_unicodeStrURIMD5;
 static XMLCh * s_unicodeStrURIBASE64;
@@ -111,6 +111,7 @@ const XMLCh * const & DSIGConstants::s_unicodeStrXmlns = ::s_unicodeStrXmlns;
 const XMLCh * const & DSIGConstants::s_unicodeStrAlgorithm = ::s_unicodeStrAlgorithm;
 
 const XMLCh * const & DSIGConstants::s_unicodeStrURIDSIG = ::s_unicodeStrURIDSIG;
+const XMLCh * const & DSIGConstants::s_unicodeStrURIEC = ::s_unicodeStrURIEC;
 const XMLCh * const & DSIGConstants::s_unicodeStrURISHA1 = ::s_unicodeStrURISHA1;
 const XMLCh * const & DSIGConstants::s_unicodeStrURIMD5 = ::s_unicodeStrURIMD5;
 const XMLCh * const & DSIGConstants::s_unicodeStrURIBASE64 = ::s_unicodeStrURIBASE64;
@@ -146,6 +147,7 @@ void DSIGConstants::create() {
 	::s_unicodeStrAlgorithm = XMLString::transcode("Algorithm");
 
 	::s_unicodeStrURIDSIG = XMLString::transcode(URI_ID_DSIG);
+	::s_unicodeStrURIEC = XMLString::transcode(URI_ID_EC);
 	::s_unicodeStrURISHA1 = XMLString::transcode(URI_ID_SHA1);
 	::s_unicodeStrURIMD5 = XMLString::transcode(URI_ID_MD5);
 	::s_unicodeStrURIBASE64 = XMLString::transcode(URI_ID_BASE64);
@@ -177,6 +179,7 @@ void DSIGConstants::destroy() {
 	delete[] ::s_unicodeStrAlgorithm;
 
 	delete[] ::s_unicodeStrURIDSIG;
+	delete[] ::s_unicodeStrURIEC;
 	delete[] ::s_unicodeStrURISHA1;
 	delete[] ::s_unicodeStrURIMD5;
 	delete[] ::s_unicodeStrURIBASE64;

@@ -111,10 +111,11 @@ private:
 #define MAKE_UNICODE_STRING(str) XMLT(str).getUnicodeStr()
 
 // --------------------------------------------------------------------------------
-//           Utilities to manipulate DSIG namespaces
+//           Utilities to manipulate namespaces
 // --------------------------------------------------------------------------------
 
 const XMLCh DSIG_EXPORT * getDSIGLocalName(const DOMNode *node);
+const XMLCh DSIG_EXPORT * getECLocalName(const DOMNode *node);
 
 // --------------------------------------------------------------------------------
 //           Find a nominated DSIG node in a document

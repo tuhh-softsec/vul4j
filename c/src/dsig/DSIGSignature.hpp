@@ -258,6 +258,24 @@ public:
 	void setDSIGNSPrefix(const XMLCh * prefix);
 
 	/**
+	  * \brief Set the prefix be used for the Exclusive Canonicalisation namespace.
+	  *
+	  * The Exclusive Canonicalisation specification defines a new namespace for the
+	  * InclusiveNamespaces node.  This function can be used to set the prefix
+	  * that the library will use when creating nodes within this namespace.
+	  *
+	  * <p>xmlns:ds="http://www.w3.org/2001/10/xml-exc-c14n#"</p>
+	  *
+	  * If no prefix is set, the default namespace will be used
+	  *
+	  * @see #createBlankSignature
+	  * @param prefix The UTF-16 encoided NS prefix to use for the XML 
+	  * Exclusive Canonicalisation nodes
+	  */
+
+	void setECNSPrefix(const XMLCh * prefix);
+
+	/**
 	 * \brief Create a <Signature> DOM structure.
 	 *
 	 * <p>The DOM structure created is still divorced from the document.  The callee
@@ -380,6 +398,15 @@ public:
 	 */
 
 	const XMLCh * getDSIGNSPrefix() {return mp_prefixNS;}
+
+	/**
+	 * \brief Get the NS being used for EC nodes
+	 *
+	 * @returns A pointer to the buffer holding the prefix
+	 * @see #setECNSPrefix
+	 */
+
+	const XMLCh * getECNSPrefix() {return mp_ecPrefixNS;}
 
 	/**
 	 * \brief
@@ -593,6 +620,7 @@ private:
 
 	// For creating functions
 	XMLCh 						* mp_prefixNS;
+	XMLCh						* mp_ecPrefixNS;
 
 	// The signing/verifying key
 	XSECCryptoKey				* mp_signingKey;

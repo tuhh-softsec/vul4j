@@ -231,8 +231,8 @@ void DSIGTransformC14n::load(void) {
 
 		DOMNode *mp_inclNSNode = mp_txfmNode->getFirstChild();
 		
-		while (mp_inclNSNode != NULL && mp_inclNSNode->getNodeType() != DOMNode::ELEMENT_NODE &&
-			!strEquals(mp_inclNSNode->getNodeName(), "InclusiveNamespaces"))
+		while (mp_inclNSNode != NULL && (mp_inclNSNode->getNodeType() != DOMNode::ELEMENT_NODE ||
+			!strEquals(getECLocalName(mp_inclNSNode), "InclusiveNamespaces")))
 				mp_inclNSNode = mp_inclNSNode->getNextSibling();
 
 		if (mp_inclNSNode != 0) {
@@ -314,14 +314,32 @@ void DSIGTransformC14n::addInclusiveNamespace(const char * ns) {
 		const XMLCh * prefix;
 		DOMDocument *doc = mp_parentSignature->getParentDocument();
 
-		prefix = mp_parentSignature->getDSIGNSPrefix();
-	
+		// Use the Exclusive Canonicalisation prefix
+		prefix = mp_parentSignature->getECNSPrefix();
+
 		// Create the transform node
 		makeQName(str, prefix, "InclusiveNamespaces");
 		mp_inclNSNode = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 		mp_inclNSNode->setAttribute(MAKE_UNICODE_STRING("PrefixList"), MAKE_UNICODE_STRING(ns));
 		mp_inclNSStr = mp_inclNSNode->getAttributes()->getNamedItem(MAKE_UNICODE_STRING("PrefixList"))->getNodeValue();
 
+		// Add the node
+		mp_txfmNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_txfmNode->appendChild(mp_inclNSNode);
+		mp_txfmNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+		// Set the namespace attribute
+		if (prefix[0] == '\0') {
+			str.sbTranscodeIn("xmlns");
+		}
+		else {
+			str.sbTranscodeIn("xmlns:");
+			str.sbXMLChCat(prefix);
+		}
+
+		mp_inclNSNode->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
+								str.rawXMLChBuffer(), 
+								DSIGConstants::s_unicodeStrURIEC);
 	}
 
 	else {
