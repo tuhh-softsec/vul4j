@@ -81,41 +81,41 @@ public class TransformationException extends XMLSecurityException {
    /**
     * Constructor TransformationException
     *
-    * @param msgID
+    * @param _msgID
     */
-   public TransformationException(String msgID) {
-      super(msgID);
+   public TransformationException(String _msgID) {
+      super(_msgID);
    }
 
    /**
     * Constructor TransformationException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     */
-   public TransformationException(String msgID, Object exArgs[]) {
-      super(msgID, exArgs);
+   public TransformationException(String _msgID, Object exArgs[]) {
+      super(_msgID, exArgs);
    }
 
    /**
     * Constructor TransformationException
     *
-    * @param msgID
+    * @param _msgID
     * @param originalException
     */
-   public TransformationException(String msgID, Exception originalException) {
-      super(msgID, originalException);
+   public TransformationException(String _msgID, Exception _originalException) {
+      super(_msgID, _originalException);
    }
 
    /**
     * Constructor TransformationException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     * @param originalException
     */
-   public TransformationException(String msgID, Object exArgs[],
-                                  Exception originalException) {
-      super(msgID, exArgs, originalException);
+   public TransformationException(String _msgID, Object exArgs[],
+                                  Exception _originalException) {
+      super(_msgID, exArgs, _originalException);
    }
 }

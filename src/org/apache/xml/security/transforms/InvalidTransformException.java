@@ -81,41 +81,41 @@ public class InvalidTransformException extends XMLSecurityException {
    /**
     * Constructor InvalidTransformException
     *
-    * @param msgID
+    * @param _msgId
     */
-   public InvalidTransformException(String msgID) {
-      super(msgID);
+   public InvalidTransformException(String _msgId) {
+      super(_msgId);
    }
 
    /**
     * Constructor InvalidTransformException
     *
-    * @param msgID
+    * @param _msgId
     * @param exArgs
     */
-   public InvalidTransformException(String msgID, Object exArgs[]) {
-      super(msgID, exArgs);
+   public InvalidTransformException(String _msgId, Object exArgs[]) {
+      super(_msgId, exArgs);
    }
 
    /**
     * Constructor InvalidTransformException
     *
-    * @param msgID
+    * @param _msgId
     * @param originalException
     */
-   public InvalidTransformException(String msgID, Exception originalException) {
-      super(msgID, originalException);
+   public InvalidTransformException(String _msgId, Exception _originalException) {
+      super(_msgId, _originalException);
    }
 
    /**
     * Constructor InvalidTransformException
     *
-    * @param msgID
+    * @param _msgId
     * @param exArgs
     * @param originalException
     */
-   public InvalidTransformException(String msgID, Object exArgs[],
-                                    Exception originalException) {
-      super(msgID, exArgs, originalException);
+   public InvalidTransformException(String _msgId, Object exArgs[],
+                                    Exception _originalException) {
+      super(_msgId, exArgs, _originalException);
    }
 }
