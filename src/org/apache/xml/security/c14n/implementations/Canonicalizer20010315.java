@@ -466,14 +466,20 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
             NamedNodeMap namednodemap = currentNode.getAttributes();
             Attr aattr[] = C14nHelper.sortAttributes(namednodemap);
 
-            for (int i = 0; i < aattr.length; i++) {
+            processingAttrs: for (int i = 0; i < aattr.length; i++) {
                Attr attr = aattr[i];
 
-               /** @todo check whether here have to be something like
-               if (!attr.getSpecified() && attr.getNodeName().equals("xmlns:xml")) {
-                  continue;
+               // To finish processing L, simply process every namespace node
+               // in L, except omit namespace node with local name xml, which
+               // defines the xml prefix, if its string value is
+               // "http://www.w3.org/XML/1998/namespace".
+               if (attr.getNodeName().equals("xmlns:xml") &&
+
+               // attr.getLocalName().equals("xml") &&
+               attr.getNodeValue()
+                       .equals("http://www.w3.org/XML/1998/namespace")) {
+                  continue processingAttrs;
                }
-               */
 
                if (engineVisible((Node) attr)) {
                   printwriter.print(' ');
