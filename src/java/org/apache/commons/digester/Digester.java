@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.25 2001/11/14 19:54:05 craigmcc Exp $
- * $Revision: 1.25 $
- * $Date: 2001/11/14 19:54:05 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.26 2001/11/14 20:38:24 craigmcc Exp $
+ * $Revision: 1.26 $
+ * $Date: 2001/11/14 20:38:24 $
  *
  * ====================================================================
  *
@@ -108,7 +108,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.25 $ $Date: 2001/11/14 19:54:05 $
+ * @version $Revision: 1.26 $ $Date: 2001/11/14 20:38:24 $
  */
 
 public class Digester extends DefaultHandler {
@@ -750,7 +750,7 @@ public class Digester extends DefaultHandler {
         }
 
 	// Recover the body text from the surrounding element
-	bodyText = (StringBuffer) bodyTexts.pop();
+	bodyText = new StringBuffer((String) bodyTexts.pop());
         if (debug >= 4)
             log("  Popping body text '" + bodyText.toString() + "'");
 
@@ -920,7 +920,7 @@ public class Digester extends DefaultHandler {
                 qName + ")");
 
 	// Save the body text accumulated for our surrounding element
-	bodyTexts.push(bodyText);
+	bodyTexts.push(bodyText.toString());
         if (debug >= 4)
             log("  Pushing body text '" + bodyText.toString() + "'");
 	bodyText.setLength(0);
