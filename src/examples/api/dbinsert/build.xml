@@ -1,0 +1,126 @@
+<!--
+ Copyright 2004 The Apache Software Foundation.
+  
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<project name="Example-AddressBook" default="compile" basedir=".">
+
+
+<!-- ========== Initialize Properties ===================================== -->
+
+
+  <property file="build.properties"/>                <!-- Component local   -->
+  <property file="../build.properties"/>             <!-- examples/api local-->
+  <property file="../../../../build.properties"/>    <!-- Digester local     -->
+  <property file="../../../../../build.properties"/> <!-- Commons local     -->
+  <property file="${user.home}/build.properties"/>   <!-- User local        -->
+
+
+<!-- ========== External Dependencies ===================================== -->
+
+
+  <!-- The directories corresponding to your necessary dependencies -->
+  <property name="jaxp.home"               value="/usr/local/jaxp1.1"/>
+  <property name="commons.home"            value="../../../../.."/>
+  <property name="beanutils.home"          value="${commons.home}/beanutils"/>
+  <property name="collections.home"        value="${commons.home}/collections"/>
+  <property name="logging.home"            value="${commons.home}/logging"/>
+  <property name="digester.home"            value="${commons.home}/digester"/>
+
+
+<!-- ========== Derived Values ============================================ -->
+
+
+  <!-- The locations of necessary jar files -->
+  <property name="jaxp.jaxp.jar"           value="${jaxp.home}/jaxp.jar"/>
+  <property name="jaxp.parser.jar"         value="${jaxp.home}/crimson.jar"/>
+  <property name="commons-beanutils.jar"   value="${beanutils.home}/dist/commons-beanutils.jar"/>
+  <property name="commons-collections.jar" value="${collections.home}/dist/commons-collections.jar"/>
+  <property name="commons-logging.jar"     value="${logging.home}/dist/commons-logging.jar"/>
+  <property name="commons-digester.jar"     value="${digester.home}/dist/commons-digester.jar"/>
+
+
+<!-- ========== Component Declarations ==================================== -->
+
+  <!-- The name of this component -->
+  <property name="component.name"          value="addressbook"/>
+
+
+<!-- ========== Compiler Defaults ========================================= -->
+
+  <!-- Should Java compilations set the 'debug' compiler option? -->
+  <property name="compile.debug"           value="true"/>
+
+  <!-- Should Java compilations set the 'deprecation' compiler option? -->
+  <property name="compile.deprecation"     value="false"/>
+
+  <!-- Should Java compilations set the 'optimize' compiler option? -->
+  <property name="compile.optimize"        value="true"/>
+
+  <!-- Construct compile classpath -->
+  <path id="compile.classpath">
+    <pathelement location="."/>
+    <pathelement location="${jaxp.jaxp.jar}"/>
+    <pathelement location="${jaxp.parser.jar}"/>
+    <pathelement location="${commons-beanutils.jar}"/>
+    <pathelement location="${commons-collections.jar}"/>
+    <pathelement location="${commons-logging.jar}"/>
+    <pathelement location="${commons-digester.jar}"/>
+  </path>
+
+
+<!-- ========== Executable Targets ======================================== -->
+
+
+  <target name="compile">
+    <javac  srcdir="."
+           destdir="."
+             debug="${compile.debug}"
+       deprecation="${compile.deprecation}"
+          optimize="${compile.optimize}">
+      <classpath refid="compile.classpath"/>
+    </javac>
+  </target>
+
+
+  <target name="clean">
+    <delete>
+      <fileset dir="." includes="*.class"/>
+    </delete>
+    <delete dir="docs"/>
+  </target>
+
+  <target name="all" depends="clean,compile"/>
+
+  <target name="javadoc" depends="compile">
+    <mkdir      dir="docs"/>
+    <javadoc destdir="docs"
+                 author="true"
+                private="true"
+                version="true">
+      <classpath  refid="compile.classpath"/>
+      <fileset dir="." includes="*.java"/>
+    </javadoc>
+  </target>
+
+  <target name="run" depends="compile">
+    <java classname="Main" fork="yes">
+      <arg value="example.xml"/>
+      <classpath refid="compile.classpath"/>
+      <classpath>
+        <pathelement location="."/>
+      </classpath>
+    </java>
+  </target>
+</project>
