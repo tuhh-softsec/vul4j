@@ -1,4 +1,4 @@
-/* $Id: NodeCreateRule.java,v 1.10 2004/05/10 06:52:50 skitching Exp $
+/* $Id: NodeCreateRule.java,v 1.11 2005/01/18 00:54:59 skitching Exp $
  *
  * Copyright 2002-2004 The Apache Software Foundation.
  * 
@@ -372,8 +372,11 @@ public class NodeCreateRule extends Rule {
 
 
     /**
-     * Implemented to replace the content handler currently in use by a 
-     * {@link NodeBuilder NodeCreateRule.NodeBuilder}.
+     * When this method fires, the content handler object used by the
+     * xml parser is replaced by a custom one, resulting in a DOM being
+     * built instead of normal digester rule-handling occurring. When the
+     * end of the current xml element is encountered, the original content 
+     * handler is restored, allowing Digester operations to continue.
      * 
      * @param namespaceURI the namespace URI of the matching element, or an 
      *   empty string if the parser is not namespace aware or the element has
