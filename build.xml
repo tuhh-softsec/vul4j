@@ -16,14 +16,14 @@
 
     <property name="product.version.major" value="1"/>
     <property name="product.version.minor" value="2"/>
-    <property name="product.version.level" value="0"/>
+    <property name="product.version.level" value="1"/>
     <property name="product.Version" 
 			  value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
     <property name="product.version" 
 			  value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
     <property name="product_version" 
 			  value="${product.version.major}_${product.version.minor}_${product.version.level}"/>
-    <property name="year" value="2000-2004"/>
+    <property name="year" value="2000-2005"/>
     <property name="copyright" 
 			  value="Copyright © ${year} Apache XML Project. All Rights Reserved."/>
 
@@ -60,7 +60,6 @@
     <property name="lib.xalan.1"        value="${dir.libs}/xalan.jar" />
     <property name="lib.xalan.2"        value="${dir.libs}/xml-apis.jar" />
     <property name="lib.xerces.1"       value="${dir.libs}/xercesImpl.jar" />
-    <property name="lib.xerces.2"       value="${dir.libs}/xmlParserAPIs.jar" />
     <property name="lib.jce"            value="${dir.libs}/${jce.provider.prefix}-${jce.provider.jar}" />
     <property name="lib.style"          value="${dir.libs}/style-apachexml.jar" />
     <property name="lib.stylebook"      value="${dir.libs}/stylebook-1.0-b3_xalan-2.jar" />
@@ -73,9 +72,9 @@
 	<property name="lib.xmlsec.tests"   value="${dir.libs}/xmlsecTests.jar" />
 
 	<!-- JAR properties -->
-	<property name="jar.library"        value="${dir.build}/xmlsec.jar" />
-	<property name="jar.samples"        value="${dir.build}/xmlsecSamples.jar" />
-	<property name="jar.tests"          value="${dir.build}/xmlsecTests.jar" />
+	<property name="jar.library"        value="${dir.build}/xmlsec-${product.version}.jar" />
+	<property name="jar.samples"        value="${dir.build}/xmlsecSamples-${product.version}.jar" />
+	<property name="jar.tests"          value="${dir.build}/xmlsecTests-${product.version}.jar" />
 	<property name="jar.manifest"       value="${dir.manifest}/MANIFEST.MF"/>
     
     <!-- javadoc properties -->
@@ -106,7 +105,6 @@
     </path >
     <path id="id.classpath.xerces" >
         <pathelement location="${lib.xerces.1}" />
-        <pathelement location="${lib.xerces.2}" />
     </path >
     <path id="id.classpath.logging" >
         <pathelement location="${lib.logging}" />
@@ -644,8 +642,6 @@
 		<copy file="${lib.stylebook}" 
 			todir="${dir.build.bindist}/libs"/>
 		<copy file="${lib.xerces.1}" 
-			todir="${dir.build.bindist}/libs"/>
-		<copy file="${lib.xerces.2}" 
 			todir="${dir.build.bindist}/libs"/>
 		<copy file="${lib.xalan.1}" 
 			todir="${dir.build.bindist}/libs"/>
