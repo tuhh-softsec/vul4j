@@ -237,7 +237,7 @@ testEnc "<Number>1234 567890 12345</Number>" encrypt-element-aes128-cbc-rsa-1_5.
 
 # CipherRef not yet supported
 
-# testEnc "<Number>1234 567890 12345</Number>" encrypt-element-aes192-cbc-ref.xml -i -de
+testEnc "<Number>1234 567890 12345</Number>" encrypt-element-aes192-cbc-ref.xml -i -de
 
 testEnc "<Number>1234 567890 12345</Number>" encrypt-element-aes256-cbc-carried-kw-aes256.xml -i -de
 testEnc "<Number>1234 567890 12345</Number>" encrypt-element-aes256-cbc-retrieved-kw-aes256.xml -i -de
