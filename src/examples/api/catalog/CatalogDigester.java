@@ -57,11 +57,6 @@ public class CatalogDigester {
         // Create a Digester instance
         Digester d = new Digester();
         
-        // some of the rules use "extended pattern matching", so we
-        // need to configure the digester with the corresponding
-        // pattern-matching implementation.
-        d.setRules( new ExtendedBaseRules() );
-
         // Add rules to the digester that will be triggered while
         // parsing occurs.
         addRules(d);
@@ -80,8 +75,9 @@ public class CatalogDigester {
             System.exit(-1);
         }
 
-        // get the first object created by the digester's rules
-        // (the "root" object).
+        // Get the first object created by the digester's rules
+        // (the "root" object). Note that this is exactly the same object
+        // returned by the Digester.parse method; either approach works.
         Catalog catalog = (Catalog) d.getRoot();
         
         // Print out all the contents of the catalog, as loaded from
@@ -122,11 +118,7 @@ public class CatalogDigester {
         // we want each subtag of book to map the text contents of
         // the tag into a bean property with the same name as the tag.
         // eg <title>foo</title> --> setTitle("foo")
-        //
-        // In order to use the wildcard "?" match, an ExtendedBaseRules
-        // instance must be set as the digester's rule matcher.
-        
-        d.addBeanPropertySetter("catalog/book/?");
+        d.addSetNestedProperties("catalog/book");
         
         
         //-----------------------------------------------
@@ -171,14 +163,15 @@ public class CatalogDigester {
         // Each tag of form "<attr id="foo" value="bar"/> needs to map
         // to a call to setFoo("bar").
         //
-        // This is an alternative to the BeanPropertySetter syntax of
-        // having the tag name indicate the attribute to set. It has
-        // advantages (like not requiring ExtendedBaseRules support),
-        // and disadvantages. It is commonly used with the FactoryCreateRule
-        // variant which allows the target class to be created to be
-        // specified in an xml attribute; this feature of FactoryCreateRule
-        // is not demonstrated in this example, but see the Apache Tomcat
-        // configuration files for an example of this usage.
+        // This is an alternative to the syntax used for books above (see
+        // method addSetNestedProperties), where the name of the subtag 
+        // indicated which property to set. Using this syntax in the xml has 
+        // advantages and disadvantages both for the user and the application 
+        // developer. It is commonly used with the FactoryCreateRule variant 
+        // which allows the target class to be created to be specified in an 
+        // xml attribute; this feature of FactoryCreateRule is not demonstrated
+        // in this example, but see the Apache Tomcat configuration files for 
+        // an example of this usage.
         //
         // Note that despite the name similarity, there is no link
         // between SetPropertyRule and SetPropertiesRule.

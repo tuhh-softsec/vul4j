@@ -9,8 +9,6 @@ Topics covered:
   created when parsing an input file.
 * how to use the "factory create" rule to create java objects which
   do not have default (no-argument) constructors.
-* how to use ExtendedBaseRules to get trailing-wildcard support
-* how to use the BeanPropertySetterRule
 * how to use the "set properties" rule (advanced usage) to map xml attributes
   to java bean properties with names different from the xml attribute name.
 * how to use the SetPropertyRule.
