@@ -14,24 +14,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-
-<!DOCTYPE project [
-<!ENTITY commons-nav SYSTEM "../../sandbox-build/incl_nav.xml">
-]>
-
-<project name="Functor">
-
-  <title>Functor</title>
-  <organizationLogo href="/images/jakarta-logo-blue.gif">
-   Jakarta
-  </organizationLogo>
-
+<!DOCTYPE org.apache.commons.menus SYSTEM '../../../jakarta-commons/commons-build/menus/menus.dtd'>
+<project name="Commons&#xA0;Functor">
+  <title>Commons&#xA0;Functor</title>
   <body>
-    <links>
-      <item name="Jakarta Commons" href="http://jakarta.apache.org/commons/"/>
-    </links>
-
-    <menu name="Commons Functor">
+    <menu name="Commons&#xA0;Functor">
       <item name="Overview" href="/index.html"/>
       <item name="Examples" href="/examples.html"/>
       <item name="Javadoc" href="apidocs/index.html"/>
@@ -45,8 +32,6 @@
       <item name="Status" href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/STATUS.txt"/>
       <item name="CVS" href="http://cvs.apache.org/viewcvs/jakarta-commons-sandbox/functor/"/>
     </menu>
-    
-    &commons-nav;
-
+    &common-menus;
   </body>
 </project>

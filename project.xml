@@ -17,10 +17,10 @@
 
 <project>
   <extend>../sandbox-build/project.xml</extend>
-  <name>Functor</name>
+  <name>Commons Functor</name>
   <id>commons-functor</id>
   
-  <logo><!--/images/logo.png--></logo>
+  <logo>/images/functor-logo-white.png</logo>
   
   <currentVersion>1.0-dev</currentVersion>
   <inceptionYear>2003</inceptionYear>
