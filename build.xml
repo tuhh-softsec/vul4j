@@ -740,9 +740,14 @@ org.apache.xml.security.utils.resolver
      </java>
   </target>
   
+
+  <target name="AxisSignAndVerify"
+          depends="axis-sign, axis-verify" />
+
   <target name="axis-sign"
           description="axis sign sample"
-          depends="compile">
+          depends="compile.samples">
+     <echo message="Running org.apache.xml.security.samples.AxisSigner" />
      <java classname="org.apache.xml.security.samples.AxisSigner"
            fork="yes"
            taskname="SignAxis"
@@ -753,7 +758,8 @@ org.apache.xml.security.utils.resolver
   
   <target name="axis-verify"
           description="axis verify sample"
-          depends="compile">
+          depends="compile.samples">
+     <echo message="Running org.apache.xml.security.samples.AxisVerifier" />
      <java classname="org.apache.xml.security.samples.AxisVerifier"
            fork="yes"
            taskname="VerifyAxis"
