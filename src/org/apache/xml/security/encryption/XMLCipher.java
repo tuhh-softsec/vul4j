@@ -1842,8 +1842,15 @@ public class XMLCipher {
         String serialize(NodeList content) throws Exception { //XMLEncryptionException {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             for (int i = 0; i < content.getLength(); i++) {
+				Canonicalizer canon;
+				try {
+					canon = Canonicalizer.getInstance
+						(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+				} catch (InvalidCanonicalizerException ice) {
+					throw new XMLEncryptionException("empty", ice);
+				}
                 byte[] canonBytes =
-                        _canon.canonicalizeSubtree(content.item(i));
+                        canon.canonicalizeSubtree(content.item(i));
                 baos.write(canonBytes);
             }
             baos.close();
@@ -1858,8 +1865,15 @@ public class XMLCipher {
          */ 
 		String canonSerialize(Node node) throws Exception {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte[] canonBytes = _canon.canonicalizeSubtree(node);
-			baos.write(canonBytes);
+			Canonicalizer canon;
+			try {
+				canon = Canonicalizer.getInstance
+					(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+			} catch (InvalidCanonicalizerException ice) {
+				throw new XMLEncryptionException("empty", ice);
+			}
+			byte[] cbytes = canon.canonicalizeSubtree(node);
+			baos.write(cbytes);
 			baos.close();
 			return baos.toString("UTF-8");
 		}
