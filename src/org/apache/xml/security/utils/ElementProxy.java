@@ -386,7 +386,12 @@ public abstract class ElementProxy {
    public byte[] getBytesFromChildElement(String localname, String namespace)
            throws XMLSecurityException {
                
-         Element e =XMLUtils.selectNode(this._constructionElement,namespace,localname,0);
+         Element e =
+             XMLUtils.selectNode(
+                 this._constructionElement.getFirstChild(),
+                 namespace,
+                 localname,
+                 0);
             
          return Base64.decode(e);
    }
@@ -402,9 +407,12 @@ public abstract class ElementProxy {
    public String getTextFromChildElement(String localname, String namespace)
            throws XMLSecurityException {
               
-         Text t = (Text) XMLUtils.selectNode(this._constructionElement,
-                                                   namespace, localname,0
-                                                   ).getFirstChild();
+         Text t =
+             (Text) XMLUtils.selectNode(
+                        this._constructionElement.getFirstChild(),
+                        namespace,
+                        localname,
+                        0).getFirstChild();
 
          return t.getData();      
    }
