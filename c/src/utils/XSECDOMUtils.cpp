@@ -677,3 +677,54 @@ XMLCh * cleanURIEscapes(const XMLCh * str) {
 
 }
 
+// --------------------------------------------------------------------------------
+//           Generate Ids
+// --------------------------------------------------------------------------------
+
+void makeHexByte(XMLCh * h, unsigned char b) {
+
+	unsigned char toConvert =  (b & 0xf0) >> 4;
+
+	if (toConvert < 10)
+		h[0] = chDigit_0 + toConvert;
+	else
+		h[0] = chLatin_a + toConvert - 10;
+
+	toConvert =  (b & 0xf);
+
+	if (toConvert < 10)
+		h[1] = chDigit_0 + toConvert;
+	else
+		h[1] = chLatin_a + toConvert - 10;
+
+}
+
+
+XMLCh * generateId(unsigned int bytes) {
+
+	unsigned char b[128];
+	XMLCh id[258];
+	unsigned int toGen = (bytes > 128 ? 16 : bytes);
+
+	// Get the appropriate amount of random data
+	if (XSECPlatformUtils::g_cryptoProvider->getRandom(b, toGen) != toGen) {
+
+		throw XSECException(XSECException::CryptoProviderError,
+			"generateId - could not obtain enough random");
+
+	}
+
+	id[0] = chLatin_I;
+
+	for (unsigned int i = 0; i < toGen; ++i) {
+
+		makeHexByte(&id[1+(i*2)], b[i]);
+
+	}
+
+	id[1+(i*2)] = chNull;
+
+	return XMLString::replicate(id);
+
+}
+
