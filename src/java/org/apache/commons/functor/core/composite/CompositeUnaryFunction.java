@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/CompositeFunction.java,v 1.1 2003/01/27 19:33:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/CompositeUnaryFunction.java,v 1.1 2003/02/01 13:46:26 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -69,10 +69,10 @@ import org.apache.commons.functor.UnaryFunction;
  * {@link UnaryFunction UnaryFunctions},
  * "chaining" the output of one to the input
  * of another.  For example, 
- * <pre>new CompositeFunction(f).of(g)</code>
+ * <pre>new CompositeUnaryFunction(f).of(g)</code>
  * {@link #evaluate evaluates} to 
  * <code>f.evaluate(g.evaluate(obj))</code>, and
- * <pre>new CompositeFunction(f).of(g).of(h)</pre>
+ * <pre>new CompositeUnaryFunction(f).of(g).of(h)</pre>
  * {@link #evaluate evaluates} to 
  * <code>f.evaluate(g.evaluate(h.evaluate(obj)))</code>.
  * <p>
@@ -87,28 +87,28 @@ import org.apache.commons.functor.UnaryFunction;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:40 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/01 13:46:26 $
  * @author Rodney Waldhoff
  */
-public class CompositeFunction implements UnaryFunction, Serializable {
+public class CompositeUnaryFunction implements UnaryFunction, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
-    public CompositeFunction() {
+    public CompositeUnaryFunction() {
     }
 
-    public CompositeFunction(UnaryFunction f) {
+    public CompositeUnaryFunction(UnaryFunction f) {
         of(f);
     }
 
-    public CompositeFunction(UnaryFunction f, UnaryFunction g) {
+    public CompositeUnaryFunction(UnaryFunction f, UnaryFunction g) {
         of(f);
         of(g);
     }
 
     // modifiers
     // ------------------------------------------------------------------------ 
-    public CompositeFunction of(UnaryFunction f) {
+    public CompositeUnaryFunction of(UnaryFunction f) {
         list.add(f);
         return this;
     }
@@ -124,25 +124,25 @@ public class CompositeFunction implements UnaryFunction, Serializable {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof CompositeFunction) {
-            return equals((CompositeFunction)that);
+        if(that instanceof CompositeUnaryFunction) {
+            return equals((CompositeUnaryFunction)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(CompositeFunction that) {
+    public boolean equals(CompositeUnaryFunction that) {
         // by construction, list is never null
         return null != that && list.equals(that.list);
     }
     
     public int hashCode() {
         // by construction, list is never null
-        return "CompositeFunction".hashCode() ^ list.hashCode();
+        return "CompositeUnaryFunction".hashCode() ^ list.hashCode();
     }
     
     public String toString() {
-        return "CompositeFunction<" + list + ">";
+        return "CompositeUnaryFunction<" + list + ">";
     }
     
     

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAll.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAll.java,v 1.2 2003/02/01 13:46:26 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/01 13:46:26 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -88,7 +88,7 @@ public class TestAll extends TestCase {
         suite.addTest(TestUnaryProcedureSequence.suite());
         suite.addTest(TestBinaryProcedureSequence.suite());
 
-        suite.addTest(TestCompositeFunction.suite());
+        suite.addTest(TestCompositeUnaryFunction.suite());
 
         suite.addTest(TestTransposedFunction.suite());
         suite.addTest(TestTransposedPredicate.suite());
