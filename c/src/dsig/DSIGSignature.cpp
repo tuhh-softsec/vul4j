@@ -125,13 +125,14 @@ bool compareBase64StringToRaw(safeBuffer &b64SB,
 
 	}
 
+	Janitor<XSECCryptoBase64> j_b64(b64);
+
 	strncpy((char *) b64Str, (char *) b64SB.rawBuffer(), 1023);
 	b64Str[1023] = '\0';	// Just in case
 
 	b64->decodeInit();
 	outputLen = b64->decode((unsigned char *) b64Str, strlen((char *) b64Str), outputStr, 1024);
 	outputLen += b64->decodeFinish(&outputStr[outputLen], 1024 - outputLen);
-	delete b64;
 
 	// Compare
 
@@ -212,6 +213,8 @@ void convertRawToBase64String(safeBuffer &b64SB,
 
 	}
 
+	Janitor<XSECCryptoBase64> j_b64(b64);
+
 	// Determine length to translate
 	unsigned int size;
 
@@ -231,7 +234,6 @@ void convertRawToBase64String(safeBuffer &b64SB,
 	b64->encodeInit();
 	outputLen = b64->encode((unsigned char *) raw, rawLen, b64Str, 1024);
 	outputLen += b64->encodeFinish(&b64Str[outputLen], 1024 - outputLen);
-	delete b64;
 
 	// Copy out
 
@@ -529,7 +531,7 @@ void DSIGSignature::clearKeyInfo(void) {
 
 	mp_KeyInfoNode->release();		// No longer required
 
-	mp_KeyInfoNode = 0;
+	mp_KeyInfoNode = NULL;
 
 	// Clear out the list
 	m_keyInfoList.empty();
@@ -578,7 +580,7 @@ DSIGKeyInfoValue * DSIGSignature::appendDSAKeyValue(const XMLCh * P,
 
 	// Create the new element
 	DSIGKeyInfoValue * v;
-	v = new DSIGKeyInfoValue(this);
+	XSECnew(v, DSIGKeyInfoValue(this));
 
 	mp_KeyInfoNode->appendChild(v->createBlankDSAKeyValue(P, Q, G, Y));
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
@@ -596,7 +598,7 @@ DSIGKeyInfoX509 * DSIGSignature::appendX509Data(void) {
 
 	DSIGKeyInfoX509 * x;
 
-	x = new DSIGKeyInfoX509(this);
+	XSECnew(x, DSIGKeyInfoX509(this));
 
 	mp_KeyInfoNode->appendChild(x->createBlankX509Data());
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
@@ -614,7 +616,7 @@ DSIGKeyInfoName * DSIGSignature::appendKeyName(const XMLCh * name) {
 
 	DSIGKeyInfoName * n;
 
-	n = new DSIGKeyInfoName(this);
+	XSECnew(n, DSIGKeyInfoName(this));
 
 	mp_KeyInfoNode->appendChild(n->createBlankKeyName(name));
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));

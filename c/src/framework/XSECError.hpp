@@ -60,21 +60,32 @@
 /*
  * XSEC
  *
- * XSECError := General class for handling errors
+ * XSECError := General include file for handling errors
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECException.hpp>
 
+/**
+ * @ingroup pubsig
+ * @{
+ */
+
+/**
+ * \brief Error strings
+ *
+ * An array that can be used to obtain an error string associated with
+ * an exception number.
+ */
+
 extern char * XSECExceptionStrings [];
 
+/** @} */
 
 #if defined (_WIN32) && defined (_DEBUG)
 

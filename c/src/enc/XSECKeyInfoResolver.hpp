@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -79,7 +77,7 @@
 #include <xsec/enc/XSECCryptoKey.hpp>
 
 /**
- * @ingroup pubsig
+ * @ingroup interfaces
  */
 /*\@{*/
 

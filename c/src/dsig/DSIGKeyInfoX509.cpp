@@ -168,11 +168,11 @@ void DSIGKeyInfoX509::load(void) {
 	
 					XSECnew(h, X509Holder);
 
-					h->mp_encodedX509 = certElt->getNodeValue();
-
 					// Add to the list
 					
 					m_X509List.push_back(h);
+
+					h->mp_encodedX509 = certElt->getNodeValue();
 
 				}
 			}

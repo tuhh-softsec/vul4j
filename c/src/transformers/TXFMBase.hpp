@@ -84,6 +84,22 @@
 
 class TXFMChain;
 
+/** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief Base class for transformers
+ *
+ * Transformers are internal classes within the xml-security-c library
+ * that actually perform the transformations.
+ *
+ * Users interface with the library should use the DSIGTransform classes,
+ * which define the DOM nodes and allow users to manipulate the actual
+ * transform defined.
+ */
+
+
 class DSIG_EXPORT TXFMBase {
 
 protected:
@@ -163,5 +179,7 @@ private:
 
 	TXFMBase();
 };
+
+/** @} */
 
 #endif /* #define TXFMBASE_INCLUDE */

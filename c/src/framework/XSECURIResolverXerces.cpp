@@ -74,7 +74,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECURIResolverXerces.hpp>
-#include <xsec/framework/XSECException.hpp>
+#include <xsec/framework/XSECError.hpp>
 
 #include <xercesc/framework/URLInputSource.hpp>
 #include <xercesc/util/XMLString.hpp>
@@ -98,13 +98,13 @@ XSECURIResolverXerces::XSECURIResolverXerces(const XMLCh * baseURI) {
 
 	}
 	else
-		mp_baseURI = 0;
+		mp_baseURI = NULL;
 
 };
 
 XSECURIResolverXerces::~XSECURIResolverXerces() {
 
-	if (mp_baseURI != 0)
+	if (mp_baseURI != NULL)
 		delete[] mp_baseURI;
 }
 
@@ -123,19 +123,17 @@ XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * XSECURIResolverXerces::resolveUR
 	BinInputStream			* is;		// To handle the actual input
 
 
-	if (mp_baseURI == 0)
-		URLS = new URLInputSource(XMLURL(uri));
-	else
-		URLS = new URLInputSource(XMLURL(XMLURL(mp_baseURI), uri));
+	if (mp_baseURI == 0) {
+		XSECnew(URLS, URLInputSource(XMLURL(uri)));
+	}
+	else {
+		XSECnew(URLS, URLInputSource(XMLURL(XMLURL(mp_baseURI), uri)));
+	}
 
 	// makeStream can (and is quite likely to) throw an exception
 	Janitor<URLInputSource> j_URLS(URLS);
 
 	is = URLS->makeStream();
-
-	j_URLS.release();
-
-	delete URLS;
 
 	if (is == NULL) {
 

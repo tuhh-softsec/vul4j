@@ -194,6 +194,8 @@ void XSECXPathNodeList::addNode(const DOMNode *n) {
 
 	else if (mp_last == NULL) {
 
+		delete tmp;
+
 		throw XSECException(XSECException::InternalError,
 			"XSECXPathNodeList has an element that is incorrectly linked");
 

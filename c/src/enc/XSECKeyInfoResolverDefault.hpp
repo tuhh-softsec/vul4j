@@ -77,7 +77,7 @@
 #include <xsec/enc/XSECKeyInfoResolver.hpp>
 
 /**
- * @ingroup pubsig
+ * @ingroup interfaces
  */
 /*\@{*/
 

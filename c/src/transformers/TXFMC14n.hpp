@@ -73,6 +73,14 @@
 #include <xsec/canon/XSECC14n20010315.hpp>
 #include <xsec/utils/XSECNameSpaceExpander.hpp>
 
+ /** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief Transformer to handle canonicalisation transforms
+ */
+
 class DSIG_EXPORT TXFMC14n : public TXFMBase {
 
 private:
@@ -111,3 +119,5 @@ public:
 private:
 	TXFMC14n();
 };
+
+/** @} */

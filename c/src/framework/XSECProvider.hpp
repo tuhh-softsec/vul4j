@@ -230,4 +230,6 @@ private:
 	XERCES_CPP_NAMESPACE_QUALIFIER XMLMutex		m_providerMutex;
 };
 
+/** @} */
+
 #endif /* XSECPROVIDER_INCLUDE */

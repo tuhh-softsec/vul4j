@@ -73,6 +73,22 @@
 
 #include <xsec/transformers/TXFMBase.hpp>
 
+/** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief Transformer to handle move between bytes and DOM
+ *
+ * THere is no "parser" transformation defined in DSIG, however there
+ * is a requirement to be able to move between a byte stream and
+ * a list of nodes.  For example, if a ref URI points to an external
+ * document, and the first transformation on that document is an 
+ * XPath expression, then the library uses this class to translate the
+ * BYTE stream to a DOM document.
+ */
+
+
 class DSIG_EXPORT TXFMParser : public TXFMBase {
 
 public:
@@ -111,5 +127,7 @@ private:
 	DOMDocument			* mp_parsedDoc;
 
 };
+
+/** @} */
 
 #endif /* #define TXFMPARSER_INCLUDE */

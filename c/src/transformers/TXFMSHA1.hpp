@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -74,6 +72,14 @@
 
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/enc/XSECCryptoProvider.hpp>
+
+/** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief Transformer to handle create a SHA-1 hash from a chain
+ */
 
 class DSIG_EXPORT TXFMSHA1 : public TXFMBase {
 
@@ -111,3 +117,4 @@ private:
 	TXFMSHA1();
 };
 
+/** @} */

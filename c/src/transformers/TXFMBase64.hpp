@@ -73,7 +73,13 @@
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/enc/XSECCryptoBase64.hpp>
  
-// Openssl includes
+/** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief Transformer to handle base64 transforms
+ */
 
 class DSIG_EXPORT TXFMBase64 : public TXFMBase {
 
@@ -111,3 +117,4 @@ private:
 	TXFMBase64();
 };
 
+/** @} */

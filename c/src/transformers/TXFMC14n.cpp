@@ -120,7 +120,7 @@ void TXFMC14n::setInput(TXFMBase *newInput) {
 
 	case TXFMBase::DOM_NODE_DOCUMENT :
 
-		mp_c14n = new XSECC14n20010315(input->getDocument());
+		XSECnew(mp_c14n, XSECC14n20010315(input->getDocument()));
 		// Expand name spaces
 		input->expandNameSpaces();
 
@@ -129,13 +129,13 @@ void TXFMC14n::setInput(TXFMBase *newInput) {
 	case TXFMBase::DOM_NODE_DOCUMENT_NODE :
 	case TXFMBase::DOM_NODE_DOCUMENT_FRAGMENT :
 
-		mp_c14n = new XSECC14n20010315(input->getDocument(), input->getFragmentNode());
+		XSECnew(mp_c14n, XSECC14n20010315(input->getDocument(), input->getFragmentNode()));
 		input->expandNameSpaces();
 		break;
 
 	case TXFMBase::DOM_NODE_XPATH_NODESET :
 
-		mp_c14n = new XSECC14n20010315(input->getDocument());
+		XSECnew(mp_c14n, XSECC14n20010315(input->getDocument()));
 		mp_c14n->setXPathMap(input->getXPathNodeList());
 		break;
 

@@ -226,7 +226,8 @@ TXFMXPath::TXFMXPath(DOMDocument *doc) :
 
 TXFMXPath::~TXFMXPath() {
 
-	delete formatter;
+	if (formatter != NULL) 
+		delete formatter;
 	
 }
 

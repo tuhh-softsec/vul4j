@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -76,24 +74,85 @@
 #include <xsec/enc/XSECCryptoKey.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
 
+/**
+ * \ingroup crypto
+ * @{
+ */
+
+/**
+ * \brief Interface class for HMAC keys.
+ *
+ * The library uses classes derived from this to process HMAC keys.
+ */
+
 class DSIG_EXPORT XSECCryptoKeyHMAC : public XSECCryptoKey {
 
 public :
 
-	// Constructors/Destructors
+	/** @name Constructors and Destructors */
+	//@{
 	
 	XSECCryptoKeyHMAC() {};
 	virtual ~XSECCryptoKeyHMAC() {};
-	virtual XSECCryptoKey * clone() = 0;
+	
+	//@}
 
-	// Generic key functions
+	/** @name Key Interface methods */
+	//@{
+
+	/**
+	 * \brief Return the type of this key.
+	 *
+	 * For DSA keys, this allows people to determine whether this is a 
+	 * public key, private key or a key pair
+	 */
 
 	virtual XSECCryptoKey::KeyType getKeyType() {return KEY_HMAC;}
 
-	// HMAC Key functions
+	/**
+	 * \brief Replicate key
+	 */
+	
+	virtual XSECCryptoKey * clone() = 0;
+
+	//@}
+
+	/** @name Optional Interface methods
+	 * 
+	 * These functions do not necessarily have to be implmented.  They
+	 * are used by XSECKeyInfoResolverDefault to try to create a key from
+	 * KeyInfo elements without knowing anything else.
+	 *
+	 * If an interface class does not implement these functions, a simple
+	 * stub that does nothing should be used.
+	 */
+
+	/**
+	 * \brief Set the key
+	 *
+	 * Set the key from the buffer
+	 *
+	 * @param inBuf Buffer containing the key
+	 * @param inLength Number of bytes of key in the buffer
+	 */
 
 	virtual void setKey(unsigned char * inBuf, unsigned int inLength) = 0;
+
+	/**
+	 * \brief Get the key value
+	 * 
+	 * Copy the key into the safeBuffer and return the number of bytes
+	 * copied.
+	 *
+	 * @param outBuf Buffer to copy key into
+	 * @returns number of bytes copied in
+	 */
+
 	virtual unsigned int getKey(safeBuffer &outBuf) = 0;
+
+	//@}
 };
+
+/** @} */
 
 #endif /* XSECCRYPTOKEYHMAC_INCLUDE */

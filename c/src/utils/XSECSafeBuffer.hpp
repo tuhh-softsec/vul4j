@@ -75,7 +75,29 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xercesc/util/XMLString.hpp>
 
+/** 
+ * \ingroup internal
+ * @{
+ */
+
+
 #define DEFAULT_SAFE_BUFFER_SIZE		1024		// Default size for a safe Buffer
+
+ /**
+ *\brief Manage buffers of arbitrary size
+ *
+ * The safeBuffer class is used internally in the library
+ * to manage buffers of bytes or UTF-16 characters.
+ *
+ * It's a fairly innefficient class, as buffers are continually
+ * being wrapped, coppied and enlarged, but given the nature of the
+ * library, a single class that manipulates buffers of variable
+ * size was felt to be preferable,
+ *
+ * The safeBuffer is not exposed through interface classes that 
+ * might be used by external functions.  In these cases, a
+ * pointer to a XMLCh * buffer is used by preference.
+ */
 
 class CANON_EXPORT safeBuffer {
 
@@ -170,6 +192,8 @@ private:
 	// For XMLCh manipulation
 	static size_t	size_XMLCh;
 };
+
+/** @} */
 
 #endif /* XSECSAFEBUFFER_INCLUDE */
 

@@ -73,6 +73,10 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/framework/XSECError.hpp>
 
+#include <xercesc/util/Janitor.hpp>
+
+XSEC_USING_XERCES(ArrayJanitor);
+
 #include <memory.h>
 
 // Define OID for SHA-1 hash
@@ -225,6 +229,7 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 
 	// Decrypt will always be longer than (RSA_len(key) - 11)
 	decryptBuf = new unsigned char [RSA_size(mp_rsaKey)];
+	ArrayJanitor<unsigned char> j_decryptBuf(decryptBuf);
 
 	// Note at this time only supports PKCS1 padding
 	// As that is what is defined in the standard.
@@ -241,14 +246,12 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 
 	if (decryptSize < 0) {
 
-		delete[] decryptBuf;
 		throw XSECCryptoException(XSECCryptoException::RSAError,
 			"OpenSSL:RSA::verify() - Error decrypting signature");
 	}
 
 	if (decryptSize != (int) (sha1OIDLen + hashLen)) {
 
-		delete[] decryptBuf;
 		return false;
 	
 	}
@@ -257,7 +260,6 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 		
 		if (sha1OID[t] != decryptBuf[t]) {
 
-			delete[] decryptBuf;
 			return false;
 
 		}
@@ -268,7 +270,6 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 
 		if (hashBuf[t-sha1OIDLen] != decryptBuf[t]) {
 
-			delete[] decryptBuf;
 			return false;
 
 		}
@@ -276,8 +277,6 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 	}
 
 	// All OK
-	delete[] decryptBuf;
-
 	return true;
 
 }

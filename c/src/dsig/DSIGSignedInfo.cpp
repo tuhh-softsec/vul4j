@@ -77,7 +77,10 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
+#include <xercesc/util/Janitor.hpp>
+
 XSEC_USING_XERCES(DOMNamedNodeMap);
+XSEC_USING_XERCES(Janitor);
 
 // Constructors and Destructors
 
@@ -189,6 +192,7 @@ DSIGReference * DSIGSignedInfo::createReference(const XMLCh * URI,
 
 	DSIGReference * ref;
 	XSECnew(ref, DSIGReference(mp_parentSignature));
+	Janitor<DSIGReference> j_ref(ref);
 
 	DOMNode *refNode = ref->createBlankReference(URI, hm, type);
 
@@ -197,6 +201,7 @@ DSIGReference * DSIGSignedInfo::createReference(const XMLCh * URI,
 	mp_signedInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
 
 	// Add to the reference List
+	j_ref.release();
 	mp_referenceList->addReference(ref);
 
 	return ref;

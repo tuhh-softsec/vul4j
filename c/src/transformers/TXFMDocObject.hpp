@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -76,6 +74,15 @@
 // Xerces
 
 #include <xercesc/dom/DOM.hpp>
+
+/** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief Transformer that defines a document start to a transform chain
+ */
+
 
 class DSIG_EXPORT TXFMDocObject : public TXFMBase {
 
@@ -114,3 +121,5 @@ private:
 	
 	TXFMDocObject();
 };
+
+/** @} */

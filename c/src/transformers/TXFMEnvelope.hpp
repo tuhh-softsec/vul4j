@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -78,6 +76,14 @@
 // Xerces
 
 #include <xercesc/dom/DOM.hpp>
+
+/** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief Transformer to handle envelope transforms
+ */
 
 class DSIG_EXPORT TXFMEnvelope : public TXFMBase {
 
@@ -115,3 +121,5 @@ public:
 private:
 	TXFMEnvelope();
 };
+
+/** @} */

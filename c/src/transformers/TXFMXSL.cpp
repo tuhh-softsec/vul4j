@@ -80,9 +80,11 @@
 #include <xercesc/dom/DOMImplementationLS.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
+#include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(XercesDOMParser);
 XSEC_USING_XERCES(MemBufInputSource);
+XSEC_USING_XERCES(Janitor);
 
 #include <iostream>
 #include <strstream>
@@ -199,8 +201,6 @@ void TXFMXSL::evaluateStyleSheet(const safeBuffer &sbStyleSheet) {
 	// Set up iostreams for input
 	std::istrstream	theXMLStream((char *) sbInDoc.rawBuffer(), strlen((char *) sbInDoc.rawBuffer()));
 	std::istrstream	theXSLStream((char *) sbStyleSheet.rawBuffer(), strlen((char *) sbStyleSheet.rawBuffer()));
-	//std::istringstream	theXMLStream((char *) sbInDoc.rawBuffer(), strlen((char *) sbInDoc.rawBuffer()));
-	//std::istringstream	theXSLStream((char *) sbStyleSheet.rawBuffer(), strlen((char *) sbStyleSheet.rawBuffer()));
 
 	// Now resolve
 
@@ -215,6 +215,8 @@ void TXFMXSL::evaluateStyleSheet(const safeBuffer &sbStyleSheet) {
 
 	// Now use xerces to "re parse" this back into a DOM_Nodes document
 	XercesDOMParser * parser = new XercesDOMParser;
+	Janitor<XercesDOMParser> j_parser(parser);
+
 	parser->setDoNamespaces(true);
 	parser->setCreateEntityReferenceNodes(true);
 	parser->setDoSchema(true);
@@ -222,6 +224,7 @@ void TXFMXSL::evaluateStyleSheet(const safeBuffer &sbStyleSheet) {
 	// Create an input source
 
 	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) txoh.buffer.rawBuffer(), txoh.offset, "XSECMem");
+	Janitor<MemBufInputSource> j_memIS(memIS);
 
 	int errorCount = 0;
 
@@ -232,10 +235,7 @@ void TXFMXSL::evaluateStyleSheet(const safeBuffer &sbStyleSheet) {
 
     docOut = parser->adoptDocument();
 
-	// Clean up
-
-	delete memIS;
-	delete parser;
+	// Janitors clean up
 
 }
 

@@ -74,6 +74,10 @@
 #include <xsec/dsig/DSIGKeyInfoValue.hpp>
 #include <xsec/framework/XSECError.hpp>
 
+#include <xercesc/util/Janitor.hpp>
+
+XSEC_USING_XERCES(Janitor);
+
 // --------------------------------------------------------------------------------
 //           Construct/Destruct
 // --------------------------------------------------------------------------------
@@ -116,6 +120,8 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 			ret = NULL;
 			const XMLCh * x509Str;
 			XSECCryptoX509 * x509 = XSECPlatformUtils::g_cryptoProvider->X509();
+			Janitor<XSECCryptoX509> j_x509(x509);
+
 			x509Str = ((DSIGKeyInfoX509 *) lst->item(i))->getCertificateItem(0);
 			
 			if (x509Str != 0) {
@@ -128,8 +134,6 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 				ret = x509->clonePublicKey();
 			}
 
-			delete x509;
-
 			if (ret != NULL)
 				return ret;
 		
@@ -140,6 +144,7 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 		{
 
 			XSECCryptoKeyDSA * dsa = XSECPlatformUtils::g_cryptoProvider->keyDSA();
+			Janitor<XSECCryptoKeyDSA> j_dsa(dsa);
 
 			safeBuffer value;
 
@@ -152,6 +157,7 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 			value << (*mp_formatter << ((DSIGKeyInfoValue *) lst->item(i))->getDSAY());
 			dsa->loadYBase64BigNums(value.rawCharBuffer(), strlen(value.rawCharBuffer()));
 
+			j_dsa.release();
 			return dsa;
 		}
 			break;
@@ -160,6 +166,7 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 		{
 
 			XSECCryptoKeyRSA * rsa = XSECPlatformUtils::g_cryptoProvider->keyRSA();
+			Janitor<XSECCryptoKeyRSA> j_rsa(rsa);
 
 			safeBuffer value;
 
@@ -168,6 +175,7 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 			value << (*mp_formatter << ((DSIGKeyInfoValue *) lst->item(i))->getRSAExponent());
 			rsa->loadPublicExponentBase64BigNums(value.rawCharBuffer(), strlen(value.rawCharBuffer()));
 
+			j_rsa.release();
 			return rsa;
 
 		}

@@ -99,6 +99,15 @@ XSEC_DECLARE_XERCES_CLASS(DOMNamedNodeMap);
 
 #ifndef XSEC_NO_XPATH
 
+/** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief Transformer to handle XPath transforms
+ */
+
+
 class DSIG_EXPORT TXFMXPath : public TXFMBase {
 
 private:
@@ -146,3 +155,4 @@ private:
 };
 
 #endif
+/** @} */

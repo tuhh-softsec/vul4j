@@ -422,14 +422,6 @@ int main(int argc, char **argv) {
 
 	_CrtMemState s1, s2, s3;
 
-	// Send all reports to STDOUT
-	_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE );
-	_CrtSetReportFile( _CRT_WARN, _CRTDBG_FILE_STDOUT );
-	_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_FILE );
-	_CrtSetReportFile( _CRT_ERROR, _CRTDBG_FILE_STDOUT );
-	_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE );
-	_CrtSetReportFile( _CRT_ASSERT, _CRTDBG_FILE_STDOUT );
-
 	// At this point we are about to start really using XSEC, so
 	// Take a "before" checkpoing
 
@@ -471,6 +463,17 @@ int main(int argc, char **argv) {
 	_CrtMemCheckpoint( &s2 );
 
 	if ( _CrtMemDifference( &s3, &s1, &s2 ) ) {
+
+		// Send all reports to STDOUT
+		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE );
+		_CrtSetReportFile( _CRT_WARN, _CRTDBG_FILE_STDOUT );
+		_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_FILE );
+		_CrtSetReportFile( _CRT_ERROR, _CRTDBG_FILE_STDOUT );
+		_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE );
+		_CrtSetReportFile( _CRT_ASSERT, _CRTDBG_FILE_STDOUT );
+
+		// Dumpy memory stats
+
  		_CrtMemDumpAllObjectsSince( &s3 );
 	    _CrtMemDumpStatistics( &s3 );
 	}

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -77,26 +75,85 @@
 #include <xsec/enc/XSECCryptoKey.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
 
+/**
+ * \ingroup crypto
+ * @{
+ */
+
+/**
+ * \brief Interface class for X509 certificates.
+ *
+ * The library uses classes derived from this to process X509 Certificates.
+ *
+ * Strictly speaking, this class is not required.  However it is used by
+ * XSECKeyInfoResolverDefault to extract a key from a certificate in cases
+ * where the caller is not worried about the trust level of the certificate.
+ *
+ */
+
+
 class DSIG_EXPORT XSECCryptoX509 {
 
 public :
 
+	/** @name Constructors and Destructors */
+	//@{
+
 	XSECCryptoX509() {};
 	virtual ~XSECCryptoX509() {};
 
-	// load functions
+	//@}
+	/** @name Key Interface methods */
+	//@{
 
-	virtual void loadX509Base64Bin(const char * buf, unsigned int len) = 0;
-
-	// Info functions
+	/**
+	 * \brief Return the type of the key stored in the certificate.
+	 *
+	 * The implementation is expected to extract the key from the 
+	 * certificate and determine the type.
+	 *
+	 */
 
 	virtual XSECCryptoKey::KeyType getPublicKeyType() = 0;
 
-	// Get functions
-	virtual XSECCryptoKey * clonePublicKey() = 0;		// Return a copy (ownership of caller)
+	/**
+	 * \brief Get a copy of the public key.
+	 *
+	 * The implementation should extract the key from the certificate,
+	 * create an instance of the appropriate key type, and return it.
+	 *
+	 */
+
+	virtual XSECCryptoKey * clonePublicKey() = 0;
+
+	//@}
+
+	/** @name Load and Get the certificate */
+	//@{
+
+	/**
+	 * \brief Load a certificate into the object.
+	 *
+	 * Take a base64 DER encoded certificate and load.
+	 *
+	 * @param buf A buffer containing the Base64 encoded certificate
+	 * @param len The number of bytes of data in the certificate.
+	 */
+
+	virtual void loadX509Base64Bin(const char * buf, unsigned int len) = 0;
+
+	/**
+	 * \brief Get a Base64 DER encoded copy of the certificate
+	 *
+	 * @returns A safeBuffer containing the DER encoded certificate
+	 */
+
 	virtual safeBuffer &getDEREncodingSB(void) = 0;		// Get the DER string
+
+	//@}
 };
 
+/** @} */
 
 #endif /* XSECCRYPTOX509_INCLUDE */
 

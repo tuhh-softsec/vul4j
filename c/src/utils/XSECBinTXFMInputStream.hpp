@@ -82,6 +82,7 @@ class TXFMBase;
 
 /**
  * @defgroup interfaces Classes that interface applications to XML Security C.
+ *
  * These classes and files provide interfaces to allow the XSEC library to link
  * to other libraries or to allow other libraries/applications to interface
  * to XSEC.

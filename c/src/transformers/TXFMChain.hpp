@@ -76,6 +76,16 @@
 
 class TXFMBase;
 
+/** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief A holder class to take care of a chain of internal
+ * transformer objects.
+ */
+
+
 class DSIG_EXPORT TXFMChain {
 
 public:
@@ -103,5 +113,7 @@ private:
 
 inline
 TXFMBase * TXFMChain::getLastTxfm(void) {return mp_currentTxfm;}
+
+/** @} */
 
 #endif /* TXFMCHAIN_INCLUDE */

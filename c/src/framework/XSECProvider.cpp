@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -163,6 +161,8 @@ void XSECProvider::releaseSignature(DSIGSignature * toRelease) {
 		++i;
 
 	if (i == m_activeSignatures.end()) {
+
+		m_providerMutex.unlock();
 
 		throw XSECException(XSECException::ProviderError,
 			"Attempt to release a signature that was not created by this provider");

@@ -78,6 +78,21 @@
 
 using std::ofstream;
 
+/** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief Transformer to handle file output transforms
+ *
+ * This transformer simply reads from the input transform 
+ * and passes the bytes to the transformer that reads from it.
+ *
+ * On the way through, the writes are written to an output
+ * stream (a file).  This is primarily a debugging tool.
+ */
+
+
 class DSIG_EXPORT TXFMOutputFile : public TXFMBase {
 
 private:
@@ -114,6 +129,6 @@ private:
 	TXFMOutputFile();
 };
 
-
+/** @} */
 
 #endif /* #define TXFMOUTPUTFILE_INCLUDE */

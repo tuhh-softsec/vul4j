@@ -78,20 +78,78 @@
 
 #include <stdio.h>
 
+/**
+ * @ingroup pubsig
+ * @{
+ */
+
+/**
+ * \brief High level library interface class.
+ *
+ * This class is used primarily to initialise the library and
+ * communicate high level parameters that will be common to all
+ * objects from the class in any given session.
+ *
+ * It is primarily a static class.
+ */
+
 class DSIG_EXPORT XSECPlatformUtils {
 
 public :
 
-	// Static data used by all of XSEC
-	static int initCount;							// Initialised?
-	static XSECCryptoProvider * g_cryptoProvider;	// The provider we are using
+	/**
+	 * \brief Number of times initialise has been called 
+	 *
+	 * initCount can be read by any class or function to determine how
+	 * many times the library has been initialised.
+	 */
 
-	// Member functions
+	static int initCount;
+
+	/**
+	 * \brief The main cryptographic provider
+	 *
+	 * This pointer can be used to determine the primary crypto
+	 * provider registered in the library.
+	 *
+	 * Individual signatures can over-ride this default.
+	 *
+	 */
+
+	static XSECCryptoProvider * g_cryptoProvider;
+
+
+	/**
+	 * \Initialise the library
+	 *
+	 * <b>Must</b> be called prior to using any functions in the library.
+	 *
+	 * Primarily sets up static variables used by all classes in the
+	 * library.
+	 *
+	 * @param p A pointer to a XSECCryptoProvider object that the library 
+	 * should use for cryptographic functions.  If p == NULL, the library
+	 * will instantiate an OpenSSLCryptoProvider object.
+	 */
 
 	static void Initialise(XSECCryptoProvider * p = NULL);
+
+	/**
+	 * \brief Terminate
+	 *
+	 * Should be called prior to any program exist to allow the library
+	 * to cleanly delete any memory associated with the library as a whole.
+	 *
+	 * @note Do not call this function while any xml-security-c object
+	 * remain instantiated.  The results of doing so is undefined, and could
+	 * cause bad results.
+	 */
+
 	static void Terminate(void);
 
 };
+
+/** @} */
 
 #endif /* XSECPLATFORMUTILS_INCLUDE */
 

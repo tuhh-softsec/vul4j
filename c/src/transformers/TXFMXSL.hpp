@@ -96,6 +96,14 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #ifndef XSEC_NO_XSLT
 
+/** @ingroup internal
+ * @{
+ */
+
+/**
+ * \brief Transformer to handle XSLT transforms
+ */
+
 class DSIG_EXPORT TXFMXSL : public TXFMBase {
 
 private:
@@ -152,5 +160,7 @@ private:
 	TXFMXSL();
 
 };
+
+/** @} */
 
 #endif /* No XSLT */

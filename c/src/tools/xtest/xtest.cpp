@@ -65,12 +65,11 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
- 
+
+#include <xsec/framework/XSECDefs.hpp> 
 
 #include <cassert>
 
@@ -84,7 +83,6 @@
 #include <xercesc/framework/XMLFormatter.hpp>
 
 #include <xercesc/dom/DOM.hpp>
-//#include <xercesc/dom/DOMParser.hpp>
 #include <xercesc/util/XMLException.hpp>
 
 #include <xsec/transformers/TXFMOutputFile.hpp>
@@ -96,17 +94,7 @@
 
 #ifndef XSEC_NO_XALAN
 
-#include <Include/PlatformDefinitions.hpp>
-#include <XalanDOM/XalanDocument.hpp>
-#include <XercesParserLiaison/XercesDocumentBridge.hpp>
-#include <XalanDOM/XalanElement.hpp>
-#include <XPath/XObject.hpp>
 #include <XPath/XPathEvaluator.hpp>
-#include <XPath/NodeRefList.hpp>
-#include <XPath/XalanXPathException.hpp>
-#include <XalanSourceTree/XalanSourceTreeDOMSupport.hpp>
-#include <XalanSourceTree/XalanSourceTreeInit.hpp>
-#include <XalanSourceTree/XalanSourceTreeParserLiaison.hpp>
 #include <XalanTransformer/XalanTransformer.hpp>
 
 XALAN_USING_XALAN(XPathEvaluator)
@@ -129,16 +117,16 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
 
-/*
- * Because of all the characters, it's easiest to put the entire program
- * in the Xerces namespace
- */
-
 using std::ostream;
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::flush;
+
+/*
+ * Because of all the characters, it's easiest to put the entire program
+ * in the Xerces namespace
+ */
 
 XERCES_CPP_NAMESPACE_USE
 

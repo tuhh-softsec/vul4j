@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -75,29 +73,6 @@
 #include <xsec/transformers/TXFMBase64.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECException.hpp>
-
-// Local function
-
-unsigned int cleanBuffer(unsigned char *buf, unsigned int bytes) {
-
-	// Take an input buffer and "clean" it so that we can handle the Base64 transform OK
-
-	unsigned char dest[2050];
-
-	unsigned int j = 0;
-
-	for (unsigned int i = 0; i < bytes; ++i) {
-
-		if (buf[i] != '\r' && buf[i] != '\n')
-			dest[j++] = buf[i];
-
-	}
-
-	memcpy(buf, dest, j);
-
-	return j;
-
-}
 
 TXFMBase64::TXFMBase64(DOMDocument *doc) : TXFMBase(doc) {
 
@@ -118,7 +93,7 @@ TXFMBase64::TXFMBase64(DOMDocument *doc) : TXFMBase(doc) {
 
 TXFMBase64::~TXFMBase64() {
 
-	if (mp_b64)
+	if (mp_b64 != NULL)
 		delete mp_b64;
 
 };

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -220,9 +218,9 @@ private:
 	/* Unimplemented Constructor */
 	XSECException();
 
-	/*\@}*/
 
 };
 
+/*\@}*/
 
 #endif /* XSECEXCEPTION_INCLUDE */

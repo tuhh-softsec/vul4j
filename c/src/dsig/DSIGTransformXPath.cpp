@@ -130,6 +130,10 @@ void DSIGTransformXPath::appendTransformer(TXFMChain * input) {
 	// XPath transform
 	XSECnew(x, TXFMXPath(mp_txfmNode->getOwnerDocument()));
 	input->appendTxfm(x);
+
+	// These can throw, but the TXFMXPath is now owned by the chain, so will
+	// be cleaned up down the calling stack.
+
 	x->setNameSpace(mp_NSMap);
 	x->evaluateExpr(mp_txfmNode, m_expr);
 	

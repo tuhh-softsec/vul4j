@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -83,6 +81,10 @@
 
 XSEC_USING_XERCES(XMLFormatter);
 XSEC_USING_XERCES(XMLFormatTarget);
+
+/** @ingroup internal
+  * @{
+  */
 
 class sbFormatTarget : public XMLFormatTarget
 {
@@ -118,9 +120,13 @@ private:
 	
 };
 
-// For easy copying to a buffer
+/**
+ * \brief Formatter for outputting to a safeBuffer
+ *
+ * The XSECSafeBufferFormatter class is used as an internal class
+ * to perform encoding translations with a safeBuffer as a target
+ */
 
-//XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s);
 
 class XSECSafeBufferFormatter {
 
@@ -180,5 +186,7 @@ private:
 	XSECSafeBufferFormatter() {};
 
 };
+
+/** @} */
 
 #endif /* XSECSAFEBUFFERFORMATTER_INCLUDE */
