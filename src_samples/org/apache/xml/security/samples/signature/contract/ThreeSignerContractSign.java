@@ -142,11 +142,11 @@ public class ThreeSignerContractSign {
 
       Element condition2 = doc.createElementNS(null, "condition2");
 
-      condition2.appendChild(doc.createTextNodeNS(null, "condition2"));
+      condition2.appendChild(doc.createTextNode("condition2"));
 
       Element condition3 = doc.createElementNS(null, "condition3");
 
-      condition3.appendChild(doc.createTextNodeNS(null, "condition3"));
+      condition3.appendChild(doc.createTextNode("condition3"));
       contract.appendChild(doc.createTextNode("\n"));
       contract.appendChild(condition1);
       contract.appendChild(doc.createTextNode("\n"));
