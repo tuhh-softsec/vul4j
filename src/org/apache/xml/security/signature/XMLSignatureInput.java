@@ -593,6 +593,22 @@ public class XMLSignatureInput {
       return this._cxpathAPI;
    }
 
+   public String toString()  {
+      if (this.isNodeSet()) {
+         try {
+         return "XMLSignatureInput/NodeSet/" + this.getNodeSet().getLength() + " nodes/" + this.getSourceURI();
+         } catch (Exception ex) {
+         return "XMLSignatureInput/NodeSet//" + this.getSourceURI();
+         }
+      } else {
+         try {
+         return "XMLSignatureInput/OctetStream/" + this.getBytes().length + " octets/" + this.getSourceURI();
+         } catch (Exception ex) {
+         return "XMLSignatureInput/OctetStream//" + this.getSourceURI();
+         }
+      }
+   }
+
    static {
       org.apache.xml.security.Init.init();
    }
