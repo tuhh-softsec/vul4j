@@ -352,14 +352,14 @@ XSECCryptoKeyHMAC * createHMACKey(const unsigned char * str) {
 	}
 #else
 #	if defined (HAVE_OPENSSL)
-		OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
+		hmacKey = new OpenSSLCryptoKeyHMAC();
 		if (first) {
 			cerr << "Using OpenSSL as the cryptography provider" << endl;
 			first = false;
 		}
 #	else
 #		if defined (HAVE_WINCAPI)
-		WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC(0);
+		hmacKey = new WinCAPICryptoKeyHMAC(0);
 		if (first) {
 			cerr << "Using Windows Crypto API as the cryptography provider" << endl;
 			first = false;
