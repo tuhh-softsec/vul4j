@@ -157,6 +157,44 @@ public:
 
 	//@}
 
+	/** @name Getter interface Methods */
+	//@{
+
+	/**
+	 * \brief Get the Type URI for the EncryptedType
+	 *
+	 * If this object is an EncryptedData, it <em>may</em> have a 
+	 * Type attribute that defines whether it is an encrypted
+	 * Element or Element Content.  This method allows the caller
+	 * to see this type URI.
+	 *
+	 * @returns a pointer to the URI string (owned by the library)
+	 * or NULL if no type is set
+	 */
+
+	virtual const XMLCh * getTypeURI(void) const = 0;
+
+	//@}
+
+	/** @name Setter interface methods */
+	//@{
+
+	/**
+	 * \brief Set the Type URI for the EncryptedType
+	 *
+	 * Allows a calling application to set a particular Type URI for
+	 * the EncryptedType.
+	 * 
+	 * @note calls to encryptElement and encryptElementContent
+	 * automatically set the appropriate Type URI.
+	 *
+	 * @param uri The URI to set
+	 */
+
+	virtual void setTypeURI(const XMLCh * uri) = 0;
+
+	//@}
+
 	/** @name KeyInfo Element Manipulation */
 	
 	//@{

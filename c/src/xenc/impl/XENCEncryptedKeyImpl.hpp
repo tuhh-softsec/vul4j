@@ -120,6 +120,13 @@ public:
 	virtual void appendEncryptedKey(XENCEncryptedKey * encryptedKey)
 		{XENCEncryptedTypeImpl::appendEncryptedKey(encryptedKey);}
 
+	// Get methods
+	virtual const XMLCh * getTypeURI(void) const
+		{return XENCEncryptedTypeImpl::getTypeURI();}
+
+	// Set methods
+	virtual void setTypeURI(const XMLCh * uri)
+		{XENCEncryptedTypeImpl::setTypeURI(uri);}
 
 private:
 

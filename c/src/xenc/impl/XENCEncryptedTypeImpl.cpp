@@ -140,6 +140,15 @@ static XMLCh s_CipherData[] = {
 	chNull,
 };
 
+static XMLCh s_Type[] = {
+	
+	chLatin_T,
+	chLatin_y,
+	chLatin_p,
+	chLatin_e,
+	chNull
+};
+
 // --------------------------------------------------------------------------------
 //			Constructors and Destructors
 // --------------------------------------------------------------------------------
@@ -151,7 +160,8 @@ mp_keyInfoNode(NULL),
 mp_cipherDataNode(NULL),
 mp_cipherData(NULL),
 mp_encryptionMethod(NULL),
-m_keyInfoList(env) {
+m_keyInfoList(env),
+mp_typeAttributeNode(NULL) {
 
 }
 
@@ -163,7 +173,8 @@ mp_keyInfoNode(NULL),
 mp_cipherDataNode(NULL),
 mp_cipherData(NULL),
 mp_encryptionMethod(NULL),
-m_keyInfoList(env) {
+m_keyInfoList(env),
+mp_typeAttributeNode(NULL) {
 
 }
 
@@ -190,6 +201,13 @@ void XENCEncryptedTypeImpl::load() {
 			"XENCEncryptedType::load - called on empty DOM");
 
 	}
+
+	// See if any attributes of interest are set
+	DOMNamedNodeMap *atts = mp_encryptedTypeNode->getAttributes();
+
+	// Type
+	mp_typeAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
+												s_Type);
 
 	// Don't know what the node name should be (held by super class), 
 	// so go straight to the children
@@ -442,4 +460,42 @@ void XENCEncryptedTypeImpl::appendEncryptedKey(XENCEncryptedKey * encryptedKey) 
 	createKeyInfoElement();
 	m_keyInfoList.addAndInsertKeyInfo(encryptedKey);
 
+}
+
+// --------------------------------------------------------------------------------
+//			Type URI handling
+// --------------------------------------------------------------------------------
+
+const XMLCh * XENCEncryptedTypeImpl::getTypeURI(void) const {
+
+	if (mp_typeAttributeNode != NULL)
+		return mp_typeAttributeNode->getNodeValue();
+
+	return NULL;
+
+}
+
+void XENCEncryptedTypeImpl::setTypeURI(const XMLCh * uri) {
+
+	if (mp_typeAttributeNode != NULL) {
+		mp_typeAttributeNode->setNodeValue(uri);
+	}
+	else {
+
+		// Need to create the node
+		DOMElement * typeElt = static_cast<DOMElement *>(mp_encryptedTypeNode);
+
+		typeElt->setAttributeNS(DSIGConstants::s_unicodeStrURIXENC, s_Type, uri);
+
+		DOMNamedNodeMap *atts = mp_encryptedTypeNode->getAttributes();
+		mp_typeAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
+												s_Type);
+		if (mp_typeAttributeNode = NULL) {
+
+			throw XSECException(XSECException::InternalError,
+				"XENCEncryptedTypeImpl::setTypeURI - Cannot find the attribute I just added");
+
+		}
+
+	}
 }

@@ -453,6 +453,18 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 	// Load
 	mp_encryptedData->load();
 
+	// Check that this is a valid type
+	const XMLCh * typeURI = mp_encryptedData->getTypeURI();
+
+	if (typeURI != NULL && 
+		!strEquals(typeURI, DSIGConstants::s_unicodeStrURIXENC_ELEMENT) &&
+		!strEquals(typeURI, DSIGConstants::s_unicodeStrURIXENC_CONTENT)) {
+
+		throw XSECException(XSECException::CipherError, 
+			"XENCCipherImpl::decryptElement - Type not Element or Content");
+	
+	}
+
 	// Make sure we have a key before we do anything else too drastic
 	if (mp_key == NULL) {
 
@@ -463,50 +475,6 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 
 			mp_key = decryptKeyFromKeyInfoList(mp_encryptedData->getKeyInfoList());
 
-#if 0
-			// See if we can decrypt a key in the KeyInfo list
-			DSIGKeyInfoList * kil = mp_encryptedData->getKeyInfoList();
-			int kLen = kil->getSize();
-
-			for (int i = 0; i < kLen ; ++ i) {
-
-				if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_ENCRYPTEDKEY) {
-
-					XENCEncryptedKey * ek = dynamic_cast<XENCEncryptedKey*>(kil->item(i));
-					volatile XMLByte buffer[1024];
-					try {
-						// Have to cast off volatile
-						int keySize = decryptKey(ek, (XMLByte *) buffer, 1024);
-
-						if (keySize > 0) {
-							// Try to map the key
-
-							XENCEncryptionMethod * encryptionMethod = 
-								mp_encryptedData->getEncryptionMethod();
-
-							if (encryptionMethod != NULL) {
-			
-								handler = 
-									XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
-										mp_encryptedData->getEncryptionMethod()->getAlgorithm());
-
-								if (handler != NULL)
-									mp_key = handler->createKeyForURI(
-												mp_encryptedData->getEncryptionMethod()->getAlgorithm(),
-												(XMLByte *) buffer,
-												keySize);
-							}
-						}
-					} catch (...) {
-						memset((void *) buffer, 0, 1024);
-						throw;
-					}
-
-					// Clear out the key buffer
-					memset((void *) buffer, 0, 1024);
-				}
-			}
-#endif
 		}
 
 		if (mp_key == NULL) {
@@ -1039,6 +1007,8 @@ DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element,
 	// Do the hard work
 
 	encryptTXFMChain(c, em, algorithmURI);
+
+	mp_encryptedData->setTypeURI(DSIGConstants::s_unicodeStrURIXENC_ELEMENT);
 
 	// Replace original element
 	DOMNode * p = element->getParentNode();

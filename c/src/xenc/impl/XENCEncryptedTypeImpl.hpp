@@ -119,6 +119,12 @@ public:
 		{return mp_encryptedTypeNode;}
 	virtual void appendEncryptedKey(XENCEncryptedKey * encryptedKey);
 
+	// Get methods
+	virtual const XMLCh * getTypeURI(void) const;
+
+	// Set methods
+	virtual void setTypeURI(const XMLCh * uri);
+
 
 
 protected:
@@ -143,6 +149,10 @@ protected:
 
 	// Hold the XML Digital Signature KeyInfo list
 	DSIGKeyInfoList			m_keyInfoList;
+
+	// Type URI
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
+								* mp_typeAttributeNode;
 
 	friend class XENCCipherImpl;
 };

@@ -131,6 +131,10 @@ XSEC_USING_XERCES(XMLString);
 #define URI_ID_HMAC_SHA1	"http://www.w3.org/2000/09/xmldsig#hmac-sha1"
 #define URI_ID_RSA_SHA1		"http://www.w3.org/2000/09/xmldsig#rsa-sha1"
 
+// Encryption defines
+#define URI_ID_XENC_ELEMENT	"http://www.w3.org/2001/04/xmlenc#Element"
+#define URI_ID_XENC_CONTENT	"http://www.w3.org/2001/04/xmlenc#Content"
+
 // General
 
 #define URI_ID_XMLNS	"http://www.w3.org/2000/xmlns/"
@@ -417,6 +421,9 @@ public:
 	static const XMLCh * s_unicodeStrURIKW_AES192;
 	static const XMLCh * s_unicodeStrURIKW_AES256;
 	static const XMLCh * s_unicodeStrURIRSA_1_5;
+
+	static const XMLCh * s_unicodeStrURIXENC_ELEMENT;
+	static const XMLCh * s_unicodeStrURIXENC_CONTENT;
 
 	// Internal Crypto Providers
 	static const XMLCh * s_unicodeStrPROVOpenSSL;
