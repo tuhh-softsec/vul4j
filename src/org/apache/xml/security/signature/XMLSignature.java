@@ -153,38 +153,79 @@ public final class XMLSignature extends SignatureElementProxy {
    //J+
 
    /** ds:Signature.ds:SignedInfo element */
-
-   /* friendly */
-   SignedInfo _signedInfo = null;
+   private SignedInfo _signedInfo = null;
 
    /** ds:Signature.ds:KeyInfo */
-
-   /* friendly */
-   KeyInfo _keyInfo = null;
+   private KeyInfo _keyInfo = null;
 
    /**
     * Checking the digests in References in a Signature are mandatory, but for
     * References inside a Manifest it is application specific. This boolean is
     * to indicate that the References inside Manifests should be validated.
     */
+   private boolean _followManifestsDuringValidation = false;
 
-   /* friendly */
-   boolean _followManifestsDuringValidation = false;
-
-   /**
+  /**
     * This creates a new <CODE>ds:Signature</CODE> Element and adds an empty
     * <CODE>ds:SignedInfo</CODE>.
     * The <code>ds:SignedInfo</code> is initialized with the specified Signature
-    * algorithm and a normal canonicalizer without comments.
-    * This method's main use is for creating a new signature.
+    * algorithm and Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS which is REQUIRED
+    * by the spec. This method's main use is for creating a new signature.
     *
-    * @param doc Document to sign
-    * @param BaseURI URI to be prepended to all relative URIs
-    * @param signatureAlgorithmURI signature algorithm to use
+    * @param doc Document in which the signature will be appended after creation.
+    * @param BaseURI URI to be used as context for all relative URIs.
+    * @param signatureAlgorithmURI signature algorithm to use.
+    * @throws XMLSecurityException
+    */
+   public XMLSignature(Document doc, String BaseURI, String SignatureMethodURI)
+           throws XMLSecurityException {
+      this(doc, BaseURI, SignatureMethodURI, 0,
+           Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+   }
+
+   /**
+    * Constructor XMLSignature
+    *
+    * @param doc
+    * @param BaseURI
+    * @param SignatureMethodURI the Signature method to be used.
+    * @param HMACOutputLength
     * @throws XMLSecurityException
     */
    public XMLSignature(
-           Document doc, String BaseURI, String signatureAlgorithmURI)
+           Document doc, String BaseURI, String SignatureMethodURI, int HMACOutputLength)
+              throws XMLSecurityException {
+      this(doc, BaseURI, SignatureMethodURI, HMACOutputLength,
+           Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+   }
+
+   /**
+    * Constructor XMLSignature
+    *
+    * @param doc
+    * @param BaseURI
+    * @param SignatureMethodURI the Signature method to be used.
+    * @param CanonicalizationMethodURI the canonicalization algorithm to be used to c14nize the SignedInfo element.
+    * @throws XMLSecurityException
+    */
+   public XMLSignature(
+           Document doc, String BaseURI, String SignatureMethodURI, String CanonicalizationMethodURI)
+              throws XMLSecurityException {
+      this(doc, BaseURI, SignatureMethodURI, 0, CanonicalizationMethodURI);
+   }
+
+   /**
+    * Constructor XMLSignature
+    *
+    * @param doc
+    * @param BaseURI
+    * @param SignatureMethodURI
+    * @param HMACOutputLength
+    * @param CanonicalizationMethodURI
+    * @throws XMLSecurityException
+    */
+   public XMLSignature(
+           Document doc, String BaseURI, String SignatureMethodURI, int HMACOutputLength, String CanonicalizationMethodURI)
               throws XMLSecurityException {
 
       super(doc);
@@ -192,23 +233,18 @@ public final class XMLSignature extends SignatureElementProxy {
       XMLUtils.addReturnToElement(this._constructionElement);
 
       this._baseURI = BaseURI;
+      this._signedInfo = new SignedInfo(this._doc, SignatureMethodURI,
+                                        HMACOutputLength,
+                                        CanonicalizationMethodURI);
 
-      // create the SignedInfo
-      this._signedInfo =
-         new SignedInfo(this._doc, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS,
-                        signatureAlgorithmURI);
-
-      // add the SignedInfo element
       this._constructionElement.appendChild(this._signedInfo.getElement());
       XMLUtils.addReturnToElement(this._constructionElement);
 
-      // create an empty SignatureValue;
-      // this is filled by setSignatureValueElement
+      // create an empty SignatureValue; this is filled by setSignatureValueElement
       Element signatureValueElement =
          XMLUtils.createElementInSignatureSpace(this._doc,
                                                 Constants._TAG_SIGNATUREVALUE);
 
-      // add the SignatureValueElement
       this._constructionElement.appendChild(signatureValueElement);
       XMLUtils.addReturnToElement(this._constructionElement);
    }
