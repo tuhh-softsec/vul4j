@@ -176,4 +176,10 @@ public class CommandlineTest extends TestCase
         }
     }
 
+    public void testEnvironment()
+    {
+        Commandline cmd = new Commandline();
+        cmd.addEnvironment( "name", "value" );
+        assertEquals( "name=value", cmd.getEnvironments()[0] );
+    }
 }
