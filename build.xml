@@ -7,6 +7,22 @@
      This build file is intended to build the org.apache.xml.security package,
      available from http://www.xmlsecurity.org/src/ and
                     http://xml.apache.org/
+
+     http://xml.apache.org/dist/xerces-j/old_xerces2/Xerces-J-bin.2.0.1.zip
+         xercesImpl.jar 
+         xmlParserAPIs.jar
+
+     http://xml.apache.org/dist/xalan-j/xalan-j_2_3_1-bin.zip
+         xalan.jar
+         xml-apis.jar
+
+     http://jakarta.apache.org/log4j/jakarta-log4j-1.2.5.zip
+         log4j-1.2.5.jar
+
+     http://www.bouncycastle.org/download/jce-jdk13-114.jar
+
+     http://download.sourceforge.net/junit/junit3.7.zip
+         junit3.7.jar
 -->
 
 <project name="The org.apache.xml.security Package" default="usage" basedir=".">
@@ -17,7 +33,7 @@
 
     <property name='product.version.major' value='1'/>
     <property name='product.version.minor' value='0'/>
-    <property name='product.version.level' value='3'/>
+    <property name='product.version.level' value='4'/>
     <property name='product.Version'   value='${product.version.major}.${product.version.minor}.${product.version.level}'/>
     <property name='product.version'   value='${product.version.major}.${product.version.minor}.${product.version.level}'/>
     <property name='product_version'   value='${product.version.major}_${product.version.minor}_${product.version.level}'/>
@@ -27,7 +43,7 @@
 <!--<property name="build.compiler" value="classic" />
     <property name="build.compiler" value="jikes" />-->
 
-    <property name="build.compiler" value="classic" />
+    <!-- <property name="build.compiler" value="classic" /> -->
 
     <property name="dir.src"           value="./src" />
     <property name="dir.src.samples"   value="./src_samples" />
@@ -71,9 +87,16 @@
     <property name="doc.generator.package" value="${dir.tools}/stylebook-1.0-b2.jar" />
 
     <!-- http://www.bouncycastle.org/checksums.html -->
+    <!--
     <property name="jce.download.md5"  value="eeb940217876bcd83a55d799ee5db7ca" />
     <property name="jce.download.sha1" value="106e97a5ad7a57aa2cbc48074db80225d3c0972a" />
     <property name="jce.download.file" value="jce-jdk13-112.jar" />
+    -->
+
+    <property name="jce.download.md5"  value="8a90f10826c0b8a4460231dcef0e0e45" />
+    <property name="jce.download.sha1" value="f3cf2677ad8fa7a038ab3a62e05afef9615ea579" />
+    <property name="jce.download.file" value="jce-jdk13-114.jar" />
+
     <property name="jce.download"      value="http://www.bouncycastle.org/download/${jce.download.file}" />
     <property name="lib.jce"           value="${dir.libs}/bc-${jce.download.file}" />
 
@@ -84,7 +107,7 @@
     <property name="lib.xerces.2" value="${dir.libs}/xmlParserAPIs.jar" />
     <property name="lib.xalan.1"  value="${dir.libs}/xalan.jar" />
     <property name="lib.xalan.2"  value="${dir.libs}/xml-apis.jar" />
-    <property name="lib.log4j"    value="${dir.libs}/jakarta-log4j-1.2beta2.jar" />
+    <property name="lib.log4j"    value="${dir.libs}/log4j-1.2.5.jar" />
 
     <path id="classpath.libraries" description="3rd party libs">
       <pathelement path="${lib.xerces.1}" />

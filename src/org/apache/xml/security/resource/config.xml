@@ -528,6 +528,10 @@
                 <priority value="fatal" />
         </category>
 
+        <category name="org.apache.xml.security.test.AllTests">
+                <priority value="debug" />
+        </category>
+
         <!--
         <category name="org.apache.xml.security.test.AllTests">
                 <priority value="debug" />
