@@ -33,6 +33,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments;
 import org.apache.xml.security.utils.JavaUtils;
@@ -51,6 +52,9 @@ import org.xml.sax.SAXException;
  * $todo$ check whether an XMLSignatureInput can be _both_, octet stream _and_ node set?
  */
 public class XMLSignatureInput {
+	 static org.apache.commons.logging.Log log = 
+	        org.apache.commons.logging.LogFactory.getLog(XMLSignatureInput.class.getName());
+
 	/*
      * The XMLSignature Input can be either:
      *   A byteArray like with/or without InputStream.
@@ -600,7 +604,7 @@ public class XMLSignatureInput {
         if (_inputOctetStreamProxy ==null)
             return null;
         if (_inputOctetStreamProxy.markSupported()) {
-            System.err.println("Mark Suported but not used as reset");
+            log.info("Mark Suported but not used as reset");
         }
     	bytes=JavaUtils.getBytesFromStream(_inputOctetStreamProxy);
     	_inputOctetStreamProxy=new ByteArrayInputStream(bytes);
