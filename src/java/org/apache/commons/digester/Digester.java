@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.92 2004/02/15 01:02:13 craigmcc Exp $
- * $Revision: 1.92 $
- * $Date: 2004/02/15 01:02:13 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.93 2004/02/16 02:23:25 skitching Exp $
+ * $Revision: 1.93 $
+ * $Date: 2004/02/16 02:23:25 $
  *
  * ====================================================================
  * 
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.92 $ $Date: 2004/02/15 01:02:13 $
+ * @version $Revision: 1.93 $ $Date: 2004/02/16 02:23:25 $
  */
 
 public class Digester extends DefaultHandler {
@@ -2213,6 +2213,16 @@ public class Digester extends DefaultHandler {
         addRule(pattern,
                 new ObjectCreateRule(attributeName, clazz));
 
+    }
+
+    /**
+     * Adds an {@link SetNestedPropertiesRule}.
+     *
+     * @param pattern register the rule with this pattern
+     */
+    public void addSetNestedProperties(String pattern) {
+    
+        addRule(pattern, new SetNestedPropertiesRule());
     }
 
     /**
