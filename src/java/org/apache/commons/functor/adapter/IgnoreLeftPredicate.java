@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/Attic/UnaryFunctionBinaryFunction.java,v 1.1 2003/01/27 19:33:39 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/IgnoreLeftPredicate.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,16 +58,16 @@ package org.apache.commons.functor.adapter;
 
 import java.io.Serializable;
 
-import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.Function;
-import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * Adapts a
- * {@link BinaryFunction BinaryFunction} 
+ * {@link UnaryPredicate UnaryPredicate} 
  * to the 
- * {@link BinaryFunction BinaryFunction} interface 
- * by ignoring the second binary argument.
+ * {@link BinaryPredicate BinaryPredicate} interface 
+ * by ignoring the first binary argument.
  * <p/>
  * Note that although this class implements 
  * {@link Serializable}, a given instance will
@@ -76,46 +76,46 @@ import org.apache.commons.functor.UnaryFunction;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:39 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
  * @author Rodney Waldhoff
  */
-public final class UnaryFunctionBinaryFunction implements BinaryFunction, Serializable {
-    public UnaryFunctionBinaryFunction(UnaryFunction function) {
-        this.function = function;
+public final class IgnoreLeftPredicate implements BinaryPredicate, Serializable {
+    public IgnoreLeftPredicate(UnaryPredicate predicate) {
+        this.predicate = predicate;
     }
  
-    public Object evaluate(Object left, Object right) {
-        return function.evaluate(left);
+    public boolean test(Object left, Object right) {
+        return predicate.test(right);
     }   
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryFunctionBinaryFunction) {
-            return equals((UnaryFunctionBinaryFunction)that);
+        if(that instanceof IgnoreLeftPredicate) {
+            return equals((IgnoreLeftPredicate)that);
         } else {
             return false;
         }
     }
         
-    public boolean equals(UnaryFunctionBinaryFunction that) {
-        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
+    public boolean equals(IgnoreLeftPredicate that) {
+        return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
     
     public int hashCode() {
-        int hash = "UnaryFunctionBinaryFunction".hashCode();
-        if(null != function) {
-            hash ^= function.hashCode();
+        int hash = "IgnoreLeftPredicate".hashCode();
+        if(null != predicate) {
+            hash ^= predicate.hashCode();
         }
         return hash;
     }
     
     public String toString() {
-        return "UnaryFunctionBinaryFunction<" + function + ">";
+        return "IgnoreLeftPredicate<" + predicate + ">";
     }
 
-    public static UnaryFunctionBinaryFunction adapt(UnaryFunction function) {
-        return null == function ? null : new UnaryFunctionBinaryFunction(function);
+    public static IgnoreLeftPredicate adapt(UnaryPredicate predicate) {
+        return null == predicate ? null : new IgnoreLeftPredicate(predicate);
     }
 
-    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction function = null;
+    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
+    private UnaryPredicate predicate = null;
 }

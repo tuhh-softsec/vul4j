@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.2 2003/03/04 21:33:56 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/IgnoreRightPredicate.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,27 +54,68 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.adapter;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.io.Serializable;
+
+import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 21:33:56 $
+ * Adapts a
+ * {@link UnaryPredicate UnaryPredicate} 
+ * to the 
+ * {@link BinaryPredicate BinaryPredicate} interface 
+ * by ignoring the second binary argument.
+ * <p/>
+ * Note that although this class implements 
+ * {@link Serializable}, a given instance will
+ * only be truly <code>Serializable</code> if the
+ * underlying functor is.  Attempts to serialize
+ * an instance whose delegate is not 
+ * <code>Serializable</code> will result in an exception.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+public final class IgnoreRightPredicate implements BinaryPredicate, Serializable {
+    public IgnoreRightPredicate(UnaryPredicate predicate) {
+        this.predicate = predicate;
     }
+ 
+    public boolean test(Object left, Object right) {
+        return predicate.test(left);
+    }   
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(Quicksort.suite());
+    public boolean equals(Object that) {
+        if(that instanceof IgnoreRightPredicate) {
+            return equals((IgnoreRightPredicate)that);
+        } else {
+            return false;
+        }
+    }
         
-        return suite;
+    public boolean equals(IgnoreRightPredicate that) {
+        return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
     }
+    
+    public int hashCode() {
+        int hash = "IgnoreRightPredicate".hashCode();
+        if(null != predicate) {
+            hash ^= predicate.hashCode();
+        }
+        return hash;
+    }
+    
+    public String toString() {
+        return "IgnoreRightPredicate<" + predicate + ">";
+    }
+
+    public static IgnoreRightPredicate adapt(UnaryPredicate predicate) {
+        return null == predicate ? null : new IgnoreRightPredicate(predicate);
+    }
+
+    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
+    private UnaryPredicate predicate = null;
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.2 2003/03/04 21:33:56 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreLeftPredicate.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,27 +54,75 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.adapter;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.IdentityFunction;
+
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 21:33:56 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestIgnoreLeftPredicate extends BaseFunctorTest {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestIgnoreLeftPredicate(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
+        return new TestSuite(TestIgnoreLeftPredicate.class);
+    }
 
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(Quicksort.suite());
-        
-        return suite;
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
+
+    protected Object makeFunctor() {
+        return new IgnoreLeftPredicate(new ConstantPredicate(true));
+    }
+
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------    
+
+    public void testEvaluate() throws Exception {
+        BinaryPredicate p = new IgnoreLeftPredicate(new UnaryFunctionUnaryPredicate(new IdentityFunction()));
+        assertTrue(p.test(null,Boolean.TRUE));
+        assertTrue(!p.test(null,Boolean.FALSE));
+    }
+    
+    public void testEquals() throws Exception {
+        BinaryPredicate p = new IgnoreLeftPredicate(new UnaryFunctionUnaryPredicate(new IdentityFunction()));
+        assertEquals(p,p);
+        assertObjectsAreEqual(p,new IgnoreLeftPredicate(new UnaryFunctionUnaryPredicate(new IdentityFunction())));
+        assertObjectsAreNotEqual(p,new ConstantPredicate(true));
+        assertObjectsAreNotEqual(p,new IgnoreLeftPredicate(new ConstantPredicate(false)));
+        assertObjectsAreNotEqual(p,new ConstantPredicate(false));
+        assertObjectsAreEqual(new IgnoreLeftPredicate(null),new IgnoreLeftPredicate(null));
+    }
+
+    public void testAdaptNull() throws Exception {
+        assertNull(IgnoreLeftPredicate.adapt(null));
+    }
+
+    public void testAdapt() throws Exception {
+        assertNotNull(IgnoreLeftPredicate.adapt(new ConstantPredicate(true)));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.2 2003/03/04 21:33:56 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreRightFunction.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,27 +54,78 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.adapter;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.IdentityFunction;
+
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 21:33:56 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestIgnoreRightFunction extends BaseFunctorTest {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestIgnoreRightFunction(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
+        return new TestSuite(TestIgnoreRightFunction.class);
+    }
 
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(Quicksort.suite());
-        
-        return suite;
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
+
+    protected Object makeFunctor() {
+        return new IgnoreRightFunction(new ConstantFunction("xyzzy"));
+    }
+
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------    
+
+    public void testEvaluate() throws Exception {
+        BinaryFunction f = new IgnoreRightFunction(new IdentityFunction());
+        assertNull(f.evaluate(null,null));
+        assertNull(f.evaluate(null,"xyzzy"));
+        assertEquals("xyzzy",f.evaluate("xyzzy",null));
+        assertEquals("xyzzy",f.evaluate("xyzzy","abc"));
+    }
+    
+    public void testEquals() throws Exception {
+        BinaryFunction f = new IgnoreRightFunction(new ConstantFunction("xyzzy"));
+        assertEquals(f,f);
+        assertObjectsAreEqual(f,new IgnoreRightFunction(new ConstantFunction("xyzzy")));
+        assertObjectsAreNotEqual(f,new ConstantFunction("x"));
+        assertObjectsAreNotEqual(f,new IgnoreRightFunction(new ConstantFunction(null)));
+        assertObjectsAreNotEqual(f,new ConstantFunction(null));
+        assertObjectsAreNotEqual(f,new IgnoreRightFunction(null));
+        assertObjectsAreEqual(new IgnoreRightFunction(null),new IgnoreRightFunction(null));
+    }
+
+    public void testAdaptNull() throws Exception {
+        assertNull(IgnoreRightFunction.adapt(null));
+    }
+
+    public void testAdapt() throws Exception {
+        assertNotNull(IgnoreRightFunction.adapt(new ConstantFunction("xyzzy")));
     }
 }

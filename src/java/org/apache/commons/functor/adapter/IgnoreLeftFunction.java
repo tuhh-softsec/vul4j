@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestUnaryProcedureBinaryProcedure.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/IgnoreLeftFunction.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,71 +56,66 @@
  */
 package org.apache.commons.functor.adapter;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
 
-import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryProcedure;
-import org.apache.commons.functor.core.IdentityFunction;
-import org.apache.commons.functor.core.NoOp;
+import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.Function;
+import org.apache.commons.functor.UnaryFunction;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
+ * Adapts a
+ * {@link UnaryFunction UnaryFunction} 
+ * to the 
+ * {@link BinaryFunction BinaryFunction} interface 
+ * by ignoring the first binary argument.
+ * <p/>
+ * Note that although this class implements 
+ * {@link Serializable}, a given instance will
+ * only be truly <code>Serializable</code> if the
+ * underlying functor is.  Attempts to serialize
+ * an instance whose delegate is not 
+ * <code>Serializable</code> will result in an exception.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
  * @author Rodney Waldhoff
  */
-public class TestUnaryProcedureBinaryProcedure extends BaseFunctorTest {
-
-    // Conventional
-    // ------------------------------------------------------------------------
-
-    public TestUnaryProcedureBinaryProcedure(String testName) {
-        super(testName);
+public final class IgnoreLeftFunction implements BinaryFunction, Serializable {
+    public IgnoreLeftFunction(UnaryFunction function) {
+        this.function = function;
     }
+ 
+    public Object evaluate(Object left, Object right) {
+        return function.evaluate(right);
+    }   
 
-    public static Test suite() {
-        return new TestSuite(TestUnaryProcedureBinaryProcedure.class);
+    public boolean equals(Object that) {
+        if(that instanceof IgnoreLeftFunction) {
+            return equals((IgnoreLeftFunction)that);
+        } else {
+            return false;
+        }
     }
-
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new UnaryProcedureBinaryProcedure(new NoOp());
-    }
-
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
-    // ------------------------------------------------------------------------    
-
-    public void testEvaluate() throws Exception {
-        BinaryProcedure p = new UnaryProcedureBinaryProcedure(new UnaryFunctionUnaryProcedure(new IdentityFunction()));
-        p.run(Boolean.TRUE,null);
+        
+    public boolean equals(IgnoreLeftFunction that) {
+        return that == this || (null != that && (null == function ? null == that.function : function.equals(that.function)));
     }
     
-    public void testEquals() throws Exception {
-        BinaryProcedure p = new UnaryProcedureBinaryProcedure(new NoOp());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new UnaryProcedureBinaryProcedure(new NoOp()));
-        assertObjectsAreNotEqual(p,new NoOp());
-        assertObjectsAreNotEqual(p,new UnaryProcedureBinaryProcedure(null));
-        assertObjectsAreEqual(new UnaryProcedureBinaryProcedure(null),new UnaryProcedureBinaryProcedure(null));
+    public int hashCode() {
+        int hash = "IgnoreLeftFunction".hashCode();
+        if(null != function) {
+            hash ^= function.hashCode();
+        }
+        return hash;
+    }
+    
+    public String toString() {
+        return "IgnoreLeftFunction<" + function + ">";
     }
 
-    public void testAdaptNull() throws Exception {
-        assertNull(UnaryProcedureBinaryProcedure.adapt(null));
+    public static BinaryFunction adapt(UnaryFunction function) {
+        return null == function ? null : new IgnoreLeftFunction(function);
     }
 
-    public void testAdapt() throws Exception {
-        assertNotNull(UnaryProcedureBinaryProcedure.adapt(new NoOp()));
-    }
+    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
+    private UnaryFunction function = null;
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.2 2003/03/04 21:33:56 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreLeftProcedure.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,27 +54,73 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.adapter;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.BinaryProcedure;
+import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.NoOp;
+
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 21:33:56 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestIgnoreLeftProcedure extends BaseFunctorTest {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestIgnoreLeftProcedure(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
+        return new TestSuite(TestIgnoreLeftProcedure.class);
+    }
 
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(Quicksort.suite());
-        
-        return suite;
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
+
+    protected Object makeFunctor() {
+        return new IgnoreLeftProcedure(new NoOp());
+    }
+
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------    
+
+    public void testEvaluate() throws Exception {
+        BinaryProcedure p = new IgnoreLeftProcedure(new UnaryFunctionUnaryProcedure(new IdentityFunction()));
+        p.run(null,Boolean.TRUE);
+    }
+    
+    public void testEquals() throws Exception {
+        BinaryProcedure p = new IgnoreLeftProcedure(new NoOp());
+        assertEquals(p,p);
+        assertObjectsAreEqual(p,new IgnoreLeftProcedure(new NoOp()));
+        assertObjectsAreNotEqual(p,new NoOp());
+        assertObjectsAreNotEqual(p,new IgnoreLeftProcedure(null));
+        assertObjectsAreEqual(new IgnoreLeftProcedure(null),new IgnoreLeftProcedure(null));
+    }
+
+    public void testAdaptNull() throws Exception {
+        assertNull(IgnoreLeftProcedure.adapt(null));
+    }
+
+    public void testAdapt() throws Exception {
+        assertNotNull(IgnoreLeftProcedure.adapt(new NoOp()));
     }
 }

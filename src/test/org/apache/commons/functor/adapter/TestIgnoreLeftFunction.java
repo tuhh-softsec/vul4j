@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestUnaryPredicateBinaryPredicate.java,v 1.2 2003/01/28 12:00:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreLeftFunction.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,32 +60,32 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.IdentityFunction;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:30 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
  * @author Rodney Waldhoff
  */
-public class TestUnaryPredicateBinaryPredicate extends BaseFunctorTest {
+public class TestIgnoreLeftFunction extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestUnaryPredicateBinaryPredicate(String testName) {
+    public TestIgnoreLeftFunction(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestUnaryPredicateBinaryPredicate.class);
+        return new TestSuite(TestIgnoreLeftFunction.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryPredicateBinaryPredicate(new ConstantPredicate(true));
+        return new IgnoreLeftFunction(new ConstantFunction("xyzzy"));
     }
 
     // Lifecycle
@@ -103,26 +103,29 @@ public class TestUnaryPredicateBinaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testEvaluate() throws Exception {
-        BinaryPredicate p = new UnaryPredicateBinaryPredicate(new UnaryFunctionUnaryPredicate(new IdentityFunction()));
-        assertTrue(p.test(Boolean.TRUE,null));
-        assertTrue(!p.test(Boolean.FALSE,null));
+        BinaryFunction f = new IgnoreLeftFunction(new IdentityFunction());
+        assertNull(f.evaluate(null,null));
+        assertNull(f.evaluate("xyzzy",null));
+        assertEquals("xyzzy",f.evaluate(null,"xyzzy"));
+        assertEquals("xyzzy",f.evaluate("abc","xyzzy"));
     }
     
     public void testEquals() throws Exception {
-        BinaryPredicate p = new UnaryPredicateBinaryPredicate(new UnaryFunctionUnaryPredicate(new IdentityFunction()));
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new UnaryPredicateBinaryPredicate(new UnaryFunctionUnaryPredicate(new IdentityFunction())));
-        assertObjectsAreNotEqual(p,new ConstantPredicate(true));
-        assertObjectsAreNotEqual(p,new UnaryPredicateBinaryPredicate(new ConstantPredicate(false)));
-        assertObjectsAreNotEqual(p,new ConstantPredicate(false));
-        assertObjectsAreEqual(new UnaryPredicateBinaryPredicate(null),new UnaryPredicateBinaryPredicate(null));
+        BinaryFunction f = new IgnoreLeftFunction(new ConstantFunction("xyzzy"));
+        assertEquals(f,f);
+        assertObjectsAreEqual(f,new IgnoreLeftFunction(new ConstantFunction("xyzzy")));
+        assertObjectsAreNotEqual(f,new ConstantFunction("x"));
+        assertObjectsAreNotEqual(f,new IgnoreLeftFunction(new ConstantFunction(null)));
+        assertObjectsAreNotEqual(f,new ConstantFunction(null));
+        assertObjectsAreNotEqual(f,new IgnoreLeftFunction(null));
+        assertObjectsAreEqual(new IgnoreLeftFunction(null),new IgnoreLeftFunction(null));
     }
 
     public void testAdaptNull() throws Exception {
-        assertNull(UnaryPredicateBinaryPredicate.adapt(null));
+        assertNull(IgnoreLeftFunction.adapt(null));
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(UnaryPredicateBinaryPredicate.adapt(new ConstantPredicate(true)));
+        assertNotNull(IgnoreLeftFunction.adapt(new ConstantFunction("xyzzy")));
     }
 }

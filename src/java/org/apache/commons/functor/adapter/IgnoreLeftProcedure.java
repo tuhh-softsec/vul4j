@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/Attic/UnaryPredicateBinaryPredicate.java,v 1.1 2003/01/27 19:33:39 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/IgnoreLeftProcedure.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,16 +58,16 @@ package org.apache.commons.functor.adapter;
 
 import java.io.Serializable;
 
-import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.Predicate;
-import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.BinaryProcedure;
+import org.apache.commons.functor.Procedure;
+import org.apache.commons.functor.UnaryProcedure;
 
 /**
  * Adapts a
- * {@link BinaryPredicate BinaryPredicate} 
+ * {@link UnaryProcedure UnaryProcedure} 
  * to the 
- * {@link BinaryPredicate BinaryPredicate} interface 
- * by ignoring the second binary argument.
+ * {@link BinaryProcedure BinaryProcedure} interface 
+ * by ignoring the first binary argument.
  * <p/>
  * Note that although this class implements 
  * {@link Serializable}, a given instance will
@@ -76,46 +76,46 @@ import org.apache.commons.functor.UnaryPredicate;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:39 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
  * @author Rodney Waldhoff
  */
-public final class UnaryPredicateBinaryPredicate implements BinaryPredicate, Serializable {
-    public UnaryPredicateBinaryPredicate(UnaryPredicate predicate) {
-        this.predicate = predicate;
+public final class IgnoreLeftProcedure implements BinaryProcedure, Serializable {
+    public IgnoreLeftProcedure(UnaryProcedure procedure) {
+        this.procedure = procedure;
     }
  
-    public boolean test(Object left, Object right) {
-        return predicate.test(left);
+    public void run(Object left, Object right) {
+        procedure.run(left);
     }   
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryPredicateBinaryPredicate) {
-            return equals((UnaryPredicateBinaryPredicate)that);
+        if(that instanceof IgnoreLeftProcedure) {
+            return equals((IgnoreLeftProcedure)that);
         } else {
             return false;
         }
     }
         
-    public boolean equals(UnaryPredicateBinaryPredicate that) {
-        return that == this || (null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate)));
+    public boolean equals(IgnoreLeftProcedure that) {
+        return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
     
     public int hashCode() {
-        int hash = "UnaryPredicateBinaryPredicate".hashCode();
-        if(null != predicate) {
-            hash ^= predicate.hashCode();
+        int hash = "IgnoreLeftProcedure".hashCode();
+        if(null != procedure) {
+            hash ^= procedure.hashCode();
         }
         return hash;
     }
     
     public String toString() {
-        return "UnaryPredicateBinaryPredicate<" + predicate + ">";
+        return "IgnoreLeftProcedure<" + procedure + ">";
     }
 
-    public static UnaryPredicateBinaryPredicate adapt(UnaryPredicate predicate) {
-        return null == predicate ? null : new UnaryPredicateBinaryPredicate(predicate);
+    public static IgnoreLeftProcedure adapt(UnaryProcedure procedure) {
+        return null == procedure ? null : new IgnoreLeftProcedure(procedure);
     }
 
-    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate predicate = null;
+    /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
+    private UnaryProcedure procedure = null;
 }

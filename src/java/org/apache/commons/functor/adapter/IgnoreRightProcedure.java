@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestUnaryFunctionBinaryFunction.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/IgnoreRightProcedure.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,76 +56,66 @@
  */
 package org.apache.commons.functor.adapter;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
 
-import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.Function;
+import org.apache.commons.functor.BinaryProcedure;
 import org.apache.commons.functor.Procedure;
-import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.NoOp;
+import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
+ * Adapts a
+ * {@link UnaryProcedure UnaryProcedure} 
+ * to the 
+ * {@link BinaryProcedure BinaryProcedure} interface 
+ * by ignoring the second binary argument.
+ * <p/>
+ * Note that although this class implements 
+ * {@link Serializable}, a given instance will
+ * only be truly <code>Serializable</code> if the
+ * underlying functor is.  Attempts to serialize
+ * an instance whose delegate is not 
+ * <code>Serializable</code> will result in an exception.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
  * @author Rodney Waldhoff
  */
-public class TestUnaryFunctionBinaryFunction extends BaseFunctorTest {
-
-    // Conventional
-    // ------------------------------------------------------------------------
-
-    public TestUnaryFunctionBinaryFunction(String testName) {
-        super(testName);
+public final class IgnoreRightProcedure implements BinaryProcedure, Serializable {
+    public IgnoreRightProcedure(UnaryProcedure procedure) {
+        this.procedure = procedure;
     }
+ 
+    public void run(Object left, Object right) {
+        procedure.run(left);
+    }   
 
-    public static Test suite() {
-        return new TestSuite(TestUnaryFunctionBinaryFunction.class);
+    public boolean equals(Object that) {
+        if(that instanceof IgnoreRightProcedure) {
+            return equals((IgnoreRightProcedure)that);
+        } else {
+            return false;
+        }
     }
-
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new UnaryFunctionBinaryFunction(new ConstantFunction("xyzzy"));
-    }
-
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
-    // ------------------------------------------------------------------------    
-
-    public void testEvaluate() throws Exception {
-        BinaryFunction f = new UnaryFunctionBinaryFunction(new ConstantFunction("xyzzy"));
-        assertEquals("xyzzy",f.evaluate(null,null));
-        assertEquals("xyzzy",f.evaluate("abc","123"));
+        
+    public boolean equals(IgnoreRightProcedure that) {
+        return that == this || (null != that && (null == procedure ? null == that.procedure : procedure.equals(that.procedure)));
     }
     
-    public void testEquals() throws Exception {
-        BinaryFunction f = new UnaryFunctionBinaryFunction(new ConstantFunction("xyzzy"));
-        assertEquals(f,f);
-        assertObjectsAreEqual(f,new UnaryFunctionBinaryFunction(new ConstantFunction("xyzzy")));
-        assertObjectsAreNotEqual(f,new ConstantFunction("x"));
-        assertObjectsAreNotEqual(f,new UnaryFunctionBinaryFunction(new ConstantFunction(null)));
-        assertObjectsAreNotEqual(f,new ConstantFunction(null));
-        assertObjectsAreNotEqual(f,new UnaryFunctionBinaryFunction(null));
-        assertObjectsAreEqual(new UnaryFunctionBinaryFunction(null),new UnaryFunctionBinaryFunction(null));
+    public int hashCode() {
+        int hash = "IgnoreRightProcedure".hashCode();
+        if(null != procedure) {
+            hash ^= procedure.hashCode();
+        }
+        return hash;
+    }
+    
+    public String toString() {
+        return "IgnoreRightProcedure<" + procedure + ">";
     }
 
-    public void testAdaptNull() throws Exception {
-        assertNull(UnaryFunctionBinaryFunction.adapt(null));
+    public static IgnoreRightProcedure adapt(UnaryProcedure procedure) {
+        return null == procedure ? null : new IgnoreRightProcedure(procedure);
     }
 
-    public void testAdapt() throws Exception {
-        assertNotNull(UnaryFunctionBinaryFunction.adapt(new ConstantFunction("xyzzy")));
-    }
+    /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
+    private UnaryProcedure procedure = null;
 }
