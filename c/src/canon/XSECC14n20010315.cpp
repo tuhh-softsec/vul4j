@@ -232,6 +232,9 @@ bool visiblyUtilises(DOMNode *node, safeBuffer &ns) {
 	if (strEquals(node->getPrefix(), (char *) ns.rawBuffer()))
 		return true;
 
+	if (ns.sbStrcmp("") == 0)
+		return false;		// Attributes are never in default namespace
+
 	// Check the attributes
 	DOMNamedNodeMap *atts = node->getAttributes();
 	if (atts == NULL)
@@ -409,7 +412,18 @@ XSECC14n20010315::~XSECC14n20010315() {
 	if (c14ntarget != NULL)
 		delete c14ntarget;
 
-};
+	// Clear out the exclusive namespace list
+	int size = m_exclNSList.size();
+
+	for (int i = 0; i < size; ++i) {
+
+		delete [] m_exclNSList[i];
+
+	}
+
+	m_exclNSList.clear();
+
+}
 
 // --------------------------------------------------------------------------------
 //           XSECC14n20010315 Comments procesing
@@ -759,6 +773,10 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 		if (!visiblyUtilises(e, localName))
 			return false;
 
+		// If we are the top node, then this has never been printer
+		if (e == mp_firstElementNode)
+			return true;
+
 		// Make sure previous nodes do not use the name space (and have it printed)
 		parent = e->getParentNode();
 
@@ -786,7 +804,10 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 				}
 			}
 
-			parent = parent->getParentNode();
+			if (parent == mp_firstElementNode)
+				parent = NULL;
+			else
+				parent = parent->getParentNode();
 
 		}
 
@@ -809,7 +830,13 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 	// Find the parent and check if the node is already defined or if the node
 	// was out of scope
 	parent = e->getParentNode();
-	if (m_XPathSelection && !m_XPathMap.hasNode(parent))
+//	if (m_XPathSelection && !m_XPathMap.hasNode(parent))
+//		return true;
+
+	while (m_XPathSelection && parent != NULL && !m_XPathMap.hasNode(parent))
+		parent = parent->getParentNode();
+
+	if (parent == NULL)
 		return true;
 
 	DOMNamedNodeMap *pmap = parent->getAttributes();
@@ -1111,7 +1138,40 @@ int XSECC14n20010315::processNextNode() {
 						DOMNode *t = mp_nextNode->getParentNode();
 						if (m_XPathSelection && m_XPathMap.hasNode(t))
 							XMLElement = false;
-					
+						else {
+
+							// This is a real node that we have to check
+
+							t = mp_nextNode;
+							while (t != next) {
+								DOMNamedNodeMap *ta;
+								int sz;
+
+								ta = t->getAttributes();
+
+								if (ta != NULL)
+									sz = ta->getLength();
+								else 
+									sz = 0;
+
+								for (int j = 0; j < sz; ++j) {
+
+									if (strEquals(ta->item(j)->getNodeName(), 
+										tmpAtts->item(i)->getNodeName()) == true) {
+
+										XMLElement = false;
+										break;
+
+									}
+
+								}
+
+								t = t->getParentNode();
+
+							}
+
+						}
+
 					}
 
 						 

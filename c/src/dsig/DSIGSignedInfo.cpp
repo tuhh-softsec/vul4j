@@ -336,6 +336,18 @@ void DSIGSignedInfo::load(void) {
 
 	}
 
+	else if (tmpSB.sbStrcmp(URI_ID_EXC_C14N_COM) == 0) {
+
+		m_canonicalizationMethod = CANON_C14NE_COM;
+
+	}
+
+	else if (tmpSB.sbStrcmp(URI_ID_EXC_C14N_NOC) == 0) {
+
+		m_canonicalizationMethod = CANON_C14NE_NOC;
+
+	}
+
 	else
 
 		throw XSECException(XSECException::UnknownCanonicalization);

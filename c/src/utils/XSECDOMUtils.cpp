@@ -195,3 +195,23 @@ XMLCh * XMLT::getUnicodeStr(void) {
 
 }
 
+// --------------------------------------------------------------------------------
+//           Gather text from children
+// --------------------------------------------------------------------------------
+
+void gatherChildrenText(DOMNode * parent, safeBuffer &output) {
+
+	DOMNode * c = parent->getFirstChild();
+
+	output.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
+
+	while (c != NULL) {
+
+		if (c->getNodeType() == DOMNode::TEXT_NODE)
+			output.sbXMLChCat(c->getNodeValue());
+
+		c = c->getNextSibling();
+
+	}
+
+}

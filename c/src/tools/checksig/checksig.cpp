@@ -257,7 +257,6 @@ int evaluate(int argc, char ** argv) {
 	if (errorsOccured) {
 
 		cout << "Errors during parse" << endl;
-		delete parser;
 		return (2);
 
 	}
@@ -312,9 +311,17 @@ int evaluate(int argc, char ** argv) {
 		char baseURI[(_MAX_PATH * 2) + 10];
 		getcwd(path, _MAX_PATH);
 
-		strcpy(baseURI, "file:///");
-		strcat(baseURI, path);
-		strcat(baseURI, "/");
+		strcpy(baseURI, "file:///");		
+
+		// Ugly and nasty but quick
+		if (filename[0] != '\\' && filename[0] != '/' && filename[1] != ':') {
+			strcat(baseURI, path);
+			strcat(baseURI, "/");
+		} else if (path[1] == ':') {
+			path[2] = '\0';
+			strcat(baseURI, path);
+		}
+
 		strcat(baseURI, filename);
 
 		// Find any ':' and "\" characters

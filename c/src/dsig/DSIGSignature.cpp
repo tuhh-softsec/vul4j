@@ -278,6 +278,24 @@ XSECBinTXFMInputStream * DSIGSignature::makeBinInputStream(void) const {
 
 		break;
 
+	case CANON_C14NE_NOC :
+
+		XSECnew(txfm, TXFMC14n(mp_doc));
+		chain->appendTxfm(txfm);
+		((TXFMC14n *) txfm)->setExclusive();
+		txfm->stripComments();
+		
+		break;
+
+	case CANON_C14NE_COM :
+
+		XSECnew(txfm, TXFMC14n(mp_doc));
+		chain->appendTxfm(txfm);
+		((TXFMC14n *) txfm)->setExclusive();
+		txfm->activateComments();
+
+		break;
+
 	default :
 
 		throw XSECException(XSECException::SigVfyError,
@@ -921,6 +939,24 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 
 		XSECnew(txfm, TXFMC14n(mp_doc));
 		chain->appendTxfm(txfm);
+		txfm->activateComments();
+
+		break;
+
+	case CANON_C14NE_NOC :
+
+		XSECnew(txfm, TXFMC14n(mp_doc));
+		chain->appendTxfm(txfm);
+		((TXFMC14n *) txfm)->setExclusive();
+		txfm->stripComments();
+		
+		break;
+
+	case CANON_C14NE_COM :
+
+		XSECnew(txfm, TXFMC14n(mp_doc));
+		chain->appendTxfm(txfm);
+		((TXFMC14n *) txfm)->setExclusive();
 		txfm->activateComments();
 
 		break;

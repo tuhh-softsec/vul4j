@@ -136,6 +136,12 @@ safeBuffer DSIG_EXPORT &makeQName(safeBuffer & qname, safeBuffer &prefix, char *
 safeBuffer DSIG_EXPORT &makeQName(safeBuffer & qname, const XMLCh *prefix, char * localName);
 
 // --------------------------------------------------------------------------------
+//           Gather text from children
+// --------------------------------------------------------------------------------
+
+void DSIG_EXPORT gatherChildrenText(DOMNode * parent, safeBuffer &output);
+
+// --------------------------------------------------------------------------------
 //           String Functions 
 // --------------------------------------------------------------------------------
 

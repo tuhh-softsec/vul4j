@@ -210,7 +210,7 @@ void DSIGTransformC14n::load(void) {
 		m_cMethod = CANON_C14N_NOC;
 	}
 	else if (strEquals(uri, DSIGConstants::s_unicodeStrURIEXC_C14N_COM)) {
-		m_cMethod = CANON_C14NE_NOC;
+		m_cMethod = CANON_C14NE_COM;
 	}
 	else if (strEquals(uri, DSIGConstants::s_unicodeStrURIEXC_C14N_NOC)) {
 		m_cMethod = CANON_C14NE_NOC;

@@ -191,7 +191,7 @@ void DSIGTransformXPath::load(void) {
 
 		mp_NSMap = mp_xpathNode->getAttributes();
 		
-		// Find the text
+		// Find the text node
 		mp_exprTextNode = findFirstChildOfType(mp_xpathNode, DOMNode::TEXT_NODE);
 
 		if (mp_exprTextNode == NULL) {
@@ -199,7 +199,14 @@ void DSIGTransformXPath::load(void) {
 				"Expected Text Node in beneath <XPath> in DSIGTransformXPath::load");
 		}
 
-		m_expr << (*(mp_parentSignature->getSBFormatter()) << mp_exprTextNode->getNodeValue());
+		// Gather the text
+		safeBuffer exprSB;
+
+		gatherChildrenText(mp_xpathNode, exprSB);
+
+		m_expr << (*(mp_parentSignature->getSBFormatter()) << exprSB.rawXMLChBuffer());
+
+		//m_expr << (*(mp_parentSignature->getSBFormatter()) << mp_exprTextNode->getNodeValue());
 				
 	}
 
