@@ -291,7 +291,7 @@ public class Transforms extends SignatureElementProxy {
     * @return the <it>i</it><sup>th</sup> transforms
     * @throws TransformationException
     */
-   private Transform item(int i) throws TransformationException {
+   public Transform item(int i) throws TransformationException {
 
       try {
          Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
