@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.9 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.9 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.10 2003/10/13 20:52:21 rdonkin Exp $
+ * $Revision: 1.10 $
+ * $Date: 2003/10/13 20:52:21 $
  *
  * ====================================================================
  * 
@@ -74,7 +74,7 @@ import junit.framework.TestSuite;
  * <p> Runs standard tests for RulesBase as well as tests of extensions.
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.9 $ $Date: 2003/10/09 21:09:48 $
+ * @version $Revision: 1.10 $ $Date: 2003/10/13 20:52:21 $
  */
 
 
@@ -386,7 +386,6 @@ public class EBRTestCase extends RulesBaseTestCase {
     }
     
     public void testAncesterMatch() throws Exception {
-        System.out.println("Starting ancester match...");
         // test fixed root ancester
         digester.getRules().clear();
         
@@ -446,5 +445,27 @@ public class EBRTestCase extends RulesBaseTestCase {
         assertEquals("Wild ancester match (2)", 1, list.size());
         assertEquals("Match missed (5)", "star-b-c-star" , ((TestRule) list.get(0)).getIdentifier());    
         System.out.println("Finished ancester match.");
+    }
+    
+    public void testLongMatch() {
+        
+        digester.getRules().clear();
+
+        digester.addRule("a/b/c/d/*", new TestRule("a-b-c-d-star"));
+        
+        List list = digester.getRules().match(null, "a/b/c/d/e"); 
+        assertEquals("Long match (1)", 1, list.size());
+        assertEquals("Match missed (1)", "a-b-c-d-star" , ((TestRule) list.get(0)).getIdentifier()); 
+        
+        list = digester.getRules().match(null, "a/b/c/d/e/f");
+        assertEquals("Long match (2)", 1, list.size());
+        assertEquals("Match missed (2)", "a-b-c-d-star" , ((TestRule) list.get(0)).getIdentifier()); 
+        
+        list = digester.getRules().match(null, "a/b/c/d/e/f/g");
+        assertEquals("Long match (3)", 1, list.size());
+        assertEquals("Match missed (3)", "a-b-c-d-star" , ((TestRule) list.get(0)).getIdentifier()); 
+        
+        list = digester.getRules().match(null, "a/b/c/d");
+        assertEquals("Long match (4)", 0, list.size());
     }
 }

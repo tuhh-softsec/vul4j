@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.8 2003/10/09 21:09:46 rdonkin Exp $
- * $Revision: 1.8 $
- * $Date: 2003/10/09 21:09:46 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.9 2003/10/13 20:52:21 rdonkin Exp $
+ * $Revision: 1.9 $
+ * $Date: 2003/10/13 20:52:21 $
  *
  * ====================================================================
  * 
@@ -172,7 +172,7 @@ import java.util.Map;
  * these additions should not break your existing rules.</p>
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.8 $ $Date: 2003/10/09 21:09:46 $
+ * @version $Revision: 1.9 $ $Date: 2003/10/13 20:52:21 $
  */
 
 
@@ -285,7 +285,7 @@ public class ExtendedBaseRules extends RulesBase {
                 } else {
                     // we don't have a match yet - so try exact ancester
                     //
-                    rulesList = findExactAncesterMatch(parentPattern);
+                    rulesList = findExactAncesterMatch(pattern);
                     if (rulesList != null) {
                         // we have a match!
                         // so ignore all basic matches from now on
