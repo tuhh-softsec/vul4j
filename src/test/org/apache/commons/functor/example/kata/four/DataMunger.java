@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.6 2003/12/17 22:05:26 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.7 2003/12/17 22:13:51 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,15 +75,24 @@ import org.apache.commons.functor.example.kata.one.Subtract;
 import org.apache.commons.functor.example.lines.Lines;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2003/12/17 22:05:26 $
+ * The real workhorse of this Kata excercise.
+ * 
+ * DataMunger wires together various functors and exposes them
+ * as static utility methhods. 
+ * @version $Revision: 1.7 $ $Date: 2003/12/17 22:13:51 $
  * @author Rodney Waldhoff
  */
 public class DataMunger {
-
+	/** See {@link #process(Reader,int,int,int)} */
     public static final Object process(final InputStream file, final int selected, final int col1, final int col2) {
         return process(new InputStreamReader(file),selected,col1,col2);
     }
 
+	/**
+	 * Processes each line of the given Reader, returning the <i>selected</i> column for the 
+	 * line where the absolute difference between the integer value of <i>col1</i> and <i>col2</i>
+	 * is least.  
+	 */
     public static final Object process(final Reader file, final int selected, final int col1, final int col2) {
         return NthColumn.instance(selected).evaluate(
             Algorithms.inject(
@@ -115,6 +124,11 @@ public class DataMunger {
         );
     }
 
+	/**
+	 * A UnaryFunction that returns the absolute value of the difference 
+	 * between the Integers stored in the <i>col1</i> and <i>col2</i>th
+	 * whitespace delimited columns of the input line (a String).
+	 */
     private static UnaryFunction absSpread(final int col1, final int col2) {
         return Composite.function(
             Abs.instance(),

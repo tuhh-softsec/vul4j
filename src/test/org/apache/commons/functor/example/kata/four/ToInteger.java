@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/ToInteger.java,v 1.1 2003/12/02 16:36:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/ToInteger.java,v 1.2 2003/12/17 22:13:51 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,7 +59,13 @@ package org.apache.commons.functor.example.kata.four;
 import org.apache.commons.functor.UnaryFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/12/02 16:36:11 $
+ * Converts a String value to an Integer, throwing 
+ * an exception if no such conversion can be made.
+ * 
+ * Trailing, non-{@link Character#isDigit digit} characters
+ * are ignored.
+ * 
+ * @version $Revision: 1.2 $ $Date: 2003/12/17 22:13:51 $
  * @author Rodney Waldhoff
  */
 public final class ToInteger implements UnaryFunction {

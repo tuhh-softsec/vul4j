@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/TestWeather.java,v 1.3 2003/12/03 01:04:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/TestWeather.java,v 1.4 2003/12/17 22:13:51 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import junit.framework.TestSuite;
  * See http://pragprog.com/pragdave/Practices/Kata/KataFour.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/12/03 01:04:12 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/17 22:13:51 $
  * @author Rodney Waldhoff
  */
 public class TestWeather extends TestCase {
@@ -77,6 +77,8 @@ public class TestWeather extends TestCase {
     }
 
     public void testProcess() {
+		// for our soccer example, we want to select the first column of the
+		// line with the minimal difference between the second and third columns.
         assertEquals(
             "14",
             DataMunger.process(getClass().getResourceAsStream("weather.txt"),0,1,2));            
