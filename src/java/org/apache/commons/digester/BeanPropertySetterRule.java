@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.1 2001/11/14 19:54:05 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/11/14 19:54:05 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.2 2001/12/04 18:01:47 jstrachan Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/12/04 18:01:47 $
  *
  * ====================================================================
  *
@@ -68,7 +68,7 @@ import org.apache.commons.beanutils.BeanUtils;
 
 
 /**
- * <p> Rule implements sets a body property on the top object 
+ * <p> Rule implements sets a bean property on the top object 
  * to the body text.</p>
  *
  * <p> The property set:</p>
@@ -80,7 +80,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.1 $ $Date: 2001/11/14 19:54:05 $
+ * @version $Revision: 1.2 $ $Date: 2001/12/04 18:01:47 $
  */
 
 public class BeanPropertySetterRule extends Rule {
