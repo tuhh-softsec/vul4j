@@ -1,4 +1,7 @@
 /*
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ParserFeatureSetterFactory.java,v 1.2 2004/01/10 17:24:10 rdonkin Exp $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/10 17:24:10 $
  *
  * ====================================================================
  * 

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.26 2003/10/09 21:09:46 rdonkin Exp $
- * $Revision: 1.26 $
- * $Date: 2003/10/09 21:09:46 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.27 2004/01/10 17:24:10 rdonkin Exp $
+ * $Revision: 1.27 $
+ * $Date: 2004/01/10 17:24:10 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -93,7 +93,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.26 $ $Date: 2003/10/09 21:09:46 $
+ * @version $Revision: 1.27 $ $Date: 2004/01/10 17:24:10 $
  */
 
 public class CallMethodRule extends Rule {
@@ -450,8 +450,8 @@ public class CallMethodRule extends Rule {
             // convert nulls and convert stringy parameters 
             // for non-stringy param types
             if(
-                parameters[i] == null
-                || (parameters[i] instanceof String && 
+                parameters[i] == null ||
+                 (parameters[i] instanceof String && 
                    !String.class.isAssignableFrom(paramTypes[i]))) {
                 
                 paramValues[i] =

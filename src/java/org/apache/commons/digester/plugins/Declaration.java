@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Declaration.java,v 1.7 2003/11/16 22:37:35 rdonkin Exp $
- * $Revision: 1.7 $
- * $Date: 2003/11/16 22:37:35 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Declaration.java,v 1.8 2004/01/10 17:23:47 rdonkin Exp $
+ * $Revision: 1.8 $
+ * $Date: 2004/01/10 17:23:47 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -344,8 +344,8 @@ public class Declaration {
                     Object none = ruleMethod.invoke(null, params);
                 } catch (Exception e) {
                     throw new PluginWrappedException(
-                        "Unable to configure class [" + pluginClass + "]"
-                        + " using method [" + ruleMethodName + "]", e);
+                        "Unable to configure class [" + pluginClass + "]" +
+                        " using method [" + ruleMethodName + "]", e);
                 }
                 return;
             }
@@ -374,8 +374,8 @@ public class Declaration {
         // look for  resource
         {
             String resourceName = 
-                pluginClass.getClass().getName().replace('.', '/')
-                + "RuleInfo.xml";
+                pluginClass.getClass().getName().replace('.', '/') +
+                "RuleInfo.xml";
             InputStream is = 
                 pluginClass.getClassLoader().getResourceAsStream(
                     resourceName);
@@ -433,9 +433,9 @@ public class Declaration {
             Object none = ruleMethod.invoke(null, params);
         } catch (Exception e) {
             throw new PluginWrappedException(
-                "Unable to configure class [" + pluginClass + "]"
-                + " using rule class [" + ruleClass + "]"
-                + " method [" + ruleMethodName + "]", e);
+                "Unable to configure class [" + pluginClass + "]" +
+                " using rule class [" + ruleClass + "]" +
+                " method [" + ruleMethodName + "]", e);
         } 
     }
     

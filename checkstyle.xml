@@ -13,7 +13,7 @@
     <!-- Verify that EVERY source file has the appropriate license -->
     <module name="Header">
       <property name="headerFile" value="LICENSE.txt"/>
-      <property name="ignoreLines" value="2,3,4,9"/>
+      <property name="ignoreLines" value="2,3,4,10"/>
     </module>
 
     <module name="OperatorWrap">

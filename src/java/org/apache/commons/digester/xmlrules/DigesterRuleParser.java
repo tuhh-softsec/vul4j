@@ -1,7 +1,7 @@
-  /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterRuleParser.java,v 1.21 2003/10/28 22:31:02 rdonkin Exp $
- * $Revision: 1.21 $
- * $Date: 2003/10/28 22:31:02 $
+/*
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterRuleParser.java,v 1.22 2004/01/10 17:24:26 rdonkin Exp $
+ * $Revision: 1.22 $
+ * $Date: 2004/01/10 17:24:26 $
  *
  * ====================================================================
  * 
@@ -665,8 +665,7 @@ public class DigesterRuleParser extends RuleSetBase {
             boolean ignoreExceptions = 
                 "true".equalsIgnoreCase(attributes.getValue("ignore-exceptions"));
             return (attrName == null || attrName.length() == 0) ?
-                new FactoryCreateRule( className, ignoreExceptions)
-                :
+                new FactoryCreateRule( className, ignoreExceptions) :
                 new FactoryCreateRule( className, attrName, ignoreExceptions);
         }
     }
@@ -679,8 +678,7 @@ public class DigesterRuleParser extends RuleSetBase {
             String className = attributes.getValue("classname");
             String attrName = attributes.getValue("attrname");
             return (attrName == null || attrName.length() == 0) ?
-                new ObjectCreateRule( className)
-                :
+                new ObjectCreateRule( className) :
                 new ObjectCreateRule( className, attrName);
         }
     }
@@ -713,8 +711,7 @@ public class DigesterRuleParser extends RuleSetBase {
             String methodName = attributes.getValue("methodname");
             String paramType = attributes.getValue("paramtype");
             return (paramType == null || paramType.length() == 0) ?
-                new SetTopRule( methodName)
-                :
+                new SetTopRule( methodName) :
                 new SetTopRule( methodName, paramType);
         }
     }
@@ -727,8 +724,7 @@ public class DigesterRuleParser extends RuleSetBase {
             String methodName = attributes.getValue("methodname");
             String paramType = attributes.getValue("paramtype");
             return (paramType == null || paramType.length() == 0) ?
-                new SetNextRule( methodName)
-                :
+                new SetNextRule( methodName) :
                 new SetNextRule( methodName, paramType);
         }
     }

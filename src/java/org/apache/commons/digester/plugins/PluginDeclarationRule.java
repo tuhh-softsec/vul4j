@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginDeclarationRule.java,v 1.6 2003/11/16 22:37:35 rdonkin Exp $
- * $Revision: 1.6 $
- * $Date: 2003/11/16 22:37:35 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginDeclarationRule.java,v 1.7 2004/01/10 17:23:47 rdonkin Exp $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/10 17:23:47 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -129,14 +129,14 @@ public class PluginDeclarationRule extends Rule {
 
         if (id == null) {
             throw new PluginInvalidInputException(
-                    "mandatory attribute id not present on tag"
-                     + " <" + name + ">");
+                    "mandatory attribute id not present on tag" +
+                       " <" + name + ">");
         }
 
         if (pluginClassName == null) {
             throw new PluginInvalidInputException(
-                    "mandatory attribute class not present on tag"
-                     + " <" + name + ">");
+                    "mandatory attribute class not present on tag" +
+                       " <" + name + ">");
         }
 
         Declaration newDecl = new Declaration(pluginClassName);
@@ -198,8 +198,8 @@ public class PluginDeclarationRule extends Rule {
         // simple for now.
         if (pm.getDeclarationByClass(pluginClassName) != null) {
             throw new PluginInvalidInputException(
-                    "Plugin id [" + id + "] maps to class [" + pluginClassName + "]"
-                     + " which has already been mapped by some other id.");
+                    "Plugin id [" + id + "] maps to class [" + pluginClassName + "]" +
+                     " which has already been mapped by some other id.");
         }
 
         pm.addDeclaration(newDecl);

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/FactoryCreateRule.java,v 1.15 2003/10/09 21:09:46 rdonkin Exp $
- * $Revision: 1.15 $
- * $Date: 2003/10/09 21:09:46 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/FactoryCreateRule.java,v 1.16 2004/01/10 17:24:10 rdonkin Exp $
+ * $Revision: 1.16 $
+ * $Date: 2004/01/10 17:24:10 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.15 $ $Date: 2003/10/09 21:09:46 $
+ * @version $Revision: 1.16 $ $Date: 2004/01/10 17:24:10 $
  */
 
 public class FactoryCreateRule extends Rule {
@@ -422,8 +422,8 @@ public class FactoryCreateRule extends Rule {
             } catch (Exception e) {
                 // log message and error
                 if (digester.log.isInfoEnabled()) {
-                    digester.log.info("[FactoryCreateRule] Create exception ignored: " 
-                        + ((e.getMessage() == null) ? e.getClass().getName() : e.getMessage()));
+                    digester.log.info("[FactoryCreateRule] Create exception ignored: " +
+                        ((e.getMessage() == null) ? e.getClass().getName() : e.getMessage()));
                     if (digester.log.isDebugEnabled()) {
                         digester.log.debug("[FactoryCreateRule] Ignored exception:", e);
                     }
@@ -451,9 +451,9 @@ public class FactoryCreateRule extends Rule {
         // check if object was created 
         // this only happens if an exception was thrown and we're ignoring them
         if (	
-                ignoreCreateExceptions 
-                && exceptionIgnoredStack != null 
-                && !(exceptionIgnoredStack.empty())) {
+                ignoreCreateExceptions &&
+                exceptionIgnoredStack != null &&
+                !(exceptionIgnoredStack.empty())) {
                 
             if (((Boolean) exceptionIgnoredStack.pop()).booleanValue()) {
                 // creation exception was ignored

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginRules.java,v 1.7 2003/11/18 22:32:16 rdonkin Exp $
- * $Revision: 1.7 $
- * $Date: 2003/11/18 22:32:16 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginRules.java,v 1.8 2004/01/10 17:23:47 rdonkin Exp $
+ * $Revision: 1.8 $
+ * $Date: 2004/01/10 17:23:47 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -315,8 +315,8 @@ public class PluginRules implements Rules {
         
         if (debug) {
             log.debug(
-                "Matching pattern [" + pattern 
-                + "] on rules object " + this.toString());
+                "Matching pattern [" + pattern +
+                "] on rules object " + this.toString());
         }
 
         List matches;
@@ -325,8 +325,8 @@ public class PluginRules implements Rules {
             // assert pattern.startsWith(currPluginCreateRule.getPattern())
             if (debug) {
                 log.debug(
-                    "Pattern [" + pattern + "] matching PluginCreateRule " 
-                    + currPluginCreateRule.toString());
+                    "Pattern [" + pattern + "] matching PluginCreateRule " +
+                    currPluginCreateRule.toString());
             }
             matches = new ArrayList(1);
             matches.add(currPluginCreateRule);
@@ -358,8 +358,8 @@ public class PluginRules implements Rules {
 
         if (debug) {
             log.debug(
-                "Entering PluginCreateRule " + pcr.toString() 
-                + " on rules object " + this.toString());
+                "Entering PluginCreateRule " + pcr.toString() +
+                " on rules object " + this.toString());
         }
 
         currPluginCreateRule = pcr;
@@ -386,8 +386,8 @@ public class PluginRules implements Rules {
         currPluginCreateRule = null;
         if (debug) {
             log.debug(
-                "Leaving PluginCreateRule " + pcr.toString()
-                + " on rules object " + this.toString());
+                "Leaving PluginCreateRule " + pcr.toString() +
+                " on rules object " + this.toString());
         }
     }
 }

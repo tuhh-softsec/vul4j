@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.88 2004/01/06 22:15:57 rdonkin Exp $
- * $Revision: 1.88 $
- * $Date: 2004/01/06 22:15:57 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.89 2004/01/10 17:24:10 rdonkin Exp $
+ * $Revision: 1.89 $
+ * $Date: 2004/01/10 17:24:10 $
  *
  * ====================================================================
  * 
@@ -120,7 +120,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.88 $ $Date: 2004/01/06 22:15:57 $
+ * @version $Revision: 1.89 $ $Date: 2004/01/10 17:24:10 $
  */
 
 public class Digester extends DefaultHandler {
@@ -2679,8 +2679,8 @@ public class Digester extends DefaultHandler {
             }
         }
         if (locator != null) {
-            String error = "Error at (" + locator.getLineNumber() + ", "
-                    + locator.getColumnNumber() + ": " + message;
+            String error = "Error at (" + locator.getLineNumber() + ", " +
+                    locator.getColumnNumber() + ": " + message;
             if (e != null) {
                 return new SAXParseException(error, locator, e);
             } else {

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginManager.java,v 1.5 2003/11/16 22:37:35 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2003/11/16 22:37:35 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginManager.java,v 1.6 2004/01/10 17:23:47 rdonkin Exp $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/10 17:23:47 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -123,8 +123,8 @@ public class PluginManager {
             declarationsById.put(id, decl);
             if (debug) {
                 log.debug(
-                    "Indexing plugin-id [" + id + "]"
-                    + " -> class [" + pluginClass.getName() + "]");
+                    "Indexing plugin-id [" + id + "]" +
+                    " -> class [" + pluginClass.getName() + "]");
             }
         }
     }

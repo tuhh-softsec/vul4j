@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.9 2003/11/18 22:14:22 rdonkin Exp $
- * $Revision: 1.9 $
- * $Date: 2003/11/18 22:14:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.10 2004/01/10 17:23:47 rdonkin Exp $
+ * $Revision: 1.10 $
+ * $Date: 2004/01/10 17:23:47 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -444,9 +444,9 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             Declaration currDeclaration = null;
             
             if (debug) {
-                log.debug("PluginCreateRule.begin: installing new plugin: " 
-                    + "oldrules=" + oldRules.toString()
-                    + ", localrules=" + localRules.toString());
+                log.debug("PluginCreateRule.begin: installing new plugin: " +
+                    "oldrules=" + oldRules.toString() +
+                    ", localrules=" + localRules.toString());
             }
               
             String pluginClassName; 
@@ -499,8 +499,8 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             }
             else {
                 throw new PluginInvalidInputException(
-                    "No plugin class specified for element "
-                    + pattern);
+                    "No plugin class specified for element " +
+                    pattern);
             }
             
             // now load up the custom rules into a private Rules instance
@@ -528,9 +528,9 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         Rules oldRules = digester.getRules();
         
         if (debug) {
-            log.debug("PluginCreateRule.begin: firing nested rules: " 
-                + "oldrules=" + oldRules.toString()
-                + ", localrules=" + localRules.toString());
+            log.debug("PluginCreateRule.begin: firing nested rules: " +
+                "oldrules=" + oldRules.toString() +
+                ", localrules=" + localRules.toString());
         }
 
         // assert oldRules = localRules.oldRules
@@ -539,8 +539,8 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         digester.setRules(oldRules);
 
         if (debug) {
-            log.debug("PluginCreateRule.begin: restored old rules to " 
-                + "oldrules=" + oldRules.toString());
+            log.debug("PluginCreateRule.begin: restored old rules to " +
+                "oldrules=" + oldRules.toString());
         }
     }
 
