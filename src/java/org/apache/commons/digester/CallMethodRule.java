@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.19 2002/09/30 19:48:50 rdonkin Exp $
- * $Revision: 1.19 $
- * $Date: 2002/09/30 19:48:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.20 2003/02/02 16:09:53 rdonkin Exp $
+ * $Revision: 1.20 $
+ * $Date: 2003/02/02 16:09:53 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -91,7 +91,7 @@ import org.apache.commons.beanutils.MethodUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.19 $ $Date: 2002/09/30 19:48:50 $
+ * @version $Revision: 1.20 $ $Date: 2003/02/02 16:09:53 $
  */
 
 public class CallMethodRule extends Rule {

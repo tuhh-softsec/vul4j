@@ -1,12 +1,12 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.3 2002/07/10 18:12:33 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2002/07/10 18:12:33 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.4 2003/02/02 16:09:53 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2003/02/02 16:09:53 $
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -156,7 +156,7 @@ import java.util.Comparator;
  * these additions should not break your existing rules.</p>
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.3 $ $Date: 2002/07/10 18:12:33 $
+ * @version $Revision: 1.4 $ $Date: 2003/02/02 16:09:53 $
  */
 
 

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.69 2002/12/16 02:14:15 craigmcc Exp $
- * $Revision: 1.69 $
- * $Date: 2002/12/16 02:14:15 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.70 2003/02/02 16:09:53 rdonkin Exp $
+ * $Revision: 1.70 $
+ * $Date: 2003/02/02 16:09:53 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -125,7 +125,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.69 $ $Date: 2002/12/16 02:14:15 $
+ * @version $Revision: 1.70 $ $Date: 2003/02/02 16:09:53 $
  */
 
 public class Digester extends DefaultHandler {

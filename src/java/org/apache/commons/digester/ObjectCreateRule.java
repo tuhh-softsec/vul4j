@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.12 2002/03/23 17:45:58 rdonkin Exp $
- * $Revision: 1.12 $
- * $Date: 2002/03/23 17:45:58 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.13 2003/02/02 16:09:53 rdonkin Exp $
+ * $Revision: 1.13 $
+ * $Date: 2003/02/02 16:09:53 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.12 $ $Date: 2002/03/23 17:45:58 $
+ * @version $Revision: 1.13 $ $Date: 2003/02/02 16:09:53 $
  */
 
 public class ObjectCreateRule extends Rule {

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.15 2002/08/05 20:52:30 craigmcc Exp $
- * $Revision: 1.15 $
- * $Date: 2002/08/05 20:52:30 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.16 2003/02/02 16:09:53 rdonkin Exp $
+ * $Revision: 1.16 $
+ * $Date: 2003/02/02 16:09:53 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ import org.apache.commons.beanutils.MethodUtils;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Janek Bogucki
- * @version $Revision: 1.15 $ $Date: 2002/08/05 20:52:30 $
+ * @version $Revision: 1.16 $ $Date: 2003/02/02 16:09:53 $
  */
 
 public class SetTopRule extends Rule {

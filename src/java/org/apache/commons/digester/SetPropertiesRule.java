@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.9 2002/07/16 21:23:27 rdonkin Exp $
- * $Revision: 1.9 $
- * $Date: 2002/07/16 21:23:27 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.10 2003/02/02 16:09:53 rdonkin Exp $
+ * $Revision: 1.10 $
+ * $Date: 2003/02/02 16:09:53 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * Certain attributes can also be marked to be ignored.</p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.9 $ $Date: 2002/07/16 21:23:27 $
+ * @version $Revision: 1.10 $ $Date: 2003/02/02 16:09:53 $
  */
 
 public class SetPropertiesRule extends Rule {

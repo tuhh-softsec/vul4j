@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.9 $ $Date: 2002/03/23 17:45:58 $
+ * @version $Revision: 1.10 $ $Date: 2003/02/02 16:09:53 $
  */
 
 public class FactoryCreateRule extends Rule {

@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -111,7 +111,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * of course.</p>
  * 
  * @author Christopher Lenz
- * @version $Revision: 1.1 $ $Date: 2002/10/02 20:27:17 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/02 16:09:53 $
  * @since Digester 1.4
  */
 
