@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.38 2002/01/09 20:22:49 sanders Exp $
- * $Revision: 1.38 $
- * $Date: 2002/01/09 20:22:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.39 2002/01/12 22:32:37 sanders Exp $
+ * $Revision: 1.39 $
+ * $Date: 2002/01/12 22:32:37 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.38 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.39 $ $Date: 2002/01/12 22:32:37 $
  */
 
 public class Digester extends DefaultHandler {
@@ -764,7 +764,7 @@ public class Digester extends DefaultHandler {
         // Fire "body" events for all relevant rules
         List rules = getRules().match(namespaceURI, match);
         if ((rules != null) && (rules.size() > 0)) {
-            String bodyText = this.bodyText.toString().trim();
+            String bodyText = this.bodyText.toString();
             for (int i = 0; i < rules.size(); i++) {
                 try {
                     Rule rule = (Rule) rules.get(i);
