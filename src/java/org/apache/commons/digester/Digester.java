@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.83 2003/10/09 21:09:46 rdonkin Exp $
- * $Revision: 1.83 $
- * $Date: 2003/10/09 21:09:46 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.84 2003/10/19 19:35:40 rdonkin Exp $
+ * $Revision: 1.84 $
+ * $Date: 2003/10/19 19:35:40 $
  *
  * ====================================================================
  * 
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.83 $ $Date: 2003/10/09 21:09:46 $
+ * @version $Revision: 1.84 $ $Date: 2003/10/19 19:35:40 $
  */
 
 public class Digester extends DefaultHandler {
@@ -591,6 +591,25 @@ public class Digester extends DefaultHandler {
 
     }
 
+    /**
+     * Gets the logger used for logging SAX-related information.
+     * <strong>Note</strong> the output is finely grained.
+     */
+    public Log getSAXLogger() {
+        
+        return saxLog;
+    }
+    
+
+    /**
+     * Sets the logger used for logging SAX-related information.
+     * <strong>Note</strong> the output is finely grained.
+     * @param log Log, not null
+     */    
+    public void setSAXLogger(Log saxLog) {
+    
+        this.saxLog = saxLog;
+    }
 
     /**
      * Return the current rule match path
@@ -1381,9 +1400,9 @@ public class Digester extends DefaultHandler {
      * @param systemId The system identifier of the entity being referenced
      *
      * @exception SAXException if a parsing exception occurs
-     * <
+     * 
      */
-      public InputSource resolveEntity(String publicId, String systemId)
+    public InputSource resolveEntity(String publicId, String systemId)
             throws SAXException {     
                 
         if (saxLog.isDebugEnabled()) {
@@ -1404,8 +1423,21 @@ public class Digester extends DefaultHandler {
             entityURL = (String)entityValidator.get(systemId);
         } 
 
-        if (entityURL == null){ 
-           return (null); 
+        if (entityURL == null) { 
+            if (systemId == null) {
+                // cannot resolve
+                if (log.isDebugEnabled()) {
+                    log.debug(" Cannot resolve entity: '" + entityURL + "'");
+                }
+                return (null);
+                
+                } else {
+                    // try to resolve using system ID
+                    if (log.isDebugEnabled()) {
+                        log.debug(" Trying to resolve using system ID '" + systemId + "'");
+                    } 
+                    entityURL = systemId;
+                }
         }
         
         // Return an input source to our alternative URL
