@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -90,6 +88,18 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
  * Class for holding information on a KeyValue node as well as setting
  * such a node in a signature.
  *
+ * Two types of Value are understood - RSA and DSA.
+ *
+ * RSA values are fully implemented as per XML-DSig.  They have two parameters
+ *
+ * <ul>
+ * <li><em>Modulus</em> - holds the modulus of this public key; and</li>
+ * <li><em>Exponent</em> - holds the exponent.</li>
+ * </ul>
+ *
+ * DSA values have all mandatory parts implemented  - P, Q, G and Y.
+ *
+ * J, Seed and PgenCounter are not currently implemented.
  */
 
 

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -76,6 +74,10 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
+#include <xercesc/util/Janitor.hpp>
+
+XSEC_USING_XERCES(ArrayJanitor);
+
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------
@@ -84,6 +86,7 @@
 DSIGKeyInfoName::DSIGKeyInfoName(DSIGSignature *sig, DOMNode *nameNode) : 
 DSIGKeyInfo(sig),
 mp_name(NULL),
+mp_decodedDName(NULL),
 mp_keyNameTextNode(0) {
 
 	mp_keyInfoDOMNode = nameNode;
@@ -94,6 +97,7 @@ mp_keyNameTextNode(0) {
 DSIGKeyInfoName::DSIGKeyInfoName(DSIGSignature *sig) : 
 DSIGKeyInfo(sig),
 mp_name(NULL),
+mp_decodedDName(NULL),
 mp_keyNameTextNode(0) {
 
 	mp_keyInfoDOMNode = 0;
@@ -102,6 +106,9 @@ mp_keyNameTextNode(0) {
 
 
 DSIGKeyInfoName::~DSIGKeyInfoName() {
+
+	if (mp_decodedDName != NULL)
+		delete[] mp_decodedDName;
 
 };
 
@@ -151,11 +158,23 @@ void DSIGKeyInfoName::load(void) {
 
 }
 
+const XMLCh * DSIGKeyInfoName::getDecodedKeyName(void) {
+
+	if (mp_decodedDName == NULL) {
+
+		mp_decodedDName = decodeDName(mp_name);
+
+	}
+
+	return mp_decodedDName;
+
+}
+
 // --------------------------------------------------------------------------------
 //           Create and Set functions
 // --------------------------------------------------------------------------------
 
-DOMElement * DSIGKeyInfoName::createBlankKeyName(const XMLCh * name) {
+DOMElement * DSIGKeyInfoName::createBlankKeyName(const XMLCh * name, bool isDName) {
 
 	// Create the DOM Structure
 
@@ -167,7 +186,23 @@ DOMElement * DSIGKeyInfoName::createBlankKeyName(const XMLCh * name) {
 
 	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	mp_keyInfoDOMNode = ret;
-	mp_keyNameTextNode = doc->createTextNode(name);
+
+	// Check whether to encode prior to adding
+	if (isDName == true) {
+
+		// Treat as a distinguished name
+
+		mp_decodedDName = XMLString::replicate(name);
+		XMLCh * encodedName = encodeDName(name);
+		ArrayJanitor<XMLCh> j_encodedName(encodedName);
+
+		mp_keyNameTextNode = doc->createTextNode(encodedName);
+
+	}
+
+	else
+		mp_keyNameTextNode = doc->createTextNode(name);
+
 	ret->appendChild(mp_keyNameTextNode);
 
 	mp_name = mp_keyNameTextNode->getNodeValue();
@@ -176,7 +211,7 @@ DOMElement * DSIGKeyInfoName::createBlankKeyName(const XMLCh * name) {
 
 }
 
-void DSIGKeyInfoName::setKeyName(const XMLCh * name) {
+void DSIGKeyInfoName::setKeyName(const XMLCh * name, bool isDName) {
 
 	if (mp_keyNameTextNode == 0) {
 
@@ -186,7 +221,32 @@ void DSIGKeyInfoName::setKeyName(const XMLCh * name) {
 
 	}
 
-	mp_keyNameTextNode->setNodeValue(name);
+	if (mp_decodedDName != NULL) {
+
+		delete[] mp_decodedDName;
+		mp_decodedDName = NULL;
+
+	}
+
+	if (isDName == true) {
+
+		// This name should be treated as a Distinguished Name - so do the
+		// required encoding
+
+		mp_decodedDName = XMLString::replicate(name);
+		XMLCh * encodedName = encodeDName(name);
+		ArrayJanitor<XMLCh> j_encodedName(encodedName);
+
+		mp_keyNameTextNode->setNodeValue(encodedName);
+
+	}
+
+	else {
+
+		mp_keyNameTextNode->setNodeValue(name);
+
+	}
+
 	mp_name = mp_keyNameTextNode->getNodeValue();
 
 }

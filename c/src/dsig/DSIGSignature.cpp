@@ -681,7 +681,7 @@ DSIGKeyInfoX509 * DSIGSignature::appendX509Data(void) {
 
 }
 
-DSIGKeyInfoName * DSIGSignature::appendKeyName(const XMLCh * name) {
+DSIGKeyInfoName * DSIGSignature::appendKeyName(const XMLCh * name, bool isDName) {
 
 	createKeyInfoElement();
 
@@ -689,7 +689,7 @@ DSIGKeyInfoName * DSIGSignature::appendKeyName(const XMLCh * name) {
 
 	XSECnew(n, DSIGKeyInfoName(this));
 
-	mp_KeyInfoNode->appendChild(n->createBlankKeyName(name));
+	mp_KeyInfoNode->appendChild(n->createBlankKeyName(name, isDName));
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
 
 	// Add to the list

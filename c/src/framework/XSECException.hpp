@@ -142,7 +142,8 @@ public:
 		HTTPURIInputStreamError     = 38,
 		LoadEmptyXPathFilter		= 39,
 		XPathFilterError			= 40,
-		UnknownError				= 41		// Must be last!
+		DNameDecodeError			= 41,
+		UnknownError				= 42		// Must be last!
 
 	};
 

@@ -619,10 +619,11 @@ public:
 	 * Add a new KeyInfo element for a key name.
 	 *
 	 * @param name The name of the key to set in the XML
+	 * @param isDName Treat the name as a Distinguished name and encode accordingly
 	 * @returns A pointer to the created object
 	 */
 
-	DSIGKeyInfoName * appendKeyName(const XMLCh * name);
+	DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false);
 
 	//@}
 

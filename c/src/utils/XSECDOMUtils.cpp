@@ -73,6 +73,7 @@
 // XSEC
 
 #include <xsec/utils/XSECDOMUtils.hpp>
+#include <xsec/framework/XSECError.hpp>
 
 // Xerces
 
@@ -238,3 +239,245 @@ void gatherChildrenText(DOMNode * parent, safeBuffer &output) {
 	}
 
 }
+
+// --------------------------------------------------------------------------------
+//           String decode/encode
+// --------------------------------------------------------------------------------
+
+/*
+ * Distinguished names have a particular encoding that needs to be performed prior
+ * to enclusion in the DOM
+ */
+
+XMLCh * encodeDName(const XMLCh * toEncode) {
+
+	XERCES_CPP_NAMESPACE_USE;
+
+	safeBuffer result;
+
+	static XMLCh s_strEncodedSpace[] = {
+		chBackSlash,
+		chDigit_2,
+		chDigit_0,
+		chNull
+	};
+
+	result.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
+
+	if (toEncode == NULL) {
+		return NULL;
+	}
+
+	
+	// Find where the trailing whitespace starts
+	const XMLCh * ws = &toEncode[XMLString::stringLen(toEncode)];
+	
+	*ws--;
+	while (ws != toEncode && 
+		(*ws == '\t' || *ws == '\r' || *ws ==' ' || *ws == '\n'))
+		*ws--;
+
+	// Set to first white space character, if we didn't get back to the start
+	if (toEncode != ws)
+		*ws++;
+
+	// Now run through each character and encode if necessary
+
+	const XMLCh * i = toEncode;
+
+	if (*i == chPound) {
+		// "#" Characters escaped at the start of a string
+		result.sbXMLChAppendCh(chBackSlash);
+	}
+
+	while (*i != chNull && i != ws) {
+
+		if (*i <= 0x09) {
+			result.sbXMLChAppendCh(chBackSlash);
+			result.sbXMLChAppendCh(chDigit_0);
+			result.sbXMLChAppendCh(chDigit_0 + *i);
+		}
+		else if (*i <= 0x0f) {
+			result.sbXMLChAppendCh(chBackSlash);
+			result.sbXMLChAppendCh(chDigit_0);
+			result.sbXMLChAppendCh(chLatin_A + *i);
+		}
+		else if (*i <= 0x19) {
+			result.sbXMLChAppendCh(chBackSlash);
+			result.sbXMLChAppendCh(chDigit_1);
+			result.sbXMLChAppendCh(chDigit_0 + *i);
+		}
+		else if (*i <= 0x1f) {
+			result.sbXMLChAppendCh(chBackSlash);
+			result.sbXMLChAppendCh(chDigit_1);
+			result.sbXMLChAppendCh(chLatin_A + *i);
+		}
+
+		else if (*i == chComma) {
+
+			// Determine if this is an RDN separator
+			const XMLCh *j = i;
+			*j++;
+			while (*j != chComma && *j != chEqual && *j != chNull)
+				*j++;
+
+			if (*j != chEqual)
+				result.sbXMLChAppendCh(chBackSlash);
+
+			result.sbXMLChAppendCh(*i);
+
+		}
+
+		else {
+			
+			if (*i == chPlus ||
+				*i == chDoubleQuote ||
+				*i == chBackSlash ||
+				*i == chOpenAngle ||
+				*i == chCloseAngle ||
+				*i == chSemiColon) {
+
+				result.sbXMLChAppendCh(chBackSlash);
+			}
+
+			result.sbXMLChAppendCh(*i);
+
+		}
+
+		*i++;
+
+	}
+
+	// Now encode trailing white space
+	while (*i != NULL) {
+
+		if (*i == ' ')
+			result.sbXMLChCat(s_strEncodedSpace);
+		else
+			result.sbXMLChAppendCh(*i);
+
+		*i++;
+
+	}
+
+	return XMLString::replicate(result.rawXMLChBuffer());
+
+}
+
+XMLCh * decodeDName(const XMLCh * toDecode) {
+
+	// Take an encoded name and decode to a normal XMLCh string
+
+	XERCES_CPP_NAMESPACE_USE;
+
+	safeBuffer result;
+
+	result.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
+
+	if (toDecode == NULL) {
+		return NULL;
+	}
+
+	const XMLCh * i = toDecode;
+
+	if (*i == chBackSlash && i[1] == chPound) {
+
+		result.sbXMLChAppendCh(chPound);
+		*i++;
+		*i++;
+
+	}
+
+	while (*i != chNull) {
+
+		if (*i == chBackSlash) {
+
+			*i++;
+			
+			if (*i == chDigit_0) {
+
+				*i++;
+
+				if (*i >= chDigit_0 && *i <= chDigit_9) {
+					result.sbXMLChAppendCh(*i - chDigit_0);
+				}
+				else if (*i >= chLatin_A && *i <= chLatin_F) {
+					result.sbXMLChAppendCh(10 + *i - chLatin_A);
+				}
+				else if (*i >= chLatin_a && *i <= chLatin_f) {
+					result.sbXMLChAppendCh(10 + *i - chLatin_a);
+				}
+				else {
+					throw XSECException(XSECException::DNameDecodeError,
+						"Unexpected escaped character in Distinguished name");
+				}
+			}
+
+			else if (*i == chDigit_1) {
+
+				*i++;
+
+				if (*i >= chDigit_0 && *i <= chDigit_9) {
+					result.sbXMLChAppendCh(16 + *i - chDigit_0);
+				}
+				else if (*i >= chLatin_A && *i <= chLatin_F) {
+					result.sbXMLChAppendCh(26 + *i - chLatin_A);
+				}
+				else if (*i >= chLatin_a && *i <= chLatin_f) {
+					result.sbXMLChAppendCh(26 + *i - chLatin_a);
+				}
+				else {
+					throw XSECException(XSECException::DNameDecodeError,
+						"Unexpected escaped character in Distinguished name");
+				}
+			}
+
+			else if (*i == chDigit_2) {
+
+				*i++;
+
+				if (*i == '0') {
+					result.sbXMLChAppendCh(' ');
+				}
+
+				else {
+					throw XSECException(XSECException::DNameDecodeError,
+						"Unexpected escaped character in Distinguished name");
+				}
+
+			}
+
+			else if (*i == chComma ||
+					 *i == chPlus ||
+					 *i == chDoubleQuote ||
+					 *i == chBackSlash ||
+					 *i == chOpenAngle ||
+					 *i == chCloseAngle ||
+					 *i == chSemiColon) {
+
+				result.sbXMLChAppendCh(*i);
+			}
+
+			else {
+
+				throw XSECException(XSECException::DNameDecodeError,
+					"Unexpected escaped character in Distinguished name");
+
+			}
+
+			*i++;
+
+		}
+
+		else {
+
+			result.sbXMLChAppendCh(*i++);
+
+		}
+
+	}
+
+	return XMLString::replicate(result.rawXMLChBuffer());
+
+}
+

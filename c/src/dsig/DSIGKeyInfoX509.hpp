@@ -183,7 +183,9 @@ public:
 	 * Get the name stored in the X509SubjectName element (if it
 	 * exists).
 	 *
-	 * @returns A pointer to the buffer containing the name (or NULL if not set)
+	 * @returns A pointer to the buffer containing the name (or NULL if not set).
+	 * The decoded string is returned.
+	 * @see setX509SubjectName(void)
 	 */
 
 	const XMLCh * getKeyName(void);
@@ -206,7 +208,8 @@ public:
 	 * signing certificate.
 	 * 
 	 * @returns A pointer to the string containing the IssuerSerialNumber.
-	 * (0 if not set.)
+	 * (0 if not set.)  This is the decoded string.
+	 * @see setX509IssuerSerial
 	 */
 
 	const XMLCh * getX509IssuerSerialNumber(void);
@@ -295,6 +298,10 @@ public:
 	 * If a X509SubjectName element exists, replace the text with the
 	 * provided text.  Otherwise create the element and set the text.
 	 *
+	 * @note XMLDSIG requires Distinguished Names be encoded in a defined
+	 * manner (escaping '<' characters etc.).  This method will perform
+	 * this encoding prior to creating the DOM nodes.
+	 *
 	 * @param name The name to set.
 	 */
 
@@ -305,6 +312,10 @@ public:
 	 *
 	 * If an X509IssuerSerial exists, replace the values with those provided,
 	 * otherwise create a new element and set the values appropriately.
+	 *
+	 * @note XMLDSIG requires Distinguished Names be encoded in a defined
+	 * manner (escaping '<' characters etc.).  This method will perform
+	 * this encoding prior to creating the DOM nodes.
 	 *
 	 * @param name The name of the issuer.
 	 * @param serial The serial number of the issuer's certificate
@@ -369,9 +380,9 @@ private:
 	DSIGKeyInfoX509();
 
 	X509ListType		m_X509List;				// The X509 structures
-	const XMLCh 		* mp_X509IssuerName;	// Parameters from KeyInfo (not cert)
+	XMLCh 				* mp_X509IssuerName;	// Parameters from KeyInfo (not cert)
 	const XMLCh 		* mp_X509SerialNumber;
-	const XMLCh 		* mp_X509SubjectName;
+	XMLCh 				* mp_X509SubjectName;
 	const XMLCh			* mp_X509CRL;
 	const XMLCh			* mp_X509SKI;
 	XMLCh				* mp_rawRetrievalURI;

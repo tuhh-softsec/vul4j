@@ -144,6 +144,18 @@ safeBuffer DSIG_EXPORT &makeQName(safeBuffer & qname, const XMLCh *prefix, char 
 void DSIG_EXPORT gatherChildrenText(DOMNode * parent, safeBuffer &output);
 
 // --------------------------------------------------------------------------------
+//           String decode/encode
+// --------------------------------------------------------------------------------
+
+/*
+ * Distinguished names have a particular encoding that needs to be performed prior
+ * to enclusion in the DOM
+ */
+
+XMLCh * encodeDName(const XMLCh * toEncode);
+XMLCh * decodeDName(const XMLCh * toDecode);
+
+// --------------------------------------------------------------------------------
 //           String Functions 
 // --------------------------------------------------------------------------------
 

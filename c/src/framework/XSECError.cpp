@@ -115,6 +115,7 @@ char * XSECExceptionStrings [] = {
 	"An error occured in a DSIGTransform holder",
 	"An error occured in a safe buffer",
 	"An error occurred processing an HTTP request via internal resolver",
+	"An error occurred decoding a DSIG encoded Distinguished name",
 	"Unknown Error type",
 
 };

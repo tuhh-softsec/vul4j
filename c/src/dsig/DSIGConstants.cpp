@@ -145,33 +145,33 @@ void DSIGConstants::create() {
 void DSIGConstants::destroy() {
 
 	// Delete the static strings
-	delete[] s_unicodeStrEmpty;
-	delete[] s_unicodeStrNL;
-	delete[] s_unicodeStrXmlns;
+	delete[] (XMLCh *) s_unicodeStrEmpty;
+	delete[] (XMLCh *) s_unicodeStrNL;
+	delete[] (XMLCh *) s_unicodeStrXmlns;
 
-	delete[] s_unicodeStrAlgorithm;
+	delete[] (XMLCh *) s_unicodeStrAlgorithm;
 
-	delete[] s_unicodeStrURIRawX509;
-	delete[] s_unicodeStrURIDSIG;
-	delete[] s_unicodeStrURIEC;
-	delete[] s_unicodeStrURIXPF;
-	delete[] s_unicodeStrURISHA1;
-	delete[] s_unicodeStrURIMD5;
-	delete[] s_unicodeStrURIBASE64;
-	delete[] s_unicodeStrURIXPATH;
-	delete[] s_unicodeStrURIXSLT;
-	delete[] s_unicodeStrURIENVELOPE;
-	delete[] s_unicodeStrURIC14N_NOC;
-	delete[] s_unicodeStrURIC14N_COM;
-	delete[] s_unicodeStrURIEXC_C14N_NOC;
-	delete[] s_unicodeStrURIEXC_C14N_COM;
-	delete[] s_unicodeStrURIDSA_SHA1;
-	delete[] s_unicodeStrURIRSA_SHA1;
-	delete[] s_unicodeStrURIHMAC_SHA1;
-	delete[] s_unicodeStrURIXMLNS;
-	delete[] s_unicodeStrURIMANIFEST;
+	delete[] (XMLCh *) s_unicodeStrURIRawX509;
+	delete[] (XMLCh *) s_unicodeStrURIDSIG;
+	delete[] (XMLCh *) s_unicodeStrURIEC;
+	delete[] (XMLCh *) s_unicodeStrURIXPF;
+	delete[] (XMLCh *) s_unicodeStrURISHA1;
+	delete[] (XMLCh *) s_unicodeStrURIMD5;
+	delete[] (XMLCh *) s_unicodeStrURIBASE64;
+	delete[] (XMLCh *) s_unicodeStrURIXPATH;
+	delete[] (XMLCh *) s_unicodeStrURIXSLT;
+	delete[] (XMLCh *) s_unicodeStrURIENVELOPE;
+	delete[] (XMLCh *) s_unicodeStrURIC14N_NOC;
+	delete[] (XMLCh *) s_unicodeStrURIC14N_COM;
+	delete[] (XMLCh *) s_unicodeStrURIEXC_C14N_NOC;
+	delete[] (XMLCh *) s_unicodeStrURIEXC_C14N_COM;
+	delete[] (XMLCh *) s_unicodeStrURIDSA_SHA1;
+	delete[] (XMLCh *) s_unicodeStrURIRSA_SHA1;
+	delete[] (XMLCh *) s_unicodeStrURIHMAC_SHA1;
+	delete[] (XMLCh *) s_unicodeStrURIXMLNS;
+	delete[] (XMLCh *) s_unicodeStrURIMANIFEST;
 
-	delete[] s_unicodeStrPROVOpenSSL;
-	delete[] s_unicodeStrPROVWinCAPI;
+	delete[] (XMLCh *) s_unicodeStrPROVOpenSSL;
+	delete[] (XMLCh *) s_unicodeStrPROVWinCAPI;
 
 }

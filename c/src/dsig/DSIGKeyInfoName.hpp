@@ -153,6 +153,17 @@ public:
 
 	virtual const XMLCh * getKeyName(void) {return mp_name;};
 
+	/**
+	 * \brief Get the decoded key name (for distinguished names)
+	 *
+	 * Returns a pointer to the buffer containing the decoded Distinguished
+	 * Name.
+	 *
+	 * @returns A pointer to the char buffer containing the key name
+	 */
+
+	virtual const XMLCh * getDecodedKeyName(void);
+
 	//@}
 
 	/**@name Create and set functions */
@@ -165,10 +176,12 @@ public:
 	 * passed in.
 	 *
 	 * @param name Value to set the KeyName as
+	 * @param isDName If set to true, the name will be encoded as a DName
+	 * prior to be being placed in the DOM document
 	 * @returns The newly created DOMElement with the structure underneath.
 	 */
 
-	DOMElement * createBlankKeyName(const XMLCh * name);
+	DOMElement * createBlankKeyName(const XMLCh * name, bool isDName = false);
 
 	/**
 	 * \brief Set the value of the KeyName to a new string.
@@ -176,9 +189,11 @@ public:
 	 * Uses the passed in string to set a new value in the DOM structure.
 	 *
 	 * @param name Value to set in KeyName
+	 * @param isDName If set to true, the name will be encoded as a DName
+	 * prior to be being placed in the DOM document
 	 */
 
-	void setKeyName(const XMLCh * name);
+	void setKeyName(const XMLCh * name, bool isDName = false);
 
 	//@}
 
@@ -198,6 +213,7 @@ private:
 	DSIGKeyInfoName();							// Non-implemented constructor
 
 	const XMLCh			* mp_name;				// The Data stored in the XML file
+	XMLCh				* mp_decodedDName;		// When this is a DName that needs decoding
 	DOMNode				* mp_keyNameTextNode;	// Text node containing the name
 
 };

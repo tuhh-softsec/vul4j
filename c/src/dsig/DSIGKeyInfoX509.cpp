@@ -75,6 +75,10 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
+#include <xercesc/util/Janitor.hpp>
+
+XSEC_USING_XERCES(ArrayJanitor);
+
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------
@@ -120,6 +124,15 @@ mp_X509SKITextNode(0) {
 
 
 DSIGKeyInfoX509::~DSIGKeyInfoX509() {
+
+	// SubjectName and IssuerName are local (decoded) copies of the
+	// encoded DName held in the DOM
+
+	if (mp_X509IssuerName != NULL)
+		delete[] mp_X509IssuerName;
+
+	if (mp_X509SubjectName != NULL)
+		delete[] mp_X509SubjectName;
 
 	X509ListType::iterator i;
 
@@ -202,7 +215,7 @@ void DSIGKeyInfoX509::load(void) {
 
 				}
 
-				mp_X509SubjectName = child->getNodeValue();
+				mp_X509SubjectName = decodeDName(child->getNodeValue());
 
 			}
 
@@ -231,7 +244,7 @@ void DSIGKeyInfoX509::load(void) {
 
 				}
 
-				mp_X509IssuerName = child->getNodeValue();
+				mp_X509IssuerName = decodeDName(child->getNodeValue());
 
 				// Now find the serial number
 				child = tmpElt->getFirstChild();
@@ -447,6 +460,14 @@ void DSIGKeyInfoX509::setX509SKI(const XMLCh * ski) {
 
 void DSIGKeyInfoX509::setX509SubjectName(const XMLCh * name) {
 
+	if (mp_X509SubjectName != NULL)
+		delete[] mp_X509SubjectName;
+
+	mp_X509SubjectName = XMLString::replicate(name);
+	
+	XMLCh * encodedName = encodeDName(name);
+	ArrayJanitor<XMLCh> j_encodedName(encodedName);
+
 	if (mp_X509SubjectNameTextNode == 0) {
 
 		// Does not yet exist in the DOM
@@ -458,7 +479,7 @@ void DSIGKeyInfoX509::setX509SubjectName(const XMLCh * name) {
 		makeQName(str, prefix, "X509SubjectName");
 
 		DOMElement * s = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-		mp_X509SubjectNameTextNode = doc->createTextNode(name);
+		mp_X509SubjectNameTextNode = doc->createTextNode(encodedName);
 		s->appendChild(mp_X509SubjectNameTextNode);
 
 		// Add to the over-arching node
@@ -469,15 +490,20 @@ void DSIGKeyInfoX509::setX509SubjectName(const XMLCh * name) {
 
 	else {
 
-		mp_X509SubjectNameTextNode->setNodeValue(name);
+		mp_X509SubjectNameTextNode->setNodeValue(encodedName);
 
 	}
-
-	mp_X509SubjectName = mp_X509SubjectNameTextNode->getNodeValue();
-
 }
 
 void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * serial) {
+
+	if (mp_X509IssuerName != NULL)
+		delete[] mp_X509IssuerName;
+
+	mp_X509IssuerName = XMLString::replicate(name);
+	
+	XMLCh * encodedName = encodeDName(name);
+	ArrayJanitor<XMLCh> j_encodedName(encodedName);
 
 	if (mp_X509IssuerNameTextNode == 0) {
 
@@ -494,7 +520,7 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 
 		// Create the text nodes with the contents
 
-		mp_X509IssuerNameTextNode = doc->createTextNode(name);
+		mp_X509IssuerNameTextNode = doc->createTextNode(encodedName);
 		mp_X509SerialNumberTextNode = doc->createTextNode(serial);
 	
 		// Create the sub elements
@@ -522,13 +548,10 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 
 	else {
 
-		mp_X509IssuerNameTextNode->setNodeValue(name);
+		mp_X509IssuerNameTextNode->setNodeValue(encodedName);
 		mp_X509SerialNumberTextNode->setNodeValue(serial);
 
 	}
-
-	mp_X509IssuerName = mp_X509IssuerNameTextNode->getNodeValue();
-	mp_X509SerialNumber = mp_X509SerialNumberTextNode->getNodeValue();
 
 }
 
