@@ -45,7 +45,7 @@ public:
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node);
 
-	virtual ~XKMSResultTypeImpl() {};
+	virtual ~XKMSResultTypeImpl();
 
 	// load
 	void load(void);

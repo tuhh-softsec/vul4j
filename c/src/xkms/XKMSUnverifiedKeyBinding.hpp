@@ -78,7 +78,7 @@ public:
 private:
 
 	// Unimplemented
-	XKMSQueryKeyBinding(const XKMSUnverifiedKeyBinding &);
+	XKMSUnverifiedKeyBinding(const XKMSUnverifiedKeyBinding &);
 	XKMSUnverifiedKeyBinding & operator = (const XKMSUnverifiedKeyBinding &);
 
 };

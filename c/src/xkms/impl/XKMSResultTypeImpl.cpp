@@ -56,7 +56,9 @@ XKMSMessageAbstractTypeImpl(env, node)
 
 }
 
-XKMSResultTypeImpl::~XKMSResultTypeImpl();
+XKMSResultTypeImpl::~XKMSResultTypeImpl() {
+
+}
 	
 // --------------------------------------------------------------------------------
 //           Load

@@ -67,6 +67,7 @@ ENC_DIR = enc
 FRAMEWORK_DIR = framework
 DSIG_DIR = dsig
 OPENSSL_DIR = enc/OpenSSL
+XSCRYPT_DIR = enc/XSCrypt
 XENC_DIR = xenc
 XENCIMPL_DIR = xenc/impl
 XKMS_DIR = xkms
@@ -129,6 +130,7 @@ compile:
 	$(MAKE) -C ${DSIG_DIR} compile
 	$(MAKE) -C ${ENC_DIR} compile
 	$(MAKE) -C ${OPENSSL_DIR} compile
+	$(MAKE) -C ${XSCRYPT_DIR} compile
 	$(MAKE) -C ${FRAMEWORK_DIR} compile
 	$(MAKE) -C ${UTILS_DIR} compile
 	$(MAKE) -C ${UNIXUTILS_DIR} compile
@@ -143,6 +145,7 @@ depends:
 	$(MAKE) -C ${DSIG_DIR} -s depends
 	$(MAKE) -C ${ENC_DIR} -s depends
 	$(MAKE) -C ${OPENSSL_DIR} -s depends
+	$(MAKE) -C ${XSCRYPT_DIR} -s depends
 	$(MAKE) -C ${FRAMEWORK_DIR} -s depends
 	$(MAKE) -C ${UTILS_DIR} -s depends
 	$(MAKE) -C ${UNIXUTILS_DIR} -s depends
@@ -159,6 +162,7 @@ prepare:
 	$(MAKE) -C ${DSIG_DIR} includes
 	$(MAKE) -C ${ENC_DIR} includes
 	$(MAKE) -C ${OPENSSL_DIR} includes
+	$(MAKE) -C ${XSCRYPT_DIR} includes
 	$(MAKE) -C ${FRAMEWORK_DIR} includes
 	$(MAKE) -C ${UTILS_DIR} includes
 	$(MAKE) -C ${UNIXUTILS_DIR} includes
@@ -180,6 +184,7 @@ install: lib
 	$(MAKE) -C ${DSIG_DIR} install
 	$(MAKE) -C ${ENC_DIR} install
 	$(MAKE) -C ${OPENSSL_DIR} install
+	$(MAKE) -C ${XSCRYPT_DIR} install
 	$(MAKE) -C ${FRAMEWORK_DIR} install
 	$(MAKE) -C ${UTILS_DIR} install
 	$(MAKE) -C ${UNIXUTILS_DIR} install
@@ -203,6 +208,7 @@ distclean: clean
 	$(MAKE) -C ${DSIG_DIR} distclean
 	$(MAKE) -C ${ENC_DIR} distclean
 	$(MAKE) -C ${OPENSSL_DIR} distclean
+	$(MAKE) -C ${XSCRYPT_DIR} distclean
 	$(MAKE) -C ${FRAMEWORK_DIR} distclean
 	$(MAKE) -C ${UTILS_DIR} distclean
 	$(MAKE) -C ${UNIXUTILS_DIR} distclean
@@ -210,7 +216,7 @@ distclean: clean
 	$(MAKE) -C ${XENC_DIR} distclean
 	$(MAKE) -C ${XENCIMPL_DIR} distclean
 	$(MAKE) -C ${XKMS_DIR} distclean
-	$(MAKE) -C ${XLMSIMPL_DIR} distclean
+	$(MAKE) -C ${XKMSIMPL_DIR} distclean
 	rm -f config.cache
 	rm -f config.status
 	rm -f config.log

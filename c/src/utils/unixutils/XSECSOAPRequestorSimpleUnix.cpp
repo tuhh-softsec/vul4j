@@ -304,14 +304,41 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 		throw XSECException(XSECException::HTTPURIInputStreamError,
 						"Unknown HTTP Response");
     }
+	/*
 	while (aLent != 0) {
 		aLent = read(s, (void *)fBuffer, sizeof(fBuffer)-1);
-		/***/
+		
 		fBuffer[aLent] = '\0';
 		printf(fBuffer);
-		/***/
+		
 	}
-	return NULL;
+*/
+	/* Now find out how long the return is */
+
+	p = strstr(fBuffer, "Content-Length:");
+	if (p == NULL) {
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Content-Length required in SOAP HTTP Response");
+	}
+
+	p = strchr(p, ' ');
+	p++;
+
+	int responseLength = atoi(p);
+
+	char * responseBuffer;
+	XSECnew(responseBuffer, char[responseLength]);
+	ArrayJanitor<char> j_responseBuffer(responseBuffer);
+
+	lent = fBufferEnd - fBufferPos;
+	memcpy(responseBuffer, fBufferPos, lent);
+	while (lent < responseLength) {
+	    aLent = read(s, &responseBuffer[lent], responseLength - lent);
+		lent += aLent;
+	}
+	
+    return parseAndUnwrap(responseBuffer, responseLength);
+
 }
 
 

@@ -34,6 +34,7 @@ AC_CONFIG_FILES([Makefile \
 	dsig/Makefile \
 	enc/Makefile \
 	enc/OpenSSL/Makefile \
+	enc/XSCrypt/Makefile \
 	framework/Makefile \
 	utils/Makefile \
 	utils/unixutils/Makefile \
@@ -68,7 +69,7 @@ fi
 
 # Create the Makefile.in files in each directory
 library_l1_src_dirs="canon transformers dsig enc framework utils xenc xkms"
-library_l2_src_dirs="enc/OpenSSL utils/unixutils xenc/impl xkms/impl"
+library_l2_src_dirs="enc/OpenSSL enc/XSCrypt utils/unixutils xenc/impl xkms/impl"
 
 AC_CONFIG_COMMANDS_PRE(
 [# Define the library directories
@@ -542,6 +543,7 @@ AC_SUBST(transformers_obj_files)
 AC_SUBST(dsig_obj_files)
 AC_SUBST(enc_obj_files)
 AC_SUBST(enc_OpenSSL_obj_files)
+AC_SUBST(enc_XSCrypt_obj_files)
 AC_SUBST(framework_obj_files)
 AC_SUBST(utils_obj_files)
 AC_SUBST(utils_unixutils_obj_files)
@@ -556,6 +558,7 @@ AC_SUBST(transformers_include_files)
 AC_SUBST(dsig_include_files)
 AC_SUBST(enc_include_files)
 AC_SUBST(enc_OpenSSL_include_files)
+AC_SUBST(enc_XSCrypt_include_files)
 AC_SUBST(framework_include_files)
 AC_SUBST(utils_include_files)
 AC_SUBST(utils_unixutils_include_files)

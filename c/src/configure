@@ -1229,7 +1229,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 # Define the files we wish to generate
 
-ac_config_files="$ac_config_files Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile xenc/Makefile xenc/impl/Makefile xkms/Makefile xkms/impl/Makefile samples/Makefile"
+ac_config_files="$ac_config_files Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile enc/XSCrypt/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile xenc/Makefile xenc/impl/Makefile xkms/Makefile xkms/impl/Makefile samples/Makefile"
 
 # AC_CONFIG_FILES([Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile samples/Makefile])
 ac_config_headers="$ac_config_headers framework/XSECConfig.hpp"
@@ -1264,7 +1264,7 @@ fi
 
 # Create the Makefile.in files in each directory
 library_l1_src_dirs="canon transformers dsig enc framework utils xenc xkms"
-library_l2_src_dirs="enc/OpenSSL utils/unixutils xenc/impl xkms/impl"
+library_l2_src_dirs="enc/OpenSSL enc/XSCrypt utils/unixutils xenc/impl xkms/impl"
 
 
 
@@ -4436,6 +4436,8 @@ fi
 
 
 
+
+
 # Populate Install directories
 
 
@@ -5043,6 +5045,7 @@ do
   "dsig/Makefile" ) CONFIG_FILES="$CONFIG_FILES dsig/Makefile" ;;
   "enc/Makefile" ) CONFIG_FILES="$CONFIG_FILES enc/Makefile" ;;
   "enc/OpenSSL/Makefile" ) CONFIG_FILES="$CONFIG_FILES enc/OpenSSL/Makefile" ;;
+  "enc/XSCrypt/Makefile" ) CONFIG_FILES="$CONFIG_FILES enc/XSCrypt/Makefile" ;;
   "framework/Makefile" ) CONFIG_FILES="$CONFIG_FILES framework/Makefile" ;;
   "utils/Makefile" ) CONFIG_FILES="$CONFIG_FILES utils/Makefile" ;;
   "utils/unixutils/Makefile" ) CONFIG_FILES="$CONFIG_FILES utils/unixutils/Makefile" ;;
@@ -5165,6 +5168,7 @@ s,@transformers_obj_files@,$transformers_obj_files,;t t
 s,@dsig_obj_files@,$dsig_obj_files,;t t
 s,@enc_obj_files@,$enc_obj_files,;t t
 s,@enc_OpenSSL_obj_files@,$enc_OpenSSL_obj_files,;t t
+s,@enc_XSCrypt_obj_files@,$enc_XSCrypt_obj_files,;t t
 s,@framework_obj_files@,$framework_obj_files,;t t
 s,@utils_obj_files@,$utils_obj_files,;t t
 s,@utils_unixutils_obj_files@,$utils_unixutils_obj_files,;t t
@@ -5178,6 +5182,7 @@ s,@transformers_include_files@,$transformers_include_files,;t t
 s,@dsig_include_files@,$dsig_include_files,;t t
 s,@enc_include_files@,$enc_include_files,;t t
 s,@enc_OpenSSL_include_files@,$enc_OpenSSL_include_files,;t t
+s,@enc_XSCrypt_include_files@,$enc_XSCrypt_include_files,;t t
 s,@framework_include_files@,$framework_include_files,;t t
 s,@utils_include_files@,$utils_include_files,;t t
 s,@utils_unixutils_include_files@,$utils_unixutils_include_files,;t t
