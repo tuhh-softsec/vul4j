@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.6 2003/11/24 20:12:16 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.7 2003/12/02 16:50:53 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -78,7 +78,7 @@ import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsInstanceOf;
 import org.apache.commons.functor.core.IsNull;
-import org.apache.commons.functor.core.RightIdentityFunction;
+import org.apache.commons.functor.core.RightIdentity;
 import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
 
 /*
@@ -96,7 +96,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  */
  
 /**
- * @version $Revision: 1.6 $ $Date: 2003/11/24 20:12:16 $
+ * @version $Revision: 1.7 $ $Date: 2003/12/02 16:50:53 $
  * @author Rodney Waldhoff
  */
 public class FlexiMapExample extends TestCase {
@@ -329,13 +329,13 @@ public class FlexiMapExample extends TestCase {
          */
         public FlexiMap(BinaryFunction putfn, BinaryFunction getfn) {
             if(null == putfn) {
-                onPut = new RightIdentityFunction();
+                onPut = new RightIdentity();
             } else {
                 onPut = putfn;
             }
             
             if(null == getfn) {
-                onGet = new RightIdentityFunction();
+                onGet = new RightIdentity();
             } else {
                 onGet = getfn;
             }
@@ -425,7 +425,7 @@ public class FlexiMapExample extends TestCase {
 
     /*
      * For the "basic" Map, we'll simply create a HashMap.
-     * Note that using a RightIdentityFunction for onPut and onGet
+     * Note that using a RightIdentity for onPut and onGet
      * would yield the same behavior. 
      */
     private Map makeBasicMap() {

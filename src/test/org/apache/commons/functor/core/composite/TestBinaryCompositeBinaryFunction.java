@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryCompositeBinaryFunction.java,v 1.3 2003/12/02 16:38:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryCompositeBinaryFunction.java,v 1.4 2003/12/02 16:50:53 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,10 +63,10 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.LeftIdentity;
-import org.apache.commons.functor.core.RightIdentityFunction;
+import org.apache.commons.functor.core.RightIdentity;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 16:38:45 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 16:50:53 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryCompositeBinaryFunction extends BaseFunctorTest {
@@ -87,9 +87,9 @@ public class TestBinaryCompositeBinaryFunction extends BaseFunctorTest {
 
     protected Object makeFunctor() {
         return new BinaryCompositeBinaryFunction(
-            new RightIdentityFunction(),
+            new RightIdentity(),
             new ConstantFunction("left"),
-            new RightIdentityFunction());
+            new RightIdentity());
     }
 
     // Lifecycle
@@ -108,9 +108,9 @@ public class TestBinaryCompositeBinaryFunction extends BaseFunctorTest {
    
     public void testEvaluate() throws Exception {
         BinaryFunction f = new BinaryCompositeBinaryFunction(
-            new RightIdentityFunction(),
+            new RightIdentity(),
             new ConstantFunction("K"),
-            new RightIdentityFunction());
+            new RightIdentity());
         assertEquals("right",f.evaluate("left","right"));
         assertNull("right",f.evaluate("left",null));
         assertEquals("right",f.evaluate(null,"right"));
@@ -127,17 +127,17 @@ public class TestBinaryCompositeBinaryFunction extends BaseFunctorTest {
             new ConstantFunction("left"),
             new ConstantFunction("right")));
         assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction(
-            new RightIdentityFunction(),
+            new RightIdentity(),
             new ConstantFunction("left"),
             new ConstantFunction("right")));
         assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction(
             new LeftIdentity(),
-            new RightIdentityFunction(),
+            new RightIdentity(),
             new ConstantFunction("right")));
         assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction(
             new LeftIdentity(),
             new ConstantFunction("left"),
-            new RightIdentityFunction()));
+            new RightIdentity()));
         assertObjectsAreNotEqual(f,new BinaryCompositeBinaryFunction(null,null,null));
         assertObjectsAreEqual(
             new BinaryCompositeBinaryFunction(null,null,null),

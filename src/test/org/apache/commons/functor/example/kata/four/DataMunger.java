@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.3 2003/12/02 16:38:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.4 2003/12/02 16:50:52 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -72,7 +72,7 @@ import org.apache.commons.functor.adapter.UnaryFunctionUnaryPredicate;
 import org.apache.commons.functor.adapter.UnaryPredicateUnaryFunction;
 import org.apache.commons.functor.core.IsNull;
 import org.apache.commons.functor.core.LeftIdentity;
-import org.apache.commons.functor.core.RightIdentityFunction;
+import org.apache.commons.functor.core.RightIdentity;
 import org.apache.commons.functor.core.comparator.IsLessThan;
 import org.apache.commons.functor.core.composite.BinaryCompositeBinaryFunction;
 import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
@@ -83,7 +83,7 @@ import org.apache.commons.functor.example.kata.one.Subtract;
 import org.apache.commons.functor.example.lines.Lines;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 16:38:45 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 16:50:52 $
  * @author Rodney Waldhoff
  */
 public class DataMunger {
@@ -112,7 +112,7 @@ public class DataMunger {
     private static final BinaryFunction lesserSpread(final int col1, final int col2) {
         return new ConditionalBinaryFunction(            
             IgnoreRightPredicate.adapt(IsNull.instance()), // if left is null
-            RightIdentityFunction.instance(),              // return right
+            RightIdentity.instance(),              // return right
             new ConditionalBinaryFunction(                 // else calculate spread and compare
                 BinaryFunctionBinaryPredicate.adapt(       
                     new BinaryCompositeBinaryFunction(
@@ -120,7 +120,7 @@ public class DataMunger {
                         IgnoreRightFunction.adapt(absSpread(col1,col2)),
                         IgnoreLeftFunction.adapt(absSpread(col1,col2)))),
                 LeftIdentity.instance(),
-                RightIdentityFunction.instance()
+                RightIdentity.instance()
             )
         );
     }

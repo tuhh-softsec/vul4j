@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestRightIdentityFunction.java,v 1.4 2003/12/02 16:50:52 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestRightIdentity.java,v 1.1 2003/12/02 16:50:52 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,30 +61,30 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 16:50:52 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 16:50:52 $
  * @author Rodney Waldhoff
- * @deprecated
  */
-public class TestRightIdentityFunction extends BaseFunctorTest {
+public class TestRightIdentity extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestRightIdentityFunction(String testName) {
+    public TestRightIdentity(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestRightIdentityFunction.class);
+        return new TestSuite(TestRightIdentity.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new RightIdentityFunction();
+        return new RightIdentity();
     }
     
     // Lifecycle
@@ -102,27 +102,48 @@ public class TestRightIdentityFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testEvaluate() throws Exception {
-        BinaryFunction f = new RightIdentityFunction();
+        BinaryFunction f = new RightIdentity();
         assertNull(f.evaluate(null,null));
         assertNull(f.evaluate("xyzzy",null));
-        assertEquals("abcdefg",f.evaluate("xyzzy","abcdefg"));
-        assertEquals("abcdefg",f.evaluate(null,"abcdefg"));
+        assertEquals("xyzzy",f.evaluate("abcdefg","xyzzy"));
+        assertEquals("xyzzy",f.evaluate(null,"xyzzy"));
         assertEquals(new Integer(3),f.evaluate(null,new Integer(3)));
         Object obj = new Long(12345L);
         assertSame(obj,f.evaluate(null,obj));
         assertSame(obj,f.evaluate(obj,obj));
     }
     
+    public void testTest() throws Exception {
+        BinaryPredicate p = new RightIdentity();
+        assertTrue(p.test(null,Boolean.TRUE));
+        assertTrue(!p.test(null,Boolean.FALSE));
+        try {
+            p.test(null,"true");
+            fail("Expected ClassCastException");
+        } catch(ClassCastException e) {
+            // expected
+        }
+        try {
+            p.test(null,null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+    }
+    
     public void testEquals() throws Exception {
-        BinaryFunction f = new RightIdentityFunction();
+        BinaryFunction f = new RightIdentity();
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new RightIdentityFunction());
-        assertObjectsAreEqual(f,RightIdentityFunction.instance());
+        assertObjectsAreEqual(f,new RightIdentity());
+        assertObjectsAreEqual(f,RightIdentity.instance());
+        assertObjectsAreNotEqual(f,new IdentityPredicate());
+        assertObjectsAreNotEqual(f,new LeftIdentity());
+        assertObjectsAreNotEqual(f,new ConstantPredicate(true));
         assertObjectsAreNotEqual(f,new ConstantFunction("abcde"));
     }
     
     public void testConstant() throws Exception {
-        assertEquals(RightIdentityFunction.instance(),RightIdentityFunction.instance());
-        assertSame(RightIdentityFunction.instance(),RightIdentityFunction.instance());
+        assertEquals(RightIdentity.instance(),RightIdentity.instance());
+        assertSame(RightIdentity.instance(),RightIdentity.instance());
     }
 }

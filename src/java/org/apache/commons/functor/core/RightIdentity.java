@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestRightIdentityFunction.java,v 1.4 2003/12/02 16:50:52 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/RightIdentity.java,v 1.1 2003/12/02 16:50:52 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,73 +56,64 @@
  */
 package org.apache.commons.functor.core;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
 
-import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 16:50:52 $
+ * {@link #evaluate Evaluates} to its second argument.
+ * 
+ * {@link #test Tests} to the <code>boolean</code>
+ * value of the <code>Boolean</code>-valued second
+ * argument. The {@link #test test} method 
+ * throws an exception if the parameter isn't a 
+ * non-<code>null</code> <code>Boolean</code>.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 16:50:52 $
  * @author Rodney Waldhoff
- * @deprecated
  */
-public class TestRightIdentityFunction extends BaseFunctorTest {
-
-    // Conventional
+public final class RightIdentity implements BinaryPredicate, BinaryFunction, Serializable {
+    
+    // constructor
+    // ------------------------------------------------------------------------
+    public RightIdentity() {
+    }
+ 
+    // functor interface
     // ------------------------------------------------------------------------
 
-    public TestRightIdentityFunction(String testName) {
-        super(testName);
+    public Object evaluate(Object left, Object right) {
+        return right;
     }
 
-    public static Test suite() {
-        return new TestSuite(TestRightIdentityFunction.class);
+    public boolean test(Object left, Object right) {
+        return test((Boolean)right);
     }
 
-    // Functor Testing Framework
+    private boolean test(Boolean bool) {
+        return bool.booleanValue();
+    }
+
+    public boolean equals(Object that) {
+        return (that instanceof RightIdentity);
+    }
+    
+    public int hashCode() {
+        return "RightIdentity".hashCode();
+    }
+    
+    public String toString() {
+        return "RightIdentity";
+    }
+    
+    // static methods
     // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new RightIdentityFunction();
+    public static RightIdentity instance() {
+        return INSTANCE;
     }
     
-    // Lifecycle
+    // static attributes
     // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
-    // ------------------------------------------------------------------------
-    
-    public void testEvaluate() throws Exception {
-        BinaryFunction f = new RightIdentityFunction();
-        assertNull(f.evaluate(null,null));
-        assertNull(f.evaluate("xyzzy",null));
-        assertEquals("abcdefg",f.evaluate("xyzzy","abcdefg"));
-        assertEquals("abcdefg",f.evaluate(null,"abcdefg"));
-        assertEquals(new Integer(3),f.evaluate(null,new Integer(3)));
-        Object obj = new Long(12345L);
-        assertSame(obj,f.evaluate(null,obj));
-        assertSame(obj,f.evaluate(obj,obj));
-    }
-    
-    public void testEquals() throws Exception {
-        BinaryFunction f = new RightIdentityFunction();
-        assertEquals(f,f);
-        assertObjectsAreEqual(f,new RightIdentityFunction());
-        assertObjectsAreEqual(f,RightIdentityFunction.instance());
-        assertObjectsAreNotEqual(f,new ConstantFunction("abcde"));
-    }
-    
-    public void testConstant() throws Exception {
-        assertEquals(RightIdentityFunction.instance(),RightIdentityFunction.instance());
-        assertSame(RightIdentityFunction.instance(),RightIdentityFunction.instance());
-    }
+    private static final RightIdentity INSTANCE = new RightIdentity();
 }
