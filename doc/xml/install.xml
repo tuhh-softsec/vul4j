@@ -1,36 +1,38 @@
-?xml version="1.0" standalone="no"?>
+<?xml version="1.0" standalone="no"?>
 <!DOCTYPE s1 SYSTEM "./dtd/document.dtd">
-
 <s1 title="Installation">
 	<s2 title="Using JDK 1.4.0">
 		<p>After SUN released the <jump href="http://java.sun.com/j2se/1.4/index.html">Java (TM) 2 Platform Standard Edition v1.4.0</jump>, the xml-security package stopped working. This is a <jump href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html">known</jump> problem: SUN packaged a beta of Xalan into the JDK 1.4.0, but the xml-security package requires a stable version of Xalan (v2.2.0 or later). To fix the problem, you have to put the xalan.jar into a special directory in your JDK: <code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code> . If you installed an out-of-the-box JDK1.4 (e.g. on Windows 2000), the "endorsed" directory does not exist: you'll have to create it by hand. <em>Putting this JAR to another location like lib/ext WILL NOT WORK.</em></p>
 		<p>For more on that, you can also check the <jump href="http://xml.apache.org/~edwingo/jaxp-faq.html#override">Unofficial JAXP FAQ</jump>.
 	</s2>
 	<s2 title="Prerequisite">
-	  <p>Make sure you get the Jakarta Ant Tool from <jump href="http://jakarta.apache.org/ant/">http://jakarta.apache.org/ant/</jump></p>
+		<p>Make sure you get the Jakarta Ant Tool from <jump href="http://jakarta.apache.org/ant/">http://jakarta.apache.org/ant/</jump>
+		</p>
 	</s2>
 	<s2 title="Getting the source">
-     	  	<p>You can download the sources via WWW in the distribution directory under <jump href="http://xml.apache.org/security/dist/">http://xml.apache.org/security/dist/</jump></p>
+		<p>You can download the sources via WWW in the distribution directory under <jump href="http://xml.apache.org/security/dist/">http://xml.apache.org/security/dist/</jump>
+		</p>
 		<p>This project's CVS repository can be checked out through anonymous (pserver) CVS with the following instruction set. The module you wish to check out must be specified as the modulename. When prompted for a password for anonymous, simply enter "anoncvs" without quotes: </p>
-<source>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
+		<source>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
 password: anoncvs
 
 cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</source>
-		<p>A HTTP interface to browse the sources online is available via <jump href="http://cvs.apache.org/viewcvs.cgi/xml-security/">http://cvs.apache.org/viewcvs.cgi/xml-security/</jump></p>
-        </s2>
+		<p>A HTTP interface to browse the sources online is available via <jump href="http://cvs.apache.org/viewcvs.cgi/xml-security/">http://cvs.apache.org/viewcvs.cgi/xml-security/</jump>
+		</p>
+	</s2>
 	<s2 title="Compiling the source">
-	  <p>
+		<p>
 	    At the command prompt type 'ant test'. If you want to 
 	    use jikes instead of your default java compiler locate the 'build.xml'
 	    file and replace the line
 	  </p>
-          <source>&lt;property name="build.compiler" value="classic"/&gt;</source>
-          <p>
+		<source>&lt;property name="build.compiler" value="classic"/&gt;</source>
+		<p>
 	      with
 	  </p>
-	  <source>&lt;property name="build.compiler" value="jikes"/&gt;</source>
+		<source>&lt;property name="build.compiler" value="jikes"/&gt;</source>
 	</s2>
-<!--	<s2 title="Unpacking the files">
+	<!--	<s2 title="Unpacking the files">
 		<p>&packagename; is packaged as a ZIP file for all
 		platforms and operating systems.  You can run the Java
 		<ref>jar</ref> command to unpack the distribution.</p>
@@ -61,26 +63,56 @@ cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</so
 	</s2>
 	<s2 title="Files in the source package release">
 		<table>
-			<tr><td>build.xml</td><td>Top level <jump href="http://jakarta.apache.org/ant/index.html">Ant</jump> Makefile -- read README file before building</td></tr>
-			<tr><td>LICENSE.txt</td><td>License for the software</td></tr>
-			<tr><td>README</td><td>Build instructions</td></tr>
-			<tr><td>Readme.html</td><td>Web page redirect required for building documentation</td></tr>
-			<tr><td>STATUS</td><td>Current source code status information</td></tr>
-			<tr><td>data/</td><td>Directory containing sample data files and test vectors for the unit tests</td></tr>
-			<tr><td>doc/xml/</td><td>Directory containing documentation, in XML form</td></tr>
-			<tr><td>src/</td><td>Directory containing source code for the core library</td></tr>
-			<tr><td>src_samples/</td><td>Directory containing source code for samples</td></tr>
-			<tr><td>src_unitTests/</td><td>Directory containing source code for unit tests</td></tr>
+			<tr>
+				<td>build.xml</td>
+				<td>Top level <jump href="http://jakarta.apache.org/ant/index.html">Ant</jump> Makefile -- read README file before building</td>
+			</tr>
+			<tr>
+				<td>LICENSE.txt</td>
+				<td>License for the software</td>
+			</tr>
+			<tr>
+				<td>README</td>
+				<td>Build instructions</td>
+			</tr>
+			<tr>
+				<td>Readme.html</td>
+				<td>Web page redirect required for building documentation</td>
+			</tr>
+			<tr>
+				<td>STATUS</td>
+				<td>Current source code status information</td>
+			</tr>
+			<tr>
+				<td>data/</td>
+				<td>Directory containing sample data files and test vectors for the unit tests</td>
+			</tr>
+			<tr>
+				<td>doc/xml/</td>
+				<td>Directory containing documentation, in XML form</td>
+			</tr>
+			<tr>
+				<td>src/</td>
+				<td>Directory containing source code for the core library</td>
+			</tr>
+			<tr>
+				<td>src_samples/</td>
+				<td>Directory containing source code for samples</td>
+			</tr>
+			<tr>
+				<td>src_unitTests/</td>
+				<td>Directory containing source code for unit tests</td>
+			</tr>
 		</table>
 	</s2>
 	<s2 title="Where is my JCE?">
 		<p>There is <em>no</em> JCE bundled together with this distribution. Living in Germany, I had no problem to include the JCE in this software package but then I realized that the Apache Project is hosted in the US where some export restrictions apply to the cryptographic primitives. </p>
 		<p>Well, how do we solve this problem? The nice guys from the <jump href="http://www.bouncycastle.org/">Bouncy Castle</jump> where so helpful to supply the JAR that you need to create HMAC integrity checks on their web site. When you use the ant makefile <code>build.xml</code> and simply say <code>ant compile</code> or <code>ant get-jce</code>, <code>ant</code> tries to fetch this JAR from the australian server. After that step, the compilation works completely. </p>
-		<p></p>
+		<p/>
 		<p>The ant make tools initiates an automated download of the BouncyCastle JCE. The file is downloaded into the libs/ directory and a "bc-" is prepended to the filename. This is done because we want the provider name (bc means BouncyCastle) being visible in the JAR's filename. </p>
-		<p></p>
+		<p/>
 		<p>If you are a little paranoid like all security people and don't want ant to make automated downloads or your firewall doesn't permit it (preventing programs "phoning home"), look in the ./build.xml file for the properties called</p>
-		<p></p>
+		<p/>
 		<source><![CDATA[<property 
      name="jce.download.file" 
      value="@@jce.download.file@@" />
@@ -91,7 +123,10 @@ cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</so
      name="lib.jce"      
      value="${libs}/bc-${jce.download.file}" />
 ]]></source>
-		<p>Here you can see that the file <code><jump href="@@jce.download@@">@@jce.download@@</jump></code> is downloaded and stored in the location <code>@@lib.jce@@</code></p>
+		<p>Here you can see that the file <code>
+				<jump href="@@jce.download@@">@@jce.download@@</jump>
+			</code> is downloaded and stored in the location <code>@@lib.jce@@</code>
+		</p>
 		<p>If you do this by hand (pointing you favourite web browser and download it yourself), simply put a "<code>bc-</code>" in front of the filename and put it to <code>./libs/</code>, then ant won't try to make a download.</p>
 	</s2>
 	<s2 title="Using JDK 1.4.0">

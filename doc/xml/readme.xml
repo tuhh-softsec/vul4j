@@ -10,6 +10,10 @@
 		</ul>
 		<p>Canonicalization is written completely new: it's about 5-80 times faster than the implementation in version 1.0.2. It's highly recommended to upgrade to the new version. </p>
 	</s2>
+	<s2 title="JDK 1.4 issues">
+		<p>If you use JDK 1.4 and want to use this software, be sure that Xalan is properly installed. Check the bottom of the <jump href="install.html">installation guide</jump>!!!</p>
+		<p>I have so many complaints from people who argue that the software throws exceptions during running the examples or during unit testing. This package NEEDS a Xalan version after 2.2D13 (and SUN shipped his JDK 1.4.0 final with a Xalan beta!). I started integrating the installation guide into the exception messages cause it seems that people don't have a look at the installation guide. </p>
+	</s2>
 	<s2 title="XML Security Release">
 		<p>The &packagenamelong; &packageversion; supports the <jump href="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/">XML-Signature Syntax and Processing</jump> recommendation.</p>
                 <p>Note that there is no standard API avaliable at the moment. SUN is working on a JAVA Specification Request <jump href="http://jcp.org/jsr/detail/105.jsp">JSR-105: XML Digital Signature APIs</jump> on an API for XML Signature and <jump href="http://jcp.org/jsr/detail/106.jsp">JSR-106: XML Digital Encryption APIs</jump>, but until now, nothing has been published. So, this software does <em>not</em> conform to any of these specifications.</p>
