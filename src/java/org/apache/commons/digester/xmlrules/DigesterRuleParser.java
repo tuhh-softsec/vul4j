@@ -1,4 +1,4 @@
-/* $Id: DigesterRuleParser.java,v 1.32 2005/01/18 00:11:12 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -540,30 +540,52 @@ public class DigesterRuleParser extends RuleSetBase {
         public Object createObject(Attributes attributes) {
             Rule callMethodRule = null;
             String methodName = attributes.getValue("methodname");
+
+            // Select which element is to be the target. Default to zero,
+            // ie the top object on the stack.
+            int targetOffset = 0;
+            String targetOffsetStr = attributes.getValue("targetoffset");
+            if (targetOffsetStr != null) {
+                targetOffset = Integer.parseInt(targetOffsetStr);
+            }
+
             if (attributes.getValue("paramcount") == null) {
                 // call against empty method
-                callMethodRule = new CallMethodRule(methodName);
+                callMethodRule = new CallMethodRule(targetOffset, methodName);
             
             } else {
                 int paramCount = Integer.parseInt(attributes.getValue("paramcount"));
                 
                 String paramTypesAttr = attributes.getValue("paramtypes");
                 if (paramTypesAttr == null || paramTypesAttr.length() == 0) {
-                    callMethodRule = new CallMethodRule(methodName, paramCount);
+                    callMethodRule = new CallMethodRule(targetOffset, methodName, paramCount);
                 } else {
-                    // Process the comma separated list or paramTypes
-                    // into an array of String class names
-                    ArrayList paramTypes = new ArrayList();
-                    StringTokenizer tokens = new StringTokenizer(paramTypesAttr, " \t\n\r,");
-                    while (tokens.hasMoreTokens()) {
-                            paramTypes.add(tokens.nextToken());
-                    }
-                    callMethodRule = new CallMethodRule( methodName,
-                                                        paramCount,
-                                                        (String[])paramTypes.toArray(new String[0]));
+                    String[] paramTypes = getParamTypes(paramTypesAttr);
+                    callMethodRule = new CallMethodRule(
+                        targetOffset, methodName, paramCount, paramTypes);
                 }
             }
             return callMethodRule;
+        }
+
+        /**
+         * Process the comma separated list of paramTypes
+         * into an array of String class names
+         */
+        private String[] getParamTypes(String paramTypes) {
+            String[] paramTypesArray;
+            if( paramTypes != null ) {
+                ArrayList paramTypesList = new ArrayList();
+                StringTokenizer tokens = new StringTokenizer(
+                        paramTypes, " \t\n\r,");
+                while (tokens.hasMoreTokens()) {
+                    paramTypesList.add(tokens.nextToken());
+                }
+                paramTypesArray = (String[])paramTypesList.toArray(new String[0]);
+            } else {
+                paramTypesArray = new String[0];
+            }
+            return paramTypesArray;
         }
     }
     
@@ -791,4 +813,5 @@ public class DigesterRuleParser extends RuleSetBase {
             rule.addAlias(attrName, propName);
         }
     }
+        
 }

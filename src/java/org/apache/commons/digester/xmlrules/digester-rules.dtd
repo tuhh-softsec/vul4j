@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!-- $Id: digester-rules.dtd,v 1.15 2005/01/18 00:11:12 skitching Exp $
+<!-- $Id$
   
- Copyright 2001-2004 The Apache Software Foundation.
+ Copyright 2001-2005 The Apache Software Foundation.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 <!--
         "Digester" component of the Jakarta Commons Subproject
         DTD for the definition of Digester rules in XML.
-        $Id: digester-rules.dtd,v 1.15 2005/01/18 00:11:12 skitching Exp $
+        $Id$
 
         Applications wishing to reference this DTD in their own documents
         should use the following DOCTYPE declaration:
@@ -96,13 +96,17 @@
     pattern      CDATA #IMPLIED
     propertyname CDATA #IMPLIED>
 
-<!-- CallMethodRule -->
+<!-- CallMethodRule
+  -
+  - Note that paramtypes is ignored unless paramcount is defined.
+  -->
 <!ELEMENT call-method-rule EMPTY>
 <!ATTLIST call-method-rule
-    pattern    CDATA #IMPLIED
-    methodname CDATA #REQUIRED
-    paramcount CDATA #IMPLIED
-    paramtypes CDATA #IMPLIED>
+    pattern      CDATA #IMPLIED
+    targetoffset CDATA #IMPLIED
+    methodname   CDATA #REQUIRED
+    paramcount   CDATA #IMPLIED
+    paramtypes   CDATA #IMPLIED>
 
 <!-- 
     CallParamRule 
