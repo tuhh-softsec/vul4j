@@ -262,6 +262,28 @@ XMLCh * BN2b64(BIGNUM * bn) {
 
 #endif
 
+DSIGKeyInfoX509 * findX509Data(DSIGKeyInfoList * lst) {
+
+	if (lst == NULL)
+		return NULL;
+
+	int sz = lst->getSize();
+	for (int i = 0; i < sz; ++i) {
+
+		DSIGKeyInfo *ki = lst->item(i);
+		if (ki->getKeyInfoType() == DSIGKeyInfo::KEYINFO_X509)
+			return (DSIGKeyInfoX509*) ki;
+
+	}
+
+	return NULL;
+
+}
+
+// --------------------------------------------------------------------------------
+//           ErrorHandler
+// --------------------------------------------------------------------------------
+
 class xkmsErrorHandler : public ErrorHandler {
 
 public:
@@ -333,8 +355,13 @@ void printLocateRequestUsage(void) {
 	cerr << "   --help/-h                : print this screen and exit\n\n";
 	cerr << "   --add-cert/-a <filename> : add cert in filename as a KeyInfo\n";
 	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n\n";
+	cerr << "   --add-usage-sig/-us      : Add Signature Key Usage\n";
+	cerr << "   --add-usage-exc/-ux      : Add Excange Key Usage\n";
+	cerr << "   --add-usage-enc/-ue      : Add Encryption Key Usage\n";
 	cerr << "   --add-usekeywith/-u <Application URI> <Identifier>\n";
 	cerr << "                            : Add a UseKeyWith element\n";
+	cerr << "   --add-respondwith/-r <Identifier>\n";
+	cerr << "                            : Add a RespondWith element\n";
 	cerr << "   --sign-dsa/-sd <filename> <passphrase>\n";
 	cerr << "           : Sign using the DSA key in file protected by passphrase\n\n";
 
@@ -375,8 +402,14 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 
 			Janitor<XSECCryptoX509> j_x(x);
 
-			XKMSQueryKeyBinding * qkb = lr->addQueryKeyBinding();
-			DSIGKeyInfoX509 * kix = qkb->appendX509Data();
+			XKMSQueryKeyBinding * qkb = lr->getQueryKeyBinding();
+			if (qkb == NULL) {
+				qkb = lr->addQueryKeyBinding();
+			}
+			// See if there is already an X.509 element
+			DSIGKeyInfoX509 * kix;
+			if ((kix = findX509Data(qkb->getKeyInfoList())) == NULL)
+				kix = qkb->appendX509Data();
 			safeBuffer sb = x->getDEREncodingSB();
 			kix->appendX509Certificate(sb.sbStrToXMLCh());
 			paramCount++;
@@ -392,6 +425,27 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			qkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
+		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
+			XKMSQueryKeyBinding * qkb = lr->getQueryKeyBinding();
+			if (qkb == NULL)
+				qkb = lr->addQueryKeyBinding();
+			qkb->setSignatureKeyUsage();
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usage-exc") == 0 || stricmp(argv[paramCount], "-ux") == 0) {
+			XKMSQueryKeyBinding * qkb = lr->getQueryKeyBinding();
+			if (qkb == NULL)
+				qkb = lr->addQueryKeyBinding();
+			qkb->setExchangeKeyUsage();
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usage-enc") == 0 || stricmp(argv[paramCount], "-ue") == 0) {
+			XKMSQueryKeyBinding * qkb = lr->getQueryKeyBinding();
+			if (qkb == NULL)
+				qkb = lr->addQueryKeyBinding();
+			qkb->setEncryptionKeyUsage();
+			paramCount++;
+		}
 		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
 			if (++paramCount >= argc + 1) {
 				printLocateRequestUsage();
@@ -404,6 +458,15 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 
 			qkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
 			paramCount += 2;
+		}
+		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+			if (++paramCount >= argc) {
+				printLocateRequestUsage();
+				delete lr;
+				return NULL;
+			}
+			lr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
 		}
 #if defined (HAVE_OPENSSL)
 		else if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0 ||
@@ -521,9 +584,14 @@ void printValidateRequestUsage(void) {
 	cerr << "\nUsage ValidateRequest [--help|-h] <service URI> [options]\n";
 	cerr << "   --help/-h                : print this screen and exit\n\n";
 	cerr << "   --add-cert/-a <filename> : add cert in filename as a KeyInfo\n";
-	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n\n";
+	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n";
+	cerr << "   --add-usage-sig/-us      : Add Signature Key Usage\n";
+	cerr << "   --add-usage-exc/-ux      : Add Excange Key Usage\n";
+	cerr << "   --add-usage-enc/-ue      : Add Encryption Key Usage\n";
 	cerr << "   --add-usekeywith/-u <Application URI> <Identifier>\n";
 	cerr << "                            : Add a UseKeyWith element\n";
+	cerr << "   --add-respondwith/-r <Identifier>\n";
+	cerr << "                            : Add a RespondWith element\n";
 	cerr << "   --sign-dsa/-sd <filename> <passphrase>\n";
 	cerr << "           : Sign using the DSA key in file protected by passphrase\n\n";
 
@@ -564,11 +632,18 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 
 			Janitor<XSECCryptoX509> j_x(x);
 
-			XKMSQueryKeyBinding * qkb = vr->addQueryKeyBinding();
-			DSIGKeyInfoX509 * kix = qkb->appendX509Data();
+			XKMSQueryKeyBinding * qkb = vr->getQueryKeyBinding();
+			if (qkb == NULL) {
+				qkb = vr->addQueryKeyBinding();
+			}
+			// See if there is already an X.509 element
+			DSIGKeyInfoX509 * kix;
+			if ((kix = findX509Data(qkb->getKeyInfoList())) == NULL)
+				kix = qkb->appendX509Data();
 			safeBuffer sb = x->getDEREncodingSB();
 			kix->appendX509Certificate(sb.sbStrToXMLCh());
 			paramCount++;
+
 		}
 
 		else if (stricmp(argv[paramCount], "--add-name") == 0 || stricmp(argv[paramCount], "-n") == 0) {
@@ -579,6 +654,36 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			}
 			XKMSQueryKeyBinding * qkb = vr->addQueryKeyBinding();
 			qkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+			if (++paramCount >= argc) {
+				printValidateRequestUsage();
+				delete vr;
+				return NULL;
+			}
+			vr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
+			XKMSQueryKeyBinding * qkb = vr->getQueryKeyBinding();
+			if (qkb == NULL)
+				qkb = vr->addQueryKeyBinding();
+			qkb->setSignatureKeyUsage();
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usage-exc") == 0 || stricmp(argv[paramCount], "-ux") == 0) {
+			XKMSQueryKeyBinding * qkb = vr->getQueryKeyBinding();
+			if (qkb == NULL)
+				qkb = vr->addQueryKeyBinding();
+			qkb->setExchangeKeyUsage();
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usage-enc") == 0 || stricmp(argv[paramCount], "-ue") == 0) {
+			XKMSQueryKeyBinding * qkb = vr->getQueryKeyBinding();
+			if (qkb == NULL)
+				qkb = vr->addQueryKeyBinding();
+			qkb->setEncryptionKeyUsage();
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
