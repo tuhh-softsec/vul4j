@@ -8,15 +8,24 @@
 
   <body>
     <menu name="Digester">
-      <item name="Overview"                href="/index.html"/>
+      <item name="Overview"                
+            href="/index.html"/>
+      <item name="Developer Guide"
+            href="/apidocs/org/apache/commons/digester/package-summary.html#package_description"/>
+          
     </menu>
     
     <menu name="Jakarta Community">
-			<item name="Get Involved"            href="http://jakarta.apache.org/site/getinvolved.html"/>
-			<item name="License"                 href="http://jakarta.apache.org/commons/license.html"/>
-			<item name="Mailing Lists"           href="http://jakarta.apache.org/site/mail.html"/>
-			<item name="CVS Repositories"        href="http://jakarta.apache.org/site/cvsindex.html"/>
-			<item name="Who We Are"              href="http://jakarta.apache.org/site/whoweare.html"/>
+     <item name="Get Involved"            
+           href="http://jakarta.apache.org/site/getinvolved.html"/>
+     <item name="License"                 
+           href="http://jakarta.apache.org/commons/license.html"/>
+     <item name="Mailing Lists"           
+           href="http://jakarta.apache.org/site/mail.html"/>
+     <item name="CVS Repositories"        
+           href="http://jakarta.apache.org/site/cvsindex.html"/>
+     <item name="Who We Are"              
+           href="http://jakarta.apache.org/site/whoweare.html"/>
     </menu>
   </body>
 </project>
