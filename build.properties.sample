@@ -1,0 +1,2 @@
+root=/java/jars
+junit.jar=${root}/junit.jar
