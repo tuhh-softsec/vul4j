@@ -134,9 +134,12 @@ public class Init {
             dbf.setValidating(false);
 
             DocumentBuilder db = dbf.newDocumentBuilder();
+            // InputStream is = Class.forName("org.apache.xml.security.Init").getResourceAsStream("resource/config.xml");
+            String cfile = System.getProperty("org.apache.xml.security.resource.config");
             InputStream is =
                Class.forName("org.apache.xml.security.Init")
-                  .getResourceAsStream("resource/config.xml");
+                  .getResourceAsStream(cfile != null ? cfile : "resource/config.xml");
+
             Document doc = db.parse(is);
             long XX_parsing_end = System.currentTimeMillis();
             Element context = doc.createElementNS(null, "nscontext");
