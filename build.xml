@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.3 2001/05/22 02:55:02 craigmcc Exp $
+        $Id: build.xml,v 1.4 2001/05/22 04:19:08 craigmcc Exp $
 -->
 
 
@@ -96,6 +96,10 @@
     <pathelement location="${build.home}/classes"/>
     <pathelement location="${build.home}/tests"/>
     <pathelement location="${junit.jar}"/>
+    <pathelement location="${jaxp.jaxp.jar}"/>
+    <pathelement location="${jaxp.parser.jar}"/>
+    <pathelement location="${commons-beanutils.jar}"/>
+    <pathelement location="${commons-collections.jar}"/>
   </path>
 
   <!-- Construct RSSDigester test classpath -->
@@ -160,7 +164,6 @@
 
   <target name="compile.tests" depends="compile"
    description="Compile unit test cases">
-<!--
     <javac  srcdir="${test.home}"
            destdir="${build.home}/tests"
              debug="${compile.debug}"
@@ -171,7 +174,6 @@
     <copy    todir="${build.home}/tests" filtering="on">
       <fileset dir="${test.home}" excludes="**/*.java"/>
     </copy>
--->
   </target>
 
 
@@ -218,9 +220,21 @@
 
 
   <target name="test" depends="compile.tests,
+                               test.digester,
                                test.rss
                               "
    description="Run all unit test cases">
+  </target>
+
+
+  <target name="test.digester" depends="compile.tests"
+   description="Run basic Digester unit tests ...">
+    <echo message="Running Digester tests ..."/>
+    <java classname="${test.runner}" fork="yes"
+        failonerror="${test.failonerror}">
+      <arg value="org.apache.commons.digester.DigesterTestCase"/>
+      <classpath refid="test.classpath"/>
+    </java>
   </target>
 
 
