@@ -133,6 +133,9 @@ public class XMLSignatureInput {
     */
    public XMLSignatureInput(InputStream inputOctetStream)  {
    	  this._inputOctetStreamProxy=inputOctetStream;
+      if (inputOctetStream.markSupported()) {
+      	inputOctetStream.mark(-1);
+      }
       //this(JavaUtils.getBytesFromStream(inputOctetStream));
 
    }
