@@ -487,7 +487,7 @@ public class XMLUtils {
 
       OutputStream os = new FileOutputStream(filename);
 
-      outputDOM(contextNode, os);
+      XMLUtils.outputDOM(contextNode, os);
    }
 
    /**
@@ -498,22 +498,34 @@ public class XMLUtils {
     */
    public static void outputDOM(Node contextNode, OutputStream os) {
 
+      /*
+   try {
+      TransformerFactory tFactory = TransformerFactory.newInstance();
+      Transformer transformer = tFactory.newTransformer();
+
+      transformer
+         .setOutputProperty(javax.xml.transform.OutputKeys
+            .OMIT_XML_DECLARATION, "yes");
+
+      DOMSource source = new DOMSource(contextNode);
+      StreamResult result = new StreamResult(os);
+
+      transformer.transform(source, result);
+   } catch (TransformerConfigurationException e) {
+      e.printStackTrace();
+   } catch (TransformerException e) {
+      e.printStackTrace();
+   }
+   */
       try {
-         TransformerFactory tFactory = TransformerFactory.newInstance();
-         Transformer transformer = tFactory.newTransformer();
-
-         transformer
-            .setOutputProperty(javax.xml.transform.OutputKeys
-               .OMIT_XML_DECLARATION, "yes");
-
-         DOMSource source = new DOMSource(contextNode);
-         StreamResult result = new StreamResult(os);
-
-         transformer.transform(source, result);
-      } catch (TransformerConfigurationException e) {
-         e.printStackTrace();
-      } catch (TransformerException e) {
-         e.printStackTrace();
+         os.write(Canonicalizer
+            .getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS)
+               .canonicalize(contextNode));
+      } catch (IOException ex) {}
+      catch (InvalidCanonicalizerException ex) {
+         ex.printStackTrace();
+      } catch (CanonicalizationException ex) {
+         ex.printStackTrace();
       }
    }
 
