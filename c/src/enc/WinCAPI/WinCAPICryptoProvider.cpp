@@ -210,6 +210,16 @@ XSECCryptoBase64 * WinCAPICryptoProvider::base64() {
 
 }
 
+XSECCryptoSymmetricKey	* WinCAPICryptoProvider::keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
+
+	// Only temporary
+
+	throw XSECException(XSECException::InternalError,
+		"WinCAPICryptoProvider() - SymmetricKeys not yet supported");
+
+}
+
+
 // --------------------------------------------------------------------------------
 //     Translate a Base64 number to a Windows (little endian) integer
 // --------------------------------------------------------------------------------

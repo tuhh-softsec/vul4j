@@ -305,6 +305,18 @@ public :
 
 	static unsigned char * WinBN2b64(BYTE * n, DWORD nLen, unsigned int &retLen);
 
+	/**
+	 * \brief Return a Symmetric Key implementation object.
+	 *
+	 * Call used by the library to obtain a bulk encryption
+	 * object.
+	 *
+	 * @returns Pointer to the new SymmetricKey object
+	 * @see XSECCryptoSymmetricKey
+	 */
+
+	virtual XSECCryptoSymmetricKey	* keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg);
+
 	//@}
 
 private:
