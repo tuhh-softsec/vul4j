@@ -154,18 +154,25 @@ public final class FileUtilsTest extends FileBasedTestCase
         FileUtils.waitFor( "", 2 );
     }
 
-    // toURL
-
-    public void testToURLs() throws Exception
+    // Hacked to sanity by Trygve
+    public void testToURLs()
+        throws Exception
     {
-        final File[] files = new File[]{new File( "file1" ), new File( "file2" )};
+        File[] files = new File[] {
+            new File( "file1" ),
+            new File( "file2" ),
+            };
 
-//        final URL[] urls = FileUtils.toURLs( files );
+        URL[] urls = FileUtils.toURLs( files );
 
-        // Path separator causes equality tests to fail
-        //assertEquals(urls[0].getFile(), File.separator + files[0].getAbsolutePath());
-        //assertEquals(urls[1].getFile(), File.separator + files[1].getAbsolutePath());
+        assertEquals( "The length of the generated URL's is not equals to the length of files. " + 
+            "Was " + files.length + ", expected " + urls.length,
+            files.length, urls.length );
 
+        for( int i = 0; i < urls.length; i++ )
+        {
+            assertEquals( files[i].toURL(), urls[i] );
+        }
     }
 
     public void testGetFilesFromExtension()
