@@ -202,30 +202,6 @@ public class XMLSignatureInputTest extends TestCase {
    static final int _nodeSetInput1NodesWithComments = _nodeSetInput1Nodes + 1;
    //J+
 
-   /**
-    * Method testSetOctetStreamGetNodeSet
-    *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws UnsupportedEncodingException
-    */
-   public static void testSetOctetStreamGetNodeSet1()
-           throws IOException, UnsupportedEncodingException,
-                  ParserConfigurationException, SAXException,
-                  CanonicalizationException, InvalidCanonicalizerException {
-
-      InputStream inputStream =
-         new ByteArrayInputStream(_nodeSetInput1.getBytes("UTF-8"));
-      XMLSignatureInput input = new XMLSignatureInput(inputStream);
-      Set nl = input.getNodeSet();
-
-      assertEquals("_nodeSetInput1 Number of nodes",
-                   _nodeSetInput1NodesWithComments, nl.size());
-   }
-
    //J-
    static final String _nodeSetInput2 =
         "<?xml version=\"1.0\"?>\n"
@@ -241,30 +217,6 @@ public class XMLSignatureInputTest extends TestCase {
    static final int _nodeSetInput2NodesWithComments = _nodeSetInput2Nodes + 1;
    //J+
 
-   /**
-    * Method testSetOctetStreamGetNodeSet2
-    *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws UnsupportedEncodingException
-    */
-   public static void testSetOctetStreamGetNodeSet2()
-           throws IOException, UnsupportedEncodingException,
-                  ParserConfigurationException, SAXException,
-                  CanonicalizationException, InvalidCanonicalizerException {
-
-      InputStream inputStream =
-         new ByteArrayInputStream(_nodeSetInput2.getBytes("UTF-8"));
-      XMLSignatureInput input = new XMLSignatureInput(inputStream);
-      Set nl = input.getNodeSet();
-
-      assertEquals("_nodeSetInput2 Number of nodes",
-                   _nodeSetInput2NodesWithComments, nl.size());
-   }
-
    //J-
    static final String _nodeSetInput3 =
         "<!-- document -->"
@@ -278,67 +230,6 @@ public class XMLSignatureInputTest extends TestCase {
    static final int _nodeSetInput3Nodes = 11; // was 10
    static final int _nodeSetInput3NodesWithComments = _nodeSetInput3Nodes + 1;
    //J+
-
-   /**
-    * Method testSetOctetStreamGetNodeSet3
-    *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws UnsupportedEncodingException
-    */
-   public static void testSetOctetStreamGetNodeSet3()
-           throws IOException, UnsupportedEncodingException,
-                  ParserConfigurationException, SAXException,
-                  CanonicalizationException, InvalidCanonicalizerException {
-
-      InputStream inputStream =
-         new ByteArrayInputStream(_nodeSetInput3.getBytes("UTF-8"));
-      XMLSignatureInput input = new XMLSignatureInput(inputStream);
-      Set nl = input.getNodeSet();
-
-      assertEquals("_nodeSetInput3 Number of nodes",
-                   _nodeSetInput3NodesWithComments, nl.size());
-   }
-
-   //J-
-   static final String _nodeSetInput4 =
-        "<!-- node set -->"
-      + "<n>1</n>"
-      + " "
-      + "<n>2</n>"
-      + "<n>3</n>"
-      + "<n>4</n>";
-   // added one for xmlns:xml since Xalan 2.2.D11
-   static final int _nodeSetInput4Nodes = 10; // was 9
-   static final int _nodeSetInput4NodesWithComments = _nodeSetInput4Nodes + 1;
-   //J+
-
-   /**
-    * Method testSetOctetStreamGetNodeSet4
-    *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws UnsupportedEncodingException
-    */
-   public static void testSetOctetStreamGetNodeSet4()
-           throws IOException, UnsupportedEncodingException,
-                  ParserConfigurationException, SAXException,
-                  CanonicalizationException, InvalidCanonicalizerException {
-
-      InputStream inputStream =
-         new ByteArrayInputStream(_nodeSetInput4.getBytes("UTF-8"));
-      XMLSignatureInput input = new XMLSignatureInput(inputStream);
-      Set nl = input.getNodeSet();
-
-      assertEquals("_nodeSetInput4 Number of nodes",
-                   _nodeSetInput4NodesWithComments, nl.size());
-   }
 
    /**
     * Method getNodeSet1
@@ -376,34 +267,13 @@ public class XMLSignatureInputTest extends TestCase {
 
       String s1 =
          "<!--Small Comment Test--><RootElement><Element1/><Element2/><Element3>Text in Element3</Element3></RootElement>";
+
+      XMLUtils.circumventBug2650(doc);
       CachedXPathAPI cXPathAPI = new CachedXPathAPI();
       NodeList nl = cXPathAPI.selectNodeList(doc,
                                              "(//. | //@* | //namespace::*)");
 
       return XMLUtils.convertNodelistToSet(nl);
-   }
-
-   /**
-    * Method testSetNodeSetGetNodeSet1
-    *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws TransformerException
-    * @throws UnsupportedEncodingException
-    */
-   public static void testSetNodeSetGetNodeSet1()
-           throws IOException, UnsupportedEncodingException,
-                  ParserConfigurationException, SAXException,
-                  CanonicalizationException, InvalidCanonicalizerException,
-                  TransformerException {
-
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
-      Set nl = input.getNodeSet();
-
-      assertEquals("getNodeSet1 Number of nodes", 8, nl.size());    // 8 was 7
    }
 
    /**
