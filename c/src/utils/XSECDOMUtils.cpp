@@ -351,7 +351,10 @@ XMLCh * transcodeFromUTF8(const unsigned char * src) {
 
 	while (totalBytesEaten < bytesToEat) {
 
-		int toEat = (bytesToEat > 2048 ? 2048 : bytesToEat);
+		int toEat = bytesToEat - totalBytesEaten;
+
+		if (toEat > 2048)
+			toEat = 2048;
 
 		t->transcodeFrom(&src[totalBytesEaten], 
 						toEat, 
