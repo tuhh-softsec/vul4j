@@ -1,6 +1,8 @@
-Extension-Name: @name@
-Specification-Vendor: Apache Software Foundation
-Specification-Version: 1.0
-Implementation-Vendor: Apache Software Foundation
-Implementation-Version: @version@
+Extension-Name: org.apache.commons.digester
+Specification-Title: "Jakarta Commons Digester"
+Specification-Vendor: "Apache Software Foundation"
+Specification-Version: "1.4"
+Implementation-Title: "org.apache.commons.digester"
+Implementation-Vendor: "Apache Software Foundation"
+Implementation-Version: "1.4.1"
 

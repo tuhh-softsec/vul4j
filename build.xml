@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.36 2003/02/23 23:39:21 rdonkin Exp $
+        $Id: build.xml,v 1.37 2003/03/01 11:39:44 rdonkin Exp $
 -->
 
 
@@ -55,7 +55,7 @@
   <property name="component.title"         value="Digester - XML to Java Object Configuration"/>
 
   <!-- The current version number of this component -->
-  <property name="component.version"       value="1.4.1RC1"/>
+  <property name="component.version"       value="1.4.1"/>
 
   <!-- The base directory for compilation targets -->
   <property name="build.home"              value="target"/>
