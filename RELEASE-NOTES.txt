@@ -1,7 +1,7 @@
-$Id: RELEASE-NOTES.txt,v 1.5 2002/08/13 16:28:59 sanders Exp $
+$Id: RELEASE-NOTES.txt,v 1.6 2003/02/02 15:34:21 rdonkin Exp $
 
                           Commons Digester Package
-                                Version 1.3
+                                Version 1.4
                                Release Notes
 
 
@@ -15,63 +15,43 @@ Digester package, and highlights changes since the previous version.
 NEW FEATURES:
 ============
 
-Minor javadoc enhancements.
-Minor test case enhancements.
-
-
-Infrastructure Enhancements:
-----------------------------
-
-Digester can now be built using Maven. 
-See http://jakarta.apache.org/turbine/maven for more details.
-
+Enhancements to java docs.
 
 Digester Enhancements:
 ---------------------
 
-Fixed bug with CallMethodRule introduced when constructors accepting the 
-digester as a parameter were depricated. CallMethodRule now waits until the 
-digester is set before loading classes from classnames.
+New begin, body and end methods were added that include namespace information. This is an important change since it allows more sophisticated Rules to be created. The old versions of these methods have been deprecated (see below) but existing Rules that override these methods will continue to function correctly.
 
-Digester can now be used as a SAX ContentHandler as an alternative to 
-calling the parse() methods. The patch ensures that the configure() method is 
-called when used on a SAX stream as well as adding a new getRoot() method that 
-can be used to extract the parsed object after the SAX events have been 
-streamed into the digester.
+Improved support for XML schema. Scope of schema related variable has been change from private to protected. The entity resolver used can now be configured through a property.
 
-JAXP 1.2 XML Schema support.
-
-Add support for public getFeature() and setFeature() methods to configure the 
-SAXParserFactory.  Also added getProperty() and setProperty() methods to do the
-same sort of thing for SAXParser properties.
+Improved support for Public ID. The property now has a setter (as well as a getter). Digester now will not set a public ID to null.
 
 
 Rules Enhancements:
 -------------------
 
-Fixed a bug in the rules implementations which meant that root tail matches 
-were missed. Also added unit tests for the bug.  
+NodeCreateRule is a new rule that creates a DOM node for the matched node. This allows sophisticated approaches mixing DOM with digester.
 
-An implmentation of overridden attribute->property name mappings for 
-SetPropertiesRule. Some of the code plus much of the inspiration came from a 
-patch created by Simon Kitching. The feeling on the list when this was 
-originally discussed was that really there is no good reason why this 
-functionality is needed - alternative mechanisms existed. Recently, one good 
-example was posted on the user list - that of the often problematic mapping of 
-an xml attribute named class. This patch allows attribute->property name 
-mappings to be overriden both through standard digester constructors and 
-through xmlrules.  
-
-Added support for primitive method calls to CallMethodRule.
-
+ObjectParamRule is a new rule that works with the CallMethodRule. This allows arbitrary objects to be passed as parameters into a CallMethodRule method call.
 
 XMLRule Enhancements:
 ---------------------
 
-XMLRules now allow paramtypes to be passed in.
+Added a new createDigester method which allows the digester to be used to process the xml rules file to be passed in. This allows this digester to be configured so that the xml rules file can be loaded from a jar.
 
 
 BUG REPORTS ADDRESSED:
 =====================
 
-8244 CallMethodRule rule can't be used to call no arg methods
+16233 - Invalid bean setters do not generate an exception
+12756 - Enhanced support for call param rules that take their values from the stack
+11693 - CallMethod rule on nested indentical elements cause parameter confusion
+14415 - InvocationTargetExceptions could be unwrapped
+13891 - Null pointer exception when setting rules
+11168 - XML-based rules def. for Digester ignores call-param-rule
+
+DEPRECATION
+===========
+
+The begin, body and end method signatures of org.apache.commons.digester.Rule have now been deprecated. They have been been replaced by new begin, body and end methods whose signatures contain namespace information. Digester now calls these new methods. Existing rules overriding the old signatures will continue to function correctly since each base implementation of these new methods in Rule calls the old ones.
+
