@@ -121,11 +121,13 @@ public:
 
 	// Get methods
 	virtual const XMLCh * getTypeURI(void) const;
+	virtual const XMLCh * getMimeType(void) const;
+	virtual const XMLCh * getEncodingURI(void) const;
 
 	// Set methods
 	virtual void setTypeURI(const XMLCh * uri);
-
-
+	virtual void setMimeType(const XMLCh * mimeType);
+	virtual void setEncodingURI(const XMLCh * uri);
 
 protected:
 
@@ -153,6 +155,10 @@ protected:
 	// Type URI
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
 								* mp_typeAttributeNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
+								* mp_mimeTypeAttributeNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
+								* mp_encodingAttributeNode;
 
 	friend class XENCCipherImpl;
 };

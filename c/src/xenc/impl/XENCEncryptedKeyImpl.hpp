@@ -123,10 +123,18 @@ public:
 	// Get methods
 	virtual const XMLCh * getTypeURI(void) const
 		{return XENCEncryptedTypeImpl::getTypeURI();}
+	virtual const XMLCh * getMimeType(void) const
+		{return XENCEncryptedTypeImpl::getMimeType();}
+	virtual const XMLCh * getEncodingURI(void) const
+		{return XENCEncryptedTypeImpl::getEncodingURI();}
 
 	// Set methods
 	virtual void setTypeURI(const XMLCh * uri)
 		{XENCEncryptedTypeImpl::setTypeURI(uri);}
+	virtual void setMimeType(const XMLCh * mimeType)
+		{XENCEncryptedTypeImpl::setMimeType(mimeType);}
+	virtual void setEncodingURI(const XMLCh * uri)
+		{XENCEncryptedTypeImpl::setEncodingURI(uri);}
 
 private:
 

@@ -174,6 +174,37 @@ public:
 
 	virtual const XMLCh * getTypeURI(void) const = 0;
 
+	/**
+	 * \brief Get the MimeType of the EncryptedType
+	 *
+	 * If this object is an EncryptedData, it <em>may</em> have a 
+	 * MimeType attribute that "describes the media type of the 
+	 * data which has been encrypted" (from the XML Encryption spec).
+	 *
+	 * The XML-Security-C library makes no use of this attribute, but
+	 * it provides these functions to allow applications to set and get.
+	 *
+	 * @returns a pointer to the MimeType string (owned by the library)
+	 * or NULL if no MimeType is set
+	 */
+
+	virtual const XMLCh * getMimeType(void) const = 0;
+
+	/**
+	 * \brief Get the Encoding of the EncryptedType
+	 *
+	 * If this object is an EncryptedData, it <em>may</em> have an
+	 * encoding attribute that describes how the data has been encoded
+	 * prior to encryption.  (E.g. http://www.w3.org/2000/09/xmldsig#base64)
+	 *
+	 * The XML-Security-C library makes no use of this attribute, but
+	 * it provides these functions to allow applications to set and get.
+	 *
+	 * @returns A string (owned by the library) providing the encoding URI
+	 */
+
+	virtual const XMLCh * getEncodingURI(void) const = 0;
+
 	//@}
 
 	/** @name Setter interface methods */
@@ -192,6 +223,40 @@ public:
 	 */
 
 	virtual void setTypeURI(const XMLCh * uri) = 0;
+
+	/**
+	 * \brief Set the MimeType of the EncryptedType
+	 *
+	 * If this object is an EncryptedData, it <em>may</em> have a 
+	 * MimeType attribute that "describes the media type of the 
+	 * data which has been encrypted" (from the XML Encryption spec).
+	 *
+	 * The XML-Security-C library makes no use of this attribute, but
+	 * it provides these functions to allow applications to set and get.
+	 *
+	 * @param mimeType String to set in the MimeType attribute.
+	 * @note no checking of this string is done by the library - it
+	 * simply sets the value of the MimeType attribute to this value.
+	 */
+
+	virtual void setMimeType(const XMLCh * mimeType) = 0;
+
+	/**
+	 * \brief Set the Encoding of the EncryptedType
+	 *
+	 * If this object is an EncryptedData, it <em>may</em> have an
+	 * encoding attribute that describes how the data has been encoded
+	 * prior to encryption.  (E.g. http://www.w3.org/2000/09/xmldsig#base64)
+	 *
+	 * The XML-Security-C library makes no use of this attribute, but
+	 * it provides these functions to allow applications to set and get.
+	 *
+	 * @param encoding String (URI) to set in the Encoding attribute.
+	 * @note no checking of this string is done by the library - it
+	 * simply sets the value of the Encoding attribute to this value.
+	 */
+
+	virtual void setEncodingURI(const XMLCh * uri) = 0;
 
 	//@}
 

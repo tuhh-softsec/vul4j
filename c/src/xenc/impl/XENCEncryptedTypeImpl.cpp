@@ -149,6 +149,33 @@ static XMLCh s_Type[] = {
 	chNull
 };
 
+static XMLCh s_MimeType[] = {
+	
+	chLatin_M,
+	chLatin_i,
+	chLatin_m,
+	chLatin_e,
+	chLatin_T,
+	chLatin_y,
+	chLatin_p,
+	chLatin_e,
+	chNull
+};
+
+
+static XMLCh s_Encoding[] = {
+	
+	chLatin_E,
+	chLatin_n,
+	chLatin_c,
+	chLatin_o,
+	chLatin_d,
+	chLatin_i,
+	chLatin_n,
+	chLatin_g,
+	chNull
+};
+
 // --------------------------------------------------------------------------------
 //			Constructors and Destructors
 // --------------------------------------------------------------------------------
@@ -161,7 +188,9 @@ mp_cipherDataNode(NULL),
 mp_cipherData(NULL),
 mp_encryptionMethod(NULL),
 m_keyInfoList(env),
-mp_typeAttributeNode(NULL) {
+mp_typeAttributeNode(NULL),
+mp_mimeTypeAttributeNode(NULL),
+mp_encodingAttributeNode(NULL) {
 
 }
 
@@ -174,7 +203,9 @@ mp_cipherDataNode(NULL),
 mp_cipherData(NULL),
 mp_encryptionMethod(NULL),
 m_keyInfoList(env),
-mp_typeAttributeNode(NULL) {
+mp_typeAttributeNode(NULL),
+mp_mimeTypeAttributeNode(NULL),
+mp_encodingAttributeNode(NULL) {
 
 }
 
@@ -208,6 +239,12 @@ void XENCEncryptedTypeImpl::load() {
 	// Type
 	mp_typeAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
 												s_Type);
+	// MimeType
+	mp_mimeTypeAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
+												s_MimeType);
+	// Encoding
+	mp_encodingAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
+												s_Encoding);
 
 	// Don't know what the node name should be (held by super class), 
 	// so go straight to the children
@@ -494,6 +531,82 @@ void XENCEncryptedTypeImpl::setTypeURI(const XMLCh * uri) {
 
 			throw XSECException(XSECException::InternalError,
 				"XENCEncryptedTypeImpl::setTypeURI - Cannot find the attribute I just added");
+
+		}
+
+	}
+}
+
+// --------------------------------------------------------------------------------
+//			MimeType handling
+// --------------------------------------------------------------------------------
+
+const XMLCh * XENCEncryptedTypeImpl::getMimeType(void) const {
+
+	if (mp_mimeTypeAttributeNode != NULL)
+		return mp_mimeTypeAttributeNode->getNodeValue();
+
+	return NULL;
+
+}
+
+void XENCEncryptedTypeImpl::setMimeType(const XMLCh * mimeType) {
+
+	if (mp_mimeTypeAttributeNode != NULL) {
+		mp_mimeTypeAttributeNode->setNodeValue(mimeType);
+	}
+	else {
+
+		// Need to create the node
+		DOMElement * typeElt = static_cast<DOMElement *>(mp_encryptedTypeNode);
+
+		typeElt->setAttributeNS(DSIGConstants::s_unicodeStrURIXENC, s_MimeType, mimeType);
+
+		DOMNamedNodeMap *atts = mp_encryptedTypeNode->getAttributes();
+		mp_mimeTypeAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
+												s_MimeType);
+		if (mp_mimeTypeAttributeNode = NULL) {
+
+			throw XSECException(XSECException::InternalError,
+				"XENCEncryptedTypeImpl::setMimeType - Cannot find the attribute I just added");
+
+		}
+
+	}
+}
+
+// --------------------------------------------------------------------------------
+//			Encoding handling
+// --------------------------------------------------------------------------------
+
+const XMLCh * XENCEncryptedTypeImpl::getEncodingURI(void) const {
+
+	if (mp_encodingAttributeNode != NULL)
+		return mp_encodingAttributeNode->getNodeValue();
+
+	return NULL;
+
+}
+
+void XENCEncryptedTypeImpl::setEncodingURI(const XMLCh * uri) {
+
+	if (mp_encodingAttributeNode != NULL) {
+		mp_encodingAttributeNode->setNodeValue(uri);
+	}
+	else {
+
+		// Need to create the node
+		DOMElement * typeElt = static_cast<DOMElement *>(mp_encryptedTypeNode);
+
+		typeElt->setAttributeNS(DSIGConstants::s_unicodeStrURIXENC, s_Encoding, uri);
+
+		DOMNamedNodeMap *atts = mp_encryptedTypeNode->getAttributes();
+		mp_encodingAttributeNode = atts->getNamedItemNS(DSIGConstants::s_unicodeStrURIXENC,
+												s_Encoding);
+		if (mp_encodingAttributeNode = NULL) {
+
+			throw XSECException(XSECException::InternalError,
+				"XENCEncryptedTypeImpl::setEncodingURI - Cannot find the attribute I just added");
 
 		}
 

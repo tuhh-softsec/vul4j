@@ -256,6 +256,15 @@ XMLCh s_tstMgmtData[] = {
 
 };
 
+XMLCh s_tstEncoding[] = {
+	chLatin_B, chLatin_a, chLatin_s, chLatin_e, chDigit_6, chDigit_4, chNull
+};
+
+XMLCh s_tstMimeType[] = {
+	chLatin_i, chLatin_m, chLatin_a, chLatin_g, chLatin_e,
+	chForwardSlash, chLatin_p, chLatin_n, chLatin_g, chNull
+};
+
 // --------------------------------------------------------------------------------
 //           Some test keys
 // --------------------------------------------------------------------------------
@@ -983,6 +992,12 @@ void testEncrypt(DOMImplementation *impl) {
 		cerr << "done\nAppending a <KeyName> ... ";
 		XENCEncryptedData * encryptedData = cipher->getEncryptedData();
 		encryptedData->appendKeyName(s_tstKeyName);
+		cerr << "done\nAdding Encoding and MimeType ... ";
+
+		// Add MimeType and Encoding
+		encryptedData->setEncodingURI(s_tstEncoding);
+		encryptedData->setMimeType(s_tstMimeType);
+
 		cerr << "done\nSearching for <category> ... ";
 
 		DOMNode * t = findNode(doc, MAKE_UNICODE_STRING("category"));
@@ -1075,6 +1090,18 @@ void testEncrypt(DOMImplementation *impl) {
 		}
 		else
 			cerr << "yes." << endl;
+
+		cerr << "Checking MimeType and Encoding ... ";
+		if (encryptedData->getMimeType() == NULL || !strEquals(encryptedData->getMimeType(), s_tstMimeType)) {
+			cerr << "Bad MimeType" << endl;
+			exit(1);
+		}
+		if (encryptedData->getEncodingURI() == NULL || !strEquals(encryptedData->getEncodingURI(), s_tstEncoding)) {
+			cerr << "Bad Encoding" << endl;
+			exit(1);
+		}
+
+		cerr << "OK" << endl;
 
 	}
 	catch (XSECException &e)
