@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.4 2003/11/25 17:49:35 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.5 2003/11/25 18:34:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -72,9 +72,10 @@ import org.apache.commons.functor.adapter.LeftBoundPredicate;
 import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsEqual;
 import org.apache.commons.functor.core.Offset;
+import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/25 17:49:35 $
+ * @version $Revision: 1.5 $ $Date: 2003/11/25 18:34:13 $
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {
@@ -129,7 +130,7 @@ public class TestAlgorithms extends TestCase {
     }
 
     public void testApply() {
-        Collection result = Algorithms.apply(list.iterator(),IdentityFunction.instance()).toCollection();
+        Collection result = IteratorToGeneratorAdapter.adapt(Algorithms.apply(list.iterator(),IdentityFunction.instance())).toCollection();
         assertNotNull(result);
         assertEquals(list.size(),result.size());
         assertEquals(list,result);
@@ -137,7 +138,7 @@ public class TestAlgorithms extends TestCase {
 
     public void testApply2() {
         Set set = new HashSet();
-        assertSame(set,Algorithms.apply(list.iterator(),IdentityFunction.instance()).to(set));
+        assertSame(set,IteratorToGeneratorAdapter.adapt(Algorithms.apply(list.iterator(),IdentityFunction.instance())).to(set));
         assertEquals(list.size(),set.size());
         for(Iterator iter = list.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -146,7 +147,7 @@ public class TestAlgorithms extends TestCase {
 
     public void testApply3() {
         Set set = new HashSet();
-        assertSame(set,Algorithms.apply(listWithDuplicates.iterator(),IdentityFunction.instance()).to(set));
+        assertSame(set,IteratorToGeneratorAdapter.adapt(Algorithms.apply(listWithDuplicates.iterator(),IdentityFunction.instance())).to(set));
         assertTrue(listWithDuplicates.size() > set.size());
         for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -180,26 +181,26 @@ public class TestAlgorithms extends TestCase {
     }
 
     public void testSelect1() {
-        Collection result = Algorithms.select(list.iterator(),isEven).toCollection();
+        Collection result = IteratorToGeneratorAdapter.adapt(Algorithms.select(list.iterator(),isEven)).toCollection();
         assertNotNull(result);
         assertEquals(evens,result);
     }
 
     public void testSelect2() {
         ArrayList result = new ArrayList();
-        assertSame(result,Algorithms.select(list.iterator(),isEven).to(result));
+        assertSame(result,IteratorToGeneratorAdapter.adapt(Algorithms.select(list.iterator(),isEven)).to(result));
         assertEquals(evens,result);
     }
 
     public void testReject1() {
-        Collection result = Algorithms.reject(list.iterator(),isOdd).toCollection();
+        Collection result = IteratorToGeneratorAdapter.adapt(Algorithms.reject(list.iterator(),isOdd)).toCollection();
         assertNotNull(result);
         assertEquals(evens,result);
     }
 
     public void testReject2() {
         ArrayList result = new ArrayList();
-        assertSame(result,Algorithms.reject(list.iterator(),isOdd).to(result));
+        assertSame(result,IteratorToGeneratorAdapter.adapt(Algorithms.reject(list.iterator(),isOdd)).to(result));
         assertEquals(evens,result);
     }
 
@@ -216,7 +217,7 @@ public class TestAlgorithms extends TestCase {
     }
 
     public void testLimit() {
-        Collection col = Algorithms.until(list.iterator(), new Offset(2)).toCollection();
+        Collection col = IteratorToGeneratorAdapter.adapt(Algorithms.until(list.iterator(), new Offset(2))).toCollection();
         System.out.println(col);
         assertEquals("[0, 1]", col.toString());
     }
