@@ -1144,6 +1144,14 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageFactoryImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSPendingRequestImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSPendingRequestImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.cpp
 # End Source File
 # Begin Source File
@@ -1270,6 +1278,10 @@ SOURCE=..\..\..\..\src\xkms\XKMSMessageAbstractType.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSMessageFactory.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSPendingRequest.hpp
 # End Source File
 # Begin Source File
 
