@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.8 2002/01/04 05:32:11 sanders Exp $
- * $Revision: 1.8 $
- * $Date: 2002/01/04 05:32:11 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.9 2002/01/05 19:48:39 craigmcc Exp $
+ * $Revision: 1.9 $
+ * $Date: 2002/01/05 19:48:39 $
  *
  * ====================================================================
  *
@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.8 $ $Date: 2002/01/04 05:32:11 $
+ * @version $Revision: 1.9 $ $Date: 2002/01/05 19:48:39 $
  */
 
 public class ObjectCreateRule extends Rule {
@@ -90,7 +90,7 @@ public class ObjectCreateRule extends Rule {
      */
     public ObjectCreateRule(Digester digester, String className) {
 
-        this(digester, className, null);
+        this(digester, className, (String) null);
 
     }
 
@@ -103,7 +103,7 @@ public class ObjectCreateRule extends Rule {
      */
     public ObjectCreateRule(Digester digester, Class clazz) {
 
-        this(digester, clazz.getName(), null);
+        this(digester, clazz.getName(), (String) null);
 
     }
 
@@ -132,12 +132,13 @@ public class ObjectCreateRule extends Rule {
      * optional attribute name containing an override.
      *
      * @param digester The associated Digester
-     * @param clazz Java class name of the object to be created
      * @param attributeName Attribute name which, if present, contains an
+     * @param clazz Java class name of the object to be created
      *  override of the class name to create
      */
-    public ObjectCreateRule(Digester digester, Class clazz,
-                            String attributeName) {
+    public ObjectCreateRule(Digester digester,
+                            String attributeName,
+                            Class clazz) {
 
         this(digester, clazz.getName(), attributeName);
 

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.33 2002/01/05 19:29:08 craigmcc Exp $
- * $Revision: 1.33 $
- * $Date: 2002/01/05 19:29:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.34 2002/01/05 19:48:39 craigmcc Exp $
+ * $Revision: 1.34 $
+ * $Date: 2002/01/05 19:48:39 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.33 $ $Date: 2002/01/05 19:29:08 $
+ * @version $Revision: 1.34 $ $Date: 2002/01/05 19:48:39 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1589,15 +1589,16 @@ public class Digester extends DefaultHandler {
      * Add an "object create" rule for the specified parameters.
      *
      * @param pattern Element matching pattern
-     * @param clazz Default Java class to be created
      * @param attributeName Attribute name that optionally overrides
+     * @param clazz Default Java class to be created
      *  the default Java class name to be created
      */
-    public void addObjectCreate(String pattern, Class clazz,
-                                String attributeName) {
+    public void addObjectCreate(String pattern,
+                                String attributeName,
+                                Class clazz) {
 
         addRule(pattern,
-                new ObjectCreateRule(this, clazz, attributeName));
+                new ObjectCreateRule(this, attributeName, clazz));
 
     }
 
