@@ -95,7 +95,6 @@ public abstract class CanonicalizerSpi {
       // db.setErrorHandler(eh);
       Document document = db.parse(in);
       byte result[] = this.engineCanonicalizeSubTree(document);
-
       return result;
    }
 
@@ -189,5 +188,8 @@ public abstract class CanonicalizerSpi {
     * @param os
     */
    public abstract void setWriter(OutputStream os);
+   
+   /** Reset the writter after a c14n */
+   protected boolean reset=false;
    //J+
 }

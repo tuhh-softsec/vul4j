@@ -131,7 +131,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
          this._writer.close();
          if (this._writer instanceof ByteArrayOutputStream) {
             byte []result=((ByteArrayOutputStream)this._writer).toByteArray();
-			((ByteArrayOutputStream)this._writer).reset();
+            if (reset) {
+                ((ByteArrayOutputStream)this._writer).reset();        
+            }
          	return result;
          } 
          return null;
@@ -277,7 +279,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
          this.canonicalizeXPathNodeSet(rootNodeOfC14n,new  NameSpaceSymbTable());
          this._writer.close();
          if (this._writer instanceof ByteArrayOutputStream) {
-         	return ((ByteArrayOutputStream)this._writer).toByteArray();
+            byte [] sol=((ByteArrayOutputStream)this._writer).toByteArray();
+            if (reset) {
+            	((ByteArrayOutputStream)this._writer).reset();
+            }
+         	return sol;
          }
          return null;
       } catch (UnsupportedEncodingException ex) {
@@ -749,4 +755,5 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     public void setWriter(OutputStream _writer) {
     	this._writer = _writer;
     }
+     
 }

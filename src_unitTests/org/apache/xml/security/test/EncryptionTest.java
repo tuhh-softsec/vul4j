@@ -17,8 +17,11 @@
 
 package org.apache.xml.security.test;
 
+import java.security.Security;
+
 import org.apache.xml.security.test.encryption.XMLCipherTester;
 import org.apache.xml.security.test.encryption.BaltimoreEncTest;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -33,10 +36,15 @@ public class EncryptionTest extends TestCase {
 
     public static void main(String[] args) {
 		org.apache.xml.security.Init.init();
+        
         processCmdLineArgs(args);
         TestRunner.run(suite());
     }
+    static {
+        Security.addProvider(new BouncyCastleProvider());
 
+   
+    }
     public static Test suite() {
         TestSuite suite = new TestSuite("DOM XML Encryption Tests");
         suite.addTest(new TestSuite(XMLCipherTester.class));

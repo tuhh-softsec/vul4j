@@ -102,6 +102,7 @@ public class Canonicalizer {
 
          this.canonicalizerSpi =
             (CanonicalizerSpi) Class.forName(implementingClass).newInstance();
+         this.canonicalizerSpi.reset=true;
       } catch (Exception e) {
          Object exArgs[] = { algorithmURI };
 
@@ -345,5 +346,9 @@ public class Canonicalizer {
       }
 
       return null;
+   }
+   
+   public void notReset() {
+   	    this.canonicalizerSpi.reset=false;
    }
 }

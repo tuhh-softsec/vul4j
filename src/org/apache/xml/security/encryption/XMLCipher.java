@@ -281,6 +281,7 @@ public class XMLCipher {
 		try {
 			instance._canon = Canonicalizer.getInstance
 				(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+            
 		} catch (InvalidCanonicalizerException ice) {
 			throw new XMLEncryptionException("empty", ice);
 		}
@@ -1796,6 +1797,7 @@ public class XMLCipher {
         String serialize(NodeList content) throws Exception { //XMLEncryptionException {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             _canon.setWriter(baos);
+            _canon.notReset();
             for (int i = 0; i < content.getLength(); i++) {                
                 _canon.canonicalizeSubtree(content.item(i));                
             }
@@ -1812,6 +1814,7 @@ public class XMLCipher {
 		String canonSerialize(Node node) throws Exception {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			_canon.setWriter(baos);			
+            _canon.notReset();
 			_canon.canonicalizeSubtree(node);			
 			baos.close();            
 			return baos.toString("UTF-8");
