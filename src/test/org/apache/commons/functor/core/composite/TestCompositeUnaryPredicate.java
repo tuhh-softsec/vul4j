@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestCompositeUnaryPredicate.java,v 1.2 2003/12/03 01:07:36 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestCompositeUnaryPredicate.java,v 1.3 2003/12/03 15:24:46 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/12/03 01:07:36 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/03 15:24:46 $
  * @author Rodney Waldhoff
  */
 public class TestCompositeUnaryPredicate extends BaseFunctorTest {
@@ -110,6 +110,12 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
     public void testNullNotAllowed() throws Exception {
         try {
             new CompositeUnaryPredicate(null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+        try {
+            new CompositeUnaryPredicate(null,null);
             fail("Expected NullPointerException");
         } catch(NullPointerException e) {
             // expected
