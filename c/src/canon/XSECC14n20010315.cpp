@@ -394,7 +394,11 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 	// We use Xalan to process the Xerces DOM tree and get the XPath nodes
 	
 	XercesDOMSupport theDOMSupport;
+#if defined XSEC_XERCESPARSERLIAISON_REQS_DOMSUPPORT
 	XercesParserLiaison theParserLiaison(theDOMSupport);
+#else
+	XercesParserLiaison theParserLiaison;
+#endif
 
 	if (mp_doc == 0) {
 		throw XSECException(XSECException::UnsupportedFunction,
@@ -433,6 +437,20 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 
 	XalanDOMString ed = XalanDOMString(XPathExpr);
 	const XalanDOMChar * expr = ed.c_str();
+ 
+#if defined XSEC_SELECTNODELIST_REQS_NODEREFLIST
+
+	NodeRefList output;
+
+	NodeRefList	theResult(
+		theEvaluator.selectNodeList(
+		output,
+		theDOMSupport,
+		theContextNode,
+		expr,
+		xe));
+
+#else
 
 	NodeRefList	theResult(
 		theEvaluator.selectNodeList(
@@ -441,7 +459,7 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 		expr,
 		xe));
 		//theDoc->getDocumentElement()));
-
+#endif
 		
 	//XercesDocumentBridge *theBridge = theParserLiaison.mapDocument(theDoc);
 	XercesDocumentWrapper *theWrapper = theParserLiaison.mapDocumentToWrapper(theDoc);

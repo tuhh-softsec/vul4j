@@ -61,6 +61,21 @@
 
 #undef XSEC_XSLEXCEPTION_RETURNS_DOMSTRING
 
+/* 1.9 and above do not take a XercesDOMSupport as input to the ctor */
+
+#undef XSEC_XERCESPARSERLIAISON_REQS_DOMSUPPORT
+
+/* 1.9 and above require a NodeRefList as input to XPathEvaluator::
+   selectNodeList 
+*/
+
+#undef XSEC_SELECTNODELIST_REQS_NODEREFLIST
+
+/* 1.9 and above use MemoryManager for the XPath Function classes
+*/
+
+#undef XSEC_XALAN_REQS_MEMORYMANAGER
+
 /* Does XMLString::release() exist */
 
 #undef XSEC_XERCES_XMLSTRING_HAS_RELEASE

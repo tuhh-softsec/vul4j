@@ -70,19 +70,39 @@ XObjectPtr DSIGXPathHere::execute(
 #else
 	DSIGXPathHere*
 #endif
-	DSIGXPathHere::clone() const {
+#if defined (XSEC_XALAN_REQS_MEMORYMANAGER)
+	DSIGXPathHere::clone(MemoryManagerType& theManager)
+#else
+	DSIGXPathHere::clone()
+#endif
+	const {
 
+#if defined (XSEC_XALAN_REQS_MEMORYMANAGER)
+		return XalanCopyConstruct(theManager, *this);
+#else
 		DSIGXPathHere *ret;
 
 		ret = new DSIGXPathHere(*this);
 		ret->XalanHereNode = XalanHereNode;
 		return ret;
+#endif
 	}
 		
 	const XalanDOMString
-		DSIGXPathHere::getError() const {
+#if defined XSEC_XALAN_REQS_MEMORYMANAGER
+    // We cheat - the memory manager happened at the same time as the string
+	&DSIGXPathHere::getError(XalanDOMString& theBuffer)
+#else
+	DSIGXPathHere::getError() 
+#endif
+    const {
 
+#if defined XSEC_XALAN_REQS_MEMORYMANAGER
+        theBuffer = "The here() function takes no arguments!";
+		return theBuffer;
+#else
 		return StaticStringToDOMString(XALAN_STATIC_UCODE_STRING("The here() function takes no arguments!"));
+#endif
 
 	}
 

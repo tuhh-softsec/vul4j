@@ -102,7 +102,12 @@ void TXFMXSL::expandNameSpaces(void) {
 
 TXFMXSL::TXFMXSL(DOMDocument *doc) : 
 	TXFMBase(doc),
-xpl(xds) {
+#if defined XSEC_XERCESPARSERLIAISON_REQS_DOMSUPPORT
+xpl(xds) 
+#else
+xpl()
+#endif
+{
 
 	// Zeroise all the pointers
 
