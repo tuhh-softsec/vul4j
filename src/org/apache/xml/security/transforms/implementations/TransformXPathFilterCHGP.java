@@ -231,6 +231,12 @@ public class TransformXPathFilterCHGP extends TransformSpi {
             this.excludeSet = nodeListToSet(excludeNodes);
          }
 
+         if (xpathContainer.getIncludeSlashPolicy() == XPathFilterCHGPContainer.IncludeSlash) {
+            this.includeSearchSet.add(inputDoc);
+         } else {
+            this.excludeSearchSet.add(inputDoc);
+         }
+
          // copy the inputNodes into a real set
          this.inputSet = nodeListToSet(inputNodes);
 

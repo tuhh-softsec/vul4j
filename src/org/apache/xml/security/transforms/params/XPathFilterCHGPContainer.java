@@ -87,8 +87,17 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /** Field _ATT_FILTER_VALUE_UNION */
    private static final String _TAG_EXCLUDE = "Exclude";
 
-   /** Field _TAG_XPATH2 */
+   /** Field _TAG_XPATHCHGP */
    public static final String _TAG_XPATHCHGP = "XPathAlternative";
+
+   /** Field _ATT_INCLUDESLASH */
+   public static final String _ATT_INCLUDESLASH = "IncludeSlashPolicy";
+
+   /** Field IncludeSlash           */
+   public static final boolean IncludeSlash = true;
+
+   /** Field ExcludeSlash           */
+   public static final boolean ExcludeSlash = false;
 
    /**
     * Constructor XPathFilterCHGPContainer
@@ -103,14 +112,24 @@ public class XPathFilterCHGPContainer extends ElementProxy
     * Constructor XPathFilterCHGPContainer
     *
     * @param doc
+    * @param includeSlashPolicy
     * @param includeButSearch
     * @param excludeButSearch
     * @param exclude
     */
-   private XPathFilterCHGPContainer(Document doc, String includeButSearch,
+   private XPathFilterCHGPContainer(Document doc, boolean includeSlashPolicy,
+                                    String includeButSearch,
                                     String excludeButSearch, String exclude) {
 
       super(doc);
+
+      if (includeSlashPolicy) {
+         this._constructionElement
+            .setAttribute(XPathFilterCHGPContainer._ATT_INCLUDESLASH, "true");
+      } else {
+         this._constructionElement
+            .setAttribute(XPathFilterCHGPContainer._ATT_INCLUDESLASH, "false");
+      }
 
       if ((includeButSearch != null)
               && (includeButSearch.trim().length() > 0)) {
@@ -185,15 +204,19 @@ public class XPathFilterCHGPContainer extends ElementProxy
     * Creates a new XPathFilterCHGPContainer; needed for generation.
     *
     * @param doc
+    * @param includeSlashPolicy
     * @param includeButSearch
     * @param excludeButSearch
     * @param exclude
     * @return
     */
    public static XPathFilterCHGPContainer getInstance(Document doc,
-           String includeButSearch, String excludeButSearch, String exclude) {
-      return new XPathFilterCHGPContainer(doc, includeButSearch,
-                                          excludeButSearch, exclude);
+           boolean includeSlashPolicy, String includeButSearch,
+           String excludeButSearch, String exclude) {
+
+      return new XPathFilterCHGPContainer(doc, includeSlashPolicy,
+                                          includeButSearch, excludeButSearch,
+                                          exclude);
    }
 
    /**
@@ -255,6 +278,18 @@ public class XPathFilterCHGPContainer extends ElementProxy
    }
 
    /**
+    * Method getIncludeSlashPolicy
+    *
+    * @return
+    */
+   public boolean getIncludeSlashPolicy() {
+
+      return this._constructionElement
+         .getAttribute(XPathFilterCHGPContainer._ATT_INCLUDESLASH)
+         .equals("true");
+   }
+
+   /**
     * Returns the first Text node which contains information from the XPath
     * Filter String. We must use this stupid hook to enable the here() function
     * to work.
@@ -283,60 +318,33 @@ public class XPathFilterCHGPContainer extends ElementProxy
       return null;
    }
 
+   /**
+    * Method getHereContextNodeIncludeButSearch
+    *
+    * @return
+    */
    public Node getHereContextNodeIncludeButSearch() {
-      return this.getHereContextNode(XPathFilterCHGPContainer._TAG_INCLUDE_BUT_SEARCH);
-   }
-   public Node getHereContextNodeExcludeButSearch() {
-      return this.getHereContextNode(XPathFilterCHGPContainer._TAG_EXCLUDE_BUT_SEARCH);
-   }
-   public Node getHereContextNodeExclude() {
-      return this.getHereContextNode(XPathFilterCHGPContainer._TAG_EXCLUDE);
+      return this
+         .getHereContextNode(XPathFilterCHGPContainer._TAG_INCLUDE_BUT_SEARCH);
    }
 
    /**
-    * Adds an xmlns: definition to the Element. This can be called as follows:
+    * Method getHereContextNodeExcludeButSearch
     *
-    * <PRE>
-    * // set namespace with ds prefix
-    * xpathContainer.setXPathNamespaceContext("ds", "http://www.w3.org/2000/09/xmldsig#");
-    * xpathContainer.setXPathNamespaceContext("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
-    * </PRE>
-    *
-    * @param prefix
-    * @param uri
-    * @throws TransformationException
+    * @return
     */
-   public void setXPathNamespaceContext(String prefix, String uri)
-           throws TransformationException {
+   public Node getHereContextNodeExcludeButSearch() {
+      return this
+         .getHereContextNode(XPathFilterCHGPContainer._TAG_EXCLUDE_BUT_SEARCH);
+   }
 
-      String ns;
-
-      if (prefix == null) {
-         ns = "xmlns";
-      } else if (prefix.length() == 0) {
-         ns = "xmlns";
-      } else if (prefix.equals("xmlns")) {
-         ns = "xmlns";
-      } else if (prefix.startsWith("xmlns:")) {
-         ns = "xmlns:" + prefix.substring("xmlns:".length());
-      } else {
-         ns = "xmlns:" + prefix;
-      }
-
-      if (ns.equals("xmlns")) {
-         throw new TransformationException("defaultNamespaceCannotBeSetHere");
-      }
-
-      Attr a = this._constructionElement.getAttributeNode(ns);
-
-      if ((a != null) && (!a.getNodeValue().equals(uri))) {
-         Object exArgs[] = { ns, this._constructionElement.getAttribute(ns) };
-
-         throw new TransformationException(
-            "namespacePrefixAlreadyUsedByOtherURI", exArgs);
-      }
-
-      this._constructionElement.setAttribute(ns, uri);
+   /**
+    * Method getHereContextNodeExclude
+    *
+    * @return
+    */
+   public Node getHereContextNodeExclude() {
+      return this.getHereContextNode(XPathFilterCHGPContainer._TAG_EXCLUDE);
    }
 
    /**

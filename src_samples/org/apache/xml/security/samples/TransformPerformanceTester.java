@@ -1269,8 +1269,8 @@ public class TransformPerformanceTester {
       Transforms transforms = new Transforms(doc);
 
       {
-         String includeButSearch = "/";
-         String excludeButSearch = "";
+         String includeButSearch = null;
+         String excludeButSearch = null;
          String exclude =
          //J-
             "\n" +
@@ -1286,8 +1286,9 @@ public class TransformPerformanceTester {
             "here()/ancestor::ds:Signature[1]";
             //J+
          XPathFilterCHGPContainer xpathContainer =
-            XPathFilterCHGPContainer.getInstance(doc, includeButSearch,
-                                                 excludeButSearch, exclude);
+            XPathFilterCHGPContainer
+               .getInstance(doc, XPathFilterCHGPContainer
+                  .IncludeSlash, includeButSearch, excludeButSearch, exclude);
 
          xpathContainer.setXPathNamespaceContext("ds",
                                                  Constants.SignatureSpecNS);
@@ -1512,11 +1513,12 @@ public class TransformPerformanceTester {
 
       {
          String includeButSearch = "//ToBeSigned";
-         String excludeButSearch = "/";
+         String excludeButSearch = null;
          String exclude = "here()/ancestor::ds:Signature[1]";
          XPathFilterCHGPContainer xpathContainer =
-            XPathFilterCHGPContainer.getInstance(doc, includeButSearch,
-                                                 excludeButSearch, exclude);
+            XPathFilterCHGPContainer
+               .getInstance(doc, XPathFilterCHGPContainer
+                  .ExcludeSlash, includeButSearch, excludeButSearch, exclude);
 
          xpathContainer.setXPathNamespaceContext("ds",
                                                  Constants.SignatureSpecNS);
@@ -1566,11 +1568,12 @@ public class TransformPerformanceTester {
 
       {
          String includeButSearch = "//ToBeSigned";
-         String excludeButSearch = "/ | //NotToBeSigned";
+         String excludeButSearch = "//NotToBeSigned";
          String exclude = "here()/ancestor::ds:Signature[1]";
          XPathFilterCHGPContainer xpathContainer =
-            XPathFilterCHGPContainer.getInstance(doc, includeButSearch,
-                                                 excludeButSearch, exclude);
+            XPathFilterCHGPContainer
+               .getInstance(doc, XPathFilterCHGPContainer
+                  .ExcludeSlash, includeButSearch, excludeButSearch, exclude);
 
          xpathContainer.setXPathNamespaceContext("ds",
                                                  Constants.SignatureSpecNS);
@@ -1620,11 +1623,12 @@ public class TransformPerformanceTester {
 
       {
          String includeButSearch = "//ToBeSigned | //ReallyToBeSigned";
-         String excludeButSearch = "/ | //NotToBeSigned";
+         String excludeButSearch = "//NotToBeSigned";
          String exclude = "here()/ancestor::ds:Signature[1]";
          XPathFilterCHGPContainer xpathContainer =
-            XPathFilterCHGPContainer.getInstance(doc, includeButSearch,
-                                                 excludeButSearch, exclude);
+            XPathFilterCHGPContainer
+               .getInstance(doc, XPathFilterCHGPContainer
+                  .ExcludeSlash, includeButSearch, excludeButSearch, exclude);
 
          xpathContainer.setXPathNamespaceContext("ds",
                                                  Constants.SignatureSpecNS);
@@ -1692,12 +1696,14 @@ public class TransformPerformanceTester {
    public static byte[][] apachesample_apachefilter_1(Document doc)
            throws Exception {
 
-      String includeButSearchStr = "      //E             ";
-      String excludeButSearchStr = "/                     ";
-      String excludeStr = "                      ";
+      String includeButSearchStr = "//E";
+      String excludeButSearchStr = null;
+      String excludeStr = null;
+      boolean includeSlashPolicy = XPathFilterCHGPContainer.ExcludeSlash;
 
       return TransformPerformanceTester.apachesample_apachefilter_x(doc,
-              includeButSearchStr, excludeButSearchStr, excludeStr);
+              includeSlashPolicy, includeButSearchStr, excludeButSearchStr,
+              excludeStr);
    }
 
    /**
@@ -1710,12 +1716,14 @@ public class TransformPerformanceTester {
    public static byte[][] apachesample_apachefilter_2(Document doc)
            throws Exception {
 
-      String includeButSearchStr = "//B | //E             ";
-      String excludeButSearchStr = "/                     ";
-      String excludeStr = "                      ";
+      String includeButSearchStr = "//B | //E";
+      String excludeButSearchStr = null;
+      String excludeStr = null;
+      boolean includeSlashPolicy = XPathFilterCHGPContainer.ExcludeSlash;
 
       return TransformPerformanceTester.apachesample_apachefilter_x(doc,
-              includeButSearchStr, excludeButSearchStr, excludeStr);
+              includeSlashPolicy, includeButSearchStr, excludeButSearchStr,
+              excludeStr);
    }
 
    /**
@@ -1728,12 +1736,14 @@ public class TransformPerformanceTester {
    public static byte[][] apachesample_apachefilter_3(Document doc)
            throws Exception {
 
-      String includeButSearchStr = "//B | //E             ";
-      String excludeButSearchStr = "/ | //C               ";
-      String excludeStr = "                      ";
+      String includeButSearchStr = "//B | //E";
+      String excludeButSearchStr = "//C";
+      String excludeStr = null;
+      boolean includeSlashPolicy = XPathFilterCHGPContainer.ExcludeSlash;
 
       return TransformPerformanceTester.apachesample_apachefilter_x(doc,
-              includeButSearchStr, excludeButSearchStr, excludeStr);
+              includeSlashPolicy, includeButSearchStr, excludeButSearchStr,
+              excludeStr);
    }
 
    /**
@@ -1746,12 +1756,14 @@ public class TransformPerformanceTester {
    public static byte[][] apachesample_apachefilter_4(Document doc)
            throws Exception {
 
-      String includeButSearchStr = "//B | //E | //F       ";
-      String excludeButSearchStr = "/ | //C               ";
-      String excludeStr = "                      ";
+      String includeButSearchStr = "//B | //E | //F";
+      String excludeButSearchStr = "//C";
+      String excludeStr = null;
+      boolean includeSlashPolicy = XPathFilterCHGPContainer.ExcludeSlash;
 
       return TransformPerformanceTester.apachesample_apachefilter_x(doc,
-              includeButSearchStr, excludeButSearchStr, excludeStr);
+              includeSlashPolicy, includeButSearchStr, excludeButSearchStr,
+              excludeStr);
    }
 
    /**
@@ -1764,12 +1776,14 @@ public class TransformPerformanceTester {
    public static byte[][] apachesample_apachefilter_5(Document doc)
            throws Exception {
 
-      String includeButSearchStr = "//B | //E | //F       ";
-      String excludeButSearchStr = "/ | //C | //G         ";
-      String excludeStr = "                      ";
+      String includeButSearchStr = "//B | //E | //F";
+      String excludeButSearchStr = "//C | //G";
+      String excludeStr = null;
+      boolean includeSlashPolicy = XPathFilterCHGPContainer.ExcludeSlash;
 
       return TransformPerformanceTester.apachesample_apachefilter_x(doc,
-              includeButSearchStr, excludeButSearchStr, excludeStr);
+              includeSlashPolicy, includeButSearchStr, excludeButSearchStr,
+              excludeStr);
    }
 
    /**
@@ -1783,11 +1797,13 @@ public class TransformPerformanceTester {
            throws Exception {
 
       String includeButSearchStr = "//B | //E | //F | //H ";
-      String excludeButSearchStr = "/ | //C | //G         ";
-      String excludeStr = "                      ";
+      String excludeButSearchStr = "//C | //G";
+      String excludeStr = null;
+      boolean includeSlashPolicy = XPathFilterCHGPContainer.ExcludeSlash;
 
       return TransformPerformanceTester.apachesample_apachefilter_x(doc,
-              includeButSearchStr, excludeButSearchStr, excludeStr);
+              includeSlashPolicy, includeButSearchStr, excludeButSearchStr,
+              excludeStr);
    }
 
    /**
@@ -1800,12 +1816,14 @@ public class TransformPerformanceTester {
    public static byte[][] apachesample_apachefilter_7(Document doc)
            throws Exception {
 
-      String includeButSearchStr = "//B | //E | //F | //H ";
-      String excludeButSearchStr = "/ | //C | //G | //@x:attr ";
-      String excludeStr = "                      ";
+      String includeButSearchStr = "//B | //E | //F | //H";
+      String excludeButSearchStr = "//C | //G | //@x:attr";
+      String excludeStr = null;
+      boolean includeSlashPolicy = XPathFilterCHGPContainer.ExcludeSlash;
 
       return TransformPerformanceTester.apachesample_apachefilter_x(doc,
-              includeButSearchStr, excludeButSearchStr, excludeStr);
+              includeSlashPolicy, includeButSearchStr, excludeButSearchStr,
+              excludeStr);
    }
 
    /**
@@ -1818,18 +1836,21 @@ public class TransformPerformanceTester {
    public static byte[][] apachesample_apachefilter_7_optimal(Document doc)
            throws Exception {
 
-      String includeButSearchStr = "//B | //E | //F | //H ";
-      String excludeButSearchStr = "/ | //G             ";
+      String includeButSearchStr = "//B | //E | //F | //H";
+      String excludeButSearchStr = "//G";
       String excludeStr = "//C | //D | //@x:attr ";
+      boolean includeSlashPolicy = XPathFilterCHGPContainer.ExcludeSlash;
 
       return TransformPerformanceTester.apachesample_apachefilter_x(doc,
-              includeButSearchStr, excludeButSearchStr, excludeStr);
+              includeSlashPolicy, includeButSearchStr, excludeButSearchStr,
+              excludeStr);
    }
 
    /**
     * Method apachesample_apachefilter_x
     *
     * @param doc
+    * @param includeSlashPolicy
     * @param includeButSearchStr
     * @param excludeButSearchStr
     * @param excludeStr
@@ -1837,7 +1858,7 @@ public class TransformPerformanceTester {
     * @throws Exception
     */
    public static byte[][] apachesample_apachefilter_x(
-           Document doc, String includeButSearchStr, String excludeButSearchStr, String excludeStr)
+           Document doc, boolean includeSlashPolicy, String includeButSearchStr, String excludeButSearchStr, String excludeStr)
               throws Exception {
 
       XMLSignature sig = new XMLSignature(doc, null,
@@ -1849,7 +1870,8 @@ public class TransformPerformanceTester {
 
       {
          XPathFilterCHGPContainer xpathContainer =
-            XPathFilterCHGPContainer.getInstance(doc, includeButSearchStr,
+            XPathFilterCHGPContainer.getInstance(doc, includeSlashPolicy,
+                                                 includeButSearchStr,
                                                  excludeButSearchStr,
                                                  excludeStr);
 
