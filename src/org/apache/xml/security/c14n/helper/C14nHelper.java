@@ -80,7 +80,7 @@ public class C14nHelper {
       org.apache.log4j.Category.getInstance(C14nHelper.class.getName());
 
    private C14nHelper() {
-      // don't allow instantiation	
+      // don't allow instantiation
    }
 
    /**
@@ -379,15 +379,11 @@ public class C14nHelper {
 
       if (definesDefaultNS || definesNonDefaultNS) {
          if (namespaceIsRelative(attr)) {
-            String parentName = "null";
-            Node parent = (Element) attr.getParentNode();
-
-            if (parent != null) {
-               parentName = parent.getNodeName();
-            }
-
+            String parentName = attr.getOwnerElement().getTagName();
             String attrValue = attr.getValue();
-            Object exArgs[] = { "parentName", nodeAttrName, attrValue };
+
+
+            Object exArgs[] = { parentName, nodeAttrName, attrValue };
 
             throw new CanonicalizationException(
                "c14n.Canonicalizer.RelativeNamespace", exArgs);

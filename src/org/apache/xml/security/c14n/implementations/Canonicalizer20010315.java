@@ -248,20 +248,17 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    /**
     * Method engineCanonicalize
     *
-    * @param node
+    * @param rootNode
     * @return
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeSubTree(Node rootNode)
            throws CanonicalizationException {
 
-      /**
-       * If the node set has not been set by anyone else before, we apply
-       * our own XPath to it.
-       */
+      // If the node set has not been set by anyone else before, we apply
+      // our own XPath to it.
       if (this.hmVisibleNodes == null) {
          try {
-            //J-
             NodeList selected = null;
 
             if (this.engineGetXPath() instanceof Element) {
@@ -283,7 +280,19 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          }
       }
 
+      {
+         // check whether any ancestor contains relative namespaces
+         Node curr = rootNode;
+
+         while (curr.getNodeType() != Node.DOCUMENT_NODE) {
+            Canonicalizer20010315.checkForRelativeNamespace((Element) curr);
+
+            curr = curr.getParentNode();
+         }
+      }
+
       return this.engineDoCanonicalization(rootNode);
+
       /*
       // Try to canonicalize using another canonicalizer:
       if (this.engineGetIncludeComments()) {
@@ -487,7 +496,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
           * must not contain relative namespaces, even if we only canonicalize a
           * subtree that does not contain relative namespace URIs).
           */
-         checkForRelativeNamespace(currentNode);
+         Canonicalizer20010315.checkForRelativeNamespace((Element) currentNode);
 
          if (engineVisible(currentNode)) {
             cat.debug(currentNode.getNodeName() + " included");
@@ -508,8 +517,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                }
             }
 
-            processXmlAttributes(currentNode);
-            processNamespaces(currentNode);
+            this.processXmlAttributes((Element) currentNode);
+            this.processNamespaces((Element) currentNode);
 
             NamedNodeMap namednodemap = currentNode.getAttributes();
             Attr aattr[] = C14nHelper.sortAttributes(namednodemap);
@@ -521,11 +530,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                // in L, except omit namespace node with local name xml, which
                // defines the xml prefix, if its string value is
                // "http://www.w3.org/XML/1998/namespace".
-               if (attr.getNodeName().equals("xmlns:xml") &&
-
-               // attr.getLocalName().equals("xml") &&
-               attr.getNodeValue()
-                       .equals("http://www.w3.org/XML/1998/namespace")) {
+               if (attr.getNodeName().equals("xmlns:xml")
+                       && attr.getNodeValue()
+                          .equals(Constants.NamespaceSpecNS)) {
                   continue processingAttrs;
                }
 
@@ -602,11 +609,11 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @param ctxNode
     * @return
     */
-   private static HashSet collectUsedXmlAttributes(Node ctxNode) {
+   private static HashSet collectUsedXmlAttributes(Element ctxNode) {
 
       HashSet attrs = new HashSet();
 
-      if ((ctxNode != null) && (ctxNode.getNodeType() == Node.ELEMENT_NODE)) {
+      if (ctxNode != null) {
          Node parent = ctxNode;
 
          searchParents: while ((parent = parent.getParentNode()) != null
@@ -631,7 +638,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     *
     * @param ctxNode
     */
-   private void processXmlAttributes(Node ctxNode) {
+   private void processXmlAttributes(Element ctxNode) {
 
       if (!engineVisible(ctxNode)) {
          return;
@@ -650,8 +657,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          boolean deleteOriginalAttribute = false;
 
          {
-            Object result[] = processXmlAttributesAlgo(ctxNode,
-                                                       currentXMLAttribute);
+            Object result[] = this.processXmlAttributesAlgo(ctxNode,
+                                 currentXMLAttribute);
 
             newAttrValue = (String) result[0];
             deleteOriginalAttribute = ((Boolean) result[1]).booleanValue();
@@ -706,18 +713,10 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @param ctxNode
     * @throws CanonicalizationException
     */
-   private void processNamespaces(Node ctxNode)
+   private void processNamespaces(Element ctxNode)
            throws CanonicalizationException {
 
       if (!engineVisible(ctxNode)) {
-         return;
-      }
-
-      if (ctxNode.getNodeType() != Node.ELEMENT_NODE) {
-         cat.fatal("removeExtraNamespaces with "
-                   + XMLUtils.getNodeTypeString(ctxNode.getNodeType())
-                   + " called. Has to get an ELEMENT");
-
          return;
       }
 
@@ -762,7 +761,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
                if (a != null) {
                   if (nodeAttrValue.equals(a.getValue())) {
-                     cat.debug("Here I call it");
                      engineMakeInVisible(nodeAttr);
                   } else {
                      continue nextNodeAttribute;
@@ -830,8 +828,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
       // loop through all ancestors and check whether we have to add some NS defs
       if (nss.invisibleAncestorsContainDefaultNS()) {
          Attr invisDefNS = nss.findFirstInvisibleDefaultNSAttr();
-
-         cat.debug("nss.findFirstInvisibleDefaultNSAttr() == " + invisDefNS);
 
          if ((invisDefNS != null) && (invisDefNS.getValue().length() != 0)) {
             cat.debug("case 5");
@@ -1029,7 +1025,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
       }
 
       result[0] = ctxAttrValue;
-      result[1] = new Boolean(deleteOriginalAttribute);
+      result[1] = (deleteOriginalAttribute
+                   ? Boolean.TRUE
+                   : Boolean.FALSE);
 
       return result;
    }
@@ -1061,10 +1059,10 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @param ctxNode
     * @throws CanonicalizationException
     */
-   protected static void checkForRelativeNamespace(Node ctxNode)
+   protected static void checkForRelativeNamespace(Element ctxNode)
            throws CanonicalizationException {
 
-      if ((ctxNode != null) && (ctxNode.getNodeType() == Node.ELEMENT_NODE)) {
+      if (ctxNode != null) {
          NamedNodeMap attributes = ctxNode.getAttributes();
 
          cat.debug("checkForRelativeNamespace(" + ctxNode + ")");
@@ -1074,7 +1072,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
             C14nHelper.assertNotRelativeNS((Attr) attributes.item(i));
          }
       } else {
-         cat.error("Called checkForRelativeNamespace() on a " + ctxNode);
+         throw new CanonicalizationException(
+            "Called checkForRelativeNamespace() on null");
       }
    }
 

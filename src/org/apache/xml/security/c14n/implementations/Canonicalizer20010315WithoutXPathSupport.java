@@ -383,7 +383,7 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
 
       case Node.ELEMENT_NODE :
          processingPos = CanonicalizerSpi.INSIDE_DOCUMENT_ELEM;
-         Canonicalizer20010315.checkForRelativeNamespace(currentNode);
+         Canonicalizer20010315.checkForRelativeNamespace((Element) currentNode);
 
          printwriter.print('<');
          printwriter.print(currentNode.getNodeName());
