@@ -234,6 +234,8 @@ DOMElement * XENCCipherDataImpl::createBlankCipherData(
 	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
 	mp_cipherDataNode = ret;
 
+	mp_env->doPrettyPrint(ret);
+
 	// Set the type
 	if (type == VALUE_TYPE) {
 		
@@ -244,6 +246,8 @@ DOMElement * XENCCipherDataImpl::createBlankCipherData(
 		DOMNode * cipherValueNode = mp_cipherValue->createBlankCipherValue(value);
 
 		ret->appendChild(cipherValueNode);
+
+		mp_env->doPrettyPrint(ret);
 
 	}
 

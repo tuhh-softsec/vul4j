@@ -188,7 +188,7 @@ DSIGXPathFilterExpr * DSIGTransformXPathFilter::appendFilter(xpathFilterType fil
 	m_exprs.push_back(e);
 
 	mp_txfmNode->appendChild(elt);
-	mp_txfmNode->appendChild(mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_txfmNode);
 
 	return e;
 

@@ -409,6 +409,7 @@ void testSignature(DOMImplementation *impl) {
 		
 		sig = prov.newSignature();
 		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
+		sig->setPrettyPrint(true);
 
 		sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA1);
 		DOMElement * rootElem = doc->getDocumentElement();
@@ -797,6 +798,7 @@ void testEncrypt(DOMImplementation *impl) {
 
 		cipher = prov.newCipher(doc);
 		cipher->setXENCNSPrefix(MAKE_UNICODE_STRING("xenc"));
+		cipher->setPrettyPrint(true);
 
 		// Set a key
 

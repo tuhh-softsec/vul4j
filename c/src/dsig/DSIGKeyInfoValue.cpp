@@ -290,10 +290,10 @@ DOMElement * DSIGKeyInfoValue::createBlankDSAKeyValue(const XMLCh * P,
 
 	makeQName(str, prefix, "DSAKeyValue");
 	DOMElement * dsa = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(ret);
 	ret->appendChild(dsa);
-	dsa->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(dsa);
+	mp_env->doPrettyPrint(ret);
 
 	// Now create the value children
 
@@ -301,28 +301,28 @@ DOMElement * DSIGKeyInfoValue::createBlankDSAKeyValue(const XMLCh * P,
 	DOMElement * v = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	mp_PTextNode = doc->createTextNode(P);
 	dsa->appendChild(v);
-	dsa->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(dsa);
 	v->appendChild(mp_PTextNode);
 
 	makeQName(str, prefix, "Q");
 	v = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	mp_PTextNode = doc->createTextNode(Q);
 	dsa->appendChild(v);
-	dsa->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(dsa);
 	v->appendChild(mp_PTextNode);
 
 	makeQName(str, prefix, "G");
 	v = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	mp_PTextNode = doc->createTextNode(G);
 	dsa->appendChild(v);
-	dsa->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(dsa);
 	v->appendChild(mp_PTextNode);
 
 	makeQName(str, prefix, "Y");
 	v = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	mp_PTextNode = doc->createTextNode(Y);
 	dsa->appendChild(v);
-	dsa->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(dsa);
 	v->appendChild(mp_PTextNode);
 
 	return ret;
@@ -405,10 +405,10 @@ DOMElement * DSIGKeyInfoValue::createBlankRSAKeyValue(const XMLCh * modulus,
 
 	makeQName(str, prefix, "RSAKeyValue");
 	DOMElement * rsa = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(ret);
 	ret->appendChild(rsa);
-	rsa->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(rsa);
+	mp_env->doPrettyPrint(ret);
 
 	// Now create the value children
 
@@ -416,14 +416,14 @@ DOMElement * DSIGKeyInfoValue::createBlankRSAKeyValue(const XMLCh * modulus,
 	DOMElement * v = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	mp_modulusTextNode = doc->createTextNode(modulus);
 	rsa->appendChild(v);
-	rsa->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(rsa);
 	v->appendChild(mp_modulusTextNode);
 
 	makeQName(str, prefix, "Exponent");
 	v = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	mp_exponentTextNode = doc->createTextNode(exponent);
 	rsa->appendChild(v);
-	rsa->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(rsa);
 	v->appendChild(mp_exponentTextNode);
 
 	return ret;

@@ -318,9 +318,9 @@ void DSIGTransformC14n::createInclusiveNamespaceNode(void) {
 	mp_inclNSNode = doc->createElementNS(DSIGConstants::s_unicodeStrURIEC, str.rawXMLChBuffer());
 
 	// Add the node to the owner element
-	mp_txfmNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_txfmNode);
 	mp_txfmNode->appendChild(mp_inclNSNode);
-	mp_txfmNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_txfmNode);
 
 	// Set the namespace attribute
 	if (prefix[0] == '\0') {

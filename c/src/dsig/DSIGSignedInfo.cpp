@@ -194,7 +194,7 @@ DSIGReference * DSIGSignedInfo::createReference(const XMLCh * URI,
 
 	// Add the node to the end of the childeren
 	mp_signedInfoNode->appendChild(refNode);
-	mp_signedInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_signedInfoNode);
 
 	// Add to the reference List
 	j_ref.release();
@@ -231,9 +231,9 @@ DOMElement *DSIGSignedInfo::createBlankSignedInfo(canonicalizationMethod cm,
 	DOMElement *canMeth = mp_doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, 
 			makeQName(str, prefixNS, "CanonicalizationMethod").rawXMLChBuffer());
 
-	mp_signedInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_signedInfoNode);
 	mp_signedInfoNode->appendChild(canMeth);
-	mp_signedInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_signedInfoNode);
 
 	if (!canonicalizationMethod2URI(str, cm)) {
 	
@@ -250,7 +250,7 @@ DOMElement *DSIGSignedInfo::createBlankSignedInfo(canonicalizationMethod cm,
 			makeQName(str, prefixNS, "SignatureMethod").rawXMLChBuffer());
 
 	mp_signedInfoNode->appendChild(sigMeth);
-	mp_signedInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_signedInfoNode);
 
 	if (!signatureHashMethod2URI(str, sm, hm)) {
 	

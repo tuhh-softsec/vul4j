@@ -448,7 +448,7 @@ DOMElement * DSIGKeyInfoList::createKeyInfo(void) {
 	DOMElement * ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 
 	mp_keyInfoNode = ret;
-	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoNode);
 
 	return ret;	
 
@@ -473,7 +473,7 @@ DSIGKeyInfoValue * DSIGKeyInfoList::appendDSAKeyValue(const XMLCh * P,
 	XSECnew(v, DSIGKeyInfoValue(mp_env));
 
 	mp_keyInfoNode->appendChild(v->createBlankDSAKeyValue(P, Q, G, Y));
-	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoNode);
 
 	// Add to the list
 	addKeyInfo(v);
@@ -498,7 +498,7 @@ DSIGKeyInfoValue * DSIGKeyInfoList::appendRSAKeyValue(const XMLCh * modulus,
 	XSECnew(v, DSIGKeyInfoValue(mp_env));
 
 	mp_keyInfoNode->appendChild(v->createBlankRSAKeyValue(modulus, exponent));
-	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoNode);
 
 	// Add to the list
 	addKeyInfo(v);
@@ -523,7 +523,7 @@ DSIGKeyInfoX509 * DSIGKeyInfoList::appendX509Data(void) {
 	XSECnew(x, DSIGKeyInfoX509(mp_env));
 
 	mp_keyInfoNode->appendChild(x->createBlankX509Data());
-	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoNode);
 
 	// Add to the list
 	addKeyInfo(x);
@@ -547,7 +547,7 @@ DSIGKeyInfoName * DSIGKeyInfoList::appendKeyName(const XMLCh * name, bool isDNam
 	XSECnew(n, DSIGKeyInfoName(mp_env));
 
 	mp_keyInfoNode->appendChild(n->createBlankKeyName(name, isDName));
-	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoNode);
 
 	// Add to the list
 	addKeyInfo(n);
@@ -571,7 +571,7 @@ DSIGKeyInfoPGPData * DSIGKeyInfoList::appendPGPData(const XMLCh * id, const XMLC
 	XSECnew(p, DSIGKeyInfoPGPData(mp_env));
 
 	mp_keyInfoNode->appendChild(p->createBlankPGPData(id, packet));
-	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoNode);
 
 	addKeyInfo(p);
 
@@ -594,7 +594,7 @@ DSIGKeyInfoSPKIData * DSIGKeyInfoList::appendSPKIData(const XMLCh * sexp) {
 	XSECnew(s, DSIGKeyInfoSPKIData(mp_env));
 
 	mp_keyInfoNode->appendChild(s->createBlankSPKIData(sexp));
-	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoNode);
 
 	addKeyInfo(s);
 
@@ -617,7 +617,7 @@ DSIGKeyInfoMgmtData * DSIGKeyInfoList::appendMgmtData(const XMLCh * data) {
 	XSECnew(m, DSIGKeyInfoMgmtData(mp_env));
 
 	mp_keyInfoNode->appendChild(m->createBlankMgmtData(data));
-	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoNode);
 
 	addKeyInfo(m);
 
@@ -640,7 +640,7 @@ void DSIGKeyInfoList::addAndInsertKeyInfo(DSIGKeyInfo * ref) {
 
 	DOMDocument * doc = mp_env->getParentDocument();
 	mp_keyInfoNode->appendChild(ref->getKeyInfoDOMNode());
-	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoNode);
 
 	addKeyInfo(ref);
 

@@ -123,6 +123,8 @@ XSECEnv::XSECEnv(DOMDocument *doc) {
 	mp_xpfPrefixNS = XMLString::replicate(s_defaultXPFPrefix);
 	mp_xencPrefixNS = XMLString::replicate(s_defaultXENCPrefix);
 
+	m_prettyPrintFlag = true;
+
 	mp_URIResolver = NULL;
 
 	// Set up our formatter
@@ -219,3 +221,16 @@ void XSECEnv::setXENCNSPrefix(const XMLCh * prefix) {
 	mp_xencPrefixNS = XMLString::replicate(prefix);
 
 }
+
+// --------------------------------------------------------------------------------
+//           Set and Get Resolvers
+// --------------------------------------------------------------------------------
+
+void XSECEnv::doPrettyPrint(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node) const {
+
+	// Very simple
+	if (m_prettyPrintFlag)
+		node->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+}
+

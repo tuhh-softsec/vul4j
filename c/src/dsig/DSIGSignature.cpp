@@ -451,6 +451,24 @@ const XMLCh * DSIGSignature::getErrMsgs() {
 	return m_errStr.rawXMLChBuffer();
 
 }
+
+// --------------------------------------------------------------------------------
+//           Pretty Printing
+// --------------------------------------------------------------------------------
+
+void DSIGSignature::setPrettyPrint(bool flag) {
+
+	mp_env->setPrettyPrintFlag(flag);
+
+}
+
+
+bool DSIGSignature::getPrettyPrint(void) {
+
+	return mp_env->getPrettyPrintFlag();
+
+}
+
 // --------------------------------------------------------------------------------
 //           Creating signatures from blank
 // --------------------------------------------------------------------------------
@@ -525,13 +543,13 @@ DOMElement *DSIGSignature::createBlankSignature(DOMDocument *doc,
 
 	mp_sigNode = sigNode;
 
-	mp_sigNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_sigNode);
 
 	// Create the skeleton SignedInfo
 	XSECnew(mp_signedInfo, DSIGSignedInfo(mp_doc, mp_formatter, mp_env));
 	
 	mp_sigNode->appendChild(mp_signedInfo->createBlankSignedInfo(cm, sm, hm));
-	mp_sigNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_sigNode);
 
 	// Create a dummy signature value (dummy until signed)
 
@@ -540,7 +558,7 @@ DOMElement *DSIGSignature::createBlankSignature(DOMDocument *doc,
 												  str.rawXMLChBuffer());
 	mp_signatureValueNode = sigValNode;
 	mp_sigNode->appendChild(sigValNode);
-	mp_sigNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_sigNode);
 
 	// Some text to mark this as a template only
 	sigValNode->appendChild(doc->createTextNode(MAKE_UNICODE_STRING("Not yet signed")));
@@ -606,12 +624,13 @@ void DSIGSignature::createKeyInfoElement(void) {
 
 	if (afterSignatureValue == 0) {
 		mp_sigNode->appendChild(mp_KeyInfoNode);
-		mp_sigNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(mp_sigNode);
 	}
 	else {
 		mp_sigNode->insertBefore(mp_KeyInfoNode, afterSignatureValue);
-		mp_sigNode->insertBefore(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL),
-			afterSignatureValue);
+		if (mp_env->getPrettyPrintFlag() == true)
+			mp_sigNode->insertBefore(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL),
+				afterSignatureValue);
 	}
 
 }

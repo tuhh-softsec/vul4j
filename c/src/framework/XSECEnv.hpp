@@ -223,7 +223,48 @@ public:
 
 	//@}
 
+	/** @name Pretty Printing Functions */
+	//@{
+
+	/**
+	 * \brief Set Pretty Print flag 
+	 *
+	 * The pretty print flag controls whether the library will output
+	 * CR/LF after the elements it adds to a document
+	 *
+	 * By default the library will do pretty printing (flag is true)
+	 *
+	 * @param flag Value to set the flag (true = do pretty printing)
+	 */
+
+	void setPrettyPrintFlag(bool flag) {m_prettyPrintFlag = flag;}
+
+	/**
+	 * \brief Return the current value of the PrettyPrint flag
+	 *
+	 * @returns The value of the pretty print flag
+	 */
+
+	bool getPrettyPrintFlag(void) const {return m_prettyPrintFlag;}
+
+	/**
+	 * \brief Do a pretty print output
+	 *
+	 * The library calls this function to perform CR/LF outputting
+	 *
+	 * At the moment htis is really redundant, but it is more a holder
+	 * so that we can set up something in the library to allow users
+	 * to install a pretty print function.
+	 * 
+	 * @param node Node to append pretty print content to
+	 */
+
+	void doPrettyPrint(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node) const;
+
+	//@}
+	
 	/** @name General information functions */
+	//@{
 
 	/**
 	 * \brief
@@ -306,6 +347,9 @@ private:
 
 	// Resolvers
 	XSECURIResolver				* mp_URIResolver;
+
+	// Flags
+	bool						m_prettyPrintFlag;
 
 	XSECEnv();
 

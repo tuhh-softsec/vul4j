@@ -204,7 +204,7 @@ DOMElement * DSIGKeyInfoSPKIData::createBlankSPKIData(const XMLCh * Sexp) {
 
 	DOMElement * ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	mp_keyInfoDOMNode = ret;
-	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(ret);
 
 	appendSexp(Sexp);
 
@@ -234,7 +234,7 @@ void DSIGKeyInfoSPKIData::appendSexp(const XMLCh * Sexp) {
 	tmpElt->appendChild(s->mp_exprTextNode);
 
 	mp_keyInfoDOMNode->appendChild(tmpElt);
-	mp_keyInfoDOMNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoDOMNode);
 
 }
 

@@ -300,6 +300,27 @@ public:
 	void setXPFNSPrefix(const XMLCh * prefix);
 
 	/**
+	 * \brief Set Pretty Print
+	 *
+	 * The pretty print functions controls whether the library will output
+	 * CR/LF after the elements it adds to a document
+	 *
+	 * By default the library will do pretty printing (flag is true)
+	 *
+	 * @param flag Value to set for Pretty Printing (true = do pretty printing)
+	 */
+
+	void setPrettyPrint(bool flag);
+
+	/**
+	 * \brief Tell caller whether PrettyPrinting is active
+	 *
+	 * @returns True if Pretty Printing is active, false if not
+	 */
+
+	bool getPrettyPrint(void);
+
+	/**
 	 * \brief Create a \<Signature\> DOM structure.
 	 *
 	 * <p>The DOM structure created is still divorced from the document.  The callee

@@ -210,14 +210,14 @@ DOMElement * DSIGKeyInfoPGPData::createBlankPGPData(const XMLCh * id, const XMLC
 
 	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	mp_keyInfoDOMNode = ret;
-	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(ret);
 
 	if (id != NULL) {
 
 		makeQName(str, prefix, "PGPKeyID");
 		DOMElement * t = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 		ret->appendChild(t);
-		ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(ret);
 		mp_keyIDTextNode = doc->createTextNode(id);
 		t->appendChild(mp_keyIDTextNode);
 		mp_keyID = mp_keyIDTextNode->getNodeValue();
@@ -229,7 +229,7 @@ DOMElement * DSIGKeyInfoPGPData::createBlankPGPData(const XMLCh * id, const XMLC
 		makeQName(str, prefix, "PGPKeyPacket");
 		DOMElement * t = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 		ret->appendChild(t);
-		ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(ret);
 		mp_keyPacketTextNode = doc->createTextNode(packet);
 		t->appendChild(mp_keyPacketTextNode);
 		mp_keyPacket = mp_keyPacketTextNode->getNodeValue();
@@ -260,11 +260,12 @@ void DSIGKeyInfoPGPData::setKeyID(const XMLCh * id) {
 		DOMNode * pkt = findFirstChildOfType(mp_keyInfoDOMNode, DOMNode::ELEMENT_NODE);
 		if (pkt != NULL) {
 			mp_keyInfoDOMNode->insertBefore(t, pkt);
-			mp_keyInfoDOMNode->insertBefore(doc->createTextNode(DSIGConstants::s_unicodeStrNL), pkt);
+			if (mp_env->getPrettyPrintFlag() == true)
+				mp_keyInfoDOMNode->insertBefore(doc->createTextNode(DSIGConstants::s_unicodeStrNL), pkt);
 		}
 		else {
 			mp_keyInfoDOMNode->appendChild(t);
-			mp_keyInfoDOMNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+			mp_env->doPrettyPrint(mp_keyInfoDOMNode);
 		}
 		mp_keyIDTextNode = doc->createTextNode(id);
 		t->appendChild(mp_keyIDTextNode);
@@ -297,7 +298,7 @@ void DSIGKeyInfoPGPData::setKeyPacket(const XMLCh * packet) {
 		makeQName(str, prefix, "PGPKeyPacket");
 		DOMElement * t = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 		mp_keyInfoDOMNode->appendChild(t);
-		mp_keyInfoDOMNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(mp_keyInfoDOMNode);
 		mp_keyPacketTextNode = doc->createTextNode(packet);
 		t->appendChild(mp_keyPacketTextNode);
 

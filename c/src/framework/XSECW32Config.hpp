@@ -119,7 +119,7 @@
 
 #define HAVE_OPENSSL 1
 
-/* #define HAVE_WINCAPI 1 */
+#define HAVE_WINCAPI 1
 
 /*
  * Macros used to determine what header files exist on this

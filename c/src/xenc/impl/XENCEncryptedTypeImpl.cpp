@@ -275,6 +275,8 @@ DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
 							str.rawXMLChBuffer(), 
 							DSIGConstants::s_unicodeStrURIXENC);
 
+	mp_env->doPrettyPrint(ret);
+
 	// Create the EncryptionMethod
 	if (algorithm != NULL) {
 
@@ -284,6 +286,8 @@ DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
 
 		ret->appendChild(encryptionMethodNode);
 
+		mp_env->doPrettyPrint(ret);
+
 	}
 
 	// Create the cipher Data
@@ -292,6 +296,8 @@ DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
 
 	// Add to EncryptedType
 	ret->appendChild(mp_cipherDataNode);
+
+	mp_env->doPrettyPrint(ret);
 
 	return ret;
 
@@ -403,6 +409,9 @@ void XENCEncryptedTypeImpl::createKeyInfoElement(void) {
 	}
 
 	mp_encryptedTypeNode->insertBefore(mp_keyInfoNode, mp_cipherDataNode);
+
+	if (mp_env->getPrettyPrintFlag() == true)
+		mp_encryptedTypeNode->insertBefore(mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), mp_cipherDataNode);
 	
 	// Need to add the DS namespace
 

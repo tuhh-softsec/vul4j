@@ -121,6 +121,8 @@ public:
 		{return mp_doc;}
 	const XMLCh * getXENCNSPrefix(void) const;
 	virtual XENCEncryptedData * getEncryptedData(void);
+	bool getPrettyPrint(void);
+
 
 	// Setter methods
 	void setKey(XSECCryptoKey * key);
@@ -128,7 +130,8 @@ public:
 	void setKeyInfoResolver(const XSECKeyInfoResolver * resolver);
 
 	void setXENCNSPrefix(const XMLCh * prefix);
-	
+	void setPrettyPrint(bool flag);
+
 	// Creation methods
 	XENCEncryptedData * createEncryptedData(XENCCipherData::XENCCipherDataType type,
 											const XMLCh * algorithm,

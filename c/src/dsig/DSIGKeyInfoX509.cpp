@@ -391,7 +391,7 @@ DOMElement * DSIGKeyInfoX509::createBlankX509Data(void) {
 
 	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	mp_keyInfoDOMNode = ret;
-	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(ret);
 
 	return ret;
 
@@ -413,7 +413,7 @@ void DSIGKeyInfoX509::setX509CRL(const XMLCh * crl) {
 
 		// Add to the over-arching node
 		mp_keyInfoDOMNode->appendChild(s);
-		mp_keyInfoDOMNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(mp_keyInfoDOMNode);
 
 	}
 
@@ -443,7 +443,7 @@ void DSIGKeyInfoX509::setX509SKI(const XMLCh * ski) {
 
 		// Add to the over-arching node
 		mp_keyInfoDOMNode->appendChild(s);
-		mp_keyInfoDOMNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(mp_keyInfoDOMNode);
 
 	}
 
@@ -483,7 +483,7 @@ void DSIGKeyInfoX509::setX509SubjectName(const XMLCh * name) {
 
 		// Add to the over-arching node
 		mp_keyInfoDOMNode->appendChild(s);
-		mp_keyInfoDOMNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(mp_keyInfoDOMNode);
 
 	}
 
@@ -515,7 +515,7 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 		makeQName(str, prefix, "X509IssuerSerial");
 
 		DOMElement * s = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-		s->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(s);
 
 		// Create the text nodes with the contents
 
@@ -529,19 +529,19 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 		t->appendChild(mp_X509IssuerNameTextNode);
 		
 		s->appendChild(t);
-		s->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(s);
 		
 		makeQName(str, prefix, "X509SerialNumber");
 		t = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 		t->appendChild(mp_X509SerialNumberTextNode);
 		
 		s->appendChild(t);
-		s->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(s);
 
 		// Add to the over-arching X509Data
 
 		mp_keyInfoDOMNode->appendChild(s);
-		mp_keyInfoDOMNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		mp_env->doPrettyPrint(mp_keyInfoDOMNode);
 
 	}
 
@@ -576,7 +576,7 @@ void DSIGKeyInfoX509::appendX509Certificate(const XMLCh * base64Certificate) {
 	s->appendChild(b64Txt);
 
 	mp_keyInfoDOMNode->appendChild(s);
-	mp_keyInfoDOMNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_keyInfoDOMNode);
 
 	// Add to the list
 

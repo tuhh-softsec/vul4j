@@ -255,6 +255,14 @@ public:
 
 	virtual XENCEncryptedData * getEncryptedData(void) = 0;
 
+	/**
+	 * \brief Tell caller whether PrettyPrinting is active
+	 *
+	 * @returns True if Pretty Printing is active, false if not
+	 */
+
+	virtual bool getPrettyPrint(void) = 0;
+
 	//@}
 
 	/** @name Setter Functions */
@@ -311,6 +319,19 @@ public:
 	 */
 
 	virtual void setXENCNSPrefix(const XMLCh * prefix) = 0;
+
+	/**
+	 * \brief Set Pretty Print
+	 *
+	 * The pretty print functions controls whether the library will output
+	 * CR/LF after the elements it adds to a document
+	 *
+	 * By default the library will do pretty printing (flag is true)
+	 *
+	 * @param flag Value to set for Pretty Printing (true = do pretty printing)
+	 */
+
+	virtual void setPrettyPrint(bool flag) = 0;
 
 	//@}
 

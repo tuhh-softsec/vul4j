@@ -224,8 +224,9 @@ void DSIGReference::createTransformList(void) {
 		makeQName(str, prefix, "Transforms");
 		mp_transformsNode = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 		mp_referenceNode->insertBefore(mp_transformsNode, mp_referenceNode->getFirstChild());
-		mp_referenceNode->insertBefore(doc->createTextNode(DSIGConstants::s_unicodeStrNL), mp_transformsNode);
-		mp_transformsNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+		if (mp_env->getPrettyPrintFlag() == true)
+			mp_referenceNode->insertBefore(doc->createTextNode(DSIGConstants::s_unicodeStrNL), mp_transformsNode);
+		mp_env->doPrettyPrint(mp_transformsNode);
 
 		// Create the list
 		XSECnew(mp_transformList, DSIGTransformList());
@@ -241,7 +242,7 @@ void DSIGReference::addTransform(DSIGTransform * txfm, DOMElement * txfmElt) {
 		createTransformList();
 
 	mp_transformsNode->appendChild(txfmElt);
-	mp_transformsNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(mp_transformsNode);
 
 	mp_transformList->addTransform(txfm);
 }
@@ -328,7 +329,7 @@ DSIGTransformXPathFilter * DSIGReference::appendXPathFilterTransform(void) {
 	txfmElt = txfm->createBlankTransform(mp_env->getParentDocument());
 
 	addTransform(txfm, txfmElt);
-	txfmElt->appendChild(mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(txfmElt);
 
 	return txfm;
 }
@@ -378,9 +379,9 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 	// Create hash and hashValue nodes
 	makeQName(str, prefix, "DigestMethod");
 	DOMElement *digestMethod = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(ret);
 	ret->appendChild(digestMethod);
-	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(ret);
 
 	if (!hashMethod2URI(str, hm)) {
 	
@@ -396,7 +397,7 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 	makeQName(str, prefix, "DigestValue");
 	mp_hashValueNode = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 	ret->appendChild(mp_hashValueNode);
-	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_env->doPrettyPrint(ret);
 	mp_hashValueNode->appendChild(doc->createTextNode(MAKE_UNICODE_STRING("Not yet calculated")));
 	
 	m_loaded = true;

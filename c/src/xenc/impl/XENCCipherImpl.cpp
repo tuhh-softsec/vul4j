@@ -824,3 +824,20 @@ DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element,
 	return mp_doc;
 
 }
+
+// --------------------------------------------------------------------------------
+//			Pretty Print functions
+// --------------------------------------------------------------------------------
+
+void XENCCipherImpl::setPrettyPrint(bool flag) {
+
+	mp_env->setPrettyPrintFlag(flag);
+
+}
+
+bool XENCCipherImpl::getPrettyPrint(void) {
+
+	return mp_env->getPrettyPrintFlag();
+
+}
+
