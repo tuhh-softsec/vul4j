@@ -31,7 +31,7 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 /**
  * This test is to ensure interoperability with the examples provided by the IBM
  * XML Security Suite. They have to be located in the directory
- * <CODE>data/com/ibm/xss4j-20011029/</CODE>.
+ * <CODE>data/com/ibm/xss4j-20030127/</CODE>.
  * <BR />
  * For license issues, the vectors are not included in the distibution. See
  * <A HREF="../../../../../../../interop.html">the interop page</A> for more on this.
@@ -46,7 +46,7 @@ public class IBMTest extends InteropTest {
         org.apache.commons.logging.LogFactory.getLog(IBMTest.class.getName());
 
    /** Field kentsDir           */
-   static final String kentsDir = "data/com/ibm/xss4j-20011029/";
+   static final String kentsDir = "data/com/ibm/xss4j-20030127/";
 
    /**
     * Method suite

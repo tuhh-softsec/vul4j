@@ -147,7 +147,7 @@
     <patternset id="dataFiles">
        <include name="data/**"/>
        <exclude name="data/de/uni-siegen/**"/>
-       <exclude name="data/com/ibm/xss4j-20011029/**/*"/>
+       <exclude name="data/com/ibm/xss4j-20030127/**/*"/>
     </patternset>
 
     <patternset id="srcFiles">
@@ -172,7 +172,10 @@
     <property name="javadoc.packages" value=" org.apache.xml.security.Init, org.apache.xml.security.algorithms, org.apache.xml.security.c14n, org.apache.xml.security.encryption, org.apache.xml.security.exceptions, org.apache.xml.security.keys, org.apache.xml.security.keys.content, org.apache.xml.security.keys.content.keyvalues, org.apache.xml.security.keys.content.x509, org.apache.xml.security.keys.keyresolver, org.apache.xml.security.keys.storage, org.apache.xml.security.signature, org.apache.xml.security.transforms, org.apache.xml.security.transforms.params, org.apache.xml.security.utils, org.apache.xml.security.utils.resolver "/>
 
     <echo message="-------------------------------------------------------------------"/>
-    <echo message="--------- ${product.Name} v${product.Version} [${year}] ----------------"/>
+    <echo message="--------- ${product.Name} v${product.Version} [${year}] -----------"/>
+    <echo message="-------------------------------------------------------------------"/>
+    <echo message="Building with ${ant.version}"/>
+    <echo message="Java ${java.version} located at ${java.home} "/>
     <echo message="-------------------------------------------------------------------"/>
   </target>
 
@@ -218,6 +221,11 @@
     <delete dir="${build.dir}"/>
     <delete dir="./bak"/>
     <delete file="log.txt"/>
+    <delete>
+       <fileset dir="." includes="merlin*.html"/>
+       <fileset dir="." includes="merlin*.xml"/>
+       <fileset dir="." includes="signature.xml"/>
+    </delete>
   </target>
 
   <target depends="init" description="Clean up all temporary test vectors" name="clean-testdata">
@@ -437,12 +445,12 @@
 
          and put the files into the
 
-         data/com/ibm/xss4j-20011029/
+         data/com/ibm/xss4j-20030127/
 
          directory. If the file enveloped-rsa.sig is found in that directory,
          IBM is 'magically' included in the test ;-))
     -->
-    <available file="data/com/ibm/xss4j-20011029/enveloped-rsa.sig" property="ibm.available"/>
+    <available file="data/com/ibm/xss4j-20030127/enveloped-rsa.sig" property="ibm.available"/>
     <junit filtertrace="true" fork="true" printsummary="on" failureproperty="build.test.failed">
        <jvmarg value="-Djava.compiler=NONE"/>
        <sysproperty key="basedir" value="${basedir}"/>

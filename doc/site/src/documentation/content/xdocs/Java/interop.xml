@@ -64,14 +64,14 @@
 	  copyrighted their test signatures which they have bundled with
 	  xss4j. If you want to include interop testing against IBM in your
 	  unit tests, simply do the following:
-	  Download <code>xss4j-20011029.zip</code> from the 
+	  Download <code>xss4j-20030127.zip</code> from the 
 	  <jump
 	    href="http://www.alphaworks.ibm.com/aw.nsf/download/xmlsecuritysuite">
 	    alphaWorks download page
 	  </jump>. 
-	  Copy all files from the <code>xss4j-20011029.zip#/xss4j/data</code>
+	  Copy all files from the <code>xss4j-20030127.zip#/xss4j/data</code>
 	  directory into the
-	  <code>xml-security/data/com/ibm/xss4j-20011029/</code>
+	  <code>xml-security/data/com/ibm/xss4j-20030127/</code>
 	  directory. If the 
 	  <jump href="api/org/apache/xml/security/test/InteropTest.html">
 	    Interop

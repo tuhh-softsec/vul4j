@@ -62,9 +62,9 @@ public class InteropTest extends TestCase {
           * To make interop against the IBM xss4j examples, download the
           * XSS4j from http://www.alphaworks.ibm.com/tech/xmlsecuritysuite
           * and extract the test signatures from
-          * xss4j-20011029.zip#/xss4j/data/dsig
+          * xss4j-20030127.zip#/xss4j/data/dsig
           * in the directory
-          * data/com/ibm/xss4j-20011029/
+          * data/com/ibm/xss4j-20030127/
           * then the interop test is performed against these values, too.
           */
          String filename = "data/com/ibm/xss4j-20011029/enveloped-rsa.sig";

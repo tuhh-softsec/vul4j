@@ -1,2 +1,2 @@
-jce-jdk13-???.jar
-bcprov-jdk13-???.jar
+jce*.jar
+bc*.jar
