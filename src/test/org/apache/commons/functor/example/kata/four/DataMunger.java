@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.7 2003/12/17 22:13:51 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.8 2003/12/17 22:15:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -79,7 +79,7 @@ import org.apache.commons.functor.example.lines.Lines;
  * 
  * DataMunger wires together various functors and exposes them
  * as static utility methhods. 
- * @version $Revision: 1.7 $ $Date: 2003/12/17 22:13:51 $
+ * @version $Revision: 1.8 $ $Date: 2003/12/17 22:15:11 $
  * @author Rodney Waldhoff
  */
 public class DataMunger {
@@ -91,7 +91,7 @@ public class DataMunger {
 	/**
 	 * Processes each line of the given Reader, returning the <i>selected</i> column for the 
 	 * line where the absolute difference between the integer value of <i>col1</i> and <i>col2</i>
-	 * is least.  
+	 * is least.  Note that lines that don't begin with an Integer are ignored.
 	 */
     public static final Object process(final Reader file, final int selected, final int col1, final int col2) {
         return NthColumn.instance(selected).evaluate(
