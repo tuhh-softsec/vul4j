@@ -56,10 +56,16 @@
     <developer>
       <name>Rodney Waldhoff</name>
       <id>rwaldhoff</id>
-      <email>rwaldhoff@apache.org</email>
+      <email>rwaldhoff AT apache DOT org</email>
     </developer>
   </developers>
 
+  <contributors>
+   <contributor>
+     <name>Jason Horman</name>
+     <email>jason AT jhorman DOT org</email>
+   </contributor>
+  </contributors>
 
   <dependencies>
     <dependency>
