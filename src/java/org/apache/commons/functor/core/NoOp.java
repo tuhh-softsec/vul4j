@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/NoOpProcedure.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/NoOp.java,v 1.1 2003/02/24 11:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,14 +65,14 @@ import org.apache.commons.functor.UnaryProcedure;
 /**
  * A procedure that does nothing at all.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:48:08 $
  * @author Rodney Waldhoff
  */
-public final class NoOpProcedure implements Procedure, UnaryProcedure, BinaryProcedure, Serializable {
+public final class NoOp implements Procedure, UnaryProcedure, BinaryProcedure, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
-    public NoOpProcedure() {
+    public NoOp() {
     }
  
     // predicate interface
@@ -87,24 +87,24 @@ public final class NoOpProcedure implements Procedure, UnaryProcedure, BinaryPro
     }
 
     public boolean equals(Object that) {
-        return (that instanceof NoOpProcedure);
+        return (that instanceof NoOp);
     }
         
     public int hashCode() {
-        return "NoOpProcedure".hashCode();
+        return "NoOp".hashCode();
     }
     
     public String toString() {
-        return "NoOpProcedure";
+        return "NoOp";
     }
     
     // static methods
     // ------------------------------------------------------------------------
-    public static NoOpProcedure getNoOpProcedure() {
+    public static NoOp getNoOpProcedure() {
         return INSTANCE;
     }
 
     // static attributes
     // ------------------------------------------------------------------------
-    private static final NoOpProcedure INSTANCE = new NoOpProcedure();
+    private static final NoOp INSTANCE = new NoOp();
 }

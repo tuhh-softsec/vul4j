@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.5 2003/02/24 11:38:06 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.6 2003/02/24 11:48:09 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2003/02/24 11:38:06 $
+ * @version $Revision: 1.6 $ $Date: 2003/02/24 11:48:09 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -74,7 +74,7 @@ public class TestAll extends TestCase {
         
         suite.addTest(TestConstantFunction.suite());
         suite.addTest(TestConstantPredicate.suite());
-        suite.addTest(TestNoOpProcedure.suite());
+        suite.addTest(TestNoOp.suite());
         suite.addTest(TestIdentityFunction.suite());
         suite.addTest(TestLeftIdentityFunction.suite());
         suite.addTest(TestRightIdentityFunction.suite());

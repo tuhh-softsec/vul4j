@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundProcedure.java,v 1.2 2003/02/19 00:54:36 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundProcedure.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,10 +63,10 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.LeftIdentityFunction;
-import org.apache.commons.functor.core.NoOpProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/02/19 00:54:36 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
  * @author Rodney Waldhoff
  */
 public class TestRightBoundProcedure extends BaseFunctorTest {
@@ -86,7 +86,7 @@ public class TestRightBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new RightBoundProcedure(new NoOpProcedure(),"xyzzy");
+        return new RightBoundProcedure(new NoOp(),"xyzzy");
     }
 
     // Lifecycle
@@ -110,14 +110,14 @@ public class TestRightBoundProcedure extends BaseFunctorTest {
     }
     
     public void testEquals() throws Exception {
-        UnaryProcedure f = new RightBoundProcedure(new NoOpProcedure(),"xyzzy");
+        UnaryProcedure f = new RightBoundProcedure(new NoOp(),"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new RightBoundProcedure(new NoOpProcedure(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new NoOpProcedure());
+        assertObjectsAreEqual(f,new RightBoundProcedure(new NoOp(),"xyzzy"));
+        assertObjectsAreNotEqual(f,new NoOp());
         assertObjectsAreNotEqual(f,new RightBoundProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentityFunction()),"xyzzy"));
-        assertObjectsAreNotEqual(f,new RightBoundProcedure(new NoOpProcedure(),"foo"));
+        assertObjectsAreNotEqual(f,new RightBoundProcedure(new NoOp(),"foo"));
         assertObjectsAreNotEqual(f,new RightBoundProcedure(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new RightBoundProcedure(new NoOpProcedure(),null));
+        assertObjectsAreNotEqual(f,new RightBoundProcedure(new NoOp(),null));
         assertObjectsAreEqual(new RightBoundProcedure(null,null),new RightBoundProcedure(null,null));
     }
 
@@ -126,7 +126,7 @@ public class TestRightBoundProcedure extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(RightBoundProcedure.bind(new NoOpProcedure(),"xyzzy"));
-        assertNotNull(RightBoundProcedure.bind(new NoOpProcedure(),null));
+        assertNotNull(RightBoundProcedure.bind(new NoOp(),"xyzzy"));
+        assertNotNull(RightBoundProcedure.bind(new NoOp(),null));
     }
 }

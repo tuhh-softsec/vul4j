@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestNoOpProcedure.java,v 1.1 2003/01/27 19:33:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestNoOp.java,v 1.1 2003/02/24 11:48:09 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,27 +65,27 @@ import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:42 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:48:09 $
  * @author Rodney Waldhoff
  */
-public class TestNoOpProcedure extends BaseFunctorTest {
+public class TestNoOp extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestNoOpProcedure(String testName) {
+    public TestNoOp(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestNoOpProcedure.class);
+        return new TestSuite(TestNoOp.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new NoOpProcedure();
+        return new NoOp();
     }
 
     // Lifecycle
@@ -103,7 +103,7 @@ public class TestNoOpProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testRun() throws Exception {
-        NoOpProcedure p = new NoOpProcedure();
+        NoOp p = new NoOp();
         p.run();
         p.run(null);
         p.run(null,null);
@@ -114,17 +114,17 @@ public class TestNoOpProcedure extends BaseFunctorTest {
     }
     
     public void testEquals() throws Exception {
-        NoOpProcedure p = new NoOpProcedure();
+        NoOp p = new NoOp();
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new NoOpProcedure());
-        assertObjectsAreEqual(p,NoOpProcedure.getNoOpProcedure());
+        assertObjectsAreEqual(p,new NoOp());
+        assertObjectsAreEqual(p,NoOp.getNoOpProcedure());
         assertObjectsAreNotEqual(p,new Procedure() { public void run() { } });
         assertObjectsAreNotEqual(p,new UnaryProcedure() { public void run(Object a) { } });
         assertObjectsAreNotEqual(p,new BinaryProcedure() { public void run(Object a, Object b) { } });
     }
     
     public void testConstant() throws Exception {
-        assertEquals(NoOpProcedure.getNoOpProcedure(),NoOpProcedure.getNoOpProcedure());
-        assertSame(NoOpProcedure.getNoOpProcedure(),NoOpProcedure.getNoOpProcedure());
+        assertEquals(NoOp.getNoOpProcedure(),NoOp.getNoOpProcedure());
+        assertSame(NoOp.getNoOpProcedure(),NoOp.getNoOpProcedure());
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBinaryProcedureBinaryFunction.java,v 1.2 2003/01/28 12:00:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBinaryProcedureBinaryFunction.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,10 +63,10 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryProcedure;
 import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.NoOpProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:30 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryProcedureBinaryFunction extends BaseFunctorTest {
@@ -86,7 +86,7 @@ public class TestBinaryProcedureBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryProcedureBinaryFunction(new NoOpProcedure());
+        return new BinaryProcedureBinaryFunction(new NoOp());
     }
 
     // Lifecycle
@@ -104,14 +104,14 @@ public class TestBinaryProcedureBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testEvaluate() throws Exception {
-        BinaryFunction f = new BinaryProcedureBinaryFunction(new NoOpProcedure());
+        BinaryFunction f = new BinaryProcedureBinaryFunction(new NoOp());
         assertNull(f.evaluate(null,null));
     }
     
     public void testEquals() throws Exception {
-        BinaryFunction f = new BinaryProcedureBinaryFunction(new NoOpProcedure());
+        BinaryFunction f = new BinaryProcedureBinaryFunction(new NoOp());
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new BinaryProcedureBinaryFunction(new NoOpProcedure()));
+        assertObjectsAreEqual(f,new BinaryProcedureBinaryFunction(new NoOp()));
         assertObjectsAreNotEqual(f,new ConstantFunction("x"));
         assertObjectsAreNotEqual(f,new BinaryProcedureBinaryFunction(new BinaryProcedure() { public void run(Object a, Object b) { } }));
         assertObjectsAreNotEqual(f,new ConstantFunction(null));
@@ -124,6 +124,6 @@ public class TestBinaryProcedureBinaryFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BinaryProcedureBinaryFunction.adapt(new NoOpProcedure()));
+        assertNotNull(BinaryProcedureBinaryFunction.adapt(new NoOp()));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestUnaryProcedureUnaryFunction.java,v 1.2 2003/01/28 12:00:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestUnaryProcedureUnaryFunction.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,10 +63,10 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.NoOpProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:30 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryProcedureUnaryFunction extends BaseFunctorTest {
@@ -86,7 +86,7 @@ public class TestUnaryProcedureUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryProcedureUnaryFunction(new NoOpProcedure());
+        return new UnaryProcedureUnaryFunction(new NoOp());
     }
 
     // Lifecycle
@@ -104,14 +104,14 @@ public class TestUnaryProcedureUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testEvaluate() throws Exception {
-        UnaryFunction f = new UnaryProcedureUnaryFunction(new NoOpProcedure());
+        UnaryFunction f = new UnaryProcedureUnaryFunction(new NoOp());
         assertNull(f.evaluate(null));
     }
     
     public void testEquals() throws Exception {
-        UnaryFunction f = new UnaryProcedureUnaryFunction(new NoOpProcedure());
+        UnaryFunction f = new UnaryProcedureUnaryFunction(new NoOp());
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new UnaryProcedureUnaryFunction(new NoOpProcedure()));
+        assertObjectsAreEqual(f,new UnaryProcedureUnaryFunction(new NoOp()));
         assertObjectsAreNotEqual(f,new ConstantFunction("x"));
         assertObjectsAreNotEqual(f,new UnaryProcedureUnaryFunction(new UnaryProcedure() { public void run(Object a) { } }));
         assertObjectsAreNotEqual(f,new ConstantFunction(null));
@@ -124,6 +124,6 @@ public class TestUnaryProcedureUnaryFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(UnaryProcedureUnaryFunction.adapt(new NoOpProcedure()));
+        assertNotNull(UnaryProcedureUnaryFunction.adapt(new NoOp()));
     }
 }

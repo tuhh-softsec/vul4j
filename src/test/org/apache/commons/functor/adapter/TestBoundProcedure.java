@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundProcedure.java,v 1.2 2003/02/19 00:54:36 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundProcedure.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,10 +62,10 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.core.IdentityFunction;
-import org.apache.commons.functor.core.NoOpProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/02/19 00:54:36 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
  * @author Rodney Waldhoff
  */
 public class TestBoundProcedure extends BaseFunctorTest {
@@ -85,7 +85,7 @@ public class TestBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BoundProcedure(new NoOpProcedure(),"xyzzy");
+        return new BoundProcedure(new NoOp(),"xyzzy");
     }
 
     // Lifecycle
@@ -108,14 +108,14 @@ public class TestBoundProcedure extends BaseFunctorTest {
     }
     
     public void testEquals() throws Exception {
-        Procedure f = new BoundProcedure(new NoOpProcedure(),"xyzzy");
+        Procedure f = new BoundProcedure(new NoOp(),"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new BoundProcedure(new NoOpProcedure(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new NoOpProcedure());
-        assertObjectsAreNotEqual(f,new BoundProcedure(new NoOpProcedure(),"foo"));
+        assertObjectsAreEqual(f,new BoundProcedure(new NoOp(),"xyzzy"));
+        assertObjectsAreNotEqual(f,new NoOp());
+        assertObjectsAreNotEqual(f,new BoundProcedure(new NoOp(),"foo"));
         assertObjectsAreNotEqual(f,new BoundProcedure(new UnaryFunctionUnaryProcedure(new IdentityFunction()),"xyzzy"));
         assertObjectsAreNotEqual(f,new BoundProcedure(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new BoundProcedure(new NoOpProcedure(),null));
+        assertObjectsAreNotEqual(f,new BoundProcedure(new NoOp(),null));
         assertObjectsAreEqual(new BoundProcedure(null,null),new BoundProcedure(null,null));
     }
 
@@ -124,7 +124,7 @@ public class TestBoundProcedure extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BoundProcedure.bind(new NoOpProcedure(),"xyzzy"));
-        assertNotNull(BoundProcedure.bind(new NoOpProcedure(),null));
+        assertNotNull(BoundProcedure.bind(new NoOp(),"xyzzy"));
+        assertNotNull(BoundProcedure.bind(new NoOp(),null));
     }
 }

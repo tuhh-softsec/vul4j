@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestUnaryProcedureBinaryProcedure.java,v 1.2 2003/01/28 12:00:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestUnaryProcedureBinaryProcedure.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,10 +62,10 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryProcedure;
 import org.apache.commons.functor.core.IdentityFunction;
-import org.apache.commons.functor.core.NoOpProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:30 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryProcedureBinaryProcedure extends BaseFunctorTest {
@@ -85,7 +85,7 @@ public class TestUnaryProcedureBinaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryProcedureBinaryProcedure(new NoOpProcedure());
+        return new UnaryProcedureBinaryProcedure(new NoOp());
     }
 
     // Lifecycle
@@ -108,10 +108,10 @@ public class TestUnaryProcedureBinaryProcedure extends BaseFunctorTest {
     }
     
     public void testEquals() throws Exception {
-        BinaryProcedure p = new UnaryProcedureBinaryProcedure(new NoOpProcedure());
+        BinaryProcedure p = new UnaryProcedureBinaryProcedure(new NoOp());
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new UnaryProcedureBinaryProcedure(new NoOpProcedure()));
-        assertObjectsAreNotEqual(p,new NoOpProcedure());
+        assertObjectsAreEqual(p,new UnaryProcedureBinaryProcedure(new NoOp()));
+        assertObjectsAreNotEqual(p,new NoOp());
         assertObjectsAreNotEqual(p,new UnaryProcedureBinaryProcedure(null));
         assertObjectsAreEqual(new UnaryProcedureBinaryProcedure(null),new UnaryProcedureBinaryProcedure(null));
     }
@@ -121,6 +121,6 @@ public class TestUnaryProcedureBinaryProcedure extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(UnaryProcedureBinaryProcedure.adapt(new NoOpProcedure()));
+        assertNotNull(UnaryProcedureBinaryProcedure.adapt(new NoOp()));
     }
 }

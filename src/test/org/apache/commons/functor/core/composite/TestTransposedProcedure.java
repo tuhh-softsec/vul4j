@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestTransposedProcedure.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestTransposedProcedure.java,v 1.2 2003/02/24 11:48:09 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,10 +63,10 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryProcedure;
 import org.apache.commons.functor.adapter.BinaryFunctionBinaryProcedure;
 import org.apache.commons.functor.core.LeftIdentityFunction;
-import org.apache.commons.functor.core.NoOpProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/24 11:48:09 $
  * @author Rodney Waldhoff
  */
 public class TestTransposedProcedure extends BaseFunctorTest {
@@ -86,7 +86,7 @@ public class TestTransposedProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new TransposedProcedure(NoOpProcedure.getNoOpProcedure());
+        return new TransposedProcedure(NoOp.getNoOpProcedure());
     }
 
     // Lifecycle
@@ -114,13 +114,13 @@ public class TestTransposedProcedure extends BaseFunctorTest {
     }
         
     public void testEquals() throws Exception {
-        BinaryProcedure p = new TransposedProcedure(NoOpProcedure.getNoOpProcedure());
+        BinaryProcedure p = new TransposedProcedure(NoOp.getNoOpProcedure());
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new TransposedProcedure(NoOpProcedure.getNoOpProcedure()));
-        assertObjectsAreEqual(p,TransposedProcedure.transpose(NoOpProcedure.getNoOpProcedure()));
-        assertObjectsAreNotEqual(p,new TransposedProcedure(new TransposedProcedure(NoOpProcedure.getNoOpProcedure())));
+        assertObjectsAreEqual(p,new TransposedProcedure(NoOp.getNoOpProcedure()));
+        assertObjectsAreEqual(p,TransposedProcedure.transpose(NoOp.getNoOpProcedure()));
+        assertObjectsAreNotEqual(p,new TransposedProcedure(new TransposedProcedure(NoOp.getNoOpProcedure())));
         assertObjectsAreNotEqual(p,new TransposedProcedure(null));
-        assertObjectsAreNotEqual(p,new NoOpProcedure());
+        assertObjectsAreNotEqual(p,new NoOp());
     }
 
     public void testTransposeNull() throws Exception {
@@ -128,7 +128,7 @@ public class TestTransposedProcedure extends BaseFunctorTest {
     }
 
     public void testTranspose() throws Exception {
-        assertNotNull(TransposedProcedure.transpose(new NoOpProcedure()));
+        assertNotNull(TransposedProcedure.transpose(new NoOp()));
     }
 
     // Classes

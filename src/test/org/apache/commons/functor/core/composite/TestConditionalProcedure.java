@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalProcedure.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalProcedure.java,v 1.2 2003/02/24 11:48:09 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,10 +64,10 @@ import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.adapter.FunctionPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 import org.apache.commons.functor.core.LeftIdentityFunction;
-import org.apache.commons.functor.core.NoOpProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/24 11:48:09 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalProcedure extends BaseFunctorTest {
@@ -89,8 +89,8 @@ public class TestConditionalProcedure extends BaseFunctorTest {
     protected Object makeFunctor() {
         return new ConditionalProcedure(
             new ConstantPredicate(true),
-            new NoOpProcedure(),
-            new NoOpProcedure());
+            new NoOp(),
+            new NoOp());
     }
 
     // Lifecycle
@@ -151,28 +151,28 @@ public class TestConditionalProcedure extends BaseFunctorTest {
     public void testEquals() throws Exception {
         ConditionalProcedure p = new ConditionalProcedure(
             new ConstantPredicate(false),
-            new NoOpProcedure(),
-            new NoOpProcedure());
+            new NoOp(),
+            new NoOp());
         assertEquals(p,p);
         assertObjectsAreEqual(p,new ConditionalProcedure(
             new ConstantPredicate(false),
-            new NoOpProcedure(),
-            new NoOpProcedure()));
+            new NoOp(),
+            new NoOp()));
         assertObjectsAreNotEqual(p,new ConditionalProcedure(
             new ConstantPredicate(true),
-            new NoOpProcedure(),
-            new NoOpProcedure()));
+            new NoOp(),
+            new NoOp()));
         assertObjectsAreNotEqual(p,new ConditionalProcedure(
             null,
-            new NoOpProcedure(),
-            new NoOpProcedure()));
+            new NoOp(),
+            new NoOp()));
         assertObjectsAreNotEqual(p,new ConditionalProcedure(
             new ConstantPredicate(false),
             null,
-            new NoOpProcedure()));
+            new NoOp()));
         assertObjectsAreNotEqual(p,new ConditionalProcedure(
             new ConstantPredicate(false),
-            new NoOpProcedure(),
+            new NoOp(),
             null));
     }
 

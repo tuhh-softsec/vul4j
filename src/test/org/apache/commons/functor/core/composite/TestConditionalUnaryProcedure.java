@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryProcedure.java,v 1.2 2003/01/29 23:24:52 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryProcedure.java,v 1.3 2003/02/24 11:48:09 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,10 +63,10 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.core.ConstantPredicate;
 import org.apache.commons.functor.core.IdentityPredicate;
-import org.apache.commons.functor.core.NoOpProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/29 23:24:52 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:09 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalUnaryProcedure extends BaseFunctorTest {
@@ -88,8 +88,8 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
     protected Object makeFunctor() {
         return new ConditionalUnaryProcedure(
             new ConstantPredicate(true),
-            new NoOpProcedure(),
-            new NoOpProcedure());
+            new NoOp(),
+            new NoOp());
     }
 
     // Lifecycle
@@ -129,28 +129,28 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
     public void testEquals() throws Exception {
         ConditionalUnaryProcedure p = new ConditionalUnaryProcedure(
             new IdentityPredicate(),
-            new NoOpProcedure(),
-            new NoOpProcedure());
+            new NoOp(),
+            new NoOp());
         assertEquals(p,p);
         assertObjectsAreEqual(p,new ConditionalUnaryProcedure(
             new IdentityPredicate(),
-            new NoOpProcedure(),
-            new NoOpProcedure()));
+            new NoOp(),
+            new NoOp()));
         assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
             new ConstantPredicate(true),
-            new NoOpProcedure(),
-            new NoOpProcedure()));
+            new NoOp(),
+            new NoOp()));
         assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
             null,
-            new NoOpProcedure(),
-            new NoOpProcedure()));
+            new NoOp(),
+            new NoOp()));
         assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
             new IdentityPredicate(),
             null,
-            new NoOpProcedure()));
+            new NoOp()));
         assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
             new IdentityPredicate(),
-            new NoOpProcedure(),
+            new NoOp(),
             null));
     }
 

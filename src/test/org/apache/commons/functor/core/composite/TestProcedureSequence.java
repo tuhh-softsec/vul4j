@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestProcedureSequence.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestProcedureSequence.java,v 1.2 2003/02/24 11:48:09 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,10 +64,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Procedure;
-import org.apache.commons.functor.core.NoOpProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/24 11:48:09 $
  * @author Rodney Waldhoff
  */
 public class TestProcedureSequence extends BaseFunctorTest {
@@ -87,7 +87,7 @@ public class TestProcedureSequence extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ProcedureSequence(new NoOpProcedure(),new NoOpProcedure());
+        return new ProcedureSequence(new NoOp(),new NoOp());
     }
 
     // Lifecycle
@@ -149,17 +149,17 @@ public class TestProcedureSequence extends BaseFunctorTest {
         assertObjectsAreEqual(p,q);
 
         for(int i=0;i<3;i++) {
-            p.then(new NoOpProcedure());
+            p.then(new NoOp());
             assertObjectsAreNotEqual(p,q);
-            q.then(new NoOpProcedure());
+            q.then(new NoOp());
             assertObjectsAreEqual(p,q);
-            p.then(new ProcedureSequence(new NoOpProcedure(),new NoOpProcedure()));
+            p.then(new ProcedureSequence(new NoOp(),new NoOp()));
             assertObjectsAreNotEqual(p,q);            
-            q.then(new ProcedureSequence(new NoOpProcedure(),new NoOpProcedure()));
+            q.then(new ProcedureSequence(new NoOp(),new NoOp()));
             assertObjectsAreEqual(p,q);            
         }
                 
-        assertObjectsAreNotEqual(p,new NoOpProcedure());
+        assertObjectsAreNotEqual(p,new NoOp());
     }
 
     // Classes
