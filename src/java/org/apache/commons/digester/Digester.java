@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.62 2002/08/10 09:45:54 rdonkin Exp $
- * $Revision: 1.62 $
- * $Date: 2002/08/10 09:45:54 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.63 2002/08/10 22:05:42 patrickl Exp $
+ * $Revision: 1.63 $
+ * $Date: 2002/08/10 22:05:42 $
  *
  * ====================================================================
  *
@@ -123,7 +123,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.62 $ $Date: 2002/08/10 09:45:54 $
+ * @version $Revision: 1.63 $ $Date: 2002/08/10 22:05:42 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1327,6 +1327,7 @@ public class Digester extends DefaultHandler {
      * @param systemId The system identifier of the entity being referenced
      *
      * @exception SAXException if a parsing exception occurs
+     * <
      */
       public InputSource resolveEntity(String publicId, String systemId)
             throws SAXException {     
@@ -1343,39 +1344,21 @@ public class Digester extends DefaultHandler {
         if (publicId != null) {
             entityURL = (String) entityValidator.get(publicId);
         }
-        
-        // Redirect the schema/dtd location to a local destination.
-        if (schemaLocation != null && entityValidator != null && entityURL == null){
-            try {    
-                String schemaName = null;
-                String localURI = null;
-                try{
-                    schemaName = systemId.substring(systemId.lastIndexOf("/") + 1);
-                    localURI = (String)entityValidator.get(schemaName);
-                } catch(IndexOutOfBoundsException ex){
-                    if (debug) {
-                        log.debug(" Not registered, use system identifier");
-                    }
-                    return null;
-                }   
-                
-                if ( localURI == null ){
-                    if (debug) {
-                        log.debug(" Not registered, use system identifier");
-                    }
-                    return null;
-                }         
-                return new InputSource(localURI);         
-            } catch (Exception e) {
-               throw createSAXException(e);
-            }
+         
+        // Redirect the schema location to a local destination
+        if (schemaLocation != null && entityURL == null && systemId != null){
+            entityURL = (String)entityValidator.get(systemId);
+        } 
+
+        if (entityURL == null){
+           return (null); 
         }
-
-
+        
         // Return an input source to our alternative URL
         if (debug) {
             log.debug(" Resolving to alternate DTD '" + entityURL + "'");
         }
+        
         try {
             URL url = new URL(entityURL);
             InputStream stream = url.openStream();
@@ -1383,7 +1366,7 @@ public class Digester extends DefaultHandler {
         } catch (Exception e) {
             throw createSAXException(e);
         }
-
+ 
     }
 
 
