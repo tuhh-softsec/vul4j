@@ -53,8 +53,17 @@ public class CallParamTestObject {
         return middle;
     }
 
-
-
+    public void setLeft(String left) {
+        this.left=left;
+    }
+    
+    public void setRight(String right) {
+        this.right = right;
+    }
+    
+    public void setMiddle(String middle) {
+        this.middle = middle;
+    }
     
     public String toString() {
         return "LEFT: " + left + " MIDDLE:" + middle + " RIGHT:" + right;

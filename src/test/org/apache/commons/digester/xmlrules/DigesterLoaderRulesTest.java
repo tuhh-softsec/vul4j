@@ -72,6 +72,61 @@ public class DigesterLoaderRulesTest extends TestCase {
         digester.parse(new InputSource(new StringReader(xml)));
         assertEquals("First param", "", testObject.getLeft());
         assertEquals("Param with default set", "tester.test", testObject.getRight());
+    }
+    
+    /** Test for call method rule with target offset */
+    public void testCallMethodRuleTargetOffset() throws Exception {
+        String xmlRules = 
+            "<?xml version='1.0'?>" +
+            "<digester-rules>" + 
+            "  <pattern value='root'>" +
+            "     <pattern value='call-top-object'>" +
+            "        <call-method-rule " +
+            "                methodname='setMiddle' " +
+            "                targetoffset='0' " +
+            "                paramcount='1' " +
+            "                paramtypes='java.lang.String' />" +
+            "        <call-param-rule paramnumber='0' />" +
+            "     </pattern>" +
+            "     <pattern value='call-parent-object'>" +
+            "        <call-method-rule " +
+            "                methodname='setLeft' " +
+            "                targetoffset='1' " +
+            "                paramcount='1' " +
+            "                paramtypes='java.lang.String' />" +
+            "        <call-param-rule paramnumber='0' />" +
+            "     </pattern>" +
+            "     <pattern value='call-root-object'>" +
+            "        <call-method-rule " +
+            "                methodname='setRight' " +
+            "                targetoffset='-1' " +
+            "                paramcount='1' " +
+            "                paramtypes='java.lang.String' />" +
+            "        <call-param-rule paramnumber='0' />" +
+            "     </pattern>" +
+            "   </pattern>" +
+            "</digester-rules>";
         
+        String xml = 
+            "<?xml version='1.0'?>" + 
+            "<root>" +
+            "  <call-top-object>DataForTheTopObject</call-top-object>" +
+            "  <call-parent-object>DataForTheParentObject</call-parent-object>" +
+            "  <call-root-object>DataForTheRootObject</call-root-object>" +
+            "</root>";
+            
+        CallParamTestObject testObjectA = new CallParamTestObject();
+        CallParamTestObject testObjectB = new CallParamTestObject();
+        CallParamTestObject testObjectC = new CallParamTestObject();
+        Digester digester = DigesterLoader.createDigester(new InputSource(new StringReader(xmlRules)));
+        digester.push( testObjectA );
+        digester.push( testObjectB );
+        digester.push( testObjectC );
+        digester.parse(new InputSource(new StringReader(xml)));
+        
+        assertEquals("Top object invoked", "DataForTheTopObject", testObjectC.getMiddle());
+        assertEquals("Parent object invoked", "DataForTheParentObject", testObjectB.getLeft());
+        assertEquals("Root object invoked", "DataForTheRootObject", testObjectA.getRight());
+
     }
 }
