@@ -1,0 +1,29 @@
+
+<!-- catalogue of items in a library. -->
+
+<catalog>
+  <book isbn="0-596-00184-3">
+    <title>Ant, The Definitive Guide</title>
+    <author>Jesse Tilly &amp; Eric M. Burke</author>
+    <desc>Complete build management for Java.</desc>
+  </book>
+
+  <book isbn="0201310058">
+    <title>Effective Java</title>
+    <author>Joshua Bloch</author>
+    <desc>Tips for experienced Java software developers.</desc>
+  </book>
+
+  <dvd category="martial arts" year-made="1978">
+    <attr id="name" value="Drunken Master"/>
+    <attr id="desc" value="Hilarious slapstick starring Jackie Chan."/>
+    <attr id="runtime" value="106"/>
+  </dvd>
+
+  <video category="drama" year-made="1993">
+    <attr id="name" value="The Piano"/>
+    <attr id="desc" value="Character drama set in New Zealand during the Victorian era."/>
+    <attr id="runtime" value="121"/>
+  </video>
+
+</catalog>
