@@ -199,28 +199,6 @@ public class XMLSignatureInput {
    }
 
    /**
-    * Construct a XMLSignatureInput from an XPath node set. Only the nodes from the
-    * <CODE>inputNodeSet</CODE> occur in the output.
-    *
-    * @param inputNodeSet is the node set
-    * @param usedXPathAPI
-   public XMLSignatureInput(NodeList inputNodeSet,
-                            CachedXPathAPI usedXPathAPI) {
-      this._inputNodeSet = XMLUtils.convertNodelistToSet(inputNodeSet);
-      this._cxpathAPI = usedXPathAPI;
-   }
-
-   /**
-    * Construct a XMLSignatureInput from a node set. Only the nodes from the
-    * <CODE>inputNodeSet</CODE> occur in the output.
-    *
-    * @param inputNodeSet is the node set
-   private XMLSignatureInput(NodeList inputNodeSet) {
-      this(inputNodeSet, new CachedXPathAPI());
-   }
-    */
-
-   /**
     * Constructor XMLSignatureInput
     *
     * @param inputNodeSet
@@ -268,13 +246,17 @@ public class XMLSignatureInput {
             db.setErrorHandler(new org.apache.xml.security.utils
                .IgnoreAllErrorHandler());
 
-            Document document = db.parse(this.getOctetStream());
+            Document doc = db.parse(this.getOctetStream());
+
+            XMLUtils.circumventBug2650(doc);
 
             // select all nodes, also the comments.
-            NodeList nodeList = this._cxpathAPI
-               .selectNodeList(document,
-                               Canonicalizer
-                                  .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+            NodeList nodeList =
+               this._cxpathAPI
+                  .selectNodeList(doc,
+                                  Canonicalizer
+                                     .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+
             return XMLUtils.convertNodelistToSet(nodeList);
          } catch (TransformerException ex) {
             throw new CanonicalizationException("generic.EmptyMessage", ex);
@@ -327,7 +309,8 @@ public class XMLSignatureInput {
          /* If we have a node set but an octet stream is needed, we MUST c14nize
           * without any comments.
           */
-         Canonicalizer20010315OmitComments c14nizer = new Canonicalizer20010315OmitComments();
+         Canonicalizer20010315OmitComments c14nizer =
+            new Canonicalizer20010315OmitComments();
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
          if (this._inputNodeSet.size() == 0) {

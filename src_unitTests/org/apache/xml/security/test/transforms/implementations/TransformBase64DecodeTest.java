@@ -266,6 +266,7 @@ public class TransformBase64DecodeTest extends TestCase {
          .IgnoreAllErrorHandler());
 
       Document doc = db.parse(new ByteArrayInputStream(input.getBytes()));
+      XMLUtils.circumventBug2650(doc);
       Element nscontext = XMLUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
       Node base64Node = XPathAPI.selectSingleNode(doc, "//ds:Base64", nscontext);

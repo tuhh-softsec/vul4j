@@ -229,7 +229,7 @@ public abstract class ElementProxy {
          throw new XMLSecurityException("ElementProxy.nullElement");
       }
 
-      cat.debug("setElement(" + element.getTagName() + ", \"" + BaseURI + "\"");
+      cat.debug("setElement(\"" + element.getTagName() + "\", \"" + BaseURI + "\")");
 
       this._doc = element.getOwnerDocument();
       this._state = ElementProxy.MODE_PROCESS;

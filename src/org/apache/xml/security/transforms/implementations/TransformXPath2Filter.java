@@ -88,6 +88,11 @@ import org.apache.xml.dtm.DTMManager;
  */
 public class TransformXPath2Filter extends TransformSpi {
 
+   /** {@link org.apache.log4j} logging facility */
+   static org.apache.log4j.Category cat =
+      org.apache.log4j.Category
+         .getInstance(TransformXPath2Filter.class.getName());
+
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XPATH2FILTER;
@@ -120,6 +125,9 @@ public class TransformXPath2Filter extends TransformSpi {
 
       try {
          Set inputSet = input.getNodeSet();
+
+         cat.debug("perform xfilter2 on " + inputSet.size() + " nodes");
+
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
          CachedXPathAPI myXPathAPI =
@@ -133,8 +141,8 @@ public class TransformXPath2Filter extends TransformSpi {
 
          Element xpathElement =
             this._transformObject.getChildElementLocalName(0,
-               XPath2FilterContainer.XPathFilter2NS, XPath2FilterContainer
-                                                     ._TAG_XPATH2);
+               XPath2FilterContainer.XPathFilter2NS,
+               XPath2FilterContainer._TAG_XPATH2);
 
          if (xpathElement == null) {
             Object exArgs[] = { "dsig-xpath:XPath", "Transform" };
@@ -160,6 +168,9 @@ public class TransformXPath2Filter extends TransformSpi {
                                     xpathContainer.getXPathFilterTextNode(),
                                     xpathContainer.getElement());
 
+         cat.debug("subtreeRoots contains " + subtreeRoots.getLength()
+                   + " nodes");
+
          /*
           * foreach subtree
           */
@@ -167,16 +178,32 @@ public class TransformXPath2Filter extends TransformSpi {
 
          for (int i = 0; i < subtreeRoots.getLength(); i++) {
             Node currentRootNode = subtreeRoots.item(i);
-            NodeList nodesInSubtree =
-               myXPathAPI
-                  .selectNodeList(currentRootNode, Canonicalizer
-                     .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
-            int jMax = nodesInSubtree.getLength();
+            int currentRootNodeType = currentRootNode.getNodeType();
 
-            for (int j = 0; j < jMax; j++) {
-               selectedNodes.add(nodesInSubtree.item(j));
+            if ((currentRootNodeType == Node.ELEMENT_NODE)
+                    || (currentRootNodeType == Node.DOCUMENT_NODE)) {
+               NodeList nodesInSubtree =
+                  myXPathAPI
+                     .selectNodeList(currentRootNode, Canonicalizer
+                        .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+               int jMax = nodesInSubtree.getLength();
+
+               for (int j = 0; j < jMax; j++) {
+                  selectedNodes.add(nodesInSubtree.item(j));
+               }
+            } else if ((currentRootNodeType == Node.ATTRIBUTE_NODE)
+                       || (currentRootNodeType == Node.TEXT_NODE)
+                       || (currentRootNodeType == Node.CDATA_SECTION_NODE)
+                       || (currentRootNodeType
+                           == Node.PROCESSING_INSTRUCTION_NODE)) {
+               selectedNodes.add(currentRootNode);
+            } else {
+               throw new RuntimeException("unknown node type: " + currentRootNodeType + " " + currentRootNode);
             }
          }
+
+         cat.debug("selection process identified " + selectedNodes.size()
+                   + " nodes");
 
          Set resultNodes = new HashSet();
 

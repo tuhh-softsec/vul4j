@@ -115,11 +115,16 @@ public class Init {
       if (!_alreadyInitialized) {
          _alreadyInitialized = true;
 
-         PRNG.init(new java.security.SecureRandom());
-
          try {
 
+
+            long XX_init_start = System.currentTimeMillis();
+            long XX_prng_start = System.currentTimeMillis();
+            PRNG.init(new java.security.SecureRandom());
+            long XX_prng_end = System.currentTimeMillis();
+
             /* read library configuration file */
+            long XX_parsing_start = System.currentTimeMillis();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
             dbf.setNamespaceAware(true);
@@ -130,6 +135,9 @@ public class Init {
                Class.forName("org.apache.xml.security.Init")
                   .getResourceAsStream("resource/config.xml");
             Document doc = db.parse(is);
+            long XX_parsing_end = System.currentTimeMillis();
+
+
             Element context = doc.createElement("nscontext");
 
             context.setAttribute(
@@ -137,6 +145,7 @@ public class Init {
             context.setAttribute("xmlns:log4j",
                                  "http://jakarta.apache.org/log4j/");
 
+            long XX_configure_log4j_start = System.currentTimeMillis();
             {
 
                /* configure logging */
@@ -156,8 +165,12 @@ public class Init {
 
                org.apache.log4j.xml.DOMConfigurator.configure(log4jElem);
                cat.info("Logging is working");
+               cat.info("Date: " + new Date(System.currentTimeMillis()).toString());
+               cat.info("Version: " + Version.getVersion());
             }
+            long XX_configure_log4j_end = System.currentTimeMillis();
 
+            long XX_configure_i18n_start = System.currentTimeMillis();
             {
 
                /* configure internationalization */
@@ -178,10 +191,12 @@ public class Init {
 
                I18n.init(languageCode, countryCode);
             }
+            long XX_configure_i18n_end = System.currentTimeMillis();
 
             /**
              * Try to register our here() implementation as internal function.
              */
+            long XX_configure_reg_here_start = System.currentTimeMillis();
             {
                FunctionTable.installFunction("here", new FuncHere());
                cat.debug(
@@ -206,7 +221,9 @@ public class Init {
                   }
                }
             }
+            long XX_configure_reg_here_end = System.currentTimeMillis();
 
+            long XX_configure_reg_c14n_start = System.currentTimeMillis();
             {
                Canonicalizer.init();
 
@@ -249,7 +266,9 @@ public class Init {
                   }
                }
             }
+            long XX_configure_reg_c14n_end = System.currentTimeMillis();
 
+            long XX_configure_reg_transforms_start = System.currentTimeMillis();
             {
                Transform.init();
 
@@ -266,21 +285,10 @@ public class Init {
 
                   try {
                      Class c = Class.forName(JAVACLASS);
-                     Method methods[] = c.getMethods();
-
-                     for (int j = 0; j < methods.length; j++) {
-                        Method currMeth = methods[j];
-
-                        if (currMeth.getDeclaringClass().getName()
-                                .equals(JAVACLASS)) {
-                           cat.debug(currMeth.getDeclaringClass());
-                        }
-                     }
                   } catch (ClassNotFoundException e) {
                      Object exArgs[] = { URI, JAVACLASS };
 
-                     cat.fatal(I18n.translate("algorithm.classDoesNotExist",
-                                              exArgs));
+                     cat.fatal(I18n.translate("algorithm.classDoesNotExist", exArgs));
 
                      registerClass = false;
                   }
@@ -292,14 +300,18 @@ public class Init {
                   }
                }
             }
+            long XX_configure_reg_transforms_end = System.currentTimeMillis();
 
+            long XX_configure_reg_jcemapper_start = System.currentTimeMillis();
             {
                Element jcemapperElem = (Element) XPathAPI.selectSingleNode(
                   doc, "/x:Configuration/x:JCEAlgorithmMappings", context);
 
                JCEMapper.init(jcemapperElem);
             }
+            long XX_configure_reg_jcemapper_end = System.currentTimeMillis();
 
+            long XX_configure_reg_sigalgos_start = System.currentTimeMillis();
             {
                SignatureAlgorithm.providerInit();
 
@@ -344,16 +356,10 @@ public class Init {
                   }
                }
             }
+            long XX_configure_reg_sigalgos_end = System.currentTimeMillis();
 
-            /*
-            {
-               Element cipherAlgos = (Element) XPathAPI.selectSingleNode(doc,
-                                        "/x:Configuration/x:EncryptionMethods",
-                                        context);
 
-               EncryptionMethod.init(cipherAlgos);
-            }
-            */
+            long XX_configure_reg_resourceresolver_start = System.currentTimeMillis();
             {
                ResourceResolver.init();
 
@@ -379,7 +385,9 @@ public class Init {
                   ResourceResolver.register(JAVACLASS);
                }
             }
+            long XX_configure_reg_resourceresolver_end = System.currentTimeMillis();
 
+            long XX_configure_reg_keyInfo_start = System.currentTimeMillis();
             {
                try {
                   KeyInfo.init();
@@ -415,7 +423,9 @@ public class Init {
                   throw e;
                }
             }
+            long XX_configure_reg_keyInfo_end = System.currentTimeMillis();
 
+            long XX_configure_reg_keyResolver_start = System.currentTimeMillis();
             {
                KeyResolver.init();
 
@@ -440,7 +450,9 @@ public class Init {
                   KeyResolver.register(JAVACLASS);
                }
             }
+            long XX_configure_reg_keyResolver_end = System.currentTimeMillis();
 
+            long XX_configure_reg_prefixes_start = System.currentTimeMillis();
             {
                cat.debug("Now I try to bind prefixes:");
 
@@ -458,20 +470,43 @@ public class Init {
                      .setDefaultPrefix(namespace, prefix);
                }
             }
+            long XX_configure_reg_prefixes_end = System.currentTimeMillis();
 
             //J-
-         EncryptionMethod.providerInit();
-         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_TRIPLEDES,     "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_TRIPLEDES_BC");
-         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES128,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES128_BC");
-         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES192,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES192_BC");
-         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES256,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES256_BC");
-         EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_TRIPLEDES, "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_TRIPLEDES_BC");
-         EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES128_BC");
-         EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES192_BC");
-         EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES256_BC");
-         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP,  "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyTransportImpl_RSAOAEP_BC");
-         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSA15,    "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyTransportImpl_RSAPKCS15_BC");
-         //J+
+            long XX_configure_reg_encryption_start = System.currentTimeMillis();
+            EncryptionMethod.providerInit();
+            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_TRIPLEDES,     "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_TRIPLEDES_BC");
+            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES128,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES128_BC");
+            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES192,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES192_BC");
+            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES256,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES256_BC");
+            EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_TRIPLEDES, "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_TRIPLEDES_BC");
+            EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES128_BC");
+            EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES192_BC");
+            EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES256_BC");
+            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP,  "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyTransportImpl_RSAOAEP_BC");
+            EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSA15,    "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyTransportImpl_RSAPKCS15_BC");
+            long XX_configure_reg_encryption_end = System.currentTimeMillis();
+            //J+
+            long XX_init_end = System.currentTimeMillis();
+
+
+            //J-
+            cat.debug("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
+            cat.debug("  XX_configure_reg_encryption       " + ((int)(XX_configure_reg_encryption_end- XX_configure_reg_encryption_start)) + " ms");
+            cat.debug("  XX_prng                           " + ((int)(XX_prng_end - XX_prng_start)) + " ms");
+            cat.debug("  XX_parsing                        " + ((int)(XX_parsing_end - XX_parsing_start)) + " ms");
+            cat.debug("  XX_configure_i18n                 " + ((int)(XX_configure_i18n_end- XX_configure_i18n_start)) + " ms");
+            cat.debug("  XX_configure_log4j                " + ((int)(XX_configure_log4j_end- XX_configure_log4j_start)) + " ms");
+            cat.debug("  XX_configure_reg_c14n             " + ((int)(XX_configure_reg_c14n_end- XX_configure_reg_c14n_start)) + " ms");
+            cat.debug("  XX_configure_reg_here             " + ((int)(XX_configure_reg_here_end- XX_configure_reg_here_start)) + " ms");
+            cat.debug("  XX_configure_reg_jcemapper        " + ((int)(XX_configure_reg_jcemapper_end- XX_configure_reg_jcemapper_start)) + " ms");
+            cat.debug("  XX_configure_reg_keyInfo          " + ((int)(XX_configure_reg_keyInfo_end- XX_configure_reg_keyInfo_start)) + " ms");
+            cat.debug("  XX_configure_reg_keyResolver      " + ((int)(XX_configure_reg_keyResolver_end- XX_configure_reg_keyResolver_start)) + " ms");
+            cat.debug("  XX_configure_reg_prefixes         " + ((int)(XX_configure_reg_prefixes_end- XX_configure_reg_prefixes_start)) + " ms");
+            cat.debug("  XX_configure_reg_resourceresolver " + ((int)(XX_configure_reg_resourceresolver_end- XX_configure_reg_resourceresolver_start)) + " ms");
+            cat.debug("  XX_configure_reg_sigalgos         " + ((int)(XX_configure_reg_sigalgos_end- XX_configure_reg_sigalgos_start)) + " ms");
+            cat.debug("  XX_configure_reg_transforms       " + ((int)(XX_configure_reg_transforms_end- XX_configure_reg_transforms_start)) + " ms");
+            //J+
          } catch (Exception e) {
             cat.fatal("Bad: ", e);
             e.printStackTrace();

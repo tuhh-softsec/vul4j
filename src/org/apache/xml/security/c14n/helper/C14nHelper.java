@@ -89,7 +89,6 @@ public class C14nHelper {
     *
     * @param namednodemap
     * @return
-    */
    public static final Attr[] sortAttributes(NamedNodeMap namednodemap) {
 
       if (namednodemap == null) {
@@ -107,13 +106,13 @@ public class C14nHelper {
       // java.util.Sort.quicksort(aattr, new AttrCompare());
       return aattr;
    }
+    */
 
    /**
     * Method sortAttributes
     *
     * @param namednodemap
     * @return
-    */
    public static final Attr[] sortAttributes(Attr[] namednodemap) {
 
       if (namednodemap == null) {
@@ -125,24 +124,23 @@ public class C14nHelper {
       // java.util.Sort.quicksort(namednodemap, new AttrCompare());
       return namednodemap;
    }
+    */
 
    /**
     * Method sortAttributes
     *
     * @param namednodemap
     * @return
-    */
    public static final Object[] sortAttributes(Object[] namednodemap) {
 
-      if (namednodemap == null) {
-         return new Attr[0];
-      }
+      for (
 
       java.util.Arrays.sort(namednodemap, new AttrCompare());
 
       // java.util.Sort.quicksort(namednodemap, new AttrCompare());
       return namednodemap;
    }
+    */
 
    /**
     * Normalizes an {@link Attr}ibute value

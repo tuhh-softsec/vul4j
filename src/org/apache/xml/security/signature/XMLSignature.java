@@ -323,13 +323,11 @@ public class XMLSignature extends SignatureElementProxy {
                                                    + "[1]", nscontext);
 
             if (firstObject != null) {
-               cat.debug("Found a ds:Object");
                this._constructionElement.insertBefore(keyInfoElement,
                                                       firstObject);
                this._constructionElement
                   .insertBefore(this._doc.createTextNode("\n"), firstObject);
             } else {
-               cat.debug("Found no ds:Object");
                this._constructionElement.appendChild(keyInfoElement);
                XMLUtils.addReturnToElement(this._constructionElement);
             }
@@ -365,7 +363,6 @@ public class XMLSignature extends SignatureElementProxy {
                "signature.operationOnlyBeforeSign");
          }
 
-         cat.debug("Added ds:Object with Id " + object.getId());
          this._constructionElement.appendChild(object.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
       } catch (XMLSecurityException ex) {
@@ -408,8 +405,6 @@ public class XMLSignature extends SignatureElementProxy {
     */
    public void sign(PrivateKey privateKey) throws XMLSignatureException {
 
-      cat.debug("sign() called");
-
       try {
          if (this._state == MODE_SIGN) {
 
@@ -433,7 +428,6 @@ public class XMLSignature extends SignatureElementProxy {
             byte jcebytes[] = sa.sign();
 
             this.setSignatureValueElement(jcebytes);
-            cat.debug("sa.sign() finished");
          }
       } catch (IOException ex) {
          throw new XMLSignatureException("empty", ex);
@@ -453,8 +447,6 @@ public class XMLSignature extends SignatureElementProxy {
     * @throws XMLSignatureException
     */
    public void sign(SecretKey secretKey) throws XMLSignatureException {
-
-      cat.debug("sign() called");
 
       try {
          if (this._state == MODE_SIGN) {
@@ -479,7 +471,6 @@ public class XMLSignature extends SignatureElementProxy {
             byte jcebytes[] = sa.sign();
 
             this.setSignatureValueElement(jcebytes);
-            cat.debug("sa.sign() finished");
          }
       } catch (IOException ex) {
          throw new XMLSignatureException("empty", ex);
@@ -660,7 +651,6 @@ public class XMLSignature extends SignatureElementProxy {
     */
    public void addDocument(String referenceURI) throws XMLSignatureException {
 
-      cat.debug("The baseURI is " + this._baseURI);
       this._signedInfo.addDocument(this._baseURI, referenceURI, null,
                                    Constants.ALGO_ID_DIGEST_SHA1, null, null);
    }

@@ -56,87 +56,69 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.transforms.implementations;
+package org.apache.xml.security.c14n.helper;
 
 
 
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import org.apache.xml.security.signature.XMLSignatureInput;
+import org.w3c.dom.*;
+import org.apache.log4j.*;
+import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.implementations.*;
-import org.apache.xml.security.transforms.*;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
 
 
 /**
- * Implements the <CODE>http://www.w3.org/TR/2001/REC-xml-c14n-20010315</CODE>
- * transform.
+ * Compares two namespaces attributes based on the C14n specification.
  *
+ * <UL>
+ * <LI>Namespace nodes have a lesser document order position than attribute nodes.
+ * <LI> An element's namespace nodes are sorted lexicographically by
+ *   local name (the default namespace node, if one exists, has no
+ *   local name and is therefore lexicographically least).
+ * <LI> An element's attribute nodes are sorted lexicographically with
+ *   namespace URI as the primary key and local name as the secondary
+ *   key (an empty namespace URI is lexicographically least).
+ * </UL>
+ *
+ * @todo Should we implement java.util.Comparator and import java.util.Arrays to use Arrays.sort(intarray);
  * @author Christian Geuer-Pollmann
  */
-public class TransformC14N extends TransformSpi {
-
-   /** Field implementedTransformURI */
-   public static final String implementedTransformURI =
-      Transforms.TRANSFORM_C14N_OMIT_COMMENTS;
-
-   //J-
-   public boolean wantsOctetStream ()   { return true; }
-   public boolean wantsNodeSet ()       { return true; }
-   public boolean returnsOctetStream () { return true; }
-   public boolean returnsNodeSet ()     { return false; }
-   //J+
+public class NSAttrCompare implements java.util.Comparator {
 
    /**
-    * Method engineGetURI
+    * Compares the order of two namespace nodes.
     *
-    * @return
-    */
-   protected String engineGetURI() {
-      return this.implementedTransformURI;
-   }
-
-   /**
-    * Method enginePerformTransform
+    * @param obj0 casted Attr
+    * @param obj1 casted Attr
+    * @return returns a negative integer, zero, or a positive integer as obj0 is less than, equal to, or greater than obj1
     *
-    * @param input
-    * @return
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
-           throws IOException, CanonicalizationException,
-                  InvalidCanonicalizerException, ParserConfigurationException,
-                  SAXException {
+   public int compare(Object obj0, Object obj1) {
 
-      try {
-         Canonicalizer20010315OmitComments c14n = new Canonicalizer20010315OmitComments();
-         byte[] result = null;
-         if (input.isOctetStream()) {
-            result = c14n.engineCanonicalize(input.getBytes());
-         } else {
-            result = c14n.engineCanonicalizeXPathNodeSet(input.getNodeSet());
+      Attr attr0 = (Attr) obj0;
+      Attr attr1 = (Attr) obj1;
+
+      {
+         String ns0 = attr0.getNamespaceURI();
+         String ns1 = attr1.getNamespaceURI();
+
+         if (ns0 == null || !ns0.equals(Constants.NamespaceSpecNS)) {
+            throw new IllegalArgumentException("You must supply namespace attributes: " + attr0.getNodeName() + "=\"" + attr0.getNodeValue() + "\" is no namespace");
          }
-         return new XMLSignatureInput(result);
-      } catch (ParserConfigurationException ex) {
-         Object[] exArgs = { ex.getMessage() };
-         CanonicalizationException cex = new CanonicalizationException(
-            "c14n.Canonicalizer.ParserConfigurationException", exArgs);
-
-         throw cex;
-      } catch (SAXException ex) {
-         Object[] exArgs = { ex.toString() };
-         CanonicalizationException cex =
-            new CanonicalizationException("c14n.Canonicalizer.SAXException",
-                                          exArgs);
-
-         throw cex;
+         if (ns1 == null || !ns1.equals(Constants.NamespaceSpecNS)) {
+            throw new IllegalArgumentException("You must supply namespace attributes: " + attr1.getNodeName() + "=\"" + attr1.getNodeValue() + "\" is no namespace");
+         }
       }
+
+      String localname0 = attr0.getLocalName();
+      String localname1 = attr1.getLocalName();
+
+      if (localname0.equals("xmlns")) {
+         localname0 = "";
+      }
+      if (localname1.equals("xmlns")) {
+         localname1 = "";
+      }
+
+      return localname0.compareTo(localname1);
    }
 }

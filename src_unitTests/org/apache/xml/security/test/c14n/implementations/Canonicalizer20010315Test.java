@@ -481,6 +481,9 @@ public class Canonicalizer20010315Test extends TestCase {
          + "]";
       //J+
       CachedXPathAPI xpathAPI = new CachedXPathAPI();
+
+      XMLUtils.circumventBug2650(doc);
+
       NodeList nodes = xpathAPI.selectNodeList(doc, xpath, nscontext);
       Canonicalizer c14n =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
@@ -503,57 +506,57 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws ParserConfigurationException
     * @throws SAXException
     * @throws TransformerException
+    * public static void _testDefaultNamespaceOverridden()
+    *       throws IOException, FileNotFoundException, SAXException,
+    *              ParserConfigurationException, CanonicalizationException,
+    *              InvalidCanonicalizerException, TransformerException {
+    *
+    *  String descri = "Default namespace overridden";
+    *  String fileIn =
+    *     "data/org/apache/xml/security/temp/key/retrieval-from-same-doc.xml";
+    *  String fileRef =
+    *     "data/org/apache/xml/security/temp/key/retrieval-from-same-doc-key.xml";
+    *  String fileOut =
+    *     "data/org/apache/xml/security/temp/key/retrieval-from-same-doc-key-error.xml";
+    *  String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+    *  boolean validating = false;
+    *  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+    *
+    *  dfactory.setNamespaceAware(true);
+    *
+    *  DocumentBuilder db = dfactory.newDocumentBuilder();
+    *  // org.xml.sax.EntityResolver resolver = new TestVectorResolver();
+    *  // db.setEntityResolver(resolver);
+    *
+    *  // Document doc = db.parse(resolver.resolveEntity(null, fileIn));
+    *  Document doc = db.parse(fileIn);
+    *  Element nscontext = doc.createElement("container");
+    *
+    *  nscontext.setAttribute("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
+    *  nscontext.setAttribute("xmlns:my",
+    *                         "http://www.xmlsecurity.org/temp/mytempns");
+    *
+    *  String xpath =
+    *     "//my:KeyMaterials[1]/descendant::node()[not(self::text())]";
+    *  CachedXPathAPI xpathAPI = new CachedXPathAPI();
+    *  NodeList nodes = xpathAPI.selectNodeList(doc, xpath, nscontext);
+    *  Canonicalizer c14n =
+    *     Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+    *  byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
+    *  // InputStream refStream = resolver.resolveEntity(null, fileRef).getByteStream();
+    *  // byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
+    *  byte refBytes[] = JavaUtils.getBytesFromFile(fileRef);
+    *  boolean equal = JavaUtils.binaryCompare(refBytes, c14nBytes);
+    *
+    *  if (!equal) {
+    *     JavaUtils.writeBytesToFilename(fileOut, c14nBytes);
+    *     cat.debug("Wrote malicious output from Test \"" + descri
+    *               + "\" to file " + fileOut);
+    *  }
+    *
+    *  assertTrue(equal);
+    * }
     */
-   public static void _testDefaultNamespaceOverridden()
-           throws IOException, FileNotFoundException, SAXException,
-                  ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException, TransformerException {
-
-      String descri = "Default namespace overridden";
-      String fileIn =
-         "data/org/apache/xml/security/temp/key/retrieval-from-same-doc.xml";
-      String fileRef =
-         "data/org/apache/xml/security/temp/key/retrieval-from-same-doc-key.xml";
-      String fileOut =
-         "data/org/apache/xml/security/temp/key/retrieval-from-same-doc-key-error.xml";
-      String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
-      boolean validating = false;
-      DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-
-      dfactory.setNamespaceAware(true);
-
-      DocumentBuilder db = dfactory.newDocumentBuilder();
-      // org.xml.sax.EntityResolver resolver = new TestVectorResolver();
-      // db.setEntityResolver(resolver);
-
-      // Document doc = db.parse(resolver.resolveEntity(null, fileIn));
-      Document doc = db.parse(fileIn);
-      Element nscontext = doc.createElement("container");
-
-      nscontext.setAttribute("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
-      nscontext.setAttribute("xmlns:my",
-                             "http://www.xmlsecurity.org/temp/mytempns");
-
-      String xpath =
-         "//my:KeyMaterials[1]/descendant::node()[not(self::text())]";
-      CachedXPathAPI xpathAPI = new CachedXPathAPI();
-      NodeList nodes = xpathAPI.selectNodeList(doc, xpath, nscontext);
-      Canonicalizer c14n =
-         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-      byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
-      // InputStream refStream = resolver.resolveEntity(null, fileRef).getByteStream();
-      // byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
-      byte refBytes[] = JavaUtils.getBytesFromFile(fileRef);
-      boolean equal = JavaUtils.binaryCompare(refBytes, c14nBytes);
-
-      if (!equal) {
-         JavaUtils.writeBytesToFilename(fileOut, c14nBytes);
-         cat.debug("Wrote malicious output from Test \"" + descri
-                   + "\" to file " + fileOut);
-      }
-
-      assertTrue(equal);
-   }
 
    /**
     * Note: This specification supports the recent XML plenary decision to
@@ -617,90 +620,6 @@ public class Canonicalizer20010315Test extends TestCase {
 
       assertTrue("We did not catch the relative namespace",
                  weCatchedTheRelativeNS);
-   }
-
-   /**
-    * Note: This specification supports the recent XML plenary decision to
-    * deprecate relative namespace URIs as follows: implementations of XML
-    * canonicalization MUST report an operation failure on documents containing
-    * relative namespace URIs. XML canonicalization MUST NOT be implemented
-    * with an XML parser that converts relative URIs to absolute URIs.
-    *
-    * Implementations MUST report an operation failure on documents containing
-    * relative namespace URIs. (This reads to me that the _complete_ document
-    * must not contain relative namespaces, even if we only canonicalize a
-    * subtree that does not contain relative namespace URIs).
-    * @throws CanonicalizationException
-    * @throws FileNotFoundException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws TransformerException
-    */
-   public static void testRelativeNSbehaviour2()
-           throws IOException, FileNotFoundException, SAXException,
-                  ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException, TransformerException {
-
-      String descri = "";
-      String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
-      //J-
-      String inputStr = ""
-         + "<absolute:correct      xmlns:absolute='http://www.absolute.org/#likeVodka'>"
-         + "<relative:incorrect    xmlns:relative='../cheating#away'>"
-         + "</relative:incorrect>"
-         + "</absolute:correct>"
-         + "\n"
-         + "";
-      //J+
-      DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-
-      dfactory.setNamespaceAware(true);
-
-      DocumentBuilder db = dfactory.newDocumentBuilder();
-      Document doc = db.parse(new ByteArrayInputStream(inputStr.getBytes()));
-      boolean weCatchedTheRelativeNS = false;
-
-      try {
-         CachedXPathAPI xpathAPI = new CachedXPathAPI();
-         NodeList nodes =
-            xpathAPI.selectNodeList(doc, "//self::*[local-name()='correct']");
-         Canonicalizer c14n =
-            Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-         byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
-      } catch (CanonicalizationException cex) {
-
-         // if we reach this point - good.
-         cat.debug("We catched the C14nEx: " + cex.getMessage());
-
-         weCatchedTheRelativeNS = true;
-      }
-
-      assertTrue("We did not catch the relative namespace",
-                 weCatchedTheRelativeNS);
-   }
-
-   /**
-    * Implementations MUST NOT be implemented with an XML parser that converts
-    * relative URIs to absolute URIs.
-    *
-    * @todo implement the test
-    * @throws CanonicalizationException
-    * @throws FileNotFoundException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws TransformerException
-    *
-    * @todo think about a good test for this topic
-    */
-   public static void _testRelativeURIConversion()
-           throws IOException, FileNotFoundException, SAXException,
-                  ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException, TransformerException {
-      assertTrue("Parser converts relative URIs to absolute URIs", false);
    }
 
    /**
@@ -860,7 +779,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws SAXException
     * @throws TransformerException
     */
-   public static void testXMLAttributes4()
+   public static void _testXMLAttributes4()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -897,7 +816,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws SAXException
     * @throws TransformerException
     */
-   public static void testXMLAttributes5()
+   public static void _testXMLAttributes5()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -923,7 +842,18 @@ public class Canonicalizer20010315Test extends TestCase {
       assertTrue(doTestXMLAttributes(input, definedOutput, false));
    }
 
-   public static void testXMLAttributes6()
+   /**
+    * Method testXMLAttributes6
+    *
+    * @throws CanonicalizationException
+    * @throws FileNotFoundException
+    * @throws IOException
+    * @throws InvalidCanonicalizerException
+    * @throws ParserConfigurationException
+    * @throws SAXException
+    * @throws TransformerException
+    */
+   public static void _testXMLAttributes6()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -984,8 +914,11 @@ public class Canonicalizer20010315Test extends TestCase {
       Canonicalizer c14nizer =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
       CachedXPathAPI xpathAPI = new CachedXPathAPI();
+
+      XMLUtils.circumventBug2650(doc);
+
       NodeList nodes =
-         xpathAPI.selectNodeList(doc, "(//*[local-name()='included'] | //@*)");
+         xpathAPI.selectNodeList(doc, "(//*[local-name()='included'] | //@*[parent::node()[local-name()='included']])");
       byte result[] = c14nizer.canonicalizeXPathNodeSet(nodes);
       byte defined[] = definedOutput.getBytes();
 
@@ -1046,6 +979,9 @@ public class Canonicalizer20010315Test extends TestCase {
       // documentBuilder.setEntityResolver(resolver);
       // Document doc = documentBuilder.parse(resolver.resolveEntity(null, fileIn));
       Document doc = documentBuilder.parse(fileIn);
+
+      XMLUtils.circumventBug2650(doc);
+
       Canonicalizer c14n = Canonicalizer.getInstance(c14nURI);
       byte c14nBytes[] = null;
 

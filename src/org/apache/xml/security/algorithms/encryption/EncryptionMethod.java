@@ -441,15 +441,6 @@ public class EncryptionMethod extends Algorithm {
     *
     */
    public static void providerInit() {
-
-      if (EncryptionMethod.cat == null) {
-         EncryptionMethod.cat =
-            org.apache.log4j.Category
-               .getInstance(EncryptionMethod.class.getName());
-      }
-
-      cat.debug("Init() called");
-
       if (!EncryptionMethod._alreadyInitialized) {
          EncryptionMethod._algorithmHash = new HashMap(10);
          EncryptionMethod._alreadyInitialized = true;

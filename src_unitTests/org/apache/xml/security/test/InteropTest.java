@@ -35,6 +35,7 @@ public class InteropTest extends TestCase {
       suite.addTest(org.apache.xml.security.test.interop.BaltimoreTest.suite());
       suite.addTest(org.apache.xml.security.test.interop.IAIKTest.suite());
       suite.addTest(org.apache.xml.security.test.interop.RSASecurityTest.suite());
+      suite.addTest(org.apache.xml.security.test.c14n.implementations.ExclusiveC14NInterop.suite());
 
       {
          /*

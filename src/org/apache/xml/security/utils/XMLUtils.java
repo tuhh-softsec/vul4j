@@ -574,10 +574,13 @@ public class XMLUtils {
             .getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS)
                .canonicalizeSubtree(contextNode));
       } catch (IOException ex) {
+
          // throw new RuntimeException(ex.getMessage());
       } catch (InvalidCanonicalizerException ex) {
+
          // throw new RuntimeException(ex.getMessage());
       } catch (CanonicalizationException ex) {
+
          // throw new RuntimeException(ex.getMessage());
       }
    }
@@ -1180,5 +1183,119 @@ public class XMLUtils {
       }
 
       return result;
+   }
+
+   /**
+    * This method spreads all namespace attributes in a DOM document to their
+    * children. This is needed because the XML Signature XPath transform
+    * must evaluate the XPath against all nodes in the input, even against
+    * XPath namespace nodes. Through a bug in XalanJ2, the namespace nodes are
+    * not fully visible in the Xalan XPath model, so we have to do this by
+    * hand in DOM spaces so that the nodes become visible in XPath space.
+    *
+    * @param doc
+    * @see <A HREF="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2650">Namespace axis resolution is not XPath compliant </A>
+    */
+   public static void circumventBug2650(Document doc) {
+      XMLUtils.circumventBug2650recurse(doc);
+   }
+
+   /**
+    * This is the work horse for {@link #circumventBug2650}.
+    *
+    * @param node
+    * @see <A HREF="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2650">Namespace axis resolution is not XPath compliant </A>
+    */
+   private static void circumventBug2650recurse(Node node) {
+
+      if (node.getNodeType() == Node.ELEMENT_NODE) {
+         Element element = (Element) node;
+         NamedNodeMap attributes = element.getAttributes();
+         int attributesLength = attributes.getLength();
+         NodeList children = element.getChildNodes();
+         int childrenLength = children.getLength();
+
+         for (int j = 0; j < childrenLength; j++) {
+            Node child = children.item(j);
+
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+               Element childElement = (Element) child;
+
+               for (int i = 0; i < attributesLength; i++) {
+                  Attr currentAttr = (Attr) attributes.item(i);
+                  String name = currentAttr.getNodeName();
+
+                  if (name.startsWith("xmlns")) {
+                     String value = currentAttr.getNodeValue();
+                     boolean mustBeDefinedInChild = !childElement.hasAttribute(name);
+
+                     if (mustBeDefinedInChild) {
+                        childElement.setAttributeNS(Constants.NamespaceSpecNS,
+                                                    name, value);
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+      for (Node child = node.getFirstChild(); child != null;
+              child = child.getNextSibling()) {
+         switch (child.getNodeType()) {
+
+         case Node.ELEMENT_NODE :
+         case Node.ENTITY_REFERENCE_NODE :
+         case Node.DOCUMENT_NODE :
+            circumventBug2650recurse(child);
+         }
+      }
+   }
+
+   /**
+    * Method getXPath
+    *
+    * @param n
+    * @param result
+    * @return
+    */
+   private static String getXPath(Node n, String result) {
+
+      if (n == null) {
+         return result;
+      }
+
+      switch (n.getNodeType()) {
+
+      case Node.ATTRIBUTE_NODE :
+         return getXPath(((Attr) n).getOwnerElement(),
+                         "/@" + ((Attr) n).getNodeName() + "=\""
+                         + ((Attr) n).getNodeValue() + "\"");
+
+      case Node.ELEMENT_NODE :
+         return getXPath(n.getParentNode(),
+                         "/" + ((Element) n).getTagName() + result);
+
+      case Node.TEXT_NODE :
+         return getXPath(n.getParentNode(), "/#text");
+
+      case Node.DOCUMENT_NODE :
+         if (result.length() > 0) {
+            return result;
+         } else {
+            return "/";
+         }
+      }
+
+      return result;
+   }
+
+   /**
+    * Simple tool to return the position of a particular node in an XPath like String.
+    *
+    * @param n
+    * @return
+    */
+   public static String getXPath(Node n) {
+      return getXPath(n, "");
    }
 }

@@ -85,7 +85,8 @@ import org.xml.sax.SAXException;
 public class Manifest extends SignatureElementProxy {
 
    /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat = org.apache.log4j.Category.getInstance(Manifest.class.getName());
+   static org.apache.log4j.Category cat =
+      org.apache.log4j.Category.getInstance(Manifest.class.getName());
 
    /** Field _references */
    Vector _references;
@@ -144,7 +145,8 @@ public class Manifest extends SignatureElementProxy {
 
       // create Vector
       this._references = new Vector(le);
-      for (int i=0; i<le; i++) {
+
+      for (int i = 0; i < le; i++) {
          this._references.add(null);
       }
    }
@@ -217,17 +219,7 @@ public class Manifest extends SignatureElementProxy {
     * @return the number of references
     */
    public int getLength() {
-
-      if (this._state == MODE_SIGN) {
-         if (this._references != null) {
-            return this._references.size();
-         } else {
-            return 0;
-         }
-      } else {
-         return super.length(Constants.SignatureSpecNS,
-                             Constants._TAG_REFERENCE);
-      }
+      return this._references.size();
    }
 
    /**
@@ -352,7 +344,7 @@ public class Manifest extends SignatureElementProxy {
                .getChildElementLocalName(i, Constants.SignatureSpecNS, Constants
                ._TAG_REFERENCE), this._baseURI, this);
 
-         this._references.add(currentRef);
+         this._references.set(i, currentRef);
 
          /* if only one item does not verify, the whole verification fails */
          try {

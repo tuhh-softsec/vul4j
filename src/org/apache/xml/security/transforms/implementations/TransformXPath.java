@@ -91,6 +91,9 @@ import org.apache.xml.dtm.DTMManager;
  */
 public class TransformXPath extends TransformSpi {
 
+   /** {@link org.apache.log4j} logging facility */
+   static org.apache.log4j.Category cat = org.apache.log4j.Category.getInstance(TransformXPath.class.getName());
+
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XPATH;
@@ -194,6 +197,9 @@ public class TransformXPath extends TransformSpi {
 
             if (includeInResult.bool()) {
                resultNodes.add(currentNode);
+               // cat.debug("    Added " + org.apache.xml.security.c14n.implementations.Canonicalizer20010315.getXPath(currentNode));
+             } else {
+               // cat.debug("Not added " + org.apache.xml.security.c14n.implementations.Canonicalizer20010315.getXPath(currentNode));
             }
          }
 

@@ -110,40 +110,38 @@ public class ResolverXPointer extends ResourceResolverSpi {
       String uriNodeValue = uri.getNodeValue();
       NodeList resultNodes = null;
       Document doc = uri.getOwnerDocument();
+
+      // this must be done so that Xalan can catch ALL namespaces
+      XMLUtils.circumventBug2650(doc);
+
       CachedXPathAPI cXPathAPI = new CachedXPathAPI();
 
-      if (isXPointerSlash(uri, BaseURI)) {
-         try {
+      try {
+         if (isXPointerSlash(uri, BaseURI)) {
             resultNodes =
                cXPathAPI.selectNodeList(doc,
                                         Canonicalizer.XPATH_C14N_WITH_COMMENTS);
-         } catch (javax.xml.transform.TransformerException ex) {
-            throw new ResourceResolverException("generic.EmptyMessage", ex,
-                                                uri, BaseURI);
-         }
-      } else if (isXPointerId(uri, BaseURI)) {
-         String id = getXPointerId(uri, BaseURI);
-         Element selectedElem = IdResolver.getElementById(doc, id);
+         } else if (isXPointerId(uri, BaseURI)) {
+            String id = getXPointerId(uri, BaseURI);
+            Element selectedElem = IdResolver.getElementById(doc, id);
 
-         cat.debug("Use #xpointer(id('" + id + "')) on element "
-                   + selectedElem);
+            // cat.debug("Use #xpointer(id('" + id + "')) on element " + selectedElem);
 
-         if (selectedElem == null) {
-            Object exArgs[] = { id };
+            if (selectedElem == null) {
+               Object exArgs[] = { id };
 
-            throw new ResourceResolverException(
-               "signature.Verification.MissingID", exArgs, uri, BaseURI);
-         }
+               throw new ResourceResolverException(
+                  "signature.Verification.MissingID", exArgs, uri, BaseURI);
+            }
 
-         try {
             resultNodes =
                cXPathAPI
                   .selectNodeList(selectedElem, Canonicalizer
                      .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
-         } catch (javax.xml.transform.TransformerException ex) {
-            throw new ResourceResolverException("generic.EmptyMessage", ex,
-                                                uri, BaseURI);
          }
+      } catch (javax.xml.transform.TransformerException ex) {
+         throw new ResourceResolverException("generic.EmptyMessage", ex, uri,
+                                             BaseURI);
       }
 
       Set resultSet = XMLUtils.convertNodelistToSet(resultNodes);
@@ -233,7 +231,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
                                                      uriNodeValue.length()
                                                      - "))".length());
 
-         cat.debug("idPlusDelim=" + idPlusDelim);
+         // cat.debug("idPlusDelim=" + idPlusDelim);
 
          if (((idPlusDelim.charAt(0) == '"') && (idPlusDelim
                  .charAt(idPlusDelim.length() - 1) == '"')) || ((idPlusDelim

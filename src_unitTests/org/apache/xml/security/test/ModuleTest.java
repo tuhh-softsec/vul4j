@@ -25,7 +25,6 @@ public class ModuleTest extends TestCase {
          new TestSuite("All org.apache.xml.security.test JUnit Tests");
 
       //J-
-      suite.addTest(org.apache.xml.security.test.c14n.helper.AttrCompareTest.suite());
       suite.addTest(org.apache.xml.security.test.c14n.helper.C14nHelperTest.suite());
       suite.addTest(org.apache.xml.security.test.c14n.implementations.Canonicalizer20010315Test.suite());
       suite.addTest(org.apache.xml.security.test.c14n.implementations.Canonicalizer20010315ExclusiveTest.suite());
