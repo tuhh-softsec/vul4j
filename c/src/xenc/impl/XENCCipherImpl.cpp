@@ -38,6 +38,7 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECEnv.hpp>
 #include <xsec/enc/XSECKeyInfoResolver.hpp>
+#include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/framework/XSECAlgorithmMapper.hpp>
 #include <xsec/framework/XSECAlgorithmHandler.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
@@ -383,7 +384,12 @@ XSECCryptoKey * XENCCipherImpl::decryptKeyFromKeyInfoList(DSIGKeyInfoList * kil)
 										keySize);
 					}
 				}
-			} catch (...) {
+			} 
+
+			catch (XSECCryptoException &) {
+				/* Do nothing - this is likely to be a bad decrypt on a public key */
+			}
+			catch (...) {
 				memset((void *) buffer, 0, 1024);
 				throw;
 			}
