@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<toplevel>
+	<element name="A">
+		<element name="B">
+			<element name="A"/>
+		</element>
+	</element>
+</toplevel>

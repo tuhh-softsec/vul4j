@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.20 2002/09/04 18:01:16 rdonkin Exp $
- * $Revision: 1.20 $
- * $Date: 2002/09/04 18:01:16 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.21 2002/09/24 20:50:07 rdonkin Exp $
+ * $Revision: 1.21 $
+ * $Date: 2002/09/24 20:50:07 $
  *
  * ====================================================================
  *
@@ -81,7 +81,7 @@ import org.xml.sax.SAXException;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.20 $ $Date: 2002/09/04 18:01:16 $
+ * @version $Revision: 1.21 $ $Date: 2002/09/24 20:50:07 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -830,4 +830,29 @@ public class RuleTestCase extends TestCase {
     }
     
 
+    /**
+     * Test nested CallMethod rules.
+     */
+    public void testCallMethod3() throws Exception {
+        
+        // Configure the digester as required
+        StringBuffer word = new StringBuffer();
+        digester.push(word);
+        digester.addCallMethod("*/element", "append", 1);
+        digester.addCallParam("*/element", 0, "name");
+        
+        // Parse our test input
+        Object root1 = null;
+        try {
+            // an exception will be thrown if the method can't be found
+            root1 = digester.parse(getInputStream("Test8.xml"));
+            
+        } catch (Throwable t) {
+            // this means that the method can't be found and so the test fails
+            fail("Digester threw Exception:  " + t);
+        }
+        
+        assertEquals("Wrong method call order", "ABA", word.toString());
+
+    }
 }
