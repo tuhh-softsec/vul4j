@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.3 2003/11/24 20:12:17 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.4 2003/11/25 17:49:35 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,16 +68,13 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.UnaryPredicate;
-import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.generator.util.MaxIterations;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
 import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsEqual;
+import org.apache.commons.functor.core.Offset;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/11/24 20:12:17 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/25 17:49:35 $
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {
@@ -219,7 +216,7 @@ public class TestAlgorithms extends TestCase {
     }
 
     public void testLimit() {
-        Collection col = Algorithms.until(list.iterator(), new MaxIterations(2)).toCollection();
+        Collection col = Algorithms.until(list.iterator(), new Offset(2)).toCollection();
         System.out.println(col);
         assertEquals("[0, 1]", col.toString());
     }

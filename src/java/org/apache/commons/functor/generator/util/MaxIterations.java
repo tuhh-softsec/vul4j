@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/Attic/MaxIterations.java,v 1.2 2003/11/25 00:23:14 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/Attic/MaxIterations.java,v 1.3 2003/11/25 17:49:35 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -70,10 +70,9 @@ import org.apache.commons.functor.UnaryPredicate;
  *
  * @since 1.0
  * @deprecated See Limit and Offset
- * @version $Revision: 1.2 $ $Date: 2003/11/25 00:23:14 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/25 17:49:35 $
  * @author  Jason Horman (jason@jhorman.org)
  */
-
 public class MaxIterations implements UnaryPredicate {
 
     /***************************************************

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.6 2003/11/12 00:50:44 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.7 2003/11/25 17:49:35 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -80,10 +80,9 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.6 $ $Date: 2003/11/12 00:50:44 $
- * @author  Jason Horman (jason@jhorman.org)
+ * @version $Revision: 1.7 $ $Date: 2003/11/25 17:49:35 $
+ * @author Jason Horman (jason@jhorman.org)
  */
-
 public class Algorithms {
 
     /**
@@ -320,7 +319,7 @@ public class Algorithms {
      * true. This is useful for imposing {@link Generator} limits. For example:
      *
      * <pre>
-     *  EachLine.open(file).until(new MaxIterations(1));
+     *  EachLine.open(file).until(new Offset(1));
      * </pre>
      *
      * Would only "generate" 1 line from the file before {@link Generator#stop

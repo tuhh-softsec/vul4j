@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.5 2003/11/24 20:12:17 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.6 2003/11/25 17:49:35 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,18 +57,28 @@
 
 package org.apache.commons.functor.generator;
 
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.commons.functor.*;
-import org.apache.commons.functor.core.IsEqual;
-import org.apache.commons.functor.core.IdentityFunction;
+
+import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
+import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.IsEqual;
+import org.apache.commons.functor.core.Offset;
 import org.apache.commons.functor.generator.util.CollectionTransformer;
 import org.apache.commons.functor.generator.util.EachElement;
-import org.apache.commons.functor.generator.util.MaxIterations;
-
-import java.util.*;
 
 /**
  * Tests the Base Generator class.
@@ -289,7 +299,7 @@ public class TestGenerator extends TestCase {
     }
 
     public void testLimit() {
-        Collection col = simpleGenerator.until(new MaxIterations(2)).toCollection();
+        Collection col = simpleGenerator.until(new Offset(2)).toCollection();
         assertEquals("[0, 1]", col.toString());
     }
 
