@@ -102,7 +102,9 @@ DOMElement * XKMSRespondWithImpl::createBlankRespondWith(const XMLCh * item) {
 												str.rawXMLChBuffer());
 
 	// Create the RespondWith item
-	makeQName(str, prefix, item);
+	str.sbXMLChIn(XKMSConstants::s_unicodeStrURIXKMS);
+	str.sbXMLChCat(item);
+
 	mp_respondWithTextNode = doc->createTextNode(str.rawXMLChBuffer());
 	mp_respondWithElement->appendChild(mp_respondWithTextNode);
 
@@ -122,9 +124,12 @@ const XMLCh * XKMSRespondWithImpl::getRespondWithString(void) const {
 	}
 	const XMLCh * r = mp_respondWithTextNode->getNodeValue();
 
-	int index = XMLString::indexOf(r, chColon);
-	if (index == -1)
-		return r;
+	int index = XMLString::indexOf(r, chPound);
+
+	if (index == -1 || XMLString::compareNString(r, XKMSConstants::s_unicodeStrURIXKMS, index)) {
+			throw XSECException(XSECException::XKMSError,
+				"XKMSRespondWith::getRespondWithString - Item not in XKMS Name Space");
+	}
 
 	return &r[index+1];
 
@@ -143,13 +148,7 @@ void XKMSRespondWithImpl::setRespondWithString(const XMLCh * str) {
 	}
 
 	safeBuffer sb;
-	sb.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
-
-	if (mp_env->getXKMSNSPrefix() != NULL) {
-		sb.sbXMLChCat(mp_env->getXKMSNSPrefix());
-		sb.sbXMLChAppendCh(chColon);
-	}
-
+	sb.sbXMLChIn(XKMSConstants::s_unicodeStrURIXKMS);
 	sb.sbXMLChCat(str);
 
 	mp_respondWithTextNode->setNodeValue(sb.rawXMLChBuffer());

@@ -96,26 +96,16 @@ void XKMSResultTypeImpl::load(void) {
 
 	const XMLCh * res = mp_resultMajorAttr->getNodeValue();
 
-	// This is actually an QName, but we cheat and find the ':' character by hand
-	// without actually checking the qualifier.
-	// TODO - CHECK the qualifier.
+	// Result types have now been updated, and are URIs with the XKMS namespace prepended
+	// to the actual result value
 
-	int res2 = XMLString::indexOf(res, chColon);
-	if (res2 != -1) {
-		if (XMLString::compareNString(res, mp_messageAbstractTypeElement->getPrefix(), res2)) {
+	int res2 = XMLString::indexOf(res, chPound);
+	if (res2 == -1 || XMLString::compareNString(res, XKMSConstants::s_unicodeStrURIXKMS, res2)) {
 			throw XSECException(XSECException::ResultTypeError,
 				"XKMSResultType::load - ResultType not in XKMS Name Space");
-		}
-
-		res = &res[res2+1];
-	}
-	else {
-		if (mp_messageAbstractTypeElement->getPrefix() != NULL) {
-			throw XSECException(XSECException::ResultTypeError,
-				"XKMSResultType::load - ResultType not in XKMS Name Space");
-		}
 	}
 
+	res = &res[res2+1];
 	for (m_resultMajor = XKMSResultType::Pending; 
 		m_resultMajor > XKMSResultType::NoneMajor; 
 		m_resultMajor = (XKMSResultType::ResultMajor) (m_resultMajor-1)) {
@@ -128,20 +118,16 @@ void XKMSResultTypeImpl::load(void) {
 	if (mp_resultMinorAttr != NULL) {
 
 		res = mp_resultMinorAttr->getNodeValue();
-		int res2 = XMLString::indexOf(res, chColon);
-		if (res2 != -1) {
-			if (XMLString::compareNString(res, mp_messageAbstractTypeElement->getPrefix(), res2)) {
-				throw XSECException(XSECException::ResultTypeError,
-					"XKMSResultType::load - ResultType not in XKMS Name Space");
-			}
-			res = &res[res2+1];
+		int res2 = XMLString::indexOf(res, chPound);
+		if (res2 == -1 ||
+			XMLString::compareNString(res, XKMSConstants::s_unicodeStrURIXKMS, res2)) {
+
+			throw XSECException(XSECException::ResultTypeError,
+				"XKMSResultType::load - ResultType not in XKMS Name Space");
 		}
-		else {
-			if (mp_messageAbstractTypeElement->getPrefix() != NULL) {
-				throw XSECException(XSECException::ResultTypeError,
-					"XKMSResultType::load - ResultType not in XKMS Name Space");
-			}
-		}
+
+		res = &res[res2+1];
+
 		for (m_resultMinor = XKMSResultType::NotSynchronous; 
 			m_resultMinor > XKMSResultType::NoneMinor; 
 			m_resultMinor = (XKMSResultType::ResultMinor) (m_resultMinor-1)) {
@@ -190,13 +176,7 @@ DOMElement * XKMSResultTypeImpl::createBlankResultType(
 
 	safeBuffer s;
 
-	s.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
-
-	if (mp_env->getXKMSNSPrefix() != NULL) {
-		s.sbXMLChCat(mp_env->getXKMSNSPrefix());
-		s.sbXMLChAppendCh(chColon);
-	}
-
+	s.sbXMLChIn(XKMSConstants::s_unicodeStrURIXKMS);
 	s.sbXMLChCat(XKMSConstants::s_tagResultMajorCodes[rmaj]);
 
 	ret->setAttributeNS(NULL, 
@@ -205,13 +185,7 @@ DOMElement * XKMSResultTypeImpl::createBlankResultType(
 
 	if (rmin != XKMSResultType::NoneMinor) {
 
-		s.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
-
-		if (mp_env->getXKMSNSPrefix() != NULL) {
-			s.sbXMLChCat(mp_env->getXKMSNSPrefix());
-			s.sbXMLChAppendCh(chColon);
-		}
-
+		s.sbXMLChIn(XKMSConstants::s_unicodeStrURIXKMS);
 		s.sbXMLChCat(XKMSConstants::s_tagResultMinorCodes[rmin]);
 	
 		ret->setAttributeNS(NULL, 

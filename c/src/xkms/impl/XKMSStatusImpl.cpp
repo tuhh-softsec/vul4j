@@ -122,21 +122,12 @@ void XKMSStatusImpl::load() {
 	// without actually checking the qualifier.
 	// TODO - CHECK the qualifier.
 
-	int res2 = XMLString::indexOf(res, chColon);
-	if (res2 != -1) {
-		if (XMLString::compareNString(res, mp_statusElement->getPrefix(), res2)) {
+	int res2 = XMLString::indexOf(res, chPound);
+	if (res2 == -1 || XMLString::compareNString(res, XKMSConstants::s_unicodeStrURIXKMS, res2)) {
 			throw XSECException(XSECException::StatusError,
 				"XKMSStatus::load - StatusValue not in XKMS Name Space");
-		}
-
-		res = &res[res2+1];
 	}
-	else {
-		if (mp_statusElement->getPrefix() != NULL) {
-			throw XSECException(XSECException::StatusError,
-				"XKMSStatus::load - StatusValue not in XKMS Name Space");
-		}
-	}
+	res = &res[res2+1];
 
 	for (m_statusValue = XKMSStatus::Indeterminate; 
 		m_statusValue > XKMSStatus::StatusUndefined; 
@@ -183,24 +174,15 @@ void XKMSStatusImpl::load() {
 				"XKMSStatus::load - Expected text node child of reason element");
 		}
 
-		/* Strip out the qname */
+		/* Strip out the URI prefix */
 		const XMLCh * reason = t->getNodeValue();
 
-		int res = XMLString::indexOf(reason, chColon);
-		if (res != -1) {
-			if (XMLString::compareNString(reason, e->getPrefix(), res)) {
+		int res = XMLString::indexOf(reason, chPound);
+		if (res == -1 || XMLString::compareNString(reason, XKMSConstants::s_unicodeStrURIXKMS, res)) {
 				throw XSECException(XSECException::StatusError,
 					"XKMSStatus::load - StatusReason not in XKMS Name Space");
-			}
-
-			reason = &reason[res+1];
 		}
-		else {
-			if (e->getPrefix() != NULL) {
-				throw XSECException(XSECException::StatusError,
-					"XKMSStatus::load - StatusReason not in XKMS Name Space");
-			}
-		}
+		reason = &reason[res+1];
 
 		/* Found out what we are! */
 		XKMSStatus::StatusReason i;
@@ -244,7 +226,8 @@ DOMElement * XKMSStatusImpl::createBlankStatus(StatusValue status) {
 
 	/* Now add the StatusValue element */
 
-	makeQName(str, prefix, XKMSConstants::s_tagStatusValueCodes[status]);
+	str.sbXMLChIn(XKMSConstants::s_unicodeStrURIXKMS);
+	str.sbXMLChCat(XKMSConstants::s_tagStatusValueCodes[status]);
 
 	mp_statusElement->setAttributeNS(NULL, 
 		XKMSConstants::s_tagStatusValue,
@@ -329,23 +312,24 @@ void XKMSStatusImpl::setStatusReason(StatusValue status, StatusReason reason, bo
 	/* Now lets create our new element and its text child */
 	safeBuffer str;
 	DOMDocument *doc = mp_env->getParentDocument();
-	const XMLCh * prefix = mp_env->getXKMSNSPrefix();
+	str.sbXMLChIn(XKMSConstants::s_unicodeStrURIXKMS);
 
 	if (status == Valid) {
-		makeQName(str, prefix, XKMSConstants::s_tagValidReason);
+		str.sbXMLChCat(XKMSConstants::s_tagValidReason);
 	}
 	else if (status == Invalid) {
-		makeQName(str, prefix, XKMSConstants::s_tagInvalidReason);
+		str.sbXMLChCat(XKMSConstants::s_tagInvalidReason);
 	}
 	else {
-		makeQName(str, prefix, XKMSConstants::s_tagIndeterminateReason);
+		str.sbXMLChCat(XKMSConstants::s_tagIndeterminateReason);
 	}
 
 	DOMElement * e = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
 												str.rawXMLChBuffer());
 
 	/* Create the text node child */
-	makeQName(str, prefix, XKMSConstants::s_tagStatusReasonCodes[reason]);
+	str.sbXMLChIn(XKMSConstants::s_unicodeStrURIXKMS);
+	str.sbXMLChCat(XKMSConstants::s_tagStatusReasonCodes[reason]);
 	e->appendChild(doc->createTextNode(str.rawXMLChBuffer()));
 
 	/* Insert at correct place */

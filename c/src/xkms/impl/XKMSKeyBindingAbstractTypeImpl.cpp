@@ -124,9 +124,13 @@ void XKMSKeyBindingAbstractTypeImpl::load(void) {
 		}
 
 		const XMLCh * usageStr = txt->getNodeValue();
-		int index = XMLString::indexOf(usageStr, chColon);
-		if (index >= 0)
-			usageStr = &usageStr[index+1];
+		int index = XMLString::indexOf(usageStr, chPound);
+		if (index == -1 || XMLString::compareNString(usageStr, XKMSConstants::s_unicodeStrURIXKMS, index)) {
+			throw XSECException(XSECException::XKMSError,
+				"XKMSResultType::load - KeyUsage not in XKMS Name Space");
+		}
+
+		usageStr = &usageStr[index+1];
 
 
 		if (strEquals(usageStr, XKMSConstants::s_tagEncryption)) {
@@ -391,7 +395,8 @@ DOMElement * XKMSKeyBindingAbstractTypeImpl::setKeyUsage(const XMLCh * usage) {
 	DOMElement * e = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
 		str.rawXMLChBuffer());
 
-	makeQName(str, prefix, usage);
+	str.sbXMLChIn(XKMSConstants::s_unicodeStrURIXKMS);
+	str.sbXMLChCat(usage);
 	e->appendChild(doc->createTextNode(str.rawXMLChBuffer()));
 
 	/* Now find where it goes */
