@@ -76,11 +76,6 @@
         </resource>
       </resources>
     </unitTest>
-    <resources>
-      <resource>
-        <include>NOTICE.txt</include>
-      </resource>
-    </resources>
   </build>
 </project>
 
