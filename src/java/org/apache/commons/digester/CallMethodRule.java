@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.20 2003/02/02 16:09:53 rdonkin Exp $
- * $Revision: 1.20 $
- * $Date: 2003/02/02 16:09:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.21 2003/04/14 21:31:03 rdonkin Exp $
+ * $Revision: 1.21 $
+ * $Date: 2003/04/14 21:31:03 $
  *
  * ====================================================================
  *
@@ -91,7 +91,7 @@ import org.apache.commons.beanutils.MethodUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.20 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.21 $ $Date: 2003/04/14 21:31:03 $
  */
 
 public class CallMethodRule extends Rule {
@@ -445,8 +445,12 @@ public class CallMethodRule extends Rule {
         // the specified paramType is not String. 
         Object paramValues[] = new Object[paramTypes.length];
         for (int i = 0; i < paramTypes.length; i++) {
-            if(parameters[i] instanceof String && 
-               !String.class.isAssignableFrom(paramTypes[i])) {
+            // convert nulls and convert stringy parameters 
+            // for non-stringy param types
+            if(
+                parameters[i] == null
+                || (parameters[i] instanceof String && 
+                   !String.class.isAssignableFrom(paramTypes[i]))) {
                 
                 paramValues[i] =
                         ConvertUtils.convert((String) parameters[i], paramTypes[i]);

@@ -328,7 +328,9 @@ public class CallMethodRuleTestCase extends TestCase {
 
     public void testPrimitiveReading() throws Exception {
         StringReader reader = new StringReader(
-            "<?xml version='1.0' ?><root><bean good='true'/><bean good='false'/><bean/></root>");
+            "<?xml version='1.0' ?><root><bean good='true'/><bean good='false'/><bean/>"
+            + "<beanie bad='Fee Fie Foe Fum' good='true'/><beanie bad='Fee Fie Foe Fum' good='false'/>"
+            + "<beanie bad='Fee Fie Foe Fum'/></root>");
             
         Digester digester = new Digester();
         
@@ -342,11 +344,18 @@ public class CallMethodRuleTestCase extends TestCase {
         digester.addCallMethod("root/bean", "setBoolean", 1, params);
         digester.addCallParam("root/bean", 0, "good");
         
+        digester.addObjectCreate("root/beanie", PrimitiveBean.class);
+        digester.addSetNext("root/beanie", "add");
+        Class [] beanieParams = { String.class, Boolean.TYPE };
+        digester.addCallMethod("root/beanie", "testSetBoolean", 2, beanieParams);
+        digester.addCallParam("root/beanie", 0, "bad");
+        digester.addCallParam("root/beanie", 1, "good");
+        
         ArrayList list = new ArrayList();
         digester.push(list);
         digester.parse(reader);
         
-        assertEquals("Wrong number of beans in list", 3, list.size());
+        assertEquals("Wrong number of beans in list", 6, list.size());
         PrimitiveBean bean = (PrimitiveBean) list.get(0);
         assertTrue("Bean 0 property not called", bean.getSetBooleanCalled());
         assertEquals("Bean 0 property incorrect", true, bean.getBoolean());
@@ -356,6 +365,15 @@ public class CallMethodRuleTestCase extends TestCase {
         bean = (PrimitiveBean) list.get(2);
         // no attibute, no call is what's expected
         assertTrue("Bean 2 property called", !bean.getSetBooleanCalled());
+        bean = (PrimitiveBean) list.get(3);
+        assertTrue("Bean 3 property not called", bean.getSetBooleanCalled());
+        assertEquals("Bean 3 property incorrect", true, bean.getBoolean());
+        bean = (PrimitiveBean) list.get(4);
+        assertTrue("Bean 4 property not called", bean.getSetBooleanCalled());
+        assertEquals("Bean 4 property incorrect", false, bean.getBoolean());
+        bean = (PrimitiveBean) list.get(5);
+        assertTrue("Bean 5 property not called", bean.getSetBooleanCalled());
+        assertEquals("Bean 5 property incorrect", false, bean.getBoolean());       
     }
     
     public void testFromStack() throws Exception {

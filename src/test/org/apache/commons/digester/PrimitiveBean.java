@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/PrimitiveBean.java,v 1.1 2003/04/13 20:46:03 rdonkin Exp $
- * $Revision: 1.1 $
- * $Date: 2003/04/13 20:46:03 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/PrimitiveBean.java,v 1.2 2003/04/14 21:31:04 rdonkin Exp $
+ * $Revision: 1.2 $
+ * $Date: 2003/04/14 21:31:04 $
  *
  * ====================================================================
  *
@@ -87,5 +87,9 @@ public class PrimitiveBean {
     public void setBoolean(boolean booleanValue) {
         this.booleanValue = booleanValue;
         setBooleanCalled = true;
+    }
+    
+    public void testSetBoolean(String ignored, boolean booleanValue) {
+        setBoolean(booleanValue);
     }
 }
