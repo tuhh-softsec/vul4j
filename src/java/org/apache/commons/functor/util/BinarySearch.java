@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.4 2003/12/01 07:32:18 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.5 2003/12/01 07:32:54 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,6 +68,7 @@ import java.util.List;
  * the {@link org.apache.commons.functor.Algorithms#recurse} call to execute the
  * search.
  *
+ * @version $Revision: 1.5 $ $Date: 2003/12/01 07:32:54 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
