@@ -91,11 +91,10 @@ public class EncryptedData extends EncryptionElementProxy
     * @param encryptionProperties
     * @param Id
     * @param Type
-    * @param Nonce
     * @throws XMLSecurityException
     */
    public EncryptedData(
-           Document doc, EncryptionMethod encryptionMethod, KeyInfo keyInfo, CipherData cipherData, EncryptionProperties encryptionProperties, String Id, String Type, int Nonce)
+           Document doc, EncryptionMethod encryptionMethod, KeyInfo keyInfo, CipherData cipherData, EncryptionProperties encryptionProperties, String Id, String Type)
               throws XMLSecurityException {
 
       super(doc);
@@ -141,7 +140,6 @@ public class EncryptedData extends EncryptionElementProxy
 
       this.setId(Id);
       this.setType(Type);
-      this.setNonce(Nonce);
    }
 
    /**
@@ -153,17 +151,15 @@ public class EncryptedData extends EncryptionElementProxy
     * @param keyInfo
     * @param encryptionProperties
     * @param Id
-    * @param Nonce
     * @throws XMLSecurityException
     */
    public EncryptedData(
-           Document doc, String encryptionMethod, EncryptionMethodParams encryptionMethodParams, KeyInfo keyInfo, EncryptionProperties encryptionProperties, String Id, int Nonce)
+           Document doc, String encryptionMethod, EncryptionMethodParams encryptionMethodParams, KeyInfo keyInfo, EncryptionProperties encryptionProperties, String Id)
               throws XMLSecurityException {
 
       this(doc,
            new EncryptionMethod(doc, encryptionMethod, encryptionMethodParams),
-           keyInfo, (CipherData) null, encryptionProperties, Id, (String) null,
-           Nonce);
+           keyInfo, (CipherData) null, encryptionProperties, Id, (String) null);
    }
 
    /**
@@ -177,17 +173,16 @@ public class EncryptedData extends EncryptionElementProxy
     * @param encryptionProperties
     * @param Id
     * @param Type
-    * @param Nonce
     * @throws XMLSecurityException
     */
    public EncryptedData(
            Document doc, String encryptionMethod,
-           EncryptionMethodParams encryptionMethodParams, KeyInfo keyInfo, CipherData cipherData, EncryptionProperties encryptionProperties, String Id, String Type, int Nonce)
+           EncryptionMethodParams encryptionMethodParams, KeyInfo keyInfo, CipherData cipherData, EncryptionProperties encryptionProperties, String Id, String Type)
               throws XMLSecurityException {
 
       this(doc,
            new EncryptionMethod(doc, encryptionMethod, encryptionMethodParams),
-           keyInfo, cipherData, encryptionProperties, Id, Type, Nonce);
+           keyInfo, cipherData, encryptionProperties, Id, Type);
    }
 
    /**
@@ -281,37 +276,6 @@ public class EncryptedData extends EncryptionElementProxy
          return new EncryptionProperties(e, this._baseURI);
       } else {
          return null;
-      }
-   }
-
-   /**
-    * Method setNonce
-    *
-    * @param Nonce
-    */
-   private void setNonce(int Nonce) {
-
-      if (Nonce > 0) {
-         this._constructionElement
-            .setAttribute(EncryptionConstants._ATT_NONCE,
-                          (new Integer(Nonce)).toString());
-      }
-   }
-
-   /**
-    * Method getNonce
-    *
-    * @return
-    */
-   public int getNonce() {
-
-      String nonceStr =
-         this._constructionElement.getAttribute(EncryptionConstants._ATT_NONCE);
-
-      if ((nonceStr != null) && (nonceStr.length() > 0)) {
-         return (new Integer(nonceStr)).intValue();
-      } else {
-         return 0;
       }
    }
 
@@ -598,7 +562,7 @@ public class EncryptedData extends EncryptionElementProxy
       Canonicalizer c14n =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
       byte plaintext[] = c14n.canonicalize(plaintextElement);
-      byte ciphertext[] = em.encrypt(plaintext, secretKey, this.getNonce());
+      byte ciphertext[] = em.encrypt(plaintext, secretKey);
 
       this.getCipherData().setCipherValue(new CipherValue(this._doc,
               ciphertext));
@@ -656,8 +620,7 @@ public class EncryptedData extends EncryptionElementProxy
          throw new XMLSecurityException("empty", ex);
       }
 
-      byte ciphertext[] = em.encrypt(plaintext, contentEncryptionKey,
-                                     this.getNonce());
+      byte ciphertext[] = em.encrypt(plaintext, contentEncryptionKey);
 
       this.getCipherData().setCipherValue(new CipherValue(this._doc,
               ciphertext));
@@ -744,8 +707,7 @@ public class EncryptedData extends EncryptionElementProxy
 
          plaintext = baos.toByteArray();
 
-         byte ciphertext[] = em.encrypt(plaintext, contentEncryptionKey,
-                                        this.getNonce());
+         byte ciphertext[] = em.encrypt(plaintext, contentEncryptionKey);
 
          this.getCipherData().setCipherValue(new CipherValue(this._doc,
                  ciphertext));
@@ -782,8 +744,7 @@ public class EncryptedData extends EncryptionElementProxy
 
       EncryptionMethod em = this.getEncryptionMethod();
       byte ciphertext[] = this.getCipherData().getCipherValue().getCipherText();
-      byte plaintext[] = em.decrypt(ciphertext, contentDecryptionKey,
-                                    this.getNonce());
+      byte plaintext[] = em.decrypt(ciphertext, contentDecryptionKey);
 
       try {
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -836,7 +797,6 @@ public class EncryptedData extends EncryptionElementProxy
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.newDocument();
       Element root = doc.createElement("root");
-      int NonceLength = 0;
       String realContent = "1 USD           ";
       String desired = "999.999.999 EUR ";
       String estimated = realContent;
@@ -871,8 +831,7 @@ public class EncryptedData extends EncryptionElementProxy
          EncryptedData ed =
             new EncryptedData(doc,
                               EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128,
-                              null, ki, null, "myFirstEncryptedElement",
-                              NonceLength);
+                              null, ki, null, "myFirstEncryptedElement");
 
          cek = ed.createSecretKeyFromBytes(
             org.apache.xml.security.utils.HexDump.hexStringToByteArray(

@@ -385,81 +385,6 @@ public class EncryptionMethod extends Algorithm {
    }
 
    /**
-    * Method encrypt
-    *
-    * @param plaintextBytes
-    * @param contentKey
-    * @param nonceLength
-    * @return
-    * @throws XMLSecurityException
-    */
-   public byte[] encrypt(byte[] plaintextBytes, Key contentKey, int nonceLength)
-           throws XMLSecurityException {
-
-      byte[] finalPlaintext = new byte[plaintextBytes.length + nonceLength];
-      byte[] nonce = PRNG.createBytes(nonceLength);
-
-      System.arraycopy(nonce, 0, finalPlaintext, 0, nonce.length);
-      System.arraycopy(plaintextBytes, 0, finalPlaintext, nonce.length,
-                       plaintextBytes.length);
-
-      return this.encrypt(finalPlaintext, contentKey);
-   }
-
-   /**
-    * Method encrypt
-    *
-    * @param plaintextBytes
-    * @param contentKey
-    * @param nonceLength
-    * @param IV
-    * @return
-    * @throws XMLSecurityException
-    */
-   public byte[] encrypt(
-           byte[] plaintextBytes, Key contentKey, int nonceLength, byte[] IV)
-              throws XMLSecurityException {
-
-      byte[] finalPlaintext = new byte[plaintextBytes.length + nonceLength];
-      byte[] nonce = PRNG.createBytes(nonceLength);
-
-      System.arraycopy(nonce, 0, finalPlaintext, 0, nonce.length);
-      System.arraycopy(plaintextBytes, 0, finalPlaintext, nonce.length,
-                       plaintextBytes.length);
-
-      return this.encrypt(finalPlaintext, contentKey, IV);
-   }
-
-   /**
-    * Method decrypt
-    *
-    * @param ciphertextBytes
-    * @param contentKey
-    * @param nonceLength
-    * @return
-    * @throws XMLSecurityException
-    */
-   public byte[] decrypt(
-           byte[] ciphertextBytes, Key contentKey, int nonceLength)
-              throws XMLSecurityException {
-
-      byte[] plaintext = this.decrypt(ciphertextBytes, contentKey);
-      int finalPlaintextLength = plaintext.length - nonceLength;
-
-      if (finalPlaintextLength <= 0) {
-         throw new XMLSecurityException(
-            "encryption.nonceLongerThanDecryptedPlaintext");
-      }
-
-      byte[] finalPlaintext = new byte[finalPlaintextLength];
-
-      System.arraycopy(plaintext, nonceLength, finalPlaintext, 0,
-                       finalPlaintextLength);
-
-      return finalPlaintext;
-   }
-
-   /**
     * Method getParams
     *
     * @return
@@ -584,14 +509,6 @@ public class EncryptionMethod extends Algorithm {
    }
 
    //J-
-   public String encryptB64(byte[] plaintextBytes, Key contentKey, int nonceLength, byte[] IV) throws XMLSecurityException {
-       byte ciphertextBytes[] = this.encrypt(plaintextBytes, contentKey, nonceLength, IV);
-       return Base64.encode(ciphertextBytes);
-   }
-   public String encryptB64(byte[] plaintextBytes, Key contentKey, int nonceLength) throws XMLSecurityException {
-       byte ciphertextBytes[] = this.encrypt(plaintextBytes, contentKey, nonceLength);
-       return Base64.encode(ciphertextBytes);
-   }
    public String encryptB64(byte[] plaintextBytes, Key contentKey, byte[] IV) throws XMLSecurityException {
        byte ciphertextBytes[] = this.encrypt(plaintextBytes, contentKey, IV);
        return Base64.encode(ciphertextBytes);
@@ -599,10 +516,6 @@ public class EncryptionMethod extends Algorithm {
    public String encryptB64(byte[] plaintextBytes, Key contentKey) throws XMLSecurityException {
        byte ciphertextBytes[] = this.encrypt(plaintextBytes, contentKey);
        return Base64.encode(ciphertextBytes);
-   }
-   public byte[] decryptB64(String ciphertext, Key contentKey, int nonceLength) throws XMLSecurityException {
-       byte ciphertextBytes[] = Base64.decode(ciphertext);
-       return this.decrypt(ciphertextBytes, contentKey, nonceLength);
    }
    public byte[] decryptB64(String ciphertext, Key contentKey) throws XMLSecurityException {
        byte ciphertextBytes[] = Base64.decode(ciphertext);
