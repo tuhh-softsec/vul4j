@@ -1,4 +1,4 @@
-<model>
+<project>
   <parent>
     <artifactId>plexus-components</artifactId>
     <groupId>plexus</groupId>
@@ -10,4 +10,4 @@
   <packaging>jar</packaging>
   <name>Plexus Archiver Component</name>
   <version>1.0-alpha-1-SNAPSHOT</version>
-</model>
+</project>
