@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/Address.java,v 1.2 2002/01/09 20:22:50 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2002/01/09 20:22:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/Address.java,v 1.3 2002/01/14 02:12:23 craigmcc Exp $
+ * $Revision: 1.3 $
+ * $Date: 2002/01/14 02:12:23 $
  *
  * ====================================================================
  *
@@ -119,6 +119,10 @@ public class Address {
     }
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    public void setEmployee(Employee employee) {
+        employee.addAddress(this);
     }
 
     public String toString() {

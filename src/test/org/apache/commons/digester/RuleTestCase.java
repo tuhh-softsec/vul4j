@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.7 2002/01/09 20:22:50 sanders Exp $
- * $Revision: 1.7 $
- * $Date: 2002/01/09 20:22:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.8 2002/01/14 02:12:23 craigmcc Exp $
+ * $Revision: 1.8 $
+ * $Date: 2002/01/14 02:12:23 $
  *
  * ====================================================================
  *
@@ -75,7 +75,8 @@ import junit.framework.TestSuite;
  * XML documents to exercise the built-in rules.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.7 $ $Date: 2002/01/09 20:22:50 $
+ * @author Janek Bogucki
+ * @version $Revision: 1.8 $ $Date: 2002/01/14 02:12:23 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -438,6 +439,67 @@ public class RuleTestCase extends TestCase {
                    employee.getAddress("home"));
         assertNull("Can not retrieve office address",
                    employee.getAddress("office"));
+
+    }
+
+
+    /**
+     * Test the two argument version of the SetTopRule rule. This test is
+     * based on testObjectCreate3 and should result in the same tree of
+     * objects.  Instead of using the SetNextRule rule which results in
+     * a method invocation on the (top-1) (parent) object with the top
+     * object (child) as an argument, this test uses the SetTopRule rule
+     * which results in a method invocation on the top object (child)
+     * with the top-1 (parent) object as an argument.  The three argument
+     * form is tested in <code>testSetTopRule2</code>.
+     */
+    public void testSetTopRule1() {
+
+        // Configure the digester as required
+        digester.addObjectCreate("employee",
+                                 "org.apache.commons.digester.Employee");
+        digester.addSetProperties("employee");
+        digester.addObjectCreate("employee/address",
+                                 "org.apache.commons.digester.Address");
+        digester.addSetProperties("employee/address");
+        digester.addSetTop("employee/address", "setEmployee");
+
+        // Parse our test input.
+        Object root = null;
+        try {
+            root = digester.parse(getInputStream("Test1.xml"));
+        } catch (Exception t) {
+            fail("Digester threw Exception: " + t);
+        }
+        validateObjectCreate3(root);
+
+    }
+
+
+    /**
+     * Same as <code>testSetTopRule1</code> except using the three argument
+     * form of the SetTopRule rule.
+     */
+    public void testSetTopRule2() {
+
+        // Configure the digester as required
+        digester.addObjectCreate("employee",
+                                 "org.apache.commons.digester.Employee");
+        digester.addSetProperties("employee");
+        digester.addObjectCreate("employee/address",
+                                 "org.apache.commons.digester.Address");
+        digester.addSetProperties("employee/address");
+        digester.addSetTop("employee/address", "setEmployee",
+                           "org.apache.commons.digester.Employee");
+
+        // Parse our test input.
+        Object root = null;
+        try {
+            root = digester.parse(getInputStream("Test1.xml"));
+        } catch (Exception t) {
+            fail("Digester threw Exception: " + t);
+        }
+        validateObjectCreate3(root);
 
     }
 
