@@ -77,15 +77,10 @@ import org.codehaus.plexus.util.FileUtils;
  *
  * @author Jeremias Maerki
  */
-public abstract class FileBasedTestCase extends TestCase
+public abstract class FileBasedTestCase
+    extends TestCase
 {
-
     private static File testDir;
-
-    public FileBasedTestCase( String name )
-    {
-        super( name );
-    }
 
     public static File getTestDirectory()
     {
@@ -163,6 +158,49 @@ public abstract class FileBasedTestCase extends TestCase
         assertEqualContent( referenceFile, file );
     }
 
+    protected void checkWrite( final OutputStream output ) throws Exception
+    {
+        try
+        {
+            new java.io.PrintStream( output ).write( 0 );
+        }
+        catch ( final Throwable t )
+        {
+            throw new AssertionFailedError(
+                "The copy() method closed the stream "
+                + "when it shouldn't have. "
+                + t.getMessage() );
+        }
+    }
+
+    protected void checkWrite( final Writer output ) throws Exception
+    {
+        try
+        {
+            new java.io.PrintWriter( output ).write( 'a' );
+        }
+        catch ( final Throwable t )
+        {
+            throw new AssertionFailedError(
+                "The copy() method closed the stream "
+                + "when it shouldn't have. "
+                + t.getMessage() );
+        }
+    }
+
+    protected void deleteFile( final File file )
+        throws Exception
+    {
+        if ( file.exists() )
+        {
+            assertTrue( "Couldn't delete file: " + file, file.delete() );
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    // Assertions
+    // ----------------------------------------------------------------------
+
     /** Assert that the content of two files is the same. */
     private void assertEqualContent( final File f0, final File f1 )
         throws IOException
@@ -230,44 +268,17 @@ public abstract class FileBasedTestCase extends TestCase
         }
     }
 
-    protected void checkWrite( final OutputStream output ) throws Exception
+    protected void assertIsDirectory( File file )
     {
-        try
-        {
-            new java.io.PrintStream( output ).write( 0 );
-        }
-        catch ( final Throwable t )
-        {
-            throw new AssertionFailedError(
-                "The copy() method closed the stream "
-                + "when it shouldn't have. "
-                + t.getMessage() );
-        }
+        assertTrue( "The File doesn't exists: " + file.getAbsolutePath(), file.exists() );
+
+        assertTrue( "The File isn't a directory: " + file.getAbsolutePath(), file.isDirectory() );
     }
 
-    protected void checkWrite( final Writer output ) throws Exception
+    protected void assertIsFile( File file )
     {
-        try
-        {
-            new java.io.PrintWriter( output ).write( 'a' );
-        }
-        catch ( final Throwable t )
-        {
-            throw new AssertionFailedError(
-                "The copy() method closed the stream "
-                + "when it shouldn't have. "
-                + t.getMessage() );
-        }
+        assertTrue( "The File doesn't exists: " + file.getAbsolutePath(), file.exists() );
+
+        assertTrue( "The File isn't a file: " + file.getAbsolutePath(), file.isFile() );
     }
-
-    protected void deleteFile( final File file )
-        throws Exception
-    {
-        if ( file.exists() )
-        {
-            assertTrue( "Couldn't delete file: " + file, file.delete() );
-        }
-    }
-
-
 }

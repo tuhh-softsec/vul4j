@@ -54,31 +54,17 @@ package org.codehaus.plexus.util;
  * <http://www.apache.org/>.
  */
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import junit.framework.TestCase;
 
 public class CollectionUtilsTest
     extends TestCase
 {
-    public CollectionUtilsTest( String testName )
-    {
-        super( testName );
-    }
-
-    public static Test suite()
-    {
-        return new TestSuite( CollectionUtilsTest.class );
-    }
-    
-    public void setUp()
-    {
-    }
-    
     public void testMergeMaps()
     {
         Map dominantMap = new HashMap();
@@ -248,5 +234,35 @@ public class CollectionUtilsTest
 
         // Values take from projectProperties.
         assertEquals( mavenRepoRemote, (String) result.get( "maven.repo.remote" ) );
+    }
+
+    public void testIteratorToListWithAPopulatedList()
+    {
+        List original = new ArrayList();
+
+        original.add( "en" );
+        original.add( "to" );
+        original.add( "tre" );
+
+        List copy = CollectionUtils.iteratorToList( original.iterator() );
+
+        assertNotNull( copy );
+
+        assertEquals( 3, copy.size() );
+
+        assertEquals( "en", copy.get( 0 ) );
+        assertEquals( "to", copy.get( 1 ) );
+        assertEquals( "tre", copy.get( 2 ) );
+    }
+
+    public void testIteratorToListWithAEmptyList()
+    {
+        List original = new ArrayList();
+
+        List copy = CollectionUtils.iteratorToList( original.iterator() );
+
+        assertNotNull( copy );
+
+        assertEquals( 0, copy.size() );
     }
 }

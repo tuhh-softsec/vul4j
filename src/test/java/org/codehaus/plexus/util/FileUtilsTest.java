@@ -1,9 +1,7 @@
 package org.codehaus.plexus.util;
 
 /*
- * $Header$
- * $Revision$
- * $Date$
+ * $Id$
  *
  * ====================================================================
  *
@@ -65,10 +63,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * This is used to test FileUtils for correctness.
@@ -78,9 +73,9 @@ import junit.textui.TestRunner;
  * @version $Id$
  * @see FileUtils
  */
-public final class FileUtilsTest extends FileBasedTestCase
+public final class FileUtilsTest
+    extends FileBasedTestCase
 {
-
     // Test data
 
     /**
@@ -94,20 +89,9 @@ public final class FileUtilsTest extends FileBasedTestCase
     private static int testFile1Size;
     private static int testFile2Size;
 
-    public static void main( String[] args )
+    public FileUtilsTest()
+        throws Exception
     {
-        TestRunner.run( suite() );
-    }
-
-    public static Test suite()
-    {
-        return new TestSuite( FileUtilsTest.class );
-    }
-
-    public FileUtilsTest( final String name ) throws IOException
-    {
-        super( name );
-
         testFile1 = new File( getTestDirectory(), "file1-test.txt" );
         testFile2 = new File( getTestDirectory(), "file1a-test.txt" );
 
@@ -127,12 +111,6 @@ public final class FileUtilsTest extends FileBasedTestCase
         createFile( testFile2, testFile2Size );
     }
 
-    /** @see junit.framework.TestCase#tearDown() */
-    protected void tearDown() throws Exception
-    {
-        FileUtils.deleteDirectory( getTestDirectory() );
-    }
-
     // byteCountToDisplaySize
 
     public void testByteCountToDisplaySize()
@@ -140,9 +118,7 @@ public final class FileUtilsTest extends FileBasedTestCase
         assertEquals( FileUtils.byteCountToDisplaySize( 0 ), "0 bytes" );
         assertEquals( FileUtils.byteCountToDisplaySize( 1024 ), "1 KB" );
         assertEquals( FileUtils.byteCountToDisplaySize( 1024 * 1024 ), "1 MB" );
-        assertEquals(
-            FileUtils.byteCountToDisplaySize( 1024 * 1024 * 1024 ),
-            "1 GB" );
+        assertEquals( FileUtils.byteCountToDisplaySize( 1024 * 1024 * 1024 ), "1 GB" );
     }
 
     // waitFor
@@ -161,7 +137,7 @@ public final class FileUtilsTest extends FileBasedTestCase
         File[] files = new File[] {
             new File( "file1" ),
             new File( "file2" ),
-            };
+        };
 
         URL[] urls = FileUtils.toURLs( files );
 
@@ -661,4 +637,49 @@ public final class FileUtilsTest extends FileBasedTestCase
         }
     }
 
+    public void testCopyDirectoryStructureWithAEmptyDirectoryStruture()
+        throws Exception
+    {
+        // Make a structure to copy
+        File from = new File( PlexusTestCase.getBasedir(), "src/test-input/directory-to-copy" );
+
+        File to = new File( getTestDirectory(), "to" );
+
+        assertTrue( to.mkdirs() );
+
+        FileUtils.copyDirectoryStructure( from, to );
+    }
+
+    public void testCopyDirectoryStructureWithAPopulatedStructure()
+        throws Exception
+    {
+        // Make a structure to copy
+        File from = new File( PlexusTestCase.getBasedir(), "src/test-input/directory-to-copy" );
+
+        File to = new File( getTestDirectory(), "to" );
+
+        assertTrue( to.mkdirs() );
+
+        FileUtils.copyDirectoryStructure( from, to );
+
+        assertIsFile( new File( to, "root.txt" ) );
+
+        assertEqualContent( "root.txt".getBytes(), new File( to, "root.txt" ) );
+
+        assertIsDirectory( new File( to, "1" ) );
+
+        assertIsDirectory( new File( to, "1/1_1" ) );
+
+        assertIsDirectory( new File( to, "2" ) );
+
+        assertIsDirectory( new File( to, "2/2_1" ) );
+
+        assertIsFile( new File( to, "2/2.txt" ) );
+
+        assertEqualContent( "2.txt".getBytes(), new File( to, "2/2.txt" ) );
+
+        assertIsFile( new File( to, "2/2_1/2_1.txt" ) );
+
+        assertEqualContent( "2_1.txt".getBytes(), new File( to, "2/2_1/2_1.txt" ) );
+    }
 }
