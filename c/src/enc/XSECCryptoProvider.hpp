@@ -329,6 +329,17 @@ public :
 
 	//@}
 
+	/** @name Information Functions */
+	//@{
+
+	/**
+	 * \brief Returns a string that identifies the Crypto Provider
+	 */
+
+	virtual const XMLCh * getProviderName() = 0;
+
+	//@}
+
 	/*\@}*/
 };
 

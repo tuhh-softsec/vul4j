@@ -134,7 +134,12 @@ m_p(prov) {
 		
 	}
 
-	m_key = 0;
+	if (!CryptGetUserKey(prov, keySpec, &m_key)) {
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"WinCAPI:RSA Unable to retrieve user key");
+	}
+
+	//m_key = 0;
 	m_keySpec = keySpec;
 
 	mp_exponent = mp_modulus = NULL;
@@ -494,6 +499,120 @@ XSECCryptoKey * WinCAPICryptoKeyRSA::clone() {
 	return ret;
 
 }
+
+// --------------------------------------------------------------------------------
+//           decrypt a buffer
+// --------------------------------------------------------------------------------
+
+unsigned int WinCAPICryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
+								 unsigned char * plainBuf, 
+								 unsigned int inLength,
+								 unsigned int maxOutLength,
+								 PaddingType padding,
+								 hashMethod hm,
+								 const unsigned char * OEAPParam,
+								 unsigned int OAPEParamLen) {
+
+	// Perform a decrypt
+	if (m_key == 0) {
+
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"WinCAPI:RSA - Attempt to decrypt data with empty key");
+	}
+
+	DWORD decryptSize = inLength;
+	memcpy(plainBuf, inBuf, inLength);
+
+	switch (padding) {
+
+	case XSECCryptoKeyRSA::PAD_PKCS_1_5 :
+
+		if (!CryptDecrypt(m_key,
+						 0,
+						 TRUE,
+						 0,
+						 plainBuf,
+						 &decryptSize)) {
+
+			throw XSECCryptoException(XSECCryptoException::RSAError,
+				"WinCAPI:RSA privateKeyDecrypt - Error Decrypting PKCS1_5 padded RSA encrypt");
+
+		}
+
+		break;
+
+	default :
+
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"OpenSSL:RSA - Unknown padding method");
+
+	}
+
+
+	return decryptSize;
+
+}
+
+// --------------------------------------------------------------------------------
+//           encrypt a buffer
+// --------------------------------------------------------------------------------
+
+unsigned int WinCAPICryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
+								 unsigned char * cipherBuf, 
+								 unsigned int inLength,
+								 unsigned int maxOutLength,
+								 PaddingType padding,
+								 hashMethod hm,
+								 const unsigned char * OEAPParam,
+								 unsigned int OAPEParamLen) {
+
+	// Perform an encrypt
+	if (m_key == 0) {
+
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"WinCAPI:RSA - Attempt to encrypt data with empty key");
+	}
+
+	DWORD encryptSize = inLength;
+	memcpy(cipherBuf, inBuf, inLength);
+
+	switch (padding) {
+
+	case XSECCryptoKeyRSA::PAD_PKCS_1_5 :
+
+		if (!CryptEncrypt(m_key,
+						  0,			/* No Hash */
+						  TRUE,			/* Is Final */
+						  0,			/* No flags */
+						  cipherBuf,
+						  &encryptSize,
+						  maxOutLength)) {
+
+			throw XSECCryptoException(XSECCryptoException::RSAError,
+				"WinCAPI:RSA publicKeyEncrypt - Error performing encrypt");
+		}
+
+		if (encryptSize <= 0) {
+
+			throw XSECCryptoException(XSECCryptoException::RSAError,
+				"WinCAPI:RSA publicKeyEncrypt - Error performing PKCS1_5 padded RSA encrypt");
+
+		}
+
+		break;
+
+	default :
+
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"WinCAPI:RSA - Unknown padding method");
+
+	}
+
+
+	return encryptSize;
+
+}
+
 // --------------------------------------------------------------------------------
 //           Size in bytes
 // --------------------------------------------------------------------------------

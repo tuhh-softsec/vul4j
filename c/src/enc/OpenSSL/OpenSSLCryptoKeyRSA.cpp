@@ -378,7 +378,7 @@ unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 	if (mp_rsaKey == NULL) {
 
 		throw XSECCryptoException(XSECCryptoException::RSAError,
-			"OpenSSL:RSA - Attempt to encrypt data with empty key");
+			"OpenSSL:RSA - Attempt to decrypt data with empty key");
 	}
 
 	int decryptSize;

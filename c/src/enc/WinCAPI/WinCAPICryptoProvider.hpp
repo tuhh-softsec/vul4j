@@ -343,6 +343,18 @@ public :
 
 	//@}
 
+	/** @name Information Functions */
+	//@{
+
+	/**
+	 * \brief Returns a string that identifies the Crypto Provider
+	 */
+
+	virtual const XMLCh * getProviderName();
+
+	//@}
+
+
 private:
 
 	HCRYPTPROV		m_provDSS;

@@ -338,16 +338,24 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 					}*/
 
 				}
+#if defined (HAVE_WINCAPI)
+				else {
+#endif /* HAVE_WINCAPI */
+#endif /* HAVE_OPENSSL */
+
+#if defined (HAVE_WINCAPI)
+					std::cerr << "WARNING - Unable to load PKCS8 private key file into Windows CAPI" << std::endl;
+#if defined (HAVE_OPENSSL)
+				}
+#endif /* HAVE_WINCAPI */
+#endif /* HAVE_OPENSSL */
 			}
-#endif
 		}
 	}
 
 	return NULL;
 
 }
-
-
 
 XSECKeyInfoResolver * MerlinFiveInteropResolver::clone(void) const {
 

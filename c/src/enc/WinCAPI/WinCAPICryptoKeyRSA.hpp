@@ -236,7 +236,7 @@ public :
 								 PaddingType padding,
 								 hashMethod hm,
 								 const unsigned char * OEAPParam,
-								 unsigned int OAPEParamLen) { return 0; /* Not implementd */}
+								 unsigned int OAPEParamLen);
 
 	/**
 	 * \brief Encrypt using a public key
@@ -261,7 +261,7 @@ public :
 								 PaddingType padding,
 								 hashMethod hm,
 								 const unsigned char * OEAPParam,
-								 unsigned int OAPEParamLen) {return 0; /* Not implemented */}
+								 unsigned int OAPEParamLen);
 
 	/**
 	 * \brief Obtain the length of an RSA key

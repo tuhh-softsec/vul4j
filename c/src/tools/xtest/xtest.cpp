@@ -138,6 +138,8 @@ XALAN_USING_XALAN(XalanTransformer)
 #endif
 #if defined (HAVE_WINCAPI)
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
+#	include <xsec/enc/WinCAPI/WinCAPICryptoKeyRSA.hpp>
+#	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #endif
 
 using std::ostream;
@@ -158,6 +160,8 @@ XERCES_CPP_NAMESPACE_USE
 // --------------------------------------------------------------------------------
 
 bool	g_printDocs = false;
+bool	g_useWinCAPI = false;
+
 // --------------------------------------------------------------------------------
 //           Known "Good" Values
 // --------------------------------------------------------------------------------
@@ -328,22 +332,42 @@ XSECCryptoKeyHMAC * createHMACKey(const unsigned char * str) {
 
 	// Create the HMAC key
 	static bool first = true;
+	XSECCryptoKeyHMAC * hmacKey;
 
-#if defined (HAVE_OPENSSL)
-	OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
-	if (first) {
-		cerr << "Using OpenSSL as the cryptography provider" << endl;
-		first = false;
+#if defined (HAVE_OPENSSL) && defined(HAVE_WINCAPI)
+
+	if (g_useWinCAPI == true) {
+		hmacKey = new WinCAPICryptoKeyHMAC(0);
+		if (first) {
+			cerr << "Using Windows Crypto API as the cryptography provider" << endl;
+			first = false;
+		}
+	}
+	else {
+		hmacKey = new OpenSSLCryptoKeyHMAC();
+		if (first) {
+			cerr << "Using OpenSSL as the cryptography provider" << endl;
+			first = false;
+		}
 	}
 #else
-#	if defined (HAVE_WINCAPI)
-	WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC(0);
-	if (first) {
-		cerr << "Using Windows Crypto API as the cryptography provider" << endl;
-		first = false;
-	}
+#	if defined (HAVE_OPENSSL)
+		OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
+		if (first) {
+			cerr << "Using OpenSSL as the cryptography provider" << endl;
+			first = false;
+		}
+#	else
+#		if defined (HAVE_WINCAPI)
+		WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC(0);
+		if (first) {
+			cerr << "Using Windows Crypto API as the cryptography provider" << endl;
+			first = false;
+		}
+#		endif
 #	endif
 #endif
+
 	hmacKey->setKey((unsigned char *) str, strlen((char *)str));
 
 	return hmacKey;
@@ -892,52 +916,85 @@ void unitTestKeyEncrypt(DOMImplementation *impl, XSECCryptoKey * k, encryptionMe
 
 void unitTestEncrypt(DOMImplementation *impl) {
 
-	// Key wraps
-	cerr << "RSA key wrap... ";
-	
+	try {
+		// Key wraps
+		cerr << "RSA key wrap... ";
+
+#if defined (HAVE_OPENSSL) && defined (HAVE_WINCAPI)
+		if (!g_useWinCAPI) {
+#endif
+
 #if defined (HAVE_OPENSSL)
-	// Load the key
-	BIO * bioMem = BIO_new(BIO_s_mem());
-	BIO_puts(bioMem, s_tstRSAPrivateKey);
-	EVP_PKEY * pk = PEM_read_bio_PrivateKey(bioMem, NULL, NULL, NULL);
+		// Load the key
+		BIO * bioMem = BIO_new(BIO_s_mem());
+		BIO_puts(bioMem, s_tstRSAPrivateKey);
+		EVP_PKEY * pk = PEM_read_bio_PrivateKey(bioMem, NULL, NULL, NULL);
 
-	OpenSSLCryptoKeyRSA * k = new OpenSSLCryptoKeyRSA(pk);
+		OpenSSLCryptoKeyRSA * k = new OpenSSLCryptoKeyRSA(pk);
 
-	BIO_free(bioMem);
-	EVP_PKEY_free(pk);
+		BIO_free(bioMem);
+		EVP_PKEY_free(pk);
 
-	unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_15);
+		unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_15);
 
 #endif
 
-	cerr << "AES 128 key wrap... ";
+#if defined (HAVE_OPENSSL) && defined (HAVE_WINCAPI)
+		} else {
+#endif
 
-	XSECCryptoSymmetricKey * ks =
-			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
-	ks->setKey((unsigned char *) s_keyStr, 16);
-	
-	unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES128);
+#if defined (HAVE_WINCAPI)
 
-	cerr << "AES 192 key wrap... ";
+		// Use the internal key
+		WinCAPICryptoProvider *cp = dynamic_cast<WinCAPICryptoProvider *>(XSECPlatformUtils::g_cryptoProvider);
+		HCRYPTPROV p = cp->getApacheKeyStore();
+		WinCAPICryptoKeyRSA * rsaKey = new WinCAPICryptoKeyRSA(p, AT_KEYEXCHANGE, true);
+		unitTestKeyEncrypt(impl, rsaKey, ENCRYPT_RSA_15);
 
-	ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
-	ks->setKey((unsigned char *) s_keyStr, 24);
-	
-	unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES192);
+#endif
 
-	cerr << "AES 256 key wrap... ";
+#if defined (HAVE_OPENSSL) && defined (HAVE_WINCAPI)
+		}
+#endif
 
-	ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
-	ks->setKey((unsigned char *) s_keyStr, 32);
-	
-	unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES256);
 
-	cerr << "Triple DES key wrap... ";
+		cerr << "AES 128 key wrap... ";
 
-	ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
-	ks->setKey((unsigned char *) s_keyStr, 24);
-	
-	unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_3DES);
+		XSECCryptoSymmetricKey * ks =
+				XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
+		ks->setKey((unsigned char *) s_keyStr, 16);
+		
+		unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES128);
+
+		cerr << "AES 192 key wrap... ";
+
+		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
+		ks->setKey((unsigned char *) s_keyStr, 24);
+		
+		unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES192);
+
+		cerr << "AES 256 key wrap... ";
+
+		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
+		ks->setKey((unsigned char *) s_keyStr, 32);
+		
+		unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES256);
+
+		cerr << "Triple DES key wrap... ";
+
+		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
+		ks->setKey((unsigned char *) s_keyStr, 24);
+		
+		unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_3DES);
+	}
+	catch (XSECCryptoException &e)
+	{
+		cerr << "failed\n";
+		cerr << "A cryptographic error occured during encryption unit tests\n   Message: "
+		<< e.getMsg() << endl;
+		exit(1);
+	}
+
 
 }
 // --------------------------------------------------------------------------------
@@ -1143,6 +1200,10 @@ void printUsage(void) {
 	cerr << "     Where options are :\n\n";
 	cerr << "     --help/-h\n";
 	cerr << "         This help message\n\n";
+#if defined (HAVE_WINCAPI)  && defined (HAVE_OPENSSL)
+	cerr << "     --wincapi/-w\n";
+	cerr << "         Use Windows Crypto API for crypto functionality\n\n";
+#endif
 	cerr << "     --print-docs/-p\n";
 	cerr << "         Print the test documents\n\n";
 	cerr << "     --signature-only/-s\n";
@@ -1182,6 +1243,12 @@ int main(int argc, char **argv) {
 			g_printDocs = true;
 			paramCount++;
 		}
+#if defined(HAVE_WINCAPI) && defined(HAVE_OPENSSL)
+		else if (stricmp(argv[paramCount], "--wincapi") == 0 || stricmp(argv[paramCount], "-w") == 0) {
+			g_useWinCAPI = true;
+			paramCount++;
+		}
+#endif
 		else if (stricmp(argv[paramCount], "--signature-only") == 0 || stricmp(argv[paramCount], "-s") == 0) {
 			doEncryptionTest = false;
 			doEncryptionUnitTests = false;
@@ -1228,6 +1295,17 @@ int main(int argc, char **argv) {
 #endif
 		XSECPlatformUtils::Initialise();
 
+#if defined (HAVE_OPENSSL) && defined (HAVE_WINCAPI)
+		if (g_useWinCAPI) {
+			// Setup for Windows Crypt API
+			WinCAPICryptoProvider * cp;
+			// First set windows as the crypto provider
+			cp = new WinCAPICryptoProvider();
+			XSECPlatformUtils::SetCryptoProvider(cp);
+		}
+#endif
+
+
 	}
 	catch (const XMLException &e) {
 
@@ -1244,6 +1322,11 @@ int main(int argc, char **argv) {
 		XMLCh tempStr[100];
 		XMLString::transcode("Core", tempStr, 99);    
 		DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+		// Output some info
+		char * provName = XMLString::transcode(XSECPlatformUtils::g_cryptoProvider->getProviderName());
+		cerr << "Crypto Provider string : " << provName << endl;
+		delete[] provName;
 
 		// Test signature functions
 		if (doSignatureTest) {

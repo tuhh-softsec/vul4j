@@ -96,6 +96,11 @@ OpenSSLCryptoProvider::OpenSSLCryptoProvider() {
 
 OpenSSLCryptoProvider::~OpenSSLCryptoProvider() {}
 
+const XMLCh * OpenSSLCryptoProvider::getProviderName() {
+
+	return DSIGConstants::s_unicodeStrPROVOpenSSL;
+
+}
 	// Hashing classes
 
 XSECCryptoHash	* OpenSSLCryptoProvider::hashSHA1() {

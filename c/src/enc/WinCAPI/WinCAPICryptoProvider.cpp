@@ -193,6 +193,13 @@ WinCAPICryptoProvider::~WinCAPICryptoProvider() {
 
 }
 
+const XMLCh * WinCAPICryptoProvider::getProviderName() {
+
+	return DSIGConstants::s_unicodeStrPROVWinCAPI;
+
+}
+
+
 // Hashing classes
 
 XSECCryptoHash	* WinCAPICryptoProvider::hashSHA1() {
