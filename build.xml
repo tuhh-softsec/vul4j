@@ -19,7 +19,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.55 2004/09/19 16:51:18 rdonkin Exp $
+        $Id: build.xml,v 1.56 2004/09/20 21:59:23 rdonkin Exp $
 -->
 
 
@@ -481,6 +481,12 @@
         failonerror="${test.failonerror}">
       <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.SetPropertyRuleTestCase"/>
+      <classpath refid="test.classpath"/>
+    </java>
+    <java classname="${test.runner}" fork="yes"
+        failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
+      <arg value="org.apache.commons.digester.SetPropertiesRuleTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
   </target>

@@ -1,4 +1,4 @@
-/* $Id: SetPropertiesRule.java,v 1.19 2004/05/10 06:30:06 skitching Exp $
+/* $Id: SetPropertiesRule.java,v 1.20 2004/09/20 21:59:23 rdonkin Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -22,6 +22,7 @@ package org.apache.commons.digester;
 import java.util.HashMap;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.xml.sax.Attributes;
 
 
@@ -144,6 +145,12 @@ public class SetPropertiesRule extends Rule {
      */    
     private String [] propertyNames;
 
+    /**
+     * Used to determine whether the parsing should fail if an property specified
+     * in the XML is missing from the bean. Default is true for backward compatibility.
+     */
+    private boolean ignoreMissingProperty = true;
+
 
     // --------------------------------------------------------- Public Methods
 
@@ -197,6 +204,14 @@ public class SetPropertiesRule extends Rule {
                         "} Setting property '" + name + "' to '" +
                         value + "'");
             }
+            
+            if ((!ignoreMissingProperty) && (name != null)) {
+                Object top = digester.peek();
+                boolean test =  PropertyUtils.isWriteable(top, name);
+                if (!test)
+                    throw new NoSuchMethodException("Property " + name + " can't be set");
+            }
+            
             if (name != null) {
                 values.put(name, value);
             } 
@@ -265,6 +280,32 @@ public class SetPropertiesRule extends Rule {
         sb.append("]");
         return (sb.toString());
 
+    }
+
+    /**
+     * <p>Are attributes found in the xml without matching properties to be ignored?
+     * </p><p>
+     * If false, the parsing will interrupt with an <code>NoSuchMethodException</code>
+     * if a property specified in the XML is not found. The default is true.
+     * </p>
+     * @return true if skipping the unmatched attributes.
+     */
+    public boolean isIgnoreMissingProperty() {
+
+        return this.ignoreMissingProperty;
+    }
+
+    /**
+     * Sets whether attributes found in the xml without matching properties 
+     * should be ignored.
+     * If set to false, the parsing will throw an <code>NoSuchMethodException</code>
+     * if an unmatched
+     * attribute is found. This allows to trap misspellings in the XML file.
+     * @param ignoreMissingProperty false to stop the parsing on unmatched attributes.
+     */
+    public void setIgnoreMissingProperty(boolean ignoreMissingProperty) {
+
+        this.ignoreMissingProperty = ignoreMissingProperty;
     }
 
 
