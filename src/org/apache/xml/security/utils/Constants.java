@@ -208,7 +208,7 @@ public class Constants {
     *
     * @param newPrefix is the new namespace prefix.
     * @see org.apache.xml.security.utils.Constants#getSignatureSpecNSprefix
-    * @todo Add consistency checking for valid prefix
+    * $todo$ Add consistency checking for valid prefix
     */
    public static void setSignatureSpecNSprefix(String newPrefix) throws XMLSecurityException {
       ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, newPrefix);

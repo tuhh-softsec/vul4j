@@ -431,7 +431,7 @@ public class KeyInfo extends SignatureElementProxy {
          Node current = nl.item(i);
 
          /**
-          * @todo using this method, we don't see unknown Elements
+          * $todo$ using this method, we don't see unknown Elements
           *  from Signature NS; revisit
           */
          if ((current.getNodeType() == Node.ELEMENT_NODE)
@@ -593,7 +593,7 @@ public class KeyInfo extends SignatureElementProxy {
          Node current = nl.item(j);
 
          /**
-          * @todo using this method, we don't see unknown Elements
+          * $todo$ using this method, we don't see unknown Elements
           *  from Signature NS; revisit
           */
          if ((current.getNodeType() == Node.ELEMENT_NODE)
@@ -1084,7 +1084,7 @@ public class KeyInfo extends SignatureElementProxy {
          if (KeyInfo.cat == null) {
 
             /**
-             * @todo why the hell does the static initialization from the
+             * $todo$ why the hell does the static initialization from the
              *  start not work ?
              */
             KeyInfo.cat =

@@ -80,7 +80,7 @@ import org.apache.xml.security.utils.I18n;
 /**
  * Base class which all Caninicalization algorithms extend.
  *
- * @todo cange JavaDoc
+ * $todo$ cange JavaDoc
  * @author Christian Geuer-Pollmann
  */
 public abstract class CanonicalizerSpi {

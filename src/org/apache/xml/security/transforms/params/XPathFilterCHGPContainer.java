@@ -293,7 +293,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
     * Filter String. We must use this stupid hook to enable the here() function
     * to work.
     *
-    * @todo I dunno whether this crashes: <XPath> he<!-- comment -->re()/ds:Signature[1]</XPath>
+    * $todo$ I dunno whether this crashes: <XPath> he<!-- comment -->re()/ds:Signature[1]</XPath>
     * @param type
     * @return the first Text node which contains information from the XPath 2 Filter String
     */

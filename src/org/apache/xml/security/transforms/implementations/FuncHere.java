@@ -175,7 +175,7 @@ public class FuncHere extends Function {
          }
       }
 
-      /** @todo Do I have to do this detach() call? */
+      /** $todo$ Do I have to do this detach() call? */
       nodeSet.detach();
 
       return nodes;

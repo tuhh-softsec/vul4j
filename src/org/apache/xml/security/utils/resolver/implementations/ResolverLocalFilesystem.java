@@ -88,7 +88,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     * @param BaseURI
     *
     * @throws ResourceResolverException
-    * @todo calculate the correct URI from the attribute and the BaseURI
+    * $todo$ calculate the correct URI from the attribute and the BaseURI
     */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
            throws ResourceResolverException {

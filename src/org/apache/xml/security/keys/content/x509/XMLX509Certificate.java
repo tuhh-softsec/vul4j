@@ -194,7 +194,7 @@ public class XMLX509Certificate extends SignatureElementProxy
 
          XMLX509Certificate other = (XMLX509Certificate) obj;
 
-         /** @todo or should be create X509Certificates and use the equals() from the Certs */
+         /** $todo$ or should be create X509Certificates and use the equals() from the Certs */
          return JavaUtils.binaryCompare(other.getCertificateBytes(),
                                         this.getCertificateBytes());
       } catch (XMLSecurityException ex) {

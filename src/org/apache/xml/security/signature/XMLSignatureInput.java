@@ -93,7 +93,7 @@ import org.apache.xpath.XPathContext;
  * Class XMLSignatureInput
  *
  * @author Christian Geuer-Pollmann
- * @todo check whether an XMLSignatureInput can be _both_, octet stream _and_ node set?
+ * $todo$ check whether an XMLSignatureInput can be _both_, octet stream _and_ node set?
  */
 public class XMLSignatureInput {
 
@@ -333,7 +333,7 @@ public class XMLSignatureInput {
 
             baos.write(bytes);
 
-            /** @todo Clarify behavior. If isNodeSet() and we getOctetStream, do we have to this._inputOctetStream=xxx ? */
+            /** $todo$ Clarify behavior. If isNodeSet() and we getOctetStream, do we have to this._inputOctetStream=xxx ? */
 
             /*
             this._inputOctetStream = new ByteArrayInputStream(baos.toByteArray());

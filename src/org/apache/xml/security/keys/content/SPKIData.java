@@ -68,7 +68,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 /**
  *
  * @author $Author$
- * @todo implement
+ * $todo$ implement
  */
 public class SPKIData extends SignatureElementProxy implements KeyInfoContent {
 

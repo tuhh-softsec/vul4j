@@ -68,7 +68,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 /**
  *
  * @author $Author$
- * @todo Implement
+ * $todo$ Implement
  */
 public class PGPData extends SignatureElementProxy implements KeyInfoContent {
 

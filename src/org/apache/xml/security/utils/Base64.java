@@ -290,7 +290,7 @@ public class Base64 {
     *
     * @param element
     *
-    * @todo not tested yet
+    * $todo$ not tested yet
     * @throws Base64DecodingException
     */
    public static byte[] decode(Element element) throws Base64DecodingException {

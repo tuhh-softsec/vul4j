@@ -80,7 +80,7 @@ import org.apache.xml.security.utils.*;
  *
  *
  * @author Christian Geuer-Pollmann
- * @todo if we remove childen, the boolean values are not updated
+ * $todo$ if we remove childen, the boolean values are not updated
  */
 public class ObjectContainer extends SignatureElementProxy {
 

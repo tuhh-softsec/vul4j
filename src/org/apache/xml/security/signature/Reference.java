@@ -166,7 +166,7 @@ public class Reference extends SignatureElementProxy {
     * @param manifest
     * @param transforms {@link transforms} applied to data
     * @param messageDigestAlgorithm {@link algorithms.MessageDigestAlgorithm Digest algorithm} which is applied to the data
-    * @todo should we throw XMLSignatureException if MessageDigestAlgoURI is wrong?
+    * $todo$ should we throw XMLSignatureException if MessageDigestAlgoURI is wrong?
     * @throws XMLSignatureException
     */
    protected Reference(

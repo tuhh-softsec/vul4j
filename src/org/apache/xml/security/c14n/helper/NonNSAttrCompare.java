@@ -79,7 +79,7 @@ import org.apache.xml.security.utils.Constants;
  *   key (an empty namespace URI is lexicographically least).
  * </UL>
  *
- * @todo Should we implement java.util.Comparator and import java.util.Arrays to use Arrays.sort(intarray);
+ * $todo$ Should we implement java.util.Comparator and import java.util.Arrays to use Arrays.sort(intarray);
  * @author Christian Geuer-Pollmann
  */
 public class NonNSAttrCompare implements java.util.Comparator {

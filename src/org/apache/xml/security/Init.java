@@ -357,7 +357,7 @@ public class Init {
                      ((Element) sigElems.item(i)).getAttributeNS(null,
                         "JAVACLASS");
 
-                  /** @todo handle registering */
+                  /** $todo$ handle registering */
                   boolean registerClass = true;
 
                   try {

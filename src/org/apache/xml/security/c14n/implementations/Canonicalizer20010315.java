@@ -992,7 +992,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
            Set xpathNodeSet, String inclusiveNamespaces)
               throws CanonicalizationException {
 
-      /** @todo well, should we throw UnsupportedOperationException ? */
+      /** $todo$ well, should we throw UnsupportedOperationException ? */
       throw new CanonicalizationException(
          "c14n.Canonicalizer.UnsupportedOperation");
    }
@@ -1009,7 +1009,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
            Node rootNode, String inclusiveNamespaces)
               throws CanonicalizationException {
 
-      /** @todo well, should we throw UnsupportedOperationException ? */
+      /** $todo$ well, should we throw UnsupportedOperationException ? */
       throw new CanonicalizationException(
          "c14n.Canonicalizer.UnsupportedOperation");
    }
