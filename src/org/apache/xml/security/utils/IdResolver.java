@@ -178,7 +178,7 @@ public class IdResolver {
    
 
    private static Element getElementBySearching(Node root,String id) {
-	   Element []els=new Element[4];
+	   Element []els=new Element[5];
 	   getElementBySearching(root,id,els);
 	   for (int i=0;i<els.length;i++) {
 		   if (els[i]!=null) {
