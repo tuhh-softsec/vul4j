@@ -136,7 +136,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
       if ((includeButSearch != null)
               && (includeButSearch.trim().length() > 0)) {
          Element includeButSearchElem =
-            XPathFilterCHGPContainer.createElementForFamily(doc, this.getBaseNamespace(),
+            ElementProxy.createElementForFamily(doc, this.getBaseNamespace(),
                                         XPathFilterCHGPContainer
                                            ._TAG_INCLUDE_BUT_SEARCH);
 
@@ -150,7 +150,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
       if ((excludeButSearch != null)
               && (excludeButSearch.trim().length() > 0)) {
          Element excludeButSearchElem =
-         XPathFilterCHGPContainer.createElementForFamily(doc, this.getBaseNamespace(),
+         ElementProxy.createElementForFamily(doc, this.getBaseNamespace(),
                                         XPathFilterCHGPContainer
                                            ._TAG_EXCLUDE_BUT_SEARCH);
 
@@ -162,7 +162,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
       }
 
       if ((exclude != null) && (exclude.trim().length() > 0)) {
-         Element excludeElem = XPathFilterCHGPContainer.createElementForFamily(doc,
+         Element excludeElem = ElementProxy.createElementForFamily(doc,
                                   this.getBaseNamespace(),
                                   XPathFilterCHGPContainer._TAG_EXCLUDE);
 
