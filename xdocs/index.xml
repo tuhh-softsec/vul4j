@@ -7,30 +7,11 @@
   </properties>
 
   <body>
-    <section name="Functor: Functions as Objects">
+    <section name="Functor: Function Objects for Java">
       <p>
          A <em>functor</em> is a function that can be manipulated 
          as an object.  
       </p>
-<!--
-      <p>
-         Functors are a very old and very common software design
-         concept, and appear in many languages in many forms.  For example, 
-         functors appear in:
-      </p>
-      <ul>
-         <li>LISP as funargs or closures</li>
-         <li>Smalltalk as blocks and closures</li>
-         <li>
-            functional programming languages such as Prolog, ML, and 
-            Haskell (<code>functor</code> is even a keyword in Haskell)
-         </li>
-         <li>C as function pointers</li>
-         <li>C++'s Standard Template Library as function objects</li>
-         <li>Ruby as blocks</li>
-         <li>etc.</li>
-      </ul>
--->      
       <p>
          In Java, functors are typically implemented as interfaces defined 
          by a single, generic member function, and that is the approach taken

@@ -1,7 +1,7 @@
 <project name="Functor" default="test" basedir=".">
 <!--
   Commons-Functor Ant Build File
-  $Id: build.xml,v 1.10 2003/03/04 12:25:24 rwaldhoff Exp $
+  $Id: build.xml,v 1.11 2003/04/02 00:07:41 rwaldhoff Exp $
 -->
 
 <!-- ========== Initialize Properties ===================================== -->
@@ -37,7 +37,7 @@
   <property name="component.package"       value="org.apache.commons.functor"/>
 
   <!-- The title of this component -->
-  <property name="component.title"         value="Functor - Functions as Objects"/>
+  <property name="component.title"         value="Functor - Function Objects for Java"/>
 
   <!-- The current version number of this component -->
   <property name="component.version"       value="1.0-dev"/>
