@@ -12,14 +12,83 @@
          We've begun to develop some example code that demonstrates the use and
          utility of the Functor component.
       </p>
-      <subsection name="Code Reuse Through Composition">
-        <p>
-          See the <a href="xref-test/org/apache/commons/functor/example/FlexiMapExample.html#88">FlexiMap</a> example.
-        </p>
+      <p>
+         In order to keep the examples in sync with the rest of the code,         
+         each example is written as a <a href="http://junit.org/">JUnit</a> 
+         <code>TestCase</code>.  The example programs are executed along with 
+         all the other unit tests, and can be invoked via <code>ant test</code>
+         or <code>maven test</code> once you've set up Ant or Maven as described
+         in the <a href="building.html">build instructions</a>.
+      </p>
+      <p>
+         If you're not familiar with JUnit, don't worry. An understanding of 
+         JUnit isn't important for an understanding of these examples, and 
+         we'll walk you through the relevant bits anyway.
+      </p>
+      <p>
+         Two things you'll want to know about JUnit are (a) all the methods
+         whose names start with "test" will be executed automatically by the 
+         test suite and (b) there are various "assert" methods that can be used
+         to make assertions about the Objects being tested.  If any assertion
+         fails, the JUnit framework will count (and report) this as a test 
+         failure.
+      </p>
+      <p>You can run a specific test case or sub-suite via Ant by invoking</p>
+      <pre>ant -Dtest.entry=&lt;fully-specified-test-case-name&gt; test</pre>
+      <p>or in Maven by invoking</p>
+      <pre>maven -Dtestcase=&lt;fully-specified-test-case-name&gt; test:single</pre>
+      <p>For example, to run the Quicksort example, invoke</p>
+      <pre>ant -Dtest.entry=org.apache.commons.functor.example.QuicksortExample test</pre>
+      <p>or</p>
+      <pre>maven -Dtestcase=org.apache.commons.functor.example.QuicksortExample test:single</pre>
+      <p>To run all the examples, invoke:</p>
+      <pre>ant -Dtest.entry=org.apache.commons.functor.example.TestAll test</pre>
+      <p>or</p>
+      <pre>maven -Dtestcase=org.apache.commons.functor.example.TestAll test:single</pre>    
+      <p>
+         Each example is written in something like a literate programming style.
+         In other words, with descriptive prose mixed right in with the source, as 
+         <code>/* C++ style */</code> comments.
+      </p>
+      <subsection name="Reuse Through Composition">
+         <p>
+            The Functor package, and more generally, a functional approach
+            to program design, supports a powerful technique for balancing 
+            behavior specialization and code reuse.
+         </p>
+         <p>
+            Traditional Object Oriented design suggests inheritence as a
+            mechanism code reuse, and method overloading as a mechanism for
+            specialization.  For example, one defines a general purpose, perhaps
+            even abstract class, say <i>AbstractList</i>, and then extend or 
+            specialize this parent via subclasses, inheriting some behaviors 
+            and overloading others.
+         </p>
+         <p>
+            Functors encourage another, complementary approach to code reuse
+            and behavior specialiazation: composition.  Following a compositional
+            design, we create a number of simple objects and then combine them to 
+            create more complex behaviors.  For example, the 
+            <a href="http://jakarta.apache.org/commons/pool/">Commons Pool</a> 
+            component defines an <code>ObjectPool</code> type that maintains
+            a collection of pooled objects, but delegates to a 
+            <code>PoolableObjectFactory</code> to create, validate and destroy 
+            the objects to be pooled.  Arbitrary <code>ObjectPool</code> 
+            implementations can be composed with arbitrary 
+            <code>PoolableObjectFactory</code>
+            implementations in order to create new types of pools.
+         </p>
+         <p>
+            The 
+            <a href="xref-test/org/apache/commons/functor/example/FlexiMapExample.html#88">FlexiMap</a> 
+            example applies this design to <code>java.util.Map</code>, demonstrating how 
+            "pluggable" functors can be applied to a generic <code>Map</code> structure in order
+            to introduce new behaviors.           
+         </p>
       </subsection>      
       <subsection name="A Functional Quicksort Implementation">
         <p>
-          See the <a href="xref-test/org/apache/commons/functor/example/Quicksort.html#79">Quicksort</a> example.
+          See the <a href="xref-test/org/apache/commons/functor/example/QuicksortExample.html#79">Quicksort</a> example.
         </p>
       </subsection>      
     </section>
