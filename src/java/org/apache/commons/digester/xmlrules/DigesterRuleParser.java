@@ -489,21 +489,32 @@ public class DigesterRuleParser extends RuleSetBase {
     protected class CallMethodRuleFactory extends AbstractObjectCreationFactory {
         public Object createObject(Attributes attributes) {
             Rule callMethodRule = null;
-            int paramCount = Integer.parseInt(attributes.getValue("paramcount"));
             String methodName = attributes.getValue("methodname");
-            String paramTypesAttr = attributes.getValue("paramtypes");
-            if (paramTypesAttr == null || paramTypesAttr.length() == 0) {
-                callMethodRule = new CallMethodRule(targetDigester, methodName,
-                                                    paramCount);
+            if (attributes.getValue("paramcount") == null) {
+                // call against empty method
+                callMethodRule = new CallMethodRule(methodName);
+                
             } else {
-                // Process the comma separated list or paramTypes
-                // into an array of String class names
-                ArrayList paramTypes = new ArrayList();
-                StringTokenizer tokens = new StringTokenizer(paramTypesAttr, " \t\n\r,");
-                while (tokens.hasMoreTokens()) {
-                    paramTypes.add(tokens.nextToken());
+                int paramCount = Integer.parseInt(attributes.getValue("paramcount"));
+                
+                String paramTypesAttr = attributes.getValue("paramtypes");
+                if (paramTypesAttr == null || paramTypesAttr.length() == 0) {
+                    callMethodRule = new CallMethodRule(targetDigester, methodName,
+                                                        paramCount);
+                } else {
+                    // Process the comma separated list or paramTypes
+                    // into an array of String class names
+                    ArrayList paramTypes = new ArrayList();
+                    StringTokenizer tokens = new StringTokenizer(paramTypesAttr, " \t\n\r,");
+                    while (tokens.hasMoreTokens()) {
+                        paramTypes.add(tokens.nextToken());
+                    }
+                    callMethodRule = new CallMethodRule(
+                                                    targetDigester, 
+                                                    methodName, 
+                                                    paramCount, 
+                                                    (String[])paramTypes.toArray(new String[0]));
                 }
-                callMethodRule = new CallMethodRule(targetDigester, methodName, paramCount, (String[])paramTypes.toArray(new String[0]));
             }
             return callMethodRule;
         }

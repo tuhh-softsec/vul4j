@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.14 2002/07/08 18:26:13 rdonkin Exp $
- * $Revision: 1.14 $
- * $Date: 2002/07/08 18:26:13 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.15 2002/07/08 21:25:30 rdonkin Exp $
+ * $Revision: 1.15 $
+ * $Date: 2002/07/08 21:25:30 $
  *
  * ====================================================================
  *
@@ -67,6 +67,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -79,7 +80,7 @@ import junit.framework.TestSuite;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.14 $ $Date: 2002/07/08 18:26:13 $
+ * @version $Revision: 1.15 $ $Date: 2002/07/08 21:25:30 $
  */
 
 public class RuleTestCase extends TestCase {

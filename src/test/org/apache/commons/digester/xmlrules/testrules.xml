@@ -7,8 +7,9 @@
 	  <include path="org/apache/commons/digester/xmlrules/testrulesinclude.xml"/>
     <include class="org.apache.commons.digester.xmlrules.TestDigesterRulesSource"/>
     <pattern value="call-method-rule-tests">
-       <call-method-rule pattern="longValue" methodname="setLongValue" paramcount="0" paramtypes="java.lang.Long"/>
+        <call-method-rule pattern="longValue" methodname="setLongValue" paramcount="0" paramtypes="java.lang.Long"/>
         <call-method-rule pattern="defaultParamType" methodname="setStringValue" paramcount="0"/>
+        <call-method-rule pattern="pushIt" methodname="push"/>
      </pattern>
   </pattern>
 </digester-rules>

@@ -74,6 +74,8 @@ public class TestObject {
     private String value = "";
     private Long longValue = new Long(-1L);
 
+    private boolean pushed = false;
+    
     public TestObject() {
     }
 
@@ -106,4 +108,11 @@ public class TestObject {
     public void setStringValue(String val) {
     }
 
+    public boolean isPushed() {
+        return pushed;
+    }
+    
+    public void push() {
+        pushed = true;
+    }
 }

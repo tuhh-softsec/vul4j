@@ -8,6 +8,7 @@
     <call-method-rule-tests value="cmr1">
       <longValue>555</longValue>
       <defaultParamType>somestringvalue</defaultParamType>
+      <pushIt/>
     </call-method-rule-tests>
   </foo>
   <baz value="baz2"/>

@@ -146,7 +146,11 @@ public class DigesterLoaderTest extends TestCase {
         if (!(root instanceof ArrayList)) {
             fail("Unexpected object returned from DigesterLoader. Expected ArrayList; got " + root.getClass().getName());
         }
+        ArrayList list = (ArrayList) root;
         assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
+        assertEquals("Wrong number of classes created", 2 , list.size());
+        assertEquals("Pushed first", true , ((TestObject)list.get(0)).isPushed());
+        assertEquals("Didn't push second", false , ((TestObject)list.get(1)).isPushed());
     }
 
 
