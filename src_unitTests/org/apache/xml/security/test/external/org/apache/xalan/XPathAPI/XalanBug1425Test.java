@@ -164,7 +164,6 @@ public class XalanBug1425Test extends TestCase {
                                               "COMMENT", "DOCUMENT",
                                               "DOCUMENT_TYPE",
                                               "DOCUMENT_FRAGMENT", "NOTATION" };
-      int i = 0;
       Node n;
 
       while ((n = nl.nextNode()) != null) {

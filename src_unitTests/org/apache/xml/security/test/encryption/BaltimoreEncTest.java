@@ -62,36 +62,30 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.PrivateKey;
-import java.security.Key;
+
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
-import javax.crypto.spec.DESedeKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import junit.framework.Assert;
 
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
-import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
+import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.keys.content.X509Data;
-import org.apache.xml.security.keys.keyresolver.KeyResolverException;
+import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
-import org.apache.xml.security.keys.storage.StorageResolver;
-import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.Method;
@@ -136,7 +130,6 @@ public class BaltimoreEncTest extends TestCase {
 	private static String rsaCertSerialNumber;
 	private static String testDecryptString;
 	private static int nodeCount = 0;
-	private static byte[] bobBytes;
 	private static byte[] jebBytes;
 	private static byte[] jobBytes;
 	private static byte[] jedBytes;
@@ -169,14 +162,14 @@ public class BaltimoreEncTest extends TestCase {
 	 *
 	 * @param args
 	 */
-
+	
 	protected void setUp() throws Exception {
 		
 		String[] testCaseName = { "-noloading",
 								  BaltimoreEncTest.class.getName() };
-
+	
 		// Create the comparison strings
-
+	
 		DocumentBuilderFactory dbf =
 			DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
@@ -185,50 +178,47 @@ public class BaltimoreEncTest extends TestCase {
 		String filename = 
 			"data/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml";
 		File f = new File(filename);
-
+	
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document doc = db.parse(new java.io.FileInputStream(f));
-
+	
 		cardNumber = retrieveCCNumber(doc);
-
+	
 		// Test decrypt
 		testDecryptString = new String("top secret message\n");
-
+	
 		// Count the nodes in the document as a secondary test
 		nodeCount = countNodes(doc);
-
+	
 		// Create the keys
-		bobBytes = 
-			"abcdefghijklmnopqrstuvwx".getBytes("ASCII");
 		jebBytes =
 			"abcdefghijklmnopqrstuvwx".getBytes("ASCII");
 		jobBytes = 
 			"abcdefghijklmnop".getBytes("ASCII");
 		jedBytes = 
 			"abcdefghijklmnopqrstuvwxyz012345".getBytes("ASCII");
-
+	
 		// Certificate information
 		rsaCertSerialNumber = new String("1014918766910");
-
+	
 		// rsaKey
 		FileInputStream infile = 
 			new FileInputStream("data/ie/baltimore/merlin-examples/merlin-xmlenc-five/rsa.p8");
 		byte[] pkcs8Bytes = new byte[10240];
-		int inputSz = infile.read(pkcs8Bytes);
 		infile.close();
-
+	
 		PKCS8EncodedKeySpec pkcs8Spec = 
 			new PKCS8EncodedKeySpec(pkcs8Bytes);
-
+	
 		// Create a key factory 
 		KeyFactory keyFactory = 
 			KeyFactory.getInstance("RSA");
 			rsaKey = keyFactory.generatePrivate(pkcs8Spec);
 	
 		// Initialise the library
-
+	
 		org.apache.xml.security.Init.init();
-
+	
 		// Register our key resolver
 		KeyResolver.register("org.apache.xml.security.test.encryption.BobKeyResolver");
 	}

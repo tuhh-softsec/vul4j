@@ -60,7 +60,6 @@ package org.apache.xml.security.test.encryption;
 
 import java.security.cert.X509Certificate;
 import java.security.PublicKey;
-import java.security.PrivateKey;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
@@ -81,8 +80,6 @@ import org.w3c.dom.Element;
 
 public class BobKeyResolver extends KeyResolverSpi {
 	
-	private static byte[] bobBytes = null;
-
 	/** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(BobKeyResolver.class.getName());

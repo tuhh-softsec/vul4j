@@ -672,12 +672,11 @@ public class Canonicalizer20010315Test extends TestCase {
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
 
-      String descri = "3.7 Document Subsets. (uncommented), c14n by NodeList";
+      //String descri = "3.7 Document Subsets. (uncommented), c14n by NodeList";
       String fileIn = prefix + "in/37_input.xml";
       String fileRef = prefix + "in/37_c14n.xml";
-      String fileOut = prefix + "out/xpath_37_output_c14nByNodeList.xml";
-      String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
-      boolean validating = true;
+      //String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+      //boolean validating = true;
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
       dfactory.setNamespaceAware(true);
@@ -799,8 +798,6 @@ public class Canonicalizer20010315Test extends TestCase {
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
 
-      String descri = "";
-      String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
       //J-
       String inputStr = ""
          + "<absolute:correct      xmlns:absolute='http://www.absolute.org/#likeVodka'>"
@@ -821,13 +818,8 @@ public class Canonicalizer20010315Test extends TestCase {
       try {
          Canonicalizer c14n =
             Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-         byte c14nBytes[] = c14n.canonicalizeSubtree(doc);
+         c14n.canonicalizeSubtree(doc);
 
-         /*
-         FileOutputStream fos = new FileOutputStream("data/org/apache/xml/security/out/relativeNS.xml");
-         fos.write(c14nBytes);
-         fos.close();
-         */
       } catch (CanonicalizationException cex) {
 
          // if we reach this point - good.
@@ -1244,8 +1236,8 @@ public class Canonicalizer20010315Test extends TestCase {
            throws ParserConfigurationException, IOException, SAXException,
                   TransformerConfigurationException, TransformerException {
 
-      String ENCODING_ISO8859_1 = "ISO-8859-1";
-      String ENCODING_UTF8 = "UTF-8";
+      //String ENCODING_ISO8859_1 = "ISO-8859-1";
+      //String ENCODING_UTF8 = "UTF-8";
       String ENCODING_UTF16 = "UTF-16";
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder db = dbf.newDocumentBuilder();

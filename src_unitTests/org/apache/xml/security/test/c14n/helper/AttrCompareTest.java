@@ -189,15 +189,14 @@ public class AttrCompareTest extends TestCase {
       AttrCompare attrCompare = new AttrCompare();
 
       assertEquals("attrCompare.compare((Object) attr0, (Object) attr1)", -1,
-                   attrCompare.compare((Object) attr0, (Object) attr1));
+                   attrCompare.compare(attr0, attr1));
       assertEquals("attrCompare.compare((Object) attr1, (Object) attr0)", 1,
-                   attrCompare.compare((Object) attr1, (Object) attr0));
+                   attrCompare.compare(attr1, attr0));
    }
 
    public static void testA2() throws ParserConfigurationException {
 
       Document doc = createDoc("documentElement");
-      Element root = doc.getDocumentElement();
       Attr attr0 = doc.createAttributeNS("http://goo", "goo:foo");
       Attr attr1 = doc.createAttributeNS(null, "foo");
 
@@ -207,9 +206,9 @@ public class AttrCompareTest extends TestCase {
       AttrCompare attrCompare = new AttrCompare();
 
       assertEquals("attrCompare.compare((Object) attr0, (Object) attr1)", 1,
-                   attrCompare.compare((Object) attr0, (Object) attr1));
+                   attrCompare.compare(attr0, attr1));
       assertEquals("attrCompare.compare((Object) attr1, (Object) attr0)", -1,
-                   attrCompare.compare((Object) attr1, (Object) attr0));
+                   attrCompare.compare(attr1, attr0));
 
    }
 
@@ -242,13 +241,13 @@ public class AttrCompareTest extends TestCase {
       AttrCompare attrCompare = new AttrCompare();
 
       assertEquals("attrCompare.compare((Object) attr0, (Object) attr1)", -1,
-                   attrCompare.compare((Object) attr0, (Object) attr1));
+                   attrCompare.compare(attr0, attr1));
       assertEquals("attrCompare.compare((Object) attr1, (Object) attr0)", 1,
-                   attrCompare.compare((Object) attr1, (Object) attr0));
+                   attrCompare.compare(attr1, attr0));
    }
 
    /**
-    * This test uses teh attrs[] array to compare every attribute against
+    * This test uses the attrs[] array to compare every attribute against
     * the others (and vice versa).
     *
     * The attribute values are taken from example 3.3 Start and End Tags

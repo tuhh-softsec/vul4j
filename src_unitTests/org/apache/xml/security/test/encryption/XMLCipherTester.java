@@ -183,7 +183,7 @@ public class XMLCipherTester extends TestCase {
 
         try {
 
-			source = toString(d);;
+			source = toString(d);
 
 			// Set up a Key Encryption Key
 			byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
@@ -248,7 +248,7 @@ public class XMLCipherTester extends TestCase {
 
         try {
 
-			source = toString(d);;
+			source = toString(d);
 
             // Generate an RSA key
             KeyPairGenerator rsaKeygen = KeyPairGenerator.getInstance("RSA");
@@ -322,7 +322,7 @@ public class XMLCipherTester extends TestCase {
 
         try {
 
-			source = toString(d);;
+			source = toString(d);
 
 			// Set up a Key Encryption Key
 			byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
@@ -401,7 +401,7 @@ public class XMLCipherTester extends TestCase {
 
         try {
 
-			source = toString(d);;
+			source = toString(d);
 
             // prepare for encryption
             byte[] passPhrase = "24 Bytes per DESede key!".getBytes();
@@ -450,7 +450,7 @@ public class XMLCipherTester extends TestCase {
 
         try {
 
-			source = toString(d);;
+			source = toString(d);
 
             // encrypt
             cipher = XMLCipher.getInstance(XMLCipher.AES_128);
@@ -495,7 +495,7 @@ public class XMLCipherTester extends TestCase {
 
         try {
 
-			source = toString(d);;
+			source = toString(d);
 
             // encrypt
             cipher = XMLCipher.getInstance(XMLCipher.AES_192);
@@ -542,7 +542,7 @@ public class XMLCipherTester extends TestCase {
 
         try {
 
-			source = toString(d);;
+			source = toString(d);
 
             // encrypt
             cipher = XMLCipher.getInstance(XMLCipher.AES_256);
@@ -575,14 +575,14 @@ public class XMLCipherTester extends TestCase {
         Document d = document(); // source
         Document ed = null;      // target
         Document dd = null;      // target
-        Element e = (Element) d.getDocumentElement();
+        Element e = d.getDocumentElement();
         Element ee = null;
 
         String source = null;
         String target = null;
 
         try {
-			source = toString(d);;
+			source = toString(d);
 
             // prepare for encryption
             byte[] passPhrase = "24 Bytes per DESede key!".getBytes();
@@ -625,7 +625,7 @@ public class XMLCipherTester extends TestCase {
 		d.appendChild(docElement);
 
 		// Create the XMLCipher object
-		XMLCipher cipher = XMLCipher.getInstance();
+		cipher = XMLCipher.getInstance();
 
 		EncryptedData ed = 
 			cipher.createEncryptedData(CipherData.REFERENCE_TYPE,
