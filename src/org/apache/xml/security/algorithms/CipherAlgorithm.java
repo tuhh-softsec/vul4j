@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European 
- * Commission in the <WebSig> project in the ISIS Programme. 
+ * The development of this software was partly funded by the European
+ * Commission in the <WebSig> project in the ISIS Programme.
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -63,8 +63,7 @@ package org.apache.xml.security.algorithms;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.*;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 import javax.xml.transform.TransformerException;
@@ -85,14 +84,13 @@ public class CipherAlgorithm extends Algorithm {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(CipherAlgorithm.class.getName());
 
-   /** Field algorithm stores the actual {@link javax.crypto.Cipher} */
-   javax.crypto.Cipher algorithm = null;
-
    /** Field _alreadyInitialized */
    static boolean _alreadyInitialized = false;
 
-   /** All available algorithm classes are registered here */
-   static HashMap _algorithmHash = null;
+   static Element _cipherAlgos = null;
+
+   /** Field algorithm stores the actual {@link javax.crypto.Cipher} */
+   javax.crypto.Cipher algorithm = null;
 
    /** Field _algorithmURI */
    Attr _algorithmURI = null;
@@ -186,6 +184,21 @@ public class CipherAlgorithm extends Algorithm {
          if (oaepParam != null) {
             this._OAEPparams = Base64.decode(oaepParam.getData());
          }
+
+         /*
+         String implementingClass =
+            SignatureAlgorithm.getImplementingClass(this._algorithmURI);
+
+         cat.debug("Create URI \"" + algorithmURI + "\" class \""
+                   + implementingClass + "\"");
+
+         this._signatureAlgorithm =
+            (SignatureAlgorithmSpi) Class.forName(implementingClass)
+               .newInstance();
+
+         this._signatureAlgorithm
+            .engineGetContextFromElement(this._constructionElement);
+         */
       } catch (TransformerException ex) {
          throw new XMLSecurityException("empty", ex);
       }
@@ -321,10 +334,10 @@ public class CipherAlgorithm extends Algorithm {
    }
 
    /**
-    * Method providerInit
+    * Method init
     *
     */
-   public static void providerInit() {
+   public static void init(Element cipherAlgos) {
 
       if (CipherAlgorithm.cat == null) {
          CipherAlgorithm.cat =
@@ -335,55 +348,72 @@ public class CipherAlgorithm extends Algorithm {
       cat.debug("Init() called");
 
       if (!CipherAlgorithm._alreadyInitialized) {
-         CipherAlgorithm._algorithmHash = new HashMap(10);
+         CipherAlgorithm._cipherAlgos = cipherAlgos;
          CipherAlgorithm._alreadyInitialized = true;
       }
    }
 
    /**
-    * Method register
-    *
-    * @param algorithmURI
-    * @param implementingClass
-    * @param ProviderId
-    * @throws AlgorithmAlreadyRegisteredException
-    */
-   public static void register(
-           String algorithmURI, String implementingClass, String ProviderId)
-              throws AlgorithmAlreadyRegisteredException {
-
-      {
-         cat.debug("Try to register " + algorithmURI + " " + implementingClass);
-
-         // are we already registered?
-         String registeredClass =
-            CipherAlgorithm.getImplementingClass(algorithmURI, ProviderId);
-
-         if ((registeredClass != null) && (registeredClass.length() != 0)) {
-            Object exArgs[] = { algorithmURI, registeredClass };
-
-            throw new AlgorithmAlreadyRegisteredException(
-               "algorithm.alreadyRegistered", exArgs);
-         }
-
-         CipherAlgorithm._algorithmHash.put(algorithmURI, implementingClass);
-      }
-   }
-
-   /**
-    * Method getImplementingClass
+    * Returns the Apache class.
     *
     * @param URI
     * @param ProviderId
     * @return
     */
-   private static String getImplementingClass(String URI, String ProviderId) {
+   private static String getImplementingClass(String URI, String ProviderId) throws XMLSecurityException {
 
-      if (CipherAlgorithm._algorithmHash == null) {
-         return null;
+      if (CipherAlgorithm._cipherAlgos == null) {
+         // not yet initialized ?!?
+         throw new XMLSecurityException("empty");
       }
 
-      return (String) CipherAlgorithm._algorithmHash.get(URI);
+      String algo = "";
+
+               /*
+      try {
+
+               for (int i = 0; i < sigElems.getLength(); i++) {
+                  String URI = ((Element) sigElems.item(i)).getAttribute("URI");
+                  String JAVACLASS =
+                     ((Element) sigElems.item(i)).getAttribute("JAVACLASS");
+                  String PROVIDERID =
+                     ((Element) sigElems.item(i)).getAttribute("ProviderId");
+
+                  boolean registerClass = true;
+
+                  try {
+                     Class c = Class.forName(JAVACLASS);
+                     Method methods[] = c.getMethods();
+
+                     for (int j = 0; j < methods.length; j++) {
+                        Method currMeth = methods[j];
+
+                        if (currMeth.getDeclaringClass().getName()
+                                .equals(JAVACLASS)) {
+                           cat.debug(currMeth.getDeclaringClass());
+                        }
+                     }
+                  } catch (ClassNotFoundException e) {
+                     Object exArgs[] = { URI, JAVACLASS };
+
+                     cat.fatal(I18n.translate("algorithm.classDoesNotExist",
+                                              exArgs));
+
+                     registerClass = false;
+                  }
+
+                  if (registerClass) {
+                     cat.debug("CipherAlgorithm.register(" + URI + ", "
+                               + JAVACLASS + ")");
+                     CipherAlgorithm.register(URI, JAVACLASS, PROVIDERID);
+                  }
+               }
+      } catch (TransformerException ex) {
+         throw new XMLSecurityException("empty", ex);
+      }
+               */
+
+      return algo;
    }
 
    /**
