@@ -45,7 +45,7 @@ private:
 
 public:
 
-	TXFMSHA1(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, XSECCryptoKey * key = NULL);
+	TXFMSHA1(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, hashMethod hm = HASH_SHA1, XSECCryptoKey * key = NULL);
 	~TXFMSHA1();
 
 	// Methods to get tranform output type and input requirement

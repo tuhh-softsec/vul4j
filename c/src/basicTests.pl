@@ -187,6 +187,10 @@ my @xenc_array=(
 "top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes192-cbc-kw-aes256.xml,-i,n,y",
 "top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes256-cbc-kw-tripledes.xml,-i,n,y",
 "top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml,-i,n,n",
+
+# NOT Supported as of V1.2 (OpenSSL 0.9.8 supports SHA256 digest, not OAEP)
+#"top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-tripledes-cbc-rsa-oaep-mgf1p-sha256.xml,-i,n,n",
+
 "<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes128-cbc-rsa-1_5.xml,-i -de,n,y",
 
 # CipherRef now supported
@@ -197,9 +201,9 @@ my @xenc_array=(
 "<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes256-cbc-retrieved-kw-aes256.xml,-i -de,n,y",
 "<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-tripledes-cbc-kw-aes128.xml,-i -de,n,y",
 
+
 # Unsupported Key-wraps
 #encrypt-content-aes192-cbc-dh-sha512.xml
-#encrypt-data-tripledes-cbc-rsa-oaep-mgf1p-sha256.xml
 #encrypt-element-aes256-cbc-kw-aes256-dh-ripemd160.xml
 
 # Don't yet support encrypted keysin signatures (or SHA-2/Ripemd)

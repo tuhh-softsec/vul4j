@@ -47,6 +47,10 @@ XSEC_USING_XERCES(XMLString);
 
 #define URI_ID_SHA1			"http://www.w3.org/2000/09/xmldsig#sha1"
 #define URI_ID_MD5			"http://www.w3.org/2001/04/xmldsig-more#md5"
+#define URI_ID_SHA224       "http://www.w3.org/2001/04/xmldsig-more#sha224"
+#define URI_ID_SHA256       "http://www.w3.org/2001/04/xmlenc#sha256"
+#define URI_ID_SHA384       "http://www.w3.org/2001/04/xmldsig-more#sha384"
+#define URI_ID_SHA512       "http://www.w3.org/2001/04/xmlenc#sha512"
 
 // Encryption Algorithms
 #define URI_ID_3DES_CBC		"http://www.w3.org/2001/04/xmlenc#tripledes-cbc"
@@ -81,14 +85,29 @@ XSEC_USING_XERCES(XMLString);
 // Signature Algorithms
 
 #define URI_ID_SIG_BASE		"http://www.w3.org/2000/09/xmldsig#"
+#define URI_ID_SIG_BASEMORE	"http://www.w3.org/2001/04/xmldsig-more#"
 #define URI_ID_SIG_DSA		"dsa"
 #define URI_ID_SIG_HMAC		"hmac"
 #define URI_ID_SIG_SHA1		"sha1"
+#define URI_ID_SIG_SHA224	"sha224"
+#define URI_ID_SIG_SHA256	"sha256"
+#define URI_ID_SIG_SHA384	"sha384"
+#define URI_ID_SIG_SHA512	"sha512"
 #define URI_ID_SIG_RSA		"rsa"
+#define URI_ID_SIG_MD5		"md5"
 
 #define URI_ID_DSA_SHA1		"http://www.w3.org/2000/09/xmldsig#dsa-sha1"
 #define URI_ID_HMAC_SHA1	"http://www.w3.org/2000/09/xmldsig#hmac-sha1"
+#define URI_ID_HMAC_SHA224	"http://www.w3.org/2001/04/xmldsig-more#hmac-sha224"
+#define URI_ID_HMAC_SHA256	"http://www.w3.org/2001/04/xmldsig-more#hmac-sha256"
+#define URI_ID_HMAC_SHA384	"http://www.w3.org/2001/04/xmldsig-more#hmac-sha384"
+#define URI_ID_HMAC_SHA512	"http://www.w3.org/2001/04/xmldsig-more#hmac-sha512"
 #define URI_ID_RSA_SHA1		"http://www.w3.org/2000/09/xmldsig#rsa-sha1"
+#define URI_ID_RSA_SHA224	"http://www.w3.org/2001/04/xmldsig-more#rsa-sha224"
+#define URI_ID_RSA_SHA256	"http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+#define URI_ID_RSA_SHA384	"http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"
+#define URI_ID_RSA_SHA512	"http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"
+#define URI_ID_RSA_MD5		"http://www.w3.org/2000/09/xmldsig#rsa-md5"
 
 // Encryption defines
 #define URI_ID_XENC_ELEMENT	"http://www.w3.org/2001/04/xmlenc#Element"
@@ -129,7 +148,11 @@ enum hashMethod {
 
 	HASH_NONE					= 0,			// No method defined
 	HASH_SHA1					= 1, 			// SHA1
-	HASH_MD5					= 2
+	HASH_MD5					= 2,
+	HASH_SHA224					= 3,
+	HASH_SHA256					= 4,
+	HASH_SHA384					= 5,
+	HASH_SHA512					= 6
 };
 
 enum transformType {
@@ -210,7 +233,10 @@ bool canonicalizationMethod2URI(safeBuffer &uri, canonicalizationMethod cm) {
 inline
 bool signatureHashMethod2URI(safeBuffer &uri, signatureMethod sm, hashMethod hm) {
 
-	uri = URI_ID_SIG_BASE;
+	if (hm < HASH_MD5)
+		uri = URI_ID_SIG_BASE;
+	else
+		uri = URI_ID_SIG_BASEMORE;
 
 	switch (sm) {
 
@@ -244,6 +270,31 @@ bool signatureHashMethod2URI(safeBuffer &uri, signatureMethod sm, hashMethod hm)
 		uri.sbStrcatIn(URI_ID_SIG_SHA1);
 		break;
 
+	case (HASH_MD5) :
+
+		uri.sbStrcatIn(URI_ID_SIG_MD5);
+		break;
+
+	case (HASH_SHA224) :
+
+		uri.sbStrcatIn(URI_ID_SIG_SHA224);
+		break;
+
+	case (HASH_SHA256) :
+
+		uri.sbStrcatIn(URI_ID_SIG_SHA256);
+		break;
+
+	case (HASH_SHA384) :
+
+		uri.sbStrcatIn(URI_ID_SIG_SHA384);
+		break;
+
+	case (HASH_SHA512) :
+
+		uri.sbStrcatIn(URI_ID_SIG_SHA512);
+		break;
+
 	default:
 
 		return false;
@@ -267,6 +318,26 @@ bool hashMethod2URI(safeBuffer &uri, hashMethod hm) {
 	case (HASH_MD5) :
 
 		uri = URI_ID_MD5;
+		break;
+
+	case (HASH_SHA224) :
+
+		uri = URI_ID_SHA224;
+		break;
+
+	case (HASH_SHA256) :
+
+		uri = URI_ID_SHA256;
+		break;
+
+	case (HASH_SHA384) :
+
+		uri = URI_ID_SHA384;
+		break;
+
+	case (HASH_SHA512) :
+
+		uri = URI_ID_SHA512;
 		break;
 
 	default:
@@ -369,6 +440,10 @@ public:
 
 	static const XMLCh * s_unicodeStrURIRawX509;
 	static const XMLCh * s_unicodeStrURISHA1;
+	static const XMLCh * s_unicodeStrURISHA224;
+	static const XMLCh * s_unicodeStrURISHA256;
+	static const XMLCh * s_unicodeStrURISHA384;
+	static const XMLCh * s_unicodeStrURISHA512;
 	static const XMLCh * s_unicodeStrURIMD5;		// Not recommended
 	static const XMLCh * s_unicodeStrURIBASE64;
 	static const XMLCh * s_unicodeStrURIXPATH;

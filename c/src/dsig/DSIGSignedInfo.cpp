@@ -350,10 +350,51 @@ void DSIGSignedInfo::load(void) {
 
 	}
 
-	else if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA1) == 0) {
+	else if (tmpSB.sbStrcmp(URI_ID_RSA_SHA224) == 0) {
+
+		m_signatureMethod = SIGNATURE_RSA;
+		m_hashMethod = HASH_SHA224;
+
+	}
+
+	else if (tmpSB.sbStrcmp(URI_ID_RSA_SHA256) == 0) {
+
+		m_signatureMethod = SIGNATURE_RSA;
+		m_hashMethod = HASH_SHA256;
+
+	}
+
+	else if (tmpSB.sbStrcmp(URI_ID_RSA_SHA384) == 0) {
+
+		m_signatureMethod = SIGNATURE_RSA;
+		m_hashMethod = HASH_SHA384;
+
+	}
+
+	else if (tmpSB.sbStrcmp(URI_ID_RSA_SHA512) == 0) {
+
+		m_signatureMethod = SIGNATURE_RSA;
+		m_hashMethod = HASH_SHA512;
+
+	}
+
+	else if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA1) == 0 ||
+		     tmpSB.sbStrcmp(URI_ID_HMAC_SHA224) == 0 ||
+		     tmpSB.sbStrcmp(URI_ID_HMAC_SHA256) == 0 ||
+		     tmpSB.sbStrcmp(URI_ID_HMAC_SHA384) == 0 ||
+			 tmpSB.sbStrcmp(URI_ID_HMAC_SHA512) == 0) {
 
 		m_signatureMethod = SIGNATURE_HMAC;
-		m_hashMethod = HASH_SHA1;
+		if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA1) == 0)
+			m_hashMethod = HASH_SHA1;
+		else if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA224) == 0)
+			m_hashMethod = HASH_SHA224;
+		else if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA256) == 0)
+			m_hashMethod = HASH_SHA256;
+		else if (tmpSB.sbStrcmp(URI_ID_HMAC_SHA384) == 0)
+			m_hashMethod = HASH_SHA384;
+		else 
+			m_hashMethod = HASH_SHA512;
 
 		// Check to see if there is a maximum output value
 

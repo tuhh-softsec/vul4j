@@ -858,7 +858,7 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 	default :
 
 		throw XSECException(XSECException::SigVfyError,
-			"Canonicalisation method unknown in DSIGSignature::verify()");
+			"Canonicalisation method unknown in DSIGSignature::calculateSignedInfoHash()");
 
 	}
 
@@ -873,7 +873,7 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 				throw XSECException(XSECException::SigVfyError,
 					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
 			}
-			XSECnew(txfm, TXFMSHA1(mp_doc, mp_signingKey));
+			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA1, mp_signingKey));
 		}
 		else  {
 			XSECnew(txfm, TXFMSHA1(mp_doc));
@@ -881,10 +881,70 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 
 		break;
 
+	case HASH_SHA224 :
+
+		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
+			if (mp_signingKey->getKeyType() != XSECCryptoKey::KEY_HMAC) {
+				throw XSECException(XSECException::SigVfyError,
+					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
+			}
+			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA224, mp_signingKey));
+		}
+		else  {
+			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA224));
+		}
+
+		break;
+
+	case HASH_SHA256 :
+
+		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
+			if (mp_signingKey->getKeyType() != XSECCryptoKey::KEY_HMAC) {
+				throw XSECException(XSECException::SigVfyError,
+					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
+			}
+			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA256, mp_signingKey));
+		}
+		else  {
+			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA256));
+		}
+
+		break;
+
+	case HASH_SHA384 :
+
+		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
+			if (mp_signingKey->getKeyType() != XSECCryptoKey::KEY_HMAC) {
+				throw XSECException(XSECException::SigVfyError,
+					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
+			}
+			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA384, mp_signingKey));
+		}
+		else  {
+			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA384));
+		}
+
+		break;
+
+	case HASH_SHA512 :
+
+		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
+			if (mp_signingKey->getKeyType() != XSECCryptoKey::KEY_HMAC) {
+				throw XSECException(XSECException::SigVfyError,
+					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
+			}
+			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA512, mp_signingKey));
+		}
+		else  {
+			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA512));
+		}
+
+		break;
+
 	default :
 
 		throw XSECException(XSECException::SigVfyError,
-			"Hash method unknown in DSIGSignature::verify()");
+			"Hash method unknown in DSIGSignature::calculateSignedInfoHash()");
 
 	}
 

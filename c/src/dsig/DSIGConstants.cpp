@@ -56,6 +56,10 @@ const XMLCh * DSIGConstants::s_unicodeStrURIXENC;
 
 const XMLCh * DSIGConstants::s_unicodeStrURIRawX509;
 const XMLCh * DSIGConstants::s_unicodeStrURISHA1;
+const XMLCh * DSIGConstants::s_unicodeStrURISHA224;
+const XMLCh * DSIGConstants::s_unicodeStrURISHA256;
+const XMLCh * DSIGConstants::s_unicodeStrURISHA384;
+const XMLCh * DSIGConstants::s_unicodeStrURISHA512;
 const XMLCh * DSIGConstants::s_unicodeStrURIMD5;		// Not recommended
 const XMLCh * DSIGConstants::s_unicodeStrURIBASE64;
 const XMLCh * DSIGConstants::s_unicodeStrURIXPATH;
@@ -110,6 +114,10 @@ void DSIGConstants::create() {
 	s_unicodeStrURIXENC = XMLString::transcode(URI_ID_XENC);
 
 	s_unicodeStrURISHA1 = XMLString::transcode(URI_ID_SHA1);
+	s_unicodeStrURISHA224 = XMLString::transcode(URI_ID_SHA224);
+	s_unicodeStrURISHA256 = XMLString::transcode(URI_ID_SHA256);
+	s_unicodeStrURISHA384 = XMLString::transcode(URI_ID_SHA384);
+	s_unicodeStrURISHA512 = XMLString::transcode(URI_ID_SHA512);
 	s_unicodeStrURIMD5 = XMLString::transcode(URI_ID_MD5);
 	s_unicodeStrURIBASE64 = XMLString::transcode(URI_ID_BASE64);
 	s_unicodeStrURIXPATH = XMLString::transcode(URI_ID_XPATH);
@@ -161,6 +169,10 @@ void DSIGConstants::destroy() {
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIXPF);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIXENC);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA1);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA224);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA256);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA384);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA512);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIMD5);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIBASE64);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIXPATH);

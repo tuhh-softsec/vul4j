@@ -31,18 +31,42 @@
 
 XERCES_CPP_NAMESPACE_USE
 
-TXFMSHA1::TXFMSHA1(DOMDocument *doc,
+TXFMSHA1::TXFMSHA1(DOMDocument *doc, hashMethod hm,
 									 XSECCryptoKey * key) : TXFMBase (doc) {
 
 	toOutput = 0;					// Nothing yet to output
+	int hashLen = 0;
+
+	switch (hm) {
+	case HASH_SHA224 :
+		hashLen = 224;
+		break;
+	case HASH_SHA256 :
+		hashLen = 256;
+		break;
+	case HASH_SHA384 :
+		hashLen = 384;
+		break;
+	case HASH_SHA512 :
+		hashLen = 512;
+		break;
+	default:
+		hashLen = 160;
+	}
 
 	if (key == NULL)
 		// Get a SHA1 worker
-		mp_h = XSECPlatformUtils::g_cryptoProvider->hashSHA1();
+		mp_h = XSECPlatformUtils::g_cryptoProvider->hashSHA(hashLen);
 	else {
 		// Get an HMAC Sha1
 		
-		mp_h = XSECPlatformUtils::g_cryptoProvider->hashHMACSHA1();
+		mp_h = XSECPlatformUtils::g_cryptoProvider->hashHMACSHA(hashLen);
+		if (!mp_h) {
+
+			throw XSECException(XSECException::CryptoProviderError, 
+					"Error requesting SHA1 object from Crypto Provider");
+
+		}
 		mp_h->setKey(key);
 
 	}

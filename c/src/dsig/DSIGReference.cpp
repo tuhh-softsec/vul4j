@@ -635,6 +635,30 @@ void DSIGReference::load(void) {
 
 	}
 
+	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURISHA224)) {
+
+		me_hashMethod = HASH_SHA224;
+
+	}
+
+	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURISHA256)) {
+
+		me_hashMethod = HASH_SHA256;
+
+	}
+
+	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURISHA384)) {
+
+		me_hashMethod = HASH_SHA384;
+
+	}
+
+	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURISHA512)) {
+
+		me_hashMethod = HASH_SHA512;
+
+	}
+
 	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURIMD5)) {
 
 		me_hashMethod = HASH_MD5;
@@ -1246,10 +1270,14 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 	switch (me_hashMethod) {
 
 	case HASH_SHA1 :
+	case HASH_SHA224 :
+	case HASH_SHA256 :
+	case HASH_SHA384 :
+	case HASH_SHA512 :
 
-		XSECnew(currentTxfm, TXFMSHA1(d));
+		XSECnew(currentTxfm, TXFMSHA1(d, me_hashMethod));
 		break;
-
+	
 	case HASH_MD5 :
 
 		XSECnew(currentTxfm, TXFMMD5(d));
