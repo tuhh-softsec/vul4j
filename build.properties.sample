@@ -14,3 +14,9 @@ commons-logging.jar=${commons-logging.home}/commons-logging.jar
 
 # junit.jar - JUnit 3.7+ Classpath
 junit.jar=${root}/junit.jar
+
+# The digester tests output logging information (including Exceptions) 
+# which can often be confusing to new developers.
+# This output is suppressed by default but can be re-enabled by
+#suppressLogOutputDuringTests=false 
+suppressLogOutputDuringTests=true

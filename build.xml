@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.47 2003/10/04 12:26:51 rdonkin Exp $
+        $Id: build.xml,v 1.48 2003/10/18 13:40:46 rdonkin Exp $
 -->
 
 
@@ -99,6 +99,14 @@
 
 <!-- ========== Test Execution Defaults =================================== -->
 
+  <property name="suppressLogOutputDuringTests" value="true"/>
+  <property name="log.factoryopt" value="org.apache.commons.logging.Log"/>
+  <property name="log.noop" value="org.apache.commons.logging.impl.NoOpLog"/>
+  <property name="log.class" value="${log.noop}"/>
+  
+  <!--
+  <property name="logclass" value="org.apache.commons.logging.impl.NoOpLog"/>
+  -->
 
   <!-- Construct unit test classpath -->
   <path id="test.classpath">
@@ -272,8 +280,12 @@
   <target name="test.factory" depends="compile.tests"
    description="Run tests for loading Digester rules from XML ...">
     <echo message="Running factory create tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.TestFactoryCreate"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -282,8 +294,12 @@
   <target name="test.xmlrules" depends="compile.tests"
    description="Run tests for loading Digester rules from XML ...">
     <echo message="Running xmlrules tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.xmlrules.DigesterLoaderTestSuite"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -293,8 +309,12 @@
   <target name="test.bpsr" depends="compile.tests"
    description="Run tests for BeanPropertySetterRule ...">
     <echo message="Running BeanPropertySetterRule tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.BeanPropertySetterRuleTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -304,8 +324,12 @@
   <target name="test.callmethod" depends="compile.tests"
    description="Run tests for CallMethodRule and CallParamRule ...">
     <echo message="Running CallMethodRule tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.CallMethodRuleTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -314,8 +338,12 @@
   <target name="test.objectparam" depends="compile.tests"
    description="Run tests for ObjectParamRule ...">
     <echo message="Running ObjectParamRule tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.ObjectParamRuleTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -324,8 +352,12 @@
   <target name="test.digester" depends="compile.tests"
    description="Run basic Digester unit tests ...">
     <echo message="Running basic Digester tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.DigesterTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -335,8 +367,12 @@
   <target name="test.matching" depends="compile.tests"
    description="Run rule Digester test cases">
     <echo message="Running rule Digester tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.RulesBaseTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -345,8 +381,12 @@
   <target name="test.regex" depends="compile.tests"
    description="Run tests for RegexRules">
     <echo message="Running tests for RegexRules ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.RegexRulesTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -355,8 +395,12 @@
   <target name="test.wdrules" depends="compile.tests"
    description="Run tests for WithDefaultsRulesWrapper">
     <echo message="Running tests for WithDefaultsRulesWrapper ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.WDRulesWrapperTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -365,8 +409,12 @@
   <target name="test.matching.extended" depends="compile.tests"
    description="Run rule Digester extended test cases">
     <echo message="Running rule Digester tests for ExtendedBaseRules ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.EBRTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -376,8 +424,12 @@
   <target name="test.rss" depends="compile.tests"
    description="Run RSSDigester test cases">
     <echo message="Running RSSDigester tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="org.apache.commons.digester.rss.RSSDigester"
                fork="yes">
+      <jvmarg value="-D${logopt}"/>
       <classpath refid="rss.classpath"/>
     </java>
   </target>
@@ -386,8 +438,12 @@
   <target name="test.rule" depends="compile.tests"
    description="Run rule Digester unit tests ...">
     <echo message="Running Rule tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.RuleTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -396,8 +452,12 @@
   <target name="test.spr" depends="compile.tests"
    description="Run tests for SetPropertyRule ...">
     <echo message="Running SetPropertyRule tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.SetPropertyRuleTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -407,8 +467,12 @@
   <target name="test.node" depends="compile.tests"
           description="Run NodeCreateRule tests ...">
     <echo message="Running NodeCreateRule tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.NodeCreateRuleTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
@@ -417,8 +481,12 @@
   <target name="test.plugins" depends="compile.tests"
           description="Run Plugins tests ...">
     <echo message="Running Plugins tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.plugins.TestAll"/>
       <classpath refid="test.classpath"/>
     </java>
