@@ -82,14 +82,14 @@ import org.apache.xpath.XPathAPI;
  *
  * @author $Author$
  */
-public class IntegrityHmacSHA1 extends IntegrityHmac {
+public class IntegrityHmacRIPEMD160 extends IntegrityHmac {
 
    /**
     * Constructor IntegrityHmacSHA1
     *
     * @throws XMLSignatureException
     */
-   public IntegrityHmacSHA1() throws XMLSignatureException {
+   public IntegrityHmacRIPEMD160() throws XMLSignatureException {
       super();
    }
 
@@ -99,6 +99,6 @@ public class IntegrityHmacSHA1 extends IntegrityHmac {
     * @return
     */
    public String engineGetURI() {
-      return XMLSignature.ALGO_ID_MAC_HMAC_SHA1;
+      return XMLSignature.ALGO_ID_MORE_MAC_HMAC_RIPEMD160;
    }
 }

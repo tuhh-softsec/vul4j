@@ -241,6 +241,10 @@ public abstract class ElementProxy {
       return nl;
    }
 
+   public Document getDocument() {
+      return this._doc;
+   }
+
    /**
     * Method getBaseURI
     *

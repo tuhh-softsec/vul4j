@@ -60,36 +60,36 @@ package org.apache.xml.security.algorithms.implementations;
 
 
 
-import org.w3c.dom.*;
-import org.apache.xml.security.algorithms.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.signature.*;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.Signature;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.InvalidKeyException;
-import java.security.InvalidAlgorithmParameterException;
+import java.security.SignatureException;
 import java.security.spec.AlgorithmParameterSpec;
-import org.apache.xml.security.signature.XMLSignatureException;
-import javax.crypto.Mac;
-import javax.xml.transform.TransformerException;
-import org.apache.xpath.XPathAPI;
+import java.security.spec.InvalidParameterSpecException;
+import org.apache.xml.security.algorithms.*;
+import org.apache.xml.security.signature.*;
+import org.apache.xml.security.utils.*;
+import org.w3c.dom.*;
 
 
 /**
  *
  * @author $Author$
  */
-public class IntegrityHmacSHA1 extends IntegrityHmac {
+public class SignatureRSARIPEMD160 extends SignatureBaseRSA {
 
    /**
-    * Constructor IntegrityHmacSHA1
+    * Constructor SignatureRSARIPEMD160
     *
     * @throws XMLSignatureException
     */
-   public IntegrityHmacSHA1() throws XMLSignatureException {
+   public SignatureRSARIPEMD160() throws XMLSignatureException {
       super();
    }
 
@@ -99,6 +99,6 @@ public class IntegrityHmacSHA1 extends IntegrityHmac {
     * @return
     */
    public String engineGetURI() {
-      return XMLSignature.ALGO_ID_MAC_HMAC_SHA1;
+      return XMLSignature.ALGO_ID_MORE_SIGNATURE_RSA_RIPEMD160;
    }
 }

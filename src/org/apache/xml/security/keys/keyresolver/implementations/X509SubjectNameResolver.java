@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -121,7 +120,9 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
       }
 
       try {
-         Element nscontext = XMLUtils.createDSctx(element.getOwnerDocument(), "ds", Constants.SignatureSpecNS);
+         Element nscontext = XMLUtils.createDSctx(element.getOwnerDocument(),
+                                                  "ds",
+                                                  Constants.SignatureSpecNS);
 
          this._x509childNodes = XPathAPI.selectNodeList(element,
                  "./ds:" + Constants._TAG_X509SUBJECTNAME, nscontext);
@@ -207,7 +208,8 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
 
          while (storage.hasNext()) {
             X509Certificate cert = storage.next();
-            XMLX509SubjectName certSN = new XMLX509SubjectName(element.getOwnerDocument(), cert);
+            XMLX509SubjectName certSN =
+               new XMLX509SubjectName(element.getOwnerDocument(), cert);
 
             cat.debug("Found Certificate SN: " + certSN.getSubjectName());
 

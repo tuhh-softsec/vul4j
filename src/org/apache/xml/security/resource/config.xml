@@ -41,36 +41,16 @@
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureRSA" />
       <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmacSHA1" />
+
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-md5"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureRSAMD5" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureRSARIPEMD160" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-md5"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmacMD5" />
+      <SignatureAlgorithm URI="hhttp://www.w3.org/2001/04/xmldsig-more#hmac-ripemd160"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmacRIPEMD160" />
    </SignatureAlgorithms>
-   <!--
-   <EncryptionMethods>
-      <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#aes128-cbc">
-         <ProviderAlgo ProviderId="BC"
-                       JCEName="RIJNDAEL"
-                       JAVACLASS="org.apache.xml.security.algorithms.encryption.implementations.Encryption_AES128_BC" />
-      </EncryptionMethod>
-      <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#kw-tripledes">
-         <ProviderAlgo ProviderId="BC"
-                       JCEName="DESEDEWrap"
-                       JAVACLASS="" />
-      </EncryptionMethod>
-      <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#kw-aes128">
-         <ProviderAlgo ProviderId="BC"
-                       JCEName="AESWrap"
-                       JAVACLASS="" />
-      </EncryptionMethod>
-      <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#kw-aes192">
-         <ProviderAlgo ProviderId="BC"
-                       JCEName="AESWrap"
-                       JAVACLASS="" />
-      </EncryptionMethod>
-      <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#kw-aes256">
-         <ProviderAlgo ProviderId="BC"
-                       JCEName="AESWrap"
-                       JAVACLASS="" />
-      </EncryptionMethod>
-   </EncryptionMethods>
-   -->
    <JCEAlgorithmMappings>
       <!-- Here, individual providers can be registered; each provider
            is identified by Id which is referenced by ProviderId of the
@@ -162,6 +142,57 @@
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="RIPEMD160" />
          </Algorithm>
+
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#md5"
+                    Description="MD5 message digest from RFC 1321"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="MD5" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#sha384"
+                    Description="SHA message digest with 384 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="SHA-384" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-md5"
+                    Description="Message Authentication code using MD5"
+                    AlgorithmClass="Mac"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="HMACMD5" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-ripemd160"
+                    Description="Message Authentication code using RIPEMD-160"
+                    AlgorithmClass="Mac"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="HMACRIPEMD160" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-md5"
+                    Description="RSA Signature with MD5 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="MD5WithRSAEncryption" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160"
+                    Description="RSA Signature with RIPEMD-160 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="RIPEMD160WithRSAEncryption" />
+         </Algorithm>
+
+
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
                     Description="Message Authentication code using SHA1"
                     AlgorithmClass="Mac"
@@ -392,6 +423,7 @@
 		</layout>
 	</appender>
 
+	<!--
 	<appender name="chainsaw" class="org.apache.log4j.net.SocketAppender">
 		<param name="RemoteHost" value="localhost" />
 		<param name="Port" value="4445" />
@@ -399,8 +431,13 @@
 		<param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
 		</layout>
 	</appender>
+        -->
 
 	<category name="org.apache.log4j.xml">
+		<priority value="info" />
+	</category>
+
+	<category name="org.apache.xml.security">
 		<priority value="info" />
 	</category>
 
@@ -408,8 +445,6 @@
 	<category name="org.apache.xml.security.c14n">
 		<priority value="fatal" />
 	</category>
-	-->
-
 	<category name="org.apache.xml.security.test.resource.TestVectorResolver">
 		<priority value="fatal" />
 	</category>
@@ -428,7 +463,6 @@
 	<category name="org.apache.xml.security.utils.ElementProxy">
 		<priority value="fatal" />
 	</category>
-        <!--
 	<category name="org.apache.xml.security.utils.resolver.implementations">
 		<priority value="info" />
 	</category>
@@ -438,11 +472,10 @@
 	<category name="org.apache.xml.security.c14n.Canonicalizer">
 		<priority value="fatal" />
 	</category>
-        -->
-
 	<category name="org.apache.xml.security.transforms.implementations.FuncHere">
 		<priority value="fatal" />
 	</category>
+        -->
 	<root>
 		<priority value ="debug" />
 		<appender-ref ref="STDOUT" />

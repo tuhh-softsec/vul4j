@@ -103,13 +103,20 @@ public class XMLSignature extends SignatureElementProxy {
       org.apache.log4j.Category.getInstance(XMLSignature.class.getName());
    //J-
    /** MAC - Required HMAC-SHA1 */
-   public static final String ALGO_ID_MAC_HMAC_SHA1 = IntegrityHmacSHA1._URI;
+   public static final String ALGO_ID_MAC_HMAC_SHA1 = Constants.SignatureSpecNS + "hmac-sha1";
 
    /** Signature - Required DSAwithSHA1 (DSS) */
    public static final String ALGO_ID_SIGNATURE_DSA = SignatureDSA._URI;
 
    /** Signature - Recommended RSAwithSHA1 */
-   public static final String ALGO_ID_SIGNATURE_RSA = SignatureRSA._URI;
+   public static final String ALGO_ID_SIGNATURE_RSA = Constants.SignatureSpecNS + "rsa-sha1";
+   public static final String ALGO_ID_SIGNATURE_RSA_SHA1 = Constants.SignatureSpecNS + "rsa-sha1";
+
+  private static final String ALGO_XMLDSIGMODE = "http://www.w3.org/2001/04/xmldsig-more";
+   public static final String ALGO_ID_MORE_SIGNATURE_RSA_MD5 = ALGO_XMLDSIGMODE + "rsa-md5";
+   public static final String ALGO_ID_MORE_SIGNATURE_RSA_RIPEMD160 = ALGO_XMLDSIGMODE + "rsa-ripemd160";
+   public static final String ALGO_ID_MORE_MAC_HMAC_MD5 = ALGO_XMLDSIGMODE + "hmac-md5";
+   public static final String ALGO_ID_MORE_MAC_HMAC_RIPEMD160 = ALGO_XMLDSIGMODE + "hmac-ripemd160";
    //J+
 
    /** ds:Signature.ds:SignedInfo element */

@@ -1027,6 +1027,11 @@ public class XMLUtils {
       } catch (TransformerException ex) {}
    }
 
+   public static void addReturnToElement(ElementProxy elementProxy) {
+      Document doc = elementProxy._doc;
+      elementProxy.getElement().appendChild(doc.createTextNode("\n"));
+   }
+
    public static void addReturnToElement(Element e) {
       Document doc = e.getOwnerDocument();
       e.appendChild(doc.createTextNode("\n"));
