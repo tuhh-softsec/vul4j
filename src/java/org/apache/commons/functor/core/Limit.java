@@ -1,5 +1,5 @@
-/* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.7 2003/11/25 00:18:58 rwaldhoff Exp $
+/*
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Limit.java,v 1.1 2003/11/25 00:18:58 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -26,7 +26,7 @@
  *    if and wherever such third-party acknowledgments normally appear.
  *
  * 4. The names "The Jakarta Project", "Commons", and "Apache Software
- *    Foundation" must not be used to endorse or promote products derived 
+ *    Foundation" must not be used to endorse or promote products derived
  *    from this software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
@@ -54,44 +54,56 @@
  * <http://www.apache.org/>.
  *
  */
+
 package org.apache.commons.functor.core;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.7 $ $Date: 2003/11/25 00:18:58 $
+ * A predicate that returns <code>true</code>
+ * the first <i>n</i> times it is invoked. 
+ *
+ * @since 1.0
+ * @version $Revision: 1.1 $ $Date: 2003/11/25 00:18:58 $
+ * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+
+public final class Limit implements Predicate, UnaryPredicate, BinaryPredicate {
+
+    public Limit(int count) {
+        if(count < 0) { 
+            throw new IllegalArgumentException("Argument must be a non-negative integer.");
+        }
+        this.max = count;
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTest(TestConstantFunction.suite());
-        suite.addTest(TestConstantPredicate.suite());
-        suite.addTest(TestNoOp.suite());
-        suite.addTest(TestIdentityFunction.suite());
-        suite.addTest(TestLeftIdentityFunction.suite());
-        suite.addTest(TestRightIdentityFunction.suite());
-        suite.addTest(TestIsInstanceOf.suite());
-        suite.addTest(TestIsNull.suite());
-        suite.addTest(TestIsNotNull.suite());
-        suite.addTest(TestIsEqual.suite());
-        suite.addTest(TestIsNotEqual.suite());
-        suite.addTest(TestIdentityPredicate.suite());
-        suite.addTest(TestLeftIdentityPredicate.suite());
-        suite.addTest(TestRightIdentityPredicate.suite());
-        suite.addTest(TestLimit.suite());
-
-        suite.addTest(org.apache.commons.functor.core.composite.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.core.collection.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.core.comparator.TestAll.suite());
-        
-        return suite;
+    public boolean test() {
+        // stop incremeting when we've hit max, so we don't loop around
+        if(current < max) {
+            current++;
+            return true;
+        } else {
+            return false;
+        }
     }
+
+    public boolean test(Object obj) {
+        return test();        
+    }
+
+    public boolean test(Object a, Object b) {
+        return test();        
+    }
+
+    public String toString() {
+        return "Limit<" + max + ">";
+    }
+    // instance variables
+    //---------------------------------------------------------------
+    private int max;
+    private int current = 0;
+
 }
