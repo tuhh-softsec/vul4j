@@ -62,6 +62,12 @@
  *
  * checkSig := tool to check a signature embedded in an XML file
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // XSEC
@@ -91,6 +97,11 @@
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/util/XMLException.hpp>
+
+XSEC_USING_XERCES(XercesDOMParser);
+XSEC_USING_XERCES(XMLException);
+XSEC_USING_XERCES(XMLPlatformUtils);
+XSEC_USING_XERCES(DOMException);
 
 #ifndef XSEC_NO_XALAN
 

@@ -62,6 +62,12 @@
  *
  * DSIGTransformXPath := Class that performs XPath transforms
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef DSIGTRANSFORMXPATH_INCLUDE
@@ -71,7 +77,8 @@
 #include <xsec/utils/XSECSafeBuffer.hpp>
 
 
-class  DOMNode;
+XSEC_DECLARE_XERCES_CLASS(DOMNamedNodeMap);
+XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
 /**
  * @ingroup pubsig

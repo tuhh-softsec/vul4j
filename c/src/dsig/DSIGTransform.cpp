@@ -62,6 +62,12 @@
  *
  * DSIGTransform := Base (virtual) class that defines a DSIG Transform
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/dsig/DSIGTransform.hpp>

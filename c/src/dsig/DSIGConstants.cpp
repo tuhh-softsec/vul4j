@@ -62,6 +62,12 @@
  *
  * DSIGConstants := Definitions of varius DSIG constants (mainly strings)
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/dsig/DSIGConstants.hpp>

@@ -62,7 +62,14 @@
  *
  * XSECException:= How we throw exceptions in XSEC
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
+
 #ifndef XSECEXCEPTION_INCLUDE
 #define XSECEXCEPTION_INCLUDE
 

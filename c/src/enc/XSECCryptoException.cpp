@@ -62,6 +62,12 @@
  *
  * XSECCryptoException:= How we throw exceptions in XSEC
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/enc/XSECCryptoException.hpp>

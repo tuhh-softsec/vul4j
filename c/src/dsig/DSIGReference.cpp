@@ -62,6 +62,12 @@
  *
  * DSIG_Reference := Class for handling a DSIG reference element
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // Xerces
@@ -105,19 +111,31 @@
 
 static const XMLCh  s_unicodeStrURI[] =
 {
-        chLatin_U, chLatin_R, chLatin_I, chNull
+        XERCES_CPP_NAMESPACE_QUALIFIER chLatin_U, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_R, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_I, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chNull
 };
 
 static const XMLCh  s_unicodeStrxpointer[] =
 {
-        chLatin_x, chLatin_p, chLatin_o
-	,	chLatin_i, chLatin_n, chLatin_t
-	,	chLatin_e, chLatin_r, chNull
+        XERCES_CPP_NAMESPACE_QUALIFIER chLatin_x, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_p, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_o,
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_i, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_n, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_t,
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_e, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chLatin_r, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chNull
 };
 
 static const XMLCh s_unicodeStrRootNode[] =
 {
-		chOpenParen, chForwardSlash, chCloseParen, chNull
+		XERCES_CPP_NAMESPACE_QUALIFIER chOpenParen, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chForwardSlash, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chCloseParen, 
+		XERCES_CPP_NAMESPACE_QUALIFIER chNull
 };
 
 // --------------------------------------------------------------------------------
@@ -409,7 +427,7 @@ TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 
 	// Determine if this is a full URL or a pointer to a URL
 
-	if (URI[0] != 0 && URI[0] != chPound) {
+	if (URI[0] != 0 && URI[0] != XERCES_CPP_NAMESPACE_QUALIFIER chPound) {
 
 		TXFMURL * retTransform;
 
@@ -454,11 +472,11 @@ TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 			
 		}
 		
-		else if (URI[9] == chOpenParen &&
-			     URI[10] == chLatin_i &&
-				 URI[11] == chLatin_d &&
-				 URI[12] == chOpenParen &&
-				 URI[13] == chSingleQuote) {
+		else if (URI[9] == XERCES_CPP_NAMESPACE_QUALIFIER chOpenParen &&
+			     URI[10] == XERCES_CPP_NAMESPACE_QUALIFIER chLatin_i &&
+				 URI[11] == XERCES_CPP_NAMESPACE_QUALIFIER chLatin_d &&
+				 URI[12] == XERCES_CPP_NAMESPACE_QUALIFIER chOpenParen &&
+				 URI[13] == XERCES_CPP_NAMESPACE_QUALIFIER chSingleQuote) {
 			
 			unsigned int len = XMLString::stringLen(&URI[14]);
 
@@ -473,7 +491,7 @@ TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 			while (URI[j] != '\'') {
 				tmp[i++] = URI[j++];
 			}
-			tmp[i] = chNull;
+			tmp[i] = XERCES_CPP_NAMESPACE_QUALIFIER chNull;
 			
 			to->setInput(doc, tmp);
 			
@@ -862,6 +880,8 @@ void DSIGReference::hashReferenceList(DSIGReferenceList *lst, bool interlocking)
 bool DSIGReference::verifyReferenceList(DSIGReferenceList * lst, safeBuffer &errStr) {
 
 	// Run through a list of hashes and checkHash for each one
+
+	XSEC_USING_XERCES(NetAccessorException);
 
 	DSIGReference * r;
 	bool res = true;

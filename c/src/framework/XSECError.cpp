@@ -62,6 +62,12 @@
  *
  * XSECError := General class for handling errors
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/framework/XSECError.hpp>

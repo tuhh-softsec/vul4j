@@ -61,8 +61,13 @@
  * XSEC
  *
  * XSECPlatformUtils:= To support the platform we run in
- *					 
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *					 
  */
 
 #ifndef XSECPLATFORMUTILS_INCLUDE

@@ -63,6 +63,12 @@
  * XSECC14n20010315 := Canonicaliser object to process XML document in line with
  *					     RFC 3076
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 //XSEC includes
@@ -71,8 +77,10 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 
 // Xerces includes
-#include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
+
+XSEC_USING_XERCES(DOMNamedNodeMap);
+XSEC_USING_XERCES(DOMProcessingInstruction);
 
 #ifndef XSEC_NO_XALAN
 

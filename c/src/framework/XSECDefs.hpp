@@ -62,6 +62,12 @@
  *
  * XSECDefs := File for general XSEC definitions
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // Use Xerces to do the "hard work in determining compilers etc." for us
@@ -94,7 +100,31 @@
 
 #include <xercesc/util/XercesDefs.hpp>
 
-// What should be a library file?
+// --------------------------------------------------------------------------------
+//           Namespace Handling
+// --------------------------------------------------------------------------------
+
+// Use an approach similar to that used in Xalan to process Xerces namespaces
+
+#if defined(XERCES_HAS_CPP_NAMESPACE)
+#	define XSEC_USING_XERCES(NAME) using XERCES_CPP_NAMESPACE :: NAME
+#	define XSEC_DECLARE_XERCES_CLASS(NAME) namespace XERCES_CPP_NAMESPACE { class NAME; } \
+										   using XERCES_CPP_NAMESPACE::NAME
+#	define XSEC_DECLARE_XERCES_STRUCT(NAME) namespace XERCES_CPP_NAMESPACE { struct NAME; }
+#else
+#	define XERCES_CPP_NAMESPACE_QUALIFIER
+#	define XERCES_CPP_NAMESPACE_BEGIN
+#	define XERCES_CPP_NAMESPACE_END
+#	define XERCES_CPP_NAMESPACE_USE
+#	define XSEC_USING_XERCES(NAME)
+#	define XSEC_DECLARE_XERCES_CLASS(NAME) class NAME;
+#	define XSEC_DECLARE_XERCES_STRUCT(NAME) struct NAME;
+#endif
+
+
+// --------------------------------------------------------------------------------
+//           Project Library Handling
+// --------------------------------------------------------------------------------
 
 #if defined (PROJ_CANON)
 

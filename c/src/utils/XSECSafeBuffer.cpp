@@ -61,7 +61,12 @@
  * XSEC
  *
  * XSECSafeBuffer := a class for storing expanding amounts of information.
- *					 
+ *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
  *
  */
 
@@ -69,6 +74,8 @@
 
 #include <xsec/utils/XSECSafeBuffer.hpp>
 #include <xsec/framework/XSECError.hpp>
+
+XSEC_USING_XERCES(XMLString);
 
 // Standard includes
 

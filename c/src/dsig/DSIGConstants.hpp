@@ -62,6 +62,12 @@
  *
  * DSIGConstants := Definitions of varius DSIG constants (mainly strings)
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef DSIGCONSTANTS_HEADER
@@ -71,6 +77,8 @@
 
 // Xerces
 #include <xercesc/util/XMLString.hpp>
+
+XSEC_USING_XERCES(XMLString);
 
 // Name Spaces
 

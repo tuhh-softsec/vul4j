@@ -62,6 +62,12 @@
  *
  * XSECException:= How we throw exceptions in XSEC
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/framework/XSECError.hpp>

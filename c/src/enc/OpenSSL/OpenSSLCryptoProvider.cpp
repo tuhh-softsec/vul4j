@@ -62,6 +62,12 @@
  *
  * OpenSSLCryptoProvider := Base class to define an OpenSSL module
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/framework/XSECError.hpp>

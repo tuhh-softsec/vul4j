@@ -63,6 +63,12 @@
  * XSECXPathNodeList := A structure to hold node lists from XPath 
  * evaluations
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // XSEC

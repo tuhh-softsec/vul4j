@@ -63,6 +63,12 @@
  * XSECNameSpaceExander := Class for expanding out a document's name space axis
  *							and then shrinking again
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // XSEC Includes
@@ -70,6 +76,8 @@
 #include <xsec/dsig/DSIGConstants.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+
+XSEC_USING_XERCES(DOMNamedNodeMap);
 
 XSECNameSpaceExpander::XSECNameSpaceExpander(DOMDocument *d) {
 

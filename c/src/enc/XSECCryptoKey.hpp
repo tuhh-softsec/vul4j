@@ -64,6 +64,12 @@
  *					Should be re-implemented by all providers as the base class
  *                  for all keys
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECCRYPTOKEY_INCLUDE

@@ -62,6 +62,12 @@
  *
  * DSIGTransformBase64 := Class that holds Base 64 Transform information
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // XSEC Includes

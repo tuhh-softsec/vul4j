@@ -63,6 +63,11 @@
  * DSIGKeyInfoX509 := A "Super" key that defines a certificate with a sub-key that defines
  *                the signing key
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$ *
  */
 
 #ifndef DSIGKEYINFOX509_INCLUDE
@@ -73,6 +78,8 @@
 #include <xsec/enc/XSECCryptoX509.hpp>
 
 #include <vector>
+
+XSEC_USING_XERCES(DOMElement);
 
 /**
  * @ingroup pubsig

@@ -62,6 +62,12 @@
  *
  * XSECCryptoKeyRSA := RSA Keys
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef OPENSSLCRYPTOKEYRSA_INCLUDE

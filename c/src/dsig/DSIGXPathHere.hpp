@@ -62,6 +62,12 @@
  *
  * DSIGXPathHere := Implementation of the "here()" XPath function.
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/framework/XSECDefs.hpp>
@@ -83,13 +89,14 @@
 
 // Namespace usage
 
-XALAN_USING_XALAN(Function)
-XALAN_USING_XALAN(XalanNode)
-XALAN_USING_XALAN(XPathExecutionContext)
-XALAN_USING_XALAN(XalanDOMString)
-XALAN_USING_XALAN(XObjectPtr)
-XALAN_USING_XALAN(StaticStringToDOMString)
+XALAN_USING_XALAN(Function);
+XALAN_USING_XALAN(XalanNode);
+XALAN_USING_XALAN(XPathExecutionContext);
+XALAN_USING_XALAN(XalanDOMString);
+XALAN_USING_XALAN(XObjectPtr);
+XALAN_USING_XALAN(StaticStringToDOMString);
 
+XSEC_USING_XERCES(Locator);
 
 #endif
 

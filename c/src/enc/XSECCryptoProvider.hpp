@@ -62,6 +62,12 @@
  *
  * XSECCryptoProvider := Base virtual class to define a crpyto module
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECCRYPTOPROVIDER_INCLUDE

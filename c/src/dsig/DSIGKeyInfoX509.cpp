@@ -63,6 +63,12 @@
  * DSIGKeyX509 := A "Super" key that defines a certificate with a sub-key that defines
  *                the signing key
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>

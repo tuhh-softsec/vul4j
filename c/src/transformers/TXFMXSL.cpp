@@ -62,6 +62,12 @@
  *
  * TXFMXSL := Class that performs XPath transforms
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMXSL.hpp>
@@ -75,8 +81,10 @@
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMImplementationLS.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
-//#include <xercesc/dom/DOMParser.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
+
+XSEC_USING_XERCES(XercesDOMParser);
+XSEC_USING_XERCES(MemBufInputSource);
 
 #include <iostream>
 #include <strstream>

@@ -62,6 +62,12 @@
  *
  * DSIGXPathHere := Implementation of the "here()" XPath function.
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/dsig/DSIGXPathHere.hpp>

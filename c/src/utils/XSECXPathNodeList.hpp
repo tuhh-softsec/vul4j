@@ -63,6 +63,12 @@
  * XSECXPathNodeList := A structure to hold node lists from XPath 
  * evaluations
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECXPATHNODELIST_INCLUDE
@@ -72,7 +78,8 @@
 #include <xsec/framework/XSECDefs.hpp>
 
 // Xerces
-#include <xercesc/dom/DOM.hpp>
+
+XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
 /**
  * @ingroup internal

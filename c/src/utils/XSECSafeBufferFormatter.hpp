@@ -62,6 +62,12 @@
  *
  * XSECSafeBufferFormatter := Class for formatting DOMStrings into SafeBuffers
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECSAFEBUFFERFORMATTER_INCLUDE
@@ -74,7 +80,9 @@
 // Xerces includes
 
 #include <xercesc/framework/XMLFormatter.hpp>
-//#include <xercesc/dom/DOMString.hpp>
+
+XSEC_USING_XERCES(XMLFormatter);
+XSEC_USING_XERCES(XMLFormatTarget);
 
 class sbFormatTarget : public XMLFormatTarget
 {

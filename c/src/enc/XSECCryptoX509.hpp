@@ -62,6 +62,12 @@
  *
  * XSECCryptoX509:= A base class for handling X509 (V3) certificates
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECCRYPTOX509_INCLUDE

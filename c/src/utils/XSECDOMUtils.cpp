@@ -61,7 +61,12 @@
  * XSEC
  *
  * XSECDOMUtils:= Utilities to manipulate DOM within XML-SECURITY
- *					 
+ *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
  *
  */
 
@@ -159,7 +164,7 @@ safeBuffer &makeQName(safeBuffer & qname, const XMLCh *prefix, char * localName)
 	}
 	else {
 		qname.sbXMLChIn(prefix);
-		qname.sbXMLChAppendCh(chColon);
+		qname.sbXMLChAppendCh(XERCES_CPP_NAMESPACE_QUALIFIER chColon);
 		qname.sbXMLChCat(localName);	// Will transcode
 	}
 

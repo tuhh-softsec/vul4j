@@ -67,12 +67,21 @@
  *							Xerces examples had this as part of a single CPP file for
  *							One overall example - much nicer.
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include "IOStreamOutputter.hpp"
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <memory.h>
+
+// Uplift everything to the Xerces name space
+XERCES_CPP_NAMESPACE_USE
 
 
 // --------------------------------------------------------------------------------

@@ -62,6 +62,12 @@
  *
  * TXFMDocObject := Class that takes an input Document object ID to start a txfm pipe
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMDocObject.hpp>
@@ -96,6 +102,8 @@ void TXFMDocObject::setInput(TXFMBase *newInput) {
 }
 
 DOMNode * findDSIGId(DOMNode *current, const XMLCh * newFragmentId) {
+
+	XSEC_USING_XERCES(DOMNamedNodeMap);
 
 	DOMNode *tmp, *ret;
 	DOMNamedNodeMap *atts;

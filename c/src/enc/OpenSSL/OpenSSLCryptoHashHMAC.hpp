@@ -62,6 +62,12 @@
  *
  * OpenSSLCryptoHashHMAC := OpenSSL Implementation of HMAC
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef OPENSSLCRYPTOHASHHMAC_INCLUDE

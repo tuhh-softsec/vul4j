@@ -62,6 +62,12 @@
  *
  * DSIGTransformXPath := Class that holds XPath transforms
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 

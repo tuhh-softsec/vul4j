@@ -62,6 +62,12 @@
  *
  * OpenSSLCryptoHash := OpenSSL Implementation of SHA1
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef OPENSSLCRYPTOHASHSHA1_INCLUDE

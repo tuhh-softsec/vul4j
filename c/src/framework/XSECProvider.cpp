@@ -63,7 +63,14 @@
  * XSECProvider.hpp := The main interface for users wishing to gain access
  *                     to signature objects
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
+
 #include <xsec/framework/XSECProvider.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>

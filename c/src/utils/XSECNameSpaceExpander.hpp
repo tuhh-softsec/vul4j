@@ -63,6 +63,12 @@
  * XSECNameSpaceHolder := Container class for holding and managing the name space stack
  *						  Used when running through a DOM document
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECNAMESPACEEXPANDER_HEADER
@@ -74,7 +80,9 @@
 #include <xsec/utils/XSECSafeBufferFormatter.hpp>
 
 // Xerces Includes
-#include <xercesc/dom/DOM.hpp>
+XSEC_DECLARE_XERCES_CLASS(DOMDocument);
+XSEC_DECLARE_XERCES_CLASS(DOMNode);
+XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
 #include <vector>
 

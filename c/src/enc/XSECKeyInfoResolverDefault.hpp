@@ -63,6 +63,12 @@
  * XSECKeyInfoResolverDefault := Default (very basic) class for applications
  *						 to map KeyInfo to keys
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECKEYINFORESOLVERDEFAULT_INCLUDE

@@ -62,6 +62,12 @@
  *
  * OpenSSLCryptoKeyDSA := DSA Keys
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef OPENSSLCRYPTOKEYDSA_INCLUDE

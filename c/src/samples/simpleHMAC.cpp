@@ -62,6 +62,12 @@
  *
  * SimpleHMAC := An application to generate an XML document (via Xerces) and sign it
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include "IOStreamOutputter.hpp"
@@ -84,6 +90,11 @@
 XALAN_USING_XALAN(XalanTransformer)
 #endif
 
+
+XSEC_USING_XERCES(DOMImplementation);
+XSEC_USING_XERCES(XMLPlatformUtils);
+XSEC_USING_XERCES(XMLException);
+XSEC_USING_XERCES(DOMImplementationRegistry);
 
 DOMDocument *createLetter(DOMImplementation *impl) {
 
@@ -170,7 +181,7 @@ int main (int argc, char **argv) {
 		rootElem->appendChild(doc->createTextNode(MAKE_UNICODE_STRING("\n")));
 
 		// Create an envelope reference for the text to be signed
-		DSIGReference * ref = sig->createReference("");
+		DSIGReference * ref = sig->createReference(MAKE_UNICODE_STRING(""));
 		ref->appendEnvelopedSignatureTransform();
 
 		// Set the HMAC Key to be the string "secret"
@@ -180,7 +191,7 @@ int main (int argc, char **argv) {
 		sig->setSigningKey(hmacKey);
 
 		// Add a KeyInfo element
-		sig->appendKeyName("The secret key is \"secret\"");
+		sig->appendKeyName(MAKE_UNICODE_STRING("The secret key is \"secret\""));
 
 		// Sign
 

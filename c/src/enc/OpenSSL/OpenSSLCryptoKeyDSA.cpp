@@ -62,6 +62,12 @@
  *
  * OpenSSLCryptoKeyDSA := DSA Keys
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>

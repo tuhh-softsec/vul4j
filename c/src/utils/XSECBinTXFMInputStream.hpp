@@ -61,8 +61,13 @@
  * XSEC
  *
  * XSECBinTXFMInputStream := Implement the BinInputStream around Transforms.
- *					 
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *					 
  */
 
 
@@ -93,7 +98,7 @@ class TXFMBase;
  */
 
 
-class DSIG_EXPORT XSECBinTXFMInputStream : public BinInputStream
+class DSIG_EXPORT XSECBinTXFMInputStream : public XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream
 {
 
 public :

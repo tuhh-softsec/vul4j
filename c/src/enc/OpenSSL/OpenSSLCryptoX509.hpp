@@ -62,6 +62,12 @@
  *
  * OpenSSLCryptoX509:= OpenSSL based class for handling X509 (V3) certificates
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef OPENSSLCRYPTOX509_INCLUDE

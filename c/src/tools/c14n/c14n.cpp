@@ -63,6 +63,12 @@
  * c14n := tool to dump a XML file to the console after canonacalising it thru
  *			c14n
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 //XSEC includes
@@ -83,97 +89,18 @@
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/util/XMLException.hpp>
 
-
 // XSEC
 
 #include <xsec/canon/XSECC14n20010315.hpp>
 #include <xsec/utils/XSECNameSpaceExpander.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
-#if 0
-class DOMMemFormatTarget : public XMLFormatTarget
-{
-public:
-    
-	unsigned char * buffer;		// Buffer to write to
 
-	DOMMemFormatTarget()  {};
-    ~DOMMemFormatTarget() {};
+XSEC_USING_XERCES(XMLException);
+XSEC_USING_XERCES(XMLString);
+XSEC_USING_XERCES(XercesDOMParser);
+XSEC_USING_XERCES(XMLPlatformUtils);
+XSEC_USING_XERCES(DOMException);
 
-	void setBuffer (unsigned char * toSet) {buffer = toSet;};
-
-
-    // -----------------------------------------------------------------------
-    //  Implementations of the format target interface
-    // -----------------------------------------------------------------------
-
-    void writeChars(const   XMLByte* const  toWrite,
-                    const   unsigned int    count,
-                            XMLFormatter * const formatter)
-    {
-        // Surprisingly, Solaris was the only platform on which
-        // required the char* cast to print out the string correctly.
-        // Without the cast, it was printing the pointer value in hex.
-        // Quite annoying, considering every other platform printed
-        // the string with the explicit cast to char* below.
-        memcpy(buffer, (char *) toWrite, (int) count);
-		buffer[count] = '\0';
-    };
-
-private:
-    // -----------------------------------------------------------------------
-    //  Unimplemented methods.
-    // -----------------------------------------------------------------------
-    DOMMemFormatTarget(const DOMMemFormatTarget& other);
-    void operator=(const DOMMemFormatTarget& rhs);
-
-	
-};
-
-
-class DOMPrintFormatTarget : public XMLFormatTarget
-{
-public:
-    DOMPrintFormatTarget()  {};
-    ~DOMPrintFormatTarget() {};
-
-    // -----------------------------------------------------------------------
-    //  Implementations of the format target interface
-    // -----------------------------------------------------------------------
-
-    void writeChars(const   XMLByte* const  toWrite,
-                    const   unsigned int    count,
-                            XMLFormatter * const formatter)
-    {
-        // Surprisingly, Solaris was the only platform on which
-        // required the char* cast to print out the string correctly.
-        // Without the cast, it was printing the pointer value in hex.
-        // Quite annoying, considering every other platform printed
-        // the string with the explicit cast to char* below.
-        cout.write((char *) toWrite, (int) count);
-    };
-
-private:
-    // -----------------------------------------------------------------------
-    //  Unimplemented methods.
-    // -----------------------------------------------------------------------
-    DOMPrintFormatTarget(const DOMPrintFormatTarget& other);
-    void operator=(const DOMPrintFormatTarget& rhs);
-};
-
-
-// ---------------------------------------------------------------------------
-//  ostream << DOMString
-//
-//  Stream out a DOM string. Doing this requires that we first transcode
-//  to char * form in the default code page for the system
-// ---------------------------------------------------------------------------
-
-
-DOMPrintFormatTarget *DOMtarget;
-DOMMemFormatTarget *MEMtarget;
-XMLFormatter *formatter, *MEMformatter;
-unsigned char *charBuffer;
-#endif
 void printUsage(void) {
 
 	cerr << "\nUsage: c14n [-n] <input file name>\n";

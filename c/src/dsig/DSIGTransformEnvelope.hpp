@@ -62,6 +62,12 @@
  *
  * DSIGTransformEnvelope := Class that holds an Envelope transform
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/dsig/DSIGTransform.hpp>

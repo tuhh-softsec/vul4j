@@ -62,6 +62,12 @@
  *
  * XSECCanon := Base (virtual) class for canonicalisation objects
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/canon/XSECCanon.hpp>

@@ -63,6 +63,12 @@
  * XSECURIResolverXerces := Virtual Interface class that takes a URI and
  *                    creates a binary input stream from it.
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 
@@ -71,9 +77,12 @@
 #include <xsec/framework/XSECException.hpp>
 
 #include <xercesc/framework/URLInputSource.hpp>
-#include <xercesc/util/BinInputStream.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/Janitor.hpp>
+
+XSEC_USING_XERCES(XMLString);
+XSEC_USING_XERCES(Janitor);
+
 
 #include <string.h>
 
@@ -103,8 +112,13 @@ XSECURIResolverXerces::~XSECURIResolverXerces() {
 //           Interface Methods
 // --------------------------------------------------------------------------------
 
-BinInputStream * XSECURIResolverXerces::resolveURI(const XMLCh * uri) {
+XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * XSECURIResolverXerces::resolveURI(const XMLCh * uri) {
 
+	XSEC_USING_XERCES(URLInputSource);
+	XSEC_USING_XERCES(XMLURL);
+	XSEC_USING_XERCES(BinInputStream);
+
+	
 	URLInputSource			* URLS;		// Use Xerces URL Input source
 	BinInputStream			* is;		// To handle the actual input
 

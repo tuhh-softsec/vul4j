@@ -63,6 +63,12 @@
  * TXFMBase := Base (virtual) class that defines a DSIG Transformer
  * Given this is a pure virtual class, this file only implements friend functions
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMBase.hpp>

@@ -62,6 +62,12 @@
  *
  * TXFMSB := Class that takes an input from a safeBuffer to start a pipe
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMBase.hpp>

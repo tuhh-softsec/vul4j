@@ -62,6 +62,12 @@
  *
  * TXFMDocObject := Class that takes an input Document object ID to start a txfm pipe
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMBase.hpp>

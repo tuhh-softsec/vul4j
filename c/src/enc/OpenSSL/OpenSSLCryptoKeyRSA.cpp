@@ -62,6 +62,12 @@
  *
  * OpenSSLCryptoKeyRSA := RSA Keys
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>

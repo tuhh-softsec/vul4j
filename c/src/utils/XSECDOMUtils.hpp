@@ -61,7 +61,12 @@
  * XSEC
  *
  * XSECDOMUtils:= Utilities to manipulate DOM within XML-SECURITY
- *					 
+ *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
  *
  */
 
@@ -78,6 +83,9 @@
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/XMLString.hpp>
+
+XSEC_USING_XERCES(DOMNode);
+XSEC_USING_XERCES(XMLString);
 
 #define COMPARE_STRING_LENGTH	256
 

@@ -60,7 +60,14 @@
 /*
  * XSEC
  *
- * checkSig := tool to check a signature embedded in an XML file
+ * txfmout:= tool to output the results of the various transforms
+ *		     used when validating the attached signature.
+ *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
  *
  */
 
@@ -91,6 +98,12 @@
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/util/XMLException.hpp>
 #include <xercesc/util/XMLNetAccessor.hpp>
+
+XSEC_USING_XERCES(NetAccessorException);
+XSEC_USING_XERCES(DOMException);
+XSEC_USING_XERCES(XMLException);
+XSEC_USING_XERCES(XercesDOMParser);
+XSEC_USING_XERCES(XMLPlatformUtils);
 
 #ifndef XSEC_NO_XALAN
 

@@ -62,6 +62,12 @@
  *
  * TXFMXSL := Class that performs XML Stylesheet Language transforms
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMBase.hpp>

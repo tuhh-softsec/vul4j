@@ -62,6 +62,12 @@
  *
  * TXFMURL := Class that takes an input URL to start of a transform pipe
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMBase.hpp>

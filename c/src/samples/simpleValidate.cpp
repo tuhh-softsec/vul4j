@@ -62,6 +62,12 @@
  *
  * simpleValidate := An application to validate an in-memory signature
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include "IOStreamOutputter.hpp"
@@ -81,6 +87,11 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
+
+XSEC_USING_XERCES(XMLPlatformUtils);
+XSEC_USING_XERCES(XercesDOMParser);
+XSEC_USING_XERCES(MemBufInputSource);
+XSEC_USING_XERCES(XMLException);
 
 #ifndef XSEC_NO_XALAN
 
@@ -217,14 +228,16 @@ int main (int argc, char **argv) {
 		DSIGKeyInfoList * kinfList = sig->getKeyInfoList();
 		
 		// See if we can find a Key Name
-		safeBuffer kname;
+		const XMLCh * kname;
 		DSIGKeyInfoList::size_type size, i;
 		size = kinfList->getSize();
 
 		for (i = 0; i < size; ++i) {
 			kname = kinfList->item(i)->getKeyName();
-			if (kname.sbStrcmp("")) {
-				cout << "Key Name = " << kname.rawCharBuffer() << endl;
+			if (kname != NULL) {
+				char * n = XMLString::transcode(kname);
+				cout << "Key Name = " << n << endl;
+				delete[] n;
 			}
 		}
 
@@ -236,8 +249,10 @@ int main (int argc, char **argv) {
 			cout << "Signature Valid\n";
 		}
 		else {
+			char * err = XMLString::transcode(sig->getErrMsgs());
 			cout << "Incorrect Signature\n";
-			cout << sig->getErrMsgsSB().rawCharBuffer();
+			cout << err << endl;
+			delete[] err;
 		}
 
 		amt->setNodeValue(MAKE_UNICODE_STRING("$0.50"));
@@ -248,8 +263,10 @@ int main (int argc, char **argv) {
 			cout << "Signature Valid\n";
 		}
 		else {
+			char * err = XMLString::transcode(sig->getErrMsgs());
 			cout << "Incorrect Signature\n";
-			cout << sig->getErrMsgsSB().rawCharBuffer();
+			cout << err << endl;
+			delete[] err;
 		}
 
 		amt->setNodeValue(MAKE_UNICODE_STRING("$16.50"));
@@ -260,8 +277,10 @@ int main (int argc, char **argv) {
 			cout << "Signature Valid\n";
 		}
 		else {
+			char * err = XMLString::transcode(sig->getErrMsgs());
 			cout << "Incorrect Signature\n";
-			cout << sig->getErrMsgsSB().rawCharBuffer();
+			cout << err << endl;
+			delete[] err;
 		}
 
 

@@ -63,6 +63,12 @@
  * DSIGKeyInfoList := Class for Loading and storing a list of KeyInfo elements
  *					 
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef DSIGKEYINFOLIST_INCLUDE

@@ -62,6 +62,12 @@
  *
  * DSIGTransform := Base (virtual) class that defines a DSIG Transform
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef DSIGTRANSFORM_INCLUDE
@@ -70,7 +76,9 @@
 #include <xsec/dsig/DSIGConstants.hpp>
 #include <xsec/framework/XSECDefs.hpp>
 
-#include <xercesc/dom/DOM.hpp>
+XSEC_DECLARE_XERCES_CLASS(DOMNode);
+XSEC_DECLARE_XERCES_CLASS(DOMElement);
+XSEC_DECLARE_XERCES_CLASS(DOMDocument);
 
 #include <stdio.h>
 

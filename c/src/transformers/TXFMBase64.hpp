@@ -62,6 +62,12 @@
  *
  * TXFMBase64 := Class that performs a Base64 transforms
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // XSEC Includes

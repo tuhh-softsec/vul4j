@@ -62,6 +62,12 @@
  *
  * TXFMXPath := Class that performs XPath transforms
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 

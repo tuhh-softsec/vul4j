@@ -62,6 +62,12 @@
  *
  * DSIGTransformEnvelope := Class that calculates an Envelope with an XPath evaluator
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // XSEC

@@ -62,6 +62,12 @@
  *
  * DSIGTransformBase64 := Class that holds a Base64 transform structure
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // XSEC

@@ -63,6 +63,12 @@
  * XSECC14n20010315 := Canonicaliser object to process XML document in line with
  *					     RFC 3076
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECC14n20010315_INCLUDE
@@ -74,12 +80,14 @@
 #include <xsec/utils/XSECXPathNodeList.hpp>
 #include <xsec/canon/XSECCanon.hpp>
 
-// Xerces includes
 #include <xercesc/framework/XMLFormatter.hpp>
 
 // General includes
 #include <memory.h>
 #include <vector>
+
+XSEC_USING_XERCES(XMLFormatter);
+XSEC_USING_XERCES(XMLFormatTarget);
 
 // --------------------------------------------------------------------------------
 //           Object definitions needed for formatting Xerces objects

@@ -61,7 +61,12 @@
  * XSEC
  *
  * DSIGTransformList := List that holds all the transforms in the Signature.
- *					 
+ *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
  *
  */
 

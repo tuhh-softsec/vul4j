@@ -62,6 +62,12 @@
  *
  * XSECSafeBufferFormatter := Class for formatting DOMStrings into SafeBuffers
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/utils/XSECSafeBufferFormatter.hpp>

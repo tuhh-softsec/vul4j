@@ -62,6 +62,12 @@
  *
  * TXFMSHA1 := Class that performs a SHA1 transform
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // XSEC Includes

@@ -62,6 +62,12 @@
  *
  * templatesign := tool to sign a template XML signature file
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 //XSEC includes
@@ -110,6 +116,10 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/pem.h>
+
+// Uplift entire program into Xerces namespace
+
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Much code taken from the DOMPrint Xerces example

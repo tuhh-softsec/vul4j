@@ -62,6 +62,12 @@
  *
  * TXFMXPath := Class that performs XPath transforms
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMBase.hpp>
@@ -72,7 +78,8 @@
 
 // Xerces
 
-#include <xercesc/dom/DOM.hpp>
+XSEC_DECLARE_XERCES_CLASS(DOMNode);
+XSEC_DECLARE_XERCES_CLASS(DOMNamedNodeMap);
 
 // Xalan
 

@@ -62,6 +62,12 @@
  *
  * OpenSSLCryptoHashSHA1 := OpenSSL Implementation of SHA1
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoHash.hpp>

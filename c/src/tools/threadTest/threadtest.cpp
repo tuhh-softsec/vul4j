@@ -63,6 +63,12 @@
  * threadTest := Run up a number of threads signing and validating
  *				 the signatures.
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // XSEC
@@ -97,12 +103,26 @@ using std::queue;
 using std::vector;
 using std::ostrstream;
 
+XSEC_USING_XERCES(XMLMutex);
+XSEC_USING_XERCES(DOMImplementation);
+XSEC_USING_XERCES(DOMImplementationLS);
+XSEC_USING_XERCES(DOMWriter);
+XSEC_USING_XERCES(XMLUni);
+XSEC_USING_XERCES(StdOutFormatTarget);
+XSEC_USING_XERCES(MemBufFormatTarget);
+XSEC_USING_XERCES(MemBufInputSource);
+XSEC_USING_XERCES(DOMText);
+XSEC_USING_XERCES(XercesDOMParser);
+XSEC_USING_XERCES(XMLPlatformUtils);
+XSEC_USING_XERCES(XMLException);
+XSEC_USING_XERCES(DOMImplementationRegistry);
+
 // --------------------------------------------------------------------------------
 //           Globals used and read by all threads
 // --------------------------------------------------------------------------------
 
 
-#define numThreads	5
+#define numThreads	7
 #define secretKey	"secret"
 #define sleepTime	30
 
@@ -159,8 +179,8 @@ void addDocToQueue (DOMImplementation *impl, DOMDocument * doc) {
 	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
 	theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
-	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
-		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
+		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
 
 	MemBufFormatTarget *formatTarget = new MemBufFormatTarget();

@@ -61,9 +61,15 @@
  * XSEC
  *
  * DSIGSignature := Class for checking and setting up signature nodes in a DSIG signature
- *					 
+ *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
  *
  */
+
 #ifndef DSIGSIGNEDINFO_INCLUDE
 #define DSIGSIGNEDINFO_INCLUDE
 
@@ -75,7 +81,9 @@
 
 // Xerces Includes
 
-#include <xercesc/dom/DOM.hpp>
+XSEC_DECLARE_XERCES_CLASS(DOMDocument);
+XSEC_DECLARE_XERCES_CLASS(DOMNode);
+XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
 // General includes
 

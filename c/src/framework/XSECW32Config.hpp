@@ -64,6 +64,12 @@
  *
  * Needs to be modified by hand
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 /*

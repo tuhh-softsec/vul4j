@@ -62,6 +62,12 @@
  *
  * DSIGKeyName := Simply a string that names a key for an application to read
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/dsig/DSIGKeyInfoName.hpp>

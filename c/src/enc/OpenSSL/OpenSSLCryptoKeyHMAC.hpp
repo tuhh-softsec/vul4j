@@ -62,6 +62,12 @@
  *
  * XSECCryptoKeyHMAC := HMAC Keys
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef OPENSSLCRYPTOKEYHMAC_INCLUDE

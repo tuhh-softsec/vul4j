@@ -62,6 +62,12 @@
  *
  * XSECCryptoException:= How we throw exceptions in XSEC
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 #ifndef XSECCRYPTOEXCEPTION_INCLUDE
 #define XSECCRYPTOEXCEPTION_INCLUDE

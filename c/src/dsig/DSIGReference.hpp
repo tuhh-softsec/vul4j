@@ -61,8 +61,13 @@
  * XSEC
  *
  * DSIG_Reference := Class for checking and setting up reference nodes in a DSIG signature
- *					 
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *					 
  */
 
 // High level include

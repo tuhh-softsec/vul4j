@@ -63,6 +63,12 @@
  * XSECKeyInfoResolver := Virtual interface class for applications
  *						 to map KeyInfo to keys
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECKEYINFORESOLVER_INCLUDE

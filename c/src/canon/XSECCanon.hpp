@@ -62,14 +62,20 @@
  *
  * XSECCanon := Base (abstract) class for canonicalisation objects
  *
+ *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
  */
 
 // XSEC includes
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
 
-// Xerces Includes
-#include <xercesc/dom/DOM.hpp>
+XSEC_DECLARE_XERCES_CLASS(DOMNode);
+XSEC_DECLARE_XERCES_CLASS(DOMDocument);
 
 // --------------------------------------------------------------------------------
 //           Defines

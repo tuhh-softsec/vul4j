@@ -62,6 +62,12 @@
  *
  * XSECCryptoProvider := Base virtual class to define a hash algorithm
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECCRYPTOHASH_INCLUDE

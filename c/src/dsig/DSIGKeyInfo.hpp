@@ -62,6 +62,12 @@
  *
  * DSIGKeyInfo := Base (virtual) class that defines an XSEC KeyInfo node
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef DSIGKEYINFO_INCLUDE

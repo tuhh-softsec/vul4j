@@ -62,6 +62,12 @@
  *
  * OpenSSLCryptoBase64 := Base virtual class to define a base64 encoder/decoder
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef OPENSSLCRYPTOBASE64_INCLUDE

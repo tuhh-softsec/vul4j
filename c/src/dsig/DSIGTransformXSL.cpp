@@ -62,6 +62,12 @@
  *
  * DSIGTransformXSL := Class that Handles DSIG XSLT Transforms
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 // XSEC

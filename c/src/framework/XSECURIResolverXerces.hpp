@@ -63,6 +63,12 @@
  * XSECURIResolverXerces := Virtual Interface class that takes a URI and
  *                    creates a binary input stream from it.
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECURIRESOLVERXERCES_INCLUDE

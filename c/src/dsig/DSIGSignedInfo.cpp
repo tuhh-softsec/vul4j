@@ -61,7 +61,12 @@
  * XSEC
  *
  * DSIGSignedInfo := Class for checking and setting up signed Info nodes in a DSIG signature
- *					 
+ *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
  *
  */
 
@@ -72,6 +77,7 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
+XSEC_USING_XERCES(DOMNamedNodeMap);
 
 // Constructors and Destructors
 

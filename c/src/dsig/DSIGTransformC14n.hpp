@@ -62,6 +62,12 @@
  *
  * DSIGTransformC14n := Class that holds information about C14n transforms
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/dsig/DSIGTransform.hpp>

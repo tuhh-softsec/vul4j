@@ -62,6 +62,12 @@
  *
  * DSIGKeyInfoValue := A value setting
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/dsig/DSIGKeyInfoValue.hpp>

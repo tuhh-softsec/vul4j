@@ -60,8 +60,13 @@
 /*
  * XSEC
  *
- * DSIGSignature := Class for checking and setting up signature nodes in a DSIG signature
- *					 
+ * DSIGSignature := Class for checking and setting up signature nodes in a DSIG signature					 
+ *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
  *
  */
 
@@ -91,6 +96,7 @@
 
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
 
+XSEC_USING_XERCES(DOMNamedNodeMap);
 
 // --------------------------------------------------------------------------------
 //           Some useful utility functions

@@ -65,6 +65,12 @@
  * 
  * NOTE: Much of this code came from Apache examples in the Xerces distribution
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xercesc/dom/DOM.hpp>
@@ -75,8 +81,9 @@
 //           Much code taken from the DOMPrint Xerces example
 // --------------------------------------------------------------------------------
 
-ostream& operator<<(ostream& target, DOMNode * toWrite);
+ostream& operator<<(ostream& target, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * toWrite);
 //ostream& operator<< (ostream& target, const DOMString& s);
 //XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s);
-void docSetup(DOMDocument *doc);
+
+void docSetup(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 

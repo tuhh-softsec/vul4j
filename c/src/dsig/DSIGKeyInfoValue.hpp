@@ -62,6 +62,12 @@
  *
  * DSIGKeyInfoValue := A value setting
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef DSIGKEYINFOVALUE_INCLUDE
@@ -70,6 +76,8 @@
 #include <xsec/utils/XSECSafeBuffer.hpp>
 #include <xsec/dsig/DSIGKeyInfo.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
+
+XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
 /**
  * @ingroup pubsig

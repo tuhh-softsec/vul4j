@@ -61,8 +61,13 @@
  * XSEC
  *
  * XSECBinTXFMInputStream := Implement the BinInputStream around Transforms.
- *					 
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *					 
  */
 
 

@@ -62,6 +62,12 @@
  *
  * XSECCryptoKeyDSA := DSA Keys
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef XSECCRYPTOKEYDSA_INCLUDE

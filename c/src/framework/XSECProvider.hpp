@@ -63,6 +63,12 @@
  * XSECProvider.hpp := The main interface for users wishing to gain access
  *                     to signature objects
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 #ifndef XSECPROVIDER_INCLUDE
 #define XSECPROVIDER_INCLUDE
@@ -219,9 +225,9 @@ private:
 
 	void setup(DSIGSignature *sig);
 
-	SignatureListVectorType			m_activeSignatures;
-	XSECURIResolver					* mp_URIResolver;
-	XMLMutex						m_providerMutex;
+	SignatureListVectorType						m_activeSignatures;
+	XSECURIResolver								* mp_URIResolver;
+	XERCES_CPP_NAMESPACE_QUALIFIER XMLMutex		m_providerMutex;
 };
 
 #endif /* XSECPROVIDER_INCLUDE */

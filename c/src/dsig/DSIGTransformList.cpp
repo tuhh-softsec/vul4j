@@ -61,7 +61,12 @@
  * XSEC
  *
  * DSIGTransformList := Class for Loading and storing a list of references
- *					 
+ *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
  *
  */
 

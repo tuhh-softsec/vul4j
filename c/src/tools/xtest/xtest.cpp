@@ -63,6 +63,12 @@
  * xtest := basic test application to run through a series of tests of
  *			the XSEC library.
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
  
 
@@ -122,6 +128,13 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
+
+/*
+ * Because of all the characters, it's easiest to put the entire program
+ * in the Xerces namespace
+ */
+
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Known "Good" Values

@@ -62,6 +62,12 @@
  *
  * DSIGTransformC14n := Class that performs C14n canonicalisation
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/dsig/DSIGTransformC14n.hpp>
@@ -69,6 +75,8 @@
 #include <xsec/transformers/TXFMC14n.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+
+XSEC_USING_XERCES(DOMNamedNodeMap);
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors

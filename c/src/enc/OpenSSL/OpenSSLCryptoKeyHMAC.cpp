@@ -62,6 +62,12 @@
  *
  * XSECCryptoKeyHMAC := Raw HMAC buffers
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>

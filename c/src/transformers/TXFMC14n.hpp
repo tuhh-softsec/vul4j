@@ -62,6 +62,12 @@
  *
  * TXFMBaseC14n := Class that performs C14n canonicalisation
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMBase.hpp>

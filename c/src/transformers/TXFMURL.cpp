@@ -62,6 +62,12 @@
  *
  * TXFMURL := Class that takes an input URL to start of a transform pipe
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMURL.hpp>
@@ -145,6 +151,8 @@ TXFMBase::nodeType TXFMURL::getNodeType(void) {
 
 unsigned int TXFMURL::readBytes(XMLByte * const toFill, unsigned int maxToFill) {
 	
+	XSEC_USING_XERCES(NetAccessorException);
+
 	// Simply read in from the input stream
 
 	unsigned int ret;

@@ -62,6 +62,12 @@
  *
  * TXFMEnvelope := Class that calculates an Envelope with an XPath evaluator
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #include <xsec/transformers/TXFMEnvelope.hpp>
@@ -151,6 +157,8 @@ TXFMBase::nodeType TXFMEnvelope::getNodeType(void) {
 
 void addEnvelopeNode(DOMNode *startNode, XSECXPathNodeList & XPathMap, DOMNode * sigNode) {
 
+	XSEC_USING_XERCES(DOMNamedNodeMap);
+	
 	DOMNode *tmp;
 	DOMNamedNodeMap *atts;
 	int attsSize, i;

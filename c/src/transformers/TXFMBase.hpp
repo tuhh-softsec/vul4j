@@ -62,6 +62,12 @@
  *
  * TXFMBase := Base (virtual) class that defines a DSIG Transformer
  *
+ * Author(s): Berin Lautenbach
+ *
+ * $ID$
+ *
+ * $LOG$
+ *
  */
 
 #ifndef TXFMBASE_INCLUDE
