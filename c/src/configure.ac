@@ -144,6 +144,10 @@ package_version_major=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $1}'`
 package_version_medium=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $2}'`
 package_version_minor=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $3}'`
 
+package_lib_major=${package_version_major}${package_version_medium}
+package_lib_minor=${package_version_minor}
+package_lib_version=${package_lib_major}.${package_lib_minor}
+
 # "cache" the check for gcc -E
 
 AC_TRY_CPP()
@@ -170,8 +174,8 @@ AC_CANONICAL_HOST
 case "${host}" in
         *-*-solaris*)   platform=SOLARIS 
 						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
+						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
 						lib_short_name="lib${PACKAGE_TARNAME}.so"
 						if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
 						# if test "x${CXX}" = "xg++"; then
@@ -198,8 +202,8 @@ case "${host}" in
 
         *-*-netbsd*)   platform=NETBSD 
 						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
+						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
 						lib_short_name="lib${PACKAGE_TARNAME}.so"
 						PLATFORM_OPTIONS=["-Wall"]
 						PIC=["-fPIC"]
@@ -220,7 +224,7 @@ case "${host}" in
 
         *-*-freebsd*)   platform=FREEBSD 
 						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
+						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
 					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
 						lib_short_name="lib${PACKAGE_TARNAME}.so"
 						PLATFORM_OPTIONS=["-Wall"]
@@ -242,8 +246,8 @@ case "${host}" in
 
         *-*-linux*)     platform=LINUX ;
 						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
+						lib_name="lib${PACKAGE_TARNAME}.so.${package_lib_version}"
+					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_lib_major}"
 						lib_short_name="lib${PACKAGE_TARNAME}.so"
 						#if test "x${CXX}" = "xg++"; then
 						if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
@@ -270,7 +274,7 @@ case "${host}" in
 
 		*-*-cygwin*)	platform=CYGWIN
 						shlibsuffix=.dll
-						lib_name="cyg${PACKAGE_TARNAME}-${PACKAGE_VERSION}.dll"
+						lib_name="cyg${PACKAGE_TARNAME}-${package_lib_version}.dll"
 					    lib_major_name="lib${PACKAGE_TARNAME}.dll.a"
 						lib_short_name="cyg${PACKAGE_TARNAME}.dll"
 						# Assume g++
