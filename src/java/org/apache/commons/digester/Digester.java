@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.90 2004/01/10 17:34:17 rdonkin Exp $
- * $Revision: 1.90 $
- * $Date: 2004/01/10 17:34:17 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.91 2004/01/24 11:22:31 rdonkin Exp $
+ * $Revision: 1.91 $
+ * $Date: 2004/01/24 11:22:31 $
  *
  * ====================================================================
  * 
@@ -120,7 +120,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.90 $ $Date: 2004/01/10 17:34:17 $
+ * @version $Revision: 1.91 $ $Date: 2004/01/24 11:22:31 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1660,9 +1660,23 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Register the specified DTD URL for the specified public identifier.
+     * <p>Register the specified DTD URL for the specified public identifier.
      * This must be called before the first call to <code>parse()</code>.
-     *
+     * </p><p>
+     * <code>Digester</code> contains an internal <code>EntityResolver</code>
+     * implementation. This maps <code>PUBLICID</code>'s to URLs 
+     * (from which the resource will be loaded). A common use case for this
+     * method is to register local URLs (possibly computed at runtime by a 
+     * classloader) for DTDs. This allows the performance advantage of using
+     * a local version without having to ensure every <code>SYSTEM</code>
+     * URI on every processed xml document is local. This implementation provides
+     * only basic functionality. If more sophisticated features are required,
+     * using {@link #setEntityResolver} to set a custom resolver is recommended.
+     * </p><p>
+     * <strong>Note:</strong> This method will have no effect when a custom 
+     * <code>EntityResolver</code> has been set. (Setting a custom 
+     * <code>EntityResolver</code> overrides the internal implementation.) 
+     * </p>
      * @param publicId Public identifier of the DTD to be resolved
      * @param entityURL The URL to use for reading this DTD
      */

@@ -19,6 +19,7 @@ XML documents.
 <a href="#doc.Namespace">[Namespace Aware Parsing]</a>
 <a href="#doc.Pluggable">[Pluggable Rules Processing]</a>
 <a href="#doc.RuleSets">[Encapsulated Rule Sets]</a>
+<a href="#doc.RegisteringDTDs">[Registering DTDs]</a>
 <a href="#doc.troubleshooting">[Troubleshooting]</a>
 <a href="#doc.FAQ">[FAQ]</a>
 <a href="#doc.Limits">[Known Limitations]</a>
@@ -993,6 +994,80 @@ public class MyRuleSet extends RuleSetBase {
     the same set of nested elements at different nesting levels within an
     XML document.</li>
 </ul>
+<a name="doc.RegisteringDTDs"></a>
+<h3>Registering DTDs</h3>
+
+<h4>Brief (But Still Too Long) Introduction To System and Public Identifiers</h4>
+<p>A definition for an external entity comes in one of two forms:
+</p>
+<ol>
+    <li><code>SYSTEM <em>system-identifier</em></code></li>
+    <li><code>PUBLIC <em>public-identifier</em> <em>system-identifier</em></code></li>
+</ol>
+<p>
+The <code><em>system-identifier</em></code> is an URI from which the resource can be obtained
+(either directly or indirectly). Many valid URIs may identify the same resource.
+The <code><em>public-identifier</em></code> is an additional free identifier which may be used
+(by the parser) to locate the resource. 
+</p>
+<p>
+In practice, the weakness with a <code><em>system-identifier</em></code> is that most parsers
+will attempt to interprete this URI as an URL, try to download the resource directly
+from the URL and stop the parsing if this download fails. So, this means that 
+almost always the URI will have to be an URL from which the declaration
+can be downloaded.
+</p>
+<p>
+URLs may be local or remote but if the URL is chosen to be local, it is likely only
+to function correctly on a small number of machines (which are configured precisely
+to allow the xml to be parsed). This is usually unsatisfactory and so a universally
+accessable URL is preferred. This usually means an internet URL.
+</p>
+<p>
+To recap, in practice the <code><em>system-identifier</em></code> will (most likely) be an 
+internet URL. Unfortunately downloading from an internet URL is not only slow
+but unreliable (since successfully downloading a document from the internet 
+relies on the client being connect to the internet and the server being
+able to satisfy the request).
+</p>
+<p>
+The <code><em>public-identifier</em></code> is a freely defined name but (in practice) it is 
+strongly recommended that a unique, readable and open format is used (for reasons
+that should become clear later). A Formal Public Identifier (FPI) is a very
+common choice. This public identifier is often used to provide a unique and location
+independent key which can be used to subsistute local resources for remote ones 
+(hint: this is why ;).
+</p>
+<p>
+By using the second (<code>PUBLIC</code>) form combined with some form of local
+catalog (which matches <code><em>public-identifier</em></code>'s to local resources) and where
+the <code><em>public-identifier</em></code> is a unique name and the <code><em>system-identifier</em></code> 
+is an internet URL, the practical disadvantages of specifying just a 
+<code><em>system-identifier</em></code> can be avoided. Those external entities which have been 
+store locally (on the machine parsing the document) can be identified and used.
+Only when no local copy exists is it necessary to download the document
+from the internet URL. This naming scheme is recommended when using <code>Digester</code>.
+</p>
+
+<h4>External Entity Resolution Using Digester</h4>
+<p>
+SAX factors out the resolution of external entities into an <code>EntityResolver</code>.
+<code>Digester</code> supports the use of custom <code>EntityResolver</code> 
+but ships with a simple internal implementation. This implementation allows local URLs
+to be easily associated with <code><em>public-identifier</em></code>'s. 
+</p>
+<p>For example:</p>
+<code><pre>
+    digester.register("-//Example Dot Com //DTD Sample Example//EN", "assets/sample.dtd");
+</pre></code>
+<p>
+will make digester return the relative file path <code>assets/sample.dtd</code> 
+whenever an external entity with public id 
+<code>-//Example Dot Com //DTD Sample Example//EN</code> is needed.
+</p>
+<p><strong>Note:</strong> This is a simple (but useful) implementation. 
+Greater sophistication requires a custom <code>EntityResolver</code>.</p>
+    
 <a name="doc.troubleshooting"></a>
 <h3>Troubleshooting</h3>
 <h4>Debugging Exceptions</h4>
