@@ -41,6 +41,10 @@ class XKMSLocateRequestImpl : public XKMSRequestAbstractTypeImpl, public XKMSLoc
 public:
 
 	XKMSLocateRequestImpl(
+		const XSECEnv * env
+	);
+
+	XKMSLocateRequestImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node
 	);
@@ -50,10 +54,20 @@ public:
 	// Load elements
 	void load();
 
+	// Creation
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankLocateRequest(
+		const XMLCh * service,
+		const XMLCh * id = NULL);
+
+
 	/* Getter Interface Methods */
 
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const;
 	virtual XKMSQueryKeyBinding * getQueryKeyBinding(void);
+
+	/* Setter interface methods */
+	virtual XKMSQueryKeyBinding * addQueryKeyBinding(void);
 
 	/* Implemented from MessageAbstractType */
 	virtual messageType getMessageType(void);
@@ -94,6 +108,8 @@ public:
 
 private:
 
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement
+				* mp_queryKeyBindingElement;
 	XKMSQueryKeyBindingImpl * mp_queryKeyBinding;
 
 	// Unimplemented

@@ -25,6 +25,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGKeyInfoList.hpp>
@@ -40,6 +41,20 @@ XERCES_CPP_NAMESPACE_USE
 // --------------------------------------------------------------------------------
 
 XKMSKeyBindingAbstractTypeImpl::XKMSKeyBindingAbstractTypeImpl(
+		const XSECEnv * env) :
+mp_keyBindingAbstractTypeElement(NULL),
+mp_idAttr(NULL),
+mp_keyUsageEncryptionElement(NULL),
+mp_keyUsageSignatureElement(NULL),
+mp_keyUsageExchangeElement(NULL),
+mp_keyInfoElement(NULL),
+mp_env(env) {
+
+	XSECnew(mp_keyInfoList, DSIGKeyInfoList(mp_env));
+
+}
+
+XKMSKeyBindingAbstractTypeImpl::XKMSKeyBindingAbstractTypeImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
 mp_keyBindingAbstractTypeElement(node),
@@ -47,8 +62,10 @@ mp_idAttr(NULL),
 mp_keyUsageEncryptionElement(NULL),
 mp_keyUsageSignatureElement(NULL),
 mp_keyUsageExchangeElement(NULL),
-mp_env(env),
-mp_keyInfoList(NULL) {
+mp_keyInfoElement(NULL),
+mp_env(env) {
+
+	XSECnew(mp_keyInfoList, DSIGKeyInfoList(mp_env));
 
 }
 
@@ -84,6 +101,8 @@ void XKMSKeyBindingAbstractTypeImpl::load(void) {
 		XSECnew(mp_keyInfoList, DSIGKeyInfoList(mp_env));
 
 		mp_keyInfoList->loadListFromXML(tmpElt);
+		mp_keyInfoElement = tmpElt;
+
 		tmpElt = findNextElementChild(tmpElt);
 
 	}
@@ -115,6 +134,25 @@ void XKMSKeyBindingAbstractTypeImpl::load(void) {
 
 }
 
+// --------------------------------------------------------------------------------
+//           Create Blank
+// --------------------------------------------------------------------------------
+
+DOMElement * XKMSKeyBindingAbstractTypeImpl::createBlankKeyBindingAbstractType(const XMLCh * tag) {
+
+	// Get some setup values
+	safeBuffer str;
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getXKMSNSPrefix();
+
+	makeQName(str, prefix, tag);
+
+	mp_keyBindingAbstractTypeElement = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
+												str.rawXMLChBuffer());
+
+	return mp_keyBindingAbstractTypeElement;
+
+}
 
 // --------------------------------------------------------------------------------
 //           Getter methods
@@ -159,6 +197,138 @@ bool XKMSKeyBindingAbstractTypeImpl::getExchangeKeyUsage(void) const {
 
 }
 
+// --------------------------------------------------------------------------------
+//			KeyInfo elements
+// --------------------------------------------------------------------------------
+
+DSIGKeyInfoList * XKMSKeyBindingAbstractTypeImpl::getKeyInfoList() {
+
+	return mp_keyInfoList;
+
+}
+
+void XKMSKeyBindingAbstractTypeImpl::clearKeyInfo(void) {
+
+	if (mp_keyInfoElement == NULL)
+		return;
+
+	if (mp_keyBindingAbstractTypeElement->removeChild(mp_keyInfoElement) != mp_keyInfoElement) {
+
+		throw XSECException(XSECException::ExpectedDSIGChildNotFound,
+			"Attempted to remove KeyInfo node but it is no longer a child of <KeyBindingAbstractType>");
+
+	}
+
+	mp_keyInfoElement->release();		// No longer required
+
+	mp_keyInfoElement = NULL;
+
+	// Clear out the list
+	mp_keyInfoList->empty();
+
+}
+
+void XKMSKeyBindingAbstractTypeImpl::createKeyInfoElement(void) {
+
+	if (mp_keyInfoElement != NULL)
+		return;
+
+	safeBuffer str;
+
+	const XMLCh * prefixNS = mp_env->getDSIGNSPrefix();
+	makeQName(str, prefixNS, "KeyInfo");
+
+	mp_keyInfoElement = mp_keyInfoList->createKeyInfo();
+
+	// Needs to be first element
+	DOMNode * insertBefore = mp_keyBindingAbstractTypeElement->getFirstChild();
+
+	if (insertBefore != NULL) {
+
+		mp_keyBindingAbstractTypeElement->insertBefore(mp_keyInfoElement, insertBefore);
+		if (mp_env->getPrettyPrintFlag() == true)
+			mp_keyBindingAbstractTypeElement->insertBefore(mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), insertBefore);
+
+	}
+
+	else {
+
+		mp_keyBindingAbstractTypeElement->appendChild(mp_keyInfoElement);
+		mp_env->doPrettyPrint(mp_keyBindingAbstractTypeElement);
+
+	}
+	
+	// Need to add the DS namespace
+
+	if (prefixNS[0] == '\0') {
+		str.sbTranscodeIn("xmlns");
+	}
+	else {
+		str.sbTranscodeIn("xmlns:");
+		str.sbXMLChCat(prefixNS);
+	}
+
+	mp_keyInfoElement->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
+							str.rawXMLChBuffer(), 
+							DSIGConstants::s_unicodeStrURIDSIG);
+
+}
+
+
+DSIGKeyInfoName * XKMSKeyBindingAbstractTypeImpl::appendKeyName(const XMLCh * name, bool isDName) {
+
+	createKeyInfoElement();
+	return mp_keyInfoList->appendKeyName(name, isDName);
+
+}
+
+
+DSIGKeyInfoValue * XKMSKeyBindingAbstractTypeImpl::appendDSAKeyValue(const XMLCh * P, 
+						   const XMLCh * Q, 
+						   const XMLCh * G, 
+						   const XMLCh * Y) {
+
+	createKeyInfoElement();
+	return mp_keyInfoList->appendDSAKeyValue(P, Q, G, Y);
+
+}
+
+DSIGKeyInfoValue * XKMSKeyBindingAbstractTypeImpl::appendRSAKeyValue(const XMLCh * modulus, 
+						   const XMLCh * exponent) {
+
+	createKeyInfoElement();
+	return mp_keyInfoList->appendRSAKeyValue(modulus, exponent);
+
+}
+
+
+DSIGKeyInfoX509 * XKMSKeyBindingAbstractTypeImpl::appendX509Data(void) {
+
+	createKeyInfoElement();
+	return mp_keyInfoList->appendX509Data();
+
+}
+
+DSIGKeyInfoPGPData * XKMSKeyBindingAbstractTypeImpl::appendPGPData(const XMLCh * id, const XMLCh * packet) {
+
+	createKeyInfoElement();
+	return mp_keyInfoList->appendPGPData(id, packet);
+
+}
+
+DSIGKeyInfoSPKIData * XKMSKeyBindingAbstractTypeImpl::appendSPKIData(const XMLCh * sexp) {
+
+	createKeyInfoElement();
+	return mp_keyInfoList->appendSPKIData(sexp);
+
+}
+
+DSIGKeyInfoMgmtData * XKMSKeyBindingAbstractTypeImpl::appendMgmtData(const XMLCh * data) {
+
+	createKeyInfoElement();
+	return mp_keyInfoList->appendMgmtData(data);
+
+}
 
 // --------------------------------------------------------------------------------
 //           Setter methods

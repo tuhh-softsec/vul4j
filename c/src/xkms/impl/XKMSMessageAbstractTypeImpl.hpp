@@ -45,6 +45,10 @@ public:
 	/* Constructors and Destructors */
 
 	XKMSMessageAbstractTypeImpl(
+		const XSECEnv * env
+	);
+
+	XKMSMessageAbstractTypeImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node
 	);
@@ -53,6 +57,13 @@ public:
 
 	// load
 	void load(void);
+
+	// Create from scratch - tag is the element name to create
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankMessageAbstractType(
+		const XMLCh * tag,
+		const XMLCh * service,
+		const XMLCh * id = NULL);
 
 	/* Message Manipulation Methods */
 

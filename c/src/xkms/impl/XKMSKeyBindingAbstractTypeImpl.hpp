@@ -43,6 +43,10 @@ public:
 	/* Constructors and Destructors */
 
 	XKMSKeyBindingAbstractTypeImpl(
+		const XSECEnv * env
+	);
+
+	XKMSKeyBindingAbstractTypeImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node
 	);
@@ -51,6 +55,10 @@ public:
 
 	// Load
 	void load(void);
+
+	// Create
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *
+		createBlankKeyBindingAbstractType(const XMLCh * tag);
 
 	/* Getter Interface Methods */
 
@@ -69,6 +77,22 @@ public:
 	virtual void setSignatureKeyUsage(void);
 	virtual void setExchangeKeyUsage(void);
 
+	/* Key Info methods */
+	virtual DSIGKeyInfoList * getKeyInfoList();
+	virtual void clearKeyInfo(void);
+	virtual DSIGKeyInfoValue * appendDSAKeyValue(const XMLCh * P, 
+						   const XMLCh * Q, 
+						   const XMLCh * G, 
+						   const XMLCh * Y);
+	virtual DSIGKeyInfoValue * appendRSAKeyValue(const XMLCh * modulus, 
+						   const XMLCh * exponent);
+	virtual DSIGKeyInfoX509 * appendX509Data(void);
+	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false);
+	virtual DSIGKeyInfoPGPData * appendPGPData(const XMLCh * id, const XMLCh * packet);
+	virtual DSIGKeyInfoSPKIData * appendSPKIData(const XMLCh * sexp);
+	virtual DSIGKeyInfoMgmtData * appendMgmtData(const XMLCh * data);
+
+
 protected:
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement
@@ -85,7 +109,11 @@ private:
 					* mp_keyUsageEncryptionElement;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement
 					* mp_keyUsageExchangeElement;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement
+					* mp_keyInfoElement;
 	DSIGKeyInfoList * mp_keyInfoList;
+
+	void createKeyInfoElement(void);
 
 	// Unimplemented
 	XKMSKeyBindingAbstractTypeImpl(void);
@@ -116,7 +144,29 @@ private:
 	virtual void setSignatureKeyUsage(void) \
 		{XKMSKeyBindingAbstractTypeImpl::setSignatureKeyUsage();} \
 	virtual void setExchangeKeyUsage(void) \
-		{XKMSKeyBindingAbstractTypeImpl::setExchangeKeyUsage();}
+		{XKMSKeyBindingAbstractTypeImpl::setExchangeKeyUsage();} \
+	virtual DSIGKeyInfoList * getKeyInfoList() \
+		{return XKMSKeyBindingAbstractTypeImpl::getKeyInfoList();} \
+	virtual void clearKeyInfo(void) \
+		{XKMSKeyBindingAbstractTypeImpl::clearKeyInfo();} \
+	virtual DSIGKeyInfoValue * appendDSAKeyValue(const XMLCh * P,  \
+						   const XMLCh * Q,  \
+						   const XMLCh * G,  \
+						   const XMLCh * Y) \
+		{return XKMSKeyBindingAbstractTypeImpl::appendDSAKeyValue(P,Q,G,Y);} \
+	virtual DSIGKeyInfoValue * appendRSAKeyValue(const XMLCh * modulus,  \
+						   const XMLCh * exponent) \
+		{return XKMSKeyBindingAbstractTypeImpl::appendRSAKeyValue(modulus,exponent);} \
+	virtual DSIGKeyInfoX509 * appendX509Data(void) \
+		{return XKMSKeyBindingAbstractTypeImpl::appendX509Data();} \
+	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false) \
+		{return XKMSKeyBindingAbstractTypeImpl::appendKeyName(name,isDName);} \
+	virtual DSIGKeyInfoPGPData * appendPGPData(const XMLCh * id, const XMLCh * packet) \
+		{return XKMSKeyBindingAbstractTypeImpl::appendPGPData(id,packet);} \
+	virtual DSIGKeyInfoSPKIData * appendSPKIData(const XMLCh * sexp) \
+		{return XKMSKeyBindingAbstractTypeImpl::appendSPKIData(sexp);} \
+	virtual DSIGKeyInfoMgmtData * appendMgmtData(const XMLCh * data) \
+		{return XKMSKeyBindingAbstractTypeImpl::appendMgmtData(data);}
 
 
 #endif /* XKMSKEYBINDINGABSTRACTTYPEIMPL_INCLUDE */

@@ -553,6 +553,7 @@ void DSIGKeyInfoX509::appendX509Certificate(const XMLCh * base64Certificate) {
 
 	X509Holder * h;
 	XSECnew(h, X509Holder);
+	m_X509List.push_back(h);
 	h->mp_encodedX509 = b64Txt->getNodeValue();
 	h->mp_cryptoX509 = XSECPlatformUtils::g_cryptoProvider->X509();
 	char * charX509 = XMLString::transcode(h->mp_encodedX509);

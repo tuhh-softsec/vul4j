@@ -31,6 +31,7 @@
 #include <xsec/xkms/XKMSConstants.hpp>
 
 #include <xercesc/dom/DOM.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
 
 #include "XKMSMessageAbstractTypeImpl.hpp"
 
@@ -41,11 +42,29 @@ XERCES_CPP_NAMESPACE_USE
 // --------------------------------------------------------------------------------
 
 XKMSMessageAbstractTypeImpl::XKMSMessageAbstractTypeImpl(
+		const XSECEnv * env) :
+
+mp_env(env),
+mp_messageAbstractTypeElement(NULL),
+mp_idAttr(NULL),
+mp_serviceAttr(NULL),
+mp_nonceAttr(NULL),
+mp_signatureElement(NULL),
+mp_signature(NULL) {
+
+}
+
+XKMSMessageAbstractTypeImpl::XKMSMessageAbstractTypeImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
 
 mp_env(env),
-mp_messageAbstractTypeElement(node) {
+mp_messageAbstractTypeElement(node),
+mp_idAttr(NULL),
+mp_serviceAttr(NULL),
+mp_nonceAttr(NULL),
+mp_signatureElement(NULL),
+mp_signature(NULL) {
 
 }
 
@@ -112,6 +131,68 @@ void XKMSMessageAbstractTypeImpl::load(void) {
 		mp_signature->load();
 
 	}
+
+}
+
+// --------------------------------------------------------------------------------
+//           Create blank
+// --------------------------------------------------------------------------------
+
+DOMElement * XKMSMessageAbstractTypeImpl::createBlankMessageAbstractType(
+		const XMLCh * tag,
+		const XMLCh * service,
+		const XMLCh * id) {
+
+	// Get some setup values
+	safeBuffer str;
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getXKMSNSPrefix();
+
+	makeQName(str, prefix, tag);
+
+	mp_messageAbstractTypeElement = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
+												str.rawXMLChBuffer());
+
+	// Set namespace
+	if (prefix[0] == chNull) {
+		str.sbTranscodeIn("xmlns");
+	}
+	else {
+		str.sbTranscodeIn("xmlns:");
+		str.sbXMLChCat(prefix);
+	}
+
+	mp_messageAbstractTypeElement->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
+							str.rawXMLChBuffer(), 
+							XKMSConstants::s_unicodeStrURIXKMS);
+
+	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+
+	// Setup the service URI
+	mp_messageAbstractTypeElement->setAttributeNS(NULL, 
+							XKMSConstants::s_tagService,
+							service);
+	mp_serviceAttr = 
+		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagService);
+
+
+	// Setup the id
+	XMLCh anAtt[] = {chLatin_a,chLatin_n,chLatin_A,chLatin_t,chLatin_t,chNull};
+	const XMLCh * myId;
+	if (id != NULL)
+		myId = id;
+	else
+		myId = anAtt;
+
+	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagId, myId);
+	mp_messageAbstractTypeElement->setIdAttributeNS(NULL, XKMSConstants::s_tagId);
+	mp_idAttr = 
+		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagId);
+
+	// Nonce is blank at start
+	mp_nonceAttr = NULL;
+
+	return mp_messageAbstractTypeElement;
 
 }
 

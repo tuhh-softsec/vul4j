@@ -47,6 +47,17 @@ public:
 	virtual XKMSMessageAbstractType * newMessageFromDOM(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * elt);
 
+	/* Construction from scratch */
+	virtual XKMSLocateRequest * createLocateRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL);		
+	virtual XKMSLocateRequest * createLocateRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL);
+
+
 	/* Environment Manipulation */
 	virtual void setDSIGNSPrefix(const XMLCh * prefix);
 	virtual void setECNSPrefix(const XMLCh * prefix);

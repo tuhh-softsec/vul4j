@@ -25,6 +25,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 
@@ -37,6 +38,14 @@ XERCES_CPP_NAMESPACE_USE
 // --------------------------------------------------------------------------------
 //           Construct/Destruct
 // --------------------------------------------------------------------------------
+
+XKMSLocateRequestImpl::XKMSLocateRequestImpl(
+		const XSECEnv * env) :
+XKMSRequestAbstractTypeImpl(env),
+mp_queryKeyBindingElement(NULL),
+mp_queryKeyBinding(NULL) {
+
+}
 
 XKMSLocateRequestImpl::XKMSLocateRequestImpl(
 		const XSECEnv * env, 
@@ -90,8 +99,23 @@ void XKMSLocateRequestImpl::load() {
 
 		XSECnew(mp_queryKeyBinding, XKMSQueryKeyBindingImpl(mp_env, tmpElt));
 		mp_queryKeyBinding->load();
+		mp_queryKeyBindingElement = tmpElt;
 
 	}
+
+}
+
+// --------------------------------------------------------------------------------
+//           Create a blank one
+// --------------------------------------------------------------------------------
+DOMElement * XKMSLocateRequestImpl::createBlankLocateRequest(
+		const XMLCh * service,
+		const XMLCh * id) {
+
+	return XKMSRequestAbstractTypeImpl::createBlankMessageAbstractType(
+		XKMSConstants::s_tagLocateRequest, service, id);
+//	return XKMSRequestAbstractTypeImpl::createBlankMessageAbstractType(
+//		MAKE_UNICODE_STRING("ValidateRequest"), service, id);
 
 }
 
@@ -100,9 +124,9 @@ void XKMSLocateRequestImpl::load() {
 // --------------------------------------------------------------------------------
 
 
-XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * XKMSLocateRequestImpl::getElement(void) const {
+DOMElement * XKMSLocateRequestImpl::getElement(void) const {
 
-	return NULL;
+	return mp_messageAbstractTypeElement;
 
 }
 
@@ -119,3 +143,27 @@ XKMSQueryKeyBinding * XKMSLocateRequestImpl::getQueryKeyBinding(void) {
 
 }
 
+// --------------------------------------------------------------------------------
+//           Setter methods
+// --------------------------------------------------------------------------------
+
+XKMSQueryKeyBinding * XKMSLocateRequestImpl::addQueryKeyBinding(void) {
+
+	if (mp_queryKeyBinding != NULL)
+		return mp_queryKeyBinding;
+
+
+	// OK - Nothing exists, so we need to create from scratch
+
+	XSECnew(mp_queryKeyBinding, XKMSQueryKeyBindingImpl(mp_env));
+	mp_queryKeyBindingElement = mp_queryKeyBinding->createBlankQueryKeyBinding();
+
+	if (mp_messageAbstractTypeElement->getFirstChild() == NULL) {
+		mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	}
+	mp_messageAbstractTypeElement->appendChild(mp_queryKeyBindingElement);
+	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+
+	return mp_queryKeyBinding;
+
+}

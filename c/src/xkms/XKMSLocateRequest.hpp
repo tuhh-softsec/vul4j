@@ -98,6 +98,22 @@ public:
 
 	//@}
 
+	/** @name Setter Interface Methods */
+	//@{
+
+	/** \brief Add a QueryKeyBinding element
+	 *
+	 * Set a QueryKeyBinding element in the LocateRequest message.  The returned
+	 * object can be manipulated to add KeyInfo elements to the LocateRequest.
+	 *
+	 * @returns A pointer to the newly created QueryKeyBinding object, or
+	 * the pointer to extant object if one already existed.
+	 */
+
+	virtual XKMSQueryKeyBinding * addQueryKeyBinding(void) = 0;
+
+	//@}
+
 private:
 
 	// Unimplemented

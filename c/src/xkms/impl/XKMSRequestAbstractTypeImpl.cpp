@@ -42,8 +42,15 @@ XERCES_CPP_NAMESPACE_USE
 // --------------------------------------------------------------------------------
 
 XKMSRequestAbstractTypeImpl::XKMSRequestAbstractTypeImpl(
+	const XSECEnv * env) :
+XKMSMessageAbstractTypeImpl(env)
+{
+
+}
+
+XKMSRequestAbstractTypeImpl::XKMSRequestAbstractTypeImpl(
 	const XSECEnv * env, 
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
+	DOMElement * node) :
 XKMSMessageAbstractTypeImpl(env, node)
 {
 
@@ -84,6 +91,19 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 	}
 
 	XKMSMessageAbstractTypeImpl::load();
+
+}
+
+// --------------------------------------------------------------------------------
+//           Create from scratch
+// --------------------------------------------------------------------------------
+
+DOMElement * XKMSRequestAbstractTypeImpl::createBlankRequestAbstractType(
+		const XMLCh * tag,
+		const XMLCh * service,
+		const XMLCh * id) {
+
+	return XKMSMessageAbstractTypeImpl::createBlankMessageAbstractType(tag, service, id);
 
 }
 

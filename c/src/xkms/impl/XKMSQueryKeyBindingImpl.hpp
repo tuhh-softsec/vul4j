@@ -38,6 +38,10 @@ class XKMSQueryKeyBindingImpl : public XKMSQueryKeyBinding, public XKMSKeyBindin
 public:
 
 	XKMSQueryKeyBindingImpl(
+		const XSECEnv * env
+	);
+
+	XKMSQueryKeyBindingImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node
 	);
@@ -46,6 +50,10 @@ public:
 
 	// Load
 	void load(void);
+
+	// Create
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *
+		createBlankQueryKeyBinding(void);
 
 	// Import methods from XKMSKeyBindingAbstractType
 	XKMS_KEYBINDINGABSTRACTYPE_IMPL_METHODS

@@ -29,6 +29,7 @@
 #include <xsec/framework/XSECProvider.hpp>
 #include <xsec/canon/XSECC14n20010315.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
@@ -37,6 +38,10 @@
 #include <xsec/xkms/XKMSMessageAbstractType.hpp>
 #include <xsec/xkms/XKMSLocateRequest.hpp>
 #include <xsec/xkms/XKMSQueryKeyBinding.hpp>
+
+#if defined(_WIN32)
+#    include <xsec/utils/winutils/XSECSOAPRequestorSimpleWin32.hpp>
+#endif
 
 // General
 
@@ -55,6 +60,7 @@
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/framework/StdOutFormatTarget.hpp>
 #include <xercesc/util/XMLException.hpp>
 #include <xercesc/util/XMLUri.hpp>
 #include <xercesc/util/Janitor.hpp>
@@ -92,11 +98,17 @@ XALAN_USING_XALAN(XalanTransformer)
 enum eProcessingMode {
 
 	ModeNone,			// No mode yet set
-	ModeMsgDump			// We are here to simply parse and dump an XKMS message
+	ModeMsgDump,		// We are here to simply parse and dump an XKMS message
+	ModeMsgCreate,		// Creating a msg from scratch
+	ModeDoRequest,		// Create a message and send to service
 
 };
 
 char * g_inputFile = NULL;
+char * g_msgType = NULL;
+char * g_serviceURI = NULL;
+char * g_certFile = NULL;
+bool g_txtOut = false;
 
 // --------------------------------------------------------------------------------
 //           General functions
@@ -146,6 +158,169 @@ void levelSet(int level) {
 
 	for (int i = 0; i < level; ++i)
 		cout << "    ";
+
+}
+
+void outputDoc(DOMDocument * doc) {
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+
+	theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
+		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+
+
+	XMLFormatTarget *formatTarget = new StdOutFormatTarget();
+
+	cerr << endl;
+
+	theSerializer->writeNode(formatTarget, *doc);
+	
+	cout << endl;
+
+	cerr << endl;
+
+	delete theSerializer;
+	delete formatTarget;
+
+}
+
+XSECCryptoX509 * loadX509(const char * infile) {
+
+	FILE * f = fopen(infile, "r");
+	if (f == NULL)
+		return NULL;
+
+	safeBuffer sb;
+	char buf[1024];
+
+	int i = fread(buf, 1, 1024, f);
+	int j = 0;
+	while (i != 0) {
+		sb.sbMemcpyIn(j, buf, i);
+		j += i;
+		i = fread(buf, 1, 1024, f);
+	}
+
+	sb[j] = '\0';
+
+	XSECCryptoX509 * ret = 
+		XSECPlatformUtils::g_cryptoProvider->X509();
+
+	ret->loadX509PEM(sb.rawCharBuffer());
+
+	return ret;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Create a message
+// --------------------------------------------------------------------------------
+
+int createMessage(char * msgType, XSECProvider &prov, DOMDocument **doc, XKMSMessageAbstractType **msg) {
+
+	XKMSMessageFactory * factory = prov.getXKMSMessageFactory();
+
+	// Create a new message
+	if (!stricmp(msgType, "LocateRequest")) {
+
+		XKMSLocateRequest * lr = factory->createLocateRequest(MAKE_UNICODE_STRING(g_serviceURI), doc);
+
+		if (g_certFile != NULL) {
+			XSECCryptoX509 * x = loadX509(g_certFile);
+			if (x == NULL) {
+				delete lr;
+				(*doc)->release();
+				cerr << "Error opening Certificate file : " << g_certFile << endl;
+				return 1;
+			}
+
+			Janitor<XSECCryptoX509> j_x(x);
+
+			XKMSQueryKeyBinding * qkb = lr->addQueryKeyBinding();
+			DSIGKeyInfoX509 * kix = qkb->appendX509Data();
+			safeBuffer sb = x->getDEREncodingSB();
+			kix->appendX509Certificate(sb.sbStrToXMLCh());
+
+		}
+
+		*msg = lr;
+	}
+	else {
+
+		cerr << "Unknown message type : " << msgType << endl;
+		return 2;
+	
+	}
+
+	return 0;
+	
+}
+	
+// --------------------------------------------------------------------------------
+//           doRequest
+// --------------------------------------------------------------------------------
+
+int doRequest(char * msgType) {
+
+	XSECProvider prov;
+	XKMSMessageFactory * factory = prov.getXKMSMessageFactory();
+
+	// Create a new message
+	XKMSMessageAbstractType * msg;
+	DOMDocument * doc;
+
+	if (createMessage(msgType, prov, &doc, &msg) != 0)
+		return 2;
+
+	if (g_txtOut) {
+
+		outputDoc(doc);
+
+	}
+
+#if defined(_WIN32)
+	XSECSOAPRequestorSimpleWin32 req(MAKE_UNICODE_STRING(g_serviceURI));
+	req.doRequest(doc);
+#endif
+
+	delete msg;
+	doc->release();
+
+	return 0;
+
+}
+
+// --------------------------------------------------------------------------------
+//           MsgCreate
+// --------------------------------------------------------------------------------
+
+int doMessageCreate(char * msgType) {
+
+	XSECProvider prov;
+	XKMSMessageFactory * factory = prov.getXKMSMessageFactory();
+
+	// Create a new message
+	XKMSMessageAbstractType * msg;
+	DOMDocument * doc;
+
+	if (createMessage(msgType, prov, &doc, &msg) != 0)
+		return 2;
+
+	if (g_txtOut) {
+
+		outputDoc(doc);
+
+	}
+
+	delete msg;
+	doc->release();
+
+	return 0;
 
 }
 
@@ -401,11 +576,22 @@ int doMsgDump(void) {
 
 void printUsage(void) {
 
-	cerr << "\nUsage: siging {msgdump} [options]\n\n";
-	cerr << "     msgdump : Read an XKMS message and print details\n";
+	cerr << "\nUsage: siging {msgdump|msgcreate [type]} [options]\n\n";
+	cerr << "     msgdump   : Read an XKMS message and print details\n";
+	cerr << "     msgcreate : Create a message of type :\n";
+	cerr << "                 LocateRequest\n";
+	cerr << "     dorequest : Create message of type : \n";
+	cerr << "                 LocateRequest\n";
+	cerr << "                 send to service URI and output result\n\n";
 	cerr << "     Where options are :\n\n";
 	cerr << "     --infile/-i {filename}\n";
-	cerr << "         File to read as input\n\n";
+	cerr << "         File to read as input\n";
+	cerr << "     --text/-t\n";
+	cerr << "         Print any created XML to screen\n";
+	cerr << "     --add-cert/-a {filename}\n";
+	cerr << "         Add the cert in the specified file to msg\n";
+	cerr << "     --service/-s\n";
+	cerr << "         Service URI to use in created messages\n\n";
 
 }
 
@@ -413,16 +599,33 @@ int evaluate(int argc, char ** argv) {
 	
 	eProcessingMode			mode = ModeNone;
 
+
 	if (argc < 2) {
 
 		printUsage();
 		return 2;
 	}
 
+	int paramCount = 2;
+
 	if (!stricmp (argv[1], "msgdump")) {
 
 		mode = ModeMsgDump;
 
+	}
+
+	else if (!stricmp (argv[1], "msgcreate")) {
+
+		mode=ModeMsgCreate;
+		g_msgType = argv[paramCount];
+		paramCount++;
+	}
+
+	else if (!stricmp (argv[1], "dorequest")) {
+
+		mode=ModeDoRequest;
+		g_msgType = argv[paramCount];
+		paramCount++;
 	}
 
 	else {
@@ -433,7 +636,6 @@ int evaluate(int argc, char ** argv) {
 	}
 
 	// Run through parameters
-	int paramCount = 2;
 
 	while (paramCount < argc) {
 
@@ -443,6 +645,27 @@ int evaluate(int argc, char ** argv) {
 				return 2;
 			}
 			g_inputFile = argv[paramCount];
+			paramCount++;
+		}
+
+		else if (stricmp(argv[paramCount], "--add-cert") == 0 || stricmp(argv[paramCount], "-a") == 0) {
+			if (++paramCount >= argc) {
+				printUsage();
+				return 2;
+			}
+			g_certFile = argv[paramCount];
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--text") == 0 || stricmp(argv[paramCount], "-t") == 0) {
+			g_txtOut = true;
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--service") == 0 || stricmp(argv[paramCount], "-s") == 0) {
+			if (++paramCount >= argc) {
+				printUsage();
+				return 2;
+			}
+			g_serviceURI = argv[paramCount];
 			paramCount++;
 		}
 		else {
@@ -456,7 +679,15 @@ int evaluate(int argc, char ** argv) {
 	case ModeMsgDump :
 
 		return doMsgDump();
+
+	case ModeMsgCreate :
+
+		return doMessageCreate(g_msgType);
 		
+	case ModeDoRequest :
+
+		return doRequest(g_msgType);
+
 	default :
 
 		cerr << "Catastrophic error - somehow I don't know what I'm doing!\n";

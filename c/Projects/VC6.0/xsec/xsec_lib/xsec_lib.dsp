@@ -1164,5 +1164,9 @@ SOURCE=..\..\..\..\src\xkms\XKMSRequestAbstractType.hpp
 SOURCE=..\..\..\..\src\xkms\XKMSRespondWith.hpp
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\XSECCryptoX509.cpp
+# End Source File
 # End Target
 # End Project

@@ -27,12 +27,24 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/xkms/XKMSConstants.hpp>
+
+#include <xercesc/dom/DOM.hpp>
 
 #include "XKMSQueryKeyBindingImpl.hpp"
+
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Construct/Destruct
 // --------------------------------------------------------------------------------
+
+XKMSQueryKeyBindingImpl::XKMSQueryKeyBindingImpl(
+		const XSECEnv * env 
+		) :
+XKMSKeyBindingAbstractTypeImpl(env) {
+
+}
 
 XKMSQueryKeyBindingImpl::XKMSQueryKeyBindingImpl(
 		const XSECEnv * env, 
@@ -58,3 +70,15 @@ void XKMSQueryKeyBindingImpl::load(void) {
 	XKMSKeyBindingAbstractTypeImpl::load();
 
 }
+
+// --------------------------------------------------------------------------------
+//           Create
+// --------------------------------------------------------------------------------
+
+DOMElement * XKMSQueryKeyBindingImpl::createBlankQueryKeyBinding(void) {
+
+	return XKMSKeyBindingAbstractTypeImpl::
+				createBlankKeyBindingAbstractType(XKMSConstants::s_tagQueryKeyBinding);
+
+}
+

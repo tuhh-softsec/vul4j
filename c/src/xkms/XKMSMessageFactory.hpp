@@ -32,6 +32,7 @@
 #include <xsec/xkms/XKMSMessageAbstractType.hpp>
 
 class DSIGSignature;
+class XKMSLocateRequest;
 
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
@@ -90,6 +91,52 @@ public:
 	virtual XKMSMessageAbstractType * newMessageFromDOM(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * elt) = 0;
 
+
+	//@}
+
+	/** @name Methods for building new messages from scratch */
+	//@{
+
+	/**
+	 * \brief Create a new \<LocateRequest\> message.
+	 * 
+	 * Generates a new LocateRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Document to create the DOM structure within.  The caller
+	 * will need to embed the DOM structure at the appropriate place in the
+	 * document (using a call to getElement to find the top level element)
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSLocateRequest structure
+	 */
+
+	virtual XKMSLocateRequest * createLocateRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL) = 0;
+		
+	/**
+	 * \brief Create a new \<LocateRequest\> message and surrounding document
+	 * 
+	 * Generates a new LocateRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSLocateRequest structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleteing the LocateRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSLocateRequest * createLocateRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL) = 0;
 
 	//@}
 

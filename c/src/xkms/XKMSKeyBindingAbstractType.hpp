@@ -31,6 +31,13 @@
 #include <xsec/framework/XSECDefs.hpp>
 
 class DSIGKeyInfoList;
+class DSIGKeyInfoMgmtData;
+class DSIGKeyInfoName;
+class DSIGKeyInfoPGPData;
+class DSIGKeyInfoSPKIData;
+class DSIGKeyInfoValue;
+class DSIGKeyInfoX509;
+
 
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
@@ -194,6 +201,124 @@ public:
 	 */
 
 	virtual void setExchangeKeyUsage(void) = 0;
+
+	//@}
+
+	/** @name KeyInfo Element Manipulation */
+	
+	//@{
+
+	/**
+	 * \brief Get the list of \<KeyInfo\> elements.
+	 *
+	 * <p>This function recovers list that contains the KeyInfo elements
+	 * read in from the DOM document.</p>
+	 *
+	 * @returns A pointer to the (library owned) KeyInfo list, or NULL
+	 * if none exists in the KeyBinding.
+	 */
+	
+	virtual DSIGKeyInfoList * getKeyInfoList(void) = 0;
+
+	/**
+	 * \brief Clear out all KeyInfo elements in the KeyBinding.
+	 *
+	 * This function will delete all KeyInfo elements from both the KeyBinding
+	 * object <em>and the associated DOM</em>.
+	 *
+	 */
+
+	virtual void clearKeyInfo(void) = 0;
+
+	/**
+	 * \brief Append a DSA KeyValue element 
+	 *
+	 * Add a new KeyInfo element for a DSA Value
+	 *
+	 * @param P Base64 encoded value of P
+	 * @param Q Base64 encoded value of Q
+	 * @param G Base64 encoded value of G
+	 * @param Y Base64 encoded value of Y
+	 * @returns A pointer to the created object.
+	 */
+
+	virtual DSIGKeyInfoValue * appendDSAKeyValue(const XMLCh * P, 
+						   const XMLCh * Q, 
+						   const XMLCh * G, 
+						   const XMLCh * Y) = 0;
+
+	/**
+	 * \brief Append a RSA KeyValue element 
+	 *
+	 * Add a new KeyInfo element for a RSA Value
+	 *
+	 * @param modulus Base64 encoded value of the modulus
+	 * @param exponent Base64 encoded value of exponent
+	 * @returns A pointer to the created object.
+	 */
+
+	virtual DSIGKeyInfoValue * appendRSAKeyValue(const XMLCh * modulus, 
+						   const XMLCh * exponent) = 0;
+
+	/**
+	 * \brief Append a X509Data element.
+	 *
+	 * Add a new KeyInfo element for X509 data.
+	 *
+	 * @note The added element is empty.  The caller must make use of the
+	 * returned object to set the required values.
+	 *
+	 * @returns A pointer to the created object.
+	 */
+
+	virtual DSIGKeyInfoX509 * appendX509Data(void) = 0;
+
+	/**
+	 * \brief Append a KeyName element.
+	 *
+	 * Add a new KeyInfo element for a key name.
+	 *
+	 * @param name The name of the key to set in the XML
+	 * @param isDName Treat the name as a Distinguished name and encode accordingly
+	 * @returns A pointer to the created object
+	 */
+
+	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false) = 0;
+
+	/**
+	 * \brief Append a PGPData element.
+	 *
+	 * Add a new KeyInfo element for a PGP key.
+	 *
+	 * @param id The ID of the key to set in the XML (base64 encoded - NULL if none)
+	 * @param packet The Packet information to set in the XML (base64 encoded -
+	 * NULL if none)
+	 * @returns A pointer to the created object
+	 */
+
+	virtual DSIGKeyInfoPGPData * appendPGPData(const XMLCh * id, const XMLCh * packet) = 0;
+
+	/**
+	 * \brief Append a SPKIData element
+	 *
+	 * Add a new KeyInfo element for a set of SPKI S-expressions
+	 *
+	 * @param sexp The initial S-expression to set in the SPKIData element
+	 * @returns A pointer to the created object
+	 */
+
+	virtual DSIGKeyInfoSPKIData * appendSPKIData(const XMLCh * sexp) = 0;
+
+	/**
+	 * \brief Append a MgmtData element
+	 *
+	 * Add a new KeyInfo element for Management Data
+	 *
+	 * @param data The string to set in the MgmtData element
+	 * @returns A pointer to the created object
+	 */
+
+	virtual DSIGKeyInfoMgmtData * appendMgmtData(const XMLCh * data) = 0;
 
 	//@}
 

@@ -134,25 +134,18 @@ char * XSECSOAPRequestorSimpleWin32::wrapAndSerialise(DOMDocument * request) {
 	makeQName(str, s_prefix, s_Envelope);
 
 	DOMDocument *doc = impl->createDocument(
-		XKMSConstants::s_unicodeStrURISOAP12,
+		XKMSConstants::s_unicodeStrURISOAP11,
 				str.rawXMLChBuffer(),
 				NULL);// DOMDocumentType());  // document type object (DTD).
 
 	DOMElement *rootElem = doc->getDocumentElement();
 
-	makeQName(str, s_prefix, s_Header);
-	DOMElement *header = doc->createElementNS(
-			XKMSConstants::s_unicodeStrURISOAP12,
-			str.rawXMLChBuffer());
-
-	rootElem->appendChild(header);
-
 	makeQName(str, s_prefix, s_Body);
 	DOMElement *body = doc->createElementNS(
-			XKMSConstants::s_unicodeStrURISOAP12,
+			XKMSConstants::s_unicodeStrURISOAP11,
 			str.rawXMLChBuffer());
 
-	header->appendChild(body);
+	rootElem->appendChild(body);
 
 	// Now replicate the request into the document
 	DOMElement * reqElement = (DOMElement *) doc->importNode(request->getDocumentElement(), true);
@@ -303,7 +296,7 @@ DOMDocument * XSECSOAPRequestorSimpleWin32::doRequest(DOMDocument * request) {
     }
     strcat(fBuffer, " HTTP/1.0\r\n");
 
-	strcat(fBuffer, "Content-Type: text/xml\r\n");
+	strcat(fBuffer, "Content-Type: text/xml; charset=utf-8\r\n");
 
 
     strcat(fBuffer, "Host: ");
@@ -318,12 +311,13 @@ DOMDocument * XSECSOAPRequestorSimpleWin32::doRequest(DOMDocument * request) {
 
 	strcat(fBuffer, "Content-Length: ");
     int i = (int) strlen(fBuffer);
-    _itoa(strlen(content)+2, fBuffer+i, 10);
+    _itoa(strlen(content), fBuffer+i, 10);
 	strcat(fBuffer, "\r\n");
+	strcat(fBuffer, "SOAPAction: \"\"\r\n");
 
-	strcat(fBuffer, "Connection: Close\r\n");
-	strcat(fBuffer, "Cache-Control: no-cache\r\n");
-    strcat(fBuffer, "\r\n\r\n");
+/*	strcat(fBuffer, "Connection: Close\r\n");
+	strcat(fBuffer, "Cache-Control: no-cache\r\n");*/
+    strcat(fBuffer, "\r\n");
 
 	// Now the content
 	strcat(fBuffer, content);
@@ -345,7 +339,7 @@ DOMDocument * XSECSOAPRequestorSimpleWin32::doRequest(DOMDocument * request) {
     //
     memset(fBuffer, 0, sizeof(fBuffer));
     aLent = XSECBinHTTPURIInputStream::recv((unsigned short) s, fBuffer, sizeof(fBuffer)-1, 0);
-    if (aLent == SOCKET_ERROR || aLent == 0)
+	if (aLent == SOCKET_ERROR || aLent == 0)
     {
         // Call WSAGetLastError() to get the error number.
         throw XSECException(XSECException::HTTPURIInputStreamError,
