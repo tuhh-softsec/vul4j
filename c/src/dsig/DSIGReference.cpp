@@ -320,13 +320,13 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 
 	// Set type
 	if (type != NULL)
-		ret->setAttribute(MAKE_UNICODE_STRING("Type"),
+		ret->setAttributeNS(NULL, MAKE_UNICODE_STRING("Type"),
 			MAKE_UNICODE_STRING(type));
 
 	// Set URI
 	if (URI != NULL) {
-		ret->setAttribute(s_unicodeStrURI, URI);
-		mp_URI = ret->getAttribute(s_unicodeStrURI); // Used later on as a pointer
+		ret->setAttributeNS(NULL, s_unicodeStrURI, URI);
+		mp_URI = ret->getAttributeNS(NULL, s_unicodeStrURI); // Used later on as a pointer
 	}
 	else {
 		// Anonymous reference
@@ -347,7 +347,7 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 
 	}
 
-	digestMethod->setAttribute(DSIGConstants::s_unicodeStrAlgorithm, str.sbStrToXMLCh());
+	digestMethod->setAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm, str.sbStrToXMLCh());
 
 	// DigestValue
 

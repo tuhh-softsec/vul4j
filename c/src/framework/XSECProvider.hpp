@@ -215,7 +215,9 @@ public:
 
 private:
 
-
+	// Copy constructor is disabled
+	XSECProvider(const XSECProvider &);
+	XSECProvider * operator = (const XSECProvider &);
 
 	// Internal functions
 
