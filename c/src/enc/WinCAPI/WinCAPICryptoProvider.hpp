@@ -31,6 +31,8 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoProvider.hpp>
 
+#if defined (HAVE_WINCAPI)
+
 #if defined (_WIN32_WINNT)
 #	undef _WIN32_WINNT
 #endif
@@ -389,6 +391,6 @@ private:
 
 /*\@}*/
 
-
+#endif /* HAVE_WINCAPI */
 #endif /* WINCAPICRYPTOPROVIDER_INCLUDE */
 
