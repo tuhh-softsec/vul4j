@@ -25,10 +25,13 @@ import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.KeyPairGenerator;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
+import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
@@ -39,6 +42,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.encryption.EncryptedData;
@@ -74,6 +78,9 @@ public class XMLCipherTester extends TestCase {
     private String elementIndex;
     private XMLCipher cipher;
 
+	private boolean haveISOPadding;
+	private boolean haveKeyWraps;
+
 	private String tstBase64EncodedString;
 
     public XMLCipherTester(String test) {
@@ -89,6 +96,25 @@ public class XMLCipherTester extends TestCase {
             "0");
 
 		tstBase64EncodedString = new String("YmNkZWZnaGlqa2xtbm9wcRrPXjQ1hvhDFT+EdesMAPE4F6vlT+y0HPXe0+nAGLQ8");
+
+		// Determine if we have ISO 10126 Padding - needed for Bulk AES or
+		// 3DES encryption
+
+		haveISOPadding = false;
+		JCEMapper.ProviderIdClass provId = 
+			JCEMapper.translateURItoJCEID(org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
+
+		if (provId != null) {
+			try {
+				if (Cipher.getInstance(provId.getAlgorithmID()) != null)
+					haveISOPadding = true;
+			} catch (NoSuchAlgorithmException nsae) {
+			} catch (NoSuchPaddingException nspe) {
+			}
+		}
+
+		haveKeyWraps = (JCEMapper.translateURItoJCEID(org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_KEYWRAP_AES128) != null);
+
     }
 
     protected void tearDown() {
@@ -131,7 +157,7 @@ public class XMLCipherTester extends TestCase {
 	 * encrypted using a AES 192 bit key.  Then reverse using the KEK
 	 */
 
-	public void testAES128ElementAES192KWCipherUsingKEK() {
+	public void testAES128ElementAES192KWCipherUsingKEK() throws Exception {
 
 		Document d = document(); // source
 		Document ed = null;
@@ -142,7 +168,7 @@ public class XMLCipherTester extends TestCase {
 		String source = null;
 		String target = null;
 
-        try {
+        if (haveISOPadding && haveKeyWraps) {
 
 			source = toString(d);
 
@@ -184,11 +210,11 @@ public class XMLCipherTester extends TestCase {
 
             target = toString(dd);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        Assert.assertEquals(source, target);
+			Assert.assertEquals(source, target);
+		}
+		else {
+			log.warn("Test testAES128ElementAES192KWCipherUsingKEK skipped as necessary algorithms not available");
+		}
     }
   
 	/**
@@ -196,7 +222,7 @@ public class XMLCipherTester extends TestCase {
 	 * encrypted using an RSA key.  Reverse using KEK
 	 */
 
-	public void testAES128ElementRSAKWCipherUsingKEK() {
+	public void testAES128ElementRSAKWCipherUsingKEK() throws Exception {
 
 		Document d = document(); // source
 		Document ed = null;
@@ -207,7 +233,7 @@ public class XMLCipherTester extends TestCase {
 		String source = null;
 		String target = null;
 
-        try {
+        if (haveISOPadding) {
 
 			source = toString(d);
 
@@ -257,11 +283,11 @@ public class XMLCipherTester extends TestCase {
             log.debug("Output document");
             log.debug(target);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        Assert.assertEquals(source, target);
+			Assert.assertEquals(source, target);
+		}
+		else {
+			log.warn("Test testAES128ElementRSAKWCipherUsingKEK skipped as necessary algorithms not available");
+		}
     }
 
 	/**
@@ -270,7 +296,7 @@ public class XMLCipherTester extends TestCase {
 	 * EncryptedKey by hand
 	 */
 
-	public void testAES192ElementAES256KWCipher() {
+	public void testAES192ElementAES256KWCipher() throws Exception {
 
 		Document d = document(); // source
 		Document ed = null;
@@ -281,7 +307,7 @@ public class XMLCipherTester extends TestCase {
 		String source = null;
 		String target = null;
 
-        try {
+        if (haveISOPadding && haveKeyWraps) {
 
 			source = toString(d);
 
@@ -343,14 +369,15 @@ public class XMLCipherTester extends TestCase {
             dd = cipher3.doFinal(ed, ee);
 
             target = toString(dd);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 
-        Assert.assertEquals(source, target);
+			Assert.assertEquals(source, target);
+		}
+		else {
+			log.warn("Test testAES192ElementAES256KWCipher skipped as necessary algorithms not available");
+		}
     }
 
-    public void testTrippleDesElementCipher() {
+    public void testTrippleDesElementCipher() throws Exception {
         Document d = document(); // source
         Document ed = null;      // target
         Document dd = null;      // target
@@ -360,7 +387,7 @@ public class XMLCipherTester extends TestCase {
         String source = null;
         String target = null;
 
-        try {
+        if (haveISOPadding) {
 
 			source = toString(d);
 
@@ -385,14 +412,14 @@ public class XMLCipherTester extends TestCase {
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        Assert.assertEquals(source, target);
+			Assert.assertEquals(source, target);
+		}
+		else {
+			log.warn("Test testTrippleDesElementCipher skipped as necessary algorithms not available");
+		}
     }
 
-    public void testAes128ElementCipher() {
+    public void testAes128ElementCipher() throws Exception {
         byte[] bits128 = {
             (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13,
             (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17,
@@ -409,7 +436,7 @@ public class XMLCipherTester extends TestCase {
         String source = null;
         String target = null;
 
-        try {
+        if (haveISOPadding) {
 
 			source = toString(d);
 
@@ -428,14 +455,14 @@ public class XMLCipherTester extends TestCase {
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        Assert.assertEquals(source, target);
+			Assert.assertEquals(source, target);
+		}
+		else {
+			log.warn("Test testAes128ElementCipher skipped as necessary algorithms not available");
+		}
     }
 
-    public void testAes192ElementCipher() {
+    public void testAes192ElementCipher() throws Exception {
         byte[] bits192 = {
             (byte) 0x08, (byte) 0x09, (byte) 0x0A, (byte) 0x0B,
             (byte) 0x0C, (byte) 0x0D, (byte) 0x0E, (byte) 0x0F,
@@ -454,7 +481,7 @@ public class XMLCipherTester extends TestCase {
         String source = null;
         String target = null;
 
-        try {
+        if (haveISOPadding) {
 
 			source = toString(d);
 
@@ -473,14 +500,14 @@ public class XMLCipherTester extends TestCase {
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        Assert.assertEquals(source, target);
+			Assert.assertEquals(source, target);
+		}
+		else {
+			log.warn("Test testAes192ElementCipher skipped as necessary algorithms not available");
+		}
     }
 
-    public void testAes265ElementCipher() {
+    public void testAes265ElementCipher() throws Exception {
         byte[] bits256 = {
             (byte) 0x00, (byte) 0x01, (byte) 0x02, (byte) 0x03,
             (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07,
@@ -501,7 +528,7 @@ public class XMLCipherTester extends TestCase {
         String source = null;
         String target = null;
 
-        try {
+        if (haveISOPadding) {
 
 			source = toString(d);
 
@@ -520,11 +547,11 @@ public class XMLCipherTester extends TestCase {
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        Assert.assertEquals(source, target);
+			Assert.assertEquals(source, target);
+		}
+		else {
+			log.warn("Test testAes265ElementCipher skipped as necessary algorithms not available");
+		}
     }
 
     /*
@@ -532,7 +559,7 @@ public class XMLCipherTester extends TestCase {
 	 * In this case the EncryptedData becomes the root element of the document
 	 */
 
-    public void testTrippleDesDocumentCipher() {
+    public void testTrippleDesDocumentCipher() throws Exception {
         Document d = document(); // source
         Document ed = null;      // target
         Document dd = null;      // target
@@ -542,7 +569,8 @@ public class XMLCipherTester extends TestCase {
         String source = null;
         String target = null;
 
-        try {
+        if (haveISOPadding) {
+
 			source = toString(d);
 
             // prepare for encryption
@@ -564,11 +592,11 @@ public class XMLCipherTester extends TestCase {
 
             target = toString(dd);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        Assert.assertEquals(source, target);
+			Assert.assertEquals(source, target);
+		}
+		else {
+			log.warn("Test testTrippleDesDocumentCipher skipped as necessary algorithms not available");
+		}
     }
 
 	/*
@@ -577,63 +605,68 @@ public class XMLCipherTester extends TestCase {
 
 	public void testSameDocumentCipherReference() throws Exception {
 
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = dbf.newDocumentBuilder();
+        if (haveISOPadding) {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
 
-		Document d = db.newDocument();
+			Document d = db.newDocument();
 
-		Element docElement = d.createElement("EncryptedDoc");
-		d.appendChild(docElement);
+			Element docElement = d.createElement("EncryptedDoc");
+			d.appendChild(docElement);
 
-		// Create the XMLCipher object
-		cipher = XMLCipher.getInstance();
+			// Create the XMLCipher object
+			cipher = XMLCipher.getInstance();
 
-		EncryptedData ed = 
-			cipher.createEncryptedData(CipherData.REFERENCE_TYPE,
+			EncryptedData ed = 
+				cipher.createEncryptedData(CipherData.REFERENCE_TYPE,
 									   "#CipherTextId");
-		EncryptionMethod em =
-			cipher.createEncryptionMethod(XMLCipher.AES_128);
+			EncryptionMethod em =
+				cipher.createEncryptionMethod(XMLCipher.AES_128);
 
-		ed.setEncryptionMethod(em);
+			ed.setEncryptionMethod(em);
 
-		org.apache.xml.security.encryption.Transforms xencTransforms =
-			cipher.createTransforms(d);
-		ed.getCipherData().getCipherReference().setTransforms(xencTransforms);
-		org.apache.xml.security.transforms.Transforms dsTransforms =
-			xencTransforms.getDSTransforms();
+			org.apache.xml.security.encryption.Transforms xencTransforms =
+				cipher.createTransforms(d);
+			ed.getCipherData().getCipherReference().setTransforms(xencTransforms);
+			org.apache.xml.security.transforms.Transforms dsTransforms =
+				xencTransforms.getDSTransforms();
 
-		// An XPath transform
-		XPathContainer xpc = new XPathContainer(d);
-		xpc.setXPath("self::text()[parent::CipherText[@Id=\"CipherTextId\"]]");
-		dsTransforms.addTransform(org.apache.xml.security.transforms.Transforms.TRANSFORM_XPATH, 
-								  xpc.getElementPlusReturns());
+			// An XPath transform
+			XPathContainer xpc = new XPathContainer(d);
+			xpc.setXPath("self::text()[parent::CipherText[@Id=\"CipherTextId\"]]");
+			dsTransforms.addTransform(org.apache.xml.security.transforms.Transforms.TRANSFORM_XPATH, 
+									  xpc.getElementPlusReturns());
 
-		// Add a Base64 Transforms
-		dsTransforms.addTransform(
-								  org.apache.xml.security.transforms.Transforms.TRANSFORM_BASE64_DECODE);
+			// Add a Base64 Transforms
+			dsTransforms.addTransform(
+									  org.apache.xml.security.transforms.Transforms.TRANSFORM_BASE64_DECODE);
 
-		Element ee = cipher.martial(d, ed);
+			Element ee = cipher.martial(d, ed);
 
-		docElement.appendChild(ee);
+			docElement.appendChild(ee);
 
-		// Add the cipher text
-		Element encryptedElement = d.createElement("CipherText");
-		encryptedElement.setAttributeNS(null, "Id", "CipherTextId");
-		IdResolver.registerElementById(encryptedElement, "CipherTextId");
-		encryptedElement.appendChild(d.createTextNode(tstBase64EncodedString));
-		docElement.appendChild(encryptedElement);
-		// dump(d);
+			// Add the cipher text
+			Element encryptedElement = d.createElement("CipherText");
+			encryptedElement.setAttributeNS(null, "Id", "CipherTextId");
+			IdResolver.registerElementById(encryptedElement, "CipherTextId");
+			encryptedElement.appendChild(d.createTextNode(tstBase64EncodedString));
+			docElement.appendChild(encryptedElement);
+			// dump(d);
 
-		// Now the decrypt, with a brand new cipher
-		XMLCipher cipherDecrypt = XMLCipher.getInstance();
-        Key key = 
-			new SecretKeySpec("abcdefghijklmnop".getBytes("ASCII"), "AES");
+			// Now the decrypt, with a brand new cipher
+			XMLCipher cipherDecrypt = XMLCipher.getInstance();
+			Key key = 
+				new SecretKeySpec("abcdefghijklmnop".getBytes("ASCII"), "AES");
 
-		cipherDecrypt.init(XMLCipher.DECRYPT_MODE, key);
-		byte[] decryptBytes = cipherDecrypt.decryptToByteArray(ee);
+			cipherDecrypt.init(XMLCipher.DECRYPT_MODE, key);
+			byte[] decryptBytes = cipherDecrypt.decryptToByteArray(ee);
 
-        Assert.assertEquals(new String(decryptBytes, "ASCII"), 
-							new String("A test encrypted secret"));
+			Assert.assertEquals(new String(decryptBytes, "ASCII"), 
+								new String("A test encrypted secret"));
+		}
+		else {
+			log.warn("Test testSameDocumentCipherReference skipped as necessary algorithms not available");
+		}
 
 	}
 

@@ -21,10 +21,13 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Key;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
@@ -35,6 +38,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
@@ -92,6 +96,8 @@ public class BaltimoreEncTest extends TestCase {
 	private static byte[] jobBytes;
 	private static byte[] jedBytes;
 	private static PrivateKey rsaKey;
+	private boolean haveISOPadding;
+	private boolean haveKeyWraps;
 
 	/** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
@@ -185,6 +191,23 @@ public class BaltimoreEncTest extends TestCase {
 	
 		// Register our key resolver
 		KeyResolver.register("org.apache.xml.security.test.encryption.BobKeyResolver");
+
+		// Check what algorithms are available
+
+		haveISOPadding = false;
+		JCEMapper.ProviderIdClass provId = 
+			JCEMapper.translateURItoJCEID(org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
+
+		if (provId != null) {
+			try {
+				if (Cipher.getInstance(provId.getAlgorithmID()) != null)
+					haveISOPadding = true;
+			} catch (NoSuchAlgorithmException nsae) {
+			} catch (NoSuchPaddingException nspe) {
+			}
+		}
+
+		haveKeyWraps = (JCEMapper.translateURItoJCEID(org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_KEYWRAP_AES128) != null);
 	}
 
 	/**
@@ -253,10 +276,15 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_content_3des_cbc() throws Exception {
 
-		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-tripledes-cbc.xml";
+		if (haveISOPadding) {
+			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-tripledes-cbc.xml";
 
-		Document dd = decryptElement(filename);
-		checkDecryptedDoc(dd, true);
+			Document dd = decryptElement(filename);
+			checkDecryptedDoc(dd, true);
+		}
+		else {
+			log.warn("Skipping test test_five_content_3des_cbs as necessary crypto algorithms are not available");
+		}
     }
 
 	/**
@@ -268,10 +296,15 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_content_aes256_cbc() throws Exception {
 
-		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes256-cbc-prop.xml";
+		if (haveISOPadding) {
+			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes256-cbc-prop.xml";
 
-		Document dd = decryptElement(filename);
-		checkDecryptedDoc(dd, true);
+			Document dd = decryptElement(filename);
+			checkDecryptedDoc(dd, true);
+		}
+		else {
+			log.warn("Skipping test test_five_content_aes256_cbc as necessary crypto algorithms are not available");
+		}
     }
 
 	/**
@@ -284,11 +317,15 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_content_aes128_cbc_kw_aes192() throws Exception {
 
-		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes128-cbc-kw-aes192.xml";
+		if (haveISOPadding && haveKeyWraps) {
+			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes128-cbc-kw-aes192.xml";
 
-		Document dd = decryptElement(filename);
-		checkDecryptedDoc(dd, true);
-
+			Document dd = decryptElement(filename);
+			checkDecryptedDoc(dd, true);
+		}
+		else {
+			log.warn("Skipping test test_five_content_aes128_cbc_kw_aes192 as necessary crypto algorithms are not available");
+		}
     }
 
 	/**
@@ -301,10 +338,15 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_content_3des_cbc_kw_aes128() throws Exception {
 
-		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-tripledes-cbc-kw-aes128.xml";
+		if (haveISOPadding && haveKeyWraps) {
+			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-tripledes-cbc-kw-aes128.xml";
 
-		Document dd = decryptElement(filename);
-		checkDecryptedDoc(dd, true);
+			Document dd = decryptElement(filename);
+			checkDecryptedDoc(dd, true);
+		}
+		else {
+			log.warn("Skipping test test_five_content_3des_cbc_kw_aes128 as necessary crypto algorithms are not available");
+		}
 
     }
 
@@ -318,11 +360,15 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_content_aes128_cbc_rsa_15() throws Exception {
 
-		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes128-cbc-rsa-1_5.xml";
+		if (haveISOPadding) {
+			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes128-cbc-rsa-1_5.xml";
 
-		Document dd = decryptElement(filename);
-		checkDecryptedDoc(dd, true);
-
+			Document dd = decryptElement(filename);
+			checkDecryptedDoc(dd, true);
+		}
+		else {
+			log.warn("Skipping test test_five_content_aes128_cbc_rsa_15 as necessary crypto algorithms are not available");
+		}
     }
 
 	/**
@@ -335,12 +381,17 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_element_aes192_cbc_ref() throws Exception {
 
-		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes192-cbc-ref.xml";
+		if (haveISOPadding) {
+			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes192-cbc-ref.xml";
 
-		Document dd = decryptElement(filename);
-		// Note - we don't check the node count, as it will be different
-		// due to the encrypted text remainin in the reference nodes
-		checkDecryptedDoc(dd, false);
+			Document dd = decryptElement(filename);
+			// Note - we don't check the node count, as it will be different
+			// due to the encrypted text remainin in the reference nodes
+			checkDecryptedDoc(dd, false);
+		}
+		else {
+			log.warn("Skipping test test_five_element_aes192_cbc_ref as necessary crypto algorithms are not available");
+		}
     }
 
 	/**
@@ -353,10 +404,15 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_data_aes128_cbc() throws Exception {
 
-		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes128-cbc.xml";
+		if (haveISOPadding) {
+			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes128-cbc.xml";
 
-		byte[] decrypt = decryptData(filename);
-		checkDecryptedData(decrypt);
+			byte[] decrypt = decryptData(filename);
+			checkDecryptedData(decrypt);
+		}
+		else {
+			log.warn("Skipping test test_five_data_aes128_cbc as necessary crypto algorithms are not available");
+		}
     }
 
 	/**
@@ -369,10 +425,15 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_data_aes256_cbc_3des() throws Exception {
 
-		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes256-cbc-kw-tripledes.xml";
+		if (haveISOPadding && haveKeyWraps) {
+			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes256-cbc-kw-tripledes.xml";
 
-		byte[] decrypt = decryptData(filename);
-		checkDecryptedData(decrypt);
+			byte[] decrypt = decryptData(filename);
+			checkDecryptedData(decrypt);
+		}
+		else {
+			log.warn("Skipping test test_five_data_aes256_cbc_3des as necessary crypto algorithms are not available");
+		}
     }
 
 	/**
@@ -385,10 +446,15 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_data_aes192_cbc_aes256() throws Exception {
 
-		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes192-cbc-kw-aes256.xml";
+		if (haveISOPadding && haveKeyWraps) {
+			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes192-cbc-kw-aes256.xml";
 
-		byte[] decrypt = decryptData(filename);
-		checkDecryptedData(decrypt);
+			byte[] decrypt = decryptData(filename);
+			checkDecryptedData(decrypt);
+		}
+		else {
+			log.warn("Skipping test test_five_data_aes192_cbc_aes256 as necessary crypto algorithms are not available");
+		}
     }
 
 	/**
@@ -401,10 +467,15 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_data_3des_cbc_rsa_oaep() throws Exception {
 
-		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml";
+		if (haveISOPadding) {
+			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml";
 
-		byte[] decrypt = decryptData(filename);
-		checkDecryptedData(decrypt);
+			byte[] decrypt = decryptData(filename);
+			checkDecryptedData(decrypt);
+		}
+		else {
+			log.warn("Skipping test test_five_data_3des_cbc_rsa_oaep as necessary crypto algorithms are not available");
+		}
     }
 
 	/**
