@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/plugins/TestAll.java,v 1.3 2003/10/09 21:09:49 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2003/10/09 21:09:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/plugins/TestAll.java,v 1.4 2003/11/12 23:21:18 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/12 23:21:18 $
  *
  * ====================================================================
  * 
@@ -99,6 +99,7 @@ public class TestAll extends TestCase {
         suite.addTest(TestLocalRules.suite());
         suite.addTest(TestRuleInfo.suite());
         suite.addTest(TestRecursion.suite());
+        suite.addTest(TestConfigurablePluginAttributes.suite());
         return suite;
     }
         

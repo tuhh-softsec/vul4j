@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.6 2003/11/02 23:26:59 rdonkin Exp $
- * $Revision: 1.6 $
- * $Date: 2003/11/02 23:26:59 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.7 2003/11/12 23:21:18 rdonkin Exp $
+ * $Revision: 1.7 $
+ * $Date: 2003/11/12 23:21:18 $
  *
  * ====================================================================
  * 
@@ -80,8 +80,31 @@ import org.apache.commons.logging.Log;
  */
 public class PluginCreateRule extends Rule implements InitializableRule {
 
-    private static final String PLUGIN_CLASS_ATTR = "plugin-class";
-    private static final String PLUGIN_ID_ATTR = "plugin-id";
+    // the xml attribute the user uses on an xml element to specify
+    // the plugin's class
+    public static final String GLOBAL_PLUGIN_CLASS_ATTR_NS = null;
+    public static final String GLOBAL_PLUGIN_CLASS_ATTR = "plugin-class";
+
+    // the xml attribute the user uses on an xml element to specify
+    // the plugin's class
+    public static final String GLOBAL_PLUGIN_ID_ATTR_NS = null;
+    public static final String GLOBAL_PLUGIN_ID_ATTR = "plugin-id";
+    
+    // see setGlobalPluginClassAttribute
+    private static String globalPluginClassAttrNs_ = GLOBAL_PLUGIN_CLASS_ATTR_NS;
+    private static String globalPluginClassAttr_ = GLOBAL_PLUGIN_CLASS_ATTR;
+
+    // see setGlobalPluginIdAttribute
+    private static String globalPluginIdAttrNs_ = GLOBAL_PLUGIN_ID_ATTR_NS;
+    private static String globalPluginIdAttr_ = GLOBAL_PLUGIN_ID_ATTR;
+    
+    // see setPluginClassAttribute
+    private String pluginClassAttrNs_ = globalPluginClassAttrNs_;
+    private String pluginClassAttr_ = globalPluginClassAttr_;
+    
+    // see setPluginIdAttribute
+    private String pluginIdAttrNs_ = globalPluginIdAttrNs_;
+    private String pluginIdAttr_ = globalPluginIdAttr_;
     
     /**
      * In order to invoke the addRules method on the plugin class correctly,
@@ -114,6 +137,76 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      */
     private PluginRules localRules_; 
     
+    //-------------------- static methods -----------------------------------
+    
+    /**
+     * Sets the xml attribute which the input xml uses to indicate to a 
+     * PluginCreateRule which class should be instantiated.
+     * <p>
+     * Example:
+     * <pre>
+     * PluginCreateRule.setGlobalPluginClassAttribute(null, "class");
+     * </pre>
+     * will allow this in the input xml:
+     * <pre>
+     *  [root]
+     *    [some-plugin class="com.acme.widget"] ......
+     * </pre>
+     *
+     * Note that this changes the default for <i>all</i> PluginCreateRule
+     * instances. To override just specific PluginCreateRule instances (which
+     * may be more friendly in container-based environments), see method
+     * setPluginClassAttribute.
+     *
+     * @param namespaceUri is the namespace uri that the specified attribute
+     * is in. If the attribute is in no namespace, then this should be null.
+     * Note that if a namespace is used, the attrName value should <i>not</i>
+     * contain any kind of namespace-prefix. Note also that if you are using
+     * a non-namespace-aware parser, this parameter <i>must</i> be null.
+     *
+     * @param attrName is the attribute whose value contains the name of the
+     * class to be instantiated.
+     */
+    public static void setGlobalPluginClassAttribute(
+    String namespaceUri, String attrName) {
+        globalPluginClassAttrNs_ = namespaceUri;
+        globalPluginClassAttr_ = attrName;
+    }
+
+    /**
+     * Sets the xml attribute which the input xml uses to indicate to a 
+     * PluginCreateRule which plugin declaration is being referenced.
+     * <p>
+     * Example:
+     * <pre>
+     * PluginCreateRule.setGlobalPluginIdAttribute(null, "id");
+     * </pre>
+     * will allow this in the input xml:
+     * <pre>
+     *  [root]
+     *    [some-plugin id="widget"] ......
+     * </pre>
+     *
+     * Note that this changes the default for <i>all</i> PluginCreateRule
+     * instances. To override just specific PluginCreateRule instances (which
+     * may be more friendly in container-based environments), see method
+     * setPluginIdAttribute.
+     *
+     * @param namespaceUri is the namespace uri that the specified attribute
+     * is in. If the attribute is in no namespace, then this should be null.
+     * Note that if a namespace is used, the attrName value should <i>not</i>
+     * contain any kind of namespace-prefix. Note also that if you are using
+     * a non-namespace-aware parser, this parameter <i>must</i> be null.
+     *
+     * @param attrName is the attribute whose value contains the id of the
+     * plugin declaration to be used when instantiating an object.
+     */
+    public static void setGlobalPluginIdAttribute(
+    String namespaceUri, String attrName) {
+        globalPluginIdAttrNs_ = namespaceUri;
+        globalPluginIdAttr_ = attrName;
+    }
+
     //-------------------- constructors -------------------------------------
 
     /**
@@ -179,6 +272,30 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         }
     }
     
+    /**
+     * Sets the xml attribute which the input xml uses to indicate to a 
+     * PluginCreateRule which class should be instantiated.
+     * <p>
+     * See setGlobalPluginClassAttribute for more info.
+     */
+    public void setPluginClassAttribute(
+    String namespaceUri, String attrName) {
+        pluginClassAttrNs_ = namespaceUri;
+        pluginClassAttr_ = attrName;
+    }
+
+    /**
+     * Sets the xml attribute which the input xml uses to indicate to a 
+     * PluginCreateRule which plugin declaration is being referenced.
+     * <p>
+     * See setGlobalPluginIdAttribute for more info.
+     */
+    public void setPluginIdAttribute(
+    String namespaceUri, String attrName) {
+        pluginIdAttrNs_ = namespaceUri;
+        pluginIdAttr_ = attrName;
+    }
+
     //------------------- methods --------------------------------------------
 
     /**
@@ -261,8 +378,9 @@ public class PluginCreateRule extends Rule implements InitializableRule {
 
             try {
                 defaultPlugin_.init(digester);
-            }
-            catch(PluginWrappedException pwe) {
+                
+            } catch(PluginWrappedException pwe) {
+            
                 throw new PluginConfigurationException(
                     pwe.getMessage(), pwe.getCause());
             }
@@ -334,8 +452,29 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                     + ", localrules=" + localRules_.toString());
             }
               
-            String pluginClassName = attributes.getValue(PLUGIN_CLASS_ATTR);
-            String pluginId = attributes.getValue(PLUGIN_ID_ATTR);
+            String pluginClassName; 
+            if (pluginClassAttrNs_ == null) {
+                // Yep, this is ugly.
+                //
+                // In a namespace-aware parser, the one-param version will 
+                // return attributes with no namespace.
+                //
+                // In a non-namespace-aware parser, the two-param version will 
+                // never return any attributes, ever.
+                pluginClassName = attributes.getValue(pluginClassAttr_);
+            } else {
+                pluginClassName = 
+                    attributes.getValue(pluginClassAttrNs_, pluginClassAttr_);
+            }
+
+            String pluginId; 
+            if (pluginIdAttrNs_ == null) {
+                pluginId = attributes.getValue(pluginIdAttr_);
+            }
+            else {
+                pluginId = 
+                    attributes.getValue(pluginIdAttrNs_, pluginIdAttr_);
+            }
             
             if (pluginClassName != null) {
                 currDeclaration = pluginManager.getDeclarationByClass(
@@ -345,23 +484,20 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                     currDeclaration = new Declaration(pluginClassName);
                     try {
                         currDeclaration.init(digester);
-                    }
-                    catch(PluginWrappedException pwe) {
+                    } catch(PluginWrappedException pwe) {
                         throw new PluginInvalidInputException(
                             pwe.getMessage(), pwe.getCause());
                     }
                     pluginManager.addDeclaration(currDeclaration);
                 }
-            }
-            else if (pluginId != null) {
+            } else if (pluginId != null) {
                 currDeclaration = pluginManager.getDeclarationById(pluginId);
                 
                 if (currDeclaration == null) {
                     throw new PluginInvalidInputException(
                         "Plugin id [" + pluginId + "] is not defined.");
                 }
-            }
-            else if (defaultPlugin_ != null) {
+            } else if (defaultPlugin_ != null) {
                 currDeclaration = defaultPlugin_;
             }
             else {
@@ -372,20 +508,20 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             
             // now load up the custom rules into a private Rules instance
             digester.setRules(localRules_);
-            {
-                currDeclaration.configure(digester, pattern_);
         
-                Class pluginClass = currDeclaration.getPluginClass();
-                
-                Object instance = pluginClass.newInstance();
-                getDigester().push(instance);
-                if (debug) {
-                    log.debug(
-                        "PluginCreateRule.begin" + ": pattern=[" + pattern_ + "]" + 
-                        " match=[" + digester.getMatch() + "]" + 
-                        " pushed instance of plugin [" + pluginClass.getName() + "]");
-                }
+            currDeclaration.configure(digester, pattern_);
+    
+            Class pluginClass = currDeclaration.getPluginClass();
+            
+            Object instance = pluginClass.newInstance();
+            getDigester().push(instance);
+            if (debug) {
+                log.debug(
+                    "PluginCreateRule.begin" + ": pattern=[" + pattern_ + "]" + 
+                    " match=[" + digester.getMatch() + "]" + 
+                    " pushed instance of plugin [" + pluginClass.getName() + "]");
             }
+        
             digester.setRules(oldRules);
 
             ((PluginRules) oldRules).beginPlugin(this);
