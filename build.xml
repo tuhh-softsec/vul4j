@@ -84,9 +84,9 @@
 
     <property name="jce.download"          value="http://www.bouncycastle.org/download/${jce.download.file}" />
     <property name="lib.jce"               value="${dir.libs}/bc-${jce.download.file}" />
-    <property name="lib.junit"             value="${dir.libs}/junit3.7.jar" />     
-    <property name="lib.log4j"             value="${dir.libs}/jakarta-log4j-1.2.6.jar" />
-    <property name="lib.logging"           value="${dir.libs}/commons-logging-1.0.3.jar" />
+    <property name="lib.junit"             value="${dir.libs}/junit3.7.jar" />
+    <property name="lib.log.api"           value="${dir.libs}/commons-logging-api.jar" />
+    <property name="lib.log"               value="${dir.libs}/commons-logging.jar" />
     <property name="lib.styleApache"       value="${dir.libs}/style-apachexml.jar" />
     <property name="lib.stylebook"         value="${dir.libs}/stylebook-1.0-b3_xalan-2.jar" />
     <property name="lib.xalan.1"           value="${dir.libs}/xalan.jar" />
@@ -99,8 +99,8 @@
       <pathelement path="${lib.xerces.2}" />
       <pathelement path="${lib.xalan.1}" />
       <pathelement path="${lib.xalan.2}" />
-      <pathelement path="${lib.log4j}" />
-      <pathelement path="${lib.logging}" />
+      <pathelement path="${lib.log.api}" />
+      <pathelement path="${lib.log}" />
       <pathelement path="${lib.jce}" />
     </path>
 
