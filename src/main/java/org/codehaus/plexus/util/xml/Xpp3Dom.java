@@ -169,37 +169,12 @@ public class Xpp3Dom
     // Helpers
     // ----------------------------------------------------------------------
 
-    private static void write( Xpp3Dom xpp3Dom, XMLWriter xmlWriter )
-    {
-        // TODO: move to XMLWriter?
-        xmlWriter.startElement( xpp3Dom.getName() );
-        String[] attributeNames = xpp3Dom.getAttributeNames();
-        for ( int i = 0; i < attributeNames.length; i++ )
-        {
-            String attributeName = attributeNames[i];
-            xmlWriter.addAttribute( attributeName, xpp3Dom.getAttribute( attributeName ) );
-        }
-        Xpp3Dom[] children = xpp3Dom.getChildren();
-        for ( int i = 0; i < children.length; i++ )
-        {
-            write( children[i], xmlWriter );
-        }
-
-        String value = xpp3Dom.getValue();
-        if ( value != null )
-        {
-            xmlWriter.writeText( value );
-        }
-
-        xmlWriter.endElement();
-    }
-
     public void writeToSerializer( String namespace, XmlSerializer serializer )
         throws IOException
     {
         // TODO: Xpp3DomWriter?
         SerializerXMLWriter xmlWriter = new SerializerXMLWriter( namespace, serializer );
-        write( this, xmlWriter );
+        Xpp3DomWriter.write( xmlWriter, this );
         if ( xmlWriter.getExceptions().size() > 0 )
         {
             throw (IOException) xmlWriter.getExceptions().get( 0 );
@@ -260,7 +235,7 @@ public class Xpp3Dom
     {
         StringWriter writer = new StringWriter();
         XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer );
-        write( this, xmlWriter );
+        Xpp3DomWriter.write( xmlWriter, this );
         return writer.toString();
     }
 }

@@ -58,7 +58,7 @@ public class Xpp3DomBuilder
             {
                 String rawName = parser.getName();
 
-                Xpp3Dom childConfiguration = createConfiguration( rawName );
+                Xpp3Dom childConfiguration = new Xpp3Dom( rawName );
 
                 int depth = elements.size();
 
@@ -132,8 +132,4 @@ public class Xpp3DomBuilder
         throw new IllegalStateException( "End of document found before returning to 0 depth" );
     }
 
-    private static Xpp3Dom createConfiguration( String localName )
-    {
-        return new Xpp3Dom( localName );
-    }
 }
