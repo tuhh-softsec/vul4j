@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -57,27 +56,29 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.samples.transforms;
+package org.apache.xml.security.samples.signature;
 
 
 
 import java.io.*;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
 import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.signature.*;
 import org.apache.xml.security.transforms.*;
+import org.apache.xml.security.transforms.params.*;
 import org.apache.xml.security.utils.*;
+import org.apache.xpath.CachedXPathAPI;
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+import javax.crypto.*;
 
 
 /**
- * This class demonstrates the use of a Transform forEnveloped Signature.
+ * Class SignaturePropertiesSample
  *
- * @author Christian Geuer-Pollmann
- * @version %I%, %G%
+ * @author $Author$
+ * @version $Revision$
  */
-public class SampleTransformEnvelopedSignature {
+public class SignaturePropertiesSample {
 
    /**
     * Method main
@@ -86,55 +87,55 @@ public class SampleTransformEnvelopedSignature {
     * @throws Exception
     */
    public static void main(String args[]) throws Exception {
-      //J-
-      String inputStr =
-        "<?xml version=\"1.0\"?>" + "\n"
-      + "<Document xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "   <Data attr='attrValue'>text in Data</Data>" + "\n"
-      + "<Signature Id='SignatureToBeOmitted' xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "     <SignedInfo>" + "\n"
-      + "       <Reference>" + "\n"
-      + "         <Transforms>" + "\n"
-      // + "           <Transform Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments' />" + "\n"
-      + "           <Transform Algorithm='http://www.w3.org/2000/09/xmldsig#enveloped-signature' />" + "\n"
-      + "           <Transform Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments' />" + "\n"
-      + "         </Transforms>" + "\n"
-      + "       </Reference>" + "\n"
-      + "     </SignedInfo>" + "\n"
-      + "   </Signature>"
-      + "   <Signature Id='VisibleSignature' xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "     <SignedInfo xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "       <Reference xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "         <Transforms xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "           <Transform Algorithm='http://www.w3.org/2000/09/xmldsig#enveloped-signature' />" + "\n"
-      + "           <Transform Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments' />" + "\n"
-      + "         </Transforms>" + "\n"
-      + "       </Reference>" + "\n"
-      + "     </SignedInfo>" + "\n"
-      + "   </Signature>" + "\n"
-      + "</Document>" + "\n"
-      ;
-      //J+
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+
+      org.apache.xml.security.Init.init();
+
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
       dbf.setNamespaceAware(true);
 
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc =
-         db.parse(new java.io.ByteArrayInputStream(inputStr.getBytes()));
-      Element nscontext = XMLUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      Document doc = db.newDocument();
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
 
-      Element transformsElem = (Element) XPathAPI.selectSingleNode(
-         doc, "//ds:Signature[@Id='SignatureToBeOmitted']//ds:Transforms",
-         nscontext);
-      Transforms transforms = new Transforms(transformsElem, "memory://");
-      XMLSignatureInput input = new XMLSignatureInput((Node) doc);
+      doc.appendChild(sig.getElement());
 
-      // input.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      SignatureProperty prop1 = new SignatureProperty(doc,
+                                   "http://www.xmlsecurity.org/#target",
+                                   "prop1");
 
-      XMLSignatureInput result = transforms.performTransforms(input);
+      prop1.getElement()
+         .appendChild(doc.createTextNode("\n   some data for this property\n"));
 
-      System.out.println(new String(result.getBytes()));
+      SignatureProperties props = new SignatureProperties(doc);
+
+      props.addSignatureProperty(prop1);
+
+      ObjectContainer object = new ObjectContainer(doc);
+
+      object.appendChild(doc.createTextNode("\n"));
+      object.appendChild(props.getElement());
+      object.appendChild(doc.createTextNode("\n"));
+      sig.appendObject(object);
+      sig.addDocument("#prop1");
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+
+      System.out.println("---------------------------------------");
+      System.out.println(new String(c14n.canonicalizeSubtree(doc)));
+      System.out.println("---------------------------------------");
+      System.out
+         .println(new String(sig.getSignedInfo().item(0).getTransformsOutput()
+            .getBytes()));
+      System.out.println("---------------------------------------");
    }
 }

@@ -131,7 +131,7 @@ public class SampleTransformXPathHereFunc {
       Transforms transforms = new Transforms(transformsElem, "memory://");
       XMLSignatureInput input = new XMLSignatureInput((Node) doc);
 
-      input.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      // input.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
 
       XMLSignatureInput result = transforms.performTransforms(input);
 

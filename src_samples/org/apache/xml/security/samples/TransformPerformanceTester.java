@@ -127,19 +127,19 @@ public class TransformPerformanceTester {
 
       DocumentBuilder db = dbf.newDocumentBuilder();
       //J-
-      int counter = 10;
-      boolean simple_gif_detached = false;
+      int counter = 300;
+      boolean simple_gif_detached = true;
 
-      boolean pureedge_xfilter2 = false;
-      boolean pureedge_apachefilter = false;
+      boolean pureedge_xfilter2 = true;
+      boolean pureedge_apachefilter = true;
 
-      boolean xfilter2spec_xfilter2_1 = false;
-      boolean xfilter2spec_xfilter2_2 = false;
-      boolean xfilter2spec_xfilter2_3 = false;
+      boolean xfilter2spec_xfilter2_1 = true;
+      boolean xfilter2spec_xfilter2_2 = true;
+      boolean xfilter2spec_xfilter2_3 = true;
 
-      boolean xfilter2spec_apachefilter_1 = false;
-      boolean xfilter2spec_apachefilter_2 = false;
-      boolean xfilter2spec_apachefilter_3 = false;
+      boolean xfilter2spec_apachefilter_1 = true;
+      boolean xfilter2spec_apachefilter_2 = true;
+      boolean xfilter2spec_apachefilter_3 = true;
 
       boolean apachesample_xfilter2_1 = true;
       boolean apachesample_xfilter2_2 = true;
@@ -168,11 +168,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.simple_gif_detached(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -205,11 +205,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.pureedge_xfilter2(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -235,6 +235,7 @@ public class TransformPerformanceTester {
       if (pureedge_apachefilter) {
          Document doc =
             db.parse(new FileInputStream("data/com/pureedge/LeaveRequest.xfd"));
+
          long start = System.currentTimeMillis();
          byte[][] result = null;
 
@@ -242,11 +243,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.pureedge_apachefilter(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -293,11 +294,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.xfilter2spec_xfilter2_1(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -344,11 +345,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.xfilter2spec_xfilter2_2(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -395,11 +396,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.xfilter2spec_xfilter2_3(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -447,11 +448,11 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.xfilter2spec_apachefilter_1(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -499,11 +500,11 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.xfilter2spec_apachefilter_2(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -551,11 +552,11 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.xfilter2spec_apachefilter_3(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -593,11 +594,11 @@ public class TransformPerformanceTester {
                   .apachesample_apachefilter_7_optimal(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -636,11 +637,11 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_1(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -677,11 +678,11 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_2(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -718,11 +719,11 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_3(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -759,11 +760,11 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_4(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -800,11 +801,11 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_5(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -841,11 +842,11 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_6(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -882,11 +883,11 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_7(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -922,11 +923,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_1(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -962,11 +963,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_2(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -1002,11 +1003,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_3(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -1042,11 +1043,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_4(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -1082,11 +1083,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_5(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -1122,11 +1123,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_6(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
@@ -1162,11 +1163,11 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_7(doc);
 
             if (i % 10 == 0) {
-               System.out.print(".");
+               // System.out.print(".");
             }
          }
 
-         System.out.println("");
+         // System.out.println("");
 
          long end = System.currentTimeMillis();
          double delta = end - start;
