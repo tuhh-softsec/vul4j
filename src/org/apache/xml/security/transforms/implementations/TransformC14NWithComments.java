@@ -149,7 +149,7 @@ public class TransformC14NWithComments extends TransformSpi {
             cat.debug("Length: " + input.getNodeSet().getLength()
                       + " nodes input");
 
-            result = this._c14n.canonicalize(input.getNodeSet());
+            result = this._c14n.canonicalizeXPathNodeSet(input.getNodeSet());
          }
 
          ByteArrayInputStream bais = new ByteArrayInputStream(result);

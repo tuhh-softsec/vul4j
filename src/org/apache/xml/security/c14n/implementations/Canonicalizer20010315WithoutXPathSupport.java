@@ -171,13 +171,13 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
    }
 
    /**
-    * Method engineCanonicalize
+    * Method engineCanonicalizeXPathNodeSet
     *
     * @param selectedNodes
     * @return
     * @throws CanonicalizationException
     */
-   public byte[] engineCanonicalize(NodeList selectedNodes)
+   public byte[] engineCanonicalizeXPathNodeSet(NodeList xpathNodeSet)
            throws CanonicalizationException {
       throw new CanonicalizationException(
          "c14n.Canonicalizer.UnsupportedOperation");
@@ -191,7 +191,7 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
     * @return
     * @throws CanonicalizationException
     */
-   public byte[] engineCanonicalize(Node node)
+   public byte[] engineCanonicalizeSubTree(Node node)
            throws CanonicalizationException {
 
       if (node == null) {

@@ -211,7 +211,7 @@ public class ApacheKeyStore extends KeyStoreSpi {
          Canonicalizer c14nizer =
             Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
 
-         os.write(c14nizer.canonicalize(this._keyStoreElement.getDocument()));
+         os.write(c14nizer.canonicalizeSubtree(this._keyStoreElement.getDocument()));
       } catch (InvalidCanonicalizerException ex) {
          throw new IOException(ex.getMessage());
       } catch (CanonicalizationException ex) {

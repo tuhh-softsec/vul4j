@@ -520,7 +520,7 @@ public class XMLUtils {
       try {
          os.write(Canonicalizer
             .getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS)
-               .canonicalize(contextNode));
+               .canonicalizeSubtree(contextNode));
       } catch (IOException ex) {}
       catch (InvalidCanonicalizerException ex) {
          ex.printStackTrace();
@@ -541,7 +541,7 @@ public class XMLUtils {
       try {
          os.write(Canonicalizer
             .getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS)
-               .canonicalize(contextNode));
+               .canonicalizeSubtree(contextNode));
       } catch (IOException ex) {}
       catch (InvalidCanonicalizerException ex) {}
       catch (CanonicalizationException ex) {}

@@ -52,6 +52,6 @@ public class ResolverAnonymous extends ResourceResolverSpi {
     * @return
     */
    public String[] engineGetPropertyKeys() {
-      return null;
+      return new String[0];
    }
 }

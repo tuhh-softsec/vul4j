@@ -24,8 +24,10 @@
     <property name="year"              value="2000-2002" />
     <property name="copyright"         value="Copyright &#169; ${year} Apache XML Project. All Rights Reserved." />
 
+<!--<property name="build.compiler" value="classic" />  
+    <property name="build.compiler" value="jikes" />-->
+    
     <property name="build.compiler" value="classic" />
-<!--<property name="build.compiler" value="jikes" /> -->
 
     <property name="dir.src"           value="./src" />
     <property name="dir.src.samples"   value="./src_samples" />
@@ -462,11 +464,17 @@ org.apache.xml.security.test.interop.*
           depends="compile.tests"
           if="junit.present"
           description="Starts all JUnit test cases">
-     <java classname="junit.textui.TestRunner"
+<!--     <java classname="junit.textui.TestRunner"
            fork="yes"
            taskname="junit"
            failonerror="true">
         <arg value="org.apache.xml.security.test.AllTests" />
+        <classpath refid="classpath.test" />
+     </java> -->
+     <java classname="org.apache.xml.security.test.AllTests"
+           fork="yes"
+           taskname="junit"
+           failonerror="true">
         <classpath refid="classpath.test" />
      </java>
   </target>

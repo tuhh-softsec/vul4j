@@ -340,7 +340,7 @@ public class Base64 {
       } catch (java.io.UnsupportedEncodingException ex) {
 
          // should never be reached because Encoding is valid and fixed
-         return null;
+         return new byte[0];
       }
    }
 

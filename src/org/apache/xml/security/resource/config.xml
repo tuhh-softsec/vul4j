@@ -33,6 +33,8 @@
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXSLT" />
       <TransformAlgorithm URI="http://www.w3.org/TR/2001/WD-xptr-20010108"
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPointer" />
+      <TransformAlgorithm URI="http://www.xmlsecurity.org/xmldsig-xpath2-subtree"
+                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPathAlternative" />
    </TransformAlgorithms>
    <SignatureAlgorithms>
       <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"

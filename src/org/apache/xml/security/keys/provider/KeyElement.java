@@ -289,7 +289,7 @@ public class KeyElement extends KeyBaseType {
          return result;
       } catch (XMLSecurityException ex) {}
 
-      return null;
+      return new Certificate[0];
    }
 
    /**

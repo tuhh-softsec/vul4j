@@ -561,7 +561,7 @@ public class EncryptedData extends EncryptionElementProxy
       EncryptionMethod em = this.getEncryptionMethod();
       Canonicalizer c14n =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-      byte plaintext[] = c14n.canonicalize(plaintextElement);
+      byte plaintext[] = c14n.canonicalizeSubtree(plaintextElement);
       byte ciphertext[] = em.encrypt(plaintext, secretKey);
 
       this.getCipherData().setCipherValue(new CipherValue(this._doc,
@@ -611,7 +611,7 @@ public class EncryptedData extends EncryptionElementProxy
                   Canonicalizer
                      .getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
 
-               baos.write(c14n.canonicalize(plaintextItem));
+               baos.write(c14n.canonicalizeSubtree(plaintextItem));
             }
          }
 
@@ -696,7 +696,7 @@ public class EncryptedData extends EncryptionElementProxy
                   Canonicalizer
                      .getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
 
-               baos.write(c14n.canonicalize(currentNode));
+               baos.write(c14n.canonicalizeSubtree(currentNode));
             }
 
             currentNode = currentNode.getNextSibling();

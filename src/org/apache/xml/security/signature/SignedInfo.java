@@ -183,7 +183,7 @@ public class SignedInfo extends Manifest {
          Canonicalizer c14nizer =
             Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
          byte c14nizedBytes[] =
-            c14nizer.canonicalize(this._constructionElement);
+            c14nizer.canonicalizeSubtree(this._constructionElement);
          javax.xml.parsers.DocumentBuilderFactory dbf =
             javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
@@ -252,7 +252,7 @@ public class SignedInfo extends Manifest {
 
       Canonicalizer c14nizer =
          Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
-      byte[] output = c14nizer.canonicalize(this._constructionElement);
+      byte[] output = c14nizer.canonicalizeSubtree(this._constructionElement);
 
       return output;
    }

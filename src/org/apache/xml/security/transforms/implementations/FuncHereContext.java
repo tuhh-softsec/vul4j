@@ -113,8 +113,10 @@ public class FuncHereContext extends XPathContext {
     */
    private FuncHereContext() {}
 
+   // private DTMManager m_dtmManager = null;
+
    /** Field _oldDTMManager */
-   private DTMManager _oldDTMManager = null;
+   // private DTMManager _oldDTMManager = null;
 
    /**
     * Constructor FuncHereContext

@@ -147,7 +147,7 @@ public class TransformC14N extends TransformSpi {
          if (input.isOctetStream()) {
             result = this._c14n.canonicalize(input.getBytes());
          } else {
-            result = this._c14n.canonicalize(input.getNodeSet());
+            result = this._c14n.canonicalizeXPathNodeSet(input.getNodeSet());
          }
 
          ByteArrayInputStream bais = new ByteArrayInputStream(result);

@@ -342,7 +342,7 @@ public class KeyStoreElement extends ElementProxy {
          return new MyEnumeration(result);
       } catch (TransformerException ex) {}
 
-      return null;
+      return new MyEnumeration(new Vector());
    }
 
    /**
@@ -550,7 +550,7 @@ public class KeyStoreElement extends ElementProxy {
          ex.printStackTrace();
       }
 
-      return null;
+      return new Certificate[0];
    }
 
    /**

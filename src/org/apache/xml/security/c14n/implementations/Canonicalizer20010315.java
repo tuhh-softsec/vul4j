@@ -225,22 +225,22 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    }
 
    /**
-    * Method engineCanonicalize
+    * Method engineCanonicalizeXPathNodeSet
     *
     * @param selectedNodes
     * @return
     * @throws CanonicalizationException
     */
-   public byte[] engineCanonicalize(NodeList selectedNodes)
+   public byte[] engineCanonicalizeXPathNodeSet(NodeList xpathNodeSet)
            throws CanonicalizationException {
 
-      this.engineSetXPathNodeSet(selectedNodes);
+      this.engineSetXPathNodeSet(xpathNodeSet);
 
-      if (selectedNodes.getLength() == 0) {
+      if (xpathNodeSet.getLength() == 0) {
          return new byte[0];
       }
 
-      Document document = XMLUtils.getOwnerDocument(selectedNodes.item(0));
+      Document document = XMLUtils.getOwnerDocument(xpathNodeSet.item(0));
 
       return this.engineDoCanonicalization(document);
    }
@@ -252,7 +252,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @return
     * @throws CanonicalizationException
     */
-   public byte[] engineCanonicalize(Node node)
+   public byte[] engineCanonicalizeSubTree(Node node)
            throws CanonicalizationException {
 
       /**
@@ -262,34 +262,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
       if (this.hmVisibleNodes == null) {
          try {
             //J-
-            /*
-            if ((this.engineGetXPathString().equals(Canonicalizer.XPATH_C14N_WITH_COMMENTS) ||
-                 this.engineGetXPathString().equals(Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE) ||
-                 this.engineGetXPathString().equals(Canonicalizer.XPATH_C14N_OMIT_COMMENTS) ||
-                 this.engineGetXPathString().equals(Canonicalizer.XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE))) {
-               //J+
-               // we do a c14n without strange features, so why use the XPath compliant version
-               CanonicalizerSpi c14nizer = null;
-
-               if (this.engineGetXPathString()
-                       .equals(Canonicalizer
-                       .XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE) || this
-                          .engineGetXPathString()
-                          .equals(Canonicalizer.XPATH_C14N_OMIT_COMMENTS)) {
-                  c14nizer =
-                     new Canonicalizer20010315WithoutXPathSupportOmitComments();
-               } else {
-                  c14nizer =
-                     new Canonicalizer20010315WithoutXPathSupportWithComments();
-               }
-
-               if (c14nizer == null) {
-                  return null;
-               }
-
-               return c14nizer.engineCanonicalize(node);
-            } else {
-            */
             NodeList selected = null;
 
             if (this.engineGetXPath() instanceof Element) {
@@ -303,8 +275,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
             cat.debug("xpath is" + this.engineGetXPathString());
             this.engineSetXPathNodeSet(selected);
-
-            // }
          } catch (TransformerException e) {
             Object exArgs[] = { "TransformerException: " + e.getMessage() };
 

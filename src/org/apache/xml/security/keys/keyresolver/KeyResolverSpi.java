@@ -193,7 +193,7 @@ public abstract class KeyResolverSpi {
     * @return
     */
    public String[] engineGetPropertyKeys() {
-      return null;
+      return new String[0];
    }
 
    /**

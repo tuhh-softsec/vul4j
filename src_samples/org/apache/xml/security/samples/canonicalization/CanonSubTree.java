@@ -129,7 +129,7 @@ public class CanonSubTree {
 
       Node signedInfo = XPathAPI.selectSingleNode(doc, "//ds:SignedInfo",
                                                   nscontext);
-      byte outputBytes[] = c14n.canonicalizeSingleNode(signedInfo);
+      byte outputBytes[] = c14n.canonicalizeSubtree(signedInfo);
 
       if (outputBytes != null) {
          System.out.println(new String(outputBytes));

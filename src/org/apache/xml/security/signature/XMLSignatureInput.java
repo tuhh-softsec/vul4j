@@ -389,7 +389,7 @@ public class XMLSignatureInput {
          cat.debug("node(0) is " + this._inputNodeSet.item(0));
 
          Document doc = XMLUtils.getOwnerDocument(this._inputNodeSet.item(0));
-         byte bytes[] = c14nizer.canonicalize(doc);
+         byte bytes[] = c14nizer.canonicalizeSubtree(doc);
 
          baos.write(bytes);
 
@@ -580,7 +580,7 @@ public class XMLSignatureInput {
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
 
       c.setXPathNodeSet(nl);
-      System.out.println(new String(c.canonicalize(nl)));
+      System.out.println(new String(c.canonicalizeXPathNodeSet(nl)));
    }
 
    /**

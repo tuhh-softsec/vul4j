@@ -89,22 +89,19 @@ public abstract class CanonicalizerSpi {
       org.apache.log4j.Category.getInstance(CanonicalizerSpi.class.getName());
 
    /** Field BEFORE_DOCUMENT_ELEM */
-   public static final short BEFORE_DOCUMENT_ELEM = 0;
+   protected static final short BEFORE_DOCUMENT_ELEM = 0;
 
    /** Field INSIDE_DOCUMENT_ELEM */
-   public static final short INSIDE_DOCUMENT_ELEM = 1;
+   protected static final short INSIDE_DOCUMENT_ELEM = 1;
 
    /** Field AFTER_DOCUMENT_ELEM */
-   public static final short AFTER_DOCUMENT_ELEM = 2;
+   protected static final short AFTER_DOCUMENT_ELEM = 2;
 
    /** Field implementedTransformURI */
    protected String implementedTransformURI = null;
 
    /** Field validating */
    private boolean _validating = false;
-
-   /** Field namespaceAware */
-   private boolean _namespaceAware = true;
 
    /** Field includeComments */
    private boolean _includeComments = false;
@@ -149,24 +146,6 @@ public abstract class CanonicalizerSpi {
     */
    public boolean engineGetValidating() {
       return this._validating;
-   }
-
-   /**
-    * Method engineSetNamespaceAware
-    *
-    * @param namespaceAware
-    */
-   public void engineSetNamespaceAware(boolean namespaceAware) {
-      this._namespaceAware = namespaceAware;
-   }
-
-   /**
-    * Method engineGetNamespaceAware
-    *
-    * @return
-    */
-   public boolean engineGetNamespaceAware() {
-      return this._namespaceAware;
    }
 
    /**
@@ -306,13 +285,13 @@ public abstract class CanonicalizerSpi {
 
          // needs to validate for ID attribute nomalization
          dfactory.setValidating(this.engineGetValidating());
-         dfactory.setNamespaceAware(this.engineGetNamespaceAware());
+         dfactory.setNamespaceAware(true);
 
          DocumentBuilder db = dfactory.newDocumentBuilder();
 
          /*
           * for some of the test vectors from the specification,
-          * there has to be a validatin parser for ID attributes, default
+          * there has to be a validating parser for ID attributes, default
           * attribute values, NMTOKENS, etc.
           * Unfortunaltely, the test vectors do use different DTDs or
           * even no DTD. So Xerces 1.3.1 fires many warnings about using
@@ -336,7 +315,7 @@ public abstract class CanonicalizerSpi {
          // ErrorHandler eh = new C14NErrorHandler();
          // db.setErrorHandler(eh);
          Document document = db.parse(in);
-         byte result[] = this.engineCanonicalize(document);
+         byte result[] = this.engineCanonicalizeSubTree(document);
          FileOutputStream fos = new FileOutputStream(outputFileName);
 
          fos.write(result);
@@ -356,7 +335,7 @@ public abstract class CanonicalizerSpi {
     */
    public void engineOutput(Document document, OutputStream out)
            throws IOException, CanonicalizationException {
-      out.write(this.engineCanonicalize(document));
+      out.write(this.engineCanonicalizeSubTree(document));
    }
 
    /**
@@ -384,7 +363,7 @@ public abstract class CanonicalizerSpi {
 
       // needs to validate for ID attribute nomalization
       dfactory.setValidating(this.engineGetValidating());
-      dfactory.setNamespaceAware(this.engineGetNamespaceAware());
+      dfactory.setNamespaceAware(true);
 
       DocumentBuilder db = dfactory.newDocumentBuilder();
 
@@ -414,29 +393,29 @@ public abstract class CanonicalizerSpi {
       // ErrorHandler eh = new C14NErrorHandler();
       // db.setErrorHandler(eh);
       Document document = db.parse(in);
-      byte result[] = this.engineCanonicalize(document);
+      byte result[] = this.engineCanonicalizeSubTree(document);
 
       return result;
    }
 
    /**
-    * Method engineCanonicalize
+    * Method engineCanonicalizeSubTree
     *
     * @param node
     * @return
     * @throws CanonicalizationException
     */
-   public abstract byte[] engineCanonicalize(Node node)
+   public abstract byte[] engineCanonicalizeSubTree(Node rootNode)
       throws CanonicalizationException;
 
    /**
-    * Method engineCanonicalize
+    * Method engineCanonicalizeXPathNodeSet
     *
     * @param selectedNodes
     * @return
     * @throws CanonicalizationException
     */
-   public abstract byte[] engineCanonicalize(NodeList selectedNodes)
+   public abstract byte[] engineCanonicalizeXPathNodeSet(NodeList xpathNodeSet)
       throws CanonicalizationException;
 
    /**

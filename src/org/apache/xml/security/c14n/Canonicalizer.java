@@ -155,11 +155,6 @@ public class Canonicalizer {
 
          this.canonicalizerSpi =
             (CanonicalizerSpi) Class.forName(implementingClass).newInstance();
-
-         cat.debug("Canonicalizer  spi = "
-                   + this.canonicalizerSpi.engineGetURI() + "");
-
-         // this.canonicalizerSpi.engineSetURI(algorithmURI);
       } catch (Exception e) {
          if (_canonicalizerHash == null) {
             cat.fatal("The _canonicalizerHash is null");
@@ -276,24 +271,6 @@ public class Canonicalizer {
    }
 
    /**
-    * Method setNamespaceAware
-    *
-    * @param namespaceAware
-    */
-   public void setNamespaceAware(boolean namespaceAware) {
-      this.canonicalizerSpi.engineSetNamespaceAware(namespaceAware);
-   }
-
-   /**
-    * Method getNamespaceAware
-    *
-    * @return
-    */
-   public boolean getNamespaceAware() {
-      return this.canonicalizerSpi.engineGetNamespaceAware();
-   }
-
-   /**
     * Method setIncludeComments
     *
     * @param includeComments
@@ -312,23 +289,81 @@ public class Canonicalizer {
    }
 
    /**
+    * Canonicalizes the subtree rooted by <CODE>node</CODE>.
+    *
+    * @param node
+    * @return
+    * @throws CanonicalizationException
+    * @deprecated use {@link #canonicalizeSubtree(Node)} instead
+    * @see #canonicalizeSubtree(Node)
+    */
+   public byte[] canonicalize(Node node) throws CanonicalizationException {
+      return this.canonicalizeSubtree(node);
+   }
+
+   /**
+    * Canonicalizes the (sub)-tree rooted by <CODE>doc</CODE>.
+    *
+    * @param doc
+    * @return
+    * @throws CanonicalizationException
+    * @deprecated use {@link #canonicalizeSubtree(Node)} instead
+    * @see #canonicalizeSubtree(Node)
+    */
+   public byte[] canonicalizeDocument(Document doc)
+           throws CanonicalizationException {
+      return this.canonicalizeSubtree(doc);
+   }
+
+   /**
+    * Canonicalizes the subtree rooted by <CODE>rootNode</CODE>.
+    *
+    * @param rootNode
+    * @return
+    * @throws CanonicalizationException
+    * @deprecated use {@link #canonicalizeSubtree(Node)} instead
+    * @see #canonicalizeSubtree(Node)
+    */
+   public byte[] canonicalizeSingleNode(Node rootNode)
+           throws CanonicalizationException {
+      return this.canonicalizeSubtree(rootNode);
+   }
+
+   /**
     * Method canonicalize
+    *
+    * @param xpathNodeSet
+    * @return
+    * @throws CanonicalizationException
+    * @deprecated use {@link #canonicalizeXPathNodeSet(NodeList)} instead
+    * @see #canonicalizeXPathNodeSet(NodeList)
+    */
+   public byte[] canonicalize(NodeList xpathNodeSet)
+           throws CanonicalizationException {
+      return this.canonicalizeXPathNodeSet(xpathNodeSet);
+   }
+
+   /**
+    * Canonicalizes the subtree rooted by <CODE>node</CODE>.
     *
     * @param node
     * @return
     * @throws CanonicalizationException
     */
-   public byte[] canonicalize(Node node) throws CanonicalizationException {
+   public byte[] canonicalizeSubtree(Node node)
+           throws CanonicalizationException {
 
       if (node == null) {
          cat.error("I was asked to canonicalize a null node");
       }
 
-      return this.canonicalizerSpi.engineCanonicalize(node);
+      return this.canonicalizerSpi.engineCanonicalizeSubTree(node);
    }
 
    /**
-    * Method canonicalize
+    * This method tries to canonicalize the given bytes. It's possible to even
+    * canonicalize non-wellformed sequences if they are well-formed after being
+    * wrapped with a <CODE>&gt;a&lt;...&gt;/a&lt;</CODE>.
     *
     * @param inputBytes
     * @return
@@ -345,86 +380,16 @@ public class Canonicalizer {
    }
 
    /**
-    * Method canonicalize
+    * Canonicalizes an XPath node set. The <CODE>xpathNodeSet</CODE> is treated
+    * as a list of XPath nodes, not as a list of subtrees.
     *
-    * @param selectedNodes
+    * @param xpathNodeSet
     * @return
     * @throws CanonicalizationException
     */
-   public byte[] canonicalize(NodeList selectedNodes)
+   public byte[] canonicalizeXPathNodeSet(NodeList xpathNodeSet)
            throws CanonicalizationException {
-      return this.canonicalizerSpi.engineCanonicalize(selectedNodes);
-   }
-
-   /**
-    * Method canonicalizeDocument
-    *
-    * @param doc
-    * @return
-    * @throws CanonicalizationException
-    */
-   public byte[] canonicalizeDocument(Document doc)
-           throws CanonicalizationException {
-
-      if (this.getIncludeComments()) {
-         this.setXPath(Canonicalizer.XPATH_C14N_WITH_COMMENTS);
-      } else {
-         this.setXPath(Canonicalizer.XPATH_C14N_OMIT_COMMENTS);
-      }
-
-      return this.canonicalize(doc);
-   }
-
-   /**
-    * Method canonicalizeSingleNode
-    *
-    * @param rootNode
-    * @return
-    * @throws CanonicalizationException
-    */
-   public byte[] canonicalizeSingleNode(Node rootNode)
-           throws CanonicalizationException {
-
-      if (this.getIncludeComments()) {
-         this.setXPath(Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
-      } else {
-         this.setXPath(Canonicalizer.XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE);
-      }
-
-      return this.canonicalize(rootNode);
-   }
-
-   /**
-    * Method canonicalize
-    *
-    * @param input
-    * @return
-    */
-   public XMLSignatureInput canonicalize(XMLSignatureInput input) {
-      return null;
-   }
-
-   /**
-    * Method c14nFiles
-    *
-    * @param inFile
-    * @param outFile
-    */
-   public void c14nFiles(String inFile, String outFile) {
-      this.canonicalizerSpi.engineC14nFiles(inFile, outFile);
-   }
-
-   /**
-    * Method output
-    *
-    * @param document
-    * @param out
-    * @throws CanonicalizationException
-    * @throws IOException
-    */
-   public void output(Document document, OutputStream out)
-           throws IOException, CanonicalizationException {
-      this.canonicalizerSpi.engineOutput(document, out);
+      return this.canonicalizerSpi.engineCanonicalizeXPathNodeSet(xpathNodeSet);
    }
 
    /**
@@ -504,7 +469,7 @@ public class Canonicalizer {
     *
     * @param remove
     */
-   public void engineSetRemoveNSAttrs(boolean remove) {
+   public void setRemoveNSAttrs(boolean remove) {
       this.canonicalizerSpi.engineSetRemoveNSAttrs(remove);
    }
 
@@ -519,7 +484,7 @@ public class Canonicalizer {
     *
     * @return
     */
-   public boolean engineGetRemoveNSAttrs() {
+   public boolean getRemoveNSAttrs() {
       return this.canonicalizerSpi.engineGetRemoveNSAttrs();
    }
 
