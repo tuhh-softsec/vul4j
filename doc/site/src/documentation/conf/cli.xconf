@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+
+<!--+
+    |  This is the Apache Cocoon command line configuration file. 
+    |  Here you give the command line interface details of where
+    |  to find various aspects of your Cocoon installation.
+    |
+    |  If you wish, you can also use this file to specify the URIs
+    |  that you wish to generate.
+    |
+    |  The current configuration information in this file is for
+    |  building the Cocoon documentation. Therefore, all links here 
+    |  are relative to the build context dir, which, in the build.xml 
+    |  file, is set to ${build.context} 
+    |
+    |  Options:
+    |    verbose:            increase amount of information presented
+    |                        to standard output (default: false)
+    |    follow-links:       whether linked pages should also be 
+    |                        generated (default: true)
+    |    precompile-only:    precompile sitemaps and XSP pages, but 
+    |                        do not generate any pages (default: false)
+    |    confirm-extensions: check the mime type for the generated page
+    |                        and adjust filename and links extensions
+    |                        to match the mime type 
+    |                        (e.g. text/html->.html)
+    |
+    | CVS: $Id$
+    +-->
+    
+<cocoon verbose="true"  
+        follow-links="true" 
+        precompile-only="false" 
+        confirm-extensions="false">
+
+   <!--+
+       | Broken link reporting options:
+       |   Report into a text file, one link per line:
+       |     <broken-links type="text" report="filename"/>
+       |   Report into an XML file:
+       |     <broken-links type="xml" report="filename"/>
+       |   Ignore broken links (default):
+       |     <broken-links type="none"/>
+       |   When a page includes an error, should a page be generated?
+       |     
+       |   Two attributes to this node specify whether a page should
+       |   be generated when an error occured. 'generate' specifies 
+       |   whether a page should be generated (default: true) and
+       |   extension specifies an extension that should be appended
+       |   to the generated page's filename (default: none)
+       |     <broken-links generate="true" extension=".error.txt"/>
+       |
+       +-->
+   <broken-links type="xml" 
+                 file="../brokenlinks.xml"
+                 generate="false"
+                 extension=".error"/>
+   
+   <!--+
+       |  Load classes at startup. This is necessary for generating
+       |  from sites that use SQL databases and JDBC.
+       |  The <load-class> element can be repeated if multiple classes
+       |  are needed.
+       +-->
+   <!--
+   <load-class>org.firebirdsql.jdbc.Driver</load-class>
+   -->
+
+   <!--+
+       |
+       +-->
+   <logging log-kit="WEB-INF/logkit.xconf" logger="cli" level="ERROR" />
+
+   <!--+
+       |  The context directory is usually the webapp directory
+       |  containing the sitemap.xmap file.
+       |
+       |  The config file is the cocoon.xconf file.
+       |
+       |  The work directory is used by Cocoon to store temporary
+       |  files and cache files.
+       |  
+       |  The destination directory is where generated pages will
+       |  be written (assuming the 'simple' mapper is used)
+       +-->
+   <context-dir>.</context-dir>
+   <config-file>WEB-INF/cocoon.xconf</config-file>
+   <work-dir>../temp/docs</work-dir>
+   <!-- Overridden in forrest.build.xml 
+   <dest-dir>../docs</dest-dir>
+   -->
+
+   <!--+
+       | Specifies the filename to be appended to URIs that
+       | refer to a directory (i.e. end with a forward slash).
+       +-->
+   <default-filename>index.html</default-filename>
+
+   <!--+
+       |  Specifies a user agent string to the sitemap when
+       |  generating the site.
+       +-->
+   <!--
+   <user-agent>xxx</user-agent>
+   -->
+
+   <!--+
+       |  Specifies an accept string to the sitemap when generating
+       |  the site.
+       +-->
+   <accept>*/*</accept>
+   
+   <!--+
+       |  Specifies the URIs that should be generated (using <uri>
+       |  elements, and (if necessary) what should be done with the
+       |  generated pages.
+       |
+       |  The old behaviour - appends uri to the specified destination
+       |  directory (as specified in <dest-dir>):
+       |
+       |   <uri>documents/index.html</uri>
+       |
+       |  Append: append the generated page's URI to the end of the 
+       |  source URI:
+       |
+       |   <uri type="append" src-prefix="documents/" src="index.html"
+       |   dest="build/dest/"/>
+       |
+       |  Replace: Completely ignore the generated page's URI - just 
+       |  use the destination URI:
+       |
+       |   <uri type="replace" src-prefix="documents/" src="index.html" 
+       |   dest="build/dest/docs.html"/>
+       |
+       |  Insert: Insert generated page's URI into the destination 
+       |  URI at the point marked with a * (example uses fictional 
+       |  zip protocol)
+       |
+       |   <uri type="insert" src-prefix="documents/" src="index.html" 
+       |   dest="zip://*.zip/page.html"/>
+       |
+       +-->
+
+   <!--+
+       | Excludes added to XML Web site to allow mirrors.ehtml to
+       | build properly
+       +-->
+    <exclude pattern="c/apiDocs/**" />
+	<exclude pattern="Java/api/**" />
+
+   <uri src="favicon.ico"/>
+
+   <!--+
+       |  File containing URIs (plain text, one per
+       |  line).
+       +-->
+   <!--
+   <uri-file></uri-file>
+   -->
+   
+</cocoon>
+
