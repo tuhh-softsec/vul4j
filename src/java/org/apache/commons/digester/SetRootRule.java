@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.5 2002/03/23 17:45:58 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2002/03/23 17:45:58 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.6 2002/08/05 20:52:30 craigmcc Exp $
+ * $Revision: 1.6 $
+ * $Date: 2002/08/05 20:52:30 $
  *
  * ====================================================================
  *
@@ -81,7 +81,7 @@ import org.apache.commons.beanutils.MethodUtils;
  * See {@link #isExactMatch()} for more details.</p>
  *
  * @author Scott Sanders
- * @version $Revision: 1.5 $ $Date: 2002/03/23 17:45:58 $
+ * @version $Revision: 1.6 $ $Date: 2002/08/05 20:52:30 $
  */
 
 public class SetRootRule extends Rule {
@@ -174,7 +174,7 @@ public class SetRootRule extends Rule {
     protected String paramType = null;
     
     /**
-     * Should we use exact matching? Default is no.
+     * Should we use exact matching. Default is no.
      */
     protected boolean useExactMatch = false;
 
@@ -183,7 +183,7 @@ public class SetRootRule extends Rule {
 
 
     /**
-     * <p>Is exact matching being used?</p>
+     * <p>Is exact matching being used.</p>
      *
      * <p>This rule uses <code>org.apache.commons.beanutils.MethodUtils</code> 
      * to introspect the relevent objects so that the right method can be called.

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.59 2002/08/05 20:48:49 craigmcc Exp $
- * $Revision: 1.59 $
- * $Date: 2002/08/05 20:48:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.60 2002/08/05 20:52:30 craigmcc Exp $
+ * $Revision: 1.60 $
+ * $Date: 2002/08/05 20:52:30 $
  *
  * ====================================================================
  *
@@ -123,7 +123,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.59 $ $Date: 2002/08/05 20:48:49 $
+ * @version $Revision: 1.60 $ $Date: 2002/08/05 20:52:30 $
  */
 
 public class Digester extends DefaultHandler {
@@ -199,7 +199,7 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Has this Digester been configured yet?
+     * Has this Digester been configured yet.
      */
     protected boolean configured = false;
 
@@ -250,7 +250,7 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Do we want a "namespace aware" parser?
+     * Do we want a "namespace aware" parser.
      */
     protected boolean namespaceAware = false;
 
@@ -328,13 +328,13 @@ public class Digester extends DefaultHandler {
 
     /**
      * Do we want to use the Context ClassLoader when loading classes
-     * for instantiating new objects?  Default is <code>false</code>.
+     * for instantiating new objects.  Default is <code>false</code>.
      */
     protected boolean useContextClassLoader = false;
 
 
     /**
-     * Do we want to use a validating parser?
+     * Do we want to use a validating parser.
      */
     protected boolean validating = false;
 
