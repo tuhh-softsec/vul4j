@@ -68,9 +68,6 @@ import sun.misc.HexDumpEncoder;
  * @author Niko Schweitzer
  */
 public class HexDump {
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(HexDump.class.getName());
 
    private HexDump() {
      // we don't allow instantiation
