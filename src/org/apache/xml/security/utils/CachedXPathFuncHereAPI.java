@@ -36,7 +36,6 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeIterator;
 
-
 /**
  *
  * @author $Author$
@@ -192,6 +191,7 @@ public class CachedXPathFuncHereAPI {
     *
     *  @param contextNode The node to start searching from.
     * @param xpathnode
+    * @param str
     *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
     *  @return A NodeIterator, should never be null.
     *
@@ -238,6 +238,7 @@ public class CachedXPathFuncHereAPI {
     *
     *  @param contextNode The node to start searching from.
     * @param xpathnode
+    * @param str
     *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
     *  @return An XObject, which can be used to obtain a string, number, nodelist, etc, should never be null.
     *  @see org.apache.xpath.objects.XObject
@@ -300,6 +301,7 @@ public class CachedXPathFuncHereAPI {
     *
     *   @param contextNode The node to start searching from.
     * @param xpathnode
+    * @param str
     *   @param prefixResolver Will be called if the parser encounters namespace
     *                         prefixes, to resolve the prefixes to URLs.
     *   @return An XObject, which can be used to obtain a string, number, nodelist, etc, should never be null.
@@ -327,8 +329,19 @@ public class CachedXPathFuncHereAPI {
     	if (str.indexOf("here()")>0) {
     		_context.reset();
     		_dtmManager=_context.getDTMManager();
-    	}     
-    	xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+    	}
+        try {
+        	xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+        } catch (TransformerException ex) {
+            //Try to see if it is a problem with the classloader.
+            Throwable th= ex.getCause();            
+            if (th instanceof ClassNotFoundException) {
+                 if (th.getMessage().indexOf("FuncHere")>0) {
+                 	throw new RuntimeException(I18n.translate("endorsed.jdk1.4.0"));
+                 }
+              }
+              throw ex;
+        }
         xpathStr=str;
     }
 
