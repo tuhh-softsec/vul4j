@@ -161,7 +161,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
                        xpathContainer.getElement());
             }
 
-            this.includeSearchSet = nodeListToSet(includeButSearchNodes);
+            this.includeSearchSet = XMLUtils.convertNodelistToSet(includeButSearchNodes);
          }
 
          {
@@ -177,7 +177,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
                        CachedXPathFuncHereAPI.getStrFromNode(excludeButSearchCtxNode),xpathContainer.getElement());
             }
 
-            this.excludeSearchSet = nodeListToSet(excludeButSearchNodes);
+            this.excludeSearchSet = XMLUtils.convertNodelistToSet(excludeButSearchNodes);
          }
 
          {
@@ -193,7 +193,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
                        xpathContainer.getElement());
             }
 
-            this.excludeSet = nodeListToSet(excludeNodes);
+            this.excludeSet = XMLUtils.convertNodelistToSet(excludeNodes);
          }
 
          if (xpathContainer.getIncludeSlashPolicy()
@@ -315,27 +315,6 @@ public class TransformXPathFilterCHGP extends TransformSpi {
       }
 
       treewalker.setCurrentNode(currentNode);
-   }
-
-   /**
-    * Copies all nodes from a given {@link NodeList} into a {@link Set}
-    *
-    * @param nl
-    * @return nodelist as set
-    */
-   private static Set nodeListToSet(NodeList nl) {
-
-      Set set = new HashSet();
-      if (nl==null) {
-          return set; 
-      }
-      int iMax = nl.getLength();
-
-      for (int i = 0; i < iMax; i++) {
-         set.add(nl.item(i));
-      }
-
-      return set;
    }
 
    /**
