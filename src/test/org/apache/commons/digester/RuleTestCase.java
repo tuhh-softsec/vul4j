@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.16 2002/07/10 18:12:33 rdonkin Exp $
- * $Revision: 1.16 $
- * $Date: 2002/07/10 18:12:33 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.17 2002/07/16 21:23:28 rdonkin Exp $
+ * $Revision: 1.17 $
+ * $Date: 2002/07/16 21:23:28 $
  *
  * ====================================================================
  *
@@ -80,7 +80,7 @@ import junit.framework.TestSuite;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.16 $ $Date: 2002/07/10 18:12:33 $
+ * @version $Revision: 1.17 $ $Date: 2002/07/16 21:23:28 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -665,7 +665,6 @@ public class RuleTestCase extends TestCase {
      * Test method calls with the CallMethodRule rule. It should be possible
      * to call any accessible method of the object on the top of the stack,
      * even methods with no arguments.
-     
      */
     public void testCallMethod2() throws Exception {
         /* 
@@ -695,6 +694,72 @@ public class RuleTestCase extends TestCase {
             fail("Digester threw Exception:  " + t);
         }
         */
+    }
+    
+    /**
+     */
+    public void testSetCustomProperties() throws Exception {
+        
+        Digester digester = new Digester();
+        
+        digester.setValidating(false);
+        
+        digester.addObjectCreate("toplevel", ArrayList.class);
+        digester.addObjectCreate("toplevel/one", Address.class);
+        digester.addSetNext("toplevel/one", "add");
+        digester.addObjectCreate("toplevel/two", Address.class);
+        digester.addSetNext("toplevel/two", "add");
+        digester.addObjectCreate("toplevel/three", Address.class);
+        digester.addSetNext("toplevel/three", "add");
+        digester.addObjectCreate("toplevel/four", Address.class);
+        digester.addSetNext("toplevel/four", "add");
+        digester.addSetProperties("toplevel/one");
+        digester.addSetProperties(
+                    "toplevel/two", 
+                    new String[] {"alt-street", "alt-city", "alt-state"}, 
+                    new String[] {"street", "city", "state"});
+        digester.addSetProperties(
+                    "toplevel/three", 
+                    new String[] {"aCity", "state"}, 
+                    new String[] {"city"});
+        digester.addSetProperties("toplevel/four", "alt-city", "city");
+        
+
+        ArrayList root = (ArrayList) digester.parse(getInputStream("Test7.xml"));
+        
+        assertEquals("Wrong array size", 4, root.size());
+        
+        // note that the array is in popped order (rather than pushed)
+         
+        Object 
+        obj = root.get(0);
+        assertTrue("(1) Should be an Address ", obj instanceof Address);
+        Address addressOne = (Address) obj;
+        assertEquals("(1) Street attribute", "New Street", addressOne.getStreet());
+        assertEquals("(1) City attribute", "Las Vegas", addressOne.getCity());
+        assertEquals("(1) State attribute", "Nevada", addressOne.getState());
+        
+        obj = root.get(1);
+        assertTrue("(2) Should be an Address ", obj instanceof Address);
+        Address addressTwo = (Address) obj;
+        assertEquals("(2) Street attribute", "Old Street", addressTwo.getStreet());
+        assertEquals("(2) City attribute", "Portland", addressTwo.getCity());
+        assertEquals("(2) State attribute", "Oregon", addressTwo.getState());
+        
+        obj = root.get(2);
+        assertTrue("(3) Should be an Address ", obj instanceof Address);
+        Address addressThree = (Address) obj;
+        assertEquals("(3) Street attribute", "4th Street", addressThree.getStreet());
+        assertEquals("(3) City attribute", "Dayton", addressThree.getCity());
+        assertEquals("(3) State attribute", "US" , addressThree.getState());
+       
+        obj = root.get(3);
+        assertTrue("(4) Should be an Address ", obj instanceof Address);
+        Address addressFour = (Address) obj;
+        assertEquals("(4) Street attribute", "6th Street", addressFour.getStreet());
+        assertEquals("(4) City attribute", "Cleveland", addressFour.getCity());
+        assertEquals("(4) State attribute", "Ohio", addressFour.getState());
+        
     }
     
     // ------------------------------------------------ Utility Support Methods
@@ -760,4 +825,6 @@ public class RuleTestCase extends TestCase {
                 office.getZipCode());
 
     }
+    
+
 }

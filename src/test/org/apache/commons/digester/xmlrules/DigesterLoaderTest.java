@@ -65,6 +65,8 @@ import java.util.ArrayList;
 
 import org.apache.commons.digester.Digester;
 
+import org.apache.commons.digester.Address;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -168,4 +170,59 @@ public class DigesterLoaderTest extends TestCase {
     }
 
 
+    /**
+     */
+    public void testSetCustomProperties() throws Exception {
+        URL rules = ClassLoader.getSystemResource
+            ("org/apache/commons/digester/xmlrules/testPropertyAliasRules.xml");
+        InputStream input = ClassLoader.getSystemResource
+            ("org/apache/commons/digester/Test7.xml").openStream();
+            
+        Object obj = DigesterLoader.load(
+                                        rules, 
+                                        getClass().getClassLoader(), 
+                                        input, 
+                                        new ArrayList());
+                                        
+        if (!(obj instanceof ArrayList)) {
+            fail(
+                "Unexpected object returned from DigesterLoader. Expected ArrayList; got " 
+                + obj.getClass().getName());
+        }
+        
+        ArrayList root = (ArrayList) obj;                
+        
+        assertEquals("Wrong array size", 4, root.size());
+        
+        // note that the array is in popped order (rather than pushed)
+         
+        obj = root.get(0);
+        assertTrue("(1) Should be an Address ", obj instanceof Address);
+        Address addressOne = (Address) obj;
+        assertEquals("(1) Street attribute", "New Street", addressOne.getStreet());
+        assertEquals("(1) City attribute", "Las Vegas", addressOne.getCity());
+        assertEquals("(1) State attribute", "Nevada", addressOne.getState());
+        
+        obj = root.get(1);
+        assertTrue("(2) Should be an Address ", obj instanceof Address);
+        Address addressTwo = (Address) obj;
+        assertEquals("(2) Street attribute", "Old Street", addressTwo.getStreet());
+        assertEquals("(2) City attribute", "Portland", addressTwo.getCity());
+        assertEquals("(2) State attribute", "Oregon", addressTwo.getState());
+        
+        obj = root.get(2);
+        assertTrue("(3) Should be an Address ", obj instanceof Address);
+        Address addressThree = (Address) obj;
+        assertEquals("(3) Street attribute", "4th Street", addressThree.getStreet());
+        assertEquals("(3) City attribute", "Dayton", addressThree.getCity());
+        assertEquals("(3) State attribute", "US" , addressThree.getState());
+       
+        obj = root.get(3);
+        assertTrue("(4) Should be an Address ", obj instanceof Address);
+        Address addressFour = (Address) obj;
+        assertEquals("(4) Street attribute", "6th Street", addressFour.getStreet());
+        assertEquals("(4) City attribute", "Cleveland", addressFour.getCity());
+        assertEquals("(4) State attribute", "Ohio", addressFour.getState());
+        
+    }
 }

@@ -238,6 +238,8 @@ public class DigesterRuleParser extends RuleSetBase {
         digester.addFactoryCreate("*/set-properties-rule", new SetPropertiesRuleFactory());
         digester.addRule("*/set-properties-rule", new PatternRule(digester, "pattern"));
         digester.addSetNext("*/set-properties-rule", "add", ruleClassName);
+        
+        digester.addRule("*/set-properties-rule/alias", new SetPropertiesAliasRule(digester));
 
         digester.addFactoryCreate("*/set-property-rule", new SetPropertyRuleFactory());
         digester.addRule("*/set-property-rule", new PatternRule(digester, "pattern"));
@@ -611,5 +613,31 @@ public class DigesterRuleParser extends RuleSetBase {
         }
     }
 
+    /**
+     * A rule for adding a attribute-property alias to the custom alias mappings of
+     * the containing SetPropertiesRule rule.
+     */
+    protected class SetPropertiesAliasRule extends Rule {
+    
+        /**
+         * <p>Base constructor.
+         *
+         * @param digester the Digester used to parse the rules XML file
+         */
+        public SetPropertiesAliasRule(Digester digester) {
+            super(digester);
+        }
 
+        /**
+         * Add the alias to the SetPropertiesRule object created by the
+         * enclosing <set-properties-rule> tag.
+         */
+        public void begin(Attributes attributes) {
+            String attrName = attributes.getValue("attr-name");
+            String propName = attributes.getValue("prop-name");
+
+            SetPropertiesRule rule = (SetPropertiesRule) digester.peek();
+            rule.addAlias(attrName, propName);
+        }
+    }
 }

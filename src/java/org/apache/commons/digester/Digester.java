@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.54 2002/06/14 21:53:30 mvdb Exp $
- * $Revision: 1.54 $
- * $Date: 2002/06/14 21:53:30 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.55 2002/07/16 21:23:27 rdonkin Exp $
+ * $Revision: 1.55 $
+ * $Date: 2002/07/16 21:23:27 $
  *
  * ====================================================================
  *
@@ -113,7 +113,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.54 $ $Date: 2002/06/14 21:53:30 $
+ * @version $Revision: 1.55 $ $Date: 2002/07/16 21:23:27 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1760,6 +1760,42 @@ public class Digester extends DefaultHandler {
 
         addRule(pattern,
                 new SetPropertiesRule());
+
+    }
+
+    /**
+     * Add a "set properties" rule with a single overridden parameter.
+     * See {@link SetPropertiesRule#SetPropertiesRule(String attributeName, String propertyName)}
+     *
+     * @param pattern Element matching pattern
+     * @param attributeName map this attribute
+     * @param propertyNames to this property
+     */
+    public void addSetProperties(
+                                String pattern, 
+                                String attributeName,
+                                String propertyName) {
+
+        addRule(pattern,
+                new SetPropertiesRule(attributeName, propertyName));
+
+    }
+
+    /**
+     * Add a "set properties" rule with overridden parameters.
+     * See {@link SetPropertiesRule#SetPropertiesRule(String [] attributeNames, String [] propertyNames)}
+     *
+     * @param pattern Element matching pattern
+     * @param attributeNames names of attributes with custom mappings
+     * @param propertyNames property names these attributes map to
+     */
+    public void addSetProperties(
+                                String pattern, 
+                                String [] attributeNames,
+                                String [] propertyNames) {
+
+        addRule(pattern,
+                new SetPropertiesRule(attributeNames, propertyNames));
 
     }
 

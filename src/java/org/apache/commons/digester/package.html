@@ -383,7 +383,11 @@ following:</p>
     (on the object at the top of the digester's stack)
     who have property names that match the attributes specified on this XML
     element, and then call them individually, passing the corresponding
-    attribute values.  A very common idiom is to define an object create
+    attribute values. These natural mappings can be overridden. This allows
+    (for example) a <code>class</code> attribute to be mapped correctly.
+    It is recommended that this feature should not be overused - in most cases,
+    it's better to use the standard <code>BeanInfo</code> mechanism.
+    A very common idiom is to define an object create
     rule, followed by a set properties rule, with the same element matching
     pattern.  This causes the creation of a new Java object, followed by
     "configuration" of that object's properties based on the attributes
