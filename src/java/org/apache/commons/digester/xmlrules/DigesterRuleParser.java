@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterRuleParser.java,v 1.24 2004/02/15 01:02:14 craigmcc Exp $
- * $Revision: 1.24 $
- * $Date: 2004/02/15 01:02:14 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterRuleParser.java,v 1.25 2004/02/15 01:25:34 craigmcc Exp $
+ * $Revision: 1.25 $
+ * $Date: 2004/02/15 01:25:34 $
  *
  * ====================================================================
  * 
@@ -89,6 +89,7 @@ import org.apache.commons.digester.Rules;
 import org.apache.commons.digester.SetNextRule;
 import org.apache.commons.digester.SetPropertiesRule;
 import org.apache.commons.digester.SetPropertyRule;
+import org.apache.commons.digester.SetRootRule;
 import org.apache.commons.digester.SetTopRule;
 import org.apache.commons.digester.ObjectParamRule;
 
@@ -287,6 +288,9 @@ public class DigesterRuleParser extends RuleSetBase {
         digester.addFactoryCreate("*/set-next-rule", new SetNextRuleFactory());
         digester.addRule("*/set-next-rule", new PatternRule("pattern"));
         digester.addSetNext("*/set-next-rule", "add", ruleClassName);
+        digester.addFactoryCreate("*/set-root-rule", new SetRootRuleFactory());
+        digester.addRule("*/set-root-rule", new PatternRule("pattern"));
+        digester.addSetNext("*/set-root-rule", "add", ruleClassName);
     }
     
     
@@ -726,6 +730,19 @@ public class DigesterRuleParser extends RuleSetBase {
             return (paramType == null || paramType.length() == 0) ?
                 new SetNextRule( methodName) :
                 new SetNextRule( methodName, paramType);
+        }
+    }
+    
+    /**
+     * Factory for creating a SetRootRuleFactory
+     */
+    protected class SetRootRuleFactory extends AbstractObjectCreationFactory {
+        public Object createObject(Attributes attributes) {
+            String methodName = attributes.getValue("methodname");
+            String paramType = attributes.getValue("paramtype");
+            return (paramType == null || paramType.length() == 0) ?
+                new SetRootRule( methodName) :
+                new SetRootRule( methodName, paramType);
         }
     }
     
