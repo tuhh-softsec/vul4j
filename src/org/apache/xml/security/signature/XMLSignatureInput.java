@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -36,7 +37,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.c14n.helper.AttrCompare;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments;
 import org.apache.xml.security.utils.JavaUtils;
@@ -106,6 +106,8 @@ public class XMLSignatureInput {
 
    /** Field _cxpathAPI */
    CachedXPathAPIHolder _cxpathAPI=null;
+   
+   OutputStream outputStream=null;
 
    /**
     * Construct a XMLSignatureInput from an octet array.
@@ -117,22 +119,21 @@ public class XMLSignatureInput {
    public XMLSignatureInput(byte[] inputOctets) {
 
       // NO  defensive copy
-
-      this._inputOctetStreamProxy = new ByteArrayInputStream(inputOctets);
+   	  
+      //this._inputOctetStreamProxy = new ByteArrayInputStream(inputOctets);
       this.bytes=inputOctets;
    }
 
 
-   /**
+      /**
     * Constructs a <code>XMLSignatureInput</code> from an octet stream. The
     * stream is directly read.
     *
     * @param inputOctetStream
-    * @throws IOException
     */
-   public XMLSignatureInput(InputStream inputOctetStream) throws IOException {
-
-      this(JavaUtils.getBytesFromStream(inputOctetStream));
+   public XMLSignatureInput(InputStream inputOctetStream)  {
+   	  this._inputOctetStreamProxy=inputOctetStream;
+      //this(JavaUtils.getBytesFromStream(inputOctetStream));
 
    }
 
@@ -235,20 +236,32 @@ public class XMLSignatureInput {
     * @throws SAXException
     * @throws IOException
     * @throws ParserConfigurationException
-    * @throws InvalidCanonicalizerException
     * @throws CanonicalizationException
     * @throws CanonicalizationException
     * @throws IOException
-    * @throws InvalidCanonicalizerException
     * @throws ParserConfigurationException
     * @throws SAXException
     */
-   public Set getNodeSet() throws CanonicalizationException, InvalidCanonicalizerException, ParserConfigurationException, IOException, SAXException {
+   public Set getNodeSet() throws CanonicalizationException, ParserConfigurationException, IOException, SAXException {
    	      return getNodeSet(false);
    }
+   /**
+    * Returns the node set from input which was specified as the parameter of {@link XMLSignatureInput} constructor
+    * @param circunvent
+    *
+    * @return the node set
+    * @throws SAXException
+    * @throws IOException
+    * @throws ParserConfigurationException
+    * @throws CanonicalizationException
+    * @throws CanonicalizationException
+    * @throws IOException
+    * @throws ParserConfigurationException
+    * @throws SAXException
+    */
    public Set getNodeSet(boolean circunvent)
            throws ParserConfigurationException, IOException, SAXException,
-                  CanonicalizationException, InvalidCanonicalizerException {
+                  CanonicalizationException {
       if (this._inputNodeSet!=null) {
       	  return this._inputNodeSet;
       }
@@ -315,73 +328,27 @@ public class XMLSignatureInput {
     * @return the Octect stream(byte Stream) from input which was specified as the parameter of {@link XMLSignatureInput} constructor
     * @throws CanonicalizationException
     * @throws IOException
-    * @throws InvalidCanonicalizerException
     */
    public InputStream getOctetStream()
-           throws IOException, CanonicalizationException,
-                  InvalidCanonicalizerException {
-   	  if (this._inputOctetStreamProxy!=null) {
-   	  	this._inputOctetStreamProxy.reset();
-
-   	  	return this._inputOctetStreamProxy;
+           throws IOException, CanonicalizationException {
       
-      } else  if (this.isElement()) {     
-         if (bytes==null) {         	
-         	Canonicalizer20010315OmitComments c14nizer =
-         		new Canonicalizer20010315OmitComments();                  
-         	bytes=c14nizer.engineCanonicalizeSubTree(this._subNode,this.excludeNode);
-         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
- 		baos.write(bytes);
-        return new ByteArrayInputStream(baos.toByteArray());
-
-      } else if (this.isNodeSet()) {
-      	if (bytes!=null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            baos.write(bytes);
-            return new ByteArrayInputStream(baos.toByteArray());
-        }
-         /* If we have a node set but an octet stream is needed, we MUST c14nize
-          * without any comments.
-          *
-          * We don't use the factory because direct instantiation should be a
-          * little bit faster...
-          */
-         Canonicalizer20010315OmitComments c14nizer =
-            new Canonicalizer20010315OmitComments();
-         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-         if (this._inputNodeSet.size() == 0) {
-
-            // empty nodeset
-            return new ByteArrayInputStream(baos.toByteArray());
-         }
-
-         try {         	
-            Set nodes = this.getNodeSet();
-            if (bytes==null) {
-            bytes = c14nizer.engineCanonicalizeXPathNodeSet(nodes);
+   	  InputStream is = this._inputOctetStreamProxy;
+      if (is!=null) {
+      	    if (is.markSupported()) {
+      	    	is.reset();
+      	    	return is;
             }
-            baos.write(bytes);
-            /** $todo$ Clarify behavior. If isNodeSet() and we getOctetStream, do we have to this._inputOctetStream=xxx ? */
+            bytes=JavaUtils.getBytesFromStream(is);
+      }           
+      return _inputOctetStreamProxy=new ByteArrayInputStream(getBytes());
 
-            /*
-            this._inputOctetStream = new ByteArrayInputStream(baos.toByteArray());
-            this._inputNodeSet = null;
-            return this._inputOctetStream;
-            */
-            return new ByteArrayInputStream(baos.toByteArray());
-         } catch (SAXException ex) {
-            throw new CanonicalizationException("empty", ex);
-         } catch (ParserConfigurationException ex) {
-            throw new CanonicalizationException("empty", ex);
-         }
-      }
-
-      throw new RuntimeException(
-         "getOctetStream() called but no input data present");
    }
-
+   /**
+     * @return
+     */
+    public InputStream getOctetStreamReal () {
+       return this._inputOctetStreamProxy;
+   }
    /**
     * Returns the byte array from input which was specified as the parameter of {@link XMLSignatureInput} constructor
     *
@@ -389,23 +356,51 @@ public class XMLSignatureInput {
     *
     * @throws CanonicalizationException
     * @throws IOException
-    * @throws InvalidCanonicalizerException
     */
    public byte[] getBytes()
-           throws IOException, CanonicalizationException,
-                  InvalidCanonicalizerException {
-      if ( bytes!=null) {
-      	return bytes;
+           throws IOException, CanonicalizationException {
+    if (bytes!=null) {
+        return bytes;      
       }
-      InputStream is = this.getOctetStream();      
-      int available = is.available();
-      bytes = new byte[available];
-      is.read(bytes);
-      if (available != bytes.length) {
-         throw new IOException("Not enough bytes read");
+   	  InputStream is = this._inputOctetStreamProxy;
+   	  if (is!=null) {
+   	  	//is.reset();
+   	  	if (is.markSupported()) {
+            is.reset();       
+            bytes=JavaUtils.getBytesFromStream(is);
+   	  	} else {
+   	  		bytes=JavaUtils.getBytesFromStream(is);
+   	  		_inputOctetStreamProxy=new ByteArrayInputStream(bytes);
+        }
+   	  	   	  	
+   	  	return bytes;   	  	      
+      } else if (this.isElement()) {                    
+         Canonicalizer20010315OmitComments c14nizer =
+         		new Canonicalizer20010315OmitComments();                  
+        bytes=c14nizer.engineCanonicalizeSubTree(this._subNode,this.excludeNode);         
+        return bytes;
+      } else if (this.isNodeSet()) {      	
+         /* If we have a node set but an octet stream is needed, we MUST c14nize
+          * without any comments.
+          *
+          * We don't use the factory because direct instantiation should be a
+          * little bit faster...
+          */
+         Canonicalizer20010315OmitComments c14nizer =
+            new Canonicalizer20010315OmitComments();         
+
+         if (this._inputNodeSet.size() == 0) {
+            // empty nodeset
+            return null;
+         }              
+         bytes = c14nizer.engineCanonicalizeXPathNodeSet(_inputNodeSet);
+          return bytes;         
       }
-      return bytes;
+
+      throw new RuntimeException(
+         "getBytes() called but no input data present");
    }
+
 
    /**
     * Determines if the object has been set up with a Node set
@@ -433,8 +428,8 @@ public class XMLSignatureInput {
     * @return true is the object has been set up with an octet stream
     */
    public boolean isOctetStream() {
-      return ((this._inputOctetStreamProxy != null)
-              && (this._inputNodeSet == null));
+      return ( ((this._inputOctetStreamProxy != null) || bytes!=null)
+              && ((this._inputNodeSet == null) && _subNode ==null));
    }
 
    /**
@@ -1247,4 +1242,61 @@ public class XMLSignatureInput {
 	         }
 	      }
 	   }
+
+	/**
+	 * @param diOs
+	 * @throws IOException
+	 * @throws CanonicalizationException
+	 */
+	public void updateOutputStream(OutputStream diOs) throws CanonicalizationException, IOException {        
+        if (diOs==outputStream) {
+        	return;
+        }
+        if (bytes!=null) {
+            diOs.write(bytes);
+            return;      
+         }else if (this.isElement()) {                    
+             Canonicalizer20010315OmitComments c14nizer =
+                    new Canonicalizer20010315OmitComments();       
+             c14nizer.setWriter(diOs);
+            c14nizer.engineCanonicalizeSubTree(this._subNode,this.excludeNode); 
+            return;
+          } else if (this.isNodeSet()) {        
+             /* If we have a node set but an octet stream is needed, we MUST c14nize
+              * without any comments.
+              *
+              * We don't use the factory because direct instantiation should be a
+              * little bit faster...
+              */
+             Canonicalizer20010315OmitComments c14nizer =
+                new Canonicalizer20010315OmitComments();         
+             c14nizer.setWriter(diOs);
+             if (this._inputNodeSet.size() == 0) {
+                // empty nodeset
+                return;
+             }                              
+             c14nizer.engineCanonicalizeXPathNodeSet(this._inputNodeSet);                
+             return;             
+          } else {
+            InputStream is = this._inputOctetStreamProxy;
+            if (is.markSupported())
+                is.reset();
+                int num;
+                bytes = new byte[1024];
+                while ((num=is.read(bytes))>0) {
+                	diOs.write(bytes,0,num);
+                }
+                
+          }
+		
+	}
+
+
+	/**
+	 * @param os
+	 */
+	public void setOutputStream(OutputStream os) {
+		outputStream=os;
+		
+	}
 }

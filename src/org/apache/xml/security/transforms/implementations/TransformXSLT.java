@@ -22,6 +22,7 @@ package org.apache.xml.security.transforms.implementations;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -32,7 +33,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
@@ -90,7 +90,11 @@ public class TransformXSLT extends TransformSpi {
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
            throws IOException,
                   TransformationException {
-
+   	return enginePerformTransform(input,null);
+   }
+    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream baos)
+    throws IOException,
+           TransformationException {
       try {
          Element transformElement = this._transformObject.getElement();        
 
@@ -137,16 +141,19 @@ public class TransformXSLT extends TransformSpi {
          }
 
          Transformer transformer = tFactory.newTransformer(stylesheet);
-         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         if (baos==null) {
+         	    ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
+               StreamResult outputTarget = new StreamResult(baos1);
+               transformer.transform(xmlSource, outputTarget);
+               return new XMLSignatureInput(baos1.toByteArray());
+
+         }
          StreamResult outputTarget = new StreamResult(baos);
 
-         transformer.transform(xmlSource, outputTarget);
-
-         return new XMLSignatureInput(baos.toByteArray());
-      } catch (InvalidCanonicalizerException ex) {
-         Object exArgs[] = { ex.getMessage() };
-
-         throw new TransformationException("generic.EmptyMessage", exArgs, ex);
+         transformer.transform(xmlSource, outputTarget);         
+         XMLSignatureInput output=new XMLSignatureInput((byte[])null);
+         output.setOutputStream(baos);
+         return output;
       } catch (XMLSecurityException ex) {
          Object exArgs[] = { ex.getMessage() };
 

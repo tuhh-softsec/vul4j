@@ -27,7 +27,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
@@ -189,8 +188,6 @@ public class TransformXPath extends TransformSpi {
       } catch (IOException ex) {
          throw new TransformationException("empty", ex);
       } catch (CanonicalizationException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (InvalidCanonicalizerException ex) {
          throw new TransformationException("empty", ex);
       } catch (ParserConfigurationException ex) {
          throw new TransformationException("empty", ex);

@@ -20,6 +20,7 @@ package org.apache.xml.security.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -249,6 +250,31 @@ public class SignedInfo extends Manifest {
       System.arraycopy(this._c14nizedBytes, 0, output, 0, output.length);
 
       return output;
+   }
+   
+   /**
+    *  Output the C14n stream to the give outputstream.
+    * @param os
+    * @throws CanonicalizationException
+    * @throws InvalidCanonicalizerException
+    * @throws XMLSecurityException
+    */
+   public void signInOctectStream(OutputStream os)            
+       throws CanonicalizationException, InvalidCanonicalizerException,
+	   XMLSecurityException {
+
+   	if ((this._c14nizedBytes == null)) {
+       Canonicalizer c14nizer =
+          Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
+       c14nizer.setWriter(os);       
+       c14nizer.canonicalizeSubtree(this._constructionElement);
+    } else {
+        try {
+			os.write(this._c14nizedBytes);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}  
+    }    
    }
 
    /**

@@ -24,14 +24,12 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -70,11 +68,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
    }
 
    /**
-    * This transform performs the Enveloped-Signature-Transform by
-    *
-    * @param input
     * @inheritDoc
-    * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
            throws TransformationException {
@@ -133,9 +127,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
          throw new TransformationException("empty", ex);
       } catch (CanonicalizationException ex) {
          throw new TransformationException("empty", ex);
-      } catch (InvalidCanonicalizerException ex) {
-         throw new TransformationException("empty", ex);
-      }
+      } 
    }
 
    /**

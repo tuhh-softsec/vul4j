@@ -19,11 +19,11 @@ package org.apache.xml.security.transforms.implementations;
 
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclOmitComments;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -76,9 +76,12 @@ public class TransformC14NExclusive extends TransformSpi {
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
            throws CanonicalizationException {
-
+   	    return enginePerformTransform(input,null);
+   }
+    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream os)
+    throws CanonicalizationException {
       try {
-         InclusiveNamespaces inclusiveNamespaces = null;
+         String inclusiveNamespaces = null;
 
          if (this._transformObject
                  .length(InclusiveNamespaces
@@ -91,39 +94,34 @@ public class TransformC14NExclusive extends TransformSpi {
                   InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES,0);
 
             inclusiveNamespaces = new InclusiveNamespaces(inclusiveElement,
-                    this._transformObject.getBaseURI());
+                    this._transformObject.getBaseURI()).getInclusiveNamespaces();
          }
 
          Canonicalizer20010315ExclOmitComments c14n =
             new Canonicalizer20010315ExclOmitComments();
-         
+         if (os!=null) {
+            c14n.setWriter(os);
+         }
+         byte []result;
          if (input.isOctetStream()) {
-            return new XMLSignatureInput(c14n
-               .engineCanonicalize(input.getBytes()));
-         } 
-         	byte []result;
-            if (inclusiveNamespaces == null) {
-            	if (input.isElement()) {
-             		org.w3c.dom.Node excl=input.getExcludeNode();             	
-             		result=c14n.engineCanonicalizeSubTree(input.getSubNode(),"",excl);             		
-             	} else {
-             		result=c14n
-	                  .engineCanonicalizeXPathNodeSet(input.getNodeSet());
-             	}
-               return new XMLSignatureInput(result);
-            }
-            	if (input.isElement()) {
+            result=c14n.engineCanonicalize(input.getBytes());
+         } else if (input.isElement()) {
             		org.w3c.dom.Node excl=input.getExcludeNode();
-            		return new XMLSignatureInput(c14n
+            		result =c14n
                             .engineCanonicalizeSubTree(input
                                .getSubNode(), inclusiveNamespaces
-                               .getInclusiveNamespaces(),excl));
-            	}
-               return new XMLSignatureInput(c14n
+                               ,excl);
+           }    else {
+               result = c14n
                   .engineCanonicalizeXPathNodeSet(input
                      .getNodeSet(), inclusiveNamespaces
-                     .getInclusiveNamespaces()));      
-         
+                     );      
+           }
+         XMLSignatureInput output=new XMLSignatureInput(result);
+         if (os!=null) {
+            output.setOutputStream(os);
+         }
+         return output;
       } catch (IOException ex) {
          throw new CanonicalizationException("empty", ex);
       } catch (ParserConfigurationException ex) {

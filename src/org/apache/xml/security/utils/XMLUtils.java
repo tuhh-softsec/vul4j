@@ -64,7 +64,8 @@ public class XMLUtils {
    /**
     * @param rootNode
     * @param result
-    * @return
+    * @param exclude
+    * @param com wheather comments or not
     */   
    public static void getSet(Node rootNode,Set result,Node exclude ,boolean com) {
    	  if ((exclude!=null) && isDescendantOrSelf(exclude,rootNode)){
@@ -313,9 +314,8 @@ public class XMLUtils {
 
       if (classLoader == null) {
          return Class.forName(className);
-      } else {
-         return classLoader.loadClass(className);
-      }
+      } 
+       return classLoader.loadClass(className);      
    }
 
    /**
@@ -323,10 +323,8 @@ public class XMLUtils {
     * For JDK 1.2 and later use the context ClassLoader.
     * Copied from javax.xml.*.FactoryFinder
     * @return the appropriate ClassLoader
-    * @throws ClassNotFoundException
     */
-   protected static ClassLoader findClassLoader()
-           throws ClassNotFoundException {
+   protected static ClassLoader findClassLoader() {
 
       Method m = null;
 
@@ -856,7 +854,7 @@ public class XMLUtils {
     * @return
     */
     public static Element[] selectNodes(Node sibling,String uri,String nodeName) {
-    	int size=10;
+    	int size=20;
     	Element[] a= new Element[size];
     	int curr=0;
     	//List list=new ArrayList();

@@ -22,18 +22,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import java.util.TreeSet;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.CanonicalizerSpi;
@@ -42,8 +37,6 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -97,7 +90,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * in subtree canonicalizations.
     */
    Node _excludeNode =null;
-   final ByteArrayOutputStream _writer = new ByteArrayOutputStream();//null;
+   OutputStream _writer = new ByteArrayOutputStream();//null;
 
    /**
     * Constructor CanonicalizerBase
@@ -136,7 +129,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
          }
          this.canonicalizeSubTree(rootNode,ns);
          this._writer.close();
-         return this._writer.toByteArray();
+         if (this._writer instanceof ByteArrayOutputStream) {
+         	return ((ByteArrayOutputStream)this._writer).toByteArray();
+         } 
+         return null;
+         
       } catch (UnsupportedEncodingException ex) {
          throw new CanonicalizationException("empty", ex);
       } catch (IOException ex) {
@@ -277,7 +274,10 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
          Node rootNodeOfC14n = XMLUtils.getOwnerDocument(this._xpathNodeSet);
          this.canonicalizeXPathNodeSet(rootNodeOfC14n,new  NameSpaceSymbTable());
          this._writer.close();
-         return this._writer.toByteArray();
+         if (this._writer instanceof ByteArrayOutputStream) {
+         	return ((ByteArrayOutputStream)this._writer).toByteArray();
+         }
+         return null;
       } catch (UnsupportedEncodingException ex) {
          throw new CanonicalizationException("empty", ex);
       } catch (IOException ex) {
@@ -717,5 +717,12 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     */
     final public void set_includeComments(boolean comments) {
 	    _includeComments = comments;
+    }
+    
+    /**
+     * @param _writer The _writer to set.
+     */
+    public void setWriter(OutputStream _writer) {
+    	this._writer = _writer;
     }
 }

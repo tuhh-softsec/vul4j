@@ -328,11 +328,9 @@ public class Manifest extends SignatureElementProxy {
                     && currentRef.typeIsReferenceToManifest()) {
                log.debug("We have to follow a nested Manifest");
 
-               try {
-                  currentRef.dereferenceURIandPerformTransforms();
-
+                try {
                   XMLSignatureInput signedManifestNodes =
-                     currentRef.getTransformsOutput();
+                    currentRef.dereferenceURIandPerformTransforms(null);
                   Set nl = signedManifestNodes.getNodeSet();
                   Manifest referencedManifest = null;
                   Iterator nlIterator = nl.iterator();

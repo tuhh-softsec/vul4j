@@ -18,6 +18,8 @@ package org.apache.xml.security.signature;
 
 
 
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
 import java.security.Key;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -39,6 +41,7 @@ import org.apache.xml.security.utils.HexDump;
 import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.SignerOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
@@ -493,12 +496,10 @@ public final class XMLSignature extends SignatureElementProxy {
 
             // generate digest values for all References in this SignedInfo
             si.generateDigestValues();
-
+            OutputStream so=new BufferedOutputStream(new SignerOutputStream(sa));
+            
             // get the canonicalized bytes from SignedInfo
-            byte signedInfoOctets[] = si.getCanonicalizedOctetStream();
-
-            // sign those bytes
-            sa.update(signedInfoOctets);
+            si.signInOctectStream(so);
 
             byte jcebytes[] = sa.sign();
 
@@ -601,11 +602,9 @@ public final class XMLSignature extends SignatureElementProxy {
          sa.initVerify(pk);
 
          // Get the canonicalized (normalized) SignedInfo
-         byte inputBytes[] = this._signedInfo.getCanonicalizedOctetStream();
-
-         //set the input bytes on the SignateAlgorithm
-         sa.update(inputBytes);
-
+         SignerOutputStream so=new SignerOutputStream(sa);
+         this._signedInfo.signInOctectStream(so);
+         
          //retrieve the byte[] from the stored signature
          byte sigBytes[] = this.getSignatureValue();
 

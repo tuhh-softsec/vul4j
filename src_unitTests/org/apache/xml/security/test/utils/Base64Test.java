@@ -19,11 +19,12 @@ package org.apache.xml.security.test.utils;
 
 
 
+import java.io.ByteArrayOutputStream;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 
 
@@ -40,8 +41,8 @@ public class Base64Test extends TestCase {
 
    /**
     * Method suite
-    *
-    *
+    * @return
+    *    
     */
    public static Test suite() {
       return new TestSuite(Base64Test.class);
@@ -70,11 +71,12 @@ public class Base64Test extends TestCase {
 
    /**
     * Method testA1
+    * @throws Exception
     *
     * @throws java.io.UnsupportedEncodingException
     * $todo$ Extend more tests
     */
-   public static void testA1() throws java.io.UnsupportedEncodingException, Base64DecodingException {
+   public static void testA1() throws Exception {
 
       String textData = "Hallo";
       String result0 = Base64.encode(textData.getBytes("UTF-8"));
@@ -85,6 +87,10 @@ public class Base64Test extends TestCase {
       String resultStr = new String(resultBytes, "UTF-8");
 
       assertEquals("Result of decoding", 0, textData.compareTo(resultStr));
+      ByteArrayOutputStream os=new ByteArrayOutputStream();
+      Base64.decode(result0.getBytes(),os);
+      resultStr = new String(os.toByteArray(), "UTF-8");
+      assertEquals("Result of decoding", 0, textData.compareTo(resultStr));
    }
 
    /**
@@ -93,10 +99,11 @@ public class Base64Test extends TestCase {
 	* Test for correct line wrapping at end of an exactly 76 char string
 	*
     * @throws java.io.UnsupportedEncodingException
+    * @throws Exception
     */
 
 	public static void testWrap1() 
-		throws java.io.UnsupportedEncodingException, Base64DecodingException {
+		throws java.io.UnsupportedEncodingException,Exception {
 
 		String inputData = "The quick brown fox jumps over the lazy dog and some extr";
 		String expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRy";
@@ -105,6 +112,10 @@ public class Base64Test extends TestCase {
 
 		String result2 = new String(Base64.decode(result), "UTF-8");
 		assertEquals("Result of encoding", result2, inputData);
+        ByteArrayOutputStream os=new ByteArrayOutputStream();
+        Base64.decode(expectedResult.getBytes(),os);
+          result2 = new String(os.toByteArray(), "UTF-8");
+          assertEquals("Result of encoding", result2, inputData);
 
 	}
 
@@ -114,10 +125,11 @@ public class Base64Test extends TestCase {
 	* Test for correct line wrapping after more than 76 characters
 	*
     * @throws java.io.UnsupportedEncodingException
+    * @throws Exception
     */
 
 	public static void testWrap2() 
-		throws java.io.UnsupportedEncodingException, Base64DecodingException {
+		throws java.io.UnsupportedEncodingException, Exception {
 
 		String inputData = "The quick brown fox jumps over the lazy dog and some extra text that will cause a line wrap";
 		String expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRy\nYSB0ZXh0IHRoYXQgd2lsbCBjYXVzZSBhIGxpbmUgd3JhcA==";
@@ -126,7 +138,10 @@ public class Base64Test extends TestCase {
 
 		String result2 = new String(Base64.decode(result), "UTF-8");
 		assertEquals("Result of encoding", result2, inputData);
-
+        ByteArrayOutputStream os=new ByteArrayOutputStream();
+        Base64.decode(expectedResult.getBytes(),os);
+          result2 = new String(os.toByteArray(), "UTF-8");
+          assertEquals("Result of encoding", result2, inputData);
 	}
 
    static {

@@ -19,7 +19,9 @@ package org.apache.xml.security.signature;
 
 
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,6 +38,7 @@ import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.DigesterOutputStream;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
@@ -333,6 +336,7 @@ public class Reference extends SignatureElementProxy {
          Node n=digestValueElement.getFirstChild();
          while (n!=null) {
                digestValueElement.removeChild(n);
+               n = n.getNextSibling();
          }
 
          String base64codedValue = Base64.encode(digestValue);
@@ -352,9 +356,8 @@ public class Reference extends SignatureElementProxy {
            throws XMLSignatureException, ReferenceNotInitializedException {
 
       if (this._state == MODE_SIGN) {
-         byte calculatedBytes[] = this.calculateDigest();
 
-         this.setDigestValueElement(calculatedBytes);
+         this.setDigestValueElement(this.calculateDigest());
       }
    }
 
@@ -417,8 +420,6 @@ public class Reference extends SignatureElementProxy {
 			result = new XMLSignatureInput(input.getBytes());
 		} catch (CanonicalizationException ex) {
 			 throw new ReferenceNotInitializedException("empty", ex);
-		} catch (InvalidCanonicalizerException ex) {
-			 throw new ReferenceNotInitializedException("empty", ex);
 		} catch (IOException ex) {
 			 throw new ReferenceNotInitializedException("empty", ex);
 		}
@@ -427,7 +428,7 @@ public class Reference extends SignatureElementProxy {
 	
    }
 
-   private XMLSignatureInput getContentsAfterTransformation(XMLSignatureInput input)
+   private XMLSignatureInput getContentsAfterTransformation(XMLSignatureInput input, OutputStream os)
            throws XMLSignatureException {
 
       try {
@@ -435,7 +436,7 @@ public class Reference extends SignatureElementProxy {
          XMLSignatureInput output = null;
 
          if (transforms != null) {
-            output = transforms.performTransforms(input);
+            output = transforms.performTransforms(input,os);
             this._transformsOutput = output;//new XMLSignatureInput(output.getBytes());
 
             //this._transformsOutput.setSourceURI(output.getSourceURI());
@@ -467,7 +468,7 @@ public class Reference extends SignatureElementProxy {
 
       XMLSignatureInput input = this.getContentsBeforeTransformation();
 
-      return this.getContentsAfterTransformation(input);
+      return this.getContentsAfterTransformation(input, null);
    }
 
    /**
@@ -502,7 +503,7 @@ public class Reference extends SignatureElementProxy {
                   break doTransforms;
                }
 
-               output = t.performTransform(output);
+               output = t.performTransform(output, null);
             }
 
             output.setSourceURI(input.getSourceURI());
@@ -594,16 +595,18 @@ public class Reference extends SignatureElementProxy {
    /**
     * This method returns the {@link XMLSignatureInput} which is referenced by the
     * <CODE>URI</CODE> Attribute.
+    * @param os TODO
+    * @return
     *
     * @throws XMLSignatureException
     * @see Manifest#verifyReferences()
     */
-   protected void dereferenceURIandPerformTransforms()
+   protected XMLSignatureInput dereferenceURIandPerformTransforms(OutputStream os)
            throws XMLSignatureException {
 
       try {
          XMLSignatureInput input = this.getContentsBeforeTransformation();
-         XMLSignatureInput output = this.getContentsAfterTransformation(input);
+         XMLSignatureInput output = this.getContentsAfterTransformation(input, os);
 
          /* at this stage, this._transformsInput and this._transformsOutput
           * contain a huge amount of nodes. When we do not cache these nodes
@@ -616,6 +619,7 @@ public class Reference extends SignatureElementProxy {
 
             //this._transformsOutput.setSourceURI(output.getSourceURI());
          }
+         return output;
       } catch (XMLSecurityException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       }
@@ -655,21 +659,20 @@ public class Reference extends SignatureElementProxy {
     */
    public byte[] getReferencedBytes()
            throws ReferenceNotInitializedException, XMLSignatureException {
+    try {
+        XMLSignatureInput output=this.dereferenceURIandPerformTransforms(null);
 
-      try {
-         this.dereferenceURIandPerformTransforms();
+        byte[] signedBytes = output.getBytes();
 
-         byte[] signedBytes = this.getTransformsOutput().getBytes();
+        return signedBytes;
+     } catch (IOException ex) {
+        throw new ReferenceNotInitializedException("empty", ex);
+     } catch (CanonicalizationException ex) {
+        throw new ReferenceNotInitializedException("empty", ex);
+     } 
 
-         return signedBytes;
-      } catch (IOException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (CanonicalizationException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (InvalidCanonicalizerException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      }
    }
+
 
    /**
     * Method resolverResult
@@ -682,25 +685,24 @@ public class Reference extends SignatureElementProxy {
            throws ReferenceNotInitializedException, XMLSignatureException {
 
       try {
-         byte[] data = this.getReferencedBytes();
+         
          MessageDigestAlgorithm mda = this.getMessageDigestAlgorithm();
 
          mda.reset();
-         mda.update(data);
+         DigesterOutputStream diOs=new DigesterOutputStream(mda);
+         OutputStream os=new BufferedOutputStream(diOs);
+         XMLSignatureInput output=this.dereferenceURIandPerformTransforms(os);         
+         output.updateOutputStream(os);
+         os.flush();
+         //this.getReferencedBytes(diOs);
+         //mda.update(data);
 
-         byte calculatedDigestValue[] = mda.digest();
-
-         //J-
-         if (data.length < 20) {
-            log.debug(new String(data));
-         } else {
-            log.debug(new String(data).substring(0, 20) + " ...");
-         }
-         //J+
-         return calculatedDigestValue;
+         return diOs.getDigestValue();
       } catch (XMLSecurityException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
-      }
+      } catch (IOException ex) {
+      	 throw new ReferenceNotInitializedException("empty", ex);
+	}
    }
 
    /**

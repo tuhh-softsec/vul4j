@@ -19,10 +19,8 @@ package org.apache.xml.security.samples;
 
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
 
@@ -36,28 +34,24 @@ public class MyResolver extends ResourceResolverSpi {
 
    /**
     * Method engineResolve
-    *
+    * @inheritDoc
     * @param uri
     * @param BaseURI
     *
-    * @throws ResourceResolverException
     */
-   public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
-           throws ResourceResolverException {
+   public XMLSignatureInput engineResolve(Attr uri, String BaseURI) {
 
-      try {
+
          ByteArrayInputStream is =
             new ByteArrayInputStream("string".getBytes());
 
          return new XMLSignatureInput(is);
-      } catch (IOException ex) {
-         throw new ResourceResolverException("empty", ex, uri, BaseURI);
-      }
+      
    }
 
    /**
     * Method engineCanResolve
-    *
+    * @inheritDoc
     * @param uri
     * @param BaseURI
     *

@@ -19,13 +19,14 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
@@ -99,13 +100,17 @@ public class TransformBase64Decode extends TransformSpi {
     * @inheritDoc
     * @throws CanonicalizationException
     * @throws IOException
-    * @throws InvalidCanonicalizerException
     * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
            throws IOException, CanonicalizationException,
-                  TransformationException, InvalidCanonicalizerException {
-
+                  TransformationException {
+   	return enginePerformTransform(input,null);
+   }
+    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,
+            OutputStream os)
+    throws IOException, CanonicalizationException,
+           TransformationException {
 	 try {
       if (input.isElement()) {
          Node el=input.getSubNode();
@@ -114,13 +119,31 @@ public class TransformBase64Decode extends TransformSpi {
          }
          StringBuffer sb=new StringBuffer();
          traverseElement((Element)el,sb);
-         byte[] decodedBytes = Base64.decode(sb.toString());            
-         return new XMLSignatureInput(decodedBytes);         
+         if (os==null) {
+         	byte[] decodedBytes = Base64.decode(sb.toString());            
+         	return new XMLSignatureInput(decodedBytes);
+         } 
+         	Base64.decode(sb.toString().getBytes(),os);
+            XMLSignatureInput output=new XMLSignatureInput((byte[])null);
+            output.setOutputStream(os);
+            return output;
+         
       }
       if (input.isOctetStream() ) {
-        byte[] base64Bytes = input.getBytes();            
-        byte[] decodedBytes = Base64.decode(base64Bytes);
-        return new XMLSignatureInput(decodedBytes);
+                    
+        
+        if (os==null) {
+            byte[] base64Bytes = input.getBytes();
+            byte[] decodedBytes = Base64.decode(base64Bytes);            
+            return new XMLSignatureInput(decodedBytes);
+         } 
+            Base64.decode(new BufferedInputStream(input.getOctetStreamReal())
+                    ,os);
+            XMLSignatureInput output=new XMLSignatureInput((byte[])null);
+            output.setOutputStream(os);
+            return output;
+         
+        
       } 
        
 	 try {

@@ -19,6 +19,7 @@ package org.apache.xml.security.c14n;
 
 
 import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -305,6 +306,15 @@ public class Canonicalizer {
               throws CanonicalizationException {
       return this.canonicalizerSpi.engineCanonicalizeXPathNodeSet(xpathNodeSet,
               inclusiveNamespaces);
+   }
+   
+   /**
+    * Sets the writter where the cannocalization ends. ByteArrayOutputStream if 
+    * none is setted.
+    * @param os
+    */
+   public void setWriter(OutputStream os) {
+   	    this.canonicalizerSpi.setWriter(os);
    }
 
    /**

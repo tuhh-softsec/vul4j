@@ -19,6 +19,7 @@ package org.apache.xml.security.transforms;
 
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -206,14 +207,33 @@ public class Transforms extends SignatureElementProxy {
     */
    public XMLSignatureInput performTransforms(
            XMLSignatureInput xmlSignatureInput) throws TransformationException {
+   	     return performTransforms(xmlSignatureInput,null);
+   }
+   
+   /**
+    * Applies all included <code>Transform</code>s to xmlSignatureInput and returns the result of these transformations.
+    *
+    * @param xmlSignatureInput the input for the <code>Transform</code>s
+    * @param os where to output the last transformation.
+    * @return the result of the <code>Transforms</code>
+    * @throws TransformationException
+    */
+    public XMLSignatureInput performTransforms(
+            XMLSignatureInput xmlSignatureInput,OutputStream os) throws TransformationException {
 
       try {
-         for (int i = 0; i < this.getLength(); i++) {
+        int transformLength=this.getLength();
+        int last=transformLength-1;
+         for (int i = 0; i < transformLength; i++) {
             Transform t = this.item(i);
             if (log.isDebugEnabled()) {
             	log.debug("Preform the (" + i + ")th " + t.getURI() + " transform");
             }
-            xmlSignatureInput = t.performTransform(xmlSignatureInput);
+            if (i==last) {
+            	xmlSignatureInput = t.performTransform(xmlSignatureInput, os);
+            } else {
+            	xmlSignatureInput = t.performTransform(xmlSignatureInput);
+            }
          }
 
          /*

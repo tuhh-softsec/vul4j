@@ -19,6 +19,7 @@ package org.apache.xml.security.c14n;
 
 
 import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -44,7 +45,7 @@ public abstract class CanonicalizerSpi {
     *
     *
     * @param inputBytes
-    *
+    * @return the c14n bytes. 
     *
     *
     * @throws CanonicalizationException
@@ -102,7 +103,7 @@ public abstract class CanonicalizerSpi {
     * Method engineCanonicalizeXPathNodeSet
     *
     * @param xpathNodeSet
-    *
+    * @return the c14n bytes
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeXPathNodeSet(NodeList xpathNodeSet)
@@ -112,7 +113,15 @@ public abstract class CanonicalizerSpi {
          .engineCanonicalizeXPathNodeSet(XMLUtils
             .convertNodelistToSet(xpathNodeSet));
    }
-
+   
+   /**
+    * Method engineCanonicalizeXPathNodeSet
+    *
+    * @param xpathNodeSet
+    * @param inclusiveNamespaces
+    * @return the c14n bytes
+    * @throws CanonicalizationException
+    */
    public byte[] engineCanonicalizeXPathNodeSet(NodeList xpathNodeSet, String inclusiveNamespaces)
            throws CanonicalizationException {
 
@@ -122,20 +131,63 @@ public abstract class CanonicalizerSpi {
    }
 
    //J-
+   /** Returns the URI of this engine.
+    * @return the URI
+    */
    public abstract String engineGetURI();
-
+   
+   /** Returns the URI if include comments
+    * @return true if include.
+    */
    public abstract boolean engineGetIncludeComments();
-
+   
+   /**
+    * C14n a nodeset
+    *
+    * @param xpathNodeSet
+    * @return the c14n bytes
+    * @throws CanonicalizationException
+    */
    public abstract byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet)
       throws CanonicalizationException;
 
+   /**
+    * C14n a nodeset
+    *
+    * @param xpathNodeSet
+    * @param inclusiveNamespaces
+    * @return the c14n bytes
+    * @throws CanonicalizationException
+    */
    public abstract byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet, String inclusiveNamespaces)
       throws CanonicalizationException;
 
+   /**
+    * C14n a node tree.
+    *
+    * @param rootNode
+    * @return the c14n bytes
+    * @throws CanonicalizationException
+    */
    public abstract byte[] engineCanonicalizeSubTree(Node rootNode)
       throws CanonicalizationException;
 
+   /**
+    * C14n a node tree.
+    *
+    * @param rootNode
+    * @param inclusiveNamespaces
+    * @return the c14n bytes
+    * @throws CanonicalizationException
+    */
    public abstract byte[] engineCanonicalizeSubTree(Node rootNode, String inclusiveNamespaces)
       throws CanonicalizationException;
+   
+   /**
+    * Sets the writter where the cannocalization ends. ByteArrayOutputStream if 
+    * none is setted.
+    * @param os
+    */
+   public abstract void setWriter(OutputStream os);
    //J+
 }

@@ -20,12 +20,10 @@ package org.apache.xml.security.encryption;
 import java.io.IOException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.TransformationException;
 import org.w3c.dom.Attr;
 import org.apache.xml.security.utils.Base64;
@@ -159,8 +157,6 @@ public class XMLCipherInput {
 				return input.getBytes();
 			}
 			catch (IOException ex) {
-				throw new XMLEncryptionException("empty", ex);
-			} catch (InvalidCanonicalizerException ex) {
 				throw new XMLEncryptionException("empty", ex);
 			} catch (CanonicalizationException ex) {
 				throw new XMLEncryptionException("empty", ex);

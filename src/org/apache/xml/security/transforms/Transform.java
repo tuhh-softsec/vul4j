@@ -19,6 +19,7 @@ package org.apache.xml.security.transforms;
 
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -29,7 +30,6 @@ import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.SignatureElementProxy;
@@ -51,7 +51,6 @@ import org.xml.sax.SAXException;
  * @author Christian Geuer-Pollmann
  * @see Transforms
  * @see TransformSpi
- * @see Canonicalizer
  *
  */
 public final class Transform extends SignatureElementProxy {
@@ -73,7 +72,9 @@ public final class Transform extends SignatureElementProxy {
     * Constructs {@link Transform}
     *
     * @param doc the {@link Document} in which <code>Transform</code> will be placed
-    * @param algorithmURI URI representation of <code>Transform algorithm</code> will be specified as parameter of {@link #getInstance}, when generate. </br>
+    * @param algorithmURI URI representation of 
+    * <code>Transform algorithm</code> will be specified as parameter of 
+    * {@link #getInstance(Document, String)}, when generate. </br>
     * @param contextNodes the child node list of <code>Transform</code> element
     * @throws InvalidTransformException
     */
@@ -246,7 +247,8 @@ public final class Transform extends SignatureElementProxy {
    /**
     * Registers implementing class of the Transform algorithm with algorithmURI
     *
-    * @param algorithmURI algorithmURI URI representation of <code>Transform algorithm</code> will be specified as parameter of {@link #getInstance}, when generate. </br>
+    * @param algorithmURI algorithmURI URI representation of <code>Transform algorithm</code>
+    *  will be specified as parameter of {@link #getInstance(Document, String)}, when generate. </br>
     * @param implementingClass <code>implementingClass</code> the implementing class of {@link TransformSpi}
     * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI is already registered
     */
@@ -280,8 +282,8 @@ public final class Transform extends SignatureElementProxy {
 
    /**
     * Transforms the input, and generats {@link XMLSignatureInput} as output.
-    *
     * @param input input {@link XMLSignatureInput} which can supplied Octect Stream and NodeSet as Input of Transformation
+    *
     * @return the {@link XMLSignatureInput} class as the result of transformation
     * @throws CanonicalizationException
     * @throws IOException
@@ -310,12 +312,46 @@ public final class Transform extends SignatureElementProxy {
 
       return result;
    }
+   
+   /**
+    * Transforms the input, and generats {@link XMLSignatureInput} as output.
+    * @param input input {@link XMLSignatureInput} which can supplied Octect Stream and NodeSet as Input of Transformation
+    * @param os where to output the result of the last transformation
+    *
+    * @return the {@link XMLSignatureInput} class as the result of transformation
+    * @throws CanonicalizationException
+    * @throws IOException
+    * @throws InvalidCanonicalizerException
+    * @throws TransformationException
+    */
+   public XMLSignatureInput performTransform(XMLSignatureInput input, OutputStream os)
+   throws IOException, CanonicalizationException,
+          InvalidCanonicalizerException, TransformationException {
+
+   	    XMLSignatureInput result = null;
+
+   	    try {
+   	    	result = transformSpi.enginePerformTransform(input,os);
+   	    } catch (ParserConfigurationException ex) {
+   	    	Object exArgs[] = { this.getURI(), "ParserConfigurationException" };
+
+   	    	throw new CanonicalizationException(
+   	    			"signature.Transform.ErrorDuringTransform", exArgs, ex);
+   	    } catch (SAXException ex) {
+   	    	Object exArgs[] = { this.getURI(), "SAXException" };
+
+   	    	throw new CanonicalizationException(
+   	    			"signature.Transform.ErrorDuringTransform", exArgs, ex);
+   	    }
+
+   	    return result;
+   }
 
    /**
     * Method getImplementingClass
     *
     * @param URI
-    *
+    * @return The name of the class implementing the URI.
     */
    private static String getImplementingClass(String URI) {
 
@@ -334,6 +370,8 @@ public final class Transform extends SignatureElementProxy {
       return null;
    }
 
+   
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_TRANSFORM;
    }
