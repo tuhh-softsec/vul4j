@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.3 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.4 2003/10/27 13:37:35 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2003/10/27 13:37:35 $
  *
  * ====================================================================
  * 
@@ -354,7 +354,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                 currDeclaration = pluginManager.getDeclarationById(pluginId);
                 
                 if (currDeclaration == null) {
-                    throw new Exception(
+                    throw new PluginInvalidInputException(
                         "Plugin id [" + pluginId + "] is not defined.");
                 }
             }

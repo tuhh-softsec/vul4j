@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginDeclarationRule.java,v 1.3 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginDeclarationRule.java,v 1.4 2003/10/27 13:37:35 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2003/10/27 13:37:35 $
  *
  * ====================================================================
  * 
@@ -128,13 +128,13 @@ public class PluginDeclarationRule extends Rule {
         }
 
         if (id == null) {
-            throw new ClassNotFoundException(
+            throw new PluginInvalidInputException(
                     "mandatory attribute id not present on tag"
                      + " <" + name + ">");
         }
 
         if (pluginClassName == null) {
-            throw new ClassNotFoundException(
+            throw new PluginInvalidInputException(
                     "mandatory attribute class not present on tag"
                      + " <" + name + ">");
         }
@@ -187,7 +187,8 @@ public class PluginDeclarationRule extends Rule {
                 log.debug("plugin redeclaration is identical: ignoring");
                 return;
             } else {
-                throw new Exception("Plugin id [" + id + "] is not unique");
+                throw new PluginInvalidInputException(
+                    "Plugin id [" + id + "] is not unique");
             }
         }
 
@@ -195,7 +196,7 @@ public class PluginDeclarationRule extends Rule {
         // name. It might be nice someday to allow this but lets keep it
         // simple for now.
         if (pm.getDeclarationByClass(pluginClassName) != null) {
-            throw new Exception(
+            throw new PluginInvalidInputException(
                     "Plugin id [" + id + "] maps to class [" + pluginClassName + "]"
                      + " which has already been mapped by some other id.");
         }
