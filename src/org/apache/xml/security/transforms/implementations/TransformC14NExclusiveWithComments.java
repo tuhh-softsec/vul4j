@@ -47,16 +47,6 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS;
 
-   //J-
-   /** @inheritDoc */
-   public boolean wantsOctetStream ()   { return false; }
-   /** @inheritDoc */
-   public boolean wantsNodeSet ()       { return true; }
-   /** @inheritDoc */
-   public boolean returnsOctetStream () { return true; }
-   /** @inheritDoc */
-   public boolean returnsNodeSet ()     { return false; }
-   //J+
 
    /**
     * Method engineGetURI

@@ -47,17 +47,6 @@ public class TransformEnvelopedSignature extends TransformSpi {
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_ENVELOPED_SIGNATURE;
 
-   //J-
-   /** @inheritDoc */
-   public boolean wantsOctetStream ()   { return true; }
-   /** @inheritDoc */
-   public boolean wantsNodeSet ()       { return true; }
-   /** @inheritDoc */
-   public boolean returnsOctetStream () { return true; }
-   /** @inheritDoc */
-   public boolean returnsNodeSet ()     { return false; }
-   //J+
-
    /**
     * Method engineGetURI
     *

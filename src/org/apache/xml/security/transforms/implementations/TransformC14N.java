@@ -45,16 +45,6 @@ public class TransformC14N extends TransformSpi {
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_C14N_OMIT_COMMENTS;
 
-   //J-
-   /** @inheritDoc */
-   public boolean wantsOctetStream ()   { return true; }
-   /** @inheritDoc */
-   public boolean wantsNodeSet ()       { return true; }
-   /** @inheritDoc */
-   public boolean returnsOctetStream () { return true; }
-   /** @inheritDoc */
-   public boolean returnsNodeSet ()     { return false; }
-   //J+
 
    /**
     * @inheritDoc 

@@ -81,17 +81,6 @@ public class TransformBase64Decode extends TransformSpi {
       return TransformBase64Decode.implementedTransformURI;
    }
 
-   //J-
-   /** @inheritDoc */
-   public boolean wantsOctetStream ()   { return true; }
-   /** @inheritDoc */
-   public boolean wantsNodeSet ()       { return true; }
-   /** @inheritDoc */
-   public boolean returnsOctetStream () { return true; }
-   /** @inheritDoc */
-   public boolean returnsNodeSet ()     { return false; }
-   //J+
-
    /**
     * Method enginePerformTransform
     *

@@ -46,33 +46,6 @@ public abstract class TransformSpi {
    protected void setTransform(Transform transform) {
       this._transformObject = transform;
    }
-   /**
-    * Tests whether Transform implemenation class is need Octect Stream as input of Transformation
-    *
-    * @return true if need Octect Stream as input
-    */
-   public abstract boolean wantsOctetStream();
-
-   /**
-    * Tests whether Transform implemenation class is need Octect Stream as input of Transformation
-    *
-    * @return true if need Node Set as input
-    */
-   public abstract boolean wantsNodeSet();
-
-   /**
-    * Tests whether Transform implemenation class will generate Octect Stream as output of result of Transformation
-    *
-    * @return true if will returns Octect Stream as output
-    */
-   public abstract boolean returnsOctetStream();
-
-  /**
-    * Tests whether Transform implemenation class will generate Node Set as output of result of Transformation
-    *
-    * @return true if will returns node set as output
-    */
-   public abstract boolean returnsNodeSet();
 
    /**
     * The mega method which MUST be implemented by the Transformation Algorithm.
