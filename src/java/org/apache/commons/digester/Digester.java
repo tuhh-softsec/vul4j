@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.24 2001/11/14 18:42:16 craigmcc Exp $
- * $Revision: 1.24 $
- * $Date: 2001/11/14 18:42:16 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.25 2001/11/14 19:54:05 craigmcc Exp $
+ * $Revision: 1.25 $
+ * $Date: 2001/11/14 19:54:05 $
  *
  * ====================================================================
  *
@@ -108,7 +108,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.24 $ $Date: 2001/11/14 18:42:16 $
+ * @version $Revision: 1.25 $ $Date: 2001/11/14 19:54:05 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1294,6 +1294,33 @@ public class Digester extends DefaultHandler {
 
     }
 
+
+    /**
+     * Add a "bean property setter" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     */
+    public void addBeanPropertySetter(String pattern) {
+
+        addRule(pattern,
+                new BeanPropertySetterRule(this));
+
+    }
+
+
+    /**
+     * Add a "bean property setter" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param propertyName Name of property to set
+     */
+    public void addBeanPropertySetter(String pattern,
+                                      String propertyName) {
+
+        addRule(pattern,
+                new BeanPropertySetterRule(this, propertyName));
+
+    }
 
 
     /**

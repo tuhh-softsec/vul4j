@@ -59,146 +59,57 @@
 package org.apache.commons.digester;
 
 
-import java.util.List;
-import org.xml.sax.Attributes;
-
-
 /**
- * <p>This rule implementation is intended to help test digester.
- * The idea is that you can test which rule matches by looking
- * at the identifier.</p>
- *
- * @author Robert Burrell Donkin
- * @revision $Revision: 1.3 $ $Date: 2001/11/14 19:54:05 $
+ * <p> As it's name suggests just a simple bean used for testing.
  */
+public class SimpleTestBean {
 
-public class TestRule extends Rule {
-
-    // ----------------------------------------------------- Instance Variables
+    private String alpha;
     
+    private String beta;
+    
+    private String gamma;
 
-    /** String identifing this particular <code>TestRule</code> */
-    private String identifier;
+    public String getAlpha()
+    {
+        return alpha;
+    }
 
-    /** Used when testing body text */
-    private String bodyText;
+    public void setAlpha(String alpha)
+    {
+        this.alpha = alpha;
+    }
 
-    /** Used when testing call orders */
-    private List order;
-
-
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Base constructor.
-     *
-     * @param digester The digester with which this rule is associated
-     * @param identifier Used to tell which TestRule is which
-     */
-    public TestRule(Digester digester, String identifier) {
-
-	super(digester);
-        this.identifier=identifier;
+    public String getBeta()
+    {
+        return beta;
     }
     
-
-    /**
-     * Constructor sets namespace URI.
-     *
-     * @param digester The digester with which this rule is associated
-     * @param identifier Used to tell which TestRule is which
-     * @param namespaceURI Set rule namespace
-     */
-    public TestRule(Digester digester,
-                    String identifier,
-                    String namespaceURI) {
-
-        super(digester);
-        this.identifier = identifier;
-        setNamespaceURI(namespaceURI);
-
+    public void setBeta(String beta)
+    {
+        this.beta=beta;
     }
     
-
-    // ------------------------------------------------ Rule Implementation
-
-
-    /**
-     * 'Begin' call.
-     */
-    public void begin(Attributes attributes) {
-        appendCall();
+    public String getGamma()
+    {
+        return gamma;
     }
-
-
-    /**
-     * 'Body' call.
-     */
-    public void body(String text) {
-        this.bodyText = bodyText;
-        appendCall();
-    }
-
-
-    /**
-     * 'End' call.
-     */
-    public void end() {
-        appendCall();
-    }
-
-
-    // ------------------------------------------------ Methods
     
-
-    /**
-     * If a list has been set, append this to the list.
-     */
-    protected void appendCall() {
-        if (order != null)
-            order.add(this);
+    public void setGamma(String gamma)
+    {
+        this.gamma=gamma;
     }
-
-
-    /**
-     * Get the body text that was set.
-     */
-    public String getBodyText() {
-        return bodyText;
+    
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer("[SimpleTestBean]");
+        sb.append(" alpha=");
+        sb.append(alpha);
+        sb.append(" beta=");
+        sb.append(beta);
+        sb.append(" gamma=");
+        sb.append(gamma);
+        
+        return sb.toString();
     }
-
-
-    /**
-     * Get the identifier associated with this test.
-     */
-    public String getIdentifier() {
-        return identifier;
-    }
-
-
-    /**
-     * Get call order list.
-     */
-    public List getOrder() {
-        return order;
-    }
-
-
-    /**
-     * Set call order list
-     */
-    public void setOrder(List order) {
-        this.order = order;
-    }
-
-
-    /** 
-     * Return the identifier.
-     */
-    public String toString() {
-        return identifier;
-    }
-
-
 }
