@@ -66,9 +66,9 @@ import org.xml.sax.Attributes;
  * implementations.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.1 $ $Date: 2001/08/20 18:23:39 $
+ * @version $Revision: 1.2 $ $Date: 2001/09/22 18:36:35 $
  */
-abstract public class  AbstractObjectCreationFactory
+abstract public class  AbstractObjectCreationFactory implements ObjectCreationFactory
 {
 
 

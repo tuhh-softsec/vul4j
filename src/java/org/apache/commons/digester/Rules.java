@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rules.java,v 1.2 2001/08/26 05:09:36 craigmcc Exp $
- * $Revision: 1.2 $
- * $Date: 2001/08/26 05:09:36 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rules.java,v 1.3 2001/09/22 18:36:35 craigmcc Exp $
+ * $Revision: 1.3 $
+ * $Date: 2001/09/22 18:36:35 $
  *
  * ====================================================================
  *
@@ -68,12 +68,12 @@ import java.util.List;
 
 /**
  * Public interface defining a collection of Rule instances (and corresponding
- * matching patterns, plus an implementation of a matching policy that selects
+ * matching patterns) plus an implementation of a matching policy that selects
  * the rules that match a particular pattern of nested elements discovered
  * during parsing.
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.2 $ $Date: 2001/08/26 05:09:36 $
+ * @version $Revision: 1.3 $ $Date: 2001/09/22 18:36:35 $
  */
 
 public interface Rules {

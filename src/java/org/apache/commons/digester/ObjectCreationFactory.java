@@ -63,9 +63,16 @@ import org.xml.sax.Attributes;
 
 /**
  * <p> Interface for use with {@link FactoryCreateRule}.
+ * The rule calls {@link #createObject} to create an object
+ * to be pushed onto the <code>Digester</code> stack
+ * whenever it is matched.</p>
+ *
+ * <p> {@link AbstractObjectCreationFactory} is an abstract
+ * implementation suitable for creating anonymous 
+ * <code>ObjectCreationFactory</code> implementations.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.2 $ $Date: 2001/08/13 19:49:34 $
+ * @version $Revision: 1.3 $ $Date: 2001/09/22 18:36:35 $
  */
 public interface ObjectCreationFactory
 {
