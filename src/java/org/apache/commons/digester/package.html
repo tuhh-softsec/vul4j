@@ -1193,7 +1193,7 @@ for the Servlet Spec. 2.4 but is not recognized by JAXP 1.1 parsers.
 This warning is harmless.</p>
 <p>
 </li>
-<li></a><strong>Why Doesn't Schema Validation Work With Parser XXX Out Of The Box?</strong>
+<li><strong>Why Doesn't Schema Validation Work With Parser XXX Out Of The Box?</strong>
 <p>
 Schema location and language settings are often need for validation using schemas.
 Unfortunately, there isn't a single standard approach to how these properties are
@@ -1209,7 +1209,23 @@ then you'll probably want to take a look at the
 and add a new class to support the particular parser that's causing problems.
 </p>
 </li>
-<li></a><strong>Where Can I Find Example Code?</strong>
+<li><strong>Help! 
+I'm Validating Against Schema But Digester Ignores Errors!</strong>
+<p>
+Digester is based on <a href='http://www.saxproject.org'>SAX</a>. The convention for
+SAX parsers is that all errors are reported (to any registered 
+<code>ErrorHandler</code>) but processing continues. Digester (by default) 
+registers it's own <code>ErrorHandler</code> implementation. This logs details 
+but does not stop the processing (following the usual convention for SAX 
+based processors). 
+</p>
+<p>
+This means that the errors reported by the validation of the schema will appear in the
+Digester logs but the processing will continue. To change this behaviour, call
+<code>digester.setErrorHandler</code> with a more suitable implementation.
+</p>
+
+<li><strong>Where Can I Find Example Code?</strong>
 <a name="doc.FAQ.Examples">
 <p>Digester ships with a sample application: a mapping for the <em>Rich Site 
 Summary</em> format used by many newsfeeds. Download the source distribution 
