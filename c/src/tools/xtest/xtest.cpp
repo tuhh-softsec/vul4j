@@ -98,8 +98,8 @@
 
 #ifndef XSEC_NO_XALAN
 
-#include <XPath/XPathEvaluator.hpp>
-#include <XalanTransformer/XalanTransformer.hpp>
+#include <xalanc/XPath/XPathEvaluator.hpp>
+#include <xalanc/XalanTransformer/XalanTransformer.hpp>
 
 XALAN_USING_XALAN(XPathEvaluator)
 XALAN_USING_XALAN(XalanTransformer)

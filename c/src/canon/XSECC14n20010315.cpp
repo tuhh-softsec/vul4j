@@ -84,12 +84,12 @@ XSEC_USING_XERCES(DOMProcessingInstruction);
 #ifndef XSEC_NO_XALAN
 
 // Xalan includes
-#include <XalanDOM/XalanDocument.hpp>
-#include <XercesParserLiaison/XercesDocumentWrapper.hpp>
-#include <XercesParserLiaison/XercesDOMSupport.hpp>
-#include <XercesParserLiaison/XercesParserLiaison.hpp>
-#include <XPath/XPathEvaluator.hpp>
-#include <XPath/NodeRefList.hpp>
+#include <xalanc/XalanDOM/XalanDocument.hpp>
+#include <xalanc/XercesParserLiaison/XercesDocumentWrapper.hpp>
+#include <xalanc/XercesParserLiaison/XercesDOMSupport.hpp>
+#include <xalanc/XercesParserLiaison/XercesParserLiaison.hpp>
+#include <xalanc/XPath/XPathEvaluator.hpp>
+#include <xalanc/XPath/NodeRefList.hpp>
 
 // Namespace definitions
 XALAN_USING_XALAN(XPathEvaluator)

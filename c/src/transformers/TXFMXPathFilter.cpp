@@ -83,21 +83,21 @@ XSEC_USING_XERCES(Janitor);
 
 #ifndef XSEC_NO_XALAN
 
-#include <XalanDOM/XalanDocument.hpp>
-#include <XalanDOM/XalanDOMString.hpp>
-#include <XercesParserLiaison/XercesDocumentWrapper.hpp>
-#include <XercesParserLiaison/XercesDOMSupport.hpp>
-#include <XercesParserLiaison/XercesParserLiaison.hpp>
-#include <XPath/XPathEvaluator.hpp>
-#include <XPath/XPathProcessorImpl.hpp>
-#include <XPath/XPathFactoryDefault.hpp>
-#include <XPath/NodeRefList.hpp>
-#include <XPath/XPathEnvSupportDefault.hpp>
-#include <XPath/XPathConstructionContextDefault.hpp>
-#include <XPath/ElementPrefixResolverProxy.hpp>
-#include <XPath/XObjectFactoryDefault.hpp>
-#include <XPath/XPathExecutionContextDefault.hpp>
-#include <XSLT/XSLTResultTarget.hpp>
+#include <xalanc/XalanDOM/XalanDocument.hpp>
+#include <xalanc/XalanDOM/XalanDOMString.hpp>
+#include <xalanc/XercesParserLiaison/XercesDocumentWrapper.hpp>
+#include <xalanc/XercesParserLiaison/XercesDOMSupport.hpp>
+#include <xalanc/XercesParserLiaison/XercesParserLiaison.hpp>
+#include <xalanc/XPath/XPathEvaluator.hpp>
+#include <xalanc/XPath/XPathProcessorImpl.hpp>
+#include <xalanc/XPath/XPathFactoryDefault.hpp>
+#include <xalanc/XPath/NodeRefList.hpp>
+#include <xalanc/XPath/XPathEnvSupportDefault.hpp>
+#include <xalanc/XPath/XPathConstructionContextDefault.hpp>
+#include <xalanc/XPath/ElementPrefixResolverProxy.hpp>
+#include <xalanc/XPath/XObjectFactoryDefault.hpp>
+#include <xalanc/XPath/XPathExecutionContextDefault.hpp>
+#include <xalanc/XSLT/XSLTResultTarget.hpp>
 
 // Xalan namespace usage
 XALAN_USING_XALAN(XPathProcessorImpl)

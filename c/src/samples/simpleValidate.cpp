@@ -97,7 +97,7 @@ XSEC_USING_XERCES(XMLException);
 
 // Xalan
 
-#include <XalanTransformer/XalanTransformer.hpp>
+#include <xalanc/XalanTransformer/XalanTransformer.hpp>
 XALAN_USING_XALAN(XalanTransformer)
 
 #endif

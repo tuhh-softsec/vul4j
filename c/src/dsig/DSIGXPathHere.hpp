@@ -76,16 +76,16 @@
 
 #ifndef XSEC_NO_XALAN
 
-#include <Include/PlatformDefinitions.hpp>
-#include <XalanTransformer/XalanTransformer.hpp>
-#include <XPath/XObjectFactory.hpp>
-#include <XalanDOM/XalanElement.hpp>
-#include <XalanDOM/XalanNode.hpp>
-#include <XalanDOM/XalanDocument.hpp>
-#include <XPath/Function.hpp>
-#include <XPath/XObjectTypeCallback.hpp>
-#include <XPath/MutableNodeRefList.hpp>
-#include <XPath/NodeRefListBase.hpp>
+#include <xalanc/Include/PlatformDefinitions.hpp>
+#include <xalanc/XalanTransformer/XalanTransformer.hpp>
+#include <xalanc/XPath/XObjectFactory.hpp>
+#include <xalanc/XalanDOM/XalanElement.hpp>
+#include <xalanc/XalanDOM/XalanNode.hpp>
+#include <xalanc/XalanDOM/XalanDocument.hpp>
+#include <xalanc/XPath/Function.hpp>
+#include <xalanc/XPath/XObjectTypeCallback.hpp>
+#include <xalanc/XPath/MutableNodeRefList.hpp>
+#include <xalanc/XPath/NodeRefListBase.hpp>
 
 // Namespace usage
 

@@ -83,17 +83,17 @@ XSEC_DECLARE_XERCES_CLASS(DOMNamedNodeMap);
 
 #ifndef XSEC_NO_XALAN
 
-#include <XalanDOM/XalanDocument.hpp>
-#include <XercesParserLiaison/XercesDocumentWrapper.hpp>
-#include <XercesParserLiaison/XercesDOMSupport.hpp>
-#include <XercesParserLiaison/XercesParserLiaison.hpp>
-#include <XPath/XPathEvaluator.hpp>
-#include <XPath/XPathProcessorImpl.hpp>
-#include <XPath/XPathFactoryDefault.hpp>
-#include <XPath/NodeRefList.hpp>
-#include <XPath/XPathEnvSupportDefault.hpp>
-#include <XPath/XPathConstructionContextDefault.hpp>
-#include <XPath/ElementPrefixResolverProxy.hpp>
+#include <xalanc/XalanDOM/XalanDocument.hpp>
+#include <xalanc/XercesParserLiaison/XercesDocumentWrapper.hpp>
+#include <xalanc/XercesParserLiaison/XercesDOMSupport.hpp>
+#include <xalanc/XercesParserLiaison/XercesParserLiaison.hpp>
+#include <xalanc/XPath/XPathEvaluator.hpp>
+#include <xalanc/XPath/XPathProcessorImpl.hpp>
+#include <xalanc/XPath/XPathFactoryDefault.hpp>
+#include <xalanc/XPath/NodeRefList.hpp>
+#include <xalanc/XPath/XPathEnvSupportDefault.hpp>
+#include <xalanc/XPath/XPathConstructionContextDefault.hpp>
+#include <xalanc/XPath/ElementPrefixResolverProxy.hpp>
 
 #endif
 

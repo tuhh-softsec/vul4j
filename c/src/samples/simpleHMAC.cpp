@@ -86,7 +86,7 @@
 // Xalan
 
 #ifndef XSEC_NO_XALAN
-#include <XalanTransformer/XalanTransformer.hpp>
+#include <xalanc/XalanTransformer/XalanTransformer.hpp>
 XALAN_USING_XALAN(XalanTransformer)
 #endif
 

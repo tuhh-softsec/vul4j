@@ -78,13 +78,13 @@
 
 #ifndef XSEC_NO_XPATH
 
-#include <XalanDOM/XalanDocument.hpp>
-#include <XercesParserLiaison/XercesDocumentBridge.hpp>
-#include <XercesParserLiaison/XercesDOMSupport.hpp>
-#include <XercesParserLiaison/XercesParserLiaison.hpp>
-#include <XPath/NodeRefList.hpp>
-#include <XPath/ElementPrefixResolverProxy.hpp>
-#include <XalanTransformer/XalanTransformer.hpp>
+#include <xalanc/XalanDOM/XalanDocument.hpp>
+#include <xalanc/XercesParserLiaison/XercesDocumentBridge.hpp>
+#include <xalanc/XercesParserLiaison/XercesDOMSupport.hpp>
+#include <xalanc/XercesParserLiaison/XercesParserLiaison.hpp>
+#include <xalanc/XPath/NodeRefList.hpp>
+#include <xalanc/XPath/ElementPrefixResolverProxy.hpp>
+#include <xalanc/XalanTransformer/XalanTransformer.hpp>
 
 // Xalan Namespace usage
 XALAN_USING_XALAN(XercesDOMSupport)

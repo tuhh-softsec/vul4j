@@ -77,8 +77,8 @@
 
 #ifndef XSEC_NO_XALAN
 
-#include <XPath/XObjectFactoryDefault.hpp>
-#include <XPath/XPathExecutionContextDefault.hpp>
+#include <xalanc/XPath/XObjectFactoryDefault.hpp>
+#include <xalanc/XPath/XPathExecutionContextDefault.hpp>
 
 // Xalan namespace usage
 XALAN_USING_XALAN(XPathProcessorImpl)
