@@ -20,21 +20,18 @@ package org.codehaus.plexus.archiver.tar;
 import junit.framework.TestCase;
 
 /**
- * @since Ant 1.6
- *
  * @version $Revision$ $Date$
- * from org.apache.ant.tools.tar.TarEntryTest v1.4
+ *          from org.apache.ant.tools.tar.TarEntryTest v1.4
+ * @since Ant 1.6
  */
-public class TarEntryTest extends TestCase {
-
-    public TarEntryTest(String name) {
-        super(name);
-    }
-
+public class TarEntryTest
+    extends TestCase
+{
     /**
      * demonstrates bug 18105 on OSes with os.name shorter than 7.
      */
-    public void testFileConstructor() {
-        new TarEntry(new java.io.File("/foo"));
+    public void testFileConstructor()
+    {
+        new TarEntry( new java.io.File( "/foo" ) );
     }
 }

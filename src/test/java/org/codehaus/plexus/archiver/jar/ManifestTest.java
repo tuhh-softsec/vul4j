@@ -17,59 +17,38 @@ package org.codehaus.plexus.archiver.jar;
  *
  */
 
-import org.codehaus.plexus.archiver.ArchiverException;
-
-import java.io.IOException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Enumeration;
 
-import junit.framework.TestCase;
+import org.codehaus.plexus.PlexusTestCase;
 
 /**
- * @version $Revision$ $Date$
+ * @author Emmanuel Venisse
+ * @version $Id$
  */
-public class ManifestTest extends TestCase
+public class ManifestTest
+    extends PlexusTestCase
 {
-    public ManifestTest( String testName )
-    {
-        super( testName );
-    }
-
     public void testManifestReader1()
+        throws Exception
     {
-        try
-        {
-            Manifest manifest = getManifest( "src/test/resources/manifests/manifest1.mf" );
-            String version = manifest.getManifestVersion();
-            assertEquals("Manifest was not created with correct version - ", "1.0", version);
-        }
-        catch (IOException ioe)
-        {
-            ioe.printStackTrace();
-            fail( ioe.getMessage() );
-        }
-        catch (ManifestException me)
-        {
-            me.printStackTrace();
-            fail( me.getMessage() );
-        }
+        Manifest manifest = getManifest( "src/test/resources/manifests/manifest1.mf" );
+        String version = manifest.getManifestVersion();
+        assertEquals( "Manifest was not created with correct version - ", "1.0", version );
     }
 
     public void testManifestReader2()
+        throws Exception
     {
         try
         {
-            Manifest manifest = getManifest( "src/test/resources/manifests/manifest2.mf" );
+            getManifest( "src/test/resources/manifests/manifest2.mf" );
             fail( "Manifest isn't well formed. It must be generate an exception." );
         }
-        catch (IOException ioe)
+        catch ( ManifestException me )
         {
-            ioe.printStackTrace();
-            fail( ioe.getMessage() );
-        }
-        catch (ManifestException me)
-        {
-            if ( me.getMessage().indexOf("is not valid as it does not contain a name and a value separated by ': '") == -1)
+            if ( me.getMessage().indexOf( "is not valid as it does not contain a name and a value separated by ': '" ) == -1 )
             {
                 fail( "Manifest isn't well formed. It must generate an exception." );
             }
@@ -78,20 +57,16 @@ public class ManifestTest extends TestCase
     }
 
     public void testManifestReader3()
+        throws Exception
     {
         try
         {
-            Manifest manifest = getManifest( "src/test/resources/manifests/manifest3.mf" );
+            getManifest( "src/test/resources/manifests/manifest3.mf" );
             fail( "Manifest isn't well formed. It must be generate an exception." );
         }
-        catch (IOException ioe)
+        catch ( ManifestException me )
         {
-            ioe.printStackTrace();
-            fail( ioe.getMessage() );
-        }
-        catch (ManifestException me)
-        {
-            if ( me.getMessage().indexOf("is not valid as it does not contain a name and a value separated by ': '") == -1)
+            if ( me.getMessage().indexOf( "is not valid as it does not contain a name and a value separated by ': '" ) == -1 )
             {
                 fail( "Manifest isn't well formed. It must generate an exception." );
             }
@@ -100,95 +75,66 @@ public class ManifestTest extends TestCase
     }
 
     public void testManifestReader4()
+        throws Exception
     {
-        try
-        {
-            Manifest manifest = getManifest( "src/test/resources/manifests/manifest4.mf" );
-            Enumeration warnings = manifest.getWarnings();
-            assertTrue( warnings.hasMoreElements() );
-            String warn = (String)warnings.nextElement();
-            assertFalse( warnings.hasMoreElements() );
-            boolean hasWarning = warn.indexOf("\"Name\" attributes should not occur in the main section") != -1;
-            assertEquals("Expected warning about Name in main section", true, hasWarning);
-        }
-        catch (IOException ioe)
-        {
-            ioe.printStackTrace();
-            fail( ioe.getMessage() );
-        }
-        catch (ManifestException me)
-        {
-            me.printStackTrace();
-            fail( me.getMessage() );
-        }
+        Manifest manifest = getManifest( "src/test/resources/manifests/manifest4.mf" );
+        Enumeration warnings = manifest.getWarnings();
+        assertTrue( warnings.hasMoreElements() );
+        String warn = (String) warnings.nextElement();
+        assertFalse( warnings.hasMoreElements() );
+        boolean hasWarning = warn.indexOf( "\"Name\" attributes should not occur in the main section" ) != -1;
+        assertEquals( "Expected warning about Name in main section", true, hasWarning );
     }
 
     public void testManifestReader5()
+        throws Exception
     {
         try
         {
-            Manifest manifest = getManifest( "src/test/resources/manifests/manifest5.mf" );
+            getManifest( "src/test/resources/manifests/manifest5.mf" );
             fail();
         }
-        catch (IOException ioe)
+        catch ( ManifestException me )
         {
-            ioe.printStackTrace();
-            fail( ioe.getMessage() );
-        }
-        catch (ManifestException me)
-        {
-            boolean hasWarning = me.getMessage().indexOf("Manifest sections should start with a \"Name\" attribute") != -1;
-            assertEquals("Expected warning about section not starting with Name: attribute", true, hasWarning);
+            boolean hasWarning = me.getMessage().indexOf( "Manifest sections should start with a \"Name\" attribute" ) != -1;
+            assertEquals( "Expected warning about section not starting with Name: attribute", true, hasWarning );
             return;
         }
     }
 
     public void testManifestReader6()
+        throws Exception
     {
-        try
-        {
-            Manifest manifest = getManifest( "src/test/resources/manifests/manifest6.mf" );
-            Enumeration warnings = manifest.getWarnings();
-            assertTrue( warnings.hasMoreElements() );
-            String warn = (String)warnings.nextElement();
-            assertFalse( warnings.hasMoreElements() );
-            boolean hasWarning = warn.indexOf("Manifest attributes should not start with \"From\"") != -1;
-            assertEquals("Expected warning about From: attribute", true, hasWarning);
-        }
-        catch (IOException ioe)
-        {
-            ioe.printStackTrace();
-            fail( ioe.getMessage() );
-        }
-        catch (ManifestException me)
-        {
-            me.printStackTrace();
-            fail( me.getMessage() );
-        }
+        Manifest manifest = getManifest( "src/test/resources/manifests/manifest6.mf" );
+        Enumeration warnings = manifest.getWarnings();
+        assertTrue( warnings.hasMoreElements() );
+        String warn = (String) warnings.nextElement();
+        assertFalse( warnings.hasMoreElements() );
+        boolean hasWarning = warn.indexOf( "Manifest attributes should not start with \"From\"" ) != -1;
+        assertEquals( "Expected warning about From: attribute", true, hasWarning );
     }
 
     public void testGetDefaultManifest()
+        throws Exception
     {
-        try
-        {
-            Manifest mf = Manifest.getDefaultManifest();
-            assertNotNull(mf);
-        }
-        catch(ArchiverException ae)
-        {
-            ae.printStackTrace();
-            fail( ae.getMessage() );
-        }
+        Manifest mf = Manifest.getDefaultManifest();
+        assertNotNull( mf );
     }
 
     /**
      * Reads a Manifest file.
      */
-    private Manifest getManifest(String filename) throws IOException, ManifestException {
-        FileReader r = new FileReader(filename);
-        try {
-            return new Manifest(r);
-        } finally {
+    private Manifest getManifest( String filename )
+        throws IOException, ManifestException
+    {
+        FileReader r = new FileReader( getTestFile( filename ) );
+
+        try
+        {
+            return new Manifest( r );
+        }
+        finally
+        {
             r.close();
         }
     }
