@@ -340,6 +340,8 @@ void XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(const XMLCh * item
 		if (!strEquals(getXKMSLocalName(c), XKMSConstants::s_tagResponseMechanism))
 			break;
 
+		c = findNextElementChild(c);
+
 	}
 
 	if (c != NULL) {
