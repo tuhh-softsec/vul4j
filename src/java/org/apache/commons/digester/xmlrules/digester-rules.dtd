@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!-- $Id: digester-rules.dtd,v 1.14 2005/01/14 11:04:31 skitching Exp $
+<!-- $Id: digester-rules.dtd,v 1.15 2005/01/18 00:11:12 skitching Exp $
   
  Copyright 2001-2004 The Apache Software Foundation.
  
@@ -20,7 +20,7 @@
 <!--
         "Digester" component of the Jakarta Commons Subproject
         DTD for the definition of Digester rules in XML.
-        $Id: digester-rules.dtd,v 1.14 2005/01/14 11:04:31 skitching Exp $
+        $Id: digester-rules.dtd,v 1.15 2005/01/18 00:11:12 skitching Exp $
 
         Applications wishing to reference this DTD in their own documents
         should use the following DOCTYPE declaration:
@@ -114,7 +114,8 @@
     pattern  CDATA #IMPLIED
     paramnumber CDATA #REQUIRED
     attrname CDATA #IMPLIED
-    from-stack CDATA #IMPLIED>
+    from-stack CDATA #IMPLIED
+    stack-index CDATA #IMPLIED>
     
 <!--
     ObjectParamRule

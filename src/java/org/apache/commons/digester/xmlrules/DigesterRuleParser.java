@@ -1,4 +1,4 @@
-/* $Id: DigesterRuleParser.java,v 1.31 2005/01/12 10:47:03 skitching Exp $
+/* $Id: DigesterRuleParser.java,v 1.32 2005/01/18 00:11:12 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -577,26 +577,26 @@ public class DigesterRuleParser extends RuleSetBase {
             int paramIndex = Integer.parseInt(attributes.getValue("paramnumber"));
             String attributeName = attributes.getValue("attrname");
             String fromStack = attributes.getValue("from-stack");
+            String stackIndex = attributes.getValue("stack-index");
             Rule callParamRule = null;
-            if (attributeName == null) {
-                if (fromStack == null) {
-                
-                    callParamRule = new CallParamRule( paramIndex );
-                
-                } else {
 
-                    callParamRule = new CallParamRule( paramIndex, Boolean.valueOf(fromStack).booleanValue());
-                    
+            if (attributeName == null) {
+                if (stackIndex != null) {                    
+                    callParamRule = new CallParamRule(
+                        paramIndex, Integer.parseInt(stackIndex));                
+                } else if (fromStack != null) {                
+                    callParamRule = new CallParamRule(
+                        paramIndex, Boolean.valueOf(fromStack).booleanValue());                
+                } else {
+                    callParamRule = new CallParamRule(paramIndex);     
                 }
             } else {
                 if (fromStack == null) {
-                    
-                    callParamRule = new CallParamRule( paramIndex, attributeName );
-                    
-                    
+                    callParamRule = new CallParamRule(paramIndex, attributeName);                    
                 } else {
                     // specifying both from-stack and attribute name is not allowed
-                    throw new RuntimeException("Attributes from-stack and attrname cannot both be present.");
+                    throw new RuntimeException(
+                        "Attributes from-stack and attrname cannot both be present.");
                 }
             }
             return callParamRule;
