@@ -1,4 +1,4 @@
-/* $Id: ExtendedBaseRules.java,v 1.15 2004/05/10 06:30:06 skitching Exp $
+/* $Id: ExtendedBaseRules.java,v 1.16 2005/01/17 10:56:50 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -105,27 +105,33 @@ import java.util.Map;
  *
  * <h4>Using The Extended Rules</h4>
  *
- * <p>The most important thing to remember
- * when using the extended rules is that universal
- * and non-universal patterns are completely independent.
- * Universal patterns are never effected by the addition of new patterns
- * or the removal of existing ones.
- * Non-universal patterns are never effected
- * by the addition of new <em>universal</em> patterns
- * or the removal of existing <em>universal</em> patterns.
- * As in the basic matching rules, non-universal (basic) patterns
- * <strong>can</strong> be effected
- * by the addition of new <em>non-universal</em> patterns
- * or the removal of existing <em>non-universal</em> patterns.
- * <p> This means that you can use universal patterns
- * to build up the simple parts of your structure
- * - for example defining universal creation and property setting rules.
- * More sophisticated and complex mapping will require non-universal patterns
- * and this might mean that some of the universal rules will need to be
- * replaced by a series of
- * special cases using non-universal rules.
- * But by using universal rules as your backbone,
- * these additions should not break your existing rules.</p>
+ * <p>By default, a Digester instance uses a {@link RulesBase} instance as
+ * its pattern matching engine. To use an ExtendedBaseRules instance, call
+ * the Digester.setRules method before adding any Rule objects to the digester
+ * instance:
+ * <pre>
+ *     Digester digester = new Digester();
+ *     digester.setRules( new ExtendedBaseRules() );
+ * </pre></p>
+ *
+ * <p>The most important thing to remember when using the extended rules is 
+ * that universal and non-universal patterns are completely independent.
+ * Universal patterns are never affected by the addition of new patterns
+ * or the removal of existing ones. Non-universal patterns are never affected
+ * by the addition of new <em>universal</em> patterns or the removal of 
+ * existing <em>universal</em> patterns. As in the basic matching rules, 
+ * non-universal (basic) patterns <strong>can</strong> be affected by the 
+ * addition of new <em>non-universal</em> patterns or the removal of existing 
+ * <em>non-universal</em> patterns, because only rules associated with the
+ * "best matching" pattern for each xml element are executed.
+ *
+ * <p> This means that you can use universal patterns to build up the simple 
+ * parts of your structure - for example defining universal creation and 
+ * property setting rules. More sophisticated and complex mapping will require 
+ * non-universal patterns and this might mean that some of the universal rules 
+ * will need to be replaced by a series of special cases using non-universal 
+ * rules. But by using universal rules as your backbone, these additions 
+ * should not break your existing rules.</p>
  */
 
 
