@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.5 2001/08/20 16:10:13 craigmcc Exp $
- * $Revision: 1.5 $
- * $Date: 2001/08/20 16:10:13 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.6 2001/08/20 18:28:40 craigmcc Exp $
+ * $Revision: 1.6 $
+ * $Date: 2001/08/20 18:28:40 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.5 $ $Date: 2001/08/20 16:10:13 $
+ * @version $Revision: 1.6 $ $Date: 2001/08/20 18:28:40 $
  */
 
 public class SetTopRule extends Rule {
@@ -157,6 +157,22 @@ public class SetTopRule extends Rule {
             paramTypes[0] = child.getClass();
 	Method method = parent.getClass().getMethod(methodName, paramTypes);
 	method.invoke(parent, new Object[] { child });
+
+    }
+
+
+    /**
+     * Render a printable version of this Rule.
+     */
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer("SetTopRule[");
+        sb.append("methodName=");
+        sb.append(methodName);
+        sb.append(", paramType=");
+        sb.append(paramType);
+        sb.append("]");
+        return (sb.toString());
 
     }
 

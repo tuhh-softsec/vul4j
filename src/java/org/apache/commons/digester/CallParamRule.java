@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.3 2001/08/20 16:10:13 craigmcc Exp $
- * $Revision: 1.3 $
- * $Date: 2001/08/20 16:10:13 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.4 2001/08/20 18:28:40 craigmcc Exp $
+ * $Revision: 1.4 $
+ * $Date: 2001/08/20 18:28:40 $
  *
  * ====================================================================
  *
@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  * by a surrounding CallMethodRule rule.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.3 $ $Date: 2001/08/20 16:10:13 $
+ * @version $Revision: 1.4 $ $Date: 2001/08/20 18:28:40 $
  */
 
 public class CallParamRule extends Rule {
@@ -181,6 +181,22 @@ public class CallParamRule extends Rule {
     public void finish() throws Exception {
 
 	bodyText = null;
+
+    }
+
+
+    /**
+     * Render a printable version of this Rule.
+     */
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer("CallParamRule[");
+        sb.append("paramIndex=");
+        sb.append(paramIndex);
+        sb.append(", attributeName=");
+        sb.append(attributeName);
+        sb.append("]");
+        return (sb.toString());
 
     }
 

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.5 2001/08/20 16:10:13 craigmcc Exp $
- * $Revision: 1.5 $
- * $Date: 2001/08/20 16:10:13 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.6 2001/08/20 18:28:40 craigmcc Exp $
+ * $Revision: 1.6 $
+ * $Date: 2001/08/20 18:28:40 $
  *
  * ====================================================================
  *
@@ -77,7 +77,7 @@ import org.apache.commons.beanutils.ConvertUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.5 $ $Date: 2001/08/20 16:10:13 $
+ * @version $Revision: 1.6 $ $Date: 2001/08/20 18:28:40 $
  */
 
 public class CallMethodRule extends Rule {
@@ -296,6 +296,31 @@ public class CallMethodRule extends Rule {
     public void finish() throws Exception {
 
 	bodyText = null;
+
+    }
+
+
+    /**
+     * Render a printable version of this Rule.
+     */
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer("CallMethodRule[");
+        sb.append("methodName=");
+        sb.append(methodName);
+        sb.append(", paramCount=");
+        sb.append(paramCount);
+        sb.append(", paramTypes={");
+        if (paramTypes != null) {
+            for (int i = 0; i < paramTypes.length; i++) {
+                if (i > 0)
+                    sb.append(", ");
+                sb.append(paramTypes[i].getName());
+            }
+        }
+        sb.append("}");
+        sb.append("]");
+        return (sb.toString());
 
     }
 

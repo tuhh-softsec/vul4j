@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.5 2001/08/20 16:10:13 craigmcc Exp $
- * $Revision: 1.5 $
- * $Date: 2001/08/20 16:10:13 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.6 2001/08/20 18:28:40 craigmcc Exp $
+ * $Revision: 1.6 $
+ * $Date: 2001/08/20 18:28:40 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.5 $ $Date: 2001/08/20 16:10:13 $
+ * @version $Revision: 1.6 $ $Date: 2001/08/20 18:28:40 $
  */
 
 public class ObjectCreateRule extends Rule {
@@ -166,6 +166,22 @@ public class ObjectCreateRule extends Rule {
 	Object top = digester.pop();
 	if (digester.getDebug() >= 1)
 	    digester.log("Pop " + top.getClass().getName());
+
+    }
+
+
+    /**
+     * Render a printable version of this Rule.
+     */
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer("ObjectCreateRule[");
+        sb.append("className=");
+        sb.append(className);
+        sb.append(", attributeName=");
+        sb.append(attributeName);
+        sb.append("]");
+        return (sb.toString());
 
     }
 

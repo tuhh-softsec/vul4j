@@ -74,7 +74,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.3 $ $Date: 2001/08/20 16:10:13 $
+ * @version $Revision: 1.4 $ $Date: 2001/08/20 18:28:40 $
  */
 
 public class FactoryCreateRule extends Rule {
@@ -196,6 +196,26 @@ public class FactoryCreateRule extends Rule {
 
         if (attributeName != null)
             creationFactory = null;
+
+    }
+
+
+    /**
+     * Render a printable version of this Rule.
+     */
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer("FactoryCreateRule[");
+        sb.append("className=");
+        sb.append(className);
+        sb.append(", attributeName=");
+        sb.append(attributeName);
+        if (creationFactory != null) {
+            sb.append(", creationFactory=");
+            sb.append(creationFactory);
+        }
+        sb.append("]");
+        return (sb.toString());
 
     }
 
