@@ -240,7 +240,7 @@ if test $XERCESCROOT; then
       else
         return 0;
     }],
-    LDFLAGS="${LDFLAGS} -L${XERCESCROOT}/lib -lxerces-c"
+    LIBS="${LIBS} -L${XERCESCROOT}/lib -lxerces-c"
     xerces_found=yes
     [AC_MSG_RESULT([found])],
     CPPFLAGS=$OLD_CPPFLAGS
@@ -261,7 +261,7 @@ if test -z $xerces_found ; then
       else
         return 0;
     }],
-    LDFLAGS="${LDFLAGS} -lxerces-c"
+    LIBS="${LIBS} -lxerces-c"
     [AC_MSG_RESULT([found])],
     [AC_MSG_ERROR([Xerces 2.0 not found.  Ensure XERCESCROOT points to base directory of Xerces and Xerces 2.0 or later is available])])
 
@@ -280,7 +280,7 @@ if test "$use_xalan" = "yes" ; then
 
     AC_TRY_CPP([#include <Include/PlatformDefinitions.hpp>], 
       xalan_found=yes 
-      LDFLAGS="${LDFLAGS} -L${XALANCROOT}/lib -lxalan-c1_5_0"
+      LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c1_5_0"
       [AC_MSG_RESULT([found])], 
       CPPFLAGS=$OLD_CPPFLAGS
       [AC_MSG_RESULT([no])]);
@@ -292,7 +292,7 @@ if test "$use_xalan" = "yes" ; then
     AC_MSG_CHECKING([for Xalan in system includes])
     AC_TRY_CPP([#include <Include/PlatformDefinitions.hpp>], 
       xalan_found=yes 
-      LDFLAGS="${LDFLAGS} -lxalan-c1_5_0"
+      LIBS="${LIBS} -lxalan-c1_5_0"
       [AC_MSG_RESULT([found])],
       [AC_DEFINE(XSEC_NO_XALAN)] 
       [AC_MSG_RESULT([no - WARNING - configuring for no Xalan])]);
@@ -319,7 +319,7 @@ CPPFLAGS=["${CPPFLAGS} -I${OPENSSL}/include"]
 AC_TRY_CPP([#include <openssl/opensslv.h>], 
    openssl_found=yes 
    AC_DEFINE(HAVE_OPENSSL)
-   LDFLAGS="${LDFLAGS} -L${OPENSSL} -lcrypto"
+   LIBS="${LIBS} -L${OPENSSL} -lcrypto"
    [AC_MSG_RESULT([found])], 
    CPPFLAGS=$OLD_CPPFLAGS
    [AC_MSG_RESULT([no])]);
@@ -332,7 +332,7 @@ AC_MSG_CHECKING([for OpenSSL in system includes])
 AC_TRY_CPP([#include <openssl/opensslv.h>], 
    openssl_found=yes 
    AC_DEFINE(HAVE_OPENSSL)
-   LDFLAGS="${LDFLAGS} -lcrypto"
+   LIBS="${LIBS} -lcrypto"
    [AC_MSG_RESULT([found])],
    [AC_MSG_RESULT([no])]
    [AC_MSG_ERROR([OpenSSL header files not find.  Please define OPENSSL])]);

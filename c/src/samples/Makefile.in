@@ -68,6 +68,7 @@ CPPFLAGS = @cppflags@
 
 PREFIX = @prefix@
 LDFLAGS = @ldflags@
+LIBS = @libs@
 OBJSUFFIX = @objsuffix@
 SHLIBSUFFIX = @shlibsuffix@
 
@@ -103,7 +104,7 @@ allsamples: ${BINDIR}/simpleHMAC \
 #	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
 ${BINDIR}/simpleHMAC: ${OBJDIR}/simpleHMAC${OBJSUFFIX} ${OBJDIR}/IOStreamOutputter${OBJSUFFIX}
-	$(LINK) $(LDFLAGS) $(LDXSEC) $^ -o $@
+	$(LINK) $(LDFLAGS) $(LDXSEC) $(LIBS) $^ -o $@
 
 #========================= simpleValidate ========================
 
@@ -111,7 +112,7 @@ ${BINDIR}/simpleHMAC: ${OBJDIR}/simpleHMAC${OBJSUFFIX} ${OBJDIR}/IOStreamOutputt
 #	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
 ${BINDIR}/simpleValidate: ${OBJDIR}/simpleValidate${OBJSUFFIX} ${OBJDIR}/IOStreamOutputter${OBJSUFFIX}
-	$(LINK) $(LDFLAGS) $(LDXSEC) $^ -o $@
+	$(LINK) $(LDFLAGS) $(LDXSEC) $(LIBS) $^ -o $@
 
 #============================= Clean =============================
 

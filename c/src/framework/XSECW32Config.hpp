@@ -71,8 +71,9 @@
  */
 
 #define XSEC_VERSION	     "0.2.0"
-#define XSEC_VERSION_MAJOR   
-#define XSEC_VERSION_MINOR
+#define XSEC_VERSION_MAJOR   0
+#define XSEC_VERSION_MEDIUM  2
+#define XSEC_VERSION_MINOR   0
 
 /*
  * The following defines whether Xalan integration is required.
