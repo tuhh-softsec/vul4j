@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+
+<!-- This file is intended for ANT, a Java based build tool.
+     ANT is availale from http://jakarta.apache.org/ant/index.html
+
+     This build file is intended to build the org.apache.xml.security package,
+     available from http://www.xmlsecurity.org/src/ and
+                    http://xml.apache.org/
+
+-->
+
+<project name="The org.apache.xml.security Package" default="signAndVerify" basedir=".">
+  <property name="src" value="src" />
+  <property name="src.samples" value="src_samples" />
+  <property name="src.unitTests" value="src_unitTests" />
+  
+  <property name="build" value="classes" />
+  <property name="libs" value="libs" />
+  <property name="build.compiler" value="jikes" />
+
+  <property name="cvs.server" value="cvs.apache.org" />
+  <property name="cvs.path" value="/home/cvs" />
+  <property name="cvs.package" value="xml-security" />
+
+  <!-- This property has to be overridden using
+       "ant -Dcvs.user.developer=geuerp ftp"
+       -->
+  <property name="cvs.user.developer" value="geuerp" />
+  <property name="cvs.user.anonymous" value="anonymous" />
+  <property name="cvs.cvsRoot.developer" value=":ext:${cvs.user.developer}@${cvs.server}:${cvs.path}" />
+  <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}" />
+
+  <property name="lib.xerces" value="${libs}/xerces-1_4_3.jar" />
+  <property name="lib.xalan"  value="${libs}/xalan-j_2_2_D10.jar" />
+  <property name="lib.log4j"  value="${libs}/jakarta-log4j-1.1.3.jar" />
+  <property name="lib.jce"    value="${libs}/jce1_2-do.jar" />
+  <property name="lib.junit"  value="${libs}/junit3.7.jar" />
+  
+  <path id="classpath.library">
+    <pathelement path="${build}" />
+    <pathelement path="${lib.xerces}" />
+    <pathelement path="${lib.xalan}" />
+    <pathelement path="${lib.log4j}" />
+    <pathelement path="${lib.jce}" />
+  </path>
+
+  <path id="classpath.test">
+    <!-- classpath for test is librarypath plus log4j -->
+    <path refid="classpath.library" />
+    <pathelement path="${lib.junit}" />
+  </path>
+
+  <property name="doc" value="doc" />
+  <property name="doc.html" value="${doc}/html" />
+  <property name="doc.html.api" value="${doc.html}/api" />
+
+  <property name="javadoc.packages"
+            value="
+org.apache.xml.security.prepare,
+org.apache.xml.security.algorithms.*,
+org.apache.xml.security.c14n.*,
+org.apache.xml.security.c14n.helper.*,
+org.apache.xml.security.c14n.implementations.*,
+org.apache.xml.security.exceptions.*,
+org.apache.xml.security.interfaces.*,
+org.apache.xml.security.keys.*,
+org.apache.xml.security.keys.content.*,
+org.apache.xml.security.keys.content.keyvalues.*,
+org.apache.xml.security.keys.content.x509.*,
+org.apache.xml.security.keys.keyresolver.*,
+org.apache.xml.security.keys.keyresolver.implementations.*,
+org.apache.xml.security.keys.storage.*,
+org.apache.xml.security.keys.storage.implementations.*,
+org.apache.xml.security.signature.*,
+org.apache.xml.security.transforms.*,
+org.apache.xml.security.transforms.implementations.*,
+org.apache.xml.security.utils.*
+" />
+
+  <target name="prepare">
+    <tstamp />
+    <mkdir dir="${build}" />
+    <!-- check whether JUnit is available -->
+    <available property="junit.present" classname="junit.framework.TestCase">
+       <classpath refid="classpath.test" />
+    </available>
+  </target>
+
+  <property name="src" value="src" />
+  <property name="src.samples" value="src_samples" />
+  <property name="src.unitTests" value="src_unitTests" />
+
+  <target name="compile.library" depends="prepare">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}">
+      <classpath refid="classpath.library" />
+    </javac>
+    <!-- Copy Property files -->
+    <copy todir="${build}" >
+      <fileset dir="${src}" includes="**/*.properties"/>
+      <fileset dir="${src}" includes="**/*.xml"/>
+      <fileset dir="${src}" includes="**/*.zip"/>
+    </copy>
+  </target>
+
+  <target name="compile.unitTests" depends="prepare, compile.library">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src.unitTests}" destdir="${build}">
+      <classpath refid="classpath.test" />
+    </javac>
+    <!-- Copy Property files -->
+    <copy todir="${build}" >
+      <fileset dir="${src.unitTests}" includes="**/*.properties"/>
+      <fileset dir="${src.unitTests}" includes="**/*.xml"/>
+      <fileset dir="${src.unitTests}" includes="**/*.zip"/>
+    </copy>
+  </target>
+
+  <target name="compile.samples" 
+          depends="prepare, compile.library">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src.samples}" 
+           destdir="${build}">
+      <classpath refid="classpath.library" />
+    </javac>
+    <!-- Copy Property files -->
+    <copy todir="${build}" >
+      <fileset dir="${src.samples}" includes="**/*.properties"/>
+      <fileset dir="${src.samples}" includes="**/*.xml"/>
+      <fileset dir="${src.samples}" includes="**/*.zip"/>
+    </copy>
+  </target>
+
+  <target name="compile" 
+          depends="compile.library, compile.samples, compile.unitTests" 
+          description="compile everything"/>
+
+  <target name="test"
+          depends="compile.unitTests"
+          if="junit.present"
+          description="Starts all JUnit test cases">
+     <java classname="junit.textui.TestRunner"
+           fork="yes"
+           taskname="junit"
+           failonerror="true">
+        <arg value="org.apache.xml.security.test.AllTests"/>
+        <classpath refid="classpath.test" />
+     </java>
+  </target>
+
+  <target name="clean" description="Clean up all temporary build files">
+    <delete dir="${build}" />
+    <delete dir="bak" />
+    <delete dir="{$doc.html.api}" />
+    <delete file="log.txt" />
+  </target>
+
+  <target name="javadoc-html"
+          depends="compile"
+          description="generates javadoc from all .java files">
+    <mkdir dir="${doc.html.api}"/>
+    <javadoc sourcepath="${src}"
+             destdir="${doc.html.api}"
+             packagenames="${javadoc.packages}"
+             classpathref="classpath.test"/>
+  </target>
+
+  <target name="generate-keys">
+     <genkey alias="test2"
+             keyalg="DSA"
+             keypass="xmlsecurity"
+             storepass="xmlsecurity"
+             keystore="data/keystoreAnt.jks"
+             validity="2000" >
+       <dname>
+         <param name="CN" value="Christian Geuer-Pollmann"/>
+         <param name="OU" value="FB12NUE"/>
+         <param name="O"  value="University of Siegen"/>
+         <param name="C"  value="DE"/>
+      </dname>
+    </genkey>
+  </target>
+
+  <target name="sign"
+          description="creates a signature"
+          depends="compile">
+     <delete file="signature.xml" />
+     <java classname="org.apache.xml.security.samples.signature.CreateSignature"
+           fork="yes"
+           taskname="CreateSignature"
+           failonerror="true">
+        <classpath refid="classpath.test" />
+     </java>
+  </target>
+
+  <target name="verify"
+          description="verifies a signature"
+          depends="compile">
+     <java classname="org.apache.xml.security.samples.signature.VerifySignature"
+           fork="yes"
+           taskname="VerifySignature"
+           failonerror="true">
+        <classpath refid="classpath.test" />
+     </java>
+  </target>
+
+  <target name="signAndVerify"
+          description="creates and verifies a signature"
+          depends="sign, verify" />
+</project>

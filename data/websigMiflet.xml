@@ -1,0 +1,42 @@
+<Book>
+    <Options>
+        <BookTitle>"The Websig Library"</BookTitle>
+        <BookSubTitle>"xmlsecurity.org"</BookSubTitle>
+        <BookAuthor>"Christian Geuer-Pollmann"</BookAuthor>
+        <BookVersion>"Volume 1"</BookVersion>
+        <BookCopyright>"Copyright \xa9 2001 Institute for Data Communications Systems"</BookCopyright>
+        <BookPublisher>""</BookPublisher>
+    </Options>
+    <FrontMatter>
+        <TitleFile>titlepage.mif</TitleFile>
+        <ContentsFile>contents.mif</ContentsFile>
+    </FrontMatter>
+    <Chapters>
+        <InsertAPIDoc>Packages Classes</InsertAPIDoc>
+        <Chapter>
+            <AlmanacFile>almanac.mif</AlmanacFile>
+        </Chapter>
+    </Chapters>
+    <BackMatter>
+        <SectionFile>sample-src\doc-files\appendix.html</SectionFile>
+        <IndexFile>index.mif</IndexFile>
+        <SectionFile>sample-src\doc-files\colophon.html</SectionFile>
+    </BackMatter>
+</Book>
+<!--
+    NOTE - The following command line options have no equivalent as
+    XML book options because they are implemented in the javadoc tool
+    and not in doclets: -bootclasspath, -classpath, -doclet,
+    -docletpath, -encoding, -extdirs, -help, -J, -locale, -package,
+    -private, -protected, -public, and -sourcepath.
+
+    These command line options have no equivalent because there are
+    easier ways to omit the pages:  -noalmanac, -nopackagepage.
+
+    These options are not included above because they are not
+    implemented in 1.2 Beta 1: <Link>, <LinkOffline>
+
+    The <Group> option is not included because it does not allow
+    wildcards.  The -group option allows wildcards, and so is more
+    versatile.
+-->

@@ -1,0 +1,5 @@
+http://www.w3.org/TR/2001/PR-xml-c14n-20010119
+
+states that:
+
+Note: The last element, normId, is well-formed but violates a validity constraint for attributes of type ID. For testing canonical XML implementations based on validating processors, remove the line containing this element from the input and canonical form. In general, XML consumers should be discouraged from using this feature of XML.
