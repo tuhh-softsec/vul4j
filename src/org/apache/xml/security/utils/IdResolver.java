@@ -73,9 +73,16 @@ import org.apache.xml.security.Init;
  * attributes. This is done by 'registering' attributes of type ID at the
  * IdResolver. This is necessary if we create a document from scratch and we
  * sign some resources with a URI using a fragent identifier...
+ * <BR />
+ * The problem is that if you do not validate a document, you cannot use the
+ * <CODE>getElementByID</CODE> functionality. So this modules uses some implicit
+ * knowledge on selected Schemas and DTDs to pick the right Element for a given
+ * ID: We know that all <CODE>@Id</CODE> attributes in an Element from the XML
+ * Signature namespace are of type <CODE>ID</CODE>.
  *
  * @author $Author$
  * @see org.apache.xml.security.utils.resolver.implementations.ResolverFragment
+ * @see <A HREF="http://www.xml.com/lpt/a/2001/11/07/id.html">"Identity Crisis" on xml.com</A>
  */
 public class IdResolver {
 
@@ -253,7 +260,7 @@ public class IdResolver {
          }
          */
       } catch (TransformerException ex) {
-         cat.fatal("", ex);
+         cat.fatal("empty", ex);
       }
 
       return null;
@@ -281,7 +288,7 @@ public class IdResolver {
 
          return element;
       } catch (TransformerException ex) {
-         cat.fatal("", ex);
+         cat.fatal("empty", ex);
       }
 
       return null;
@@ -308,7 +315,7 @@ public class IdResolver {
 
          return element;
       } catch (TransformerException ex) {
-         cat.fatal("", ex);
+         cat.fatal("empty", ex);
       }
 
       return null;
@@ -355,7 +362,7 @@ public class IdResolver {
 
          return null;
       } catch (TransformerException ex) {
-         cat.fatal("", ex);
+         cat.fatal("empty", ex);
       }
 
       return null;
@@ -395,7 +402,7 @@ public class IdResolver {
             return element_id;
          }
       } catch (TransformerException ex) {
-         cat.fatal("", ex);
+         cat.fatal("empty", ex);
       }
 
       return null;
