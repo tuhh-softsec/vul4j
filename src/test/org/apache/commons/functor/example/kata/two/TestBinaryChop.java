@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.1 2003/12/01 07:30:24 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.2 2003/12/01 07:46:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,7 +68,7 @@ import org.apache.commons.functor.util.BinarySearch;
  * See http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/12/01 07:30:24 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/01 07:46:13 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryChop extends TestCase {
@@ -121,16 +121,14 @@ public class TestBinaryChop extends TestCase {
                     int cur = 0;
                     while(low < high) {
                         cur = (high+low)/2;
-                        switch(((Comparable)(list.get(cur))).compareTo(seeking)) {
-                            case 0: // equal
-                                return cur;
-                            case 1:
-                                high = cur;
-                                break;
-                            case -1:
-                                if(low == cur) { cur++; }
-                                low = cur;
-                                break;
+                        int comp = ((Comparable)(list.get(cur))).compareTo(seeking);
+                        if(comp == 0) { 
+                            return cur;
+                        } else if(comp > 0) {
+                            high = cur;
+                        } else {                                
+                            if(low == cur) { cur++; }
+                            low = cur;
                         }
                     }
                     return -1;
@@ -147,16 +145,13 @@ public class TestBinaryChop extends TestCase {
                     } else {
                         int pivot = list.size()/2;
                         int offset = 0;
-                        int comp = ((Comparable)(list.get(pivot))).compareTo(seeking); 
-                        switch(comp) {
-                            case 0:  
-                                return pivot;
-                            case -1:
-                                offset = find(seeking,list.subList(Math.max(pivot,1),list.size()));                                
-                                break;
-                            case 1:
-                                offset = find(seeking,list.subList(0,pivot));
-                                break;
+                        int comp = ((Comparable)(list.get(pivot))).compareTo(seeking);
+                        if(comp == 0) { 
+                            return pivot;
+                        } else if(comp < 0) {
+                            offset = find(seeking,list.subList(Math.max(pivot,1),list.size()));
+                        } else {                                
+                            offset = find(seeking,list.subList(0,pivot));
                         }
                         return -1 == offset ? -1 : (comp == 1) ? offset : pivot+offset;
                     }
