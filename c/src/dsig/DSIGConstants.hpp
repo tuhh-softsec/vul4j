@@ -221,6 +221,7 @@ bool signatureHashMethod2URI(safeBuffer &uri, signatureMethod sm, hashMethod hm)
 	case (SIGNATURE_RSA) :
 
 		uri.sbStrcatIn(URI_ID_SIG_RSA);
+		break;
 
 	default :
 
