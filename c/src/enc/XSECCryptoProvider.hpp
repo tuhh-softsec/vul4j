@@ -157,9 +157,23 @@ public :
 	 *
 	 * @returns A pointer to a Hash object that implements SHA1
 	 * @see XSECCryptoHash
+	 * @deprecated Use hashSHA instead
 	 */
 	 
 	virtual XSECCryptoHash			* hashSHA1() = 0;
+
+	/**
+	 * \brief Return a SHA implementation.
+	 *
+	 * Call used by the library to obtain a SHA object from the 
+	 * provider.  Size of hash determined by length argument (160 = SHA1)
+	 *
+	 * @returns A pointer to a Hash object that implements SHA1
+	 * @param length - length of hash.  E.g. 160 for SHA1 or 256 for SHA256
+	 * @see XSECCryptoHash
+	 */
+	 
+	virtual XSECCryptoHash			* hashSHA(int length = 160) = 0;
 
 	/**
 	 * \brief Return a HMAC SHA1 implementation.
@@ -170,9 +184,24 @@ public :
 	 *
 	 * @returns A pointer to a Hash object that implements HMAC-SHA1
 	 * @see XSECCryptoHash
+	 * @deprecated use hashHMACSHA instead
 	 */
 
 	virtual XSECCryptoHash			* hashHMACSHA1() = 0;
+
+	/**
+	 * \brief Return a HMAC SHA(1-512) implementation.
+	 *
+	 * Call used by the library to obtain a HMAC SHA object from the 
+	 * provider.  The caller will need to set the key in the hash
+	 * object with an XSECCryptoKeyHMAC using XSECCryptoHash::setKey()
+	 *
+	 * @returns A pointer to a Hash object that implements HMAC-SHA1
+	 * @length Length of hash output (160 = SHA1, 256, 512 etc)
+	 * @see XSECCryptoHash
+	 */
+
+	virtual XSECCryptoHash			* hashHMACSHA(int length = 160) = 0;
 
 	/**
 	 * \brief Return a MD5 implementation.
@@ -280,6 +309,15 @@ public :
 
 	virtual bool algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) = 0;
 
+	/**
+	 * \brief Determine whether a given algorithm is supported
+	 *
+	 * A call that can be used to determine whether a given 
+	 * digest algorithm is supported
+	 */
+
+	virtual bool algorithmSupported(XSECCryptoHash::HashType alg) = 0;
+	
 	/**
 	 * \brief Return a Symmetric Key implementation object.
 	 *

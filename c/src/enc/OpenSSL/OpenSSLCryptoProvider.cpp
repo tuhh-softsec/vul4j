@@ -92,6 +92,55 @@ XSECCryptoHash * OpenSSLCryptoProvider::hashHMACSHA1() {
 
 }
 
+XSECCryptoHash	* OpenSSLCryptoProvider::hashSHA(int length) {
+
+
+	OpenSSLCryptoHash * ret;
+
+	switch (length) {
+
+	case 160: XSECnew(ret, OpenSSLCryptoHash(XSECCryptoHash::HASH_SHA1));
+		break;
+	case 224: XSECnew(ret, OpenSSLCryptoHash(XSECCryptoHash::HASH_SHA224));
+		break;
+	case 256: XSECnew(ret, OpenSSLCryptoHash(XSECCryptoHash::HASH_SHA256));
+		break;
+	case 384: XSECnew(ret, OpenSSLCryptoHash(XSECCryptoHash::HASH_SHA384));
+		break;
+	case 512: XSECnew(ret, OpenSSLCryptoHash(XSECCryptoHash::HASH_SHA512));
+		break;
+	default:
+		ret = NULL;
+	}
+
+	return ret;
+
+}
+
+XSECCryptoHash * OpenSSLCryptoProvider::hashHMACSHA(int length) {
+
+	OpenSSLCryptoHashHMAC * ret;
+
+	switch (length) {
+
+	case 160: XSECnew(ret, OpenSSLCryptoHashHMAC(XSECCryptoHash::HASH_SHA1));
+		break;
+	case 224: XSECnew(ret, OpenSSLCryptoHashHMAC(XSECCryptoHash::HASH_SHA224));
+		break;
+	case 256: XSECnew(ret, OpenSSLCryptoHashHMAC(XSECCryptoHash::HASH_SHA256));
+		break;
+	case 384: XSECnew(ret, OpenSSLCryptoHashHMAC(XSECCryptoHash::HASH_SHA384));
+		break;
+	case 512: XSECnew(ret, OpenSSLCryptoHashHMAC(XSECCryptoHash::HASH_SHA512));
+		break;
+	default:
+		ret = NULL;
+	}
+
+	return ret;
+
+}
+
 XSECCryptoHash	* OpenSSLCryptoProvider::hashMD5() {
 
 	OpenSSLCryptoHash * ret;
@@ -192,6 +241,34 @@ bool OpenSSLCryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::Symmetric
 
 }
 
+bool OpenSSLCryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg)  {
+
+	switch (alg) {
+
+	case (XSECCryptoHash::HASH_SHA1) :
+	case (XSECCryptoHash::HASH_MD5) :
+
+		return true;
+
+	case (XSECCryptoHash::HASH_SHA224) :
+	case (XSECCryptoHash::HASH_SHA256) :
+	case (XSECCryptoHash::HASH_SHA384) :
+	case (XSECCryptoHash::HASH_SHA512) :
+
+		return 
+#if defined (SHA512_DIGEST_LENGTH) && !defined (OPENSSL_NO_SHA512)
+			true;
+#else
+			false;
+#endif
+
+	default:
+		return false;
+	}
+
+	return false;
+
+}
 
 
 XSECCryptoSymmetricKey	* OpenSSLCryptoProvider::keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) {

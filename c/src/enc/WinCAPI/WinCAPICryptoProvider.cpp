@@ -181,6 +181,24 @@ XSECCryptoHash * WinCAPICryptoProvider::hashHMACSHA1() {
 
 }
 
+XSECCryptoHash	* WinCAPICryptoProvider::hashSHA(int length) {
+
+
+	if (length == 160)
+		return hashSHA1();
+
+	else return NULL;
+}
+
+XSECCryptoHash * WinCAPICryptoProvider::hashHMACSHA(int length) {
+
+	if (length == 160)
+		return hashHMACSHA1();
+
+	else return NULL;
+
+}
+
 XSECCryptoHash	* WinCAPICryptoProvider::hashMD5() {
 
 	WinCAPICryptoHash * ret;
@@ -279,6 +297,30 @@ bool WinCAPICryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::Symmetric
 
 }
 
+bool WinCAPICryptoProvider::algorithmSupported(XSECCryptoHash::HashType alg) {
+
+	switch (alg) {
+
+	case (XSECCryptoHash::HASH_SHA1) :
+	case (XSECCryptoHash::HASH_MD5) :
+
+		return true;
+
+	case (XSECCryptoHash::HASH_SHA224) :
+	case (XSECCryptoHash::HASH_SHA256) :
+	case (XSECCryptoHash::HASH_SHA384) :
+	case (XSECCryptoHash::HASH_SHA512) :
+
+		return false;
+
+	default:
+		return false;
+	}
+
+	return false;
+
+}
+	
 XSECCryptoSymmetricKey	* WinCAPICryptoProvider::keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
 
 	// Only temporary

@@ -69,7 +69,11 @@ public :
 
 		HASH_NONE			= 0,
 		HASH_SHA1			= 1,
-		HASH_MD5			= 2
+		HASH_MD5			= 2,
+		HASH_SHA224			= 3,
+		HASH_SHA256			= 4,
+		HASH_SHA384			= 5,
+		HASH_SHA512			= 6
 
 	};
 

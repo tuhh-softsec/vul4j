@@ -49,6 +49,46 @@ OpenSSLCryptoHash::OpenSSLCryptoHash(HashType alg) {
 		mp_md = EVP_get_digestbyname("MD5");
 		break;
 
+	case (XSECCryptoHash::HASH_SHA224) :
+	
+		mp_md = EVP_get_digestbyname("SHA224");
+		if (mp_md == NULL) {
+			throw XSECCryptoException(XSECCryptoException::MDError,
+			"OpenSSL:Hash - SHA224 not supported by this version of OpenSSL"); 
+		}
+
+		break;
+
+	case (XSECCryptoHash::HASH_SHA256) :
+	
+		mp_md = EVP_get_digestbyname("SHA256");
+		if (mp_md == NULL) {
+			throw XSECCryptoException(XSECCryptoException::MDError,
+			"OpenSSL:Hash - SHA256 not supported by this version of OpenSSL"); 
+		}
+
+		break;
+
+	case (XSECCryptoHash::HASH_SHA384) :
+	
+		mp_md = EVP_get_digestbyname("SHA384");
+		if (mp_md == NULL) {
+			throw XSECCryptoException(XSECCryptoException::MDError,
+			"OpenSSL:Hash - SHA384 not supported by this version of OpenSSL"); 
+		}
+
+		break;
+
+	case (XSECCryptoHash::HASH_SHA512) :
+	
+		mp_md = EVP_get_digestbyname("SHA512");
+		if (mp_md == NULL) {
+			throw XSECCryptoException(XSECCryptoException::MDError,
+			"OpenSSL:Hash - SHA512 not supported by this version of OpenSSL"); 
+		}
+
+		break;
+
 	default :
 
 		mp_md = NULL;

@@ -84,7 +84,7 @@ void WinCAPICryptoHash::reset(void) {
 	if(alg_id == 0) {
 
 		throw XSECCryptoException(XSECCryptoException::MDError,
-			"WinCAPI:Hash - Unknown algorithm"); 
+			"WinCAPI:Hash - Unknown algorithm (NOTE SHA512 and SHA256 not supported"); 
 	}
 
 	fResult = CryptCreateHash(
