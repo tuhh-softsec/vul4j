@@ -66,7 +66,6 @@ import org.apache.xml.security.utils.EncryptionElementProxy;
 import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.XMLUtils;
 
-
 /**
  * This class maps to the <CODE>xenc:ReferenceList</CODE> element.
  *
@@ -116,47 +115,65 @@ public class ReferenceList extends EncryptionElementProxy {
     *
     * @param keyReference
     */
-   public void add(KeyReference keyReference) {
-      this._constructionElement.appendChild(keyReference.getElement());
-      XMLUtils.addReturnToElement(this._constructionElement);
-   }
+    public void add(KeyReference keyReference) {
+        this._constructionElement.appendChild(keyReference.getElement());
+        XMLUtils.addReturnToElement(this._constructionElement);
+    }
 
    /**
     * Method getLengthDataReference
     *
-    *
+    * @return
     */
    public int getLengthDataReference() {
-      return 0;
+       return this.length(EncryptionConstants.EncryptionSpecNS,
+                          EncryptionConstants._TAG_DATAREFERENCE);
    }
 
    /**
     * Method getLengthKeyReference
     *
-    *
+    * @return
     */
    public int getLengthKeyReference() {
-      return 0;
+       return this.length(EncryptionConstants.EncryptionSpecNS,
+                          EncryptionConstants._TAG_KEYREFERENCE);
    }
 
    /**
     * Method itemDataReference
     *
     * @param i
-    *
+    * @return
     */
-   public DataReference itemDataReference(int i) {
-      return null;
+   public DataReference itemDataReference(int i) throws XMLSecurityException {
+       Element e = this.getChildElementLocalName(i,
+                                                 EncryptionConstants.EncryptionSpecNS,
+                                                 EncryptionConstants._TAG_DATAREFERENCE);
+
+       if (e != null) {
+           return new DataReference(e, this._baseURI);
+       } else {
+           return null;
+       }
    }
 
    /**
     * Method itemKeyReference
     *
     * @param i
-    *
+    * @return
     */
-   public KeyReference itemKeyReference(int i) {
-      return null;
+    public KeyReference itemKeyReference(int i)  throws XMLSecurityException {
+        Element e = this.getChildElementLocalName(i,
+                                                  EncryptionConstants.EncryptionSpecNS,
+                                                  EncryptionConstants._TAG_KEYREFERENCE);
+
+        if (e != null) {
+            return new KeyReference(e, this._baseURI);
+        } else {
+            return null;
+        }
    }
 
    public String getBaseLocalName() {
