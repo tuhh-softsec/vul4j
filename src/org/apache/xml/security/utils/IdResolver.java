@@ -86,7 +86,7 @@ import org.w3c.dom.Element;
 public class IdResolver {
 
    /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
+    static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(IdResolver.class.getName());
 
    /**
@@ -147,7 +147,7 @@ public class IdResolver {
 
       if (result != null) {
          log.debug(
-            "I could find an Element using the advanced ds:Namespace searcher method: "
+            "Found an Element using an insecure Id/ID/id search method: "
             + result.getTagName());
 
          // register the ID to speed up further queries on that ID
@@ -198,7 +198,7 @@ public class IdResolver {
 
       if (result != null) {
          log.warn(
-            "I could find an Element using the totally stupid and insecure Id/ID/id searcher method: "
+            "Found an Element using an insecure Id/ID/id search method: "
             + result.getTagName());
 
          // Don't register the ID, we're not sure
