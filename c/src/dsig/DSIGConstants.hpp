@@ -104,7 +104,8 @@ XSEC_USING_XERCES(XMLString);
 #define URI_ID_KW_3DES		"http://www.w3.org/2001/04/xmlenc#kw-tripledes"
 
 // Key Transport algorithms
-#define URI_ID_RSA_1_5		"http://www.w3.org/2001/04/xmlenc#rsa-1_5" 
+#define URI_ID_RSA_1_5			"http://www.w3.org/2001/04/xmlenc#rsa-1_5"
+#define URI_ID_RSA_OAEP_MGFP1	"http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"
 
 // Transforms
 
@@ -205,7 +206,8 @@ enum encryptionMethod {
 	ENCRYPT_KW_AES192		= 6,				// KeyWrap - AES192
 	ENCRYPT_KW_AES256		= 7,				// KeyWrap - AES256
 	ENCRYPT_KW_3DES			= 8,
-	ENCRYPT_RSA_15			= 9					// RSA with PKCS 1.5 padding
+	ENCRYPT_RSA_15			= 9,				// RSA with PKCS 1.5 padding
+	ENCRYPT_RSA_OAEP_MGFP1	= 10				// RSA with OAEP
 
 };
 
@@ -369,6 +371,11 @@ bool encryptionMethod2URI(safeBuffer &uri, encryptionMethod em) {
 		uri = URI_ID_RSA_1_5;
 		break;
 		
+	case (ENCRYPT_RSA_OAEP_MGFP1) :
+
+		uri = URI_ID_RSA_OAEP_MGFP1;
+		break;
+	
 	default:
 
 		return false;
@@ -429,6 +436,7 @@ public:
 	static const XMLCh * s_unicodeStrURIKW_AES256;
 	static const XMLCh * s_unicodeStrURIKW_3DES;
 	static const XMLCh * s_unicodeStrURIRSA_1_5;
+	static const XMLCh * s_unicodeStrURIRSA_OAEP_MGFP1;
 
 	static const XMLCh * s_unicodeStrURIXENC_ELEMENT;
 	static const XMLCh * s_unicodeStrURIXENC_CONTENT;

@@ -115,6 +115,28 @@ public:
 	virtual const XMLCh * getAlgorithm(void) = 0;
 
 	/**
+	 * \brief Get the digest method URI
+	 *
+	 * Return the Algorithm URI represtenting the Digest Method for those
+	 * encryption algorithms that require it (such as RSA with OAEP padding)
+	 *
+	 * @returns the URI representing the digest method algorithm
+	 */
+
+	virtual const XMLCh * getDigestMethod(void) = 0;
+
+	/**
+	 * \brief Get the value of the OAEPparams string
+	 *
+	 * The OAEP RSA padding method allows a user to set an optional
+	 * params string (that will be used as input to the Digest algorithm).
+	 *
+	 * @returns The string (base64 encoded value) representing the OAEP params
+	 */
+
+	virtual const XMLCh * getOAEPparams(void) = 0;
+
+	/**
 	 * \brief Get the DOM Node of this structure
 	 *
 	 * @returns the DOM Node representing the <EncryptionMethod> element
@@ -124,6 +146,33 @@ public:
 
 
 	//@}
+
+	/** @name Setter Methods */
+	//@{
+
+	/**
+	 * \brief Set the value of the DigestMethod
+	 *
+	 * Sets the DigestMethod element's Algorithm attribute to the passed in
+	 * value - should be a URI string
+	 *
+	 * @param method String to set in the Algorithm attribute.  Will create a
+	 * \<DigestMethod\> element if one does not already exist
+	 */
+
+	virtual void setDigestMethod(const XMLCh * method) = 0;
+
+	/**
+	 * \brief Set the value of the OAEPparams string
+	 *
+	 * Sets the OAEPparams element's Text node child to the passed in
+	 * value - should be a base64 encoded value
+	 *
+	 * @param params String to set in the OAEPparams text node.  Will create a
+	 * \<OAEPparams\> element if one does not already exist
+	 */
+
+	virtual void setOAEPparams(const XMLCh * params) = 0;
 
 private:
 

@@ -103,6 +103,38 @@ static XMLCh s_EncryptionMethod[] = {
 	chNull,
 };
 
+static XMLCh s_DigestMethod[] = {
+
+	chLatin_D,
+	chLatin_i,
+	chLatin_g,
+	chLatin_e,
+	chLatin_s,
+	chLatin_t,
+	chLatin_M,
+	chLatin_e,
+	chLatin_t,
+	chLatin_h,
+	chLatin_o,
+	chLatin_d,
+	chNull
+};
+
+static XMLCh s_OAEPparams [] = {
+
+	chLatin_O,
+	chLatin_A,
+	chLatin_E,
+	chLatin_P,
+	chLatin_p,
+	chLatin_a,
+	chLatin_r,
+	chLatin_a,
+	chLatin_m,
+	chLatin_s,
+	chNull
+};
+
 // --------------------------------------------------------------------------------
 //			Constructors and Destructors
 // --------------------------------------------------------------------------------
@@ -110,7 +142,9 @@ static XMLCh s_EncryptionMethod[] = {
 XENCEncryptionMethodImpl::XENCEncryptionMethodImpl(const XSECEnv * env) :
 mp_env(env),
 mp_encryptionMethodNode(NULL),
-mp_algorithm(NULL) {
+mp_algorithm(NULL),
+mp_digestAlgorithmAttributeNode(NULL),
+mp_oaepParamsTextNode(NULL) {
 
 }
 
@@ -119,7 +153,9 @@ XENCEncryptionMethodImpl::XENCEncryptionMethodImpl(
 		DOMNode * node) :
 mp_env(env),
 mp_encryptionMethodNode(node),
-mp_algorithm(NULL) {
+mp_algorithm(NULL),
+mp_digestAlgorithmAttributeNode(NULL),
+mp_oaepParamsTextNode(NULL) {
 
 }
 
@@ -173,13 +209,48 @@ void XENCEncryptionMethodImpl::load() {
 
 	}
 
+	// Check for known children
+	DOMNode * c = findFirstChildOfType(mp_encryptionMethodNode, DOMNode::ELEMENT_NODE);
+
+	while (c != NULL) {
+
+		if (strEquals(getDSIGLocalName(c), s_DigestMethod)) {
+
+			mp_digestAlgorithmAttributeNode = NULL;
+			tmpAtts = c->getAttributes();
+
+			if (tmpAtts != NULL)
+				mp_digestAlgorithmAttributeNode = tmpAtts->getNamedItem(DSIGConstants::s_unicodeStrAlgorithm);
+
+			if (mp_digestAlgorithmAttributeNode == NULL) {
+				throw XSECException(XSECException::EncryptionMethodError,
+					"XENCEncryptionMethod::load - Cannot find Algorithm Attribute in DigestMethod element");
+			}
+		}
+
+		else if (strEquals(getXENCLocalName(c), s_OAEPparams)) {
+
+			mp_oaepParamsTextNode = NULL;
+			mp_oaepParamsTextNode = findFirstChildOfType(c, DOMNode::TEXT_NODE);
+
+			if (mp_oaepParamsTextNode == NULL) {
+				throw XSECException(XSECException::EncryptionMethodError,
+					"XENCEncryptionMethod::load - Cannot find text value of OAEPparams node");
+			}
+
+		}
+
+		do {
+			c = c->getNextSibling();
+		} while (c != NULL && c->getNodeType() != DOMNode::ELEMENT_NODE);
+	}
 }
 
 // --------------------------------------------------------------------------------
 //			Create from scratch
 // --------------------------------------------------------------------------------
 
-DOMElement * XENCEncryptionMethodImpl::createBlankEncryptedType(const XMLCh * algorithm) {
+DOMElement * XENCEncryptionMethodImpl::createBlankEncryptedMethod(const XMLCh * algorithm) {
 
 	// Reset
 	if (mp_algorithm != NULL) {
@@ -210,3 +281,131 @@ DOMElement * XENCEncryptionMethodImpl::createBlankEncryptedType(const XMLCh * al
 	return ret;
 
 }
+// --------------------------------------------------------------------------------
+//			Getter functions
+// --------------------------------------------------------------------------------
+
+const XMLCh * XENCEncryptionMethodImpl::getDigestMethod(void) {
+
+	if (mp_digestAlgorithmAttributeNode != NULL)
+		return mp_digestAlgorithmAttributeNode->getNodeValue();
+
+	return NULL;
+
+}
+
+const XMLCh * XENCEncryptionMethodImpl::getOAEPparams(void) {
+
+	if (mp_oaepParamsTextNode != NULL) {
+		return mp_oaepParamsTextNode->getNodeValue();
+	}
+
+	return NULL;
+
+}
+
+// --------------------------------------------------------------------------------
+//			Setter functions
+// --------------------------------------------------------------------------------
+
+void XENCEncryptionMethodImpl::setDigestMethod(const XMLCh * method) {
+
+	if (mp_digestAlgorithmAttributeNode == NULL) {
+
+		// Need to create
+		if (mp_oaepParamsTextNode == NULL) {
+			mp_env->doPrettyPrint(mp_encryptionMethodNode);
+		}
+
+		// Get some setup values
+		safeBuffer str;
+		DOMDocument *doc = mp_env->getParentDocument();
+		const XMLCh * prefix = mp_env->getDSIGNSPrefix();
+
+		makeQName(str, prefix, s_DigestMethod);
+
+		DOMElement *e = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
+		if (mp_oaepParamsTextNode != NULL) {
+			mp_encryptionMethodNode->insertBefore(e, mp_oaepParamsTextNode->getParentNode());
+			if (mp_env->getPrettyPrintFlag())
+				mp_encryptionMethodNode->insertBefore(doc->createTextNode(DSIGConstants::s_unicodeStrNL), mp_oaepParamsTextNode->getParentNode());
+		}
+		else {
+			mp_encryptionMethodNode->appendChild(e);
+			mp_env->doPrettyPrint(mp_encryptionMethodNode);
+		}
+
+		e->setAttributeNS(DSIGConstants::s_unicodeStrURIDSIG,
+							DSIGConstants::s_unicodeStrAlgorithm,
+							method);
+
+		// Set namespace
+		if (prefix[0] == XERCES_CPP_NAMESPACE::chNull) {
+			str.sbTranscodeIn("xmlns");
+		}
+		else {
+			str.sbTranscodeIn("xmlns:");
+			str.sbXMLChCat(prefix);
+		}
+
+		e->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
+								str.rawXMLChBuffer(), 
+								DSIGConstants::s_unicodeStrURIXENC);
+
+		// Now retrieve for later use
+		DOMNamedNodeMap * tmpAtts = e->getAttributes();
+
+		if (tmpAtts != NULL) {
+
+			mp_digestAlgorithmAttributeNode = tmpAtts->getNamedItem(DSIGConstants::s_unicodeStrAlgorithm);
+
+		}
+
+		if (mp_digestAlgorithmAttributeNode == NULL) {
+
+			throw XSECException(XSECException::EncryptionMethodError,
+				"XENCEncryptionMethod::setDigestMethod - Error creating Algorithm Attribute");
+		}
+	} 
+	
+	else {
+
+		mp_digestAlgorithmAttributeNode->setNodeValue(method);
+
+	}
+
+}
+
+void XENCEncryptionMethodImpl::setOAEPparams(const XMLCh * params) {
+
+	if (mp_oaepParamsTextNode == NULL) {
+
+		// Need to create
+		if (mp_digestAlgorithmAttributeNode == NULL) {
+			mp_env->doPrettyPrint(mp_encryptionMethodNode);
+		}
+
+		// Get some setup values
+		safeBuffer str;
+		DOMDocument *doc = mp_env->getParentDocument();
+		const XMLCh * prefix = mp_env->getXENCNSPrefix();
+
+		makeQName(str, prefix, s_OAEPparams);
+
+		DOMElement *e = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
+		mp_encryptionMethodNode->appendChild(e);
+		mp_env->doPrettyPrint(mp_encryptionMethodNode);
+
+		mp_oaepParamsTextNode = doc->createTextNode(params);
+		e->appendChild(mp_oaepParamsTextNode);
+
+	} 
+	
+	else {
+
+		mp_oaepParamsTextNode->setNodeValue(params);
+
+	}
+
+}
+

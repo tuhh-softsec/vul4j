@@ -193,6 +193,7 @@ void XENCCipherImpl::Initialise(void) {
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIKW_AES256, def);
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIKW_3DES, def);
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_1_5, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_OAEP_MGFP1, def);
 
 }
 

@@ -92,7 +92,9 @@ unsigned char sha1OID[] = {
 
 int sha1OIDLen = 15;
 
-OpenSSLCryptoKeyRSA::OpenSSLCryptoKeyRSA() {
+OpenSSLCryptoKeyRSA::OpenSSLCryptoKeyRSA() :
+mp_oaepParams(NULL),
+m_oaepParamsLen(0) {
 
 	// Create a new key to be loaded as we go
 
@@ -107,7 +109,38 @@ OpenSSLCryptoKeyRSA::~OpenSSLCryptoKeyRSA() {
 	if (mp_rsaKey)
 		RSA_free(mp_rsaKey);
 
+	if (mp_oaepParams != NULL)
+		delete[] mp_oaepParams;
+
 };
+
+void OpenSSLCryptoKeyRSA::setOAEPparams(unsigned char * params, unsigned int paramsLen) {
+
+	if (mp_oaepParams != NULL) {
+		delete[] mp_oaepParams;
+	}
+
+	m_oaepParamsLen = paramsLen;
+	if (params != NULL) {
+		XSECnew(mp_oaepParams, unsigned char[paramsLen]);
+		memcpy(mp_oaepParams, params, paramsLen);
+	}
+	else
+		mp_oaepParams = NULL;
+
+}
+
+unsigned int OpenSSLCryptoKeyRSA::getOAEPparamsLen(void) {
+
+	return m_oaepParamsLen;
+
+}
+
+const unsigned char * OpenSSLCryptoKeyRSA::getOAEPparams(void) {
+
+	return mp_oaepParams;
+
+}
 
 // Generic key functions
 
@@ -153,6 +186,9 @@ void OpenSSLCryptoKeyRSA::loadPublicExponentBase64BigNums(const char * b64, unsi
 OpenSSLCryptoKeyRSA::OpenSSLCryptoKeyRSA(EVP_PKEY *k) {
 
 	// Create a new key to be loaded as we go
+
+	mp_oaepParams = NULL;
+	m_oaepParamsLen = 0;
 
 	mp_rsaKey = RSA_new();
 	
@@ -370,9 +406,7 @@ unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 								 unsigned int inLength,
 								 unsigned int maxOutLength,
 								 PaddingType padding,
-								 hashMethod hm,
-								 const unsigned char * OEAPParam,
-								 unsigned int OAPEParamLen) {
+								 hashMethod hm) {
 
 	// Perform a decrypt
 	if (mp_rsaKey == NULL) {
@@ -402,6 +436,49 @@ unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 
 		break;
 
+	case XSECCryptoKeyRSA::PAD_OAEP_MGFP1 :
+		{
+
+			unsigned char * tBuf;
+			int num = RSA_size(mp_rsaKey);
+			XSECnew(tBuf, unsigned char[inLength]);
+			ArrayJanitor<unsigned char> j_tBuf(tBuf);
+
+			decryptSize = RSA_private_decrypt(inLength,
+								inBuf,
+								tBuf,
+								mp_rsaKey,
+								RSA_NO_PADDING);
+			if (decryptSize < 0) {
+
+				throw XSECCryptoException(XSECCryptoException::RSAError,
+					"OpenSSL:RSA privateKeyDecrypt - Error doing raw decrypt of RSA encrypted data");
+
+			}
+
+			// Clear out the "0"s at the front
+			int i;
+			for (i = 0; i < num && tBuf[i] == 0; ++i)
+				--decryptSize;
+
+			decryptSize = RSA_padding_check_PKCS1_OAEP(plainBuf,
+													   maxOutLength,
+													   &tBuf[i],
+													   decryptSize,
+													   num,
+													   mp_oaepParams,
+													   m_oaepParamsLen);
+
+			if (decryptSize < 0) {
+
+				throw XSECCryptoException(XSECCryptoException::RSAError,
+					"OpenSSL:RSA privateKeyDecrypt - Error removing OAEPadding");
+
+			}
+
+		}
+		break;
+
 	default :
 
 		throw XSECCryptoException(XSECCryptoException::RSAError,
@@ -423,9 +500,7 @@ unsigned int OpenSSLCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 								 unsigned int inLength,
 								 unsigned int maxOutLength,
 								 PaddingType padding,
-								 hashMethod hm,
-								 const unsigned char * OEAPParam,
-								 unsigned int OAPEParamLen) {
+								 hashMethod hm) {
 
 	// Perform an encrypt
 	if (mp_rsaKey == NULL) {
@@ -449,10 +524,55 @@ unsigned int OpenSSLCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 		if (encryptSize < 0) {
 
 			throw XSECCryptoException(XSECCryptoException::RSAError,
-				"OpenSSL:RSA publicKeyDecrypt - Error performing PKCS1_5 padded RSA encrypt");
+				"OpenSSL:RSA publicKeyEncrypt - Error performing PKCS1_5 padded RSA encrypt");
 
 		}
 
+		break;
+
+	case XSECCryptoKeyRSA::PAD_OAEP_MGFP1 :
+		{
+
+			unsigned char * tBuf;
+			unsigned int num = RSA_size(mp_rsaKey);
+			if (maxOutLength < num) {
+				throw XSECCryptoException(XSECCryptoException::RSAError,
+					"OpenSSL:RSA publicKeyEncrypt - Not enough space in cipherBuf");
+			}
+
+			XSECnew(tBuf, unsigned char[num]);
+			ArrayJanitor<unsigned char> j_tBuf(tBuf);
+
+			// First add the padding
+
+			encryptSize = RSA_padding_add_PKCS1_OAEP(tBuf,
+													 num,
+													 inBuf,
+													 inLength,
+													 mp_oaepParams,
+													 m_oaepParamsLen);
+
+			if (encryptSize <= 0) {
+
+				throw XSECCryptoException(XSECCryptoException::RSAError,
+					"OpenSSL:RSA publicKeyEncrypt - Error adding OAEPadding");
+
+			}
+
+			encryptSize = RSA_public_encrypt(num,
+								tBuf,
+								cipherBuf,
+								mp_rsaKey,
+								RSA_NO_PADDING);
+			
+
+			if (encryptSize < 0) {
+
+				throw XSECCryptoException(XSECCryptoException::RSAError,
+					"OpenSSL:RSA publicKeyEncrypt - Error encrypting padded data");
+
+			}
+		}
 		break;
 
 	default :
@@ -492,6 +612,16 @@ XSECCryptoKey * OpenSSLCryptoKeyRSA::clone() {
 
 	ret->m_keyType = m_keyType;
 	ret->mp_rsaKey = RSA_new();
+
+	if (mp_oaepParams != NULL) {
+		XSECnew(ret->mp_oaepParams, unsigned char[m_oaepParamsLen]);
+		memcpy(ret->mp_oaepParams, mp_oaepParams, m_oaepParamsLen);
+		ret->m_oaepParamsLen = m_oaepParamsLen;
+	}
+	else {
+		ret->mp_oaepParams = NULL;
+		ret->m_oaepParamsLen = 0;
+	}
 
 	// Duplicate parameters 
 

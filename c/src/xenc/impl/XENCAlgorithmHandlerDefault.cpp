@@ -140,7 +140,8 @@ void XENCAlgorithmHandlerDefault::mapURIToKey(const XMLCh * uri,
 	case XSECCryptoKey::KEY_RSA_PAIR :
 	case XSECCryptoKey::KEY_RSA_PRIVATE :
 
-		keyOK = strEquals(uri, DSIGConstants::s_unicodeStrURIRSA_1_5);
+		keyOK = strEquals(uri, DSIGConstants::s_unicodeStrURIRSA_1_5) ||
+			strEquals(uri, DSIGConstants::s_unicodeStrURIRSA_OAEP_MGFP1);
 		break;
 
 	case XSECCryptoKey::KEY_SYMMETRIC :
@@ -613,17 +614,66 @@ unsigned int XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer(
 		bytesRead = b->readBytes(buf, 1024);
 	}
 
+	unsigned int decryptLen;
 
-	// Do decrypt
-	unsigned int decryptLen = rsa->privateDecrypt(cipherSB.rawBuffer(), 
+	// Now we find out what kind of padding
+	if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIRSA_1_5)) {
+
+		// Do decrypt
+		decryptLen = rsa->privateDecrypt(cipherSB.rawBuffer(), 
 												  decBuf, 
 												  offset, 
 												  rsa->getLength(), 
 												  XSECCryptoKeyRSA::PAD_PKCS_1_5, 
-												  HASH_NONE, 
-												  NULL, 
-												  0);
+												  HASH_NONE);
+	}
+	else if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIRSA_OAEP_MGFP1)) {
 
+		if (!strEquals(encryptionMethod->getDigestMethod(), DSIGConstants::s_unicodeStrURISHA1)) {
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer - Currently only SHA-1 is supported for OAEP");
+		}
+
+		// Read out any OAEP params
+		unsigned char * oaepParamsBuf = NULL;
+		const XMLCh * oaepParams = encryptionMethod->getOAEPparams();
+		unsigned int sz = 0;
+		if (oaepParams != NULL) {
+
+			char * oaepParamsStr = XMLString::transcode(oaepParams);
+			ArrayJanitor<char> j_oaepParamsStr(oaepParamsStr);
+
+			unsigned int bufLen = strlen(oaepParamsStr);
+			oaepParamsBuf = new unsigned char[bufLen];
+			ArrayJanitor<unsigned char> j_oaepParamsBuf(oaepParamsBuf);
+
+			XSECCryptoBase64 * b64 = 
+				XSECPlatformUtils::g_cryptoProvider->base64();
+			Janitor<XSECCryptoBase64> j_b64(b64);
+
+			b64->decodeInit();
+			sz = b64->decode((unsigned char *) oaepParamsStr, bufLen, oaepParamsBuf, bufLen);
+			sz += b64->decodeFinish(&oaepParamsBuf[sz], bufLen - sz);
+
+			rsa->setOAEPparams(oaepParamsBuf, sz);
+
+		}
+		else
+			rsa->setOAEPparams(NULL, 0);
+
+		decryptLen = rsa->privateDecrypt(cipherSB.rawBuffer(), 
+												  decBuf, 
+												  offset, 
+												  rsa->getLength(), 
+												  XSECCryptoKeyRSA::PAD_OAEP_MGFP1, 
+												  HASH_SHA1);
+
+	}
+
+	else {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer - Unknown padding type");
+	}
 	// Copy to output
 	result.sbMemcpyIn(decBuf, decryptLen);
 	
@@ -767,16 +817,57 @@ bool XENCAlgorithmHandlerDefault::doRSAEncryptToSafeBuffer(
 		bytesRead = b->readBytes(buf, 1024);
 	}
 
+	unsigned int encryptLen;
 
 	// Do decrypt
-	unsigned int encryptLen = rsa->publicEncrypt(plainSB.rawBuffer(), 
+	if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIRSA_1_5)) {
+		encryptLen = rsa->publicEncrypt(plainSB.rawBuffer(), 
 												  encBuf, 
 												  offset, 
 												  rsa->getLength(), 
 												  XSECCryptoKeyRSA::PAD_PKCS_1_5, 
-												  HASH_NONE, 
-												  NULL, 
-												  0);
+												  HASH_NONE);
+	}
+
+	else if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIRSA_OAEP_MGFP1)) {
+
+		encryptionMethod->setDigestMethod(DSIGConstants::s_unicodeStrURISHA1);
+
+		// Check for OAEP params
+		int oaepParamsLen = rsa->getOAEPparamsLen();
+		if (oaepParamsLen > 0) {
+			unsigned char * oaepParamsB64;
+			XSECnew(oaepParamsB64, unsigned char[oaepParamsLen * 2]);
+			ArrayJanitor<unsigned char> j_oaepParamsB64(oaepParamsB64);
+
+			XSECCryptoBase64 * b64 = 
+				XSECPlatformUtils::g_cryptoProvider->base64();
+			Janitor<XSECCryptoBase64> j_b64(b64);
+
+			b64->encodeInit();
+			int sz = b64->encode(rsa->getOAEPparams(), oaepParamsLen, oaepParamsB64, oaepParamsLen *2);
+			sz += b64->encodeFinish(&oaepParamsB64[sz], (oaepParamsLen * 2)  - sz);
+			oaepParamsB64[sz] = '\0';
+
+			XMLCh * xBuf = XMLString::transcode((char *) oaepParamsB64);
+			ArrayJanitor<XMLCh> j_xBuf(xBuf);
+
+			encryptionMethod->setOAEPparams(xBuf);
+
+		}
+
+		encryptLen = rsa->publicEncrypt(plainSB.rawBuffer(), 
+										  encBuf, 
+										  offset, 
+										  rsa->getLength(), 
+										  XSECCryptoKeyRSA::PAD_OAEP_MGFP1, 
+										  HASH_SHA1);
+
+	}
+	else {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault::doRSAEncryptToSafeBuffer - Unknown padding type");
+	}
 
 	// Now need to base64 encode
 	XSECCryptoBase64 * b64 = 

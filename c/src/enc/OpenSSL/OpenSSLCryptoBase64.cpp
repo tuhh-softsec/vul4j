@@ -88,7 +88,7 @@ void OpenSSLCryptoBase64::decodeInit(void) {
 
 }
 
-unsigned int OpenSSLCryptoBase64::decode(unsigned char * inData, 
+unsigned int OpenSSLCryptoBase64::decode(const unsigned char * inData, 
 						 	    unsigned int inLength,
 								unsigned char * outData,
 								unsigned int outLength) {
@@ -106,7 +106,7 @@ unsigned int OpenSSLCryptoBase64::decode(unsigned char * inData,
 	rc = EVP_DecodeUpdate(&m_dctx, 
 						  outData, 
 						  &outLen, 
-						  inData, 
+						  (unsigned char *) inData, 
 						  inLength);
 
 	if (rc < 0) {
@@ -149,7 +149,7 @@ void OpenSSLCryptoBase64::encodeInit(void) {
 }
 
 
-unsigned int OpenSSLCryptoBase64::encode(unsigned char * inData, 
+unsigned int OpenSSLCryptoBase64::encode(const unsigned char * inData, 
 						 	    unsigned int inLength,
 								unsigned char * outData,
 								unsigned int outLength) {
@@ -166,7 +166,7 @@ unsigned int OpenSSLCryptoBase64::encode(unsigned char * inData,
 	EVP_EncodeUpdate(&m_ectx, 
 					  outData, 
 					  &outLen, 
-					  inData, 
+					  (unsigned char *) inData, 
 					  inLength);
 
 	if (outLen > (int) outLength) {

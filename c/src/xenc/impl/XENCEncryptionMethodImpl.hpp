@@ -93,13 +93,19 @@ public:
 	void load();
 
 	// Create from scratch
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createBlankEncryptedType(
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createBlankEncryptedMethod(
 						const XMLCh * algorithm);
 
 	// Interface
 	const XMLCh * getAlgorithm(void) {return mp_algorithm;}
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
 		{return mp_encryptionMethodNode;}
+	virtual const XMLCh * getDigestMethod(void);
+	virtual const XMLCh * getOAEPparams(void);
+	virtual void setDigestMethod(const XMLCh * method);
+	virtual void setOAEPparams(const XMLCh * params);
+
+
 
 private:
 
@@ -112,7 +118,10 @@ private:
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
 								* mp_encryptionMethodNode;	// Node at head of structure
 	XMLCh						* mp_algorithm;
-
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
+								* mp_digestAlgorithmAttributeNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
+								* mp_oaepParamsTextNode;
 };
 
 #endif /* XENCENCRYPTIONMETHODIMPL_INCLUDE */

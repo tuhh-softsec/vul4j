@@ -326,6 +326,8 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
 					EVP_PKEY * pk = EVP_PKCS82PKEY(p8inf);
 					OpenSSLCryptoKeyRSA * k = new OpenSSLCryptoKeyRSA(pk);
+					PKCS8_PRIV_KEY_INFO_free(p8inf);
+					BIO_free_all(rsaFile);
 					return k;
 						//d2i_PKCS8PrivateKey_bio(rsaFile, NULL, NULL, NULL);
 

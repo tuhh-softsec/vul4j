@@ -140,7 +140,7 @@ public :
 	 * @returns The number of bytes placed in the outData buffer.
 	 */
 
-	virtual unsigned int decode(unsigned char * inData, 
+	virtual unsigned int decode(const unsigned char * inData, 
 						 	    unsigned int inLength,
 								unsigned char * outData,
 								unsigned int outLength);
@@ -190,7 +190,7 @@ public :
 	 * @returns The number of bytes placed in the outData buffer.
 	 */
 
-	virtual unsigned int encode(unsigned char * inData, 
+	virtual unsigned int encode(const unsigned char * inData, 
 						 	    unsigned int inLength,
 								unsigned char * outData,
 								unsigned int outLength);

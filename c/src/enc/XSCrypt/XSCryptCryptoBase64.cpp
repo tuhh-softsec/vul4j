@@ -118,7 +118,7 @@ unsigned char decodeCh(unsigned char c) {
 
 }
 
-void XSCryptCryptoBase64::canonicaliseInput(unsigned char *inData, 
+void XSCryptCryptoBase64::canonicaliseInput(const unsigned char *inData, 
 											unsigned int inLength) {
 
 	// Canonicalise the input buffer into m_inputBuffer
@@ -159,7 +159,7 @@ void XSCryptCryptoBase64::decodeInit(void) {
 
 }
 
-unsigned int XSCryptCryptoBase64::decode(unsigned char * inData, 
+unsigned int XSCryptCryptoBase64::decode(const unsigned char * inData, 
 						 	    unsigned int inLength,
 								unsigned char * outData,
 								unsigned int outLength) {
@@ -335,7 +335,7 @@ void XSCryptCryptoBase64::encodeInit(void) {
 }
 
 
-unsigned int XSCryptCryptoBase64::encode(unsigned char * inData, 
+unsigned int XSCryptCryptoBase64::encode(const unsigned char * inData, 
 						 	    unsigned int inLength,
 								unsigned char * outData,
 								unsigned int outLength) {

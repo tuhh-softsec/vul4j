@@ -175,6 +175,46 @@ public :
 	//@{
 
 	/**
+	 * \brief Set the OAEPparams string
+	 *
+	 * By default, the library expects crypto implementations to perform
+	 * OAEP padding with no params.  This call allows the library (or user)
+	 * to set a params value prior to an encrypt/decrypt operation.
+	 *
+	 * @param params buffer containing the params data.  Pass in NULL to clear any
+	 * old paramters.
+	 * @param paramsLen number of bytes in buffer to use.  Pass in 0 to clear any
+	 * old parameters.
+	 * @note The Microsoft Crypto RSA_AES and RSA_FULL providers do not support
+	 * the ability to set OAEP parameters, so this will throw an 
+	 * XSECCryptoException::UnsupportedError, unless the passed in paramters
+	 * are NULL and 0 (to clear).
+	 */
+
+	virtual void setOAEPparams(unsigned char * params, unsigned int paramsLen);
+
+	/**
+	 * \brief Get OAEPparams Length
+	 *
+	 * @returns the number of bytes of the OAEPparams buffer (assuming it has been set)
+	 * @note The Microsoft Crypto RSA_AES and RSA_FULL providers do not support
+	 * the ability to set OAEP parameters, so this will always return 0
+	 */
+
+	virtual unsigned int getOAEPparamsLen(void);
+
+	/**
+	 * \brief Get the OAEPparams
+	 *
+	 * @returns a pointer to the (crypto object owned) buffer holding the OAEPparams
+	 * or NULL if no params are held
+	 * @note The Microsoft Crypto RSA_AES and RSA_FULL providers do not support
+	 * the ability to set OAEP parameters, so this will always return NULL
+	 */
+
+	virtual const unsigned char * getOAEPparams(void);
+
+	/**
 	 * \brief Verify a SHA1 PKCS1 encoded signature
 	 *
 	 * The library will call this function to validate an RSA signature
@@ -224,9 +264,8 @@ public :
 	 * @param inLength bytes of cipher text to decrypt
 	 * @param maxOutLength size of outputBuffer
 	 * @param padding Type of padding (PKCS 1.5 or OAEP)
-	 * @param hm Hash Method for OAEP encryption
-	 * @param OAEPParam OAEP Parameter String (NULL if none)
-	 * @param OEAPParamLen Length of OAEPParam string
+	 * @param hm Hash Method for OAEP encryption (OAEPParams should be
+	 * set using setOAEPparams()
 	 */
 
 	virtual unsigned int privateDecrypt(const unsigned char * inBuf,
@@ -234,9 +273,7 @@ public :
 								 unsigned int inLength,
 								 unsigned int maxOutLength,
 								 PaddingType padding,
-								 hashMethod hm,
-								 const unsigned char * OEAPParam,
-								 unsigned int OAPEParamLen);
+								 hashMethod hm);
 
 	/**
 	 * \brief Encrypt using a public key
@@ -249,9 +286,8 @@ public :
 	 * @param inLength bytes of plain text to encrypt
 	 * @param maxOutLength size of outputBuffer
 	 * @param padding Type of padding (PKCS 1.5 or OAEP)
-	 * @param hm Hash Method for OAEP encryption
-	 * @param OAEPParam OAEP Parameter String (NULL if none)
-	 * @param OEAPParamLen Length of OAEPParam string
+	 * @param hm Hash Method for OAEP encryption (OAEPParams should be
+	 * set using setOAEPparams()
 	 */
 
 	virtual unsigned int publicEncrypt(const unsigned char * inBuf,
@@ -259,9 +295,7 @@ public :
 								 unsigned int inLength,
 								 unsigned int maxOutLength,
 								 PaddingType padding,
-								 hashMethod hm,
-								 const unsigned char * OEAPParam,
-								 unsigned int OAPEParamLen);
+								 hashMethod hm);
 
 	/**
 	 * \brief Obtain the length of an RSA key

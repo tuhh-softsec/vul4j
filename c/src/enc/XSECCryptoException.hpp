@@ -129,7 +129,8 @@ public:
 		DSAError					= 6,		// DSA Error
 		RSAError					= 7,		// RSA Error
 		SymmetricError				= 8,
-		UnknownError				= 9			// Must be last!
+		UnsupportedError			= 9,		// Called function is not supported
+		UnknownError				= 10		// Must be last!
 
 	};
 

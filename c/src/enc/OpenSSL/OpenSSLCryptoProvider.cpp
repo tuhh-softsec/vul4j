@@ -85,16 +85,25 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 
 #include <openssl/rand.h>
+#include <openssl/err.h>
 
 OpenSSLCryptoProvider::OpenSSLCryptoProvider() {
 
 	OpenSSL_add_all_digests();		// Initialise Openssl
-	SSLeay_add_all_algorithms();
+	ERR_load_crypto_strings();
+
+	//SSLeay_add_all_algorithms();
 
 }
 
 
-OpenSSLCryptoProvider::~OpenSSLCryptoProvider() {}
+OpenSSLCryptoProvider::~OpenSSLCryptoProvider() {
+
+	EVP_cleanup();
+	ERR_free_strings();
+
+}
+
 
 const XMLCh * OpenSSLCryptoProvider::getProviderName() {
 

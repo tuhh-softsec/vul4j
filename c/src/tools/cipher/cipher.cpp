@@ -661,6 +661,7 @@ int evaluate(int argc, char ** argv) {
 			}
 			else {
 				XSECBinTXFMInputStream * bis = cipher->decryptToBinInputStream(static_cast<DOMElement *>(n));
+				Janitor<XSECBinTXFMInputStream> j_bis(bis);
 	
 				XMLByte buf[1024];			
 				unsigned int read = bis->readBytes(buf, 1023);
@@ -668,7 +669,6 @@ int evaluate(int argc, char ** argv) {
 					formatTarget->writeChars(buf, read, NULL);
 					read = bis->readBytes(buf, 1023);
 				}
-				delete bis;
 			}
 		}
 		else {
@@ -728,6 +728,7 @@ int evaluate(int argc, char ** argv) {
 
 			DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(core);
 			DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+			Janitor<DOMWriter> j_theSerializer(theSerializer);
 
 			theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
 			if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
@@ -737,7 +738,6 @@ int evaluate(int argc, char ** argv) {
 			
 			cout << endl;
 
-			delete theSerializer;
 		}
 	}
 
@@ -747,12 +747,18 @@ int evaluate(int argc, char ** argv) {
 		<< msg << endl;
 		delete [] msg;
 		errorsOccured = true;
+		if (formatTarget != NULL)
+			delete formatTarget;
+		doc->release();
 		return 2;
 	}
 	catch (XSECCryptoException &e) {
 		cerr << "An error occured during encryption/decryption operation\n   Message: "
 		<< e.getMsg() << endl;
 		errorsOccured = true;
+		if (formatTarget != NULL)
+			delete formatTarget;
+		doc->release();
 
 #if defined (HAVE_OPENSSL)
 		ERR_load_crypto_strings();

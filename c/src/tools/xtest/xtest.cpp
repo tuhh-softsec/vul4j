@@ -269,6 +269,8 @@ XMLCh s_tstMimeType[] = {
 	chForwardSlash, chLatin_p, chLatin_n, chLatin_g, chNull
 };
 
+unsigned char s_tstOAEPparams[] = "12345678";
+
 // --------------------------------------------------------------------------------
 //           Some test keys
 // --------------------------------------------------------------------------------
@@ -932,10 +934,20 @@ void unitTestEncrypt(DOMImplementation *impl) {
 
 		OpenSSLCryptoKeyRSA * k = new OpenSSLCryptoKeyRSA(pk);
 
+		unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_15);
+
+		cerr << "RSA OAEP key wrap... ";
+		k = new OpenSSLCryptoKeyRSA(pk);
+		unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_OAEP_MGFP1);
+
+		cerr << "RSA OAEP key wrap + params... ";
+		k = new OpenSSLCryptoKeyRSA(pk);
+		k->setOAEPparams(s_tstOAEPparams, strlen((char *) s_tstOAEPparams));
+
+		unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_OAEP_MGFP1);
+
 		BIO_free(bioMem);
 		EVP_PKEY_free(pk);
-
-		unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_15);
 
 #endif
 
@@ -948,8 +960,14 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		// Use the internal key
 		WinCAPICryptoProvider *cp = dynamic_cast<WinCAPICryptoProvider *>(XSECPlatformUtils::g_cryptoProvider);
 		HCRYPTPROV p = cp->getApacheKeyStore();
+		
 		WinCAPICryptoKeyRSA * rsaKey = new WinCAPICryptoKeyRSA(p, AT_KEYEXCHANGE, true);
 		unitTestKeyEncrypt(impl, rsaKey, ENCRYPT_RSA_15);
+
+		cerr << "RSA OAEP key wrap... ";
+		rsaKey = new WinCAPICryptoKeyRSA(p, AT_KEYEXCHANGE, true);
+		unitTestKeyEncrypt(impl, rsaKey, ENCRYPT_RSA_OAEP_MGFP1);
+
 
 #endif
 

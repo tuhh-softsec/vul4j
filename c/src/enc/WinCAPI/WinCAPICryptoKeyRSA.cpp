@@ -78,6 +78,10 @@
 
 XSEC_USING_XERCES(ArrayJanitor);
 
+#if !defined (CRYPT_OAEP)
+#	define CRYPT_OAEP              0x00000040
+#	define KP_OAEP_PARAMS          36
+#endif
 
 WinCAPICryptoKeyRSA::WinCAPICryptoKeyRSA(HCRYPTPROV prov) {
 
@@ -171,6 +175,32 @@ XSECCryptoKey::KeyType WinCAPICryptoKeyRSA::getKeyType() {
 	return KEY_RSA_PUBLIC;
 
 }
+
+// --------------------------------------------------------------------------------
+//           OAEP parameters handling
+// --------------------------------------------------------------------------------
+
+
+void WinCAPICryptoKeyRSA::setOAEPparams(unsigned char * params, unsigned int paramsLen) {
+
+	if (params != NULL && paramsLen != 0)
+		throw XSECCryptoException(XSECCryptoException::UnsupportedError,
+			"WinCAPI::setOAEPParams - OAEP parameters are not supported by Windows Crypto API");
+
+}
+
+unsigned int WinCAPICryptoKeyRSA::getOAEPparamsLen(void) {
+
+	return 0;
+
+}
+
+const unsigned char * WinCAPICryptoKeyRSA::getOAEPparams(void) {
+
+	return NULL;
+
+}
+
 
 // --------------------------------------------------------------------------------
 //           Load key from parameters
@@ -509,9 +539,7 @@ unsigned int WinCAPICryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 								 unsigned int inLength,
 								 unsigned int maxOutLength,
 								 PaddingType padding,
-								 hashMethod hm,
-								 const unsigned char * OEAPParam,
-								 unsigned int OAPEParamLen) {
+								 hashMethod hm) {
 
 	// Perform a decrypt
 	if (m_key == 0) {
@@ -541,6 +569,23 @@ unsigned int WinCAPICryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 
 		break;
 
+	case XSECCryptoKeyRSA::PAD_OAEP_MGFP1 :
+
+		if (!CryptDecrypt(m_key,
+						 0,
+						 TRUE,
+						 CRYPT_OAEP,
+						 plainBuf,
+						 &decryptSize)) {
+
+			throw XSECCryptoException(XSECCryptoException::RSAError,
+				"WinCAPI:RSA privateKeyDecrypt - Error Decrypting PKCS1_5 padded RSA encrypt");
+
+		}
+
+		break;
+
+
 	default :
 
 		throw XSECCryptoException(XSECCryptoException::RSAError,
@@ -562,9 +607,7 @@ unsigned int WinCAPICryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 								 unsigned int inLength,
 								 unsigned int maxOutLength,
 								 PaddingType padding,
-								 hashMethod hm,
-								 const unsigned char * OEAPParam,
-								 unsigned int OAPEParamLen) {
+								 hashMethod hm) {
 
 	// Perform an encrypt
 	if (m_key == 0) {
@@ -596,6 +639,29 @@ unsigned int WinCAPICryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 
 			throw XSECCryptoException(XSECCryptoException::RSAError,
 				"WinCAPI:RSA publicKeyEncrypt - Error performing PKCS1_5 padded RSA encrypt");
+
+		}
+
+		break;
+
+	case XSECCryptoKeyRSA::PAD_OAEP_MGFP1 :
+
+		if (!CryptEncrypt(m_key,
+						  0,			/* No Hash */
+						  TRUE,			/* Is Final */
+						  CRYPT_OAEP,
+						  cipherBuf,
+						  &encryptSize,
+						  maxOutLength)) {
+
+			throw XSECCryptoException(XSECCryptoException::RSAError,
+				"WinCAPI:RSA publicKeyEncrypt - Error performing encrypt");
+		}
+
+		if (encryptSize <= 0) {
+
+			throw XSECCryptoException(XSECCryptoException::RSAError,
+				"WinCAPI:RSA publicKeyEncrypt - Error performing OAEP RSA encrypt");
 
 		}
 
