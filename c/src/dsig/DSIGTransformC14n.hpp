@@ -222,6 +222,19 @@ public:
 	void addInclusiveNamespace(const char * ns);
 
 	/**
+	 * \brief Set the namespace list
+	 *
+	 * Deletes current PrefixList (if any) and sets the list to the space
+	 * separated list of namespace prefixes provided in ns.
+	 *
+	 * @note No checking is done on the string passed in.
+	 *
+	 * @param ns The (space separated) list of prefixes to set.
+	 */
+
+	void DSIGTransformC14n::setInclusiveNamespaces(XMLCh * ns);
+	
+	/**
 	 * \brief Get the string containing the inclusive namespaces.
 	 *
 	 * Get the string containing a list of (space separated) prefixes that will
@@ -249,6 +262,9 @@ private:
 
 	DSIGTransformC14n();
 	DSIGTransformC14n(const DSIGTransformC14n & theOther);
+
+	void createInclusiveNamespaceNode(void);
+
 
 	canonicalizationMethod			m_cMethod;			// The method
 	DOMElement						* mp_inclNSNode;	// Node holding the inclusive Namespaces
