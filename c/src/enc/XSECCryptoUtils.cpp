@@ -26,11 +26,13 @@
  */
 
 #include <xsec/framework/XSECDefs.hpp>
+#include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/XSECCryptoUtils.hpp>
 #include <xsec/enc/XSECCryptoKeyHMAC.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
 
 #include <xercesc/util/Janitor.hpp>
+#include <xercesc/util/XMLString.hpp>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -86,6 +88,7 @@ int DSIG_EXPORT CalculateXKMSRevocationCodeIdentifierEncoding1(unsigned char * i
 	unsigned char keyVal[] = {XKMSRevocationCodeIdenfitierEncoding1};
 
 	XSECCryptoKeyHMAC * k = XSECPlatformUtils::g_cryptoProvider->keyHMAC();
+	Janitor<XSECCryptoKeyHMAC> j_k(k);
 	k->setKey(keyVal, 1);
 
 	XSECCryptoHash *h = XSECPlatformUtils::g_cryptoProvider->hashHMACSHA1();
@@ -93,7 +96,11 @@ int DSIG_EXPORT CalculateXKMSRevocationCodeIdentifierEncoding1(unsigned char * i
 
 	h->setKey(k);
 
-	h->hash(input, inputLen);
+	// Clean the input
+	safeBuffer sb;
+	int l = CleanXKMSPassPhrase(input, inputLen, sb);
+
+	h->hash((unsigned char *) sb.rawBuffer(), l);
 	return h->finish(output, maxOutputLen);
 
 }
@@ -112,6 +119,7 @@ int DSIG_EXPORT CalculateXKMSRevocationCodeIdentifierEncoding2From1(unsigned cha
 	unsigned char keyVal[] = {XKMSRevocationCodeIdenfitierEncoding2};
 
 	XSECCryptoKeyHMAC * k = XSECPlatformUtils::g_cryptoProvider->keyHMAC();
+	Janitor<XSECCryptoKeyHMAC> j_k(k);
 	k->setKey(keyVal, 1);
 
 	XSECCryptoHash *h = XSECPlatformUtils::g_cryptoProvider->hashHMACSHA1();
@@ -136,10 +144,43 @@ int DSIG_EXPORT CalculateXKMSKEK(unsigned char * input, int inputLen, unsigned c
 
 	h->setKey(k);
 
-	h->hash(input, inputLen);
+	// Clean the input
+	safeBuffer sb;
+	int l = CleanXKMSPassPhrase(input, inputLen, sb);
+
+	h->hash((unsigned char *) sb.rawBuffer(), l);
 	return h->finish(output, maxOutputLen);
 
 }
+
+// --------------------------------------------------------------------------------
+//           Some Base64 helpers
+// --------------------------------------------------------------------------------
+
+XMLCh DSIG_EXPORT * EncodeToBase64XMLCh(unsigned char * input, int inputLen) {
+
+	XSECCryptoBase64 * b64 = XSECPlatformUtils::g_cryptoProvider->base64();
+	Janitor<XSECCryptoBase64> j_b64(b64);
+	unsigned char * output;
+	int outputLen = ((4 * inputLen) / 3) + 5;
+	XSECnew(output, unsigned char[outputLen]);
+	ArrayJanitor<unsigned char> j_output(output);
+
+	b64->encodeInit();
+	int j = b64->encode(input, inputLen, output, outputLen - 1);
+	j += b64->encodeFinish(&output[j], outputLen - j - 1);
+
+	// Strip any trailing \n\r
+	while (j > 0 && (output[j-1] == '\n' || output[j-1] == '\r'))
+		j--;
+
+	// Now transcode and get out of here
+	output[j] = '\0';
+	return XMLString::transcode((char *) output);
+
+}
+
+
 
 
 

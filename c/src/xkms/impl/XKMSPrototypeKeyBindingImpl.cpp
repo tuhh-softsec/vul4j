@@ -74,6 +74,13 @@ void XKMSPrototypeKeyBindingImpl::load(void) {
 
 	DOMElement * tmpElt = findFirstElementChild(mp_keyBindingAbstractTypeElement);
 
+	while (tmpElt != NULL && !strEquals(getXKMSLocalName(tmpElt), 
+									XKMSConstants::s_tagValidityInterval) &&
+						  !strEquals(getXKMSLocalName(tmpElt), 
+									XKMSConstants::s_tagRevocationCodeIdentifier))
+		tmpElt = findNextElementChild(tmpElt);
+						  
+
 	if (tmpElt != NULL && strEquals(getXKMSLocalName(tmpElt), 
 									XKMSConstants::s_tagValidityInterval)) {
 
@@ -101,9 +108,14 @@ void XKMSPrototypeKeyBindingImpl::load(void) {
 
 DOMElement * XKMSPrototypeKeyBindingImpl::createBlankPrototypeKeyBinding(void) {
 
-	return XKMSKeyBindingAbstractTypeImpl::
+	DOMElement * ret = XKMSKeyBindingAbstractTypeImpl::
 				createBlankKeyBindingAbstractType(XKMSConstants::s_tagPrototypeKeyBinding);
 
+	// Must have an Id
+
+	XKMSKeyBindingAbstractTypeImpl::setId();
+
+	return ret;
 
 }
 

@@ -82,6 +82,11 @@ public:
 		ResultMajor rmaj,
 		ResultMinor rmin = XKMSResultTypeImpl::NoneMinor,
 		const XMLCh * id = NULL);
+	virtual XKMSRegisterResult * createRegisterResult(
+		XKMSRegisterRequest * request,
+		ResultMajor rmaj,
+		ResultMinor rmin = XKMSResultTypeImpl::NoneMinor,
+		const XMLCh * id = NULL);
 
 	/* Implemented from MessageAbstractType */
 	virtual messageType getMessageType(void);

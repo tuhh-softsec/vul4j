@@ -32,6 +32,7 @@
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
+#include <xercesc/util/Janitor.hpp>
 
 #include "XKMSKeyBindingAbstractTypeImpl.hpp"
 #include "XKMSUseKeyWithImpl.hpp"
@@ -357,6 +358,24 @@ DSIGKeyInfoMgmtData * XKMSKeyBindingAbstractTypeImpl::appendMgmtData(const XMLCh
 // --------------------------------------------------------------------------------
 
 void XKMSKeyBindingAbstractTypeImpl::setId(const XMLCh * id) {
+
+	// Setup the id
+	XMLCh * myId;
+
+	if (id != NULL)
+		myId = XMLString::replicate(id);
+	else
+		myId = generateId();
+
+	ArrayJanitor<XMLCh> j_myId(myId);
+
+	mp_keyBindingAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagId, myId);
+#if defined (XSEC_XERCES_HAS_SETIDATTRIBUTE)
+	mp_keyBindingAbstractTypeElement->setIdAttributeNS(NULL, XKMSConstants::s_tagId);
+#endif
+	mp_idAttr = 
+		mp_keyBindingAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagId);
+
 }
 
 DOMElement * XKMSKeyBindingAbstractTypeImpl::setKeyUsage(const XMLCh * usage) {

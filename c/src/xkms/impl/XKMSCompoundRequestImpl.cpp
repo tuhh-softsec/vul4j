@@ -32,6 +32,7 @@
 #include "XKMSCompoundRequestImpl.hpp"
 #include "XKMSLocateRequestImpl.hpp"
 #include "XKMSValidateRequestImpl.hpp"
+#include "XKMSRegisterRequestImpl.hpp"
 
 #include <xercesc/dom/DOM.hpp>
 
@@ -187,3 +188,15 @@ XKMSValidateRequest * XKMSCompoundRequestImpl::createValidateRequest(
 	return r;
 }
 
+XKMSRegisterRequest * XKMSCompoundRequestImpl::createRegisterRequest(
+		const XMLCh * service,
+		const XMLCh * id) {
+
+	XKMSRegisterRequest * r = m_factory.createRegisterRequest(service, mp_env->getParentDocument(), id);
+	m_requestList.push_back(dynamic_cast<XKMSRequestAbstractTypeImpl*>(r));
+
+	mp_messageAbstractTypeElement->appendChild(r->getElement());
+	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+
+	return r;
+}

@@ -195,6 +195,11 @@ DSIGSignature * XKMSAuthenticationImpl::addKeyBindingAuthenticationSignature(
 		signatureMethod	sm,
 		hashMethod hm) {
 
+	if (mp_keyBindingId == NULL) {
+		throw XSECException(XSECException::XKMSError,
+			"XKMSAuthenticationImpl::addKeyBindingAuthenticationSignature - called prior to key infos being added");
+	}
+
 	DSIGSignature * ret = m_prov.newSignature();
 	DOMElement * elt = ret->createBlankSignature(mp_env->getParentDocument(), cm, sm, hm);
 

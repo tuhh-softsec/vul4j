@@ -161,10 +161,10 @@ public:
 	 * Allows a calling application to set a new Id for the
 	 * KeyBinding
 	 *
-	 * @param id The Id to set
+	 * @param id The Id to set - if NULL, the library will generate a random Id
 	 */
 
-	virtual void setId(const XMLCh * id) = 0;
+	virtual void setId(const XMLCh * id = NULL) = 0;
 
 	/**
 	 * \brief Set Encryption key usage on

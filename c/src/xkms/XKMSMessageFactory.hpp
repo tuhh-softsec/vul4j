@@ -44,6 +44,8 @@ class XKMSValidateResult;
 class XKMSPendingRequest;
 class XKMSStatusRequest;
 class XKMSStatusResult;
+class XKMSRegisterRequest;
+class XKMSRegisterResult;
 
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
@@ -85,7 +87,7 @@ public:
 
 	virtual ~XKMSMessageFactory() {};
 
-	/** @name Methods to build message objects from existing XML  */
+	/** @name Methods to build XKMS message objects from existing XML  */
 	//@{
 
 	/**
@@ -105,7 +107,7 @@ public:
 
 	//@}
 
-	/** @name Methods for building new messages from scratch */
+	/** @name Methods for building new X-KISS messages from scratch */
 	//@{
 
 	/**
@@ -533,6 +535,97 @@ public:
 
 	virtual XKMSStatusResult * createStatusResult(
 		XKMSStatusRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	//@}
+
+	/** @name Methods for building new X-KRSS messages from scratch */
+	//@{
+
+	/**
+	 * \brief Create a new \<RegisterRequest\> message.
+	 * 
+	 * Generates a new RegisterRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Document to create the DOM structure within.  The caller
+	 * will need to embed the DOM structure at the appropriate place in the
+	 * document (using a call to getElement to find the top level element)
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSRegisterRequest structure
+	 */
+
+	virtual XKMSRegisterRequest * createRegisterRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL) = 0;
+		
+	/**
+	 * \brief Create a new \<RegisterRequest\> message and surrounding document
+	 * 
+	 * Generates a new RegisterRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSRegisterRequest structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the RegisterRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSRegisterRequest * createRegisterRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<RegisterResult\> message.
+	 * 
+	 * Generates a new RegisterResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input ValidateRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSRegisterResponse structure
+	 */
+
+	virtual XKMSRegisterResult * createRegisterResult(
+		XKMSRegisterRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<RegisterResult\> message and surrounding document
+	 * 
+	 * Generates a new RegisterResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input ValidateRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSRegisterResponse structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the RegisterRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSRegisterResult * createRegisterResult(
+		XKMSRegisterRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		XKMSResultType::ResultMajor rmaj,
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,

@@ -633,6 +633,25 @@ const XMLCh XKMSConstants::s_tagRegisterRequest[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagRegisterResult[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_g,
+	chLatin_i,
+	chLatin_s,
+	chLatin_t,
+	chLatin_e,
+	chLatin_r,
+	chLatin_R,
+	chLatin_e,
+	chLatin_s,
+	chLatin_u,
+	chLatin_l,
+	chLatin_t,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagRepresent[] = {
 
 	chLatin_R,

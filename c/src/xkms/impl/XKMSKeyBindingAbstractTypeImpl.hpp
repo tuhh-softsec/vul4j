@@ -75,7 +75,7 @@ public:
 
 	/* Setter interface methods */
 
-	virtual void setId(const XMLCh * id);
+	virtual void setId(const XMLCh * id = NULL);
 	virtual void setEncryptionKeyUsage(void);
 	virtual void setSignatureKeyUsage(void);
 	virtual void setExchangeKeyUsage(void);

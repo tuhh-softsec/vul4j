@@ -53,6 +53,12 @@ int DSIG_EXPORT CalculateXKMSRevocationCodeIdentifierEncoding2(unsigned char * i
 int DSIG_EXPORT CalculateXKMSRevocationCodeIdentifierEncoding2From1(unsigned char * input, int inputLen, unsigned char * output, int maxOutputLen);
 int DSIG_EXPORT CalculateXKMSKEK(unsigned char * input, int inputLen, unsigned char * output, int maxOutputLen);
 
+// --------------------------------------------------------------------------------
+//           Some Base64 helpers
+// --------------------------------------------------------------------------------
+
+XMLCh DSIG_EXPORT * EncodeToBase64XMLCh(unsigned char * input, int inputLen);
+
 #endif /* XSECCRYPTOUTILS_INCLUDE */
 
 

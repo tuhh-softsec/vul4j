@@ -155,6 +155,31 @@ public:
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
 		const XMLCh * id = NULL);
 
+	/* X-KRSS Construction from Scratch */
+
+	virtual XKMSRegisterRequest * createRegisterRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL);
+	virtual XKMSRegisterRequest * createRegisterRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL);
+
+	virtual XKMSRegisterResult * createRegisterResult(
+		XKMSRegisterRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSRegisterResult * createRegisterResult(
+		XKMSRegisterRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+
+
 	/* Conversions */
 	virtual XKMSRequestAbstractType * toRequestAbstractType(XKMSMessageAbstractType *msg);
 	virtual XKMSResultType * toResultType(XKMSMessageAbstractType *msg);

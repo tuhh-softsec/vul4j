@@ -269,6 +269,11 @@ XKMSAuthentication * XKMSRegisterRequestImpl::addAuthentication(void) {
 	if (mp_authentication != NULL)
 		return mp_authentication;
 
+	if (mp_prototypeKeyBinding == NULL) {
+		throw XSECException(XSECException::XKMSError,
+			"XKMSRegisterRequestImpl::addAuthentication - called prior to key infos being added");
+	}
+
 	XSECnew(mp_authentication, XKMSAuthenticationImpl(mp_env));
 	DOMElement * e = 
 		mp_authentication->createBlankAuthentication(mp_prototypeKeyBinding->getId());

@@ -125,8 +125,8 @@ public:
 	 */
 
 	virtual DSIGSignature * addKeyBindingAuthenticationSignature(
-		canonicalizationMethod cm = CANON_C14N_NOC,
-		signatureMethod	sm = SIGNATURE_DSA,
+		canonicalizationMethod cm = CANON_C14NE_NOC,
+		signatureMethod	sm = SIGNATURE_HMAC,
 		hashMethod hm = HASH_SHA1) = 0;
 
 	/**

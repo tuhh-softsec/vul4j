@@ -33,6 +33,7 @@
 
 class XKMSLocateRequest;
 class XKMSValidateRequest;
+class XKMSRegisterRequest;
 
 /**
  * @ingroup xkms
@@ -149,7 +150,22 @@ public:
 		const XMLCh * service,
 		const XMLCh * id = NULL) = 0;
 	 
-	 //@}
+	/** \brief Add a RegisterRequest item
+	 *
+	 * Appends a RegisterRequest to the CompoundRequest object and returns the newly
+	 * created object
+	 *
+	 * @param service URI
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSValidateRequest structure
+	 */
+
+	virtual XKMSRegisterRequest * createRegisterRequest(
+		const XMLCh * service,
+		const XMLCh * id = NULL) = 0;
+
+	//@}
 
 private:
 

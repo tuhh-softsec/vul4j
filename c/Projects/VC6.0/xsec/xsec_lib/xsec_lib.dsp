@@ -566,6 +566,14 @@ SOURCE=..\..\..\..\src\enc\XSECCryptoSymmetricKey.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\enc\XSECCryptoUtils.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\XSECCryptoUtils.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\enc\XSECCryptoX509.cpp
 # End Source File
 # Begin Source File
@@ -1080,6 +1088,14 @@ SOURCE=..\..\..\..\src\xenc\XENCEncryptionMethod.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSAuthenticationImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSAuthenticationImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSCompoundRequestImpl.cpp
 # End Source File
 # Begin Source File
@@ -1144,6 +1160,14 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageFactoryImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSNotBoundAuthentication.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSNotBoundAuthenticationImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSPendingRequestImpl.cpp
 # End Source File
 # Begin Source File
@@ -1152,11 +1176,39 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSPendingRequestImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSPrototypeKeyBindingImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSPrototypeKeyBindingImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRegisterResult.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.hpp
 # End Source File
 # Begin Source File
 
@@ -1254,7 +1306,19 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.cpp
 
 SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSValidityIntervalImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSValidityIntervalImpl.hpp
+# End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSAuthentication.hpp
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSCompoundRequest.hpp
@@ -1297,11 +1361,23 @@ SOURCE=..\..\..\..\src\xkms\XKMSMessageFactory.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\XKMSNotBoundAuthentication.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\XKMSPendingRequest.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\XKMSPrototypeKeyBinding.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\XKMSQueryKeyBinding.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRegisterRequest.hpp
 # End Source File
 # Begin Source File
 
@@ -1350,6 +1426,10 @@ SOURCE=..\..\..\..\src\xkms\XKMSValidateRequest.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSValidateResult.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSValidityInterval.hpp
 # End Source File
 # End Group
 # End Target

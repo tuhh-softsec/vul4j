@@ -85,6 +85,7 @@ public:
 	static const XMLCh s_tagPrototypeKeyBinding[];
 	static const XMLCh s_tagQueryKeyBinding[];
 	static const XMLCh s_tagRegisterRequest[];
+	static const XMLCh s_tagRegisterResult[];
 	static const XMLCh s_tagRepresent[];
 	static const XMLCh s_tagRequestId[];
 	static const XMLCh s_tagRequestSignatureValue[];

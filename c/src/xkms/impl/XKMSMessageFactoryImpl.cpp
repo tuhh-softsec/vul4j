@@ -44,6 +44,7 @@
 #include "XKMSValidateResultImpl.hpp"
 #include "XKMSPendingRequestImpl.hpp"
 #include "XKMSRegisterRequestImpl.hpp"
+#include "XKMSRegisterResultImpl.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -301,6 +302,20 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 	}
 
+	else if (strEquals(name, XKMSConstants::s_tagRegisterResult)) {
+
+		// This is a <RegisterResult> message
+		XKMSRegisterResultImpl * ret;
+		XSECnew(ret, XKMSRegisterResultImpl(env, elt));
+		Janitor<XKMSRegisterResultImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return ret;
+
+	}
+
 	delete env;
 	return NULL;
 
@@ -505,6 +520,46 @@ XKMSStatusRequest * XKMSMessageFactoryImpl::createStatusRequest(
 	(*doc)->appendChild(sri->getElement());
 
 	return sri;
+}
+
+XKMSRegisterRequest * XKMSMessageFactoryImpl::createRegisterRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id) {
+	
+	XKMSRegisterRequestImpl * rri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(rri, XKMSRegisterRequestImpl(tenv));
+	rri->createBlankRegisterRequest(service, id);
+
+	return rri;
+
+}
+
+
+XKMSRegisterRequest * XKMSMessageFactoryImpl::createRegisterRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id) {
+
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSRegisterRequest * rri = createRegisterRequest(service, *doc, id);
+	(*doc)->appendChild(rri->getElement());
+
+	return rri;
 }
 
 // --------------------------------------------------------------------------------
@@ -731,6 +786,51 @@ XKMSCompoundResult * XKMSMessageFactoryImpl::createCompoundResult(
 	return cr;
 }
 
+XKMSRegisterResult * XKMSMessageFactoryImpl::createRegisterResult(
+		XKMSRegisterRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSRegisterResultImpl * rri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(rri, XKMSRegisterResultImpl(tenv));
+	rri->createBlankRegisterResult(request->getService(), id, rmaj, rmin);
+
+	copyRequestToResult(request, (XKMSResultTypeImpl*) rri);
+
+	return rri;
+
+}
+
+XKMSRegisterResult * XKMSMessageFactoryImpl::createRegisterResult(
+		XKMSRegisterRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSRegisterResult * rr = createRegisterResult(request, *doc, rmaj, rmin, id);
+	(*doc)->appendChild(rr->getElement());
+
+	return rr;
+}
+
+
 // --------------------------------------------------------------------------------
 //           Message Conversions
 // --------------------------------------------------------------------------------
@@ -754,6 +854,10 @@ XKMSRequestAbstractType * XKMSMessageFactoryImpl::toRequestAbstractType(XKMSMess
 		XKMSPendingRequest * pr = dynamic_cast<XKMSPendingRequest*>(msg);
 		return pr;
 	}
+	if (msg->getMessageType() == XKMSMessageAbstractType::RegisterRequest) {
+		XKMSRegisterRequest * rr = dynamic_cast<XKMSRegisterRequest*>(msg);
+		return rr;
+	}
 	return NULL;
 }
 
@@ -766,12 +870,14 @@ XKMSResultType * XKMSMessageFactoryImpl::toResultType(XKMSMessageAbstractType *m
 	if (msg->getMessageType() == XKMSMessageAbstractType::ValidateResult) {
 		XKMSValidateResult * vr = dynamic_cast<XKMSValidateResult*>(msg);
 		return vr;
-
 	}
 	if (msg->getMessageType() == XKMSMessageAbstractType::CompoundResult) {
 		XKMSCompoundResult * cr = dynamic_cast<XKMSCompoundResult*>(msg);
 		return cr;
-
+	}
+	if (msg->getMessageType() == XKMSMessageAbstractType::RegisterResult) {
+		XKMSRegisterResult * rr = dynamic_cast<XKMSRegisterResult*>(msg);
+		return rr;
 	}
 	return NULL;
 }
