@@ -60,12 +60,14 @@ package org.apache.commons.digester.xmlrules;
 
 
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 
 import org.apache.commons.digester.Digester;
-
 import org.apache.commons.digester.Address;
+
+import org.apache.commons.digester.TestObjectCreationFactory;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -228,4 +230,70 @@ public class DigesterLoaderTest extends TestCase {
         assertEquals("(4) State attribute", "Ohio", addressFour.getState());
         
     }
+    
+   public void testFactoryCreateRule() throws Exception {
+        URL rules = ClassLoader.getSystemResource
+            ("org/apache/commons/digester/xmlrules/testfactory.xml");
+            
+        String xml = "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><foo/></root>";
+        Object obj = DigesterLoader.load(
+                                        rules, 
+                                        getClass().getClassLoader(), 
+                                        new StringReader(xml), 
+                                        new ArrayList());
+                                        
+        if (!(obj instanceof ArrayList)) {
+            fail(
+                "Unexpected object returned from DigesterLoader. Expected ArrayList; got " 
+                + obj.getClass().getName());
+        }
+        
+        ArrayList list = (ArrayList) obj;                
+         
+        assertEquals("List should contain only the factory object", list.size() , 1);
+        TestObjectCreationFactory factory = (TestObjectCreationFactory) list.get(0);
+        assertEquals("Object create not called(1)", factory.called , true);
+        assertEquals(
+                    "Attribute not passed (1)", 
+                    factory.attributes.getValue("one"), 
+                    "good");
+        assertEquals(
+                    "Attribute not passed (2)", 
+                    factory.attributes.getValue("two"), 
+                    "bad");
+        assertEquals(
+                    "Attribute not passed (3)", 
+                    factory.attributes.getValue("three"), 
+                    "ugly");   
+
+        
+        rules = ClassLoader.getSystemResource
+            ("org/apache/commons/digester/xmlrules/testfactoryignore.xml");
+            
+        xml = "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><foo/></root>";
+        try {
+            DigesterLoader.load(
+                                    rules, 
+                                    getClass().getClassLoader(), 
+                                    new StringReader(xml));
+        } catch (Exception e) {
+            fail("This exception should have been ignored: " + e.getClass().getName());
+        }
+        
+        rules = ClassLoader.getSystemResource
+            ("org/apache/commons/digester/xmlrules/testfactorynoignore.xml");
+            
+        xml = "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><foo/></root>";
+        try {
+            DigesterLoader.load(
+                                    rules, 
+                                    getClass().getClassLoader(), 
+                                    new StringReader(xml));
+            fail("Exception should have been propagated from create method.");
+        } catch (Exception e) {
+            /* What we expected */
+            System.out.println(e.getClass().getName());
+        }        
+    }
+
 }
