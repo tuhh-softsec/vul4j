@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.1 2001/05/03 00:28:33 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/05/03 00:28:33 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.2 2001/05/12 17:25:54 sanders Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/05/12 17:25:54 $
  *
  * ====================================================================
  *
@@ -64,7 +64,7 @@ package org.apache.commons.digester;
 
 
 import java.util.HashMap;
-import org.xml.sax.AttributeList;
+import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.BeanUtils;
 
 
@@ -73,7 +73,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * stack, based on attributes with corresponding names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/05/03 00:28:33 $
+ * @version $Revision: 1.2 $ $Date: 2001/05/12 17:25:54 $
  */
 
 public class SetPropertiesRule extends Rule {
@@ -103,12 +103,12 @@ public class SetPropertiesRule extends Rule {
      * @param context The associated context
      * @param attributes The attribute list of this element
      */
-    public void begin(AttributeList attributes) throws Exception {
+    public void begin(Attributes attributes) throws Exception {
 
 	// Build a set of attribute names and corresponding values
 	HashMap values = new HashMap();
 	for (int i = 0; i < attributes.getLength(); i++) {
-	    String name = attributes.getName(i);
+	    String name = attributes.getLocalName(i);
 	    String value = attributes.getValue(i);
 	    values.put(name, value);
 	}

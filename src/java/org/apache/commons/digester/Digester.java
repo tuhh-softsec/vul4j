@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.1 2001/05/03 00:28:33 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/05/03 00:28:33 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.2 2001/05/12 17:25:53 sanders Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/05/12 17:25:53 $
  *
  * ====================================================================
  *
@@ -76,11 +76,11 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.collections.ArrayStack;
-import org.xml.sax.AttributeList;
-import org.xml.sax.DocumentHandler;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.HandlerBase;
+import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -103,10 +103,10 @@ import org.xml.sax.SAXParseException;
  * even from the same thread.</p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/05/03 00:28:33 $
+ * @version $Revision: 1.2 $ $Date: 2001/05/12 17:25:53 $
  */
 
-public class Digester extends HandlerBase {
+public class Digester extends DefaultHandler {
 
 
     // --------------------------------------------------------- Constructors
@@ -408,11 +408,17 @@ public class Digester extends HandlerBase {
     /**
      * Process notification of the end of an XML element being reached.
      *
-     * @param name Name of the element that is ending
-     *
+     * @param uri - The Namespace URI, or the empty string if the 
+     *   element has no Namespace URI or if Namespace processing is not 
+     *   being performed.
+     * @param localName - The local name (without prefix), or the empty 
+     *   string if Namespace processing is not being performed.
+     * @param qName - The qualified XML 1.0 name (with prefix), or the 
+     *   empty string if qualified names are not available.
      * @exception SAXException if a parsing error is to be reported
      */
-    public void endElement(String name) throws SAXException {
+    public void endElement(String namespaceURI, String localName,
+                           String qName) throws SAXException {
 
 	//	if (debug >= 3)
 	//	    log("endElement(" + match + ")");
@@ -533,13 +539,19 @@ public class Digester extends HandlerBase {
     /**
      * Process notification of the start of an XML element being reached.
      *
-     * @param name Name of the element that is starting
-     * @param list The attributes associated with this element
-     *
+     * @param uri The Namespace URI, or the empty string if the element 
+     *   has no Namespace URI or if Namespace processing is not being performed.
+     * @param localName The local name (without prefix), or the empty 
+     *   string if Namespace processing is not being performed.
+     * @param qName The qualified name (with prefix), or the empty 
+     *   string if qualified names are not available.\
+     * @param list The attributes attached to the element. If there are 
+     *   no attributes, it shall be an empty Attributes object.
      * @exception SAXException if a parsing error is to be reported
      */
-    public void startElement(String name, AttributeList list)
-      throws SAXException {
+    public void startElement(String namespaceURI, String localName, 
+                             String qName, Attributes list)
+        throws SAXException {
 
 	// Save the body text accumulated for our surrounding element
 	bodyTexts.push(bodyText);
@@ -547,9 +559,9 @@ public class Digester extends HandlerBase {
 
 	// Compute the current matching rule
 	if (match.length() > 0)
-	    match += "/" + name;
+	    match += "/" + localName;
 	else
-	    match = name;
+	    match = localName;
 	//	if (debug >= 3)
 	//	    log("startElement(" + match + ")");
 

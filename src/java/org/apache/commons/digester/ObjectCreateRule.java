@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.1 2001/05/03 00:28:33 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/05/03 00:28:33 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.2 2001/05/12 17:25:54 sanders Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/05/12 17:25:54 $
  *
  * ====================================================================
  *
@@ -64,7 +64,7 @@ package org.apache.commons.digester;
 
 
 import java.lang.ClassLoader;
-import org.xml.sax.AttributeList;
+import org.xml.sax.Attributes;
 
 
 /**
@@ -74,7 +74,7 @@ import org.xml.sax.AttributeList;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.1 $ $Date: 2001/05/03 00:28:33 $
+ * @version $Revision: 1.2 $ $Date: 2001/05/12 17:25:54 $
  */
 
 public class ObjectCreateRule extends Rule {
@@ -138,7 +138,7 @@ public class ObjectCreateRule extends Rule {
      *
      * @param attributes The attribute list of this element
      */
-    public void begin(AttributeList attributes) throws Exception {
+    public void begin(Attributes attributes) throws Exception {
 
 	// Identify the name of the class to instantiate
 	String realClassName = className;

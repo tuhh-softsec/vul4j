@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.1 2001/05/03 00:28:33 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/05/03 00:28:33 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.2 2001/05/12 17:25:53 sanders Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/05/12 17:25:53 $
  *
  * ====================================================================
  *
@@ -64,7 +64,7 @@ package org.apache.commons.digester;
 
 
 import java.lang.reflect.Method;
-import org.xml.sax.AttributeList;
+import org.xml.sax.Attributes;
 
 
 /**
@@ -73,7 +73,7 @@ import org.xml.sax.AttributeList;
  * by a surrounding CallMethodRule rule.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/05/03 00:28:33 $
+ * @version $Revision: 1.2 $ $Date: 2001/05/12 17:25:53 $
  */
 
 public class CallParamRule extends Rule {
@@ -143,7 +143,7 @@ public class CallParamRule extends Rule {
      *
      * @param attributes The attribute list for this element
      */
-    public void begin(AttributeList attributes) throws Exception {
+    public void begin(Attributes attributes) throws Exception {
 
 	if (attributeName != null)
 	    bodyText = attributes.getValue(attributeName);
