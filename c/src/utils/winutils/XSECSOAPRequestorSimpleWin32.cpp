@@ -78,6 +78,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 
 
 	char * content = wrapAndSerialise(request);
+	ArrayJanitor<char> janContent(content);
 
 	// First we need to serialise
 
@@ -342,7 +343,31 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 							"Unknown HTTP response received");
     }
 
-    return NULL;
+	/* Now find out how long the return is */
+
+	p = strstr(fBuffer, "Content-Length:");
+	if (p == NULL) {
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Content-Length required in SOAP HTTP Response");
+	}
+
+	p = strchr(p, ' ');
+	p++;
+
+	int responseLength = atoi(p);
+
+	char * responseBuffer;
+	XSECnew(responseBuffer, char[responseLength]);
+	ArrayJanitor<char> j_responseBuffer(responseBuffer);
+
+	lent = fBufferEnd - fBufferPos;
+	memcpy(responseBuffer, fBufferPos, lent);
+	while (lent < responseLength) {
+	    aLent = XSECBinHTTPURIInputStream::recv((unsigned short) s, &responseBuffer[lent], responseLength - lent, 0);
+		lent += aLent;
+	}
+	
+    return parseAndUnwrap(responseBuffer, responseLength);
 }
 
 

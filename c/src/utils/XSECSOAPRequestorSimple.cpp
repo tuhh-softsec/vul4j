@@ -46,6 +46,7 @@
 #include <xercesc/util/XMLExceptMsgs.hpp>
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
+#include <xercesc/framework/MemBufInputSource.hpp>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -151,5 +152,63 @@ char * XSECSOAPRequestorSimple::wrapAndSerialise(DOMDocument * request) {
 	return ret;
 }
 
+// --------------------------------------------------------------------------------
+//           UnWrap and de-serialise the response message
+// --------------------------------------------------------------------------------
+
+DOMDocument * XSECSOAPRequestorSimple::parseAndUnwrap(const char * buf, unsigned int len) {
+
+	XercesDOMParser * parser = new XercesDOMParser;
+	Janitor<XercesDOMParser> j_parser(parser);
+
+	parser->setDoNamespaces(true);
+	parser->setCreateEntityReferenceNodes(true);
+	parser->setDoSchema(true);
+
+	// Create an input source
+
+	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) buf, len, "XSECMem");
+	Janitor<MemBufInputSource> j_memIS(memIS);
+
+	int errorCount = 0;
+
+	parser->parse(*memIS);
+    errorCount = parser->getErrorCount();
+    if (errorCount > 0)
+		throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error parsing SOAP response message");
+
+    DOMDocument * responseDoc = parser->getDocument();
+
+	// Now create a new document for the Response message
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	DOMDocument * retDoc = impl->createDocument();
+
+	// Find the base of the response
 
 
+	DOMNode * e = responseDoc->getDocumentElement();
+
+	e = e->getFirstChild();
+
+	while (e != NULL && (e->getNodeType() != DOMNode::ELEMENT_NODE || !strEquals(e->getLocalName(), "Body")))
+		e = e->getNextSibling();
+
+	if (e == NULL)
+		throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Could not find SOAP body");
+
+	e = findFirstChildOfType(e, DOMNode::ELEMENT_NODE);
+
+	if (e == NULL)
+		throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Could not find message within SOAP body");
+
+	retDoc->appendChild(retDoc->importNode(e, true));
+
+	return retDoc;
+
+}

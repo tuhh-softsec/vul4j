@@ -95,6 +95,8 @@ public :
 private:
 
 	char * wrapAndSerialise(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * request);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *
+		parseAndUnwrap(const char * buf, unsigned int len);
 
 	XERCES_CPP_NAMESPACE_QUALIFIER XMLUri			
 						m_uri;
