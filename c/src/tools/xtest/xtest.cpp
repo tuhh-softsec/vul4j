@@ -454,9 +454,13 @@ void outputDoc(DOMImplementation * impl, DOMDocument * doc) {
 
 	XMLFormatTarget *formatTarget = new StdOutFormatTarget();
 
+	cerr << endl;
+
 	theSerializer->writeNode(formatTarget, *doc);
 	
 	cout << endl;
+
+	cerr << endl;
 
 	delete theSerializer;
 	delete formatTarget;
@@ -833,6 +837,114 @@ count(ancestor-or-self::dsig:Signature)");
 //           Unit tests for test encrypt/Decrypt
 // --------------------------------------------------------------------------------
 
+void unitTestElementContentEncrypt(DOMImplementation *impl, XSECCryptoKey * key, encryptionMethod em, bool doElementContent) {
+
+	if (doElementContent)
+		cerr << "Encrypting Element Content ... ";
+	else
+		cerr << "Encrypting Element ... ";
+	
+	// Create a document
+    
+	DOMDocument * doc = createTestDoc(impl);
+	DOMNode * categoryNode = findNode(doc, MAKE_UNICODE_STRING("category"));
+	if (categoryNode == NULL) {
+
+		cerr << "Error finding category node for encryption test" << endl;
+		exit(1);
+
+	}
+
+	// Create and execute cipher
+
+	XSECProvider prov;
+	XENCCipher * cipher;
+
+	try {
+		
+		/*
+		 * Now we have a document, find the data node.
+		 */
+
+		cipher = prov.newCipher(doc);
+		cipher->setXENCNSPrefix(MAKE_UNICODE_STRING("xenc"));
+		cipher->setPrettyPrint(true);
+
+		// Set a key
+
+		cipher->setKey(key->clone());
+	
+		// Now encrypt!
+		if (doElementContent)
+			cipher->encryptElementContent(doc->getDocumentElement(), em);
+		else
+			cipher->encryptElement((DOMElement *) categoryNode, em);
+
+		cerr << "done ... check encrypted ... ";
+
+		DOMNode * t = findNode(doc, MAKE_UNICODE_STRING("category"));
+		if (t != NULL) {
+
+			cerr << "no - a category child still exists" << endl;
+			exit(1);
+
+		}
+		else
+			cerr << "yes" << endl;
+		
+		outputDoc(impl, doc);
+		
+		if (doElementContent)
+			cerr << "Decrypting Element content ... ";
+		else
+			cerr << "Decrypting Element ... ";
+
+		// OK - Now we try to decrypt
+		// Find the EncryptedData node
+		DOMNode * n = findXENCNode(doc, "EncryptedData");
+
+		XENCCipher * cipher2 = prov.newCipher(doc);
+
+		cipher2->setKey(key);
+
+		cipher2->decryptElement(static_cast<DOMElement *>(n));
+
+		cerr << "done ... check decrypt ... ";
+		t = findNode(doc, MAKE_UNICODE_STRING("category"));
+
+		if (t == NULL) {
+
+			cerr << " failed - category did not decrypt properly" << endl;
+			exit(1);
+
+		}
+		else
+			cerr << "OK" << endl;
+
+		outputDoc(impl, doc);
+
+	}
+	catch (XSECException &e)
+	{
+		cerr << "An error occured during encryption processing\n   Message: ";
+		char * ce = XMLString::transcode(e.getMsg());
+		cerr << ce << endl;
+		delete ce;
+		exit(1);
+		
+	}	
+	catch (XSECCryptoException &e)
+	{
+		cerr << "A cryptographic error occured during encryption processing\n   Message: "
+		<< e.getMsg() << endl;
+		exit(1);
+	}
+
+	doc->release();
+
+}
+
+
 void unitTestKeyEncrypt(DOMImplementation *impl, XSECCryptoKey * k, encryptionMethod em) {
 
 	// Create a document that we will embed the encrypted key in
@@ -1019,6 +1131,41 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		ks->setKey((unsigned char *) s_keyStr, 24);
 		
 		unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_3DES);
+
+		// Now do Element encrypts
+		// 128 AES
+		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
+		ks->setKey((unsigned char *) s_keyStr, 16);
+
+		cerr << "Unit testing AES 128 bit CBC encryption" << endl;
+		unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_AES128_CBC, false);
+		unitTestElementContentEncrypt(impl, ks, ENCRYPT_AES128_CBC, true);
+
+		//192 AES
+		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
+		ks->setKey((unsigned char *) s_keyStr, 24);
+
+		cerr << "Unit testing AES 192 bit CBC encryption" << endl;
+		unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_AES192_CBC, false);
+		unitTestElementContentEncrypt(impl, ks, ENCRYPT_AES192_CBC, true);
+
+		// 256 AES
+		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
+		ks->setKey((unsigned char *) s_keyStr, 32);
+
+		cerr << "Unit testing AES 256 bit CBC encryption" << endl;
+		unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_AES256_CBC, false);
+		unitTestElementContentEncrypt(impl, ks, ENCRYPT_AES256_CBC, true);
+
+		// 192 3DES
+		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
+		ks->setKey((unsigned char *) s_keyStr, 24);
+
+		cerr << "Unit testing 3DES CBC encryption" << endl;
+		unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_3DES_CBC, false);
+		unitTestElementContentEncrypt(impl, ks, ENCRYPT_3DES_CBC, true);
+
+
 	}
 	catch (XSECCryptoException &e)
 	{
@@ -1027,7 +1174,6 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		<< e.getMsg() << endl;
 		exit(1);
 	}
-
 
 }
 // --------------------------------------------------------------------------------
