@@ -10,13 +10,5 @@
   <groupId>plexus</groupId>
   <artifactId>plexus-utils</artifactId>
   <name>Plexus Common Utilities</name>
-  <version>0.18-SNAPSHOT</version>
-
-  <dependencies/>
-
-  <build>
-    <nagEmailAddress>plexus-dev@plexus.codehaus.org</nagEmailAddress>
-    <sourceDirectory>src/main/java</sourceDirectory>
-  </build>
-
+  <version>1.0-alpha-1-SNAPSHOt</version>
 </project>
