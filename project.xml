@@ -74,6 +74,7 @@
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
+        <include>**/*TestCase.java</include>
       </includes>
       <resources>
          <resource>
