@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/util/Attic/TestBinarySearch.java,v 1.2 2003/06/24 15:21:02 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/util/Attic/TestBinarySearch.java,v 1.3 2003/12/01 07:19:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,6 +66,7 @@ import junit.framework.TestSuite;
 
 /**
  * @author Jason Horman (jason@jhorman.org)
+ * @author Rodney Waldhoff
  */
 
 public class TestBinarySearch extends TestCase {
@@ -101,5 +102,9 @@ public class TestBinarySearch extends TestCase {
 
         position = BinarySearch.execute(list, new Integer(86));
         assertEquals(new Integer(86), position);
+
+        position = (Integer)new BinarySearch(new ArrayList(), new Integer(10)).recurse();
+        assertEquals(new Integer(-1), position);
+
     }
 }

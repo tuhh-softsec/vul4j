@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.1 2003/06/24 15:17:01 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.2 2003/12/01 07:19:56 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -69,6 +69,7 @@ import java.util.List;
  * search.
  *
  * @author Jason Horman (jason@jhorman.org)
+ * @author Rodney Waldhoff
  */
 
 public class BinarySearch extends RecursiveFunction {
@@ -105,8 +106,15 @@ public class BinarySearch extends RecursiveFunction {
      * when it is found. If the item is not found -1 (as Integer) is returned.
      */
     public Object evaluate() {
+        // TODO: should be using compareTo instead of equals
         if (lower == upper) {
-            return list.get(upper).equals(item) ? new Integer(upper) : new Integer(-1);
+            if(upper >= list.size()) {
+                return new Integer(-1);
+            } else if(list.get(upper).equals(item)) {
+                return new Integer(upper);
+            } else {
+                return new Integer(-1);
+            }
         } else {
             int middle = (lower + upper) / 2;
             if (item.compareTo(list.get(middle)) > 0) {
