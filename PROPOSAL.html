@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>Proposal for Digester Package</title>
+</head>
+<body bgcolor="white">
+
+<div align="center">
+<h1>Proposal for <em>Digester</em> Package</h1>
+</div>
+
+<h3>(0) Rationale</h3>
+
+<p>Many Jakarta products read XML configuration files to provide
+initialization of various Java objects within the system.
+</p>
+
+<p>There are several ways of doing this now spread across various Jakarta
+projects which could all be moved toward a common implementation.
+</p>
+
+<p>A Commons package would give committers an opportunity to coordinate
+their efforts to create and maintain a efficient, feature-rich package
+under the ASF license.
+</p>
+
+<h3>(1) Scope of the Package</h3>
+
+<p>The <em>Digester</em> project shall create and maintain a XML -> Java 
+object mapping package written in the Java language to be distributed 
+under the ASF license.
+
+<h3>(1.5) Interaction With Other Packages</h3>
+
+<p><em>Digester</em> relies on:
+</p>
+
+<ul>
+  <li>Java Development Kit (Version 1.2 or later)</li>
+  <li>A JAXP 1.1 implementation</li>
+  <li>A SAX 2.0 parser conforming to the JAXP 1.1 APIs</li>
+  <li>BeanUtils from Commons - for instrospection information</li>
+  <li>Collections from Commons - for ArrayStack</li>
+</ul>
+
+<h3>(2) Initial Source of the Package</h3>
+
+<p>The initial codebase are an integral part of the 
+<a href="http://jakarta.apache.org/struts">Struts Framework</a>.
+However, they have very few dependencies on other aspects of Struts, and
+those dependencies have been removed in the proposed code base.
+Once accepted and released as a Jakarta Commons component, Struts will
+be modified to use the Commons version of these classes, and its internal
+versions will be deprecated.</p>
+
+<p>The proposed package name for the new component is
+org.apache.commons.digester.
+</p>
+
+<h3>(3) Required Jakarta-Commons Resources</h3>
+
+<ul>
+
+<li>CVS Repository - New directory <code>digester</code> in the 
+<code>jakarta-commons</code> CVS repository.</li>
+
+<li>Initial Committers - Most of the initial commiters are already 
+committers on jakarta-commons,so the only addition is for user id sanders.</li>
+
+<li>Mailing List - Discussions will take place on the general
+<em>jakarta-commons@jakarta.apache.org</em> mailing list. To help list
+subscribers identify messages of interest, it is suggested that the
+message subject of messages about this component be prefixed with
+[Digester].</li>
+
+<li>Bugzilla - New component "Digester" under the "Commons" product
+category, with appropriate version identifiers as needed.</li>
+
+<li>Jyve FAQ - New category "commons-digester" (when available).</li>
+</ul>
+
+
+<h3>(4) Initial Committers</h3>
+
+<p>The initial committers on the Digester component shall be:</p>
+
+<ul>
+  <li>Geir Magnusson Jr.</li>
+  <li>Craig R. McClanahan</li>
+  <li>Scott Sanders</li>
+  <li>Rodney Waldhoff</li>
+</ul>
+
+</body>
+</html>
