@@ -82,6 +82,8 @@ MAKE_SHARED = @make_shared@
 LINK = @link@
 
 LN_S = @ln_s@
+INSTALL = @install@
+INSTALL_DATA = @install_data@
 
 # Packaging
 
@@ -200,6 +202,21 @@ alltools:
 allsamples:
 	$(MAKE) -C ${SAMPLES_DIR} allsamples
 
+
+####################### INSTALL ##########################
+
+install: lib
+	$(INSTALL) ${THISLIB} ${libdir}
+	$(RM) ${libdir}/${LIBMAJORNAME} && $(LN_S) ${LIBNAME} ${libdir}/${LIBMAJORNAME}
+	$(RM) ${libdir}/${LIBSHORTNAME} && $(LN_S) ${LIBNAME} ${libdir}/${LIBSHORTNAME}
+	$(MAKE) -C ${CANON_DIR} install
+	$(MAKE) -C ${TRANSFORMERS_DIR} install
+	$(MAKE) -C ${DSIG_DIR} install
+	$(MAKE) -C ${ENC_DIR} install
+	$(MAKE) -C ${OPENSSL_DIR} install
+	$(MAKE) -C ${FRAMEWORK_DIR} install
+	$(MAKE) -C ${UTILS_DIR} install
+	$(MAKE) -C ${UNIXUTILS_DIR} install
 
 ######################## CLEAN  ##########################
 

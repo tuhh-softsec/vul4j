@@ -468,6 +468,12 @@ AC_SUBST(cc4)
 ln_s=${LN_S}
 AC_SUBST(ln_s)
 
+install=${INSTALL}
+install_data=${INSTALL_DATA}
+
+AC_SUBST(install)
+AC_SUBST(install_data)
+
 make_shared=${MAKE_SHARED}
 AC_SUBST(make_shared)
 
