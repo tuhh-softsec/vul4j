@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.40 2003/03/31 00:41:14 craigmcc Exp $
+        $Id: build.xml,v 1.41 2003/04/02 19:05:12 rdonkin Exp $
 -->
 
 
@@ -255,7 +255,8 @@
                                test.spr,
                                test.xmlrules,
                                test.node,
-                               test.factory
+                               test.factory,
+                               test.regex
                               "
    description="Run all unit test cases">
   </target>
@@ -333,6 +334,15 @@
     </java>
   </target>
 
+  <target name="test.regex" depends="compile.tests"
+   description="Run tests for RegexRules">
+    <echo message="Running tests for RegexRules ..."/>
+    <java classname="${test.runner}" fork="yes"
+        failonerror="${test.failonerror}">
+      <arg value="org.apache.commons.digester.RegexRulesTestCase"/>
+      <classpath refid="test.classpath"/>
+    </java>
+  </target>
 
   <target name="test.matching.extended" depends="compile.tests"
    description="Run rule Digester extended test cases">
