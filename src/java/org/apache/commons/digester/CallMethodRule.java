@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.7 2001/08/20 19:18:42 craigmcc Exp $
- * $Revision: 1.7 $
- * $Date: 2001/08/20 19:18:42 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.8 2001/08/25 15:20:59 jvanzyl Exp $
+ * $Revision: 1.8 $
+ * $Date: 2001/08/25 15:20:59 $
  *
  * ====================================================================
  *
@@ -77,7 +77,7 @@ import org.apache.commons.beanutils.ConvertUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.7 $ $Date: 2001/08/20 19:18:42 $
+ * @version $Revision: 1.8 $ $Date: 2001/08/25 15:20:59 $
  */
 
 public class CallMethodRule extends Rule {
@@ -243,8 +243,16 @@ public class CallMethodRule extends Rule {
 
 	// Retrieve or construct the parameter values array
 	String parameters[] = null;
-	if (paramCount > 0)
+	if (paramCount > 0) {
 	    parameters = (String[]) digester.popParams();
+         
+         // In the case where the parameter for the method
+         // is taken from an attribute, and that attribute
+         // isn't actually defined in the source XML file.
+         if (paramCount == 1 && parameters[0] == null) {
+             return;
+         }             
+     }         
 	else {
 	    parameters = new String[1];
 	    parameters[0] = bodyText;
