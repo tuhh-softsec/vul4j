@@ -79,13 +79,13 @@
 XSEC_USING_XERCES(ArrayJanitor);
 
 
-WinCAPICryptoKeyRSA::WinCAPICryptoKeyRSA(WinCAPICryptoProvider * owner) {
+WinCAPICryptoKeyRSA::WinCAPICryptoKeyRSA(HCRYPTPROV prov) {
 
 	// Create a new key to be loaded as we go
 
 	m_key = 0;
-	mp_ownerProvider = owner;
-	m_havePrivate = false;
+	m_p = prov;
+	m_keySpec = 0;
 
 	mp_exponent = NULL;
 	m_exponentLen = 0;
@@ -109,20 +109,38 @@ WinCAPICryptoKeyRSA::~WinCAPICryptoKeyRSA() {
 
 };
 
-WinCAPICryptoKeyRSA::WinCAPICryptoKeyRSA(WinCAPICryptoProvider * owner, 
-										 HCRYPTKEY k,
-										 bool havePrivate) :
-mp_ownerProvider(owner),
-m_havePrivate(havePrivate) {
+WinCAPICryptoKeyRSA::WinCAPICryptoKeyRSA(HCRYPTPROV prov, 
+										 HCRYPTKEY k) :
+m_p(prov) {
 
-	mp_ownerProvider = owner;
 	m_key = k;		// NOTE - We OWN this handle
+	m_keySpec = 0;
 
 	mp_exponent = mp_modulus = NULL;
 	m_exponentLen = m_modulusLen = 0;
 
 }
 
+WinCAPICryptoKeyRSA::WinCAPICryptoKeyRSA(HCRYPTPROV prov, 
+										 DWORD keySpec,
+										 bool isPrivate) :
+m_p(prov) {
+
+	if (isPrivate == false) {
+
+		throw XSECCryptoException(XSECCryptoException::RSAError,
+			"WinCAPICryptoKeyRSA - Public keys defined via keySpec ctor not yet supported");
+
+		
+	}
+
+	m_key = 0;
+	m_keySpec = keySpec;
+
+	mp_exponent = mp_modulus = NULL;
+	m_exponentLen = m_modulusLen = 0;
+
+}
 
 // Generic key functions
 
@@ -130,6 +148,9 @@ XSECCryptoKey::KeyType WinCAPICryptoKeyRSA::getKeyType() {
 
 	// Find out what we have
 	if (m_key == 0) {
+
+		if (m_keySpec != 0)
+			return KEY_RSA_PRIVATE;
 
 		if (mp_exponent == NULL ||
 			mp_modulus == NULL)
@@ -139,7 +160,7 @@ XSECCryptoKey::KeyType WinCAPICryptoKeyRSA::getKeyType() {
 
 	}
 
-	if (m_havePrivate == true)
+	if (m_keySpec != 0)
 		return KEY_RSA_PAIR;
 
 	return KEY_RSA_PUBLIC;
@@ -216,7 +237,7 @@ void WinCAPICryptoKeyRSA::importKey(void) {
 
 	// Now that we have the blob, import
 	BOOL fResult = CryptImportKey(
-					mp_ownerProvider->getProviderRSA(),
+					m_p,
 					blobBuffer,
 					blobBufferLen,
 					0,				// Not signed
@@ -283,7 +304,7 @@ bool WinCAPICryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 	// Have to create a Windows hash object and feed in the hash
 	BOOL fResult;
 	HCRYPTHASH h;
-	fResult = CryptCreateHash(mp_ownerProvider->getProviderRSA(), 
+	fResult = CryptCreateHash(m_p, 
 					CALG_SHA1, 
 					0, 
 					0,
@@ -343,22 +364,16 @@ unsigned int WinCAPICryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 
 	// Sign a pre-calculated hash using this key
 
-	if (m_key == NULL) {
+	if (m_keySpec == 0) {
 
 		throw XSECCryptoException(XSECCryptoException::RSAError,
-			"WinCAPI:RSA - Attempt to sign data with empty key");
-	}
-
-	if (m_havePrivate == false) {
-
-		throw XSECCryptoException(XSECCryptoException::RSAError,
-			"WinCAPI:RSA - Attempt to sign data a public key");
+			"WinCAPI:RSA - Attempt to sign data using a public or un-loaded key");
 	}
 
 	// Have to create a Windows hash object and feed in the hash
 	BOOL fResult;
 	HCRYPTHASH h;
-	fResult = CryptCreateHash(mp_ownerProvider->getProviderRSA(), 
+	fResult = CryptCreateHash(m_p, 
 					CALG_SHA1, 
 					0, 
 					0,
@@ -385,7 +400,7 @@ unsigned int WinCAPICryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 	DWORD rawSigLen;
 	fResult = CryptSignHash(
 				h,
-				AT_SIGNATURE,
+				m_keySpec,
 				NULL,
 				0,
 				NULL,
@@ -403,7 +418,7 @@ unsigned int WinCAPICryptoKeyRSA::signSHA1PKCS1Base64Signature(unsigned char * h
 
 	fResult = CryptSignHash(
 				h,
-				AT_SIGNATURE,
+				m_keySpec,
 				NULL,
 				0,
 				rawSig,
@@ -443,7 +458,7 @@ XSECCryptoKey * WinCAPICryptoKeyRSA::clone() {
 
 	WinCAPICryptoKeyRSA * ret;
 
-	XSECnew(ret, WinCAPICryptoKeyRSA(mp_ownerProvider));
+	XSECnew(ret, WinCAPICryptoKeyRSA(m_p));
 	
 	if (m_key != 0) {
 
@@ -455,8 +470,10 @@ XSECCryptoKey * WinCAPICryptoKeyRSA::clone() {
 		CryptExportKey(m_key, 0, PUBLICKEYBLOB, 0, keyBuf, &keyBufLen);
 
 		// Now re-import
-		CryptImportKey(mp_ownerProvider->getProviderRSA(), keyBuf, keyBufLen, NULL, 0, &ret->m_key);
+		CryptImportKey(m_p, keyBuf, keyBufLen, NULL, 0, &ret->m_key);
 	}
+
+	ret->m_keySpec = m_keySpec;
 
 	ret->m_exponentLen = m_exponentLen;
 	if (mp_exponent != NULL) {
@@ -483,8 +500,15 @@ XSECCryptoKey * WinCAPICryptoKeyRSA::clone() {
 
 void WinCAPICryptoKeyRSA::loadParamsFromKey(void) {
 
-	if (m_key == 0)
-		return;
+	if (m_key == 0) {
+
+		if (m_keySpec == 0)
+			return;
+
+		// See of we can get the user key
+		if (!CryptGetUserKey(m_p, m_keySpec, &m_key))
+			return;
+	}
 
 	// Export key into a keyblob
 	BOOL fResult;
@@ -549,7 +573,7 @@ void WinCAPICryptoKeyRSA::loadParamsFromKey(void) {
 
 unsigned int WinCAPICryptoKeyRSA::getExponentBase64BigNums(char * b64, unsigned int len) {
 
-	if (m_key == 0 && mp_exponent == NULL) {
+	if (m_key == 0 && m_keySpec == 0 && mp_exponent == NULL) {
 
 		return 0;	// Nothing we can do
 
@@ -574,7 +598,7 @@ unsigned int WinCAPICryptoKeyRSA::getExponentBase64BigNums(char * b64, unsigned 
 
 unsigned int WinCAPICryptoKeyRSA::getModulusBase64BigNums(char * b64, unsigned int len) {
 
-	if (m_key == 0 && mp_modulus == NULL) {
+	if (m_key == 0 && m_keySpec == 0 && mp_modulus == NULL) {
 
 		return 0;	// Nothing we can do
 

@@ -76,9 +76,9 @@
 
 // Constructors/Destructors
 
-WinCAPICryptoHash::WinCAPICryptoHash(WinCAPICryptoProvider * owner, HashType alg) {
+WinCAPICryptoHash::WinCAPICryptoHash(HCRYPTPROV prov, HashType alg) {
 
-	mp_ownerProvider = owner;
+	m_p = prov;
 	m_hashType = alg;
 	m_h = 0;
 
@@ -131,7 +131,7 @@ void WinCAPICryptoHash::reset(void) {
 	}
 
 	fResult = CryptCreateHash(
-		mp_ownerProvider->getProviderDSS(),
+		m_p,
 		alg_id,
 		0,
 		0,

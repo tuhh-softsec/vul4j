@@ -296,7 +296,7 @@ XSECCryptoKeyHMAC * createHMACKey(const unsigned char * str) {
 	}
 #else
 #	if defined (HAVE_WINCAPI)
-	WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC();
+	WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC(0);
 	if (first) {
 		cerr << "Using Windows Crypto API as the cryptography provider" << endl;
 		first = false;

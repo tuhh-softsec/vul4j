@@ -121,11 +121,12 @@ public :
 	 * (Currently supports MD5 and SHA1)
 	 *
 	 *
-	 * @param owner Owning XSECCryptoProvider instance
+	 * @param prov handle to a provider that supports the required algorithm.
+	 * Both PROV_RSA_FULL and PROV_DSS support MD5 and SHA1
 	 * @param alg Digest algorithm to use
 	 */
 	
-	WinCAPICryptoHashHMAC(WinCAPICryptoProvider * owner, XSECCryptoHash::HashType alg);
+	WinCAPICryptoHashHMAC(HCRYPTPROV prov, XSECCryptoHash::HashType alg);
 	virtual ~WinCAPICryptoHashHMAC();
 
 	//@}
@@ -209,14 +210,13 @@ private:
 	// Not implemented constructors
 	WinCAPICryptoHashHMAC();
 
-	WinCAPICryptoProvider		* mp_ownerProvider;
-
 	unsigned char				m_mdValue[XSEC_MAX_HASH_SIZE];		// Final output
 	unsigned int				m_mdLen;
 
 	ALG_ID						m_algId;
 	XSECCryptoHash::HashType	m_hashType;
 
+	HCRYPTPROV					m_p;
 	HCRYPTHASH					m_h;
 
 	unsigned char				m_ipadKeyed[XSEC_MAX_HASH_SIZE];

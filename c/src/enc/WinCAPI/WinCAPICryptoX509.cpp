@@ -81,8 +81,8 @@
 
 XSEC_USING_XERCES(ArrayJanitor);
 
-WinCAPICryptoX509::WinCAPICryptoX509(WinCAPICryptoProvider * owner) :
-m_DERX509(""), mp_certContext(NULL), mp_ownerProvider(owner) { 
+WinCAPICryptoX509::WinCAPICryptoX509(HCRYPTPROV provRSA, HCRYPTPROV provDSS) :
+m_DERX509(""), mp_certContext(NULL), m_pRSA(provRSA), m_pDSS(provDSS) { 
 
 
 }
@@ -164,7 +164,7 @@ XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() {
 	if (getPublicKeyType() == XSECCryptoKey::KEY_DSA_PUBLIC) {
 
 		fResult= CryptImportPublicKeyInfo(
-			   mp_ownerProvider->getProviderDSS(),
+			   m_pDSS,
 			   X509_ASN_ENCODING,
 			   &(mp_certContext->pCertInfo->SubjectPublicKeyInfo),
 			   &key);
@@ -179,7 +179,7 @@ XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() {
 		// wrap it in
 
 		WinCAPICryptoKeyDSA * ret;
-		XSECnew(ret, WinCAPICryptoKeyDSA(mp_ownerProvider, key));
+		XSECnew(ret, WinCAPICryptoKeyDSA(m_pDSS, key));
 
 		return ret;
 
@@ -188,7 +188,7 @@ XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() {
 	if (getPublicKeyType() == XSECCryptoKey::KEY_RSA_PUBLIC) {
 
 		fResult= CryptImportPublicKeyInfo(
-			   mp_ownerProvider->getProviderRSA(),
+			   m_pRSA,
 			   X509_ASN_ENCODING,
 			   &(mp_certContext->pCertInfo->SubjectPublicKeyInfo),
 			   &key);
@@ -203,7 +203,7 @@ XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() {
 		// wrap it in
 
 		WinCAPICryptoKeyRSA * ret;
-		XSECnew(ret, WinCAPICryptoKeyRSA(mp_ownerProvider, key));
+		XSECnew(ret, WinCAPICryptoKeyRSA(m_pRSA, key));
 
 		return ret;
 

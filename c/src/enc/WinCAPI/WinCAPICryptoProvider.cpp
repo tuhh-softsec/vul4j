@@ -136,7 +136,7 @@ XSECCryptoHash	* WinCAPICryptoProvider::hashSHA1() {
 
 	WinCAPICryptoHash * ret;
 
-	XSECnew(ret, WinCAPICryptoHash(this, XSECCryptoHash::HASH_SHA1));
+	XSECnew(ret, WinCAPICryptoHash(m_provDSS, XSECCryptoHash::HASH_SHA1));
 
 	return ret;
 
@@ -146,7 +146,7 @@ XSECCryptoHash * WinCAPICryptoProvider::hashHMACSHA1() {
 
 	WinCAPICryptoHashHMAC * ret;
 
-	XSECnew(ret, WinCAPICryptoHashHMAC(this, XSECCryptoHash::HASH_SHA1));
+	XSECnew(ret, WinCAPICryptoHashHMAC(m_provDSS, XSECCryptoHash::HASH_SHA1));
 
 	return ret;
 
@@ -156,7 +156,7 @@ XSECCryptoHash	* WinCAPICryptoProvider::hashMD5() {
 
 	WinCAPICryptoHash * ret;
 
-	XSECnew(ret, WinCAPICryptoHash(this, XSECCryptoHash::HASH_MD5));
+	XSECnew(ret, WinCAPICryptoHash(m_provDSS, XSECCryptoHash::HASH_MD5));
 
 	return ret;
 
@@ -166,7 +166,7 @@ XSECCryptoHash * WinCAPICryptoProvider::hashHMACMD5() {
 
 	WinCAPICryptoHashHMAC * ret;
 
-	XSECnew(ret, WinCAPICryptoHashHMAC(this, XSECCryptoHash::HASH_MD5));
+	XSECnew(ret, WinCAPICryptoHashHMAC(m_provDSS, XSECCryptoHash::HASH_MD5));
 
 	return ret;
 
@@ -176,7 +176,7 @@ XSECCryptoKeyDSA * WinCAPICryptoProvider::keyDSA() {
 	
 	WinCAPICryptoKeyDSA * ret;
 
-	XSECnew(ret, WinCAPICryptoKeyDSA(this));
+	XSECnew(ret, WinCAPICryptoKeyDSA(m_provDSS));
 
 	return ret;
 
@@ -186,7 +186,7 @@ XSECCryptoKeyRSA * WinCAPICryptoProvider::keyRSA() {
 	
 	WinCAPICryptoKeyRSA * ret;
 
-	XSECnew(ret, WinCAPICryptoKeyRSA(this));
+	XSECnew(ret, WinCAPICryptoKeyRSA(m_provRSA));
 
 	return ret;
 
@@ -197,7 +197,7 @@ XSECCryptoX509 * WinCAPICryptoProvider::X509() {
 
 	WinCAPICryptoX509 * ret;
 
-	XSECnew(ret, WinCAPICryptoX509(this));
+	XSECnew(ret, WinCAPICryptoX509(m_provRSA, m_provDSS));
 
 	return ret;
 

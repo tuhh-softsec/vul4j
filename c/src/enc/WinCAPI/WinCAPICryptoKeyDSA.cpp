@@ -78,12 +78,13 @@
 
 XSEC_USING_XERCES(ArrayJanitor);
 
-WinCAPICryptoKeyDSA::WinCAPICryptoKeyDSA(WinCAPICryptoProvider * owner) {
+WinCAPICryptoKeyDSA::WinCAPICryptoKeyDSA(HCRYPTPROV prov) {
 
 	// Create a new key to be loaded as we go
 
 	m_key = 0;
-	mp_ownerProvider = owner;
+	m_p = prov;
+	m_keySpec = 0;
 
 	mp_P = NULL;
 	mp_Q = NULL;
@@ -94,14 +95,33 @@ WinCAPICryptoKeyDSA::WinCAPICryptoKeyDSA(WinCAPICryptoProvider * owner) {
 
 // "Hidden" WinCAPI constructor
 
-WinCAPICryptoKeyDSA::WinCAPICryptoKeyDSA(WinCAPICryptoProvider * owner, 
-										 HCRYPTKEY k,
-										 bool havePrivate) :
-mp_ownerProvider(owner),
-m_havePrivate(havePrivate) {
+WinCAPICryptoKeyDSA::WinCAPICryptoKeyDSA(HCRYPTPROV prov, 
+										 HCRYPTKEY k) :
+m_p(prov) {
 
-	mp_ownerProvider = owner;
 	m_key = k;		// NOTE - We OWN this handle
+	m_keySpec = 0;
+
+	mp_P = mp_Q = mp_G = mp_Y = NULL;
+	m_PLen = m_QLen = m_GLen = m_YLen = 0;
+
+}
+
+WinCAPICryptoKeyDSA::WinCAPICryptoKeyDSA(HCRYPTPROV prov, 
+										 DWORD keySpec,
+										 bool isPrivate) :
+m_p(prov) {
+
+	if (isPrivate == false) {
+
+		throw XSECCryptoException(XSECCryptoException::DSAError,
+			"Public keys defined via keySpec ctor not yet supported");
+
+		
+	}
+	
+	m_key = 0;
+	m_keySpec = keySpec;
 
 	mp_P = mp_Q = mp_G = mp_Y = NULL;
 	m_PLen = m_QLen = m_GLen = m_YLen = 0;
@@ -134,6 +154,10 @@ XSECCryptoKey::KeyType WinCAPICryptoKeyDSA::getKeyType() {
 	// Find out what we have
 	if (m_key == NULL) {
 
+		// For now we don't really understand Private Windows keys
+		if (m_keySpec != 0)
+			return KEY_DSA_PRIVATE;
+		
 		// Check if we have parameters loaded
 		if (mp_P == NULL ||
 			mp_Q == NULL ||
@@ -144,8 +168,12 @@ XSECCryptoKey::KeyType WinCAPICryptoKeyDSA::getKeyType() {
 			return KEY_DSA_PUBLIC;
 	}
 
-	// For now we don't really understand Private Windows keys
-	return (m_havePrivate ? KEY_DSA_PAIR : KEY_DSA_PUBLIC);
+	if (m_keySpec != 0)
+		return KEY_DSA_PAIR;
+
+	// If we have m_key - it must be public
+
+	return KEY_DSA_PUBLIC;
 
 }
 
@@ -277,7 +305,7 @@ void WinCAPICryptoKeyDSA::importKey(void) {
 
 	// Now that we have the blob, import
 	BOOL fResult = CryptImportKey(
-					mp_ownerProvider->getProviderDSS(),
+					m_p,
 					blobBuffer,
 					blobBufferLen,
 					0,				// Not signed
@@ -346,7 +374,7 @@ bool WinCAPICryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 	// Have to create a Windows hash object and feed in the hash
 	BOOL fResult;
 	HCRYPTHASH h;
-	fResult = CryptCreateHash(mp_ownerProvider->getProviderDSS(), 
+	fResult = CryptCreateHash(m_p, 
 					CALG_SHA1, 
 					0, 
 					0,
@@ -411,22 +439,16 @@ unsigned int WinCAPICryptoKeyDSA::signBase64Signature(unsigned char * hashBuf,
 
 	// Sign a pre-calculated hash using this key
 
-	if (m_key == NULL) {
+	if (m_keySpec == 0) {
 
 		throw XSECCryptoException(XSECCryptoException::DSAError,
-			"WinCAPI:DSA - Attempt to sign data with empty key");
-	}
-
-	if (m_havePrivate == false) {
-
-		throw XSECCryptoException(XSECCryptoException::DSAError,
-			"WinCAPI:DSA - Attempt to sign data a public key");
+			"WinCAPI:DSA - Attempt to sign data a public or non-existent key");
 	}
 
 	// Have to create a Windows hash object and feed in the hash
 	BOOL fResult;
 	HCRYPTHASH h;
-	fResult = CryptCreateHash(mp_ownerProvider->getProviderDSS(), 
+	fResult = CryptCreateHash(m_p, 
 					CALG_SHA1, 
 					0, 
 					0,
@@ -454,7 +476,7 @@ unsigned int WinCAPICryptoKeyDSA::signBase64Signature(unsigned char * hashBuf,
 	DWORD rawSigLen = 50;
 	fResult = CryptSignHash(
 				h,
-				AT_SIGNATURE,
+				m_keySpec,
 				NULL,
 				0,
 				rawSig,
@@ -500,7 +522,7 @@ XSECCryptoKey * WinCAPICryptoKeyDSA::clone() {
 
 	WinCAPICryptoKeyDSA * ret;
 
-	XSECnew(ret, WinCAPICryptoKeyDSA(mp_ownerProvider));
+	XSECnew(ret, WinCAPICryptoKeyDSA(m_p));
 	
 	if (m_key != 0) {
 
@@ -512,7 +534,7 @@ XSECCryptoKey * WinCAPICryptoKeyDSA::clone() {
 		CryptExportKey(m_key, 0, PUBLICKEYBLOB, 0, keyBuf, &keyBufLen);
 
 		// Now re-import
-		CryptImportKey(mp_ownerProvider->getProviderDSS(), keyBuf, keyBufLen, NULL, 0, &ret->m_key);
+		CryptImportKey(m_p, keyBuf, keyBufLen, NULL, 0, &ret->m_key);
 	}
 
 	ret->m_PLen = m_PLen;
@@ -559,8 +581,16 @@ XSECCryptoKey * WinCAPICryptoKeyDSA::clone() {
 
 void WinCAPICryptoKeyDSA::loadParamsFromKey(void) {
 
-	if (m_key == 0)
-		return;
+	if (m_key == 0) {
+
+		if (m_keySpec == 0)
+			return;
+
+		// See of we can get the user key
+		if (!CryptGetUserKey(m_p, m_keySpec, &m_key))
+			return;
+
+	}
 
 	// Export key into a keyblob
 	BOOL fResult;
@@ -649,7 +679,7 @@ void WinCAPICryptoKeyDSA::loadParamsFromKey(void) {
 
 unsigned int WinCAPICryptoKeyDSA::getPBase64BigNums(char * b64, unsigned int len) {
 
-	if (m_key == 0 && mp_P == NULL) {
+	if (m_key == 0 && m_keySpec == 0 && mp_P == NULL) {
 
 		return 0;	// Nothing we can do
 
@@ -674,7 +704,7 @@ unsigned int WinCAPICryptoKeyDSA::getPBase64BigNums(char * b64, unsigned int len
 
 unsigned int WinCAPICryptoKeyDSA::getQBase64BigNums(char * b64, unsigned int len) {
 
-	if (m_key == 0 && mp_Q == NULL) {
+	if (m_key == 0 && m_keySpec == 0 && mp_Q == NULL) {
 
 		return 0;	// Nothing we can do
 
@@ -699,7 +729,7 @@ unsigned int WinCAPICryptoKeyDSA::getQBase64BigNums(char * b64, unsigned int len
 
 unsigned int WinCAPICryptoKeyDSA::getGBase64BigNums(char * b64, unsigned int len) {
 
-	if (m_key == 0 && mp_G == NULL) {
+	if (m_key == 0 && m_keySpec == 0 && mp_G == NULL) {
 
 		return 0;	// Nothing we can do
 
@@ -724,7 +754,7 @@ unsigned int WinCAPICryptoKeyDSA::getGBase64BigNums(char * b64, unsigned int len
 
 unsigned int WinCAPICryptoKeyDSA::getYBase64BigNums(char * b64, unsigned int len) {
 
-	if (m_key == 0 && mp_Y == NULL) {
+	if (m_key == 0 && m_keySpec == 0 && mp_Y == NULL) {
 
 		return 0;	// Nothing we can do
 

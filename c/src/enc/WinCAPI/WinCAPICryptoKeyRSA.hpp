@@ -99,22 +99,44 @@ public :
 	/** @name Constructors and Destructors */
 	//@{
 
-	WinCAPICryptoKeyRSA(WinCAPICryptoProvider * owner);
+	/**
+	 * \brief Create an RSA key
+	 *
+	 * Constructor used to create an "empty" RSA key, that the
+	 * library will later set parameters for the public key within.
+	 *
+	 * @param prov A handle to a PROV_RSA_FULL provider that the
+	 * library will eventually import the key into
+	 */
+
+	WinCAPICryptoKeyRSA(HCRYPTPROV prov);
 
 	/**
-	 * \brief Dedicated WinCAPI constructor
+	 * \brief Dedicated WinCAPI constructor for a public RSA key
 	 *
-	 * Create a RSA key for use in XSEC from an existing HCRYPTKEY
+	 * Create a public RSA key for use in XSEC from an existing HCRYPTKEY
 	 *
-	 * @param owner The owner provider object (needed to find CSP)
+	 * @param prov The handle to the provider that was used to create the key
 	 * @param k The key to use
-	 * @param havePrivate The CSP holds the private key as well as public
 	 * @note k is owned by the library.  When the wrapper 
 	 * WinCAPICryptoKeyRSA is deleted, k will be destroyed using
 	 * CryptDestroyKey()
 	 */
 
-	WinCAPICryptoKeyRSA(WinCAPICryptoProvider * owner, HCRYPTKEY k, bool havePrivate = false);
+	WinCAPICryptoKeyRSA(HCRYPTPROV prov, HCRYPTKEY k);
+
+	/**
+	 * \brief Dedicated WinCAPI constructor for a private RSA key
+	 *
+	 * Create a public RSA key for use in XSEC from an keySpec
+	 *
+	 * @param prov The handle to the provider that was used to create the key
+	 * @param keySpec The key to use (AT_SIGNATURE or AT_KEYEXCHANGE
+	 * @param isPrivate Should be true.  May be used later for public 
+	 * keys created this way
+	 */
+
+	WinCAPICryptoKeyRSA(HCRYPTPROV prov, DWORD keySpec, bool isPrivate);
 
 	virtual ~WinCAPICryptoKeyRSA();
 
@@ -227,13 +249,6 @@ public :
 	/** @name WinCAPI Specific Functions */
 	//@{
 
-	/**
-	 * \brief Constructor that loads the Windows CAPI key directly
-	 *
-	 * @param k The key to load
-	 */
-
-	WinCAPICryptoKeyRSA(HCRYPTKEY k);
 
 	/**
 	 * \brief Retrieve the exponent
@@ -263,9 +278,9 @@ public :
 
 private:
 
-	HCRYPTKEY					m_key;	
-	WinCAPICryptoProvider		* mp_ownerProvider;
-	bool						m_havePrivate;		// Do we have the private key?
+	HCRYPTPROV					m_p;
+	HCRYPTKEY					m_key;			// For a public key
+	DWORD						m_keySpec;		// For a private key
 
 	BYTE						* mp_modulus;
 	BYTE						* mp_exponent;

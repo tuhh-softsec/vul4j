@@ -106,8 +106,17 @@ public :
 
 	/** @name Constructors and Destructors */
 	//@{
+	/**
+	 * \brief Constructor
+	 *
+	 * @param prov The handle to the provider context that was used to
+	 * create any Windows keys (later set via setKey).  If this is not
+	 * to be used for a windows key (i.e. will be used for a "normal"
+	 * buffer of bytes as a key, then this value can be set to 0
+	 */
+
+	WinCAPICryptoKeyHMAC(HCRYPTPROV prov);
 	
-	WinCAPICryptoKeyHMAC();
 	virtual ~WinCAPICryptoKeyHMAC() {};
 
 	//@}
@@ -178,13 +187,11 @@ public :
 	 * Set a Windows Crypto key that has been either derived via the
 	 * various Crypt functions or has been loaded from an encrypted BLOB
 	 *
-	 * @param p Handle to provider context used to create this key.  Note
-	 * it is the responsibility of the caller to release the context.
 	 * @param k Windows CAPI key to load
 	 * Note that the library now owns this key (and will destroy it).
 	 */
 
-	void setWinKey(HCRYPTPROV p, HCRYPTKEY k);
+	void setWinKey(HCRYPTKEY k);
 
 	/**
 	 * \brief Get a windows key

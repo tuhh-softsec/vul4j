@@ -100,23 +100,49 @@ public :
 	/** @name Constructors and Destructors */
 	//@{
 	
-	WinCAPICryptoKeyDSA(WinCAPICryptoProvider * owner);
+	/**
+	 * \brief Ctor for DSA keys
+	 *
+	 * This constructor should be used for public keys that are going to be
+	 * loaded later via P, Q etc.
+	 *
+	 * @param prov A handle to the provider (and key store) that will be
+	 * used to hold the key being built  (Obviously a provider type that supports
+	 * DSS, such as DSS_PROV)
+	 */
+
+	WinCAPICryptoKeyDSA(HCRYPTPROV prov);
+	
 	virtual ~WinCAPICryptoKeyDSA();
 
 	/**
-	 * \brief WinCAPI Specific constructor
+	 * \brief WinCAPI Specific constructor for public keys
 	 *
-	 * Create a DSA key for use in XSEC from an existing HCRYPTKEY
+	 * Create a DSA key for use in XSEC from an existing public HCRYPTKEY
 	 *
-	 * @param owner The owner provider object (needed to find CSP)
+	 * @param prov A handle to the CSP to be used for operations under this key.
 	 * @param k The key to use
-	 * @param havePrivate The CSP holds the private key as well as public
 	 * @note k is owned by the library.  When the wrapper 
 	 * WinCAPICryptoKeyDSA is deleted, k will be destroyed using
-	 * CryptDestroyKey()
+	 * CryptDestroyKey().  Note also that prov will not be released.
 	 */
 
-	WinCAPICryptoKeyDSA(WinCAPICryptoProvider * owner, HCRYPTKEY k, bool havePrivate = false);
+	WinCAPICryptoKeyDSA(HCRYPTPROV prov, HCRYPTKEY k);
+
+	/**
+	 * \brief WinCAPI Specific constructor for private keys
+	 *
+	 * Create a DSA key for use in XSEC from a passed in handle to a provider
+	 * and associated key store
+	 *
+	 * @param prov A handle to the CSP to be used and read for the key.
+	 * @param keySpec The Key to use (AT_SIGNATURE or AT_KEYEXCHANGE)
+	 * @param isPrivate Should be true.  In future, may be able to define public
+	 * keys this way as well.
+	 * @note The prov will not be released on close.
+	 */
+
+	WinCAPICryptoKeyDSA(HCRYPTPROV prov, DWORD keySpec, bool isPrivate);
 
 	//@}
 
@@ -289,9 +315,9 @@ public :
 
 private:
 
-	HCRYPTKEY					m_key;	
-	WinCAPICryptoProvider		* mp_ownerProvider;
-	bool						m_havePrivate;		// Do we have the private key?
+	HCRYPTPROV					m_p;
+	HCRYPTKEY					m_key;		// For a public key
+	DWORD						m_keySpec;	// For a private key
 
 	BYTE						* mp_P;
 	BYTE						* mp_Q;

@@ -208,6 +208,9 @@ int evaluate(int argc, char ** argv) {
 	bool					useXSECURIResolver = false;
 	bool                    useAnonymousResolver = false;
 	bool					useInteropResolver = false;
+#if defined (HAVE_WINCAPI)
+	HCRYPTPROV				win32CSP = 0;
+#endif
 
 	bool skipRefs = false;
 
@@ -258,9 +261,7 @@ int evaluate(int argc, char ** argv) {
 
 				paramCount++;
 
-				HCRYPTPROV				win32RSACSP;		
-
-				if (!CryptAcquireContext(&win32RSACSP,
+				if (!CryptAcquireContext(&win32CSP,
 					NULL,
 					NULL,
 					PROV_RSA_FULL,
@@ -273,7 +274,7 @@ int evaluate(int argc, char ** argv) {
 				HCRYPTKEY k;
 				HCRYPTHASH h;
 				BOOL fResult = CryptCreateHash(
-					win32RSACSP,
+					win32CSP,
 					CALG_SHA,
 					0,
 					0,
@@ -296,7 +297,7 @@ int evaluate(int argc, char ** argv) {
 
 				// Now create a key
 				fResult = CryptDeriveKey(
-					win32RSACSP,
+					win32CSP,
 					CALG_RC2,
 					h,
 					CRYPT_EXPORTABLE,
@@ -309,13 +310,12 @@ int evaluate(int argc, char ** argv) {
 
 				// Wrap in a WinCAPI object
 				WinCAPICryptoKeyHMAC * hk;
-				hk = new WinCAPICryptoKeyHMAC();
-				hk->setWinKey(win32RSACSP, k); 
+				hk = new WinCAPICryptoKeyHMAC(win32CSP);
+				hk->setWinKey(k); 
 
 				key = hk;
 
 				CryptDestroyHash(h);
-//				CryptReleaseContext(win32RSACSP, 0);
 
 			}
 
@@ -331,32 +331,9 @@ int evaluate(int argc, char ** argv) {
 
 #if defined (HAVE_WINCAPI) && !defined(HAVE_OPENSSL)
 
-	if (win32DSSCSP == 0) {
-		WinCAPICryptoProvider * cp;
-		// Obtain default PROV_DSS
-		if (!CryptAcquireContext(&win32DSSCSP,
-			NULL,
-			NULL,
-			PROV_DSS,
-			CRYPT_VERIFYCONTEXT)) {
-				cerr << "Error acquiring DSS Crypto Service Provider" << endl;
-				return 2;
-		}
-
-		if (!CryptAcquireContext(&win32RSACSP,
-			NULL,
-			NULL,
-			PROV_RSA_FULL,
-			CRYPT_VERIFYCONTEXT)) {
-				cerr << "Error acquiring RSA Crypto Service Provider" << endl;
-				return 2;
-		}
-
-		// Use default DSS provider
-		cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
-		XSECPlatformUtils::SetCryptoProvider(cp);
-
-	}
+	// Use default DSS provider
+	WinCAPICryptoProvider * cp = new WinCAPICryptoProvider();
+	XSECPlatformUtils::SetCryptoProvider(cp);
 
 #endif
 
@@ -528,7 +505,7 @@ int evaluate(int argc, char ** argv) {
 #else
 #	if defined (HAVE_WINCAPI)
 			WinCAPICryptoKeyHMAC	* hmacKey;
-			hmacKey = new WinCAPICryptoKeyHMAC();
+			hmacKey = new WinCAPICryptoKeyHMAC(0);
 #	endif
 #endif
 			hmacKey->setKey((unsigned char *) hmacKeyStr, strlen(hmacKeyStr));
@@ -595,6 +572,12 @@ int evaluate(int argc, char ** argv) {
 		delete [] (char *) e;
 		retResult = 1;
 	}
+
+#if defined (HAVE_WINCAPI)
+	// Clean up the handle to the CSP
+	if (win32CSP != 0)
+		CryptReleaseContext(win32CSP, 0);
+#endif
 
 	// Janitor will clean up the parser
 	return retResult;

@@ -103,8 +103,18 @@ public :
 
 	/** @name Constructors/Destructors */
 	//@{
-	
-	WinCAPICryptoHash(WinCAPICryptoProvider * owner, XSECCryptoHash::HashType alg);
+	/**
+	 * \brief Construct a Hash object
+	 *
+	 * Creates a Windows Crypto API based hash object of the required
+	 * type.
+	 *
+	 * @param prov handle to a provider that supports the required algorithm.
+	 * Both PROV_RSA_FULL and PROV_DSS support MD5 and SHA1
+	 * @param alg The algorithm to use for digest operations
+	 */
+
+	WinCAPICryptoHash(HCRYPTPROV prov, XSECCryptoHash::HashType alg);
 	virtual ~WinCAPICryptoHash();
 
 	//@}
@@ -187,13 +197,12 @@ private:
 	// Not implemented constructors
 	WinCAPICryptoHash();
 
-	WinCAPICryptoProvider		* mp_ownerProvider;
-
 	unsigned char				m_mdValue[WINCAPI_MAX_HASH_SIZE];		// Final output
 	unsigned int				m_mdLen;
 
 	XSECCryptoHash::HashType	m_hashType;
 
+	HCRYPTPROV					m_p;
 	HCRYPTHASH					m_h;
 
 };

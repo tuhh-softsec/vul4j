@@ -72,12 +72,12 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
-WinCAPICryptoKeyHMAC::WinCAPICryptoKeyHMAC() :m_keyBuf("") {
+WinCAPICryptoKeyHMAC::WinCAPICryptoKeyHMAC(HCRYPTPROV prov) :m_keyBuf("") {
 
 	m_keyBuf.isSensitive();
 	m_keyLen = 0;
 	m_k = 0;
-	m_p = 0;
+	m_p = prov;
 
 };
 
@@ -99,12 +99,10 @@ XSECCryptoKey * WinCAPICryptoKeyHMAC::clone() {
 
 	WinCAPICryptoKeyHMAC * ret;
 
-	XSECnew(ret, WinCAPICryptoKeyHMAC());
+	XSECnew(ret, WinCAPICryptoKeyHMAC(m_p));
 
 	ret->m_keyBuf = m_keyBuf;
 	ret->m_keyLen = m_keyLen;
-
-	ret->m_p = m_p;
 
 	if (m_k != 0) {
 #if (_WIN32_WINNT > 0x0400)
@@ -133,7 +131,7 @@ XSECCryptoKey * WinCAPICryptoKeyHMAC::clone() {
 //           Windows Specific Keys
 // --------------------------------------------------------------------------------
 
-void WinCAPICryptoKeyHMAC::setWinKey(HCRYPTPROV p, HCRYPTKEY k) {
+void WinCAPICryptoKeyHMAC::setWinKey(HCRYPTKEY k) {
 
 	if (m_k != 0) {
 
@@ -142,7 +140,6 @@ void WinCAPICryptoKeyHMAC::setWinKey(HCRYPTPROV p, HCRYPTKEY k) {
 	}
 
 	m_k = k;
-	m_p = p;
 
 }
 

@@ -108,9 +108,9 @@ static unsigned char opad[] = {
 //           Constructors/Destructors
 // --------------------------------------------------------------------------------
 
-WinCAPICryptoHashHMAC::WinCAPICryptoHashHMAC(WinCAPICryptoProvider * owner, HashType alg) {
+WinCAPICryptoHashHMAC::WinCAPICryptoHashHMAC(HCRYPTPROV prov, HashType alg) {
 
-	mp_ownerProvider = owner;
+	m_p = prov;
 	m_h = 0;
 	m_blockSize = 64;		// We only know SHA-1 and MD5 at this time - both are 64 bytes
 
@@ -199,6 +199,8 @@ void WinCAPICryptoHashHMAC::setKey(XSECCryptoKey *key) {
 	if (strEquals(key->getProviderName(), DSIGConstants::s_unicodeStrPROVWinCAPI) &&
 		((WinCAPICryptoKeyHMAC *) key)->getWinKey() != 0) {
 
+		// Over-ride the local provider for this 
+
 		HCRYPTPROV p = ((WinCAPICryptoKeyHMAC *) key)->getWinKeyProv();
 		HCRYPTKEY k = ((WinCAPICryptoKeyHMAC *) key)->getWinKey();
 
@@ -252,7 +254,7 @@ void WinCAPICryptoHashHMAC::setKey(XSECCryptoKey *key) {
 		HCRYPTHASH h;
 
 		fResult = CryptCreateHash(
-			mp_ownerProvider->getProviderDSS(),
+			m_p,
 			m_algId,
 			0,
 			0,
@@ -307,7 +309,7 @@ void WinCAPICryptoHashHMAC::setKey(XSECCryptoKey *key) {
 
 	// Now create the hash object, and start with the ipad operation
 	fResult = CryptCreateHash(
-		mp_ownerProvider->getProviderDSS(),
+		m_p,
 		m_algId,
 		0,
 		0,
@@ -379,7 +381,7 @@ unsigned int WinCAPICryptoHashHMAC::finish(unsigned char * hash,
 	// Perform the opad operation
 	HCRYPTHASH h;
 	fResult = CryptCreateHash(
-		mp_ownerProvider->getProviderDSS(),
+		m_p,
 		m_algId,
 		0,
 		0,

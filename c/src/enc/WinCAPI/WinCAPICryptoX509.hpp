@@ -94,7 +94,19 @@ public :
 	/** @name Constructors and Destructors */
 	//@{
 
-	WinCAPICryptoX509(WinCAPICryptoProvider * owner);
+	/**
+	 * \brief Constructor for X509 objects
+	 *
+	 * The windows constructor requires RSA or DSS crypto providers, 
+	 * depending on the key type within the cert.
+	 *
+	 * @param provRSA A handle to the PROV_RSA_FULL type provider that the
+	 * interface should use when importing keys and manipulating certs
+	 * @param provDSS A handle to the PROV_DSS type provider that the
+	 * interface should use when importing keys and manipulating certs
+	 */
+
+	WinCAPICryptoX509(HCRYPTPROV provRSA, HCRYPTPROV provDSS);
 	virtual ~WinCAPICryptoX509();
 
 	//@}
@@ -152,7 +164,8 @@ private:
 	safeBuffer				m_DERX509;
 	PCCERT_CONTEXT			mp_certContext;
 
-	WinCAPICryptoProvider	* mp_ownerProvider;
+	HCRYPTPROV				m_pRSA;
+	HCRYPTPROV				m_pDSS;
 
 };
 

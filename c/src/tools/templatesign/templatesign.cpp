@@ -802,7 +802,7 @@ int main(int argc, char **argv) {
 			OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
 #else
 #	if defined (HAVE_WINCAPI)
-			WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC();
+			WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC(0);
 #	endif
 #endif
 			hmacKey->setKey((unsigned char *) argv[paramCount + 1], strlen(argv[paramCount + 1]));
@@ -820,73 +820,78 @@ int main(int argc, char **argv) {
 
 #if defined (HAVE_WINCAPI)
 		else if (stricmp(argv[paramCount], "--windss") == 0 || stricmp(argv[paramCount], "-wd") == 0) {
+
 			WinCAPICryptoProvider * cp;
-			// Obtain default PROV_DSS, with default user key container
+			// First set windows as the crypto provider
+			cp = new WinCAPICryptoProvider();
+			XSECPlatformUtils::SetCryptoProvider(cp);
+			
+			// Now set the key
 			if (!CryptAcquireContext(&win32DSSCSP,
 				NULL,
 				NULL,
 				PROV_DSS,
 				0)) {
-					cerr << "Error acquiring DSS Crypto Service Provider" << endl;
-					return 2;
-			}
-			// We know RSA provider is not required
-			cp = new WinCAPICryptoProvider();
-			XSECPlatformUtils::SetCryptoProvider(cp);
-			
-			// Now get the key
-			HCRYPTKEY k;
-			BOOL fResult = CryptGetUserKey(
-				win32DSSCSP,
-				AT_SIGNATURE,
-				&k);
 
-			if (!fResult || k == 0) {
-				cerr << "Error obtaining default user AT_SIGNATURE key from windows DSS provider\n";
-				exit(1);
-			};
-			winKeyDSA = new WinCAPICryptoKeyDSA(cp, k, true);
+				cerr << "Error acquiring Crypto context - Attempting to generate new key pair" << endl;
+				
+				// Attempt to gen a new keyset
+				if (!CryptAcquireContext(&win32DSSCSP,
+					NULL,
+					NULL,
+					PROV_DSS,
+					CRYPT_NEWKEYSET)) {
+						cerr << "Error acquiring DSS Crypto Service Provider with new keyset" << endl;
+						return 2;
+				}
+				else {
+					HCRYPTKEY k;
+					if (!CryptGenKey(win32DSSCSP, AT_SIGNATURE, CRYPT_EXPORTABLE, &k)) {
+						cerr << "Error generating DSS keyset" << endl;
+						return 2;
+					}
+					CryptDestroyKey(k);
+				}
+			}
+			
+			winKeyDSA = new WinCAPICryptoKeyDSA(win32DSSCSP, AT_SIGNATURE, true);
 			key = winKeyDSA;
 			paramCount++;
 		}
 
 		else if (stricmp(argv[paramCount], "--winrsa") == 0 || stricmp(argv[paramCount], "-wr") == 0) {
 			WinCAPICryptoProvider * cp;
-			// Obtain default PROV_DSS and PROV_RSA_FULL, with default user key containers
-			if (!CryptAcquireContext(&win32DSSCSP,
-				NULL,
-				NULL,
-				PROV_DSS,
-				0)) {
-					cerr << "Error acquiring DSS Crypto Service Provider" << endl;
-					return 2;
-			}
+			cp = new WinCAPICryptoProvider();
+			XSECPlatformUtils::SetCryptoProvider(cp);
 
 			if (!CryptAcquireContext(&win32RSACSP,
 				NULL,
 				NULL,
 				PROV_RSA_FULL,
 				0)) {
-					cerr << "Error acquiring RSA Crypto Service Provider" << endl;
-					return 2;
+
+				cerr << "Error acquiring Crypto context - Attempting to generate new RSA key pair" << endl;
+				
+				// Attempt to gen a new keyset
+				if (!CryptAcquireContext(&win32RSACSP,
+					NULL,
+					NULL,
+					PROV_RSA_FULL,
+					CRYPT_NEWKEYSET)) {
+						cerr << "Error acquiring RSA Crypto Service Provider with new keyset" << endl;
+						return 2;
+				}
+				else {
+					HCRYPTKEY k;
+					if (!CryptGenKey(win32RSACSP, AT_SIGNATURE, CRYPT_EXPORTABLE, &k)) {
+						cerr << "Error generating RSA keyset" << endl;
+						return 2;
+					}
+					CryptDestroyKey(k);
+				}
 			}
 
-			cp = new WinCAPICryptoProvider();
-			XSECPlatformUtils::SetCryptoProvider(cp);
-			
-			// Now get the key
-			HCRYPTKEY k;
-			BOOL fResult = CryptGetUserKey(
-				win32RSACSP,
-				AT_SIGNATURE,
-				&k);
-
-			if (!fResult || k == 0) {
-				cerr << "Error obtaining default user AT_SIGNATURE key from windows RSA provider\n";
-				exit(1);
-			};
-
-			winKeyRSA = new WinCAPICryptoKeyRSA(cp, k, true);
+			winKeyRSA = new WinCAPICryptoKeyRSA(win32RSACSP, AT_SIGNATURE, true);
 			key = winKeyRSA;
 			paramCount++;
 		}
@@ -895,11 +900,12 @@ int main(int argc, char **argv) {
 
 			WinCAPICryptoProvider * cp;
 			// Obtain default PROV_RSA, with default user key container
+			// Note we open in VERIFYCONTEXT as we do not require a assymetric key pair
 			if (!CryptAcquireContext(&win32RSACSP,
 				NULL,
 				NULL,
 				PROV_RSA_FULL,
-				0)) {
+				CRYPT_VERIFYCONTEXT)) {
 					cerr << "Error acquiring RSA Crypto Service Provider" << endl;
 					return 2;
 			}
@@ -946,8 +952,8 @@ int main(int argc, char **argv) {
 
 			// Wrap in a WinCAPI object
 			WinCAPICryptoKeyHMAC * hk;
-			hk = new WinCAPICryptoKeyHMAC();
-			hk->setWinKey(win32RSACSP, k); 
+			hk = new WinCAPICryptoKeyHMAC(win32RSACSP);
+			hk->setWinKey(k); 
 
 			key = hk;
 
