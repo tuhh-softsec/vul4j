@@ -27,6 +27,7 @@
     <property name="dir.build.junit.xml"  value="${dir.build.docs.xml}/junit" />
     <property name="dir.build.junit.html" value="${dir.build.docs.html}/junit" />
     <property name="dir.build.javadoc"    value="${dir.build.docs.html}/javadoc" />
+    <property name="dir.build.coverage"   value="${dir.build.docs.html}/coverage" />
 
     <!-- library properties -->
     <property name="lib.logging"        value="${dir.libs}/commons-logging.jar" />
@@ -38,7 +39,7 @@
     <property name="lib.jce"            value="${dir.libs}/${jce.provider.prefix}-${jce.provider.jar}" />
     <property name="lib.style"          value="${dir.libs}/style-apachexml.jar" />
     <property name="lib.stylebook"      value="${dir.libs}/stylebook-1.0-b3_xalan-2.jar" />
-    <!--property name="lib.junit"			value="${ant.home}/lib/junit.jar" /-->
+    <property name="lib.clover"			value="${dir.libs}/clover.jar" />
     
     <!-- javadoc properties -->
     <property name="javadoc.packages" value=" org.apache.xml.security.Init, org.apache.xml.security.algorithms, org.apache.xml.security.c14n, org.apache.xml.security.encryption, org.apache.xml.security.exceptions, org.apache.xml.security.keys, org.apache.xml.security.keys.content, org.apache.xml.security.keys.content.keyvalues, org.apache.xml.security.keys.content.x509, org.apache.xml.security.keys.keyresolver, org.apache.xml.security.keys.storage, org.apache.xml.security.signature, org.apache.xml.security.transforms, org.apache.xml.security.transforms.params, org.apache.xml.security.utils, org.apache.xml.security.utils.resolver "/>
@@ -47,6 +48,10 @@
 
 
 
+	<!-- T A S K D E F S -->
+	<taskdef resource="clovertasks"/>
+	
+	
 
     <!-- C O N D I T I O N A L    P R O P E R T I E S -->
     <target name="do.build.src" >
@@ -58,16 +63,16 @@
 
     <!-- P A T H S -->
     <path id="id.classpath.xalan" >
-        <pathelement path="${lib.xalan.1}" />
-        <pathelement path="${lib.xalan.2}" />
+        <pathelement location="${lib.xalan.1}" />
+        <pathelement location="${lib.xalan.2}" />
     </path >
     <path id="id.classpath.xerces" >
-        <pathelement path="${lib.xerces.1}" />
-        <pathelement path="${lib.xerces.2}" />
+        <pathelement location="${lib.xerces.1}" />
+        <pathelement location="${lib.xerces.2}" />
     </path >
     <path id="id.classpath.logging" >
-        <pathelement path="${lib.logging}" />
-        <pathelement path="${lib.logging.api}" />
+        <pathelement location="${lib.logging}" />
+        <pathelement location="${lib.logging.api}" />
     </path >
     <path id="id.classpath.common" >
         <path refid="id.classpath.xalan" />
@@ -75,7 +80,10 @@
         <path refid="id.classpath.logging" />
     </path >
     <path id="id.classpath.crypt" >
-        <pathelement path="${lib.jce}" />
+        <pathelement location="${lib.jce}" />
+    </path >
+    <path id="id.classpath.coverage" >
+    	<pathelement location="${lib.clover}" />
     </path >
     <path id="id.classpath.sig" >
     </path >
@@ -83,13 +91,14 @@
         <path refid="id.classpath.common" />
         <path refid="id.classpath.crypt" />
         <path refid="id.classpath.sig" />
+        <!--path refid="id.classpath.coverage" /-->
     </path >
     <path id="id.classpath.test" >
         <path refid="id.classpath" />
-        <pathelement path="${dir.build.bin}"/>
-        <!--pathelement path="${lib.junit}"/ -->
-        <pathelement path="${dir.build.test}"/>
-    </path >
+        <pathelement location="${dir.build.bin}" />
+        <pathelement location="${dir.build.test}" />
+        <path refid="id.classpath.coverage" />
+    </path>
 
 
 
@@ -110,6 +119,15 @@
     <!-- tear down -->
     <target name="env.rm.dirs" >
         <delete dir="${dir.build}" />
+    </target >
+    
+    <target name="with.clover" >
+    	<clover-setup initstring="clover-db/coverage.db" >
+    		<fileset dir="${dir.src}" >
+		  		<include name="**/*.java" />
+		  		<exclude name="**/*Exception.java" />
+			</fileset >
+     	</clover-setup >
     </target >
 
     <!-- check targets -->
@@ -246,7 +264,20 @@
           		<pathelement location="${dir.src}"/>
 	        </sourcepath>
     	</javadoc>
-    </target>    
+    </target>
+    
+	<target name="clover.report.html" depends="with.clover">
+		<clover-report>
+      		<current outfile="${dir.build.coverage}"
+      				 title="Apache XML-Security coverage">
+      			<fileset dir="${dir.src}">
+			  		<include name="**/*.java"/>
+			  		<exclude name="**/*Exception.java" />
+				</fileset>
+         		<format type="html"/> 
+      		</current>	 
+   		</clover-report>
+	</target>
 
     <!-- jars -->
     <target name="build.jar"
@@ -262,7 +293,7 @@
     </target >
 
     <!-- aliases -->
-    <target name="build.all"        depends="env.mk.dirs,build.src,build.docs,build.jar,build.arch" />
+    <target name="build.all"        depends="env.mk.dirs,build.src,build.docs,build.test,build.jar,build.arch" />
 
     <target name="compile"          depends="build.src" />
     <target name="docs"             depends="build.docs" />
@@ -270,6 +301,7 @@
     <target name="dist"             depends="build.dist" />
     <target name="clean"            depends="env.rm.dirs"/>
     <target name="gump"				depends="clean, docs, test"/>
+    <target name="clover"			depends="clean, with.clover, test, clover.report.html" />
 
     <!-- distribution targets -->
     <target name="build.dist"       depends="build.all" />
@@ -302,7 +334,10 @@
         <echo message="5.  creates distribution archives" />
     </target >
     <target name="help.test" >
-        <echo message="To be done..." />
+        <echo message="test			- runs all unit and interop tests" />
+        <echo message="test_exc_c14 - runs the exclusive c14 tests" />
+        <echo message="test_xenc	- does all encryption related tests" />
+        <echo message="clover		- generates clover coverage reports" />
     </target >
     <target name="help.config" >
         <echo message="1.  to configure the provider setings," />
