@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/Attic/Transformer.java,v 1.1 2003/06/24 15:16:59 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/Attic/Transformer.java,v 1.2 2003/06/24 15:49:58 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,8 +61,9 @@ package org.apache.commons.functor.generators;
  * Transformers are used to change a {@link Generator} into something else,
  * such as a {@link java.util.Collection}.
  *
+ * @since 1.0
+ * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:58 $
  * @author  Jason Horman (jason@jhorman.org)
- * @version $Id: Transformer.java,v 1.1 2003/06/24 15:16:59 rwaldhoff Exp $
  */
 
 public interface Transformer {

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsWithinRange.java,v 1.1 2003/06/24 15:17:01 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsWithinRange.java,v 1.2 2003/06/24 15:49:58 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,8 @@ import org.apache.commons.functor.UnaryPredicate;
  * A {@link UnaryPredicate} that tests whether a {@link Comparable} object is
  * within a range. The range is defined in the constructor.
  *
- * @version $Id: IsWithinRange.java,v 1.1 2003/06/24 15:17:01 rwaldhoff Exp $
+ * @since 1.0
+ * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:58 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 

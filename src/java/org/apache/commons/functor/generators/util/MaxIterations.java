@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/MaxIterations.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/MaxIterations.java,v 1.2 2003/06/24 15:49:57 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,8 +68,9 @@ import org.apache.commons.functor.UnaryPredicate;
  *
  * Would only "generate" 1 line from the file.
  *
+ * @since 1.0
+ * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:57 $
  * @author  Jason Horman (jason@jhorman.org)
- * @version $Id: MaxIterations.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
  */
 
 public class MaxIterations implements UnaryPredicate {

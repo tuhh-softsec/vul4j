@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/Attic/GeneratorException.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/Attic/GeneratorException.java,v 1.2 2003/06/24 15:49:58 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,8 +60,9 @@ package org.apache.commons.functor.generators;
 /**
  * Runtime exception thrown by Generators.
  *
+ * @since 1.0
+ * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:58 $
  * @author  Jason Horman (jason@jhorman.org)
- * @version $Id: GeneratorException.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
  */
 
 public class GeneratorException extends RuntimeException {

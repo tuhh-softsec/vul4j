@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/NumberRange.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/NumberRange.java,v 1.2 2003/06/24 15:49:57 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,8 +64,9 @@ import org.apache.commons.functor.generators.Generator;
  * Generator for a numeric range. If {@link #min} <= {@link #max} generation
  * will be forward, if {@link #min} > {@link #max} generation will be backward.
  *
+ * @since 1.0
+ * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:57 $
  * @author  Jason Horman (jason@jhorman.org)
- * @version $Id: NumberRange.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
  */
 
 public abstract class NumberRange extends Generator {

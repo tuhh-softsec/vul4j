@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/CollectionTransformer.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/CollectionTransformer.java,v 1.2 2003/06/24 15:49:58 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,8 +68,9 @@ import java.util.ArrayList;
  * Transforms a generator into a collection. If a collection is not passed into
  * the constructor an ArrayList will be returned from the transform method.
  *
+ * @since 1.0
+ * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:58 $
  * @author  Jason Horman (jason@jhorman.org)
- * @version $Id: CollectionTransformer.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
  */
 
 public class CollectionTransformer implements Transformer {
