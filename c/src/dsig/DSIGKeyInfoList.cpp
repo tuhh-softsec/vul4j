@@ -73,6 +73,7 @@
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
 #include <xsec/dsig/DSIGKeyInfoValue.hpp>
+#include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
@@ -205,6 +206,27 @@ bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
 
 		// Add
 		this->addKeyInfo(k);
+
+		return true;
+
+	}
+
+	if (strEquals(getDSIGLocalName(ki), "PGPData")) {
+
+		DSIGKeyInfoPGPData * p;
+
+		XSECnew(p, DSIGKeyInfoPGPData(mp_parentSignature, ki));
+		
+		try {
+			p->load();
+		}
+		catch (...) {
+			delete p;
+			throw;
+		}
+
+		// Add
+		this->addKeyInfo(p);
 
 		return true;
 

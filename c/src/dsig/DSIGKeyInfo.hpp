@@ -119,7 +119,10 @@ public:
 		KEYINFO_X509			= 2,			// X509 Certificate (with embedded key)
 		KEYINFO_VALUE_DSA		= 3,			// DSA Key
 		KEYINFO_VALUE_RSA		= 4,
-		KEYINFO_NAME			= 5				// A name of a key (application dependant)
+		KEYINFO_NAME			= 5,			// A name of a key (application dependant)
+		KEYINFO_PGPDATA			= 6,			// A PGP key
+		KEYINFO_SPKIDATA		= 7,
+		KEYINFO_MGMTDATA		= 8				// Management data
 
 	};
 

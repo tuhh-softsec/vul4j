@@ -88,6 +88,7 @@ class XSECKeyInfoResolver;
 class DSIGKeyInfoValue;
 class DSIGKeyInfoX509;
 class DSIGKeyInfoName;
+class DSIGKeyInfoPGPData;
 
 /**
  * @ingroup pubsig
@@ -624,6 +625,19 @@ public:
 	 */
 
 	DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false);
+
+	/**
+	 * \brief Append a PGPData element.
+	 *
+	 * Add a new KeyInfo element for a PGP key.
+	 *
+	 * @param id The ID of the key to set in the XML (base64 encoded - NULL if none)
+	 * @param packet The Packet information to set in the XML (base64 encoded -
+	 * NULL if none)
+	 * @returns A pointer to the created object
+	 */
+
+	DSIGKeyInfoPGPData * appendPGPData(const XMLCh * id, const XMLCh * packet);
 
 	//@}
 

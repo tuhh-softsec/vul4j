@@ -119,6 +119,7 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
+#include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
 
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
@@ -196,6 +197,24 @@ XMLCh s_tstDName[] = {
 	chNull
 
 };
+
+XMLCh s_tstPGPKeyID[] = {
+
+	chLatin_D, chLatin_u, chLatin_m, chLatin_m, chLatin_y, chSpace,
+	chLatin_P, chLatin_G, chLatin_P, chSpace,
+	chLatin_I, chLatin_D, chNull
+};
+
+XMLCh s_tstPGPKeyPacket[] = {
+
+	chLatin_D, chLatin_u, chLatin_m, chLatin_m, chLatin_y, chSpace,
+	chLatin_P, chLatin_G, chLatin_P, chSpace,
+	chLatin_P, chLatin_a, chLatin_c, chLatin_k, chLatin_e, chLatin_t, chNull
+};
+
+// --------------------------------------------------------------------------------
+//           Create a key
+// --------------------------------------------------------------------------------
 
 XSECCryptoKeyHMAC * createHMACKey(const unsigned char * str) {
 
@@ -397,6 +416,9 @@ count(ancestor-or-self::dsig:Signature)");
 		DSIGKeyInfoX509 * x509 = sig->appendX509Data();
 		x509->setX509SubjectName(s_tstDName);
 
+		// Append a test PGPData element
+		sig->appendPGPData(s_tstPGPKeyID, s_tstPGPKeyPacket);
+
 		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
 		sig->sign();
 
@@ -561,6 +583,21 @@ count(ancestor-or-self::dsig:Signature)");
 					cerr << "decoded incorrectly" << endl;;
 					exit (1);
 				}
+			}
+			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_PGPDATA) {
+				
+				cerr << "Validating PGPData read back OK ... ";
+
+				DSIGKeyInfoPGPData * p = (DSIGKeyInfoPGPData *)kil->item(i);
+
+				if (!(strEquals(p->getKeyID(), s_tstPGPKeyID) &&
+					strEquals(p->getKeyPacket(), s_tstPGPKeyPacket))) {
+
+					cerr << "no!";
+					exit(1);
+				}
+
+				cerr << "yes\n";
 			}
 		}
 	}
