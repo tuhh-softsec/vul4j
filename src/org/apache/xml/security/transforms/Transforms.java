@@ -109,6 +109,8 @@ public class Transforms extends SignatureElementProxy {
    public static final String TRANSFORM_ENVELOPED_SIGNATURE = Constants.SignatureSpecNS + "enveloped-signature";
    /** Transform - XPointer */
    public static final String TRANSFORM_XPOINTER = "http://www.w3.org/TR/2001/WD-xptr-20010108";
+   /** Transform - XPath Filter v2.0 */
+   public static final String TRANSFORM_XPATH2FILTER = "http://www.w3.org/2002/04/xmldsig-filter2";
    //J+
 
    /**

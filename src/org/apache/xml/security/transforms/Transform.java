@@ -77,15 +77,19 @@ import org.apache.xml.security.utils.*;
 /**
  * Implements the behaviour of the <code>ds:Transform</code> element.
  *
- * This <code>Transform</code>(Factory) class role as the Factory and Proxy of implemanting class that have the functionality of <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>a Transform algorithm</a>.
+ * This <code>Transform</code>(Factory) class role as the Factory and Proxy of
+ * implemanting class that have the functionality of <a
+ * href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>a Transform
+ * algorithm</a>.
  * Implements the Factory and Proxy pattern for ds:Transform algorithms.
+ *
  * @author Christian Geuer-Pollmann
  * @see Transforms
  * @see TransformSpi
  * @see c14.Canonicalizer
  *
  */
-public class Transform extends SignatureElementProxy {
+public final class Transform extends SignatureElementProxy {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
@@ -162,7 +166,6 @@ public class Transform extends SignatureElementProxy {
    }
 
    /**
-    *
     * This constructor can only be called from the {@link Transforms} object, so
     * it's protected.
     *
@@ -241,7 +244,9 @@ public class Transform extends SignatureElementProxy {
 
       HelperNodeList contextNodes = new HelperNodeList();
 
+      contextNodes.appendChild(doc.createTextNode("\n"));
       contextNodes.appendChild(contextChild);
+      contextNodes.appendChild(doc.createTextNode("\n"));
 
       return Transform.getInstance(doc, algorithmURI, contextNodes);
    }

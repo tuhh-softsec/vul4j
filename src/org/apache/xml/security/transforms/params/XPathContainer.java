@@ -62,6 +62,8 @@ package org.apache.xml.security.transforms.params;
 
 import org.w3c.dom.*;
 import org.apache.xml.security.utils.*;
+import org.apache.xml.security.transforms.TransformParam;
+import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.XPathAPI;
@@ -74,7 +76,7 @@ import org.apache.xpath.XPathAPI;
  *
  * @author Christian Geuer-Pollmann
  */
-public class XPathContainer extends SignatureElementProxy {
+public class XPathContainer extends SignatureElementProxy implements TransformParam {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
@@ -141,10 +143,6 @@ public class XPathContainer extends SignatureElementProxy {
     * Adds an xmlns: definition to the Element. This can be called as follows:
     *
     * <PRE>
-    * // set default namespace
-    * xpathContainer.setXPathNamespaceContext("", "http://www.w3.org/2000/09/xmldsig#");
-    * xpathContainer.setXPathNamespaceContext("xmlns", "http://www.w3.org/2000/09/xmldsig#");
-    *
     * // set namespace with ds prefix
     * xpathContainer.setXPathNamespaceContext("ds", "http://www.w3.org/2000/09/xmldsig#");
     * xpathContainer.setXPathNamespaceContext("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
@@ -152,20 +150,39 @@ public class XPathContainer extends SignatureElementProxy {
     *
     * @param prefix
     * @param uri
+    * @throws TransformationException
     */
-   public void setXPathNamespaceContext(String prefix, String uri) {
+   public void setXPathNamespaceContext(String prefix, String uri)
+           throws TransformationException {
 
-      if (prefix.length() == 0) {
-         this._constructionElement.setAttribute("xmlns", uri);
+      String ns;
+
+      if (prefix == null) {
+         ns = "xmlns";
+      } else if (prefix.length() == 0) {
+         ns = "xmlns";
       } else if (prefix.equals("xmlns")) {
-         this._constructionElement.setAttribute("xmlns", uri);
+         ns = "xmlns";
       } else if (prefix.startsWith("xmlns:")) {
-         String newPrefix = prefix.substring("xmlns:".length());
-
-         this._constructionElement.setAttribute("xmlns:" + newPrefix, uri);
+         ns = "xmlns:" + prefix.substring("xmlns:".length());
       } else {
-         this._constructionElement.setAttribute("xmlns:" + prefix, uri);
+         ns = "xmlns:" + prefix;
       }
+
+      if (ns.equals("xmlns")) {
+         throw new TransformationException("defaultNamespaceCannotBeSetHere");
+      }
+
+      Attr a = this._constructionElement.getAttributeNode(ns);
+
+
+      if ((a != null) && (!a.getNodeValue().equals(uri))) {
+          Object exArgs[] = { ns, this._constructionElement.getAttribute(ns)};
+
+         throw new TransformationException("namespacePrefixAlreadyUsedByOtherURI", exArgs);
+      }
+
+      this._constructionElement.setAttribute(ns, uri);
    }
 
    public String getBaseLocalName() {
