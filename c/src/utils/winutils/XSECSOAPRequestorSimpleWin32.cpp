@@ -214,7 +214,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     strcat(fBuffer, "\r\n");
 
 	// Now the content
-	strcat(fBuffer, content);
+//	strcat(fBuffer, content);
 
     // Send the http request
     int lent = (int) strlen(fBuffer);
@@ -227,6 +227,16 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 							"Error reported writing to socket");
     }
 
+	// Now the content
+    lent = (int) strlen(content);
+    aLent = 0;
+    if ((aLent = XSECBinHTTPURIInputStream::send((unsigned short) s, 
+		content, lent, 0)) != lent)
+    {
+        // Call WSAGetLastError() to get the error number.
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported writing to socket");
+    }
 
     //
     // get the response, check the http header for errors from the server.
@@ -354,6 +364,41 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 	/* Now find out how long the return is */
 
 	p = strstr(fBuffer, "Content-Length:");
+	int responseLength;
+
+	if (p == NULL) {
+		// Need to work it out from the amount of data returned
+		responseLength = -1;
+	}
+	else {
+
+		p = strchr(p, ' ');
+		p++;
+
+		responseLength = atoi(p);
+	}
+
+	safeBuffer responseBuffer;
+	lent = fBufferEnd - fBufferPos;
+	responseBuffer.sbMemcpyIn(fBufferPos, lent);
+
+	while (responseLength == -1 || lent < responseLength) {
+		aLent = XSECBinHTTPURIInputStream::recv((unsigned short)s, fBuffer, sizeof(fBuffer)-1, 0);
+		if (aLent > 0) {
+			responseBuffer.sbMemcpyIn(lent, fBuffer, aLent);
+			lent += aLent;
+		}
+		else {
+			responseLength = 0;
+		}
+	}
+
+	return parseAndUnwrap(responseBuffer.rawCharBuffer(), lent);
+
+
+# if 0
+
+	p = strstr(fBuffer, "Content-Length:");
 	if (p == NULL) {
         throw XSECException(XSECException::HTTPURIInputStreamError,
 							"Content-Length required in SOAP HTTP Response");
@@ -376,6 +421,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 	}
 	
     return parseAndUnwrap(responseBuffer, responseLength);
+#endif
 }
 
 
