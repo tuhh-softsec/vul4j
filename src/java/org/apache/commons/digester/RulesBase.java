@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.3 2001/08/26 22:13:44 craigmcc Exp $
- * $Revision: 1.3 $
- * $Date: 2001/08/26 22:13:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.4 2001/09/03 16:29:14 craigmcc Exp $
+ * $Revision: 1.4 $
+ * $Date: 2001/09/03 16:29:14 $
  *
  * ====================================================================
  *
@@ -86,7 +86,7 @@ import java.util.List;
  * </ul>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.3 $ $Date: 2001/08/26 22:13:44 $
+ * @version $Revision: 1.4 $ $Date: 2001/09/03 16:29:14 $
  */
 
 public class RulesBase implements Rules {
@@ -194,7 +194,8 @@ public class RulesBase implements Rules {
         }
         list.add(rule);
         rules.add(rule);
-        rule.setNamespaceURI(this.namespaceURI);
+        if (this.namespaceURI != null)
+            rule.setNamespaceURI(this.namespaceURI);
 
     }
 
