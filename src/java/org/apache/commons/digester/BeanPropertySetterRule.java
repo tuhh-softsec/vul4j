@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.6 2002/01/23 21:25:22 sanders Exp $
- * $Revision: 1.6 $
- * $Date: 2002/01/23 21:25:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.7 2002/01/23 22:38:01 sanders Exp $
+ * $Revision: 1.7 $
+ * $Date: 2002/01/23 22:38:01 $
  *
  * ====================================================================
  *
@@ -62,9 +62,9 @@
 
 package org.apache.commons.digester;
 
+
 import java.util.HashMap;
 
-import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.BeanUtils;
 
 
@@ -81,7 +81,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.6 $ $Date: 2002/01/23 21:25:22 $
+ * @version $Revision: 1.7 $ $Date: 2002/01/23 22:38:01 $
  */
 
 public class BeanPropertySetterRule extends Rule {
@@ -146,7 +146,7 @@ public class BeanPropertySetterRule extends Rule {
         // log some debugging information
         if (digester.log.isDebugEnabled()) {
             digester.log.debug("[BeanPropertySetterRule]{" +
-                digester.match + "} Called with text " + bodyText);
+                    digester.match + "} Called with text " + bodyText);
         }
 
         this.bodyText = bodyText.trim();
@@ -177,7 +177,7 @@ public class BeanPropertySetterRule extends Rule {
         // log some debugging information
         if (digester.log.isDebugEnabled()) {
             digester.log.debug("[BeanPropertySetterRule]{" + digester.match +
-                "} Setting property " + property + " with text " + bodyText);
+                    "} Setting property " + property + " with text " + bodyText);
         }
 
         // going to use beanutils so need to specify property using map
@@ -191,7 +191,7 @@ public class BeanPropertySetterRule extends Rule {
             // just log and return
             if (digester.log.isDebugEnabled()) {
                 digester.log.debug("[BeanPropertySetterRule]{" +
-                    digester.match + "} Top object is null.");
+                        digester.match + "} Top object is null.");
             }
             return;
         }

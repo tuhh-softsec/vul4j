@@ -58,16 +58,15 @@
 package org.apache.commons.digester;
 
 
-import java.lang.ClassLoader;
-
 import org.xml.sax.Attributes;
+
 
 /**
  * <p>Abstract base class for <code>ObjectCreationFactory</code>
  * implementations.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.3 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.4 $ $Date: 2002/01/23 22:38:01 $
  */
 abstract public class AbstractObjectCreationFactory implements ObjectCreationFactory {
 

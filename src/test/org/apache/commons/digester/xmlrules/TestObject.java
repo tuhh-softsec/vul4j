@@ -56,8 +56,11 @@
  */
 
 package org.apache.commons.digester.xmlrules;
+
+
 import java.util.ArrayList;
 import java.util.Iterator;
+
 
 /**
  * Test harness object for holding results of digestion.
@@ -77,7 +80,7 @@ public class TestObject {
 
     public String toString() {
         String str = value;
-        for (Iterator i = children.iterator(); i.hasNext(); ) {
+        for (Iterator i = children.iterator(); i.hasNext();) {
             str += " " + i.next();
         }
         return str;

@@ -60,10 +60,11 @@ package org.apache.commons.digester.xmlrules;
 
 
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
+
 import org.apache.commons.digester.Digester;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -120,7 +121,7 @@ public class DigesterLoaderTest extends TestCase {
         assertNotNull("The test could not locate testrules.xml", rules);
         assertNotNull("The test could not locate test.xml", input);
         Object root = DigesterLoader.load(rules, classLoader, input, new ArrayList());
-        if (! (root instanceof ArrayList)) {
+        if (!(root instanceof ArrayList)) {
             fail("Unexpected object returned from DigesterLoader. Expected ArrayList; got " + root.getClass().getName());
         }
         assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
@@ -134,7 +135,7 @@ public class DigesterLoaderTest extends TestCase {
         URL rules = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/testrules.xml");
         InputStream input = ClassLoader.getSystemResource("org/apache/commons/digester/xmlrules/test.xml").openStream();
         Object root = DigesterLoader.load(rules, getClass().getClassLoader(), input, new ArrayList());
-        if (! (root instanceof ArrayList)) {
+        if (!(root instanceof ArrayList)) {
             fail("Unexpected object returned from DigesterLoader. Expected ArrayList; got " + root.getClass().getName());
         }
         assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");

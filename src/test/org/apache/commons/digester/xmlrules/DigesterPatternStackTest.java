@@ -56,8 +56,11 @@
  */
 
 package org.apache.commons.digester.xmlrules;
+
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 
 /**
  * This test case tests the behavior of
@@ -68,6 +71,7 @@ import junit.framework.TestSuite;
  * formatted string.
  */
 public class DigesterPatternStackTest extends TestCase {
+
     public DigesterPatternStackTest(String testName) {
         super(testName);
     }

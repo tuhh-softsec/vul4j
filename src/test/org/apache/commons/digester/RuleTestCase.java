@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.8 2002/01/14 02:12:23 craigmcc Exp $
- * $Revision: 1.8 $
- * $Date: 2002/01/14 02:12:23 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.9 2002/01/23 22:38:01 sanders Exp $
+ * $Revision: 1.9 $
+ * $Date: 2002/01/23 22:38:01 $
  *
  * ====================================================================
  *
@@ -63,8 +63,9 @@
 package org.apache.commons.digester;
 
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -76,7 +77,7 @@ import junit.framework.TestSuite;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.8 $ $Date: 2002/01/14 02:12:23 $
+ * @version $Revision: 1.9 $ $Date: 2002/01/23 22:38:01 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -152,7 +153,7 @@ public class RuleTestCase extends TestCase {
 
         // Configure the digester as required
         digester.addObjectCreate("employee",
-                                 "org.apache.commons.digester.Employee");
+                "org.apache.commons.digester.Employee");
         digester.addSetProperties("employee");
 
         // Parse our test input.
@@ -164,14 +165,14 @@ public class RuleTestCase extends TestCase {
         }
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
-                   root instanceof Employee);
+                root instanceof Employee);
         Employee employee = (Employee) root;
         assertEquals("First name is correct",
-                     "First Name",
-                     employee.getFirstName());
+                "First Name",
+                employee.getFirstName());
         assertEquals("Last name is correct",
-                     "Last Name",
-                     employee.getLastName());
+                "Last Name",
+                employee.getLastName());
 
 
     }
@@ -189,7 +190,7 @@ public class RuleTestCase extends TestCase {
         digester.addObjectCreate("employee", Employee.class);
         digester.addSetProperties("employee");
         digester.addObjectCreate("employee/address",
-                                 "org.apache.commons.digester.Address");
+                "org.apache.commons.digester.Address");
         digester.addSetProperties("employee/address");
 
         // Parse our test input.
@@ -201,14 +202,14 @@ public class RuleTestCase extends TestCase {
         }
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
-                   root instanceof Employee);
+                root instanceof Employee);
         Employee employee = (Employee) root;
         assertEquals("First name is correct",
-                     "First Name",
-                     employee.getFirstName());
+                "First Name",
+                employee.getFirstName());
         assertEquals("Last name is correct",
-                     "Last Name",
-                     employee.getLastName());
+                "Last Name",
+                employee.getLastName());
 
 
     }
@@ -226,10 +227,10 @@ public class RuleTestCase extends TestCase {
         digester.addObjectCreate("employee", Employee.class);
         digester.addSetProperties("employee");
         digester.addObjectCreate("employee/address",
-                                 "org.apache.commons.digester.Address");
+                "org.apache.commons.digester.Address");
         digester.addSetProperties("employee/address");
         digester.addSetNext("employee/address",
-                            "addAddress");
+                "addAddress");
 
         // Parse our test input once
         Object root = null;
@@ -260,10 +261,10 @@ public class RuleTestCase extends TestCase {
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
         digester.addCallMethod("employee",
-                               "setFirstName", 1);
+                "setFirstName", 1);
         digester.addCallParam("employee", 0, "firstName");
         digester.addCallMethod("employee",
-                               "setLastName", 1);
+                "setLastName", 1);
         digester.addCallParam("employee", 0, "lastName");
 
 
@@ -276,14 +277,14 @@ public class RuleTestCase extends TestCase {
         }
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
-                   root instanceof Employee);
+                root instanceof Employee);
         Employee employee = (Employee) root;
         assertEquals("First name is correct",
-                     "First Name",
-                     employee.getFirstName());
+                "First Name",
+                employee.getFirstName());
         assertEquals("Last name is correct",
-                     "Last Name",
-                     employee.getLastName());
+                "Last Name",
+                employee.getLastName());
 
 
     }
@@ -299,10 +300,10 @@ public class RuleTestCase extends TestCase {
         digester.addObjectCreate("employee", Employee.class);
         digester.addSetProperties("employee");
         digester.addObjectCreate("employee/address",
-                                 "org.apache.commons.digester.Address");
+                "org.apache.commons.digester.Address");
         digester.addSetProperties("employee/address");
         digester.addSetNext("employee/address",
-                            "addAddress");
+                "addAddress");
 
         // Parse our test input the first time
         Object root1 = null;
@@ -324,7 +325,7 @@ public class RuleTestCase extends TestCase {
 
         // Make sure that it was a different root
         assertTrue("Different tree instances were returned",
-                   root1 != root2);
+                root1 != root2);
 
     }
 
@@ -351,18 +352,18 @@ public class RuleTestCase extends TestCase {
 
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
-                   root instanceof Employee);
+                root instanceof Employee);
         Employee employee = (Employee) root;
         assertEquals("First name is correct",
-                     "First Name",
-                     employee.getFirstName());
+                "First Name",
+                employee.getFirstName());
         assertEquals("Last name is correct",
-                     "Last Name",
-                     employee.getLastName());
+                "Last Name",
+                employee.getLastName());
         assertNotNull("Can retrieve home address",
-                      employee.getAddress("home"));
+                employee.getAddress("home"));
         assertNotNull("Can retrieve office address",
-                      employee.getAddress("office"));
+                employee.getAddress("office"));
 
     }
 
@@ -375,7 +376,7 @@ public class RuleTestCase extends TestCase {
         // Configure the digester as required
         digester.setNamespaceAware(true);
         RuleSet rs = new TestRuleSet(null,
-                                     "http://jakarta.apache.org/digester/Foo");
+                "http://jakarta.apache.org/digester/Foo");
         digester.addRuleSet(rs);
 
         // Parse our test input.
@@ -388,18 +389,18 @@ public class RuleTestCase extends TestCase {
 
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
-                   root instanceof Employee);
+                root instanceof Employee);
         Employee employee = (Employee) root;
         assertEquals("First name is correct",
-                     "First Name",
-                     employee.getFirstName());
+                "First Name",
+                employee.getFirstName());
         assertEquals("Last name is correct",
-                     "Last Name",
-                     employee.getLastName());
+                "Last Name",
+                employee.getLastName());
         assertNotNull("Can retrieve home address",
-                      employee.getAddress("home"));
+                employee.getAddress("home"));
         assertNotNull("Can retrieve office address",
-                      employee.getAddress("office"));
+                employee.getAddress("office"));
 
     }
 
@@ -414,7 +415,7 @@ public class RuleTestCase extends TestCase {
         // Configure the digester as required
         digester.setNamespaceAware(true);
         RuleSet rs = new TestRuleSet(null,
-                                     "http://jakarta.apache.org/digester/Foo");
+                "http://jakarta.apache.org/digester/Foo");
         digester.addRuleSet(rs);
 
         // Parse our test input.
@@ -427,18 +428,18 @@ public class RuleTestCase extends TestCase {
 
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
-                   root instanceof Employee);
+                root instanceof Employee);
         Employee employee = (Employee) root;
         assertEquals("First name is correct",
-                     "First Name",
-                     employee.getFirstName());
+                "First Name",
+                employee.getFirstName());
         assertEquals("Last name is correct",
-                     "Last Name",
-                     employee.getLastName());
+                "Last Name",
+                employee.getLastName());
         assertNull("Can not retrieve home address",
-                   employee.getAddress("home"));
+                employee.getAddress("home"));
         assertNull("Can not retrieve office address",
-                   employee.getAddress("office"));
+                employee.getAddress("office"));
 
     }
 
@@ -457,10 +458,10 @@ public class RuleTestCase extends TestCase {
 
         // Configure the digester as required
         digester.addObjectCreate("employee",
-                                 "org.apache.commons.digester.Employee");
+                "org.apache.commons.digester.Employee");
         digester.addSetProperties("employee");
         digester.addObjectCreate("employee/address",
-                                 "org.apache.commons.digester.Address");
+                "org.apache.commons.digester.Address");
         digester.addSetProperties("employee/address");
         digester.addSetTop("employee/address", "setEmployee");
 
@@ -484,13 +485,13 @@ public class RuleTestCase extends TestCase {
 
         // Configure the digester as required
         digester.addObjectCreate("employee",
-                                 "org.apache.commons.digester.Employee");
+                "org.apache.commons.digester.Employee");
         digester.addSetProperties("employee");
         digester.addObjectCreate("employee/address",
-                                 "org.apache.commons.digester.Address");
+                "org.apache.commons.digester.Address");
         digester.addSetProperties("employee/address");
         digester.addSetTop("employee/address", "setEmployee",
-                           "org.apache.commons.digester.Employee");
+                "org.apache.commons.digester.Employee");
 
         // Parse our test input.
         Object root = null;
@@ -533,38 +534,38 @@ public class RuleTestCase extends TestCase {
         // Validate the retrieved Employee
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
-                   root instanceof Employee);
+                root instanceof Employee);
         Employee employee = (Employee) root;
         assertEquals("First name is correct",
-                     "First Name",
-                     employee.getFirstName());
+                "First Name",
+                employee.getFirstName());
         assertEquals("Last name is correct",
-                     "Last Name",
-                     employee.getLastName());
+                "Last Name",
+                employee.getLastName());
 
         // Validate the corresponding "home" Address
         Address home = employee.getAddress("home");
         assertNotNull("Retrieved home address", home);
         assertEquals("Home street", "Home Street",
-                     home.getStreet());
+                home.getStreet());
         assertEquals("Home city", "Home City",
-                     home.getCity());
+                home.getCity());
         assertEquals("Home state", "HS",
-                     home.getState());
+                home.getState());
         assertEquals("Home zip", "HmZip",
-                     home.getZipCode());
+                home.getZipCode());
 
         // Validate the corresponding "office" Address
         Address office = employee.getAddress("office");
         assertNotNull("Retrieved office address", office);
         assertEquals("Office street", "Office Street",
-                     office.getStreet());
+                office.getStreet());
         assertEquals("Office city", "Office City",
-                     office.getCity());
+                office.getCity());
         assertEquals("Office state", "OS",
-                     office.getState());
+                office.getState());
         assertEquals("Office zip", "OfZip",
-                     office.getZipCode());
+                office.getZipCode());
 
     }
 

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/Employee.java,v 1.2 2002/01/09 20:22:50 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2002/01/09 20:22:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/Employee.java,v 1.3 2002/01/23 22:38:01 sanders Exp $
+ * $Revision: 1.3 $
+ * $Date: 2002/01/23 22:38:01 $
  *
  * ====================================================================
  *
@@ -61,8 +61,10 @@
 
 package org.apache.commons.digester;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
+
 
 /**
  * Bean for Digester testing.
@@ -81,9 +83,11 @@ public class Employee {
     }
 
     private ArrayList addresses = new ArrayList();
+
     public void addAddress(Address address) {
         addresses.add(address);
     }
+
     public Address getAddress(String type) {
         Iterator elements = addresses.iterator();
         while (elements.hasNext()) {
@@ -93,22 +97,27 @@ public class Employee {
         }
         return (null);
     }
+
     public void removeAddress(Address address) {
         addresses.remove(address);
     }
 
     private String firstName = null;
+
     public String getFirstName() {
         return (this.firstName);
     }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
     private String lastName = null;
+
     public String getLastName() {
         return (this.lastName);
     }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }

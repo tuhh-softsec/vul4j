@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/Address.java,v 1.3 2002/01/14 02:12:23 craigmcc Exp $
- * $Revision: 1.3 $
- * $Date: 2002/01/14 02:12:23 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/Address.java,v 1.4 2002/01/23 22:38:01 sanders Exp $
+ * $Revision: 1.4 $
+ * $Date: 2002/01/23 22:38:01 $
  *
  * ====================================================================
  *
@@ -82,41 +82,51 @@ public class Address {
     }
 
     private String city = null;
+
     public String getCity() {
         return (this.city);
     }
+
     public void setCity(String city) {
         this.city = city;
     }
 
     private String state = null;
+
     public String getState() {
         return (this.state);
     }
+
     public void setState(String state) {
         this.state = state;
     }
 
     private String street = null;
+
     public String getStreet() {
         return (this.street);
     }
+
     public void setStreet(String street) {
         this.street = street;
     }
 
     private String type = null;
+
     public String getType() {
         return (this.type);
     }
+
     public void setType(String type) {
         this.type = type;
     }
 
     private String zipCode = null;
+
     public String getZipCode() {
         return (this.zipCode);
     }
+
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }

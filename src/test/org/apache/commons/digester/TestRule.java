@@ -60,6 +60,7 @@ package org.apache.commons.digester;
 
 
 import java.util.List;
+
 import org.xml.sax.Attributes;
 
 
@@ -69,7 +70,7 @@ import org.xml.sax.Attributes;
  * at the identifier.</p>
  *
  * @author Robert Burrell Donkin
- * @revision $Revision: 1.5 $ $Date: 2002/01/09 20:22:50 $
+ * @revision $Revision: 1.6 $ $Date: 2002/01/23 22:38:01 $
  */
 
 public class TestRule extends Rule {
@@ -98,8 +99,8 @@ public class TestRule extends Rule {
      */
     public TestRule(Digester digester, String identifier) {
 
-	super(digester);
-        this.identifier=identifier;
+        super(digester);
+        this.identifier = identifier;
     }
 
 

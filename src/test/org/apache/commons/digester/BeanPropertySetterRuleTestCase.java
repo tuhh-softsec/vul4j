@@ -59,15 +59,15 @@
 package org.apache.commons.digester;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.StringBufferInputStream;
-import java.io.InputStream;
-import java.io.IOException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.commons.logging.SimpleLog;
 
 
 /**
@@ -84,7 +84,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
      * Simple test xml document used in the tests.
      */
     protected final static String TEST_XML =
-        "<?xml version='1.0'?><root>ROOT BODY<alpha>ALPHA BODY</alpha><beta>BETA BODY</beta><gamma>GAMMA BODY</gamma></root>";
+            "<?xml version='1.0'?><root>ROOT BODY<alpha>ALPHA BODY</alpha><beta>BETA BODY</beta><gamma>GAMMA BODY</gamma></root>";
 
 
     /**
@@ -157,19 +157,19 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         digester.setRules(new RulesBase());
 
         // add first test rule
-        TestRule firstRule=new TestRule(digester,"first");
+        TestRule firstRule = new TestRule(digester, "first");
         firstRule.setOrder(callOrder);
-        digester.addRule("root/alpha",firstRule);
+        digester.addRule("root/alpha", firstRule);
 
         // add second test rule
-        TestRule secondRule=new TestRule(digester,"second");
+        TestRule secondRule = new TestRule(digester, "second");
         secondRule.setOrder(callOrder);
-        digester.addRule("root/alpha",secondRule);
+        digester.addRule("root/alpha", secondRule);
 
         // add third test rule
-        TestRule thirdRule=new TestRule(digester,"third");
+        TestRule thirdRule = new TestRule(digester, "third");
         thirdRule.setOrder(callOrder);
-        digester.addRule("root/alpha",thirdRule);
+        digester.addRule("root/alpha", thirdRule);
 
 
         try {
@@ -181,58 +181,58 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
 
         // we should have nine entries in our list of calls
 
-         assertEquals(
-                    "Nine calls should have been made.",
-                    9,
-                    callOrder.size());
+        assertEquals(
+                "Nine calls should have been made.",
+                9,
+                callOrder.size());
 
         // begin should be called in the order added
         assertEquals(
-                    "First rule begin not called first.",
-                    "first",
-                    ((TestRule)callOrder.get(0)).getIdentifier());
+                "First rule begin not called first.",
+                "first",
+                ((TestRule) callOrder.get(0)).getIdentifier());
 
         assertEquals(
-                    "Second rule begin not called second.",
-                    "second",
-                    ((TestRule)callOrder.get(1)).getIdentifier());
+                "Second rule begin not called second.",
+                "second",
+                ((TestRule) callOrder.get(1)).getIdentifier());
 
         assertEquals(
-                    "Third rule begin not called third.",
-                    "third",
-                    ((TestRule)callOrder.get(2)).getIdentifier());
+                "Third rule begin not called third.",
+                "third",
+                ((TestRule) callOrder.get(2)).getIdentifier());
 
-         // body text should be called in the order added
+        // body text should be called in the order added
         assertEquals(
-                    "First rule body text not called first.",
-                    "first",
-                    ((TestRule)callOrder.get(3)).getIdentifier());
-
-        assertEquals(
-                    "Second rule body text not called second.",
-                    "second",
-                    ((TestRule)callOrder.get(4)).getIdentifier());
+                "First rule body text not called first.",
+                "first",
+                ((TestRule) callOrder.get(3)).getIdentifier());
 
         assertEquals(
-                    "Third rule body text not called third.",
-                    "third",
-                    ((TestRule)callOrder.get(5)).getIdentifier());
-
-         // end should be called in reverse order
-        assertEquals(
-                    "Third rule end not called first.",
-                    "third",
-                    ((TestRule)callOrder.get(6)).getIdentifier());
+                "Second rule body text not called second.",
+                "second",
+                ((TestRule) callOrder.get(4)).getIdentifier());
 
         assertEquals(
-                    "Second rule end not called second.",
-                    "second",
-                    ((TestRule)callOrder.get(7)).getIdentifier());
+                "Third rule body text not called third.",
+                "third",
+                ((TestRule) callOrder.get(5)).getIdentifier());
+
+        // end should be called in reverse order
+        assertEquals(
+                "Third rule end not called first.",
+                "third",
+                ((TestRule) callOrder.get(6)).getIdentifier());
 
         assertEquals(
-                    "First rule end not called third.",
-                    "first",
-                    ((TestRule)callOrder.get(8)).getIdentifier());
+                "Second rule end not called second.",
+                "second",
+                ((TestRule) callOrder.get(7)).getIdentifier());
+
+        assertEquals(
+                "First rule end not called third.",
+                "first",
+                ((TestRule) callOrder.get(8)).getIdentifier());
 
 
     }
@@ -248,20 +248,20 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         digester.setRules(new RulesBase());
 
         // add test rule to catch body text
-        TestRule rootRule=new TestRule(digester,"root");
-        digester.addRule("root",rootRule);
+        TestRule rootRule = new TestRule(digester, "root");
+        digester.addRule("root", rootRule);
 
         // add test rule to catch body text
-        TestRule alphaRule=new TestRule(digester,"root/alpha");
-        digester.addRule("root/alpha",alphaRule);
+        TestRule alphaRule = new TestRule(digester, "root/alpha");
+        digester.addRule("root/alpha", alphaRule);
 
         // add test rule to catch body text
-        TestRule betaRule=new TestRule(digester,"root/beta");
-        digester.addRule("root/beta",betaRule);
+        TestRule betaRule = new TestRule(digester, "root/beta");
+        digester.addRule("root/beta", betaRule);
 
         // add test rule to catch body text
-        TestRule gammaRule=new TestRule(digester,"root/gamma");
-        digester.addRule("root/gamma",gammaRule);
+        TestRule gammaRule = new TestRule(digester, "root/gamma");
+        digester.addRule("root/gamma", gammaRule);
 
         try {
             digester.parse(xmlTestStream());
@@ -271,24 +271,24 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         }
 
         assertEquals(
-                    "Root body text not set correct.",
-                    "ROOT BODY",
-                    rootRule.getBodyText());
+                "Root body text not set correct.",
+                "ROOT BODY",
+                rootRule.getBodyText());
 
         assertEquals(
-                    "Alpha body text not set correct.",
-                    "ALPHA BODY",
-                    alphaRule.getBodyText());
+                "Alpha body text not set correct.",
+                "ALPHA BODY",
+                alphaRule.getBodyText());
 
         assertEquals(
-                    "Beta body text not set correct.",
-                    "BETA BODY",
-                    betaRule.getBodyText());
+                "Beta body text not set correct.",
+                "BETA BODY",
+                betaRule.getBodyText());
 
         assertEquals(
-                    "Gamma body text not set correct.",
-                    "GAMMA BODY",
-                    gammaRule.getBodyText());
+                "Gamma body text not set correct.",
+                "GAMMA BODY",
+                gammaRule.getBodyText());
 
     }
 
@@ -302,13 +302,13 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         digester.setRules(new RulesBase());
 
         // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate("root","org.apache.commons.digester.SimpleTestBean");
+        digester.addObjectCreate("root", "org.apache.commons.digester.SimpleTestBean");
 
         // we'll set property alpha with the body text of root
-        digester.addRule("root",new BeanPropertySetterRule(digester,"alpha"));
+        digester.addRule("root", new BeanPropertySetterRule(digester, "alpha"));
 
         // we'll set property beta with the body text of child element alpha
-        digester.addRule("root/alpha",new BeanPropertySetterRule(digester,"beta"));
+        digester.addRule("root/alpha", new BeanPropertySetterRule(digester, "beta"));
 
         // we'll leave property gamma alone
 
@@ -325,18 +325,18 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
 
         // check properties are set correctly
         assertEquals(
-                    "Property alpha not set correctly",
-                    "ROOT BODY",
-                    bean.getAlpha());
+                "Property alpha not set correctly",
+                "ROOT BODY",
+                bean.getAlpha());
 
         assertEquals(
-                    "Property beta not set correctly",
-                    "ALPHA BODY",
-                    bean.getBeta());
+                "Property beta not set correctly",
+                "ALPHA BODY",
+                bean.getBeta());
 
         assertTrue(
-                    "Property gamma not set correctly",
-                    bean.getGamma()==null);
+                "Property gamma not set correctly",
+                bean.getGamma() == null);
 
     }
 
@@ -349,10 +349,10 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         digester.setRules(new ExtendedBaseRules());
 
         // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate("root","org.apache.commons.digester.SimpleTestBean");
+        digester.addObjectCreate("root", "org.apache.commons.digester.SimpleTestBean");
 
         // match all children of root with this rule
-        digester.addRule("root/?",new BeanPropertySetterRule(digester));
+        digester.addRule("root/?", new BeanPropertySetterRule(digester));
 
         SimpleTestBean bean = null;
         try {
@@ -365,20 +365,19 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
 
         // check properties are set correctly
         assertEquals(
-                    "Property alpha not set correctly",
-                    "ALPHA BODY",
-                    bean.getAlpha());
+                "Property alpha not set correctly",
+                "ALPHA BODY",
+                bean.getAlpha());
 
         assertEquals(
-                    "Property beta not set correctly",
-                    "BETA BODY",
-                    bean.getBeta());
+                "Property beta not set correctly",
+                "BETA BODY",
+                bean.getBeta());
 
         assertEquals(
-                    "Property gamma not set correctly",
-                    "GAMMA BODY",
-                    bean.getGamma());
-
+                "Property gamma not set correctly",
+                "GAMMA BODY",
+                bean.getGamma());
 
 
     }
@@ -386,8 +385,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
     /**
      * Get input stream from {@link #TEST_XML}.
      */
-    private InputStream xmlTestStream() throws IOException
-    {
+    private InputStream xmlTestStream() throws IOException {
         return new StringBufferInputStream(TEST_XML);
     }
 

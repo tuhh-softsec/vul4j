@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.8 2002/01/09 20:22:50 sanders Exp $
- * $Revision: 1.8 $
- * $Date: 2002/01/09 20:22:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.9 2002/01/23 22:38:01 sanders Exp $
+ * $Revision: 1.9 $
+ * $Date: 2002/01/23 22:38:01 $
  *
  * ====================================================================
  *
@@ -63,18 +63,15 @@
 package org.apache.commons.digester;
 
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.xml.sax.ErrorHandler;
-
 
 
 /**
@@ -83,7 +80,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.8 $ $Date: 2002/01/09 20:22:50 $
+ * @version $Revision: 1.9 $ $Date: 2002/01/23 22:38:01 $
  */
 
 public class DigesterTestCase extends TestCase {
@@ -170,31 +167,31 @@ public class DigesterTestCase extends TestCase {
     public void testProperties() {
 
         assertNull("Initial error handler is null",
-                   digester.getErrorHandler());
+                digester.getErrorHandler());
         digester.setErrorHandler((ErrorHandler) digester);
         assertTrue("Set error handler is digester",
-               digester.getErrorHandler() == digester);
+                digester.getErrorHandler() == digester);
         digester.setErrorHandler(null);
         assertNull("Reset error handler is null",
-                   digester.getErrorHandler());
+                digester.getErrorHandler());
 
         assertTrue("Initial namespace aware is false",
-               !digester.getNamespaceAware());
+                !digester.getNamespaceAware());
         digester.setNamespaceAware(true);
         assertTrue("Set namespace aware is true",
-               digester.getNamespaceAware());
+                digester.getNamespaceAware());
         digester.setNamespaceAware(false);
         assertTrue("Reset namespace aware is false",
-               !digester.getNamespaceAware());
+                !digester.getNamespaceAware());
 
         assertTrue("Initial validating is false",
-               !digester.getValidating());
+                !digester.getValidating());
         digester.setValidating(true);
         assertTrue("Set validating is true",
-               digester.getValidating());
+                digester.getValidating());
         digester.setValidating(false);
         assertTrue("Reset validating is false",
-               !digester.getValidating());
+                !digester.getValidating());
 
     }
 
@@ -224,18 +221,17 @@ public class DigesterTestCase extends TestCase {
         while (keys.hasNext()) {
             String key = (String) keys.next();
             for (int i = 0; i < n; i++) {
-                if (key.equals(registrations[i*2])) {
+                if (key.equals(registrations[i * 2])) {
                     count[i]++;
                     break;
                 }
             }
         }
         for (int i = 0; i < n; i++)
-            assertEquals("Count for key " + registrations[i*2],
-                         1, count[i]);
+            assertEquals("Count for key " + registrations[i * 2],
+                    1, count[i]);
 
     }
-
 
 
     /**
@@ -246,19 +242,19 @@ public class DigesterTestCase extends TestCase {
         List list = null;
 
         assertEquals("Initial rules list is empty",
-                     0, digester.getRules().match(null, "a").size());
+                0, digester.getRules().match(null, "a").size());
         digester.addSetProperties("a");
         assertEquals("Add a matching rule",
-                     1, digester.getRules().match(null, "a").size());
+                1, digester.getRules().match(null, "a").size());
         digester.addSetProperties("b");
         assertEquals("Add a non-matching rule",
-                     1, digester.getRules().match(null, "a").size());
+                1, digester.getRules().match(null, "a").size());
         digester.addSetProperties("a/b");
         assertEquals("Add a non-matching nested rule",
-                     1, digester.getRules().match(null, "a").size());
+                1, digester.getRules().match(null, "a").size());
         digester.addSetProperties("a/b");
         assertEquals("Add a second matching rule",
-                     2, digester.getRules().match(null, "a/b").size());
+                2, digester.getRules().match(null, "a/b").size());
 
     }
 
@@ -276,7 +272,7 @@ public class DigesterTestCase extends TestCase {
     public void testRulesBase() {
 
         assertEquals("Initial rules list is empty",
-                     0, digester.getRules().rules().size());
+                0, digester.getRules().rules().size());
 
         // We're going to set up
         digester.addRule("a/b/c/d", new TestRule(digester, "a/b/c/d"));
@@ -285,24 +281,24 @@ public class DigesterTestCase extends TestCase {
 
         // Test exact match
         assertEquals("Exact match takes precedence 1",
-                     1, digester.getRules().match(null, "a/b/c/d").size());
+                1, digester.getRules().match(null, "a/b/c/d").size());
         assertEquals("Exact match takes precedence 2",
-                     "a/b/c/d",
-                     ((TestRule) digester.getRules().match(null, "a/b/c/d").iterator().next()).getIdentifier());
+                "a/b/c/d",
+                ((TestRule) digester.getRules().match(null, "a/b/c/d").iterator().next()).getIdentifier());
 
         // Test wildcard tail matching
         assertEquals("Wildcard tail matching rule 1",
-                     1, digester.getRules().match(null, "a/b/d").size());
+                1, digester.getRules().match(null, "a/b/d").size());
         assertEquals("Wildcard tail matching rule 2",
-                     "*/d",
-                     ((TestRule) digester.getRules().match(null, "a/b/d").iterator().next()).getIdentifier());
+                "*/d",
+                ((TestRule) digester.getRules().match(null, "a/b/d").iterator().next()).getIdentifier());
 
         // Test the longest matching pattern rule
         assertEquals("Longest tail rule 1",
-                     1, digester.getRules().match(null, "x/c/d").size());
+                1, digester.getRules().match(null, "x/c/d").size());
         assertEquals("Longest tail rule 2",
-                     "*/c/d",
-                     ((TestRule) digester.getRules().match(null, "x/c/d").iterator().next()).getIdentifier());
+                "*/c/d",
+                ((TestRule) digester.getRules().match(null, "x/c/d").iterator().next()).getIdentifier());
 
     }
 

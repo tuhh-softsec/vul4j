@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestBean.java,v 1.2 2002/01/09 20:22:50 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2002/01/09 20:22:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestBean.java,v 1.3 2002/01/23 22:38:01 sanders Exp $
+ * $Revision: 1.3 $
+ * $Date: 2002/01/23 22:38:01 $
  *
  * ====================================================================
  *
@@ -67,7 +67,7 @@ package org.apache.commons.digester;
  * General purpose test bean for Digester tests.
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.2 $ $Date: 2002/01/09 20:22:50 $
+ * @version $Revision: 1.3 $ $Date: 2002/01/23 22:38:01 $
  */
 
 public class TestBean {
@@ -198,7 +198,7 @@ public class TestBean {
      * A multiple-String SELECT element.
      */
     private String[] multipleSelect = { "Multiple 3", "Multiple 5",
-                                        "Multiple 7" };
+        "Multiple 7" };
 
     public String[] getMultipleSelect() {
         return (this.multipleSelect);
@@ -267,7 +267,7 @@ public class TestBean {
      * String arrays that are accessed as an array as well as indexed.
      */
     private String stringArray[] =
-    { "String 0", "String 1", "String 2", "String 3", "String 4" };
+            { "String 0", "String 1", "String 2", "String 3", "String 4" };
 
     public String[] getStringArray() {
         return (this.stringArray);
@@ -278,7 +278,7 @@ public class TestBean {
     }
 
     private String stringIndexed[] =
-    { "String 0", "String 1", "String 2", "String 3", "String 4" };
+            { "String 0", "String 1", "String 2", "String 3", "String 4" };
 
     public String getStringIndexed(int index) {
         return (stringIndexed[index]);
