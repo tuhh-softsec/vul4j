@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.3 2003/12/01 08:27:54 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.4 2003/12/01 16:40:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,13 +65,12 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.Function;
 import org.apache.commons.functor.generator.util.IntegerRange;
-import org.apache.commons.functor.util.BinarySearch;
 
 /**
  * See http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/12/01 08:27:54 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/01 16:40:11 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryChop extends TestCase {
@@ -194,7 +193,7 @@ public class TestBinaryChop extends TestCase {
                 }
             });    
     }    
-    public void testExplicitTailRecursive() {
+    public void testTailRecursive() {
         chopTest(
             new BaseBinaryChop() {
                 public int find(final Object seeking, final List list) { 
@@ -223,15 +222,5 @@ public class TestBinaryChop extends TestCase {
                         })).intValue();
                 }                   
             });    
-    }
-    
-    public void testImplicitTailRecursive() {
-        chopTest(
-            new BaseBinaryChop() {
-                public int find(Object seeking, List list) { 
-                    return BinarySearch.execute(list,(Comparable)seeking);
-                }                   
-            });    
-    }
-    
+    }    
 }
