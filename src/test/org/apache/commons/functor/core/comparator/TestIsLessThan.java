@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestAll.java,v 1.3 2003/03/04 16:51:46 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsLessThan.java,v 1.1 2003/03/04 16:51:46 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,30 +57,68 @@
 package org.apache.commons.functor.core.comparator;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.core.ConstantPredicate;
+
 /**
- * @version $Revision: 1.3 $ $Date: 2003/03/04 16:51:46 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 16:51:46 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestIsLessThan extends BaseComparisonPredicateTest {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestIsLessThan(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTest(TestComparableComparator.suite());
-        suite.addTest(TestComparatorFunction.suite());        
-        suite.addTest(TestIsLessThan.suite());
-        suite.addTest(TestIsLessThanOrEqual.suite());
-        suite.addTest(TestIsEquivalent.suite());
-        suite.addTest(TestIsGreaterThan.suite());
-        suite.addTest(TestIsGreaterThanOrEqual.suite());
-        suite.addTest(TestIsNotEquivalent.suite());
-            
-        return suite;
+        return new TestSuite(TestIsLessThan.class);
     }
+
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
+
+    protected Object makeFunctor() {
+        return new IsLessThan();
+    }
+
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------
+    
+    public void testTest() throws Exception {
+        IsLessThan p = new IsLessThan();
+        assertTrue(p.test(new Integer(2),new Integer(4)));
+        assertTrue(p.test(new Integer(3),new Integer(4)));
+        assertTrue(!p.test(new Integer(4),new Integer(4)));
+        assertTrue(!p.test(new Integer(5),new Integer(4)));
+        assertTrue(!p.test(new Integer(6),new Integer(4)));
+    }
+    
+    public void testEquals() throws Exception {
+        IsLessThan p = new IsLessThan();
+        assertEquals(p,p);
+
+        assertObjectsAreEqual(p,new IsLessThan());
+        assertObjectsAreEqual(p,new IsLessThan(null));
+        assertObjectsAreEqual(p,new IsLessThan(new ComparableComparator()));
+        assertObjectsAreEqual(p,IsLessThan.getLessThan());
+        assertSame(IsLessThan.getLessThan(),IsLessThan.getLessThan());
+        assertObjectsAreNotEqual(p,new ConstantPredicate(false));
+    }
+    
 }

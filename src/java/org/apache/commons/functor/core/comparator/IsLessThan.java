@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsLessThan.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsLessThan.java,v 1.2 2003/03/04 16:51:46 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,7 +68,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * When no (or a <code>null</code> <code>Comparator</code> is specified,
  * a {@link Comparable Comparable} <code>Comparator</code> is used.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
+ * @version $Revision: 1.2 $ $Date: 2003/03/04 16:51:46 $
  * @author Rodney Waldhoff
  */
 public final class IsLessThan implements BinaryPredicate, Serializable {
@@ -125,9 +125,8 @@ public final class IsLessThan implements BinaryPredicate, Serializable {
      */
     public int hashCode() {
         int hash = "IsLessThan".hashCode();
-        if(null != comparator) {
-            hash ^= comparator.hashCode();
-        }
+        // by construction, comparator is never null
+        hash ^= comparator.hashCode();
         return hash;
     }
 

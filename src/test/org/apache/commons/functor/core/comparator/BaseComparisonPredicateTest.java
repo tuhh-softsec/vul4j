@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsGreaterThan.java,v 1.2 2003/03/04 16:51:46 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/BaseComparisonPredicateTest.java,v 1.1 2003/03/04 16:51:46 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,91 +56,78 @@
  */
 package org.apache.commons.functor.core.comparator;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
+import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * A {@link BinaryPredicate BinaryPredicate} that {@link #test tests}
- * <code>true</code> iff the left argument is greater than the
- * right argument under the specified {@link Comparator}.
- * When no (or a <code>null</code> <code>Comparator</code> is specified,
- * a {@link Comparable Comparable} <code>Comparator</code> is used.
- * 
- * @version $Revision: 1.2 $ $Date: 2003/03/04 16:51:46 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 16:51:46 $
  * @author Rodney Waldhoff
  */
-public final class IsGreaterThan implements BinaryPredicate, Serializable {
-    /**
-     * Construct a <code>IsGreaterThan</code> {@link BinaryPredicate predicate}
-     * for {@link Comparable Comparable}s.
-     */
-    public IsGreaterThan() {
-        this(null);
+public abstract class BaseComparisonPredicateTest extends BaseFunctorTest {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public BaseComparisonPredicateTest(String testName) {
+        super(testName);
     }
 
-    /**
-     * Construct a <code>IsGreaterThan</code> {@link BinaryPredicate predicate}
-     * for the given {@link Comparator Comparator}.
-     * 
-     * @param comparator the {@link Comparator Comparator}, when <code>null</code>,
-     *        a <code>Comparator</code> for {@link Comparable Comparable}s will
-     *        be used.
-     */
-    public IsGreaterThan(Comparator comparator) {
-        this.comparator = null == comparator ? ComparableComparator.getInstance() : comparator;
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
     }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------
     
-    /**
-     * Return <code>true</code> iff the <i>left</i> parameter is 
-     * greater than the <i>right</i> parameter under my current
-     * {@link Comparator Comparator}.
-     */
-    public boolean test(Object left, Object right) {
-        return comparator.compare(left,right) > 0;
-    }
-
-    /**
-     * @see java.lang.Object#equals(Object)
-     */
-    public boolean equals(Object that) {
-        if(that instanceof IsGreaterThan) {
-            return equals((IsGreaterThan)that);
-        } else {
-            return false;
+    public final void testTestNull() throws Exception {
+        BinaryPredicate p = (BinaryPredicate)(makeFunctor());
+        try {
+            p.test(new Integer(2),null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+        try {
+            p.test(null,new Integer(2));
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+        try {
+            p.test(null,null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
         }
     }
-
-    /**
-     * @see #equals(Object)
-     */
-    public boolean equals(IsGreaterThan that) {
-        return null != that && 
-            null == comparator ? null == that.comparator : comparator.equals(that.comparator);
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        int hash = "IsGreaterThan".hashCode();
-        // by construction, comparator is never null
-        hash ^= comparator.hashCode();
-        return hash;
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return "IsGreaterThan<" + comparator + ">";
-    }
-
-    public static final IsGreaterThan getGreaterThan() {
-        return COMPARABLE_INSTANCE;
-    }
     
-    private Comparator comparator = null;
-    private static final IsGreaterThan COMPARABLE_INSTANCE = new IsGreaterThan();
+    public final void testTestNonComparable() throws Exception {
+        BinaryPredicate p = (BinaryPredicate)(makeFunctor());
+        try {
+            p.test(new Integer(2),new Object());
+            fail("Expected ClassCastException");
+        } catch(ClassCastException e) {
+            // expected
+        }
+        try {
+            p.test(new Object(),new Integer(2));
+            fail("Expected ClassCastException");
+        } catch(ClassCastException e) {
+            // expected
+        }
+        try {
+            p.test(new Object(),new Object());
+            fail("Expected ClassCastException");
+        } catch(ClassCastException e) {
+            // expected
+        }
+    }
+        
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestAll.java,v 1.3 2003/03/04 16:51:46 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsEquivalent.java,v 1.1 2003/03/04 16:51:46 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,30 +57,68 @@
 package org.apache.commons.functor.core.comparator;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.core.ConstantPredicate;
+
 /**
- * @version $Revision: 1.3 $ $Date: 2003/03/04 16:51:46 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 16:51:46 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestIsEquivalent extends BaseComparisonPredicateTest {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestIsEquivalent(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTest(TestComparableComparator.suite());
-        suite.addTest(TestComparatorFunction.suite());        
-        suite.addTest(TestIsLessThan.suite());
-        suite.addTest(TestIsLessThanOrEqual.suite());
-        suite.addTest(TestIsEquivalent.suite());
-        suite.addTest(TestIsGreaterThan.suite());
-        suite.addTest(TestIsGreaterThanOrEqual.suite());
-        suite.addTest(TestIsNotEquivalent.suite());
-            
-        return suite;
+        return new TestSuite(TestIsEquivalent.class);
     }
+
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
+
+    protected Object makeFunctor() {
+        return new IsEquivalent();
+    }
+
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------
+    
+    public void testTest() throws Exception {
+        IsEquivalent p = new IsEquivalent();
+        assertTrue(!p.test(new Integer(2),new Integer(4)));
+        assertTrue(!p.test(new Integer(3),new Integer(4)));
+        assertTrue(p.test(new Integer(4),new Integer(4)));
+        assertTrue(!p.test(new Integer(5),new Integer(4)));
+        assertTrue(!p.test(new Integer(6),new Integer(4)));
+    }
+    
+    public void testEquals() throws Exception {
+        IsEquivalent p = new IsEquivalent();
+        assertEquals(p,p);
+
+        assertObjectsAreEqual(p,new IsEquivalent());
+        assertObjectsAreEqual(p,new IsEquivalent(null));
+        assertObjectsAreEqual(p,new IsEquivalent(new ComparableComparator()));
+        assertObjectsAreEqual(p,IsEquivalent.getEquivalent());
+        assertSame(IsEquivalent.getEquivalent(),IsEquivalent.getEquivalent());
+        assertObjectsAreNotEqual(p,new ConstantPredicate(false));
+    }
+    
 }
