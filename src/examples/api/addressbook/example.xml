@@ -1,0 +1,14 @@
+
+<address-book>
+  <person id="1" category="acquaintance">
+    <name>Gonzo</name>
+    <email type="business">gonzo@muppets.com</email>
+  </person>
+
+  <person id="2" category="rolemodel">
+    <name>Kermit</name>
+    <email type="business">kermit@muppets.com</email>
+    <email type="home">kermie@acme.com</email>
+  </person>
+
+</address-book>
