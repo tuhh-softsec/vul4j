@@ -84,6 +84,12 @@ public class MessageDigestAlgorithm extends Algorithm {
 
       JCEMapper.ProviderIdClass algorithmID =
          JCEMapper.translateURItoJCEID(algorithmURI);
+
+	  if (algorithmID == null) {
+		  Object[] exArgs = { algorithmURI };
+		  throw new XMLSignatureException("algorithms.NoSuchMap", exArgs);
+	  }
+
       MessageDigest md;
 
       try {

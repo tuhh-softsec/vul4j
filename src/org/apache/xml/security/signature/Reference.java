@@ -251,6 +251,10 @@ public class Reference extends SignatureElementProxy {
       String uri = digestMethodElem.getAttributeNS(null,
          Constants._ATT_ALGORITHM);
 
+	  if (uri == null) {
+		  return null;
+	  }
+
       return MessageDigestAlgorithm.getInstance(this._doc, uri);
    }
 
@@ -767,10 +771,19 @@ public class Reference extends SignatureElementProxy {
     *
     * @return the digest value.
     * @throws Base64DecodingException if Reference contains no proper base64 encoded data.
+	* @throws XMLSecurityException if the Reference does not contain a DigestValue element
     */
-   public byte[] getDigestValue() throws Base64DecodingException {
+   public byte[] getDigestValue() throws Base64DecodingException, XMLSecurityException {
       Element digestValueElem = this.getChildElementLocalName(0,
          Constants.SignatureSpecNS, Constants._TAG_DIGESTVALUE);
+	  if (digestValueElem == null) {
+		  // The required element is not in the XML!
+		  Object[] exArgs ={ Constants._TAG_DIGESTVALUE, 
+							 Constants.SignatureSpecNS };
+		  throw new XMLSecurityException(
+					"signature.Verification.NoSignatureElement", 
+					exArgs);
+	  }
       byte[] elemDig = Base64.decode(digestValueElem);
       return elemDig;
    }
