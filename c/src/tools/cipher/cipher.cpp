@@ -156,9 +156,12 @@ void printUsage(void) {
 	cerr << "         Operate in decrypt and XML mode.\n";
 	cerr << "         This will output the original XML document with the first encrypted\n";
 	cerr << "         element decrypted.\n";
-	cerr << "     --encrypt-file/-de\n";
+	cerr << "     --encrypt-file/-ef\n";
 	cerr << "         Encrypt the contents of the input file as raw data and create an\n";
 	cerr << "         XML Encrypted Data outpu\n";
+	cerr << "     --encrypt-xml/-ex\n";
+	cerr << "         Parse the input file and encrypt the doc element down, storing the\n";
+	cerr << "         output as a XML Encrypted Data\n";
 	cerr << "     --key/-k [kek] <KEY_TYPE> [options]\n";
 	cerr << "         Set the key to use.\n";
 	cerr << "             If the first parameter is \"kek\", the key arguments will be used\n";
@@ -246,6 +249,14 @@ int evaluate(int argc, char ** argv) {
 			parseXMLInput = false;
 			paramCount++;
 		}
+		else if (stricmp(argv[paramCount], "--encrypt-xml") == 0 || stricmp(argv[paramCount], "-ex") == 0) {
+			// Us this file as an XML input file
+			doDecrypt = false;
+			encryptFileAsData = false;
+			doXMLOutput = true;
+			parseXMLInput = true;
+			paramCount++;
+		}
 		else if (stricmp(argv[paramCount], "--out-file") == 0 || stricmp(argv[paramCount], "-o") == 0) {
 			if (paramCount +2 >= argc) {
 				printUsage();
@@ -330,11 +341,17 @@ int evaluate(int argc, char ** argv) {
 				}
 
 				paramCount++;
-				keyStr = (unsigned char *) argv[paramCount];
+				unsigned char keyStr[64];
+				if (strlen(argv[paramCount]) > 64) {
+					cerr << "Key string too long\n";
+					return 2;
+				}
+				memset(keyStr, 0, 64);
+				strcpy((char *) keyStr, argv[paramCount]);
 				paramCount++;
 				XSECCryptoSymmetricKey * sk = 
 					XSECPlatformUtils::g_cryptoProvider->keySymmetric(loadKeyAs);
-				sk->setKey((unsigned char *) keyStr, keyLen);
+				sk->setKey(keyStr, keyLen);
 				if (isKEK)
 					kek = sk;
 				else
@@ -660,8 +677,8 @@ int evaluate(int argc, char ** argv) {
 				elt->release();
 			}
 			else {
-				cerr << "Element encryption not yet supported" << endl;
-				return (2);
+				// Document encryption
+				cipher->encryptElement(doc->getDocumentElement(), keyAlg);
 			}
 
 			// Do we encrypt a created key?
