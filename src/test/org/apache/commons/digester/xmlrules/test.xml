@@ -9,6 +9,8 @@
       <longValue>555</longValue>
       <defaultParamType>somestringvalue</defaultParamType>
       <pushIt/>
+      <mapValue name="test1">foo</mapValue>
+      <mapValue name="test2">bar</mapValue>
     </call-method-rule-tests>
   </foo>
   <baz value="baz2"/>

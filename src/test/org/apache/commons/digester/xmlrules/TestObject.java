@@ -60,6 +60,7 @@ package org.apache.commons.digester.xmlrules;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.HashMap;
 
 
 /**
@@ -73,6 +74,8 @@ public class TestObject {
     private ArrayList children = new ArrayList();
     private String value = "";
     private Long longValue = new Long(-1L);
+
+    private HashMap mapValue = new HashMap();
 
     private boolean pushed = false;
     
@@ -114,5 +117,13 @@ public class TestObject {
     
     public void push() {
         pushed = true;
+    }
+
+    public void setMapValue( String name, String value ) {
+        this.mapValue.put( name, value );
+    }
+
+    public String getMapValue( String name ) {
+        return (String) this.mapValue.get( name );
     }
 }

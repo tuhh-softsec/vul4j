@@ -135,6 +135,8 @@ public class DigesterLoaderTest extends TestCase {
         }
         TestObject to = (TestObject)obj;
         assertEquals(new Long(555),to.getLongValue());
+        assertEquals( "foo", to.getMapValue( "test1" ) );
+        assertEquals( "bar", to.getMapValue( "test2" ) );
     }
 
     /**

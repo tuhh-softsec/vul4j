@@ -84,21 +84,21 @@ import org.xml.sax.SAXException;
  */
 
 public class DigesterRuleParser extends RuleSetBase {
-
+    
     public static final String DIGESTER_PUBLIC_ID = "-//Jakarta Apache //DTD digester-rules XML V1.0//EN";
-
+    
     /**
      * path to the DTD
      */
     private String digesterDtdUrl;
-
+    
     /**
      * This is the digester to which we are adding the rules that we parse
      * from the Rules XML document.
      */
     protected Digester targetDigester;
-
-
+    
+    
     /**
      * A stack whose toString method returns a '/'-separated concatenation
      * of all the elements in the stack.
@@ -118,7 +118,7 @@ public class DigesterRuleParser extends RuleSetBase {
             return str.toString();
         }
     }
-
+    
     /**
      * A stack used to maintain the current pattern. The Rules XML document
      * type allows nesting of patterns. If an element defines a matching
@@ -126,12 +126,12 @@ public class DigesterRuleParser extends RuleSetBase {
      * all the ancestor elements' patterns. Hence the need for a stack.
      */
     protected PatternStack patternStack;
-
+    
     /**
      * Used to detect circular includes
      */
     private Set includedFiles = new HashSet();
-
+    
     /**
      * Constructs a DigesterRuleParser. This object will be inoperable
      * until the target digester is set, via <code>setTarget(Digester)</code>
@@ -139,7 +139,7 @@ public class DigesterRuleParser extends RuleSetBase {
     public DigesterRuleParser() {
         patternStack = new PatternStack();
     }
-
+    
     /**
      * Constructs a rule set for converting XML digester rule descriptions
      * into Rule objects, and adding them to the given Digester
@@ -149,7 +149,7 @@ public class DigesterRuleParser extends RuleSetBase {
         this.targetDigester = targetDigester;
         patternStack = new PatternStack();
     }
-
+    
     /**
      * Constructs a rule set for parsing an XML digester rule file that
      * has been included within an outer XML digester rule file. In this
@@ -161,12 +161,12 @@ public class DigesterRuleParser extends RuleSetBase {
      * to any pattern parsed by this rule set.
      */
     private DigesterRuleParser(Digester targetDigester,
-                               PatternStack stack, Set includedFiles) {
+                                PatternStack stack, Set includedFiles) {
         this.targetDigester = targetDigester;
         patternStack = stack;
         this.includedFiles = includedFiles;
     }
-
+    
     /**
      * Sets the digester into which to add the parsed rules
      * @param d the Digester to add the rules to
@@ -174,7 +174,7 @@ public class DigesterRuleParser extends RuleSetBase {
     public void setTarget(Digester d) {
         targetDigester = d;
     }
-
+    
     /**
      * Sets the location of the digester rules DTD. This is the DTD used
      * to validate the rules XML file.
@@ -182,7 +182,7 @@ public class DigesterRuleParser extends RuleSetBase {
     public void setDigesterRulesDTD(String dtdURL) {
         digesterDtdUrl = dtdURL;
     }
-
+    
     /**
      * Returns the location of the DTD used to validate the digester rules
      * XML document.
@@ -193,7 +193,7 @@ public class DigesterRuleParser extends RuleSetBase {
         //return url.toString();
         return digesterDtdUrl;
     }
-
+    
     /**
      * Adds a rule the the target digester. After a rule has been created by
      * parsing the XML, it is added to the digester by calling this method.
@@ -204,8 +204,8 @@ public class DigesterRuleParser extends RuleSetBase {
     public void add(Rule rule) {
         targetDigester.addRule(patternStack.toString(), rule);
     }
-
-
+    
+    
     /**
      * Add to the given digester the set of Rule instances used to parse an XML
      * document defining Digester rules. When the digester parses an XML file,
@@ -218,43 +218,47 @@ public class DigesterRuleParser extends RuleSetBase {
     public void addRuleInstances(Digester digester) {
         final String ruleClassName = Rule.class.getName();
         digester.register(DIGESTER_PUBLIC_ID, getDigesterRulesDTD());
-
-        digester.addRule("*/pattern", new PatternRule(digester, "value"));
-
-        digester.addRule("*/include", new IncludeRule(digester));
-
+        
+        digester.addRule("*/pattern", new PatternRule("value"));
+        
+        digester.addRule("*/include", new IncludeRule());
+        
         digester.addFactoryCreate("*/call-method-rule", new CallMethodRuleFactory());
-        digester.addRule("*/call-method-rule", new PatternRule(digester, "pattern"));
+        digester.addRule("*/call-method-rule", new PatternRule("pattern"));
         digester.addSetNext("*/call-method-rule", "add", ruleClassName);
-
+        
+        digester.addFactoryCreate("*/call-param-rule", new CallParamRuleFactory());
+        digester.addRule("*/call-param-rule", new PatternRule("pattern"));
+        digester.addSetNext("*/call-param-rule", "add", ruleClassName);
+        
         digester.addFactoryCreate("*/factory-create-rule", new FactoryCreateRuleFactory());
-        digester.addRule("*/factory-create-rule", new PatternRule(digester, "pattern"));
+        digester.addRule("*/factory-create-rule", new PatternRule("pattern"));
         digester.addSetNext("*/factory-create-rule", "add", ruleClassName);
-
+        
         digester.addFactoryCreate("*/object-create-rule", new ObjectCreateRuleFactory());
-        digester.addRule("*/object-create-rule", new PatternRule(digester, "pattern"));
+        digester.addRule("*/object-create-rule", new PatternRule("pattern"));
         digester.addSetNext("*/object-create-rule", "add", ruleClassName);
-
+        
         digester.addFactoryCreate("*/set-properties-rule", new SetPropertiesRuleFactory());
-        digester.addRule("*/set-properties-rule", new PatternRule(digester, "pattern"));
+        digester.addRule("*/set-properties-rule", new PatternRule("pattern"));
         digester.addSetNext("*/set-properties-rule", "add", ruleClassName);
-
-        digester.addRule("*/set-properties-rule/alias", new SetPropertiesAliasRule(digester));
-
+        
+        digester.addRule("*/set-properties-rule/alias", new SetPropertiesAliasRule());
+        
         digester.addFactoryCreate("*/set-property-rule", new SetPropertyRuleFactory());
-        digester.addRule("*/set-property-rule", new PatternRule(digester, "pattern"));
+        digester.addRule("*/set-property-rule", new PatternRule("pattern"));
         digester.addSetNext("*/set-property-rule", "add", ruleClassName);
-
+        
         digester.addFactoryCreate("*/set-top-rule", new SetTopRuleFactory());
-        digester.addRule("*/set-top-rule", new PatternRule(digester, "pattern"));
+        digester.addRule("*/set-top-rule", new PatternRule("pattern"));
         digester.addSetNext("*/set-top-rule", "add", ruleClassName);
-
+        
         digester.addFactoryCreate("*/set-next-rule", new SetNextRuleFactory());
-        digester.addRule("*/set-next-rule", new PatternRule(digester, "pattern"));
+        digester.addRule("*/set-next-rule", new PatternRule("pattern"));
         digester.addSetNext("*/set-next-rule", "add", ruleClassName);
     }
-
-
+    
+    
     /**
      * A rule for extracting the pattern matching strings from the rules XML.
      * In the digester-rules document type, a pattern can either be declared
@@ -264,19 +268,19 @@ public class DigesterRuleParser extends RuleSetBase {
      * element.
      */
     private class PatternRule extends Rule {
-
+        
         private String attrName;
         private String pattern = null;
-
+        
         /**
          * @param digester the Digester used to parse the rules XML file
          * @param attrName The name of the attribute containing the pattern
          */
-        public PatternRule(Digester digester, String attrName) {
-            super(digester);
+        public PatternRule(String attrName) {
+            super();
             this.attrName = attrName;
         }
-
+        
         /**
          * If a pattern is defined for the attribute, push it onto the
          * pattern stack.
@@ -287,7 +291,7 @@ public class DigesterRuleParser extends RuleSetBase {
                 patternStack.push(pattern);
             }
         }
-
+        
         /**
          * If there was a pattern for this element, pop it off the pattern
          * stack.
@@ -298,7 +302,7 @@ public class DigesterRuleParser extends RuleSetBase {
             }
         }
     }
-
+    
     /**
      * A rule for including one rules XML file within another. Included files
      * behave as if they are 'macro-expanded' within the includer. This means
@@ -309,10 +313,10 @@ public class DigesterRuleParser extends RuleSetBase {
      * the parse.
      */
     private class IncludeRule extends Rule {
-        public IncludeRule(Digester digester) {
-            super(digester);
+        public IncludeRule() {
+            super();
         }
-
+        
         /**
          * To include a rules xml file, we instantiate another Digester, and
          * another DigesterRulesRuleSet. We pass the
@@ -325,7 +329,7 @@ public class DigesterRuleParser extends RuleSetBase {
             if (fileName != null && fileName.length() > 0) {
                 includeXMLRules(fileName);
             }
-
+            
             // The class attribute gives the name of a class that implements
             // the DigesterRulesSource interface
             String className = attributes.getValue("class");
@@ -333,15 +337,15 @@ public class DigesterRuleParser extends RuleSetBase {
                 includeProgrammaticRules(className);
             }
         }
-
+        
         /**
          * Creates another DigesterRuleParser, and uses it to extract the rules
          * out of the give XML file. The contents of the current pattern stack
          * will be prepended to all of the pattern strings parsed from the file.
          */
         private void includeXMLRules(String fileName)
-                throws IOException, SAXException, CircularIncludeException {
-            URL fileURL = getDigester().getClassLoader().getResource(fileName);
+                        throws IOException, SAXException, CircularIncludeException {
+            URL fileURL = DigesterRuleParser.this.getClass().getClassLoader().getResource(fileName);
             if (fileURL == null) {
                 throw new FileNotFoundException("File \"" + fileName + "\" not found.");
             }
@@ -352,19 +356,15 @@ public class DigesterRuleParser extends RuleSetBase {
             }
             // parse the included xml file
             DigesterRuleParser includedSet =
-                    new DigesterRuleParser(targetDigester, patternStack, includedFiles);
+                        new DigesterRuleParser(targetDigester, patternStack, includedFiles);
             includedSet.setDigesterRulesDTD(getDigesterRulesDTD());
-
             Digester digester = new Digester();
-            digester.setUseContextClassLoader(getDigester().getUseContextClassLoader());
-            digester.setClassLoader(getDigester().getClassLoader());
-            digester.setErrorHandler(getDigester().getErrorHandler());
             digester.addRuleSet(includedSet);
             digester.push(DigesterRuleParser.this);
             digester.parse(fileName);
             includedFiles.remove(fileName);
         }
-
+        
         /**
          * Creates an instance of the indicated class. The class must implement
          * the DigesterRulesSource interface. Passes the target digester to
@@ -374,17 +374,17 @@ public class DigesterRuleParser extends RuleSetBase {
          * by the DigesterRulesSource instance.
          */
         private void includeProgrammaticRules(String className)
-                throws ClassNotFoundException, ClassCastException,
-                InstantiationException, IllegalAccessException {
-
-            Class cls = Class.forName(className, true, digester.getClassLoader());
+                        throws ClassNotFoundException, ClassCastException,
+                        InstantiationException, IllegalAccessException {
+            
+            Class cls = Class.forName(className);
             DigesterRulesSource rulesSource = (DigesterRulesSource) cls.newInstance();
-
+            
             // wrap the digester's Rules object, to prepend pattern
             Rules digesterRules = targetDigester.getRules();
             Rules prefixWrapper =
                     new RulesPrefixAdapter(patternStack.toString(), digesterRules);
-
+            
             targetDigester.setRules(prefixWrapper);
             try {
                 rulesSource.getRules(targetDigester);
@@ -393,20 +393,19 @@ public class DigesterRuleParser extends RuleSetBase {
                 targetDigester.setRules(digesterRules);
             }
         }
-
     }
-
-
+    
+    
     /**
      * Wraps a Rules object. Delegates all the Rules interface methods
      * to the underlying Rules object. Overrides the add method to prepend
      * a prefix to the pattern string.
      */
     private class RulesPrefixAdapter implements Rules {
-
+        
         private Rules delegate;
         private String prefix;
-
+        
         /**
          * @param patternPrefix the pattern string to prepend to the pattern
          * passed to the add method.
@@ -417,7 +416,7 @@ public class DigesterRuleParser extends RuleSetBase {
             prefix = patternPrefix;
             delegate = rules;
         }
-
+        
         /**
          * Register a new Rule instance matching a pattern which is constructed
          * by concatenating the pattern prefix with the given pattern.
@@ -425,56 +424,56 @@ public class DigesterRuleParser extends RuleSetBase {
         public void add(String pattern, Rule rule) {
             delegate.add(prefix + pattern, rule);
         }
-
+        
         /**
          * This method passes through to the underlying Rules object.
          */
         public void clear() {
             delegate.clear();
         }
-
+        
         /**
          * This method passes through to the underlying Rules object.
          */
         public Digester getDigester() {
             return delegate.getDigester();
         }
-
+        
         /**
          * This method passes through to the underlying Rules object.
          */
         public String getNamespaceURI() {
             return delegate.getNamespaceURI();
         }
-
+        
         /**
          * @deprecated Call match(namespaceURI,pattern) instead.
          */
         public List match(String pattern) {
             return delegate.match(pattern);
         }
-
+        
         /**
          * This method passes through to the underlying Rules object.
          */
         public List match(String namespaceURI, String pattern) {
             return delegate.match(namespaceURI, pattern);
         }
-
+        
         /**
          * This method passes through to the underlying Rules object.
          */
         public List rules() {
             return delegate.rules();
         }
-
+        
         /**
          * This method passes through to the underlying Rules object.
          */
         public void setDigester(Digester digester) {
             delegate.setDigester(digester);
         }
-
+        
         /**
          * This method passes through to the underlying Rules object.
          */
@@ -482,13 +481,13 @@ public class DigesterRuleParser extends RuleSetBase {
             delegate.setNamespaceURI(namespaceURI);
         }
     }
-
-
+    
+    
     ///////////////////////////////////////////////////////////////////////
     // Classes beyond this point are ObjectCreationFactory implementations,
     // used to create Rule objects and initialize them from SAX attributes.
     ///////////////////////////////////////////////////////////////////////
-
+    
     /**
      * Factory for creating a CallMethodRule.
      */
@@ -499,48 +498,44 @@ public class DigesterRuleParser extends RuleSetBase {
             if (attributes.getValue("paramcount") == null) {
                 // call against empty method
                 callMethodRule = new CallMethodRule(methodName);
-
+            
             } else {
                 int paramCount = Integer.parseInt(attributes.getValue("paramcount"));
-
+                
                 String paramTypesAttr = attributes.getValue("paramtypes");
                 if (paramTypesAttr == null || paramTypesAttr.length() == 0) {
-                    callMethodRule = new CallMethodRule(targetDigester, methodName,
-                                                        paramCount);
+                    callMethodRule = new CallMethodRule(methodName, paramCount);
                 } else {
                     // Process the comma separated list or paramTypes
                     // into an array of String class names
                     ArrayList paramTypes = new ArrayList();
                     StringTokenizer tokens = new StringTokenizer(paramTypesAttr, " \t\n\r,");
                     while (tokens.hasMoreTokens()) {
-                        paramTypes.add(tokens.nextToken());
+                            paramTypes.add(tokens.nextToken());
                     }
-                    callMethodRule = new CallMethodRule(
-                                                    targetDigester, 
-                                                    methodName, 
-                                                    paramCount, 
-                                                    (String[])paramTypes.toArray(new String[0]));
+                    callMethodRule = new CallMethodRule( methodName,
+                                                        paramCount,
+                                                        (String[])paramTypes.toArray(new String[0]));
                 }
             }
             return callMethodRule;
         }
     }
-
+    
     /**
-     * Factory for creating a CallMethodRule.
+     * Factory for creating a CallParamRule.
      */
     protected class CallParamRuleFactory extends AbstractObjectCreationFactory {
-
+    
         public Object createObject(Attributes attributes) {
-            // create callmethodrule
-            int paramNumber = Integer.parseInt(attributes.getValue("paramnumber"));
-            String methodName = attributes.getValue("attrname");
-            Rule callMethodRule = new CallMethodRule(targetDigester, methodName,
-                    paramNumber);
-            return callMethodRule;
+            // create callparamrule
+            int paramIndex = Integer.parseInt(attributes.getValue("paramnumber"));
+            String attributeName = attributes.getValue("attrname");
+            Rule callParamRule = new CallParamRule( paramIndex, attributeName );
+            return callParamRule;
         }
     }
-
+    
     /**
      * Factory for creating a FactoryCreateRule
      */
@@ -549,12 +544,12 @@ public class DigesterRuleParser extends RuleSetBase {
             String className = attributes.getValue("classname");
             String attrName = attributes.getValue("attrname");
             return (attrName == null || attrName.length() == 0) ?
-                    new FactoryCreateRule(targetDigester, className)
-                    :
-                    new FactoryCreateRule(targetDigester, className, attrName);
+                new FactoryCreateRule( className)
+                :
+                new FactoryCreateRule( className, attrName);
         }
     }
-
+    
     /**
      * Factory for creating a ObjectCreateRule
      */
@@ -563,21 +558,21 @@ public class DigesterRuleParser extends RuleSetBase {
             String className = attributes.getValue("classname");
             String attrName = attributes.getValue("attrname");
             return (attrName == null || attrName.length() == 0) ?
-                    new ObjectCreateRule(targetDigester, className)
-                    :
-                    new ObjectCreateRule(targetDigester, className, attrName);
+                new ObjectCreateRule( className)
+                :
+                new ObjectCreateRule( className, attrName);
         }
     }
-
+    
     /**
      * Factory for creating a SetPropertiesRule
      */
     protected class SetPropertiesRuleFactory extends AbstractObjectCreationFactory {
         public Object createObject(Attributes attributes) {
-            return new SetPropertiesRule(targetDigester);
+                return new SetPropertiesRule();
         }
     }
-
+    
     /**
      * Factory for creating a SetPropertyRule
      */
@@ -585,10 +580,10 @@ public class DigesterRuleParser extends RuleSetBase {
         public Object createObject(Attributes attributes) {
             String name = attributes.getValue("name");
             String value = attributes.getValue("value");
-            return new SetPropertyRule(targetDigester, name, value);
+            return new SetPropertyRule( name, value);
         }
     }
-
+    
     /**
      * Factory for creating a SetTopRuleFactory
      */
@@ -597,12 +592,12 @@ public class DigesterRuleParser extends RuleSetBase {
             String methodName = attributes.getValue("methodname");
             String paramType = attributes.getValue("paramtype");
             return (paramType == null || paramType.length() == 0) ?
-                    new SetTopRule(targetDigester, methodName)
-                    :
-                    new SetTopRule(targetDigester, methodName, paramType);
+                new SetTopRule( methodName)
+                :
+                new SetTopRule( methodName, paramType);
         }
     }
-
+    
     /**
      * Factory for creating a SetNextRuleFactory
      */
@@ -611,27 +606,27 @@ public class DigesterRuleParser extends RuleSetBase {
             String methodName = attributes.getValue("methodname");
             String paramType = attributes.getValue("paramtype");
             return (paramType == null || paramType.length() == 0) ?
-                    new SetNextRule(targetDigester, methodName)
-                    :
-                    new SetNextRule(targetDigester, methodName, paramType);
+                new SetNextRule( methodName)
+                :
+                new SetNextRule( methodName, paramType);
         }
     }
-
+    
     /**
      * A rule for adding a attribute-property alias to the custom alias mappings of
      * the containing SetPropertiesRule rule.
      */
     protected class SetPropertiesAliasRule extends Rule {
-
+        
         /**
          * <p>Base constructor.
          *
          * @param digester the Digester used to parse the rules XML file
          */
-        public SetPropertiesAliasRule(Digester digester) {
-            super(digester);
+        public SetPropertiesAliasRule() {
+            super();
         }
-
+        
         /**
          * Add the alias to the SetPropertiesRule object created by the
          * enclosing <set-properties-rule> tag.
@@ -639,7 +634,7 @@ public class DigesterRuleParser extends RuleSetBase {
         public void begin(Attributes attributes) {
             String attrName = attributes.getValue("attr-name");
             String propName = attributes.getValue("prop-name");
-
+    
             SetPropertiesRule rule = (SetPropertiesRule) digester.peek();
             rule.addAlias(attrName, propName);
         }

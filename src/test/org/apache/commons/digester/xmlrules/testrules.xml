@@ -1,15 +1,19 @@
 <?xml version="1.0"?>
+<!DOCTYPE digester-rules PUBLIC "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
 <digester-rules>
-  <pattern value="root/foo">
-    <object-create-rule classname="org.apache.commons.digester.xmlrules.TestObject"/>
-    <set-next-rule methodname="add" paramtype="java.lang.Object"/>
-	  <set-properties-rule/>
-	  <include path="org/apache/commons/digester/xmlrules/testrulesinclude.xml"/>
-    <include class="org.apache.commons.digester.xmlrules.TestDigesterRulesSource"/>
-    <pattern value="call-method-rule-tests">
-        <call-method-rule pattern="longValue" methodname="setLongValue" paramcount="0" paramtypes="java.lang.Long"/>
-        <call-method-rule pattern="defaultParamType" methodname="setStringValue" paramcount="0"/>
-        <call-method-rule pattern="pushIt" methodname="push"/>
-     </pattern>
-  </pattern>
+	<pattern value="root/foo">
+		<object-create-rule classname="org.apache.commons.digester.xmlrules.TestObject"/>
+		<set-next-rule methodname="add" paramtype="java.lang.Object"/>
+		<set-properties-rule/>
+		<include path="org/apache/commons/digester/xmlrules/testrulesinclude.xml"/>
+		<include class="org.apache.commons.digester.xmlrules.TestDigesterRulesSource"/>
+		<pattern value="call-method-rule-tests">
+			<call-method-rule pattern="longValue" methodname="setLongValue" paramcount="0" paramtypes="java.lang.Long"/>
+			<call-method-rule pattern="defaultParamType" methodname="setStringValue" paramcount="0"/>
+			<call-method-rule pattern="pushIt" methodname="push"/>
+			<call-method-rule pattern="mapValue" methodname="setMapValue" paramcount="2" paramtypes="java.lang.String,java.lang.String"/>
+		    	<call-param-rule pattern="mapValue" attrname="name" paramnumber="0" />
+		    	<call-param-rule pattern="mapValue" paramnumber="1"/>
+		</pattern>
+	</pattern>
 </digester-rules>

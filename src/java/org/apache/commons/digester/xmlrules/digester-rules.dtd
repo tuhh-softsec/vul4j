@@ -3,7 +3,7 @@
 <!--
         "Digester" component of the Jakarta Commons Subproject
         DTD for the definition of Digester rules in XML.
-        $Id: digester-rules.dtd,v 1.4 2002/07/16 21:23:28 rdonkin Exp $
+        $Id: digester-rules.dtd,v 1.5 2002/08/23 13:42:56 rdonkin Exp $
 -->
 
 <!-- This document type defines an XML format for defining Digester rules.
@@ -103,8 +103,8 @@
 <!-- An alias is a custom attribute->property name mapping -->
 <!ELEMENT alias EMPTY>
 <!ATTLIST alias
-ÊÊÊÊ attr-name CDATA #REQUIRED
-ÊÊÊÊ prop-name CDATA #IMPLIED>
+ attr-name CDATA #REQUIRED
+ prop-name CDATA #IMPLIED>
 
 <!-- SetPropertyRule -->
 <!ELEMENT set-property-rule EMPTY>
