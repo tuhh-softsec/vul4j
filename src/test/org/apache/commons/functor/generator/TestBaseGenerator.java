@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.6 2003/11/25 17:49:35 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestBaseGenerator.java,v 1.1 2003/11/25 19:57:48 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -85,19 +85,19 @@ import org.apache.commons.functor.generator.util.EachElement;
  * @author Jason Horman (jason@jhorman.org)
  */
 
-public class TestGenerator extends TestCase {
+public class TestBaseGenerator extends TestCase {
 
     private Generator simpleGenerator = null;
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestGenerator(String name) {
+    public TestBaseGenerator(String name) {
         super(name);
     }
 
     public static Test suite() {
-        return new TestSuite(TestGenerator.class);
+        return new TestSuite(TestBaseGenerator.class);
     }
 
     // Lifecycle
