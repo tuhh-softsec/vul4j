@@ -798,7 +798,7 @@
     <target name="jar"              depends="build.jar" />
     <target name="dist"             depends="build.dist" />
     <target name="clean"            depends="env.rm.dirs,env.rm.files"/>
-    <target name="gump"				depends="clean, docs, test"/>
+    <target name="gump"				depends="clean, docs, jar, test"/>
     <target name="clover"			depends="clean, with.clover, test, clover.report.html" />
 
     <!-- maintenance targets -->
