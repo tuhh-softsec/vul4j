@@ -454,6 +454,12 @@ public class BaltimoreEncTest extends TestCase {
 
 	public void test_five_data_3des_cbc_rsa_oaep() throws Exception {
 
+                // Work-around for the fact that BC currently doesn't support
+                // the standard JCE name for oaep padding
+                java.security.Provider bc = java.security.Security.getProvider("BC");
+                if (bc != null)
+                    bc.put("Alg.Alias.Cipher.RSA/ECB/OAEPWithSHA1AndMGF1Padding","RSA/OAEP");
+
 		if (haveISOPadding) {
 			String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml";
 
