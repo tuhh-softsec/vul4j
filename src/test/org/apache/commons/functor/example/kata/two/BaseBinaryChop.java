@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/BaseBinaryChop.java,v 1.1 2003/12/01 07:30:24 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/BaseBinaryChop.java,v 1.2 2003/12/01 19:22:41 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import java.util.List;
  * See http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/12/01 07:30:24 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/01 19:22:41 $
  * @author Rodney Waldhoff
  */
 public abstract class BaseBinaryChop implements BinaryChop {
@@ -78,6 +78,20 @@ public abstract class BaseBinaryChop implements BinaryChop {
     public int find(Object seeking, Object[] in) {
         return find(seeking, Arrays.asList(in));
     }
+    
+    protected static int compare(List list, int index, Object obj) {
+        return ((Comparable)list.get(index)).compareTo(obj);
+    }
+
+    protected static boolean greaterThan(List list, int index, Object obj) {
+        return compare(list,index,obj) > 0;
+    }
+
+    protected static boolean equals(List list, int index, Object obj) {
+        return compare(list,index,obj) == 0;
+    }
+    
+    protected static Integer NEGATIVE_ONE = new Integer(-1);
     
     public abstract int find(Object seeking, List in);
 } 
