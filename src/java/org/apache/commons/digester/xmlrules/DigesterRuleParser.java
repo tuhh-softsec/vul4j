@@ -345,7 +345,7 @@ public class DigesterRuleParser extends RuleSetBase {
             if (fileURL == null) {
                 throw new FileNotFoundException("File \"" + fileName + "\" not found.");
             }
-            fileName = fileURL.getFile();
+            fileName = fileURL.toExternalForm();
             if (includedFiles.add(fileName) == false) {
                 // circular include detected
                 throw new CircularIncludeException(fileName);
