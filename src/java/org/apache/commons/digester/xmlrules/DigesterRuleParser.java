@@ -362,7 +362,11 @@ public class DigesterRuleParser extends RuleSetBase {
          */
         private void includeXMLRules(String fileName)
                         throws IOException, SAXException, CircularIncludeException {
-            URL fileURL = DigesterRuleParser.this.getClass().getClassLoader().getResource(fileName);
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            if (cl == null) {
+                cl = DigesterRuleParser.this.getClass().getClassLoader();
+            }
+            URL fileURL = cl.getResource(fileName);
             if (fileURL == null) {
                 throw new FileNotFoundException("File \"" + fileName + "\" not found.");
             }
