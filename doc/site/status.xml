@@ -22,12 +22,28 @@ limitations under the License.
     <person name="Axl Mattheus"      email="axl.mattheus@sun.com"      id="AXL" />
     <person name="Erwin van der Koogh" email="erwin@koogh.com" id="EK" />
     <person name="Karel Wouters"      email="karel.wouters@esat.kuleuven.ac.be"      id="KW" />
+    <person name="Raul Benito Garcia" email="raul@apache.org" id="RB"/>
+    <person name="Vishal Mahajan" email="Vishal.Mahajan@Sun.COM" id="VM"/>
     <!-- Add more people here -->
   </developers>
   
   <changes>
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
+    <release version="Java 1.2" date="December 2004">
+      <action dev="RB" type="update" context="java_c14n">
+	<p>Rework the canonicalization for speed-up common cases</p>
+      </action>
+      <action dev="RB" type="update" context="java_general">
+	<p>General memory footprint improvements</p>
+      </action>
+      <action dev="RB" type="update" context="java_general">
+	<p>General speed optimizations</p>
+      </action>
+      <action dev="VM" type="update" context="java_csp">
+	<p>Update the JCE algorith mechanism</p>
+      </action>
+    </release>
     <release version="C++ 1.10" date="March 2004">
       <action dev="BL" type="add" context="c_rel">
 	    <ul>
