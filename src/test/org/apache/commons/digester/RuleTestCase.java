@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.2 2001/08/20 22:06:23 craigmcc Exp $
- * $Revision: 1.2 $
- * $Date: 2001/08/20 22:06:23 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.3 2001/08/20 22:12:02 craigmcc Exp $
+ * $Revision: 1.3 $
+ * $Date: 2001/08/20 22:12:02 $
  *
  * ====================================================================
  *
@@ -76,7 +76,7 @@ import junit.framework.TestSuite;
  * XML documents to exercise the built-in rules.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.2 $ $Date: 2001/08/20 22:06:23 $
+ * @version $Revision: 1.3 $ $Date: 2001/08/20 22:12:02 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -249,6 +249,45 @@ public class RuleTestCase extends TestCase {
             fail("Digester threw IOException: " + t);
         }
         validateObjectCreate3(root);
+
+    }
+
+
+    /**
+     * Same as testObjectCreate1(), except use individual call method rules
+     * to set the properties of the Employee.
+     */
+    public void testObjectCreate4() {
+
+        // Configure the digester as required
+        digester.addObjectCreate("employee",
+                                 "org.apache.commons.digester.Employee");
+        digester.addCallMethod("employee",
+                               "setFirstName", 1);
+        digester.addCallParam("employee", 0, "firstName");
+        digester.addCallMethod("employee",
+                               "setLastName", 1);
+        digester.addCallParam("employee", 0, "lastName");
+
+
+        // Parse our test input.
+        Object root = null;
+        try {
+            root = digester.parse(getInputStream("Test1.xml"));
+        } catch (Throwable t) {
+            fail("Digester threw IOException: " + t);
+        }
+        assertNotNull("Digester returned an object", root);
+        assertTrue("Digester returned an Employee",
+                   root instanceof Employee);
+        Employee employee = (Employee) root;
+        assertEquals("First name is correct",
+                     "First Name",
+                     employee.getFirstName());
+        assertEquals("Last name is correct",
+                     "Last Name",
+                     employee.getLastName());
+
 
     }
 
