@@ -67,6 +67,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.3  2003/03/02 08:21:02  blautenb
+ * Fixes for a clean doxygen run
+ *
  * Revision 1.2  2003/02/21 11:53:09  blautenb
  * TXFMChain to prevent memory leaks
  *
@@ -88,12 +91,8 @@ class TXFMChain;
 XSEC_DECLARE_XERCES_CLASS(BinInputStream);
 
 /**
- * @ingroup interfaces 
- * @{
- */
-
-/**
  * @brief InputSource wrapper for a TXFMList.
+ * @ingroup interfaces
  *
  * This class provides a wrapper for a TXFMList.  It is used to provide 
  * an input to the Xerces Parser.
@@ -154,6 +153,5 @@ private :
 
 };
 
-/** @} */
 
 #endif /* XSECTXFMINPUTSOURCE_INCLUDE */

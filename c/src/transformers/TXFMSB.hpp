@@ -71,12 +71,9 @@
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
 
-/** @ingroup internal
- * @{
- */
-
 /**
  * \brief Base transformer to start a chain from a safeBuffer
+ * @ingroup internal
  */
 
 class DSIG_EXPORT TXFMSB : public TXFMBase {

@@ -221,6 +221,5 @@ public :
 	//@}
 };
 
-/** @} */
 
 #endif /* XSECCRYPTOKEYDSA_INCLUDE */

@@ -73,12 +73,9 @@
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/enc/XSECCryptoProvider.hpp>
 
-/** @ingroup internal
- * @{
- */
-
 /**
  * \brief Transformer to handle create a SHA-1 hash from a chain
+ * @ingroup internal
  */
 
 class DSIG_EXPORT TXFMSHA1 : public TXFMBase {
@@ -117,4 +114,4 @@ private:
 	TXFMSHA1();
 };
 
-/** @} */
+

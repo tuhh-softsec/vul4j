@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 #ifndef XSECPROVIDER_INCLUDE
@@ -81,9 +79,7 @@
 #include <vector>
 
 /**
- * @defgroup pubsig Main Signature API
- * This section describes the main classes and interfaces necessary for 
- * programming with the XML-Security-C library.
+ * @addtogroup pubsig
  * @{
  */
 

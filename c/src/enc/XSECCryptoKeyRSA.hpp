@@ -205,7 +205,6 @@ public :
 
 };
 
-/** @} */
 
 
 #endif /* XSECCRYPTOKEYRSA_INCLUDE */

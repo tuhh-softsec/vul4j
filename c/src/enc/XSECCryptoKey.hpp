@@ -157,6 +157,5 @@ public :
 
 };
 
-/** @} */
 
 #endif /* XSECCRYPTOKEY_INCLUDE */

@@ -73,12 +73,9 @@
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/enc/XSECCryptoBase64.hpp>
  
-/** @ingroup internal
- * @{
- */
-
 /**
  * \brief Transformer to handle base64 transforms
+ * @ingroup internal
  */
 
 class DSIG_EXPORT TXFMBase64 : public TXFMBase {
@@ -117,4 +114,3 @@ private:
 	TXFMBase64();
 };
 
-/** @} */

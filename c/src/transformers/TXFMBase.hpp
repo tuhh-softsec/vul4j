@@ -84,7 +84,10 @@
 
 class TXFMChain;
 
-/** @ingroup internal
+/** @defgroup internal Internal Classes
+ * Classes marked as <b>internal</b> are used internally by the xml-security-c
+ * library.  Generally there should be no requirement for these classes
+ * to be manipulated directly by the calling applicataion.
  * @{
  */
 

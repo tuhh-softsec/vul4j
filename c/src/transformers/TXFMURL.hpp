@@ -75,12 +75,9 @@
 
 #include <xercesc/util/BinInputStream.hpp>
 
-/** @ingroup internal
- * @{
- */
-
 /**
  * \brief Base transformer for URL inputs to chains
+ * @ingroup internal
  */
 
 class DSIG_EXPORT TXFMURL : public TXFMBase {
@@ -119,4 +116,4 @@ public:
 private :
 	TXFMURL();
 };
-/** @} */
+

@@ -76,12 +76,8 @@
 #include <xsec/utils/XSECSafeBuffer.hpp>
 
 /**
- * \ingroup crypto
- * @{
- */
-
-/**
  * \brief Interface class for X509 certificates.
+ * @ingroup crypto
  *
  * The library uses classes derived from this to process X509 Certificates.
  *
@@ -151,9 +147,9 @@ public :
 	virtual safeBuffer &getDEREncodingSB(void) = 0;		// Get the DER string
 
 	//@}
+
 };
 
-/** @} */
 
 #endif /* XSECCRYPTOX509_INCLUDE */
 

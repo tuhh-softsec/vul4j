@@ -72,7 +72,9 @@
 #include <xsec/framework/XSECException.hpp>
 
 /**
- * @ingroup pubsig
+ * @defgroup pubsig Main Signature API
+ * This section describes the main classes and interfaces necessary for 
+ * programming with the XML-Security-C library.
  * @{
  */
 

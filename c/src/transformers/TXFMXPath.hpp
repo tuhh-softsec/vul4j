@@ -99,12 +99,9 @@ XSEC_DECLARE_XERCES_CLASS(DOMNamedNodeMap);
 
 #ifndef XSEC_NO_XPATH
 
-/** @ingroup internal
- * @{
- */
-
 /**
  * \brief Transformer to handle XPath transforms
+ * @ingroup internal
  */
 
 
@@ -155,4 +152,3 @@ private:
 };
 
 #endif
-/** @} */

@@ -77,12 +77,9 @@
 
 #include <xercesc/dom/DOM.hpp>
 
-/** @ingroup internal
- * @{
- */
-
 /**
  * \brief Transformer to handle envelope transforms
+ * @ingroup internal
  */
 
 class DSIG_EXPORT TXFMEnvelope : public TXFMBase {
@@ -122,4 +119,3 @@ private:
 	TXFMEnvelope();
 };
 
-/** @} */

@@ -78,12 +78,9 @@
 
 using std::ofstream;
 
-/** @ingroup internal
- * @{
- */
-
 /**
  * \brief Transformer to handle file output transforms
+ * @ingroup internal
  *
  * This transformer simply reads from the input transform 
  * and passes the bytes to the transformer that reads from it.
@@ -129,6 +126,5 @@ private:
 	TXFMOutputFile();
 };
 
-/** @} */
 
 #endif /* #define TXFMOUTPUTFILE_INCLUDE */

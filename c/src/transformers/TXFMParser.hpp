@@ -73,12 +73,9 @@
 
 #include <xsec/transformers/TXFMBase.hpp>
 
-/** @ingroup internal
- * @{
- */
-
 /**
  * \brief Transformer to handle move between bytes and DOM
+ * @ingroup internal
  *
  * THere is no "parser" transformation defined in DSIG, however there
  * is a requirement to be able to move between a byte stream and
@@ -127,7 +124,5 @@ private:
 	DOMDocument			* mp_parsedDoc;
 
 };
-
-/** @} */
 
 #endif /* #define TXFMPARSER_INCLUDE */

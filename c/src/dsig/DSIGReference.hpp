@@ -127,7 +127,7 @@ public:
 	 * @note DSIGReference structures should only ever be created via calls to a
 	 * DSIGSignature object.
 	 *
-	 * @param doc The DOM document node in which the signature is embedded.
+	 * @param sig The signature in which the reference is embedded.
 	 * @param dom The DOM node (within doc) that is to be used as the base of the reference.
 	 * @see #load
 	 * @see DSIGSignature#createReference
@@ -144,7 +144,7 @@ public:
 	 * @note DSIGReference structures should only ever be created via calls to a
 	 * DSIGSignature object.
 	 *
-	 * @param doc The DOM document node in which the signature is embedded.
+	 * @param sig The signature in which the reference is embedded.
 	 * @see #load
 	 * @see DSIGSignature#createReference
 	 */
@@ -190,7 +190,7 @@ public:
 	 * applications.
 	 *
 	 * @param URI The URI (data source) for this reference.
-	 * @param hashMethod The type of Digest to be used (generally SHA-1)
+	 * @param hm The type of Digest to be used (generally SHA-1)
 	 * @param type A type string (as defined by XML Signature).
 	 * @returns The root Reference element of the newly created DOM structure.
 	 */

@@ -74,9 +74,9 @@
 #include <xsec/framework/XSECDefs.hpp>
 
 /**
- * @ingroup pubsig Main Signature API
+ * @addtogroup pubsig
+ * @{
  */
-/*\@{*/
 
 /**
  * @brief Exception Class.
@@ -221,6 +221,6 @@ private:
 
 };
 
-/*\@}*/
+/** @}*/
 
 #endif /* XSECEXCEPTION_INCLUDE */

@@ -90,7 +90,7 @@ class DSIGKeyInfoX509;
 class DSIGKeyInfoName;
 
 /**
- * @ingroup pubsig Main Signature API
+ * @ingroup pubsig
  */
 /*\@{*/
 

@@ -153,6 +153,5 @@ public :
 	//@}
 };
 
-/** @} */
 
 #endif /* XSECCRYPTOKEYHMAC_INCLUDE */

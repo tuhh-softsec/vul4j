@@ -76,7 +76,7 @@
 #include <xercesc/util/XMLString.hpp>
 
 /** 
- * \ingroup internal
+ * \addtogroup internal
  * @{
  */
 

@@ -188,6 +188,8 @@ public:
 
 	virtual void load() = 0;
 
+	//@}
+
 protected:
 
 	DOMNode						* mp_keyInfoDOMNode;
@@ -198,7 +200,6 @@ private:
 
 };
 
-/** @} */
 
 
 

@@ -79,12 +79,8 @@
 #include <stdio.h>
 
 /**
- * @ingroup pubsig
- * @{
- */
-
-/**
  * \brief High level library interface class.
+ * @ingroup internal
  *
  * This class is used primarily to initialise the library and
  * communicate high level parameters that will be common to all
@@ -149,7 +145,6 @@ public :
 
 };
 
-/** @} */
 
 #endif /* XSECPLATFORMUTILS_INCLUDE */
 

@@ -215,7 +215,7 @@ public:
 	 *
 	 * @param URI What the reference references
 	 * @param hm Digest method to use for the reference
-	 * @type Reference type
+	 * @param type Reference type
 	 */
 
 	DSIGReference * createReference(const XMLCh * URI,
@@ -299,6 +299,5 @@ private:
 
 };
 
-/** @} */
 
 #endif /* DSIGSIGNEDINFO_INCLUDE */

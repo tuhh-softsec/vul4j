@@ -199,6 +199,4 @@ public :
 
 };
 
-/** @} */
-
 #endif /* XSECCRYPTOHASH_INCLUDE */

@@ -82,7 +82,7 @@
 XSEC_USING_XERCES(XMLFormatter);
 XSEC_USING_XERCES(XMLFormatTarget);
 
-/** @ingroup internal
+/** @addtogroup internal
   * @{
   */
 

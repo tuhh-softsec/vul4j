@@ -75,12 +75,9 @@
 
 #include <xercesc/dom/DOM.hpp>
 
-/** @ingroup internal
- * @{
- */
-
 /**
  * \brief Transformer that defines a document start to a transform chain
+ * @ingroup internal
  */
 
 
@@ -122,4 +119,3 @@ private:
 	TXFMDocObject();
 };
 
-/** @} */
