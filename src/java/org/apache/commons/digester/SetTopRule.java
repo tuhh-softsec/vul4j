@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.11 2002/01/23 21:25:22 sanders Exp $
- * $Revision: 1.11 $
- * $Date: 2002/01/23 21:25:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.12 2002/01/27 00:52:06 craigmcc Exp $
+ * $Revision: 1.12 $
+ * $Date: 2002/01/27 00:52:06 $
  *
  * ====================================================================
  *
@@ -71,12 +71,13 @@ import org.apache.commons.beanutils.MethodUtils;
 
 
 /**
- * Rule implementation that calls a method on the top (parent)
- * object, passing the (top-1) (child) object as an argument.
+ * Rule implementation that calls a "set parent" method on the top (child)
+ * object, passing the (top-1) (parent) object as an argument.
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.11 $ $Date: 2002/01/23 21:25:22 $
+ * @author Janek Bogucki
+ * @version $Revision: 1.12 $ $Date: 2002/01/27 00:52:06 $
  */
 
 public class SetTopRule extends Rule {
@@ -87,11 +88,11 @@ public class SetTopRule extends Rule {
 
     /**
      * Construct a "set parent" rule with the specified method name.  The
-     * parent method's argument type is assumed to be the class of the
-     * child object.
+     * "set parent" method's argument type is assumed to be the class of the
+     * parent object.
      *
      * @param digester The associated Digester
-     * @param methodName Method name of the parent method to call
+     * @param methodName Method name of the "set parent" method to call
      */
     public SetTopRule(Digester digester, String methodName) {
 
@@ -104,8 +105,8 @@ public class SetTopRule extends Rule {
      * Construct a "set parent" rule with the specified method name.
      *
      * @param digester The associated Digester
-     * @param methodName Method name of the parent method to call
-     * @param paramType Java class of the parent method's argument
+     * @param methodName Method name of the "set parent" method to call
+     * @param paramType Java class of the "set parent" method's argument
      *  (if you wish to use a primitive type, specify the corresonding
      *  Java wrapper class instead, such as <code>java.lang.Boolean</code>
      *  for a <code>boolean</code> parameter)
@@ -124,7 +125,7 @@ public class SetTopRule extends Rule {
 
 
     /**
-     * The method name to call on the parent object.
+     * The method name to call on the child object.
      */
     protected String methodName = null;
 
@@ -144,17 +145,17 @@ public class SetTopRule extends Rule {
     public void end() throws Exception {
 
         // Identify the objects to be used
-        Object child = digester.peek(1);
-        Object parent = digester.peek(0);
+        Object child = digester.peek(0);
+        Object parent = digester.peek(1);
         if (digester.log.isDebugEnabled()) {
-            if (parent == null) {
+            if (child == null) {
                 digester.log.debug("[SetTopRule]{" + digester.match +
-                        "} Call [NULL PARENT]." +
-                        methodName + "(" + child + ")");
+                        "} Call [NULL CHILD]." +
+                        methodName + "(" + parent + ")");
             } else {
                 digester.log.debug("[SetTopRule]{" + digester.match +
-                        "} Call " + parent.getClass().getName() + "." +
-                        methodName + "(" + child + ")");
+                        "} Call " + child.getClass().getName() + "." +
+                        methodName + "(" + parent + ")");
             }
         }
 
@@ -164,10 +165,10 @@ public class SetTopRule extends Rule {
             paramTypes[0] =
                     digester.getClassLoader().loadClass(paramType);
         } else {
-            paramTypes[0] = child.getClass();
+            paramTypes[0] = parent.getClass();
         }
-        MethodUtils.invokeExactMethod(parent, methodName,
-                new Object[]{ child }, paramTypes);
+        MethodUtils.invokeExactMethod(child, methodName,
+                new Object[]{ parent }, paramTypes);
 
     }
 
