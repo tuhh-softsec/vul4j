@@ -190,6 +190,14 @@ SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoList.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoMgmtData.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoMgmtData.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\dsig\DSIGKeyInfoName.cpp
 # End Source File
 # Begin Source File

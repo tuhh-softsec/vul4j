@@ -60,7 +60,7 @@
 /*
  * XSEC
  *
- * DSIGKeyInfoList := Class for Loading and storing a list of KeyInfo elements
+ * DSIGKeyInfoMgmtData := MgmtData - used for conveying in-band key data
  *
  * Author(s): Berin Lautenbach
  *
@@ -68,147 +68,144 @@
  *
  */
 
-// XSEC Includes
-#include <xsec/dsig/DSIGKeyInfoList.hpp>
-#include <xsec/dsig/DSIGKeyInfoX509.hpp>
-#include <xsec/dsig/DSIGKeyInfoName.hpp>
-#include <xsec/dsig/DSIGKeyInfoValue.hpp>
-#include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
-#include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
-#include <xsec/dsig/DSIGKeyInfoMgmtData.hpp>
-#include <xsec/framework/XSECError.hpp>
-#include <xsec/utils/XSECDOMUtils.hpp>
-#include <xsec/dsig/DSIGSignature.hpp>
+#ifndef DSIGKEYINFOMGMTDATA_INCLUDE
+#define DSIGKEYINFOMGMTDATA_INCLUDE
 
-DSIGKeyInfoList::DSIGKeyInfoList(DSIGSignature * sig) :
-mp_parentSignature(sig) {}
+#include <xsec/dsig/DSIGKeyInfo.hpp>
+#include <xsec/utils/XSECPlatformUtils.hpp>
 
-DSIGKeyInfoList::~DSIGKeyInfoList() {
+XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
-	empty();
+/**
+ * @ingroup pubsig
+ * @{
+ */
 
-}
-
-// Actions
-
-void DSIGKeyInfoList::addKeyInfo(DSIGKeyInfo * ref) {
-
-	m_keyInfoList.push_back(ref);
-
-}
-
-DSIGKeyInfo * DSIGKeyInfoList::removeKeyInfo(size_type index) {
-
-	if (index < m_keyInfoList.size())
-		return m_keyInfoList[index];
-
-	return NULL;
-
-}
-
-size_t DSIGKeyInfoList::getSize() {
-
-	return m_keyInfoList.size();
-
-}
+/**
+ * @brief The class for <MgmtData> nodes in a KeyInfo list.
+ *
+ * Class for holding in band key information.
+ * @note Use of this class is <em>NOT RECOMMEDED</em> within
+ * the DSIG standard.
+ *
+ */
 
 
-DSIGKeyInfo * DSIGKeyInfoList::item(size_type index) {
 
-	if (index < m_keyInfoList.size())
-		return m_keyInfoList[index];
+class DSIG_EXPORT DSIGKeyInfoMgmtData : public DSIGKeyInfo {
+
+public:
+
+	/** @name Constructors and Destructors */
+	//@{
+
+	/**
+	 * \brief Constructor used when XML exists.
+	 *
+	 * This constructor is used by DSIGSignature objects to load
+	 * an existing DOM structure into the Name element.
+	 *
+	 * @param sig Calling signature object.
+	 * @param nameNode DOMNode to load information from
+	 */
+
+	DSIGKeyInfoMgmtData(DSIGSignature * sig, DOMNode *nameNode);
+
+	/**
+	 * \brief Constructor used when XML needs to be created.
+	 *
+	 * This constructor is used by DSIGSignature objects to
+	 * create a DSIGKeyInfoName object that can then be used
+	 * to create the required XML.
+	 *
+	 * @param sig Calling signature object.
+	 */
+
+	DSIGKeyInfoMgmtData(DSIGSignature * sig);
+
+	/**
+	 * \brief Destructor
+	 */
+
+	virtual ~DSIGKeyInfoMgmtData();
+
+	//@}
+
+	/** @name Load and Get functions */
+	//@{
+
+	/**
+	 * \brief Load an existing XML structure into this object.
+	 */
+
+	virtual void load(void);
+
+	/**
+	 * \Get key name - unimplemented for MgmtData
+	 */
+
+	virtual const XMLCh * getKeyName(void) {return NULL;}
+
+	/**
+	 * \brief Get the MgmtData string
+	 *
+	 * Returns a pointer to the buffer containing the data string.
+	 *
+	 * @returns A pointer to the XMLCh buffer containing the data
+	 */
+
+	virtual const XMLCh * getData(void) {return mp_data;};
+
+	//@}
+
+	/**@name Create and set functions */
+	//@{
 	
-	return NULL;
+	/**
+	 * \brief Create a new MgmtData element in the current document.
+	 *
+	 * Creates a new MgmtData element and sets the data with the string
+	 * passed in.
+	 *
+	 * @param data Value to set the MgmtData to
+	 * @returns The newly created DOMElement with the structure underneath.
+	 */
 
-}
+	DOMElement * createBlankMgmtData(const XMLCh * data);
 
-void DSIGKeyInfoList::empty() {
+	/**
+	 * \brief Set the value of the MgmtData to a new string.
+	 *
+	 * Uses the passed in string to set a new value in the DOM structure.
+	 *
+	 * @param data Value to set in MgmtData
+	 */
 
-	size_type i, s;
-	s = getSize();
+	void setData(const XMLCh * data);
 
-	for (i = 0; i < s; ++i)
-		delete m_keyInfoList[i];
+	//@}
 
-	m_keyInfoList.clear();
+	/** @name Information Functions */
+	//@{
+	
+	/**
+	 * \brief Return type of this KeyInfo element
+	 */
+	
+	virtual keyInfoType getKeyInfoType(void) {return DSIGKeyInfo::KEYINFO_MGMTDATA;}
 
-}
+	//@}
 
-bool DSIGKeyInfoList::isEmpty() {
+private:
 
-		return (m_keyInfoList.size() == 0);
+	DSIGKeyInfoMgmtData();						// Non-implemented constructor
 
-}
+	const XMLCh			* mp_data;				// The Data stored in the XML file
+	DOMNode				* mp_dataTextNode;		// Text node containing the name
 
-// --------------------------------------------------------------------------------
-//           Add a KeyInfo based on XML DomNode source
-// --------------------------------------------------------------------------------
-
-
-bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
-
-	// return true if successful - does not throw if the node type is unknown
-
-	if (ki == 0)
-		return false;
-
-	DSIGKeyInfo * k;
-
-	if (strEquals(getDSIGLocalName(ki), "X509Data")) {
-
-		// Have a certificate!
-		XSECnew(k, DSIGKeyInfoX509(mp_parentSignature, ki));
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "KeyName")) {
-
-		XSECnew(k, DSIGKeyInfoName(mp_parentSignature, ki));
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "KeyValue")) {
-
-		XSECnew(k, DSIGKeyInfoValue(mp_parentSignature, ki));
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "PGPData")) {
-
-		XSECnew(k, DSIGKeyInfoPGPData(mp_parentSignature, ki));
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "SPKIData")) {
-
-		XSECnew(k, DSIGKeyInfoSPKIData(mp_parentSignature, ki));
-		
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "MgmtData")) {
-
-		XSECnew(k, DSIGKeyInfoMgmtData(mp_parentSignature, ki));
-		
-	}
-
-	else {
-
-		return false;
-
-	}
-
-	// Now we know what the element type is - do the load and save
-
-	try {
-		k->load();
-	}
-	catch (...) {
-		delete k;
-		throw;
-	}
-
-	// Add
-	this->addKeyInfo(k);
-
-	return true;
-
-}
+};
 
 
+
+#endif /* #define DSIGKEYINFOMGMTDATA_INCLUDE */
 

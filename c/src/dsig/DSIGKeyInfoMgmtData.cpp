@@ -60,7 +60,7 @@
 /*
  * XSEC
  *
- * DSIGKeyInfoList := Class for Loading and storing a list of KeyInfo elements
+ * DSIGKeyInfoMgmtData := Inband key information
  *
  * Author(s): Berin Lautenbach
  *
@@ -68,147 +68,130 @@
  *
  */
 
-// XSEC Includes
-#include <xsec/dsig/DSIGKeyInfoList.hpp>
-#include <xsec/dsig/DSIGKeyInfoX509.hpp>
-#include <xsec/dsig/DSIGKeyInfoName.hpp>
-#include <xsec/dsig/DSIGKeyInfoValue.hpp>
-#include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
-#include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
 #include <xsec/dsig/DSIGKeyInfoMgmtData.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
-DSIGKeyInfoList::DSIGKeyInfoList(DSIGSignature * sig) :
-mp_parentSignature(sig) {}
+#include <xercesc/util/Janitor.hpp>
 
-DSIGKeyInfoList::~DSIGKeyInfoList() {
-
-	empty();
-
-}
-
-// Actions
-
-void DSIGKeyInfoList::addKeyInfo(DSIGKeyInfo * ref) {
-
-	m_keyInfoList.push_back(ref);
-
-}
-
-DSIGKeyInfo * DSIGKeyInfoList::removeKeyInfo(size_type index) {
-
-	if (index < m_keyInfoList.size())
-		return m_keyInfoList[index];
-
-	return NULL;
-
-}
-
-size_t DSIGKeyInfoList::getSize() {
-
-	return m_keyInfoList.size();
-
-}
-
-
-DSIGKeyInfo * DSIGKeyInfoList::item(size_type index) {
-
-	if (index < m_keyInfoList.size())
-		return m_keyInfoList[index];
-	
-	return NULL;
-
-}
-
-void DSIGKeyInfoList::empty() {
-
-	size_type i, s;
-	s = getSize();
-
-	for (i = 0; i < s; ++i)
-		delete m_keyInfoList[i];
-
-	m_keyInfoList.clear();
-
-}
-
-bool DSIGKeyInfoList::isEmpty() {
-
-		return (m_keyInfoList.size() == 0);
-
-}
+XSEC_USING_XERCES(ArrayJanitor);
 
 // --------------------------------------------------------------------------------
-//           Add a KeyInfo based on XML DomNode source
+//           Constructors and Destructors
 // --------------------------------------------------------------------------------
 
 
-bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
+DSIGKeyInfoMgmtData::DSIGKeyInfoMgmtData(DSIGSignature *sig, DOMNode *nameNode) : 
+DSIGKeyInfo(sig),
+mp_data(NULL),
+mp_dataTextNode(0) {
 
-	// return true if successful - does not throw if the node type is unknown
+	mp_keyInfoDOMNode = nameNode;
 
-	if (ki == 0)
-		return false;
+}
 
-	DSIGKeyInfo * k;
 
-	if (strEquals(getDSIGLocalName(ki), "X509Data")) {
+DSIGKeyInfoMgmtData::DSIGKeyInfoMgmtData(DSIGSignature *sig) : 
+DSIGKeyInfo(sig),
+mp_data(NULL),
+mp_dataTextNode(0) {
 
-		// Have a certificate!
-		XSECnew(k, DSIGKeyInfoX509(mp_parentSignature, ki));
+	mp_keyInfoDOMNode = 0;
+
+}
+
+
+DSIGKeyInfoMgmtData::~DSIGKeyInfoMgmtData() {
+
+
+};
+
+// --------------------------------------------------------------------------------
+//           Load and Get functions
+// --------------------------------------------------------------------------------
+
+
+void DSIGKeyInfoMgmtData::load(void) {
+
+	// Assuming we have a valid DOM_Node to start with, load the signing key so that it can
+	// be used later on
+
+	if (mp_keyInfoDOMNode == NULL) {
+
+		// Attempt to load an empty signature element
+		throw XSECException(XSECException::KeyInfoError,
+			"DSIGKeyInfoMgmtData::load - called on empty DOM");
+
 	}
 
-	else if (strEquals(getDSIGLocalName(ki), "KeyName")) {
+	if (!strEquals(getDSIGLocalName(mp_keyInfoDOMNode), "MgmtData")) {
 
-		XSECnew(k, DSIGKeyInfoName(mp_parentSignature, ki));
+		throw XSECException(XSECException::KeyInfoError,
+			"DSIGKeyInfoMgmtData::load - called on non <MgmtData> node");
+
 	}
 
-	else if (strEquals(getDSIGLocalName(ki), "KeyValue")) {
+	// Now find the text node containing the name
 
-		XSECnew(k, DSIGKeyInfoValue(mp_parentSignature, ki));
-	}
+	DOMNode *tmpElt = findFirstChildOfType(mp_keyInfoDOMNode, DOMNode::TEXT_NODE);
 
-	else if (strEquals(getDSIGLocalName(ki), "PGPData")) {
+	if (tmpElt != 0) {
 
-		XSECnew(k, DSIGKeyInfoPGPData(mp_parentSignature, ki));
-	}
+		mp_dataTextNode = tmpElt;
+		mp_data = tmpElt->getNodeValue();
 
-	else if (strEquals(getDSIGLocalName(ki), "SPKIData")) {
-
-		XSECnew(k, DSIGKeyInfoSPKIData(mp_parentSignature, ki));
-		
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "MgmtData")) {
-
-		XSECnew(k, DSIGKeyInfoMgmtData(mp_parentSignature, ki));
-		
 	}
 
 	else {
 
-		return false;
+		throw XSECException(XSECException::ExpectedDSIGChildNotFound,
+			"DSIGKeyInfoMgmtData::load - Expected TEXT node as child to <MgmtData> element");
 
 	}
-
-	// Now we know what the element type is - do the load and save
-
-	try {
-		k->load();
-	}
-	catch (...) {
-		delete k;
-		throw;
-	}
-
-	// Add
-	this->addKeyInfo(k);
-
-	return true;
 
 }
 
+// --------------------------------------------------------------------------------
+//           Create and Set functions
+// --------------------------------------------------------------------------------
 
+DOMElement * DSIGKeyInfoMgmtData::createBlankMgmtData(const XMLCh * data) {
+
+	// Create the DOM Structure
+
+	safeBuffer str;
+	DOMDocument *doc = mp_parentSignature->getParentDocument();
+	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+
+	makeQName(str, prefix, "MgmtData");
+
+	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
+	mp_keyInfoDOMNode = ret;
+
+	// Check whether to encode prior to adding
+	mp_dataTextNode = doc->createTextNode(data);
+
+	ret->appendChild(mp_dataTextNode);
+
+	mp_data = mp_dataTextNode->getNodeValue();
+
+	return ret;
+
+}
+
+void DSIGKeyInfoMgmtData::setData(const XMLCh * data) {
+
+	if (mp_dataTextNode == 0) {
+
+		// Attempt to set an empty element
+		throw XSECException(XSECException::KeyInfoError,
+			"KeyInfoMgmtData::setData() called prior to load() or createBlank()");
+
+	}
+
+	mp_dataTextNode->setNodeValue(data);
+	mp_data = mp_dataTextNode->getNodeValue();
+
+}
 

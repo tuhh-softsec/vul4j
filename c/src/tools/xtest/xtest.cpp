@@ -121,6 +121,7 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
 #include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
 #include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
+#include <xsec/dsig/DSIGKeyInfoMgmtData.hpp>
 
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
@@ -223,6 +224,14 @@ XMLCh s_tstSexp2[] = {
 
 	chLatin_D, chLatin_u, chLatin_m, chLatin_m, chLatin_y, chSpace,
 	chLatin_S, chLatin_e, chLatin_x, chLatin_p, chDigit_2, chNull
+};
+
+XMLCh s_tstMgmtData[] = {
+
+	chLatin_D, chLatin_u, chLatin_m, chLatin_m, chLatin_y, chSpace,
+	chLatin_M, chLatin_g, chLatin_m, chLatin_t, chSpace,
+	chLatin_D, chLatin_a, chLatin_t, chLatin_a, chNull
+
 };
 
 // --------------------------------------------------------------------------------
@@ -436,6 +445,9 @@ count(ancestor-or-self::dsig:Signature)");
 		DSIGKeyInfoSPKIData * spki = sig->appendSPKIData(s_tstSexp1);
 		spki->appendSexp(s_tstSexp2);
 
+		// Append a MgmtData element
+		sig->appendMgmtData(s_tstMgmtData);
+
 		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
 		sig->sign();
 
@@ -629,6 +641,20 @@ count(ancestor-or-self::dsig:Signature)");
 
 				if (!(strEquals(s->getSexp(0), s_tstSexp1) &&
 					strEquals(s->getSexp(1), s_tstSexp2))) {
+
+					cerr << "no!";
+					exit(1);
+				}
+
+				cerr << "yes\n";
+			}
+			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_MGMTDATA) {
+				
+				cerr << "Validating MgmtData read back OK ... ";
+
+				DSIGKeyInfoMgmtData * m = (DSIGKeyInfoMgmtData *)kil->item(i);
+
+				if (!strEquals(m->getData(), s_tstMgmtData)) {
 
 					cerr << "no!";
 					exit(1);

@@ -90,6 +90,7 @@ class DSIGKeyInfoX509;
 class DSIGKeyInfoName;
 class DSIGKeyInfoPGPData;
 class DSIGKeyInfoSPKIData;
+class DSIGKeyInfoMgmtData;
 
 /**
  * @ingroup pubsig
@@ -650,6 +651,17 @@ public:
 	 */
 
 	DSIGKeyInfoSPKIData * appendSPKIData(const XMLCh * sexp);
+
+	/**
+	 * \brief Append a MgmtData element
+	 *
+	 * Add a new KeyInfo element for Management Data
+	 *
+	 * @param data The string to set in the MgmtData element
+	 * @returns A pointer to the created object
+	 */
+
+	DSIGKeyInfoMgmtData * appendMgmtData(const XMLCh * data);
 
 	//@}
 
