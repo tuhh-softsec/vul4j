@@ -287,7 +287,7 @@ public class C14NInterop extends InteropTest {
       A_A.appendChild(A_B);
       A_B.appendChild(A_C);
 
-      log.info("Created document");
+      log.debug("Created document");
 
 
       Canonicalizer20010315OmitComments c = new Canonicalizer20010315OmitComments();
