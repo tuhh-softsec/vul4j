@@ -60,6 +60,9 @@
  */
 package org.codehaus.plexus.util;
 
+import junit.framework.AssertionFailedError;
+import junit.framework.TestCase;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,11 +73,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.Arrays;
-
-import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
 
 // Note: jdk1.2 dependency
 
@@ -111,7 +112,7 @@ public final class IOUtilTest
     {
         try
         {
-            testDirectory = ( new File( "test/io/" ) ).getAbsoluteFile();
+            testDirectory = ( new File( "target/test/io/" ) ).getAbsoluteFile();
             if ( !testDirectory.exists() )
             {
                 testDirectory.mkdirs();
