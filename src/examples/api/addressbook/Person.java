@@ -66,7 +66,9 @@ public class Person {
           System.out.println("  email (type " + type + ") : " + address);
       }
       
-      System.out.println( addresses );
-      
+      for(Iterator i = addresses.iterator(); i.hasNext(); ) {
+          Address addr = (Address) i.next();
+          addr.print(System.out, 2);
+      }
   }
 }
