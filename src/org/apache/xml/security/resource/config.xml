@@ -38,18 +38,31 @@
       <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureDSA" />
       <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#rsa-sha1"
-                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureRSA" />
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA1" />
       <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
-                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmacSHA1" />
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmac$IntegrityHmacSHA1" />
 
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-md5"
-                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureRSAMD5" />
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSAMD5" />
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160"
-                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureRSARIPEMD160" />
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSARIPEMD160" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA256" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA384" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureBaseRSA$SignatureRSASHA512" />
+
       <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-md5"
-                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmacMD5" />
-      <SignatureAlgorithm URI="hhttp://www.w3.org/2001/04/xmldsig-more#hmac-ripemd160"
-                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmacRIPEMD160" />
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmac$IntegrityHmacMD5" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-ripemd160"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmac$IntegrityHmacRIPEMD160" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha256"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmac$IntegrityHmacSHA256" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha384"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmac$IntegrityHmacSHA384" />
+      <SignatureAlgorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha512"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmac$IntegrityHmacSHA512" />
    </SignatureAlgorithms>
    <JCEAlgorithmMappings>
       <!-- Here, individual providers can be registered; each provider
@@ -82,29 +95,23 @@
                    ProviderURL="http://www.cryptix.org//" />
       </Providers>
       <Algorithms>
-         <Algorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
-                    Description="Digital Signature Algorithm with SHA-1 message digest"
-                    AlgorithmClass="Signature"
-                    RequirementLevel="REQUIRED">
+         <!-- MessageDigest Algorithms -->
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#md5"
+                    Description="MD5 message digest from RFC 1321"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="NOT RECOMMENDED"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
             <ProviderAlgo ProviderId="BC"
-                          JCEName="DSA" />
-            <ProviderAlgo ProviderId="SUN"
-                          JCEName="DSAWithSHA1" />
-            <ProviderAlgo ProviderId="IAIK"
-                          JCEName="DSA" />
+                          JCEName="MD5" />
          </Algorithm>
-         <Algorithm URI="http://www.w3.org/2000/09/xmldsig#rsa-sha1"
-                    Description="RSA Signature with SHA-1 message digest"
-                    AlgorithmClass="Signature"
-                    RequirementLevel="RECOMMENDED">
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#ripemd160"
+                    Description="RIPEMD-160 message digest"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL">
             <ProviderAlgo ProviderId="BC"
-                          JCEName="SHA1WithRSAEncryption" />
-            <ProviderAlgo ProviderId="SunRsaSign"
-                          JCEName="SHA1withRSA" />
-            <ProviderAlgo ProviderId="IAIK"
-                          JCEName="SHA-1/RSA" />
+                          JCEName="RIPEMD160" />
             <ProviderAlgo ProviderId="Cryptix"
-                          JCEName="SHA-1/RSA" />
+                          JCEName="RIPEMD160" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#sha1"
                     Description="SHA-1 message digest"
@@ -126,31 +133,6 @@
             <ProviderAlgo ProviderId="BC"
                           JCEName="SHA-256" />
          </Algorithm>
-         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#sha512"
-                    Description="SHA-1 message digest with 512 bit"
-                    AlgorithmClass="MessageDigest"
-                    RequirementLevel="OPTIONAL">
-            <ProviderAlgo ProviderId="BC"
-                          JCEName="SHA-512" />
-         </Algorithm>
-         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#ripemd160"
-                    Description="RIPEMD-160 message digest"
-                    AlgorithmClass="MessageDigest"
-                    RequirementLevel="OPTIONAL">
-            <ProviderAlgo ProviderId="BC"
-                          JCEName="RIPEMD160" />
-            <ProviderAlgo ProviderId="Cryptix"
-                          JCEName="RIPEMD160" />
-         </Algorithm>
-
-         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#md5"
-                    Description="MD5 message digest from RFC 1321"
-                    AlgorithmClass="MessageDigest"
-                    RequirementLevel="OPTIONAL"
-                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
-            <ProviderAlgo ProviderId="BC"
-                          JCEName="MD5" />
-         </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#sha384"
                     Description="SHA message digest with 384 bit"
                     AlgorithmClass="MessageDigest"
@@ -159,26 +141,31 @@
             <ProviderAlgo ProviderId="BC"
                           JCEName="SHA-384" />
          </Algorithm>
-         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-md5"
-                    Description="Message Authentication code using MD5"
-                    AlgorithmClass="Mac"
-                    RequirementLevel="OPTIONAL"
-                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#sha512"
+                    Description="SHA-1 message digest with 512 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL">
             <ProviderAlgo ProviderId="BC"
-                          JCEName="HMACMD5" />
+                          JCEName="SHA-512" />
          </Algorithm>
-         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-ripemd160"
-                    Description="Message Authentication code using RIPEMD-160"
-                    AlgorithmClass="Mac"
-                    RequirementLevel="OPTIONAL"
-                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+
+         <!-- Signature Algorithms -->
+         <Algorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
+                    Description="Digital Signature Algorithm with SHA-1 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="REQUIRED">
             <ProviderAlgo ProviderId="BC"
-                          JCEName="HMACRIPEMD160" />
+                          JCEName="DSA" />
+            <ProviderAlgo ProviderId="SUN"
+                          JCEName="DSAWithSHA1" />
+            <ProviderAlgo ProviderId="IAIK"
+                          JCEName="DSA" />
          </Algorithm>
+
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-md5"
                     Description="RSA Signature with MD5 message digest"
                     AlgorithmClass="Signature"
-                    RequirementLevel="OPTIONAL"
+                    RequirementLevel="NOT RECOMMENDED"
                     SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
             <ProviderAlgo ProviderId="BC"
                           JCEName="MD5WithRSAEncryption" />
@@ -191,8 +178,61 @@
             <ProviderAlgo ProviderId="BC"
                           JCEName="RIPEMD160WithRSAEncryption" />
          </Algorithm>
+         <Algorithm URI="http://www.w3.org/2000/09/xmldsig#rsa-sha1"
+                    Description="RSA Signature with SHA-1 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="RECOMMENDED">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="SHA1WithRSAEncryption" />
+            <ProviderAlgo ProviderId="SunRsaSign"
+                          JCEName="SHA1withRSA" />
+            <ProviderAlgo ProviderId="IAIK"
+                          JCEName="SHA-1/RSA" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="SHA-1/RSA" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+                    Description="RSA Signature with SHA-256 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="SHA256withRSAEncryption" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"
+                    Description="RSA Signature with SHA-384 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="SHA384withRSAEncryption" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"
+                    Description="RSA Signature with SHA-512 message digest"
+                    AlgorithmClass="Signature"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="SHA512withRSAEncryption" />
+         </Algorithm>
 
-
+         <!-- MAC Algorithms -->
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-md5"
+                    Description="Message Authentication code using MD5"
+                    AlgorithmClass="Mac"
+                    RequirementLevel="NOT RECOMMENDED"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="HMACMD5" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-ripemd160"
+                    Description="Message Authentication code using RIPEMD-160"
+                    AlgorithmClass="Mac"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="HMACRIPEMD160" />
+         </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
                     Description="Message Authentication code using SHA1"
                     AlgorithmClass="Mac"
@@ -206,6 +246,32 @@
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="HMAC-SHA-1" />
          </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha256"
+                    Description="Message Authentication code using SHA-256"
+                    AlgorithmClass="Mac"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="HMACSHA256" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha384"
+                    Description="Message Authentication code using SHA-384"
+                    AlgorithmClass="Mac"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="HMACSHA384" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha512"
+                    Description="Message Authentication code using SHA-512"
+                    AlgorithmClass="Mac"
+                    RequirementLevel="OPTIONAL"
+                    SpecificationURL="http://www.ietf.org/internet-drafts/draft-eastlake-xmldsig-uri-02.txt">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="HMACSHA512" />
+         </Algorithm>
+
+         <!-- Block encryption Algorithms -->
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#tripledes-cbc"
                     Description="Block encryption using Triple-DES"
                     AlgorithmClass="BlockEncryption"
@@ -254,6 +320,7 @@
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="Rijndael" />
          </Algorithm>
+
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#rsa-1_5"
                     Description="Key Transport RSA-v1.5"
                     AlgorithmClass="KeyTransport"
@@ -283,11 +350,13 @@
                           RequiredKey="RSA" />
             <!-- <ProviderAlgo ProviderId="BC" JCEName="RSA/OAEP" RequiredKey="RSA" /> -->
          </Algorithm>
+
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#dh"
                     Description="Key Agreement Diffie-Hellman"
                     AlgorithmClass="KeyAgreement"
                     RequirementLevel="OPTIONAL">
          </Algorithm>
+
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-tripledes"
                     Description="Symmetric Key Wrap using Triple DES"
                     AlgorithmClass="SymmetricKeyWrap"
@@ -438,7 +507,7 @@
 	</category>
 
 	<category name="org.apache.xml.security">
-		<priority value="info" />
+		<priority value="debug" />
 	</category>
 
 	<!--

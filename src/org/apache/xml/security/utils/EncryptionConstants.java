@@ -133,6 +133,7 @@ public class EncryptionConstants {
    // Symmetric Key Wrap - OPTIONAL AES-192 KeyWrap
    public static final String ALGO_ID_KEYWRAP_AES192 = EncryptionConstants.EncryptionSpecNS + "kw-aes192";
 
+   /*
    // Message Digest - REQUIRED SHA1
    public static final String ALGO_ID_DIGEST_SHA160 = Constants.ALGO_ID_DIGEST_SHA1;
    // Message Digest - RECOMMENDED SHA256
@@ -141,6 +142,7 @@ public class EncryptionConstants {
    public static final String ALGO_ID_DIGEST_SHA512 = EncryptionConstants.EncryptionSpecNS + "sha512";
    // Message Digest - OPTIONAL RIPEMD-160
    public static final String ALGO_ID_DIGEST_RIPEMD160 = EncryptionConstants.EncryptionSpecNS + "ripemd160";
+   */
 
    // Message Authentication - RECOMMENDED XML Digital Signature
    public static final String ALGO_ID_AUTHENTICATION_XMLSIGNATURE = "http://www.w3.org/TR/2001/CR-xmldsig-core-20010419/";

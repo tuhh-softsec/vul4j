@@ -106,17 +106,23 @@ public class XMLSignature extends SignatureElementProxy {
    public static final String ALGO_ID_MAC_HMAC_SHA1 = Constants.SignatureSpecNS + "hmac-sha1";
 
    /** Signature - Required DSAwithSHA1 (DSS) */
-   public static final String ALGO_ID_SIGNATURE_DSA = SignatureDSA._URI;
+   public static final String ALGO_ID_SIGNATURE_DSA = Constants.SignatureSpecNS + "dsa-sha1";
 
    /** Signature - Recommended RSAwithSHA1 */
    public static final String ALGO_ID_SIGNATURE_RSA = Constants.SignatureSpecNS + "rsa-sha1";
    public static final String ALGO_ID_SIGNATURE_RSA_SHA1 = Constants.SignatureSpecNS + "rsa-sha1";
 
-  private static final String ALGO_ID_MORE = "http://www.w3.org/2001/04/xmldsig-more";
-   public static final String ALGO_ID_MORE_SIGNATURE_RSA_MD5 = ALGO_ID_MORE + "rsa-md5";
-   public static final String ALGO_ID_MORE_SIGNATURE_RSA_RIPEMD160 = ALGO_ID_MORE + "rsa-ripemd160";
-   public static final String ALGO_ID_MORE_MAC_HMAC_MD5 = ALGO_ID_MORE + "hmac-md5";
-   public static final String ALGO_ID_MORE_MAC_HMAC_RIPEMD160 = ALGO_ID_MORE + "hmac-ripemd160";
+   public static final String ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5 = Constants.MoreAlgorithmsSpecNS + "rsa-md5";
+   public static final String ALGO_ID_SIGNATURE_RSA_RIPEMD160 = Constants.MoreAlgorithmsSpecNS + "rsa-ripemd160";
+   public static final String ALGO_ID_SIGNATURE_RSA_SHA256 = Constants.MoreAlgorithmsSpecNS + "rsa-sha256";
+   public static final String ALGO_ID_SIGNATURE_RSA_SHA384 = Constants.MoreAlgorithmsSpecNS + "rsa-sha384";
+   public static final String ALGO_ID_SIGNATURE_RSA_SHA512 = Constants.MoreAlgorithmsSpecNS + "rsa-sha512";
+
+   public static final String ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5 = Constants.MoreAlgorithmsSpecNS + "hmac-md5";
+   public static final String ALGO_ID_MAC_HMAC_RIPEMD160 = Constants.MoreAlgorithmsSpecNS + "hmac-ripemd160";
+   public static final String ALGO_ID_MAC_HMAC_SHA256 = Constants.MoreAlgorithmsSpecNS + "hmac-sha256";
+   public static final String ALGO_ID_MAC_HMAC_SHA384 = Constants.MoreAlgorithmsSpecNS + "hmac-sha384";
+   public static final String ALGO_ID_MAC_HMAC_SHA512 = Constants.MoreAlgorithmsSpecNS + "hmac-sha512";
    //J+
 
    /** ds:Signature.ds:SignedInfo element */
