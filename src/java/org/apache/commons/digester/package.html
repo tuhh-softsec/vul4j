@@ -763,9 +763,13 @@ behavior of <code>Digester</code>, as described above, is generally sufficient.
 However, if the document you are processing uses namespaces, it is often
 convenient to have sets of <code>Rule</code> instances that are <em>only</em>
 matched on elements that use the prefix of a particular namespace.  This
-approach, for example, elegantly deals with element names that are the same
-in different namespaces, but where you want to perform different processing
-for each namespace.  To accomplish this, follow these steps:</p>
+approach, for example, makes it possible to deal with element names that are 
+the same in different namespaces, but where you want to perform different 
+processing for each namespace. </p>
+
+<p>Digester does not provide full support for namespaces, but does provide
+sufficient to accomplish most tasks. Enabling digester's namespace support
+is done by following these steps:</p>
 
 <ol>
 <li>Tell <code>Digester</code> that you will be doing namespace
@@ -821,11 +825,6 @@ any restrictions on what other content is present in the document.</p>
 Rule Sets</a> if you wish to reuse a particular set of rules, associated
 with a particular namespace, in more than one application context.</p>
 
-<p>Note that Digester does not provide general "xpath-compliant" matching;
-only the namespace attached to the <i>last</i> element in the match path
-is involved in the matching process. Namespaces attached to parent
-elements are ignored for matching purposes.</p>
-
 <h4>Using Namespace Prefixes In Pattern Matching</h4>
 
 <p>Using rules with namespaces is very useful when you have orthogonal rulesets. 
@@ -843,6 +842,13 @@ prefixes.</p>
 <p>For example, (with <code>NamespaceAware</code> false), the pattern <code>
 'foo:bar'</code> will match a top level element named <code>'bar'</code> in the 
 namespace with (local) prefix <code>'foo'</code>.</p>
+
+<h4>Limitations of Digester Namespace support</h4>
+<p>Digester does not provide general "xpath-compliant" matching;
+only the namespace attached to the <i>last</i> element in the match path
+is involved in the matching process. Namespaces attached to parent
+elements are ignored for matching purposes.</p>
+
 
 <a name="doc.Pluggable"></a>
 <h3>Pluggable Rules Processing</h3>
@@ -936,10 +942,11 @@ to be kept to a minimum).
 
 <h4>WithDefaultsRulesWrapper</h4>
 <p>
-<a href="WithDefaultsRulesWrapper.html"> WithDefaultsRulesWrapper</a> allows default 
-<code>Rule</code>'s to be added to any existing <code>Rules</code> implementation.
-These default <code>Rule</code>'s will be returned for any match for which the wrapped 
-implementation does not return any matches. 
+<a href="WithDefaultsRulesWrapper.html"> WithDefaultsRulesWrapper</a> allows 
+default <code>Rule</code> instances to be added to any existing 
+<code>Rules</code> implementation. These default <code>Rule</code> instances 
+will be returned for any match for which the wrapped implementation does not 
+return any matches. 
 </p>
 <p>
 For example,
@@ -1028,10 +1035,11 @@ public class MyRuleSet extends RuleSetBase {
 <a name="doc.NamedStacks"></a>
 <h3>Using Named Stacks For Inter-Rule Communication</h3>
 <p>
-<code>Digester</code> is based on <code>Rule</code>'s working together to process xml.
-For anything other than the most trival processing, communication between 
-<code>Rule</code>'s is necessary. Since <code>Rule</code>'s are processed in sequence,
-this usually means storing an Object somewhere where later instances can retrieve it.
+<code>Digester</code> is based on <code>Rule</code> instances working together 
+to process xml. For anything other than the most trival processing, 
+communication between <code>Rule</code> instances is necessary. Since <code>Rule</code>
+instances are processed in sequence, this usually means storing an Object 
+somewhere where later instances can retrieve it.
 </p>
 <p>
 <code>Digester</code> is based on SAX. The most natural data structure to use with 
@@ -1042,8 +1050,8 @@ nested structure of the xml.
 <p>
 <code>Digester</code> uses two basic stacks: one for the main beans and the other 
 for parameters for method calls. These are inadequate for complex processing 
-where many different <code>Rule</code>'s need to communicate through different
-channels.
+where many different <code>Rule</code> instances need to communicate through 
+different channels.
 </p>
 <p>
 In this case, it is recommended that named stacks are used. In addition to the
@@ -1112,7 +1120,7 @@ independent key which can be used to subsistute local resources for remote ones
 </p>
 <p>
 By using the second (<code>PUBLIC</code>) form combined with some form of local
-catalog (which matches <code><em>public-identifier</em></code>'s to local resources) and where
+catalog (which matches <code><em>public-identifiers</em></code> to local resources) and where
 the <code><em>public-identifier</em></code> is a unique name and the <code><em>system-identifier</em></code> 
 is an internet URL, the practical disadvantages of specifying just a 
 <code><em>system-identifier</em></code> can be avoided. Those external entities which have been 
@@ -1126,7 +1134,7 @@ from the internet URL. This naming scheme is recommended when using <code>Digest
 SAX factors out the resolution of external entities into an <code>EntityResolver</code>.
 <code>Digester</code> supports the use of custom <code>EntityResolver</code> 
 but ships with a simple internal implementation. This implementation allows local URLs
-to be easily associated with <code><em>public-identifier</em></code>'s. 
+to be easily associated with <code><em>public-identifiers</em></code>. 
 </p>
 <p>For example:</p>
 <code><pre>
@@ -1175,7 +1183,7 @@ to help with diagnosing the reason for the failure.
 </p>
 <p>
 General <a href='http://www.saxproject.org/apidoc/org/xml/sax/SAXException.html'>
-SAXException</a>'s may wrap a causal exception. When exceptions are
+SAXException</a> instances may wrap a causal exception. When exceptions are
 throw by <code>Digester</code> each of these will be wrapped into a 
 <code>SAXException</code> and rethrown. So, catch these and examine the wrapped
 exception to diagnose what went wrong.
@@ -1215,7 +1223,7 @@ I'm Validating Against Schema But Digester Ignores Errors!</strong>
 Digester is based on <a href='http://www.saxproject.org'>SAX</a>. The convention for
 SAX parsers is that all errors are reported (to any registered 
 <code>ErrorHandler</code>) but processing continues. Digester (by default) 
-registers it's own <code>ErrorHandler</code> implementation. This logs details 
+registers its own <code>ErrorHandler</code> implementation. This logs details 
 but does not stop the processing (following the usual convention for SAX 
 based processors). 
 </p>
