@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsGreaterThanOrEqual.java,v 1.4 2003/11/24 20:12:17 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsGreaterThanOrEqual.java,v 1.5 2003/12/01 05:16:24 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,6 +60,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.adapter.RightBoundPredicate;
 
 /**
  * A {@link BinaryPredicate BinaryPredicate} that {@link #test tests}
@@ -68,7 +70,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * When no (or a <code>null</code> <code>Comparator</code> is specified,
  * a {@link Comparable Comparable} <code>Comparator</code> is used.
  * 
- * @version $Revision: 1.4 $ $Date: 2003/11/24 20:12:17 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/01 05:16:24 $
  * @author Rodney Waldhoff
  */
 public final class IsGreaterThanOrEqual implements BinaryPredicate, Serializable {
@@ -141,6 +143,10 @@ public final class IsGreaterThanOrEqual implements BinaryPredicate, Serializable
         return COMPARABLE_INSTANCE;
     }
     
+    public static final UnaryPredicate instance(Comparable right) {
+        return RightBoundPredicate.bind(instance(),right);
+    }
+
     private Comparator comparator = null;
     private static final IsGreaterThanOrEqual COMPARABLE_INSTANCE = new IsGreaterThanOrEqual();
 }

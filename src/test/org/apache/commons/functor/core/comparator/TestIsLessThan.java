@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsLessThan.java,v 1.3 2003/03/04 23:11:13 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsLessThan.java,v 1.4 2003/12/01 05:16:24 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/03/04 23:11:13 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/01 05:16:24 $
  * @author Rodney Waldhoff
  */
 public class TestIsLessThan extends BaseComparisonPredicateTest {
@@ -115,8 +115,8 @@ public class TestIsLessThan extends BaseComparisonPredicateTest {
         assertObjectsAreEqual(p,new IsLessThan());
         assertObjectsAreEqual(p,new IsLessThan(null));
         assertObjectsAreEqual(p,new IsLessThan(new ComparableComparator()));
-        assertObjectsAreEqual(p,IsLessThan.getIsLessThan());
-        assertSame(IsLessThan.getIsLessThan(),IsLessThan.getIsLessThan());
+        assertObjectsAreEqual(p,IsLessThan.instance());
+        assertSame(IsLessThan.instance(),IsLessThan.instance());
         assertObjectsAreNotEqual(p,new ConstantPredicate(false));
     }
     

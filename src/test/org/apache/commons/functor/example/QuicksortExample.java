@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/QuicksortExample.java,v 1.7 2003/11/25 19:39:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/QuicksortExample.java,v 1.8 2003/12/01 05:16:24 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,7 +68,6 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.adapter.RightBoundPredicate;
 import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.collection.IsEmpty;
 import org.apache.commons.functor.core.comparator.IsGreaterThanOrEqual;
@@ -95,7 +94,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * <p> 
  * See the extensive in line comments for details.
  * 
- * @version $Revision: 1.7 $ $Date: 2003/11/25 19:39:45 $
+ * @version $Revision: 1.8 $ $Date: 2003/12/01 05:16:24 $
  * @author Rodney Waldhoff
  */
 public class QuicksortExample extends TestCase {
@@ -503,9 +502,7 @@ public class QuicksortExample extends TestCase {
         public Object evaluate(Object head, List tail) {
             return Algorithms.collect(Algorithms.select(
                 tail.iterator(),
-                RightBoundPredicate.bind(
-                    IsLessThan.getIsLessThan(), 
-                    head)));
+                IsLessThan.instance((Comparable)head)));
         }
     };
 
@@ -514,13 +511,11 @@ public class QuicksortExample extends TestCase {
  * the tail greater than (or equal to) the head. This 
  * is similar to the lesserTail approach.
  */
-    private BinaryFunction greaterTail = new BinaryFunction() {
-        public Object evaluate(Object head, Object tail) {
+    private BinaryFunction greaterTail = new ObjectListFunction() {
+        public Object evaluate(Object head, List tail) {
             return Algorithms.collect(Algorithms.select(
-                ((List)tail).iterator(),
-                RightBoundPredicate.bind(
-                    IsGreaterThanOrEqual.instance(), 
-                    head)));
+                tail.iterator(),
+                IsGreaterThanOrEqual.instance((Comparable)head)));
         }
     };
 

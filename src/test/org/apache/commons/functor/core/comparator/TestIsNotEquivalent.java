@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsNotEquivalent.java,v 1.3 2003/03/04 23:05:25 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsNotEquivalent.java,v 1.4 2003/12/01 05:16:24 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/03/04 23:05:25 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/01 05:16:24 $
  * @author Rodney Waldhoff
  */
 public class TestIsNotEquivalent extends BaseComparisonPredicateTest {
@@ -115,8 +115,8 @@ public class TestIsNotEquivalent extends BaseComparisonPredicateTest {
         assertObjectsAreEqual(p,new IsNotEquivalent());
         assertObjectsAreEqual(p,new IsNotEquivalent(null));
         assertObjectsAreEqual(p,new IsNotEquivalent(new ComparableComparator()));
-        assertObjectsAreEqual(p,IsNotEquivalent.getIsNotEquivalent());
-        assertSame(IsNotEquivalent.getIsNotEquivalent(),IsNotEquivalent.getIsNotEquivalent());
+        assertObjectsAreEqual(p,IsNotEquivalent.instance());
+        assertSame(IsNotEquivalent.instance(),IsNotEquivalent.instance());
         assertObjectsAreNotEqual(p,new ConstantPredicate(false));
     }
     
