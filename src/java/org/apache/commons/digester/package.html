@@ -19,6 +19,7 @@ XML documents.
 <a href="#doc.Namespace">[Namespace Aware Parsing]</a>
 <a href="#doc.Pluggable">[Pluggable Rules Processing]</a>
 <a href="#doc.RuleSets">[Encapsulated Rule Sets]</a>
+<a href="#doc.FAQ">[FAQ]</a>
 </div>
 
 <a name="doc.Depend"></a>
@@ -826,5 +827,18 @@ public class MyRuleSet extends RuleSetBase {
     XML document.</li>
 </ul>
 
+<a name="doc.FAQ"></a>
+<h3>Frequently Asked Questions</h3>
+<p><ul>
+<li><strong>Why do I get warnings when using a JAXP 1.1 parser?</strong>
+<p>If you're using a JAXP 1.1 parser, you might see the following warning (in your log):
+<code><pre>
+[WARN] Digester - -Error: JAXP SAXParser property not recognized: http://java.sun.com/xml/jaxp/properties/schemaLanguage
+</pre></code>
+This property is needed for JAXP 1.2 (XML Schema support) as required
+for the Servlet Spec. 2.4 but is not recognized by JAXP 1.1 parsers.
+This warning is harmless.
+</p></li>
+</ul>
 </body>
 </html>
