@@ -280,8 +280,8 @@ public class XMLCipherTester extends TestCase {
 			builderKeyInfo.add(encryptedKey);
 
             ed = cipher.doFinal(d, e);
-            log.info("Encrypted document");
-            log.info(toString(ed));
+            log.debug("Encrypted document");
+            log.debug(toString(ed));
 
 
             //decrypt
