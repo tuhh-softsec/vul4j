@@ -1,3 +1,4 @@
+
 /*
  * The Apache Software License, Version 1.1
  *
@@ -62,7 +63,6 @@ package org.apache.xml.security.c14n.helper;
 
 import org.w3c.dom.*;
 import org.apache.log4j.*;
-import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.utils.Constants;
 
 
@@ -84,6 +84,9 @@ import org.apache.xml.security.utils.Constants;
  */
 public class AttrCompare implements java.util.Comparator {
 
+   private final int ATTR0_BEFORE_ATTR1 = -1;
+   private final int ATTR1_BEFORE_ATTR0 = 1;
+
    /**
     * Compares two attributes based on the C14n specification.
     *
@@ -104,44 +107,83 @@ public class AttrCompare implements java.util.Comparator {
     */
    public int compare(Object obj0, Object obj1) {
 
-      throw new RuntimeException("Not yet fully written");
-
-      /*
       Attr attr0 = (Attr) obj0;
       Attr attr1 = (Attr) obj1;
+      boolean isNamespaceAttr0 =
+         Constants.NamespaceSpecNS.equals(attr0.getNamespaceURI());
+      boolean isNamespaceAttr1 =
+         Constants.NamespaceSpecNS.equals(attr1.getNamespaceURI());
+
+      if (isNamespaceAttr0) {
+         if (isNamespaceAttr1) {
+
+            // both are namespaces
+            return this.nsAttrCompare(attr0, attr1);
+         } else {
+
+            // attr0 is a namespace, attr1 is not
+            return ATTR0_BEFORE_ATTR1;
+         }
+      } else {
+         if (isNamespaceAttr1) {
+
+            // attr1 is a namespace, attr0 is not
+            return ATTR1_BEFORE_ATTR0;
+         } else {
+
+            // none is a namespae
+            return this.nonNSAttrCompare(attr0, attr1);
+         }
+      }
+   }
+
+   private int nsAttrCompare(Attr attr0, Attr attr1) {
+      String localname0 = attr0.getLocalName();
+      String localname1 = attr1.getLocalName();
+
+      if (localname0.equals("xmlns")) {
+         localname0 = "";
+      }
+
+      if (localname1.equals("xmlns")) {
+         localname1 = "";
+      }
+
+      return localname0.compareTo(localname1);
+   }
+
+   private int nonNSAttrCompare(Attr attr0, Attr attr1) {
 
       String namespaceURI0 = attr0.getNamespaceURI();
       String namespaceURI1 = attr1.getNamespaceURI();
 
-      if ((namespaceURI0 == null) && (namespaceURI1 == null)) {
-         String localName0 = attr0.getLocalName();
-         String localName1 = attr1.getLocalName();
+      if (namespaceURI0 == null) {
+         if (namespaceURI1 == null) {
 
-         return localName0.compareTo(localName1);
-      } else if ((namespaceURI0 == null) && (namespaceURI1 != null)) {
-         if (namespaceURI1.equals(Constants.NamespaceSpecNS)) {
-            return 1;
+            // if the namespaceURI of *both* attributes is null, there MUST be a localName.
+            // so if the namespaceURIs are null *and* any of the localNames is null, a NullPointer is created...
+            String localName0 = attr0.getLocalName();
+            String localName1 = attr1.getLocalName();
+
+            return localName0.compareTo(localName1);
          } else {
-            return -1;
-         }
-      } else if ((namespaceURI0 != null) && (namespaceURI1 == null)) {
-         if (namespaceURI0.equals(Constants.NamespaceSpecNS)) {
-            return -1;
-         } else {
-            return 1;
+            return ATTR0_BEFORE_ATTR1;
          }
       } else {
-         int a = namespaceURI0.compareTo(namespaceURI1);
+         if (namespaceURI1 == null) {
+            return ATTR1_BEFORE_ATTR0;
+         } else {
+            int a = namespaceURI0.compareTo(namespaceURI1);
 
-         if (a != 0) {
-            return a;
+            if (a != 0) {
+               return a;
+            }
+
+            String localName0 = attr0.getLocalName();
+            String localName1 = attr1.getLocalName();
+
+            return localName0.compareTo(localName1);
          }
-
-         String localName0 = attr0.getLocalName();
-         String localName1 = attr1.getLocalName();
-
-         return localName0.compareTo(localName1);
       }
-      */
    }
 }
