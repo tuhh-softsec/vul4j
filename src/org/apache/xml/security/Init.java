@@ -135,30 +135,36 @@ public class Init {
             long XX_configure_reg_here_start = System.currentTimeMillis();
 
             {
-               FunctionTable.installFunction("here", new FuncHere());
-               log.debug(
-                  "Registered class " + FuncHere.class.getName()
-                  + " for XPath function 'here()' function in internal table");
+                FunctionTable.installFunction("here", new FuncHere());
+                log.debug("Registered class " + FuncHere.class.getName()
+                        + " for XPath function 'here()' function in internal table");
 
-               /* The following tweak by "Eric Olson" <ego@alum.mit.edu>
-                * is to enable xml-security to play with JDK 1.4 which
-                * unfortunately bundles an old version of Xalan
-                */
-               FuncLoader funcHereLoader = new FuncHereLoader();
+                /* The following tweak by "Eric Olson" <ego@alum.mit.edu>
+                 * is to enable xml-security to play with JDK 1.4 which
+                 * unfortunately bundles an old version of Xalan
+                 */
+                FuncLoader funcHereLoader = new FuncHereLoader();
 
-               for (int i = 0; i < FunctionTable.m_functions.length; i++) {
-                  FuncLoader loader = FunctionTable.m_functions[i];
+                try {
+                    java.lang.reflect.Field mFunctions = FunctionTable.class.getField("m_functions");
+                    FuncLoader[] m_functions = (FuncLoader[]) mFunctions.get(null);
 
-                  if (loader != null) {
-                     log.debug("Func " + i + " " + loader.getName());
+                    for (int i = 0; i < m_functions.length; i++) {
+                        FuncLoader loader = m_functions[i];
 
-                     if (loader.getName().equals(funcHereLoader.getName())) {
-                        FunctionTable.m_functions[i] = funcHereLoader;
-                     }
-                  }
-               }
+                        if (loader != null) {
+                            log.debug("Func " + i + " " + loader.getName());
+
+                            if (loader.getName().equals(funcHereLoader.getName())) {
+                                m_functions[i] = funcHereLoader;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    log.info("Unable to patch xalan function table.", e);
+                }
             }
-
+             
             long XX_configure_reg_here_end = System.currentTimeMillis();
             long XX_configure_reg_c14n_start = System.currentTimeMillis();
 
@@ -688,3 +694,4 @@ public class Init {
       }
    }
 }
+
