@@ -47,18 +47,20 @@
 		</a>
 	</faq>
 	<faq>
-		<q>I'm using crimson</q>
+		<q>I'm using Crimson, but it throws Exceptions. Why?</q>
 		<a>
-			<p>You shouldn't; some people had problems with it. Use  <resource-ref idref="xml4j-used"/> instead.</p>
+			<p>Crimson is not supported at the moment. The main reason is that Crimson did not support the <code>org.w3c.dom.traversal.TreeWalker</code> interface in the past. Additionally, it does not support the <code>org.apache.xerces.dom.DocumentImpl.putIdentifier(String ID, Element e)</code> functionality where Xerces allows us to enable ID attributes during document generation.</p>
+			<p>Use <resource-ref idref="xml4j-used"/> instead of Crimson.</p>
 		</a>
 	</faq>
 	<faq>
 		<q>What's up with the Bouncy Castle CSP? / Where is my CSP?</q>
 		<a>
-			<p>There is <em>no</em> JCE bundled together with this distribution. This is because the Apache Project is hosted in the US where some export restrictions apply to the cryptographic primitives. </p>
-			<p>The nice guys from the <jump href="http://www.bouncycastle.org/">Legion of Bouncy Castle</jump> where so helpful to supply the JAR that you need to create HMAC integrity checks on their web site. When you use the ant makefile <code>build.xml</code> and simply say <code>ant compile</code> or <code>ant get-jce</code>, <code>ant</code> tries to fetch this JAR from the australian server. After that step, the compilation works completely.  </p>
+			<p>There is <em>no</em> JCE bundled together with this distribution. This is because the Apache Project web site is hosted in the US where some export restrictions apply to the cryptographic primitives. </p>
+			<p>The nice guys from the <jump href="http://www.bouncycastle.org/">Legion of Bouncy Castle</jump> where so helpful to supply their JCE in a simple JAR package so that we can simply fetch it during the compilation process and put it into the <code>libs/</code> directory. When you use the ant makefile <code>build.xml</code> and simply say <code>ant compile</code> or <code>ant get-jce</code>, <code>ant</code> tries to fetch this JAR from the australian server. After that step, the compilation works completely.  </p>
 			<p>The ant make tools initiates an automated download of the BouncyCastle JCE. The file is downloaded into the <code>libs/</code> directory and a &quot;bc-&quot; is prepended to the filename. This is done because we want the provider name (bc means BouncyCastle) being visible in the JAR's filename. </p>
 			<p>More information can be found in the Installation section.</p>
+	                <note>The fact that we <em>use</em> Bouncy in this project does not mean that you <em>must</em> use it, it's only the default. If you take a look at the configuration <code>src/org/apache/xml/security/resource/config.xml</code>, you'll notice the sections which do integrate these alternative JCEs.</note> 		
 		</a>
 	</faq>
 	<faq>

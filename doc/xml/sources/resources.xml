@@ -37,6 +37,7 @@
 	<resource id="sax" title="SAX" location="http://www.megginson.com/SAX/sax.html"/>
 	<resource id="sax2" title="SAX 2" location="http://www.megginson.com/SAX/Java/index.html"/>
 	<resource id="jaxp" title="Java API for XML Parsing 1.0" location="http://java.sun.com/xml/docs/api/index.html"/>
+	<resource id="xml4j-used" title="Apache Xerces2" location="http://xml.apache.org/xerces2-j/index.html"/>
 	<human-resource id="mailhelp" name="security-dev-help@xml.apache.org" mailto="security-dev-help@xml.apache.org"/>
 	<human-resource id="geuerp" name="Christian Geuer-Pollmann" mailto="geuerp@apache.org"/>
 </resources>
