@@ -5,24 +5,7 @@
      ANT is availale from http://jakarta.apache.org/ant/index.html
 
      This build file is intended to build the org.apache.xml.security package,
-     available from http://www.xmlsecurity.org/src/ and
-                    http://xml.apache.org/
-
-     http://xml.apache.org/dist/xerces-j/old_xerces2/Xerces-J-bin.2.0.1.zip
-         xercesImpl.jar
-         xmlParserAPIs.jar
-
-     http://xml.apache.org/dist/xalan-j/xalan-j_2_3_1-bin.zip
-         xalan.jar
-         xml-apis.jar
-
-     http://jakarta.apache.org/log4j/jakarta-log4j-1.2.5.zip
-         log4j-1.2.5.jar
-
-     http://www.bouncycastle.org/download/jce-jdk13-114.jar
-
-     http://download.sourceforge.net/junit/junit3.7.zip
-         junit3.7.jar
+     available from http://xml.apache.org/security/
 -->
 
 <project name="The org.apache.xml.security Package" default="usage" basedir=".">
@@ -82,13 +65,22 @@
 
     <property name="doc.xml"               value="${dir.doc}/xml" />
     <property name="doc.book"              value="${build.doc.xml}/sources/docs-book.xml" />
-    <property name="doc.generator"         value="org.apache.stylebook.StyleBook" />
-    <property name="doc.generator.package" value="${dir.tools}/stylebook-1.0-b2.jar" />
 
-    <!-- http://www.bouncycastle.org/checksums.html -->
+    <!-- To validate that the MD5 and SHA1 checksums are in sync, please see
+         http://www.bouncycastle.org/checksums.html -->
+
+    <property name="jce.download.file"     value="jce-jdk13-114.jar" />
     <property name="jce.download.md5"      value="8a90f10826c0b8a4460231dcef0e0e45" />
     <property name="jce.download.sha1"     value="f3cf2677ad8fa7a038ab3a62e05afef9615ea579" />
-    <property name="jce.download.file"     value="jce-jdk13-114.jar" />
+    
+    <!--
+    
+    The most recent one is this here
+    
+    <property name="jce.download.file"     value="jce-jdk13-115.jar" />
+    <property name="jce.download.md5"      value="38c40aa5c386e3ba5fac70916bcc5b0d" />
+    <property name="jce.download.sha1"     value="15f5af7fc73e4ff5c059f83f47509b9720e129e7" />
+    -->
 
     <property name="jce.download"          value="http://www.bouncycastle.org/download/${jce.download.file}" />
     <property name="lib.jce"               value="${dir.libs}/bc-${jce.download.file}" />
@@ -343,13 +335,13 @@ org.apache.xml.security.utils.resolver
     <unjar src="${lib.styleApache}"  dest="${build.doc.xml}" />
 
     <!-- substitute tokens as needed -->
-    <replace file="${build.doc.xml}/dtd/entities.ent"
+    <replace file="${build.doc.xml}/sources/dtd/entities.ent"
              token="@@packagenamelong@@" value="${product.Name}" />
-    <replace file="${build.doc.xml}/dtd/entities.ent"
+    <replace file="${build.doc.xml}/sources/dtd/entities.ent"
              token="@@packagename@@" value="${product.name}" />
-    <replace file="${build.doc.xml}/dtd/entities.ent"
+    <replace file="${build.doc.xml}/sources/dtd/entities.ent"
              token="@@packageversion@@" value="${product.Version}" />
-    <replace file="${build.doc.xml}/dtd/entities.ent"
+    <replace file="${build.doc.xml}/sources/dtd/entities.ent"
              token="@@packagedistname@@" value="${product.Name}" />
     <replace file="${build.doc.xml}/sources/install.xml"
              token="@@jce.download@@" value="${jce.download}" />
@@ -557,6 +549,18 @@ org.apache.xml.security.utils.resolver
       </fileset>
       <report format="frames" todir="${build.junit.html}"/>
     </junitreport>
+  </target>
+
+  <target name="test_exc_c14n"
+          depends="compile.tests"
+          if="junit.present"
+          description="Runs exclusive c14n interop (Y1, Y2, Y3, Y4)">
+     <java classname="org.apache.xml.security.test.c14n.implementations.ExclusiveC14NInterop"
+           fork="yes"
+           taskname="junit"
+           failonerror="true">
+        <classpath refid="classpath.test" />
+     </java>
   </target>
 
   <target name="testjar"
