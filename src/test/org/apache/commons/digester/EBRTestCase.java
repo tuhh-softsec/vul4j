@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.10 2003/10/13 20:52:21 rdonkin Exp $
- * $Revision: 1.10 $
- * $Date: 2003/10/13 20:52:21 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.11 2003/10/18 13:30:22 rdonkin Exp $
+ * $Revision: 1.11 $
+ * $Date: 2003/10/18 13:30:22 $
  *
  * ====================================================================
  * 
@@ -74,7 +74,7 @@ import junit.framework.TestSuite;
  * <p> Runs standard tests for RulesBase as well as tests of extensions.
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.10 $ $Date: 2003/10/13 20:52:21 $
+ * @version $Revision: 1.11 $ $Date: 2003/10/18 13:30:22 $
  */
 
 
@@ -444,7 +444,6 @@ public class EBRTestCase extends RulesBaseTestCase {
         list = digester.getRules().match(null, "b/b/c/e/d"); 
         assertEquals("Wild ancester match (2)", 1, list.size());
         assertEquals("Match missed (5)", "star-b-c-star" , ((TestRule) list.get(0)).getIdentifier());    
-        System.out.println("Finished ancester match.");
     }
     
     public void testLongMatch() {

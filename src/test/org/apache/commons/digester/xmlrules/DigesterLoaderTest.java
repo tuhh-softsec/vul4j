@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/xmlrules/DigesterLoaderTest.java,v 1.15 2003/10/09 21:09:50 rdonkin Exp $
- * $Revision: 1.15 $
- * $Date: 2003/10/09 21:09:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/xmlrules/DigesterLoaderTest.java,v 1.16 2003/10/18 13:30:22 rdonkin Exp $
+ * $Revision: 1.16 $
+ * $Date: 2003/10/18 13:30:22 $
  *
  * ====================================================================
  * 
@@ -113,7 +113,6 @@ public class DigesterLoaderTest extends TestCase {
         digester.push(new ArrayList());
         Object root = digester.parse(input.openStream());
         assertEquals("[foo1 baz1 foo2, foo3 foo4]",root.toString());
-        //System.out.println(root);
     }
 
     /**
@@ -295,7 +294,7 @@ public class DigesterLoaderTest extends TestCase {
             fail("Exception should have been propagated from create method.");
         } catch (Exception e) {
             /* What we expected */
-            System.out.println(e.getClass().getName());
+            assertEquals(org.xml.sax.SAXParseException.class, e.getClass());
         }        
     }
 

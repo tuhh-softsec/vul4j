@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/BeanPropertySetterRuleTestCase.java,v 1.12 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.12 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/BeanPropertySetterRuleTestCase.java,v 1.13 2003/10/18 13:30:22 rdonkin Exp $
+ * $Revision: 1.13 $
+ * $Date: 2003/10/18 13:30:22 $
  *
  * ====================================================================
  * 
@@ -363,7 +363,6 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
                 digester.parse(xmlTestReader());
             fail("Should have thrown NoSuchMethodException");
         } catch (Exception e) {
-            e.printStackTrace(System.err);
             if (e instanceof InvocationTargetException) {
                 Throwable t =
                     ((InvocationTargetException) e).getTargetException();

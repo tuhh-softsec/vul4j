@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/CallMethodRuleTestCase.java,v 1.11 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.11 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/CallMethodRuleTestCase.java,v 1.12 2003/10/18 13:30:22 rdonkin Exp $
+ * $Revision: 1.12 $
+ * $Date: 2003/10/18 13:30:22 $
  *
  * ====================================================================
  * 
@@ -516,8 +516,6 @@ public class CallMethodRuleTestCase extends TestCase {
         ArrayList list = new ArrayList();
         digester.push(list);
         digester.parse(reader);
-        
-        System.out.println(list);
         
         NamedBean bean = (NamedBean) list.get(0);
         assertEquals("Wrong name (1)", "Simple", bean.getName());
