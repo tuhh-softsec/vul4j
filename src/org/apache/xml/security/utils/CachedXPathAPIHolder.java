@@ -27,28 +27,25 @@ public class CachedXPathAPIHolder {
     static ThreadLocal  local=new ThreadLocal();
     static ThreadLocal localDoc=new ThreadLocal();
   
-	public static void setDoc(Document doc) {  
-        CachedXPathAPI cx=(CachedXPathAPI)local.get();
-        if (cx==null) {
-           cx=new CachedXPathAPI();
-           local.set(cx);
-           localDoc.set(doc);
-        } else {
-             if (localDoc.get()!=doc) {
-                //Different docs reset.
-              cx.getXPathContext().reset();
-              localDoc.set(doc);
-           }
-          
+	public static void setDoc(Document doc) {                    
+       if (localDoc.get()!=doc) {
+            CachedXPathAPI cx=(CachedXPathAPI)local.get();
+            if (cx==null) {
+               cx=new CachedXPathAPI();
+               local.set(cx);
+               localDoc.set(doc);
+               return;
+            }
+            //Different docs reset.
+            cx.getXPathContext().reset();
+            localDoc.set(doc);                     
         }		
 	}
     /**
      * @return
      */
-    public static CachedXPathAPI getCachedXPathAPI() {
-        
-        CachedXPathAPI cx=(CachedXPathAPI)local.get();
-        cx=(CachedXPathAPI)local.get();
+    public static CachedXPathAPI getCachedXPathAPI() {        
+        CachedXPathAPI cx=(CachedXPathAPI)local.get();        
         if (cx==null) {
             cx=new CachedXPathAPI();
             local.set(cx);
