@@ -74,6 +74,8 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
+#include <string.h>
+
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------

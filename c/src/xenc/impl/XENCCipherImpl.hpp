@@ -143,7 +143,7 @@ private:
 	XMLCh					* mp_xencPrefixNS;
 
 
-	friend XSECProvider;
+	friend class XSECProvider;
 
 };
 

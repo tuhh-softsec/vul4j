@@ -121,7 +121,7 @@ protected:
 							* mp_encryptedTypeNode;		// Node at head of structure
 	XENCCipherDataImpl		* mp_cipherData;
 
-	friend XENCCipherImpl;
+	friend class XENCCipherImpl;
 };
 
 #endif /* XENCENCRYPTEDTYPEIMPL_INCLUDE */
