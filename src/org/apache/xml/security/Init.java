@@ -66,6 +66,8 @@ import java.util.*;
 import javax.xml.parsers.*;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.FuncLoader;
+import org.apache.xpath.functions.Function;
 import org.w3c.dom.*;
 import org.apache.xml.security.algorithms.encryption.EncryptionMethod;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
@@ -181,6 +183,24 @@ public class Init {
                cat.debug(
                   "Registered class " + FuncHere.class.getName()
                   + " for XPath function 'here()' function in internal table");
+
+               /* The following tweak by "Eric Olson" <ego@alum.mit.edu>
+                * is to enable xml-security to play with JDK 1.4 which
+                * unfortunately bundles an old version of Xalan
+                */
+               FuncLoader funcHereLoader = new FuncHereLoader();
+
+               for (int i = 0; i < FunctionTable.m_functions.length; i++) {
+                  FuncLoader loader = FunctionTable.m_functions[i];
+
+                  if (loader != null) {
+                     cat.debug("Func " + i + " " + loader.getName());
+
+                     if (loader.getName().equals(funcHereLoader.getName())) {
+                        FunctionTable.m_functions[i] = funcHereLoader;
+                     }
+                  }
+               }
             }
 
             {
@@ -330,7 +350,6 @@ public class Init {
                EncryptionMethod.init(cipherAlgos);
             }
             */
-
             {
                ResourceResolver.init();
 
@@ -436,7 +455,7 @@ public class Init {
                }
             }
 
-         //J-
+            //J-
          EncryptionMethod.providerInit();
          EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_TRIPLEDES,     "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_TRIPLEDES_BC");
          EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES128,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES128_BC");
@@ -449,7 +468,6 @@ public class Init {
          EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP,  "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyTransportImpl_RSAOAEP_BC");
          EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSA15,    "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyTransportImpl_RSAPKCS15_BC");
          //J+
-
          } catch (Exception e) {
             cat.fatal("Bad: ", e);
             e.printStackTrace();
@@ -648,6 +666,43 @@ public class Init {
       }
 
       return null;
+   }
+
+   /**
+    * Class FuncHereLoader
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
+   public static class FuncHereLoader extends FuncLoader {
+
+      /**
+       * Constructor FuncHereLoader
+       *
+       */
+      public FuncHereLoader() {
+         super(FuncHere.class.getName(), 0);
+      }
+
+      /**
+       * Method getFunction
+       *
+       * @return
+       * @throws javax.xml.transform.TransformerException
+       */
+      public Function getFunction()
+              throws javax.xml.transform.TransformerException {
+         return new FuncHere();
+      }
+
+      /**
+       * Method getName
+       *
+       * @return
+       */
+      public String getName() {
+         return FuncHere.class.getName();
+      }
    }
 
    static {
