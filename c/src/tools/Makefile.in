@@ -127,8 +127,14 @@ ${BINDIR}/c14n: ${OBJDIR}/c14n${OBJSUFFIX}
 ${OBJDIR}/checksig${OBJSUFFIX}: checksig/checksig.cpp
 	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
-${BINDIR}/checksig: ${OBJDIR}/checksig${OBJSUFFIX}
-	$(LINK) $(LDFLAGS) $< $(LDXSEC) $(LIBS) -o $@
+${OBJDIR}/AnonymousResolver${OBJSUFFIX}: checksig/AnonymousResolver.cpp
+	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
+
+${OBJDIR}/InteropResolver${OBJSUFFIX}: checksig/InteropResolver.cpp
+	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
+
+${BINDIR}/checksig: ${OBJDIR}/checksig${OBJSUFFIX} ${OBJDIR}/AnonymousResolver${OBJSUFFIX} ${OBJDIR}/InteropResolver${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $^ $(LDXSEC) $(LIBS) -o $@
 
 #========================== templatesign =========================
 
