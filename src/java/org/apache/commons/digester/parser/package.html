@@ -1,0 +1,36 @@
+<html>
+<head>
+<title>Package Documentation for org.apache.commons.digester.parser Package</title>
+</head>
+<body bgcolor="white">
+Provides for parser recognition and parser dependent code.
+<br><br>
+<p>
+Digester aims to support the widest range possible of parsers.
+Unfortunately, there are a few parser settings which have no been standardized.
+In most cases, the best practice is for the user to configure the parser 
+themselves and pass it to Digester to use.
+</p>
+<p>
+There are a few reasonable exceptions which Digesters makes to this general rule.
+There are a small number of common use cases where insisting that the user
+configure the parser may reduce the portability of applications using Digester.
+These are outlined below.
+</p>
+<h4>Validating With Schema</h4>
+<p>
+When validating using schemas (rather than DTDs),
+settings for schema language and schema location are commonly needed.
+Unfortunately, there is a lack of standardization for these settings.
+In particular, for older versions of Xerces, these are set differently
+from newer versions.
+</p>
+<p>
+In order to aid portability for this common use case, Digester uses
+the classes in this package (together with <code>ParserFeatureSetterFactory</code>)
+to guess the parser and set these properties appropriately.
+The aim is for Digester to automagically recognize and configure each parser.
+Help would be gratefully appreciated to maintain and improve the support in this area.
+</p>
+</body>
+</html>
