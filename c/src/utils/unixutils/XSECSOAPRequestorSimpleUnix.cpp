@@ -209,10 +209,10 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     // get the response, check the http header for errors from the server.
     //
     aLent = read(s, (void *)fBuffer, sizeof(fBuffer)-1);
-	/***/
+	/*
 	fBuffer[aLent] = '\0';
 	printf(fBuffer);
-	/***/
+	*/
     if (aLent <= 0)
     {
         throw XSECException(XSECException::HTTPURIInputStreamError,
@@ -304,15 +304,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 		throw XSECException(XSECException::HTTPURIInputStreamError,
 						"Unknown HTTP Response");
     }
-	/*
-	while (aLent != 0) {
-		aLent = read(s, (void *)fBuffer, sizeof(fBuffer)-1);
-		
-		fBuffer[aLent] = '\0';
-		printf(fBuffer);
-		
-	}
-*/
+
 	/* Now find out how long the return is */
 
 	p = strstr(fBuffer, "Content-Length:");
