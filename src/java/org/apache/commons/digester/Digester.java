@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.28 2001/11/18 21:53:24 craigmcc Exp $
- * $Revision: 1.28 $
- * $Date: 2001/11/18 21:53:24 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.29 2001/12/04 17:11:08 jstrachan Exp $
+ * $Revision: 1.29 $
+ * $Date: 2001/12/04 17:11:08 $
  *
  * ====================================================================
  *
@@ -68,6 +68,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.28 $ $Date: 2001/11/18 21:53:24 $
+ * @version $Revision: 1.29 $ $Date: 2001/12/04 17:11:08 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1231,6 +1232,24 @@ public class Digester extends DefaultHandler {
 
         configure();
 	getReader().parse(new InputSource(input));
+	return (root);
+
+    }
+
+
+    /**
+     * Parse the content of the specified reader using this Digester.
+     * Returns the root element from the object stack (if any).
+     *
+     * @param reader Reader containing the XML data to be parsed
+     *
+     * @exception IOException if an input/output error occurs
+     * @exception SAXException if a parsing exception occurs
+     */
+    public Object parse(Reader reader) throws IOException, SAXException {
+
+        configure();
+	getReader().parse(new InputSource(reader));
 	return (root);
 
     }
