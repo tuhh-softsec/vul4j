@@ -147,7 +147,7 @@ public abstract class SignatureAlgorithmSpi {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signature
-    * @return
+    * @return true if the signature is correct
     * @throws XMLSignatureException
     */
    protected abstract boolean engineVerify(byte[] signature)
@@ -185,15 +185,6 @@ public abstract class SignatureAlgorithmSpi {
     */
    protected void engineGetContextFromElement(Element element) {
       this._constructionElement = element;
-   }
-
-   /**
-    * Method engineAddContextToElement
-    *
-    * @param element
-    */
-   protected void engineAddContextToElement(Element element)
-   {    	       
    }
 
    /**

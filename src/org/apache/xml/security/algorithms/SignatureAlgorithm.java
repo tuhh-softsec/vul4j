@@ -22,6 +22,7 @@ import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.HashMap;
 
+import org.apache.xml.security.algorithms.implementations.IntegrityHmac;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureException;
@@ -104,7 +105,7 @@ public class SignatureAlgorithm extends Algorithm {
       this(doc, algorithmURI);
 
       this._signatureAlgorithm.engineSetHMACOutputLength(HMACOutputLength);
-      this._signatureAlgorithm
+      ((IntegrityHmac)this._signatureAlgorithm)
          .engineAddContextToElement(this._constructionElement);
    }
 
@@ -176,7 +177,7 @@ public class SignatureAlgorithm extends Algorithm {
    /**
     * Method getJCEProviderName
     *
-    * @return
+    * @return The Provider of this Signature Alogrithm
     */
    public String getJCEProviderName() {
       return this._signatureAlgorithm.engineGetJCEProviderName();
@@ -285,7 +286,7 @@ public class SignatureAlgorithm extends Algorithm {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signature
-    * @return
+    * @return true if if the signature is valid.
     * 
     * @throws XMLSignatureException
     */
@@ -329,6 +330,7 @@ public class SignatureAlgorithm extends Algorithm {
     * @param algorithmURI algorithmURI URI representation of <code>Transform algorithm</code>.
     * @param implementingClass <code>implementingClass</code> the implementing class of {@link SignatureAlgorithmSpi}
     * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI is already registered
+    * @throws XMLSignatureException 
     */
    public static void register(String algorithmURI, String implementingClass)
            throws AlgorithmAlreadyRegisteredException,XMLSignatureException {
@@ -371,7 +373,7 @@ public class SignatureAlgorithm extends Algorithm {
     * Method getImplementingClass
     *
     * @param URI
-    * @return
+    * @return the class that implements the URI
     */
    private static Class getImplementingClass(String URI) {
 
@@ -385,7 +387,7 @@ public class SignatureAlgorithm extends Algorithm {
    /**
     * Method getBaseNamespace
     *
-    * @return
+    * @return URI of this element
     */
    public String getBaseNamespace() {
       return Constants.SignatureSpecNS;
@@ -394,7 +396,7 @@ public class SignatureAlgorithm extends Algorithm {
    /**
     * Method getBaseLocalName
     *
-    * @return
+    * @return Local name
     */
    public String getBaseLocalName() {
       return Constants._TAG_SIGNATUREMETHOD;
