@@ -81,6 +81,7 @@ public:
 	virtual const XMLCh * getResponseMechanismItemStr(int item);
 	virtual void appendResponseMechanismItem(XKMSResponseMechanism * item);
 	virtual void appendResponseMechanismItem(const XMLCh * item);
+	virtual void removeResponseMechanismItem(int item);
 
 
 	/* Inherited from XKMSMessageType */
@@ -161,6 +162,8 @@ private:
 	virtual void appendResponseMechanismItem(XKMSResponseMechanism * item) \
 		{XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(item);} \
 	virtual void appendResponseMechanismItem(const XMLCh * item) \
-		{XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(item);}
+		{XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(item);} \
+	virtual void removeResponseMechanismItem(int item) \
+		{XKMSRequestAbstractTypeImpl::removeResponseMechanismItem(item);}
 
 #endif /* XKMSREQUESTABSTRACTTYPEIMPL_INCLUDE */

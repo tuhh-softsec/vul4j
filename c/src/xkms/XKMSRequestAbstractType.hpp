@@ -121,7 +121,8 @@ public:
 	/** @name \<RespondWith\> handling */
 	//@{
 
-	/* \brief Number of RespondWith elements in this Request
+	/**
+	 * \brief Number of RespondWith elements in this Request
 	 *
 	 * Returns the number of RespondWith elements held within this request
 	 *
@@ -130,7 +131,7 @@ public:
 
 	virtual int getRespondWithSize(void) = 0;
 
-	/*
+	/**
 	 * \brief Get the nth item in the RespondWith list
 	 *
 	 * @param item The item to return
@@ -140,7 +141,7 @@ public:
 
 	virtual XKMSRespondWith * getRespondWithItem(int item) = 0;
 
-	/*
+	/**
 	 * \brief Get the string of the nth item in the RespondWith list
 	 *
 	 * @param item The item whose string is to be returned
@@ -150,7 +151,7 @@ public:
 
 	virtual const XMLCh * getRespondWithItemStr(int item) = 0;
 
-	/*
+	/**
 	 * \brief Append an item to the RespondWith list
 	 *
 	 * @param item XKMSRespondWith object to append to the list.
@@ -159,7 +160,7 @@ public:
 
 	virtual void appendRespondWithItem(XKMSRespondWith * item) = 0;
 
-	/*
+	/**
 	 * \brief Shortcut for appending an item to the RespondWith list
 	 *
 	 * @param item String to create a RespondWith element around and 
@@ -173,7 +174,8 @@ public:
 	/** @name \<ResponseMechanism\> handling */
 	//@{
 
-	/* \brief Number of ResponseMechanism elements in this Request
+	/**
+	 * \brief Number of ResponseMechanism elements in this Request
 	 *
 	 * Returns the number of ResponseMechanism elements held within this request
 	 *
@@ -182,7 +184,7 @@ public:
 
 	virtual int getResponseMechanismSize(void) = 0;
 
-	/*
+	/**
 	 * \brief Get the nth item in the ResponseMechanism list
 	 *
 	 * @param item The item to return
@@ -192,7 +194,7 @@ public:
 
 	virtual XKMSResponseMechanism * getResponseMechanismItem(int item) = 0;
 
-	/*
+	/**
 	 * \brief Get the string of the nth item in the ResponseMechanism list
 	 *
 	 * @param item The item whose string is to be returned
@@ -202,7 +204,7 @@ public:
 
 	virtual const XMLCh * getResponseMechanismItemStr(int item) = 0;
 
-	/*
+	/**
 	 * \brief Append an item to the ResponseMechanism list
 	 *
 	 * @param item XKMSResponseMechanism object to append to the list.
@@ -211,7 +213,7 @@ public:
 
 	virtual void appendResponseMechanismItem(XKMSResponseMechanism * item) = 0;
 
-	/*
+	/**
 	 * \brief Shortcut for appending an item to the ResponseMechanism list
 	 *
 	 * @param item String to create a ResponseMechanism element around and 
@@ -219,6 +221,16 @@ public:
 	 */
 
 	virtual void appendResponseMechanismItem(const XMLCh * item) = 0;
+
+	/**
+	 * \brief Remove a ResponseMechanism
+	 *
+	 * Removes the identified ResponseMechanism from the item
+	 *
+	 * @param item Item to remove
+	 */
+
+	virtual void removeResponseMechanismItem(int item) = 0;
 
 	//@}
 

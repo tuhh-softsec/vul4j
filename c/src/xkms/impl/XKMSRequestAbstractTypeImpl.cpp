@@ -320,4 +320,30 @@ void XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(const XMLCh * item
 
 }
 
+void XKMSRequestAbstractTypeImpl::removeResponseMechanismItem(int item) {
+
+	if (item < 0 || item >= m_responseMechanismList.size()) {
+
+		throw XSECException(XSECException::RequestAbstractTypeError,
+			"XKMSRequestAbstractTypeImpl::getResponseMechanismItem - item out of range");
+
+	}
+
+	XKMSResponseMechanism *rm = m_responseMechanismList[item];
+	DOMNode * m = rm->getElement();
+	m->getParentNode()->removeChild(m);
+	m->release();
+
+	// Now clean up our structure.
+	ResponseMechanismVectorType::iterator i;
+	int j = 0;
+	i = m_responseMechanismList.begin();
+	while (j < item) {
+		j++;
+		i++;
+	}
+	m_responseMechanismList.erase(i);
+
+}
+
 
