@@ -143,11 +143,18 @@ private:
    		TXFMChain * cipherText,
 		XSECCryptoKey * key,
 		safeBuffer & result);
+	unsigned int unwrapKey3DES(
+   		TXFMChain * cipherText,
+		XSECCryptoKey * key,
+		safeBuffer & result);
 	bool wrapKeyAES(
    		TXFMChain * cipherText,
 		XSECCryptoKey * key,
 		safeBuffer & result);
-
+	bool wrapKey3DES(
+   		TXFMChain * cipherText,
+		XSECCryptoKey * key,
+		safeBuffer & result);
 
 };
 

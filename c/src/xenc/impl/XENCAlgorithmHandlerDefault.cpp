@@ -152,7 +152,8 @@ void XENCAlgorithmHandlerDefault::mapURIToKey(const XMLCh * uri,
 			switch (skt) {
 
 			case XSECCryptoSymmetricKey::KEY_3DES_192 :
-				keyOK = strEquals(uri, DSIGConstants::s_unicodeStrURI3DES_CBC);
+				isSymmetricKeyWrap = strEquals(uri, DSIGConstants::s_unicodeStrURIKW_3DES);
+				keyOK = isSymmetricKeyWrap || strEquals(uri, DSIGConstants::s_unicodeStrURI3DES_CBC);
 				break;
 			case XSECCryptoSymmetricKey::KEY_AES_128 :
 				isSymmetricKeyWrap = strEquals(uri, DSIGConstants::s_unicodeStrURIKW_AES128);
@@ -360,60 +361,182 @@ bool XENCAlgorithmHandlerDefault::wrapKeyAES(
 //			DES CMS Key wrap/unwrap
 // --------------------------------------------------------------------------------
 
-#if 0
+unsigned int XENCAlgorithmHandlerDefault::unwrapKey3DES(
+   		TXFMChain * cipherText,
+		XSECCryptoKey * key,
+		safeBuffer & result) {
 
-Keep for DES keywrap
+	// Perform an unwrap on the key
+	safeBuffer cipherSB;
 
-		// Perform an unwrap on the key
-		safeBuffer cipherSB;
+	// Cat the encrypted key
+	XMLByte buf[_MY_MAX_KEY_SIZE];
+	TXFMBase * b = cipherText->getLastTxfm();
+	int offset = 0;
+	int sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
 
-		// Set the IV
-		cipherSB.sbMemcpyIn(s_CMSIV, 8);
+	while (sz > 0) {
+		cipherSB.sbMemcpyIn(offset, buf, sz);
+		offset += sz;
+		sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
+	}
 
-		// Cat the encrypted key
-		XMLByte buf[_MY_MAX_KEY_SIZE];
-		TXFMBase * b = cipherText->getLastTxfm();
-		int offset = 8;
-		int sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
+	if (offset > _MY_MAX_KEY_SIZE) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault - Key to decrypt too big!");
+	}
 
-		while (sz > 0) {
-			cipherSB.sbMemcpyIn(offset, buf, sz);
-			offset += sz;
-			sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
-		}
+	// Do the decrypt - this cast will throw if wrong, but we should
+	// not have been able to get through algorithm checks otherwise
+	XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
 
-		if (offset > _MY_MAX_KEY_SIZE) {
+	sk->decryptInit(false, XSECCryptoSymmetricKey::MODE_CBC, s_3DES_CMS_IV);
+	// If key is bigger than this, then we have a problem
+	sz = sk->decrypt(cipherSB.rawBuffer(), buf, offset, _MY_MAX_KEY_SIZE);
+
+	sz += sk->decryptFinish(&buf[sz], _MY_MAX_KEY_SIZE - sz);
+
+	if (sz <= 0) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault - Error decrypting key!");
+	}
+
+	// We now have the first cut, reverse the cipher text
+	XMLByte buf2[_MY_MAX_KEY_SIZE];
+	for (int i = 0; i < sz; ++ i) {
+		buf2[sz - i - 1] = buf[i];
+	}
+
+	// decrypt again
+	sk->decryptInit(false);
+	offset = sk->decrypt(buf2, buf, sz, _MY_MAX_KEY_SIZE);
+	offset += sk->decryptFinish(&buf[offset], _MY_MAX_KEY_SIZE - offset);
+
+	// Calculate the CMS Key Checksum
+	XSECCryptoHash * sha1 = XSECPlatformUtils::g_cryptoProvider->hashSHA1();
+	if (!sha1) {
+
+		throw XSECException(XSECException::CryptoProviderError, 
+				"XENCAlgorithmHandlerDefault - Error getting SHA-1 object in 3DES unwrap");
+
+	}
+	Janitor<XSECCryptoHash> j_sha1(sha1);
+	sha1->reset();
+	sha1->hash(buf, offset - 8);
+	sha1->finish(buf2, _MY_MAX_KEY_SIZE);
+
+	// Compare
+	for (int j = 0; j < 8; ++j) {
+
+		if (buf[offset - 8 + j] != buf2[j]) {
 			throw XSECException(XSECException::CipherError, 
-				"XENCAlgorithmHandlerDefault - Key to decrypt too big!");
+				"XENCAlgorithmHandlerDefault::unwrapKey3DES - CMS Key Checksum does not match");
 		}
+	}
 
-		// Do the decrypt - this cast will throw if wrong, but we should
-		// not have been able to get through algorithm checks otherwise
-		XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
+	result.sbMemcpyIn(buf, offset - 8);
 
-		sk->decryptInit(false);	// No padding
-		// If key is bigger than this, then we have a problem
-		sz = sk->decrypt(cipherSB.rawBuffer(), buf, offset, _MY_MAX_KEY_SIZE);
+	return offset - 8;
 
-		sz += sk->decryptFinish(&buf[sz], _MY_MAX_KEY_SIZE - sz);
+}
 
-		if (sz <= 0) {
-			throw XSECException(XSECException::CipherError, 
-				"XENCAlgorithmHandlerDefault - Error decrypting key!");
-		}
+bool XENCAlgorithmHandlerDefault::wrapKey3DES(
+   		TXFMChain * cipherText,
+		XSECCryptoKey * key,
+		safeBuffer & result) {
 
-		// We now have the first cut, reverse the key
-		XMLByte buf2[_MY_MAX_KEY_SIZE];
-		for (int i = 0; i < sz; ++ i) {
-			buf2[sz - i] = buf[i];
-		}
+	// Cat the plaintext key
+	XMLByte buf[_MY_MAX_KEY_SIZE + 16];
+	TXFMBase * b = cipherText->getLastTxfm();
+	int offset = 0;
+	int sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
 
-		// decrypt again
-		sk->decryptInit(false);
-		offset = sk->decrypt(buf2, buf, sz, _MY_MAX_KEY_SIZE);
-		offset += sk->decryptFinish(&buf[offset], _MY_MAX_KEY_SIZE - offset);
+	if (sz <= 0) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault::wrapKey3DES - Unable to read key");
+	}
 
-#endif
+	if (sz >= _MY_MAX_KEY_SIZE) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault::wrapKey3DES - Key to decrypt too big!");
+	}
+
+	if (sz % 8 != 0) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault::wrapKey3DES - Key to encrypt not a multiple of 8 bytes");
+	}
+
+	// Calculate the CMS Key Checksum
+
+	// Do the first encrypt
+	XMLByte buf2[_MY_MAX_KEY_SIZE + 16];
+
+	XSECCryptoHash * sha1 = XSECPlatformUtils::g_cryptoProvider->hashSHA1();
+	if (!sha1) {
+
+		throw XSECException(XSECException::CryptoProviderError, 
+				"XENCAlgorithmHandlerDefault - Error getting SHA-1 object in 3DES wrap");
+
+	}
+	Janitor<XSECCryptoHash> j_sha1(sha1);
+	sha1->reset();
+	sha1->hash(buf, sz);
+	sha1->finish(buf2, _MY_MAX_KEY_SIZE);
+
+	for (int j = 0; j < 8 ; ++j)
+		buf[sz++] = buf2[j];
+
+	// Do the first encrypt - this cast will throw if wrong, but we should
+	// not have been able to get through algorithm checks otherwise
+	XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
+
+	sk->encryptInit(false);
+	// If key is bigger than this, then we have a problem
+	sz = sk->encrypt(buf, buf2, sz, _MY_MAX_KEY_SIZE);
+	sz += sk->encryptFinish(&buf2[sz], _MY_MAX_KEY_SIZE - sz);
+
+	if (sz <= 0) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault::wrapKey3DES - Error encrypting key!");
+	}
+
+	// We now have the first cut, reverse the cipher text
+	for (int i = 0; i < sz; ++ i) {
+		buf[sz - i - 1] = buf2[i];
+	}
+
+	// encrypt again
+	sk->encryptInit(false, XSECCryptoSymmetricKey::MODE_CBC, s_3DES_CMS_IV);
+	offset = sk->encrypt(buf, buf2, sz, _MY_MAX_KEY_SIZE);
+	offset += sk->encryptFinish(&buf2[offset], _MY_MAX_KEY_SIZE - offset);
+
+	// Base64 encode
+	XSECCryptoBase64 * b64 = XSECPlatformUtils::g_cryptoProvider->base64();
+
+	if (!b64) {
+
+		throw XSECException(XSECException::CryptoProviderError, 
+				"XENCAlgorithmHandlerDefault - Error getting base64 encoder in 3DES wrap");
+
+	}
+
+	Janitor<XSECCryptoBase64> j_b64(b64);
+	unsigned char * b64Buffer;
+	int bufLen = (offset + 9) * 3;
+	XSECnew(b64Buffer, unsigned char[bufLen + 1]);// Overkill
+	ArrayJanitor<unsigned char> j_b64Buffer(b64Buffer);
+
+	b64->encodeInit();
+	int outputLen = b64->encode (&buf2[8], offset-8, b64Buffer, bufLen);
+	outputLen += b64->encodeFinish(&b64Buffer[outputLen], bufLen - outputLen);
+	b64Buffer[outputLen] = '\0';
+
+	// Copy to safebuffer
+	result.sbStrcpyIn((const char *) b64Buffer);
+
+	return true;
+
+}
 
 // --------------------------------------------------------------------------------
 //			InputStream decryption
@@ -560,6 +683,10 @@ unsigned int XENCAlgorithmHandlerDefault::decryptToSafeBuffer(
 
 			return unwrapKeyAES(cipherText, key, result);
 
+		}
+
+		else if (skt == XSECCryptoSymmetricKey::KEY_3DES_192) {
+			return unwrapKey3DES(cipherText, key, result);
 		}
 
 		else {
@@ -719,6 +846,10 @@ bool XENCAlgorithmHandlerDefault::encryptToSafeBuffer(
 
 			return wrapKeyAES(plainText, key, result);
 
+		}
+
+		if (skt == XSECCryptoSymmetricKey::KEY_3DES_192) {
+			return wrapKey3DES(plainText, key, result);
 		}
 
 		else {

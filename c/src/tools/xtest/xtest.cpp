@@ -932,6 +932,13 @@ void unitTestEncrypt(DOMImplementation *impl) {
 	
 	unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES256);
 
+	cerr << "Triple DES key wrap... ";
+
+	ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
+	ks->setKey((unsigned char *) s_keyStr, 24);
+	
+	unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_3DES);
+
 }
 // --------------------------------------------------------------------------------
 //           Test encrypt/Decrypt
