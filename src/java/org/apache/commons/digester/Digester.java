@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.77 2003/05/07 09:28:24 rdonkin Exp $
- * $Revision: 1.77 $
- * $Date: 2003/05/07 09:28:24 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.78 2003/05/22 17:00:55 rdonkin Exp $
+ * $Revision: 1.78 $
+ * $Date: 2003/05/22 17:00:55 $
  *
  * ====================================================================
  *
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.77 $ $Date: 2003/05/07 09:28:24 $
+ * @version $Revision: 1.78 $ $Date: 2003/05/22 17:00:55 $
  */
 
 public class Digester extends DefaultHandler {
@@ -2386,9 +2386,18 @@ public class Digester extends DefaultHandler {
 
 
     /**
+     * <p>
      * Provide a hook for lazy configuration of this <code>Digester</code>
      * instance.  The default implementation does nothing, but subclasses
      * can override as needed.
+     * </p>
+     *
+     * <p>
+     * <strong>Note</strong> This method may be called more than once.
+     * Once only initialization code should be placed in {@link #initialize}
+     * or the code should take responsibility by checking and setting the 
+     * {@link #configured} flag.
+     * </p>
      */
     protected void configure() {
 
@@ -2398,13 +2407,36 @@ public class Digester extends DefaultHandler {
         }
 
         // Perform lazy configuration as needed
-        ; // Nothing required by default
+        initialize(); // call hook method for subclasses that want to be initialized once only
+        // Nothing else required by default
 
         // Set the configuration flag to avoid repeating
         configured = true;
 
     }
+    
+    /**
+     * <p>
+     * Provides a hook for lazy initialization of this <code>Digester</code>
+     * instance.  
+     * The default implementation does nothing, but subclasses
+     * can override as needed.
+     * Digester (by default) only calls this method once.
+     * </p>
+     *
+     * <p>
+     * <strong>Note</strong> This method will be called by {@link #configure} 
+     * only when the {@link #configured} flag is false. 
+     * Subclasses that override <code>configure</code> or who set <code>configured</code>
+     * may find that this method may be called more than once.
+     * </p>
+     */
+    protected void initialize() {
 
+        // Perform lazy initialization as needed
+        ; // Nothing required by default
+
+    }    
 
     // -------------------------------------------------------- Package Methods
 

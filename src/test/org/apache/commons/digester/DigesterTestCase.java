@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.12 2003/04/16 11:23:49 jstrachan Exp $
- * $Revision: 1.12 $
- * $Date: 2003/04/16 11:23:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.13 2003/05/22 17:00:55 rdonkin Exp $
+ * $Revision: 1.13 $
+ * $Date: 2003/05/22 17:00:55 $
  *
  * ====================================================================
  *
@@ -64,6 +64,7 @@ package org.apache.commons.digester;
 
 
 import java.net.URL;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +82,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.12 $ $Date: 2003/04/16 11:23:49 $
+ * @version $Revision: 1.13 $ $Date: 2003/05/22 17:00:55 $
  */
 
 public class DigesterTestCase extends TestCase {
@@ -351,5 +352,22 @@ public class DigesterTestCase extends TestCase {
 
     }
 
-
+    public void testOnceAndOnceOnly() throws Exception {
+        
+        class TestConfigureDigester extends Digester {
+            public int called=0;
+            public TestConfigureDigester() {}
+            
+            protected void initialize() {
+                called++;
+            }
+        }
+        
+        TestConfigureDigester digester = new TestConfigureDigester();
+        
+        String xml = "<?xml version='1.0'?><document/>";
+        digester.parse(new StringReader(xml));
+        
+        assertEquals("Initialize should be called once and only once", 1, digester.called);
+    }
 }
