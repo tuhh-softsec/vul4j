@@ -74,7 +74,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.98 $ $Date: 2004/03/29 20:34:54 $
+ * @version $Revision: 1.99 $ $Date: 2004/04/02 01:53:41 $
  */
 
 public class Digester extends DefaultHandler {
@@ -140,6 +140,16 @@ public class Digester extends DefaultHandler {
     protected ArrayStack bodyTexts = new ArrayStack();
 
 
+    /**
+     * Stack whose elements are List objects, each containing a list of
+     * Rule objects as returned from Rules.getMatch(). As each xml element
+     * in the input is entered, the matching rules are pushed onto this
+     * stack. After the end tag is reached, the matches are popped again.
+     * The depth of is stack is therefore exactly the same as the current
+     * "nesting" level of the input xml. 
+     */
+    protected ArrayStack matches = new ArrayStack(10);
+    
     /**
      * The class loader to use for instantiating application objects.
      * If not specified, the context class loader, or the class loader
@@ -1006,7 +1016,7 @@ public class Digester extends DefaultHandler {
         }
 
         // Fire "body" events for all relevant rules
-        List rules = getRules().match(namespaceURI, match);
+        List rules = (List) matches.pop();
         if ((rules != null) && (rules.size() > 0)) {
             String bodyText = this.bodyText.toString();
             Substitutor substitutor = getSubstitutor();
@@ -1256,6 +1266,7 @@ public class Digester extends DefaultHandler {
 
         // Fire "begin" events for all relevant rules
         List rules = getRules().match(namespaceURI, match);
+        matches.push(rules);
         if ((rules != null) && (rules.size() > 0)) {
             Substitutor substitutor = getSubstitutor();
             if (substitutor!= null) {
