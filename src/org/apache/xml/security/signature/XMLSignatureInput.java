@@ -526,29 +526,22 @@ public class XMLSignatureInput {
       /** Field _writer */
       private Writer _writer = null;
 
-      /** Field HTMLPrefix */
-      public static final String HTMLPrefix =    /* "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n" + */
-         "<html>\n<head>\n<style type=\"text/css\">\n<!--\n"
-         + ".INCLUDE { color: #000000; background-color: #FFFFFF; } "
-         + ".INCLUSIVENAMESPACE { color: #FF0000; background-color: #FFFFFF; font-weight: bold; } "
-         + "\n-->\n</style>\n</head>\n<body>\n<pre>";
-
-      /** Field HTMLSuffix */
+      //J-
+      public static final String HTMLPrefix = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head><style type=\"text/css\"><!-- .INCLUDED { color: #000000; background-color: #FFFFFF; font-weight: bold; } .EXCLUDED { color: #666666; background-color: #999999; } .INCLUDEDINCLUSIVENAMESPACE {	color: #0000FF; background-color: #FFFFFF; font-weight: bold; font-style: italic; } .EXCLUDEDINCLUSIVENAMESPACE { color: #0000FF; background-color: #999999; font-style: italic; } --> </style> </head><body bgcolor=\"#999999\"><pre>";
       public static final String HTMLSuffix = "</pre></body></html>";
 
-      /** Field ExcludePrefix */
-      public static final String HTMLExcludePrefix = "<span class=\"INCLUDE\">";
-
-      /** Field ExcludeSuffix */
+      public static final String HTMLExcludePrefix = "<span class=\"EXCLUDED\">";
       public static final String HTMLExcludeSuffix = "</span>";
 
-      /** Field HTMLInclusiveNamespacePrefix */
-      public static final String HTMLInclusiveNamespacePrefix =
-         "<b>";
+      public static final String HTMLIncludePrefix = "<span class=\"INCLUDED\">";
+      public static final String HTMLIncludeSuffix = "</span>";
 
-      /** Field HTMLInclusiveNamespaceSuffix */
-      public static final String HTMLInclusiveNamespaceSuffix = "</b>";
-      //J-
+      public static final String HTMLIncludedInclusiveNamespacePrefix = "<span class=\"INCLUDEDINCLUSIVENAMESPACE\">";
+      public static final String HTMLIncludedInclusiveNamespaceSuffix = "</span>";
+
+      public static final String HTMLExcludedInclusiveNamespacePrefix = "<span class=\"EXCLUDEDINCLUSIVENAMESPACE\">";
+      public static final String HTMLExcludedInclusiveNamespaceSuffix = "</span>";
+
       private static final int NODE_BEFORE_DOCUMENT_ELEMENT = -1;
       private static final int NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT = 0;
       private static final int NODE_AFTER_DOCUMENT_ELEMENT = 1;
@@ -661,7 +654,9 @@ public class XMLSignatureInput {
             break;
 
          case Node.COMMENT_NODE :
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludePrefix);
+            } else {
                this._writer.write(HTMLExcludePrefix);
             }
 
@@ -677,13 +672,17 @@ public class XMLSignatureInput {
                this._writer.write("\n");
             }
 
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludeSuffix);
+            } else {
                this._writer.write(HTMLExcludeSuffix);
             }
             break;
 
          case Node.PROCESSING_INSTRUCTION_NODE :
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludePrefix);
+            } else {
                this._writer.write(HTMLExcludePrefix);
             }
 
@@ -699,14 +698,18 @@ public class XMLSignatureInput {
                this._writer.write("\n");
             }
 
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludeSuffix);
+            } else {
                this._writer.write(HTMLExcludeSuffix);
             }
             break;
 
          case Node.TEXT_NODE :
          case Node.CDATA_SECTION_NODE :
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludePrefix);
+            } else {
                this._writer.write(HTMLExcludePrefix);
             }
 
@@ -728,7 +731,9 @@ public class XMLSignatureInput {
                this.outputTextToWriter(nextSibling.getNodeValue());
             }
 
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludeSuffix);
+            } else {
                this._writer.write(HTMLExcludeSuffix);
             }
             break;
@@ -736,14 +741,18 @@ public class XMLSignatureInput {
          case Node.ELEMENT_NODE :
             Element currentElement = (Element) currentNode;
 
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludePrefix);
+            } else {
                this._writer.write(HTMLExcludePrefix);
             }
 
             this._writer.write("&lt;");
             this._writer.write(currentElement.getTagName());
 
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludeSuffix);
+            } else {
                this._writer.write(HTMLExcludeSuffix);
             }
 
@@ -763,32 +772,59 @@ public class XMLSignatureInput {
             for (int i = 0; i < attrsLength; i++) {
                Attr a = (Attr) attrs3[i];
 
-               if (!this._xpathNodeSet.contains(a)) {
-                  this._writer.write(HTMLExcludePrefix);
-               }
+               boolean included = this._xpathNodeSet.contains(a);
+               boolean inclusive = this._inclusiveNamespaces.contains(a.getName());
 
-               if (this._inclusiveNamespaces.contains(a.getName())) {
-                  this._writer.write(HTMLInclusiveNamespacePrefix);
+               if (included) {
+                  if (inclusive) {
+                      // included and inclusive
+                      this._writer.write(HTMLIncludedInclusiveNamespacePrefix);
+                  } else {
+                      // included and not inclusive
+                      this._writer.write(HTMLIncludePrefix);
+                  }
+               } else {
+                  if (inclusive) {
+                      // excluded and inclusive
+                      this._writer.write(HTMLExcludedInclusiveNamespacePrefix);
+                  } else {
+                      // excluded and not inclusive
+                      this._writer.write(HTMLExcludePrefix);
+                  }
                }
 
                this.outputAttrToWriter(a.getNodeName(), a.getNodeValue());
 
-               if (this._inclusiveNamespaces.contains(a.getName())) {
-                  this._writer.write(HTMLInclusiveNamespaceSuffix);
-               }
-
-               if (!this._xpathNodeSet.contains(a)) {
-                  this._writer.write(HTMLExcludeSuffix);
+               if (included) {
+                  if (inclusive) {
+                      // included and inclusive
+                      this._writer.write(HTMLIncludedInclusiveNamespaceSuffix);
+                  } else {
+                      // included and not inclusive
+                      this._writer.write(HTMLIncludeSuffix);
+                  }
+               } else {
+                  if (inclusive) {
+                      // excluded and inclusive
+                      this._writer.write(HTMLExcludedInclusiveNamespaceSuffix);
+                  } else {
+                      // excluded and not inclusive
+                      this._writer.write(HTMLExcludeSuffix);
+                  }
                }
             }
 
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludePrefix);
+            } else {
                this._writer.write(HTMLExcludePrefix);
             }
 
             this._writer.write("&gt;");
 
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludeSuffix);
+            } else {
                this._writer.write(HTMLExcludeSuffix);
             }
 
@@ -799,7 +835,9 @@ public class XMLSignatureInput {
                this.canonicalizeXPathNodeSet(currentChild);
             }
 
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludePrefix);
+            } else {
                this._writer.write(HTMLExcludePrefix);
             }
 
@@ -807,7 +845,9 @@ public class XMLSignatureInput {
             this._writer.write(currentElement.getTagName());
             this._writer.write("&gt;");
 
-            if (!this._xpathNodeSet.contains(currentNode)) {
+            if (this._xpathNodeSet.contains(currentNode)) {
+               this._writer.write(HTMLIncludeSuffix);
+            } else {
                this._writer.write(HTMLExcludeSuffix);
             }
             break;
