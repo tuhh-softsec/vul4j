@@ -128,7 +128,7 @@ public class TransformPerformanceTester {
       DocumentBuilder db = dbf.newDocumentBuilder();
 
       //J-
-      int counter = 600;
+      int counter = 10;
       boolean simple_gif_detached = true;
 
       boolean pureedge_xfilter2 = true;
