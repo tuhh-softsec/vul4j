@@ -667,7 +667,7 @@ public class Canonicalizer20010315Test extends TestCase {
       InputStream refStream = resolver.resolveEntity(null,
                                  fileRef).getByteStream();
       byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
-      boolean equal = JavaUtils.binaryCompare(refBytes, c14nBytes);
+      boolean equal = java.security.MessageDigest.isEqual(refBytes, c14nBytes);
 
       assertTrue(equal);
    }
@@ -827,7 +827,7 @@ public class Canonicalizer20010315Test extends TestCase {
             prefix + "/in/testTranslationFromUTF16toUTF8.xml")
                .getByteStream();
       byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
-      boolean equal = JavaUtils.binaryCompare(refBytes, c14nBytes);
+      boolean equal = java.security.MessageDigest.isEqual(refBytes, c14nBytes);
 
       assertTrue("Parser does not translate to UCS character domain", equal);
    }
@@ -1091,7 +1091,7 @@ public class Canonicalizer20010315Test extends TestCase {
       byte result[] = c14nizer.canonicalizeXPathNodeSet(nodes);
       byte defined[] = definedOutput.getBytes();
 
-      return JavaUtils.binaryCompare(defined, result);
+      return java.security.MessageDigest.isEqual(defined, result);
    }
 
    /**
@@ -1162,7 +1162,7 @@ public class Canonicalizer20010315Test extends TestCase {
       byte refBytes[] = JavaUtils.getBytesFromFile(fileRef);
 
       // if everything is OK, result is true; we do a binary compare, byte by byte
-      boolean result = JavaUtils.binaryCompare(refBytes, c14nBytes);
+      boolean result = java.security.MessageDigest.isEqual(refBytes, c14nBytes);
 
       if (result == false) {
          File f = new File(fileOut);

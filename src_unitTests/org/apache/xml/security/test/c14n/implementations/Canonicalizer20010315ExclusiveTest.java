@@ -199,7 +199,7 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
          "data/org/apache/xml/security/c14n/inExcl/example2_2_1_c14nized.xml") );
       byte[] result = c.engineCanonicalizeSubTree(root);
-      boolean equals = JavaUtils.binaryCompare(reference, result);
+      boolean equals = java.security.MessageDigest.isEqual(reference, result);
 
       /*
       if (!equals) {
@@ -238,7 +238,7 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
          "data/org/apache/xml/security/c14n/inExcl/example2_2_2_c14nized.xml"));
       byte[] result = c.engineCanonicalizeSubTree(root);
-      boolean equals = JavaUtils.binaryCompare(reference, result);
+      boolean equals = java.security.MessageDigest.isEqual(reference, result);
 
       assertTrue(equals);
    }
@@ -271,7 +271,7 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
          "data/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml") );
       byte[] result = c.engineCanonicalizeSubTree(root);
-      boolean equals = JavaUtils.binaryCompare(reference, result);
+      boolean equals = java.security.MessageDigest.isEqual(reference, result);
 
       assertTrue(equals);
    }
@@ -304,7 +304,7 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
          "data/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml") );
       byte[] result = c.engineCanonicalizeSubTree(root);
-      boolean equals = JavaUtils.binaryCompare(reference, result);
+      boolean equals = java.security.MessageDigest.isEqual(reference, result);
 
       assertTrue(equals);
    }
@@ -340,7 +340,7 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       byte[] reference = JavaUtils.getBytesFromFile(
       		getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_3_c14nized_exclusive.xml") );
       byte[] result = c.engineCanonicalizeXPathNodeSet(nodes);
-      boolean equals = JavaUtils.binaryCompare(reference, result);
+      boolean equals = java.security.MessageDigest.isEqual(reference, result);
       if (!equals) {
           log.warn("Error output = " + new String(result));
       }
