@@ -70,6 +70,9 @@
     <property name="doc.generator"     value="org.apache.stylebook.StyleBook" />
     <property name="doc.generator.package" value="${dir.tools}/stylebook-1.0-b2.jar" />
 
+    <!-- http://www.bouncycastle.org/checksums.html -->
+    <property name="jce.download.md5"  value="eeb940217876bcd83a55d799ee5db7ca" />
+    <property name="jce.download.sha1" value="106e97a5ad7a57aa2cbc48074db80225d3c0972a" />
     <property name="jce.download.file" value="jce-jdk13-112.jar" />
     <property name="jce.download"      value="http://www.bouncycastle.org/download/${jce.download.file}" />
     <property name="lib.jce"           value="${dir.libs}/bc-${jce.download.file}" />
@@ -424,8 +427,12 @@ org.apache.xml.security.test.interop.*
 
   <taskdef name="md5" classname="ant.Md5Task"/>
   <target name="check-bc" depends="get-jce" description="This target checks that the digest values of the JCE library are valid">
-      <!-- http://www.bouncycastle.org/checksums.html -->
-      <md5 Md5="eeb940217876bcd83a55d799ee5db7ca" Sha1="106e97a5ad7a57aa2cbc48074db80225d3c0972a" file="${lib.jce}" />
+      <md5 Md5="${jce.download.md5}" Sha1="${jce.download.sha1}" file="${lib.jce}" />
+      <!-- when ant 1.5 becomes widely available, maybe the core task "checksum" can make this easier -->
+      <!-- 
+      <checksum file="${lib.jce}" property="${jce.download.md5}"  algorithm="md5" verifyProperty="md5OK" />
+      <checksum file="${lib.jce}" property="${jce.download.sha1}" algorithm="sha" verifyProperty="sha1OK" />
+      -->
   </target>
 
   <target name="compile.library" depends="prepare-src, check-bc">
