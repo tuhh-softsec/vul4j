@@ -51,8 +51,8 @@ public class SubstituteTransform implements Transform {
         return buf.toString();
     }
     
-    public static void addRules(Digester d, String pattern) {
-        d.addCallMethod(pattern+"/from", "setFrom", 0);
-        d.addCallMethod(pattern+"/to", "setTo", 0);
+    public static void addRules(Digester d, String patternPrefix) {
+        d.addCallMethod(patternPrefix+"/from", "setFrom", 0);
+        d.addCallMethod(patternPrefix+"/to", "setTo", 0);
     }
 }

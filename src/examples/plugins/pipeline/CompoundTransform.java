@@ -44,9 +44,9 @@ public class CompoundTransform implements Transform {
         return s;
     }
     
-    public static void addRules(Digester d, String pattern) {
+    public static void addRules(Digester d, String patternPrefix) {
         PluginCreateRule pcr = new PluginCreateRule(Transform.class);
-        d.addRule(pattern+"/subtransform", pcr);
-        d.addSetNext(pattern+"/subtransform", "addTransform");
+        d.addRule(patternPrefix+"/subtransform", pcr);
+        d.addSetNext(patternPrefix+"/subtransform", "addTransform");
     }
 }
