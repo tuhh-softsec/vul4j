@@ -312,16 +312,17 @@ void XKMSStatusImpl::setStatusReason(StatusValue status, StatusReason reason, bo
 	/* Now lets create our new element and its text child */
 	safeBuffer str;
 	DOMDocument *doc = mp_env->getParentDocument();
-	str.sbXMLChIn(XKMSConstants::s_unicodeStrURIXKMS);
+	// str.sbXMLChIn(XKMSConstants::s_unicodeStrURIXKMS);
+	const XMLCh * prefix = mp_env->getXKMSNSPrefix();
 
 	if (status == Valid) {
-		str.sbXMLChCat(XKMSConstants::s_tagValidReason);
+		makeQName(str, prefix, XKMSConstants::s_tagValidReason);
 	}
 	else if (status == Invalid) {
-		str.sbXMLChCat(XKMSConstants::s_tagInvalidReason);
+		makeQName(str, prefix, XKMSConstants::s_tagInvalidReason);
 	}
 	else {
-		str.sbXMLChCat(XKMSConstants::s_tagIndeterminateReason);
+		makeQName(str, prefix, XKMSConstants::s_tagIndeterminateReason);
 	}
 
 	DOMElement * e = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
