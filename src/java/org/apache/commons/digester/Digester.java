@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.9 2001/08/04 22:26:37 craigmcc Exp $
- * $Revision: 1.9 $
- * $Date: 2001/08/04 22:26:37 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.10 2001/08/04 23:14:57 craigmcc Exp $
+ * $Revision: 1.10 $
+ * $Date: 2001/08/04 23:14:57 $
  *
  * ====================================================================
  *
@@ -106,7 +106,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.9 $ $Date: 2001/08/04 22:26:37 $
+ * @version $Revision: 1.10 $ $Date: 2001/08/04 23:14:57 $
  */
 
 public class Digester extends DefaultHandler {
@@ -222,12 +222,12 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * The set of Rules that have been registered with this Digester.  The
-     * key is the matching pattern against the current element stack, and
-     * the value is a List containing the Rules for that pattern, in the
-     * order that they were registered.
+     * The <code>Rules</code> implementation containing our collection of
+     * <code>Rule</code> instances and associated matching policy.  If not
+     * established before the first rule is added, a default implementation
+     * will be provided.
      */
-    protected HashMap rules = new HashMap();
+    protected Rules rules = null;
 
 
     /**
@@ -403,6 +403,35 @@ public class Digester extends DefaultHandler {
 
 
     /**
+     * Return the <code>Rules</code> implementation object containing our
+     * rules collection and associated matching policy.  If none has been
+     * established, a default implementation will be created and returned.
+     */
+    public Rules getRules() {
+
+        if (this.rules == null) {
+            this.rules = new RulesBase();
+            this.rules.setDigester(this);
+        }
+        return (this.rules);
+
+    }
+
+
+    /**
+     * Set the <code>Rules</code> implementation object containing our
+     * rules collection and associated matching policy.
+     *
+     * @param rules New Rules implementation
+     */
+    public void setRules(Rules rules) {
+
+        this.rules = rules;
+
+    }
+
+
+    /**
      * Return the validating parser flag.
      */
     public boolean getValidating() {
@@ -514,18 +543,15 @@ public class Digester extends DefaultHandler {
 	    pop();
 
 	// Fire "finish" events for all defined rules
-	Iterator keys = this.rules.keySet().iterator();
-	while (keys.hasNext()) {
-	    String key = (String) keys.next();
-	    List rules = (List) this.rules.get(key);
-	    for (int i = 0; i < rules.size(); i++) {
-		try {
-		    ((Rule) rules.get(i)).finish();
-		} catch (Exception e) {
-		    log("Finish event threw exception", e);
-		    throw new SAXException(e);
-		}
-	    }
+        Iterator rules = getRules().rules().iterator();
+        while (rules.hasNext()) {
+            Rule rule = (Rule) rules.next();
+            try {
+                rule.finish();
+            } catch (Exception e) {
+                log("Finish event threw exception", e);
+                throw new SAXException(e);
+            }
 	}
 
 	// Perform final cleanup
@@ -551,7 +577,7 @@ public class Digester extends DefaultHandler {
 
 	//	if (debug >= 3)
 	//	    log("endElement(" + match + ")");
-	List rules = getRules(match);
+	List rules = getRules().match(match);
 
 	// Fire "body" events for all relevant rules
 	if (rules != null) {
@@ -699,7 +725,7 @@ public class Digester extends DefaultHandler {
 
 
 	// Fire "begin" events for all relevant rules
-	List rules = getRules(match);
+	List rules = getRules().match(match);
 	if (rules != null) {
 	    //	    if (debug >= 3)
 	    //		log("  Firing 'begin' events for " + rules.size() + " rules");
@@ -991,12 +1017,7 @@ public class Digester extends DefaultHandler {
      */
     public void addRule(String pattern, Rule rule) {
 
-	List list = (List) rules.get(pattern);
-	if (list == null) {
-	    list = new ArrayList();
-	    rules.put(pattern, list);
-	}
-	list.add(rule);
+        getRules().add(pattern, rule);
 
     }
 
@@ -1233,6 +1254,7 @@ public class Digester extends DefaultHandler {
 	match = "";
         bodyTexts.clear();
         stack.clear();
+        getRules().clear();
 
     }
 
@@ -1322,27 +1344,13 @@ public class Digester extends DefaultHandler {
      * is preferred.
      *
      * @param match The current match position
+     *
+     * @deprecated Call <code>match()</code> on the <code>Rules</code>
+     *  implementation returned by <code>getRules()</code>
      */
     List getRules(String match) {
 
-        List rulesList = (List) this.rules.get(match);
-	if (rulesList == null) {
-            // Find the longest key, ie more discriminant
-            String longKey = "";
-	    Iterator keys = this.rules.keySet().iterator();
-	    while (keys.hasNext()) {
-	        String key = (String) keys.next();
-		if (key.startsWith("*/")) {
-		    if (match.endsWith(key.substring(1))) {
-                        if (key.length() > longKey.length()) {
-                            rulesList = (List) this.rules.get(key);
-                            longKey = key;
-                        }
-		    }
-		}
-	    }
-	}
-	return (rulesList);
+        return (getRules().match(match));
 
     }
 
