@@ -67,7 +67,7 @@ import org.apache.xml.security.utils.EncryptionConstants;
  *
  * @author $Author$
  */
-public class KeyWrapImpl_AES256_BC extends KeyWrapImpl {
+public class KeyWrapImpl_AES256_BC extends KeyWrapImpl_AES_BC {
 
    /**
     * Method engineGetIvLength

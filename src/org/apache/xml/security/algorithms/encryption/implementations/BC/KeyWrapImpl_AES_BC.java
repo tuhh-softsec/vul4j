@@ -1,108 +1,32 @@
-/*
- * The Apache Software License, Version 1.1
- *
- *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
- * reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
- *       "This product includes software developed by the
- *        Apache Software Foundation (http://www.apache.org/)."
- *    Alternately, this acknowledgment may appear in the software itself,
- *    if and wherever such third-party acknowledgments normally appear.
- *
- * 4. The names "<WebSig>" and "Apache Software Foundation" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
- *    permission, please contact apache@apache.org.
- *
- * 5. Products derived from this software may not be called "Apache",
- *    nor may "Apache" appear in their name, without prior written
- *    permission of the Apache Software Foundation.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 2001, Institute for
- * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
- * For more information on the Apache Software Foundation, please see
- * <http://www.apache.org/>.
- */
 package org.apache.xml.security.algorithms.encryption.implementations.BC;
 
 
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.xml.security.algorithms.JCEMapper;
+import java.security.*;
+import java.security.spec.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import org.apache.xml.security.algorithms.*;
 import org.apache.xml.security.algorithms.encryption.*;
 import org.apache.xml.security.algorithms.encryption.params.*;
+import org.apache.xml.security.algorithms.encryption.helper.AESWrapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.PRNG;
 import org.w3c.dom.*;
 
-
 /**
- * Symmetric Key Wrap algorithms are shared secret key encryption algorithms
- * especially specified for encrypting and decrypting symmetric keys.
  *
- * Their identifiers appear as Algorithm attribute values to EncryptionMethod
- * elements that are children of EncryptedKey which is in turn a child of
- * KeyInfo which is in turn a child of EncryptedData or another EncryptedKey.
  *
- * (xenc:EncryptedData or xenc:EncryptedKey)/ds:KeyInfo/xenc:EncryptedKey/xenc:EncryptionMethod/@Algorithm
  *
- * The type of the key being wrapped is indicated by the Algorithm attribute of
- * EncryptionMethod child of the parent of the KeyInfo grandparent of the
- * EncryptionMethod specifying the symmetric key wrap algorithm.
- *
- * ./ancestor[2]::ds:KeyInfo/../xenc:EncryptionMethod/@Algorithm
  *
  * @author $Author$
+ *
  */
-public abstract class KeyWrapImpl extends EncryptionMethodSpi {
+
+public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
 
    /** Field _cipher           */
    Cipher _cipher;
@@ -224,31 +148,12 @@ public abstract class KeyWrapImpl extends EncryptionMethodSpi {
    public byte[] engineWrap(Key contentKey, Key wrapKey, byte[] IV)
            throws org.apache.xml.security.exceptions.XMLSecurityException {
 
-      try {
-         if (IV != null) {
-            IvParameterSpec ivParamSpec = new IvParameterSpec(IV);
-
-            this._cipher.init(Cipher.WRAP_MODE, wrapKey, ivParamSpec);
-         } else {
-            if (this.engineGetIvLength() != -1) {
-               IV = PRNG.createBytes(this.engineGetIvLength());
-
-               IvParameterSpec ivParamSpec = new IvParameterSpec(IV);
-
-               this._cipher.init(Cipher.WRAP_MODE, wrapKey, ivParamSpec);
-            } else {
-               this._cipher.init(Cipher.WRAP_MODE, wrapKey);
-            }
+         if (IV != null && IV.length != 8) {
+            throw new XMLSecurityException("empty");
          }
+         AESWrapper aw = new AESWrapper(this._cipher);
 
-         return this._cipher.wrap(contentKey);
-      } catch (InvalidKeyException ex) {
-         throw new XMLSecurityException("empty", ex);
-      } catch (InvalidAlgorithmParameterException ex) {
-         throw new XMLSecurityException("empty", ex);
-      } catch (IllegalBlockSizeException ex) {
-         throw new XMLSecurityException("empty", ex);
-      }
+         return aw.wrap(contentKey, wrapKey, IV);
    }
 
    /**
@@ -264,17 +169,40 @@ public abstract class KeyWrapImpl extends EncryptionMethodSpi {
            throws org.apache.xml.security.exceptions.XMLSecurityException {
 
       try {
-         this._cipher.init(Cipher.UNWRAP_MODE, wrapKey);
-
-         String keyAlgorithm =
+         String wrappedKeyAlgorithm =
             JCEMapper
                .translateURItoJCEID(wrappedKeyURI, this
                   .getRequiredProviderName()).getAlgorithmID();
-         int keyType = JCEMapper.getKeyTypeFromURI(wrappedKeyURI);
+         int wrappedKeyType = JCEMapper.getKeyTypeFromURI(wrappedKeyURI);
+         AESWrapper wrapper = new AESWrapper(this._cipher);
+         byte[] encoded = wrapper.unwrap(wrappedKey, wrapKey);
 
-         return this._cipher.unwrap(wrappedKey, keyAlgorithm, keyType);
-      } catch (NoSuchAlgorithmException ex) {
-         throw new XMLSecurityException("empty", ex);
+         if (wrappedKeyType == Cipher.SECRET_KEY) {
+            return new SecretKeySpec(encoded, wrappedKeyAlgorithm);
+         } else {
+            try {
+               KeyFactory kf =
+                  KeyFactory.getInstance(wrappedKeyAlgorithm,
+                                         this.getRequiredProviderName());
+
+               if (wrappedKeyType == Cipher.PUBLIC_KEY) {
+                  return kf.generatePublic(new X509EncodedKeySpec(encoded));
+               } else if (wrappedKeyType == Cipher.PRIVATE_KEY) {
+                  return kf.generatePrivate(new PKCS8EncodedKeySpec(encoded));
+               }
+            } catch (NoSuchProviderException e) {
+               throw new InvalidKeyException("Unknown key type "
+                                             + e.getMessage());
+            } catch (NoSuchAlgorithmException e) {
+               throw new InvalidKeyException("Unknown key type "
+                                             + e.getMessage());
+            } catch (InvalidKeySpecException e2) {
+               throw new InvalidKeyException("Unknown key type "
+                                             + e2.getMessage());
+            }
+
+            throw new InvalidKeyException("Unknown key type " + wrappedKeyType);
+         }
       } catch (InvalidKeyException ex) {
          throw new XMLSecurityException("empty", ex);
       }
