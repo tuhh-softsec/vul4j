@@ -181,43 +181,6 @@ public class ExclusiveC14NInterop extends InteropTest {
    }
 
    /**
-    * Method _test_Y4_stripped
-    *
-    * @throws Exception
-    */
-   public void _test_Y4_stripped() throws Exception {
-
-      String success = t("data/interop/c14n/Y4stripped", "signature.xml");
-
-      assertTrue(success, success == null);
-   }
-
-   /**
-    * Method test_Y5
-    *
-    * @throws Exception
-    */
-   public void test_Y5() throws Exception {
-
-      String success = t("data/interop/c14n/Y5", "signature.xml");
-
-      // String success = t("data/interop/c14n/Y5", "signatureCommented.xml");
-      assertTrue(success, success == null);
-   }
-
-   /**
-    * Method _test_Y5_stripped
-    *
-    * @throws Exception
-    */
-   public void _test_Y5_stripped() throws Exception {
-
-      String success = t("data/interop/c14n/Y5", "signatureStripped.xml");
-
-      assertTrue(success, success == null);
-   }
-
-   /**
     * Method t
     *
     * @param directory
@@ -255,7 +218,8 @@ public class ExclusiveC14NInterop extends InteropTest {
 
       int failures = 0;
 
-      if (!verify) {
+      // if (!verify) {
+      if (true) {
          StringBuffer sb = new StringBuffer();
 
          for (int i = 0; i < signature.getSignedInfo().getLength(); i++) {
@@ -264,6 +228,11 @@ public class ExclusiveC14NInterop extends InteropTest {
 
             if (refVerify) {
                cat.debug("Reference " + i + " was OK");
+               /*
+               JavaUtils.writeBytesToFilename(
+                  directory + "/c14n-" + i + ".html", signature.getSignedInfo()
+                     .item(i).getHTMLRepresentation().getBytes());
+               */
             } else {
                failures++;
 
