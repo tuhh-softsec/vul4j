@@ -540,7 +540,7 @@ public class Reference extends SignatureElementProxy {
       try {
          this.dereferenceURIandPerformTransforms();
 
-         byte[] signedBytes = this._transformsOutput.getBytes();
+         byte[] signedBytes = this.getTransformsOutput().getBytes();
 
          return signedBytes;
       } catch (IOException ex) {
@@ -603,10 +603,11 @@ public class Reference extends SignatureElementProxy {
 
       if (!equal) {
          cat.warn("Verification failed for URI \"" + this.getURI() + "\"");
-         cat.debug("unverifiedDigestValue= " + Base64.encode(elemDig));
-         cat.debug("calculatedDigestValue= " + Base64.encode(calcDig));
 
          if (cat.isDebugEnabled()) {
+            cat.debug("unverifiedDigestValue= " + Base64.encode(elemDig));
+            cat.debug("calculatedDigestValue= " + Base64.encode(calcDig));
+
             try {
                String tmp = new Long(System.currentTimeMillis()).toString()
                             + ".txt";
