@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.15 2002/03/23 17:45:57 rdonkin Exp $
- * $Revision: 1.15 $
- * $Date: 2002/03/23 17:45:57 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.16 2002/04/18 21:23:44 rdonkin Exp $
+ * $Revision: 1.16 $
+ * $Date: 2002/04/18 21:23:44 $
  *
  * ====================================================================
  *
@@ -75,11 +75,14 @@ import org.apache.commons.beanutils.MethodUtils;
  * Rule implementation that calls a method on the top (parent)
  * object, passing arguments collected from subsequent
  * <code>CallParamRule</code> rules or from the body of this
- * element.
+ * element. 
+ * By using {@link #CallMethodRule(String methodName)} 
+ * a method call can be made to a method which accepts no
+ * arguments.
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.15 $ $Date: 2002/03/23 17:45:57 $
+ * @version $Revision: 1.16 $ $Date: 2002/04/18 21:23:44 $
  */
 
 public class CallMethodRule extends Rule {
@@ -166,13 +169,38 @@ public class CallMethodRule extends Rule {
     public CallMethodRule(String methodName,
                           int paramCount) {
 
-        this( methodName, paramCount, (Class[]) null);
+        this.methodName = methodName;
+        this.paramCount = paramCount;        
+        if (paramCount == 0) {
+            this.paramTypes = new Class[] { String.class };
+        } else {
+            this.paramTypes = new Class[paramCount];
+            for (int i = 0; i < this.paramTypes.length; i++) {
+                this.paramTypes[i] = String.class;
+            }
+        }
 
     }
 
+    /**
+     * Construct a "call method" rule with the specified method name.  
+     * The method should accept no parameters.
+     *
+     * @param methodName Method name of the parent method to call
+     */
+    public CallMethodRule(String methodName) {
+    
+        this(methodName, 0, (Class[]) null);
+    
+    }
+    
 
     /**
-     * Construct a "call method" rule with the specified method name.
+     * Construct a "call method" rule with the specified method name and
+     * parameter types. If <code>paramCount</code> is set to zero the rule
+     * will use the body of this element as the single argument of the
+     * method, unless <code>paramTypes</code> is null or empty, in this
+     * case the rule will call the specified method with no arguments.
      *
      * @param methodName Method name of the parent method to call
      * @param paramCount The number of parameters to collect, or
@@ -210,7 +238,11 @@ public class CallMethodRule extends Rule {
 
 
     /**
-     * Construct a "call method" rule with the specified method name.
+     * Construct a "call method" rule with the specified method name and
+     * parameter types. If <code>paramCount</code> is set to zero the rule
+     * will use the body of this element as the single argument of the
+     * method, unless <code>paramTypes</code> is null or empty, in this
+     * case the rule will call the specified method with no arguments.
      *
      * @param methodName Method name of the parent method to call
      * @param paramCount The number of parameters to collect, or
@@ -327,7 +359,7 @@ public class CallMethodRule extends Rule {
                 return;
             }
 
-        } else {
+        } else if (paramTypes != null && paramTypes.length != 0) {
 
             // In the case where the parameter for the method
             // is taken from the body text, but there is no

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.11 2002/03/20 20:28:28 rdonkin Exp $
- * $Revision: 1.11 $
- * $Date: 2002/03/20 20:28:28 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.12 2002/04/18 21:23:44 rdonkin Exp $
+ * $Revision: 1.12 $
+ * $Date: 2002/04/18 21:23:44 $
  *
  * ====================================================================
  *
@@ -79,7 +79,7 @@ import junit.framework.TestSuite;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.11 $ $Date: 2002/03/20 20:28:28 $
+ * @version $Revision: 1.12 $ $Date: 2002/04/18 21:23:44 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -288,6 +288,41 @@ public class RuleTestCase extends TestCase {
                 "Last Name",
                 employee.getLastName());
 
+    }
+
+
+    /**
+     * Same as testObjectCreate1(), except use individual call method rules
+     * to set the properties of the Employee. Bean data are defined using 
+     * elements instead of attributes. The purpose is to test CallMethod with
+     * a paramCount=0 (ie the body of the element is the argument of the 
+     * method).
+     */
+    public void testObjectCreate5() {
+
+        // Configure the digester as required
+        digester.addObjectCreate("employee", Employee.class);
+        digester.addCallMethod("employee/firstName", "setFirstName", 0);
+        digester.addCallMethod("employee/lastName", "setLastName", 0);
+
+
+        // Parse our test input.
+        Object root = null;
+        try {
+            root = digester.parse(getInputStream("Test5.xml"));
+        } catch (Throwable t) {
+            fail("Digester threw IOException: " + t);
+        }
+        assertNotNull("Digester returned an object", root);
+        assertTrue("Digester returned an Employee",
+                root instanceof Employee);
+        Employee employee = (Employee) root;
+        assertEquals("First name is correct",
+                "First Name",
+                employee.getFirstName());
+        assertEquals("Last name is correct",
+                "Last Name",
+                employee.getLastName());
 
     }
 
@@ -594,6 +629,37 @@ public class RuleTestCase extends TestCase {
         assertEquals("Wrong name (6)", "FOUR", five.getParent().getName());
 
     }
+
+
+    /**
+     * Test method calls with the CallMethodRule rule. It should be possible
+     * to call any accessible method of the object on the top of the stack,
+     * even methods with no arguments.
+     */
+    public void testCallMethod() throws Exception {
+        
+        // Configure the digester as required
+        digester.addObjectCreate("employee", Employee.class);
+        // try all syntax permutations
+        digester.addCallMethod("employee", "toString", 0, (Class[])null);
+        digester.addCallMethod("employee", "toString", 0, (String[])null);
+        digester.addCallMethod("employee", "toString", 0, new Class[] {});
+        digester.addCallMethod("employee", "toString", 0, new String[] {});
+        digester.addCallMethod("employee", "toString");
+
+        // Parse our test input
+        Object root1 = null;
+        try {
+            // an exception will be thrown if the method can't be found
+            root1 = digester.parse(getInputStream("Test5.xml"));
+            
+        } catch (Throwable t) {
+            // this means that the method can't be found and so the test fails
+            fail("Digester threw Exception:  " + t);
+        }
+
+    }
+
 
     // ------------------------------------------------ Utility Support Methods
 

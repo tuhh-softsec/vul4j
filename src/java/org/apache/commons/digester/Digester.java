@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.50 2002/03/23 17:45:57 rdonkin Exp $
- * $Revision: 1.50 $
- * $Date: 2002/03/23 17:45:57 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.51 2002/04/18 21:23:44 rdonkin Exp $
+ * $Revision: 1.51 $
+ * $Date: 2002/04/18 21:23:44 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.50 $ $Date: 2002/03/23 17:45:57 $
+ * @version $Revision: 1.51 $ $Date: 2002/04/18 21:23:44 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1423,6 +1423,19 @@ public class Digester extends DefaultHandler {
 
     }
 
+    /**
+     * Add an "call method" rule for a method which accepts no arguments.
+     *
+     * @param pattern Element matching pattern
+     * @param methodName Method name to be called
+     */
+    public void addCallMethod(String pattern, String methodName) {
+
+        addRule(
+                pattern,
+                new CallMethodRule(methodName));
+
+    }
 
     /**
      * Add an "call method" rule for the specified parameters.
@@ -1443,6 +1456,10 @@ public class Digester extends DefaultHandler {
 
     /**
      * Add an "call method" rule for the specified parameters.
+     * If <code>paramCount</code> is set to zero the rule will use
+     * the body of the matched element as the single argument of the
+     * method, unless <code>paramTypes</code> is null or empty, in this
+     * case the rule will call the specified method with no arguments.
      *
      * @param pattern Element matching pattern
      * @param methodName Method name to be called
@@ -1468,6 +1485,10 @@ public class Digester extends DefaultHandler {
 
     /**
      * Add an "call method" rule for the specified parameters.
+     * If <code>paramCount</code> is set to zero the rule will use
+     * the body of the matched element as the single argument of the
+     * method, unless <code>paramTypes</code> is null or empty, in this
+     * case the rule will call the specified method with no arguments.
      *
      * @param pattern Element matching pattern
      * @param methodName Method name to be called
