@@ -78,24 +78,33 @@ public class IgnoreAllErrorHandler implements ErrorHandler {
       org.apache.log4j.Category
          .getInstance(IgnoreAllErrorHandler.class.getName());
 
+   /** Field throwExceptions */
+   static final boolean warnOnExceptions = true;
+
    /** Field throwExceptions           */
    static final boolean throwExceptions = false;
 
    //J-
     public void warning (SAXParseException ex) throws SAXException {
-       cat.warn("", ex);
+       if (IgnoreAllErrorHandler.warnOnExceptions) {
+          cat.warn("", ex);
+       }
        if (IgnoreAllErrorHandler.throwExceptions) {
           throw ex;
        }
     }
     public void error (SAXParseException ex) throws SAXException {
-       cat.error("", ex);
+       if (IgnoreAllErrorHandler.warnOnExceptions) {
+          cat.error("", ex);
+       }
        if (IgnoreAllErrorHandler.throwExceptions) {
           throw ex;
        }
     }
     public void fatalError (SAXParseException ex) throws SAXException {
-       cat.fatal("", ex);
+       if (IgnoreAllErrorHandler.warnOnExceptions) {
+          cat.warn("", ex);
+       }
        if (IgnoreAllErrorHandler.throwExceptions) {
           throw ex;
        }
