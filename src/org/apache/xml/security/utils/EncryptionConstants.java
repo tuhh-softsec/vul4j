@@ -156,6 +156,10 @@ public class EncryptionConstants {
    public static final String ALGO_ID_ENCODING_BASE64 = "http://www.w3.org/2000/09/xmldsig#base64";
    //J+
 
+   private EncryptionConstants() {
+     // we don't allow instantiation
+   }
+
    /**
     * Method setEncryptionSpecNSprefix
     *

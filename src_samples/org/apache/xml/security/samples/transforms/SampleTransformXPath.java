@@ -69,7 +69,7 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.c14n.helper.XPathContainer;
-import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.signature.*;
 import org.apache.xml.security.transforms.*;
 import org.apache.xml.security.utils.*;
 
@@ -99,7 +99,8 @@ public class SampleTransformXPath {
       // + "   <ds:XPath xmlns:match='http://sfdfg/'>(self::match:Order | self::text()[string(parent::e)=\"Hello,  world!\"])</ds:XPath>\n"
       // + "   <ds:XPath>//@*</ds:XPath>\n"
       + "   <!-- Exclude all signatures -->\n"
-      + "   <ds:XPath xmlns:ds='http://www.w3.org/2000/09/xmldsig#'>not(ancestor-or-self::ds:Signature)</ds:XPath>\n"
+      // + "   <ds:XPath xmlns:ds='http://www.w3.org/2000/09/xmldsig#'>not(ancestor-or-self::ds:Signature)</ds:XPath>\n"
+      + "   <ds:XPath xmlns:ds='http://www.w3.org/2000/09/xmldsig#'>self::text()[ancestor-or-self::node()=/Class/e[1]]</ds:XPath>\n"
       + "</Transform>\n"
       + "</Transforms>\n"
       ;

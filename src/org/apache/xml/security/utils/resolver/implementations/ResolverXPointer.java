@@ -90,7 +90,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(ResolverDirectHTTP.class.getName());
+      org.apache.log4j.Category.getInstance(ResolverXPointer.class.getName());
 
    /**
     * Method engineResolve
@@ -107,7 +107,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
            throws ResourceResolverException {
 
       String uriNodeValue = uri.getNodeValue();
-      NodeList resultNodes = new HelperNodeList();
+      NodeList resultNodes = null;
       Document doc = uri.getOwnerDocument();
       CachedXPathAPI cXPathAPI = new CachedXPathAPI();
 

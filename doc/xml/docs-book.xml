@@ -37,4 +37,6 @@
   <document label="History" 
             id="history"     
             source="history.xml" />
+  <external label="Latest GUMP"
+            href="http://jakarta.apache.org/builds/gump/latest/xml-security.html" />
 </book>

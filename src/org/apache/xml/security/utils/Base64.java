@@ -109,6 +109,10 @@ public class Base64 {
 
    /** Field _base64length */
    static int _base64length = Base64.BASE64DEFAULTLENGTH;
+   
+   private Base64() {
+     // we don't allow instantiation
+   }
 
    /**
     * Method setBase64WrapLength

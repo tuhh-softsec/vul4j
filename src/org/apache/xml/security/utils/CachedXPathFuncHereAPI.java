@@ -105,6 +105,9 @@ public class CachedXPathFuncHereAPI {
       return this._funcHereContext;
    }
 
+   private CachedXPathFuncHereAPI() {
+   }
+
    /**
     * Constructor CachedXPathFuncHereAPI
     *

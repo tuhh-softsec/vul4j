@@ -12,6 +12,10 @@ public class PRNG {
   private static PRNG _prng = null;
   private SecureRandom _sr;
 
+  private PRNG() {
+     // we don't allow instantiation
+  }
+
   private PRNG(SecureRandom secureRandom) {
      this._sr = secureRandom;
   }

@@ -83,6 +83,10 @@ public class IdResolver {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(IdResolver.class.getName());
 
+   private IdResolver() {
+     // we don't allow instantiation
+   }
+
    /**
     * Method registerElementById
     *

@@ -83,7 +83,7 @@ public class ResolverFragment extends ResourceResolverSpi {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(ResolverDirectHTTP.class.getName());
+      org.apache.log4j.Category.getInstance(ResolverFragment.class.getName());
 
    /**
     * Method engineResolve

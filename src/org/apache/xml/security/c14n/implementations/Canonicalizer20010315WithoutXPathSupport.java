@@ -62,6 +62,10 @@ package org.apache.xml.security.c14n.implementations;
 
 import java.io.*;
 import java.util.Vector;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Iterator;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 import org.xml.sax.*;
@@ -103,8 +107,7 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
     */
    private short processingPos = CanonicalizerSpi.BEFORE_DOCUMENT_ELEM;
 
-   /** Field _xpathChecked */
-   private boolean _xpathChecked = false;
+   private Node _rootNode = null;
 
    /**
     * This method always returns true because this implementation is not XPath
@@ -157,17 +160,8 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
     *
     * @param includeComments
     */
-   public Canonicalizer20010315WithoutXPathSupport(boolean includeComments) {
-
+   protected Canonicalizer20010315WithoutXPathSupport(boolean includeComments) {
       this.engineSetIncludeComments(includeComments);
-
-      if (includeComments) {
-         this.engineSetURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-         this.engineSetXPath(Canonicalizer.XPATH_C14N_WITH_COMMENTS);
-      } else {
-         this.engineSetURI(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-         this.engineSetXPath(Canonicalizer.XPATH_C14N_OMIT_COMMENTS);
-      }
    }
 
    /**
@@ -201,52 +195,57 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
                                              exArgs);
       }
 
-      /*
-       * check whether the correct XPath is set. This version can only handle
-       * the core types from the spec.
-       */
-      if (!_xpathChecked) {
-         if (this.engineGetIncludeComments()) {
-
-            /**
-             * @todo these xpath Strings are not compared to be semantically equal,
-             *  only char-by-char. Can we compare compiled XPathes?
-             */
-            if (!this.engineGetXPathString()
-                    .equals(Canonicalizer.XPATH_C14N_WITH_COMMENTS)) {
-               cat.fatal("initialized with wrong xpath \"" + engineGetXPath()
-                         + "\"");
-
-               throw new RuntimeException("initialized with wrong xpath "
-                                          + engineGetXPath());
-            }
-         } else {
-            if (!this.engineGetXPathString()
-                    .equals(Canonicalizer.XPATH_C14N_OMIT_COMMENTS)) {
-               cat.fatal("initialized with wrong xpath \"" + engineGetXPath()
-                         + "\"");
-
-               throw new RuntimeException("initialized with wrong xpath "
-                                          + engineGetXPath());
-            }
-         }
-
-         this._xpathChecked = true;
-      }
-
+      this._rootNode = node;
       NodeFilter nodefilter =
          new C14nNodeFilter(this.engineGetIncludeComments());
       Document document;
 
-      if (node.getNodeType() == Node.DOCUMENT_NODE) {
-         document = (Document) node;
+      if (this._rootNode.getNodeType() == Node.DOCUMENT_NODE) {
+         document = (Document) this._rootNode;
       } else {
-         document = node.getOwnerDocument();
+         document = this._rootNode.getOwnerDocument();
+      }
+
+      {
+         // determine all in-scope-namespaces
+         Node parent = this._rootNode;
+         java.util.Map inScopeNS = new java.util.HashMap();
+         while (parent != null && parent.getNodeType() == Node.ELEMENT_NODE) {
+            NamedNodeMap attributes = ((Element) parent).getAttributes();
+            for (int i=0; i<attributes.getLength(); i++) {
+               Attr attr = (Attr) attributes.item(i);
+               String namespaceURI = attr.getNamespaceURI();
+               if (namespaceURI != null && namespaceURI.equals(Constants.NamespaceSpecNS)) {
+                  String name = attr.getNodeName();
+
+                  if (!inScopeNS.containsKey(name)) {
+                     String value = attr.getNodeValue();
+
+                     inScopeNS.put(name, value);
+                  }
+               }
+            }
+
+            parent = parent.getParentNode();
+         }
+
+         // copy all in-scope-namespace attributes to rootNode;
+         Iterator iterator = inScopeNS.keySet().iterator();
+         while (iterator.hasNext()) {
+            String name = (String) iterator.next();
+            String value = (String) inScopeNS.get(name);
+
+            if ((name.equals("xmlns")) && (value.length() == 0)) {
+               ;
+            } else {
+               ((Element)this._rootNode).setAttributeNS(Constants.NamespaceSpecNS, name, value);
+            }
+         }
       }
 
       boolean entityReferenceExpansion = true;
       TreeWalker treewalker =
-         ((DocumentTraversal) document).createTreeWalker(node,
+         ((DocumentTraversal) document).createTreeWalker(this._rootNode,
             NodeFilter.SHOW_ALL, nodefilter, entityReferenceExpansion);
       ByteArrayOutputStream bytearrayoutputstream;
       PrintWriter printwriter;
@@ -383,14 +382,12 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
          break;
 
       case Node.ELEMENT_NODE :
-         // if (currentNode == currentNode.getOwnerDocument().getDocumentElement()) {
          processingPos = CanonicalizerSpi.INSIDE_DOCUMENT_ELEM;
-         // }
          Canonicalizer20010315.checkForRelativeNamespace(currentNode);
 
          printwriter.print('<');
          printwriter.print(currentNode.getNodeName());
-         removeExtraNamespaces(currentNode);
+         this.removeExtraNamespaces(currentNode);
 
          NamedNodeMap namednodemap = currentNode.getAttributes();
          Attr aattr[] = C14nHelper.sortAttributes(namednodemap);
@@ -471,7 +468,7 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
                    + " called. Has to get an ELEMENT");
       }
 
-      Vector ancestorVector = XMLUtils.getAncestorElements(node);
+      Vector ancestorVector = XMLUtils.getAncestorElements(node, this._rootNode);
       Vector redundantAttrsVector = new Vector();
       NamedNodeMap nodeAttributes = node.getAttributes();
 

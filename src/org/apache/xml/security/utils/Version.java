@@ -9,6 +9,10 @@ public class Version {
     /** Version string. */
     public static String fVersion = "@@VERSION@@";
 
+   private Version() {
+     // we don't allow instantiation
+   }
+
     public static final String getVersion() {
        return Version.fVersion;
     }

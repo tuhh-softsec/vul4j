@@ -227,7 +227,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    /**
     * Method engineCanonicalizeXPathNodeSet
     *
-    * @param selectedNodes
+    * @param xpathNodeSet
     * @return
     * @throws CanonicalizationException
     */
@@ -252,7 +252,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @return
     * @throws CanonicalizationException
     */
-   public byte[] engineCanonicalizeSubTree(Node node)
+   public byte[] engineCanonicalizeSubTree(Node rootNode)
            throws CanonicalizationException {
 
       /**
@@ -265,11 +265,11 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
             NodeList selected = null;
 
             if (this.engineGetXPath() instanceof Element) {
-               selected = XPathAPI.selectNodeList(node,
+               selected = XPathAPI.selectNodeList(rootNode,
                                                   this.engineGetXPathString(),
                                                   (Node) this.engineGetXPath());
             } else {
-               selected = XPathAPI.selectNodeList(node,
+               selected = XPathAPI.selectNodeList(rootNode,
                                                   this.engineGetXPathString());
             }
 
@@ -283,7 +283,21 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          }
       }
 
-      return this.engineDoCanonicalization(node);
+      return this.engineDoCanonicalization(rootNode);
+      /*
+      // Try to canonicalize using another canonicalizer:
+      if (this.engineGetIncludeComments()) {
+         Canonicalizer20010315WithoutXPathSupportWithComments c14n =
+            new Canonicalizer20010315WithoutXPathSupportWithComments();
+
+         return c14n.engineCanonicalizeSubTree(rootNode);
+      } else {
+         Canonicalizer20010315WithoutXPathSupportOmitComments c14n =
+            new Canonicalizer20010315WithoutXPathSupportOmitComments();
+
+         return c14n.engineCanonicalizeSubTree(rootNode);
+      }
+      */
    }
 
    /**

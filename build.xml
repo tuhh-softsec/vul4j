@@ -285,6 +285,10 @@ org.apache.xml.security.test.interop.*
             dir="${dir.src}"
             includes="org/**,ant/**" />
     </copy>
+    <copy file="./src/MANIFEST.MF" 
+          tofile="${build.classes}/META-INF/MANIFEST.MF" />
+    <replace file="${build.classes}/META-INF/MANIFEST.MF"
+             token="@@VERSION@@" value="${product.version}" />
 
     <!-- substitute tokens as needed -->
     <replace file="${build.src}/org/apache/xml/security/utils/Version.java"
@@ -497,16 +501,19 @@ org.apache.xml.security.test.interop.*
           description="Creates the ${jar.library}, ${jar.samples} and ${jar.samples} JAR file in ${build.dir}">
      <jar jarfile="${build.dir}/${jar.library}"
           basedir="${build.classes}"
-          includes="org/apache/**, META-INF/**, *.txt"
-          excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**" />
+          includes="org/apache/**, *.txt"
+          excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**" 
+          manifest="${build.classes}/META-INF/MANIFEST.MF" />
      <jar jarfile="${build.dir}/${jar.samples}"
           basedir="${build.classes}"
-          includes="org/apache/xml/security/samples/**, META-INF/**"
-          excludes="org/apache/xml/security/temp/**" />
+          includes="org/apache/xml/security/samples/**"
+          excludes="org/apache/xml/security/temp/**"  
+          manifest="${build.classes}/META-INF/MANIFEST.MF" />
      <jar jarfile="${build.dir}/${jar.tests}"
           basedir="${build.classes}"
-          includes="org/apache/xml/security/test/**, META-INF/**"
-          excludes="org/apache/xml/security/temp/**" />
+          includes="org/apache/xml/security/test/**"
+          excludes="org/apache/xml/security/temp/**"  
+          manifest="${build.classes}/META-INF/MANIFEST.MF" />
     <!--  compress="false" -->
   </target>
 

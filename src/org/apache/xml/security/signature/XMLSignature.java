@@ -289,6 +289,11 @@ public class XMLSignature extends SignatureElementProxy {
          }
 
          String base64codedValue = Base64.encode(bytes);
+
+         if (base64codedValue.length() > 76) {
+            base64codedValue = "\n" + base64codedValue + "\n";
+         }
+
          Text t = this._doc.createTextNode(base64codedValue);
 
          signatureValueElem.appendChild(t);

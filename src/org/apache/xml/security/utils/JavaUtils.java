@@ -75,6 +75,10 @@ public class JavaUtils {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(JavaUtils.class.getName());
 
+   private JavaUtils() {
+     // we don't allow instantiation
+   }
+
    /**
     * Checks whether an object implements a specific interface.
     *

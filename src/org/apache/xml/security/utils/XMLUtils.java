@@ -97,6 +97,10 @@ public class XMLUtils {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(XMLUtils.class.getName());
 
+   private XMLUtils() {
+      // we don't allow instantiation
+   }
+
    /**
     * Method getXalanVersion
     *
@@ -381,23 +385,9 @@ public class XMLUtils {
    }
 
    /**
-    * Prints a sub-tree to standard out.
+    * Returns all ancestor elements of a given node up to the document element
     *
     * @param ctxNode
-    *
-    *  try {
-    *     Document doc = contextNode.getOwnerDocument();
-    *     OutputFormat format = new OutputFormat(doc);
-    *     StringWriter stringOut = new StringWriter();
-    *     XMLSerializer serial = new XMLSerializer(stringOut, format);
-    *
-    *     serial.asDOMSerializer();
-    *     serial.serialize(doc.getDocumentElement());
-    *     os.write(stringOut.toString());
-    *  } catch (Exception ex) {
-    *     ex.printStackTrace();
-    *  }
-    * }
     * @return
     */
    public static Vector getAncestorElements(Node ctxNode) {
@@ -411,6 +401,35 @@ public class XMLUtils {
 
       while ((parent = parent.getParentNode()) != null
              && (parent.getNodeType() == Node.ELEMENT_NODE)) {
+         ancestorVector.add(parent);
+      }
+
+      ancestorVector.trimToSize();
+
+      return ancestorVector;
+   }
+
+   /**
+    * Returns all ancestor elements of a given node up to the given root element
+    *
+    * @param ctxNode
+    * @param rootElement
+    * @return
+    */
+   public static Vector getAncestorElements(Node ctxNode, Node rootElement) {
+
+      Vector ancestorVector = new Vector();
+
+      if (ctxNode.getNodeType() != Node.ELEMENT_NODE) {
+         return ancestorVector;
+      }
+
+      Node parent = ctxNode;
+      Node parentOfRoot = rootElement.getParentNode();
+
+      while ((parent = parent.getParentNode()) != null
+             && (parent.getNodeType() == Node.ELEMENT_NODE)
+             && (parent != parentOfRoot)) {
          ancestorVector.add(parent);
       }
 
@@ -530,7 +549,9 @@ public class XMLUtils {
    }
 
    /**
-    * Method outputDOMc14n
+    * Serializes the <CODE>contextNode</CODE> into the OutputStream, but
+    * supresses all Exceptions. This should only be used for debugging purposes,
+    * not in a production environment.
     *
     * @param contextNode
     * @param os

@@ -93,6 +93,10 @@ public class I18n {
 
    /** Field _countryCode */
    protected static String _countryCode = null;
+   
+   private I18n() {
+     // we don't allow instantiation
+   }
 
    /**
     * Method translate

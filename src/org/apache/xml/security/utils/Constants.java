@@ -194,6 +194,10 @@ public class Constants {
    public static final String ALGO_ID_SIGNATURE_ECDSA_CERTICOM = "http://www.certicom.com/2000/11/xmlecdsig#ecdsa-sha1";
    //J+
 
+   private Constants() {
+     // we don't allow instantiation
+   }
+
    /**
     * Sets the namespace prefix which will be used to identify elements in the
     * XML Signature Namespace.
