@@ -130,7 +130,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
          this.canonicalizeSubTree(rootNode,ns);
          this._writer.close();
          if (this._writer instanceof ByteArrayOutputStream) {
-         	return ((ByteArrayOutputStream)this._writer).toByteArray();
+            byte []result=((ByteArrayOutputStream)this._writer).toByteArray();
+			((ByteArrayOutputStream)this._writer).reset();
+         	return result;
          } 
          return null;
          
@@ -520,18 +522,28 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    }
 
    final static void writeCharToUtf8(final char c,final OutputStream out) throws IOException{
-   	
-   	if (/*(c >= 0x0001) &&*/ (c <= 0x007F)) {
+   	char ch;
+    if (/*(c >= 0x0001) &&*/ (c <= 0x007F)) {
    		out.write(c);
    		return;
    	} else if (c > 0x07FF) {
-   		out.write(0xE0 | ((c >> 12) & 0x0F));
-   		out.write(0x80 | ((c >>  6) & 0x3F));
+        ch=(char)(c>>>12);
+        if (ch>0) {
+        	out.write(0xE0 | ( ch & 0x0F));
+        } else {
+        	out.write(0xE0);
+        }
+        out.write(0x80 | ((c >>>  6) & 0x3F));
    		out.write(0x80 | ((c) & 0x3F));
    		return;
    		
    	} else {
-   		out.write(0xC0 | ((c >>  6) & 0x1F));
+        ch=(char)(c>>>6);
+        if (ch>0) {
+        	out.write(0xC0 | (ch & 0x1F));
+        } else {
+        	out.write(0xC0);
+        }
    		out.write(0x80 | ((c) & 0x3F));
    		return;   		
    	}
@@ -541,21 +553,32 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    final static void writeStringToUtf8(final String str,final OutputStream out) throws IOException{
    	final int length=str.length();
    	int i=0;
+    char ch,c;
    	while (i<length) {
-   		char c=str.charAt(i++);
-   		if (/*(c >= 0x0001) && */(c <= 0x007F)) {
-   			out.write(c);
-   			continue;
-   		} else if (c > 0x07FF) {
-   			out.write(0xE0 | ((c >> 12) & 0x0F));
-   			out.write(0x80 | ((c >>  6) & 0x3F));
-   			out.write(0x80 | ((c) & 0x3F));
-   			continue;
-   		} else {
-   			out.write(0xC0 | ((c >>  6) & 0x1F));
-   			out.write(0x80 | ((c) & 0x3F));
-   			continue;
-   		}
+   		c=str.charAt(i++);        
+        if (/*(c >= 0x0001) &&*/ (c <= 0x007F)) {
+            out.write(c);
+            continue;
+        } else if (c > 0x07FF) {
+            ch=(char)(c>>>12);
+            if (ch>0) {
+                out.write(0xE0 | ( ch & 0x0F));
+            } else {
+                out.write(0xE0);
+            }
+            out.write(0x80 | ((c >>>  6) & 0x3F));
+            out.write(0x80 | ((c) & 0x3F));
+            continue;            
+        } else {
+            ch=(char)(c>>>6);
+            if (ch>0) {
+                out.write(0xC0 | (ch & 0x1F));
+            } else {
+                out.write(0xC0);
+            }
+            out.write(0x80 | ((c) & 0x3F));
+            continue;         
+        }   		
    	}
     
    }
