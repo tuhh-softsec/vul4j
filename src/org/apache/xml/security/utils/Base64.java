@@ -494,10 +494,6 @@ public class Base64 {
 
       int block = 0;
       int slack = raw.length - offset - 1;
-      int end = (slack >= 2)
-                ? 2
-                : slack;
-
       for (int i = 0; i < 3; i++) {
          byte b = (offset + i < raw.length)
                   ? raw[offset + i]

@@ -323,7 +323,6 @@ public class XMLUtils {
    protected static ClassLoader findClassLoader()
            throws ClassNotFoundException {
 
-      ClassLoader classLoader = null;
       Method m = null;
 
       try {

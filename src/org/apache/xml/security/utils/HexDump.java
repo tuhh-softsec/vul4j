@@ -56,24 +56,18 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.utils;
 
+package org.apache.xml.security.utils;
 
 import java.io.ByteArrayOutputStream;
 
 import sun.misc.HexDumpEncoder;
-
 
 /**
  *
  * @author Niko Schweitzer
  */
 public class HexDump {
-
-   private HexDump() {
-     // we don't allow instantiation
-   }
-
    /**
     * Method prettyPrintHex
     *
@@ -99,9 +93,6 @@ public class HexDump {
       return prettyPrintHex(sToConvert.getBytes());
    }
 
-   /** Field DEBUG */
-   private static boolean DEBUG = false;
-
    /** Field HEX_DIGITS */
    private final static char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6',
                                               '7', '8', '9', 'A', 'B', 'C', 'D',
@@ -122,14 +113,6 @@ public class HexDump {
    /** Field WITH_BYTE_SEPARATOR */
    private static boolean WITH_BYTE_SEPARATOR = true;
 
-   /**
-    *  Sets the Debug attribute of the Convert object
-    *
-    * @param  dbg  The new Debug value
-    */
-   public static void setDebug(boolean dbg) {
-      DEBUG = dbg;
-   }
 
    /**
     *  Sets the WithByteSeparator attribute of the Convert class
@@ -322,7 +305,6 @@ public class HexDump {
     */
    public static String byteArrayToHexString(byte[] block) {
 
-      long lTime = System.currentTimeMillis();
       StringBuffer buf = new StringBuffer();
       int len = block.length;
 
@@ -361,7 +343,6 @@ public class HexDump {
    public static String byteArrayToHexString(byte[] block, int offset,
                                              int length) {
 
-      long lTime = System.currentTimeMillis();
       StringBuffer buf = new StringBuffer();
       int len = block.length;
 
@@ -473,7 +454,6 @@ public class HexDump {
     */
    public static String toHexString(byte[] ba, int offset, int length) {
 
-      long lTime = System.currentTimeMillis();
       char[] buf;
 
       if (WITH_BYTE_SEPARATOR) {
@@ -768,9 +748,6 @@ public class HexDump {
 
       System.out.println("-test and demo of the converter ");
 
-      // enable debug outputs
-      setDebug(false);
-
       String str = new String("Niko");
       byte[] ba = str.getBytes();
 
@@ -882,10 +859,6 @@ public class HexDump {
       System.out.println(strToConvert + " = "
                          + stringToHexString(strToConvert));
       System.out.println("Das ist die Hex-Darstellung des obigen Strings");
-
-      byte[] baConverted = new byte[strToConvert.length()];
-
-      baConverted = hexStringToByteArray(strToConvert);
 
       System.out.println("ba = " + toHexString(ba));
    }
