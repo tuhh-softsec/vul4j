@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.32 2002/01/05 00:48:55 craigmcc Exp $
- * $Revision: 1.32 $
- * $Date: 2002/01/05 00:48:55 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.33 2002/01/05 19:29:08 craigmcc Exp $
+ * $Revision: 1.33 $
+ * $Date: 2002/01/05 19:29:08 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.32 $ $Date: 2002/01/05 00:48:55 $
+ * @version $Revision: 1.33 $ $Date: 2002/01/05 19:29:08 $
  */
 
 public class Digester extends DefaultHandler {
@@ -308,6 +308,7 @@ public class Digester extends DefaultHandler {
      * is used, which means no output is done at all.
      */
     protected Log log = new NoOpLog();
+
 
     // ----------------------------------------------------------- Properties
 
@@ -1167,6 +1168,31 @@ public class Digester extends DefaultHandler {
 
 
     // ------------------------------------------------------- Public Methods
+
+
+    /**
+     * Log a message to our associated logger.
+     *
+     * @param message The message to be logged
+     */
+    public void log(String message) {
+
+        log.info(message);
+
+    }
+
+
+    /**
+     * Log a message and exception to our associated logger.
+     *
+     * @param message The message to be logged
+     */
+    public void log(String message, Throwable exception) {
+
+        log.error(message, exception);
+
+    }
+
 
 
     /**
