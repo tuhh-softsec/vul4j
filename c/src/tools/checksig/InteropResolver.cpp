@@ -99,6 +99,10 @@ InteropResolver::InteropResolver(const XMLCh * baseURI) {
 	m_searchStarted = false;
 	m_searchFinished = false;
 
+#if !defined(_WIN32)
+	m_fcount = 0;
+#endif
+
 }
 
 
@@ -146,16 +150,29 @@ X509 * InteropResolver::nextFile2Cert(void) {
 		// Reverse the "backslash" characters
 
 		reverseSlash(path);
-#endif
 
 		m_handle = _findfirst(path.rawCharBuffer(), &m_finder);
 		res = m_handle;
+#else
+		if (glob(path.rawCharBuffer(), 0, NULL, &m_globbuf) != 0)
+			res = -1;
+		else
+			res = 0;
+#endif
+
 		m_searchStarted = true;
 
 	}
 	else {
 
+#if defined(_WIN32)
 		res = _findnext(m_handle, &m_finder);
+#else
+		if (m_fcount == m_globbuf.gl_pathc)
+			res = -1;
+		else
+			res = 0;
+#endif
 
 	}
 
@@ -180,18 +197,19 @@ X509 * InteropResolver::nextFile2Cert(void) {
 
 	// Create the filename
 	safeBuffer fname;
+#if defined(_WIN32)
 	fname.sbTranscodeIn(mp_baseURI);
 	fname.sbStrcatIn("/certs/");
 	fname.sbStrcatIn(m_finder.name);
-
-#if defined(_WIN32)
 	reverseSlash(fname);
+#else
+	fname.sbStrcpyIn(m_globbuf.gl_pathv[m_fcount++]);
 #endif
 
 	if (BIO_read_filename(bioCert, fname.rawCharBuffer()) <= 0) {
 
-		std::cerr << "Error opening certificate file\n\n";
-		exit (1);
+		std::cerr << "Error opening certificate file\n" << fname.rawCharBuffer() << std::endl;
+		return NULL;
 
 	}
 
@@ -369,7 +387,7 @@ bool InteropResolver::checkMatch(DSIGKeyInfoList * lst, X509 * x) {
 				int xlen = b64.decode((unsigned char *) cski, clen, xski, clen);
 				xlen += b64.decodeFinish(&xski[xlen], clen - xlen);
 
-				if (xlen != NULL) {
+				if (xlen != 0) {
 
 					// Have a buffer with a number in it
 					STACK_OF(X509_EXTENSION) *exts;

@@ -74,7 +74,11 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECKeyInfoResolver.hpp>
 
-#include <io.h>
+#if defined (_WIN32)
+#    include <io.h>
+#else
+#    include <glob.h>
+#endif
 
 #include <openssl/x509.h>
 
@@ -100,9 +104,14 @@ private:
 	XMLCh *			mp_baseURI;
 	bool			m_searchStarted;
 	bool			m_searchFinished;
+
+#if defined (_WIN32)
 	_finddata_t		m_finder;
 	long			m_handle;
-
+#else
+    glob_t          m_globbuf;
+	unsigned int    m_fcount;
+#endif
 
 };
 
