@@ -65,9 +65,12 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
+ * $Id$
  *
- * $LOG$
+ * $Log$
+ * Revision 1.3  2003/02/09 11:26:50  blautenb
+ * Fixed CVS Log/Id
+ *
  *
  */
 
