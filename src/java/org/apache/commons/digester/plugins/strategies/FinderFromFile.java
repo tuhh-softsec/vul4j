@@ -1,6 +1,6 @@
-/* $Id: FinderFromFile.java,v 1.4 2004/05/10 06:30:08 skitching Exp $
+/* $Id: FinderFromFile.java,v 1.5 2004/05/10 06:34:01 skitching Exp $
  *
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

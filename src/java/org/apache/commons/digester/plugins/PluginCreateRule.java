@@ -1,6 +1,6 @@
-/* $Id: PluginCreateRule.java,v 1.17 2004/05/10 06:30:07 skitching Exp $
+/* $Id: PluginCreateRule.java,v 1.18 2004/05/10 06:36:38 skitching Exp $
  *
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

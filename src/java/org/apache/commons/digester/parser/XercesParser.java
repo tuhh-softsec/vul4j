@@ -1,6 +1,6 @@
-/* $Id: XercesParser.java,v 1.6 2004/05/10 06:30:07 skitching Exp $
+/* $Id: XercesParser.java,v 1.7 2004/05/10 06:37:22 skitching Exp $
  *
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
