@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.85 2003/10/28 23:01:00 rdonkin Exp $
- * $Revision: 1.85 $
- * $Date: 2003/10/28 23:01:00 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.86 2003/11/19 21:05:19 rdonkin Exp $
+ * $Revision: 1.86 $
+ * $Date: 2003/11/19 21:05:19 $
  *
  * ====================================================================
  * 
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.85 $ $Date: 2003/10/28 23:01:00 $
+ * @version $Revision: 1.86 $ $Date: 2003/11/19 21:05:19 $
  */
 
 public class Digester extends DefaultHandler {
@@ -2179,6 +2179,30 @@ public class Digester extends DefaultHandler {
         addRule(pattern,
                 new ObjectCreateRule(attributeName, clazz));
 
+    }
+
+    /**
+     * Adds an {@link SetNestPropertiesRule}.
+     *
+     * @param pattern register the rule with this pattern
+     * @param elementName elment name that a property maps to
+     * @param propertyName property name of the element mapped from
+     */
+    public void addSetNestedProperties(String pattern, String elementName, String propertyName) {
+    
+        addRule(pattern, new SetNestedPropertiesRule(elementName, propertyName));
+    }
+
+    /**
+     * Adds an {@link SetNestPropertiesRule}.
+     *
+     * @param pattern register the rule with this pattern
+     * @param elementNames elment names that (in order) map to properties
+     * @param propertyNames property names that (in order) elements are mapped to
+     */    
+    public void addSetNestedProperties(String pattern, String[] elementNames, String[] propertyNames) {
+    
+        addRule(pattern, new SetNestedPropertiesRule(elementNames, propertyNames));
     }
 
 
