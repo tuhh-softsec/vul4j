@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.11 2003/04/16 11:23:50 jstrachan Exp $
- * $Revision: 1.11 $
- * $Date: 2003/04/16 11:23:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.12 2003/08/16 18:02:56 craigmcc Exp $
+ * $Revision: 1.12 $
+ * $Date: 2003/08/16 18:02:56 $
  *
  * ====================================================================
  *
@@ -80,7 +80,7 @@ import org.xml.sax.Attributes;
  * Certain attributes can also be marked to be ignored.</p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.11 $ $Date: 2003/04/16 11:23:50 $
+ * @version $Revision: 1.12 $ $Date: 2003/08/16 18:02:56 $
  */
 
 public class SetPropertiesRule extends Rule {
@@ -253,8 +253,14 @@ public class SetPropertiesRule extends Rule {
         // Populate the corresponding properties of the top object
         Object top = digester.peek();
         if (digester.log.isDebugEnabled()) {
-            digester.log.debug("[SetPropertiesRule]{" + digester.match +
-                    "} Set " + top.getClass().getName() + " properties");
+            if (top != null) {
+                digester.log.debug("[SetPropertiesRule]{" + digester.match +
+                                   "} Set " + top.getClass().getName() +
+                                   " properties");
+            } else {
+                digester.log.debug("[SetPropertiesRule]{" + digester.match +
+                                   "} Set NULL properties");
+            }
         }
         BeanUtils.populate(top, values);
 
