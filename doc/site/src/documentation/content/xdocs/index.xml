@@ -23,6 +23,17 @@ limitations under the License.
     <section>
       <title>News</title>
 	  <section>
+		<title>April 2004</title>
+		<p>
+		  Version 1.1 of the Java library has been released.  
+		  This version provides :
+		</p>
+		<ul>
+		  <li>Beta implementation of XML Encryption</li>
+		  <li>Bug fixes to Signature implementation</li>
+		</ul>
+	  </section>
+	  <section>
 		<title>March 2004</title>
 		<p>
 		  Version 1.1 of the C++ library has been released.  Supporting

@@ -36,7 +36,6 @@ limitations under the License.
     <ul>
       <li><jump href="ext:java/docs/full-api">Full API documentation</jump></li>
       <li><jump href="ext:java/docs/hierachry">Hierarchy for all the packages</jump></li>
-      <li>If the above documentation is outdated, an always-fresh copy can be found <jump href="ext:java/docs/gumpdocs">here</jump></li>
     </ul>
     </section>
   </body>

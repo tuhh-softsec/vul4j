@@ -49,7 +49,7 @@ limitations under the License.
     <api label="API Docs" href="api.html" />
     <interop label="Interoperability" href="interop.html"/>
     <gump label="Gump results"
-      href="http://cvs.apache.org/builds/gump/latest/xml-security.html" />
+		  href="http://lsd.student.utwente.nl/gump/xml-security/xml-security.html" />
     <resolvers label="Resolvermania" href="resolver.html"/>
   </java>
 
@@ -116,8 +116,8 @@ limitations under the License.
     <!-- Java -->
     <java>
       <docs>
-	<full-api href=""/>
-	<hierachry href=""/>
+	<full-api href="Java/api/index.html"/>
+	<hierachry href="Java/api/overview-tree.html"/>
 	<gumpdocs href="http://nagoya.apache.org/gump/javadoc/xml-security/build/doc/html/api/index.html" />
       </docs>
       <jce>

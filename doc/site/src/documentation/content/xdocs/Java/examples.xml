@@ -26,7 +26,7 @@ limitations under the License.
   </header> 
   <body> 
     <section>
-      <title>About</title>
+      <title>XML Signatures</title>
       <p>
 	Part of this software can be used to create and verify arbitrary forms
 	of XML Signatures. The documentation available here is not very huge;
@@ -40,10 +40,18 @@ limitations under the License.
 	the verifying program to another filename if you get
 	<code>FileNotFoundException</code>s.
       </note>
-      <fixme author="KW">
-	We should add more information here.
-      </fixme>
-      
     </section>
+	<section>
+	  <title>XML Encryption</title>
+	  <p>
+		As with signatures, samples are provided to show how to encrypt
+		and decrypt XML content.  See 
+		<code>src_samples/org/apache/xml/security/samples/encryption</code>.
+	  </p>
+	  <p>
+		The samples can be compiled and run using <code>ant encrypt</code>
+		and <code>ant decrypt</code>.
+	  </p>
+	</section>
   </body>
 </document>

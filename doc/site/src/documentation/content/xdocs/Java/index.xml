@@ -27,17 +27,20 @@ limitations under the License.
   <body> 
     <section>
       <title>News</title>
-	<p>Version 1.0.4 released on 15 July 2002; minor
-	improvements. The most significant is that people who did not install
-	Xalan properly under JDK 1.4.0 get a more specific error message. It
-	uses the most recent version of the BouncyCastle JCE now. </p>
+	  <p>
+		Version 1.1 released on 7 April 2004.  Includes a beta implementation
+		of XML Encryption together with minor bug fixes for the XML Signature
+		code.
+	  </p>
     </section>
     <section>
       <title>XML Security Release</title>
       <p>
-	The &packagenamelong; &packageversion; supports
-	<jump href="ext:w3c/xmldsig_java_supported">&supp_java_dsig;
-	</jump> 
+		The &packagenamelong; &packageversion; supports
+		<jump href="ext:w3c/xmldsig_java_supported">&supp_java_dsig;
+		</jump> and (in beta)
+		<jump href="ext:w3c/xmlenc_java_supported">&supp_java_enc;
+		</jump>
       </p>
       <p>
 	Note that there is no standard API avaliable at the moment. SUN is
