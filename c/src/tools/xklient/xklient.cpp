@@ -62,10 +62,6 @@
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 
-#include <xsec/utils/XSECBinTXFMInputStream.hpp>
-#include <xsec/dsig/DSIGReference.hpp>
-#include <xsec/dsig/DSIGReferenceList.hpp>
-
 // General
 
 #include <memory.h>
@@ -923,26 +919,6 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			safeBuffer sb = x->getDEREncodingSB();
 			kix->appendX509Certificate(sb.sbStrToXMLCh());
 			paramCount++;
-			/***********************************************/
-			cout << "Start doc\n";
-			outputDoc(*doc);
-			cout << "End doc\n";
-			if (sig->verify())
-				cout << "OK";
-			else
-				cout << "BAD";
-			DSIGReference * ref = sig->getReferenceList()->item(0);
-			XSECBinTXFMInputStream *is = ref->makeBinInputStream();
-			cout << "---" << endl;
-			XMLByte buf[1024];
-			int ct = is->readBytes(buf,1023);
-			while (ct != 0) {
-				buf[ct]='\0';
-				cout << buf;
-				ct = is->readBytes(buf,1023);
-			}
-			cout << "---" << endl;
-
 		}
 
 #endif
