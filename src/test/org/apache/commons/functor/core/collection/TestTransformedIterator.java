@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestTransformedIterator.java,v 1.1 2003/11/25 19:02:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestTransformedIterator.java,v 1.2 2003/11/25 19:06:42 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -70,7 +70,7 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.core.IdentityFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/11/25 19:02:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/25 19:06:42 $
  * @author Rodney Waldhoff
  */
 public class TestTransformedIterator extends BaseFunctorTest {
@@ -89,7 +89,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
     public Object makeFunctor() {
         List list = new ArrayList();
         list.add("xyzzy");        
-        return TransformedIterator.transform(IdentityFunction.instance(),list.iterator());
+        return TransformedIterator.transform(list.iterator(),IdentityFunction.instance());
     }
 
     // Lifecycle
@@ -116,7 +116,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
     
     public void testBasicTransform() {
         Iterator expected = negatives.iterator();
-        Iterator testing = new TransformedIterator(negate,list.iterator());
+        Iterator testing = new TransformedIterator(list.iterator(),negate);
         while(expected.hasNext()) {
             assertTrue(testing.hasNext());
             assertEquals(expected.next(),testing.next());
@@ -125,12 +125,12 @@ public class TestTransformedIterator extends BaseFunctorTest {
     }
 
     public void testEmptyList() {
-        Iterator testing = new TransformedIterator(negate,Collections.EMPTY_LIST.iterator());
+        Iterator testing = new TransformedIterator(Collections.EMPTY_LIST.iterator(),negate);
         assertTrue(!testing.hasNext());
     }
 
     public void testNextWithoutHasNext() {
-        Iterator testing = new TransformedIterator(negate,list.iterator());
+        Iterator testing = new TransformedIterator(list.iterator(),negate);
         Iterator expected = negatives.iterator();
         while(expected.hasNext()) {
             assertEquals(expected.next(),testing.next());
@@ -139,7 +139,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
     }
 
     public void testNextAfterEndOfList() {
-        Iterator testing = new TransformedIterator(negate,list.iterator());
+        Iterator testing = new TransformedIterator(list.iterator(),negate);
         Iterator expected = negatives.iterator();
         while(expected.hasNext()) {
             assertEquals(expected.next(),testing.next());
@@ -153,7 +153,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
     }
 
     public void testNextOnEmptyList() {
-        Iterator testing = new TransformedIterator(negate,Collections.EMPTY_LIST.iterator());
+        Iterator testing = new TransformedIterator(Collections.EMPTY_LIST.iterator(),negate);
         try {
             testing.next();
             fail("ExpectedNoSuchElementException");
@@ -163,7 +163,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
     }
     
     public void testRemoveBeforeNext() {
-        Iterator testing = new TransformedIterator(negate,list.iterator());
+        Iterator testing = new TransformedIterator(list.iterator(),negate);
         try {
             testing.remove();
             fail("IllegalStateException");
@@ -173,7 +173,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
     }
     
     public void testRemoveAfterNext() {
-        Iterator testing = new TransformedIterator(negate,list.iterator());
+        Iterator testing = new TransformedIterator(list.iterator(),negate);
         testing.next();
         testing.remove();
         try {
@@ -185,7 +185,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
     }
     
     public void testRemoveAll() {
-        Iterator testing = new TransformedIterator(negate,list.iterator());
+        Iterator testing = new TransformedIterator(list.iterator(),negate);
         while(testing.hasNext()) {
             testing.next();
             testing.remove();
@@ -194,7 +194,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
     }
 
     public void testRemoveWithoutHasNext() {
-        Iterator testing = new TransformedIterator(negate,list.iterator());
+        Iterator testing = new TransformedIterator(list.iterator(),negate);
         for(int i=0,m = list.size();i<m;i++) {
             testing.next();
             testing.remove();
@@ -203,12 +203,12 @@ public class TestTransformedIterator extends BaseFunctorTest {
     }
     
     public void testTransformWithNullIteratorReturnsNull() {
-        assertNull(TransformedIterator.transform(negate,null));
+        assertNull(TransformedIterator.transform(null,negate));
     }
     
     public void testTransformWithNullPredicateReturnsIdentity() {
         Iterator iter = list.iterator();
-        assertSame(iter,TransformedIterator.transform(null,iter));
+        assertSame(iter,TransformedIterator.transform(iter,null));
     }
 
     public void testConstructorProhibitsNull() {
@@ -219,13 +219,13 @@ public class TestTransformedIterator extends BaseFunctorTest {
             // expected
         }
         try {
-            new TransformedIterator(negate,null);
+            new TransformedIterator(null,negate);
             fail("ExpectedNullPointerException");
         } catch(NullPointerException e) {
             // expected
         }
         try {
-            new TransformedIterator(null,list.iterator());
+            new TransformedIterator(list.iterator(),null);
             fail("ExpectedNullPointerException");
         } catch(NullPointerException e) {
             // expected

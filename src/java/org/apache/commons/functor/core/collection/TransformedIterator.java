@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/TransformedIterator.java,v 1.1 2003/11/25 19:02:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/TransformedIterator.java,v 1.2 2003/11/25 19:06:42 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import java.util.Iterator;
 import org.apache.commons.functor.UnaryFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/11/25 19:02:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/25 19:06:42 $
  * @author Rodney Waldhoff
  */
 public final class TransformedIterator implements Iterator {
@@ -69,7 +69,7 @@ public final class TransformedIterator implements Iterator {
     // constructor
     // ------------------------------------------------------------------------
     
-    public TransformedIterator(UnaryFunction function, Iterator iterator) {
+    public TransformedIterator(Iterator iterator, UnaryFunction function) {
         if(null == iterator || null == function) {
             throw new NullPointerException();
         } else {
@@ -121,14 +121,14 @@ public final class TransformedIterator implements Iterator {
     }
 
     public String toString() {
-        return "TransformedIterator<" + function + "," + iterator + ">";
+        return "TransformedIterator<" + iterator + "," + function + ">";
     }
     
     // class methods
     // ------------------------------------------------------------------------
     
-    public static Iterator transform(UnaryFunction func, Iterator iter) {
-        return null == func ? iter : (null == iter ? null : new TransformedIterator(func,iter));
+    public static Iterator transform(Iterator iter, UnaryFunction func) {
+        return null == func ? iter : (null == iter ? null : new TransformedIterator(iter,func));
     }
  
  

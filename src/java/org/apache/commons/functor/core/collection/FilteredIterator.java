@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/FilteredIterator.java,v 1.1 2003/11/25 19:02:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/FilteredIterator.java,v 1.2 2003/11/25 19:06:42 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,7 +62,7 @@ import java.util.NoSuchElementException;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/11/25 19:02:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/25 19:06:42 $
  * @author Rodney Waldhoff
  */
 public final class FilteredIterator implements Iterator {
@@ -70,7 +70,7 @@ public final class FilteredIterator implements Iterator {
     // constructor
     // ------------------------------------------------------------------------
     
-    public FilteredIterator(UnaryPredicate predicate, Iterator iterator) {
+    public FilteredIterator(Iterator iterator, UnaryPredicate predicate) {
         if(null == iterator || null == predicate) {
             throw new NullPointerException();
         } else {
@@ -136,14 +136,14 @@ public final class FilteredIterator implements Iterator {
     }
 
     public String toString() {
-        return "FilteredIterator<" + predicate + "," + iterator + ">";
+        return "FilteredIterator<" + iterator + "," + predicate + ">";
     }
     
     // class methods
     // ------------------------------------------------------------------------
     
-    public static Iterator filter(UnaryPredicate pred, Iterator iter) {
-        return null == pred ? iter : (null == iter ? null : new FilteredIterator(pred,iter));
+    public static Iterator filter(Iterator iter, UnaryPredicate pred) {
+        return null == pred ? iter : (null == iter ? null : new FilteredIterator(iter,pred));
     }
  
     // private
