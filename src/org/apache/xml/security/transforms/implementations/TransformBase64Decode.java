@@ -129,7 +129,7 @@ public class TransformBase64Decode extends TransformSpi {
             return output;
          
       }
-      if (input.isOctetStream() ) {
+      if (input.isOctetStream() || input.isNodeSet()) {
                     
         
         if (os==null) {
