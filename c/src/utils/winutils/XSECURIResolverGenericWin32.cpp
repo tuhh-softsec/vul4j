@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.2  2003/02/17 11:21:45  blautenb
+ * Work around for Xerces XMLUri bug
+ *
  * Revision 1.1  2003/02/12 09:45:29  blautenb
  * Win32 Re-implementation of Xerces URIResolver to support re-directs
  *
@@ -87,6 +90,7 @@
 #include <xercesc/util/BinFileInputStream.hpp>
 
 XSEC_USING_XERCES(XMLString);
+XSEC_USING_XERCES(ArrayJanitor);
 
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
@@ -111,6 +115,19 @@ static const XMLCh gHttpScheme[] = {
 
 };
 
+#if XERCES_VERSION_MAJOR == 2 && XERCES_VERSION_MINOR < 3
+
+
+static const XMLCh DOTDOT_SLASH[] = {
+
+	XERCES_CPP_NAMESPACE_QUALIFIER chPeriod,
+	XERCES_CPP_NAMESPACE_QUALIFIER chPeriod,
+	XERCES_CPP_NAMESPACE_QUALIFIER chForwardSlash,
+	XERCES_CPP_NAMESPACE_QUALIFIER chNull
+
+};
+
+#endif
 
 XSECURIResolverGenericWin32::XSECURIResolverGenericWin32() :
 mp_baseURI(NULL) {
@@ -142,10 +159,39 @@ BinInputStream * XSECURIResolverGenericWin32::resolveURI(const XMLCh * uri) {
 	// Create the appropriate XMLUri objects
 	if (mp_baseURI != NULL) {
 		XMLUri	* turi;
+
+#if XERCES_VERSION_MAJOR == 2 && XERCES_VERSION_MINOR < 3
+
+		// XMLUri relative paths are broken, so we need to strip out ".."
+		XMLCh * b = XMLString::replicate(mp_baseURI);
+		ArrayJanitor<XMLCh> j_b(b);
+		XMLCh * r = XMLString::replicate(uri);
+		ArrayJanitor<XMLCh> j_r(r);
+
+		int index = 0;
+		while (XMLString::startsWith(&(r[index]), DOTDOT_SLASH)) {
+
+			// Strip the last segment of the base
+
+			int lastIndex = XMLString::lastIndexOf(b, XERCES_CPP_NAMESPACE_QUALIFIER chForwardSlash);
+			if (lastIndex > 0)
+				b[lastIndex] = 0;
+
+			index += 3;
+
+		}
+
+		XSECnew(turi, XMLUri(b));
+		Janitor<XMLUri> j_turi(turi);
+		XSECnew(xmluri, XMLUri(turi, &(r[index])));
+
+#else
 		XSECnew(turi, XMLUri(mp_baseURI));
 		Janitor<XMLUri> j_turi(turi);
 
 		XSECnew(xmluri, XMLUri(turi, uri));
+#endif
+
 	}
 	else {
 		XSECnew(xmluri, XMLUri(uri));
@@ -221,3 +267,15 @@ XSECURIResolver * XSECURIResolverGenericWin32::clone(void) {
 
 }
 
+// -----------------------------------------------------------------------
+//  Set a base URI to map any incoming files against
+// -----------------------------------------------------------------------
+
+void XSECURIResolverGenericWin32::setBaseURI(const XMLCh * uri) {
+
+	if (mp_baseURI != NULL)
+		delete[] mp_baseURI;
+
+	mp_baseURI = XMLString::replicate(uri);
+
+}
