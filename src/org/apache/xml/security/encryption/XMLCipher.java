@@ -17,23 +17,20 @@
 package org.apache.xml.security.encryption;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.ByteArrayOutputStream;
-import java.lang.Integer;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -42,37 +39,34 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.xml.security.keys.keyresolver.implementations.EncryptedKeyResolver;
-import org.apache.xml.security.keys.keyresolver.KeyResolverException;
-import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
-import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.EncryptionConstants;
-import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
+
 import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
-import org.apache.xml.security.transforms.Transform;
-import org.apache.xml.security.utils.ElementProxy;
-import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.keys.keyresolver.KeyResolverException;
+import org.apache.xml.security.keys.keyresolver.implementations.EncryptedKeyResolver;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.transforms.InvalidTransformException;
 import org.apache.xml.security.transforms.TransformationException;
+import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.ElementProxy;
+import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xml.utils.URI;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.Attr;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-// import sun.misc.BASE64Encoder;
-import org.apache.xml.security.utils.Base64;
 
 
 /**
@@ -1728,7 +1722,7 @@ public class XMLCipher {
 	 * Create a new ReferenceList object
 	 */
 	public ReferenceList createReferenceList(int type) {
-		return (new ReferenceList(type));
+		return (_factory.newReferenceList(type));
 	}
 	
 	/**
@@ -2080,7 +2074,7 @@ public class XMLCipher {
          *
          */
         ReferenceList newReferenceList(int type) {
-            return (new ReferenceList(type));
+            return (new ReferenceListImpl(type));
         }
 
         /**
@@ -2131,24 +2125,34 @@ public class XMLCipher {
             // Figure out how to make this pesky line work..
             // <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
 
-            // TODO: ///////////////////////////////////////////////////////////
-            // Implement properly, implement a KeyInfo marshaler.
+            // TODO: Work out how to handle relative URI
+
             Element originatorKeyInfoElement =
                 (Element) element.getElementsByTagNameNS(
                     EncryptionConstants.EncryptionSpecNS,
                     EncryptionConstants._TAG_ORIGINATORKEYINFO).item(0);
             if (null != originatorKeyInfoElement) {
-                result.setOriginatorKeyInfo(null);
+                try {
+                    result.setOriginatorKeyInfo(
+                        new KeyInfo(originatorKeyInfoElement, null));
+                } catch (XMLSecurityException xse) {
+                    throw new XMLEncryptionException("empty", xse);
+                }
             }
 
-            // TODO: ///////////////////////////////////////////////////////////
-            // Implement properly, implement a KeyInfo marshaler.
+            // TODO: Work out how to handle relative URI
+
             Element recipientKeyInfoElement =
                 (Element) element.getElementsByTagNameNS(
                     EncryptionConstants.EncryptionSpecNS,
                     EncryptionConstants._TAG_RECIPIENTKEYINFO).item(0);
             if (null != recipientKeyInfoElement) {
-                result.setRecipientKeyInfo(null);
+                try {
+                    result.setRecipientKeyInfo(
+                        new KeyInfo(recipientKeyInfoElement, null));
+                } catch (XMLSecurityException xse) {
+                    throw new XMLEncryptionException("empty", xse);
+                }
             }
 
             return (result);
@@ -2585,7 +2589,7 @@ public class XMLCipher {
                 // complain
             }
 
-            ReferenceList result = newReferenceList(type);
+            ReferenceList result = new ReferenceListImpl(type);
             NodeList list = null;
             switch (type) {
                 case ReferenceList.DATA_REFERENCE:
@@ -2599,7 +2603,7 @@ public class XMLCipher {
                             ((Element) list.item(0)).getNodeValue()).toString();
                     } catch (URI.MalformedURIException mfue) {
                     }
-                    result.add(ReferenceList.newDataReference(uri));
+                    result.add(result.newDataReference(uri));
                 }
                 case ReferenceList.KEY_REFERENCE:
                 list = element.getElementsByTagNameNS(
@@ -2612,7 +2616,7 @@ public class XMLCipher {
                             ((Element) list.item(0)).getNodeValue()).toString();
                     } catch (URI.MalformedURIException mfue) {
                     }
-                    result.add(ReferenceList.newKeyReference(uri));
+                    result.add(result.newKeyReference(uri));
                 }
             }
 
@@ -2690,9 +2694,7 @@ public class XMLCipher {
         }
 
         Element toElement(ReferenceList referenceList) {
-            // NOTE: ///////////////////////////////////////////////////////////
-            // TODO: Complete
-            return (null);
+            return ((ReferenceListImpl) referenceList).toElement();
         }
 
         /**
@@ -2814,10 +2816,10 @@ public class XMLCipher {
                     }
                 }
                 if (null != originatorKeyInfo) {
-                    // TODO: complete
+                    result.appendChild(originatorKeyInfo.getElement());
                 }
                 if (null != recipientKeyInfo) {
-                    // TODO: complete
+                    result.appendChild(recipientKeyInfo.getElement());
                 }
 
                 return (result);
@@ -3205,7 +3207,7 @@ public class XMLCipher {
                         super.getEncryptionMethod()).toElement());
                 }
                 if (null != super.getKeyInfo()) {
-                    // TODO: complete
+                    result.appendChild(super.getKeyInfo().getElement());
                 }
                 result.appendChild(
                     ((CipherDataImpl) super.getCipherData()).toElement());
@@ -3214,7 +3216,8 @@ public class XMLCipher {
                         super.getEncryptionProperties()).toElement());
                 }
                 if (referenceList != null && !referenceList.isEmpty()) {
-                    // TODO: complete
+                    result.appendChild(((ReferenceListImpl)
+                        getReferenceList()).toElement());
                 }
                 if (null != carriedName) {
                     result.appendChild(
@@ -3611,6 +3614,152 @@ public class XMLCipher {
 				return EncryptionConstants.EncryptionSpecNS;
 			}
 
+        }
+
+        //<element name='ReferenceList'>
+        //    <complexType>
+        //        <choice minOccurs='1' maxOccurs='unbounded'>
+        //            <element name='DataReference' type='xenc:ReferenceType'/>
+        //            <element name='KeyReference' type='xenc:ReferenceType'/>
+        //        </choice>
+        //    </complexType>
+        //</element>
+        private class ReferenceListImpl implements ReferenceList {
+            private Class sentry;
+            private List references;
+
+            public ReferenceListImpl(int type) {
+                if (type == ReferenceList.DATA_REFERENCE) {
+                    sentry = DataReference.class;
+                } else if (type == ReferenceList.KEY_REFERENCE) {
+                    sentry = KeyReference.class;
+                } else {
+                    throw new IllegalArgumentException();
+                }
+                references = new LinkedList();
+            }
+
+            public void add(Reference reference) {
+                if (!reference.getClass().equals(sentry)) {
+                    throw new IllegalArgumentException();
+                } else {
+                    references.add(reference);
+                }
+            }
+
+            public void remove(Reference reference) {
+                if (!reference.getClass().equals(sentry)) {
+                    throw new IllegalArgumentException();
+                } else {
+                    references.remove(reference);
+                }
+            }
+
+            public int size() {
+                return (references.size());
+            }
+
+            public boolean isEmpty() {
+                return (references.isEmpty());
+            }
+
+            public Iterator getReferences() {
+                return (references.iterator());
+            }
+
+            Element toElement() {
+                Element result = ElementProxy.createElementForFamily(
+                    _contextDocument,
+                    EncryptionConstants.EncryptionSpecNS,
+                    EncryptionConstants._TAG_REFERENCELIST);
+                Iterator eachReference = references.iterator();
+                while (eachReference.hasNext()) {
+                    Reference reference = (Reference) eachReference.next();
+                    result.appendChild(
+                        ((ReferenceImpl) reference).toElement());
+                }
+                return (result);
+            }
+
+            public Reference newDataReference(String uri) {
+                return (new DataReference(uri));
+            }
+
+            public Reference newKeyReference(String uri) {
+                return (new KeyReference(uri));
+            }
+
+            /**
+             * <code>ReferenceImpl</code> is an implementation of
+             * <code>Reference</code>.
+             *
+             * @see Reference.
+             */
+            private abstract class ReferenceImpl implements Reference {
+                private String uri;
+                private List referenceInformation;
+
+                ReferenceImpl(String _uri) {
+                    this.uri = _uri;
+                    referenceInformation = new LinkedList();
+                }
+            
+                public String getURI() {
+                    return (uri);
+                }
+
+                public Iterator getElementRetrievalInformation() {
+                    return (referenceInformation.iterator());
+                }
+
+                public void setURI(String _uri) {
+                	this.uri = _uri;
+                }
+
+                public void removeElementRetrievalInformation(Element node) {
+                    referenceInformation.remove(node);
+                }
+
+                public void addElementRetrievalInformation(Element node) {
+                    referenceInformation.add(node);
+                }
+
+                public abstract Element toElement();
+
+                Element toElement(String tagName) {
+                    Element result = ElementProxy.createElementForFamily(
+                        _contextDocument,
+                        EncryptionConstants.EncryptionSpecNS,
+                        tagName);
+                    result.setAttribute(EncryptionConstants._ATT_URI, uri);
+
+                    // TODO: Need to martial referenceInformation
+                    // Figure out how to make this work..
+                    // <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+
+                    return (result);
+                }
+            }
+
+            private class DataReference extends ReferenceImpl {
+                DataReference(String uri) {
+                    super(uri);
+                }
+
+                public Element toElement() {
+                    return toElement(EncryptionConstants._TAG_DATAREFERENCE);
+                }
+            }
+
+            private class KeyReference extends ReferenceImpl {
+                KeyReference(String uri) {
+                    super (uri);
+                }
+
+                public Element toElement() {
+                    return toElement(EncryptionConstants._TAG_KEYREFERENCE);
+                }
+            }
         }
     }
 }
