@@ -217,6 +217,18 @@ public :
 
 	virtual XSECCryptoX509			* X509();
 
+	/**
+	 * \brief Return a Symmetric Key implementation object.
+	 *
+	 * Call used by the library to obtain a bulk encryption
+	 * object.
+	 *
+	 * @returns Pointer to the new SymmetricKey object
+	 * @see XSECCryptoSymmetricKey
+	 */
+
+	virtual XSECCryptoSymmetricKey	* keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg);
+
 	//@}
 
 	/*\@}*/

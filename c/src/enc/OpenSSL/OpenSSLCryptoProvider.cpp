@@ -80,7 +80,7 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
-
+#include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 
 OpenSSLCryptoProvider::OpenSSLCryptoProvider() {
 
@@ -174,5 +174,16 @@ XSECCryptoBase64 * OpenSSLCryptoProvider::base64() {
 	return ret;
 
 }
+
+XSECCryptoSymmetricKey	* OpenSSLCryptoProvider::keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
+
+	OpenSSLCryptoSymmetricKey * ret;
+
+	XSECnew(ret, OpenSSLCryptoSymmetricKey(alg));
+
+	return ret;
+
+}
+
 
 #endif /* HAVE_OPENSSL */

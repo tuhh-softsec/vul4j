@@ -128,7 +128,8 @@ public:
 		X509Error					= 5,		// X509 problem
 		DSAError					= 6,		// DSA Error
 		RSAError					= 7,		// RSA Error
-		UnknownError				= 8			// Must be last!
+		SymmetricError				= 8,
+		UnknownError				= 9			// Must be last!
 
 	};
 

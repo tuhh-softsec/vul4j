@@ -77,6 +77,7 @@
 #include <xsec/enc/XSECCryptoX509.hpp>
 #include <xsec/enc/XSECCryptoKeyDSA.hpp>
 #include <xsec/enc/XSECCryptoKeyRSA.hpp>
+#include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
 /**
  * @defgroup crypto Cryptographic Abstraction Layer
@@ -178,33 +179,6 @@ class DSIG_EXPORT XSECCryptoProvider {
 
 
 public :
-
-	/**
-	 * Enumeration of types of keys that must be handled by
-	 * the CryptoProvider
-	 */
-
-	enum CryptoKeyType {
-
-		KEY_NONE			= 0,        /**< Key is empty - type unknown */
-		KEY_DSA_PUB			= 1,		/**< DSA key - Public part only */
-		KEY_DSA_PRIV		= 2,		/**< DSA key - Private part only */
-		KEY_DSA_PAIR		= 3		/**< DSA key - Full Key Pair */
-
-	};
-
-	/**
-	 * Enumeration of cryptographic algorithms that the provider must
-	 * supply
-	 */
-
-	enum CryptoAlgorithmType {
-
-		ALG_NONE			= 0,       /**< Used for catching errors */
-		ALG_DSA				= 1        /**< Digital Signature Algorithm */
-
-	};
-
 
 	/** @name Constructors and Destructors */
 	//@{
@@ -326,6 +300,18 @@ public :
 	 */
 
 	virtual XSECCryptoX509			* X509() = 0;
+
+	/**
+	 * \brief Return a Symmetric Key implementation object.
+	 *
+	 * Call used by the library to obtain a bulk encryption
+	 * object.
+	 *
+	 * @returns Pointer to the new SymmetricKey object
+	 * @see XSECCryptoSymmetricKey
+	 */
+
+	virtual XSECCryptoSymmetricKey	* keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) = 0;
 
 	//@}
 

@@ -82,7 +82,8 @@ extern const char * XSECCryptoExceptionStrings[] = {
 	"Memory allocation error",
 	"X509 Error",
 	"DSA Error",
-	"RSA Error"
+	"RSA Error",
+	"Symmetric Error"
 
 };
 
