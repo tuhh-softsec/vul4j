@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalBinaryProcedure.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalBinaryProcedure.java,v 1.2 2003/01/29 23:24:52 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,13 +61,12 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryProcedure;
-import org.apache.commons.functor.adapter.BinaryFunctionBinaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
-import org.apache.commons.functor.core.LeftIdentityFunction;
+import org.apache.commons.functor.core.LeftIdentityPredicate;
 import org.apache.commons.functor.core.NoOpProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.2 $ $Date: 2003/01/29 23:24:52 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalBinaryProcedure extends BaseFunctorTest {
@@ -111,7 +110,7 @@ public class TestConditionalBinaryProcedure extends BaseFunctorTest {
         RunCounter left = new RunCounter();
         RunCounter right = new RunCounter();
         ConditionalBinaryProcedure p = new ConditionalBinaryProcedure(
-            new BinaryFunctionBinaryPredicate(new LeftIdentityFunction()),
+            new LeftIdentityPredicate(),
             left,
             right);
         assertEquals(0,left.count);
@@ -129,12 +128,12 @@ public class TestConditionalBinaryProcedure extends BaseFunctorTest {
     
     public void testEquals() throws Exception {
         ConditionalBinaryProcedure p = new ConditionalBinaryProcedure(
-            new BinaryFunctionBinaryPredicate(new LeftIdentityFunction()),
+            new LeftIdentityPredicate(),
             new NoOpProcedure(),
             new NoOpProcedure());
         assertEquals(p,p);
         assertObjectsAreEqual(p,new ConditionalBinaryProcedure(
-            new BinaryFunctionBinaryPredicate(new LeftIdentityFunction()),
+            new LeftIdentityPredicate(),
             new NoOpProcedure(),
             new NoOpProcedure()));
         assertObjectsAreNotEqual(p,new ConditionalBinaryProcedure(
@@ -146,11 +145,11 @@ public class TestConditionalBinaryProcedure extends BaseFunctorTest {
             new NoOpProcedure(),
             new NoOpProcedure()));
         assertObjectsAreNotEqual(p,new ConditionalBinaryProcedure(
-            new BinaryFunctionBinaryPredicate(new LeftIdentityFunction()),
+            new LeftIdentityPredicate(),
             null,
             new NoOpProcedure()));
         assertObjectsAreNotEqual(p,new ConditionalBinaryProcedure(
-            new BinaryFunctionBinaryPredicate(new LeftIdentityFunction()),
+            new LeftIdentityPredicate(),
             new NoOpProcedure(),
             null));
     }

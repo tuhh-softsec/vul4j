@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryPredicate.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryPredicate.java,v 1.2 2003/01/29 23:24:52 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,12 +60,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.adapter.UnaryFunctionUnaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
-import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.IdentityPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.2 $ $Date: 2003/01/29 23:24:52 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalUnaryPredicate extends BaseFunctorTest {
@@ -107,7 +106,7 @@ public class TestConditionalUnaryPredicate extends BaseFunctorTest {
     
     public void testTest() throws Exception {
         ConditionalUnaryPredicate p = new ConditionalUnaryPredicate(
-            new UnaryFunctionUnaryPredicate(new IdentityFunction()),
+            new IdentityPredicate(),
             new ConstantPredicate(true),
             new ConstantPredicate(false));
         assertTrue(p.test(Boolean.TRUE));
@@ -116,16 +115,16 @@ public class TestConditionalUnaryPredicate extends BaseFunctorTest {
     
     public void testEquals() throws Exception {
         ConditionalUnaryPredicate p = new ConditionalUnaryPredicate(
-            new UnaryFunctionUnaryPredicate(new IdentityFunction()),
+            new IdentityPredicate(),
             new ConstantPredicate(true),
             new ConstantPredicate(true));
         assertEquals(p,p);
         assertObjectsAreEqual(p,new ConditionalUnaryPredicate(
-            new UnaryFunctionUnaryPredicate(new IdentityFunction()),
+            new IdentityPredicate(),
             new ConstantPredicate(true),
             new ConstantPredicate(true)));
         assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
-            new UnaryFunctionUnaryPredicate(new IdentityFunction()),
+            new IdentityPredicate(),
             new ConstantPredicate(false),
             new ConstantPredicate(true)));
         assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(

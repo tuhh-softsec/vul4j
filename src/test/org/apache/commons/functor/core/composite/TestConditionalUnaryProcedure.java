@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryProcedure.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryProcedure.java,v 1.2 2003/01/29 23:24:52 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,13 +61,12 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.adapter.UnaryFunctionUnaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
-import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.IdentityPredicate;
 import org.apache.commons.functor.core.NoOpProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.2 $ $Date: 2003/01/29 23:24:52 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalUnaryProcedure extends BaseFunctorTest {
@@ -111,7 +110,7 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
         RunCounter left = new RunCounter();
         RunCounter right = new RunCounter();
         ConditionalUnaryProcedure p = new ConditionalUnaryProcedure(
-            new UnaryFunctionUnaryPredicate(new IdentityFunction()),
+            new IdentityPredicate(),
             left,
             right);
         assertEquals(0,left.count);
@@ -129,12 +128,12 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
     
     public void testEquals() throws Exception {
         ConditionalUnaryProcedure p = new ConditionalUnaryProcedure(
-            new UnaryFunctionUnaryPredicate(new IdentityFunction()),
+            new IdentityPredicate(),
             new NoOpProcedure(),
             new NoOpProcedure());
         assertEquals(p,p);
         assertObjectsAreEqual(p,new ConditionalUnaryProcedure(
-            new UnaryFunctionUnaryPredicate(new IdentityFunction()),
+            new IdentityPredicate(),
             new NoOpProcedure(),
             new NoOpProcedure()));
         assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
@@ -146,11 +145,11 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
             new NoOpProcedure(),
             new NoOpProcedure()));
         assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
-            new UnaryFunctionUnaryPredicate(new IdentityFunction()),
+            new IdentityPredicate(),
             null,
             new NoOpProcedure()));
         assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
-            new UnaryFunctionUnaryPredicate(new IdentityFunction()),
+            new IdentityPredicate(),
             new NoOpProcedure(),
             null));
     }
