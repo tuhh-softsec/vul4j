@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.3  2003/09/11 11:29:12  blautenb
+ * Fix Xerces namespace usage in *NIX build
+ *
  * Revision 1.2  2003/07/05 10:30:38  blautenb
  * Copyright update
  *
@@ -89,19 +92,15 @@
 #include <xercesc/util/XMLExceptMsgs.hpp>
 #include <xercesc/util/BinInputStream.hpp>
 
-XSEC_USING_XERCES(XMLUri);
-XSEC_USING_XERCES(BinInputStream);
-
-
 //
 // This class implements the BinInputStream interface specified by the XML
 // parser.
 //
 
-class DSIG_EXPORT XSECBinHTTPURIInputStream : public BinInputStream
+class DSIG_EXPORT XSECBinHTTPURIInputStream : public XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream
 {
 public :
-    XSECBinHTTPURIInputStream(const XMLUri&  urlSource);
+    XSECBinHTTPURIInputStream(const XERCES_CPP_NAMESPACE_QUALIFIER XMLUri&  urlSource);
     ~XSECBinHTTPURIInputStream();
 
     unsigned int curPos() const;
@@ -130,7 +129,7 @@ private :
     //      that readBytes must return.
     // -----------------------------------------------------------------------
 
-	int getSocketHandle(const XMLUri&  urlSource);
+	int getSocketHandle(const XERCES_CPP_NAMESPACE_QUALIFIER XMLUri&  urlSource);
 
     int                 fSocket;
     unsigned int        fBytesProcessed;

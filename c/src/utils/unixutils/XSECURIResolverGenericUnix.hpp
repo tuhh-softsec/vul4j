@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.3  2003/09/11 11:29:12  blautenb
+ * Fix Xerces namespace usage in *NIX build
+ *
  * Revision 1.2  2003/07/05 10:30:38  blautenb
  * Copyright update
  *
@@ -87,9 +90,6 @@
 #include <xsec/framework/XSECURIResolver.hpp>
 
 #include <xercesc/util/XMLString.hpp>
-
-XSEC_USING_XERCES(XMLString);
-
 
 /**
  * @ingroup pubsig
@@ -139,7 +139,8 @@ public:
 	 * @returns The octet stream corresponding to the URI.
 	 */
 
-	virtual BinInputStream * resolveURI(const XMLCh * uri);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * 
+	    resolveURI(const XMLCh * uri);
 
 	/**
 	 * \brief Clone the resolver to be installed in a new object.

@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.5  2003/09/11 11:29:12  blautenb
+ * Fix Xerces namespace usage in *NIX build
+ *
  * Revision 1.4  2003/07/05 10:30:38  blautenb
  * Copyright update
  *
@@ -95,8 +98,7 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/BinFileInputStream.hpp>
 
-XSEC_USING_XERCES(XMLString);
-XSEC_USING_XERCES(ArrayJanitor);
+XERCES_CPP_NAMESPACE_USE
 
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/unixutils/XSECBinHTTPURIInputStream.hpp>

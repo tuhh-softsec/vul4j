@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.6  2003/09/11 11:29:12  blautenb
+ * Fix Xerces namespace usage in *NIX build
+ *
  * Revision 1.5  2003/07/05 10:30:37  blautenb
  * Copyright update
  *
@@ -110,11 +113,7 @@
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
-XSEC_USING_XERCES(XMLUri);
-XSEC_USING_XERCES(XMLString);
-XSEC_USING_XERCES(ArrayJanitor);
-XSEC_USING_XERCES(XMLExcepts);
-XSEC_USING_XERCES(NetAccessorException);
+XERCES_CPP_NAMESPACE_USE
 
 int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource) {
 
