@@ -91,7 +91,7 @@ void XKMSMessageFactoryImpl::copyRequestToResult(XKMSRequestAbstractType * req,
 	for (i = 0; i < sz; ++i) {
 		if (strEquals(req->getResponseMechanismItemStr(i), XKMSConstants::s_tagRequestSignatureValue)) {
 			DSIGSignature *s = req->getSignature();
-			if (s != NULL) {
+			if (s != NULL && res->getResultMinor() != XKMSResultType::NoAuthentication) {
 
 				res->setRequestSignatureValue(s->getSignatureValue());
 
