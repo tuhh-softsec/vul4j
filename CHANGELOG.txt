@@ -1,4 +1,12 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
+New in v1.2.1-99
+	Init-Don't fail if a transformation don't have all of its dependecies.
+		Remove XPath initialization from Init and do only when xpath is needed.
+    Resolv-Removed the use of xpath expressions to search the elements to sign/verify, now use only plain DOM searching.
+	Resolvers-Remove wantsOctectStream wantsNodeSet and his returns pair they are not used, right now and some are incorrect.	
+	Remove the Use of xalan or xerces class URI
+	Removed the expandSystemId
+	Changed from Vector<String> to List<Class>, so we don't need to use classForName everytime and used it just the first time.
 
 New in v1.2.1
  * Fix the memory leak when using xpath or using ResourceResolver and not hitting 

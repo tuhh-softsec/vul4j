@@ -19,8 +19,9 @@ TODO for 1.2.1:
 TODO for 1.3:
 RAUL:
 
-[ ] Remove XPath in IdResolver.
-[ ] Deferred XPath till needed.
+[X] Remove XPath in IdResolver.
+[X] Deferred XPath till needed.
+[ ] Clean unneed XPath
 [ ] Integrate the SAX patch and add Signing
 [ ] More examples.
 [ ] Change Symbol table to a more efficient and simple structure
