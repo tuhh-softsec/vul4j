@@ -50,6 +50,12 @@
          In other words, with descriptive prose mixed right in with the source, as 
          <code>/* C++ style */</code> comments.
       </p>
+      <subsection name="Generators">        
+        <p>
+          The <a href="xref-test/org/apache/commons/functor/example/lines/package-summary.html">lines</a>
+          package demonstrates a functional approach to IO using Generators and the Algorithms class.
+        </p>
+      </subsection>      
       <subsection name="Reuse Through Composition">
          <p>
             The Functor package, and more generally, a functional approach
@@ -84,6 +90,13 @@
             applies this design to <code>java.util.Map</code>, demonstrating how 
             "pluggable" functors can be applied to a generic <code>Map</code> structure in order
             to introduce new behaviors.           
+         </p>
+         <p>
+            The 
+            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/map/package-summary.html">map</a>
+            package is a more complete example of this, implementing a number of the Commons-Collections Maps
+            derived from a base 
+            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/map/FunctoredMap.html">FunctoredMap</a>.
          </p>
       </subsection>      
       <subsection name="A Quicksort Implementation">        
