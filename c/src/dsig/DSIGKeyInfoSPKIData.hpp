@@ -149,7 +149,7 @@ public:
 	 * @returns The number of S-expressions
 	 */
 
-	int getSexpSize(void);
+	unsigned int getSexpSize(void);
 
 	/**
 	 * \brief returns the indicated SExpression
@@ -161,7 +161,7 @@ public:
 	 * S-expression
 	 */
 
-	virtual const XMLCh * getSexp(int index);
+	virtual const XMLCh * getSexp(unsigned int index);
 
 	/**
 	 * \Get key name - unimplemented for SPKI packets

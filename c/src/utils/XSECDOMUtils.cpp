@@ -349,7 +349,7 @@ XMLCh * encodeDName(const XMLCh * toEncode) {
 	}
 
 	// Now encode trailing white space
-	while (*i != NULL) {
+	while (*i != chNull) {
 
 		if (*i == ' ')
 			result.sbXMLChCat(s_strEncodedSpace);

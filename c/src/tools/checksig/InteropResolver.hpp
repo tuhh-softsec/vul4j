@@ -111,7 +111,7 @@ private:
 	long			m_handle;
 #else
     glob_t          m_globbuf;
-	unsigned int    m_fcount;
+    int             m_fcount;
 #endif
 
 };

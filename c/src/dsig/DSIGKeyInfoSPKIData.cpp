@@ -168,13 +168,13 @@ void DSIGKeyInfoSPKIData::load(void) {
 
 }
 
-int DSIGKeyInfoSPKIData::getSexpSize(void) {
+unsigned int DSIGKeyInfoSPKIData::getSexpSize(void) {
 
 	return m_sexpList.size();
 
 }
 
-const XMLCh * DSIGKeyInfoSPKIData::getSexp(int index) {
+const XMLCh * DSIGKeyInfoSPKIData::getSexp(unsigned int index) {
 
 	if (index < 0 || index >= m_sexpList.size()) {
 
