@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.6 2002/01/04 05:32:11 sanders Exp $
- * $Revision: 1.6 $
- * $Date: 2002/01/04 05:32:11 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.7 2002/01/08 23:46:01 sanders Exp $
+ * $Revision: 1.7 $
+ * $Date: 2002/01/08 23:46:01 $
  *
  * ====================================================================
  *
@@ -83,7 +83,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.6 $ $Date: 2002/01/04 05:32:11 $
+ * @version $Revision: 1.7 $ $Date: 2002/01/08 23:46:01 $
  */
 
 public class DigesterTestCase extends TestCase {
@@ -246,19 +246,19 @@ public class DigesterTestCase extends TestCase {
         List list = null;
 
         assertEquals("Initial rules list is empty",
-                     0, digester.getRules().match("a").size());
+                     0, digester.getRules().match(null, "a").size());
         digester.addSetProperties("a");
         assertEquals("Add a matching rule",
-                     1, digester.getRules().match("a").size());
+                     1, digester.getRules().match(null, "a").size());
         digester.addSetProperties("b");
         assertEquals("Add a non-matching rule",
-                     1, digester.getRules().match("a").size());
+                     1, digester.getRules().match(null, "a").size());
         digester.addSetProperties("a/b");
         assertEquals("Add a non-matching nested rule",
-                     1, digester.getRules().match("a").size());
+                     1, digester.getRules().match(null, "a").size());
         digester.addSetProperties("a/b");
         assertEquals("Add a second matching rule",
-                     2, digester.getRules().match("a/b").size());
+                     2, digester.getRules().match(null, "a/b").size());
 
     }
 
@@ -285,24 +285,24 @@ public class DigesterTestCase extends TestCase {
 
         // Test exact match
         assertEquals("Exact match takes precedence 1",
-                     1, digester.getRules().match("a/b/c/d").size());
+                     1, digester.getRules().match(null, "a/b/c/d").size());
         assertEquals("Exact match takes precedence 2",
                      "a/b/c/d",
-                     ((TestRule) digester.getRules().match("a/b/c/d").iterator().next()).getIdentifier());
+                     ((TestRule) digester.getRules().match(null, "a/b/c/d").iterator().next()).getIdentifier());
 
         // Test wildcard tail matching
         assertEquals("Wildcard tail matching rule 1",
-                     1, digester.getRules().match("a/b/d").size());
+                     1, digester.getRules().match(null, "a/b/d").size());
         assertEquals("Wildcard tail matching rule 2",
                      "*/d",
-                     ((TestRule) digester.getRules().match("a/b/d").iterator().next()).getIdentifier());
+                     ((TestRule) digester.getRules().match(null, "a/b/d").iterator().next()).getIdentifier());
 
         // Test the longest matching pattern rule
         assertEquals("Longest tail rule 1",
-                     1, digester.getRules().match("x/c/d").size());
+                     1, digester.getRules().match(null, "x/c/d").size());
         assertEquals("Longest tail rule 2",
                      "*/c/d",
-                     ((TestRule) digester.getRules().match("x/c/d").iterator().next()).getIdentifier());
+                     ((TestRule) digester.getRules().match(null, "x/c/d").iterator().next()).getIdentifier());
 
     }
 
