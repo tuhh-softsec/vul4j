@@ -149,7 +149,7 @@ enum hashMethod {
 
 	HASH_NONE					= 0,			// No method defined
 	HASH_SHA1					= 1, 			// SHA1
-	HASH_MD5					= 2,
+	HASH_MD5					= 2
 };
 
 enum transformType {

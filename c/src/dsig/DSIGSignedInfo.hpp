@@ -105,7 +105,7 @@ class DSIGSignature;
  *
  */
 
-class DSIGSignedInfo {
+class DSIG_EXPORT DSIGSignedInfo {
 
 public:
 

@@ -324,7 +324,7 @@ void outputReferences(DSIGReferenceList *rl, int level) {
 
 }
 
-void outputSignatureInfo(DSIGSignature *sig) {
+void outputSignatureInfo(DSIGSignature *sig, bool skipReferences) {
 
 	// First get some information about the main signature
 	cout << "Signature (Signed Info) settings : " << endl;
@@ -393,15 +393,17 @@ void outputSignatureInfo(DSIGSignature *sig) {
 
 	// Read in the references and output
 
-	DSIGReferenceList * rl = sig->getReferenceList();
-	
-	if (rl != NULL) {
+	if (skipReferences == false) {
 
-		cout << endl << "Reference List : " << endl;
-		outputReferences(rl, 1);
+		DSIGReferenceList * rl = sig->getReferenceList();
 	
+		if (rl != NULL) {
+
+			cout << endl << "Reference List : " << endl;
+			outputReferences(rl, 1);
+	
+		}
 	}
-
 }
 
 void printUsage(void) {
@@ -520,7 +522,7 @@ int evaluate(int argc, char ** argv) {
 
 		cout << "Filename : " << filename << endl;
 
-		outputSignatureInfo(sig);
+		outputSignatureInfo(sig, skipRefs);
 //		if (skipRefs == false)
 //			result = sig->verifySignatureOnly();
 //		else
@@ -558,7 +560,8 @@ int main(int argc, char **argv) {
 	/* We output a version number to overcome a "feature" in Microsoft's memory
 	   leak detection */
 
-	cout << "DSIG Info (Using Apache XML-Security-C Library v" << XSEC_VERSION << ")\n";
+	cout << "DSIG Info (Using Apache XML-Security-C Library v" << XSEC_VERSION_MAJOR <<
+		"." << XSEC_VERSION_MEDIUM << "." << XSEC_VERSION_MINOR << ")\n";
 
 #if defined (_DEBUG) && defined (_MSC_VER)
 

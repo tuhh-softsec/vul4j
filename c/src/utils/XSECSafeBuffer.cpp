@@ -145,7 +145,7 @@ safeBuffer::safeBuffer() {
 
 }
 
-safeBuffer::safeBuffer(char * inStr, unsigned int initialSize) {
+safeBuffer::safeBuffer(const char * inStr, unsigned int initialSize) {
 
 	// Initialise with a string
 
@@ -218,7 +218,7 @@ void safeBuffer::sbStrcpyIn(const safeBuffer & inStr) {
 }
 
 
-void safeBuffer::sbStrncpyIn(char * inStr, int n) {
+void safeBuffer::sbStrncpyIn(const char * inStr, int n) {
 
 	int len = strlen(inStr);
 	checkAndExpand((n < len) ? n : len);
@@ -239,7 +239,7 @@ void safeBuffer::sbStrncpyIn(const safeBuffer & inStr, int n) {
 }
 
 
-void safeBuffer::sbStrcatIn(char * inStr) {
+void safeBuffer::sbStrcatIn(const char * inStr) {
 
 	checkBufferType(BUFFER_CHAR);
 	checkAndExpand(strlen((char *) buffer) + strlen(inStr));
@@ -255,7 +255,7 @@ void safeBuffer::sbStrcatIn(const safeBuffer & inStr) {
 
 }
 
-void safeBuffer::sbStrncatIn(char * inStr, int n) {
+void safeBuffer::sbStrncatIn(const char * inStr, int n) {
 
 
 	checkBufferType(BUFFER_CHAR);
@@ -322,14 +322,14 @@ void safeBuffer::sbMemshift(int toOffset, int fromOffset, int len) {
 
 // Comparisons
 
-int safeBuffer::sbStrncmp(char *inStr, int n) {
+int safeBuffer::sbStrncmp(const char *inStr, int n) const {
 
 	checkBufferType(BUFFER_CHAR);
 	return (strncmp((char *) buffer, inStr, n));
 
 }
 
-int safeBuffer::sbStrcmp(char *inStr) const {
+int safeBuffer::sbStrcmp(const char *inStr) const {
 
 	checkBufferType(BUFFER_CHAR);
 	return (strcmp((char *) buffer, inStr));
@@ -343,7 +343,7 @@ int safeBuffer::sbStrcmp(const safeBuffer & inStr) const {
 
 }
 
-int safeBuffer::sbOffsetStrcmp(char * inStr, unsigned int offset) {
+int safeBuffer::sbOffsetStrcmp(const char * inStr, unsigned int offset) const {
 
 	checkBufferType(BUFFER_CHAR);
 	unsigned int bl = strlen((char *) buffer);
@@ -355,7 +355,7 @@ int safeBuffer::sbOffsetStrcmp(char * inStr, unsigned int offset) {
 
 }
 
-int safeBuffer::sbOffsetStrncmp(char * inStr, unsigned int offset, int n) {
+int safeBuffer::sbOffsetStrncmp(const char * inStr, unsigned int offset, int n) const {
 
 	checkBufferType(BUFFER_CHAR);
 	unsigned int bl = strlen((char *) buffer);
@@ -366,7 +366,7 @@ int safeBuffer::sbOffsetStrncmp(char * inStr, unsigned int offset, int n) {
 
 }
 
-int safeBuffer::sbStrstr(char * inStr) {
+int safeBuffer::sbStrstr(const char * inStr) const {
 
 	char * p;
 	int d;
@@ -386,7 +386,7 @@ int safeBuffer::sbStrstr(char * inStr) {
 
 }	
 
-int safeBuffer::sbOffsetStrstr(const char * inStr, unsigned int offset) {
+int safeBuffer::sbOffsetStrstr(const char * inStr, unsigned int offset) const {
 
 	char * p;
 	int d;

@@ -114,7 +114,7 @@ public:
 
 	safeBuffer();
 	safeBuffer(int initialSize);
-	safeBuffer(char * inStr, unsigned int initialSize = DEFAULT_SAFE_BUFFER_SIZE);
+	safeBuffer(const char * inStr, unsigned int initialSize = DEFAULT_SAFE_BUFFER_SIZE);
 	safeBuffer(const safeBuffer & other);
 
 	~safeBuffer();
@@ -125,11 +125,11 @@ public:
 
 	void sbStrcpyIn(const char * inStr);
 	void sbStrcpyIn(const safeBuffer & inStr);
-	void sbStrncpyIn(char * inStr, int n);
+	void sbStrncpyIn(const char * inStr, int n);
 	void sbStrncpyIn(const safeBuffer & inStr, int n);
-	void sbStrcatIn(char * inStr);
+	void sbStrcatIn(const char * inStr);
 	void sbStrcatIn(const safeBuffer & inStr);
-	void sbStrncatIn(char * inStr, int n);
+	void sbStrncatIn(const char * inStr, int n);
 	void sbStrinsIn(const char * inStr, unsigned int offset);
 
 	void sbMemcpyIn(const void * inBuf, int n);
@@ -140,13 +140,13 @@ public:
 
 	// Comparison functions
 
-	int sbStrncmp(char * inStr, int n);
-	int sbOffsetStrcmp(char * inStr, unsigned int offset);
-	int sbOffsetStrncmp(char * inStr, unsigned int offset, int n);
-	int sbStrcmp(char * inStr) const;
+	int sbStrncmp(const char * inStr, int n) const;
+	int sbOffsetStrcmp(const char * inStr, unsigned int offset) const;
+	int sbOffsetStrncmp(const char * inStr, unsigned int offset, int n) const;
+	int sbStrcmp(const char * inStr) const;
 	int sbStrcmp(const safeBuffer & inStr) const;
-	int sbStrstr(char * inStr);
-	int sbOffsetStrstr(const char * inStr, unsigned int offset);
+	int sbStrstr(const char * inStr) const;
+	int sbOffsetStrstr(const char * inStr, unsigned int offset) const;
 
 
 	// Operators
