@@ -60,64 +60,58 @@ public class XMLUtils {
       // we don't allow instantiation
    }
 
-   /**
-    * @param rootNode
-    * @param result
-    * @return
-    */
-   public static Set getSetWithComments(Node rootNode,Set result) {
-   	  return getSet(rootNode,result,true);
-   }
    
    /**
     * @param rootNode
     * @param result
     * @return
-    */
-   public static Set getSetWithoutComments(Node rootNode,Set result) {
- 	  return getSet(rootNode,result,false);
+    */   
+   public static void getSet(Node rootNode,Set result,Node exclude ,boolean com) {
+   	  if ((exclude!=null) && isDescendantOrSelf(exclude,rootNode)){
+   	  	return;
+      }
+      getSetRec(rootNode,result,exclude,com);
    }
-   
-   static Set getSet(Node rootNode,Set result,boolean com) {
-   	   //Set result = new HashSet();   	   
-   	   switch (rootNode.getNodeType()) {
-   	   		
-   	   			
-   	   		case Node.ELEMENT_NODE:
+   static void getSetRec(Node rootNode,Set result,Node exclude ,boolean com) {
+   	   //Set result = new HashSet();
+       if (rootNode==exclude) {
+          return;
+       }
+   	   switch (rootNode.getNodeType()) {   	   		   	   			
+   	   	case Node.ELEMENT_NODE:
    	   			result.add(rootNode);
-   	   		    NamedNodeMap nl = ((Element)rootNode).getAttributes();
-   	   		    for (int i=0;i<nl.getLength();i++) {
-   	   		    	result.add(nl.item(i));
-   	   		    }
-   	   	case Node.DOCUMENT_NODE:
-				boolean skipingTextNodes=false;
-   	   			Node r=rootNode.getFirstChild();
-   	   			if (r==null) {
-   	   				break;
+   	   	        Element el=(Element)rootNode;
+                if (el.hasAttributes()) {
+   	   		        NamedNodeMap nl = ((Element)rootNode).getAttributes();
+   	   		        for (int i=0;i<nl.getLength();i++) {
+   	   		        	result.add(nl.item(i));
+   	   		        }
+                }
+                //no return keep working
+   	   	case Node.DOCUMENT_NODE:   	   			
+   	   			for (Node r=rootNode.getFirstChild();r!=null;r=r.getNextSibling()){                                    
+   	   				if (r.getNodeType()==Node.TEXT_NODE) {
+   	   					result.add(r); 
+   	   					while ((r!=null) && (r.getNodeType()==Node.TEXT_NODE)) {
+   	   						r=r.getNextSibling();
+   	   					}
+   	   					if (r==null)
+   	   						return;
+   	   				}  
+   	   				getSetRec(r,result,exclude,com);                
    	   			}
-                                do {
-                                    if (r.getNodeType()==Node.TEXT_NODE) {
-                                        if (skipingTextNodes) {
-                                            continue;
-                                        }
-                                        skipingTextNodes=true;
-                                    } else {
-                                        skipingTextNodes=false;
-                                    }
-                                    getSet(r,result,com);
-   	   			} while ((r=r.getNextSibling())!=null);
-   	   			break;
+   	   			return;
    	   		case Node.COMMENT_NODE:
    	   			if (com) {
    	   				result.add(rootNode);
    	   			}
-   	   			break;
+   	   		    return;
    	   		case Node.DOCUMENT_TYPE_NODE:
-   	   			break;
+   	   			return;
    	   		default:
    	   			result.add(rootNode);
    	   }
-   	   return result;
+   	   return;
    }
    /**
     * Method getXalanVersion
@@ -727,37 +721,33 @@ public class XMLUtils {
 
       if (node.getNodeType() == Node.ELEMENT_NODE) {
          Element element = (Element) node;
-         NamedNodeMap attributes = element.getAttributes();
-         int attributesLength = attributes.getLength();
-         NodeList children = element.getChildNodes();
-         int childrenLength = children.getLength();
+         if (element.hasChildNodes() && element.hasAttributes()) {
+         	NamedNodeMap attributes = element.getAttributes();
+         	int attributesLength = attributes.getLength();         
 
-         for (int j = 0; j < childrenLength; j++) {
-            Node child = children.item(j);
+         	for (Node child = element.getFirstChild(); child!=null; 
+                 child=child.getNextSibling()) {            
 
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
-               Element childElement = (Element) child;
+         		if (child.getNodeType() == Node.ELEMENT_NODE) {
+         			Element childElement = (Element) child;
 
-               for (int i = 0; i < attributesLength; i++) {
-                  Attr currentAttr = (Attr) attributes.item(i);
-                  boolean isNamespace = Constants.NamespaceSpecNS.equals(
-                     currentAttr.getNamespaceURI());
-
-                  if (isNamespace) {
-                     boolean mustBeDefinedInChild =
-                        !childElement.hasAttributeNS(
-                           Constants.NamespaceSpecNS,
-                           currentAttr.getLocalName());
-
-                     if (mustBeDefinedInChild) {
-                        childElement.setAttributeNS(Constants.NamespaceSpecNS,
+         			for (int i = 0; i < attributesLength; i++) {
+         				Attr currentAttr = (Attr) attributes.item(i);                  
+         				if (Constants.NamespaceSpecNS.equals(
+         						currentAttr.getNamespaceURI())) {                     
+                        
+         					if (!childElement.hasAttributeNS(
+         							Constants.NamespaceSpecNS,
+									currentAttr.getLocalName())) {
+         						childElement.setAttributeNS(Constants.NamespaceSpecNS,
                                                     currentAttr.getName(),
                                                     currentAttr.getNodeValue());
-                     }
-                  }
-               }
+         					}
+         				}
+         			}
+         		}
             }
-         }
+         }  
       }
 
       for (Node child = node.getFirstChild(); child != null;
