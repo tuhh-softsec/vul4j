@@ -417,6 +417,14 @@ SOURCE=..\..\..\..\src\enc\openssl\OpenSSLCryptoProvider.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoSymmetricKey.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoSymmetricKey.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoX509.cpp
 # End Source File
 # Begin Source File
@@ -531,6 +539,10 @@ SOURCE=..\..\..\..\src\enc\XSECCryptoKeyRSA.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\enc\XSECCryptoProvider.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\XSECCryptoSymmetricKey.hpp
 # End Source File
 # Begin Source File
 
@@ -777,6 +789,14 @@ SOURCE=..\..\..\..\src\transformers\TXFMChain.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\transformers\TXFMCipher.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\transformers\TXFMCipher.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\transformers\TXFMDocObject.cpp
 # End Source File
 # Begin Source File
@@ -870,6 +890,78 @@ SOURCE=..\..\..\..\src\transformers\TXFMXSL.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\framework\version.rc
+# End Source File
+# End Group
+# Begin Group "xenc"
+
+# PROP Default_Filter ""
+# Begin Group "impl"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCCipherDataImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCCipherDataImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCCipherImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCCipherImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCCipherValueImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCCipherValueImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedDataImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedDataImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.hpp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\XENCCipher.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\XENCCipherData.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\XENCCipherValue.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\XENCEncryptedData.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\XENCEncryptedType.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\XENCEncryptionMethod.hpp
 # End Source File
 # End Group
 # End Target

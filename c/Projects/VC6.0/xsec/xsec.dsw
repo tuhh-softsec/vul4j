@@ -33,6 +33,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "cipher"=".\cipher\cipher.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name xsec_lib
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "siginf"=".\siginf\siginf.dsp" - Package Owner=<4>
 
 Package=<5>
