@@ -254,6 +254,8 @@ public class ExtendedBaseRules extends RulesBase {
 
         // Find the longest key, ie more discriminant
         String longKey = "";
+        int longKeyLength = 0;
+        
         Iterator keys = this.cache.keySet().iterator();
         while (keys.hasNext()) {
             String key = (String) keys.next();
@@ -268,18 +270,22 @@ public class ExtendedBaseRules extends RulesBase {
 
                     
             // don't need to check exact matches
-            if (key.startsWith("*/") || (isUniversal && key.endsWith("/*"))) {
+            boolean wildcardMatchStart = key.startsWith("*/");
+            boolean wildcardMatchEnd = key.endsWith("/*");
+            if (wildcardMatchStart || (isUniversal && wildcardMatchEnd)) {
 
                 boolean parentMatched = false;
                 boolean basicMatched = false;
                 boolean ancesterMatched = false;
-                if (key.endsWith("/?")) {
+                
+                boolean parentMatchEnd = key.endsWith("/?");
+                if (parentMatchEnd) {
                     // try for a parent match
                     parentMatched = parentMatch(key, pattern, parentPattern);
 
-                } else if (key.endsWith("/*")) {
+                } else if (wildcardMatchEnd) {
                     // check for ancester match
-                    if (key.startsWith("*/")) {
+                    if (wildcardMatchStart) {
                         String patternBody = key.substring(2, key.length() - 2);
                         if (pattern.endsWith(patternBody)) {
                             ancesterMatched = true;
@@ -317,16 +323,25 @@ public class ExtendedBaseRules extends RulesBase {
                     } else {
                         if (!ignoreBasicMatches) {
                             // ensure that all parent matches are SHORTER
-                            // than rules with same level of matching
+                            // than rules with same level of matching.
+                            //
+                            // the calculations below don't work for universal
+                            // matching, but we don't care because in that case
+                            // this if-stmt is not entered.
                             int keyLength = key.length();
-                            if (parentMatched || ancesterMatched) {
-                                keyLength--;
+                            if (wildcardMatchStart) {
+                                --keyLength;
+                            }
+                            if (wildcardMatchEnd) {
+                                --keyLength;
+                            } else if (parentMatchEnd) {
+                                --keyLength;
                             }
 
-
-                            if (keyLength > longKey.length()) {
+                            if (keyLength > longKeyLength) {
                                 rulesList = (List) this.cache.get(key);
                                 longKey = key;
+                                longKeyLength = keyLength;
                             }
                         }
                     }
