@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.49 2003/11/19 21:07:06 rdonkin Exp $
+        $Id: build.xml,v 1.50 2003/12/02 23:21:16 rdonkin Exp $
 -->
 
 
@@ -273,7 +273,8 @@
                                test.regex,
                                test.wdrules,
                                test.plugins,
-                               test.others
+                               test.others,
+                               test.substitution
                               "
    description="Run all unit test cases">
   </target>
@@ -503,6 +504,20 @@
         failonerror="${test.failonerror}">
       <jvmarg value="-D${logopt}"/>
       <arg value="org.apache.commons.digester.TestOthers"/>
+      <classpath refid="test.classpath"/>
+    </java>
+  </target> 
+  
+  <target name="test.substitution" depends="compile.tests"
+          description="Run Substitutions tests ...">
+    <echo message="Running Substitutions tests ..."/>
+    <condition property="logopt" value="${log.factoryopt}=${log.class}">
+      <istrue value="${suppressLogOutputDuringTests}"/>
+    </condition>
+    <java classname="${test.runner}" fork="yes"
+        failonerror="${test.failonerror}">
+      <jvmarg value="-D${logopt}"/>
+      <arg value="org.apache.commons.digester.substitution.TestAll"/>
       <classpath refid="test.classpath"/>
     </java>
   </target> 

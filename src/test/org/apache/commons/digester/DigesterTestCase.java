@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.15 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.15 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.16 2003/12/02 23:21:16 rdonkin Exp $
+ * $Revision: 1.16 $
+ * $Date: 2003/12/02 23:21:16 $
  *
  * ====================================================================
  * 
@@ -74,6 +74,9 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.AttributesImpl;
+import org.xml.sax.InputSource;
 
 
 /**
@@ -82,7 +85,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.15 $ $Date: 2003/10/09 21:09:48 $
+ * @version $Revision: 1.16 $ $Date: 2003/12/02 23:21:16 $
  */
 
 public class DigesterTestCase extends TestCase {
@@ -370,4 +373,57 @@ public class DigesterTestCase extends TestCase {
         
         assertEquals("Initialize should be called once and only once", 1, digester.called);
     }
+    
+    public void testBasicSubstitution() throws Exception {
+        class TestSubRule extends Rule {
+            public String body;
+            public Attributes attributes;
+            
+            public void begin(String namespace, String name, Attributes attributes) {
+                this.attributes = new AttributesImpl(attributes);
+            }
+            
+            public void body(String namespace, String name, String text) {
+                this.body = text;
+            }
+        }
+        
+        TestSubRule tsr = new TestSubRule();
+        Digester digester = new Digester();
+        digester.addRule("alpha/beta", tsr);
+            
+        // it's not easy to transform dirty harry into the mighty circus - but let's give it a try
+        String xml = "<?xml version='1.0'?><alpha><beta forname='Dirty' surname='Harry'>Do you feel luck punk?</beta></alpha>";
+        InputSource in = new InputSource(new StringReader(xml));
+        
+        digester.parse(in);
+        
+        assertEquals("Unsubstituted body text", "Do you feel luck punk?", tsr.body);
+        assertEquals("Unsubstituted number of attributes", 2, tsr.attributes.getLength());
+        assertEquals("Unsubstituted forname attribute value", "Dirty", tsr.attributes.getValue("forname"));
+        assertEquals("Unsubstituted surname attribute value", "Harry", tsr.attributes.getValue("surname"));
+
+        digester.setSubstitutor(
+            new Substitutor() {
+                public Attributes substitute(Attributes attributes) {
+                    AttributesImpl results = new AttributesImpl();
+                    results.addAttribute("", "python", "python", "CDATA", "Cleese");
+                    return results;
+                }   
+                
+                public String substitute(String bodyText) {
+                    return "And now for something completely different...";
+                }
+            });
+        
+        // now transform into the full monty
+        in = new InputSource(new StringReader(xml));
+        digester.parse(in);
+        
+        assertEquals("Substituted body text", "And now for something completely different...", tsr.body);
+        assertEquals("Substituted number of attributes", 1, tsr.attributes.getLength());
+        assertEquals("Substituted python attribute value", "Cleese", tsr.attributes.getValue("", "python"));
+    }
+    
+    
 }

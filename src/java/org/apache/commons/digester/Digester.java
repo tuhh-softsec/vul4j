@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.86 2003/11/19 21:05:19 rdonkin Exp $
- * $Revision: 1.86 $
- * $Date: 2003/11/19 21:05:19 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.87 2003/12/02 23:21:16 rdonkin Exp $
+ * $Revision: 1.87 $
+ * $Date: 2003/12/02 23:21:16 $
  *
  * ====================================================================
  * 
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.86 $ $Date: 2003/11/19 21:05:19 $
+ * @version $Revision: 1.87 $ $Date: 2003/12/02 23:21:16 $
  */
 
 public class Digester extends DefaultHandler {
@@ -360,7 +360,11 @@ public class Digester extends DefaultHandler {
     protected static final String W3C_XML_SCHEMA =
         "http://www.w3.org/2001/XMLSchema";
     
-
+    /**
+     * An optional class that substitutes values in attributes and body text.
+     * This may be null and so a null check is always required before use.
+     */
+    protected Substitutor substitutor;
     
     // ------------------------------------------------------------- Properties
 
@@ -934,6 +938,22 @@ public class Digester extends DefaultHandler {
         return reader;
     }
 
+    /**
+     * Gets the <code>Substitutor</code> used to convert attributes and body text.
+     * @return Substitutor, null if not substitutions are to be performed.
+     */
+    public Substitutor getSubstitutor() {
+        return substitutor;
+    }
+    
+    /** 
+     * Sets the <code>Substitutor</code> to be used to convert attributes and body text.
+     * @param substitutor the Substitutor to be used to convert attributes and body text
+     * or null if not substitution of these values is to be performed.
+     */
+    public void setSubstitutor(Substitutor substitutor) {
+        this.substitutor = substitutor;
+    }
 
     // ------------------------------------------------- ContentHandler Methods
 
@@ -1038,6 +1058,10 @@ public class Digester extends DefaultHandler {
         List rules = getRules().match(namespaceURI, match);
         if ((rules != null) && (rules.size() > 0)) {
             String bodyText = this.bodyText.toString();
+            Substitutor substitutor = getSubstitutor();
+            if (substitutor!= null) {
+                bodyText = substitutor.substitute(bodyText);
+            }
             for (int i = 0; i < rules.size(); i++) {
                 try {
                     Rule rule = (Rule) rules.get(i);
@@ -1282,7 +1306,10 @@ public class Digester extends DefaultHandler {
         // Fire "begin" events for all relevant rules
         List rules = getRules().match(namespaceURI, match);
         if ((rules != null) && (rules.size() > 0)) {
-            String bodyText = this.bodyText.toString();
+            Substitutor substitutor = getSubstitutor();
+            if (substitutor!= null) {
+                list = substitutor.substitute(list);
+            }
             for (int i = 0; i < rules.size(); i++) {
                 try {
                     Rule rule = (Rule) rules.get(i);
@@ -2182,7 +2209,7 @@ public class Digester extends DefaultHandler {
     }
 
     /**
-     * Adds an {@link SetNestPropertiesRule}.
+     * Adds an {@link SetNestedPropertiesRule}.
      *
      * @param pattern register the rule with this pattern
      * @param elementName elment name that a property maps to
@@ -2194,7 +2221,7 @@ public class Digester extends DefaultHandler {
     }
 
     /**
-     * Adds an {@link SetNestPropertiesRule}.
+     * Adds an {@link SetNestedPropertiesRule}.
      *
      * @param pattern register the rule with this pattern
      * @param elementNames elment names that (in order) map to properties
