@@ -64,14 +64,18 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
+ * $Id$
  *
- * $LOG$
+ * $Log$
+ * Revision 1.3  2003/02/17 11:21:03  blautenb
+ * Bug fix to ensure duplicate XPath namespace does not delete document ns
+ *
  *
  */
 
 
 #include <xsec/transformers/TXFMXPath.hpp>
+#include <xsec/transformers/TXFMParser.hpp>
 #include <xsec/dsig/DSIGConstants.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
@@ -110,11 +114,11 @@ XALAN_USING_XALAN(XSLTResultTarget)
 
 // Helper function
 
-void setAndClearNS(DOMDocument *d, 
-				   DOMNamedNodeMap *xAtts, 
-				   bool set, 
-				   XSECSafeBufferFormatter *formatter,
-				   XSECNameSpaceExpander * nse) {
+void setXPathNS(DOMDocument *d, 
+				DOMNamedNodeMap *xAtts, 
+			    XSECXPathNodeList &addedNodes,
+				XSECSafeBufferFormatter *formatter,
+				XSECNameSpaceExpander * nse) {
 
 	// if set then set the name spaces in the attribute list else clear them
 
@@ -139,24 +143,31 @@ void setAndClearNS(DOMDocument *d,
 		}
 
 		// Run through each attribute looking for name spaces
-
-		safeBuffer xpName, xpValue;
+		const XMLCh *xpName;
+		safeBuffer xpNameSB;
+		const XMLCh *xpLocalName;
+		const XMLCh *xpValue;
 
 		for (int xCounter = 0; xCounter < xAttsCount; ++xCounter) {
 
 			if (nse == NULL || !nse->nodeWasAdded(xAtts->item(xCounter))) {
-
-				xpName << (*formatter << xAtts->item(xCounter)->getNodeName());
 				
-				if (xpName.sbStrncmp("xmlns", 5) == 0) {
+				xpName = xAtts->item(xCounter)->getNodeName();
+				xpNameSB << (*formatter << xpName);
+				
+				if (xpNameSB.sbStrncmp("xmlns", 5) == 0) {
 
-					xpValue << (*formatter << xAtts->item(xCounter)->getNodeValue());
+					// Check whether a node of this name already exists
+					xpLocalName = xAtts->item(xCounter)->getLocalName();
+					xpValue = xAtts->item(xCounter)->getNodeValue();
+					if (e->hasAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, xpLocalName) == false) {
 
-					if (set)
-						e->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, xpName.sbStrToXMLCh(), xpValue.sbStrToXMLCh());
-					else
-						e->removeAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
-									MAKE_UNICODE_STRING((char *) (&xpName.rawBuffer()[6])));
+						// Nope
+	
+						e->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, xpName, xpValue);
+						addedNodes.addNode(e->getAttributeNodeNS(DSIGConstants::s_unicodeStrURIXMLNS, xpLocalName));
+					}
+
 				}
 
 			}
@@ -169,13 +180,37 @@ void setAndClearNS(DOMDocument *d,
 	safeBuffer k("xmlns:");
 	k.sbStrcatIn(KLUDGE_PREFIX);
 
-	if (set)
-		e->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS,
-						 MAKE_UNICODE_STRING(k.rawCharBuffer()),
-						 DSIGConstants::s_unicodeStrURIDSIG);
-	else
-		e->removeAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS,
-						 MAKE_UNICODE_STRING(KLUDGE_PREFIX));
+	e->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS,
+					 MAKE_UNICODE_STRING(k.rawCharBuffer()),
+					 DSIGConstants::s_unicodeStrURIDSIG);
+}
+
+void clearXPathNS(DOMDocument *d, 
+				  XSECXPathNodeList &toRemove,
+				  XSECSafeBufferFormatter *formatter,
+				  XSECNameSpaceExpander * nse) {
+
+	// Clear the XPath name spaces in the document element attribute list
+
+	DOMElement * e = d->getDocumentElement();
+
+	if (e == NULL) {
+
+		throw XSECException(XSECException::XPathError, "Element node not found in Document");
+
+	}
+
+	// Run through each node in the added nodes
+
+	const DOMNode * r = toRemove.getFirstNode();
+	while (r != NULL) {
+		e->removeAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
+					r->getLocalName());
+		r = toRemove.getNextNode();
+	}
+
+	e->removeAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS,
+					 MAKE_UNICODE_STRING(KLUDGE_PREFIX));
 
 }
 
@@ -210,21 +245,33 @@ void TXFMXPath::setNameSpace(DOMNamedNodeMap *xpAtts) {
 
 void TXFMXPath::setInput(TXFMBase *newInput) {
 
-	if (newInput->getOutputType() != TXFMBase::DOM_NODES) {
+	if (newInput->getOutputType() == TXFMBase::BYTE_STREAM) {
 
-		throw XSECException(XSECException::TransformInputOutputFail, "XPath requires DOM_NODES input type");
+		//throw XSECException(XSECException::TransformInputOutputFail, "C14n canonicalisation transform requires DOM_NODES input");
+		// Need to parse into DOM_NODES
+		TXFMParser * parser;
+		XSECnew(parser, TXFMParser(mp_expansionDoc));
+		try{
+			parser->setInput(newInput);
+		}
+		catch (...) {
+			delete parser;
+			throw;
+		}
 
+		input = parser;
+		parser->expandNameSpaces();
 	}
+	else
+		input = newInput;
 
-	input = newInput;
+	// Set up for the new document
+	document = input->getDocument();
 
 	// Expand if necessary
 	this->expandNameSpaces();
 
 	keepComments = input->getCommentsStatus();
-
-	// Set up for the new document
-	document = input->getDocument();
 
 }
 
@@ -268,7 +315,8 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 
 	// Temporarily add any necessary name spaces into the document
 
-	setAndClearNS(document, XPathAtts, true, formatter, mp_nse);
+	XSECXPathNodeList addedNodes;
+	setXPathNS(document, XPathAtts, addedNodes, formatter, mp_nse);
 
 	XPathProcessorImpl	xppi;					// The processor
 	XercesDOMSupport	xds;
@@ -288,21 +336,30 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 	XercesDocumentWrapper *xdw = xpl.mapDocumentToWrapper(xd);
 	XercesWrapperNavigator xwn(xdw);
 
-	// Map the "here" node
+	// Map the "here" node - but only if part of current document
 
-	XalanNode * hereNode = xwn.mapNode(h);
+	bool haveHereNode;
+	XalanNode * hereNode;
 
-	if (hereNode == NULL) {
-
-		hereNode = findHereNodeFromXalan(&xwn, xd, h);
+	if (h->getOwnerDocument() == document) {
+		
+		hereNode = xwn.mapNode(h);
 
 		if (hereNode == NULL) {
 
-			throw XSECException(XSECException::XPathError,
-			   "Unable to find here node in Xalan Wrapper map");
-		}
+			hereNode = findHereNodeFromXalan(&xwn, xd, h);
 
+			if (hereNode == NULL) {
+
+				throw XSECException(XSECException::XPathError,
+				   "Unable to find here node in Xalan Wrapper map");
+			}
+
+		}
+		haveHereNode = true;
 	}
+	else
+		haveHereNode = false;
 
 	// Now work out what we have to set up in the new processing
 
@@ -414,7 +471,11 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 
 	// Install the External function in the Environment handler
 
-	xpesd.installExternalFunctionLocal(XalanDOMString(URI_ID_DSIG), XalanDOMString("here"), DSIGXPathHere(hereNode));
+	if (haveHereNode) {
+
+		xpesd.installExternalFunctionLocal(XalanDOMString(URI_ID_DSIG), XalanDOMString("here"), DSIGXPathHere(hereNode));
+
+	}
 
 	str.sbStrcpyIn("(descendant-or-self::node() | descendant-or-self::node()/attribute::* | descendant-or-self::node()/namespace::*)[");
 	str.sbStrcatIn(expr);
@@ -448,7 +509,7 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 
 	xpesd.uninstallExternalFunctionGlobal(XalanDOMString(URI_ID_DSIG), XalanDOMString("here"));
 
-	setAndClearNS(document, XPathAtts, false, formatter, mp_nse);
+	clearXPathNS(document, addedNodes, formatter, mp_nse);
 
 }
 
