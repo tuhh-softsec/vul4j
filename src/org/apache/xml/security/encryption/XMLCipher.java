@@ -112,7 +112,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import sun.misc.BASE64Encoder;
+// import sun.misc.BASE64Encoder;
 import org.apache.xml.security.utils.Base64;
 
 
@@ -634,12 +634,10 @@ public class XMLCipher {
         if(_cipherMode != ENCRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
-		if (_algorithm == null) {
-
-			throw new XMLEncryptionException("XMLCipher instance without transformation specified");
-		}
-
-		encryptData(_contextDocument, element);
+	if (_algorithm == null) {
+	    throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+	}
+	encryptData(_contextDocument, element, false);
 
         Element encryptedElement = _factory.toElement(_ed);
 
@@ -670,60 +668,10 @@ public class XMLCipher {
         if(_cipherMode != ENCRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
-		if (_algorithm == null) {
-
-			throw new XMLEncryptionException("XMLCipher instance without transformation specified");
-		}
-
-        NodeList children = element.getChildNodes();
-        String serializedOctets = null;
-        if ((null != children)) {
-            serializedOctets = _serializer.serialize(children);
-        } else {
-            Object exArgs[] = {"Element has no content."};
-            throw new XMLEncryptionException("empty", exArgs);
-        }
-        logger.debug("Serialized octets:\n" + serializedOctets);
-
-        byte[] encryptedBytes = null;
-        try {
-            encryptedBytes =
-                _contextCipher.doFinal(serializedOctets.getBytes("UTF-8"));
-
-            logger.debug("Expected cipher.outputSize = " +
-                Integer.toString(_contextCipher.getOutputSize(
-                    serializedOctets.getBytes().length)));
-            logger.debug("Actual cipher.outputSize = " +
-                Integer.toString(encryptedBytes.length));
-        } catch (IllegalStateException ise) {
-            throw new XMLEncryptionException("empty", ise);
-        } catch (IllegalBlockSizeException ibse) {
-            throw new XMLEncryptionException("empty", ibse);
-        } catch (BadPaddingException bpe) {
-            throw new XMLEncryptionException("empty", bpe);
-        } catch (UnsupportedEncodingException uee) {
-		   	throw new XMLEncryptionException("empty", uee);
-        }
-
-        String base64EncodedEncryptedOctets = new BASE64Encoder().encode(
-            encryptedBytes);
-
-        logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
-        logger.debug("Encrypted octets length = " +
-            base64EncodedEncryptedOctets.length());
-
-        try {
-			CipherData cd = _ed.getCipherData();
-			CipherValue cv = cd.getCipherValue();
-			cv.setValue(base64EncodedEncryptedOctets.getBytes());
-
-            _ed.setType(new URI(EncryptionConstants.TYPE_CONTENT).toString());
-            EncryptionMethod method = _factory.newEncryptionMethod(
-                new URI(_algorithm).toString());
-            _ed.setEncryptionMethod(method);
-        } catch (URI.MalformedURIException mfue) {
-            throw new XMLEncryptionException("empty", mfue);
-        }
+	if (_algorithm == null) {
+	    throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+	}
+	encryptData(_contextDocument, element, true);	
 
         Element encryptedElement = _factory.toElement(_ed);
 
@@ -860,7 +808,7 @@ public class XMLCipher {
                 "empty", new IllegalStateException());
         }
 
-        return (null);
+        return (result);
     }
 
     /**
@@ -918,7 +866,13 @@ public class XMLCipher {
      * @param element the <code>Element</code> that will be encrypted.
      * @throws XMLEncryptionException.
      */
-    public EncryptedData encryptData(Document context, Element element) throws
+
+    public EncryptedData encryptData(Document context, Element element) throws 
+            XMLEncryptionException {
+	return encryptData(context, element, false);
+    }
+
+    private EncryptedData encryptData(Document context, Element element, boolean contentMode) throws
             XMLEncryptionException {
         logger.debug("Encrypting element...");
         if(null == context)
@@ -930,13 +884,26 @@ public class XMLCipher {
 
         _contextDocument = context;
 
-		if (_algorithm == null) {
+	if (_algorithm == null) {
+	    throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+	}
+	
 
-			throw new XMLEncryptionException("XMLCipher instance without transformation specified");
-		}
-
-        String serializedOctets = _serializer.serialize(element);
-        logger.debug("Serialized octets:\n" + serializedOctets);
+        String serializedOctets = null;
+	if (contentMode) {
+	    NodeList children = element.getChildNodes();
+	    if ((null != children)) {
+		serializedOctets = _serializer.serialize(children);
+	    }
+	    else {
+		Object exArgs[] = {"Element has no content."};
+		throw new XMLEncryptionException("empty", exArgs);
+	    }
+        }
+	else {
+	    serializedOctets = _serializer.serialize(element);
+	}
+	logger.debug("Serialized octets:\n" + serializedOctets);
 
         byte[] encryptedBytes = null;
 		// Now create the working cipher
@@ -1005,26 +972,30 @@ public class XMLCipher {
 						 iv.length,
 						 encryptedBytes.length);
 
-        String base64EncodedEncryptedOctets = new BASE64Encoder().encode(
-            finalEncryptedBytes);
+        String base64EncodedEncryptedOctets = Base64.encode(finalEncryptedBytes);
 
         logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
         logger.debug("Encrypted octets length = " +
             base64EncodedEncryptedOctets.length());
 
         try {
-			CipherData cd = _ed.getCipherData();
-			CipherValue cv = cd.getCipherValue();
-			cv.setValue(base64EncodedEncryptedOctets.getBytes());
+	    CipherData cd = _ed.getCipherData();
+	    CipherValue cv = cd.getCipherValue();
+	    // cv.setValue(base64EncodedEncryptedOctets.getBytes());
+		cv.setValue(base64EncodedEncryptedOctets);
 
-            _ed.setType(new URI(EncryptionConstants.TYPE_ELEMENT).toString());
+	    if (contentMode) {
+		_ed.setType(new URI(EncryptionConstants.TYPE_CONTENT).toString());
+	    }
+	    else {
+		_ed.setType(new URI(EncryptionConstants.TYPE_ELEMENT).toString());
+	    }
             EncryptionMethod method = _factory.newEncryptionMethod(
-                new URI(_algorithm).toString());
+		 new URI(_algorithm).toString());
             _ed.setEncryptionMethod(method);
         } catch (URI.MalformedURIException mfue) {
             throw new XMLEncryptionException("empty", mfue);
         }
-
         return (_ed);
     }
 
@@ -1159,15 +1130,14 @@ public class XMLCipher {
 			throw new XMLEncryptionException("empty", ibse);
 		}
 
-        String base64EncodedEncryptedOctets = new BASE64Encoder().encode(
-            encryptedBytes);
+        String base64EncodedEncryptedOctets = Base64.encode(encryptedBytes);
 
         logger.debug("Encrypted key octets:\n" + base64EncodedEncryptedOctets);
         logger.debug("Encrypted key octets length = " +
             base64EncodedEncryptedOctets.length());
 
 		CipherValue cv = _ek.getCipherData().getCipherValue();
-		cv.setValue(base64EncodedEncryptedOctets.getBytes());
+		cv.setValue(base64EncodedEncryptedOctets);
 
         try {
             EncryptionMethod method = _factory.newEncryptionMethod(
@@ -1342,14 +1312,13 @@ public class XMLCipher {
 
 		if (sourceParent instanceof Document) {
 			
-			// If this is a content decryption, this may have problems
+		    // If this is a content decryption, this may have problems
 
-			_contextDocument.removeChild(_contextDocument.getDocumentElement());
-			_contextDocument.appendChild(decryptedFragment);
+		    _contextDocument.removeChild(_contextDocument.getDocumentElement());
+		    _contextDocument.appendChild(decryptedFragment);
 		}
 		else {
-
-			sourceParent.replaceChild(decryptedFragment, element);
+		    sourceParent.replaceChild(decryptedFragment, element);
 
 		}
 
@@ -1801,8 +1770,14 @@ public class XMLCipher {
             try {
                 for (int i =0; i < content.getLength(); i++) {
                     Node n = content.item(i);
-                    if ((null != n) && (n.getNodeType() == Node.ELEMENT_NODE)) {
-                        _serializer.serialize((Element) n);
+                    if (null != n) {
+			int nodeType = n.getNodeType();
+			if (nodeType == Node.ELEMENT_NODE) {
+			    _serializer.serialize((Element) n);
+			}
+			else if (nodeType == Node.TEXT_NODE) {
+			    output.write(n.getNodeValue());
+			}
                     }
                 }
             } catch (IOException ioe) {
@@ -1887,7 +1862,7 @@ public class XMLCipher {
 					result.appendChild(child);
 					child = fragElt.getFirstChild();
 				}
-				String outp = serialize(d);
+				// String outp = serialize(d);
 
             } catch (SAXException se) {
                 throw new XMLEncryptionException("empty", se);
@@ -1939,11 +1914,11 @@ public class XMLCipher {
 
         /**
          *
-         */
+         
         CipherValue newCipherValue(byte[] value) {
             return (new CipherValueImpl(value));
         }
-
+		*/
         /**
          *
          */
@@ -2870,26 +2845,30 @@ public class XMLCipher {
         }
 
         private class CipherValueImpl implements CipherValue {
-            private byte[] cipherValue = null;
-
-            public CipherValueImpl(byte[] value) {
-                cipherValue = value;
-            }
+			private String cipherValue = null;
+			
+            // public CipherValueImpl(byte[] value) {
+               // cipherValue = value;
+            // }
 
             public CipherValueImpl(String value) {
-                cipherValue = value.getBytes();
+				// cipherValue = value.getBytes();
+				cipherValue = value;
             }
 
-            public byte[] getValue() {
+			// public byte[] getValue() {
+			public String getValue() {
                 return (cipherValue);
             }
 
-            public void setValue(byte[] value) {
-                cipherValue = value;
-            }
+			// public void setValue(byte[] value) {
+			// public void setValue(String value) {
+               // cipherValue = value;
+            // }
 
             public void setValue(String value) {
-                cipherValue = value.getBytes();
+                // cipherValue = value.getBytes();
+				cipherValue = value;
             }
 
             Element toElement() {
