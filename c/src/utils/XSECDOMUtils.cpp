@@ -324,11 +324,18 @@ XMLCh * transcodeFromUTF8(const unsigned char * src) {
 	// Grab a transcoder
 	XMLTransService::Codes failReason;
 
+#if defined(XSEC_XERCES_REQUIRES_MEMMGR)
 	XMLTranscoder* t = 
 		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8", 
 															   failReason, 
 															   2*1024, 
 															   XMLPlatformUtils::fgMemoryManager);
+#else
+	XMLTranscoder* t = 
+		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8", 
+															   failReason, 
+															   2*1024);
+#endif
 	Janitor<XMLTranscoder> j_t(t);
 
 	// Need to loop through, 2K at a time

@@ -1229,7 +1229,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 # Define the files we wish to generate
 
-ac_config_files="$ac_config_files Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile samples/Makefile"
+ac_config_files="$ac_config_files Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile xenc/Makefile xenc/impl/Makefile samples/Makefile"
 
 # AC_CONFIG_FILES([Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile samples/Makefile])
 ac_config_headers="$ac_config_headers framework/XSECConfig.hpp"
@@ -1263,8 +1263,8 @@ else
 fi
 
 # Create the Makefile.in files in each directory
-library_l1_src_dirs="canon transformers dsig enc framework utils"
-library_l2_src_dirs="enc/OpenSSL utils/unixutils"
+library_l1_src_dirs="canon transformers dsig enc framework utils xenc"
+library_l2_src_dirs="enc/OpenSSL utils/unixutils xenc/impl"
 
 
 
@@ -4092,6 +4092,9 @@ fi
 
 
 
+
+
+
 # Populate Install directories
 
 
@@ -4703,6 +4706,8 @@ do
   "utils/Makefile" ) CONFIG_FILES="$CONFIG_FILES utils/Makefile" ;;
   "utils/unixutils/Makefile" ) CONFIG_FILES="$CONFIG_FILES utils/unixutils/Makefile" ;;
   "tools/Makefile" ) CONFIG_FILES="$CONFIG_FILES tools/Makefile" ;;
+  "xenc/Makefile" ) CONFIG_FILES="$CONFIG_FILES xenc/Makefile" ;;
+  "xenc/impl/Makefile" ) CONFIG_FILES="$CONFIG_FILES xenc/impl/Makefile" ;;
   "samples/Makefile" ) CONFIG_FILES="$CONFIG_FILES samples/Makefile" ;;
   "framework/XSECConfig.hpp" ) CONFIG_HEADERS="$CONFIG_HEADERS framework/XSECConfig.hpp" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
@@ -4821,6 +4826,8 @@ s,@framework_obj_files@,$framework_obj_files,;t t
 s,@utils_obj_files@,$utils_obj_files,;t t
 s,@utils_unixutils_obj_files@,$utils_unixutils_obj_files,;t t
 s,@lib_obj_files@,$lib_obj_files,;t t
+s,@xenc_obj_files@,$xenc_obj_files,;t t
+s,@xenc_impl_obj_files@,$xenc_impl_obj_files,;t t
 s,@canon_include_files@,$canon_include_files,;t t
 s,@transformers_include_files@,$transformers_include_files,;t t
 s,@dsig_include_files@,$dsig_include_files,;t t
@@ -4830,6 +4837,7 @@ s,@framework_include_files@,$framework_include_files,;t t
 s,@utils_include_files@,$utils_include_files,;t t
 s,@utils_unixutils_include_files@,$utils_unixutils_include_files,;t t
 s,@lib_include_files@,$lib_include_files,;t t
+s,@xenc_include_files@,$xenc_include_files,;t t
 s,@LINK_COMMAND_1@,$LINK_COMMAND_1,;t t
 s,@LINK_COMMAND_2@,$LINK_COMMAND_2,;t t
 s,@INSTALL_COMMAND_1@,$INSTALL_COMMAND_1,;t t

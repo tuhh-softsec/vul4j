@@ -76,6 +76,8 @@ AC_CONFIG_FILES([Makefile \
 	utils/Makefile \
 	utils/unixutils/Makefile \
 	tools/Makefile \
+	xenc/Makefile \
+	xenc/impl/Makefile \
 	samples/Makefile])
 # AC_CONFIG_FILES([Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile samples/Makefile])
 AC_CONFIG_HEADERS([framework/XSECConfig.hpp])
@@ -101,8 +103,8 @@ else
 fi
 
 # Create the Makefile.in files in each directory
-library_l1_src_dirs="canon transformers dsig enc framework utils"
-library_l2_src_dirs="enc/OpenSSL utils/unixutils"
+library_l1_src_dirs="canon transformers dsig enc framework utils xenc"
+library_l2_src_dirs="enc/OpenSSL utils/unixutils xenc/impl"
 
 AC_CONFIG_COMMANDS_PRE(
 [# Define the library directories
@@ -372,6 +374,7 @@ AC_TRY_COMPILE([#include <xercesc/framework/XMLFormatter.hpp>
 		XMLFormatter::UnRep_CharRef);
 	],
 	[AC_MSG_RESULT([yes])]
+	[AC_DEFINE(XSEC_XERCES_REQUIRES_MEMMGR)],
 	[AC_DEFINE(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)],
 	[AC_MSG_RESULT([no])])
 	
@@ -514,6 +517,8 @@ AC_SUBST(framework_obj_files)
 AC_SUBST(utils_obj_files)
 AC_SUBST(utils_unixutils_obj_files)
 AC_SUBST(lib_obj_files)
+AC_SUBST(xenc_obj_files)
+AC_SUBST(xenc_impl_obj_files)
 
 AC_SUBST(canon_include_files)
 AC_SUBST(transformers_include_files)
@@ -524,6 +529,7 @@ AC_SUBST(framework_include_files)
 AC_SUBST(utils_include_files)
 AC_SUBST(utils_unixutils_include_files)
 AC_SUBST(lib_include_files)
+AC_SUBST(xenc_include_files)
 
 # Populate Install directories
 

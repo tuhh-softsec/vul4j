@@ -88,6 +88,11 @@
 
 #undef XSEC_XERCES_FORMATTER_REQUIRES_VERSION
 
+/* 2.3 and above use a user defined Memory Manager.  In some cases, this
+   actually needs to be passed to functions
+*/
+
+#undef XSEC_XERCES_REQUIRES_MEMMGR
 
 /*
  * Define presence of cryptographic providers
