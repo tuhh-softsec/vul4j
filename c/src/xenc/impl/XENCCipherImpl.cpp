@@ -77,6 +77,7 @@
 #include <xsec/transformers/TXFMSB.hpp>
 #include <xsec/transformers/TXFMURL.hpp>
 #include <xsec/transformers/TXFMDocObject.hpp>
+#include <xsec/transformers/TXFMConcatChains.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECEnv.hpp>
 #include <xsec/enc/XSECKeyInfoResolver.hpp>
@@ -343,9 +344,7 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 	// Create an input source
 
 	unsigned int bytes = XMLString::stringLen(sb.rawXMLChBuffer()) * sizeof(XMLCh);
-	char * utf = XMLString::transcode(sb.rawXMLChBuffer());
 	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) sb.rawBuffer(), bytes, "XSECMem");
-	//MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) utf, strlen(utf), "XSECMem");
 	Janitor<MemBufInputSource> j_memIS(memIS);
 
 	int errorCount = 0;
@@ -1031,9 +1030,89 @@ DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element,
 
 	p->replaceChild(mp_encryptedData->getDOMNode(), element);
 
+	// Clear up the old child
+	element->release();
+
 	return mp_doc;
 
 }
+
+// --------------------------------------------------------------------------------
+//			Encrypt an element's children
+// --------------------------------------------------------------------------------
+
+DOMDocument * XENCCipherImpl::encryptElementContent(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * algorithmURI) {
+
+	// Make sure we have a key before we do anything too drastic
+	if (mp_key == NULL) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCCipherImpl::encryptElement - No key set");
+	}
+
+	// Create a transform chain to do the encryption
+	// We use a concat transformer so we can concatinate the bytestreams
+	// from the serialisation of each child in turn
+
+	TXFMConcatChains * tcat;
+	XSECnew(tcat, TXFMConcatChains(mp_doc));
+	TXFMChain * c;
+	XSECnew(c, TXFMChain(tcat));
+	Janitor<TXFMChain> j_c(c);
+
+	DOMNode *n = element->getFirstChild();
+	
+	while (n != NULL) {
+
+		TXFMDocObject * tdocObj;
+		XSECnew(tdocObj, TXFMDocObject(mp_doc));
+		TXFMChain * tc;
+		XSECnew(tc, TXFMChain(tdocObj));
+
+		// Add to the concat object, which will own it, so if anything throws
+		// the memory will be released.
+
+		tcat->setInput(tc);
+		tdocObj->setInput(mp_doc, n);
+
+		// Now need to serialise the element - easiest to just use a canonicaliser
+		TXFMC14n *tc14n;
+		XSECnew(tc14n, TXFMC14n(mp_doc));
+		tc->appendTxfm(tc14n);
+
+		tc14n->activateComments();
+		tc14n->setExclusive();
+
+		n = n->getNextSibling();
+
+	}
+
+	encryptTXFMChain(c, em, algorithmURI);
+
+	mp_encryptedData->setTypeURI(DSIGConstants::s_unicodeStrURIXENC_CONTENT);
+
+	// Delete current children 
+	n = element->getFirstChild();
+	while (n != NULL) {
+
+		element->removeChild(n);
+		n->release();
+
+		n = element->getFirstChild();
+
+	}
+	
+	// Now add the EncryptedData
+	element->appendChild(mp_encryptedData->getDOMNode());
+
+	return mp_doc;
+
+}
+
+
+
 
 // --------------------------------------------------------------------------------
 //			Pretty Print functions

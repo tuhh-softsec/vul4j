@@ -116,6 +116,10 @@ public:
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
 		encryptionMethod em,
 		const XMLCh * uri = NULL);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * encryptElementContent(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL);
 
 	// Encrypt a key
 	virtual XENCEncryptedKey * encryptKey(

@@ -239,6 +239,32 @@ public:
 	) = 0;
 
 	/**
+	 * \brief Encrypt the children of the nominated element
+	 * 
+	 * Encrypts the all children of the passed in element, but
+	 * leaves the element itself in place, with one new child - an
+	 * EncryptedData node of type #content
+	 *
+	 * @param element Element whose children are to be encrypted
+	 * @param em The encryptionMethod to use for this encryption.  Use
+	 * ENCRYPT_NONE if a user defined type is required.
+	 * @param algorithmURI If ENCRYPT_NONE is passed in, this will be
+	 * used to set the algorithm URI.  If this is also NULL - no
+	 * EncryptionMethod will be set.  <b>NULL Value Unsupported if em not
+	 * set!  It's use could cause problems!</b>
+	 *
+	 * @returns The owning document with the element's children replaced, or NULL
+	 * if the decryption fails for some reason (normally an exception).
+	 * @throws XSECException if the encryption fails.
+	 */
+
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * encryptElementContent(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL
+	) = 0;
+
+	/**
 	 * \brief Encrypt a buffer of data as a key
 	 *
 	 * Encrypts the passed in data and creates an EncryptedKey element

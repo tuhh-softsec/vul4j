@@ -825,6 +825,14 @@ SOURCE=..\..\..\..\src\transformers\TXFMCipher.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\transformers\TXFMConcatChains.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\transformers\TXFMConcatChains.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\transformers\TXFMDocObject.cpp
 # End Source File
 # Begin Source File
