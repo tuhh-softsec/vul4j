@@ -374,7 +374,7 @@ AC_TRY_COMPILE([#include <xercesc/framework/XMLFormatter.hpp>
 		XMLFormatter::UnRep_CharRef);
 	],
 	[AC_MSG_RESULT([yes])]
-	[AC_DEFINE(XSEC_XERCES_REQUIRES_MEMMGR)],
+	[AC_DEFINE(XSEC_XERCES_REQUIRES_MEMMGR)]
 	[AC_DEFINE(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)],
 	[AC_MSG_RESULT([no])])
 	
@@ -425,6 +425,8 @@ AC_LANG(C)
 # Check for OpenSSL
 if test $OPENSSL ; then
 
+# First check includes
+
 AC_MSG_CHECKING([for OpenSSL headers in OPENSSL])
 
 OLD_CPPFLAGS=$CPPFLAGS
@@ -433,10 +435,30 @@ CPPFLAGS=["${CPPFLAGS} -I${OPENSSL}/include"]
 AC_TRY_CPP([#include <openssl/opensslv.h>], 
    openssl_found=yes 
    AC_DEFINE(HAVE_OPENSSL)
-   LIBS="${LIBS} -L${OPENSSL} -lcrypto"
    [AC_MSG_RESULT([found])], 
    CPPFLAGS=$OLD_CPPFLAGS
    [AC_MSG_RESULT([no])]);
+
+# Now check libs
+
+OLD_LIBS=$LIBS
+LIBS=["${LIBS} -L${OPENSSL} -lcrypto"]
+
+AC_CHECK_LIB([crypto], 
+   [EVP_EncryptInit],
+   openssllib_found=yes,
+   [LIBS=$OLD_LIBS])
+
+   if test -z $openssllib_found ; then
+
+   LIBS=["${LIBS} -L${OPENSSL}/lib -lcrypto"]
+   AC_CHECK_LIB([crypto],
+      [EVP_DecryptInit],
+      openssllib_found=yes,
+      [LIBS=$OLD_LIBS]
+	  [AC_MSG_ERROR(["Unable to find libcrypto in OPENSSL"])])
+
+  fi
 
 fi
 
@@ -449,7 +471,7 @@ AC_TRY_CPP([#include <openssl/opensslv.h>],
    LIBS="${LIBS} -lcrypto"
    [AC_MSG_RESULT([found])],
    [AC_MSG_RESULT([no])]
-   [AC_MSG_ERROR([OpenSSL header files not find.  Please define OPENSSL])]);
+   [AC_MSG_ERROR([OpenSSL header files not found.  Please define OPENSSL])]);
 
 fi
 

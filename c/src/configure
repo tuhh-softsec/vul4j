@@ -3775,6 +3775,10 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
 	cat >>confdefs.h <<\_ACEOF
+#define XSEC_XERCES_REQUIRES_MEMMGR 1
+_ACEOF
+
+	cat >>confdefs.h <<\_ACEOF
 #define XSEC_XERCES_FORMATTER_REQUIRES_VERSION 1
 _ACEOF
 
@@ -3903,6 +3907,8 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 # Check for OpenSSL
 if test $OPENSSL ; then
 
+# First check includes
+
 echo "$as_me:$LINENO: checking for OpenSSL headers in OPENSSL" >&5
 echo $ECHO_N "checking for OpenSSL headers in OPENSSL... $ECHO_C" >&6
 
@@ -3936,7 +3942,6 @@ if test -z "$ac_cpp_err"; then
 #define HAVE_OPENSSL 1
 _ACEOF
 
-   LIBS="${LIBS} -L${OPENSSL} -lcrypto"
    echo "$as_me:$LINENO: result: found" >&5
 echo "${ECHO_T}found" >&6
 else
@@ -3947,6 +3952,143 @@ else
 echo "${ECHO_T}no" >&6
 fi
 rm -f conftest.err conftest.$ac_ext;
+
+# Now check libs
+
+OLD_LIBS=$LIBS
+LIBS="${LIBS} -L${OPENSSL} -lcrypto"
+
+echo "$as_me:$LINENO: checking for EVP_EncryptInit in -lcrypto" >&5
+echo $ECHO_N "checking for EVP_EncryptInit in -lcrypto... $ECHO_C" >&6
+if test "${ac_cv_lib_crypto_EVP_EncryptInit+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcrypto  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char EVP_EncryptInit ();
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+EVP_EncryptInit ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_crypto_EVP_EncryptInit=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_lib_crypto_EVP_EncryptInit=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_crypto_EVP_EncryptInit" >&5
+echo "${ECHO_T}$ac_cv_lib_crypto_EVP_EncryptInit" >&6
+if test $ac_cv_lib_crypto_EVP_EncryptInit = yes; then
+  openssllib_found=yes
+else
+  LIBS=$OLD_LIBS
+fi
+
+
+   if test -z $openssllib_found ; then
+
+   LIBS="${LIBS} -L${OPENSSL}/lib -lcrypto"
+   echo "$as_me:$LINENO: checking for EVP_DecryptInit in -lcrypto" >&5
+echo $ECHO_N "checking for EVP_DecryptInit in -lcrypto... $ECHO_C" >&6
+if test "${ac_cv_lib_crypto_EVP_DecryptInit+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcrypto  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char EVP_DecryptInit ();
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+EVP_DecryptInit ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_crypto_EVP_DecryptInit=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_lib_crypto_EVP_DecryptInit=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_crypto_EVP_DecryptInit" >&5
+echo "${ECHO_T}$ac_cv_lib_crypto_EVP_DecryptInit" >&6
+if test $ac_cv_lib_crypto_EVP_DecryptInit = yes; then
+  openssllib_found=yes
+else
+  LIBS=$OLD_LIBS
+	  { { echo "$as_me:$LINENO: error: \"Unable to find libcrypto in OPENSSL\"" >&5
+echo "$as_me: error: \"Unable to find libcrypto in OPENSSL\"" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  fi
 
 fi
 
@@ -3989,8 +4131,8 @@ else
   cat conftest.$ac_ext >&5
   echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
-   { { echo "$as_me:$LINENO: error: OpenSSL header files not find.  Please define OPENSSL" >&5
-echo "$as_me: error: OpenSSL header files not find.  Please define OPENSSL" >&2;}
+   { { echo "$as_me:$LINENO: error: OpenSSL header files not found.  Please define OPENSSL" >&5
+echo "$as_me: error: OpenSSL header files not found.  Please define OPENSSL" >&2;}
    { (exit 1); exit 1; }; }
 fi
 rm -f conftest.err conftest.$ac_ext;
