@@ -31,7 +31,7 @@
 		All distributions are provided with signature <em>.sig</em> files.
 		These contain PGP signatures for the related distribution.
 		You should validate these using the keys found in the
-		<jump href="http://www.apache.org/dist/xml/security/keys.asc">
+		<jump href="http://www.apache.org/dist/xml/security/KEYS">
 		  key file</jump> downloaded from the Apache site.
 	  </p>
 	  <p/>
@@ -43,13 +43,13 @@
 		Verification can be performed using :
 	  </p>
 	  <source>
-% pgpk -a keys.asc
+% pgpk -a KEYS
 % pgpv xml-security-bin-1_0_5D2.zip.sig
   <em>or</em>
-% pgp -ka keys.asc
+% pgp -ka KEYS
 % pgp xml-security-bin-1_0_5D2.zip.sig
   <em>or</em>
-% gpg --import keys.asc
+% gpg --import KEYS
 % gpg --verify xml-security-bin-1_0_5D2.zip.sig
 	  </source>
 	</section>
