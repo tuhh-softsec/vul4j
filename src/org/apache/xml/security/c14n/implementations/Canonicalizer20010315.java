@@ -61,16 +61,20 @@ package org.apache.xml.security.c14n.implementations;
 
 
 
-import java.io.*;
-import java.util.*;
-import javax.xml.parsers.*;
-import javax.xml.transform.TransformerException;
-import org.apache.xml.security.c14n.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.helper.C14nHelper;
-import org.apache.xml.security.utils.*;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.apache.xml.security.utils.Constants;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 
 /**

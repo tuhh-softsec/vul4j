@@ -60,13 +60,16 @@ package org.apache.xml.security.keys.content.x509;
 
 
 
-import java.security.cert.X509Certificate;
 import java.math.BigInteger;
-import org.w3c.dom.*;
-import org.apache.xpath.XPathAPI;
-import javax.xml.transform.TransformerException;
+import java.security.cert.X509Certificate;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.RFC2253Parser;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

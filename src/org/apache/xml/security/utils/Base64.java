@@ -62,30 +62,21 @@ package org.apache.xml.security.utils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.StringTokenizer;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.NodeIterator;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.NodeSet;
-import org.apache.xpath.objects.XObject;
-
-import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.exceptions.Base64DecodingException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
 
 
 /**

@@ -61,19 +61,26 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
-import java.io.*;
-import javax.xml.parsers.*;
-import javax.xml.transform.TransformerException;
-import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.security.c14n.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xpath.CachedXPathAPI;
-import org.apache.xpath.objects.XObject;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
+import org.apache.xml.security.transforms.TransformSpi;
+import org.apache.xml.security.transforms.TransformationException;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.Base64;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
+import org.w3c.dom.traversal.DocumentTraversal;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.TreeWalker;
 import org.xml.sax.SAXException;
 
 
@@ -115,7 +122,7 @@ public class TransformBase64Decode extends TransformSpi {
     *
     */
    protected String engineGetURI() {
-      return this.implementedTransformURI;
+      return TransformBase64Decode.implementedTransformURI;
    }
 
    //J-

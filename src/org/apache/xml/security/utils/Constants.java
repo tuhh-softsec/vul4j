@@ -60,14 +60,7 @@ package org.apache.xml.security.utils;
 
 
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Properties;
-import java.io.IOException;
-import java.io.File;
-import java.io.FileInputStream;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.XMLSignature;
 
 
 /**

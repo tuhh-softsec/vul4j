@@ -61,36 +61,32 @@ package org.apache.xml.security.signature;
 
 
 
-import java.io.*;
-import java.math.BigInteger;
-import java.util.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.NodeIterator;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
-import org.apache.xml.serialize.XMLSerializer;
-import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xpath.NodeSet;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.XPathContext;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.apache.xml.security.c14n.*;
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.exceptions.Base64DecodingException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.transforms.InvalidTransformException;
+import org.apache.xml.security.transforms.Transform;
+import org.apache.xml.security.transforms.TransformationException;
+import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.InclusiveNamespaces;
-import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.transforms.params.XPathContainer;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.utils.resolver.*;
+import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.resolver.ResourceResolver;
+import org.apache.xml.security.utils.resolver.ResourceResolverException;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 
 /**

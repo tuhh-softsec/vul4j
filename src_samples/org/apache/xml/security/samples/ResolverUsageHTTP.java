@@ -61,17 +61,12 @@ package org.apache.xml.security.samples;
 
 
 
-import java.io.*;
-import java.net.*;
-import org.apache.xml.utils.URI;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.utils.resolver.*;
+import org.w3c.dom.Element;
 
 
 /**

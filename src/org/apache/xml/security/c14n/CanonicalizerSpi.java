@@ -60,21 +60,17 @@ package org.apache.xml.security.c14n;
 
 
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
 import java.io.ByteArrayInputStream;
 import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
-import org.w3c.dom.*;
-import org.xml.sax.InputSource;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 import javax.xml.parsers.DocumentBuilder;
-import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.utils.Constants;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xml.security.utils.I18n;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 
 /**

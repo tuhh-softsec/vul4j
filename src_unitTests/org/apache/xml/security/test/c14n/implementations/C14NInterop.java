@@ -60,32 +60,25 @@ package org.apache.xml.security.test.c14n.implementations;
 
 
 
-import java.io.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.OutputKeys;
+import java.io.File;
+import java.util.Iterator;
+import java.util.Set;
+
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.implementations.*;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.transforms.params.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.test.resource.TestVectorResolver;
+
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.test.interop.InteropTest;
-import java.util.*;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.transforms.params.XPath2FilterContainer;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 
 /**

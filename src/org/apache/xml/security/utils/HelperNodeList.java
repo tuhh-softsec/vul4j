@@ -61,9 +61,11 @@ package org.apache.xml.security.utils;
 
 
 
-import org.w3c.dom.*;
 import java.util.ArrayList;
-import org.apache.xml.security.utils.XMLUtils;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 /**

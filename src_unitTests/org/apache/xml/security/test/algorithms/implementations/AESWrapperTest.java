@@ -6,12 +6,9 @@ import java.security.Key;
 import java.security.MessageDigest;
 import java.security.Provider;
 import java.security.Security;
-import javax.crypto.*;
+
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.*;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import junit.framework.Test;

@@ -61,7 +61,6 @@ package org.apache.xml.security.keys.content;
 
 
 
-import org.w3c.dom.*;
 
 
 /**

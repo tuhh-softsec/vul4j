@@ -60,10 +60,7 @@ package org.apache.xml.security.algorithms.implementations;
 
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -73,11 +70,12 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.InvalidParameterSpecException;
-import org.apache.xml.security.algorithms.*;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.utils.*;
-import org.w3c.dom.*;
+
+import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.algorithms.SignatureAlgorithmSpi;
+import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.Constants;
 
 
 /*
@@ -109,7 +107,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     *
     */
    protected String engineGetURI() {
-      return this._URI;
+      return SignatureDSA._URI;
    }
 
    /**
@@ -120,7 +118,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    public SignatureDSA() throws XMLSignatureException {
 
       JCEMapper.ProviderIdClass algorithmID =
-         JCEMapper.translateURItoJCEID(this._URI);
+         JCEMapper.translateURItoJCEID(SignatureDSA._URI);
 
       cat.debug("Created SignatureDSA using " + algorithmID.getAlgorithmID()
                 + " " + algorithmID.getProviderId());

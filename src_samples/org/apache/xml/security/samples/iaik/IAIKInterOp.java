@@ -60,29 +60,20 @@ package org.apache.xml.security.samples.iaik;
 
 
 
-import java.io.*;
-import java.lang.reflect.*;
+import java.io.File;
 import java.security.PublicKey;
-import java.security.cert.*;
-import java.util.*;
-import javax.xml.transform.TransformerException;
+import java.security.cert.X509Certificate;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.apache.xml.security.utils.resolver.implementations.ResolverAnonymous;
 import org.apache.xpath.XPathAPI;
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.keys.*;
-import org.apache.xml.security.keys.content.*;
-import org.apache.xml.security.keys.content.x509.*;
-import org.apache.xml.security.keys.keyresolver.*;
-import org.apache.xml.security.keys.storage.*;
-import org.apache.xml.security.keys.storage.implementations.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.Init;
-import org.apache.xml.security.samples.utils.resolver.OfflineResolver;
-import org.apache.xml.security.utils.resolver.*;
-import org.apache.xml.security.utils.resolver.implementations.*;
+import org.w3c.dom.Element;
 
 
 /**

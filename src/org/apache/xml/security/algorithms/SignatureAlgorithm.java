@@ -59,30 +59,17 @@
 package org.apache.xml.security.algorithms;
 
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.MessageDigest;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.cert.Certificate;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.Collection;
 import java.util.HashMap;
-import javax.crypto.Mac;
-import javax.crypto.ShortBufferException;
 
-import org.w3c.dom.*;
-
-import org.apache.xml.security.algorithms.implementations.*;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

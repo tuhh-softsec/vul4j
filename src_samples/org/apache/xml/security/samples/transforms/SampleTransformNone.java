@@ -61,10 +61,8 @@ package org.apache.xml.security.samples.transforms;
 
 
 
-import org.apache.xml.security.transforms.Transform;
-import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.transforms.TransformSpi;
 
 
 /**
@@ -89,7 +87,7 @@ public class SampleTransformNone extends TransformSpi {
     *
     */
    protected String engineGetURI() {
-      return this.implementedTransformURI;
+      return SampleTransformNone.implementedTransformURI;
    }
 
    //J-

@@ -61,17 +61,19 @@ package org.apache.xml.security.transforms.implementations;
 
 
 import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.implementations.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.transforms.params.InclusiveNamespaces;
+
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclWithComments;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.TransformSpi;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.transforms.params.InclusiveNamespaces;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import org.w3c.dom.*;
 
 
 /**
@@ -99,7 +101,7 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
     *
     */
    protected String engineGetURI() {
-      return this.implementedTransformURI;
+      return implementedTransformURI;
    }
 
    /**

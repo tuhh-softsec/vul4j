@@ -61,17 +61,18 @@ package org.apache.xml.security.transforms.implementations;
 
 
 import javax.xml.transform.TransformerException;
+
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSetDTM;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.functions.Function;
-import org.apache.xpath.res.XPATHErrorResources;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.NodeIterator;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.I18n;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 
 /**

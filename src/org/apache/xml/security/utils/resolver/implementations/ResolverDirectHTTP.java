@@ -61,14 +61,20 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 
 
-import java.net.*;
-import java.io.*;
-import org.w3c.dom.*;
-import org.apache.xml.utils.URI;
-import org.apache.xml.security.utils.resolver.ResourceResolverException;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.resolver.ResourceResolverException;
+import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.apache.xml.utils.URI;
+import org.w3c.dom.Attr;
 
 
 /**

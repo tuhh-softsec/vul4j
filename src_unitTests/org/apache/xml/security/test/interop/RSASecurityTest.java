@@ -60,35 +60,10 @@ package org.apache.xml.security.test.interop;
 
 
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.security.cert.*;
-import java.security.PublicKey;
-import java.util.*;
-import javax.xml.parsers.*;
-import javax.xml.transform.TransformerException;
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import junit.extensions.TestSetup;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.Init;
-import org.apache.xml.security.keys.*;
-import org.apache.xml.security.keys.content.*;
-import org.apache.xml.security.keys.content.x509.*;
-import org.apache.xml.security.keys.keyresolver.*;
-import org.apache.xml.security.keys.storage.*;
-import org.apache.xml.security.keys.storage.implementations.*;
-import org.apache.xml.security.test.utils.resolver.OfflineResolver;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.utils.resolver.*;
-import org.apache.xml.security.utils.resolver.implementations.*;
-import org.apache.xpath.objects.*;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
+
+import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 
 
 /**

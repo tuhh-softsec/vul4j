@@ -63,36 +63,22 @@ package org.apache.xml.security.test.external.org.apache.xalan.XPathAPI;
 
 // This file uses 4 space indents, no tabs.
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.util.Properties;
-import org.apache.xerces.parsers.DOMParser;
-import org.apache.xpath.XPathAPI;
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.DOMBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.traversal.NodeIterator;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
 
-// Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 
-// Imported Serializer classes
-import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
-import javax.xml.transform.dom.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.Constants;
+
 import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
 
 
 /**

@@ -61,11 +61,11 @@ package org.apache.xml.security.samples;
 
 
 
-import java.io.*;
-import org.w3c.dom.*;
+import java.io.ByteArrayInputStream;
+
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.transforms.Transform;
+import org.apache.xml.security.transforms.Transforms;
 
 
 /**

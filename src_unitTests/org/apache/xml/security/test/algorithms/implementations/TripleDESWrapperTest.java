@@ -59,17 +59,15 @@
 package org.apache.xml.security.test.algorithms.implementations;
 
 
-
+import java.security.Key;
+import java.security.MessageDigest;
 import java.security.Provider;
 import java.security.Security;
-import java.security.MessageDigest;
-import java.security.Key;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.SecretKeySpec;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.KeyGenerator;
+
 import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

@@ -61,16 +61,25 @@ package org.apache.xml.security.c14n.implementations;
 
 
 
-import java.io.*;
-import java.util.*;
-import javax.xml.parsers.*;
-import javax.xml.transform.TransformerException;
-import org.apache.xml.security.c14n.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Set;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.c14n.CanonicalizerSpi;
 import org.apache.xml.security.c14n.helper.C14nHelper;
-import org.apache.xml.security.utils.*;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.ProcessingInstruction;
 
 
 /**

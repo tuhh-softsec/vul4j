@@ -60,23 +60,28 @@ package org.apache.xml.security.algorithms.implementations;
 
 
 
-import org.w3c.dom.*;
-import org.apache.xml.security.algorithms.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.signature.*;
-import java.io.IOException;
-import java.security.Key;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import java.security.InvalidKeyException;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
-import org.apache.xml.security.signature.XMLSignatureException;
+
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.xml.transform.TransformerException;
+
+import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
+import org.apache.xml.security.algorithms.SignatureAlgorithmSpi;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.HexDump;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 
 /**

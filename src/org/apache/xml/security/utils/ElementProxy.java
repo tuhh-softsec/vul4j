@@ -60,17 +60,20 @@ package org.apache.xml.security.utils;
 
 
 
-import java.io.*;
-import java.util.*;
-import org.w3c.dom.*;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.utils.*;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import javax.xml.transform.TransformerException;
+
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 
 /**

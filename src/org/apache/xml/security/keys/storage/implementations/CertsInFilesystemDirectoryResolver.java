@@ -61,11 +61,22 @@ package org.apache.xml.security.keys.storage.implementations;
 
 
 
-import java.io.*;
-import java.util.*;
-import java.security.cert.*;
-import org.apache.xml.security.keys.storage.*;
-import org.apache.xml.security.utils.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Vector;
+
+import org.apache.xml.security.keys.storage.StorageResolverException;
+import org.apache.xml.security.keys.storage.StorageResolverSpi;
+import org.apache.xml.security.utils.Base64;
 
 
 /**

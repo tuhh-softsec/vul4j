@@ -64,9 +64,11 @@ package org.apache.xml.security.keys.storage.implementations;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
-import java.util.Iterator;
 import java.util.Enumeration;
-import org.apache.xml.security.keys.storage.*;
+import java.util.Iterator;
+
+import org.apache.xml.security.keys.storage.StorageResolverException;
+import org.apache.xml.security.keys.storage.StorageResolverSpi;
 
 
 /**

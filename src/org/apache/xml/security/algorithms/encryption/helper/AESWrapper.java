@@ -60,12 +60,13 @@ package org.apache.xml.security.algorithms.encryption.helper;
 
 
 
-import java.io.*;
-import java.security.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
+import java.security.InvalidKeyException;
+import java.security.Key;
+
+import javax.crypto.Cipher;
+import javax.crypto.ShortBufferException;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.utils.*;
 
 
 /**

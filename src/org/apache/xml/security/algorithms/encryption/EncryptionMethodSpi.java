@@ -60,16 +60,15 @@ package org.apache.xml.security.algorithms.encryption;
 
 
 
-import java.security.*;
-import java.security.spec.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
-import org.apache.xml.security.algorithms.*;
-import org.apache.xml.security.algorithms.encryption.*;
-import org.apache.xml.security.algorithms.encryption.params.*;
+import java.security.Key;
+
+import javax.crypto.Cipher;
+
+import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.algorithms.encryption.params.EncryptionMethodParams;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.utils.*;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

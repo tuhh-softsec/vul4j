@@ -61,16 +61,15 @@ package org.apache.xml.security.keys.keyresolver;
 
 
 
-import java.security.cert.*;
 import java.security.PublicKey;
-import java.util.*;
+import java.security.cert.X509Certificate;
+import java.util.Vector;
+
 import javax.crypto.SecretKey;
 
-import org.w3c.dom.*;
-
-import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.keys.KeyInfo; //for javadoc
-import org.apache.xml.security.keys.storage.*;
+import org.apache.xml.security.keys.storage.StorageResolver;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 
 /**

@@ -65,23 +65,22 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.xml.security.algorithms.JCEMapper;
-import org.apache.xml.security.algorithms.encryption.*;
-import org.apache.xml.security.algorithms.encryption.params.*;
+import org.apache.xml.security.algorithms.encryption.EncryptionMethodSpi;
+import org.apache.xml.security.algorithms.encryption.params.EncryptionMethodParams;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.PRNG;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

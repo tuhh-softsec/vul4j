@@ -60,19 +60,11 @@ package org.apache.xml.security.algorithms.encryption.implementations.BC;
 
 
 
-import java.io.*;
-import java.security.*;
-import java.security.spec.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
-import org.apache.xml.security.algorithms.*;
-import org.apache.xml.security.algorithms.encryption.*;
-import org.apache.xml.security.algorithms.encryption.helper.*;
-import org.apache.xml.security.algorithms.encryption.params.*;
+import java.security.Key;
+
+import org.apache.xml.security.algorithms.encryption.EncryptionMethodSpi;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.utils.EncryptionConstants;
-import org.apache.xml.security.utils.PRNG;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
 
 
 /**

@@ -61,13 +61,17 @@ package org.apache.xml.security.keys.content;
 
 
 import javax.xml.transform.TransformerException;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
+
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.utils.resolver.*;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

@@ -61,9 +61,8 @@ package org.apache.xml.security.utils.resolver;
 
 
 
-import org.apache.xml.utils.URI;
-import org.w3c.dom.Attr;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.w3c.dom.Attr;
 
 
 /**

@@ -60,21 +60,23 @@ package org.apache.xml.security.keys.content.keyvalues;
 
 
 
-import java.security.interfaces.DSAPublicKey;
+import java.math.BigInteger;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
+import java.security.interfaces.DSAPublicKey;
 import java.security.spec.DSAPublicKeySpec;
-import java.math.BigInteger;
-import javax.xml.transform.TransformerException;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
+import java.security.spec.InvalidKeySpecException;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.I18n;
+import org.apache.xml.security.utils.JavaUtils;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

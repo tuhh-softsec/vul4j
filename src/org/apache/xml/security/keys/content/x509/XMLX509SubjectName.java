@@ -60,14 +60,16 @@ package org.apache.xml.security.keys.content.x509;
 
 
 
-import java.security.Principal;
-import java.security.cert.X509Certificate;
-import org.w3c.dom.*;
-import org.apache.xpath.XPathAPI;
-import javax.xml.transform.TransformerException;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.exceptions.XMLSecurityException;
 import java.io.IOException;
+import java.security.cert.X509Certificate;
+
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.RFC2253Parser;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import sun.security.x509.X500Name;
 
 

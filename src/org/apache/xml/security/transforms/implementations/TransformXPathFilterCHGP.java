@@ -60,24 +60,36 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
-import java.util.*;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Stack;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.xml.sax.SAXException;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.c14n.*;
+import org.apache.xml.security.transforms.TransformSpi;
+import org.apache.xml.security.transforms.TransformationException;
+import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPathFilterCHGPContainer;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.CachedXPathAPI;
-import org.apache.xpath.objects.XObject;
-import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.dtm.DTMManager;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.traversal.DocumentTraversal;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.TreeWalker;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -130,7 +142,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
     *
     */
    protected String engineGetURI() {
-      return this.implementedTransformURI;
+      return implementedTransformURI;
    }
 
    /**
@@ -171,7 +183,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
                                     ._TAG_XPATHCHGP, nscontext);
 
          if (xpathElement == null) {
-            Object exArgs[] = { "{" + this.implementedTransformURI + "}XPath",
+            Object exArgs[] = { "{" + TransformXPathFilterCHGP.implementedTransformURI + "}XPath",
                                 "Transform" };
 
             throw new TransformationException("xml.WrongContent", exArgs);

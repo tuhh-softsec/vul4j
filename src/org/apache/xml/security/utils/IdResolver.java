@@ -60,12 +60,12 @@ package org.apache.xml.security.utils;
 
 
 
-import org.w3c.dom.*;
-import org.apache.xerces.dom.DocumentImpl;
 import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.XPathAPI;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.Init;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

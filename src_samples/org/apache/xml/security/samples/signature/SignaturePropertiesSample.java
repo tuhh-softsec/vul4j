@@ -60,16 +60,15 @@ package org.apache.xml.security.samples.signature;
 
 
 
-import java.io.*;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.transforms.params.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
-import javax.crypto.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.signature.ObjectContainer;
+import org.apache.xml.security.signature.SignatureProperties;
+import org.apache.xml.security.signature.SignatureProperty;
+import org.apache.xml.security.signature.XMLSignature;
+import org.w3c.dom.Document;
 
 
 /**

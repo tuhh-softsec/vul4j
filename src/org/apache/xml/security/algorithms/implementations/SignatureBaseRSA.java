@@ -60,22 +60,20 @@ package org.apache.xml.security.algorithms.implementations;
 
 
 
-import java.io.IOException;
-import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.Signature;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.InvalidParameterSpecException;
-import org.apache.xml.security.algorithms.*;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.utils.*;
-import org.w3c.dom.*;
+
+import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.algorithms.SignatureAlgorithmSpi;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.signature.XMLSignatureException;
 
 
 /**

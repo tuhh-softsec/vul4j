@@ -60,11 +60,16 @@ package org.apache.xml.security.algorithms.encryption.params;
 
 
 
-import org.w3c.dom.*;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.EncryptionConstants;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 
 /**

@@ -60,16 +60,21 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
-import org.w3c.dom.*;
+import java.util.Set;
+
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.HelperNodeList;
+import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.resolver.ResourceResolverException;
+import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xml.utils.URI;
 import org.apache.xpath.CachedXPathAPI;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.utils.resolver.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**

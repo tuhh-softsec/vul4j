@@ -61,24 +61,25 @@ package org.apache.xml.security.transforms.implementations;
 
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.transforms.params.XPathContainer;
-import org.apache.xml.security.exceptions.*;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xpath.CachedXPathAPI;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XObject;
-import org.w3c.dom.*;
+import org.apache.xml.security.transforms.TransformSpi;
+import org.apache.xml.security.transforms.TransformationException;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-import org.apache.xml.dtm.DTMManager;
 
 
 /**
@@ -106,7 +107,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
     *
     */
    protected String engineGetURI() {
-      return this.implementedTransformURI;
+      return implementedTransformURI;
    }
 
    /**

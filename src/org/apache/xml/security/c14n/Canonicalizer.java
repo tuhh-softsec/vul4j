@@ -61,20 +61,19 @@ package org.apache.xml.security.c14n;
 
 
 import java.io.ByteArrayInputStream;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.*;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
-import org.w3c.dom.*;
-import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.JavaUtils;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 
 /**

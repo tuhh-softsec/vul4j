@@ -1,13 +1,13 @@
 package org.apache.xml.security.utils.resolver.implementations;
 
-import java.net.*;
-import java.io.*;
-import org.w3c.dom.*;
-import org.apache.xml.utils.URI;
-import org.apache.xml.security.utils.resolver.ResourceResolverException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xml.security.utils.Base64;
+import org.w3c.dom.Attr;
 
 /**
  *

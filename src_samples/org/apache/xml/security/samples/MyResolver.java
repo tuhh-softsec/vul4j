@@ -60,10 +60,13 @@ package org.apache.xml.security.samples;
 
 
 
-import org.w3c.dom.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.resolver.*;
-import java.io.*;
+import org.apache.xml.security.utils.resolver.ResourceResolverException;
+import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.w3c.dom.Attr;
 
 
 /**

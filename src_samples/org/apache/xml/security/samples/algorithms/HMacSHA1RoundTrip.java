@@ -60,16 +60,22 @@ package org.apache.xml.security.samples.algorithms;
 
 
 
-import org.w3c.dom.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.signature.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
-import javax.xml.parsers.*;
-import java.security.*;
-import java.security.cert.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
-import java.io.*;
+import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
 
 
 /**

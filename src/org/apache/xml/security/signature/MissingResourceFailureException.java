@@ -61,10 +61,6 @@ package org.apache.xml.security.signature;
 
 
 
-import java.util.Collection;
-import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.XMLSignatureException;
 
 
 /**

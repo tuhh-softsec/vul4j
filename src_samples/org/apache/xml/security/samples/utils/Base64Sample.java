@@ -61,13 +61,16 @@ package org.apache.xml.security.samples.utils;
 
 
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
 import java.math.BigInteger;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
-import org.apache.xml.security.c14n.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.utils.Base64;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 
 /**

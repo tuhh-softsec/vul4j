@@ -60,12 +60,13 @@ package org.apache.xml.security.transforms.params;
 
 
 
-import org.w3c.dom.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.exceptions.*;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.TransformParam;
-import org.apache.xml.security.transforms.TransformationException;
-import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.ElementProxy;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 /**

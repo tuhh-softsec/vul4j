@@ -60,12 +60,10 @@ package org.apache.xml.security.samples.signature;
 
 
 
-import java.io.*;
-import org.w3c.dom.*;
-import org.apache.xml.utils.URI;
-import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.w3c.dom.Attr;
 
 
 /**

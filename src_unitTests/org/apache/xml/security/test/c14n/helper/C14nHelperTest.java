@@ -61,25 +61,10 @@ package org.apache.xml.security.test.c14n.helper;
 
 
 
-import java.io.*;
-import java.util.Map;
-import java.util.HashMap;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.xerces.dom.DOMImplementationImpl;
-import org.apache.xerces.dom.DocumentImpl;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
-import org.apache.xml.serialize.XMLSerializer;
 
-// import org.apache.xml.serialize.OutputFormat;
-import org.w3c.dom.*;
-import org.apache.xpath.XPathAPI;
-import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.c14n.helper.C14nHelper;
 
 

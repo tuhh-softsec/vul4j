@@ -62,25 +62,24 @@ package org.apache.xml.security.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Vector;
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.*;
+import org.apache.xml.security.algorithms.SignatureAlgorithm;
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.ElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import org.apache.xpath.XPathAPI;
-
-import org.apache.xml.security.algorithms.*;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.transforms.params.XPathContainer;
-import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.utils.resolver.*;
 
 
 /**
@@ -159,6 +158,22 @@ public class SignedInfo extends Manifest {
             .appendChild(this._signatureAlgorithm.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
       }
+   }
+
+   public SignedInfo(
+           Document doc, Element SignatureMethodElem, Element CanonicalizationMethodElem)
+              throws XMLSecurityException {
+
+      super(doc);
+
+      this._constructionElement.appendChild(CanonicalizationMethodElem);
+      XMLUtils.addReturnToElement(this._constructionElement);
+
+      this._signatureAlgorithm = new SignatureAlgorithm(SignatureMethodElem, null);
+
+      this._constructionElement
+         .appendChild(this._signatureAlgorithm.getElement());
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**

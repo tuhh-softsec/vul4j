@@ -62,10 +62,12 @@ package org.apache.xml.security.samples.canonicalization;
 
 
 import java.io.ByteArrayInputStream;
-import org.w3c.dom.*;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.w3c.dom.Document;
 
 
 /**

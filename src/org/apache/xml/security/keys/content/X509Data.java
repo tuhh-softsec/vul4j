@@ -60,15 +60,23 @@ package org.apache.xml.security.keys.content;
 
 
 
-import java.util.Vector;
 import java.math.BigInteger;
 import java.security.cert.X509Certificate;
-import org.w3c.dom.*;
-import org.apache.xpath.XPathAPI;
-import javax.xml.transform.TransformerException;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.keys.content.x509.*;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.keys.content.x509.XMLX509CRL;
+import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
+import org.apache.xml.security.keys.content.x509.XMLX509IssuerSerial;
+import org.apache.xml.security.keys.content.x509.XMLX509SKI;
+import org.apache.xml.security.keys.content.x509.XMLX509SubjectName;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.HelperNodeList;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 /**

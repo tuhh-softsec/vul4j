@@ -59,7 +59,8 @@
 
 package ant;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+
 import sun.misc.HexDumpEncoder;
 
 /**

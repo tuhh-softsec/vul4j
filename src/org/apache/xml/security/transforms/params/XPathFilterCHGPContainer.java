@@ -60,12 +60,15 @@ package org.apache.xml.security.transforms.params;
 
 
 
-import org.w3c.dom.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.exceptions.*;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.TransformParam;
-import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.ElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 /**
@@ -133,7 +136,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
       if ((includeButSearch != null)
               && (includeButSearch.trim().length() > 0)) {
          Element includeButSearchElem =
-            this.createElementForFamily(doc, this.getBaseNamespace(),
+            XPathFilterCHGPContainer.createElementForFamily(doc, this.getBaseNamespace(),
                                         XPathFilterCHGPContainer
                                            ._TAG_INCLUDE_BUT_SEARCH);
 
@@ -147,7 +150,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
       if ((excludeButSearch != null)
               && (excludeButSearch.trim().length() > 0)) {
          Element excludeButSearchElem =
-            this.createElementForFamily(doc, this.getBaseNamespace(),
+         XPathFilterCHGPContainer.createElementForFamily(doc, this.getBaseNamespace(),
                                         XPathFilterCHGPContainer
                                            ._TAG_EXCLUDE_BUT_SEARCH);
 
@@ -159,7 +162,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
       }
 
       if ((exclude != null) && (exclude.trim().length() > 0)) {
-         Element excludeElem = this.createElementForFamily(doc,
+         Element excludeElem = XPathFilterCHGPContainer.createElementForFamily(doc,
                                   this.getBaseNamespace(),
                                   XPathFilterCHGPContainer._TAG_EXCLUDE);
 

@@ -60,12 +60,18 @@ package org.apache.xml.security.algorithms;
 
 
 
-import java.util.*;
-import java.security.*;
-import org.w3c.dom.*;
-import org.apache.xpath.XPathAPI;
+import java.security.Key;
+import java.security.Provider;
+import java.security.Security;
+
 import javax.xml.transform.TransformerException;
-import org.apache.xml.security.utils.*;
+
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**

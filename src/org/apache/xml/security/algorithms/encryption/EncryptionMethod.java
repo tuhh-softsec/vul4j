@@ -60,23 +60,20 @@ package org.apache.xml.security.algorithms.encryption;
 
 
 
-import java.io.IOException;
-import java.security.*;
-import java.security.spec.*;
-import java.util.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
-import javax.xml.transform.TransformerException;
+import java.security.Key;
+import java.util.HashMap;
+import java.util.Vector;
+
+import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.xml.security.algorithms.Algorithm;
-import org.apache.xml.security.algorithms.encryption.params
-   .EncryptionMethodParams;
 import org.apache.xml.security.algorithms.JCEMapper;
-import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
+import org.apache.xml.security.algorithms.encryption.params.EncryptionMethodParams;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.utils.*;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
+import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.EncryptionConstants;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**
@@ -204,7 +201,7 @@ public class EncryptionMethod extends Algorithm {
 
       super(doc, algorithmURI);
 
-      Vector v = (Vector) this._algorithmHash.get(algorithmURI);
+      Vector v = (Vector) EncryptionMethod._algorithmHash.get(algorithmURI);
 
       if (v == null) {
          Object exArgs[] = { "Could not find a registered Provider" };
@@ -263,7 +260,7 @@ public class EncryptionMethod extends Algorithm {
       super(element, BaseURI);
 
       String algorithmURI = this.getAlgorithmURI();
-      Vector v = (Vector) this._algorithmHash.get(algorithmURI);
+      Vector v = (Vector) EncryptionMethod._algorithmHash.get(algorithmURI);
 
       if (v == null) {
          Object exArgs[] = { "Could not find a registered Provider" };

@@ -61,16 +61,8 @@ package org.apache.xml.security.samples.transforms;
 
 
 
-import java.io.*;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.transforms.Transforms;
 
 
 /**

@@ -64,9 +64,8 @@ package org.apache.xml.security.test.utils;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.xml.security.exceptions.Base64DecodingException;
-import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.Constants;
 
 
 /**

@@ -62,8 +62,7 @@ package org.apache.xml.security.keys.content.keyvalues;
 
 
 import java.security.PublicKey;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
 /**

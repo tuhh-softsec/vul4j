@@ -60,12 +60,20 @@ package org.apache.xml.security.algorithms.encryption.helper;
 
 
 
-import java.io.*;
-import java.security.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.MessageDigest;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.spec.IvParameterSpec;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.utils.PRNG;
 
 
 /**

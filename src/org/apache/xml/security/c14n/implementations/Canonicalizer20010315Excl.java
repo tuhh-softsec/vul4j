@@ -61,30 +61,41 @@ package org.apache.xml.security.c14n.implementations;
 
 
 
-import java.io.*;
-import java.util.*;
-import javax.xml.parsers.*;
-import javax.xml.transform.TransformerException;
-import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xpath.NodeSet;
-import org.apache.xpath.XPath;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.helper.C14nHelper;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.helper.AttrCompare;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.c14n.helper.C14nHelper;
 import org.apache.xml.security.transforms.params.InclusiveNamespaces;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.ProcessingInstruction;
 
 
 /**
  * Implements &quot;<A HREF="http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/">Exclusive XML Canonicalization, Version 1.0</A>&quot;
  * <BR />
- * Credits: During restructuring of the Canonicalizer framework, René Kollmorgen from
+ * Credits: During restructuring of the Canonicalizer framework, RenÃ© Kollmorgen from
  * Software AG submitted an implementation of ExclC14n which fitted into the old
  * architecture and which based heavily on my old (and slow) implementation of
- * "Canonical XML". A big "thank you" to René for this.
+ * "Canonical XML". A big "thank you" to RenÃ© for this.
  * <BR />
  * <i>THIS</i> implementation is a complete rewrite of the algorithm.
  *

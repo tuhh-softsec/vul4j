@@ -60,16 +60,19 @@ package org.apache.xml.security.transforms.params;
 
 
 
-import java.io.*;
-import java.util.*;
-import org.w3c.dom.*;
-import org.apache.xml.security.utils.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.TransformParam;
-import org.apache.xml.security.transforms.TransformationException;
-import org.apache.xalan.extensions.ExpressionContext;
-import org.apache.xpath.NodeSet;
-import org.apache.xpath.XPathAPI;
+import org.apache.xml.security.utils.ElementProxy;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

@@ -59,7 +59,8 @@
 package org.apache.xml.security.utils;
 
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+
 import sun.misc.HexDumpEncoder;
 
 

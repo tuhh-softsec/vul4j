@@ -60,15 +60,13 @@ package org.apache.xml.security.keys.keyresolver;
 
 
 
-import java.security.*;
-import java.security.cert.*;
-import java.util.ArrayList;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
+
 import javax.crypto.SecretKey;
 
-import org.w3c.dom.*;
-
-import org.apache.xml.security.keys.storage.*;
-import org.apache.xml.security.utils.resolver.*; //for javadoc
+import org.apache.xml.security.keys.storage.StorageResolver;
+import org.w3c.dom.Element;
 
 
 /**

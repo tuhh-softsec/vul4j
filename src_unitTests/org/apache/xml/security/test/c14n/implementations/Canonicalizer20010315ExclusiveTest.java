@@ -60,24 +60,34 @@ package org.apache.xml.security.test.c14n.implementations;
 
 
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.*;
+import javax.xml.transform.TransformerException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.*;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315Excl;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclWithComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithComments;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.JavaUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.implementations.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.exceptions.*;
 
 
 /**

@@ -61,32 +61,18 @@ package org.apache.xml.security.test.c14n.implementations;
 
 
 
-import java.io.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.OutputKeys;
+import java.io.File;
+
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.implementations.*;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.transforms.params.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.test.resource.TestVectorResolver;
+
+import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.test.interop.InteropTest;
-import java.util.*;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.JavaUtils;
+import org.w3c.dom.Element;
 
 
 /**
@@ -180,6 +166,13 @@ public class ExclusiveC14NInterop extends InteropTest {
       assertTrue(success, success == null);
    }
 
+   public void test_xfilter2() throws Exception {
+
+      String success = t("data/interop/xfilter2/merlin-xpath-filter2-three", "sign-spec.xml");
+
+      assertTrue(success, success == null);
+   }
+
    /**
     * Method t
     *
@@ -225,6 +218,7 @@ public class ExclusiveC14NInterop extends InteropTest {
          for (int i = 0; i < signature.getSignedInfo().getLength(); i++) {
             boolean refVerify =
                signature.getSignedInfo().getVerificationResult(i);
+            JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
 
             if (refVerify) {
                cat.debug("Reference " + i + " was OK");
@@ -233,8 +227,8 @@ public class ExclusiveC14NInterop extends InteropTest {
 
                sb.append(i + " ");
 
-               // JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());
-               // JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
+               JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());
+               JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
 
                Reference reference = signature.getSignedInfo().item(i);
                int length = reference.getTransforms().getLength();

@@ -61,12 +61,13 @@ package org.apache.xml.security.keys.storage;
 
 
 
-import java.util.Vector;
-import java.util.Iterator;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
-import org.apache.xml.security.keys.storage.implementations.*;
-import org.apache.xml.security.utils.*;
+import java.util.Iterator;
+import java.util.Vector;
+
+import org.apache.xml.security.keys.storage.implementations.KeyStoreResolver;
+import org.apache.xml.security.keys.storage.implementations.SingleCertificateResolver;
 
 
 /**

@@ -59,21 +59,20 @@
 package org.apache.xml.security.test.algorithms.implementations;
 
 
-
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import org.apache.xpath.CachedXPathAPI;
-import org.apache.xml.security.algorithms.encryption.*;
-import org.apache.xml.security.algorithms.JCEMapper;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.utils.EncryptionConstants;
-import org.apache.xml.security.utils.HexDump;
-import java.security.Key;
-import javax.crypto.*;
-import javax.crypto.spec.*;
 import java.security.MessageDigest;
-import junit.framework.*;
+
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.algorithms.encryption.EncryptionMethod;
+import org.apache.xml.security.utils.HexDump;
+import org.w3c.dom.Document;
 
 
 /**

@@ -63,7 +63,8 @@ package org.apache.xml.security.keys.storage.implementations;
 
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
-import org.apache.xml.security.keys.storage.*;
+
+import org.apache.xml.security.keys.storage.StorageResolverSpi;
 
 
 /**

@@ -60,9 +60,11 @@ package org.apache.xml.security.keys.content.x509;
 
 
 
-import org.w3c.dom.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

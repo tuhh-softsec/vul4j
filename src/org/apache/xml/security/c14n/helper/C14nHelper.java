@@ -60,13 +60,11 @@ package org.apache.xml.security.c14n.helper;
 
 
 
-import org.w3c.dom.*;
-import java.util.*;
-import java.util.Arrays;
-import org.apache.xml.utils.URI;
-import org.apache.xml.security.utils.*;
-import java.net.MalformedURLException;
 import org.apache.xml.security.c14n.CanonicalizationException;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 
 /**

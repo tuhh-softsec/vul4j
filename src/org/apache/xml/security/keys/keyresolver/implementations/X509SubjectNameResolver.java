@@ -60,20 +60,22 @@ package org.apache.xml.security.keys.keyresolver.implementations;
 
 
 
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.security.*;
-import java.security.cert.*;
-import java.security.spec.*;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
+
 import javax.xml.transform.TransformerException;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SubjectName;
-import org.apache.xml.security.keys.keyresolver.*;
-import org.apache.xml.security.keys.storage.*;
+import org.apache.xml.security.keys.keyresolver.KeyResolverException;
+import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
+import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**

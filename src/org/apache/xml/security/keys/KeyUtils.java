@@ -61,12 +61,16 @@ package org.apache.xml.security.keys;
 
 
 
-import java.io.*;
-import java.security.*;
-import java.security.spec.*;
+import java.io.PrintStream;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.keys.content.*;
-import org.apache.xml.security.keys.content.x509.*;
+import org.apache.xml.security.keys.content.KeyName;
+import org.apache.xml.security.keys.content.KeyValue;
+import org.apache.xml.security.keys.content.MgmtData;
+import org.apache.xml.security.keys.content.X509Data;
 
 
 /**

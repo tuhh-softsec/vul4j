@@ -60,10 +60,9 @@ package org.apache.xml.security.utils;
 
 
 
-import java.util.Properties;
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.text.MessageFormat;
 
 
 /**

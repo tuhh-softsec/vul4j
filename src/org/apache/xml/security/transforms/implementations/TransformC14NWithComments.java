@@ -61,13 +61,15 @@ package org.apache.xml.security.transforms.implementations;
 
 
 import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.implementations.*;
-import org.apache.xml.security.transforms.*;
+
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithComments;
+import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.TransformSpi;
+import org.apache.xml.security.transforms.Transforms;
 import org.xml.sax.SAXException;
 
 
@@ -96,7 +98,7 @@ public class TransformC14NWithComments extends TransformSpi {
     *
     */
    protected String engineGetURI() {
-      return this.implementedTransformURI;
+      return implementedTransformURI;
    }
 
    /**

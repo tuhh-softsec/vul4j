@@ -59,20 +59,19 @@
 package org.apache.xml.security.test.algorithms.implementations;
 
 
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+
+import junit.framework.TestCase;
+
+import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.HexDump;
 import org.bouncycastle.asn1.DERConstructedSequence;
 import org.bouncycastle.asn1.DERInputStream;
 import org.bouncycastle.asn1.DERInteger;
 import org.bouncycastle.asn1.DEROutputStream;
-
-import junit.framework.TestCase;
-
-import org.apache.xml.security.utils.HexDump;
-import org.apache.xml.security.utils.Base64;
 
 
 /**

@@ -62,45 +62,47 @@ package org.apache.xml.security.signature;
 
 import java.io.IOException;
 import java.security.Key;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-import java.util.Vector;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import org.apache.xml.security.algorithms.*;
-import org.apache.xml.security.algorithms.implementations.*;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.transforms.params.XPathContainer;
-import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.keys.*;
-import org.apache.xml.security.keys.content.*;
-import org.apache.xml.security.keys.content.keyvalues.*;
-import org.apache.xml.security.keys.content.x509.*;
-import org.apache.xml.security.keys.keyresolver.*;
-import org.apache.xml.security.keys.storage.*;
-import org.apache.xml.security.transforms.Transform;
-import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.utils.resolver.*;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
+
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+import javax.xml.transform.TransformerException;
+
+import org.apache.xml.security.algorithms.SignatureAlgorithm;
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.exceptions.Base64DecodingException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.keys.content.X509Data;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.HexDump;
+import org.apache.xml.security.utils.I18n;
+import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.resolver.ResourceResolver;
+import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 
 /**
  * Handles <code>&lt;ds:Signature&gt;</code> elements.
  * This is the main class that deals with creating and verifying signatures.
- * 
+ *
  * <p>There are 2 types of constructors for this class. The ones that take a
- * document, baseURI and 1 or more Java Objects. This is mostly used for 
+ * document, baseURI and 1 or more Java Objects. This is mostly used for
  * signing purposes.
  * The other constructor is the one that takes a DOM Element and a BaseURI.
  * This is used mostly with for verifying, when you have a SignatureElement.
- * 
+ *
  * There are a few different types of methods:
  * <ul><li>The addDocument* methods are used to add References with optional
  * transforms during signing. </li>
@@ -236,6 +238,29 @@ public final class XMLSignature extends SignatureElementProxy {
       this._signedInfo = new SignedInfo(this._doc, SignatureMethodURI,
                                         HMACOutputLength,
                                         CanonicalizationMethodURI);
+
+      this._constructionElement.appendChild(this._signedInfo.getElement());
+      XMLUtils.addReturnToElement(this._constructionElement);
+
+      // create an empty SignatureValue; this is filled by setSignatureValueElement
+      Element signatureValueElement =
+         XMLUtils.createElementInSignatureSpace(this._doc,
+                                                Constants._TAG_SIGNATUREVALUE);
+
+      this._constructionElement.appendChild(signatureValueElement);
+      XMLUtils.addReturnToElement(this._constructionElement);
+   }
+
+   public XMLSignature(
+           Document doc, String BaseURI, Element SignatureMethodElem, Element CanonicalizationMethodElem)
+              throws XMLSecurityException {
+
+      super(doc);
+
+      XMLUtils.addReturnToElement(this._constructionElement);
+
+      this._baseURI = BaseURI;
+      this._signedInfo = new SignedInfo(this._doc, SignatureMethodElem, CanonicalizationMethodElem);
 
       this._constructionElement.appendChild(this._signedInfo.getElement());
       XMLUtils.addReturnToElement(this._constructionElement);

@@ -60,15 +60,22 @@ package org.apache.xml.security.keys.content;
 
 
 
-import java.security.*;
-import java.security.spec.*;
-import java.util.*;
-import org.w3c.dom.*;
-import org.apache.xpath.XPathAPI;
+import java.security.Key;
+import java.security.PublicKey;
+
 import javax.xml.transform.TransformerException;
-import org.apache.xml.security.keys.content.keyvalues.*;
-import org.apache.xml.security.utils.*;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
+import org.apache.xml.security.keys.content.keyvalues.RSAKeyValue;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.JavaUtils;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**

@@ -60,7 +60,9 @@ package org.apache.xml.security.utils;
 
 
 
-import java.security.cert.*;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
 
 
 /**

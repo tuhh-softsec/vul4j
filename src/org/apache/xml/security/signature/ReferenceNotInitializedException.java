@@ -61,7 +61,6 @@ package org.apache.xml.security.signature;
 
 
 
-import org.apache.xml.security.signature.XMLSignatureException;
 
 
 /**

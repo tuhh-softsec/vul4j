@@ -60,18 +60,24 @@ package org.apache.xml.security.transforms;
 
 
 
-import java.util.Iterator;
-import java.util.HashMap;
-import java.io.InputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
-import org.apache.xml.security.c14n.*;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.HelperNodeList;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 
 /**

@@ -60,18 +60,22 @@ package org.apache.xml.security.test.external.org.apache.xalan.XPathAPI;
 
 
 
-import java.io.*;
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
-import javax.xml.transform.TransformerException;
-import org.xml.sax.SAXException;
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.objects.*;
+import java.io.ByteArrayInputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.XPathAPI;
+import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 
 /**

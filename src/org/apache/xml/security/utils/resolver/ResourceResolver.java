@@ -61,10 +61,11 @@ package org.apache.xml.security.utils.resolver;
 
 
 
-import java.util.*;
-import org.w3c.dom.*;
-import org.apache.xml.utils.URI;
+import java.util.Map;
+import java.util.Vector;
+
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.w3c.dom.Attr;
 
 
 /**
@@ -75,14 +76,14 @@ import org.apache.xml.security.signature.XMLSignatureInput;
  * for {@link javax.xml.transform.stream.StreamSource#getSystemId}.
  *
  * <UL xml:lang="DE" LANG="DE">
- * <LI> Verschiedene Implementierungen können sich als Resolver registrieren.
- * <LI> Standardmäßig werden erste Implementierungen auf dem XML config file registrirt.
- * <LI> Der Benutzer kann bei Bedarf Implementierungen voranstellen oder anfügen.
- * <LI> Implementierungen können mittels Features customized werden ä
- *      (z.B. um Proxy-Passworter übergeben zu können).
+ * <LI> Verschiedene Implementierungen kÃ¶nnen sich als Resolver registrieren.
+ * <LI> StandardmÃ¤ÃŸig werden erste Implementierungen auf dem XML config file registrirt.
+ * <LI> Der Benutzer kann bei Bedarf Implementierungen voranstellen oder anfÃ¼gen.
+ * <LI> Implementierungen kÃ¶nnen mittels Features customized werden Ã¤
+ *      (z.B. um Proxy-Passworter Ã¼bergeben zu kÃ¶nnen).
  * <LI> Jede Implementierung bekommt das URI Attribut und den Base URI
- *      übergeben und muss antworten, ob sie auflösen kann.
- * <LI> Die erste Implementierung, die die Aufgabe erfüllt, führt die Auflösung durch.
+ *      Ã¼bergeben und muss antworten, ob sie auflÃ¶sen kann.
+ * <LI> Die erste Implementierung, die die Aufgabe erfÃ¼llt, fÃ¼hrt die AuflÃ¶sung durch.
  * </UL>
  *
  * @author $Author$

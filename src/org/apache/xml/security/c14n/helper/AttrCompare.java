@@ -61,9 +61,8 @@ package org.apache.xml.security.c14n.helper;
 
 
 
-import org.w3c.dom.*;
-import org.apache.log4j.*;
 import org.apache.xml.security.utils.Constants;
+import org.w3c.dom.Attr;
 
 
 /**

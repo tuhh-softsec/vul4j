@@ -63,6 +63,11 @@ package org.apache.xml.security.utils;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xml.security.transforms.implementations.FuncHereContext;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolverDefault;
+import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -70,21 +75,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeIterator;
-
-
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.ref.DTMManagerDefault;
-import org.apache.xml.dtm.ref.DTMNodeIterator;
-import org.apache.xml.dtm.ref.DTMNodeList;
-import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathAPI; //for javadoc
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.XPathParser;
-import org.apache.xpath.objects.XObject;
-
-import org.apache.xml.security.transforms.implementations.FuncHereContext;
 
 
 

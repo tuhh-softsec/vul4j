@@ -61,29 +61,33 @@ package org.apache.xml.security.test.signature;
 
 
 
-import java.io.InputStream;
-import java.io.FileOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.io.IOException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.*;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Set;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.xpath.CachedXPathAPI;
 import javax.xml.transform.TransformerException;
-import org.w3c.dom.*;
-import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.c14n.Canonicalizer;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xml.security.utils.Constants;
+import org.apache.xpath.CachedXPathAPI;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
 
 
 /**

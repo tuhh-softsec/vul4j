@@ -60,29 +60,18 @@ package org.apache.xml.security.samples.signature;
 
 
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.security.*;
-import java.security.cert.*;
-import java.util.*;
-import javax.xml.transform.TransformerException;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
-import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.keys.*;
-import org.apache.xml.security.keys.content.*;
-import org.apache.xml.security.keys.content.x509.*;
-import org.apache.xml.security.keys.keyresolver.*;
-import org.apache.xml.security.keys.storage.*;
-import org.apache.xml.security.keys.storage.implementations.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.Init;
-import org.apache.xml.security.samples.utils.resolver.OfflineResolver;
-import org.apache.xml.serialize.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
+
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Element;
 
 
 /**
@@ -160,6 +149,7 @@ public class CreateSignature {
       //signature algorithm (in this case DSA)
       XMLSignature sig = new XMLSignature(doc, BaseURI,
                                           XMLSignature.ALGO_ID_SIGNATURE_DSA);
+
 
       //Append the signature element to the root element before signing because
       //this is going to be an enveloped signature.

@@ -60,8 +60,9 @@ package org.apache.xml.security.algorithms.encryption.params;
 
 
 
-import org.w3c.dom.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 
 
 /**

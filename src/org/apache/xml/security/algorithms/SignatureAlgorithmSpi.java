@@ -61,13 +61,12 @@ package org.apache.xml.security.algorithms;
 
 
 import java.security.Key;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import javax.crypto.SecretKey;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
+
 import org.apache.xml.security.signature.XMLSignatureException;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

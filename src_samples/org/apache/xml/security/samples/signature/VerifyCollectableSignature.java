@@ -60,21 +60,15 @@ package org.apache.xml.security.samples.signature;
 
 
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.security.PublicKey;
-import java.security.cert.*;
-import java.util.*;
-import javax.xml.transform.TransformerException;
+import java.io.File;
+
+import org.apache.xml.security.signature.SignedInfo;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.keys.*;
-import org.apache.xml.security.keys.content.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.Init;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**

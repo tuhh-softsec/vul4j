@@ -60,12 +60,11 @@ package org.apache.xml.security.keys.content;
 
 
 
-import java.util.StringTokenizer;
-import org.w3c.dom.*;
-import org.apache.xpath.XPathAPI;
-import javax.xml.transform.TransformerException;
-import org.apache.xml.security.utils.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

@@ -60,16 +60,22 @@ package org.apache.xml.security.samples.transforms;
 
 
 
-import java.io.*;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.transforms.params.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
-import javax.crypto.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.transforms.params.XPath2FilterContainer;
+import org.apache.xml.security.transforms.params.XPathFilterCHGPContainer;
+import org.apache.xml.security.utils.Constants;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**

@@ -64,6 +64,7 @@ package org.apache.xml.security.test.utils.resolver;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 
 

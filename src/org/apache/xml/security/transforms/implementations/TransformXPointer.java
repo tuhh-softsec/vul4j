@@ -61,14 +61,16 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
-import org.w3c.dom.*;
-import org.apache.xml.security.c14n.CanonicalizationException;
 import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.transforms.*;
+import org.apache.xml.security.transforms.TransformSpi;
+import org.apache.xml.security.transforms.TransformationException;
+import org.apache.xml.security.transforms.Transforms;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -95,7 +97,7 @@ public class TransformXPointer extends TransformSpi {
     *
     */
    protected String engineGetURI() {
-      return this.implementedTransformURI;
+      return implementedTransformURI;
    }
 
    /**

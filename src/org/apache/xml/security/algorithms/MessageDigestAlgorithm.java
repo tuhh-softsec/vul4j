@@ -60,16 +60,12 @@ package org.apache.xml.security.algorithms;
 
 
 
-import java.util.Collection;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import org.w3c.dom.*;
-import org.apache.xml.security.signature.XMLSignatureInput;
+
 import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
-import java.io.IOException;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.EncryptionConstants;
+import org.w3c.dom.Document;
 
 
 /**

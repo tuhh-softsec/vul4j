@@ -1,7 +1,12 @@
 package org.apache.xml.security.test;
 
+
 import java.io.File;
-import junit.framework.*;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.apache.xml.security.utils.XMLUtils;
 
 

@@ -62,10 +62,16 @@ package org.apache.xml.security.keys.content.x509;
 
 import java.io.ByteArrayInputStream;
 import java.security.PublicKey;
-import java.security.cert.*;
-import org.w3c.dom.*;
-import org.apache.xml.security.utils.*;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.JavaUtils;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

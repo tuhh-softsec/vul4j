@@ -60,8 +60,15 @@ package ant;
 
 
 
-import java.io.*;
-import java.security.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 

@@ -60,25 +60,36 @@ package org.apache.xml.security.keys;
 
 
 
-import java.lang.reflect.*;
-import java.security.*;
-import java.security.cert.*;
-import java.security.spec.*;
-import java.util.*;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
+import java.util.Vector;
+
 import javax.crypto.SecretKey;
-import javax.xml.transform.TransformerException;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.transforms.params.XPathContainer;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.keys.content.*;
-import org.apache.xml.security.keys.content.keyvalues.*;
-import org.apache.xml.security.keys.keyresolver.*;
-import org.apache.xml.security.keys.storage.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.transforms.*;
+
 import org.apache.xml.security.Init;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.keys.content.KeyName;
+import org.apache.xml.security.keys.content.KeyValue;
+import org.apache.xml.security.keys.content.MgmtData;
+import org.apache.xml.security.keys.content.PGPData;
+import org.apache.xml.security.keys.content.RetrievalMethod;
+import org.apache.xml.security.keys.content.SPKIData;
+import org.apache.xml.security.keys.content.X509Data;
+import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
+import org.apache.xml.security.keys.content.keyvalues.RSAKeyValue;
+import org.apache.xml.security.keys.keyresolver.KeyResolver;
+import org.apache.xml.security.keys.keyresolver.KeyResolverException;
+import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
+import org.apache.xml.security.keys.storage.StorageResolver;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 /**

@@ -60,12 +60,11 @@
 package org.apache.xml.security.utils.resolver;
 
 
-import java.util.*;
-import java.net.URL;
-import java.net.MalformedURLException;
-import org.w3c.dom.*;
-import org.apache.xml.utils.URI;
+import java.util.Map;
+
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.utils.URI;
+import org.w3c.dom.Attr;
 
 
 /**

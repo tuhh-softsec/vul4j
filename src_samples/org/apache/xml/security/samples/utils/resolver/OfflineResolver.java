@@ -61,15 +61,17 @@ package org.apache.xml.security.samples.utils.resolver;
 
 
 
-import java.util.*;
-import java.net.*;
-import java.io.*;
-import org.w3c.dom.*;
-import org.apache.xml.utils.URI;
-import org.apache.xml.security.utils.resolver.ResourceResolverException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xml.security.utils.Base64;
+import org.apache.xml.utils.URI;
+import org.w3c.dom.Attr;
 
 
 /**
@@ -98,8 +100,8 @@ public class OfflineResolver extends ResourceResolverSpi {
       try {
          String URI = uri.getNodeValue();
 
-         if (this._uriMap.containsKey(URI)) {
-            String newURI = (String) this._uriMap.get(URI);
+         if (OfflineResolver._uriMap.containsKey(URI)) {
+            String newURI = (String) OfflineResolver._uriMap.get(URI);
 
             cat.debug("Mapped " + URI + " to " + newURI);
 
@@ -111,7 +113,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 
             // XMLSignatureInput result = new XMLSignatureInput(inputStream);
             result.setSourceURI(URI);
-            result.setMIMEType((String) this._mimeMap.get(URI));
+            result.setMIMEType((String) OfflineResolver._mimeMap.get(URI));
 
             return result;
          } else {

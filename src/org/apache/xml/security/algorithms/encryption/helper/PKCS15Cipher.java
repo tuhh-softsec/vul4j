@@ -59,17 +59,13 @@
 package org.apache.xml.security.algorithms.encryption.helper;
 
 
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.SecureRandom;
 
-import java.security.*;
-import java.security.spec.*;
-import java.security.interfaces.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
-import javax.crypto.interfaces.*;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.HexDump;
-import java.math.BigInteger;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 
 
 /**

@@ -60,32 +60,22 @@ package org.apache.xml.security.samples.signature;
 
 
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.security.*;
-import java.security.cert.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
-import java.util.*;
-import javax.xml.transform.TransformerException;
-import javax.xml.parsers.*;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
+import javax.crypto.SecretKey;
+import javax.xml.parsers.DocumentBuilder;
+
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.*;
-import org.apache.xml.security.keys.*;
-import org.apache.xml.security.keys.content.*;
-import org.apache.xml.security.keys.content.x509.*;
-import org.apache.xml.security.keys.keyresolver.*;
-import org.apache.xml.security.keys.storage.*;
-import org.apache.xml.security.keys.storage.implementations.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.Init;
-import org.apache.xml.security.samples.utils.resolver.OfflineResolver;
-import org.apache.xml.serialize.*;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**

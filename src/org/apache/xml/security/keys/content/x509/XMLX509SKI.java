@@ -61,13 +61,16 @@ package org.apache.xml.security.keys.content.x509;
 
 
 import java.io.IOException;
-import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.security.cert.X509Extension;
-import org.w3c.dom.*;
-import org.apache.xml.security.utils.*;
+
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.keys.keyresolver.KeyResolverException;
+import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.JavaUtils;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import sun.security.util.DerValue;
 
 
@@ -212,7 +215,7 @@ public class XMLX509SKI extends SignatureElementProxy
    private void createSKIElementFromCert(X509Certificate cert)
            throws XMLSecurityException {
 
-      byte[] abyte0 = this.getSKIBytesFromCert(cert);
+      byte[] abyte0 = XMLX509SKI.getSKIBytesFromCert(cert);
 
       Base64.encodeToElement(this._doc, Constants._TAG_X509SKI, abyte0);
    }
