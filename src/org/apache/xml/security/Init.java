@@ -19,6 +19,8 @@ package org.apache.xml.security;
 
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,6 +36,7 @@ import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.PRNG;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
+import org.apache.xpath.Expression;
 import org.apache.xpath.compiler.FuncLoader;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.functions.Function;
@@ -414,7 +417,22 @@ private static void registerHereFunction() {
 	 * Try to register our here() implementation as internal function.
 	 */            
 	{	    
-	    FunctionTable.installFunction("here", new FuncHere());
+        Class []args={String.class, Expression.class};
+        try {
+			Method installFunction=FunctionTable.class.getMethod("installFunction",args);
+            if ((installFunction.getModifiers() & Modifier.STATIC)!=0) {
+            	//xalan 1.1
+                Object []params={"here",new FuncHere()};
+                installFunction.invoke(null, params );
+            } else {
+            	log.warn("Xalan new, install function not installed.");
+                //TODO: Right now not a good way to install the function. Let see how this
+                //is resolv, latter in xalan.
+            }
+		} catch (Exception e) {
+			//what to do here, just log it
+            log.warn("Exception while installing Function",e);
+        }
         if (log.isDebugEnabled())
         	log.debug("Registered class " + FuncHere.class.getName()
 	            + " for XPath function 'here()' function in internal table");
