@@ -376,6 +376,7 @@ int evaluate(int argc, char ** argv) {
 	// so we add a KeyInfoResolverDefault to the Signature.
 
 	sig->setKeyInfoResolver(&theKeyInfoResolver);
+	sig->registerIdAttributeName(MAKE_UNICODE_STRING("ID"));
 
 	// Check whether we should use the internal resolver
 
