@@ -269,7 +269,7 @@ public class Init {
                   boolean registerClass = true;
 
                   try {
-                     Class c = Class.forName(JAVACLASS);
+                     Class.forName(JAVACLASS);
                   } catch (ClassNotFoundException e) {
                      Object exArgs[] = { URI, JAVACLASS };
 
@@ -574,6 +574,9 @@ public class Init {
                                        context);
 
             for (int i = 0; i < nl.getLength(); i++) {
+               //EK: the registerStore method was already commented out.
+               //unsure what needs to happen with it now.
+               /*
                Element e = (Element) nl.item(i);
                String URI = e.getAttributeNS(null, "URI");
                String keyStoreType = e.getAttributeNS(null, "Type");
@@ -581,6 +584,7 @@ public class Init {
                                                          "DefaultKeyAlias");
                String storePass = e.getAttributeNS(null, "StorePass");
                String KeyPass = e.getAttributeNS(null, "KeyPass");
+               */
 
                // org.apache.xml.security.keys.keyStorage.KeyStorage.registerStore(URI, JAVACLASS, LOCATION, DEFAULTKEYOBJECT, CONTEXT);
             }
