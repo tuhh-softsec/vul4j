@@ -158,6 +158,9 @@ struct XSECNodeListElt {
 #define XMLNS_PREFIX		"a"
 #define ATTRIBUTE_PREFIX	"b"
 
+#define NOURI_PREFIX         "a"
+#define HAVEURI_PREFIX       "b"
+
 // --------------------------------------------------------------------------------
 //           XSECC14n20010315 Object definition
 // --------------------------------------------------------------------------------

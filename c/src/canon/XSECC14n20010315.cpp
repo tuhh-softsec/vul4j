@@ -1191,51 +1191,28 @@ int XSECC14n20010315::processNextNode() {
 						toIns = new XSECNodeListElt;
 						toIns->element = tmpAtts->item(i);
 						
-						// First the correct prefix						
+						// First the correct prefix to ensure will be sorted
+						// in correct placing against XMLNS nodes
+
 						toIns->sortString.sbStrcpyIn(ATTRIBUTE_PREFIX);
 						
-						// Now break down the name to see if it has a namespace
-						int len = currentName.sbStrlen();
-						int k;
-						
-						for (k = 0; k < len; ++k) {
-							
-							if (currentName[k] == ':')
-								break;
-							
+						// Find the namespace URI
+						const XMLCh * nsURI = 
+							tmpAtts->item(i)->getNamespaceURI();
+
+						if (nsURI == NULL) {
+							toIns->sortString.sbStrcatIn(NOURI_PREFIX);
 						}
-
-						safeBuffer	tsb, tsc;
-
-						tsb.sbStrcpyIn("xmlns:");
-						
-						if (k < len) {
-							
-							// Have a namespace delcleration
-							
-							
-							tsc.sbStrncpyIn(currentName, k);
-							tsb.sbStrcatIn(tsc);
-							
-							
-						}
-						// find the URL matching identifier tsb
-						XMLCh * tsbXMLCh = XMLString::transcode(tsb.rawCharBuffer());
-						DOMNode *nsd = mp_nextNode->getAttributes()->getNamedItem(tsbXMLCh);
-						delete[] tsbXMLCh;
-
-						if (nsd != NULL) {
-							// Found a namespace!
-							*formatter << nsd->getNodeValue();
+						else {
+							*formatter << nsURI;
+							toIns->sortString.sbStrcatIn(HAVEURI_PREFIX);
 							toIns->sortString.sbStrcatIn(formatBuffer);
-							toIns->sortString.sbStrcatIn(":");
 						}
 
-						// Should throw!
+						// Append the local name as the secondary key
+						*formatter << tmpAtts->item(i)->getLocalName();
+						toIns->sortString.sbStrcatIn(formatBuffer);
 
-						// Append rest of name.  Don't need value as name should be unique
-						toIns->sortString.sbStrcatIn(currentName);
-						
 						// Insert node
 						mp_attributes = insertNodeIntoList(mp_attributes, toIns);
 						
