@@ -98,6 +98,10 @@ public abstract class ElementProxy {
    protected int _state = MODE_UNKNOWN;
    //J+
 
+   // public static final String NS_NS = "http://www.w3.org/XML/1998/namespace";
+   public static final String NS_NS = "http://www.w3.org/2000/xmlns/";
+
+
    /**
     * Returns the namespace of the Elements of the sub-class.
     *
@@ -176,11 +180,13 @@ public abstract class ElementProxy {
          if ((prefix == null) || (prefix.length() == 0)) {
             result = doc.createElementNS(namespace, localName);
 
-            result.setAttribute("xmlns", namespace);
+            // result.setAttribute("xmlns", namespace);
+            result.setAttributeNS(ElementProxy.NS_NS, "xmlns", namespace);
          } else {
             result = doc.createElementNS(namespace, prefix + ":" + localName);
 
-            result.setAttribute("xmlns:" + prefix, namespace);
+            // result.setAttribute("xmlns:" + prefix, namespace);
+            result.setAttributeNS(ElementProxy.NS_NS, "xmlns:" + prefix, namespace);
          }
       }
 
