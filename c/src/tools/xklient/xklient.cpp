@@ -32,6 +32,7 @@
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoValue.hpp>
+#include <xsec/dsig/DSIGKeyInfoName.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
@@ -1090,6 +1091,7 @@ void doKeyInfoDump(DSIGKeyInfoList * l, int level) {
 	for (int i = 0 ; i < size ; ++ i) {
 
 		DSIGKeyInfoValue * kiv;
+		DSIGKeyInfoName * kn;
 		char * b;
 
 		DSIGKeyInfo * ki = l->item(i);
@@ -1138,6 +1140,19 @@ void doKeyInfoDump(DSIGKeyInfoList * l, int level) {
 			levelSet(level+1);
 			b = XMLString::transcode(kiv->getDSAY());
 			cout << "Y = " << b << endl;
+			delete[] b;
+
+			break;
+
+		case DSIGKeyInfo::KEYINFO_NAME :
+
+			kn = (DSIGKeyInfoName *) ki;
+			levelSet(level);
+			cout << "Key Name" << endl;
+
+			levelSet(level+1);
+			b = XMLString::transcode(kn->getKeyName());
+			cout << "Name = " << b << endl;
 			delete[] b;
 
 			break;
