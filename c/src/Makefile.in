@@ -154,7 +154,7 @@ all: lib alltools allsamples
 lib: prepare ${THISLIB}
 
 ${THISLIB}: $(LIB_OBJ_FILES)
-	$(MAKE_SHARED) $(LDFLAGS) $(LIBS) $(LIB_OBJ_FILES) -o $@
+	$(MAKE_SHARED) $(LDFLAGS) $(LIB_OBJ_FILES) $(LIBS) -o $@
 	(cd $(LIB_DIR) ; rm -f $(LIBMAJORNAME) ; $(LN_S) $(LIBNAME) $(LIBMAJORNAME))
 	(cd $(LIB_DIR) ; rm -f $(LIBSHORTNAME) ; $(LN_S) $(LIBNAME) $(LIBSHORTNAME))
 

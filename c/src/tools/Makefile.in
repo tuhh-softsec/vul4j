@@ -111,7 +111,7 @@ ${OBJDIR}/xtest${OBJSUFFIX}: xtest/xtest.cpp
 	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
 ${BINDIR}/xtest: ${OBJDIR}/xtest${OBJSUFFIX}
-	$(LINK) $(LDFLAGS) $(LDXSEC) $(LIBS) $< -o $@
+	$(LINK) $(LDFLAGS) $< $(LDXSEC) $(LIBS) -o $@
 
 #============================== c14n =============================
 
@@ -119,7 +119,7 @@ ${OBJDIR}/c14n${OBJSUFFIX}: c14n/c14n.cpp
 	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
 ${BINDIR}/c14n: ${OBJDIR}/c14n${OBJSUFFIX}
-	$(LINK) $(LDFLAGS) $(LDXSEC) $(LIBS) $< -o $@
+	$(LINK) $(LDFLAGS) $< $(LDXSEC) $(LIBS) -o $@
 
 
 #============================ checksig ===========================
@@ -128,7 +128,7 @@ ${OBJDIR}/checksig${OBJSUFFIX}: checksig/checksig.cpp
 	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
 ${BINDIR}/checksig: ${OBJDIR}/checksig${OBJSUFFIX}
-	$(LINK) $(LDFLAGS) $(LDXSEC) $(LIBS) $< -o $@
+	$(LINK) $(LDFLAGS) $< $(LDXSEC) $(LIBS) -o $@
 
 #========================== templatesign =========================
 
@@ -136,7 +136,7 @@ ${OBJDIR}/templatesign${OBJSUFFIX}: templatesign/templatesign.cpp
 	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
 ${BINDIR}/templatesign: ${OBJDIR}/templatesign${OBJSUFFIX}
-	$(LINK) $(LDFLAGS) $(LDXSEC) $(LIBS) $< -o $@
+	$(LINK) $(LDFLAGS) $< $(LDXSEC) $(LIBS) -o $@
 
 #============================= txfmout ============================
 
@@ -144,7 +144,7 @@ ${OBJDIR}/txfmout${OBJSUFFIX}: txfmout/txfmout.cpp
 	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
 ${BINDIR}/txfmout: ${OBJDIR}/txfmout${OBJSUFFIX}
-	$(LINK) $(LDFLAGS) $(LDXSEC) $(LIBS) $< -o $@
+	$(LINK) $(LDFLAGS) $< $(LDXSEC) $(LIBS) -o $@
 
 #============================= siginf =============================
 
@@ -152,7 +152,7 @@ ${OBJDIR}/siginf${OBJSUFFIX}: siginf/siginf.cpp
 	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
 ${BINDIR}/siginf: ${OBJDIR}/siginf${OBJSUFFIX}
-	$(LINK) $(LDFLAGS) $(LDXSEC) $(LIBS) $< -o $@
+	$(LINK) $(LDFLAGS) $< $(LDXSEC) $(LIBS) -o $@
 
 #============================= Clean =============================
 
