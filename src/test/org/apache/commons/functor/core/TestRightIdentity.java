@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestRightIdentity.java,v 1.1 2003/12/02 16:50:52 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestRightIdentity.java,v 1.2 2003/12/02 17:06:29 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/12/02 16:50:52 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/02 17:06:29 $
  * @author Rodney Waldhoff
  */
 public class TestRightIdentity extends BaseFunctorTest {
@@ -136,7 +136,7 @@ public class TestRightIdentity extends BaseFunctorTest {
         assertEquals(f,f);
         assertObjectsAreEqual(f,new RightIdentity());
         assertObjectsAreEqual(f,RightIdentity.instance());
-        assertObjectsAreNotEqual(f,new IdentityPredicate());
+        assertObjectsAreNotEqual(f,new Identity());
         assertObjectsAreNotEqual(f,new LeftIdentity());
         assertObjectsAreNotEqual(f,new ConstantPredicate(true));
         assertObjectsAreNotEqual(f,new ConstantFunction("abcde"));

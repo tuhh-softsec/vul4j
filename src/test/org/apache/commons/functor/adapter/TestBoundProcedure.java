@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundProcedure.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundProcedure.java,v 1.4 2003/12/02 17:06:29 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Procedure;
-import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.Identity;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 17:06:29 $
  * @author Rodney Waldhoff
  */
 public class TestBoundProcedure extends BaseFunctorTest {
@@ -103,7 +103,7 @@ public class TestBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testRun() throws Exception {
-        Procedure p = new BoundProcedure(new UnaryFunctionUnaryProcedure(new IdentityFunction()),Boolean.TRUE);
+        Procedure p = new BoundProcedure(new UnaryFunctionUnaryProcedure(new Identity()),Boolean.TRUE);
         p.run();
     }
     
@@ -113,7 +113,7 @@ public class TestBoundProcedure extends BaseFunctorTest {
         assertObjectsAreEqual(f,new BoundProcedure(new NoOp(),"xyzzy"));
         assertObjectsAreNotEqual(f,new NoOp());
         assertObjectsAreNotEqual(f,new BoundProcedure(new NoOp(),"foo"));
-        assertObjectsAreNotEqual(f,new BoundProcedure(new UnaryFunctionUnaryProcedure(new IdentityFunction()),"xyzzy"));
+        assertObjectsAreNotEqual(f,new BoundProcedure(new UnaryFunctionUnaryProcedure(new Identity()),"xyzzy"));
         assertObjectsAreNotEqual(f,new BoundProcedure(null,"xyzzy"));
         assertObjectsAreNotEqual(f,new BoundProcedure(new NoOp(),null));
         assertObjectsAreEqual(new BoundProcedure(null,null),new BoundProcedure(null,null));

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestIdentityFunction.java,v 1.4 2003/12/02 17:06:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Identity.java,v 1.1 2003/12/02 17:06:30 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,70 +56,63 @@
  */
 package org.apache.commons.functor.core;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
 
-import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 17:06:29 $
+ * {@link #evaluate Evaluates} to its input argument.
+ * 
+ * {@link #test Tests} to the <code>boolean</code>
+ * value of the <code>Boolean</code>-valued parameter.
+ * The {@link #test} method throws an exception if 
+ * the parameter isn't a non-<code>null</code> 
+ * <code>Boolean</code>.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 17:06:30 $
  * @author Rodney Waldhoff
- * @deprecated Use {@link Identity}
  */
-public class TestIdentityFunction extends BaseFunctorTest {
+public final class Identity implements UnaryFunction, UnaryPredicate, Serializable {
 
-    // Conventional
+    // constructor
     // ------------------------------------------------------------------------
-
-    public TestIdentityFunction(String testName) {
-        super(testName);
+    public Identity() {
+    }
+ 
+    // function interface
+    // ------------------------------------------------------------------------
+    public Object evaluate(Object obj) {
+        return obj;
     }
 
-    public static Test suite() {
-        return new TestSuite(TestIdentityFunction.class);
+    public boolean test(Object obj) {
+        return test((Boolean)obj);
     }
 
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
+    public boolean test(Boolean bool) {
+        return bool.booleanValue();
+    }
 
-    protected Object makeFunctor() {
-        return new IdentityFunction();
+    public boolean equals(Object that) {
+        return (that instanceof Identity);
     }
     
-    // Lifecycle
+    public int hashCode() {
+        return "Identity".hashCode();
+    }
+    
+    public String toString() {
+        return "Identity";
+    }
+    
+    // static methods
     // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
+    public static Identity instance() {
+        return INSTANCE;
     }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
+    
+    // static attributes
     // ------------------------------------------------------------------------
-    
-    public void testEvaluate() throws Exception {
-        UnaryFunction f = new IdentityFunction();
-        assertNull(f.evaluate(null));
-        assertEquals("xyzzy",f.evaluate("xyzzy"));
-        assertEquals(new Integer(3),f.evaluate(new Integer(3)));
-        Object obj = new Long(12345L);
-        assertSame(obj,f.evaluate(obj));
-    }
-    
-    public void testEquals() throws Exception {
-        UnaryFunction f = new IdentityFunction();
-        assertEquals(f,f);
-        assertObjectsAreEqual(f,new IdentityFunction());
-        assertObjectsAreEqual(f,IdentityFunction.instance());
-        assertObjectsAreNotEqual(f,new ConstantFunction("abcde"));
-    }
-    
-    public void testConstant() throws Exception {
-        assertEquals(IdentityFunction.instance(),IdentityFunction.instance());
-        assertSame(IdentityFunction.instance(),IdentityFunction.instance());
-    }
+    private static final Identity INSTANCE = new Identity();
 }

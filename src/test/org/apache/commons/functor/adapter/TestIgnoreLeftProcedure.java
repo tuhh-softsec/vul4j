@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreLeftProcedure.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreLeftProcedure.java,v 1.2 2003/12/02 17:06:29 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryProcedure;
-import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.Identity;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/02 17:06:29 $
  * @author Rodney Waldhoff
  */
 public class TestIgnoreLeftProcedure extends BaseFunctorTest {
@@ -103,7 +103,7 @@ public class TestIgnoreLeftProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testEvaluate() throws Exception {
-        BinaryProcedure p = new IgnoreLeftProcedure(new UnaryFunctionUnaryProcedure(new IdentityFunction()));
+        BinaryProcedure p = new IgnoreLeftProcedure(new UnaryFunctionUnaryProcedure(new Identity()));
         p.run(null,Boolean.TRUE);
     }
     

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryCompositeBinaryFunction.java,v 1.4 2003/12/02 16:50:53 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryCompositeBinaryFunction.java,v 1.5 2003/12/02 17:06:30 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,12 +62,12 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.Identity;
 import org.apache.commons.functor.core.LeftIdentity;
 import org.apache.commons.functor.core.RightIdentity;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 16:50:53 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/02 17:06:30 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryCompositeBinaryFunction extends BaseFunctorTest {
@@ -90,7 +90,7 @@ public class TestUnaryCompositeBinaryFunction extends BaseFunctorTest {
         return new UnaryCompositeBinaryFunction(
             new RightIdentity(),
             new ConstantFunction("left"),
-            new IdentityFunction());
+            new Identity());
     }
 
     // Lifecycle
@@ -111,7 +111,7 @@ public class TestUnaryCompositeBinaryFunction extends BaseFunctorTest {
         BinaryFunction f = new UnaryCompositeBinaryFunction(
             new RightIdentity(),
             new ConstantFunction("K"),
-            new IdentityFunction());
+            new Identity());
         assertEquals("right",f.evaluate("left","right"));
         assertNull("right",f.evaluate("left",null));
         assertEquals("right",f.evaluate(null,"right"));
@@ -133,12 +133,12 @@ public class TestUnaryCompositeBinaryFunction extends BaseFunctorTest {
             new ConstantFunction("right")));
         assertObjectsAreNotEqual(f,new UnaryCompositeBinaryFunction(
             new LeftIdentity(),
-            new IdentityFunction(),
+            new Identity(),
             new ConstantFunction("right")));
         assertObjectsAreNotEqual(f,new UnaryCompositeBinaryFunction(
             new LeftIdentity(),
             new ConstantFunction("left"),
-            new IdentityFunction()));
+            new Identity()));
         assertObjectsAreNotEqual(f,new UnaryCompositeBinaryFunction(null,null,null));
         assertObjectsAreEqual(
             new UnaryCompositeBinaryFunction(null,null,null),

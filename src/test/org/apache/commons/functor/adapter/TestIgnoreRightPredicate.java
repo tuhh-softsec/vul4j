@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreRightPredicate.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreRightPredicate.java,v 1.2 2003/12/02 17:06:29 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,10 +62,10 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
-import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/02 17:06:29 $
  * @author Rodney Waldhoff
  */
 public class TestIgnoreRightPredicate extends BaseFunctorTest {
@@ -103,15 +103,15 @@ public class TestIgnoreRightPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testEvaluate() throws Exception {
-        BinaryPredicate p = new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new IdentityFunction()));
+        BinaryPredicate p = new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new Identity()));
         assertTrue(p.test(Boolean.TRUE,null));
         assertTrue(!p.test(Boolean.FALSE,null));
     }
     
     public void testEquals() throws Exception {
-        BinaryPredicate p = new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new IdentityFunction()));
+        BinaryPredicate p = new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new Identity()));
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new IdentityFunction())));
+        assertObjectsAreEqual(p,new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new Identity())));
         assertObjectsAreNotEqual(p,new ConstantPredicate(true));
         assertObjectsAreNotEqual(p,new IgnoreRightPredicate(new ConstantPredicate(false)));
         assertObjectsAreNotEqual(p,new ConstantPredicate(false));

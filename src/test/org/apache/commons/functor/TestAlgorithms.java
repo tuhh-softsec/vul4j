@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.10 2003/12/01 21:51:47 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.11 2003/12/02 17:06:30 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -69,7 +69,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
-import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.Identity;
 import org.apache.commons.functor.core.IsEqual;
 import org.apache.commons.functor.core.Limit;
 import org.apache.commons.functor.core.Offset;
@@ -78,7 +78,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 import org.apache.commons.functor.generator.util.IntegerRange;
 
 /**
- * @version $Revision: 1.10 $ $Date: 2003/12/01 21:51:47 $
+ * @version $Revision: 1.11 $ $Date: 2003/12/02 17:06:30 $
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {
@@ -241,7 +241,7 @@ public class TestAlgorithms extends TestCase {
 
     public void testApply2() {
         Set set = new HashSet();
-        assertSame(set,IteratorToGeneratorAdapter.adapt(Algorithms.apply(list.iterator(),IdentityFunction.instance())).to(set));
+        assertSame(set,IteratorToGeneratorAdapter.adapt(Algorithms.apply(list.iterator(),Identity.instance())).to(set));
         assertEquals(list.size(),set.size());
         for(Iterator iter = list.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -250,7 +250,7 @@ public class TestAlgorithms extends TestCase {
 
     public void testApply3() {
         Set set = new HashSet();
-        assertSame(set,IteratorToGeneratorAdapter.adapt(Algorithms.apply(listWithDuplicates.iterator(),IdentityFunction.instance())).to(set));
+        assertSame(set,IteratorToGeneratorAdapter.adapt(Algorithms.apply(listWithDuplicates.iterator(),Identity.instance())).to(set));
         assertTrue(listWithDuplicates.size() > set.size());
         for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.7 2003/12/02 16:50:53 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.8 2003/12/02 17:06:30 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,7 +75,7 @@ import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.IgnoreLeftFunction;
 import org.apache.commons.functor.adapter.UnaryProcedureUnaryFunction;
 import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.Identity;
 import org.apache.commons.functor.core.IsInstanceOf;
 import org.apache.commons.functor.core.IsNull;
 import org.apache.commons.functor.core.RightIdentity;
@@ -96,7 +96,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  */
  
 /**
- * @version $Revision: 1.7 $ $Date: 2003/12/02 16:50:53 $
+ * @version $Revision: 1.8 $ $Date: 2003/12/02 17:06:30 $
  * @author Rodney Waldhoff
  */
 public class FlexiMapExample extends TestCase {
@@ -457,7 +457,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * and passing through all non-null values.
                      */      
-                    IdentityFunction.instance()
+                    Identity.instance()
                 )
             ),
             null
@@ -491,7 +491,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * and passing through all non-null values.
                      */      
-					IdentityFunction.instance()
+					Identity.instance()
 				)
 			)
 		);
@@ -515,7 +515,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * and either pass the given value through,
                      */      
-					IdentityFunction.instance(),
+					Identity.instance(),
                     /*
                      * or throw a ClassCastException.
                      */      

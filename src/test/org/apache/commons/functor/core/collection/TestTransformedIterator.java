@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestTransformedIterator.java,v 1.2 2003/11/25 19:06:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestTransformedIterator.java,v 1.3 2003/12/02 17:06:30 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -67,10 +67,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/25 19:06:42 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:06:30 $
  * @author Rodney Waldhoff
  */
 public class TestTransformedIterator extends BaseFunctorTest {
@@ -89,7 +89,7 @@ public class TestTransformedIterator extends BaseFunctorTest {
     public Object makeFunctor() {
         List list = new ArrayList();
         list.add("xyzzy");        
-        return TransformedIterator.transform(list.iterator(),IdentityFunction.instance());
+        return TransformedIterator.transform(list.iterator(),Identity.instance());
     }
 
     // Lifecycle

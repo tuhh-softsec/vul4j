@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundFunction.java,v 1.3 2003/03/04 23:11:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundFunction.java,v 1.4 2003/12/02 17:06:29 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,10 +62,10 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Function;
 import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/03/04 23:11:12 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 17:06:29 $
  * @author Rodney Waldhoff
  */
 public class TestBoundFunction extends BaseFunctorTest {
@@ -85,7 +85,7 @@ public class TestBoundFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BoundFunction(new IdentityFunction(),"xyzzy");
+        return new BoundFunction(new Identity(),"xyzzy");
     }
 
     // Lifecycle
@@ -103,19 +103,19 @@ public class TestBoundFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testEvaluate() throws Exception {
-        Function f = new BoundFunction(new IdentityFunction(),"xyzzy");
+        Function f = new BoundFunction(new Identity(),"xyzzy");
         assertEquals("xyzzy",f.evaluate());
     }
     
     public void testEquals() throws Exception {
-        Function f = new BoundFunction(new IdentityFunction(),"xyzzy");
+        Function f = new BoundFunction(new Identity(),"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new BoundFunction(new IdentityFunction(),"xyzzy"));
+        assertObjectsAreEqual(f,new BoundFunction(new Identity(),"xyzzy"));
         assertObjectsAreNotEqual(f,new ConstantFunction("xyzzy"));
-        assertObjectsAreNotEqual(f,new BoundFunction(new IdentityFunction(),"foo"));
+        assertObjectsAreNotEqual(f,new BoundFunction(new Identity(),"foo"));
         assertObjectsAreNotEqual(f,new BoundFunction(new ConstantFunction("xyzzy"),"foo"));
         assertObjectsAreNotEqual(f,new BoundFunction(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new BoundFunction(new IdentityFunction(),null));
+        assertObjectsAreNotEqual(f,new BoundFunction(new Identity(),null));
         assertObjectsAreEqual(new BoundFunction(null,null),new BoundFunction(null,null));
     }
 
@@ -124,7 +124,7 @@ public class TestBoundFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BoundFunction.bind(new IdentityFunction(),"xyzzy"));
-        assertNotNull(BoundFunction.bind(new IdentityFunction(),null));
+        assertNotNull(BoundFunction.bind(new Identity(),"xyzzy"));
+        assertNotNull(BoundFunction.bind(new Identity(),null));
     }
 }

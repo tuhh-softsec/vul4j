@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryProcedure.java,v 1.4 2003/12/02 17:06:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIdentity.java,v 1.1 2003/12/02 17:06:29 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,44 +54,39 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core.composite;
+package org.apache.commons.functor.core;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.core.ConstantPredicate;
-import org.apache.commons.functor.core.Identity;
-import org.apache.commons.functor.core.NoOp;
+import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 17:06:30 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 17:06:29 $
  * @author Rodney Waldhoff
  */
-public class TestConditionalUnaryProcedure extends BaseFunctorTest {
+public class TestIdentity extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestConditionalUnaryProcedure(String testName) {
+    public TestIdentity(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestConditionalUnaryProcedure.class);
+        return new TestSuite(TestIdentity.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConditionalUnaryProcedure(
-            new ConstantPredicate(true),
-            new NoOp(),
-            new NoOp());
+        return new Identity();
     }
-
+    
     // Lifecycle
     // ------------------------------------------------------------------------
 
@@ -106,61 +101,42 @@ public class TestConditionalUnaryProcedure extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testRun() throws Exception {
-        RunCounter left = new RunCounter();
-        RunCounter right = new RunCounter();
-        ConditionalUnaryProcedure p = new ConditionalUnaryProcedure(
-            new Identity(),
-            left,
-            right);
-        assertEquals(0,left.count);
-        assertEquals(0,right.count);
-        p.run(Boolean.TRUE);
-        assertEquals(1,left.count);
-        assertEquals(0,right.count);
-        p.run(Boolean.FALSE);
-        assertEquals(1,left.count);
-        assertEquals(1,right.count);
-        p.run(Boolean.TRUE);
-        assertEquals(2,left.count);
-        assertEquals(1,right.count);
+    public void testEvaluate() throws Exception {
+        UnaryFunction f = new Identity();
+        assertNull(f.evaluate(null));
+        assertEquals("xyzzy",f.evaluate("xyzzy"));
+        assertEquals(new Integer(3),f.evaluate(new Integer(3)));
+        Object obj = new Long(12345L);
+        assertSame(obj,f.evaluate(obj));
     }
     
+    public void testTest() throws Exception {
+        UnaryPredicate p = new Identity();
+        assertTrue(p.test(Boolean.TRUE));
+        assertTrue(!p.test(Boolean.FALSE));
+        try {
+            p.test("true");
+            fail("Expected ClassCastException");
+        } catch(ClassCastException e) {
+            // expected
+        }
+        try {
+            p.test(null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+    }
     public void testEquals() throws Exception {
-        ConditionalUnaryProcedure p = new ConditionalUnaryProcedure(
-            new Identity(),
-            new NoOp(),
-            new NoOp());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new ConditionalUnaryProcedure(
-            new Identity(),
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
-            new ConstantPredicate(true),
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
-            null,
-            new NoOp(),
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
-            new Identity(),
-            null,
-            new NoOp()));
-        assertObjectsAreNotEqual(p,new ConditionalUnaryProcedure(
-            new Identity(),
-            new NoOp(),
-            null));
+        UnaryFunction f = new Identity();
+        assertEquals(f,f);
+        assertObjectsAreEqual(f,new Identity());
+        assertObjectsAreEqual(f,Identity.instance());
+        assertObjectsAreNotEqual(f,new ConstantFunction("abcde"));
     }
-
-    // Classes
-    // ------------------------------------------------------------------------
     
-    static class RunCounter implements UnaryProcedure {        
-        public void run(Object obj) {
-            count++;    
-        }        
-        public int count = 0;
+    public void testConstant() throws Exception {
+        assertEquals(Identity.instance(),Identity.instance());
+        assertSame(Identity.instance(),Identity.instance());
     }
 }
