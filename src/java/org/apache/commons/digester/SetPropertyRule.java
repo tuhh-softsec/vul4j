@@ -1,4 +1,4 @@
-/* $Id: SetPropertyRule.java,v 1.18 2004/05/10 06:30:06 skitching Exp $
+/* $Id: SetPropertyRule.java,v 1.19 2004/11/30 03:06:27 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -130,6 +130,9 @@ public class SetPropertyRule extends Rule {
 
         // Force an exception if the property does not exist
         // (BeanUtils.setProperty() silently returns in this case)
+        //
+        // This code should probably use PropertyUtils.isWriteable(), 
+        // like SetPropertiesRule does.
         if (top instanceof DynaBean) {
             DynaProperty desc =
                 ((DynaBean) top).getDynaClass().getDynaProperty(actualName);
