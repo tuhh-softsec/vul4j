@@ -67,6 +67,8 @@ import java.util.Vector;
 import javax.crypto.SecretKey;
 
 import org.apache.xml.security.Init;
+import org.apache.xml.security.encryption.EncryptedKey;
+import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.keys.content.KeyValue;
@@ -82,6 +84,7 @@ import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
@@ -588,6 +591,30 @@ public class KeyInfo extends SignatureElementProxy {
          return null;
       }
    }
+
+   /**
+	* Method itemEncryptedKey
+	*
+	* @param i
+	*
+	* @throws XMLEncryptionException
+	*/
+
+	public EncryptedKey itemEncryptedKey(int i) throws XMLSecurityException {
+
+		Element e = 
+			this.getChildElementLocalName(i, 
+										  EncryptionConstants.EncryptionSpecNS,
+										  EncryptionConstants._TAG_ENCRYPTEDKEY);
+
+		if (e != null) {
+			XMLCipher cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+			return cipher.loadEncryptedKey(e);
+		}
+		else {
+			return null;
+		}
+	}
 
    /**
     * Method itemUnknownElement

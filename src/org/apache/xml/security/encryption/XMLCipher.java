@@ -194,6 +194,7 @@ public class XMLCipher {
     private Map enc2JCE;
 	private Map enc2IV;
 	private Key localKey;
+	private Key localKEK;
 
     /**
      * Creates a new <code>XMLCipher</code>.
@@ -286,6 +287,8 @@ public class XMLCipher {
         }
 
         instance.algorithm = transformation;
+		instance.localKey = null;
+		instance.localKEK = null;
 
         try {
             String jceAlgorithm = (String) instance.enc2JCE.get(transformation);
@@ -331,6 +334,8 @@ public class XMLCipher {
 
         instance.algorithm = transformation;
 		instance.requestedJCEProvider = provider;
+		instance.localKey = null;
+		instance.localKEK = null;
 
         try {
             String jceAlgorithm = (String) instance.enc2JCE.get(transformation);
@@ -374,6 +379,24 @@ public class XMLCipher {
 		localKey = key;
 
     }
+
+	/**
+	 * Set a Key Encryption Key.
+	 * <p>
+	 * The Key Encryption Key (KEK) is used for encrypting/decrypting
+	 * EncryptedKey elements.  By setting this separately, the XMLCipher
+	 * class can know whether a key applies to the data part or wrapped key
+	 * part of an encrypted object.
+	 *
+	 * @param kek The key to use for de/encrypting key data
+	 */
+
+	public void setKEK(Key kek) {
+
+		localKEK = kek;
+
+	}
+  
 
     /**
      * Encrypts an <code>Element</code> and replaces it with its encrypted
@@ -829,8 +852,48 @@ public class XMLCipher {
 		return (encryptedData);
     }
 
+    /**
+     * Returns an <code>EncryptedKey</code> interface. Use this operation if
+     * you want to load an <code>EncryptedKey</code> structure from a DOM 
+	 * structure and manipulate the contents.
+     *
+     * @param context the context <code>Document</code>.
+     * @param element the <code>Element</code> that will be loaded
+     * @throws XMLEncryptionException.
+     */
 
+    public EncryptedKey loadEncryptedKey(Document context, Element element) 
+		throws XMLEncryptionException {
+        logger.debug("Loading encrypted key...");
+        if(null == context)
+            logger.error("Context document unexpectedly null...");
+        if(null == element)
+            logger.error("Element unexpectedly null...");
+        if(cipherMode != DECRYPT_MODE)
+            logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
 
+        instance.contextDocument = context;
+        EncryptedKey encryptedKey = factory.newEncryptedKey(element);
+
+		return (encryptedKey);
+    }
+
+    /**
+     * Returns an <code>EncryptedKey</code> interface. Use this operation if
+     * you want to load an <code>EncryptedKey</code> structure from a DOM 
+	 * structure and manipulate the contents.
+	 *
+	 * Assumes that the context document is the document that owns the element
+     *
+     * @param element the <code>Element</code> that will be loaded
+     * @throws XMLEncryptionException.
+     */
+
+    public EncryptedKey loadEncryptedKey(Element element) 
+		throws XMLEncryptionException {
+
+		return (loadEncryptedKey(element.getOwnerDocument(), element));
+    }
 
     /**
      * Decrypts an <code>EncryptedKey</code> object.
@@ -839,6 +902,97 @@ public class XMLCipher {
             XMLEncryptionException {
         return (null);
     }
+
+	/**
+	 * Decrypt a key from a passed in EncryptedKey structure
+	 *
+	 * @param encryptedKey Previously loaded EncryptedKey that needs
+	 * to be decrypted.
+	 * @param keyType a URI indicated the type of key that is wrapped
+	 * @returns a key corresponding to the give type
+	 */
+
+	public Key decryptKey(EncryptedKey encryptedKey, String algorithm) throws
+	            XMLEncryptionException {
+
+        logger.debug("Decrypting key from previously loaded EncryptedKey...");
+
+        if(cipherMode != DECRYPT_MODE)
+            logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+
+		if (localKEK == null) {
+			// For now take the easy apprach and just throw
+			logger.error("XMLCipher::decryptKey called without a KEK");
+			throw new XMLEncryptionException("Unable to decrypt without a KEK");
+		}
+
+		CipherData cipherData = encryptedKey.getCipherData();
+        String base64EncodedEncryptedOctets = null;
+
+        if (cipherData.getDataType() == CipherData.REFERENCE_TYPE) {
+            // retrieve the cipher text
+        } else if (cipherData.getDataType() == CipherData.VALUE_TYPE) {
+            CipherValue cipherValue = cipherData.getCipherValue();
+            base64EncodedEncryptedOctets = new String(cipherValue.getValue());
+        } else {
+            // complain...
+        }
+        logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
+
+        byte[] encryptedBytes = null;
+
+        try {
+			encryptedBytes = Base64.decode(base64EncodedEncryptedOctets);
+        } catch (Base64DecodingException bde) {
+            throw new XMLEncryptionException("empty", bde);
+        }
+
+		// Now create the working cipher
+
+		String jceAlgorithm = 
+			JCEMapper.translateURItoJCEID(encryptedKey.getEncryptionMethod()
+										  .getAlgorithm()).getAlgorithmID();
+		String provider;
+
+		if (requestedJCEProvider == null)
+			provider =
+				JCEMapper.translateURItoJCEID(encryptedKey
+											  .getEncryptionMethod()
+											  .getAlgorithm())
+				.getProviderId();
+		else
+			provider = requestedJCEProvider;
+
+		String jceKeyAlgorithm = 
+			JCEMapper.getJCEKeyAlgorithmFromURI(algorithm, provider);
+
+		Cipher c;
+		try {
+			c = Cipher.getInstance(jceAlgorithm, provider);
+		} catch (NoSuchAlgorithmException nsae) {
+			throw new XMLEncryptionException("empty", nsae);
+		} catch (NoSuchProviderException nspre) {
+			throw new XMLEncryptionException("empty", nspre);
+		} catch (NoSuchPaddingException nspae) {
+			throw new XMLEncryptionException("empty", nspae);
+		}
+
+		Key ret;
+
+		try {		
+			c.init(Cipher.UNWRAP_MODE, localKEK);
+			ret = c.unwrap(encryptedBytes, jceKeyAlgorithm, Cipher.SECRET_KEY);
+			
+		} catch (InvalidKeyException ike) {
+			throw new XMLEncryptionException("empty", ike);
+		} catch (NoSuchAlgorithmException nsae) {
+			throw new XMLEncryptionException("empty", nsae);
+		}
+
+		return ret;
+
+    }
+		
 
     /**
      * Removes the contents of a <code>Node</code>.
@@ -869,6 +1023,12 @@ public class XMLCipher {
 
         if(cipherMode != DECRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+
+		if (localKey == null) {
+			// For now take the easy apprach and just throw
+			logger.error("XMLCipher::decryptElement called without a key");
+			throw new XMLEncryptionException("Unable to decrypt without a key");
+		}
 
         EncryptedData encryptedData = factory.newEncryptedData(element);
 
@@ -1508,10 +1668,16 @@ public class XMLCipher {
 			XMLEncryptionException {
             EncryptedData result = null;
 
+			NodeList dataElements = element.getElementsByTagNameNS(
+                    EncryptionConstants.EncryptionSpecNS,
+                    EncryptionConstants._TAG_CIPHERDATA);
+
+			// Need to get the last CipherData found, as earlier ones will
+			// be for elements in the KeyInfo lists
+
             Element dataElement =
-                (Element) element.getElementsByTagNameNS(
-                    EncryptionConstants.EncryptionSpecNS, 
-                    EncryptionConstants._TAG_CIPHERDATA).item(0);
+				(Element) dataElements.item(dataElements.getLength() - 1);
+
             CipherData data = newCipherData(dataElement);
 
             result = newEncryptedData(data);
@@ -1599,11 +1765,12 @@ public class XMLCipher {
         EncryptedKey newEncryptedKey(Element element) throws
                 XMLEncryptionException {
             EncryptedKey result = null;
-
-            Element dataElement =
-                (Element) element.getElementsByTagNameNS(
+			NodeList dataElements = element.getElementsByTagNameNS(
                     EncryptionConstants.EncryptionSpecNS,
-                    EncryptionConstants._TAG_CIPHERDATA).item(0);
+                    EncryptionConstants._TAG_CIPHERDATA);
+            Element dataElement =
+				(Element) dataElements.item(dataElements.getLength() - 1);
+
             CipherData data = newCipherData(dataElement);
             result = newEncryptedKey(data);
 
@@ -1633,12 +1800,16 @@ public class XMLCipher {
                     encryptionMethodElement));
             }
 
-            // TODO: Implement
             Element keyInfoElement =
                 (Element) element.getElementsByTagNameNS(
                     Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
             if (null != keyInfoElement) {
-                result.setKeyInfo(null);
+				try {
+					result.setKeyInfo(new KeyInfo(keyInfoElement, null));
+				} catch (XMLSecurityException xse) {
+					throw new XMLEncryptionException("Error loading Key Info", 
+													 xse);
+				}
             }
 
             // TODO: Implement
