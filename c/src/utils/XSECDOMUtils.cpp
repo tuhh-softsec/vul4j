@@ -646,3 +646,69 @@ XMLCh * decodeDName(const XMLCh * toDecode) {
 
 }
 
+// --------------------------------------------------------------------------------
+//           Misc string functions
+// --------------------------------------------------------------------------------
+
+// These three functions are pretty much lifted from XMLURL.cpp in Xerces
+
+static bool isHexDigit(const XMLCh toCheck)
+{
+    if ((toCheck >= chDigit_0) && (toCheck <= chDigit_9)
+    ||  (toCheck >= chLatin_A) && (toCheck <= chLatin_Z)
+    ||  (toCheck >= chLatin_a) && (toCheck <= chLatin_z))
+    {
+        return true;
+    }
+    return false;
+}
+
+static unsigned int xlatHexDigit(const XMLCh toXlat)
+{
+    if ((toXlat >= chDigit_0) && (toXlat <= chDigit_9))
+        return (unsigned int)(toXlat - chDigit_0);
+
+    if ((toXlat >= chLatin_A) && (toXlat <= chLatin_Z))
+        return (unsigned int)(toXlat - chLatin_A) + 10;
+
+    return (unsigned int)(toXlat - chLatin_a) + 10;
+}
+
+XMLCh * cleanURIEscapes(const XMLCh * str) {
+
+	// Taken from Xerces XMLURI.cpp
+
+	XMLCh * retPath = XMLString::replicate(str);
+	ArrayJanitor<XMLCh> j_retPath(retPath);
+
+	int len = XMLString::stringLen(retPath);
+	int percentIndex = XMLString::indexOf(retPath, chPercent, 0);
+
+	while (percentIndex != -1) {
+
+		if (percentIndex+2 >= len ||
+			!isHexDigit(retPath[percentIndex+1]) ||
+			!isHexDigit(retPath[percentIndex+2]))
+			
+			throw XSECException(XSECException::ErrorOpeningURI, 
+					"Bad escape sequence in URI");
+
+		unsigned int value = (xlatHexDigit(retPath[percentIndex+1]) * 16) +
+						     (xlatHexDigit(retPath[percentIndex+2]));
+
+		retPath[percentIndex] = XMLCh(value);
+		int i = 0;
+		for (i = percentIndex+1 ; i < len - 2; ++i)
+			retPath[i] = retPath[i+2];
+		retPath[i] = chNull;
+		len = i;
+
+		percentIndex = XMLString::indexOf(retPath, chPercent, percentIndex);
+
+	}
+
+	j_retPath.release();
+	return retPath;
+
+}
+

@@ -169,6 +169,11 @@ XMLCh * decodeDName(const XMLCh * toDecode);
 //           String Functions 
 // --------------------------------------------------------------------------------
 
+// Remove escape (%XX) characters from URIs and return a new buffer containing the
+// "cleaned" string
+
+XMLCh * cleanURIEscapes(const XMLCh * str);
+
 inline
 bool strEquals (const XMLCh * str1, const XMLCh *str2) {
 
