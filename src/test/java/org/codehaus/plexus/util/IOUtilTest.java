@@ -469,6 +469,8 @@ public final class IOUtilTest
         assertTrue( "Wrong output size: file.length()=" +
                     file.length() + "!=" + FILE_SIZE + 1,
                     file.length() == FILE_SIZE + 1 );
+        
+        System.gc();
 
         assertTrue( "File would not delete", ( file.delete() || ( !file.exists() ) ) );
     }
