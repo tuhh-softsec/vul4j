@@ -60,11 +60,8 @@ package org.apache.xml.security.exceptions;
 
 
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.text.MessageFormat;
 
-import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.I18n;
 
 
@@ -101,23 +98,12 @@ import org.apache.xml.security.utils.I18n;
  * @author Christian Geuer-Pollmann
  */
 public class XMLSecurityException extends Exception {
-
-   /** Field originalException */
-   protected Exception originalException = null;
-
-   /** Field msgID */
-   protected String msgID;
-
    /**
     * Constructor XMLSecurityException
     *
     */
    public XMLSecurityException() {
-
-      super("Missing message string");
-
-      this.msgID = null;
-      this.originalException = null;
+      super();
    }
 
    /**
@@ -125,12 +111,8 @@ public class XMLSecurityException extends Exception {
     *
     * @param msgID
     */
-   public XMLSecurityException(String msgID) {
-
-      super(I18n.getExceptionMessage(msgID));
-
-      this.msgID = msgID;
-      this.originalException = null;
+   public XMLSecurityException(String message) {
+      super(message);
    }
 
    /**
@@ -140,11 +122,7 @@ public class XMLSecurityException extends Exception {
     * @param exArgs
     */
    public XMLSecurityException(String msgID, Object exArgs[]) {
-
       super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
-
-      this.msgID = msgID;
-      this.originalException = null;
    }
 
    /**
@@ -152,29 +130,16 @@ public class XMLSecurityException extends Exception {
     *
     * @param originalException
     */
-   public XMLSecurityException(Exception originalException) {
-
-      super("Missing message ID to locate message string in resource bundle \""
-            + Constants.exceptionMessagesResourceBundleBase
-            + "\". Original Exception was a "
-            + originalException.getClass().getName() + " and message "
-            + originalException.getMessage());
-
-      this.originalException = originalException;
+   public XMLSecurityException(Throwable cause) {
+		super(cause);
    }
 
    /**
-    * Constructor XMLSecurityException
-    *
-    * @param msgID
-    * @param originalException
+    * @param message
+    * @param cause
     */
-   public XMLSecurityException(String msgID, Exception originalException) {
-
-      super(I18n.getExceptionMessage(msgID, originalException));
-
-      this.msgID = msgID;
-      this.originalException = originalException;
+   public XMLSecurityException(String message, Throwable cause) {
+		super(message, cause);
    }
 
    /**
@@ -186,100 +151,6 @@ public class XMLSecurityException extends Exception {
     */
    public XMLSecurityException(String msgID, Object exArgs[],
                                Exception originalException) {
-
       super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
-
-      this.msgID = msgID;
-      this.originalException = originalException;
-   }
-
-   /**
-    * Method getMsgID
-    *
-    *
-    */
-   public String getMsgID() {
-
-      if (msgID == null) {
-         return "Missing message ID";
-      } else {
-         return msgID;
-      }
-   }
-
-   /**
-    * Method toString
-    *
-    *
-    */
-   public String toString() {
-
-      String s = this.getClass().getName();
-      String message = super.getLocalizedMessage();
-
-      if (message != null) {
-         message = s + ": " + message;
-      } else {
-         message = s;
-      }
-
-      if (originalException != null) {
-         message = message + "\nOriginal Exception was "
-                   + originalException.toString();
-      }
-
-      return message;
-   }
-
-   /**
-    * Method printStackTrace
-    *
-    */
-   public void printStackTrace() {
-
-      synchronized (System.err) {
-         super.printStackTrace(System.err);
-
-         if (this.originalException != null) {
-            this.originalException.printStackTrace(System.err);
-         }
-      }
-   }
-
-   /**
-    * Method printStackTrace
-    *
-    * @param printwriter
-    */
-   public void printStackTrace(PrintWriter printwriter) {
-
-      super.printStackTrace(printwriter);
-
-      if (this.originalException != null) {
-         this.originalException.printStackTrace(printwriter);
-      }
-   }
-
-   /**
-    * Method printStackTrace
-    *
-    * @param printstream
-    */
-   public void printStackTrace(PrintStream printstream) {
-
-      super.printStackTrace(printstream);
-
-      if (this.originalException != null) {
-         this.originalException.printStackTrace(printstream);
-      }
-   }
-
-   /**
-    * Method getOriginalException
-    *
-    *
-    */
-   public Exception getOriginalException() {
-      return originalException;
    }
 }
