@@ -224,6 +224,8 @@ public class Init {
                      log.fatal(I18n.translate("algorithm.classDoesNotExist",
                                               exArgs));
 
+                  } catch (NoClassDefFoundError ex) {
+					  log.warn("Not able to found dependecies for algorithm, I'm keep working.");
                   }
                }
                XX_configure_reg_transforms_end = System.currentTimeMillis();
