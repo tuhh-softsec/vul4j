@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 The Apache Software Foundation.
+ * Copyright 2002-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,7 +11,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * imitations under the License.
+ * limitations under the License.
  */
 
 /*
@@ -26,6 +26,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.6  2005/02/03 13:56:22  milan
+ * Apache licence fix.
+ *
  * Revision 1.5  2004/02/08 10:25:40  blautenb
  * Convert to Apache 2.0 license
  *
