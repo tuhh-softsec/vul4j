@@ -30,9 +30,11 @@
 #include <xsec/xkms/XKMSConstants.hpp>
 
 #include <xercesc/dom/DOM.hpp>
+#include <xercesc/util/Janitor.hpp>
 
 #include "XKMSMessageFactoryImpl.hpp"
 #include "XKMSLocateRequestImpl.hpp"
+#include "XKMSLocateResultImpl.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -115,6 +117,21 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 	}
 
+	else if (strEquals(name, XKMSConstants::s_tagLocateResult)) {
+
+		// This is a <LocateRequest> message
+		XKMSLocateResultImpl * ret;
+		XSECnew(ret, XKMSLocateResultImpl(new XSECEnv(*mp_env), elt));
+		Janitor<XKMSLocateResultImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return ret;
+
+	}
+
+
 	return NULL;
 
 }
@@ -162,3 +179,46 @@ XKMSLocateRequest * XKMSMessageFactoryImpl::createLocateRequest(
 
 	return lri;
 }
+
+XKMSLocateResult * XKMSMessageFactoryImpl::createLocateResult(
+		XKMSLocateRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSLocateResultImpl * lri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(lri, XKMSLocateResultImpl(tenv));
+	lri->createBlankLocateResult(request->getService(), id, rmaj, rmin);
+
+	return lri;
+
+}
+
+XKMSLocateResult * XKMSMessageFactoryImpl::createLocateResult(
+		XKMSLocateRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSLocateResult * lr = createLocateResult(request, *doc, rmaj, rmin, id);
+	(*doc)->appendChild(lr->getElement());
+
+	return lr;
+}
+

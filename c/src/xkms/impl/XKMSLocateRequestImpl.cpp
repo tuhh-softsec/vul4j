@@ -123,13 +123,6 @@ DOMElement * XKMSLocateRequestImpl::createBlankLocateRequest(
 //           Get interface methods
 // --------------------------------------------------------------------------------
 
-
-DOMElement * XKMSLocateRequestImpl::getElement(void) const {
-
-	return mp_messageAbstractTypeElement;
-
-}
-
 XKMSMessageAbstractType::messageType XKMSLocateRequestImpl::getMessageType(void) {
 
 	return XKMSMessageAbstractType::LocateRequest;

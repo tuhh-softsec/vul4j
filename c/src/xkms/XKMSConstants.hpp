@@ -55,12 +55,23 @@ public:
 	static const XMLCh s_tagId[];
 	static const XMLCh s_tagKeyInfo[];
 	static const XMLCh s_tagKeyUsage[];
+	static const XMLCh s_tagKeyValue[];
 	static const XMLCh s_tagLocateRequest[];
+	static const XMLCh s_tagLocateResult[];
 	static const XMLCh s_tagNonce[];
 	static const XMLCh s_tagQueryKeyBinding[];
+	static const XMLCh s_tagRequestId[];
 	static const XMLCh s_tagRespondWith[];
+	static const XMLCh s_tagResultMajor[];
+	static const XMLCh s_tagResultMinor[];
 	static const XMLCh s_tagService[];
 	static const XMLCh s_tagSignature[];
+	static const XMLCh s_tagUnverifiedKeyBinding[];
+
+	// ResultMajor codes
+
+	static const XMLCh s_tagResultMajorCodes[][16];
+	static const XMLCh s_tagResultMinorCodes[][20];
 
 	XKMSConstants();
 

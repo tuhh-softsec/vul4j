@@ -63,7 +63,6 @@ public:
 
 	/* Getter Interface Methods */
 
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const;
 	virtual XKMSQueryKeyBinding * getQueryKeyBinding(void);
 
 	/* Setter interface methods */
@@ -73,22 +72,7 @@ public:
 	virtual messageType getMessageType(void);
 
 	/* Forced inheritance from XKMSMessageAbstractTypeImpl */
-	virtual bool isSigned(void) const
-		{return XKMSMessageAbstractTypeImpl::isSigned();}
-	virtual DSIGSignature * getSignature(void) const
-		{return XKMSMessageAbstractTypeImpl::getSignature();}
-	virtual const XMLCh * getId(void) const
-		{return XKMSMessageAbstractTypeImpl::getId();}
-	virtual const XMLCh * getService(void) const
-		{return XKMSMessageAbstractTypeImpl::getService();}
-	virtual const XMLCh * getNonce(void) const
-		{return XKMSMessageAbstractTypeImpl::getNonce();}
-	virtual void setId(const XMLCh * id)
-		{XKMSMessageAbstractTypeImpl::setId(id);}
-	virtual void setService(const XMLCh * service)
-		{XKMSMessageAbstractTypeImpl::setService(service);}
-	virtual void setNonce(const XMLCh * uri)
-		{XKMSMessageAbstractTypeImpl::setNonce(uri);}
+	XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS
 
 	/* Forced inheritance from RequestAbstractType */
 	virtual const XMLCh * getOriginalRequestId(void) const

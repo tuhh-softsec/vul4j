@@ -30,9 +30,11 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/xkms/XKMSMessageAbstractType.hpp>
+#include <xsec/xkms/XKMSResultType.hpp>
 
 class DSIGSignature;
 class XKMSLocateRequest;
+class XKMSLocateResult;
 
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
@@ -136,6 +138,51 @@ public:
 	virtual XKMSLocateRequest * createLocateRequest(
 		const XMLCh * service,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<LocateResult\> message.
+	 * 
+	 * Generates a new LocateResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input LocateRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSLocateResponse structure
+	 */
+
+	virtual XKMSLocateResult * createLocateResult(
+		XKMSLocateRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<LocateResult\> message and surrounding document
+	 * 
+	 * Generates a new LocateResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input LocateRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSLocateResponse structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleteing the LocateRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSLocateResult * createLocateResult(
+		XKMSLocateRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
 		const XMLCh * id = NULL) = 0;
 
 	//@}

@@ -95,7 +95,8 @@ public:
 	enum messageType {
 
 		None,					/** A default value that indicates something hasn't been set */
-		LocateRequest			/** A LocateRequest message */
+		LocateRequest,			/** A LocateRequest message */
+		LocateResult			/** A LocateResult message */
 
 	};
 

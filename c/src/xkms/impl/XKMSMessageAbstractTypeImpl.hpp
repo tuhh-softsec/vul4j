@@ -112,4 +112,26 @@ private:
 
 };
 
+#define XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS \
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * \
+		getElement(void) const \
+		{return XKMSMessageAbstractTypeImpl::getElement();} \
+	virtual bool isSigned(void) const \
+		{return XKMSMessageAbstractTypeImpl::isSigned();} \
+	virtual DSIGSignature * getSignature(void) const \
+		{return XKMSMessageAbstractTypeImpl::getSignature();} \
+	virtual const XMLCh * getId(void) const \
+		{return XKMSMessageAbstractTypeImpl::getId();} \
+	virtual const XMLCh * getService(void) const \
+		{return XKMSMessageAbstractTypeImpl::getService();} \
+	virtual const XMLCh * getNonce(void) const \
+		{return XKMSMessageAbstractTypeImpl::getNonce();} \
+	virtual void setId(const XMLCh * id) \
+		{XKMSMessageAbstractTypeImpl::setId(id);} \
+	virtual void setService(const XMLCh * service) \
+		{XKMSMessageAbstractTypeImpl::setService(service);} \
+	virtual void setNonce(const XMLCh * uri) \
+		{XKMSMessageAbstractTypeImpl::setNonce(uri);} \
+
+
 #endif /* XKMSMESSAGEABSTRACTTYPEIMPL_INCLUDE */
