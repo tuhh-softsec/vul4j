@@ -81,7 +81,9 @@
 #include <xsec/transformers/TXFMBase64.hpp>
 #include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/transformers/TXFMSB.hpp>
+#include <xsec/transformers/TXFMC14n.hpp>
 #include <xsec/framework/XSECEnv.hpp>
+#include <xsec/dsig/DSIGReference.hpp>
 
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/util/Janitor.hpp>
@@ -392,10 +394,31 @@ TXFMChain * XENCEncryptedTypeImpl::createCipherTXFMChain(void) {
 
 	}
 
+	else if (mp_cipherData->getCipherDataType() == XENCCipherData::REFERENCE_TYPE) {
+
+		TXFMChain * chain;
+		TXFMBase * b = DSIGReference::getURIBaseTXFM(mp_env->getParentDocument(), mp_cipherData->getCipherReference()->getURI(), mp_env->getURIResolver());
+
+		chain = DSIGReference::createTXFMChainFromList(b, mp_cipherData->getCipherReference()->getTransforms());
+		Janitor<TXFMChain> j_chain(chain);
+
+		if (chain->getLastTxfm()->getOutputType() == TXFMBase::DOM_NODES) {
+
+			TXFMC14n * c14n;
+			XSECnew(c14n, TXFMC14n(mp_env->getParentDocument()));
+			chain->appendTxfm(c14n);
+
+		}
+
+		j_chain.release();
+		return chain;
+
+	}
+
 	else {
 
 		throw XSECException(XSECException::EncryptedTypeError,
-			"XENCEncryptedType::createDecryptionTXFMChain - cannot process non CipherValue elements");
+			"XENCEncryptedType::createDecryptionTXFMChain - Unknown type of CipherData");
 
 	}
 

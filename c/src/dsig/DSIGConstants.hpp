@@ -399,6 +399,7 @@ public:
 	static const XMLCh * s_unicodeStrEmpty;		// ""
 	static const XMLCh * s_unicodeStrNL;			// "\n"
 	static const XMLCh * s_unicodeStrXmlns;		// "xmlns"
+	static const XMLCh * s_unicodeStrURI;		// "URI"
 
 	// DSIG Element Strings
 	static const XMLCh * s_unicodeStrAlgorithm;

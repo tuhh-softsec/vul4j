@@ -466,7 +466,8 @@ public:
 	 * @param type Should this set up a CipherReference or a CipherValue
 	 * @param algorithm URI string to use for the Algorithm attribute in EncryptionMethod.
 	 * Set to NULL for no defined algorithm.
-	 * @param value String to set the cipher data to if the type is VALUE_TYPE
+	 * @param value String to set the cipher data to if the type is VALUE_TYPE.
+	 * for REFERENCE_TYPE CipherData elements, this should be the URI value.
 	 * @returns An XENCEncryptedData object
 	 */
 

@@ -76,6 +76,7 @@
 const XMLCh * DSIGConstants::s_unicodeStrEmpty;		// ""
 const XMLCh * DSIGConstants::s_unicodeStrNL;			// "\n"
 const XMLCh * DSIGConstants::s_unicodeStrXmlns;		// "xmlns"
+const XMLCh * DSIGConstants::s_unicodeStrURI;
 
 const XMLCh * DSIGConstants::s_unicodeStrAlgorithm;
 
@@ -129,6 +130,7 @@ void DSIGConstants::create() {
 	s_unicodeStrEmpty = XMLString::transcode("");
 	s_unicodeStrNL = XMLString::transcode("\n");
 	s_unicodeStrXmlns = XMLString::transcode("xmlns");
+	s_unicodeStrURI = XMLString::transcode("URI");
 
 	s_unicodeStrAlgorithm = XMLString::transcode("Algorithm");
 
@@ -179,6 +181,7 @@ void DSIGConstants::destroy() {
 	delete[] (XMLCh *) s_unicodeStrEmpty;
 	delete[] (XMLCh *) s_unicodeStrNL;
 	delete[] (XMLCh *) s_unicodeStrXmlns;
+	delete[] (XMLCh *) s_unicodeStrURI;
 
 	delete[] (XMLCh *) s_unicodeStrAlgorithm;
 

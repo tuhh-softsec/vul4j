@@ -77,6 +77,7 @@
 #include "XENCCipherImpl.hpp"
 
 class XENCCipherValueImpl;
+class XENCCipherReferenceImpl;
 
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
@@ -102,6 +103,7 @@ public:
 	// Interface methods
 	virtual XENCCipherDataType getCipherDataType(void);
 	virtual XENCCipherValue * getCipherValue(void);
+	virtual XENCCipherReference * getCipherReference(void);
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
 		{return mp_cipherDataNode;}
 
@@ -117,6 +119,7 @@ private:
 
 	XENCCipherDataType		m_cipherDataType;			// Is this a value or a reference?
 	XENCCipherValueImpl		* mp_cipherValue;			// Cipher value node
+	XENCCipherReferenceImpl		* mp_cipherReference;			// Cipher Reference node
 };
 
 #endif /* XENCCIPHERDATAIMPL_INCLUDE */

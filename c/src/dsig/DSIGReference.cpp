@@ -1016,7 +1016,8 @@ DSIGTransformList * DSIGReference::loadTransforms(
 	// This is defined as a static function, not because it makes use of any static variables
 	// in the DSIGReference class, but to neatly link it to the other users
 
-	if (transformsNode == 0 || !strEquals(getDSIGLocalName(transformsNode), "Transforms")) {
+	if (transformsNode == 0 || (!strEquals(getDSIGLocalName(transformsNode), "Transforms") &&
+		!strEquals(getXENCLocalName(transformsNode), "Transforms"))) {
 
 			throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
 					"Expected <Transforms> in function DSIGReference::processTransforms");

@@ -74,6 +74,7 @@
 #include <xsec/framework/XSECDefs.hpp>
 
 #include <xsec/xenc/XENCCipherValue.hpp>
+#include <xsec/xenc/XENCCipherReference.hpp>
 
 /**
  * @ingroup xenc
@@ -144,6 +145,14 @@ public:
 	 */
 
 	virtual XENCCipherValue * getCipherValue(void) = 0;
+
+	/**
+	 * \brief Get the CipherReference element
+	 *
+	 * @returns the CipherReference element, or NULL if one is not held
+	 */
+
+	virtual XENCCipherReference * getCipherReference(void) = 0;
 
 	/**
 	 * \brief Get the DOM Node of this structure

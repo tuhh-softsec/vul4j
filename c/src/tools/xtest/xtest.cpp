@@ -117,6 +117,7 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/utils/XSECNameSpaceExpander.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+#include <xsec/utils/XSECBinTXFMInputStream.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
@@ -285,6 +286,9 @@ XMLCh s_tstMimeType[] = {
 };
 
 unsigned char s_tstOAEPparams[] = "12345678";
+
+unsigned char s_tstBase64EncodedString[] = "YmNkZWZnaGlqa2xtbm9wcRrPXjQ1hvhDFT+EdesMAPE4F6vlT+y0HPXe0+nAGLQ8";
+char s_tstDecryptedString[] = "A test encrypted secret";
 
 // --------------------------------------------------------------------------------
 //           Some test keys
@@ -837,6 +841,106 @@ count(ancestor-or-self::dsig:Signature)");
 //           Unit tests for test encrypt/Decrypt
 // --------------------------------------------------------------------------------
 
+void unitTestCipherReference(DOMImplementation * impl) {
+
+	DOMDocument *doc = impl->createDocument(
+				0,                    // root element namespace URI.
+				MAKE_UNICODE_STRING("ADoc"),            // root element name
+				NULL);// DOMDocumentType());  // document type object (DTD).
+
+	DOMElement *rootElem = doc->getDocumentElement();
+
+	// Use key k to wrap a test key, decrypt it and make sure it is still OK
+	XSECProvider prov;
+	XENCCipher * cipher;
+
+	try {
+
+		cipher = prov.newCipher(doc);
+
+		cerr << "Creating CipherReference ... ";
+
+		XENCEncryptedData * xenc = 
+			cipher->createEncryptedData(XENCCipherData::REFERENCE_TYPE, DSIGConstants::s_unicodeStrURIAES128_CBC, MAKE_UNICODE_STRING("#CipherText"));
+
+		rootElem->appendChild(xenc->getDOMNode());
+
+		// Now create the data that is referenced
+		DOMElement * cipherVal = doc->createElement(MAKE_UNICODE_STRING("MyCipherValue"));
+		rootElem->appendChild(cipherVal);
+		cipherVal->setAttribute(MAKE_UNICODE_STRING("Id"), MAKE_UNICODE_STRING("CipherText"));
+		cipherVal->setIdAttribute(MAKE_UNICODE_STRING("Id"));
+
+		cipherVal->appendChild(doc->createTextNode(MAKE_UNICODE_STRING((char *) s_tstBase64EncodedString)));
+
+		// Now add the transforms necessary to decrypt
+		XENCCipherReference *cref = xenc->getCipherData()->getCipherReference();
+
+		if (cref == NULL) {
+			cerr << "Failed - no CipherReference object" << endl;
+			exit(1);
+		}
+
+		cerr << "done ... appending XPath and Base64 transforms ... ";
+
+		//cref->appendXPathTransform("self::text()[parent::rep:CipherValue[@Id="example1"]]");
+		cref->appendXPathTransform("self::text()[parent::MyCipherValue[@Id=\"CipherText\"]]");
+		cref->appendBase64Transform();
+
+		cerr << "done ... decrypting ... ";
+
+		// Create a key
+		XSECCryptoSymmetricKey * ks =
+				XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
+		ks->setKey((unsigned char *) s_keyStr, 16);
+
+		cipher->setKey(ks);
+
+		// Now try to decrypt
+		DOMNode * n = findXENCNode(doc, "EncryptedData");
+
+		XSECBinTXFMInputStream *is = cipher->decryptToBinInputStream((DOMElement *) n);
+		Janitor<XSECBinTXFMInputStream> j_is(is);
+
+		XMLByte buf[1024];
+
+		cerr << "done ... comparing to known good ... ";
+
+		int bytesRead = is->readBytes(buf, 1024);
+		buf[bytesRead] = '\0';
+		if (strcmp((char *) buf, s_tstDecryptedString) == 0) {
+			cerr << "OK" << endl;
+		}
+		else {
+			cerr << "failed - bad compare of decrypted data" << endl;
+		}
+
+	}
+
+	catch (XSECException &e)
+	{
+		cerr << "failed\n";
+		cerr << "An error occured during signature processing\n   Message: ";
+		char * ce = XMLString::transcode(e.getMsg());
+		cerr << ce << endl;
+		delete ce;
+		exit(1);
+		
+	}	
+	catch (XSECCryptoException &e)
+	{
+		cerr << "failed\n";
+		cerr << "A cryptographic error occured during signature processing\n   Message: "
+		<< e.getMsg() << endl;
+		exit(1);
+	}
+
+	outputDoc(impl, doc);
+	doc->release();
+
+}
+
+
 void unitTestElementContentEncrypt(DOMImplementation *impl, XSECCryptoKey * key, encryptionMethod em, bool doElementContent) {
 
 	if (doElementContent)
@@ -1165,6 +1269,8 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_3DES_CBC, false);
 		unitTestElementContentEncrypt(impl, ks, ENCRYPT_3DES_CBC, true);
 
+		cerr << "Unit testing CipherReference creation and decryption" << endl;
+		unitTestCipherReference(impl);
 
 	}
 	catch (XSECCryptoException &e)

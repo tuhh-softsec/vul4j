@@ -69,6 +69,7 @@
 
 #include "XENCCipherDataImpl.hpp"
 #include "XENCCipherValueImpl.hpp"
+#include "XENCCipherReferenceImpl.hpp"
 
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
@@ -140,7 +141,8 @@ static XMLCh s_CipherReference[] = {
 XENCCipherDataImpl::XENCCipherDataImpl(const XSECEnv * env) :
 mp_env(env),
 mp_cipherDataNode(NULL),
-mp_cipherValue(NULL) {
+mp_cipherValue(NULL),
+mp_cipherReference(NULL) {
 
 }
 
@@ -148,7 +150,8 @@ mp_cipherValue(NULL) {
 XENCCipherDataImpl::XENCCipherDataImpl(const XSECEnv * env, DOMNode * node) :
 mp_env(env),
 mp_cipherDataNode(node),
-mp_cipherValue(NULL) {
+mp_cipherValue(NULL),
+mp_cipherReference(NULL) {
 
 }
 
@@ -156,6 +159,9 @@ XENCCipherDataImpl::~XENCCipherDataImpl() {
 
 	if (mp_cipherValue != NULL)
 		delete mp_cipherValue;
+	if (mp_cipherReference != NULL)
+		delete mp_cipherReference;
+
 }
 
 // --------------------------------------------------------------------------------
@@ -194,7 +200,9 @@ void XENCCipherDataImpl::load() {
 
 	else if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_CipherReference)) {
 
-		m_cipherDataType = NO_TYPE;
+		m_cipherDataType = REFERENCE_TYPE;
+		XSECnew(mp_cipherReference, XENCCipherReferenceImpl(mp_env, tmpElt));
+		mp_cipherReference->load();
 
 	}
 
@@ -251,6 +259,19 @@ DOMElement * XENCCipherDataImpl::createBlankCipherData(
 
 	}
 
+	else if (type == REFERENCE_TYPE) {
+
+		m_cipherDataType = REFERENCE_TYPE;
+
+		// Create the Cipher Reference
+		XSECnew(mp_cipherReference, XENCCipherReferenceImpl(mp_env));
+		DOMNode * cipherReferenceNode = mp_cipherReference->createBlankCipherReference(value);
+
+		ret->appendChild(cipherReferenceNode);
+		mp_env->doPrettyPrint(ret);
+
+	}
+
 	return ret;
 
 }
@@ -272,4 +293,9 @@ XENCCipherValue * XENCCipherDataImpl::getCipherValue(void) {
 
 }
 
+XENCCipherReference * XENCCipherDataImpl::getCipherReference(void) {
+
+	return mp_cipherReference;
+
+}
 

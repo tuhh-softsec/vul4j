@@ -113,21 +113,24 @@ void DSIGTransformBase64::appendTransformer(TXFMChain * input) {
 
 	if (input->getLastTxfm()->getOutputType() == TXFMBase::DOM_NODES) {
 
+		if (input->getLastTxfm()->getNodeType() != TXFMBase::DOM_NODE_XPATH_NODESET) {
 
 #ifdef XSEC_NO_XPATH
 
-		throw XSECException(XSECException::UnsupportedFunction,
-			"Unable to extract Base64 text from Nodes without XPath support");
+			throw XSECException(XSECException::UnsupportedFunction,
+				"Unable to extract Base64 text from Nodes without XPath support");
 
 #else
 		
-		// Use an XPath transform to get "Self::text()" from the nodeset
+			// Use an XPath transform to get "Self::text()" from the nodeset
 		
-		TXFMXPath *x;
+			TXFMXPath *x;
 		
-		XSECnew(x, TXFMXPath(mp_txfmNode->getOwnerDocument()));
-		input->appendTxfm(x);
-		((TXFMXPath *) x)->evaluateExpr(mp_txfmNode, "self::text()");
+			XSECnew(x, TXFMXPath(mp_txfmNode->getOwnerDocument()));
+			input->appendTxfm(x);
+			((TXFMXPath *) x)->evaluateExpr(mp_txfmNode, "self::text()");
+
+		}
 		
 		TXFMC14n *c;
 		
