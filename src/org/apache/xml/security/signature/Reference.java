@@ -436,16 +436,14 @@ public class Reference extends SignatureElementProxy {
 
          if (transforms != null) {
             output = transforms.performTransforms(input);
-            this._transformsOutput = new XMLSignatureInput(output.getBytes());
+            this._transformsOutput = output;//new XMLSignatureInput(output.getBytes());
 
-            this._transformsOutput.setSourceURI(output.getSourceURI());
+            //this._transformsOutput.setSourceURI(output.getSourceURI());
          } else {
             output = input;
          }
 
          return output;
-      } catch (IOException ex) {
-         throw new XMLSignatureException("empty", ex);
       } catch (ResourceResolverException ex) {
          throw new XMLSignatureException("empty", ex);
       } catch (CanonicalizationException ex) {
@@ -614,16 +612,10 @@ public class Reference extends SignatureElementProxy {
           */
          if (!Reference.CacheSignedNodes) {
 
-            this._transformsOutput = new XMLSignatureInput(output.getBytes());
+            this._transformsOutput = output;//new XMLSignatureInput(output.getBytes());
 
-            this._transformsOutput.setSourceURI(output.getSourceURI());
+            //this._transformsOutput.setSourceURI(output.getSourceURI());
          }
-      } catch (IOException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (CanonicalizationException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (InvalidCanonicalizerException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
       } catch (XMLSecurityException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       }
