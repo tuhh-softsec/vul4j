@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.12 $ $Date: 2003/04/16 11:23:50 $
+ * @version $Revision: 1.13 $ $Date: 2003/08/16 18:18:26 $
  */
 
 public class FactoryCreateRule extends Rule {
@@ -275,7 +275,8 @@ public class FactoryCreateRule extends Rule {
      * then be used to create an object and push it on the stack.
      *
      * @param className Java class name of the object creation factory class
-     * @param ignoreCreateException if true, exceptions thrown by the object creation factory
+     * @param ignoreCreateExceptions if true, exceptions thrown by the object
+     *  creation factory
      * will be ignored.
      */
     public FactoryCreateRule(String className, boolean ignoreCreateExceptions) {
@@ -291,7 +292,8 @@ public class FactoryCreateRule extends Rule {
      * then be used to create an object and push it on the stack.
      *
      * @param clazz Java class name of the object creation factory class
-     * @param ignoreCreateException if true, exceptions thrown by the object creation factory
+     * @param ignoreCreateExceptions if true, exceptions thrown by the
+     *  object creation factory
      * will be ignored.
      */
     public FactoryCreateRule(Class clazz, boolean ignoreCreateExceptions) {
@@ -310,8 +312,8 @@ public class FactoryCreateRule extends Rule {
      * @param className Default Java class name of the factory class
      * @param attributeName Attribute name which, if present, contains an
      *  override of the class name of the object creation factory to create.
-     * @param ignoreCreateException if true, exceptions thrown by the object creation factory
-     * will be ignored.
+     * @param ignoreCreateExceptions if true, exceptions thrown by the object
+     *  creation factory will be ignored.
      */
     public FactoryCreateRule(
                                 String className, 
@@ -334,8 +336,8 @@ public class FactoryCreateRule extends Rule {
      * @param clazz Default Java class name of the factory class
      * @param attributeName Attribute name which, if present, contains an
      *  override of the class name of the object creation factory to create.
-     * @param ignoreCreateException if true, exceptions thrown by the object creation factory
-     * will be ignored.
+     * @param ignoreCreateExceptions if true, exceptions thrown by the object
+     *  creation factory will be ignored.
      */
     public FactoryCreateRule(
                                 Class clazz, 
@@ -352,8 +354,8 @@ public class FactoryCreateRule extends Rule {
      * {@link ObjectCreationFactory}.
      *
      * @param creationFactory called on to create the object.
-     * @param ignoreCreateException if true, exceptions thrown by the object creation factory
-     * will be ignored.
+     * @param ignoreCreateExceptions if true, exceptions thrown by the object
+     *  creation factory will be ignored.
      */
     public FactoryCreateRule(
                             ObjectCreationFactory creationFactory, 

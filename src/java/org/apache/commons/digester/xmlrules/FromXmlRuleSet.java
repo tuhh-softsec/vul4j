@@ -103,7 +103,7 @@ public class FromXmlRuleSet extends RuleSetBase {
      * Constructs a FromXmlRuleSet using the default DigesterRuleParser and
      * a ruleDigester for loading the rules xml.
      * @param rulesXml the path to the XML document defining the Digester rules
-     * @param ruleDigester the digester to read the rules xml.
+     * @param rulesDigester the digester to read the rules xml.
      */
     public FromXmlRuleSet(URL rulesXml, Digester rulesDigester) {
         this(rulesXml, new DigesterRuleParser(), rulesDigester);

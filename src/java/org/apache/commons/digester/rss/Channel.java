@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/Channel.java,v 1.6 2003/04/16 11:23:51 jstrachan Exp $
- * $Revision: 1.6 $
- * $Date: 2003/04/16 11:23:51 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/Channel.java,v 1.7 2003/08/16 18:18:26 craigmcc Exp $
+ * $Revision: 1.7 $
+ * $Date: 2003/08/16 18:18:26 $
  *
  * ====================================================================
  *
@@ -78,7 +78,7 @@ import java.util.ArrayList;
  *
  * @author Craig R. McClanahan
  * @author Ted Husted
- * @version $Revision: 1.6 $ $Date: 2003/04/16 11:23:51 $
+ * @version $Revision: 1.7 $ $Date: 2003/08/16 18:18:26 $
  */
 
 public class Channel implements Serializable {
@@ -332,9 +332,9 @@ public class Channel implements Serializable {
 
 
     /**
-     * Add an additional skip day name.
+     * Add an additional skip hour name.
      *
-     * @param skipDay The skip day to be added
+     * @param skipHour The skip hour to be added
      */
     public void addSkipHour(String skipHour) {
         synchronized (skipHours) {

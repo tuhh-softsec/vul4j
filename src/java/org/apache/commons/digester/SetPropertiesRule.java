@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.12 2003/08/16 18:02:56 craigmcc Exp $
- * $Revision: 1.12 $
- * $Date: 2003/08/16 18:02:56 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.13 2003/08/16 18:18:26 craigmcc Exp $
+ * $Revision: 1.13 $
+ * $Date: 2003/08/16 18:18:26 $
  *
  * ====================================================================
  *
@@ -80,7 +80,7 @@ import org.xml.sax.Attributes;
  * Certain attributes can also be marked to be ignored.</p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.12 $ $Date: 2003/08/16 18:02:56 $
+ * @version $Revision: 1.13 $ $Date: 2003/08/16 18:18:26 $
  */
 
 public class SetPropertiesRule extends Rule {
@@ -165,7 +165,7 @@ public class SetPropertiesRule extends Rule {
      * </pre></code>
      *
      * @param attributeNames names of attributes to map
-     * @param proeprtyNames names of properties mapped to
+     * @param propertyNames names of properties mapped to
      */
     public SetPropertiesRule(String[] attributeNames, String[] propertyNames) {
         // create local copies
@@ -198,7 +198,6 @@ public class SetPropertiesRule extends Rule {
     /**
      * Process the beginning of this element.
      *
-     * @param context The associated context
      * @param attributes The attribute list of this element
      */
     public void begin(Attributes attributes) throws Exception {

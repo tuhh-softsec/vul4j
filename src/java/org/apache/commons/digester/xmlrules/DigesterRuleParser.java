@@ -291,7 +291,6 @@ public class DigesterRuleParser extends RuleSetBase {
         private String pattern = null;
         
         /**
-         * @param digester the Digester used to parse the rules XML file
          * @param attrName The name of the attribute containing the pattern
          */
         public PatternRule(String attrName) {
@@ -681,9 +680,7 @@ public class DigesterRuleParser extends RuleSetBase {
     protected class SetPropertiesAliasRule extends Rule {
         
         /**
-         * <p>Base constructor.
-         *
-         * @param digester the Digester used to parse the rules XML file
+         * <p>Base constructor.</p>
          */
         public SetPropertiesAliasRule() {
             super();

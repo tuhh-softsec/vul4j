@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.11 2003/04/16 11:23:50 jstrachan Exp $
- * $Revision: 1.11 $
- * $Date: 2003/04/16 11:23:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.12 2003/08/16 18:18:26 craigmcc Exp $
+ * $Revision: 1.12 $
+ * $Date: 2003/08/16 18:18:26 $
  *
  * ====================================================================
  *
@@ -77,7 +77,7 @@ import org.xml.sax.Attributes;
  * top of the stack, based on attributes with specified names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.11 $ $Date: 2003/04/16 11:23:50 $
+ * @version $Revision: 1.12 $ $Date: 2003/08/16 18:18:26 $
  */
 
 public class SetPropertyRule extends Rule {
@@ -142,7 +142,6 @@ public class SetPropertyRule extends Rule {
     /**
      * Process the beginning of this element.
      *
-     * @param context The associated context
      * @param attributes The attribute list of this element
      *
      * @exception NoSuchMethodException if the bean does not
