@@ -460,8 +460,10 @@ int main(int argc, char **argv) {
 	retResult = evaluate(argc, argv);
 
 	XSECPlatformUtils::Terminate();
+#ifndef XSEC_NO_XALAN
 	XalanTransformer::terminate();
 	XPathEvaluator::terminate();
+#endif
 	XMLPlatformUtils::Terminate();
 
 #if defined (_DEBUG) && defined (_MSC_VER)
