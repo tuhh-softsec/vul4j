@@ -44,7 +44,11 @@
       <id>jvanzyl</id>
       <email>jvanzyl@apache.org</email>
     </developer>
-
+    <developer>
+      <name>Tim O'Brien</name>
+      <id>tobrien</id>
+      <email>tobrien@apache.org</email>
+    </developer>
   </developers>
   
   <dependencies>
