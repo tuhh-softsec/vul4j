@@ -62,6 +62,10 @@ package org.apache.xml.security.utils;
 
 import org.w3c.dom.*;
 import org.apache.xerces.dom.DocumentImpl;
+import javax.xml.transform.TransformerException;
+import org.apache.xpath.XPathAPI;
+import org.apache.xml.security.utils.*;
+import org.apache.xml.security.Init;
 
 
 /**
@@ -74,6 +78,10 @@ import org.apache.xerces.dom.DocumentImpl;
  * @see org.apache.xml.security.utils.resolver.implementations.ResolverFragment
  */
 public class IdResolver {
+
+   /** {@link org.apache.log4j} logging facility */
+   static org.apache.log4j.Category cat =
+      org.apache.log4j.Category.getInstance(IdResolver.class.getName());
 
    /**
     * Method registerElementById
@@ -107,6 +115,156 @@ public class IdResolver {
     * @return
     */
    public static Element getElementById(Document doc, String id) {
+
+      Element result = null;
+
+      result = IdResolver.getElementByIdType(doc, id);
+
+      if (result != null) {
+         cat.debug(
+            "I could find an Element using the simple getElementById method: "
+            + result.getTagName());
+
+         return result;
+      }
+
+      result = IdResolver.getElementByIdInDSNamespace(doc, id);
+
+      if (result != null) {
+         cat.debug(
+            "I could find an Element using the advanced ds:Namespace searcher method: "
+            + result.getTagName());
+
+         return result;
+      }
+
+      result = IdResolver.getElementByIdInSOAPSignatureNamespace(doc, id);
+
+      if (result != null) {
+         cat.debug(
+            "I could find an Element using the advanced SOAP-SEC:id searcher method: "
+            + result.getTagName());
+
+         return result;
+      }
+
+      result = IdResolver.getElementByIdUnsafeMatchByIdName(doc, id);
+
+      if (result != null) {
+         cat.warn(
+            "I could find an Element using the totally stupid and insecure Id/ID/id searcher method: "
+            + result.getTagName());
+
+         return result;
+      }
+
+
+      return null;
+   }
+
+   /**
+    * Method getElementByIdType
+    *
+    * @param doc
+    * @param id
+    * @return
+    */
+   private static Element getElementByIdType(Document doc, String id) {
       return doc.getElementById(id);
+   }
+
+   /**
+    * Method getElementByIdInDSNamespace
+    *
+    * @param doc
+    * @param id
+    * @return
+    */
+   private static Element getElementByIdInDSNamespace(Document doc, String id) {
+
+      cat.debug("Search for ID " + id);
+
+      try {
+         Element nscontext = XMLUtils.createDSctx(doc, "ds",
+                                                  Constants.SignatureSpecNS);
+         Element element = (Element) XPathAPI.selectSingleNode(doc,
+                              "//ds:*[@Id='" + id + "']", nscontext);
+
+         return element;
+
+         /*
+         NodeList dsElements = XPathAPI.selectNodeList(doc, "//ds:*",
+                                  nscontext);
+
+         cat.debug("Found ds:Elements: " + dsElements.getLength());
+
+         for (int i = 0; i < dsElements.getLength(); i++) {
+            Element currentElem = (Element) dsElements.item(i);
+            Attr IdAttr = currentElem.getAttributeNode(Constants._ATT_ID);
+
+            if (IdAttr != null) {
+               if (IdAttr.getNodeValue().equals(id)) {
+                  return currentElem;
+               }
+            }
+         }
+         */
+      } catch (TransformerException ex) {
+         cat.fatal("", ex);
+      }
+
+      return null;
+   }
+
+   /**
+    * Method getElementByIdInSOAPSignatureNamespace
+    *
+    * @param doc
+    * @param id
+    * @return
+    */
+   private static Element getElementByIdInSOAPSignatureNamespace(Document doc,
+           String id) {
+
+      try {
+         Element nscontext = XMLUtils.createDSctx(
+            doc, "SOAP-SEC",
+            "http://schemas.xmlsoap.org/soap/security/2000-12");
+         Element element = (Element) XPathAPI.selectSingleNode(doc,
+                              "//*[@SOAP-SEC:id='" + id + "']", nscontext);
+
+         return element;
+      } catch (TransformerException ex) {
+         cat.fatal("", ex);
+      }
+
+      return null;
+   }
+
+   private static Element getElementByIdUnsafeMatchByIdName(Document doc,
+           String id) {
+
+      try {
+         Element element_Id = (Element) XPathAPI.selectSingleNode(doc, "//*[@Id='" + id + "']");
+         if (element_Id != null) {
+            return element_Id;
+         }
+         Element element_ID = (Element) XPathAPI.selectSingleNode(doc, "//*[@ID='" + id + "']");
+         if (element_ID != null) {
+            return element_ID;
+         }
+         Element element_id = (Element) XPathAPI.selectSingleNode(doc, "//*[@id='" + id + "']");
+         if (element_id != null) {
+            return element_id;
+         }
+      } catch (TransformerException ex) {
+         cat.fatal("", ex);
+      }
+
+      return null;
+   }
+
+   static {
+      org.apache.xml.security.Init.init();
    }
 }

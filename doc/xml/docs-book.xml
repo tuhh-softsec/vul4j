@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE book SYSTEM "./dtd/book.dtd">
+<book title="XML-Security Documentation" 
+      copyright="2001 The Apache Software Foundation">
+  <external label="Home"
+            href="../index.html" />
+  <separator />
+  <document label="Readme"       
+            id="index"
+            source="readme.xml" />
+  <external label="Repository"
+            href="http://cvs.apache.org/viewcvs.cgi/xml-security/" />
+  <document label="Installation" 
+            id="install"     
+            source="install.xml" />
+  <separator />
+  <document label="API Docs"     
+            id="api"         
+            source="api.xml" />
+</book>

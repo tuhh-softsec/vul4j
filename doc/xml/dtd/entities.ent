@@ -1,0 +1,7 @@
+<?xml encoding="US-ASCII"?>
+
+<!ENTITY packagenamelong "Apache XML Security Software">
+<!ENTITY packagename "XMLSecurity-J">
+<!ENTITY packageversion "0.0.1">
+<!ENTITY packagedirectory "xml-security-0_0_1">
+<!ENTITY packagedistname "XMLSecurity-J-bin">

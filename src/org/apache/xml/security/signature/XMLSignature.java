@@ -662,6 +662,10 @@ public class XMLSignature extends ElementProxy {
 
       String SignatureMethodURI = this.getSignedInfo().getSignatureMethodURI();
       String jceSigID = JCEMapper.translateURItoJCEID(SignatureMethodURI);
+
+      cat.debug("SignatureMethodURI = " + SignatureMethodURI);
+      cat.debug("jceSigID = " + jceSigID);
+
       java.security.Signature signature =
          java.security.Signature.getInstance(jceSigID);
 

@@ -60,18 +60,18 @@
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     Description="Digital Signature Algorithm with SHA-1 message digest"
                     AlgorithmClass="Signature">
-            <ProviderAlgo ProviderId="BC"
-                          JCEName="DSA" />
             <ProviderAlgo ProviderId="SUN"
                           JCEName="DSAWithSHA1" />
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="DSA" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#rsa-sha1"
                     Description="RSA Signature with SHA-1 message digest"
                     AlgorithmClass="Signature">
-            <ProviderAlgo ProviderId="BC"
-                          JCEName="SHA1WithRSAEncryption" />
             <ProviderAlgo ProviderId="SunRsaSign"
                           JCEName="SHA1withRSA" />
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="SHA1WithRSAEncryption" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#sha1"
                     Description="SHA-1 message digest"

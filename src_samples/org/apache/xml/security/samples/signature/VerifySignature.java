@@ -103,16 +103,52 @@ public class VerifySignature {
       javax.xml.parsers.DocumentBuilderFactory dbf =
          javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
+      dbf.setAttribute("http://apache.org/xml/features/validation/schema",
+                       Boolean.TRUE);
+      dbf.setAttribute(
+         "http://apache.org/xml/features/dom/defer-node-expansion",
+         Boolean.TRUE);
+      dbf.setValidating(true);
+      dbf.setAttribute("http://xml.org/sax/features/validation", Boolean.TRUE);
       dbf.setNamespaceAware(true);
+      dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+      dbf.setAttribute(
+         "http://apache.org/xml/properties/schema/external-schemaLocation",
+         "http://www.w3.org/2000/09/xmldsig# data/xmldsig-core-schema.xsd");
 
       try {
-         File f = new File("signature.xml");
+
+         // File f = new File("signature.xml");
+         File f = new File(
+            "data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/signature-enveloping-rsa.xml");
 
          System.out.println(
             "#########################################################");
          System.out.println("Try to verify " + f.toURL().toString());
 
          javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+
+         db.setErrorHandler(new org.apache.xml.security.utils
+            .IgnoreAllErrorHandler());
+         db.setEntityResolver(new org.xml.sax.EntityResolver() {
+
+            public org.xml.sax
+                    .InputSource resolveEntity(String publicId, String systemId)
+                       throws org.xml.sax.SAXException {
+
+               if (systemId.endsWith("xmldsig-core-schema.xsd")) {
+                  try {
+                  return new org.xml.sax
+                     .InputSource(new FileInputStream("data/xmldsig-core-schema.xsd"));
+                  } catch (FileNotFoundException ex) {
+                     throw new org.xml.sax.SAXException(ex);
+                  }
+               } else {
+                  return null;
+               }
+            }
+         });
+
          org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
          Element nscontext = XMLUtils.createDSctx(doc, "ds",
                                                   Constants.SignatureSpecNS);
@@ -168,5 +204,9 @@ public class VerifySignature {
       } catch (Exception ex) {
          ex.printStackTrace();
       }
+   }
+
+   static {
+      org.apache.xml.security.Init.init();
    }
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE s1 SYSTEM "./dtd/document.dtd">
+
+<s1 title="Readme">
+	<s2 title="XML Security Release">
+		<p>The &packagenamelong; &packageversion; supports the
+		<jump href="http://www.w3.org/TR/1998/REC-xml-19980210">XML 1.0</jump> 
+		recommendation and contains advanced parser functionality, such as 
+        support for the W3C&apos;s 
+		<jump href="http://www.w3.org/XML/Schema.html">XML 
+        Schema recommendation version 1.0</jump>, 
+		<jump href="http://www.w3.org/TR/DOM-Level-2/">DOM Level 2 version 1.0</jump>, and 
+		<jump href="http://www.megginson.com/SAX/">SAX Version 2</jump>, 
+		in addition to supporting the industry-standard 
+		<jump href="http://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/level-one-core.html">DOM Level 1</jump> and 
+		<jump href="http://www.megginson.com/SAX/SAX1/">SAX version 1</jump>
+		APIs.</p>
+        <p>
+        Note that because some of the standards
+		are still not complete, the stable API will definitely be 
+		different from its current form in &packagename; &packageversion;. 
+		This is your chance to give us 
+		feedback on the features that are important to you, and let us know
+		whether the APIs that we are providing are the right ones. Please 
+		direct your feedback to the &packagename; mailing list.</p>
+
+	</s2>
+	<s2 title="License Information">
+		<p>The &packagename; &packageversion; release is available in both source code
+		and precompiled binary (JAR files) form. Both &packagename; 
+                packages are made available under the <jump href='../../LICENSE'>Apache
+                Software License</jump>.
+                </p>
+	</s2>
+	<s2 title="Applications of the &packagename; Parser">
+		<p>The rich generating and validating capabilities allow the &packagename; 
+		Parser to be used for: </p>
+		<ul>
+			<li>Building XML-savvy Web servers. </li>
+			<li>The next generation of vertical applications which will use 
+				XML as their data format. </li>
+			<li>On-the-fly validation for creating XML editors. </li>
+			<li>Ensuring the integrity of e-business data expressed in XML. </li>
+			<li>Building truly internationalized XML applications. </li>
+		</ul>
+	</s2>
+	<s2 title="XML Schema 1.0 (beta) Support">
+		<p>This release includes full support for the W3C XML Schema 
+		Recommendation, except for limitations as described on the <link 
+        idref="schema">Schema Implementation Limitations</link> page.
+        We intend to remove these limitations and fix outstanding
+        bugs in the next release of &packagename;.</p>
+	</s2>
+	<s2 title="DOM Level 2 Support">
+		<p>This release includes support for DOM Level 2 
+		<jump href="http://www.w3.org/TR/DOM-Level-2-Core">Core</jump>,
+		<jump href="http://www.w3.org/TR/DOM-Level-2-Events">Events</jump>,
+		and <jump href="http://www.w3.org/TR/DOM-Level-2-Traversal-Range">Traversal and Range</jump> modules.
+                The DOM Level 2 specification is now a W3C Recommendation.</p>
+	</s2>
+	<s2 title="SAX 2 Support">
+		<p>This release includes support for the <jump href="http://www.megginson.com/SAX/">
+		SAX Version 2</jump> API&apos;s which have been finalized.</p>
+	</s2>
+	<s2 title="Configuration Mechanism">
+		<p>&packagename; &packageversion; uses a collection of methods to configure 
+		various settings in the parser. This release includes a new mechanism 
+		for setting parser switches. This mechanism uses the SAX2 configuration
+		methods that are part of the XMLReader interface. We have defined a series 
+		of <link idref="properties">properties</link> and 
+		<link idref="features">features</link> for the &packagename; 
+		options. </p>
+	</s2>
+</s1>

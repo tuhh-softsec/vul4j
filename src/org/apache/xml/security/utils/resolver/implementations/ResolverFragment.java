@@ -264,4 +264,8 @@ public class ResolverFragment extends ResourceResolverSpi {
                                              BaseURI);
       }
    }
+
+   static {
+      org.apache.xml.security.Init.init();
+   }
 }
