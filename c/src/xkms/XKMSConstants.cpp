@@ -122,6 +122,18 @@ const XMLCh XKMSConstants::s_tagExchange[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagFailure[] = {
+
+	chLatin_F,
+	chLatin_a,
+	chLatin_i,
+	chLatin_l,
+	chLatin_u,
+	chLatin_r,
+	chLatin_e,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagId[] = {
 
 	chLatin_I,
@@ -613,6 +625,41 @@ const XMLCh XKMSConstants::s_tagStatus[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagStatusRequest[] = {
+
+	chLatin_S,
+	chLatin_t,
+	chLatin_a,
+	chLatin_t,
+	chLatin_u,
+	chLatin_s,
+	chLatin_R,
+	chLatin_e,
+	chLatin_q,
+	chLatin_u,
+	chLatin_e,
+	chLatin_s,
+	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagStatusResult[] = {
+
+	chLatin_S,
+	chLatin_t,
+	chLatin_a,
+	chLatin_t,
+	chLatin_u,
+	chLatin_s,
+	chLatin_R,
+	chLatin_e,
+	chLatin_s,
+	chLatin_u,
+	chLatin_l,
+	chLatin_t,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagStatusValue[] = {
 
 	chLatin_S,
@@ -626,6 +673,18 @@ const XMLCh XKMSConstants::s_tagStatusValue[] = {
 	chLatin_l,
 	chLatin_u,
 	chLatin_e,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagSuccess[] = {
+
+	chLatin_S,
+	chLatin_u,
+	chLatin_c,
+	chLatin_c,
+	chLatin_e,
+	chLatin_s,
+	chLatin_s,
 	chNull
 };
 

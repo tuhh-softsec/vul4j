@@ -42,6 +42,8 @@ class XKMSResult;
 class XKMSValidateRequest;
 class XKMSValidateResult;
 class XKMSPendingRequest;
+class XKMSStatusRequest;
+class XKMSStatusResult;
 
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
@@ -271,6 +273,47 @@ public:
 		const XMLCh * id = NULL) = 0;
 
 	/**
+	 * \brief Create a new \<StatusRequest\> message.
+	 * 
+	 * Generates a new StatusRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Document to create the DOM structure within.  The caller
+	 * will need to embed the DOM structure at the appropriate place in the
+	 * document (using a call to getElement to find the top level element)
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSStatusRequest structure
+	 */
+
+	virtual XKMSStatusRequest * createStatusRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL) = 0;
+		
+	/**
+	 * \brief Create a new \<StatusRequest\> message and surrounding document
+	 * 
+	 * Generates a new StatusRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSStatusRequest structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the StatusRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSStatusRequest * createStatusRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL) = 0;
+
+	/**
 	 * \brief Create a new \<LocateResult\> message.
 	 * 
 	 * Generates a new LocateResult message from scratch, building the DOM
@@ -445,6 +488,51 @@ public:
 
 	virtual XKMSResult * createResult(
 		XKMSRequestAbstractType * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<StatusResult\> message.
+	 * 
+	 * Generates a new StatusResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input StatusRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSStatusRessult structure
+	 */
+
+	virtual XKMSStatusResult * createStatusResult(
+		XKMSStatusRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<StatusResult\> message and surrounding document
+	 * 
+	 * Generates a new StatusResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input StatusRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSStatusResult structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the StatusResult object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSStatusResult * createStatusResult(
+		XKMSStatusRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		XKMSResultType::ResultMajor rmaj,
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,

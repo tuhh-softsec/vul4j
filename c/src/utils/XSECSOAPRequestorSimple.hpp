@@ -56,6 +56,18 @@ class DSIG_EXPORT XSECSOAPRequestorSimple : public XSECSOAPRequestor {
 
 public :
 
+	/**
+	 * Envelope Enumeration
+	 */
+
+	enum envelopeType {
+
+		ENVELOPE_NONE,		/** No envelope - straight HTTP request */
+		ENVELOPE_SOAP11,	/** SOAP 1.1 envelope (default) */
+		ENVELOPE_SOAP12		/** SOAP 1.2 envelope */
+
+	};
+
 	/** @name Constructors and Destructors */
 	//@{
 
@@ -75,6 +87,7 @@ public :
 	//@}
 
 	/** @name Interface methods */
+	//@{
 
 	/**
 	 * \brief Do a SOAP request
@@ -92,6 +105,25 @@ public :
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *
 		doRequest(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * request);
 
+	//@}
+
+	/** @name Configuration methods */
+	//@{
+
+	/**
+	 * \brief Set the envelope type
+	 *
+	 * The requestor can do a SOAP 1.1, SOAP 1.2 or no envelope around the
+	 * message.  This call allows the apllication to set the type.
+	 *
+	 * By default, the requestor uses a SOAP 1.1 envelope
+	 *
+	 * @param et - the type of envelope to use
+	 */
+
+	void setEnvelopeType(envelopeType et);
+
+
 private:
 
 	char * wrapAndSerialise(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * request);
@@ -100,6 +132,8 @@ private:
 
 	XERCES_CPP_NAMESPACE_QUALIFIER XMLUri			
 						m_uri;
+
+	envelopeType		m_envelopeType;
 
 };
 

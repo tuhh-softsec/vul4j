@@ -102,7 +102,9 @@ public:
 		LocateResult,			/** A LocateResult message */
 		ValidateRequest,		/** A ValidateRequest message */
 		ValidateResult,			/** A ValidateResult message */
-		PendingRequest,			/** A PendingRequest message (Asynchronous protocol */
+		PendingRequest,			/** A PendingRequest message (Asynchronous protocol) */
+		StatusRequest,          /** A StatusRequest message (Asynchronous protocol) */
+		StatusResult,           /** A StatusResult message (Asynchronous protocol) */
 		Result					/** A non-specific result message */
 
 	};

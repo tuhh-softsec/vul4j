@@ -101,37 +101,11 @@ XSECSOAPRequestorSimple::~XSECSOAPRequestorSimple() {
 
 char * XSECSOAPRequestorSimple::wrapAndSerialise(DOMDocument * request) {
 
-	// Create a new document to wrap the request in
+	// Prepare the serialiser
 
 	XMLCh tempStr[100];
 	XMLString::transcode("Core", tempStr, 99);    
 	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
-
-	safeBuffer str;
-
-	makeQName(str, s_prefix, s_Envelope);
-
-	DOMDocument *doc = impl->createDocument(
-		XKMSConstants::s_unicodeStrURISOAP11,
-				str.rawXMLChBuffer(),
-				NULL);// DOMDocumentType());  // document type object (DTD).
-
-	DOMElement *rootElem = doc->getDocumentElement();
-
-	makeQName(str, s_prefix, s_Body);
-	DOMElement *body = doc->createElementNS(
-			XKMSConstants::s_unicodeStrURISOAP11,
-			str.rawXMLChBuffer());
-
-	rootElem->appendChild(body);
-
-	// Now replicate the request into the document
-	DOMElement * reqElement = (DOMElement *) doc->importNode(request->getDocumentElement(), true);
-	body->appendChild(reqElement);
-
-	// OK - Now we have the SOAP request as a document, we serialise to a string buffer
-	// and return
-
 	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
 	theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
@@ -139,15 +113,70 @@ char * XSECSOAPRequestorSimple::wrapAndSerialise(DOMDocument * request) {
 		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
 	MemBufFormatTarget *formatTarget = new MemBufFormatTarget;
-	theSerializer->writeNode(formatTarget, *doc);
+
+	if (m_envelopeType != ENVELOPE_NONE) {
+
+		// Create a new document to wrap the request in
+		safeBuffer str;
+
+		makeQName(str, s_prefix, s_Envelope);
+
+		DOMDocument *doc;
+		
+		if (m_envelopeType == ENVELOPE_SOAP11) {
+			doc = impl->createDocument(
+				XKMSConstants::s_unicodeStrURISOAP11,
+						str.rawXMLChBuffer(),
+						NULL);
+			DOMElement *rootElem = doc->getDocumentElement();
+
+			makeQName(str, s_prefix, s_Body);
+			DOMElement *body = doc->createElementNS(
+					XKMSConstants::s_unicodeStrURISOAP11,
+					str.rawXMLChBuffer());
+
+			rootElem->appendChild(body);
+
+			// Now replicate the request into the document
+			DOMElement * reqElement = (DOMElement *) doc->importNode(request->getDocumentElement(), true);
+			body->appendChild(reqElement);
+		}
+		else {
+			doc = impl->createDocument(
+				XKMSConstants::s_unicodeStrURISOAP12,
+						str.rawXMLChBuffer(),
+						NULL);
+			DOMElement *rootElem = doc->getDocumentElement();
+
+			makeQName(str, s_prefix, s_Body);
+			DOMElement *body = doc->createElementNS(
+					XKMSConstants::s_unicodeStrURISOAP12,
+					str.rawXMLChBuffer());
+
+			rootElem->appendChild(body);
+
+			// Now replicate the request into the document
+			DOMElement * reqElement = (DOMElement *) doc->importNode(request->getDocumentElement(), true);
+			body->appendChild(reqElement);
+		}
+
+
+		// OK - Now we have the SOAP request as a document, we serialise to a string buffer
+		// and return
+
+		theSerializer->writeNode(formatTarget, *doc);
+		doc->release();
+
+	}
+	else {
+		theSerializer->writeNode(formatTarget, *request);
+	}
 
 	// Now replicate the buffer
 	char * ret = XMLString::replicate((const char *) formatTarget->getRawBuffer());
 
 	delete theSerializer;
 	delete formatTarget;
-
-	doc->release();
 
 	return ret;
 }
@@ -176,11 +205,19 @@ DOMDocument * XSECSOAPRequestorSimple::parseAndUnwrap(const char * buf, unsigned
     errorCount = parser->getErrorCount();
     if (errorCount > 0)
 		throw XSECException(XSECException::HTTPURIInputStreamError,
-							"Error parsing SOAP response message");
+							"Error parsing response message");
+
+	if (m_envelopeType == ENVELOPE_NONE) {
+
+		return parser->adoptDocument();
+
+	}
 
     DOMDocument * responseDoc = parser->getDocument();
 
-	// Now create a new document for the Response message
+	// Must be a SOAP message of some kind - so lets remove the wrapper.
+	// First create a new document for the Response message
+
 	XMLCh tempStr[100];
 	XMLString::transcode("Core", tempStr, 99);    
 	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
@@ -258,5 +295,15 @@ DOMDocument * XSECSOAPRequestorSimple::parseAndUnwrap(const char * buf, unsigned
 	retDoc->appendChild(retDoc->importNode(e, true));
 
 	return retDoc;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Envelope Type handling
+// --------------------------------------------------------------------------------
+
+void XSECSOAPRequestorSimple::setEnvelopeType(envelopeType et) {
+
+	m_envelopeType = et;
 
 }

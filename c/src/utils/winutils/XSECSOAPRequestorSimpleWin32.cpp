@@ -65,6 +65,7 @@ XERCES_CPP_NAMESPACE_USE
 XSECSOAPRequestorSimple::XSECSOAPRequestorSimple(const XMLCh * uri) : m_uri(uri) {
 
 	XSECBinHTTPURIInputStream::ExternalInitialize();
+	m_envelopeType = ENVELOPE_SOAP11;
 
 }
 
@@ -304,7 +305,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     if (p == 0)
     {
         throw XSECException(XSECException::HTTPURIInputStreamError,
-							"Error reported reading socket");
+							"XSECSOAPRequestorSimple - Error reported reading socket");
     }
 
     int httpResponse = atoi(p);
@@ -391,6 +392,11 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 		else {
 			responseLength = 0;
 		}
+	}
+
+	if (lent <= 0) {
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+			"XSECSOAPRequestorSimple - Zero length response from server");
 	}
 
 	return parseAndUnwrap(responseBuffer.rawCharBuffer(), lent);

@@ -1208,6 +1208,22 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusRequestImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusRequestImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusResultImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSStatusResultImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.cpp
 # End Source File
 # Begin Source File
@@ -1310,6 +1326,14 @@ SOURCE=..\..\..\..\src\xkms\XKMSResultType.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSStatus.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSStatusRequest.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSStatusResult.hpp
 # End Source File
 # Begin Source File
 

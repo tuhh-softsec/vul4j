@@ -37,6 +37,8 @@
 #include "XKMSMessageFactoryImpl.hpp"
 #include "XKMSLocateRequestImpl.hpp"
 #include "XKMSLocateResultImpl.hpp"
+#include "XKMSStatusRequestImpl.hpp"
+#include "XKMSStatusResultImpl.hpp"
 #include "XKMSResultImpl.hpp"
 #include "XKMSValidateRequestImpl.hpp"
 #include "XKMSValidateResultImpl.hpp"
@@ -251,6 +253,34 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 	}
 
+	else if (strEquals(name, XKMSConstants::s_tagStatusRequest)) {
+
+		// This is a <StatusRequest> message
+		XKMSStatusRequestImpl * ret;
+		XSECnew(ret, XKMSStatusRequestImpl(new XSECEnv(*mp_env), elt));
+		Janitor<XKMSStatusRequestImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return ret;
+
+	}
+
+	else if (strEquals(name, XKMSConstants::s_tagStatusResult)) {
+
+		// This is a <StatusRequest> message
+		XKMSStatusResultImpl * ret;
+		XSECnew(ret, XKMSStatusResultImpl(new XSECEnv(*mp_env), elt));
+		Janitor<XKMSStatusResultImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return ret;
+
+	}
+
 	return NULL;
 
 }
@@ -417,6 +447,45 @@ XKMSPendingRequest * XKMSMessageFactoryImpl::createPendingRequest(
 	return pri;
 }
 
+XKMSStatusRequest * XKMSMessageFactoryImpl::createStatusRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id) {
+	
+	XKMSStatusRequestImpl* sri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(sri, XKMSStatusRequestImpl(tenv));
+	sri->createBlankStatusRequest(service, id);
+
+	return sri;
+
+}
+
+XKMSStatusRequest * XKMSMessageFactoryImpl::createStatusRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id) {
+
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSStatusRequest * sri = createStatusRequest(service, *doc, id);
+	(*doc)->appendChild(sri->getElement());
+
+	return sri;
+}
+
 // --------------------------------------------------------------------------------
 //           Create a result based on a request
 // --------------------------------------------------------------------------------
@@ -463,6 +532,50 @@ XKMSLocateResult * XKMSMessageFactoryImpl::createLocateResult(
 	(*doc)->appendChild(lr->getElement());
 
 	return lr;
+}
+
+XKMSStatusResult * XKMSMessageFactoryImpl::createStatusResult(
+		XKMSStatusRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSStatusResultImpl * sri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(sri, XKMSStatusResultImpl(tenv));
+	sri->createBlankStatusResult(request->getService(), id, rmaj, rmin);
+
+	copyRequestToResult(request, (XKMSResultTypeImpl*) sri);
+
+	return sri;
+
+}
+
+XKMSStatusResult * XKMSMessageFactoryImpl::createStatusResult(
+		XKMSStatusRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSStatusResult * sr = createStatusResult(request, *doc, rmaj, rmin, id);
+	(*doc)->appendChild(sr->getElement());
+
+	return sr;
 }
 
 XKMSResult * XKMSMessageFactoryImpl::createResult(

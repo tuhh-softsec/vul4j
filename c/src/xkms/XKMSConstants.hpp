@@ -34,7 +34,7 @@
 #define URI_ID_XKMS		"http://www.w3.org/2002/03/xkms#"
 //#define URI_ID_XKMS		"http://www.w3.org/2004/07/xkms#"
 #define URI_ID_SOAP11   "http://schemas.xmlsoap.org/soap/envelope/"
-#define URI_ID_SOAP12   "http://www.w3.org/2002/06/soap-envelope/"
+#define URI_ID_SOAP12   "http://www.w3.org/2003/05/soap-envelope"
 
 
 // --------------------------------------------------------------------------------
@@ -56,6 +56,7 @@ public:
 	static const XMLCh s_tagCompoundResult[];
 	static const XMLCh s_tagEncryption[];
 	static const XMLCh s_tagExchange[];
+	static const XMLCh s_tagFailure[];
 	static const XMLCh s_tagId[];
 	static const XMLCh s_tagIdentifier[];
 	static const XMLCh s_tagIndeterminateReason[];
@@ -87,7 +88,10 @@ public:
 	static const XMLCh s_tagService[];
 	static const XMLCh s_tagSignature[];
 	static const XMLCh s_tagStatus[];
+	static const XMLCh s_tagStatusRequest[];
+	static const XMLCh s_tagStatusResult[];
 	static const XMLCh s_tagStatusValue[];
+	static const XMLCh s_tagSuccess[];
 	static const XMLCh s_tagUnverifiedKeyBinding[];
 	static const XMLCh s_tagUseKeyWith[];
 	static const XMLCh s_tagValidateRequest[];

@@ -44,6 +44,8 @@
 #include <xsec/xkms/XKMSMessageAbstractType.hpp>
 #include <xsec/xkms/XKMSLocateRequest.hpp>
 #include <xsec/xkms/XKMSLocateResult.hpp>
+#include <xsec/xkms/XKMSStatusRequest.hpp>
+#include <xsec/xkms/XKMSStatusResult.hpp>
 #include <xsec/xkms/XKMSResult.hpp>
 #include <xsec/xkms/XKMSQueryKeyBinding.hpp>
 #include <xsec/xkms/XKMSKeyBinding.hpp>
@@ -892,6 +894,39 @@ XKMSMessageAbstractType * createPendingRequest(XSECProvider &prov, DOMDocument *
 }
 
 // --------------------------------------------------------------------------------
+//           Create a StatusRequest
+// --------------------------------------------------------------------------------
+
+void printStatusRequestUsage(void) {
+
+	cerr << "\nUsage StatusRequest [--help|-h] <service URI> <OriginalRequestId> <ResponseId>\n";
+	cerr << "   --help/-h                : print this screen and exit\n\n";
+
+}
+
+XKMSMessageAbstractType * createStatusRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
+
+	if (paramCount +2 >= argc || 
+		(stricmp(argv[paramCount], "--help") == 0) ||
+		(stricmp(argv[paramCount], "-h") == 0)) {
+
+		printStatusRequestUsage();
+		return NULL;
+	}
+
+	/* First create the basic request */
+	XKMSMessageFactory * factory = 
+		prov.getXKMSMessageFactory();
+	XKMSStatusRequest * sr = 
+		factory->createStatusRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
+
+	sr->setOriginalRequestId(MAKE_UNICODE_STRING(argv[paramCount++]));
+	sr->setResponseId(MAKE_UNICODE_STRING(argv[paramCount++]));
+
+	return sr;
+}
+
+// --------------------------------------------------------------------------------
 //           Create a CompoundRequest
 // --------------------------------------------------------------------------------
 
@@ -1232,6 +1267,17 @@ int doLocateRequestDump(XKMSLocateRequest *msg) {
 	return 0;
 }
 
+int doStatusRequestDump(XKMSStatusRequest *msg) {
+
+	cout << endl << "This is a StatusRequest Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doRequestAbstractTypeDump(msg, level);
+
+	return 0;
+}
+
 int doValidateRequestDump(XKMSValidateRequest *msg) {
 
 	cout << endl << "This is a ValidateRequest Message" << endl;
@@ -1297,6 +1343,17 @@ int doValidateResultDump(XKMSValidateResult *msg) {
 		}
 
 	}
+
+	return 0;
+}
+
+int doStatusResultDump(XKMSStatusResult *msg) {
+
+	cout << endl << "This is a StatusResult Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doResultTypeDump(msg, level);
 
 	return 0;
 }
@@ -1378,6 +1435,16 @@ int doMsgDump(XKMSMessageAbstractType * msg) {
 	case XKMSMessageAbstractType::LocateResult :
 
 		doLocateResultDump(dynamic_cast<XKMSLocateResult *>(msg));
+		break;
+
+	case XKMSMessageAbstractType::StatusRequest :
+
+		doStatusRequestDump(dynamic_cast<XKMSStatusRequest *>(msg));
+		break;
+
+	case XKMSMessageAbstractType::StatusResult :
+
+		doStatusResultDump(dynamic_cast<XKMSStatusResult *>(msg));
 		break;
 
 	case XKMSMessageAbstractType::Result :
@@ -1523,7 +1590,12 @@ void printDoRequestUsage(void) {
 
 	cerr << "\nUsage request [options] {CompoundRequest|LocateRequest|ValidateRequest|PendingRequest} [msg specific options]\n";
 	cerr << "   --help/-h       : Print this screen and exit\n";
-	cerr << "   --two-phase/-t  : Indicate Two-Phase support in the request message\n\n";
+	cerr << "   --two-phase/-t  : Indicate Two-Phase support in the request message\n";
+	cerr << "   --envelope-type/-e [NONE|SOAP11|SOAP12]\n";
+    cerr << "                   : Set envelope wrapper for request\n";
+	cerr << "                     NONE   = No wrapper - straight HTTP request\n";
+	cerr << "                     SOAP11 = Use a SOAP 1.1 envelope\n";
+	cerr << "                     SOAP12 = Use a SOAP 1.2 envelope\n\n";
 
 }
 
@@ -1532,6 +1604,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 	XSECProvider prov;
 	DOMDocument * doc;
 	XKMSMessageAbstractType *msg;
+	XSECSOAPRequestorSimple::envelopeType et = XSECSOAPRequestorSimple::ENVELOPE_SOAP11;
+
 	bool twoPhase = false;
 	bool parmsDone = false;
 
@@ -1549,6 +1623,32 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			twoPhase = true;
 			paramCount++;
 
+		}
+		if ((stricmp(argv[paramCount], "--envelope") == 0) ||
+			(stricmp(argv[paramCount], "-e") == 0)) {
+
+			// Set the wrapper envelope type
+
+			paramCount++;
+			if (paramCount == argc) {
+				printDoRequestUsage();
+				return -1;
+			}
+
+			if (stricmp(argv[paramCount], "NONE") == 0) {
+				et = XSECSOAPRequestorSimple::ENVELOPE_NONE;
+			}
+			else if (stricmp(argv[paramCount], "SOAP11") == 0) {
+				et = XSECSOAPRequestorSimple::ENVELOPE_SOAP11;
+			}
+			else if (stricmp(argv[paramCount], "SOAP12") == 0) {
+				et = XSECSOAPRequestorSimple::ENVELOPE_SOAP12;
+			}
+			else {
+				printDoRequestUsage();
+				return -1;
+			}
+			paramCount++;
 		}
 		if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
 			(stricmp(argv[paramCount], "lr") == 0)) {
@@ -1602,6 +1702,23 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			parmsDone = true;
 
 		}
+		else if ((stricmp(argv[paramCount], "StatusRequest") == 0) ||
+			(stricmp(argv[paramCount], "sr") == 0)) {
+
+			paramCount++;
+			XKMSStatusRequest * r = 
+				dynamic_cast<XKMSStatusRequest *> (createStatusRequest(prov, &doc, argc, argv, paramCount));
+
+			if (r == NULL) {
+				return -1;
+			}
+			if (twoPhase)
+				r->appendResponseMechanismItem(XKMSConstants::s_tagRepresent);
+
+			msg = r;
+			parmsDone = true;
+
+		}
 		else if ((stricmp(argv[paramCount], "CompoundRequest") == 0) ||
 			(stricmp(argv[paramCount], "cr") == 0)) {
 
@@ -1641,6 +1758,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 	try {
 		XSECSOAPRequestorSimple req(msg->getService());
+		req.setEnvelopeType(et);
 		responseDoc = req.doRequest(doc);
 
 		/* If two-phase - re-do the request */

@@ -84,6 +84,14 @@ public:
 		const XMLCh * service,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		const XMLCh * id = NULL);
+	virtual XKMSStatusRequest * createStatusRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL);
+	virtual XKMSStatusRequest * createStatusRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL);
 
 
 	virtual XKMSLocateResult * createLocateResult(
@@ -130,6 +138,18 @@ public:
 		const XMLCh * id = NULL);
 	virtual XKMSCompoundResult * createCompoundResult(
 		XKMSCompoundRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSStatusResult * createStatusResult(
+		XKMSStatusRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSStatusResult * createStatusResult(
+		XKMSStatusRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		XKMSResultType::ResultMajor rmaj,
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
