@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/BaseFunctorTest.java,v 1.3 2003/01/28 12:54:37 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/BaseFunctorTest.java,v 1.4 2003/11/25 18:22:50 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,7 +65,7 @@ import java.io.Serializable;
 import junit.framework.TestCase;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/01/28 12:54:37 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/25 18:22:50 $
  * @author Rodney Waldhoff
  */
 public abstract class BaseFunctorTest extends TestCase {
@@ -92,7 +92,7 @@ public abstract class BaseFunctorTest extends TestCase {
     // ------------------------------------------------------------------------
     
     protected abstract Object makeFunctor() throws Exception;
-    
+   
     // Tests
     // ------------------------------------------------------------------------    
 
@@ -137,14 +137,14 @@ public abstract class BaseFunctorTest extends TestCase {
 
     // protected utils
     // ------------------------------------------------------------------------
-    protected void assertObjectsAreEqual(Object a, Object b) {
+    public static void assertObjectsAreEqual(Object a, Object b) {
         assertEquals(a,b);
         assertEquals(b,a);
         assertEquals(a.hashCode(),b.hashCode()); 
         assertEquals(a.toString(),b.toString()); // not strictly required
     }
     
-    protected void assertObjectsAreNotEqual(Object a, Object b) {
+    public static void assertObjectsAreNotEqual(Object a, Object b) {
         assertTrue(!a.equals(b));
         assertTrue(!b.equals(a));
         assertTrue(a.hashCode() != b.hashCode()); // not strictly required

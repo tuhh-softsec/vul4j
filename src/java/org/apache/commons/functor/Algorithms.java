@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.7 2003/11/25 17:49:35 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.8 2003/11/25 18:22:50 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -80,13 +80,13 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.7 $ $Date: 2003/11/25 17:49:35 $
+ * @version $Revision: 1.8 $ $Date: 2003/11/25 18:22:50 $
  * @author Jason Horman (jason@jhorman.org)
  */
 public class Algorithms {
 
     /**
-     * apply(new IteratorToGeneratorAdapater(iter),func);
+     * Equivalent to <code>{@link #apply(Generator,UnaryFunction) apply}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),func)</code>.
      */
     public static final Generator apply(Iterator iter, UnaryFunction func) {
         return apply(new IteratorToGeneratorAdapter(iter),func);
@@ -109,7 +109,7 @@ public class Algorithms {
     }
 
     /**
-     * contains(new IteratorToGeneratorAdapater(iter),pred);
+     * Equivalent to <code>{@link #contains(Generator,UnaryPredicate) contains}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred)</code>.
      */
     public static final boolean contains(Iterator iter, UnaryPredicate pred) {
         return contains(new IteratorToGeneratorAdapter(iter),pred);
@@ -139,14 +139,14 @@ public class Algorithms {
     }
 
     /**
-     * detect(new IteratorToGeneratorAdapater(iter), pred);
+     * Equivalent to <code>{@link #detect(Generator,UnaryPredicate) detect}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred)</code>.
      */
     public static final Object detect(Iterator iter, UnaryPredicate pred) {
         return detect(new IteratorToGeneratorAdapter(iter), pred);
     }
 
     /**
-     * detect(new IteratorToGeneratorAdapater(iter), pred, ifNone);
+     * Equivalent to <code>{@link #detect(Generator,UnaryPredicate,Object) detect}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred,ifNone)</code>.
      */
     public static final Object detect(Iterator iter, UnaryPredicate pred, Object ifNone) {
         return detect(new IteratorToGeneratorAdapter(iter), pred, ifNone);
@@ -206,7 +206,7 @@ public class Algorithms {
     }
 
     /**
-     * foreach(new IteratorToGeneratorAdapater(iter), proc);
+     * Equivalent to <code>{@link #foreach(Generator,UnaryProcedure) foreach}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),proc)</code>.
      */
     public static final void foreach(Iterator iter, UnaryProcedure proc) {
         foreach(new IteratorToGeneratorAdapter(iter), proc);
@@ -221,7 +221,7 @@ public class Algorithms {
     }
 
     /**
-     * inject(new IteratorToGeneratorAdapater(iter), seed, func);
+     * Equivalent to <code>{@link #inject(Generator,Object,BinaryFunction) inject}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),seed,func)</code>.
      */
     public static final Object inject(Iterator iter, Object seed, BinaryFunction func) {
         return inject(new IteratorToGeneratorAdapter(iter), seed, func);
@@ -258,7 +258,7 @@ public class Algorithms {
 
 
     /**
-     * reject(new IteratorToGeneratorAdapater(iter), pred);
+     * Equivalent to <code>{@link #reject(Generator,UnaryPredicate) reject}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred)</code>.
      */
     public static Generator reject(Iterator iter, UnaryPredicate pred) {
         return reject(new IteratorToGeneratorAdapter(iter), pred);
@@ -283,7 +283,7 @@ public class Algorithms {
     }
 
     /**
-     * select(new IteratorToGeneratorAdapater(iter), pred);
+     * Equivalent to <code>{@link #select(Generator,UnaryPredicate) select}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred)</code>.
      */
     public static final Generator select(Iterator iter, UnaryPredicate pred) {
         return select(new IteratorToGeneratorAdapter(iter), pred);
@@ -308,7 +308,7 @@ public class Algorithms {
     }
 
     /**
-     * until(new IteratorToGeneratorAdapater(iter), pred);
+     * Equivalent to <code>{@link #until(Generator,UnaryPredicate) until}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred)</code>.
      */
     public static final Generator until(Iterator iter, UnaryPredicate pred) {
         return until(new IteratorToGeneratorAdapter(iter), pred);

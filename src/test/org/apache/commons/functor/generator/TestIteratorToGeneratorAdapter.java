@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/IteratorToGeneratorAdapter.java,v 1.4 2003/11/25 18:22:50 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestIteratorToGeneratorAdapter.java,v 1.1 2003/11/25 18:22:50 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,71 +57,89 @@
 
 package org.apache.commons.functor.generator;
 
-import org.apache.commons.functor.UnaryProcedure;
-
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import org.apache.commons.functor.BaseFunctorTest;
 
 /**
- * Adapts an {@link Iterator} to the {@link Generator} interface.
- * 
- * @since 1.0
- * @version $Revision: 1.4 $ $Date: 2003/11/25 18:22:50 $
- * @author Jason Horman (jason@jhorman.org)
+ * @version $Revision: 1.1 $ $Date: 2003/11/25 18:22:50 $
  * @author Rodney Waldhoff
  */
-public final class IteratorToGeneratorAdapter extends BaseGenerator {
 
-    // constructors
-    //-----------------------------------------------------
+public class TestIteratorToGeneratorAdapter extends BaseFunctorTest {
 
-    public IteratorToGeneratorAdapter(Iterator iter) {
-        if(null == iter) {
-            throw new NullPointerException();
-        } else {
-            this.iter = iter;
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestIteratorToGeneratorAdapter(String name) {
+        super(name);
+    }
+
+    public static Test suite() {
+        return new TestSuite(TestIteratorToGeneratorAdapter.class);
+    }
+
+    public Object makeFunctor() {
+        List list = new ArrayList();
+        list.add("1");
+        return new IteratorToGeneratorAdapter(list.iterator());
+    }
+    
+    // Lifecycle
+    // ------------------------------------------------------------------------
+    
+    private List list = null;
+    
+    public void setUp() throws Exception {
+        super.setUp();
+        list = new ArrayList();
+        list.add("1");
+        list.add("two");
+        list.add("c");
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+        list = null;
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------
+
+    public void testAdaptNull() {
+        assertNull(IteratorToGeneratorAdapter.adapt(null));
+    }
+
+    public void testAdaptNonNull() {
+        assertNotNull(IteratorToGeneratorAdapter.adapt(list.iterator()));
+    }
+
+    public void testGenerate() {
+        Iterator iter = list.iterator();
+        Generator gen = new IteratorToGeneratorAdapter(iter);
+        List list2 = new ArrayList();
+        list2.addAll(gen.toCollection());
+        assertEquals(list,list2);
+    }
+    
+    public void testConstructNull() {
+        try {
+            new IteratorToGeneratorAdapter(null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
         }
     }
 
-    // instance methods
-    //-----------------------------------------------------
-
-    public void run(UnaryProcedure proc) {
-        while(iter.hasNext()) {
-            proc.run(iter.next());
-            if (isStopped()) { break; } 
-        }
+    public void testEquals() {
+        Iterator iter = list.iterator();
+        Generator gen = new IteratorToGeneratorAdapter(iter);
+        assertObjectsAreEqual(gen,gen);
+        assertObjectsAreEqual(gen,new IteratorToGeneratorAdapter(iter));
     }
-
-    public boolean equals(Object obj) {
-        if(obj instanceof IteratorToGeneratorAdapter) {
-            IteratorToGeneratorAdapter that = (IteratorToGeneratorAdapter)obj;
-            return this.iter.equals(that.iter);
-        } else {
-            return false;
-        }
-    }
-    
-    public int hashCode() {
-        int hash = "IteratorToGeneratorAdapater".hashCode();
-        hash <<= 2;
-        hash ^= iter.hashCode();
-        return hash; 
-    }
-    
-    public String toString() {
-        return "IteratorToGeneratorAdapter<" + iter + ">";
-    }
-
-
-    // class methods
-    //-----------------------------------------------------
-
-    public static IteratorToGeneratorAdapter adapt(Iterator iter) {
-        return null == iter ? null : new IteratorToGeneratorAdapter(iter);
-    }
-    
-    // instance variables
-    //-----------------------------------------------------
-
-    private Iterator iter = null;
 }
