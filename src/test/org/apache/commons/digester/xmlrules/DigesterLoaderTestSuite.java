@@ -40,6 +40,7 @@ public class DigesterLoaderTestSuite extends TestCase {
 
     public static junit.framework.Test suite() {
         TestSuite suite = new TestSuite();
+        suite.addTestSuite(FromXmlRuleSetTest.class);
         suite.addTestSuite(DigesterLoaderTest.class);
         suite.addTestSuite(DigesterPatternStackTest.class);
         suite.addTestSuite(DigesterLoaderRulesTest.class);

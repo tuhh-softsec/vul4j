@@ -119,61 +119,50 @@ public class TestConfigurablePluginAttributes extends TestCase {
         PluginRules rc = new PluginRules();
         digester.setRules(rc);
 
-        PluginCreateRule.setGlobalPluginIdAttribute(null, "id");
-        PluginCreateRule.setGlobalPluginClassAttribute(null, "class");
+        rc.setPluginIdAttribute(null, "id");
+        rc.setPluginClassAttribute(null, "class");
      
+        PluginDeclarationRule pdr = new PluginDeclarationRule();
+        digester.addRule("root/plugin", pdr);
+        
+        PluginCreateRule widgetPluginRule = new PluginCreateRule(Widget.class);
+        digester.addRule("root/widget", widgetPluginRule);
+        digester.addSetNext("root/widget", "addWidget");
+
+        PluginCreateRule gadgetPluginRule = new PluginCreateRule(Widget.class);
+        digester.addRule("root/gadget", gadgetPluginRule);
+        digester.addSetNext("root/gadget", "addGadget");
+
+        MultiContainer root = new MultiContainer();
+        digester.push(root);
+        
         try {
-            PluginDeclarationRule pdr = new PluginDeclarationRule();
-            digester.addRule("root/plugin", pdr);
-            
-            PluginCreateRule widgetPluginRule = new PluginCreateRule(Widget.class);
-            digester.addRule("root/widget", widgetPluginRule);
-            digester.addSetNext("root/widget", "addWidget");
-    
-            PluginCreateRule gadgetPluginRule = new PluginCreateRule(Widget.class);
-            digester.addRule("root/gadget", gadgetPluginRule);
-            digester.addSetNext("root/gadget", "addGadget");
-    
-            MultiContainer root = new MultiContainer();
-            digester.push(root);
-            
-            try {
-                digester.parse(
-                    TestAll.getInputStream(this, "test7.xml"));
-                    
-            } catch(Exception e) {
-                throw e;
-            }
-    
-            Object child;
-            
-            List widgets = root.getWidgets();
-            assertTrue(widgets != null);
-            assertEquals(4, widgets.size());
-    
-            assertEquals(Slider.class, widgets.get(0).getClass());
-            assertEquals(Slider.class, widgets.get(1).getClass());
-            assertEquals(Slider.class, widgets.get(2).getClass());
-            assertEquals(Slider.class, widgets.get(3).getClass());
-            
-            List gadgets = root.getGadgets();
-            assertTrue(gadgets != null);
-            assertEquals(4, gadgets.size());
-    
-            assertEquals(Slider.class, gadgets.get(0).getClass());
-            assertEquals(Slider.class, gadgets.get(1).getClass());
-            assertEquals(Slider.class, gadgets.get(2).getClass());
-            assertEquals(Slider.class, gadgets.get(3).getClass());
-        } finally {
-            // reset the global values to their defaults
-            PluginCreateRule.setGlobalPluginIdAttribute(
-                PluginCreateRule.GLOBAL_PLUGIN_ID_ATTR_NS,
-                PluginCreateRule.GLOBAL_PLUGIN_ID_ATTR);
+            digester.parse(
+                TestAll.getInputStream(this, "test7.xml"));
                 
-            PluginCreateRule.setGlobalPluginClassAttribute(
-                PluginCreateRule.GLOBAL_PLUGIN_CLASS_ATTR_NS,
-                PluginCreateRule.GLOBAL_PLUGIN_CLASS_ATTR);
+        } catch(Exception e) {
+            throw e;
         }
+
+        Object child;
+        
+        List widgets = root.getWidgets();
+        assertTrue(widgets != null);
+        assertEquals(4, widgets.size());
+
+        assertEquals(Slider.class, widgets.get(0).getClass());
+        assertEquals(Slider.class, widgets.get(1).getClass());
+        assertEquals(Slider.class, widgets.get(2).getClass());
+        assertEquals(Slider.class, widgets.get(3).getClass());
+        
+        List gadgets = root.getGadgets();
+        assertTrue(gadgets != null);
+        assertEquals(4, gadgets.size());
+
+        assertEquals(Slider.class, gadgets.get(0).getClass());
+        assertEquals(Slider.class, gadgets.get(1).getClass());
+        assertEquals(Slider.class, gadgets.get(2).getClass());
+        assertEquals(Slider.class, gadgets.get(3).getClass());
     }
     
     public void testInstanceOverride() throws Exception {
@@ -188,7 +177,11 @@ public class TestConfigurablePluginAttributes extends TestCase {
 
         PluginDeclarationRule pdr = new PluginDeclarationRule();
         digester.addRule("root/plugin", pdr);
-        
+
+        // for plugins at pattern "root/widget", use xml attributes "id" and
+        // "class" in the custom namespace as the values for plugin id and
+        // class, not the default (and non-namespaced) values of 
+        // "plugin-id" and "plugin-class".
         PluginCreateRule widgetPluginRule = new PluginCreateRule(Widget.class);
         widgetPluginRule.setPluginIdAttribute(
             "http://jakarta.apache.org/digester/plugins", "id");

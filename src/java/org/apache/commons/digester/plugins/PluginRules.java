@@ -82,6 +82,12 @@ public class PluginRules implements Rules {
      */
     private PluginRules parent = null;
     
+    /**
+     * A reference to the object that holds all data which should only
+     * exist once per digester instance.
+     */
+    private PluginContext pluginContext = null;
+    
     // ------------------------------------------------------------- Constructor
     
     /**
@@ -90,8 +96,7 @@ public class PluginRules implements Rules {
      * object before parsing starts.
      */
     public PluginRules() {
-        decoratedRules = new RulesBase();
-        pluginManager = new PluginManager();
+        this(new RulesBase());
     }
 
     /**
@@ -100,7 +105,9 @@ public class PluginRules implements Rules {
      */
     public PluginRules(Rules decoratedRules) {
         this.decoratedRules = decoratedRules;
-        pluginManager = new PluginManager();
+
+        pluginContext = new PluginContext();
+        pluginManager = new PluginManager(pluginContext);
     }
 
     /**
@@ -110,6 +117,11 @@ public class PluginRules implements Rules {
      * One of these is created each time a PluginCreateRule's begin method 
      * fires, in order to manage the custom rules associated with whatever 
      * concrete plugin class the user has specified.
+     *
+     * @param mountPoint is the digester match path for the element 
+     * matching a PluginCreateRule which caused this "nested parsing scope"
+     * to begin.
+     * @param parent must be non-null.
      */
      PluginRules(String mountPoint, PluginRules parent) {
         // no need to set digester or decoratedRules.digester,
@@ -117,6 +129,7 @@ public class PluginRules implements Rules {
         // method on this object will be called.
         
         decoratedRules = new RulesBase();
+        pluginContext = parent.pluginContext;
         pluginManager = new PluginManager(parent.pluginManager);
         
         this.mountPoint = mountPoint;
@@ -177,7 +190,21 @@ public class PluginRules implements Rules {
     public PluginManager getPluginManager() {
         return pluginManager;
     }
-
+    
+    /**
+     * See {@link PluginContext#getRuleFinders}.
+     */
+    public List getRuleFinders() {
+        return pluginContext.getRuleFinders();
+    }
+    
+    /**
+     * See {@link PluginContext#setRuleFinders}.
+     */
+    public void setRuleFinders(List ruleFinders) {
+        pluginContext.setRuleFinders(ruleFinders);
+    }
+    
     // --------------------------------------------------------- Public Methods
 
     /**
@@ -329,11 +356,42 @@ public class PluginRules implements Rules {
             // even though this object may hold some rules matching
             // this same path. See PluginCreateRule's begin, body and end
             // methods for the reason.
-        } 
-        else {
+        } else {
             matches = decoratedRules.match(namespaceURI, path); 
         }
 
         return matches;
+    }
+
+    /** See {@link PluginContext#setPluginClassAttribute}. */
+    public void setPluginClassAttribute(String namespaceUri, 
+                                        String attrName) {
+        pluginContext.setPluginClassAttribute(namespaceUri, attrName);
+    }
+
+    /** See {@link PluginContext#setPluginIdAttribute}. */
+    public void setPluginIdAttribute(String namespaceUri, 
+                                     String attrName) {
+        pluginContext.setPluginIdAttribute(namespaceUri, attrName);
+    }
+    
+    /** See {@link PluginContext#getPluginClassAttrNs}. */
+    public String getPluginClassAttrNs() {
+        return pluginContext.getPluginClassAttrNs();
+    }
+    
+    /** See {@link PluginContext#getPluginClassAttr}. */
+    public String getPluginClassAttr() {
+        return pluginContext.getPluginClassAttr();
+    }
+    
+    /** See {@link PluginContext#getPluginIdAttrNs}. */
+    public String getPluginIdAttrNs() {
+        return pluginContext.getPluginIdAttrNs();
+    }
+    
+    /** See {@link PluginContext#getPluginIdAttr}. */
+    public String getPluginIdAttr() {
+        return pluginContext.getPluginIdAttr();
     }
 }

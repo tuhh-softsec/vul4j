@@ -47,6 +47,7 @@ public class TestAll extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
+        suite.addTest(TestXmlRuleInfo.suite());
         suite.addTest(TestInline.suite());
         suite.addTest(TestDelegate.suite());
         suite.addTest(TestDeclaration.suite());

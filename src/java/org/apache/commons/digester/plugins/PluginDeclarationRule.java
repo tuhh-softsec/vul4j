@@ -16,7 +16,7 @@
 
 package org.apache.commons.digester.plugins;
 
-import java.io.File;
+import java.util.Properties;
 
 import org.apache.commons.digester.Rule;
 import org.apache.commons.digester.Digester;
@@ -69,17 +69,7 @@ public class PluginDeclarationRule extends Rule {
         
         String id = attributes.getValue("id");
         String pluginClassName = attributes.getValue("class");
-        String ruleMethodName = attributes.getValue("method");
-        String ruleClassName = attributes.getValue("ruleclass");
-        String ruleResource = attributes.getValue("resource");
-        String ruleFile = attributes.getValue("file");
-        String autoSetPropertiesStr = attributes.getValue("setprops");
-
-        if (debug) {
-            log.debug(
-                "mapping id [" + id + "] -> [" + pluginClassName + "]");
-        }
-
+        
         if (id == null) {
             throw new PluginInvalidInputException(
                     "mandatory attribute id not present on tag" +
@@ -92,38 +82,20 @@ public class PluginDeclarationRule extends Rule {
                        " <" + name + ">");
         }
 
+        int nAttrs = attributes.getLength();
+        Properties props = new Properties();
+        for(int i=0; i<nAttrs; ++i) {
+            String key = attributes.getLocalName(i);
+            if ((key == null) || (key.length() == 0)) {
+                key = attributes.getQName(i);
+            }
+            String value = attributes.getValue(i);
+            props.setProperty(key, value);
+        }
+        
         Declaration newDecl = new Declaration(pluginClassName);
         newDecl.setId(id);
-        
-        if (ruleMethodName != null) {
-            newDecl.setRuleMethod(ruleMethodName);
-        }
-        
-        if (ruleClassName != null) {
-            Class ruleClass;
-            try {
-                ruleClass = digester.getClassLoader().loadClass(ruleClassName);
-            } catch(ClassNotFoundException cnfe) {
-                throw new ClassNotFoundException(
-                    "Rule class [" + ruleClassName + "] not found.");
-            }
-            newDecl.setRuleClass(ruleClass);
-        }
-        
-        if (ruleResource != null) {
-            newDecl.setRuleResource(ruleResource);
-        }
-        
-        if (ruleFile != null) {
-            newDecl.setRuleFile(new File(ruleFile));
-        }
-        
-        if (autoSetPropertiesStr != null) {
-            newDecl.setAutoSetProperties(
-                Boolean.valueOf(autoSetPropertiesStr).booleanValue());
-        }
-        
-        newDecl.init(digester);
+        newDecl.setProperties(props);
 
         PluginRules rc = (PluginRules) digester.getRules();
         PluginManager pm = rc.getPluginManager();
@@ -155,6 +127,7 @@ public class PluginDeclarationRule extends Rule {
                      " which has already been mapped by some other id.");
         }
 
+        newDecl.init(digester, pm);
         pm.addDeclaration(newDecl);
     }
 }

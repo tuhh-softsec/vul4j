@@ -18,7 +18,10 @@ package org.apache.commons.digester.plugins;
 
 /**
  * Thrown when an error occurs due to the way the calling application uses
- * the plugins module.
+ * the plugins module. Because the pre-existing Digester API doesn't provide
+ * any option for throwing checked exceptions at some points where Plugins
+ * can potentially fail, this exception extends RuntimeException so that it
+ * can "tunnel" through these points.
  */
 
 public class PluginConfigurationException extends RuntimeException {

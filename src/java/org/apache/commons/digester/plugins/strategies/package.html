@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>The digester.plugins.strategies package.</title>
+</head>
+<body>
+<p>
+This package contains "rule-finding" strategy classes, and their associated
+"helper" loader classes.
+<p>
+Note that you do not need to understand or deal with any of the classes in
+this package in order to use the plugins functionality. If you wish to use
+plugins functionality in non-english languages and therefore want to
+change the attribute names used on plugin declaration tags ("id", "file", etc)
+then you will need some familiarity with this package. Otherwise, this package
+is only relevant to people really wishing to tweak plugins in unexpected
+ways. If this is the case, come and talk to us on the digester email lists
+as we would be interested in knowing about your requirements.
+<p>
+When the plugins module is being used and the input xml indicates that
+a specific plugin class is to be instantiated, that class may then wish
+to configure itself from the xml attributes on that tag or xml attributes
+and elements nested within that tag.
+<p>
+The question is: how is the digester going to figure out where the plugin
+keeps its custom rules which are to be applied to the xml within that
+plugin tag?
+<p>
+Well, the answer is that there is a list of "rule finding strategies",
+generally containing an instance of each of the Finder classes in this 
+package in a specific order. The strategies provided here should satisfy 
+just about everyone, but if they don't you can add extra strategies if 
+desired.
+<p>
+A RuleFinder is essentially a "strategy" or "algorithm" for finding the dynamic
+rules associated with a plugin class. When a plugin declaration is encountered 
+in the input xml, the PluginContext object is asked for the list of RuleFinder 
+objects, then each RuleFinder instance in turn is passed the declaration 
+parameters, and asked "are you able to locate custom parsing rules for this 
+declaration?". When one can, it returns a RuleLoader instance which is 
+remembered. When the input xml indicates that an instance of the declared 
+plugin class is to be created, that RuleLoader is invoked to temporarily add 
+the relevant custom rules to the Digester in order to map xml 
+attributes/elements/etc into the instantiated plugin object. Once the end of 
+the plugin tag is encountered, those temporary rules are removed. This repeats 
+each time the input xml indicates that an instance of a plugin class is to be 
+instantiated.
+<p>
+If the plugin is declared "inline", using the "plugin-class" attribute
+instead of using "plugin-id" to reference a previous declaration then the
+process is exactly the same, except that the RuleFinder objects don't
+have any user-provided attribute "hints" to tell them where the custom
+rules are.
+<p>
+The RuleFinder list is carefully ordered; classes which look at the 
+user-provided data in the declaration come first, and classes which look in 
+"well-known places" come later so that users can override default behaviour by 
+providing the appropriate tags on the plugin declaration.
+<p>
+See the javadoc on the different Finder classes for information on what
+each does, and what attribute (if any) it looks for in the declaration.
+</body>
+</html>

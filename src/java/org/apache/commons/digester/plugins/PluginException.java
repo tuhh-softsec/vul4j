@@ -17,16 +17,18 @@
 package org.apache.commons.digester.plugins;
 
 /**
- * Thrown when an error occurs due to bad data in the file being parsed.
+ * Thrown when some plugin-related error has occurred, and none of the
+ * other exception types are appropriate.
  */
-public class PluginInvalidInputException extends PluginException {
+
+public class PluginException extends Exception {
 
     private Throwable cause = null;
 
     /**
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginInvalidInputException(Throwable cause) {
+    public PluginException(Throwable cause) {
         this(cause.getMessage());
         this.cause = cause;
     }
@@ -34,7 +36,7 @@ public class PluginInvalidInputException extends PluginException {
     /**
      * @param msg describes the reason this exception is being thrown.
      */
-    public PluginInvalidInputException(String msg) {
+    public PluginException(String msg) {
         super(msg);
     }
 
@@ -42,8 +44,15 @@ public class PluginInvalidInputException extends PluginException {
      * @param msg describes the reason this exception is being thrown.
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginInvalidInputException(String msg, Throwable cause) {
+    public PluginException(String msg, Throwable cause) {
         this(msg);
         this.cause = cause;
+    }
+    
+    /**
+     * @return the underlying exception that caused this to be thrown
+     */
+    public Throwable getCause() {
+        return cause;
     }
 }

@@ -138,6 +138,28 @@ public class FromXmlRuleSet extends RuleSetBase {
      * @see org.apache.commons.digester.RuleSetBase
      */
     public void addRuleInstances(org.apache.commons.digester.Digester digester) throws XmlLoadException {
+        addRuleInstances(digester, null);
+    }
+    
+    /**
+     * Adds to the digester the set of Rule instances defined in the
+     * XML file for this rule set.
+     * <p>
+     * Note that this method doesn't have a matching one on the DigesterLoader
+     * class, because it is not expected to be widely used, and DigesterLoader's
+     * load method is already heavily overloaded.
+     *
+     * @param digester is the digester that rules will be added to.
+     * @param basePath is a path that will be prefixed to every
+     * pattern string defined in the xmlrules input file.
+     *
+     * @see org.apache.commons.digester.RuleSetBase
+     */
+    public void addRuleInstances(
+    org.apache.commons.digester.Digester digester,
+    String basePath) 
+    throws XmlLoadException {
+        
         URL dtdURL = getClass().getClassLoader().getResource(DIGESTER_DTD_PATH);
         if (dtdURL == null) {
             throw new XmlLoadException("Cannot find resource \"" +
@@ -145,6 +167,7 @@ public class FromXmlRuleSet extends RuleSetBase {
         }
         parser.setDigesterRulesDTD(dtdURL.toString());
         parser.setTarget(digester);
+        parser.setBasePath(basePath);
 
         rulesDigester.addRuleSet(parser);
         rulesDigester.push(parser);

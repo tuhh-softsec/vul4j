@@ -111,7 +111,9 @@ public class TestLocalRules extends TestCase {
     
     public void testNonStandardLocalRules() throws Exception {
         // * tests that using PluginDeclarationRule to declare an alternate
-        //   rule method name invokes that alternate method instead.
+        //   rule method name invokes that alternate method instead (the
+        //   input xml specifies that a method other than addRules is to
+        //   be used)
         // * tests that if a rule method is defined, then a SetProperties
         //   rule is not automatically added.
         // * tests that a SetProperties rule applying to one class doesn't

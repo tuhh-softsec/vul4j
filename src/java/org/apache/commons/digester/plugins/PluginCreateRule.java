@@ -33,31 +33,13 @@ import org.apache.commons.logging.Log;
  */
 public class PluginCreateRule extends Rule implements InitializableRule {
 
-    // the xml attribute the user uses on an xml element to specify
-    // the plugin's class
-    public static final String GLOBAL_PLUGIN_CLASS_ATTR_NS = null;
-    public static final String GLOBAL_PLUGIN_CLASS_ATTR = "plugin-class";
-
-    // the xml attribute the user uses on an xml element to specify
-    // the plugin's class
-    public static final String GLOBAL_PLUGIN_ID_ATTR_NS = null;
-    public static final String GLOBAL_PLUGIN_ID_ATTR = "plugin-id";
-    
-    // see setGlobalPluginClassAttribute
-    private static String globalPluginClassAttrNs = GLOBAL_PLUGIN_CLASS_ATTR_NS;
-    private static String globalPluginClassAttr = GLOBAL_PLUGIN_CLASS_ATTR;
-
-    // see setGlobalPluginIdAttribute
-    private static String globalPluginIdAttrNs = GLOBAL_PLUGIN_ID_ATTR_NS;
-    private static String globalPluginIdAttr = GLOBAL_PLUGIN_ID_ATTR;
-    
     // see setPluginClassAttribute
-    private String pluginClassAttrNs = globalPluginClassAttrNs;
-    private String pluginClassAttr = globalPluginClassAttr;
+    private String pluginClassAttrNs = null;
+    private String pluginClassAttr = null;
     
     // see setPluginIdAttribute
-    private String pluginIdAttrNs = globalPluginIdAttrNs;
-    private String pluginIdAttr = globalPluginIdAttr;
+    private String pluginIdAttrNs = null;
+    private String pluginIdAttr = null;
     
     /**
      * In order to invoke the addRules method on the plugin class correctly,
@@ -83,76 +65,6 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      */
     private PluginConfigurationException initException;
 
-    //-------------------- static methods -----------------------------------
-    
-    /**
-     * Sets the xml attribute which the input xml uses to indicate to a 
-     * PluginCreateRule which class should be instantiated.
-     * <p>
-     * Example:
-     * <pre>
-     * PluginCreateRule.setGlobalPluginClassAttribute(null, "class");
-     * </pre>
-     * will allow this in the input xml:
-     * <pre>
-     *  [root]
-     *    [some-plugin class="com.acme.widget"] ......
-     * </pre>
-     *
-     * Note that this changes the default for <i>all</i> PluginCreateRule
-     * instances. To override just specific PluginCreateRule instances (which
-     * may be more friendly in container-based environments), see method
-     * setPluginClassAttribute.
-     *
-     * @param namespaceUri is the namespace uri that the specified attribute
-     * is in. If the attribute is in no namespace, then this should be null.
-     * Note that if a namespace is used, the attrName value should <i>not</i>
-     * contain any kind of namespace-prefix. Note also that if you are using
-     * a non-namespace-aware parser, this parameter <i>must</i> be null.
-     *
-     * @param attrName is the attribute whose value contains the name of the
-     * class to be instantiated.
-     */
-    public static void setGlobalPluginClassAttribute(String namespaceUri, 
-                                                     String attrName) {
-        globalPluginClassAttrNs = namespaceUri;
-        globalPluginClassAttr = attrName;
-    }
-
-    /**
-     * Sets the xml attribute which the input xml uses to indicate to a 
-     * PluginCreateRule which plugin declaration is being referenced.
-     * <p>
-     * Example:
-     * <pre>
-     * PluginCreateRule.setGlobalPluginIdAttribute(null, "id");
-     * </pre>
-     * will allow this in the input xml:
-     * <pre>
-     *  [root]
-     *    [some-plugin id="widget"] ......
-     * </pre>
-     *
-     * Note that this changes the default for <i>all</i> PluginCreateRule
-     * instances. To override just specific PluginCreateRule instances (which
-     * may be more friendly in container-based environments), see method
-     * setPluginIdAttribute.
-     *
-     * @param namespaceUri is the namespace uri that the specified attribute
-     * is in. If the attribute is in no namespace, then this should be null.
-     * Note that if a namespace is used, the attrName value should <i>not</i>
-     * contain any kind of namespace-prefix. Note also that if you are using
-     * a non-namespace-aware parser, this parameter <i>must</i> be null.
-     *
-     * @param attrName is the attribute whose value contains the id of the
-     * plugin declaration to be used when instantiating an object.
-     */
-    public static void setGlobalPluginIdAttribute(String namespaceUri, 
-                                                  String attrName) {
-        globalPluginIdAttrNs = namespaceUri;
-        globalPluginIdAttr = attrName;
-    }
-
     //-------------------- constructors -------------------------------------
 
     /**
@@ -163,7 +75,6 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * descended from.
      */
     public PluginCreateRule(Class baseClass) {
-        super();
         this.baseClass = baseClass;
     }
 
@@ -179,50 +90,42 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * custom rules installed for it just like a declared plugin.
      */
     public PluginCreateRule(Class baseClass, Class dfltPluginClass) {
-        super();
         this.baseClass = baseClass;
         if (dfltPluginClass != null) {
             defaultPlugin = new Declaration(dfltPluginClass);
         }
     }
 
+    /**
+     * Create a plugin rule where the user <i>may</i> specify a plugin.
+     * If the user doesn't specify a plugin, then the default class specified 
+     * in this constructor is used.
+     * 
+     * @param baseClass is the class which any specified plugin <i>must</i> be
+     * descended from.
+     * @param dfltPluginClass is the class which will be used if the user
+     * doesn't specify any plugin-class or plugin-id. This class will have
+     * custom rules installed for it just like a declared plugin.
+     * @param dfltPluginRuleLoader is a RuleLoader instance which knows how
+     * to load the custom rules associated with this default plugin.
+     */
+    public PluginCreateRule(Class baseClass, Class dfltPluginClass,
+                    RuleLoader dfltPluginRuleLoader) {
+
+        this.baseClass = baseClass;
+        if (dfltPluginClass != null) {
+            defaultPlugin = 
+                new Declaration(dfltPluginClass, dfltPluginRuleLoader);
+        }
+    }
+
     //------------------- properties ---------------------------------------
-
-    public void setDefaultRuleMethod(String dfltPluginRuleMethod) {
-        if (defaultPlugin != null) {
-            defaultPlugin.setRuleMethod(dfltPluginRuleMethod);
-        }
-    }
-    
-    public void setDefaultRuleClass(Class dfltPluginRuleClass) {
-        if (defaultPlugin != null) {
-            defaultPlugin.setRuleClass(dfltPluginRuleClass);
-        }
-    }
-    
-    public void setDefaultRuleResource(String dfltPluginRuleResource) {
-        if (defaultPlugin != null) {
-            defaultPlugin.setRuleResource(dfltPluginRuleResource);
-        }
-    }
-    
-    public void setDefaultRuleFile(String dfltPluginRuleFile) {
-        if (defaultPlugin != null) {
-            defaultPlugin.setRuleFile(new File(dfltPluginRuleFile));
-        }
-    }
-
-    public void setDefaultRuleAutoSetProperties(boolean enabled) {
-        if (defaultPlugin != null) {
-            defaultPlugin.setAutoSetProperties(enabled);
-        }
-    }
     
     /**
      * Sets the xml attribute which the input xml uses to indicate to a 
      * PluginCreateRule which class should be instantiated.
      * <p>
-     * See setGlobalPluginClassAttribute for more info.
+     * See {@link PluginRules#setPluginClassAttribute} for more info.
      */
     public void setPluginClassAttribute(String namespaceUri, String attrName) {
         pluginClassAttrNs = namespaceUri;
@@ -233,7 +136,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * Sets the xml attribute which the input xml uses to indicate to a 
      * PluginCreateRule which plugin declaration is being referenced.
      * <p>
-     * See setGlobalPluginIdAttribute for more info.
+     * See {@link PluginRules#setPluginIdAttribute} for more info.
      */
     public void setPluginIdAttribute(String namespaceUri, String attrName) {
         pluginIdAttrNs = namespaceUri;
@@ -257,7 +160,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         boolean debug = log.isDebugEnabled();
         if (debug) {
             log.debug("PluginCreateRule.postRegisterInit" + 
-                      ": rule registered for pattern [" + pattern + "]");
+                      ": rule registered for pattern [" + matchPattern + "]");
         }
 
         if (digester == null) {
@@ -309,6 +212,9 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             baseClass = Object.class;
         }
         
+        PluginRules rules = (PluginRules) digester.getRules();
+        PluginManager pm = rules.getPluginManager();
+
         // check default class is valid
         if (defaultPlugin != null) {
             if (!baseClass.isAssignableFrom(defaultPlugin.getPluginClass())) {
@@ -321,9 +227,9 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             }
 
             try {
-                defaultPlugin.init(digester);
+                defaultPlugin.init(digester, pm);
                 
-            } catch(PluginWrappedException pwe) {
+            } catch(PluginException pwe) {
             
                 throw new PluginConfigurationException(
                     pwe.getMessage(), pwe.getCause());
@@ -332,6 +238,48 @@ public class PluginCreateRule extends Rule implements InitializableRule {
 
         // remember the pattern for later
         pattern = matchPattern;
+        
+        if (pluginClassAttr ==  null) {
+            // the user hasn't set explicit xml attr names on this rule,
+            // so fetch the default values
+            pluginClassAttrNs = rules.getPluginClassAttrNs();
+            pluginClassAttr = rules.getPluginClassAttr();
+            
+            if (debug) {
+                log.debug(
+                    "init: pluginClassAttr set to per-digester values ["
+                    + "ns=" + pluginClassAttrNs 
+                    + ", name=" + pluginClassAttr + "]");
+            }
+        } else {
+            if (debug) {
+                log.debug(
+                    "init: pluginClassAttr set to rule-specific values ["
+                    + "ns=" + pluginClassAttrNs 
+                    + ", name=" + pluginClassAttr + "]");
+            }
+        }
+        
+        if (pluginIdAttr ==  null) {
+            // the user hasn't set explicit xml attr names on this rule,
+            // so fetch the default values
+            pluginIdAttrNs = rules.getPluginIdAttrNs();
+            pluginIdAttr = rules.getPluginIdAttr();
+            
+            if (debug) {
+                log.debug(
+                    "init: pluginIdAttr set to per-digester values ["
+                    + "ns=" + pluginIdAttrNs 
+                    + ", name=" + pluginIdAttr + "]");
+            }
+        } else {
+            if (debug) {
+                log.debug(
+                    "init: pluginIdAttr set to rule-specific values ["
+                    + "ns=" + pluginIdAttrNs 
+                    + ", name=" + pluginIdAttr + "]");
+            }
+        }
     }
 
     /**
@@ -407,21 +355,26 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         String pluginId; 
         if (pluginIdAttrNs == null) {
             pluginId = attributes.getValue(pluginIdAttr);
-        }
-        else {
+        } else {
             pluginId = 
                 attributes.getValue(pluginIdAttrNs, pluginIdAttr);
         }
         
         if (pluginClassName != null) {
+            // The user is using a plugin "inline", ie without a previous
+            // explicit declaration. If they have used the same plugin class
+            // before, we have already gone to the effort of creating a 
+            // Declaration object, so retrieve it. If there is no existing
+            // declaration object for this class, then create one.
+
             currDeclaration = pluginManager.getDeclarationByClass(
                 pluginClassName);
 
             if (currDeclaration == null) {
                 currDeclaration = new Declaration(pluginClassName);
                 try {
-                    currDeclaration.init(digester);
-                } catch(PluginWrappedException pwe) {
+                    currDeclaration.init(digester, pluginManager);
+                } catch(PluginException pwe) {
                     throw new PluginInvalidInputException(
                         pwe.getMessage(), pwe.getCause());
                 }
@@ -436,8 +389,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             }
         } else if (defaultPlugin != null) {
             currDeclaration = defaultPlugin;
-        }
-        else {
+        } else {
             throw new PluginInvalidInputException(
                 "No plugin class specified for element " +
                 pattern);

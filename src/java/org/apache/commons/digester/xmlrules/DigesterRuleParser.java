@@ -76,7 +76,9 @@ public class DigesterRuleParser extends RuleSetBase {
      * from the Rules XML document.
      */
     protected Digester targetDigester;
-    
+
+    /** See {@link #setBasePath}. */
+    protected String basePath = "";
     
     /**
      * A stack whose toString method returns a '/'-separated concatenation
@@ -155,6 +157,22 @@ public class DigesterRuleParser extends RuleSetBase {
     }
     
     /**
+     * Set a base pattern beneath which all the rules loaded by this
+     * object will be registered. If this string is not empty, and does
+     * not end in a "/", then one will be added.
+     */
+    public void setBasePath(String path) {
+        if (path == null) {
+            basePath = "";
+        }
+        else if ((path.length() > 0) && !path.endsWith("/")) {
+            basePath = path + "/";
+        } else {
+            basePath = path;
+        }
+    }
+
+    /**
      * Sets the location of the digester rules DTD. This is the DTD used
      * to validate the rules XML file.
      */
@@ -181,7 +199,8 @@ public class DigesterRuleParser extends RuleSetBase {
      * @param rule a Rule to add to the target digester.
      */
     public void add(Rule rule) {
-        targetDigester.addRule(patternStack.toString(), rule);
+        targetDigester.addRule(
+            basePath + patternStack.toString(), rule);
     }
     
     
