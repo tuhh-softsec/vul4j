@@ -160,7 +160,7 @@ public final class FileUtilsTest extends FileBasedTestCase
     {
         final File[] files = new File[]{new File( "file1" ), new File( "file2" )};
 
-        final URL[] urls = FileUtils.toURLs( files );
+//        final URL[] urls = FileUtils.toURLs( files );
 
         // Path separator causes equality tests to fail
         //assertEquals(urls[0].getFile(), File.separator + files[0].getAbsolutePath());
