@@ -107,6 +107,11 @@ my $data_dir = "../../data";
 my $dsig_file = 0;
 my $dsig_args = 1;
 
+# What kind of test results should we expect?
+# Without xalan, 13 tests will fail
+my $no_xalan_failures = 13;
+my $expected_failures = 0;
+
 my @dsig_array=(
 
 "at/iaik/ixsil/coreFeatures/signatures/anonymousReferenceSignature.xml,-a",
@@ -258,6 +263,24 @@ my @xenc_array=(
 
 );
 
+sub print_args {
+
+  print STDERR "\nUsage: basicTests.pl [--noxalan]\n\n";
+  exit(1);
+
+}
+
+# Process command line options
+
+foreach (@ARGV) {
+
+ SWITCH: {
+    if (/^--noxalan$/ || /^-x$/) {$expected_failures += $no_xalan_failures; last SWITCH;}
+    print STDERR "Unknown command : " . $_ . "\n\n";
+    print_args();
+  }
+}
+
 # Run the signature tests
 
 print "\n\n";
@@ -340,3 +363,8 @@ print "All tests complete.\n\n";
 print "Total Tests  = $total_count\n";
 print "Total Passed = $total_passed\n";
 print "Total Failed = $total_failed\n\n";
+
+# Now calculate error code
+exit ($total_failed - $expected_failures);
+
+
