@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.5 2003/12/01 07:32:54 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.6 2003/12/01 07:33:47 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,7 +68,7 @@ import java.util.List;
  * the {@link org.apache.commons.functor.Algorithms#recurse} call to execute the
  * search.
  *
- * @version $Revision: 1.5 $ $Date: 2003/12/01 07:32:54 $
+ * @version $Revision: 1.6 $ $Date: 2003/12/01 07:33:47 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -80,13 +80,14 @@ public class BinarySearch extends RecursiveFunction {
    //---------------------------------------------------------------
 
     public BinarySearch(List list, Comparable item) {
-        this.list = list; this.item = item;
-        this.lower = 0; this.upper = list.size();
+        this(list,item,0,list.size());
     }
 
     public BinarySearch(List list, Comparable item, int lower, int upper) {
-        this.list = list; this.item = item;
-        this.lower = lower; this.upper = upper;
+        this.list = list; 
+        this.item = item;
+        this.lower = lower; 
+        this.upper = upper;
     }
 
     // instance methods variables
