@@ -343,11 +343,18 @@ XSECXPathNodeList * TXFMXPathFilter::evaluateSingleExpr(DSIGXPathFilterExpr *exp
 	return NULL;
 }
 
-bool TXFMXPathFilter::checkNodeInInput(DOMNode * n) {
+bool TXFMXPathFilter::checkNodeInInput(DOMNode * n, DOMNode * attParent) {
 
 	if (mp_fragment != NULL) {
 
 		DOMNode * p = n;
+
+		/* Check attParent here to reduce cycles */
+		if (attParent != NULL) {
+			if (p == mp_fragment)
+				return true;
+			p = attParent;
+		}
 
 		while (p != NULL) {
 
@@ -479,7 +486,8 @@ void TXFMXPathFilter::walkDocument(DOMNode * n) {
 			// Now that the ancestor setup is done, check to see if this node is 
 			// in scope.
 
-			if (checkNodeInScope(current) && checkNodeInInput(current)) {
+			if (checkNodeInScope(current) && 
+				checkNodeInInput(current, (atts != NULL ? attParent : NULL))) {
 
 				m_xpathFilterMap.addNode(current);
 

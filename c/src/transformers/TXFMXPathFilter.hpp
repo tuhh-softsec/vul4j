@@ -93,7 +93,8 @@ private:
 	TXFMXPathFilter();
 	void walkDocument(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);
 	bool checkNodeInScope(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);
-	bool checkNodeInInput(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);
+	bool checkNodeInInput(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n, 
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * attParent);
 
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument			
