@@ -205,7 +205,7 @@ DOMElement * DSIGXPathFilterExpr::setFilter(xpathFilterType filterType,
 	// Create the XPath element
 	prefix = mp_sig->getXPFNSPrefix();
 	makeQName(str, prefix, "XPath");
-	xe = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
+	xe = doc->createElementNS(DSIGConstants::s_unicodeStrURIXPF, str.rawXMLChBuffer());
 	mp_xpathFilterNode = xe;
 
 	// Put in correct namespace
