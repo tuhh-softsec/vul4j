@@ -1,5 +1,5 @@
 /*
- * $Id: Generator.java,v 1.4 2003/11/12 00:50:44 rwaldhoff Exp $
+ * $Id: Generator.java,v 1.5 2003/11/24 21:13:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,8 +64,8 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/12 00:50:44 $
- * @author  Jason Horman (jason@jhorman.org)
+ * @version $Revision: 1.5 $ $Date: 2003/11/24 21:13:15 $
+ * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
 public interface Generator {
