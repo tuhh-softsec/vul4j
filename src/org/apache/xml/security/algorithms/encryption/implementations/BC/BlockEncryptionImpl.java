@@ -90,8 +90,11 @@ import org.w3c.dom.*;
  */
 public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
 
-   /** Field _cipher           */
+   /** Field _cipher */
    Cipher _cipher;
+
+   /** Field ENCRYPT_IV_IN_ECB           */
+   public static final boolean ENCRYPT_IV_IN_ECB = false;
 
    /**
     * Method getRequiredProviderName
@@ -145,15 +148,18 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
     *
     * @param doc
     * @param params
+    * @return
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
-   public EncryptionMethodParams engineInit(Document doc, EncryptionMethodParams params)
-           throws org.apache.xml.security.exceptions.XMLSecurityException {
+   public EncryptionMethodParams engineInit(
+           Document doc, EncryptionMethodParams params)
+              throws org.apache.xml.security.exceptions.XMLSecurityException {
 
       if (params != null) {
          throw new XMLSecurityException(
             "encryption.algorithmCannotEatInitParams");
       }
+
       try {
          this._cipher = Cipher.getInstance(this.getImplementedAlgorithmJCE(),
                                            this.getRequiredProviderName());
@@ -168,8 +174,15 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
       return params;
    }
 
+   /**
+    * Method engineInit
+    *
+    * @param encryptionMethodElem
+    * @return
+    * @throws org.apache.xml.security.exceptions.XMLSecurityException
+    */
    public EncryptionMethodParams engineInit(Element encryptionMethodElem)
-              throws org.apache.xml.security.exceptions.XMLSecurityException {
+           throws org.apache.xml.security.exceptions.XMLSecurityException {
 
       if (encryptionMethodElem.getChildNodes().getLength() != 0) {
          throw new XMLSecurityException(
@@ -245,6 +258,18 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
    }
 
    /**
+    * Method getImplementedIVAlgorithmJCE
+    *
+    * @return
+    */
+   private String getImplementedIVAlgorithmJCE() {
+
+      return JCEMapper
+         .getJCEIVAlgorithmFromURI(this.getImplementedAlgorithmURI(), this
+            .getRequiredProviderName());
+   }
+
+   /**
     * Method engineEncrypt
     *
     * @param plaintextBytes
@@ -257,11 +282,12 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
            throws org.apache.xml.security.exceptions.XMLSecurityException {
 
       try {
+         int ivLength = this.engineGetIvLength();
          Cipher cipher = Cipher.getInstance(this.getImplementedAlgorithmJCE(),
                                             this.getRequiredProviderName());
 
          if (IV == null) {
-            IV = PRNG.createBytes(this.engineGetIvLength());
+            IV = PRNG.createBytes(ivLength);
          }
 
          IvParameterSpec ivParamSpec = new IvParameterSpec(IV);
@@ -270,6 +296,18 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
 
          ByteArrayOutputStream baos =
             new ByteArrayOutputStream(plaintextBytes.length);
+
+         if (BlockEncryptionImpl.ENCRYPT_IV_IN_ECB) {
+
+            // At this place, the encryption of the IV must take place
+            Cipher IVCipher =
+               Cipher.getInstance(this.getImplementedIVAlgorithmJCE(),
+                                  this.getRequiredProviderName());
+
+            IVCipher.init(Cipher.ENCRYPT_MODE, contentKey);
+
+            IV = IVCipher.doFinal(IV);
+         }
 
          baos.write(IV);
 
@@ -317,7 +355,24 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
            throws org.apache.xml.security.exceptions.XMLSecurityException {
 
       try {
-         IvParameterSpec ivParamSpec = new IvParameterSpec(ciphertextBytes, 0, this.engineGetIvLength());
+         int ivLength = this.engineGetIvLength();
+         byte[] IV = new byte[ivLength];
+
+         System.arraycopy(ciphertextBytes, 0, IV, 0, ivLength);
+
+         if (BlockEncryptionImpl.ENCRYPT_IV_IN_ECB) {
+
+            // this would be the place where decryption of the IV happens
+            Cipher IVCipher =
+               Cipher.getInstance(this.getImplementedIVAlgorithmJCE(),
+                                  this.getRequiredProviderName());
+
+            IVCipher.init(Cipher.DECRYPT_MODE, contentKey);
+
+            IV = IVCipher.doFinal(IV);
+         }
+
+         IvParameterSpec ivParamSpec = new IvParameterSpec(IV);
 
          this._cipher.init(Cipher.DECRYPT_MODE, contentKey, ivParamSpec);
 
@@ -325,9 +380,8 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
             new ByteArrayOutputStream(ciphertextBytes.length);
          byte bytes[];
 
-         bytes = this._cipher.update(ciphertextBytes, this.engineGetIvLength(),
-                               ciphertextBytes.length
-                               - this.engineGetIvLength());
+         bytes = this._cipher.update(ciphertextBytes, ivLength,
+                                     ciphertextBytes.length - ivLength);
 
          if (bytes != null) {
             baos.write(bytes);
@@ -349,6 +403,12 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
       } catch (BadPaddingException ex) {
          throw new XMLSecurityException("empty", ex);
       } catch (IllegalBlockSizeException ex) {
+         throw new XMLSecurityException("empty", ex);
+      } catch (NoSuchPaddingException ex) {
+         throw new XMLSecurityException("empty", ex);
+      } catch (NoSuchProviderException ex) {
+         throw new XMLSecurityException("empty", ex);
+      } catch (NoSuchAlgorithmException ex) {
          throw new XMLSecurityException("empty", ex);
       }
    }

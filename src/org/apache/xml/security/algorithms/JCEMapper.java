@@ -407,6 +407,29 @@ public class JCEMapper {
       return null;
    }
 
+
+   public static String getJCEIVAlgorithmFromURI(String AlgorithmURI,
+           String ProviderId) {
+
+      try {
+         Attr algoclassAttr =
+            (Attr) XPathAPI.selectSingleNode(JCEMapper._providerList,
+                                             "./x:Algorithms/x:Algorithm[@URI='"
+                                             + AlgorithmURI
+                                             + "']/x:ProviderAlgo[@ProviderId='"
+                                             + ProviderId + "']/@IVJCEName",
+                                             JCEMapper._nscontext);
+
+         if (algoclassAttr != null) {
+            return algoclassAttr.getNodeValue();
+         }
+      } catch (TransformerException ex) {
+         cat.debug("Found nothing: " + ex.getMessage());
+      }
+
+      return null;
+   }
+
    /** Field KEYTYPE_SYMMETRIC_KEY_WRAP           */
    public static final String KEYTYPE_SYMMETRIC_KEY_WRAP = "SymmetricKeyWrap";
 

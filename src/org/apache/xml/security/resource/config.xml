@@ -182,7 +182,8 @@
                     KeyLength="192">
             <ProviderAlgo ProviderId="BC"
                           RequiredKey="DESEDE"
-                          JCEName="DESEDE/CBC/ISO10126PADDING" />
+                          JCEName="DESEDE/CBC/ISO10126PADDING"
+                          IVJCEName="DESEDE/ECB/NOPADDING" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="DES-EDE3/CBC" />
          </Algorithm>
@@ -193,7 +194,8 @@
                     KeyLength="128">
             <ProviderAlgo ProviderId="BC"
                           RequiredKey="AES"
-                          JCEName="AES/CBC/ISO10126PADDING" />
+                          JCEName="AES/CBC/ISO10126PADDING"
+                          IVJCEName="AES/ECB/NOPADDING" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="Rijndael" />
          </Algorithm>
@@ -204,7 +206,8 @@
                     KeyLength="192">
             <ProviderAlgo ProviderId="BC"
                           RequiredKey="AES"
-                          JCEName="AES/CBC/ISO10126PADDING" />
+                          JCEName="AES/CBC/ISO10126PADDING"
+                          IVJCEName="AES/ECB/NOPADDING" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="Rijndael" />
          </Algorithm>
@@ -215,7 +218,8 @@
                     KeyLength="256">
             <ProviderAlgo ProviderId="BC"
                           RequiredKey="AES"
-                          JCEName="AES/CBC/ISO10126PADDING" />
+                          JCEName="AES/CBC/ISO10126PADDING"
+                          IVJCEName="AES/ECB/NOPADDING" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="Rijndael" />
          </Algorithm>
