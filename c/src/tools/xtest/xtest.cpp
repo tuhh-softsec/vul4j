@@ -125,9 +125,10 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <xsec/xenc/XENCCipher.hpp>
 #include <xsec/xenc/XENCEncryptedData.hpp>
 
+#include <xsec/enc/XSECCryptoSymmetricKey.hpp>
+
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
-#	include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 #	include <openssl/rand.h>
 #endif
 #if defined (HAVE_WINCAPI)
@@ -780,19 +781,12 @@ void testEncrypt(DOMImplementation *impl) {
 		// Generate a key
 		unsigned char randomBuffer[256];
 
-#if defined (HAVE_OPENSSL) 
-		if (RAND_status() != 1) {
+		if (XSECPlatformUtils::g_cryptoProvider->getRandom(randomBuffer, 256) != 256) {
 
-			cerr << "Warning - OpenSSL random not properly initialised" << endl;
-
-		}
-
-		if (RAND_bytes(randomBuffer, 128) != 1) {
-
-			cerr << "Error - OpenSSL random did not generate data" << endl;
+			cerr << "Unable to obtain enough random bytes from Crypto Provider" << endl;
 			exit(1);
+		
 		}
-#endif
 
 		static char keyStr[] = "abcdefghijklmnopqrstuvwx";
 
@@ -802,8 +796,8 @@ void testEncrypt(DOMImplementation *impl) {
 
 		// Set a key
 
-		OpenSSLCryptoSymmetricKey * k;
-		k = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
+		XSECCryptoSymmetricKey * k = 
+			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
 		k->setKey((unsigned char *) randomBuffer, 24);
 		cipher->setKey(k);
 	
@@ -831,8 +825,8 @@ void testEncrypt(DOMImplementation *impl) {
 
 		cerr << "Encrypting symmetric key ... " << endl;
 
-		OpenSSLCryptoSymmetricKey * kek;
-		kek = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
+		XSECCryptoSymmetricKey * kek =
+			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
 		kek->setKey((unsigned char *) keyStr, 16);
 		cipher->setKEK(kek);
 
@@ -851,8 +845,8 @@ void testEncrypt(DOMImplementation *impl) {
 
 		XENCCipher * cipher2 = prov.newCipher(doc);
 
-		OpenSSLCryptoSymmetricKey * k2;
-		k2 = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
+		XSECCryptoSymmetricKey * k2 = 
+			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
 		k2->setKey((unsigned char *) keyStr, 16);
 		cipher2->setKEK(k2);
 

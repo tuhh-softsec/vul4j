@@ -497,6 +497,14 @@ SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoProvider.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoSymmetricKey.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoSymmetricKey.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.cpp
 # End Source File
 # Begin Source File

@@ -137,6 +137,10 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
+#if !defined (HAVE_OPENSSL) && !defined(HAVE_WINCAPI)
+#	error No available cryptoAPI
+#endif
+
 #if defined (HAVE_OPENSSL)
 // OpenSSL
 
@@ -148,6 +152,7 @@ XALAN_USING_XALAN(XalanTransformer)
 #if defined (HAVE_WINCAPI)
 
 #	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
+#	include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
 
 #endif
@@ -179,10 +184,8 @@ void printUsage(void) {
 	cerr << "         Decrypt the first encrypted element found\n";
 	cerr << "     --key/-k [key string]\n";
 	cerr << "         Use the key provided in [key string] to encrypt/decrypt\n";
-#if defined (HAVE_OPENSSL)
 	cerr << "     --interop/-i\n";
 	cerr << "         Use the interop resolver for Baltimore interop examples\n";
-#endif
 
 	cerr << "\n     Exits with codes :\n";
 	cerr << "         0 = Decrypt/Encrypt OK\n";
@@ -201,7 +204,11 @@ int evaluate(int argc, char ** argv) {
 
 #if defined(_WIN32) && defined (HAVE_WINCAPI)
 	HCRYPTPROV				win32DSSCSP = 0;		// Crypto Providers
-	HCRYPTPROV				win32RSACSP = 0;		
+	HCRYPTPROV				win32RSACSP = 0;
+
+	CryptAcquireContext(&win32DSSCSP, NULL, NULL, PROV_DSS, CRYPT_VERIFYCONTEXT);
+	CryptAcquireContext(&win32RSACSP, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
+
 #endif
 
 	if (argc < 2) {
@@ -219,13 +226,11 @@ int evaluate(int argc, char ** argv) {
 			paramCount++;
 			doDecryptElement = true;
 		}
-#if defined (HAVE_OPENSSL)
 		else if (stricmp(argv[paramCount], "--interop") == 0 || stricmp(argv[paramCount], "-i") == 0) {
 			// Use the interop key resolver
 			useInteropResolver = true;
 			paramCount++;
 		}
-#endif
 		else if (stricmp(argv[paramCount], "--key") == 0 || stricmp(argv[paramCount], "-k") == 0) {
 
 			// Have set a key string
@@ -308,21 +313,29 @@ int evaluate(int argc, char ** argv) {
 
 	try {
 
+#if defined (HAVE_OPENSSL)
 		OpenSSLCryptoSymmetricKey * k;
 		if (keyStr != NULL) {
 			k = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
 			k->setKey((unsigned char *) keyStr, strlen(keyStr));
 			cipher->setKey(k);
 		}
+#else
+		WinCAPICryptoSymmetricKey * k;
+		if (keyStr != NULL) {
+			k = new WinCAPICryptoSymmetricKey(win32RSACSP, XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
+			k->setKey((unsigned char *) keyStr, strlen(keyStr));
+			cipher->setKey(k);
+		}
+#endif
 
-#if defined (HAVE_OPENSSL)
 		if (useInteropResolver == true) {
 
 			MerlinFiveInteropResolver ires(NULL);
 			cipher->setKeyInfoResolver(&ires);
 
 		}
-#endif
+
 		cipher->decryptElement(static_cast<DOMElement *>(n));
 
 		// Output the result
@@ -357,14 +370,14 @@ int evaluate(int argc, char ** argv) {
 
 	catch (XSECException &e) {
 		char * msg = XMLString::transcode(e.getMsg());
-		cerr << "An error occured during signature verification\n   Message: "
+		cerr << "An error occured during encryption/decryption operation\n   Message: "
 		<< msg << endl;
 		delete [] msg;
 		errorsOccured = true;
 		return 2;
 	}
 	catch (XSECCryptoException &e) {
-		cerr << "An error occured during signature verification\n   Message: "
+		cerr << "An error occured during encryption/decryption operation\n   Message: "
 		<< e.getMsg() << endl;
 		errorsOccured = true;
 

@@ -73,15 +73,13 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECKeyInfoResolver.hpp>
+#include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
 #if defined (_WIN32)
 #    include <io.h>
 #else
 #    include <glob.h>
 #endif
-
-#if defined (HAVE_OPENSSL)
-#	include <openssl/x509.h>
 
 class MerlinFiveInteropResolver : public XSECKeyInfoResolver {
 
@@ -99,6 +97,8 @@ public :
 
 private:
 
+	XSECCryptoSymmetricKey * makeSymmetricKey(XSECCryptoSymmetricKey::SymmetricKeyType);
+
 	XMLCh *			mp_baseURI;
 
 #if defined (_WIN32)
@@ -111,4 +111,3 @@ private:
 
 };
 
-#endif /* HAVE_OPENSSL */

@@ -77,6 +77,18 @@
 #define _WIN32_WINNT 0x0400
 #include <wincrypt.h>
 
+// For older versions of wincrypt.h
+
+#if !defined (PROV_RSA_AES)
+#	define PROV_RSA_AES				24
+#	define ALG_SID_AES_128			14
+#	define ALG_SID_AES_192			15
+#	define ALG_SID_AES_256          16
+#	define ALG_SID_AES              17
+#	define CALG_AES_128				(ALG_CLASS_DATA_ENCRYPT|ALG_TYPE_BLOCK|ALG_SID_AES_128)
+#	define CALG_AES_192				(ALG_CLASS_DATA_ENCRYPT|ALG_TYPE_BLOCK|ALG_SID_AES_192)
+#	define CALG_AES_256				(ALG_CLASS_DATA_ENCRYPT|ALG_TYPE_BLOCK|ALG_SID_AES_256)
+#endif
 
 #define WINCAPI_BLOBHEADERLEN	0x08
 #define WINCAPI_DSSPUBKEYLEN	0x08
@@ -269,6 +281,12 @@ public :
 	HCRYPTPROV getProviderRSA(void) {return m_provRSA;}
 
 	/**
+	 * \brief Return the internal key store provider
+	 */
+
+	HCRYPTPROV getApacheKeyStore(void) {return m_provApacheKeyStore;}
+
+	/**
 	 * \brief Translate B64 I2OS integer to a WinCAPI int.
 	 *
 	 * Decodes a Base64 (ds:CryptoBinary) integer and reverses the order to 
@@ -329,8 +347,11 @@ private:
 
 	HCRYPTPROV		m_provDSS;
 	HCRYPTPROV		m_provRSA;
+	HCRYPTPROV		m_provApacheKeyStore;
 	LPCSTR			m_provDSSName;
 	LPCSTR			m_provRSAName;
+	bool			m_haveAES;
+	DWORD			m_provRSAType;
 
 };
 

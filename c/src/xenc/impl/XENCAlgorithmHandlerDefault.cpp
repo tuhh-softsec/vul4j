@@ -179,7 +179,7 @@ unsigned int XENCAlgorithmHandlerDefault::unwrapKeyAES(
 			aesBuf[7] ^= ((n * j) + i);
 
 			// do decrypt
-			sk->decryptInit();
+			sk->decryptInit(false);		// No padding
 			int sz = sk->decrypt(aesBuf, aesOutBuf, 16, 16);
 			sz += sk->decryptFinish(&aesOutBuf[sz], 16 - sz);
 
@@ -218,7 +218,7 @@ bool XENCAlgorithmHandlerDefault::wrapKeyAES(
 	XMLByte buf[_MY_MAX_KEY_SIZE + 8];
 	memcpy(buf, s_AES_IV, 8);
 	XMLByte aesBuf[16];
-	XMLByte aesOutBuf[16];
+	XMLByte aesOutBuf[32];  // Give this an extra block for WinCAPI
 	TXFMBase * b = cipherText->getLastTxfm();
 	int sz = b->readBytes(&buf[8], _MY_MAX_KEY_SIZE);
 
@@ -255,9 +255,9 @@ bool XENCAlgorithmHandlerDefault::wrapKeyAES(
 			memcpy(&aesBuf[8], &buf[8 * i], 8);
 
 			// do encrypt
-			sk->encryptInit();
-			int sz = sk->encrypt(aesBuf, aesOutBuf, 16, 16);
-			sz += sk->encryptFinish(&aesOutBuf[sz], 16 - sz);
+			sk->encryptInit(false);
+			int sz = sk->encrypt(aesBuf, aesOutBuf, 16, 32);
+			sz += sk->encryptFinish(&aesOutBuf[sz], 32 - sz);
 
 			if (sz != 16) {
 				throw XSECException(XSECException::CipherError, 

@@ -77,6 +77,8 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
+#if defined (HAVE_OPENSSL)
+
 // OpenSSL Includes
 
 #include <openssl/evp.h>
@@ -325,5 +327,5 @@ private:
 	bool							m_doPad;		// Do we pad last block?
 };
 
-
+#endif /* HAVE_OPENSSL */
 #endif /* OPENSSLCRYPTOSYMMETRICKEY_INCLUDE */

@@ -76,7 +76,7 @@
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
-
+#include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
@@ -84,7 +84,9 @@ XERCES_CPP_NAMESPACE_USE
 
 #include <iostream>
 
-#if defined (HAVE_OPENSSL) 
+#if !defined (HAVE_OPENSSL) && !defined (HAVE_WINCAPI)
+#	error Require OpenSSL or Windows Crypto API for the Merlin Resolver
+#endif
 
 // --------------------------------------------------------------------------------
 //           Strings and keys
@@ -133,7 +135,33 @@ MerlinFiveInteropResolver::~MerlinFiveInteropResolver() {
 		delete[]mp_baseURI;
 
 }
+// --------------------------------------------------------------------------------
+//			Utility functions
+// --------------------------------------------------------------------------------
+	
+XSECCryptoSymmetricKey * MerlinFiveInteropResolver::makeSymmetricKey(XSECCryptoSymmetricKey::SymmetricKeyType type) {
 
+#if defined (HAVE_OPENSSL)
+
+	OpenSSLCryptoSymmetricKey * k;
+	k = new OpenSSLCryptoSymmetricKey(type);
+
+	return k;
+
+#else
+
+	WinCAPICryptoSymmetricKey * k;
+	k = new WinCAPICryptoSymmetricKey(0, type);
+
+	return k;
+
+#endif
+
+}
+
+// --------------------------------------------------------------------------------
+//           Resolver
+// --------------------------------------------------------------------------------
 
 XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
@@ -152,15 +180,25 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 			// Check if this is a key we know
 
 			if (strEquals(s_bobName, name)) {
-				OpenSSLCryptoSymmetricKey * k;
-				k = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
-				k->setKey((unsigned char *) s_bobKey, strlen(s_bobKey));
+				XSECCryptoSymmetricKey * k = 
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
+				try {
+					k->setKey((unsigned char *) s_bobKey, strlen(s_bobKey));
+				} catch (...) {
+					delete k;
+					throw;
+				}
 				return k;
 			}
 			if (strEquals(s_jobName, name)) {
-				OpenSSLCryptoSymmetricKey * k;
-				k = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
-				k->setKey((unsigned char *) s_jobKey, strlen(s_bobKey));
+				XSECCryptoSymmetricKey * k = 
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
+				try {
+					k->setKey((unsigned char *) s_jobKey, strlen(s_jobKey));
+				} catch(...) {
+					delete k;
+					throw;
+				}
 				return k;
 			}
 
@@ -182,4 +220,3 @@ XSECKeyInfoResolver * MerlinFiveInteropResolver::clone(void) const {
 
 
 
-#endif /* HAVE_OPENSSL */

@@ -412,28 +412,37 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 				if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_ENCRYPTEDKEY) {
 
 					XENCEncryptedKey * ek = dynamic_cast<XENCEncryptedKey*>(kil->item(i));
-					XMLByte buffer[1024];
-					int keySize = decryptKey(ek, buffer, 1024);
+					volatile XMLByte buffer[1024];
+					try {
+						// Have to cast off volatile
+						int keySize = decryptKey(ek, (XMLByte *) buffer, 1024);
 
-					if (keySize > 0) {
-						// Try to map the key
+						if (keySize > 0) {
+							// Try to map the key
 
-						XENCEncryptionMethod * encryptionMethod = 
-							mp_encryptedData->getEncryptionMethod();
+							XENCEncryptionMethod * encryptionMethod = 
+								mp_encryptedData->getEncryptionMethod();
 
-						if (encryptionMethod != NULL) {
-		
-							handler = 
-								XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
-									mp_encryptedData->getEncryptionMethod()->getAlgorithm());
+							if (encryptionMethod != NULL) {
+			
+								handler = 
+									XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
+										mp_encryptedData->getEncryptionMethod()->getAlgorithm());
 
-							if (handler != NULL)
-								mp_key = handler->createKeyForURI(
-											mp_encryptedData->getEncryptionMethod()->getAlgorithm(),
-											buffer,
-											keySize);
+								if (handler != NULL)
+									mp_key = handler->createKeyForURI(
+												mp_encryptedData->getEncryptionMethod()->getAlgorithm(),
+												(XMLByte *) buffer,
+												keySize);
+							}
 						}
+					} catch (...) {
+						memset((void *) buffer, 0, 1024);
+						throw;
 					}
+
+					// Clear out the key buffer
+					memset((void *) buffer, 0, 1024);
 				}
 			}
 		}

@@ -77,12 +77,15 @@
 #include <xsec/enc/WinCAPI/WinCAPICryptoKeyRSA.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoHash.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoHashHMAC.hpp>
+#include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
 #include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(ArrayJanitor);
+
+static char s_xsecKeyStoreName[] = "ApacheXML-SecurityKeyStore";
 
 WinCAPICryptoProvider::WinCAPICryptoProvider(
 						LPCSTR provDSSName, 
@@ -101,11 +104,70 @@ WinCAPICryptoProvider::WinCAPICryptoProvider(
 	if (!CryptAcquireContext(&m_provRSA,
 		NULL,
 		provRSAName,
-		PROV_RSA_FULL,
+		PROV_RSA_AES,
 		CRYPT_VERIFYCONTEXT)) 
 	{
-		throw XSECException(XSECException::InternalError,
-			"WinCAPICryptoProvider() - Error obtaining default PROV_RSA_FULL");
+		// Check of we maybe don't understand AES
+
+		DWORD error = GetLastError();
+		if (error == NTE_PROV_TYPE_NOT_DEF) {
+
+			// This system does not have AES!
+			m_haveAES = false;
+			m_provRSAType = PROV_RSA_FULL;
+
+			if (!CryptAcquireContext(&m_provRSA,
+				NULL,
+				provRSAName,
+				PROV_RSA_FULL,
+				CRYPT_VERIFYCONTEXT)) 
+			{
+
+				throw XSECException(XSECException::InternalError,
+					"WinCAPICryptoProvider() - Error obtaining default PROV_RSA_FULL");
+			}
+
+		}
+		
+		else {
+
+			throw XSECException(XSECException::InternalError,
+				"WinCAPICryptoProvider() - Error obtaining default PROV_RSA_AES");
+		}
+	}
+
+	else {
+		m_haveAES = true;
+		m_provRSAType = PROV_RSA_AES;
+	}
+
+	// Now obtain our internal (library) key store
+
+	if (!CryptAcquireContext(&m_provApacheKeyStore,
+		s_xsecKeyStoreName,
+		provRSAName,
+		m_provRSAType,
+		CRYPT_MACHINE_KEYSET)) 
+	{
+
+		// Try to create
+		if (!CryptAcquireContext(&m_provApacheKeyStore,
+			s_xsecKeyStoreName,
+			provRSAName,
+			PROV_RSA_FULL,
+			CRYPT_MACHINE_KEYSET | CRYPT_NEWKEYSET)) {
+
+			throw XSECException(XSECException::InternalError,
+				"WinCAPICryptoProvider() - Error obtaining generating internal key store for PROV_RSA_FULL");
+		}
+		else {
+			HCRYPTKEY k;
+			if (!CryptGenKey(m_provApacheKeyStore, AT_KEYEXCHANGE, CRYPT_EXPORTABLE, &k)) {
+				throw XSECException(XSECException::InternalError,
+					"WinCAPICryptoProvider() - Error generating internal key set for PROV_RSA_FULL");
+			}
+			CryptDestroyKey(k);
+		}
 	}
 
 	// Copy parameters for later use
@@ -127,6 +189,7 @@ WinCAPICryptoProvider::~WinCAPICryptoProvider() {
 
 	CryptReleaseContext(m_provRSA, 0);
 	CryptReleaseContext(m_provDSS, 0);
+	CryptReleaseContext(m_provApacheKeyStore, 0);
 
 }
 
@@ -220,16 +283,22 @@ XSECCryptoSymmetricKey	* WinCAPICryptoProvider::keySymmetric(XSECCryptoSymmetric
 
 	// Only temporary
 
-	throw XSECException(XSECException::InternalError,
-		"WinCAPICryptoProvider() - SymmetricKeys not yet supported");
+	WinCAPICryptoSymmetricKey * ret;
+	
+	XSECnew(ret, WinCAPICryptoSymmetricKey(m_provApacheKeyStore, alg));
+
+	return ret;
 
 }
 
 unsigned int WinCAPICryptoProvider::getRandom(unsigned char * buffer, unsigned int numOctets) {
 
-	throw XSECException(XSECException::InternalError,
-		"WinCAPICryptoProvider() - Random generation not yet supported");
+	if (!CryptGenRandom(m_provApacheKeyStore, numOctets, buffer)) {
+		throw XSECException(XSECException::InternalError,
+			"WinCAPICryptoProvider() - Error generating Random data");
+	}
 
+	return numOctets;
 }
 
 
