@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.22 2002/03/11 21:31:15 craigmcc Exp $
+        $Id: build.xml,v 1.23 2002/04/29 21:46:27 craigmcc Exp $
 -->
 
 
@@ -210,7 +210,8 @@
                  author="true"
                 private="true"
                 version="true"
-               doctitle="&lt;h1&gt;${component.title}&lt;/h1&gt;"
+               overview="src/java/overview.html"
+               doctitle="&lt;h1&gt;${component.title} (Version ${component.version})&lt;/h1&gt;"
             windowtitle="${component.title} (Version ${component.version})"
                  bottom="Copyright (c) 2001-2002 - Apache Software Foundation">
       <link     offline="true" packagelistLoc="${commons-beanutils.api}"
