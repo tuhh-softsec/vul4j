@@ -1,9 +1,10 @@
 package org.codehaus.plexus.util.xml;
 
-import java.util.HashMap;
+import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Xpp3Dom
 {
@@ -159,5 +160,81 @@ public class Xpp3Dom
     public void setParent( Xpp3Dom parent )
     {
         this.parent = parent;
+    }
+
+    // ----------------------------------------------------------------------
+    // Standard object handling
+    // ----------------------------------------------------------------------
+
+    public boolean equals( Object obj )
+    {
+        if ( obj == this )
+        {
+            return true;
+        }
+
+        if ( !( obj instanceof Xpp3Dom ) )
+        {
+            return false;
+        }
+
+        Xpp3Dom dom = (Xpp3Dom) obj;
+
+        if ( name == null ? dom.name != null : !dom.name.equals( name ) )
+        {
+            return false;
+        }
+        else if ( value == null ? dom.value != null : !dom.value.equals( value ) )
+        {
+            return false;
+        }
+        else if ( attributes == null ? dom.attributes != null : !dom.attributes.equals( attributes ) )
+        {
+            return false;
+        }
+        else if ( childList == null ? dom.childList != null : !dom.childList.equals( childList ) )
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public int hashCode()
+    {
+        int result = 17;
+        result = 37 * result + ( name != null ? name.hashCode() : 0 );
+        result = 37 * result + ( value != null ? value.hashCode() : 0 );
+        result = 37 * result + ( attributes != null ? attributes.hashCode() : 0 );
+        result = 37 * result + ( childList != null ? childList.hashCode() : 0 );
+        return result;
+    }
+
+    public String toString()
+    {
+        StringWriter writer = new StringWriter();
+        XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer );
+        write( this, xmlWriter );
+        return writer.toString();
+    }
+
+    private static void write( Xpp3Dom xpp3Dom, XMLWriter xmlWriter )
+    {
+        // TODO: move to XMLWriter?
+        xmlWriter.startElement( xpp3Dom.getName() );
+        String[] attributeNames = xpp3Dom.getAttributeNames();
+        for ( int i = 0; i < attributeNames.length; i++ )
+        {
+            String attributeName = attributeNames[i];
+            xmlWriter.addAttribute( attributeName, xpp3Dom.getAttribute( attributeName ) );
+        }
+        Xpp3Dom[] children = xpp3Dom.getChildren();
+        for ( int i = 0; i < children.length; i++ )
+        {
+            write( children[i], xmlWriter );
+        }
+        xmlWriter.endElement();
     }
 }

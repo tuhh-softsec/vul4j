@@ -1,8 +1,11 @@
 package org.codehaus.plexus.util.xml;
 
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,17 +13,28 @@ import java.util.List;
 public class Xpp3DomBuilder
 {
     public static Xpp3Dom build( Reader reader )
-        throws Exception
+        throws XmlPullParserException, IOException
+    {
+        XmlPullParser parser = new MXParser();
+
+        parser.setInput( reader );
+
+        try
+        {
+            return build( parser );
+        }
+        finally
+        {
+            IOUtil.close( reader );
+        }
+    }
+
+    public static Xpp3Dom build( XmlPullParser parser )
+        throws XmlPullParserException, IOException
     {
         List elements = new ArrayList();
 
         List values = new ArrayList();
-
-        Xpp3Dom configuration = null;
-
-        XmlPullParser parser = new MXParser();
-            
-        parser.setInput( reader );
 
         int eventType = parser.getEventType();
 
@@ -90,16 +104,13 @@ public class Xpp3DomBuilder
 
                 if ( 0 == depth )
                 {
-                    configuration = finishedConfiguration;
+                    return finishedConfiguration;
                 }
             }
 
             eventType = parser.next();
         }
-
-        reader.close();
-
-        return configuration;
+        throw new IllegalStateException( "End of document found before returning to 0 depth" );
     }
 
     private static Xpp3Dom createConfiguration( String localName )
