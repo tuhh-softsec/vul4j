@@ -351,7 +351,7 @@ unsigned int WinCAPICryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 	if (m_doPad) {
 
 		// Need to do this ourselves, as WinCAPI appears broken
-		if (plainBuf[outl - 1] > 8) {
+		if (plainBuf[outl - 1] > m_blockSize) {
 			throw XSECCryptoException(XSECCryptoException::SymmetricError,
 				"WinCAPI:SymmetricKey - Bad padding"); 
 		}
