@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.1 2003/02/19 00:54:37 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.2 2003/02/19 12:09:04 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,6 +68,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
@@ -75,7 +76,7 @@ import org.apache.commons.functor.core.EqualPredicate;
 import org.apache.commons.functor.core.IdentityFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/19 00:54:37 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/19 12:09:04 $
  * @author Rodney Waldhoff
  */
 public class TestCollectionAlgorithms extends TestCase {
@@ -202,6 +203,18 @@ public class TestCollectionAlgorithms extends TestCase {
         assertEquals(evens,result);
     }    
 
+    public void testInject() {
+        Object result = CollectionAlgorithms.inject(
+            list.iterator(),
+            new Integer(0),
+            new BinaryFunction() {
+                public Object evaluate(Object a, Object b) {
+                    return new Integer(((Number)a).intValue() + ((Number)b).intValue());
+                }
+            });
+        assertEquals(new Integer(sum),result);
+    }    
+
     // Attributes
     // ------------------------------------------------------------------------
     private List list = null;    
@@ -230,6 +243,4 @@ public class TestCollectionAlgorithms extends TestCase {
         }        
         public int sum = 0;
     }
-    
-
 }

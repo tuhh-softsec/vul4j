@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Attic/CollectionAlgorithms.java,v 1.1 2003/02/19 00:54:36 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Attic/CollectionAlgorithms.java,v 1.2 2003/02/19 12:09:04 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,12 +61,16 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/19 00:54:36 $
+ * Utility methods and algorithms for applying functors 
+ * to {@link Collection Collections}.
+ * 
+ * @version $Revision: 1.2 $ $Date: 2003/02/19 12:09:04 $
  * @author Rodney Waldhoff
  */
 public final class CollectionAlgorithms {
@@ -91,7 +95,7 @@ public final class CollectionAlgorithms {
      * and {@link Collection#add add} the result to a
      * new {@link Collection}.
      * 
-     * @see #collect(java.util.Iterator,org.apache.commons.functor.UnaryFunction,java.util.Collection}
+     * @see #collect(java.util.Iterator,org.apache.commons.functor.UnaryFunction,java.util.Collection)
      */
     public static Collection collect(Iterator iter, UnaryFunction func) {
         return collect(iter,func,new ArrayList());
@@ -105,7 +109,7 @@ public final class CollectionAlgorithms {
      * given {@link Collection}.
      * 
      * @return the given {@link Collection}
-     * @see #collect(java.util.Iterator,org.apache.commons.functor.UnaryFunction}
+     * @see #collect(java.util.Iterator,org.apache.commons.functor.UnaryFunction)
      */
     public static Collection collect(Iterator iter, UnaryFunction func, Collection col) {
         while(iter.hasNext()) {
@@ -120,7 +124,7 @@ public final class CollectionAlgorithms {
      * {@link Iterator Iterator} that matches the given
      * {@link UnaryPredicate UnaryPredicate}.
      * 
-     * @see #detect(java.util.Iterator,org.apache.commons.functor.UnaryPredicate}
+     * @see #detect(java.util.Iterator,org.apache.commons.functor.UnaryPredicate)
      */
     public static boolean contains(Iterator iter, UnaryPredicate pred) {
         while(iter.hasNext()) {
@@ -138,7 +142,7 @@ public final class CollectionAlgorithms {
      * {@link NoSuchElementException NoSuchElementException} if no
      * matching element can be found.
      * 
-     * @see #detect(java.util.Iterator,org.apache.commons.functor.UnaryPredicate,java.lang.Object}
+     * @see #detect(java.util.Iterator,org.apache.commons.functor.UnaryPredicate,java.lang.Object)
      */
     public static Object detect(Iterator iter, UnaryPredicate pred) {
         while(iter.hasNext()) {
@@ -157,7 +161,7 @@ public final class CollectionAlgorithms {
      * the given (possibly <code>null</code> <code>Object</code>
      * if no matching element can be found.
      * 
-     * @see #detect(java.util.Iterator,org.apache.commons.functor.UnaryPredicate}
+     * @see #detect(java.util.Iterator,org.apache.commons.functor.UnaryPredicate)
      */
     public static Object detect(Iterator iter, UnaryPredicate pred, Object ifNone) {
         while(iter.hasNext()) {
@@ -178,6 +182,28 @@ public final class CollectionAlgorithms {
         while(iter.hasNext()) {
             proc.run(iter.next());
         }
+    }
+
+    /**
+     * {@link BinaryFunction#evaluate Evaluate} the pair
+     * <i>( previousResult, element )</i> for each element 
+     * in the given {@link Iterator Iterator} where 
+     * previousResult is initially <i>seed</i>, and thereafter
+     * the result of the evaluation of the previous element
+     * in the iterator.  Returns the result of the final
+     * evaluation.
+     * <p>
+     * In code:
+     * <pre>while(iter.hasNext()) { 
+     *   seed = func.evaluate(seed,iter.next());
+     * }
+     * return seed;</pre>
+     */
+    public static Object inject(Iterator iter, Object seed, BinaryFunction func) {        
+        while(iter.hasNext()) {
+            seed = func.evaluate(seed,iter.next());
+        }
+        return seed;
     }
 
     /**
