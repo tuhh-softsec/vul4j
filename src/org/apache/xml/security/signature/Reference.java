@@ -617,8 +617,6 @@ public class Reference extends SignatureElementProxy {
 
          byte calculatedDigestValue[] = mda.digest();
 
-         cat.fatal("data.length = " + data.length);
-
          //J-
          if (data.length < 20) {
             cat.debug(new String(data));
