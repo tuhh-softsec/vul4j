@@ -129,9 +129,9 @@ public class TestSignature {
       int end = filenames.length;
 
       // int end = filenames.length;
-      for (int filetoverify = start; filetoverify < end; filetoverify++) {
+      for (int file_to_verify = start; file_to_verify < end; file_to_verify++) {
          try {
-            String filename = filenames[filetoverify];
+            String filename = filenames[file_to_verify];
             File f = new File(filename);
 
             System.out.println("");
@@ -142,16 +142,26 @@ public class TestSignature {
             javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
             org.w3c.dom.Document doc =
                db.parse(new java.io.FileInputStream(filename));
+
+            //create a namespace context for use in the XPath expression below
             Element nscontext = XMLUtils.createDSctx(doc, "ds",
                                                      Constants.SignatureSpecNS);
+
+            //retrieve the signature Element from the document
             Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
                                     "//ds:Signature[1]", nscontext);
+
+            //Creates a XMLSignature from the element and uses the filename as
+            //the baseURI. That URI is prepended to all relative URIs.
             XMLSignature signature =
                new XMLSignature(sigElement,
                                 (new File(filename)).toURL().toString());
 
             signature.addResourceResolver(new OfflineResolver());
 
+            //Get the KeyInfo object, which might contain some clues as to what
+            //key was used to create the signature. It might also contain the
+            //full cert.
             KeyInfo ki = signature.getKeyInfo();
 
             ki.addStorageResolver(new StorageResolver(new org.apache.xml
@@ -159,24 +169,36 @@ public class TestSignature {
                .CertsInFilesystemDirectoryResolver(merlinsDir + "certs")));
 
             if (ki != null) {
+
+               //First try to see if it is an X509Cert
                X509Certificate cert =
                   signature.getKeyInfo().getX509Certificate();
 
                if (cert != null) {
+
+                  //check if the signature is valid using the cert
                   System.out.println("Check: "
                                      + signature.checkSignatureValue(cert));
                } else {
+
+                  //Maybe it's a public key
                   PublicKey pk = signature.getKeyInfo().getPublicKey();
 
                   if (pk != null) {
+
+                     //check if the signature is valid using the public key
                      System.out.println("Check: "
                                         + signature.checkSignatureValue(pk));
                   } else {
+
+                     //No X509Cert or PublicKey could be found.
                      System.out
                         .println("Could not find Certificate or PublicKey");
                   }
                }
             } else {
+
+               //If the signature did not contain any KeyInfo element
                System.out.println("Could not find ds:KeyInfo");
             }
          } catch (Exception ex) {
