@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Caninical XML node set</title>
+<style type="text/css">
+<!-- 
+.INCLUDED { 
+   color: #000000; 
+   background-color: 
+   #FFFFFF; 
+   font-weight: bold; } 
+.EXCLUDED { 
+   color: #666666; 
+   background-color: 
+   #999999; } 
+.INCLUDEDINCLUSIVENAMESPACE { 
+   color: #0000FF; 
+   background-color: #FFFFFF; 
+   font-weight: bold; 
+   font-style: italic; } 
+.EXCLUDEDINCLUSIVENAMESPACE { 
+   color: #0000FF; 
+   background-color: #999999; 
+   font-style: italic; } 
+--> 
+</style> 
+</head>
+<body bgcolor="#999999">
+<h1>Explanation of the output</h1>
+<p>The following text contains the nodeset of the given Reference before it is canonicalized. There exist four different styles to indicate how a given node is treated.</p>
+<ul>
+<li class="INCLUDED">A node which is in the node set is labeled using the INCLUDED style.</li>
+<li class="EXCLUDED">A node which is <em>NOT</em> in the node set is labeled EXCLUDED style.</li>
+<li class="INCLUDEDINCLUSIVENAMESPACE">A namespace which is in the node set AND in the InclusiveNamespaces PrefixList is labeled using the INCLUDEDINCLUSIVENAMESPACE style.</li>
+<li class="EXCLUDEDINCLUSIVENAMESPACE">A namespace which is in NOT the node set AND in the InclusiveNamespaces PrefixList is labeled using the INCLUDEDINCLUSIVENAMESPACE style.</li>
+</ul>
+<h1>Output</h1>
+<pre>
+<span class="EXCLUDED">&lt;!-- XPath="self::Parent or (parent::Parent and not(self::Child)) or self::GrandChild or parent::GrandChild" --&gt;
+</span><span class="EXCLUDED">&lt;!-- Result C14N:
+<Parent xml:foo="bar" xml:fool="barbar" xml:lang="en" xml:space="default">
+    <GrandChild xml:foo="barbarossa" xml:fool="barbar" xml:lang="ge" xml:space="preserve"></GrandChild>
+  </Parent>
+--&gt;
+</span><span class="EXCLUDED">&lt;!-- Annotation C14N:
+1. Parent inherts xml:lang and xml:space since it is an orphan node.
+2. Parent has explicitly declared attributes xml:foo and xml:fool.
+3. GrandChild inherts xml:foo from its Child ancestor.
+4. GrandChild inherits xml:fool from its Parent ancestor.
+5. GrandChild inherits xml:lang from its Child ancestor.
+6. GrandChild has explicitly declared attribute xml:space.
+--&gt;
+</span><span class="EXCLUDED">&lt;!-- Result EC14N:
+<Parent xml:foo="bar" xml:fool="barbar">
+    <GrandChild xm:space="preserve"></GrandChild>
+  </Parent>
+--&gt;
+</span><span class="EXCLUDED">&lt;!-- Annotation EC14N:
+1. Only those attributes in the xml namespace are rendered, which are
+   explicitely declared in the attribute axis of an element.
+--&gt;
+</span><span class="EXCLUDED">&lt;GrandParent</span><span class="EXCLUDED"> xmlns=""</span><span class="EXCLUDED"> xml:lang="en"</span><span class="EXCLUDED"> xml:space="default"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+  </span><span class="INCLUDED">&lt;Parent</span><span class="INCLUDED"> xmlns=""</span><span class="INCLUDED"> xml:foo="bar"</span><span class="INCLUDED"> xml:fool="barbar"</span><span class="INCLUDED">&gt;</span><span class="INCLUDED">
+    </span><span class="EXCLUDED">&lt;Child</span><span class="EXCLUDED"> xmlns=""</span><span class="EXCLUDED"> xml:foo="barbarossa"</span><span class="EXCLUDED"> xml:lang="ge"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+      </span><span class="INCLUDED">&lt;GrandChild</span><span class="INCLUDED"> xmlns=""</span><span class="INCLUDED"> xml:space="preserve"</span><span class="INCLUDED">&gt;</span><span class="INCLUDED">&lt;/GrandChild&gt;</span><span class="EXCLUDED">
+    </span><span class="EXCLUDED">&lt;/Child&gt;</span><span class="INCLUDED">
+  </span><span class="INCLUDED">&lt;/Parent&gt;</span><span class="EXCLUDED">
+</span><span class="EXCLUDED">&lt;/GrandParent&gt;</span></pre></body></html>

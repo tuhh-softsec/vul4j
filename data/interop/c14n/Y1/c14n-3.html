@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Caninical XML node set</title>
+<style type="text/css">
+<!-- 
+.INCLUDED { 
+   color: #000000; 
+   background-color: 
+   #FFFFFF; 
+   font-weight: bold; } 
+.EXCLUDED { 
+   color: #666666; 
+   background-color: 
+   #999999; } 
+.INCLUDEDINCLUSIVENAMESPACE { 
+   color: #0000FF; 
+   background-color: #FFFFFF; 
+   font-weight: bold; 
+   font-style: italic; } 
+.EXCLUDEDINCLUSIVENAMESPACE { 
+   color: #0000FF; 
+   background-color: #999999; 
+   font-style: italic; } 
+--> 
+</style> 
+</head>
+<body bgcolor="#999999">
+<h1>Explanation of the output</h1>
+<p>The following text contains the nodeset of the given Reference before it is canonicalized. There exist four different styles to indicate how a given node is treated.</p>
+<ul>
+<li class="INCLUDED">A node which is in the node set is labeled using the INCLUDED style.</li>
+<li class="EXCLUDED">A node which is <em>NOT</em> in the node set is labeled EXCLUDED style.</li>
+<li class="INCLUDEDINCLUSIVENAMESPACE">A namespace which is in the node set AND in the InclusiveNamespaces PrefixList is labeled using the INCLUDEDINCLUSIVENAMESPACE style.</li>
+<li class="EXCLUDEDINCLUSIVENAMESPACE">A namespace which is in NOT the node set AND in the InclusiveNamespaces PrefixList is labeled using the INCLUDEDINCLUSIVENAMESPACE style.</li>
+</ul>
+<h1>Output</h1>
+<pre>
+<span class="EXCLUDED">&lt;Foo</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xml:space="preserve"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+  </span><span class="EXCLUDED">&lt;dsig:Signature</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+    </span><span class="EXCLUDED">&lt;dsig:SignedInfo</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;dsig:CanonicalizationMethod</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">&lt;/dsig:CanonicalizationMethod&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;dsig:SignatureMethod</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">&lt;/dsig:SignatureMethod&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;dsig:Reference</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> URI="#xpointer(id('to-be-signed'))"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:Transforms</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+          </span><span class="EXCLUDED">&lt;dsig:Transform</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">&lt;/dsig:Transform&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;/dsig:Transforms&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:DigestMethod</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">&lt;/dsig:DigestMethod&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:DigestValue</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">7yOTjUu+9oEhShgyIIXDLjQ08aY=</span><span class="EXCLUDED">&lt;/dsig:DigestValue&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;/dsig:Reference&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;dsig:Reference</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> URI="#xpointer(id('to-be-signed'))"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:Transforms</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+          </span><span class="EXCLUDED">&lt;dsig:Transform</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+            </span><span class="EXCLUDED">&lt;InclusiveNamespaces</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="http://www.w3.org/2001/10/xml-exc-c14n#"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> PrefixList="bar #default"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">&lt;/InclusiveNamespaces&gt;</span><span class="EXCLUDED">
+          </span><span class="EXCLUDED">&lt;/dsig:Transform&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;/dsig:Transforms&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:DigestMethod</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">&lt;/dsig:DigestMethod&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:DigestValue</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">09xMy0RTQM1Q91demYe/0F6AGXo=</span><span class="EXCLUDED">&lt;/dsig:DigestValue&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;/dsig:Reference&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;dsig:Reference</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> URI="#xpointer(id('to-be-signed'))"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:Transforms</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+          </span><span class="EXCLUDED">&lt;dsig:Transform</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#WithComments"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">&lt;/dsig:Transform&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;/dsig:Transforms&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:DigestMethod</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">&lt;/dsig:DigestMethod&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:DigestValue</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">ZQH+SkCN8c5y0feAr+aRTZDwyvY=</span><span class="EXCLUDED">&lt;/dsig:DigestValue&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;/dsig:Reference&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;dsig:Reference</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> URI="#xpointer(id('to-be-signed'))"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:Transforms</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+          </span><span class="EXCLUDED">&lt;dsig:Transform</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#WithComments"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+            </span><span class="EXCLUDED">&lt;InclusiveNamespaces</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="http://www.w3.org/2001/10/xml-exc-c14n#"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> PrefixList="bar #default"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">&lt;/InclusiveNamespaces&gt;</span><span class="EXCLUDED">
+          </span><span class="EXCLUDED">&lt;/dsig:Transform&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;/dsig:Transforms&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:DigestMethod</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED"> Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">&lt;/dsig:DigestMethod&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:DigestValue</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">a1cTqBgbqpUt6bMJN4C6zFtnoyo=</span><span class="EXCLUDED">&lt;/dsig:DigestValue&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;/dsig:Reference&gt;</span><span class="EXCLUDED">
+    </span><span class="EXCLUDED">&lt;/dsig:SignedInfo&gt;</span><span class="EXCLUDED">
+    </span><span class="EXCLUDED">&lt;dsig:SignatureValue</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+      Kv1e7Kjhz4gFtOZKgvC5cLYtMQNIn99fyLBa6D//bBokTxTUEkMwaA==
+    </span><span class="EXCLUDED">&lt;/dsig:SignatureValue&gt;</span><span class="EXCLUDED">
+    </span><span class="EXCLUDED">&lt;dsig:KeyInfo</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;dsig:KeyValue</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;dsig:DSAKeyValue</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+          </span><span class="EXCLUDED">&lt;dsig:P</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+            8FkJgwdyizV5Vd0m6DA/DZsdweJdnkueYVUd7L8aA4JpZxrlCI/M7mDE/OGhEhgB
+            nFzSTrBjSFpT7DG66uy7oJeE+RgkXO7EWWOEglMPwaZgGgi1oZarv95VOx3uO8W8
+            L7+S/3AuHNUZQD4b5bpdYAmjXFwz6dl0mKiXAvVuP9E=
+          </span><span class="EXCLUDED">&lt;/dsig:P&gt;</span><span class="EXCLUDED">
+          </span><span class="EXCLUDED">&lt;dsig:Q</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+            mFf8DiMVNFXy0vag9oNGNW/g4u0=
+          </span><span class="EXCLUDED">&lt;/dsig:Q&gt;</span><span class="EXCLUDED">
+          </span><span class="EXCLUDED">&lt;dsig:G</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+            g8gRdNlq9EOTR2TjmVApqCAZAq3jEjOIxXbs8JBiZ+U7dV9geeXEy13GbYoP23Qr
+            apZQo+35diw+cMYPHjN+iUCwUkiGWv7/piAK+Ootfw03etL8XiVWjtL5NBof2CNp
+            wmAw7mrwmNG092y1e6HXSGMMZpaoth/P8xhsxCQsqI8=
+          </span><span class="EXCLUDED">&lt;/dsig:G&gt;</span><span class="EXCLUDED">
+          </span><span class="EXCLUDED">&lt;dsig:Y</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="EXCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="EXCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="EXCLUDED">&gt;</span><span class="EXCLUDED">
+            j0V14dc/I+okDAeG4ZbWUzb3HTFkEOC6feOMo5Dk218GcPqEKroVHaDBF9CmRV1v
+            B8MUOExB+6ZNHfcs5Vaw0HVn62YiEBzrmKikx6SxO4Dg9L8I5WbHn37vxUKvHs8r
+            7+rma3kpZQftTMiBpJ8XK8Z6jg8VhuJqo9yZZO+p3I0=
+          </span><span class="EXCLUDED">&lt;/dsig:Y&gt;</span><span class="EXCLUDED">
+        </span><span class="EXCLUDED">&lt;/dsig:DSAKeyValue&gt;</span><span class="EXCLUDED">
+      </span><span class="EXCLUDED">&lt;/dsig:KeyValue&gt;</span><span class="EXCLUDED">
+    </span><span class="EXCLUDED">&lt;/dsig:KeyInfo&gt;</span><span class="EXCLUDED">
+    </span><span class="INCLUDED">&lt;dsig:Object</span><span class="INCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="INCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="INCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="INCLUDED"> Id="to-be-signed"</span><span class="INCLUDED">&gt;</span><span class="INCLUDED">
+      </span><span class="INCLUDED">&lt;bar:Baz</span><span class="INCLUDEDINCLUSIVENAMESPACE"> xmlns="urn:foo"</span><span class="INCLUDEDINCLUSIVENAMESPACE"> xmlns:bar="urn:bar"</span><span class="INCLUDED"> xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"</span><span class="INCLUDED">&gt;</span><span class="INCLUDED">
+        </span><span class="INCLUDED">&lt;!--  comment --&gt;</span><span class="INCLUDED">
+      </span><span class="INCLUDED">&lt;/bar:Baz&gt;</span><span class="INCLUDED">
+    </span><span class="INCLUDED">&lt;/dsig:Object&gt;</span><span class="EXCLUDED">
+  </span><span class="EXCLUDED">&lt;/dsig:Signature&gt;</span><span class="EXCLUDED">
+</span><span class="EXCLUDED">&lt;/Foo&gt;</span></pre></body></html>
