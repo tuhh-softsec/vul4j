@@ -66,17 +66,18 @@ AC_CONFIG_SRCDIR(framework)
 
 # Define the files we wish to generate
 
-AC_CONFIG_FILES([Makefile \
-	canon/Makefile \
-	transformers/Makefile \
-	dsig/Makefile \
-	enc/Makefile \
-	enc/OpenSSL/Makefile \
-	framework/Makefile \
-	utils/Makefile \
-	utils/unixutils/Makefile \
-	tools/Makefile \
-	samples/Makefile])
+#AC_CONFIG_FILES([Makefile \
+#	canon/Makefile \
+#	transformers/Makefile \
+#	dsig/Makefile \
+#	enc/Makefile \
+#	enc/OpenSSL/Makefile \
+#	framework/Makefile \
+#	utils/Makefile \
+#	utils/unixutils/Makefile \
+#	tools/Makefile \
+#	samples/Makefile])
+AC_CONFIG_FILES([Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile samples/Makefile])
 AC_CONFIG_HEADERS([framework/XSECConfig.hpp])
 
 # Get user options
@@ -186,8 +187,15 @@ case "${host}" in
 						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
 						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
 						MAKE_SHARED=["${CXX} ${CXXFLAGS} -DSOLARIS -shared ${PIC}"]
-						LINK=["${CXX} ${CXXFLAGS} -DSOLARIS ${PIC}"];;
-						
+						LINK=["${CXX} ${CXXFLAGS} -DSOLARIS ${PIC}"]
+						LINK_COMMAND_1=["(cd \$(LIB_DIR) \; rm -f \$(LIBMAJORNAME) \; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
+						LINK_COMMAND_2=["(cd \$(LIB_DIR) \; rm -f \$(LIBSHORTNAME) \; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
+						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${libdir}"]
+						INSTALL_COMMAND_2=["\$(RM) \${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBMAJORNAME}"]
+						INSTALL_COMMAND_3=["\$(RM) \${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBSHORTNAME}"]
+
+						;;
+
         *-*-linux*)     platform=LINUX ;
 						shlibsuffix=.so
 						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
@@ -207,8 +215,34 @@ case "${host}" in
 						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
 						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
 						MAKE_SHARED=["${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DLINUX -shared ${PIC}"]
-						LINK=["${CXX} ${CXXFLAGS} -DLINUX ${PIC}"];;
-						
+						LINK=["${CXX} ${CXXFLAGS} -DLINUX ${PIC}"]
+						LINK_COMMAND_1=["(cd \$(LIB_DIR) \; rm -f \$(LIBMAJORNAME) \; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
+						LINK_COMMAND_2=["(cd \$(LIB_DIR) \; rm -f \$(LIBSHORTNAME) \; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
+						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${libdir}"]
+						INSTALL_COMMAND_2=["\$(RM) \${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBMAJORNAME}"]
+						INSTALL_COMMAND_3=["\$(RM) \${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBSHORTNAME}"]
+
+						;;
+
+		*-*-cygwin*)	platform=CYGWIN
+						shlibsuffix=.dll
+						lib_name="cyg${PACKAGE_TARNAME}-${PACKAGE_VERSION}.dll"
+					    lib_major_name="lib${PACKAGE_TARNAME}.dll.a"
+						lib_short_name="cyg${PACKAGE_TARNAME}.dll"
+						# Assume g++
+						PLATFORM_OPTIONS=["-Wall"]
+
+						# Should use -D_REENTRANT - but not yet OK
+						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} -DCYGWIN"]
+						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
+						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
+						MAKE_SHARED=["${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DCYGWIN -shared -Xlinker --warn-once -Xlinker -Map -Xlinker ../lib/lib${PACKAGE_TARNAME}.map -Xlinker --output-def -Xlinker ../lib/lib${PACKAGE_TARNAME}.def -Xlinker --out-implib -Xlinker ../lib/\$(LIBMAJORNAME)"]
+						LINK=["${CXX} ${CXXFLAGS} -DCYGWIN"]
+
+						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${bindir}"]
+						INSTALL_COMMAND_2=["\$(INSTALL) \$(LIB_DIR)/\$(LIBMAJORNAME) \${libdir}"]
+
+						;;
 						
 #        *-*-irix*)      platform=IRIX ;;
 #        *-*-aix*)       platform=AIX ;;
@@ -450,6 +484,14 @@ AC_SUBST(exec_prefix)
 AC_SUBST(includedir)
 AC_SUBST(libdir)
 AC_SUBST(bindir)
+
+# Populate special platform specific make commands
+
+AC_SUBST(LINK_COMMAND_1)
+AC_SUBST(LINK_COMMAND_2)
+AC_SUBST(INSTALL_COMMAND_1)
+AC_SUBST(INSTALL_COMMAND_2)
+AC_SUBST(INSTALL_COMMAND_3)
 
 # Now populate the platform and Compiler related variables.
 

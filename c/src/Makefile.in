@@ -157,8 +157,8 @@ lib: prepare ${THISLIB}
 
 ${THISLIB}: $(LIB_OBJ_FILES)
 	$(MAKE_SHARED) $(LDFLAGS) $(LIB_OBJ_FILES) $(LIBS) -o $@
-	(cd $(LIB_DIR) ; rm -f $(LIBMAJORNAME) ; $(LN_S) $(LIBNAME) $(LIBMAJORNAME))
-	(cd $(LIB_DIR) ; rm -f $(LIBSHORTNAME) ; $(LN_S) $(LIBNAME) $(LIBSHORTNAME))
+	@LINK_COMMAND_1@
+	@LINK_COMMAND_2@
 
 $(LIB_OBJ_FILES): compile
 
@@ -206,9 +206,6 @@ allsamples:
 ####################### INSTALL ##########################
 
 install: lib
-	$(INSTALL) ${THISLIB} ${libdir}
-	$(RM) ${libdir}/${LIBMAJORNAME} && $(LN_S) ${LIBNAME} ${libdir}/${LIBMAJORNAME}
-	$(RM) ${libdir}/${LIBSHORTNAME} && $(LN_S) ${LIBNAME} ${libdir}/${LIBSHORTNAME}
 	$(MAKE) -C ${CANON_DIR} install
 	$(MAKE) -C ${TRANSFORMERS_DIR} install
 	$(MAKE) -C ${DSIG_DIR} install
@@ -217,6 +214,9 @@ install: lib
 	$(MAKE) -C ${FRAMEWORK_DIR} install
 	$(MAKE) -C ${UTILS_DIR} install
 	$(MAKE) -C ${UNIXUTILS_DIR} install
+	@INSTALL_COMMAND_1@
+	@INSTALL_COMMAND_2@
+	@INSTALL_COMMAND_3@
 
 ######################## CLEAN  ##########################
 
