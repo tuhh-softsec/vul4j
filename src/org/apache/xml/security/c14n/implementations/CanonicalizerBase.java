@@ -467,83 +467,94 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * @param writer 
     * @throws IOException
     */
-   static final void outputAttrToWriter(String name, String value, OutputStream writer) throws IOException {
+   static final void outputAttrToWriter(final String name, final String value, final OutputStream writer) throws IOException {
       writer.write(' ');
       writeStringToUtf8(name,writer);
       writer.write(equalsStr);
-
-      int length = value.length();
+      byte  []toWrite;
+      final int length = value.length();
       for (int i=0;i < length; i++) {        
          char c = value.charAt(i);
 
          switch (c) {
 
          case '&' :
-            writer.write(_AMP_);
+         	toWrite=_AMP_;
+            //writer.write(_AMP_);
             break;
 
          case '<' :
-            writer.write(_LT_);
+         	toWrite=_LT_;
+            //writer.write(_LT_);
             break;
 
          case '"' :
-            writer.write(_QUOT_);
+         	toWrite=_QUOT_;
+            //writer.write(_QUOT_);
             break;
 
          case 0x09 :    // '\t'
-            writer.write(__X9_);
+         	toWrite=__X9_;
+            //writer.write(__X9_);
             break;
 
          case 0x0A :    // '\n'
-            writer.write(__XA_);
+         	toWrite=__XA_;
+            //writer.write(__XA_);
             break;
 
          case 0x0D :    // '\r'
-            writer.write(__XD_);
+         	toWrite=__XD_;
+            //writer.write(__XD_);
             break;
 
          default :
             writeCharToUtf8(c,writer);
             //this._writer.write(c);
-            break;
+            continue;
          }
+         writer.write(toWrite);
       }
 
       writer.write('\"');
    }
 
-   final static void writeCharToUtf8(char c,OutputStream out) throws IOException{
+   final static void writeCharToUtf8(final char c,final OutputStream out) throws IOException{
    	
    	if (/*(c >= 0x0001) &&*/ (c <= 0x007F)) {
    		out.write(c);
+   		return;
    	} else if (c > 0x07FF) {
    		out.write(0xE0 | ((c >> 12) & 0x0F));
    		out.write(0x80 | ((c >>  6) & 0x3F));
-   		out.write(0x80 | ((c >>  0) & 0x3F));
+   		out.write(0x80 | ((c) & 0x3F));
+   		return;
    		
    	} else {
    		out.write(0xC0 | ((c >>  6) & 0x1F));
-   		out.write(0x80 | ((c >>  0) & 0x3F));
-   		
+   		out.write(0x80 | ((c) & 0x3F));
+   		return;   		
    	}
    	
    }
    
-   final static void writeStringToUtf8(String str,OutputStream out) throws IOException{
-   	int length=str.length();
-   	for (int i=0;i<length;i++) {
-   		char c=str.charAt(i);
+   final static void writeStringToUtf8(final String str,final OutputStream out) throws IOException{
+   	final int length=str.length();
+   	int i=0;
+   	while (i<length) {
+   		char c=str.charAt(i++);
    		if (/*(c >= 0x0001) && */(c <= 0x007F)) {
    			out.write(c);
+   			continue;
    		} else if (c > 0x07FF) {
    			out.write(0xE0 | ((c >> 12) & 0x0F));
    			out.write(0x80 | ((c >>  6) & 0x3F));
-   			out.write(0x80 | ((c >>  0) & 0x3F));
-   			
+   			out.write(0x80 | ((c) & 0x3F));
+   			continue;
    		} else {
    			out.write(0xC0 | ((c >>  6) & 0x1F));
-   			out.write(0x80 | ((c >>  0) & 0x3F));
-   			
+   			out.write(0x80 | ((c) & 0x3F));
+   			continue;
    		}
    	}
     
@@ -556,48 +567,38 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * @throws IOException
     */
    static final void outputPItoWriter(ProcessingInstruction currentPI, OutputStream writer) throws IOException {
-   	  int position = getPositionRelativeToDocumentElement(currentPI);
+   	  final int position = getPositionRelativeToDocumentElement(currentPI);
 
       if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
         writer.write('\n');
       }
       writer.write(_BEGIN_PI);
 
-      String target = currentPI.getTarget();
+      final String target = currentPI.getTarget();
       int length = target.length();
 
       for (int i = 0; i < length; i++) {         
       	 char c=target.charAt(i);
-         switch (c) {
-
-         case 0x0D :
+         if (c==0x0D) {
             writer.write(__XD_);
-            break;
-
-         default :
+         } else {
             writeCharToUtf8(c,writer);            
-            break;
          }
       }
 
-      String data = currentPI.getData();
+      final String data = currentPI.getData();
      
       length = data.length();
 
-      if ((data != null) && (length > 0)) {
+      if (length > 0) {
          writer.write(' ');
 
          for (int i = 0; i < length; i++) {            
          	char c=data.charAt(i);
-            switch (c) {
-
-            case 0x0D :
+            if (c==0x0D) {
                writer.write(__XD_);
-               break;
-
-            default :
-                writeCharToUtf8(c,writer);
-               break;
+            } else {
+               writeCharToUtf8(c,writer);               
             }
          }
       }
@@ -616,28 +617,22 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * @throws IOException
     */
    static final void outputCommentToWriter(Comment currentComment, OutputStream writer) throws IOException {
-   	   int position = getPositionRelativeToDocumentElement(currentComment);
-   	   if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
+   	  final int position = getPositionRelativeToDocumentElement(currentComment);
+   	  if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
    		writer.write('\n');
    	  }
       writer.write(_BEGIN_COMM);
 
-      String data = currentComment.getData();
-      int length = data.length();      
+      final String data = currentComment.getData();
+      final int length = data.length();      
 
-      for (int i = 0; i < length; i++) {
-         char c = data.charAt(i);
-
-         switch (c) {
-
-         case 0x0D :
+      for (int i = 0; i < length; i++) {         
+         char c=data.charAt(i);
+         if (c==0x0D) {
             writer.write(__XD_);
-            break;
-
-         default :
-            writeCharToUtf8(c,writer);            
-            break;
-         }       
+         } else {
+            writeCharToUtf8(c,writer);               
+         }      
       }
 
       writer.write(_END_COMM);
@@ -653,33 +648,39 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * @param writer TODO
     * @throws IOException
     */
-   static final void outputTextToWriter(String text, OutputStream writer) throws IOException {
-      int length = text.length();
+   static final void outputTextToWriter(final String text, final OutputStream writer) throws IOException {
+      final int length = text.length();
+      byte []toWrite;
       for (int i = 0; i < length; i++) {
          char c = text.charAt(i);
 
          switch (c) {
 
          case '&' :
-            writer.write(_AMP_);
+         	toWrite=_AMP_;
+            //writer.write(_AMP_);
             break;
 
          case '<' :
-            writer.write(_LT_);
+         	toWrite=_LT_;
+            //writer.write(_LT_);
             break;
 
          case '>' :
-            writer.write(_GT_);
+         	toWrite=_GT_;
+            //writer.write(_GT_);
             break;
 
          case 0xD :
-            writer.write(__XD_);
+         	toWrite=__XD_;
+            //writer.write(__XD_);
             break;
 
          default :
             writeCharToUtf8(c,writer);
-            break;
+            continue;
          }
+         writer.write(toWrite);
       }
    }
 
