@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/TextInput.java,v 1.3 2003/02/02 15:53:56 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2003/02/02 15:53:56 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/TextInput.java,v 1.4 2003/03/27 19:06:56 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2003/03/27 19:06:56 $
  *
  * ====================================================================
  *
@@ -62,7 +62,7 @@
 
 package org.apache.commons.digester.rss;
 
-
+import java.io.Serializable;
 import java.io.PrintWriter;
 
 
@@ -72,10 +72,10 @@ import java.io.PrintWriter;
  * to further specialize its behavior.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.3 $ $Date: 2003/02/02 15:53:56 $
+ * @version $Revision: 1.4 $ $Date: 2003/03/27 19:06:56 $
  */
 
-public class TextInput {
+public class TextInput implements Serializable {
 
 
     // ------------------------------------------------------------- Properties

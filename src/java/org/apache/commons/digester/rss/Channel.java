@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/Channel.java,v 1.4 2003/02/02 15:53:56 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2003/02/02 15:53:56 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/Channel.java,v 1.5 2003/03/27 19:06:56 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2003/03/27 19:06:56 $
  *
  * ====================================================================
  *
@@ -62,7 +62,7 @@
 
 package org.apache.commons.digester.rss;
 
-
+import java.io.Serializable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -79,10 +79,10 @@ import java.util.ArrayList;
  *
  * @author Craig R. McClanahan
  * @author Ted Husted
- * @version $Revision: 1.4 $ $Date: 2003/02/02 15:53:56 $
+ * @version $Revision: 1.5 $ $Date: 2003/03/27 19:06:56 $
  */
 
-public class Channel {
+public class Channel implements Serializable {
 
 
     // ----------------------------------------------------- Instance Variables
