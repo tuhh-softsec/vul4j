@@ -68,7 +68,7 @@ import org.apache.xpath.XPathAPI;
 import org.apache.xpath.compiler.FunctionTable;
 import org.w3c.dom.*;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
-import org.apache.xml.security.algorithms.CipherAlgorithm;
+import org.apache.xml.security.algorithms.encryption.EncryptionMethod;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.helper.XPathContainer;
@@ -103,7 +103,7 @@ public class Init {
     * Method init
     *
     */
-   public static void init() {
+   public synchronized static void init() {
 
       if (!_alreadyInitialized) {
          _alreadyInitialized = true;
@@ -130,33 +130,6 @@ public class Init {
             {
 
                /* configure logging */
-
-               /*
-               try {
-                  File f = new File("log.txt");
-
-                  f.delete();
-               } catch (Exception ex) {}
-
-               String log4jConfigFile = ((Attr) XPathAPI.selectSingleNode(
-                  doc, "/x:Configuration/x:Log4J/@configFile",
-                  context)).getNodeValue();
-
-               org.apache.log4j.xml.DOMConfigurator.configure(log4jConfigFile);
-               cat.info("Logging is working");
-               cat.debug(
-                  org.apache.log4j.Category.DEFAULT_CONFIGURATION_FILE + "=\""
-                  + System.getProperties().getProperty(
-                  org.apache.log4j.Category.DEFAULT_CONFIGURATION_FILE) + "\"");
-               cat.debug(
-                  org.apache.log4j.Category.DEFAULT_CONFIGURATION_KEY + "=\""
-                  + System.getProperties().getProperty(
-                  org.apache.log4j.Category.DEFAULT_CONFIGURATION_KEY) + "\"");
-               cat.debug(
-                  org.apache.log4j.Category.DEFAULT_INIT_OVERRIDE_KEY + "=\""
-                  + System.getProperties().getProperty(
-                  org.apache.log4j.Category.DEFAULT_INIT_OVERRIDE_KEY) + "\"");
-               */
                Element log4jElem = (Element) XPathAPI.selectSingleNode(doc,
                                       "//log4j:configuration[1]", context);
 
@@ -346,10 +319,10 @@ public class Init {
 
             {
                Element cipherAlgos = (Element) XPathAPI.selectSingleNode(
-                  doc, "/x:Configuration/x:CipherAlgorithms",
+                  doc, "/x:Configuration/x:EncryptionMethods",
                   context);
 
-               CipherAlgorithm.init(cipherAlgos);
+               EncryptionMethod.init(cipherAlgos);
             }
 
             {

@@ -527,7 +527,9 @@ public abstract class ElementProxy {
       return prefix;
    }
 
+   /*
    static {
       org.apache.xml.security.Init.init();
    }
+   */
 }

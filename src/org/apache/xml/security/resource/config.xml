@@ -4,7 +4,7 @@
 -->
 <!-- This configuration file is used for configuration of the org.apache.xml.security package -->
 <Configuration target="org.apache.xml.security" xmlns="http://www.xmlsecurity.org/NS/#configuration">
-   <CanonicalizationMethods JAVACLASS="org.apache.xml.security.c14n.Canonicalizer">
+   <CanonicalizationMethods>
       <CanonicalizationMethod URI="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
                               JAVACLASS="org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments" />
       <CanonicalizationMethod URI="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"
@@ -18,7 +18,7 @@
       <CanonicalizationMethod URI="http://www.xmlsecurity.org/canonicalizerWithoutXPath#withComments"
                               JAVACLASS="org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithoutXPathSupportWithComments" />
    </CanonicalizationMethods>
-   <TransformAlgorithms JAVACLASS="org.apache.xml.security.transforms.Transform">
+   <TransformAlgorithms>
       <TransformAlgorithm URI="http://www.w3.org/2000/09/xmldsig#base64"
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformBase64Decode" />
       <TransformAlgorithm URI="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
@@ -34,7 +34,7 @@
       <TransformAlgorithm URI="http://www.w3.org/TR/2001/WD-xptr-20010108"
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPointer" />
    </TransformAlgorithms>
-   <SignatureAlgorithms JAVACLASS="org.apache.xml.security.algorithms.SignatureAlgorithm">
+   <SignatureAlgorithms>
       <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureDSA" />
       <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#rsa-sha1"
@@ -42,11 +42,13 @@
       <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmacSHA1" />
    </SignatureAlgorithms>
-   <CipherAlgorithms JAVACLASS="org.apache.xml.security.algorithms.CipherAlgorithm">
-      <CipherAlgorithm URI="http://www.w3.org/2001/04/xmlenc#aes128-cbc"
-                       JAVACLASS="org.apache.xml.security.algorithms.implementations.cipher.Cipher_AES128_BC"
-                       ProviderId="BC"/>
-   </CipherAlgorithms>
+   <EncryptionMethods>
+      <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#aes128-cbc">
+         <ProviderAlgo ProviderId="BC"
+                       JCEName="RIJNDAEL"
+                       JAVACLASS="org.apache.xml.security.algorithms.implementations.cipher.Encryption_AES128_BC" />
+      </EncryptionMethod>
+   </EncryptionMethods>
    <JCEAlgorithmMappings>
       <!-- Here, individual providers can be registered; each provider
            is identified by Id which is referenced by ProviderId of the

@@ -56,114 +56,87 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.algorithms;
+package org.apache.xml.security.algorithms.encryption.implementations;
 
 
 
-import java.security.Key;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import javax.crypto.SecretKey;
-import java.security.SecureRandom;
-import java.security.spec.AlgorithmParameterSpec;
+import java.security.*;
+import java.security.spec.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.w3c.dom.*;
+import org.apache.xml.security.algorithms.*;
+import org.apache.xml.security.algorithms.encryption.*;
+import org.apache.xml.security.utils.*;
 
 
 /**
  *
  * @author $Author$
  */
-public abstract class CipherAlgorithmSpi {
+public class Encryption_AES128_BC extends EncryptionMethodSpi {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(CipherAlgorithmSpi.class.getName());
+      org.apache.log4j.Category.getInstance(Encryption_AES128_BC.class.getName());
 
-   /** Field algorithm */
-   protected javax.crypto.Cipher _cipherAlgorithm = null;
+   /** Field _URI */
+   public static final String _URI =
+      EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128;
+
+   /** Field _ProviderId */
+   private static final String _ProviderId = "BC";
+
+   /** Field _keyBits */
+   private static final int _keyBits = 128;
 
    /**
-    * Method engineGetJCEAlgorithmString
+    * Method engineGetURI
     *
     * @return
     */
-   protected String engineGetJCEAlgorithmString() {
-      return this._cipherAlgorithm.getAlgorithm();
+   protected String engineGetURI() {
+      return this._URI;
+   }
+
+   protected int getImplementedKeySize() {
+      return this._keyBits;
    }
 
    /**
-    * Method engineGetJCEProviderName
+    * Constructor Encryption_AES128_BC
     *
-    * @return
+    * @throws XMLSecurityException
     */
-   protected String engineGetJCEProviderName() {
-      return this._cipherAlgorithm.getProvider().getName();
+   public Encryption_AES128_BC() throws XMLSecurityException {
+
+      JCEMapper.ProviderIdClass algorithmID =
+         JCEMapper.translateURItoJCEID(this._URI, this._ProviderId);
+
+      try {
+         cat.debug("Create a " + this.getClass().getName()
+                   + " using the Provider \"" + algorithmID.getProviderId()
+                   + "\" and the Id \"" + algorithmID.getAlgorithmID() + "\"");
+
+         this._cipherAlgorithm =
+            Cipher.getInstance(algorithmID.getAlgorithmID(),
+                               algorithmID.getProviderId());
+
+         cat.debug(this._cipherAlgorithm.getAlgorithm());
+      } catch (java.security.NoSuchAlgorithmException ex) {
+         Object[] exArgs = { algorithmID.getAlgorithmID(),
+                             ex.getLocalizedMessage() };
+
+         throw new XMLSecurityException("algorithms.NoSuchAlgorithm", exArgs);
+      } catch (java.security.NoSuchProviderException ex) {
+         Object[] exArgs = { algorithmID.getProviderId(),
+                             ex.getLocalizedMessage() };
+
+         throw new XMLSecurityException("algorithms.NoSuchProvider", exArgs);
+      } catch (NoSuchPaddingException ex) {
+         throw new XMLSecurityException("empty", ex);
+      }
    }
-
-   /**
-    * Returns the URI representation of <code>Transformation algorithm</code>
-    *
-    * @return the URI representation of <code>Transformation algorithm</code>
-    */
-   protected abstract String engineGetURI();
-
-   /**
-    * Proxy method for {@link java.security.Signature#update}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param input
-    * @throws XMLSecurityException
-    */
-   protected abstract void engineUpdate(byte[] input)
-      throws XMLSecurityException;
-
-   /**
-    * Proxy method for {@link java.security.Signature#update}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param buf
-    * @param offset
-    * @param len
-    * @throws XMLSecurityException
-    */
-   protected abstract void engineUpdate(byte buf[], int offset, int len)
-      throws XMLSecurityException;
-
-   /** Field _doc */
-   Document _doc = null;
-
-   /**
-    * Method engineSetDocument
-    *
-    * @param doc
-    */
-   protected void engineSetDocument(Document doc) {
-      this._doc = doc;
-   }
-
-   /** Field _constructionElement */
-   Element _constructionElement = null;
-
-   /**
-    * Method engineGetContextFromElement
-    *
-    * @param element
-    * @throws XMLSecurityException
-    */
-   protected void engineReadContextFromElement(Element element)
-           throws XMLSecurityException {
-      this._constructionElement = element;
-   }
-
-   /**
-    * Method engineAddContextToElement
-    *
-    * @param element
-    * @throws XMLSecurityException
-    */
-   protected void engineAddContextToElement(Element element)
-           throws XMLSecurityException {}
 
    static {
       org.apache.xml.security.Init.init();
