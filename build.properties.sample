@@ -1,7 +1,14 @@
-# junit.jar - JUnit 3.7+ Classpath
 jaxp.jaxp.jar=/java/jars/jaxp.jar
 jaxp.parser.jar=/java/jars/crimson.jar
-commons-beanutils.jar=/java/jars/commons-beanutils.jar
-commons-collections.jar=/java/jars/commons-collections.jar
-commons-logging.jar=/java/jars/commons-logging.jar
+
+# Commons projects -- correct if 'ant dist' is run on each project in the
+# default CVS directory layout
+commons-beanutils.home=../beanutils/dist
+commons-beanutils.jar=${commons-beanutils.home}/commons-beanutils.jar
+commons-collections.home=../collections/dist
+commons-collections.jar=${commons-collections.home}/commons-collections.jar
+commons-logging.home=../logging/dist
+commons-logging.jar=${commons-logging.home}/commons-logging.jar
+
+# junit.jar - JUnit 3.7+ Classpath
 junit.jar=/java/jars/junit.jar
