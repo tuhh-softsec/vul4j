@@ -66,14 +66,13 @@
     <property name="cvs.cvsRoot.developer" value=":ext:${cvs.user.developer}@${cvs.server}:${cvs.path}" />
     <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}" />
 
-    <property name="libs" value="libs" />
-    <property name="lib.xerces" value="${libs}/xerces-1_4_3.jar" />
-    <property name="lib.xalan"  value="${libs}/xalan-j_2_2_D10.jar" />
-    <property name="lib.log4j"  value="${libs}/jakarta-log4j-1.1.3.jar" />
-    <property name="lib.junit"  value="${libs}/junit3.7.jar" />
-    <property name="lib.jce"    value="${libs}/bc-jce-jdk13-109.jar" />
-    <property name="jce.download"    
-                                value="http://www.xmlsecurity.org/src/bc-jce-jdk13-109.jar" />
+    <property name="libs"         value="libs" />
+    <property name="lib.xerces"   value="${libs}/xerces-1_4_3.jar" />
+    <property name="lib.xalan"    value="${libs}/xalan-j_2_2_D10.jar" />
+    <property name="lib.log4j"    value="${libs}/jakarta-log4j-1.1.3.jar" />
+    <property name="lib.junit"    value="${libs}/junit3.7.jar" />
+    <property name="lib.jce"      value="${libs}/bc-jce-jdk13-109.jar" />
+    <property name="jce.download" value="http://www.bouncycastle.org/download/bcjce-prov13-109.jar" />
 
     <property name="doc" value="./doc" />
     <property name="doc.html" value="${doc}/html" />
