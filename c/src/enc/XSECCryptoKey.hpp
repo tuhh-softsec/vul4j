@@ -76,6 +76,7 @@
 #define XSECCRYPTOKEY_INCLUDE
 
 #include <xsec/framework/XSECDefs.hpp>
+#include <xsec/dsig/DSIGConstants.hpp>
 
 /**
  * \ingroup crypto
@@ -142,6 +143,12 @@ public :
 	 */
 
 	virtual KeyType getKeyType() {return KEY_NONE;}
+
+	/**
+	 * \brief Returns a string that identifies the crypto owner of this library.
+	 */
+
+	virtual const XMLCh * getProviderName() = 0;
 
 	/**
 	 * \brief Clone the key

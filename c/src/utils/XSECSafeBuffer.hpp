@@ -132,10 +132,11 @@ public:
 	void sbStrncatIn(char * inStr, int n);
 	void sbStrinsIn(const char * inStr, unsigned int offset);
 
-	void sbMemcpyIn(void * inBuf, int n);
+	void sbMemcpyIn(const void * inBuf, int n);
 	void sbMemcpyIn(int offset, const void * inBuf, int n);
 
 	void sbMemcpyOut(void * outBuf, int n) const;
+	void sbMemshift(int toOffset, int fromOffset, int len);
 
 	// Comparison functions
 

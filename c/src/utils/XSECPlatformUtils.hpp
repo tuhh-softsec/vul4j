@@ -131,6 +131,23 @@ public :
 	static void Initialise(XSECCryptoProvider * p = NULL);
 
 	/**
+	 * \brief Set a new crypto provider
+	 * 
+	 * Set the crypto provider to the value passed in.  Any current provider
+	 * is deleted.
+	 *
+	 * @note This is not thread-safe.  It should be called prior to any real
+	 * usage of the library.
+	 *
+	 * @param p A pointer to a XSECCryptoProvider object that the library 
+	 * should use for cryptographic functions.  
+	 * @note Ownership of the provider is passed to the library, which will
+	 * delete it at Termination.
+	 */
+
+	static void SetCryptoProvider(XSECCryptoProvider * p);
+
+	/**
 	 * \brief Terminate
 	 *
 	 * Should be called prior to any program exist to allow the library

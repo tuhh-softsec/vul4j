@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -88,6 +86,7 @@ public :
 	// Generic key functions
 
 	virtual XSECCryptoKey::KeyType getKeyType() {return KEY_HMAC;}
+	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVOpenSSL;}
 
 	// HMAC Key functions
 

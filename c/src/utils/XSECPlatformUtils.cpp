@@ -101,6 +101,16 @@ void XSECPlatformUtils::Initialise(XSECCryptoProvider * p) {
 
 };
 
+void XSECPlatformUtils::SetCryptoProvider(XSECCryptoProvider * p) {
+
+	if (g_cryptoProvider != NULL)
+		delete g_cryptoProvider;
+
+	g_cryptoProvider = p;
+
+}
+
+
 void XSECPlatformUtils::Terminate(void) {
 
 	if (--initCount > 0)

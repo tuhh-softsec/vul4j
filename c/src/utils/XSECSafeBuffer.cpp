@@ -265,7 +265,7 @@ void safeBuffer::sbStrncatIn(char * inStr, int n) {
 
 }
 
-void safeBuffer::sbMemcpyIn(void * inBuf, int n) {
+void safeBuffer::sbMemcpyIn(const void * inBuf, int n) {
 
 	checkAndExpand(n);
 	memcpy(buffer, inBuf, n);
@@ -309,6 +309,16 @@ void safeBuffer::sbMemcpyOut(void *outBuf, int n) const {
 	memcpy(outBuf, buffer, n);
 
 }
+
+void safeBuffer::sbMemshift(int toOffset, int fromOffset, int len) {
+
+	// Move data in the buffer around
+	checkAndExpand((toOffset > fromOffset ? toOffset : fromOffset) + len);
+
+	memmove(&buffer[toOffset], &buffer[fromOffset], len);
+
+}
+
 
 // Comparisons
 

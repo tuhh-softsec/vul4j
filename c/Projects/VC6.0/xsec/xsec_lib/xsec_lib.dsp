@@ -81,7 +81,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 xerces-c_2D.lib Xalan-C_1D.lib libeay32.lib /nologo /version:0.2 /dll /debug /machine:I386 /out:"../../../../Build/Win32/VC6/Debug/xsec_lib_01D.dll" /pdbtype:sept
+# ADD LINK32 xerces-c_2D.lib Xalan-C_1D.lib libeay32.lib crypt32.lib /nologo /version:0.2 /dll /debug /machine:I386 /out:"../../../../Build/Win32/VC6/Debug/xsec_lib_01D.dll" /pdbtype:sept
 
 !ELSEIF  "$(CFG)" == "xsec_lib - Win32 Debug No Xalan"
 
@@ -378,6 +378,70 @@ SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoX509.cpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\enc\OpenSSL\OpenSSLCryptoX509.hpp
+# End Source File
+# End Group
+# Begin Group "XSCrypt"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\XSCrypt\XSCryptCryptoBase64.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\XSCrypt\XSCryptCryptoBase64.hpp
+# End Source File
+# End Group
+# Begin Group "WinCAPI"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHash.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHash.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHashHMAC.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoHashHMAC.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyDSA.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyDSA.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyHMAC.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyHMAC.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoProvider.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoProvider.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.hpp
 # End Source File
 # End Group
 # Begin Source File

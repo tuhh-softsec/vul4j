@@ -76,6 +76,9 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoKey.hpp>
 
+#define XSEC_MAX_HASH_SIZE			256		/* Max size of any expected hash algorithms (oversized) */
+#define XSEC_MAX_HASH_BLOCK_SIZE	64		/* Max size of blocks used - MD5 and SHA1 are both 64 bytes*/
+
 /**
  * @ingroup crypto
  * @{

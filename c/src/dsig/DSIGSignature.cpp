@@ -234,6 +234,7 @@ void convertRawToBase64String(safeBuffer &b64SB,
 	b64->encodeInit();
 	outputLen = b64->encode((unsigned char *) raw, rawLen, b64Str, 1024);
 	outputLen += b64->encodeFinish(&b64Str[outputLen], 1024 - outputLen);
+	b64Str[outputLen] = '\0';
 
 	// Copy out
 

@@ -138,6 +138,12 @@
 #define CRYPTO_MAX_HASH_SIZE		128
 
 /**
+ *\brief OID For DSA
+ */
+
+#define CRYPTO_OID_DSA				"1.2.840.10040.4.1"
+
+/**
  *\brief The base class that all *CryptoProviders need to implement.
  *
  * The instatiations of this class are used by the core library to

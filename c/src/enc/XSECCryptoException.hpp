@@ -121,13 +121,14 @@ public:
 	enum XSECCryptoExceptionType {
 
 		None						= 0,
-		MDError						= 1,		// Error in Message Digest
-		Base64Error					= 2,		// Error in a Base64 operation
-		MemoryError					= 3,		// Memory allocation error
-		X509Error					= 4,		// X509 problem
-		DSAError					= 5,		// DSA Error
-		RSAError					= 6,		// RSA Error
-		UnknownError				= 7			// Must be last!
+		GeneralError				= 1,
+		MDError						= 2,		// Error in Message Digest
+		Base64Error					= 3,		// Error in a Base64 operation
+		MemoryError					= 4,		// Memory allocation error
+		X509Error					= 5,		// X509 problem
+		DSAError					= 6,		// DSA Error
+		RSAError					= 7,		// RSA Error
+		UnknownError				= 8			// Must be last!
 
 	};
 

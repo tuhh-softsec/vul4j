@@ -119,6 +119,11 @@ XSEC_USING_XERCES(XMLString);
 #define URI_ID_XMLNS	"http://www.w3.org/2000/xmlns/"
 #define URI_ID_MANIFEST "http://www.w3.org/2000/09/xmldsig#Manifest"
 
+// Internal Crypto Providers
+
+#define PROV_OPENSSL	"OpenSSL Provider"
+#define PROV_WINCAPI	"WinCAPI Provider"
+
 // Enumerated Types
 
 
@@ -300,6 +305,10 @@ public:
 	static const XMLCh * const & s_unicodeStrURIHMAC_SHA1;
 	static const XMLCh * const & s_unicodeStrURIXMLNS;
 	static const XMLCh * const & s_unicodeStrURIMANIFEST;
+
+	// Internal Crypto Providers
+	static const XMLCh * const & s_unicodeStrPROVOpenSSL;
+	static const XMLCh * const & s_unicodeStrPROVWinCAPI;
 
 
 	DSIGConstants();

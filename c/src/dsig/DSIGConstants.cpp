@@ -96,6 +96,8 @@ static XMLCh * s_unicodeStrURIRSA_SHA1;
 static XMLCh * s_unicodeStrURIHMAC_SHA1;
 static XMLCh * s_unicodeStrURIXMLNS;
 static XMLCh * s_unicodeStrURIMANIFEST;
+static XMLCh * s_unicodeStrPROVOpenSSL;
+static XMLCh * s_unicodeStrPROVWinCAPI;
 
 
 // --------------------------------------------------------------------------------
@@ -124,6 +126,9 @@ const XMLCh * const & DSIGConstants::s_unicodeStrURIRSA_SHA1 = ::s_unicodeStrURI
 const XMLCh * const & DSIGConstants::s_unicodeStrURIHMAC_SHA1 = ::s_unicodeStrURIHMAC_SHA1;
 const XMLCh * const & DSIGConstants::s_unicodeStrURIXMLNS = ::s_unicodeStrURIXMLNS;
 const XMLCh * const & DSIGConstants::s_unicodeStrURIMANIFEST = ::s_unicodeStrURIMANIFEST;
+
+const XMLCh * const & DSIGConstants::s_unicodeStrPROVOpenSSL = ::s_unicodeStrPROVOpenSSL;
+const XMLCh * const & DSIGConstants::s_unicodeStrPROVWinCAPI = ::s_unicodeStrPROVWinCAPI;
 
 // --------------------------------------------------------------------------------
 //           Constant Strings Class
@@ -156,6 +161,8 @@ void DSIGConstants::create() {
 	::s_unicodeStrURIHMAC_SHA1 = XMLString::transcode(URI_ID_HMAC_SHA1);
 	::s_unicodeStrURIXMLNS = XMLString::transcode(URI_ID_XMLNS);
 	::s_unicodeStrURIMANIFEST = XMLString::transcode(URI_ID_MANIFEST);
+	::s_unicodeStrPROVOpenSSL = XMLString::transcode(PROV_OPENSSL);
+	::s_unicodeStrPROVWinCAPI = XMLString::transcode(PROV_WINCAPI);
 
 
 }
@@ -185,5 +192,8 @@ void DSIGConstants::destroy() {
 	delete[] ::s_unicodeStrURIHMAC_SHA1;
 	delete[] ::s_unicodeStrURIXMLNS;
 	delete[] ::s_unicodeStrURIMANIFEST;
+
+	delete[] ::s_unicodeStrPROVOpenSSL;
+	delete[] ::s_unicodeStrPROVWinCAPI;
 
 }

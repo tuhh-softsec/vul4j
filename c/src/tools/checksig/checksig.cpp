@@ -84,6 +84,7 @@
 
 #if defined(_WIN32)
 #include <xsec/utils/winutils/XSECURIResolverGenericWin32.hpp>
+#include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #else
 #include <xsec/utils/unixutils/XSECURIResolverGenericUnix.hpp>
 #endif
@@ -167,6 +168,10 @@ void printUsage(void) {
 	cerr << "         Set an hmac key using the <string>\n\n";
 	cerr << "     --xsecresolver/-x\n";
 	cerr << "         Use the xml-security test XMLDSig URI resolver\n\n";
+#if defined(_WIN32)
+	cerr << "     --wincapi/-w\n";
+	cerr << "         Use the Windows CAPI crypto Provider\n\n";
+#endif
 	cerr << "     Exits with codes :\n";
 	cerr << "         0 = Signature OK\n";
 	cerr << "         1 = Signature Bad\n";
@@ -180,6 +185,9 @@ int evaluate(int argc, char ** argv) {
 	char					* hmacKeyStr = NULL;
 	OpenSSLCryptoKeyHMAC	* hmacKey;
 	bool					useXSECURIResolver = false;
+#if defined(_WIN32)
+	HCRYPTPROV				win32CSP = 0;		// Crypto Provider
+#endif
 
 	bool skipRefs = false;
 
@@ -206,6 +214,26 @@ int evaluate(int argc, char ** argv) {
 			useXSECURIResolver = true;
 			paramCount++;
 		}
+#if defined (_WIN32)
+		else if (stricmp(argv[paramCount], "--wincapi") == 0 || stricmp(argv[paramCount], "-w") == 0) {
+			WinCAPICryptoProvider * cp;
+			// Obtain default PROV_DSS
+			if (!CryptAcquireContext(&win32CSP,
+				NULL,
+				NULL,
+				PROV_DSS,
+				0)) {
+					cerr << "Error acquiring DSS Crypto Service Provider" << endl;
+					return 2;
+			}
+
+			// Use default DSS provider
+			cp = new WinCAPICryptoProvider(win32CSP);
+			XSECPlatformUtils::SetCryptoProvider(cp);
+			paramCount++;
+		
+		}
+#endif
 		else {
 			printUsage();
 			return 2;
@@ -412,6 +440,11 @@ int evaluate(int argc, char ** argv) {
 		retResult = 1;
 	}
 
+#if defined (_WIN32)
+	if (win32CSP != 0) {
+		CryptReleaseContext(win32CSP, 0);
+	}
+#endif
 	prov.releaseSignature(sig);
 	// Janitor will clean up the parser
 	return retResult;

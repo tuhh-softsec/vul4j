@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -94,6 +92,7 @@ public :
 
 	// Key activities
 	virtual void		setKey(XSECCryptoKey * key);
+	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVOpenSSL;}
 
 	// Hashing Activities
 	virtual void		reset(void);					// Reset the hash

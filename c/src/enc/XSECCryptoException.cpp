@@ -78,6 +78,7 @@
 extern const char * XSECCryptoExceptionStrings[] = {
 
 	"No Error",
+	"General error occurred somewhere in cryptographic routines",
 	"Error Creating SHA1 MD",
 	"Error in Base64",
 	"Memory allocation error",

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -89,6 +87,7 @@ public :
 	// Generic key functions
 
 	virtual XSECCryptoKey::KeyType getKeyType();
+	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVOpenSSL;}
 	virtual XSECCryptoKey * clone();
 
 	// RSA Specific Functions
