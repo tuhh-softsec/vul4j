@@ -19,7 +19,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.56 2004/09/20 21:59:23 rdonkin Exp $
+        $Id: build.xml,v 1.57 2005/01/18 10:04:33 skitching Exp $
 -->
 
 
@@ -221,6 +221,11 @@
    description="Clean and compile all components"/>
 
 
+  <!--
+    - Note that this javadoc target currently does not work on MS-Windows.
+    - As a temporary measure, the "bottom" attribute can be removed when
+    - building on that platform.
+    -->
   <target name="javadoc" depends="compile"
    description="Create component Javadoc documentation">
     <mkdir      dir="${dist.home}"/>
