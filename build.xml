@@ -57,7 +57,7 @@
 
   <property name="javadoc.packages"
             value="
-org.apache.xml.security.prepare,
+org.apache.xml.security.Init,
 org.apache.xml.security.algorithms.*,
 org.apache.xml.security.c14n.*,
 org.apache.xml.security.c14n.helper.*,

@@ -174,8 +174,6 @@ public class XMLSignature extends ElementProxy {
       XMLUtils.guaranteeThatElementInSignatureSpace(element,
               Constants._TAG_SIGNATURE);
 
-      this._state = MODE_VERIFY;
-
       Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
                                                Constants.SignatureSpecNS);
 
@@ -252,32 +250,6 @@ public class XMLSignature extends ElementProxy {
             throw new XMLSignatureException("xml.WrongContent", exArgs, ex);
          }
       }
-
-      // <element ref="ds:Object" minOccurs="0" maxOccurs="unbounded"/>
-      {
-         try {
-            NodeList nl =
-               XPathAPI.selectNodeList(element,
-                                       "./ds:" + Constants._TAG_OBJECT,
-                                       nscontext);
-
-            if (nl.getLength() > 0) {
-               Element objectElem = (Element) nl.item(0);
-               ObjectContainer object = new ObjectContainer(objectElem,
-                                           BaseURI);
-
-               this.appendObject(object);
-            }
-         } catch (javax.xml.transform.TransformerException ex) {
-            Object exArgs[] = { Constants._TAG_OBJECT,
-                                Constants._TAG_SIGNATURE };
-
-            throw new XMLSignatureException("xml.WrongContent", exArgs, ex);
-         }
-      }
-
-      /** @todo use getAttributeNS() here? */
-      this.setId(element.getAttribute(Constants._ATT_ID));
 
       if (cat.isDebugEnabled()) {
          cat.debug("Signature: Id = \"" + this.getId() + "\"");
@@ -361,6 +333,7 @@ public class XMLSignature extends ElementProxy {
 
       if ((this._state == MODE_SIGN) && (Id != null)) {
          this._constructionElement.setAttribute(Constants._ATT_ID, Id);
+         IdResolver.registerElementById(this._constructionElement, Id);
       }
    }
 
@@ -443,11 +416,13 @@ public class XMLSignature extends ElementProxy {
                                                    + "[1]", nscontext);
 
             if (firstObject != null) {
+               cat.debug("Found a ds:Object");
                this._constructionElement
                   .insertBefore(this._keyInfo.getElement(), firstObject);
                this._constructionElement
                   .insertBefore(this._doc.createTextNode("\n"), firstObject);
             } else {
+               cat.debug("Found no ds:Object");
                this._constructionElement
                   .appendChild(this._keyInfo.getElement());
                this._constructionElement
@@ -487,6 +462,7 @@ public class XMLSignature extends ElementProxy {
                "signature.operationOnlyBeforeSign");
          }
 
+         cat.debug("Added ds:Object with Id " + object.getId());
          this._constructionElement.appendChild(object.getElement());
          this._constructionElement.appendChild(this._doc.createTextNode("\n"));
       } catch (XMLSecurityException ex) {

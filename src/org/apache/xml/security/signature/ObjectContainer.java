@@ -127,6 +127,7 @@ public class ObjectContainer extends ElementProxy {
 
       if ((this._state == MODE_SIGN) && Id != null) {
          this._constructionElement.setAttribute(Constants._ATT_ID, Id);
+         IdResolver.registerElementById(this._constructionElement, Id);
       }
    }
 

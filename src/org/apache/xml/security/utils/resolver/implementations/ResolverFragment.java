@@ -110,6 +110,7 @@ public class ResolverFragment extends ResourceResolverSpi {
           * resource containing the signature
           */
          cat.debug("ResolverFragment with empty URI (means complete document)");
+
          try {
             resultNodes =
                XPathAPI.selectNodeList(doc,
@@ -129,25 +130,32 @@ public class ResolverFragment extends ResourceResolverSpi {
           * attributes -- but not comments.
           */
          String id = uriNodeValue.substring(1);
-         Element selectedElem = doc.getElementById(id);
+
+         // Element selectedElem = doc.getElementById(id);
+         Element selectedElem = IdResolver.getElementById(doc, id);
 
          cat.debug("Try to catch an Element with ID " + id
                    + " and Element was " + selectedElem);
 
-         try {
-            resultNodes =
-               XPathAPI
-                  .selectNodeList(selectedElem, Canonicalizer
-                     .XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE);
-         } catch (javax.xml.transform.TransformerException ex) {
-            throw new ResourceResolverException("generic.EmptyMessage", ex,
-                                                uri, BaseURI);
+         if (selectedElem == null) {
+            resultNodes = new HelperNodeList();
+         } else {
+            try {
+               resultNodes =
+                  XPathAPI
+                     .selectNodeList(selectedElem, Canonicalizer
+                        .XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE);
+            } catch (javax.xml.transform.TransformerException ex) {
+               throw new ResourceResolverException("generic.EmptyMessage", ex,
+                                                   uri, BaseURI);
+            }
          }
       }
 
       XMLSignatureInput result = new XMLSignatureInput(resultNodes);
-      cat.debug("We return a nodeset with " + resultNodes.getLength() + " nodes");
 
+      cat.debug("We return a nodeset with " + resultNodes.getLength()
+                + " nodes");
       result.setMIMEType("text/xml");
 
       try {
@@ -159,7 +167,6 @@ public class ResolverFragment extends ResourceResolverSpi {
          cat.debug("Set SourceURI to " + BaseURI);
          result.setSourceURI(BaseURI);
       }
-
 
       return result;
    }
@@ -198,6 +205,7 @@ public class ResolverFragment extends ResourceResolverSpi {
            throws URI.MalformedURIException {
 
       String uriNodeValue = uri.getNodeValue();
+
       if (uriNodeValue.equals("") || uriNodeValue.startsWith("#")) {
          return true;
       } else {
@@ -242,7 +250,8 @@ public class ResolverFragment extends ResourceResolverSpi {
          cat.debug("Owner Document " + doc.getDocumentElement().getTagName());
          cat.debug("try to select fragment " + fragment);
 
-         Element selectedElem = doc.getElementById(fragment);
+         // Element selectedElem = doc.getElementById(fragment);
+         Element selectedElem = IdResolver.getElementById(doc, fragment);
 
          if (selectedElem != null) {
             cat.debug("Selection hat geklappt!!!: "

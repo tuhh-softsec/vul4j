@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -219,6 +218,10 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
            throws CanonicalizationException {
 
       this.engineSetXPathNodeSet(selectedNodes);
+
+      if (selectedNodes.getLength() == 0) {
+         return new byte[0];
+      }
 
       Document document = XMLUtils.getOwnerDocument(selectedNodes.item(0));
 
