@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>plexus</groupId>
+    <artifactId>plexus-root</artifactId>
+    <version>1.0</version>
+  </parent>
+  <groupId>plexus</groupId>
+  <artifactId>plexus-utils</artifactId>
+  <name>Plexus Common Utilities</name>
+  <version>0.18-SNAPSHOT</version>
+
+  <dependencies/>
+
+  <build>
+    <nagEmailAddress>plexus-dev@plexus.codehaus.org</nagEmailAddress>
+    <sourceDirectory>src/main/java</sourceDirectory>
+  </build>
+
+</project>
