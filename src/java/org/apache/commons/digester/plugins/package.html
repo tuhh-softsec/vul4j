@@ -77,10 +77,11 @@ This may be done by several mechanisms, including:
 <li> declaring a method <code>public static void addRules(Digester d, String
 pattern)</code> on the class being "plugged in", or</li>
 <li> providing a separate "rule info" class, somewhat in the spirit of 
-"BeanInfo" classes for java beans.</li>
+"BeanInfo" classes for java beans, or</li>
+<li> providing an xmlrules file which defines the associated parsing rules./li>
 </ul>
 If a plugin class has a no-parameter constructor, does not expect any subtags, 
-and is content to map any attributes on the parent xml tag to 
+and is satisfied with mapping any attributes on the parent xml tag to 
 bean-property-setter methods on itself, then no rules need to be defined at 
 all; the class can be used as a plugin without any coding.
 <p>
@@ -91,7 +92,7 @@ instead of, or in addition to, classes distributed with the application.
 <h2> Plugin Declarations </h2>
 
 As well as the syntax shown above, where plugin classnames were defined
-as they were used, plugin classes can be pre-defined (provided the application
+as they were used, plugin classes can be pre-dedeclared (provided the application
 associates a PluginDeclarationRule with a tag for that purpose). Example:
 <p>
 The plugin class can be declared once:
@@ -107,8 +108,8 @@ and later referenced via the short "id" value:
 
 Any application where user-specific operations may need to be performed
 that cannot be known in advance by the initial application developer may
-benefit from this module. The apache projects listed at the top of this page
-(log4j, cocoon, ant) are examples.
+benefit from this module. Applications in the style of the apache projects 
+listed at the top of this page (log4j, cocoon, ant) are examples.
 <p>
 Note also that plugged-in classes can themselves allow user-defined classes
 to be plugged in within their configuration. This allows a very simple
@@ -179,16 +180,17 @@ needs that can be met by a SetPropertiesRule, then no changes need to be
 made at all.
 <p>
 In other circumstances, you may either define an "addRules" method on the
-class which adds any necessary rules to the digester, or a separate class
-containing that information. In the latter approach, the class containing
+class which adds any necessary rules to the digester, a separate class
+containing that information, or write an xmlrules-format file defining the
+necessary rules. In the "separate rule info class" approach, the class containing
 the rule info may have any name of your choice, but the original class + 
 "RuleInfo" is recommended.
 <p>
 Here is the addRules method on class SubstituteTransform, from the example:
 <pre>
-    public static void addRules(Digester d, String patternPrefix) {
-        d.addCallMethod(patternPrefix+"/from", "setFrom", 0);
-        d.addCallMethod(patternPrefix+"/to", "setTo", 0);
+    public static void addRules(Digester d, String pathPrefix) {
+        d.addCallMethod(pathPrefix+"/from", "setFrom", 0);
+        d.addCallMethod(pathPrefix+"/to", "setTo", 0);
     }
 </pre>
 A "rule info" class consists of nothing but a static method defined as above.
@@ -200,7 +202,7 @@ any custom rules are defined for the plugin class, then that implementation
 is required to define a SetPropertiesRule for itself if it desires one.
 <p>
 Note that when adding any rules, the pattern passed to the digester
-<i>must</i> start with the patternPrefix provided. A plugin cannot
+<i>must</i> start with the pathPrefix provided. A plugin cannot
 define rules with absolute paths. And as defined in the limitations, the 
 pattern should not include any wildcard characters. 
 
