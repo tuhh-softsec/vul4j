@@ -22,7 +22,7 @@
             Haskell (<code>functor</code> is even a keyword in Haskell)
          </li>
          <li>C as function pointers</li>
-         <li>C++'s Standard Template Library as functor objects</li>
+         <li>C++'s Standard Template Library as function objects</li>
          <li>Ruby as blocks</li>
          <li>etc.</li>
       </ul>

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/BinaryCompositeBinaryFunction.java,v 1.1 2003/02/01 14:40:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/BinaryCompositeBinaryFunction.java,v 1.2 2003/02/02 21:46:19 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,7 +62,10 @@ import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryFunction;
 
 /**
- * f(x,y) := f(g(x,y),h(x,y))
+ * A {@link BinaryFunction BinaryFunction} composed of
+ * three binary functions, <i>f</i>, <i>g</i> and <i>h</i>,
+ * evaluating the ordered parameters <i>x</i>, <i>y</i> 
+ * to <code><i>f</i>(<i>g</i>(<i>x</i>,<i>y</i>),<i>h</i>(<i>x</i>,<i>y</i>))</code>.
  * <p>
  * Note that although this class implements 
  * {@link Serializable}, a given instance will
@@ -71,7 +74,7 @@ import org.apache.commons.functor.BinaryFunction;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/02/01 14:40:45 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/02 21:46:19 $
  * @author Rodney Waldhoff
  */
 public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializable {

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/UnaryCompositeBinaryFunction.java,v 1.2 2003/02/01 14:40:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/UnaryCompositeBinaryFunction.java,v 1.3 2003/02/02 21:46:19 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,7 +62,11 @@ import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
 
 /**
- * f(x,y) := f(g(x),h(y))
+ * A {@link BinaryFunction BinaryFunction} composed of
+ * one binary function, <i>f</i>, and two unary
+ * functions, <i>g</i> and <i>h</i>,
+ * evaluating the ordered parameters <i>x</i>, <i>y</i> 
+ * to <code><i>f</i>(<i>g</i>(<i>x</i>),<i>h</i>(<i>y</i>))</code>.
  * <p>
  * Note that although this class implements 
  * {@link Serializable}, a given instance will
@@ -71,7 +75,7 @@ import org.apache.commons.functor.UnaryFunction;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.2 $ $Date: 2003/02/01 14:40:45 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/02 21:46:19 $
  * @author Rodney Waldhoff
  */
 public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializable {

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/ConditionalBinaryFunction.java,v 1.2 2003/01/28 12:00:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/ConditionalBinaryFunction.java,v 1.3 2003/02/02 21:46:19 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.BinaryPredicate;
 /**
  * A {@link BinaryFunction BinaryFunction} 
  * similiar to Java's "ternary" 
- * or "conditional" operator (<code>? :</code>).
+ * or "conditional" operator (<code>&#x3F; &#x3A;</code>).
  * Given a {@link BinaryPredicate predicate}
  * <i>p</i> and {@link BinaryFunction functions}
  * <i>f</i> and <i>g</i>, {@link #evaluate evalautes}
@@ -78,7 +78,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:29 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/02 21:46:19 $
  * @author Rodney Waldhoff
  */
 public final class ConditionalBinaryFunction implements BinaryFunction, Serializable {
