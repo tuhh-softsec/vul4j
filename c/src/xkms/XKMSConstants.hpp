@@ -55,6 +55,7 @@ public:
 	static const XMLCh s_tagExchange[];
 	static const XMLCh s_tagId[];
 	static const XMLCh s_tagIdentifier[];
+	static const XMLCh s_tagKeyBinding[];
 	static const XMLCh s_tagKeyInfo[];
 	static const XMLCh s_tagKeyUsage[];
 	static const XMLCh s_tagKeyValue[];
@@ -64,12 +65,15 @@ public:
 	static const XMLCh s_tagQueryKeyBinding[];
 	static const XMLCh s_tagRequestId[];
 	static const XMLCh s_tagRespondWith[];
+	static const XMLCh s_tagResult[];
 	static const XMLCh s_tagResultMajor[];
 	static const XMLCh s_tagResultMinor[];
 	static const XMLCh s_tagService[];
 	static const XMLCh s_tagSignature[];
 	static const XMLCh s_tagUnverifiedKeyBinding[];
 	static const XMLCh s_tagUseKeyWith[];
+	static const XMLCh s_tagValidateRequest[];
+	static const XMLCh s_tagValidateResult[];
 
 	// ResultMajor codes
 

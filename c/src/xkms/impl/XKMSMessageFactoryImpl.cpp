@@ -35,6 +35,9 @@
 #include "XKMSMessageFactoryImpl.hpp"
 #include "XKMSLocateRequestImpl.hpp"
 #include "XKMSLocateResultImpl.hpp"
+#include "XKMSResultImpl.hpp"
+#include "XKMSValidateRequestImpl.hpp"
+#include "XKMSValidateResultImpl.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -117,12 +120,52 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 	}
 
+	if (strEquals(name, XKMSConstants::s_tagValidateRequest)) {
+
+		// This is a <ValidateRequest> message
+		XKMSValidateRequestImpl * ret;
+		XSECnew(ret, XKMSValidateRequestImpl(new XSECEnv(*mp_env), elt));
+
+		ret->load();
+
+		return ret;
+
+	}
+
 	else if (strEquals(name, XKMSConstants::s_tagLocateResult)) {
 
 		// This is a <LocateRequest> message
 		XKMSLocateResultImpl * ret;
 		XSECnew(ret, XKMSLocateResultImpl(new XSECEnv(*mp_env), elt));
 		Janitor<XKMSLocateResultImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return ret;
+
+	}
+
+	else if (strEquals(name, XKMSConstants::s_tagValidateResult)) {
+
+		// This is a <LocateRequest> message
+		XKMSValidateResultImpl * ret;
+		XSECnew(ret, XKMSValidateResultImpl(new XSECEnv(*mp_env), elt));
+		Janitor<XKMSValidateResultImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return ret;
+
+	}
+
+	else if (strEquals(name, XKMSConstants::s_tagResult)) {
+
+		// This is a <LocateRequest> message
+		XKMSResultImpl * ret;
+		XSECnew(ret, XKMSResultImpl(new XSECEnv(*mp_env), elt));
+		Janitor<XKMSResultImpl> j_ret(ret);
 
 		ret->load();
 		
@@ -180,6 +223,46 @@ XKMSLocateRequest * XKMSMessageFactoryImpl::createLocateRequest(
 	return lri;
 }
 
+XKMSValidateRequest * XKMSMessageFactoryImpl::createValidateRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id) {
+	
+	XKMSValidateRequestImpl * vri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(vri, XKMSValidateRequestImpl(tenv));
+	vri->createBlankValidateRequest(service, id);
+
+	return vri;
+
+}
+
+
+XKMSValidateRequest * XKMSMessageFactoryImpl::createValidateRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id) {
+
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSValidateRequest * vri = createValidateRequest(service, *doc, id);
+	(*doc)->appendChild(vri->getElement());
+
+	return vri;
+}
+
 XKMSLocateResult * XKMSMessageFactoryImpl::createLocateResult(
 		XKMSLocateRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
@@ -220,5 +303,89 @@ XKMSLocateResult * XKMSMessageFactoryImpl::createLocateResult(
 	(*doc)->appendChild(lr->getElement());
 
 	return lr;
+}
+
+XKMSResult * XKMSMessageFactoryImpl::createResult(
+		XKMSRequestAbstractType * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSResultImpl * ri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(ri, XKMSResultImpl(tenv));
+	ri->createBlankResult(request->getService(), id, rmaj, rmin);
+
+	return ri;
+
+}
+
+XKMSResult * XKMSMessageFactoryImpl::createResult(
+		XKMSRequestAbstractType * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSResult * r = createResult(request, *doc, rmaj, rmin, id);
+	(*doc)->appendChild(r->getElement());
+
+	return r;
+}
+
+XKMSValidateResult * XKMSMessageFactoryImpl::createValidateResult(
+		XKMSValidateRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSValidateResultImpl * vri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(vri, XKMSValidateResultImpl(tenv));
+	vri->createBlankValidateResult(request->getService(), id, rmaj, rmin);
+
+	return vri;
+
+}
+
+XKMSValidateResult * XKMSMessageFactoryImpl::createValidateResult(
+		XKMSValidateRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSValidateResult * vr = createValidateResult(request, *doc, rmaj, rmin, id);
+	(*doc)->appendChild(vr->getElement());
+
+	return vr;
 }
 

@@ -105,6 +105,21 @@ const XMLCh XKMSConstants::s_tagIdentifier[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagKeyBinding[] = {
+
+	chLatin_K,
+	chLatin_e,
+	chLatin_y,
+	chLatin_B,
+	chLatin_i,
+	chLatin_n,
+	chLatin_d,
+	chLatin_i,
+	chLatin_n,
+	chLatin_g,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagKeyInfo[] = {
 
 	chLatin_K,
@@ -238,6 +253,17 @@ const XMLCh XKMSConstants::s_tagRespondWith[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagResult[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_s,
+	chLatin_u,
+	chLatin_l,
+	chLatin_t,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagResultMajor[] = {
 
 	chLatin_R,
@@ -333,6 +359,45 @@ const XMLCh XKMSConstants::s_tagUseKeyWith[] = {
 	chLatin_i,
 	chLatin_t,
 	chLatin_h,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagValidateRequest[] = {
+
+	chLatin_V,
+	chLatin_a,
+	chLatin_l,
+	chLatin_i,
+	chLatin_d,
+	chLatin_a,
+	chLatin_t,
+	chLatin_e,
+	chLatin_R,
+	chLatin_e,
+	chLatin_q,
+	chLatin_u,
+	chLatin_e,
+	chLatin_s,
+	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagValidateResult[] = {
+
+	chLatin_V,
+	chLatin_a,
+	chLatin_l,
+	chLatin_i,
+	chLatin_d,
+	chLatin_a,
+	chLatin_t,
+	chLatin_e,
+	chLatin_R,
+	chLatin_e,
+	chLatin_s,
+	chLatin_u,
+	chLatin_l,
+	chLatin_t,
 	chNull
 };
 

@@ -41,9 +41,13 @@
 #include <xsec/xkms/XKMSMessageAbstractType.hpp>
 #include <xsec/xkms/XKMSLocateRequest.hpp>
 #include <xsec/xkms/XKMSLocateResult.hpp>
+#include <xsec/xkms/XKMSResult.hpp>
 #include <xsec/xkms/XKMSQueryKeyBinding.hpp>
+#include <xsec/xkms/XKMSKeyBinding.hpp>
 #include <xsec/xkms/XKMSUseKeyWith.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
+#include <xsec/xkms/XKMSValidateRequest.hpp>
+#include <xsec/xkms/XKMSValidateResult.hpp>
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 
@@ -444,6 +448,195 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 }
 
 // --------------------------------------------------------------------------------
+//           Create a ValidateRequest
+// --------------------------------------------------------------------------------
+
+void printValidateRequestUsage(void) {
+
+	cerr << "\nUsage ValidateRequest [--help|-h] <service URI> [options]\n";
+	cerr << "   --help/-h                : print this screen and exit\n\n";
+	cerr << "   --add-cert/-a <filename> : add cert in filename as a KeyInfo\n";
+	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n\n";
+	cerr << "   --add-usekeywith/-u <Application URI> <Identifier>\n";
+	cerr << "                            : Add a UseKeyWith element\n";
+	cerr << "   --sign-dsa/-sd <filename> <passphrase>\n";
+	cerr << "           : Sign using the DSA key in file protected by passphrase\n\n";
+
+}
+
+XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
+
+	if (paramCount >= argc || 
+		(stricmp(argv[paramCount], "--help") == 0) ||
+		(stricmp(argv[paramCount], "-h") == 0)) {
+
+		printValidateRequestUsage();
+		return NULL;
+	}
+
+	/* First create the basic request */
+	XKMSMessageFactory * factory = 
+		prov.getXKMSMessageFactory();
+	XKMSValidateRequest * vr = 
+		factory->createValidateRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
+
+	while (paramCount < argc) {
+
+		if (stricmp(argv[paramCount], "--add-cert") == 0 || stricmp(argv[paramCount], "-a") == 0) {
+			if (++paramCount >= argc) {
+				printValidateRequestUsage();
+				delete vr;
+				return NULL;
+			}
+			XSECCryptoX509 * x = loadX509(argv[paramCount]);
+			if (x == NULL) {
+				delete vr;
+				(*doc)->release();
+				cerr << "Error opening Certificate file : " << 
+					argv[paramCount] << endl;
+				return NULL;
+			}
+
+			Janitor<XSECCryptoX509> j_x(x);
+
+			XKMSQueryKeyBinding * qkb = vr->addQueryKeyBinding();
+			DSIGKeyInfoX509 * kix = qkb->appendX509Data();
+			safeBuffer sb = x->getDEREncodingSB();
+			kix->appendX509Certificate(sb.sbStrToXMLCh());
+			paramCount++;
+		}
+
+		else if (stricmp(argv[paramCount], "--add-name") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+			if (++paramCount >= argc) {
+				printValidateRequestUsage();
+				delete vr;
+				return NULL;
+			}
+			XKMSQueryKeyBinding * qkb = vr->addQueryKeyBinding();
+			qkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+			if (++paramCount >= argc + 1) {
+				printValidateRequestUsage();
+				delete vr;
+				return NULL;
+			}
+			XKMSQueryKeyBinding *qkb = vr->getQueryKeyBinding();
+			if (qkb == NULL)
+				qkb = vr->addQueryKeyBinding();
+
+			qkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
+			paramCount += 2;
+		}
+#if defined (HAVE_OPENSSL)
+		else if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0 ||
+				stricmp(argv[paramCount], "--sign-rsa") == 0 || stricmp(argv[paramCount], "-sr") == 0) {
+			if (paramCount >= argc + 2) {
+				printValidateRequestUsage();
+				delete vr;
+				return NULL;
+			}
+
+			// DSA or RSA OpenSSL Key
+			// For now just read a particular file
+
+			BIO * bioKey;
+			if ((bioKey = BIO_new(BIO_s_file())) == NULL) {
+
+				cerr << "Error opening private key file\n\n";
+				return NULL;
+
+			}
+
+			if (BIO_read_filename(bioKey, argv[paramCount+1]) <= 0) {
+
+				cerr << "Error opening private key file : " << argv[paramCount+1] << endl;
+				return NULL;
+
+			}
+
+			EVP_PKEY * pkey;
+			pkey = PEM_read_bio_PrivateKey(bioKey,NULL,NULL,argv[paramCount + 2]);
+
+			if (pkey == NULL) {
+
+				BIO * bio_err;
+	
+				if ((bio_err=BIO_new(BIO_s_file())) != NULL)
+					BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
+				cerr << "Error loading private key\n\n";
+				ERR_print_errors(bio_err);
+				return NULL;
+
+			}
+			XSECCryptoKey *key;
+			DSIGSignature * sig;
+			if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0) {
+
+				// Check type is correct
+
+				if (pkey->type != EVP_PKEY_DSA) {
+					cerr << "DSA Key requested, but OpenSSL loaded something else\n";
+					return NULL;
+				}
+
+				sig = vr->addSignature(CANON_C14N_NOC, SIGNATURE_DSA, HASH_SHA1);
+				// Create the XSEC OpenSSL interface
+				key = new OpenSSLCryptoKeyDSA(pkey);
+
+				XMLCh * P = BN2b64(pkey->pkey.dsa->p);
+				XMLCh * Q = BN2b64(pkey->pkey.dsa->q);
+				XMLCh * G = BN2b64(pkey->pkey.dsa->g);
+				XMLCh * Y = BN2b64(pkey->pkey.dsa->pub_key);
+
+				sig->appendDSAKeyValue(P,Q,G,Y);
+
+				XMLString::release(&P);
+				XMLString::release(&Q);
+				XMLString::release(&G);
+				XMLString::release(&Y);
+			}
+			else {
+				if (pkey->type != EVP_PKEY_RSA) {
+					cerr << "RSA Key requested, but OpenSSL loaded something else\n";
+					exit (1);
+				}
+				sig = vr->addSignature(CANON_C14N_NOC, SIGNATURE_RSA, HASH_SHA1);
+				key = new OpenSSLCryptoKeyRSA(pkey);
+
+				XMLCh * mod = BN2b64(pkey->pkey.rsa->n);
+				XMLCh * exp = BN2b64(pkey->pkey.rsa->e);
+				sig->appendRSAKeyValue(mod, exp);
+				XMLString::release(&mod);
+				XMLString::release(&exp);
+
+			}
+
+			sig->setSigningKey(key);
+			sig->sign();
+
+			EVP_PKEY_free(pkey);
+			BIO_free(bioKey);
+
+			paramCount += 3;
+
+			
+		} /* argv[1] = "dsa/rsa" */
+
+#endif
+		else {
+			printValidateRequestUsage();
+			delete vr;
+			(*doc)->release();
+			return NULL;
+		}
+	}
+
+	return vr;
+}
+
+// --------------------------------------------------------------------------------
 //           MsgDump
 // --------------------------------------------------------------------------------
 
@@ -590,7 +783,7 @@ void doKeyInfoDump(DSIGKeyInfoList * l, int level) {
 }
 
 
-void doKeyBindingDump(XKMSKeyBindingAbstractType * msg, int level) {
+void doKeyBindingAbstractDump(XKMSKeyBindingAbstractType * msg, int level) {
 
 	levelSet(level);
 	cout << "Key Binding found." << endl;
@@ -649,10 +842,15 @@ void doKeyBindingDump(XKMSKeyBindingAbstractType * msg, int level) {
 
 void doUnverifiedKeyBindingDump(XKMSUnverifiedKeyBinding * ukb, int level) {
 
-	doKeyBindingDump((XKMSKeyBindingAbstractType *) ukb, level);
+	doKeyBindingAbstractDump((XKMSKeyBindingAbstractType *) ukb, level);
 
 }
 
+void doKeyBindingDump(XKMSKeyBinding * kb, int level) {
+
+	doKeyBindingAbstractDump((XKMSKeyBindingAbstractType *) kb, level);
+
+}
 
 int doLocateRequestDump(XKMSLocateRequest *msg) {
 
@@ -664,7 +862,22 @@ int doLocateRequestDump(XKMSLocateRequest *msg) {
 
 	XKMSQueryKeyBinding *qkb = msg->getQueryKeyBinding();
 	if (qkb != NULL)
-		doKeyBindingDump(qkb, level);
+		doKeyBindingAbstractDump(qkb, level);
+
+	return 0;
+}
+
+int doValidateRequestDump(XKMSValidateRequest *msg) {
+
+	cout << endl << "This is a ValidateRequest Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doRequestAbstractTypeDump(msg, level);
+
+	XKMSQueryKeyBinding *qkb = msg->getQueryKeyBinding();
+	if (qkb != NULL)
+		doKeyBindingAbstractDump(qkb, level);
 
 	return 0;
 }
@@ -696,6 +909,43 @@ int doLocateResultDump(XKMSLocateResult *msg) {
 	return 0;
 }
 
+int doValidateResultDump(XKMSValidateResult *msg) {
+
+	cout << endl << "This is a ValidateResult Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doResultTypeDump(msg, level);
+
+	int j;
+
+	if ((j = msg->getKeyBindingSize()) > 0) {
+
+		cout << endl;
+		levelSet(level);
+		cout << "Key Bindings" << endl << endl;
+
+		for (int i = 0; i < j ; ++i) {
+
+			doKeyBindingDump(msg->getKeyBindingItem(i), level + 1);
+
+		}
+
+	}
+
+	return 0;
+}
+
+int doResultDump(XKMSResult *msg) {
+
+	cout << endl << "This is a Result Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doResultTypeDump(msg, level);
+
+	return 0;
+}
 
 int doParsedMsgDump(DOMDocument * doc) {
 
@@ -708,6 +958,11 @@ int doParsedMsgDump(DOMDocument * doc) {
 
 		XKMSMessageAbstractType * msg =
 			factory->newMessageFromDOM(doc->getDocumentElement());
+
+		if (msg == NULL) {
+			cerr << "Unable to create XKMS msg from parsed DOM\n" << endl;
+			return 2;
+		}
 
 		Janitor <XKMSMessageAbstractType> j_msg(msg);
 
@@ -751,6 +1006,21 @@ int doParsedMsgDump(DOMDocument * doc) {
 			doLocateResultDump(dynamic_cast<XKMSLocateResult *>(msg));
 			break;
 
+		case XKMSMessageAbstractType::Result :
+
+			doResultDump(dynamic_cast<XKMSResult *>(msg));
+			break;
+
+		case XKMSMessageAbstractType::ValidateRequest :
+
+			doValidateRequestDump(dynamic_cast<XKMSValidateRequest *>(msg));
+			break;
+
+		case XKMSMessageAbstractType::ValidateResult :
+
+			doValidateResultDump(dynamic_cast<XKMSValidateResult *>(msg));
+			break;
+
 		default :
 
 			cout << "Unknown message type!" << endl;
@@ -786,7 +1056,7 @@ int doParsedMsgDump(DOMDocument * doc) {
 	}
 	catch (...) {
 
-		cerr << "Unknown Exception type occured.  Cleaning up and exiting\n" << endl;
+		cerr << "Unknown Exception type occured.  Cleaning up and exitting\n" << endl;
 		return 2;
 
 	}
@@ -853,7 +1123,7 @@ int doMsgCreate(int argc, char ** argv, int paramCount) {
 
 void printDoRequestUsage(void) {
 
-	cerr << "\nUsage request [options] {LocateRequest} [msg specific options]\n";
+	cerr << "\nUsage request [options] {LocateRequest|ValidateRequest} [msg specific options]\n";
 	cerr << "   --help/-h    : print this screen and exit\n\n";
 
 }
@@ -875,6 +1145,15 @@ int doRequest(int argc, char ** argv, int paramCount) {
 		(stricmp(argv[paramCount], "lr") == 0)) {
 
 		msg = createLocateRequest(prov, &doc, argc, argv, paramCount + 1);
+		if (msg == NULL) {
+			return -1;
+		}
+
+	}
+	else if ((stricmp(argv[paramCount], "ValidateRequest") == 0) ||
+		(stricmp(argv[paramCount], "vr") == 0)) {
+
+		msg = createValidateRequest(prov, &doc, argc, argv, paramCount + 1);
 		if (msg == NULL) {
 			return -1;
 		}

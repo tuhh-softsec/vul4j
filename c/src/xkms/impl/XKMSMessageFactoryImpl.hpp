@@ -56,6 +56,14 @@ public:
 		const XMLCh * service,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		const XMLCh * id = NULL);
+	virtual XKMSValidateRequest * createValidateRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL);		
+	virtual XKMSValidateRequest * createValidateRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL);
 	virtual XKMSLocateResult * createLocateResult(
 		XKMSLocateRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
@@ -64,6 +72,30 @@ public:
 		const XMLCh * id = NULL);
 	virtual XKMSLocateResult * createLocateResult(
 		XKMSLocateRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSResult * createResult(
+		XKMSRequestAbstractType * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSResult * createResult(
+		XKMSRequestAbstractType * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSValidateResult * createValidateResult(
+		XKMSValidateRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSValidateResult * createValidateResult(
+		XKMSValidateRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		XKMSResultType::ResultMajor rmaj,
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,

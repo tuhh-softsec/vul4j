@@ -56,7 +56,15 @@ XKMSMessageAbstractTypeImpl(env, node)
 
 }
 
-XKMSRequestAbstractTypeImpl::~XKMSRequestAbstractTypeImpl() {};
+XKMSRequestAbstractTypeImpl::~XKMSRequestAbstractTypeImpl() {
+
+	RespondWithVectorType::iterator i;
+
+	for (i = m_respondWithList.begin(); i < m_respondWithList.end(); ++i) {
+		delete (*i);
+	}
+
+};
 
 // --------------------------------------------------------------------------------
 //           Load

@@ -97,7 +97,10 @@ public:
 
 		None,					/** A default value that indicates something hasn't been set */
 		LocateRequest,			/** A LocateRequest message */
-		LocateResult			/** A LocateResult message */
+		LocateResult,			/** A LocateResult message */
+		ValidateRequest,		/** A ValidateRequest message */
+		ValidateResult,			/** A ValidateResult message */
+		Result					/** A non-specific result message */
 
 	};
 

@@ -1088,6 +1088,14 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSKeyBindingAbstractTypeImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSKeyBindingImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSKeyBindingImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSLocateRequestImpl.cpp
 # End Source File
 # Begin Source File
@@ -1144,6 +1152,14 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSResultImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSResultImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.cpp
 # End Source File
 # Begin Source File
@@ -1166,6 +1182,22 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSUseKeyWithImpl.cpp
 
 SOURCE=..\..\..\..\src\xkms\impl\XKMSUseKeyWithImpl.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateRequestImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateRequestImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.hpp
+# End Source File
 # End Group
 # Begin Source File
 
@@ -1174,6 +1206,10 @@ SOURCE=..\..\..\..\src\xkms\XKMSConstants.cpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSConstants.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSKeyBinding.hpp
 # End Source File
 # Begin Source File
 
@@ -1209,6 +1245,10 @@ SOURCE=..\..\..\..\src\xkms\XKMSRespondWith.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\XKMSResult.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\XKMSResultType.hpp
 # End Source File
 # Begin Source File
@@ -1218,6 +1258,14 @@ SOURCE=..\..\..\..\src\xkms\XKMSUnverifiedKeyBinding.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSUseKeyWith.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSValidateRequest.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSValidateResult.hpp
 # End Source File
 # End Group
 # End Target
