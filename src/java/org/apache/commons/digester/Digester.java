@@ -1,4 +1,4 @@
-/* $Id: Digester.java,v 1.102 2004/05/10 06:30:06 skitching Exp $
+/* $Id: Digester.java,v 1.103 2004/05/10 07:15:20 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -417,8 +417,9 @@ public class Digester extends DefaultHandler {
     /**
      * Return the debugging detail level of our currently enabled logger.
      *
-     * @deprecated Configure the logger using standard mechanisms
-     *  for your implementation
+     * @deprecated This method now always returns 0. Digester uses the apache
+     * jakarta commons-logging library; see the documentation for that library
+     * for more information.
      */
     public int getDebug() {
 
@@ -433,8 +434,9 @@ public class Digester extends DefaultHandler {
      * @param debug New debugging detail level (0=off, increasing integers
      *  for more detail)
      *
-     * @deprecated Configure the logger using standard mechanisms
-     *  for your implementation
+     * @deprecated This method now has no effect at all. Digester uses
+     * the apache jakarta comons-logging library; see the documentation
+     * for that library for more information.
      */
     public void setDebug(int debug) {
 
