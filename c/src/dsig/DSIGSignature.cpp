@@ -1102,7 +1102,7 @@ void DSIGSignature::sign(void) {
 	
 	// Now check the calculated hash
 
-	char b64Buf[256];
+	char b64Buf[1024];
 	unsigned int b64Len;
 	safeBuffer b64SB;
 	
@@ -1122,7 +1122,7 @@ void DSIGSignature::sign(void) {
 			hash, 
 			hashLen,
 			(char *) b64Buf, 
-			256);
+			1024);
 
 		if (b64Len <= 0) {
 
@@ -1152,7 +1152,7 @@ void DSIGSignature::sign(void) {
 			hash, 
 			hashLen,
 			(char *) b64Buf, 
-			256);
+			1024);
 
 		if (b64Len <= 0) {
 
@@ -1186,7 +1186,7 @@ void DSIGSignature::sign(void) {
 								hashLen, 
 								mp_signedInfo->getHMACOutputLength());
 		
-		strncpy(b64Buf, (char *) b64SB.rawBuffer(), 255);
+		strncpy(b64Buf, (char *) b64SB.rawBuffer(), 1024);
 		break;
 
 	default :
