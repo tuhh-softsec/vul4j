@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.13 2003/11/25 21:03:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.14 2003/11/25 21:07:34 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,6 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.functor.adapter.UnaryFunctionUnaryProcedure;
 import org.apache.commons.functor.core.NoOp;
 import org.apache.commons.functor.core.collection.FilteredIterator;
 import org.apache.commons.functor.core.collection.TransformedIterator;
@@ -89,7 +88,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.13 $ $Date: 2003/11/25 21:03:41 $
+ * @version $Revision: 1.14 $ $Date: 2003/11/25 21:07:34 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -161,19 +160,6 @@ public final class Algorithms {
      */
     public static final Iterator apply(Iterator iter, UnaryFunction func) {
         return TransformedIterator.transform(iter,func);
-    }
-
-    /**
-     * Returns a {@link Generator} that will apply the given {@link UnaryFunction} to each
-     * generated element.
-     * @deprecated Use {@link UnaryFunctionUnaryProcedure} and run the generator yourself.
-     */
-    public static final Generator apply(final Generator gen, final UnaryFunction func) {
-        return new BaseGenerator(gen) {
-            public void run(final UnaryProcedure proc) {
-                gen.run(new UnaryFunctionUnaryProcedure(func));
-            }
-        };
     }
 
     /**

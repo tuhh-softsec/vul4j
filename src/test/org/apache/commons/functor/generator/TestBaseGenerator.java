@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestBaseGenerator.java,v 1.1 2003/11/25 19:57:48 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestBaseGenerator.java,v 1.2 2003/11/25 21:07:34 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,12 +59,9 @@ package org.apache.commons.functor.generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -74,7 +71,6 @@ import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
-import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsEqual;
 import org.apache.commons.functor.core.Offset;
 import org.apache.commons.functor.generator.util.CollectionTransformer;
@@ -211,31 +207,6 @@ public class TestBaseGenerator extends TestCase {
 
     // Tests
     // ------------------------------------------------------------------------
-
-    public void testApply() {
-        Collection result = EachElement.from(list).apply(IdentityFunction.instance()).toCollection();
-        assertNotNull(result);
-        assertEquals(list.size(),result.size());
-        assertEquals(list,result);
-    }
-
-    public void testApply2() {
-        Set set = new HashSet();
-        assertSame(set,EachElement.from(list).apply(IdentityFunction.instance()).to(set));
-        assertEquals(list.size(),set.size());
-        for(Iterator iter = list.iterator(); iter.hasNext(); ) {
-            assertTrue(set.contains(iter.next()));
-        }
-    }
-
-    public void testApply3() {
-        Set set = new HashSet();
-        assertSame(set,EachElement.from(listWithDuplicates).apply(IdentityFunction.instance()).to(set));
-        assertTrue(listWithDuplicates.size() > set.size());
-        for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
-            assertTrue(set.contains(iter.next()));
-        }
-    }
 
     public void testContains() {
         assertTrue(EachElement.from(list).contains(equalsThree));
