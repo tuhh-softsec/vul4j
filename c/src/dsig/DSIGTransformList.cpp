@@ -100,7 +100,7 @@ void DSIGTransformList::addTransform(DSIGTransform * ref) {
 
 }
 
-DSIGTransformList::size_type DSIGTransformList::getSize() {
+DSIGTransformList::size_type DSIGTransformList::getSize(void) {
 
 	return m_transformList.size();
 

@@ -296,6 +296,29 @@ public:
 	const XMLCh * getURI();
 
 	/**
+	 * \brief Get the Digest method
+	 *
+	 * Obtain the digest method used to find a hash for this reference
+	 *
+	 * @returns the hashMethod
+	 */
+
+	hashMethod getHashMethod(void) {
+		return me_hashMethod;
+	}
+
+	/**
+	 * \brief Obtain the transforms for this reference
+	 *
+	 * Get the DSIGTransformList object for this reference.  Can be used to
+	 * obtain information about the transforms and also change the the transforms
+	 */
+
+	DSIGTransformList * getTransforms(void) {
+		return mp_transformList;
+	}
+
+	/**
 	 * \brief Determine whether the reference is a manifest
 	 *
 	 * @returns true iff the Reference element is a Manifest reference

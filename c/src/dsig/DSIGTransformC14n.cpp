@@ -110,6 +110,9 @@ DSIGTransformC14n::~DSIGTransformC14n() {};
 	
 transformType DSIGTransformC14n::getTransformType() {
 
+	if ((m_cMethod == CANON_C14NE_NOC) || (m_cMethod == CANON_C14NE_COM))
+		return TRANSFORM_EXC_C14N;
+
 	return TRANSFORM_C14N;
 
 }

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -98,7 +96,7 @@ class DSIGTransform;
  */
 
 
-class DSIGTransformList {
+class DSIG_EXPORT DSIGTransformList {
 
 public:
 

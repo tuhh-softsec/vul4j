@@ -70,6 +70,8 @@
  *
  */
 
+#define XSEC_VERSION	0.11
+
 /*
  * The following defines whether Xalan integration is required.
  *

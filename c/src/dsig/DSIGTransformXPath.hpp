@@ -225,6 +225,19 @@ public:
 	void setNamespace(const char * prefix, const char * value);
 
 	/**
+	 * \brief Get the list of namespaces.
+	 *
+	 * Returns the DOMNamedNodeMap of the attributes of the XPath transform
+	 * node.  This <em>should</em> only contain namespaces.
+	 *
+	 * @returns A pointer to the NamedNodeMap
+	 */
+
+	DOMNamedNodeMap * getNamespaces(void) {
+		return mp_NSMap;
+	}
+
+	/**
 	 * \brief Delete a namespace to the list to be used
 	 *
 	 * Delete a namespace from the XPath Element.

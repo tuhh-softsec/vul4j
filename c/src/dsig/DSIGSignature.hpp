@@ -394,6 +394,46 @@ public:
 	DOMDocument * getParentDocument() {return mp_doc;}
 
 	/**
+	 * \brief Get canonicalisation algorithm
+	 *
+	 * Returns the canonicalisation algorithm that will be/is used
+	 * to canonicalise the <SignedInfo> element prior to hash/sign
+	 *
+	 * @returns The canonicalisation method
+	 */
+
+	canonicalizationMethod getCanonicalizationMethod(void) 
+	{return (mp_signedInfo != NULL ? 
+			 mp_signedInfo->getCanonicalizationMethod() : CANON_NONE);}
+
+
+	/**
+	 * \brief Get the hash method
+	 *
+	 * Obtain the hash (digest) algorithm that is used to generate a hash
+	 * of the canonicalised <SignedInfo> element.
+	 *
+	 * @returns the Hash (digest) Method
+	 */
+
+	hashMethod getHashMethod(void)
+	{return (mp_signedInfo != NULL ? 
+			 mp_signedInfo->getHashMethod() : HASH_NONE);}
+
+	/**
+	 * \brief Get the signature method
+	 *
+	 * Obtain the algorithm that will be used to generate/check the signature
+	 * of the canonicalised and hashed <SignedInfo> element.
+	 *
+	 * @returns the Signature method
+	 */
+
+	signatureMethod getSignatureMethod(void)
+	{return (mp_signedInfo != NULL ? 
+			 mp_signedInfo->getSignatureMethod() : SIGNATURE_NONE);}
+		 
+	/**
 	 * \brief Helper function for sub Classes.
 	 *
 	 * Returns the pointer to the formatter being used within the Signature
