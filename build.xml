@@ -40,79 +40,66 @@
     <property name="year"              value="2000-2002" />
     <property name="copyright"         value="Copyright &#169; ${year} Apache XML Project. All Rights Reserved." />
 
-<!--<property name="build.compiler" value="classic" />
-    <property name="build.compiler" value="jikes" />-->
+<!--<property name="build.compiler"        value="classic" />
+    <property name="build.compiler"        value="jikes" />-->
 
-    <!-- <property name="build.compiler" value="classic" /> -->
+    <property name="dir.data"              value="./data" />
+    <property name="dir.doc"               value="./doc" />
+    <property name="dir.libs"              value="./libs" />
+    <property name="dir.src"               value="./src" />
+    <property name="dir.src.unitTests"     value="./src_unitTests" />
+    <property name="dir.src.samples"       value="./src_samples" />
 
-    <property name="dir.src"           value="./src" />
-    <property name="dir.src.samples"   value="./src_samples" />
-    <property name="dir.src.unitTests" value="./src_unitTests" />
-    <property name="dir.tools"         value="./tools" />
-    <property name="dir.data"          value="./data" />
-    <property name="dir.libs"          value="./libs" />
-    <property name="dir.doc"           value="./doc" />
+    <property name="build.dir"             value="./build" />
+    <property name="build.data"            value="${build.dir}/data" />
+    <property name="build.src"             value="${build.dir}/src" />
+    <property name="build.tests"           value="${build.dir}/tests" />
+    <property name="build.samples"         value="${build.dir}/samples" />
+    <property name="build.classes"         value="${build.dir}/classes" />
+    <property name="build.srcdist"         value="${build.dir}/${product.name}_${product_version}_src" />
+    <property name="build.bindist"         value="${build.dir}/${product.name}_${product_version}_bin" />
+    <property name="build.manifest.dir"    value="${build.classes}/META-INF"/>
+    <property name="jar.manifest"          value="${build.manifest.dir}/MANIFEST.MF"/>
 
-    <property name="build.dir"         value="./build" />
-    <property name="build.src"         value="${build.dir}/src" />
-    <property name="build.classes"     value="${build.dir}/classes" />
-    <property name="build.samples"     value="${build.dir}/samples" />
-    <property name="build.tests"       value="${build.dir}/tests" />
-    <property name="build.data"        value="${build.dir}/data" />
-    <property name="build.doc"         value="${build.dir}/doc" />
-    <property name="build.doc.xml"     value="${build.doc}/xml" />
-    <property name="build.doc.html"    value="${build.doc}/html" />
-    <property name="build.javadoc"     value="${build.doc.html}/api" />
-    <property name="build.junit.html"  value="${build.doc.html}/junit" />
-    <property name="build.junit.xml"   value="${build.doc.xml}/junit" />
-    <property name="build.srcdist"     value="${build.dir}/${product.name}_${product_version}_src" />
-    <property name="build.bindist"     value="${build.dir}/${product.name}_${product_version}_bin" />
+    <property name="jar.library"           value="${product.shortname}.jar" />
+    <property name="jar.tests"             value="${product.shortname}Tests.jar" />
+    <property name="jar.samples"           value="${product.shortname}Samples.jar" />
 
-    <property name="jar.library"       value="${product.shortname}.jar" />
-    <property name="jar.samples"       value="${product.shortname}Samples.jar" />
-    <property name="jar.tests"         value="${product.shortname}Tests.jar" />
+    <property name="build.doc"             value="${build.dir}/doc" />
+    <property name="build.doc.xml"         value="${build.doc}/xml" />
+    <property name="build.doc.html"        value="${build.doc}/html" />
+    <property name="build.javadoc"         value="${build.doc.html}/api" />
+    <property name="build.junit.xml"       value="${build.doc.xml}/junit" />
+    <property name="build.junit.html"      value="${build.doc.html}/junit" />
 
-    <property name="build.manifest.dir" value="${build.classes}/META-INF"/>
-    <property name="jar.manifest"       value="${build.manifest.dir}/MANIFEST.MF"/>
-
-    <property name="cvs.server"        value="cvs.apache.org" />
-    <property name="cvs.path"          value="/home/cvs" />
-    <property name="cvs.package"       value="xml-security" />
-
-    <property name="cvs.user.developer"    value="geuerp" />
-    <property name="cvs.user.anonymous"    value="anoncvs" />
-    <property name="cvs.cvsRoot.developer" value=":ext:${cvs.user.developer}@${cvs.server}:${cvs.path}" />
     <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}public" />
+    <property name="cvs.cvsRoot.developer" value=":ext:${cvs.user.developer}@${cvs.server}:${cvs.path}" />
+    <property name="cvs.package"           value="xml-security" />
+    <property name="cvs.path"              value="/home/cvs" />
+    <property name="cvs.server"            value="cvs.apache.org" />
+    <property name="cvs.user.anonymous"    value="anoncvs" />
+    <property name="cvs.user.developer"    value="geuerp" />
 
-    <property name="doc.xml"           value="${dir.doc}/xml" />
-    <property name="doc.book"          value="${build.doc.xml}/docs-book.xml" />
-    <property name="doc.style"         value="${build.doc.xml}/style-apachexml" />
-    <property name="doc.style.jar"     value="${dir.tools}/style-apachexml.jar" />
-    <property name="doc.generator"     value="org.apache.stylebook.StyleBook" />
+    <property name="doc.xml"               value="${dir.doc}/xml" />
+    <property name="doc.book"              value="${build.doc.xml}/sources/docs-book.xml" />
+    <property name="doc.generator"         value="org.apache.stylebook.StyleBook" />
     <property name="doc.generator.package" value="${dir.tools}/stylebook-1.0-b2.jar" />
 
     <!-- http://www.bouncycastle.org/checksums.html -->
-    <!--
-    <property name="jce.download.md5"  value="eeb940217876bcd83a55d799ee5db7ca" />
-    <property name="jce.download.sha1" value="106e97a5ad7a57aa2cbc48074db80225d3c0972a" />
-    <property name="jce.download.file" value="jce-jdk13-112.jar" />
-    -->
+    <property name="jce.download.md5"      value="8a90f10826c0b8a4460231dcef0e0e45" />
+    <property name="jce.download.sha1"     value="f3cf2677ad8fa7a038ab3a62e05afef9615ea579" />
+    <property name="jce.download.file"     value="jce-jdk13-114.jar" />
 
-    <property name="jce.download.md5"  value="8a90f10826c0b8a4460231dcef0e0e45" />
-    <property name="jce.download.sha1" value="f3cf2677ad8fa7a038ab3a62e05afef9615ea579" />
-    <property name="jce.download.file" value="jce-jdk13-114.jar" />
-
-    <property name="jce.download"      value="http://www.bouncycastle.org/download/${jce.download.file}" />
-    <property name="lib.jce"           value="${dir.libs}/bc-${jce.download.file}" />
-
-    <!-- http://download.sourceforge.net/junit/junit3.7.zip -->
-    <property name="lib.junit"    value="${dir.libs}/junit3.7.jar" />
-
-    <property name="lib.xerces.1" value="${dir.libs}/xercesImpl.jar" />
-    <property name="lib.xerces.2" value="${dir.libs}/xmlParserAPIs.jar" />
-    <property name="lib.xalan.1"  value="${dir.libs}/xalan.jar" />
-    <property name="lib.xalan.2"  value="${dir.libs}/xml-apis.jar" />
-    <property name="lib.log4j"    value="${dir.libs}/jakarta-log4j-1.2.6.jar" />
+    <property name="jce.download"          value="http://www.bouncycastle.org/download/${jce.download.file}" />
+    <property name="lib.jce"               value="${dir.libs}/bc-${jce.download.file}" />
+    <property name="lib.junit"             value="${dir.libs}/junit3.7.jar" />     
+    <property name="lib.log4j"             value="${dir.libs}/jakarta-log4j-1.2.6.jar" />
+    <property name="lib.styleApache"       value="${dir.libs}/style-apachexml.jar" />
+    <property name="lib.stylebook"         value="${dir.libs}/stylebook-1.0-b3_xalan-2.jar" />
+    <property name="lib.xalan.1"           value="${dir.libs}/xalan.jar" />
+    <property name="lib.xalan.2"           value="${dir.libs}/xml-apis.jar" />
+    <property name="lib.xerces.1"          value="${dir.libs}/xercesImpl.jar" />
+    <property name="lib.xerces.2"          value="${dir.libs}/xmlParserAPIs.jar" />
 
     <path id="classpath.libraries" description="3rd party libs">
       <pathelement path="${lib.xerces.1}" />
@@ -125,7 +112,6 @@
 
     <path id="classpath.xmlsec" description="xmlsec classes; first try pure class files, then jars">
       <pathelement path="${build.classes}" />
-
       <pathelement path="${build.dir}/${jar.library}" />
       <pathelement path="${build.dir}/${jar.tests}" />
       <pathelement path="${build.dir}/${jar.samples}" />
@@ -323,37 +309,8 @@ org.apache.xml.security.utils.resolver
              token="@@VERSION@@" value="${product.Name} ${product.Version}" />
   </target>
 
-  <target name="prepare-doc" depends="prepare"
-          description="This target copies the XML documentation sources and brands the version information">
-    <!-- create directories -->
-    <mkdir dir="${build.doc}" />
-    <mkdir dir="${build.doc.xml}" />
-    <mkdir dir="${build.doc.html}" />
-
-    <!-- copy xml files -->
-    <copy todir="${build.doc.xml}">
-        <fileset dir="${doc.xml}" />
-    </copy>
-
-    <!-- substitute tokens as needed -->
-    <replace file="${build.doc.xml}/dtd/entities.ent"
-             token="@@packagenamelong@@" value="${product.Name}" />
-    <replace file="${build.doc.xml}/dtd/entities.ent"
-             token="@@packagename@@" value="${product.name}" />
-    <replace file="${build.doc.xml}/dtd/entities.ent"
-             token="@@packageversion@@" value="${product.Version}" />
-    <replace file="${build.doc.xml}/dtd/entities.ent"
-             token="@@packagedistname@@" value="${product.Name}" />
-    <replace file="${build.doc.xml}/install.xml"
-             token="@@jce.download@@" value="${jce.download}" />
-    <replace file="${build.doc.xml}/install.xml"
-             token="@@lib.jce@@" value="${lib.jce}" />
-    <replace file="${build.doc.xml}/install.xml"
-             token="@@jce.download.file@@" value="${jce.download.file}" />
-  </target>
-
   <target name="javadoc"
-          depends="prepare-src, prepare-doc"
+          depends="prepare-src"
           description="Generates javadoc from all .java files; this is done on the 'branded' files">
     <mkdir dir="${build.doc}" />
     <mkdir dir="${build.doc.html}" />
@@ -371,31 +328,54 @@ org.apache.xml.security.utils.resolver
     </javadoc>
   </target>
 
-  <target name="doc" depends="prepare-doc">
-    <unjar src="${doc.style.jar}" dest="${doc.style}" />
+  <target name="doc" depends="prepare">
+    <!-- create directories -->
+    <mkdir dir="${build.doc}" />
+    <mkdir dir="${build.doc.xml}" />
+    <mkdir dir="${build.doc.html}" />
 
-    <path id="classpath.doc">
-      <pathelement path="${doc.generator.package}" />
-      <pathelement path="${dir.tools}/xerces.jar" />
-      <pathelement path="${dir.tools}/xalan.jar" />
-      <pathelement path="${dir.tools}/optional.jar" />
-    </path>
-
-    <java fork="yes"
-          classname="${doc.generator}">
-        <arg value="targetDirectory=${build.doc.html}" />
-        <arg value="${doc.book}" />
-        <arg value="${doc.style}" />
-        <classpath refid="classpath.doc" />
-    </java>
-
-    <copy todir="${build.doc.html}">
-        <fileset
-            dir="${doc.xml}"
-            includes="**/*.txt" />
+    <!-- copy xml files -->
+    <copy todir="${build.doc.xml}">
+        <fileset dir="${doc.xml}" />
     </copy>
 
-    <delete dir="${doc.style}" />
+    <!-- unjar the stylebook software -->
+    <unjar src="${lib.styleApache}"  dest="${build.doc.xml}" />
+
+    <!-- substitute tokens as needed -->
+    <replace file="${build.doc.xml}/dtd/entities.ent"
+             token="@@packagenamelong@@" value="${product.Name}" />
+    <replace file="${build.doc.xml}/dtd/entities.ent"
+             token="@@packagename@@" value="${product.name}" />
+    <replace file="${build.doc.xml}/dtd/entities.ent"
+             token="@@packageversion@@" value="${product.Version}" />
+    <replace file="${build.doc.xml}/dtd/entities.ent"
+             token="@@packagedistname@@" value="${product.Name}" />
+    <replace file="${build.doc.xml}/sources/install.xml"
+             token="@@jce.download@@" value="${jce.download}" />
+    <replace file="${build.doc.xml}/sources/install.xml"
+             token="@@lib.jce@@" value="${lib.jce}" />
+    <replace file="${build.doc.xml}/sources/install.xml"
+             token="@@jce.download.file@@" value="${jce.download.file}" />
+
+    <!-- create the site -->
+    <stylebook book="${doc.book}" skindirectory="${build.doc.xml}" targetdirectory="${build.doc.html}">
+       <classpath>
+         <pathelement path="${lib.stylebook}" />
+         <pathelement path="${lib.xerces.1}" />
+         <pathelement path="${lib.xalan.1}" />
+       </classpath>
+    </stylebook>
+    
+    <!-- copy plain ASCII files -->
+    <copy todir="${build.doc.html}">
+        <fileset
+            dir="${doc.xml}/sources"
+            includes="**/*.txt" />
+    </copy>
+    
+    <!-- remove the patched XML sources -->
+    <delete dir="${build.doc.xml}" />
   </target>
 
   <target name="javadoc-pdf"
