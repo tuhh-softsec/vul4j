@@ -222,7 +222,8 @@ public class NameSpaceSymbTable {
             if (!ob.rendered) {                 
                 ob=(NameSpaceSymbEntry) ob.clone();
                 needsClone();
-                symb.put(prefix,ob);                        
+                symb.put(prefix,ob);         
+                ob.lastrendered=uri;
                 ob.rendered=true;
                 return ob.n;
             }           
@@ -230,10 +231,10 @@ public class NameSpaceSymbTable {
         }   
         
         NameSpaceSymbEntry ne=new NameSpaceSymbEntry(uri,n,true);
+        ne.lastrendered=uri;
         needsClone();
         symb.put(prefix, ne);
         if (ob != null) {           
-            ne.lastrendered=uri;
             
             if ((ob.lastrendered!=null)&& (ob.lastrendered.equals(uri))) {
                 ne.rendered=true;
