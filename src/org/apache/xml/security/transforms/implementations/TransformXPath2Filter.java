@@ -124,14 +124,8 @@ public class TransformXPath2Filter extends TransformSpi {
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());
-         Document inputDoc = null;
-
-         {
-            Iterator it = this._inputSet.iterator();
-
-            inputDoc = XMLUtils.getOwnerDocument((Node) it.next());
-         }
-
+         Document inputDoc = XMLUtils.getOwnerDocument(_inputSet);
+         
          Element []xpathElements =XMLUtils.selectNodes(
                 this._transformObject.getElement().getFirstChild(),
                    XPath2FilterContainer.XPathFilter2NS,
@@ -191,7 +185,7 @@ public class TransformXPath2Filter extends TransformSpi {
          Set resultSet = new HashSet();
          Iterator it = this._inputSet.iterator();
          while (it.hasNext()) {
-            Node n = (Node) it.next();
+            Object n = it.next();
             if (this._F.contains(n)) {
                resultSet.add(n);
             }
