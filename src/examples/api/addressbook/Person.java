@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * See Example1.java.
+ * See Main.java.
  */
 public class Person {
   private int id;
