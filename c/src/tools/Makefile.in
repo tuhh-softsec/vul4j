@@ -166,8 +166,11 @@ ${BINDIR}/siginf: ${OBJDIR}/siginf${OBJSUFFIX}
 ${OBJDIR}/cipher${OBJSUFFIX}: cipher/cipher.cpp
 	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
-${BINDIR}/cipher: ${OBJDIR}/cipher${OBJSUFFIX}
-	$(LINK) $(LDFLAGS) $< $(LDXSEC) $(LIBS) -o $@
+${OBJDIR}/MerlinFiveInteropResolver${OBJSUFFIX}: cipher/MerlinFiveInteropResolver.cpp
+	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
+
+${BINDIR}/cipher: ${OBJDIR}/cipher${OBJSUFFIX} ${OBJDIR}/MerlinFiveInteropResolver${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $^ $(LDXSEC) $(LIBS) -o $@
 
 #============================= Clean =============================
 

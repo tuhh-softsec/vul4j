@@ -70,7 +70,7 @@
 // XSEC Includes
 #include <xsec/framework/XSECEnv.hpp>
 #include <xsec/framework/XSECError.hpp>
-#include <xsec/framework/XSECUriResolver.hpp>
+#include <xsec/framework/XSECURIResolver.hpp>
 #include <xsec/dsig/DSIGConstants.hpp>
 
 #include <xercesc/util/XMLUniDefs.hpp>

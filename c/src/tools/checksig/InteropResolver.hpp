@@ -93,7 +93,7 @@ public :
 	// Interface functions
 
 	virtual XSECCryptoKey * resolveKey(DSIGKeyInfoList * lst);
-	virtual XSECKeyInfoResolver * clone(void);
+	virtual XSECKeyInfoResolver * clone(void) const;
 
 	// Internal functions
 	X509 * nextFile2Cert(void);

@@ -682,7 +682,7 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
 
 
-XSECKeyInfoResolver * InteropResolver::clone(void) {
+XSECKeyInfoResolver * InteropResolver::clone(void) const {
 
 	return new InteropResolver(mp_baseURI);
 
