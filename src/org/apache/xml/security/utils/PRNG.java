@@ -37,12 +37,18 @@ public class PRNG {
      this._sr = secureRandom;
   }
 
+  /**
+   * @param secureRandom
+   */
   public static void init(SecureRandom secureRandom) {
      if (PRNG._prng == null) {
         PRNG._prng = new PRNG(secureRandom);
      }
   }
 
+  /**
+   *  @return
+   */
   public static PRNG getInstance() {
      if (PRNG._prng == null) {
         PRNG.init(new SecureRandom());
@@ -51,32 +57,55 @@ public class PRNG {
      return PRNG._prng;
   }
 
+  /**
+   *  @return
+   */
   public SecureRandom getSecureRandom() {
      return this._sr;
   }
 
+  /**
+   * @param length
+   *  @return
+   */
   public static byte[] createBytes(int length) {
      byte result[] = new byte[length];
      PRNG.getInstance().nextBytes(result);
      return result;
   }
 
+  /**
+   *  @param bytes
+   */
   public void nextBytes(byte[] bytes) {
      this._sr.nextBytes(bytes);
   }
 
+  /**
+   *  @return
+   */
   public double nextDouble() {
      return this._sr.nextDouble();
   }
 
+  /**
+   *  @return
+   */
   public int nextInt() {
      return this._sr.nextInt();
   }
 
+  /**
+   * @param i
+   *  @return
+   */
   public int nextInt(int i) {
      return this._sr.nextInt(i);
   }
 
+  /**
+   *  @return
+   */
   public boolean nextBoolean() {
      return this._sr.nextBoolean();
   }

@@ -113,12 +113,7 @@ public class DSAKeyValue extends SignatureElementProxy
       }
    }
 
-   /**
-    * Method getPublicKey
-    *
-    *
-    * @throws XMLSecurityException
-    */
+   /** @inheritDoc */
    public PublicKey getPublicKey() throws XMLSecurityException {
 
       try {
@@ -143,6 +138,7 @@ public class DSAKeyValue extends SignatureElementProxy
       }
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_DSAKEYVALUE;
    }

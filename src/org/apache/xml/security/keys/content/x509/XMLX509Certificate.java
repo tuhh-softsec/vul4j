@@ -93,7 +93,7 @@ public class XMLX509Certificate extends SignatureElementProxy
    /**
     * Method getCertificateBytes
     *
-    *
+    * @return
     * @throws XMLSecurityException
     */
    public byte[] getCertificateBytes() throws XMLSecurityException {
@@ -103,7 +103,7 @@ public class XMLX509Certificate extends SignatureElementProxy
    /**
     * Method getX509Certificate
     *
-    *
+    * @return
     * @throws XMLSecurityException
     */
    public X509Certificate getX509Certificate() throws XMLSecurityException {
@@ -129,7 +129,7 @@ public class XMLX509Certificate extends SignatureElementProxy
    /**
     * Method getPublicKey
     *
-    *
+    * @return
     * @throws XMLSecurityException
     */
    public PublicKey getPublicKey() throws XMLSecurityException {
@@ -143,12 +143,7 @@ public class XMLX509Certificate extends SignatureElementProxy
       return null;
    }
 
-   /**
-    * Method equals
-    *
-    * @param obj
-    *
-    */
+   /** @inheritDoc */
    public boolean equals(Object obj) {
 
       try {
@@ -166,6 +161,7 @@ public class XMLX509Certificate extends SignatureElementProxy
       }
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_X509CERTIFICATE;
    }

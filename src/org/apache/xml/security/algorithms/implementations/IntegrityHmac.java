@@ -366,15 +366,13 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
     * Method engineGetContextFromElement
     *
     * @param element
-    * @throws XMLSignatureException
     */
-   protected void engineGetContextFromElement(Element element)
-           throws XMLSignatureException {
+   protected void engineGetContextFromElement(Element element) {
 
       super.engineGetContextFromElement(element);
 
       if (element == null) {
-         throw new XMLSignatureException("empty");
+         throw new IllegalArgumentException("element null");
       }
 
              Text hmaclength =XMLUtils.selectDsNodeText(element.getFirstChild(),
@@ -390,13 +388,12 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
     * Method engineAddContextToElement
     *
     * @param element
-    * @throws XMLSignatureException
     */
    protected void engineAddContextToElement(Element element)
-           throws XMLSignatureException {
+           {
 
       if (element == null) {
-         throw new XMLSignatureException("empty");
+         throw new IllegalArgumentException("null element");
       }
 
       if (this._HMACOutputLength != 0) {

@@ -24,7 +24,6 @@ import java.security.cert.X509Certificate;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
-import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.utils.Constants;
@@ -41,14 +40,7 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
    /** Field _dsaKeyElement */
    private Element _dsaKeyElement = null;
 
-   /**
-    * Method engineCanResolve
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    */
+   /** @inheritDoc */
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
 
@@ -88,11 +80,9 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
     * @param BaseURI
     * @param storage
     * @return null if no {@link PublicKey} could be obtained
-    * @throws KeyResolverException
     */
    public PublicKey engineResolvePublicKey(
-           Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+           Element element, String BaseURI, StorageResolver storage) {
 
       if (this._dsaKeyElement == null) {
          boolean weCanResolve = this.engineCanResolve(element, BaseURI,
@@ -116,33 +106,16 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
       return null;
    }
 
-   /**
-    * Method engineResolveX509Certificate
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    * @throws KeyResolverException
-    */
+   
+   /** @inheritDoc */
    public X509Certificate engineResolveX509Certificate(
-           Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+           Element element, String BaseURI, StorageResolver storage) {
       return null;
    }
 
-   /**
-    * Method engineResolveSecretKey
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    * @throws KeyResolverException
-    */
+   /** @inheritDoc */
    public javax.crypto.SecretKey engineResolveSecretKey(
-           Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+           Element element, String BaseURI, StorageResolver storage){
       return null;
    }
 }

@@ -18,8 +18,6 @@ package org.apache.xml.security.signature;
 
 
 
-import javax.xml.transform.TransformerException;
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.IdResolver;
@@ -27,7 +25,6 @@ import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -72,9 +69,8 @@ public class SignatureProperties extends SignatureElementProxy {
     * Return the nonnegative number of added SignatureProperty elements.
     *
     * @return the number of SignatureProperty elements
-    * @throws XMLSignatureException
     */
-   public int getLength() throws XMLSignatureException {
+   public int getLength() {
       
          Element[] propertyElems =
             XMLUtils.selectDsNodes(this._constructionElement,
@@ -95,15 +91,14 @@ public class SignatureProperties extends SignatureElementProxy {
    public SignatureProperty item(int i) throws XMLSignatureException {
    	  try {
          Element propertyElem =
-            (Element) XMLUtils.selectDsNode(this._constructionElement, 
+            XMLUtils.selectDsNode(this._constructionElement, 
                                  Constants._TAG_SIGNATUREPROPERTY, 
                                  i );
 
          if (propertyElem == null) {
             return null;
-         } else {
-            return new SignatureProperty(propertyElem, this._baseURI);
-         }      
+         } 
+         return new SignatureProperty(propertyElem, this._baseURI);               
       } catch (XMLSecurityException ex) {
          throw new XMLSignatureException("empty", ex);
       }
@@ -141,6 +136,7 @@ public class SignatureProperties extends SignatureElementProxy {
       XMLUtils.addReturnToElement(this._constructionElement);
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_SIGNATUREPROPERTIES;
    }

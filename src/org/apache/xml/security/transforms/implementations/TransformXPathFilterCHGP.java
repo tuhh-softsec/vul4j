@@ -356,12 +356,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
     */
    public class AlwaysAcceptNodeFilter implements NodeFilter {
 
-      /**
-       * Method acceptNode
-       *
-       * @param n
-       * @inheritDoc
-       */
+   	  /** @inheritDoc */
       public short acceptNode(Node n) {
          return NodeFilter.FILTER_ACCEPT;
       }

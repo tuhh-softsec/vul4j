@@ -27,7 +27,7 @@ import org.apache.xml.security.keys.storage.StorageResolverSpi;
 
 /**
  * This {@link StorageResolverSpi} makes a single {@link X509Certificate}
- * available to the {@link StorageResolver}.
+ * available to the {@link org.apache.xml.security.keys.storage.StorageResolver}.
  *
  * @author $Author$
  */
@@ -49,11 +49,7 @@ public class SingleCertificateResolver extends StorageResolverSpi {
       this._iterator = new InternalIterator(this._certificate);
    }
 
-   /**
-    * Method getIterator
-    *
-    *
-    */
+   /** @inheritDoc */
    public Iterator getIterator() {
       return this._iterator;
    }
@@ -81,20 +77,12 @@ public class SingleCertificateResolver extends StorageResolverSpi {
          this._certificate = x509cert;
       }
 
-      /**
-       * Method hasNext
-       *
-       *
-       */
+      /** @inheritDoc */
       public boolean hasNext() {
          return (!this._alreadyReturned);
       }
 
-      /**
-       * Method next
-       *
-       *
-       */
+      /** @inheritDoc */
       public Object next() {
 
          this._alreadyReturned = true;

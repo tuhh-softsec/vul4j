@@ -84,13 +84,7 @@ public class TransformXPath2Filter04 extends TransformSpi {
       return implementedTransformURI;
    }
 
-   /**
-    * Method enginePerformTransform
-    *
-    * @param input
-    * @inheritDoc
-    * @throws TransformationException
-    */
+   /** @inheritDoc */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
            throws TransformationException {
 

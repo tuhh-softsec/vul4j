@@ -134,7 +134,7 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method getPublicKey
     *
-    *
+    * @return
     * @throws XMLSecurityException
     */
    public PublicKey getPublicKey() throws XMLSecurityException {
@@ -165,6 +165,7 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
       return null;
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_KEYVALUE;
    }

@@ -19,16 +19,12 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
-import java.io.IOException;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
-import org.xml.sax.SAXException;
+
 
 
 /**
@@ -43,17 +39,17 @@ public class TransformXPointer extends TransformSpi {
       Transforms.TRANSFORM_XPOINTER;
 
    //J-
+   /** @inheritDoc */
    public boolean wantsOctetStream ()   { return false; }
+   /** @inheritDoc */
    public boolean wantsNodeSet ()       { return true; }
+   /** @inheritDoc */
    public boolean returnsOctetStream () { return false; }
+   /** @inheritDoc */
    public boolean returnsNodeSet ()     { return true; }
    //J+
 
-   /**
-    * Method engineGetURI
-    *
-    *
-    */
+   /** @inheritDoc */
    protected String engineGetURI() {
       return implementedTransformURI;
    }
@@ -62,17 +58,12 @@ public class TransformXPointer extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
+    * @return
+    * @throws TransformationException
     *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws NotYetImplementedException
-    * @throws ParserConfigurationException
-    * @throws SAXException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
-           throws IOException, CanonicalizationException,
-                  ParserConfigurationException, SAXException,
-                  TransformationException {
+           throws  TransformationException {
 
       Object exArgs[] = { implementedTransformURI };
 

@@ -55,12 +55,12 @@ public abstract class SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEProviderName
     *
-    *
+    * @return the JCE ProviderName
     */
    protected abstract String engineGetJCEProviderName();
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
+    * Proxy method for {@link java.security.Signature#update(byte[])}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param input
@@ -70,7 +70,7 @@ public abstract class SignatureAlgorithmSpi {
       throws XMLSignatureException;
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
+    * Proxy method for {@link java.security.Signature#update(byte[])}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param input
@@ -80,7 +80,7 @@ public abstract class SignatureAlgorithmSpi {
       throws XMLSignatureException;
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
+    * Proxy method for {@link java.security.Signature#update(byte[], int, int)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param buf
@@ -92,7 +92,7 @@ public abstract class SignatureAlgorithmSpi {
       throws XMLSignatureException;
 
    /**
-    * Proxy method for {@link java.security.Signature#initSign}
+    * Proxy method for {@link java.security.Signature#initSign(java.security.PrivateKey)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signingKey
@@ -102,7 +102,7 @@ public abstract class SignatureAlgorithmSpi {
       throws XMLSignatureException;
 
    /**
-    * Proxy method for {@link java.security.Signature#initSign}
+    * Proxy method for {@link java.security.Signature#initSign(java.security.PrivateKey, java.security.SecureRandom)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signingKey
@@ -125,10 +125,10 @@ public abstract class SignatureAlgorithmSpi {
          throws XMLSignatureException;
 
    /**
-    * Proxy method for {@link java.security.Signature#sign}
+    * Proxy method for {@link java.security.Signature#sign()}
     * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @return the result of the {@link java.security.Signature#sign} method
+    * @return the result of the {@link java.security.Signature#sign()} method
     * @throws XMLSignatureException
     */
    protected abstract byte[] engineSign() throws XMLSignatureException;
@@ -143,18 +143,18 @@ public abstract class SignatureAlgorithmSpi {
       throws XMLSignatureException;
 
    /**
-    * Proxy method for {@link java.security.Signature#verify}
+    * Proxy method for {@link java.security.Signature#verify(byte[])}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signature
-    *
+    * @return
     * @throws XMLSignatureException
     */
    protected abstract boolean engineVerify(byte[] signature)
       throws XMLSignatureException;
 
    /**
-    * Proxy method for {@link java.security.Signature#setParameter}
+    * Proxy method for {@link java.security.Signature#setParameter(java.security.spec.AlgorithmParameterSpec)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param params
@@ -182,10 +182,8 @@ public abstract class SignatureAlgorithmSpi {
     * Method engineGetContextFromElement
     *
     * @param element
-    * @throws XMLSignatureException
     */
-   protected void engineGetContextFromElement(Element element)
-           throws XMLSignatureException {
+   protected void engineGetContextFromElement(Element element) {
       this._constructionElement = element;
    }
 
@@ -193,10 +191,10 @@ public abstract class SignatureAlgorithmSpi {
     * Method engineAddContextToElement
     *
     * @param element
-    * @throws XMLSignatureException
     */
    protected void engineAddContextToElement(Element element)
-           throws XMLSignatureException {}
+   {    	       
+   }
 
    /**
     * Method engineSetHMACOutputLength

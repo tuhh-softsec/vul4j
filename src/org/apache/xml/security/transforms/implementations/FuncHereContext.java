@@ -29,7 +29,7 @@ import org.w3c.dom.Node;
  * {@link FuncHereContext} extends {@link XPathContext} for supplying context
  * for the <CODE>here()</CODE> function. The here() function needs to know
  * <I>where</I> in an XML instance the XPath text string appeared. This can be
- * in {@link Text}, {@link Attr}ibutes and {@ProcessingInstrinction} nodes. The
+ * in {@link org.w3c.dom.Text}, {@link org.w3c.dom.Attr}ibutes and {@ProcessingInstrinction} nodes. The
  * correct node must be supplied to the constructor of {@link FuncHereContext}.
  * The supplied Node MUST contain the XPath which is to be executed.
  *

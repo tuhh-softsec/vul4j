@@ -107,10 +107,9 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
       if (subStr.charAt(1) == ':') {
       	 // we're running M$ Windows, so this works fine
          return subStr;
-      } else {
-      	 // we're running some UNIX, so we have to prepend a slash
-         return "/" + subStr;
       }
+      // we're running some UNIX, so we have to prepend a slash
+      return "/" + subStr;
    }
 
    /**

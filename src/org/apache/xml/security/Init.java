@@ -19,7 +19,6 @@ package org.apache.xml.security;
 
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import javax.xml.parsers.*;
 import org.apache.xml.security.algorithms.JCEMapper;

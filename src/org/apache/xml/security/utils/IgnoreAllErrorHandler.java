@@ -44,9 +44,7 @@ public class IgnoreAllErrorHandler implements ErrorHandler {
 		"org.apache.xml.security.test.throw.exceptions", "false").equals("true");
 
 	
-	/* (non-Javadoc)
-	 * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
-	 */
+	/** @inheritDoc */
 	public void warning(SAXParseException ex) throws SAXException {
 		if (IgnoreAllErrorHandler.warnOnExceptions) {
 			log.warn("", ex);
@@ -57,9 +55,7 @@ public class IgnoreAllErrorHandler implements ErrorHandler {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
-	 */
+	/** @inheritDoc */
 	public void error(SAXParseException ex) throws SAXException {
 		if (IgnoreAllErrorHandler.warnOnExceptions) {
 			log.error("", ex);
@@ -71,9 +67,7 @@ public class IgnoreAllErrorHandler implements ErrorHandler {
 
 
 
-	/* (non-Javadoc)
-	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
-	 */
+	/** @inheritDoc */
 	public void fatalError(SAXParseException ex) throws SAXException {
 		if (IgnoreAllErrorHandler.warnOnExceptions) {
 			log.warn("", ex);

@@ -473,8 +473,8 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     * @param i
     * @return the Unknown Element at i
     * $todo$ implement
-    */
-   public Element itemUnknownElement(int i) {
+    **/
+   public Element itemUnknownElement(int i) {      
       return null;
    }
 

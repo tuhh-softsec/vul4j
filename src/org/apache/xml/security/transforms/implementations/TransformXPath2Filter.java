@@ -39,7 +39,6 @@ import org.apache.xml.security.transforms.params.XPath2FilterContainer;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xml.security.utils.XPathFuncHereAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -81,7 +81,7 @@ public class XMLSecurityException extends Exception {
    /**
     * Constructor XMLSecurityException
     *
-    * @param msgID
+    * @param _msgID
     */
    public XMLSecurityException(String _msgID) {
 
@@ -94,7 +94,7 @@ public class XMLSecurityException extends Exception {
    /**
     * Constructor XMLSecurityException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     */
    public XMLSecurityException(String _msgID, Object exArgs[]) {
@@ -108,7 +108,7 @@ public class XMLSecurityException extends Exception {
    /**
     * Constructor XMLSecurityException
     *
-    * @param originalException
+    * @param _originalException
     */
    public XMLSecurityException(Exception _originalException) {
 
@@ -124,8 +124,8 @@ public class XMLSecurityException extends Exception {
    /**
     * Constructor XMLSecurityException
     *
-    * @param msgID
-    * @param originalException
+    * @param _msgID
+    * @param _originalException
     */
    public XMLSecurityException(String _msgID, Exception _originalException) {
 
@@ -138,9 +138,9 @@ public class XMLSecurityException extends Exception {
    /**
     * Constructor XMLSecurityException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     */
    public XMLSecurityException(String _msgID, Object exArgs[],
                                Exception _originalException) {
@@ -154,22 +154,17 @@ public class XMLSecurityException extends Exception {
    /**
     * Method getMsgID
     *
-    *
+    * @return the messageId
     */
    public String getMsgID() {
 
       if (msgID == null) {
          return "Missing message ID";
-      } else {
-         return msgID;
-      }
+      } 
+      return msgID;      
    }
 
-   /**
-    * Method toString
-    *
-    *
-    */
+   /** @inheritDoc */
    public String toString() {
 
       String s = this.getClass().getName();
@@ -235,7 +230,7 @@ public class XMLSecurityException extends Exception {
    /**
     * Method getOriginalException
     *
-    *
+    * @return
     */
    public Exception getOriginalException() {
       return originalException;

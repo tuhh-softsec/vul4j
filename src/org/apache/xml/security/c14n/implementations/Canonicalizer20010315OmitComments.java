@@ -35,20 +35,12 @@ public class Canonicalizer20010315OmitComments extends Canonicalizer20010315 {
       super(false);
    }
 
-   /**
-    * Method engineGetURI
-    *
-    *
-    */
+   /** @inheritDoc */
    public final String engineGetURI() {
       return Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
    }
 
-   /**
-    * Method engineGetIncludeComments
-    *
-    *
-    */
+   /** @inheritDoc */
    public final boolean engineGetIncludeComments() {
       return false;
    }

@@ -82,9 +82,9 @@ public class XMLX509SubjectName extends SignatureElementProxy
     * Method getSubjectName
     *
     *
-    * @throws XMLSecurityException
+    * @return
     */
-   public String getSubjectName() throws XMLSecurityException {
+   public String getSubjectName() {
       return RFC2253Parser.normalize(this.getTextFromTextChild());
    }
 
@@ -95,6 +95,7 @@ public class XMLX509SubjectName extends SignatureElementProxy
     * @param orgUnit
     * @param org
     * @param country
+    * @return
     *
     * @throws IOException
     */
@@ -113,6 +114,7 @@ public class XMLX509SubjectName extends SignatureElementProxy
     * @param locality
     * @param state
     * @param country
+    * @return
     *
     * @throws IOException
     */
@@ -122,33 +124,26 @@ public class XMLX509SubjectName extends SignatureElementProxy
       return new X500Name(common, orgUnit, org, locality, state, country);
    }
 
-   /**
-    * Method equals
-    *
-    * @param obj
-    *
-    */
+   /** @inheritDoc */
    public boolean equals(Object obj) {
 
       if (!obj.getClass().getName().equals(this.getClass().getName())) {
          return false;
       }
 
-      try {
-         XMLX509SubjectName other = (XMLX509SubjectName) obj;
-         String otherSubject = other.getSubjectName();
-         String thisSubject = this.getSubjectName();
+      XMLX509SubjectName other = (XMLX509SubjectName) obj;
+      String otherSubject = other.getSubjectName();
+      String thisSubject = this.getSubjectName();
 
-         if (otherSubject.equals(thisSubject)) {
+      if (otherSubject.equals(thisSubject)) {
             return true;
-         }
-
-         return false;
-      } catch (XMLSecurityException ex) {
-         return false;
       }
-   }
 
+       return false;
+      
+   }
+   
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_X509SUBJECTNAME;
    }

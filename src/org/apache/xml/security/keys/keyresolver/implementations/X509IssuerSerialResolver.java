@@ -44,14 +44,7 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
         org.apache.commons.logging.LogFactory.getLog(
                     X509IssuerSerialResolver.class.getName());
 
-   /**
-    * Method engineCanResolve
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    */
+    /** @inheritDoc */
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
 
@@ -83,15 +76,7 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
       return false;
    }
 
-   /**
-    * Method engineResolvePublicKey
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    * @throws KeyResolverException
-    */
+   /** @inheritDoc */
    public PublicKey engineResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
@@ -106,15 +91,7 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
       return null;
    }
 
-   /**
-    * Method engineResolveX509Certificate
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    * @throws KeyResolverException
-    */
+   /** @inheritDoc */
    public X509Certificate engineResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
@@ -155,9 +132,8 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
                   log.debug("match !!! ");
 
                   return cert;
-               } else {
-                  log.debug("no match...");
-               }
+               } 
+                log.debug("no match...");               
             }
          }
 
@@ -169,18 +145,9 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
       }
    }
 
-   /**
-    * Method engineResolveSecretKey
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    * @throws KeyResolverException
-    */
+   /** @inheritDoc */
    public javax.crypto.SecretKey engineResolveSecretKey(
-           Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+           Element element, String BaseURI, StorageResolver storage) {
       return null;
    }
 }

@@ -63,7 +63,7 @@ public class KeyResolverException extends XMLSecurityException {
     * Constructor KeyResolverException
     *
     * @param _msgID
-    * @param originalException
+    * @param _originalException
     */
    public KeyResolverException(String _msgID, Exception _originalException) {
       super(_msgID, _originalException);
@@ -74,7 +74,7 @@ public class KeyResolverException extends XMLSecurityException {
     *
     * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     */
    public KeyResolverException(String _msgID, Object exArgs[],
                                Exception _originalException) {

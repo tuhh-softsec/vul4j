@@ -43,10 +43,8 @@ public class SignatureProperty extends SignatureElementProxy {
     *
     * @param doc the {@link Document} in which <code>XMLsignature</code> is placed
     * @param Target the <code>Target</code> attribute references the <code>Signature</code> element to which the property applies SignatureProperty
-    * @throws XMLSignatureException
     */
-   public SignatureProperty(Document doc, String Target)
-           throws XMLSignatureException {
+   public SignatureProperty(Document doc, String Target) {
       this(doc, Target, null);
    }
 
@@ -56,10 +54,8 @@ public class SignatureProperty extends SignatureElementProxy {
     * @param doc the {@link Document} in which <code>XMLsignature</code> is placed
     * @param Target the <code>Target</code> attribute references the <code>Signature</code> element to which the property applies
     * @param Id the <code>Id</code> will be specified by {@link Reference#getURI} in validation
-    * @throws XMLSignatureException
     */
-   public SignatureProperty(Document doc, String Target, String Id)
-           throws XMLSignatureException {
+   public SignatureProperty(Document doc, String Target, String Id) {
 
       super(doc);
 
@@ -125,12 +121,13 @@ public class SignatureProperty extends SignatureElementProxy {
     * Method appendChild
     *
     * @param node
-    *
+    * @return
     */
    public Node appendChild(Node node) {
       return this._constructionElement.appendChild(node);
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_SIGNATUREPROPERTY;
    }

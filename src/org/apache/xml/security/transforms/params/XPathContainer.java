@@ -28,7 +28,7 @@ import org.w3c.dom.Text;
 
 /**
  * This Object serves both as namespace prefix resolver and as container for
- * the <CODE>ds:XPath</CODE> Element. It implements the {@link Element} interface
+ * the <CODE>ds:XPath</CODE> Element. It implements the {@link org.w3c.dom.Element} interface
  * and can be used directly in a DOM tree.
  *
  * @author Christian Geuer-Pollmann
@@ -72,6 +72,7 @@ public class XPathContainer extends SignatureElementProxy implements TransformPa
       return this.getTextFromTextChild();
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_XPATH;
    }

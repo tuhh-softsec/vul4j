@@ -41,12 +41,19 @@ public class RetrievalMethod extends SignatureElementProxy
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(RetrievalMethod.class.getName());
    //J-
+    /** DSA retrieval */
    public static final String TYPE_DSA     = Constants.SignatureSpecNS + "DSAKeyValue";
+   /** RSA retrieval */
    public static final String TYPE_RSA     = Constants.SignatureSpecNS + "RSAKeyValue";
+   /** PGP retrieval */
    public static final String TYPE_PGP     = Constants.SignatureSpecNS + "PGPData";
+   /** SPKI retrieval */
    public static final String TYPE_SPKI    = Constants.SignatureSpecNS + "SPKIData";
+   /** MGMT retrieval */
    public static final String TYPE_MGMT    = Constants.SignatureSpecNS + "MgmtData";
+   /** X509 retrieval */
    public static final String TYPE_X509    = Constants.SignatureSpecNS + "X509Data";
+   /** RAWX509 retrieval */
    public static final String TYPE_RAWX509 = Constants.SignatureSpecNS + "rawX509Certificate";
    //J+
 
@@ -90,7 +97,7 @@ public class RetrievalMethod extends SignatureElementProxy
    /**
     * Method getURIAttr
     *
-    *
+    * @return
     */
    public Attr getURIAttr() {
       return this._constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
@@ -99,17 +106,14 @@ public class RetrievalMethod extends SignatureElementProxy
    /**
     * Method getURI
     *
-    *
+    * 
+    * @return
     */
    public String getURI() {
       return this.getURIAttr().getNodeValue();
    }
 
-   /**
-    * Method getType
-    *
-    *
-    */
+   /** @return */
    public String getType() {
       return this._constructionElement.getAttributeNS(null, Constants._ATT_TYPE);
    }
@@ -119,12 +123,13 @@ public class RetrievalMethod extends SignatureElementProxy
     *
     *
     * @throws XMLSecurityException
+    * @return
     */
    public Transforms getTransforms() throws XMLSecurityException {
 
       try {
        Element transformsElem =
-            (Element) XMLUtils.selectDsNode(this._constructionElement,                                                
+             XMLUtils.selectDsNode(this._constructionElement,                                                
                                                 Constants
                                                    ._TAG_TRANSFORMS, 0);
 
@@ -137,7 +142,8 @@ public class RetrievalMethod extends SignatureElementProxy
          throw new XMLSecurityException("empty", ex);
       }
    }
-
+   
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_RETRIEVALMETHOD;
    }

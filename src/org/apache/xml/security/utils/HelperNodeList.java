@@ -43,10 +43,17 @@ public class HelperNodeList implements NodeList {
 
    boolean _allNodesMustHaveSameParent = false;
 
+   /**
+    * 
+    */
    public HelperNodeList() {
       this(false);
    }
 
+   
+   /**
+    * @param allNodesMustHaveSameParent
+    */
    public HelperNodeList(boolean allNodesMustHaveSameParent) {
       this._allNodesMustHaveSameParent = allNodesMustHaveSameParent;
    }
@@ -55,7 +62,7 @@ public class HelperNodeList implements NodeList {
     * Method item
     *
     * @param index
-    *
+    * @return 
     */
    public Node item(int index) {
 
@@ -67,7 +74,7 @@ public class HelperNodeList implements NodeList {
    /**
     * Method getLength
     *
-    *
+    *  @return 
     */
    public int getLength() {
       return nodes.size();
@@ -77,6 +84,7 @@ public class HelperNodeList implements NodeList {
     * Method appendChild
     *
     * @param node
+    * @throws IllegalArgumentException
     */
    public void appendChild(Node node) throws IllegalArgumentException {
       if (this._allNodesMustHaveSameParent && this.getLength() > 0) {
@@ -87,11 +95,13 @@ public class HelperNodeList implements NodeList {
       nodes.add(node);
    }
 
+   /**
+    * @return
+    */
    public Document getOwnerDocument() {
       if (this.getLength() == 0) {
          return null;
-      } else {
-         return XMLUtils.getOwnerDocument(this.item(0));
       }
+      return XMLUtils.getOwnerDocument(this.item(0));
    }
 }

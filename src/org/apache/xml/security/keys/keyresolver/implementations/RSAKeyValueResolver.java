@@ -25,7 +25,6 @@ import java.security.cert.X509Certificate;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.keyvalues.RSAKeyValue;
-import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.utils.Constants;
@@ -47,14 +46,7 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
    /** Field _rsaKeyElement */
    private Element _rsaKeyElement = null;
 
-   /**
-    * Method engineCanResolve
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    */
+   /** @inheritDoc */
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
 
@@ -88,18 +80,9 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
       return false;
    }
 
-   /**
-    * Method engineResolvePublicKey
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    * @return null if no {@link PublicKey} could be obtained
-    * @throws KeyResolverException
-    */
+   /** @inheritDoc */
    public PublicKey engineResolvePublicKey(
-           Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+           Element element, String BaseURI, StorageResolver storage) {
 
       if (this._rsaKeyElement == null) {
          boolean weCanResolve = this.engineCanResolve(element, BaseURI,
@@ -122,33 +105,15 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
       return null;
    }
 
-   /**
-    * Method engineResolveX509Certificate
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    * @throws KeyResolverException
-    */
+   /** @inheritDoc */
    public X509Certificate engineResolveX509Certificate(
-           Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+           Element element, String BaseURI, StorageResolver storage) {
       return null;
    }
 
-   /**
-    * Method engineResolveSecretKey
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    *
-    * @throws KeyResolverException
-    */
+   /** @inheritDoc */
    public javax.crypto.SecretKey engineResolveSecretKey(
-           Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+           Element element, String BaseURI, StorageResolver storage) {
       return null;
    }
 }

@@ -47,13 +47,13 @@ public abstract class KeyResolverSpi {
         org.apache.commons.logging.LogFactory.getLog(KeyResolverSpi.class.getName());
 
    /**
-    * This method helps the {@link ResourceResolver} to decide whether a
-    * {@link ResourceResolverSpi} is able to perform the requested action.
+    * This method helps the {@link org.apache.xml.security.utils.resolver.ResourceResolver} to decide whether a
+    * {@link org.apache.xml.security.utils.resolver.ResourceResolverSpi} is able to perform the requested action.
     *
     * @param element
     * @param BaseURI
     * @param storage
-    *
+    * @return
     */
    abstract public boolean engineCanResolve(Element element, String BaseURI,
                                             StorageResolver storage);
@@ -64,7 +64,8 @@ public abstract class KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    *
+    * @return
+    * 
     * @throws KeyResolverException
     */
    abstract public PublicKey engineResolvePublicKey(
@@ -77,6 +78,7 @@ public abstract class KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
+    * @return
     *
     * @throws KeyResolverException
     */
@@ -90,6 +92,7 @@ public abstract class KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
+    * @return
     *
     * @throws KeyResolverException
     */
@@ -127,7 +130,7 @@ public abstract class KeyResolverSpi {
     * Method engineGetProperty
     *
     * @param key
-    *
+    * @return
     */
    public String engineGetProperty(String key) {
 
@@ -149,7 +152,7 @@ public abstract class KeyResolverSpi {
    /**
     * Method engineGetPropertyKeys
     *
-    *
+    * @return
     */
    public String[] engineGetPropertyKeys() {
       return new String[0];
@@ -159,7 +162,7 @@ public abstract class KeyResolverSpi {
     * Method understandsProperty
     *
     * @param propertyToTest
-    *
+    * @return
     */
    public boolean understandsProperty(String propertyToTest) {
 

@@ -44,11 +44,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(SignatureBaseRSA.class.getName());
 
-   /**
-    * Method engineGetURI
-    *
-    *
-    */
+    /** @inheritDoc */
    public abstract String engineGetURI();
 
    /** Field algorithm */
@@ -84,13 +80,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       }
    }
 
-   /**
-    * Proxy method for {@link java.security.Signature#setParameter}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param params
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected void engineSetParameter(AlgorithmParameterSpec params)
            throws XMLSignatureException {
 
@@ -101,14 +91,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       }
    }
 
-   /**
-    * Proxy method for {@link java.security.Signature#verify}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param signature
-    *
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected boolean engineVerify(byte[] signature)
            throws XMLSignatureException {
 
@@ -119,13 +102,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       }
    }
 
-   /**
-    * Proxy method for {@link java.security.Signature#initVerify}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param publicKey
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected void engineInitVerify(Key publicKey) throws XMLSignatureException {
 
       if (!(publicKey instanceof PublicKey)) {
@@ -144,13 +121,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       }
    }
 
-   /**
-    * Proxy method for {@link java.security.Signature#sign}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @return the result of the {@link java.security.Signature#sign} method
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected byte[] engineSign() throws XMLSignatureException {
 
       try {
@@ -160,14 +131,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       }
    }
 
-   /**
-    * Proxy method for {@link java.security.Signature#initSign}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param privateKey
-    * @param secureRandom
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected void engineInitSign(Key privateKey, SecureRandom secureRandom)
            throws XMLSignatureException {
 
@@ -188,13 +152,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       }
    }
 
-   /**
-    * Proxy method for {@link java.security.Signature#initSign}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param privateKey
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected void engineInitSign(Key privateKey) throws XMLSignatureException {
 
       if (!(privateKey instanceof PrivateKey)) {
@@ -213,13 +171,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       }
    }
 
-   /**
-    * Proxy method for {@link java.security.Signature#update}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param input
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected void engineUpdate(byte[] input) throws XMLSignatureException {
 
       try {
@@ -229,13 +181,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       }
    }
 
-   /**
-    * Proxy method for {@link java.security.Signature#update}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param input
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected void engineUpdate(byte input) throws XMLSignatureException {
 
       try {
@@ -245,15 +191,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       }
    }
 
-   /**
-    * Proxy method for {@link java.security.Signature#update}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param buf
-    * @param offset
-    * @param len
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected void engineUpdate(byte buf[], int offset, int len)
            throws XMLSignatureException {
 
@@ -264,42 +202,23 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       }
    }
 
-   /**
-    * Method engineGetJCEAlgorithmString
-    *
-    *
-    */
+   /** @inheritDoc */
    protected String engineGetJCEAlgorithmString() {
       return this._signatureAlgorithm.getAlgorithm();
    }
 
-   /**
-    * Method engineGetJCEProviderName
-    *
-    *
-    */
+   /** @inheritDoc */
    protected String engineGetJCEProviderName() {
       return this._signatureAlgorithm.getProvider().getName();
    }
 
-   /**
-    * Method engineSetHMACOutputLength
-    *
-    * @param HMACOutputLength
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected void engineSetHMACOutputLength(int HMACOutputLength)
            throws XMLSignatureException {
       throw new XMLSignatureException("algorithms.HMACOutputLengthOnlyForHMAC");
    }
 
-   /**
-    * Method engineInitSign
-    *
-    * @param signingKey
-    * @param algorithmParameterSpec
-    * @throws XMLSignatureException
-    */
+   /** @inheritDoc */
    protected void engineInitSign(
            Key signingKey, AlgorithmParameterSpec algorithmParameterSpec)
               throws XMLSignatureException {
@@ -324,11 +243,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
          super();
       }
 
-      /**
-       * Method engineGetURI
-       *
-       *
-       */
+      /** @inheritDoc */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1;
       }
@@ -351,11 +266,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
          super();
       }
 
-      /**
-       * Method engineGetURI
-       *
-       *
-       */
+      /** @inheritDoc */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256;
       }
@@ -378,11 +289,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
          super();
       }
 
-      /**
-       * Method engineGetURI
-       *
-       *
-       */
+      /** @inheritDoc */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384;
       }
@@ -405,11 +312,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
          super();
       }
 
-      /**
-       * Method engineGetURI
-       *
-       *
-       */
+      /** @inheritDoc */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512;
       }
@@ -432,11 +335,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
          super();
       }
 
-      /**
-       * Method engineGetURI
-       *
-       *
-       */
+      /** @inheritDoc */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160;
       }
@@ -459,11 +358,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
          super();
       }
 
-      /**
-       * Method engineGetURI
-       *
-       *
-       */
+      /** @inheritDoc */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5;
       }

@@ -96,6 +96,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
     * @param BaseURI
     *
     * @throws ResourceResolverException
+    * @return 
     * $todo$ calculate the correct URI from the attribute and the BaseURI
     */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
@@ -240,7 +241,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    *
+    *  @return 
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
@@ -280,7 +281,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
    /**
     * Method engineGetPropertyKeys
     *
-    *
+    * @return 
     */
    public String[] engineGetPropertyKeys() {
       return ResolverDirectHTTP.properties;
@@ -291,8 +292,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
       if ((BaseURI == null) || "".equals(BaseURI)) {
          return new URI(uri);
-      } else {
-         return new URI(new URI(BaseURI), uri);
       }
+      return new URI(new URI(BaseURI), uri);
    }
 }

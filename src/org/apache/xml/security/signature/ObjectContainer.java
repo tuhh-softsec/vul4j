@@ -134,7 +134,7 @@ public class ObjectContainer extends SignatureElementProxy {
     * Adds childe Node
     *
     * @param node childe Node
-    *
+    * @return
     */
    public Node appendChild(Node node) {
 
@@ -147,6 +147,7 @@ public class ObjectContainer extends SignatureElementProxy {
       return result;
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_OBJECT;
    }

@@ -41,17 +41,17 @@ public class MessageDigestAlgorithm extends Algorithm {
         org.apache.commons.logging.LogFactory.getLog(
                     MessageDigestAlgorithm.class.getName());
 
-   // Message Digest - NOT RECOMMENDED MD5
+    /** Message Digest - NOT RECOMMENDED MD5*/
    public static final String ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5 = Constants.MoreAlgorithmsSpecNS + "md5";
-   // Digest - Required SHA1
+   /** Digest - Required SHA1*/
    public static final String ALGO_ID_DIGEST_SHA1 = Constants.SignatureSpecNS + "sha1";
-   // Message Digest - RECOMMENDED SHA256
+   /** Message Digest - RECOMMENDED SHA256*/
    public static final String ALGO_ID_DIGEST_SHA256 = EncryptionConstants.EncryptionSpecNS + "sha256";
-   // Message Digest - OPTIONAL SHA384
+   /** Message Digest - OPTIONAL SHA384*/
    public static final String ALGO_ID_DIGEST_SHA384 = Constants.MoreAlgorithmsSpecNS + "sha384";
-   // Message Digest - OPTIONAL SHA512
+   /** Message Digest - OPTIONAL SHA512*/
    public static final String ALGO_ID_DIGEST_SHA512 = EncryptionConstants.EncryptionSpecNS + "sha512";
-   // Message Digest - OPTIONAL RIPEMD-160
+   /** Message Digest - OPTIONAL RIPEMD-160*/
    public static final String ALGO_ID_DIGEST_RIPEMD160 = EncryptionConstants.EncryptionSpecNS + "ripemd160";
 
    /** Field algorithm stores the actual {@link java.security.MessageDigest} */
@@ -76,7 +76,7 @@ public class MessageDigestAlgorithm extends Algorithm {
     *
     * @param doc
     * @param algorithmURI
-    *
+    * @return
     * @throws XMLSignatureException
     */
    public static MessageDigestAlgorithm getInstance(
@@ -133,34 +133,34 @@ public class MessageDigestAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.MessageDigest#digest}
+    * Proxy method for {@link java.security.MessageDigest#digest()}
     * which is executed on the internal {@link java.security.MessageDigest} object.
     *
-    * @return the result of the {@link java.security.MessageDigest#digest} method
+    * @return the result of the {@link java.security.MessageDigest#digest()} method
     */
    public byte[] digest() {
       return this.algorithm.digest();
    }
 
    /**
-    * Proxy method for {@link java.security.MessageDigest#digest}
+    * Proxy method for {@link java.security.MessageDigest#digest(byte[])}
     * which is executed on the internal {@link java.security.MessageDigest} object.
     *
     * @param input
-    * @return the result of the {@link java.security.MessageDigest#digest} method
+    * @return the result of the {@link java.security.MessageDigest#digest(byte[])} method
     */
    public byte[] digest(byte input[]) {
       return this.algorithm.digest(input);
    }
 
    /**
-    * Proxy method for {@link java.security.MessageDigest#digest}
+    * Proxy method for {@link java.security.MessageDigest#digest(byte[], int, int)}
     * which is executed on the internal {@link java.security.MessageDigest} object.
     *
     * @param buf
     * @param offset
     * @param len
-    * @return the result of the {@link java.security.MessageDigest#digest} method
+    * @return the result of the {@link java.security.MessageDigest#digest(byte[], int, int)} method
     * @throws java.security.DigestException
     */
    public int digest(byte buf[], int offset, int len)
@@ -208,7 +208,7 @@ public class MessageDigestAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.MessageDigest#update}
+    * Proxy method for {@link java.security.MessageDigest#update(byte[])}
     * which is executed on the internal {@link java.security.MessageDigest} object.
     *
     * @param input
@@ -218,7 +218,7 @@ public class MessageDigestAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.MessageDigest#update}
+    * Proxy method for {@link java.security.MessageDigest#update(byte)}
     * which is executed on the internal {@link java.security.MessageDigest} object.
     *
     * @param input
@@ -228,7 +228,7 @@ public class MessageDigestAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.MessageDigest#update}
+    * Proxy method for {@link java.security.MessageDigest#update(byte[], int, int)}
     * which is executed on the internal {@link java.security.MessageDigest} object.
     *
     * @param buf
@@ -239,15 +239,12 @@ public class MessageDigestAlgorithm extends Algorithm {
       this.algorithm.update(buf, offset, len);
    }
 
-   /**
-    * Method getBaseNamespace
-    *
-    *
-    */
+   /** @inheritDoc */
    public String getBaseNamespace() {
       return Constants.SignatureSpecNS;
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_DIGESTMETHOD;
    }

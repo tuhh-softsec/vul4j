@@ -30,6 +30,10 @@ public class Version {
      // we don't allow instantiation
    }
 
+   /**
+    * version
+    * @return
+    */
     public static final String getVersion() {
        return Version.fVersion;
     }
@@ -37,6 +41,7 @@ public class Version {
     /**
      * Prints out the version number to System.out. This is needed
      * for the build system.
+     * @param argv
      */
     public static void main(String argv[]) {
         System.out.println(org.apache.xml.security.utils.Version.getVersion());

@@ -34,14 +34,14 @@ import org.w3c.dom.Attr;
  * for {@link javax.xml.transform.stream.StreamSource#getSystemId}.
  *
  * <UL xml:lang="DE" LANG="DE">
- * <LI> Verschiedene Implementierungen können sich als Resolver registrieren.
- * <LI> Standardmäßig werden erste Implementierungen auf dem XML config file registrirt.
- * <LI> Der Benutzer kann bei Bedarf Implementierungen voranstellen oder anfügen.
- * <LI> Implementierungen können mittels Features customized werden ä
- *      (z.B. um Proxy-Passworter übergeben zu können).
+ * <LI> Verschiedene Implementierungen k??nnen sich als Resolver registrieren.
+ * <LI> Standardm????ig werden erste Implementierungen auf dem XML config file registrirt.
+ * <LI> Der Benutzer kann bei Bedarf Implementierungen voranstellen oder anf??gen.
+ * <LI> Implementierungen k??nnen mittels Features customized werden ??
+ *      (z.B. um Proxy-Passworter ??bergeben zu k??nnen).
  * <LI> Jede Implementierung bekommt das URI Attribut und den Base URI
- *      übergeben und muss antworten, ob sie auflösen kann.
- * <LI> Die erste Implementierung, die die Aufgabe erfüllt, führt die Auflösung durch.
+ *      ??bergeben und muss antworten, ob sie aufl??sen kann.
+ * <LI> Die erste Implementierung, die die Aufgabe erf??llt, f??hrt die Aufl??sung durch.
  * </UL>
  *
  * @author $Author$
@@ -93,6 +93,7 @@ public class ResourceResolver {
     *
     * @param uri
     * @param BaseURI
+    * @return
     *
     * @throws ResourceResolverException
     */
@@ -136,6 +137,7 @@ public class ResourceResolver {
     * @param uri
     * @param BaseURI
     * @param individualResolvers
+    * @return
     *
     * @throws ResourceResolverException
     */
@@ -229,6 +231,7 @@ public class ResourceResolver {
     *
     * @param uri
     * @param BaseURI
+    * @return
     *
     * @throws ResourceResolverException
     */
@@ -245,6 +248,7 @@ public class ResourceResolver {
     *
     * @param uri
     * @param BaseURI
+    * @return
     *
     * @throws ResourceResolverException
     */
@@ -267,7 +271,7 @@ public class ResourceResolver {
     * Method getProperty
     *
     * @param key
-    *
+    * @return
     */
    public String getProperty(String key) {
       return this._resolverSpi.engineGetProperty(key);
@@ -285,7 +289,7 @@ public class ResourceResolver {
    /**
     * Method getPropertyKeys
     *
-    *
+    * @return
     */
    public String[] getPropertyKeys() {
       return this._resolverSpi.engineGetPropertyKeys();
@@ -295,7 +299,7 @@ public class ResourceResolver {
     * Method understandsProperty
     *
     * @param propertyToTest
-    *
+    * @return
     */
    public boolean understandsProperty(String propertyToTest) {
       return this._resolverSpi.understandsProperty(propertyToTest);
@@ -306,7 +310,7 @@ public class ResourceResolver {
     *
     * @param uri
     * @param BaseURI
-    *
+    * @return
     */
    private boolean canResolve(Attr uri, String BaseURI) {
       return this._resolverSpi.engineCanResolve(uri, BaseURI);

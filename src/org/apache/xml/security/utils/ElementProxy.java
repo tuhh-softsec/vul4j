@@ -374,7 +374,7 @@ public abstract class ElementProxy {
     *
     * @param localname
     * @param namespace
-    *
+    * @return the bytes
     * @throws XMLSecurityException
     */
    public byte[] getBytesFromChildElement(String localname, String namespace)
@@ -395,11 +395,9 @@ public abstract class ElementProxy {
     *
     * @param localname
     * @param namespace
-    *
-    * @throws XMLSecurityException
+    * @return the Text of the textNode
     */
-   public String getTextFromChildElement(String localname, String namespace)
-           throws XMLSecurityException {
+   public String getTextFromChildElement(String localname, String namespace) {
               
          Text t =
              (Text) XMLUtils.selectNode(

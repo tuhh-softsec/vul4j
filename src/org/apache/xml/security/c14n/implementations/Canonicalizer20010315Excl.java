@@ -17,9 +17,6 @@
  */
 package org.apache.xml.security.c14n.implementations;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
@@ -29,7 +26,6 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.helper.C14nHelper;
 import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -47,9 +43,8 @@ import org.w3c.dom.Node;
  * 
  * @author Christian Geuer-Pollmann <geuerp@apache.org>
  * @version $Revision$ 
- * @see 
- *          <a HREF="http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/">"Exclusive
- *          XML Canonicalization, Version 1.0" </a>
+ * @see <a href="http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/ Exclusive#">
+ *          XML Canonicalization, Version 1.0</a>
  */
 public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
     /**

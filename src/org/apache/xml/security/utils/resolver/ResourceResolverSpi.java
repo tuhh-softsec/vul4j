@@ -45,6 +45,7 @@ public abstract class ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
+    * @return
     *
     * @throws ResourceResolverException
     */
@@ -78,7 +79,7 @@ public abstract class ResourceResolverSpi {
     * Method engineGetProperty
     *
     * @param key
-    *
+    * @return
     */
    public String engineGetProperty(String key) {
 
@@ -97,6 +98,10 @@ public abstract class ResourceResolverSpi {
       return (String) this._properties.get(key);
    }
 
+   /**
+    * 
+    * @param properties
+    */
    public void engineAddProperies(Map properties) {
       this._properties.putAll(properties);
    }
@@ -107,14 +112,14 @@ public abstract class ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    *
+    * @return
     */
    public abstract boolean engineCanResolve(Attr uri, String BaseURI);
 
    /**
     * Method engineGetPropertyKeys
     *
-    *
+    * @return
     */
    public String[] engineGetPropertyKeys() {
       return new String[0];
@@ -124,7 +129,7 @@ public abstract class ResourceResolverSpi {
     * Method understandsProperty
     *
     * @param propertyToTest
-    *
+    * @return
     */
    public boolean understandsProperty(String propertyToTest) {
 

@@ -39,7 +39,7 @@ public class InvalidCanonicalizerException extends XMLSecurityException {
    /**
     * Constructor InvalidCanonicalizerException
     *
-    * @param msgID
+    * @param _msgID
     */
    public InvalidCanonicalizerException(String _msgID) {
       super(_msgID);
@@ -48,7 +48,7 @@ public class InvalidCanonicalizerException extends XMLSecurityException {
    /**
     * Constructor InvalidCanonicalizerException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     */
    public InvalidCanonicalizerException(String _msgID, Object exArgs[]) {
@@ -58,8 +58,8 @@ public class InvalidCanonicalizerException extends XMLSecurityException {
    /**
     * Constructor InvalidCanonicalizerException
     *
-    * @param msgID
-    * @param originalException
+    * @param _msgID
+    * @param _originalException
     */
    public InvalidCanonicalizerException(String _msgID,
                                         Exception _originalException) {
@@ -69,9 +69,9 @@ public class InvalidCanonicalizerException extends XMLSecurityException {
    /**
     * Constructor InvalidCanonicalizerException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     */
    public InvalidCanonicalizerException(String _msgID, Object exArgs[],
                                         Exception _originalException) {

@@ -68,13 +68,14 @@ public class XMLX509CRL extends SignatureElementProxy
    /**
     * Method getCRLBytes
     *
-    *
+    * @return
     * @throws XMLSecurityException
     */
    public byte[] getCRLBytes() throws XMLSecurityException {
       return this.getBytesFromTextChild();
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_X509CRL;
    }

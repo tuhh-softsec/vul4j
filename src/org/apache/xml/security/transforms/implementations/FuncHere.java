@@ -46,9 +46,9 @@ import org.w3c.dom.Node;
  *
  * To get this baby to work, a special trick has to be used. The function needs
  * access to the Node where the XPath expression has been defined. This is done
- * by constructing a {@link FuncHereContext) which has this Node as 'owner'.
+ * by constructing a {@link FuncHere} which has this Node as 'owner'.
  *
- * @see http://www.w3.org/Signature/Drafts/xmldsig-core/Overview.html#function-here
+ * @see "http://www.w3.org/Signature/Drafts/xmldsig-core/Overview.html#function-here"
  */
 public class FuncHere extends Function {
 
@@ -60,7 +60,7 @@ public class FuncHere extends Function {
     * same XML document against which the XPath expression is being evaluated.
     *
     * @param xctxt
-    *
+    * @return
     * @throws javax.xml.transform.TransformerException
     */
    public XObject execute(XPathContext xctxt)

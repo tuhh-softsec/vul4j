@@ -62,13 +62,13 @@ public class KeyName extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method getKeyName
     *
-    *
-    * @throws XMLSecurityException
+    * @return
     */
-   public String getKeyName() throws XMLSecurityException {
+   public String getKeyName() {
       return this.getTextFromTextChild();
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_KEYNAME;
    }

@@ -114,9 +114,9 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     * Method getSerialNumber
     *
     *
-    * @throws XMLSecurityException
+    * @return
     */
-   public BigInteger getSerialNumber() throws XMLSecurityException {
+   public BigInteger getSerialNumber() {
 
       String text =
          this.getTextFromChildElement(Constants._TAG_X509SERIALNUMBER,
@@ -131,9 +131,9 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     * Method getSerialNumberInteger
     *
     *
-    * @throws XMLSecurityException
+    * @return
     */
-   public int getSerialNumberInteger() throws XMLSecurityException {
+   public int getSerialNumberInteger() {
       return this.getSerialNumber().intValue();
    }
 
@@ -141,9 +141,9 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     * Method getIssuerName
     *
     *
-    * @throws XMLSecurityException
+    * @return
     */
-   public String getIssuerName() throws XMLSecurityException {
+   public String getIssuerName()  {
 
       return RFC2253Parser
          .normalize(this
@@ -151,12 +151,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
                                      Constants.SignatureSpecNS));
    }
 
-   /**
-    * Method equals
-    *
-    * @param obj
-    *
-    */
+   /** @inheritDoc */
    public boolean equals(Object obj) {
 
       if (!obj.getClass().getName().equals(this.getClass().getName())) {
@@ -165,18 +160,16 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
 
       XMLX509IssuerSerial other = (XMLX509IssuerSerial) obj;
 
-      try {
-         if (other.getSerialNumber().equals(this.getSerialNumber())
-                 && other.getIssuerName().equals(this.getIssuerName())) {
-            return true;
-         }
 
-         return false;
-      } catch (XMLSecurityException ex) {
-         return false;
+      if (other.getSerialNumber().equals(this.getSerialNumber())
+                 && other.getIssuerName().equals(this.getIssuerName())) {
+           return true;
       }
+
+       return false;      
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_X509ISSUERSERIAL;
    }

@@ -39,14 +39,23 @@ public class ResolverAnonymous extends ResourceResolverSpi {
 
    private XMLSignatureInput _input = null;
 
+   /**
+    * @param filename
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
    public ResolverAnonymous(String filename) throws FileNotFoundException, IOException {
       this._input = new XMLSignatureInput(new FileInputStream(filename));
    }
 
-   public ResolverAnonymous(InputStream is) throws IOException {
+   /**
+    * @param is
+     */
+   public ResolverAnonymous(InputStream is) {
       this._input = new XMLSignatureInput(is);
    }
 
+   /** @inheritDoc */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI) {
       return this._input;
    }
@@ -56,6 +65,7 @@ public class ResolverAnonymous extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
+    * @return
     *
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
@@ -65,11 +75,7 @@ public class ResolverAnonymous extends ResourceResolverSpi {
       return false;
    }
 
-   /**
-    * Method engineGetPropertyKeys
-    *
-    *
-    */
+   /** @inheritDoc */
    public String[] engineGetPropertyKeys() {
       return new String[0];
    }

@@ -63,13 +63,13 @@ public class MgmtData extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method getMgmtData
     *
-    *
-    * @throws XMLSecurityException
+    * @return
     */
-   public String getMgmtData() throws XMLSecurityException {
+   public String getMgmtData() {
       return this.getTextFromTextChild();
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_MGMTDATA;
    }

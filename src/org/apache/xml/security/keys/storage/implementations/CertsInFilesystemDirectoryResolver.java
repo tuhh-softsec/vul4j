@@ -39,7 +39,7 @@ import org.apache.xml.security.utils.Base64;
 
 /**
  * This {@link StorageResolverSpi} makes all raw (binary) {@link X509Certificate}s
- * which reside as files in a single directory available to the {@link StorageResolver}.
+ * which reside as files in a single directory available to the {@link org.apache.xml.security.keys.storage.StorageResolver}.
  *
  * @author $Author$
  */
@@ -144,11 +144,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
       }
    }
 
-   /**
-    * Method getIterator
-    *
-    *
-    */
+   /** @inheritDoc */
    public Iterator getIterator() {
       return this._iterator;
    }
@@ -171,27 +167,18 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
        * Constructor FilesystemIterator
        *
        * @param certs
-       * @throws StorageResolverException
        */
-      public FilesystemIterator(Vector certs) throws StorageResolverException {
+      public FilesystemIterator(Vector certs) {
          this._certs = certs;
          this._i = 0;
       }
 
-      /**
-       * Method hasNext
-       *
-       *
-       */
+      /** @inheritDoc */
       public boolean hasNext() {
          return (this._i < this._certs.size());
       }
 
-      /**
-       * Method next
-       *
-       *
-       */
+      /** @inheritDoc */
       public Object next() {
          return this._certs.elementAt(this._i++);
       }

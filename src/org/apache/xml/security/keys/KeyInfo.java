@@ -582,7 +582,7 @@ public class KeyInfo extends SignatureElementProxy {
     * Method itemUnknownElement
     *
     * @param i
-    *
+    * @return
     */
    public Element itemUnknownElement(int i) {
 

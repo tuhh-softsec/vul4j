@@ -20,9 +20,7 @@ package org.apache.xml.security.keys;
 
 
 import java.io.PrintStream;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.KeyName;
@@ -47,13 +45,10 @@ public class KeyUtils {
     *
     * @param ki
     * @param os
-    * @throws InvalidKeySpecException
-    * @throws NoSuchAlgorithmException
     * @throws XMLSecurityException
     */
    public static void prinoutKeyInfo(KeyInfo ki, PrintStream os)
-           throws NoSuchAlgorithmException, InvalidKeySpecException,
-                  XMLSecurityException {
+           throws XMLSecurityException {
 
       for (int i = 0; i < ki.lengthKeyName(); i++) {
          KeyName x = ki.itemKeyName(i);

@@ -22,7 +22,7 @@ package org.apache.xml.security.signature;
 
 
 /**
- * Thrown by {@link org.apache.xml.security.signature.SignedInfo#verify} when
+ * Thrown by {@link org.apache.xml.security.signature.SignedInfo#verify()} when
  * testing the signature fails because of uninitialized
  * {@link org.apache.xml.security.signature.Reference}s.
  *
@@ -36,7 +36,7 @@ public class MissingResourceFailureException extends XMLSignatureException {
 
    /**
     * MissingKeyResourceFailureException constructor.
-    * @param msgID
+    * @param _msgID
     * @param reference
     * @see #getReference
     */
@@ -67,7 +67,7 @@ public class MissingResourceFailureException extends XMLSignatureException {
     * Constructor MissingResourceFailureException
     *
     * @param _msgID
-    * @param originalException
+    * @param _originalException
     * @param reference
     * @see #getReference
     */
@@ -85,7 +85,7 @@ public class MissingResourceFailureException extends XMLSignatureException {
     *
     * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     * @param reference
     * @see #getReference
     */

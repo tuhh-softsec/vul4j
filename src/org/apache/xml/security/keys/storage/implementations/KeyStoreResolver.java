@@ -31,7 +31,7 @@ import org.apache.xml.security.keys.storage.StorageResolverSpi;
 
 /**
  * Makes the Certificates from a JAVA {@link KeyStore} object available to the
- * {@link StorageResolver}.
+ * {@link org.apache.xml.security.keys.storage.StorageResolver}.
  *
  * @author $Author$
  */
@@ -54,11 +54,7 @@ public class KeyStoreResolver extends StorageResolverSpi {
       this._iterator = new KeyStoreIterator(this, this._keyStore);
    }
 
-   /**
-    * Method getIterator
-    *
-    *
-    */
+   /** @inheritDoc */
    public Iterator getIterator() {
       return this._iterator;
    }
@@ -95,20 +91,12 @@ public class KeyStoreResolver extends StorageResolverSpi {
          }
       }
 
-      /**
-       * Method hasNext
-       *
-       *
-       */
+      /** @inheritDoc */
       public boolean hasNext() {
          return this._aliases.hasMoreElements();
       }
 
-      /**
-       * Method next
-       *
-       *
-       */
+      /** @inheritDoc */
       public Object next() {
 
          String alias = (String) this._aliases.nextElement();

@@ -115,7 +115,7 @@ public class StorageResolver {
 
    /**
     * Method getIterator
-    *
+    * @return
     *
     */
    public Iterator getIterator() {
@@ -130,7 +130,7 @@ public class StorageResolver {
    /**
     * Method hasNext
     *
-    *
+    * @return
     */
    public boolean hasNext() {
 
@@ -144,7 +144,7 @@ public class StorageResolver {
    /**
     * Method next
     *
-    *
+    * @return
     */
    public X509Certificate next() {
       return (X509Certificate) this._iterator.next();
@@ -174,11 +174,7 @@ public class StorageResolver {
          this._currentResolver = 0;
       }
 
-      /**
-       * Method hasNext
-       *
-       *
-       */
+      /** @inheritDoc */
       public boolean hasNext() {
 
          if (this._resolvers == null) {
@@ -196,19 +192,14 @@ public class StorageResolver {
 
             if (current.getIterator().hasNext()) {
                return true;
-            } else {
-               this._currentResolver++;
-            }
+            } 
+            this._currentResolver++;            
          }
 
          return false;
       }
 
-      /**
-       * Method next
-       *
-       *
-       */
+      /** @inheritDoc */
       public Object next() {
 
          if (this._resolvers == null) {
@@ -226,9 +217,8 @@ public class StorageResolver {
 
             if (current.getIterator().hasNext()) {
                return current.getIterator().next();
-            } else {
-               this._currentResolver++;
             }
+            this._currentResolver++;           
          }
 
          return null;

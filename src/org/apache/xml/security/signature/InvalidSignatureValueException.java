@@ -58,7 +58,7 @@ public class InvalidSignatureValueException extends XMLSignatureException {
     * Constructor InvalidSignatureValueException
     *
     * @param _msgID
-    * @param originalException
+    * @param _originalException
     */
    public InvalidSignatureValueException(String _msgID,
                                          Exception _originalException) {
@@ -70,7 +70,7 @@ public class InvalidSignatureValueException extends XMLSignatureException {
     *
     * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     */
    public InvalidSignatureValueException(String _msgID, Object exArgs[],
                                          Exception _originalException) {

@@ -36,9 +36,8 @@ public interface KeyValueContent {
    /**
     * Method getPublicKey
     *
-    *
-    * @throws InvalidKeySpecException
-    * @throws NoSuchAlgorithmException
+    * @return
+    * @throws XMLSecurityException
     */
    public PublicKey getPublicKey()
       throws XMLSecurityException;

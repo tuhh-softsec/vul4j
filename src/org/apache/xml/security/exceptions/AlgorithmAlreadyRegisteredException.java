@@ -59,7 +59,7 @@ public class AlgorithmAlreadyRegisteredException extends XMLSecurityException {
     * Constructor AlgorithmAlreadyRegisteredException
     *
     * @param _msgID
-    * @param originalException
+    * @param _originalException
     */
    public AlgorithmAlreadyRegisteredException(String _msgID,
                                               Exception _originalException) {
@@ -71,7 +71,7 @@ public class AlgorithmAlreadyRegisteredException extends XMLSecurityException {
     *
     * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     */
    public AlgorithmAlreadyRegisteredException(String _msgID, Object exArgs[],
                                               Exception _originalException) {

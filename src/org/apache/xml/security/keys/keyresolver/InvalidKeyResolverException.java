@@ -60,7 +60,7 @@ public class InvalidKeyResolverException extends XMLSecurityException {
     * Constructor InvalidKeyResolverException
     *
     * @param _msgID
-    * @param originalException
+    * @param _originalException
     */
    public InvalidKeyResolverException(String _msgID,
                                       Exception _originalException) {
@@ -72,7 +72,7 @@ public class InvalidKeyResolverException extends XMLSecurityException {
     *
     * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     */
    public InvalidKeyResolverException(String _msgID, Object exArgs[],
                                       Exception _originalException) {

@@ -52,15 +52,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
                             ResolverXPointer.class.getName());
 
    /**
-    * Method engineResolve
-    *
-    * Wird das gleiche Dokument referenziert?
-    * Wird ein anderes Dokument referenziert?
-    *
-    * @param uri
-    * @param BaseURI
     * @inheritDoc
-    * @throws ResourceResolverException
     */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
            throws ResourceResolverException {
@@ -114,10 +106,6 @@ public class ResolverXPointer extends ResourceResolverSpi {
    }
 
    /**
-    * Method engineCanResolve
-    *
-    * @param uri
-    * @param BaseURI
     * @inheritDoc
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {

@@ -59,7 +59,7 @@ public class TransformationException extends XMLSecurityException {
     * Constructor TransformationException
     *
     * @param _msgID
-    * @param originalException
+    * @param _originalException
     */
    public TransformationException(String _msgID, Exception _originalException) {
       super(_msgID, _originalException);
@@ -70,7 +70,7 @@ public class TransformationException extends XMLSecurityException {
     *
     * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     */
    public TransformationException(String _msgID, Object exArgs[],
                                   Exception _originalException) {

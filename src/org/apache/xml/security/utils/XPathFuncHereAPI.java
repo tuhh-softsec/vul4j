@@ -38,7 +38,7 @@ import org.w3c.dom.traversal.NodeIterator;
 
 
 /**
- * This class does the same as {@link XPathAPI} except that the XPath strings
+ * This class does the same as {@link org.apache.xpath.XPathAPI} except that the XPath strings
  * are not supplied as Strings but as {@link Text}, {@link Attr}ibute or
  * {ProcessingInstruction} nodes which contain the XPath string. This enables
  * us to use the <CODE>here()</CODE> function.
@@ -286,7 +286,7 @@ public class XPathFuncHereAPI {
     * Method getStrFromNode
     *
     * @param xpathnode
-    *
+    * @return
     */
    private static String getStrFromNode(Node xpathnode) {
 

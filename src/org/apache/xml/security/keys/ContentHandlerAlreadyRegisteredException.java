@@ -61,7 +61,7 @@ public class ContentHandlerAlreadyRegisteredException
     * Constructor ContentHandlerAlreadyRegisteredException
     *
     * @param _msgID
-    * @param originalException
+    * @param _originalException
     */
    public ContentHandlerAlreadyRegisteredException(String _msgID,
            Exception _originalException) {
@@ -73,7 +73,7 @@ public class ContentHandlerAlreadyRegisteredException
     *
     * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     */
    public ContentHandlerAlreadyRegisteredException(String _msgID,
            Object exArgs[], Exception _originalException) {

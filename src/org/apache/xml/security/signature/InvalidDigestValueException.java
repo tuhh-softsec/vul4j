@@ -57,7 +57,7 @@ public class InvalidDigestValueException extends XMLSignatureException {
     * Constructor InvalidDigestValueException
     *
     * @param _msgID
-    * @param originalException
+    * @param _originalException
     */
    public InvalidDigestValueException(String _msgID,
                                       Exception _originalException) {
@@ -69,7 +69,7 @@ public class InvalidDigestValueException extends XMLSignatureException {
     *
     * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     */
    public InvalidDigestValueException(String _msgID, Object exArgs[],
                                       Exception _originalException) {

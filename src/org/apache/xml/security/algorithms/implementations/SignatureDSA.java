@@ -55,7 +55,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    /**
     * Method engineGetURI
     *
-    *
+    * @inheritDoc
     */
    protected String engineGetURI() {
       return SignatureDSA._URI;
@@ -92,11 +92,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#setParameter}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param params
-    * @throws XMLSignatureException
+    * @inheritDoc
     */
    protected void engineSetParameter(AlgorithmParameterSpec params)
            throws XMLSignatureException {
@@ -109,12 +105,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#verify}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param signature
-    *
-    * @throws XMLSignatureException
+    * @inheritDoc
     */
    protected boolean engineVerify(byte[] signature)
            throws XMLSignatureException {
@@ -133,11 +124,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#initVerify}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param publicKey
-    * @throws XMLSignatureException
+    * @inheritDoc
     */
    protected void engineInitVerify(Key publicKey) throws XMLSignatureException {
 
@@ -158,11 +145,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#sign}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @return the result of the {@link java.security.Signature#sign} method
-    * @throws XMLSignatureException
+    * @inheritDoc
     */
    protected byte[] engineSign() throws XMLSignatureException {
 
@@ -178,12 +161,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#initSign}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param privateKey
-    * @param secureRandom
-    * @throws XMLSignatureException
+    * @inheritDoc
     */
    protected void engineInitSign(Key privateKey, SecureRandom secureRandom)
            throws XMLSignatureException {
@@ -206,11 +184,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#initSign}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param privateKey
-    * @throws XMLSignatureException
+    * @inheritDoc
     */
    protected void engineInitSign(Key privateKey) throws XMLSignatureException {
 
@@ -231,11 +205,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param input
-    * @throws XMLSignatureException
+    * @inheritDoc
     */
    protected void engineUpdate(byte[] input) throws XMLSignatureException {
 
@@ -247,11 +217,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param input
-    * @throws XMLSignatureException
+    * @inheritDoc
     */
    protected void engineUpdate(byte input) throws XMLSignatureException {
 
@@ -263,13 +229,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param buf
-    * @param offset
-    * @param len
-    * @throws XMLSignatureException
+    * @inheritDoc
     */
    protected void engineUpdate(byte buf[], int offset, int len)
            throws XMLSignatureException {
@@ -284,7 +244,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEAlgorithmString
     *
-    *
+    * @inheritDoc
     */
    protected String engineGetJCEAlgorithmString() {
       return this._signatureAlgorithm.getAlgorithm();
@@ -293,7 +253,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEProviderName
     *
-    *
+    * @inheritDoc
     */
    protected String engineGetJCEProviderName() {
       return this._signatureAlgorithm.getProvider().getName();
@@ -307,6 +267,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     * pairs; the XML Signature requires the core BigInteger values.
     *
     * @param asn1Bytes
+    * @return the decode bytes
     *
     * @throws IOException
     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
@@ -329,16 +290,15 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
               || (asn1Bytes[2] != 2) || (i > 20)
               || (asn1Bytes[4 + rLength] != 2) || (j > 20)) {
          throw new IOException("Invalid ASN.1 format of DSA signature");
-      } else {
-         byte xmldsigBytes[] = new byte[40];
+      } 
+      byte xmldsigBytes[] = new byte[40];
 
-         System.arraycopy(asn1Bytes, (4 + rLength) - i, xmldsigBytes, 20 - i,
+      System.arraycopy(asn1Bytes, (4 + rLength) - i, xmldsigBytes, 20 - i,
                           i);
-         System.arraycopy(asn1Bytes, (6 + rLength + sLength) - j, xmldsigBytes,
+      System.arraycopy(asn1Bytes, (6 + rLength + sLength) - j, xmldsigBytes,
                           40 - j, j);
 
-         return xmldsigBytes;
-      }
+       return xmldsigBytes;      
    }
 
    /**
@@ -348,6 +308,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     * pairs; the XML Signature requires the core BigInteger values.
     *
     * @param xmldsigBytes
+    * @return the encoded ASN.1 bytes
     *
     * @throws IOException
     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>

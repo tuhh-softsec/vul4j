@@ -165,10 +165,10 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#sign}
+    * Proxy method for {@link java.security.Signature#sign()}
     * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @return the result of the {@link java.security.Signature#sign} method
+    * @return the result of the {@link java.security.Signature#sign()} method
     * @throws XMLSignatureException
     */
    public byte[] sign() throws XMLSignatureException {
@@ -188,14 +188,14 @@ public class SignatureAlgorithm extends Algorithm {
    /**
     * Method getJCEProviderName
     *
-    *
+    * @return
     */
    public String getJCEProviderName() {
       return this._signatureAlgorithm.engineGetJCEProviderName();
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
+    * Proxy method for {@link java.security.Signature#update(byte[])}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param input
@@ -206,7 +206,7 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
+    * Proxy method for {@link java.security.Signature#update(byte)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param input
@@ -217,7 +217,7 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
+    * Proxy method for {@link java.security.Signature#update(byte[], int, int)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param buf
@@ -231,7 +231,7 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#initSign}
+    * Proxy method for {@link java.security.Signature#initSign(java.security.PrivateKey)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signingKey
@@ -242,7 +242,7 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#initSign}
+    * Proxy method for {@link java.security.Signature#initSign(java.security.PrivateKey, java.security.SecureRandom)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signingKey
@@ -255,7 +255,7 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#initSign}
+    * Proxy method for {@link java.security.Signature#initSign(java.security.PrivateKey)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signingKey
@@ -270,7 +270,7 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#setParameter}
+    * Proxy method for {@link java.security.Signature#setParameter(java.security.spec.AlgorithmParameterSpec)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param params
@@ -282,7 +282,7 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#initVerify}
+    * Proxy method for {@link java.security.Signature#initVerify(java.security.PublicKey)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param verificationKey
@@ -293,11 +293,12 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#verify}
+    * Proxy method for {@link java.security.Signature#verify(byte[])}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signature
-    *
+    * @return
+    * 
     * @throws XMLSignatureException
     */
    public boolean verify(byte[] signature) throws XMLSignatureException {
@@ -366,7 +367,7 @@ public class SignatureAlgorithm extends Algorithm {
     * Method getImplementingClass
     *
     * @param URI
-    *
+    * @return
     */
    private static String getImplementingClass(String URI) {
 
@@ -380,7 +381,7 @@ public class SignatureAlgorithm extends Algorithm {
    /**
     * Method getBaseNamespace
     *
-    *
+    * @return
     */
    public String getBaseNamespace() {
       return Constants.SignatureSpecNS;
@@ -389,7 +390,7 @@ public class SignatureAlgorithm extends Algorithm {
    /**
     * Method getBaseLocalName
     *
-    *
+    * @return
     */
    public String getBaseLocalName() {
       return Constants._TAG_SIGNATUREMETHOD;

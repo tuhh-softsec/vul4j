@@ -67,7 +67,7 @@ public class ResourceResolverException extends XMLSecurityException {
     * Constructor ResourceResolverException
     *
     * @param _msgID
-    * @param originalException
+    * @param _originalException
     * @param uri
     * @param BaseURI
     */
@@ -85,7 +85,7 @@ public class ResourceResolverException extends XMLSecurityException {
     *
     * @param _msgID
     * @param exArgs
-    * @param originalException
+    * @param _originalException
     * @param uri
     * @param BaseURI
     */
@@ -101,17 +101,36 @@ public class ResourceResolverException extends XMLSecurityException {
 
    //J-
    Attr _uri = null;
+   /**
+    * 
+    * @param uri
+    */
    public void setURI(Attr uri) {
       this._uri = uri;
    }
+   
+   /**
+    * 
+    * @return
+    */
    public Attr getURI() {
       return this._uri;
    }
 
    String _BaseURI;
+   
+   /**
+    * 
+    * @param BaseURI
+    */
    public void setBaseURI(String BaseURI) {
       this._BaseURI = BaseURI;
    }
+   
+   /**
+    * 
+    * @return
+    */
    public String getBaseURI() {
       return this._BaseURI;
    }
