@@ -254,7 +254,7 @@ public class XMLSignatureInputTest extends TestCase {
                   CanonicalizationException, InvalidCanonicalizerException,
                   TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
+      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
       String definedWithoutComments =
          "<RootElement><Element1></Element1><Element2></Element2><Element3>Text in Element3</Element3></RootElement>";
 
@@ -327,7 +327,7 @@ public class XMLSignatureInputTest extends TestCase {
                   ParserConfigurationException, SAXException,
                   CanonicalizationException, TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
+      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
 
       assertTrue("Input is initialized", input.isInitialized());
    }
@@ -347,7 +347,7 @@ public class XMLSignatureInputTest extends TestCase {
                   ParserConfigurationException, SAXException,
                   CanonicalizationException, TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
+      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
 
       assertTrue("Input is not octet stream", !input.isOctetStream());
    }
@@ -367,7 +367,7 @@ public class XMLSignatureInputTest extends TestCase {
                   ParserConfigurationException, SAXException,
                   CanonicalizationException, TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
+      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
 
       assertTrue("Input is node set", input.isNodeSet());
    }

@@ -99,7 +99,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
 
          signatureElement = searchSignatureElement(signatureElement);
          if (input.isElement()) {
-         	XMLSignatureInput result = new XMLSignatureInput(input.getSubNode(),input.getCachedXPathAPI());
+         	XMLSignatureInput result = new XMLSignatureInput(input.getSubNode());
          	result.setExcludeNode(signatureElement);
          	result.setExcludeComments(input.isExcludeComments());
          	return result;
@@ -115,8 +115,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
          
          Set resultSet=XMLUtils.excludeNodeFromSet(signatureElement, inputSet);
 
-         XMLSignatureInput result = new XMLSignatureInput(resultSet,
-                                       null/*input.getCachedXPathAPI()*/);
+         XMLSignatureInput result = new XMLSignatureInput(resultSet);
 
          return result;
       } catch (IOException ex) {

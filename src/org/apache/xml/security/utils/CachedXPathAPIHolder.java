@@ -16,6 +16,7 @@
  */
 package org.apache.xml.security.utils;
 
+import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Document;
 
@@ -26,36 +27,33 @@ import org.w3c.dom.Document;
 public class CachedXPathAPIHolder {
     static ThreadLocal  local=new ThreadLocal();
     static ThreadLocal localDoc=new ThreadLocal();
-    Document doc;
-    CachedXPathAPI cx;
-	/**
-	 * 
-	 */
-	public CachedXPathAPIHolder(Document doc) {        
-		cx=null;
-        this.doc=doc;
-		// TODO Auto-generated constructor stub
+  
+	public static void setDoc(Document doc) {  
+        CachedXPathAPI cx=(CachedXPathAPI)local.get();
+        if (cx==null) {
+           cx=new CachedXPathAPI();
+           local.set(cx);
+           localDoc.set(doc);
+        } else {
+             if (localDoc.get()!=doc) {
+                //Different docs reset.
+              cx.getXPathContext().reset();
+              localDoc.set(doc);
+           }
+          
+        }		
 	}
     /**
      * @return
      */
-    public CachedXPathAPI getCachedXPathAPI() {
-        if (cx==null) { 
-                  cx=(CachedXPathAPI)local.get();
-                  if (cx==null) {
-                     cx=new CachedXPathAPI();
-                     local.set(cx);
-                     localDoc.set(doc);
-                  } else {
-                  	 if (localDoc.get()!=doc) {
-                  	 	//Different docs reset.
-                        cx.getXPathContext().reset();
-                        localDoc.set(doc);
-                     }
-                    
-                  }
-                  //cx.getXPathContext().reset();//
-                  //cx=new CachedXPathAPI();
+    public static CachedXPathAPI getCachedXPathAPI() {
+        
+        CachedXPathAPI cx=(CachedXPathAPI)local.get();
+        cx=(CachedXPathAPI)local.get();
+        if (cx==null) {
+            cx=new CachedXPathAPI();
+            local.set(cx);
+            localDoc.set(null);            
         }
     	return cx;
     }

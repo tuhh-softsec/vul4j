@@ -32,6 +32,7 @@ import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
@@ -109,7 +110,7 @@ public class TransformXPath extends TransformSpi {
 
          
          CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());
+            new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());
          
 
          Element xpathElement =XMLUtils.selectDsNode(
@@ -175,8 +176,7 @@ public class TransformXPath extends TransformSpi {
             }
          }
 
-         XMLSignatureInput result = new XMLSignatureInput(resultNodes,
-                                       input.getCachedXPathAPI());
+         XMLSignatureInput result = new XMLSignatureInput(resultNodes);
 
          result.setSourceURI(input.getSourceURI());
 

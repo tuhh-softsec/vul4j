@@ -35,8 +35,10 @@ import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPathFilterCHGPContainer;
+import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -120,7 +122,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
          this.inputSet = input.getNodeSet(true);
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());         
+            new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());         
 
          if (this.inputSet.size() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
@@ -235,8 +237,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
             process(treewalker);
          }
 
-         XMLSignatureInput result = new XMLSignatureInput(resultSet,
-                                       input.getCachedXPathAPI());
+         XMLSignatureInput result = new XMLSignatureInput(resultSet);
 
          result.setSourceURI(input.getSourceURI());
 

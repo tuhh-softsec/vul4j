@@ -119,7 +119,8 @@ public class IdResolver {
       }
        // this must be done so that Xalan can catch ALL namespaces
        //XMLUtils.circumventBug2650(doc);
-       CachedXPathAPI cx=new CachedXPathAPIHolder(doc).getCachedXPathAPI();//cxHolder.getCachedXPathAPI();
+       CachedXPathAPIHolder.setDoc(doc);
+       CachedXPathAPI cx=CachedXPathAPIHolder.getCachedXPathAPI();//cxHolder.getCachedXPathAPI();
       result = IdResolver.getElementByIdInDSNamespace(doc, id,cx);
 
       if (result != null) {

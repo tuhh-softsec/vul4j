@@ -35,6 +35,7 @@ import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer04;
+import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.CachedXPathAPI;
@@ -94,9 +95,9 @@ public class TransformXPath2Filter04 extends TransformSpi {
          	log.debug("perform xfilter2 on " + inputSet.size() + " nodes");
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());
+            new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());
          CachedXPathAPI myXPathAPI =
-            new CachedXPathAPI(input.getCachedXPathAPI().getCachedXPathAPI());
+            new CachedXPathAPI(CachedXPathAPIHolder.getCachedXPathAPI());
 
          if (inputSet.size() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
@@ -208,8 +209,7 @@ public class TransformXPath2Filter04 extends TransformSpi {
             throw new TransformationException("empty");
          }
 
-         XMLSignatureInput result = new XMLSignatureInput(resultNodes,
-                                       input.getCachedXPathAPI());
+         XMLSignatureInput result = new XMLSignatureInput(resultNodes);
 
          result.setSourceURI(input.getSourceURI());
 

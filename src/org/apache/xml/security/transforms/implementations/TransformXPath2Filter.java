@@ -36,6 +36,7 @@ import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer;
+import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.XMLUtils;
@@ -122,7 +123,7 @@ public class TransformXPath2Filter extends TransformSpi {
          }
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());
+            new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());
          Document inputDoc = XMLUtils.getOwnerDocument(_inputSet);
          
          Element []xpathElements =XMLUtils.selectNodes(
@@ -190,8 +191,7 @@ public class TransformXPath2Filter extends TransformSpi {
             }
          }
 
-         XMLSignatureInput result = new XMLSignatureInput(resultSet,
-                                       input.getCachedXPathAPI());
+         XMLSignatureInput result = new XMLSignatureInput(resultSet);
 
 
          result.setSourceURI(input.getSourceURI());
