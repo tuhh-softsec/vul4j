@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.4 2001/08/20 18:28:40 craigmcc Exp $
- * $Revision: 1.4 $
- * $Date: 2001/08/20 18:28:40 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.5 2001/08/20 19:18:42 craigmcc Exp $
+ * $Revision: 1.5 $
+ * $Date: 2001/08/20 19:18:42 $
  *
  * ====================================================================
  *
@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  * by a surrounding CallMethodRule rule.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.4 $ $Date: 2001/08/20 18:28:40 $
+ * @version $Revision: 1.5 $ $Date: 2001/08/20 19:18:42 $
  */
 
 public class CallParamRule extends Rule {
@@ -169,7 +169,7 @@ public class CallParamRule extends Rule {
      */
     public void end() throws Exception {
 
-	String parameters[] = (String[]) digester.peek();
+	String parameters[] = (String[]) digester.peekParams();
 	parameters[paramIndex] = bodyText;
 
     }

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.13 2001/08/13 18:59:46 craigmcc Exp $
- * $Revision: 1.13 $
- * $Date: 2001/08/13 18:59:46 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.14 2001/08/20 19:18:42 craigmcc Exp $
+ * $Revision: 1.14 $
+ * $Date: 2001/08/20 19:18:42 $
  *
  * ====================================================================
  *
@@ -106,7 +106,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.13 $ $Date: 2001/08/13 18:59:46 $
+ * @version $Revision: 1.14 $ $Date: 2001/08/20 19:18:42 $
  */
 
 public class Digester extends DefaultHandler {
@@ -206,6 +206,13 @@ public class Digester extends DefaultHandler {
      * Do we want a "namespace aware" parser?
      */
     protected boolean namespaceAware = false;
+
+
+    /**
+     * The parameters stack being utilized by CallMethodRule and
+     * CallParamRule rules.
+     */
+    protected ArrayStack params = new ArrayStack();
 
 
     /**
@@ -576,18 +583,19 @@ public class Digester extends DefaultHandler {
     public void endElement(String namespaceURI, String localName,
                            String qName) throws SAXException {
 
-	//	if (debug >= 3)
-	//	    log("endElement(" + match + ")");
+	if (debug >= 3)
+	    log("endElement(" + match + ")");
 	List rules = getRules().match(match);
 
 	// Fire "body" events for all relevant rules
 	if (rules != null) {
-	    //	    if (debug >= 3)
-	    //		log("  Firing 'body' events for " + rules.size() + " rules");
 	    String bodyText = this.bodyText.toString().trim();
 	    for (int i = 0; i < rules.size(); i++) {
 		try {
-		    ((Rule) rules.get(i)).body(bodyText);
+                    Rule rule = (Rule) rules.get(i);
+                    if (debug >= 4)
+                        log("  Fire body() for " + rule);
+                    rule.body(bodyText);
 		} catch (Exception e) {
 		    log("Body event threw exception", e);
 		    throw new SAXException(e);
@@ -600,12 +608,13 @@ public class Digester extends DefaultHandler {
 
 	// Fire "end" events for all relevant rules in reverse order
 	if (rules != null) {
-	    //	    if (debug >= 3)
-	    //		log("  Firing 'end' events for " + rules.size() + " rules");
 	    for (int i = 0; i < rules.size(); i++) {
 		int j = (rules.size() - i) - 1;
 		try {
-		    ((Rule) rules.get(j)).end();
+                    Rule rule = (Rule) rules.get(j);
+                    if (debug >= 4)
+                        log("  Fire end() for " + rule);
+                    rule.end();
 		} catch (Exception e) {
 		    log("End event threw exception", e);
 		    throw new SAXException(e);
@@ -733,18 +742,19 @@ public class Digester extends DefaultHandler {
         else
             sb.append(localName);
         match = sb.toString();
-	//	if (debug >= 3)
-	//	    log("startElement(" + match + ")");
+	if (debug >= 3)
+	    log("startElement(" + match + ")");
 
 	// Fire "begin" events for all relevant rules
 	List rules = getRules().match(match);
 	if (rules != null) {
-	    //	    if (debug >= 3)
-	    //		log("  Firing 'begin' events for " + rules.size() + " rules");
 	    String bodyText = this.bodyText.toString();
 	    for (int i = 0; i < rules.size(); i++) {
 		try {
-		    ((Rule) rules.get(i)).begin(list);
+                    Rule rule = (Rule) rules.get(i);
+                    if (debug >= 4)
+                        log("  Fire begin() for " + rule);
+                    rule.begin(list);
 		} catch (Exception e) {
 		    log("Begin event threw exception", e);
 		    throw new SAXException(e);
@@ -1302,7 +1312,7 @@ public class Digester extends DefaultHandler {
     }
 
 
-    // -------------------------------------------------------- Stack Methods
+    // --------------------------------------------------- Object Stack Methods
 
 
     /**
@@ -1312,6 +1322,7 @@ public class Digester extends DefaultHandler {
 
 	match = "";
         bodyTexts.clear();
+        params.clear();
         stack.clear();
         getRules().clear();
 
@@ -1381,6 +1392,9 @@ public class Digester extends DefaultHandler {
     }
 
 
+    // ------------------------------------------------ Parameter Stack Methods
+
+
     // -------------------------------------------------------- Package Methods
 
 
@@ -1410,6 +1424,67 @@ public class Digester extends DefaultHandler {
     List getRules(String match) {
 
         return (getRules().match(match));
+
+    }
+
+
+    /**
+     * Return the top object on the stack without removing it.  If there are
+     * no objects on the stack, return <code>null</code>.
+     */
+    Object peekParams() {
+
+	try {
+	    return (params.peek());
+	} catch (EmptyStackException e) {
+	    return (null);
+	}
+
+    }
+
+
+    /**
+     * Return the n'th object down the stack, where 0 is the top element
+     * and [getCount()-1] is the bottom element.  If the specified index
+     * is out of range, return <code>null</code>.
+     *
+     * @param n Index of the desired element, where 0 is the top of the stack,
+     *  1 is the next element down, and so on.
+     */
+    Object peekParams(int n) {
+
+	try {
+	    return (params.peek(n));
+	} catch (EmptyStackException e) {
+	    return (null);
+	}
+
+    }
+
+
+    /**
+     * Pop the top object off of the stack, and return it.  If there are
+     * no objects on the stack, return <code>null</code>.
+     */
+    Object popParams() {
+
+	try {
+	    return (params.pop());
+	} catch (EmptyStackException e) {
+	    return (null);
+	}
+
+    }
+
+
+    /**
+     * Push a new object onto the top of the object stack.
+     *
+     * @param object The new object
+     */
+    void pushParams(Object object) {
+
+	params.push(object);
 
     }
 

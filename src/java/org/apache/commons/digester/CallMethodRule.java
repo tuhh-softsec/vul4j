@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.6 2001/08/20 18:28:40 craigmcc Exp $
- * $Revision: 1.6 $
- * $Date: 2001/08/20 18:28:40 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.7 2001/08/20 19:18:42 craigmcc Exp $
+ * $Revision: 1.7 $
+ * $Date: 2001/08/20 19:18:42 $
  *
  * ====================================================================
  *
@@ -77,7 +77,7 @@ import org.apache.commons.beanutils.ConvertUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.6 $ $Date: 2001/08/20 18:28:40 $
+ * @version $Revision: 1.7 $ $Date: 2001/08/20 19:18:42 $
  */
 
 public class CallMethodRule extends Rule {
@@ -217,7 +217,7 @@ public class CallMethodRule extends Rule {
 	    String parameters[] = new String[paramCount];
 	    for (int i = 0; i < parameters.length; i++)
 	        parameters[i] = null;
-	    digester.push(parameters);
+	    digester.pushParams(parameters);
         }
 
     }
@@ -244,7 +244,7 @@ public class CallMethodRule extends Rule {
 	// Retrieve or construct the parameter values array
 	String parameters[] = null;
 	if (paramCount > 0)
-	    parameters = (String[]) digester.pop();
+	    parameters = (String[]) digester.popParams();
 	else {
 	    parameters = new String[1];
 	    parameters[0] = bodyText;
