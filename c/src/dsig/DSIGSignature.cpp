@@ -311,7 +311,7 @@ XSECBinTXFMInputStream * DSIGSignature::makeBinInputStream(void) const {
 
 	XSECBinTXFMInputStream * ret;
 
-	XSECnew(ret, XSECBinTXFMInputStream(chain));
+	ret = new XSECBinTXFMInputStream(chain);
 	j_chain.release();
 
 	return ret;

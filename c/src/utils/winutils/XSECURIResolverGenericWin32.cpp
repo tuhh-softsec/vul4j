@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.6  2003/07/28 12:52:46  blautenb
+ * Fixed a bug with DEBUG_NEW when compiling with Xalan 1.6
+ *
  * Revision 1.5  2003/07/05 10:30:38  blautenb
  * Copyright update
  *
@@ -202,15 +205,15 @@ BinInputStream * XSECURIResolverGenericWin32::resolveURI(const XMLCh * uri) {
 		XSECnew(xmluri, XMLUri(turi, &(r[index])));
 
 #else
-		XSECnew(turi, XMLUri(mp_baseURI));
+		turi = new XMLUri(mp_baseURI);
 		Janitor<XMLUri> j_turi(turi);
 
-		XSECnew(xmluri, XMLUri(turi, uri));
+		xmluri = new XMLUri(turi, uri);
 #endif
 
 	}
 	else {
-		XSECnew(xmluri, XMLUri(uri));
+		xmluri = new XMLUri(uri);
 	}
 	
 	Janitor<XMLUri> j_xmluri(xmluri);
@@ -252,7 +255,7 @@ BinInputStream * XSECURIResolverGenericWin32::resolveURI(const XMLCh * uri) {
 		// Pass straight to our local XSECBinHTTPUriInputStream
 		XSECBinHTTPURIInputStream *ret;
 
-		XSECnew(ret, XSECBinHTTPURIInputStream(*xmluri));
+		ret = new XSECBinHTTPURIInputStream(*xmluri);
 
 		return ret;
 		

@@ -67,6 +67,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.4  2003/07/28 12:52:46  blautenb
+ * Fixed a bug with DEBUG_NEW when compiling with Xalan 1.6
+ *
  * Revision 1.3  2003/07/05 10:30:37  blautenb
  * Copyright update
  *
@@ -113,7 +116,8 @@ BinInputStream* XSECTXFMInputSource::makeStream() const {
 
 	XSECBinTXFMInputStream * ret;
 
-	XSECnew(ret, XSECBinTXFMInputStream(mp_chain, m_deleteWhenDone));
+	// Have to do direct due to strange issues with MSVC++ and DEBUG_NEW
+	ret = new XSECBinTXFMInputStream(mp_chain, m_deleteWhenDone);
 
 	return ret;
 

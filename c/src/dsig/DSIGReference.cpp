@@ -860,7 +860,7 @@ XSECBinTXFMInputStream * DSIGReference::makeBinInputStream(void) const {
 	// Now create the InputStream
 
 	XSECBinTXFMInputStream * ret;
-	XSECnew(ret, XSECBinTXFMInputStream(txfmChain));
+	ret = new XSECBinTXFMInputStream(txfmChain);	// Probs with MSVC++ mean no XSECnew
 	j_txfmChain.release();		// Now owned by "ret"
 
 	return ret;

@@ -128,10 +128,10 @@ XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * XSECURIResolverXerces::resolveUR
 	}
 
 	if (mp_baseURI == 0) {
-		XSECnew(URLS, URLInputSource(XMLURL(uri)));
+		URLS = new URLInputSource(XMLURL(uri));
 	}
 	else {
-		XSECnew(URLS, URLInputSource(XMLURL(XMLURL(mp_baseURI), uri)));
+		URLS = new URLInputSource(XMLURL(XMLURL(mp_baseURI), uri));
 	}
 
 	// makeStream can (and is quite likely to) throw an exception

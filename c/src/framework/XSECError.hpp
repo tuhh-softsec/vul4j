@@ -91,8 +91,8 @@ extern const char * XSECExceptionStrings [];
 
 #if defined (_WIN32) && defined (_DEBUG)
 
-#	define XSECnew(a, b) \
-	if ((a = DEBUG_NEW b) == NULL) { \
+#	define XSECnew( a, b ) \
+	if (( a = DEBUG_NEW b ) == NULL) { \
 		throw XSECException (XSECException::MemoryAllocationFail); \
 	}
 

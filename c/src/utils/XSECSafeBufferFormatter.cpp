@@ -114,15 +114,15 @@ XSECSafeBufferFormatter::XSECSafeBufferFormatter(
 						const XMLFormatter::UnRepFlags unrepFlags) {
 
 	
-	XSECnew(sbf, sbFormatTarget());
+	sbf = new sbFormatTarget();
 	sbf->setBuffer(&formatBuffer);
 
 #if defined(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)
-	XSECnew(formatter, XMLFormatter(outEncoding, 
+	formatter = new XMLFormatter(outEncoding, 
 									0,
 									sbf, 
 									escapeFlags, 
-									unrepFlags));
+									unrepFlags);
 #else
 	XSECnew(formatter, XMLFormatter(outEncoding, 
 									sbf, 
@@ -140,15 +140,15 @@ XSECSafeBufferFormatter::XSECSafeBufferFormatter(
 						const XMLFormatter::EscapeFlags	escapeFlags,
 						const XMLFormatter::UnRepFlags unrepFlags) {
 
-	XSECnew(sbf, sbFormatTarget());
+	sbf = new sbFormatTarget();
 	sbf->setBuffer(&formatBuffer);
 
 #if defined(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)
-	XSECnew(formatter, XMLFormatter(outEncoding, 
+	formatter = new XMLFormatter(outEncoding, 
 									0,
 									sbf, 
 									escapeFlags, 
-									unrepFlags));
+									unrepFlags);
 #else
 	XSECnew(formatter, XMLFormatter(outEncoding, 
 									sbf, 
