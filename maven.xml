@@ -1,2 +1,11 @@
-<project default="test" xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:doc="doc">
+<project default="test" xmlns:j="jelly:core" xmlns:maven="jelly:maven">
+
+<preGoal name="maven-jdepend-plugin:report">
+  <!-- add src/conf to the classpath, so that jdepend can find jdepend.properties -->
+  <path id="conf-classpath">
+    <pathelement location="${basedir}/src/conf"/>
+  </path>
+  <maven:addPath id="maven-classpath" refid="conf-classpath"/>
+</preGoal>
+
 </project>
