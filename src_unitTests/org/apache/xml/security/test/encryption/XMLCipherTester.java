@@ -65,6 +65,10 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
+import java.security.KeyPairGenerator;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -99,6 +103,11 @@ import org.w3c.dom.Element;
  * @author  Berin Lautenbach
  */
 public class XMLCipherTester extends TestCase {
+
+	/** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(XMLCipherTester.class.getName());
+    
     private String documentName;
     private String elementName;
     private String elementIndex;
@@ -221,6 +230,78 @@ public class XMLCipherTester extends TestCase {
         Assert.assertEquals(source, target);
     }
   
+	/**
+	 * Test encryption using a generated AES 256 bit key that is
+	 * encrypted using an RSA key.  Reverse using KEK
+	 */
+
+	public void testAES128ElementRSAKWCipherUsingKEK() {
+
+		Document d = document(); // source
+		Document ed = null;
+		Document dd = null;
+		Element e = (Element) d.getElementsByTagName(element()).item(index());
+		Element ee = null;
+
+		String source = null;
+		String target = null;
+
+        try {
+
+			source = toString(d);;
+
+            // Generate an RSA key
+            KeyPairGenerator rsaKeygen = KeyPairGenerator.getInstance("RSA");
+            KeyPair kp = rsaKeygen.generateKeyPair();
+            PrivateKey priv = kp.getPrivate();
+            PublicKey pub = kp.getPublic();
+            
+			// Generate a traffic key
+			KeyGenerator keygen = KeyGenerator.getInstance("AES");
+			keygen.init(256);
+			Key key = keygen.generateKey();
+
+            
+            cipher = XMLCipher.getInstance(XMLCipher.RSA_v1dot5);
+			cipher.init(XMLCipher.WRAP_MODE, pub);
+			EncryptedKey encryptedKey = cipher.encryptKey(d, key);
+
+            // encrypt
+            cipher = XMLCipher.getInstance(XMLCipher.AES_256);
+            cipher.init(XMLCipher.ENCRYPT_MODE, key);
+			EncryptedData builder = cipher.getEncryptedData();
+
+			KeyInfo builderKeyInfo = builder.getKeyInfo();
+			if (builderKeyInfo == null) {
+				builderKeyInfo = new KeyInfo(d);
+				builder.setKeyInfo(builderKeyInfo);
+			}
+
+			builderKeyInfo.add(encryptedKey);
+
+            ed = cipher.doFinal(d, e);
+            log.info("Encrypted document");
+            log.info(toString(ed));
+
+
+            //decrypt
+			key = null;
+            ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
+            cipher = XMLCipher.getInstance(XMLCipher.AES_128);
+            cipher.init(XMLCipher.DECRYPT_MODE, null);
+			cipher.setKEK(priv);
+			dd = cipher.doFinal(ed, ee);
+
+            target = toString(dd);
+            log.debug("Output document");
+            log.debug(target);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        Assert.assertEquals(source, target);
+    }
 
 	/**
 	 * Test encryption using a generated AES 192 bit key that is
@@ -485,7 +566,7 @@ public class XMLCipherTester extends TestCase {
         Assert.assertEquals(source, target);
     }
 
-	/*
+    /*
 	 * Test case for when the entire document is encrypted and decrypted
 	 * In this case the EncryptedData becomes the root element of the document
 	 */

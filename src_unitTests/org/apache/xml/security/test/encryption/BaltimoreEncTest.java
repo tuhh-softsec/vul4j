@@ -560,21 +560,8 @@ public class BaltimoreEncTest extends TestCase {
 	 */
 
 	public SecretKey mapKeyName(String name) throws Exception {
-		/*
-		if (name.equals("bob")) {
 
-			// Bob is a DESEDE key
-
-			DESedeKeySpec keySpec = new DESedeKeySpec(bobBytes);
-			SecretKeyFactory keyFactory = 
-				SecretKeyFactory.getInstance("DESede");
-			SecretKey key = keyFactory.generateSecret(keySpec);
-
-			return key;
-
-		}
-		*/
-		if (name.equals("job")) {
+        if (name.equals("job")) {
 
 			// Jeb is a AES-128 key
 	        SecretKey key = new SecretKeySpec(jobBytes, "AES");
