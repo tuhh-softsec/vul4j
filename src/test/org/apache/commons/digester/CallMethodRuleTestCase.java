@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/CallMethodRuleTestCase.java,v 1.14 2004/02/25 07:15:28 skitching Exp $
- * $Revision: 1.14 $
- * $Date: 2004/02/25 07:15:28 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/CallMethodRuleTestCase.java,v 1.15 2004/02/27 23:41:18 skitching Exp $
+ * $Revision: 1.15 $
+ * $Date: 2004/02/27 23:41:18 $
  *
  * ====================================================================
  * 
@@ -300,10 +300,59 @@ public class CallMethodRuleTestCase extends TestCase {
 
 
     /**
-     * Test nested CallMethod rules. A CallMethodRule only fires when
-     * the end tag for its associated pattern is reached..
+     * Test that the target object for a CallMethodRule is the object that was
+     * on top of the object stack when the CallMethodRule fired, even when other
+     * rules fire between the CallMethodRule and its associated CallParamRules.
+     * <p>
+     * The current implementation of CallMethodRule ensures this works by
+     * firing only at the end of the tag that CallMethodRule triggered on.
      */
-    public void testOrderNested() throws Exception {
+    public void testOrderNestedPartA() throws Exception {
+
+        // Configure the digester as required
+
+        // Here, we use the "grandchild element name" as a parameter to
+        // the created element, to ensure that all the params aren't
+        // avaiable to the CallMethodRule until some other rules have fired,
+        // in particular an ObjectCreateRule. The CallMethodRule should still
+        // function correctly in this scenario.
+        digester.addObjectCreate("toplevel/element", NamedBean.class);
+        digester.addCallMethod("toplevel/element", "setName", 1);
+        digester.addCallParam("toplevel/element/element/element", 0, "name");
+        
+        digester.addObjectCreate("toplevel/element/element", NamedBean.class);
+
+        // Parse our test input
+        NamedBean root1 = null;
+        try {
+            // an exception will be thrown if the method can't be found
+            root1 = (NamedBean) digester.parse(getInputStream("Test8.xml"));
+            
+        } catch (Throwable t) {
+            // this means that the method can't be found and so the test fails
+            fail("Digester threw Exception:  " + t);
+        }
+        
+        // if the CallMethodRule were to incorrectly invoke the method call
+        // on the second-created NamedBean instance, then the root one would
+        // have a null name. If it works correctly, the target element will
+        // be the first-created (root) one, despite the fact that a second
+        // object instance was created between the firing of the 
+        // CallMethodRule and its associated CallParamRule.
+        assertEquals("Wrong method call order", "C", root1.getName());
+    }
+
+    /**
+     * Test nested CallMethod rules.
+     * <p>
+     * The current implementation of CallMethodRule, in which the method is
+     * invoked in its end() method, causes behaviour which some users find
+     * non-intuitive. In this test it can be seen to "reverse" the order of
+     * data processed. However this is the way CallMethodRule has always 
+     * behaved, and it is expected that apps out there rely on this call order 
+     * so this test is present to ensure that no-one changes this behaviour.
+     */
+    public void testOrderNestedPartB() throws Exception {
         
         // Configure the digester as required
         StringBuffer word = new StringBuffer();
@@ -323,9 +372,7 @@ public class CallMethodRuleTestCase extends TestCase {
         }
         
         assertEquals("Wrong method call order", "CBA", word.toString());
-
     }
-
 
     public void testPrimitiveReading() throws Exception {
         StringReader reader = new StringReader(
