@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsGreaterThanOrEqual.java,v 1.1 2003/03/04 16:51:46 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsGreaterThanOrEqual.java,v 1.2 2003/03/04 17:28:21 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/03/04 16:51:46 $
+ * @version $Revision: 1.2 $ $Date: 2003/03/04 17:28:21 $
  * @author Rodney Waldhoff
  */
 public class TestIsGreaterThanOrEqual extends BaseComparisonPredicateTest {
@@ -117,8 +117,8 @@ public class TestIsGreaterThanOrEqual extends BaseComparisonPredicateTest {
         assertObjectsAreEqual(p,new IsGreaterThanOrEqual());
         assertObjectsAreEqual(p,new IsGreaterThanOrEqual(null));
         assertObjectsAreEqual(p,new IsGreaterThanOrEqual(new ComparableComparator()));
-        assertObjectsAreEqual(p,IsGreaterThanOrEqual.getGreaterThanOrEqual());
-        assertSame(IsGreaterThanOrEqual.getGreaterThanOrEqual(),IsGreaterThanOrEqual.getGreaterThanOrEqual());
+        assertObjectsAreEqual(p,IsGreaterThanOrEqual.getIsGreaterThanOrEqual());
+        assertSame(IsGreaterThanOrEqual.getIsGreaterThanOrEqual(),IsGreaterThanOrEqual.getIsGreaterThanOrEqual());
         assertObjectsAreNotEqual(p,new ConstantPredicate(false));
     }
     

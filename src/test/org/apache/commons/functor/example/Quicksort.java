@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.4 2003/02/24 11:58:27 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.5 2003/03/04 17:28:22 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -100,7 +100,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * <p> 
  * See the extensive in line comments for details.
  * 
- * @version $Revision: 1.4 $ $Date: 2003/02/24 11:58:27 $
+ * @version $Revision: 1.5 $ $Date: 2003/03/04 17:28:22 $
  * @author Rodney Waldhoff
  */
 public class Quicksort extends TestCase {
@@ -442,7 +442,7 @@ public class Quicksort extends TestCase {
             return CollectionAlgorithms.select(
                 ((List)tail).iterator(),
                 RightBoundPredicate.bind(
-                    IsLessThan.getLessThan(),
+                    IsLessThan.getIsLessThan(),
                     head));            
         }
     };
@@ -456,7 +456,7 @@ public class Quicksort extends TestCase {
             return CollectionAlgorithms.select(
                 ((List)tail).iterator(),
                 RightBoundPredicate.bind(
-                    IsGreaterThanOrEqual.getGreaterThanOrEqual(),
+                    IsGreaterThanOrEqual.getIsGreaterThanOrEqual(),
                     head));            
         }
     };
