@@ -1,4 +1,4 @@
-/* $Id: PluginRules.java,v 1.17 2004/05/10 06:44:13 skitching Exp $
+/* $Id: PluginRules.java,v 1.18 2004/06/11 03:48:50 skitching Exp $
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 
@@ -64,6 +64,11 @@ public class PluginRules implements Rules {
     protected Digester digester = null;
 
     /** 
+     * The (optional) object which generates new rules instances.
+     */
+    private RulesFactory rulesFactory;
+
+    /** 
      * The rules implementation that we are "enhancing" with plugins
      * functionality, as per the Decorator pattern.
      */
@@ -126,17 +131,24 @@ public class PluginRules implements Rules {
      * to begin.
      * @param parent must be non-null.
      */
-     PluginRules(String mountPoint, PluginRules parent) {
+     PluginRules(String mountPoint, PluginRules parent, Class pluginClass) 
+     throws PluginException {
         // no need to set digester or decoratedRules.digester,
         // because when Digester.setRules is called, the setDigester
         // method on this object will be called.
         
-        decoratedRules = new RulesBase();
-        pluginContext = parent.pluginContext;
-        pluginManager = new PluginManager(parent.pluginManager);
-        
         this.mountPoint = mountPoint;
         this.parent = parent;
+        this.rulesFactory = parent.rulesFactory;
+        
+        if (rulesFactory == null) {
+            decoratedRules = new RulesBase();
+        } else {
+            decoratedRules = rulesFactory.newRules(digester, pluginClass);
+        }
+        
+        pluginContext = parent.pluginContext;
+        pluginManager = new PluginManager(parent.pluginManager);
     }
     
     // ------------------------------------------------------------- Properties
@@ -206,6 +218,21 @@ public class PluginRules implements Rules {
      */
     public void setRuleFinders(List ruleFinders) {
         pluginContext.setRuleFinders(ruleFinders);
+    }
+    
+    /**
+     * Return the rules factory object (or null if one has not been specified).
+     */
+    public RulesFactory getRulesFactory() {
+        return rulesFactory;
+    }
+    
+    /**
+     * Set the object which is used to generate the new Rules instances created
+     * to hold and process the rules associated with each plugged-in class.
+     */
+    public void setRulesFactory(RulesFactory factory) {
+        rulesFactory = factory;
     }
     
     // --------------------------------------------------------- Public Methods
@@ -360,6 +387,7 @@ public class PluginRules implements Rules {
             // this same path. See PluginCreateRule's begin, body and end
             // methods for the reason.
         } else {
+                log.debug("delegating to decorated rules.");
             matches = decoratedRules.match(namespaceURI, path); 
         }
 
