@@ -32,20 +32,20 @@ limitations under the License.
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
     
-    <release version="Java 1.2.1" date="Febraury 2005(not yet released)">
+    <release version="Java 1.2.1" date="February 2005(not yet released)">
     	<action dev="RB" type="fix" fixes-bug="32836" context="java_general" due-to="Sylvain Dusart">
     	Fix a memory leak when using xpath or using ResourceResolver and not hitting getElementByIdUsingDOM()
     	</action>
         <action dev="RB" type="fix" context="java_general">
-        Fix erronous creation/verification when using XPath2Filter and inclusive c14n.</action>
+        Fix erroneous creation/verification when using XPath2Filter and inclusive c14n.</action>
         <action dev="RB" type="fix" fixes-bug="23554" context="java_general" due-to="Raymond Wong">
         Library now throws an exception when asked to sign/verify an inexistent fragment.</action>
  		<action dev="RB" type="fix" context="java_general">
  		Restore reset behaviour as default when reusing Canonicalizers(but an append one can still be used).</action>
         <action dev="RB" type="fix" fixes-bug="33393" context="java_general" due-to="Sean Mullan">
         Fix a bug when using base64transformation and external resources.</action>
-        <action dev="RB" type="fix" fixes-bug="33393" context="java_general">
-        Fix a bug when passing XMLsignatureInput(InputStream) streams that don't acknoledge as expected the reset() method.
+        <action dev="RB" type="fix" context="java_general">
+        Fix a bug when passing XMLsignatureInput(InputStream) streams that don't acknowledge reset() as expected.
         </action>
         <action dev="RB" type="fix" fixes-bug="32996" context="java_general" due-to="Sean Mullan">
         Added i14n Base64 error message.
