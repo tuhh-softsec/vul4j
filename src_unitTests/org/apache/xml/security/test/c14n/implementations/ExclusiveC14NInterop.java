@@ -181,7 +181,12 @@ public class ExclusiveC14NInterop extends InteropTest {
     *
     * @throws Exception
     */
-   public String t(String directory, String file) throws Exception {
+   public String t(String directory, String file) throws Exception
+   {
+   	  String basedir = System.getProperty("basedir");
+   	  if(basedir != null && !"".equals(basedir)) {
+   	  	directory = basedir + "/" + directory;
+   	  }
 
       File f = new File(directory + "/" + file);
       javax.xml.parsers.DocumentBuilderFactory dbf =

@@ -387,13 +387,15 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws SAXException
     * @see #test34validatingParser
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Chars">the example from the spec</A>
-    * $todo$ Check what we have to do to get this f*cking test working!!!
     * @throws TransformerException
     */
-   public static void _test34()
+   public static void test34()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException, TransformerException {
+                  InvalidCanonicalizerException, TransformerException
+   {
+   	
+   	  //TODO Check what we have to do to get this f*cking test working!!!
 
       String descri =
          "3.4 Character Modifications and Character References. (uncommented)";
@@ -865,7 +867,7 @@ public class Canonicalizer20010315Test extends TestCase {
       org.xml.sax.EntityResolver resolver = new TestVectorResolver();
       InputStream refStream = resolver.resolveEntity(
          null,
-            "data/org/apache/xml/security/c14n/in/testTranslationFromUTF16toUTF8.xml")
+            prefix + "/in/testTranslationFromUTF16toUTF8.xml")
                .getByteStream();
       byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
       boolean equal = JavaUtils.binaryCompare(refBytes, c14nBytes);
@@ -1172,6 +1174,7 @@ public class Canonicalizer20010315Test extends TestCase {
       // org.xml.sax.EntityResolver resolver = new TestVectorResolver();
       // documentBuilder.setEntityResolver(resolver);
       // Document doc = documentBuilder.parse(resolver.resolveEntity(null, fileIn));
+            
       Document doc = documentBuilder.parse(fileIn);
 
       XMLUtils.circumventBug2650(doc);
@@ -1266,7 +1269,12 @@ public class Canonicalizer20010315Test extends TestCase {
          throw new RuntimeException(urlEx.getMessage());
       }
       */
-      prefix = "data/org/apache/xml/security/c14n/";
+   	  prefix = "data/org/apache/xml/security/c14n/";
+   	  String basedir = System.getProperty("basedir");
+   	  if(basedir != null && !"".equals(basedir)) {
+   		prefix = basedir + "/" + prefix;
+      }
+      
       org.apache.xml.security.Init.init();
    }
 }

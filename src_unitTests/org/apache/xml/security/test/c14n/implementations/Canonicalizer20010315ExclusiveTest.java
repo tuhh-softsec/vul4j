@@ -182,8 +182,8 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
                   org.apache.xml.security.keys.keyresolver
                      .KeyResolverException {
 
-      File fileIn = new File(
-         "data/ie/baltimore/merlin-examples/ec-merlin-iaikTests-two/signature.xml");
+      File fileIn = new File(getAbsolutePath(
+         "data/ie/baltimore/merlin-examples/ec-merlin-iaikTests-two/signature.xml") );
 
       // File fileIn = new File("signature.xml");
       assertTrue("file exists", fileIn.exists());
@@ -234,12 +234,12 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
 
       Document doc =
          this.db
-            .parse("data/org/apache/xml/security/c14n/inExcl/example2_2_1.xml");
+            .parse(getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_1.xml") );
       Node root = doc.getElementsByTagNameNS("http://example.net",
                                              "elem2").item(0);
       Canonicalizer20010315 c = new Canonicalizer20010315WithComments();
-      byte[] reference = JavaUtils.getBytesFromFile(
-         "data/org/apache/xml/security/c14n/inExcl/example2_2_1_c14nized.xml");
+      byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
+         "data/org/apache/xml/security/c14n/inExcl/example2_2_1_c14nized.xml") );
       byte[] result = c.engineCanonicalizeSubTree(root);
       boolean equals = JavaUtils.binaryCompare(reference, result);
 
@@ -273,12 +273,12 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
 
       Document doc =
          this.db
-            .parse("data/org/apache/xml/security/c14n/inExcl/example2_2_2.xml");
+            .parse(getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_2.xml"));
       Node root = doc.getElementsByTagNameNS("http://example.net",
                                              "elem2").item(0);
       Canonicalizer20010315 c = new Canonicalizer20010315WithComments();
-      byte[] reference = JavaUtils.getBytesFromFile(
-         "data/org/apache/xml/security/c14n/inExcl/example2_2_2_c14nized.xml");
+      byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
+         "data/org/apache/xml/security/c14n/inExcl/example2_2_2_c14nized.xml"));
       byte[] result = c.engineCanonicalizeSubTree(root);
       boolean equals = JavaUtils.binaryCompare(reference, result);
 
@@ -306,12 +306,12 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
 
       Document doc =
          this.db
-            .parse("data/org/apache/xml/security/c14n/inExcl/example2_2_1.xml");
+            .parse(getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_1.xml"));
       Node root = doc.getElementsByTagNameNS("http://example.net",
                                              "elem2").item(0);
       Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
-      byte[] reference = JavaUtils.getBytesFromFile(
-         "data/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml");
+      byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
+         "data/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml") );
       byte[] result = c.engineCanonicalizeSubTree(root);
       boolean equals = JavaUtils.binaryCompare(reference, result);
 
@@ -339,12 +339,12 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
 
       Document doc =
          this.db
-            .parse("data/org/apache/xml/security/c14n/inExcl/example2_2_2.xml");
+            .parse(getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_2.xml"));
       Node root = doc.getElementsByTagNameNS("http://example.net",
                                              "elem2").item(0);
       Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
-      byte[] reference = JavaUtils.getBytesFromFile(
-         "data/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml");
+      byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
+         "data/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml") );
       byte[] result = c.engineCanonicalizeSubTree(root);
       boolean equals = JavaUtils.binaryCompare(reference, result);
 
@@ -374,19 +374,28 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
 
       Document doc =
          this.db
-            .parse("data/org/apache/xml/security/c14n/inExcl/example2_2_3.xml");
+            .parse(getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_3.xml"));
       XMLUtils.circumventBug2650(doc);
       NodeList nodes = XPathAPI.selectNodeList(doc.getDocumentElement(),
                                  "(//. | //@* | //namespace::*)[ancestor-or-self::p]");
       Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
       byte[] reference = JavaUtils.getBytesFromFile(
-         "data/org/apache/xml/security/c14n/inExcl/example2_2_3_c14nized_exclusive.xml");
+      		getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_3_c14nized_exclusive.xml") );
       byte[] result = c.engineCanonicalizeXPathNodeSet(nodes);
       boolean equals = JavaUtils.binaryCompare(reference, result);
       if (!equals) {
           log.warn("Error output = " + new String(result));
       }
       assertTrue(equals);
+   }
+   
+   private String getAbsolutePath(String path)
+   {
+   	  String basedir = System.getProperty("basedir");
+   	  if(basedir != null && !"".equals(basedir)) {
+   		path = basedir + "/" + path;
+   	  }
+   	  return path;
    }
    
 }

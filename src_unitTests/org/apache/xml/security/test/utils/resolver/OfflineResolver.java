@@ -187,21 +187,29 @@ public class OfflineResolver extends ResourceResolverSpi {
 
       OfflineResolver._uriMap = new HashMap();
       OfflineResolver._mimeMap = new HashMap();
+      
+      String basedir = System.getProperty("basedir");
+      if(basedir == null) {
+      	basedir = "/";
+      }
+      else {
+      	basedir = basedir + "/";
+      }
 
       OfflineResolver.register("http://www.w3.org/TR/xml-stylesheet",
-                               "data/org/w3c/www/TR/xml-stylesheet.html",
+                               basedir + "data/org/w3c/www/TR/xml-stylesheet.html",
                                "text/html");
       OfflineResolver.register("http://www.w3.org/TR/2000/REC-xml-20001006",
-                               "data/org/w3c/www/TR/2000/REC-xml-20001006",
+                               basedir + "data/org/w3c/www/TR/2000/REC-xml-20001006",
                                "text/xml");
       OfflineResolver.register("http://www.nue.et-inf.uni-siegen.de/index.html",
-                               "data/org/apache/xml/security/temp/nuehomepage",
+                               basedir + "data/org/apache/xml/security/temp/nuehomepage",
                                "text/html");
       OfflineResolver.register(
          "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/id2.xml",
-         "data/org/apache/xml/security/temp/id2.xml", "text/xml");
+         basedir + "data/org/apache/xml/security/temp/id2.xml", "text/xml");
       OfflineResolver.register(
          "http://xmldsig.pothole.com/xml-stylesheet.txt",
-         "data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml");
+         basedir + "data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml");
    }
 }

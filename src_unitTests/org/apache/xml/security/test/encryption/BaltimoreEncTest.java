@@ -60,7 +60,6 @@ package org.apache.xml.security.test.encryption;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -86,6 +85,7 @@ import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.keys.content.X509Data;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
+import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.Method;
@@ -177,6 +177,10 @@ public class BaltimoreEncTest extends TestCase {
 		
 		String filename = 
 			"data/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml";
+		String basedir = System.getProperty("basedir");
+		if(basedir != null && !"".equals(basedir)) {
+			filename = basedir + "/" + filename;
+		}
 		File f = new File(filename);
 	
 		DocumentBuilder db = dbf.newDocumentBuilder();
@@ -202,10 +206,12 @@ public class BaltimoreEncTest extends TestCase {
 		rsaCertSerialNumber = new String("1014918766910");
 	
 		// rsaKey
-		FileInputStream infile = 
-			new FileInputStream("data/ie/baltimore/merlin-examples/merlin-xmlenc-five/rsa.p8");
-		byte[] pkcs8Bytes = new byte[10240];
-		infile.close();
+		filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/rsa.p8";
+		if(basedir != null && !"".equals(basedir)) {
+			filename = basedir + "/" + filename;
+		}
+		
+		byte[] pkcs8Bytes = JavaUtils.getBytesFromFile(filename);
 	
 		PKCS8EncodedKeySpec pkcs8Spec = 
 			new PKCS8EncodedKeySpec(pkcs8Bytes);
@@ -213,7 +219,7 @@ public class BaltimoreEncTest extends TestCase {
 		// Create a key factory 
 		KeyFactory keyFactory = 
 			KeyFactory.getInstance("RSA");
-			rsaKey = keyFactory.generatePrivate(pkcs8Spec);
+		rsaKey = keyFactory.generatePrivate(pkcs8Spec);
 	
 		// Initialise the library
 	
@@ -463,6 +469,10 @@ public class BaltimoreEncTest extends TestCase {
 			javax.xml.parsers.DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
 		dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+		String basedir = System.getProperty("basedir");
+		if(basedir != null && !"".equals(basedir)) {
+			filename = basedir + "/" + filename;
+		}
 		File f = new File(filename);
 
 		DocumentBuilder db = dbf.newDocumentBuilder();
@@ -511,6 +521,10 @@ public class BaltimoreEncTest extends TestCase {
 			javax.xml.parsers.DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
 		dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+		String basedir = System.getProperty("basedir");
+		if(basedir != null || !"".equals(basedir)) {
+			filename = basedir + "/" + filename;
+		}
 		File f = new File(filename);
 
 		DocumentBuilder db = dbf.newDocumentBuilder();

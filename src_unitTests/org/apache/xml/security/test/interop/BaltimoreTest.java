@@ -82,8 +82,10 @@ public class BaltimoreTest extends InteropTest {
         org.apache.commons.logging.LogFactory.getLog(BaltimoreTest.class.getName());
 
    /** Field merlinsDir15           */
-   static final String merlinsDir15 =
+   static String merlinsDir15 =
       "data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/";
+   static String merlinsDir16 =
+   	"data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen";
 
    /**
     * Method suite
@@ -326,7 +328,7 @@ public class BaltimoreTest extends InteropTest {
    public void test_sixteen_external_dsa() throws Exception {
 
       String filename =
-         "data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen/signature.xml";
+         merlinsDir16 + "/signature.xml";
       ResourceResolverSpi resolver = new OfflineResolver();
       boolean followManifests = false;
       boolean verify = false;
@@ -346,6 +348,12 @@ public class BaltimoreTest extends InteropTest {
    }
 
    static {
+   	
+   	  String basedir = System.getProperty("basedir");
+   	  if(basedir != null && !"".equals(basedir)) {
+   		merlinsDir15 = basedir + "/" + merlinsDir15;
+   		merlinsDir16 = basedir + "/" + merlinsDir16;
+   	  }
       org.apache.xml.security.Init.init();
    }
 }

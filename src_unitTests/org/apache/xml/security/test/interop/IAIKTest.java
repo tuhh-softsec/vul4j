@@ -84,7 +84,7 @@ public class IAIKTest extends InteropTest {
                     IAIKTest.class.getName());
 
    /** Field gregorsDir */
-   static final String gregorsDir = "data/at/iaik/ixsil/";
+   static String gregorsDir = "data/at/iaik/ixsil/";
 
    /**
     * Method suite
@@ -468,6 +468,10 @@ public class IAIKTest extends InteropTest {
    }
 
    static {
+   	String basedir = System.getProperty("basedir");
+   	if(basedir != null && !"".equals(basedir)) {
+   		gregorsDir = basedir + "/" + gregorsDir;
+   	}
       org.apache.xml.security.Init.init();
    }
 }

@@ -81,7 +81,7 @@ public class RSASecurityTest extends InteropTest {
         org.apache.commons.logging.LogFactory.getLog(RSASecurityTest.class.getName());
 
    /** Field blakesDir           */
-   static final String blakesDir =
+   static String blakesDir =
       "data/com/rsasecurity/bdournaee/";
 
    /**
@@ -145,6 +145,10 @@ public class RSASecurityTest extends InteropTest {
    }
 
    static {
+   	  String basedir = System.getProperty("basedir");
+   	  if(basedir != null && !"".equals(basedir)) {
+   		blakesDir = basedir + "/" + blakesDir;
+   	  }
       org.apache.xml.security.Init.init();
    }
 }
