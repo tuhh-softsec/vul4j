@@ -101,7 +101,6 @@ public abstract class ElementProxy {
    // public static final String NS_NS = "http://www.w3.org/XML/1998/namespace";
    public static final String NS_NS = "http://www.w3.org/2000/xmlns/";
 
-
    /**
     * Returns the namespace of the Elements of the sub-class.
     *
