@@ -1,4 +1,4 @@
-/* $Id: Digester.java,v 1.106 2004/09/18 09:17:28 skitching Exp $
+/* $Id: Digester.java,v 1.107 2004/09/18 09:51:03 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -1552,7 +1552,7 @@ public class Digester extends DefaultHandler {
 
         configure();
         InputSource input = new InputSource(new FileInputStream(file));
-        input.setSystemId("file://" + file.getAbsolutePath());
+        input.setSystemId(file.toURL().toString());
         getXMLReader().parse(input);
         return (root);
 
