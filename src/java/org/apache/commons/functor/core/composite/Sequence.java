@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/AndBinaryPredicate.java,v 1.1 2003/01/27 19:33:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Sequence.java,v 1.1 2003/03/04 14:48:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,82 +56,86 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.util.Iterator;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 
-import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.Procedure;
 
 /**
- * {@link #test Tests} <code>true</code> iff
- * none of its children test <code>false</code>.
- * Note that by this definition, the "and" of
- * an empty collection of predicates tests <code>true</code>.
+ * A {@link Procedure Procedure} 
+ * that {@link Procedure#run runs} an ordered 
+ * sequence of {@link Procedure Procedures}.
+ * When the sequence is empty, this procedure is does
+ * nothing.
  * <p>
  * Note that although this class implements 
- * {@link java.io.Serializable Serializable}, a given instance will
+ * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:40 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:07 $
  * @author Rodney Waldhoff
  */
-public final class AndBinaryPredicate extends BaseBinaryPredicateList {
+public class Sequence implements Procedure, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
-    public AndBinaryPredicate() {
-        super();
+    public Sequence() {
     }
 
-    public AndBinaryPredicate(BinaryPredicate p) {
-        super(p);
+    public Sequence(Procedure p) {
+        then(p);
     }
 
-    public AndBinaryPredicate(BinaryPredicate p, BinaryPredicate q) {
-        super(p,q);
+    public Sequence(Procedure p, Procedure q) {
+        then(p);
+        then(q);
     }
 
-    public AndBinaryPredicate(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
-        super(p,q,r);
-    }
-    
     // modifiers
     // ------------------------------------------------------------------------ 
-    public AndBinaryPredicate and(BinaryPredicate p) {
-        super.addBinaryPredicate(p);
+    public Sequence then(Procedure p) {
+        list.add(p);
         return this;
     }
  
     // predicate interface
     // ------------------------------------------------------------------------
-    public boolean test(Object a, Object b) {
-        for(Iterator iter = getBinaryPredicateIterator(); iter.hasNext();) {
-            if(!((BinaryPredicate)iter.next()).test(a,b)) {
-                return false;
-            }
+    public void run() {        
+        for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
+            ((Procedure)iter.previous()).run();
         }
-        return true;
     }
 
     public boolean equals(Object that) {
-        if(that instanceof AndBinaryPredicate) {
-            return equals((AndBinaryPredicate)that);
+        if(that instanceof Sequence) {
+            return equals((Sequence)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(AndBinaryPredicate that) {
-        return getBinaryPredicateListEquals(that);
+    public boolean equals(Sequence that) {
+        // by construction, list is never null
+        return null != that && list.equals(that.list);
     }
     
     public int hashCode() {
-        return "AndBinaryPredicate".hashCode() ^ getBinaryPredicateListHashCode();
+        // by construction, list is never null
+        return "Sequence".hashCode() ^ list.hashCode();
     }
     
     public String toString() {
-        return "AndBinaryPredicate<" + getBinaryPredicateListToString() + ">";
+        return "Sequence<" + list + ">";
     }
     
+    
+    // attributes
+    // ------------------------------------------------------------------------
+    private List list = new ArrayList();
+
 }

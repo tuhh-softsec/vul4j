@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestAndPredicate.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnarySequence.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,35 +56,38 @@
  */
 package org.apache.commons.functor.core.composite;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.Predicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
-public class TestAndPredicate extends BaseFunctorTest {
+public class TestUnarySequence extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestAndPredicate(String testName) {
+    public TestUnarySequence(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestAndPredicate.class);
+        return new TestSuite(TestUnarySequence.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new AndPredicate(new ConstantPredicate(true),new ConstantPredicate(true));
+        return new UnarySequence(new NoOp(),new NoOp());
     }
 
     // Lifecycle
@@ -101,81 +104,77 @@ public class TestAndPredicate extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testTrue() throws Exception {
-        assertTrue((new AndPredicate()).test());
-        assertTrue((new AndPredicate(new ConstantPredicate(true))).test());
-        assertTrue((new AndPredicate(new ConstantPredicate(true),new ConstantPredicate(true))).test());
-        assertTrue((new AndPredicate(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(true))).test());
-        
-        AndPredicate p = new AndPredicate(new ConstantPredicate(true));
-        assertTrue(p.test());        
-        for(int i=0;i<10;i++) {
-            p.and(new ConstantPredicate(true));
-            assertTrue(p.test());        
-        }
-        
-        AndPredicate q = new AndPredicate(new ConstantPredicate(true));
-        assertTrue(q.test());        
-        for(int i=0;i<10;i++) {
-            q.and(new ConstantPredicate(true));
-            assertTrue(q.test());        
-        }
-        
-        AndPredicate r = new AndPredicate(p,q);
-        assertTrue(r.test());        
+    public void testRunZero() throws Exception {
+        UnarySequence seq = new UnarySequence();
+        seq.run(null);
+        seq.run("xyzzy");
+    }
+
+    public void testRunOne() throws Exception {
+        RunCounter counter = new RunCounter();
+        UnarySequence seq = new UnarySequence(counter);
+        assertEquals(0,counter.count);
+        seq.run(null);
+        assertEquals(1,counter.count);
+        seq.run("xyzzy");
+        assertEquals(2,counter.count);
+    }
+
+    public void testRunTwo() throws Exception {
+        RunCounter[] counter = { new RunCounter(), new RunCounter() };
+        UnarySequence seq = new UnarySequence(counter[0],counter[1]);
+        assertEquals(0,counter[0].count);
+        assertEquals(0,counter[1].count);
+        seq.run(null);
+        assertEquals(1,counter[0].count);
+        assertEquals(1,counter[1].count);
+        seq.run("xyzzy");
+        assertEquals(2,counter[0].count);
+        assertEquals(2,counter[1].count);
     }
     
-    public void testFalse() throws Exception {
-        assertTrue(!(new AndPredicate(new ConstantPredicate(false))).test());
-        assertTrue(!(new AndPredicate(new ConstantPredicate(true),new ConstantPredicate(false))).test());
-        assertTrue(!(new AndPredicate(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(false))).test());
-        
-        AndPredicate p = new AndPredicate(new ConstantPredicate(false));
-        assertTrue(!p.test());        
+    public void testThen() throws Exception {
+        List list = new ArrayList();
+        UnarySequence seq = new UnarySequence();
+        seq.run(null);        
         for(int i=0;i<10;i++) {
-            p.and(new ConstantPredicate(false));
-            assertTrue(!p.test());        
-        }
-        
-        AndPredicate q = new AndPredicate(new ConstantPredicate(true));
-        assertTrue(q.test());        
-        for(int i=0;i<10;i++) {
-            q.and(new ConstantPredicate(true));
-            assertTrue(q.test());        
-        }
-        
-        AndPredicate r = new AndPredicate(p,q);
-        assertTrue(!r.test());        
-    }
-        
-    public void testDuplicateAdd() throws Exception {
-        Predicate p = new ConstantPredicate(true);
-        AndPredicate q = new AndPredicate(p,p);
-        assertTrue(q.test());
-        for(int i=0;i<10;i++) {
-            q.and(p);
-            assertTrue(q.test());        
+            RunCounter counter = new RunCounter();
+            seq.then(counter);
+            list.add(counter);
+            seq.run("xyzzy");
+            for(int j=0;j<list.size();j++) {
+                assertEquals(list.size()-j,(((RunCounter)(list.get(j))).count));
+            }
         }
     }
-        
+    
     public void testEquals() throws Exception {
-        AndPredicate p = new AndPredicate();
+        UnarySequence p = new UnarySequence();
         assertEquals(p,p);
-        AndPredicate q = new AndPredicate();
+        UnarySequence q = new UnarySequence();
         assertObjectsAreEqual(p,q);
 
         for(int i=0;i<3;i++) {
-            p.and(ConstantPredicate.getTruePredicate());
+            p.then(new NoOp());
             assertObjectsAreNotEqual(p,q);
-            q.and(ConstantPredicate.getTruePredicate());
+            q.then(new NoOp());
             assertObjectsAreEqual(p,q);
-            p.and(new AndPredicate(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            p.then(new UnarySequence(new NoOp(),new NoOp()));
             assertObjectsAreNotEqual(p,q);            
-            q.and(new AndPredicate(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            q.then(new UnarySequence(new NoOp(),new NoOp()));
             assertObjectsAreEqual(p,q);            
         }
-        
-        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
+                
+        assertObjectsAreNotEqual(p,new NoOp());
     }
 
+    // Classes
+    // ------------------------------------------------------------------------
+    
+    static class RunCounter implements UnaryProcedure {        
+        public void run(Object that) {
+            count++;    
+        }        
+        public int count = 0;
+    }
 }

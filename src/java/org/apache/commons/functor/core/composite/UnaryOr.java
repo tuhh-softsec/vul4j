@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/OrPredicate.java,v 1.1 2003/01/27 19:33:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/UnaryOr.java,v 1.1 2003/03/04 14:48:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,7 +58,7 @@ package org.apache.commons.functor.core.composite;
 
 import java.util.Iterator;
 
-import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * {@link #test Tests} <code>true</code> iff
@@ -73,41 +73,41 @@ import org.apache.commons.functor.Predicate;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:40 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:07 $
  * @author Rodney Waldhoff
  */
-public final class OrPredicate extends BasePredicateList {
+public final class UnaryOr extends BaseUnaryPredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
-    public OrPredicate() {
+    public UnaryOr() {
         super();
     }
 
-    public OrPredicate(Predicate p) {
+    public UnaryOr(UnaryPredicate p) {
         super(p);
     }
 
-    public OrPredicate(Predicate p, Predicate q) {
+    public UnaryOr(UnaryPredicate p, UnaryPredicate q) {
         super(p,q);
     }
 
-    public OrPredicate(Predicate p, Predicate q, Predicate r) {
+    public UnaryOr(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
         super(p,q,r);
     }
     
     // modifiers
     // ------------------------------------------------------------------------ 
-    public OrPredicate or(Predicate p) {
-        super.addPredicate(p);
+    public UnaryOr or(UnaryPredicate p) {
+        super.addUnaryPredicate(p);
         return this;
     }
  
     // predicate interface
     // ------------------------------------------------------------------------
-    public boolean test() {
-        for(Iterator iter = getPredicateIterator(); iter.hasNext();) {
-            if(((Predicate)iter.next()).test()) {
+    public boolean test(Object a) {
+        for(Iterator iter = getUnaryPredicateIterator(); iter.hasNext();) {
+            if(((UnaryPredicate)iter.next()).test(a)) {
                 return true;
             }
         }
@@ -115,23 +115,23 @@ public final class OrPredicate extends BasePredicateList {
     }
 
     public boolean equals(Object that) {
-        if(that instanceof OrPredicate) {
-            return equals((OrPredicate)that);
+        if(that instanceof UnaryOr) {
+            return equals((UnaryOr)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(OrPredicate that) {
-        return getPredicateListEquals(that);
+    public boolean equals(UnaryOr that) {
+        return getUnaryPredicateListEquals(that);
     }
     
     public int hashCode() {
-        return "OrPredicate".hashCode() ^ getPredicateListHashCode();
+        return "UnaryOr".hashCode() ^ getUnaryPredicateListHashCode();
     }
     
     public String toString() {
-        return "OrPredicate<" + getPredicateListToString() + ">";
+        return "UnaryOr<" + getUnaryPredicateListToString() + ">";
     }
     
 }

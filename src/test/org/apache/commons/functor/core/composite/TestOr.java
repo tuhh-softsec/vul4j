@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestOrPredicate.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestOr.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,27 +64,27 @@ import org.apache.commons.functor.Predicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
-public class TestOrPredicate extends BaseFunctorTest {
+public class TestOr extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestOrPredicate(String testName) {
+    public TestOr(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestOrPredicate.class);
+        return new TestSuite(TestOr.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new OrPredicate(new ConstantPredicate(false),new ConstantPredicate(true));
+        return new Or(new ConstantPredicate(false),new ConstantPredicate(true));
     }
 
     // Lifecycle
@@ -102,55 +102,55 @@ public class TestOrPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testTrue() throws Exception {
-        assertTrue((new OrPredicate(new ConstantPredicate(true))).test());
-        assertTrue((new OrPredicate(new ConstantPredicate(false),new ConstantPredicate(true))).test());
-        assertTrue((new OrPredicate(new ConstantPredicate(false),new ConstantPredicate(false),new ConstantPredicate(true))).test());
+        assertTrue((new Or(new ConstantPredicate(true))).test());
+        assertTrue((new Or(new ConstantPredicate(false),new ConstantPredicate(true))).test());
+        assertTrue((new Or(new ConstantPredicate(false),new ConstantPredicate(false),new ConstantPredicate(true))).test());
         
-        OrPredicate p = new OrPredicate(new ConstantPredicate(true));
+        Or p = new Or(new ConstantPredicate(true));
         assertTrue(p.test());        
         for(int i=0;i<10;i++) {
             p.or(new ConstantPredicate(i%2==0));
             assertTrue(p.test());        
         }
         
-        OrPredicate q = new OrPredicate(new ConstantPredicate(true));
+        Or q = new Or(new ConstantPredicate(true));
         assertTrue(q.test());        
         for(int i=0;i<10;i++) {
             q.or(new ConstantPredicate(i%2==0));
             assertTrue(q.test());        
         }
         
-        OrPredicate r = new OrPredicate(p,q);
+        Or r = new Or(p,q);
         assertTrue(r.test());        
     }
     
     public void testFalse() throws Exception {
-        assertTrue(!(new OrPredicate()).test());
-        assertTrue(!(new OrPredicate(new ConstantPredicate(false))).test());
-        assertTrue(!(new OrPredicate(new ConstantPredicate(false),new ConstantPredicate(false))).test());
-        assertTrue(!(new OrPredicate(new ConstantPredicate(false),new ConstantPredicate(false),new ConstantPredicate(false))).test());
+        assertTrue(!(new Or()).test());
+        assertTrue(!(new Or(new ConstantPredicate(false))).test());
+        assertTrue(!(new Or(new ConstantPredicate(false),new ConstantPredicate(false))).test());
+        assertTrue(!(new Or(new ConstantPredicate(false),new ConstantPredicate(false),new ConstantPredicate(false))).test());
         
-        OrPredicate p = new OrPredicate(new ConstantPredicate(false));
+        Or p = new Or(new ConstantPredicate(false));
         assertTrue(!p.test());        
         for(int i=0;i<10;i++) {
             p.or(new ConstantPredicate(false));
             assertTrue(!p.test());        
         }
         
-        OrPredicate q = new OrPredicate(new ConstantPredicate(false));
+        Or q = new Or(new ConstantPredicate(false));
         assertTrue(!q.test());        
         for(int i=0;i<10;i++) {
             q.or(new ConstantPredicate(false));
             assertTrue(!q.test());        
         }
         
-        OrPredicate r = new OrPredicate(p,q);
+        Or r = new Or(p,q);
         assertTrue(!r.test());        
     }
         
     public void testDuplicateAdd() throws Exception {
         Predicate p = new ConstantPredicate(true);
-        OrPredicate q = new OrPredicate(p,p);
+        Or q = new Or(p,p);
         assertTrue(q.test());
         for(int i=0;i<10;i++) {
             q.or(p);
@@ -159,13 +159,13 @@ public class TestOrPredicate extends BaseFunctorTest {
     }
         
     public void testEquals() throws Exception {
-        OrPredicate p = new OrPredicate();
+        Or p = new Or();
         assertEquals(p,p);
 
-        OrPredicate q = new OrPredicate();
+        Or q = new Or();
         assertObjectsAreEqual(p,q);
 
-        AndPredicate r = new AndPredicate();
+        And r = new And();
         assertObjectsAreNotEqual(p,r);
         
         for(int i=0;i<3;i++) {
@@ -176,11 +176,11 @@ public class TestOrPredicate extends BaseFunctorTest {
             r.and(ConstantPredicate.getTruePredicate());
             assertObjectsAreNotEqual(p,r);
 
-            p.or(new OrPredicate(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            p.or(new Or(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
             assertObjectsAreNotEqual(p,q);            
-            q.or(new OrPredicate(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            q.or(new Or(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
             assertObjectsAreEqual(p,q);            
-            r.and(new OrPredicate(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            r.and(new Or(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
             assertObjectsAreNotEqual(p,r);
         }
         

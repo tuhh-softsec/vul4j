@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestAndBinaryPredicate.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryOr.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,27 +64,27 @@ import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
-public class TestAndBinaryPredicate extends BaseFunctorTest {
+public class TestBinaryOr extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestAndBinaryPredicate(String testName) {
+    public TestBinaryOr(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestAndBinaryPredicate.class);
+        return new TestSuite(TestBinaryOr.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new AndBinaryPredicate(new ConstantPredicate(true),new ConstantPredicate(true));
+        return new BinaryOr(new ConstantPredicate(false),new ConstantPredicate(true));
     }
 
     // Lifecycle
@@ -102,79 +102,86 @@ public class TestAndBinaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testTrue() throws Exception {
-        assertTrue((new AndBinaryPredicate()).test("xyzzy",new Integer(3)));
-        assertTrue((new AndBinaryPredicate(new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
-        assertTrue((new AndBinaryPredicate(new ConstantPredicate(true),new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
-        assertTrue((new AndBinaryPredicate(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
+        assertTrue((new BinaryOr(new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
+        assertTrue((new BinaryOr(new ConstantPredicate(false),new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
+        assertTrue((new BinaryOr(new ConstantPredicate(false),new ConstantPredicate(false),new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
         
-        AndBinaryPredicate p = new AndBinaryPredicate(new ConstantPredicate(true));
+        BinaryOr p = new BinaryOr(new ConstantPredicate(true));
         assertTrue(p.test("xyzzy",new Integer(3)));        
         for(int i=0;i<10;i++) {
-            p.and(new ConstantPredicate(true));
+            p.or(new ConstantPredicate(i%2==0));
             assertTrue(p.test("xyzzy",new Integer(3)));        
         }
         
-        AndBinaryPredicate q = new AndBinaryPredicate(new ConstantPredicate(true));
+        BinaryOr q = new BinaryOr(new ConstantPredicate(true));
         assertTrue(q.test("xyzzy",new Integer(3)));        
         for(int i=0;i<10;i++) {
-            q.and(new ConstantPredicate(true));
+            q.or(new ConstantPredicate(i%2==0));
             assertTrue(q.test("xyzzy",new Integer(3)));        
         }
         
-        AndBinaryPredicate r = new AndBinaryPredicate(p,q);
+        BinaryOr r = new BinaryOr(p,q);
         assertTrue(r.test("xyzzy",new Integer(3)));        
     }
     
     public void testFalse() throws Exception {
-        assertTrue(!(new AndBinaryPredicate(new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
-        assertTrue(!(new AndBinaryPredicate(new ConstantPredicate(true),new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
-        assertTrue(!(new AndBinaryPredicate(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryOr()).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryOr(new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryOr(new ConstantPredicate(false),new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryOr(new ConstantPredicate(false),new ConstantPredicate(false),new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
         
-        AndBinaryPredicate p = new AndBinaryPredicate(new ConstantPredicate(false));
+        BinaryOr p = new BinaryOr(new ConstantPredicate(false));
         assertTrue(!p.test("xyzzy",new Integer(3)));        
         for(int i=0;i<10;i++) {
-            p.and(new ConstantPredicate(false));
+            p.or(new ConstantPredicate(false));
             assertTrue(!p.test("xyzzy",new Integer(3)));        
         }
         
-        AndBinaryPredicate q = new AndBinaryPredicate(new ConstantPredicate(true));
-        assertTrue(q.test("xyzzy",new Integer(3)));        
+        BinaryOr q = new BinaryOr(new ConstantPredicate(false));
+        assertTrue(!q.test("xyzzy",new Integer(3)));        
         for(int i=0;i<10;i++) {
-            q.and(new ConstantPredicate(true));
-            assertTrue(q.test("xyzzy",new Integer(3)));        
+            q.or(new ConstantPredicate(false));
+            assertTrue(!q.test("xyzzy",new Integer(3)));        
         }
         
-        AndBinaryPredicate r = new AndBinaryPredicate(p,q);
+        BinaryOr r = new BinaryOr(p,q);
         assertTrue(!r.test("xyzzy",new Integer(3)));        
     }
         
     public void testDuplicateAdd() throws Exception {
         BinaryPredicate p = new ConstantPredicate(true);
-        AndBinaryPredicate q = new AndBinaryPredicate(p,p);
+        BinaryOr q = new BinaryOr(p,p);
         assertTrue(q.test("xyzzy",new Integer(3)));
         for(int i=0;i<10;i++) {
-            q.and(p);
+            q.or(p);
             assertTrue(q.test("xyzzy",new Integer(3)));        
         }
     }
         
     public void testEquals() throws Exception {
-        AndBinaryPredicate p = new AndBinaryPredicate();
+        BinaryOr p = new BinaryOr();
         assertEquals(p,p);
-        AndBinaryPredicate q = new AndBinaryPredicate();
-        assertObjectsAreEqual(p,q);
-        OrBinaryPredicate r = new OrBinaryPredicate();
-        assertObjectsAreNotEqual(p,r);
 
+        BinaryOr q = new BinaryOr();
+        assertObjectsAreEqual(p,q);
+
+        BinaryAnd r = new BinaryAnd();
+        assertObjectsAreNotEqual(p,r);
+        
         for(int i=0;i<3;i++) {
-            p.and(ConstantPredicate.getTruePredicate());
+            p.or(ConstantPredicate.getTruePredicate());
             assertObjectsAreNotEqual(p,q);
-            q.and(ConstantPredicate.getTruePredicate());
+            q.or(ConstantPredicate.getTruePredicate());
             assertObjectsAreEqual(p,q);
-            p.and(new AndBinaryPredicate(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            r.and(ConstantPredicate.getTruePredicate());
+            assertObjectsAreNotEqual(p,r);
+
+            p.or(new BinaryOr(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
             assertObjectsAreNotEqual(p,q);            
-            q.and(new AndBinaryPredicate(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            q.or(new BinaryOr(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
             assertObjectsAreEqual(p,q);            
+            r.and(new BinaryOr(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            assertObjectsAreNotEqual(p,r);
         }
         
         assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());

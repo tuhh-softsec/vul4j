@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestNotPredicate.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Not.java,v 1.1 2003/03/04 14:48:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,71 +56,70 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
 
-import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Predicate;
-import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * {@link #test Tests} to the logical inverse
+ * of some other predicate.
+ * <p>
+ * Note that although this class implements 
+ * {@link Serializable}, a given instance will
+ * only be truly <code>Serializable</code> if the
+ * underlying functor is.  Attempts to serialize
+ * an instance whose delegate is not 
+ * <code>Serializable</code> will result in an exception.
+ * </p>
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:07 $
  * @author Rodney Waldhoff
  */
-public class TestNotPredicate extends BaseFunctorTest {
+public final class Not implements Predicate, Serializable {
 
-    // Conventional
+    // constructor
     // ------------------------------------------------------------------------
 
-    public TestNotPredicate(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(TestNotPredicate.class);
-    }
-
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new NotPredicate(new ConstantPredicate(true));
-    }
-
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
-    // ------------------------------------------------------------------------
-    
-    public void testTest() throws Exception {
-        Predicate truePred = new NotPredicate(new ConstantPredicate(false));
-        assertTrue(truePred.test());
+    public Not(Predicate p) {
+        this.predicate = p;
     }
     
-    public void testEquals() throws Exception {
-        NotPredicate p = new NotPredicate(ConstantPredicate.getTruePredicate());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new NotPredicate(new ConstantPredicate(true)));
-        assertObjectsAreEqual(p,NotPredicate.not(new ConstantPredicate(true)));
-        assertObjectsAreNotEqual(p,new NotPredicate(new ConstantPredicate(false)));
-        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
-        assertObjectsAreNotEqual(p,new NotPredicate(null));
+    // predicate interface
+    // ------------------------------------------------------------------------
+    public boolean test() {
+        return !(predicate.test());
     }
 
-    public void testNotNull() throws Exception {
-        assertNull(NotPredicate.not(null));
+    public boolean equals(Object that) {
+        if(that instanceof Not) {
+            return equals((Not)that);
+        } else {
+            return false;
+        }
+    }
+    
+    public boolean equals(Not that) {
+        return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
+    }
+    
+    public int hashCode() {
+        int hash = "Not".hashCode();
+        if(null != predicate) {
+            hash ^= predicate.hashCode();
+        }
+        return hash;
+    }
+    
+    public String toString() {
+        return "Not<" + predicate + ">";
     }
 
-    public void testNotNotNull() throws Exception {
-        assertNotNull(NotPredicate.not(ConstantPredicate.getTruePredicate()));
+    // static
+    // ------------------------------------------------------------------------
+    public static Predicate not(Predicate that) {
+        return null == that ? null : new Not(that);
     }
+    
+    // attributes
+    // ------------------------------------------------------------------------
+    private Predicate predicate = null;
 }

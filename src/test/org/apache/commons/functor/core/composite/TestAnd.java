@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestNotUnaryPredicate.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAnd.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,31 +60,31 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.Predicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
-public class TestNotUnaryPredicate extends BaseFunctorTest {
+public class TestAnd extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestNotUnaryPredicate(String testName) {
+    public TestAnd(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestNotUnaryPredicate.class);
+        return new TestSuite(TestAnd.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new NotUnaryPredicate(new ConstantPredicate(true));
+        return new And(new ConstantPredicate(true),new ConstantPredicate(true));
     }
 
     // Lifecycle
@@ -101,28 +101,81 @@ public class TestNotUnaryPredicate extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testTest() throws Exception {
-        UnaryPredicate truePred = new NotUnaryPredicate(new ConstantPredicate(false));
-        assertTrue(truePred.test(null));
-        assertTrue(truePred.test("xyzzy"));
-        assertTrue(truePred.test(new Integer(3)));
+    public void testTrue() throws Exception {
+        assertTrue((new And()).test());
+        assertTrue((new And(new ConstantPredicate(true))).test());
+        assertTrue((new And(new ConstantPredicate(true),new ConstantPredicate(true))).test());
+        assertTrue((new And(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(true))).test());
+        
+        And p = new And(new ConstantPredicate(true));
+        assertTrue(p.test());        
+        for(int i=0;i<10;i++) {
+            p.and(new ConstantPredicate(true));
+            assertTrue(p.test());        
+        }
+        
+        And q = new And(new ConstantPredicate(true));
+        assertTrue(q.test());        
+        for(int i=0;i<10;i++) {
+            q.and(new ConstantPredicate(true));
+            assertTrue(q.test());        
+        }
+        
+        And r = new And(p,q);
+        assertTrue(r.test());        
     }
     
+    public void testFalse() throws Exception {
+        assertTrue(!(new And(new ConstantPredicate(false))).test());
+        assertTrue(!(new And(new ConstantPredicate(true),new ConstantPredicate(false))).test());
+        assertTrue(!(new And(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(false))).test());
+        
+        And p = new And(new ConstantPredicate(false));
+        assertTrue(!p.test());        
+        for(int i=0;i<10;i++) {
+            p.and(new ConstantPredicate(false));
+            assertTrue(!p.test());        
+        }
+        
+        And q = new And(new ConstantPredicate(true));
+        assertTrue(q.test());        
+        for(int i=0;i<10;i++) {
+            q.and(new ConstantPredicate(true));
+            assertTrue(q.test());        
+        }
+        
+        And r = new And(p,q);
+        assertTrue(!r.test());        
+    }
+        
+    public void testDuplicateAdd() throws Exception {
+        Predicate p = new ConstantPredicate(true);
+        And q = new And(p,p);
+        assertTrue(q.test());
+        for(int i=0;i<10;i++) {
+            q.and(p);
+            assertTrue(q.test());        
+        }
+    }
+        
     public void testEquals() throws Exception {
-        NotUnaryPredicate p = new NotUnaryPredicate(ConstantPredicate.getTruePredicate());
+        And p = new And();
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new NotUnaryPredicate(new ConstantPredicate(true)));
-        assertObjectsAreEqual(p,NotUnaryPredicate.not(new ConstantPredicate(true)));
-        assertObjectsAreNotEqual(p,new NotUnaryPredicate(new ConstantPredicate(false)));
+        And q = new And();
+        assertObjectsAreEqual(p,q);
+
+        for(int i=0;i<3;i++) {
+            p.and(ConstantPredicate.getTruePredicate());
+            assertObjectsAreNotEqual(p,q);
+            q.and(ConstantPredicate.getTruePredicate());
+            assertObjectsAreEqual(p,q);
+            p.and(new And(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            assertObjectsAreNotEqual(p,q);            
+            q.and(new And(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            assertObjectsAreEqual(p,q);            
+        }
+        
         assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
-        assertObjectsAreNotEqual(p,new NotUnaryPredicate(null));
     }
 
-    public void testNotNull() throws Exception {
-        assertNull(NotUnaryPredicate.not(null));
-    }
-
-    public void testNotNotNull() throws Exception {
-        assertNotNull(NotUnaryPredicate.not(ConstantPredicate.getTruePredicate()));
-    }
 }

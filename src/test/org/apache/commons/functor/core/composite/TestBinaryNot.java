@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/NotBinaryPredicate.java,v 1.2 2003/01/28 12:00:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,70 +56,73 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.io.Serializable;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * {@link #test Tests} to the logical inverse
- * of some other predicate.
- * <p>
- * Note that although this class implements 
- * {@link Serializable}, a given instance will
- * only be truly <code>Serializable</code> if the
- * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
- * <code>Serializable</code> will result in an exception.
- * </p>
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:29 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
-public final class NotBinaryPredicate implements BinaryPredicate, Serializable {
+public class TestBinaryNot extends BaseFunctorTest {
 
-    // constructor
+    // Conventional
     // ------------------------------------------------------------------------
 
-    public NotBinaryPredicate(BinaryPredicate p) {
-        this.predicate = p;
-    }
-    
-    // predicate interface
-    // ------------------------------------------------------------------------
-    public boolean test(Object left, Object right) {
-        return !(predicate.test(left,right));
+    public TestBinaryNot(String testName) {
+        super(testName);
     }
 
-    public boolean equals(Object that) {
-        if(that instanceof NotBinaryPredicate) {
-            return equals((NotBinaryPredicate)that);
-        } else {
-            return false;
-        }
-    }
-    
-    public boolean equals(NotBinaryPredicate that) {
-        return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
-    }
-    
-    public int hashCode() {
-        int hash = "NotBinaryPredicate".hashCode();
-        if(null != predicate) {
-            hash ^= predicate.hashCode();
-        }
-        return hash;
-    }
-    
-    public String toString() {
-        return "NotBinaryPredicate<" + predicate + ">";
+    public static Test suite() {
+        return new TestSuite(TestBinaryNot.class);
     }
 
-    // static
+    // Functor Testing Framework
     // ------------------------------------------------------------------------
-    public static BinaryPredicate not(BinaryPredicate that) {
-        return null == that ? null : new NotBinaryPredicate(that);
+
+    protected Object makeFunctor() {
+        return new BinaryNot(new ConstantPredicate(true));
+    }
+
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------
+    
+    public void testTest() throws Exception {
+        BinaryPredicate truePred = new BinaryNot(new ConstantPredicate(false));
+        assertTrue(truePred.test(null,null));
+        assertTrue(truePred.test("xyzzy","abcde"));
+        assertTrue(truePred.test("xyzzy",new Integer(3)));
     }
     
-    // attributes
-    // ------------------------------------------------------------------------
-    private BinaryPredicate predicate = null;
+    public void testEquals() throws Exception {
+        BinaryNot p = new BinaryNot(ConstantPredicate.getTruePredicate());
+        assertEquals(p,p);
+        assertObjectsAreEqual(p,new BinaryNot(new ConstantPredicate(true)));
+        assertObjectsAreEqual(p,BinaryNot.not(new ConstantPredicate(true)));
+        assertObjectsAreNotEqual(p,new BinaryNot(new ConstantPredicate(false)));
+        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
+        assertObjectsAreNotEqual(p,new BinaryNot(null));
+    }
+
+    public void testNotNull() throws Exception {
+        assertNull(BinaryNot.not(null));
+    }
+
+    public void testNotNotNull() throws Exception {
+        assertNotNull(BinaryNot.not(ConstantPredicate.getTruePredicate()));
+    }
 }

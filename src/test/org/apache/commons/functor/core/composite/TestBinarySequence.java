@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestUnaryProcedureSequence.java,v 1.2 2003/02/24 11:48:09 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinarySequence.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,31 +63,31 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.BinaryProcedure;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/02/24 11:48:09 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
-public class TestUnaryProcedureSequence extends BaseFunctorTest {
+public class TestBinarySequence extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestUnaryProcedureSequence(String testName) {
+    public TestBinarySequence(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestUnaryProcedureSequence.class);
+        return new TestSuite(TestBinarySequence.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryProcedureSequence(new NoOp(),new NoOp());
+        return new BinarySequence(new NoOp(),new NoOp());
     }
 
     // Lifecycle
@@ -105,43 +105,43 @@ public class TestUnaryProcedureSequence extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testRunZero() throws Exception {
-        UnaryProcedureSequence seq = new UnaryProcedureSequence();
-        seq.run(null);
-        seq.run("xyzzy");
+        BinarySequence seq = new BinarySequence();
+        seq.run(null,null);
+        seq.run("xyzzy","xyzzy");
     }
 
     public void testRunOne() throws Exception {
         RunCounter counter = new RunCounter();
-        UnaryProcedureSequence seq = new UnaryProcedureSequence(counter);
+        BinarySequence seq = new BinarySequence(counter);
         assertEquals(0,counter.count);
-        seq.run(null);
+        seq.run(null,null);
         assertEquals(1,counter.count);
-        seq.run("xyzzy");
+        seq.run("xyzzy","xyzzy");
         assertEquals(2,counter.count);
     }
 
     public void testRunTwo() throws Exception {
         RunCounter[] counter = { new RunCounter(), new RunCounter() };
-        UnaryProcedureSequence seq = new UnaryProcedureSequence(counter[0],counter[1]);
+        BinarySequence seq = new BinarySequence(counter[0],counter[1]);
         assertEquals(0,counter[0].count);
         assertEquals(0,counter[1].count);
-        seq.run(null);
+        seq.run(null,null);
         assertEquals(1,counter[0].count);
         assertEquals(1,counter[1].count);
-        seq.run("xyzzy");
+        seq.run("xyzzy","xyzzy");
         assertEquals(2,counter[0].count);
         assertEquals(2,counter[1].count);
     }
     
     public void testThen() throws Exception {
         List list = new ArrayList();
-        UnaryProcedureSequence seq = new UnaryProcedureSequence();
-        seq.run(null);        
+        BinarySequence seq = new BinarySequence();
+        seq.run(null,null);        
         for(int i=0;i<10;i++) {
             RunCounter counter = new RunCounter();
             seq.then(counter);
             list.add(counter);
-            seq.run("xyzzy");
+            seq.run("xyzzy","xyzzy");
             for(int j=0;j<list.size();j++) {
                 assertEquals(list.size()-j,(((RunCounter)(list.get(j))).count));
             }
@@ -149,9 +149,9 @@ public class TestUnaryProcedureSequence extends BaseFunctorTest {
     }
     
     public void testEquals() throws Exception {
-        UnaryProcedureSequence p = new UnaryProcedureSequence();
+        BinarySequence p = new BinarySequence();
         assertEquals(p,p);
-        UnaryProcedureSequence q = new UnaryProcedureSequence();
+        BinarySequence q = new BinarySequence();
         assertObjectsAreEqual(p,q);
 
         for(int i=0;i<3;i++) {
@@ -159,9 +159,9 @@ public class TestUnaryProcedureSequence extends BaseFunctorTest {
             assertObjectsAreNotEqual(p,q);
             q.then(new NoOp());
             assertObjectsAreEqual(p,q);
-            p.then(new UnaryProcedureSequence(new NoOp(),new NoOp()));
+            p.then(new BinarySequence(new NoOp(),new NoOp()));
             assertObjectsAreNotEqual(p,q);            
-            q.then(new UnaryProcedureSequence(new NoOp(),new NoOp()));
+            q.then(new BinarySequence(new NoOp(),new NoOp()));
             assertObjectsAreEqual(p,q);            
         }
                 
@@ -171,8 +171,8 @@ public class TestUnaryProcedureSequence extends BaseFunctorTest {
     // Classes
     // ------------------------------------------------------------------------
     
-    static class RunCounter implements UnaryProcedure {        
-        public void run(Object that) {
+    static class RunCounter implements BinaryProcedure {        
+        public void run(Object a, Object b) {
             count++;    
         }        
         public int count = 0;

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAll.java,v 1.4 2003/02/01 14:40:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAll.java,v 1.5 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/02/01 14:40:45 $
+ * @version $Revision: 1.5 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -72,21 +72,21 @@ public class TestAll extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
 
-        suite.addTest(TestAndPredicate.suite());
-        suite.addTest(TestAndUnaryPredicate.suite());
-        suite.addTest(TestAndBinaryPredicate.suite());
+        suite.addTest(TestAnd.suite());
+        suite.addTest(TestUnaryAnd.suite());
+        suite.addTest(TestBinaryAnd.suite());
 
-        suite.addTest(TestOrPredicate.suite());
-        suite.addTest(TestOrUnaryPredicate.suite());
-        suite.addTest(TestOrBinaryPredicate.suite());
+        suite.addTest(TestOr.suite());
+        suite.addTest(TestUnaryOr.suite());
+        suite.addTest(TestBinaryOr.suite());
         
-        suite.addTest(TestNotPredicate.suite());
-        suite.addTest(TestNotUnaryPredicate.suite());
-        suite.addTest(TestNotBinaryPredicate.suite());
+        suite.addTest(TestNot.suite());
+        suite.addTest(TestUnaryNot.suite());
+        suite.addTest(TestBinaryNot.suite());
 
-        suite.addTest(TestProcedureSequence.suite());
-        suite.addTest(TestUnaryProcedureSequence.suite());
-        suite.addTest(TestBinaryProcedureSequence.suite());
+        suite.addTest(TestSequence.suite());
+        suite.addTest(TestUnarySequence.suite());
+        suite.addTest(TestBinarySequence.suite());
 
         suite.addTest(TestCompositeUnaryFunction.suite());
         suite.addTest(TestUnaryCompositeBinaryFunction.suite());

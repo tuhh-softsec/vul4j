@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/OrBinaryPredicate.java,v 1.1 2003/01/27 19:33:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/BinaryAnd.java,v 1.1 2003/03/04 14:48:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,9 +62,9 @@ import org.apache.commons.functor.BinaryPredicate;
 
 /**
  * {@link #test Tests} <code>true</code> iff
- * at least one of its children test <code>true</code>.
- * Note that by this definition, the "or" of
- * an empty collection of predicates tests <code>false</code>.
+ * none of its children test <code>false</code>.
+ * Note that by this definition, the "and" of
+ * an empty collection of predicates tests <code>true</code>.
  * <p>
  * Note that although this class implements 
  * {@link java.io.Serializable Serializable}, a given instance will
@@ -73,32 +73,32 @@ import org.apache.commons.functor.BinaryPredicate;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:40 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:07 $
  * @author Rodney Waldhoff
  */
-public final class OrBinaryPredicate extends BaseBinaryPredicateList {
+public final class BinaryAnd extends BaseBinaryPredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
-    public OrBinaryPredicate() {
+    public BinaryAnd() {
         super();
     }
 
-    public OrBinaryPredicate(BinaryPredicate p) {
+    public BinaryAnd(BinaryPredicate p) {
         super(p);
     }
 
-    public OrBinaryPredicate(BinaryPredicate p, BinaryPredicate q) {
+    public BinaryAnd(BinaryPredicate p, BinaryPredicate q) {
         super(p,q);
     }
 
-    public OrBinaryPredicate(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
+    public BinaryAnd(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
         super(p,q,r);
     }
     
     // modifiers
     // ------------------------------------------------------------------------ 
-    public OrBinaryPredicate or(BinaryPredicate p) {
+    public BinaryAnd and(BinaryPredicate p) {
         super.addBinaryPredicate(p);
         return this;
     }
@@ -107,31 +107,31 @@ public final class OrBinaryPredicate extends BaseBinaryPredicateList {
     // ------------------------------------------------------------------------
     public boolean test(Object a, Object b) {
         for(Iterator iter = getBinaryPredicateIterator(); iter.hasNext();) {
-            if(((BinaryPredicate)iter.next()).test(a,b)) {
-                return true;
+            if(!((BinaryPredicate)iter.next()).test(a,b)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public boolean equals(Object that) {
-        if(that instanceof OrBinaryPredicate) {
-            return equals((OrBinaryPredicate)that);
+        if(that instanceof BinaryAnd) {
+            return equals((BinaryAnd)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(OrBinaryPredicate that) {
+    public boolean equals(BinaryAnd that) {
         return getBinaryPredicateListEquals(that);
     }
     
     public int hashCode() {
-        return "OrBinaryPredicate".hashCode() ^ getBinaryPredicateListHashCode();
+        return "BinaryAnd".hashCode() ^ getBinaryPredicateListHashCode();
     }
     
     public String toString() {
-        return "OrBinaryPredicate<" + getBinaryPredicateListToString() + ">";
+        return "BinaryAnd<" + getBinaryPredicateListToString() + ">";
     }
     
 }

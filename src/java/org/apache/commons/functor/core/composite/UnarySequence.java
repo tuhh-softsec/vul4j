@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestNotBinaryPredicate.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/UnarySequence.java,v 1.1 2003/03/04 14:48:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,73 +56,86 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 
-import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * A {@link UnaryProcedure UnaryProcedure} 
+ * that {@link UnaryProcedure#run runs} an ordered 
+ * sequence of {@link UnaryProcedure UnaryProcedures}.
+ * When the sequence is empty, this procedure is does
+ * nothing.
+ * <p>
+ * Note that although this class implements 
+ * {@link Serializable}, a given instance will
+ * only be truly <code>Serializable</code> if all the
+ * underlying functors are.  Attempts to serialize
+ * an instance whose delegates are not all 
+ * <code>Serializable</code> will result in an exception.
+ * </p>
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:07 $
  * @author Rodney Waldhoff
  */
-public class TestNotBinaryPredicate extends BaseFunctorTest {
+public class UnarySequence implements UnaryProcedure, Serializable {
 
-    // Conventional
+    // constructor
     // ------------------------------------------------------------------------
-
-    public TestNotBinaryPredicate(String testName) {
-        super(testName);
+    public UnarySequence() {
     }
 
-    public static Test suite() {
-        return new TestSuite(TestNotBinaryPredicate.class);
+    public UnarySequence(UnaryProcedure p) {
+        then(p);
     }
 
-    // Functor Testing Framework
+    public UnarySequence(UnaryProcedure p, UnaryProcedure q) {
+        then(p);
+        then(q);
+    }
+
+    // modifiers
+    // ------------------------------------------------------------------------ 
+    public UnarySequence then(UnaryProcedure p) {
+        list.add(p);
+        return this;
+    }
+ 
+    // predicate interface
     // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new NotBinaryPredicate(new ConstantPredicate(true));
+    public void run(Object obj) {        
+        for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
+            ((UnaryProcedure)iter.previous()).run(obj);
+        }
     }
 
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
-    // ------------------------------------------------------------------------
-    
-    public void testTest() throws Exception {
-        BinaryPredicate truePred = new NotBinaryPredicate(new ConstantPredicate(false));
-        assertTrue(truePred.test(null,null));
-        assertTrue(truePred.test("xyzzy","abcde"));
-        assertTrue(truePred.test("xyzzy",new Integer(3)));
+    public boolean equals(Object that) {
+        if(that instanceof UnarySequence) {
+            return equals((UnarySequence)that);
+        } else {
+            return false;
+        }
     }
     
-    public void testEquals() throws Exception {
-        NotBinaryPredicate p = new NotBinaryPredicate(ConstantPredicate.getTruePredicate());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new NotBinaryPredicate(new ConstantPredicate(true)));
-        assertObjectsAreEqual(p,NotBinaryPredicate.not(new ConstantPredicate(true)));
-        assertObjectsAreNotEqual(p,new NotBinaryPredicate(new ConstantPredicate(false)));
-        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
-        assertObjectsAreNotEqual(p,new NotBinaryPredicate(null));
+    public boolean equals(UnarySequence that) {
+        // by construction, list is never null
+        return null != that && list.equals(that.list);
     }
+    
+    public int hashCode() {
+        // by construction, list is never null
+        return "UnarySequence".hashCode() ^ list.hashCode();
+    }
+    
+    public String toString() {
+        return "UnarySequence<" + list + ">";
+    }
+    
+    
+    // attributes
+    // ------------------------------------------------------------------------
+    private List list = new ArrayList();
 
-    public void testNotNull() throws Exception {
-        assertNull(NotBinaryPredicate.not(null));
-    }
-
-    public void testNotNotNull() throws Exception {
-        assertNotNull(NotBinaryPredicate.not(ConstantPredicate.getTruePredicate()));
-    }
 }

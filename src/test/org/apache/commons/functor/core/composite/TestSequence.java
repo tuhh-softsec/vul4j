@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsEmpty.java,v 1.2 2003/03/04 14:48:07 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestSequence.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,44 +54,40 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core.collection;
+package org.apache.commons.functor.core.composite;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.UnaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
-import org.apache.commons.functor.core.composite.UnaryNot;
+import org.apache.commons.functor.Procedure;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 14:48:07 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
-public class TestIsEmpty extends BaseFunctorTest {
+public class TestSequence extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestIsEmpty(String testName) {
+    public TestSequence(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestIsEmpty.class);
+        return new TestSuite(TestSequence.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IsEmpty();
+        return new Sequence(new NoOp(),new NoOp());
     }
 
     // Lifecycle
@@ -108,49 +104,71 @@ public class TestIsEmpty extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testTest() throws Exception {
-        assertTrue(IsEmpty.getIsEmpty().test(Collections.EMPTY_LIST));
-        assertTrue(IsEmpty.getIsEmpty().test(Collections.EMPTY_SET));
-        {
-            List list = new ArrayList();
-            assertTrue(IsEmpty.getIsEmpty().test(list));
-            list.add("Xyzzy");
-            assertTrue(!IsEmpty.getIsEmpty().test(list));
-        }
-        {
-            Set set = new HashSet();
-            assertTrue(IsEmpty.getIsEmpty().test(set));
-            set.add("Xyzzy");
-            assertTrue(!IsEmpty.getIsEmpty().test(set));
-        }
+    public void testRunZero() throws Exception {
+        Sequence seq = new Sequence();
+        seq.run();
     }
 
-    public void testTestNull() throws Exception {
-        try {
-            IsEmpty.getIsEmpty().test(null);
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
-            // expected
-        }
+    public void testRunOne() throws Exception {
+        RunCounter counter = new RunCounter();
+        Sequence seq = new Sequence(counter);
+        assertEquals(0,counter.count);
+        seq.run();
+        assertEquals(1,counter.count);
+    }
+
+    public void testRunTwo() throws Exception {
+        RunCounter[] counter = { new RunCounter(), new RunCounter() };
+        Sequence seq = new Sequence(counter[0],counter[1]);
+        assertEquals(0,counter[0].count);
+        assertEquals(0,counter[1].count);
+        seq.run();
+        assertEquals(1,counter[0].count);
+        assertEquals(1,counter[1].count);
     }
     
-    public void testTestNonCollection() throws Exception {
-        try {
-            IsEmpty.getIsEmpty().test(new Integer(3));
-            fail("Expected ClassCastException");
-        } catch(ClassCastException e) {
-            // expected
+    public void testThen() throws Exception {
+        List list = new ArrayList();
+        Sequence seq = new Sequence();
+        seq.run();        
+        for(int i=0;i<10;i++) {
+            RunCounter counter = new RunCounter();
+            seq.then(counter);
+            list.add(counter);
+            seq.run();
+            for(int j=0;j<list.size();j++) {
+                assertEquals(list.size()-j,(((RunCounter)(list.get(j))).count));
+            }
         }
     }
     
     public void testEquals() throws Exception {
-        UnaryPredicate p = new IsEmpty();
+        Sequence p = new Sequence();
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new IsEmpty());
-        assertObjectsAreEqual(p,IsEmpty.getIsEmpty());
-        assertSame(IsEmpty.getIsEmpty(),IsEmpty.getIsEmpty());
-        assertObjectsAreNotEqual(p,new ConstantPredicate(true));
-        assertObjectsAreNotEqual(p,new UnaryNot(null));
+        Sequence q = new Sequence();
+        assertObjectsAreEqual(p,q);
+
+        for(int i=0;i<3;i++) {
+            p.then(new NoOp());
+            assertObjectsAreNotEqual(p,q);
+            q.then(new NoOp());
+            assertObjectsAreEqual(p,q);
+            p.then(new Sequence(new NoOp(),new NoOp()));
+            assertObjectsAreNotEqual(p,q);            
+            q.then(new Sequence(new NoOp(),new NoOp()));
+            assertObjectsAreEqual(p,q);            
+        }
+                
+        assertObjectsAreNotEqual(p,new NoOp());
     }
 
+    // Classes
+    // ------------------------------------------------------------------------
+    
+    static class RunCounter implements Procedure {        
+        public void run() {
+            count++;    
+        }        
+        public int count = 0;
+    }
 }

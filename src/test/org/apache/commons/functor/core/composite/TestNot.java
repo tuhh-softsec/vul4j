@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/UnaryProcedureSequence.java,v 1.2 2003/01/28 12:00:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestNot.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,86 +56,71 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
-import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * A {@link UnaryProcedure UnaryProcedure} 
- * that {@link UnaryProcedure#run runs} an ordered 
- * sequence of {@link UnaryProcedure UnaryProcedures}.
- * When the sequence is empty, this procedure is does
- * nothing.
- * <p>
- * Note that although this class implements 
- * {@link Serializable}, a given instance will
- * only be truly <code>Serializable</code> if all the
- * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
- * <code>Serializable</code> will result in an exception.
- * </p>
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:29 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
-public class UnaryProcedureSequence implements UnaryProcedure, Serializable {
+public class TestNot extends BaseFunctorTest {
 
-    // constructor
+    // Conventional
     // ------------------------------------------------------------------------
-    public UnaryProcedureSequence() {
+
+    public TestNot(String testName) {
+        super(testName);
     }
 
-    public UnaryProcedureSequence(UnaryProcedure p) {
-        then(p);
+    public static Test suite() {
+        return new TestSuite(TestNot.class);
     }
 
-    public UnaryProcedureSequence(UnaryProcedure p, UnaryProcedure q) {
-        then(p);
-        then(q);
-    }
-
-    // modifiers
-    // ------------------------------------------------------------------------ 
-    public UnaryProcedureSequence then(UnaryProcedure p) {
-        list.add(p);
-        return this;
-    }
- 
-    // predicate interface
+    // Functor Testing Framework
     // ------------------------------------------------------------------------
-    public void run(Object obj) {        
-        for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            ((UnaryProcedure)iter.previous()).run(obj);
-        }
+
+    protected Object makeFunctor() {
+        return new Not(new ConstantPredicate(true));
     }
 
-    public boolean equals(Object that) {
-        if(that instanceof UnaryProcedureSequence) {
-            return equals((UnaryProcedureSequence)that);
-        } else {
-            return false;
-        }
-    }
-    
-    public boolean equals(UnaryProcedureSequence that) {
-        // by construction, list is never null
-        return null != that && list.equals(that.list);
-    }
-    
-    public int hashCode() {
-        // by construction, list is never null
-        return "UnaryProcedureSequence".hashCode() ^ list.hashCode();
-    }
-    
-    public String toString() {
-        return "UnaryProcedureSequence<" + list + ">";
-    }
-    
-    
-    // attributes
+    // Lifecycle
     // ------------------------------------------------------------------------
-    private List list = new ArrayList();
 
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------
+    
+    public void testTest() throws Exception {
+        Predicate truePred = new Not(new ConstantPredicate(false));
+        assertTrue(truePred.test());
+    }
+    
+    public void testEquals() throws Exception {
+        Not p = new Not(ConstantPredicate.getTruePredicate());
+        assertEquals(p,p);
+        assertObjectsAreEqual(p,new Not(new ConstantPredicate(true)));
+        assertObjectsAreEqual(p,Not.not(new ConstantPredicate(true)));
+        assertObjectsAreNotEqual(p,new Not(new ConstantPredicate(false)));
+        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
+        assertObjectsAreNotEqual(p,new Not(null));
+    }
+
+    public void testNotNull() throws Exception {
+        assertNull(Not.not(null));
+    }
+
+    public void testNotNotNull() throws Exception {
+        assertNotNull(Not.not(ConstantPredicate.getTruePredicate()));
+    }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestBinaryProcedureSequence.java,v 1.2 2003/02/24 11:48:09 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryAnd.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,38 +56,35 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryProcedure;
-import org.apache.commons.functor.core.NoOp;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/02/24 11:48:09 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
-public class TestBinaryProcedureSequence extends BaseFunctorTest {
+public class TestUnaryAnd extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestBinaryProcedureSequence(String testName) {
+    public TestUnaryAnd(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestBinaryProcedureSequence.class);
+        return new TestSuite(TestUnaryAnd.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryProcedureSequence(new NoOp(),new NoOp());
+        return new UnaryAnd(new ConstantPredicate(true),new ConstantPredicate(true));
     }
 
     // Lifecycle
@@ -104,77 +101,81 @@ public class TestBinaryProcedureSequence extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testRunZero() throws Exception {
-        BinaryProcedureSequence seq = new BinaryProcedureSequence();
-        seq.run(null,null);
-        seq.run("xyzzy","xyzzy");
-    }
-
-    public void testRunOne() throws Exception {
-        RunCounter counter = new RunCounter();
-        BinaryProcedureSequence seq = new BinaryProcedureSequence(counter);
-        assertEquals(0,counter.count);
-        seq.run(null,null);
-        assertEquals(1,counter.count);
-        seq.run("xyzzy","xyzzy");
-        assertEquals(2,counter.count);
-    }
-
-    public void testRunTwo() throws Exception {
-        RunCounter[] counter = { new RunCounter(), new RunCounter() };
-        BinaryProcedureSequence seq = new BinaryProcedureSequence(counter[0],counter[1]);
-        assertEquals(0,counter[0].count);
-        assertEquals(0,counter[1].count);
-        seq.run(null,null);
-        assertEquals(1,counter[0].count);
-        assertEquals(1,counter[1].count);
-        seq.run("xyzzy","xyzzy");
-        assertEquals(2,counter[0].count);
-        assertEquals(2,counter[1].count);
+    public void testTrue() throws Exception {
+        assertTrue((new UnaryAnd()).test("xyzzy"));
+        assertTrue((new UnaryAnd(new ConstantPredicate(true))).test("xyzzy"));
+        assertTrue((new UnaryAnd(new ConstantPredicate(true),new ConstantPredicate(true))).test("xyzzy"));
+        assertTrue((new UnaryAnd(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(true))).test("xyzzy"));
+        
+        UnaryAnd p = new UnaryAnd(new ConstantPredicate(true));
+        assertTrue(p.test("xyzzy"));        
+        for(int i=0;i<10;i++) {
+            p.and(new ConstantPredicate(true));
+            assertTrue(p.test("xyzzy"));        
+        }
+        
+        UnaryAnd q = new UnaryAnd(new ConstantPredicate(true));
+        assertTrue(q.test("xyzzy"));        
+        for(int i=0;i<10;i++) {
+            q.and(new ConstantPredicate(true));
+            assertTrue(q.test("xyzzy"));        
+        }
+        
+        UnaryAnd r = new UnaryAnd(p,q);
+        assertTrue(r.test("xyzzy"));        
     }
     
-    public void testThen() throws Exception {
-        List list = new ArrayList();
-        BinaryProcedureSequence seq = new BinaryProcedureSequence();
-        seq.run(null,null);        
+    public void testFalse() throws Exception {
+        assertTrue(!(new UnaryAnd(new ConstantPredicate(false))).test("xyzzy"));
+        assertTrue(!(new UnaryAnd(new ConstantPredicate(true),new ConstantPredicate(false))).test("xyzzy"));
+        assertTrue(!(new UnaryAnd(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(false))).test("xyzzy"));
+        
+        UnaryAnd p = new UnaryAnd(new ConstantPredicate(false));
+        assertTrue(!p.test("xyzzy"));        
         for(int i=0;i<10;i++) {
-            RunCounter counter = new RunCounter();
-            seq.then(counter);
-            list.add(counter);
-            seq.run("xyzzy","xyzzy");
-            for(int j=0;j<list.size();j++) {
-                assertEquals(list.size()-j,(((RunCounter)(list.get(j))).count));
-            }
+            p.and(new ConstantPredicate(false));
+            assertTrue(!p.test("xyzzy"));        
+        }
+        
+        UnaryAnd q = new UnaryAnd(new ConstantPredicate(true));
+        assertTrue(q.test("xyzzy"));        
+        for(int i=0;i<10;i++) {
+            q.and(new ConstantPredicate(true));
+            assertTrue(q.test("xyzzy"));        
+        }
+        
+        UnaryAnd r = new UnaryAnd(p,q);
+        assertTrue(!r.test("xyzzy"));        
+    }
+        
+    public void testDuplicateAdd() throws Exception {
+        UnaryPredicate p = new ConstantPredicate(true);
+        UnaryAnd q = new UnaryAnd(p,p);
+        assertTrue(q.test("xyzzy"));
+        for(int i=0;i<10;i++) {
+            q.and(p);
+            assertTrue(q.test("xyzzy"));        
         }
     }
-    
+        
     public void testEquals() throws Exception {
-        BinaryProcedureSequence p = new BinaryProcedureSequence();
+        UnaryAnd p = new UnaryAnd();
         assertEquals(p,p);
-        BinaryProcedureSequence q = new BinaryProcedureSequence();
+        UnaryAnd q = new UnaryAnd();
         assertObjectsAreEqual(p,q);
 
         for(int i=0;i<3;i++) {
-            p.then(new NoOp());
+            p.and(ConstantPredicate.getTruePredicate());
             assertObjectsAreNotEqual(p,q);
-            q.then(new NoOp());
+            q.and(ConstantPredicate.getTruePredicate());
             assertObjectsAreEqual(p,q);
-            p.then(new BinaryProcedureSequence(new NoOp(),new NoOp()));
+            p.and(new UnaryAnd(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
             assertObjectsAreNotEqual(p,q);            
-            q.then(new BinaryProcedureSequence(new NoOp(),new NoOp()));
+            q.and(new UnaryAnd(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
             assertObjectsAreEqual(p,q);            
         }
-                
-        assertObjectsAreNotEqual(p,new NoOp());
+        
+        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
     }
 
-    // Classes
-    // ------------------------------------------------------------------------
-    
-    static class RunCounter implements BinaryProcedure {        
-        public void run(Object a, Object b) {
-            count++;    
-        }        
-        public int count = 0;
-    }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/NotPredicate.java,v 1.2 2003/01/28 12:00:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/And.java,v 1.1 2003/03/04 14:48:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,70 +56,82 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.io.Serializable;
+import java.util.Iterator;
 
 import org.apache.commons.functor.Predicate;
 
 /**
- * {@link #test Tests} to the logical inverse
- * of some other predicate.
+ * {@link #test Tests} <code>true</code> iff
+ * none of its children test <code>false</code>.
+ * Note that by this definition, the "and" of
+ * an empty collection of predicates tests <code>true</code>.
  * <p>
  * Note that although this class implements 
- * {@link Serializable}, a given instance will
- * only be truly <code>Serializable</code> if the
- * underlying functor is.  Attempts to serialize
- * an instance whose delegate is not 
+ * {@link java.io.Serializable Serializable}, a given instance will
+ * only be truly <code>Serializable</code> if all the
+ * underlying functors are.  Attempts to serialize
+ * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:29 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:07 $
  * @author Rodney Waldhoff
  */
-public final class NotPredicate implements Predicate, Serializable {
+public final class And extends BasePredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
+    public And() {
+        super();
+    }
 
-    public NotPredicate(Predicate p) {
-        this.predicate = p;
+    public And(Predicate p) {
+        super(p);
+    }
+
+    public And(Predicate p, Predicate q) {
+        super(p,q);
+    }
+
+    public And(Predicate p, Predicate q, Predicate r) {
+        super(p,q,r);
     }
     
+    // modifiers
+    // ------------------------------------------------------------------------ 
+    public And and(Predicate p) {
+        super.addPredicate(p);
+        return this;
+    }
+ 
     // predicate interface
     // ------------------------------------------------------------------------
     public boolean test() {
-        return !(predicate.test());
+        for(Iterator iter = getPredicateIterator(); iter.hasNext();) {
+            if(!((Predicate)iter.next()).test()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean equals(Object that) {
-        if(that instanceof NotPredicate) {
-            return equals((NotPredicate)that);
+        if(that instanceof And) {
+            return equals((And)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(NotPredicate that) {
-        return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
+    public boolean equals(And that) {
+        return getPredicateListEquals(that);
     }
     
     public int hashCode() {
-        int hash = "NotPredicate".hashCode();
-        if(null != predicate) {
-            hash ^= predicate.hashCode();
-        }
-        return hash;
+        return "And".hashCode() ^ getPredicateListHashCode();
     }
     
     public String toString() {
-        return "NotPredicate<" + predicate + ">";
-    }
-
-    // static
-    // ------------------------------------------------------------------------
-    public static Predicate not(Predicate that) {
-        return null == that ? null : new NotPredicate(that);
+        return "And<" + getPredicateListToString() + ">";
     }
     
-    // attributes
-    // ------------------------------------------------------------------------
-    private Predicate predicate = null;
 }

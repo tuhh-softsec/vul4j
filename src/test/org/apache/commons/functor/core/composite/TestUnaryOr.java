@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/Attic/TestOrBinaryPredicate.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryOr.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,31 +60,31 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
  * @author Rodney Waldhoff
  */
-public class TestOrBinaryPredicate extends BaseFunctorTest {
+public class TestUnaryOr extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestOrBinaryPredicate(String testName) {
+    public TestUnaryOr(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestOrBinaryPredicate.class);
+        return new TestSuite(TestUnaryOr.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new OrBinaryPredicate(new ConstantPredicate(false),new ConstantPredicate(true));
+        return new UnaryOr(new ConstantPredicate(false),new ConstantPredicate(true));
     }
 
     // Lifecycle
@@ -102,70 +102,70 @@ public class TestOrBinaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testTrue() throws Exception {
-        assertTrue((new OrBinaryPredicate(new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
-        assertTrue((new OrBinaryPredicate(new ConstantPredicate(false),new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
-        assertTrue((new OrBinaryPredicate(new ConstantPredicate(false),new ConstantPredicate(false),new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
+        assertTrue((new UnaryOr(new ConstantPredicate(true))).test("xyzzy"));
+        assertTrue((new UnaryOr(new ConstantPredicate(false),new ConstantPredicate(true))).test("xyzzy"));
+        assertTrue((new UnaryOr(new ConstantPredicate(false),new ConstantPredicate(false),new ConstantPredicate(true))).test("xyzzy"));
         
-        OrBinaryPredicate p = new OrBinaryPredicate(new ConstantPredicate(true));
-        assertTrue(p.test("xyzzy",new Integer(3)));        
+        UnaryOr p = new UnaryOr(new ConstantPredicate(true));
+        assertTrue(p.test("xyzzy"));        
         for(int i=0;i<10;i++) {
             p.or(new ConstantPredicate(i%2==0));
-            assertTrue(p.test("xyzzy",new Integer(3)));        
+            assertTrue(p.test("xyzzy"));        
         }
         
-        OrBinaryPredicate q = new OrBinaryPredicate(new ConstantPredicate(true));
-        assertTrue(q.test("xyzzy",new Integer(3)));        
+        UnaryOr q = new UnaryOr(new ConstantPredicate(true));
+        assertTrue(q.test("xyzzy"));        
         for(int i=0;i<10;i++) {
             q.or(new ConstantPredicate(i%2==0));
-            assertTrue(q.test("xyzzy",new Integer(3)));        
+            assertTrue(q.test("xyzzy"));        
         }
         
-        OrBinaryPredicate r = new OrBinaryPredicate(p,q);
-        assertTrue(r.test("xyzzy",new Integer(3)));        
+        UnaryOr r = new UnaryOr(p,q);
+        assertTrue(r.test("xyzzy"));        
     }
     
     public void testFalse() throws Exception {
-        assertTrue(!(new OrBinaryPredicate()).test("xyzzy",new Integer(3)));
-        assertTrue(!(new OrBinaryPredicate(new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
-        assertTrue(!(new OrBinaryPredicate(new ConstantPredicate(false),new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
-        assertTrue(!(new OrBinaryPredicate(new ConstantPredicate(false),new ConstantPredicate(false),new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
+        assertTrue(!(new UnaryOr()).test("xyzzy"));
+        assertTrue(!(new UnaryOr(new ConstantPredicate(false))).test("xyzzy"));
+        assertTrue(!(new UnaryOr(new ConstantPredicate(false),new ConstantPredicate(false))).test("xyzzy"));
+        assertTrue(!(new UnaryOr(new ConstantPredicate(false),new ConstantPredicate(false),new ConstantPredicate(false))).test("xyzzy"));
         
-        OrBinaryPredicate p = new OrBinaryPredicate(new ConstantPredicate(false));
-        assertTrue(!p.test("xyzzy",new Integer(3)));        
+        UnaryOr p = new UnaryOr(new ConstantPredicate(false));
+        assertTrue(!p.test("xyzzy"));        
         for(int i=0;i<10;i++) {
             p.or(new ConstantPredicate(false));
-            assertTrue(!p.test("xyzzy",new Integer(3)));        
+            assertTrue(!p.test("xyzzy"));        
         }
         
-        OrBinaryPredicate q = new OrBinaryPredicate(new ConstantPredicate(false));
-        assertTrue(!q.test("xyzzy",new Integer(3)));        
+        UnaryOr q = new UnaryOr(new ConstantPredicate(false));
+        assertTrue(!q.test("xyzzy"));        
         for(int i=0;i<10;i++) {
             q.or(new ConstantPredicate(false));
-            assertTrue(!q.test("xyzzy",new Integer(3)));        
+            assertTrue(!q.test("xyzzy"));        
         }
         
-        OrBinaryPredicate r = new OrBinaryPredicate(p,q);
-        assertTrue(!r.test("xyzzy",new Integer(3)));        
+        UnaryOr r = new UnaryOr(p,q);
+        assertTrue(!r.test("xyzzy"));        
     }
         
     public void testDuplicateAdd() throws Exception {
-        BinaryPredicate p = new ConstantPredicate(true);
-        OrBinaryPredicate q = new OrBinaryPredicate(p,p);
-        assertTrue(q.test("xyzzy",new Integer(3)));
+        UnaryPredicate p = new ConstantPredicate(true);
+        UnaryOr q = new UnaryOr(p,p);
+        assertTrue(q.test("xyzzy"));
         for(int i=0;i<10;i++) {
             q.or(p);
-            assertTrue(q.test("xyzzy",new Integer(3)));        
+            assertTrue(q.test("xyzzy"));        
         }
     }
         
     public void testEquals() throws Exception {
-        OrBinaryPredicate p = new OrBinaryPredicate();
+        UnaryOr p = new UnaryOr();
         assertEquals(p,p);
 
-        OrBinaryPredicate q = new OrBinaryPredicate();
+        UnaryOr q = new UnaryOr();
         assertObjectsAreEqual(p,q);
 
-        AndBinaryPredicate r = new AndBinaryPredicate();
+        UnaryAnd r = new UnaryAnd();
         assertObjectsAreNotEqual(p,r);
         
         for(int i=0;i<3;i++) {
@@ -176,11 +176,11 @@ public class TestOrBinaryPredicate extends BaseFunctorTest {
             r.and(ConstantPredicate.getTruePredicate());
             assertObjectsAreNotEqual(p,r);
 
-            p.or(new OrBinaryPredicate(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            p.or(new UnaryOr(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
             assertObjectsAreNotEqual(p,q);            
-            q.or(new OrBinaryPredicate(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            q.or(new UnaryOr(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
             assertObjectsAreEqual(p,q);            
-            r.and(new OrBinaryPredicate(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            r.and(new UnaryOr(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
             assertObjectsAreNotEqual(p,r);
         }
         

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/OrUnaryPredicate.java,v 1.1 2003/01/27 19:33:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/BinarySequence.java,v 1.1 2003/03/04 14:48:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,82 +56,87 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.util.Iterator;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 
-import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.BinaryProcedure;
 
 /**
- * {@link #test Tests} <code>true</code> iff
- * at least one of its children test <code>true</code>.
- * Note that by this definition, the "or" of
- * an empty collection of predicates tests <code>false</code>.
+ * A {@link BinaryProcedure BinaryProcedure} 
+ * that {@link BinaryProcedure#run runs} an ordered 
+ * sequence of {@link BinaryProcedure BinaryProcedures}.
+ * When the sequence is empty, this procedure is does
+ * nothing.
  * <p>
  * Note that although this class implements 
- * {@link java.io.Serializable Serializable}, a given instance will
+ * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:40 $
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:07 $
  * @author Rodney Waldhoff
  */
-public final class OrUnaryPredicate extends BaseUnaryPredicateList {
+public class BinarySequence implements BinaryProcedure, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
-    public OrUnaryPredicate() {
-        super();
+    public BinarySequence() {
     }
 
-    public OrUnaryPredicate(UnaryPredicate p) {
-        super(p);
+    public BinarySequence(BinaryProcedure p) {
+        then(p);
     }
 
-    public OrUnaryPredicate(UnaryPredicate p, UnaryPredicate q) {
-        super(p,q);
+    public BinarySequence(BinaryProcedure p, BinaryProcedure q) {
+        then(p);
+        then(q);
     }
 
-    public OrUnaryPredicate(UnaryPredicate p, UnaryPredicate q, UnaryPredicate r) {
-        super(p,q,r);
-    }
-    
     // modifiers
     // ------------------------------------------------------------------------ 
-    public OrUnaryPredicate or(UnaryPredicate p) {
-        super.addUnaryPredicate(p);
+    public BinarySequence then(BinaryProcedure p) {
+        list.add(p);
         return this;
     }
  
     // predicate interface
     // ------------------------------------------------------------------------
-    public boolean test(Object a) {
-        for(Iterator iter = getUnaryPredicateIterator(); iter.hasNext();) {
-            if(((UnaryPredicate)iter.next()).test(a)) {
-                return true;
-            }
+    public void run(Object left, Object right) {        
+        for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
+            ((BinaryProcedure)iter.previous()).run(left,right);
         }
-        return false;
     }
 
     public boolean equals(Object that) {
-        if(that instanceof OrUnaryPredicate) {
-            return equals((OrUnaryPredicate)that);
+        if(that instanceof BinarySequence) {
+            return equals((BinarySequence)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(OrUnaryPredicate that) {
-        return getUnaryPredicateListEquals(that);
+    public boolean equals(BinarySequence that) {
+        // by construction, list is never null
+        return null != that && list.equals(that.list);
     }
     
     public int hashCode() {
-        return "OrUnaryPredicate".hashCode() ^ getUnaryPredicateListHashCode();
+        // by construction, list is never null
+        return "BinarySequence".hashCode() ^ list.hashCode();
     }
     
     public String toString() {
-        return "OrUnaryPredicate<" + getUnaryPredicateListToString() + ">";
+        return "BinarySequence<" + list + ">";
     }
     
+    
+    // attributes
+    // ------------------------------------------------------------------------
+    private List list = new ArrayList();
+
 }

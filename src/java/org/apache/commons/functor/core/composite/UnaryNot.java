@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/ProcedureSequence.java,v 1.2 2003/01/28 12:00:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/UnaryNot.java,v 1.1 2003/03/04 14:48:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,85 +57,69 @@
 package org.apache.commons.functor.core.composite;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
 
-import org.apache.commons.functor.Procedure;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * A {@link Procedure Procedure} 
- * that {@link Procedure#run runs} an ordered 
- * sequence of {@link Procedure Procedures}.
- * When the sequence is empty, this procedure is does
- * nothing.
+ * {@link #test Tests} to the logical inverse
+ * of some other predicate.
  * <p>
  * Note that although this class implements 
  * {@link Serializable}, a given instance will
- * only be truly <code>Serializable</code> if all the
- * underlying functors are.  Attempts to serialize
- * an instance whose delegates are not all 
+ * only be truly <code>Serializable</code> if the
+ * underlying functor is.  Attempts to serialize
+ * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:29 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:07 $
  * @author Rodney Waldhoff
  */
-public class ProcedureSequence implements Procedure, Serializable {
+public final class UnaryNot implements UnaryPredicate, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
-    public ProcedureSequence() {
-    }
 
-    public ProcedureSequence(Procedure p) {
-        then(p);
+    public UnaryNot(UnaryPredicate p) {
+        this.predicate = p;
     }
-
-    public ProcedureSequence(Procedure p, Procedure q) {
-        then(p);
-        then(q);
-    }
-
-    // modifiers
-    // ------------------------------------------------------------------------ 
-    public ProcedureSequence then(Procedure p) {
-        list.add(p);
-        return this;
-    }
- 
+    
     // predicate interface
     // ------------------------------------------------------------------------
-    public void run() {        
-        for(ListIterator iter = list.listIterator(list.size()); iter.hasPrevious();) {
-            ((Procedure)iter.previous()).run();
-        }
+    public boolean test(Object obj) {
+        return !(predicate.test(obj));
     }
 
     public boolean equals(Object that) {
-        if(that instanceof ProcedureSequence) {
-            return equals((ProcedureSequence)that);
+        if(that instanceof UnaryNot) {
+            return equals((UnaryNot)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(ProcedureSequence that) {
-        // by construction, list is never null
-        return null != that && list.equals(that.list);
+    public boolean equals(UnaryNot that) {
+        return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
     
     public int hashCode() {
-        // by construction, list is never null
-        return "ProcedureSequence".hashCode() ^ list.hashCode();
+        int hash = "UnaryNot".hashCode();
+        if(null != predicate) {
+            hash ^= predicate.hashCode();
+        }
+        return hash;
     }
     
     public String toString() {
-        return "ProcedureSequence<" + list + ">";
+        return "UnaryNot<" + predicate + ">";
     }
-    
+
+    // static
+    // ------------------------------------------------------------------------
+    public static UnaryPredicate not(UnaryPredicate that) {
+        return null == that ? null : new UnaryNot(that);
+    }
     
     // attributes
     // ------------------------------------------------------------------------
-    private List list = new ArrayList();
-
+    private UnaryPredicate predicate = null;
 }

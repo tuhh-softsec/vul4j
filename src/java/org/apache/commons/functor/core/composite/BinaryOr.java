@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/AndPredicate.java,v 1.1 2003/01/27 19:33:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/BinaryOr.java,v 1.1 2003/03/04 14:48:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,13 +58,13 @@ package org.apache.commons.functor.core.composite;
 
 import java.util.Iterator;
 
-import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.BinaryPredicate;
 
 /**
  * {@link #test Tests} <code>true</code> iff
- * none of its children test <code>false</code>.
- * Note that by this definition, the "and" of
- * an empty collection of predicates tests <code>true</code>.
+ * at least one of its children test <code>true</code>.
+ * Note that by this definition, the "or" of
+ * an empty collection of predicates tests <code>false</code>.
  * <p>
  * Note that although this class implements 
  * {@link java.io.Serializable Serializable}, a given instance will
@@ -73,65 +73,65 @@ import org.apache.commons.functor.Predicate;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:40 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:07 $
  * @author Rodney Waldhoff
  */
-public final class AndPredicate extends BasePredicateList {
+public final class BinaryOr extends BaseBinaryPredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
-    public AndPredicate() {
+    public BinaryOr() {
         super();
     }
 
-    public AndPredicate(Predicate p) {
+    public BinaryOr(BinaryPredicate p) {
         super(p);
     }
 
-    public AndPredicate(Predicate p, Predicate q) {
+    public BinaryOr(BinaryPredicate p, BinaryPredicate q) {
         super(p,q);
     }
 
-    public AndPredicate(Predicate p, Predicate q, Predicate r) {
+    public BinaryOr(BinaryPredicate p, BinaryPredicate q, BinaryPredicate r) {
         super(p,q,r);
     }
     
     // modifiers
     // ------------------------------------------------------------------------ 
-    public AndPredicate and(Predicate p) {
-        super.addPredicate(p);
+    public BinaryOr or(BinaryPredicate p) {
+        super.addBinaryPredicate(p);
         return this;
     }
  
     // predicate interface
     // ------------------------------------------------------------------------
-    public boolean test() {
-        for(Iterator iter = getPredicateIterator(); iter.hasNext();) {
-            if(!((Predicate)iter.next()).test()) {
-                return false;
+    public boolean test(Object a, Object b) {
+        for(Iterator iter = getBinaryPredicateIterator(); iter.hasNext();) {
+            if(((BinaryPredicate)iter.next()).test(a,b)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public boolean equals(Object that) {
-        if(that instanceof AndPredicate) {
-            return equals((AndPredicate)that);
+        if(that instanceof BinaryOr) {
+            return equals((BinaryOr)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(AndPredicate that) {
-        return getPredicateListEquals(that);
+    public boolean equals(BinaryOr that) {
+        return getBinaryPredicateListEquals(that);
     }
     
     public int hashCode() {
-        return "AndPredicate".hashCode() ^ getPredicateListHashCode();
+        return "BinaryOr".hashCode() ^ getBinaryPredicateListHashCode();
     }
     
     public String toString() {
-        return "AndPredicate<" + getPredicateListToString() + ">";
+        return "BinaryOr<" + getBinaryPredicateListToString() + ">";
     }
     
 }

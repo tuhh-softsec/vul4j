@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/NotUnaryPredicate.java,v 1.2 2003/01/28 12:00:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/BinaryNot.java,v 1.1 2003/03/04 14:48:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,7 +58,7 @@ package org.apache.commons.functor.core.composite;
 
 import java.io.Serializable;
 
-import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.BinaryPredicate;
 
 /**
  * {@link #test Tests} to the logical inverse
@@ -71,38 +71,38 @@ import org.apache.commons.functor.UnaryPredicate;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:29 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:07 $
  * @author Rodney Waldhoff
  */
-public final class NotUnaryPredicate implements UnaryPredicate, Serializable {
+public final class BinaryNot implements BinaryPredicate, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
 
-    public NotUnaryPredicate(UnaryPredicate p) {
+    public BinaryNot(BinaryPredicate p) {
         this.predicate = p;
     }
     
     // predicate interface
     // ------------------------------------------------------------------------
-    public boolean test(Object obj) {
-        return !(predicate.test(obj));
+    public boolean test(Object left, Object right) {
+        return !(predicate.test(left,right));
     }
 
     public boolean equals(Object that) {
-        if(that instanceof NotUnaryPredicate) {
-            return equals((NotUnaryPredicate)that);
+        if(that instanceof BinaryNot) {
+            return equals((BinaryNot)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(NotUnaryPredicate that) {
+    public boolean equals(BinaryNot that) {
         return null != that && (null == predicate ? null == that.predicate : predicate.equals(that.predicate));
     }
     
     public int hashCode() {
-        int hash = "NotUnaryPredicate".hashCode();
+        int hash = "BinaryNot".hashCode();
         if(null != predicate) {
             hash ^= predicate.hashCode();
         }
@@ -110,16 +110,16 @@ public final class NotUnaryPredicate implements UnaryPredicate, Serializable {
     }
     
     public String toString() {
-        return "NotUnaryPredicate<" + predicate + ">";
+        return "BinaryNot<" + predicate + ">";
     }
 
     // static
     // ------------------------------------------------------------------------
-    public static UnaryPredicate not(UnaryPredicate that) {
-        return null == that ? null : new NotUnaryPredicate(that);
+    public static BinaryPredicate not(BinaryPredicate that) {
+        return null == that ? null : new BinaryNot(that);
     }
     
     // attributes
     // ------------------------------------------------------------------------
-    private UnaryPredicate predicate = null;
+    private BinaryPredicate predicate = null;
 }
