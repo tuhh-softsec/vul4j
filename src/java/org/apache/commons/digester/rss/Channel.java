@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/Channel.java,v 1.1 2001/05/22 02:55:03 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/05/22 02:55:03 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/Channel.java,v 1.2 2001/09/14 19:22:52 husted Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/09/14 19:22:52 $
  *
  * ====================================================================
  *
@@ -78,7 +78,8 @@ import java.util.ArrayList;
  * to further specialize its behavior.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/05/22 02:55:03 $
+ * @author Ted Husted
+ * @version $Revision: 1.2 $ $Date: 2001/09/14 19:22:52 $
  */
 
 public class Channel {
@@ -355,6 +356,14 @@ public class Channel {
 
 
     /**
+     * Return the items for this channel.
+     */
+    public Item[] getItems() {
+        return findItems();
+    }
+
+
+    /**
      * Return the skip days for this channel.
      */
     public String[] findSkipDays() {
@@ -368,11 +377,27 @@ public class Channel {
     /**
      * Return the skip hours for this channel.
      */
+    public String[] getSkipHours() {
+        return findSkipHours();
+    }
+
+
+    /**
+     * Return the skip hours for this channel.
+     */
     public String[] findSkipHours() {
         synchronized (skipHours) {
             String skipHours[] = new String[this.skipHours.size()];
             return ((String[]) this.skipHours.toArray(skipHours));
         }
+    }
+
+
+    /**
+     * Return the skip days for this channel.
+     */
+    public String[] getSkipDays() {
+        return findSkipDays();
     }
 
 
