@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.2 2003/02/19 12:09:04 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.3 2003/02/19 12:34:20 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -69,6 +69,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
@@ -76,7 +77,7 @@ import org.apache.commons.functor.core.EqualPredicate;
 import org.apache.commons.functor.core.IdentityFunction;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/02/19 12:09:04 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/19 12:34:20 $
  * @author Rodney Waldhoff
  */
 public class TestCollectionAlgorithms extends TestCase {
@@ -99,10 +100,12 @@ public class TestCollectionAlgorithms extends TestCase {
         super.setUp();
         list = new ArrayList();
         evens = new ArrayList();
+        doubled = new ArrayList();
         listWithDuplicates = new ArrayList();
         sum = 0;
         for(int i=0;i<10;i++) {
             list.add(new Integer(i));
+            doubled.add(new Integer(i*2));
             listWithDuplicates.add(new Integer(i));
             listWithDuplicates.add(new Integer(i));
             sum += i;
@@ -215,9 +218,32 @@ public class TestCollectionAlgorithms extends TestCase {
         assertEquals(new Integer(sum),result);
     }    
 
+    public void testRetain() {
+        CollectionAlgorithms.retain(list.iterator(),isEven);
+        assertEquals(evens,list);
+    }
+
+    public void testRemove() {
+        CollectionAlgorithms.remove(list.iterator(),isOdd);
+        assertEquals(evens,list);
+    }
+
+    public void testTransform() {
+        CollectionAlgorithms.transform(
+            list.listIterator(),
+            new UnaryFunction() {
+                public Object evaluate(Object obj) {
+                    return new Integer(((Number)obj).intValue()*2);
+                }
+            }
+        );
+        assertEquals(doubled,list);
+    }
+
     // Attributes
     // ------------------------------------------------------------------------
     private List list = null;    
+    private List doubled = null;
     private List evens = null;
     private List listWithDuplicates = null;    
     private int sum = 0;

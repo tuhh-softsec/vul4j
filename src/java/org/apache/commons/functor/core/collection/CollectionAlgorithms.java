@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Attic/CollectionAlgorithms.java,v 1.2 2003/02/19 12:09:04 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Attic/CollectionAlgorithms.java,v 1.3 2003/02/19 12:34:20 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,6 +59,7 @@ package org.apache.commons.functor.core.collection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.functor.BinaryFunction;
@@ -70,7 +71,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * Utility methods and algorithms for applying functors 
  * to {@link Collection Collections}.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/02/19 12:09:04 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/19 12:34:20 $
  * @author Rodney Waldhoff
  */
 public final class CollectionAlgorithms {
@@ -95,7 +96,7 @@ public final class CollectionAlgorithms {
      * and {@link Collection#add add} the result to a
      * new {@link Collection}.
      * 
-     * @see #collect(java.util.Iterator,org.apache.commons.functor.UnaryFunction,java.util.Collection)
+     * @see #collect(Iterator,UnaryFunction,Collection)
      */
     public static Collection collect(Iterator iter, UnaryFunction func) {
         return collect(iter,func,new ArrayList());
@@ -109,7 +110,7 @@ public final class CollectionAlgorithms {
      * given {@link Collection}.
      * 
      * @return the given {@link Collection}
-     * @see #collect(java.util.Iterator,org.apache.commons.functor.UnaryFunction)
+     * @see #collect(Iterator,UnaryFunction)
      */
     public static Collection collect(Iterator iter, UnaryFunction func, Collection col) {
         while(iter.hasNext()) {
@@ -124,7 +125,7 @@ public final class CollectionAlgorithms {
      * {@link Iterator Iterator} that matches the given
      * {@link UnaryPredicate UnaryPredicate}.
      * 
-     * @see #detect(java.util.Iterator,org.apache.commons.functor.UnaryPredicate)
+     * @see #detect(Iterator,UnaryPredicate)
      */
     public static boolean contains(Iterator iter, UnaryPredicate pred) {
         while(iter.hasNext()) {
@@ -142,7 +143,7 @@ public final class CollectionAlgorithms {
      * {@link NoSuchElementException NoSuchElementException} if no
      * matching element can be found.
      * 
-     * @see #detect(java.util.Iterator,org.apache.commons.functor.UnaryPredicate,java.lang.Object)
+     * @see #detect(Iterator,UnaryPredicate,Object)
      */
     public static Object detect(Iterator iter, UnaryPredicate pred) {
         while(iter.hasNext()) {
@@ -161,7 +162,7 @@ public final class CollectionAlgorithms {
      * the given (possibly <code>null</code> <code>Object</code>
      * if no matching element can be found.
      * 
-     * @see #detect(java.util.Iterator,org.apache.commons.functor.UnaryPredicate)
+     * @see #detect(Iterator,UnaryPredicate)
      */
     public static Object detect(Iterator iter, UnaryPredicate pred, Object ifNone) {
         while(iter.hasNext()) {
@@ -208,47 +209,13 @@ public final class CollectionAlgorithms {
 
     /**
      * {@link Collection#add Add} all elements within the
-     * given {@link Iterator Iterator} that match the
-     * given {@link UnaryPredicate UnaryPredicate} to the
-     * given {@link Collection Collection}.
-     * 
-     * @return the given {@link Collection Collection}
-     * @see #select(java.util.Iterator,org.apache.commons.functor.UnaryPredicate)
-     * @see #reject(java.util.Iterator,org.apache.commons.functor.UnaryPredicate,java.util.Collection)
-     */
-    public static Collection select(Iterator iter, UnaryPredicate pred, Collection col) {
-        while(iter.hasNext()) {
-            Object obj = iter.next();
-            if(pred.test(obj)) {
-                col.add(obj);
-            }
-        }
-        return col;
-    }
-
-    /**
-     * {@link Collection#add Add} all elements within the
-     * given {@link Iterator Iterator} that match the
-     * given {@link UnaryPredicate UnaryPredicate} to a
-     * new {@link Collection Collection}.
-     * 
-     * @return the new {@link Collection Collection}
-     * @see #select(java.util.Iterator,org.apache.commons.functor.UnaryPredicate,java.util.Collection)
-     * @see #reject(java.util.Iterator,org.apache.commons.functor.UnaryPredicate)
-     */
-    public static Collection select(Iterator iter, UnaryPredicate pred) {
-        return select(iter,pred,new ArrayList());
-    }
-
-    /**
-     * {@link Collection#add Add} all elements within the
      * given {@link Iterator Iterator} that fail to match the
      * given {@link UnaryPredicate UnaryPredicate} to the
      * given {@link Collection Collection}.
      * 
      * @return the given {@link Collection Collection}
-     * @see #reject(java.util.Iterator,org.apache.commons.functor.UnaryPredicate)
-     * @see #select(java.util.Iterator,org.apache.commons.functor.UnaryPredicate,java.util.Collection)
+     * @see #reject(Iterator,UnaryPredicate)
+     * @see #select(Iterator,UnaryPredicate,Collection)
      */
     public static Collection reject(Iterator iter, UnaryPredicate pred, Collection col) {
         while(iter.hasNext()) {
@@ -267,10 +234,89 @@ public final class CollectionAlgorithms {
      * new {@link Collection Collection}.
      * 
      * @return the new {@link Collection Collection}
-     * @see #reject(java.util.Iterator,org.apache.commons.functor.UnaryPredicate,java.util.Collection)
-     * @see #select(java.util.Iterator,org.apache.commons.functor.UnaryPredicate)
+     * @see #reject(Iterator,UnaryPredicate,Collection)
+     * @see #select(Iterator,UnaryPredicate)
      */
     public static Collection reject(Iterator iter, UnaryPredicate pred) {
         return reject(iter,pred,new ArrayList());
+    }
+
+    /**
+     * {@link Iterator#remove Renmove} from the
+     * given {@link Iterator Iterator} all elements 
+     * that match the
+     * given {@link UnaryPredicate UnaryPredicate}.
+     * 
+     * @see #retain(Iterator,UnaryPredicate)
+     */
+    public static void remove(Iterator iter, UnaryPredicate pred) {
+        while(iter.hasNext()) {
+            if(pred.test(iter.next())) {
+                iter.remove();
+            }
+        }        
+    }
+    
+    /**
+     * {@link Iterator#remove Renmove} from the
+     * given {@link Iterator Iterator} all elements 
+     * that fail to match the
+     * given {@link UnaryPredicate UnaryPredicate}.
+     * 
+     * @see #remove(Iterator,UnaryPredicate)
+     */
+    public static void retain(Iterator iter, UnaryPredicate pred) {
+        while(iter.hasNext()) {
+            if(!(pred.test(iter.next()))) {
+                iter.remove();
+            }
+        }
+    }
+
+    /**
+     * {@link Collection#add Add} all elements within the
+     * given {@link Iterator Iterator} that match the
+     * given {@link UnaryPredicate UnaryPredicate} to the
+     * given {@link Collection Collection}.
+     * 
+     * @return the given {@link Collection Collection}
+     * @see #select(Iterator,UnaryPredicate)
+     * @see #reject(Iterator,UnaryPredicate,Collection)
+     */
+    public static Collection select(Iterator iter, UnaryPredicate pred, Collection col) {
+        while(iter.hasNext()) {
+            Object obj = iter.next();
+            if(pred.test(obj)) {
+                col.add(obj);
+            }
+        }
+        return col;
+    }
+
+    /**
+     * {@link Collection#add Add} all elements within the
+     * given {@link Iterator Iterator} that match the
+     * given {@link UnaryPredicate UnaryPredicate} to a
+     * new {@link Collection Collection}.
+     * 
+     * @return the new {@link Collection Collection}
+     * @see #select(Iterator,UnaryPredicate,Collection)
+     * @see #reject(Iterator,UnaryPredicate)
+     */
+    public static Collection select(Iterator iter, UnaryPredicate pred) {
+        return select(iter,pred,new ArrayList());
+    }
+
+    /**
+     * {@link ListIterator#set Set} each element of the
+     * given {@link ListIterator ListIterator} to
+     * the result of applying the 
+     * given {@link UnaryFunction UnaryFunction} to
+     * its original value.
+     */
+    public static void transform(ListIterator iter, UnaryFunction func) {
+        while(iter.hasNext()) {
+            iter.set(func.evaluate(iter.next()));
+        }
     }
 }
