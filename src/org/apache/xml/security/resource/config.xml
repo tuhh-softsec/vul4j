@@ -446,6 +446,9 @@
             <ProviderAlgo ProviderId="BC"
                           RequiredKey="DESEDE"
                           JCEName="DESEDEWrap" />
+            <ProviderAlgo ProviderId="SunJCE"
+                          RequiredKey="DESede"
+                          JCEName="DESedeWrap" />             
             <!-- <ProviderAlgo ProviderId="BC" JCEName="DESEDEWrap" RequiredKey="DESEDE" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes128"
@@ -455,6 +458,9 @@
                     KeyLength="128">
             <!-- We need an AES in ElectronicCodeBook (ECB) mode here without padding -->
             <ProviderAlgo ProviderId="BC"
+                          JCEName="AESWrap"
+                          RequiredKey="AES" />
+            <ProviderAlgo ProviderId="SunJCE"
                           JCEName="AESWrap"
                           RequiredKey="AES" />
             <!-- <ProviderAlgo ProviderId="BC" JCEName="AESWrap" RequiredKey="AES" /> -->
@@ -468,6 +474,9 @@
             <ProviderAlgo ProviderId="BC"
                           JCEName="AESWrap"
                           RequiredKey="AES" />
+            <ProviderAlgo ProviderId="SunJCE"
+                          JCEName="AESWrap"
+                          RequiredKey="AES" />
             <!-- <ProviderAlgo ProviderId="BC" JCEName="AESWrap" RequiredKey="AES" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes256"
@@ -479,6 +488,9 @@
             <ProviderAlgo ProviderId="BC"
                           JCEName="AESWrap"
                           RequiredKey="AES" />
+            <ProviderAlgo ProviderId="SunJCE"
+                          JCEName="AESWrap"
+                          RequiredKey="AES" />             
             <!-- <ProviderAlgo ProviderId="BC" JCEName="AESWrap" RequiredKey="AES" /> -->
          </Algorithm>
       </Algorithms>
