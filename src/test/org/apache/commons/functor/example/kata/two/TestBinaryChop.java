@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.2 2003/12/01 07:46:13 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.3 2003/12/01 08:27:54 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,13 +62,16 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.Algorithms;
+import org.apache.commons.functor.Function;
+import org.apache.commons.functor.generator.util.IntegerRange;
 import org.apache.commons.functor.util.BinarySearch;
 
 /**
  * See http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/12/01 07:46:13 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/01 08:27:54 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryChop extends TestCase {
@@ -110,6 +113,13 @@ public class TestBinaryChop extends TestCase {
         assertEquals(-1, chopper.find(4, new int[] { 1, 3, 5, 7 }));
         assertEquals(-1, chopper.find(6, new int[] { 1, 3, 5, 7 }));
         assertEquals(-1, chopper.find(8, new int[] { 1, 3, 5, 7 }));
+        
+        List largeList = (List)(new IntegerRange(0,100001).toCollection());
+        assertEquals(-1, chopper.find(new Integer(-5),largeList));
+        assertEquals(100000, chopper.find(new Integer(100000),largeList));
+        assertEquals(0, chopper.find(new Integer(0),largeList));
+        assertEquals(50000, chopper.find(new Integer(50000),largeList));
+        
      }
 
     public void testIterative() {
@@ -124,11 +134,11 @@ public class TestBinaryChop extends TestCase {
                         int comp = ((Comparable)(list.get(cur))).compareTo(seeking);
                         if(comp == 0) { 
                             return cur;
-                        } else if(comp > 0) {
-                            high = cur;
-                        } else {                                
+                        } else if(comp < 0) {
                             if(low == cur) { cur++; }
                             low = cur;
+                        } else {                                
+                            high = cur;
                         }
                     }
                     return -1;
@@ -158,8 +168,64 @@ public class TestBinaryChop extends TestCase {
                 }
             });    
     }
+
+    public void testRecursive2() {
+        chopTest(
+            new BaseBinaryChop() {
+                public int find(Object seeking, List list) { 
+                    return find(seeking,list,0,list.size());
+                }
+                
+                private int find(Object seeking, List list, int low, int high) {
+                    if(low >= high) {
+                        return -1;
+                    } else {
+                        int cur = (high+low)/2;
+                        int comp = ((Comparable)(list.get(cur))).compareTo(seeking);
+                        if(comp == 0) { 
+                            return cur;
+                        } else if(comp < 0) {
+                            if(low == cur) { cur++; }
+                            return find(seeking,list,cur,high);
+                        } else {                                
+                            return find(seeking,list,low,cur);
+                        }
+                    }
+                }
+            });    
+    }    
+    public void testExplicitTailRecursive() {
+        chopTest(
+            new BaseBinaryChop() {
+                public int find(final Object seeking, final List list) { 
+                    return ((Number)Algorithms.recurse(
+                        new Function() {
+                            public Object evaluate() {
+                                if(low < high) {
+                                    int mid = (high+low)/2;                                
+                                    int comp = ((Comparable)(list.get(mid))).compareTo(seeking);
+                                    if(comp == 0) { 
+                                        return new Integer(mid);
+                                    } else if(comp < 0) {
+                                        if(mid == low) { mid++; }
+                                        low = mid;
+                                        return this;
+                                    } else {  
+                                        high = mid;
+                                        return this;                              
+                                    }
+                                } else {
+                                    return new Integer(-1);
+                                }
+                            }
+                            int high = list.size();
+                            int low = 0;
+                        })).intValue();
+                }                   
+            });    
+    }
     
-    public void testTailRecursion() {
+    public void testImplicitTailRecursive() {
         chopTest(
             new BaseBinaryChop() {
                 public int find(Object seeking, List list) { 
