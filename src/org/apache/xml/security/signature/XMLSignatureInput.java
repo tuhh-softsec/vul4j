@@ -21,6 +21,7 @@ package org.apache.xml.security.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -104,8 +105,6 @@ public class XMLSignatureInput {
     */
    private String _SourceURI = null;
 
-   /** Field _cxpathAPI */
-   CachedXPathAPIHolder _cxpathAPI=null;
    
    OutputStream outputStream=null;
 
@@ -133,9 +132,7 @@ public class XMLSignatureInput {
     */
    public XMLSignatureInput(InputStream inputOctetStream)  {
    	  this._inputOctetStreamProxy=inputOctetStream;
-      if (inputOctetStream.markSupported()) {
-      	inputOctetStream.mark(-1);
-      }
+   	  
       //this(JavaUtils.getBytesFromStream(inputOctetStream));
 
    }
@@ -173,41 +170,22 @@ public class XMLSignatureInput {
     * @param rootNode
     * @param usedXPathAPI
     */
-   public XMLSignatureInput(Node rootNode, CachedXPathAPIHolder usedXPathAPI)
+   public XMLSignatureInput(Node rootNode)
    {
-      this._cxpathAPI = usedXPathAPI;
       this._subNode = rootNode;
    }
 
-   /**
-    * Construct a XMLSignatureInput from a subtree rooted by rootNode. This method included the node
-    * and <I>all</I> his descendants in the output.
-    *
-    * @param rootNode    
-    */
-   public XMLSignatureInput(Node rootNode)  {
-      this(rootNode, null);
-   }
-
+   
    /**
     * Constructor XMLSignatureInput
     *
     * @param inputNodeSet
     * @param usedXPathAPI
     */
-   public XMLSignatureInput(Set inputNodeSet, CachedXPathAPIHolder usedXPathAPI) {
+   public XMLSignatureInput(Set inputNodeSet) {
    	    this._inputNodeSet = inputNodeSet;
-   	    this._cxpathAPI = usedXPathAPI;
     }
 
-   /**
-    * Constructor XMLSignatureInput
-    *
-    * @param inputNodeSet
-    */
-   public XMLSignatureInput(Set inputNodeSet) {
-      this(inputNodeSet, null);
-   }
 
    /**
     * Constructor XMLSignatureInput
@@ -216,19 +194,7 @@ public class XMLSignatureInput {
     * @deprecated Use {@link Set}s instead of {@link NodeList}s.
     */
    public XMLSignatureInput(NodeList inputNodeSet) {   	  
-      this(XMLUtils.convertNodelistToSet(inputNodeSet), null);
-   }
-
-   /**
-    * Constructor XMLSignatureInput
-    *
-    * @param inputNodeSet
-    * @param usedXPathAPI
-    * @deprecated Use {@link Set}s instead of {@link NodeList}s.
-    */
-   public XMLSignatureInput(NodeList inputNodeSet,
-                            CachedXPathAPIHolder usedXPathAPI) {
-      this(XMLUtils.convertNodelistToSet(inputNodeSet), usedXPathAPI);
+      this(XMLUtils.convertNodelistToSet(inputNodeSet));
    }
 
    
@@ -310,7 +276,7 @@ public class XMLSignatureInput {
             //XMLUtils.circumventBug2650(document);
 
             try {
-               NodeList nodeList = this._cxpathAPI.getCachedXPathAPI().selectNodeList(
+               NodeList nodeList = CachedXPathAPIHolder.getCachedXPathAPI().selectNodeList(
                   document,
                   "(//. | //@* | //namespace::*)[not(self::node()=/) and not(self::node=/container)]");
 
@@ -334,16 +300,8 @@ public class XMLSignatureInput {
     */
    public InputStream getOctetStream()
            throws IOException, CanonicalizationException {
-      
-   	  InputStream is = this._inputOctetStreamProxy;
-      if (is!=null) {
-      	    if (is.markSupported()) {
-      	    	is.reset();
-      	    	return is;
-            }
-            bytes=JavaUtils.getBytesFromStream(is);
-      }           
-      return _inputOctetStreamProxy=new ByteArrayInputStream(getBytes());
+         	  
+      return getResetableInputStream();                 
 
    }
    /**
@@ -365,17 +323,13 @@ public class XMLSignatureInput {
     if (bytes!=null) {
         return bytes;      
       }
-   	  InputStream is = this._inputOctetStreamProxy;
+   	  InputStream is = getResetableInputStream();
    	  if (is!=null) {
-   	  	//is.reset();
-   	  	if (is.markSupported()) {
+        //reseatable can read again bytes. 
+   	  	if (bytes==null) {
             is.reset();       
             bytes=JavaUtils.getBytesFromStream(is);
-   	  	} else {
-   	  		bytes=JavaUtils.getBytesFromStream(is);
-   	  		_inputOctetStreamProxy=new ByteArrayInputStream(bytes);
-        }
-   	  	   	  	
+   	  	} 	  	
    	  	return bytes;   	  	      
       } else if (this.isElement()) {                    
          Canonicalizer20010315OmitComments c14nizer =
@@ -490,28 +444,6 @@ public class XMLSignatureInput {
       this._SourceURI = SourceURI;
    }
 
-   /**
-    * This method gives access to an {@link org.apache.xpath.CachedXPathAPI}
-    * object which was used for creating the internal node set and which MUST be
-    * used for subsequent operations on this node set.
-    *
-    * @return an existing {@link org.apache.xpath.CachedXPathAPI}
-    */
-   public CachedXPathAPIHolder getCachedXPathAPI() {      
-   	  if (this._cxpathAPI==null) {
-         if (this.isOctetStream()) {
-         	this._cxpathAPI=new CachedXPathAPIHolder(null);
-         } else {
-            if (this._inputNodeSet!=null) {
-                this._cxpathAPI=new CachedXPathAPIHolder(((Node)this._inputNodeSet.iterator().next()).getOwnerDocument()); 
-            }
-            if (this.isElement()) {
-            	this._cxpathAPI=new CachedXPathAPIHolder(XMLUtils.getOwnerDocument(_subNode));
-            }
-         }
-      }
-      return this._cxpathAPI;
-   }
    
    /**
     * Method toString
@@ -1300,14 +1232,18 @@ public class XMLSignatureInput {
              c14nizer.engineCanonicalizeXPathNodeSet(this._inputNodeSet);                
              return;             
           } else {
-            InputStream is = this._inputOctetStreamProxy;
-            if (is.markSupported())
-                is.reset();
-                int num;
-                bytes = new byte[1024];
-                while ((num=is.read(bytes))>0) {
-                	diOs.write(bytes,0,num);
-                }
+            InputStream is = getResetableInputStream();
+            if (bytes!=null) {
+                //already read write it, can be rea.
+            	diOs.write(bytes,0,bytes.length);
+                return;
+            }            
+            is.reset();            
+            int num;
+            byte[] bytesT = new byte[1024];
+            while ((num=is.read(bytesT))>0) {
+            	diOs.write(bytesT,0,num);
+            }
                 
           }
 		
@@ -1321,4 +1257,25 @@ public class XMLSignatureInput {
 		outputStream=os;
 		
 	}
+    protected InputStream getResetableInputStream() throws IOException{    	
+    	if ((_inputOctetStreamProxy instanceof ByteArrayInputStream) ) {            
+            if (!_inputOctetStreamProxy.markSupported()) {
+                throw new RuntimeException("Accepted as Markable but not truly been"+_inputOctetStreamProxy);
+            }
+           return _inputOctetStreamProxy;
+        }
+        if (bytes!=null) {
+            _inputOctetStreamProxy=new ByteArrayInputStream(bytes);
+            return _inputOctetStreamProxy;
+        }
+        if (_inputOctetStreamProxy ==null)
+            return null;
+        if (_inputOctetStreamProxy.markSupported()) {
+            System.err.println("Mark Suported but not used as reset");
+        }
+    	bytes=JavaUtils.getBytesFromStream(_inputOctetStreamProxy);
+    	_inputOctetStreamProxy=new ByteArrayInputStream(bytes);
+        return _inputOctetStreamProxy;
+    }
+        
 }
