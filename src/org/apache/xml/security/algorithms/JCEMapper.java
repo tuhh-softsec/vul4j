@@ -45,6 +45,7 @@ public class JCEMapper {
    
    private static Map algorithmsMap = new HashMap();
 
+   private static String providerName = null;
    /**
     * Method init
     *
@@ -124,6 +125,20 @@ public class JCEMapper {
 
    }
 
+   /**
+    * Gets the default Provider for obtaining the security algorithms  
+    */
+   public static String getProviderId() {
+   		return providerName;
+   }
+   
+   /**
+    * Sets the default Provider for obtaining the security algorithms  
+    */
+   public static void setProviderId(String provider) {
+   		providerName=provider;
+   }
+   
    /**
     * Represents the Algorithm xml element
     */   

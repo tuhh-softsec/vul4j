@@ -21,6 +21,7 @@ package org.apache.xml.security.algorithms.implementations;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -61,15 +62,24 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
       if (log.isDebugEnabled())
       	log.debug("Created SignatureDSA using " + algorithmID);
-
+      String provider=JCEMapper.getProviderId();
       try {
-         this._signatureAlgorithm = Signature.getInstance(algorithmID);
+      	 if (provider==null) {
+      	 	this._signatureAlgorithm = Signature.getInstance(algorithmID);
+      	 } else {
+      	 	this._signatureAlgorithm = Signature.getInstance(algorithmID,provider);
+      	 }
       } catch (java.security.NoSuchAlgorithmException ex) {
          Object[] exArgs = { algorithmID,
                              ex.getLocalizedMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
-      }
+      } catch (NoSuchProviderException ex) {
+      	 Object[] exArgs = { algorithmID,
+      	 					 ex.getLocalizedMessage() };
+
+      	 throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
+	}
    }
 
    /** @inheritDoc */
