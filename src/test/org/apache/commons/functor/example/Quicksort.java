@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.5 2003/03/04 17:28:22 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.6 2003/03/04 17:59:29 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -84,11 +84,11 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  */
 
 /* 
+ * Here's an example of the Quicksort sorting algorithm, implemented using
+ * commons-functor.
+ * 
  * We'll write this quicksort implementation in a literate programming style,
  * (in other words, with descriptive prose mixed right in with the source).
- * 
- * Within this source file, the "literate" comments will use
- * c-style, multi-line comments (slash-star to star-slash).
  * 
  * For convenience, and to make sure this example stays up to date, 
  * we'll implement our quicksort example as a JUnit TestCase.
@@ -100,7 +100,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * <p> 
  * See the extensive in line comments for details.
  * 
- * @version $Revision: 1.5 $ $Date: 2003/03/04 17:28:22 $
+ * @version $Revision: 1.6 $ $Date: 2003/03/04 17:59:29 $
  * @author Rodney Waldhoff
  */
 public class Quicksort extends TestCase {
@@ -161,7 +161,7 @@ public class Quicksort extends TestCase {
     }    
 
 /*
- * Similarly, sorting an List composed of a single element
+ * Similarly, sorting a List composed of a single element
  * should produce an equivalent list:
  */
 
@@ -184,7 +184,7 @@ public class Quicksort extends TestCase {
     }    
 
 /*
- * Finally, sorting an List composed of multiple copies
+ * Finally, sorting a List composed of multiple copies
  * of a single value should produce an equivalent list:
  */
 
@@ -212,6 +212,9 @@ public class Quicksort extends TestCase {
  */
     public void testSortSorted() {
         List list = new ArrayList();
+        for(int i=0;i<10;i++) {
+            list.add(new Integer(i));
+        }
         
         List sorted = quicksort(list);
         
@@ -288,7 +291,7 @@ public class Quicksort extends TestCase {
 /*
  * Finally, while this quicksort implementation is intended to 
  * illustrate the use of Commons Functor, not for performance,
- * let's output some timings, just to demonstrate that the 
+ * let's output some timings just to demonstrate that the 
  * performance is adequate.
  */
  
@@ -393,8 +396,7 @@ public class Quicksort extends TestCase {
  * THE QUICKSORT ALGORITHM:
  * ----------------------------------------------------------------------------
  * 
- * As you may recall, the quicksort sorting algorithm can be summarized as 
- * follows:
+ * The quicksort sorting algorithm can be summarized as follows:
  * 
  * Given a list of elements to be sorted:
  * 
@@ -468,7 +470,7 @@ public class Quicksort extends TestCase {
     private UnaryFunction quicksort = new ConditionalUnaryFunction(        
         IsEmpty.getIsEmpty(),                         /* If the list is empty, */
         new ConstantFunction(Collections.EMPTY_LIST), /*  then return an empty list, */
-        new ListFunction() {                          /*  else, split and recurse*/
+        new ListFunction() {                          /*  else, split and recurse */
             public Object evaluate(List list) {
                 List result = new ArrayList(list.size());
                 Object h = head.evaluate(list);
