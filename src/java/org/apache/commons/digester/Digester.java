@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.52 2002/04/27 23:39:50 craigmcc Exp $
- * $Revision: 1.52 $
- * $Date: 2002/04/27 23:39:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.53 2002/05/29 18:43:10 rdonkin Exp $
+ * $Revision: 1.53 $
+ * $Date: 2002/05/29 18:43:10 $
  *
  * ====================================================================
  *
@@ -113,7 +113,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.52 $ $Date: 2002/04/27 23:39:50 $
+ * @version $Revision: 1.53 $ $Date: 2002/05/29 18:43:10 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1957,8 +1957,11 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Return the top object on the stack without removing it.  If there are
-     * no objects on the stack, return <code>null</code>.
+     * <p>Return the top object on the parameters stack without removing it.  If there are
+     * no objects on the stack, return <code>null</code>.</p>
+     *
+     * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
+     * See {@link #params}.</p>
      */
     Object peekParams() {
 
@@ -1973,9 +1976,12 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Return the n'th object down the stack, where 0 is the top element
+     * <p>Return the n'th object down the parameters stack, where 0 is the top element
      * and [getCount()-1] is the bottom element.  If the specified index
-     * is out of range, return <code>null</code>.
+     * is out of range, return <code>null</code>.</p>
+     *
+     * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
+     * See {@link #params}.</p>
      *
      * @param n Index of the desired element, where 0 is the top of the stack,
      *  1 is the next element down, and so on.
@@ -1993,8 +1999,11 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Pop the top object off of the stack, and return it.  If there are
-     * no objects on the stack, return <code>null</code>.
+     * <p>Pop the top object off of the parameters stack, and return it.  If there are
+     * no objects on the stack, return <code>null</code>.</p>
+     *
+     * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
+     * See {@link #params}.</p>
      */
     Object popParams() {
 
@@ -2009,7 +2018,10 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Push a new object onto the top of the object stack.
+     * <p>Push a new object onto the top of the parameters stack.</p>
+     *
+     * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
+     * See {@link #params}.</p>
      *
      * @param object The new object
      */
