@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd">
+<document> 
+  <header> 
+    <title>Welcome to XML Security</title> 
+  </header> 
+  <body> 
+    <section>
+      <title>News</title>
+      <p>
+        The site has now been re-built using the new xml.apache.org standard,
+        using Forrest.
+      </p>
+    </section>
+    <section>
+      <title>The Project</title>
+      <p>
+        The XML Security project is aimed at providing implementation of
+        security standards for XML.  Currently the focus is on the W3C
+        standards :
+      </p>
+      <ul>
+        <li><jump href="http://www.w3.org/Signature/">
+            XML-Signature Syntax and Processing; and</jump>
+        </li>
+        <li><jump href="http://www.w3.org/Encryption/2001/">
+            XML Encryption Syntax and Processing.</jump></li>
+      </ul>
+      <p>
+        Once these are implemented, 
+        <jump href="http://www.w3.org/2001/XKMS">XML Key Management</jump>
+          is likely to be the next focus for the project.
+      </p>
+      <p>
+        Two libraries are currently available.
+      </p>
+      <ol>
+        <li>A Java library, which includes a mature Digital Signature 
+          implementation.  Encryption is currently under development.</li>
+        <li>A C++ library is also now available.  Currently this is in
+          beta and supports Digital Signature processing only.</li>
+      </ol>
+    </section>
+  </body>
+</document>

@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+
+<status>  
+  <developers>
+    <person name="Christian Geuer-Pollmann"  email="geuer-pollmann@nue.et-inf.uni-siegen.de"  id="CGP" />
+    <person name="Berin Lautenbach"      email="berin@ozemail.com.au"      id="BL" />
+    <person name="Axl Mattheus"      email="axl.mattheus@sun.com"      id="AXL" />
+    <person name="Erwin van der Koogh" email="erwin@koogh.com" id="EK" />
+    <person name="Karel Wouters"      email="karel.wouters@esat.kuleuven.ac.be"      id="KW" />
+    <!-- Add more people here -->
+  </developers>
+  
+  <changes>
+    <!-- Add new releases here; action attributes: type:(add | fix | update); -->
+    <!-- context:(docs | java_something | c_something ) -->
+    <release version="Java 1.0.5" date="unreleased">
+      <action dev="KW" type="update" context="docs">
+	<p>Ported the docs to Forrest</p>
+      </action>
+    </release>
+    <release version="C++ 0.10" date="unreleased">
+      <action dev="BL" type="add" context="c_rel">
+        <p>
+          First release of a Beta for the C++ library.
+        </p>
+      </action>
+    </release>
+    <release version="Java 1.0.4" date="15 July 2002">
+      <action dev="CGP" type="update" context="java_jdk">
+	<p>Java - People who did not install Xalan properly under JDK 1.4.0 now
+	get a more specific error message.</p>
+      </action>
+      <action dev="CGP" type="update" context="java_csp">
+	<p>Java - We use the most recent version of the BouncyCastle JCE now.</p>
+      </action>
+    </release>
+    <release version="Java 1.0.3" date="unknown">
+      <action dev="CGP" type="add" context="java_exc_c14n">
+	<p>Java - Added support <link href="ext:w3c/c14n"> Exclusive XML
+	  Canonicalization Version 1.0, W3C Recommendation 18 July 2002
+	</link>. (There is no interop to test vector <link
+	  href="ext:w3c/c14n-interop">Y4</link> because of a problem in Xalan) </p>
+	<p>Canonicalization is written completely new: it's about 5-80 times
+	faster than the implementation in version 1.0.2. It's highly
+	recommended to upgrade to the new version. </p>
+      </action>
+      <action dev="CGP" type="update" context="java_xpath2">
+	 <p>Java - Added support for <link href="ext:w3c/xpath-filterv2">
+	    XML-Signature XPath Filter 2.0, W3C Candidate Recommendation 18
+	    July 2002 
+	  </link>
+	  </p>
+      </action>
+    </release>
+  </changes>
+  
+  <todo>
+    <actions priority="high">
+      <action context="Java-code" dev="AXL">
+	Finish XML Encryption.
+      </action>
+      <action context="C++ code" dev="BL">
+        Create MD5 transform.
+      </action>
+      <action context="C++ code" dev="BL">
+        Create XPath-Filter Transform.
+      </action>
+      <action context="C++ code" dev="BL">
+        Release a "1.00" version.
+      </action>
+      <action context="C++ code" dev="BL">
+        Implement XML Encryption. 
+      </action>
+    </actions>
+    <actions priority="medium">
+      <action context="Java-code" dev="open">
+	Construct more examples.
+      </action>
+      <action context="C++ code" dev="BL">
+        Build a PGP/GPG signature capability.
+      </action>
+      <action context="C++ code" dev="BL">
+        Implement interface for Windows CAPI.
+      </action>
+    </actions>
+    <actions priority="low">
+      <action context="docs" dev="KW">
+	Polish the ported docs. Add more content. Todo and changes are in <code>status.xml</code>
+      </action>
+      <action context="Java-code and C++ code" dev="open">
+        Implement an XKMS client.
+      </action>
+    </actions>
+  </todo>
+</status>
+
+
+
+
+
+
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//APACHE//DTD Cocoon Documentation Book V1.0//EN" "book-cocoon-v10.dtd">
+
+<!--
+Sample Forrest book.xml file.  If renamed to book.xml, this file will determine
+the menu for files in this directory, rather than have a menu be auto-generated
+from site.xml,
+
+NOTE:
+  If you use site.xml in conjunction with a custom book.xml file, you can use
+  'site:' URLs in book.xml.  Eg, instead of href="sample.html", one could have
+  href="site:sample".
+-->
+ 
+<book software="MyProj"
+  title="MyProj"
+  copyright="@year@ The Apache Software Foundation"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <menu label="About">
+    <menu-item label="Index" href="index.html"/>
+    <menu-item label="Sample page" href="sample.html"/>
+    <menu-item label="Sample ihtml page" href="ihtml-sample.html"/>
+    <menu-item label="Sample ehtml page" href="ehtml-sample.html"/>
+    <menu-item label="FAQ" href="faq.html"/>
+    <menu-item label="Changes" href="changes.html"/>
+    <menu-item label="Todo" href="todo.html"/>
+  </menu>
+
+  <menu label="Subdir">
+    <menu-item label="index" href="subdir/index.html"/>
+  </menu>
+
+</book>

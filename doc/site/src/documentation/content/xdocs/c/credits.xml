@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd">
+
+<document>
+  <header>
+    <title>Credits</title>
+  </header>
+  <body>
+    <section>
+	  <title>Software Used</title>
+	  <p>
+		The XML-Security-C package makes heavy use of the Xalan-C and
+		Xerces-C++ libraries from the <jump href="http://xml.apache.org">
+		  Apache Software Foundation XML Project</jump>.
+	  </p>
+	  <p>
+		This documentation has been created using Forrest, also part of
+		the Apache Sofware Foundation's XML project.
+	  </p>
+	  <p>
+		The package also makes heavy use of the <jump href="http://www.openssl.org">
+		  OpenSSL</jump> cryptographic
+		libraries to provide the cryptographic foundation.  The associated
+		license can be found in the distribution in the doc/ directory.
+	  </p>
+	</section>
+  </body>
+</document>

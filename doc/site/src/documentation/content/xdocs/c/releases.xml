@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd">
+
+<document>
+  <header>
+	<title>Release Information</title>
+  </header>
+  <body>
+	<section>
+	  <title>Changes</title>
+	  <p>
+		This section describes the changes that have occurred between the
+		various releases of the library
+	  </p>
+	  <section>
+		<title>Current Release - Beta 0.10</title>
+		<p>
+		  The current release of the xml-security-c library is a beta of the
+		  XML Digital Signature code, and is the first version of the library
+		  produced within Apache's XML project.
+		</p>
+		<p>
+		  Previous versions were created within Sourceforge as the
+		  xml-security-c project at that site.
+		</p>
+	  </section>
+	  <section>
+		<title>Changes from 0.03-0.10</title>
+		<p>
+		  The following changes occurred between versions 0.03 and 0.10 :
+		</p>
+		<ul>
+		  <li>A <em>threadTest</em> tool, which is primarily used to show
+			how multiple threads can access the library under Windows</li>
+		  <li>Windows and UNIX URI Resolvers, based on the Xerces resolver,
+			but which can handle HTTP re-directs</li>
+		  <li>Completed a basic level of API documentation</li>
+		  <li>Reviewed library to ensure usage of UTF-16 internally</li>
+		  <li>Closed a number of memory-leaks caused by exceptions being
+			thrown</li>
+		</ul>
+	  </section>
+	  <section>
+		<title>Changes from 0.02-0.03</title>
+		<p>
+		  The following changes occurred between 0.02->0.03
+		</p>
+		<ul>
+		  <li>A <em>txfmout</em> tool to output the transformed references</li>
+		  <li>Updates to <em>templatesign</em> to support KeyInfo elements
+			and RSA signatures</li>
+		  <li>Library support for RSA signatures</li>
+		  <li>API support form manipulating KeyInfo elements</li>
+		  <li>Pluggable KeyInfo Resolvers (to allow an application to supply
+			an object that will resolve a given KeyInfo to a key)</li>
+		  <li>Pluggable URI resolvers</li>
+		  <li>API support for creating references and transformations</li>
+		  <li>Re-written Makefiles for *NIX</li>
+		  <li>Improved API docs</li>
+		  <li>Envelope Transform that no longer uses XPath transforms (much
+			quicker)</li>
+		  <li>Uses new Xerces DOMNode objects - has made for significant
+			speed improvements</li>
+		</ul>
+	  </section>
+	  <section>
+		<title>Changes from 0.01-0.02</title>
+		<ul>
+		  <li>Signing functionality</li>
+		  <li>Update C14n canonicalisation</li>
+		  <li>Exclusive Canonicalisation</li>
+		  <li>Basic ability to create a signature via the API (rather than just
+			from an XML template file</li>
+		  <li>SHA-1 HMAC support</li>
+		  <li>Basic Documentation of core API</li>
+		  <li>A <em>templatesign</em> tool</li>
+		</ul>
+	  </section>
+	</section>
+	<section>
+	  <title>Future Release Plans</title>
+	  <p>
+		The current plans are to stablise the beta code and provide a sound
+		core library for digital signing.  Now that the code is at 0.10,
+		some further additions will be made to the digital signature support,
+		and a 1.00 release will be made when digital signature support is
+		fairly complete.
+	  </p>
+	  <p>
+		XML Encryption will be added post 1.00
+	  </p>
+	  <p>
+		The majority of activity from now to 1.00 will concentrate on: 
+	  </p>
+	  <ul>
+		<li>Fixing bugs and memory leaks</li>
+		<li>Ensure API is reasonably consistant</li>
+		<li>Improvements in the API for manipulating a signature 
+		  in memory</li>
+		<li>Support for KeyInfo elements not currently implemented (PGP and
+		  SPKI)</li>
+		<li>Implementation of libgcrypt as a crypto provider</li>
+		<li>Support for PGP/GPG signatures (using libgcrypt and gpgme)</li>
+		<li>NetBSD/FreeBSD builds</li>
+		<li>Install capability in make files</li>
+	  </ul>
+	</section>
+	<section>
+	  <title>Beyond a stable release</title>
+	  <p>A number of items are planned for after the 1.0 major release.</p>
+	  <ul>
+		<li>XML Encryption Support</li>
+		<li>A crypto interface for the Windows CAPI</li>
+		<li>Implementation of a core set of encryption primitives to allow
+		  decoupling from OpenSSL for "light" applications</li>
+		<li>Improved <em>KeyInfo</em> resolver interface leading to...</li>
+		<li>XKMS client support</li>
+		<li>Bring the API in-line with JCP 105 (if appropriate)</li>
+		<li>Eventually (the GRAND PLAN) an XKMS server implementation</li>
+	  </ul>
+	</section>
+  </body>
+</document>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd">
+<document>
+  <header>
+    <title>C++ Library Documentation</title>
+  </header>
+  
+  <body>
+    <section>
+      <title>News</title>
+      <p>
+        The C++ library has now been fully transferred into the Apache XML
+        project.  It was previously hosted on SourceForge.
+      </p>
+      <p>
+        The first release under Apache is 0.10.  This is a Beta release,
+        with fairly complete documentation, and a stable code base.  It
+        fully validates the various interop documents held in the xml-security
+        CVS, with the exception of those related to :
+      </p>
+      <ul>
+        <li>MD5 Digests (to be added in next point release)</li>
+        <li>XPath Filter (to be added in next point release)</li>
+        <li>XML Encryption (to be added post 1.00 release)</li>
+      </ul>
+    </section>
+    <section>
+      <title>Overview of the C++ Library</title>
+      <p>
+        The C++ library is an implementation of the XML Digital Signature
+        specification.  It is designed to be easily ported to new platforms,
+        and has been tested on Solaris, Linux and Windows.  The next version
+        will have ports to FreeBSD and HP-UX.
+      </p>
+      <p>
+        The library makes use of the Apache XML project's Xerces-C XML Parser
+        and Xalan-C XSLT processor.  The latter is used for processing XPath
+        and XSLT transforms.  The use of Xalan-C is optional, but without it,
+        XPath and XSLT transformations cannot be performed.
+      </p>
+      <p>
+        In addition, the library currently uses OpenSSL to provide 
+        cryptographic functionality.  The cryptographic interface is
+        implemented via a thin wrapper layer, which will be expanded to
+        support the GNU Privacy Guard cryptographic library (libgcrypt) and
+        Windows CAPI in the near future.
+      </p>
+    </section>
+  </body>
+</document>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd"
+[
+  <!ENTITY % xmlsec_entities SYSTEM "../xmlsec_entities.ent"> 
+  %xmlsec_entities; 
+]>
+
+<document> 
+  <header> 
+    <title>Installing the C++ Library</title> 
+  </header> 
+  <body> 
+    <section> 
+      <title>Prerequisites</title>
+      <p>
+		The library requires OpenSSL for cryptographic support.  Xalan-C
+		is also required if XPath and/or XSLT transformations are required.
+      </p>
+    </section>
+
+    <section>
+      <title>Getting the source</title>
+      <p>
+	You can download the sources via WWW in the distribution directory
+	from one of the Apache  
+	<jump href="site:about/download">
+	  mirrors
+	</jump>.
+      </p>
+      <p>
+	This project's CVS repository can be checked out through anonymous
+	(pserver) CVS with the following instruction set. The module you wish
+	to check out must be specified as the modulename. When prompted for a
+	password for anonymous, simply enter "anoncvs" without quotes: 
+      </p>
+      <source>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
+	password: anoncvs
+	cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout
+	xml-security
+      </source>
+      <p>
+	A HTTP interface to browse the sources online is available via 
+	<jump href="site:getting-involved/CVS">http://cvs.apache.org/viewcvs.cgi/xml-security/</jump>
+      </p>
+    </section>
+    
+    <section>
+	  <title>Building for UNIX</title>
+	  <p>
+		XML-Security-C is currently supported on Linux and Solaris.
+		It has been built and tested using GNU gcc 2.95.4 and GNU make.
+	  </p>
+	  <note>
+		The UNIX XML-Security-C build process has changed radically since
+		beta 0.0.2 as the Makefiles and configure scripts have been completely
+		rewritten.
+	  </note>
+	  <section>
+		<title>Set up the Environment</title>
+		<p>
+		  The build process has been automated as much as possible.  To
+		  start the process, three environment variables <em>can</em> be set :
+		</p>
+		<ul>
+		  <li><em>XERCESCROOT</em> - points to the base of your Xerces distribution</li>
+		  <li><em>XALANCROOT</em> - points to the base of your Xalan distribution</li>
+		  <li><em>OPENSSL</em> - points to the base of your OpenSSL distribution</li>
+		</ul>
+		<p>
+		  For example (on my Debian Linux box under Bash) :
+		</p>
+		<source><![CDATA[
+export XERCESCROOT=~/prog/extlibs/xerces-c-src2_2_0
+export XALANCROOT=~/prog/extlibs/xalan-c-src1_5/c
+export OPENSSL=~/prog/extlibs/openssl-0.9.7a
+		  ]]></source>
+		<p>
+		  If these environment variables are not set, configure will try to
+		  find the necessary include and library files in the system directories.
+		  The configure script is created through <em>autoconf</em> so you
+		  can also tell your compiler where to find these things via
+		  the <em>CXXFLAGS</em> and <em>LDFLAGS</em> environment variables.
+		</p>
+		<p>
+		  If configure cannot find anything for Xalan, it will assume that
+		  you are not interested in XPath or XSLT support and will compile
+		  XSEC without linking to Xalan.  Any attempt to use these features
+		  will raise an exception in the library.
+		</p>
+	  </section>
+	  <section>
+		<title>Configure</title>
+		<p>
+		  Now go to the $XSECCROOT/src directory and run the command
+		  <em>./configure</em>.  This will create the necessary makefiles
+		  and header files necessary to build the package.
+		</p>
+		<p>
+		  In addition to the standard options, <em>configure</em> can be 
+		  passed a number of XSEC specific options :
+		</p>
+		<ul>
+		  <li><em>--without-xalan</em> disable linkage to Xalan.</li>
+		  <li><em>--enable-debug</em> cause the library to be built with symbols</li>
+		</ul>
+		<note>
+		  Using the <em>--without-xalan</em> option will automatically mean
+		  that the library does not support XPath or XSLT transformations
+		  (although envelope transforms will work as the library can now
+		  perform these without going through an XPath transform).
+		</note>
+	  </section>
+	  <section>
+		<title>Compile</title>
+		<p>
+		  Assuming the output of the above command looks reasonable simply
+		  type <em>make</em> (or <em>gmake</em> - you must use the GNU
+		  make utility) in the <em>src</em> directory.  This
+		  will make the shared library.  In addition,  <em>make tools</em>
+		  will make the tools (or examples) in the src/tools directory.
+		</p>
+		<p>
+		  The make process will create three directories in the distribution
+		  directory:
+		</p>
+		<ol>
+		  <li><em>include</em> - All public header files are copied here</li>
+		  <li><em>bin</em> - Where the tools are placed once compiles </li>
+		  <li><em>lib</em> - Where the shared library is place</li>
+		</ol>
+		<p>
+		  You will need to set up your <em>LD_LIBRARY_PATH</em> environment
+		  variable to ensure ld.so will find the new shared libraries.
+		</p>
+		<p>
+		  Finally - you can use <em>make clean</em> and <em>make distclean</em>
+		  to remove all binaries and libraries (former) and build scripts (latter)
+		</p>
+	  </section>
+	</section>
+	<section>
+	  <title>Building for Windows</title>
+	  <p>
+		XML-Security-C has been built and tested on Microsoft's Visual C++ 6.0
+		compiler only.  (VC++ .NET support is currently being worked on.)  
+		The following subsections briefly describe how to 
+		rebuild the library, tools and samples using the supplied workspaces.
+	  </p>
+	  <section>
+		<title>Setup Directories</title>
+		<p>
+		  The workspace and project files provided do not make any assumptions
+		  about where Xerces, Xalan or OpenSSL might be on the system.  The
+		  first step is therefore to configure VC directories under 
+		  Tools->Options (Directories).
+		</p>
+		<p>
+		  For the Include directories you will need something similar to my
+		  setup below (replacing D:\PROG\CLIB\.. with the appropriate path
+		  on your system).
+		</p>
+		<figure src="images/vc6a.gif" alt="Include Directories"/>
+		<p>
+		  Similarly the library directories will need to be added to.  Note
+		  that in the example below, I use both Debug and Release libraries
+		  for Xalan and Xerces.  As provided, the workspace projects link to
+		  the debug libraries for XSEC Debug and Release for XSEC Release.
+		</p>
+		
+		<figure src="images/vc6b.gif" alt="Link Directories"/>
+
+	  </section>
+	  <section>
+		<title>Build Library and Tools</title>
+		<p>
+		  The main workspace is found in :
+		</p>
+		<p><em>.../src/Projects/VC6.0/xsec/xsec.dsw</em></p>
+		<p>
+		  You can load this to build the tools or the library using the relevant
+		  project.  (The library is xsec_lib.)
+		</p>
+		<p>
+		  Samples can be built using the workspace found in :
+		</p>
+		<p><em>.../src/Projects/VC6.0/Samples/Samples.dsw</em></p>
+		<p>All output will be sent to</p>
+		<p><em>.../Build/Win32/VC6/Debug</em></p>
+		<p>for the debug builds and Release for the release.</p>
+	  </section>
+	</section>
+  </body>
+</document>
+
+
+
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

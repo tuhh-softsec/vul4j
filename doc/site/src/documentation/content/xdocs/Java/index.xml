@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd"
+[
+  <!ENTITY % xmlsec_entities SYSTEM "../xmlsec_entities.ent"> 
+  %xmlsec_entities; 
+]>
+
+<document> 
+  <header> 
+    <title>The Java section</title> 
+  </header> 
+  <body> 
+    <section>
+      <title>News</title>
+	<p>Version 1.0.4 released on 15 July 2002; minor
+	improvements. The most significant is that people who did not install
+	Xalan properly under JDK 1.4.0 get a more specific error message. It
+	uses the most recent version of the BouncyCastle JCE now. </p>
+    </section>
+    <section>
+      <title>XML Security Release</title>
+      <p>
+	The &packagenamelong; &packageversion; supports
+	<jump href="ext:w3c/xmldsig_java_supported">&supp_java_dsig;
+	</jump> 
+      </p>
+      <p>
+	Note that there is no standard API avaliable at the moment. SUN is
+	working on a JAVA Specification Request 
+	<jump href="http://jcp.org/jsr/detail/105.jsp">
+	  JSR-105: XML Digital Signature APIs
+	</jump> on an API for XML Signature and 
+	<jump href="http://jcp.org/jsr/detail/106.jsp">
+	  JSR-106: XML Digital Encryption APIs
+	</jump>, but until now, nothing has been published. So, this software
+	does <em>not</em> conform to any of these specifications.
+      </p>
+    </section>
+    <section>
+      <title>JDK 1.4 issues</title>
+      <p>
+	If you use JDK 1.4 and want to use this software, be sure that Xalan is
+	properly installed. Check the bottom of the <jump
+	  href="site:java/installation">installation guide</jump>!!!
+      </p>
+      <p>
+	I have so many complaints from people who argue that the software
+	throws exceptions during running the examples or during unit
+	testing. This package NEEDS a Xalan version after 2.2D13 (and SUN
+	shipped his JDK 1.4.0 final with a Xalan beta!). I started integrating
+	the installation guide into the exception messages cause it seems that
+	people don't have a look at the installation guide. 
+      </p>
+    </section>
+  </body>
+</document>
+
+
+
+

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd">
+<document> 
+  <header> 
+    <title>XML security mailing list</title> 
+  </header> 
+  <body> 
+    <section>
+      <title>XML security mailing list</title>
+      <p>
+	There exists a mailing list which you can subscribe to ask questions:
+      </p>
+      <p>
+	The <jump href="ext:xml.apache.org/mail">ezmlm mailing list controller</jump> 
+	accepts commands by sending emails to it, generally
+	like the following:
+      </p>
+      <ul>
+	<li>
+	  <jump href="ext:mailsub">security-dev-subscribe</jump> to subscribe
+	  your current email address to the list.
+	</li>
+	<li>
+	  <jump href="ext:mailunsub">security-dev-unsubscribe</jump> to
+	  <em>un</em>subscribe your *current* email address from the list.
+	</li>
+	<li>
+	  <jump href="ext:mailhelp">security-dev-help</jump> to get Help on
+	  mailing list commands.
+	</li>
+      </ul>
+    </section>
+    <section>
+      <title>Mail Archives</title>
+      <p>
+	An archive of this list is kept under 
+	<jump href="ext:gmane">
+	  http://news.gmane.org/thread.php?group=gmane.text.xml.security.devel
+	</jump>
+      </p>
+      <p>
+	Another archive is held by <jump href="ext:nagoya">The EyeBrowse Mail Archive
+	</jump>.
+      </p>
+    </section>
+  </body>
+</document>

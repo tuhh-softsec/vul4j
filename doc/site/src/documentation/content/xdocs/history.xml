@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd"
+[
+  <!ENTITY % xmlsec_entities SYSTEM "./xmlsec_entities.ent"> 
+  %xmlsec_entities; 
+]>
+
+<document> 
+  <header> 
+    <title>XML Security History</title> 
+  </header> 
+  <body> 
+    <section>
+      <title>The &lt;WebSig&gt; project</title>
+      <p>
+	In mid-1999, the <jump
+	  href="http://www.nue.et-inf.uni-siegen.de/">Institute for Data
+	  Communications Systems</jump> at the <jump
+	  href="http://www.uni-siegen.de/">University of Siegen</jump> in
+	Germany looked for partners to participate in a European project for
+	implementing the upcoming <jump href="ext:w3c/xmldsig">XML Signature
+	  standard</jump>. We found our partners in the companies <jump
+	  href="http://www.expnet.gr/">Expertnet S.A.</jump> and <jump
+	  href="http://www.proodos.gr/">PROODOS S.A.</jump>, both from Athens,
+	who were willing to use our XML Signature library in a first commercial
+	project. 
+      </p>
+      <p>
+	The project started in January 2000 and ended up in September 2001. 50%
+	of the costs have been funded by the European Commission in the <jump
+	  href="http://www.ispo.cec.be/isis/99websig.htm">ISIS
+	  programme</jump>. Goal was to develop a JAVA library for creating and
+	validating XML Signatures and to make the binaries of this software
+	freely available. 
+      </p>
+      <p>In September 2001, the Institute for Data Communications Systems decided to
+	make the sources freely available, too, to promote the use of digital
+	signatures and to give XML Signature a spin. The decision was made to
+	give the complete library (including an implementation of "Canonical
+	XML" and "XML Signature") under the hood of the Apache Software
+	Foundation to ensure availablility of the source and to enable other
+	people to use it under the Apache License. 
+      </p>
+    </section>
+    <section>
+      <title>XML Encryption</title>
+      <p>2Bdone</p>
+    </section>    
+    <section>
+      <title>The C++ Library</title>
+      <p>The C++ library is a much more recent addition to the XML-Security
+        project.  It started out on <jump href="http://www.sourceforge.net">
+          Sourceforge</jump> and was migrated into XML Security in early 2003.
+      </p>
+    </section>
+  </body>
+</document>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

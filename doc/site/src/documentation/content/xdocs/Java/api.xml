@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd"
+[
+  <!ENTITY % xmlsec_entities SYSTEM "../xmlsec_entities.ent"> 
+  %xmlsec_entities; 
+]>
+<document> 
+  <header> 
+    <title>Java API Documentation</title> 
+  </header> 
+  <body> 
+    <section>
+      <title>Javadoc Generated Documentation</title>
+      <p>&packagenamelong; comes packaged with API documentation.</p>
+      <p>This documentation is generated automatically from the Javadoc-style
+	comments inside the source files.  Click on one of the links below to
+	go to the appropriate API documentation.</p>
+    </section>
+    <section>
+      <title>&packagename; API Documentation</title>
+    <ul>
+      <li><jump href="ext:java/docs/full-api">Full API documentation</jump></li>
+      <li><jump href="ext:java/docs/hierachry">Hierarchy for all the packages</jump></li>
+      <li>If the above documentation is outdated, an always-fresh copy can be found <jump href="ext:java/docs/gumpdocs">here</jump></li>
+    </ul>
+    </section>
+  </body>
+</document>

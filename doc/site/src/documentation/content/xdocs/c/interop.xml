@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd"
+[
+  <!ENTITY % xmlsec_entities SYSTEM "../xmlsec_entities.ent"> 
+  %xmlsec_entities; 
+]>
+<document> 
+  <header> 
+    <title>C++ Interoperability</title> 
+  </header> 
+  <body> 
+    <section> 
+      <title>Interoperability</title>
+      <p>
+        The C++ library is designed to be fully inter-operable with any
+        other implementation of the W3C XML Digital Signature standard, such
+        as the Apache XML-Security Java library.
+      </p>
+    </section>
+  </body>
+</document>
+
+
+
+
+
+
+
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

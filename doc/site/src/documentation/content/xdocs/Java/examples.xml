@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd"
+[
+  <!ENTITY % xmlsec_entities SYSTEM "../xmlsec_entities.ent"> 
+  %xmlsec_entities; 
+]>
+
+<document> 
+  <header> 
+    <title>Java Examples</title> 
+  </header> 
+  <body> 
+    <section>
+      <title>About</title>
+      <p>
+	Part of this software can be used to create and verify arbitrary forms
+	of XML Signatures. The documentation available here is not very huge;
+	my first approach is to supply usage examples which are available in
+	the <code>src_samples/</code> directory to give interested users a
+	first starting point to jump-start with XML Signature. 
+      </p>
+      <note>
+	The samples divide into two groups: Samples that <em>create</em> and
+	samples that <em>verify</em> Signatures. Eventually, you should adjust
+	the verifying program to another filename if you get
+	<code>FileNotFoundException</code>s.
+      </note>
+      <fixme author="KW">
+	We should add more information here.
+      </fixme>
+      
+    </section>
+  </body>
+</document>
