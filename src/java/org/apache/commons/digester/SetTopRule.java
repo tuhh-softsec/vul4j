@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.6 2001/08/20 18:28:40 craigmcc Exp $
- * $Revision: 1.6 $
- * $Date: 2001/08/20 18:28:40 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.7 2001/11/14 18:54:19 craigmcc Exp $
+ * $Revision: 1.7 $
+ * $Date: 2001/11/14 18:54:19 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.6 $ $Date: 2001/08/20 18:28:40 $
+ * @version $Revision: 1.7 $ $Date: 2001/11/14 18:54:19 $
  */
 
 public class SetTopRule extends Rule {
@@ -144,9 +144,14 @@ public class SetTopRule extends Rule {
 	// Identify the objects to be used
 	Object child = digester.peek(1);
 	Object parent = digester.peek(0);
-	if (digester.getDebug() >= 1)
-	    digester.log("Call " + parent.getClass().getName() + "." +
-	      methodName + "(" + child + ")");
+	if (digester.getDebug() >= 1) {
+            if (parent == null)
+                digester.log("Call [NULL PARENT]." +
+                             methodName + "(" + child + ")");
+            else
+                digester.log("Call " + parent.getClass().getName() + "." +
+                             methodName + "(" + child + ")");
+        }
 
 	// Call the specified method
 	Class paramTypes[] = new Class[1];
