@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.12 2002/04/18 21:23:44 rdonkin Exp $
- * $Revision: 1.12 $
- * $Date: 2002/04/18 21:23:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.13 2002/06/05 21:23:24 rdonkin Exp $
+ * $Revision: 1.13 $
+ * $Date: 2002/06/05 21:23:24 $
  *
  * ====================================================================
  *
@@ -79,7 +79,7 @@ import junit.framework.TestSuite;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.12 $ $Date: 2002/04/18 21:23:44 $
+ * @version $Revision: 1.13 $ $Date: 2002/06/05 21:23:24 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -660,6 +660,35 @@ public class RuleTestCase extends TestCase {
 
     }
 
+    /**
+     * Test method calls with the CallMethodRule rule. It should be possible
+     * to call any accessible method of the object on the top of the stack,
+     * even methods with no arguments.
+     
+     */
+    public void testCallMethod2() throws Exception {
+        
+        // Configure the digester as required
+        digester.addObjectCreate("employee", Employee.class);
+        // try all syntax permutations
+        digester.addCallMethod("employee", "setLastName", 1, new String[] {"java.lang.String"});
+        digester.addCallParam("employee/lastName", 0);
+
+        // Parse our test input
+        Object root1 = null;
+        try {
+            // an exception will be thrown if the method can't be found
+            root1 = digester.parse(getInputStream("Test5.xml"));
+            Employee employee = (Employee) root1;
+            assertEquals("Failed to call Employee.setLastName", "Last Name", employee.getLastName()); 
+            
+        } catch (Throwable t) {
+            // this means that the method can't be found and so the test fails
+            fail("Digester threw Exception:  " + t);
+        }
+
+    }
+
 
     // ------------------------------------------------ Utility Support Methods
 
@@ -724,5 +753,4 @@ public class RuleTestCase extends TestCase {
                 office.getZipCode());
 
     }
-
 }

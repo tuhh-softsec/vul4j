@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.16 2002/04/18 21:23:44 rdonkin Exp $
- * $Revision: 1.16 $
- * $Date: 2002/04/18 21:23:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.17 2002/06/05 21:23:23 rdonkin Exp $
+ * $Revision: 1.17 $
+ * $Date: 2002/06/05 21:23:23 $
  *
  * ====================================================================
  *
@@ -82,7 +82,7 @@ import org.apache.commons.beanutils.MethodUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.16 $ $Date: 2002/04/18 21:23:44 $
+ * @version $Revision: 1.17 $ $Date: 2002/06/05 21:23:23 $
  */
 
 public class CallMethodRule extends Rule {
@@ -223,14 +223,11 @@ public class CallMethodRule extends Rule {
                 this.paramTypes[i] = "abc".getClass();
             }
         } else {
-            this.paramTypes = new Class[paramTypes.length];
-            for (int i = 0; i < this.paramTypes.length; i++) {
-                try {
-                    this.paramTypes[i] =
-                            digester.getClassLoader().loadClass(paramTypes[i]);
-                } catch (ClassNotFoundException e) {
-                    this.paramTypes[i] = null; // Will cause NPE later
-                }
+            // copy the parameter class names into an array
+            // the classes will be loaded when the digester is set 
+            this.paramClassNames = new String[paramTypes.length];
+            for (int i = 0; i < this.paramClassNames.length; i++) {
+                this.paramClassNames[i] = paramTypes[i];
             }
         }
 
@@ -303,9 +300,37 @@ public class CallMethodRule extends Rule {
      */
     protected Class paramTypes[] = null;
 
-
+    /**
+     * The names of the classes of the parameters to be collected.
+     * This attribute allows creation of the classes to be postponed until the digester is set.
+     */
+    private String paramClassNames[] = null;
+    
     // --------------------------------------------------------- Public Methods
 
+    /**
+     * Set the associated digester.
+     * If needed, this class loads the parameter classes from their names.
+     */
+    public void setDigester(Digester digester)
+    {
+        // call superclass
+        super.setDigester(digester);
+        // if necessary, load parameter classes
+        if (this.paramClassNames != null) {
+            this.paramTypes = new Class[paramClassNames.length];
+            for (int i = 0; i < this.paramClassNames.length; i++) {
+                try {
+                    this.paramTypes[i] =
+                            digester.getClassLoader().loadClass(this.paramClassNames[i]);
+                } catch (ClassNotFoundException e) {
+                    // use the digester log
+                    digester.getLogger().error("(CallMethodRule) Cannot load class " + this.paramClassNames[i], e);
+                    this.paramTypes[i] = null; // Will cause NPE later
+                }
+            }
+        }
+    }
 
     /**
      * Process the start of this element.
