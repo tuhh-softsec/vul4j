@@ -76,9 +76,9 @@
     <property name="cvs.package"       value="xml-security" />
 
     <property name="cvs.user.developer"    value="geuerp" />
-    <property name="cvs.user.anonymous"    value="anonymous" />
+    <property name="cvs.user.anonymous"    value="anoncvs" />
     <property name="cvs.cvsRoot.developer" value=":ext:${cvs.user.developer}@${cvs.server}:${cvs.path}" />
-    <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}" />
+    <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}public" />
 
     <property name="doc.xml"           value="${dir.doc}/xml" />
     <property name="doc.book"          value="${build.doc.xml}/docs-book.xml" />
@@ -348,7 +348,7 @@ org.apache.xml.security.utils.resolver
     <javadoc destdir="${build.javadoc}"
              packagenames="${javadoc.packages}"
              classpathref="classpath.test">
-             <!--additionalparam="-breakiterator">-->
+             <!-- additionalparam="-breakiterator"-->
        <sourcepath>
           <pathelement location="${build.src}" />
           <pathelement location="${dir.src.unitTests}" />
@@ -426,6 +426,16 @@ org.apache.xml.security.utils.resolver
   <!-- #################################################################### -->
   <!-- #################################################################### -->
 
+  <target name="update"
+      depends="init"
+      description="Updates the current source tree from CVS">
+    <cvspass cvsroot="${cvs.cvsRoot.anonymous}"
+       password="anoncvs"/>
+    <cvs cvsRoot="${cvs.cvsRoot.anonymous}"
+       package="${cvs.package}"
+       dest=".."
+       command="checkout"/>
+  </target> 
 
   <target name="get-jce"
           depends="prepare"
