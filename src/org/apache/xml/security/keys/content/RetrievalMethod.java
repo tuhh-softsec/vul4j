@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -75,7 +75,8 @@ import org.apache.xml.security.utils.resolver.*;
  *
  * @author $Author$
  */
-public class RetrievalMethod extends ElementProxy implements KeyInfoContent {
+public class RetrievalMethod extends SignatureElementProxy
+        implements KeyInfoContent {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
@@ -99,11 +100,7 @@ public class RetrievalMethod extends ElementProxy implements KeyInfoContent {
     */
    public RetrievalMethod(Element element, String BaseURI)
            throws XMLSecurityException {
-
-      super(element, BaseURI);
-
-      XMLUtils.guaranteeThatElementInSignatureSpace(element,
-              Constants._TAG_RETRIEVALMETHOD);
+      super(element, BaseURI, Constants._TAG_RETRIEVALMETHOD);
    }
 
    /**
@@ -178,6 +175,7 @@ public class RetrievalMethod extends ElementProxy implements KeyInfoContent {
          if (transformsElem != null) {
             return new Transforms(transformsElem, this._baseURI);
          }
+
          return null;
       } catch (TransformerException ex) {
          throw new XMLSecurityException("empty", ex);

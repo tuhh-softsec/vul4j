@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -219,6 +218,18 @@ public class XMLSignatureInputTest extends TestCase {
          new ByteArrayInputStream(_nodeSetInput1.getBytes("UTF-8"));
       XMLSignatureInput input = new XMLSignatureInput(inputStream);
       NodeList nl = input.getNodeSet();
+
+      if (_nodeSetInput1Nodes != nl.getLength()) {
+         for (int i = 0; i < nl.getLength(); i++) {
+            cat.error(i + " " + XMLUtils.getNodeTypeString(nl.item(i)) + " "
+                      + nl.item(i));
+         }
+      } else {
+         for (int i = 0; i < nl.getLength(); i++) {
+            cat.info(i + " " + XMLUtils.getNodeTypeString(nl.item(i)) + " "
+                     + nl.item(i));
+         }
+      }
 
       //J-
       assertEquals("_nodeSetInput1 Number of nodes", _nodeSetInput1Nodes, nl.getLength());

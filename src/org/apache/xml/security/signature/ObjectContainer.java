@@ -1,9 +1,8 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -19,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -27,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -52,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -77,13 +76,13 @@ import org.apache.xml.security.utils.*;
 
 /**
  * Handles <code>&lt;ds:Object&gt;</code> elements
- *<code>Object<code> {@link Element} supply facility which can contain any kind data
+ * <code>Object<code> {@link Element} supply facility which can contain any kind data
  *
  *
  * @author Christian Geuer-Pollmann
  * @todo if we remove childen, the boolean values are not updated
  */
-public class ObjectContainer extends ElementProxy {
+public class ObjectContainer extends SignatureElementProxy {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
@@ -95,7 +94,9 @@ public class ObjectContainer extends ElementProxy {
     * @param doc the {@link Document} in which <code>Object</code> element is placed
     */
    public ObjectContainer(Document doc) {
+
       super(doc, Constants._TAG_OBJECT);
+
       // this._constructionElement.appendChild(this._doc.createTextNode("\n"));
    }
 
@@ -109,11 +110,7 @@ public class ObjectContainer extends ElementProxy {
    public ObjectContainer(Element element, String BaseURI)
            throws XMLSecurityException {
 
-      super(element, BaseURI);
-
-      // element must be of type ds:Object
-      XMLUtils.guaranteeThatElementInSignatureSpace(element,
-              Constants._TAG_OBJECT);
+      super(element, BaseURI, Constants._TAG_OBJECT);
 
       // <!ELEMENT Object (#PCDATA|Signature|SignatureProperties|Manifest %Object.ANY;)* >
    }
@@ -125,7 +122,7 @@ public class ObjectContainer extends ElementProxy {
     */
    public void setId(String Id) {
 
-      if ((this._state == MODE_SIGN) && Id != null) {
+      if ((this._state == MODE_SIGN) && (Id != null)) {
          this._constructionElement.setAttribute(Constants._ATT_ID, Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
@@ -147,7 +144,7 @@ public class ObjectContainer extends ElementProxy {
     */
    public void setMimeType(String MimeType) {
 
-      if ((this._state == MODE_SIGN) && MimeType != null) {
+      if ((this._state == MODE_SIGN) && (MimeType != null)) {
          this._constructionElement.setAttribute(Constants._ATT_MIMETYPE,
                                                 MimeType);
       }
@@ -169,7 +166,7 @@ public class ObjectContainer extends ElementProxy {
     */
    public void setEncoding(String Encoding) {
 
-      if ((this._state == MODE_SIGN) && Encoding != null) {
+      if ((this._state == MODE_SIGN) && (Encoding != null)) {
          this._constructionElement.setAttribute(Constants._ATT_ENCODING,
                                                 Encoding);
       }
@@ -188,12 +185,16 @@ public class ObjectContainer extends ElementProxy {
     * Adds childe Node
     *
     * @param node childe Node
+    * @return
     */
    public Node appendChild(Node node) {
+
       Node result = null;
+
       if (this._state == MODE_SIGN) {
          result = this._constructionElement.appendChild(node);
       }
+
       return result;
    }
 

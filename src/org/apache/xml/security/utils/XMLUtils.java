@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -80,6 +80,9 @@ import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.HelperNodeList;
+import org.apache.xpath.XPathAPI;
+import javax.xml.transform.TransformerException;
+
 
 /**
  * DOM and XML accessibility and comfort functions.
@@ -353,10 +356,9 @@ public class XMLUtils {
            Document doc, String elementName, BigInteger bigInteger)
               throws XMLSignatureException {
 
-      Element element = doc.createElementNS(
-         Constants.SignatureSpecNS,
-         Constants.getSignatureSpecNSprefix() + ":"
-         + elementName);
+      Element element = doc.createElementNS(Constants.SignatureSpecNS,
+                                            Constants.getSignatureSpecNSprefix()
+                                            + ":" + elementName);
 
       /* bigInteger must be positive */
       if (bigInteger.signum() != 1) {
@@ -489,17 +491,20 @@ public class XMLUtils {
       String xenc = EncryptionConstants.getEncryptionSpecNSprefix();
 
       if ((xenc == null) || (xenc.length() == 0)) {
-         Element element = doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
-                                               elementName);
+         Element element =
+            doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
+                                elementName);
 
          element.setAttribute("xmlns", Constants.SignatureSpecNS);
 
          return element;
       } else {
-         Element element = doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
-                                               xenc + ":" + elementName);
+         Element element =
+            doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
+                                xenc + ":" + elementName);
 
-         element.setAttribute("xmlns:" + xenc, EncryptionConstants.EncryptionSpecNS);
+         element.setAttribute("xmlns:" + xenc,
+                              EncryptionConstants.EncryptionSpecNS);
 
          return element;
       }
@@ -554,7 +559,8 @@ public class XMLUtils {
          return false;
       }
 
-      if (!element.getNamespaceURI().equals(EncryptionConstants.EncryptionSpecNS)) {
+      if (!element.getNamespaceURI()
+              .equals(EncryptionConstants.EncryptionSpecNS)) {
          return false;
       }
 
@@ -720,14 +726,39 @@ public class XMLUtils {
    }
 
    /**
-    * Method createDSctx
+    * Method indentSignature
     *
-    * @param doc
-    * @return
+    * @param element
+    * @param indentString
+    * @param initialDepth
     */
-   public static Element createDSctx(Document doc) {
-      return XMLUtils.createDSctx(doc, Constants.DEFAULTSIGNATURENSPREFIX,
-                                  Constants.SignatureSpecNS);
+   public static void indentSignature(Element element, String indentString,
+                                      int initialDepth) {
+
+      try {
+         NodeList returns = XPathAPI.selectNodeList(element, ".//text()");
+
+         for (int i = 0; i < returns.getLength(); i++) {
+            Text returnText = (Text) returns.item(i);
+            Element parent = (Element) returnText.getParentNode();
+            Document doc = returnText.getOwnerDocument();
+            int j = 0;
+
+            while (parent != element) {
+               j++;
+            }
+
+            String newReturn = "";
+
+            for (int k = 0; k < j; k++) {
+               newReturn += indentString;
+            }
+
+            Text newReturnText = doc.createTextNode(newReturn);
+
+            parent.replaceChild(newReturnText, returnText);
+         }
+      } catch (TransformerException ex) {}
    }
 
    static {

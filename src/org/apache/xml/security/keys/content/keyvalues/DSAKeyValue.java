@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -82,7 +82,8 @@ import org.apache.xml.security.utils.*;
  *
  * @author $Author$
  */
-public class DSAKeyValue extends ElementProxy implements KeyValueContent {
+public class DSAKeyValue extends SignatureElementProxy
+        implements KeyValueContent {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
@@ -97,24 +98,7 @@ public class DSAKeyValue extends ElementProxy implements KeyValueContent {
     */
    public DSAKeyValue(Element element, String BaseURI)
            throws XMLSecurityException {
-
-      super(element, BaseURI);
-
-      XMLUtils.guaranteeThatElementInSignatureSpace(element,
-              Constants._TAG_DSAKEYVALUE);
-
-      /*
-      Text seedText = (Text) XPathAPI.selectSingleNode(element,
-                         "./ds:" + Constants._TAG_SEED + "/text()", nscontext);
-      Text counterText = (Text) XPathAPI.selectSingleNode(element,
-                            "./ds:" + Constants._TAG_PGENCOUNTER + "/text()",
-                            nscontext);
-
-      if ((counterText != null) && (seedText != null)) {
-         this._PgenCounter = Base64.decodeBigIntegerFromText(counterText);
-         this._Seed = Base64.decodeBigIntegerFromText(seedText);
-      }
-      */
+      super(element, BaseURI, Constants._TAG_DSAKEYVALUE);
    }
 
    /**
@@ -130,8 +114,8 @@ public class DSAKeyValue extends ElementProxy implements KeyValueContent {
                       BigInteger Y) {
 
       super(doc, Constants._TAG_DSAKEYVALUE);
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
 
+      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
       this.addBigIntegerElement(P, Constants._TAG_P);
       this.addBigIntegerElement(Q, Constants._TAG_Q);
       this.addBigIntegerElement(G, Constants._TAG_G);
@@ -148,14 +132,19 @@ public class DSAKeyValue extends ElementProxy implements KeyValueContent {
    public DSAKeyValue(Document doc, Key key) throws IllegalArgumentException {
 
       super(doc, Constants._TAG_DSAKEYVALUE);
+
       this._constructionElement.appendChild(this._doc.createTextNode("\n"));
 
       if (JavaUtils.implementsInterface(
               (Object) key, "java.security.interfaces.DSAPublicKey")) {
-         this.addBigIntegerElement(((DSAPublicKey) key).getParams().getP(), Constants._TAG_P);
-         this.addBigIntegerElement(((DSAPublicKey) key).getParams().getQ(), Constants._TAG_Q);
-         this.addBigIntegerElement(((DSAPublicKey) key).getParams().getG(), Constants._TAG_G);
-         this.addBigIntegerElement(((DSAPublicKey) key).getY(), Constants._TAG_Y);
+         this.addBigIntegerElement(((DSAPublicKey) key).getParams().getP(),
+                                   Constants._TAG_P);
+         this.addBigIntegerElement(((DSAPublicKey) key).getParams().getQ(),
+                                   Constants._TAG_Q);
+         this.addBigIntegerElement(((DSAPublicKey) key).getParams().getG(),
+                                   Constants._TAG_G);
+         this.addBigIntegerElement(((DSAPublicKey) key).getY(),
+                                   Constants._TAG_Y);
       } else {
          Object exArgs[] = { Constants._TAG_DSAKEYVALUE,
                              key.getClass().getName() };
@@ -175,10 +164,15 @@ public class DSAKeyValue extends ElementProxy implements KeyValueContent {
 
       try {
          DSAPublicKeySpec pkspec =
-            new DSAPublicKeySpec(this.getBigIntegerFromChildElement(Constants._TAG_Y),
-                                 this.getBigIntegerFromChildElement(Constants._TAG_P),
-                                 this.getBigIntegerFromChildElement(Constants._TAG_Q),
-                                 this.getBigIntegerFromChildElement(Constants._TAG_G));
+            new DSAPublicKeySpec(this
+               .getBigIntegerFromChildElement(Constants._TAG_Y, Constants
+               .SignatureSpecNS), this
+                  .getBigIntegerFromChildElement(Constants._TAG_P, Constants
+                  .SignatureSpecNS), this
+                     .getBigIntegerFromChildElement(Constants._TAG_Q, Constants
+                     .SignatureSpecNS), this
+                        .getBigIntegerFromChildElement(Constants
+                           ._TAG_G, Constants.SignatureSpecNS));
          KeyFactory dsaFactory = KeyFactory.getInstance("DSA");
          PublicKey pk = dsaFactory.generatePublic(pkspec);
 

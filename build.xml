@@ -126,10 +126,10 @@ org.apache.xml.security.utils.*
     <available property="bcprov.present" file="${lib.jce}" />
   </target>
 
-  <target name="get-jce" 
-          depends="prepare" 
+  <target name="get-jce"
+          depends="prepare"
           unless="bcprov.present">
-    <get src="${jce.download}" 
+    <get src="${jce.download}"
 	 dest="${lib.jce}"
 	 verbose="true"
 	 usetimestamp="true"/>

@@ -238,7 +238,6 @@
          </Algorithm>
       </Algorithms>
    </JCEAlgorithmMappings>
-   <Log4J configFile="data/log4j.xml" />
    <ResourceBundles defaultLanguageCode="de" defaultCountryCode="DE">
       <ResourceBundle LanguageCode="de"
                       CountryCode="DE"
@@ -310,4 +309,85 @@
       <Resolver JAVACLASS="org.apache.xml.security.keys.keyresolver.implementations.X509IssuerSerialResolver"
                 DESCRIPTION="Uses an X509 IssuerName and IssuerSerial to retrieve a certificate from the storages" />
    </KeyResolver>
+   <!-- <Log4J configFile="data/log4j.xml" /> -->
+   <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+        <!-- http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/xml/DOMConfigurator.html -->
+   	<appender name="STDOUT" class="org.apache.log4j.FileAppender">
+		<param name="File" value="log.txt" />
+		<!--
+		<param name="File" value="System.out" />
+		-->
+
+		<layout class="org.apache.log4j.PatternLayout">
+
+		<param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
+		<!--
+		<param name="ConversionPattern" value="%d %-5p %C{10}:%-4L - %m\n"/>
+		-->
+		</layout>
+	</appender>
+
+	<appender name="chainsaw" class="org.apache.log4j.net.SocketAppender">
+		<param name="RemoteHost" value="localhost" />
+		<param name="Port" value="4445" />
+		<layout class="org.apache.log4j.PatternLayout">
+		<param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
+		</layout>
+	</appender>
+
+	<category name="org.apache.log4j.xml">
+		<priority value="info" />
+	</category>
+
+	<!--
+	<category name="org.apache.xml.security.c14n">
+		<priority value="fatal" />
+	</category>
+	-->
+
+	<category name="org.apache.xml.security.test.resource.TestVectorResolver">
+		<priority value="fatal" />
+	</category>
+	<category name="org.apache.xml.security.Init">
+		<priority value="error" />
+	</category>
+	<category name="org.apache.xml.security.c14n.helper.AttrCompare">
+		<priority value="fatal" />
+	</category>
+	<category name="org.apache.xml.security.c14n.helper.NamespaceSearcher">
+		<priority value="fatal" />
+	</category>
+	<category name="org.apache.xml.security.c14n">
+		<priority value="fatal" />
+	</category>
+	<category name="org.apache.xml.security.utils.ElementProxy">
+		<priority value="fatal" />
+	</category>
+        <!--
+	<category name="org.apache.xml.security.utils.resolver.implementations">
+		<priority value="info" />
+	</category>
+	<category name="org.apache.xml.security.transforms.implementations">
+		<priority value="info" />
+	</category>
+	<category name="org.apache.xml.security.c14n.Canonicalizer">
+		<priority value="fatal" />
+	</category>
+        -->
+
+	<category name="org.apache.xml.security.transforms.implementations.FuncHere">
+		<priority value="fatal" />
+	</category>
+	<root>
+		<priority value ="debug" />
+		<appender-ref ref="STDOUT" />
+		<!-- <appender-ref ref="chainsaw" /> -->
+	</root>
+   </log4j:configuration>
+   <PrefixMappings>
+      <PrefixMapping namespace="http://www.w3.org/2000/09/xmldsig#"
+                     prefix="ds" />
+      <PrefixMapping namespace="http://www.w3.org/2001/04/xmlenc#"
+                     prefix="xenc" />
+   </PrefixMappings>
 </Configuration>

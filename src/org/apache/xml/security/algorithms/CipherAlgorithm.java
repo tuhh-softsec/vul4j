@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,12 +51,13 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
 package org.apache.xml.security.algorithms;
+
 
 
 import java.io.IOException;
@@ -78,7 +79,7 @@ import org.w3c.dom.*;
  *
  * @author $Author$
  */
-public class CipherAlgorithm extends ElementProxy {
+public class CipherAlgorithm extends Algorithm {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
@@ -116,12 +117,10 @@ public class CipherAlgorithm extends ElementProxy {
     */
    private CipherAlgorithm(Document doc, Cipher cipher, String algorithmURI) {
 
-      this._doc = doc;
-      this._state = MODE_SIGN;
-      this._constructionElement =
-         XMLUtils.createElementInEncryptionSpace(this._doc, EncryptionConstants._TAG_ENCRYPTIONMETHOD);
+      super(doc, EncryptionConstants._TAG_ENCRYPTIONMETHOD,
+            EncryptionConstants.EncryptionSpecNS, algorithmURI);
+
       this.algorithm = cipher;
-      this.setAlgorithmURI(algorithmURI);
    }
 
    /**
@@ -134,13 +133,10 @@ public class CipherAlgorithm extends ElementProxy {
    public CipherAlgorithm(Element element, String BaseURI)
            throws XMLSecurityException {
 
-      super(element, BaseURI);
-
-      XMLUtils.guaranteeThatElementInEncryptionSpace(this._constructionElement,
-              EncryptionConstants._TAG_ENCRYPTIONMETHOD);
+      super(element, BaseURI, EncryptionConstants._TAG_ENCRYPTIONMETHOD);
 
       try {
-         Element nscontext = XMLUtils.createDSctx(this._doc);
+         Element nscontext = this._doc.createElement("prefixResolver");
 
          nscontext.setAttribute("xmlns:ds",
                                 Constants.SIGNATURESPECIFICATION_URL);
@@ -148,9 +144,12 @@ public class CipherAlgorithm extends ElementProxy {
                                 EncryptionConstants
                                    .ENCRYPTIONSPECIFICATION_URL);
 
-         this._algorithmURI = (Attr) XPathAPI.selectSingleNode(this._constructionElement,
+         this._algorithmURI =
+            (Attr) XPathAPI.selectSingleNode(this._constructionElement,
                                              "./@" + Constants._ATT_ALGORITHM);
+
          if (this._algorithmURI == null) {
+
             // Algorithm attribute is REQUIRED
             throw new XMLSecurityException("empty");
          }
@@ -322,27 +321,9 @@ public class CipherAlgorithm extends ElementProxy {
    }
 
    /**
-    * Method getAlgorithmURI
+    * Method providerInit
     *
-    * @return
     */
-   public String getAlgorithmURI() {
-      return this._constructionElement.getAttribute(Constants._ATT_ALGORITHM);
-   }
-
-   /**
-    * Sets the algorithm's URI as used in the signature.
-    *
-    * @param algorithmURI is the URI of the algorithm as String
-    */
-   protected void setAlgorithmURI(String algorithmURI) {
-
-      if ((this._state == MODE_SIGN) && (algorithmURI != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_ALGORITHM,
-                                                algorithmURI);
-      }
-   }
-
    public static void providerInit() {
 
       if (CipherAlgorithm.cat == null) {
@@ -359,13 +340,20 @@ public class CipherAlgorithm extends ElementProxy {
       }
    }
 
-   public static void register(String algorithmURI, String implementingClass, String ProviderId)
-           throws AlgorithmAlreadyRegisteredException {
+   /**
+    * Method register
+    *
+    * @param algorithmURI
+    * @param implementingClass
+    * @param ProviderId
+    * @throws AlgorithmAlreadyRegisteredException
+    */
+   public static void register(
+           String algorithmURI, String implementingClass, String ProviderId)
+              throws AlgorithmAlreadyRegisteredException {
 
       {
          cat.debug("Try to register " + algorithmURI + " " + implementingClass);
-
-
 
          // are we already registered?
          String registeredClass =
@@ -386,6 +374,7 @@ public class CipherAlgorithm extends ElementProxy {
     * Method getImplementingClass
     *
     * @param URI
+    * @param ProviderId
     * @return
     */
    private static String getImplementingClass(String URI, String ProviderId) {
@@ -397,12 +386,22 @@ public class CipherAlgorithm extends ElementProxy {
       return (String) CipherAlgorithm._algorithmHash.get(URI);
    }
 
+   /**
+    * Method getBaseNamespace
+    *
+    * @return
+    */
+   public String getBaseNamespace() {
+      return EncryptionConstants.EncryptionSpecNS;
+   }
+
    ///////////////////////////////////////////////////////////////////////////
 
    /**
     * Method main
     *
     * @param unused
+    * @throws Exception
     */
    public static void main(String unused[]) throws Exception {
       //J-
@@ -415,13 +414,17 @@ public class CipherAlgorithm extends ElementProxy {
       "" + "\n" +
       "";
       //J+
-
       javax.xml.parsers.DocumentBuilderFactory dbf =
          javax.xml.parsers.DocumentBuilderFactory.newInstance();
+
       dbf.setNamespaceAware(true);
+
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc = db.parse(new java.io.ByteArrayInputStream(xmlStr.getBytes()));
-      CipherAlgorithm c = new CipherAlgorithm(doc.getDocumentElement(), "file://1.xml");
+      Document doc =
+         db.parse(new java.io.ByteArrayInputStream(xmlStr.getBytes()));
+      CipherAlgorithm c = new CipherAlgorithm(doc.getDocumentElement(),
+                                              "file://1.xml");
+
       System.out.println(c.getAlgorithmURI());
    }
 

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -82,7 +82,8 @@ import org.apache.xml.security.utils.*;
  *
  * @author $Author$
  */
-public class RSAKeyValue extends ElementProxy implements KeyValueContent {
+public class RSAKeyValue extends SignatureElementProxy
+        implements KeyValueContent {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
@@ -97,11 +98,7 @@ public class RSAKeyValue extends ElementProxy implements KeyValueContent {
     */
    public RSAKeyValue(Element element, String BaseURI)
            throws XMLSecurityException {
-
-      super(element, BaseURI);
-
-      XMLUtils.guaranteeThatElementInSignatureSpace(element,
-              Constants._TAG_RSAKEYVALUE);
+      super(element, BaseURI, Constants._TAG_RSAKEYVALUE);
    }
 
    /**
@@ -114,8 +111,8 @@ public class RSAKeyValue extends ElementProxy implements KeyValueContent {
    public RSAKeyValue(Document doc, BigInteger modulus, BigInteger exponent) {
 
       super(doc, Constants._TAG_DSAKEYVALUE);
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
 
+      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
       this.addBigIntegerElement(modulus, Constants._TAG_MODULUS);
       this.addBigIntegerElement(exponent, Constants._TAG_EXPONENT);
    }
@@ -123,19 +120,22 @@ public class RSAKeyValue extends ElementProxy implements KeyValueContent {
    /**
     * Constructor RSAKeyValue
     *
+    * @param doc
     * @param key
     * @throws IllegalArgumentException
     */
    public RSAKeyValue(Document doc, Key key) throws IllegalArgumentException {
 
       super(doc, Constants._TAG_RSAKEYVALUE);
+
       this._constructionElement.appendChild(this._doc.createTextNode("\n"));
 
       if (JavaUtils.implementsInterface(
               (Object) key, "java.security.interfaces.RSAPublicKey")) {
-         this.addBigIntegerElement(((RSAPublicKey) key).getModulus(), Constants._TAG_MODULUS);
+         this.addBigIntegerElement(((RSAPublicKey) key).getModulus(),
+                                   Constants._TAG_MODULUS);
          this.addBigIntegerElement(((RSAPublicKey) key).getPublicExponent(),
-                     Constants._TAG_EXPONENT);
+                                   Constants._TAG_EXPONENT);
       } else {
          Object exArgs[] = { Constants._TAG_RSAKEYVALUE,
                              key.getClass().getName() };
@@ -159,8 +159,11 @@ public class RSAKeyValue extends ElementProxy implements KeyValueContent {
          // String JCE_RSA = org.apache.xml.security.algorithms.JCEMapper.translateURItoJCEID(Constants.ALGO_ID_SIGNATURE_RSA);
          // KeyFactory rsaFactory = KeyFactory.getInstance(JCE_RSA);
          RSAPublicKeySpec rsaKeyspec =
-            new RSAPublicKeySpec(this.getBigIntegerFromChildElement(Constants._TAG_MODULUS),
-                                 this.getBigIntegerFromChildElement(Constants._TAG_EXPONENT));
+            new RSAPublicKeySpec(this
+               .getBigIntegerFromChildElement(Constants._TAG_MODULUS, Constants
+               .SignatureSpecNS), this
+                  .getBigIntegerFromChildElement(Constants
+                     ._TAG_EXPONENT, Constants.SignatureSpecNS));
          PublicKey pk = rsaFactory.generatePublic((KeySpec) rsaKeyspec);
 
          return pk;

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -61,6 +61,7 @@ package org.apache.xml.security.utils;
 
 
 import java.io.*;
+import java.util.HashMap;
 import org.w3c.dom.*;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.exceptions.*;
@@ -76,7 +77,7 @@ import org.apache.xpath.XPathAPI;
  *
  * @author $Author$
  */
-public class ElementProxy {
+public abstract class ElementProxy {
 
    /** Field cat */
    static org.apache.log4j.Category cat =
@@ -84,11 +85,23 @@ public class ElementProxy {
    //J-
    public static final int MODE_SIGN = 0;
    public static final int MODE_VERIFY = 1;
-   public static final int MODE_UNKNOWN = 2;
+
    public static final int MODE_ENCRYPT = 0;
    public static final int MODE_DECRYPT = 1;
+
+   public static final int MODE_CREATE = 0;
+   public static final int MODE_PROCESS = 1;
+
+   public static final int MODE_UNKNOWN = 2;
    protected int _state = MODE_UNKNOWN;
    //J+
+
+   /**
+    * Method getBaseNamespace
+    *
+    * @return
+    */
+   public abstract String getBaseNamespace();
 
    /** Field _constructionElement */
    protected Element _constructionElement = null;
@@ -106,7 +119,7 @@ public class ElementProxy {
    public ElementProxy() {
 
       this._doc = null;
-      this._state = MODE_SIGN;
+      this._state = ElementProxy.MODE_UNKNOWN;
       this._baseURI = null;
       this._constructionElement = null;
    }
@@ -116,13 +129,35 @@ public class ElementProxy {
     *
     * @param doc
     * @param localname
+    * @param namespace
     */
-   public ElementProxy(Document doc, String localname) {
+   public ElementProxy(Document doc, String localname, String namespace) {
+
+      if (doc == null) {
+         throw new RuntimeException("Document is null");
+      }
 
       this._doc = doc;
-      this._state = MODE_SIGN;
-      this._constructionElement =
-         XMLUtils.createElementInSignatureSpace(this._doc, localname);
+      this._state = ElementProxy.MODE_CREATE;
+
+      String prefix = ElementProxy.getDefaultPrefix(namespace);
+
+      if (namespace == null) {
+         this._constructionElement = doc.createElement(localname);
+      } else {
+         if ((prefix == null) || (prefix.length() == 0)) {
+            this._constructionElement = doc.createElementNS(namespace,
+                    localname);
+
+            this._constructionElement.setAttribute("xmlns", namespace);
+         } else {
+            this._constructionElement = doc.createElementNS(namespace,
+                    prefix + ":" + localname);
+
+            this._constructionElement.setAttribute("xmlns:" + prefix,
+                                                   namespace);
+         }
+      }
    }
 
    /**
@@ -142,7 +177,7 @@ public class ElementProxy {
       cat.debug("setElement(" + element.getTagName() + ", \"" + BaseURI + "\"");
 
       this._doc = element.getOwnerDocument();
-      this._state = MODE_VERIFY;
+      this._state = ElementProxy.MODE_PROCESS;
       this._constructionElement = element;
       this._baseURI = BaseURI;
    }
@@ -152,22 +187,26 @@ public class ElementProxy {
     *
     * @param element
     * @param BaseURI
+    * @param localname
     * @throws XMLSecurityException
     */
-   public ElementProxy(Element element, String BaseURI)
+   public ElementProxy(Element element, String BaseURI, String localname)
            throws XMLSecurityException {
 
       if (element == null) {
          throw new XMLSecurityException("ElementProxy.nullElement");
       }
 
-      cat.debug("Constructed from " + element.getTagName());
-      cat.debug("Now I have children: " + element.getChildNodes().getLength());
+      cat.debug("setElement(" + element.getTagName() + ", \"" + BaseURI + "\"");
 
-      this._state = MODE_VERIFY;
+      this._doc = element.getOwnerDocument();
+      this._state = ElementProxy.MODE_PROCESS;
       this._constructionElement = element;
-      this._doc = this._constructionElement.getOwnerDocument();
       this._baseURI = BaseURI;
+
+      this.guaranteeThatElementInCorrectSpace(localname);
+
+      // this.setElement(element, BaseURI);
    }
 
    /**
@@ -185,10 +224,13 @@ public class ElementProxy {
     * @return the Element which was constructed by the Object.
     */
    public final NodeList getElementPlusReturns() {
+
       HelperNodeList nl = new HelperNodeList();
+
       nl.appendChild(this._doc.createTextNode("\n"));
       nl.appendChild(this.getElement());
       nl.appendChild(this._doc.createTextNode("\n"));
+
       return nl;
    }
 
@@ -199,6 +241,28 @@ public class ElementProxy {
     */
    public String getBaseURI() {
       return this._baseURI;
+   }
+
+   /**
+    * Method guaranteeThatElementInCorrectSpace
+    *
+    * @param localname
+    * @throws XMLSecurityException
+    */
+   public void guaranteeThatElementInCorrectSpace(String localname)
+           throws XMLSecurityException {
+
+      if ((localname == null) || (localname.equals(""))
+              || (this._constructionElement == null)
+              || (this._constructionElement.getNamespaceURI() == null)
+              || (!this._constructionElement.getLocalName().equals(localname))
+              || (!this._constructionElement.getNamespaceURI()
+                 .equals(this.getBaseNamespace()))) {
+         Object exArgs[] = { localname,
+                             this._constructionElement.getLocalName() };
+
+         throw new XMLSecurityException("xml.WrongElement", exArgs);
+      }
    }
 
    /**
@@ -265,6 +329,11 @@ public class ElementProxy {
       }
    }
 
+   /**
+    * Method addText
+    *
+    * @param text
+    */
    public void addText(String text) {
 
       if (text != null) {
@@ -278,16 +347,17 @@ public class ElementProxy {
     * Method getVal
     *
     * @param localname
+    * @param namespace
     * @return
     * @throws XMLSecurityException
     */
-   public BigInteger getBigIntegerFromChildElement(String localname)
-           throws XMLSecurityException {
+   public BigInteger getBigIntegerFromChildElement(
+           String localname, String namespace) throws XMLSecurityException {
 
       try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds");
+         Element nscontext = XMLUtils.createDSctx(this._doc, "x", namespace);
          Text t = (Text) XPathAPI.selectSingleNode(this._constructionElement,
-                                                   "./ds:" + localname
+                                                   "./x:" + localname
                                                    + "/text()", nscontext);
 
          return Base64.decodeBigIntegerFromText(t);
@@ -300,17 +370,18 @@ public class ElementProxy {
     * Method getBytesFromChildElement
     *
     * @param localname
+    * @param namespace
     * @return
     * @throws XMLSecurityException
     */
-   public byte[] getBytesFromChildElement(String localname)
+   public byte[] getBytesFromChildElement(String localname, String namespace)
            throws XMLSecurityException {
 
       try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds");
+         Element nscontext = XMLUtils.createDSctx(this._doc, "x", namespace);
          Element e =
             (Element) XPathAPI.selectSingleNode(this._constructionElement,
-                                                "./ds:" + localname, nscontext);
+                                                "./x:" + localname, nscontext);
 
          return Base64.decode(e);
       } catch (TransformerException ex) {
@@ -318,14 +389,22 @@ public class ElementProxy {
       }
    }
 
-   public String getTextFromChildElement(String localname)
+   /**
+    * Method getTextFromChildElement
+    *
+    * @param localname
+    * @param namespace
+    * @return
+    * @throws XMLSecurityException
+    */
+   public String getTextFromChildElement(String localname, String namespace)
            throws XMLSecurityException {
 
       try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds");
-         Text t =
-            (Text) XPathAPI.selectSingleNode(this._constructionElement,
-                                                "./ds:" + localname + "/text()", nscontext);
+         Element nscontext = XMLUtils.createDSctx(this._doc, "x", namespace);
+         Text t = (Text) XPathAPI.selectSingleNode(this._constructionElement,
+                                                   "./x:" + localname
+                                                   + "/text()", nscontext);
 
          return t.getData();
       } catch (TransformerException ex) {
@@ -351,6 +430,12 @@ public class ElementProxy {
       }
    }
 
+   /**
+    * Method getTextFromTextChild
+    *
+    * @return
+    * @throws XMLSecurityException
+    */
    public String getTextFromTextChild() throws XMLSecurityException {
 
       try {
@@ -372,7 +457,7 @@ public class ElementProxy {
     * @return
     */
    protected Element getChildElementLocalName(int index, String namespace,
-                                            String localname) {
+                                              String localname) {
 
       try {
          Element nscontext = XMLUtils.createDSctx(this._doc, "ds", namespace);
@@ -407,54 +492,32 @@ public class ElementProxy {
       return 0;
    }
 
-   /*
-   //J-
-   // Interface Node
-   public String getNodeName(){return _constructionElement.getNodeName();}
-   public String getNodeValue() throws DOMException{return _constructionElement.getNodeValue();}
-   public void setNodeValue(String nodeValue) throws DOMException{_constructionElement.setNodeValue(nodeValue);}
-   public short getNodeType(){return _constructionElement.getNodeType();}
-   public Node getParentNode(){return _constructionElement.getParentNode();}
-   public NodeList getChildNodes(){return _constructionElement.getChildNodes();}
-   public Node getFirstChild(){return _constructionElement.getFirstChild();}
-   public Node getLastChild(){return _constructionElement.getLastChild();}
-   public Node getPreviousSibling(){return _constructionElement.getPreviousSibling();}
-   public Node getNextSibling(){return _constructionElement.getNextSibling();}
-   public NamedNodeMap getAttributes(){return _constructionElement.getAttributes();}
-   public Document getOwnerDocument(){return _constructionElement.getOwnerDocument();}
-   public Node insertBefore(Node newChild, Node refChild) throws DOMException{return _constructionElement.insertBefore( newChild , refChild);}
-   public Node replaceChild(Node newChild, Node oldChild) throws DOMException{return _constructionElement.replaceChild( newChild , oldChild);}
-   public Node removeChild(Node oldChild) throws DOMException{return _constructionElement.removeChild(oldChild);}
-   public Node appendChild(Node newChild) throws DOMException{return _constructionElement.appendChild(newChild);}
-   public boolean hasChildNodes(){return _constructionElement.hasChildNodes();}
-   public Node cloneNode(boolean deep){return _constructionElement.cloneNode(deep);}
-   public void normalize(){_constructionElement.normalize();}
-   public boolean isSupported(String feature, String version){return _constructionElement.isSupported(feature, version);}
-   public String getNamespaceURI(){return _constructionElement.getNamespaceURI();}
-   public String getPrefix(){return _constructionElement.getPrefix();}
-   public void setPrefix(String prefix) throws DOMException{_constructionElement.setPrefix(prefix);}
-   public String getLocalName(){return _constructionElement.getLocalName();}
-   public boolean hasAttributes(){return _constructionElement.hasAttributes();}
+   /** Field _prefixMappings */
+   static HashMap _prefixMappings = new HashMap();
 
-   // Interface Element
-   public String getTagName(){return _constructionElement.getTagName();}
-   public String getAttribute(String name){return _constructionElement.getAttribute(name);}
-   public void setAttribute(String name, String value) throws DOMException{_constructionElement.setAttribute(name, value);}
-   public void removeAttribute(String name) throws DOMException{_constructionElement.removeAttribute(name);}
-   public Attr getAttributeNode(String name){return _constructionElement.getAttributeNode(name);}
-   public Attr setAttributeNode(Attr newAttr) throws DOMException{return _constructionElement.setAttributeNode(newAttr);}
-   public Attr removeAttributeNode(Attr oldAttr) throws DOMException{return _constructionElement.removeAttributeNode(oldAttr);}
-   public NodeList getElementsByTagName(String name){return _constructionElement.getElementsByTagName(name);}
-   public String getAttributeNS(String namespaceURI, String localName){return _constructionElement.getAttributeNS(namespaceURI, localName);}
-   public void setAttributeNS(String namespaceURI, String qualifiedName, String value)throws DOMException{_constructionElement.setAttributeNS(namespaceURI, qualifiedName, value);}
-   public void removeAttributeNS(String namespaceURI, String localName) throws DOMException{removeAttributeNS(namespaceURI, localName);}
-   public Attr getAttributeNodeNS(String namespaceURI, String localName){return _constructionElement.getAttributeNodeNS(namespaceURI, localName);}
-   public Attr setAttributeNodeNS(Attr newAttr) throws DOMException{return _constructionElement.setAttributeNodeNS(newAttr);}
-   public NodeList getElementsByTagNameNS(String namespaceURI, String localName){return _constructionElement.getElementsByTagNameNS(namespaceURI, localName);}
-   public boolean hasAttribute(String name){return _constructionElement.hasAttribute(name);}
-   public boolean hasAttributeNS(String namespaceURI, String localName){return _constructionElement.hasAttributeNS(namespaceURI, localName);}
-   //J+
-   */
+   /**
+    * Method setDefaultPrefix
+    *
+    * @param namespace
+    * @param prefix
+    */
+   public static void setDefaultPrefix(String namespace, String prefix) {
+      ElementProxy._prefixMappings.put(namespace, prefix);
+   }
+
+   /**
+    * Method getDefaultPrefix
+    *
+    * @param namespace
+    * @return
+    */
+   public static String getDefaultPrefix(String namespace) {
+
+      String prefix = (String) ElementProxy._prefixMappings.get(namespace);
+
+      return prefix;
+   }
+
    static {
       org.apache.xml.security.Init.init();
    }

@@ -3,7 +3,7 @@
 <book title="XML-Security Documentation" 
       copyright="2001 The Apache Software Foundation">
   <external label="Home"
-            href="../index.html" />
+            href="http://xml.apache.org/" />
   <separator />
   <document label="Readme"       
             id="index"

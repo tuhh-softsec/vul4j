@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -87,19 +87,13 @@ import org.xml.sax.SAXException;
 /**
  * Handles <code>&lt;ds:Manifest&gt;</code> elements
  * <p> This element holds the <code>Reference</code> elements</p>
- * @author Christian Geuer-Pollmann
+ * @author $author: $
  */
-public class Manifest extends ElementProxy {
+public class Manifest extends SignatureElementProxy {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(Manifest.class.getName());
-
-   /**
-    * Constructor Manifest
-    *
-    */
-   Manifest() {}
 
    /**
     * Consturts {@link Manifest}
@@ -123,31 +117,17 @@ public class Manifest extends ElementProxy {
    }
 
    /**
-    * Build a {@link Manifest} from an {@link Element}
+    * Constructor Manifest
     *
-    * @param element <code>Manifest</code> element
-    * @param BaseURI the URI of the resource where the XML instance was stored
+    * @param element
+    * @param BaseURI
+    * @param localname
     * @throws XMLSecurityException
     */
-   public Manifest(Element element, String BaseURI)
+   public Manifest(Element element, String BaseURI, String localname)
            throws XMLSecurityException {
 
-      super(element, BaseURI);
-
-      cat.debug("Create Manifest or SignedInfo from Element with BaseURI "
-                + this._baseURI);
-
-      if (!XMLUtils
-              .elementIsInSignatureSpace(this
-              ._constructionElement, Constants._TAG_MANIFEST) &&!XMLUtils
-                 .elementIsInSignatureSpace(this
-                    ._constructionElement, Constants._TAG_SIGNEDINFO)) {
-         Object exArgs[] = {
-            Constants._TAG_MANIFEST + " or " + Constants._TAG_SIGNEDINFO,
-            element.getLocalName() };
-
-         throw new XMLSecurityException("xml.WrongElement", exArgs);
-      }
+      super(element, BaseURI, localname);
 
       // check out Reference children
       {
@@ -161,6 +141,18 @@ public class Manifest extends ElementProxy {
                                    I18n.translate("xml.WrongContent", exArgs));
          }
       }
+   }
+
+   /**
+    * Build a {@link Manifest} from an {@link Element}
+    *
+    * @param element <code>Manifest</code> element
+    * @param BaseURI the URI of the resource where the XML instance was stored
+    * @throws XMLSecurityException
+    */
+   public Manifest(Element element, String BaseURI)
+           throws XMLSecurityException {
+      this(element, BaseURI, Constants._TAG_MANIFEST);
    }
 
    /**
@@ -567,7 +559,7 @@ public class Manifest extends ElementProxy {
       return (String) this._resolverProperties.get(key);
    }
 
-   /** Field _signedContents           */
+   /** Field _signedContents */
    Vector _signedContents = new Vector();
 
    /**

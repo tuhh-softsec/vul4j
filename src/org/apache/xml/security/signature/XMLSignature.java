@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -96,7 +96,7 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author $Author$
  */
-public class XMLSignature extends ElementProxy {
+public class XMLSignature extends SignatureElementProxy {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
@@ -121,6 +121,7 @@ public class XMLSignature extends ElementProxy {
    /** ds:Signature.ds:KeyInfo */
    KeyInfo _keyInfo = null;
 
+   /** Field _followManifestsDuringValidation           */
    boolean _followManifestsDuringValidation = false;
 
    /**
@@ -130,7 +131,7 @@ public class XMLSignature extends ElementProxy {
     * @param doc
     * @param BaseURI
     * @param signatureAlgorithmURI
-    * @throws XMLSignatureException
+    * @throws XMLSecurityException
     */
    public XMLSignature(
            Document doc, String BaseURI, String signatureAlgorithmURI)
@@ -172,11 +173,7 @@ public class XMLSignature extends ElementProxy {
    public XMLSignature(Element element, String BaseURI)
            throws XMLSignatureException, XMLSecurityException, IOException {
 
-      super(element, BaseURI);
-
-      // element must be of type ds:Signature
-      XMLUtils.guaranteeThatElementInSignatureSpace(element,
-              Constants._TAG_SIGNATURE);
+      super(element, BaseURI, Constants._TAG_SIGNATURE);
 
       Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
                                                Constants.SignatureSpecNS);
@@ -535,6 +532,8 @@ public class XMLSignature extends ElementProxy {
 
       try {
          if (this._state == MODE_SIGN) {
+
+            // XMLUtils.indentSignature(this._constructionElement, "   ", 0);
             Element signatureMethodElement =
                this._signedInfo.getSignatureMethodElement();
             SignatureAlgorithm sa =
@@ -579,6 +578,8 @@ public class XMLSignature extends ElementProxy {
 
       try {
          if (this._state == MODE_SIGN) {
+
+            // XMLUtils.indentSignature(this._constructionElement, "   ", 0);
             Element signatureMethodElement =
                this._signedInfo.getSignatureMethodElement();
             SignatureAlgorithm sa =
@@ -809,8 +810,13 @@ public class XMLSignature extends ElementProxy {
       return this.getSignedInfo().createSecretKey(secretKeyBytes);
    }
 
+   /**
+    * Method setFollowNestedManifests
+    *
+    * @param followManifests
+    */
    public void setFollowNestedManifests(boolean followManifests) {
-     this._followManifestsDuringValidation = followManifests;
+      this._followManifestsDuringValidation = followManifests;
    }
 
    static {

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -81,20 +81,27 @@ import org.apache.xpath.XPathAPI;
  * Handles <code>&lt;ds:SignatureProperties&gt;</code> elements
  * This Element holds {@link SignatureProperty} that contian additional information items
  * concerning the generation of the signature.
- * for example, data-time stamp, serial number of cryptographic hardware. *
+ * for example, data-time stamp, serial number of cryptographic hardware. 
  *
  * @author Christian Geuer-Pollmann
  *
  */
-public class SignatureProperties extends ElementProxy {
+public class SignatureProperties extends SignatureElementProxy {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category
          .getInstance(SignatureProperties.class.getName());
 
+   /**
+    * Constructor SignatureProperties
+    *
+    * @param doc
+    */
    public SignatureProperties(Document doc) {
+
       super(doc, Constants._TAG_SIGNATUREPROPERTIES);
+
       this._constructionElement.appendChild(this._doc.createTextNode("\n"));
    }
 
@@ -102,15 +109,11 @@ public class SignatureProperties extends ElementProxy {
     * Constructs {@link SignatureProperties} from {@link Element}
     * @param element <code>SignatureProperties</code> elementt
     * @param BaseURI the URI of the resource where the XML instance was stored
+    * @throws XMLSecurityException
     */
    public SignatureProperties(Element element, String BaseURI)
            throws XMLSecurityException {
-
-      super(element, BaseURI);
-
-      // element must be of type ds:SignatureProperties
-      XMLUtils.guaranteeThatElementInSignatureSpace(element,
-              Constants._TAG_SIGNATUREPROPERTIES);
+      super(element, BaseURI, Constants._TAG_SIGNATUREPROPERTIES);
    }
 
    /**
@@ -188,6 +191,11 @@ public class SignatureProperties extends ElementProxy {
       return this._constructionElement.getAttribute(Constants._ATT_ID);
    }
 
+   /**
+    * Method addSignatureProperty
+    *
+    * @param sp
+    */
    public void addSignatureProperty(SignatureProperty sp) {
       this._constructionElement.appendChild(sp.getElement());
       this._constructionElement.appendChild(this._doc.createTextNode("\n"));

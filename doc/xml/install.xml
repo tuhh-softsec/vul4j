@@ -43,7 +43,7 @@ cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</so
 	<s2 title="Files in the source package release">
 		<table>
 			<tr><td>build.xml</td><td>Top level <jump href="http://jakarta.apache.org/ant/index.html">Ant</jump> Makefile -- read README file before building</td></tr>
-			<tr><td>LICENSE.txt</td><td>License for &packagename;</td></tr>
+			<tr><td>LICENSE.txt</td><td>License for the software</td></tr>
 			<tr><td>README</td><td>Build instructions</td></tr>
 			<tr><td>Readme.html</td><td>Web page redirect required for building documentation</td></tr>
 			<tr><td>STATUS</td><td>Current source code status information</td></tr>
@@ -53,5 +53,9 @@ cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</so
 			<tr><td>src_samples/</td><td>Directory containing source code for samples</td></tr>
 			<tr><td>src_unitTests/</td><td>Directory containing source code for unit tests</td></tr>
 		</table>
+	</s2>
+	<s2 title="Where is my JCE?">
+		<p>There is <em>no</em> JCE bundled together with this distribution. Living in Germany, I had no problem to include the JCE in this software package but then I realized that the Apache Project is hosted in the US where some export restrictions apply to the cryptographic primitives. </p>
+		<p>Well, how do we solve this problem? The nice guys from the <jump href="http://www.bouncycastle.org/">Bouncy Castle</jump> where so helpful to supply the JAR that you need to create HMAC integrity checks on their web site. When you use the ant makefile <code>build.xml</code> and simply say <code>ant compile</code> or <code>ant get-jce</code>, <code>ant</code> tries to fetch this JAR from the australian server. After that step, the compilation works completely. </p>
 	</s2>
 </s1>

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European
- * Commission in the <WebSig> project in the ISIS Programme.
+ * The development of this software was partly funded by the European 
+ * Commission in the <WebSig> project in the ISIS Programme. 
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -124,14 +124,20 @@ public class Init {
             Element context = XMLUtils.createDSctx(
                doc, "x", "http://www.xmlsecurity.org/NS/#configuration");
 
+            context.setAttribute("xmlns:log4j",
+                                 "http://jakarta.apache.org/log4j/");
+
             {
+
+               /* configure logging */
+
+               /*
                try {
                   File f = new File("log.txt");
 
                   f.delete();
                } catch (Exception ex) {}
 
-               /* configure logging */
                String log4jConfigFile = ((Attr) XPathAPI.selectSingleNode(
                   doc, "/x:Configuration/x:Log4J/@configFile",
                   context)).getNodeValue();
@@ -150,6 +156,23 @@ public class Init {
                   org.apache.log4j.Category.DEFAULT_INIT_OVERRIDE_KEY + "=\""
                   + System.getProperties().getProperty(
                   org.apache.log4j.Category.DEFAULT_INIT_OVERRIDE_KEY) + "\"");
+               */
+               Element log4jElem = (Element) XPathAPI.selectSingleNode(doc,
+                                      "//log4j:configuration[1]", context);
+
+               try {
+                  Attr logfile = (Attr) XPathAPI.selectSingleNode(
+                     log4jElem,
+                     "./x:appender[@name='STDOUT']/x:param[@name='File']/@value",
+                     context);
+                  String logFileName = logfile.getNodeValue();
+                  File f = new File(logFileName);
+
+                  f.delete();
+               } catch (Exception ex) {}
+
+               org.apache.log4j.xml.DOMConfigurator.configure(log4jElem);
+               cat.info("Logging is working");
             }
 
             {
@@ -314,8 +337,8 @@ public class Init {
                   }
 
                   if (registerClass) {
-                     cat.debug("SignatureAlgorithm.register(" + URI + ", " + JAVACLASS
-                               + ")");
+                     cat.debug("SignatureAlgorithm.register(" + URI + ", "
+                               + JAVACLASS + ")");
                      SignatureAlgorithm.register(URI, JAVACLASS);
                   }
                }
@@ -325,8 +348,7 @@ public class Init {
                CipherAlgorithm.providerInit();
 
                NodeList sigElems = XPathAPI.selectNodeList(
-                  doc,
-                  "/x:Configuration/x:CipherAlgorithms/x:CipherAlgorithm",
+                  doc, "/x:Configuration/x:CipherAlgorithms/x:CipherAlgorithm",
                   context);
 
                for (int i = 0; i < sigElems.getLength(); i++) {
@@ -361,8 +383,8 @@ public class Init {
                   }
 
                   if (registerClass) {
-                     cat.debug("CipherAlgorithm.register(" + URI + ", " + JAVACLASS
-                               + ")");
+                     cat.debug("CipherAlgorithm.register(" + URI + ", "
+                               + JAVACLASS + ")");
                      CipherAlgorithm.register(URI, JAVACLASS, PROVIDERID);
                   }
                }
@@ -454,6 +476,24 @@ public class Init {
                   KeyResolver.register(JAVACLASS);
                }
             }
+
+            {
+               cat.debug("Now I try to bind prefixes:");
+
+               NodeList nl = XPathAPI.selectNodeList(
+                  doc, "/x:Configuration/x:PrefixMappings/x:PrefixMapping",
+                  context);
+
+               for (int i = 0; i < nl.getLength(); i++) {
+                  String namespace =
+                     ((Element) nl.item(i)).getAttribute("namespace");
+                  String prefix = ((Element) nl.item(i)).getAttribute("prefix");
+
+                  cat.debug("Now I try to bind " + prefix + " to " + namespace);
+                  org.apache.xml.security.utils.ElementProxy
+                     .setDefaultPrefix(namespace, prefix);
+               }
+            }
          } catch (Exception e) {
             cat.fatal("Bad: ", e);
             e.printStackTrace();
@@ -531,8 +571,8 @@ public class Init {
 
          DocumentBuilder db = dbf.newDocumentBuilder();
          Document doc = db.parse(is);
-            Element context = XMLUtils.createDSctx(
-               doc, "x", "http://www.xmlsecurity.org/NS/#configuration");
+         Element context = XMLUtils.createDSctx(
+            doc, "x", "http://www.xmlsecurity.org/NS/#configuration");
 
          {
             NodeList nl =
