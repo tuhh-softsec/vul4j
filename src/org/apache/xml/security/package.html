@@ -1,0 +1,46 @@
+<HTML>
+  <HEAD> 
+	 <TITLE>org.apache.xml.security</TITLE> 
+  </HEAD> 
+  <BODY> 
+	 <H1>Canonical XML Implementation v0.5</H1> 
+	 <H2>Author</H2> 
+	 <P>Christian Geuer-Pollmann geuer-pollmann@xmlsecurity.org<BR> University
+		of Siegen<BR> Institute for Data Communications Systems<BR> </P> 
+	 <H2>Needs the following packages</H2> 
+	 <UL> 
+		<LI>Xerces v1.4.0 <A
+		  HREF="http://xml.apache.org/dist/xerces-j/">http://xml.apache.org/dist/xerces-j/</A>
+		  </LI>
+		<LI>Xalan 2.1.0 <A
+		  HREF="http://xml.apache.org/dist/xalan-j/">http://xml.apache.org/dist/xalan-j/
+		  </A></LI>
+		<LI>JUnit 3.5
+		  <A
+			HREF="http://download.sourceforge.net/junit/junit3.5.zip">http://download.sourceforge.net/junit/junit3.5.zip</A>
+		  </LI>
+		<LI>Jakarta Log4J 1.1.2 <A
+		  HREF="http://jakarta.apache.org/log4j/">http://jakarta.apache.org/log4j/</A>
+		  </LI>
+		<LI>ANT <A
+		  HREF="http://jakarta.apache.org/builds/jakarta-ant/release/">http://jakarta.apache.org/builds/jakarta-ant/release/</A>
+		  </LI> 
+	 </UL>
+	 <H1>Packages</H1> 
+	 <UL> 
+		<LI>{@link org.apache.xml.security.algorithms} contains algorithm factories </LI> 
+		<LI>{@link org.apache.xml.security.c14n} contains Canonicalization related material and algorithms </LI> 
+		<LI>{@link org.apache.xml.security.exceptions} contains all exceptions used by this library </LI> 
+		<LI>{@link org.apache.xml.security.keys} contains key related material </LI> 
+		<LI>{@link org.apache.xml.security.samples} contains some sample applications and non-standard transforms </LI> 
+		<LI>{@link org.apache.xml.security.signature} contains the XML Signature specific classes </LI> 
+		<LI>{@link org.apache.xml.security.transforms} XML Signature transformations </LI> 
+		<LI>{@link org.apache.xml.security.utils} contains all utility classes </LI> 
+		<LI>{@link org.apache.xml.security.test} JUnit test cases </LI> 
+		<LI>{@link org.apache.xml.security.temp} is the playground for messing around </LI> 
+	 </UL> 
+	 <H1>Features</H1> 
+	 <P>Currently, the examples 3.1 - 3.6 work as expected. For example "3.4
+		Character Modifications and Character References", the parser must switched to
+		validating mode to make the ID and NMTOKENS normalization.</P> </BODY>
+</HTML>
