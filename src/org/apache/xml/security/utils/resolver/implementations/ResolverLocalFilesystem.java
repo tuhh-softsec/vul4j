@@ -20,7 +20,7 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 import java.io.FileInputStream;
 
-import org.apache.xerces.util.URI;
+import org.apache.xml.utils.URI;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;

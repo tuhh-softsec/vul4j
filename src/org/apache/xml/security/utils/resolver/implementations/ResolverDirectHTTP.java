@@ -26,7 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.apache.xerces.util.URI;
+import org.apache.xml.utils.URI;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
