@@ -66,6 +66,10 @@ public:
 
 	virtual const XMLCh * getOriginalRequestId(void) const;
 	virtual void setOriginalRequestId(const XMLCh * id);
+	virtual unsigned int getResponseLimit(void) const;
+
+	/* Set interface methods */
+	virtual void setResponseLimit(unsigned int limit);
 
 	/* RespondWith handling */
 
@@ -131,6 +135,9 @@ private:
 	XERCES_CPP_NAMESPACE_QUALIFIER  DOMAttr
 						* mp_originalRequestIdAttr;
 
+	XERCES_CPP_NAMESPACE_QUALIFIER  DOMAttr
+						* mp_responseLimitAttr;
+
 	// Unimplemented
 	XKMSRequestAbstractTypeImpl(void);
 	XKMSRequestAbstractTypeImpl(const XKMSRequestAbstractTypeImpl &);
@@ -164,6 +171,10 @@ private:
 	virtual void appendResponseMechanismItem(const XMLCh * item) \
 		{XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(item);} \
 	virtual void removeResponseMechanismItem(int item) \
-		{XKMSRequestAbstractTypeImpl::removeResponseMechanismItem(item);}
+		{XKMSRequestAbstractTypeImpl::removeResponseMechanismItem(item);} \
+	virtual unsigned int getResponseLimit(void) const \
+		{return XKMSRequestAbstractTypeImpl::getResponseLimit();} \
+	virtual void setResponseLimit(unsigned int limit) \
+		{XKMSRequestAbstractTypeImpl::setResponseLimit(limit);}
 
 #endif /* XKMSREQUESTABSTRACTTYPEIMPL_INCLUDE */

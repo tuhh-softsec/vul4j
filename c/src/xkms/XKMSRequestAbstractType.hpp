@@ -100,6 +100,17 @@ public:
 
 	virtual const XMLCh * getOriginalRequestId(void) const = 0;
 
+	/**
+	 * \brief Get the ResponseLimit size
+	 *
+	 * A client can limit the number of keys to be returned by the service by
+	 * setting this value to the required limit.
+	 *
+	 * @returns Value of the ResponseLimit within the message.  0 if none was set
+	 */
+
+	virtual unsigned int getResponseLimit(void) const = 0;
+
 	//@}
 
 	/** @name Setter interface methods */
@@ -115,6 +126,17 @@ public:
 	 */
 
 	virtual void setOriginalRequestId(const XMLCh * id) = 0;
+
+	/**
+	 * \brief Set the ResponseLimit size
+	 *
+	 * A client can limit the number of keys to be returned by the service by
+	 * setting this value to the required limit.
+	 *
+	 * @param limit Value to set the ResponseLimit within the message
+	 */
+
+	virtual void setResponseLimit(unsigned int limit) = 0;
 
 	//@}
 

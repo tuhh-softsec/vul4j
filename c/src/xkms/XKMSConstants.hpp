@@ -91,6 +91,7 @@ public:
 	static const XMLCh s_tagRequestSignatureValue[];
 	static const XMLCh s_tagRespondWith[];
 	static const XMLCh s_tagResponseId[];
+	static const XMLCh s_tagResponseLimit[];
 	static const XMLCh s_tagResponseMechanism[];
 	static const XMLCh s_tagResult[];
 	static const XMLCh s_tagResultMajor[];

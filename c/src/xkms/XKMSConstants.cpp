@@ -737,6 +737,24 @@ const XMLCh XKMSConstants::s_tagResponseId[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagResponseLimit[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_s,
+	chLatin_p,
+	chLatin_o,
+	chLatin_n,
+	chLatin_s,
+	chLatin_e,
+	chLatin_L,
+	chLatin_i,
+	chLatin_m,
+	chLatin_i,
+	chLatin_t,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagResponseMechanism[] = {
 
 	chLatin_R,

@@ -376,6 +376,8 @@ void printLocateRequestUsage(void) {
 	cerr << "   --add-usage-sig/-us      : Add Signature Key Usage\n";
 	cerr << "   --add-usage-exc/-ux      : Add Excange Key Usage\n";
 	cerr << "   --add-usage-enc/-ue      : Add Encryption Key Usage\n";
+	cerr << "   --add-responselimit/-l <limit>\n";
+	cerr << "                            : Set <limit> for ResponseLimit\n";
 	cerr << "   --add-usekeywith/-u <Application URI> <Identifier>\n";
 	cerr << "                            : Add a UseKeyWith element\n";
 	cerr << "   --add-respondwith/-r <Identifier>\n";
@@ -476,6 +478,16 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			if (qkb == NULL)
 				qkb = lr->addQueryKeyBinding();
 			qkb->setEncryptionKeyUsage();
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-responselimit") == 0 || stricmp(argv[paramCount], "-l") == 0) {
+			if (paramCount >= argc+1) {
+				printLocateRequestUsage();
+				delete lr;
+				return NULL;
+			}
+			paramCount++;
+			lr->setResponseLimit(atoi(argv[paramCount]));
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
@@ -630,6 +642,8 @@ void printValidateRequestUsage(void) {
 	cerr << "   --add-usage-sig/-us      : Add Signature Key Usage\n";
 	cerr << "   --add-usage-exc/-ux      : Add Excange Key Usage\n";
 	cerr << "   --add-usage-enc/-ue      : Add Encryption Key Usage\n";
+	cerr << "   --add-responselimit/-l <limit>\n";
+	cerr << "                            : Set <limit> for ResponseLimit\n";
 	cerr << "   --add-usekeywith/-u <Application URI> <Identifier>\n";
 	cerr << "                            : Add a UseKeyWith element\n";
 	cerr << "   --add-respondwith/-r <Identifier>\n";
@@ -729,6 +743,16 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 				return NULL;
 			}
 			vr->appendResponseMechanismItem(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-responselimit") == 0 || stricmp(argv[paramCount], "-l") == 0) {
+			if (paramCount >= argc+1) {
+				printValidateRequestUsage();
+				delete vr;
+				return NULL;
+			}
+			paramCount++;
+			vr->setResponseLimit(atoi(argv[paramCount]));
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {

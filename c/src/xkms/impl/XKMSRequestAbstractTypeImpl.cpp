@@ -48,6 +48,7 @@ XKMSRequestAbstractTypeImpl::XKMSRequestAbstractTypeImpl(
 XKMSMessageAbstractTypeImpl(env)
 {
 	mp_originalRequestIdAttr = NULL;
+	mp_responseLimitAttr = NULL;
 }
 
 XKMSRequestAbstractTypeImpl::XKMSRequestAbstractTypeImpl(
@@ -56,6 +57,7 @@ XKMSRequestAbstractTypeImpl::XKMSRequestAbstractTypeImpl(
 XKMSMessageAbstractTypeImpl(env, node)
 {
 	mp_originalRequestIdAttr = NULL;
+	mp_responseLimitAttr = NULL;
 }
 
 XKMSRequestAbstractTypeImpl::~XKMSRequestAbstractTypeImpl() {
@@ -126,6 +128,10 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 	mp_originalRequestIdAttr = 
 		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagOriginalRequestId);
 
+	mp_responseLimitAttr = 
+		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseLimit);
+	
+		
 	XKMSMessageAbstractTypeImpl::load();
 
 }
@@ -144,7 +150,7 @@ DOMElement * XKMSRequestAbstractTypeImpl::createBlankRequestAbstractType(
 }
 
 // --------------------------------------------------------------------------------
-//           Get interface methods
+//           Get/Set interface methods
 // --------------------------------------------------------------------------------
 
 const XMLCh * XKMSRequestAbstractTypeImpl::getOriginalRequestId(void) const {
@@ -168,6 +174,39 @@ void XKMSRequestAbstractTypeImpl::setOriginalRequestId(const XMLCh * id) {
 	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagOriginalRequestId, id);
 	mp_originalRequestIdAttr = 
 		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagOriginalRequestId);
+
+}
+
+unsigned int XKMSRequestAbstractTypeImpl::getResponseLimit(void) const {
+
+	if (mp_responseLimitAttr == NULL)
+		return 0;
+
+	unsigned int ret;
+
+	if (!XMLString::textToBin(mp_responseLimitAttr->getValue(), ret))
+		return 0;
+
+	return ret;
+}
+
+void XKMSRequestAbstractTypeImpl::setResponseLimit(unsigned int limit) {
+
+	if (mp_messageAbstractTypeElement == NULL) {
+
+		// Attempt update when not initialised
+		throw XSECException(XSECException::MessageAbstractTypeError,
+			"XKMSRequestAbstractType::setResponseLimit - called on non-initialised structure");
+
+	}
+
+	/* Convert the number to a string */
+	XMLCh limitStr[10];
+	XMLString::binToText(limit, limitStr, 9, 10);
+
+	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagResponseLimit, limitStr);
+	mp_responseLimitAttr = 
+		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseLimit);
 
 }
 
