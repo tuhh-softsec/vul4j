@@ -25,6 +25,8 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.util.WeakHashMap;
+
 
 /**
  * Purpose of this class is to enable the XML Parser to keep track of ID
@@ -47,6 +49,8 @@ public class IdResolver {
     static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(IdResolver.class.getName());
 
+   static WeakHashMap docMap = new WeakHashMap();
+    
    /**
     * Constructor IdResolver
     *
@@ -63,11 +67,13 @@ public class IdResolver {
     * @param idValue
     */
    public static void registerElementById(Element element, String idValue) {
-
       Document doc = element.getOwnerDocument();
-
-      ((org.apache.xerces.dom.DocumentImpl) doc).putIdentifier(idValue,
-              element);
+      WeakHashMap elementMap = (WeakHashMap) docMap.get(doc);
+      if(elementMap == null) {
+          elementMap = new WeakHashMap();
+          docMap.put(doc, elementMap);
+      }
+      elementMap.put(idValue, element);
    }
 
    /**
@@ -95,7 +101,17 @@ public class IdResolver {
 
       if (result != null) {
          log.debug(
-            "I could find an Element using the simple getElementById method: "
+            "I could find an Element using the simple getElementByIdType method: "
+            + result.getTagName());
+
+         return result;
+      }
+
+       result = IdResolver.getElementByIdUsingDOM(doc, id);
+
+       if (result != null) {
+          log.debug(
+             "I could find an Element using the simple getElementByIdUsingDOM method: "
             + result.getTagName());
 
          return result;
@@ -166,6 +182,19 @@ public class IdResolver {
       return null;
    }
 
+
+    /**
+     * Method getElementByIdUsingDOM
+     *
+     * @param doc
+     * @param id
+     *
+     */
+    private static Element getElementByIdUsingDOM(Document doc, String id) {
+        log.debug("getElementByIdUsingDOM() Search for ID " + id);
+        return doc.getElementById(id);
+    }
+
    /**
     * Method getElementByIdType
     *
@@ -174,10 +203,12 @@ public class IdResolver {
     *
     */
    private static Element getElementByIdType(Document doc, String id) {
-
       log.debug("getElementByIdType() Search for ID " + id);
-
-      return doc.getElementById(id);
+       WeakHashMap elementMap = (WeakHashMap) docMap.get(doc);
+       if (elementMap != null) {
+           return (Element)elementMap.get(id);
+       }
+       return null;
    }
 
    /**
