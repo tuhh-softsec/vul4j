@@ -56,8 +56,6 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xml.utils.URI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -139,15 +137,6 @@ public class XMLCipher {
         AES_128 + "\n" + AES_256 + "\n" + AES_192 + "\n" + RSA_v1dot5 + "\n" +
         RSA_OAEP + "\n" + TRIPLEDES_KeyWrap + "\n" + AES_128_KeyWrap + "\n" +
         AES_256_KeyWrap + "\n" + AES_192_KeyWrap+ "\n";
-    private static final String ALGORITHMS = TRIPLEDES + "\n" +
-        AES_128 + "\n" + AES_256 + "\n" + AES_192 + "\n" + RSA_v1dot5 + "\n" +
-        RSA_OAEP + "\n" + DIFFIE_HELLMAN + "\n" + TRIPLEDES_KeyWrap + "\n" +
-        AES_128_KeyWrap + "\n" +  AES_256_KeyWrap + "\n" +
-        AES_192_KeyWrap+ "\n" + SHA1 + "\n" + SHA256 + "\n" + SHA512 + "\n" +
-        RIPEMD_160 + "\n" + XML_DSIG + "\n" + N14C_XML + "\n" +
-        N14C_XML_WITH_COMMENTS + "\n" + EXCL_XML_N14C + "\n" +
-        EXCL_XML_N14C_WITH_COMMENTS;
-
 	
 	/** Cipher created during initialisation that is used for encryption */
     private Cipher _contextCipher;
@@ -199,7 +188,7 @@ public class XMLCipher {
      * Checks to ensure that the supplied algorithm is valid.
      *
      * @param algorithm the algorithm to check.
-     * @returm true if the algorithm is valid, otherwise false.
+     * @return true if the algorithm is valid, otherwise false.
      * @since 1.0.
      */
     private static boolean isValidEncryptionAlgorithm(String algorithm) {
@@ -243,7 +232,7 @@ public class XMLCipher {
      * @param transformation the name of the transformation, e.g.,
      *   <code>XMLCipher.TRIPLEDES</code> which is shorthand for
      *   &quot;http://www.w3.org/2001/04/xmlenc#tripledes-cbc&quot;
-     * @throws <code>XMLEncryptionException</code>.
+     * @throws XMLEncryptionException
      * @see javax.crypto.Cipher#getInstance
      */
     public static XMLCipher getInstance(String transformation) throws
@@ -340,7 +329,7 @@ public class XMLCipher {
      *   <code>XMLCipher.TRIPLEDES</code> which is shorthand for
      *   &quot;http://www.w3.org/2001/04/xmlenc#tripledes-cbc&quot;
      * @param provider the JCE provider that supplies the transformation
-     * @throws <code>XMLEncryptionException</code>.
+     * @throws XMLEncryptionException
      */
 
     public static XMLCipher getProviderInstance(String transformation, String provider)
@@ -408,7 +397,7 @@ public class XMLCipher {
 	 * @param canon				the name of the c14n algorithm, if
 	 * 							<code>null</code> use standard serializer 
 	 * @return
-	 * @throws Exception
+	 * @throws XMLEncryptionException
 	 */
 	public static XMLCipher getProviderInstance(
 		String transformation,
@@ -433,7 +422,7 @@ public class XMLCipher {
 	 * unwrap operations where the encryption method is defined in the 
 	 * <code>EncryptionMethod</code> element.
 	 *
-     * @throws <code>XMLEncryptionException</code>.
+     * @throws XMLEncryptionException
      */
 
     public static XMLCipher getInstance()
@@ -473,7 +462,7 @@ public class XMLCipher {
      *
      * @param provider the JCE provider that supplies the cryptographic
 	 * needs.
-     * @throws <code>XMLEncryptionException</code>.
+     * @throws XMLEncryptionException
      */
 
     public static XMLCipher getProviderInstance(String provider)
@@ -563,7 +552,7 @@ public class XMLCipher {
 	 * This can then be used by applications to add KeyInfo elements and
 	 * set other parameters.
 	 *
-	 * @returns The EncryptedData being built
+	 * @return The EncryptedData being built
 	 */
 
 	public EncryptedData getEncryptedData() {
@@ -581,7 +570,7 @@ public class XMLCipher {
 	 * This can then be used by applications to add KeyInfo elements and
 	 * set other parameters.
 	 *
-	 * @returns The EncryptedData being built
+	 * @return The EncryptedData being built
 	 */
 
 	public EncryptedKey getEncryptedKey() {
@@ -691,7 +680,7 @@ public class XMLCipher {
      * Encrypts an <code>Element</code> and replaces it with its encrypted
      * counterpart in the context <code>Document</code>, that is, the
      * <code>Document</code> specified when one calls
-     * {@link #getInstance(Document, String) getInstance}.
+     * {@link #getInstance(String) getInstance}.
      *
      * @param element the <code>Element</code> to encrypt.
      * @return the context <code>Document</code> with the encrypted
@@ -725,9 +714,9 @@ public class XMLCipher {
      * content with this the resulting <code>EncryptedType</code> within the
      * context <code>Document</code>, that is, the <code>Document</code>
      * specified when one calls
-     * {@link #getInstance(Document, String) getInstance}.
+     * {@link #getInstance(String) getInstance}.
      *
-     * @param content the <code>NodeList</code> to encrypt.
+     * @param element the <code>NodeList</code> to encrypt.
      * @return the context <code>Document</code> with the encrypted
      *   <code>NodeList</code> having replaced the content of the source
      *   <code>Element</code>.
@@ -760,7 +749,7 @@ public class XMLCipher {
      * @param context the context <code>Document</code>.
      * @param source the <code>Document</code> to be encrypted or decrypted.
      * @return the processed <code>Document</code>.
-     * @throws XMLEnccryptionException to indicate any exceptional conditions.
+     * @throws Exception to indicate any exceptional conditions.
      */
     public Document doFinal(Document context, Document source) throws
             /* XMLEncryption */Exception {
@@ -800,7 +789,7 @@ public class XMLCipher {
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> to be encrypted.
      * @return the processed <code>Document</code>.
-     * @throws XMLEnccryptionException to indicate any exceptional conditions.
+     * @throws Exception to indicate any exceptional conditions.
      */
     public Document doFinal(Document context, Element element) throws
             /* XMLEncryption */Exception {
@@ -842,7 +831,7 @@ public class XMLCipher {
      * @param element the <code>Element</code> which contents is to be
      *   encrypted.
      * @return the processed <code>Document</code>.
-     * @throws XMLEnccryptionException to indicate any exceptional conditions.
+     * @throws Exception to indicate any exceptional conditions.
      */
     public Document doFinal(Document context, Element element, boolean content)
             throws /* XMLEncryption*/ Exception {
@@ -884,50 +873,6 @@ public class XMLCipher {
     }
 
     /**
-     * Process a DOM <code>NodeList</code>. The processing depends on the
-     * initialization parameters of {@link #init(int, Key) init()}.
-     *
-     * @param context the context <code>Document</code>.
-     * @param elements the <code>NodeList</code> which contents is to be
-     *   processed.
-     * @return the processed <code>Document</code>.
-     * @throws XMLEnccryptionException to indicate any exceptional conditions.
-     */
-    private Document doFinal(Document context, NodeList elements) throws
-            XMLEncryptionException {
-        return (null);
-    }
-
-    /**
-     * Process an XPath expression. The processing depends on the
-     * initialization parameters of {@link #init(int, Key) init()}.
-     *
-     * @param xpathExpression the expression to process.
-     * @return the processed <code>Document</code>.
-     * @throws XMLEncryptionException to indicat any exceptional conditions.
-     */
-    private Document doFinal(String xpathExpression) throws
-            XMLEncryptionException {
-        return (null);
-    }
-
-    /**
-     *
-     */
-    private Document doFinal(Document context, Element element,
-            EncryptedData data) throws XMLEncryptionException {
-        return (null);
-    }
-
-    /**
-     *
-     */
-    private Document doFinal(Document context, Element element,
-            EncryptedKey key) throws XMLEncryptionException {
-        return (null);
-    }
-
-    /**
      * Returns an <code>EncryptedData</code> interface. Use this operation if
      * you want to have full control over the contents of the
      * <code>EncryptedData</code> structure.
@@ -936,7 +881,7 @@ public class XMLCipher {
      *
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> that will be encrypted.
-     * @throws XMLEncryptionException.
+     * @throws Exception
      */
 
     public EncryptedData encryptData(Document context, Element element) throws 
@@ -1080,7 +1025,7 @@ public class XMLCipher {
      *
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> that will be loaded
-     * @throws XMLEncryptionException.
+     * @throws XMLEncryptionException
      */
     public EncryptedData loadEncryptedData(Document context, Element element) 
 		throws XMLEncryptionException {
@@ -1105,7 +1050,7 @@ public class XMLCipher {
      *
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> that will be loaded
-     * @throws XMLEncryptionException.
+     * @throws XMLEncryptionException
      */
 
     public EncryptedKey loadEncryptedKey(Document context, Element element) 
@@ -1131,7 +1076,7 @@ public class XMLCipher {
 	 * Assumes that the context document is the document that owns the element
      *
      * @param element the <code>Element</code> that will be loaded
-     * @throws XMLEncryptionException.
+     * @throws XMLEncryptionException
      */
 
     public EncryptedKey loadEncryptedKey(Element element) 
@@ -1233,8 +1178,8 @@ public class XMLCipher {
 	 *
 	 * @param encryptedKey Previously loaded EncryptedKey that needs
 	 * to be decrypted.
-	 * @param keyType a URI indicated the type of key that is wrapped
-	 * @returns a key corresponding to the give type
+	 * @param algorithm Algorithm for the decryption
+	 * @return a key corresponding to the give type
 	 */
 
 	public Key decryptKey(EncryptedKey encryptedKey, String algorithm) throws
@@ -1344,7 +1289,7 @@ public class XMLCipher {
 	 *
 	 * @param encryptedKey Previously loaded EncryptedKey that needs
 	 * to be decrypted.
-	 * @returns a key corresponding to the give type
+	 * @return a key corresponding to the give type
 	 */
 
 	public Key decryptKey(EncryptedKey encryptedKey) throws
@@ -1373,7 +1318,7 @@ public class XMLCipher {
     /**
      * Decrypts <code>EncryptedData</code> in a single-part operation.
      *
-     * @param data the <code>EncryptedData</code> to decrypt.
+     * @param element the <code>EncryptedData</code> to decrypt.
      * @return the <code>Node</code> as a result of the decrypt operation.
      */
     private Document decryptElement(Element element) throws
@@ -1535,7 +1480,6 @@ public class XMLCipher {
 			throw new XMLEncryptionException("empty", iape);
 		}
 
-        String octets = null;
 		byte[] plainBytes;
 
         try {
@@ -1567,7 +1511,7 @@ public class XMLCipher {
 	 *
 	 * @param type Either REFERENCE_TYPE or VALUE_TYPE - defines what kind of
 	 * CipherData this EncryptedData will contain.
-     * @param text the Base 64 encoded, encrypted text to wrap in the
+     * @param value the Base 64 encoded, encrypted text to wrap in the
      *   <code>EncryptedData</code> or the URI to set in the CipherReference
 	 * (usage will depend on the <code>type</code>
      * @return the <code>EncryptedData</code> <code>Element</code>.
@@ -1624,7 +1568,7 @@ public class XMLCipher {
 	 *
 	 * @param type Either REFERENCE_TYPE or VALUE_TYPE - defines what kind of
 	 * CipherData this EncryptedData will contain.
-     * @param text the Base 64 encoded, encrypted text to wrap in the
+     * @param value the Base 64 encoded, encrypted text to wrap in the
      *   <code>EncryptedKey</code> or the URI to set in the CipherReference
 	 * (usage will depend on the <code>type</code>
      * @return the <code>EncryptedKey</code> <code>Element</code>.
@@ -1779,9 +1723,6 @@ public class XMLCipher {
      */
 
     private class Serializer {
-        private OutputFormat format;
-        private XMLSerializer _serializer;
-
         /**
          * Initialize the <code>XMLSerializer</code> with the specified context
          * <code>Document</code>.
@@ -1792,18 +1733,8 @@ public class XMLCipher {
          * encryption. If that content was signed before encryption and the 
          * serialization modifies the content the signature verification will
          * fail.
-         * 
-         * @param document the context <code>Document</code>.
          */
         Serializer() {
-            format = new OutputFormat();
-            format.setEncoding("UTF-8");
-            format.setOmitDocumentType(true);
-			format.setOmitXMLDeclaration(true);
-			format.setOmitComments(false);
-            format.setPreserveSpace(true);
-			format.setIndenting(false);
-
         }
 
         /**
@@ -1812,27 +1743,13 @@ public class XMLCipher {
          * <p/>
          * Refer also to comments about setup of format.
          *
-         * @param doc the <code>Document</code> to serialize.
+         * @param document the <code>Document</code> to serialize.
          * @return the <code>String</code> representation of the serilaized
          *   <code>Document</code>.
-         * @throws
+         * @throws Exception
          */
         String serialize(Document document) throws Exception {
-        	
-        	if (_canon != null) {
-        		return canonSerialize(document);
-        	}
-        	
-            StringWriter output = new StringWriter();
-            _serializer = new XMLSerializer(output, format);
-
-            try {
-                _serializer.serialize(document);
-            } catch (IOException ioe) {
-                throw new XMLEncryptionException("empty", ioe);
-            }
-
-            return (output.toString());
+            return canonSerialize(document);
         }
 
         /**
@@ -1841,26 +1758,13 @@ public class XMLCipher {
          * <p/>
          * Refer also to comments about setup of format.
          *
-         * @param doc the <code>Element</code> to serialize.
+         * @param element the <code>Element</code> to serialize.
          * @return the <code>String</code> representation of the serilaized
          *   <code>Element</code>.
          * @throws XMLEncryptionException
          */
 		String serialize(Element element) throws Exception {
-
-			if (_canon != null) {
-				return canonSerialize(element);
-			}
-
-			StringWriter output = new StringWriter();
-			_serializer = new XMLSerializer(output, format);
-
-			try {
-				_serializer.serialize(element);
-			} catch (IOException ioe) {
-				throw new XMLEncryptionException("empty", ioe);
-			}
-			return (output.toString());
+            return canonSerialize(element);
 		}
 
         /**
@@ -1880,41 +1784,28 @@ public class XMLCipher {
          * <p/>
          * Refer also to comments about setup of format.
          * 
-         * @param doc the <code>NodeList</code> to serialize.
+         * @param content the <code>NodeList</code> to serialize.
          * @return the <code>String</code> representation of the serilaized
          *   <code>NodeList</code>.
-         * @throws
+         * @throws Exception
          */
         String serialize(NodeList content) throws Exception { //XMLEncryptionException {
-        	
-			if (_canon != null) {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				for (int i = 0; i < content.getLength(); i++) {
-					byte[] canonBytes =
-						_canon.canonicalizeSubtree(content.item(i));
-					baos.write(canonBytes);
-				}
-				baos.close();
-				return baos.toString("UTF-8");
-			}
-			  
-			StringWriter output = new StringWriter();
-			_serializer = new XMLSerializer(output, format);
-
-			DocumentFragment parts = _contextDocument.createDocumentFragment();
-			for (int i = 0; i < content.getLength(); i++) {
-				Node n = content.item(i);
-				Node newN = n.cloneNode(true);
-				parts.appendChild(newN);
-			}
-			try {
-				_serializer.serialize((DocumentFragment)parts);
-			} catch (IOException ioe) {
-				throw new XMLEncryptionException("empty", ioe);
-			}
-			return (output.toString());			
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            for (int i = 0; i < content.getLength(); i++) {
+                byte[] canonBytes =
+                        _canon.canonicalizeSubtree(content.item(i));
+                baos.write(canonBytes);
+            }
+            baos.close();
+            return baos.toString("UTF-8");
         }
 
+        /**
+         * Use the Canoncializer to serialize the node
+         * @param node
+         * @return
+         * @throws Exception
+         */ 
 		String canonSerialize(Node node) throws Exception {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			byte[] canonBytes = _canon.canonicalizeSubtree(node);
@@ -3713,7 +3604,7 @@ public class XMLCipher {
              * <code>ReferenceImpl</code> is an implementation of
              * <code>Reference</code>.
              *
-             * @see Reference.
+             * @see Reference
              */
             private abstract class ReferenceImpl implements Reference {
                 private String uri;
