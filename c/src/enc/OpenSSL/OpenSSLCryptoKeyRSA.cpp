@@ -379,6 +379,21 @@ unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 			"OpenSSL:RSA - Attempt to decrypt data with empty key");
 	}
 
+#if 0
+
+	/* normally commented out code to determine endian problems */
+	unsigned int i;
+	unsigned char e[2048];
+	unsigned char * inBuf1 = (unsigned char *) inBuf;
+	if (inLength < 2048) {
+		memcpy(e, inBuf, inLength);
+		for (i = 0; i < inLength;++i) {
+			inBuf1[i] = e[inLength - 1 - i];
+		}
+	}
+
+#endif
+
 	int decryptSize;
 
 	switch (padding) {
@@ -458,6 +473,19 @@ unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 
 	}
 
+#if 0
+
+	/* normally commented out code to determine endian problems */
+	int i;
+	unsigned char t[512];
+	if (decryptSize < 512) {
+		memcpy(t, plainBuf, decryptSize);
+		for (i = 0; i < decryptSize;++i) {
+			plainBuf[i] = t[decryptSize - 1 - i];
+		}
+	}
+
+#endif
 
 	return decryptSize;
 

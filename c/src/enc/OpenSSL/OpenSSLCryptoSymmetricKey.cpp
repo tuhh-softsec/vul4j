@@ -296,6 +296,21 @@ unsigned int OpenSSLCryptoSymmetricKey::decrypt(const unsigned char * inBuf,
 	// NOTE: This won't actually stop OpenSSL blowing the buffer, so the onus is
 	// on the caller.
 
+#if 0
+
+	/* normally commented out code to determine endian problems */
+	unsigned int i;
+	unsigned char e[2048];
+	unsigned char * inBuf1 = (unsigned char *) inBuf;
+	if (inLength < 2048) {
+		memcpy(e, inBuf, inLength);
+		for (i = 0; i < inLength;++i) {
+			inBuf1[i] = e[inLength - 1 - i];
+		}
+	}
+
+#endif
+
 	unsigned int offset = 0;
 	if (!m_initialised) {
 		offset = decryptCtxInit(inBuf);
