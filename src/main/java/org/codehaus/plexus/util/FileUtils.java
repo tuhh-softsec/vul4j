@@ -1333,12 +1333,18 @@ public class FileUtils
    public static void copyDirectory( File sourceDirectory, File destinationDirectory )
         throws IOException
     {
+        copyDirectory( sourceDirectory, destinationDirectory, "**", null );
+    }
+
+   public static void copyDirectory( File sourceDirectory, File destinationDirectory, String includes, String excludes )
+        throws IOException
+    {
         if ( ! sourceDirectory.exists() )
         {
             return;
         }
 
-        List files = getFiles( sourceDirectory, "**", null );
+        List files = getFiles( sourceDirectory, includes, excludes );
 
         for ( Iterator i = files.iterator(); i.hasNext(); )
         {
