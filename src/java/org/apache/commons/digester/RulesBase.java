@@ -1,4 +1,4 @@
-/* $Id: RulesBase.java,v 1.19 2005/01/18 00:58:16 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 

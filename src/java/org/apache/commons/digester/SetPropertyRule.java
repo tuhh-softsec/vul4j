@@ -1,4 +1,4 @@
-/* $Id: SetPropertyRule.java,v 1.19 2004/11/30 03:06:27 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 

@@ -1,4 +1,4 @@
-/* $Id: PluginManager.java,v 1.14 2004/05/10 06:44:13 skitching Exp $
+/* $Id$
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 

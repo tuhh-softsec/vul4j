@@ -1,4 +1,4 @@
-/* $Id: Digester.java,v 1.107 2004/09/18 09:51:03 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 

@@ -1,4 +1,4 @@
-/* $Id: PathCallParamRule.java,v 1.8 2004/05/10 06:52:50 skitching Exp $
+/* $Id$
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 

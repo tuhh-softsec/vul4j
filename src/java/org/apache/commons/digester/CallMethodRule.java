@@ -1,4 +1,4 @@
-/* $Id: CallMethodRule.java,v 1.36 2004/11/30 03:08:55 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 

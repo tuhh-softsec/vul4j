@@ -1,4 +1,4 @@
-/* $Id: TestRuleSet.java,v 1.10 2004/05/07 01:29:59 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -24,7 +24,7 @@ package org.apache.commons.digester;
  * optionally associated with a particular namespace URI.
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.10 $ $Date: 2004/05/07 01:29:59 $
+ * @version $Revision$ $Date$
  */
 
 public class TestRuleSet extends RuleSetBase {

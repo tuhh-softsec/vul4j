@@ -1,4 +1,4 @@
-/* $Id: FinderFromDfltMethod.java,v 1.5 2004/05/10 06:34:01 skitching Exp $
+/* $Id$
  *
  * Copyright 2004 The Apache Software Foundation.
  * 

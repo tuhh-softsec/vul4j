@@ -1,4 +1,4 @@
-/* $Id: RuleTestCase.java,v 1.28 2004/05/07 01:29:59 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -35,7 +35,7 @@ import org.xml.sax.SAXException;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.28 $ $Date: 2004/05/07 01:29:59 $
+ * @version $Revision$ $Date$
  */
 
 public class RuleTestCase extends TestCase {

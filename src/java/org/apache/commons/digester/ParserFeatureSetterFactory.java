@@ -1,4 +1,4 @@
-/* $Id: ParserFeatureSetterFactory.java,v 1.7 2004/05/10 06:52:50 skitching Exp $
+/* $Id$
  *
  * Copyright 2004 The Apache Software Foundation.
  * 

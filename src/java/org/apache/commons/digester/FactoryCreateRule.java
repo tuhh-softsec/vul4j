@@ -1,4 +1,4 @@
-/* $Id: FactoryCreateRule.java,v 1.22 2004/09/09 20:38:21 rdonkin Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 

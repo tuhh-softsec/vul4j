@@ -1,4 +1,4 @@
-/* $Id: PluginRules.java,v 1.19 2004/06/16 03:40:18 skitching Exp $
+/* $Id$
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 

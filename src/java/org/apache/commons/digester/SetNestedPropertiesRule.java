@@ -1,4 +1,4 @@
-/* $Id: SetNestedPropertiesRule.java,v 1.10 2005/01/12 10:33:06 skitching Exp $
+/* $Id$
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 

@@ -1,4 +1,4 @@
-/* $Id: VariableExpander.java,v 1.6 2004/05/10 06:46:31 skitching Exp $
+/* $Id$
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 

@@ -1,4 +1,4 @@
-/* $Id: RulesFactory.java,v 1.1 2004/06/11 03:49:55 skitching Exp $
+/* $Id$
  *
  * Copyright 2004 The Apache Software Foundation.
  * 

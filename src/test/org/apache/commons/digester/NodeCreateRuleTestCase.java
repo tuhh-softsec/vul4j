@@ -1,4 +1,4 @@
-/* $Id: NodeCreateRuleTestCase.java,v 1.7 2004/05/07 01:29:59 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * <p>Test case for the <code>NodeCreateRule</code>.
  * 
  * @author Christopher Lenz
- * @version $Revision: 1.7 $ $Date: 2004/05/07 01:29:59 $
+ * @version $Revision$ $Date$
  */
 
 public class NodeCreateRuleTestCase extends TestCase {

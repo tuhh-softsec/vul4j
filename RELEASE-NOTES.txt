@@ -1,4 +1,4 @@
-$Id: RELEASE-NOTES.txt,v 1.14 2004/09/09 20:38:19 rdonkin Exp $
+$Id$
 
 
                           Commons Digester Package

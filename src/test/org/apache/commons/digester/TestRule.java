@@ -1,4 +1,4 @@
-/* $Id: TestRule.java,v 1.13 2004/05/07 01:29:59 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -30,7 +30,7 @@ import org.xml.sax.Attributes;
  * at the identifier.</p>
  *
  * @author Robert Burrell Donkin
- * @revision $Revision: 1.13 $ $Date: 2004/05/07 01:29:59 $
+ * @revision $Revision$ $Date$
  */
 
 public class TestRule extends Rule {

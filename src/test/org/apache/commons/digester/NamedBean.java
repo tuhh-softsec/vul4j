@@ -1,4 +1,4 @@
-/* $Id: NamedBean.java,v 1.6 2004/05/07 01:29:59 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -23,7 +23,7 @@ package org.apache.commons.digester;
  * Very simple test bean
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.6 $ $Date: 2004/05/07 01:29:59 $
+ * @version $Revision$ $Date$
  */
 
 public class NamedBean {

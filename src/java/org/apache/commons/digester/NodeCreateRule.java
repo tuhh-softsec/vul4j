@@ -1,4 +1,4 @@
-/* $Id: NodeCreateRule.java,v 1.11 2005/01/18 00:54:59 skitching Exp $
+/* $Id$
  *
  * Copyright 2002-2004 The Apache Software Foundation.
  * 

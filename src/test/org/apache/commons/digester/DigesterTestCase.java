@@ -1,4 +1,4 @@
-/* $Id: DigesterTestCase.java,v 1.21 2004/06/08 08:26:47 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -42,7 +42,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.21 $ $Date: 2004/06/08 08:26:47 $
+ * @version $Revision$ $Date$
  */
 
 public class DigesterTestCase extends TestCase {

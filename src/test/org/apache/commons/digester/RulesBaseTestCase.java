@@ -1,4 +1,4 @@
-/* $Id: RulesBaseTestCase.java,v 1.12 2004/05/07 01:29:59 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -35,7 +35,7 @@ import junit.framework.TestSuite;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.12 $ $Date: 2004/05/07 01:29:59 $
+ * @version $Revision$ $Date$
  */
 
 public class RulesBaseTestCase extends TestCase {

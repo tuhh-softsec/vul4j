@@ -1,4 +1,4 @@
-/* $Id: SetPropertiesRuleTestCase.java,v 1.1 2004/09/20 21:59:02 rdonkin Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 

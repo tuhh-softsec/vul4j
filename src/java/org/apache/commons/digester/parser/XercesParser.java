@@ -1,4 +1,4 @@
-/* $Id: XercesParser.java,v 1.8 2004/11/26 04:41:45 skitching Exp $
+/* $Id$
  *
  * Copyright 2004 The Apache Software Foundation.
  * 

@@ -1,4 +1,4 @@
-/* $Id: GenericParser.java,v 1.6 2004/05/10 06:37:22 skitching Exp $
+/* $Id$
  *
  * Copyright 2004 The Apache Software Foundation.
  * 

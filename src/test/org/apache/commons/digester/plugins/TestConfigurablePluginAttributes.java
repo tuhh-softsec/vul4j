@@ -1,4 +1,4 @@
-/* $Id: TestConfigurablePluginAttributes.java,v 1.4 2004/05/07 01:30:00 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 

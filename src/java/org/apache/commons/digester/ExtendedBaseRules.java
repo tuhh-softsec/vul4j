@@ -1,4 +1,4 @@
-/* $Id: ExtendedBaseRules.java,v 1.16 2005/01/17 10:56:50 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
