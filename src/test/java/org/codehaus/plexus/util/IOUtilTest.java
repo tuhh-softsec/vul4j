@@ -203,6 +203,7 @@ public final class IOUtilTest
               assertTrue( "Byte " + i + " differs (" + b0[i] + " != " + b1[i] + ")", b0[i] == b1[i] ), i++
             )
             ;
+        is.close();
     }
 
     public void testInputStreamToOutputStream()
