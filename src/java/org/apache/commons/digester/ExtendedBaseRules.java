@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.4 2003/02/02 16:09:53 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2003/02/02 16:09:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.5 2003/03/12 22:10:50 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2003/03/12 22:10:50 $
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
@@ -102,7 +102,7 @@ import java.util.Comparator;
  *     to call.
  *     <ul>
  *     <li><code>"a/b/c/?"</code> matches any child whose parent matches
- *         <code>"a/b/c"</code>.  Exact parent rules take precendence over
+ *         <code>"a/b/c"</code>.  Exact parent rules take precedence over
  *         standard wildcard tail endings.</li>
  *     <li><code>"*&#47;a/b/c/?"</code> matches any child whose parent matches
  *         "*&#47;a/b/c"</code>.  The longest matching still applies to parent
@@ -110,7 +110,18 @@ import java.util.Comparator;
  *         that standard wildcard matches with the same level of depth are
  *         chosen in preference.</li>
  *     </ul></li>
- * <li><em>Universal Wildcard Match </em> -  Any pattern prefixed with '!'
+ * <li><em>Ancester Match</em> - Will match elements who parentage includes 
+ * 	a particular sequence of elements.
+ * 	<ul>
+ *      <li><code>"a/b/*"</code> matches any element whose parentage path starts with
+ *	    'a' then 'b'. Exact parent and parent match rules take precedence. The longest
+ *           ancester match will take precedence.</li>
+ *	<li><code>"*&#47;a/b/*"</code> matches any elements whose parentage path contains
+ *           an element 'a' followed by an element 'b'. The longest matching still applies
+ *           but the length excludes the '*' at the end.</li>
+ *      </ul>
+ * </li>
+ * <li><em>Universal Wildcard Match</em> -  Any pattern prefixed with '!'
  *     bypasses the longest matching rule.  Even if there is an exact match
  *     or a longer wildcard match,  patterns prefixed by '!' will still be
  *     tested to see if they match.  This can be used for example to specify
@@ -122,6 +133,10 @@ import java.util.Comparator;
  *         matching <code>"a/b"</code>.</li>
  *     <li>Pattern <code>"!*&#47;a/b/?"</code> matches any child of a parent
  *         matching <code>"!*&#47;a/b"</code></li>
+ *     <li>Pattern <code>"!a/b/*"</code> matches any element whose parentage path starts with
+ *	    "a" then "b".</li>
+ *     <li>Pattern <code>"!*&#47;a/b/*"</code> matches any elements whose parentage path contains
+ *          'a/b'</li>
  *    </ul></li>
  * <li><em>Wild Match</em>
  *     <ul>
@@ -156,7 +171,7 @@ import java.util.Comparator;
  * these additions should not break your existing rules.</p>
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.4 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.5 $ $Date: 2003/03/12 22:10:50 $
  */
 
 
@@ -207,7 +222,6 @@ public class ExtendedBaseRules extends RulesBase {
      * @param pattern Nesting pattern to be matched
      */
     public List match(String namespace, String pattern) {
-
         // calculate the pattern of the parent
         // (if the element has one)
         String parentPattern = "";
@@ -266,6 +280,16 @@ public class ExtendedBaseRules extends RulesBase {
                     // we have a match!
                     // so ignore all basic matches from now on
                     ignoreBasicMatches = true;
+                    
+                } else {
+                    // we don't have a match yet - so try exact ancester
+                    //
+                    rulesList = findExactAncesterMatch(parentPattern);
+                    if (rulesList != null) {
+                        // we have a match!
+                        // so ignore all basic matches from now on
+                        ignoreBasicMatches = true;
+                    }
                 }
             }
         }
@@ -289,22 +313,32 @@ public class ExtendedBaseRules extends RulesBase {
                 key = key.substring(1, key.length());
             }
 
-
+                    
             // don't need to check exact matches
-            if (key.startsWith("*/")) {
+            if (key.startsWith("*/") || (isUniversal && key.endsWith("/*"))) {
 
                 boolean parentMatched = false;
                 boolean basicMatched = false;
+                boolean ancesterMatched = false;
                 if (key.endsWith("/?")) {
                     // try for a parent match
                     parentMatched = parentMatch(key, pattern, parentPattern);
 
+                } else if (key.endsWith("/*")) {
+                    // check for ancester match
+                    int patternStart = 0;
+                    if (key.startsWith("*/")) {
+                        patternStart = 2;
+                    }
+                    ancesterMatched = 
+                        (pattern.lastIndexOf(key.substring(patternStart, key.length() - 2)) > -1);
+                                    
                 } else {
                     // try for a base match
                     basicMatched = basicMatch(key, pattern);
                 }
 
-                if (parentMatched || basicMatched) {
+                if (parentMatched || basicMatched || ancesterMatched) {
                     if (isUniversal) {
                         // universal rules go straight in
                         // (no longest matching rule)
@@ -318,7 +352,7 @@ public class ExtendedBaseRules extends RulesBase {
                             // ensure that all parent matches are SHORTER
                             // than rules with same level of matching
                             int keyLength = key.length();
-                            if (parentMatched) {
+                            if (parentMatched || ancesterMatched) {
                                 keyLength--;
                             }
 
@@ -408,5 +442,22 @@ public class ExtendedBaseRules extends RulesBase {
         return (pattern.equals(key.substring(2)) ||
                 pattern.endsWith(key.substring(1)));
     }
-
+    
+    /**
+     * Finds an exact ancester match for given pattern
+     */
+    private List findExactAncesterMatch(String parentPattern) {
+        List matchingRules = null;
+        int lastIndex = parentPattern.length();
+        while (lastIndex-- > 0) {
+            lastIndex = parentPattern.lastIndexOf('/', lastIndex);
+            if (lastIndex > 0) {
+                matchingRules = (List) this.cache.get(parentPattern.substring(0, lastIndex) + "/*");
+                if (matchingRules != null) {
+                    return matchingRules;
+                }
+            }
+        }
+        return null;
+    }
 }

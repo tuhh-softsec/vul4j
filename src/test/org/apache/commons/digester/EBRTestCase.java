@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.6 2003/02/02 15:52:14 rdonkin Exp $
- * $Revision: 1.6 $
- * $Date: 2003/02/02 15:52:14 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.7 2003/03/12 22:10:51 rdonkin Exp $
+ * $Revision: 1.7 $
+ * $Date: 2003/03/12 22:10:51 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import junit.framework.TestSuite;
  * <p> Runs standard tests for RulesBase as well as tests of extensions.
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.6 $ $Date: 2003/02/02 15:52:14 $
+ * @version $Revision: 1.7 $ $Date: 2003/03/12 22:10:51 $
  */
 
 
@@ -383,5 +383,68 @@ public class EBRTestCase extends RulesBaseTestCase {
         // clean up
         digester.getRules().clear();
 
+    }
+    
+    public void testAncesterMatch() throws Exception {
+        System.out.println("Starting ancester match...");
+        // test fixed root ancester
+        digester.getRules().clear();
+        
+        digester.addRule("!a/b/*", new TestRule("uni-a-b-star"));
+        digester.addRule("a/b/*", new TestRule("a-b-star"));
+        digester.addRule("a/b/c", new TestRule("a-b-c"));
+        digester.addRule("a/b/?", new TestRule("a-b-child"));
+        
+        List
+        list = digester.getRules().match(null, "a/b/c");
+        
+        assertEquals("Simple ancester matches (1)", 2, list.size());
+        assertEquals("Univeral ancester mismatch (1)", "uni-a-b-star" , ((TestRule) list.get(0)).getIdentifier());
+        assertEquals("Parent precedence failure", "a-b-c" , ((TestRule) list.get(1)).getIdentifier());
+        
+        list = digester.getRules().match(null, "a/b/b");        
+        assertEquals("Simple ancester matches (2)", 2, list.size());
+        assertEquals("Univeral ancester mismatch (2)", "uni-a-b-star" , ((TestRule) list.get(0)).getIdentifier());
+        assertEquals("Child precedence failure", "a-b-child" , ((TestRule) list.get(1)).getIdentifier());
+        
+        list = digester.getRules().match(null, "a/b/d");        
+        assertEquals("Simple ancester matches (3)", 2, list.size());
+        assertEquals("Univeral ancester mismatch (3)", "uni-a-b-star" , ((TestRule) list.get(0)).getIdentifier());
+        assertEquals("Ancester mismatch (1)", "a-b-child" , ((TestRule) list.get(1)).getIdentifier());
+
+        list = digester.getRules().match(null, "a/b/d/e/f");        
+        assertEquals("Simple ancester matches (4)", 2, list.size());
+        assertEquals("Univeral ancester mismatch (4)", "uni-a-b-star" , ((TestRule) list.get(0)).getIdentifier());
+        assertEquals("Ancester mismatch (2)", "a-b-star" , ((TestRule) list.get(1)).getIdentifier());
+        
+        // test wild root ancester
+        digester.getRules().clear();
+
+        digester.addRule("!*/a/b/*", new TestRule("uni-star-a-b-star"));
+        digester.addRule("*/b/c/*", new TestRule("star-b-c-star"));
+        digester.addRule("*/b/c/d", new TestRule("star-b-c-d"));
+        digester.addRule("a/b/c", new TestRule("a-b-c"));
+        
+        list = digester.getRules().match(null, "a/b/c");  
+        assertEquals("Wild ancester match (1)", 2, list.size());
+        assertEquals(
+                    "Univeral ancester mismatch (5)", 
+                    "uni-star-a-b-star" , 
+                    ((TestRule) list.get(0)).getIdentifier());
+        assertEquals("Match missed (1)", "a-b-c" , ((TestRule) list.get(1)).getIdentifier());
+        
+        list = digester.getRules().match(null, "b/c");  
+        assertEquals("Wild ancester match (2)", 1, list.size());
+        assertEquals("Match missed (2)", "star-b-c-star" , ((TestRule) list.get(0)).getIdentifier());    
+        
+        list = digester.getRules().match(null, "a/b/c/d"); 
+        assertEquals("Wild ancester match (3)", 2, list.size());
+        assertEquals("Match missed (3)", "uni-star-a-b-star" , ((TestRule) list.get(0)).getIdentifier());    
+        assertEquals("Match missed (4)", "star-b-c-d" , ((TestRule) list.get(1)).getIdentifier());
+        
+        list = digester.getRules().match(null, "b/b/c/e/d"); 
+        assertEquals("Wild ancester match (2)", 1, list.size());
+        assertEquals("Match missed (5)", "star-b-c-star" , ((TestRule) list.get(0)).getIdentifier());    
+        System.out.println("Finished ancester match.");
     }
 }
