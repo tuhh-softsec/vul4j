@@ -1214,6 +1214,11 @@ public class Canonicalizer20010315Test extends TestCase {
 
       if (result == false) {
          File f = new File(fileOut);
+         if (!f.exists()) {
+         	File parent = new File(f.getParent());
+         	parent.mkdirs();
+         	f.createNewFile();
+         }
          FileOutputStream fos = new FileOutputStream(f);
 
          fos.write(c14nBytes);
