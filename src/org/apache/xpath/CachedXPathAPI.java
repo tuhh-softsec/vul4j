@@ -104,9 +104,31 @@ public class CachedXPathAPI {
   */
   XPathContext xpathSupport = new XPathContext();
 
-  public XPathContext getXPathContext() {
-     return this.xpathSupport;
-  }
+   /**
+    * Constructor CachedXPathAPI
+    *
+    */
+   public CachedXPathAPI() {
+      this.xpathSupport = new XPathContext();
+   }
+
+   /**
+    * Constructor CachedXPathAPI
+    *
+    * @param xpathContext
+    */
+   public CachedXPathAPI(XPathContext xpathContext) {
+      this.xpathSupport = xpathContext;
+   }
+
+   /**
+    * Method getXPathContext
+    *
+    * @return
+    */
+   public XPathContext getXPathContext() {
+      return this.xpathSupport;
+   }
 
   /**
    * Use an XPath string to select a single node. XPath namespace
