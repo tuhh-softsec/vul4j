@@ -303,7 +303,7 @@ public class JCEMapper {
 
          for (int i = 0; i < providers.getLength(); i++) {
             Element pro = (Element) providers.item(i);
-            Attr jceName = pro.getAttributeNode("JCEName");
+            Attr jceName = pro.getAttributeNodeNS(null, "JCEName");
 
             cat.debug("Found " + jceName.getNodeValue());
          }

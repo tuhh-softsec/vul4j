@@ -455,7 +455,7 @@ public class Reference extends SignatureElementProxy {
 
       try {
          Attr URIAttr =
-            this._constructionElement.getAttributeNode(Constants._ATT_URI);
+            this._constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
          String URI;
 
          if (URIAttr == null) {

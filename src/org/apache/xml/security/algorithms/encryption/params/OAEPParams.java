@@ -137,7 +137,7 @@ public class OAEPParams extends EncryptionMethodParams {
          throw new XMLSecurityException("encryption.MissingOAEPParams");
       }
 
-      this._digestMethodURI = digestElem.getAttribute(Constants._ATT_ALGORITHM);
+      this._digestMethodURI = digestElem.getAttributeNS(null, Constants._ATT_ALGORITHM);
       this._OAEPParamBytes = Base64.decode(paramElem);
    }
 

@@ -1235,7 +1235,7 @@ public class XMLUtils {
                   if (name.startsWith("xmlns")) {
                      String value = currentAttr.getNodeValue();
                      boolean mustBeDefinedInChild =
-                        !childElement.hasAttribute(name);
+                        !childElement.hasAttributeNS(Constants.NamespaceSpecNS, name);
 
                      if (mustBeDefinedInChild) {
                         childElement.setAttributeNS(Constants.NamespaceSpecNS,

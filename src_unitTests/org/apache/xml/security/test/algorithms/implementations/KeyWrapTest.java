@@ -148,7 +148,7 @@ public class KeyWrapTest extends TestCase {
 
       this.doc = db.newDocument();
 
-      this.doc.appendChild(doc.createElement("root"));
+      this.doc.appendChild(doc.createElementNS(null, "root"));
    }
 
    /**

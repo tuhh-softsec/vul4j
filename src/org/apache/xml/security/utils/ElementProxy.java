@@ -586,7 +586,7 @@ public abstract class ElementProxy {
          throw new XMLSecurityException("defaultNamespaceCannotBeSetHere");
       }
 
-      Attr a = this._constructionElement.getAttributeNode(ns);
+      Attr a = this._constructionElement.getAttributeNodeNS(Constants.NamespaceSpecNS, ns);
 
       if ((a != null) && (!a.getNodeValue().equals(uri))) {
          Object exArgs[] = { ns,

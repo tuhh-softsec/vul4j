@@ -70,6 +70,7 @@ import org.apache.xpath.objects.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 
 
@@ -144,9 +145,9 @@ public class AttributeAncestorOrSelf extends TestCase {
       DocumentBuilder db = dfactory.newDocumentBuilder();
       Document document =
          db.parse(new ByteArrayInputStream(_nodeSetInput1.getBytes()));
-      Element nscontext = document.createElement("nscontext");
+      Element nscontext = document.createElementNS(null, "nscontext");
 
-      nscontext.setAttribute("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
+      nscontext.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
 
       Node ctxNode = XPathAPI.selectSingleNode(document, ctxNodeStr, nscontext);
       XObject include = XPathAPI.eval(ctxNode, evalStr, nscontext);

@@ -131,7 +131,7 @@ public class Canonicalizer20010315Test extends TestCase {
    }
 
    /** Field prefix */
-   private static String prefix = "data/org/apache/xml/security/c14n/";
+   private static String prefix;
 
    /**
     * 3.1 PIs, Comments, and Outside of Document Element
@@ -151,6 +151,8 @@ public class Canonicalizer20010315Test extends TestCase {
 
       String descri =
          "3.1: PIs, Comments, and Outside of Document Element. (commented)";
+
+
       String fileIn = prefix + "in/31_input.xml";
       String fileRef = prefix + "in/31_c14n-comments.xml";
       String fileOut = prefix + "out/xpath_31_output-comments.xml";
@@ -419,7 +421,7 @@ public class Canonicalizer20010315Test extends TestCase {
 
       xpath = XMLUtils.createElementInSignatureSpace(doc, Constants._TAG_XPATH);
 
-      xpath.setAttribute("xmlns:ietf", "http://www.ietf.org");
+      xpath.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ietf", "http://www.ietf.org");
 
       //J-
          String xpathFromSpec =
@@ -1059,6 +1061,15 @@ public class Canonicalizer20010315Test extends TestCase {
    }
 
    static {
+      /*
+      try {
+         // String wd = new File(".").toURL().toExternalForm();
+         // prefix = wd.substring(0, wd.length()-2) + "data/org/apache/xml/security/c14n/";
+      } catch (java.net.MalformedURLException urlEx) {
+         throw new RuntimeException(urlEx.getMessage());
+      }
+      */
+      prefix = "data/org/apache/xml/security/c14n/";
       org.apache.xml.security.Init.init();
    }
 }

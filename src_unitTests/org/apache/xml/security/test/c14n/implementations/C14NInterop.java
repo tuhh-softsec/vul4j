@@ -274,7 +274,7 @@ public class C14NInterop extends InteropTest {
       // String nsC = "http://www.c.com/";
       Element A_A = doc.createElementNS(nsA, "A:A");
       Element A_B = doc.createElementNS(nsA, "A:B");
-      Element A_C = doc.createElement("C");
+      Element A_C = doc.createElementNS(null, "C");
 
       // Element A_C = doc.createElementNS(nsC, "A:C");
       // Element A_D = doc.createElementNS(nsC, "A:D");

@@ -133,7 +133,7 @@ public class RetrievalMethod extends SignatureElementProxy
     * @return
     */
    public Attr getURIAttr() {
-      return this._constructionElement.getAttributeNode(Constants._ATT_URI);
+      return this._constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
    }
 
    /**

@@ -362,10 +362,10 @@ public class XMLSignatureInputTest extends TestCase {
 
       doc.appendChild(c1);
 
-      Element root = doc.createElement("RootElement");
-      Element e1 = doc.createElement("Element1");
-      Element e2 = doc.createElement("Element2");
-      Element e3 = doc.createElement("Element3");
+      Element root = doc.createElementNS(null, "RootElement");
+      Element e1 = doc.createElementNS(null, "Element1");
+      Element e2 = doc.createElementNS(null, "Element2");
+      Element e3 = doc.createElementNS(null, "Element3");
       Text e3t = doc.createTextNode("Text in Element3");
 
       e3.appendChild(e3t);
