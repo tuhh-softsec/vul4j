@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestConstantPredicate.java,v 1.2 2003/03/04 23:11:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestConstantPredicate.java,v 1.3 2003/11/24 20:31:19 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:12 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:31:19 $
  * @author Rodney Waldhoff
  */
 public class TestConstantPredicate extends BaseFunctorTest {
@@ -124,27 +124,27 @@ public class TestConstantPredicate extends BaseFunctorTest {
     public void testEquals() throws Exception {
         ConstantPredicate truePred = new ConstantPredicate(true);
         assertEquals(truePred,truePred);
-        assertObjectsAreEqual(truePred,ConstantPredicate.getTruePredicate());
+        assertObjectsAreEqual(truePred,ConstantPredicate.trueInstance());
 
         ConstantPredicate falsePred = new ConstantPredicate(false);
         assertEquals(falsePred,falsePred);
-        assertObjectsAreEqual(falsePred,ConstantPredicate.getFalsePredicate());
+        assertObjectsAreEqual(falsePred,ConstantPredicate.falseInstance());
 
         assertObjectsAreNotEqual(truePred,falsePred);
     }
 
     public void testConstants() throws Exception {
-        assertEquals(ConstantPredicate.getTruePredicate(),ConstantPredicate.getTruePredicate());
-        assertSame(ConstantPredicate.getTruePredicate(),ConstantPredicate.getTruePredicate());
+        assertEquals(ConstantPredicate.trueInstance(),ConstantPredicate.trueInstance());
+        assertSame(ConstantPredicate.trueInstance(),ConstantPredicate.trueInstance());
 
-        assertEquals(ConstantPredicate.getConstantPredicate(true),ConstantPredicate.getTruePredicate());
-        assertSame(ConstantPredicate.getConstantPredicate(true),ConstantPredicate.getTruePredicate());
+        assertEquals(ConstantPredicate.instance(true),ConstantPredicate.trueInstance());
+        assertSame(ConstantPredicate.instance(true),ConstantPredicate.trueInstance());
 
-        assertEquals(ConstantPredicate.getFalsePredicate(),ConstantPredicate.getFalsePredicate());
-        assertSame(ConstantPredicate.getFalsePredicate(),ConstantPredicate.getFalsePredicate());
+        assertEquals(ConstantPredicate.falseInstance(),ConstantPredicate.falseInstance());
+        assertSame(ConstantPredicate.falseInstance(),ConstantPredicate.falseInstance());
 
-        assertEquals(ConstantPredicate.getConstantPredicate(false),ConstantPredicate.getFalsePredicate());
-        assertSame(ConstantPredicate.getConstantPredicate(false),ConstantPredicate.getFalsePredicate());
+        assertEquals(ConstantPredicate.instance(false),ConstantPredicate.falseInstance());
+        assertSame(ConstantPredicate.instance(false),ConstantPredicate.falseInstance());
     }
     
 }

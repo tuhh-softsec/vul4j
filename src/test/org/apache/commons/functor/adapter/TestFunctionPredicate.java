@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestFunctionPredicate.java,v 1.1 2003/01/27 19:33:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestFunctionPredicate.java,v 1.2 2003/11/24 20:31:19 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,7 +65,7 @@ import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:41 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:31:19 $
  * @author Rodney Waldhoff
  */
 public class TestFunctionPredicate extends BaseFunctorTest {
@@ -136,7 +136,7 @@ public class TestFunctionPredicate extends BaseFunctorTest {
         Predicate p = new FunctionPredicate(new ConstantFunction(Boolean.TRUE));
         assertEquals(p,p);
         assertObjectsAreEqual(p,new FunctionPredicate(new ConstantFunction(Boolean.TRUE)));
-        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
+        assertObjectsAreNotEqual(p,ConstantPredicate.trueInstance());
         assertObjectsAreNotEqual(p,new FunctionPredicate(null));
         assertObjectsAreNotEqual(p,new FunctionPredicate(new ConstantFunction(Boolean.FALSE)));
         assertObjectsAreEqual(new FunctionPredicate(null),new FunctionPredicate(null));

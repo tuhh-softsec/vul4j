@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryAnd.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryAnd.java,v 1.2 2003/11/24 20:31:20 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:31:20 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryAnd extends BaseFunctorTest {
@@ -165,17 +165,17 @@ public class TestUnaryAnd extends BaseFunctorTest {
         assertObjectsAreEqual(p,q);
 
         for(int i=0;i<3;i++) {
-            p.and(ConstantPredicate.getTruePredicate());
+            p.and(ConstantPredicate.trueInstance());
             assertObjectsAreNotEqual(p,q);
-            q.and(ConstantPredicate.getTruePredicate());
+            q.and(ConstantPredicate.trueInstance());
             assertObjectsAreEqual(p,q);
-            p.and(new UnaryAnd(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            p.and(new UnaryAnd(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
             assertObjectsAreNotEqual(p,q);            
-            q.and(new UnaryAnd(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            q.and(new UnaryAnd(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
             assertObjectsAreEqual(p,q);            
         }
         
-        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
+        assertObjectsAreNotEqual(p,ConstantPredicate.trueInstance());
     }
 
 }

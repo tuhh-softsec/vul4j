@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/ConstantPredicate.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/ConstantPredicate.java,v 1.3 2003/11/24 20:31:20 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,7 +65,7 @@ import org.apache.commons.functor.UnaryPredicate;
 /**
  * {@link #test Tests} to a constant value.
  *
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:31:20 $
  * @author Rodney Waldhoff
  */
 public final class ConstantPredicate implements Predicate, UnaryPredicate, BinaryPredicate, Serializable {
@@ -150,7 +150,7 @@ public final class ConstantPredicate implements Predicate, UnaryPredicate, Binar
      * @return a <code>ConstantPredicate</code> that always
      *         returns <code>true</code>
      */
-    public static ConstantPredicate getTruePredicate() {
+    public static ConstantPredicate trueInstance() {
         return TRUE_PREDICATE;
     }
 
@@ -160,7 +160,7 @@ public final class ConstantPredicate implements Predicate, UnaryPredicate, Binar
      * @return a <code>ConstantPredicate</code> that always
      *         returns <code>false</code>
      */
-    public static ConstantPredicate getFalsePredicate() {
+    public static ConstantPredicate falseInstance() {
         return FALSE_PREDICATE;
     }
     
@@ -171,7 +171,7 @@ public final class ConstantPredicate implements Predicate, UnaryPredicate, Binar
      * @return a <code>ConstantPredicate</code> that always
      *         returns <i>value</i>
      */
-    public static ConstantPredicate getConstantPredicate(boolean value) {
+    public static ConstantPredicate instance(boolean value) {
         return value ? TRUE_PREDICATE : FALSE_PREDICATE;
     }
     

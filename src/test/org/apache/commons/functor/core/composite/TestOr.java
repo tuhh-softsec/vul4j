@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestOr.java,v 1.1 2003/03/04 14:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestOr.java,v 1.2 2003/11/24 20:31:20 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.Predicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/03/04 14:48:08 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:31:20 $
  * @author Rodney Waldhoff
  */
 public class TestOr extends BaseFunctorTest {
@@ -169,22 +169,22 @@ public class TestOr extends BaseFunctorTest {
         assertObjectsAreNotEqual(p,r);
         
         for(int i=0;i<3;i++) {
-            p.or(ConstantPredicate.getTruePredicate());
+            p.or(ConstantPredicate.trueInstance());
             assertObjectsAreNotEqual(p,q);
-            q.or(ConstantPredicate.getTruePredicate());
+            q.or(ConstantPredicate.trueInstance());
             assertObjectsAreEqual(p,q);
-            r.and(ConstantPredicate.getTruePredicate());
+            r.and(ConstantPredicate.trueInstance());
             assertObjectsAreNotEqual(p,r);
 
-            p.or(new Or(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            p.or(new Or(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
             assertObjectsAreNotEqual(p,q);            
-            q.or(new Or(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            q.or(new Or(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
             assertObjectsAreEqual(p,q);            
-            r.and(new Or(ConstantPredicate.getTruePredicate(),ConstantPredicate.getFalsePredicate()));
+            r.and(new Or(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
             assertObjectsAreNotEqual(p,r);
         }
         
-        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
+        assertObjectsAreNotEqual(p,ConstantPredicate.trueInstance());
     }
 
 }

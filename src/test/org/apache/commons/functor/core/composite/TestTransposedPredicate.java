@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestTransposedPredicate.java,v 1.2 2003/03/04 23:11:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestTransposedPredicate.java,v 1.3 2003/11/24 20:31:20 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,7 +66,7 @@ import org.apache.commons.functor.core.ConstantPredicate;
 import org.apache.commons.functor.core.LeftIdentityFunction;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:11 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:31:20 $
  * @author Rodney Waldhoff
  */
 public class TestTransposedPredicate extends BaseFunctorTest {
@@ -86,7 +86,7 @@ public class TestTransposedPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new TransposedPredicate(ConstantPredicate.getTruePredicate());
+        return new TransposedPredicate(ConstantPredicate.trueInstance());
     }
 
     // Lifecycle
@@ -110,11 +110,11 @@ public class TestTransposedPredicate extends BaseFunctorTest {
     }
         
     public void testEquals() throws Exception {
-        BinaryPredicate p = new TransposedPredicate(ConstantPredicate.getTruePredicate());
+        BinaryPredicate p = new TransposedPredicate(ConstantPredicate.trueInstance());
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new TransposedPredicate(ConstantPredicate.getTruePredicate()));
-        assertObjectsAreEqual(p,TransposedPredicate.transpose(ConstantPredicate.getTruePredicate()));
-        assertObjectsAreNotEqual(p,new TransposedPredicate(ConstantPredicate.getFalsePredicate()));
+        assertObjectsAreEqual(p,new TransposedPredicate(ConstantPredicate.trueInstance()));
+        assertObjectsAreEqual(p,TransposedPredicate.transpose(ConstantPredicate.trueInstance()));
+        assertObjectsAreNotEqual(p,new TransposedPredicate(ConstantPredicate.falseInstance()));
         assertObjectsAreNotEqual(p,new TransposedPredicate(null));
         assertObjectsAreNotEqual(p,new ConstantPredicate(true));
     }

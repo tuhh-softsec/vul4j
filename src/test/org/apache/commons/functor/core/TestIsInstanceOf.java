@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsInstanceOf.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsInstanceOf.java,v 1.2 2003/11/24 20:31:19 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:31:19 $
  * @author Rodney Waldhoff
  */
 public class TestIsInstanceOf extends BaseFunctorTest {
@@ -123,7 +123,7 @@ public class TestIsInstanceOf extends BaseFunctorTest {
         UnaryPredicate p = new IsInstanceOf(Object.class);
         assertEquals(p,p);
         assertObjectsAreEqual(p,new IsInstanceOf(Object.class));
-        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
+        assertObjectsAreNotEqual(p,ConstantPredicate.trueInstance());
         assertObjectsAreNotEqual(p,new IsInstanceOf(null));
         assertObjectsAreNotEqual(p,new IsInstanceOf(String.class));
     }

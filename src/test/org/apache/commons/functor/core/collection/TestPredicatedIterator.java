@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestPredicatedIterator.java,v 1.2 2003/02/21 00:12:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestPredicatedIterator.java,v 1.3 2003/11/24 20:31:20 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -70,7 +70,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/02/21 00:12:28 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:31:20 $
  * @author Rodney Waldhoff
  */
 public class TestPredicatedIterator extends TestCase {
@@ -132,7 +132,7 @@ public class TestPredicatedIterator extends TestCase {
 
     public void testAllPass2() {
         Iterator expected = list.iterator();
-        Iterator testing = new PredicatedIterator(ConstantPredicate.getTruePredicate(),list.iterator());
+        Iterator testing = new PredicatedIterator(ConstantPredicate.trueInstance(),list.iterator());
         while(expected.hasNext()) {
             assertTrue(testing.hasNext());
             assertEquals(expected.next(),testing.next());
@@ -146,7 +146,7 @@ public class TestPredicatedIterator extends TestCase {
     }
 
     public void testNonePass() {
-        Iterator testing = new PredicatedIterator(ConstantPredicate.getFalsePredicate(),Collections.EMPTY_LIST.iterator());
+        Iterator testing = new PredicatedIterator(ConstantPredicate.falseInstance(),Collections.EMPTY_LIST.iterator());
         assertTrue(!testing.hasNext());
     }
 
@@ -217,7 +217,7 @@ public class TestPredicatedIterator extends TestCase {
     }
 
     public void testRemoveAll() {
-        Iterator testing = new PredicatedIterator(ConstantPredicate.getTruePredicate(),list.iterator());
+        Iterator testing = new PredicatedIterator(ConstantPredicate.trueInstance(),list.iterator());
         while(testing.hasNext()) {
             testing.next();
             testing.remove();
@@ -226,7 +226,7 @@ public class TestPredicatedIterator extends TestCase {
     }
 
     public void testRemoveWithoutHasNext() {
-        Iterator testing = new PredicatedIterator(ConstantPredicate.getTruePredicate(),list.iterator());
+        Iterator testing = new PredicatedIterator(ConstantPredicate.trueInstance(),list.iterator());
         for(int i=0,m = list.size();i<m;i++) {
             testing.next();
             testing.remove();

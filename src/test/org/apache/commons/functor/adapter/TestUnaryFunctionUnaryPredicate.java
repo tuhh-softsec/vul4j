@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestUnaryFunctionUnaryPredicate.java,v 1.2 2003/01/28 12:00:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestUnaryFunctionUnaryPredicate.java,v 1.3 2003/11/24 20:31:19 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,7 +65,7 @@ import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:30 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:31:19 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryFunctionUnaryPredicate extends BaseFunctorTest {
@@ -136,7 +136,7 @@ public class TestUnaryFunctionUnaryPredicate extends BaseFunctorTest {
         UnaryPredicate p = new UnaryFunctionUnaryPredicate(new ConstantFunction(Boolean.TRUE));
         assertEquals(p,p);
         assertObjectsAreEqual(p,new UnaryFunctionUnaryPredicate(new ConstantFunction(Boolean.TRUE)));
-        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
+        assertObjectsAreNotEqual(p,ConstantPredicate.trueInstance());
         assertObjectsAreNotEqual(p,new UnaryFunctionUnaryPredicate(null));
         assertObjectsAreNotEqual(p,new UnaryFunctionUnaryPredicate(new ConstantFunction(Boolean.FALSE)));
         assertObjectsAreEqual(new UnaryFunctionUnaryPredicate(null),new UnaryFunctionUnaryPredicate(null));

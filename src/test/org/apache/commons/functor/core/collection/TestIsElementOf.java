@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsElementOf.java,v 1.4 2003/11/24 20:29:23 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsElementOf.java,v 1.5 2003/11/24 20:31:20 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,7 +66,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/24 20:29:23 $
+ * @version $Revision: 1.5 $ $Date: 2003/11/24 20:31:20 $
  * @author Rodney Waldhoff
  * @author Jason Horman
  */
@@ -127,6 +127,6 @@ public class TestIsElementOf extends BaseFunctorTest {
         assertObjectsAreEqual(p1, new IsElementOf());
         assertObjectsAreEqual(p1, IsElementOf.instance());
         assertSame(IsElementOf.instance(), IsElementOf.instance());
-        assertObjectsAreNotEqual(p1, ConstantPredicate.getFalsePredicate());
+        assertObjectsAreNotEqual(p1, ConstantPredicate.falseInstance());
     }
 }
