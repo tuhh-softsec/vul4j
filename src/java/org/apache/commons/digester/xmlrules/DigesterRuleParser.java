@@ -82,6 +82,7 @@ import org.xml.sax.SAXException;
  * @author David H. Martin - Initial Contribution
  * @author Scott Sanders   - Added ASL, removed external dependencies
  * @author Bradley M. Handy - Bean Property Setter Rule addition
+ * 
  */
 
 public class DigesterRuleParser extends RuleSetBase {
