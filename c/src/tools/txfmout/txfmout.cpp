@@ -68,6 +68,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.4  2003/02/20 10:34:24  blautenb
+ * Check for unistd.h
+ *
  * Revision 1.3  2003/02/17 11:22:39  blautenb
  * Now handle relative file URIs in references
  *
@@ -99,7 +102,16 @@
 #include <string.h>
 #include <iostream.h>
 #include <stdlib.h>
-#include <direct.h>
+
+#if defined(HAVE_UNISTD_H)
+# include <unistd.h>
+# define _MAX_PATH NAME_MAX
+#else
+# if defined(HAVE_DIRECT_H)
+#  include <direct.h>
+# endif
+#endif
+
 
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>

@@ -67,6 +67,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.7  2003/02/20 10:34:24  blautenb
+ * Check for unistd.h
+ *
  * Revision 1.6  2003/02/18 11:28:12  blautenb
  * Catch and clean up after Xalan exceptions
  *
@@ -105,7 +108,15 @@
 #include <string.h>
 #include <iostream.h>
 #include <stdlib.h>
-#include <direct.h>
+
+#if defined(HAVE_UNISTD_H)
+# include <unistd.h>
+# define _MAX_PATH NAME_MAX
+#else
+# if defined(HAVE_DIRECT_H)
+#  include <direct.h>
+# endif
+#endif
 
 #if defined (_DEBUG) && defined (_MSC_VER)
 #include <crtdbg.h>
