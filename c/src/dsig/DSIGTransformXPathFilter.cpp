@@ -76,7 +76,7 @@
 #include <xsec/transformers/TXFMXPathFilter.hpp>
 #include <xsec/transformers/TXFMChain.hpp>
 
-#include <xercesc/DOM/DOMNode.hpp>
+#include <xercesc/dom/DOMNode.hpp>
 
 XSEC_USING_XERCES(DOMNode);
 

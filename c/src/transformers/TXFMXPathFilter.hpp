@@ -134,7 +134,7 @@ public:
 private:
 
 	typedef std::vector<filterSetHolder *> lstsVectorType;
-	TXFMXPath();
+	TXFMXPathFilter();
 	void walkDocument(DOMNode * n);
 	bool checkNodeInScope(DOMNode * n);
 	bool checkNodeInInput(DOMNode * n);

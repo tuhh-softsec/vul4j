@@ -260,8 +260,6 @@ XSECXPathNodeList * TXFMXPathFilter::evaluateSingleExpr(DSIGXPathFilterExpr *exp
 
 		// Now work out what we have to set up in the new processing
 
-		TXFMBase::nodeType inputType = input->getNodeType();
-
 		XalanDOMString cd;		// For XPath Filter, the root is always the context node
 
 		cd = XalanDOMString("/");		// Root node

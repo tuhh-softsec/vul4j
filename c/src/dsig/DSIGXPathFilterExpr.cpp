@@ -74,8 +74,8 @@
 #include <xsec/framework/XSECException.hpp>
 
 
-#include <xercesc/DOM/DOMNode.hpp>
-#include <xercesc/DOM/DOMNamedNodeMap.hpp>
+#include <xercesc/dom/DOMNode.hpp>
+#include <xercesc/dom/DOMNamedNodeMap.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
 
