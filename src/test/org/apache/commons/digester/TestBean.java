@@ -1,4 +1,5 @@
-/*
+/* $Id: TestBean.java,v 1.8 2004/05/07 01:29:59 skitching Exp $
+ *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +23,7 @@ package org.apache.commons.digester;
  * General purpose test bean for Digester tests.
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.7 $ $Date: 2004/02/28 13:32:54 $
+ * @version $Revision: 1.8 $ $Date: 2004/05/07 01:29:59 $
  */
 
 public class TestBean {

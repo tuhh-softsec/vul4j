@@ -1,4 +1,5 @@
-/*
+/* $Id: VariableExpansionTestCase.java,v 1.3 2004/05/07 01:30:00 skitching Exp $
+ *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +36,7 @@ import org.xml.sax.SAXException;
  * <p>Test Case for the variable expansion facility in Digester.
  *
  * @author Simon Kitching
- * @version $Revision: 1.2 $ $Date: 2004/02/28 13:32:55 $
+ * @version $Revision: 1.3 $ $Date: 2004/05/07 01:30:00 $
  */
 
 public class VariableExpansionTestCase extends TestCase {

@@ -1,4 +1,5 @@
-/*
+/* $Id: RuleTestCase.java,v 1.28 2004/05/07 01:29:59 skitching Exp $
+ *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +35,7 @@ import org.xml.sax.SAXException;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.27 $ $Date: 2004/02/28 13:32:54 $
+ * @version $Revision: 1.28 $ $Date: 2004/05/07 01:29:59 $
  */
 
 public class RuleTestCase extends TestCase {

@@ -1,4 +1,5 @@
-/*
+/* $Id: EBRTestCase.java,v 1.14 2004/05/07 01:29:59 skitching Exp $
+ *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +30,7 @@ import junit.framework.TestSuite;
  * <p> Runs standard tests for RulesBase as well as tests of extensions.
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.13 $ $Date: 2004/02/28 13:32:54 $
+ * @version $Revision: 1.14 $ $Date: 2004/05/07 01:29:59 $
  */
 
 

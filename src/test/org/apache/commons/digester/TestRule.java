@@ -1,4 +1,5 @@
-/*
+/* $Id: TestRule.java,v 1.13 2004/05/07 01:29:59 skitching Exp $
+ *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +30,7 @@ import org.xml.sax.Attributes;
  * at the identifier.</p>
  *
  * @author Robert Burrell Donkin
- * @revision $Revision: 1.12 $ $Date: 2004/02/28 13:32:54 $
+ * @revision $Revision: 1.13 $ $Date: 2004/05/07 01:29:59 $
  */
 
 public class TestRule extends Rule {

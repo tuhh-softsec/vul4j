@@ -1,4 +1,5 @@
-/*
+/* $Id: DigesterTestCase.java,v 1.20 2004/05/07 01:29:59 skitching Exp $
+ *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +42,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.19 $ $Date: 2004/03/15 21:44:53 $
+ * @version $Revision: 1.20 $ $Date: 2004/05/07 01:29:59 $
  */
 
 public class DigesterTestCase extends TestCase {

@@ -1,4 +1,5 @@
-/*
+/* $Id: WDRulesWrapperTestCase.java,v 1.5 2004/05/07 01:29:59 skitching Exp $
+ *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +25,7 @@ import junit.framework.TestCase;
  * Test case for WithDefaultsRulesWrapper
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.4 $ $Date: 2004/02/28 13:32:54 $
+ * @version $Revision: 1.5 $ $Date: 2004/05/07 01:29:59 $
  */
 
 public class WDRulesWrapperTestCase extends TestCase {
