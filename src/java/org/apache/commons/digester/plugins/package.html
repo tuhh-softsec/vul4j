@@ -208,11 +208,8 @@ pattern should not include any wildcard characters.
 
 <h2> Other features </h2>
 
-Multiple identical plugin declarations are ignored. This is useful
-when using "external entity references" to compose an XML document from
-multiple xml documents; the components don't need to worry about
-redeclaring a plugin as long as they always map the same id to the
-same class.
+Multiple plugin declarations are permitted; the latest simply overrides
+earlier ones.
 <p>
 In situations where a user <i>might</i> want to specify a custom class,
 but will often want "default" behaviour, a PluginCreateRule can specify
