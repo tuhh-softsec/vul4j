@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.9 2002/10/29 20:17:11 craigmcc Exp $
- * $Revision: 1.9 $
- * $Date: 2002/10/29 20:17:11 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.10 2002/11/01 18:21:06 rdonkin Exp $
+ * $Revision: 1.10 $
+ * $Date: 2002/11/01 18:21:06 $
  *
  * ====================================================================
  *
@@ -80,13 +80,13 @@ import java.util.List;
  * <li><em>Exact Match</em> - A pattern "a/b/c" exactly matches a
  *     <code>&lt;c&gt;</code> element, nested inside a <code>&lt;b&gt;</code>
  *     element, which is nested inside an <code>&lt;a&gt;</code> element.</li>
- * <li><em>Tail Match</em> - A pattern "*\/a/b" matches a
+ * <li><em>Tail Match</em> - A pattern "&#42;/a/b" matches a
  *     <code>&lt;b&gt;</code> element, nested inside an <code>&lt;a&gt;</code>
  *      element, no matter how deeply the pair is nested.</li>
  * </ul>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.9 $ $Date: 2002/10/29 20:17:11 $
+ * @version $Revision: 1.10 $ $Date: 2002/11/01 18:21:06 $
  */
 
 public class RulesBase implements Rules {
