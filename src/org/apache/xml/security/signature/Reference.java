@@ -152,8 +152,6 @@ public class Reference extends SignatureElementProxy {
    public static final String MANIFEST_URI = Constants.SignatureSpecNS
                                              + Constants._TAG_MANIFEST;
    //J-
-   Element _transformsElement = null;
-   Element _digestValueElement = null;
    Manifest _manifest = null;
    XMLSignatureInput _transformsInput;
    XMLSignatureInput _transformsOutput;
@@ -180,25 +178,18 @@ public class Reference extends SignatureElementProxy {
       XMLUtils.addReturnToElement(this._constructionElement);
 
       this._baseURI = BaseURI;
+      this._manifest = manifest;
 
       this.setURI(ReferenceURI);
 
-      this._manifest = manifest;
-
-      // important: The ds>Reference must be added to the associated ds:Manifest
+      // important: The ds:Reference must be added to the associated ds:Manifest
       //            or ds:SignedInfo _before_ the this.resolverResult() is called.
       // this._manifest.appendChild(this._constructionElement);
       // this._manifest.appendChild(this._doc.createTextNode("\n"));
       Element nscontext = XMLUtils.createDSctx(this._doc, "ds");
 
       if (transforms != null) {
-         try {
-            cat.debug("Add Transforms Element with " + transforms.getLength()
-                      + " Transform to the Reference");
-         } catch (Exception ex) {}
-
-         this.setTransformsElement(transforms.getElement());
-         this._constructionElement.appendChild(this._transformsElement);
+         this._constructionElement.appendChild(transforms.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
       }
       {
@@ -210,28 +201,12 @@ public class Reference extends SignatureElementProxy {
          XMLUtils.addReturnToElement(this._constructionElement);
       }
       {
-         this._digestValueElement =
+         Element digestValueElement =
             XMLUtils.createElementInSignatureSpace(this._doc,
                                                    Constants._TAG_DIGESTVALUE);
 
-         this._constructionElement.appendChild(this._digestValueElement);
+         this._constructionElement.appendChild(digestValueElement);
          XMLUtils.addReturnToElement(this._constructionElement);
-      }
-   }
-
-   /**
-    * Method generateDigestValue
-    *
-    * @throws ReferenceNotInitializedException
-    * @throws XMLSignatureException
-    */
-   public void generateDigestValue()
-           throws XMLSignatureException, ReferenceNotInitializedException {
-
-      if (this._state == MODE_SIGN) {
-         byte calculatedBytes[] = this.calculateDigest();
-
-         this.setDigestValueElement(calculatedBytes);
       }
    }
 
@@ -299,53 +274,6 @@ public class Reference extends SignatureElementProxy {
       super(element, BaseURI);
 
       this._manifest = manifest;
-
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-
-         this.setTransformsElement((Element) XPathAPI
-            .selectSingleNode(this._constructionElement, "./ds:"
-                              + Constants._TAG_TRANSFORMS, nscontext));
-      } catch (TransformerException ex) {
-         throw new XMLSecurityException("empty", ex);
-      }
-   }
-
-   /**
-    * sets <code>ds:Transforms</code> Element
-    *
-    * @param t <code>ds:Transforms</code> Element
-    */
-   void setTransformsElement(Element t) {
-
-      // id it _is_ already set, throw Exception and stop application
-      if (this._transformsElement != null) {
-         throw new RuntimeException();
-      }
-
-      this._transformsElement = t;
-   }
-
-   /**
-    * Method getDigestValueFromElement
-    *
-    * @return
-    */
-   byte[] getDigestValueFromElement() {
-
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         Element digestValue =
-            (Element) XPathAPI
-               .selectSingleNode(this._constructionElement, "./ds:"
-                                 + Constants._TAG_DIGESTVALUE, nscontext);
-
-         return Base64.decode(digestValue);
-      } catch (TransformerException ex) {
-         return null;
-      }
    }
 
    /**
@@ -359,20 +287,17 @@ public class Reference extends SignatureElementProxy {
    public MessageDigestAlgorithm getMessageDigestAlgorithm()
            throws XMLSignatureException {
 
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         Element digestMethodElement =
-            (Element) XPathAPI
-               .selectSingleNode(this._constructionElement, "./ds:"
-                                 + Constants._TAG_DIGESTMETHOD, nscontext);
-         String uri =
-            digestMethodElement.getAttribute(Constants._ATT_ALGORITHM);
+      Element digestMethodElem = this.getChildElementLocalName(0,
+                                    Constants.SignatureSpecNS,
+                                    Constants._TAG_DIGESTMETHOD);
 
-         return MessageDigestAlgorithm.getInstance(this._doc, uri);
-      } catch (TransformerException ex) {}
+      if (digestMethodElem == null) {
+         return null;
+      }
 
-      return null;
+      String uri = digestMethodElem.getAttribute(Constants._ATT_ALGORITHM);
+
+      return MessageDigestAlgorithm.getInstance(this._doc, uri);
    }
 
    /**
@@ -485,16 +410,35 @@ public class Reference extends SignatureElementProxy {
            throws XMLSignatureException {
 
       if (this._state == MODE_SIGN) {
-         NodeList children = this._digestValueElement.getChildNodes();
+         Element digestValueElement = this.getChildElementLocalName(0,
+                                         Constants.SignatureSpecNS,
+                                         Constants._TAG_REFERENCE);
+         NodeList children = digestValueElement.getChildNodes();
 
          for (int i = 0; i < children.getLength(); i++) {
-            this._digestValueElement.removeChild(children.item(i));
+            digestValueElement.removeChild(children.item(i));
          }
 
          String base64codedValue = Base64.encode(digestValue);
          Text t = this._doc.createTextNode(base64codedValue);
 
-         this._digestValueElement.appendChild(t);
+         digestValueElement.appendChild(t);
+      }
+   }
+
+   /**
+    * Method generateDigestValue
+    *
+    * @throws ReferenceNotInitializedException
+    * @throws XMLSignatureException
+    */
+   public void generateDigestValue()
+           throws XMLSignatureException, ReferenceNotInitializedException {
+
+      if (this._state == MODE_SIGN) {
+         byte calculatedBytes[] = this.calculateDigest();
+
+         this.setDigestValueElement(calculatedBytes);
       }
    }
 
@@ -502,7 +446,6 @@ public class Reference extends SignatureElementProxy {
     * This method returns the {@link XMLSignatureInput} which is referenced by the
     * <CODE>URI</CODE> Attribute.
     *
-    * @return
     * @throws ReferenceNotInitializedException
     * @throws XMLSignatureException
     * @ see Manifest#verifyReferences
@@ -521,8 +464,6 @@ public class Reference extends SignatureElementProxy {
             URI = URIAttr.getNodeValue();
          }
 
-         cat.debug("The manifest is " + this._manifest);
-
          ResourceResolver resolver = ResourceResolver.getInstance(URIAttr,
                                         this._baseURI,
                                         this._manifest._perManifestResolvers);
@@ -538,26 +479,17 @@ public class Reference extends SignatureElementProxy {
 
          this._transformsInput = resolver.resolve(URIAttr, this._baseURI);
 
-         try {
-            cat.debug("After resolving, the document has "
-                      + this._transformsInput.getNodeSet().getLength() + " nodes");
-         } catch (Exception ex) {}
+         Element transformsElement = this.getChildElementLocalName(0,
+                                        Constants.SignatureSpecNS,
+                                        Constants._TAG_TRANSFORMS);
 
-         if (this._transformsElement != null) {
-            Transforms transforms = new Transforms(this._transformsElement,
+         if (transformsElement != null) {
+            Transforms transforms = new Transforms(transformsElement,
                                                    this._baseURI);
 
-            try {
-               cat.debug("The Reference contains " + transforms.getLength()
-                         + " Transforms, so I perform them");
-               cat.debug("Before the transforms, the document has "
-                         + this._transformsInput.getNodeSet().getLength()
-                         + " nodes");
-            } catch (Exception ex) {}
-
-            this._transformsOutput = transforms.performTransforms(this._transformsInput);
+            this._transformsOutput =
+               transforms.performTransforms(this._transformsInput);
          } else {
-            cat.debug("The Reference contains no Transforms, so I skip them");
             this._transformsOutput = this._transformsInput;
          }
       } catch (ResourceResolverException ex) {
@@ -585,6 +517,7 @@ public class Reference extends SignatureElementProxy {
 
       try {
          this.dereferenceURIandPerformTransforms();
+
          byte[] signedBytes = this._transformsOutput.getBytes();
 
          return signedBytes;
@@ -609,7 +542,6 @@ public class Reference extends SignatureElementProxy {
 
       try {
          byte[] data = this.getReferencedBytes();
-
          MessageDigestAlgorithm mda = this.getMessageDigestAlgorithm();
 
          mda.reset();
@@ -640,9 +572,10 @@ public class Reference extends SignatureElementProxy {
    public boolean verify()
            throws ReferenceNotInitializedException, XMLSecurityException {
 
-      cat.debug("verify called");
-
-      byte[] elemDig = this.getDigestValueFromElement();
+      Element digestValueElem = this.getChildElementLocalName(0,
+                                   Constants.SignatureSpecNS,
+                                   Constants._TAG_DIGESTVALUE);
+      byte[] elemDig = Base64.decode(digestValueElem);
       byte[] calcDig = this.calculateDigest();
       boolean equal = MessageDigestAlgorithm.isEqual(elemDig, calcDig);
 
@@ -656,7 +589,7 @@ public class Reference extends SignatureElementProxy {
                String tmp = new Long(System.currentTimeMillis()).toString()
                             + ".txt";
 
-               cat.info("Wrote \"" + this.getURI() + "\" to file " + tmp);
+               cat.warn("Wrote \"" + this.getURI() + "\" to file " + tmp);
                JavaUtils.writeBytesToFilename(tmp, this.getReferencedBytes());
             } catch (Exception ex) {}
          }
@@ -667,14 +600,29 @@ public class Reference extends SignatureElementProxy {
       return equal;
    }
 
+   /**
+    * Method getTransformsInput
+    *
+    * @return
+    */
    public XMLSignatureInput getTransformsInput() {
       return this._transformsInput;
    }
 
+   /**
+    * Method getTransformsOutput
+    *
+    * @return
+    */
    public XMLSignatureInput getTransformsOutput() {
       return this._transformsOutput;
    }
 
+   /**
+    * Method getBaseLocalName
+    *
+    * @return
+    */
    public String getBaseLocalName() {
       return Constants._TAG_REFERENCE;
    }

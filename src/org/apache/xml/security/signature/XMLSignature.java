@@ -112,18 +112,15 @@ public class XMLSignature extends SignatureElementProxy {
    public static final String ALGO_ID_SIGNATURE_RSA = Constants.SignatureSpecNS + "rsa-sha1";
    public static final String ALGO_ID_SIGNATURE_RSA_SHA1 = Constants.SignatureSpecNS + "rsa-sha1";
 
-  private static final String ALGO_XMLDSIGMODE = "http://www.w3.org/2001/04/xmldsig-more";
-   public static final String ALGO_ID_MORE_SIGNATURE_RSA_MD5 = ALGO_XMLDSIGMODE + "rsa-md5";
-   public static final String ALGO_ID_MORE_SIGNATURE_RSA_RIPEMD160 = ALGO_XMLDSIGMODE + "rsa-ripemd160";
-   public static final String ALGO_ID_MORE_MAC_HMAC_MD5 = ALGO_XMLDSIGMODE + "hmac-md5";
-   public static final String ALGO_ID_MORE_MAC_HMAC_RIPEMD160 = ALGO_XMLDSIGMODE + "hmac-ripemd160";
+  private static final String ALGO_ID_MORE = "http://www.w3.org/2001/04/xmldsig-more";
+   public static final String ALGO_ID_MORE_SIGNATURE_RSA_MD5 = ALGO_ID_MORE + "rsa-md5";
+   public static final String ALGO_ID_MORE_SIGNATURE_RSA_RIPEMD160 = ALGO_ID_MORE + "rsa-ripemd160";
+   public static final String ALGO_ID_MORE_MAC_HMAC_MD5 = ALGO_ID_MORE + "hmac-md5";
+   public static final String ALGO_ID_MORE_MAC_HMAC_RIPEMD160 = ALGO_ID_MORE + "hmac-ripemd160";
    //J+
 
    /** ds:Signature.ds:SignedInfo element */
    SignedInfo _signedInfo = null;
-
-   /** Field _signatureValueElement */
-   Element _signatureValueElement = null;
 
    /** ds:Signature.ds:KeyInfo */
    KeyInfo _keyInfo = null;
@@ -157,15 +154,12 @@ public class XMLSignature extends SignatureElementProxy {
       XMLUtils.addReturnToElement(this._constructionElement);
 
       // create an empty SignatureValue; this is filled by setSignatureValueElement
-      this._signatureValueElement =
+      Element signatureValueElement =
          XMLUtils.createElementInSignatureSpace(this._doc,
                                                 Constants._TAG_SIGNATUREVALUE);
 
-      this._constructionElement.appendChild(this._signatureValueElement);
+      this._constructionElement.appendChild(signatureValueElement);
       XMLUtils.addReturnToElement(this._constructionElement);
-
-      // this._constructionElement.appendChild(this._keyInfo.getElement());
-      // XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -182,153 +176,40 @@ public class XMLSignature extends SignatureElementProxy {
 
       super(element, BaseURI);
 
-      Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                               Constants.SignatureSpecNS);
-
       // check out SignedInfo child
-      {
+      Element signedInfoElem = this.getChildElementLocalName(0,
+                                  Constants.SignatureSpecNS,
+                                  Constants._TAG_SIGNEDINFO);
 
-         // at this stage, nl can contain more than one SignedInfo, possibly
-         // in Object Elements. Make shure that nl contains exactly one
-         // SignedInfo which is child of element
-         try {
-            Element signedInfoElem =
-               (Element) XPathAPI
-                  .selectSingleNode(element, "./ds:"
-                                    + Constants._TAG_SIGNEDINFO, nscontext);
+      if (signedInfoElem == null) {
+         Object exArgs[] = { Constants._TAG_SIGNEDINFO,
+                             Constants._TAG_SIGNATURE };
 
-            if (signedInfoElem == null) {
-               Object exArgs[] = { Constants._TAG_SIGNEDINFO,
-                                   Constants._TAG_SIGNATURE };
-
-               throw new XMLSignatureException("xml.WrongContent", exArgs);
-            }
-
-            this._signedInfo = new SignedInfo(signedInfoElem, BaseURI);
-         } catch (javax.xml.transform.TransformerException ex) {
-            Object exArgs[] = { Constants._TAG_SIGNEDINFO,
-                                Constants._TAG_SIGNATURE };
-
-            throw new XMLSignatureException("xml.WrongContent", exArgs, ex);
-         }
+         throw new XMLSignatureException("xml.WrongContent", exArgs);
       }
 
+      this._signedInfo = new SignedInfo(signedInfoElem, BaseURI);
+
       // check out SignatureValue child
-      {
-         try {
-            this._signatureValueElement =
-               (Element) XPathAPI
-                  .selectSingleNode(element, "./ds:"
-                                    + Constants._TAG_SIGNATUREVALUE, nscontext);
+      Element signatureValueElement = this.getChildElementLocalName(0,
+              Constants.SignatureSpecNS, Constants._TAG_SIGNATUREVALUE);
 
-            if (this._signatureValueElement == null) {
-               Object exArgs[] = { Constants._TAG_SIGNATUREVALUE,
-                                   Constants._TAG_SIGNATURE };
+      if (signatureValueElement == null) {
+         Object exArgs[] = { Constants._TAG_SIGNATUREVALUE,
+                             Constants._TAG_SIGNATURE };
 
-               throw new XMLSignatureException("xml.WrongContent", exArgs);
-            }
-         } catch (javax.xml.transform.TransformerException ex) {
-            Object exArgs[] = { Constants._TAG_SIGNATUREVALUE,
-                                Constants._TAG_SIGNATURE };
-
-            throw new XMLSignatureException("xml.WrongContent", exArgs, ex);
-         }
+         throw new XMLSignatureException("xml.WrongContent", exArgs);
       }
 
       // <element ref="ds:KeyInfo" minOccurs="0"/>
-      {
-         try {
-            Element keyInfoElem = (Element) XPathAPI.selectSingleNode(element,
-                                     "./ds:" + Constants._TAG_KEYINFO,
-                                     nscontext);
+      Element keyInfoElem = this.getChildElementLocalName(0,
+                               Constants.SignatureSpecNS,
+                               Constants._TAG_KEYINFO);
 
-            if (keyInfoElem != null) {
-
-               /** @todo check out KeyInfo here */
-               this._keyInfo = new KeyInfo(keyInfoElem, BaseURI);
-
-               cat.debug("Found a KeyInfo in the Signature: " + this._keyInfo);
-            } else {
-               cat.debug("I didn't find a KeyInfo in the Signature");
-            }
-         } catch (javax.xml.transform.TransformerException ex) {
-            Object exArgs[] = { Constants._TAG_KEYINFO,
-                                Constants._TAG_SIGNATURE };
-
-            throw new XMLSignatureException("xml.WrongContent", exArgs, ex);
-         }
-      }
-
-      if (cat.isDebugEnabled()) {
-         cat.debug("Signature: Id = \"" + this.getId() + "\"");
+      if (keyInfoElem != null) {
+         this._keyInfo = new KeyInfo(keyInfoElem, BaseURI);
       }
    }
-
-   /**
-    * Method flushInternalObjects
-    *
-    * @throws XMLSecurityException
-    */
-   private void flushInternalObjects() throws XMLSecurityException {
-
-      // now we fill our SignatureValue Element with life
-      // this.setSignatureValueElement();
-      // The Signature contains a KeyInfo; we delete it if it's empty
-      Element keyInfoElement = this._keyInfo.getElement();
-
-      if (this._keyInfo.isEmpty()) {
-         cat.debug("KeyInfo is empty, try to remove it");
-         this._constructionElement.removeChild(keyInfoElement);
-      } else {
-         cat.debug("KeyInfo is not empty, try to add a return");
-
-         Node nodeAfterKeyInfo = keyInfoElement.getNextSibling();
-
-         if (nodeAfterKeyInfo == null) {
-            XMLUtils.addReturnToElement(this._constructionElement);
-         } else {
-            this._constructionElement
-               .insertBefore(this._doc.createTextNode("\n"), nodeAfterKeyInfo);
-         }
-      }
-
-      {
-         for (int i = 0; i < this.getObjectLength(); i++) {
-            ObjectContainer oc = this.getObjectItem(i);
-            Element ocElem = oc.getElement();
-
-            this._constructionElement.appendChild(ocElem);
-            XMLUtils.addReturnToElement(this._constructionElement);
-         }
-      }
-   }
-
-   /**
-    * Serializes the XMLSignature object to an Element
-    *
-    * @param Id
-    *
-    *  if (this._state == MODE_VERIFY) {
-    *     return this._constructionElement;
-    *  }
-    *
-    *  try {
-    *     this.flushInternalObjects();
-    *
-    *     return this._constructionElement;
-    *  } catch (XMLSecurityException ex) {
-    *     ex.printStackTrace();
-    *
-    *     throw new RuntimeException(
-    *        "XMLSignature.flushInternalObjects() failed");
-    *  } catch (DOMException ex) {
-    *     ex.printStackTrace();
-    *
-    *     throw new RuntimeException(
-    *        "XMLSignature.flushInternalObjects() failed");
-    *  }
-    * }
-    */
 
    /**
     * Sets the <code>Id</code> attribute
@@ -368,13 +249,9 @@ public class XMLSignature extends SignatureElementProxy {
     * @throws XMLSignatureException
     */
    public byte[] getSignatureValue() throws XMLSignatureException {
+      Element signatureValueElem = this.getChildElementLocalName(0, Constants.SignatureSpecNS, Constants._TAG_SIGNATUREVALUE);
 
-      cat.debug("getSignatureValue " + this._signatureValueElement);
-      cat.debug("getSignatureValue base64 = "
-                + ((Text) this._signatureValueElement.getChildNodes().item(0))
-                   .getData());
-
-      byte[] signatureValue = Base64.decode(this._signatureValueElement);
+      byte[] signatureValue = Base64.decode(signatureValueElem);
 
       return signatureValue;
    }
@@ -389,18 +266,17 @@ public class XMLSignature extends SignatureElementProxy {
            throws XMLSignatureException {
 
       if (this._state == MODE_SIGN) {
-         NodeList children = this._signatureValueElement.getChildNodes();
+         Element signatureValueElem = this.getChildElementLocalName(0, Constants.SignatureSpecNS, Constants._TAG_SIGNATUREVALUE);
+         NodeList children = signatureValueElem.getChildNodes();
 
-         for (int i = 0; i < children.getLength(); i++) {
-            this._signatureValueElement.removeChild(children.item(i));
+         while (signatureValueElem.hasChildNodes()) {
+            signatureValueElem.removeChild(signatureValueElem.getFirstChild());
          }
 
          String base64codedValue = Base64.encode(bytes);
          Text t = this._doc.createTextNode(base64codedValue);
 
-         this._signatureValueElement.appendChild(t);
-      } else {
-         ;
+         signatureValueElem.appendChild(t);
       }
    }
 
@@ -814,6 +690,11 @@ public class XMLSignature extends SignatureElementProxy {
       this._followManifestsDuringValidation = followManifests;
    }
 
+   /**
+    * Method getBaseLocalName
+    *
+    * @return
+    */
    public String getBaseLocalName() {
       return Constants._TAG_SIGNATURE;
    }
