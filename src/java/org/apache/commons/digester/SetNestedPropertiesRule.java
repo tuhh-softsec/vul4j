@@ -44,10 +44,11 @@ import org.apache.commons.logging.LogFactory;
  *
  * <p>Example input that can be processed by this rule:</p>
  * <pre>
- *   [point]
- *    [x]7[/x]
- *    [y]9[/y]
- *   [/point]
+ *   [widget]
+ *    [height]7[/height]
+ *    [width]8[/width]
+ *    [label]Hello, world[/label]
+ *   [/widget]
  * </pre>
  *
  * <p>This rule supports custom mapping of attribute names to property names.
@@ -62,11 +63,32 @@ import org.apache.commons.logging.LogFactory;
  * rules manager; this <code>Rule</code>, however, works fine with the default 
  * <code>RulesBase</code> rules manager.</p>
  *
+ * <p><b>Implementation Notes</b></p>
+ *
+ * <p>This class works by creating its own simple Rules implementation. When
+ * begin is invoked on this rule, the digester's current rules object is
+ * replaced by a custom one. When end is invoked for this rule, the original
+ * rules object is restored. The digester rules objects therefore behave in
+ * a stack-like manner.</p>
+ *
+ * <p>For each child element encountered, the custom Rules implementation
+ * ensures that a special AnyChildRule instance is included in the matches 
+ * returned to the digester, and it is this rule instance that is responsible 
+ * for setting the appropriate property on the target object (if such a property 
+ * exists). The effect is therefore like a "trailing wildcard pattern". The 
+ * custom Rules implementation also returns the matches provided by the 
+ * underlying Rules implementation for the same pattern, so other rules
+ * are not "disabled" during processing of a SetNestedPropertiesRule.</p> 
+ *
  * @since 1.6
  */
 
 public class SetNestedPropertiesRule extends Rule {
 
+    /**
+     * Dummy object that can be placed in collections to indicate an
+     * ignored property when null cannot be used for that purpose.
+     */
     private static final String PROP_IGNORE = "ignore-me";
     
     private Log log = null;
@@ -158,7 +180,7 @@ public class SetNestedPropertiesRule extends Rule {
         
     // --------------------------------------------------------- Public Methods
 
-
+    /** Invoked when rule is added to digester. */
     public void setDigester(Digester digester) {
         super.setDigester(digester);
         log = digester.getLogger();
