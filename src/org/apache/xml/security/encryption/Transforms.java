@@ -59,8 +59,6 @@
 package org.apache.xml.security.encryption;
 
 
-import java.util.Iterator;
-import org.apache.xml.security.transforms.Transform;
 
 
 /**
