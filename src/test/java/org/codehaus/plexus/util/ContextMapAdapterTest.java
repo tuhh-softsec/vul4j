@@ -1,11 +1,9 @@
 package org.codehaus.plexus.util;
 
-import junit.framework.TestCase;
-
-import java.util.Map;
-import java.util.HashMap;
 import java.io.StringReader;
 import java.io.StringWriter;
+
+import junit.framework.TestCase;
 
 import org.codehaus.plexus.context.DefaultContext;
 
@@ -38,5 +36,24 @@ public class ContextMapAdapterTest
         assertEquals( "exotic dancer", (String) adapter.get( "occupation" ) );
 
         assertNull( adapter.get( "foo") );
+    }
+
+    public void testInterpolationWithContext()
+        throws Exception
+    {
+        DefaultContext context = new DefaultContext();
+        context.put( "name", "jason" );
+        context.put( "noun", "asshole" );
+
+        String foo = "${name} is an ${noun}. ${not.interpolated}";
+
+        InterpolationFilterReader reader =
+            new InterpolationFilterReader( new StringReader( foo ), new ContextMapAdapter( context ) );
+
+        StringWriter writer = new StringWriter();
+        IOUtil.copy( reader, writer );
+
+        String bar = writer.toString();
+        assertEquals( "jason is an asshole. ${not.interpolated}", bar );
     }
 }
