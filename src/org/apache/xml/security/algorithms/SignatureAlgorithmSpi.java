@@ -79,9 +79,6 @@ public abstract class SignatureAlgorithmSpi {
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(SignatureAlgorithmSpi.class.getName());
 
-   /** Field _signatureAlgorithmObject */
-   private SignatureAlgorithm _signatureAlgorithmObject = null;
-
    /**
     * Returns the URI representation of <code>Transformation algorithm</code>
     *
