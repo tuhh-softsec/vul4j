@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.20 2002/01/31 20:25:11 rdonkin Exp $
+        $Id: build.xml,v 1.21 2002/03/11 05:01:54 craigmcc Exp $
 -->
 
 
@@ -246,8 +246,7 @@
                                test.matching,
                                test.matching.extended,
                                test.rule,
-                               test.bpsr,
-                               test.xmlrules
+                               test.bpsr
                               "
    description="Run all unit test cases">
   </target>

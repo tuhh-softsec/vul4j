@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.46 2002/02/27 18:06:09 craigmcc Exp $
- * $Revision: 1.46 $
- * $Date: 2002/02/27 18:06:09 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.47 2002/03/11 05:01:54 craigmcc Exp $
+ * $Revision: 1.47 $
+ * $Date: 2002/03/11 05:01:54 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.46 $ $Date: 2002/02/27 18:06:09 $
+ * @version $Revision: 1.47 $ $Date: 2002/03/11 05:01:54 $
  */
 
 public class Digester extends DefaultHandler {
@@ -748,9 +748,9 @@ public class Digester extends DefaultHandler {
             } catch (Exception e) {
                 log.error("Finish event threw exception", e);
                 throw createSAXException(e);
-            } catch (Throwable t) {
-                log.error("Finish event threw exception", t);
-                throw createSAXException(t.getMessage());
+            } catch (Error e) {
+                log.error("Finish event threw error", e);
+                throw e;
             }
         }
 
@@ -800,9 +800,9 @@ public class Digester extends DefaultHandler {
                 } catch (Exception e) {
                     log.error("Body event threw exception", e);
                     throw createSAXException(e);
-                } catch (Throwable t) {
-                    log.error("Body event threw exception", t);
-                    throw createSAXException(t.getMessage());
+                } catch (Error e) {
+                    log.error("Body event threw error", e);
+                    throw e;
                 }
             }
         } else {
@@ -830,9 +830,9 @@ public class Digester extends DefaultHandler {
                 } catch (Exception e) {
                     log.error("End event threw exception", e);
                     throw createSAXException(e);
-                } catch (Throwable t) {
-                    log.error("End event threw exception", t);
-                    throw createSAXException(t.getMessage());
+                } catch (Error e) {
+                    log.error("End event threw error", e);
+                    throw e;
                 }
             }
         }
@@ -1030,9 +1030,9 @@ public class Digester extends DefaultHandler {
                 } catch (Exception e) {
                     log.error("Begin event threw exception", e);
                     throw createSAXException(e);
-                } catch (Throwable t) {
-                    log.error("Begin event threw exception", t);
-                    throw createSAXException(t.getMessage());
+                } catch (Error e) {
+                    log.error("Begin event threw error", e);
+                    throw e;
                 }
             }
         } else {
