@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterLoader.java,v 1.8 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.8 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterLoader.java,v 1.9 2003/10/22 18:28:57 rdonkin Exp $
+ * $Revision: 1.9 $
+ * $Date: 2003/10/22 18:28:57 $
  *
  * ====================================================================
  * 
@@ -70,7 +70,9 @@ import java.net.URL;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.RuleSet;
+
 import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
 
 
 /**
@@ -83,6 +85,34 @@ import org.xml.sax.SAXException;
  */
 
 public class DigesterLoader {
+
+    /**
+     * Creates a new digester and initializes it from the specified InputSource
+     * @param inputSource load the xml rules from this InputSource
+     * @return a new Digester initialized with the rules
+     */
+    public static Digester createDigester(InputSource rulesSource) {
+        RuleSet ruleSet = new FromXmlRuleSet(rulesSource);
+        Digester digester = new Digester();
+        digester.addRuleSet(ruleSet);
+        return digester;
+    }
+
+    /**
+     * Creates a new digester and initializes it from the specified InputSource.
+     * This constructor allows the digester to be used to load the rules to be specified.
+     * This allows properties to be configured on the Digester instance before it is used.
+     *
+     * @param inputSource load the xml rules from this InputSource
+     * @param rulesDigester digester to load the specified XML file.
+     * @return a new Digester initialized with the rules
+     */
+    public static Digester createDigester(InputSource rulesSource, Digester rulesDigester) {
+        RuleSet ruleSet = new FromXmlRuleSet(rulesSource, rulesDigester);
+        Digester digester = new Digester();
+        digester.addRuleSet(ruleSet);
+        return digester;
+    }
 
     /**
      * Creates a new digester and initializes it from the specified XML file

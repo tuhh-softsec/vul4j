@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/xmlrules/DigesterLoaderTest.java,v 1.16 2003/10/18 13:30:22 rdonkin Exp $
- * $Revision: 1.16 $
- * $Date: 2003/10/18 13:30:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/xmlrules/DigesterLoaderTest.java,v 1.17 2003/10/22 18:28:57 rdonkin Exp $
+ * $Revision: 1.17 $
+ * $Date: 2003/10/22 18:28:57 $
  *
  * ====================================================================
  * 
@@ -75,6 +75,7 @@ import org.apache.commons.digester.Address;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.TestObjectCreationFactory;
 
+import org.xml.sax.InputSource;
 
 /**
  * Tests loading Digester rules from an XML file.
@@ -313,6 +314,41 @@ public class DigesterLoaderTest extends TestCase {
                                     getClass().getClassLoader(), 
                                     new StringReader(xml),
                                     testObject);        
+                                                                        
+        assertEquals("Incorrect left value", "long", testObject.getLeft());
+        assertEquals("Incorrect middle value", "short", testObject.getMiddle());
+        assertEquals("Incorrect right value", "", testObject.getRight());
+    }
+    
+    public void testInputSourceLoader() throws Exception {
+        String rulesXml = "<?xml version='1.0'?>"
+                + "<digester-rules>"
+                + " <pattern value='root'>"
+		+ "   <pattern value='foo'>"
+		+ "     <call-method-rule methodname='triple' paramcount='3'"
+                + "            paramtypes='java.lang.String,java.lang.String,java.lang.String'/>"
+                + "     <call-param-rule paramnumber='0' attrname='attr'/>"
+                + "        <pattern value='bar'>"
+                + "            <call-param-rule paramnumber='1' from-stack='false'/>"
+                + "        </pattern>"
+                + "        <pattern value='foobar'>"
+                + "            <object-create-rule classname='java.lang.String'/>"
+                + "            <pattern value='ping'>"
+                + "                <call-param-rule paramnumber='2' from-stack='true'/>"
+                + "            </pattern>"
+                + "         </pattern>"
+                + "   </pattern>"
+                + " </pattern>"
+                + "</digester-rules>";
+                
+        String xml = "<?xml version='1.0' ?>"
+                     + "<root><foo attr='long'><bar>short</bar><foobar><ping>tosh</ping></foobar></foo></root>";
+        
+        CallParamTestObject testObject = new CallParamTestObject();
+        
+        Digester digester = DigesterLoader.createDigester(new InputSource(new StringReader(rulesXml)));
+        digester.push(testObject);
+        digester.parse(new StringReader(xml));        
                                                                         
         assertEquals("Incorrect left value", "long", testObject.getLeft());
         assertEquals("Incorrect middle value", "short", testObject.getMiddle());

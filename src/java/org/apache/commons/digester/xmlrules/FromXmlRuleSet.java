@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/FromXmlRuleSet.java,v 1.9 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.9 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/FromXmlRuleSet.java,v 1.10 2003/10/22 18:28:57 rdonkin Exp $
+ * $Revision: 1.10 $
+ * $Date: 2003/10/22 18:28:57 $
  *
  * ====================================================================
  * 
@@ -68,6 +68,8 @@ import java.net.URL;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.RuleSetBase;
 
+import org.xml.sax.InputSource;
+
 /**
  * A Digester rule set where the rules come from an XML file.
  *
@@ -82,17 +84,17 @@ public class FromXmlRuleSet extends RuleSetBase {
     /**
      * The file containing the Digester rules, in XML.
      */
-    private URL xmlRules;
+    private XMLRulesLoader rulesLoader;
 
     /**
      * The rule set for parsing the Digester rules
      */
     private DigesterRuleParser parser;
 
-	/**
-	 * The digester for loading the rules xml.
-	 */
-	private Digester rulesDigester;
+    /**
+        * The digester for loading the rules xml.
+        */
+    private Digester rulesDigester;
 
     /**
      * Constructs a FromXmlRuleSet using the default DigesterRuleParser and
@@ -118,8 +120,8 @@ public class FromXmlRuleSet extends RuleSetBase {
      * @param parser an instance of DigesterRuleParser, for parsing the rules from XML
      */
     public FromXmlRuleSet(URL rulesXml, DigesterRuleParser parser) {
-		this(rulesXml, parser, new Digester());
-	}
+        this(rulesXml, parser, new Digester());
+    }
 
     /**
      * @param rulesXml the path to the XML document defining the Digester rules
@@ -127,11 +129,54 @@ public class FromXmlRuleSet extends RuleSetBase {
      * @param rulesDigester the digester used to load the Xml rules.
      */
     public FromXmlRuleSet(URL rulesXml, DigesterRuleParser parser, Digester rulesDigester) {
-        xmlRules = rulesXml;
+        init(new URLXMLRulesLoader(rulesXml), parser, rulesDigester);
+    }
+
+    /**
+     * Constructs a FromXmlRuleSet using the default DigesterRuleParser and
+     * rulesDigester.
+     * @param inputSource load the xml rules from this InputSource
+     */
+    public FromXmlRuleSet(InputSource inputSource) {
+        this(inputSource, new DigesterRuleParser(), new Digester());
+    }
+    
+    /**
+     * Constructs a FromXmlRuleSet using the default DigesterRuleParser and
+     * a ruleDigester for loading the rules xml.
+     * @param inputSource load the xml rules from this InputSource
+     * @param rulesDigester the digester to read the rules xml.
+     */
+    public FromXmlRuleSet(InputSource inputSource, Digester rulesDigester) {
+        this(inputSource, new DigesterRuleParser(), rulesDigester);
+    }
+
+    /**
+     * @param inputSource load the xml rules from this InputSource
+     * @param parser an instance of DigesterRuleParser, for parsing the rules from XML
+     */
+    public FromXmlRuleSet(InputSource inputSource, DigesterRuleParser parser) {
+        this(inputSource, parser, new Digester());
+    }
+
+    /**
+     * @param inputSource load the xml rules from this InputSource
+     * @param parser an instance of DigesterRuleParser, for parsing the rules from XML
+     * @param rulesDigester the digester used to load the Xml rules.
+     */
+    public FromXmlRuleSet(InputSource inputSource, DigesterRuleParser parser, Digester rulesDigester) {
+        init(new InputSourceXMLRulesLoader(inputSource), parser, rulesDigester);
+    }
+    
+    /**
+     * Base constructor
+     */
+    private void init(XMLRulesLoader rulesLoader, DigesterRuleParser parser, Digester rulesDigester) {
+        this.rulesLoader = rulesLoader;
         this.parser = parser;
         this.rulesDigester = rulesDigester;
     }
-
+    
     /**
      * Adds to the digester the set of Rule instances defined in the
      * XML file for this rule set.
@@ -149,12 +194,48 @@ public class FromXmlRuleSet extends RuleSetBase {
         rulesDigester.addRuleSet(parser);
         rulesDigester.push(parser);
 
-        try {
-            rulesDigester.parse(xmlRules.openStream());
-        } catch (Exception ex) {
-            throw new XmlLoadException(ex);
+        rulesLoader.loadRules();
+    }
+    
+    /** 
+     * Worker class encapsulates loading mechanisms.
+     * Private until some reason is found to make it public.
+     */
+    private abstract static class XMLRulesLoader {
+        /** Load rules now */
+        public abstract void loadRules()  throws XmlLoadException;
+    }
+    
+    /** Loads XMLRules from an URL */
+    private class URLXMLRulesLoader extends XMLRulesLoader {
+        private URL url;
+        public URLXMLRulesLoader(URL url) {
+            this.url = url;
+        }
+        
+        public void loadRules() throws XmlLoadException {
+            try {
+                rulesDigester.parse(url.openStream());
+            } catch (Exception ex) {
+                throw new XmlLoadException(ex);
+            }
         }
     }
 
+    /** Loads XMLRules from an InputSource */
+    private class InputSourceXMLRulesLoader extends XMLRulesLoader {
+        private InputSource inputSource;
+        public InputSourceXMLRulesLoader(InputSource inputSource) {
+            this.inputSource = inputSource;
+        }
+        
+        public void loadRules() throws XmlLoadException {
+            try {
+                rulesDigester.parse(inputSource);
+            } catch (Exception ex) {
+                throw new XmlLoadException(ex);
+            }
+        }
+    }
 }
 
