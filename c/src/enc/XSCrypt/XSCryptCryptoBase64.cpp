@@ -320,11 +320,13 @@ unsigned int XSCryptCryptoBase64::encode(const unsigned char * inData,
 		m_outputBuffer[m_remainingOutput++] = Base64LookupTable[t];
 
 		// 2 bits from byte one and 4 from byte 2
-		t = ((m_inputBuffer[i++] << 4) & 0x30) | (m_inputBuffer[i] >> 4);
+		t = ((m_inputBuffer[i++] << 4) & 0x30);
+		t |= (m_inputBuffer[i] >> 4);
 		m_outputBuffer[m_remainingOutput++] = Base64LookupTable[t];
 
 		// 4 from byte 2 and 2 from byte 3
-		t = ((m_inputBuffer[i++] << 2) & 0x3C) | (m_inputBuffer[i] >> 6);
+		t = ((m_inputBuffer[i++] << 2) & 0x3C);
+		t |= (m_inputBuffer[i] >> 6);
 		m_outputBuffer[m_remainingOutput++] = Base64LookupTable[t];
 
 		// last 6 bits from byte 3
