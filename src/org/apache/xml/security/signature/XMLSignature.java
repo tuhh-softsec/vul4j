@@ -89,7 +89,6 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 
@@ -396,8 +395,6 @@ public final class XMLSignature extends SignatureElementProxy {
          Element signatureValueElem = this.getChildElementLocalName(0,
                                          Constants.SignatureSpecNS,
                                          Constants._TAG_SIGNATUREVALUE);
-         NodeList children = signatureValueElem.getChildNodes();
-
          while (signatureValueElem.hasChildNodes()) {
             signatureValueElem.removeChild(signatureValueElem.getFirstChild());
          }
