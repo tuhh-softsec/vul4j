@@ -256,7 +256,6 @@ bool XENCAlgorithmHandlerDefault::wrapKeyAES(
 	XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
 
 	int n = sz / 8;
-	int blocks = n + 1;
 
 	for (int j = 0; j <= 5; ++j) {
 		for (int i = 1 ; i <= n ; ++i) {
