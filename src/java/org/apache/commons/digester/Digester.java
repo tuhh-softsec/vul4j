@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.44 2002/01/27 01:53:03 craigmcc Exp $
- * $Revision: 1.44 $
- * $Date: 2002/01/27 01:53:03 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.45 2002/02/14 07:04:01 craigmcc Exp $
+ * $Revision: 1.45 $
+ * $Date: 2002/02/14 07:04:01 $
  *
  * ====================================================================
  *
@@ -82,7 +82,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogSource;
+import org.apache.commons.logging.LogFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.44 $ $Date: 2002/01/27 01:53:03 $
+ * @version $Revision: 1.45 $ $Date: 2002/02/14 07:04:01 $
  */
 
 public class Digester extends DefaultHandler {
@@ -306,13 +306,15 @@ public class Digester extends DefaultHandler {
     /**
      * The Log to which most logging calls will be made.
      */
-    protected Log log = LogSource.getInstance("org.apache.commons.digester.Digester");
+    protected Log log =
+        LogFactory.getLog("org.apache.commons.digester.Digester");
 
 
     /**
      * The Log to which all SAX event related logging calls will be made.
      */
-    private Log saxLog = LogSource.getInstance("org.apache.commons.digester.Digester.sax");
+    private Log saxLog =
+        LogFactory.getLog("org.apache.commons.digester.Digester.sax");
 
 
     // ----------------------------------------------------------- Properties
