@@ -146,6 +146,9 @@ package_version_minor=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $3}'`
 # "cache" the check for gcc -E
 
 AC_TRY_CPP()
+AC_LANG(C++)
+AC_TRY_CPP()
+AC_LANG(C)
 
 # Checks for required libraries
 AC_CHECK_LIB(m, floor)
@@ -227,6 +230,8 @@ esac
 
 # Check for Xerces using XERCESCROOT (override any system version)
 
+AC_LANG(C++)
+
 if test $XERCESCROOT; then
 
   OLDCPPFLAGS=$CPPFLAGS
@@ -266,6 +271,28 @@ if test -z $xerces_found ; then
     [AC_MSG_ERROR([Xerces 2.0 not found.  Ensure XERCESCROOT points to base directory of Xerces and Xerces 2.0 or later is available])])
 
 fi
+
+# Find out some properties of the version of Xerces we have
+
+AC_MSG_CHECKING([whether Xerces XMLFormatter requires a version])
+
+AC_TRY_COMPILE([#include <xercesc/framework/XMLFormatter.hpp>
+	#include <xercesc/util/XercesDefs.hpp>
+	#include <xercesc/util/XMLUniDefs.hpp>],
+	[using namespace XERCES_CPP_NAMESPACE;
+	  XMLCh s_encoding[] = {
+		chLatin_U, chLatin_T, chLatin_F, chDash, chDigit_8, chNull
+	  };
+	  XMLFormatter f(s_encoding,
+		NULL,
+		NULL, 
+		XMLFormatter::NoEscapes, 
+		XMLFormatter::UnRep_CharRef);
+	],
+	[AC_MSG_RESULT([yes])]
+	[AC_DEFINE(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)],
+	[AC_MSG_RESULT([no])])
+	
 
 # Now check for Xalan
 
@@ -307,6 +334,8 @@ else
   AC_DEFINE(XSEC_NO_XALAN)
 
 fi
+
+AC_LANG(C)
 
 # Check for OpenSSL
 if test $OPENSSL ; then

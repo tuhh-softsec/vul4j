@@ -81,6 +81,15 @@
 #undef XSEC_NO_XALAN
 
 /*
+ * Find out the idiosyncracies of the version of Xerces we are using
+ */
+
+/* 2.3 and above introduced a version parameter in the XMLFormatter ctor */
+
+#undef XSEC_XERCES_FORMATTER_REQUIRES_VERSION
+
+
+/*
  * Define presence of cryptographic providers
  */
 
