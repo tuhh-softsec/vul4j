@@ -151,8 +151,7 @@ void  XSECSafeBufferFormatter::formatBuf (
 
 XSECSafeBufferFormatter&  XSECSafeBufferFormatter::operator<< (const XMLCh *const toFormat) {
 
-	formatBuffer[0] = '\0';
-
+	sbf->reset();
 	*formatter << toFormat;
 
 	return *this;
@@ -162,6 +161,7 @@ XSECSafeBufferFormatter&  XSECSafeBufferFormatter::operator<< (const XMLCh *cons
 XSECSafeBufferFormatter&  
      XSECSafeBufferFormatter::operator<< (const XMLCh toFormat) {
 
+	sbf->reset();
 	*formatter << toFormat;
 	return *this;
 
@@ -209,29 +209,3 @@ safeBuffer& operator<< (safeBuffer &to, const XSECSafeBufferFormatter & from) {
 
 }
 
-/*
-
-XSECSafeBufferFormatter& XSECSafeBufferFormatter::operator<< (const DOMString &s) {
-
-	// Clear out buffer
-	formatBuffer[0] = '\0';
-
-    unsigned int lent = s.length();
-
-	if (lent <= 0)
-		lent = 0;
-
-    XMLCh*  buf = new XMLCh[lent + 1];
-    
-	if (lent > 0)
-		XMLString::copyNString(buf, s.rawBuffer(), lent);
-    
-	buf[lent] = 0;
-    *(this) << buf;
-
-    delete [] buf;
-
-    return *this;
-}
-
-*/

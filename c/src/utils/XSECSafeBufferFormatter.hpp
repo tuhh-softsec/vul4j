@@ -87,12 +87,10 @@ class sbFormatTarget : public XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatTarget
 {
 public:
     
-	safeBuffer * buffer;		// Buffer to write to
+	sbFormatTarget()  {m_offset = 0;}
+    ~sbFormatTarget() {}
 
-	sbFormatTarget()  {};
-    ~sbFormatTarget() {};
-
-	void setBuffer (safeBuffer * toSet) {buffer = toSet;};
+	void setBuffer (safeBuffer * toSet) {m_buffer = toSet;};
 
 
     // -----------------------------------------------------------------------
@@ -104,16 +102,21 @@ public:
                     const unsigned int    count,
                     XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter * const formatter)
     {
-         buffer->sbMemcpyIn((char *) toWrite, (int) count);
-		 buffer->setBufferType(safeBuffer::BUFFER_CHAR);
-		(*buffer)[count] = '\0';
+         m_buffer->sbMemcpyIn(m_offset, (char *) toWrite, (int) count);
+		 m_buffer->setBufferType(safeBuffer::BUFFER_CHAR);
+		 m_offset += count;
+		(*m_buffer)[m_offset] = '\0';
     };
+
+	void reset(void) {m_offset = 0;(*m_buffer)[0] = '\0';}
 
 private:
 
     sbFormatTarget(const sbFormatTarget& other);
     void operator=(const sbFormatTarget& rhs);
 
+	safeBuffer					* m_buffer;		// Buffer to write to
+	unsigned int				m_offset;
 	
 };
 
@@ -180,7 +183,6 @@ public:
 
 	XSECSafeBufferFormatter&  operator<< (const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::EscapeFlags newFlags); 
 	XSECSafeBufferFormatter&  operator<< (const XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter::UnRepFlags newFlags); 
-	//XSECSafeBufferFormatter& operator<<  (const DOMString &s);
 
 	// Friends for working with safestrings
 
@@ -192,6 +194,7 @@ private:
 
 	XSECSafeBufferFormatter() {};
 
+	
 };
 
 /** @} */

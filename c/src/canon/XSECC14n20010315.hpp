@@ -87,50 +87,7 @@
 XSEC_USING_XERCES(XMLFormatter);
 XSEC_USING_XERCES(XMLFormatTarget);
 
-// --------------------------------------------------------------------------------
-//           Object definitions needed for formatting Xerces objects
-// --------------------------------------------------------------------------------
-
-
-class c14nFormatTarget : public XMLFormatTarget
-{
-public:
-    
-	safeBuffer * buffer;		// Buffer to write to
-
-	c14nFormatTarget()  {};
-    ~c14nFormatTarget() {};
-
-	void setBuffer (safeBuffer * toSet) {buffer = toSet;};
-
-
-    // -----------------------------------------------------------------------
-    //  Implementations of the format target interface
-    // -----------------------------------------------------------------------
-
-    void writeChars(const   XMLByte* const  toWrite,
-                    const   unsigned int    count,
-                            XMLFormatter * const formatter)
-    {
-        // Surprisingly, Solaris was the only platform on which
-        // required the char* cast to print out the string correctly.
-        // Without the cast, it was pinting the pointer value in hex.
-        // Quite annoying, considering every other platform printed
-        // the string with the explicit cast to char* below.
-        buffer->sbMemcpyIn((char *) toWrite, (int) count);
-		(*buffer)[count] = '\0';
-		buffer->setBufferType(safeBuffer::BUFFER_CHAR);
-    };
-
-private:
-    // -----------------------------------------------------------------------
-    //  Unimplemented methods.
-    // -----------------------------------------------------------------------
-    c14nFormatTarget(const c14nFormatTarget& other);
-    void operator=(const c14nFormatTarget& rhs);
-
-	
-};
+class XSECSafeBufferFormatter;
 
 // --------------------------------------------------------------------------------
 //           Simple structure for holding a list of nodes
@@ -215,9 +172,8 @@ private:
 								  XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *a);
 
 	// For formatting the buffers
-	c14nFormatTarget *c14ntarget;
-	XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter *formatter;
-	safeBuffer formatBuffer;
+	XSECSafeBufferFormatter		* mp_formatter;
+	safeBuffer					m_formatBuffer;
 
 	// For holding state whilst walking the DOM tree
 	XSECNodeListElt	* mp_attributes,				// Start of list

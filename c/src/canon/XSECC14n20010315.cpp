@@ -71,9 +71,10 @@
 
 //XSEC includes
 #include <xsec/framework/XSECDefs.hpp>
+#include <xsec/framework/XSECError.hpp>
 #include <xsec/canon/XSECC14n20010315.hpp>
-#include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+#include <xsec/utils/XSECSafeBufferFormatter.hpp>
 
 // Xerces includes
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
@@ -116,28 +117,6 @@ XALAN_USING_XALAN(XercesWrapperNavigator)
 // --------------------------------------------------------------------------------
 //           Some useful utilities
 // --------------------------------------------------------------------------------
-
-/*
-
-  Removed - During conversion to DOMNode * (Xerces 2.1) 
-
-XMLFormatter& operator<< (XMLFormatter& strm, const XMLCh *  s)
-{
-    unsigned int lent = s.length();
-
-	if (lent <= 0)
-		lent = 0;
-
-    XMLCh*  buf = new XMLCh[lent + 1];
-    if (lent > 0)
-		XMLString::copyNString(buf, s.rawBuffer(), lent);
-    buf[lent] = 0;
-    strm << buf;
-    delete [] buf;
-    return strm;
-}
-
-*/
 
 // Find a node in an XSECNodeList
 
@@ -354,17 +333,8 @@ void XSECC14n20010315::init() {
 
 	// Set up the Xerces formatter
 
-	c14ntarget = new c14nFormatTarget();
-	c14ntarget->setBuffer(&formatBuffer);
-
-#if defined(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)
-	formatter = new XMLFormatter("UTF-8", 0, c14ntarget, XMLFormatter::NoEscapes, 
-												XMLFormatter::UnRep_CharRef);
-#else
-	formatter = new XMLFormatter("UTF-8", c14ntarget, XMLFormatter::NoEscapes, 
-												XMLFormatter::UnRep_CharRef);
-#endif
-	formatBuffer.setBufferType(safeBuffer::BUFFER_CHAR);
+	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
+												XMLFormatter::UnRep_CharRef));
 
 	// Set up for first attribute list
 
@@ -411,11 +381,8 @@ XSECC14n20010315::XSECC14n20010315(DOMDocument *newDoc,
 
 XSECC14n20010315::~XSECC14n20010315() {
 
-	if (formatter != NULL)
-		delete formatter;
-
-	if (c14ntarget != NULL)
-		delete c14ntarget;
+	if (mp_formatter != NULL)
+		delete mp_formatter;
 
 	// Clear out the exclusive namespace list
 	int size = m_exclNSList.size();
@@ -756,10 +723,7 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 			processAsExclusive = m_exclusiveDefault;
 		}
 		else {
-			formatBuffer[0] = '\0';
-			*formatter << a->getLocalName();
-			localName.sbStrcpyIn(formatBuffer);
-
+			localName << (*mp_formatter << a->getLocalName());
 			processAsExclusive = !inNonExclNSList(localName);
 		}
 
@@ -772,9 +736,7 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 			return false;
 
 		// Is the name space visibly utilised?
-		formatBuffer[0] = '\0';
-		*formatter << a->getLocalName();
-		localName.sbStrcpyIn(formatBuffer);
+		localName << (*mp_formatter << a->getLocalName());
 
 		if (localName.sbStrcmp("xmlns") == 0)
 			localName[0] = '\0';			// Is this correct or should Xerces return "" for default?
@@ -893,7 +855,6 @@ int XSECC14n20010315::processNextNode() {
 	}
 
 	// Always zeroise buffers to make work simpler
-	formatBuffer[0] = '\0';
 	m_bufferLength = m_bufferPoint = 0;
 	m_buffer.sbStrcpyIn("");
 
@@ -966,15 +927,13 @@ int XSECC14n20010315::processNextNode() {
 			else
 				m_buffer.sbStrcpyIn("<?");
 			
-			*formatter << mp_nextNode->getNodeName();
-			m_buffer.sbStrcatIn(formatBuffer);
+			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeName());
+			m_buffer.sbStrcatIn(m_formatBuffer);
 			
-			//*formatter << mp_nextNode.getNodeValue();
-			formatBuffer[0] = '\0';
-			*formatter << ((DOMProcessingInstruction *) mp_nextNode)->getData();
-			if (formatBuffer.sbStrlen() > 0) {
+			m_formatBuffer << (*mp_formatter << ((DOMProcessingInstruction *) mp_nextNode)->getData());
+			if (m_formatBuffer.sbStrlen() > 0) {
 				m_buffer.sbStrcatIn(" ");
-				m_buffer.sbStrcatIn(formatBuffer);
+				m_buffer.sbStrcatIn(m_formatBuffer);
 			}
 			
 			m_buffer.sbStrcatIn("?>");
@@ -1005,11 +964,10 @@ int XSECC14n20010315::processNextNode() {
 			else
 				m_buffer.sbStrcpyIn("<!--");
 			
-			formatBuffer[0] = '\0';
-			*formatter << mp_nextNode->getNodeValue();
+			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeValue());
 
-			if (formatBuffer.sbStrlen() > 0) {
-				m_buffer.sbStrcatIn(formatBuffer);
+			if (m_formatBuffer.sbStrlen() > 0) {
+				m_buffer.sbStrcatIn(m_formatBuffer);
 			}
 			
 			m_buffer.sbStrcatIn("-->");
@@ -1030,11 +988,11 @@ int XSECC14n20010315::processNextNode() {
 	case DOMNode::TEXT_NODE : // Straight copy for now
 
 		if (processNode) {
-			*formatter << mp_nextNode->getNodeValue();
+			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeValue());
 
 			// Do c14n cleaning on the text string
 
-			m_buffer = c14nCleanText(formatBuffer);
+			m_buffer = c14nCleanText(m_formatBuffer);
 
 		}
 
@@ -1049,8 +1007,8 @@ int XSECC14n20010315::processNextNode() {
 		if (m_returnedFromChild) {
 			if (processNode) {		
 				m_buffer.sbStrcpyIn ("</");
-				*formatter << mp_nextNode->getNodeName();
-				m_buffer.sbStrcatIn(formatBuffer);
+				m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeName());
+				m_buffer.sbStrcatIn(m_formatBuffer);
 				m_buffer.sbStrcatIn(">");
 			}
 
@@ -1060,8 +1018,8 @@ int XSECC14n20010315::processNextNode() {
 		if (processNode) {	
 
 			m_buffer.sbStrcpyIn("<");
-			*formatter << mp_nextNode->getNodeName();
-			m_buffer.sbStrcatIn(formatBuffer);
+			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeName());
+			m_buffer.sbStrcatIn(m_formatBuffer);
 		}
 
 		// We now set up for attributes and name spaces
@@ -1089,13 +1047,8 @@ int XSECC14n20010315::processNextNode() {
 			for (i = 0; i < size; ++i) {
 
 				// Get the name and value of the attribute
-				formatBuffer[0] = '\0';
-				*formatter << tmpAtts->item(i)->getNodeName();
-				currentName.sbStrcpyIn(formatBuffer);
-
-				formatBuffer[0] = '\0';
-				*formatter << tmpAtts->item(i)->getNodeValue();
-				currentValue.sbStrcpyIn(formatBuffer);
+				currentName << (*mp_formatter << tmpAtts->item(i)->getNodeName());
+				currentValue << (*mp_formatter << tmpAtts->item(i)->getNodeValue());
 
 				// Build the string used to sort this node
 				
@@ -1112,9 +1065,9 @@ int XSECC14n20010315::processNextNode() {
 
 						// Add to the list
 				
-						*formatter << tmpAtts->item(i)->getNodeName();
-						if (formatBuffer[5] == ':')
-							currentName.sbStrcpyIn((char *) &formatBuffer[6]);
+						m_formatBuffer << (*mp_formatter << tmpAtts->item(i)->getNodeName());
+						if (m_formatBuffer[5] == ':')
+							currentName.sbStrcpyIn((char *) &m_formatBuffer[6]);
 						else
 							currentName.sbStrcpyIn("");
 				
@@ -1203,14 +1156,14 @@ int XSECC14n20010315::processNextNode() {
 							toIns->sortString.sbStrcatIn(NOURI_PREFIX);
 						}
 						else {
-							*formatter << nsURI;
+							m_formatBuffer << (*mp_formatter << nsURI);
 							toIns->sortString.sbStrcatIn(HAVEURI_PREFIX);
-							toIns->sortString.sbStrcatIn(formatBuffer);
+							toIns->sortString.sbStrcatIn(m_formatBuffer);
 						}
 
 						// Append the local name as the secondary key
-						*formatter << tmpAtts->item(i)->getLocalName();
-						toIns->sortString.sbStrcatIn(formatBuffer);
+						m_formatBuffer << (*mp_formatter << tmpAtts->item(i)->getLocalName());
+						toIns->sortString.sbStrcatIn(m_formatBuffer);
 
 						// Insert node
 						mp_attributes = insertNodeIntoList(mp_attributes, toIns);
@@ -1301,13 +1254,8 @@ int XSECC14n20010315::processNextNode() {
 
 				for (int i = 0; i < size; ++i) {
 
-					formatBuffer[0] = '\0';
-					*formatter << tmpAtts->item(i)->getNodeName();
-					currentName.sbStrcpyIn(formatBuffer);
-
-					formatBuffer[0] = '\0';
-					*formatter << tmpAtts->item(i)->getNodeValue();
-					currentValue.sbStrcpyIn(formatBuffer);
+					currentName << (*mp_formatter << tmpAtts->item(i)->getNodeName());
+					currentValue << (*mp_formatter << tmpAtts->item(i)->getNodeValue());
 
 					if ((currentName.sbStrcmp("xmlns") == 0) &&
 						(currentValue.sbStrcmp("") != 0) &&
@@ -1367,14 +1315,13 @@ int XSECC14n20010315::processNextNode() {
 
 		if (mp_nextNode != 0) {
 			
-			*formatter << mp_nextNode->getNodeName();
-			m_buffer.sbStrcatIn(formatBuffer);
+			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeName());
+			m_buffer.sbStrcatIn(m_formatBuffer);
 				
 			m_buffer.sbStrcatIn("=\"");
 				
-			formatBuffer[0] = '\0';
-			*formatter << mp_nextNode->getNodeValue();
-			sbWork = c14nCleanAttribute(formatBuffer);
+			m_formatBuffer << (*mp_formatter << mp_nextNode->getNodeValue());
+			sbWork = c14nCleanAttribute(m_formatBuffer);
 			m_buffer.sbStrcatIn(sbWork);
 				
 			m_buffer.sbStrcatIn("\"");
