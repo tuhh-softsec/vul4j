@@ -207,20 +207,6 @@ public class XMLX509SKI extends SignatureElementProxy
    }
 
    /**
-    * Method decode
-    *
-    * @param cert
-    * @throws XMLSecurityException
-    */
-   private void createSKIElementFromCert(X509Certificate cert)
-           throws XMLSecurityException {
-
-      byte[] abyte0 = XMLX509SKI.getSKIBytesFromCert(cert);
-
-      Base64.encodeToElement(this._doc, Constants._TAG_X509SKI, abyte0);
-   }
-
-   /**
     * Method equals
     *
     * @param obj
