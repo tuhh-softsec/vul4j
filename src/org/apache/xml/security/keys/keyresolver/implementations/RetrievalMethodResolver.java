@@ -224,7 +224,6 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
       try {
          RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
          Attr uri = rm.getURIAttr();
-         String type = rm.getType();
          Transforms transforms = rm.getTransforms();
 
          log.debug("Asked to resolve URI " + uri);
