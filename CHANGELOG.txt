@@ -8,6 +8,7 @@ New in v1.2.1-99
 	Removed the expandSystemId
 	Changed from Vector<String> to List<Class>, so we don't need to use classForName everytime and used it just the first time.
 	Removed PRNG,HexDump,Version, X509CertificateValidator
+	Added an unsync buffer outputstream.
 
 New in v1.2.1
  * Fix the memory leak when using xpath or using ResourceResolver and not hitting 
