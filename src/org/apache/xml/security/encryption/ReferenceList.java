@@ -192,8 +192,8 @@ public class ReferenceList {
         private String uri;
         private List referenceInformation;
 
-        ReferenceImpl(String uri) {
-            this.uri = uri;
+        ReferenceImpl(String _uri) {
+            this.uri = _uri;
             referenceInformation = new LinkedList();
         }
 
@@ -205,7 +205,8 @@ public class ReferenceList {
             return (referenceInformation.iterator());
         }
 
-        public void setURI(String uri) {
+        public void setURI(String _uri) {
+        	this.uri = _uri;
         }
 
         public void removeElementRetrievalInformation(Element node) {
