@@ -379,14 +379,10 @@
     <get dest="${lib.jce}" src="${jce.download}" usetimestamp="true" verbose="true"/>
   </target>
 
-  <taskdef classname="ant.Md5Task" classpath="." name="md5"/>
   <target depends="get-jce" description="This target checks that the digest values of the JCE library are valid" name="check-bc">
-      <md5 Md5="${jce.download.md5}" Sha1="${jce.download.sha1}" file="${lib.jce}"/>
       <!-- when ant 1.5 becomes widely available, maybe the core task "checksum" can make this easier -->
-      <!--
       <checksum file="${lib.jce}" property="${jce.download.md5}"  algorithm="md5" verifyProperty="md5OK" />
-      <checksum file="${lib.jce}" property="${jce.download.sha1}" algorithm="sha" verifyProperty="sha1OK" />
-      -->
+      <!--checksum file="${lib.jce}" property="${jce.download.sha1}" algorithm="sha" verifyProperty="sha1OK" / -->
   </target>
 
   <target depends="prepare-src, check-bc" name="compile.library">
@@ -422,20 +418,7 @@
     </javac>
   </target>
 
-  <target depends="compile.tests" description="Starts all JUnit test cases" if="junit.present" name="test">
-<!--     <java classname="junit.textui.TestRunner"
-           fork="yes"
-           taskname="junit"
-           failonerror="true">
-        <arg value="org.apache.xml.security.test.AllTests" />
-        <classpath refid="classpath.test" />
-     </java> -->
-     <java classname="org.apache.xml.security.test.AllTests" failonerror="true" fork="yes" taskname="junit">
-        <classpath refid="classpath.test"/>
-     </java>
-  </target>
-
-  <target depends="compile.tests" description="Starts all Junit tests with optional Ant" if="junit.present" name="test_junit">
+  <target depends="compile.tests" description="Starts all Junit tests with optional Ant" if="junit.present" name="test">
     <delete dir="${build.junit.xml}"/>
     <delete dir="${build.junit.html}"/>
     <mkdir dir="${build.junit.xml}"/>
@@ -459,6 +442,7 @@
     <available file="data/com/ibm/xss4j-20011029/enveloped-rsa.sig" property="ibm.available"/>
     <junit filtertrace="true" fork="true" printsummary="on">
        <jvmarg value="-Djava.compiler=NONE"/>
+       <sysproperty key="basedir" value="${basedir}"/>
        <classpath refid="classpath.test"/>
        <formatter type="xml"/>
        <batchtest fork="yes" todir="${build.junit.xml}">
