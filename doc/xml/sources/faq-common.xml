@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE faqs SYSTEM '../style/dtd/faqs.dtd'>
+<!DOCTYPE faqs SYSTEM "sbk:/style/dtd/faqs.dtd">
+
 <faqs title='Common Problems FAQs'>
  <faq title='Get some exception'>
   <q>

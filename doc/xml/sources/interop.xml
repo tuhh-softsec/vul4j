@@ -1,7 +1,6 @@
 <?xml version="1.0" standalone="no"?>
-<!DOCTYPE s1 SYSTEM "../style/dtd/document.dtd">
+<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
 
-<!-- <jump href=""></jump> -->
 <s1 title="Interoperability">
         <s2 title="Problems">
            <p>In Version v1.0.4, there is one test case which fails (interop test for exclusive c14n). This is related to very esoteric node sets (The Y4 test vector from <jump href="http://www.w3.org/Signature/2002/02/01-exc-c14n-interop.html">the interop matrix</jump>). </p>

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE book SYSTEM "../style/dtd/book.dtd">
+<!DOCTYPE book SYSTEM "sbk:/style/dtd/book.dtd">
+
 <book title="XML-Security Documentation" 
       copyright="2001 The Apache Software Foundation">
   <resources source="sbk:/sources/resources.xml"/>
@@ -9,11 +10,22 @@
   <document label="Readme"       
             id="index"
             source="readme.xml" />
+
+
   <faqs     label='FAQs'
             title='Frequently Asked Questions' 
             id='faqs'
             source='faq.xml'>
   </faqs>
+  <!-- 
+  <group    label="FAQs"
+            id="faqs"
+            title="Frequently Asked Questions">
+    <entry  id="faq-resolvers"
+            source="faq-resolvers.xml" />
+  </group>
+  -->
+
   <external label="Download"
             href="http://xml.apache.org/security/dist/" />
   <external label="Repository"
@@ -27,14 +39,6 @@
   <document label="Interoperability" 
             id="interop"     
             source="interop.xml" />
-  <!-- 
-  <group    label="FAQs"
-            id="faqs"
-            title="Frequently Asked Questions">
-    <entry  id="faq-resolvers"
-            source="faq-resolvers.xml" />
-  </group>
-  -->
   <separator />
   <document label="API Docs"     
             id="api"         

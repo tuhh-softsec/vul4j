@@ -1,19 +1,16 @@
 <?xml version="1.0" standalone="no"?>
-<!DOCTYPE s1 SYSTEM "../style/dtd/document.dtd">
+<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
 
 <s1 title="API Documentation">
-    <s2 title="Javadoc Generated Documentation">
-        <p>&packagenamelong; comes packaged with API documentation.</p>
-        <p>This documentation is generated automatically from the Javadoc-style 
-        comments inside the source files.  Click on one of the links below to 
-        go to the appropriate API documentation.</p>
-    </s2>
-    <s2 title="&packagename; API Documentation">
-        <ul>
-            <li><jump href="api/index.html">Full API documentation</jump></li>
-            <li><jump href="api/overview-tree.html">Hierarchy for all the packages</jump></li>
-            <li>If the above documentation is outdated, an always-fresh copy can be found 
-            <jump href="http://nagoya.apache.org/gump/javadoc/xml-security/build/doc/html/api/index.html">here</jump></li>
-        </ul>
+  <s2 title="Javadoc Generated Documentation">
+    <p>&packagenamelong; comes packaged with API documentation.</p>
+    <p>This documentation is generated automatically from the Javadoc-style comments inside the source files.  Click on one of the links below to go to the appropriate API documentation.</p>
+  </s2>
+  <s2 title="&packagename; API Documentation">
+    <ul>
+      <li><jump href="api/index.html">Full API documentation</jump></li>
+      <li><jump href="api/overview-tree.html">Hierarchy for all the packages</jump></li>
+      <li>If the above documentation is outdated, an always-fresh copy can be found <jump href="http://nagoya.apache.org/gump/javadoc/xml-security/build/doc/html/api/index.html">here</jump></li>
+    </ul>
   </s2>
 </s1>

@@ -1,181 +1,110 @@
-<?xml version="1.0" standalone="no"?> 
-<!DOCTYPE faqs SYSTEM "../style/dtd/faqs.dtd">
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE faqs SYSTEM "sbk:/style/dtd/faqs.dtd">
 
 <faqs title="Frequently asked questions">
-
-  <faq>
-    <q>Where's the archive for this list?</q>
-    <a>
-      <p>A very good question! Currently, <resource-ref
-	  idref="mail-arch-gmane"/> is archiving the mailing list. This service
-	also makes the mailinglist reachable with a news reader.</p>
-      <p>If this service ever fails/stops, you can still use the ezmlm mailing
-	list controller to recieve previous messages by email. Send an empty
-	email to <human-resource-ref idref="mailhelp"/> for detailed information on
-	how to use this service  </p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>Where can I learn about XML?</q>
-    <a>
-      <p>There are plenty of resources on the web, just use any search
-	engine. You might start at <resource-ref idref="xmlfaq"/> or
-	<resource-ref idref="zvon"/>.</p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>Where can I learn about XML Digital Signatures?</q>
-    <a>
-      <p>The best place to start is <resource-ref idref="xmldsig"/>. Links on
-	XML security in general can be found on <resource-ref
-	  idref="christ-page"/>.</p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>Where can I learn about XML Encryption?</q>
-    <a>
-      <p>The best place to start is <resource-ref idref="xmlenc"/>. Links on
-	XML security in general can be found on <resource-ref
-	  idref="christ-page"/></p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>Where can I learn about Cryptography in general?</q>
-    <a>
-      <p>A lot of resources exist on the web, including the 'green bible' for
-	cryptography: <resource-ref idref="hac"/>. The &hac; is completely
-	online and it should satisfy most of your cryptographic
-	hunger. Disadvantage of it is that it goes rather deep, so it isn't a
-	executive overview or a &quot;Learn XYZ in 21 days&quot;-book</p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>I have a Java-(security/cryptography) problem. Can you help me?</q>
-    <a>
-      <p>Go to the <resource-ref idref="javaforum"/> of Sun. You can find
-	forums where you can ask questions like &quot;How do I generate a
-	keypair&quot;, etc.</p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>I have a Java-XML problem.</q>
-    <a>
-      <p>Go to the <resource-ref idref="javaforum"/> of Sun, section Java
-	Technology &amp; XML and have a look at <resource-ref idref="xml4j-used"/>.</p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>I'm using crimson</q>
-    <a>
-      <p>You shouldn't; some people had problems with it. Use 
-	<resource-ref idref="xml4j-used"/> instead.</p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>I'm using JDK1.4.0</q>
-    <a>
-      <p>After SUN released the 
-	<jump href="http://java.sun.com/j2se/1.4/index.html">
-	  Java (TM) 2 Platform Standard Edition v1.4.0
-	</jump>, the xml-security package stopped working. This is a 
-	<jump href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html">
-	  known
-	</jump> problem: SUN packaged a beta of Xalan into the JDK1.4.0, but
-	the xml-security package requires a stable version of Xalan (v2.2.0 or
-	later). To fix the problem, you have to put the xalan.jar into a
-	special directory in your JDK:
-	<code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code>. If you installed an
-	out-of-the-box JDK1.4 (e.g. on Windows 2000), the &quot;endorsed&quot;
-	directory does not exist: you'll have to create it by hand. 
-	<em>Putting this JAR to another location like lib/ext WILL NOT
-	  WORK.</em>
-      </p>
-      <p>For more on that, you can also check the 
-	<jump href="http://xml.apache.org/~edwingo/jaxp-faq.html#override">
-	  Unofficial JAXP FAQ
-	</jump>.
-      </p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>What's up with the Bouncy Castle CSP? / Where is my CSP?</q>
-    <a>
-      <p>There is <em>no</em> JCE bundled together with this distribution. This
-	is because the Apache Project is hosted in the US where some export
-	restrictions apply to the cryptographic primitives. 
-      </p>
-      <p>The nice guys from the 
-	<jump href="http://www.bouncycastle.org/">Legion of Bouncy
-	  Castle</jump> where so helpful to supply the JAR that you need to
-	create HMAC integrity checks on their web site. When you use the ant
-	makefile <code>build.xml</code> and simply say <code>ant compile</code>
-	or <code>ant get-jce</code>, <code>ant</code> tries to fetch this JAR
-	from the australian server. After that step, the compilation works
-	completely. 
-      </p>
-      <p>The ant make tools initiates an automated download of the BouncyCastle
-	JCE. The file is downloaded into the <code>libs/</code> directory and a
-	&quot;bc-&quot; is prepended to the filename. This is done because we
-	want the provider name (bc means BouncyCastle) being visible in the
-	JAR's filename. </p>
-      <p>More information can be found in the Installation section.</p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>How do I enable/turn off logging?</q>
-    <a>
-      <p>2BDone</p>
-    </a>
-  </faq>
-
-  <faq>
-    <q>How do I use the package to generate and verify a signature?</q>
-    <a>
-      <p>Checkout the samples in
-	<code>src_samples/org/apache/xml/security/samples/signature/</code>.
-      </p>
-      <note>The samples divide into two groups: Samples that <em>create</em>
-	and samples that <em>verify</em> Signatures. Eventually, you should
-	adjust the verifying program to another filename if you get
-	<code>FileNotFoundException</code>s.</note>
-    </a>
-  </faq>
-
-  <faq>
-    <q>What is the meaning of BaseURI?</q>
-    <a>
-      <p>The String BaseURI is the systemID on which the Object will be stored
-	in the future. This is needed to resolve relative links in the
-	<code>Reference</code> elements which point to the filesystem or
-	something similar.
-      </p>
-      <p>Example: Imagine that you want to create a signature to store it on a web server as 
-         <code>http://www.acme.com/signatures/sig1.xml</code>. So
-	<code>BaseURI=&quot;http://www.acme.com/sig1.xml&quot;</code>. This
-	means that if you create a <code>Reference</code> with
-	<code>URI=&quot;../index.html&quot;</code>, the library can easily use
-	it's HTTPResourceResolver to fetch
-	<code>http://www.acme.com/index.html</code> without that you have to
-	say <code>URI=&quot;http://www.acme.com/index.html&quot;</code>.
-      </p>
-    </a>
-  </faq>
-
-  <faq>
-    <q></q>
-    <a>
-      <p></p>
-    </a>
-  </faq>
+	<faq>
+		<q>Where's the archive for this list?</q>
+		<a>
+			<p>A very good question! Currently, <resource-ref idref="mail-arch-gmane"/> is archiving the mailing list. This service also makes the mailinglist reachable with a news reader.</p>
+			<p>If this service ever fails/stops, you can still use the ezmlm mailing list controller to recieve previous messages by email. Send an empty email to <human-resource-ref idref="mailhelp"/> for detailed information on how to use this service </p>
+		</a>
+	</faq>
+	<faq>
+		<q>Where can I learn about XML?</q>
+		<a>
+			<p>There are plenty of resources on the web, just use any search engine. You might start at <resource-ref idref="xmlfaq"/> or <resource-ref idref="zvon"/>.</p>
+		</a>
+	</faq>
+	<faq>
+		<q>Where can I learn about XML Digital Signatures?</q>
+		<a>
+			<p>The best place to start is <resource-ref idref="xmldsig"/>. Links on XML security in general can be found on <resource-ref idref="christ-page"/>.</p>
+		</a>
+	</faq>
+	<faq>
+		<q>Where can I learn about XML Encryption?</q>
+		<a>
+			<p>The best place to start is <resource-ref idref="xmlenc"/>. Links on XML security in general can be found on <resource-ref idref="christ-page"/>
+			</p>
+		</a>
+	</faq>
+	<faq>
+		<q>Where can I learn about Cryptography in general?</q>
+		<a>
+			<p>A lot of resources exist on the web, including the 'green bible' for cryptography: <resource-ref idref="hac"/>. The &hac; is completely online and it should satisfy most of your cryptographic hunger. Disadvantage of it is that it goes rather deep, so it isn't a executive overview or a &quot;Learn XYZ in 21 days&quot;-book</p>
+		</a>
+	</faq>
+	<faq>
+		<q>I have a Java-(security/cryptography) problem. Can you help me?</q>
+		<a>
+			<p>Go to the <resource-ref idref="javaforum"/> of Sun. You can find forums where you can ask questions like &quot;How do I generate a keypair&quot;, etc.</p>
+		</a>
+	</faq>
+	<faq>
+		<q>I have a Java-XML problem.</q>
+		<a>
+			<p>Go to the <resource-ref idref="javaforum"/> of Sun, section Java Technology &amp; XML and have a look at <resource-ref idref="xml4j-used"/>.</p>
+		</a>
+	</faq>
+	<faq>
+		<q>I'm using crimson</q>
+		<a>
+			<p>You shouldn't; some people had problems with it. Use  <resource-ref idref="xml4j-used"/> instead.</p>
+		</a>
+	</faq>
+	<faq>
+		<q>I'm using JDK1.4.0</q>
+		<a>
+			<p>After SUN released the  <jump href="http://java.sun.com/j2se/1.4/index.html"> Java (TM) 2 Platform Standard Edition v1.4.0 </jump>, the xml-security package stopped working. This is a  <jump href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html"> known </jump> problem: SUN packaged a beta of Xalan into the JDK1.4.0, but the xml-security package requires a stable version of Xalan (v2.2.0 or later). To fix the problem, you have to put the xalan.jar into a special directory in your JDK: <code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code>. If you installed an out-of-the-box JDK1.4 (e.g. on Windows 2000), the &quot;endorsed&quot; directory does not exist: you'll have to create it by hand.  <em>Putting this JAR to another location like lib/ext WILL NOT WORK.</em>
+			</p>
+			<p>For more on that, you can also check the  <jump href="http://xml.apache.org/~edwingo/jaxp-faq.html#override"> Unofficial JAXP FAQ </jump>. </p>
+		</a>
+	</faq>
+	<faq>
+		<q>What's up with the Bouncy Castle CSP? / Where is my CSP?</q>
+		<a>
+			<p>There is <em>no</em> JCE bundled together with this distribution. This is because the Apache Project is hosted in the US where some export restrictions apply to the cryptographic primitives. </p>
+			<p>The nice guys from the <jump href="http://www.bouncycastle.org/">Legion of Bouncy Castle</jump> where so helpful to supply the JAR that you need to create HMAC integrity checks on their web site. When you use the ant makefile <code>build.xml</code> and simply say <code>ant compile</code> or <code>ant get-jce</code>, <code>ant</code> tries to fetch this JAR from the australian server. After that step, the compilation works completely.  </p>
+			<p>The ant make tools initiates an automated download of the BouncyCastle JCE. The file is downloaded into the <code>libs/</code> directory and a &quot;bc-&quot; is prepended to the filename. This is done because we want the provider name (bc means BouncyCastle) being visible in the JAR's filename. </p>
+			<p>More information can be found in the Installation section.</p>
+		</a>
+	</faq>
+	<faq>
+		<q>How do I enable/turn off logging?</q>
+		<a>
+			<p>2BDone</p>
+		</a>
+	</faq>
+	<faq>
+		<q>How do I use the package to generate and verify a signature?</q>
+		<a>
+			<p>Checkout the samples in <code>src_samples/org/apache/xml/security/samples/signature/</code>. </p>
+			<note>The samples divide into two groups: Samples that <em>create</em> and samples that <em>verify</em> Signatures. Eventually, you should adjust the verifying program to another filename if you get <code>FileNotFoundException</code>s.</note>
+		</a>
+	</faq>
+	<faq>
+		<q>What is the meaning of BaseURI?</q>
+		<a>
+			<p>When you work with URIs like &quot;<code>http://www.example.com/index.html</code>&quot;, it is quite sure what you mean as this is an absolute URL, i.e. it is clear which protocol ise used to fetch which file from which server. When you use such a URL inside a signature, the software can automatically figure out what you sign. But when you sign something in your local file system or if you use a relative path like &quot;<code>../1.txt</code>&quot;, it's not possible to understand this reference without some context. <em>This</em> context is the <code>BaseURI</code>. For instance, if you sign <code>URI=&quot;../1.txt&quot;</code> and the <code>BaseURI=&quot;file:///home/user/work/signature.xml&quot;</code>, it is clear that the file <code>BaseURI=&quot;file:///home/user/1.txt&quot;</code> is to be signed. But when you create the signature, the file <code>BaseURI=&quot;file:///home/user/work/signature.xml&quot;</code> does not yet exist; therefore, you have to supply the URL where you intend to store the signature later (relative to the signed objects). </p>
+			
+			
+			
+			<p>The String BaseURI is the systemID on which the Object will be stored in the future. This is needed to resolve relative links in the <code>Reference</code> elements which point to the filesystem or something similar. </p>
+			<p>Example: Imagine that you want to create a signature to store it on a web server as  <code>http://www.acme.com/signatures/sig1.xml</code>. So <code>BaseURI=&quot;http://www.acme.com/sig1.xml&quot;</code>. This means that if you create a <code>Reference</code> with <code>URI=&quot;../index.html&quot;</code>, the library can easily use it's HTTPResourceResolver to fetch <code>http://www.acme.com/index.html</code> without that you have to say <code>URI=&quot;http://www.acme.com/index.html&quot;</code>. </p>
+		</a>
+	</faq>
+	<faq>
+		<q>Some unit tests fail: <code>org.apache.xml.security.test.c14n.implementations.ExclusiveC14NInterop.test_Y4: junit.framework.AssertionFailedError: 8 26</code></q>
+		<a>
+			<p>The above message states that the references nr. 8 and 26 do fail. This is because you're using a buggy version of Xalan. These references contain the XPath expression</p>
+			<p><code>((count(ancestor-or-self::node()) mod 2) = 1)))</code></p>
+			<p>in the XPath. If you have a look at <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=9575">Bugzilla Bug 9575, count() returns wrong value on ancestor-or-self::node()</jump>, you see the bug report. Committed to CVS on 2002-07-25. Guess your Xalan is from before that date.</p>
+		</a>
+	</faq>
+	<!-- TEMPLATE -->
+	<!-- 
+<faq>
+  <q></q> <a> <p></p> </a> </faq>
+-->
 </faqs>
 
