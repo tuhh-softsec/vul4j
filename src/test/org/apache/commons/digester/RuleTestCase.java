@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.1 2001/08/20 21:59:43 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/08/20 21:59:43 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.2 2001/08/20 22:06:23 craigmcc Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/08/20 22:06:23 $
  *
  * ====================================================================
  *
@@ -76,7 +76,7 @@ import junit.framework.TestSuite;
  * XML documents to exercise the built-in rules.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/08/20 21:59:43 $
+ * @version $Revision: 1.2 $ $Date: 2001/08/20 22:06:23 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -233,13 +233,51 @@ public class RuleTestCase extends TestCase {
         digester.addSetNext("employee/address",
                             "addAddress");
 
-        // Parse our test input.
+        // Parse our test input once
         Object root = null;
         try {
             root = digester.parse(getInputStream("Test1.xml"));
         } catch (Throwable t) {
             fail("Digester threw IOException: " + t);
         }
+        validateObjectCreate3(root);
+
+        // Parse the same input again
+        try {
+            root = digester.parse(getInputStream("Test1.xml"));
+        } catch (Throwable t) {
+            fail("Digester threw IOException: " + t);
+        }
+        validateObjectCreate3(root);
+
+    }
+
+
+    // ------------------------------------------------ Utility Support Methods
+
+
+    /**
+     * Return an appropriate InputStream for the specified test file (which
+     * must be inside our current package.
+     *
+     * @param name Name of the test file we want
+     *
+     * @exception IOException if an input/output error occurs
+     */
+    protected InputStream getInputStream(String name) throws IOException {
+
+        return (this.getClass().getResourceAsStream
+                ("/org/apache/commons/digester/" + name));
+
+    }
+
+
+    /**
+     * Validate the assertions for ObjectCreateRule3.
+     *
+     * @param object Root object returned by <code>digester.parse()</code>
+     */
+    protected void validateObjectCreate3(Object root) {
 
         // Validate the retrieved Employee
         assertNotNull("Digester returned an object", root);
@@ -276,25 +314,6 @@ public class RuleTestCase extends TestCase {
                      office.getState());
         assertEquals("Office zip", "OfZip",
                      office.getZipCode());
-
-    }
-
-
-    // ------------------------------------------------ Utility Support Methods
-
-
-    /**
-     * Return an appropriate InputStream for the specified test file (which
-     * must be inside our current package.
-     *
-     * @param name Name of the test file we want
-     *
-     * @exception IOException if an input/output error occurs
-     */
-    protected InputStream getInputStream(String name) throws IOException {
-
-        return (this.getClass().getResourceAsStream
-                ("/org/apache/commons/digester/" + name));
 
     }
 
