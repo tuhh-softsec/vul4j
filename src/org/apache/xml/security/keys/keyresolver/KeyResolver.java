@@ -21,6 +21,7 @@ package org.apache.xml.security.keys.keyresolver;
 
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.Vector;
 
 import javax.crypto.SecretKey;
@@ -47,7 +48,7 @@ public class KeyResolver {
    static boolean _alreadyInitialized = false;
 
    /** Field _resolverVector */
-   static Vector _resolverVector = null;
+   static List _resolverVector = null;
 
    /** Field _resolverSpi */
    protected KeyResolverSpi _resolverSpi = null;
@@ -88,13 +89,9 @@ public class KeyResolver {
     */
    public static KeyResolver item(int i) throws KeyResolverException {
 
-      String currentClass = (String) KeyResolver._resolverVector.elementAt(i);
-      KeyResolver resolver = null;
-
-      try {
-         resolver = new KeyResolver(currentClass);
-      } catch (Exception e) {
-         throw new KeyResolverException("utils.resolver.noClass", e);
+	   KeyResolver resolver = (KeyResolver) KeyResolver._resolverVector.get(i);
+      if (resolver==null) {
+         throw new KeyResolverException("utils.resolver.noClass");
       }
 
       return resolver;
@@ -115,26 +112,22 @@ public class KeyResolver {
               throws KeyResolverException {
 
       for (int i = 0; i < KeyResolver._resolverVector.size(); i++) {
-         String currentClass =
-            (String) KeyResolver._resolverVector.elementAt(i);
-         KeyResolver resolver = null;
+		  KeyResolver resolver=
+            (KeyResolver) KeyResolver._resolverVector.get(i);
 
-         try {
-            resolver = new KeyResolver(currentClass);
-         } catch (Exception e) {
+		  if (resolver==null) {
             Object exArgs[] = {
                (((element != null)
                  && (element.getNodeType() == Node.ELEMENT_NODE))
                 ? element.getTagName()
                 : "null") };
 
-            throw new KeyResolverException("utils.resolver.noClass", exArgs, e);
+            throw new KeyResolverException("utils.resolver.noClass", exArgs);
          }
          if (log.isDebugEnabled())
-         	log.debug("check resolvability by class " + currentClass);
+         	log.debug("check resolvability by class " + resolver.getClass());
 
-         if ((resolver != null)
-                 && resolver.canResolve(element, BaseURI, storage)) {
+         if (resolver.canResolve(element, BaseURI, storage)) {
             return resolver;
          }
       }
@@ -166,9 +159,12 @@ public class KeyResolver {
     * {@link org.apache.xml.security.keys.KeyInfo#registerInternalKeyResolver}.
     *
     * @param className
+ * @throws InstantiationException 
+ * @throws IllegalAccessException 
+ * @throws ClassNotFoundException 
     */
-   public static void register(String className) {
-      KeyResolver._resolverVector.add(className);
+   public static void register(String className) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+      KeyResolver._resolverVector.add(new KeyResolver(className));
    }
 
    /**

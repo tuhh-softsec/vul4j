@@ -21,8 +21,9 @@ package org.apache.xml.security.keys.storage;
 
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import org.apache.xml.security.keys.storage.implementations.KeyStoreResolver;
 import org.apache.xml.security.keys.storage.implementations.SingleCertificateResolver;
@@ -40,7 +41,7 @@ public class StorageResolver {
         org.apache.commons.logging.LogFactory.getLog(StorageResolver.class.getName());
 
    /** Field _storageResolvers */
-   Vector _storageResolvers = new Vector();
+   List _storageResolvers = new ArrayList();
 
    /** Field _iterator */
    Iterator _iterator = null;
@@ -121,7 +122,7 @@ public class StorageResolver {
    public Iterator getIterator() {
 
       if (this._iterator == null) {
-         this._iterator = new StorageResolverIterator(this._storageResolvers);
+         this._iterator = new StorageResolverIterator(this._storageResolvers.iterator());
       }
 
       return this._iterator;
@@ -135,7 +136,7 @@ public class StorageResolver {
    public boolean hasNext() {
 
       if (this._iterator == null) {
-         this._iterator = new StorageResolverIterator(this._storageResolvers);
+         this._iterator = new StorageResolverIterator(this._storageResolvers.iterator());
       }
 
       return this._iterator.hasNext();
@@ -159,7 +160,7 @@ public class StorageResolver {
    class StorageResolverIterator implements Iterator {
 
       /** Field _resolvers */
-      Vector _resolvers = null;
+	   Iterator _resolvers = null;
 
       /** Field _currentResolver */
       int _currentResolver = 0;
@@ -169,59 +170,18 @@ public class StorageResolver {
        *
        * @param resolvers
        */
-      public StorageResolverIterator(Vector resolvers) {
+      public StorageResolverIterator(Iterator resolvers) {
          this._resolvers = resolvers;
-         this._currentResolver = 0;
       }
 
       /** @inheritDoc */
       public boolean hasNext() {
-
-         if (this._resolvers == null) {
-            return false;
-         }
-
-         while (this._currentResolver < this._resolvers.size()) {
-            StorageResolverSpi current =
-               (StorageResolverSpi) this._resolvers
-                  .elementAt(this._currentResolver);
-
-            if (current == null) {
-               continue;
-            }
-
-            if (current.getIterator().hasNext()) {
-               return true;
-            } 
-            this._currentResolver++;            
-         }
-
-         return false;
+		  return _resolvers.hasNext();
       }
 
       /** @inheritDoc */
       public Object next() {
-
-         if (this._resolvers == null) {
-            return null;
-         }
-
-         while (this._currentResolver < this._resolvers.size()) {
-            StorageResolverSpi current =
-               (StorageResolverSpi) this._resolvers
-                  .elementAt(this._currentResolver);
-
-            if (current == null) {
-               continue;
-            }
-
-            if (current.getIterator().hasNext()) {
-               return current.getIterator().next();
-            }
-            this._currentResolver++;           
-         }
-
-         return null;
+		  return _resolvers.next();
       }
 
       /**

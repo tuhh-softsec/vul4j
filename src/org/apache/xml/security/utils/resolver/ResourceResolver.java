@@ -19,6 +19,8 @@ package org.apache.xml.security.utils.resolver;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -56,10 +58,10 @@ public class ResourceResolver {
    static boolean _alreadyInitialized = false;
 
    /** these are the system-wide resolvers */
-   static Vector _resolverVector = null;
+   static List _resolverVector = null;
 
    /** Field _individualResolverVector */
-   Vector _individualResolverVector = null;
+   List _individualResolverVector = null;
 
    /** Field transformSpi */
    protected ResourceResolverSpi _resolverSpi = null;
@@ -99,25 +101,14 @@ public class ResourceResolver {
     */
    public static final ResourceResolver getInstance(Attr uri, String BaseURI)
            throws ResourceResolverException {
-
-      for (int i = 0; i < ResourceResolver._resolverVector.size(); i++) {
-         String currentClass =
-            (String) ResourceResolver._resolverVector.elementAt(i);
-         ResourceResolver resolver = null;
-
-         try {
-            resolver = new ResourceResolver(currentClass);
-         } catch (Exception e) {
-            Object exArgs[] = { ((uri != null)
-                                 ? uri.getNodeValue()
-                                 : "null"), BaseURI };
-
-            throw new ResourceResolverException("utils.resolver.noClass",
-                                                exArgs, e, uri, BaseURI);
-         }
+      int length=ResourceResolver._resolverVector.size();
+      for (int i = 0; i < length; i++) {
+		  ResourceResolver resolver =
+            (ResourceResolver) ResourceResolver._resolverVector.get(i);
+         
 
          if (log.isDebugEnabled())
-         	log.debug("check resolvability by class " + currentClass);
+         	log.debug("check resolvability by class " + resolver.getClass().getName());
 
          if ((resolver != null) && resolver.canResolve(uri, BaseURI)) {
             return resolver;
@@ -131,7 +122,6 @@ public class ResourceResolver {
       throw new ResourceResolverException("utils.resolver.noClass", exArgs,
                                           uri, BaseURI);
    }
-
    /**
     * Method getInstance
     *
@@ -151,8 +141,9 @@ public class ResourceResolver {
       }
 
       // first check the individual Resolvers
-      if ((individualResolvers != null) && (individualResolvers.size() > 0)) {
-         for (int i = 0; i < individualResolvers.size(); i++) {
+	  int size=0;
+      if ((individualResolvers != null) && ((size=individualResolvers.size()) > 0)) {
+         for (int i = 0; i < size; i++) {
             ResourceResolver resolver =
                (ResourceResolver) individualResolvers.elementAt(i);
 
@@ -168,35 +159,7 @@ public class ResourceResolver {
          }
       }
 
-      for (int i = 0; i < ResourceResolver._resolverVector.size(); i++) {
-         String currentClass =
-            (String) ResourceResolver._resolverVector.elementAt(i);
-         ResourceResolver resolver = null;
-
-         try {
-            resolver = new ResourceResolver(currentClass);
-         } catch (Exception e) {
-            Object exArgs[] = { ((uri != null)
-                                 ? uri.getNodeValue()
-                                 : "null"), BaseURI };
-
-            throw new ResourceResolverException("utils.resolver.noClass",
-                                                exArgs, e, uri, BaseURI);
-         }
-         if (log.isDebugEnabled())
-         	log.debug("check resolvability by class " + currentClass);
-
-         if ((resolver != null) && resolver.canResolve(uri, BaseURI)) {
-            return resolver;
-         }
-      }
-
-      Object exArgs[] = { ((uri != null)
-                           ? uri.getNodeValue()
-                           : "null"), BaseURI };
-
-      throw new ResourceResolverException("utils.resolver.noClass", exArgs,
-                                          uri, BaseURI);
+	  return getInstance(uri,BaseURI);
    }
 
    /**
@@ -205,7 +168,7 @@ public class ResourceResolver {
    public static void init() {
 
       if (!ResourceResolver._alreadyInitialized) {
-         ResourceResolver._resolverVector = new Vector(10);
+         ResourceResolver._resolverVector = new ArrayList(10);
          _alreadyInitialized = true;
       }
    }
@@ -216,7 +179,23 @@ public class ResourceResolver {
     * @param className
     */
    public static void register(String className) {
-      ResourceResolver._resolverVector.add(className);
+	    ResourceResolver resolver = null;
+
+        try {
+           resolver = new ResourceResolver(className);
+		   ResourceResolver._resolverVector.add(resolver);
+        } catch (Exception e) {
+//			Object exArgs[] = { ((uri != null)
+//                    ? uri.getNodeValue()
+//                    : "null"), BaseURI };
+//
+//			throw new ResourceResolverException("utils.resolver.noClass",
+//                                   exArgs, e, uri, BaseURI);
+			log.warn("Error loading resolver " + className +" disabling it");
+        } catch (NoClassDefFoundError e) {
+			log.warn("Error loading resolver " + className +" disabling it");
+        }
+      
    }
 
    /**

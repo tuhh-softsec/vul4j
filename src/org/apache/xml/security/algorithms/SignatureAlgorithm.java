@@ -63,21 +63,15 @@ public class SignatureAlgorithm extends Algorithm {
       super(doc, algorithmURI);
 
       try {
-         String implementingClass =
+         Class implementingClass =
             SignatureAlgorithm.getImplementingClass(algorithmURI);
          if (log.isDebugEnabled())
          	log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
 
          this._signatureAlgorithm =
-            (SignatureAlgorithmSpi) Class.forName(implementingClass)
-               .newInstance();
-      } catch (ClassNotFoundException ex) {
-         Object exArgs[] = { algorithmURI, ex.getMessage() };
-
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
-                                         ex);
-      } catch (IllegalAccessException ex) {
+            (SignatureAlgorithmSpi) implementingClass.newInstance();
+      }  catch (IllegalAccessException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
@@ -129,24 +123,18 @@ public class SignatureAlgorithm extends Algorithm {
       String algorithmURI = this.getURI();
 
       try {
-         String implementingClass =
+         Class implementingClass =
             SignatureAlgorithm.getImplementingClass(algorithmURI);
          if (log.isDebugEnabled())
          	log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
 
          this._signatureAlgorithm =
-            (SignatureAlgorithmSpi) Class.forName(implementingClass)
-               .newInstance();
+            (SignatureAlgorithmSpi) implementingClass.newInstance();
 
          this._signatureAlgorithm
             .engineGetContextFromElement(this._constructionElement);
-      } catch (ClassNotFoundException ex) {
-         Object exArgs[] = { algorithmURI, ex.getMessage() };
-
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
-                                         ex);
-      } catch (IllegalAccessException ex) {
+      }  catch (IllegalAccessException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
@@ -343,24 +331,39 @@ public class SignatureAlgorithm extends Algorithm {
     * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI is already registered
     */
    public static void register(String algorithmURI, String implementingClass)
-           throws AlgorithmAlreadyRegisteredException {
+           throws AlgorithmAlreadyRegisteredException,XMLSignatureException {
 
       {
          if (log.isDebugEnabled())
          	log.debug("Try to register " + algorithmURI + " " + implementingClass);
 
          // are we already registered?
-         String registeredClass =
+         Class registeredClassClass =
             SignatureAlgorithm.getImplementingClass(algorithmURI);
+		 if (registeredClassClass!=null) {
+			 String registeredClass = registeredClassClass.getName();
 
-         if ((registeredClass != null) && (registeredClass.length() != 0)) {
-            Object exArgs[] = { algorithmURI, registeredClass };
+			 if ((registeredClass != null) && (registeredClass.length() != 0)) {
+				 Object exArgs[] = { algorithmURI, registeredClass };
 
-            throw new AlgorithmAlreadyRegisteredException(
-               "algorithm.alreadyRegistered", exArgs);
-         }
+				 throw new AlgorithmAlreadyRegisteredException(
+						 "algorithm.alreadyRegistered", exArgs);
+			 }
+		 }
+		 try {	         	   			 
+			 SignatureAlgorithm._algorithmHash.put(algorithmURI, Class.forName(implementingClass));
+	      } catch (ClassNotFoundException ex) {
+	         Object exArgs[] = { algorithmURI, ex.getMessage() };
 
-         SignatureAlgorithm._algorithmHash.put(algorithmURI, implementingClass);
+	         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
+	                                         ex);
+	      } catch (NullPointerException ex) {
+	         Object exArgs[] = { algorithmURI, ex.getMessage() };
+
+	         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
+	                                         ex);
+	      }
+         
       }
    }
 
@@ -370,13 +373,13 @@ public class SignatureAlgorithm extends Algorithm {
     * @param URI
     * @return
     */
-   private static String getImplementingClass(String URI) {
+   private static Class getImplementingClass(String URI) {
 
       if (SignatureAlgorithm._algorithmHash == null) {
          return null;
       }
 
-      return (String) SignatureAlgorithm._algorithmHash.get(URI);
+      return (Class) SignatureAlgorithm._algorithmHash.get(URI);
    }
 
    /**

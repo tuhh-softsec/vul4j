@@ -21,7 +21,6 @@ package org.apache.xml.security.transforms;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -87,7 +86,7 @@ public final class Transform extends SignatureElementProxy {
          this._constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM,
                                                 algorithmURI);
 
-         String implementingClass =
+         Class implementingClass =
             Transform.getImplementingClass(algorithmURI);
          if (log.isDebugEnabled()) {
          	log.debug("Create URI \"" + algorithmURI + "\" class \""
@@ -97,7 +96,7 @@ public final class Transform extends SignatureElementProxy {
 
          // create the custom Transform object
          this.transformSpi =
-            (TransformSpi) Class.forName(implementingClass).newInstance();
+            (TransformSpi) implementingClass.newInstance();
 
          this.transformSpi.setTransform(this);
 
@@ -114,11 +113,6 @@ public final class Transform extends SignatureElementProxy {
             }
 
          }
-      } catch (ClassNotFoundException ex) {
-         Object exArgs[] = { algorithmURI };
-
-         throw new InvalidTransformException(
-            "signature.Transform.UnknownTransform", exArgs, ex);
       } catch (IllegalAccessException ex) {
          Object exArgs[] = { algorithmURI };
 
@@ -159,17 +153,12 @@ public final class Transform extends SignatureElementProxy {
       }
 
       try {
-         String implementingClass = (String) _transformHash.get(AlgorithmURI);
+         Class implementingClass = (Class) _transformHash.get(AlgorithmURI);
 
          this.transformSpi =
-            (TransformSpi) Class.forName(implementingClass).newInstance();
+            (TransformSpi) implementingClass.newInstance();
 
          this.transformSpi.setTransform(this);
-      } catch (ClassNotFoundException e) {
-         Object exArgs[] = { AlgorithmURI };
-
-         throw new InvalidTransformException(
-            "signature.Transform.UnknownTransform", exArgs);
       } catch (IllegalAccessException e) {
          Object exArgs[] = { AlgorithmURI };
 
@@ -259,16 +248,21 @@ public final class Transform extends SignatureElementProxy {
       {
 
          // are we already registered?
-         String registeredClass = Transform.getImplementingClass(algorithmURI);
+         Class registeredClass = Transform.getImplementingClass(algorithmURI);
 
-         if ((registeredClass != null) && (registeredClass.length() != 0)) {
+         if ((registeredClass != null) ) {
             Object exArgs[] = { algorithmURI, registeredClass };
 
             throw new AlgorithmAlreadyRegisteredException(
                "algorithm.alreadyRegistered", exArgs);
          }
 
-         Transform._transformHash.put(algorithmURI, implementingClass);
+         try {
+			Transform._transformHash.put(algorithmURI, Class.forName(implementingClass));
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
       }
    }
 
@@ -354,21 +348,8 @@ public final class Transform extends SignatureElementProxy {
     * @param URI
     * @return The name of the class implementing the URI.
     */
-   private static String getImplementingClass(String URI) {
-
-      try {
-         Iterator i = Transform._transformHash.keySet().iterator();
-
-         while (i.hasNext()) {
-            String key = (String) i.next();
-
-            if (key.equals(URI)) {
-               return (String) Transform._transformHash.get(key);
-            }
-         }
-      } catch (NullPointerException ex) {}
-
-      return null;
+   private static Class getImplementingClass(String URI) {
+       return (Class)Transform._transformHash.get(URI);
    }
 
    

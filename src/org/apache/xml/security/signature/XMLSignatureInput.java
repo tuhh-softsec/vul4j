@@ -31,14 +31,11 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
-import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -268,16 +265,16 @@ public class XMLSignatureInput {
             Document document = db.parse(new ByteArrayInputStream(result));
 
             //XMLUtils.circumventBug2650(document);
+            
+				Set set = new HashSet();
+				XMLUtils.getSet(
+						document.getDocumentElement().getFirstChild().getFirstChild(),
+						set,null,true);
+              // NodeList nodeList = CachedXPathAPIHolder.getCachedXPathAPI().selectNodeList(
+              //    document,
+              //    "(//. | //@* | //namespace::*)[not(self::node()=/) and not(self::node=/container)]");
 
-            try {
-               NodeList nodeList = CachedXPathAPIHolder.getCachedXPathAPI().selectNodeList(
-                  document,
-                  "(//. | //@* | //namespace::*)[not(self::node()=/) and not(self::node=/container)]");
-
-               return XMLUtils.convertNodelistToSet(nodeList);
-            } catch (TransformerException ex2) {
-               throw new CanonicalizationException("generic.EmptyMessage", ex2);
-            }
+               return set;
          }
       }
 
