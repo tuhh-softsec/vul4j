@@ -1,5 +1,16 @@
 Changelog for "Apache xml-security" <http://xml.apache.org/security/>
 
+New in v1.2.1
+ * Fix the memory leak when using xpath or using ResourceResolver and not hitting 
+  	  getElementByIdUsingDOM() [http://issues.apache.org/bugzilla/show_bug.cgi?id=32836]
+ * Fix the bug with using XPath2Filter and inclusive c14n
+ * Fix the bug arrouse in reusing Canonicalizers
+ * Fix base64transformation bug [http://issues.apache.org/bugzilla/show_bug.cgi?id=33393 ]
+ * Fix the XMLsignatureInput reset() bug.
+ * Clean unused jar (xmlParserAPI.jar,etc) and check and stored new versions.
+ * generated the dist jar with version (i.e. xmlsec-1.2.1.jar instead of plain xmlsec.jar)
+ * Clean unused build*.xml files.
+
 
 ##############################################################################
 # New in v1.0.3                                                   24. May 2002
