@@ -120,6 +120,8 @@ void DSIGTransformBase64::appendTransformer(TXFMChain * input) {
 			throw XSECException(XSECException::UnsupportedFunction,
 				"Unable to extract Base64 text from Nodes without XPath support");
 
+		}
+
 #else
 		
 			// Use an XPath transform to get "Self::text()" from the nodeset
