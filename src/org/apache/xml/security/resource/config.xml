@@ -247,71 +247,59 @@
                     RequirementLevel="REQUIRED">
             <!-- You have to provide a core RSA mechanism here, even for
                  the bouncy castle -->
-<!--        <ProviderAlgo ProviderId="BC"
-                          JCEName="RSA/OAEP"
-                          RequiredKey="RSA" /> -->
             <ProviderAlgo ProviderId="BC"
                           JCEName="RSA"
                           RequiredKey="RSA" />
+            <!-- <ProviderAlgo ProviderId="BC" JCEName="RSA/OAEP" RequiredKey="RSA" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#dh"
                     Description="Key Agreement Diffie-Hellman"
                     AlgorithmClass="KeyAgreement"
                     RequirementLevel="OPTIONAL">
-            <!-- <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-tripledes"
                     Description="Symmetric Key Wrap using Triple DES"
                     AlgorithmClass="SymmetricKeyWrap"
                     RequirementLevel="REQUIRED"
                     KeyLength="192">
-<!-- We need a Triple DES in CipherBlockChaining (CBC) mode here without padding -->
+            <!-- We need a Triple DES in CipherBlockChaining (CBC) mode here without padding -->
             <ProviderAlgo ProviderId="BC"
                           RequiredKey="DESEDE"
                           JCEName="DESEDE/CBC/NOPADDING" />
-<!--            <ProviderAlgo ProviderId="BC"
-                          JCEName="DESEDEWrap"
-                          RequiredKey="DESEDE" /> -->
+            <!-- <ProviderAlgo ProviderId="BC" JCEName="DESEDEWrap" RequiredKey="DESEDE" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes128"
                     Description="Symmetric Key Wrap using AES with a key length of 128 bit"
                     AlgorithmClass="SymmetricKeyWrap"
                     RequirementLevel="REQUIRED"
                     KeyLength="128">
-<!-- We need an AES in ElectronicCodeBook (ECB) mode here without padding -->
+            <!-- We need an AES in ElectronicCodeBook (ECB) mode here without padding -->
             <ProviderAlgo ProviderId="BC"
                           JCEName="AES/ECB/NOPADDING"
                           RequiredKey="AES" />
-<!--            <ProviderAlgo ProviderId="BC"
-                          JCEName="AESWrap"
-                          RequiredKey="AES" /> -->
+            <!-- <ProviderAlgo ProviderId="BC" JCEName="AESWrap" RequiredKey="AES" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes192"
                     Description="Symmetric Key Wrap using AES with a key length of 192 bit"
                     AlgorithmClass="SymmetricKeyWrap"
                     RequirementLevel="OPTIONAL"
                     KeyLength="192">
-<!-- We need an AES in ElectronicCodeBook (ECB) mode here without padding -->
+            <!-- We need an AES in ElectronicCodeBook (ECB) mode here without padding -->
             <ProviderAlgo ProviderId="BC"
                           JCEName="AES/ECB/NOPADDING"
                           RequiredKey="AES" />
-<!--            <ProviderAlgo ProviderId="BC"
-                          JCEName="AESWrap"
-                          RequiredKey="AES" /> -->
+            <!-- <ProviderAlgo ProviderId="BC" JCEName="AESWrap" RequiredKey="AES" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes256"
                     Description="Symmetric Key Wrap using AES with a key length of 256 bit"
                     AlgorithmClass="SymmetricKeyWrap"
                     RequirementLevel="REQUIRED"
                     KeyLength="256">
-<!-- We need an AES in ElectronicCodeBook (ECB) mode here without padding -->
+            <!-- We need an AES in ElectronicCodeBook (ECB) mode here without padding -->
             <ProviderAlgo ProviderId="BC"
                           JCEName="AES/ECB/NOPADDING"
                           RequiredKey="AES" />
-<!--            <ProviderAlgo ProviderId="BC"
-                          JCEName="AESWrap"
-                          RequiredKey="AES" /> -->
+            <!-- <ProviderAlgo ProviderId="BC" JCEName="AESWrap" RequiredKey="AES" /> -->
          </Algorithm>
       </Algorithms>
    </JCEAlgorithmMappings>
