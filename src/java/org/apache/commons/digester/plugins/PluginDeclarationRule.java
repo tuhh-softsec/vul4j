@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginDeclarationRule.java,v 1.4 2003/10/27 13:37:35 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2003/10/27 13:37:35 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginDeclarationRule.java,v 1.5 2003/10/28 23:31:08 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2003/10/28 23:31:08 $
  *
  * ====================================================================
  * 
@@ -68,7 +68,6 @@ import org.apache.commons.digester.Digester;
 import org.apache.commons.beanutils.MethodUtils;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * A Digester rule which allows the user to pre-declare a class which is to
@@ -82,7 +81,6 @@ import org.apache.commons.logging.LogFactory;
  */
 
 public class PluginDeclarationRule extends Rule {
-    private static Log log = LogFactory.getLog(PluginDeclarationRule.class);
 
     //------------------- constructors ---------------------------------------
 
@@ -114,6 +112,10 @@ public class PluginDeclarationRule extends Rule {
             String name,
             org.xml.sax.Attributes attributes)
              throws java.lang.Exception {
+                 
+        Log log = digester.getLogger();
+        boolean debug = log.isDebugEnabled();
+        
         String id = attributes.getValue("id");
         String pluginClassName = attributes.getValue("class");
         String ruleMethodName = attributes.getValue("method");
@@ -122,7 +124,7 @@ public class PluginDeclarationRule extends Rule {
         String ruleFile = attributes.getValue("file");
         String autoSetPropertiesStr = attributes.getValue("setprops");
 
-        if (log.isDebugEnabled()) {
+        if (debug) {
             log.debug(
                 "mapping id [" + id + "] -> [" + pluginClassName + "]");
         }
@@ -184,7 +186,9 @@ public class PluginDeclarationRule extends Rule {
                 // the same external file at multiple locations within a
                 // parent document. if the declaration is identical,
                 // then we just ignore it.
-                log.debug("plugin redeclaration is identical: ignoring");
+                if (debug) {
+                    log.debug("plugin redeclaration is identical: ignoring");
+                }
                 return;
             } else {
                 throw new PluginInvalidInputException(

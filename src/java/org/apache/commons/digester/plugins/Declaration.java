@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Declaration.java,v 1.4 2003/10/27 13:37:35 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2003/10/27 13:37:35 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Declaration.java,v 1.5 2003/10/28 23:31:08 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2003/10/28 23:31:08 $
  *
  * ====================================================================
  * 
@@ -69,7 +69,6 @@ import java.lang.reflect.Method;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Simple structure to store the set of attributes that can be present on 
@@ -78,7 +77,6 @@ import org.apache.commons.logging.LogFactory;
  * @author Simon Kitching
  */
 public class Declaration {
-    private static Log log = LogFactory.getLog(Declaration.class);
 
     /** 
      * The name of the method looked for on the plugin class and any
@@ -225,7 +223,11 @@ public class Declaration {
      */
     public void init(Digester digester)
     throws PluginWrappedException {
-        log.debug("init being called!");
+        Log log = digester.getLogger();
+        boolean debug = log.isDebugEnabled();
+        if (debug) {
+            log.debug("init being called!");
+        }
         
         if (initialised_) {
             throw new PluginAssertionError("Init called multiple times.");
@@ -292,7 +294,11 @@ public class Declaration {
      
     public void configure(Digester digester, String pattern)
     throws PluginWrappedException {
-        log.debug("configure being called!");
+        Log log = digester.getLogger();
+        boolean debug = log.isDebugEnabled();
+        if (debug) {
+            log.debug("configure being called!");
+        }
         
         if (!initialised_) {
             throw new PluginAssertionError("Not initialised.");
@@ -350,7 +356,7 @@ public class Declaration {
 
         // look for rule class
         {
-            if (log.isDebugEnabled()) {
+            if (debug) {
                 log.debug("plugin class type:" + pluginClass_.getName());
             }
             String ruleClassName = pluginClass_.getName() + "RuleInfo";
@@ -385,7 +391,7 @@ public class Declaration {
         
         // try autoSetProperties
         if (autoSetProperties_) {
-            if (log.isDebugEnabled()) {
+            if (debug) {
                 log.debug("adding autoset for pattern [" + pattern + "]");
             }
             digester.addSetProperties(pattern);
@@ -410,6 +416,7 @@ public class Declaration {
                 is.close();
             }
             catch(IOException ioe) {
+                Log log = digester.getLogger();
                 log.warn("Unable to close stream after reading rules", ioe);
             }
         }

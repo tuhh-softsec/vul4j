@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginRules.java,v 1.3 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginRules.java,v 1.4 2003/10/28 23:31:08 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2003/10/28 23:31:08 $
  *
  * ====================================================================
  * 
@@ -75,7 +75,6 @@ import org.apache.commons.digester.Rule;
 import org.apache.commons.digester.Rules;
 import org.apache.commons.digester.RulesBase;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * A custom digester Rules manager which must be used as the Rules object
@@ -85,7 +84,6 @@ import org.apache.commons.logging.LogFactory;
  */
 
 public class PluginRules implements Rules {
-    private static Log log = LogFactory.getLog(PluginRules.class);
                                                
     /** 
      * The rules implementation that we are "enhancing" with plugins
@@ -230,10 +228,14 @@ public class PluginRules implements Rules {
      * @param rule Rule instance to be registered
      */
     public void add(String pattern, Rule rule) {
-        if (log.isDebugEnabled()) {
+        Log log = LogUtils.getLogger(digester_);
+        boolean debug = log.isDebugEnabled();
+        
+        if (debug) {
             log.debug("add entry" + ": mapping pattern [" + pattern + "]" + 
                   " to rule of type [" + rule.getClass().getName() + "]");
         }
+        
         decoratedRules_.add(pattern, rule);
 
         if (rule instanceof InitializableRule) {
@@ -245,13 +247,15 @@ public class PluginRules implements Rules {
                 // initialisable rule to remember that its initialisation
                 // failed, and to throw the exception when begin is
                 // called for the first time.
-                log.debug("Rule initialisation failed", e);
+                if (debug) {
+                    log.debug("Rule initialisation failed", e);
+                }
                 // throw e; -- alas, can't do this
                 return;
             }
         }
         
-        if (log.isDebugEnabled()) {
+        if (debug) {
             log.debug("add exit" + ": mapped pattern [" + pattern + "]" + 
                   " to rule of type [" + rule.getClass().getName() + "]");
         }
@@ -298,16 +302,20 @@ public class PluginRules implements Rules {
      * @param pattern Nesting pattern to be matched
      */
     public List match(String namespaceURI, String pattern) {
-        if (log.isDebugEnabled()) {
+        Log log = LogUtils.getLogger(digester_);
+        boolean debug = log.isDebugEnabled();
+        
+        if (debug) {
             log.debug(
                 "Matching pattern [" + pattern 
                 + "] on rules object " + this.toString());
         }
+
         List matches;
         if ((currPluginCreateRule_ != null) && 
             (pattern.length() > currPluginCreateRule_.getPattern().length())) {
             // assert pattern.startsWith(currPluginCreateRule.getPattern())
-            if (log.isDebugEnabled()) {
+            if (debug) {
                 log.debug(
                     "Pattern [" + pattern + "] matching PluginCreateRule " 
                     + currPluginCreateRule_.toString());
@@ -332,15 +340,20 @@ public class PluginRules implements Rules {
      * endPlugin method is called.
      */
     public void beginPlugin(PluginCreateRule pcr) {
+        Log log = LogUtils.getLogger(digester_);
+        boolean debug = log.isDebugEnabled();
+
         if (currPluginCreateRule_ != null) {
             throw new PluginAssertionError(
                 "endPlugin called when currPluginCreateRule_ is not null.");
         }
-        if (log.isDebugEnabled()) {
+
+        if (debug) {
             log.debug(
                 "Entering PluginCreateRule " + pcr.toString() 
                 + " on rules object " + this.toString());
         }
+
         currPluginCreateRule_ = pcr;
     }
     
@@ -349,6 +362,9 @@ public class PluginRules implements Rules {
      * See {@link #beginPlugin}.
      */
     public void endPlugin(PluginCreateRule pcr) {
+        Log log = LogUtils.getLogger(digester_);
+        boolean debug = log.isDebugEnabled();
+
         if (currPluginCreateRule_ == null) {
             throw new PluginAssertionError(
                 "endPlugin called when currPluginCreateRule_ is null.");
@@ -360,7 +376,7 @@ public class PluginRules implements Rules {
         }
         
         currPluginCreateRule_ = null;
-        if (log.isDebugEnabled()) {
+        if (debug) {
             log.debug(
                 "Leaving PluginCreateRule " + pcr.toString()
                 + " on rules object " + this.toString());

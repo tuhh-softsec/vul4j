@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.4 2003/10/27 13:37:35 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2003/10/27 13:37:35 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.5 2003/10/28 23:31:08 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2003/10/28 23:31:08 $
  *
  * ====================================================================
  * 
@@ -70,7 +70,6 @@ import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.Rule;
 import org.apache.commons.digester.Rules;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Allows the original rules for parsing the configuration file to define
@@ -80,8 +79,6 @@ import org.apache.commons.logging.LogFactory;
  * @author Simon Kitching
  */
 public class PluginCreateRule extends Rule implements InitializableRule {
-
-    private static Log log = LogFactory.getLog(PluginCreateRule.class);
 
     private static final String PLUGIN_CLASS_ATTR = "plugin-class";
     private static final String PLUGIN_ID_ATTR = "plugin-id";
@@ -195,8 +192,12 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      */
     public void postRegisterInit(String pattern)
     throws PluginConfigurationException {
-        log.debug("PluginCreateRule.postRegisterInit" + 
-                  ": rule registered for pattern [" + pattern + "]");
+        Log log = LogUtils.getLogger(digester);
+        boolean debug = log.isDebugEnabled();
+        if (debug) {
+            log.debug("PluginCreateRule.postRegisterInit" + 
+                      ": rule registered for pattern [" + pattern + "]");
+        }
 
         if (digester == null) {
             // We require setDigester to be called before this method.
@@ -300,7 +301,9 @@ public class PluginCreateRule extends Rule implements InitializableRule {
     String namespace, String name, 
     org.xml.sax.Attributes attributes)
     throws java.lang.Exception {
-        if (log.isDebugEnabled()) {
+        Log log = digester.getLogger();
+        boolean debug = log.isDebugEnabled();
+        if (debug) {
             log.debug("PluginCreateRule.begin" + ": pattern=[" + pattern_ + "]" + 
                   " match=[" + digester.getMatch() + "]");
         }
@@ -325,7 +328,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             PluginManager pluginManager = localRules_.getPluginManager();
             Declaration currDeclaration = null;
             
-            if (log.isDebugEnabled()) {
+            if (debug) {
                 log.debug("PluginCreateRule.begin: installing new plugin: " 
                     + "oldrules=" + oldRules.toString()
                     + ", localrules=" + localRules_.toString());
@@ -376,7 +379,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                 
                 Object instance = pluginClass.newInstance();
                 getDigester().push(instance);
-                if (log.isDebugEnabled()) {
+                if (debug) {
                     log.debug(
                         "PluginCreateRule.begin" + ": pattern=[" + pattern_ + "]" + 
                         " match=[" + digester.getMatch() + "]" + 
@@ -391,7 +394,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         // fire the begin method of all custom rules
         Rules oldRules = digester.getRules();
         
-        if (log.isDebugEnabled()) {
+        if (debug) {
             log.debug("PluginCreateRule.begin: firing nested rules: " 
                 + "oldrules=" + oldRules.toString()
                 + ", localrules=" + localRules_.toString());
@@ -402,7 +405,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         delegateBegin(namespace, name, attributes);
         digester.setRules(oldRules);
 
-        if (log.isDebugEnabled()) {
+        if (debug) {
             log.debug("PluginCreateRule.begin: restored old rules to " 
                 + "oldrules=" + oldRules.toString());
         }
@@ -491,6 +494,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
     throws java.lang.Exception {
         
         // Fire "begin" events for all relevant rules
+        Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();
         String match = digester.getMatch();
         List rules = digester.getRules().match(namespace, match);
@@ -510,6 +514,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
     public void delegateBody(String namespace, String name, String text)
     throws Exception {
         // Fire "body" events for all relevant rules
+        Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();
         String match = digester.getMatch();
         List rules = digester.getRules().match(namespace, match);
@@ -529,6 +534,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
     public void delegateEnd(String namespace, String name)
     throws Exception {
         // Fire "end" events for all relevant rules in reverse order
+        Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();
         String match = digester.getMatch();
         List rules = digester.getRules().match(namespace, match);

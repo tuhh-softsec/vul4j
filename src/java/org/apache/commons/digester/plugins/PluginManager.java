@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginManager.java,v 1.3 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginManager.java,v 1.4 2003/10/28 23:31:08 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2003/10/28 23:31:08 $
  *
  * ====================================================================
  * 
@@ -66,7 +66,6 @@ import java.util.HashMap;
 import org.apache.commons.digester.Digester;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Coordinates between PluginDeclarationRule and PluginCreateRule objects,
@@ -79,7 +78,6 @@ import org.apache.commons.logging.LogFactory;
  */
 
 public class PluginManager {
-    private static Log log = LogFactory.getLog(PluginManager.class);
 
     /** Map of classname->Declaration */
     private HashMap declarationsByClass_ = new HashMap();
@@ -89,7 +87,7 @@ public class PluginManager {
 
     /** the parent manager to which this one may delegate lookups. */
     private PluginManager parent_;
-    
+
     //------------------- constructors ---------------------------------------
     
     /** Constructor. */
@@ -105,10 +103,17 @@ public class PluginManager {
 
     /**
      * Add the declaration to the set of known declarations.
+     * <p>
+     * TODO: somehow get a reference to a Digester object
+     * so that we can really log here. Currently, all
+     * logging is disabled from this method.
      *
      *@param decl an object representing a plugin class.
      */
     public void addDeclaration(Declaration decl) {
+        Log log = LogUtils.getLogger(null);
+        boolean debug = log.isDebugEnabled();
+        
         Class pluginClass = decl.getPluginClass();
         String id = decl.getId();
         
@@ -116,7 +121,7 @@ public class PluginManager {
             
         if (id != null) {
             declarationsById_.put(id, decl);
-            if (log.isDebugEnabled()) {
+            if (debug) {
                 log.debug(
                     "Indexing plugin-id [" + id + "]"
                     + " -> class [" + pluginClass.getName() + "]");
