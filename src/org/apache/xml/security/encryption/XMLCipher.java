@@ -3767,7 +3767,7 @@ public class XMLCipher {
                 }
 
                 public Element toElement() {
-                    return toElement(EncryptionConstants._TAG_DATAREFERENCE);
+                    return super.toElement(EncryptionConstants._TAG_DATAREFERENCE);
                 }
             }
 
@@ -3777,7 +3777,7 @@ public class XMLCipher {
                 }
 
                 public Element toElement() {
-                    return toElement(EncryptionConstants._TAG_KEYREFERENCE);
+                    return super.toElement(EncryptionConstants._TAG_KEYREFERENCE);
                 }
             }
         }
