@@ -112,6 +112,9 @@ public class AllTests extends TestCase {
    }
 
    static {
+    if (System.getProperty("basedir")==null) {
+        System.setProperty("basedir",System.getProperty("user.dir"));
+    }
       org.apache.xml.security.Init.init();
    }
 }
