@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.10 2003/02/02 16:09:53 rdonkin Exp $
- * $Revision: 1.10 $
- * $Date: 2003/02/02 16:09:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.11 2003/04/13 20:46:03 rdonkin Exp $
+ * $Revision: 1.11 $
+ * $Date: 2003/04/13 20:46:03 $
  *
  * ====================================================================
  *
@@ -84,7 +84,7 @@ import org.xml.sax.Attributes;
  * </p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.10 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.11 $ $Date: 2003/04/13 20:46:03 $
  */
 
 public class CallParamRule extends Rule {
@@ -167,7 +167,22 @@ public class CallParamRule extends Rule {
     
         this.paramIndex = paramIndex;  
         this.fromStack = fromStack;
-       
+
+    }
+    
+    /**
+     * Constructs a "call parameter" rule which sets a parameter from the stack.
+     * If the stack contains too few objects, then the parameter will be set to null.
+     *
+     * @param paramIndex The zero-relative parameter number
+     * @param stackIndex the index of the object which will be passed as a parameter. 
+     * The zeroth object is the top of the stack, 1 is the next object down and so on.
+     */    
+    public CallParamRule(int paramIndex, int stackIndex) {
+    
+        this.paramIndex = paramIndex;  
+        this.fromStack = true;
+        this.stackIndex = stackIndex;
     }
  
     // ----------------------------------------------------- Instance Variables
@@ -186,9 +201,14 @@ public class CallParamRule extends Rule {
 
 
     /**
-     * The position of the object from the top of the stack
+     * Is the parameter to be set from the stack?
      */
     protected boolean fromStack = false;
+    
+    /**
+     * The position of the object from the top of the stack
+     */
+    protected int stackIndex = 0;
 
 
     // --------------------------------------------------------- Public Methods
@@ -209,7 +229,7 @@ public class CallParamRule extends Rule {
             
         } else if(fromStack) {
         
-            param = digester.peek();
+            param = digester.peek(stackIndex);
             
             if (digester.log.isDebugEnabled()) {
             

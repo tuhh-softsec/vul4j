@@ -74,6 +74,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.logging.impl.SimpleLog;
+
 
 /**
  * <p>Tests for the <code>CallMethodRule</code> and associated 
@@ -323,6 +325,98 @@ public class CallMethodRuleTestCase extends TestCase {
 
     }
 
+
+    public void testPrimitiveReading() throws Exception {
+        StringReader reader = new StringReader(
+            "<?xml version='1.0' ?><root><bean good='true'/><bean good='false'/><bean/></root>");
+            
+        Digester digester = new Digester();
+        
+        //SimpleLog log = new SimpleLog("[testPrimitiveReading:Digester]");
+        //log.setLevel(SimpleLog.LOG_LEVEL_TRACE);
+        //digester.setLogger(log);
+        
+        digester.addObjectCreate("root/bean", PrimitiveBean.class);
+        digester.addSetNext("root/bean", "add");
+        Class [] params = { Boolean.TYPE };
+        digester.addCallMethod("root/bean", "setBoolean", 1, params);
+        digester.addCallParam("root/bean", 0, "good");
+        
+        ArrayList list = new ArrayList();
+        digester.push(list);
+        digester.parse(reader);
+        
+        assertEquals("Wrong number of beans in list", 3, list.size());
+        PrimitiveBean bean = (PrimitiveBean) list.get(0);
+        assertTrue("Bean 0 property not called", bean.getSetBooleanCalled());
+        assertEquals("Bean 0 property incorrect", true, bean.getBoolean());
+        bean = (PrimitiveBean) list.get(1);
+        assertTrue("Bean 1 property not called", bean.getSetBooleanCalled());
+        assertEquals("Bean 1 property incorrect", false, bean.getBoolean());
+        bean = (PrimitiveBean) list.get(2);
+        // no attibute, no call is what's expected
+        assertTrue("Bean 2 property called", !bean.getSetBooleanCalled());
+    }
+    
+    public void testFromStack() throws Exception {
+    
+        StringReader reader = new StringReader(
+            "<?xml version='1.0' ?><root><one/><two/><three/><four/><five/></root>");
+            
+        Digester digester = new Digester();
+        
+        Class [] params = { String.class };
+        
+        digester.addObjectCreate("root/one", NamedBean.class);
+        digester.addSetNext("root/one", "add");
+        digester.addCallMethod("root/one", "setName", 1, params);
+        digester.addCallParam("root/one", 0, 2);
+        
+        digester.addObjectCreate("root/two", NamedBean.class);
+        digester.addSetNext("root/two", "add");
+        digester.addCallMethod("root/two", "setName", 1, params);
+        digester.addCallParam("root/two", 0, 3);
+        
+        digester.addObjectCreate("root/three", NamedBean.class);
+        digester.addSetNext("root/three", "add");
+        digester.addCallMethod("root/three", "setName", 1, params);
+        digester.addCallParam("root/three", 0, 4);
+        
+        digester.addObjectCreate("root/four", NamedBean.class);
+        digester.addSetNext("root/four", "add");
+        digester.addCallMethod("root/four", "setName", 1, params);
+        digester.addCallParam("root/four", 0, 5);
+        
+        digester.addObjectCreate("root/five", NamedBean.class);
+        digester.addSetNext("root/five", "add");
+        Class [] newParams = { String.class, String.class };
+        digester.addCallMethod("root/five", "test", 2, newParams);
+        digester.addCallParam("root/five", 0, 10);
+        digester.addCallParam("root/five", 1, 3);
+        
+        // prepare stack
+        digester.push("That lamb was sure to go.");
+        digester.push("And everywhere that Mary went,");
+        digester.push("It's fleece was white as snow.");
+        digester.push("Mary had a little lamb,");
+        
+        ArrayList list = new ArrayList();
+        digester.push(list);
+        digester.parse(reader);
+        
+        assertEquals("Wrong number of beans in list", 5, list.size());
+        NamedBean bean = (NamedBean) list.get(0);
+        assertEquals("Parameter not set from stack (1)", "Mary had a little lamb,", bean.getName());
+        bean = (NamedBean) list.get(1);
+        assertEquals("Parameter not set from stack (2)", "It's fleece was white as snow.", bean.getName());
+        bean = (NamedBean) list.get(2);
+        assertEquals("Parameter not set from stack (3)", "And everywhere that Mary went,", bean.getName());
+        bean = (NamedBean) list.get(3);
+        assertEquals("Parameter not set from stack (4)", "That lamb was sure to go.", bean.getName());
+        bean = (NamedBean) list.get(4);
+        assertEquals("Out of stack not set to null", null , bean.getName());
+    }
+    
 
     // ------------------------------------------------ Utility Support Methods
 
