@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.11 2001/08/04 23:46:29 craigmcc Exp $
- * $Revision: 1.11 $
- * $Date: 2001/08/04 23:46:29 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.12 2001/08/08 03:03:00 craigmcc Exp $
+ * $Revision: 1.12 $
+ * $Date: 2001/08/08 03:03:00 $
  *
  * ====================================================================
  *
@@ -106,7 +106,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.11 $ $Date: 2001/08/04 23:46:29 $
+ * @version $Revision: 1.12 $ $Date: 2001/08/08 03:03:00 $
  */
 
 public class Digester extends DefaultHandler {
@@ -427,6 +427,7 @@ public class Digester extends DefaultHandler {
     public void setRules(Rules rules) {
 
         this.rules = rules;
+        this.rules.setDigester(this);
 
     }
 
