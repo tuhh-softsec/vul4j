@@ -126,6 +126,18 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    public Map hmVisibleNodes = null;
 
    /**
+    * During c14n of a document with only a document subset visible,
+    * Attributes for namespace declarations are created in 'visible' Elements.
+    * This means that after c14n, the infoset of the document is modified because
+    * this process added namespace attrs. If this is a problem, the added
+    * attributes have to be removed from the DOM after c14n.
+    */
+   private Vector _attrsToBeRemovedAfterC14n = new Vector();
+
+   /** Field _removeNSattrsAfterC14n */
+   private boolean _removeNSattrsAfterC14n = true;
+
+   /**
     * Method engineVisible
     *
     * @param node
@@ -307,6 +319,10 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
       process(treewalker, printwriter, this.engineGetIncludeComments());
       printwriter.flush();
+
+      if (this.engineGetRemoveNSAttrs()) {
+         this.removeNSAttrs();
+      }
 
       return bytearrayoutputstream.toByteArray();
    }
@@ -801,25 +817,23 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                if (invisDefNS.getValue().equals(visDefNS.getValue())) {
                   ;
                } else {
-                  cat.debug("upper");
-
                   Document doc = ctxNode.getOwnerDocument();
                   Attr newAttr = doc.createAttribute("xmlns");
 
                   newAttr.setValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
+                  this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             } else {
                if (((Element) ctxNode).getAttributeNode("xmlns") == null) {
-                  cat.debug("lower");
-
                   Document doc = ctxNode.getOwnerDocument();
                   Attr newAttr = doc.createAttribute("xmlns");
 
                   newAttr.setValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
+                  this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             }
          } else {
@@ -845,6 +859,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   newAttr.setValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
+                  this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             } else {
                ;
@@ -885,6 +900,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                      newAttr.setValue(invisAttr.getValue());
                      ((Element) ctxNode).setAttributeNode(newAttr);
                      engineMakeVisible(newAttr);
+                     this._attrsToBeRemovedAfterC14n.add(newAttr);
                   }
                } else {
                   Document doc = ctxNode.getOwnerDocument();
@@ -893,6 +909,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   newAttr.setValue(invisAttr.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
+                  this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             } else {
                cat.debug("case 8");
@@ -1019,6 +1036,39 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          }
       } else {
          cat.error("Called checkForRelativeNamespace() on a " + ctxNode);
+      }
+   }
+
+   /**
+    * Method engineSetRemoveNSAttrs
+    *
+    * @param remove
+    */
+   public void engineSetRemoveNSAttrs(boolean remove) {
+      this._removeNSattrsAfterC14n = remove;
+   }
+
+   /**
+    * Method engineGetRemoveNSAttrs
+    *
+    * @return
+    */
+   public boolean engineGetRemoveNSAttrs() {
+      return this._removeNSattrsAfterC14n;
+   }
+
+   /**
+    * Iterates over all Attributes which have been added during c14n and
+    * removes them.
+    */
+   private void removeNSAttrs() {
+
+      for (int i = 0; i < this._attrsToBeRemovedAfterC14n.size(); i++) {
+         Attr currentNSdecl =
+            (Attr) this._attrsToBeRemovedAfterC14n.elementAt(i);
+         Element ownerElem = currentNSdecl.getOwnerElement();
+
+         ownerElem.removeAttributeNode(currentNSdecl);
       }
    }
 

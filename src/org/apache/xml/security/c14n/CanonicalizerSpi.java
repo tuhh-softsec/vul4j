@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -468,6 +467,20 @@ public abstract class CanonicalizerSpi {
     * @param nodeList
     */
    public abstract void engineSetXPathNodeSet(NodeList nodeList);
+
+   /**
+    * Method engineSetRemoveNSAttrs
+    *
+    * @param remove
+    */
+   public abstract void engineSetRemoveNSAttrs(boolean remove);
+
+   /**
+    * Method engineGetRemoveNSAttrs
+    *
+    * @return
+    */
+   public abstract boolean engineGetRemoveNSAttrs();
 
    static {
       org.apache.xml.security.Init.init();

@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -320,9 +319,11 @@ public class Canonicalizer {
     * @throws CanonicalizationException
     */
    public byte[] canonicalize(Node node) throws CanonicalizationException {
+
       if (node == null) {
          cat.error("I was asked to canonicalize a null node");
       }
+
       return this.canonicalizerSpi.engineCanonicalize(node);
    }
 
@@ -490,6 +491,36 @@ public class Canonicalizer {
       }
 
       return null;
+   }
+
+   /**
+    * Defines whether possibly added NS decls have to be removed after c14n.
+    * <BR />
+    * During c14n of a document with only a document subset visible,
+    * Attributes for namespace declarations are created in 'visible' Elements.
+    * This means that after c14n, the infoset of the document is modified because
+    * this process added namespace attrs. If this is a problem, the added
+    * attributes have to be removed from the DOM after c14n.
+    *
+    * @param remove
+    */
+   public void engineSetRemoveNSAttrs(boolean remove) {
+      this.canonicalizerSpi.engineSetRemoveNSAttrs(remove);
+   }
+
+   /**
+    * Returns whether possibly added NS decls have to be removed after c14n.
+    * <BR />
+    * During c14n of a document with only a document subset visible,
+    * Attributes for namespace declarations are created in 'visible' Elements.
+    * This means that after c14n, the infoset of the document is modified because
+    * this process added namespace attrs. If this is a problem, the added
+    * attributes have to be removed from the DOM after c14n.
+    *
+    * @return
+    */
+   public boolean engineGetRemoveNSAttrs() {
+      return this.canonicalizerSpi.engineGetRemoveNSAttrs();
    }
 
    static {
