@@ -26,6 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.WeakHashMap;
+import java.lang.ref.WeakReference;
 
 
 /**
@@ -73,7 +74,7 @@ public class IdResolver {
           elementMap = new WeakHashMap();
           docMap.put(doc, elementMap);
       }
-      elementMap.put(idValue, element);
+      elementMap.put(idValue, new WeakReference(element));
    }
 
    /**
@@ -208,7 +209,11 @@ public class IdResolver {
       log.debug("getElementByIdType() Search for ID " + id);
        WeakHashMap elementMap = (WeakHashMap) docMap.get(doc);
        if (elementMap != null) {
-           return (Element)elementMap.get(id);
+           WeakReference weakReference = (WeakReference) elementMap.get(id);
+           if (weakReference != null)
+           {
+                return (Element) weakReference.get();   
+           }
        }
        return null;
    }
