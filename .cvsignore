@@ -7,3 +7,4 @@ tmp
 *.log
 *.gz
 eclipse_classes
+eclipse
