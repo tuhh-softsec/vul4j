@@ -60,25 +60,27 @@ package org.apache.xml.security.signature;
 
 
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
-import org.w3c.dom.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.transforms.TransformationException;
-import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.MissingResourceFailureException;
+import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.transforms.TransformationException;
+import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;
-import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
-import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 
@@ -135,9 +137,11 @@ public class Manifest extends ElementProxy {
       cat.debug("Create Manifest or SignedInfo from Element with BaseURI "
                 + this._baseURI);
 
-      if (!XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_MANIFEST)
-              &&!XMLUtils.elementIsInSignatureSpace(element,
-                 Constants._TAG_SIGNEDINFO)) {
+      if (!XMLUtils
+              .elementIsInSignatureSpace(this
+              ._constructionElement, Constants._TAG_MANIFEST) &&!XMLUtils
+                 .elementIsInSignatureSpace(this
+                    ._constructionElement, Constants._TAG_SIGNEDINFO)) {
          Object exArgs[] = {
             Constants._TAG_MANIFEST + " or " + Constants._TAG_SIGNEDINFO,
             element.getLocalName() };
@@ -250,7 +254,7 @@ public class Manifest extends ElementProxy {
     * @return the <it>i</it><sup>th</sup> reference
     * @throws XMLSecurityException
     */
-   private Reference item(int i) throws XMLSecurityException {
+   public Reference item(int i) throws XMLSecurityException {
 
       try {
          Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
@@ -398,11 +402,14 @@ public class Manifest extends ElementProxy {
                      throw new MissingResourceFailureException("empty",
                                                                currentRef);
                   }
-                  referencedManifest._perManifestResolvers = this._perManifestResolvers;
-                  referencedManifest._resolverProperties = this._resolverProperties;
+
+                  referencedManifest._perManifestResolvers =
+                     this._perManifestResolvers;
+                  referencedManifest._resolverProperties =
+                     this._resolverProperties;
 
                   boolean referencedManifestValid =
-                     referencedManifest.verifyReferences(true);
+                     referencedManifest.verifyReferences(followManifests);
 
                   if (!referencedManifestValid) {
                      verify = false;
@@ -560,17 +567,36 @@ public class Manifest extends ElementProxy {
       return (String) this._resolverProperties.get(key);
    }
 
+   /** Field _signedContents           */
    Vector _signedContents = new Vector();
+
+   /**
+    * Method addSignedContent
+    *
+    * @param signedBytes
+    */
    protected void addSignedContent(byte signedBytes[]) {
       this._signedContents.add(signedBytes);
    }
+
+   /**
+    * Method getSignedContentItem
+    *
+    * @param i
+    * @return
+    */
    public byte[] getSignedContentItem(int i) {
       return (byte[]) this._signedContents.get(i);
    }
+
+   /**
+    * Method getSignedContentLength
+    *
+    * @return
+    */
    public int getSignedContentLength() {
       return this._signedContents.size();
    }
-
 
    static {
       org.apache.xml.security.Init.init();

@@ -56,72 +56,106 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.algorithms;
+package org.apache.xml.security.algorithms.implementations.cipher;
 
 
 
-import org.w3c.dom.*;
-import org.apache.xml.security.utils.*;
+import java.security.*;
+import java.security.spec.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.algorithms.*;
+import org.apache.xml.security.utils.*;
 
 
 /**
- * The Algorithm class which stores the Algorithm URI as a string.
  *
+ * @author $Author$
  */
-public class Algorithm extends ElementProxy {
+public class Cipher_AES128_BC extends CipherAlgorithmSpi {
 
-   /** Field cat */
+   /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Algorithm.class.getName());
+      org.apache.log4j.Category.getInstance(Cipher_AES128_BC.class.getName());
+
+   /** Field _URI */
+   public static final String _URI =
+      EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128;
+
+   /** Field _ProviderId           */
+   private static final String _ProviderId = "BC";
 
    /**
-    *
-    * @param doc
-    * @param localname
-    * @param algorithmURI is the URI of the algorithm as String
-    */
-   public Algorithm(Document doc, String localname, String algorithmURI) {
-
-      super(doc, localname);
-
-      this._constructionElement =
-         XMLUtils.createElementInSignatureSpace(this._doc, localname);
-
-      this.setAlgorithmURI(algorithmURI);
-   }
-
-   /**
-    * Constructor Algorithm
-    *
-    * @param element
-    * @param BaseURI
-    * @throws XMLSecurityException
-    */
-   public Algorithm(Element element, String BaseURI)
-           throws XMLSecurityException {
-      super(element, BaseURI);
-   }
-
-   /**
-    * Method getAlgorithmURI
+    * Method engineGetURI
     *
     * @return
     */
-   public String getAlgorithmURI() {
-      return this._constructionElement.getAttribute(Constants._ATT_ALGORITHM);
+   protected String engineGetURI() {
+      return this._URI;
    }
 
    /**
-    * Sets the algorithm's URI as used in the signature.
+    * Constructor Cipher_AES128_BC
     *
-    * @param algorithmURI is the URI of the algorithm as String
+    * @throws XMLSecurityException
     */
-   protected void setAlgorithmURI(String algorithmURI) {
+   public Cipher_AES128_BC() throws XMLSecurityException {
 
-      if ((this._state == MODE_SIGN) && (algorithmURI != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_ALGORITHM,
-                                                algorithmURI);
+      JCEMapper.ProviderIdClass algorithmID =
+         JCEMapper.translateURItoJCEID(this._URI, this._ProviderId);
+
+      try {
+         this._cipherAlgorithm =
+            Cipher.getInstance(algorithmID.getAlgorithmID(),
+                               algorithmID.getProviderId());
+      } catch (java.security.NoSuchAlgorithmException ex) {
+         Object[] exArgs = { algorithmID.getAlgorithmID(),
+                             ex.getLocalizedMessage() };
+
+         throw new XMLSecurityException("algorithms.NoSuchAlgorithm", exArgs);
+      } catch (java.security.NoSuchProviderException ex) {
+         Object[] exArgs = { algorithmID.getProviderId(),
+                             ex.getLocalizedMessage() };
+
+         throw new XMLSecurityException("algorithms.NoSuchProvider", exArgs);
+      } catch (NoSuchPaddingException ex) {
+         throw new XMLSecurityException("empty", ex);
+      }
+   }
+
+   /**
+    * Proxy method for {@link javax.crypto.Cipher#update(byte[])}
+    * which is executed on the internal {@link javax.crypto.Cipher} object.
+    *
+    * @param input
+    * @throws XMLSecurityException
+    */
+   protected void engineUpdate(byte[] input) throws XMLSecurityException {
+
+      try {
+         this._cipherAlgorithm.update(input);
+      } catch (IllegalStateException ex) {
+         throw new XMLSecurityException("empty", ex);
+      }
+   }
+
+   /**
+    * Proxy method for {@link javax.crypto.Cipher#update(byte[],int,int)}
+    * which is executed on the internal {@link javax.crypto.Cipher} object.
+    *
+    * @param buf
+    * @param offset
+    * @param len
+    * @throws XMLSecurityException
+    */
+   protected void engineUpdate(byte buf[], int offset, int len)
+           throws XMLSecurityException {
+
+      try {
+         this._cipherAlgorithm.update(buf, offset, len);
+      } catch (IllegalStateException ex) {
+         throw new XMLSecurityException("empty", ex);
       }
    }
 

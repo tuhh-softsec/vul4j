@@ -42,6 +42,11 @@
       <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmacSHA1" />
    </SignatureAlgorithms>
+   <CipherAlgorithms JAVACLASS="org.apache.xml.security.algorithms.CipherAlgorithm">
+      <CipherAlgorithm URI="http://www.w3.org/2001/04/xmlenc#aes128-cbc"
+                       JAVACLASS="org.apache.xml.security.algorithms.implementations.cipher.Cipher_AES128_BC"
+                       ProviderId="BC"/>
+   </CipherAlgorithms>
    <JCEAlgorithmMappings>
       <!-- Here, individual providers can be registered; each provider
            is identified by Id which is referenced by ProviderId of the
@@ -49,7 +54,7 @@
       <Providers>
          <Provider Id="BC"
                    Class="org.bouncycastle.jce.provider.BouncyCastleProvider"
-                   Info="BouncyCastle Security Provider v1.08"
+                   Info="BouncyCastle Security Provider v1.09"
                    ProviderURL="http://www.bouncycastle.org/" />
          <Provider Id="SUN"
                    Class="sun.security.provider.Sun"
@@ -67,11 +72,16 @@
                    Class="iaik.security.provider.IAIK"
                    Info="IAIK Security Provider v2.6"
                    ProviderURL="http://www.iaik.at/" />
+         <Provider Id="Cryptix"
+                   Class="cryptix.provider.Cryptix"
+                   Info="Cryptix JCE provider v3.001002"
+                   ProviderURL="http://www.cryptix.org//" />
       </Providers>
       <Algorithms>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     Description="Digital Signature Algorithm with SHA-1 message digest"
-                    AlgorithmClass="Signature">
+                    AlgorithmClass="Signature"
+                    RequirementLevel="REQUIRED">
             <ProviderAlgo ProviderId="BC"
                           JCEName="DSA" />
             <ProviderAlgo ProviderId="SUN"
@@ -81,33 +91,150 @@
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#rsa-sha1"
                     Description="RSA Signature with SHA-1 message digest"
-                    AlgorithmClass="Signature">
+                    AlgorithmClass="Signature"
+                    RequirementLevel="RECOMMENDED">
             <ProviderAlgo ProviderId="BC"
                           JCEName="SHA1WithRSAEncryption" />
             <ProviderAlgo ProviderId="SunRsaSign"
                           JCEName="SHA1withRSA" />
             <ProviderAlgo ProviderId="IAIK"
                           JCEName="SHA-1/RSA" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="SHA-1/RSA" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#sha1"
                     Description="SHA-1 message digest"
-                    AlgorithmClass="MessageDigest">
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="REQUIRED">
             <ProviderAlgo ProviderId="BC"
                           JCEName="SHA-1" />
             <ProviderAlgo ProviderId="SUN"
                           JCEName="SHA-1" />
             <ProviderAlgo ProviderId="IAIK"
                           JCEName="SHA-1" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="SHA-1" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#sha256"
+                    Description="SHA-1 message digest with 256 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="RECOMMENDED">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="SHA-256" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#sha512"
+                    Description="SHA-1 message digest with 512 bit"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="SHA-512" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#ripemd160"
+                    Description="RIPEMD-160 message digest"
+                    AlgorithmClass="MessageDigest"
+                    RequirementLevel="OPTIONAL">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="RIPEMD160" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="RIPEMD160" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
                     Description="Message Authentication code using SHA1"
-                    AlgorithmClass="Mac">
+                    AlgorithmClass="Mac"
+                    RequirementLevel="REQUIRED">
             <ProviderAlgo ProviderId="BC"
                           JCEName="HMACSHA1" />
             <ProviderAlgo ProviderId="SunJCE"
                           JCEName="HmacSHA1" />
             <ProviderAlgo ProviderId="IAIK"
                           JCEName="HMAC/SHA" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="HMAC-SHA-1" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#tripledes-cbc"
+                    Description="Block encryption using Triple-DES"
+                    AlgorithmClass="BlockEncryption"
+                    RequirementLevel="REQUIRED">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="DESEDE" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="DES-EDE3/CBC" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#aes128-cbc"
+                    Description="Block encryption using AES with a key length of 128 bit"
+                    AlgorithmClass="BlockEncryption"
+                    RequirementLevel="REQUIRED">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="RIJNDAEL" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="Rijndael" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#aes192-cbc"
+                    Description="Block encryption using AES with a key length of 192 bit"
+                    AlgorithmClass="BlockEncryption"
+                    RequirementLevel="OPTIONAL">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="RIJNDAEL" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="Rijndael" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#aes256-cbc"
+                    Description="Block encryption using AES with a key length of 256 bit"
+                    AlgorithmClass="BlockEncryption"
+                    RequirementLevel="REQUIRED">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="RIJNDAEL" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="Rijndael" />
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#rsa-1_5"
+                    Description="Key Transport RSA-v1.5"
+                    AlgorithmClass="KeyTransport"
+                    RequirementLevel="REQUIRED">
+            <!-- <ProviderAlgo ProviderId="BC"
+                          JCEName="RIJNDAEL" /> -->
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"
+                    Description="Key Transport RSA-OAEP"
+                    AlgorithmClass="KeyTransport"
+                    RequirementLevel="REQUIRED">
+            <!-- <ProviderAlgo ProviderId="BC"
+                          JCEName="RIJNDAEL" /> -->
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#dh"
+                    Description="Key Agreement Diffie-Hellman"
+                    AlgorithmClass="KeyAgreement"
+                    RequirementLevel="OPTIONAL">
+            <!-- <ProviderAlgo ProviderId="BC"
+                          JCEName="RIJNDAEL" /> -->
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-tripledes"
+                    Description="Symmetric Key Wrap using Triple DES"
+                    AlgorithmClass="SymmetricKeyWrap"
+                    RequirementLevel="REQUIRED">
+            <!-- <ProviderAlgo ProviderId="BC"
+                          JCEName="RIJNDAEL" /> -->
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes128"
+                    Description="Symmetric Key Wrap using AES with a key length of 128 bit"
+                    AlgorithmClass="SymmetricKeyWrap"
+                    RequirementLevel="REQUIRED">
+            <!-- <ProviderAlgo ProviderId="BC"
+                          JCEName="RIJNDAEL" /> -->
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes192"
+                    Description="Symmetric Key Wrap using AES with a key length of 192 bit"
+                    AlgorithmClass="SymmetricKeyWrap"
+                    RequirementLevel="OPTIONAL">
+            <!-- <ProviderAlgo ProviderId="BC"
+                          JCEName="RIJNDAEL" /> -->
+         </Algorithm>
+         <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes256"
+                    Description="Symmetric Key Wrap using AES with a key length of 256 bit"
+                    AlgorithmClass="SymmetricKeyWrap"
+                    RequirementLevel="REQUIRED">
+            <!-- <ProviderAlgo ProviderId="BC"
+                          JCEName="RIJNDAEL" /> -->
          </Algorithm>
       </Algorithms>
    </JCEAlgorithmMappings>
@@ -183,37 +310,4 @@
       <Resolver JAVACLASS="org.apache.xml.security.keys.keyresolver.implementations.X509IssuerSerialResolver"
                 DESCRIPTION="Uses an X509 IssuerName and IssuerSerial to retrieve a certificate from the storages" />
    </KeyResolver>
-
-<!--
-   <KeyResolvers JAVACLASS="org.apache.xml.security.keys.KeyResolver">
-      <KeyResolver URI="http://www.w3.org/2000/09/xmldsig#KeyName"
-                   JAVACLASS="org.apache.xml.security.keys.implementations.KeyNameImpl" />
-      <KeyResolver URI="http://www.w3.org/2000/09/xmldsig#KeyValue"
-                   JAVACLASS="org.apache.xml.security.keys.implementations.KeyValueImpl" />
-      <KeyResolver URI="http://www.w3.org/2000/09/xmldsig#RetrievalMethod"
-                   JAVACLASS="org.apache.xml.security.keys.implementations.RetrievalMethodImpl" />
-      <KeyResolver URI="http://www.w3.org/2000/09/xmldsig#X509Data"
-                   JAVACLASS="org.apache.xml.security.keys.implementations.X509DataImpl" />
-      <KeyResolver URI="http://www.w3.org/2000/09/xmldsig#PGPData"
-                   JAVACLASS="org.apache.xml.security.transforms.implementations.EnvelopedSignature" />
-      <KeyResolver URI="http://www.w3.org/2000/09/xmldsig#SPKIData"
-                   JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXSLT" />
-      <KeyResolver URI="http://www.w3.org/2000/09/xmldsig#MgmtData"
-                   JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPointer" />
-      <KeyResolver URI="NULL"
-                   JAVACLASS="org.apache.xml.security.keys.implementations.NullKeyInfoImpl" />
-   </KeyResolvers>
-   <KeyStores JAVACLASS="org.apache.xml.security.keys.keyStorage.KeyStorage">
-      <KeyStore TYPE="FILE"
-                JAVACLASS="org.apache.xml.security.keys.keyStorage.implementations.FileKeyStorageImpl"
-   		LOCATION="data/org.apache.xml.security/keys/certs"
-                DEFAULTKEYOBJECT="Lugh"
-                CONTEXT="NULL"/>
-      <KeyStore TYPE="DEFAULT"
-                JAVACLASS="org.apache.xml.security.keys.keyStorage.implementations.KeyStoreKeyStorageImpl"
-   		LOCATION="data/org.apache.xml.security/keys/certs/.xmlkeystore"
-                DEFAULTKEYOBJECT="Lugh"
-                CONTEXT="xmlsecurity:JKS"/>
-   </KeyStores>
--->
 </Configuration>

@@ -68,6 +68,7 @@ import org.apache.xpath.XPathAPI;
 import org.apache.xpath.compiler.FunctionTable;
 import org.w3c.dom.*;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
+import org.apache.xml.security.algorithms.CipherAlgorithm;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.helper.XPathContainer;
@@ -269,6 +270,13 @@ public class Init {
             }
 
             {
+               Element jcemapperElem = (Element) XPathAPI.selectSingleNode(
+                  doc, "/x:Configuration/x:JCEAlgorithmMappings", context);
+
+               JCEMapper.init(jcemapperElem);
+            }
+
+            {
                SignatureAlgorithm.providerInit();
 
                NodeList sigElems = XPathAPI.selectNodeList(
@@ -314,10 +322,50 @@ public class Init {
             }
 
             {
-               Element jcemapperElem = (Element) XPathAPI.selectSingleNode(
-                  doc, "/x:Configuration/x:JCEAlgorithmMappings", context);
+               CipherAlgorithm.providerInit();
 
-               JCEMapper.init(jcemapperElem);
+               NodeList sigElems = XPathAPI.selectNodeList(
+                  doc,
+                  "/x:Configuration/x:CipherAlgorithms/x:CipherAlgorithm",
+                  context);
+
+               for (int i = 0; i < sigElems.getLength(); i++) {
+                  String URI = ((Element) sigElems.item(i)).getAttribute("URI");
+                  String JAVACLASS =
+                     ((Element) sigElems.item(i)).getAttribute("JAVACLASS");
+                  String PROVIDERID =
+                     ((Element) sigElems.item(i)).getAttribute("ProviderId");
+
+                  /** @todo handle registering */
+                  boolean registerClass = true;
+
+                  try {
+                     Class c = Class.forName(JAVACLASS);
+                     Method methods[] = c.getMethods();
+
+                     for (int j = 0; j < methods.length; j++) {
+                        Method currMeth = methods[j];
+
+                        if (currMeth.getDeclaringClass().getName()
+                                .equals(JAVACLASS)) {
+                           cat.debug(currMeth.getDeclaringClass());
+                        }
+                     }
+                  } catch (ClassNotFoundException e) {
+                     Object exArgs[] = { URI, JAVACLASS };
+
+                     cat.fatal(I18n.translate("algorithm.classDoesNotExist",
+                                              exArgs));
+
+                     registerClass = false;
+                  }
+
+                  if (registerClass) {
+                     cat.debug("CipherAlgorithm.register(" + URI + ", " + JAVACLASS
+                               + ")");
+                     CipherAlgorithm.register(URI, JAVACLASS, PROVIDERID);
+                  }
+               }
             }
 
             {

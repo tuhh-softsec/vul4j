@@ -168,6 +168,7 @@ public class IntegrityHmacSHA1 extends SignatureAlgorithmSpi {
 
             return MessageDigestAlgorithm.isEqual(completeResult, signature);
          } else {
+            cat.debug("completeResult = " + HexDump.byteArrayToHexString(completeResult));
             byte[] stripped = IntegrityHmacSHA1.reduceBitLength(completeResult,
                                  this._HMACOutputLength);
 

@@ -72,15 +72,14 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.apache.xerces.dom.DocumentImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.*;
 import org.apache.xml.security.c14n.*;
+import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.HelperNodeList;
-
 
 /**
  * DOM and XML accessibility and comfort functions.
@@ -147,258 +146,6 @@ public class XMLUtils {
    }
 
    /**
-    * Transforms <code>org.w3c.dom.Node.XXX_NODE</code> NodeType values into
-    * Strings.
-    *
-    * This is the old and un-elegant version of {@link #getNodeTypeString}.
-    *
-    * @param nodeType as taken from the {@link org.w3c.dom.Node#getNodeType} function
-    * @return the String value.
-    * @see org.w3c.dom.Node#getNodeType
-    * @see #getNodeTypeString
-    */
-   public static String getNodeTypeStringOld(short nodeType) {
-
-      switch (nodeType) {
-
-      case Node.ELEMENT_NODE :
-         return "ELEMENT";
-
-      case Node.ATTRIBUTE_NODE :
-         return "ATTRIBUTE";
-
-      case Node.TEXT_NODE :
-         return "TEXT";
-
-      case Node.CDATA_SECTION_NODE :
-         return "CDATA_SECTION";
-
-      case Node.ENTITY_REFERENCE_NODE :
-         return "ENTITY_REFERENCE";
-
-      case Node.ENTITY_NODE :
-         return "ENTITY";
-
-      case Node.PROCESSING_INSTRUCTION_NODE :
-         return "PROCESSING_INSTRUCTION";
-
-      case Node.COMMENT_NODE :
-         return "COMMENT";
-
-      case Node.DOCUMENT_NODE :
-         return "DOCUMENT";
-
-      case Node.DOCUMENT_TYPE_NODE :
-         return "DOCUMENT_TYPE";
-
-      case Node.DOCUMENT_FRAGMENT_NODE :
-         return "DOCUMENT_FRAGMENT";
-
-      case Node.NOTATION_NODE :
-         return "NOTATION";
-
-      default :
-         return "UNKNOWN_NODE_TYPE";
-      }
-   }
-
-   /**
-    * appends a return plus <code>indent</code> spaces to afterThisElement
-    *
-    * @param parentElement
-    * @param childLocalName
-    * @return
-    */
-
-   /*
-   public static void appendIndentationToElement(Element afterThisElement,
-                                        int indent) {
-
-      if (afterThisElement != null) {
-         Document doc = afterThisElement.getOwnerDocument();
-         Node parentElem = afterThisElement.getParentNode();
-
-         if (parentElem.getNodeType() == Node.ELEMENT_NODE) {
-            String indentStr = "";
-
-            for (int i = 0; i < indent; i++) {
-               indentStr += " ";
-            }
-
-            Text indentText = doc.createTextNode(indentStr);
-            Node nextSibling = parentElem.getNextSibling();
-
-            if (nextSibling == null) {
-               parentElem.appendChild(indentText);
-            } else {
-               parentElem.insertBefore(indentText, nextSibling);
-            }
-         }
-      }
-   }
-
-   public static void indentElement(Element thisElement) {
-
-      if (thisElement != null) {
-         Document doc = thisElement.getOwnerDocument();
-         Node parentElem = thisElement.getParentNode();
-
-         if (parentElem.getNodeType() == Node.ELEMENT_NODE) {
-
-            String indentStr = "";
-
-            for (int i = 0; i < Constants.xmlOutputProperties.getXMLIndentLevel(); i++) {
-               indentStr += Constants.xmlOutputProperties.getXMLIndentPattern();
-            }
-
-            Text indentText = doc.createTextNode(indentStr);
-            parentElem.insertBefore(indentText, thisElement);
-
-
-            Node nextSibling = parentElem.getNextSibling();
-
-            if (nextSibling != null) {
-               parentElem.insertBefore(doc.createTextNode("\n"), nextSibling);
-            } else {
-               parentElem.appendChild(doc.createTextNode("\n"));
-            }
-         }
-      }
-   }
-   */
-
-   /**
-    * Convenience methods to catch the <B>first</B> child of an
-    * <CODE>Element</CODE> with a given <CODE>NodeName</CODE> which
-    * is in XML Signature namespace.
-    *
-    * @param parentNode the parent node
-    * @param nodeName the name of the child
-    * @return the child Element
-    */
-   public static Element getFirstChildElementInSignatureNS(
-           Element parentElement, String childLocalName) {
-
-      NodeList nl = getDirectChildrenElementsNS(parentElement, childLocalName,
-                                                Constants.SignatureSpecNS);
-
-      if (nl.getLength() == 0) {
-         return null;
-      } else {
-         return (Element) nl.item(0);
-      }
-   }
-
-   /**
-    * Convenience methods to catch the <B>first</B> child of an
-    * <CODE>Element</CODE> with a given <CODE>NodeName</CODE> and
-    * <CODE>NamespaceURI</CODE>
-    *
-    * @param parentElement
-    * @param childLocalName
-    * @param namespace
-    * @return the child Element
-    */
-   public static Element getFirstChildElementNS(Element parentElement,
-           String childLocalName, String namespace) {
-
-      NodeList nl = getDirectChildrenElementsNS(parentElement, childLocalName,
-                                                namespace);
-
-      if (nl.getLength() == 0) {
-         return null;
-      } else {
-         return (Element) nl.item(0);
-      }
-   }
-
-   /**
-    * Retrieves the direct Element children of a particular namespace with a
-    * specific local name from the element.
-    *
-    * This is very often used instead of {@link org.w3c.dom.Element#getElementsByTagNameNS}
-    * due to the fact that {@link org.w3c.dom.Element#getElementsByTagNameNS}
-    * searches recursive through all descendants. If e.g. the one and only
-    * ds:SignatureValue of a ds:Signature should be matched,
-    * {@link org.w3c.dom.Element#getElementsByTagNameNS} can return more than
-    * one Node because it finds ds:SignedInfo elements in Signatures, which are
-    * in Objects of the original ds:Signature.
-    *
-    * @param parentElement
-    * @param namespace
-    * @param childLocalName
-    * @return the NodeList which contains the selected children
-    */
-   public static NodeList getDirectChildrenElementsNS(Element parentElement,
-           String childLocalName, String namespace) {
-
-      NodeList allNodes = parentElement.getChildNodes();
-      HelperNodeList selectedNodes = new HelperNodeList();
-
-      for (int i = 0; i < allNodes.getLength(); i++) {
-         Node currentNode = allNodes.item(i);
-
-         //J-
-         if ((currentNode.getNodeType() == Node.ELEMENT_NODE) &&
-             ((Element) currentNode).getLocalName().equals(childLocalName) &&
-             (((Element) currentNode).getNamespaceURI() != null) &&
-             ((Element) currentNode).getNamespaceURI().equals(namespace)
-             ) {
-            selectedNodes.appendChild(currentNode);
-         }
-         //J+
-      }
-
-      return selectedNodes;
-   }
-
-   /**
-    * Method getSingleExistingChildElementSignatureNS
-    *
-    * @param element
-    * @param childLocalName
-    * @return
-    * @throws DOMException
-    */
-   public static Element getSingleExistingChildElementSignatureNS(
-           Element element, String childLocalName) throws DOMException {
-      return getSingleExistingChildElementNS(element, childLocalName,
-                                             Constants.SignatureSpecNS);
-   }
-
-   /**
-    * Retrieves the one and only direct Element child of a particular namespace
-    * with a specific local name from the element.
-    *
-    * @param element is the parent element which contains the searches one.
-    * @param namespace the namespace in which the searched element has to be
-    * @param childLocalName
-    * @return
-    * @throws DOMException
-    */
-   public static Element getSingleExistingChildElementNS(
-           Element element, String childLocalName, String namespace)
-              throws DOMException {
-
-      NodeList correctOnes = getDirectChildrenElementsNS(element,
-                                childLocalName, namespace);
-
-      if (correctOnes.getLength() == 1) {
-         return (Element) correctOnes.item(0);
-      } else {
-
-         /*
-         Object exArgs[] = { childLocalName, element.getLocalName() };
-
-         throw new DOMException(DOMException.WRONG_DOCUMENT_ERR,
-                                Constants.translate("xml.WrongContent",
-                                                    exArgs));
-         */
-         return null;
-      }
-   }
-
-   /**
     * Prints a sub-tree to standard out.
     *
     * @param ctxNode
@@ -457,7 +204,7 @@ public class XMLUtils {
       }
 
       return selectedNodes;
-   }    //getDirectChildrenElements:NodeList
+   }
 
    /**
     * Outputs a DOM tree to a file.
@@ -608,7 +355,7 @@ public class XMLUtils {
 
       Element element = doc.createElementNS(
          Constants.SignatureSpecNS,
-         Constants.xmlOutputProperties.getSignatureSpecNSprefix() + ":"
+         Constants.getSignatureSpecNSprefix() + ":"
          + elementName);
 
       /* bigInteger must be positive */
@@ -726,7 +473,41 @@ public class XMLUtils {
    }
 
    /**
-    * Returns true if the element is in XML Signature namespace and the local name equals the supplied one.
+    * Creates an Element in the XML Encryption specification namespace.
+    *
+    * @param doc the factory Document
+    * @param elementName the local name of the Element
+    * @return the Element
+    */
+   public static Element createElementInEncryptionSpace(Document doc,
+           String elementName) {
+
+      if (doc == null) {
+         throw new RuntimeException("Document is null");
+      }
+
+      String xenc = EncryptionConstants.getEncryptionSpecNSprefix();
+
+      if ((xenc == null) || (xenc.length() == 0)) {
+         Element element = doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
+                                               elementName);
+
+         element.setAttribute("xmlns", Constants.SignatureSpecNS);
+
+         return element;
+      } else {
+         Element element = doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
+                                               xenc + ":" + elementName);
+
+         element.setAttribute("xmlns:" + xenc, EncryptionConstants.EncryptionSpecNS);
+
+         return element;
+      }
+   }
+
+   /**
+    * Returns true if the element is in XML Signature namespace and the local
+    * name equals the supplied one.
     *
     * @param element
     * @param localName
@@ -744,6 +525,36 @@ public class XMLUtils {
       }
 
       if (!element.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
+         return false;
+      }
+
+      if (!element.getLocalName().equals(localName)) {
+         return false;
+      }
+
+      return true;
+   }
+
+   /**
+    * Returns true if the element is in XML Encryption namespace and the local
+    * name equals the supplied one.
+    *
+    * @param element
+    * @param localName
+    * @return true if the element is in XML Encryption namespace and the local name equals the supplied one
+    */
+   public static boolean elementIsInEncryptionSpace(Element element,
+           String localName) {
+
+      if (element == null) {
+         return false;
+      }
+
+      if (element.getNamespaceURI() == null) {
+         return false;
+      }
+
+      if (!element.getNamespaceURI().equals(EncryptionConstants.EncryptionSpecNS)) {
          return false;
       }
 
@@ -782,6 +593,33 @@ public class XMLUtils {
          Object exArgs[] = { localName, element.getLocalName() };
 
          throw new XMLSignatureException("xml.WrongElement", exArgs);
+      }
+   }
+
+   /**
+    * Verifies that the given Element is in the XML Encryption namespace
+    * {@link org.apache.xml.security.utils.Constants#EncryptionSpecNS} and that the
+    * local name of the Element matches the supplied on.
+    *
+    * @param element Element to be checked
+    * @param localName
+    * @throws XMLSecurityException if element is not in Encryption namespace or if the local name does not match
+    * @see org.apache.xml.security.utils.Constants#EncryptionSpecNS
+    */
+   public static void guaranteeThatElementInEncryptionSpace(
+           Element element, String localName) throws XMLSecurityException {
+
+      if (element == null) {
+         Object exArgs[] = { localName, null };
+
+         throw new XMLSecurityException("xml.WrongElement", exArgs);
+      }
+
+      if ((localName == null) || localName.equals("")
+              ||!elementIsInEncryptionSpace(element, localName)) {
+         Object exArgs[] = { localName, element.getLocalName() };
+
+         throw new XMLSecurityException("xml.WrongElement", exArgs);
       }
    }
 

@@ -570,6 +570,50 @@ public class XMLSignature extends ElementProxy {
    /**
     * Method sign
     *
+    * @param secretKey
+    * @throws XMLSignatureException
+    */
+   public void sign(SecretKey secretKey) throws XMLSignatureException {
+
+      cat.debug("sign() called");
+
+      try {
+         if (this._state == MODE_SIGN) {
+            Element signatureMethodElement =
+               this._signedInfo.getSignatureMethodElement();
+            SignatureAlgorithm sa =
+               new SignatureAlgorithm(signatureMethodElement,
+                                      this.getBaseURI());
+
+            sa.initSign(secretKey);
+
+            SignedInfo si = this.getSignedInfo();
+
+            si.generateDigestValues();
+
+            byte signedInfoOctets[] = si.getCanonicalizedOctetStream();
+
+            sa.update(signedInfoOctets);
+
+            byte jcebytes[] = sa.sign();
+
+            this.setSignatureValueElement(jcebytes);
+            cat.debug("sa.sign() finished");
+         }
+      } catch (IOException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (CanonicalizationException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (InvalidCanonicalizerException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (XMLSecurityException ex) {
+         throw new XMLSignatureException("empty", ex);
+      }
+   }
+
+   /**
+    * Method sign
+    *
     * @return
     * @throws XMLSignatureException
     */

@@ -76,8 +76,6 @@ import org.apache.xpath.XPathAPI;
  *
  * @author $Author$
  */
-
-// public abstract class ElementProxy implements org.w3c.dom.Element {
 public class ElementProxy {
 
    /** Field cat */
@@ -87,6 +85,8 @@ public class ElementProxy {
    public static final int MODE_SIGN = 0;
    public static final int MODE_VERIFY = 1;
    public static final int MODE_UNKNOWN = 2;
+   public static final int MODE_ENCRYPT = 0;
+   public static final int MODE_DECRYPT = 1;
    protected int _state = MODE_UNKNOWN;
    //J+
 

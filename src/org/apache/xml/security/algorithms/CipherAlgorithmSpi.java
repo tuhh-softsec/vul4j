@@ -60,70 +60,110 @@ package org.apache.xml.security.algorithms;
 
 
 
-import org.w3c.dom.*;
-import org.apache.xml.security.utils.*;
+import java.security.Key;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import javax.crypto.SecretKey;
+import java.security.SecureRandom;
+import java.security.spec.AlgorithmParameterSpec;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.w3c.dom.*;
 
 
 /**
- * The Algorithm class which stores the Algorithm URI as a string.
  *
+ * @author $Author$
  */
-public class Algorithm extends ElementProxy {
+public abstract class CipherAlgorithmSpi {
 
-   /** Field cat */
+   /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Algorithm.class.getName());
+      org.apache.log4j.Category.getInstance(CipherAlgorithmSpi.class.getName());
+
+   /** Field algorithm */
+   protected javax.crypto.Cipher _cipherAlgorithm = null;
 
    /**
-    *
-    * @param doc
-    * @param localname
-    * @param algorithmURI is the URI of the algorithm as String
-    */
-   public Algorithm(Document doc, String localname, String algorithmURI) {
-
-      super(doc, localname);
-
-      this._constructionElement =
-         XMLUtils.createElementInSignatureSpace(this._doc, localname);
-
-      this.setAlgorithmURI(algorithmURI);
-   }
-
-   /**
-    * Constructor Algorithm
-    *
-    * @param element
-    * @param BaseURI
-    * @throws XMLSecurityException
-    */
-   public Algorithm(Element element, String BaseURI)
-           throws XMLSecurityException {
-      super(element, BaseURI);
-   }
-
-   /**
-    * Method getAlgorithmURI
+    * Method engineGetJCEAlgorithmString
     *
     * @return
     */
-   public String getAlgorithmURI() {
-      return this._constructionElement.getAttribute(Constants._ATT_ALGORITHM);
+   protected String engineGetJCEAlgorithmString() {
+      return this._cipherAlgorithm.getAlgorithm();
    }
 
    /**
-    * Sets the algorithm's URI as used in the signature.
+    * Method engineGetJCEProviderName
     *
-    * @param algorithmURI is the URI of the algorithm as String
+    * @return
     */
-   protected void setAlgorithmURI(String algorithmURI) {
-
-      if ((this._state == MODE_SIGN) && (algorithmURI != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_ALGORITHM,
-                                                algorithmURI);
-      }
+   protected String engineGetJCEProviderName() {
+      return this._cipherAlgorithm.getProvider().getName();
    }
+
+   /**
+    * Returns the URI representation of <code>Transformation algorithm</code>
+    *
+    * @return the URI representation of <code>Transformation algorithm</code>
+    */
+   protected abstract String engineGetURI();
+
+   /**
+    * Proxy method for {@link java.security.Signature#update}
+    * which is executed on the internal {@link java.security.Signature} object.
+    *
+    * @param input
+    * @throws XMLSecurityException
+    */
+   protected abstract void engineUpdate(byte[] input)
+      throws XMLSecurityException;
+
+   /**
+    * Proxy method for {@link java.security.Signature#update}
+    * which is executed on the internal {@link java.security.Signature} object.
+    *
+    * @param buf
+    * @param offset
+    * @param len
+    * @throws XMLSecurityException
+    */
+   protected abstract void engineUpdate(byte buf[], int offset, int len)
+      throws XMLSecurityException;
+
+   /** Field _doc */
+   Document _doc = null;
+
+   /**
+    * Method engineSetDocument
+    *
+    * @param doc
+    */
+   protected void engineSetDocument(Document doc) {
+      this._doc = doc;
+   }
+
+   /** Field _constructionElement */
+   Element _constructionElement = null;
+
+   /**
+    * Method engineGetContextFromElement
+    *
+    * @param element
+    * @throws XMLSecurityException
+    */
+   protected void engineReadContextFromElement(Element element)
+           throws XMLSecurityException {
+      this._constructionElement = element;
+   }
+
+   /**
+    * Method engineAddContextToElement
+    *
+    * @param element
+    * @throws XMLSecurityException
+    */
+   protected void engineAddContextToElement(Element element)
+           throws XMLSecurityException {}
 
    static {
       org.apache.xml.security.Init.init();

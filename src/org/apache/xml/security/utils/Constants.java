@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -89,7 +88,7 @@ public class Constants {
    /** Field configurationFile */
    public static String configurationFile = "data/websig.conf";
 
-   /** Field configurationFileNew           */
+   /** Field configurationFileNew */
    public static final String configurationFileNew = ".xmlsecurityconfig";
 
    /** Field exceptionMessagesResourceBundleDir */
@@ -99,32 +98,16 @@ public class Constants {
    /** Field exceptionMessagesResourceBundleBase is the location of the <CODE>ResourceBundle</CODE> */
    public static final String exceptionMessagesResourceBundleBase =
       exceptionMessagesResourceBundleDir + "/" + "xmlsecurity";
-
-
-   /** Field xmlOutputProperties */
-   public static XMLOutputProperties xmlOutputProperties = null;
-
-   /**
-    * Method incrementXMLIndentLevel
-    *
-    */
-   public static void incrementXMLIndentLevel() {
-      xmlOutputProperties.incrementXMLIndentLevel();
-   }
-
-   /**
-    * Method decrementXMLIndentLevel
-    *
-    */
-   public static void decrementXMLIndentLevel() {
-      xmlOutputProperties.decrementXMLIndentLevel();
-   }
-
    //J-
    /**
     * The URL of the <A HREF="http://www.w3.org/TR/2001/CR-xmldsig-core-20010419/">XML Signature specification</A>
     */
-   public static final String SPECIFICATION_URL = "http://www.w3.org/TR/2001/CR-xmldsig-core-20010419/";
+   public static final String SIGNATURESPECIFICATION_URL = "http://www.w3.org/TR/2001/CR-xmldsig-core-20010419/";
+
+   /**
+    * The URL of the <A HREF="http://www.w3.org/TR/xmlenc-core/">XML Encryption Syntax and Processing</A>
+    */
+
 
    /**
     * The namespace of the <A HREF="http://www.w3.org/TR/2001/CR-xmldsig-core-20010419/">XML Signature specification</A>
@@ -170,8 +153,8 @@ public class Constants {
    public static final String _TAG_KEYINFO                = "KeyInfo";
 
    public static final String _TAG_KEYNAME                = "KeyName";
-   public static final String _TAG_KEYVALUE               = "KeyValue"; // MUST
-   public static final String _TAG_RETRIEVALMETHOD        = "RetrievalMethod"; // SHOULD
+   public static final String _TAG_KEYVALUE               = "KeyValue";
+   public static final String _TAG_RETRIEVALMETHOD        = "RetrievalMethod";
    public static final String _TAG_X509DATA               = "X509Data";
    public static final String _TAG_PGPDATA                = "PGPData";
    public static final String _TAG_SPKIDATA               = "SPKIData";
@@ -202,20 +185,8 @@ public class Constants {
    public static final String _TAG_PGPKEYPACKET           = "PGPKeyPacket";
    public static final String _TAG_SPKISEXP               = "SPKISexp";
 
-   //Certificate type
-   public static final String _CERT_X509 = "X509";
-
    // Digest - Required SHA1
    public static final String ALGO_ID_DIGEST_SHA1        = SignatureSpecNS + "sha1";
-
-   /*
-   // MAC - Required HMAC-SHA1
-   public static final String ALGO_ID_MAC_HMAC_SHA1      = XMLSignature.ALGO_ID_MAC_HMAC_SHA1;
-   // Signature - Required DSAwithSHA1 (DSS)
-   public static final String ALGO_ID_SIGNATURE_DSA      = XMLSignature.ALGO_ID_SIGNATURE_DSA;
-   // Signature - Recommended RSAwithSHA1
-   public static final String ALGO_ID_SIGNATURE_RSA      = XMLSignature.ALGO_ID_SIGNATURE_RSA;
-   */
 
    /**
     * @see <A HREF="http://www.ietf.org/internet-drafts/draft-blake-wilson-xmldsig-ecdsa-02.txt">
@@ -249,7 +220,7 @@ public class Constants {
     * @todo Add consistency checking for valid prefix
     */
    public static void setSignatureSpecNSprefix(String newPrefix) {
-      _signatureSpecNSprefix = newPrefix;
+      Constants._signatureSpecNSprefix = newPrefix;
    }
 
    /**
@@ -263,12 +234,10 @@ public class Constants {
     * @see #setSignatureSpecNSprefix
     */
    public static String getSignatureSpecNSprefix() {
-      return _signatureSpecNSprefix;
+      return Constants._signatureSpecNSprefix;
    }
 
    static {
       org.apache.xml.security.Init.init();
-
-      Constants.xmlOutputProperties = new XMLOutputProperties();
    }
 }

@@ -60,11 +60,13 @@ package org.apache.xml.security.signature;
 
 
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Vector;
-import org.w3c.dom.*;
-import org.apache.xpath.XPathAPI;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apache.xml.security.algorithms.*;
 import org.apache.xml.security.c14n.*;
@@ -73,8 +75,9 @@ import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.transforms.*;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -169,16 +172,51 @@ public class SignedInfo extends Manifest {
     * @param element <code>SignedInfo</code>
     * @param BaseURI the URI of the resource where the XML instance was stored
     * @throws XMLSecurityException
+    * @see <A HREF="http://lists.w3.org/Archives/Public/w3c-ietf-xmldsig/2001OctDec/0033.html">Question</A>
+    * @see <A HREF="http://lists.w3.org/Archives/Public/w3c-ietf-xmldsig/2001OctDec/0054.html">Answer</A>
     */
    public SignedInfo(Element element, String BaseURI)
            throws XMLSecurityException {
 
-      // Parse the Reference childern and Id attribute in the Manifest
+      // Parse the Reference children and Id attribute in the Manifest
       super(element, BaseURI);
 
       // element must be of type ds:Reference
       XMLUtils.guaranteeThatElementInSignatureSpace(element,
               Constants._TAG_SIGNEDINFO);
+
+      /* canonicalize ds:SignedInfo, reparse it into a new document
+       * and replace the original not-canonicalized ds:SignedInfo by
+       * the re-parsed canonicalized one.
+       */
+      try {
+         Canonicalizer c14nizer =
+            Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
+         byte c14nizedBytes[] =
+            c14nizer.canonicalize(this._constructionElement);
+
+         javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
+
+         dbf.setNamespaceAware(true);
+
+         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+         org.w3c.dom.Document newdoc =
+            db.parse(new ByteArrayInputStream(c14nizedBytes));
+         Node imported = this._doc.importNode(newdoc.getDocumentElement(),
+                                              true);
+
+         this._constructionElement.getParentNode().replaceChild(imported,
+                 this._constructionElement);
+
+         this._constructionElement = (Element) imported;
+      } catch (ParserConfigurationException ex) {
+         throw new XMLSecurityException("empty", ex);
+      } catch (IOException ex) {
+         throw new XMLSecurityException("empty", ex);
+      } catch (SAXException ex) {
+         throw new XMLSecurityException("empty", ex);
+      }
 
       this._signatureAlgorithm =
          new SignatureAlgorithm(this.getSignatureMethodElement(),

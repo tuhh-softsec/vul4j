@@ -121,12 +121,52 @@ public class JCEMapper {
                (java.security.Provider) Class.forName(providerClass)
                   .newInstance();
 
-            java.security.Security.addProvider(prov);
+            if (java.security.Security.getProvider(Id) == null) {
+               cat.debug("The provider " + Id
+                         + " had to be added to the java.security.Security");
+               java.security.Security.addProvider(prov);
+            }
          }
       } catch (TransformerException ex) {}
       catch (ClassNotFoundException ex) {}
       catch (IllegalAccessException ex) {}
       catch (InstantiationException ex) {}
+   }
+
+   /**
+    * Method getProviderIsAvailable
+    *
+    * @param providerId
+    * @return
+    */
+   public static boolean getProviderIsAvailable(String providerId) {
+
+      boolean available = false;
+
+      try {
+         Element pro =
+            (Element) XPathAPI.selectSingleNode(JCEMapper._providerList,
+                                                "./x:Providers/x:Provider[@Id='"
+                                                + providerId + "']",
+                                                JCEMapper._nscontext);
+         String providerClass = pro.getAttribute("Class");
+         java.security.Provider prov =
+            (java.security.Provider) Class.forName(providerClass).newInstance();
+
+         if (prov != null) {
+            available = true;
+         }
+      } catch (TransformerException ex) {
+         ;
+      } catch (ClassNotFoundException ex) {
+         ;
+      } catch (IllegalAccessException ex) {
+         ;
+      } catch (InstantiationException ex) {
+         ;
+      }
+
+      return available;
    }
 
    /**
@@ -157,20 +197,58 @@ public class JCEMapper {
             String jceName = pro.getAttribute("JCEName");
             String providerId = pro.getAttribute("ProviderId");
 
-            JCEMapper.addProvider(providerId);
+            if (JCEMapper.getProviderIsAvailable(providerId)) {
+               JCEMapper.addProvider(providerId);
 
-            Element providerElem = (Element) XPathAPI.selectSingleNode(
-               JCEMapper._providerList,
-               "./x:Providers/x:Provider[@Id='" + providerId + "']",
-               JCEMapper._nscontext);
-            String providerClass = providerElem.getAttribute("Class");
-            ProviderIdClass result = new ProviderIdClass(jceName, providerId);
+               ProviderIdClass result = new ProviderIdClass(jceName,
+                                           providerId);
 
-            cat.debug("Found " + result.getAlgorithmID() + " from provider "
-                      + result.getProviderId());
+               cat.debug("Found " + result.getAlgorithmID() + " from provider "
+                         + result.getProviderId());
 
-            return result;
+               return result;
+            }
          }
+      } catch (TransformerException ex) {
+         cat.debug("Found nothing: " + ex.getMessage());
+      }
+
+      return null;
+   }
+
+   /**
+    * Method translateURItoJCEID
+    *
+    * @param AlgorithmURI
+    * @param requestedProviderId
+    * @return
+    */
+   public static ProviderIdClass translateURItoJCEID(String AlgorithmURI,
+           String requestedProviderId) {
+
+      cat.debug("Request for URI " + AlgorithmURI + " from provider "
+                + requestedProviderId);
+
+      if (!JCEMapper.getProviderIsAvailable(requestedProviderId)) {
+         return null;
+      }
+
+      try {
+         Element pro = (Element) XPathAPI.selectSingleNode(
+            JCEMapper._providerList,
+            "./x:Algorithms/x:Algorithm[@URI='" + AlgorithmURI
+            + "']/x:ProviderAlgo[@ProviderId='" + requestedProviderId + "']",
+            JCEMapper._nscontext);
+         String jceName = pro.getAttribute("JCEName");
+
+         JCEMapper.addProvider(requestedProviderId);
+
+         ProviderIdClass result = new ProviderIdClass(jceName, requestedProviderId);
+
+         cat.debug("Found " + result.getAlgorithmID() + " from provider "
+                   + result.getProviderId());
+
+         return result;
       } catch (TransformerException ex) {
          cat.debug("Found nothing: " + ex.getMessage());
       }
@@ -209,6 +287,12 @@ public class JCEMapper {
       }
    }
 
+   /**
+    * Class ProviderIdClass
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class ProviderIdClass {
 
       /** Field _jceid */
