@@ -1,4 +1,4 @@
-$Id: RELEASE-NOTES.txt,v 1.3 2002/03/20 20:28:28 rdonkin Exp $
+$Id: RELEASE-NOTES.txt,v 1.4 2002/04/28 03:38:29 craigmcc Exp $
 
                           Commons Digester Package
                                 Version 1.2
@@ -6,34 +6,75 @@ $Id: RELEASE-NOTES.txt,v 1.3 2002/03/20 20:28:28 rdonkin Exp $
 
 
 INTRODUCTION:
+============
 
 This document contains the release notes for this version of the Commons
-Digester package, and highlights changes since the previous version.  The
-current release adds new features and bug fixes, and is being done now to
-follow the release early/release often mentality.
+Digester package, and highlights changes since the previous version.
 
 
 NEW FEATURES:
+============
 
-* XMLRules.  Allows a Digester user to define Digester Rules in xml, and then
-  load them at runtime.  
-  Check it out in the org.apache.commons.digester.xmlrules package.
 
-* Logging.  Digester has been updated to use the Commons logging package.  This
-  will allow the Digester user to plug in their logging system.  Check out the
-  Commons logging package for more information.
+Logging:
+-------
 
-* More Flexible Method Matching. SetRootRule, SetNextRule and SetTopRule now 
-  support more flexible method matching. This means that a matching method is
-  more likely to be found but in some very specific circumstances it is possible
-  that it will be less precise that the old matching method. The old behaviour 
-  can be enabled by setting the ExactMatch property to true. See the java doc 
-  comments for more details.
+All components of the commons-digester package now use the commons-logging
+package for logging, which means that the Digester classes will transparently
+adapt to whatever logging implementation your application is using.  Set the
+logging detail level to DEBUG or TRACE to receive debugging output.  The
+following log names are utilized:
+  org.apache.commons.digester.Digester
+  org.apache.commons.digester.Digester.sax
 
-BUG FIXES:
 
-* Rule.body() used to get a trim()'ed version of the body text.  This can affect
-  some systems adversely.  Digester's built-in Rule implementations trim()
-  internally to maintain behavior of previous releases, but rule implementors
-  should take this into account.
+XML Rules Support:
+-----------------
 
+You can now define Digester Rules in an XML-based format that is loaded at
+runtime, rather than requiring programmatic declaration of the relevant rules.
+Details are in the org.apache.commons.digester.xmlrules package.
+
+
+Digester Enhancements:
+---------------------
+
+The parse() method that accepts a File parameter will now create an InputSource
+that declares a system identifier for the file containing the XML document to
+be parsed.  This allows relative references to other XML entities to be
+resolved correctly.
+
+
+Rule Enhancements:
+-----------------
+
+A no-arguments constructor for Rule has been added, so that you can dynamically
+instantiate Rule instances like any other JavaBean.
+
+Rules that invoke methods dynamically now take advantage of the new
+commons-beanutils facilities for matching methods by compatible argument types,
+rather than requiring an exact match.
+
+You can now use CallMethodRule to call methods that take no arguments.
+
+New BeanPropertySetterRule allows you to set arbitrary properties of the
+top element on the evaluation stack.
+
+New SetRootRule allows convenient access to the root element on the
+evaluation stack.
+
+
+
+BUG REPORTS ADDRESSED:
+=====================
+
+4519 Digester#parse() throws NullPointerException if unable to instantiate
+     SAX parser
+4553 Digester always logs exceptions
+5804 SetTopRule description: swap parent and child?
+6043 [PATCH] for SetTopRule.java to fix misleading debug message and other
+     clarifications
+6290 Unsafe handling of Throwable
+6524 Minor error in digester java-doc
+8244 CallMethodRule can't be used to call no arg methods
+8461 Digester parse(File) is crippled in two aspects
