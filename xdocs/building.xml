@@ -26,7 +26,7 @@
       <p>
          To build Commons Functor from scratch, you must first obtain the source, either
          from 
-         <a href="./cvs-usage.html#Anonymous+CVS+Access">the CVS server</a>
+         <a href="./cvs-usage.html">the SVN server</a>
          or from
          <a href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/">a source snapshot</a>.
       </p>

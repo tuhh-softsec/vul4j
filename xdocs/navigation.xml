@@ -29,8 +29,8 @@
       <item name="Building" href="/building.html"/>
       <item name="Test Coverage" href="/clover/index.html"/>
       <item name="Team" href="/team-list.html"/>
-      <item name="Status" href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/STATUS.txt"/>
-      <item name="CVS" href="http://cvs.apache.org/viewcvs/jakarta-commons-sandbox/functor/"/>
+      <item name="Status" href="http://svn.apache.org/viewcvs/*checkout*/jakarta/commons/sandbox/functor/trunk/STATUS.txt"/>
+      <item name="SVN" href="http://svn.apache.org/viewcvs/jakarta/commons/sandbox/functor/"/>
     </menu>
     &common-menus;
   </body>
