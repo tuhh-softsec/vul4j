@@ -12,7 +12,15 @@ import java.util.List;
 
 public class Xpp3DomBuilder
 {
+    private static final boolean DEFAULT_TRIM = true;
+
     public static Xpp3Dom build( Reader reader )
+        throws XmlPullParserException, IOException
+    {
+        return build( reader, DEFAULT_TRIM );
+    }
+
+    public static Xpp3Dom build( Reader reader, boolean trim )
         throws XmlPullParserException, IOException
     {
         XmlPullParser parser = new MXParser();
@@ -21,7 +29,7 @@ public class Xpp3DomBuilder
 
         try
         {
-            return build( parser );
+            return build( parser, trim );
         }
         finally
         {
@@ -30,6 +38,12 @@ public class Xpp3DomBuilder
     }
 
     public static Xpp3Dom build( XmlPullParser parser )
+        throws XmlPullParserException, IOException
+    {
+        return build( parser, DEFAULT_TRIM );
+    }
+
+    public static Xpp3Dom build( XmlPullParser parser, boolean trim )
         throws XmlPullParserException, IOException
     {
         List elements = new ArrayList();
@@ -76,7 +90,12 @@ public class Xpp3DomBuilder
 
                 StringBuffer valueBuffer = (StringBuffer) values.get( depth );
 
-                valueBuffer.append( parser.getText() );
+                String text = parser.getText();
+                if ( trim )
+                {
+                    text = text.trim();
+                }
+                valueBuffer.append( text );
             }
             else if ( eventType == XmlPullParser.END_TAG )
             {

@@ -1,28 +1,11 @@
 package org.codehaus.plexus.util.xml;
 
-/*
- * Copyright 2001-2005 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import junit.framework.TestCase;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 
 /**
@@ -39,13 +22,25 @@ public class Xpp3DomBuilderTest
     {
         String domString = createDomString();
 
-        Reader r = new StringReader( domString );
-
-        Xpp3Dom dom = Xpp3DomBuilder.build( r );
+        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( domString ) );
 
         Xpp3Dom expectedDom = createExpectedDom();
 
         assertEquals( "check DOMs match", expectedDom, dom );
+    }
+
+    public void testBuildTrimming()
+        throws Exception
+    {
+        String domString = createDomString();
+
+        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( domString ), true );
+
+        assertEquals( "test with trimming on", "element1", dom.getChild( "el1" ).getValue() );
+
+        dom = Xpp3DomBuilder.build( new StringReader( domString ), false );
+
+        assertEquals( "test with trimming off", " element1\n ", dom.getChild( "el1" ).getValue() );
     }
 
     public void testBuildFromXpp3Dom()
@@ -132,7 +127,7 @@ public class Xpp3DomBuilderTest
     {
         StringBuffer buf = new StringBuffer();
         buf.append( "<root>\n" );
-        buf.append( " <el1>element1</el1>\n" );
+        buf.append( " <el1> element1\n </el1>\n" );
         buf.append( " <el2 att2='attribute2'>\n" );
         buf.append( "  <el3 att3='attribute3'>element3</el3>\n" );
         buf.append( " </el2>\n" );
