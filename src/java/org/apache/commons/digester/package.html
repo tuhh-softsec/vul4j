@@ -1006,6 +1006,22 @@ for the Servlet Spec. 2.4 but is not recognized by JAXP 1.1 parsers.
 This warning is harmless.</p>
 <p>
 </li>
+<li></a><strong>Why Doesn't Schema Validation Work With Parser XXX Out Of The Box?</strong>
+<p>
+Schema location and language settings are often need for validation using schemas.
+Unfortunately, there isn't a single standard approach to how these properties are
+configured on a parser.
+Digester tries to guess the parser being used and configure it appropriately
+but it's not infallible.
+You might need to grab an instance, configure it and pass it to Digester.
+</p>
+<p>
+If you want to support more than one parser in a portable manner, 
+then you'll probably want to take a look at the 
+<code>org.apache.commons.digester.parsers</code> package
+and add a new class to support the particular parser that's causing problems.
+</p>
+</li>
 <li></a><strong>Where Can I Find Example Code?</strong>
 <a name="doc.FAQ.Examples">
 <p>Digester ships with a sample application: a mapping for the <em>Rich Site 

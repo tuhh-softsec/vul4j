@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.87 2003/12/02 23:21:16 rdonkin Exp $
- * $Revision: 1.87 $
- * $Date: 2003/12/02 23:21:16 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.88 2004/01/06 22:15:57 rdonkin Exp $
+ * $Revision: 1.88 $
+ * $Date: 2004/01/06 22:15:57 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,6 +74,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -113,13 +114,13 @@ import org.xml.sax.helpers.DefaultHandler;
  * even from the same thread.</p>
  *
  * <p><strong>IMPLEMENTATION NOTE</strong> - A bug in Xerces 2.0.2 prevents
- * the support of XML schema. You need Xerces 2.1 or JAXP 1.2.1 to make
- * that class working with XML schema</p>
+ * the support of XML schema. You need Xerces 2.1/2.3 and up to make
+ * this class working with XML schema</p>
  *
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.87 $ $Date: 2003/12/02 23:21:16 $
+ * @version $Revision: 1.88 $ $Date: 2004/01/06 22:15:57 $
  */
 
 public class Digester extends DefaultHandler {
@@ -224,19 +225,12 @@ public class Digester extends DefaultHandler {
      */
     protected SAXParserFactory factory = null;
 
-
     /**
-     * The JAXP 1.2 property required to set up the schema location.
-     */
-    private static final String JAXP_SCHEMA_SOURCE =
-        "http://java.sun.com/xml/jaxp/properties/schemaSource";
-
-    /**
-     * The JAXP 1.2 property to set up the schemaLanguage used.
+     * @deprecated This is now managed by {@link ParserFeatureSetterFactory}
      */
     protected String JAXP_SCHEMA_LANGUAGE =
         "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-
+    
     
     /**
      * The Locator associated with our parser.
@@ -706,21 +700,21 @@ public class Digester extends DefaultHandler {
 
         // Create a new parser
         try {
-            parser = getFactory().newSAXParser();         
+            if (validating) {
+                Properties properties = new Properties();
+                properties.put("SAXParserFactory", getFactory());
+                if (schemaLocation != null) {
+                    properties.put("schemaLocation", schemaLocation);
+                    properties.put("schemaLanguage", schemaLanguage);
+                }
+                parser = ParserFeatureSetterFactory.newSAXParser(properties);               } else {
+                parser = getFactory().newSAXParser();
+            }
         } catch (Exception e) {
             log.error("Digester.getParser: ", e);
             return (null);
         }
 
-        // Configure standard properties and return the new instance
-        try {
-            if (schemaLocation != null) {
-                setProperty(JAXP_SCHEMA_LANGUAGE, schemaLanguage);
-                setProperty(JAXP_SCHEMA_SOURCE, schemaLocation);
-            }
-        } catch (Exception e) {
-            log.warn("" + e);
-        }
         return (parser);
 
     }
