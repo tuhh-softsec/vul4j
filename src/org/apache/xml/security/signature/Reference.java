@@ -142,6 +142,8 @@ import org.apache.xml.security.utils.resolver.*;
  */
 public class Reference extends SignatureElementProxy {
 
+   public static boolean CacheSignedNodes = false;
+
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(Reference.class.getName());
@@ -445,16 +447,9 @@ public class Reference extends SignatureElementProxy {
    }
 
    /**
-    * This method returns the {@link XMLSignatureInput} which is referenced by the
-    * <CODE>URI</CODE> Attribute.
-    *
-    * @throws ReferenceNotInitializedException
-    * @throws XMLSignatureException
-    * @see Manifest#verifyReferences
+    * Returns the XMLSignatureInput which is created by de-referencing the URI attribute.
     */
-   protected void dereferenceURIandPerformTransforms()
-           throws ReferenceNotInitializedException, XMLSignatureException {
-
+   public XMLSignatureInput getContentsBeforeTransformation () throws ReferenceNotInitializedException {
       try {
          Attr URIAttr =
             this._constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
@@ -479,23 +474,111 @@ public class Reference extends SignatureElementProxy {
 
          resolver.addProperties(this._manifest._resolverProperties);
 
-         this._transformsInput = resolver.resolve(URIAttr, this._baseURI);
+         XMLSignatureInput input = resolver.resolve(URIAttr, this._baseURI);
 
+         this._transformsInput = new XMLSignatureInput(input.getBytes());
+         this._transformsInput.setSourceURI(input.getSourceURI());
+
+         return input;
+      } catch (IOException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      } catch (ResourceResolverException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      } catch (XMLSecurityException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      }
+   }
+
+   /**
+    * Returns the data which is referenced by the URI attribute. This method
+    * only works works after a call to verify.
+    *
+    * @deprecated use
+    */
+   public XMLSignatureInput getTransformsInput() {
+      return this._transformsInput;
+   }
+
+   private XMLSignatureInput getContentsAfterTransformation (XMLSignatureInput input) throws XMLSignatureException {
+      try {
          Transforms transforms = this.getTransforms();
 
+         XMLSignatureInput output = null;
          if (transforms != null) {
-            this._transformsOutput =
-               transforms.performTransforms(this._transformsInput);
+            output = transforms.performTransforms(input);
+
+            this._transformsOutput = new XMLSignatureInput(output.getBytes());
+            this._transformsOutput.setSourceURI(output.getSourceURI());
          } else {
+            output = input;
+
             this._transformsOutput = this._transformsInput;
          }
+
+         return output;
+      } catch (IOException ex) {
+         throw new XMLSignatureException("empty", ex);
       } catch (ResourceResolverException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (CanonicalizationException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (InvalidCanonicalizerException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (TransformationException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (XMLSecurityException ex) {
+         throw new XMLSignatureException("empty", ex);
+      }
+   }
+
+   /**
+    * Returns the XMLSignatureInput which is the result of the Transforms.
+    */
+   public XMLSignatureInput getContentsAfterTransformation () throws XMLSignatureException {
+      XMLSignatureInput input = this.getContentsBeforeTransformation();
+
+      return this.getContentsAfterTransformation(input);
+   }
+
+   /**
+    * This method only works works after a call to verify.
+    *
+    */
+   public XMLSignatureInput getTransformsOutput() {
+      return this._transformsOutput;
+   }
+
+   /**
+    * This method returns the {@link XMLSignatureInput} which is referenced by the
+    * <CODE>URI</CODE> Attribute.
+    *
+    * @throws XMLSignatureException
+    * @see Manifest#verifyReferences
+    */
+   protected void dereferenceURIandPerformTransforms() throws XMLSignatureException {
+
+      try {
+
+         XMLSignatureInput input = this.getContentsBeforeTransformation();
+         XMLSignatureInput output = this.getContentsAfterTransformation(input);
+
+         /* at this stage, this._transformsInput and this._transformsOutput
+          * contain a huge amount of nodes. When we do not cache these nodes
+          * but only preserve the octets, the memory footprint is dramatically
+          * reduced.
+          */
+         if (!Reference.CacheSignedNodes) {
+            this._transformsInput = new XMLSignatureInput(input.getBytes());
+            this._transformsInput.setSourceURI(input.getSourceURI());
+
+            this._transformsOutput = new XMLSignatureInput(output.getBytes());
+            this._transformsOutput.setSourceURI(output.getSourceURI());
+         }
+      } catch (IOException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (CanonicalizationException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (InvalidCanonicalizerException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (TransformationException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (XMLSecurityException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
@@ -625,24 +708,6 @@ public class Reference extends SignatureElementProxy {
       }
 
       return equal;
-   }
-
-   /**
-    * Method getTransformsInput
-    *
-    *
-    */
-   public XMLSignatureInput getTransformsInput() {
-      return this._transformsInput;
-   }
-
-   /**
-    * Method getTransformsOutput
-    *
-    *
-    */
-   public XMLSignatureInput getTransformsOutput() {
-      return this._transformsOutput;
    }
 
    /**

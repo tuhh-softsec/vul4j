@@ -589,7 +589,7 @@ public class Manifest extends SignatureElementProxy {
     */
    public XMLSignatureInput getReferencedContentBeforeTransformsItem(int i)
            throws XMLSecurityException {
-      return this.item(i).getTransformsInput();
+      return this.item(i).getContentsBeforeTransformation();
    }
 
    /**
@@ -601,7 +601,7 @@ public class Manifest extends SignatureElementProxy {
     */
    public XMLSignatureInput getReferencedContentAfterTransformsItem(int i)
            throws XMLSecurityException {
-      return this.item(i).getTransformsOutput();
+      return this.item(i).getContentsAfterTransformation();
    }
 
    /**
