@@ -142,44 +142,33 @@ public abstract class SignatureAlgorithmSpi {
     * Proxy method for {@link java.security.Signature#initSign}
     * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @param privateKey
-    * @param secureRandom
+    * @param signingKey
     * @throws XMLSignatureException if this method is called on a MAC
     */
-   protected abstract void engineInitSign(
-      PrivateKey privateKey, SecureRandom secureRandom)
-         throws XMLSignatureException;
+   protected abstract void engineInitSign(Key signingKey)
+      throws XMLSignatureException;
 
    /**
     * Proxy method for {@link java.security.Signature#initSign}
     * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @param privateKey
+    * @param signingKey
+    * @param secureRandom
     * @throws XMLSignatureException if this method is called on a MAC
     */
-   protected abstract void engineInitSign(PrivateKey privateKey)
-      throws XMLSignatureException;
+   protected abstract void engineInitSign(
+      Key signingKey, SecureRandom secureRandom) throws XMLSignatureException;
 
    /**
     * Proxy method for {@link javax.crypto.Mac}
     * which is executed on the internal {@link javax.crypto.Mac#init(Key)} object.
     *
-    * @param secretKey
-    * @throws XMLSignatureException if this method is called on a Signature
-    */
-   protected abstract void engineInitSign(Key secretKey)
-      throws XMLSignatureException;
-
-   /**
-    * Proxy method for {@link javax.crypto.Mac}
-    * which is executed on the internal {@link javax.crypto.Mac#init(Key)} object.
-    *
-    * @param secretKey
+    * @param signingKey
     * @param algorithmParameterSpec
     * @throws XMLSignatureException if this method is called on a Signature
     */
    protected abstract void engineInitSign(
-      Key secretKey, AlgorithmParameterSpec algorithmParameterSpec)
+      Key signingKey, AlgorithmParameterSpec algorithmParameterSpec)
          throws XMLSignatureException;
 
    /**
@@ -192,22 +181,12 @@ public abstract class SignatureAlgorithmSpi {
    protected abstract byte[] engineSign() throws XMLSignatureException;
 
    /**
-    * Proxy method for {@link java.security.Signature#initVerify}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param publickey
-    * @throws XMLSignatureException
-    */
-   protected abstract void engineInitVerify(PublicKey publickey)
-      throws XMLSignatureException;
-
-   /**
     * Method engineInitVerify
     *
-    * @param secretkey
+    * @param verificationKey
     * @throws XMLSignatureException
     */
-   protected abstract void engineInitVerify(Key secretkey)
+   protected abstract void engineInitVerify(Key verificationKey)
       throws XMLSignatureException;
 
    /**

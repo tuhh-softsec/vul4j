@@ -167,14 +167,22 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     * Proxy method for {@link java.security.Signature#initVerify}
     * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @param publickey
+    * @param publicKey
     * @throws XMLSignatureException
     */
-   protected void engineInitVerify(PublicKey publickey)
-           throws XMLSignatureException {
+   protected void engineInitVerify(Key publicKey) throws XMLSignatureException {
+
+      if (!(publicKey instanceof PublicKey)) {
+         String supplied = publicKey.getClass().getName();
+         String needed = PublicKey.class.getName();
+         Object exArgs[] = { supplied, needed };
+
+         throw new XMLSignatureException("algorithms.WrongKeyForThisOperation",
+                                         exArgs);
+      }
 
       try {
-         this._signatureAlgorithm.initVerify((PublicKey) publickey);
+         this._signatureAlgorithm.initVerify((PublicKey) publicKey);
       } catch (InvalidKeyException ex) {
          throw new XMLSignatureException("empty", ex);
       }
@@ -204,9 +212,17 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     * @param secureRandom
     * @throws XMLSignatureException
     */
-   protected void engineInitSign(
-           PrivateKey privateKey, SecureRandom secureRandom)
-              throws XMLSignatureException {
+   protected void engineInitSign(Key privateKey, SecureRandom secureRandom)
+           throws XMLSignatureException {
+
+      if (!(privateKey instanceof PrivateKey)) {
+         String supplied = privateKey.getClass().getName();
+         String needed = PrivateKey.class.getName();
+         Object exArgs[] = { supplied, needed };
+
+         throw new XMLSignatureException("algorithms.WrongKeyForThisOperation",
+                                         exArgs);
+      }
 
       try {
          this._signatureAlgorithm.initSign((PrivateKey) privateKey,
@@ -223,8 +239,16 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     * @param privateKey
     * @throws XMLSignatureException
     */
-   protected void engineInitSign(PrivateKey privateKey)
-           throws XMLSignatureException {
+   protected void engineInitSign(Key privateKey) throws XMLSignatureException {
+
+      if (!(privateKey instanceof PrivateKey)) {
+         String supplied = privateKey.getClass().getName();
+         String needed = PrivateKey.class.getName();
+         Object exArgs[] = { supplied, needed };
+
+         throw new XMLSignatureException("algorithms.WrongKeyForThisOperation",
+                                         exArgs);
+      }
 
       try {
          this._signatureAlgorithm.initSign((PrivateKey) privateKey);
@@ -314,82 +338,176 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Method engineInitVerify
-    *
-    * @param secretkey
-    * @throws XMLSignatureException
-    */
-   protected void engineInitVerify(Key secretkey) throws XMLSignatureException {
-      throw new XMLSignatureException("algorithms.operationOnlyForMAC");
-   }
-
-   /**
     * Method engineInitSign
     *
-    * @param secretKey
+    * @param signingKey
     * @param algorithmParameterSpec
     * @throws XMLSignatureException
     */
    protected void engineInitSign(
-           Key secretKey, AlgorithmParameterSpec algorithmParameterSpec)
+           Key signingKey, AlgorithmParameterSpec algorithmParameterSpec)
               throws XMLSignatureException {
-      throw new XMLSignatureException("algorithms.operationOnlyForMAC");
+      throw new XMLSignatureException(
+         "algorithms.CannotUseAlgorithmParameterSpecOnRSA");
    }
 
    /**
-    * Method engineInitSign
+    * Class SignatureRSASHA1
     *
-    * @param secretKey
-    * @throws XMLSignatureException
+    * @author $Author$
+    * @version $Revision$
     */
-   protected void engineInitSign(Key secretKey) throws XMLSignatureException {
-      throw new XMLSignatureException("algorithms.operationOnlyForMAC");
-   }
-
    public static class SignatureRSASHA1 extends SignatureBaseRSA {
+
+      /**
+       * Constructor SignatureRSASHA1
+       *
+       * @throws XMLSignatureException
+       */
       public SignatureRSASHA1() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1;
       }
    }
+
+   /**
+    * Class SignatureRSASHA256
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class SignatureRSASHA256 extends SignatureBaseRSA {
+
+      /**
+       * Constructor SignatureRSASHA256
+       *
+       * @throws XMLSignatureException
+       */
       public SignatureRSASHA256() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256;
       }
    }
+
+   /**
+    * Class SignatureRSASHA384
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class SignatureRSASHA384 extends SignatureBaseRSA {
+
+      /**
+       * Constructor SignatureRSASHA384
+       *
+       * @throws XMLSignatureException
+       */
       public SignatureRSASHA384() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384;
       }
    }
+
+   /**
+    * Class SignatureRSASHA512
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class SignatureRSASHA512 extends SignatureBaseRSA {
+
+      /**
+       * Constructor SignatureRSASHA512
+       *
+       * @throws XMLSignatureException
+       */
       public SignatureRSASHA512() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512;
       }
    }
+
+   /**
+    * Class SignatureRSARIPEMD160
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class SignatureRSARIPEMD160 extends SignatureBaseRSA {
+
+      /**
+       * Constructor SignatureRSARIPEMD160
+       *
+       * @throws XMLSignatureException
+       */
       public SignatureRSARIPEMD160() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160;
       }
    }
+
+   /**
+    * Class SignatureRSAMD5
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class SignatureRSAMD5 extends SignatureBaseRSA {
+
+      /**
+       * Constructor SignatureRSAMD5
+       *
+       * @throws XMLSignatureException
+       */
       public SignatureRSAMD5() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5;
       }

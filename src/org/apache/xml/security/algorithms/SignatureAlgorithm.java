@@ -135,16 +135,24 @@ public class SignatureAlgorithm extends Algorithm {
                .newInstance();
       } catch (ClassNotFoundException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
+
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
+                                         ex);
       } catch (IllegalAccessException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
+
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
+                                         ex);
       } catch (InstantiationException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
+
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
+                                         ex);
       } catch (NullPointerException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
+
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
+                                         ex);
       }
    }
 
@@ -196,16 +204,24 @@ public class SignatureAlgorithm extends Algorithm {
             .engineGetContextFromElement(this._constructionElement);
       } catch (ClassNotFoundException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
+
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
+                                         ex);
       } catch (IllegalAccessException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
+
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
+                                         ex);
       } catch (InstantiationException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
+
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
+                                         ex);
       } catch (NullPointerException ex) {
          Object exArgs[] = { algorithmURI, ex.getMessage() };
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
+
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs,
+                                         ex);
       }
    }
 
@@ -279,47 +295,38 @@ public class SignatureAlgorithm extends Algorithm {
     * Proxy method for {@link java.security.Signature#initSign}
     * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @param privateKey
-    * @param secureRandom
+    * @param signingKey
     * @throws XMLSignatureException
     */
-   public void initSign(PrivateKey privateKey, SecureRandom secureRandom)
-           throws XMLSignatureException {
-      this._signatureAlgorithm.engineInitSign(privateKey, secureRandom);
+   public void initSign(Key signingKey) throws XMLSignatureException {
+      this._signatureAlgorithm.engineInitSign(signingKey);
    }
 
    /**
     * Proxy method for {@link java.security.Signature#initSign}
     * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @param privateKey
+    * @param signingKey
+    * @param secureRandom
     * @throws XMLSignatureException
     */
-   public void initSign(PrivateKey privateKey) throws XMLSignatureException {
-      this._signatureAlgorithm.engineInitSign(privateKey);
+   public void initSign(Key signingKey, SecureRandom secureRandom)
+           throws XMLSignatureException {
+      this._signatureAlgorithm.engineInitSign(signingKey, secureRandom);
    }
 
    /**
-    * Method initSign
+    * Proxy method for {@link java.security.Signature#initSign}
+    * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @param secretKey
-    * @throws XMLSignatureException
-    */
-   public void initSign(Key secretKey) throws XMLSignatureException {
-      this._signatureAlgorithm.engineInitSign(secretKey);
-   }
-
-   /**
-    * Method initSign
-    *
-    * @param secretKey
+    * @param signingKey
     * @param algorithmParameterSpec
     * @throws XMLSignatureException
     */
    public void initSign(
-           Key secretKey, AlgorithmParameterSpec algorithmParameterSpec)
+           Key signingKey, AlgorithmParameterSpec algorithmParameterSpec)
               throws XMLSignatureException {
-      this._signatureAlgorithm.engineInitSign(secretKey,
+      this._signatureAlgorithm.engineInitSign(signingKey,
                                               algorithmParameterSpec);
    }
 
@@ -339,26 +346,11 @@ public class SignatureAlgorithm extends Algorithm {
     * Proxy method for {@link java.security.Signature#initVerify}
     * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @param publickey
+    * @param verificationKey
     * @throws XMLSignatureException
     */
-   public void initVerify(PublicKey publickey) throws XMLSignatureException {
-      this._signatureAlgorithm.engineInitVerify(publickey);
-   }
-
-   /**
-    * Method initVerify
-    *
-    * @param secretkey
-    * @throws XMLSignatureException
-    */
-   public void initVerify(Key secretkey) throws XMLSignatureException {
-
-      if (secretkey instanceof java.security.PublicKey) {
-         this.initVerify((PublicKey) secretkey);
-      } else {
-         this._signatureAlgorithm.engineInitVerify(secretkey);
-      }
+   public void initVerify(Key verificationKey) throws XMLSignatureException {
+      this._signatureAlgorithm.engineInitVerify(verificationKey);
    }
 
    /**
@@ -379,7 +371,8 @@ public class SignatureAlgorithm extends Algorithm {
     * @return the URI representation of Transformation algorithm
     */
    public final String getURI() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ALGORITHM);
+      return this._constructionElement.getAttributeNS(null,
+              Constants._ATT_ALGORITHM);
    }
 
    /**
@@ -454,6 +447,11 @@ public class SignatureAlgorithm extends Algorithm {
       return Constants.SignatureSpecNS;
    }
 
+   /**
+    * Method getBaseLocalName
+    *
+    * @return
+    */
    public String getBaseLocalName() {
       return Constants._TAG_SIGNATUREMETHOD;
    }

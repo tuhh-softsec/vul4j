@@ -74,6 +74,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.spec.AlgorithmParameterSpec;
 import org.apache.xml.security.signature.XMLSignatureException;
 import javax.crypto.Mac;
+import javax.crypto.SecretKey;
 import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
 
@@ -187,13 +188,22 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
     * Proxy method for {@link java.security.Signature#initVerify}
     * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @param publickey
+    * @param secretKey
     * @throws XMLSignatureException
     */
-   protected void engineInitVerify(Key publickey) throws XMLSignatureException {
+   protected void engineInitVerify(Key secretKey) throws XMLSignatureException {
+
+      if (!(secretKey instanceof SecretKey)) {
+         String supplied = secretKey.getClass().getName();
+         String needed = SecretKey.class.getName();
+         Object exArgs[] = { supplied, needed };
+
+         throw new XMLSignatureException("algorithms.WrongKeyForThisOperation",
+                                         exArgs);
+      }
 
       try {
-         this._macAlgorithm.init(publickey);
+         this._macAlgorithm.init(secretKey);
       } catch (InvalidKeyException ex) {
          throw new XMLSignatureException("empty", ex);
       }
@@ -257,6 +267,15 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
     */
    protected void engineInitSign(Key secretKey) throws XMLSignatureException {
 
+      if (!(secretKey instanceof SecretKey)) {
+         String supplied = secretKey.getClass().getName();
+         String needed = SecretKey.class.getName();
+         Object exArgs[] = { supplied, needed };
+
+         throw new XMLSignatureException("algorithms.WrongKeyForThisOperation",
+                                         exArgs);
+      }
+
       try {
          this._macAlgorithm.init(secretKey);
       } catch (InvalidKeyException ex) {
@@ -275,6 +294,15 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
            Key secretKey, AlgorithmParameterSpec algorithmParameterSpec)
               throws XMLSignatureException {
 
+      if (!(secretKey instanceof SecretKey)) {
+         String supplied = secretKey.getClass().getName();
+         String needed = SecretKey.class.getName();
+         Object exArgs[] = { supplied, needed };
+
+         throw new XMLSignatureException("algorithms.WrongKeyForThisOperation",
+                                         exArgs);
+      }
+
       try {
          this._macAlgorithm.init(secretKey, algorithmParameterSpec);
       } catch (InvalidKeyException ex) {
@@ -282,6 +310,18 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       } catch (InvalidAlgorithmParameterException ex) {
          throw new XMLSignatureException("empty", ex);
       }
+   }
+
+   /**
+    * Method engineInitSign
+    *
+    * @param secretKey
+    * @param secureRandom
+    * @throws XMLSignatureException
+    */
+   protected void engineInitSign(Key secretKey, SecureRandom secureRandom)
+           throws XMLSignatureException {
+      throw new XMLSignatureException("algorithms.CannotUseSecureRandomOnMAC");
    }
 
    /**
@@ -427,85 +467,162 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#initSign}
-    * which is executed on the internal {@link java.security.Signature} object.
+    * Class IntegrityHmacSHA1
     *
-    * @param privateKey
-    * @param secureRandom
-    * @throws XMLSignatureException
+    * @author $Author$
+    * @version $Revision$
     */
-   protected void engineInitSign(
-           PrivateKey privateKey, SecureRandom secureRandom)
-              throws XMLSignatureException {
-      throw new XMLSignatureException("algorithms.operationOnlyForSignature");
-   }
-
-   /**
-    * Method engineInitSign
-    *
-    * @param privateKey
-    * @throws XMLSignatureException
-    */
-   protected void engineInitSign(PrivateKey privateKey)
-           throws XMLSignatureException {
-      throw new XMLSignatureException("algorithms.operationOnlyForSignature");
-   }
-
-   /**
-    * Method engineInitVerify
-    *
-    * @param publicKey
-    * @throws XMLSignatureException
-    */
-   protected void engineInitVerify(PublicKey publicKey)
-           throws XMLSignatureException {
-      throw new XMLSignatureException("algorithms.operationOnlyForSignature");
-   }
-
    public static class IntegrityHmacSHA1 extends IntegrityHmac {
+
+      /**
+       * Constructor IntegrityHmacSHA1
+       *
+       * @throws XMLSignatureException
+       */
       public IntegrityHmacSHA1() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_SHA1;
       }
    }
+
+   /**
+    * Class IntegrityHmacSHA256
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class IntegrityHmacSHA256 extends IntegrityHmac {
+
+      /**
+       * Constructor IntegrityHmacSHA256
+       *
+       * @throws XMLSignatureException
+       */
       public IntegrityHmacSHA256() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_SHA256;
       }
    }
+
+   /**
+    * Class IntegrityHmacSHA384
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class IntegrityHmacSHA384 extends IntegrityHmac {
+
+      /**
+       * Constructor IntegrityHmacSHA384
+       *
+       * @throws XMLSignatureException
+       */
       public IntegrityHmacSHA384() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_SHA384;
       }
    }
+
+   /**
+    * Class IntegrityHmacSHA512
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class IntegrityHmacSHA512 extends IntegrityHmac {
+
+      /**
+       * Constructor IntegrityHmacSHA512
+       *
+       * @throws XMLSignatureException
+       */
       public IntegrityHmacSHA512() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_SHA512;
       }
    }
+
+   /**
+    * Class IntegrityHmacRIPEMD160
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class IntegrityHmacRIPEMD160 extends IntegrityHmac {
+
+      /**
+       * Constructor IntegrityHmacRIPEMD160
+       *
+       * @throws XMLSignatureException
+       */
       public IntegrityHmacRIPEMD160() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160;
       }
    }
+
+   /**
+    * Class IntegrityHmacMD5
+    *
+    * @author $Author$
+    * @version $Revision$
+    */
    public static class IntegrityHmacMD5 extends IntegrityHmac {
+
+      /**
+       * Constructor IntegrityHmacMD5
+       *
+       * @throws XMLSignatureException
+       */
       public IntegrityHmacMD5() throws XMLSignatureException {
          super();
       }
+
+      /**
+       * Method engineGetURI
+       *
+       * @return
+       */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5;
       }
