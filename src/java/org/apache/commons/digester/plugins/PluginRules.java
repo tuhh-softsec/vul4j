@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginRules.java,v 1.6 2003/11/16 22:37:35 rdonkin Exp $
- * $Revision: 1.6 $
- * $Date: 2003/11/16 22:37:35 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginRules.java,v 1.7 2003/11/18 22:32:16 rdonkin Exp $
+ * $Revision: 1.7 $
+ * $Date: 2003/11/18 22:32:16 $
  *
  * ====================================================================
  * 
@@ -224,7 +224,9 @@ public class PluginRules implements Rules {
     /**
      * Register a new Rule instance matching the specified pattern.
      * 
-     * @param pattern Nesting pattern to be matched for this Rule
+     * @param pattern Nesting pattern to be matched for this Rule.
+     * This parameter treats equally patterns that begin with and without
+     * a leading slash ('/').
      * @param rule Rule instance to be registered
      */
     public void add(String pattern, Rule rule) {
@@ -234,6 +236,12 @@ public class PluginRules implements Rules {
         if (debug) {
             log.debug("add entry" + ": mapping pattern [" + pattern + "]" + 
                   " to rule of type [" + rule.getClass().getName() + "]");
+        }
+        
+        // allow patterns with a leading slash character
+        if (pattern.startsWith("/"))
+        {
+            pattern = pattern.substring(1);
         }
         
         decoratedRules.add(pattern, rule);
