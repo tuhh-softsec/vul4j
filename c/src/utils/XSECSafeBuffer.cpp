@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -524,7 +522,7 @@ void safeBuffer::sbXMLChCat(const XMLCh *str) {
 	
 	checkBufferType(BUFFER_UNICODE);
 	unsigned int len = XMLString::stringLen((XMLCh *) buffer) * size_XMLCh;
-	len += XMLString::stringLen(str);
+	len += XMLString::stringLen(str) * size_XMLCh;
 	len += (2 * size_XMLCh);
 
 	checkAndExpand(len);

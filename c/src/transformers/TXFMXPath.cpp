@@ -66,11 +66,6 @@
  *
  * $Id$
  *
- * $Log$
- * Revision 1.3  2003/02/17 11:21:03  blautenb
- * Bug fix to ensure duplicate XPath namespace does not delete document ns
- *
- *
  */
 
 
@@ -104,6 +99,7 @@ XALAN_USING_XALAN(ElementPrefixResolverProxy)
 XALAN_USING_XALAN(XPath)
 XALAN_USING_XALAN(NodeRefListBase)
 XALAN_USING_XALAN(XSLTResultTarget)
+XALAN_USING_XALAN(XSLException)
 
 #endif
 
@@ -328,187 +324,209 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 	XalanDocument		* xd;
 	XalanNode			* contextNode;
 
+	// Xalan can throw exceptions in all functions, so do one broad catch point.
+
+	try {
 	
-	// Map to Xalan
-	xd = xpl.createDocument(document);
+		// Map to Xalan
+		xd = xpl.createDocument(document);
 
-	// For performing mapping
-	XercesDocumentWrapper *xdw = xpl.mapDocumentToWrapper(xd);
-	XercesWrapperNavigator xwn(xdw);
+		// For performing mapping
+		XercesDocumentWrapper *xdw = xpl.mapDocumentToWrapper(xd);
+		XercesWrapperNavigator xwn(xdw);
 
-	// Map the "here" node - but only if part of current document
+		// Map the "here" node - but only if part of current document
 
-	bool haveHereNode;
-	XalanNode * hereNode;
+		bool haveHereNode;
+		XalanNode * hereNode;
 
-	if (h->getOwnerDocument() == document) {
-		
-		hereNode = xwn.mapNode(h);
-
-		if (hereNode == NULL) {
-
-			hereNode = findHereNodeFromXalan(&xwn, xd, h);
+		if (h->getOwnerDocument() == document) {
+			
+			hereNode = xwn.mapNode(h);
 
 			if (hereNode == NULL) {
 
-				throw XSECException(XSECException::XPathError,
-				   "Unable to find here node in Xalan Wrapper map");
-			}
+				hereNode = findHereNodeFromXalan(&xwn, xd, h);
 
-		}
-		haveHereNode = true;
-	}
-	else
-		haveHereNode = false;
+				if (hereNode == NULL) {
 
-	// Now work out what we have to set up in the new processing
-
-	TXFMBase::nodeType inputType = input->getNodeType();
-
-	XalanDOMString cd;		// For the moment assume the root is the context
-
-	const XalanDOMChar * cexpr;
-
-	safeBuffer contextExpr;
-
-	switch (inputType) {
-
-	case DOM_NODE_DOCUMENT :
-
-		cd = XalanDOMString("/");		// Root node
-		cexpr = cd.c_str();
-
-		// The context node is the "root" node
-		contextNode =
-			xpe.selectSingleNode(
-			xds,
-			xd,
-			cexpr,
-			xd->getDocumentElement());
-
-		break;
-
-	case DOM_NODE_DOCUMENT_FRAGMENT :
-		{
-
-			// Need to map the DOM_Node that we are given from the input to the appropriate XalanNode
-
-			// Create the XPath expression to find the node
-
-			if (input->getFragmentId() != NULL) {
-
-				contextExpr.sbTranscodeIn("//descendant-or-self::node()[attribute::Id='");
-				contextExpr.sbXMLChCat(input->getFragmentId());
-				contextExpr.sbXMLChCat("']");
-
-				// Map the node
-
-				contextNode = 
-					xpe.selectSingleNode(
-					xds,
-					xd,
-					contextExpr.rawXMLChBuffer(), //XalanDOMString((char *) contextExpr.rawBuffer()).c_str(), 
-					xd->getDocumentElement());
-
-
-				if (contextNode == NULL) {
-					// Last Ditch
-					contextNode = xwn.mapNode(input->getFragmentNode());
-
+					throw XSECException(XSECException::XPathError,
+					   "Unable to find here node in Xalan Wrapper map");
 				}
 
 			}
-			else
-				contextNode = xwn.mapNode(input->getFragmentNode());
+			haveHereNode = true;
+		}
+		else
+			haveHereNode = false;
 
-			if (contextNode == NULL) {
+		// Now work out what we have to set up in the new processing
 
-				// Something wrong
-				throw XSECException(XSECException::XPathError, "Error mapping context node");
+		TXFMBase::nodeType inputType = input->getNodeType();
+
+		XalanDOMString cd;		// For the moment assume the root is the context
+
+		const XalanDOMChar * cexpr;
+
+		safeBuffer contextExpr;
+
+		switch (inputType) {
+
+		case DOM_NODE_DOCUMENT :
+
+			cd = XalanDOMString("/");		// Root node
+			cexpr = cd.c_str();
+
+			// The context node is the "root" node
+			contextNode =
+				xpe.selectSingleNode(
+				xds,
+				xd,
+				cexpr,
+				xd->getDocumentElement());
+
+			break;
+
+		case DOM_NODE_DOCUMENT_FRAGMENT :
+			{
+
+				// Need to map the DOM_Node that we are given from the input to the appropriate XalanNode
+
+				// Create the XPath expression to find the node
+
+				if (input->getFragmentId() != NULL) {
+
+					contextExpr.sbTranscodeIn("//descendant-or-self::node()[attribute::Id='");
+					contextExpr.sbXMLChCat(input->getFragmentId());
+					contextExpr.sbXMLChCat("']");
+
+					// Map the node
+
+					contextNode = 
+						xpe.selectSingleNode(
+						xds,
+						xd,
+						contextExpr.rawXMLChBuffer(), //XalanDOMString((char *) contextExpr.rawBuffer()).c_str(), 
+						xd->getDocumentElement());
+
+
+					if (contextNode == NULL) {
+						// Last Ditch
+						contextNode = xwn.mapNode(input->getFragmentNode());
+
+					}
+
+				}
+				else
+					contextNode = xwn.mapNode(input->getFragmentNode());
+
+				if (contextNode == NULL) {
+
+					// Something wrong
+					throw XSECException(XSECException::XPathError, "Error mapping context node");
+
+				}
+
+				break;
+			}
+
+		default :
+
+			throw XSECException(XSECException::XPathError);	// Should never get here
+
+		}
+
+		safeBuffer str;
+		XPathEnvSupportDefault xpesd;
+		XObjectFactoryDefault			xof;
+		XPathExecutionContextDefault	xpec(xpesd, xds, xof);
+
+		ElementPrefixResolverProxy pr(xd->getDocumentElement(), xpesd, xds);
+
+		// Work around the fact that the XPath implementation is designed for XSLT, so does
+		// not allow here() as a NCName.
+
+		// THIS IS A KLUDGE AND SHOULD BE DONE BETTER
+
+		int offset = 0;
+		safeBuffer k(KLUDGE_PREFIX);
+		k.sbStrcatIn(":");
+
+		offset = expr.sbStrstr("here()");
+
+		while (offset >= 0) {
+
+			if (offset == 0 || offset == 1 || 
+				(!(expr[offset - 1] == ':' && expr[offset - 2] != ':') &&
+				separator(expr[offset - 1]))) {
+
+				expr.sbStrinsIn(k.rawCharBuffer(), offset);
 
 			}
 
-			break;
-		}
-
-	default :
-
-		throw XSECException(XSECException::XPathError);	// Should never get here
-
-	}
-
-	safeBuffer str;
-	XPathEnvSupportDefault xpesd;
-	XObjectFactoryDefault			xof;
-	XPathExecutionContextDefault	xpec(xpesd, xds, xof);
-
-	ElementPrefixResolverProxy pr(xd->getDocumentElement(), xpesd, xds);
-
-	// Work around the fact that the XPath implementation is designed for XSLT, so does
-	// not allow here() as a NCName.
-
-	// THIS IS A KLUDGE AND SHOULD BE DONE BETTER
-
-	int offset = 0;
-	safeBuffer k(KLUDGE_PREFIX);
-	k.sbStrcatIn(":");
-
-	offset = expr.sbStrstr("here()");
-
-	while (offset >= 0) {
-
-		if (offset == 0 || offset == 1 || 
-			(!(expr[offset - 1] == ':' && expr[offset - 2] != ':') &&
-			separator(expr[offset - 1]))) {
-
-			expr.sbStrinsIn(k.rawCharBuffer(), offset);
+			offset = expr.sbOffsetStrstr("here()", offset + 11);
 
 		}
 
-		offset = expr.sbOffsetStrstr("here()", offset + 11);
+		// Install the External function in the Environment handler
 
-	}
+		if (haveHereNode) {
 
-	// Install the External function in the Environment handler
+			xpesd.installExternalFunctionLocal(XalanDOMString(URI_ID_DSIG), XalanDOMString("here"), DSIGXPathHere(hereNode));
 
-	if (haveHereNode) {
-
-		xpesd.installExternalFunctionLocal(XalanDOMString(URI_ID_DSIG), XalanDOMString("here"), DSIGXPathHere(hereNode));
-
-	}
-
-	str.sbStrcpyIn("(descendant-or-self::node() | descendant-or-self::node()/attribute::* | descendant-or-self::node()/namespace::*)[");
-	str.sbStrcatIn(expr);
-	str.sbStrcatIn("]");
-
-	XPath * xp = xpf.create();
-
-	XalanDOMString Xexpr((char *) str.rawBuffer());
-	xppi.initXPath(*xp, xpcc, Xexpr, pr);
-	
-	// Now resolve
-
-	XObjectPtr xObj = xp->execute(contextNode, pr, xpec);
-
-	// Now map to a list that others can use (naieve list at this time)
-
-	const NodeRefListBase&	lst = xObj->nodeset();
-	
-	int size = lst.getLength();
-	const DOMNode *item;
-	
-	for (int i = 0; i < size; ++ i) {
-
-		if (lst.item(i) == xd)
-			m_XPathMap.addNode(document);
-		else {
-			item = xwn.mapNode(lst.item(i));
-			m_XPathMap.addNode(item);
 		}
+
+		str.sbStrcpyIn("(descendant-or-self::node() | descendant-or-self::node()/attribute::* | descendant-or-self::node()/namespace::*)[");
+		str.sbStrcatIn(expr);
+		str.sbStrcatIn("]");
+
+		XPath * xp = xpf.create();
+
+		XalanDOMString Xexpr((char *) str.rawBuffer());
+		xppi.initXPath(*xp, xpcc, Xexpr, pr);
+		
+		// Now resolve
+
+		XObjectPtr xObj = xp->execute(contextNode, pr, xpec);
+
+		// Now map to a list that others can use (naieve list at this time)
+
+		const NodeRefListBase&	lst = xObj->nodeset();
+		
+		int size = lst.getLength();
+		const DOMNode *item;
+		
+		for (int i = 0; i < size; ++ i) {
+
+			if (lst.item(i) == xd)
+				m_XPathMap.addNode(document);
+			else {
+				item = xwn.mapNode(lst.item(i));
+				m_XPathMap.addNode(item);
+			}
+		}
+
+		xpesd.uninstallExternalFunctionGlobal(XalanDOMString(URI_ID_DSIG), XalanDOMString("here"));
+
 	}
 
-	xpesd.uninstallExternalFunctionGlobal(XalanDOMString(URI_ID_DSIG), XalanDOMString("here"));
+	catch (XSLException &e) {
 
+		safeBuffer msg;
+
+		// Whatever happens - fix any changes to the original document
+		clearXPathNS(document, addedNodes, formatter, mp_nse);
+	
+		// Collate the exception message into an XSEC message.		
+		msg.sbTranscodeIn("Xalan Exception : ");
+		msg.sbXMLChCat(e.getType().c_str());
+		msg.sbXMLChCat(" caught.  Message : ");
+		msg.sbXMLChCat(e.getMessage().c_str());
+
+		throw XSECException(XSECException::XPathError,
+			msg.rawXMLChBuffer());
+	}
+	
 	clearXPathNS(document, addedNodes, formatter, mp_nse);
 
 }

@@ -95,8 +95,10 @@
 // Xerces includes
 
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
+#include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(DOMNamedNodeMap);
+XSEC_USING_XERCES(Janitor);
 
 // --------------------------------------------------------------------------------
 //           Some useful utility functions
@@ -798,11 +800,18 @@ void DSIGSignature::load(void) {
 					DSIGTransformList::TransformListVectorType::size_type size, i;
 					size = l->getSize();
 					for (i = 0; i < size; ++ i) {
-						currentTxfm = l->item(i)->createTransformer(currentTxfm);
+						try {
+							currentTxfm = l->item(i)->createTransformer(currentTxfm);
+						}
+						catch (...) {
+							deleteTXFMChain(currentTxfm);
+							delete l;
+							throw;
+						}
 					}
 
 					delete l;
-			
+
 				}
 
 				// Find out the type of the final transform and process accordingly

@@ -67,6 +67,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.6  2003/02/18 11:28:12  blautenb
+ * Catch and clean up after Xalan exceptions
+ *
  * Revision 1.5  2003/02/17 11:22:39  blautenb
  * Now handle relative file URIs in references
  *
@@ -378,6 +381,14 @@ int evaluate(int argc, char ** argv) {
 
 		ERR_print_errors(bio_err);
 		return 2;
+	}
+
+	catch (...) {
+
+		cerr << "Unknown Exception type occured.  Cleaning up and exiting\n" << endl;
+
+		return 2;
+
 	}
 
 	int retResult;
