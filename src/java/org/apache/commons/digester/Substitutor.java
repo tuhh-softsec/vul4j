@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Substitutor.java,v 1.1 2003/12/02 23:21:16 rdonkin Exp $
- * $Revision: 1.1 $
- * $Date: 2003/12/02 23:21:16 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Substitutor.java,v 1.2 2003/12/03 23:36:13 rdonkin Exp $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/03 23:36:13 $
  *
  * ====================================================================
  * 
@@ -78,13 +78,24 @@ import org.xml.sax.Attributes;
  * <p>Different strategies are supported for attributes and body text.</p> 
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.1 $ $Date: 2003/12/02 23:21:16 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/03 23:36:13 $
  */
 public abstract class Substitutor {
     
     /**
-     * Substitutes the attributes (before they are passed to the 
-     * <code>Rule</code> implementations's)
+     * <p>Substitutes the attributes (before they are passed to the 
+     * <code>Rule</code> implementations's).</p>
+     *
+     * <p><code>Digester</code> will only call this method a second time 
+     * once the original <code>Attributes</code> instance can be safely reused. 
+     * The implementation is therefore free to reuse the same <code>Attributes</code> instance
+     * for all calls.</p>
+     *
+     * @param attributes the <code>Attributes</code> passed into <code>Digester</code> by the SAX parser, 
+     * not null (but may be empty)
+     * @return <code>Attributes</code> to be passed to the <code>Rule</code> implementations. 
+     * This method may pass back the Attributes passed in.
+     * Not null but possibly empty.
      */
     public abstract Attributes substitute(Attributes attributes);
     
