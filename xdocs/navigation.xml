@@ -4,10 +4,10 @@
 <!ENTITY commons-nav SYSTEM "../../incl_nav.xml">
 ]>
 
-<project name="Digester">
+<project name="Logging">
 
-  <title>Digester</title>
-  <organizationLogo href="/images/jakarta-logo-blue.gif">
+  <title>Logging</title>
+  <organizationLogo href="/images/jakarta-logo.gif">
    Jakarta
   </organizationLogo>
 
@@ -17,11 +17,11 @@
             href="http://jakarta.apache.org/commons/"/>
     </links>
 
-    <menu name="Commons Digester">
+    <menu name="Commons Logging">
       <item name="Overview"
             href="/index.html"/>
-      <item name="Guide (Current)"
-            href="/apidocs/org/apache/commons/digester/package-summary.html"/>
+      <item name="User Guide"
+            href="/guide.html"/>
     </menu>
     
     &commons-nav;
