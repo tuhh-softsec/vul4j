@@ -14,11 +14,18 @@
     </links>
 
     <menu name="Commons Digester">
-      <item name="Overview"
+      <item name="Overview (Current)"
             href="/index.html"/>
       <item name="Guide (Current)"
-            href="/apidocs/org/apache/commons/digester/package-summary.html"/>
+            href="http://jakarta.apache.org/commons/digester/commons-digester-1.6/apidocs/org/apache/commons/digester/package-summary.html"/>
     </menu>
+    <menu name="Release Documentation">
+      <item name="Digester 1.6"
+            href="/index.html"/>
+      <item name="Digester 1.5"
+            href="http://jakarta.apache.org/commons/digester/commons-digester-1.5/apidocs/org/apache/commons/digester/package-summary.html"/>
+    </menu>
+        
     
     &common-menus;
 

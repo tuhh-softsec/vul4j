@@ -60,7 +60,7 @@ the ViewCVS</a> web site, or can use CVS to download the files.
 
 
 <section name="Releases">
-    <subsection name='Digester 1.6 Release'>
+    <subsection name='Digester 1.6 Release (9th September 2004)'>
         <p>
 Digester 1.6 is an important release adding extra functionality 
 as well as fixes for bugs. It represents an important milestone in the evolution
@@ -105,14 +105,16 @@ The dependencies neccessary for Digester 1.6 can be summarized as follows:
 </tr>
 </table>
         <p>
-Digester 1.6.0 release is currently in preparation.
+   <a href="http://jakarta.apache.org/site/binindex.cgi#commons-digester">Binary</a> and
+   <a href="http://jakarta.apache.org/site/sourceindex.cgi#commons-digester">source</a>
+   downloads are available. Please remember to verify the MD5 check sums.
         </p>
     </subsection>
     <subsection name='Older Releases'>
  <ul>
   <li>Version 1.5 (from mirror) - 27 Apr 2003
    <a href="http://jakarta.apache.org/site/binindex.cgi">binary</a>
-   <a href="http://jakarta.apache.org/site/sourceindex.cgi">source</a> (latest)</li>
+   <a href="http://jakarta.apache.org/site/sourceindex.cgi">source</a></li>
   <li>Version 1.4.1 (from mirror)
    <a href="http://jakarta.apache.org/site/binindex.cgi">binary</a>
    <a href="http://jakarta.apache.org/site/sourceindex.cgi">source</a></li>

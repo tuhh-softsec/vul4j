@@ -19,7 +19,7 @@
   
   <id>commons-digester</id>
   <inceptionYear>2001</inceptionYear>
-  <currentVersion>1.6</currentVersion>
+  <currentVersion>1.7-dev</currentVersion>
   <name>Digester</name>
   <shortDescription>Rule based XML->Java object mapping module</shortDescription>
   <description>The Digester package lets you configure an XML->Java object mapping module which triggers certain actions called rules whenever a particular pattern of nested XML elements is recognized.</description>
