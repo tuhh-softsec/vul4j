@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.1 2003/12/02 01:12:07 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.2 2003/12/02 16:36:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,17 +59,31 @@ package org.apache.commons.functor.example.kata.four;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.StringTokenizer;
 
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.adapter.BinaryFunctionBinaryPredicate;
+import org.apache.commons.functor.adapter.BinaryPredicateBinaryFunction;
+import org.apache.commons.functor.adapter.IgnoreLeftFunction;
+import org.apache.commons.functor.adapter.IgnoreRightFunction;
+import org.apache.commons.functor.adapter.IgnoreRightPredicate;
+import org.apache.commons.functor.adapter.UnaryFunctionUnaryPredicate;
+import org.apache.commons.functor.adapter.UnaryPredicateUnaryFunction;
+import org.apache.commons.functor.core.IsNull;
+import org.apache.commons.functor.core.LeftIdentityFunction;
+import org.apache.commons.functor.core.RightIdentityFunction;
+import org.apache.commons.functor.core.comparator.IsLessThan;
+import org.apache.commons.functor.core.composite.BinaryCompositeBinaryFunction;
 import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
+import org.apache.commons.functor.core.composite.ConditionalBinaryFunction;
+import org.apache.commons.functor.core.composite.UnaryCompositeBinaryFunction;
+import org.apache.commons.functor.example.kata.one.BinaryFunctionUnaryFunction;
+import org.apache.commons.functor.example.kata.one.Subtract;
 import org.apache.commons.functor.example.lines.Lines;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/12/02 01:12:07 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/02 16:36:11 $
  * @author Rodney Waldhoff
  */
 public class DataMunger {
@@ -79,98 +93,15 @@ public class DataMunger {
     }
 
     public static final Object process(final Reader file, final int selected, final int col1, final int col2) {
-        return nthColumn(selected).evaluate(
+        return NthColumn.instance(selected).evaluate(
             Algorithms.inject(
-                Lines.from(file).where(nthColumnIsInteger(0)), 
+                Lines.from(file).where(
+                    UnaryFunctionUnaryPredicate.adapt(
+                        new CompositeUnaryFunction(UnaryPredicateUnaryFunction.adapt(IsInteger.instance()),NthColumn.instance(0)))),
                 null,
                 lesserSpread(col1,col2)));            
     }
     
-
-    /** 
-     * A UnaryFunction that selects the nth column from the input 
-     * String and converts it to an Integer.
-     */
-    private static final UnaryFunction nthInteger(int n) {  
-        return new CompositeUnaryFunction(toInteger(),nthColumn(n));
-    }
-
-    /** 
-     * Selects the nth column from the input 
-     * obj (String) and converts it to an int.
-     */
-    private static final int nthInteger(int n, Object obj) {
-        return toInt(nthInteger(n).evaluate(obj));  
-    }
-
-    /** 
-     * A UnaryPredicate that returns true iff the the nth column 
-     * in the input String can be converted into an Integer.
-     * See {@link #toInteger}.
-     */
-    private static final UnaryPredicate nthColumnIsInteger(final int n) {
-        return new UnaryPredicate() {
-            public boolean test(Object obj) {
-                try {
-                    nthInteger(n).evaluate(obj);
-                    return true;
-                } catch(RuntimeException e) {
-                    return false;
-                }
-            }
-        };
-    }
-    
-    /** 
-     * A UnaryFunction that returns the nth whitespace
-     * delimited column in the given input String, or 
-     * null if there is no such column.
-     */
-    private static final UnaryFunction nthColumn(final int n) {
-        return new UnaryFunction() {
-            public Object evaluate(Object obj) {
-                StringTokenizer toker = new StringTokenizer((String)obj);
-                for(int count = 0; count < n && toker.hasMoreTokens();count++) {
-                    toker.nextToken();
-                }
-                return toker.hasMoreTokens() ? toker.nextToken() : null;
-            }
-        };
-    }
-    
-    /** 
-     * Accessor method for {@link #TO_INTEGER}.
-     */
-    private static final UnaryFunction toInteger() {
-        return TO_INTEGER;
-    }
-    
-    /** 
-     * Converts the input String to an Integer.
-     * Any trailing characters that aren't digits
-     * are ignored.
-     */
-    private static final UnaryFunction TO_INTEGER = new UnaryFunction() {
-        public Object evaluate(Object obj) {
-            return evaluate((String)obj);
-        }
-        
-        public Object evaluate(String str) {
-            StringBuffer buf = new StringBuffer();
-            for(int i=0;i<str.length();i++) {
-                if(Character.isDigit(str.charAt(i))) {
-                    buf.append(str.charAt(i));
-                } else {
-                    break;
-                }
-            }
-            try {
-                return new Integer(buf.toString());
-            } catch(NumberFormatException e) {
-                throw new NumberFormatException(str);
-            }
-        }
-    };
 
     /** 
      * A BinaryFunction that will calcuate the absolute
@@ -179,26 +110,30 @@ public class DataMunger {
      * whose difference is smallest.
      */
     private static final BinaryFunction lesserSpread(final int col1, final int col2) {
-        return new BinaryFunction() {
-            public Object evaluate(Object left, Object right) {
-                if(null == left) {
-                    return right;
-                } else {
-                    return absSpread(left) < absSpread(right) ? left : right;
-                }
-            }
-            
-            private int absSpread(Object obj) {
-                return Math.abs(nthInteger(col1,obj) - nthInteger(col2,obj));
-            }
-        };
+        return new ConditionalBinaryFunction(            
+            IgnoreRightPredicate.adapt(IsNull.instance()), // if left is null
+            RightIdentityFunction.instance(),              // return right
+            new ConditionalBinaryFunction(                 // else calculate spread and compare
+                BinaryFunctionBinaryPredicate.adapt(       
+                    new BinaryCompositeBinaryFunction(
+                        BinaryPredicateBinaryFunction.adapt(IsLessThan.instance()),
+                        IgnoreRightFunction.adapt(absSpread(col1,col2)),
+                        IgnoreLeftFunction.adapt(absSpread(col1,col2)))),
+                LeftIdentityFunction.instance(),
+                RightIdentityFunction.instance()
+            )
+        );
     }
 
-    /**
-     * Convert the given Number into an int.
-     */    
-    private static int toInt(Object obj) {
-        return ((Number)obj).intValue();
+    private static UnaryFunction absSpread(final int col1, final int col2) {
+        return new CompositeUnaryFunction(
+            Abs.instance(), 
+            new BinaryFunctionUnaryFunction(
+                new UnaryCompositeBinaryFunction(
+                    Subtract.instance(),
+                    new CompositeUnaryFunction(ToInteger.instance(),NthColumn.instance(col1)),
+                    new CompositeUnaryFunction(ToInteger.instance(),NthColumn.instance(col2)))
+                ));
     }
-    
+
 }
