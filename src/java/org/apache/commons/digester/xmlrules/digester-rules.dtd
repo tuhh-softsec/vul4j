@@ -3,7 +3,15 @@
 <!--
         "Digester" component of the Jakarta Commons Subproject
         DTD for the definition of Digester rules in XML.
-        $Id: digester-rules.dtd,v 1.10 2003/10/23 20:06:09 rdonkin Exp $
+        $Id: digester-rules.dtd,v 1.11 2004/02/15 01:16:51 craigmcc Exp $
+
+        Applications wishing to reference this DTD in their own documents
+        should use the following DOCTYPE declaration:
+
+        <!DOCTYPE digester-rules PUBLIC
+         "-//Jakarta Apache //DTD digester-rules XML V1.0//EN"
+         "digester-rules.dtd">
+
 -->
 
 <!-- This document type defines an XML format for defining Digester rules.
