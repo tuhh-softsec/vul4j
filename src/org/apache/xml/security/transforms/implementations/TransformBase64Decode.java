@@ -19,10 +19,7 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -98,6 +95,7 @@ public class TransformBase64Decode extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
+    * @return
     * @inheritDoc
     * @throws CanonicalizationException
     * @throws IOException
@@ -109,54 +107,43 @@ public class TransformBase64Decode extends TransformSpi {
                   TransformationException, InvalidCanonicalizerException {
 
 	 try {
-      if (input.isOctetStream() || isTextNodeSet(input.getNodeSet())) {
-         try {
-            byte[] base64Bytes = input.getBytes();
-            byte[] decodedBytes = Base64.decode(base64Bytes);
-
-            return new XMLSignatureInput(
-               new ByteArrayInputStream(decodedBytes));
-         } catch (Base64DecodingException ex) {
-            throw new TransformationException("empty", ex);
+      if (input.isElement()) {
+         Node el=input.getSubNode();
+         if (input.getSubNode().getNodeType()==Node.TEXT_NODE) {         	
+            el=el.getParentNode();
          }
+         StringBuffer sb=new StringBuffer();
+         traverseElement((Element)el,sb);
+         byte[] decodedBytes = Base64.decode(sb.toString());            
+         return new XMLSignatureInput(decodedBytes);         
+      }
+      if (input.isOctetStream() ) {
+        byte[] base64Bytes = input.getBytes();            
+        byte[] decodedBytes = Base64.decode(base64Bytes);
+        return new XMLSignatureInput(decodedBytes);
       } 
-		  try {
+       
+	 try {
+            //Exceptional case there is current not text case testing this(Before it was a
+	 	    //a common case).
             Document doc =
                DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
                   input.getOctetStream());
-            //DocumentTraversal dt = ((DocumentTraversal) doc);
+                  
             Element rootNode = doc.getDocumentElement();
             StringBuffer sb = new StringBuffer();
             traverseElement(rootNode,sb);
-            // we accept all nodes
-            /*
-            NodeFilter nodefilter = new AlwaysAcceptNodeFilter();
-            TreeWalker treewalker = dt.createTreeWalker(rootNode,
-                                                        NodeFilter.SHOW_ALL,
-                                                        nodefilter, true);
-            StringBuffer sb = new StringBuffer();
-
-            process(treewalker, sb);
-            */
             byte[] decodedBytes = Base64.decode(sb.toString());
 			
-            return new XMLSignatureInput(
-               new ByteArrayInputStream(decodedBytes));
+            return new XMLSignatureInput(decodedBytes);
 		  } catch (ParserConfigurationException e) {
-			  throw new TransformationException("c14n.Canonicalizer.Exception",
-												e);
+			  throw new TransformationException("c14n.Canonicalizer.Exception",e);
 		  } catch (SAXException e) {
 			  throw new TransformationException("SAX exception", e);
-		  } catch (Base64DecodingException ex) {
-			  throw new TransformationException("empty", ex);
-		  }
-      
-	 } catch (ParserConfigurationException e) {
-		 throw new TransformationException("c14n.Canonicalizer.Exception",
-										   e);
-	 } catch (SAXException e) {
-		 throw new TransformationException("SAX exception", e);
-	 }
+		  }      
+	} catch (Base64DecodingException e) {
+        throw new TransformationException("Base64Decoding", e);
+	}
    }
 
    void traverseElement(org.w3c.dom.Element node,StringBuffer sb) {
@@ -171,26 +158,5 @@ public class TransformBase64Decode extends TransformSpi {
             }
             sibling=sibling.getNextSibling();
         }
-   }
-  
-   /**
-	* Method to take a set of nodes and check whether any are "non-text"
-    * @param s to search
-    * @return true if the set only contains text nodes.
-	*/
-   private boolean isTextNodeSet(Set s) {
-
-	   boolean isText = true;
-
-	   Iterator it = s.iterator();
-	   while (it.hasNext() && isText) {
-				
-		   Node n = (Node) it.next();
-		   if (n.getNodeType() != Node.TEXT_NODE)
-			   isText = false;
-	   }
-
-	   return isText;
-   }
-
+   }  
 }

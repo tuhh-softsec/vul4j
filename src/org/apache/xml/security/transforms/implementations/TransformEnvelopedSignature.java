@@ -118,13 +118,6 @@ public class TransformEnvelopedSignature extends TransformSpi {
 
             throw new TransformationException("generic.EmptyMessage", exArgs);
          }
-         Document transformDoc = transformElement.getOwnerDocument();
-         Document inputDoc = XMLUtils.getOwnerDocument((Node) inputSet.iterator().next());
-
-         if (transformDoc != inputDoc) {
-            throw new TransformationException("xpath.funcHere.documentsDiffer");
-         }
-
          
          Set resultSet=XMLUtils.excludeNodeFromSet(signatureElement, inputSet);
 

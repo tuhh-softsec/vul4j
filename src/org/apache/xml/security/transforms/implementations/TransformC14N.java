@@ -19,6 +19,7 @@ package org.apache.xml.security.transforms.implementations;
 
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -28,6 +29,7 @@ import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitCom
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -86,7 +88,8 @@ public class TransformC14N extends TransformSpi {
          		Node excl=input.getExcludeNode();
          		result=c14n.engineCanonicalizeSubTree(input.getSubNode(),excl);         		
          	} else {
-         		result = c14n.engineCanonicalizeXPathNodeSet(input.getNodeSet());
+                Set set=input.getNodeSet(true);                
+         		result = c14n.engineCanonicalizeXPathNodeSet(set);
             }
          }
          return new XMLSignatureInput(result);
