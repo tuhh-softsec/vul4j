@@ -1,4 +1,4 @@
-$Id: RELEASE-NOTES.txt,v 1.1 2002/01/12 22:43:05 sanders Exp $
+$Id: RELEASE-NOTES.txt,v 1.2 2002/01/12 22:48:21 sanders Exp $
 
                           Commons Digester Package
                                 Version 1.2
@@ -16,7 +16,8 @@ follow the release early/release often mentality.
 NEW FEATURES:
 
 * XMLRules.  Allows a Digester user to define Digester Rules in xml, and then
-  load them at runtime.
+  load them at runtime.  
+  Check it out in the org.apache.commons.digester.xmlrules package.
 
 * Logging.  Digester has been updated to use the Commons logging package.  This
   will allow the Digester user to plug in their logging system.  Check out the
@@ -24,9 +25,6 @@ NEW FEATURES:
 
 
 BUG FIXES:
-
-* XMLRules.  Allows a Digester user to define Digester Rules in xml, and then
-  load them at runtime.
 
 * Rule.body() used to get a trim()'ed version of the body text.  This can affect
   some systems adversely.  Digester's built-in Rule implementations trim()
