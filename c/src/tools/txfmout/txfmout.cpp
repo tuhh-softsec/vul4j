@@ -491,6 +491,7 @@ int main(int argc, char **argv) {
 
 	XSECProvider prov;
 	DSIGSignature * sig = prov.newSignatureFromDOM(theDOM, sigNode);
+	sig->registerIdAttributeName(MAKE_UNICODE_STRING("ID"));
 
 #if defined(_WIN32)
 	XSECURIResolverGenericWin32 
