@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.26 2001/11/14 20:38:24 craigmcc Exp $
- * $Revision: 1.26 $
- * $Date: 2001/11/14 20:38:24 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.27 2001/11/14 20:42:04 craigmcc Exp $
+ * $Revision: 1.27 $
+ * $Date: 2001/11/14 20:42:04 $
  *
  * ====================================================================
  *
@@ -108,7 +108,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.26 $ $Date: 2001/11/14 20:38:24 $
+ * @version $Revision: 1.27 $ $Date: 2001/11/14 20:42:04 $
  */
 
 public class Digester extends DefaultHandler {
@@ -750,7 +750,7 @@ public class Digester extends DefaultHandler {
         }
 
 	// Recover the body text from the surrounding element
-	bodyText = new StringBuffer((String) bodyTexts.pop());
+	bodyText = (StringBuffer) bodyTexts.pop();
         if (debug >= 4)
             log("  Popping body text '" + bodyText.toString() + "'");
 
@@ -920,10 +920,10 @@ public class Digester extends DefaultHandler {
                 qName + ")");
 
 	// Save the body text accumulated for our surrounding element
-	bodyTexts.push(bodyText.toString());
+	bodyTexts.push(bodyText);
         if (debug >= 4)
             log("  Pushing body text '" + bodyText.toString() + "'");
-	bodyText.setLength(0);
+	bodyText = new StringBuffer();
 
 	// Compute the current matching rule
         StringBuffer sb = new StringBuffer(match);
