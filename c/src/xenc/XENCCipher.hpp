@@ -422,7 +422,7 @@ public:
 
 	//@}
 
-	/** @name Creation Functions */
+	/** @name Creation and loading Functions */
 	//@{
 
 	/**
@@ -447,6 +447,21 @@ public:
 	virtual XENCEncryptedData * createEncryptedData(XENCCipherData::XENCCipherDataType type,
 													const XMLCh * algorithm,
 													const XMLCh * value) = 0;
+
+	/**
+	 * \brief Load an EncryptedKey element
+	 *
+	 * Take a passed in EncryptedKey DOMNode and return a loaded XENCEncryptedKey
+	 * object based on the DOMNode from the passed in element.
+	 *
+	 * @param keyNode Element node to load EncryptedKey from
+	 * @returns An XENCEncryptedKey structure (owned by the caller) based on the 
+	 * node.
+	 */
+
+	virtual XENCEncryptedKey * loadEncryptedKey(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * keyNode
+		) = 0;
 
 	//@}
 

@@ -110,9 +110,73 @@ public:
 
 	virtual ~XENCEncryptedKey() {};
 
-	/** @name Get Interface Methods */
+	/** @name EncryptedKey Specific Getter Methods */
 	//@{
 
+	/**
+	 * \brief Get the CarriedKeyName
+	 *
+	 * EncryptedKey elements MAY have a CarriedKeyName element that links
+	 * the EncryptedKey to a KeyName KeyInfo element in another EncryptedKey
+	 * or EncryptedData element.
+	 * 
+	 * This method allows applications to retrieve the Carried Key Name for
+	 * the particular EncryptedKey
+	 *
+	 * @returns A pointer (owned by the library) to the CarriedKeyName string 
+	 * (or NULL if none)
+	 */
+
+	virtual const XMLCh * getCarriedKeyName(void) = 0;
+
+	/**
+	 * \brief Get the Recipient name
+	 *
+	 * EncryptedKey elements MAY have a Recipient Attribute on the main
+	 * EncryptedKey element that provide a hint to the application as to who
+	 * the recipient of the key is.
+	 *
+	 * This method returns this string in cases where it has been provided
+	 *
+	 * @returns A pointer (owned by the library) to the Recipient string
+	 * (or NULL if none provided).
+	 */
+
+	virtual const XMLCh * getRecipient(void) = 0;
+
+	//@}
+
+	/** @name EncryptedKey Specific Setter Methods */
+	//@{
+
+	/**
+	 * \brief Set the CarriedKeyName
+	 *
+	 * EncryptedKey elements MAY have a CarriedKeyName element that links
+	 * the EncryptedKey to a KeyName KeyInfo element in another EncryptedKey
+	 * or EncryptedData element.
+	 * 
+	 * This method allows applications to set the Carried Key Name for
+	 * the particular EncryptedKey
+	 *
+	 * @param name String to set in the CarriedKeyName element
+	 */
+
+	virtual void setCarriedKeyName(const XMLCh * name) = 0;
+
+	/**
+	 * \brief Set the Recipient name
+	 *
+	 * EncryptedKey elements MAY have a Recipient Attribute on the main
+	 * EncryptedKey element that provide a hint to the application as to who
+	 * the recipient of the key is.
+	 *
+	 * This method sets the Recipient string
+	 *
+	 * @param recipient String to set in the Recipient attribute
+	 */
+
+	virtual void setRecipient(const XMLCh * recipient) = 0;
 
 	//@}
 

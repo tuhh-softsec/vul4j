@@ -260,6 +260,21 @@ XMLCh s_tstMgmtData[] = {
 
 };
 
+XMLCh s_tstCarriedKeyName[] = {
+
+	chLatin_D, chLatin_u, chLatin_m, chLatin_m, chLatin_y, chSpace,
+	chLatin_C, chLatin_a, chLatin_r, chLatin_r, chLatin_y, chNull
+
+};
+
+XMLCh s_tstRecipient[] = {
+
+	chLatin_D, chLatin_u, chLatin_m, chLatin_m, chLatin_y, chSpace,
+	chLatin_R, chLatin_e, chLatin_c, chLatin_i, chLatin_p,
+	chLatin_i, chLatin_e, chLatin_n, chLatin_t, chNull
+
+};
+
 XMLCh s_tstEncoding[] = {
 	chLatin_B, chLatin_a, chLatin_s, chLatin_e, chDigit_6, chDigit_4, chNull
 };
@@ -1106,6 +1121,11 @@ void testEncrypt(DOMImplementation *impl) {
 
 		cerr << "done!" << endl;
 
+		cerr << "Adding CarriedKeyName and Recipient to encryptedKey ... " << endl;
+		encryptedKey->setCarriedKeyName(s_tstCarriedKeyName);
+		encryptedKey->setRecipient(s_tstRecipient);
+		cerr << "done!" << endl;
+
 		encryptedData->appendEncryptedKey(encryptedKey);
 
 		outputDoc(impl, doc);
@@ -1151,7 +1171,8 @@ void testEncrypt(DOMImplementation *impl) {
 		int nki = kil->getSize();
 		bool foundNameOK = false;
 
-		for (int i = 0; i < nki; ++i) {
+		int i;
+		for (i = 0; i < nki; ++i) {
 
 			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_NAME) {
 
@@ -1164,6 +1185,7 @@ void testEncrypt(DOMImplementation *impl) {
 				foundNameOK = true;
 				break;
 			}
+
 		}
 
 		if (foundNameOK == false) {
@@ -1172,6 +1194,36 @@ void testEncrypt(DOMImplementation *impl) {
 		}
 		else
 			cerr << "yes." << endl;
+
+		cerr << "Checking CarriedKeyName and Recipient values ... ";
+		bool foundCCN = false;
+		bool foundRecipient = false;
+
+		for (i = 0; i < nki; ++i) {
+
+			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_ENCRYPTEDKEY) {
+
+				XENCEncryptedKey * xek = dynamic_cast<XENCEncryptedKey*>(kil->item(i));
+
+				if (strEquals(xek->getCarriedKeyName(), s_tstCarriedKeyName)) {
+
+					foundCCN = true;
+				}
+				
+				if (strEquals(xek->getRecipient(), s_tstRecipient)) {
+
+					foundRecipient = true;
+				}
+			}
+		}
+
+		if (foundCCN == false || foundRecipient == false) {
+			cerr << "no!" << endl;
+			exit(1);
+		}
+		else {
+			cerr << "OK" << endl;
+		}
 
 		cerr << "Checking MimeType and Encoding ... ";
 		if (encryptedData->getMimeType() == NULL || !strEquals(encryptedData->getMimeType(), s_tstMimeType)) {

@@ -725,6 +725,16 @@ int XENCCipherImpl::decryptKey(
 		int maxKeySize
 		) {
 
+	XENCEncryptedKey * encryptedKey = loadEncryptedKey(keyNode);
+	Janitor<XENCEncryptedKey> j_encryptedKey(encryptedKey);
+
+	// Now decrypt!
+	return decryptKey(encryptedKey, rawKey, maxKeySize);
+
+}
+
+XENCEncryptedKey * XENCCipherImpl::loadEncryptedKey(DOMElement * keyNode) {
+
 	XENCEncryptedKeyImpl * encryptedKey;
 	XSECnew(encryptedKey, 
 		XENCEncryptedKeyImpl(mp_env, dynamic_cast<DOMNode *>(keyNode)));
@@ -733,11 +743,10 @@ int XENCCipherImpl::decryptKey(
 	// Load
 	encryptedKey->load();
 
-	// Now decrypt!
-	return decryptKey(encryptedKey, rawKey, maxKeySize);
+	j_encryptedKey.release();
+	return encryptedKey;
 
 }
-
 // --------------------------------------------------------------------------------
 //			Encrypt a BinInputStream
 // --------------------------------------------------------------------------------

@@ -85,7 +85,7 @@ class MerlinFiveInteropResolver : public XSECKeyInfoResolver {
 
 public :
 
-	MerlinFiveInteropResolver(const XMLCh * baseURI);
+	MerlinFiveInteropResolver(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc, const XMLCh * baseURI);
 	~MerlinFiveInteropResolver();
 
 	// Interface functions
@@ -100,6 +100,8 @@ private:
 	XSECCryptoSymmetricKey * makeSymmetricKey(XSECCryptoSymmetricKey::SymmetricKeyType);
 
 	XMLCh *			mp_baseURI;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument 
+					*mp_doc;
 
 #if defined (_WIN32)
 	_finddata_t		m_finder;

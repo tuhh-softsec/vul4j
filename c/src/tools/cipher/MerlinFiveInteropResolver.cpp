@@ -72,10 +72,13 @@
 #include "MerlinFiveInteropResolver.hpp"
 
 #include <xsec/framework/XSECDefs.hpp>
+#include <xsec/framework/XSECProvider.hpp>
 #include <xsec/enc/XSECKeyInfoResolver.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+#include <xsec/xenc/XENCCipher.hpp>
+#include <xsec/xenc/XENCEncryptedKey.hpp>
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
@@ -143,7 +146,7 @@ static char s_jedKey[] = "abcdefghijklmnopqrstuvwxyz012345";
 // --------------------------------------------------------------------------------
 
 
-MerlinFiveInteropResolver::MerlinFiveInteropResolver(const XMLCh * baseURI) {
+MerlinFiveInteropResolver::MerlinFiveInteropResolver(DOMDocument * doc, const XMLCh * baseURI) {
 
 	if (baseURI != NULL)
 		mp_baseURI = XMLString::replicate(baseURI);
@@ -153,6 +156,8 @@ MerlinFiveInteropResolver::MerlinFiveInteropResolver(const XMLCh * baseURI) {
 #if !defined(_WIN32)
 	m_fcount = 0;
 #endif
+
+	mp_doc = doc;
 
 }
 
@@ -295,6 +300,57 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				return k;
 			}
 
+			// If we get this far, we don't know it.  So look for EncryptedKey elements
+			// containing this name as a CarriedKeyName
+
+			DOMNode * c = mp_doc->getDocumentElement()->getFirstChild();
+			while (c != NULL) {
+
+				if (c->getNodeType() == DOMNode::ELEMENT_NODE &&
+					strEquals(getDSIGLocalName(c), MAKE_UNICODE_STRING("KeyInfo"))) {
+
+					DOMNode * ek = c->getFirstChild();
+					while (ek != NULL) {
+
+						if (ek->getNodeType() == DOMNode::ELEMENT_NODE &&
+							strEquals(getXENCLocalName(ek), MAKE_UNICODE_STRING("EncryptedKey"))) {
+
+							// Load
+							XSECProvider prov;
+							XENCCipher * cipher = prov.newCipher(mp_doc);
+
+							XENCEncryptedKey * xek = cipher->loadEncryptedKey(static_cast<DOMElement*>(ek));
+							Janitor<XENCEncryptedKey> j_xek(xek);
+
+							if (strEquals(xek->getCarriedKeyName(), name) &&
+								strEquals(xek->getRecipient(), MAKE_UNICODE_STRING("you"))) {
+
+								// This is it!
+								cipher->setKeyInfoResolver(this);
+								unsigned char keyBuf[1024];
+								int sz = cipher->decryptKey(xek, keyBuf, 1024);
+
+								if (sz > 0) {
+									XSECCryptoSymmetricKey * k = 
+										XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
+									try {
+										k->setKey(keyBuf, sz);
+									} catch (...) {
+										delete k;
+										throw;
+									}
+
+									return k;
+								}
+							}
+						}
+						ek = ek->getNextSibling();
+					}
+				}
+				
+				c = c->getNextSibling();
+			}
+
 		}
 
 		else if (ki->getKeyInfoType() == DSIGKeyInfo::KEYINFO_X509) {
@@ -361,7 +417,7 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
 XSECKeyInfoResolver * MerlinFiveInteropResolver::clone(void) const {
 
-	return new MerlinFiveInteropResolver(mp_baseURI);
+	return new MerlinFiveInteropResolver(mp_doc, mp_baseURI);
 
 }
 

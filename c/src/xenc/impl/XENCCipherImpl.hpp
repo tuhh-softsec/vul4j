@@ -156,6 +156,9 @@ public:
 	XENCEncryptedData * createEncryptedData(XENCCipherData::XENCCipherDataType type,
 											const XMLCh * algorithm,
 											const XMLCh * value);
+	virtual XENCEncryptedKey * loadEncryptedKey(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * keyNode
+		);
 
 protected:
 

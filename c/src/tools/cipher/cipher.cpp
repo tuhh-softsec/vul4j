@@ -647,7 +647,7 @@ int evaluate(int argc, char ** argv) {
 
 				XMLUri uri(MAKE_UNICODE_STRING(baseURI));
 
-				MerlinFiveInteropResolver ires(&(uri.getUriText()[8]));
+				MerlinFiveInteropResolver ires(doc, &(uri.getUriText()[8]));
 				cipher->setKeyInfoResolver(&ires);
 
 			}

@@ -136,12 +136,26 @@ public:
 	virtual void setEncodingURI(const XMLCh * uri)
 		{XENCEncryptedTypeImpl::setEncodingURI(uri);}
 
+	// EncryptedKey specific Getter Methods
+	virtual const XMLCh * getCarriedKeyName(void);
+	virtual const XMLCh * getRecipient(void);
+
+	// EncryptedKey specific setter methods
+	virtual void setCarriedKeyName(const XMLCh * name);
+	virtual void setRecipient(const XMLCh * recipient);
+
+
 private:
 
 	// Unimplemented
 	XENCEncryptedKeyImpl(void);
 	XENCEncryptedKeyImpl(const XENCEncryptedKeyImpl &);
 	XENCEncryptedKeyImpl & operator = (const XENCEncryptedKeyImpl &);
+
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
+								* mp_carriedKeyNameTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
+								* mp_recipientAttributeNode;
 
 };
 
