@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/one/SupermarketPricingExample.java,v 1.1 2003/12/01 05:29:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/one/SupermarketPricingExample.java,v 1.2 2003/12/01 22:01:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -69,10 +69,26 @@ import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
 import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
 
 /**
+ * Dave Thomas's Kata One asks us to think about how one might 
+ * implement pricing rules:  
+ * 
+ * "Some things in supermarkets have simple prices: this can of 
+ * beans costs $0.65. Other things have more complex prices. 
+ * For example:
+ *
+ * o three for a dollar (so what?s the price if I buy 4, or 5?)
+ *
+ * o $1.99/pound (so what does 4 ounces cost?)
+ * 
+ * o buy two, get one free (so does the third item have a price?)"
+ * 
+ * Functors provide one approach to this sort of problem, and in
+ * this example we'll demonstrate some simple cases.
+ *  
  * See http://pragprog.com/pragdave/Practices/Kata/KataOne.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/12/01 05:29:08 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/01 22:01:15 $
  * @author Rodney Waldhoff
  */
 public class SupermarketPricingExample extends TestCase {
