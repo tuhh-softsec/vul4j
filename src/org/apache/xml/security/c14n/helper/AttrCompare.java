@@ -44,6 +44,7 @@ public class AttrCompare implements java.util.Comparator {
    private final int ATTR0_BEFORE_ATTR1 = -1;
    private final int ATTR1_BEFORE_ATTR0 = 1;
 
+   private final static String XMLNS=Constants.NamespaceSpecNS;
    /**
     * Compares two attributes based on the C14n specification.
     *
@@ -70,9 +71,9 @@ public class AttrCompare implements java.util.Comparator {
       String namespaceURI1 = attr1.getNamespaceURI();
       
       boolean isNamespaceAttr0 =
-         Constants.NamespaceSpecNS.equals(namespaceURI0);
+      	XMLNS.equals(namespaceURI0);
       boolean isNamespaceAttr1 =
-         Constants.NamespaceSpecNS.equals(namespaceURI1);
+      	XMLNS.equals(namespaceURI1);
 
       if (isNamespaceAttr0) {
          if (isNamespaceAttr1) {
