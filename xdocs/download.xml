@@ -42,10 +42,10 @@
             <a href="http://gump.covalent.net/jars/">http://gump.covalent.net/jars/</a>
             for previous versions.
          </dd>
-         <dt><a href="http://nagoya.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/">JavaDocs</a></dt>
+         <dt><a href="http://gump.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/">JavaDocs</a></dt>
          <dd>
             JavaDoc-generated API documentation is available at 
-            <a href="http://nagoya.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/">http://nagoya.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/</a>.
+            <a href="http://gump.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/">http://gump.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/</a>.
          </dd>
       </dl>
       <p>
