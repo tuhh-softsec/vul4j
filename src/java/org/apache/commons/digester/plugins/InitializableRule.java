@@ -20,8 +20,6 @@ package org.apache.commons.digester.plugins;
  * Defines an interface that a Rule class can implement if it wishes to get an
  * initialisation callback after the rule has been added to the set of Rules
  * within a PluginRules instance.
- * 
- * @author Simon Kitching
  */
 
 public interface InitializableRule {

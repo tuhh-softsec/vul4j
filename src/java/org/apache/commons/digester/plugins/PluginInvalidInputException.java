@@ -18,8 +18,6 @@ package org.apache.commons.digester.plugins;
 
 /**
  * Thrown when an error occurs due to bad data in the file being parsed.
- *
- * @author Simon Kitching
  */
 public class PluginInvalidInputException extends Exception {
 

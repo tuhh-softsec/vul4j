@@ -40,8 +40,6 @@ package org.apache.commons.digester.plugins;
  * input is bad, or when code external to the Digester module passes invalid 
  * parameters to a plugins method. It should be used only in checks for 
  * problems which indicate internal bugs within the plugins module.
- *
- * @author Simon Kitching
  */
 public class PluginAssertionFailure extends RuntimeException {
 

@@ -19,8 +19,6 @@ package org.apache.commons.digester.plugins;
 /**
  * Thrown when some other exception needs to be wrapped with an explanatory
  * message, and none of the other exception types are appropriate.
- *
- * @author Simon Kitching
  */
 public class PluginWrappedException extends Exception {
 

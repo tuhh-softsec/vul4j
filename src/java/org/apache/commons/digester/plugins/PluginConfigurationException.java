@@ -19,8 +19,6 @@ package org.apache.commons.digester.plugins;
 /**
  * Thrown when an error occurs due to the way the calling application uses
  * the plugins module.
- *
- * @author Simon Kitching
  */
 
 public class PluginConfigurationException extends RuntimeException {

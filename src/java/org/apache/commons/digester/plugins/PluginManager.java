@@ -28,8 +28,6 @@ import org.apache.commons.logging.Log;
  * <p>
  * One instance of this class exists per PluginRules instance,
  * ie one per Digester instance.
- *
- * @author Simon Kitching
  */
 
 public class PluginManager {

@@ -34,8 +34,6 @@ import org.apache.commons.logging.Log;
 /**
  * A custom digester Rules manager which must be used as the Rules object
  * when using the plugins module functionality.
- * </p>
- * @author Simon Kitching
  */
 
 public class PluginRules implements Rules {

@@ -31,8 +31,6 @@ import org.apache.commons.logging.Log;
  * Normally, a PluginDeclarationRule is added to a Digester instance with
  * the pattern "{root}/plugin" or "* /plugin" where {root} is the name of 
  * the root tag in the input document.
- *
- * @author Simon Kitching
  */
 
 public class PluginDeclarationRule extends Rule {

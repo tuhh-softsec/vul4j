@@ -28,8 +28,6 @@ import org.apache.commons.logging.Log;
 /**
  * Simple structure to store the set of attributes that can be present on 
  * a plugin declaration.
- * 
- * @author Simon Kitching
  */
 public class Declaration {
 
