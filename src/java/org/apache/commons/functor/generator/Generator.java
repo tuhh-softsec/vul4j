@@ -1,5 +1,5 @@
 /*
- * $Id: Generator.java,v 1.3 2003/07/17 22:44:45 rwaldhoff Exp $
+ * $Id: Generator.java,v 1.4 2003/11/12 00:50:44 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/07/17 22:44:45 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/12 00:50:44 $
  * @author  Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -75,23 +75,23 @@ public interface Generator {
     public abstract void stop();
     /** Check if the generator is stopped. */
     public abstract boolean isStopped();
-    /** See {@link Algorithms#apply}. */
+    /** See {@link org.apache.commons.functor.Algorithms#apply}. */
     public abstract Generator apply(UnaryFunction func);
-    /** See {@link Algorithms#contains}. */
+    /** See {@link org.apache.commons.functor.Algorithms#contains}. */
     public abstract boolean contains(UnaryPredicate pred);
-    /** See {@link Algorithms#detect}. */
+    /** See {@link org.apache.commons.functor.Algorithms#detect}. */
     public abstract Object detect(UnaryPredicate pred);
-    /** See {@link Algorithms#detect}. */
+    /** See {@link org.apache.commons.functor.Algorithms#detect}. */
     public abstract Object detect(UnaryPredicate pred, Object ifNone);
     /** Synonym for run. */
     public abstract void foreach(UnaryProcedure proc);
-    /** See {@link Algorithms#inject}. */
+    /** See {@link org.apache.commons.functor.Algorithms#inject}. */
     public abstract Object inject(Object seed, BinaryFunction func);
-    /** See {@link Algorithms#reject}. */
+    /** See {@link org.apache.commons.functor.Algorithms#reject}. */
     public abstract Generator reject(UnaryPredicate pred);
-    /** See {@link Algorithms#select}. */
+    /** See {@link org.apache.commons.functor.Algorithms#select}. */
     public abstract Generator select(UnaryPredicate pred);
-    /** See {@link Algorithms#until}. */
+    /** See {@link org.apache.commons.functor.Algorithms#until}. */
     public abstract Generator until(UnaryPredicate pred);
     /**
      * {@link Transformer Transforms} this generator using the passed in

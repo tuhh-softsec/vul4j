@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/DoWhileProcedure.java,v 1.1 2003/11/11 23:36:00 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/DoWhileProcedure.java,v 1.2 2003/11/12 00:50:44 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,13 +66,13 @@ import org.apache.commons.functor.Procedure;
  * <code>do { p.run(); } while(c.test())</code>.
  * <p>
  * Note that although this class implements 
- * {@link Serializable}, a given instance will
+ * {@link java.io.Serializable}, a given instance will
  * only be truly <code>Serializable</code> if all the
  * underlying functors are.  Attempts to serialize
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/11/11 23:36:00 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/12 00:50:44 $
  * @author Herve Quiroz
  * @author Rodney Waldhoff
  */

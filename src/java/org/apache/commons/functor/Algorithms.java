@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.5 2003/07/17 22:44:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.6 2003/11/12 00:50:44 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,10 +65,10 @@ import org.apache.commons.functor.generator.Generator;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
 /**
- * Utility methods and algorithms for applying functors to {@link IfaceGenerator}s.
- * {@link IfaceGenerator}s also define these utility methods as instance methods. The
+ * Utility methods and algorithms for applying functors to {@link Generator}s.
+ * {@link Generator}s also define these utility methods as instance methods. The
  * {@link #apply}, {@link #select}, and {@link #reject} methods return new
- * IfaceGenerators. This becomes useful for constructing nested expressions. For
+ * Generators. This becomes useful for constructing nested expressions. For
  * example:
  *
  * <pre>
@@ -80,7 +80,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.5 $ $Date: 2003/07/17 22:44:45 $
+ * @version $Revision: 1.6 $ $Date: 2003/11/12 00:50:44 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
@@ -94,7 +94,7 @@ public class Algorithms {
     }
 
     /**
-     * Returns a {@link IfaceGenerator} that will apply the given {@link UnaryFunction} to each
+     * Returns a {@link Generator} that will apply the given {@link UnaryFunction} to each
      * generated element.
      */
     public static final Generator apply(final Generator gen, final UnaryFunction func) {
@@ -117,10 +117,10 @@ public class Algorithms {
     }
 
     /**
-     * Return <code>true</code> if some element in the given {@link IfaceGenerator}
+     * Return <code>true</code> if some element in the given {@link Generator}
      * that matches the given {@link UnaryPredicate UnaryPredicate}.
      *
-     * @see #detect(IfaceGenerator,UnaryPredicate)
+     * @see #detect(Generator,UnaryPredicate)
      */
     public static final boolean contains(final Generator gen, final UnaryPredicate pred) {
         // javas' inner classes suck, i should do this a different way i guess
@@ -154,12 +154,12 @@ public class Algorithms {
     }
 
     /**
-     * Return the first element within the given {@link IfaceGenerator} that matches
+     * Return the first element within the given {@link Generator} that matches
      * the given {@link UnaryPredicate UnaryPredicate}, or throw {@link
      * java.util.NoSuchElementException NoSuchElementException} if no
      * matching element can be found.
      *
-     * @see #detect(IfaceGenerator,UnaryPredicate,Object)
+     * @see #detect(Generator,UnaryPredicate,Object)
      * @throws NoSuchElementException If no element could be found.
      */
     public static final Object detect(final Generator gen, final UnaryPredicate pred) {
@@ -181,12 +181,12 @@ public class Algorithms {
     }
 
     /**
-     * Return the first element within the given {@link IfaceGenerator} that matches
+     * Return the first element within the given {@link Generator} that matches
      * the given {@link UnaryPredicate UnaryPredicate}, or return the given
      * (possibly <code>null</code> <code>Object</code> if no matching element
      * can be found.
      *
-     * @see #detect(IfaceGenerator,UnaryPredicate)
+     * @see #detect(Generator,UnaryPredicate)
      */
     public static final Object detect(final Generator gen, final UnaryPredicate pred, Object ifNone) {
         final Object[] foundObj = new Object[1];
@@ -215,7 +215,7 @@ public class Algorithms {
 
     /**
      * {@link UnaryProcedure#run Apply} the given {@link UnaryProcedure
-     * UnaryProcedure} to each element in the given {@link IfaceGenerator}.
+     * UnaryProcedure} to each element in the given {@link Generator}.
      */
     public static final void foreach(Generator gen, UnaryProcedure proc) {
         gen.run(proc);
@@ -230,7 +230,7 @@ public class Algorithms {
 
     /**
      * {@link BinaryFunction#evaluate Evaluate} the pair <i>( previousResult,
-     * element )</i> for each element in the given {@link IfaceGenerator} where
+     * element )</i> for each element in the given {@link Generator} where
      * previousResult is initially <i>seed</i>, and thereafter the result of the
      * evaluation of the previous element in the iterator. Returns the result
      * of the final evaluation.
@@ -266,7 +266,7 @@ public class Algorithms {
     }
 
     /**
-     * Returns a {@link IfaceGenerator} that will only "generate" elements that DO
+     * Returns a {@link Generator} that will only "generate" elements that DO
      * NOT match the given predicate.
      */
     public static Generator reject(final Generator gen, final UnaryPredicate pred) {
@@ -291,7 +291,7 @@ public class Algorithms {
     }
 
     /**
-     * Returns a {@link IfaceGenerator} that will only "generate" elements that DO
+     * Returns a {@link Generator} that will only "generate" elements that DO
      * match the given predicate.
      */
     public static final Generator select(final Generator gen, final UnaryPredicate pred) {
@@ -316,14 +316,14 @@ public class Algorithms {
     }
 
     /**
-     * Returns a {@link IfaceGenerator} that will stop when the predicate becomes
-     * true. This is useful for imposing {@link IfaceGenerator} limits. For example:
+     * Returns a {@link Generator} that will stop when the predicate becomes
+     * true. This is useful for imposing {@link Generator} limits. For example:
      *
      * <pre>
      *  EachLine.open(file).until(new MaxIterations(1));
      * </pre>
      *
-     * Would only "generate" 1 line from the file before {@link IfaceGenerator#stop
+     * Would only "generate" 1 line from the file before {@link Generator#stop
      * stopping} the generator.
      */
     public static final Generator until(final Generator gen, final UnaryPredicate pred) {
