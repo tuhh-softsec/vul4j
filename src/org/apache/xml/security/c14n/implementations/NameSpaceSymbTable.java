@@ -207,7 +207,7 @@ public class NameSpaceSymbTable {
         return true;
 	}
 
-	/**
+    /**
      * Adds a definition and mark it as render.
      * For inclusive c14n.
      * @param prefix the prefix of definition
@@ -215,32 +215,33 @@ public class NameSpaceSymbTable {
      * @param n the attribute that have the definition
      * @return the attr to render, null if there is no need to render
      **/
-	public Node addMappingAndRender(String prefix, String uri,Attr n) {						
-		NameSpaceSymbEntry ob = (NameSpaceSymbEntry)symb.get(prefix);
-		
-		if ((ob!=null) && uri.equals(ob.uri)) {
-			if (!ob.rendered) {					
-				ob=(NameSpaceSymbEntry) ob.clone();
+    public Node addMappingAndRender(String prefix, String uri,Attr n) {                     
+        NameSpaceSymbEntry ob = (NameSpaceSymbEntry)symb.get(prefix);
+        
+        if ((ob!=null) && uri.equals(ob.uri)) {
+            if (!ob.rendered) {                 
+                ob=(NameSpaceSymbEntry) ob.clone();
                 needsClone();
-                symb.put(prefix,ob);			
-				ob.rendered=true;
-				return ob.n;
-			}			
-			return null;
-		}	
-		
-		NameSpaceSymbEntry ne=new NameSpaceSymbEntry(uri,n,true);
-		needsClone();
-		symb.put(prefix, ne);
-		if (ob != null) {			
-			ne.lastrendered=ob.lastrendered;
-			
-			if ((ob.lastrendered!=null)&& (ob.lastrendered.equals(uri))) {
-				ne.rendered=true;
-			}
-		} 		
-		return ne.n;
-	}
+                symb.put(prefix,ob);                        
+                ob.rendered=true;
+                return ob.n;
+            }           
+            return null;
+        }   
+        
+        NameSpaceSymbEntry ne=new NameSpaceSymbEntry(uri,n,true);
+        needsClone();
+        symb.put(prefix, ne);
+        if (ob != null) {           
+            ne.lastrendered=uri;
+            
+            if ((ob.lastrendered!=null)&& (ob.lastrendered.equals(uri))) {
+                ne.rendered=true;
+                return null;
+            }
+        }       
+        return ne.n;
+    }
 	/** 
      * Adds & gets(if needed) the attribute node that defines the binding for the prefix. 
      * Take on account if the rules of rendering in the inclusive c14n.
