@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsGreaterThan.java,v 1.4 2003/11/24 20:12:16 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsGreaterThan.java,v 1.5 2003/12/01 21:51:47 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/24 20:12:16 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/01 21:51:47 $
  * @author Rodney Waldhoff
  */
 public class TestIsGreaterThan extends BaseComparisonPredicateTest {
@@ -106,6 +106,11 @@ public class TestIsGreaterThan extends BaseComparisonPredicateTest {
         assertTrue(!p.test(new Integer(4),new Integer(4)));
         assertTrue(p.test(new Integer(5),new Integer(4)));
         assertTrue(p.test(new Integer(6),new Integer(4)));
+    }
+    
+    public void testInstance() {
+        assertTrue(IsGreaterThan.instance(new Integer(7)).test(new Integer(8)));
+        assertTrue(! IsGreaterThan.instance(new Integer(7)).test(new Integer(6)));
     }
     
     public void testEquals() throws Exception {

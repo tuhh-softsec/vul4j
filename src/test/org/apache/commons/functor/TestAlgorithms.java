@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.9 2003/11/25 21:29:17 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.10 2003/12/01 21:51:47 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -71,13 +71,14 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
 import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsEqual;
+import org.apache.commons.functor.core.Limit;
 import org.apache.commons.functor.core.Offset;
 import org.apache.commons.functor.generator.Generator;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 import org.apache.commons.functor.generator.util.IntegerRange;
 
 /**
- * @version $Revision: 1.9 $ $Date: 2003/11/25 21:29:17 $
+ * @version $Revision: 1.10 $ $Date: 2003/12/01 21:51:47 $
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {
@@ -278,6 +279,37 @@ public class TestAlgorithms extends TestCase {
         assertEquals("[0, 1]", col.toString());
     }
 
+    public void testDoUntil() {        
+        for(int i=0;i<3;i++){
+            Counter counter = new Counter();
+            Algorithms.dountil(counter,new Offset(i));
+            assertEquals(i+1,counter.count);        
+        }
+    }
+    
+    public void testDoWhile() {        
+        for(int i=0;i<3;i++){
+            Counter counter = new Counter();
+            Algorithms.dowhile(counter,new Limit(i));
+            assertEquals(i+1,counter.count);        
+        }
+    }
+    
+    public void testUntilDo() {        
+        for(int i=0;i<3;i++){
+            Counter counter = new Counter();
+            Algorithms.untildo(new Offset(i),counter);
+            assertEquals(i,counter.count);        
+        }
+    }
+    
+    public void testWhileDo() {        
+        for(int i=0;i<3;i++){
+            Counter counter = new Counter();
+            Algorithms.whiledo(new Limit(i),counter);
+            assertEquals(i,counter.count);        
+        }
+    }
     public void testRecurse() {
         assertEquals(new Integer(5), Algorithms.recurse(new RecFunc(0, false)));
 
@@ -336,6 +368,13 @@ public class TestAlgorithms extends TestCase {
     // Classes
     // ------------------------------------------------------------------------
 
+    static class Counter implements Procedure {
+        public void run() {
+            count++;
+        }
+        public int count = 0;
+    }
+    
     static class Summer implements UnaryProcedure {
         public void run(Object that) {
             sum += ((Number)that).intValue();

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.7 2003/12/01 21:14:46 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.8 2003/12/01 21:51:47 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -109,7 +109,7 @@ import org.apache.commons.functor.generator.util.IntegerRange;
  * See http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.7 $ $Date: 2003/12/01 21:14:46 $
+ * @version $Revision: 1.8 $ $Date: 2003/12/01 21:51:47 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryChop extends TestCase {
@@ -295,7 +295,7 @@ public class TestBinaryChop extends TestCase {
      * Using the functor framework, we can make these notions
      * explict.  Specifically, the construction above is:
      * 
-     *   Algorithms.dountil(BODY,TERM); 
+     *   Algorithms.untildo(BODY,TERM); 
      * 
      * Since we'll want to share state among the TERM and BODY,
      * let's declare a single interface for the TERM Predicate and
@@ -379,7 +379,7 @@ public class TestBinaryChop extends TestCase {
      *     end
      *   end
      * 
-     * We can do that too, see EiffelStyleLoop.
+     * We can do that too, using EiffelStyleLoop.
      */
     class BinarySearchLoop extends EiffelStyleLoop {
         BinarySearchLoop(Object aSeeking, List aList) {
