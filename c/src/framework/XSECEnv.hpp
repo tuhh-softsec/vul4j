@@ -174,6 +174,15 @@ public:
 	void setXPFNSPrefix(const XMLCh * prefix);
 
 	/**
+	 * \brief Set prefix for XENC nodes
+	 *
+	 * Set the namespace prefix the library will use when creating
+	 * nodes in the XENC namespace
+	 */
+
+	void setXENCNSPrefix(const XMLCh * prefix);
+
+	/**
 	 * \brief Get the NS Prefix being used for DSIG elements.
 	 *
 	 * @returns A pointer to the buffer holding the prefix
@@ -200,6 +209,17 @@ public:
 	 */
 
 	const XMLCh * getXPFNSPrefix() const {return mp_xpfPrefixNS;}
+
+	/**
+	 * \brief Get namespace prefix for XENC nodes
+	 *
+	 * Find the string being used by the library to prefix nodes in the 
+	 * xenc: namespace.
+	 *
+	 * @returns XENC namespace prefix
+	 */
+
+	const XMLCh * getXENCNSPrefix(void) const {return mp_xencPrefixNS;}
 
 	//@}
 
@@ -252,10 +272,23 @@ public:
 	 * @returns A pointer to the URIResolver registered in this signature
 	 */
 
-	XSECURIResolver * getURIResolver(void);
+	XSECURIResolver * getURIResolver(void) const;
 
 
 	//@}
+
+	/** @name Formatters */
+	//@{
+
+	/** 
+	 * \brief Get a safeBufferFormatter
+	 *
+	 * Return a UTF-8 safeBuffer formatter
+	 *
+	 * @returns A pointer to a safeBuffer formatter
+	 */
+
+	XSECSafeBufferFormatter * getSBFormatter(void) const {return mp_formatter;}
 
 
 private:
@@ -269,6 +302,7 @@ private:
 	XMLCh 						* mp_prefixNS;
 	XMLCh						* mp_ecPrefixNS;
 	XMLCh						* mp_xpfPrefixNS;
+	XMLCh						* mp_xencPrefixNS;
 
 	// Resolvers
 	XSECURIResolver				* mp_URIResolver;

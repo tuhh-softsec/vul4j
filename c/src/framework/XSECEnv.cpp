@@ -73,8 +73,40 @@
 #include <xsec/framework/XSECUriResolver.hpp>
 #include <xsec/dsig/DSIGConstants.hpp>
 
+#include <xercesc/util/XMLUniDefs.hpp>
+
 XERCES_CPP_NAMESPACE_USE
 
+// --------------------------------------------------------------------------------
+//           Default prefix strings
+// --------------------------------------------------------------------------------
+
+const XMLCh s_defaultECPrefix[] = {
+
+	chLatin_e,
+	chLatin_c,
+	chNull
+
+};
+
+const XMLCh s_defaultXPFPrefix[] = {
+
+	chLatin_x,
+	chLatin_p,
+	chLatin_f,
+	chNull
+
+};
+
+const XMLCh s_defaultXENCPrefix[] = {
+
+	chLatin_x,
+	chLatin_e,
+	chLatin_n,
+	chLatin_c,
+	chNull
+
+};
 
 // --------------------------------------------------------------------------------
 //           Env
@@ -87,8 +119,10 @@ XSECEnv::XSECEnv(DOMDocument *doc) {
 	mp_doc = doc;
 
 	mp_prefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
-	mp_ecPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
-	mp_xpfPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
+	mp_ecPrefixNS = XMLString::replicate(s_defaultECPrefix);
+	mp_xpfPrefixNS = XMLString::replicate(s_defaultXPFPrefix);
+	mp_xencPrefixNS = XMLString::replicate(s_defaultXENCPrefix);
+
 	mp_URIResolver = NULL;
 
 	// Set up our formatter
@@ -101,29 +135,27 @@ XSECEnv::XSECEnv(DOMDocument *doc) {
 XSECEnv::~XSECEnv() {
 
 	if (mp_formatter != NULL) {
-
 		delete mp_formatter;
-		mp_formatter = NULL;
 	}
 
 	if (mp_prefixNS != NULL) {
 		delete[] mp_prefixNS;
-		mp_prefixNS = NULL;
 	}
 
 	if (mp_ecPrefixNS != NULL) {
 		delete[] mp_ecPrefixNS;
-		mp_ecPrefixNS = NULL;
 	}
 	
 	if (mp_xpfPrefixNS != NULL) {
 		delete[] mp_xpfPrefixNS;
-		mp_xpfPrefixNS = NULL;
+	}
+
+	if (mp_xencPrefixNS != NULL) {
+		delete[] mp_xencPrefixNS;
 	}
 
 	if (mp_URIResolver != NULL) {
 		delete mp_URIResolver;
-		mp_URIResolver = NULL;
 	}
 
 }
@@ -142,7 +174,7 @@ void XSECEnv::setURIResolver(XSECURIResolver * resolver) {
 
 }
 
-XSECURIResolver * XSECEnv::getURIResolver(void) {
+XSECURIResolver * XSECEnv::getURIResolver(void) const {
 
 	return mp_URIResolver;
 
@@ -179,3 +211,11 @@ void XSECEnv::setXPFNSPrefix(const XMLCh * prefix) {
 
 }
 
+void XSECEnv::setXENCNSPrefix(const XMLCh * prefix) {
+
+	if (mp_xencPrefixNS != NULL)
+		delete[] mp_xencPrefixNS;
+
+	mp_xencPrefixNS = XMLString::replicate(prefix);
+
+}
