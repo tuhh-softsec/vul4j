@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <extend>../project.xml</extend>
+  <name>commons-digester</name>
+  <id>commons-digester</id>
+  <currentVersion>1.0-dev</currentVersion>
+  <inceptionYear>2002</inceptionYear>
+  <gumpRepositoryId>jakarta</gumpRepositoryId>
+  <shortDescription>Commons Digester</shortDescription>
+
+  <description>
+    Commons Digester
+  </description>
+  
+  <developers>
+    <developer>
+      <name>Craig McClanahan</name>
+      <id></id>
+      <email></email>
+      <organization></organization>
+    </developer>
+  </developers>
+  
+  <dependencies>
+
+    <dependency>
+      <id>commons-beanutils</id>
+      <version>1.4-dev</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-collections</id>
+      <version>2.0</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-logging</id>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <id>xml-apis</id>
+      <version>2.0.2</version>
+    </dependency>
+
+    <dependency>
+      <id>junit</id>
+      <version>3.7</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    
+    <unitTest>
+      <includes>
+        <include>**/*TestCase.java</include>
+      </includes>
+    </unitTest>
+
+    <resources>
+      <includes>
+        <include>**/*.xml</include>
+      </includes>
+    </resources>
+
+  </build>
+
+</project>
