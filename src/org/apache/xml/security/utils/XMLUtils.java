@@ -1,3 +1,4 @@
+
 /*
  * The Apache Software License, Version 1.1
  *
@@ -487,8 +488,8 @@ public class XMLUtils {
 
          if (n.getNodeType() == Node.ELEMENT_NODE) {
             if (((Element) n).getLocalName().equals(childLocalName)
-                    && ((Element) n).getNamespaceURI()
-                       .equals(childNamespaceURI)) {
+                    && ((Element) n).getNamespaceURI().equals(
+                       childNamespaceURI)) {
                results.add(n);
             }
          }
@@ -543,9 +544,10 @@ public class XMLUtils {
             os.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".getBytes());
          }
 
-         os.write(Canonicalizer
-            .getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS)
-               .canonicalizeSubtree(contextNode));
+         os.write(
+            Canonicalizer.getInstance(
+               Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS).canonicalizeSubtree(
+               contextNode));
       } catch (IOException ex) {}
       catch (InvalidCanonicalizerException ex) {
          ex.printStackTrace();
@@ -571,9 +573,10 @@ public class XMLUtils {
            OutputStream os) {
 
       try {
-         os.write(Canonicalizer
-            .getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS)
-               .canonicalizeSubtree(contextNode));
+         os.write(
+            Canonicalizer.getInstance(
+               Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS).canonicalizeSubtree(
+               contextNode));
       } catch (IOException ex) {
 
          // throw new RuntimeException(ex.getMessage());
@@ -663,9 +666,8 @@ public class XMLUtils {
     * @return the Element
     * @throws XMLSignatureException if bigInteger is not positive
     */
-   public static Element createElementFromBigint(
-           Document doc, String elementName, BigInteger bigInteger)
-              throws XMLSignatureException {
+   public static Element createElementFromBigint(Document doc, String elementName, BigInteger bigInteger)
+           throws XMLSignatureException {
 
       Element element = doc.createElementNS(Constants.SignatureSpecNS,
                                             Constants.getSignatureSpecNSprefix()
@@ -687,9 +689,8 @@ public class XMLUtils {
                           oldByteRepresentation.length - 1);
       }
 
-      Text text =
-         doc.createTextNode(org.apache.xml.security.utils.Base64
-            .encode(byteRepresentation));
+      Text text = doc.createTextNode(
+         org.apache.xml.security.utils.Base64.encode(byteRepresentation));
 
       element.appendChild(text);
 
@@ -905,8 +906,8 @@ public class XMLUtils {
          return false;
       }
 
-      if (!element.getNamespaceURI()
-              .equals(EncryptionConstants.EncryptionSpecNS)) {
+      if (!element.getNamespaceURI().equals(
+              EncryptionConstants.EncryptionSpecNS)) {
          return false;
       }
 
@@ -927,8 +928,8 @@ public class XMLUtils {
     * @throws XMLSignatureException if element is not in Signature namespace or if the local name does not match
     * @see org.apache.xml.security.utils.Constants#SignatureSpecNS
     */
-   public static void guaranteeThatElementInSignatureSpace(
-           Element element, String localName) throws XMLSignatureException {
+   public static void guaranteeThatElementInSignatureSpace(Element element, String localName)
+           throws XMLSignatureException {
 
       /*
       cat.debug("guaranteeThatElementInSignatureSpace(" + element + ", "
@@ -958,8 +959,8 @@ public class XMLUtils {
     * @throws XMLSecurityException if element is not in Encryption namespace or if the local name does not match
     * @see org.apache.xml.security.utils.EncryptionConstants#EncryptionSpecNS
     */
-   public static void guaranteeThatElementInEncryptionSpace(
-           Element element, String localName) throws XMLSecurityException {
+   public static void guaranteeThatElementInEncryptionSpace(Element element, String localName)
+           throws XMLSecurityException {
 
       if (element == null) {
          Object exArgs[] = { localName, null };
@@ -1059,8 +1060,8 @@ public class XMLUtils {
    public static Element createDSctx(Document doc, String prefix,
                                      String namespace) {
 
-      if (prefix == null || prefix.trim().length() == 0) {
-          throw new IllegalArgumentException("You must supply a prefix");
+      if ((prefix == null) || (prefix.trim().length() == 0)) {
+         throw new IllegalArgumentException("You must supply a prefix");
       }
 
       Element ctx = doc.createElementNS(null, "namespaceContext");
@@ -1206,6 +1207,17 @@ public class XMLUtils {
     * @see <A HREF="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2650">Namespace axis resolution is not XPath compliant </A>
     */
    public static void circumventBug2650(Document doc) {
+
+      Element documentElement = doc.getDocumentElement();
+
+      // if the document element has no xmlns definition, we add xmlns=""
+      Attr xmlnsAttr =
+         documentElement.getAttributeNodeNS(Constants.NamespaceSpecNS, "xmlns");
+
+      if (xmlnsAttr == null) {
+         documentElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", "");
+      }
+
       XMLUtils.circumventBug2650recurse(doc);
    }
 
@@ -1232,16 +1244,19 @@ public class XMLUtils {
 
                for (int i = 0; i < attributesLength; i++) {
                   Attr currentAttr = (Attr) attributes.item(i);
-                  String name = currentAttr.getNodeName();
+                  boolean isNamespace = Constants.NamespaceSpecNS.equals(
+                     currentAttr.getNamespaceURI());
 
-                  if (name.startsWith("xmlns")) {
-                     String value = currentAttr.getNodeValue();
+                  if (isNamespace) {
                      boolean mustBeDefinedInChild =
-                        !childElement.hasAttributeNS(Constants.NamespaceSpecNS, name);
+                        !childElement.hasAttributeNS(
+                           Constants.NamespaceSpecNS,
+                           currentAttr.getLocalName());
 
                      if (mustBeDefinedInChild) {
                         childElement.setAttributeNS(Constants.NamespaceSpecNS,
-                                                    name, value);
+                                                    currentAttr.getName(),
+                                                    currentAttr.getNodeValue());
                      }
                   }
                }

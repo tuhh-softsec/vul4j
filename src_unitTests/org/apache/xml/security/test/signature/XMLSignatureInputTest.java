@@ -1,3 +1,4 @@
+
 /*
  * The Apache Software License, Version 1.1
  *
@@ -94,9 +95,8 @@ import org.apache.xml.security.utils.Constants;
 public class XMLSignatureInputTest extends TestCase {
 
    /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(XMLSignatureInputTest.class.getName());
+   static org.apache.log4j.Category cat = org.apache.log4j.Category.getInstance(
+      XMLSignatureInputTest.class.getName());
 
    /**
     * Method suite
@@ -201,7 +201,6 @@ public class XMLSignatureInputTest extends TestCase {
    static final int _nodeSetInput1Nodes = 11; // was 10
    static final int _nodeSetInput1NodesWithComments = _nodeSetInput1Nodes + 1;
    //J+
-
    //J-
    static final String _nodeSetInput2 =
         "<?xml version=\"1.0\"?>\n"
@@ -216,7 +215,6 @@ public class XMLSignatureInputTest extends TestCase {
    static final int _nodeSetInput2Nodes = 11; // was 10
    static final int _nodeSetInput2NodesWithComments = _nodeSetInput2Nodes + 1;
    //J+
-
    //J-
    static final String _nodeSetInput3 =
         "<!-- document -->"
@@ -269,6 +267,7 @@ public class XMLSignatureInputTest extends TestCase {
          "<!--Small Comment Test--><RootElement><Element1/><Element2/><Element3>Text in Element3</Element3></RootElement>";
 
       XMLUtils.circumventBug2650(doc);
+
       CachedXPathAPI cXPathAPI = new CachedXPathAPI();
       NodeList nl = cXPathAPI.selectNodeList(doc,
                                              "(//. | //@* | //namespace::*)");

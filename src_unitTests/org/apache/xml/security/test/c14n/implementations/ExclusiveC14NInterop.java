@@ -1,3 +1,4 @@
+
 /*
  * The Apache Software License, Version 1.1
  *
@@ -96,8 +97,8 @@ import java.util.*;
 public class ExclusiveC14NInterop extends InteropTest {
 
    /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(ExclusiveC14NInterop.class.getName());
+   static org.apache.log4j.Category cat = org.apache.log4j.Category.getInstance(
+      ExclusiveC14NInterop.class.getName());
 
    /**
     * Method suite
@@ -124,7 +125,8 @@ public class ExclusiveC14NInterop extends InteropTest {
     */
    public static void main(String[] args) {
 
-      String[] testCaseName = { "-noloading", ExclusiveC14NInterop.class.getName() };
+      String[] testCaseName = { "-noloading",
+                                ExclusiveC14NInterop.class.getName() };
 
       org.apache.xml.security.Init.init();
       junit.textui.TestRunner.main(testCaseName);
@@ -171,7 +173,7 @@ public class ExclusiveC14NInterop extends InteropTest {
     *
     * @throws Exception
     */
-   public void _test_Y4() throws Exception {
+   public void test_Y4() throws Exception {
 
       String success = t("data/interop/c14n/Y4", "signature.xml");
 
@@ -190,15 +192,26 @@ public class ExclusiveC14NInterop extends InteropTest {
       assertTrue(success, success == null);
    }
 
+   /**
+    * Method test_Y5
+    *
+    * @throws Exception
+    */
    public void test_Y5() throws Exception {
 
-      // String success = t("data/interop/c14n/Y5", "signature.xml");
-      String success = t("data/interop/c14n/Y5", "signatureCommented.xml");
+      String success = t("data/interop/c14n/Y5", "signature.xml");
 
+      // String success = t("data/interop/c14n/Y5", "signatureCommented.xml");
       assertTrue(success, success == null);
    }
 
+   /**
+    * Method _test_Y5_stripped
+    *
+    * @throws Exception
+    */
    public void _test_Y5_stripped() throws Exception {
+
       String success = t("data/interop/c14n/Y5", "signatureStripped.xml");
 
       assertTrue(success, success == null);
@@ -238,13 +251,13 @@ public class ExclusiveC14NInterop extends InteropTest {
       boolean verify =
          signature.checkSignatureValue(signature.getKeyInfo().getPublicKey());
 
-
       cat.debug("   signature.checkSignatureValue finished: " + verify);
 
       int failures = 0;
 
       if (!verify) {
          StringBuffer sb = new StringBuffer();
+
          for (int i = 0; i < signature.getSignedInfo().getLength(); i++) {
             boolean refVerify =
                signature.getSignedInfo().getVerificationResult(i);
@@ -253,22 +266,25 @@ public class ExclusiveC14NInterop extends InteropTest {
                cat.debug("Reference " + i + " was OK");
             } else {
                failures++;
+
                sb.append(i + " ");
 
                XMLSignatureInput result =
                   signature.getSignedInfo()
                      .getReferencedContentAfterTransformsItem(i);
 
-               JavaUtils.writeBytesToFilename(directory + "/c14n-" + i
-                                              + ".apache.txt", result
-                                                 .getBytes());
+               JavaUtils.writeBytesToFilename(
+                  directory + "/c14n-" + i + ".apache.txt", result.getBytes());
 
                Reference reference = signature.getSignedInfo().item(i);
                int length = reference.getTransforms().getLength();
-               String algo = reference.getTransforms().item(length-1).getURI();
+               String algo = reference.getTransforms().item(length
+                  - 1).getURI();
+
                cat.debug("Reference " + i + " failed: " + algo);
             }
          }
+
          String r = sb.toString().trim();
 
          if (r.length() == 0) {

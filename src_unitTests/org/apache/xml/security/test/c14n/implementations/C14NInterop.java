@@ -185,7 +185,8 @@ public class C14NInterop extends InteropTest {
     */
    public void test_Y4_stripped() throws Exception {
 
-      boolean success = t("data/interop/c14n/Y4", "signatureStripped.xml");
+      // boolean success = t("data/interop/c14n/Y4", "signatureStripped.xml");
+      boolean success = t("data/interop/c14n/Y4", "signature.xml");
 
       assertTrue(success);
    }

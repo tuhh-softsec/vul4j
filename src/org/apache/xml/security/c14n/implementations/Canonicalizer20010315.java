@@ -1,3 +1,4 @@
+
 /*
  * The Apache Software License, Version 1.1
  *
@@ -64,12 +65,12 @@ import java.io.*;
 import java.util.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.TransformerException;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.*;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.c14n.helper.*;
 import org.apache.xml.security.utils.*;
+import org.apache.xpath.CachedXPathAPI;
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
 
 /**
@@ -104,7 +105,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * Method engineCanonicalizeSubTree
     *
     * @param rootNode
-    *
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeSubTree(Node rootNode)
@@ -122,7 +122,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          Map inscopeNamespaces;
 
          if (rootNode.getNodeType() == Node.ELEMENT_NODE) {
-            inscopeNamespaces = this.getinscopeNamespaces((Element) rootNode);
+            inscopeNamespaces = this.getInscopeNamespaces((Element) rootNode);
          } else {
             inscopeNamespaces = new HashMap();
          }
@@ -156,9 +156,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @throws CanonicalizationException
     * @throws IOException
     */
-   void canonicalizeSubTree(
-           Node currentNode, Map inscopeNamespaces, Map alreadyVisible)
-              throws CanonicalizationException, IOException {
+   void canonicalizeSubTree(Node currentNode, Map inscopeNamespaces, Map alreadyVisible)
+           throws CanonicalizationException, IOException {
 
       int currentNodeType = currentNode.getNodeType();
 
@@ -225,14 +224,16 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          this._writer.write("<");
          this._writer.write(currentElement.getTagName());
 
-         List attrs =
-            updateinscopeNamespacesAndReturnVisibleAttrs(currentElement,
+         Object[] attrs =
+            updateInscopeNamespacesAndReturnVisibleAttrs(currentElement,
                inscopeNamespaces, alreadyVisible);
 
+         attrs = C14nHelper.sortAttributes(attrs);
+
          // we output all Attrs which are available
-         for (int i = 0; i < attrs.size(); i++) {
-            outputAttrToWriter(((Attr) attrs.get(i)).getNodeName(),
-                               ((Attr) attrs.get(i)).getNodeValue());
+         for (int i = 0; i < attrs.length; i++) {
+            outputAttrToWriter(((Attr) attrs[i]).getNodeName(),
+                               ((Attr) attrs[i]).getNodeValue());
          }
 
          this._writer.write(">");
@@ -244,7 +245,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
             if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
 
                /*
-                * We must 'clone' the inscopeXMLAttrs to allow the descendants
+                * We must 'clone' the inscopeNamespaces to allow the descendants
                 * to mess around in their own map
                 */
                canonicalizeSubTree(currentChild,
@@ -264,21 +265,19 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    }
 
    /**
-    * This method updates the inscopeXMLAttrs based on the currentElement and
+    * This method updates the inscopeNamespaces based on the currentElement and
     * returns the Attr[]s to be outputted.
     *
-    * @param inscopeXMLAttrs is changed by this method !!!
+    * @param inscopeNamespaces is changed by this method !!!
     * @param currentElement
     * @param alreadyVisible
     * @return the Attr[]s to be outputted
     * @throws CanonicalizationException
     */
-   List updateinscopeNamespacesAndReturnVisibleAttrs(
-           Element currentElement, Map inscopeXMLAttrs, Map alreadyVisible)
-              throws CanonicalizationException {
+   Object[] updateInscopeNamespacesAndReturnVisibleAttrs(Element currentElement, Map inscopeNamespaces, Map alreadyVisible)
+           throws CanonicalizationException {
 
-      Vector ns = new Vector();
-      Vector at = new Vector();
+      List result = new Vector();
       NamedNodeMap attributes = currentElement.getAttributes();
       int attributesLength = attributes.getLength();
 
@@ -290,21 +289,31 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          if (name.equals("xmlns") && value.equals("")) {
 
             // undeclare default namespace
-            inscopeXMLAttrs.remove("xmlns");
-         } else if (name.startsWith("xmlns")) {
+            inscopeNamespaces.remove("xmlns");
+         } else if (name.startsWith("xmlns") &&!value.equals("")) {
+            if ("xml".equals(currentAttr.getLocalName())
+                    && value.equals(Constants.XML_LANG_SPACE_SpecNS)) {
 
-            // update inscope namespaces
-            if (!value.equals("")) {
-               inscopeXMLAttrs.put(name, value);
+               /*
+                * To finish processing L, simply process every namespace node
+                * in L, except omit namespace node with local name xml, which
+                * defines the xml prefix, if its string value
+                * is http://www.w3.org/XML/1998/namespace.
+                */
+               ;
+            } else {
+
+               // update inscope namespaces
+               inscopeNamespaces.put(name, value);
             }
          } else if (name.startsWith("xml:")) {
 
             // output xml:blah features
-            inscopeXMLAttrs.put(name, value);
+            inscopeNamespaces.put(name, value);
          } else {
 
             // output regular attributes
-            at.add(currentAttr);
+            result.add(currentAttr);
          }
       }
 
@@ -312,7 +321,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
          // check whether default namespace must be deleted
          if (alreadyVisible.containsKey("xmlns")
-                 &&!inscopeXMLAttrs.containsKey("xmlns")) {
+                 &&!inscopeNamespaces.containsKey("xmlns")) {
 
             // undeclare default namespace
             alreadyVisible.remove("xmlns");
@@ -321,16 +330,16 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                                                  "xmlns");
 
             a.setValue("");
-            ns.add(a);
+            result.add(a);
          }
       }
 
       boolean isOrphanNode = currentElement == this._rootNodeOfC14n;
-      Iterator it = inscopeXMLAttrs.keySet().iterator();
+      Iterator it = inscopeNamespaces.keySet().iterator();
 
       while (it.hasNext()) {
          String name = (String) it.next();
-         String inscopeValue = (String) inscopeXMLAttrs.get(name);
+         String inscopeValue = (String) inscopeNamespaces.get(name);
 
          if (name.startsWith("xml:")
                  && (isOrphanNode
@@ -343,7 +352,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                                            name);
 
             a.setValue(inscopeValue);
-            at.add(a);
+            result.add(a);
          } else if (!alreadyVisible.containsKey(name)
                     || (alreadyVisible.containsKey(name)
                         &&!alreadyVisible.get(name).equals(inscopeValue))) {
@@ -361,18 +370,11 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                                                  name);
 
             a.setValue(inscopeValue);
-            ns.add(a);
+            result.add(a);
          }
       }
 
-      Collections.sort(ns,
-                       new org.apache.xml.security.c14n.helper.NSAttrCompare());
-      Collections.sort(at,
-                       new org.apache.xml.security.c14n.helper
-                          .NonNSAttrCompare());
-      ns.addAll(at);
-
-      return ns;
+      return result.toArray();
    }
 
    /**
@@ -381,9 +383,10 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * names/values.
     *
     * @param apexElement
-    *
+    * @throws CanonicalizationException
     */
-   public static Map getinscopeNamespaces(Element apexElement) {
+   Map getInscopeNamespaces(Element apexElement)
+           throws CanonicalizationException {
 
       Map result = new HashMap();
 
@@ -463,7 +466,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * Method engineCanonicalizeXPathNodeSet
     *
     * @param xpathNodeSet
-    *
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet)
@@ -480,6 +482,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
          this._doc = XMLUtils.getOwnerDocument(n);
          this._documentElement = this._doc.getDocumentElement();
+         this._rootNodeOfC14n = this._doc;
       }
 
       try {
@@ -487,8 +490,10 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
          this._writer = new OutputStreamWriter(baos, Canonicalizer.ENCODING);
 
-         this.canonicalizeXPathNodeSet(this._doc, true,
-                                       new C14nCtx());
+         Map inscopeNamespaces = new HashMap();
+         Map lostNamespaces = new HashMap();
+
+         this.canonicalizeXPathNodeSet(this._rootNodeOfC14n);
          this._writer.close();
 
          return baos.toByteArray();
@@ -509,14 +514,11 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * Method canonicalizeXPathNodeSet
     *
     * @param currentNode
-    * @param parentIsVisible
-    * @param ctx
     * @throws CanonicalizationException
     * @throws IOException
     */
-   void canonicalizeXPathNodeSet(
-           Node currentNode, boolean parentIsVisible, C14nCtx ctx)
-              throws CanonicalizationException, IOException {
+   void canonicalizeXPathNodeSet(Node currentNode)
+           throws CanonicalizationException, IOException {
 
       int currentNodeType = currentNode.getNodeType();
       boolean currentNodeIsVisible = this._xpathNodeSet.contains(currentNode);
@@ -536,12 +538,13 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          for (Node currentChild = currentNode.getFirstChild();
                  currentChild != null;
                  currentChild = currentChild.getNextSibling()) {
-            canonicalizeXPathNodeSet(currentChild, currentNodeIsVisible, ctx);
+            canonicalizeXPathNodeSet(currentChild);
          }
          break;
 
       case Node.COMMENT_NODE :
-         if (this._includeComments && currentNodeIsVisible) {
+         if (this._includeComments
+                 && this._xpathNodeSet.contains(currentNode)) {
             int position = getPositionRelativeToDocumentElement(currentNode);
 
             if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
@@ -557,7 +560,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          break;
 
       case Node.PROCESSING_INSTRUCTION_NODE :
-         if (currentNodeIsVisible) {
+         if (this._xpathNodeSet.contains(currentNode)) {
             int position = getPositionRelativeToDocumentElement(currentNode);
 
             if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
@@ -574,16 +577,15 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
       case Node.TEXT_NODE :
       case Node.CDATA_SECTION_NODE :
-         if (currentNodeIsVisible) {
+         if (this._xpathNodeSet.contains(currentNode)) {
             outputTextToWriter(currentNode.getNodeValue());
 
-            for (Node nextSibling =
-                    currentNode
-                       .getNextSibling(); (nextSibling != null) && ((nextSibling
-                          .getNodeType() == Node.TEXT_NODE) || (nextSibling
-                             .getNodeType() == Node
-                                .CDATA_SECTION_NODE)); nextSibling =
-                                   nextSibling.getNextSibling()) {
+            for (Node nextSibling = currentNode.getNextSibling();
+                    (nextSibling != null)
+                    && ((nextSibling.getNodeType() == Node.TEXT_NODE)
+                        || (nextSibling.getNodeType()
+                            == Node.CDATA_SECTION_NODE));
+                    nextSibling = nextSibling.getNextSibling()) {
 
                /* The XPath data model allows to select only the first of a
                 * sequence of mixed text and CDATA nodes. But we must output
@@ -605,13 +607,14 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          }
 
          // we output all Attrs which are available
-         List attrs = this.getAttrs(currentElement, parentIsVisible, ctx);
-         int attrsLength = attrs.size();
+         Object[] attrs = handleAttributes(currentElement);
 
-         for (int i = 0; i < attrsLength; i++) {
-            Attr a = (Attr) attrs.get(i);
+         attrs = C14nHelper.sortAttributes(attrs);
 
-            outputAttrToWriter(a.getNodeName(), a.getNodeValue());
+         for (int i = 0; i < attrs.length; i++) {
+            Attr attr = (Attr) attrs[i];
+
+            outputAttrToWriter(attr.getNodeName(), attr.getNodeValue());
          }
 
          if (currentNodeIsVisible) {
@@ -622,18 +625,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          for (Node currentChild = currentNode.getFirstChild();
                  currentChild != null;
                  currentChild = currentChild.getNextSibling()) {
-            if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
-
-               /*
-                * We must 'clone' the inscopeXMLAttrs to allow the descendants
-                * to mess around in their own map
-                */
-               canonicalizeXPathNodeSet(currentChild, currentNodeIsVisible,
-                                        ctx.copy());
-            } else {
-               canonicalizeXPathNodeSet(currentChild, currentNodeIsVisible,
-                                        ctx);
-            }
+            canonicalizeXPathNodeSet(currentChild);
          }
 
          if (currentNodeIsVisible) {
@@ -646,142 +638,235 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    }
 
    /**
-    * Method getAttrs
+    * This method updates the inscopeNamespaces based on the currentElement and
+    * returns the Attr[]s to be outputted.
+    * <br>
+    * IMPORTANT: This method expects to work on a modified DOM tree, i.e. a DOM which has
+    * been prepared using {@link XMLUtils#circumventBug2650(Document)}.
     *
-    * @param currentElement
-    * @param parentIsVisible
-    * @param ctx
-    *
+    * @param E
+    * @return the Attr[]s to be outputted
     * @throws CanonicalizationException
     */
-   List getAttrs(Element currentElement, boolean parentIsVisible, C14nCtx ctx)
-           throws CanonicalizationException {
+   Object[] handleAttributes(Element E) throws CanonicalizationException {
 
-      boolean currentElementIsInNodeset =
-         this._xpathNodeSet.contains(currentElement);
-      Vector namespacesInSubset = new Vector();
-      Vector attributesInSubset = new Vector();
-      Vector xmlAttributesInSubset = new Vector();
-      NamedNodeMap attributes = currentElement.getAttributes();
-      int attributesLength = attributes.getLength();
+      // result will contain the attrs which have to be outputted
+      List result = new Vector();
+      NamedNodeMap attrs = E.getAttributes();
+      int attrsLength = attrs.getLength();
 
-      for (int i = 0; i < attributesLength; i++) {
-         Attr currentAttr = (Attr) attributes.item(i);
-         String URI = currentAttr.getNamespaceURI();
+      /* ***********************************************************************
+       * Handle xmlns=""
+       * ***********************************************************************/
 
-         if (this._xpathNodeSet.contains(currentAttr)) {
-            if (URI != null) {
-               if (Constants.NamespaceSpecNS.equals(URI)) {
-                  String value = currentAttr.getValue();
+      // first check whether we have to output xmlns=""
+      Attr xmlns = E.getAttributeNodeNS(Constants.NamespaceSpecNS, "xmlns");
 
-                  if (C14nHelper.namespaceIsRelative(value)) {
-                     Object exArgs[] = { currentElement.getTagName(),
-                                         currentAttr.getNodeName(), value };
+      if (xmlns == null) {
+         throw new RuntimeException(
+            "The tree has not been prepared for canonicalization using XMLUtils#circumventBug2650(Document)");
+      }
 
-                     throw new CanonicalizationException(
-                        "c14n.Canonicalizer.RelativeNamespace", exArgs);
-                  }
+      /* To begin processing L, if the first node is not the default namespace
+       * node (a node with no namespace URI and no local name), then generate
+       * a space followed by xmlns="" if and only if the following conditions
+       * are met:
+       */
+      boolean firstNodeIsNotDefaultNamespaceNode =
+         xmlns.getNodeValue().equals("");
 
-                  namespacesInSubset.add(currentAttr);
-               } else if (Constants.XML_LANG_SPACE_SpecNS.equals(URI)) {
-                  xmlAttributesInSubset.add(currentAttr);
-                  ctx.a.put(currentAttr.getNodeName(), currentAttr);
-               } else {
-                  attributesInSubset.add(currentAttr);
+      /* the element E that owns the axis is in the node-set
+       */
+      if (firstNodeIsNotDefaultNamespaceNode
+              && this._xpathNodeSet.contains(E)) {
+
+         /* The nearest ancestor element of E in the node-set has a default
+          * namespace node in the node-set (default namespace nodes always
+          * have non-empty values in XPath)
+          */
+         for (Node ancestor = E.getParentNode();
+                 (ancestor != null)
+                 && (ancestor.getNodeType() == Node.ELEMENT_NODE);
+                 ancestor = ancestor.getParentNode()) {
+            if (this._xpathNodeSet.contains(ancestor)) {
+               Attr xmlnsAncestor = ((Element) ancestor).getAttributeNodeNS(
+                  Constants.NamespaceSpecNS, "xmlns");
+
+               if (xmlnsAncestor == null) {
+                  throw new RuntimeException(
+                     "The tree has not been prepared for canonicalization using XMLUtils#circumventBug2650(Document)");
                }
-            } else {
-               attributesInSubset.add(currentAttr);
-            }
-         } else {
-            if (URI != null && Constants.XML_LANG_SPACE_SpecNS.equals(URI)) {
-               ctx.a.put(currentAttr.getNodeName(), currentAttr);
+
+               if (!xmlnsAncestor.getNodeValue().equals("")) {
+
+                  // OK, we must output xmlns=""
+                  result.add(xmlns);
+               }
+
+               break;
             }
          }
       }
 
-      Collections.sort(namespacesInSubset,
-                       new org.apache.xml.security.c14n.helper.NSAttrCompare());
+      /* ***********************************************************************
+       * Handle namespace axis
+       * ***********************************************************************/
+      handleNamespaces: for (int i = 0; i < attrsLength; i++) {
+         Attr N = (Attr) attrs.item(i);
 
-      // update the ctx.a with the xml:* values
-      for (int i = 0; i < xmlAttributesInSubset.size(); i++) {
-         Attr currentAttr = (Attr) xmlAttributesInSubset.get(i);
-         String name = currentAttr.getNodeName();
+         if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
 
-         ctx.a.put(name, currentAttr);
+            // only handle namespaces here
+            continue handleNamespaces;
+         }
+
+         if (N.getName().equals("xmlns") && N.getNodeValue().equals("")) {
+
+            // xmlns="" already handled
+            continue handleNamespaces;
+         }
+
+         if (!this._xpathNodeSet.contains(N)) {
+
+            // Consider a list L containing only namespace nodes in the axis and in the node-set
+            //
+            // only if N in the node set
+            continue handleNamespaces;
+         }
+
+         if ("xml".equals(N.getLocalName())
+                 && Constants.XML_LANG_SPACE_SpecNS.equals(N.getNodeValue())) {
+
+            /* except omit namespace node with local name xml, which defines
+             * the xml prefix, if its string value is http://www.w3.org/XML/1998/namespace.
+             */
+            continue handleNamespaces;
+         }
+
+         /* OK, now we have a 'real' namespace in N, no attrs, no xmlns=""
+          * and no xmlns:xml="http://www.w3.org/XML/1998/namespace"
+          */
+
+         /* A namespace node N is ignored if the nearest ancestor element of E
+          * that is in the node-set has a namespace node in the node-set with
+          * the same local name and value as N.
+          *
+          * Otherwise, process the namespace node N in the same way as an
+          * attribute node, except assign the local name xmlns to the default
+          * namespace node if it exists (in XPath, the default namespace node
+          * has an empty URI and local name).
+          */
+         boolean ignoreN = false;
+
+         lookForAncestorsInNodeset: for (Node ancestor = E.getParentNode();
+                                            (ancestor != null)
+                                            && (ancestor.getNodeType()
+                                                == Node.ELEMENT_NODE);
+                                            ancestor =
+                                               ancestor.getParentNode()) {
+            if (this._xpathNodeSet.contains(ancestor)) {
+               Attr NA = ((Element) ancestor).getAttributeNodeNS(
+                  Constants.NamespaceSpecNS, N.getLocalName());
+
+               if ((NA != null) && NA.getNodeValue().equals(N.getNodeValue())
+                       && this._xpathNodeSet.contains(NA)) {
+                  ignoreN = true;
+               }
+
+               break lookForAncestorsInNodeset;
+            }
+         }
+
+         if (!ignoreN) {
+            result.add(N);
+         }
       }
 
-      if (currentElementIsInNodeset &&!parentIsVisible) {
-         // it's an orphan node, so we must include all xml:* attrs all the
-         // ancestor axis along
-         Iterator it = ctx.a.keySet().iterator();
+      /* ***********************************************************************
+       * Handle attribute axis
+       * ***********************************************************************/
+      handleAttributes: for (int i = 0; i < attrsLength; i++) {
+         Attr a = (Attr) attrs.item(i);
+
+         if (Constants.NamespaceSpecNS.equals(a.getNamespaceURI())) {
+
+            // only handle attributes here
+            continue handleAttributes;
+         }
+
+         if (!this._xpathNodeSet.contains(a)) {
+
+            // only if a in the node set
+            continue handleAttributes;
+         }
+
+         result.add(a);
+      }
+
+      /* The processing of an element node E MUST be modified slightly when an
+       * XPath node-set is given as input and the element's parent is omitted
+       * from the node-set. The method for processing the attribute axis of an
+       * element E in the node-set is enhanced. All element nodes along E's
+       * ancestor axis are examined for nearest occurrences of attributes in
+       * the xml namespace, such as xml:lang and xml:space (whether or not they
+       * are in the node-set). From this list of attributes, remove any that are
+       * in E's attribute axis (whether or not they are in the node-set). Then,
+       * lexicographically merge this attribute list with the nodes of E's
+       * attribute axis that are in the node-set. The result of visiting the
+       * attribute axis is computed by processing the attribute nodes in this
+       * merged attribute list.
+       */
+      if (this._xpathNodeSet.contains(E)) {
+
+         // E is in the node-set
+         Node parent = E.getParentNode();
+         Map loa = new HashMap();
+
+         if ((parent.getNodeType() == Node.ELEMENT_NODE)
+                 &&!this._xpathNodeSet.contains(parent)) {
+
+            // parent element is not in node set
+            for (Node ancestor = parent;
+                    (ancestor != null)
+                    && (ancestor.getNodeType() == Node.ELEMENT_NODE);
+                    ancestor = ancestor.getParentNode()) {
+
+               // for all ancestor elements
+               NamedNodeMap ancestorAttrs =
+                  ((Element) ancestor).getAttributes();
+
+               for (int i = 0; i < ancestorAttrs.getLength(); i++) {
+
+                  // for all attributes in the ancestor element
+                  Attr currentAncestorAttr = (Attr) ancestorAttrs.item(i);
+
+                  if (Constants.XML_LANG_SPACE_SpecNS.equals(
+                          currentAncestorAttr.getNamespaceURI())) {
+
+                     // do we have an xml:* ?
+                     if (!E.hasAttributeNS(
+                             Constants.XML_LANG_SPACE_SpecNS,
+                             currentAncestorAttr.getLocalName())) {
+
+                        // the xml:* attr is not in E
+                        if (!loa.containsKey(currentAncestorAttr.getName())) {
+                           loa.put(currentAncestorAttr.getName(),
+                                   currentAncestorAttr);
+                        }
+                     }
+                  }
+               }
+            }
+         }
+
+         Iterator it = loa.values().iterator();
 
          while (it.hasNext()) {
-            String name = (String) it.next();
-
-            attributesInSubset.add(ctx.a.get(name));
-         }
-      }
-      Collections.sort(attributesInSubset,
-                       new org.apache.xml.security.c14n.helper
-                          .NonNSAttrCompare());
-
-
-      Vector nsResult = new Vector();
-      Map outputNamespaces = new HashMap();
-
-      if (namespacesInSubset.size() > 0) {
-         int firstNonDefaultNS = -1;
-         Attr firstNode = (Attr) namespacesInSubset.get(0);
-
-         if (!firstNode.getNodeName().equals("xmlns")) {
-
-            // there is no default namespace in L
-            firstNonDefaultNS = 0;
-
-            // if the output ancestor defines a default namespace
-            if (currentElementIsInNodeset && ctx.n.containsKey("xmlns") &&!ctx.n.get("xmlns").equals("")) {
-               Attr xmlns = this._doc.createAttributeNS(Constants.NamespaceSpecNS, "xmlns");
-               xmlns.setValue("");
-               nsResult.add(xmlns);
-            }
-         } else if (firstNode.getNodeName().equals("xmlns")
-                    && firstNode.getValue().equals("")) {
-
-            // there is an empty default namespace in L
-            // skip
-            firstNonDefaultNS = 1;
-
-            // if the output ancestor defines a default namespace
-            if (currentElementIsInNodeset && ctx.n.containsKey("xmlns") &&!ctx.n.get("xmlns").equals("")) {
-               nsResult.add(firstNode);
-            }
-         } else {
-            firstNonDefaultNS = 0;
-         }
-
-         // handle non-empty namespaces
-         for (int i = firstNonDefaultNS; i < namespacesInSubset.size(); i++) {
-            Attr currentAttr = (Attr) namespacesInSubset.get(i);
-            String name = currentAttr.getNodeName();
-
-            outputNamespaces.put(name, currentAttr);
-
-            if (!ctx.n.containsKey(name) || !((Attr) ctx.n.get(name)).getValue().equals(currentAttr.getValue())) {
-               nsResult.add(currentAttr);
-            }
+            result.add(it.next());
          }
       }
 
-      if (currentElementIsInNodeset) {
-
-         // if the element E is in the node set, remember the namespaces for the next one
-         ctx.n = outputNamespaces;
-      }
-
-      // and append them to the result
-      nsResult.addAll(attributesInSubset);
-
-      return nsResult;
+      return result.toArray();
    }
 
    /**
@@ -855,9 +940,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @throws IOException
     */
    void outputPItoWriter(ProcessingInstruction currentPI) throws IOException {
-      if (currentPI == null) {
-        return;
-      }
 
       this._writer.write("<?");
 
@@ -912,9 +994,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @throws IOException
     */
    void outputCommentToWriter(Comment currentComment) throws IOException {
-      if (currentComment == null) {
-        return;
-      }
 
       this._writer.write("<!--");
 
@@ -946,9 +1025,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @throws IOException
     */
    void outputTextToWriter(String text) throws IOException {
-      if (text == null) {
-        return;
-      }
 
       int length = text.length();
 
@@ -981,16 +1057,14 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    }
 
    /**
-    * Method engineCanonicalizeXPathNodeSet
+    * Always throws a CanonicalizationException because this is inclusive c14n.
     *
     * @param xpathNodeSet
     * @param inclusiveNamespaces
-    *
     * @throws CanonicalizationException
     */
-   public byte[] engineCanonicalizeXPathNodeSet(
-           Set xpathNodeSet, String inclusiveNamespaces)
-              throws CanonicalizationException {
+   public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet, String inclusiveNamespaces)
+           throws CanonicalizationException {
 
       /** $todo$ well, should we throw UnsupportedOperationException ? */
       throw new CanonicalizationException(
@@ -998,69 +1072,17 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    }
 
    /**
-    * Method engineCanonicalizeSubTree
+    * Always throws a CanonicalizationException because this is inclusive c14n.
     *
     * @param rootNode
     * @param inclusiveNamespaces
-    *
     * @throws CanonicalizationException
     */
-   public byte[] engineCanonicalizeSubTree(
-           Node rootNode, String inclusiveNamespaces)
-              throws CanonicalizationException {
+   public byte[] engineCanonicalizeSubTree(Node rootNode, String inclusiveNamespaces)
+           throws CanonicalizationException {
 
       /** $todo$ well, should we throw UnsupportedOperationException ? */
       throw new CanonicalizationException(
          "c14n.Canonicalizer.UnsupportedOperation");
-   }
-
-   /**
-    * Class C14nCtx
-    *
-    * @author $Author$
-    * @version $Revision$
-    */
-   class C14nCtx {
-
-      /** Field a */
-      Map a;
-
-      /** Field n */
-      Map n;
-
-      /**
-       * Constructor C14nCtx
-       *
-       */
-      public C14nCtx() {
-         this.a = new HashMap();
-         this.n = new HashMap();
-      }
-
-      /**
-       * Constructor C14nCtx
-       *
-       * @param a
-       * @param n
-       */
-      public C14nCtx(Map a, Map n) {
-         this.a = a;
-         this.n = n;
-      }
-
-      /**
-       * Method copy
-       *
-       *
-       */
-      public C14nCtx copy() {
-
-         C14nCtx c = new C14nCtx();
-
-         c.a = new HashMap(this.a);
-         c.n = new HashMap(this.n);
-
-         return c;
-      }
    }
 }
