@@ -17,15 +17,13 @@
 
 package org.apache.xml.security.test;
 
-import java.security.Security;
-
-import org.apache.xml.security.test.encryption.XMLCipherTester;
-import org.apache.xml.security.test.encryption.BaltimoreEncTest;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
+
+import org.apache.xml.security.test.encryption.BaltimoreEncTest;
+import org.apache.xml.security.test.encryption.XMLCipherTester;
 
 
 public class EncryptionTest extends TestCase {
