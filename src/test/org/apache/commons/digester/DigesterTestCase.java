@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.4 2001/09/05 18:52:37 craigmcc Exp $
- * $Revision: 1.4 $
- * $Date: 2001/09/05 18:52:37 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.5 2001/12/04 19:47:00 sanders Exp $
+ * $Revision: 1.5 $
+ * $Date: 2001/12/04 19:47:00 $
  *
  * ====================================================================
  *
@@ -83,7 +83,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.4 $ $Date: 2001/09/05 18:52:37 $
+ * @version $Revision: 1.5 $ $Date: 2001/12/04 19:47:00 $
  */
 
 public class DigesterTestCase extends TestCase {
@@ -203,28 +203,28 @@ public class DigesterTestCase extends TestCase {
         assertNull("Initial error handler is null",
                    digester.getErrorHandler());
         digester.setErrorHandler((ErrorHandler) digester);
-        assert("Set error handler is digester",
+        assertTrue("Set error handler is digester",
                digester.getErrorHandler() == digester);
         digester.setErrorHandler(null);
         assertNull("Reset error handler is null",
                    digester.getErrorHandler());
 
-        assert("Initial namespace aware is false",
+        assertTrue("Initial namespace aware is false",
                !digester.getNamespaceAware());
         digester.setNamespaceAware(true);
-        assert("Set namespace aware is true",
+        assertTrue("Set namespace aware is true",
                digester.getNamespaceAware());
         digester.setNamespaceAware(false);
-        assert("Reset namespace aware is false",
+        assertTrue("Reset namespace aware is false",
                !digester.getNamespaceAware());
 
-        assert("Initial validating is false",
+        assertTrue("Initial validating is false",
                !digester.getValidating());
         digester.setValidating(true);
-        assert("Set validating is true",
+        assertTrue("Set validating is true",
                digester.getValidating());
         digester.setValidating(false);
-        assert("Reset validating is false",
+        assertTrue("Reset validating is false",
                !digester.getValidating());
 
     }
