@@ -114,9 +114,9 @@ public class CipherData extends EncryptionElementProxy {
     */
    public CipherData(Document doc) {
 
-      super(doc, EncryptionConstants._TAG_CIPHERDATA);
+      super(doc);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -127,11 +127,11 @@ public class CipherData extends EncryptionElementProxy {
     */
    public CipherData(Document doc, CipherValue cipherValue) {
 
-      super(doc, EncryptionConstants._TAG_CIPHERDATA);
+      super(doc);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
       this._constructionElement.appendChild(cipherValue.getElement());
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -142,11 +142,11 @@ public class CipherData extends EncryptionElementProxy {
     */
    public CipherData(Document doc, CipherReference cipherReference) {
 
-      super(doc, EncryptionConstants._TAG_CIPHERDATA);
+      super(doc);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
       this._constructionElement.appendChild(cipherReference.getElement());
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -170,7 +170,7 @@ public class CipherData extends EncryptionElementProxy {
     */
    public CipherData(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, EncryptionConstants._TAG_CIPHERDATA);
+      super(element, BaseURI);
    }
 
    /**
@@ -268,7 +268,7 @@ public class CipherData extends EncryptionElementProxy {
 
       if (this.isNotYetFilled()) {
          this._constructionElement.appendChild(cipherValue.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -283,7 +283,11 @@ public class CipherData extends EncryptionElementProxy {
 
       if (this.isNotYetFilled()) {
          this._constructionElement.appendChild(cipherReference.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
+   }
+
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_CIPHERDATA;
    }
 }

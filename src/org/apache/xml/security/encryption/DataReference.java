@@ -83,7 +83,7 @@ public class DataReference extends EncryptionElementProxy
     */
    public DataReference(Document doc, String URI) {
 
-      super(doc, EncryptionConstants._TAG_DATAREFERENCE);
+      super(doc);
 
       this._constructionElement.setAttribute(EncryptionConstants._ATT_URI, URI);
    }
@@ -97,7 +97,7 @@ public class DataReference extends EncryptionElementProxy
     */
    public DataReference(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, EncryptionConstants._TAG_DATAREFERENCE);
+      super(element, BaseURI);
    }
 
    /**
@@ -108,5 +108,9 @@ public class DataReference extends EncryptionElementProxy
    public String getURI() {
       return this._constructionElement
          .getAttribute(EncryptionConstants._ATT_URI);
+   }
+
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_DATAREFERENCE;
    }
 }

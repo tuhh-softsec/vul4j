@@ -118,9 +118,9 @@ public class StreamParams extends EncryptionMethodParams {
          doc.createTextNode(Integer.toString(this.getKeySize()));
 
       keySizeElem.appendChild(keySizeText);
-      nl.appendChild(doc.createTextNode("\n"));
+      XMLUtils.addReturnToNode(nl);
       nl.appendChild(keySizeElem);
-      nl.appendChild(doc.createTextNode("\n"));
+      XMLUtils.addReturnToNode(nl);
 
       return nl;
    }

@@ -1027,6 +1027,16 @@ public class XMLUtils {
       } catch (TransformerException ex) {}
    }
 
+   public static void addReturnToElement(Element e) {
+      Document doc = e.getOwnerDocument();
+      e.appendChild(doc.createTextNode("\n"));
+   }
+
+   public static void addReturnToNode(Node n) {
+      Document doc = n.getOwnerDocument();
+      n.appendChild(doc.createTextNode("\n"));
+   }
+
    static {
       org.apache.xml.security.Init.init();
    }

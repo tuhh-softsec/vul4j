@@ -1,19 +1,20 @@
-<?xml encoding='US-ASCII'?>
-
-<!-- STYLEBOOK DOCUMENT DTD -->
-
-<!-- import the external blocks.ent dtd -->
+<?xml encoding="US-ASCII"?>
 <!ENTITY % blocksEntity SYSTEM "blocks.ent">
 %blocksEntity;
-
-<!ELEMENT s1 (s2|%blocks;)*>
-<!ELEMENT s2 (s3|%blocks;)*>
-<!ELEMENT s3 (s4|%blocks;)*>
+<!ELEMENT s1 (s2 | %blocks;)*>
+<!ELEMENT s2 (s3 | %blocks;)*>
+<!ELEMENT s3 (s4 | %blocks;)*>
 <!ELEMENT s4 (%blocks;)*>
-
-<!ATTLIST s1 title CDATA #REQUIRED>
-<!ATTLIST s2 title CDATA #REQUIRED>
-<!ATTLIST s3 title CDATA #REQUIRED>
-<!ATTLIST s4 title CDATA #REQUIRED>
-
+<!ATTLIST s1
+	title CDATA #REQUIRED
+>
+<!ATTLIST s2
+	title CDATA #REQUIRED
+>
+<!ATTLIST s3
+	title CDATA #REQUIRED
+>
+<!ATTLIST s4
+	title CDATA #REQUIRED
+>
 <!-- CVS $Revision$ $Date$ -->

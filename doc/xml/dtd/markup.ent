@@ -13,9 +13,9 @@
 <!ENTITY % linksEntity SYSTEM "links.ent">
 %linksEntity;
 
-<!ELEMENT em (#PCDATA|%links;)*>
-<!ELEMENT ref (#PCDATA|%links;)*>
-<!ELEMENT code (#PCDATA|%links;)*>
+<!ELEMENT em (#PCDATA|link|anchor|jump|img|resource-ref|human-resource-ref)*>
+<!ELEMENT ref (#PCDATA|link|anchor|jump|img|resource-ref|human-resource-ref)*>
+<!ELEMENT code (#PCDATA|link|anchor|jump|img|resource-ref|human-resource-ref)*>
 <!ELEMENT br EMPTY>
 
 <!-- CVS $Revision$ $Date$ -->

@@ -128,9 +128,9 @@ public class KeyInfo extends SignatureElementProxy {
     */
    public KeyInfo(Document doc) {
 
-      super(doc, Constants._TAG_KEYINFO);
+      super(doc);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
 
       this._dsns = XMLUtils.createDSctx(this._doc, "ds",
                                         Constants.SignatureSpecNS);
@@ -145,7 +145,7 @@ public class KeyInfo extends SignatureElementProxy {
     */
    public KeyInfo(Element element, String BaseURI) throws XMLSecurityException {
 
-      super(element, BaseURI, Constants._TAG_KEYINFO);
+      super(element, BaseURI);
 
       this._dsns = XMLUtils.createDSctx(this._doc, "ds",
                                         Constants.SignatureSpecNS);
@@ -191,7 +191,7 @@ public class KeyInfo extends SignatureElementProxy {
 
       if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(keyname.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -249,7 +249,7 @@ public class KeyInfo extends SignatureElementProxy {
 
       if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(keyvalue.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -271,7 +271,7 @@ public class KeyInfo extends SignatureElementProxy {
 
       if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(mgmtdata.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -284,7 +284,7 @@ public class KeyInfo extends SignatureElementProxy {
 
       if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(pgpdata.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -309,7 +309,7 @@ public class KeyInfo extends SignatureElementProxy {
 
       if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(retrievalmethod.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -322,7 +322,7 @@ public class KeyInfo extends SignatureElementProxy {
 
       if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(spkidata.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -336,7 +336,7 @@ public class KeyInfo extends SignatureElementProxy {
 
       if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(x509data.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -349,7 +349,7 @@ public class KeyInfo extends SignatureElementProxy {
 
       if (this._state == MODE_SIGN) {
          this._constructionElement.appendChild(element);
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -1103,6 +1103,11 @@ public class KeyInfo extends SignatureElementProxy {
       Init.registerKeyInfoContentHandler(namespace, localname,
                                          implementingClass);
    }
+
+   public String getBaseLocalName() {
+      return Constants._TAG_KEYINFO;
+   }
+
    //J+
    static {
       org.apache.xml.security.Init.init();

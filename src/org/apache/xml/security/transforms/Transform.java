@@ -111,7 +111,7 @@ public class Transform extends SignatureElementProxy {
    public Transform(Document doc, String algorithmURI, NodeList contextNodes)
            throws InvalidTransformException {
 
-      super(doc, Constants._TAG_TRANSFORM);
+      super(doc);
 
       try {
          this._constructionElement.setAttribute(Constants._ATT_ALGORITHM,
@@ -169,7 +169,7 @@ public class Transform extends SignatureElementProxy {
            throws InvalidTransformException, TransformationException,
                   XMLSecurityException {
 
-      super(element, BaseURI, Constants._TAG_TRANSFORM);
+      super(element, BaseURI);
 
       // retrieve Algorithm Attribute from ds:Transform
       String AlgorithmURI = element.getAttribute(Constants._ATT_ALGORITHM);
@@ -355,6 +355,10 @@ public class Transform extends SignatureElementProxy {
       } catch (NullPointerException ex) {}
 
       return null;
+   }
+
+   public String getBaseLocalName() {
+      return Constants._TAG_TRANSFORM;
    }
 
    static {

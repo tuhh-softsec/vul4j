@@ -60,29 +60,26 @@ package org.apache.xml.security.utils;
 
 
 
-import org.w3c.dom.*;
-import org.apache.xml.security.exceptions.*;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.*;
+import org.w3c.dom.*;
 
 
 /**
+ * Class SignatureElementProxy
  *
  * @author $Author$
+ * @version $Revision$
  */
-public class SignatureElementProxy extends ElementProxy {
+public abstract class SignatureElementProxy extends ElementProxy {
 
    /**
     * Constructor SignatureElementProxy
     *
     * @param doc
-    * @param localname
     */
-   public SignatureElementProxy(Document doc, String localname) {
-      super(doc, localname, Constants.SignatureSpecNS);
-   }
-
-   public SignatureElementProxy() {
-      super();
+   public SignatureElementProxy(Document doc) {
+      super(doc);
    }
 
    /**
@@ -92,9 +89,9 @@ public class SignatureElementProxy extends ElementProxy {
     * @param BaseURI
     * @throws XMLSecurityException
     */
-   public SignatureElementProxy(Element element, String BaseURI, String localname)
+   public SignatureElementProxy(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, localname);
+      super(element, BaseURI);
    }
 
    /**

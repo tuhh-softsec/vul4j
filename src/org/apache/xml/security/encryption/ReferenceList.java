@@ -64,6 +64,7 @@ import org.w3c.dom.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.EncryptionElementProxy;
 import org.apache.xml.security.utils.EncryptionConstants;
+import org.apache.xml.security.utils.XMLUtils;
 
 
 /**
@@ -80,9 +81,9 @@ public class ReferenceList extends EncryptionElementProxy {
     */
    public ReferenceList(Document doc) {
 
-      super(doc, EncryptionConstants._TAG_REFERENCELIST);
+      super(doc);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -95,9 +96,9 @@ public class ReferenceList extends EncryptionElementProxy {
    public ReferenceList(Element element, String BaseURI)
            throws XMLSecurityException {
 
-      super(element, BaseURI, EncryptionConstants._TAG_REFERENCELIST);
+      super(element, BaseURI);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -107,7 +108,7 @@ public class ReferenceList extends EncryptionElementProxy {
     */
    public void add(DataReference dataReference) {
       this._constructionElement.appendChild(dataReference.getElement());
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -117,7 +118,7 @@ public class ReferenceList extends EncryptionElementProxy {
     */
    public void add(KeyReference keyReference) {
       this._constructionElement.appendChild(keyReference.getElement());
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -156,5 +157,9 @@ public class ReferenceList extends EncryptionElementProxy {
     */
    public KeyReference itemKeyReference(int i) {
       return null;
+   }
+
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_REFERENCELIST;
    }
 }

@@ -64,6 +64,7 @@ import org.w3c.dom.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.EncryptionElementProxy;
 import org.apache.xml.security.utils.EncryptionConstants;
+import org.apache.xml.security.utils.XMLUtils;
 
 
 /**
@@ -84,7 +85,7 @@ public class CipherReference extends EncryptionElementProxy {
     */
    public CipherReference(Document doc, String URI) {
 
-      super(doc, EncryptionConstants._TAG_CIPHERREFERENCE);
+      super(doc);
 
       this._constructionElement.setAttribute(EncryptionConstants._ATT_URI, URI);
    }
@@ -98,12 +99,12 @@ public class CipherReference extends EncryptionElementProxy {
     */
    public CipherReference(Document doc, String URI, Transforms transforms) {
 
-      super(doc, EncryptionConstants._TAG_CIPHERREFERENCE);
+      super(doc);
 
       this._constructionElement.setAttribute(EncryptionConstants._ATT_URI, URI);
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
       this._constructionElement.appendChild(transforms.getElement());
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
 
       this._transforms = transforms;
    }
@@ -117,7 +118,7 @@ public class CipherReference extends EncryptionElementProxy {
     */
    public CipherReference(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, EncryptionConstants._TAG_CIPHERREFERENCE);
+      super(element, BaseURI);
    }
 
    /**
@@ -145,5 +146,9 @@ public class CipherReference extends EncryptionElementProxy {
          // return new Transforms(el, this._baseURI);
          return null;
       }
+   }
+
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_CIPHERREFERENCE;
    }
 }

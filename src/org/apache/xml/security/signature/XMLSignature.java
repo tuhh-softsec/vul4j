@@ -137,9 +137,9 @@ public class XMLSignature extends SignatureElementProxy {
            Document doc, String BaseURI, String signatureAlgorithmURI)
               throws XMLSecurityException {
 
-      super(doc, Constants._TAG_SIGNATURE);
+      super(doc);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
 
       this._baseURI = BaseURI;
       this._signedInfo =
@@ -147,7 +147,7 @@ public class XMLSignature extends SignatureElementProxy {
                         signatureAlgorithmURI);
 
       this._constructionElement.appendChild(this._signedInfo.getElement());
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
 
       // create an empty SignatureValue; this is filled by setSignatureValueElement
       this._signatureValueElement =
@@ -155,10 +155,10 @@ public class XMLSignature extends SignatureElementProxy {
                                                 Constants._TAG_SIGNATUREVALUE);
 
       this._constructionElement.appendChild(this._signatureValueElement);
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
 
       // this._constructionElement.appendChild(this._keyInfo.getElement());
-      // this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      // XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -173,7 +173,7 @@ public class XMLSignature extends SignatureElementProxy {
    public XMLSignature(Element element, String BaseURI)
            throws XMLSignatureException, XMLSecurityException, IOException {
 
-      super(element, BaseURI, Constants._TAG_SIGNATURE);
+      super(element, BaseURI);
 
       Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
                                                Constants.SignatureSpecNS);
@@ -278,8 +278,7 @@ public class XMLSignature extends SignatureElementProxy {
          Node nodeAfterKeyInfo = keyInfoElement.getNextSibling();
 
          if (nodeAfterKeyInfo == null) {
-            this._constructionElement
-               .appendChild(this._doc.createTextNode("\n"));
+            XMLUtils.addReturnToElement(this._constructionElement);
          } else {
             this._constructionElement
                .insertBefore(this._doc.createTextNode("\n"), nodeAfterKeyInfo);
@@ -292,8 +291,7 @@ public class XMLSignature extends SignatureElementProxy {
             Element ocElem = oc.getElement();
 
             this._constructionElement.appendChild(ocElem);
-            this._constructionElement
-               .appendChild(this._doc.createTextNode("\n"));
+            XMLUtils.addReturnToElement(this._constructionElement);
          }
       }
    }
@@ -430,8 +428,7 @@ public class XMLSignature extends SignatureElementProxy {
             } else {
                cat.debug("Found no ds:Object");
                this._constructionElement.appendChild(keyInfoElement);
-               this._constructionElement
-                  .appendChild(this._doc.createTextNode("\n"));
+               XMLUtils.addReturnToElement(this._constructionElement);
             }
          } catch (TransformerException ex) {
             ex.printStackTrace();
@@ -467,7 +464,7 @@ public class XMLSignature extends SignatureElementProxy {
 
          cat.debug("Added ds:Object with Id " + object.getId());
          this._constructionElement.appendChild(object.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       } catch (XMLSecurityException ex) {
          throw new XMLSignatureException("empty", ex);
       }
@@ -476,25 +473,16 @@ public class XMLSignature extends SignatureElementProxy {
    /**
     * Method objectItem
     *
-    * @param index
+    * @param i
     * @return
     */
-   public ObjectContainer getObjectItem(int index) {
+   public ObjectContainer getObjectItem(int i) {
+
+      Element objElem = this.getChildElementLocalName(i,
+                           Constants.SignatureSpecNS, Constants._TAG_OBJECT);
 
       try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         NodeList nl = XPathAPI.selectNodeList(this._doc,
-                                               "./ds:" + Constants._TAG_OBJECT,
-                                               nscontext);
-
-         if (index >= nl.getLength()) {
-            return null;
-         }
-
-         return new ObjectContainer((Element) nl.item(index), this._baseURI);
-      } catch (TransformerException ex) {
-         return null;
+         return new ObjectContainer(objElem, this._baseURI);
       } catch (XMLSecurityException ex) {
          return null;
       }
@@ -506,18 +494,7 @@ public class XMLSignature extends SignatureElementProxy {
     * @return
     */
    public int getObjectLength() {
-
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         NodeList nl = XPathAPI.selectNodeList(this._doc,
-                                               "./ds:" + Constants._TAG_OBJECT,
-                                               nscontext);
-
-         return nl.getLength();
-      } catch (TransformerException ex) {
-         return 0;
-      }
+      return this.length(Constants.SignatureSpecNS, Constants._TAG_OBJECT);
    }
 
    /**
@@ -662,14 +639,17 @@ public class XMLSignature extends SignatureElementProxy {
     *
     * @param cert
     * @return
-    * @throws Exception
+    * @throws XMLSignatureException
     */
-   public boolean checkSignatureValue(X509Certificate cert) throws Exception {
+   public boolean checkSignatureValue(X509Certificate cert)
+           throws XMLSignatureException {
 
       if (cert != null) {
          return this.checkSignatureValue(cert.getPublicKey());
       } else {
-         throw new Exception("Didn't get a certificate");
+         Object exArgs[] = { "Didn't get a certificate" };
+
+         throw new XMLSignatureException("empty", exArgs);
       }
    }
 
@@ -678,23 +658,29 @@ public class XMLSignature extends SignatureElementProxy {
     *
     * @param pk
     * @return
-    * @throws Exception
+    * @throws XMLSignatureException
     */
-   public boolean checkSignatureValue(Key pk) throws Exception {
+   public boolean checkSignatureValue(Key pk) throws XMLSignatureException {
 
-      if (!this.getSignedInfo().verify(this._followManifestsDuringValidation)) {
-         return false;
+      if (pk == null) {
+         Object exArgs[] = { "Didn't get a key" };
+
+         throw new XMLSignatureException("empty", exArgs);
       }
 
-      SignatureAlgorithm sa =
-         new SignatureAlgorithm(this.getSignedInfo()
-            .getSignatureMethodElement(), this.getBaseURI());
+      try {
+         if (!this.getSignedInfo()
+                 .verify(this._followManifestsDuringValidation)) {
+            return false;
+         }
 
-      cat.debug("SignatureMethodURI = " + sa.getAlgorithmURI());
-      cat.debug("jceSigAlgorithm    = " + sa.getJCEAlgorithmString());
-      cat.debug("jceSigProvider     = " + sa.getJCEProviderName());
+         SignatureAlgorithm sa =
+            new SignatureAlgorithm(this.getSignedInfo()
+               .getSignatureMethodElement(), this.getBaseURI());
 
-      if (pk != null) {
+         cat.debug("SignatureMethodURI = " + sa.getAlgorithmURI());
+         cat.debug("jceSigAlgorithm    = " + sa.getJCEAlgorithmString());
+         cat.debug("jceSigProvider     = " + sa.getJCEProviderName());
          cat.debug("PublicKey = " + pk);
          sa.initVerify(pk);
 
@@ -710,8 +696,10 @@ public class XMLSignature extends SignatureElementProxy {
          boolean verify = sa.verify(sigBytes);
 
          return verify;
-      } else {
-         throw new Exception("Didn't get a key");
+      } catch (XMLSecurityException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (IOException ex) {
+         throw new XMLSignatureException("empty", ex);
       }
    }
 
@@ -817,6 +805,10 @@ public class XMLSignature extends SignatureElementProxy {
     */
    public void setFollowNestedManifests(boolean followManifests) {
       this._followManifestsDuringValidation = followManifests;
+   }
+
+   public String getBaseLocalName() {
+      return Constants._TAG_SIGNATURE;
    }
 
    static {

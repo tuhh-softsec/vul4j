@@ -417,9 +417,9 @@ public class IntegrityHmacSHA1 extends SignatureAlgorithmSpi {
             doc.createTextNode(new Integer(this._HMACOutputLength).toString());
 
          HMElem.appendChild(HMText);
-         element.appendChild(doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(element);
          element.appendChild(HMElem);
-         element.appendChild(doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(element);
       }
    }
 

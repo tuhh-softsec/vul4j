@@ -108,6 +108,15 @@ public class EncryptionMethod extends Algorithm {
    }
 
    /**
+    * Method getBaseLocalName
+    *
+    * @return
+    */
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_ENCRYPTIONMETHOD;
+   }
+
+   /**
     * Constructor EncryptionMethod
     *
     * @param doc
@@ -119,27 +128,65 @@ public class EncryptionMethod extends Algorithm {
       this(doc, algorithmURI, null);
    }
 
+   /**
+    * Method getUsableInEncryptedData
+    *
+    * @return
+    */
    public boolean getUsableInEncryptedData() {
+
       int type = this._emSpi.getImplementedAlgorithmType();
+
       switch (type) {
-         case EncryptionMethodSpi.ALGOTYPE_BLOCK_ENCRYPTION: return true;
-         case EncryptionMethodSpi.ALGOTYPE_STREAM_ENCRYPTION: return true;
-         case EncryptionMethodSpi.ALGOTYPE_SYMMETRIC_KEY_WRAP: return false;
-         case EncryptionMethodSpi.ALGOTYPE_KEY_TRANSPORT: return false;
-         case EncryptionMethodSpi.ALGOTYPE_KEY_AGREEMENT: return false;
-         default: return false;
+
+      case EncryptionMethodSpi.ALGOTYPE_BLOCK_ENCRYPTION :
+         return true;
+
+      case EncryptionMethodSpi.ALGOTYPE_STREAM_ENCRYPTION :
+         return true;
+
+      case EncryptionMethodSpi.ALGOTYPE_SYMMETRIC_KEY_WRAP :
+         return false;
+
+      case EncryptionMethodSpi.ALGOTYPE_KEY_TRANSPORT :
+         return false;
+
+      case EncryptionMethodSpi.ALGOTYPE_KEY_AGREEMENT :
+         return false;
+
+      default :
+         return false;
       }
    }
 
+   /**
+    * Method getUsableInEncryptedKey
+    *
+    * @return
+    */
    public boolean getUsableInEncryptedKey() {
+
       int type = this._emSpi.getImplementedAlgorithmType();
+
       switch (type) {
-         case EncryptionMethodSpi.ALGOTYPE_BLOCK_ENCRYPTION: return false;
-         case EncryptionMethodSpi.ALGOTYPE_STREAM_ENCRYPTION: return false;
-         case EncryptionMethodSpi.ALGOTYPE_SYMMETRIC_KEY_WRAP: return true;
-         case EncryptionMethodSpi.ALGOTYPE_KEY_TRANSPORT: return true;
-         case EncryptionMethodSpi.ALGOTYPE_KEY_AGREEMENT: return true;
-         default: return false;
+
+      case EncryptionMethodSpi.ALGOTYPE_BLOCK_ENCRYPTION :
+         return false;
+
+      case EncryptionMethodSpi.ALGOTYPE_STREAM_ENCRYPTION :
+         return false;
+
+      case EncryptionMethodSpi.ALGOTYPE_SYMMETRIC_KEY_WRAP :
+         return true;
+
+      case EncryptionMethodSpi.ALGOTYPE_KEY_TRANSPORT :
+         return true;
+
+      case EncryptionMethodSpi.ALGOTYPE_KEY_AGREEMENT :
+         return true;
+
+      default :
+         return false;
       }
    }
 
@@ -155,8 +202,7 @@ public class EncryptionMethod extends Algorithm {
            Document doc, String algorithmURI, EncryptionMethodParams params)
               throws XMLSecurityException {
 
-      super(doc, EncryptionConstants._TAG_ENCRYPTIONMETHOD,
-            EncryptionConstants.EncryptionSpecNS, algorithmURI);
+      super(doc, algorithmURI);
 
       Vector v = (Vector) this._algorithmHash.get(algorithmURI);
 
@@ -213,9 +259,10 @@ public class EncryptionMethod extends Algorithm {
     */
    public EncryptionMethod(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, EncryptionConstants._TAG_ENCRYPTIONMETHOD);
-      String algorithmURI = this.getAlgorithmURI();
 
+      super(element, BaseURI);
+
+      String algorithmURI = this.getAlgorithmURI();
       Vector v = (Vector) this._algorithmHash.get(algorithmURI);
 
       if (v == null) {
@@ -573,6 +620,7 @@ public class EncryptionMethod extends Algorithm {
        byte wrappedKeyBytes[] = Base64.decode(wrappedKey);
        return this.unwrap(wrappedKeyBytes, wrapKey, wrappedKeyAlgoURI);
    }
+
    //J+
    static {
       org.apache.xml.security.Init.init();

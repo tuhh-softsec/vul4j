@@ -98,9 +98,9 @@ public class EncryptedData extends EncryptionElementProxy
            Document doc, EncryptionMethod encryptionMethod, KeyInfo keyInfo, CipherData cipherData, EncryptionProperties encryptionProperties, String Id, String Type, int Nonce)
               throws XMLSecurityException {
 
-      super(doc, EncryptionConstants._TAG_ENCRYPTEDDATA);
+      super(doc);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
 
       if (encryptionMethod != null) {
          if (!encryptionMethod.getUsableInEncryptedData()) {
@@ -111,14 +111,14 @@ public class EncryptedData extends EncryptionElementProxy
          }
 
          this._constructionElement.appendChild(encryptionMethod.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
 
          this._cachedEncryptionMethod = encryptionMethod;
       }
 
       if (keyInfo != null) {
          this._constructionElement.appendChild(keyInfo.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
 
       if (cipherData == null) {
@@ -131,12 +131,12 @@ public class EncryptedData extends EncryptionElementProxy
       }
 
       this._constructionElement.appendChild(cipherData.getElement());
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
 
       if (encryptionProperties != null) {
          this._constructionElement
             .appendChild(encryptionProperties.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
 
       this.setId(Id);
@@ -199,7 +199,7 @@ public class EncryptedData extends EncryptionElementProxy
     */
    public EncryptedData(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, EncryptionConstants._TAG_ENCRYPTEDDATA);
+      super(element, BaseURI);
    }
 
    /**
@@ -836,7 +836,7 @@ public class EncryptedData extends EncryptionElementProxy
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.newDocument();
       Element root = doc.createElement("root");
-      int NonceLength = 32;
+      int NonceLength = 0;
       String realContent = "1 USD           ";
       String desired = "999.999.999 EUR ";
       String estimated = realContent;
@@ -889,6 +889,7 @@ public class EncryptedData extends EncryptionElementProxy
          System.out.println();
       }
 
+
       {
          org.apache.xpath.CachedXPathAPI xpath =
             new org.apache.xpath.CachedXPathAPI();
@@ -899,6 +900,7 @@ public class EncryptedData extends EncryptionElementProxy
          Element encryptedDataElem = (Element) xpath.selectSingleNode(doc,
                                         "//xenc:EncryptedData", nsctx);
          EncryptedData ed2 = new EncryptedData(encryptedDataElem, "memory://");
+/*
          byte[] ciphertext =
             ed2.getCipherData().getCipherValue().getCipherText();
 
@@ -949,6 +951,9 @@ public class EncryptedData extends EncryptionElementProxy
          System.out.println();
          System.out.println(
             "------------------------------------------------------------");
+*/
+
+
          ed2.decryptAndReplace(cek);
          System.out.println(
             "------------------------------------------------------------");
@@ -985,5 +990,9 @@ public class EncryptedData extends EncryptionElementProxy
       }
 
       return b;
+   }
+
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_ENCRYPTEDDATA;
    }
 }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European 
- * Commission in the <WebSig> project in the ISIS Programme. 
+ * The development of this software was partly funded by the European
+ * Commission in the <WebSig> project in the ISIS Programme.
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -133,9 +133,9 @@ public class SignedInfo extends Manifest {
            Document doc, String CanonicalizationMethodURI, String SignatureMethodURI, int HMACOutputLength)
               throws XMLSecurityException {
 
-      super(doc, Constants._TAG_SIGNEDINFO);
+      super(doc);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
       {
          Element canonElem = XMLUtils.createElementInSignatureSpace(this._doc,
                                 Constants._TAG_CANONICALIZATIONMETHOD);
@@ -143,7 +143,7 @@ public class SignedInfo extends Manifest {
          canonElem.setAttribute(Constants._ATT_ALGORITHM,
                                 CanonicalizationMethodURI);
          this._constructionElement.appendChild(canonElem);
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
       {
          if (HMACOutputLength > 0) {
@@ -156,7 +156,7 @@ public class SignedInfo extends Manifest {
 
          this._constructionElement
             .appendChild(this._signatureAlgorithm.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -173,7 +173,7 @@ public class SignedInfo extends Manifest {
            throws XMLSecurityException {
 
       // Parse the Reference children and Id attribute in the Manifest
-      super(element, BaseURI, Constants._TAG_SIGNEDINFO);
+      super(element, BaseURI);
 
       /* canonicalize ds:SignedInfo, reparse it into a new document
        * and replace the original not-canonicalized ds:SignedInfo by
@@ -351,6 +351,10 @@ public class SignedInfo extends Manifest {
       return new SecretKeySpec(secretKeyBytes,
                                this._signatureAlgorithm
                                   .getJCEAlgorithmString());
+   }
+
+   public String getBaseLocalName() {
+      return Constants._TAG_SIGNEDINFO;
    }
 
    static {

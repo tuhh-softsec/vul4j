@@ -84,7 +84,7 @@ public class CipherValue extends EncryptionElementProxy {
    public CipherValue(Document doc, byte ciphertext[])
            throws XMLSecurityException {
 
-      super(doc, EncryptionConstants._TAG_CIPHERVALUE);
+      super(doc);
 
       this.setCipherText(ciphertext);
    }
@@ -98,7 +98,7 @@ public class CipherValue extends EncryptionElementProxy {
     */
    public CipherValue(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, EncryptionConstants._TAG_CIPHERVALUE);
+      super(element, BaseURI);
    }
 
    /**
@@ -138,5 +138,9 @@ public class CipherValue extends EncryptionElementProxy {
       Text textNode = this._doc.createTextNode(Base64.encode(ciphertext));
 
       this._constructionElement.appendChild(textNode);
+   }
+
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_CIPHERVALUE;
    }
 }

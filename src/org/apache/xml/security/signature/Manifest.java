@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European 
- * Commission in the <WebSig> project in the ISIS Programme. 
+ * The development of this software was partly funded by the European
+ * Commission in the <WebSig> project in the ISIS Programme.
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -102,19 +102,18 @@ public class Manifest extends SignatureElementProxy {
     */
    public Manifest(Document doc) {
 
-      super(doc, Constants._TAG_MANIFEST);
-
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      super(doc);
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
     * This is only called if we call super() in SignedInfo
     * @param doc
     * @param signedinfoelementname
-    */
    Manifest(Document doc, String signedinfoelementname) {
       super(doc, signedinfoelementname);
    }
+   */
 
    /**
     * Constructor Manifest
@@ -124,10 +123,9 @@ public class Manifest extends SignatureElementProxy {
     * @param localname
     * @throws XMLSecurityException
     */
-   public Manifest(Element element, String BaseURI, String localname)
-           throws XMLSecurityException {
+   public Manifest(Element element, String BaseURI) throws XMLSecurityException {
 
-      super(element, BaseURI, localname);
+      super(element, BaseURI);
 
       // check out Reference children
       {
@@ -141,18 +139,6 @@ public class Manifest extends SignatureElementProxy {
                                    I18n.translate("xml.WrongContent", exArgs));
          }
       }
-   }
-
-   /**
-    * Build a {@link Manifest} from an {@link Element}
-    *
-    * @param element <code>Manifest</code> element
-    * @param BaseURI the URI of the resource where the XML instance was stored
-    * @throws XMLSecurityException
-    */
-   public Manifest(Element element, String BaseURI)
-           throws XMLSecurityException {
-      this(element, BaseURI, Constants._TAG_MANIFEST);
    }
 
    /**
@@ -190,7 +176,7 @@ public class Manifest extends SignatureElementProxy {
 
       this._references.add(ref);
       this._constructionElement.appendChild(ref.getElement());
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /** Field _references */
@@ -223,19 +209,7 @@ public class Manifest extends SignatureElementProxy {
     * @throws XMLSecurityException
     */
    public int getLength() throws XMLSecurityException {
-
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         NodeList referenceElems =
-            XPathAPI.selectNodeList(this._constructionElement,
-                                    "./ds:" + Constants._TAG_REFERENCE,
-                                    nscontext);
-
-         return referenceElems.getLength();
-      } catch (TransformerException ex) {
-         throw new XMLSecurityException("empty", ex);
-      }
+      return this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE);
    }
 
    /**
@@ -248,23 +222,13 @@ public class Manifest extends SignatureElementProxy {
     */
    public Reference item(int i) throws XMLSecurityException {
 
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         Element refElem =
-            (Element) XPathAPI.selectSingleNode(this._constructionElement,
-                                                "./ds:"
-                                                + Constants._TAG_REFERENCE
-                                                + "[" + (i + 1) + "]",
-                                                nscontext);
+      Element refElem = this.getChildElementLocalName(i,
+                           Constants.SignatureSpecNS, Constants._TAG_REFERENCE);
 
-         if (refElem == null) {
-            return null;
-         } else {
-            return new Reference(refElem, this._baseURI, this);
-         }
-      } catch (TransformerException ex) {
-         throw new XMLSecurityException("empty", ex);
+      if (refElem == null) {
+         return null;
+      } else {
+         return new Reference(refElem, this._baseURI, this);
       }
    }
 
@@ -588,6 +552,10 @@ public class Manifest extends SignatureElementProxy {
     */
    public int getSignedContentLength() {
       return this._signedContents.size();
+   }
+
+   public String getBaseLocalName() {
+      return Constants._TAG_MANIFEST;
    }
 
    static {

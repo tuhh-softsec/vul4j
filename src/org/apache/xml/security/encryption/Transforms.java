@@ -95,9 +95,9 @@ public class Transforms extends EncryptionElementProxy {
     */
    public Transforms(Document doc) {
 
-      super(doc, EncryptionConstants._TAG_TRANSFORMS);
+      super(doc);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -110,7 +110,7 @@ public class Transforms extends EncryptionElementProxy {
    public Transforms(Element element, String BaseURI)
            throws XMLSecurityException {
 
-      super(element, BaseURI, EncryptionConstants._TAG_TRANSFORMS);
+      super(element, BaseURI);
 
       int numberOfTransformElems = this.getLength();
 
@@ -190,11 +190,8 @@ public class Transforms extends EncryptionElementProxy {
     * @param transform {@link Transform} object
     */
    private void addTransform(Transform transform) {
-
-      Element transformElement = transform.getElement();
-
-      this._constructionElement.appendChild(transformElement);
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      this._constructionElement.appendChild(transform.getElement());
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -221,6 +218,8 @@ public class Transforms extends EncryptionElementProxy {
          throw new TransformationException("empty", ex);
       } catch (InvalidCanonicalizerException ex) {
          throw new TransformationException("empty", ex);
+      } catch (XMLSecurityException ex) {
+         throw new TransformationException("empty", ex);
       }
    }
 
@@ -228,23 +227,9 @@ public class Transforms extends EncryptionElementProxy {
     * Return the nonnegative number of transformations.
     *
     * @return the number of transformations
-    * @throws TransformationException
     */
-   public int getLength() throws TransformationException {
-
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         CachedXPathAPI xpathAPI = new CachedXPathAPI();
-         NodeList transformElems =
-            xpathAPI.selectNodeList(this._constructionElement,
-                                    "./ds:" + Constants._TAG_TRANSFORM + "",
-                                    nscontext);
-
-         return transformElems.getLength();
-      } catch (TransformerException ex) {
-         throw new TransformationException("empty", ex);
-      }
+   public int getLength() {
+      return this.length(Constants.SignatureSpecNS, Constants._TAG_TRANSFORM);
    }
 
    /**
@@ -253,30 +238,22 @@ public class Transforms extends EncryptionElementProxy {
     *
     * @param i index of {@link Transform} to return
     * @return the <it>i</it><sup>th</sup> transforms
-    * @throws TransformationException
+    * @throws XMLSecurityException
     */
-   private Transform item(int i) throws TransformationException {
+   private Transform item(int i) throws XMLSecurityException {
 
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         CachedXPathAPI xpathAPI = new CachedXPathAPI();
-         Element transformElem =
-            (Element) xpathAPI.selectSingleNode(this._constructionElement,
-                                                "./ds:"
-                                                + Constants._TAG_TRANSFORM
-                                                + "[" + (i + 1) + "]",
-                                                nscontext);
+      Element transformElem = this.getChildElementLocalName(i,
+                                 Constants.SignatureSpecNS,
+                                 Constants._TAG_TRANSFORM);
 
-         if (transformElem == null) {
-            return null;
-         } else {
-            return new Transform(transformElem, this._baseURI);
-         }
-      } catch (TransformerException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (XMLSecurityException ex) {
-         throw new TransformationException("empty", ex);
+      if (transformElem == null) {
+         return null;
+      } else {
+         return new Transform(transformElem, this._baseURI);
       }
+   }
+
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_TRANSFORMS;
    }
 }

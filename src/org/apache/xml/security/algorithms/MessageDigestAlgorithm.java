@@ -99,8 +99,7 @@ public class MessageDigestAlgorithm extends Algorithm {
    private MessageDigestAlgorithm(Document doc, MessageDigest messageDigest,
                                   String algorithmURI) {
 
-      super(doc, Constants._TAG_DIGESTMETHOD, Constants.SignatureSpecNS,
-            algorithmURI);
+      super(doc, algorithmURI);
 
       this.algorithm = messageDigest;
    }
@@ -274,6 +273,10 @@ public class MessageDigestAlgorithm extends Algorithm {
     */
    public String getBaseNamespace() {
       return Constants.SignatureSpecNS;
+   }
+
+   public String getBaseLocalName() {
+      return Constants._TAG_DIGESTMETHOD;
    }
 
    static {

@@ -82,6 +82,11 @@ import junit.framework.*;
  */
 public class KeyWrapTest extends TestCase {
 
+   /** {@link org.apache.log4j} logging facility */
+   static org.apache.log4j.Category cat =
+      org.apache.log4j.Category
+         .getInstance(KeyWrapTest.class.getName());
+
    /** Field FAILURE_OK */
    static final int FAILURE_OK = 0;
 
@@ -191,6 +196,7 @@ public class KeyWrapTest extends TestCase {
 
       if (!MessageDigest.isEqual(result,
                                  HexDump.hexStringToByteArray(WrappedStr))) {
+         cat.info("Wrap failed: " + HexDump.byteArrayToHexString(result));
          return FAILURE_WRAP;
       }
 
@@ -199,6 +205,7 @@ public class KeyWrapTest extends TestCase {
       SecretKeySpec unwrapped = (SecretKeySpec) kwa.unwrap(result, kek, cekURI);
 
       if (!MessageDigest.isEqual(unwrapped.getEncoded(), CEK)) {
+         cat.info("Unwrap failed: " + HexDump.byteArrayToHexString(unwrapped.getEncoded()));
          return FAILURE_UNWRAP;
       }
 

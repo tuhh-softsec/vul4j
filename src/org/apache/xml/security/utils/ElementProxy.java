@@ -74,6 +74,8 @@ import org.apache.xpath.XPathAPI;
 
 
 /**
+ * This is the base class to all Objects which have a direct 1:1 mapping to an
+ * Element in a particular namespace.
  *
  * @author $Author$
  */
@@ -83,25 +85,32 @@ public abstract class ElementProxy {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(ElementProxy.class.getName());
    //J-
-   public static final int MODE_SIGN = 0;
-   public static final int MODE_VERIFY = 1;
-
-   public static final int MODE_ENCRYPT = 0;
-   public static final int MODE_DECRYPT = 1;
-
-   public static final int MODE_CREATE = 0;
+   public static final int MODE_CREATE  = 0;
    public static final int MODE_PROCESS = 1;
-
    public static final int MODE_UNKNOWN = 2;
+
+   public static final int MODE_SIGN    = MODE_CREATE;
+   public static final int MODE_VERIFY  = MODE_PROCESS;
+
+   public static final int MODE_ENCRYPT = MODE_CREATE;
+   public static final int MODE_DECRYPT = MODE_PROCESS;
+
    protected int _state = MODE_UNKNOWN;
    //J+
 
    /**
-    * Method getBaseNamespace
+    * Returns the namespace of the Elements of the sub-class.
     *
-    * @return
+    * @return the namespace of the Elements of the sub-class.
     */
    public abstract String getBaseNamespace();
+
+   /**
+    * Returns the localname of the Elements of the sub-class.
+    *
+    * @return the localname of the Elements of the sub-class.
+    */
+   public abstract String getBaseLocalName();
 
    /** Field _constructionElement */
    protected Element _constructionElement = null;
@@ -128,10 +137,8 @@ public abstract class ElementProxy {
     * Constructor ElementProxy
     *
     * @param doc
-    * @param localname
-    * @param namespace
     */
-   public ElementProxy(Document doc, String localname, String namespace) {
+   public ElementProxy(Document doc) {
 
       if (doc == null) {
          throw new RuntimeException("Document is null");
@@ -140,22 +147,25 @@ public abstract class ElementProxy {
       this._doc = doc;
       this._state = ElementProxy.MODE_CREATE;
 
-      String prefix = ElementProxy.getDefaultPrefix(namespace);
+      String prefix = ElementProxy.getDefaultPrefix(this.getBaseNamespace());
 
-      if (namespace == null) {
-         this._constructionElement = doc.createElement(localname);
+      if (this.getBaseNamespace() == null) {
+         this._constructionElement = doc.createElement(this.getBaseLocalName());
       } else {
          if ((prefix == null) || (prefix.length() == 0)) {
-            this._constructionElement = doc.createElementNS(namespace,
-                    localname);
+            this._constructionElement =
+               doc.createElementNS(this.getBaseNamespace(),
+                                   this.getBaseLocalName());
 
-            this._constructionElement.setAttribute("xmlns", namespace);
+            this._constructionElement.setAttribute("xmlns",
+                                                   this.getBaseNamespace());
          } else {
-            this._constructionElement = doc.createElementNS(namespace,
-                    prefix + ":" + localname);
+            this._constructionElement =
+               doc.createElementNS(this.getBaseNamespace(),
+                                   prefix + ":" + this.getBaseLocalName());
 
             this._constructionElement.setAttribute("xmlns:" + prefix,
-                                                   namespace);
+                                                   this.getBaseNamespace());
          }
       }
    }
@@ -187,10 +197,9 @@ public abstract class ElementProxy {
     *
     * @param element
     * @param BaseURI
-    * @param localname
     * @throws XMLSecurityException
     */
-   public ElementProxy(Element element, String BaseURI, String localname)
+   public ElementProxy(Element element, String BaseURI)
            throws XMLSecurityException {
 
       if (element == null) {
@@ -204,9 +213,7 @@ public abstract class ElementProxy {
       this._constructionElement = element;
       this._baseURI = BaseURI;
 
-      this.guaranteeThatElementInCorrectSpace(localname);
-
-      // this.setElement(element, BaseURI);
+      this.guaranteeThatElementInCorrectSpace(this.getBaseLocalName());
    }
 
    /**
@@ -279,7 +286,7 @@ public abstract class ElementProxy {
 
          Base64.fillElementWithBigInteger(e, bi);
          this._constructionElement.appendChild(e);
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
 
@@ -500,17 +507,25 @@ public abstract class ElementProxy {
     *
     * @param namespace
     * @param prefix
+    * @throws XMLSecurityException
     */
-   public static void setDefaultPrefix(String namespace, String prefix) throws XMLSecurityException {
+   public static void setDefaultPrefix(String namespace, String prefix)
+           throws XMLSecurityException {
+
       Iterator keys = ElementProxy._prefixMappings.keySet().iterator();
+
       while (keys.hasNext()) {
          String storedNamespace = (String) keys.next();
-         String storedPrefix = (String) ElementProxy._prefixMappings.get(storedNamespace);
-         if (storedPrefix.equals(prefix) && !storedNamespace.equals(namespace)) {
+         String storedPrefix =
+            (String) ElementProxy._prefixMappings.get(storedNamespace);
+
+         if (storedPrefix.equals(prefix) &&!storedNamespace.equals(namespace)) {
             Object exArgs[] = { prefix, namespace, storedNamespace };
+
             throw new XMLSecurityException("prefix.AlreadyAssigned", exArgs);
          }
       }
+
       ElementProxy._prefixMappings.put(namespace, prefix);
    }
 

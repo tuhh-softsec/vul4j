@@ -171,13 +171,13 @@ public class OAEPParams extends EncryptionMethodParams {
 
       DocumentFragment nl = doc.createDocumentFragment();
 
-      nl.appendChild(doc.createTextNode("\n"));
+      XMLUtils.addReturnToNode(nl);
 
       MessageDigestAlgorithm mda = MessageDigestAlgorithm.getInstance(doc,
                                       this.getDigestMethodURI());
 
       nl.appendChild(mda.getElement());
-      nl.appendChild(doc.createTextNode("\n"));
+      XMLUtils.addReturnToNode(nl);
 
       if ((this.getOAEPParamBytes() != null)
               && (this.getOAEPParamBytes().length > 0)) {
@@ -192,7 +192,7 @@ public class OAEPParams extends EncryptionMethodParams {
          }
 
          nl.appendChild(oaepElem);
-         nl.appendChild(doc.createTextNode("\n"));
+         XMLUtils.addReturnToNode(nl);
       }
 
       return nl;

@@ -78,14 +78,11 @@ public abstract class Algorithm extends ElementProxy {
    /**
     *
     * @param doc
-    * @param localname
-    * @param namespace
     * @param algorithmURI is the URI of the algorithm as String
     */
-   public Algorithm(Document doc, String localname, String namespace,
-                    String algorithmURI) {
+   public Algorithm(Document doc, String algorithmURI) {
 
-      super(doc, localname, namespace);
+      super(doc);
 
       this.setAlgorithmURI(algorithmURI);
    }
@@ -95,12 +92,11 @@ public abstract class Algorithm extends ElementProxy {
     *
     * @param element
     * @param BaseURI
-    * @param localname
     * @throws XMLSecurityException
     */
-   public Algorithm(Element element, String BaseURI, String localname)
+   public Algorithm(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, localname);
+      super(element, BaseURI);
    }
 
    /**

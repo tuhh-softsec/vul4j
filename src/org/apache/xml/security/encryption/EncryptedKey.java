@@ -97,9 +97,9 @@ public class EncryptedKey extends EncryptionElementProxy
            CipherData cipherData, EncryptionProperties encryptionProperties, ReferenceList referenceList, String CarriedKeyName, String Id, String Type, String Recipient)
               throws XMLSecurityException {
 
-      super(doc, EncryptionConstants._TAG_ENCRYPTEDKEY);
+      super(doc);
 
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
 
       if (encryptionMethod != null) {
          if (!encryptionMethod.getUsableInEncryptedKey()) {
@@ -110,27 +110,27 @@ public class EncryptedKey extends EncryptionElementProxy
          }
 
          this._constructionElement.appendChild(encryptionMethod.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
 
       if (keyInfo != null) {
          this._constructionElement.appendChild(keyInfo.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
       {
          this._constructionElement.appendChild(cipherData.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
 
       if (encryptionProperties != null) {
          this._constructionElement
             .appendChild(encryptionProperties.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
 
       if (referenceList != null) {
          this._constructionElement.appendChild(referenceList.getElement());
-         this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+         XMLUtils.addReturnToElement(this._constructionElement);
       }
 
       this.setCarriedKeyName(CarriedKeyName);
@@ -148,7 +148,7 @@ public class EncryptedKey extends EncryptionElementProxy
     */
    public EncryptedKey(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, EncryptionConstants._TAG_ENCRYPTEDKEY);
+      super(element, BaseURI);
    }
 
    /**
@@ -170,17 +170,19 @@ public class EncryptedKey extends EncryptionElementProxy
     */
    public ReferenceList getReferenceList() throws XMLSecurityException {
 
-      NodeList nl =
-         this._constructionElement
-            .getElementsByTagNameNS(EncryptionConstants.EncryptionSpecNS,
-                                    EncryptionConstants._TAG_REFERENCELIST);
+      int noOfReferences = this.length(EncryptionConstants.EncryptionSpecNS,
+                                       EncryptionConstants._TAG_REFERENCELIST);
 
-      if (nl.getLength() > 1) {
+      if (noOfReferences > 1) {
          Object exArgs[] = { "More then one xenc:ReferenceList found" };
 
          throw new XMLSecurityException("empty", exArgs);
-      } else if (nl.getLength() == 1) {
-         return new ReferenceList((Element) nl.item(0), this._baseURI);
+      } else if (noOfReferences == 1) {
+         Element referenceListElem = this.getChildElementLocalName(0,
+                                        EncryptionConstants.EncryptionSpecNS,
+                                        EncryptionConstants._TAG_REFERENCELIST);
+
+         return new ReferenceList(referenceListElem, this._baseURI);
       } else {
          return null;
       }
@@ -303,8 +305,7 @@ public class EncryptedKey extends EncryptionElementProxy
             cn = new CarriedKeyName(this._doc, carriedKeyName);
 
             this._constructionElement.appendChild(cn.getElement());
-            this._constructionElement
-               .appendChild(this._doc.createTextNode("\n"));
+            XMLUtils.addReturnToElement(this._constructionElement);
          }
       }
    }
@@ -536,6 +537,10 @@ public class EncryptedKey extends EncryptionElementProxy
       }
 
       return null;
+   }
+
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_ENCRYPTEDKEY;
    }
 
    /**

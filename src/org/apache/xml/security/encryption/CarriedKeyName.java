@@ -82,7 +82,7 @@ public class CarriedKeyName extends EncryptionElementProxy {
     */
    public CarriedKeyName(Document doc, String carriedKeyName) {
 
-      super(doc, EncryptionConstants._TAG_CARRIEDKEYNAME);
+      super(doc);
 
       this.setCarriedKeyName(carriedKeyName);
    }
@@ -96,7 +96,7 @@ public class CarriedKeyName extends EncryptionElementProxy {
     */
    public CarriedKeyName(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, EncryptionConstants._TAG_CARRIEDKEYNAME);
+      super(element, BaseURI);
    }
 
    /**
@@ -146,5 +146,9 @@ public class CarriedKeyName extends EncryptionElementProxy {
       }
 
       return false;
+   }
+
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_CARRIEDKEYNAME;
    }
 }

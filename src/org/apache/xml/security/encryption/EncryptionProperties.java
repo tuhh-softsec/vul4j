@@ -79,7 +79,7 @@ public class EncryptionProperties extends EncryptionElementProxy {
     * @param doc
     */
    public EncryptionProperties(Document doc) {
-      super(doc, EncryptionConstants._TAG_ENCRYPTIONPROPERTIES);
+      super(doc);
    }
 
    /**
@@ -91,7 +91,7 @@ public class EncryptionProperties extends EncryptionElementProxy {
     */
    public EncryptionProperties(Element element, String BaseURI)
            throws XMLSecurityException {
-      super(element, BaseURI, EncryptionConstants._TAG_ENCRYPTIONPROPERTIES);
+      super(element, BaseURI);
    }
 
    /**
@@ -135,5 +135,9 @@ public class EncryptionProperties extends EncryptionElementProxy {
                                        ._TAG_ENCRYPTIONPROPERTIES);
 
       return new EncryptionProperty((Element) nl.item(i), this._baseURI);
+   }
+
+   public String getBaseLocalName() {
+      return EncryptionConstants._TAG_ENCRYPTIONPROPERTIES;
    }
 }
