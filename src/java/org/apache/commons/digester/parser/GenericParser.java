@@ -32,7 +32,7 @@
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
- *    "Apache" nor may "Apache" appear in their names without prior 
+ *    nor may "Apache" appear in their names without prior 
  *    written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED

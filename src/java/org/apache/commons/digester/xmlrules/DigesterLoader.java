@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterLoader.java,v 1.10 2003/10/28 23:01:00 rdonkin Exp $
- * $Revision: 1.10 $
- * $Date: 2003/10/28 23:01:00 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterLoader.java,v 1.11 2004/01/10 17:44:18 rdonkin Exp $
+ * $Revision: 1.11 $
+ * $Date: 2004/01/10 17:44:18 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
- *    "Apache" nor may "Apache" appear in their names without prior 
+ *    nor may "Apache" appear in their names without prior 
  *    written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED

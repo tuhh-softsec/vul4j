@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/AbstractRulesImpl.java,v 1.3 2003/10/09 21:09:46 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2003/10/09 21:09:46 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/AbstractRulesImpl.java,v 1.4 2004/01/10 17:32:28 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/10 17:32:28 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
- *    "Apache" nor may "Apache" appear in their names without prior 
+ *    nor may "Apache" appear in their names without prior 
  *    written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -78,7 +78,7 @@ import java.util.List;
  * The subclass can then perform whatever it needs to do to register the rule.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.3 $ $Date: 2003/10/09 21:09:46 $
+ * @version $Revision: 1.4 $ $Date: 2004/01/10 17:32:28 $
  */
 
 abstract public class AbstractRulesImpl implements Rules {

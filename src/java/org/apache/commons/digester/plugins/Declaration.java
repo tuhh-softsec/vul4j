@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Declaration.java,v 1.8 2004/01/10 17:23:47 rdonkin Exp $
- * $Revision: 1.8 $
- * $Date: 2004/01/10 17:23:47 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Declaration.java,v 1.9 2004/01/10 17:40:27 rdonkin Exp $
+ * $Revision: 1.9 $
+ * $Date: 2004/01/10 17:40:27 $
  *
  * ====================================================================
  * 
@@ -35,7 +35,7 @@
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
- *    "Apache" nor may "Apache" appear in their names without prior 
+ *    nor may "Apache" appear in their names without prior 
  *    written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/FactoryCreateRule.java,v 1.16 2004/01/10 17:24:10 rdonkin Exp $
- * $Revision: 1.16 $
- * $Date: 2004/01/10 17:24:10 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/FactoryCreateRule.java,v 1.17 2004/01/10 17:34:18 rdonkin Exp $
+ * $Revision: 1.17 $
+ * $Date: 2004/01/10 17:34:18 $
  *
  * ====================================================================
  * 
@@ -35,7 +35,7 @@
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
- *    "Apache" nor may "Apache" appear in their names without prior 
+ *    nor may "Apache" appear in their names without prior 
  *    written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -77,7 +77,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.16 $ $Date: 2004/01/10 17:24:10 $
+ * @version $Revision: 1.17 $ $Date: 2004/01/10 17:34:18 $
  */
 
 public class FactoryCreateRule extends Rule {

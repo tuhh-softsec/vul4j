@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.27 2004/01/10 17:24:10 rdonkin Exp $
- * $Revision: 1.27 $
- * $Date: 2004/01/10 17:24:10 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.28 2004/01/10 17:32:28 rdonkin Exp $
+ * $Revision: 1.28 $
+ * $Date: 2004/01/10 17:32:28 $
  *
  * ====================================================================
  * 
@@ -35,7 +35,7 @@
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
- *    "Apache" nor may "Apache" appear in their names without prior 
+ *    nor may "Apache" appear in their names without prior 
  *    written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -93,7 +93,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.27 $ $Date: 2004/01/10 17:24:10 $
+ * @version $Revision: 1.28 $ $Date: 2004/01/10 17:32:28 $
  */
 
 public class CallMethodRule extends Rule {

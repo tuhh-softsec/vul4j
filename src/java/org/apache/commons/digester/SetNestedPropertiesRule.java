@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetNestedPropertiesRule.java,v 1.1 2003/11/19 20:40:26 rdonkin Exp $
- * $Revision: 1.1 $
- * $Date: 2003/11/19 20:40:26 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetNestedPropertiesRule.java,v 1.2 2004/01/10 17:38:19 rdonkin Exp $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/10 17:38:19 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
- *    "Apache" nor may "Apache" appear in their names without prior 
+ *    nor may "Apache" appear in their names without prior 
  *    written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -108,7 +108,7 @@ import org.apache.commons.logging.LogFactory;
  * <code>Rule</code>, however, works fine with the default <code>RulesBase</code> rules manager.</p>
  *
  * @author Simon Kitching
- * @version $Revision: 1.1 $ $Date: 2003/11/19 20:40:26 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/10 17:38:19 $
  */
 
 public class SetNestedPropertiesRule extends Rule {

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RuleSetBase.java,v 1.5 2003/10/09 21:09:46 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2003/10/09 21:09:46 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RuleSetBase.java,v 1.6 2004/01/10 17:37:12 rdonkin Exp $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/10 17:37:12 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
- *    "Apache" nor may "Apache" appear in their names without prior 
+ *    nor may "Apache" appear in their names without prior 
  *    written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -69,7 +69,7 @@ package org.apache.commons.digester;
  * logic in the <code>addRuleSet()</code> implementation.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.5 $ $Date: 2003/10/09 21:09:46 $
+ * @version $Revision: 1.6 $ $Date: 2004/01/10 17:37:12 $
  */
 
 public abstract class RuleSetBase implements RuleSet {

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/Channel.java,v 1.9 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.9 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/Channel.java,v 1.10 2004/01/10 17:43:05 rdonkin Exp $
+ * $Revision: 1.10 $
+ * $Date: 2004/01/10 17:43:05 $
  *
  * ====================================================================
  * 
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
- *    "Apache" nor may "Apache" appear in their names without prior 
+ *    nor may "Apache" appear in their names without prior 
  *    written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -78,7 +78,7 @@ import java.util.ArrayList;
  *
  * @author Craig R. McClanahan
  * @author Ted Husted
- * @version $Revision: 1.9 $ $Date: 2003/10/09 21:09:48 $
+ * @version $Revision: 1.10 $ $Date: 2004/01/10 17:43:05 $
  */
 
 public class Channel implements Serializable {
