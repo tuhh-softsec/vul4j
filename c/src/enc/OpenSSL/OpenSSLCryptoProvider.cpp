@@ -89,7 +89,7 @@
 
 OpenSSLCryptoProvider::OpenSSLCryptoProvider() {
 
-	OpenSSL_add_all_digests();		// Initialise Openssl
+	OpenSSL_add_all_algorithms();		// Initialise Openssl
 	ERR_load_crypto_strings();
 
 	//SSLeay_add_all_algorithms();
