@@ -94,6 +94,7 @@
 #include <xsec/dsig/DSIGTransformXPath.hpp>
 #include <xsec/dsig/DSIGTransformXPathFilter.hpp>
 #include <xsec/dsig/DSIGTransformC14n.hpp>
+#include <xsec/dsig/DSIGObject.hpp>
 
 // XALAN
 
@@ -353,39 +354,22 @@ DOMNode * findNode(DOMNode * n, XMLCh * name) {
 XSECCryptoKeyHMAC * createHMACKey(const unsigned char * str) {
 
 	// Create the HMAC key
-	static bool first = true;
 	XSECCryptoKeyHMAC * hmacKey;
 
 #if defined (HAVE_OPENSSL) && defined(HAVE_WINCAPI)
 
 	if (g_useWinCAPI == true) {
 		hmacKey = new WinCAPICryptoKeyHMAC(0);
-		if (first) {
-			cerr << "Using Windows Crypto API as the cryptography provider" << endl;
-			first = false;
-		}
 	}
 	else {
 		hmacKey = new OpenSSLCryptoKeyHMAC();
-		if (first) {
-			cerr << "Using OpenSSL as the cryptography provider" << endl;
-			first = false;
-		}
 	}
 #else
 #	if defined (HAVE_OPENSSL)
 		hmacKey = new OpenSSLCryptoKeyHMAC();
-		if (first) {
-			cerr << "Using OpenSSL as the cryptography provider" << endl;
-			first = false;
-		}
 #	else
 #		if defined (HAVE_WINCAPI)
 		hmacKey = new WinCAPICryptoKeyHMAC(0);
-		if (first) {
-			cerr << "Using Windows Crypto API as the cryptography provider" << endl;
-			first = false;
-		}
 #		endif
 #	endif
 #endif
@@ -469,6 +453,208 @@ void outputDoc(DOMImplementation * impl, DOMDocument * doc) {
 
 	delete theSerializer;
 	delete formatTarget;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Unit test helper functions
+// --------------------------------------------------------------------------------
+
+bool reValidateSig(DOMImplementation *impl, DOMDocument * inDoc, XSECCryptoKey *k) {
+
+	// Take a signature in DOM, serialise and re-validate
+
+	try {
+
+		DOMWriter *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+
+		theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+
+		if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
+			theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+
+		MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
+
+		theSerializer->writeNode(formatTarget, *inDoc);
+
+		// Copy to a new buffer
+		int len = formatTarget->getLen();
+		char * mbuf = new char [len + 1];
+		memcpy(mbuf, formatTarget->getRawBuffer(), len);
+		mbuf[len] = '\0';
+
+		delete theSerializer;
+		delete formatTarget;
+
+		/*
+		 * Re-parse
+		 */
+
+		XercesDOMParser parser;
+		
+		parser.setDoNamespaces(true);
+		parser.setCreateEntityReferenceNodes(true);
+
+		MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) mbuf, 
+																len, "XSECMem");
+
+		parser.parse(*memIS);
+		DOMDocument * doc = parser.adoptDocument();
+
+
+		delete(memIS);
+		delete[] mbuf;
+
+		/*
+		 * Validate signature
+		 */
+
+		XSECProvider prov;
+		DSIGSignature * sig = prov.newSignatureFromDOM(doc);
+		sig->load();
+		sig->setSigningKey(k);
+
+		bool ret = sig->verify();
+
+		doc->release();
+
+		return ret;
+
+	}
+
+	catch (XSECException &e)
+	{
+		cerr << "An error occured during signature processing\n   Message: ";
+		char * ce = XMLString::transcode(e.getMsg());
+		cerr << ce << endl;
+		delete ce;
+		exit(1);
+		
+	}	
+	catch (XSECCryptoException &e)
+	{
+		cerr << "A cryptographic error occured during signature processing\n   Message: "
+		<< e.getMsg() << endl;
+		exit(1);
+	}
+
+}
+// --------------------------------------------------------------------------------
+//           Unit tests for signature
+// --------------------------------------------------------------------------------
+
+
+void unitTestEnvelopingSignature(DOMImplementation * impl) {
+	
+	// This tests an enveloping signature as the root node
+
+	cerr << "Creating enveloping signature ... ";
+	
+	try {
+		
+		// Create a document
+    
+		DOMDocument * doc = impl->createDocument();
+
+		// Create the signature
+
+		XSECProvider prov;
+		DSIGSignature *sig;
+		DOMElement *sigNode;
+		
+		sig = prov.newSignature();
+		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
+		sig->setPrettyPrint(true);
+
+		sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA1);
+
+		doc->appendChild(sigNode);
+
+		// Add an object
+		DSIGObject * obj = sig->appendObject();
+		obj->setId(MAKE_UNICODE_STRING("ObjectId"));
+
+		// Create a text node
+		DOMText * txt= doc->createTextNode(MAKE_UNICODE_STRING("A test string"));
+		obj->appendChild(txt);
+
+		// Add a Reference
+		sig->createReference(MAKE_UNICODE_STRING("#ObjectId"));
+
+		// Get a key
+		cerr << "signing ... ";
+
+		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
+		sig->sign();
+
+		cerr << "validating ... ";
+		if (!sig->verify()) {
+			cerr << "bad verify!" << endl;
+			exit(1);
+		}
+
+		cerr << "OK ... serialise and re-verify ... ";
+		if (!reValidateSig(impl, doc, createHMACKey((unsigned char *) "secret"))) {
+
+			cerr << "bad verify!" << endl;
+			exit(1);
+
+		}
+
+		cerr << "OK ... ";
+
+		// Now set to bad
+		txt->setNodeValue(MAKE_UNICODE_STRING("A bad string"));
+
+		cerr << "verify bad data ... ";
+		if (sig->verify()) {
+
+			cerr << "bad - should have failed!" << endl;
+			exit(1);
+
+		}
+
+		cerr << "OK (verify false) ... serialise and re-verify ... ";
+		if (reValidateSig(impl, doc, createHMACKey((unsigned char *) "secret"))) {
+
+			cerr << "bad - should have failed" << endl;
+			exit(1);
+
+		}
+
+		cerr << "OK" << endl;
+		// Reset to OK
+		txt->setNodeValue(MAKE_UNICODE_STRING("A test string"));
+		outputDoc(impl, doc);
+		doc->release();
+		
+
+	}
+
+	catch (XSECException &e)
+	{
+		cerr << "An error occured during signature processing\n   Message: ";
+		char * ce = XMLString::transcode(e.getMsg());
+		cerr << ce << endl;
+		delete ce;
+		exit(1);
+		
+	}	
+	catch (XSECCryptoException &e)
+	{
+		cerr << "A cryptographic error occured during signature processing\n   Message: "
+		<< e.getMsg() << endl;
+		exit(1);
+	}
+
+
+}
+
+
+void unitTestSignature(DOMImplementation * impl) {
+
+	// Test an enveloping signature
+	unitTestEnvelopingSignature(impl);
 
 }
 
@@ -1542,9 +1728,11 @@ void printUsage(void) {
 	cerr << "     --print-docs/-p\n";
 	cerr << "         Print the test documents\n\n";
 	cerr << "     --signature-only/-s\n";
-	cerr << "         Only run signature tests\n\n";
+	cerr << "         Only run basic signature test\n\n";
+	cerr << "     --signature-unit-only/-t\n";
+	cerr << "         Only run signature unit tests\n\n";
 	cerr << "     --encryption-only/-e\n";
-	cerr << "         Only run encryption tests\n\n";
+	cerr << "         Only run basic encryption test\n\n";
 	cerr << "     --encryption-unit-only/-u\n";
 	cerr << "         Only run encryption unit tests\n\n";
 
@@ -1565,6 +1753,7 @@ int main(int argc, char **argv) {
 	bool		doEncryptionTest = true;
 	bool		doEncryptionUnitTests = true;
 	bool		doSignatureTest = true;
+	bool		doSignatureUnitTests = true;
 
 	int paramCount = 1;
 
@@ -1587,16 +1776,25 @@ int main(int argc, char **argv) {
 		else if (stricmp(argv[paramCount], "--signature-only") == 0 || stricmp(argv[paramCount], "-s") == 0) {
 			doEncryptionTest = false;
 			doEncryptionUnitTests = false;
+			doSignatureUnitTests = false;
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--encryption-only") == 0 || stricmp(argv[paramCount], "-e") == 0) {
 			doSignatureTest = false;
 			doEncryptionUnitTests = false;
+			doSignatureUnitTests = false;
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--encryption-unit-only") == 0 || stricmp(argv[paramCount], "-u") == 0) {
 			doEncryptionTest = false;
 			doSignatureTest = false;
+			doSignatureUnitTests = false;
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--signature-unit-only") == 0 || stricmp(argv[paramCount], "-t") == 0) {
+			doEncryptionTest = false;
+			doSignatureTest = false;
+			doEncryptionUnitTests = false;
 			paramCount++;
 		}
 		else {
@@ -1666,11 +1864,21 @@ int main(int argc, char **argv) {
 		// Test signature functions
 		if (doSignatureTest) {
 			cerr << endl << "====================================";
-			cerr << endl << "Testing Signature Functions";
+			cerr << endl << "Testing Signature Function";
 			cerr << endl << "====================================";
 			cerr << endl << endl;
 
 			testSignature(impl);
+		}
+
+		// Test signature functions
+		if (doSignatureUnitTests) {
+			cerr << endl << "====================================";
+			cerr << endl << "Performing Signature Unit Tests";
+			cerr << endl << "====================================";
+			cerr << endl << endl;
+
+			unitTestSignature(impl);
 		}
 
 		// Test encrypt function
