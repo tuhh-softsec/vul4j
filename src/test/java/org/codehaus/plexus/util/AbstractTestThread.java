@@ -2,8 +2,8 @@ package org.codehaus.plexus.util;
 
 /**
  * A thread which is registered with a ThreadRegistry and notifies it when it has completed
- * running. Collects any errors and makes it available for analysis.  
- * 
+ * running. Collects any errors and makes it available for analysis.
+ *
  * <p>Created on 1/07/2003</p>
  *
  * @author <a href="mailto:bert@tuaworks.co.nz">Bert van Brakel</a>
@@ -31,7 +31,7 @@ public abstract class AbstractTestThread implements Runnable
     /** If the thread has been run */
     private boolean hasRun = false;
 
-    /** Flag indicating if the test has passed. Some test might require an 
+    /** Flag indicating if the test has passed. Some test might require an
      * exception so using the error to determine if the test has passed is
      * not sufficient.
      */
@@ -41,7 +41,7 @@ public abstract class AbstractTestThread implements Runnable
 
     /**
      * Constructor
-     * 
+     *
      * <p>Remember to call <code>setThreadRegistry(ThreadRegistry)</code>
      */
     public AbstractTestThread()
@@ -49,15 +49,15 @@ public abstract class AbstractTestThread implements Runnable
         super();
     }
 
-    public AbstractTestThread(TestThreadManager registry)
+    public AbstractTestThread( TestThreadManager registry )
     {
         super();
-        setThreadRegistry(registry);
+        setThreadRegistry( registry );
     }
 
     //~ Methods ------------------------------------------------------------------------------------
 
-    /** 
+    /**
      * @return
      */
     public Throwable getError()
@@ -65,29 +65,29 @@ public abstract class AbstractTestThread implements Runnable
         return error;
     }
 
-	/** 
-	 * Resets the test back to it's state before starting. If the test
-	 * is currently running this method will block until the test has
-	 * finished running. Subclasses should call this method if
-	 * overriding it.
-	 * 
-	 * */
+    /**
+     * Resets the test back to it's state before starting. If the test
+     * is currently running this method will block until the test has
+     * finished running. Subclasses should call this method if
+     * overriding it.
+     *
+     * */
     public void reset()
     {
-    	//shouldn't reset until the test has finished running
-        synchronized (this)
+        //shouldn't reset until the test has finished running
+        synchronized ( this )
         {
-            while (isRunning)
-             {
-                 try
-                 {
-                     wait();
-                 }
-                 catch (InterruptedException e)
-                 {
-            
-                 }            
-             }
+            while ( isRunning )
+            {
+                try
+                {
+                    wait();
+                }
+                catch ( InterruptedException e )
+                {
+
+                }
+            }
             errorMsg = null;
             error = null;
             hasRun = false;
@@ -95,26 +95,26 @@ public abstract class AbstractTestThread implements Runnable
         }
     }
 
-	/**
-	 * Start this TestThread running. If the test is currently running then
-	 * this method does nothing.
-	 *
-	 */
+    /**
+     * Start this TestThread running. If the test is currently running then
+     * this method does nothing.
+     *
+     */
     public final void start()
     {
-    	//shouldn't have multiple threads running this test at the same time
-        synchronized (this)
+        //shouldn't have multiple threads running this test at the same time
+        synchronized ( this )
         {
-            if (isRunning == false)
+            if ( isRunning == false )
             {
                 isRunning = true;
-                Thread t = new Thread(this);
+                Thread t = new Thread( this );
                 t.start();
             }
         }
     }
 
-    /** 
+    /**
      * @return
      */
     public String getErrorMsg()
@@ -122,7 +122,7 @@ public abstract class AbstractTestThread implements Runnable
         return errorMsg;
     }
 
-    /** 
+    /**
      * @return
      */
     public boolean hasFailed()
@@ -130,7 +130,7 @@ public abstract class AbstractTestThread implements Runnable
         return !passed;
     }
 
-    /** 
+    /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
@@ -140,57 +140,57 @@ public abstract class AbstractTestThread implements Runnable
         return passed;
     }
 
-    /** 
+    /**
      * Don't override this. Calls <code>doRun()</code>
      *
      * @see java.lang.Runnable#run()
      */
     public final void run()
     {
-        if (registry == null)
+        if ( registry == null )
         {
-            throw new IllegalArgumentException("The ThreadRegistry is null. Ensure this is set before running this thread");
+            throw new IllegalArgumentException( "The ThreadRegistry is null. Ensure this is set before running this thread" );
         }
         passed = false;
         try
         {
             doRun();
         }
-        catch (Throwable t)
+        catch ( Throwable t )
         {
             error = t;
         }
 
-        registry.completed(this);
+        registry.completed( this );
         hasRun = true;
         isRunning = false;
         //notify objects with blocked methods which are waiting
         //on this test to complete running
-        synchronized( this)
+        synchronized ( this )
         {
-        	notifyAll();
+            notifyAll();
         }
     }
 
-    /** 
+    /**
      * Override this to run your custom test
      *
      * @throws Throwable
      */
     public abstract void doRun() throws Throwable;
 
-    /** 
+    /**
      * Set the registry this thread should notify when it has completed running
      *
      * @param registry
      */
-    public void setThreadRegistry(TestThreadManager registry)
-    
+    public void setThreadRegistry( TestThreadManager registry )
+
     {
         this.registry = registry;
     }
 
-    /** 
+    /**
      * Test if the test has run
      *
      * @return
@@ -199,10 +199,11 @@ public abstract class AbstractTestThread implements Runnable
     {
         return hasRun;
     }
+
     /**
      * @param throwable
      */
-    public void setError(Throwable throwable)
+    public void setError( Throwable throwable )
     {
         error = throwable;
     }
@@ -210,7 +211,7 @@ public abstract class AbstractTestThread implements Runnable
     /**
      * @param string
      */
-    public void setErrorMsg(String string)
+    public void setErrorMsg( String string )
     {
         errorMsg = string;
     }
@@ -218,10 +219,11 @@ public abstract class AbstractTestThread implements Runnable
     /**
      * @param b
      */
-    public void setPassed(boolean b)
+    public void setPassed( boolean b )
     {
         passed = b;
     }
+
     /**
      * @return
      */
@@ -233,16 +235,16 @@ public abstract class AbstractTestThread implements Runnable
     /**
      * @param string
      */
-    public void setName(String string)
+    public void setName( String string )
     {
         name = string;
     }
 
-    private final void debug(String msg)
+    private final void debug( String msg )
     {
-        if (DEBUG)
+        if ( DEBUG )
         {
-            System.out.println(this +":" + msg);
+            System.out.println( this + ":" + msg );
         }
     }
 }
