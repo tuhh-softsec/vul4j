@@ -130,9 +130,9 @@ public class Manifest extends SignatureElementProxy {
       super(element, BaseURI);
 
       // check out Reference children
+      int le = this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE);
       {
-         if (this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE)
-                 == 0) {
+         if (le == 0) {
 
             // At least one Reference must be present. Bad.
             Object exArgs[] = { Constants._TAG_REFERENCE,
@@ -143,9 +143,8 @@ public class Manifest extends SignatureElementProxy {
          }
       }
 
-      // create Vector of appropriate length
-      this._references = new Vector(this.length(Constants.SignatureSpecNS,
-                                                Constants._TAG_REFERENCE));
+      // create Vector
+      this._references = new Vector();
    }
 
    /**
@@ -179,10 +178,6 @@ public class Manifest extends SignatureElementProxy {
             ref.setType(ReferenceType);
          }
 
-         if (this._references == null) {
-            this._references = new Vector();
-         }
-
          // add Reference object to our cache vector
          this._references.add(ref);
 
@@ -204,7 +199,7 @@ public class Manifest extends SignatureElementProxy {
            throws XMLSignatureException, ReferenceNotInitializedException {
 
       if (this._state == MODE_SIGN) {
-         for (int i = 0; i < this._references.size(); i++) {
+         for (int i = 0; i < this.getLength(); i++) {
 
             // update the cached Reference object, the Element content is automatically updated
             Reference currentRef = (Reference) this._references.elementAt(i);
@@ -228,8 +223,8 @@ public class Manifest extends SignatureElementProxy {
             return 0;
          }
       } else {
-         return this.length(Constants.SignatureSpecNS,
-                            Constants._TAG_REFERENCE);
+         return super.length(Constants.SignatureSpecNS,
+                             Constants._TAG_REFERENCE);
       }
    }
 
@@ -248,15 +243,15 @@ public class Manifest extends SignatureElementProxy {
          // we already have real objects
          return (Reference) this._references.elementAt(i);
       } else {
-         if (this._references.elementAt(i) == null) {
+         if (this._references.size() <= i) {
 
-            // not yet constructed, so we have to
-            Element refElem = this.getChildElementLocalName(i,
+            // not yet constructed, so _we_ have to
+            Element refElem = super.getChildElementLocalName(i,
                                  Constants.SignatureSpecNS,
                                  Constants._TAG_REFERENCE);
             Reference ref = new Reference(refElem, this._baseURI, this);
 
-            this._references.setElementAt(ref, i);
+            this._references.add(i, ref);
          }
 
          return (Reference) this._references.elementAt(i);
