@@ -18,13 +18,13 @@ package org.apache.xml.security.utils;
 
 
 
-import javax.xml.transform.TransformerException;
 
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
+import java.util.Arrays;
 import java.util.WeakHashMap;
 import java.lang.ref.WeakReference;
 
@@ -119,73 +119,17 @@ public class IdResolver {
       }
        // this must be done so that Xalan can catch ALL namespaces
        //XMLUtils.circumventBug2650(doc);
-       CachedXPathAPIHolder.setDoc(doc);
-       CachedXPathAPI cx=CachedXPathAPIHolder.getCachedXPathAPI();//cxHolder.getCachedXPathAPI();
-      result = IdResolver.getElementByIdInDSNamespace(doc, id,cx);
+      result = IdResolver.getElementBySearching(doc, id);
 
       if (result != null) {
-         log.debug(
-            "Found an Element using an insecure Id/ID/id search method: "
-            + result.getTagName());
+		  IdResolver.registerElementById(result, id);
 
-         // register the ID to speed up further queries on that ID
-         IdResolver.registerElementById(result, id);
-
-         return result;
-      }
-
-      result = IdResolver.getElementByIdInXENCNamespace(doc, id,cx);
-
-      if (result != null) {
-         log.debug(
-            "I could find an Element using the advanced xenc:Namespace searcher method: "
-            + result.getTagName());
-
-         // register the ID to speed up further queries on that ID
-         IdResolver.registerElementById(result, id);
-
-         return result;
-      }
-
-      result = IdResolver.getElementByIdInSOAPSignatureNamespace(doc, id,cx);
-
-      if (result != null) {
-         log.debug(
-            "I could find an Element using the advanced SOAP-SEC:id searcher method: "
-            + result.getTagName());
-
-         // register the ID to speed up further queries on that ID
-         IdResolver.registerElementById(result, id);
-
-         return result;
-      }
-
-      result = IdResolver.getElementByIdInXKMSNamespace(doc, id,cx);
-
-      if (result != null) {
-         log.debug("I could find an Element using the XKMS searcher method: "
-                   + result.getTagName());
-
-         // register the ID to speed up further queries on that ID
-         IdResolver.registerElementById(result, id);
-
-         return result;
-      }
-
-      result = IdResolver.getElementByIdUnsafeMatchByIdName(doc, id,cx);
-
-      if (result != null) {
-         log.warn(
-            "Found an Element using an insecure Id/ID/id search method: "
-            + result.getTagName());
-
-         // Don't register the ID, we're not sure
          return result;
       }
 
       return null;
    }
-
+   
 
     /**
      * Method getElementByIdUsingDOM
@@ -221,195 +165,69 @@ public class IdResolver {
        return null;
    }
 
-   /**
-    * Method getElementByIdInDSNamespace
-    *
-    * @param doc
-    * @param id
-    * @param cx
-    * @return the element obtained by the Id, or null if it is not found.
-    */
-   private static Element getElementByIdInDSNamespace(Document doc, String id
-            ,CachedXPathAPI cx) {
-   	  if (log.isDebugEnabled())
-   	  	log.debug("getElementByIdInDSNamespace() Search for ID " + id);
+   
+   static java.util.List names;
+   static {
+	   String namespaces[]={ Constants.SignatureSpecNS,
+			   EncryptionConstants.EncryptionSpecNS,
+			   "http://schemas.xmlsoap.org/soap/security/2000-12",
+			   "http://www.w3.org/2002/03/xkms#"	   	   
+		   };
+	   names=Arrays.asList(namespaces);
+   }
+   
 
-      try {
-         Element nscontext = XMLUtils.createDSctx(doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         Element element = (Element) cx.selectSingleNode(doc,
-                              "//ds:*[@Id='" + id + "']", nscontext);
-
-         return element;
-
-         /*
-         NodeList dsElements = XPathAPI.selectNodeList(doc, "//ds:*",
-                                  nscontext);
-
-         log.debug("Found ds:Elements: " + dsElements.getLength());
-
-         for (int i = 0; i < dsElements.getLength(); i++) {
-            Element currentElem = (Element) dsElements.item(i);
-            Attr IdAttr = currentElem.getAttributeNode(Constants._ATT_ID);
-
-            if (IdAttr != null) {
-               if (IdAttr.getNodeValue().equals(id)) {
-                  return currentElem;
-               }
-            }
-         }
-         */
-      } catch (TransformerException ex) {
-         log.fatal("empty", ex);
-      }
-
-      return null;
+   private static Element getElementBySearching(Node root,String id) {
+	   Element []els=new Element[4];
+	   getElementBySearching(root,id,els);
+	   for (int i=0;i<els.length;i++) {
+		   if (els[i]!=null) {
+			   return els[i];
+		   }
+	   }
+	   return null;
+	   
+   }
+   private static int getElementBySearching(Node root,String id,Element []els) {
+	   switch (root.getNodeType()) {
+	   case Node.ELEMENT_NODE:
+		   Element el=(Element)root;
+		   if (el.hasAttributes()) {			  
+			   int index=names.indexOf(el.getNamespaceURI());
+			   if (index<0) {
+				   index=4;
+			   }		   
+			   if (el.getAttribute("Id").equals(id)) {				   
+				   els[index]=el;
+				   if (index==0) {
+					   return 1;
+				   }
+			   } else if ( el.getAttribute("id").equals(id) ) {
+				   if (index!=2) {
+					   index=4;
+				   }			    				   
+				   els[index]=el;
+			   } else if ( el.getAttribute("ID").equals(id) ) {
+				   if (index!=3) {
+					   index=4;
+				   }
+				   els[index]=el;				   
+			   } else if ((index==3)&&(
+				   el.getAttribute("OriginalRequestID").equals(id) ||
+				   el.getAttribute("RequestID").equals(id) ||
+				   el.getAttribute("ResponseID" ).equals(id))) {
+				   els[3]=el;				   
+			   }
+		   }
+	   	case Node.DOCUMENT_NODE:
+			Node sibling=root.getFirstChild();
+			while (sibling!=null) {
+				if (getElementBySearching(sibling,id,els)==1)
+					return 1;
+				sibling=sibling.getNextSibling();
+			}
+	   }
+	   return 0;
    }
 
-   /**
-    * Method getElementByIdInXENCNamespace
-    *
-    * @param doc
-    * @param id
-    * @param cx
-    * @return the element obtained by the Id, or null if it is not found.
-    */
-   private static Element getElementByIdInXENCNamespace(Document doc,
-           String id, CachedXPathAPI cx) {
-      if (log.isDebugEnabled())
-      	log.debug("getElementByIdInXENCNamespace() Search for ID " + id);
-
-      try {
-         Element nscontext =
-            XMLUtils.createDSctx(doc, "xenc",
-                                 org.apache.xml.security.utils
-                                    .EncryptionConstants.EncryptionSpecNS);
-         Element element = (Element) cx.selectSingleNode(doc,
-                              "//xenc:*[@Id='" + id + "']", nscontext);
-
-         return element;
-      } catch (TransformerException ex) {
-         log.fatal("empty", ex);
-      }
-
-      return null;
-   }
-
-   /**
-    * Method getElementByIdInSOAPSignatureNamespace
-    *
-    * @param doc
-    * @param id
-    * @param cx
-    * @return the element obtained by the Id, or null if it is not found.
-    */
-   private static Element getElementByIdInSOAPSignatureNamespace(Document doc,
-           String id, CachedXPathAPI cx) {
-   	  if (log.isDebugEnabled())
-   	  	log.debug("getElementByIdInSOAPSignatureNamespace() Search for ID " + id);
-
-      try {
-         Element nscontext = XMLUtils.createDSctx(
-            doc, "SOAP-SEC",
-            "http://schemas.xmlsoap.org/soap/security/2000-12");
-         Element element = (Element) cx.selectSingleNode(doc,
-                              "//*[@SOAP-SEC:id='" + id + "']", nscontext);
-
-         return element;
-      } catch (TransformerException ex) {
-         log.fatal("empty", ex);
-      }
-
-      return null;
-   }
-
-   /**
-    * Method getElementByIdInXKMSNamespace
-    *
-    * @param doc
-    * @param id
-    * @param cx
-    * @return the element obtained by the Id, or null if it is not found.
-    * @see <a href="http://www.w3c.org/2001/XKMS/Drafts/XKMS-20020410">XKMS</a>
-    */
-   private static Element getElementByIdInXKMSNamespace(Document doc,
-           String id, CachedXPathAPI cx) {
-
-      /*
-      xmlns:xkms="http://www.w3.org/2002/03/xkms#"
-
-      <attribute name="ID"                type="ID" use="optional"/>
-      <attribute name="OriginalRequestID" type="ID" use="optional"/>
-      <attribute name="RequestID"         type="ID" use="optional"/>
-      <attribute name="ResponseID"        type="ID" use="required"/>
-      */
-   	  if (log.isDebugEnabled())
-   	  	log.debug("getElementByIdInXKMSNamespace() Search for ID " + id);
-
-      try {
-         Element nscontext =
-            XMLUtils.createDSctx(doc, "xkms",
-                                 "http://www.w3.org/2002/03/xkms#");
-         String[] attrs = { "ID", "OriginalRequestID", "RequestID",
-                            "ResponseID" };
-
-         for (int i = 0; i < attrs.length; i++) {
-            String attr = attrs[i];
-            Element element = (Element) cx.selectSingleNode(doc,
-                                 "//xkms:*[@" + attr + "='" + id + "']",
-                                 nscontext);
-
-            if (element != null) {
-               return element;
-            }
-         }
-
-         return null;
-      } catch (TransformerException ex) {
-         log.fatal("empty", ex);
-      }
-
-      return null;
-   }
-
-   /**
-    * Method getElementByIdUnsafeMatchByIdName
-    *
-    * @param doc
-    * @param id
-    * @param cx
-    * @return the element obtained by the Id, or null if it is not found.
-    */
-   private static Element getElementByIdUnsafeMatchByIdName(Document doc,
-           String id, CachedXPathAPI cx) {
-   	  if (log.isDebugEnabled())
-   	  	log.debug("getElementByIdUnsafeMatchByIdName() Search for ID " + id);
-
-      try {
-         Element element_Id = (Element) cx.selectSingleNode(doc,
-                                 "//*[@Id='" + id + "']");
-
-         if (element_Id != null) {
-            return element_Id;
-         }
-
-         Element element_ID = (Element) cx.selectSingleNode(doc,
-                                 "//*[@ID='" + id + "']");
-
-         if (element_ID != null) {
-            return element_ID;
-         }
-
-         Element element_id = (Element) cx.selectSingleNode(doc,
-                                 "//*[@id='" + id + "']");
-
-         if (element_id != null) {
-            return element_id;
-         }
-      } catch (TransformerException ex) {
-         log.fatal("empty", ex);
-      }
-
-      return null;
-   }
 }
