@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/FactoryCreateRule.java,v 1.17 2004/01/10 17:34:18 rdonkin Exp $
- * $Revision: 1.17 $
- * $Date: 2004/01/10 17:34:18 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/FactoryCreateRule.java,v 1.18 2004/02/15 01:02:13 craigmcc Exp $
+ * $Revision: 1.18 $
+ * $Date: 2004/02/15 01:02:13 $
  *
  * ====================================================================
  * 
@@ -62,7 +62,6 @@
 
 package org.apache.commons.digester;
 
-import org.apache.commons.collections.ArrayStack;
 import org.xml.sax.Attributes;
 
 
@@ -77,7 +76,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.17 $ $Date: 2004/01/10 17:34:18 $
+ * @version $Revision: 1.18 $ $Date: 2004/02/15 01:02:13 $
  */
 
 public class FactoryCreateRule extends Rule {

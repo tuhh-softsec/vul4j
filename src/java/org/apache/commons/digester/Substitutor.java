@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Substitutor.java,v 1.4 2004/01/10 17:51:57 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2004/01/10 17:51:57 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Substitutor.java,v 1.5 2004/02/15 01:02:13 craigmcc Exp $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/15 01:02:13 $
  *
  * ====================================================================
  * 
@@ -78,7 +78,7 @@ import org.xml.sax.Attributes;
  * <p>Different strategies are supported for attributes and body text.</p> 
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.4 $ $Date: 2004/01/10 17:51:57 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/15 01:02:13 $
  */
 public abstract class Substitutor {
     
@@ -104,7 +104,7 @@ public abstract class Substitutor {
      * This method may substitute values into the body text of the
      * elements that Digester parses.
      *
-     * @param the body text (as passed to <code>Digester</code>)
+     * @param bodyText the body text (as passed to <code>Digester</code>)
      * @return the body text to be passed to the <code>Rule</code> implementations
      */
     public abstract String substitute(String bodyText);

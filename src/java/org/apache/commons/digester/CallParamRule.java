@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.17 2004/01/10 17:32:29 rdonkin Exp $
- * $Revision: 1.17 $
- * $Date: 2004/01/10 17:32:29 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.18 2004/02/15 01:02:13 craigmcc Exp $
+ * $Revision: 1.18 $
+ * $Date: 2004/02/15 01:02:13 $
  *
  * ====================================================================
  * 
@@ -65,8 +65,6 @@ package org.apache.commons.digester;
 
 import org.xml.sax.Attributes;
 
-import org.apache.commons.collections.ArrayStack;
-
 
 /**
  * <p>Rule implementation that saves a parameter for use by a surrounding 
@@ -86,7 +84,7 @@ import org.apache.commons.collections.ArrayStack;
  * </p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.17 $ $Date: 2004/01/10 17:32:29 $
+ * @version $Revision: 1.18 $ $Date: 2004/02/15 01:02:13 $
  */
 
 public class CallParamRule extends Rule {

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/substitution/VariableSubstitutor.java,v 1.3 2004/01/10 17:43:46 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2004/01/10 17:43:46 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/substitution/VariableSubstitutor.java,v 1.4 2004/02/15 01:02:14 craigmcc Exp $
+ * $Revision: 1.4 $
+ * $Date: 2004/02/15 01:02:14 $
  *
  * ====================================================================
  * 
@@ -74,7 +74,7 @@ import org.xml.sax.Attributes;
  * Also supported is setting no expanders for body text and for attributes. 
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.3 $ $Date: 2004/01/10 17:43:46 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/15 01:02:14 $
  */
 public class VariableSubstitutor extends Substitutor {
 
@@ -137,7 +137,7 @@ public class VariableSubstitutor extends Substitutor {
      * This method may substitute values into the body text of the
      * elements that Digester parses.
      *
-     * @param the body text (as passed to <code>Digester</code>)
+     * @param bodyText the body text (as passed to <code>Digester</code>)
      * @return the body text to be passed to the <code>Rule</code> implementations
      */
     public String substitute(String bodyText) {

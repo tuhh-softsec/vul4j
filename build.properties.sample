@@ -4,7 +4,9 @@ jaxp.jaxp.jar=${jaxp.home}/jaxp.jar
 jaxp.parser.jar=${jaxp.home}/crimson.jar
 
 # Commons projects -- correct if 'ant dist' is run on each project in the
-# default CVS directory layout
+# default CVS directory layout.  Note that Digester no longer depends on
+# commons-collections itself; there is a runtime dependency currently
+# inherited from commons-beanutils, however.
 commons-beanutils.home=../beanutils/dist
 commons-beanutils.jar=${commons-beanutils.home}/commons-beanutils.jar
 commons-collections.home=../collections/dist

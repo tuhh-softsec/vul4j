@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterRuleParser.java,v 1.23 2004/01/10 17:45:07 rdonkin Exp $
- * $Revision: 1.23 $
- * $Date: 2004/01/10 17:45:07 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterRuleParser.java,v 1.24 2004/02/15 01:02:14 craigmcc Exp $
+ * $Revision: 1.24 $
+ * $Date: 2004/02/15 01:02:14 $
  *
  * ====================================================================
  * 
@@ -74,7 +74,7 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.beanutils.ConvertUtils;
 
-import org.apache.commons.collections.ArrayStack;
+import org.apache.commons.digester.ArrayStack;
 
 import org.apache.commons.digester.AbstractObjectCreationFactory;
 import org.apache.commons.digester.BeanPropertySetterRule;

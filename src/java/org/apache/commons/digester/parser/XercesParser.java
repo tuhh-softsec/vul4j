@@ -216,7 +216,7 @@ public class XercesParser{
     /**
      * Configure schema validation as recommended by the Xerces spec. 
      * Both DTD and Schema validation will be enabled simultaneously.
-     * @param properties parser optional info
+     * @param factory SAXParserFactory to be configured
      */
     private static void configureXerces(SAXParserFactory factory)
             throws ParserConfigurationException, 
