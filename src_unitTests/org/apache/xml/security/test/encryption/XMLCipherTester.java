@@ -80,6 +80,7 @@ import junit.framework.TestCase;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
+import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.Method;
 import org.apache.xml.serialize.OutputFormat;
@@ -183,7 +184,16 @@ public class XMLCipherTester extends TestCase {
             // encrypt
             cipher = XMLCipher.getInstance(XMLCipher.AES_128);
             cipher.init(XMLCipher.ENCRYPT_MODE, key);
-			cipher.addEncryptedKey(encryptedKey);
+			EncryptedData builder = cipher.getEncryptedData();
+
+			KeyInfo builderKeyInfo = builder.getKeyInfo();
+			if (builderKeyInfo == null) {
+				builderKeyInfo = new KeyInfo(d);
+				builder.setKeyInfo(builderKeyInfo);
+			}
+
+			builderKeyInfo.add(encryptedKey);
+
             ed = cipher.doFinal(d, e);
 
             //decrypt
@@ -251,6 +261,9 @@ public class XMLCipherTester extends TestCase {
             cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
             cipher.init(XMLCipher.DECRYPT_MODE, key);
             ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
+			EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
+			Assert.assertEquals(encryptedData.getEncryptionMethod().getAlgorithm(), 
+								XMLCipher.TRIPLEDES);
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
@@ -291,6 +304,9 @@ public class XMLCipherTester extends TestCase {
             cipher = XMLCipher.getInstance(XMLCipher.AES_128);
             cipher.init(XMLCipher.DECRYPT_MODE, key);
             ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
+			EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
+			Assert.assertEquals(encryptedData.getEncryptionMethod().getAlgorithm(), 
+								XMLCipher.AES_128);
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
@@ -333,6 +349,9 @@ public class XMLCipherTester extends TestCase {
             cipher = XMLCipher.getInstance(XMLCipher.AES_192);
             cipher.init(XMLCipher.DECRYPT_MODE, key);
             ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
+			EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
+			Assert.assertEquals(encryptedData.getEncryptionMethod().getAlgorithm(), 
+								XMLCipher.AES_192);
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
@@ -377,6 +396,9 @@ public class XMLCipherTester extends TestCase {
             cipher = XMLCipher.getInstance(XMLCipher.AES_256);
             cipher.init(XMLCipher.DECRYPT_MODE, key);
             ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
+			EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
+			Assert.assertEquals(encryptedData.getEncryptionMethod().getAlgorithm(), 
+								XMLCipher.AES_256);
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);

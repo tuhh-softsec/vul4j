@@ -69,6 +69,7 @@ import javax.crypto.SecretKey;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
+import org.apache.xml.security.encryption.XMLEncryptionException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.keys.content.KeyValue;
@@ -353,6 +354,23 @@ public class KeyInfo extends SignatureElementProxy {
          XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
+
+	/**
+	 * Method addEncryptedKey
+	 *
+	 * @param encryptedKey
+	 * @throws XMLEncryptionException
+	 */
+
+	public void add(EncryptedKey encryptedKey) 
+		throws XMLEncryptionException {
+
+		if (this._state == MODE_SIGN) {
+			XMLCipher cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+			this._constructionElement.appendChild(cipher.martial(encryptedKey));
+		}
+
+	}
 
    /**
     * Method addUnknownElement
