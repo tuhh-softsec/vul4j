@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/Generator.java,v 1.1 2003/06/30 11:00:13 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/Generator.java,v 1.2 2003/06/30 23:36:14 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -71,7 +71,7 @@ import org.apache.commons.functor.generator.util.CollectionTransformer;
  * each subclass.
  *
  * @since 1.0
- * @version $Revision: 1.1 $ $Date: 2003/06/30 11:00:13 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/30 23:36:14 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
@@ -82,7 +82,6 @@ public abstract class Generator {
 
     /** Create a new generator. */
     public Generator() {
-
     }
 
     /**
@@ -95,7 +94,7 @@ public abstract class Generator {
     }
 
     /** Get the generator that is being wrapped. */
-    public Generator getWrappedGenerator() {
+    protected Generator getWrappedGenerator() {
         return wrappedGenerator;
     }
 
@@ -104,7 +103,7 @@ public abstract class Generator {
 
     /** Stop the generator. Will stop the wrapped generator if one was set. */
     public void stop() {
-        if (wrappedGenerator != null) wrappedGenerator.stop();
+        if (wrappedGenerator != null) { wrappedGenerator.stop(); } 
         stopped = true;
     }
 
