@@ -83,12 +83,28 @@
 #define WINCAPI_DSSSEEDLEN		0x18
 #define WINCAPI_RSAPUBKEYLEN	0x0C
 
-
 /**
  * @defgroup wincapicrypto Windows Crypto API Interface
  * @ingroup crypto
  * The WinCAPI crypto provides an experimental inerface to
- * the Windows Cryptographic API
+ * the Windows Cryptographic API.
+ *
+ * All initialisation of the Windows providers needs to be done
+ * by the calling application.  The interface will call the provided
+ * DSS (PROV_DSS) provider and RSA (PROV_RSA_FULL) provider to perform
+ * cryptographic functions.
+ *
+ * The tools use the default providers, but the calling application
+ * can use any providers that implement PROV_DSS and PROV_FULL_RSA.
+ *
+ * Note that, unlike the OpenSSL classes, the various implementation 
+ * classes all require their owner provider class to be passed into
+ * the constructor.  This allows them to access the RSA and DSS CAPI
+ * providers being used for the implementation.
+ *
+ * @todo Need to allow the various classes to over-ride the PROV
+ * objects to allow specific private key instances rather than one
+ * instance across the library instance.
  */
  /*\@{*/
 
@@ -97,8 +113,8 @@ class DSIG_EXPORT WinCAPICryptoProvider : public XSECCryptoProvider {
 
 public :
 
-	// Constructors/Destructors
-
+	/** @name Constructors and Destructors */
+	//@{
 	/**
 	 * \brief Create a Windows CAPI interface layer
 	 *
@@ -124,32 +140,149 @@ public :
 
 	virtual ~WinCAPICryptoProvider();
 
-	// Hashing classes
+	//@}
+
+	/** @name Hashing (Digest) Functions */
+	//@{
+
+	/**
+	 * \brief Return a SHA1 implementation.
+	 *
+	 * Call used by the library to obtain a SHA1 object from the 
+	 * provider.
+	 *
+	 * @returns A pointer to an OpenSSL Hash object that implements SHA1
+	 * @see WinCAPICryptoHash
+	 */
+
 	virtual XSECCryptoHash			* hashSHA1();
+
+	/**
+	 * \brief Return a HMAC SHA1 implementation.
+	 *
+	 * Call used by the library to obtain a HMAC SHA1 object from the 
+	 * provider.  The caller will need to set the key in the hash
+	 * object with an XSECCryptoKeyHMAC using WinCAPICryptoHash::setKey()
+	 *
+	 * @returns A pointer to a Hash object that implements HMAC-SHA1
+	 * @see WinCAPICryptoHash
+	 */
+
 	virtual XSECCryptoHash			* hashHMACSHA1();
+
+	/**
+	 * \brief Return a MD5 implementation.
+	 *
+	 * Call used by the library to obtain a MD5 object from the 
+	 * OpenSSL provider.
+	 *
+	 * @returns A pointer to a Hash object that implements MD5
+	 * @see WinCAPICryptoHash
+	 */
+
 	virtual XSECCryptoHash			* hashMD5();
+
+	/**
+	 * \brief Return a HMAC MD5 implementation.
+	 *
+	 * Call used by the library to obtain a HMAC MD5 object from the 
+	 * provider.  The caller will need to set the key in the hash
+	 * object with an XSECCryptoKeyHMAC using XSECCryptoHash::setKey()
+	 *
+	 * @note The use of MD5 is explicitly marked as <b>not recommended</b> 
+	 * in the XML Digital Signature standard due to recent advances in
+	 * cryptography indicating there <em>may</em> be weaknesses in the 
+	 * algorithm.
+	 *
+	 * @returns A pointer to a Hash object that implements HMAC-MD5
+	 * @see WinCAPICryptoHash
+	 */
+
 	virtual XSECCryptoHash			* hashHMACMD5();
 
-	// Encode/Decode
+	//@}
+
+	/** @name Encoding functions */
+	//@{
+
+	/**
+	 * \brief Return a Base64 encoder/decoder implementation.
+	 *
+	 * Call used by the library to obtain a Base64 
+	 * encoder/decoder.
+	 *
+	 * @note Windows providers do not implement Base64, so the internal
+	 * implementation (XSCrypt) is used instead.
+	 * 
+	 *
+	 * @returns Pointer to the new Base64 encoder.
+	 * @see XSCryptCryptoBase64
+	 */
+
 	virtual XSECCryptoBase64		* base64();
 
-	// Keys
+	//@}
+
+	/** @name Keys and Certificates */
+	//@{
+
+	/**
+	 * \brief Return a DSA key implementation object.
+	 * 
+	 * Call used by the library to obtain a DSA key object.
+	 *
+	 * @returns Pointer to the new DSA key
+	 * @see WinCAPICryptoKeyDSA
+	 */
+
 	virtual XSECCryptoKeyDSA		* keyDSA();
+
+	/**
+	 * \brief Return an RSA key implementation object.
+	 * 
+	 * Call used by the library to obtain an OpenSSL RSA key object.
+	 *
+	 * @returns Pointer to the new RSA key
+	 * @see WinCAPICryptoKeyRSA
+	 */
+
 	virtual XSECCryptoKeyRSA		* keyRSA();
 
-	// X509
+	/**
+	 * \brief Return an X509 implementation object.
+	 * 
+	 * Call used by the library to obtain an object that can work
+	 * with X509 certificates.
+	 *
+	 * @returns Pointer to the new X509 object
+	 * @see WinCAPICryptoX509
+	 */
+
 	virtual XSECCryptoX509			* X509();
 
+	//@}
 
-	// WinCAPI Unique
+	/** @name Windows CAPI Specific methods */
+	//@{
+
+	/**
+	 * \brief Returns the Crypto Provider being used for DSS
+	 */
+
 	HCRYPTPROV getProviderDSS(void) {return m_provDSS;}
+
+	/**
+	 * \brief Returns the Provider being used for RSA functions
+	 */
+
 	HCRYPTPROV getProviderRSA(void) {return m_provRSA;}
 
 	/**
 	 * \brief Translate B64 I2OS integer to a WinCAPI int.
 	 *
-	 * Decodes a Base64 integer and reverses the order to allow loading into
-	 * a Windows CAPI function.  (CAPI uses Little Endian storage of integers).
+	 * Decodes a Base64 (ds:CryptoBinary) integer and reverses the order to 
+	 * allow loading into a Windows CAPI function.  (CAPI uses Little Endian 
+	 * storage of integers).
 	 *
 	 * @param b64 Base 64 string
 	 * @param b64Len Length of base64 string
@@ -170,9 +303,7 @@ public :
 
 	static unsigned char * WinBN2b64(BYTE * n, DWORD nLen, unsigned int &retLen);
 
-	/*\@}*/
-
-
+	//@}
 
 private:
 
@@ -181,4 +312,8 @@ private:
 
 };
 
+/*\@}*/
+
+
 #endif /* WINCAPICRYPTOPROVIDER_INCLUDE */
+

@@ -79,27 +79,89 @@
 #include <openssl/x509.h>
 #include <openssl/bio.h>
 
+/**
+ * \brief Implementation class for interface for X509 certificates.
+ * @ingroup opensslcrypto
+ *
+ * The library uses classes derived from this to process X509 Certificates.
+ *
+ */
+
 class DSIG_EXPORT OpenSSLCryptoX509 : public XSECCryptoX509 {
 
 public :
 
+	/** @name Constructors and Destructors */
+	//@{
+
 	OpenSSLCryptoX509();
 	virtual ~OpenSSLCryptoX509();
 
-	// load functions
+	//@}
 
-	virtual void loadX509Base64Bin(const char * buf, unsigned int len);
 
-	// Info functions
+	//@}
+	/** @name Key Interface methods */
+	//@{
+
+	/**
+	 * \brief Return the type of the key stored in the certificate.
+	 *
+	 * Will extract the key from the certificate to return the appropriate
+	 * type
+	 *
+	 */
 
 	virtual XSECCryptoKey::KeyType getPublicKeyType();
 
-	// Get functions
+	/**
+	 * \brief Get a copy of the public key.
+	 *
+	 * Extracts the public key from the certificate and returns the appropriate
+	 * OpenSSLCryrptoKey (DSA or RSA) object
+	 *
+	 */
+
 	virtual XSECCryptoKey * clonePublicKey();
+
+	//@}
+
+	/** @name Load and Get the certificate */
+	//@{
+
+	/**
+	 * \brief Load a certificate into the object.
+	 *
+	 * Take a base64 DER encoded certificate and load.
+	 *
+	 * @param buf A buffer containing the Base64 encoded certificate
+	 * @param len The number of bytes of data in the certificate.
+	 */
+
+	virtual void loadX509Base64Bin(const char * buf, unsigned int len);
+
+	/**
+	 * \brief Get a Base64 DER encoded copy of the certificate
+	 *
+	 * @returns A safeBuffer containing the DER encoded certificate
+	 */
+
 	virtual safeBuffer &getDEREncodingSB(void) {return m_DERX509;}
 
-	// OpenSSL specific functions
+	//@}
+
+	/** @name OpenSSL Library Specific functions */
+	//@{
+
+	/**
+	 * \brief OpenSSL specific constructor 
+	 *
+	 * Construct the object around an existing X509 certificate
+	 */
+
 	OpenSSLCryptoX509(X509 * x);
+
+	//@}
 
 private:
 

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -317,7 +315,6 @@ public :
 
 	virtual XSECCryptoKeyRSA		* keyRSA() = 0;
 
-
 	/**
 	 * \brief Return an X509 implementation object.
 	 * 
@@ -327,6 +324,7 @@ public :
 	 * @returns Pointer to the new X509 object
 	 * @see XSECCryptoX509
 	 */
+
 	virtual XSECCryptoX509			* X509() = 0;
 
 	//@}

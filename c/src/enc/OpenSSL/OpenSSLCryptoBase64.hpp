@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -80,37 +78,154 @@
 
 #include <openssl/evp.h>
 
+/**
+ * @ingroup opensslcrypto
+ */
+ /*\@{*/
+
+/**
+ * \brief Base64 encode/decode handler interface class.
+ *
+ * The XSEC library will use implementations of this interface 
+ * for translating bytes to/from base64 encoding.
+ *
+ * Uses the EVP decode/encode routines in OpenSSL to perform the 
+ * work.
+ * 
+ * 
+ * 
+ * @note Requires implementation of OpenSSL > 0.9.6e as there was a bug
+ * in the Base64 decoding routines in this version and prior.
+ *
+ */
+
+
 class DSIG_EXPORT OpenSSLCryptoBase64 : public XSECCryptoBase64 {
 
 
 public :
 
-	// Constructors/Destructors
 	
 	OpenSSLCryptoBase64() {};
 	virtual ~OpenSSLCryptoBase64() {};
 
-	// Decoding Activities
-	virtual void		 decodeInit(void);					// Setup
+	/** @name Decoding Functions */
+	//@{
+
+	/**
+	 * \brief Initialise the base64 object.
+	 *
+	 * Initialises the OpenSSL decode context and gets ready for data
+	 * to be decoded.
+	 *
+	 */
+
+	virtual void decodeInit(void);
+
+	/**
+	 * \brief Decode some passed in data.
+	 *
+	 * Pass the encoded data through the OpenSSL base64 decode function
+	 * and place the data in the outData buffer.
+	 *
+	 * @note The OpenSSL library is very unkind if the output buffer is
+	 * not large enough.  It is the responsibility of the caller to ensure
+	 * the buffer will take the data.
+	 *
+	 * @param inData Pointer to the buffer holding encoded data.
+	 * @param inLength Length of the encoded data in the buffer
+	 * @param outData Buffer to place decoded data into
+	 * @param outLength Maximum amount of data that can be placed in
+	 *        the buffer.
+	 * @returns The number of bytes placed in the outData buffer.
+	 */
+
 	virtual unsigned int decode(unsigned char * inData, 
 						 	    unsigned int inLength,
 								unsigned char * outData,
-								unsigned int outLength);	// decode
-	virtual unsigned int decodeFinish(unsigned char * outData,
-							 	      unsigned int outLength);// Finish
+								unsigned int outLength);
 
-	// Encoding activities
-	virtual void		 encodeInit(void);						// Setup
+
+	/**
+	 * \brief Finish off a decode.
+	 *
+	 * Clean out any extra data in the OpenSSL decode context 
+	 * variable into the outData buffer.
+	 *
+	 * @param outData Buffer to place any remaining decoded data
+	 * @param outLength Max amount of data to be placed in the buffer.
+	 * @returns Amount of data placed in the outData buffer
+	 */
+
+	virtual unsigned int decodeFinish(unsigned char * outData,
+							 	      unsigned int outLength);
+
+	//@}
+
+	/** @name Encoding Functions */
+	//@{
+
+	/**
+	 * \brief Initialise the base64 object for encoding
+	 *
+	 * Get the context variable ready for a base64 decode
+	 *
+	 */
+
+	virtual void		 encodeInit(void);
+
+	/**
+	 * \brief Encode some passed in data.
+	 *
+	 * Pass the data through the OpenSSL Base64 encoder and place
+	 * the output in the outData buffer.  Will keep any "overhang"
+	 * data in the context buffer ready for the next pass of input 
+	 * data.
+	 *
+	 * @param inData Pointer to the buffer holding data to be encoded.
+	 * @param inLength Length of the data in the buffer
+	 * @param outData Buffer to place encoded data into
+	 * @param outLength Maximum amount of data that can be placed in
+	 *        the buffer.
+	 * @returns The number of bytes placed in the outData buffer.
+	 */
+
 	virtual unsigned int encode(unsigned char * inData, 
 						 	    unsigned int inLength,
 								unsigned char * outData,
-								unsigned int outLength);		// decode
+								unsigned int outLength);
+
+	/**
+	 * \brief Finish off an encode.
+	 *
+	 * Take any data left in the context variable, and create the
+	 * tail of the base64 encoding.
+	 *
+	 * @param outData Buffer to place any remaining encoded data
+	 * @param outLength Max amount of data to be placed in the buffer.
+	 * @returns Amount of data placed in the outData buffer
+	 */
+
 	virtual unsigned int encodeFinish(unsigned char * outData,
 							 	      unsigned int outLength);	// Finish
 
-	// Utility functions
+
+	//@}
+
+	/** @name Library Specific Functions */
+	//@{
+
+	/**
+	 * \brief Translate a base64 encoded BN to a bignum
+	 *
+	 * Take a ds:CryptoBinary number and translate to an OpenSSL
+	 * representation of a "big number" BIGNUM.
+	 *
+	 */
+	
 	static BIGNUM * b642BN(char * b64in, unsigned int len);
 
+	//@}
 
 private :
 
@@ -118,5 +233,7 @@ private :
 	EVP_ENCODE_CTX m_dctx;				// Decode context
 
 };
+
+/*\@}*/
 
 #endif /* OPENSSLCRYPTOBASE64_INCLUDE */

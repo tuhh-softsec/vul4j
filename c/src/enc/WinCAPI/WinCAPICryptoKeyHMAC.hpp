@@ -79,29 +79,122 @@
 
 #include <wincrypt.h>
 
+/**
+ * \ingroup wincapicrypto
+ * @{
+ */
+
+/**
+ * \brief Windows Crypto API implementation for HMAC keys.
+ *
+ * Used to provide HMAC keys to WinCAPI CryptoHashHMAC
+ *
+ * Provides two types of key.
+ *
+ * A <b>Windows Key</b> (via setWinKey) is a direct key that can be used
+ * by the Windows HMAC implementation.
+ *
+ * A <b>byte</b> key (via setKey) is a string of bytes that will be used 
+ * as a key.  This requires an internal implementation of an HMAC using the
+ * Windows Digest functions, as the Windows API does not allow direct
+ * loading of these keys.
+ */
+
 class DSIG_EXPORT WinCAPICryptoKeyHMAC : public XSECCryptoKeyHMAC {
 
 public :
 
-	// Constructors/Destructors
+	/** @name Constructors and Destructors */
+	//@{
 	
 	WinCAPICryptoKeyHMAC();
 	virtual ~WinCAPICryptoKeyHMAC() {};
-	virtual XSECCryptoKey * clone();
 
-	// Generic key functions
+	//@}
+
+	/** @name Key Interface methods */
+	//@{
+
+	/**
+	 * \brief Return the type of this key.
+	 *
+	 * For DSA keys, this allows people to determine whether this is a 
+	 * public key, private key or a key pair
+	 */
 
 	virtual XSECCryptoKey::KeyType getKeyType() {return KEY_HMAC;}
+	
+	/**
+	 * \brief Replicate key
+	 */
+
+	virtual XSECCryptoKey * clone();
+
+	/**
+	 * \brief Return the WinCAPI string identifier
+	 */
+
 	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVWinCAPI;}
 
-	// HMAC Key functions
+	//@}
+
+	/** @name Optional Interface methods */
+	//@{
+
+	/**
+	 * \brief Set the key
+	 *
+	 * Set the key from the buffer
+	 *
+	 * @param inBuf Buffer containing the direct bitwise representation of the key
+	 * @param inLength Number of bytes of key in the buffer
+	 *
+	 * @note isSensitive() should have been called on the inbound buffer
+	 * to ensure the contents is overwritten when the safeBuffer is deleted
+	 */
 
 	virtual void setKey(unsigned char * inBuf, unsigned int inLength);
+
+	/**
+	 * \brief Get the key value
+	 * 
+	 * Copy the key into the safeBuffer and return the number of bytes
+	 * copied.
+	 *
+	 * @param outBuf Buffer to copy key into
+	 * @returns number of bytes copied in
+	 */
+
 	virtual unsigned int getKey(safeBuffer &outBuf);
 
-	// Windows specific Key Functions
+	//@}
+
+	/** @name Windows specific keys */
+	//@{
+
+	/**
+	 * \brief Set a Windows key
+	 *
+	 * Set a Windows Crypto key that has been either derived via the
+	 * various Crypt functions or has been loaded from an encrypted BLOB
+	 *
+	 * @param k Windows CAPI key to load
+	 */
+
 	void setWinKey(HCRYPTKEY k);
+
+	/**
+	 * \brief Get a windows key
+	 *
+	 * Used by WinCAPICryptoHashHMAC to retrieve the key in order to
+	 * load it into the HMAC function.
+	 *
+	 * @returns The key to use or 0 if this object does not hold one
+	 */
+
 	HCRYPTKEY getWinKey(void);
+
+	//@}
 
 private:
 

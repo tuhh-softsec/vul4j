@@ -81,12 +81,24 @@
 
 class WinCAPICryptoProvider;
 
+/**
+ * \ingroup wincapicrypto
+ * @{
+ */
+
+/**
+ * \brief WinCAPI implementation of the interface class for RSA keys.
+ *
+ * The library uses classes derived from this to process RSA keys.
+ */
+
 class DSIG_EXPORT WinCAPICryptoKeyRSA : public XSECCryptoKeyRSA {
 
 public :
 
-	// Constructors/Destructors
-	
+	/** @name Constructors and Destructors */
+	//@{
+
 	WinCAPICryptoKeyRSA(WinCAPICryptoProvider * owner);
 
 	/**
@@ -106,37 +118,148 @@ public :
 
 	virtual ~WinCAPICryptoKeyRSA();
 
-	// Generic key functions
+	//@}
+
+	/** @name Key Interface methods */
+	//@{
+
+	/**
+	 * \brief Return the type of this key.
+	 *
+	 * For RSA keys, this allows people to determine whether this is a 
+	 * public key, private key or a key pair
+	 */
 
 	virtual XSECCryptoKey::KeyType getKeyType();
+
+	/**
+	 * \brief Return the WinCAPI identifier string
+	 */
+	
 	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVWinCAPI;}
+	
+	/**
+	 * \brief Replicate key
+	 */
+
 	virtual XSECCryptoKey * clone();
 
-	// RSA Specific Functions
+	//@}
 
-	virtual void loadPublicModulusBase64BigNums(const char * b64, unsigned int len);
-	virtual void loadPublicExponentBase64BigNums(const char * b64, unsigned int len);
+	/** @name Mandatory RSA interface methods 
+	 *
+	 * These classes are required by the library.
+	 */
+	//@{
 
-	// Signature functions
+	/**
+	 * \brief Verify a SHA1 PKCS1 encoded signature
+	 *
+	 * The library will call this function to validate an RSA signature
+	 * The standard by default uses SHA1 in a PKCS1 encoding.
+	 *
+	 * @param hashBuf Buffer containing the pre-calculated (binary) digest
+	 * @param hashLen Length of the data in the digest buffer
+	 * @param base64Signature Buffer containing the Base64 encoded signature
+	 * @param sigLen Length of the data in the signature buffer
+	 * @returns true if the signature was valid, false otherwise
+	 */
 
 	virtual bool verifySHA1PKCS1Base64Signature(const unsigned char * hashBuf, 
 								 unsigned int hashLen,
 								 const char * base64Signature,
 								 unsigned int sigLen);
 
-	virtual unsigned int signSHA1PKCS1Base64Signature(unsigned char * hashBuf,
-		unsigned int hashLen,
-		char * base64SignatureBuf,
-		unsigned int base64SignatureBufLen);
+	/**
+	 * \brief Create a signature
+	 *
+	 * The library will call this function to create a signature from
+	 * a pre-calculated digest.  The output signature will
+	 * be Base64 encoded such that it can be placed directly into the
+	 * XML document
+	 *
+	 * @param hashBuf Buffer containing the pre-calculated (binary) digest
+	 * @param hashLen Number of bytes of hash in the hashBuf
+	 * @param base64SignatureBuf Buffer to place the base64 encoded result
+	 * in.
+	 * @param base64SignatureBufLen Implementations need to ensure they do
+	 * not write more bytes than this into the buffer
+	 */
 
-	// "Extra" WinCAPI functions
+	virtual unsigned int signSHA1PKCS1Base64Signature(unsigned char * hashBuf,
+								unsigned int hashLen,
+								char * base64SignatureBuf,
+								unsigned int base64SignatureBufLen);
+
+	//@}
+
+	/** @name Optional Interface methods
+	 * 
+	 * Have been implemented to allow interoperability testing
+	 */
+
+	//@{
+
+	/**
+	 * \brief Load the modulus
+	 *
+	 * Load the modulus from a Base64 encoded string
+	 *
+	 * param b64 A buffer containing the encoded string
+	 * param len The length of the data in the buffer
+	 */
+
+	virtual void loadPublicModulusBase64BigNums(const char * b64, unsigned int len);
+
+	/**
+	 * \brief Load the exponent
+	 *
+	 * Load the exponent from a Base64 encoded string
+	 *
+	 * param b64 A buffer containing the encoded string
+	 * param len The length of the data in the buffer
+	 */
+	
+	virtual void loadPublicExponentBase64BigNums(const char * b64, unsigned int len);
+
+	//@}
+
+	/** @name WinCAPI Specific Functions */
+	//@{
+
+	/**
+	 * \brief Constructor that loads the Windows CAPI key directly
+	 *
+	 * @param k The key to load
+	 */
 
 	WinCAPICryptoKeyRSA(HCRYPTKEY k);
 
-	// Some useful functions for extracting parameters from a Windows key
+	/**
+	 * \brief Retrieve the exponent
+	 *
+	 * Retrieves the exponent in ds:CryptoBinary encoded format
+	 *
+	 * @param b64 Buffer to place encoded exponent into
+	 * @param len Maximum number of bytes to place in buffer
+	 * @returns The number of bytes placed in the buffer
+	 */
 
 	unsigned int getExponentBase64BigNums(char * b64, unsigned int len);
+
+	/**
+	 * \brief Retrieve the modulus
+	 *
+	 * Retrieves the modulus in ds:CryptoBinary encoded format
+	 *
+	 * @param b64 Buffer to place the encoded modulus into
+	 * @param len Maximum number of bytes to place in buffer
+	 * @returns The number of bytes placed in the buffer
+	 */
+
 	unsigned int getModulusBase64BigNums(char * b64, unsigned int len);
+
+	//@}
 
 private:
 

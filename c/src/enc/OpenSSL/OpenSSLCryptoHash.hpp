@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -80,28 +78,103 @@
 
 #include <openssl/evp.h>
 
-class DSIG_EXPORT OpenSSLCryptoHash : public XSECCryptoHash {
+/**
+ * @ingroup opensslcrypto
+ * @{
+ */
 
+/**
+ * \brief Interface definition for Hash functions.
+ *
+ * Uses the OpenSSL EVP_digest functions to implement the various
+ * hash functions required by the OpenSSL library.
+ *
+ */
+
+class DSIG_EXPORT OpenSSLCryptoHash : public XSECCryptoHash {
 
 public :
 
-	// Constructors/Destructors
-	
+	/** @name Constructors and Destructors */
+	//@{
+
 	OpenSSLCryptoHash(XSECCryptoHash::HashType alg);
 	virtual ~OpenSSLCryptoHash();
+	
+	//@}
 
-	// Key activities
+	/** @name HMAC Functions */
+	//@{
+	
+	/**
+	 *\brief
+	 *
+	 * Does nothing.  If the required function is an HMAC function,
+	 * then OpenSSLCryptoHashHMAC should be used.
+	 *
+	 * @param key The key the HMAC function should use.
+	 */
+
 	virtual void		setKey(XSECCryptoKey * key) {}
 
-	// Hashing Activities
-	virtual void		reset(void);					// Reset the hash
+	//@}
+
+	/** @name Digest/Hash functions */
+	//@{
+
+	/**
+	 * \brief Rest the hash function
+	 *
+	 * Re-initialises the digest structure.
+	 */
+
+	virtual void		reset(void);
+
+	/**
+	 * \brief Hash some data.
+	 *
+	 * Take length bytes of data from the data buffer and update the hash
+	 * that already exists.  This function may (and normally will) be called
+	 * many times for large blocks of data.
+	 *
+	 * @param data The buffer containing the data to be hashed.
+	 * @param length The number of bytes to be read from data
+	 */
+
 	virtual void		hash(unsigned char * data, 
-							 unsigned int length);		// Hash some data
+							 unsigned int length);
+	/**
+	 * \brief Finish up a Digest operation and read the result.
+	 *
+	 * This call tells the CryptoHash object that the input is complete and
+	 * to finalise the Digest.  The output of the digest is read into the 
+	 * hash buffer (at most maxLength bytes)
+	 *
+	 * @param hash The buffer the hash should be read into.
+	 * @param maxLength The maximum number of bytes to be read into hash
+	 * @returns The number of bytes copied into the hash buffer
+	 */
+
 	virtual unsigned int finish(unsigned char * hash,
 								unsigned int maxLength);// Finish and get hash
 
-	// Get information
+	//@}
+
+	/** @name Information functions */
+	//@{
+
+	/**
+	 *\brief
+	 *
+	 * Determine the hash type of this object
+	 *
+	 * @returns The hash type
+	 */
+
 	virtual HashType getHashType(void);
+
+	//@}
+
 
 private:
 

@@ -80,29 +80,125 @@
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
 
-class DSIG_EXPORT OpenSSLCryptoHashHMAC : public XSECCryptoHash {
+/**
+ * @ingroup opensslcrypto
+ * @{
+ */
 
+/**
+ * \brief Implementation of HMAC Hash functions in OpenSSL
+ *
+ * Uses the OpenSSL EVP_digest functions to implement the various
+ * HMAC hash functions required by the library.
+ *
+ */
+
+class DSIG_EXPORT OpenSSLCryptoHashHMAC : public XSECCryptoHash {
 
 public :
 
-	// Constructors/Destructors
-	
+	/** @name Constructors and Destructors */
+	//@{
+
+	/**
+	 * \brief Constructor
+	 *
+	 * Create the object, with the indicated algorithm
+	 * (Currently supports MD5 and SHA1)
+	 *
+	 * @param alg Digest algorithm to use
+	 */
+
 	OpenSSLCryptoHashHMAC(XSECCryptoHash::HashType alg);
+
+	/**
+	 * \brief Destructor
+	 *
+	 * Destroy the object.  Will ensure any key material is also destroyed
+	 */
+
 	virtual ~OpenSSLCryptoHashHMAC();
 
-	// Key activities
+	//@}
+
+	/** @name HMAC Functions */
+	//@{
+	
+	/**
+	 *\brief Set the HMAC key
+	 *
+	 * Sets the key - which needs to have a base class of 
+	 * OpenSSLCryptoKeyHMAC.
+	 *
+	 * @param key The key the HMAC function should use.
+	 */
+
 	virtual void		setKey(XSECCryptoKey * key);
+
+	/**
+	 * \brief Return the string identifier for the OpenSSL interface
+	 */
+
 	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVOpenSSL;}
 
-	// Hashing Activities
-	virtual void		reset(void);					// Reset the hash
+	//@}
+
+	/** @name Hash Functions */
+	//{@
+
+	/**
+	 * \brief Reset the hash function
+	 *
+	 * Re-initialises the digest structure.
+	 */
+
+	virtual void		reset(void);
+
+	/**
+	 * \brief Hash some data.
+	 *
+	 * Take length bytes of data from the data buffer and update the hash
+	 * that already exists.  This function may (and normally will) be called
+	 * many times for large blocks of data.
+	 *
+	 * @param data The buffer containing the data to be hashed.
+	 * @param length The number of bytes to be read from data
+	 */
+
 	virtual void		hash(unsigned char * data, 
-							 unsigned int length);		// Hash some data
+							 unsigned int length);
+	/**
+	 * \brief Finish up a Digest operation and read the result.
+	 *
+	 * This call tells the CryptoHash object that the input is complete and
+	 * to finalise the Digest.  The output of the digest is read into the 
+	 * hash buffer (at most maxLength bytes).  This is effectively the
+	 * signature for the data that has been run through the HMAC function.
+	 *
+	 * @param hash The buffer the hash should be read into.
+	 * @param maxLength The maximum number of bytes to be read into hash
+	 * @returns The number of bytes copied into the hash buffer
+	 */
+
 	virtual unsigned int finish(unsigned char * hash,
 								unsigned int maxLength);// Finish and get hash
 
-	// Get information
+	//@}
+
+	/** @name Information functions */
+	//@{
+
+	/**
+	 *\brief
+	 *
+	 * Determine the hash type of this object
+	 *
+	 * @returns The hash type
+	 */
+
 	virtual HashType getHashType(void);
+
+	//@}
 
 private:
 

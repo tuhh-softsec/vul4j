@@ -75,6 +75,17 @@
 #include <xsec/enc/XSECCryptoBase64.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
 
+ /**
+ * @defgroup xscryptcrypto Internal Crypto API Interface
+ * @ingroup crypto
+ * The XSCrypt Interface provides cryptographic functions that are missing
+ * from other libraries.
+ *
+ * Currently this only provides Base64 functionality which is not
+ * available in the Windows Crypto API.
+ *
+ */
+
 class DSIG_EXPORT XSCryptCryptoBase64 : public XSECCryptoBase64 {
 
 
@@ -85,23 +96,97 @@ public :
 	XSCryptCryptoBase64() : m_state(B64_UNINITIALISED) {};
 	virtual ~XSCryptCryptoBase64() {};
 
-	// Decoding Activities
+	/** @name Decoding Functions */
+	//@{
+
+	/**
+	 * \brief Initialise the base64 object.
+	 *
+	 * Initialises the OpenSSL decode context and gets ready for data
+	 * to be decoded.
+	 *
+	 */
+
 	virtual void		 decodeInit(void);					// Setup
+
+	/**
+	 * \brief Decode some passed in data.
+	 *
+	 * Decode the passed in data and place the data in the outData buffer
+	 *
+	 * @param inData Pointer to the buffer holding encoded data.
+	 * @param inLength Length of the encoded data in the buffer
+	 * @param outData Buffer to place decoded data into
+	 * @param outLength Maximum amount of data that can be placed in
+	 *        the buffer.
+	 * @returns The number of bytes placed in the outData buffer.
+	 */
+	
 	virtual unsigned int decode(unsigned char * inData, 
 						 	    unsigned int inLength,
 								unsigned char * outData,
-								unsigned int outLength);	// decode
-	virtual unsigned int decodeFinish(unsigned char * outData,
-							 	      unsigned int outLength);// Finish
+								unsigned int outLength);
 
-	// Encoding activities
-	virtual void		 encodeInit(void);						// Setup
+	/**
+	 * \brief Finish off a decode.
+	 *
+	 * Clean out any extra data from previous decode operations and place
+	 * into the outData buffer.
+	 *
+	 * @param outData Buffer to place any remaining decoded data
+	 * @param outLength Max amount of data to be placed in the buffer.
+	 * @returns Amount of data placed in the outData buffer
+	 */
+
+	virtual unsigned int decodeFinish(unsigned char * outData,
+							 	      unsigned int outLength);
+
+	//@}
+
+	/** @name Encoding Functions */
+	//@{
+
+	/**
+	 * \brief Initialise the base64 object for encoding
+	 *
+	 * Get the context variable ready for a base64 decode
+	 *
+	 */
+
+	virtual void		 encodeInit(void);
+
+	/**
+	 * \brief Encode some passed in data.
+	 *
+	 * @param inData Pointer to the buffer holding data to be encoded.
+	 * @param inLength Length of the data in the buffer
+	 * @param outData Buffer to place encoded data into
+	 * @param outLength Maximum amount of data that can be placed in
+	 *        the buffer.
+	 * @returns The number of bytes placed in the outData buffer.
+	 */
+
 	virtual unsigned int encode(unsigned char * inData, 
 						 	    unsigned int inLength,
 								unsigned char * outData,
-								unsigned int outLength);		// decode
+								unsigned int outLength);
+
+	/**
+	 * \brief Finish off an encode.
+	 *
+	 * Take any data from previous encode operations and create the
+	 * tail of the base64 encoding.
+	 *
+	 * @param outData Buffer to place any remaining encoded data
+	 * @param outLength Max amount of data to be placed in the buffer.
+	 * @returns Amount of data placed in the outData buffer
+	 */
+
+
 	virtual unsigned int encodeFinish(unsigned char * outData,
-							 	      unsigned int outLength);	// Finish
+							 	      unsigned int outLength);
+
+	//@}
 
 private :
 

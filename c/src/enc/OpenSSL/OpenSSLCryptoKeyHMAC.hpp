@@ -73,25 +73,93 @@
 
 #include <xsec/enc/XSECCryptoKeyHMAC.hpp>
 
+/**
+ * \ingroup opensslcrypto
+ * @{
+ */
+
+/**
+ * \brief OpenSSL implementation for HMAC keys.
+ *
+ * Used to provide HMAC keys to OpenSSLCryptoHashHMAC
+ */
+
 class DSIG_EXPORT OpenSSLCryptoKeyHMAC : public XSECCryptoKeyHMAC {
 
 public :
 
-	// Constructors/Destructors
-	
+	/** @name Constructors and Destructors */
+	//@{
+
 	OpenSSLCryptoKeyHMAC();
 	virtual ~OpenSSLCryptoKeyHMAC() {};
-	virtual XSECCryptoKey * clone();
 
-	// Generic key functions
+	//@}
+
+	/** @name Key Interface methods */
+	//@{
+
+	/**
+	 * \brief Return the type of this key.
+	 *
+	 * For DSA keys, this allows people to determine whether this is a 
+	 * public key, private key or a key pair
+	 */
 
 	virtual XSECCryptoKey::KeyType getKeyType() {return KEY_HMAC;}
-	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVOpenSSL;}
 
-	// HMAC Key functions
+	/**
+	 * \brief Replicate key
+	 */
+
+	virtual XSECCryptoKey * clone();
+
+	/**
+	 * \brief Return the OpenSSL string identifier
+	 */
+
+	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVOpenSSL;}
+	
+	//@}
+
+	/** @name Optional Interface methods
+	 * 
+	 * These functions do not necessarily have to be implmented.  They
+	 * are used by XSECKeyInfoResolverDefault to try to create a key from
+	 * KeyInfo elements without knowing anything else.
+	 *
+	 * If an interface class does not implement these functions, a simple
+	 * stub that does nothing should be used.
+	 */
+	//@{
+
+	/**
+	 * \brief Set the key
+	 *
+	 * Set the key from the buffer
+	 *
+	 * @param inBuf Buffer containing the key
+	 * @param inLength Number of bytes of key in the buffer
+	 *
+	 * @note isSensitive() should have been called on the inbound buffer
+	 * to ensure the contents is overwritten when the safeBuffer is deleted
+	 */
 
 	virtual void setKey(unsigned char * inBuf, unsigned int inLength);
+
+	/**
+	 * \brief Get the key value
+	 * 
+	 * Copy the key into the safeBuffer and return the number of bytes
+	 * copied.
+	 *
+	 * @param outBuf Buffer to copy key into
+	 * @returns number of bytes copied in
+	 */
+
 	virtual unsigned int getKey(safeBuffer &outBuf);
+
+	//@}
 
 private:
 

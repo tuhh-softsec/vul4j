@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -79,7 +77,14 @@
 /**
  * @defgroup opensslcrypto OpenSSL Interface
  * @ingroup crypto
- * The OpenSSL code provides an implementation....
+ * The OpenSSL/OpenSSL* classes provide an implementation of the 
+ * XSECCrypto interface layer for OpenSSL.  The layer is very thin -
+ * it only provides the functionality necessary to provide cryptographic
+ * services to the library.
+ *
+ * Calling applications need to do the work to initialise OpenSSL, load
+ * keys from disk etc.
+ *
  */
  /*\@{*/
 
@@ -88,26 +93,129 @@ class DSIG_EXPORT OpenSSLCryptoProvider : public XSECCryptoProvider {
 
 public :
 
-	// Constructors/Destructors
+	/** @name Constructors and Destructors */
+	//@{
 	
 	OpenSSLCryptoProvider();
 	virtual ~OpenSSLCryptoProvider();
 
-	// Hashing classes
+	//@}
+
+	/** @name Hashing (Digest) Functions */
+	//@{
+
+	/**
+	 * \brief Return a SHA1 implementation.
+	 *
+	 * Call used by the library to obtain a SHA1 object from the 
+	 * provider.
+	 *
+	 * @returns A pointer to an OpenSSL Hash object that implements SHA1
+	 * @see XSECCryptoHash
+	 */
+
 	virtual XSECCryptoHash			* hashSHA1();
+
+	/**
+	 * \brief Return a HMAC SHA1 implementation.
+	 *
+	 * Call used by the library to obtain a HMAC SHA1 object from the 
+	 * provider.  The caller will need to set the key in the hash
+	 * object with an XSECCryptoKeyHMAC using OpenSSLCryptoHash::setKey()
+	 *
+	 * @returns A pointer to a Hash object that implements HMAC-SHA1
+	 * @see OpenSSLCryptoHash
+	 */
+
 	virtual XSECCryptoHash			* hashHMACSHA1();
+
+	/**
+	 * \brief Return a MD5 implementation.
+	 *
+	 * Call used by the library to obtain a MD5 object from the 
+	 * OpenSSL provider.
+	 *
+	 * @returns A pointer to a Hash object that implements MD5
+	 * @see OpenSSLCryptoHash
+	 */
+	 
 	virtual XSECCryptoHash			* hashMD5();
+
+	/**
+	 * \brief Return a HMAC MD5 implementation.
+	 *
+	 * Call used by the library to obtain a HMAC MD5 object from the 
+	 * provider.  The caller will need to set the key in the hash
+	 * object with an XSECCryptoKeyHMAC using XSECCryptoHash::setKey()
+	 *
+	 * @note The use of MD5 is explicitly marked as <b>not recommended</b> 
+	 * in the XML Digital Signature standard due to recent advances in
+	 * cryptography indicating there <em>may</em> be weaknesses in the 
+	 * algorithm.
+	 *
+	 * @returns A pointer to a Hash object that implements HMAC-MD5
+	 * @see OpenSSLCryptoHash
+	 */
+
 	virtual XSECCryptoHash			* hashHMACMD5();
 
-	// Encode/Decode
+	//@}
+
+	/** @name Encoding functions */
+	//@{
+
+	/**
+	 * \brief Return a Base64 encoder/decoder implementation.
+	 *
+	 * Call used by the library to obtain an OpenSSL Base64 
+	 * encoder/decoder.
+	 *
+	 * @returns Pointer to the new Base64 encoder.
+	 * @see OpenSSLCryptoBase64
+	 */
+
 	virtual XSECCryptoBase64		* base64();
 
-	// Keys
+	//@}
+
+	/** @name Keys and Certificates */
+	//@{
+
+	/**
+	 * \brief Return a DSA key implementation object.
+	 * 
+	 * Call used by the library to obtain a DSA key object.
+	 *
+	 * @returns Pointer to the new DSA key
+	 * @see OpenSSLCryptoKeyDSA
+	 */
+
 	virtual XSECCryptoKeyDSA		* keyDSA();
+
+	/**
+	 * \brief Return an RSA key implementation object.
+	 * 
+	 * Call used by the library to obtain an OpenSSL RSA key object.
+	 *
+	 * @returns Pointer to the new RSA key
+	 * @see OpenSSLCryptoKeyRSA
+	 */
+
 	virtual XSECCryptoKeyRSA		* keyRSA();
 
-	// X509
+	/**
+	 * \brief Return an X509 implementation object.
+	 * 
+	 * Call used by the library to obtain an object that can work
+	 * with X509 certificates.
+	 *
+	 * @returns Pointer to the new X509 object
+	 * @see OpenSSLCryptoX509
+	 */
+
 	virtual XSECCryptoX509			* X509();
+
+	//@}
 
 	/*\@}*/
 
