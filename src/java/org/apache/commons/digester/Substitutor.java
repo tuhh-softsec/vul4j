@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Substitutor.java,v 1.3 2004/01/10 17:39:41 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2004/01/10 17:39:41 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Substitutor.java,v 1.4 2004/01/10 17:51:57 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/10 17:51:57 $
  *
  * ====================================================================
  * 
@@ -34,7 +34,7 @@
  *    from this software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache"
+ * 5. Products derived from this software may not be called "Apache",
  *    nor may "Apache" appear in their names without prior 
  *    written permission of the Apache Software Foundation.
  *
@@ -78,7 +78,7 @@ import org.xml.sax.Attributes;
  * <p>Different strategies are supported for attributes and body text.</p> 
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.3 $ $Date: 2004/01/10 17:39:41 $
+ * @version $Revision: 1.4 $ $Date: 2004/01/10 17:51:57 $
  */
 public abstract class Substitutor {
     
