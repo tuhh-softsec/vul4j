@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.5 2003/12/03 01:04:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.6 2003/12/17 22:05:26 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,7 +75,7 @@ import org.apache.commons.functor.example.kata.one.Subtract;
 import org.apache.commons.functor.example.lines.Lines;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2003/12/03 01:04:12 $
+ * @version $Revision: 1.6 $ $Date: 2003/12/17 22:05:26 $
  * @author Rodney Waldhoff
  */
 public class DataMunger {
@@ -103,14 +103,14 @@ public class DataMunger {
     private static final BinaryFunction lesserSpread(final int col1, final int col2) {
         return new ConditionalBinaryFunction(            
             IsNull.left(),                                 // if left is null
-            RightIdentity.instance(),                      // return right
-            Conditional.function(                          // else the parameter with the least spread
-                Composite.predicate(                       // if left is less than right
+            RightIdentity.instance(),                      //   return right
+            Conditional.function(                          //   else return the parameter with the least spread
+                Composite.predicate(                       //     if left is less than right
                     IsLessThan.instance(),
                     absSpread(col1,col2),
                     absSpread(col1,col2)),
-                LeftIdentity.instance(),                   // return left
-                RightIdentity.instance()                   // else return right 
+                LeftIdentity.instance(),                   //       return left
+                RightIdentity.instance()                   //       else return right 
             )
         );
     }
