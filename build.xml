@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.18 2002/01/04 05:32:11 sanders Exp $
+        $Id: build.xml,v 1.19 2002/01/05 00:34:46 craigmcc Exp $
 -->
 
 
@@ -229,6 +229,9 @@
     <mkdir      dir="${dist.home}"/>
     <copy      file="../LICENSE"
               todir="${dist.home}"/>
+    <mkdir      dir="${build.home}/classes/META-INF"/>
+    <copy      file="../LICENSE"
+             tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <jar    jarfile="${dist.home}/commons-${component.name}.jar"
             basedir="${build.home}/classes"
            manifest="${build.home}/conf/MANIFEST.MF"/>
