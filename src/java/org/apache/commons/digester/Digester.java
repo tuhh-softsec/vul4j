@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.7 2001/07/19 20:55:52 sanders Exp $
- * $Revision: 1.7 $
- * $Date: 2001/07/19 20:55:52 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.8 2001/08/04 22:04:15 craigmcc Exp $
+ * $Revision: 1.8 $
+ * $Date: 2001/08/04 22:04:15 $
  *
  * ====================================================================
  *
@@ -106,7 +106,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.7 $ $Date: 2001/07/19 20:55:52 $
+ * @version $Revision: 1.8 $ $Date: 2001/08/04 22:04:15 $
  */
 
 public class Digester extends DefaultHandler {
@@ -639,6 +639,9 @@ public class Digester extends DefaultHandler {
 	bodyText.setLength(0);
 
 	// Compute the current matching rule
+        if (!namespaceAware &&
+            ((localName == null) || (localName.length() < 1)))
+            localName = qName;
 	if (match.length() > 0)
 	    match += "/" + localName;
 	else
