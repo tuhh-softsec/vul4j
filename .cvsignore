@@ -1,8 +1,0 @@
-build.properties
-dist
-target
-Digester.ipr
-velocity.log
-.classpath
-.project
-j*.properties
