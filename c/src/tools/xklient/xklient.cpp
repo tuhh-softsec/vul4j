@@ -30,6 +30,7 @@
 #include <xsec/canon/XSECC14n20010315.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
+#include <xsec/dsig/DSIGKeyInfoValue.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
@@ -37,7 +38,9 @@
 
 #include <xsec/xkms/XKMSMessageAbstractType.hpp>
 #include <xsec/xkms/XKMSLocateRequest.hpp>
+#include <xsec/xkms/XKMSLocateResult.hpp>
 #include <xsec/xkms/XKMSQueryKeyBinding.hpp>
+#include <xsec/xkms/XKMSConstants.hpp>
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 
@@ -107,6 +110,8 @@ char * g_msgType = NULL;
 char * g_serviceURI = NULL;
 char * g_certFile = NULL;
 bool g_txtOut = false;
+
+int doParsedMsgDump(DOMDocument * doc);
 
 // --------------------------------------------------------------------------------
 //           General functions
@@ -281,13 +286,29 @@ int doRequest(char * msgType) {
 	}
 
 	XSECSOAPRequestorSimple req(MAKE_UNICODE_STRING(g_serviceURI));
-	req.doRequest(doc);
+	DOMDocument * responseDoc = req.doRequest(doc);
 
+	// Cleanup request stuff
 	delete msg;
 	doc->release();
 
-	return 0;
+	// Now lets process the result
 
+	int ret;
+	
+	try {
+		if (g_txtOut) {
+			outputDoc(responseDoc);
+		}
+		ret = doParsedMsgDump(responseDoc);
+	}
+	catch (...) {
+		responseDoc->release();
+		throw;
+	}
+	
+	responseDoc->release();
+	return ret;
 }
 
 // --------------------------------------------------------------------------------
@@ -364,18 +385,111 @@ void doRequestAbstractTypeDump(XKMSRequestAbstractType *msg, int level) {
 	
 }
 
-void doKeyBindingDump(XKMSKeyBindingAbstractType * msg, int level) {
+void doResultTypeDump(XKMSResultType *msg, int level) {
 
-	cout << endl;
+	const XMLCh * rid = msg->getRequestId();
+	char * s;
+
+	if (rid != NULL) {
+		levelSet(level);
+		cout << "Result is in response to MsgID : ";
+		s = XMLString::transcode(rid);
+		cout << s << endl;
+		XMLString::release(&s);
+	}
+
 	levelSet(level);
-	cout << "Key Binding found." << endl;
+	cout << "Result Major code = ";
+	s = XMLString::transcode(XKMSConstants::s_tagResultMajorCodes[msg->getResultMajor()]);
+	cout << s << endl;
+	XMLString::release(&s);
 
-	if (msg->getKeyInfoList() != NULL) {
+	XKMSResultType::ResultMinor rm = msg->getResultMinor();
+	if (rm != XKMSResultType::NoneMinor) {
+		levelSet(level);
+		cout << "Result Minor code = ";
+		char * s = XMLString::transcode(XKMSConstants::s_tagResultMinorCodes[rm]);
+		cout << s << endl;
+		XMLString::release(&s);
+	}
 
-		levelSet(level+1);
-		cout << "Has KeyInfo element" << endl;
+}
+
+void doKeyInfoDump(DSIGKeyInfoList * l, int level) {
+
+
+	int size = l->getSize();
+
+	for (int i = 0 ; i < size ; ++ i) {
+
+		DSIGKeyInfoValue * kiv;
+		char * b;
+
+		DSIGKeyInfo * ki = l->item(i);
+
+		switch (ki->getKeyInfoType()) {
+
+		case DSIGKeyInfo::KEYINFO_VALUE_RSA :
+
+			kiv = (DSIGKeyInfoValue *) ki;
+			levelSet(level);
+			cout << "RSA Key Value" << endl;
+
+			levelSet(level+1);
+			b = XMLString::transcode(kiv->getRSAExponent());
+			cout << "Base64 encoded exponent = " << b << endl;
+			delete[] b;
+
+			levelSet(level+1);
+			b = XMLString::transcode(kiv->getRSAModulus());
+			cout << "Base64 encoded modulus  = " << b << endl;
+			delete[] b;
+
+			break;
+
+		case DSIGKeyInfo::KEYINFO_VALUE_DSA :
+
+			kiv = (DSIGKeyInfoValue *) ki;
+			levelSet(level);
+			cout << "DSA Key Value" << endl;
+
+			levelSet(level+1);
+			b = XMLString::transcode(kiv->getDSAG());
+			cout << "G = " << b << endl;
+			delete[] b;
+
+			levelSet(level+1);
+			b = XMLString::transcode(kiv->getDSAP());
+			cout << "P = " << b << endl;
+			delete[] b;
+
+			levelSet(level+1);
+			b = XMLString::transcode(kiv->getDSAQ());
+			cout << "Q = " << b << endl;
+			delete[] b;
+
+			levelSet(level+1);
+			b = XMLString::transcode(kiv->getDSAY());
+			cout << "Y = " << b << endl;
+			delete[] b;
+
+			break;
+
+		default:
+
+			levelSet(level);
+			cout << "Unknown KeyInfo type" << endl;
+
+		}
 
 	}
+}
+
+
+void doKeyBindingDump(XKMSKeyBindingAbstractType * msg, int level) {
+
+	levelSet(level);
+	cout << "Key Binding found." << endl;
 
 	levelSet(level+1);
 	cout << "KeyUsage Encryption : ";
@@ -398,7 +512,20 @@ void doKeyBindingDump(XKMSKeyBindingAbstractType * msg, int level) {
 	else
 		cout << "no" << endl;
 
+	// Now dump any KeyInfo
+	levelSet(level+1);
+	cout << "KeyInfo information:" << endl << endl;
+
+	doKeyInfoDump(msg->getKeyInfoList(), level + 2);
+
 }
+
+void doUnverifiedKeyBindingDump(XKMSUnverifiedKeyBinding * ukb, int level) {
+
+	doKeyBindingDump((XKMSKeyBindingAbstractType *) ukb, level);
+
+}
+
 
 int doLocateRequestDump(XKMSLocateRequest *msg) {
 
@@ -415,6 +542,132 @@ int doLocateRequestDump(XKMSLocateRequest *msg) {
 	return 0;
 }
 
+int doLocateResultDump(XKMSLocateResult *msg) {
+
+	cout << endl << "This is a LocateResult Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doResultTypeDump(msg, level);
+
+	int j;
+
+	if ((j = msg->getUnverifiedKeyBindingSize()) > 0) {
+
+		cout << endl;
+		levelSet(level);
+		cout << "Unverified Key Bindings" << endl << endl;
+
+		for (int i = 0; i < j ; ++i) {
+
+			doUnverifiedKeyBindingDump(msg->getUnverifiedKeyBindingItem(i), level + 1);
+
+		}
+
+	}
+
+	return 0;
+}
+
+
+int doParsedMsgDump(DOMDocument * doc) {
+
+	// Get an XKMS Message Factory
+	XSECProvider prov;
+	XKMSMessageFactory * factory = prov.getXKMSMessageFactory();
+	int errorsOccured;
+
+	try {
+
+		XKMSMessageAbstractType * msg =
+			factory->newMessageFromDOM(doc->getDocumentElement());
+
+		Janitor <XKMSMessageAbstractType> j_msg(msg);
+
+		if (msg->isSigned()) {
+
+			cout << "Message is signed.  Checking signature ... ";
+			try {
+
+				XSECKeyInfoResolverDefault theKeyInfoResolver;
+				DSIGSignature * sig = msg->getSignature();
+
+				// The only way we can verify is using keys read directly from the KeyInfo list,
+				// so we add a KeyInfoResolverDefault to the Signature.
+
+				sig->setKeyInfoResolver(&theKeyInfoResolver);
+
+				if (sig->verify())
+					cout << "OK!" << endl;
+				else
+					cout << "Bad!" << endl;
+
+			}
+		
+			catch (XSECException &e) {
+				cout << "Bad!.  Caught exception : " << endl;
+				char * msg = XMLString::transcode(e.getMsg());
+				cout << msg << endl;
+				XMLString::release(&msg);
+			}
+		}
+
+		switch (msg->getMessageType()) {
+
+		case XKMSMessageAbstractType::LocateRequest :
+
+			doLocateRequestDump(dynamic_cast<XKMSLocateRequest *>(msg));
+			break;
+
+		case XKMSMessageAbstractType::LocateResult :
+
+			doLocateResultDump(dynamic_cast<XKMSLocateResult *>(msg));
+			break;
+
+		default :
+
+			cout << "Unknown message type!" << endl;
+
+		}
+
+
+	}
+
+	catch (XSECException &e) {
+		char * msg = XMLString::transcode(e.getMsg());
+		cerr << "An error occured during message loading\n   Message: "
+		<< msg << endl;
+		XMLString::release(&msg);
+		errorsOccured = true;
+		return 2;
+	}
+	catch (XSECCryptoException &e) {
+		cerr << "An error occured during encryption/signature processing\n   Message: "
+		<< e.getMsg() << endl;
+		errorsOccured = true;
+
+#if defined (HAVE_OPENSSL)
+		ERR_load_crypto_strings();
+		BIO * bio_err;
+		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
+			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
+
+		ERR_print_errors(bio_err);
+#endif
+
+		return 2;
+	}
+	catch (...) {
+
+		cerr << "Unknown Exception type occured.  Cleaning up and exiting\n" << endl;
+		return 2;
+
+	}
+
+	// Clean up
+
+	return 0;
+}
 
 int doMsgDump(void) {
 
@@ -471,96 +724,7 @@ int doMsgDump(void) {
 	
 	DOMDocument *doc = parser->getDocument();
 
-	// Get an XKMS Message Factory
-	XSECProvider prov;
-	XKMSMessageFactory * factory = prov.getXKMSMessageFactory();
-
-	try {
-
-		XKMSMessageAbstractType * msg =
-			factory->newMessageFromDOM(doc->getDocumentElement());
-
-		Janitor <XKMSMessageAbstractType> j_msg(msg);
-
-		if (msg->isSigned()) {
-
-			cout << "Message is signed.  Checking signature ... ";
-			try {
-
-				XSECKeyInfoResolverDefault theKeyInfoResolver;
-				DSIGSignature * sig = msg->getSignature();
-
-				// The only way we can verify is using keys read directly from the KeyInfo list,
-				// so we add a KeyInfoResolverDefault to the Signature.
-
-				sig->setKeyInfoResolver(&theKeyInfoResolver);
-
-				if (sig->verify())
-					cout << "OK!" << endl;
-				else
-					cout << "Bad!" << endl;
-
-			}
-		
-			catch (XSECException &e) {
-				cout << "Bad!.  Caught exception : " << endl;
-				char * msg = XMLString::transcode(e.getMsg());
-				cout << msg << endl;
-				XMLString::release(&msg);
-			}
-		}
-
-		switch (msg->getMessageType()) {
-
-		case XKMSMessageAbstractType::LocateRequest :
-
-			doLocateRequestDump(dynamic_cast<XKMSLocateRequest *>(msg));
-			break;
-
-		default :
-
-			cout << "Unknown message type!" << endl;
-
-		}
-
-
-	}
-
-	catch (XSECException &e) {
-		char * msg = XMLString::transcode(e.getMsg());
-		cerr << "An error occured during message loading\n   Message: "
-		<< msg << endl;
-		XMLString::release(&msg);
-		errorsOccured = true;
-		return 2;
-	}
-	catch (XSECCryptoException &e) {
-		cerr << "An error occured during encryption/signature processing\n   Message: "
-		<< e.getMsg() << endl;
-		errorsOccured = true;
-
-#if defined (HAVE_OPENSSL)
-		ERR_load_crypto_strings();
-		BIO * bio_err;
-		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
-			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
-
-		ERR_print_errors(bio_err);
-#endif
-
-		return 2;
-	}
-	catch (...) {
-
-		cerr << "Unknown Exception type occured.  Cleaning up and exiting\n" << endl;
-		return 2;
-
-	}
-
-	// Clean up
-
-	return 0;
-
+	return doParsedMsgDump(doc);
 }
 
 
