@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.6  2004/01/26 00:29:48  blautenb
+ * Check for Xerces new way of handling NULL hostnames in URIs
+ *
  * Revision 1.5  2003/09/11 11:29:12  blautenb
  * Fix Xerces namespace usage in *NIX build
  *
@@ -222,7 +225,7 @@ BinInputStream * XSECURIResolverGenericUnix::resolveURI(const XMLCh * uri) {
 		// This is a file.  We only really understand if this is localhost
 		// XMLUri has already cleaned of escape characters (%xx)
         
-		if (xmluri->getHost() == NULL || 
+		if (xmluri->getHost() == NULL || xmluri->getHost()[0] == chNull ||
 			!XMLString::compareIString(xmluri->getHost(), XMLUni::fgLocalHostString)) {
 
 			// Localhost
