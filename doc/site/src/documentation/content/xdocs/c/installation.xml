@@ -17,8 +17,8 @@
 		is also required if XPath and/or XSLT transformations are required.
       </p>
 	  <p>
-		Version 0.2 of the library has been tested with version 2.2 of
-		Xerces-C, verion 1.5 of Xalan-C and Version 0.9.7 (and above) of
+		Version 1.00 of the library has been tested with version 2.2 and 2.3 of
+		Xerces-C, version 1.5 of Xalan-C and Version 0.9.7 (and above) of
 		OpenSSL.
 	  </p>
     </section>
@@ -26,17 +26,17 @@
     <section>
       <title>Getting the source</title>
       <p>
-	You can download the sources via WWW in the distribution directory
-	from one of the Apache  
-	<jump href="site:about/download">
-	  mirrors
-	</jump>.
+		You can download the sources via WWW in the distribution directory
+		from one of the Apache  
+		<jump href="site:about/download">
+		  mirrors
+		</jump>.
       </p>
       <p>
-	This project's CVS repository can be checked out through anonymous
-	(pserver) CVS with the following instruction set. The module you wish
-	to check out must be specified as the modulename. When prompted for a
-	password for anonymous, simply enter "anoncvs" without quotes: 
+		This project's CVS repository can be checked out through anonymous
+		(pserver) CVS with the following instruction set. The module you wish
+		to check out must be specified as the modulename. When prompted for a
+		password for anonymous, simply enter "anoncvs" without quotes: 
       </p>
       <source>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
 	password: anoncvs
@@ -44,16 +44,18 @@
 	xml-security
       </source>
       <p>
-	A HTTP interface to browse the sources online is available via 
-	<jump href="site:getting-involved/CVS">http://cvs.apache.org/viewcvs.cgi/xml-security/</jump>
+		A HTTP interface to browse the sources online is available via 
+		<jump href="site:getting-involved/CVS">http://cvs.apache.org/viewcvs.cgi/xml-security/</jump>
       </p>
     </section>
     
     <section>
 	  <title>Building for UNIX</title>
 	  <p>
-		XML-Security-C is currently supported on Linux and Solaris.
-		It has been built and tested using GNU gcc 3.2 and GNU make.
+		XML-Security-C is currently fully supported on Linux, FreeBSD and 
+		Solaris.  It is partially supported (in cases where Xalan is not 
+		required) on NetBSD and Cygwin.  It has been built and tested using 
+		GNU gcc 3.2, gcc 2.95.4, Forte C++ 5.4 (Solaris) and GNU make.
 	  </p>
 	  <note>
 		The UNIX XML-Security-C build process has changed radically since
@@ -142,6 +144,15 @@ export OPENSSL=~/prog/extlibs/openssl-0.9.7a
 		  to remove all binaries and libraries (former) and build scripts (latter)
 		</p>
 	  </section>
+	  <section>
+		<title>Install</title>
+		<p>
+		  <em>make install</em> can be used to install the library and the
+		  include files into the relevant directories (which can be set via
+		  the <em>configure</em> script using the various <em>--prefix=</em>
+		  options.
+		</p>
+	  </section>
 	</section>
 	<section>
 	  <title>Building for Windows</title>
@@ -198,13 +209,18 @@ export OPENSSL=~/prog/extlibs/openssl-0.9.7a
 		  XSEC workspace.
 		</p>
 		<p>
+		  To enable support for the Windows Crypto API, edit the 
+		  XSECW32Config.hpp file and uncomment the line 
+		  <code>#define HAVE_WINCAPI 1</code>
+		</p>
+		<p>
 		  To disable support for Xalan, a similar process is followed.  Edit
 		  the XSECW32Config.hpp file, and <strong>uncomment</strong> the XSEC_NO_XALAN
 		  line.  This will remove all support for Xalan from the various
 		  source code files.
 		</p>
 		<p>
-		  WHen compiling, using the "...No Xalan configurations for each
+		  When compiling, using the "...No Xalan configurations for each
 		  project.  These are the same as the normal debug or release builds,
 		  but the Xalan library is not linked in.
 		</p>

@@ -7,20 +7,18 @@
   
   <body>
     <section>
-      <title>News</title>
+      <title>News - July 2003</title>
       <p>
-		Beta 0.2 has been released.  It covers :
+		Version 1.00 of the library has now been released.  It features :
 	  </p>
 	  <ul>
-		<li>some minor bug-fixes in the	code and the UNIX build system</li>
-		<li>a first cut at a Windows Crypto API provider interface</li>
-		<li>methods to extract information from signature objects; and</li>
-		<li>updates to tools to allow (and demonstrate) use of Windows CAPI
-		  and new extraction methods</li>
+		<li>the first stable release</li>
+		<li>full implementation of all mandatory requirements of DSIG</li>
+		<li>FreeBSD, NetBSD and Cygwin builds</li>
 	  </ul>
 	  <p>
-		Beta 0.2 is has been tested with Xerces-C v2.2 and the newly 
-		released Xalan-C v1.5.
+		Version 1.00 is has been tested with Xerces-C v2.2 and the newly 
+		released Xalan-C v1.5.  Xerces-C v2.3 is also supported.
 	  </p>
     </section>
     <section>
@@ -28,8 +26,7 @@
       <p>
         The C++ library is an implementation of the XML Digital Signature
         specification.  It is designed to be easily ported to new platforms,
-        and has been tested on Solaris, Linux and Windows.  The next version
-        will have ports to FreeBSD and HP-UX.
+        and has been tested on Solaris, Linux, FreeBSD, NetBSD and Windows.
       </p>
       <p>
         The library makes use of the Apache XML project's Xerces-C XML Parser
@@ -40,13 +37,30 @@
       <p>
         In addition, the library currently uses OpenSSL to provide 
         cryptographic functionality.  The cryptographic interface is
-        implemented via a thin wrapper layer, which will be expanded to
-        support the GNU Privacy Guard cryptographic library (libgcrypt) and
-        Windows CAPI in the near future.
+        implemented via a thin wrapper layer, and a development version of
+		an implementation for the Windows Cryptographic API has also been
+		implemented.
       </p>
     </section>
 	<section>
 	  <title>Old News</title>
+	  <section>
+		<title>May 2003</title>
+		<p>
+		  Beta 0.2 has been released.  It covers :
+		</p>
+		<ul>
+		  <li>some minor bug-fixes in the	code and the UNIX build system</li>
+		  <li>a first cut at a Windows Crypto API provider interface</li>
+		  <li>methods to extract information from signature objects; and</li>
+		  <li>updates to tools to allow (and demonstrate) use of Windows CAPI
+			and new extraction methods</li>
+		</ul>
+		<p>
+		  Beta 0.2 is has been tested with Xerces-C v2.2 and the newly 
+		  released Xalan-C v1.5.
+		</p>
+	  </section>
 	  <section>
 		<title>February 2003</title>
 		<p>

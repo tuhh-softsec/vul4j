@@ -7,6 +7,15 @@
   <body> 
     <section>
       <title>News</title>
+      <section>
+        <title>July 2003</title>
+        <p>
+          Version 1.00 of the C++ library is now released.  This is the first
+          stable release of the library.  Functionality is still fairly basic,
+          but all mandatory parts of the the DSIG standard are fully 
+          implemented.
+        </p>
+      </section>
 	  <section>
 		<title>May 2003</title>
 		<p>

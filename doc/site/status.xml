@@ -13,6 +13,16 @@
   <changes>
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
+    <release version="C++ 1.00" date="July 2003">
+      <action dev="BL" type="add" context="c_rel">
+	    <ul>
+		  <li>First stable release</li>
+		  <li>Support for FreeBSD, NetBSD and Cygwin builds</li>
+		  <li>All KeyInfo elements now available</li>
+		  <li>Various bug fixes</li>
+		</ul>
+      </action>
+	</release>
     <release version="C++ 0.20" date="May 2003">
       <action dev="BL" type="add" context="c_rel">
 	    <ul>

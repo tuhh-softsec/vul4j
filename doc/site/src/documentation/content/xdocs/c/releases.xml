@@ -13,14 +13,36 @@
 		various releases of the library
 	  </p>
 	  <section>
-	    <title>Current Release - Beta 0.20</title>
+		<title>Version 1.00</title>
+		<p>
+		  Version 1.00 is the first release of the library considered basically
+		  stable.  The interface is fairly simple, but all the mandatory
+		  requirements of the XML Digital Signature standard are implemented.
+		</p>
+		<p>
+		  Changes from version 0.20 include :
+		</p>
+		<ul>
+		  <li>Implementation of remaining KeyInfo elements (SPKIData,
+			PGPData and MgmtData</li>
+		  <li>Re-implementation of XSECXPathNodeList using a binary search 
+			to speed up list searches</li>
+		  <li>Support for FreeBSD 4.7 (gcc) builds, Intel Compiler 6.0 on
+			Linux and Forte CC (CC 5.4) on Solaris</li>
+		  <li>Limited support (i.e. without Xalan integration for NetBSD and 
+			Cygwin</li>
+		  <li>A number of minor bug fixes</li>
+		</ul>
+	  </section>
+	  <section>
+	    <title>Changes from 0.10 - 0.20</title>
 		<p>
 		  Includes a number of bug-fixes and a first cut at a provider for the
 		  Windows Crypto API.
 		</p>
 	  </section>
 	  <section>
-		<title>Changes from 0.10-0.10</title>
+		<title>Beta release 0.10</title>
 		<p>
 		  The current release of the xml-security-c library is a beta of the
 		  XML Digital Signature code, and is the first version of the library
@@ -86,32 +108,6 @@
 	</section>
 	<section>
 	  <title>Future Release Plans</title>
-	  <p>
-		The current plans are to stablise the beta code and provide a sound
-		core library for digital signing.  Now that the code is at 0.20,
-		some further additions will be made to the digital signature support,
-		and a 1.00 release will be made when digital signature support is
-		fairly complete.
-	  </p>
-	  <p>
-		XML Encryption will be added post 1.00
-	  </p>
-	  <p>
-		The majority of activity from now to 1.00 will concentrate on: 
-	  </p>
-	  <ul>
-		<li>Fixing bugs and memory leaks</li>
-		<li>Ensure API is reasonably consistant</li>
-		<li>Improvements in the API for manipulating a signature 
-		  in memory</li>
-		<li>Support for KeyInfo elements not currently implemented (PGP and
-		  SPKI)</li>
-		<li>NetBSD/FreeBSD builds</li>
-		<li>Install capability in make files</li>
-	  </ul>
-	</section>
-	<section>
-	  <title>Beyond a stable release</title>
 	  <p>A number of items are planned for after the 1.0 major release.</p>
 	  <ul>
 		<li>XML Encryption Support</li>
@@ -120,7 +116,8 @@
 		<li>Improved <em>KeyInfo</em> resolver interface leading to...</li>
 		<li>XKMS client support</li>
 		<li>Implementation of libgcrypt as a crypto provider</li>
-		<li>Support for PGP/GPG signatures (using libgcrypt and gpgme)</li>
+		<li>Support for PGP/GPG key based signatures (using libgcrypt and 
+		  gpgme)</li>
 		<li>Bring the API in-line with JCP 105 (if appropriate)</li>
 		<li>Eventually (the GRAND PLAN) an XKMS server implementation</li>
 	  </ul>

@@ -13,14 +13,47 @@
       </question>
       <answer>
 		<p>
-		  At this time, the xml-security-c library requires OpenSSL to perform
-		  cryptographic operations.  However the library has been written to
-		  easily interface to other cryptographic providers.  Future versions
-		  will provide interface layers to libgcrypt (the GNU Privacy Guard
-		  crypto library) and the Windows Crypto API.
+		  The main development work for the library is done using OpenSSL, so
+		  this is the recommended option.  However, a developmental Windows
+		  Crypto API interface is also now provided.
+		</p>
+		<p>
+		  It is also possible to implement interfaces for other cryptographic
+		  libraries and pass them into the xml-security-c library during
+		  initialisation (via the <em>XSECPlatformUtils::Initialise()</em>
+		  call).
 		</p>
       </answer>
     </faq>
+	<faq id="openssl2_c">
+	  <question>
+		Does the library provide a full C++ wrapper for OpenSSL?
+	  </question>
+	  <answer>
+		<p>
+		  The C++ crypto interface layer provided for the library provides only
+		  the smallest subset of cryptographic functions necessary for the
+		  library to make calls to the provided library.  Applications will
+		  need to work directly with OpenSSL (or other libraries) to read and
+		  manipulate encryption keys that should then be wrapped in XSECCrypto*
+		  objects and passed into the library.
+		</p>
+	  </answer>
+	</faq>
+	<faq id="wincapi_c">
+	  <question>
+		What is WinCAPI?
+	  </question>
+	  <answer>
+		<p>
+		  WinCAPI is the developmental interface being built to give
+		  users of the library access to the Windows Cryptographic library.
+		</p>
+		<p>
+		  It is <em>not</em> a C API wrapper for the overall library.
+		</p>
+	  </answer>
+	</faq>
     <faq id="xalan_c">
       <question>
 		Is Xalan required?
