@@ -389,7 +389,7 @@ public class Canonicalizer20010315WithoutXPathSupportTest extends TestCase {
                   .parse( resolver.resolveEntity(null, fileIn  ));*/
       Document doc = documentBuilder.parse(fileIn);
       Canonicalizer c14n = Canonicalizer.getInstance(c14nURI);
-      byte c14nBytes[] = c14n.canonicalize(doc);
+      byte c14nBytes[] = c14n.canonicalizeSubtree(doc);
 
       // org.xml.sax.InputSource refIs = resolver.resolveEntity(null, fileRef);
       // byte refBytes[] = JavaUtils.getBytesFromStream(refIs.getByteStream());
@@ -398,11 +398,13 @@ public class Canonicalizer20010315WithoutXPathSupportTest extends TestCase {
       // if everything is OK, result is true; we do a binary compare, byte by byte
       boolean result = JavaUtils.binaryCompare(refBytes, c14nBytes);
 
+      /*
       if (result == false) {
          FileOutputStream fos = new FileOutputStream(fileOut);
-
          fos.write(c14nBytes);
+         fos.close();
       }
+      */
 
       return result;
    }

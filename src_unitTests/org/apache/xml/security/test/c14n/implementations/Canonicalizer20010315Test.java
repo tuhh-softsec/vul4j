@@ -475,7 +475,7 @@ public class Canonicalizer20010315Test extends TestCase {
       NodeList nodes = XPathAPI.selectNodeList(doc, xpath, nscontext);
       Canonicalizer c14n =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-      byte c14nBytes[] = c14n.canonicalize(nodes);
+      byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
       InputStream refStream = resolver.resolveEntity(null,
                                  fileRef).getByteStream();
       byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
@@ -530,12 +530,13 @@ public class Canonicalizer20010315Test extends TestCase {
       NodeList nodes = XPathAPI.selectNodeList(doc, xpath, nscontext);
       Canonicalizer c14n =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-      byte c14nBytes[] = c14n.canonicalize(nodes);
+      byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
       InputStream refStream = resolver.resolveEntity(null,
                                  fileRef).getByteStream();
       byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
       boolean equal = JavaUtils.binaryCompare(refBytes, c14nBytes);
 
+      /*
       if (!equal) {
          File fout = new File(fileOut);
 
@@ -547,6 +548,7 @@ public class Canonicalizer20010315Test extends TestCase {
          fos.write(c14nBytes);
          fos.close();
       }
+      */
 
       assertTrue(equal);
    }
@@ -560,6 +562,7 @@ public class Canonicalizer20010315Test extends TestCase {
     *
     * Implementations MUST report an operation failure on documents containing
     * relative namespace URIs.
+    *
     * @throws CanonicalizationException
     * @throws FileNotFoundException
     * @throws IOException
@@ -595,7 +598,7 @@ public class Canonicalizer20010315Test extends TestCase {
       try {
          Canonicalizer c14n =
             Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-         byte c14nBytes[] = c14n.canonicalize(doc);
+         byte c14nBytes[] = c14n.canonicalizeSubtree(doc);
 
          /*
          FileOutputStream fos = new FileOutputStream("data/org/apache/xml/security/out/relativeNS.xml");
@@ -663,7 +666,7 @@ public class Canonicalizer20010315Test extends TestCase {
 
          c14n.setXPath("//self::*[local-name()='absolute']");
 
-         byte c14nBytes[] = c14n.canonicalize(doc);
+         byte c14nBytes[] = c14n.canonicalizeSubtree(doc);
          FileOutputStream fos = new FileOutputStream(
             "../../Desktop/relativeNStestRelativeNSbehaviour2.xml");
 
@@ -954,7 +957,7 @@ public class Canonicalizer20010315Test extends TestCase {
       // c14nizer.setXPath("(//included | //@*)");
       c14nizer.setXPath("(//*[local-name()='included'] | //@*)");
 
-      byte result[] = c14nizer.canonicalize(doc);
+      byte result[] = c14nizer.canonicalizeSubtree(doc);
       byte defined[] = definedOutput.getBytes();
 
       if (writeResultsToFile) {
@@ -1021,7 +1024,7 @@ public class Canonicalizer20010315Test extends TestCase {
 
       cat.debug("Use the following String as XPath: " + c14n.getXPathString());
 
-      byte c14nBytes[] = c14n.canonicalize(doc);
+      byte c14nBytes[] = c14n.canonicalizeSubtree(doc);
 
       // org.xml.sax.InputSource refIs = resolver.resolveEntity(null, fileRef);
       // byte refBytes[] = JavaUtils.getBytesFromStream(refIs.getByteStream());
