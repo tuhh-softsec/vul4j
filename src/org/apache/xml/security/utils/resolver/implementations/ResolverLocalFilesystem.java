@@ -86,33 +86,33 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    *
+    * @return
     * @throws ResourceResolverException
-    * $todo$ calculate the correct URI from the attribute and the BaseURI
+    * @todo calculate the correct URI from the attribute and the BaseURI
     */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
            throws ResourceResolverException {
 
-      try {
-         URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
+     try {
+        URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
 
-         // if the URI contains a fragment, ignore it
-         URI uriNewNoFrag = new URI(uriNew);
+        // if the URI contains a fragment, ignore it
+        URI uriNewNoFrag = new URI(uriNew);
 
-         uriNewNoFrag.setFragment(null);
+        uriNewNoFrag.setFragment(null);
 
-         String fileName =
-            ResolverLocalFilesystem
-               .translateUriToFilename(uriNewNoFrag.toString());
-         FileInputStream inputStream = new FileInputStream(fileName);
-         XMLSignatureInput result = new XMLSignatureInput(inputStream);
+        String fileName =
+           ResolverLocalFilesystem
+              .translateUriToFilename(uriNewNoFrag.toString());
+        FileInputStream inputStream = new FileInputStream(fileName);
+        XMLSignatureInput result = new XMLSignatureInput(inputStream);
 
-         result.setSourceURI(uriNew.toString());
+        result.setSourceURI(uriNew.toString());
 
-         return result;
-      } catch (Exception e) {
-         throw new ResourceResolverException("generic.EmptyMessage", e, uri,
-                                             BaseURI);
+        return result;
+     } catch (Exception e) {
+        throw new ResourceResolverException("generic.EmptyMessage", e, uri,
+                                            BaseURI);
       }
    }
 
@@ -120,13 +120,31 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     * Method translateUriToFilename
     *
     * @param uri
-    *
+    * @return
     */
    private static String translateUriToFilename(String uri) {
 
       String subStr = uri.substring("file:/".length());
 
-      subStr.replace('/', java.io.File.separatorChar);
+      if (subStr.indexOf("%20") > -1)
+      {
+        int offset = 0;
+        int index = 0;
+        StringBuffer temp = new StringBuffer(subStr.length());
+        do
+        {
+          index = subStr.indexOf("%20",offset);
+          if (index == -1) temp.append(subStr.substring(offset));
+          else
+          {
+            temp.append(subStr.substring(offset,index));
+            temp.append(' ');
+            offset = index+3;
+          }
+        }
+        while(index != -1);
+        subStr = temp.toString();
+      }
 
       if (subStr.charAt(1) == ':') {
       	 // we're running M$ Windows, so this works fine
@@ -142,7 +160,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    *
+    * @return
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
