@@ -23,7 +23,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 
 
 /**
@@ -72,62 +71,7 @@ public class ResourceResolverSpiTest extends TestCase {
       // junit.swingui.TestRunner.main(testCaseName);
    }
 
-   /**
-    * Method testExpandSystemId_1
-    *
-    * @throws Exception
-    */
-   public static void testExpandSystemId_1() throws Exception {
 
-      String systemId = "http://www.w3.org/1.xml";
-      String currentSystemId = "http://localhost/file.txt";
-      String expected = "http://www.w3.org/1.xml";
-      String result = ResourceResolverSpi.expandSystemId(systemId,
-                         currentSystemId);
-      String description = "systemId='" + systemId + "' currentSystemId='"
-                           + currentSystemId + "' expected='" + expected
-                           + "' but was: " + result;
-
-      assertTrue(description, result.equals(expected));
-   }
-
-   /**
-    * Method testExpandSystemId_2
-    *
-    * @throws Exception
-    */
-   public static void testExpandSystemId_2() throws Exception {
-
-      String systemId = "1.xml";
-      String currentSystemId = "http://www.w3.org/file.xml";
-      String expected = "http://www.w3.org/1.xml";
-      String result = ResourceResolverSpi.expandSystemId(systemId,
-                         currentSystemId);
-      String description = "systemId='" + systemId + "' currentSystemId='"
-                           + currentSystemId + "' expected='" + expected
-                           + "' but was: " + result;
-
-      assertTrue(description, result.equals(expected));
-   }
-
-   /**
-    * Method testExpandSystemId_3
-    *
-    * @throws Exception
-    */
-   public static void _testExpandSystemId_3() throws Exception {
-
-      String systemId = "1.xml";
-      String currentSystemId = "file:/Y:\\dir\\3.xml";
-      String expected = "file:/Y:/dir/1.xml";
-      String result = ResourceResolverSpi.expandSystemId(systemId,
-                         currentSystemId);
-      String description = "systemId='" + systemId + "' currentSystemId='"
-                           + currentSystemId + "' expected='" + expected
-                           + "' but was: " + result;
-
-      assertTrue(description, result.equals(expected));
-   }
 
    static {
       org.apache.xml.security.Init.init();
