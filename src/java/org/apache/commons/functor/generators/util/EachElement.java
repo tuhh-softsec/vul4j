@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/EachElement.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/EachElement.java,v 1.2 2003/06/24 15:21:02 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,21 +57,20 @@
 
 package org.apache.commons.functor.generators.util;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.generators.Generator;
-import org.apache.commons.functor.generators.Generator;
 import org.apache.commons.functor.generators.IteratorToGeneratorAdapter;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Arrays;
-import java.util.Iterator;
 
 /**
  * Generator for each element of a collection.
  *
  * @author  Jason Horman (jason@jhorman.org)
- * @version $Id: EachElement.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
+ * @version $Id: EachElement.java,v 1.2 2003/06/24 15:21:02 rwaldhoff Exp $
  */
 
 public class EachElement extends Generator {

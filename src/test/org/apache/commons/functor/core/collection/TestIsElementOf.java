@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsElementOf.java,v 1.1 2003/06/24 15:17:04 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsElementOf.java,v 1.2 2003/06/24 15:21:02 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,16 +56,15 @@
  */
 package org.apache.commons.functor.core.collection;
 
+import java.util.ArrayList;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 
-import java.util.List;
-import java.util.ArrayList;
-
 /**
- * @version $Revision: 1.1 $ $Date: 2003/06/24 15:17:04 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/24 15:21:02 $
  * @author Rodney Waldhoff
  */
 public class TestIsElementOf extends BaseFunctorTest {

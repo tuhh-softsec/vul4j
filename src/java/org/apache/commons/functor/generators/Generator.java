@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/Attic/Generator.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/Attic/Generator.java,v 1.2 2003/06/24 15:21:03 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,18 +57,21 @@
 
 package org.apache.commons.functor.generators;
 
-import org.apache.commons.functor.*;
-import org.apache.commons.functor.generators.util.CollectionTransformer;
-
 import java.util.Collection;
-import java.util.Iterator;
+
+import org.apache.commons.functor.Algorithms;
+import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.generators.util.CollectionTransformer;
 
 /**
  * Base class for generators. Adds support for all of the {@link Algorithms} to
  * each subclass.
  *
  * @author  Jason Horman (jason@jhorman.org)
- * @version $Id: Generator.java,v 1.1 2003/06/24 15:17:00 rwaldhoff Exp $
+ * @version $Id: Generator.java,v 1.2 2003/06/24 15:21:03 rwaldhoff Exp $
  */
 
 public abstract class Generator {
