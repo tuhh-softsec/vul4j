@@ -57,7 +57,7 @@ public class ResolverFragment extends ResourceResolverSpi {
    {
 
       String uriNodeValue = uri.getNodeValue();
-      Document doc = uri.getOwnerDocument();
+      Document doc = uri.getOwnerElement().getOwnerDocument();
 
 
       Node selectedElem = null;

@@ -66,7 +66,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
            throws ResourceResolverException {
 
       Node resultNode = null;
-      Document doc = uri.getOwnerDocument();
+      Document doc = uri.getOwnerElement().getOwnerDocument();
 
       // this must be done so that Xalan can catch ALL namespaces
       //XMLUtils.circumventBug2650(doc);

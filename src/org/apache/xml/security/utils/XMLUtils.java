@@ -610,10 +610,14 @@ public class XMLUtils {
        Iterator iterator = xpathNodeSet.iterator();
        while(iterator.hasNext()) {
            Node node = (Node) iterator.next();
-           if (node.getNodeType() == Node.DOCUMENT_NODE) {
+           int nodeType =node.getNodeType();
+           if (nodeType == Node.DOCUMENT_NODE) {
               return (Document) node;
            } 
               try {
+                 if (nodeType==Node.ATTRIBUTE_NODE) {
+                    return ((Attr)node).getOwnerElement().getOwnerDocument();  
+                 }
                  return node.getOwnerDocument();
               } catch (NullPointerException e) {
                   npe = e;
