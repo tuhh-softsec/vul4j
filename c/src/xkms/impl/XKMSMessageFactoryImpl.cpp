@@ -140,6 +140,11 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 						XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * elt) {
 
 
+	XSECEnv * env;
+	XSECnew(env, XSECEnv(*mp_env));
+
+	env->setParentDocument(elt->getOwnerDocument());
+
 	if (elt == NULL) {
 
 		throw XSECException(XSECException::XKMSError,
@@ -154,7 +159,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <CompoundRequest> message
 		XKMSCompoundRequestImpl * ret;
-		XSECnew(ret, XKMSCompoundRequestImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSCompoundRequestImpl(env, elt));
 
 		ret->load();
 
@@ -166,7 +171,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <CompoundResult> message
 		XKMSCompoundResultImpl * ret;
-		XSECnew(ret, XKMSCompoundResultImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSCompoundResultImpl(env, elt));
 
 		ret->load();
 
@@ -178,7 +183,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <LocateRequest> message
 		XKMSLocateRequestImpl * ret;
-		XSECnew(ret, XKMSLocateRequestImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSLocateRequestImpl(env, elt));
 
 		ret->load();
 
@@ -190,7 +195,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <ValidateRequest> message
 		XKMSValidateRequestImpl * ret;
-		XSECnew(ret, XKMSValidateRequestImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSValidateRequestImpl(env, elt));
 
 		ret->load();
 
@@ -202,7 +207,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <LocateRequest> message
 		XKMSLocateResultImpl * ret;
-		XSECnew(ret, XKMSLocateResultImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSLocateResultImpl(env, elt));
 		Janitor<XKMSLocateResultImpl> j_ret(ret);
 
 		ret->load();
@@ -216,7 +221,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <LocateRequest> message
 		XKMSValidateResultImpl * ret;
-		XSECnew(ret, XKMSValidateResultImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSValidateResultImpl(env, elt));
 		Janitor<XKMSValidateResultImpl> j_ret(ret);
 
 		ret->load();
@@ -230,7 +235,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <LocateRequest> message
 		XKMSResultImpl * ret;
-		XSECnew(ret, XKMSResultImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSResultImpl(env, elt));
 		Janitor<XKMSResultImpl> j_ret(ret);
 
 		ret->load();
@@ -244,7 +249,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <PendingRequest> message
 		XKMSPendingRequestImpl * ret;
-		XSECnew(ret, XKMSPendingRequestImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSPendingRequestImpl(env, elt));
 		Janitor<XKMSPendingRequestImpl> j_ret(ret);
 
 		ret->load();
@@ -258,7 +263,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <StatusRequest> message
 		XKMSStatusRequestImpl * ret;
-		XSECnew(ret, XKMSStatusRequestImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSStatusRequestImpl(env, elt));
 		Janitor<XKMSStatusRequestImpl> j_ret(ret);
 
 		ret->load();
@@ -272,7 +277,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <StatusRequest> message
 		XKMSStatusResultImpl * ret;
-		XSECnew(ret, XKMSStatusResultImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSStatusResultImpl(env, elt));
 		Janitor<XKMSStatusResultImpl> j_ret(ret);
 
 		ret->load();
@@ -286,7 +291,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		// This is a <PendingRequest> message
 		XKMSRegisterRequestImpl * ret;
-		XSECnew(ret, XKMSRegisterRequestImpl(new XSECEnv(*mp_env), elt));
+		XSECnew(ret, XKMSRegisterRequestImpl(env, elt));
 		Janitor<XKMSRegisterRequestImpl> j_ret(ret);
 
 		ret->load();
@@ -296,6 +301,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 	}
 
+	delete env;
 	return NULL;
 
 }

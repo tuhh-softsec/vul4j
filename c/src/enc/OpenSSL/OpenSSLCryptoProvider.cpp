@@ -36,6 +36,7 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
+#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 
@@ -104,6 +105,15 @@ XSECCryptoHash * OpenSSLCryptoProvider::hashHMACMD5() {
 	OpenSSLCryptoHashHMAC * ret;
 
 	XSECnew(ret, OpenSSLCryptoHashHMAC(XSECCryptoHash::HASH_MD5));
+
+	return ret;
+
+}
+
+XSECCryptoKeyHMAC * OpenSSLCryptoProvider::keyHMAC(void) {
+
+	OpenSSLCryptoKeyHMAC * ret;
+	XSECnew(ret, OpenSSLCryptoKeyHMAC);
 
 	return ret;
 

@@ -164,6 +164,18 @@ public :
 
 	virtual XSECCryptoHash			* hashHMACMD5();
 
+	/**
+	 * \brief Return a HMAC key
+	 *
+	 * Sometimes the library needs to create an HMAC key (notably within
+	 * the XKMS utilities.
+	 *
+	 * This function allows the library to obtain a key that can then have
+	 * a value set within it.
+	 */
+
+	virtual XSECCryptoKeyHMAC		* keyHMAC(void);
+
 	//@}
 
 	/** @name Encoding functions */

@@ -31,6 +31,7 @@
 #include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoX509.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoKeyDSA.hpp>
+#include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoKeyRSA.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoHash.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoHashHMAC.hpp>
@@ -198,6 +199,16 @@ XSECCryptoHash * WinCAPICryptoProvider::hashHMACMD5() {
 	return ret;
 
 }
+
+XSECCryptoKeyHMAC * WinCAPICryptoProvider::keyHMAC(void) {
+
+	WinCAPICryptoKeyHMAC * ret;
+	XSECnew(ret, WinCAPICryptoKeyHMAC(m_provDSS));
+
+	return ret;
+
+}
+
 
 XSECCryptoKeyDSA * WinCAPICryptoProvider::keyDSA() {
 	

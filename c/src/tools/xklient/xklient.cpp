@@ -36,6 +36,7 @@
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
+#include <xsec/enc/XSECCryptoUtils.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/enc/XSECKeyInfoResolverDefault.hpp>
 
@@ -133,6 +134,7 @@ XALAN_USING_XALAN(XalanTransformer)
 // --------------------------------------------------------------------------------
 
 bool g_txtOut = false;
+char * g_authPassPhrase = NULL;
 
 int doParsedMsgDump(DOMDocument * doc);
 
@@ -1275,6 +1277,49 @@ void doKeyBindingDump(XKMSKeyBinding * kb, int level) {
 
 }
 
+void doAuthenticationDump(XKMSAuthentication *a, int level) {
+
+
+	if (a == NULL)
+		return;
+
+	DSIGSignature * sig = a->getKeyBindingAuthenticationSignature();
+	if (sig != NULL) {
+
+		levelSet(level);
+		cout << "KeyBindingAuthentication Signature found.  ";
+		if (g_authPassPhrase == NULL) {
+			cout << "Cannot check - no pass phrase set" << endl;
+			return;
+		}
+		
+		cout << "Checking.... ";
+
+		// Create the key
+		unsigned char keyBuf[XSEC_MAX_HASH_SIZE];
+		int len = CalculateXKMSAuthenticationKey((unsigned char *) g_authPassPhrase, strlen(g_authPassPhrase), keyBuf, XSEC_MAX_HASH_SIZE);
+		if (len <= 0) {
+			cout << "Error creating key from pass phrase" << endl;
+			return;
+		}
+
+		XSECCryptoKeyHMAC * k = XSECPlatformUtils::g_cryptoProvider->keyHMAC();
+		k->setKey(keyBuf, len);
+		//k->setKey((unsigned char *) g_authPassPhrase, strlen(g_authPassPhrase));
+
+		// Set key and validate
+		sig->setSigningKey(k);
+		if (sig->verify())
+			cout << "OK!" << endl;
+		else 
+			cout << "Signature BAD!" << endl;
+
+	}
+
+	return;
+
+}
+
 int doLocateRequestDump(XKMSLocateRequest *msg) {
 
 	cout << endl << "This is a LocateRequest Message" << endl;
@@ -1404,9 +1449,40 @@ int doRegisterRequestDump(XKMSRegisterRequest *msg) {
 	if (pkb != NULL)
 		doKeyBindingAbstractDump(pkb, level);
 
-	//doAuthenticationDump(pkb, level);
+	// Check authentication
+	doAuthenticationDump(msg->getAuthentication(), level);
+
+	// Check ProofOfPossession
+	levelSet(1);
+	DSIGSignature * sig = msg->getProofOfPossessionSignature();
+	if (sig != NULL) {
+
+		cout << "Proof of PossessionSignature signature found. Checking.... ";
+
+		// Try to find the key
+		XSECKeyInfoResolverDefault kir;
+		XSECCryptoKey * k = kir.resolveKey(pkb->getKeyInfoList());
+
+		if (k != NULL) {
+
+			sig->setSigningKey(k);
+			if (sig->verify())
+				cout << "OK!" << endl;
+			else 
+				cout << "Signature Bad!" << endl;
+		}
+		else
+			cout << "Cannot obtain key from PrototypeKeyBinding" << endl;
+
+	}
+	else {
+
+		cout << "No ProofOfPossession Signature found" << endl;
+
+	}
 
 	return 0;
+
 }
 
 int doMsgDump(XKMSMessageAbstractType * msg) {
@@ -1936,7 +2012,9 @@ void printMsgDumpUsage(void) {
 
 	cerr << "\nUsage msgdump [options] <filename>\n";
 	cerr << "   --help/-h      : print this screen and exit\n";
-	cerr << "   --validate/-v  : validate the input messages\n\n";
+	cerr << "   --validate/-v  : validate the input messages\n";
+	cerr << "   --auth-phrase/-a <phrase>\n";
+	cerr << "                  : use <phrase> for authentication in X-KRSS messages\n\n";
     cerr << "   filename = name of file containing XKMS msg to dump\n\n";
 
 }
@@ -1960,6 +2038,13 @@ int doMsgDump(int argc, char ** argv, int paramCount) {
 			doValidate = true;
 			paramCount++;
 
+		}
+		else if ((stricmp(argv[paramCount], "--auth-phrase") == 0) ||
+			(stricmp(argv[paramCount], "-a") == 0)) {
+
+			paramCount++;
+			g_authPassPhrase = argv[paramCount];
+			paramCount++;
 		}
 		else {
 

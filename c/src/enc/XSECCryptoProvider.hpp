@@ -30,6 +30,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoHash.hpp>
+#include <xsec/enc/XSECCryptoKeyHMAC.hpp>
 #include <xsec/enc/XSECCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoX509.hpp>
 #include <xsec/enc/XSECCryptoKeyDSA.hpp>
@@ -202,6 +203,18 @@ public :
 	 */
 
 	virtual XSECCryptoHash			* hashHMACMD5() = 0;
+
+	/**
+	 * \brief Return a HMAC key
+	 *
+	 * Sometimes the library needs to create an HMAC key (notably within
+	 * the XKMS utilities.
+	 *
+	 * This function allows the library to obtain a key that can then have
+	 * a value set within it.
+	 */
+
+	virtual XSECCryptoKeyHMAC		* keyHMAC(void) = 0;
 
 	//@}
 
