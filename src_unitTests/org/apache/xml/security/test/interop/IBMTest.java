@@ -176,7 +176,7 @@ public class IBMTest extends InteropTest {
     */
    public void test_detached_dsa() throws Exception {
       String filename = kentsDir + "detached-dsa.sig";
-      ResourceResolverSpi resolver = null;
+      ResourceResolverSpi resolver = new OfflineResolver();;
       boolean followManifests = false;
       boolean verify = false;
 
@@ -201,7 +201,7 @@ public class IBMTest extends InteropTest {
     */
    public void test_detached_rsa() throws Exception {
       String filename = kentsDir + "detached-rsa.sig";
-      ResourceResolverSpi resolver = null;
+      ResourceResolverSpi resolver = new OfflineResolver();
       boolean followManifests = false;
       boolean verify = false;
 

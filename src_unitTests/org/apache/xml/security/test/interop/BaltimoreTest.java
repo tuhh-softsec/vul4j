@@ -197,11 +197,10 @@ public class BaltimoreTest extends InteropTest {
       String filename = merlinsDir15 + "signature-enveloped-dsa.xml";
       ResourceResolverSpi resolver = new OfflineResolver();
       boolean followManifests = false;
-      byte[] hmacKey = "secret".getBytes("ASCII");
       boolean verify = false;
 
       try {
-         verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
+         verify = this.verify(filename, resolver, followManifests);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
          throw ex;

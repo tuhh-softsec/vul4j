@@ -63,7 +63,9 @@ package org.apache.xml.security.transforms.implementations;
 
 import org.w3c.dom.*;
 import org.apache.xpath.XPathContext;
-
+import org.apache.xpath.CachedXPathAPI;
+import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
+import org.apache.xml.dtm.DTMManager;
 
 /**
  * {@link FuncHereContext} extends {@link XPathContext} for supplying context
@@ -107,9 +109,11 @@ public class FuncHereContext extends XPathContext {
 
    /**
     * This constuctor is disabled because if we use the here() function we
-    * <I>always</I> need to kxnow in which node the XPath occured.
+    * <I>always</I> need to know in which node the XPath occured.
     */
    private FuncHereContext() {}
+
+   private DTMManager _oldDTMManager = null;
 
    /**
     * Constructor FuncHereContext
@@ -118,6 +122,24 @@ public class FuncHereContext extends XPathContext {
     */
    public FuncHereContext(Node owner) {
       super((Object) owner);
+   }
+
+   public FuncHereContext(Node owner, DTMManager dtmManager) {
+      super((Object) owner);
+      this._oldDTMManager = super.getDTMManager();
+      super.setDTMManager(dtmManager);
+   }
+
+   public FuncHereContext(Node owner, CachedXPathAPI previouslyUsed) {
+      super((Object) owner);
+      this._oldDTMManager = super.getDTMManager();
+      super.setDTMManager(previouslyUsed.getXPathContext().getDTMManager());
+   }
+
+   public FuncHereContext(Node owner, CachedXPathFuncHereAPI previouslyUsed) {
+      super((Object) owner);
+      this._oldDTMManager = super.getDTMManager();
+      super.setDTMManager(previouslyUsed.getFuncHereContext().getDTMManager());
    }
 
    static {

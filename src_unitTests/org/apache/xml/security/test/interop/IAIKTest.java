@@ -225,7 +225,7 @@ public class IAIKTest extends InteropTest {
          cat.error("Verification failed for " + filename);
       }
 
-      assertTrue(filename, verify);
+      assertTrue("Verification failed for " + filename, verify);
    }
 
    /**
@@ -238,7 +238,7 @@ public class IAIKTest extends InteropTest {
 
       String filename = gregorsDir
                         + "coreFeatures/signatures/signatureTypesSignature.xml";
-      ResourceResolverSpi resolver = null;
+      ResourceResolverSpi resolver = new OfflineResolver();
       boolean followManifests = false;
       boolean verify = false;
 
@@ -253,7 +253,7 @@ public class IAIKTest extends InteropTest {
          cat.error("Verification failed for " + filename);
       }
 
-      assertTrue(filename, verify);
+      assertTrue("Verification failed for " + filename, verify);
    }
 
    /**

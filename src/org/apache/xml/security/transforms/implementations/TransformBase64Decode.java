@@ -78,7 +78,8 @@ import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.transforms.*;
-
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xpath.CachedXPathAPI;
 
 /**
  * Implements the <CODE>http://www.w3.org/2000/09/xmldsig#base64</CODE> decoding
@@ -167,8 +168,11 @@ public class TransformBase64Decode extends TransformSpi {
                }
                */
 
-               NodeList resultNodeSet = XPathAPI.selectNodeList(node,
-                                           "self::text()");
+               DTMManager dtmManager = input.getDTMManager();
+               CachedXPathAPI myXPathAPI = new CachedXPathAPI();
+               myXPathAPI.getXPathContext().setDTMManager(dtmManager);
+
+               NodeList resultNodeSet = myXPathAPI.selectNodeList(node, "self::text()");
                int resultNodeSetGetLength = resultNodeSet.getLength();
 
                if (resultNodeSetGetLength == 1) {

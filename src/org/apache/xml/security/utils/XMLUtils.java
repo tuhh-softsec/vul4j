@@ -95,11 +95,23 @@ public class XMLUtils {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(XMLUtils.class.getName());
 
+   /**
+    * Method getXalanVersion
+    *
+    * @return
+    */
    public static String getXalanVersion() {
+
       // return "Apache " + org.apache.xalan.processor.XSLProcessorVersion.S_VERSION;
+
       return "Apache " + org.apache.xalan.Version.getVersion();
    }
 
+   /**
+    * Method getXercesVersion
+    *
+    * @return
+    */
    public static String getXercesVersion() {
       return "Apache " + org.apache.xerces.framework.Version.fVersion;
    }

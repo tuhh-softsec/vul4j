@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -72,11 +71,11 @@ import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.transforms.*;
 import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.utils.*;
-import org.apache.xpath.*;
+import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.objects.XObject;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.PrefixResolver;
-
+import org.apache.xml.dtm.DTMManager;
 
 /**
  * Class TransformXPath
@@ -142,6 +141,7 @@ public class TransformXPath extends TransformSpi {
          }
 
          NodeList inputNodes = input.getNodeSet();
+         CachedXPathFuncHereAPI xPathFuncHereAPI = new CachedXPathFuncHereAPI(input.getDTMManager());
 
          if (inputNodes.getLength() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
@@ -151,14 +151,18 @@ public class TransformXPath extends TransformSpi {
 
          Element transformElement = this._transformObject.getElement();
          Document doc = transformElement.getOwnerDocument();
-         Element nscontext = XMLUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+         Element nscontext = XMLUtils.createDSctx(doc, "ds",
+                                                  Constants.SignatureSpecNS);
 
          cat.debug("The Transform Element is " + transformElement);
 
+         DTMManager dtmManager = input.getDTMManager();
+         CachedXPathAPI myXPathAPI = new CachedXPathAPI();
+         myXPathAPI.getXPathContext().setDTMManager(dtmManager);
+
          Element xpathElement =
-            (Element) XPathAPI.selectSingleNode(transformElement,
-                                                "./ds:" + Constants._TAG_XPATH,
-                                                nscontext);
+            (Element) myXPathAPI.selectSingleNode(transformElement,
+               "./ds:" + Constants._TAG_XPATH, nscontext);
 
          if (xpathElement == null) {
             Object exArgs[] = { "ds:XPath", "Transform" };
@@ -189,6 +193,7 @@ public class TransformXPath extends TransformSpi {
          }
 
          for (int i = 0; i < inputNodes.getLength(); i++) {
+
             /* Same solution as in TransformBase64 ?
             if (inputNodes.item(i).getClass().getName().equals(
                "org.apache.xml.dtm.ref.dom2dtm.DOM2DTM$defaultNamespaceDeclarationNode")) {
@@ -196,7 +201,7 @@ public class TransformXPath extends TransformSpi {
             }
             */
 
-            XObject includeInResult = XPathFuncHereAPI.eval(inputNodes.item(i),
+            XObject includeInResult = xPathFuncHereAPI.eval(inputNodes.item(i),
                                          xpathnode, prefixResolver);
 
             if (includeInResult.bool()) {
@@ -207,7 +212,7 @@ public class TransformXPath extends TransformSpi {
             }
          }
 
-         XMLSignatureInput result = new XMLSignatureInput(resultNodes);
+         XMLSignatureInput result = new XMLSignatureInput(resultNodes, dtmManager);
 
          result.setSourceURI(input.getSourceURI());
 

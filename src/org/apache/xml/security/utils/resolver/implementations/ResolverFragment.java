@@ -64,7 +64,7 @@ import java.net.*;
 import java.io.*;
 import org.w3c.dom.*;
 import org.apache.xml.utils.URI;
-import org.apache.xpath.XPathAPI;
+import org.apache.xpath.CachedXPathAPI;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.*;
@@ -102,6 +102,7 @@ public class ResolverFragment extends ResourceResolverSpi {
       String uriNodeValue = uri.getNodeValue();
       NodeList resultNodes = null;
       Document doc = uri.getOwnerDocument();
+      CachedXPathAPI cXPathAPI = new CachedXPathAPI();
 
       if (uriNodeValue.equals("")) {
 
@@ -113,7 +114,7 @@ public class ResolverFragment extends ResourceResolverSpi {
 
          try {
             resultNodes =
-               XPathAPI.selectNodeList(doc,
+               cXPathAPI.selectNodeList(doc,
                                        Canonicalizer.XPATH_C14N_OMIT_COMMENTS);
          } catch (javax.xml.transform.TransformerException ex) {
             throw new ResourceResolverException("generic.EmptyMessage", ex,
@@ -142,7 +143,7 @@ public class ResolverFragment extends ResourceResolverSpi {
          } else {
             try {
                resultNodes =
-                  XPathAPI
+                  cXPathAPI
                      .selectNodeList(selectedElem, Canonicalizer
                         .XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE);
             } catch (javax.xml.transform.TransformerException ex) {
@@ -152,7 +153,7 @@ public class ResolverFragment extends ResourceResolverSpi {
          }
       }
 
-      XMLSignatureInput result = new XMLSignatureInput(resultNodes);
+      XMLSignatureInput result = new XMLSignatureInput(resultNodes, cXPathAPI.getXPathContext().getDTMManager());
 
       cat.debug("We return a nodeset with " + resultNodes.getLength()
                 + " nodes");

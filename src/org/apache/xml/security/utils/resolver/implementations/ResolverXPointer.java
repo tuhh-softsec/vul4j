@@ -65,7 +65,7 @@ import java.net.*;
 import java.io.*;
 import org.w3c.dom.*;
 import org.apache.xml.utils.URI;
-import org.apache.xpath.XPathAPI;
+import org.apache.xpath.CachedXPathAPI;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.*;
@@ -110,11 +110,12 @@ public class ResolverXPointer extends ResourceResolverSpi {
       String uriNodeValue = uri.getNodeValue();
       NodeList resultNodes = new HelperNodeList();
       Document doc = uri.getOwnerDocument();
+      CachedXPathAPI cXPathAPI = new CachedXPathAPI();
 
       if (isXPointerSlash(uri, BaseURI)) {
          try {
             resultNodes =
-               XPathAPI.selectNodeList(doc,
+               cXPathAPI.selectNodeList(doc,
                                        Canonicalizer.XPATH_C14N_WITH_COMMENTS);
          } catch (javax.xml.transform.TransformerException ex) {
             throw new ResourceResolverException("generic.EmptyMessage", ex,
@@ -128,7 +129,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
 
          try {
             resultNodes =
-               XPathAPI
+               cXPathAPI
                   .selectNodeList(selectedElem, Canonicalizer
                      .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
          } catch (javax.xml.transform.TransformerException ex) {
@@ -142,7 +143,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
                    + XMLUtils.getNodeTypeString(resultNodes.item(i)));
       }
 
-      XMLSignatureInput result = new XMLSignatureInput(resultNodes);
+      XMLSignatureInput result = new XMLSignatureInput(resultNodes, cXPathAPI.getXPathContext().getDTMManager());
 
       // result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
       result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);

@@ -71,10 +71,13 @@ import org.apache.xml.security.transforms.*;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xpath.*;
+import org.apache.xpath.CachedXPathAPI;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
+import org.apache.xml.dtm.DTMManager;
 
 
 /**
@@ -169,22 +172,32 @@ public class TransformEnvelopedSignature extends TransformSpi {
          Node algorithmAttr =
             this._transformObject.getElement()
                .getAttributeNode(Constants._ATT_ALGORITHM);
-         FuncHereContext xPathContext = new FuncHereContext(algorithmAttr);
 
-         cat.debug("Selected " + algorithmAttr
-                   + " attribute as owner for FuncHereContext");
-         xPathContext.setNamespaceContext(prefixResolver);
+         DTMManager dtmManager = input.getDTMManager();
+         FuncHereContext funcHereCtx = new FuncHereContext(algorithmAttr, dtmManager);
+         funcHereCtx.setNamespaceContext(prefixResolver);
+         cat.debug("Selected " + algorithmAttr + " attribute as owner for FuncHereContext");
 
+         /*
          // create a DTMIterator from the input node set
          // (does not work in Xalan 2.2.D7) ;-(
          org.apache.xpath.NodeSetDTM dtmIterator =
-            new org.apache.xpath.NodeSetDTM(inputNodes, xPathContext);
+            new org.apache.xpath.NodeSetDTM(inputNodes, funcHereCtx);
 
-         xPathContext.pushContextNodeList(dtmIterator);
+         funcHereCtx.pushContextNodeList(dtmIterator);
+         */
+
+         org.apache.xpath.NodeSetDTM dtmIterator = new org.apache.xpath.NodeSetDTM(dtmManager);
+
+         for (int i=0; i<inputNodes.getLength(); i++) {
+            dtmIterator.addNode(dtmManager.getDTMHandleFromNode(inputNodes.item(i)));
+         }
+
+         funcHereCtx.pushContextNodeList(dtmIterator);
 
          for (int i = 0; i < inputNodes.getLength(); i++) {
             Node currentContextNode = inputNodes.item(i);
-            XObject value = xpath.execute(xPathContext, currentContextNode,
+            XObject value = xpath.execute((XPathContext) funcHereCtx, currentContextNode,
                                           prefixResolver);
 
             if (value.getType() != XObject.CLASS_BOOLEAN) {
@@ -206,7 +219,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
             }
          }
 
-         XMLSignatureInput result = new XMLSignatureInput(resultNodes);
+         XMLSignatureInput result = new XMLSignatureInput(resultNodes, dtmManager);
 
          cat.debug(
             "TransformsEnvelopedSignature finished processing and returns "

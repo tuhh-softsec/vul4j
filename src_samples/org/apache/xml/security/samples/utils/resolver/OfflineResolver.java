@@ -184,6 +184,9 @@ public class OfflineResolver extends ResourceResolverSpi {
       OfflineResolver.register("http://www.w3.org/TR/xml-stylesheet",
                                "data/org/w3c/www/TR/xml-stylesheet.html",
                                "text/html");
+      OfflineResolver.register("http://www.w3.org/TR/2000/REC-xml-20001006",
+                               "data/org/w3c/www/TR/2000/REC-xml-20001006",
+                               "text/xml");
       OfflineResolver.register("http://www.nue.et-inf.uni-siegen.de/index.html",
                                "data/org/apache/xml/security/temp/nuehomepage",
                                "text/html");

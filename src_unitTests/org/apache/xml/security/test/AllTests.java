@@ -101,7 +101,11 @@ public class AllTests {
       // interoperability tests using test vectors from other implementations
       suite.addTest(org.apache.xml.security.test.interop.BaltimoreTest.suite());
       suite.addTest(org.apache.xml.security.test.interop.IAIKTest.suite());
-      suite.addTest(org.apache.xml.security.test.interop.IBMTest.suite());
+
+      /** @todo can only be added when we have test values which are not
+       *  copyrighted by xss4j
+       */
+      // suite.addTest(org.apache.xml.security.test.interop.IBMTest.suite());
       //J+
       return suite;
    }

@@ -73,7 +73,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.xpath.XPathAPI;
+import org.apache.xpath.CachedXPathAPI;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.*;
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -396,7 +396,8 @@ public class XMLSignatureInputTest extends TestCase {
       String s1 =
          "<!--Small Comment Test--><RootElement><Element1/><Element2/><Element3>Text in Element3</Element3></RootElement>";
 
-      return XPathAPI.selectNodeList(doc, "(//. | //@* | //namespace::*)");
+      CachedXPathAPI cXPathAPI = new CachedXPathAPI();
+      return cXPathAPI.selectNodeList(doc, "(//. | //@* | //namespace::*)");
    }
 
    /**
@@ -416,7 +417,8 @@ public class XMLSignatureInputTest extends TestCase {
                   CanonicalizationException, InvalidCanonicalizerException,
                   TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
+
+      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
       NodeList nl = input.getNodeSet();
 
       //J-
@@ -443,7 +445,7 @@ public class XMLSignatureInputTest extends TestCase {
                   CanonicalizationException, InvalidCanonicalizerException,
                   TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
+      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
       String definedWithoutComments =
          "<RootElement><Element1></Element1><Element2></Element2><Element3>Text in Element3</Element3></RootElement>";
 
@@ -476,7 +478,7 @@ public class XMLSignatureInputTest extends TestCase {
                   CanonicalizationException, InvalidCanonicalizerException,
                   TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
+      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
       String definedWithoutComments =
          "<RootElement><Element1></Element1><Element2></Element2><Element3>Text in Element3</Element3></RootElement>";
 
@@ -546,7 +548,7 @@ public class XMLSignatureInputTest extends TestCase {
                   ParserConfigurationException, SAXException,
                   CanonicalizationException, TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
+      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
 
       assertTrue("Input is initialized", input.isInitialized());
    }
@@ -566,7 +568,7 @@ public class XMLSignatureInputTest extends TestCase {
                   ParserConfigurationException, SAXException,
                   CanonicalizationException, TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
+      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
 
       assertTrue("Input is not octet stream", !input.isOctetStream());
    }
@@ -586,7 +588,7 @@ public class XMLSignatureInputTest extends TestCase {
                   ParserConfigurationException, SAXException,
                   CanonicalizationException, TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
+      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
 
       assertTrue("Input is node set", input.isNodeSet());
    }
