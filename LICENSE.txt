@@ -1,9 +1,7 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/LICENSE.txt,v 1.1 2003/01/27 19:33:37 rwaldhoff Exp $
- * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
