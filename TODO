@@ -6,3 +6,11 @@ Possible choices include:
 - using the XMLSignature.setFollowNestedManifests(true) method, it can be defined that all Mianifests have to be valid, also Manifests which are referenced from Manifests. 
 - the user could define a length how many Manifests have to be followed. But this makes not much sense, cause it makes Signature something 'analog', allowing to scale whether validation fails or not.
 
+TODO for 1.3:
+RAUL:
+
+[ ] Remove XPath in IdResolver.
+[ ] Deferred XPath till needed.
+[ ] Integrate the SAX patch and add Signing
+[ ] More examples.
+[ ] ...
