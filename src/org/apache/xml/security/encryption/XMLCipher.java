@@ -100,6 +100,7 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.exceptions.Base64DecodingException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xml.utils.URI;
@@ -809,6 +810,34 @@ public class XMLCipher {
     }
 
     /**
+     * Returns an <code>EncryptedData</code> interface. Use this operation if
+     * you want to load an <code>EncryptedData</code> structure from a DOM 
+	 * structure and manipulate the contents 
+     *
+     * @param context the context <code>Document</code>.
+     * @param element the <code>Element</code> that will be loaded
+     * @throws XMLEncryptionException.
+     */
+    public EncryptedData loadEncryptedData(Document context, Element element) 
+		throws XMLEncryptionException {
+        logger.info("Loading encrypted element...");
+        if(null == context)
+            logger.error("Context document unexpectedly null...");
+        if(null == element)
+            logger.error("Element unexpectedly null...");
+        if(cipherMode != DECRYPT_MODE)
+            logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+
+        instance.contextDocument = context;
+        EncryptedData encryptedData = factory.newEncryptedData(element);
+
+		return (encryptedData);
+    }
+
+
+
+
+    /**
      * Decrypts an <code>EncryptedKey</code> object.
      */
     public EncryptedKey encryptKey(Document context, Element element) throws
@@ -1437,7 +1466,7 @@ public class XMLCipher {
         //     </complexContent>
         // </complexType>
         EncryptedData newEncryptedData(Element element) throws
-                XMLEncryptionException {
+			XMLEncryptionException {
             EncryptedData result = null;
 
             Element dataElement =
@@ -1472,12 +1501,19 @@ public class XMLCipher {
                     encryptionMethodElement));
             }
 
-            // TODO: Implement
+            // BFL 16/7/03 - simple implementation
+			// TODO: Work out how to handle relative URI
+
             Element keyInfoElement =
                 (Element) element.getElementsByTagNameNS(
                     Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
             if (null != keyInfoElement) {
-                result.setKeyInfo(null);
+				try {
+					result.setKeyInfo(new KeyInfo(keyInfoElement, null));
+				} catch (XMLSecurityException xse) {
+					throw new XMLEncryptionException("Error loading Key Info", 
+													 xse);
+				}
             }
 
             // TODO: Implement
