@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE doc [
+<!ATTLIST e9 Id ID #IMPLIED>
+]>
+<doc>
+   <!-- A comment -->
+   <e9 Id='N3'><!-- A comment -->Das N3 Element</e9>
+   <e9 Id='id2'><!-- A comment --> Das id2 Element</e9>
+</doc> 

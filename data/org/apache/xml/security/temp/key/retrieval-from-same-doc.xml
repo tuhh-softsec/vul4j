@@ -1,0 +1,60 @@
+<Document>
+  <KeyMaterials Id="thecert" xmlns="http://www.xmlsecurity.org/temp/mytempns">
+    <X509Data xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <X509Certificate>
+            MIICwzCCAiygAwIBAgIGAOZ75QhHMA0GCSqGSIb3DQEBBQUAMG4xCzAJBgNVBAYT
+            AklFMQ8wDQYDVQQIEwZEdWJsaW4xJTAjBgNVBAoTHEJhbHRpbW9yZSBUZWNobm9s
+            b2dpZXMsIEx0ZC4xETAPBgNVBAsTCFgvU2VjdXJlMRQwEgYDVQQDEwtYL1NlY3Vy
+            ZSBDQTAeFw0wMTA1MTUxMDA0NDVaFw0wMjA1MTUxMDA0MzdaMGkxCzAJBgNVBAYT
+            AklFMQ8wDQYDVQQIEwZEdWJsaW4xJTAjBgNVBAoTHEJhbHRpbW9yZSBUZWNobm9s
+            b2dpZXMsIEx0ZC4xETAPBgNVBAsTCFgvU2VjdXJlMQ8wDQYDVQQDEwZNb3JpZ3Uw
+            gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALT4FJkxu+bB5lOwYa+irIb7sJU7
+            9sRQbYYnfw35D7NQkig+Lvi2LXXoA6ABull2bF+gu+sgRzezzOs6VsTL8z57TIz2
+            48HaMInFjOiqSANmzQKlXv1PjXSxSyHRi/3xc8gMfmCxeSPCZ5VpUiQoJ5ZpWcDz
+            /LKvb0l9X0YBzMZlAgMBAAGjcTBvMA4GA1UdDwEB/wQEAwIHgDARBgNVHQ4ECgQI
+            hbis35lIcu8wNQYDVR0SBC4wLIYqaHR0cDovL3d3dy5iYWx0aW1vcmUuY29tL3By
+            b2R1Y3RzL3hzZWN1cmUvMBMGA1UdIwQMMAqACIXsHwqPfxrRMA0GCSqGSIb3DQEB
+            BQUAA4GBAGSBdPou5CWAiyS5/f46m00mIIqO3xl6ZXOc/DRblF4gWnesd2F5v/s6
+            lAbqK8+wJM6GxvpOkSp6O1q6hZRyzF86QPlXCfhKAXkgzHXtb6PfT2m9t0iawnjy
+            P+oyYofnFU5FFVOCujSrmFx3FCU+Wg6RT3v1jRoM3YfMYZYEzfTT
+        </X509Certificate>
+    </X509Data>
+  </KeyMaterials>
+  <KeyMaterials Id="hjdsbadcret" xmlns="http://www.xmlsecurity.org/temp/mytempns">
+    <X509Data xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <X509Certificate>
+            This is no valid base64 encoded X509 Certificate so if the XPath
+               ancestor::my:KeyMaterials[@Id="hjdsbadcret"]
+            would have been used this wouldn't resolve to a valid key
+        </X509Certificate>
+    </X509Data>
+  </KeyMaterials>
+  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <SignedInfo>
+      <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+      <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+      <Reference URI="http://www.w3.org/TR/xml-stylesheet">
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <DigestValue>60NvZvtdTB+7UnlLp/H24p7h4bs=</DigestValue>
+      </Reference>
+    </SignedInfo>
+    <SignatureValue>
+      FnwsSCWT6REW/8QnOjv0BK+r3Ly/4aB++pNnZp9pnz8f7+j33eKSj1soyQLq5zmN
+      FwyeeQhnlTbR1kfve014ub9uHVC9A1cfmGZxQF1DC+enHt+AAPJaa278/ocgpMb5
+      Gibl4w7e3HAdBn/RJCrFJH77wY2oU5Ob0zIQtECVNJk=
+    </SignatureValue>
+    <KeyInfo>
+      <RetrievalMethod URI="" Type="http://www.w3.org/2000/09/xmldsig#X509Data">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath xmlns:my="http://www.xmlsecurity.org/temp/mytempns" 
+                   xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+               ancestor::my:KeyMaterials[@Id="thecert"]
+            </XPath>
+          </Transform>
+        </Transforms>
+      </RetrievalMethod>
+    </KeyInfo>
+  </Signature>
+</Document>
+  
