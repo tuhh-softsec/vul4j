@@ -170,7 +170,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
          }
 
          // make network request
-         URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
+         URI uriNew = getNewURI(uri.getNodeValue(), BaseURI);
 
          // if the URI contains a fragment, ignore it
          URI uriNewNoFrag = new URI(uriNew);
@@ -282,27 +282,24 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
       if (uri == null) {
+         cat.debug("quick fail, uri == null");
          return false;
       }
 
       String uriNodeValue = uri.getNodeValue();
 
       if (uriNodeValue.equals("") || uriNodeValue.startsWith("#")) {
+         cat.debug("quick fail for empty URIs and local ones");
          return false;
       }
 
-      try {
-         URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
-
-         if (uriNew.getScheme().equals("http")) {
-            cat.debug("I state that I can resolve " + uriNew.toString());
-
-            return true;
-         }
-
-         cat.debug("I state that I can't resolve " + uriNew.toString());
-      } catch (URI.MalformedURIException ex) {}
-
+      URI uriNew = getNewURI(uri.getNodeValue(), BaseURI);
+      if (uriNew != null && uriNew.getScheme().equals("http")) {
+        cat.debug("I state that I can resolve " + uriNew.toString());
+        return true;
+      }
+      
+      cat.debug("I state that I can't resolve " + uriNew.toString());
       return false;
    }
 
@@ -314,4 +311,23 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
    public String[] engineGetPropertyKeys() {
       return ResolverDirectHTTP.properties;
    }
+   
+   private URI getNewURI(String uri, String BaseURI)
+   {
+      URI uriNew;
+      try {
+        
+        if(BaseURI == null || "".equals(BaseURI) ){
+            uriNew = new URI(uri );
+        }
+        else {
+            uriNew = new URI(new URI(BaseURI), uri);
+        }
+  
+      } catch (URI.MalformedURIException ex) {
+        cat.debug("MalformedURIException: ", ex);
+        return null;
+      }
+      return uriNew;
+  }
 }
