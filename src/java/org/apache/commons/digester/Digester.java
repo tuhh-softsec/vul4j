@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.53 2002/05/29 18:43:10 rdonkin Exp $
- * $Revision: 1.53 $
- * $Date: 2002/05/29 18:43:10 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.54 2002/06/14 21:53:30 mvdb Exp $
+ * $Revision: 1.54 $
+ * $Date: 2002/06/14 21:53:30 $
  *
  * ====================================================================
  *
@@ -113,7 +113,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.53 $ $Date: 2002/05/29 18:43:10 $
+ * @version $Revision: 1.54 $ $Date: 2002/06/14 21:53:30 $
  */
 
 public class Digester extends DefaultHandler {
@@ -429,7 +429,7 @@ public class Digester extends DefaultHandler {
      *  for more detail)
      *
      * @deprecated Configure the logger using standard mechanisms
-     *  for your immplementation
+     *  for your implementation
      */
     public void setDebug(int debug) {
 
