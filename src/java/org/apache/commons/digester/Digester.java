@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.78 2003/05/22 17:00:55 rdonkin Exp $
- * $Revision: 1.78 $
- * $Date: 2003/05/22 17:00:55 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.79 2003/07/29 15:31:22 sanders Exp $
+ * $Revision: 1.79 $
+ * $Date: 2003/07/29 15:31:22 $
  *
  * ====================================================================
  *
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.78 $ $Date: 2003/05/22 17:00:55 $
+ * @version $Revision: 1.79 $ $Date: 2003/07/29 15:31:22 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1386,8 +1386,6 @@ public class Digester extends DefaultHandler {
       public InputSource resolveEntity(String publicId, String systemId)
             throws SAXException {     
                 
-        boolean debug = log.isDebugEnabled();
-        
         if (saxLog.isDebugEnabled()) {
             saxLog.debug("resolveEntity('" + publicId + "', '" + systemId + "')");
         }
@@ -1411,7 +1409,7 @@ public class Digester extends DefaultHandler {
         }
         
         // Return an input source to our alternative URL
-        if (debug) {
+        if (log.isDebugEnabled()) {
             log.debug(" Resolving to alternate DTD '" + entityURL + "'");
         }  
         
