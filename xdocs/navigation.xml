@@ -15,7 +15,8 @@
     <menu name="Commons Digester">
       <item name="Overview"
             href="/index.html"/>
-          
+      <item name="Guide (Current)"
+            href="/apidocs/org/apache/commons/digester/package-summary.html"/>
     </menu>
     
     &commons-nav;
