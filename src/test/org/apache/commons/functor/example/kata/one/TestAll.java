@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/one/TestAll.java,v 1.1 2003/12/01 05:29:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/one/TestAll.java,v 1.2 2003/12/01 05:32:43 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import junit.framework.TestSuite;
  * See http://pragprog.com/pragdave/Practices/Kata/KataOne.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/12/01 05:29:08 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/01 05:32:43 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -74,9 +74,7 @@ public class TestAll extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-
-        //suite.addTest(org.apache.commons.functor.example.kata.one.TestAll.suite());
-        
+        suite.addTest(SupermarketPricingExample.suite());
         return suite;
     }
 }
