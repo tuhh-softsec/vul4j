@@ -1,8 +1,8 @@
 Extension-Name: org.apache.commons.digester
 Specification-Title: "Jakarta Commons Digester"
 Specification-Vendor: "Apache Software Foundation"
-Specification-Version: "1.5"
+Specification-Version: "1.6"
 Implementation-Title: "org.apache.commons.digester"
 Implementation-Vendor: "Apache Software Foundation"
-Implementation-Version: "1.5"
+Implementation-Version: "1.6"
 
