@@ -335,14 +335,15 @@ org.apache.xml.security.utils.resolver
     <unjar src="${lib.styleApache}"  dest="${build.doc.xml}" />
 
     <!-- substitute tokens as needed -->
-    <replace file="${build.doc.xml}/sources/dtd/entities.ent"
+    <replace file="${build.doc.xml}/dtd/entities.ent"
              token="@@packagenamelong@@" value="${product.Name}" />
-    <replace file="${build.doc.xml}/sources/dtd/entities.ent"
+    <replace file="${build.doc.xml}/dtd/entities.ent"
              token="@@packagename@@" value="${product.name}" />
-    <replace file="${build.doc.xml}/sources/dtd/entities.ent"
+    <replace file="${build.doc.xml}/dtd/entities.ent"
              token="@@packageversion@@" value="${product.Version}" />
-    <replace file="${build.doc.xml}/sources/dtd/entities.ent"
+    <replace file="${build.doc.xml}/dtd/entities.ent"
              token="@@packagedistname@@" value="${product.Name}" />
+             
     <replace file="${build.doc.xml}/sources/install.xml"
              token="@@jce.download@@" value="${jce.download}" />
     <replace file="${build.doc.xml}/sources/install.xml"
