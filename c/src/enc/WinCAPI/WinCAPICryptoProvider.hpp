@@ -41,20 +41,20 @@
 // For older versions of wincrypt.h
 
 #if !defined (PROV_RSA_AES)
-#	define PROV_RSA_AES				24
-#	define ALG_SID_AES_128			14
-#	define ALG_SID_AES_192			15
-#	define ALG_SID_AES_256          16
-#	define ALG_SID_AES              17
-#	define CALG_AES_128				(ALG_CLASS_DATA_ENCRYPT|ALG_TYPE_BLOCK|ALG_SID_AES_128)
-#	define CALG_AES_192				(ALG_CLASS_DATA_ENCRYPT|ALG_TYPE_BLOCK|ALG_SID_AES_192)
-#	define CALG_AES_256				(ALG_CLASS_DATA_ENCRYPT|ALG_TYPE_BLOCK|ALG_SID_AES_256)
+#	define PROV_RSA_AES      24
+#	define ALG_SID_AES_128   14
+#	define ALG_SID_AES_192   15
+#	define ALG_SID_AES_256   16
+#	define ALG_SID_AES       17
+#	define CALG_AES_128      (ALG_CLASS_DATA_ENCRYPT|ALG_TYPE_BLOCK|ALG_SID_AES_128)
+#	define CALG_AES_192      (ALG_CLASS_DATA_ENCRYPT|ALG_TYPE_BLOCK|ALG_SID_AES_192)
+#	define CALG_AES_256      (ALG_CLASS_DATA_ENCRYPT|ALG_TYPE_BLOCK|ALG_SID_AES_256)
 #endif
 
-#define WINCAPI_BLOBHEADERLEN	0x08
-#define WINCAPI_DSSPUBKEYLEN	0x08
-#define WINCAPI_DSSSEEDLEN		0x18
-#define WINCAPI_RSAPUBKEYLEN	0x0C
+#define WINCAPI_BLOBHEADERLEN   0x08
+#define WINCAPI_DSSPUBKEYLEN    0x08
+#define WINCAPI_DSSSEEDLEN      0x18
+#define WINCAPI_RSAPUBKEYLEN    0x0C
 
 /**
  * @defgroup wincapicrypto Windows Crypto API Interface
@@ -98,9 +98,11 @@ public :
 	 * Will use the default Windows DSS provider if nothing passed in.
 	 * @param provRSAName RSA provider - must be of type PROV_RSA_FULL.
 	 * Will use the default RSA_FULL provider if nothing passed in
+         * @param dwFlags If you are running XSEC as service you should specify
+         * CRYPT_MACHINE_KEYSET here
 	 */
-	
-	WinCAPICryptoProvider(LPCSTR provDSSName = NULL, LPCSTR provRSAName = NULL);
+
+	WinCAPICryptoProvider(LPCSTR provDSSName = NULL, LPCSTR provRSAName = NULL, DWORD dwFlags = 0);
 
 	virtual ~WinCAPICryptoProvider();
 

@@ -46,14 +46,15 @@ XSEC_USING_XERCES(ArrayJanitor);
 static char s_xsecKeyStoreName[] = "ApacheXML-SecurityKeyStore";
 
 WinCAPICryptoProvider::WinCAPICryptoProvider(
-						LPCSTR provDSSName, 
-						LPCSTR provRSAName) {
+						LPCSTR provDSSName,
+						LPCSTR provRSAName,
+            DWORD dwFlags) {
 
 	if (!CryptAcquireContext(&m_provDSS,
 		NULL,
 		provDSSName,
 		PROV_DSS,
-		CRYPT_VERIFYCONTEXT)) 
+		CRYPT_VERIFYCONTEXT))
 	{
 		throw XSECException(XSECException::InternalError,
 			"WinCAPICryptoProvider() - Error obtaining default PROV_DSS");
@@ -105,15 +106,15 @@ WinCAPICryptoProvider::WinCAPICryptoProvider(
 		s_xsecKeyStoreName,
 		provRSAName,
 		m_provRSAType,
-		CRYPT_MACHINE_KEYSET)) 
+		dwFlags)) 
 	{
 
 		// Try to create
 		if (!CryptAcquireContext(&m_provApacheKeyStore,
 			s_xsecKeyStoreName,
 			provRSAName,
-			PROV_RSA_FULL,
-			CRYPT_MACHINE_KEYSET | CRYPT_NEWKEYSET)) {
+			m_provRSAType,
+			dwFlags | CRYPT_NEWKEYSET)) {
 
 			throw XSECException(XSECException::InternalError,
 				"WinCAPICryptoProvider() - Error obtaining generating internal key store for PROV_RSA_FULL");
