@@ -104,12 +104,38 @@ public class JCEMapper {
    }
 
    /**
+    * This method takes a Provider ID and tries to register this provider in the JCE.
+    *
+    * @param Id
+    */
+   public static void addProvider(String Id) {
+
+      try {
+         if (Security.getProvider(Id) == null) {
+            Element providerElem = (Element) XPathAPI.selectSingleNode(
+               JCEMapper._providerList,
+               "./x:Providers/x:Provider[@Id='" + Id + "']",
+               JCEMapper._nscontext);
+            String providerClass = providerElem.getAttribute("Class");
+            java.security.Provider prov =
+               (java.security.Provider) Class.forName(providerClass)
+                  .newInstance();
+
+            java.security.Security.addProvider(prov);
+         }
+      } catch (TransformerException ex) {}
+      catch (ClassNotFoundException ex) {}
+      catch (IllegalAccessException ex) {}
+      catch (InstantiationException ex) {}
+   }
+
+   /**
     * Method translateURItoJCEID
     *
     * @param AlgorithmURI
     * @return
     */
-   public static String translateURItoJCEID(String AlgorithmURI) {
+   public static ProviderIdClass translateURItoJCEID(String AlgorithmURI) {
 
       cat.debug("Request for URI " + AlgorithmURI);
 
@@ -128,25 +154,41 @@ public class JCEMapper {
 
          for (int i = 0; i < providers.getLength(); i++) {
             Element pro = (Element) providers.item(i);
-            Attr jceName = pro.getAttributeNode("JCEName");
+            String jceName = pro.getAttribute("JCEName");
+            String providerId = pro.getAttribute("ProviderId");
 
-            cat.debug("Found " + jceName.getNodeValue());
+            JCEMapper.addProvider(providerId);
+
+            Element providerElem = (Element) XPathAPI.selectSingleNode(
+               JCEMapper._providerList,
+               "./x:Providers/x:Provider[@Id='" + providerId + "']",
+               JCEMapper._nscontext);
+            String providerClass = providerElem.getAttribute("Class");
+            ProviderIdClass result = new ProviderIdClass(jceName, providerId);
+
+            cat.debug("Found " + result.getAlgorithmID() + " from provider "
+                      + result.getProviderId());
+
+            return result;
          }
-
-         return ((Element) providers.item(0)).getAttribute("JCEName");
       } catch (TransformerException ex) {
          cat.debug("Found nothing: " + ex.getMessage());
-
-         return "";
       }
+
+      return null;
    }
 
+   /**
+    * Method getAlgorithmClassFromURI
+    *
+    * @param AlgorithmURI
+    * @return
+    */
    public static String getAlgorithmClassFromURI(String AlgorithmURI) {
 
       cat.debug("Request for URI " + AlgorithmURI);
 
       try {
-
          NodeList providers = XPathAPI.selectNodeList(JCEMapper._providerList,
                                  "./x:Algorithms/x:Algorithm[@URI='"
                                  + AlgorithmURI + "']/x:ProviderAlgo",
@@ -220,6 +262,44 @@ public class JCEMapper {
     *  a(Constants.ALGO_ID_MAC_HMAC_SHA1);
     * }
     */
+   public static class ProviderIdClass {
+
+      /** Field _jceid */
+      private String _algorithmId;
+
+      /** Field _providerClass */
+      private String _providerId;
+
+      /**
+       * Constructor ProviderIdClass
+       *
+       * @param JCEID
+       * @param ProviderClass
+       */
+      protected ProviderIdClass(String AlgorithmID, String ProviderId) {
+         this._algorithmId = AlgorithmID;
+         this._providerId = ProviderId;
+      }
+
+      /**
+       * Method getJceId
+       *
+       * @return
+       */
+      public String getAlgorithmID() {
+         return this._algorithmId;
+      }
+
+      /**
+       * Method getProvider
+       *
+       * @return
+       */
+      public String getProviderId() {
+         return this._providerId;
+      }
+   }
+
    static {
       org.apache.xml.security.Init.init();
    }

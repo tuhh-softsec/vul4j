@@ -55,23 +55,31 @@
                    Class="com.sun.crypto.provider.SunJCE"
                    Info="SunJCE Provider (implements DES, Triple DES, Blowfish, PBE, Diffie-Hellman, HMAC-MD5, HMAC-SHA1)"
                    ProviderURL="http://java.sun.com/" />
+         <Provider Id="IAIK"
+                   Class="iaik.security.provider.IAIK"
+                   Info="IAIK Security Provider v2.6"
+                   ProviderURL="http://www.iaik.at/" />
       </Providers>
       <Algorithms>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     Description="Digital Signature Algorithm with SHA-1 message digest"
                     AlgorithmClass="Signature">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="DSA" />
             <ProviderAlgo ProviderId="SUN"
                           JCEName="DSAWithSHA1" />
-            <ProviderAlgo ProviderId="BC"
+            <ProviderAlgo ProviderId="IAIK"
                           JCEName="DSA" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#rsa-sha1"
                     Description="RSA Signature with SHA-1 message digest"
                     AlgorithmClass="Signature">
-            <ProviderAlgo ProviderId="SunRsaSign"
-                          JCEName="SHA1withRSA" />
             <ProviderAlgo ProviderId="BC"
                           JCEName="SHA1WithRSAEncryption" />
+            <ProviderAlgo ProviderId="SunRsaSign"
+                          JCEName="SHA1withRSA" />
+            <ProviderAlgo ProviderId="IAIK"
+                          JCEName="SHA-1/RSA" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#sha1"
                     Description="SHA-1 message digest"
@@ -79,6 +87,8 @@
             <ProviderAlgo ProviderId="BC"
                           JCEName="SHA-1" />
             <ProviderAlgo ProviderId="SUN"
+                          JCEName="SHA-1" />
+            <ProviderAlgo ProviderId="IAIK"
                           JCEName="SHA-1" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
@@ -88,6 +98,8 @@
                           JCEName="HMACSHA1" />
             <ProviderAlgo ProviderId="SunJCE"
                           JCEName="HmacSHA1" />
+            <ProviderAlgo ProviderId="IAIK"
+                          JCEName="HMAC/SHA" />
          </Algorithm>
       </Algorithms>
    </JCEAlgorithmMappings>

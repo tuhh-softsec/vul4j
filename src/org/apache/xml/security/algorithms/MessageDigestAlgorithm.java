@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -93,34 +92,43 @@ public class MessageDigestAlgorithm extends Algorithm {
 
    /**
     * Constructor for the brave who pass their own message digest algorithms and the corresponding URI.
-    * @param algorithm
+    * @param doc
+    * @param messageDigest
     * @param algorithmURI
     */
-   private MessageDigestAlgorithm(Document doc, MessageDigest messageDigest, String algorithmURI) {
+   private MessageDigestAlgorithm(Document doc, MessageDigest messageDigest,
+                                  String algorithmURI) {
 
       super(doc, Constants._TAG_DIGESTMETHOD, algorithmURI);
+
       this.algorithm = messageDigest;
    }
 
    /**
     * Factory method for constructing a message digest algorithm by name.
     *
+    * @param doc
     * @param algorithmURI
     * @return
     * @throws XMLSignatureException
     */
-   public static MessageDigestAlgorithm getInstance(Document doc, String algorithmURI)
-           throws XMLSignatureException {
+   public static MessageDigestAlgorithm getInstance(
+           Document doc, String algorithmURI) throws XMLSignatureException {
 
-      String JCEAlgorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
+      JCEMapper.ProviderIdClass algorithmID =
+         JCEMapper.translateURItoJCEID(algorithmURI);
       MessageDigest md;
 
       try {
-         md = MessageDigest.getInstance(JCEAlgorithmID);
-      } catch (NoSuchAlgorithmException ex) {
+         md = MessageDigest.getInstance(algorithmID.getAlgorithmID(),
+                                        algorithmID.getProviderId());
+      } catch (java.security.NoSuchAlgorithmException ex) {
+         Object[] exArgs = { algorithmID.getAlgorithmID(), ex.getLocalizedMessage() };
 
-         // Object[] exArgs = { JCEAlgorithmID, ex.getLocalizedMessage() };
-         Object[] exArgs = { algorithmURI, ex.getLocalizedMessage() };
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
+      } catch (java.security.NoSuchProviderException ex) {
+         Object[] exArgs = { algorithmID.getProviderId(),
+                             ex.getLocalizedMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
       }

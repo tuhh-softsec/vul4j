@@ -622,9 +622,11 @@ public class XMLSignature extends ElementProxy {
       if (cert != null) {
          String SignatureMethodURI =
             this.getSignedInfo().getSignatureMethodURI();
-         String jceSigID = JCEMapper.translateURItoJCEID(SignatureMethodURI);
+         JCEMapper.ProviderIdClass jceSigID =
+            JCEMapper.translateURItoJCEID(SignatureMethodURI);
          java.security.Signature signature =
-            java.security.Signature.getInstance(jceSigID);
+            java.security.Signature.getInstance(jceSigID.getAlgorithmID(),
+                                                jceSigID.getProviderId());
 
          signature.initVerify(cert);
 
@@ -661,13 +663,15 @@ public class XMLSignature extends ElementProxy {
       }
 
       String SignatureMethodURI = this.getSignedInfo().getSignatureMethodURI();
-      String jceSigID = JCEMapper.translateURItoJCEID(SignatureMethodURI);
+      JCEMapper.ProviderIdClass jceSigID =
+         JCEMapper.translateURItoJCEID(SignatureMethodURI);
 
       cat.debug("SignatureMethodURI = " + SignatureMethodURI);
-      cat.debug("jceSigID = " + jceSigID);
+      cat.debug("jceSigID = " + jceSigID.getAlgorithmID());
 
       java.security.Signature signature =
-         java.security.Signature.getInstance(jceSigID);
+         java.security.Signature.getInstance(jceSigID.getAlgorithmID(),
+                                             jceSigID.getProviderId());
 
       if (pk != null) {
          signature.initVerify(pk);

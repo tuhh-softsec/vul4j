@@ -124,13 +124,17 @@ public class SignatureAlgorithm extends Algorithm {
    public static SignatureAlgorithm getInstance(Document doc, String algorithmURI)
            throws XMLSignatureException {
 
-      String algorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
+      JCEMapper.ProviderIdClass algorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
       Signature algorithm = null;
 
       try {
-         algorithm = Signature.getInstance(algorithmID);
+         algorithm = Signature.getInstance(algorithmID.getAlgorithmID(), algorithmID.getProviderId());
       } catch (java.security.NoSuchAlgorithmException ex) {
-         Object[] exArgs = { algorithmID, ex.getLocalizedMessage() };
+         Object[] exArgs = { algorithmID.getAlgorithmID(), ex.getLocalizedMessage() };
+
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
+      } catch (java.security.NoSuchProviderException ex) {
+         Object[] exArgs = { algorithmID.getProviderId(), ex.getLocalizedMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
       }
