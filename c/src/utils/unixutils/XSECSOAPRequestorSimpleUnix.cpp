@@ -318,15 +318,38 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 	/* Now find out how long the return is */
 
 	p = strstr(fBuffer, "Content-Length:");
+	int responseLength;
+
 	if (p == NULL) {
-        throw XSECException(XSECException::HTTPURIInputStreamError,
-							"Content-Length required in SOAP HTTP Response");
+		// Need to work it out from the amount of data returned
+		responseLength = -1;
+	}
+	else {
+
+		p = strchr(p, ' ');
+		p++;
+
+		responseLength = atoi(p);
 	}
 
-	p = strchr(p, ' ');
-	p++;
+	safeBuffer responseBuffer;
+	lent = fBufferEnd - fBufferPos;
+	responseBuffer.sbMemcpyIn(fBufferPos, lent);
 
-	int responseLength = atoi(p);
+	while (responseLength == -1 || lent < responseLength) {
+		aLent = read(s, (void *)fBuffer, sizeof(fBuffer)-1);
+		if (aLent > 0) {
+			responseBuffer.sbMemcpyIn(lent, fBuffer, aLent);
+			lent += aLent;
+		}
+		else {
+			responseLength = 0;
+		}
+	}
+
+	return parseAndUnwrap(responseBuffer.rawCharBuffer(), lent);
+
+#if 0
 
 	char * responseBuffer;
 	XSECnew(responseBuffer, char[responseLength]);
@@ -340,7 +363,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 	}
 	
     return parseAndUnwrap(responseBuffer, responseLength);
-
+#endif
 }
 
 
