@@ -22,32 +22,21 @@ public class ContextMapAdapterTest
         super( name );
     }
 
-    /**
-     * The JUnit setup method
-     */
-    protected void setUp()
-        throws Exception
-    {
-    }
-
-    /**
-     * The teardown method for JUnit
-     */
-    protected void tearDown()
-        throws Exception
-    {
-    }
-
     public void testInterpolation()
         throws Exception
     {
         DefaultContext context = new DefaultContext();
+
         context.put( "name", "jason" );
+
         context.put( "occupation", "exotic dancer" );
 
         ContextMapAdapter adapter = new ContextMapAdapter( context );
 
         assertEquals( "jason", (String) adapter.get( "name" ) );
+
         assertEquals( "exotic dancer", (String) adapter.get( "occupation" ) );
+
+        assertNull( adapter.get( "foo") );
     }
 }
