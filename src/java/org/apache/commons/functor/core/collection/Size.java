@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Size.java,v 1.2 2003/11/24 20:12:17 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Size.java,v 1.3 2003/11/24 21:29:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,12 +57,15 @@
 package org.apache.commons.functor.core.collection;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.Collection;
 
 import org.apache.commons.functor.UnaryFunction;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:17 $
+ * Returns the size of the specified Collection, or the length
+ * of the specified array or String.
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 21:29:28 $
  * @author Rodney Waldhoff
  */
 public final class Size implements UnaryFunction, Serializable {
@@ -73,7 +76,17 @@ public final class Size implements UnaryFunction, Serializable {
     public Size() { }
     
     public Object evaluate(Object obj) {
-        return new Integer(((Collection)obj).size());
+        if(obj instanceof Collection) {
+            return evaluate((Collection)obj);
+        } else if(obj instanceof String) {
+            return evaluate((String)obj);
+        } else if(null != obj && obj.getClass().isArray()) {
+            return evaluateArray(obj);
+        } else if(null == obj){
+            throw new NullPointerException("Argument must not be null");
+        } else {
+            throw new ClassCastException("Expected Collection, String or Array, found " + obj);
+        } 
     }
 
     /**
@@ -100,7 +113,19 @@ public final class Size implements UnaryFunction, Serializable {
     public static final Size instance() {
         return INSTANCE;
     }
+
+    private Object evaluate(Collection col) {
+        return new Integer(col.size());
+    }
+    
+    private Object evaluate(String str) {
+        return new Integer(str.length());
+    }
+    
+    private Object evaluateArray(Object array) {
+        return new Integer(Array.getLength(array));
+    }
     
     private static final Size INSTANCE = new Size();
-
+    
 }

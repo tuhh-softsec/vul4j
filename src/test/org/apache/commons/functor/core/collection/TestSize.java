@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestSize.java,v 1.2 2003/11/24 20:12:17 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestSize.java,v 1.3 2003/11/24 21:29:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -70,7 +70,7 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.core.ConstantFunction;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:17 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 21:29:28 $
  * @author Rodney Waldhoff
  */
 public class TestSize extends BaseFunctorTest {
@@ -139,7 +139,7 @@ public class TestSize extends BaseFunctorTest {
         }
     }
     
-    public void testTestNonCollection() throws Exception {
+    public void testEvaluateNonCollection() throws Exception {
         try {
             Size.instance().evaluate(new Integer(3));
             fail("Expected ClassCastException");
@@ -148,6 +148,12 @@ public class TestSize extends BaseFunctorTest {
         }
     }
     
+    public void testEvaluateArray() throws Exception {
+        assertEquals(new Integer(10),Size.instance().evaluate(new int[10]));
+        assertEquals(new Integer(7),Size.instance().evaluate(new String[7]));
+        assertEquals(new Integer("xyzzy".length()),Size.instance().evaluate("xyzzy"));
+    }
+
     public void testEquals() throws Exception {
         UnaryFunction f = new Size();
         assertEquals(f,f);
