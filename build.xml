@@ -443,11 +443,13 @@
          IBM is 'magically' included in the test ;-))
     -->
     <available file="data/com/ibm/xss4j-20011029/enveloped-rsa.sig" property="ibm.available"/>
-    <junit filtertrace="true" fork="true" printsummary="on">
+    <junit filtertrace="true" fork="true" printsummary="on" failureproperty="build.test.failed">
        <jvmarg value="-Djava.compiler=NONE"/>
        <sysproperty key="basedir" value="${basedir}"/>
        <classpath refid="classpath.test"/>
        <formatter type="xml"/>
+       <!-- Also put output to screen -->
+       <formatter type="plain" usefile="false"/>
        <batchtest fork="yes" todir="${build.junit.xml}">
          <fileset dir="${dir.src.unitTests}">
            <include name="**/*Test*.java"/>
@@ -466,6 +468,7 @@
       </fileset>
       <report format="frames" todir="${build.junit.html}"/>
     </junitreport>
+    <fail if="build.test.failed" message="Unit Tests Failed"/>
   </target>
 
   <target depends="compile.tests" description="Runs exclusive c14n interop (Y1, Y2, Y3, Y4)" if="junit.present" name="test_exc_c14n">
