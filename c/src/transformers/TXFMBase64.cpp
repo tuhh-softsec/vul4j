@@ -74,6 +74,8 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECException.hpp>
 
+XERCES_CPP_NAMESPACE_USE
+
 TXFMBase64::TXFMBase64(DOMDocument *doc, bool decode) : TXFMBase(doc) {
 
 	m_complete = false;					// Nothing yet to output

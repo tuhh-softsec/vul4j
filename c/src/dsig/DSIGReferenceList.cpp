@@ -62,8 +62,6 @@
  *
  * DSIGReferenceList := Class for Loading and storing a list of references
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -71,6 +69,8 @@
 // XSEC Includes
 #include <xsec/dsig/DSIGReferenceList.hpp>
 #include <xsec/dsig/DSIGReference.hpp>
+
+XERCES_CPP_NAMESPACE_USE
 
 DSIGReferenceList::DSIGReferenceList() {}
 

@@ -62,22 +62,7 @@
  *
  * XSECTXFMInputSource := Transfomer InputSource for Xerces Parser.
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
- *
- * $Log$
- * Revision 1.4  2003/07/28 12:52:46  blautenb
- * Fixed a bug with DEBUG_NEW when compiling with Xalan 1.6
- *
- * Revision 1.3  2003/07/05 10:30:37  blautenb
- * Copyright update
- *
- * Revision 1.2  2003/02/21 11:53:09  blautenb
- * TXFMChain to prevent memory leaks
- *
- * Revision 1.1  2003/02/17 11:19:12  blautenb
- * Class to use a transform as an InputSource to Xerces
  *
  *					 
  */
@@ -90,8 +75,7 @@
 
 #include <xercesc/util/BinInputStream.hpp>
 
-XSEC_USING_XERCES(BinInputStream);
-
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Construct/Destruct

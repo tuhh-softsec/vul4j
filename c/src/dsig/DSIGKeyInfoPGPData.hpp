@@ -109,7 +109,8 @@ public:
 	 * @param pgpDataNode DOMNode to load information from
 	 */
 
-	DSIGKeyInfoPGPData(DSIGSignature * sig, DOMNode *pgpDataNode);
+	DSIGKeyInfoPGPData(DSIGSignature * sig, 
+					   XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *pgpDataNode);
 
 	/**
 	 * \brief Constructor used when XML needs to be created.
@@ -184,7 +185,8 @@ public:
 	 * @returns The newly created DOMElement with the structure underneath.
 	 */
 
-	DOMElement * createBlankPGPData(const XMLCh * id, const XMLCh * packet);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankPGPData(const XMLCh * id, const XMLCh * packet);
 
 	/**
 	 * \brief Set the value of the KeyID to a new string.
@@ -225,8 +227,10 @@ private:
 
 	const XMLCh			* mp_keyID;				// Key ID (from DOM)
 	const XMLCh			* mp_keyPacket;			// key Packet (from DOM)
-	DOMNode				* mp_keyIDTextNode;		// Text node containing the ID
-	DOMNode				* mp_keyPacketTextNode;	// Text node contianing key packet
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode				
+						* mp_keyIDTextNode;		// Text node containing the ID
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode				
+						* mp_keyPacketTextNode;	// Text node contianing key packet
 };
 
 

@@ -63,8 +63,6 @@
  * XSECXPathNodeList := A structure to hold node lists from XPath 
  * evaluations
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -76,7 +74,7 @@
 
 #include <string.h>
 
-
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors.

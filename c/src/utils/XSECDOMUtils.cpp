@@ -82,11 +82,7 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/TransService.hpp>
 
-XSEC_USING_XERCES(XMLTransService);
-XSEC_USING_XERCES(XMLTranscoder);
-XSEC_USING_XERCES(XMLPlatformUtils);
-XSEC_USING_XERCES(Janitor);
-XSEC_USING_XERCES(chNull);
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Utilities to manipulate DSIG namespaces

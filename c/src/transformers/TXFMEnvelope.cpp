@@ -62,8 +62,6 @@
  *
  * TXFMEnvelope := Class that calculates an Envelope with an XPath evaluator
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -71,6 +69,8 @@
 #include <xsec/transformers/TXFMEnvelope.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+
+XERCES_CPP_NAMESPACE_USE
 
 TXFMEnvelope::TXFMEnvelope(DOMDocument *doc) :
 TXFMBase(doc) {

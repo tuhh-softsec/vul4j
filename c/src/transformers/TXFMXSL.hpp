@@ -62,8 +62,6 @@
  *
  * TXFMXSL := Class that performs XML Stylesheet Language transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -114,13 +112,15 @@ private:
 
 	safeBuffer			sbInDoc;
 
-	DOMDocument		* document;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument		
+						* document;
 	
-	DOMDocument		* docOut;			// The output from the transformation
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument		
+						* docOut;			// The output from the transformation
 
 public:
 
-	TXFMXSL(DOMDocument *doc);
+	TXFMXSL(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 	~TXFMXSL();
 
 	// Methods to set the inputs
@@ -146,8 +146,8 @@ public:
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	
 private:

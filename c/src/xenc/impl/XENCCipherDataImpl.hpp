@@ -85,14 +85,18 @@ class XENCCipherDataImpl : public XENCCipherData {
 public:
 
 	XENCCipherDataImpl(XENCCipherImpl * cipher);
-	XENCCipherDataImpl(XENCCipherImpl * cipher, DOMNode * node);
+	XENCCipherDataImpl(
+		XENCCipherImpl * cipher, 
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
+	);
 
 	virtual ~XENCCipherDataImpl();
 
 	// Load elements
 	void load();
 	// Create
-	DOMElement * createBlankCipherData(XENCCipherData::XENCCipherDataType type, const XMLCh * value);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankCipherData(XENCCipherData::XENCCipherDataType type, const XMLCh * value);
 
 
 	// Interface methods
@@ -106,7 +110,8 @@ private:
 	XENCCipherDataImpl();
 
 	XENCCipherImpl			* mp_cipher;
-	DOMNode					* mp_cipherDataNode;		// Node at head of structure
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
+							* mp_cipherDataNode;		// Node at head of structure
 
 	XENCCipherDataType		m_cipherDataType;			// Is this a value or a reference?
 	XENCCipherValueImpl		* mp_cipherValue;			// Cipher value node

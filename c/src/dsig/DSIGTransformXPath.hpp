@@ -62,8 +62,6 @@
  *
  * DSIGTransformXPath := Class that performs XPath transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -111,7 +109,7 @@ public:
 	 * @see #load
 	 */
 
-	DSIGTransformXPath(DSIGSignature *sig, DOMNode * node);
+	DSIGTransformXPath(DSIGSignature *sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);
 
     /**
 	 * \brief Contructor used for new signatures.
@@ -170,7 +168,8 @@ public:
 	 * transform and return the newly constructed DOMNode structure
 	 */
 
-	virtual DOMElement * createBlankTransform(DOMDocument * parentDoc);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createBlankTransform(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * parentDoc);
 
 	/**
 	 * \brief Load a DOM structure
@@ -233,7 +232,7 @@ public:
 	 * @returns A pointer to the NamedNodeMap
 	 */
 
-	DOMNamedNodeMap * getNamespaces(void) {
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNamedNodeMap * getNamespaces(void) {
 		return mp_NSMap;
 	}
 
@@ -257,9 +256,12 @@ private:
 	DSIGTransformXPath(const DSIGTransformXPath & theOther);
 
 	safeBuffer					m_expr;
-	DOMNode						* mp_exprTextNode;
-	DOMNode						* mp_xpathNode;
-	DOMNamedNodeMap		* mp_NSMap;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_exprTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_xpathNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNamedNodeMap		
+								* mp_NSMap;
 
 
 };

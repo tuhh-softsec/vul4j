@@ -149,7 +149,7 @@ public:
 	 * @param n The node to add.
 	 */
 
-	void addNode(const DOMNode *n);
+	void addNode(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *n);
 
 	/**
 	 * \brief Remove a node from the list.
@@ -159,7 +159,7 @@ public:
 	 * @param n The node to be removed.
 	 */
 
-	void removeNode(const DOMNode *n);
+	void removeNode(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *n);
 
 	/**
 	 * \brief Clear out the entire list, deleting all entries.
@@ -179,7 +179,7 @@ public:
 	 * @param n The node to find in the list.
 	 */
 
-	bool hasNode(const DOMNode *n);
+	bool hasNode(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *n);
 
 	/**
 	 * \brief Get the first node in the list.
@@ -189,7 +189,7 @@ public:
 	 * @returns The first node in the list or NULL if none exist
 	 */
 
-	const DOMNode * getFirstNode(void);
+	const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getFirstNode(void);
 
 	/**
 	 * \brief Get the next node in the list
@@ -199,7 +199,7 @@ public:
 	 * @returns The next node in the list of NULL if none exist
 	 */
 
-	const DOMNode *getNextNode(void);
+	const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getNextNode(void);
 
 	//@}
 
@@ -221,9 +221,10 @@ public:
 private:
 
 	// Internal functions
-	unsigned int findNodeIndex(const DOMNode * n);
+	unsigned int findNodeIndex(const XERCES_CPP_NAMESPACE::DOMNode * n);
 
-	const DOMNode					** mp_elts;			// The current list of elements
+	const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	
+									** mp_elts;			// The current list of elements
 
 	unsigned int					m_size;				// How big is the current array
 	unsigned int					m_num;				// Number of elements in the array

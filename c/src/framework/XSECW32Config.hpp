@@ -88,6 +88,13 @@
  * constructors
  */
 #	define XSEC_XERCES_FORMATTER_REQUIRES_VERSION 1
+
+ /* 2.3 and above use a user defined Memory Manager.  In some cases, this
+   actually needs to be passed to functions
+*/
+
+#	define XSEC_XERCES_REQUIRES_MEMMGR 1
+
 #else
 /*
  * In version 2.2, the XMLUri class was broken for relative URI de-referencing

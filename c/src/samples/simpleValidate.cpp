@@ -88,10 +88,7 @@
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
 
-XSEC_USING_XERCES(XMLPlatformUtils);
-XSEC_USING_XERCES(XercesDOMParser);
-XSEC_USING_XERCES(MemBufInputSource);
-XSEC_USING_XERCES(XMLException);
+XERCES_CPP_NAMESPACE_USE
 
 #ifndef XSEC_NO_XALAN
 

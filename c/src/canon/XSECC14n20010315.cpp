@@ -78,8 +78,7 @@
 // Xerces includes
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
 
-XSEC_USING_XERCES(DOMNamedNodeMap);
-XSEC_USING_XERCES(DOMProcessingInstruction);
+XERCES_CPP_NAMESPACE_USE
 
 #ifndef XSEC_NO_XALAN
 

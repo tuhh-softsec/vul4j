@@ -62,8 +62,6 @@
  *
  * DSIG_Reference := Class for handling a DSIG reference element
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -104,7 +102,7 @@
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(Janitor);
+XERCES_CPP_NAMESPACE_USE
 
 #include <iostream>
 

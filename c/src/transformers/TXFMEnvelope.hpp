@@ -62,8 +62,6 @@
  *
  * TXFMEnvelope := Class that calculates an Envelope with an XPath evaluator
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -86,12 +84,12 @@ class DSIG_EXPORT TXFMEnvelope : public TXFMBase {
 
 private:
 
-	DOMDocument		* mp_document;
-	DOMNode			* mp_startNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument	* mp_document;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode		* mp_startNode;
 
 public:
 
-	TXFMEnvelope(DOMDocument *doc);
+	TXFMEnvelope(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 	~TXFMEnvelope();
 
 	// Methods to set the inputs
@@ -106,13 +104,13 @@ public:
 
 	// Envelope unique
 
-	void evaluateEnvelope(DOMNode *t);
+	void evaluateEnvelope(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *t);
 
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	virtual XSECXPathNodeList	& getXPathNodeList();
 private:

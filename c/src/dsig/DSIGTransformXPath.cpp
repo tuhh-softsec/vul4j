@@ -62,8 +62,6 @@
  *
  * DSIGTransformXPath := Class that holds XPath transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -79,7 +77,7 @@
 
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(Janitor);
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors

@@ -62,8 +62,6 @@
  *
  * DSIGReferenceList := Class for Loading and storing a list of references
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */

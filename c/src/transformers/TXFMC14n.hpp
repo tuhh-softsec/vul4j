@@ -62,8 +62,6 @@
  *
  * TXFMBaseC14n := Class that performs C14n canonicalisation
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -86,7 +84,7 @@ private:
 	
 public:
 
-	TXFMC14n(DOMDocument *doc);
+	TXFMC14n(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 	~TXFMC14n();
 
 	// Methods to set the inputs
@@ -109,8 +107,8 @@ public:
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	
 private:

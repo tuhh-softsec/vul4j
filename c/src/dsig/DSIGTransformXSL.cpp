@@ -62,8 +62,6 @@
  *
  * DSIGTransformXSL := Class that Handles DSIG XSLT Transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -78,6 +76,8 @@
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
+
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors

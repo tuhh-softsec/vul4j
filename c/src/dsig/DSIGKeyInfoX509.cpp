@@ -63,8 +63,6 @@
  * DSIGKeyX509 := A "Super" key that defines a certificate with a sub-key that defines
  *                the signing key
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -77,7 +75,7 @@
 
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(ArrayJanitor);
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors

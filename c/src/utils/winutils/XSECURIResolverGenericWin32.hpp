@@ -66,11 +66,12 @@
  *								  handle HTTP redirects as is required by
  *								  the DSIG Standard
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  * $Log$
+ * Revision 1.4  2003/09/11 11:11:05  blautenb
+ * Cleaned up usage of Xerces namespace - no longer inject into global namespace in headers
+ *
  * Revision 1.3  2003/07/05 10:30:38  blautenb
  * Copyright update
  *
@@ -92,8 +93,6 @@
 #include <xercesc/util/XMLString.hpp>
 
 #include <map>
-
-XSEC_USING_XERCES(XMLString);
 
 
 /**
@@ -143,7 +142,7 @@ public:
 	 * @returns The octet stream corresponding to the URI.
 	 */
 
-	virtual BinInputStream * resolveURI(const XMLCh * uri);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * resolveURI(const XMLCh * uri);
 
 	/**
 	 * \brief Clone the resolver to be installed in a new object.

@@ -82,9 +82,7 @@
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(Janitor);
-XSEC_USING_XERCES(ArrayJanitor);
-
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //			UNICODE Strings
@@ -92,50 +90,50 @@ XSEC_USING_XERCES(ArrayJanitor);
 
 static XMLCh s_EncryptionMethod[] = {
 
-	XERCES_CPP_NAMESPACE :: chLatin_E,
-	XERCES_CPP_NAMESPACE :: chLatin_n,
-	XERCES_CPP_NAMESPACE :: chLatin_c,
-	XERCES_CPP_NAMESPACE :: chLatin_r,
-	XERCES_CPP_NAMESPACE :: chLatin_y,
-	XERCES_CPP_NAMESPACE :: chLatin_p,
-	XERCES_CPP_NAMESPACE :: chLatin_t,
-	XERCES_CPP_NAMESPACE :: chLatin_i,
-	XERCES_CPP_NAMESPACE :: chLatin_o,
-	XERCES_CPP_NAMESPACE :: chLatin_n,
-	XERCES_CPP_NAMESPACE :: chLatin_M,
-	XERCES_CPP_NAMESPACE :: chLatin_e,
-	XERCES_CPP_NAMESPACE :: chLatin_t,
-	XERCES_CPP_NAMESPACE :: chLatin_h,
-	XERCES_CPP_NAMESPACE :: chLatin_o,
-	XERCES_CPP_NAMESPACE :: chLatin_d,
-	XERCES_CPP_NAMESPACE :: chNull,
+	chLatin_E,
+	chLatin_n,
+	chLatin_c,
+	chLatin_r,
+	chLatin_y,
+	chLatin_p,
+	chLatin_t,
+	chLatin_i,
+	chLatin_o,
+	chLatin_n,
+	chLatin_M,
+	chLatin_e,
+	chLatin_t,
+	chLatin_h,
+	chLatin_o,
+	chLatin_d,
+	chNull,
 };
 
 static XMLCh s_KeyInfo[] = {
 
-	XERCES_CPP_NAMESPACE :: chLatin_K,
-	XERCES_CPP_NAMESPACE :: chLatin_e,
-	XERCES_CPP_NAMESPACE :: chLatin_y,
-	XERCES_CPP_NAMESPACE :: chLatin_I,
-	XERCES_CPP_NAMESPACE :: chLatin_n,
-	XERCES_CPP_NAMESPACE :: chLatin_f,
-	XERCES_CPP_NAMESPACE :: chLatin_o,
-	XERCES_CPP_NAMESPACE :: chNull,
+	chLatin_K,
+	chLatin_e,
+	chLatin_y,
+	chLatin_I,
+	chLatin_n,
+	chLatin_f,
+	chLatin_o,
+	chNull,
 };
 
 static XMLCh s_CipherData[] = {
 
-	XERCES_CPP_NAMESPACE :: chLatin_C,
-	XERCES_CPP_NAMESPACE :: chLatin_i,
-	XERCES_CPP_NAMESPACE :: chLatin_p,
-	XERCES_CPP_NAMESPACE :: chLatin_h,
-	XERCES_CPP_NAMESPACE :: chLatin_e,
-	XERCES_CPP_NAMESPACE :: chLatin_r,
-	XERCES_CPP_NAMESPACE :: chLatin_D,
-	XERCES_CPP_NAMESPACE :: chLatin_a,
-	XERCES_CPP_NAMESPACE :: chLatin_t,
-	XERCES_CPP_NAMESPACE :: chLatin_a,
-	XERCES_CPP_NAMESPACE :: chNull,
+	chLatin_C,
+	chLatin_i,
+	chLatin_p,
+	chLatin_h,
+	chLatin_e,
+	chLatin_r,
+	chLatin_D,
+	chLatin_a,
+	chLatin_t,
+	chLatin_a,
+	chNull,
 };
 
 // --------------------------------------------------------------------------------

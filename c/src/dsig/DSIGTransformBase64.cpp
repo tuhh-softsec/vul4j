@@ -62,8 +62,6 @@
  *
  * DSIGTransformBase64 := Class that holds a Base64 transform structure
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -79,6 +77,8 @@
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
+
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors

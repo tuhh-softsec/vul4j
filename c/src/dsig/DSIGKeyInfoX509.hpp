@@ -63,11 +63,8 @@
  * DSIGKeyInfoX509 := A "Super" key that defines a certificate with a sub-key that defines
  *                the signing key
  *
- * Author(s): Berin Lautenbach
+ * $Id$
  *
- * $ID$
- *
- * $LOG$ *
  */
 
 #ifndef DSIGKEYINFOX509_INCLUDE
@@ -132,7 +129,7 @@ public:
 	 * @param X509Data DOMNode at start of data
 	 */
 
-	DSIGKeyInfoX509(DSIGSignature * sig, DOMNode *X509Data);
+	DSIGKeyInfoX509(DSIGSignature * sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *X509Data);
 
 	/**
 	 * \brief Constructor called when building XML structures
@@ -290,7 +287,8 @@ public:
 	 * @returns A pointer to the new X509Data element.
 	 */
 
-	DOMElement * createBlankX509Data(void);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankX509Data(void);
 
 	/**
 	 * \brief Set the X509SubjectName element in the KeyInfo element.
@@ -389,11 +387,11 @@ private:
 
 	// Text nodes holding information
 
-	DOMNode				* mp_X509SubjectNameTextNode;
-	DOMNode				* mp_X509IssuerNameTextNode;
-	DOMNode				* mp_X509SerialNumberTextNode;
-	DOMNode				* mp_X509CRLTextNode;
-	DOMNode				* mp_X509SKITextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509SubjectNameTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509IssuerNameTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509SerialNumberTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509CRLTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_X509SKITextNode;
 
 };
 

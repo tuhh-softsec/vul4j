@@ -63,8 +63,6 @@
  * TXFMOutputFile := Transform that outputs the byte stream to a file without changing
  *							  the actual data in any way
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -98,7 +96,8 @@ private:
 
 public:
 
-	TXFMOutputFile(DOMDocument *doc) : TXFMBase(doc) {input = NULL;}
+	TXFMOutputFile(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc) : 
+		TXFMBase(doc) {input = NULL;}
 	~TXFMOutputFile();
 
 	// Methods to set the inputs
@@ -118,8 +117,8 @@ public:
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	
 private:

@@ -63,12 +63,7 @@
  * XSECURIResolver := Virtual Interface class that takes a URI and
  *                    creates a binary input stream from it.
  *
- * Author(s): Berin Lautenbach
- *
- * $ID$
- *
- * $LOG$
- *
+ * $Id$
  */
 
 #ifndef XSECURIRESOLVER_INCLUDE
@@ -133,7 +128,8 @@ public:
 	 * @returns The octet stream corresponding to the URI.
 	 */
 
-	virtual BinInputStream * resolveURI(const XMLCh * uri) = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * 
+		resolveURI(const XMLCh * uri) = 0;
 
 	/**
 	 * \brief Clone the resolver to be installed in a new object.

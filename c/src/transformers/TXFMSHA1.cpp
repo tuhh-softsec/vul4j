@@ -62,8 +62,6 @@
  *
  * TXFMSHA1 := Class that performs a SHA1 transform
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -74,7 +72,7 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECException.hpp>
 
-// Standarad includes 
+XERCES_CPP_NAMESPACE_USE
 
 TXFMSHA1::TXFMSHA1(DOMDocument *doc,
 									 XSECCryptoKey * key) : TXFMBase (doc) {

@@ -62,8 +62,6 @@
  *
  * DSIGTransformC14n := Class that performs C14n canonicalisation
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -77,8 +75,7 @@
 
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(DOMNamedNodeMap);
-XSEC_USING_XERCES(Janitor);
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors

@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -145,11 +143,11 @@ private:
 
 struct XSECNodeListElt {
 
-	DOMNode		*element;			// Element referred to
-	safeBuffer	sortString;			// The string that is used to sort the nodes
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	*element;	// Element referred to
+	safeBuffer						sortString;	// The string that is used to sort the nodes
 
-	XSECNodeListElt		*next,
-						*last;		// For the list
+	XSECNodeListElt					*next,
+									*last;		// For the list
 
 };
 
@@ -184,8 +182,9 @@ public:
 
 	// Constructors
 	XSECC14n20010315();
-	XSECC14n20010315(DOMDocument *newDoc);
-	XSECC14n20010315(DOMDocument *newDoc, DOMNode *newStartNode);
+	XSECC14n20010315(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *newDoc);
+	XSECC14n20010315(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *newDoc, 
+					 XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *newStartNode);
 	virtual ~XSECC14n20010315();
 
 	// XPath processor
@@ -212,20 +211,21 @@ protected:
 private:
 
 	void XSECC14n20010315::init();
-	bool checkRenderNameSpaceNode(DOMNode *e, DOMNode *a);
+	bool checkRenderNameSpaceNode(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *e, 
+								  XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *a);
 
 	// For formatting the buffers
 	c14nFormatTarget *c14ntarget;
-	XMLFormatter *formatter;
+	XERCES_CPP_NAMESPACE_QUALIFIER XMLFormatter *formatter;
 	safeBuffer formatBuffer;
 
 	// For holding state whilst walking the DOM tree
 	XSECNodeListElt	* mp_attributes,				// Start of list
 					* mp_currentAttribute,			// Where we currently are in list
 					* mp_firstNonNsAttribute;		// First NON XMLNS element in list
-	DOMNode			* mp_attributeParent;			// To return up the tree
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * mp_attributeParent;			// To return up the tree
 	bool m_returnedFromChild;						// Did we get to this node from below?
-	DOMNode			* mp_firstElementNode;			// The root element of the document
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * mp_firstElementNode;			// The root element of the document
 	bool			m_firstElementProcessed;		// Has the first node been handled?
 	unsigned char	* mp_charBuffer;
 

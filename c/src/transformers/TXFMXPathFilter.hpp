@@ -62,8 +62,6 @@
  *
  * TXFMXPath := Class that performs XPath transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -88,7 +86,8 @@ struct filterSetHolder {
 
 	XSECXPathNodeList	* lst;
 	xpathFilterType		type;
-	DOMNode				* ancestorInScope;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode				
+						* ancestorInScope;
 
 };
 
@@ -105,7 +104,7 @@ class DSIG_EXPORT TXFMXPathFilter : public TXFMBase {
 
 public:
 
-	TXFMXPathFilter(DOMDocument *doc);
+	TXFMXPathFilter(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 	~TXFMXPathFilter();
 
 	// Methods to set the inputs
@@ -126,8 +125,8 @@ public:
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	virtual XSECXPathNodeList	& getXPathNodeList();
 
@@ -135,19 +134,21 @@ private:
 
 	typedef std::vector<filterSetHolder *> lstsVectorType;
 	TXFMXPathFilter();
-	void walkDocument(DOMNode * n);
-	bool checkNodeInScope(DOMNode * n);
-	bool checkNodeInInput(DOMNode * n);
+	void walkDocument(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);
+	bool checkNodeInScope(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);
+	bool checkNodeInInput(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);
 
 
-	DOMDocument			* document;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument			
+						* document;
 	XSECXPathNodeList	m_xpathFilterMap;
 	lstsVectorType		m_lsts;
 
 	XSECSafeBufferFormatter * mp_formatter;
 
 	/* Used to hold details during tree-walk */
-	DOMNode				* mp_fragment;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode				
+						* mp_fragment;
 	XSECXPathNodeList	* mp_inputList;
 
 };

@@ -90,11 +90,7 @@
 XALAN_USING_XALAN(XalanTransformer)
 #endif
 
-
-XSEC_USING_XERCES(DOMImplementation);
-XSEC_USING_XERCES(XMLPlatformUtils);
-XSEC_USING_XERCES(XMLException);
-XSEC_USING_XERCES(DOMImplementationRegistry);
+XERCES_CPP_NAMESPACE_USE
 
 DOMDocument *createLetter(DOMImplementation *impl) {
 

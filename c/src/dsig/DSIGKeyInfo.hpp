@@ -164,7 +164,8 @@ public:
 	 * \brief Return the DOMNode that heads up this DOMNode
 	 */
 
-	virtual const DOMNode *getKeyInfoDOMNode() {return mp_keyInfoDOMNode;}
+	virtual const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getKeyInfoDOMNode() 
+		{return mp_keyInfoDOMNode;}
 
 	/**
 	 * \brief Return the name of this key
@@ -195,8 +196,8 @@ public:
 
 protected:
 
-	DOMNode						* mp_keyInfoDOMNode;
-	DSIGSignature				* mp_parentSignature;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode			* mp_keyInfoDOMNode;
+	DSIGSignature									* mp_parentSignature;
 
 private:
 	DSIGKeyInfo();

@@ -74,7 +74,7 @@
 
 #include <xercesc/dom/DOM.hpp>
 
-XSEC_USING_XERCES(DOMDocument);
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors

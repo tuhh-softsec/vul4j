@@ -135,7 +135,7 @@ public:
 	 * @returns the DOMNode that heads up this structure
 	 */
 
-	virtual DOMElement * getDOMNode() = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getDOMNode() = 0;
 
 	//@}
 

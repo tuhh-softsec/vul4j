@@ -63,14 +63,14 @@
  * TXFMOutputFile := Transform that outputs the byte stream to a file without changing
  *							  the actual data in any way
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
 
 #include <xsec/transformers/TXFMOutputFile.hpp>
 #include <xsec/framework/XSECException.hpp>
+
+XERCES_CPP_NAMESPACE_USE
 
 // Destructor
 

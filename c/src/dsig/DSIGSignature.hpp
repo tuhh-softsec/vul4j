@@ -129,7 +129,9 @@ protected:
 	 * @see #load
 	 */
 
-	DSIGSignature(DOMDocument *doc, DOMNode *sigNode);
+	DSIGSignature(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, 
+				  XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *sigNode);
+
 	~DSIGSignature();
     //@}
 	
@@ -319,10 +321,12 @@ public:
 	 * the document.
 	 */
 
-	DOMElement *createBlankSignature(DOMDocument *doc,
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *createBlankSignature(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
 		canonicalizationMethod cm = CANON_C14N_NOC,
 		signatureMethod	sm = SIGNATURE_DSA,
-		hashMethod hm = HASH_SHA1);
+		hashMethod hm = HASH_SHA1
+	);
 
 	/**
 	 * \brief Add a new reference to the end of the list of \<Reference\> nodes.
@@ -344,8 +348,11 @@ public:
 	 */
 
 	
-	DSIGReference * createReference(const XMLCh * URI,
-		hashMethod hm = HASH_SHA1, char * type = NULL);
+	DSIGReference * createReference(
+		const XMLCh * URI,
+		hashMethod hm = HASH_SHA1, 
+		char * type = NULL
+	);
 
 	//@}
 
@@ -448,7 +455,8 @@ public:
 	 * @returns The DOM_Document node.
 	 */
 
-	DOMDocument * getParentDocument() {return mp_doc;}
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * getParentDocument() 
+		{return mp_doc;}
 
 	/**
 	 * \brief Get canonicalisation algorithm
@@ -675,13 +683,17 @@ private:
 
 	XSECSafeBufferFormatter		* mp_formatter;
 	bool						m_loaded;				// Have we already loaded?
-	DOMDocument					* mp_doc;
-	DOMNode						* mp_sigNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument					
+								* mp_doc;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_sigNode;
 	DSIGSignedInfo				* mp_signedInfo;
-	DOMNode						* mp_signatureValueNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_signatureValueNode;
 	safeBuffer					m_signatureValueSB;
 	DSIGKeyInfoList				m_keyInfoList;
-	DOMNode						* mp_KeyInfoNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_KeyInfoNode;
 	safeBuffer					m_errStr;
 
 	// For creating functions

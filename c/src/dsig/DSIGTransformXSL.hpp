@@ -62,8 +62,6 @@
  *
  * DSIGTransformXSL := Class that performs XML Stylesheet Language transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -110,7 +108,7 @@ public:
 	 * @see #load
 	 */
 
-	DSIGTransformXSL(DSIGSignature *sig, DOMNode * node);
+	DSIGTransformXSL(DSIGSignature *sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);
 
     /**
 	 * \brief Contructor used for new signatures.
@@ -162,7 +160,8 @@ public:
 	 * transform and return the newly constructed DOMNode structure
 	 */
 
-	virtual DOMElement * createBlankTransform(DOMDocument * parentDoc);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createBlankTransform(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * parentDoc);
 
 	/**
 	 * \brief Load a DOM structure
@@ -191,7 +190,9 @@ public:
 	 * to the caller who is expected to delete it.
 	 */
 
-	DOMNode * setStylesheet(DOMNode * stylesheet);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * setStylesheet(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * stylesheet
+	);
 
 	/**
 	 * \brief Get the stylesheet node.
@@ -202,7 +203,7 @@ public:
 	 * @returns The top stylesheet node
 	 */
 
-	DOMNode * getStylesheet(void);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getStylesheet(void);
 
 	//@}
 	
@@ -211,6 +212,6 @@ private:
 	DSIGTransformXSL();
 	DSIGTransformXSL(const DSIGTransformXSL & theOther);
 
-	DOMNode				* mp_stylesheetNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * mp_stylesheetNode;
 
 };

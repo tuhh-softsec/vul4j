@@ -134,7 +134,7 @@ public:
 	 * @see DSIGSignature#createReference
 	 */
 
-	DSIGReference(DSIGSignature * sig, DOMNode *dom);
+	DSIGReference(DSIGSignature * sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *dom);
 
     /**
 	 * \brief Contructor for use when creating new Reference structures.
@@ -197,7 +197,8 @@ public:
 	 * @returns The root Reference element of the newly created DOM structure.
 	 */
 
-	DOMElement * createBlankReference(const XMLCh * URI, hashMethod hm, char * type);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankReference(const XMLCh * URI, hashMethod hm, char * type);
 
 	/**
 	 * \brief Append an Enveloped Signature Transform to the Reference.
@@ -254,7 +255,7 @@ public:
 	 * @returns The newly create XSLT transform
 	 */
 
-	DSIGTransformXSL * appendXSLTransform(DOMNode *stylesheet);
+	DSIGTransformXSL * appendXSLTransform(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *stylesheet);
 	
 	/**
 	 * \brief Append a Canonicalization Transform to the Reference.
@@ -447,7 +448,7 @@ public:
 	 */
 
 	static DSIGTransformList * loadTransforms(
-							DOMNode *transformsNode,
+							XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *transformsNode,
 							XSECSafeBufferFormatter * formatter,
 							DSIGSignature * sig);
 
@@ -464,7 +465,7 @@ public:
 	 * @returns A base TXFM element.
 	 */
 
-	static TXFMBase * getURIBaseTXFM(DOMDocument * doc, 
+	static TXFMBase * getURIBaseTXFM(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc, 
 									const XMLCh * URI, 
 									XSECURIResolver * resolver);
 
@@ -482,7 +483,7 @@ public:
 	 */
 
 	static DSIGReferenceList *loadReferenceListFromXML(DSIGSignature * sig, 
-													   DOMNode *firstReference);
+													   XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *firstReference);
 
 	/**
 	 * \brief Validate a list of references.
@@ -520,19 +521,25 @@ private:
 
 	// Internal functions
 	void createTransformList(void);
-	void addTransform(DSIGTransform * txfm, DOMElement * txfmElt);
+	void addTransform(
+		DSIGTransform * txfm, 
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * txfmElt
+	);
 
 
 	XSECSafeBufferFormatter		* mp_formatter;
 	bool formatterLocal;
-	DOMNode						* mp_referenceNode;		// Points to start of document where reference node is
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_referenceNode;		// Points to start of document where reference node is
 	TXFMBase					* mp_preHash;			// To be used pre-hash
 	DSIGReferenceList			* mp_manifestList;		// The list of references in a manifest
 	const XMLCh					* mp_URI;				// The URI String
 	bool						m_isManifest;			// Does this reference a manifest?
-	DOMNode						* mp_transformsNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_transformsNode;
 	hashMethod					me_hashMethod;			// What form of digest?
-	DOMNode						* mp_hashValueNode;		// Node where the Hash value is stored
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_hashValueNode;		// Node where the Hash value is stored
 	DSIGSignature				* mp_parentSignature;	// Owner signature
 	DSIGTransformList			* mp_transformList;		// List of transforms
 	

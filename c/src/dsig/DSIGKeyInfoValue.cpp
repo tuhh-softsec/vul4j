@@ -62,11 +62,7 @@
  *
  * DSIGKeyInfoValue := A value setting
  *
- * Author(s): Berin Lautenbach
- *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -75,6 +71,8 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+
+XERCES_CPP_NAMESPACE_USE
 
 DSIGKeyInfoValue::DSIGKeyInfoValue(DSIGSignature * sig, DOMNode *valueNode) :
 DSIGKeyInfo(sig),

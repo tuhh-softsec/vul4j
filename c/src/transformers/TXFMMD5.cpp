@@ -62,8 +62,6 @@
  *
  * TXFMMD5 := Class that performs a MD5 transform
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -73,6 +71,8 @@
 #include <xsec/transformers/TXFMMD5.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECException.hpp>
+
+XERCES_CPP_NAMESPACE_USE
 
 // Standarad includes 
 

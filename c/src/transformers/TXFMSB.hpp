@@ -62,8 +62,6 @@
  *
  * TXFMSB := Class that takes an input from a safeBuffer to start a pipe
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -86,7 +84,7 @@ private:
 
 public:
 
-	TXFMSB(DOMDocument *doc);
+	TXFMSB(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 	~TXFMSB();
 
 	// Methods to set the inputs
@@ -104,8 +102,8 @@ public:
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	
 private:

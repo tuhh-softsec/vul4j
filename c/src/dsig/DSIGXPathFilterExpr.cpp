@@ -79,19 +79,17 @@
 #include <xercesc/util/XMLUniDefs.hpp>
 
 
-XSEC_USING_XERCES(DOMNamedNodeMap);
-XSEC_USING_XERCES(DOMNode);
-XSEC_USING_XERCES(DOMAttr);
+XERCES_CPP_NAMESPACE_USE
 
 XMLCh filterStr[] = {
 
-	XERCES_CPP_NAMESPACE :: chLatin_F,
-	XERCES_CPP_NAMESPACE :: chLatin_i,
-	XERCES_CPP_NAMESPACE :: chLatin_l,
-	XERCES_CPP_NAMESPACE :: chLatin_t,
-	XERCES_CPP_NAMESPACE :: chLatin_e,
-	XERCES_CPP_NAMESPACE :: chLatin_r,
-	XERCES_CPP_NAMESPACE :: chNull
+	chLatin_F,
+	chLatin_i,
+	chLatin_l,
+	chLatin_t,
+	chLatin_e,
+	chLatin_r,
+	chNull
 
 };
 

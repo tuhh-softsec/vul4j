@@ -120,7 +120,10 @@ public:
 	 * @param valueNode DOMNode at head of XML structure
 	 */
 
-	DSIGKeyInfoValue(DSIGSignature * sig, DOMNode *valueNode);
+	DSIGKeyInfoValue(
+		DSIGSignature * sig, 
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *valueNode
+	);
 
 	/**
 	 * \brief Constructor for creating from scratch
@@ -215,10 +218,11 @@ public:
 	 * @returns the DOMElement at the head of the DOM structure
 	 */
 	
-	DOMElement * createBlankDSAKeyValue(const XMLCh * P,
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createBlankDSAKeyValue(const XMLCh * P,
 		const XMLCh * Q,
 		const XMLCh * G,
-		const XMLCh * Y);
+		const XMLCh * Y
+	);
 
 	/**
 	 * \brief Set P value.
@@ -271,8 +275,9 @@ public:
 	 * @returns The DOM structure of the RSAValue that has been created
 	 */
 	
-	DOMElement * DSIGKeyInfoValue::createBlankRSAKeyValue(const XMLCh * modulus,
-		const XMLCh * exponent);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		DSIGKeyInfoValue::createBlankRSAKeyValue(const XMLCh * modulus,
+			const XMLCh * exponent);
 
 	/**
 	 * \brief Set the Modulus
@@ -323,20 +328,20 @@ private:
 
 	// DSA
 
-	DOMNode				* mp_PTextNode;	// Nodes where strings are stored
-	DOMNode				* mp_QTextNode;
-	DOMNode				* mp_GTextNode;
-	DOMNode				* mp_YTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_PTextNode;	// Nodes where strings are stored
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_QTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_GTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_YTextNode;
 
 	// RSA
 	
-	DOMNode				* mp_modulusTextNode;
-	DOMNode				* mp_exponentTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_modulusTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_exponentTextNode;
 
 	// General
 
-	DOMNode				* mp_valueNode;
-	keyInfoType			m_keyInfoType;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_valueNode;
+	keyInfoType								m_keyInfoType;
 };
 
 #endif /* #define DSIGKEYVALUE_INCLUDE */

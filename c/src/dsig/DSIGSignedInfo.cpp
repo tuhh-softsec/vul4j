@@ -62,11 +62,7 @@
  *
  * DSIGSignedInfo := Class for checking and setting up signed Info nodes in a DSIG signature
  *
- * Author(s): Berin Lautenbach
- *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -79,8 +75,7 @@
 
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(DOMNamedNodeMap);
-XSEC_USING_XERCES(Janitor);
+XERCES_CPP_NAMESPACE_USE
 
 // Constructors and Destructors
 

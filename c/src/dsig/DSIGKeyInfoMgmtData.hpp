@@ -109,7 +109,7 @@ public:
 	 * @param nameNode DOMNode to load information from
 	 */
 
-	DSIGKeyInfoMgmtData(DSIGSignature * sig, DOMNode *nameNode);
+	DSIGKeyInfoMgmtData(DSIGSignature * sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *nameNode);
 
 	/**
 	 * \brief Constructor used when XML needs to be created.
@@ -171,7 +171,7 @@ public:
 	 * @returns The newly created DOMElement with the structure underneath.
 	 */
 
-	DOMElement * createBlankMgmtData(const XMLCh * data);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createBlankMgmtData(const XMLCh * data);
 
 	/**
 	 * \brief Set the value of the MgmtData to a new string.
@@ -201,7 +201,8 @@ private:
 	DSIGKeyInfoMgmtData();						// Non-implemented constructor
 
 	const XMLCh			* mp_data;				// The Data stored in the XML file
-	DOMNode				* mp_dataTextNode;		// Text node containing the name
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode				
+						* mp_dataTextNode;		// Text node containing the name
 
 };
 

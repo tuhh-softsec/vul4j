@@ -63,8 +63,6 @@
  * c14n := tool to dump a XML file to the console after canonacalising it thru
  *			c14n
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -93,11 +91,7 @@
 #include <xsec/utils/XSECNameSpaceExpander.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
 
-XSEC_USING_XERCES(XMLException);
-XSEC_USING_XERCES(XMLString);
-XSEC_USING_XERCES(XercesDOMParser);
-XSEC_USING_XERCES(XMLPlatformUtils);
-XSEC_USING_XERCES(DOMException);
+XERCES_CPP_NAMESPACE_USE
 
 using std::endl;
 using std::cout;

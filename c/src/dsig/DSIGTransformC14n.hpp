@@ -62,8 +62,6 @@
  *
  * DSIGTransformC14n := Class that holds information about C14n transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -104,7 +102,7 @@ public:
 	 * @see #load
 	 */
 
-	DSIGTransformC14n(DSIGSignature *sig, DOMNode * node);
+	DSIGTransformC14n(DSIGSignature *sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);
 
     /**
 	 * \brief Contructor used for new signatures.
@@ -163,7 +161,8 @@ public:
 	 * @note By default creates a non-comment non-exclusive C14n transform.
 	 */
 
-	virtual DOMElement * createBlankTransform(DOMDocument * parentDoc);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createBlankTransform(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * parentDoc);
 
 	/**
 	 * \brief Load a DOM structure
@@ -267,6 +266,7 @@ private:
 
 
 	canonicalizationMethod			m_cMethod;			// The method
-	DOMElement						* mp_inclNSNode;	// Node holding the inclusive Namespaces
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement						
+									* mp_inclNSNode;	// Node holding the inclusive Namespaces
 	const XMLCh						* mp_inclNSStr;		// String holding the namespaces							
 };

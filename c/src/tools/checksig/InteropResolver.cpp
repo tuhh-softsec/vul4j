@@ -63,8 +63,6 @@
  * InteropResolver := Class to resolve key elements into certificates for
  *						merlin-18 interop test
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -85,7 +83,7 @@
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
-XSEC_USING_XERCES(ArrayJanitor);
+XERCES_CPP_NAMESPACE_USE
 
 #include <iostream>
 

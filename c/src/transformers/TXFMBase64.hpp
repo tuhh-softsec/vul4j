@@ -62,8 +62,6 @@
  *
  * TXFMBase64 := Class that performs a Base64 transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -84,7 +82,7 @@ public:
 
 	// Constructors and destructors
 
-	TXFMBase64(DOMDocument *doc, bool decode = true);
+	TXFMBase64(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, bool decode = true);
 	~TXFMBase64();
 
 	// Methods to get tranform output type and input requirement
@@ -100,8 +98,8 @@ public:
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	
 private:

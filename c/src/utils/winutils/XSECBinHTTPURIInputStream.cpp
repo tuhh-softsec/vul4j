@@ -68,23 +68,7 @@
  * NOTE: Much code taken from Xerces, and the cross platform interfacing is
  * no-where near as nice.
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
- *
- * $Log$
- * Revision 1.4  2003/07/05 10:30:38  blautenb
- * Copyright update
- *
- * Revision 1.3  2003/03/15 22:41:46  blautenb
- * Add 301 (permanently moved) support
- *
- * Revision 1.2  2003/02/13 10:19:43  blautenb
- * Updated Xerces exceptions to Xsec exception
- *
- * Revision 1.1  2003/02/12 09:45:29  blautenb
- * Win32 Re-implementation of Xerces URIResolver to support re-directs
- *
  *
  */
 
@@ -109,12 +93,7 @@
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
-XSEC_USING_XERCES(NetAccessorException);
-XSEC_USING_XERCES(XMLExcepts);
-XSEC_USING_XERCES(XMLPlatformUtils);
-XSEC_USING_XERCES(XMLMutexLock);
-XSEC_USING_XERCES(XMLString);
-XSEC_USING_XERCES(ArrayJanitor);
+XERCES_CPP_NAMESPACE_USE
 
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
 #include <xsec/framework/XSECError.hpp>

@@ -73,6 +73,8 @@
 #include <xsec/transformers/TXFMParser.hpp>
 #include <xsec/framework/XSECError.hpp>
 
+XERCES_CPP_NAMESPACE_USE
+
 TXFMC14n::TXFMC14n(DOMDocument *doc) : TXFMBase(doc) {
 
 	mp_c14n = NULL;

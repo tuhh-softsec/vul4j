@@ -62,8 +62,6 @@
  *
  * checkSig := (Very ugly) tool to check a signature embedded in an XML file
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -120,12 +118,7 @@
 #include <xercesc/util/XMLUri.hpp>
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(XercesDOMParser);
-XSEC_USING_XERCES(XMLException);
-XSEC_USING_XERCES(XMLPlatformUtils);
-XSEC_USING_XERCES(DOMException);
-XSEC_USING_XERCES(XMLUri);
-XSEC_USING_XERCES(Janitor);
+XERCES_CPP_NAMESPACE_USE
 
 using std::cerr;
 using std::cout;

@@ -62,8 +62,6 @@
  *
  * TXFMXPathFilter := Class that performs XPath transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -79,7 +77,7 @@
 
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(Janitor);
+XERCES_CPP_NAMESPACE_USE
 
 #ifndef XSEC_NO_XALAN
 

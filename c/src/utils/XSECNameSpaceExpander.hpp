@@ -63,8 +63,6 @@
  * XSECNameSpaceHolder := Container class for holding and managing the name space stack
  *						  Used when running through a DOM document
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -91,9 +89,9 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
 struct XSECNameSpaceEntry {
 
 	// Variables
-	safeBuffer							m_name;			// The name for this name space
-	DOMElement							* mp_node;		// The Element Node owner
-	DOMNode								* mp_att;		// The added attribute node
+	safeBuffer									m_name;			// The name for this name space
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement	* mp_node;		// The Element Node owner
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode		* mp_att;		// The added attribute node
 			
 };
 
@@ -157,7 +155,7 @@ public:
 	 * @param d The DOM document to be expanded.
 	 */
 
-	XSECNameSpaceExpander(DOMDocument *d);			// Constructor
+	XSECNameSpaceExpander(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *d);			// Constructor
 
     /**
 	 * \brief Fragment constructor
@@ -168,7 +166,7 @@ public:
 	 * @param f The starting element of the fragment to be expanded.
 	 */
 
-	XSECNameSpaceExpander(DOMElement *f);		    // frag Constructor
+	XSECNameSpaceExpander(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *f);		    // frag Constructor
 
 	~XSECNameSpaceExpander();						// Default destructor
 
@@ -194,18 +192,20 @@ public:
 	void deleteAddedNamespaces(void);
 
 	// Check if a node is an added node
-	bool nodeWasAdded(DOMNode *n);
+	bool nodeWasAdded(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *n);
 
 private:  // Functions
 
 	XSECNameSpaceExpander(void);					// No default constructor
-	void recurse(DOMElement *n);
+	void recurse(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *n);
 
 	// data
 	
 	NameSpaceEntryListVectorType	m_lst;			// List of added name spaces
-	DOMDocument						* mp_doc;		// The owner document
-	DOMElement                      * mp_fragment;  // If we are doing a fragment
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument						
+									* mp_doc;		// The owner document
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement                      
+									* mp_fragment;  // If we are doing a fragment
 	bool							m_expanded;		// Have we expanded already?
 	XSECSafeBufferFormatter			* mp_formatter;
 

@@ -123,7 +123,7 @@ public:
 	 * @see #load
 	 */
 
-	DSIGTransform(DSIGSignature *sig, DOMNode * node) : 
+	DSIGTransform(DSIGSignature *sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node) : 
 		  mp_txfmNode(node),
 		  mp_parentSignature(sig) {};
 
@@ -185,7 +185,8 @@ public:
 	 * transform and return the newly constructed DOMNode structure
 	 */
 
-	virtual DOMElement * createBlankTransform(DOMDocument * parentDoc) = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankTransform(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * parentDoc) = 0;
 
 	/**
 	 * \brief Load a DOM structure
@@ -209,10 +210,11 @@ protected:
 	 *
 	 */
 
-	DOMElement * createTransformNode();
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createTransformNode();
 
 
-	DOMNode					* mp_txfmNode;			// The node that we read from
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
+							* mp_txfmNode;			// The node that we read from
 	DSIGSignature			* mp_parentSignature;	// Owning signature
 
 private:

@@ -62,12 +62,7 @@
  *
  * DSIGKeyInfoList := Class for Loading and storing a list of KeyInfo elements
  *					 
- *
- * Author(s): Berin Lautenbach
- *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -191,7 +186,7 @@ public:
 	 * @returns true if successfully loaded
 	 */
 
-	bool addXMLKeyInfo(DOMNode *ki);
+	bool addXMLKeyInfo(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *ki);
 
 	/*
 	 * \brief Remove a KeyInfo from the list

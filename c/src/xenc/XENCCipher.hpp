@@ -142,7 +142,9 @@ public:
 	 * not a valid EncryptedData DOM structure.
 	 */
 
-	virtual DOMDocument * decryptElement(DOMElement * element) = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * decryptElement(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
+	) = 0;
 
 	//@}
 
@@ -161,7 +163,9 @@ public:
 	 * @throws XSECException if the encryption fails.
 	 */
 
-	virtual DOMDocument * encryptElement(DOMElement * element) = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * encryptElement(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
+	) = 0;
 
 	//@}
 	/** @name Getter Functions */
@@ -176,7 +180,7 @@ public:
 	 * @returns The DOMDocument that is used by this object
 	 */
 
-	virtual DOMDocument * getDocument(void) = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * getDocument(void) = 0;
 
 	/**
 	 * \brief Get namespace prefix for XENC nodes

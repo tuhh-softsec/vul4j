@@ -62,17 +62,15 @@
  *
  * TXFMDocObject := Class that takes an input Document object ID to start a txfm pipe
  *
- * Author(s): Berin Lautenbach
- *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
 #include <xsec/transformers/TXFMDocObject.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+
+XERCES_CPP_NAMESPACE_USE
 
 // Construct/Destruct
 

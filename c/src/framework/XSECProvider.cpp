@@ -63,8 +63,6 @@
  * XSECProvider.hpp := The main interface for users wishing to gain access
  *                     to signature objects
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -75,6 +73,8 @@
 #include <xsec/framework/XSECURIResolverXerces.hpp>
 
 #include "../xenc/impl/XENCCipherImpl.hpp"
+
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Constructors/Destructors

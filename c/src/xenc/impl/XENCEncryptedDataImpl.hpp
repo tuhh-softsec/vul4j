@@ -84,21 +84,25 @@ class XENCEncryptedDataImpl : public XENCEncryptedData, public XENCEncryptedType
 public:
 
 	XENCEncryptedDataImpl(XENCCipherImpl * cipher);
-	XENCEncryptedDataImpl(XENCCipherImpl * cipher, DOMNode * node);
+	XENCEncryptedDataImpl(
+		XENCCipherImpl * cipher, 
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
+	);
 	virtual ~XENCEncryptedDataImpl();
 
 	void load(void);
 
 	// Create a blank EncryptedData DOM structure
 
-	DOMElement * createBlankEncryptedData(XENCCipherData::XENCCipherDataType type, const XMLCh * value);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankEncryptedData(XENCCipherData::XENCCipherDataType type, const XMLCh * value);
 
 	// Interface methods
 
 	// Inherited from XENCEncryptedData - need to re-implement
 	virtual XENCCipherData * getCipherData(void) 
 		{return XENCEncryptedTypeImpl::getCipherData();}
-	virtual DOMElement * getDOMNode()
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getDOMNode()
 		{return XENCEncryptedTypeImpl::getDOMNode();}
 
 

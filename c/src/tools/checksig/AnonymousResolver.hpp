@@ -97,7 +97,7 @@ public:
 
 	// Interface method
 
-	virtual BinInputStream * resolveURI(const XMLCh * uri);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * resolveURI(const XMLCh * uri);
  
 	// Interface method
 

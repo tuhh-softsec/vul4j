@@ -85,15 +85,21 @@ class DSIG_EXPORT TXFMDocObject : public TXFMBase {
 
 public:
 
-	TXFMDocObject(DOMDocument *doc);
+	TXFMDocObject(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 	~TXFMDocObject();
 
 	// Methods to set the inputs
 
 	void setInput(TXFMBase *newInput);
-	void setInput(DOMDocument *doc, const XMLCh * newFragmentId);
-	void setInput(DOMDocument *doc, DOMNode *newFragmentObject);
-	void setInput(DOMDocument *doc);
+	void setInput(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, 
+		const XMLCh * newFragmentId
+	);
+	void setInput(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, 
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *newFragmentObject
+	);
+	void setInput(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 
 	// Methods to get tranform output type and input requirement
 
@@ -104,15 +110,17 @@ public:
 	// Methods to get output data
 
 	unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument * getDocument();
-	virtual DOMNode * getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	
 private:
 
 	XMLCh	* fragmentId;				// The identifier of the object
-	DOMDocument * document;				// The DOM document we are working with
-	DOMNode * fragmentObject;			// The object that contains the doc fragment to use
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument 
+			* document;					// The DOM document we are working with
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode 
+			* fragmentObject;			// The object that contains the doc fragment to use
 	TXFMBase::nodeType type;			// The type of nodes this holds
 
 	

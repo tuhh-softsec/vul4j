@@ -63,8 +63,6 @@
  * XSECKeyInfoResolverDefault := Default (very basic) class for applications
  *						 to map KeyInfo to keys
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -76,7 +74,7 @@
 
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(Janitor);
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Construct/Destruct

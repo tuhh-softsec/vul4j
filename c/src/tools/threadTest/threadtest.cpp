@@ -103,19 +103,7 @@ using std::queue;
 using std::vector;
 using std::ostrstream;
 
-XSEC_USING_XERCES(XMLMutex);
-XSEC_USING_XERCES(DOMImplementation);
-XSEC_USING_XERCES(DOMImplementationLS);
-XSEC_USING_XERCES(DOMWriter);
-XSEC_USING_XERCES(XMLUni);
-XSEC_USING_XERCES(StdOutFormatTarget);
-XSEC_USING_XERCES(MemBufFormatTarget);
-XSEC_USING_XERCES(MemBufInputSource);
-XSEC_USING_XERCES(DOMText);
-XSEC_USING_XERCES(XercesDOMParser);
-XSEC_USING_XERCES(XMLPlatformUtils);
-XSEC_USING_XERCES(XMLException);
-XSEC_USING_XERCES(DOMImplementationRegistry);
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Globals used and read by all threads

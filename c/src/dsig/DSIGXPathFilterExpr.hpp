@@ -62,8 +62,6 @@
  *
  * DSIGXPathFilterExpr := Class that holds an XPath Filter expression
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -112,7 +110,7 @@ public:
 	 * @param node The node that will be used to read the expression in
 	 */
 
-	DSIGXPathFilterExpr(DSIGSignature * sig, DOMNode * node);
+	DSIGXPathFilterExpr(DSIGSignature * sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);
 
 	/**
 	 * \brief Builder constructor
@@ -168,7 +166,7 @@ public:
 	 * @param filterExpr The XPath expression
 	 */
 
-	DOMElement * setFilter(xpathFilterType filterType,
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * setFilter(xpathFilterType filterType,
 						const XMLCh * filterExpr);
 
 	/**
@@ -203,7 +201,7 @@ public:
 	 * @returns A pointer to the NamedNodeMap
 	 */
 
-	DOMNamedNodeMap * getNamespaces(void) {
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNamedNodeMap * getNamespaces(void) {
 		return mp_NSMap;
 	}
 
@@ -231,9 +229,12 @@ private:
 	DSIGXPathFilterExpr(const DSIGXPathFilterExpr& theOther);
 
 	DSIGSignature				* mp_sig;
-	DOMNode						* mp_xpathFilterNode;
-	DOMNode						* mp_exprTextNode;
-	DOMNamedNodeMap				* mp_NSMap;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_xpathFilterNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_exprTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNamedNodeMap				
+								* mp_NSMap;
 	safeBuffer					m_expr;
 	xpathFilterType				m_filterType;
 	bool						m_loaded;

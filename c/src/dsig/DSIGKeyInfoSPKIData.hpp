@@ -110,7 +110,8 @@ public:
 	 * @param nameNode DOMNode to load information from
 	 */
 
-	DSIGKeyInfoSPKIData(DSIGSignature * sig, DOMNode *nameNode);
+	DSIGKeyInfoSPKIData(DSIGSignature * sig, 
+						XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *nameNode);
 
 	/**
 	 * \brief Constructor used when XML needs to be created.
@@ -185,7 +186,8 @@ public:
 	 * @returns The newly created DOMElement with the structure underneath.
 	 */
 
-	DOMElement * createBlankSPKIData(const XMLCh * Sexp);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankSPKIData(const XMLCh * Sexp);
 
 	/**
 	 * \brief Append a new SPKISexp element to the SPKIData nodes
@@ -217,7 +219,8 @@ private:
 
 	struct SexpNode {
 		const XMLCh		* mp_expr;
-		DOMNode			* mp_exprTextNode;
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode			
+						* mp_exprTextNode;
 	};
 
 	typedef std::vector<SexpNode *> sexpVectorType;

@@ -103,24 +103,24 @@ using std::cout;
 
 const XMLCh s_tagname[] = {
 
-	XERCES_CPP_NAMESPACE :: chLatin_f,
-	XERCES_CPP_NAMESPACE :: chLatin_r,
-	XERCES_CPP_NAMESPACE :: chLatin_a,
-	XERCES_CPP_NAMESPACE :: chLatin_g,
-	XERCES_CPP_NAMESPACE :: chLatin_m,
-	XERCES_CPP_NAMESPACE :: chLatin_e,
-	XERCES_CPP_NAMESPACE :: chLatin_n,
-	XERCES_CPP_NAMESPACE :: chLatin_t,
-	XERCES_CPP_NAMESPACE :: chNull
+	chLatin_f,
+	chLatin_r,
+	chLatin_a,
+	chLatin_g,
+	chLatin_m,
+	chLatin_e,
+	chLatin_n,
+	chLatin_t,
+	chNull
 };
 
 const XMLCh s_defaultXENCPrefix[] = {
 
-	XERCES_CPP_NAMESPACE :: chLatin_x,
-	XERCES_CPP_NAMESPACE :: chLatin_e,
-	XERCES_CPP_NAMESPACE :: chLatin_n,
-	XERCES_CPP_NAMESPACE :: chLatin_c,
-	XERCES_CPP_NAMESPACE :: chNull
+	chLatin_x,
+	chLatin_e,
+	chLatin_n,
+	chLatin_c,
+	chNull
 
 };
 

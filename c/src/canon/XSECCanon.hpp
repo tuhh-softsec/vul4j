@@ -98,13 +98,13 @@ protected:
 
 	// Data structures
 
-	DOMDocument			*mp_doc;			// Xerces DOM Node that defines the document
-	DOMNode				*mp_startNode,		// Node to start processing from
-						*mp_nextNode;		// Next Node to be processeed
-	safeBuffer			m_buffer;			// Buffer holding parsed output
-	int					m_bufferLength,		// Length of input currently in buffer
-						m_bufferPoint;		// Next "character" to copy out
-	bool				m_allNodesDone;		// Have we completed?
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument	* mp_doc;		// Xerces DOM Node that defines the document
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode		* mp_startNode,	// Node to start processing from
+										*mp_nextNode;	// Next Node to be processeed
+	safeBuffer							m_buffer;		// Buffer holding parsed output
+	int									m_bufferLength,	// Length of input currently in buffer
+										m_bufferPoint;	// Next "character" to copy out
+	bool								m_allNodesDone;	// Have we completed?
 
 
 public:
@@ -112,8 +112,10 @@ public:
 	// Constructors
 
 	XSECCanon();
-	XSECCanon(DOMDocument *newDoc);
-	XSECCanon(DOMDocument *newDoc, DOMNode *newStartNode);
+	XSECCanon(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *newDoc);
+	XSECCanon(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *newDoc, 
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *newStartNode);
 
 	// Destructors
 
@@ -129,7 +131,7 @@ public:
 	// setStartNode sets the starting point for the output if it is a sub-document 
 	// that needs canonicalisation and we want to re-start
 	
-	bool setStartNode(DOMNode *newStartNode);
+	bool setStartNode(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *newStartNode);
 
 protected:
 

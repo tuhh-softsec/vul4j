@@ -110,12 +110,14 @@ protected:
 	TXFMBase				*input;			// The input source that we read from
 	bool					keepComments;	// Each transform needs to tell the next whether comments are still in
 	XSECNameSpaceExpander	* mp_nse;		// For expanding document name spaces
-	DOMDocument				* mp_expansionDoc;	// For expanding
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument				
+							* mp_expansionDoc;	// For expanding
 	XSECXPathNodeList		m_XPathMap;		// For node lists if necessary
 
 public:
 
-	TXFMBase(DOMDocument *doc) {input = NULL; keepComments = true; mp_nse = NULL; mp_expansionDoc = doc;}
+	TXFMBase(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc) 
+		{input = NULL; keepComments = true; mp_nse = NULL; mp_expansionDoc = doc;}
 	virtual ~TXFMBase();
 
 	// For getting/setting input/output type
@@ -168,8 +170,8 @@ public:
 	// BinInputStream methods:
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill) = 0;
-	virtual DOMDocument *getDocument() = 0;
-	virtual DOMNode *getFragmentNode() = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument() = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode() = 0;
 	virtual const XMLCh * getFragmentId() = 0;
 	virtual XSECXPathNodeList & getXPathNodeList() {return m_XPathMap;}
 

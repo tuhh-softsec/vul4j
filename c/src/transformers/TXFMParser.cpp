@@ -78,11 +78,7 @@
 #include <xercesc/framework/MemBufInputSource.hpp>
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(XercesDOMParser);
-XSEC_USING_XERCES(MemBufInputSource);
-XSEC_USING_XERCES(Janitor);
-
-
+XERCES_CPP_NAMESPACE_USE
 
 TXFMParser::TXFMParser(DOMDocument * doc) : 
 TXFMBase(doc),

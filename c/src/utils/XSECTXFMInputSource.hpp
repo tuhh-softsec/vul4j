@@ -62,23 +62,7 @@
  *
  * XSECTXFMInputSource := Transfomer InputSource for Xerces Parser.
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
- *
- * $Log$
- * Revision 1.4  2003/07/05 10:30:37  blautenb
- * Copyright update
- *
- * Revision 1.3  2003/03/02 08:21:02  blautenb
- * Fixes for a clean doxygen run
- *
- * Revision 1.2  2003/02/21 11:53:09  blautenb
- * TXFMChain to prevent memory leaks
- *
- * Revision 1.1  2003/02/17 11:19:12  blautenb
- * Class to use a transform as an InputSource to Xerces
- *
  *					 
  */
 
@@ -145,7 +129,7 @@ public :
 	 * Returns an InputStream that can be read by the parser
 	 */
 
-	BinInputStream* makeStream() const;
+	XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream* makeStream() const;
 
 	//@}
 

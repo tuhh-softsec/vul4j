@@ -62,8 +62,6 @@
  *
  * TXFMXPath := Class that performs XPath transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -102,6 +100,8 @@ XALAN_USING_XALAN(XSLTResultTarget)
 XALAN_USING_XALAN(XSLException)
 
 #endif
+
+XERCES_CPP_NAMESPACE_USE
 
 #if !defined(XSEC_NO_XPATH)
 

@@ -80,6 +80,8 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
+XERCES_CPP_NAMESPACE_USE
+
 DSIGKeyInfoList::DSIGKeyInfoList(DSIGSignature * sig) :
 mp_parentSignature(sig) {}
 

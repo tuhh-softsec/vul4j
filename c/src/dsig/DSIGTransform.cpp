@@ -62,16 +62,14 @@
  *
  * DSIGTransform := Base (virtual) class that defines a DSIG Transform
  *
- * Author(s): Berin Lautenbach
- *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
 #include <xsec/dsig/DSIGTransform.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+
+XERCES_CPP_NAMESPACE_USE
 
 DOMElement * DSIGTransform::createTransformNode() {
 

@@ -148,7 +148,10 @@ public:
 	 * @see DSIGSignature#load
 	 */
 
-	DSIGSignature * newSignatureFromDOM(DOMDocument *doc, DOMNode *sigNode);
+	DSIGSignature * newSignatureFromDOM(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, 
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *sigNode
+	);
 
     /**
 	 * \brief DSIGSignature creator for use with existing XML signatures or templates.
@@ -166,7 +169,7 @@ public:
 	 * @see DSIGSignature#load
 	 */
 	
-	DSIGSignature * newSignatureFromDOM(DOMDocument *doc);
+	DSIGSignature * newSignatureFromDOM(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 
     /**
 	 * \brief DSIGSignature creator for creating new XML signatures.
@@ -218,7 +221,7 @@ public:
 	 * @returns An implementation object for XENCCipher
 	 */
 
-	XENCCipher * newCipher(DOMDocument * doc);
+	XENCCipher * newCipher(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc);
 
 	/**
 	 * \brief Method to delete XENCCipher objects created via this provider

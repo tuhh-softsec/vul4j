@@ -63,8 +63,6 @@
  * XSECURIResolverXerces := Virtual Interface class that takes a URI and
  *                    creates a binary input stream from it.
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -123,7 +121,7 @@ public:
 	 * @returns The octet stream corresponding to the URI.
 	 */
 
-	virtual BinInputStream * resolveURI(const XMLCh * uri);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * resolveURI(const XMLCh * uri);
 
 	/**
 	 * \brief Clone the resolver to be installed in a new object.

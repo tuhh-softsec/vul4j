@@ -63,8 +63,6 @@
  * DSIGTransformXPathFilter := Class that performs XPath Filter 
  *                             transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -123,7 +121,7 @@ public:
 	 * @see #load
 	 */
 
-	DSIGTransformXPathFilter(DSIGSignature *sig, DOMNode * node);
+	DSIGTransformXPathFilter(DSIGSignature *sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);
 
     /**
 	 * \brief Contructor used for new signatures.
@@ -182,7 +180,8 @@ public:
 	 * transform and return the newly constructed DOMNode structure
 	 */
 
-	virtual DOMElement * createBlankTransform(DOMDocument * parentDoc);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankTransform(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * parentDoc);
 
 	/**
 	 * \brief Load a DOM structure

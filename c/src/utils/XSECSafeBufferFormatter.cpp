@@ -62,8 +62,6 @@
  *
  * XSECSafeBufferFormatter := Class for formatting DOMStrings into SafeBuffers
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -72,39 +70,7 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xsec/framework/XSECError.hpp>
 
-//XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s);
-/*
-{
-    unsigned int lent = s.length();
-
-	if (lent <= 0)
-		lent = 0;
-
-    XMLCh*  buf = new XMLCh[lent + 1];
-    if (lent > 0)
-		XMLString::copyNString(buf, s.rawBuffer(), lent);
-    buf[lent] = 0;
-    strm << buf;
-    delete [] buf;
-    return strm;
-}
-*/
-
-// -----------------------------------------------------------------------
-//  If the caller tells us the local coding type, this allows us to work 
-//  easily with safe buffers and DOMStrings
-// -----------------------------------------------------------------------
-
-
-/* class XSECSafeBufferFormatter {
-
-	XMLFormatter		* formatter;		// To actually perform the formatting
-	safeBuffer			formatBuffer;		// Storage of translated strings
-	sbFormatTarget		* sbf;				// Format target used by XMLFormatter
-
-public:
-
-  */
+XERCES_CPP_NAMESPACE_USE
 
 // Constructor
 

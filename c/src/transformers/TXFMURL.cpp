@@ -62,11 +62,7 @@
  *
  * TXFMURL := Class that takes an input URL to start of a transform pipe
  *
- * Author(s): Berin Lautenbach
- *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -77,7 +73,7 @@
 
 #include <xercesc/util/XMLNetAccessor.hpp>
 
-//#include <util/NetAccessors/libWWW/BinURLInputStream.hpp>
+XERCES_CPP_NAMESPACE_USE
 
 // General includes 
 

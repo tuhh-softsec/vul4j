@@ -62,8 +62,6 @@
  *
  * TXFMXPath := Class that performs XPath transforms
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -111,8 +109,8 @@ private:
 
 	safeBuffer expr;							// The expression being worked with
 
-	DOMDocument			* document;
-	DOMNamedNodeMap		* XPathAtts;	// Attributes that came through from the doc
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument			* document;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNamedNodeMap		* XPathAtts;	// Attributes that came through from the doc
 
 	static	bool		XPathInitDone;
 
@@ -121,7 +119,7 @@ private:
 
 public:
 
-	TXFMXPath(DOMDocument *doc);
+	TXFMXPath(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 	~TXFMXPath();
 
 	// Methods to set the inputs
@@ -136,15 +134,15 @@ public:
 
 	// XPath unique
 
-	void setNameSpace(DOMNamedNodeMap *xpAtts);
-	void evaluateExpr(DOMNode *h, safeBuffer expr);
-	void evaluateEnvelope(DOMNode *t);
+	void setNameSpace(XERCES_CPP_NAMESPACE_QUALIFIER DOMNamedNodeMap *xpAtts);
+	void evaluateExpr(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *h, safeBuffer expr);
+	void evaluateEnvelope(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *t);
 
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	virtual XSECXPathNodeList	& getXPathNodeList();
 private:

@@ -63,11 +63,7 @@
  * DSIGKeyInfoX509 := A "Super" key that defines a certificate with a sub-key that defines
  *                the signing key
  *
- * Author(s): Berin Lautenbach
- *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -112,7 +108,7 @@ public:
 	 * @param nameNode DOMNode to load information from
 	 */
 
-	DSIGKeyInfoName(DSIGSignature * sig, DOMNode *nameNode);
+	DSIGKeyInfoName(DSIGSignature * sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *nameNode);
 
 	/**
 	 * \brief Constructor used when XML needs to be created.
@@ -181,7 +177,7 @@ public:
 	 * @returns The newly created DOMElement with the structure underneath.
 	 */
 
-	DOMElement * createBlankKeyName(const XMLCh * name, bool isDName = false);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createBlankKeyName(const XMLCh * name, bool isDName = false);
 
 	/**
 	 * \brief Set the value of the KeyName to a new string.
@@ -214,7 +210,8 @@ private:
 
 	const XMLCh			* mp_name;				// The Data stored in the XML file
 	XMLCh				* mp_decodedDName;		// When this is a DName that needs decoding
-	DOMNode				* mp_keyNameTextNode;	// Text node containing the name
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode				
+						* mp_keyNameTextNode;	// Text node containing the name
 
 };
 

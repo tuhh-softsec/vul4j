@@ -84,14 +84,18 @@ class XENCCipherValueImpl : public XENCCipherValue {
 public:
 
 	XENCCipherValueImpl(XENCCipherImpl * cipher);
-	XENCCipherValueImpl(XENCCipherImpl * cipher, DOMNode * node);
+	XENCCipherValueImpl(
+		XENCCipherImpl * cipher, 
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
+	);
 
 	virtual ~XENCCipherValueImpl();
 
 	// Load
 	void load(void);
 	// Create
-	DOMElement * createBlankCipherValue(const XMLCh * value);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankCipherValue(const XMLCh * value);
 
 	// Interface methods
 
@@ -104,7 +108,8 @@ private:
 	XENCCipherValueImpl & operator = (const XENCCipherValueImpl &);
 
 	XENCCipher				* mp_cipher;
-	DOMNode					* mp_cipherValueNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
+							* mp_cipherValueNode;
 	XMLCh					* mp_cipherString;		// EncryptedData
 };
 

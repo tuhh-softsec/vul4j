@@ -62,8 +62,6 @@
  *
  * TXFMSHA1 := Class that performs a SHA1 transform
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -90,7 +88,7 @@ private:
 
 public:
 
-	TXFMSHA1(DOMDocument *doc, XSECCryptoKey * key = NULL);
+	TXFMSHA1(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, XSECCryptoKey * key = NULL);
 	~TXFMSHA1();
 
 	// Methods to get tranform output type and input requirement
@@ -106,8 +104,8 @@ public:
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	
 private:

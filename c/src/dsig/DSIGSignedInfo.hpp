@@ -124,9 +124,9 @@ public:
 	 * @param parentSignature The signature that owns me
 	 */
 
-	DSIGSignedInfo(DOMDocument *doc, 
+	DSIGSignedInfo(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, 
 		XSECSafeBufferFormatter * pFormatter, 
-		DOMNode *signedInfoNode,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *signedInfoNode,
 		DSIGSignature * parentSignature);
 
 
@@ -141,7 +141,7 @@ public:
 	 * @param parentSignature The owning Signature
 	 */
 
-	DSIGSignedInfo(DOMDocument *doc,
+	DSIGSignedInfo(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
 				XSECSafeBufferFormatter * pFormatter, 
 				DSIGSignature * parentSignature);
 
@@ -204,9 +204,11 @@ public:
 	 * @param hm Hash method to use (for the SignedInfo, not the references)
 	 */
 
-	DOMElement *createBlankSignedInfo(canonicalizationMethod cm,
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *
+		createBlankSignedInfo(canonicalizationMethod cm,
 			signatureMethod	sm,
-			hashMethod hm);
+			hashMethod hm
+		);
 
 	/**
 	 * \brief Create a reference to add to the SignedInfo
@@ -232,7 +234,7 @@ public:
 	 * @returns the SignedInfo node
 	 */
 
-	DOMNode *getDOMNode(void);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getDOMNode(void);
 
 	/**
 	 * \brief Get the canonicalisation method 
@@ -283,8 +285,10 @@ private:
 
 	XSECSafeBufferFormatter		* mp_formatter;
 	bool						m_loaded;				// Have we already loaded?
-	DOMDocument					* mp_doc;
-	DOMNode						* mp_signedInfoNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument					
+								* mp_doc;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
+								* mp_signedInfoNode;
 	canonicalizationMethod		m_canonicalizationMethod;
 	signatureMethod				m_signatureMethod;
 	hashMethod					m_hashMethod;

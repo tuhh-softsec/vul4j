@@ -77,26 +77,28 @@
 
 #include <xercesc/util/XMLUniDefs.hpp>
 
+XERCES_CPP_NAMESPACE_USE
+
 // --------------------------------------------------------------------------------
 //			UNICODE Strings
 // --------------------------------------------------------------------------------
 
 static XMLCh s_EncryptedData[] = {
 
-	XERCES_CPP_NAMESPACE :: chLatin_E,
-	XERCES_CPP_NAMESPACE :: chLatin_n,
-	XERCES_CPP_NAMESPACE :: chLatin_c,
-	XERCES_CPP_NAMESPACE :: chLatin_r,
-	XERCES_CPP_NAMESPACE :: chLatin_y,
-	XERCES_CPP_NAMESPACE :: chLatin_p,
-	XERCES_CPP_NAMESPACE :: chLatin_t,
-	XERCES_CPP_NAMESPACE :: chLatin_e,
-	XERCES_CPP_NAMESPACE :: chLatin_d,
-	XERCES_CPP_NAMESPACE :: chLatin_D,
-	XERCES_CPP_NAMESPACE :: chLatin_a,
-	XERCES_CPP_NAMESPACE :: chLatin_t,
-	XERCES_CPP_NAMESPACE :: chLatin_a,
-	XERCES_CPP_NAMESPACE :: chNull,
+	chLatin_E,
+	chLatin_n,
+	chLatin_c,
+	chLatin_r,
+	chLatin_y,
+	chLatin_p,
+	chLatin_t,
+	chLatin_e,
+	chLatin_d,
+	chLatin_D,
+	chLatin_a,
+	chLatin_t,
+	chLatin_a,
+	chNull,
 };
 
 // --------------------------------------------------------------------------------

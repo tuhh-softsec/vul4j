@@ -99,8 +99,7 @@
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
 #include <xercesc/util/Janitor.hpp>
 
-XSEC_USING_XERCES(DOMNamedNodeMap);
-XSEC_USING_XERCES(Janitor);
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Some useful utility functions

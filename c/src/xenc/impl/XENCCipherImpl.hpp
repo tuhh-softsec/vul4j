@@ -90,13 +90,16 @@ public:
 
 	// Implementation for decrypting elements
 
-	DOMDocument * decryptElement(DOMElement * element);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * 
+		decryptElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element);
 
 	// Implementation for encryption Elements
-	DOMDocument * encryptElement(DOMElement * element);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * encryptElement(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element);
 
 	// Getter methods
-	DOMDocument * getDocument(void) {return mp_doc;}
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * getDocument(void) 
+		{return mp_doc;}
 	const XMLCh * getXENCNSPrefix(void) const;
 
 	// Setter methods
@@ -111,19 +114,24 @@ public:
 protected:
 
 	// Protected to prevent direct creation of objects
-	XENCCipherImpl(DOMDocument * doc);
+	XENCCipherImpl(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc);
 
 	// Creates a transform chain that gives the decrypted data
 	TXFMChain * createDecryptionTXFMChain(void);
 private:
 
 	// Internal functions
-	DOMDocumentFragment * deSerialise(safeBuffer &content, DOMNode * ctx);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocumentFragment 
+							* deSerialise(
+								safeBuffer &content, 
+								XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * ctx
+							);
 
 	// Unimplemented constructor
 	XENCCipherImpl();
 
-	DOMDocument				* mp_doc;			// Document against which this will operate
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument				
+							* mp_doc;			// Document against which this will operate
 
 	// Current working object
 	XENCEncryptedDataImpl	* mp_encryptedData;

@@ -79,8 +79,7 @@
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/framework/URLInputSource.hpp>
 
-XSEC_USING_XERCES(XMLString);
-XSEC_USING_XERCES(Janitor);
+XERCES_CPP_NAMESPACE_USE
 
 
 // ----------------------------------------------------------------------------

@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.7  2003/09/11 11:11:05  blautenb
+ * Cleaned up usage of Xerces namespace - no longer inject into global namespace in headers
+ *
  * Revision 1.6  2003/07/28 12:52:46  blautenb
  * Fixed a bug with DEBUG_NEW when compiling with Xalan 1.6
  *
@@ -101,29 +104,28 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/BinFileInputStream.hpp>
 
-XSEC_USING_XERCES(XMLString);
-XSEC_USING_XERCES(ArrayJanitor);
+XERCES_CPP_NAMESPACE_USE
 
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
 
 static const XMLCh gFileScheme[] = {
 
-	XERCES_CPP_NAMESPACE_QUALIFIER chLatin_f,
-	XERCES_CPP_NAMESPACE_QUALIFIER chLatin_i,
-	XERCES_CPP_NAMESPACE_QUALIFIER chLatin_l,
-	XERCES_CPP_NAMESPACE_QUALIFIER chLatin_e,
-	XERCES_CPP_NAMESPACE_QUALIFIER chNull
+	chLatin_f,
+	chLatin_i,
+	chLatin_l,
+	chLatin_e,
+	chNull
 
 };
 
 static const XMLCh gHttpScheme[] = {
 
-	XERCES_CPP_NAMESPACE_QUALIFIER chLatin_h,
-	XERCES_CPP_NAMESPACE_QUALIFIER chLatin_t,
-	XERCES_CPP_NAMESPACE_QUALIFIER chLatin_t,
-	XERCES_CPP_NAMESPACE_QUALIFIER chLatin_p,
-	XERCES_CPP_NAMESPACE_QUALIFIER chNull
+	chLatin_h,
+	chLatin_t,
+	chLatin_t,
+	chLatin_p,
+	chNull
 
 };
 
@@ -132,10 +134,10 @@ static const XMLCh gHttpScheme[] = {
 
 static const XMLCh DOTDOT_SLASH[] = {
 
-	XERCES_CPP_NAMESPACE_QUALIFIER chPeriod,
-	XERCES_CPP_NAMESPACE_QUALIFIER chPeriod,
-	XERCES_CPP_NAMESPACE_QUALIFIER chForwardSlash,
-	XERCES_CPP_NAMESPACE_QUALIFIER chNull
+	chPeriod,
+	chPeriod,
+	chForwardSlash,
+	chNull
 
 };
 

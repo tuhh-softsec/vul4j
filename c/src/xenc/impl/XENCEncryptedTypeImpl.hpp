@@ -88,7 +88,10 @@ class XENCEncryptedTypeImpl : public XENCEncryptedType {
 public:
 
 	XENCEncryptedTypeImpl(XENCCipherImpl * cipher);
-	XENCEncryptedTypeImpl(XENCCipherImpl * cipher, DOMNode * node);
+	XENCEncryptedTypeImpl(
+		XENCCipherImpl * cipher, 
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
+	);
 
 	virtual ~XENCEncryptedTypeImpl();
 
@@ -97,14 +100,14 @@ public:
 
 	// Create from scratch.  LocalName is the name of the owning element
 
-	DOMElement * createBlankEncryptedType(
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createBlankEncryptedType(
 						XMLCh * localName,
 						XENCCipherData::XENCCipherDataType type, 
 						const XMLCh * value);
 
 	// Interface Methods
 	virtual XENCCipherData * getCipherData(void);
-	virtual DOMElement * getDOMNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getDOMNode();
 
 protected:
 
@@ -114,7 +117,8 @@ protected:
 	TXFMChain * createCipherTXFMChain(void);
 
 	XENCCipherImpl			* mp_cipher;
-	DOMNode					* mp_encryptedTypeNode;		// Node at head of structure
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
+							* mp_encryptedTypeNode;		// Node at head of structure
 	XENCCipherDataImpl		* mp_cipherData;
 
 	friend XENCCipherImpl;

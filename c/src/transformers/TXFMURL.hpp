@@ -62,8 +62,6 @@
  *
  * TXFMURL := Class that takes an input URL to start of a transform pipe
  *
- * Author(s): Berin Lautenbach
- *
  * $Id$
  *
  */
@@ -85,14 +83,15 @@ class DSIG_EXPORT TXFMURL : public TXFMBase {
 private:
 
 	XSECURIResolver			* mp_resolver;	// Resolver passed in
-	BinInputStream			* is;		// To handle the actual input
+	XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream			
+							* is;		// To handle the actual input
 
 	bool					done;
 
 
 public:
 
-	TXFMURL(DOMDocument *doc, XSECURIResolver * resolver);
+	TXFMURL(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, XSECURIResolver * resolver);
 	~TXFMURL();
 
 	// Methods to set the inputs
@@ -109,8 +108,8 @@ public:
 	// Methods to get output data
 
 	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *getDocument();
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getFragmentNode();
 	virtual const XMLCh * getFragmentId();
 	
 private :

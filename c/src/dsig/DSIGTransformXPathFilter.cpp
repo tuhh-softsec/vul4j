@@ -78,7 +78,7 @@
 
 #include <xercesc/dom/DOMNode.hpp>
 
-XSEC_USING_XERCES(DOMNode);
+XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
 //           Construct/Destruct

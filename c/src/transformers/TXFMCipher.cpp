@@ -73,6 +73,8 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECException.hpp>
 
+XERCES_CPP_NAMESPACE_USE
+
 TXFMCipher::TXFMCipher(DOMDocument *doc, 
 					   XSECCryptoKey * key, 
 					   bool encrypt) : 

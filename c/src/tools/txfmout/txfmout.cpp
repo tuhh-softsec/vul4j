@@ -114,12 +114,7 @@
 #include <xercesc/util/XMLNetAccessor.hpp>
 #include <xercesc/util/XMLUri.hpp>
 
-XSEC_USING_XERCES(NetAccessorException);
-XSEC_USING_XERCES(DOMException);
-XSEC_USING_XERCES(XMLException);
-XSEC_USING_XERCES(XercesDOMParser);
-XSEC_USING_XERCES(XMLPlatformUtils);
-XSEC_USING_XERCES(XMLUri);
+XERCES_CPP_NAMESPACE_USE
 
 using std::ios;
 using std::cout;

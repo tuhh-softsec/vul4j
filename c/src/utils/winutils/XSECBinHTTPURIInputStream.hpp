@@ -73,6 +73,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.3  2003/09/11 11:11:05  blautenb
+ * Cleaned up usage of Xerces namespace - no longer inject into global namespace in headers
+ *
  * Revision 1.2  2003/07/05 10:30:38  blautenb
  * Copyright update
  *
@@ -93,10 +96,6 @@
 #include <xercesc/util/BinInputStream.hpp>
 #include <xercesc/util/Mutexes.hpp>
 
-XSEC_USING_XERCES(BinInputStream);
-XSEC_USING_XERCES(XMLUri);
-XSEC_USING_XERCES(XMLMutex);
-
 //
 // This class implements the BinInputStream interface specified by the XML
 // parser.
@@ -106,11 +105,11 @@ struct hostent;
 struct sockaddr;
 
 
-class DSIG_EXPORT XSECBinHTTPURIInputStream : public BinInputStream
+class DSIG_EXPORT XSECBinHTTPURIInputStream : public XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream
 {
 public :
 
-    XSECBinHTTPURIInputStream(const XMLUri&  urlSource);
+    XSECBinHTTPURIInputStream(const XERCES_CPP_NAMESPACE_QUALIFIER XMLUri&  urlSource);
     ~XSECBinHTTPURIInputStream();
 
     unsigned int curPos() const;
@@ -145,10 +144,10 @@ private :
     char *              fBufferEnd;
     char *              fBufferPos;
     static bool         fInitialized;
-    static XMLMutex*    fInitMutex;
+    static XERCES_CPP_NAMESPACE_QUALIFIER XMLMutex*    fInitMutex;
 
 	static void Initialize();
-	unsigned int getSocketHandle(const XMLUri&  urlSource);
+	unsigned int getSocketHandle(const XERCES_CPP_NAMESPACE_QUALIFIER XMLUri&  urlSource);
 
 	inline static hostent* gethostbyname(const char* name);
 	inline static unsigned long inet_addr(const char* cp);
