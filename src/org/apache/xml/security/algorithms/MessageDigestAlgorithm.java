@@ -128,7 +128,6 @@ public class MessageDigestAlgorithm extends Algorithm {
     * @param digesta
     * @param digestb
     * @return the result of the {@link java.security.MessageDigest#isEqual} method
-    * @see org.apache.xml.security.utils.JavaUtils#binaryCompare
     */
    public static boolean isEqual(byte[] digesta, byte[] digestb) {
       return java.security.MessageDigest.isEqual(digesta, digestb);
