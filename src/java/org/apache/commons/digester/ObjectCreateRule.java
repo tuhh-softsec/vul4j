@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.9 2002/01/05 19:48:39 craigmcc Exp $
- * $Revision: 1.9 $
- * $Date: 2002/01/05 19:48:39 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.10 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.10 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.9 $ $Date: 2002/01/05 19:48:39 $
+ * @version $Revision: 1.10 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public class ObjectCreateRule extends Rule {
@@ -174,11 +174,13 @@ public class ObjectCreateRule extends Rule {
         String realClassName = className;
         if (attributeName != null) {
             String value = attributes.getValue(attributeName);
-            if (value != null)
+            if (value != null) {
                 realClassName = value;
+            }
         }
-        if (digester.log.isDebugEnabled())
+        if (digester.log.isDebugEnabled()) {
             digester.log.debug("New " + realClassName);
+        }
 
         // Instantiate the new object and push it on the context stack
         Class clazz = digester.getClassLoader().loadClass(realClassName);
@@ -194,8 +196,9 @@ public class ObjectCreateRule extends Rule {
     public void end() throws Exception {
 
         Object top = digester.pop();
-        if (digester.log.isDebugEnabled())
+        if (digester.log.isDebugEnabled()) {
             digester.log.debug("Pop " + top.getClass().getName());
+        }
 
     }
 

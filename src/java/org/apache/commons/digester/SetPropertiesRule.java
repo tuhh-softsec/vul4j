@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.5 2002/01/04 05:32:11 sanders Exp $
- * $Revision: 1.5 $
- * $Date: 2002/01/04 05:32:11 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.6 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.6 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,7 @@ package org.apache.commons.digester;
 
 
 import java.util.HashMap;
+
 import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -73,7 +74,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * stack, based on attributes with corresponding names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.5 $ $Date: 2002/01/04 05:32:11 $
+ * @version $Revision: 1.6 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public class SetPropertiesRule extends Rule {
@@ -89,7 +90,7 @@ public class SetPropertiesRule extends Rule {
      */
     public SetPropertiesRule(Digester digester) {
 
-	super(digester);
+        super(digester);
 
     }
 
@@ -105,24 +106,27 @@ public class SetPropertiesRule extends Rule {
      */
     public void begin(Attributes attributes) throws Exception {
 
-	// Build a set of attribute names and corresponding values
-	HashMap values = new HashMap();
-	for (int i = 0; i < attributes.getLength(); i++) {
-	    String name = attributes.getLocalName(i);
-            if ("".equals(name))
+        // Build a set of attribute names and corresponding values
+        HashMap values = new HashMap();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            String name = attributes.getLocalName(i);
+            if ("".equals(name)) {
                 name = attributes.getQName(i);
-	    String value = attributes.getValue(i);
-            if (digester.log.isDebugEnabled())
+            }
+            String value = attributes.getValue(i);
+            if (digester.log.isDebugEnabled()) {
                 digester.log.debug("  Setting property '" + name + "' to '" +
-                             value + "'");
-	    values.put(name, value);
-	}
+                        value + "'");
+            }
+            values.put(name, value);
+        }
 
-	// Populate the corresponding properties of the top object
-	Object top = digester.peek();
-	if (digester.log.isDebugEnabled())
-	    digester.log.debug("Set " + top.getClass().getName() + " properties");
-	BeanUtils.populate(top, values);
+        // Populate the corresponding properties of the top object
+        Object top = digester.peek();
+        if (digester.log.isDebugEnabled()) {
+            digester.log.debug("Set " + top.getClass().getName() + " properties");
+        }
+        BeanUtils.populate(top, values);
 
 
     }

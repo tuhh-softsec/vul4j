@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rule.java,v 1.4 2001/08/26 22:13:44 craigmcc Exp $
- * $Revision: 1.4 $
- * $Date: 2001/08/26 22:13:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rule.java,v 1.5 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.5 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ import org.xml.sax.Attributes;
  * a corresponding nested pattern of XML elements has been matched.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.4 $ $Date: 2001/08/26 22:13:44 $
+ * @version $Revision: 1.5 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public abstract class Rule {
@@ -87,8 +87,8 @@ public abstract class Rule {
      */
     public Rule(Digester digester) {
 
-	super();
-	this.digester = digester;
+        super();
+        this.digester = digester;
 
     }
 
@@ -155,7 +155,7 @@ public abstract class Rule {
      */
     public void begin(Attributes attributes) throws Exception {
 
-	;	// The default implementation does nothing
+        ;	// The default implementation does nothing
 
     }
 
@@ -169,7 +169,7 @@ public abstract class Rule {
      */
     public void body(String text) throws Exception {
 
-	;	// The default implementation does nothing
+        ;	// The default implementation does nothing
 
     }
 
@@ -180,10 +180,9 @@ public abstract class Rule {
      */
     public void end() throws Exception {
 
-	;	// The default implementation does nothing
+        ;	// The default implementation does nothing
 
     }
-
 
 
     /**
@@ -192,7 +191,7 @@ public abstract class Rule {
      */
     public void finish() throws Exception {
 
-	;	// The default implementation does nothing
+        ;	// The default implementation does nothing
 
     }
 

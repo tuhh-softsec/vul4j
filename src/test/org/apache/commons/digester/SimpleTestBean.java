@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,9 +65,9 @@ package org.apache.commons.digester;
 public class SimpleTestBean {
 
     private String alpha;
-    
+
     private String beta;
-    
+
     private String gamma;
 
     public String getAlpha()
@@ -84,22 +84,22 @@ public class SimpleTestBean {
     {
         return beta;
     }
-    
+
     public void setBeta(String beta)
     {
         this.beta=beta;
     }
-    
+
     public String getGamma()
     {
         return gamma;
     }
-    
+
     public void setGamma(String gamma)
     {
         this.gamma=gamma;
     }
-    
+
     public String toString()
     {
         StringBuffer sb = new StringBuffer("[SimpleTestBean]");
@@ -109,7 +109,7 @@ public class SimpleTestBean {
         sb.append(beta);
         sb.append(" gamma=");
         sb.append(gamma);
-        
+
         return sb.toString();
     }
 }

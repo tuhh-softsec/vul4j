@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.6 2001/09/05 18:52:37 craigmcc Exp $
- * $Revision: 1.6 $
- * $Date: 2001/09/05 18:52:37 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.7 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.7 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@ import java.util.List;
  * </ul>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.6 $ $Date: 2001/09/05 18:52:37 $
+ * @version $Revision: 1.7 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public class RulesBase implements Rules {
@@ -194,8 +194,9 @@ public class RulesBase implements Rules {
         }
         list.add(rule);
         rules.add(rule);
-        if (this.namespaceURI != null)
+        if (this.namespaceURI != null) {
             rule.setNamespaceURI(this.namespaceURI);
+        }
 
     }
 
@@ -244,26 +245,27 @@ public class RulesBase implements Rules {
 
         // List rulesList = (List) this.cache.get(pattern);
         List rulesList = lookup(namespaceURI, pattern);
-	if ((rulesList == null) || (rulesList.size() < 1)) {
+        if ((rulesList == null) || (rulesList.size() < 1)) {
             // Find the longest key, ie more discriminant
             String longKey = "";
-	    Iterator keys = this.cache.keySet().iterator();
-	    while (keys.hasNext()) {
-	        String key = (String) keys.next();
-		if (key.startsWith("*/")) {
-		    if (pattern.endsWith(key.substring(1))) {
+            Iterator keys = this.cache.keySet().iterator();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                if (key.startsWith("*/")) {
+                    if (pattern.endsWith(key.substring(1))) {
                         if (key.length() > longKey.length()) {
                             // rulesList = (List) this.cache.get(key);
                             rulesList = lookup(namespaceURI, key);
                             longKey = key;
                         }
-		    }
-		}
-	    }
-	}
-        if (rulesList == null)
+                    }
+                }
+            }
+        }
+        if (rulesList == null) {
             rulesList = new ArrayList();
-	return (rulesList);
+        }
+        return (rulesList);
 
     }
 
@@ -311,7 +313,7 @@ public class RulesBase implements Rules {
         while (items.hasNext()) {
             Rule item = (Rule) items.next();
             if ((namespaceURI.equals(item.getNamespaceURI())) ||
-                (item.getNamespaceURI() == null)) {
+                    (item.getNamespaceURI() == null)) {
                 results.add(item);
             }
         }

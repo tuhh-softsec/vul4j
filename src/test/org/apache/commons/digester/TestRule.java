@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,13 +69,13 @@ import org.xml.sax.Attributes;
  * at the identifier.</p>
  *
  * @author Robert Burrell Donkin
- * @revision $Revision: 1.4 $ $Date: 2001/11/20 00:37:25 $
+ * @revision $Revision: 1.5 $ $Date: 2002/01/09 20:22:50 $
  */
 
 public class TestRule extends Rule {
 
     // ----------------------------------------------------- Instance Variables
-    
+
 
     /** String identifing this particular <code>TestRule</code> */
     private String identifier;
@@ -101,7 +101,7 @@ public class TestRule extends Rule {
 	super(digester);
         this.identifier=identifier;
     }
-    
+
 
     /**
      * Constructor sets namespace URI.
@@ -119,7 +119,7 @@ public class TestRule extends Rule {
         setNamespaceURI(namespaceURI);
 
     }
-    
+
 
     // ------------------------------------------------ Rule Implementation
 
@@ -150,7 +150,7 @@ public class TestRule extends Rule {
 
 
     // ------------------------------------------------ Methods
-    
+
 
     /**
      * If a list has been set, append this to the list.
@@ -193,7 +193,7 @@ public class TestRule extends Rule {
     }
 
 
-    /** 
+    /**
      * Return the identifier.
      */
     public String toString() {

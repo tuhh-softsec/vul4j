@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.1 2001/09/20 20:42:04 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/09/20 20:42:04 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.2 2002/01/09 20:22:50 sanders Exp $
+ * $Revision: 1.2 $
+ * $Date: 2002/01/09 20:22:50 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ import java.util.Iterator;
  * <p> Runs standard tests for RulesBase as well as tests of extensions.
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.1 $ $Date: 2001/09/20 20:42:04 $
+ * @version $Revision: 1.2 $ $Date: 2002/01/09 20:22:50 $
  */
 
 
@@ -96,16 +96,16 @@ public class EBRTestCase extends RulesBaseTestCase {
 
     // -------------------------------------------------- Overall Test Methods
 
-    /** 
+    /**
      * <p> This should be overriden by subclasses.
      *
      * @return the matching rules to be tested.
      */
     protected Rules createMatchingRulesForTest() {
-    
+
         return new ExtendedBaseRules();
     }
-    
+
 
     /**
      * Return the tests included in this test suite.
@@ -115,8 +115,8 @@ public class EBRTestCase extends RulesBaseTestCase {
         return (new TestSuite(EBRTestCase.class));
 
     }
-    
-    
+
+
     /**
      * Basic test of parent matching rules.
      * A parent match matches any child of a particular kind of parent.
@@ -138,54 +138,54 @@ public class EBRTestCase extends RulesBaseTestCase {
         digester.addRule("*/beta/gamma/epsilon", new TestRule(digester, "wild_child"));
         digester.addRule("alpha/beta/gamma/?", new TestRule(digester, "exact_parent"));
         digester.addRule("*/beta/gamma/?", new TestRule(digester, "wild_parent"));
-        
-        
+
+
         List list=null;
         Iterator it=null;
-         
+
         // this should match just the exact since this has presidence
         list=digester.getRules().match(null,"alpha/beta/gamma/delta");
-        
+
         // all three rules should match
         assertEquals("Testing basic parent mismatch (A)",1,list.size());
-        
+
         it=list.iterator();
         assertEquals("Testing basic parent mismatch (B)","exact",((TestRule)it.next()).getIdentifier());
- 
- 
+
+
         // we don't have an exact match for this child so we should get the exact parent
         list=digester.getRules().match(null,"alpha/beta/gamma/epsilon");
-        
+
         // all three rules should match
         assertEquals("Testing basic parent mismatch (C)",1,list.size());
-        
+
         it=list.iterator();
         assertEquals("Testing basic parent mismatch (D)","exact_parent",((TestRule)it.next()).getIdentifier());
- 
- 
+
+
         // wild child overrides wild parent
         list=digester.getRules().match(null,"alpha/omega/beta/gamma/epsilon");
-        
+
         // all three rules should match
         assertEquals("Testing basic parent mismatch (E)",1,list.size());
-        
+
         it=list.iterator();
-        assertEquals("Testing basic parent mismatch (F)","wild_child",((TestRule)it.next()).getIdentifier()); 
+        assertEquals("Testing basic parent mismatch (F)","wild_child",((TestRule)it.next()).getIdentifier());
 
 
-        // nothing else matches so return wild parent 
+        // nothing else matches so return wild parent
         list=digester.getRules().match(null,"alpha/omega/beta/gamma/zeta");
-        
+
         // all three rules should match
         assertEquals("Testing basic parent mismatch (G)",1,list.size());
-        
-        it=list.iterator();
-        assertEquals("Testing basic parent mismatch (H)","wild_parent",((TestRule)it.next()).getIdentifier()); 
 
-        
+        it=list.iterator();
+        assertEquals("Testing basic parent mismatch (H)","wild_parent",((TestRule)it.next()).getIdentifier());
+
+
         // clean up
         digester.getRules().clear();
-   
+
     }
 
 
@@ -212,27 +212,27 @@ public class EBRTestCase extends RulesBaseTestCase {
         digester.addRule("alpha/epsilon/beta/gamma/zeta", new TestRule(digester, "exact3"));
         digester.addRule("*/gamma/?", new TestRule(digester, "non_wildhead_child"));
         digester.addRule("!*/epsilon/beta/gamma/?", new TestRule(digester, "universal_wildhead_child"));
-        
-        
-        
+
+
+
         List list=null;
         Iterator it=null;
-         
+
         // test universal wild head
         list=digester.getRules().match(null,"alpha/beta/gamma");
-        
+
         assertEquals("Testing universal wildcard mismatch (A)",2,list.size());
-        
+
         it=list.iterator();
         assertEquals("Testing universal wildcard mismatch (B)","exact",((TestRule)it.next()).getIdentifier());
         assertEquals("Testing universal wildcard mismatch (C)","universal_wild_head",((TestRule)it.next()).getIdentifier());
- 
- 
+
+
         // test universal parent
         list=digester.getRules().match(null,"alpha/beta/gamma/epsilon");
 
         assertEquals("Testing universal wildcard mismatch (D)",2,list.size());
-        
+
         it=list.iterator();
         assertEquals("Testing universal wildcard mismatch (E)","universal_wild_child",((TestRule)it.next()).getIdentifier());
         assertEquals("Testing universal wildcard mismatch (F)","exact2",((TestRule)it.next()).getIdentifier());
@@ -241,7 +241,7 @@ public class EBRTestCase extends RulesBaseTestCase {
         list=digester.getRules().match(null,"alpha/beta/gamma/zeta");
 
         assertEquals("Testing universal wildcard mismatch (G)",2,list.size());
-        
+
         it=list.iterator();
         assertEquals("Testing universal wildcard mismatch (H)","universal_wild_child",((TestRule)it.next()).getIdentifier());
         assertEquals("Testing universal wildcard mismatch (I)","non_wild_child",((TestRule)it.next()).getIdentifier());
@@ -251,7 +251,7 @@ public class EBRTestCase extends RulesBaseTestCase {
         list=digester.getRules().match(null,"alpha/epsilon/beta/gamma/alpha");
 
         assertEquals("Testing universal wildcard mismatch (J)",2,list.size());
-        
+
         it=list.iterator();
         assertEquals("Testing universal wildcard mismatch (K)","non_wildhead_child",((TestRule)it.next()).getIdentifier());
         assertEquals("Testing universal wildcard mismatch (L)","universal_wildhead_child",((TestRule)it.next()).getIdentifier());
@@ -260,18 +260,18 @@ public class EBRTestCase extends RulesBaseTestCase {
         list=digester.getRules().match(null,"alpha/epsilon/beta/gamma/zeta");
 
         assertEquals("Testing universal wildcard mismatch (M)",2,list.size());
-        
+
         it=list.iterator();
         assertEquals("Testing universal wildcard mismatch (M)","exact3",((TestRule)it.next()).getIdentifier());
         assertEquals("Testing universal wildcard mismatch (O)","universal_wildhead_child",((TestRule)it.next()).getIdentifier());
 
-        
+
         // clean up
         digester.getRules().clear();
-   
+
     }
 
-    
+
     /**
      * Basic test of wild matches.
      * A universal will match matches anything!
@@ -293,44 +293,44 @@ public class EBRTestCase extends RulesBaseTestCase {
         digester.addRule("alpha/beta/gamma/delta", new TestRule(digester, "exact"));
         digester.addRule("*/beta/gamma/?", new TestRule(digester, "wild_parent"));
 
-        
+
         List list=null;
         Iterator it=null;
-         
+
         // The universal wild will always match whatever else does
         list=digester.getRules().match(null,"alpha/beta/gamma/delta");
-        
+
         // all three rules should match
         assertEquals("Testing wild mismatch (A)",2,list.size());
-        
+
         it=list.iterator();
         assertEquals("Testing wild mismatch (B)","universal_wild",((TestRule)it.next()).getIdentifier());
         assertEquals("Testing wild mismatch (C)","exact",((TestRule)it.next()).getIdentifier());
- 
-         
+
+
         // The universal wild will always match whatever else does
         list=digester.getRules().match(null,"alpha/beta/gamma/epsilon");
-        
+
         assertEquals("Testing wild mismatch (D)",2,list.size());
-        
+
         it=list.iterator();
         assertEquals("Testing wild mismatch (E)","universal_wild",((TestRule)it.next()).getIdentifier());
-        assertEquals("Testing wild mismatch (F)","wild_parent",((TestRule)it.next()).getIdentifier()); 
- 
-         
+        assertEquals("Testing wild mismatch (F)","wild_parent",((TestRule)it.next()).getIdentifier());
+
+
         // The universal wild will always match whatever else does
         // we have no other non-universal matching so this will match the non-universal wild as well
         list=digester.getRules().match(null,"alpha/gamma");
-        
+
         assertEquals("Testing wild mismatch (G)",2,list.size());
-        
+
         it=list.iterator();
         assertEquals("Testing wild mismatch (H)","basic_wild",((TestRule)it.next()).getIdentifier());
-        assertEquals("Testing wild mismatch (I)","universal_wild",((TestRule)it.next()).getIdentifier()); 
-        
-        
+        assertEquals("Testing wild mismatch (I)","universal_wild",((TestRule)it.next()).getIdentifier());
+
+
         // clean up
         digester.getRules().clear();
-   
+
     }
 }

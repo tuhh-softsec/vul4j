@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,7 @@ package org.apache.commons.digester;
 
 
 import java.lang.ClassLoader;
+
 import org.xml.sax.Attributes;
 
 /**
@@ -66,10 +67,9 @@ import org.xml.sax.Attributes;
  * implementations.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.2 $ $Date: 2001/09/22 18:36:35 $
+ * @version $Revision: 1.3 $ $Date: 2002/01/09 20:22:49 $
  */
-abstract public class  AbstractObjectCreationFactory implements ObjectCreationFactory
-{
+abstract public class AbstractObjectCreationFactory implements ObjectCreationFactory {
 
 
     // ----------------------------------------------------- Instance Variables

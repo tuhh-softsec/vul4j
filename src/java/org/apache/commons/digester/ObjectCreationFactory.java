@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,7 @@ package org.apache.commons.digester;
 
 
 import java.lang.ClassLoader;
+
 import org.xml.sax.Attributes;
 
 /**
@@ -68,14 +69,13 @@ import org.xml.sax.Attributes;
  * whenever it is matched.</p>
  *
  * <p> {@link AbstractObjectCreationFactory} is an abstract
- * implementation suitable for creating anonymous 
+ * implementation suitable for creating anonymous
  * <code>ObjectCreationFactory</code> implementations.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.3 $ $Date: 2001/09/22 18:36:35 $
+ * @version $Revision: 1.4 $ $Date: 2002/01/09 20:22:49 $
  */
-public interface ObjectCreationFactory
-{
+public interface ObjectCreationFactory {
 
     /**
      * <p>Factory method called by {@link FactoryCreateRule} to supply an

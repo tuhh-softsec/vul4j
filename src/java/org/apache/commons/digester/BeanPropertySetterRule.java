@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.3 2002/01/04 05:32:11 sanders Exp $
- * $Revision: 1.3 $
- * $Date: 2002/01/04 05:32:11 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.4 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.4 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,12 +63,13 @@
 package org.apache.commons.digester;
 
 import java.util.HashMap;
+
 import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.BeanUtils;
 
 
 /**
- * <p> Rule implements sets a bean property on the top object 
+ * <p> Rule implements sets a bean property on the top object
  * to the body text.</p>
  *
  * <p> The property set:</p>
@@ -80,7 +81,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.3 $ $Date: 2002/01/04 05:32:11 $
+ * @version $Revision: 1.4 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public class BeanPropertySetterRule extends Rule {
@@ -89,22 +90,22 @@ public class BeanPropertySetterRule extends Rule {
     // ----------------------------------------------------------- Constructors
 
 
-    /** 
+    /**
      * <p>Construct rule that sets the given property from the body text.</p>
-     * 
+     *
      * @param digester associated <code>Digester</code>
-     * @param propertyName name of property to set 
+     * @param propertyName name of property to set
      */
     public BeanPropertySetterRule(Digester digester, String propertyName) {
-            
-            super(digester);
-            this.propertyName=propertyName;
+
+        super(digester);
+        this.propertyName = propertyName;
 
     }
 
-    /** 
+    /**
      * <p>Construct rule that automatically sets a property from the body text.
-     * 
+     *
      * <p> This construct creates a rule that sets the property
      * on the top object named the same as the current element.
      *
@@ -112,10 +113,10 @@ public class BeanPropertySetterRule extends Rule {
      */
     public BeanPropertySetterRule(Digester digester) {
 
-            this(digester, null);
+        this(digester, null);
 
     }
- 
+
 
     // ----------------------------------------------------- Instance Variables
 
@@ -142,12 +143,13 @@ public class BeanPropertySetterRule extends Rule {
      */
     public void body(String bodyText) throws Exception {
 
-            // log some debugging information
-            if (digester.log.isDebugEnabled())
-                digester.log.debug("[BeanPropertySetterRule] Called with text " +
-                             bodyText);
+        // log some debugging information
+        if (digester.log.isDebugEnabled()) {
+            digester.log.debug("[BeanPropertySetterRule] Called with text " +
+                    bodyText);
+        }
 
-	    this.bodyText = bodyText.trim();
+        this.bodyText = bodyText.trim();
 
     }
 
@@ -156,42 +158,44 @@ public class BeanPropertySetterRule extends Rule {
      * Process the end of this element.
      */
     public void end() throws Exception {
-        
-        String property=propertyName;    
 
-        if (property==null) {
+        String property = propertyName;
+
+        if (property == null) {
             // If we don't have a specific property name,
             // use the element name.
             String match = digester.match;
             int slash = match.lastIndexOf('/');
-            if (slash >= 0)
-                match = match.substring(slash+1);
-                
-            property=match;
-            
-	}
+            if (slash >= 0) {
+                match = match.substring(slash + 1);
+            }
+
+            property = match;
+
+        }
 
         // log some debugging information
         digester.log.info("[BeanPropertySetterRule] setting property " +
-                         property + " with text " + bodyText);
+                property + " with text " + bodyText);
 
         // going to use beanutils so need to specify property using map
-        HashMap map=new HashMap();
-        map.put(property,bodyText);
-        
+        HashMap map = new HashMap();
+        map.put(property, bodyText);
+
         // examine top object
-        Object top=digester.peek();
-        if (top==null) {
+        Object top = digester.peek();
+        if (top == null) {
             // don't try to set property if null
             // just log and return
-            if (digester.log.isDebugEnabled())
+            if (digester.log.isDebugEnabled()) {
                 digester.log.debug("[BeanPropertySetterRule] Top object is null.");
+            }
             return;
         }
-        
+
         // populate property on top object
-        BeanUtils.populate(top,map);
-        
+        BeanUtils.populate(top, map);
+
     }
 
 
@@ -200,7 +204,7 @@ public class BeanPropertySetterRule extends Rule {
      */
     public void finish() throws Exception {
 
-	bodyText = null;
+        bodyText = null;
 
     }
 
@@ -209,7 +213,7 @@ public class BeanPropertySetterRule extends Rule {
      * Render a printable version of this Rule.
      */
     public String toString() {
-        
+
         StringBuffer sb = new StringBuffer("BeanPropertySetterRule[");
         sb.append("propertyName=");
         sb.append(propertyName);

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.6 2002/01/04 02:34:08 sanders Exp $
- * $Revision: 1.6 $
- * $Date: 2002/01/04 02:34:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.7 2002/01/09 20:22:50 sanders Exp $
+ * $Revision: 1.7 $
+ * $Date: 2002/01/09 20:22:50 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * XML documents to exercise the built-in rules.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.6 $ $Date: 2002/01/04 02:34:08 $
+ * @version $Revision: 1.7 $ $Date: 2002/01/09 20:22:50 $
  */
 
 public class RuleTestCase extends TestCase {

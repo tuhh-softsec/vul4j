@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.12 2002/01/04 05:32:11 sanders Exp $
- * $Revision: 1.12 $
- * $Date: 2002/01/04 05:32:11 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.13 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.13 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,6 +65,7 @@ package org.apache.commons.digester;
 
 import java.lang.reflect.Method;
 import java.lang.ClassLoader;
+
 import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.MethodUtils;
@@ -78,7 +79,7 @@ import org.apache.commons.beanutils.MethodUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.12 $ $Date: 2002/01/04 05:32:11 $
+ * @version $Revision: 1.13 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public class CallMethodRule extends Rule {
@@ -97,9 +98,9 @@ public class CallMethodRule extends Rule {
      *  zero for a single argument from the body of this element.
      */
     public CallMethodRule(Digester digester, String methodName,
-    			  int paramCount) {
+                          int paramCount) {
 
-	this(digester, methodName, paramCount, (Class[]) null);
+        this(digester, methodName, paramCount, (Class[]) null);
 
     }
 
@@ -119,19 +120,20 @@ public class CallMethodRule extends Rule {
     public CallMethodRule(Digester digester, String methodName,
                           int paramCount, String paramTypes[]) {
 
-	super(digester);
-	this.methodName = methodName;
-	this.paramCount = paramCount;
-	if (paramTypes == null) {
+        super(digester);
+        this.methodName = methodName;
+        this.paramCount = paramCount;
+        if (paramTypes == null) {
             this.paramTypes = new Class[paramCount];
-            for (int i = 0; i < this.paramTypes.length; i++)
+            for (int i = 0; i < this.paramTypes.length; i++) {
                 this.paramTypes[i] = "abc".getClass();
+            }
         } else {
             this.paramTypes = new Class[paramTypes.length];
             for (int i = 0; i < this.paramTypes.length; i++) {
                 try {
                     this.paramTypes[i] =
-                        digester.getClassLoader().loadClass(paramTypes[i]);
+                            digester.getClassLoader().loadClass(paramTypes[i]);
                 } catch (ClassNotFoundException e) {
                     this.paramTypes[i] = null; // Will cause NPE later
                 }
@@ -157,17 +159,19 @@ public class CallMethodRule extends Rule {
     public CallMethodRule(Digester digester, String methodName,
                           int paramCount, Class paramTypes[]) {
 
-	super(digester);
-	this.methodName = methodName;
-	this.paramCount = paramCount;
-	if (paramTypes == null) {
+        super(digester);
+        this.methodName = methodName;
+        this.paramCount = paramCount;
+        if (paramTypes == null) {
             this.paramTypes = new Class[paramCount];
-            for (int i = 0; i < this.paramTypes.length; i++)
+            for (int i = 0; i < this.paramTypes.length; i++) {
                 this.paramTypes[i] = "abc".getClass();
+            }
         } else {
             this.paramTypes = new Class[paramTypes.length];
-            for (int i = 0; i < this.paramTypes.length; i++)
+            for (int i = 0; i < this.paramTypes.length; i++) {
                 this.paramTypes[i] = paramTypes[i];
+            }
         }
 
     }
@@ -180,7 +184,6 @@ public class CallMethodRule extends Rule {
      * The body text collected from this element.
      */
     protected String bodyText = null;
-
 
 
     /**
@@ -213,12 +216,13 @@ public class CallMethodRule extends Rule {
      */
     public void begin(Attributes attributes) throws Exception {
 
-	// Push an array to capture the parameter values if necessary
-	if (paramCount > 0) {
-	    String parameters[] = new String[paramCount];
-	    for (int i = 0; i < parameters.length; i++)
-	        parameters[i] = null;
-	    digester.pushParams(parameters);
+        // Push an array to capture the parameter values if necessary
+        if (paramCount > 0) {
+            String parameters[] = new String[paramCount];
+            for (int i = 0; i < parameters.length; i++) {
+                parameters[i] = null;
+            }
+            digester.pushParams(parameters);
         }
 
     }
@@ -231,8 +235,9 @@ public class CallMethodRule extends Rule {
      */
     public void body(String bodyText) throws Exception {
 
-	if (paramCount == 0)
-	    this.bodyText = bodyText.trim();
+        if (paramCount == 0) {
+            this.bodyText = bodyText.trim();
+        }
 
     }
 
@@ -242,11 +247,11 @@ public class CallMethodRule extends Rule {
      */
     public void end() throws Exception {
 
-	// Retrieve or construct the parameter values array
-	String parameters[] = null;
-	if (paramCount > 0) {
-         
-	    parameters = (String[]) digester.popParams();
+        // Retrieve or construct the parameter values array
+        String parameters[] = null;
+        if (paramCount > 0) {
+
+            parameters = (String[]) digester.popParams();
 
             // In the case where the parameter for the method
             // is taken from an attribute, and that attribute
@@ -254,7 +259,7 @@ public class CallMethodRule extends Rule {
             // skip the method call
             if (paramCount == 1 && parameters[0] == null) {
                 return;
-            }             
+            }
 
         } else {
 
@@ -266,8 +271,8 @@ public class CallMethodRule extends Rule {
                 return;
             }
 
-	    parameters = new String[1];
-	    parameters[0] = bodyText;
+            parameters = new String[1];
+            parameters[0] = bodyText;
             if (paramTypes.length == 0) {
                 paramTypes = new Class[1];
                 paramTypes[0] = "abc".getClass();
@@ -275,41 +280,46 @@ public class CallMethodRule extends Rule {
 
         }
 
-	// Construct the parameter values array we will need
-	Object paramValues[] = new Object[paramTypes.length];
-	for (int i = 0; i < paramTypes.length; i++)
-	    paramValues[i] =
-	      ConvertUtils.convert(parameters[i], paramTypes[i]);
+        // Construct the parameter values array we will need
+        Object paramValues[] = new Object[paramTypes.length];
+        for (int i = 0; i < paramTypes.length; i++) {
+            paramValues[i] =
+                    ConvertUtils.convert(parameters[i], paramTypes[i]);
+        }
 
-	// Invoke the required method on the top object
-	Object top = digester.peek();
-	if (digester.log.isDebugEnabled()) {
-	    StringBuffer sb = new StringBuffer("Call ");
-            if (top == null)
+        // Invoke the required method on the top object
+        Object top = digester.peek();
+        if (digester.log.isDebugEnabled()) {
+            StringBuffer sb = new StringBuffer("Call ");
+            if (top == null) {
                 sb.append("[NULL TOP]");
-            else
+            } else {
                 sb.append(top.getClass().getName());
-	    sb.append(".");
-	    sb.append(methodName);
-	    sb.append("(");
-	    for (int i = 0; i < paramValues.length; i++) {
-		if (i > 0)
-		    sb.append(",");
-		if (paramValues[i] == null)
-		    sb.append("null");
-		else
-		    sb.append(paramValues[i].toString());
-                sb.append("/");
-                if (paramTypes[i] == null)
+            }
+            sb.append(".");
+            sb.append(methodName);
+            sb.append("(");
+            for (int i = 0; i < paramValues.length; i++) {
+                if (i > 0) {
+                    sb.append(",");
+                }
+                if (paramValues[i] == null) {
                     sb.append("null");
-                else
+                } else {
+                    sb.append(paramValues[i].toString());
+                }
+                sb.append("/");
+                if (paramTypes[i] == null) {
+                    sb.append("null");
+                } else {
                     sb.append(paramTypes[i].getName());
-	    }
-	    sb.append(")");
-	    digester.log.debug(sb.toString());
-	}
+                }
+            }
+            sb.append(")");
+            digester.log.debug(sb.toString());
+        }
         MethodUtils.invokeExactMethod(top, methodName,
-                                      paramValues, paramTypes);
+                paramValues, paramTypes);
 
     }
 
@@ -319,7 +329,7 @@ public class CallMethodRule extends Rule {
      */
     public void finish() throws Exception {
 
-	bodyText = null;
+        bodyText = null;
 
     }
 
@@ -337,8 +347,9 @@ public class CallMethodRule extends Rule {
         sb.append(", paramTypes={");
         if (paramTypes != null) {
             for (int i = 0; i < paramTypes.length; i++) {
-                if (i > 0)
+                if (i > 0) {
                     sb.append(", ");
+                }
                 sb.append(paramTypes[i].getName());
             }
         }

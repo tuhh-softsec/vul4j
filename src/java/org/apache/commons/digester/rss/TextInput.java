@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/TextInput.java,v 1.1 2001/05/22 02:55:03 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/05/22 02:55:03 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/TextInput.java,v 1.2 2002/01/09 20:22:50 sanders Exp $
+ * $Revision: 1.2 $
+ * $Date: 2002/01/09 20:22:50 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ import java.io.PrintWriter;
  * to further specialize its behavior.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/05/22 02:55:03 $
+ * @version $Revision: 1.2 $ $Date: 2002/01/09 20:22:50 $
  */
 
 public class TextInput {

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.9 2002/01/04 05:32:11 sanders Exp $
- * $Revision: 1.9 $
- * $Date: 2002/01/04 05:32:11 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.10 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.10 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,6 +65,7 @@ package org.apache.commons.digester;
 
 import java.lang.ClassLoader;
 import java.lang.reflect.Method;
+
 import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.MethodUtils;
 
@@ -75,7 +76,7 @@ import org.apache.commons.beanutils.MethodUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.9 $ $Date: 2002/01/04 05:32:11 $
+ * @version $Revision: 1.10 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public class SetTopRule extends Rule {
@@ -94,7 +95,7 @@ public class SetTopRule extends Rule {
      */
     public SetTopRule(Digester digester, String methodName) {
 
-	this(digester, methodName, null);
+        this(digester, methodName, null);
 
     }
 
@@ -110,11 +111,11 @@ public class SetTopRule extends Rule {
      *  for a <code>boolean</code> parameter)
      */
     public SetTopRule(Digester digester, String methodName,
-                         String paramType) {
+                      String paramType) {
 
-	super(digester);
-	this.methodName = methodName;
-	this.paramType = paramType;
+        super(digester);
+        this.methodName = methodName;
+        this.paramType = paramType;
 
     }
 
@@ -142,27 +143,29 @@ public class SetTopRule extends Rule {
      */
     public void end() throws Exception {
 
-	// Identify the objects to be used
-	Object child = digester.peek(1);
-	Object parent = digester.peek(0);
-	if (digester.log.isDebugEnabled()) {
-            if (parent == null)
+        // Identify the objects to be used
+        Object child = digester.peek(1);
+        Object parent = digester.peek(0);
+        if (digester.log.isDebugEnabled()) {
+            if (parent == null) {
                 digester.log.debug("Call [NULL PARENT]." +
-                             methodName + "(" + child + ")");
-            else
+                        methodName + "(" + child + ")");
+            } else {
                 digester.log.debug("Call " + parent.getClass().getName() + "." +
-                             methodName + "(" + child + ")");
+                        methodName + "(" + child + ")");
+            }
         }
 
-	// Call the specified method
-	Class paramTypes[] = new Class[1];
-	if (paramType != null)
+        // Call the specified method
+        Class paramTypes[] = new Class[1];
+        if (paramType != null) {
             paramTypes[0] =
-                digester.getClassLoader().loadClass(paramType);
-        else
+                    digester.getClassLoader().loadClass(paramType);
+        } else {
             paramTypes[0] = child.getClass();
+        }
         MethodUtils.invokeExactMethod(parent, methodName,
-                                      new Object[] { child }, paramTypes);
+                new Object[]{ child }, paramTypes);
 
     }
 

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestRuleSet.java,v 1.2 2002/01/04 02:34:08 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2002/01/04 02:34:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestRuleSet.java,v 1.3 2002/01/09 20:22:51 sanders Exp $
+ * $Revision: 1.3 $
+ * $Date: 2002/01/09 20:22:51 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,7 +68,7 @@ package org.apache.commons.digester;
  * optionally associated with a particular namespace URI.
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.2 $ $Date: 2002/01/04 02:34:08 $
+ * @version $Revision: 1.3 $ $Date: 2002/01/09 20:22:51 $
  */
 
 public class TestRuleSet extends RuleSetBase {

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RulesBaseTestCase.java,v 1.2 2001/09/05 18:52:37 craigmcc Exp $
- * $Revision: 1.2 $
- * $Date: 2001/09/05 18:52:37 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RulesBaseTestCase.java,v 1.3 2002/01/09 20:22:50 sanders Exp $
+ * $Revision: 1.3 $
+ * $Date: 2002/01/09 20:22:50 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -87,7 +87,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.2 $ $Date: 2001/09/05 18:52:37 $
+ * @version $Revision: 1.3 $ $Date: 2002/01/09 20:22:50 $
  */
 
 public class RulesBaseTestCase extends TestCase {
@@ -112,7 +112,7 @@ public class RulesBaseTestCase extends TestCase {
     public RulesBaseTestCase(String name) {
 
         super(name);
-        
+
     }
 
 
@@ -129,7 +129,7 @@ public class RulesBaseTestCase extends TestCase {
 
     }
 
-    /** 
+    /**
      * <p> This should be overriden by subclasses.
      *
      * @return the matching rules to be tested.
@@ -169,7 +169,7 @@ public class RulesBaseTestCase extends TestCase {
 
         // clear any existing rules
         digester.getRules().clear();
-        
+
         // perform tests
         List list = null;
 
@@ -190,7 +190,7 @@ public class RulesBaseTestCase extends TestCase {
 
         // clean up
         digester.getRules().clear();
-        
+
     }
 
     /**
@@ -239,11 +239,11 @@ public class RulesBaseTestCase extends TestCase {
 
         // clean up
         digester.getRules().clear();
-        
+
     }
-    
+
     /**
-     * Test basic matchings involving namespaces. 
+     * Test basic matchings involving namespaces.
      */
     public void testBasicNamespaceMatching() {
 
@@ -260,44 +260,44 @@ public class RulesBaseTestCase extends TestCase {
         digester.addRule("alpha/beta/gamma", new TestRule(digester, "No-Namespace"));
         digester.addRule("alpha/beta/gamma", new TestRule(digester, "Euclidean-Namespace","euclidean"));
 
-        
-        list=digester.getRules().rules();        
+
+        list=digester.getRules().rules();
 
         // test that matching null namespace brings back namespace and non-namespace rules
         list=digester.getRules().match(null,"alpha/beta/gamma");
-        
+
         assertEquals("Null namespace match (A)",2,list.size());
-        
+
         it=list.iterator();
         assertEquals("Null namespace match (B)","No-Namespace",((TestRule)it.next()).getIdentifier());
         assertEquals("Null namespace match (C)","Euclidean-Namespace",((TestRule)it.next()).getIdentifier());
 
-        
+
 
         // test that matching euclid namespace brings back namespace and non-namespace rules
         list=digester.getRules().match("euclidean","alpha/beta/gamma");
-        
+
         assertEquals("Matching namespace match (A)",2,list.size());
-        
+
         it=list.iterator();
         assertEquals("Matching namespace match (B)","No-Namespace",((TestRule)it.next()).getIdentifier());
         assertEquals("Matching namespace match (C)","Euclidean-Namespace",((TestRule)it.next()).getIdentifier());
-        
-        
-        
+
+
+
         // test that matching another namespace brings back only non-namespace rule
         list=digester.getRules().match("hyperbolic","alpha/beta/gamma");
-        
+
         assertEquals("Non matching namespace match (A)",1,list.size());
-        
+
         it=list.iterator();
         assertEquals("Non matching namespace match (B)","No-Namespace",((TestRule)it.next()).getIdentifier());
 
         // clean up
         digester.getRules().clear();
-        
+
     }
-    
+
     /**
      * Rules must always be returned in the correct order.
      */
@@ -316,9 +316,9 @@ public class RulesBaseTestCase extends TestCase {
 
         // test that rules are returned in set order
         List list=digester.getRules().match(null,"alpha/beta/gamma");
-        
+
         assertEquals("Testing ordering mismatch (A)",3,list.size());
-        
+
         Iterator it=list.iterator();
         assertEquals("Testing ordering mismatch (B)","one",((TestRule)it.next()).getIdentifier());
         assertEquals("Testing ordering mismatch (C)","two",((TestRule)it.next()).getIdentifier());
@@ -326,6 +326,6 @@ public class RulesBaseTestCase extends TestCase {
 
         // clean up
         digester.getRules().clear();
-        
+
     }
 }

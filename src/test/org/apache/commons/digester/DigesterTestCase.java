@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.7 2002/01/08 23:46:01 sanders Exp $
- * $Revision: 1.7 $
- * $Date: 2002/01/08 23:46:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.8 2002/01/09 20:22:50 sanders Exp $
+ * $Revision: 1.8 $
+ * $Date: 2002/01/09 20:22:50 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.7 $ $Date: 2002/01/08 23:46:01 $
+ * @version $Revision: 1.8 $ $Date: 2002/01/09 20:22:50 $
  */
 
 public class DigesterTestCase extends TestCase {

@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ package org.apache.commons.digester.xmlrules;
 
 
 /**
- * Thrown when parsing XML into Digester rules, if a circular inclusion occurred 
+ * Thrown when parsing XML into Digester rules, if a circular inclusion occurred
  * in the xml digester rules files.
  *
  * @author David H. Martin - Initial Contribution
@@ -70,7 +70,7 @@ package org.apache.commons.digester.xmlrules;
 public class CircularIncludeException extends XmlLoadException {
 
     /**
-     * @param fileName the name of the XML file suspected of causing the 
+     * @param fileName the name of the XML file suspected of causing the
      * circular inclusion
      */
     public CircularIncludeException(String fileName) {

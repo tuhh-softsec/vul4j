@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rules.java,v 1.3 2001/09/22 18:36:35 craigmcc Exp $
- * $Revision: 1.3 $
- * $Date: 2001/09/22 18:36:35 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rules.java,v 1.4 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.4 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ import java.util.List;
  * during parsing.
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.3 $ $Date: 2001/09/22 18:36:35 $
+ * @version $Revision: 1.4 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public interface Rules {
@@ -161,7 +161,6 @@ public interface Rules {
     public List match(String namespaceURI, String pattern);
 
 
-
     /**
      * Return a List of all registered Rule instances, or a zero-length List
      * if there are no registered Rule instances.  If more than one Rule
@@ -170,7 +169,6 @@ public interface Rules {
      * method.
      */
     public List rules();
-
 
 
 }

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/RSSDigester.java,v 1.2 2002/01/04 05:32:11 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2002/01/04 05:32:11 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/RSSDigester.java,v 1.3 2002/01/09 20:22:50 sanders Exp $
+ * $Revision: 1.3 $
+ * $Date: 2002/01/09 20:22:50 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,6 +67,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.LogSource;
 import org.xml.sax.InputSource;
@@ -87,7 +88,7 @@ import org.xml.sax.SAXException;
  * example of using these classes.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.2 $ $Date: 2002/01/04 05:32:11 $
+ * @version $Revision: 1.3 $ $Date: 2002/01/09 20:22:50 $
  */
 
 public class RSSDigester extends Digester {
@@ -171,7 +172,7 @@ public class RSSDigester extends Digester {
      * implementation class.
      */
     protected String textInputClass =
-        "org.apache.commons.digester.rss.TextInput";
+            "org.apache.commons.digester.rss.TextInput";
 
     public String getTextInputClass() {
         return (this.textInputClass);
@@ -268,14 +269,16 @@ public class RSSDigester extends Digester {
      */
     protected void configure() {
 
-        if (configured)
+        if (configured) {
             return;
+        }
 
         // Register local copies of the DTDs we understand
         for (int i = 0; i < registrations.length; i += 2) {
-            URL url = this.getClass().getResource(registrations[i+1]);
-            if (url != null)
+            URL url = this.getClass().getResource(registrations[i + 1]);
+            if (url != null) {
                 register(registrations[i], url.toString());
+            }
         }
 
         // FIXME - validate the "version" attribute of the rss element?
@@ -299,20 +302,20 @@ public class RSSDigester extends Digester {
         // Add the rules for the Image object
         addObjectCreate("rss/channel/image", imageClass);
         addSetNext("rss/channel/image", "setImage",
-                   "org.apache.commons.digester.rss.Image");
+                "org.apache.commons.digester.rss.Image");
         addCallMethod("rss/channel/image/description", "setDescription", 0);
         addCallMethod("rss/channel/image/height", "setHeight", 0,
-                      new Class[] { Integer.TYPE });
+                new Class[]{ Integer.TYPE });
         addCallMethod("rss/channel/image/link", "setLink", 0);
         addCallMethod("rss/channel/image/title", "setTitle", 0);
         addCallMethod("rss/channel/image/url", "setURL", 0);
         addCallMethod("rss/channel/image/width", "setWidth", 0,
-                      new Class[] { Integer.TYPE });
+                new Class[]{ Integer.TYPE });
 
         // Add the rules for the Item object
         addObjectCreate("rss/channel/item", itemClass);
         addSetNext("rss/channel/item", "addItem",
-                   "org.apache.commons.digester.rss.Item");
+                "org.apache.commons.digester.rss.Item");
         addCallMethod("rss/channel/item/description", "setDescription", 0);
         addCallMethod("rss/channel/item/link", "setLink", 0);
         addCallMethod("rss/channel/item/title", "setTitle", 0);
@@ -320,9 +323,9 @@ public class RSSDigester extends Digester {
         // Add the rules for the TextInput object
         addObjectCreate("rss/channel/textinput", textInputClass);
         addSetNext("rss/channel/textinput", "setTextInput",
-                   "org.apache.commons.digester.rss.TextInput");
+                "org.apache.commons.digester.rss.TextInput");
         addCallMethod("rss/channel/textinput/description",
-                      "setDescription", 0);
+                "setDescription", 0);
         addCallMethod("rss/channel/textinput/link", "setLink", 0);
         addCallMethod("rss/channel/textinput/name", "setName", 0);
         addCallMethod("rss/channel/textinput/title", "setTitle", 0);
@@ -348,11 +351,12 @@ public class RSSDigester extends Digester {
             System.out.println("RSSDigester Test Program");
             System.out.println("Opening input stream ...");
             InputStream is = RSSDigester.class.getResourceAsStream
-                ("/org/apache/commons/digester/rss/rss-example.xml");
+                    ("/org/apache/commons/digester/rss/rss-example.xml");
             System.out.println("Creating new digester ...");
             RSSDigester digester = new RSSDigester();
-            if ((args.length > 0) && (args[0].equals("-debug")))
+            if ((args.length > 0) && (args[0].equals("-debug"))) {
                 digester.setLogger(LogSource.getInstance("RSSDigester"));
+            }
             System.out.println("Parsing input stream ...");
             Channel channel = (Channel) digester.parse(is);
             System.out.println("Closing input stream ...");
@@ -367,4 +371,4 @@ public class RSSDigester extends Digester {
     }
 
 
- }
+}

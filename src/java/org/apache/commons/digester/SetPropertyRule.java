@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.5 2002/01/04 05:32:11 sanders Exp $
- * $Revision: 1.5 $
- * $Date: 2002/01/04 05:32:11 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.6 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.6 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,7 @@ package org.apache.commons.digester;
 
 
 import java.util.HashMap;
+
 import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -73,7 +74,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * top of the stack, based on attributes with specified names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.5 $ $Date: 2002/01/04 05:32:11 $
+ * @version $Revision: 1.6 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public class SetPropertyRule extends Rule {
@@ -94,9 +95,9 @@ public class SetPropertyRule extends Rule {
      */
     public SetPropertyRule(Digester digester, String name, String value) {
 
-	super(digester);
-	this.name = name;
-	this.value = value;
+        super(digester);
+        this.name = name;
+        this.value = value;
 
     }
 
@@ -127,28 +128,31 @@ public class SetPropertyRule extends Rule {
      */
     public void begin(Attributes attributes) throws Exception {
 
-	// Identify the actual property name and value to be used
-	String actualName = null;
-	String actualValue = null;
-	HashMap values = new HashMap();
-	for (int i = 0; i < attributes.getLength(); i++) {
-	    String name = attributes.getLocalName(i);
-            if ("".equals(name))
+        // Identify the actual property name and value to be used
+        String actualName = null;
+        String actualValue = null;
+        HashMap values = new HashMap();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            String name = attributes.getLocalName(i);
+            if ("".equals(name)) {
                 name = attributes.getQName(i);
-	    String value = attributes.getValue(i);
-	    if (name.equals(this.name))
-		actualName = value;
-	    else if (name.equals(this.value))
-		actualValue = value;
-	}
-	values.put(actualName, actualValue);
+            }
+            String value = attributes.getValue(i);
+            if (name.equals(this.name)) {
+                actualName = value;
+            } else if (name.equals(this.value)) {
+                actualValue = value;
+            }
+        }
+        values.put(actualName, actualValue);
 
-	// Populate the corresponding property of the top object
-	Object top = digester.peek();
-	if (digester.log.isDebugEnabled())
-	    digester.log.debug("Set " + top.getClass().getName() + " property " +
-			 actualName + " to " + actualValue);
-	BeanUtils.populate(top, values);
+        // Populate the corresponding property of the top object
+        Object top = digester.peek();
+        if (digester.log.isDebugEnabled()) {
+            digester.log.debug("Set " + top.getClass().getName() + " property " +
+                    actualName + " to " + actualValue);
+        }
+        BeanUtils.populate(top, values);
 
     }
 

@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,12 +69,12 @@ public class TestObject {
 
     private ArrayList children = new ArrayList();
     private String value = "";
-    
+
     public TestObject() {
     }
 
     private static int idx = 0;
-    
+
     public String toString() {
         String str = value;
         for (Iterator i = children.iterator(); i.hasNext(); ) {
@@ -82,11 +82,11 @@ public class TestObject {
         }
         return str;
     }
-    
+
     public void add(Object o) {
         children.add(o);
     }
-    
+
     public void setValue(String val) {
         value = val;
     }

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.5 2001/08/20 19:18:42 craigmcc Exp $
- * $Revision: 1.5 $
- * $Date: 2001/08/20 19:18:42 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.6 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.6 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,7 @@ package org.apache.commons.digester;
 
 
 import java.lang.reflect.Method;
+
 import org.xml.sax.Attributes;
 
 
@@ -73,7 +74,7 @@ import org.xml.sax.Attributes;
  * by a surrounding CallMethodRule rule.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.5 $ $Date: 2001/08/20 19:18:42 $
+ * @version $Revision: 1.6 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public class CallParamRule extends Rule {
@@ -91,7 +92,7 @@ public class CallParamRule extends Rule {
      */
     public CallParamRule(Digester digester, int paramIndex) {
 
-	this(digester, paramIndex, null);
+        this(digester, paramIndex, null);
 
     }
 
@@ -105,11 +106,11 @@ public class CallParamRule extends Rule {
      * @param attributeName The name of the attribute to save
      */
     public CallParamRule(Digester digester, int paramIndex,
-    			 String attributeName) {
+                         String attributeName) {
 
-	super(digester);
-	this.paramIndex = paramIndex;
-	this.attributeName = attributeName;
+        super(digester);
+        this.paramIndex = paramIndex;
+        this.attributeName = attributeName;
 
     }
 
@@ -145,8 +146,9 @@ public class CallParamRule extends Rule {
      */
     public void begin(Attributes attributes) throws Exception {
 
-	if (attributeName != null)
-	    bodyText = attributes.getValue(attributeName);
+        if (attributeName != null) {
+            bodyText = attributes.getValue(attributeName);
+        }
 
     }
 
@@ -158,8 +160,9 @@ public class CallParamRule extends Rule {
      */
     public void body(String bodyText) throws Exception {
 
-	if (attributeName == null)
-	    this.bodyText = bodyText.trim();
+        if (attributeName == null) {
+            this.bodyText = bodyText.trim();
+        }
 
     }
 
@@ -169,8 +172,8 @@ public class CallParamRule extends Rule {
      */
     public void end() throws Exception {
 
-	String parameters[] = (String[]) digester.peekParams();
-	parameters[paramIndex] = bodyText;
+        String parameters[] = (String[]) digester.peekParams();
+        parameters[paramIndex] = bodyText;
 
     }
 
@@ -180,7 +183,7 @@ public class CallParamRule extends Rule {
      */
     public void finish() throws Exception {
 
-	bodyText = null;
+        bodyText = null;
 
     }
 

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.37 2002/01/09 02:04:13 sanders Exp $
- * $Revision: 1.37 $
- * $Date: 2002/01/09 02:04:13 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.38 2002/01/09 20:22:49 sanders Exp $
+ * $Revision: 1.38 $
+ * $Date: 2002/01/09 20:22:49 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,6 +79,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
 import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogSource;
@@ -111,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.37 $ $Date: 2002/01/09 02:04:13 $
+ * @version $Revision: 1.38 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public class Digester extends DefaultHandler {
@@ -321,8 +322,9 @@ public class Digester extends DefaultHandler {
     public String findNamespaceURI(String prefix) {
 
         ArrayStack stack = (ArrayStack) namespaces.get(prefix);
-        if (stack == null)
+        if (stack == null) {
             return (null);
+        }
         try {
             return ((String) stack.peek());
         } catch (EmptyStackException e) {
@@ -344,13 +346,15 @@ public class Digester extends DefaultHandler {
      */
     public ClassLoader getClassLoader() {
 
-        if (this.classLoader != null)
+        if (this.classLoader != null) {
             return (this.classLoader);
+        }
         if (this.useContextClassLoader) {
             ClassLoader classLoader =
                     Thread.currentThread().getContextClassLoader();
-            if (classLoader != null)
+            if (classLoader != null) {
                 return (classLoader);
+            }
         }
         return (this.getClass().getClassLoader());
 
@@ -388,8 +392,9 @@ public class Digester extends DefaultHandler {
 
         String elementName = match;
         int lastSlash = elementName.lastIndexOf('/');
-        if (lastSlash >= 0)
+        if (lastSlash >= 0) {
             elementName = elementName.substring(lastSlash + 1);
+        }
         return (elementName);
 
     }
@@ -539,14 +544,16 @@ public class Digester extends DefaultHandler {
     public SAXParser getParser() {
 
         // Return the parser we already created (if any)
-        if (parser != null)
+        if (parser != null) {
             return (parser);
+        }
 
         // Create and return a new parser
         synchronized (this) {
             try {
-                if (factory == null)
+                if (factory == null) {
                     factory = SAXParserFactory.newInstance();
+                }
                 factory.setNamespaceAware(namespaceAware);
                 factory.setValidating(validating);
                 parser = factory.newSAXParser();
@@ -705,8 +712,9 @@ public class Digester extends DefaultHandler {
             }
         }
 
-        while (getCount() > 1)
+        while (getCount() > 1) {
             pop();
+        }
 
         // Fire "finish" events for all defined rules
         Iterator rules = getRules().rules().iterator();
@@ -760,8 +768,9 @@ public class Digester extends DefaultHandler {
             for (int i = 0; i < rules.size(); i++) {
                 try {
                     Rule rule = (Rule) rules.get(i);
-                    if (debug)
+                    if (debug) {
                         log.debug("  Fire body() for " + rule);
+                    }
                     rule.body(bodyText);
                 } catch (Exception e) {
                     log.error("Body event threw exception", e);
@@ -772,14 +781,16 @@ public class Digester extends DefaultHandler {
                 }
             }
         } else {
-            if (debug)
+            if (debug) {
                 log.debug("  No rules found matching '" + match + "'.");
+            }
         }
 
         // Recover the body text from the surrounding element
         bodyText = (StringBuffer) bodyTexts.pop();
-        if (debug)
+        if (debug) {
             log.debug("  Popping body text '" + bodyText.toString() + "'");
+        }
 
         // Fire "end" events for all relevant rules in reverse order
         if (rules != null) {
@@ -787,8 +798,9 @@ public class Digester extends DefaultHandler {
                 int j = (rules.size() - i) - 1;
                 try {
                     Rule rule = (Rule) rules.get(j);
-                    if (debug)
+                    if (debug) {
                         log.debug("  Fire end() for " + rule);
+                    }
                     rule.end();
                 } catch (Exception e) {
                     log.error("End event threw exception", e);
@@ -802,10 +814,11 @@ public class Digester extends DefaultHandler {
 
         // Recover the previous match expression
         int slash = match.lastIndexOf('/');
-        if (slash >= 0)
+        if (slash >= 0) {
             match = match.substring(0, slash);
-        else
+        } else {
             match = "";
+        }
 
     }
 
@@ -825,8 +838,9 @@ public class Digester extends DefaultHandler {
 
         // Deregister this prefix mapping
         ArrayStack stack = (ArrayStack) namespaces.get(prefix);
-        if (stack == null)
+        if (stack == null) {
             return;
+        }
         try {
             stack.pop();
             if (stack.empty())
@@ -964,12 +978,14 @@ public class Digester extends DefaultHandler {
 
         // Compute the current matching rule
         StringBuffer sb = new StringBuffer(match);
-        if (match.length() > 0)
+        if (match.length() > 0) {
             sb.append('/');
-        if ((localName == null) || (localName.length() < 1))
+        }
+        if ((localName == null) || (localName.length() < 1)) {
             sb.append(qName);
-        else
+        } else {
             sb.append(localName);
+        }
         match = sb.toString();
         if (debug) {
             log.debug("  New match='" + match + "'");
@@ -1090,8 +1106,9 @@ public class Digester extends DefaultHandler {
 
         // Has this system identifier been registered?
         String dtdURL = null;
-        if (publicId != null)
+        if (publicId != null) {
             dtdURL = (String) dtds.get(publicId);
+        }
         if (dtdURL == null) {
             if (debug) {
                 log.debug(" Not registered, use system identifier");
@@ -1130,8 +1147,9 @@ public class Digester extends DefaultHandler {
         log.error("Parse Error at line " + exception.getLineNumber() +
                 " column " + exception.getColumnNumber() + ": " +
                 exception.getMessage(), exception);
-        if (errorHandler != null)
+        if (errorHandler != null) {
             errorHandler.error(exception);
+        }
 
     }
 
@@ -1149,8 +1167,9 @@ public class Digester extends DefaultHandler {
         log.error("Parse Fatal Error at line " + exception.getLineNumber() +
                 " column " + exception.getColumnNumber() + ": " +
                 exception.getMessage(), exception);
-        if (errorHandler != null)
+        if (errorHandler != null) {
             errorHandler.fatalError(exception);
+        }
 
     }
 
@@ -1168,8 +1187,9 @@ public class Digester extends DefaultHandler {
         log.error("Parse Warning at line " + exception.getLineNumber() +
                 " column " + exception.getColumnNumber() + ": " +
                 exception.getMessage(), exception);
-        if (errorHandler != null)
+        if (errorHandler != null) {
             errorHandler.warning(exception);
+        }
 
     }
 
@@ -1201,7 +1221,6 @@ public class Digester extends DefaultHandler {
         log.error(message, exception);
 
     }
-
 
 
     /**
@@ -1337,10 +1356,11 @@ public class Digester extends DefaultHandler {
         String oldNamespaceURI = getRuleNamespaceURI();
         String newNamespaceURI = ruleSet.getNamespaceURI();
         if (log.isDebugEnabled()) {
-            if (newNamespaceURI == null)
+            if (newNamespaceURI == null) {
                 log.debug("addRuleSet() with no namespace URI");
-            else
+            } else {
                 log.debug("addRuleSet() with namespace URI " + newNamespaceURI);
+            }
         }
         setRuleNamespaceURI(newNamespaceURI);
         ruleSet.addRuleInstances(this);
@@ -1784,8 +1804,9 @@ public class Digester extends DefaultHandler {
      */
     public void push(Object object) {
 
-        if (stack.size() == 0)
+        if (stack.size() == 0) {
             root = object;
+        }
         stack.push(object);
 
     }
@@ -1805,8 +1826,9 @@ public class Digester extends DefaultHandler {
     protected void configure() {
 
         // Do not configure more than once
-        if (configured)
+        if (configured) {
             return;
+        }
 
         // Perform lazy configuration as needed
         ; // Nothing required by default

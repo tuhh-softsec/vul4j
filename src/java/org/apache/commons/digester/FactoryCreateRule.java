@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.6 $ $Date: 2002/01/04 05:32:11 $
+ * @version $Revision: 1.7 $ $Date: 2002/01/09 20:22:49 $
  */
 
 public class FactoryCreateRule extends Rule {
@@ -203,8 +203,9 @@ public class FactoryCreateRule extends Rule {
     public void begin(Attributes attributes) throws Exception {
 
         Object instance = getFactory(attributes).createObject(attributes);
-        if (digester.log.isDebugEnabled())
+        if (digester.log.isDebugEnabled()) {
             digester.log.debug("New " + instance.getClass().getName());
+        }
         digester.push(instance);
 
     }
@@ -216,8 +217,9 @@ public class FactoryCreateRule extends Rule {
     public void end() throws Exception {
 
         Object top = digester.pop();
-        if (digester.log.isDebugEnabled())
+        if (digester.log.isDebugEnabled()) {
             digester.log.debug("Pop " + top.getClass().getName());
+        }
 
     }
 
@@ -227,8 +229,9 @@ public class FactoryCreateRule extends Rule {
      */
     public void finish() throws Exception {
 
-        if (attributeName != null)
+        if (attributeName != null) {
             creationFactory = null;
+        }
 
     }
 
@@ -271,11 +274,13 @@ public class FactoryCreateRule extends Rule {
             String realClassName = className;
             if (attributeName != null) {
                 String value = attributes.getValue(attributeName);
-                if (value != null)
+                if (value != null) {
                     realClassName = value;
+                }
             }
-            if (digester.log.isDebugEnabled())
+            if (digester.log.isDebugEnabled()) {
                 digester.log.debug("New factory " + realClassName);
+            }
             Class clazz = digester.getClassLoader().loadClass(realClassName);
             creationFactory = (ObjectCreationFactory)
                     clazz.newInstance();

@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,21 +76,21 @@ import junit.framework.TestSuite;
  */
 
 public class DigesterLoaderTest extends TestCase {
-    
+
     public DigesterLoaderTest(java.lang.String testName) {
         super(testName);
     }
-    
+
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
     }
-    
+
     public static junit.framework.Test suite() {
         TestSuite suite = new TestSuite(DigesterLoaderTestSuite.class);
 
         return suite;
     }
-    
+
     /**
      * Tests the DigesterLoader.createDigester(), with multiple
      * included rule sources: testrules.xml includes another rules xml
@@ -107,7 +107,7 @@ public class DigesterLoaderTest extends TestCase {
         assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
         //System.out.println(root);
     }
-    
+
     /**
      * Tests the DigesterLoader.load(), with multiple included rule
      * sources: testrules.xml includes another rules xml file, and
@@ -125,7 +125,7 @@ public class DigesterLoaderTest extends TestCase {
         }
         assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
     }
-    
+
     /**
      * The same as testLoad1, exception the input file is passed to
      * DigesterLoader as an InputStream instead of a URL.
@@ -139,7 +139,7 @@ public class DigesterLoaderTest extends TestCase {
         }
         assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
     }
- 
+
 
     /**
      * Validates that circular includes are detected and result in an exception
@@ -153,6 +153,6 @@ public class DigesterLoaderTest extends TestCase {
         }
         fail("Creating a digester with circular rules should have thrown CircularIncludeException.");
     }
-        
-        
+
+
 }

@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,10 +75,10 @@ public class DigesterPatternStackTest extends TestCase {
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
     }
-    
+
     public static junit.framework.Test suite() {
         TestSuite suite = new TestSuite(DigesterPatternStackTest.class);
-        
+
         return suite;
     }
 

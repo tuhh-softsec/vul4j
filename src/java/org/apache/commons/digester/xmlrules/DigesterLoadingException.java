@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -78,7 +78,7 @@ public class DigesterLoadingException extends Exception {
     }
 
     /**
-     * @param cause underlying exception that caused this to be thrown 
+     * @param cause underlying exception that caused this to be thrown
      */
     public DigesterLoadingException(Throwable cause) {
         this(cause.getMessage());
@@ -87,7 +87,7 @@ public class DigesterLoadingException extends Exception {
 
     /**
      * @param msg a String detailing the reason for the exception
-     * @param cause underlying exception that caused this to be thrown 
+     * @param cause underlying exception that caused this to be thrown
      */
     public DigesterLoadingException(String msg, Throwable cause) {
         this(msg);

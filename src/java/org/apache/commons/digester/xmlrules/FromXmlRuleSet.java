@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,6 +72,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.RuleSetBase;
 import org.xml.sax.InputSource;
@@ -96,7 +97,7 @@ public class FromXmlRuleSet extends RuleSetBase {
      * The rule set for parsing the Digester rules
      */
     private DigesterRuleParser parser;
-    
+
     /**
      * Constructs a FromXmlRuleSet using the default DigesterRuleParser
      * @param rulesXml the path to the XML document defining the Digester rules
@@ -113,21 +114,21 @@ public class FromXmlRuleSet extends RuleSetBase {
         xmlRules = rulesXml;
         this.parser = parser;
     }
-    
+
     /**
      * Adds to the digester the set of Rule instances defined in the
-     * XML file for this rule set.  
+     * XML file for this rule set.
      * @see org.apache.commons.digester.RuleSetBase
      */
     public void addRuleInstances(org.apache.commons.digester.Digester digester) throws XmlLoadException {
         URL dtdURL = getClass().getClassLoader().getResource(DIGESTER_DTD_PATH);
         if (dtdURL == null) {
-            throw new XmlLoadException("Cannot find resource \"" + 
-                DIGESTER_DTD_PATH + "\"");
+            throw new XmlLoadException("Cannot find resource \"" +
+                    DIGESTER_DTD_PATH + "\"");
         }
         parser.setDigesterRulesDTD(dtdURL.toString());
         parser.setTarget(digester);
-        
+
         Digester rulesDigester = new Digester();
         rulesDigester.addRuleSet(parser);
         rulesDigester.push(parser);
