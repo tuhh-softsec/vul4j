@@ -125,7 +125,19 @@ public class AllTests extends TestCase {
       boolean useTextUI = true;
 
       if (useTextUI) {
-         junit.textui.TestRunner.run(suite());
+         int counter = 100;
+         long start = System.currentTimeMillis();
+         for (int i=0; i<counter; i++) {
+            junit.textui.TestRunner.run(suite());
+         }
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " full tests took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
       } else {
          String[] testCaseName = { "-noloading", AllTests.class.getName() };
 

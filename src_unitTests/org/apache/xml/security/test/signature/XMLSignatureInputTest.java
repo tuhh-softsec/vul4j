@@ -66,6 +66,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -219,24 +220,10 @@ public class XMLSignatureInputTest extends TestCase {
       InputStream inputStream =
          new ByteArrayInputStream(_nodeSetInput1.getBytes("UTF-8"));
       XMLSignatureInput input = new XMLSignatureInput(inputStream);
-      NodeList nl = input.getNodeSet();
+      Set nl = input.getNodeSet();
 
-      if (_nodeSetInput1Nodes != nl.getLength()) {
-         for (int i = 0; i < nl.getLength(); i++) {
-            cat.error(i + " " + XMLUtils.getNodeTypeString(nl.item(i)) + " "
-                      + nl.item(i));
-         }
-      } else {
-         for (int i = 0; i < nl.getLength(); i++) {
-            cat.info(i + " " + XMLUtils.getNodeTypeString(nl.item(i)) + " "
-                     + nl.item(i));
-         }
-      }
-
-      //J-
-      assertEquals("_nodeSetInput1 Number of nodes", _nodeSetInput1Nodes, nl.getLength());
-      // assertEquals("_nodeSetInput1.item(0) DOCUMENT_TYPE", XMLUtils.getNodeTypeString(Node.DOCUMENT_TYPE_NODE), XMLUtils.getNodeTypeString(nl.item(0).getNodeType()));
-      //J+
+      assertEquals("_nodeSetInput1 Number of nodes",
+                   _nodeSetInput1NodesWithComments, nl.size());
    }
 
    //J-
@@ -272,12 +259,10 @@ public class XMLSignatureInputTest extends TestCase {
       InputStream inputStream =
          new ByteArrayInputStream(_nodeSetInput2.getBytes("UTF-8"));
       XMLSignatureInput input = new XMLSignatureInput(inputStream);
-      NodeList nl = input.getNodeSet();
+      Set nl = input.getNodeSet();
 
-      //J-
-      assertEquals("_nodeSetInput2 Number of nodes", _nodeSetInput2Nodes, nl.getLength());
-      // assertEquals("_nodeSetInput2.item(0) COMMENT", XMLUtils.getNodeTypeString(Node.COMMENT_NODE), XMLUtils.getNodeTypeString(nl.item(0).getNodeType()));
-      //J+
+      assertEquals("_nodeSetInput2 Number of nodes",
+                   _nodeSetInput2NodesWithComments, nl.size());
    }
 
    //J-
@@ -312,12 +297,10 @@ public class XMLSignatureInputTest extends TestCase {
       InputStream inputStream =
          new ByteArrayInputStream(_nodeSetInput3.getBytes("UTF-8"));
       XMLSignatureInput input = new XMLSignatureInput(inputStream);
-      NodeList nl = input.getNodeSet();
+      Set nl = input.getNodeSet();
 
-      //J-
-      assertEquals("_nodeSetInput3 Number of nodes", _nodeSetInput3Nodes, nl.getLength());
-      // assertEquals("_nodeSetInput3.item(0) COMMENT", XMLUtils.getNodeTypeString(Node.COMMENT_NODE), XMLUtils.getNodeTypeString(nl.item(0).getNodeType()));
-      //J+
+      assertEquals("_nodeSetInput3 Number of nodes",
+                   _nodeSetInput3NodesWithComments, nl.size());
    }
 
    //J-
@@ -351,12 +334,10 @@ public class XMLSignatureInputTest extends TestCase {
       InputStream inputStream =
          new ByteArrayInputStream(_nodeSetInput4.getBytes("UTF-8"));
       XMLSignatureInput input = new XMLSignatureInput(inputStream);
-      NodeList nl = input.getNodeSet();
+      Set nl = input.getNodeSet();
 
-      //J-
-      assertEquals("_nodeSetInput4 Number of nodes", _nodeSetInput4Nodes, nl.getLength());
-      // assertEquals("_nodeSetInput4.item(0) COMMENT", Node.COMMENT_NODE, nl.item(0).getNodeType());
-      //J+
+      assertEquals("_nodeSetInput4 Number of nodes",
+                   _nodeSetInput4NodesWithComments, nl.size());
    }
 
    /**
@@ -366,7 +347,7 @@ public class XMLSignatureInputTest extends TestCase {
     * @throws ParserConfigurationException
     * @throws TransformerException
     */
-   private static NodeList getNodeSet1()
+   private static Set getNodeSet1()
            throws ParserConfigurationException, TransformerException {
 
       // This should build
@@ -395,9 +376,11 @@ public class XMLSignatureInputTest extends TestCase {
 
       String s1 =
          "<!--Small Comment Test--><RootElement><Element1/><Element2/><Element3>Text in Element3</Element3></RootElement>";
-
       CachedXPathAPI cXPathAPI = new CachedXPathAPI();
-      return cXPathAPI.selectNodeList(doc, "(//. | //@* | //namespace::*)");
+      NodeList nl = cXPathAPI.selectNodeList(doc,
+                                             "(//. | //@* | //namespace::*)");
+
+      return XMLUtils.convertNodelistToSet(nl);
    }
 
    /**
@@ -417,15 +400,10 @@ public class XMLSignatureInputTest extends TestCase {
                   CanonicalizationException, InvalidCanonicalizerException,
                   TransformerException {
 
-
       XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
-      NodeList nl = input.getNodeSet();
+      Set nl = input.getNodeSet();
 
-      //J-
-      // added one for xmlns:xml since Xalan 2.2.D11
-      assertEquals("getNodeSet1 Number of nodes", 8, nl.getLength()); // 8 was 7
-      // assertEquals("getNodeSet1.item(0)", XMLUtils.getNodeTypeString(Node.COMMENT_NODE), XMLUtils.getNodeTypeString(nl.item(0).getNodeType()));
-      //J+
+      assertEquals("getNodeSet1 Number of nodes", 8, nl.size());    // 8 was 7
    }
 
    /**
@@ -450,8 +428,8 @@ public class XMLSignatureInputTest extends TestCase {
          "<RootElement><Element1></Element1><Element2></Element2><Element3>Text in Element3</Element3></RootElement>";
 
       {
-         input.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
 
+         // input.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
          String resultWithoutComments = new String(input.getBytes(), "UTF-8");
 
          /* FileOutputStream fos = new FileOutputStream ("xResult.xml");
@@ -462,41 +440,9 @@ public class XMLSignatureInputTest extends TestCase {
    }
 
    /**
-    * Method testSetNodeSetGetOctetStream2
-    *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws TransformerException
-    * @throws UnsupportedEncodingException
-    */
-   public static void testSetNodeSetGetOctetStream2()
-           throws IOException, UnsupportedEncodingException,
-                  ParserConfigurationException, SAXException,
-                  CanonicalizationException, InvalidCanonicalizerException,
-                  TransformerException {
-
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1(), null);
-      String definedWithoutComments =
-         "<RootElement><Element1></Element1><Element2></Element2><Element3>Text in Element3</Element3></RootElement>";
-
-      {
-         input.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-
-         String resultWithComments = new String(input.getBytes(), "UTF-8");
-         String definedWithComments = "<!--Small Comment Test-->\n"
-                                      + definedWithoutComments;
-
-         assertTrue("testSetNodeSetGetOctetStream(false)",
-                    resultWithComments.equals(definedWithComments));
-      }
-   }
-
-   /**
     * Method testIsInitialized
     *
+    * @throws IOException
     */
    public static void testIsInitializedWithOctetStream() throws IOException {
 
@@ -510,6 +456,7 @@ public class XMLSignatureInputTest extends TestCase {
    /**
     * Method testOctetStreamIsOctetStream
     *
+    * @throws IOException
     */
    public static void testOctetStreamIsOctetStream() throws IOException {
 
@@ -523,6 +470,7 @@ public class XMLSignatureInputTest extends TestCase {
    /**
     * Method testOctetStreamIsNotNodeSet
     *
+    * @throws IOException
     */
    public static void testOctetStreamIsNotNodeSet() throws IOException {
 

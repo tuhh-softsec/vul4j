@@ -172,14 +172,15 @@ public class BlockEncryptionTest extends TestCase {
       byte decrypted[] = bea.decrypt(realciphertext, key);
 
       // we cannot compare the whole ciphertext because the padding bytes always look different.
-      if (realciphertext.length - bea.getBlockSize() != cipherText.length) {
-         System.out.println(HexDump.byteArrayToHexString(realciphertext));
+      int beaBlockSize = bea.getBlockSize();
+
+      if (realciphertext.length - beaBlockSize != cipherText.length) {
          return FAILURE_ENCRYPT;
       }
 
-      for (int i = 0; i < realciphertext.length - bea.getBlockSize(); i++) {
+      int iMax = realciphertext.length - beaBlockSize;
+      for (int i = 0; i < iMax; i++) {
          if (realciphertext[i] != cipherText[i]) {
-            System.out.println(HexDump.byteArrayToHexString(realciphertext));
             return FAILURE_ENCRYPT;
          }
       }

@@ -274,14 +274,12 @@ public class TransformBase64DecodeTest extends TestCase {
       Document doc2 = TransformBase64DecodeTest.createDocument();
       Transforms t = new Transforms(doc2);
       doc2.appendChild(t.getElement());
-      t.addTransform(TransformBase64Decode.implementedTransformURI);
+      t.addTransform(Transforms.TRANSFORM_BASE64_DECODE);
 
       XMLSignatureInput out = t.performTransforms(xmlinput);
       String result = new String(out.getBytes());
 
-      cat.debug("result = " + result);
-      assertTrue(
-         result.equals(
+      assertTrue("\"" + result + "\"", result.equals(
             "The URI of the transform is http://www.w3.org/2000/09/xmldsig#base64"));
    }
 

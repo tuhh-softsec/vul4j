@@ -74,7 +74,7 @@ import javax.xml.transform.OutputKeys;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.xpath.XPathAPI;
+import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -142,11 +142,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws InvalidCanonicalizerException
     * @throws ParserConfigurationException
     * @throws SAXException
+    * @throws TransformerException
     */
    public static void test31withComments()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
 
       String descri =
          "3.1: PIs, Comments, and Outside of Document Element. (commented)";
@@ -172,11 +173,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws ParserConfigurationException
     * @throws SAXException
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-OutsideDoc">the example from the spec</A>
+    * @throws TransformerException
     */
    public static void test31()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
 
       String descri =
          "3.1: PIs, Comments, and Outside of Document Element. (uncommented)";
@@ -202,11 +204,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws ParserConfigurationException
     * @throws SAXException
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-WhitespaceInContent">the example from the spec</A>
+    * @throws TransformerException
     */
    public static void test32()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
 
       String descri = "3.2 Whitespace in Document Content. (uncommented)";
       String fileIn = prefix + "in/32_input.xml";
@@ -231,11 +234,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws ParserConfigurationException
     * @throws SAXException
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-SETags">the example from the spec</A>
+    * @throws TransformerException
     */
    public static void test33()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
 
       String descri = "3.3 Start and End Tags. (uncommented)";
       String fileIn = prefix + "in/33_input.xml";
@@ -243,7 +247,7 @@ public class Canonicalizer20010315Test extends TestCase {
       String fileOut = prefix + "out/xpath_33_output.xml";
       String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
       boolean validating = true;
-      String xpath = null;
+      String xpath = null;    // Canonicalizer.XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE;
 
       assertTrue(descri,
                  c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
@@ -262,11 +266,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @see #test34validatingParser
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Chars">the example from the spec</A>
     * @todo Check what we have to do to get this f*cking test working!!!
+    * @throws TransformerException
     */
    public static void _test34()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
 
       String descri =
          "3.4 Character Modifications and Character References. (uncommented)";
@@ -300,11 +305,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws ParserConfigurationException
     * @throws SAXException
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Chars">the example from the spec</A>
+    * @throws TransformerException
     */
    public static void test34validatingParser()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
 
       String descri =
          "3.4 Character Modifications and Character References. (uncommented, patched to run on validating Parsers)";
@@ -330,11 +336,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws ParserConfigurationException
     * @throws SAXException
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Entities">the example from the spec</A>
+    * @throws TransformerException
     */
    public static void test35()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
 
       String descri = "3.5 Entity References. (uncommented)";
       String fileIn = prefix + "in/35_input.xml";
@@ -359,11 +366,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws ParserConfigurationException
     * @throws SAXException
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-UTF8">the example from the spec</A>
+    * @throws TransformerException
     */
    public static void test36()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
 
       String descri = "3.6 UTF-8 Encoding. (uncommented)";
       String fileIn = prefix + "in/36_input.xml";
@@ -388,11 +396,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws ParserConfigurationException
     * @throws SAXException
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-DocSubsets">the example from the spec</A>
+    * @throws TransformerException
     */
    public static void test37()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
 
       String descri = "3.7 Document Subsets. (uncommented)";
       String fileIn = prefix + "in/37_input.xml";
@@ -471,7 +480,8 @@ public class Canonicalizer20010315Test extends TestCase {
          + "count(id(\"E3\")|ancestor-or-self::node()) = count(ancestor-or-self::node()) "
          + "]";
       //J+
-      NodeList nodes = XPathAPI.selectNodeList(doc, xpath, nscontext);
+      CachedXPathAPI xpathAPI = new CachedXPathAPI();
+      NodeList nodes = xpathAPI.selectNodeList(doc, xpath, nscontext);
       Canonicalizer c14n =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
       byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
@@ -526,7 +536,8 @@ public class Canonicalizer20010315Test extends TestCase {
 
       String xpath =
          "//my:KeyMaterials[1]/descendant::node()[not(self::text())]";
-      NodeList nodes = XPathAPI.selectNodeList(doc, xpath, nscontext);
+      CachedXPathAPI xpathAPI = new CachedXPathAPI();
+      NodeList nodes = xpathAPI.selectNodeList(doc, xpath, nscontext);
       Canonicalizer c14n =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
       byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
@@ -535,19 +546,11 @@ public class Canonicalizer20010315Test extends TestCase {
       byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
       boolean equal = JavaUtils.binaryCompare(refBytes, c14nBytes);
 
-      /*
       if (!equal) {
-         File fout = new File(fileOut);
-
+         JavaUtils.writeBytesToFilename(fileOut, c14nBytes);
          cat.debug("Wrote malicious output from Test \"" + descri
-                   + "\" to file " + fout.toURL().toString());
-
-         FileOutputStream fos = new FileOutputStream(fout);
-
-         fos.write(c14nBytes);
-         fos.close();
+                   + "\" to file " + fileOut);
       }
-      */
 
       assertTrue(equal);
    }
@@ -660,16 +663,12 @@ public class Canonicalizer20010315Test extends TestCase {
       boolean weCatchedTheRelativeNS = false;
 
       try {
+         CachedXPathAPI xpathAPI = new CachedXPathAPI();
+         NodeList nodes =
+            xpathAPI.selectNodeList(doc, "//self::*[local-name()='correct']");
          Canonicalizer c14n =
             Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-
-         c14n.setXPath("//self::*[local-name()='absolute']");
-
-         byte c14nBytes[] = c14n.canonicalizeSubtree(doc);
-         FileOutputStream fos = new FileOutputStream(
-            "../../Desktop/relativeNStestRelativeNSbehaviour2.xml");
-
-         fos.write(c14nBytes);
+         byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
       } catch (CanonicalizationException cex) {
 
          // if we reach this point - good.
@@ -754,11 +753,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws InvalidCanonicalizerException
     * @throws ParserConfigurationException
     * @throws SAXException
+    * @throws TransformerException
     */
    public static void testXMLAttributes1()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
       //J-
       String input = ""
          + "<included    xml:lang='de'>"
@@ -788,11 +788,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws InvalidCanonicalizerException
     * @throws ParserConfigurationException
     * @throws SAXException
+    * @throws TransformerException
     */
    public static void testXMLAttributes2()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
       //J-
       String input = ""
          + "<included    xml:lang='uk'>"
@@ -806,7 +807,7 @@ public class Canonicalizer20010315Test extends TestCase {
 
       String definedOutput = ""
          + "<included xml:lang=\"uk\">"
-         + "<included>"
+         + "<included xml:lang=\"uk\">"
          + "</included>"
          + "</included>";
       //J+
@@ -822,11 +823,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws InvalidCanonicalizerException
     * @throws ParserConfigurationException
     * @throws SAXException
+    * @throws TransformerException
     */
    public static void testXMLAttributes3()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
       //J-
       String input = ""
          + "<included    xml:lang='de'>"
@@ -840,7 +842,7 @@ public class Canonicalizer20010315Test extends TestCase {
 
       String definedOutput = ""
          + "<included xml:lang=\"de\">"
-         + "<included>"
+         + "<included xml:lang=\"de\">"
          + "</included>"
          + "</included>";
       //J+
@@ -856,11 +858,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws InvalidCanonicalizerException
     * @throws ParserConfigurationException
     * @throws SAXException
+    * @throws TransformerException
     */
    public static void testXMLAttributes4()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
       //J-
       String input = ""
          + "<included    xml:lang='de'>"
@@ -892,11 +895,12 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws InvalidCanonicalizerException
     * @throws ParserConfigurationException
     * @throws SAXException
+    * @throws TransformerException
     */
    public static void testXMLAttributes5()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
-                  InvalidCanonicalizerException {
+                  InvalidCanonicalizerException, TransformerException {
       //J-
       String input = ""
          + "<included                         xml:lang='de'>"
@@ -932,12 +936,13 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws InvalidCanonicalizerException
     * @throws ParserConfigurationException
     * @throws SAXException
+    * @throws TransformerException
     */
    private static boolean doTestXMLAttributes(
            String input, String definedOutput, boolean writeResultsToFile)
               throws IOException, FileNotFoundException, SAXException,
                      ParserConfigurationException, CanonicalizationException,
-                     InvalidCanonicalizerException {
+                     InvalidCanonicalizerException, TransformerException {
 
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
@@ -952,11 +957,10 @@ public class Canonicalizer20010315Test extends TestCase {
       Document doc = db.parse(new ByteArrayInputStream(input.getBytes()));
       Canonicalizer c14nizer =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-
-      // c14nizer.setXPath("(//included | //@*)");
-      c14nizer.setXPath("(//*[local-name()='included'] | //@*)");
-
-      byte result[] = c14nizer.canonicalizeSubtree(doc);
+      CachedXPathAPI xpathAPI = new CachedXPathAPI();
+      NodeList nodes =
+         xpathAPI.selectNodeList(doc, "(//*[local-name()='included'] | //@*)");
+      byte result[] = c14nizer.canonicalizeXPathNodeSet(nodes);
       byte defined[] = definedOutput.getBytes();
 
       if (writeResultsToFile) {
@@ -994,12 +998,13 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws InvalidCanonicalizerException
     * @throws ParserConfigurationException
     * @throws SAXException
+    * @throws TransformerException
     */
    private static boolean c14nAndCompare(
            String fileIn, String fileRef, String fileOut, String c14nURI, boolean validating, Object xpath)
               throws IOException, FileNotFoundException, SAXException,
                      ParserConfigurationException, CanonicalizationException,
-                     InvalidCanonicalizerException {
+                     InvalidCanonicalizerException, TransformerException {
 
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
@@ -1016,14 +1021,25 @@ public class Canonicalizer20010315Test extends TestCase {
       // Document doc = documentBuilder.parse(resolver.resolveEntity(null, fileIn));
       Document doc = documentBuilder.parse(fileIn);
       Canonicalizer c14n = Canonicalizer.getInstance(c14nURI);
+      byte c14nBytes[] = null;
 
-      if (xpath != null) {
-         c14n.setXPath(xpath);
+      if (xpath == null) {
+         c14nBytes = c14n.canonicalizeSubtree(doc);
+      } else {
+         CachedXPathAPI xpathAPI = new CachedXPathAPI();
+         NodeList nl = null;
+
+         if (xpath instanceof String) {
+            nl = xpathAPI.selectNodeList(doc, (String) xpath);
+         } else {
+            Element xpathElement = (Element) xpath;
+            String xpathStr = ((Text) xpathElement.getFirstChild()).getData();
+
+            nl = xpathAPI.selectNodeList(doc, xpathStr, xpathElement);
+         }
+
+         c14nBytes = c14n.canonicalizeXPathNodeSet(nl);
       }
-
-      cat.debug("Use the following String as XPath: " + c14n.getXPathString());
-
-      byte c14nBytes[] = c14n.canonicalizeSubtree(doc);
 
       // org.xml.sax.InputSource refIs = resolver.resolveEntity(null, fileRef);
       // byte refBytes[] = JavaUtils.getBytesFromStream(refIs.getByteStream());
