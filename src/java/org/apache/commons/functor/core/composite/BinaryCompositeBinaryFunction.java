@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/UnaryCompositeBinaryFunction.java,v 1.2 2003/02/01 14:40:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/BinaryCompositeBinaryFunction.java,v 1.1 2003/02/01 14:40:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,10 +59,10 @@ package org.apache.commons.functor.core.composite;
 import java.io.Serializable;
 
 import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.BinaryFunction;
 
 /**
- * f(x,y) := f(g(x),h(y))
+ * f(x,y) := f(g(x,y),h(x,y))
  * <p>
  * Note that although this class implements 
  * {@link Serializable}, a given instance will
@@ -71,65 +71,65 @@ import org.apache.commons.functor.UnaryFunction;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.2 $ $Date: 2003/02/01 14:40:45 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/01 14:40:45 $
  * @author Rodney Waldhoff
  */
-public class UnaryCompositeBinaryFunction implements BinaryFunction, Serializable {
+public class BinaryCompositeBinaryFunction implements BinaryFunction, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
-    public UnaryCompositeBinaryFunction(BinaryFunction f, UnaryFunction g, UnaryFunction h) {
+    public BinaryCompositeBinaryFunction(BinaryFunction f, BinaryFunction g, BinaryFunction h) {
         binary = f;
-        leftUnary = g;
-        rightUnary = h;        
+        leftBinary = g;
+        rightBinary = h;        
     }
 
     // function interface
     // ------------------------------------------------------------------------
     public Object evaluate(Object left, Object right) {
-        return binary.evaluate(leftUnary.evaluate(left), rightUnary.evaluate(right));
+        return binary.evaluate(leftBinary.evaluate(left,right), rightBinary.evaluate(left,right));
     }
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryCompositeBinaryFunction) {
-            return equals((UnaryCompositeBinaryFunction)that);
+        if(that instanceof BinaryCompositeBinaryFunction) {
+            return equals((BinaryCompositeBinaryFunction)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(UnaryCompositeBinaryFunction that) {
+    public boolean equals(BinaryCompositeBinaryFunction that) {
         return (null != that) &&
             (null == binary ? null == that.binary : binary.equals(that.binary)) &&
-            (null == leftUnary ? null == that.leftUnary : leftUnary.equals(that.leftUnary)) &&
-            (null == rightUnary ? null == that.rightUnary : rightUnary.equals(that.rightUnary));
+            (null == leftBinary ? null == that.leftBinary : leftBinary.equals(that.leftBinary)) &&
+            (null == rightBinary ? null == that.rightBinary : rightBinary.equals(that.rightBinary));
     }
     
     public int hashCode() {
-        int hash = "UnaryCompositeBinaryFunction".hashCode();
+        int hash = "BinaryCompositeBinaryFunction".hashCode();
         if(null != binary) {
             hash <<= 4;
             hash ^= binary.hashCode();            
         }
-        if(null != leftUnary) {
+        if(null != leftBinary) {
             hash <<= 4;
-            hash ^= leftUnary.hashCode();            
+            hash ^= leftBinary.hashCode();            
         }
-        if(null != rightUnary) {
+        if(null != rightBinary) {
             hash <<= 4;
-            hash ^= rightUnary.hashCode();            
+            hash ^= rightBinary.hashCode();            
         }
         return hash;
     }
     
     public String toString() {
-        return "UnaryCompositeBinaryFunction<" + binary + ";" + leftUnary + ";" + rightUnary + ">";
+        return "BinaryCompositeBinaryFunction<" + binary + ";" + leftBinary + ";" + rightBinary + ">";
     }
         
     // attributes
     // ------------------------------------------------------------------------
     private BinaryFunction binary = null;
-    private UnaryFunction leftUnary = null;
-    private UnaryFunction rightUnary = null;
+    private BinaryFunction leftBinary = null;
+    private BinaryFunction rightBinary = null;
 
 }

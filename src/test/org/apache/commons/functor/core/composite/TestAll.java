@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAll.java,v 1.3 2003/02/01 14:23:05 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAll.java,v 1.4 2003/02/01 14:40:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/02/01 14:23:05 $
+ * @version $Revision: 1.4 $ $Date: 2003/02/01 14:40:45 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -90,6 +90,7 @@ public class TestAll extends TestCase {
 
         suite.addTest(TestCompositeUnaryFunction.suite());
         suite.addTest(TestUnaryCompositeBinaryFunction.suite());
+        suite.addTest(TestBinaryCompositeBinaryFunction.suite());
 
         suite.addTest(TestTransposedFunction.suite());
         suite.addTest(TestTransposedPredicate.suite());
