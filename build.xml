@@ -526,6 +526,7 @@ org.apache.xml.security.utils.resolver
     <junit printsummary="on"
            fork="true"
            filtertrace="true">
+       <jvmarg value="-Djava.compiler=NONE"/>
        <classpath refid="classpath.test" />
        <formatter type="xml"/>
        <batchtest fork="yes" todir="${build.junit.xml}">
@@ -539,6 +540,7 @@ org.apache.xml.security.utils.resolver
          </fileset>
        </batchtest>
        <test name="org.apache.xml.security.test.interop.IBMTest"
+             todir="${build.junit.xml}"
              if="ibm.available"/>
     </junit>
     <junitreport todir="${build.junit.xml}">
