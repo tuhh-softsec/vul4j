@@ -51,11 +51,6 @@ public class XalanBug1425Test extends TestCase {
         org.apache.commons.logging.LogFactory.getLog(
                     XalanBug1425Test.class.getName());
 
-   /** Field xercesVerStr */
-   static String xercesVerStr = XMLUtils.getXercesVersion();
-
-   /** Field xalanVerStr */
-   static String xalanVerStr = XMLUtils.getXalanVersion();
 
    /**
     * Method suite
@@ -150,7 +145,7 @@ public class XalanBug1425Test extends TestCase {
       String desc = " # mixed content and following comment";
       String xpath = "(//.)";
 
-      assertTrue("Bad " + xml + desc + "  " + xalanVerStr,
+      assertTrue("Bad " + xml + desc + "  " ,
                  containsDocumentElement(xml, xpath));
    }
 
@@ -165,7 +160,7 @@ public class XalanBug1425Test extends TestCase {
       String desc = " # mixed content and following PI";
       String xpath = "(//.)";
 
-      assertTrue("Bad " + xml + desc + "  " + xalanVerStr,
+      assertTrue("Bad " + xml + desc + "  " ,
                  containsDocumentElement(xml, xpath));
    }
 
@@ -180,7 +175,7 @@ public class XalanBug1425Test extends TestCase {
       String desc = " # mixed content and following comment";
       String xpath = "(//.)";
 
-      assertTrue("Bad " + xml + desc + "  " + xalanVerStr,
+      assertTrue("Bad " + xml + desc + "  " ,
                  containsDocumentElement(xml, xpath));
    }
 

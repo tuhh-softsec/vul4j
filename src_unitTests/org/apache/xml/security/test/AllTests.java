@@ -65,7 +65,7 @@ public class AllTests extends TestCase {
     */
    public static void main(String[] args) {
 
-      XMLUtils.spitOutVersions(log);
+      //XMLUtils.spitOutVersions(log);
       log.debug("java.class.path            : " + System.getProperty("java.class.path"));
       log.debug("java.library.path          : " + System.getProperty("java.library.path"));
       log.debug("java.runtime.name          : " + System.getProperty("java.runtime.name"));

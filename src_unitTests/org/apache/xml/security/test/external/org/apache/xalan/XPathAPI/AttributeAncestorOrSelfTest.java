@@ -49,11 +49,6 @@ public class AttributeAncestorOrSelfTest extends TestCase {
         org.apache.commons.logging.LogFactory.getLog(
                     AttributeAncestorOrSelfTest.class.getName());
 
-   /** Field xercesVerStr */
-   static String xercesVerStr = XMLUtils.getXercesVersion();
-
-   /** Field xalanVerStr */
-   static String xalanVerStr = XMLUtils.getXalanVersion();
 
    /**
     * Method suite
@@ -137,7 +132,7 @@ public class AttributeAncestorOrSelfTest extends TestCase {
       String ctxNodeStr = "/ds:Signature/ds:Object";
       String evalStr = "ancestor-or-self::ds:Signature";
 
-      assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  " + xalanVerStr,
+      assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  ",
                  isAncestorOf(_nodeSetInput1, ctxNodeStr, evalStr));
    }
 
@@ -151,7 +146,7 @@ public class AttributeAncestorOrSelfTest extends TestCase {
       String ctxNodeStr = "/ds:Signature/ds:Object/text()";
       String evalStr = "ancestor-or-self::ds:Signature";
 
-      assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  " + xalanVerStr,
+      assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  "  ,
                  isAncestorOf(_nodeSetInput1, ctxNodeStr, evalStr));
    }
 
@@ -165,7 +160,7 @@ public class AttributeAncestorOrSelfTest extends TestCase {
       String ctxNodeStr = "/ds:Signature/ds:Object/@Id";
       String evalStr = "ancestor-or-self::ds:Object";
 
-      assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  " + xalanVerStr,
+      assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  " ,
                  isAncestorOf(_nodeSetInput1, ctxNodeStr, evalStr));
    }
 

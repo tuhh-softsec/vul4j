@@ -99,18 +99,7 @@ public class XMLSignatureInputTest extends TestCase {
       junit.textui.TestRunner.main(testCaseName);
    }
 
-   /**
-    * Method printNodeSet
-    *
-    * @param nl
-    */
-   private void printNodeSet(NodeList nl) {
 
-      for (int i = 0; i < nl.getLength(); i++) {
-         log.debug("Type "
-                   + XMLUtils.getNodeTypeString(nl.item(i).getNodeType()));
-      }
-   }
 
    /**
     * Method testSetOctetStreamGetOctetStream

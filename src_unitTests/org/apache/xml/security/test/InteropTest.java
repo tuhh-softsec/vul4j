@@ -85,7 +85,7 @@ public class InteropTest extends TestCase {
     */
    public static void main(String[] args) {
 
-      XMLUtils.spitOutVersions(log);
+      //XMLUtils.spitOutVersions(log);
 
       boolean useTextUI = true;
 

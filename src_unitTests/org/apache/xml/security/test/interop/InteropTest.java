@@ -43,13 +43,7 @@ public class InteropTest extends TestCase {
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(BaltimoreTest.class.getName());
-
-   /** Field xercesVerStr */
-   static String xercesVerStr = XMLUtils.getXercesVersion();
-
-   /** Field xalanVerStr */
-   static String xalanVerStr = XMLUtils.getXalanVersion();
-
+ 
    /** Field dbf */
    static javax.xml.parsers.DocumentBuilderFactory dbf = null;
 
