@@ -92,6 +92,8 @@ public class C14nHelper {
     * @param attributes
     *
     */
+
+   /*
    public static final Object[] sortAttributes(Object[] attributes) {
 
       if (attributes == null) {
@@ -132,6 +134,23 @@ public class C14nHelper {
       for (int i = 0; i < nonNamespaces.length; i++) {
          result[i + namespaces.length] = (Attr) nonNamespaces[i];
       }
+
+      return result;
+   }
+   */
+
+   public static final Object[] sortAttributes(Object[] attributes) {
+
+      if (attributes == null) {
+         return new Attr[0];
+      }
+
+      Object[] result = new Object[attributes.length];
+      for (int i=0; i<attributes.length; i++) {
+         result[i] = attributes[i];
+      }
+
+      java.util.Arrays.sort(result, new AttrCompare());
 
       return result;
    }

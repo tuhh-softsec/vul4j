@@ -72,7 +72,8 @@ import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.helper.*;
+import org.apache.xml.security.c14n.helper.C14nHelper;
+import org.apache.xml.security.c14n.helper.AttrCompare;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 
@@ -373,10 +374,10 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
          }
       }
 
-      Collections.sort(ns,
-                       new org.apache.xml.security.c14n.helper.NSAttrCompare());
-      Collections.sort(
-         at, new org.apache.xml.security.c14n.helper.NonNSAttrCompare());
+      // Collections.sort(ns,new NSAttrCompare());
+      Collections.sort(ns,new AttrCompare());
+      // Collections.sort(at, new NonNSAttrCompare());
+      Collections.sort(at, new AttrCompare());
       ns.addAll(at);
 
       return ns;

@@ -66,7 +66,7 @@ import java.util.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.TransformerException;
 import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.helper.*;
+import org.apache.xml.security.c14n.helper.C14nHelper;
 import org.apache.xml.security.utils.*;
 import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.*;
