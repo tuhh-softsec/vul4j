@@ -295,7 +295,8 @@
 			unless="is.bin.dist"
             if="has.jce.provider" >
         <javac srcdir="${dir.src}"
-               destdir="${dir.build.bin}" >
+               destdir="${dir.build.bin}"
+               debug="${build.compile.debug}">
             <classpath refid="id.classpath" />
             <include name="**/org/apache/xml/security/**/*.java" />
         </javac >
@@ -314,7 +315,8 @@
     		depends="build.src"
 			unless="is.bin.dist">
     	<javac srcdir="${dir.src.test}"
-               destdir="${dir.build.test}">
+               destdir="${dir.build.test}"
+               debug="${build.compile.debug}">
         	<classpath refid="id.classpath.test" />
         	<include name="**/org/apache/xml/security/**/*.java" />
         </javac>
