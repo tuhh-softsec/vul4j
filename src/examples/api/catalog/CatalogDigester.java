@@ -16,7 +16,6 @@
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.AbstractObjectCreationFactory;
-import org.apache.commons.digester.ExtendedBaseRules;
 
 /**
  * A simple program to demonstrate some of the functionality of the
