@@ -285,19 +285,7 @@ public class XMLCipher {
 			throw new XMLEncryptionException("empty", ice);
 		}
 
-		String jceAlgorithm;
-		JCEMapper.ProviderIdClass provId = 
-			JCEMapper.translateURItoJCEID(transformation);
-
-		if (provId != null)
-			jceAlgorithm = provId.getAlgorithmID();
-		else {
-			Object exArgs[] = 
-				{ transformation,
-				  "No provider found that supports this algorithm" };
-			throw new XMLEncryptionException("algorithms.NoSuchAlgorithm",
-											 exArgs);
-		}
+		String jceAlgorithm = JCEMapper.translateURItoJCEID(transformation);
 
 		try {
             instance._contextCipher = Cipher.getInstance(jceAlgorithm);
@@ -389,7 +377,7 @@ public class XMLCipher {
 
         try {
 			String jceAlgorithm =
-				JCEMapper.translateURItoJCEID(transformation).getAlgorithmID();
+				JCEMapper.translateURItoJCEID(transformation);
 
             instance._contextCipher = Cipher.getInstance(jceAlgorithm, provider);
 
@@ -953,19 +941,15 @@ public class XMLCipher {
 		Cipher c;
 		if (_contextCipher == null) {
 			String jceAlgorithm =
-				JCEMapper.translateURItoJCEID(_algorithm).getAlgorithmID();
-			String provider;
+				JCEMapper.translateURItoJCEID(_algorithm);
 
-			if (_requestedJCEProvider == null)
-				provider =
-					JCEMapper.translateURItoJCEID(_algorithm).getProviderId();
-			else
-				provider = _requestedJCEProvider;
-
-			logger.debug("provider = " + provider + "alg = " + jceAlgorithm);
+			logger.debug("alg = " + jceAlgorithm);
 
 			try {
-				c = Cipher.getInstance(jceAlgorithm, provider);
+                            if (_requestedJCEProvider == null)
+				c = Cipher.getInstance(jceAlgorithm);
+                            else
+                                c = Cipher.getInstance(jceAlgorithm, _requestedJCEProvider);
 			} catch (NoSuchAlgorithmException nsae) {
 				throw new XMLEncryptionException("empty", nsae);
 			} catch (NoSuchProviderException nspre) {
@@ -1150,19 +1134,15 @@ public class XMLCipher {
 			// Now create the working cipher
 
 			String jceAlgorithm =
-				JCEMapper.translateURItoJCEID(_algorithm).getAlgorithmID();
-			String provider;
+				JCEMapper.translateURItoJCEID(_algorithm);
 
-			if (_requestedJCEProvider == null)
-				provider =
-					JCEMapper.translateURItoJCEID(_algorithm).getProviderId();
-			else
-				provider = _requestedJCEProvider;
-
-			logger.debug("provider = " + provider + "alg = " + jceAlgorithm);
+			logger.debug("alg = " + jceAlgorithm);
 
 			try {
-				c = Cipher.getInstance(jceAlgorithm, provider);
+			    if (_requestedJCEProvider == null)
+				c = Cipher.getInstance(jceAlgorithm);
+                            else
+                                c = Cipher.getInstance(jceAlgorithm, _requestedJCEProvider);
 			} catch (NoSuchAlgorithmException nsae) {
 				throw new XMLEncryptionException("empty", nsae);
 			} catch (NoSuchProviderException nspre) {
@@ -1250,42 +1230,24 @@ public class XMLCipher {
 		XMLCipherInput cipherInput = new XMLCipherInput(encryptedKey);
 		byte [] encryptedBytes = cipherInput.getBytes();
 
-		String provider;
-		if (_requestedJCEProvider == null) {
-			JCEMapper.ProviderIdClass provId = 
-				JCEMapper.translateURItoJCEID(
-						 encryptedKey.getEncryptionMethod().getAlgorithm());
-			if (provId != null)
-				provider = provId.getProviderId();
-			else {
-				Object exArgs[] = 
-					{ encryptedKey.getEncryptionMethod().getAlgorithm(),
-					  "No provider found that supports this algorithm" };
-				throw new XMLEncryptionException("algorithms.NoSuchAlgorithm",
-												 exArgs);
-			}
-		}
-		else
-			provider = _requestedJCEProvider;
-
 		String jceKeyAlgorithm =
-			JCEMapper.getJCEKeyAlgorithmFromURI(algorithm, provider);
-		logger.debug("JCE Provider = " + provider);
+			JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
 
 		Cipher c;
 		if (_contextCipher == null) {
 			// Now create the working cipher
 
 			String jceAlgorithm =
-				JCEMapper
-					.translateURItoJCEID(
-						encryptedKey.getEncryptionMethod().getAlgorithm())
-					.getAlgorithmID();
+				JCEMapper.translateURItoJCEID(
+					encryptedKey.getEncryptionMethod().getAlgorithm());
 
 			logger.debug("JCE Algorithm = " + jceAlgorithm);
 
 			try {
-				c = Cipher.getInstance(jceAlgorithm, provider);
+                            if (_requestedJCEProvider == null)
+				c = Cipher.getInstance(jceAlgorithm);
+                            else
+                                c = Cipher.getInstance(jceAlgorithm, _requestedJCEProvider);
 			} catch (NoSuchAlgorithmException nsae) {
 				throw new XMLEncryptionException("empty", nsae);
 			} catch (NoSuchProviderException nspre) {
@@ -1473,22 +1435,14 @@ public class XMLCipher {
 		// Now create the working cipher
 
 		String jceAlgorithm = 
-			JCEMapper.translateURItoJCEID(encryptedData.getEncryptionMethod()
-										  .getAlgorithm()).getAlgorithmID();
-		String provider;
-
-		if (_requestedJCEProvider == null)
-			provider =
-				JCEMapper.translateURItoJCEID(encryptedData
-											  .getEncryptionMethod()
-											  .getAlgorithm())
-				.getProviderId();
-		else
-			provider = _requestedJCEProvider;
+			JCEMapper.translateURItoJCEID(encryptedData.getEncryptionMethod().getAlgorithm());
 
 		Cipher c;
 		try {
-			c = Cipher.getInstance(jceAlgorithm, provider);
+                    if (_requestedJCEProvider == null)
+			c = Cipher.getInstance(jceAlgorithm);
+                    else
+                        c = Cipher.getInstance(jceAlgorithm, _requestedJCEProvider);
 		} catch (NoSuchAlgorithmException nsae) {
 			throw new XMLEncryptionException("empty", nsae);
 		} catch (NoSuchProviderException nspre) {

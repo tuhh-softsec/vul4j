@@ -92,12 +92,12 @@ public class XMLCipherTester extends TestCase {
 		// 3DES encryption
 
 		haveISOPadding = false;
-		JCEMapper.ProviderIdClass provId = 
+		String algorithmId = 
 			JCEMapper.translateURItoJCEID(org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
 
-		if (provId != null) {
+		if (algorithmId != null) {
 			try {
-				if (Cipher.getInstance(provId.getAlgorithmID()) != null)
+				if (Cipher.getInstance(algorithmId) != null)
 					haveISOPadding = true;
 			} catch (NoSuchAlgorithmException nsae) {
 			} catch (NoSuchPaddingException nspe) {

@@ -111,7 +111,6 @@ public class RSAKeyValue extends SignatureElementProxy
       try {
          KeyFactory rsaFactory = KeyFactory.getInstance("RSA");
 
-         // String JCE_RSA = org.apache.xml.security.algorithms.JCEMapper.translateURItoJCEID(Constants.ALGO_ID_SIGNATURE_RSA);
          // KeyFactory rsaFactory = KeyFactory.getInstance(JCE_RSA);
          RSAPublicKeySpec rsaKeyspec =
             new RSAPublicKeySpec(this

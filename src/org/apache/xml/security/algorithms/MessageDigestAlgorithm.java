@@ -82,8 +82,7 @@ public class MessageDigestAlgorithm extends Algorithm {
    public static MessageDigestAlgorithm getInstance(
            Document doc, String algorithmURI) throws XMLSignatureException {
 
-      JCEMapper.ProviderIdClass algorithmID =
-         JCEMapper.translateURItoJCEID(algorithmURI);
+      String algorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
 
 	  if (algorithmID == null) {
 		  Object[] exArgs = { algorithmURI };
@@ -93,15 +92,9 @@ public class MessageDigestAlgorithm extends Algorithm {
       MessageDigest md;
 
       try {
-         md = MessageDigest.getInstance(algorithmID.getAlgorithmID(),
-                                        algorithmID.getProviderId());
+         md = MessageDigest.getInstance(algorithmID);
       } catch (java.security.NoSuchAlgorithmException ex) {
-         Object[] exArgs = { algorithmID.getAlgorithmID(),
-                             ex.getLocalizedMessage() };
-
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
-      } catch (java.security.NoSuchProviderException ex) {
-         Object[] exArgs = { algorithmID.getProviderId(),
+         Object[] exArgs = { algorithmID,
                              ex.getLocalizedMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);

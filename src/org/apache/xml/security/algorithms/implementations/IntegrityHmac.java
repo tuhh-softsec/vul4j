@@ -70,26 +70,17 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
     */
    public IntegrityHmac() throws XMLSignatureException {
 
-      JCEMapper.ProviderIdClass algorithmID =
-         JCEMapper.translateURItoJCEID(this.engineGetURI());
+      String algorithmID = JCEMapper.translateURItoJCEID(this.engineGetURI());
       if (log.isDebugEnabled())
-      	log.debug("Created IntegrityHmacSHA1 using "
-                + algorithmID.getAlgorithmID() + " "
-                + algorithmID.getProviderId());
+      	log.debug("Created IntegrityHmacSHA1 using " + algorithmID);
 
       try {
-         this._macAlgorithm = Mac.getInstance(algorithmID.getAlgorithmID(),
-                                              algorithmID.getProviderId());
+         this._macAlgorithm = Mac.getInstance(algorithmID);
       } catch (java.security.NoSuchAlgorithmException ex) {
-         Object[] exArgs = { algorithmID.getAlgorithmID(),
+         Object[] exArgs = { algorithmID,
                              ex.getLocalizedMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
-      } catch (java.security.NoSuchProviderException ex) {
-         Object[] exArgs = { algorithmID.getProviderId(),
-                             ex.getLocalizedMessage() };
-
-         throw new XMLSignatureException("algorithms.NoSuchProvider", exArgs);
       }
    }
 

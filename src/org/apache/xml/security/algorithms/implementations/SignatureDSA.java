@@ -68,26 +68,17 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     */
    public SignatureDSA() throws XMLSignatureException {
 
-      JCEMapper.ProviderIdClass algorithmID =
-         JCEMapper.translateURItoJCEID(SignatureDSA._URI);
+      String algorithmID = JCEMapper.translateURItoJCEID(SignatureDSA._URI);
       if (log.isDebugEnabled())
-      	log.debug("Created SignatureDSA using " + algorithmID.getAlgorithmID()
-                + " " + algorithmID.getProviderId());
+      	log.debug("Created SignatureDSA using " + algorithmID);
 
       try {
-         this._signatureAlgorithm =
-            Signature.getInstance(algorithmID.getAlgorithmID(),
-                                  algorithmID.getProviderId());
+         this._signatureAlgorithm = Signature.getInstance(algorithmID);
       } catch (java.security.NoSuchAlgorithmException ex) {
-         Object[] exArgs = { algorithmID.getAlgorithmID(),
+         Object[] exArgs = { algorithmID,
                              ex.getLocalizedMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
-      } catch (java.security.NoSuchProviderException ex) {
-         Object[] exArgs = { algorithmID.getProviderId(),
-                             ex.getLocalizedMessage() };
-
-         throw new XMLSignatureException("algorithms.NoSuchProvider", exArgs);
       }
    }
 
