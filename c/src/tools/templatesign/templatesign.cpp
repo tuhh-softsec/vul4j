@@ -1110,8 +1110,8 @@ int main(int argc, char **argv) {
 	}
 
 
-	XSECProvider prov;
-	DSIGSignature * sig = prov.newSignatureFromDOM(theDOM, sigNode);
+	XSECProvider * prov = new XSECProvider;
+	DSIGSignature * sig = prov->newSignatureFromDOM(theDOM, sigNode);
 
 	// Use the internal URI resolver
 #if defined(_WIN32)
@@ -1310,8 +1310,9 @@ int main(int argc, char **argv) {
 		CryptReleaseContext(win32RSACSP,0);
 #endif
 
-	prov.releaseSignature(sig);
+	prov->releaseSignature(sig);
 	delete parser;
+	delete prov;
 
 	XSECPlatformUtils::Terminate();
 #ifndef XSEC_NO_XALAN
