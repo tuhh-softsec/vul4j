@@ -89,7 +89,7 @@ public class TransformXPath2Filter04 extends TransformSpi {
            throws TransformationException {
 
       try {
-         Set inputSet = input.getNodeSet();
+         Set inputSet = input.getNodeSet(true);
          if (log.isDebugEnabled())
          	log.debug("perform xfilter2 on " + inputSet.size() + " nodes");
 

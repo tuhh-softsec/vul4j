@@ -113,7 +113,7 @@ public class TransformXPath2Filter extends TransformSpi {
 
       try {
 
-         this._inputSet = input.getNodeSet();
+         this._inputSet = input.getNodeSet(true);
 
          if (this._inputSet.size() == 0) {
 

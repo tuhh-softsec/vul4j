@@ -117,7 +117,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
            throws TransformationException {
 
       try {
-         this.inputSet = input.getNodeSet();
+         this.inputSet = input.getNodeSet(true);
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());         
