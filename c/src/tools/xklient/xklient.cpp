@@ -54,6 +54,9 @@
 #include <xsec/xkms/XKMSConstants.hpp>
 #include <xsec/xkms/XKMSValidateRequest.hpp>
 #include <xsec/xkms/XKMSValidateResult.hpp>
+#include <xsec/xkms/XKMSRegisterRequest.hpp>
+#include <xsec/xkms/XKMSAuthentication.hpp>
+#include <xsec/xkms/XKMSPrototypeKeyBinding.hpp>
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 
@@ -64,8 +67,10 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include <sys/time.h>
-#include <time.h>
+#if !defined(_WIN32)
+#	include <sys/time.h>
+#	include <time.h>
+#endif
 
 #if defined (_DEBUG) && defined (_MSC_VER)
 #include <crtdbg.h>
@@ -1387,6 +1392,23 @@ int doResultDump(XKMSResult *msg) {
 	return 0;
 }
 
+int doRegisterRequestDump(XKMSRegisterRequest *msg) {
+
+	cout << endl << "This is a RegisterRequest Message" << endl;
+	int level = 1;
+	
+	doMessageAbstractTypeDump(msg, level);
+	doRequestAbstractTypeDump(msg, level);
+
+	XKMSPrototypeKeyBinding *pkb = msg->getPrototypeKeyBinding();
+	if (pkb != NULL)
+		doKeyBindingAbstractDump(pkb, level);
+
+	//doAuthenticationDump(pkb, level);
+
+	return 0;
+}
+
 int doMsgDump(XKMSMessageAbstractType * msg) {
 
 	if (msg->isSigned()) {
@@ -1478,6 +1500,11 @@ int doMsgDump(XKMSMessageAbstractType * msg) {
 	case XKMSMessageAbstractType::ValidateResult :
 
 		doValidateResultDump(dynamic_cast<XKMSValidateResult *>(msg));
+		break;
+
+	case XKMSMessageAbstractType::RegisterRequest :
+
+		doRegisterRequestDump(dynamic_cast<XKMSRegisterRequest *>(msg));
 		break;
 
 	default :
@@ -1776,12 +1803,14 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 	try {
 		XSECSOAPRequestorSimple req(msg->getService());
+#if !defined(_WIN32)
 		struct timeval tv1, tv2;
 		gettimeofday(&tv1, NULL);
-
+#endif
 		req.setEnvelopeType(et);
 
 		responseDoc = req.doRequest(doc);
+#if !defined(_WIN32)
 		gettimeofday(&tv2, NULL);
 		long seconds = tv2.tv_sec - tv1.tv_sec;
 		long useconds;
@@ -1798,7 +1827,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 		}
 
 		cout << "Time takend for request = " << seconds << " seconds, " << useconds << " useconds" << endl;
-
+#endif
 		/* If two-phase - re-do the request */
 		if (twoPhase) {
 

@@ -96,6 +96,9 @@ public:
 	enum messageType {
 
 		None,					/** A default value that indicates something hasn't been set */
+
+		/* X-KISS messages */
+
 		CompoundRequest,		/** A CompoundRequest message - holding multiple requests */
 		CompoundResult,			/** A CompoundResult message - holding multiple results */
 		LocateRequest,			/** A LocateRequest message */
@@ -105,7 +108,12 @@ public:
 		PendingRequest,			/** A PendingRequest message (Asynchronous protocol) */
 		StatusRequest,          /** A StatusRequest message (Asynchronous protocol) */
 		StatusResult,           /** A StatusResult message (Asynchronous protocol) */
-		Result					/** A non-specific result message */
+		Result,					/** A non-specific result message */
+
+		/* X-KRSS messages */
+
+		RegisterRequest,		/** A RegisterReqeust message */
+		RegisterResult			/** A RegisterResult message */
 
 	};
 

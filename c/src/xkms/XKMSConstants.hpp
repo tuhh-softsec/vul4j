@@ -52,6 +52,7 @@ public:
 
 	// Tags - note all are UTF-16, but not marked as such
 	static const XMLCh s_tagApplication[];
+	static const XMLCh s_tagAuthentication[];
 	static const XMLCh s_tagCompoundRequest[];
 	static const XMLCh s_tagCompoundResult[];
 	static const XMLCh s_tagEncryption[];
@@ -62,6 +63,7 @@ public:
 	static const XMLCh s_tagIndeterminateReason[];
 	static const XMLCh s_tagInvalidReason[];
 	static const XMLCh s_tagKeyBinding[];
+	static const XMLCh s_tagKeyBindingAuthentication[];
 	static const XMLCh s_tagKeyInfo[];
 	static const XMLCh s_tagKeyName[];
 	static const XMLCh s_tagKeyUsage[];
@@ -70,12 +72,19 @@ public:
 	static const XMLCh s_tagLocateResult[];
 	static const XMLCh s_tagMessageExtension[];
 	static const XMLCh s_tagNonce[];
+	static const XMLCh s_tagNotBoundAuthentication[];
+	static const XMLCh s_tagNotBefore[];
+	static const XMLCh s_tagNotOnOrAfter[];
 	static const XMLCh s_tagOpaqueClientData[];
 	static const XMLCh s_tagOpaqueData[];
 	static const XMLCh s_tagOriginalRequestId[];
 	static const XMLCh s_tagPending[];
 	static const XMLCh s_tagPendingRequest[];
+	static const XMLCh s_tagProofOfPossession[];
+	static const XMLCh s_tagProtocol[];
+	static const XMLCh s_tagPrototypeKeyBinding[];
 	static const XMLCh s_tagQueryKeyBinding[];
+	static const XMLCh s_tagRegisterRequest[];
 	static const XMLCh s_tagRepresent[];
 	static const XMLCh s_tagRequestId[];
 	static const XMLCh s_tagRequestSignatureValue[];
@@ -85,6 +94,7 @@ public:
 	static const XMLCh s_tagResult[];
 	static const XMLCh s_tagResultMajor[];
 	static const XMLCh s_tagResultMinor[];
+	static const XMLCh s_tagRevocationCodeIdentifier[];
 	static const XMLCh s_tagService[];
 	static const XMLCh s_tagSignature[];
 	static const XMLCh s_tagStatus[];
@@ -97,6 +107,8 @@ public:
 	static const XMLCh s_tagValidateRequest[];
 	static const XMLCh s_tagValidateResult[];
 	static const XMLCh s_tagValidReason[];
+	static const XMLCh s_tagValidityInterval[];
+	static const XMLCh s_tagValue[];
 	static const XMLCh s_tagX509Cert[];
 	static const XMLCh s_tagX509Chain[];
 

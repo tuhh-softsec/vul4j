@@ -119,7 +119,7 @@ public:
 		RequestAbstractTypeError	= 54,
 		ResultTypeError				= 55,
 		StatusError 				= 56,
-		UnknownError				= 57		// Must be last!
+		UnknownError				= 58		// Must be last!
 
 	};
 

@@ -43,6 +43,7 @@
 #include "XKMSValidateRequestImpl.hpp"
 #include "XKMSValidateResultImpl.hpp"
 #include "XKMSPendingRequestImpl.hpp"
+#include "XKMSRegisterRequestImpl.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -273,6 +274,20 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 		XKMSStatusResultImpl * ret;
 		XSECnew(ret, XKMSStatusResultImpl(new XSECEnv(*mp_env), elt));
 		Janitor<XKMSStatusResultImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return ret;
+
+	}
+
+	else if (strEquals(name, XKMSConstants::s_tagRegisterRequest)) {
+
+		// This is a <PendingRequest> message
+		XKMSRegisterRequestImpl * ret;
+		XSECnew(ret, XKMSRegisterRequestImpl(new XSECEnv(*mp_env), elt));
+		Janitor<XKMSRegisterRequestImpl> j_ret(ret);
 
 		ret->load();
 		
