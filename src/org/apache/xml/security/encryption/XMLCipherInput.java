@@ -60,7 +60,7 @@ public class XMLCipherInput {
 	 * Constructor for processing encrypted octets
 	 *
 	 * @param data The <code>CipherData</code> object to read the bytes from
-	 * @throws {@link XMLEncryptionException}
+	 * @throws XMLEncryptionException {@link XMLEncryptionException}
 	 */
 
 	public XMLCipherInput(CipherData data) throws XMLEncryptionException {
@@ -78,7 +78,7 @@ public class XMLCipherInput {
 	 *
 	 * @param input The <code>EncryptedType</code> object to read 
 	 * the bytes from.
-	 * @throws {@link XMLEncryptionException}
+	 * @throws XMLEncryptionException {@link XMLEncryptionException}
 	 */
 
 	public XMLCipherInput(EncryptedType input) throws XMLEncryptionException {
@@ -94,7 +94,8 @@ public class XMLCipherInput {
 	/**
 	 * Dereferences the input and returns it as a single byte array.
 	 *
-	 * @throws XMLEncryption Exception
+	 * @throws XMLEncryptionException
+     * @return The decripted bytes.
 	 */
 
 	public byte[] getBytes() throws XMLEncryptionException {
@@ -107,6 +108,8 @@ public class XMLCipherInput {
 
 	/**
 	 * Internal method to get bytes in decryption mode
+     * @return the decripted bytes
+     * @throws XMLEncryptionException
 	 */
 
 	private byte[] getDecryptBytes() throws XMLEncryptionException {
@@ -130,9 +133,7 @@ public class XMLCipherInput {
 				input = resolver.resolve(uriAttr, null);
 			} catch (ResourceResolverException ex) {
 				throw new XMLEncryptionException("empty", ex);
-			} catch (XMLSecurityException ex) {
-				throw new XMLEncryptionException("empty", ex);
-			}
+			} 
 
 			if (input != null) {
 				logger.debug("Managed to resolve URI \"" + cr.getURI() + "\"");

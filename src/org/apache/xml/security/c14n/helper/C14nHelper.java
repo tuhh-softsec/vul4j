@@ -42,185 +42,10 @@ public class C14nHelper {
    }
 
    /**
-    * Sorts a list of attributes according to the c14n spec. The list can contain
-    * both namespaces and regular attributes.
-    *
-    * @param attributes
-    *
-    */
-   public static final Object[] sortAttributes(Object[] attributes) {
-
-      if (attributes == null) {
-         return new Attr[0];
-      }
-
-      Object[] result = new Object[attributes.length];
-      for (int i=0; i<attributes.length; i++) {
-         result[i] = attributes[i];
-      }
-
-      java.util.Arrays.sort(result, new AttrCompare());
-
-      return result;
-   }
-
-   /**
-    * Normalizes an {@link Attr}ibute value
-    *
-    * The string value of the node is modified by replacing
-    * <UL>
-    * <LI>all ampersands (&) with <CODE>&amp;amp;</CODE></LI>
-    * <LI>all open angle brackets (<) with <CODE>&amp;lt;</CODE></LI>
-    * <LI>all quotation mark characters with <CODE>&amp;quot;</CODE></LI>
-    * <LI>and the whitespace characters <CODE>#x9</CODE>, #xA, and #xD, with character
-    * references. The character references are written in uppercase
-    * hexadecimal with no leading zeroes (for example, <CODE>#xD</CODE> is represented
-    * by the character reference <CODE>&amp;#xD;</CODE>)</LI>
-    * </UL>
-    *
-    * @param s
-    * @return the normalized {@link org.w3c.dom.Attr}ibute value ((({@link String})
-    */
-   public static final String normalizeAttr(String s) {
-
-      StringBuffer stringbuffer = new StringBuffer();
-      int i = (s == null)
-              ? 0
-              : s.length();
-
-      for (int j = 0; j < i; j++) {
-         char c = s.charAt(j);
-
-         switch (c) {
-
-         case '&' :
-            stringbuffer.append("&amp;");
-            break;
-
-         case '<' :
-            stringbuffer.append("&lt;");
-            break;
-
-         case '"' :
-            stringbuffer.append("&quot;");
-            break;
-
-         case 0x09 :    // '\t'
-            stringbuffer.append("&#x9;");
-            break;
-
-         case 0x0A :    // '\n'
-            stringbuffer.append("&#xA;");
-            break;
-
-         case 0x0D :    // '\r'
-            stringbuffer.append("&#xD;");
-            break;
-
-         default :
-            stringbuffer.append(c);
-            break;
-         }
-      }
-
-      return stringbuffer.toString();
-   }
-
-   /**
-    * Normalizes a {@link org.w3c.dom.Comment} value
-    *
-    * @param s
-    * @return the normalized {@link org.w3c.dom.Comment} value ((({@link String})
-    */
-   public static final String normalizeComment(String s) {
-      return normalizeProcessingInstruction(s);
-   }
-
-   /**
-    * Normalizes a {@link org.w3c.dom.ProcessingInstruction} value
-    *
-    * @param s
-    * @return the normalized {@link org.w3c.dom.ProcessingInstruction} value ((({@link String})
-    */
-   public static final String normalizeProcessingInstruction(String s) {
-
-      StringBuffer stringbuffer = new StringBuffer();
-      int i = (s == null)
-              ? 0
-              : s.length();
-
-      for (int j = 0; j < i; j++) {
-         char c = s.charAt(j);
-
-         switch (c) {
-
-         case 0x0D :
-            stringbuffer.append("&#xD;");
-            break;
-
-         default :
-            stringbuffer.append(c);
-            break;
-         }
-      }
-
-      return stringbuffer.toString();
-   }
-
-   /**
-    * Normalizes a {@link Text} value
-    *
-    * <p>Text Nodes - the string value, except all ampersands (&amp; are replaced by
-    * &amp;amp;, all open angle brackets (<) are replaced by &amp;lt;, all closing
-    * angle brackets (>) are replaced by &amp;gt;, and all #xD characters
-    * are replaced by &amp;#xD;. (See <A
-    * HREF="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#ProcessingModel">
-    * processing model section in the specification</A>)</p>
-    *
-    * @param s
-    * @return the normalized {@link Text} value ((({@link String})
-    */
-   public static final String normalizeText(String s) {
-
-      StringBuffer stringbuffer = new StringBuffer();
-      int i = (s == null)
-              ? 0
-              : s.length();
-
-      for (int j = 0; j < i; j++) {
-         char c = s.charAt(j);
-
-         switch (c) {
-
-         case '&' :
-            stringbuffer.append("&amp;");
-            break;
-
-         case '<' :
-            stringbuffer.append("&lt;");
-            break;
-
-         case '>' :
-            stringbuffer.append("&gt;");
-            break;
-
-         case 0xD :
-            stringbuffer.append("&#xD;");
-            break;
-
-         default :
-            stringbuffer.append(c);
-            break;
-         }
-      }
-
-      return stringbuffer.toString();
-   }
-
-   /**
     * Method namespaceIsRelative
     *
     * @param namespace
+    * @return true if the given namespace is relative. 
     */
    public static boolean namespaceIsRelative(Attr namespace) {
       return !namespaceIsAbsolute(namespace);
@@ -230,6 +55,7 @@ public class C14nHelper {
     * Method namespaceIsRelative
     *
     * @param namespaceValue
+    * @return true if the given namespace is relative.
     */
    public static boolean namespaceIsRelative(String namespaceValue) {
       return !namespaceIsAbsolute(namespaceValue);
@@ -239,6 +65,7 @@ public class C14nHelper {
     * Method namespaceIsAbsolute
     *
     * @param namespace
+    * @return true if the given namespace is absolute.
     */
    public static boolean namespaceIsAbsolute(Attr namespace) {
       return namespaceIsAbsolute(namespace.getValue());
@@ -248,6 +75,7 @@ public class C14nHelper {
     * Method namespaceIsAbsolute
     *
     * @param namespaceValue
+    * @return true if the given namespace is absolute.
     */
    public static boolean namespaceIsAbsolute(String namespaceValue) {
 
@@ -255,48 +83,7 @@ public class C14nHelper {
       if (namespaceValue.length() == 0) {
          return true;
       }
-
-      boolean foundColon = false;
-      int length = namespaceValue.length();
-
-      for (int i = 0; i < length; i++) {
-         char c = namespaceValue.charAt(i);
-
-         if (c == ':') {
-            foundColon = true;
-         } else if (!foundColon && (c == '/')) {
-            return false;
-         }
-      }
-
-      return foundColon;
-
-      /*
-      try {
-         URI uri = new URI(namespaceValue);
-         String Scheme = uri.getScheme();
-         boolean protocolOK = false;
-
-         if (Scheme != null) {
-            protocolOK = uri.getScheme().length() > 0;
-
-            if (Scheme.equals("urn")) {
-               return true;
-            }
-         }
-
-         boolean hostOK = false;
-         String Host = uri.getHost();
-
-         if (Host != null) {
-            hostOK = uri.getHost().length() > 0;
-         }
-
-         return (protocolOK && hostOK);
-      } catch (URI.MalformedURIException ex) {
-         return false;
-      }
-      */
+      return namespaceValue.indexOf(':')>0;
    }
 
    /**

@@ -24,7 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.helper.C14nHelper;
@@ -56,28 +57,30 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
    /**
     * Returns the Attr[]s to be outputted for the given element.
     * <br>
-    * The code of this method is a copy of {@link #handleAttributes(Element)},
+    * The code of this method is a copy of {@link #handleAttributes(Element,
+    * NameSpaceSymbTable)},
     * whereas it takes into account that subtree-c14n is -- well -- subtree-based.
     * So if the element in question isRoot of c14n, it's parent is not in the
     * node set, as well as all other ancestors.
     *
     * @param E
+    * @param ns
     * @return the Attr[]s to be outputted
     * @throws CanonicalizationException
     */
-   Object[] handleAttributesSubtree(Element E,  NameSpaceSymbTable ns )
+   Iterator handleAttributesSubtree(Element E,  NameSpaceSymbTable ns )
            throws CanonicalizationException {
 
       boolean isRoot = E == this._rootNodeOfC14n;
 
       // result will contain the attrs which have to be outputted
-      List result = new Vector();
+      SortedSet result = new TreeSet(COMPARE);
       NamedNodeMap attrs = E.getAttributes();
       int attrsLength = attrs.getLength();      
             
       for (int i = 0; i < attrsLength; i++) {
          Attr N = (Attr) attrs.item(i);
-         String NName=N.getName();
+         String NName=N.getLocalName();
          String NValue=N.getValue();
          String NUri =N.getNamespaceURI();
 
@@ -86,14 +89,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
             result.add(N);
             continue;
          }
-
-         if (C14nHelper.namespaceIsRelative(N)) {
-            Object exArgs[] = { E.getTagName(), NName, N.getNodeValue() };
-            throw new CanonicalizationException(
-               "c14n.Canonicalizer.RelativeNamespace", exArgs);
-         }
-        
-         if ("xml".equals(N.getLocalName())
+         
+         if (XML.equals(NName)
                  && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
          	//The default mapping for xml must not be output.
          	continue;
@@ -104,6 +101,11 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
       	  if (n!=null) {
       	  	 //Render the ns definition
              result.add(n);
+             if (C14nHelper.namespaceIsRelative(N)) {
+                Object exArgs[] = { E.getTagName(), NName, N.getNodeValue() };
+                throw new CanonicalizationException(
+                   "c14n.Canonicalizer.RelativeNamespace", exArgs);
+             }
           }        
       }
             	   
@@ -116,7 +118,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
 		addXmlAttributesSubtree(E, result);
       } 
       
-      return C14nHelper.sortAttributes(result.toArray());
+      return result.iterator();
    }
 
    /**
@@ -124,7 +126,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     * @param E the root node.
     * @param result the xml:* attributes  to output.
     */
-   private void addXmlAttributesSubtree(Element E, List result) {
+   private void addXmlAttributesSubtree(Element E, SortedSet result) {
          // E is in the node-set
          Node parent = E.getParentNode();
          Map loa = new HashMap();
@@ -175,22 +177,27 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     * Returns the Attr[]s to be outputted for the given element.
     * <br>
     * IMPORTANT: This method expects to work on a modified DOM tree, i.e. a DOM which has
-    * been prepared using {@link XMLUtils#circumventBug2650(Document)}.
-    *
+    * been prepared using {@link org.apache.xml.security.utils.XMLUtils#circumventBug2650(
+    * org.w3c.dom.Document)}.
+    * 
     * @param E
+    * @param ns
     * @return the Attr[]s to be outputted
     * @throws CanonicalizationException
     */
-   Object[] handleAttributes(Element E,  NameSpaceSymbTable ns ) throws CanonicalizationException {    
+   Iterator handleAttributes(Element E,  NameSpaceSymbTable ns ) throws CanonicalizationException {    
     // result will contain the attrs which have to be outputted
-    List result = new Vector();
+    
     NamedNodeMap attrs = E.getAttributes();
     int attrsLength = attrs.getLength();
     boolean isRealVisible=this._xpathNodeSet.contains(E);
+    
+    SortedSet result = new TreeSet(COMPARE);
+    
             
     for (int i = 0; i < attrsLength; i++) {
        Attr N = (Attr) attrs.item(i);
-       String NName=N.getName();
+       String NName=N.getLocalName();
        String NValue=N.getValue();
        String NUri =N.getNamespaceURI();
        
@@ -204,13 +211,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
           continue;
        }
 
-       if (C14nHelper.namespaceIsRelative(N)) {
-          Object exArgs[] = { E.getTagName(), NName, N.getNodeValue() };
-          throw new CanonicalizationException(
-             "c14n.Canonicalizer.RelativeNamespace", exArgs);
-       }
-       
-       if ("xml".equals(N.getLocalName())
+              
+       if ("xml".equals(NName)
                && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
           /* except omit namespace node with local name xml, which defines
            * the xml prefix, if its string value is http://www.w3.org/XML/1998/namespace.
@@ -227,6 +229,11 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
 	    		
 		 	 	if (n!=null) {
 		 	 		result.add(n);
+                    if (C14nHelper.namespaceIsRelative(N)) {
+                       Object exArgs[] = { E.getTagName(), NName, N.getNodeValue() };
+                       throw new CanonicalizationException(
+                          "c14n.Canonicalizer.RelativeNamespace", exArgs);
+                    }
 		 	 	}
     	}
     }
@@ -236,11 +243,11 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
         Node n=null;
         if (xmlns == null) {
         	//No xmlns def just get the already defined.
-        	n=ns.getMapping("xmlns");        		
+        	n=ns.getMapping(XMLNS);        		
         } else if ( !this._xpathNodeSet.contains(xmlns)) {
         	//There is a definition but the xmlns is not selected by the xpath.
         	//then xmlns=""
-        	n=ns.addMappingAndRenderXNodeSet("xmlns","",nullNode,true);        	    		      	
+        	n=ns.addMappingAndRenderXNodeSet(XMLNS,"",nullNode,true);        	    		      	
         }
         //output the xmlns def if needed.
         if (n!=null) {
@@ -250,14 +257,14 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     	addXmlAttributes(E,result);
     }
     
-    return C14nHelper.sortAttributes(result.toArray());   		
+    return result.iterator();
    }
    /**
     *  Float the xml:* attributes of the unselected parent nodes to the ciurrent node.
     * @param E
     * @param result
     */
-   private void addXmlAttributes(Element E, List result) {
+   private void addXmlAttributes(Element E, SortedSet result) {
 	/* The processing of an element node E MUST be modified slightly when an
        * XPath node-set is given as input and the element's parent is omitted
        * from the node-set. The method for processing the attribute axis of an
@@ -326,7 +333,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     *
     * @param xpathNodeSet
     * @param inclusiveNamespaces
-    * @throws CanonicalizationException
+    * @return none it always fails
+    * @throws CanonicalizationException always
     */
    public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet, String inclusiveNamespaces)
            throws CanonicalizationException {
@@ -341,6 +349,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     *
     * @param rootNode
     * @param inclusiveNamespaces
+    * @return none it always fails
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeSubTree(Node rootNode, String inclusiveNamespaces)

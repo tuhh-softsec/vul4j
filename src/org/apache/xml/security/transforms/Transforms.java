@@ -20,8 +20,6 @@ package org.apache.xml.security.transforms;
 
 import java.io.IOException;
 
-import javax.xml.transform.TransformerException;
-
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
@@ -31,11 +29,9 @@ import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -74,10 +70,12 @@ public class Transforms extends SignatureElementProxy {
    public static final String TRANSFORM_XPOINTER = "http://www.w3.org/TR/2001/WD-xptr-20010108";
    /** Transform - XPath Filter v2.0 */
    public static final String TRANSFORM_XPATH2FILTER04 = "http://www.w3.org/2002/04/xmldsig-filter2";
+   /** Transform - XPath Filter */
    public static final String TRANSFORM_XPATH2FILTER = "http://www.w3.org/2002/06/xmldsig-filter2";
+   /** Transform - XPath Filter  CHGP private*/
    public static final String TRANSFORM_XPATHFILTERCHGP = "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter";
    //J+
-
+   Element []transforms;
    /**
     * Consturcts {@link Transforms}
     *
@@ -212,9 +210,9 @@ public class Transforms extends SignatureElementProxy {
       try {
          for (int i = 0; i < this.getLength(); i++) {
             Transform t = this.item(i);
-
-            log.debug("Preform the (" + i + ")th " + t.getURI() + " transform");
-
+            if (log.isDebugEnabled()) {
+            	log.debug("Preform the (" + i + ")th " + t.getURI() + " transform");
+            }
             xmlSignatureInput = t.performTransform(xmlSignatureInput);
          }
 
@@ -244,9 +242,8 @@ public class Transforms extends SignatureElementProxy {
     * Return the nonnegative number of transformations.
     *
     * @return the number of transformations
-    * @throws TransformationException
     */
-   public int getLength() throws TransformationException
+   public int getLength()
    {
 		/*Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
 	                                              Constants.SignatureSpecNS);
@@ -254,21 +251,11 @@ public class Transforms extends SignatureElementProxy {
 	        XPathAPI.selectNodeList(this._constructionElement,
 	                                "./ds:Transform", nscontext);
 	     return transformElems.getLength();*/
-	      int size=0;
-	      Node sibling= this._constructionElement.getFirstChild();
-	      while (sibling!=null)
-	      {
-	          if ("Transform".equals(sibling.getLocalName())
-	                  && Constants.SignatureSpecNS.equals(sibling.getNamespaceURI())) {
-	              size++;
-	          }
-	          sibling=sibling.getNextSibling();
-	      }
-	      if (size==0)
-	      {
-	          throw new TransformationException("empty");
-	      }
-          return size;
+       if (transforms==null) {
+        transforms=XMLUtils.selectDsNodes(this._constructionElement.getFirstChild(),
+           "Transform");
+       }
+       return transforms.length;       
   }
 
    /**
@@ -282,23 +269,17 @@ public class Transforms extends SignatureElementProxy {
    public Transform item(int i) throws TransformationException {
    	
 	   	try {
-	   		Node sibling= this._constructionElement.getFirstChild();
-	   		while (sibling!=null) {
-	   			if ("Transform".equals(sibling.getLocalName())
-	   					&& Constants.SignatureSpecNS.equals(sibling.getNamespaceURI())) {
-	   				if (i==0){
-	   					return new Transform((Element)sibling, this._baseURI);
-	   				}
-	   				i--;
-	   			}
-	   			sibling=sibling.getNextSibling();
+	   		if (transforms==null) {
+	   			transforms=XMLUtils.selectDsNodes(this._constructionElement.getFirstChild(),
+	   			"Transform");
 	   		}
-	   		return null;                                                                     
+	   		return new Transform(transforms[i], this._baseURI);
 	   	} catch (XMLSecurityException ex) {
 	   		throw new TransformationException("empty", ex);
 	   	}
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_TRANSFORMS;
    }

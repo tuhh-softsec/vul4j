@@ -35,8 +35,8 @@ import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
  * transform.
  *
  * @author Christian Geuer-Pollmann
- * @see http://www.w3.org/TR/1999/REC-xpath-19991116
+ * @see <a href="http://www.w3.org/TR/1999/REC-xpath-19991116">XPath</a>
  *
  */
 public class TransformXPath extends TransformSpi {
@@ -65,16 +65,20 @@ public class TransformXPath extends TransformSpi {
       Transforms.TRANSFORM_XPATH;
 
    //J-
+   /** @inheritDoc */
    public boolean wantsOctetStream ()   { return false; }
+   /** @inheritDoc */
    public boolean wantsNodeSet ()       { return true; }
+   /** @inheritDoc */
    public boolean returnsOctetStream () { return false; }
+   /** @inheritDoc */
    public boolean returnsNodeSet ()     { return true; }
    //J+
 
    /**
     * Method engineGetURI
     *
-    *
+    * @inheritDoc
     */
    protected String engineGetURI() {
       return implementedTransformURI;
@@ -82,7 +86,7 @@ public class TransformXPath extends TransformSpi {
 
    /**
     * Method enginePerformTransform
-    *
+    * @inheritDoc
     * @param input
     *
     * @throws TransformationException
@@ -105,16 +109,16 @@ public class TransformXPath extends TransformSpi {
           */
          Set inputSet = input.getNodeSet();
          CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(new CachedXPathAPI() /*input.getCachedXPathAPI()*/);
+            new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());
          if (inputSet.size() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
 
             throw new TransformationException("empty", exArgs);
          }
 
-         Element xpathElement =
-            this._transformObject.getChildElementLocalName(0,
-               Constants.SignatureSpecNS, Constants._TAG_XPATH);
+         Element xpathElement =XMLUtils.selectDsNode(
+            this._transformObject.getElement().getFirstChild(),
+               Constants._TAG_XPATH,0);
 
          if (xpathElement == null) {
             Object exArgs[] = { "ds:XPath", "Transform" };
@@ -145,7 +149,7 @@ public class TransformXPath extends TransformSpi {
          }
 
          Iterator iterator = inputSet.iterator();
-
+         String str=CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
          while (iterator.hasNext()) {
             Node currentNode = (Node) iterator.next();
 
@@ -154,20 +158,15 @@ public class TransformXPath extends TransformSpi {
                "org.apache.xml.dtm.ref.dom2dtm.DOM2DTM$defaultNamespaceDeclarationNode")) {
                continue;
             }
-            */
-            try {
+            */            
             XObject includeInResult = xPathFuncHereAPI.eval(currentNode,
-                                         xpathnode, prefixResolver);
+                                         xpathnode, str,prefixResolver);
            
             if (includeInResult.bool()) {
                resultNodes.add(currentNode);
                // log.debug("    Added " + org.apache.xml.security.c14n.implementations.Canonicalizer20010315.getXPath(currentNode));
              } else {
                // log.debug("Not added " + org.apache.xml.security.c14n.implementations.Canonicalizer20010315.getXPath(currentNode));
-            }
-            } catch (RuntimeException e) {
-            	e.printStackTrace();
-            	throw new TransformerException("ddd");
             }
          }
 

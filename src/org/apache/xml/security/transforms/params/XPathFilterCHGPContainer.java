@@ -26,7 +26,6 @@ import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -137,15 +136,15 @@ public class XPathFilterCHGPContainer extends ElementProxy
     * Method indentXPathText
     *
     * @param xp
-    *
+    * @return
     */
    static String indentXPathText(String xp) {
 
       if ((xp.length() > 2) && (!Character.isWhitespace(xp.charAt(0)))) {
          return "\n" + xp + "\n";
-      } else {
-         return xp;
-      }
+      } 
+      return xp;
+      
    }
 
    /**
@@ -168,7 +167,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
     * @param includeButSearch
     * @param excludeButSearch
     * @param exclude
-    *
+    * @return the created object
     */
    public static XPathFilterCHGPContainer getInstance(Document doc,
            boolean includeSlashPolicy, String includeButSearch,
@@ -186,6 +185,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
     * @param BaseURI
     *
     * @throws XMLSecurityException
+    * @return the created object.
     */
    public static XPathFilterCHGPContainer getInstance(
            Element element, String BaseURI) throws XMLSecurityException {
@@ -196,7 +196,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
     * Method getXStr
     *
     * @param type
-    *
+    * @return The Xstr
     */
    private String getXStr(String type) {
 
@@ -204,8 +204,8 @@ public class XPathFilterCHGPContainer extends ElementProxy
          return "";
       }
 
-      Element xElem = this.getChildElementLocalName(0, this.getBaseNamespace(),
-                         type);
+      Element xElem = XMLUtils.selectNode(this._constructionElement.getFirstChild(), this.getBaseNamespace(),
+                         type,0);
 
       return XMLUtils.getFullTextChildrenFromElement(xElem);
    }
@@ -213,7 +213,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getIncludeButSearch
     *
-    *
+    * @return
     */
    public String getIncludeButSearch() {
       return this.getXStr(XPathFilterCHGPContainer._TAG_INCLUDE_BUT_SEARCH);
@@ -222,7 +222,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getExcludeButSearch
     *
-    *
+    * @return
     */
    public String getExcludeButSearch() {
       return this.getXStr(XPathFilterCHGPContainer._TAG_EXCLUDE_BUT_SEARCH);
@@ -231,7 +231,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getExclude
     *
-    *
+    * @return
     */
    public String getExclude() {
       return this.getXStr(XPathFilterCHGPContainer._TAG_EXCLUDE);
@@ -240,7 +240,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getIncludeSlashPolicy
     *
-    *
+    * @return
     */
    public boolean getIncludeSlashPolicy() {
 
@@ -264,24 +264,14 @@ public class XPathFilterCHGPContainer extends ElementProxy
          return null;
       }
 
-      Element xElem = this.getChildElementLocalName(0, this.getBaseNamespace(),
-                         type);
-      NodeList children = xElem.getChildNodes();
-      int length = children.getLength();
-
-      for (int i = 0; i < length; i++) {
-         if (children.item(i).getNodeType() == Node.TEXT_NODE) {
-            return children.item(i);
-         }
-      }
-
-      return null;
+      return XMLUtils.selectNodeText(this._constructionElement.getFirstChild(), this.getBaseNamespace(),
+                         type,0);
    }
 
    /**
     * Method getHereContextNodeIncludeButSearch
     *
-    *
+    * @return
     */
    public Node getHereContextNodeIncludeButSearch() {
       return this
@@ -291,7 +281,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getHereContextNodeExcludeButSearch
     *
-    *
+    * @return
     */
    public Node getHereContextNodeExcludeButSearch() {
       return this
@@ -301,7 +291,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getHereContextNodeExclude
     *
-    *
+    * @return
     */
    public Node getHereContextNodeExclude() {
       return this.getHereContextNode(XPathFilterCHGPContainer._TAG_EXCLUDE);
@@ -310,7 +300,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getBaseLocalName
     *
-    *
+    * @inheritDoc
     */
    public final String getBaseLocalName() {
       return XPathFilterCHGPContainer._TAG_XPATHCHGP;
@@ -319,7 +309,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getBaseNamespace
     *
-    *
+    * @inheritDoc
     */
    public final String getBaseNamespace() {
       return Transforms.TRANSFORM_XPATHFILTERCHGP;

@@ -19,10 +19,11 @@ package org.apache.xml.security.transforms.implementations;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -38,6 +39,7 @@ import org.apache.xml.security.transforms.params.XPath2FilterContainer;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.XPathFuncHereAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,7 +54,7 @@ import org.xml.sax.SAXException;
  *
  * @author $Author$
  * @see <A HREF="http://www.w3.org/TR/xmldsig-filter2/">XPath Filter v2.0 (TR)</A>
- * @see <A HREF=http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/">XPath Filter v2.0 (editors copy)</A>
+ * @see <a HREF="http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/">XPath Filter v2.0 (editors copy)</a>
  */
 public class TransformXPath2Filter extends TransformSpi {
 
@@ -66,21 +68,25 @@ public class TransformXPath2Filter extends TransformSpi {
       Transforms.TRANSFORM_XPATH2FILTER;
    //J-
    // contains the type of the filter
-   Vector _filterTypes = new Vector();
+   List _filterTypes = new ArrayList();
 
    // contains the node set
-   Vector _filterNodes = new Vector();
+   List _filterNodes = new ArrayList();
 
    Set _F = null;
-   Vector _ancestors = null;
+   List _ancestors = null;
 
    private static final String FUnion = "union";
    private static final String FSubtract = "subtract";
    private static final String FIntersect = "intersect";
 
+   /** @inheritDoc */
    public boolean wantsOctetStream ()   { return false; }
+   /** @inheritDoc */
    public boolean wantsNodeSet ()       { return true; }
+   /** @inheritDoc */
    public boolean returnsOctetStream () { return false; }
+   /** @inheritDoc */
    public boolean returnsNodeSet ()     { return true; }
 
    //J+
@@ -88,7 +94,7 @@ public class TransformXPath2Filter extends TransformSpi {
    /**
     * Method engineGetURI
     *
-    *
+    * @inheritDoc
     */
    protected String engineGetURI() {
       return implementedTransformURI;
@@ -98,7 +104,7 @@ public class TransformXPath2Filter extends TransformSpi {
 
    /**
     * Method enginePerformTransform
-    *
+    * @inheritDoc
     * @param input
     *
     * @throws TransformationException
@@ -117,7 +123,7 @@ public class TransformXPath2Filter extends TransformSpi {
          }
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
+            new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());
          Document inputDoc = null;
 
          {
@@ -126,9 +132,12 @@ public class TransformXPath2Filter extends TransformSpi {
             inputDoc = XMLUtils.getOwnerDocument((Node) it.next());
          }
 
-         int noOfSteps =
-            this._transformObject.length(Transforms.TRANSFORM_XPATH2FILTER,
-                                         "XPath");
+         Element []xpathElements =XMLUtils.selectNodes(
+                this._transformObject.getElement().getFirstChild(),
+                   XPath2FilterContainer.XPathFilter2NS,
+                   XPath2FilterContainer._TAG_XPATH2);
+         int noOfSteps = xpathElements.length;
+
 
          if (noOfSteps == 0) {
             Object exArgs[] = { Transforms.TRANSFORM_XPATH2FILTER, "XPath" };
@@ -147,10 +156,10 @@ public class TransformXPath2Filter extends TransformSpi {
          }
 
          for (int i = 0; i < noOfSteps; i++) {
-            Element xpathElement =
-               this._transformObject.getChildElementLocalName(i,
+            Element xpathElement =XMLUtils.selectNode(
+               this._transformObject.getElement().getFirstChild(),
                   XPath2FilterContainer.XPathFilter2NS,
-                  XPath2FilterContainer._TAG_XPATH2);
+                  XPath2FilterContainer._TAG_XPATH2,i);
             XPath2FilterContainer xpathContainer =
                XPath2FilterContainer.newInstance(xpathElement,
                                                    input.getSourceURI());
@@ -167,6 +176,7 @@ public class TransformXPath2Filter extends TransformSpi {
 
             NodeList subtreeRoots = xPathFuncHereAPI.selectNodeList(inputDoc,
                                        xpathContainer.getXPathFilterTextNode(),
+                                       CachedXPathFuncHereAPI.getStrFromNode(xpathContainer.getXPathFilterTextNode()),
                                        xpathContainer.getElement());
 
             // _filterNodes.add(XMLUtils.convertNodelistToSet(subtreeRoots));
@@ -174,7 +184,7 @@ public class TransformXPath2Filter extends TransformSpi {
          }
 
          this._F = new HashSet();
-         this._ancestors = new Vector();
+         this._ancestors = new ArrayList();
 
          this.traversal(inputDoc);
 
@@ -217,7 +227,6 @@ public class TransformXPath2Filter extends TransformSpi {
     * Method traversal
     *
     * @param currentNode
-    * @param Z
     */
    private void traversal(Node currentNode) {
 
@@ -229,11 +238,11 @@ public class TransformXPath2Filter extends TransformSpi {
       int i = 0;
 
       searchFirstUnionWhichContainsNode: for (i = iMax - 1; i >= 0; i--) {
-         NodeList rootNodes = (NodeList) this._filterNodes.elementAt(i);
-         String type = (String) this._filterTypes.elementAt(i);
+         NodeList rootNodes = (NodeList) this._filterNodes.get(i);
+         String type = (String) this._filterTypes.get(i);
 
          if ((type == FUnion)
-                 && rooted(currentNode, this._ancestors, rootNodes)) {
+                 && rooted(/*currentNode,*/ this._ancestors, rootNodes)) {
 
             /*
             if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -255,9 +264,9 @@ public class TransformXPath2Filter extends TransformSpi {
 
       // search in the subsequent steps for
       for (int I = IStart; I < iMax; I++) {
-         NodeList rootNodes = (NodeList) this._filterNodes.elementAt(I);
-         String type = (String) this._filterTypes.elementAt(I);
-         boolean rooted = rooted(currentNode, this._ancestors, rootNodes);
+         NodeList rootNodes = (NodeList) this._filterNodes.get(I);
+         String type = (String) this._filterTypes.get(I);
+         boolean rooted = rooted(/*currentNode,*/ this._ancestors, rootNodes);
 
          if ((type == FIntersect) &&!rooted) {
 
@@ -318,12 +327,11 @@ public class TransformXPath2Filter extends TransformSpi {
    /**
     * Method rooted
     *
-    * @param currentNode
     * @param ancestors
     * @param rootNodes
-    *
+    * @return
     */
-   boolean rooted(Node currentNode, Vector ancestors, NodeList rootNodes) {
+   boolean rooted(/*Node currentNode,*/ List ancestors, NodeList rootNodes) {
 
       int length = rootNodes.getLength();
 

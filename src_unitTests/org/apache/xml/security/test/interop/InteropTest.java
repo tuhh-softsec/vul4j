@@ -51,7 +51,7 @@ public class InteropTest extends TestCase {
    static String xalanVerStr = XMLUtils.getXalanVersion();
 
    /** Field dbf */
-   javax.xml.parsers.DocumentBuilderFactory dbf = null;
+   static javax.xml.parsers.DocumentBuilderFactory dbf = null;
 
    public InteropTest(String Name_) {
       super(Name_);
@@ -116,7 +116,7 @@ public class InteropTest extends TestCase {
 
       File f = new File(filename);
       javax.xml.parsers.DocumentBuilder db = this.dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
+      org.w3c.dom.Document doc = db.parse(f);
       Element nscontext = XMLUtils.createDSctx(doc, "ds",
                                                Constants.SignatureSpecNS);
       Element sigElement = (Element) XPathAPI.selectSingleNode(doc,

@@ -26,7 +26,6 @@ import java.security.spec.AlgorithmParameterSpec;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
-import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
@@ -36,7 +35,6 @@ import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.HexDump;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -55,7 +53,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    /**
     * Method engineGetURI
     *
-    *
+    *@inheritDoc
     */
    public abstract String engineGetURI();
 
@@ -96,7 +94,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#setParameter}
+    * Proxy method for {@link java.security.Signature#setParameter(java.security.spec.AlgorithmParameterSpec)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param params
@@ -108,11 +106,11 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#verify}
+    * Proxy method for {@link java.security.Signature#verify(byte[])}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signature
-    *
+    * @return true if the signature is correct
     * @throws XMLSignatureException
     */
    protected boolean engineVerify(byte[] signature)
@@ -121,34 +119,29 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       try {
          byte[] completeResult = this._macAlgorithm.doFinal();
 
-         if ((this._HMACOutputLength == 0) || (this._HMACOutputLength >= 160)) {
-            log.debug("completeResult = "
+         if (log.isDebugEnabled()) {
+         log.debug("completeResult = "
                       + HexDump.byteArrayToHexString(completeResult));
-            log.debug("signature      = "
+         log.debug("signature      = "
                       + HexDump.byteArrayToHexString(signature));
-
-            return MessageDigestAlgorithm.isEqual(completeResult, signature);
-         } else {
-            log.debug("completeResult = "
-                      + HexDump.byteArrayToHexString(completeResult));
-
-            byte[] stripped = IntegrityHmac.reduceBitLength(completeResult,
-                                 this._HMACOutputLength);
-
-            log.debug("stripped       = "
-                      + HexDump.byteArrayToHexString(stripped));
-            log.debug("signature      = "
-                      + HexDump.byteArrayToHexString(signature));
-
-            return MessageDigestAlgorithm.isEqual(stripped, signature);
          }
+         if ((this._HMACOutputLength == 0) || (this._HMACOutputLength >= 160)) {
+            return MessageDigestAlgorithm.isEqual(completeResult, signature);
+         }
+         byte[] stripped = IntegrityHmac.reduceBitLength(completeResult,
+                                 this._HMACOutputLength);
+         if (log.isDebugEnabled()) {
+         log.debug("stripped       = "
+                      + HexDump.byteArrayToHexString(stripped));
+         }
+         return MessageDigestAlgorithm.isEqual(stripped, signature);         
       } catch (IllegalStateException ex) {
          throw new XMLSignatureException("empty", ex);
       }
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#initVerify}
+    * Proxy method for {@link java.security.Signature#initVerify(java.security.PublicKey)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param secretKey
@@ -173,10 +166,10 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#sign}
+    * Proxy method for {@link java.security.Signature#sign()}
     * which is executed on the internal {@link java.security.Signature} object.
     *
-    * @return the result of the {@link java.security.Signature#sign} method
+    * @return the result of the {@link java.security.Signature#sign()} method
     * @throws XMLSignatureException
     */
    protected byte[] engineSign() throws XMLSignatureException {
@@ -186,10 +179,10 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
 
          if ((this._HMACOutputLength == 0) || (this._HMACOutputLength >= 160)) {
             return completeResult;
-         } else {
-            return IntegrityHmac.reduceBitLength(completeResult,
+         } 
+          return IntegrityHmac.reduceBitLength(completeResult,
                                                  this._HMACOutputLength);
-         }
+         
       } catch (IllegalStateException ex) {
          throw new XMLSignatureException("empty", ex);
       }
@@ -199,6 +192,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
     * Method reduceBitLength
     *
     * @param completeResult
+    * @return the reduced bits.
     * @param length
     *
     */
@@ -288,7 +282,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
+    * Proxy method for {@link java.security.Signature#update(byte[])}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param input
@@ -304,7 +298,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
+    * Proxy method for {@link java.security.Signature#update(byte)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param input
@@ -320,7 +314,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#update}
+    * Proxy method for {@link java.security.Signature#update(byte[], int, int)}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param buf
@@ -340,7 +334,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
 
    /**
     * Method engineGetJCEAlgorithmString
-    *
+    * @inheritDoc
     *
     */
    protected String engineGetJCEAlgorithmString() {
@@ -353,7 +347,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEAlgorithmString
     *
-    *
+    * @inheritDoc
     */
    protected String engineGetJCEProviderName() {
       return this._macAlgorithm.getProvider().getName();
@@ -383,23 +377,13 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
          throw new XMLSignatureException("empty");
       }
 
-      if ((element.getChildNodes() != null)
-              && (element.getChildNodes().getLength() > 0)) {
-         try {
-            Element nscontext = XMLUtils.createDSctx(element.getOwnerDocument(),
-                                                     "ds",
-                                                     Constants.SignatureSpecNS);
-            Text hmaclength = (Text) XPathAPI.selectSingleNode(element,
-                                 "./ds:" + Constants._TAG_HMACOUTPUTLENGTH
-                                 + "/text()", nscontext);
+             Text hmaclength =XMLUtils.selectDsNodeText(element.getFirstChild(),
+                    Constants._TAG_HMACOUTPUTLENGTH,0);               
 
             if (hmaclength != null) {
                this._HMACOutputLength = Integer.parseInt(hmaclength.getData());
             }
-         } catch (TransformerException ex) {
-            throw new XMLSignatureException("empty", ex);
-         }
-      }
+      
    }
 
    /**
@@ -448,7 +432,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
 
       /**
        * Method engineGetURI
-       *
+       * @inheritDoc
        *
        */
       public String engineGetURI() {
@@ -476,7 +460,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       *
+       * @inheritDoc
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_SHA256;
@@ -502,7 +486,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
 
       /**
        * Method engineGetURI
-       *
+       * @inheritDoc
        *
        */
       public String engineGetURI() {
@@ -529,7 +513,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
 
       /**
        * Method engineGetURI
-       *
+       * @inheritDoc
        *
        */
       public String engineGetURI() {
@@ -557,7 +541,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       *
+       * @inheritDoc
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160;
@@ -584,7 +568,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       *
+       * @inheritDoc
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5;

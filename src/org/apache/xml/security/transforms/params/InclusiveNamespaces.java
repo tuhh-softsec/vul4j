@@ -18,13 +18,11 @@ package org.apache.xml.security.transforms.params;
 
 
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.TreeSet;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.TransformParam;
@@ -77,9 +75,8 @@ public class InclusiveNamespaces extends ElementProxy
       super(doc);
 
       StringBuffer sb = new StringBuffer();
-      List prefixList = new Vector(prefixes);
+      SortedSet prefixList = new TreeSet(prefixes);
 
-      Collections.sort(prefixList);
 
       Iterator it = prefixList.iterator();
 
@@ -89,7 +86,6 @@ public class InclusiveNamespaces extends ElementProxy
          if (prefix.equals("xmlns")) {
             sb.append("#default ");
          } else {
-
             sb.append(prefix.substring("xmlns:".length()) + " ");
          }
       }
@@ -102,7 +98,7 @@ public class InclusiveNamespaces extends ElementProxy
    /**
     * Method getInclusiveNamespaces
     *
-    *
+    * @return The Inclusive Namespace string
     */
    public String getInclusiveNamespaces() {
       return this._constructionElement
@@ -136,11 +132,11 @@ public class InclusiveNamespaces extends ElementProxy
     * </UL>
     *
     * @param inclusiveNamespaces
-    *
+    * @return A set to string
     */
-   public static Set prefixStr2Set(String inclusiveNamespaces) {
+   public static SortedSet prefixStr2Set(String inclusiveNamespaces) {
 
-      Set prefixes = new HashSet();
+      SortedSet prefixes = new TreeSet();
 
       if ((inclusiveNamespaces == null)
               || (inclusiveNamespaces.length() == 0)) {
@@ -153,9 +149,9 @@ public class InclusiveNamespaces extends ElementProxy
          String prefix = st.nextToken();
 
          if (prefix.equals("#default")) {
-            prefixes.add("xmlns" + "");
+            prefixes.add("xmlns" );
          } else {
-            prefixes.add("xmlns:" + prefix);
+            prefixes.add( prefix);
          }
       }
 
@@ -165,7 +161,7 @@ public class InclusiveNamespaces extends ElementProxy
    /**
     * Method getBaseNamespace
     *
-    *
+    * @inheritDoc
     */
    public String getBaseNamespace() {
       return InclusiveNamespaces.ExclusiveCanonicalizationNamespace;
@@ -174,7 +170,7 @@ public class InclusiveNamespaces extends ElementProxy
    /**
     * Method getBaseLocalName
     *
-    *
+    * @inheritDoc
     */
    public String getBaseLocalName() {
       return InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES;

@@ -19,26 +19,17 @@ package org.apache.xml.security.utils;
 
 
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
-import org.apache.xml.security.exceptions.Base64DecodingException;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.transforms.implementations.TransformEnvelopedSignature;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -69,12 +60,24 @@ public class XMLUtils {
       // we don't allow instantiation
    }
 
+   /**
+    * @param rootNode
+    * @param result
+    * @return
+    */
    public static Set getSetWithComments(Node rootNode,Set result) {
    	  return getSet(rootNode,result,true);
    }
+   
+   /**
+    * @param rootNode
+    * @param result
+    * @return
+    */
    public static Set getSetWithoutComments(Node rootNode,Set result) {
  	  return getSet(rootNode,result,false);
- }
+   }
+   
    static Set getSet(Node rootNode,Set result,boolean com) {
    	   //Set result = new HashSet();   	   
    	   switch (rootNode.getNodeType()) {
@@ -119,7 +122,7 @@ public class XMLUtils {
    /**
     * Method getXalanVersion
     *
-    *
+    * @return 
     */
    public static String getXalanVersion() {
 
@@ -150,7 +153,7 @@ public class XMLUtils {
    /**
     * Method getXercesVersion
     *
-    *
+    * @return
     */
    public static String getXercesVersion() {
 
@@ -175,7 +178,7 @@ public class XMLUtils {
    /**
     * Method getXalan1Version
     *
-    *
+    * @return
     */
    private static String getXalan1Version() {
 
@@ -210,7 +213,7 @@ public class XMLUtils {
    /**
     * Method getXalan20Version
     *
-    *
+    * @return
     */
    private static String getXalan20Version() {
 
@@ -233,7 +236,7 @@ public class XMLUtils {
    /**
     * Method getXalan2Version
     *
-    *
+    * @return
     */
    private static String getXalan2Version() {
 
@@ -260,7 +263,7 @@ public class XMLUtils {
    /**
     * Method getXerces1Version
     *
-    *
+    * @return
     */
    private static String getXerces1Version() {
 
@@ -282,7 +285,7 @@ public class XMLUtils {
    /**
     * Method getXerces2Version
     *
-    *
+    * @return
     */
    private static String getXerces2Version() {
 
@@ -384,145 +387,10 @@ public class XMLUtils {
 
       if ((nodeType > 0) && (nodeType < 13)) {
          return nodeTypeString[nodeType];
-      } else {
-         return "";
       }
+         return "";    
    }
 
-   /**
-    * Method getNodeTypeString
-    *
-    * @param n
-    *
-    */
-   public static String getNodeTypeString(Node n) {
-      return getNodeTypeString(n.getNodeType());
-   }
-
-   /**
-    * Returns all ancestor elements of a given node up to the document element
-    *
-    * @param ctxNode
-    *
-    */
-   public static Vector getAncestorElements(Node ctxNode) {
-
-      if (ctxNode.getNodeType() != Node.ELEMENT_NODE) {
-         return null;
-      }
-
-      Vector ancestorVector = new Vector();
-      Node parent = ctxNode;
-
-      while ((parent = parent.getParentNode()) != null
-             && (parent.getNodeType() == Node.ELEMENT_NODE)) {
-         ancestorVector.add(parent);
-      }
-
-      ancestorVector.trimToSize();
-
-      return ancestorVector;
-   }
-
-   /**
-    * Returns all ancestor elements of a given node up to the given root element
-    *
-    * @param ctxNode
-    * @param rootElement
-    *
-    */
-   public static Vector getAncestorElements(Node ctxNode, Node rootElement) {
-
-      Vector ancestorVector = new Vector();
-
-      if (ctxNode.getNodeType() != Node.ELEMENT_NODE) {
-         return ancestorVector;
-      }
-
-      Node parent = ctxNode;
-      Node parentOfRoot = rootElement.getParentNode();
-
-      while ((parent = parent.getParentNode()) != null
-             && (parent.getNodeType() == Node.ELEMENT_NODE)
-             && (parent != parentOfRoot)) {
-         ancestorVector.add(parent);
-      }
-
-      ancestorVector.trimToSize();
-
-      return ancestorVector;
-   }
-
-   /**
-    * Method getDirectChildrenElements
-    *
-    * @param parentElement
-    *
-    */
-   public static NodeList getDirectChildrenElements(Element parentElement) {
-
-      NodeList allNodes = parentElement.getChildNodes();
-      HelperNodeList selectedNodes = new HelperNodeList();
-
-      for (int i = 0; i < allNodes.getLength(); i++) {
-         Node currentNode = allNodes.item(i);
-
-         if ((currentNode.getNodeType() == Node.ELEMENT_NODE)) {
-            selectedNodes.appendChild(currentNode);
-         }
-      }
-
-      return selectedNodes;
-   }
-
-   /**
-    * Method getDirectChild
-    *
-    * @param parentElement
-    * @param childLocalName
-    * @param childNamespaceURI
-    *
-    */
-   public static Element getDirectChild(Element parentElement,
-                                        String childLocalName,
-                                        String childNamespaceURI) {
-
-      NodeList nl = parentElement.getChildNodes();
-      Vector results = new Vector();
-
-      for (int i = 0; i < nl.getLength(); i++) {
-         Node n = nl.item(i);
-
-         if (n.getNodeType() == Node.ELEMENT_NODE) {
-            if (((Element) n).getLocalName().equals(childLocalName)
-                    && ((Element) n).getNamespaceURI().equals(
-                       childNamespaceURI)) {
-               results.add(n);
-            }
-         }
-      }
-
-      if (results.size() != 1) {
-         return null;
-      }
-
-      return (Element) results.elementAt(0);
-   }
-
-   /**
-    * Outputs a DOM tree to a file.
-    *
-    * @param contextNode root node of the DOM tree
-    * @param filename the file name
-    * @throws java.io.FileNotFoundException
-    */
-   public static void outputDOM(Node contextNode, String filename)
-           throws java.io.FileNotFoundException {
-
-      OutputStream os = new FileOutputStream(filename);
-
-      XMLUtils.outputDOM(contextNode, os);
-   }
 
    /**
     * Outputs a DOM tree to an {@link OutputStream}.
@@ -596,119 +464,12 @@ public class XMLUtils {
       }
    }
 
-   /**
-    * Converts a single {@link Node} into a {@link NodeList} which contains only that {@link Node}
-    *
-    * @param node the Node
-    * @return the NodeList
-    */
-   public static NodeList elementToNodeList(Node node) {
-
-      HelperNodeList nl = new HelperNodeList();
-
-      nl.appendChild(node);
-
-      return (NodeList) nl;
-   }
-
-   /**
-    * Creates Attributes {@link org.w3c.dom.Attr} in the given namespace
-    * (if possible). If the namespace is empty, only the QName is used.
-    *
-    * @param doc the generator (factory) Document
-    * @param QName the QName of the Attr
-    * @param Value the String value of the Attr
-    * @param NamespaceURI the namespace for the Attr
-    * @return the Attr
-    */
-   public static Attr createAttr(Document doc, String QName, String Value,
-                                 String NamespaceURI) {
-
-      Attr attr = doc.createAttributeNS(NamespaceURI, QName);
-
-      attr.setNodeValue(Value);
-
-      return attr;
-   }
-
-   /**
-    * Sets the Attribute QName with Value in Element elem.
-    *
-    * @param elem the Element which has to contain the Attribute
-    * @param QName the QName of the Attribute
-    * @param Value the value of the Attribute
-    */
-   public static void setAttr(Element elem, String QName, String Value) {
-
-      Document doc = elem.getOwnerDocument();
-      Attr attr = doc.createAttributeNS(Constants.SignatureSpecNS, QName);
-
-      attr.setNodeValue(Value);
-      elem.setAttributeNode(attr);
-   }
-
-   /**
-    * Creates an Element from a BigInteger. The BigInteger is base64-encoded
-    * and put into the Element with a given name.
-    *
-    * See
-    * <A HREF="http://www.w3.org/TR/2001/CR-xmldsig-core-20010419/#sec-CryptoBinary">Section
-    * 4.0.1 The ds:CryptoBinary Simple Type</A>:
-    *
-    * This specification defines the ds:CryptoBinary simple type for
-    * representing arbitrary-length integers (e.g. "bignums") in XML as
-    * octet strings. The integer value is first converted to a "big
-    * endian" bitstring. The bitstring is then padded with leading zero
-    * bits so that the total number of bits == 0 mod 8 (so that there are
-    * an integral number of octets). If the bitstring contains entire
-    * leading octets that are zero, these are removed (so the high-order
-    * octet is always non-zero). This octet string is then base64 [MIME]
-    * encoded. (The conversion from integer to octet string is equivalent
-    * to IEEE 1363's I2OSP [1363] with minimal length).
-    *
-    *
-    * @param doc the factory Document
-    * @param elementName the name of the Element
-    * @param bigInteger the BigInteger wo be inserted
-    * @return the Element
-    * @throws XMLSignatureException if bigInteger is not positive
-    */
-   public static Element createElementFromBigint(Document doc, String elementName, BigInteger bigInteger)
-           throws XMLSignatureException {
-
-      Element element = doc.createElementNS(Constants.SignatureSpecNS,
-                                            Constants.getSignatureSpecNSprefix()
-                                            + ":" + elementName);
-
-      /* bigInteger must be positive */
-      if (bigInteger.signum() != 1) {
-         throw new XMLSignatureException("signature.Util.BignumNonPositive");
-      }
-
-      byte byteRepresentation[] = bigInteger.toByteArray();
-
-      while (byteRepresentation[0] == 0) {
-         byte oldByteRepresentation[] = byteRepresentation;
-
-         byteRepresentation = new byte[oldByteRepresentation.length - 1];
-
-         System.arraycopy(oldByteRepresentation, 1, byteRepresentation, 0,
-                          oldByteRepresentation.length - 1);
-      }
-
-      Text text = doc.createTextNode(
-         org.apache.xml.security.utils.Base64.encode(byteRepresentation));
-
-      element.appendChild(text);
-
-      return element;
-   }
-
+ 
    /**
     * Method getFullTextChildrenFromElement
     *
     * @param element
-    *
+    * @return
     */
    public static String getFullTextChildrenFromElement(Element element) {
 
@@ -727,70 +488,6 @@ public class XMLUtils {
       return sb.toString();
    }
 
-   /**
-    * Fetches a base64-encoded BigInteger from an Element.
-    *
-    * @param element the Element
-    * @return the BigInteger
-    * @throws XMLSignatureException if Element has not exactly one Text child
-    */
-   public static BigInteger getBigintFromElement(Element element)
-           throws XMLSignatureException {
-
-      try {
-         if (element.getChildNodes().getLength() != 1) {
-            throw new XMLSignatureException("signature.Util.TooManyChilds");
-         }
-
-         Node child = element.getFirstChild();
-
-         if ((child == null) || (child.getNodeType() != Node.TEXT_NODE)) {
-            throw new XMLSignatureException("signature.Util.NonTextNode");
-         }
-
-         Text text = (Text) child;
-         String textData = text.getData();
-         byte magnitude[] =
-            org.apache.xml.security.utils.Base64.decode(textData);
-         int signum = 1;
-         BigInteger bigInteger = new BigInteger(signum, magnitude);
-
-         return bigInteger;
-      } catch (Base64DecodingException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
-
-   /**
-    * Fetches base64-encoded byte[] data from an Element.
-    *
-    * @param element
-    * @return the byte[] data
-    * @throws XMLSignatureException if Element has not exactly one Text child
-    */
-   public static byte[] getBytesFromElement(Element element)
-           throws XMLSignatureException {
-
-      try {
-         if (element.getChildNodes().getLength() != 1) {
-            throw new XMLSignatureException("signature.Util.TooManyChilds");
-         }
-
-         Node child = element.getFirstChild();
-
-         if ((child == null) || (child.getNodeType() != Node.TEXT_NODE)) {
-            throw new XMLSignatureException("signature.Util.NonTextNode");
-         }
-
-         Text text = (Text) child;
-         String textData = text.getData();
-         byte bytes[] = org.apache.xml.security.utils.Base64.decode(textData);
-
-         return bytes;
-      } catch (Base64DecodingException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
 
    /**
     * Creates an Element in the XML Signature specification namespace.
@@ -816,7 +513,7 @@ public class XMLUtils {
                                 Constants.SignatureSpecNS);
 
          return element;
-      } else {
+      } 
          Element element = doc.createElementNS(Constants.SignatureSpecNS,
                                                ds + ":" + elementName);
 
@@ -824,45 +521,9 @@ public class XMLUtils {
                                 Constants.SignatureSpecNS);
 
          return element;
-      }
+      
    }
 
-   /**
-    * Creates an Element in the XML Encryption specification namespace.
-    *
-    * @param doc the factory Document
-    * @param elementName the local name of the Element
-    * @return the Element
-    */
-   public static Element createElementInEncryptionSpace(Document doc,
-           String elementName) {
-
-      if (doc == null) {
-         throw new RuntimeException("Document is null");
-      }
-
-      String xenc = EncryptionConstants.getEncryptionSpecNSprefix();
-
-      if ((xenc == null) || (xenc.length() == 0)) {
-         Element element =
-            doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
-                                elementName);
-
-         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns",
-                                Constants.SignatureSpecNS);
-
-         return element;
-      } else {
-         Element element =
-            doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
-                                xenc + ":" + elementName);
-
-         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + xenc,
-                                EncryptionConstants.EncryptionSpecNS);
-
-         return element;
-      }
-   }
 
    /**
     * Returns true if the element is in XML Signature namespace and the local
@@ -875,15 +536,8 @@ public class XMLUtils {
    public static boolean elementIsInSignatureSpace(Element element,
            String localName) {
 
-      if (element == null) {
-         return false;
-      }
-
-      if (element.getNamespaceURI() == null) {
-         return false;
-      }
-
-      if (!element.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
+      if ((element == null) ||
+          !Constants.SignatureSpecNS.equals(element.getNamespaceURI()) ){
          return false;
       }
 
@@ -905,16 +559,9 @@ public class XMLUtils {
    public static boolean elementIsInEncryptionSpace(Element element,
            String localName) {
 
-      if (element == null) {
-         return false;
-      }
-
-      if (element.getNamespaceURI() == null) {
-         return false;
-      }
-
-      if (!element.getNamespaceURI().equals(
-              EncryptionConstants.EncryptionSpecNS)) {
+      if ((element == null) || 
+            !EncryptionConstants.EncryptionSpecNS.equals(element.getNamespaceURI()) 
+          ){
          return false;
       }
 
@@ -923,64 +570,6 @@ public class XMLUtils {
       }
 
       return true;
-   }
-
-   /**
-    * Verifies that the given Element is in the XML Signature namespace
-    * {@link org.apache.xml.security.utils.Constants#SignatureSpecNS} and that the
-    * local name of the Element matches the supplied on.
-    *
-    * @param element Element to be checked
-    * @param localName
-    * @throws XMLSignatureException if element is not in Signature namespace or if the local name does not match
-    * @see org.apache.xml.security.utils.Constants#SignatureSpecNS
-    */
-   public static void guaranteeThatElementInSignatureSpace(Element element, String localName)
-           throws XMLSignatureException {
-
-      /*
-      log.debug("guaranteeThatElementInSignatureSpace(" + element + ", "
-                + localName + ")");
-      */
-      if (element == null) {
-         Object exArgs[] = { localName, null };
-
-         throw new XMLSignatureException("xml.WrongElement", exArgs);
-      }
-
-      if ((localName == null) || localName.equals("")
-              ||!elementIsInSignatureSpace(element, localName)) {
-         Object exArgs[] = { localName, element.getLocalName() };
-
-         throw new XMLSignatureException("xml.WrongElement", exArgs);
-      }
-   }
-
-   /**
-    * Verifies that the given Element is in the XML Encryption namespace
-    * {@link org.apache.xml.security.utils.EncryptionConstants#EncryptionSpecNS} and that the
-    * local name of the Element matches the supplied on.
-    *
-    * @param element Element to be checked
-    * @param localName
-    * @throws XMLSecurityException if element is not in Encryption namespace or if the local name does not match
-    * @see org.apache.xml.security.utils.EncryptionConstants#EncryptionSpecNS
-    */
-   public static void guaranteeThatElementInEncryptionSpace(Element element, String localName)
-           throws XMLSecurityException {
-
-      if (element == null) {
-         Object exArgs[] = { localName, null };
-
-         throw new XMLSecurityException("xml.WrongElement", exArgs);
-      }
-
-      if ((localName == null) || localName.equals("")
-              ||!elementIsInEncryptionSpace(element, localName)) {
-         Object exArgs[] = { localName, element.getLocalName() };
-
-         throw new XMLSecurityException("xml.WrongElement", exArgs);
-      }
    }
 
    /**
@@ -996,7 +585,7 @@ public class XMLUtils {
 
       if (node.getNodeType() == Node.DOCUMENT_NODE) {
          return (Document) node;
-      } else {
+      } 
          try {
             return node.getOwnerDocument();
          } catch (NullPointerException npe) {
@@ -1004,7 +593,7 @@ public class XMLUtils {
                                            + " Original message was \""
                                            + npe.getMessage() + "\"");
          }
-      }
+      
    }
 
     /**
@@ -1023,75 +612,28 @@ public class XMLUtils {
            Node node = (Node) iterator.next();
            if (node.getNodeType() == Node.DOCUMENT_NODE) {
               return (Document) node;
-           } else {
+           } 
               try {
                  return node.getOwnerDocument();
               } catch (NullPointerException e) {
                   npe = e;
               }
-           }
+           
        }
        throw new NullPointerException(I18n.translate("endorsed.jdk1.4.0")
                                        + " Original message was \""
                                        + (npe == null ? "" : npe.getMessage()) + "\"");
     }
     
-   /** Field randomNS */
-   private static String randomNS = null;
 
-   /**
-    * Prefix for random namespaces.
-    *
-    * @see #getRandomNamespacePrefix
-    */
-   public static final String randomNSprefix =
-      "http://www.xmlsecurity.org/NS#randomval";
-
-   /**
-    * This method creates a random String like
-    * <CODE>http://www.xmlsecurity.org/NS#randomval8dcc/C2qwxFukXjJhS7W1xvHHq4Z</CODE>
-    * that will be used for registering the <CODE>here()</CODE> function in a
-    * specific namespace. The random string is the Base64 encoded version of a
-    * 168 bit {@link java.security.SecureRandom} value.
-    * <BR/>
-    * This random namespace prefix prevents attackers from inserting malicious
-    * here() functions in our namespace. The method caches the valued for
-    * subsequent calls during the application run.
-    *
-    * @return the random namespace prefix String.
-    */
-   public static String getRandomNamespacePrefix() {
-
-      if (XMLUtils.randomNS == null) {
-         byte[] randomData = new byte[21];
-         java.security.SecureRandom sr = new java.security.SecureRandom();
-
-         sr.nextBytes(randomData);
-
-         String prefix =
-            "xmlsecurityOrgPref"
-            + org.apache.xml.security.utils.Base64.encode(randomData);
-
-         XMLUtils.randomNS = "";
-
-         for (int i = 0; i < prefix.length(); i++) {
-            if ((prefix.charAt(i) != '+') && (prefix.charAt(i) != '/')
-                    && (prefix.charAt(i) != '=')) {
-               XMLUtils.randomNS += prefix.charAt(i);
-            }
-         }
-      }
-
-      return XMLUtils.randomNS;
-   }
-
+ 
    /**
     * Method createDSctx
     *
     * @param doc
     * @param prefix
     * @param namespace
-    *
+    * @return
     */
    public static Element createDSctx(Document doc, String prefix,
                                      String namespace) {
@@ -1108,28 +650,7 @@ public class XMLUtils {
       return ctx;
    }
 
-   /**
-    * Method createDSctx
-    *
-    * @param doc
-    * @param prefix
-    *
-    */
-   public static Element createDSctx(Document doc, String prefix) {
-      return XMLUtils.createDSctx(doc, prefix, Constants.SignatureSpecNS);
-   }
 
-   /**
-    * Method addReturnToElement
-    *
-    * @param elementProxy
-    */
-   public static void addReturnToElement(ElementProxy elementProxy) {
-
-      Document doc = elementProxy._doc;
-
-      elementProxy.getElement().appendChild(doc.createTextNode("\n"));
-   }
 
    /**
     * Method addReturnToElement
@@ -1144,22 +665,10 @@ public class XMLUtils {
    }
 
    /**
-    * Method addReturnToNode
-    *
-    * @param n
-    */
-   public static void addReturnToNode(Node n) {
-
-      Document doc = n.getOwnerDocument();
-
-      n.appendChild(doc.createTextNode("\n"));
-   }
-
-   /**
     * Method convertNodelistToSet
     *
     * @param xpathNodeSet
-    *
+    * @return
     */
    public static Set convertNodelistToSet(NodeList xpathNodeSet) {
 
@@ -1177,23 +686,6 @@ public class XMLUtils {
       return set;
    }
 
-   /**
-    * Method convertSetToNodelist
-    *
-    * @param set
-    *
-    */
-   public static NodeList convertSetToNodelist(Set set) {
-
-      HelperNodeList result = new HelperNodeList();
-      Iterator it = set.iterator();
-
-      while (it.hasNext()) {
-         result.appendChild((Node) it.next());
-      }
-
-      return result;
-   }
 
    /**
     * This method spreads all namespace attributes in a DOM document to their
@@ -1277,59 +769,11 @@ public class XMLUtils {
    }
 
    /**
-    * Method getXPath
-    *
-    * @param n
-    * @param result
-    *
+    * @param sibling
+    * @param nodeName
+    * @param number
+    * @return
     */
-   private static String getXPath(Node n, String result) {
-
-      if (n == null) {
-         return result;
-      }
-
-      switch (n.getNodeType()) {
-
-      case Node.ATTRIBUTE_NODE :
-         return getXPath(((Attr) n).getOwnerElement(),
-                         "/@" + ((Attr) n).getNodeName() + "=\""
-                         + ((Attr) n).getNodeValue() + "\"");
-
-      case Node.ELEMENT_NODE :
-         return getXPath(n.getParentNode(),
-                         "/" + ((Element) n).getTagName() + result);
-
-      case Node.TEXT_NODE :
-         return getXPath(n.getParentNode(), "/#text");
-
-      case Node.DOCUMENT_NODE :
-         if (result.length() > 0) {
-            return result;
-         } else {
-            return "/";
-         }
-      }
-
-      return result;
-   }
-
-   /**
-    * Simple tool to return the position of a particular node in an XPath like String.
-    *
-    * @param n
-    *
-    */
-   public static String getXPath(Node n) {
-      return getXPath(n, "");
-   }
-
-/**
- * @param sibling
- * @param nodeName
- * @param number
- * @return
- */
    public static Element selectDsNode(Node sibling, String nodeName, int number) {
 	while (sibling!=null) {
 		if (nodeName.equals(sibling.getLocalName())
@@ -1342,7 +786,52 @@ public class XMLUtils {
 		sibling=sibling.getNextSibling();
 	}
 	return null;
-}
+   }
+   
+   /**
+    * @param sibling
+    * @param nodeName
+    * @param number
+    * @return
+    */
+   public static Text selectDsNodeText(Node sibling, String nodeName, int number) {
+   	    Node n=selectDsNode(sibling,nodeName,number);
+        if (n==null) {
+        	return null;
+        }
+        n=n.getFirstChild();
+        while (n!=null && n.getNodeType()!=Node.TEXT_NODE) {
+        	n=n.getNextSibling();
+        }
+        return (Text)n;
+   }
+   
+   /**
+    * @param sibling
+    * @param uri
+    * @param nodeName
+    * @param number
+    * @return
+    */
+   public static Text selectNodeText(Node sibling, String uri, String nodeName, int number) {
+        Node n=selectNode(sibling,uri,nodeName,number);
+    if (n==null) {
+        return null;
+    }
+    n=n.getFirstChild();
+    while (n!=null && n.getNodeType()!=Node.TEXT_NODE) {
+        n=n.getNextSibling();
+    }
+    return (Text)n;
+   }
+   
+   /**
+    * @param sibling
+    * @param uri
+    * @param nodeName
+    * @param number
+    * @return
+    */
    public static Element selectNode(Node sibling, String uri,String nodeName, int number) {
 	while (sibling!=null) {
 		if (nodeName.equals(sibling.getLocalName())
@@ -1355,31 +844,57 @@ public class XMLUtils {
 		sibling=sibling.getNextSibling();
 	}
 	return null;
-}
-
+   }
+   
+   /**
+    * @param sibling
+    * @param nodeName    
+    * @return
+    */
    public static Element[] selectDsNodes(Node sibling,String nodeName) {
-   	List list=new ArrayList();
-   	while (sibling!=null) {
-		if (nodeName.equals(sibling.getLocalName())
-				&& Constants.SignatureSpecNS.equals(sibling.getNamespaceURI())) {
-			list.add((Element)sibling);
-		}
-		sibling=sibling.getNextSibling();
-	}
-   	Element []a=new Element[list.size()];
-   	return (Element[])list.toArray(a);
+     return selectNodes(sibling,Constants.SignatureSpecNS,nodeName);
+   }
+   
+   /**
+    * @param sibling
+    * @param uri
+    * @param nodeName
+    * @return
+    */
+    public static Element[] selectNodes(Node sibling,String uri,String nodeName) {
+    	int size=10;
+    	Element[] a= new Element[size];
+    	int curr=0;
+    	//List list=new ArrayList();
+    	while (sibling!=null) {
+    		if (nodeName.equals(sibling.getLocalName())
+    				&& uri.equals(sibling.getNamespaceURI())) {
+    			a[curr++]=(Element)sibling;
+    			if (size<=curr) {
+    				int cursize= size<<2;
+    				Element []cp=new Element[cursize];
+    				System.arraycopy(a,0,cp,0,size);
+    				a=cp;
+    				size=cursize;
+    			}   
+    		}
+    		sibling=sibling.getNextSibling();
+    	}
+    	Element []af=new Element[curr];
+    	System.arraycopy(a,0,af,0,curr);
+    	return af;
    }
 
-/**
- * @param signatureElement
- * @param inputSet
- * @param resultSet
- */
-public static Set excludeNodeFromSet(Node signatureElement, Set inputSet) {
-	Set resultSet = new HashSet();
-	Iterator iterator = inputSet.iterator();
+   /**
+    * @param signatureElement
+    * @param inputSet
+    * @return
+    */
+    public static Set excludeNodeFromSet(Node signatureElement, Set inputSet) {
+	  Set resultSet = new HashSet();
+	  Iterator iterator = inputSet.iterator();
 
-	 while (iterator.hasNext()) {
+	  while (iterator.hasNext()) {
 	    Node inputNode = (Node) iterator.next();
 
 	    if (!XMLUtils
@@ -1388,15 +903,15 @@ public static Set excludeNodeFromSet(Node signatureElement, Set inputSet) {
 	    }
 	 }
 	 return resultSet;
-}
+     }
 
-/**
+   /**
     * Returns true if the descendantOrSelf is on the descendant-or-self axis
     * of the context node.
     *
     * @param ctx
     * @param descendantOrSelf
-    *
+    * @return
     */
    static boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
 

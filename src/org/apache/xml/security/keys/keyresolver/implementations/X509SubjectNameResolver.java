@@ -21,18 +21,15 @@ package org.apache.xml.security.keys.keyresolver.implementations;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
-import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SubjectName;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
-import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -54,7 +51,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
 
    /**
     * Method engineCanResolve
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
@@ -65,10 +62,9 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
 
       log.debug("Can I resolve " + element.getTagName() + "?");
 
-      try {
-         XMLUtils.guaranteeThatElementInSignatureSpace(element,
-                 Constants._TAG_X509DATA);
-      } catch (XMLSignatureException ex) {
+      
+       if (!XMLUtils.elementIsInSignatureSpace(element,
+                 Constants._TAG_X509DATA) ) {      
          log.debug("I can't");
 
          return false;
@@ -117,7 +113,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
 
    /**
     * Method engineResolveX509Certificate
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
@@ -154,7 +150,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
 
          for (int i = 0; i < this._x509childNodes.length; i++) {
             this._x509childObject[i] =
-               new XMLX509SubjectName((Element) this._x509childNodes[i],
+               new XMLX509SubjectName(this._x509childNodes[i],
                                       BaseURI);
          }
 
@@ -173,9 +169,8 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
                   log.debug("match !!! ");
 
                   return cert;
-               } else {
-                  log.debug("no match...");
-               }
+               } 
+               log.debug("no match...");               
             }
          }
 
@@ -189,16 +184,15 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
 
    /**
     * Method engineResolveSecretKey
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
     *
-    * @throws KeyResolverException
     */
    public javax.crypto.SecretKey engineResolveSecretKey(
            Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+   {
       return null;
    }
 }

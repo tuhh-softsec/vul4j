@@ -18,7 +18,6 @@ package org.apache.xml.security.signature;
 
 
 
-import java.io.IOException;
 import java.security.Key;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -133,7 +132,7 @@ public final class XMLSignature extends SignatureElementProxy {
     *
     * @param doc Document in which the signature will be appended after creation.
     * @param BaseURI URI to be used as context for all relative URIs.
-    * @param signatureAlgorithmURI signature algorithm to use.
+    * @param SignatureMethodURI signature algorithm to use.
     * @throws XMLSecurityException
     */
    public XMLSignature(Document doc, String BaseURI, String SignatureMethodURI)
@@ -207,7 +206,14 @@ public final class XMLSignature extends SignatureElementProxy {
       this._constructionElement.appendChild(signatureValueElement);
       XMLUtils.addReturnToElement(this._constructionElement);
    }
-
+   /**
+    *  Creates a XMLSignature in a Document
+    * @param doc
+    * @param BaseURI
+    * @param SignatureMethodElem
+    * @param CanonicalizationMethodElem
+    * @throws XMLSecurityException
+    */
    public XMLSignature(
            Document doc, String BaseURI, Element SignatureMethodElem, Element CanonicalizationMethodElem)
               throws XMLSecurityException {
@@ -237,19 +243,17 @@ public final class XMLSignature extends SignatureElementProxy {
     *
     * @param element ds:Signature element that contains the whole signature
     * @param BaseURI URI to be prepended to all relative URIs
-    * @throws IOException
     * @throws XMLSecurityException
     * @throws XMLSignatureException if the signature is badly formatted
     */
    public XMLSignature(Element element, String BaseURI)
-           throws XMLSignatureException, XMLSecurityException, IOException {
+           throws XMLSignatureException, XMLSecurityException {
 
       super(element, BaseURI);
 
       // check out SignedInfo child
-      Element signedInfoElem = this.getChildElementLocalName(0,
-                                  Constants.SignatureSpecNS,
-                                  Constants._TAG_SIGNEDINFO);
+      Element signedInfoElem = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                  Constants._TAG_SIGNEDINFO,0);
 
       // check to see if it is there
       if (signedInfoElem == null) {
@@ -263,9 +267,8 @@ public final class XMLSignature extends SignatureElementProxy {
       this._signedInfo = new SignedInfo(signedInfoElem, BaseURI);
 
       // check out SignatureValue child
-      Element signatureValueElement = this.getChildElementLocalName(0,
-                                         Constants.SignatureSpecNS,
-                                         Constants._TAG_SIGNATUREVALUE);
+      Element signatureValueElement = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                         Constants._TAG_SIGNATUREVALUE,0);
 
       // check to see if it exists
       if (signatureValueElement == null) {
@@ -276,9 +279,8 @@ public final class XMLSignature extends SignatureElementProxy {
       }
 
       // <element ref="ds:KeyInfo" minOccurs="0"/>
-      Element keyInfoElem = this.getChildElementLocalName(0,
-                               Constants.SignatureSpecNS,
-                               Constants._TAG_KEYINFO);
+      Element keyInfoElem =XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                               Constants._TAG_KEYINFO,0);
 
       // If it exists use it, but it's not mandatory
       if (keyInfoElem != null) {
@@ -327,9 +329,8 @@ public final class XMLSignature extends SignatureElementProxy {
    public byte[] getSignatureValue() throws XMLSignatureException {
 
       try {
-         Element signatureValueElem = this.getChildElementLocalName(0,
-                                         Constants.SignatureSpecNS,
-                                         Constants._TAG_SIGNATUREVALUE);
+         Element signatureValueElem = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                         Constants._TAG_SIGNATUREVALUE,0);
          byte[] signatureValue = Base64.decode(signatureValueElem);
 
          return signatureValue;
@@ -343,15 +344,13 @@ public final class XMLSignature extends SignatureElementProxy {
     * Node.
     *
     * @param bytes bytes to be used by SignatureValue before Base64 encoding
-    * @throws XMLSignatureException
     */
    private void setSignatureValueElement(byte[] bytes)
-           throws XMLSignatureException {
+   {
 
       if (this._state == MODE_SIGN) {
-         Element signatureValueElem = this.getChildElementLocalName(0,
-                                         Constants.SignatureSpecNS,
-                                         Constants._TAG_SIGNATUREVALUE);
+         Element signatureValueElem = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                         Constants._TAG_SIGNATUREVALUE,0);
          while (signatureValueElem.hasChildNodes()) {
             signatureValueElem.removeChild(signatureValueElem.getFirstChild());
          }
@@ -441,8 +440,8 @@ public final class XMLSignature extends SignatureElementProxy {
     */
    public ObjectContainer getObjectItem(int i) {
 
-      Element objElem = this.getChildElementLocalName(i,
-                           Constants.SignatureSpecNS, Constants._TAG_OBJECT);
+      Element objElem = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+            Constants._TAG_OBJECT,i);
 
       try {
          return new ObjectContainer(objElem, this._baseURI);
@@ -506,8 +505,6 @@ public final class XMLSignature extends SignatureElementProxy {
             // set them on the SignateValue element
             this.setSignatureValueElement(jcebytes);
          }
-      } catch (IOException ex) {
-         throw new XMLSignatureException("empty", ex);
       } catch (CanonicalizationException ex) {
          throw new XMLSignatureException("empty", ex);
       } catch (InvalidCanonicalizerException ex) {
@@ -553,11 +550,11 @@ public final class XMLSignature extends SignatureElementProxy {
 
          //check the values with the public key from the cert
          return this.checkSignatureValue(cert.getPublicKey());
-      } else {
-         Object exArgs[] = { "Didn't get a certificate" };
-
-         throw new XMLSignatureException("empty", exArgs);
-      }
+      } 
+      
+      Object exArgs[] = { "Didn't get a certificate" };
+      throw new XMLSignatureException("empty", exArgs);
+      
    }
 
    /**
@@ -595,11 +592,12 @@ public final class XMLSignature extends SignatureElementProxy {
          SignatureAlgorithm sa =
             new SignatureAlgorithm(this.getSignedInfo()
                .getSignatureMethodElement(), this.getBaseURI());
-
-         log.debug("SignatureMethodURI = " + sa.getAlgorithmURI());
-         log.debug("jceSigAlgorithm    = " + sa.getJCEAlgorithmString());
-         log.debug("jceSigProvider     = " + sa.getJCEProviderName());
-         log.debug("PublicKey = " + pk);
+         if (log.isDebugEnabled()) {
+         	log.debug("SignatureMethodURI = " + sa.getAlgorithmURI());
+         	log.debug("jceSigAlgorithm    = " + sa.getJCEAlgorithmString());
+         	log.debug("jceSigProvider     = " + sa.getJCEProviderName());
+         	log.debug("PublicKey = " + pk);
+         }
          sa.initVerify(pk);
 
          // Get the canonicalized (normalized) SignedInfo
@@ -623,9 +621,7 @@ public final class XMLSignature extends SignatureElementProxy {
          return verify;
       } catch (XMLSecurityException ex) {
          throw new XMLSignatureException("empty", ex);
-      } catch (IOException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
+      } 
    }
 
    /**
@@ -721,12 +717,11 @@ public final class XMLSignature extends SignatureElementProxy {
     * from octets.
     *
     * @param secretKeyBytes
-    *
-    * @throws XMLSecurityException
+    * @return the secret key created.
     * @see SignedInfo#createSecretKey(byte[])
     */
    public SecretKey createSecretKey(byte[] secretKeyBytes)
-           throws XMLSecurityException {
+   {
       return this.getSignedInfo().createSecretKey(secretKeyBytes);
    }
 

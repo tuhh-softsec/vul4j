@@ -51,10 +51,16 @@ public class CachedXPathFuncHereAPI {
 
    /** Field _dtmManager */
    DTMManager _dtmManager = null;
+   
+   XPathContext _context = null;
+   
+   String xpathStr=null;
+   
+   XPath xpath=null;
 
    /**
     * Method getFuncHereContext
-    *
+    * @return
     *
     */
    public FuncHereContext getFuncHereContext() {
@@ -74,6 +80,7 @@ public class CachedXPathFuncHereAPI {
     */
    public CachedXPathFuncHereAPI(XPathContext existingXPathContext) {
       this._dtmManager = existingXPathContext.getDTMManager();
+      this._context=existingXPathContext;
    }
 
    /**
@@ -81,8 +88,9 @@ public class CachedXPathFuncHereAPI {
     *
     * @param previouslyUsed
     */
-   public CachedXPathFuncHereAPI(CachedXPathAPI previouslyUsed) {
+   public CachedXPathFuncHereAPI(CachedXPathAPI previouslyUsed) {    
       this._dtmManager = previouslyUsed.getXPathContext().getDTMManager();
+      this._context=previouslyUsed.getXPathContext();
    }
 
    /**
@@ -149,13 +157,14 @@ public class CachedXPathFuncHereAPI {
     *  @return A NodeIterator, should never be null.
     *
     * @throws TransformerException
+    * @deprecated
     */
    public NodeIterator selectNodeIterator(
            Node contextNode, Node xpathnode, Node namespaceNode)
               throws TransformerException {
 
       // Execute the XPath, and have it return the result
-      XObject list = eval(contextNode, xpathnode, namespaceNode);
+      XObject list = eval(contextNode, xpathnode, getStrFromNode(xpathnode), namespaceNode);
 
       // Have the XObject return its result as a NodeSetDTM.
       return list.nodeset();
@@ -170,10 +179,11 @@ public class CachedXPathFuncHereAPI {
     *  @return A NodeIterator, should never be null.
     *
     * @throws TransformerException
+    * @deprecated
     */
    public NodeList selectNodeList(Node contextNode, Node xpathnode)
            throws TransformerException {
-      return selectNodeList(contextNode, xpathnode, contextNode);
+      return selectNodeList(contextNode, xpathnode, getStrFromNode(xpathnode), contextNode);
    }
 
    /**
@@ -188,11 +198,11 @@ public class CachedXPathFuncHereAPI {
     * @throws TransformerException
     */
    public NodeList selectNodeList(
-           Node contextNode, Node xpathnode, Node namespaceNode)
+           Node contextNode, Node xpathnode, String str, Node namespaceNode)
               throws TransformerException {
 
       // Execute the XPath, and have it return the result
-      XObject list = eval(contextNode, xpathnode, namespaceNode);
+      XObject list = eval(contextNode, xpathnode, str, namespaceNode);
 
       // Return a NodeList.
       return list.nodelist();
@@ -212,10 +222,11 @@ public class CachedXPathFuncHereAPI {
     *  @see org.apache.xpath.objects.XRTreeFrag
     *
     * @throws TransformerException
+    * @deprecated
     */
    public XObject eval(Node contextNode, Node xpathnode)
            throws TransformerException {
-      return eval(contextNode, xpathnode, contextNode);
+      return eval(contextNode, xpathnode, getStrFromNode(xpathnode),contextNode);
    }
 
    /**
@@ -238,9 +249,11 @@ public class CachedXPathFuncHereAPI {
     *
     * @throws TransformerException
     */
-   public XObject eval(Node contextNode, Node xpathnode, Node namespaceNode)
+   public XObject eval(Node contextNode, Node xpathnode, String str, Node namespaceNode)
            throws TransformerException {
-
+      //  Create the XPath object.
+      //String str = CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
+      
       // Since we don't have a XML Parser involved here, install some default support
       // for things like namespaces, etc.
       // (Changed from: XPathContext xpathSupport = new XPathContext();
@@ -262,9 +275,14 @@ public class CachedXPathFuncHereAPI {
                                       .getDocumentElement()
                                    : namespaceNode);
 
-      // Create the XPath object.
-      String str = CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
-      XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+      if (str!=xpathStr) {
+        if (str.indexOf("here()")>0) {
+            _context.reset();
+            _dtmManager=_context.getDTMManager();
+        }
+      	xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+        xpathStr=str;
+      }
 
       // Execute the XPath, and have it return the result
       // return xpath.execute(xpathSupport, contextNode, prefixResolver);
@@ -295,7 +313,7 @@ public class CachedXPathFuncHereAPI {
     * @throws TransformerException
     */
    public XObject eval(
-           Node contextNode, Node xpathnode, PrefixResolver prefixResolver)
+           Node contextNode, Node xpathnode, String str, PrefixResolver prefixResolver)
               throws TransformerException {
 
       // Since we don't have a XML Parser involved here, install some default support
@@ -304,8 +322,15 @@ public class CachedXPathFuncHereAPI {
       //    because XPathContext is weak in a number of areas... perhaps
       //    XPathContext should be done away with.)
       // Create the XPath object.
-      String str = CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
-      XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+      //String str = CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
+    if (str!=xpathStr) {
+    	if (str.indexOf("here()")>0) {
+    		_context.reset();
+    		_dtmManager=_context.getDTMManager();
+    	}     
+    	xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+        xpathStr=str;
+    }
 
       // Execute the XPath, and have it return the result
       if (this._funcHereContext == null) {
@@ -322,9 +347,9 @@ public class CachedXPathFuncHereAPI {
     * Method getStrFromNode
     *
     * @param xpathnode
-    *
+    * @return
     */
-   private static String getStrFromNode(Node xpathnode) {
+   public static String getStrFromNode(Node xpathnode) {
 
       if (xpathnode.getNodeType() == Node.TEXT_NODE) {
 

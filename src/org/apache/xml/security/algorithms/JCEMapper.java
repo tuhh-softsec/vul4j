@@ -27,7 +27,7 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
+import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,6 +51,8 @@ public class JCEMapper {
    /** Field _nscontext */
    private static Element _nscontext = null;
    
+   private static CachedXPathAPI cx=null;
+   
    private static Map uriToProvider = new HashMap();
    private static Map cacheProviderIsInClassPath = new HashMap();
 
@@ -58,9 +60,10 @@ public class JCEMapper {
     * Method init
     *
     * @param mappingElement
+    * @param cx for using in the xpath searchs
     * @throws Exception
     */
-   public static void init(Element mappingElement) throws Exception {
+   public static void init(Element mappingElement,CachedXPathAPI cx) throws Exception {
 
       JCEMapper._providerList = mappingElement;
 
@@ -69,19 +72,21 @@ public class JCEMapper {
       JCEMapper._nscontext =
          XMLUtils.createDSctx(doc, "x",
                               "http://www.xmlsecurity.org/NS/#configuration");
+      JCEMapper.cx=cx;
    }
 
    /**
     * This method takes a Provider ID and tries to register this provider in the JCE.
     *
-    * @param Id
+    * @param Id the provider Id
+    * @return true if the provider was registerd
     *
     */
    public static boolean addProvider(String Id) {
 
       try {
          if (Security.getProvider(Id) == null) {
-            Element providerElem = (Element) XPathAPI.selectSingleNode(
+            Element providerElem = (Element) cx.selectSingleNode(
                JCEMapper._providerList,
                "./x:Providers/x:Provider[@Id='" + Id + "']",
                JCEMapper._nscontext);
@@ -114,7 +119,8 @@ public class JCEMapper {
    /**
     * Method getProviderIsAvailable
     *
-    * @param providerId
+    * @param providerId the id to search
+    *  @return true if the provider is in the classpath
     *
     */
    public static boolean getProviderIsInClassPath(String providerId) {
@@ -131,7 +137,7 @@ public class JCEMapper {
 
       try {
 		  /* Allow for mulitple provider entries with same Id */
-		  NodeList providers = XPathAPI.selectNodeList(JCEMapper._providerList,
+		  NodeList providers = cx.selectNodeList(JCEMapper._providerList,
 													   "./x:Providers/x:Provider[@Id='"
 													   + providerId + "']",
 													   JCEMapper._nscontext);
@@ -186,6 +192,7 @@ public class JCEMapper {
     * Method translateURItoJCEID
     *
     * @param AlgorithmURI
+    * @return the Provider that manages the given URI
     *
     */
    public static ProviderIdClass translateURItoJCEID(String AlgorithmURI) {
@@ -200,7 +207,7 @@ public class JCEMapper {
 
       try {
  
-         NodeList providers = XPathAPI.selectNodeList(JCEMapper._providerList,
+         NodeList providers = cx.selectNodeList(JCEMapper._providerList,
                                  "./x:Algorithms/x:Algorithm[@URI='"
                                  + AlgorithmURI + "']/x:ProviderAlgo",
                                  JCEMapper._nscontext);
@@ -235,6 +242,7 @@ public class JCEMapper {
     *
     * @param AlgorithmURI
     * @param requestedProviderId
+    * @return the Provider that manages the given URI
     *
     */
    public static ProviderIdClass translateURItoJCEID(String AlgorithmURI,
@@ -248,7 +256,7 @@ public class JCEMapper {
       }
 
       try {
-         Element pro = (Element) XPathAPI.selectSingleNode(
+         Element pro = (Element) cx.selectSingleNode(
             JCEMapper._providerList,
             "./x:Algorithms/x:Algorithm[@URI='" + AlgorithmURI
             + "']/x:ProviderAlgo[@ProviderId='" + requestedProviderId + "']",
@@ -273,8 +281,10 @@ public class JCEMapper {
 
    /**
     * Method getAlgorithmClassFromURI
-    *
+    * NOTE(Raul Benito) It seems a buggy function the loop doesn't do
+    * anything??
     * @param AlgorithmURI
+    * @return the class name that implements this algorithm
     *
     */
    public static String getAlgorithmClassFromURI(String AlgorithmURI) {
@@ -282,7 +292,7 @@ public class JCEMapper {
       log.debug("Request for URI " + AlgorithmURI);
 
       try {
-         NodeList providers = XPathAPI.selectNodeList(JCEMapper._providerList,
+         NodeList providers = cx.selectNodeList(JCEMapper._providerList,
                                  "./x:Algorithms/x:Algorithm[@URI='"
                                  + AlgorithmURI + "']/x:ProviderAlgo",
                                  JCEMapper._nscontext);
@@ -306,21 +316,19 @@ public class JCEMapper {
     * Method getKeyTypeFromURI
     *
     * @param AlgorithmURI
-    *
+    * @return the type of key used fpr the algorithm
     */
    public static int getKeyTypeFromURI(String AlgorithmURI) {
 
       try {
          Attr algoclassAttr =
-            (Attr) XPathAPI.selectSingleNode(JCEMapper._providerList,
+            (Attr) cx.selectSingleNode(JCEMapper._providerList,
                                              "./x:Algorithms/x:Algorithm[@URI='"
                                              + AlgorithmURI
                                              + "']/@AlgorithmClass", JCEMapper
                                                 ._nscontext);
 
-         if (algoclassAttr == null) {
-            return -1;
-         } else {
+         if (algoclassAttr != null) {            
             String algoclass = algoclassAttr.getNodeValue();
 
             if (algoclass.equals(JCEMapper.KEYTYPE_BLOCK_ENCRYPTION)) {
@@ -344,13 +352,13 @@ public class JCEMapper {
     * Returns the keylength in bit for a particular algorithm.
     *
     * @param AlgorithmURI
-    *
+    * @return The length of the key used in the alogrithm
     */
    public static int getKeyLengthFromURI(String AlgorithmURI) {
 
       try {
          Attr algoclassAttr =
-            (Attr) XPathAPI.selectSingleNode(JCEMapper._providerList,
+            (Attr) cx.selectSingleNode(JCEMapper._providerList,
                                              "./x:Algorithms/x:Algorithm[@URI='"
                                              + AlgorithmURI + "']/@KeyLength",
                                              JCEMapper._nscontext);
@@ -370,6 +378,7 @@ public class JCEMapper {
     *
     * @param AlgorithmURI
     * @param ProviderId
+    * @return The KeyAlgorithm for the given URI.
     *
     */
    public static String getJCEKeyAlgorithmFromURI(String AlgorithmURI,
@@ -377,7 +386,7 @@ public class JCEMapper {
 
       try {
          Attr algoclassAttr =
-            (Attr) XPathAPI.selectSingleNode(JCEMapper._providerList,
+            (Attr) cx.selectSingleNode(JCEMapper._providerList,
                                              "./x:Algorithms/x:Algorithm[@URI='"
                                              + AlgorithmURI
                                              + "']/x:ProviderAlgo[@ProviderId='"
@@ -395,12 +404,17 @@ public class JCEMapper {
    }
 
 
-   public static String getJCEIVAlgorithmFromURI(String AlgorithmURI,
+   /**
+    * @param AlgorithmURI
+    * @param ProviderId
+    * @return The IVJCEName for the given algorithm
+    */
+    public static String getJCEIVAlgorithmFromURI(String AlgorithmURI,
            String ProviderId) {
 
       try {
          Attr algoclassAttr =
-            (Attr) XPathAPI.selectSingleNode(JCEMapper._providerList,
+            (Attr) cx.selectSingleNode(JCEMapper._providerList,
                                              "./x:Algorithms/x:Algorithm[@URI='"
                                              + AlgorithmURI
                                              + "']/x:ProviderAlgo[@ProviderId='"
@@ -437,6 +451,7 @@ public class JCEMapper {
     *
     * @param key
     * @param type
+    * @return the URI for the given type and key length.
     *
     */
    public static String getURIfromKey(Key key, String type) {
@@ -445,7 +460,7 @@ public class JCEMapper {
       String keyLength = new Integer(key.getEncoded().length * 8).toString();
 
       try {
-         Attr URI = (Attr) XPathAPI.selectSingleNode(
+         Attr URI = (Attr) cx.selectSingleNode(
             JCEMapper._providerList,
             "./x:Algorithms/x:Algorithm[@KeyLength='" + keyLength
             + "' and @AlgorithmClass='" + type
@@ -499,8 +514,7 @@ public class JCEMapper {
 
       /**
        * Method getJceId
-       *
-       *
+       * @return The algorithmId of this provider       
        */
       public String getAlgorithmID() {
          return this._algorithmId;
@@ -508,8 +522,7 @@ public class JCEMapper {
 
       /**
        * Method getProvider
-       *
-       *
+       * @return the providerId of this provider       
        */
       public String getProviderId() {
          return this._providerId;

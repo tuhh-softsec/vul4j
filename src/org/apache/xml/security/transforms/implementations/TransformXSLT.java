@@ -32,7 +32,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -40,8 +39,6 @@ import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
@@ -59,20 +56,24 @@ public class TransformXSLT extends TransformSpi {
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XSLT;
    //J-
-   public static final String XSLTSpecNS              = "http://www.w3.org/1999/XSL/Transform";
-   public static final String defaultXSLTSpecNSprefix = "xslt";
-   public static final String XSLTSTYLESHEET          = "stylesheet";
-
+   static final String XSLTSpecNS              = "http://www.w3.org/1999/XSL/Transform";
+   static final String defaultXSLTSpecNSprefix = "xslt";
+   static final String XSLTSTYLESHEET          = "stylesheet";
+   
+   /** @inheritDoc */
    public boolean wantsOctetStream ()   { return false; }
+   /** @inheritDoc */
    public boolean wantsNodeSet ()       { return true; }
+   /** @inheritDoc */
    public boolean returnsOctetStream () { return true; }
+   /** @inheritDoc */
    public boolean returnsNodeSet ()     { return true; }
    //J+
 
    /**
     * Method engineGetURI
     *
-    *
+    * @inheritDoc
     */
    protected String engineGetURI() {
       return implementedTransformURI;
@@ -80,25 +81,22 @@ public class TransformXSLT extends TransformSpi {
 
    /**
     * Method enginePerformTransform
-    *
+    * 
     * @param input the input for this transform
     * @return the result of this Transform
-    * @throws CanonicalizationException
     * @throws IOException
     * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
-           throws IOException, CanonicalizationException,
+           throws IOException,
                   TransformationException {
 
       try {
-         Element transformElement = this._transformObject.getElement();
-         Document doc = transformElement.getOwnerDocument();
-         Element nscontext = XMLUtils.createDSctx(doc, "xslt", XSLTSpecNS);
+         Element transformElement = this._transformObject.getElement();        
 
          Element _xsltElement =
-            (Element) XPathAPI.selectSingleNode(transformElement,
-                                                "./xslt:stylesheet", nscontext);
+            XMLUtils.selectNode(transformElement.getFirstChild(),
+                                                XSLTSpecNS,"stylesheet", 0);
 
          if (_xsltElement == null) {
             Object exArgs[] = { "xslt:stylesheet", "Transform" };

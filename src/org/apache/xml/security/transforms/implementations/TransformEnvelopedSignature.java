@@ -19,8 +19,6 @@ package org.apache.xml.security.transforms.implementations;
 
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,7 +31,6 @@ import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,16 +50,20 @@ public class TransformEnvelopedSignature extends TransformSpi {
       Transforms.TRANSFORM_ENVELOPED_SIGNATURE;
 
    //J-
+   /** @inheritDoc */
    public boolean wantsOctetStream ()   { return true; }
+   /** @inheritDoc */
    public boolean wantsNodeSet ()       { return true; }
+   /** @inheritDoc */
    public boolean returnsOctetStream () { return true; }
+   /** @inheritDoc */
    public boolean returnsNodeSet ()     { return false; }
    //J+
 
    /**
     * Method engineGetURI
     *
-    *
+    * @inheritDoc
     */
    protected String engineGetURI() {
       return implementedTransformURI;
@@ -72,7 +73,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
     * This transform performs the Enveloped-Signature-Transform by
     *
     * @param input
-    *
+    * @inheritDoc
     * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
@@ -104,7 +105,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
 
          signatureElement = searchSignatureElement(signatureElement);
          if (input.isElement()) {
-         	XMLSignatureInput result = new XMLSignatureInput(input.getSubNode());
+         	XMLSignatureInput result = new XMLSignatureInput(input.getSubNode(),input.getCachedXPathAPI());
          	result.setExcludeNode(signatureElement);
          	result.setExcludeComments(input.isExcludeComments());
          	return result;
@@ -145,35 +146,33 @@ public class TransformEnvelopedSignature extends TransformSpi {
    }
 
    /**
- * @param signatureElement
- * @param found
- * @return
- * @throws TransformationException
- */
-private static Node searchSignatureElement(Node signatureElement) throws TransformationException {
-	boolean found=false;
-	searchSignatureElemLoop: while (true) {
-	    if ((signatureElement == null)
+    * @param signatureElement    
+    * @return
+    * @throws TransformationException
+    */
+    private static Node searchSignatureElement(Node signatureElement) throws TransformationException {
+	    boolean found=false;
+        
+	    while (true) {
+	    	if ((signatureElement == null)
 	            || (signatureElement.getNodeType() == Node.DOCUMENT_NODE)) {
-	       break searchSignatureElemLoop;
+	    		break;
+	    	}
+	    	Element el=(Element)signatureElement;
+	    	if (el.getNamespaceURI().equals(Constants.SignatureSpecNS)
+                    && 
+	               el.getLocalName().equals(Constants._TAG_SIGNATURE)) {
+	    		found = true;
+	    		break;
+	    	}
+
+	    	signatureElement = signatureElement.getParentNode();
 	    }
 
-	    if (((Element) signatureElement).getNamespaceURI()
-	            .equals(Constants
-	            .SignatureSpecNS) && ((Element) signatureElement)
-	               .getLocalName().equals(Constants._TAG_SIGNATURE)) {
-	       found = true;
-
-	       break searchSignatureElemLoop;
-	    }
-
-	    signatureElement = signatureElement.getParentNode();
-	 }
-
-	 if (!found) {
-	    throw new TransformationException(
+	    if (!found) {
+	      throw new TransformationException(
 	       "envelopedSignatureTransformNotInSignatureElement");
-	 }
-	return signatureElement;
-}
+	    }
+	    return signatureElement;
+    }
 }

@@ -66,10 +66,13 @@ public class AttrCompare implements java.util.Comparator {
 
       Attr attr0 = (Attr) obj0;
       Attr attr1 = (Attr) obj1;
+      String namespaceURI0 = attr0.getNamespaceURI();      
+      String namespaceURI1 = attr1.getNamespaceURI();
+      
       boolean isNamespaceAttr0 =
-         Constants.NamespaceSpecNS.equals(attr0.getNamespaceURI());
+         Constants.NamespaceSpecNS.equals(namespaceURI0);
       boolean isNamespaceAttr1 =
-         Constants.NamespaceSpecNS.equals(attr1.getNamespaceURI());
+         Constants.NamespaceSpecNS.equals(namespaceURI1);
 
       if (isNamespaceAttr0) {
          if (isNamespaceAttr1) {
@@ -87,53 +90,48 @@ public class AttrCompare implements java.util.Comparator {
             }
 
             return localname0.compareTo(localname1);
-         } else {
-
-            // attr0 is a namespace, attr1 is not
-            return ATTR0_BEFORE_ATTR1;
          }
-      } else {
-         if (isNamespaceAttr1) {
+         // attr0 is a namespace, attr1 is not
+         return ATTR0_BEFORE_ATTR1;
+         
+      } 
+      if (isNamespaceAttr1) {
 
             // attr1 is a namespace, attr0 is not
             return ATTR1_BEFORE_ATTR0;
-         } else {
+      } 
 
-            // none is a namespae
-            String namespaceURI0 = attr0.getNamespaceURI();
-            String namespaceURI1 = attr1.getNamespaceURI();
-
-            if (namespaceURI0 == null) {
-               if (namespaceURI1 == null) {
-                  /*
-                  String localName0 = attr0.getLocalName();
-                  String localName1 = attr1.getLocalName();
-                  return localName0.compareTo(localName1);
-                  */
-
-                  String name0 = attr0.getName();
-                  String name1 = attr1.getName();
-                  return name0.compareTo(name1);
-               } else {
-                  return ATTR0_BEFORE_ATTR1;
-               }
-            } else {
-               if (namespaceURI1 == null) {
-                  return ATTR1_BEFORE_ATTR0;
-               } else {
-                  int a = namespaceURI0.compareTo(namespaceURI1);
-
-                  if (a != 0) {
-                     return a;
-                  }
-
-                  String localName0 = attr0.getLocalName();
-                  String localName1 = attr1.getLocalName();
-
-                  return localName0.compareTo(localName1);
-               }
-            }
-         }
+      // none is a namespae
+      
+      if (namespaceURI0 == null) {
+      	if (namespaceURI1 == null) {
+      		/*
+      		 String localName0 = attr0.getLocalName();
+      		 String localName1 = attr1.getLocalName();
+      		 return localName0.compareTo(localName1);
+      		 */
+      		
+      		String name0 = attr0.getName();
+      		String name1 = attr1.getName();
+      		return name0.compareTo(name1);
+      	}
+      	return ATTR0_BEFORE_ATTR1;
+      	
+      } 
+      if (namespaceURI1 == null) {
+      		return ATTR1_BEFORE_ATTR0;
+      } 
+      int a = namespaceURI0.compareTo(namespaceURI1);
+      		
+      if (a != 0) {
+      	return a;
       }
+      
+      String localName0 = attr0.getLocalName();
+      String localName1 = attr1.getLocalName();
+      
+      return localName0.compareTo(localName1);
+         
    }
+         
 }

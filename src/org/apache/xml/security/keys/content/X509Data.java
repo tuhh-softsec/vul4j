@@ -28,13 +28,11 @@ import org.apache.xml.security.keys.content.x509.XMLX509IssuerSerial;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.apache.xml.security.keys.content.x509.XMLX509SubjectName;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -70,24 +68,16 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
            throws XMLSecurityException {
 
       super(element, BaseURI);
-
-      NodeList children = this._constructionElement.getChildNodes();
-      HelperNodeList nodes = new HelperNodeList();
-
-      for (int i = 0; i < children.getLength(); i++) {
-         if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
-            nodes.appendChild(children.item(i));
+      
+      boolean noElements=true;
+      Node sibling=this._constructionElement.getFirstChild();
+      while (sibling!=null) {
+      	 if (sibling.getNodeType()!=Node.ELEMENT_NODE) {
+      	 	sibling=sibling.getNextSibling();
+            continue;
          }
-      }
-
-      if (nodes.getLength() == 0) {
-         Object exArgs[] = { "Elements", Constants._TAG_X509DATA };
-
-         throw new XMLSecurityException("xml.WrongContent", exArgs);
-      }
-
-      for (int i = 0; i < nodes.getLength(); i++) {
-         Element currentElem = (Element) nodes.item(i);
+        noElements=false;
+         Element currentElem = (Element) sibling;
          String localname = currentElem.getLocalName();
 
          if (currentElem.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
@@ -125,6 +115,12 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
             this.addUnknownElement(currentElem);
          }
       }
+      if (noElements) {
+        Object exArgs[] = { "Elements", Constants._TAG_X509DATA };
+
+        throw new XMLSecurityException("xml.WrongContent", exArgs);
+     }
+
    }
 
    /**
@@ -310,7 +306,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthIssuerSerial
     *
-    *
+    * @return the number of IssuerSerial elements in this X509Data
     */
    public int lengthIssuerSerial() {
       return this.length(Constants.SignatureSpecNS,
@@ -320,7 +316,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthSKI
     *
-    *
+    * @return the number of SKI elements in this X509Data
     */
    public int lengthSKI() {
       return this.length(Constants.SignatureSpecNS, Constants._TAG_X509SKI);
@@ -329,7 +325,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthSubjectName
     *
-    *
+    * @return the number of SubjectName elements in this X509Data
     */
    public int lengthSubjectName() {
       return this.length(Constants.SignatureSpecNS,
@@ -339,7 +335,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthCertificate
     *
-    *
+    * @return the number of Certificate elements in this X509Data
     */
    public int lengthCertificate() {
       return this.length(Constants.SignatureSpecNS,
@@ -349,7 +345,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthCRL
     *
-    *
+    * @return the number of CRL elements in this X509Data
     */
    public int lengthCRL() {
       return this.length(Constants.SignatureSpecNS, Constants._TAG_X509CRL);
@@ -358,22 +354,21 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthUnknownElement
     *
-    *
+    * @return the number of UnknownElement elements in this X509Data
     */
    public int lengthUnknownElement() {
-
-      NodeList nl = this._constructionElement.getChildNodes();
+      
       int result = 0;
-
-      for (int i = 0; i < nl.getLength(); i++) {
-         Node n = nl.item(i);
+      Node n=this._constructionElement.getFirstChild();
+      while (n!=null){         
 
          if ((n.getNodeType() == Node.ELEMENT_NODE)
                  &&!n.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
             result += 1;
          }
+         n=n.getNextSibling();
       }
-
+      
       return result;
    }
 
@@ -381,106 +376,101 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     * Method itemIssuerSerial
     *
     * @param i
-    *
+    * @return the X509IssuerSerial, null if not present
     * @throws XMLSecurityException
     */
    public XMLX509IssuerSerial itemIssuerSerial(int i)
            throws XMLSecurityException {
 
       Element e =
-         this.getChildElementLocalName(i, Constants.SignatureSpecNS,
-                                       Constants._TAG_X509ISSUERSERIAL);
+        XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                       Constants._TAG_X509ISSUERSERIAL,i);
 
       if (e != null) {
          return new XMLX509IssuerSerial(e, this._baseURI);
-      } else {
-         return null;
-      }
+      } 
+      return null;
    }
 
    /**
     * Method itemSKI
     *
     * @param i
-    *
+    * @return the X509SKI, null if not present
     * @throws XMLSecurityException
     */
    public XMLX509SKI itemSKI(int i) throws XMLSecurityException {
 
-      Element e = this.getChildElementLocalName(i, Constants.SignatureSpecNS,
-                                                Constants._TAG_X509SKI);
+      Element e = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                                Constants._TAG_X509SKI,i);
 
       if (e != null) {
          return new XMLX509SKI(e, this._baseURI);
-      } else {
-         return null;
       }
+      return null;
    }
 
    /**
     * Method itemSubjectName
     *
     * @param i
-    *
+    * @return the X509SubjectName, null if not present
     * @throws XMLSecurityException
     */
    public XMLX509SubjectName itemSubjectName(int i)
            throws XMLSecurityException {
 
-      Element e = this.getChildElementLocalName(i, Constants.SignatureSpecNS,
-                                                Constants._TAG_X509SUBJECTNAME);
+      Element e = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                                Constants._TAG_X509SUBJECTNAME,i);
 
       if (e != null) {
          return new XMLX509SubjectName(e, this._baseURI);
-      } else {
-         return null;
-      }
+      } 
+       return null;
    }
 
    /**
     * Method itemCertificate
     *
     * @param i
-    *
+    * @return the X509Certifacte, null if not present
     * @throws XMLSecurityException
     */
    public XMLX509Certificate itemCertificate(int i)
            throws XMLSecurityException {
 
-      Element e = this.getChildElementLocalName(i, Constants.SignatureSpecNS,
-                                                Constants._TAG_X509CERTIFICATE);
+      Element e = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                                Constants._TAG_X509CERTIFICATE,i);
 
       if (e != null) {
          return new XMLX509Certificate(e, this._baseURI);
-      } else {
-         return null;
-      }
+      } 
+       return null;
    }
 
    /**
     * Method itemCRL
     *
     * @param i
-    *
+    * @return the X509CRL, null if not present
     * @throws XMLSecurityException
     */
    public XMLX509CRL itemCRL(int i) throws XMLSecurityException {
 
-      Element e = this.getChildElementLocalName(i, Constants.SignatureSpecNS,
-                                                Constants._TAG_X509CRL);
+      Element e = XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+                                                Constants._TAG_X509CRL,i);
 
       if (e != null) {
          return new XMLX509CRL(e, this._baseURI);
-      } else {
-         return null;
-      }
+      } 
+       return null;
    }
 
    /**
     * Method itemUnknownElement
     *
     * @param i
-    *
+    * @return the Unknown Element at i
     * $todo$ implement
     */
    public Element itemUnknownElement(int i) {
@@ -490,7 +480,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsIssuerSerial
     *
-    *
+    * @return true if this X509Data contains a IssuerSerial
     */
    public boolean containsIssuerSerial() {
       return this.lengthIssuerSerial() > 0;
@@ -499,7 +489,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsSKI
     *
-    *
+    * @return true if this X509Data contains a SKI
     */
    public boolean containsSKI() {
       return this.lengthSKI() > 0;
@@ -508,7 +498,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsSubjectName
     *
-    *
+    * @return true if this X509Data contains a SubjectName
     */
    public boolean containsSubjectName() {
       return this.lengthSubjectName() > 0;
@@ -517,7 +507,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsCertificate
     *
-    *
+    * @return true if this X509Data contains a Certificate
     */
    public boolean containsCertificate() {
       return this.lengthCertificate() > 0;
@@ -526,7 +516,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsCRL
     *
-    *
+    * @return true if this X509Data contains a CRL
     */
    public boolean containsCRL() {
       return this.lengthCRL() > 0;
@@ -535,12 +525,13 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsUnknownElement
     *
-    *
+    * @return true if this X509Data contains an UnknownElement
     */
    public boolean containsUnknownElement() {
       return this.lengthUnknownElement() > 0;
    }
 
+   /** @inheritDoc */
    public String getBaseLocalName() {
       return Constants._TAG_X509DATA;
    }

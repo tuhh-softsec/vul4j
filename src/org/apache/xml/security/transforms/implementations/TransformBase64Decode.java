@@ -36,11 +36,9 @@ import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Base64;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
-import org.w3c.dom.traversal.DocumentTraversal;
-import org.w3c.dom.traversal.NodeFilter;
-import org.w3c.dom.traversal.TreeWalker;
 import org.xml.sax.SAXException;
 
 
@@ -79,16 +77,20 @@ public class TransformBase64Decode extends TransformSpi {
    /**
     * Method engineGetURI
     *
-    *
+    * @inheritDoc
     */
    protected String engineGetURI() {
       return TransformBase64Decode.implementedTransformURI;
    }
 
    //J-
+   /** @inheritDoc */
    public boolean wantsOctetStream ()   { return true; }
+   /** @inheritDoc */
    public boolean wantsNodeSet ()       { return true; }
+   /** @inheritDoc */
    public boolean returnsOctetStream () { return true; }
+   /** @inheritDoc */
    public boolean returnsNodeSet ()     { return false; }
    //J+
 
@@ -96,7 +98,7 @@ public class TransformBase64Decode extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
-    *
+    * @inheritDoc
     * @throws CanonicalizationException
     * @throws IOException
     * @throws InvalidCanonicalizerException
@@ -117,15 +119,17 @@ public class TransformBase64Decode extends TransformSpi {
          } catch (Base64DecodingException ex) {
             throw new TransformationException("empty", ex);
          }
-      } else {
+      } 
 		  try {
             Document doc =
                DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
                   input.getOctetStream());
-            DocumentTraversal dt = ((DocumentTraversal) doc);
-            Node rootNode = (Node) doc;
-
+            //DocumentTraversal dt = ((DocumentTraversal) doc);
+            Element rootNode = doc.getDocumentElement();
+            StringBuffer sb = new StringBuffer();
+            traverseElement(rootNode,sb);
             // we accept all nodes
+            /*
             NodeFilter nodefilter = new AlwaysAcceptNodeFilter();
             TreeWalker treewalker = dt.createTreeWalker(rootNode,
                                                         NodeFilter.SHOW_ALL,
@@ -133,7 +137,7 @@ public class TransformBase64Decode extends TransformSpi {
             StringBuffer sb = new StringBuffer();
 
             process(treewalker, sb);
-
+            */
             byte[] decodedBytes = Base64.decode(sb.toString());
 			
             return new XMLSignatureInput(
@@ -146,7 +150,7 @@ public class TransformBase64Decode extends TransformSpi {
 		  } catch (Base64DecodingException ex) {
 			  throw new TransformationException("empty", ex);
 		  }
-      }
+      
 	 } catch (ParserConfigurationException e) {
 		 throw new TransformationException("c14n.Canonicalizer.Exception",
 										   e);
@@ -155,32 +159,25 @@ public class TransformBase64Decode extends TransformSpi {
 	 }
    }
 
-   /**
-    * Method process
-    *
-    * @param treewalker
-    * @param sb
-    */
-   private void process(TreeWalker treewalker, StringBuffer sb) {
-
-      Node currentNode = treewalker.getCurrentNode();
-
-      if (currentNode.getNodeType() == Node.TEXT_NODE) {
-         sb.append(((Text) currentNode).getData());
-      }
-
-      for (Node node1 = treewalker.firstChild(); node1 != null;
-              node1 = treewalker.nextSibling()) {
-         process(treewalker, sb);
-      }
-
-      treewalker.setCurrentNode(currentNode);
+   void traverseElement(org.w3c.dom.Element node,StringBuffer sb) {
+   	    Node sibling=node.getFirstChild();
+        while (sibling!=null) {
+        	switch (sibling.getNodeType()) {
+        		case Node.ELEMENT_NODE:
+                    traverseElement((Element)sibling,sb);
+                    break;
+               case Node.TEXT_NODE:
+               	    sb.append(((Text)sibling).getData());
+            }
+            sibling=sibling.getNextSibling();
+        }
    }
-
+  
    /**
 	* Method to take a set of nodes and check whether any are "non-text"
+    * @param s to search
+    * @return true if the set only contains text nodes.
 	*/
-
    private boolean isTextNodeSet(Set s) {
 
 	   boolean isText = true;
@@ -196,21 +193,4 @@ public class TransformBase64Decode extends TransformSpi {
 	   return isText;
    }
 
-   /**
-    * This {@link NodeFilter} always returns <code>true</code>
-    *
-    * @author Christian Geuer-Pollmann
-    */
-   public class AlwaysAcceptNodeFilter implements NodeFilter {
-
-      /**
-       * Method acceptNode
-       *
-       * @param n
-       *
-       */
-      public short acceptNode(Node n) {
-         return NodeFilter.FILTER_ACCEPT;
-      }
-   }
 }

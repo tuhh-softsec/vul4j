@@ -32,7 +32,6 @@ import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
-import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
@@ -63,7 +62,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 
    /**
     * Method engineCanResolve
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
@@ -72,10 +71,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
 
-      try {
-         XMLUtils.guaranteeThatElementInSignatureSpace(element,
-                 Constants._TAG_RETRIEVALMETHOD);
-      } catch (XMLSignatureException ex) {
+      if 
+         (!XMLUtils.elementIsInSignatureSpace(element,
+                 Constants._TAG_RETRIEVALMETHOD)) {      
          return false;
       }
 
@@ -84,16 +82,15 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 
    /**
     * Method engineResolvePublicKey
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
     *
-    * @throws KeyResolverException
     */
    public PublicKey engineResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+              {
 
       try {
          RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
@@ -169,16 +166,15 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 
    /**
     * Method engineResolveX509Certificate
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
     *
-    * @throws KeyResolverException
     */
    public X509Certificate engineResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+              {
 
       try {
          RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
@@ -257,7 +253,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * Parses a byte array and returns the parsed Element.
     *
     * @param bytes
-    *
+    * @return the Document Element after parsing bytes 
     * @throws KeyResolverException if something goes wrong
     */
    Element getDocFromBytes(byte[] bytes) throws KeyResolverException {
@@ -284,19 +280,18 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 
    /**
     * Method engineResolveSecretKey
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
     *
-    * @throws KeyResolverException
     */
    public javax.crypto.SecretKey engineResolveSecretKey(
            Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+   {
       return null;
    }
-   public static Element getFirstElementChild(Element e){
+   static Element getFirstElementChild(Element e){
    	    Node n=e.getFirstChild();
    	    while (n!=null && n.getNodeType()!=Node.ELEMENT_NODE) {
    	    	n=n.getNextSibling();

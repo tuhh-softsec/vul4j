@@ -23,13 +23,13 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclWithComments;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.InclusiveNamespaces;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -48,15 +48,19 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
       Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS;
 
    //J-
+   /** @inheritDoc */
    public boolean wantsOctetStream ()   { return false; }
+   /** @inheritDoc */
    public boolean wantsNodeSet ()       { return true; }
+   /** @inheritDoc */
    public boolean returnsOctetStream () { return true; }
+   /** @inheritDoc */
    public boolean returnsNodeSet ()     { return false; }
    //J+
 
    /**
     * Method engineGetURI
-    *
+    *@inheritDoc 
     *
     */
    protected String engineGetURI() {
@@ -67,18 +71,17 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
-    *
+    * @inheritDoc 
     * @throws CanonicalizationException
-    * @throws InvalidCanonicalizerException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
-           throws CanonicalizationException, InvalidCanonicalizerException {
+           throws CanonicalizationException {
 
       try {
-         Element inclusiveElement =
-            this._transformObject.getChildElementLocalName(0,
+         Element inclusiveElement =XMLUtils.selectNode(
+            this._transformObject.getElement().getFirstChild(),
                InclusiveNamespaces.ExclusiveCanonicalizationNamespace,
-               InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES);
+               InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES,0);
          InclusiveNamespaces inclusiveNamespaces = null;
 
          if (inclusiveElement != null) {
@@ -92,30 +95,30 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
          if (input.isOctetStream()) {
             return new XMLSignatureInput(c14n
                .engineCanonicalize(input.getBytes()));
-         } else {
+         } 
          	if (input.isElement()) {
          		if (inclusiveNamespaces == null) {
              		Node excl=input.getExcludeNode();
          			return new XMLSignatureInput(
          					c14n.engineCanonicalizeSubTree(input.getSubNode(),"",
          							excl));
-         		} else {
+         		} 
          		Node excl=input.getExcludeNode();
          			return new XMLSignatureInput(
          					c14n.engineCanonicalizeSubTree(input.getSubNode(),inclusiveNamespaces.getInclusiveNamespaces(),
          							excl));
-         		}
+         		
          	}
             if (inclusiveNamespaces == null) {
                return new XMLSignatureInput(c14n
                   .engineCanonicalizeXPathNodeSet(input.getNodeSet()));
-            } else {
+            } 
                return new XMLSignatureInput(c14n
                   .engineCanonicalizeXPathNodeSet(input
                      .getNodeSet(), inclusiveNamespaces
                      .getInclusiveNamespaces()));
-            }
-         }
+            
+         
       } catch (IOException ex) {
          throw new CanonicalizationException("empty", ex);
       } catch (ParserConfigurationException ex) {

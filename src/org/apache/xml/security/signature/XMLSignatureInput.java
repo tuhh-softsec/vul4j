@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,12 +36,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.c14n.helper.AttrCompare;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.CachedXPathAPI;
+import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -82,8 +83,12 @@ public class XMLSignatureInput {
     * 
     */
    boolean excludeComments=false;
+   /**
+    * A cached bytes
+    */
+   byte []bytes=null;
    /** Field _cxpathAPI */
-   CachedXPathAPI _cxpathAPI;
+   CachedXPathAPIHolder _cxpathAPI=null;
 
    /**
     * Construct a XMLSignatureInput from an octet array.
@@ -120,7 +125,7 @@ public class XMLSignatureInput {
    /**
     * Construct a XMLSignatureInput from a String.
     * <p>
-    * This is a comfort method, which internally converts the String into a byte[] array using the {@link java.lang.String#getBytes} method.
+    * This is a comfort method, which internally converts the String into a byte[] array using the {@link java.lang.String#getBytes()} method.
     *
     * @param inputStr the input String which including XML document or node
     */
@@ -131,7 +136,7 @@ public class XMLSignatureInput {
    /**
     * Construct a XMLSignatureInput from a String with a given encoding.
     * <p>
-    * This is a comfort method, which internally converts the String into a byte[] array using the {@link java.lang.String#getBytes} method.
+    * This is a comfort method, which internally converts the String into a byte[] array using the {@link java.lang.String#getBytes()} method.
     *
     * @param inputStr the input String with encoding <code>encoding</code>
     * @param encoding the encoding of <code>inputStr</code>
@@ -148,9 +153,8 @@ public class XMLSignatureInput {
     *
     * @param rootNode
     * @param usedXPathAPI
-    * @throws TransformerException
     */
-   public XMLSignatureInput(Node rootNode, CachedXPathAPI usedXPathAPI)
+   public XMLSignatureInput(Node rootNode, CachedXPathAPIHolder usedXPathAPI)
            {
 
       this._cxpathAPI = usedXPathAPI;
@@ -170,11 +174,10 @@ public class XMLSignatureInput {
     * Construct a XMLSignatureInput from a subtree rooted by rootNode. This method included the node
     * and <I>all</I> his descendants in the output.
     *
-    * @param rootNode
-    * @throws TransformerException
+    * @param rootNode    
     */
    public XMLSignatureInput(Node rootNode)  {
-      this(rootNode, null /*new CachedXPathAPI()*/);
+      this(rootNode, null);
    }
 
    /**
@@ -183,7 +186,7 @@ public class XMLSignatureInput {
     * @param inputNodeSet
     * @param usedXPathAPI
     */
-   public XMLSignatureInput(Set inputNodeSet, CachedXPathAPI usedXPathAPI) {
+   public XMLSignatureInput(Set inputNodeSet, CachedXPathAPIHolder usedXPathAPI) {
     this._inputNodeSet = inputNodeSet;
     this._cxpathAPI = usedXPathAPI;
     //    After the c14n FIX is merge this is neaded
@@ -205,7 +208,7 @@ public class XMLSignatureInput {
     * @deprecated Use {@link Set}s instead of {@link NodeList}s.
     */
    public XMLSignatureInput(NodeList inputNodeSet) {   	  
-      this(XMLUtils.convertNodelistToSet(inputNodeSet), null /* new CachedXPathAPI()*/);
+      this(XMLUtils.convertNodelistToSet(inputNodeSet), null);
       //After the c14n FIX is merge this is neaded
       
       //XMLUtils.circumventBug2650(XMLUtils.getOwnerDocument(inputNodeSet.item(0)));
@@ -219,7 +222,7 @@ public class XMLSignatureInput {
     * @deprecated Use {@link Set}s instead of {@link NodeList}s.
     */
    public XMLSignatureInput(NodeList inputNodeSet,
-                            CachedXPathAPI usedXPathAPI) {
+                            CachedXPathAPIHolder usedXPathAPI) {
       this(XMLUtils.convertNodelistToSet(inputNodeSet), usedXPathAPI);
    }
 
@@ -285,7 +288,7 @@ public class XMLSignatureInput {
             XMLUtils.circumventBug2650(document);
 
             try {
-               NodeList nodeList = this._cxpathAPI.selectNodeList(
+               NodeList nodeList = this._cxpathAPI.getCachedXPathAPI().selectNodeList(
                   document,
                   "(//. | //@* | //namespace::*)[not(self::node()=/) and not(self::node=/container)]");
 
@@ -317,15 +320,16 @@ public class XMLSignatureInput {
 
          return this._inputOctetStreamProxy;
       } else if (this.isElement()) {
+         if (bytes==null) {         	
         Canonicalizer20010315OmitComments c14nizer =
-            new Canonicalizer20010315OmitComments();
-         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-         byte bytes[];
+            new Canonicalizer20010315OmitComments();                  
          if (this.excludeNode!=null ) {
          	bytes=c14nizer.engineCanonicalizeSubTree(this._subNode,this.excludeNode);
          } else {
          	bytes=c14nizer.engineCanonicalizeSubTree(this._subNode);
          }
+         }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
  		baos.write(bytes);
         return new ByteArrayInputStream(baos.toByteArray());
 
@@ -349,8 +353,9 @@ public class XMLSignatureInput {
 
          try {         	
             Set nodes = this.getNodeSet();
-            byte bytes[] = c14nizer.engineCanonicalizeXPathNodeSet(nodes);
-
+            if (bytes==null) {
+            bytes = c14nizer.engineCanonicalizeXPathNodeSet(nodes);
+            }
             baos.write(bytes);
             /** $todo$ Clarify behavior. If isNodeSet() and we getOctetStream, do we have to this._inputOctetStream=xxx ? */
 
@@ -383,8 +388,10 @@ public class XMLSignatureInput {
    public byte[] getBytes()
            throws IOException, CanonicalizationException,
                   InvalidCanonicalizerException {
-
-      InputStream is = this.getOctetStream();
+      if ( bytes!=null) {
+      	return bytes;
+      }
+      InputStream is = this.getOctetStream();      
       int available = is.available();
       byte[] data = new byte[available];
 
@@ -493,41 +500,44 @@ public class XMLSignatureInput {
     *
     * @return an existing {@link org.apache.xpath.CachedXPathAPI}
     */
-   public CachedXPathAPI getCachedXPathAPI() {
-      if (this._cxpathAPI == null) {
-          this._cxpathAPI = new CachedXPathAPI();
+   public CachedXPathAPIHolder getCachedXPathAPI() {      
+   	  if (this._cxpathAPI==null) {
+         this._cxpathAPI=new CachedXPathAPIHolder(); 
       }
       return this._cxpathAPI;
    }
-
+   
    /**
     * Method toString
-    *
+    * @inheritDoc
     *
     */
    public String toString() {
 
       if (this.isNodeSet()) {
-         try {
-            return "XMLSignatureInput/NodeSet/" + this._inputNodeSet.size()
-                   + " nodes/" + this.getSourceURI();
-         } catch (Exception ex) {
-            return "XMLSignatureInput/NodeSet//" + this.getSourceURI();
-         }
-      } else {
+         return "XMLSignatureInput/NodeSet/" + this._inputNodeSet.size()
+                   + " nodes/" + this.getSourceURI();         
+      } 
+      if (this.isElement()) {
+        return "XMLSignatureInput/Element/" + this._subNode
+        + " exclude "+ this.excludeNode + " comments:" + 
+        this.excludeComments
+        +"/" + this.getSourceURI();
+      }
          try {
             return "XMLSignatureInput/OctetStream/" + this.getBytes().length
                    + " octets/" + this.getSourceURI();
          } catch (Exception ex) {
             return "XMLSignatureInput/OctetStream//" + this.getSourceURI();
          }
-      }
+      
    }
 
    /**
     * Method getHTMLRepresentation
     *
     * @throws XMLSignatureException
+    * @return The HTML representation for this XMLSignature
     */
    public String getHTMLRepresentation() throws XMLSignatureException {
 
@@ -541,6 +551,7 @@ public class XMLSignatureInput {
     *
     * @param inclusiveNamespaces
     * @throws XMLSignatureException
+    * @return The HTML representation for this XMLSignature
     */
    public String getHTMLRepresentation(Set inclusiveNamespaces)
            throws XMLSignatureException {
@@ -570,7 +581,8 @@ public class XMLSignatureInput {
       private Writer _writer = null;
       //J-
       // public static final String HTMLPrefix = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head><style type=\"text/css\"><!-- .INCLUDED { color: #000000; background-color: #FFFFFF; font-weight: bold; } .EXCLUDED { color: #666666; background-color: #999999; } .INCLUDEDINCLUSIVENAMESPACE {	color: #0000FF; background-color: #FFFFFF; font-weight: bold; font-style: italic; } .EXCLUDEDINCLUSIVENAMESPACE { color: #0000FF; background-color: #999999; font-style: italic; } --> </style> </head><body bgcolor=\"#999999\"><pre>";
-      public static final String HTMLPrefix = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
+      /**The HTML Prefix**/ 
+      static final String HTMLPrefix = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
                  + "<html>\n"
                  + "<head>\n"
                  + "<title>Caninical XML node set</title>\n"
@@ -609,20 +621,20 @@ public class XMLSignatureInput {
                  + "<h1>Output</h1>\n"
                  + "<pre>\n" ;
 
+      /** HTML Suffix **/
+      static final String HTMLSuffix = "</pre></body></html>";
 
-      public static final String HTMLSuffix = "</pre></body></html>";
+      static final String HTMLExcludePrefix = "<span class=\"EXCLUDED\">";
+      static final String HTMLExcludeSuffix = "</span>";
 
-      public static final String HTMLExcludePrefix = "<span class=\"EXCLUDED\">";
-      public static final String HTMLExcludeSuffix = "</span>";
+      static final String HTMLIncludePrefix = "<span class=\"INCLUDED\">";
+      static final String HTMLIncludeSuffix = "</span>";
 
-      public static final String HTMLIncludePrefix = "<span class=\"INCLUDED\">";
-      public static final String HTMLIncludeSuffix = "</span>";
+      static final String HTMLIncludedInclusiveNamespacePrefix = "<span class=\"INCLUDEDINCLUSIVENAMESPACE\">";
+      static final String HTMLIncludedInclusiveNamespaceSuffix = "</span>";
 
-      public static final String HTMLIncludedInclusiveNamespacePrefix = "<span class=\"INCLUDEDINCLUSIVENAMESPACE\">";
-      public static final String HTMLIncludedInclusiveNamespaceSuffix = "</span>";
-
-      public static final String HTMLExcludedInclusiveNamespacePrefix = "<span class=\"EXCLUDEDINCLUSIVENAMESPACE\">";
-      public static final String HTMLExcludedInclusiveNamespaceSuffix = "</span>";
+      static final String HTMLExcludedInclusiveNamespacePrefix = "<span class=\"EXCLUDEDINCLUSIVENAMESPACE\">";
+      static final String HTMLExcludedInclusiveNamespaceSuffix = "</span>";
 
       private static final int NODE_BEFORE_DOCUMENT_ELEMENT = -1;
       private static final int NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT = 0;
@@ -638,7 +650,7 @@ public class XMLSignatureInput {
        * @param xmlSignatureInput
        */
       public XMLSignatureInputDebugger(XMLSignatureInput xmlSignatureInput)
-              throws XMLSignatureException {
+      {
 
          if (!xmlSignatureInput.isNodeSet()) {
             this._xpathNodeSet = null;
@@ -652,11 +664,10 @@ public class XMLSignatureInput {
        *
        * @param xmlSignatureInput
        * @param inclusiveNamespace
-       * @throws XMLSignatureException
        */
       public XMLSignatureInputDebugger(
               XMLSignatureInput xmlSignatureInput, Set inclusiveNamespace)
-                 throws XMLSignatureException {
+      {
 
          this(xmlSignatureInput);
 
@@ -665,7 +676,8 @@ public class XMLSignatureInput {
 
       /**
        * Method getHTMLRepresentation
-       *
+       * @return The HTML Representation.
+       * @throws XMLSignatureException
        */
       public String getHTMLRepresentation() throws XMLSignatureException {
 
@@ -703,6 +715,7 @@ public class XMLSignatureInput {
        *
        * @param currentNode
        * @throws XMLSignatureException
+       * @throws IOException
        */
       private void canonicalizeXPathNodeSet(Node currentNode)
               throws XMLSignatureException, IOException {
@@ -843,10 +856,9 @@ public class XMLSignatureInput {
             for (int i = 0; i < attrsLength; i++) {
                attrs2[i] = attrs.item(i);
             }
-
-            Object attrs3[] =
-               org.apache.xml.security.c14n.helper.C14nHelper
-                  .sortAttributes(attrs2);
+            
+            Arrays.sort(attrs2,new AttrCompare());
+            Object attrs3[] = attrs2;
 
             for (int i = 0; i < attrsLength; i++) {
                Attr a = (Attr) attrs3[i];
@@ -949,9 +961,9 @@ public class XMLSignatureInput {
        *
        * @param currentNode comment or pi to check
        * @return NODE_BEFORE_DOCUMENT_ELEMENT, NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT or NODE_AFTER_DOCUMENT_ELEMENT
-       * @see NODE_BEFORE_DOCUMENT_ELEMENT
-       * @see NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT
-       * @see NODE_AFTER_DOCUMENT_ELEMENT
+       * @see #NODE_BEFORE_DOCUMENT_ELEMENT
+       * @see #NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT
+       * @see #NODE_AFTER_DOCUMENT_ELEMENT
        */
       private int getPositionRelativeToDocumentElement(Node currentNode) {
 
@@ -1228,21 +1240,21 @@ public class XMLSignatureInput {
 
      /**
       * Gets the node of this XMLSignatureInput
-      * @param excludeNode The excludeNode to set.
+      * @return The excludeNode set.
       */
      public Node getSubNode() {
   	    return _subNode;
      }
-/**
- * @return Returns the excludeComments.
- */
-public boolean isExcludeComments() {
-	return excludeComments;
-}
-/**
- * @param excludeComments The excludeComments to set.
- */
-public void setExcludeComments(boolean excludeComments) {
-	this.excludeComments = excludeComments;
-}
+     /**
+      * @return Returns the excludeComments.
+      */
+     public boolean isExcludeComments() {
+     	return excludeComments;
+     }
+     /**
+      * @param excludeComments The excludeComments to set.
+      */
+     public void setExcludeComments(boolean excludeComments) {
+     	this.excludeComments = excludeComments;
+     }
 }

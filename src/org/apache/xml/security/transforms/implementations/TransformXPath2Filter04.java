@@ -36,6 +36,7 @@ import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer04;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -50,7 +51,7 @@ import org.xml.sax.SAXException;
  *
  * @author $Author$
  * @see <A HREF="http://www.w3.org/TR/xmldsig-filter2/">XPath Filter v2.0 (TR)</A>
- * @see <A HREF=http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/">XPath Filter v2.0 (editors copy)</A>
+ * @see <A HREF="http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/">XPath Filter v2.0 (editors copy)</A>
  */
 public class TransformXPath2Filter04 extends TransformSpi {
 
@@ -64,16 +65,20 @@ public class TransformXPath2Filter04 extends TransformSpi {
       Transforms.TRANSFORM_XPATH2FILTER04;
 
    //J-
+   /** @inheritDoc */
    public boolean wantsOctetStream ()   { return false; }
+   /** @inheritDoc */
    public boolean wantsNodeSet ()       { return true; }
+   /** @inheritDoc */
    public boolean returnsOctetStream () { return false; }
+   /** @inheritDoc */
    public boolean returnsNodeSet ()     { return true; }
    //J+
 
    /**
     * Method engineGetURI
     *
-    *
+    * @inheritDoc
     */
    protected String engineGetURI() {
       return implementedTransformURI;
@@ -83,7 +88,7 @@ public class TransformXPath2Filter04 extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
-    *
+    * @inheritDoc
     * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
@@ -95,9 +100,9 @@ public class TransformXPath2Filter04 extends TransformSpi {
          log.debug("perform xfilter2 on " + inputSet.size() + " nodes");
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
+            new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());
          CachedXPathAPI myXPathAPI =
-            new CachedXPathAPI(input.getCachedXPathAPI());
+            new CachedXPathAPI(input.getCachedXPathAPI().getCachedXPathAPI());
 
          if (inputSet.size() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
@@ -105,10 +110,10 @@ public class TransformXPath2Filter04 extends TransformSpi {
             throw new TransformationException("empty", exArgs);
          }
 
-         Element xpathElement =
-            this._transformObject.getChildElementLocalName(0,
+         Element xpathElement =XMLUtils.selectNode(
+            this._transformObject.getElement().getFirstChild(),
                XPath2FilterContainer04.XPathFilter2NS,
-               XPath2FilterContainer04._TAG_XPATH2);
+               XPath2FilterContainer04._TAG_XPATH2,0);
 
          if (xpathElement == null) {
             Object exArgs[] = { "dsig-xpath:XPath", "Transform" };
@@ -122,6 +127,7 @@ public class TransformXPath2Filter04 extends TransformSpi {
          Document doc = this._transformObject.getElement().getOwnerDocument();
          NodeList subtreeRoots = xPathFuncHereAPI.selectNodeList(doc,
                                     xpathContainer.getXPathFilterTextNode(),
+                                    CachedXPathFuncHereAPI.getStrFromNode(xpathContainer.getXPathFilterTextNode()),
                                     xpathContainer.getElement());
 
          log.debug("subtreeRoots contains " + subtreeRoots.getLength()

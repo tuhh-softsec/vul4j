@@ -18,21 +18,15 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 
 
-import java.util.Set;
-
-import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.IdResolver;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xml.utils.URI;
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -65,7 +59,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    *
+    * @inheritDoc
     * @throws ResourceResolverException
     */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
@@ -80,12 +74,12 @@ public class ResolverXPointer extends ResourceResolverSpi {
       //CachedXPathAPI cXPathAPI = new CachedXPathAPI();
 
       
-         if (isXPointerSlash(uri, BaseURI)) {
+         if (isXPointerSlash(uri)) {
             resultNode = doc;
                
-         } else if (isXPointerId(uri, BaseURI)) {
-            String id = getXPointerId(uri, BaseURI);
-            resultNode =(Node) IdResolver.getElementById(doc, id);
+         } else if (isXPointerId(uri)) {
+            String id = getXPointerId(uri);
+            resultNode =IdResolver.getElementById(doc, id);
 
             // log.debug("Use #xpointer(id('" + id + "')) on element " + selectedElem);
 
@@ -104,7 +98,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
       
 
       //Set resultSet = XMLUtils.convertNodelistToSet(resultNode); 
-      XMLSignatureInput result = new XMLSignatureInput(resultNode);
+      XMLSignatureInput result = new XMLSignatureInput(resultNode,new CachedXPathAPIHolder());
 
       result.setMIMEType("text/xml");
 
@@ -124,7 +118,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    *
+    * @inheritDoc
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
@@ -132,7 +126,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
          return false;
       }
 
-      if (isXPointerSlash(uri, BaseURI) || isXPointerId(uri, BaseURI)) {
+      if (isXPointerSlash(uri) || isXPointerId(uri)) {
          return true;
       }
 
@@ -143,10 +137,9 @@ public class ResolverXPointer extends ResourceResolverSpi {
     * Method isXPointerSlash
     *
     * @param uri
-    * @param BaseURI
-    *
+    * @return true if begins with xpointer
     */
-   private static boolean isXPointerSlash(Attr uri, String BaseURI) {
+   private static boolean isXPointerSlash(Attr uri) {
 
       if (uri.getNodeValue().equals("#xpointer(/)")) {
          return true;
@@ -159,10 +152,10 @@ public class ResolverXPointer extends ResourceResolverSpi {
     * Method isXPointerId
     *
     * @param uri
-    * @param BaseURI
+    * @return it it has an xpointer id
     *
     */
-   private static boolean isXPointerId(Attr uri, String BaseURI) {
+   private static boolean isXPointerId(Attr uri) {
 
       String uriNodeValue = uri.getNodeValue();
 
@@ -192,10 +185,9 @@ public class ResolverXPointer extends ResourceResolverSpi {
     * Method getXPointerId
     *
     * @param uri
-    * @param BaseURI
-    *
+    * @return
     */
-   private static String getXPointerId(Attr uri, String BaseURI) {
+   private static String getXPointerId(Attr uri) {
 
       String uriNodeValue = uri.getNodeValue();
 

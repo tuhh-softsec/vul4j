@@ -19,21 +19,19 @@ package org.apache.xml.security;
 
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
 import javax.xml.parsers.*;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.keys.ContentHandlerAlreadyRegisteredException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.implementations.FuncHere;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
-import org.apache.xpath.XPathAPI;
+import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.compiler.FuncLoader;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.functions.Function;
@@ -59,7 +57,7 @@ public class Init {
 
    /**
     * Method isInitialized
-    *
+    * @return true if the librairy is already initialized.     
     *
     */
    public static final boolean isInitialized() {
@@ -104,16 +102,17 @@ public class Init {
             context.setAttributeNS(
                Constants.NamespaceSpecNS, "xmlns:x",
                     "http://www.xmlsecurity.org/NS/#configuration");
+            CachedXPathAPI cx=new CachedXPathAPI();
             long XX_configure_i18n_start = System.currentTimeMillis();
 
             {
 
                /* configure internationalization */
-               Attr langAttr = (Attr) XPathAPI.selectSingleNode(
+               Attr langAttr = (Attr) cx.selectSingleNode(
                   doc,
                   "/x:Configuration/x:ResourceBundles/@defaultLanguageCode",
                   context);
-               Attr countryAttr = (Attr) XPathAPI.selectSingleNode(
+               Attr countryAttr = (Attr) cx.selectSingleNode(
                   doc,
                   "/x:Configuration/x:ResourceBundles/@defaultCountryCode",
                   context);
@@ -171,7 +170,7 @@ public class Init {
             {
                Canonicalizer.init();
 
-               NodeList c14nElem = XPathAPI.selectNodeList(
+               NodeList c14nElem = cx.selectNodeList(
                   doc,
                   "/x:Configuration/x:CanonicalizationMethods/x:CanonicalizationMethod",
                   context);
@@ -219,7 +218,7 @@ public class Init {
             {
                Transform.init();
 
-               NodeList tranElem = XPathAPI.selectNodeList(
+               NodeList tranElem = cx.selectNodeList(
                   doc,
                   "/x:Configuration/x:TransformAlgorithms/x:TransformAlgorithm",
                   context);
@@ -255,10 +254,10 @@ public class Init {
             long XX_configure_reg_jcemapper_start = System.currentTimeMillis();
 
             {
-               Element jcemapperElem = (Element) XPathAPI.selectSingleNode(
+               Element jcemapperElem = (Element) cx.selectSingleNode(
                   doc, "/x:Configuration/x:JCEAlgorithmMappings", context);
 
-               JCEMapper.init(jcemapperElem);
+               JCEMapper.init(jcemapperElem,cx);
             }
 
             long XX_configure_reg_jcemapper_end = System.currentTimeMillis();
@@ -267,7 +266,7 @@ public class Init {
             {
                SignatureAlgorithm.providerInit();
 
-               NodeList sigElems = XPathAPI.selectNodeList(
+               NodeList sigElems = cx.selectNodeList(
                   doc,
                   "/x:Configuration/x:SignatureAlgorithms/x:SignatureAlgorithm",
                   context);
@@ -318,7 +317,7 @@ public class Init {
             {
                ResourceResolver.init();
 
-               NodeList resolverElem = XPathAPI.selectNodeList(
+               NodeList resolverElem = cx.selectNodeList(
                   doc, "/x:Configuration/x:ResourceResolvers/x:Resolver",
                   context);
 
@@ -349,32 +348,6 @@ public class Init {
             {
                try {
                   KeyInfo.init();
-
-                  Init._contentHandlerHash = new HashMap(10);
-
-                  {
-                     NodeList keyElem = XPathAPI.selectNodeList(
-                        doc, "/x:Configuration/x:KeyInfo/x:ContentHandler",
-                        context);
-
-                     for (int i = 0; i < keyElem.getLength(); i++) {
-                        String namespace =
-                           ((Element) keyElem.item(i)).getAttributeNS(null,
-                              "NAMESPACE");
-                        String localname =
-                           ((Element) keyElem.item(i)).getAttributeNS(null,
-                              "LOCALNAME");
-                        String JAVACLASS =
-                           ((Element) keyElem.item(i)).getAttributeNS(null,
-                              "JAVACLASS");
-
-                        log.debug("KeyInfoContent: " + namespace + " "
-                                  + localname + " " + JAVACLASS);
-                        Init.registerKeyInfoContentHandler(namespace,
-                                                           localname,
-                                                           JAVACLASS);
-                     }
-                  }
                } catch (Exception e) {
                   e.printStackTrace();
 
@@ -389,7 +362,7 @@ public class Init {
             {
                KeyResolver.init();
 
-               NodeList resolverElem = XPathAPI.selectNodeList(
+               NodeList resolverElem = cx.selectNodeList(
                   doc, "/x:Configuration/x:KeyResolver/x:Resolver", context);
 
                for (int i = 0; i < resolverElem.getLength(); i++) {
@@ -418,7 +391,7 @@ public class Init {
             {
                log.debug("Now I try to bind prefixes:");
 
-               NodeList nl = XPathAPI.selectNodeList(
+               NodeList nl = cx.selectNodeList(
                   doc, "/x:Configuration/x:PrefixMappings/x:PrefixMapping",
                   context);
 
@@ -459,203 +432,7 @@ public class Init {
       }
    }
 
-   /**
-    * This method customizes the library with user supplied configuration.
-    * This includes access to keystores etc.
-    * By default, this method tries to find the configurationfile in
-    * the System.getProperty("user.home") directory.
-    *
-    * @throws XMLSecurityException
-    */
-   public static void readUserConfiguration() throws XMLSecurityException {
 
-      try {
-         String filename = System.getProperty("user.home") + "/"
-                           + Constants.configurationFileNew;
-         InputStream is = new FileInputStream(filename);
-
-         Init.readUserConfiguration(is);
-      } catch (IOException ex) {
-         throw new XMLSecurityException("generic.EmptyMessage", ex);
-      }
-   }
-
-   /**
-    * This method customizes the library with user supplied configuration.
-    * This includes access to keystores etc.
-    *
-    * @param fileURI
-    * @throws XMLSecurityException
-    */
-   public static void readUserConfiguration(String fileURI)
-           throws XMLSecurityException {
-
-      try {
-         InputStream is = null;
-
-         // first try to interpret fileURI as filename in the local file system
-         File f = new File(fileURI);
-
-         if (f.exists()) {
-            is = new FileInputStream(f);
-         } else {
-
-            // then treat it as USI
-            is = new java.net.URL(fileURI).openStream();
-         }
-
-         Init.readUserConfiguration(is);
-      } catch (IOException ex) {
-         throw new XMLSecurityException("generic.EmptyMessage", ex);
-      }
-   }
-
-   /**
-    * Method readUserConfiguration
-    *
-    * @param is
-    * @throws XMLSecurityException
-    */
-   public static void readUserConfiguration(InputStream is)
-           throws XMLSecurityException {
-
-      try {
-
-         /* read library configuration file */
-         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-         dbf.setNamespaceAware(true);
-         dbf.setValidating(false);
-
-         DocumentBuilder db = dbf.newDocumentBuilder();
-         Document doc = db.parse(is);
-         Element context = XMLUtils.createDSctx(
-            doc, "x", "http://www.xmlsecurity.org/NS/#configuration");
-
-         {
-            NodeList nl =
-               XPathAPI.selectNodeList(doc, "/x:AppConfiguration/x:KeyStore",
-                                       context);
-
-            for (int i = 0; i < nl.getLength(); i++) {
-               //EK: the registerStore method was already commented out.
-               //unsure what needs to happen with it now.
-               /*
-               Element e = (Element) nl.item(i);
-               String URI = e.getAttributeNS(null, "URI");
-               String keyStoreType = e.getAttributeNS(null, "Type");
-               String defaultKeyAlias = e.getAttributeNS(null,
-                                                         "DefaultKeyAlias");
-               String storePass = e.getAttributeNS(null, "StorePass");
-               String KeyPass = e.getAttributeNS(null, "KeyPass");
-               */
-
-               // org.apache.xml.security.keys.keyStorage.KeyStorage.registerStore(URI, JAVACLASS, LOCATION, DEFAULTKEYOBJECT, CONTEXT);
-            }
-         }
-      } catch (Exception ex) {
-         throw new XMLSecurityException("generic.EmptyMessage", ex);
-      }
-   }
-
-   /** Field _contentHandlerHash */
-   public static HashMap _contentHandlerHash;
-
-   /**
-    * Method registerKeyinfoContentHandler
-    *
-    * @param namespace
-    * @param localname
-    * @param implementingClass
-    * @throws ContentHandlerAlreadyRegisteredException
-    */
-   public static void registerKeyInfoContentHandler(
-           String namespace, String localname, String implementingClass)
-              throws ContentHandlerAlreadyRegisteredException {
-
-      String namespacequali = Init.qualifyNamespace(namespace, localname);
-
-      // are we already registered?
-      if (Init._contentHandlerHash.containsKey(namespacequali)) {
-         log.error("Already registered");
-
-         Object exArgs[] = { namespacequali,
-                             ((String) Init._contentHandlerHash
-                                .get(namespacequali)) };
-
-         throw new ContentHandlerAlreadyRegisteredException(
-            "algorithm.alreadyRegistered", exArgs);
-      }
-
-      synchronized (Init._contentHandlerHash) {
-         Init._contentHandlerHash.put(namespacequali, implementingClass);
-         log.debug("Init._contentHandlerHash.put(\"" + namespacequali
-                   + "\", \"" + implementingClass + "\")");
-         log.debug("Init._contentHandlerHash.size()="
-                   + Init._contentHandlerHash.size());
-      }
-   }
-
-   /**
-    * Method qualifyNamespace
-    *
-    * @param namespace
-    * @param localname
-    *
-    */
-   private static String qualifyNamespace(String namespace, String localname) {
-      return "{" + namespace + "}" + localname;
-   }
-
-   /**
-    * Method getContentHandlerClass
-    *
-    * @param namespace
-    * @param localname
-    *
-    */
-   public static String getKeyInfoContentHandler(String namespace,
-           String localname) {
-
-      /*
-      Iterator i = KeyInfo._contentHandlerHash.keySet().iterator();
-      while (i.hasNext()) {
-         String key = (String) i.next();
-         if (key.equals(URI)) {
-            return (String) KeyInfo._contentHandlerHash.get(key);
-         }
-      }
-      return null;
-      */
-      String namespacequali = Init.qualifyNamespace(namespace, localname);
-
-      log.debug("Asked for handler for " + namespacequali);
-
-      if (Init._contentHandlerHash == null) {
-         log.debug("But I can't help (hash==null) ");
-
-         return null;
-      }
-
-      if (Init._contentHandlerHash.size() == 0) {
-         log.debug("But I can't help (size()==0)");
-
-         return null;
-      }
-
-      Set keyset = Init._contentHandlerHash.keySet();
-      Iterator i = keyset.iterator();
-
-      while (i.hasNext()) {
-         String key = (String) i.next();
-
-         if (key.equals(namespacequali)) {
-            return (String) Init._contentHandlerHash.get(key);
-         }
-      }
-
-      return null;
-   }
 
    /**
     * Class FuncHereLoader
@@ -675,18 +452,15 @@ public class Init {
 
       /**
        * Method getFunction
-       *
-       *
-       * @throws javax.xml.transform.TransformerException
+       * @return  a New function       
        */
-      public Function getFunction()
-              throws javax.xml.transform.TransformerException {
+      public Function getFunction() {
          return new FuncHere();
       }
 
       /**
        * Method getName
-       *
+       * @return  the name of the class.     
        *
        */
       public String getName() {

@@ -45,15 +45,28 @@ public class Canonicalizer {
    /** The output encoding of canonicalized data */
    public static final String ENCODING = "UTF8";
 
-   private static final String XPATH_NO_COMMENTS = "[not(self::comment())]";
-   public static final String XPATH_C14N_WITH_COMMENTS = "(//. | //@* | //namespace::*)";
-   public static final String XPATH_C14N_OMIT_COMMENTS = XPATH_C14N_WITH_COMMENTS + XPATH_NO_COMMENTS;
-   public static final String XPATH_C14N_WITH_COMMENTS_SINGLE_NODE = "(.//. | .//@* | .//namespace::*)";
-   public static final String XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE = XPATH_C14N_WITH_COMMENTS_SINGLE_NODE + XPATH_NO_COMMENTS;
+   
+   /**
+     * XPath Expresion for selecting every node and continuos comments joined in only one node 
+     */
+    public static final String XPATH_C14N_WITH_COMMENTS_SINGLE_NODE = "(.//. | .//@* | .//namespace::*)";
+   
 
+   /**
+     * The URL defined in XML-SEC Rec for inclusive c14n <b>without</b> comments.
+     */
    public static final String ALGO_ID_C14N_OMIT_COMMENTS = "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
+   /**
+    * The URL defined in XML-SEC Rec for inclusive c14n <b>with</b> comments.
+    */
    public static final String ALGO_ID_C14N_WITH_COMMENTS = ALGO_ID_C14N_OMIT_COMMENTS + "#WithComments";
+   /**
+    * The URL defined in XML-SEC Rec for exclusive c14n <b>without</b> comments.
+    */
    public static final String ALGO_ID_C14N_EXCL_OMIT_COMMENTS = "http://www.w3.org/2001/10/xml-exc-c14n#";
+   /**
+    * The URL defined in XML-SEC Rec for exclusive c14n <b>with</b> comments.
+    */
    public static final String ALGO_ID_C14N_EXCL_WITH_COMMENTS = ALGO_ID_C14N_EXCL_OMIT_COMMENTS + "WithComments";
 
    static boolean _alreadyInitialized = false;
@@ -100,7 +113,7 @@ public class Canonicalizer {
     * Method getInstance
     *
     * @param algorithmURI
-    *
+    * @return a Conicicalizer instance ready for the job
     * @throws InvalidCanonicalizerException
     */
    public static final Canonicalizer getInstance(String algorithmURI)
@@ -137,7 +150,7 @@ public class Canonicalizer {
    /**
     * Method getURI
     *
-    *
+    * @return the URI defined for this c14n instance.
     */
    public final String getURI() {
       return this.canonicalizerSpi.engineGetURI();
@@ -146,7 +159,7 @@ public class Canonicalizer {
    /**
     * Method getIncludeComments
     *
-    *
+    * @return true if the c14n respect the comments.
     */
    public boolean getIncludeComments() {
       return this.canonicalizerSpi.engineGetIncludeComments();
@@ -158,7 +171,7 @@ public class Canonicalizer {
     * wrapped with a <CODE>&gt;a&lt;...&gt;/a&lt;</CODE>.
     *
     * @param inputBytes
-    *
+    * @return the result of the conicalization.
     * @throws CanonicalizationException
     * @throws java.io.IOException
     * @throws javax.xml.parsers.ParserConfigurationException
@@ -214,7 +227,8 @@ public class Canonicalizer {
    /**
     * Canonicalizes the subtree rooted by <CODE>node</CODE>.
     *
-    * @param node
+    * @param node The node to canicalize
+    * @return the result of the c14n.
     *
     * @throws CanonicalizationException
     */
@@ -228,7 +242,7 @@ public class Canonicalizer {
     *
     * @param node
     * @param inclusiveNamespaces
-    *
+    * @return the result of the c14n.
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeSubtree(Node node, String inclusiveNamespaces)
@@ -242,7 +256,7 @@ public class Canonicalizer {
     * as a list of XPath nodes, not as a list of subtrees.
     *
     * @param xpathNodeSet
-    *
+    * @return the result of the c14n.
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeXPathNodeSet(NodeList xpathNodeSet)
@@ -256,7 +270,7 @@ public class Canonicalizer {
     *
     * @param xpathNodeSet
     * @param inclusiveNamespaces
-    *
+    * @return the result of the c14n.
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeXPathNodeSet(
@@ -270,7 +284,7 @@ public class Canonicalizer {
     * Canonicalizes an XPath node set.
     *
     * @param xpathNodeSet
-    *
+    * @return the result of the c14n.
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeXPathNodeSet(Set xpathNodeSet)
@@ -283,7 +297,7 @@ public class Canonicalizer {
     *
     * @param xpathNodeSet
     * @param inclusiveNamespaces
-    *
+    * @return the result of the c14n.
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeXPathNodeSet(
@@ -304,9 +318,9 @@ public class Canonicalizer {
 
    /**
     * Method getImplementingClass
-    *
+    * 
     * @param URI
-    *
+    * @return the name of the class that implements the give URI
     */
    private static String getImplementingClass(String URI) {
 

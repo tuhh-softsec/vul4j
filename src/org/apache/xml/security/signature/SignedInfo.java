@@ -31,12 +31,10 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
@@ -117,7 +115,13 @@ public class SignedInfo extends Manifest {
          XMLUtils.addReturnToElement(this._constructionElement);
       }
    }
-
+   
+   /**
+    * @param doc
+    * @param SignatureMethodElem
+    * @param CanonicalizationMethodElem
+    * @throws XMLSecurityException
+    */
    public SignedInfo(
            Document doc, Element SignatureMethodElem, Element CanonicalizationMethodElem)
               throws XMLSecurityException {
@@ -223,13 +227,12 @@ public class SignedInfo extends Manifest {
     *
     * @return the canonicalization result octedt stream of <code>SignedInfo</code> element
     * @throws CanonicalizationException
-    * @throws IOException
     * @throws InvalidCanonicalizerException
     * @throws XMLSecurityException
     */
    public byte[] getCanonicalizedOctetStream()
            throws CanonicalizationException, InvalidCanonicalizerException,
-                  IOException, XMLSecurityException {
+                 XMLSecurityException {
 
       if ((this._c14nizedBytes == null)
               /*&& (this._state == ElementProxy.MODE_SIGN)*/) {
@@ -255,28 +258,12 @@ public class SignedInfo extends Manifest {
     */
    public String getCanonicalizationMethodURI() {
 
-      NodeList children = this._constructionElement.getChildNodes();
-
-      for (int i = 0; i < children.getLength(); i++) {
-         Node n = children.item(i);
-
-         if (n.getNodeType() == Node.ELEMENT_NODE) {
-            boolean found = true;
-
-            try {
-               XMLUtils.guaranteeThatElementInSignatureSpace((Element) n,
-                       Constants._TAG_CANONICALIZATIONMETHOD);
-            } catch (XMLSecurityException ex) {
-               found = false;
-            }
-
-            if (found) {
-               return ((Element) n).getAttributeNS(null, Constants._ATT_ALGORITHM);
-            }
-         }
-      }
-
-      return null;
+    Element el= XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+     Constants._TAG_CANONICALIZATIONMETHOD,0);
+     if (el==null) {
+     	return null;
+     }
+     return el.getAttributeNS(null, Constants._ATT_ALGORITHM);    
    }
 
    /**
@@ -297,35 +284,12 @@ public class SignedInfo extends Manifest {
 
    /**
     * Method getSignatureMethodElement
-    *
+    * @return gets The SignatureMethod Node.   
     *
     */
    public Element getSignatureMethodElement() {
-
-      NodeList children = this._constructionElement.getChildNodes();
-
-      for (int i = 0; i < children.getLength(); i++) {
-         Node n = children.item(i);
-
-         log.debug("Looking for SignatureMethodURI in " + n);
-
-         if (n.getNodeType() == Node.ELEMENT_NODE) {
-            boolean found = true;
-
-            try {
-               XMLUtils.guaranteeThatElementInSignatureSpace((Element) n,
-                       Constants._TAG_SIGNATUREMETHOD);
-            } catch (XMLSecurityException ex) {
-               found = false;
-            }
-
-            if (found) {
-               return (Element) n;
-            }
-         }
-      }
-
-      return null;
+      return XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+        Constants._TAG_SIGNATUREMETHOD,0);
    }
 
    /**
@@ -333,11 +297,10 @@ public class SignedInfo extends Manifest {
     * byte[] array password.
     *
     * @param secretKeyBytes
-    *
-    * @throws XMLSecurityException
+    * @return the secret key for the SignedInfo element.
     */
    public SecretKey createSecretKey(byte[] secretKeyBytes)
-           throws XMLSecurityException {
+   {
 
       return new SecretKeySpec(secretKeyBytes,
                                this._signatureAlgorithm
@@ -346,7 +309,7 @@ public class SignedInfo extends Manifest {
 
    /**
     * Method getBaseLocalName
-    *
+    * @inheritDoc
     *
     */
    public String getBaseLocalName() {

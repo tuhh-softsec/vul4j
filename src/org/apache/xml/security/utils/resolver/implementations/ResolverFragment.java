@@ -18,19 +18,13 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.IdResolver;
-import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xml.utils.URI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 
@@ -54,14 +48,13 @@ public class ResolverFragment extends ResourceResolverSpi {
     *
     * Wird das gleiche Dokument referenziert?
     * Wird ein anderes Dokument referenziert?
-    *
+    * @inheritDoc
     * @param uri
     * @param BaseURI
     *
-    * @throws ResourceResolverException
     */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
-           throws ResourceResolverException {
+   {
 
       String uriNodeValue = uri.getNodeValue();
       Document doc = uri.getOwnerDocument();
@@ -96,7 +89,7 @@ public class ResolverFragment extends ResourceResolverSpi {
       }
 
       //Set resultSet = dereferenceSameDocumentURI(selectedElem);
-      XMLSignatureInput result = new XMLSignatureInput(selectedElem);
+      XMLSignatureInput result = new XMLSignatureInput(selectedElem,new CachedXPathAPIHolder());
       result.setExcludeComments(true);
 
       //log.debug("We return a nodeset with " + resultSet.size() + " nodes");
@@ -115,7 +108,7 @@ public class ResolverFragment extends ResourceResolverSpi {
 
    /**
     * Method engineCanResolve
-    *
+    * @inheritDoc
     * @param uri
     * @param BaseURI
     *

@@ -37,7 +37,6 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPathFilterCHGPContainer;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -60,9 +59,13 @@ public class TransformXPathFilterCHGP extends TransformSpi {
       Transforms.TRANSFORM_XPATHFILTERCHGP;
 
    //J-
+   /** @inheritDoc */
    public boolean wantsOctetStream ()   { return false; }
+   /** @inheritDoc */
    public boolean wantsNodeSet ()       { return true; }
+   /** @inheritDoc */
    public boolean returnsOctetStream () { return false; }
+   /** @inheritDoc */
    public boolean returnsNodeSet ()     { return true; }
    //J+
    //J-
@@ -96,7 +99,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
 
    /**
     * Method engineGetURI
-    *
+    * @inheritDoc
     *
     */
    protected String engineGetURI() {
@@ -105,7 +108,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
 
    /**
     * Method enginePerformTransform
-    *
+    * @inheritDoc
     * @param input
     *
     * @throws TransformationException
@@ -117,9 +120,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
          this.inputSet = input.getNodeSet();
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
-         CachedXPathAPI myXPathAPI =
-            new CachedXPathAPI(input.getCachedXPathAPI());
+            new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());         
 
          if (this.inputSet.size() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
@@ -131,15 +132,10 @@ public class TransformXPathFilterCHGP extends TransformSpi {
          Document doc = transformElement.getOwnerDocument();
 
          // create the XPathFilterCHGPContainer so that we easily can read it out
-         Element nscontext =
-            XMLUtils.createDSctx(doc, "dsig-xpathalt",
-                                 Transforms.TRANSFORM_XPATHFILTERCHGP);
-         Element xpathElement =
-            (Element) myXPathAPI
-               .selectSingleNode(transformElement, "./dsig-xpathalt:"
-                                 + XPathFilterCHGPContainer
-                                    ._TAG_XPATHCHGP, nscontext);
-
+         Element xpathElement = XMLUtils.selectNode(transformElement.getFirstChild(),
+                Transforms.TRANSFORM_XPATHFILTERCHGP,
+                XPathFilterCHGPContainer._TAG_XPATHCHGP,0);
+            
          if (xpathElement == null) {
             Object exArgs[] = { "{" + TransformXPathFilterCHGP.implementedTransformURI + "}XPath",
                                 "Transform" };
@@ -171,7 +167,8 @@ public class TransformXPathFilterCHGP extends TransformSpi {
 
             if (includeButSearchCtxNode != null) {
                includeButSearchNodes = xPathFuncHereAPI.selectNodeList(doc,
-                       includeButSearchCtxNode, xpathContainer.getElement());
+                       includeButSearchCtxNode,CachedXPathFuncHereAPI.getStrFromNode(includeButSearchCtxNode),
+                       xpathContainer.getElement());
             }
 
             this.includeSearchSet = nodeListToSet(includeButSearchNodes);
@@ -186,7 +183,8 @@ public class TransformXPathFilterCHGP extends TransformSpi {
 
             if (excludeButSearchCtxNode != null) {
                excludeButSearchNodes = xPathFuncHereAPI.selectNodeList(doc,
-                       excludeButSearchCtxNode, xpathContainer.getElement());
+                       excludeButSearchCtxNode,
+                       CachedXPathFuncHereAPI.getStrFromNode(excludeButSearchCtxNode),xpathContainer.getElement());
             }
 
             this.excludeSearchSet = nodeListToSet(excludeButSearchNodes);
@@ -200,7 +198,9 @@ public class TransformXPathFilterCHGP extends TransformSpi {
 
             if (excludeCtxNode != null) {
                excludeNodes = xPathFuncHereAPI.selectNodeList(doc,
-                       excludeCtxNode, xpathContainer.getElement());
+                       excludeCtxNode, 
+                       CachedXPathFuncHereAPI.getStrFromNode(excludeCtxNode),
+                       xpathContainer.getElement());
             }
 
             this.excludeSet = nodeListToSet(excludeNodes);
@@ -218,7 +218,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
 
          {
             DocumentTraversal dt = ((DocumentTraversal) inputDoc);
-            Node rootNode = (Node) inputDoc;
+            Node rootNode =  inputDoc;
 
             // we accept all nodes
             NodeFilter nodefilter = new AlwaysAcceptNodeFilter();
@@ -332,14 +332,15 @@ public class TransformXPathFilterCHGP extends TransformSpi {
     * Copies all nodes from a given {@link NodeList} into a {@link Set}
     *
     * @param nl
-    *
+    * @return 
     */
    private static Set nodeListToSet(NodeList nl) {
 
       Set set = new HashSet();
-      int iMax = ((nl == null)
-                  ? 0
-                  : nl.getLength());
+      if (nl==null) {
+          return set; 
+      }
+      int iMax = nl.getLength();
 
       for (int i = 0; i < iMax; i++) {
          set.add(nl.item(i));
@@ -359,7 +360,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
        * Method acceptNode
        *
        * @param n
-       *
+       * @inheritDoc
        */
       public short acceptNode(Node n) {
          return NodeFilter.FILTER_ACCEPT;

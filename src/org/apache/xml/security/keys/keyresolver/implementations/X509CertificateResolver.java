@@ -22,18 +22,15 @@ package org.apache.xml.security.keys.keyresolver.implementations;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
-import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
-import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -53,7 +50,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
 
    /**
     * Method engineCanResolve
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
@@ -64,16 +61,13 @@ public class X509CertificateResolver extends KeyResolverSpi {
 
       log.debug("Can I resolve " + element.getTagName() + "?");
 
-      try {
-         XMLUtils.guaranteeThatElementInSignatureSpace(element,
-                 Constants._TAG_X509DATA);
-      } catch (XMLSignatureException ex) {
+      if (!XMLUtils.elementIsInSignatureSpace(element,
+                 Constants._TAG_X509DATA)) {
          log.debug("I can't");
 
          return false;
       }
-
-         Element nscontext = XMLUtils.createDSctx(element.getOwnerDocument(), "ds", Constants.SignatureSpecNS);
+         
 
          this._x509CertKeyElements = XMLUtils.selectDsNodes(element.getFirstChild(),
                  Constants._TAG_X509CERTIFICATE);
@@ -95,7 +89,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
 
    /**
     * Method engineResolvePublicKey
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
@@ -118,7 +112,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
 
    /**
     * Method engineResolveX509Certificate
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
@@ -169,16 +163,15 @@ public class X509CertificateResolver extends KeyResolverSpi {
 
    /**
     * Method engineResolveSecretKey
-    *
+    * @inheritDoc
     * @param element
     * @param BaseURI
     * @param storage
     *
-    * @throws KeyResolverException
     */
    public javax.crypto.SecretKey engineResolveSecretKey(
            Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
+   {
       return null;
    }
 }
