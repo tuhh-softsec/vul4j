@@ -32,8 +32,7 @@ import org.w3c.dom.Attr;
  * During reference validation, we have to retrieve resources from somewhere.
  * This is done by retrieving a Resolver. The resolver needs two arguments: The
  * URI in which the link to the new resource is defined and the BaseURI of the
- * file/entity in which the URI occurs (the BaseURI is the same as the SystemId
- * for {@link javax.xml.transform.stream.StreamSource#getSystemId}.
+ * file/entity in which the URI occurs (the BaseURI is the same as the SystemId.
  *
  * <UL xml:lang="DE" LANG="DE">
  * <LI> Verschiedene Implementierungen k??nnen sich als Resolver registrieren.
