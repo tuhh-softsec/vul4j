@@ -394,12 +394,15 @@ public class Base64 {
          encoded.append(encodeFullBlock(raw, i));
       }
 
-      if (outLen >= wrap) {    //this will produce an extra newline if needed !? Sun had it this way...
-         encoded.append(LINE_SEPARATOR);
-      }
-
       if (len3 < raw.length) {
-         encoded.append(encodeBlock(raw, len3));
+
+		  // BFL - Modified 21/2/2004.  
+		  // Only add NL if we are appending more data
+		  if (outLen >= wrap) {
+			  encoded.append(LINE_SEPARATOR);
+		  }
+
+		  encoded.append(encodeBlock(raw, len3));
       }
 
       return encoded.toString();
