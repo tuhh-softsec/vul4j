@@ -1,0 +1,130 @@
+From: Christian Geuer-Pollmann <geuer-pollmann@nue.et-inf.uni-siegen.de>
+Date: Tue, 12 Feb 2002 17:24:17 +0100
+Subject: Announcement: Apache XML Security v1.0.0
+
+XML Security v1.0.0 Released
+---------------------
+  We are proud to announce the 1.0.0 final
+  release of the XML Security package.
+
+About XML Security
+------------------
+  The XML Security project is an implementation of
+  security related XML standards. Currently, it includes
+  implementations of W3C recommendations "Canonical XML"
+  and "XML Signature Syntax and Processing".
+
+  Basically, this means that you can use this software
+  for creating and verifying digital signatures which
+  are expressed in XML and sign both XML and/or arbitrary
+  contents.
+
+For more information about the XML Security project, please go to
+http://xml.apache.org/security/
+
+For more information about XML Signature, go to
+http://www.w3.org/Signature/
+
+For pointers about XML Security in general, please go to
+http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/xml_security.html
+
+---------------------------------------------------------
+
+Downloads for XML Security v1.0.0 are available at
+http://xml.apache.org/security/dist/
+
+The source distibution is available at
+http://xml.apache.org/security/dist/xml-security-src-1_0_0.zip (1.0 MB)
+http://xml.apache.org/security/dist/xml-security-src-1_0_0.zip.sig
+
+The binary distibution is available at
+http://xml.apache.org/security/dist/xml-security-bin-1_0_0.zip (3.1 MB)
+http://xml.apache.org/security/dist/xml-security-bin-1_0_0.zip.sig
+
+---------------------------------------------------------
+
+The source distibution includes
+ - JAVA source code for the library itself
+ - JAVA unit test code for the library
+ - JAVA sample code for the library
+ - test vectors for the unit tests
+
+The source distibution does _not_ include
+ - JavaDocs
+ - the required (binary JAR) libraries.
+   The libraries are available under http://xml.apache.org/ .
+   It requires
+   - Jakarta ANT as build/make tool
+     http://jakarta.apache.org/builds/jakarta-ant/release/v1.4.1/bin/jakarta-ant
+-1.4.1-bin.zip
+   - Apache Xerces v2.0.0
+     http://xml.apache.org/dist/xerces-j/Xerces-J-bin.2.0.0.zip
+   - Apache Xalan v2.2.0
+     http://xml.apache.org/dist/xalan-j/xalan-j_2_2-bin.zip
+   - Jakarta Log4J
+     http://jakarta.apache.org/log4j/jakarta-log4j-1.2beta2.zip
+   - JUnit 3.7
+     http://download.sourceforge.net/junit/junit3.7.zip
+   - A JCE Cryptographic Service Provider.
+     The distibution uses the BounceCastle JCE as a default provider.
+     When you first start ant for compiling, the JCE JAR is downloaded
+     from http://www.bouncycastle.org/ . This hook is included to
+     circumvent US export restrictions.
+
+---------------------------------------------------------
+
+The binary distibution includes
+ - JAVA sample code for the library
+ - test vectors for the unit tests
+ - Generated JavaDocs
+ - The complete library compiled
+ - All required libaries (but not the JCE which is downloaded online).
+
+---------------------------------------------------------
+
+Download of the JCE
+
+The ant make tools initiates an automated download of the BouncyCastle JCE. 
+The file is downloaded into the libs/ directory and a "bc-" is prepended 
+to the filename. This is done because we want the provider name (bc means 
+BouncyCastle) being visible in the JAR's filename. 
+
+If you are a little paranoid like all security people and don't want ant to 
+make automated downloads or your firewall doesn't permit it, look in the 
+./build.xml file for the properties called
+
+<property 
+     name="jce.download.file" 
+     value="jce-jdk13-112.jar" />
+<property 
+     name="jce.download" 
+     value="http://www.bouncycastle.org/download/${jce.download.file}" />
+<property 
+     name="lib.jce"      
+     value="${libs}/bc-${jce.download.file}" />
+
+Here you can see that the file 
+
+http://www.bouncycastle.org/download/jce-jdk13-112.jar
+
+is downloaded and stored in the location 
+
+libs/bc-jce-jdk13-112.jar
+
+If you do this by hand (pointing you favourite web browser and download it 
+yourself), simply put a "bc-" in front of the filename and put it to ./libs/, 
+then ant won't try to make a download.
+
+---------------------------------------------------------
+
+Questions about the software:
+mailto:security-dev@xml.apache.org
+
+Comments:
+mailto:geuer-pollmann@nue.et-inf.uni-siegen.de
+
+---------------------------------------------------------
+
+Wish you a pleasant day, have fun with the software and best regards,
+Christian Geuer-Pollmann
+
