@@ -93,10 +93,6 @@ import org.apache.xml.security.utils.I18n;
  */
 public class FuncHere extends Function {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(FuncHere.class.getName());
-
    /**
     * The here function returns a node-set containing the attribute or
     * processing instruction node or the parent element of the text node
@@ -119,12 +115,6 @@ public class FuncHere extends Function {
 
       int xpathOwnerNodeDTM = xctxt.getDTMHandleFromNode(xpathOwnerNode);
 
-      /*
-      cat.debug("xpathOwnerNode.getNodeType() = "
-                + XMLUtils.getNodeTypeString(xpathOwnerNode.getNodeType()));
-      cat.debug("xpathOwnerNode.getNodeValue() = "
-                + xpathOwnerNode.getNodeValue());
-      */
       int currentNode = xctxt.getCurrentNode();
       DTM dtm = xctxt.getDTM(currentNode);
       int docContext = dtm.getDocument();
@@ -160,7 +150,6 @@ public class FuncHere extends Function {
             hereNode = xpathOwnerNodeDTM;
 
             nodeSet.addNode(hereNode);
-            cat.debug("here() in Attribute");
 
             break;
          }
@@ -169,7 +158,6 @@ public class FuncHere extends Function {
             hereNode = xpathOwnerNodeDTM;
 
             nodeSet.addNode(hereNode);
-            cat.debug("here() in ProcessingInstruction");
 
             break;
          }
@@ -178,7 +166,6 @@ public class FuncHere extends Function {
             // text node that directly bears the XPath expression
             hereNode = dtm.getParent(xpathOwnerNodeDTM);
 
-            cat.debug("here() in Text");
             nodeSet.addNode(hereNode);
 
             break;
