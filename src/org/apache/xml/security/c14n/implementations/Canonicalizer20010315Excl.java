@@ -726,19 +726,24 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          if (name.equals("xmlns") && value.equals("")) {
 
             // undeclare default namespace
-            inscopeNamespaces.remove("xmlns");
+            if (this._xpathNodeSet.contains(currentAttr))
+               inscopeNamespaces.remove("xmlns");
          } else if (name.startsWith("xmlns") &&!value.equals("")) {
 
             // update inscope namespaces
-            inscopeNamespaces.put(name, value);
+            if (this._xpathNodeSet.contains(currentAttr))
+               inscopeNamespaces.put(name, value);
          } else if (name.startsWith("xml:")) {
 
             // update xml:blah features
-            inscopeNamespaces.put(name, value);
+            if (this._xpathNodeSet.contains(currentAttr))
+               inscopeNamespaces.put(name, value);
          } else {
 
             // output regular attributes
-            result.add(currentAttr);
+            if (this._xpathNodeSet.contains(currentAttr)) {
+               result.add(currentAttr);
+            }
          }
       }
 
@@ -841,12 +846,6 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
             ;
          }
       }
-
-      /*
-      if (inscopeNamespaces.containsKey("xmlns") && inscopeNamespaces.get("xmlns").equals("")) {
-         inscopeNamespaces.remove("xmlns");
-      }
-      */
    }
 
    /**
@@ -1127,71 +1126,5 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
       }
 
       return result;
-   }
-
-   /**
-    * Method main
-    *
-    * @param args
-    * @throws Exception
-    */
-   public static void main_nodeset(String[] args) throws Exception {
-
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-      dbf.setNamespaceAware(true);
-
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc =
-         db.parse("data/org/apache/xml/security/c14n/inExcl/example2_2_2.xml");
-      CachedXPathAPI xpathAPI = new CachedXPathAPI();
-      Element resolver = doc.createElement("r");
-
-      resolver.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:n1",
-                              "http://example.net");
-
-      NodeList nodes = xpathAPI.selectNodeList(
-         doc, "(//. | //@* | //namespace::*)[ancestor-or-self::n1:elem2]",
-         resolver);
-      Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
-
-      /*
-      System.out.println("##################################");
-      System.out.println(new String(c.engineCanonicalizeXPathNodeSet(nodes)));
-      System.out.println("##################################");
-      System.out.println(
-         new String(
-            JavaUtils.getBytesFromFile(
-               "data/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml")));
-      System.out.println("##################################");
-      */
-   }
-
-   /**
-    * Method main
-    *
-    * @param args
-    * @throws Exception
-    */
-   public static void main(String[] args) throws Exception {
-
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-      dbf.setNamespaceAware(true);
-
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc = db.parse("example2_2_2.xml");
-      CachedXPathAPI xpathAPI = new CachedXPathAPI();
-      Element resolver = doc.createElement("resolver");
-
-      resolver.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:n1",
-                              "http://example.net");
-
-      NodeList nodes = xpathAPI.selectNodeList(
-         doc, "(//. | //@* | //namespace::*)[ancestor-or-self::n1:elem2]",
-         resolver);
-      Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
-
-      System.out.println(new String(c.engineCanonicalizeXPathNodeSet(nodes)));
    }
 }

@@ -143,7 +143,10 @@ public class Manifest extends SignatureElementProxy {
       }
 
       // create Vector
-      this._references = new Vector();
+      this._references = new Vector(le);
+      for (int i=0; i<le; i++) {
+         this._references.add(null);
+      }
    }
 
    /**
@@ -242,7 +245,7 @@ public class Manifest extends SignatureElementProxy {
          // we already have real objects
          return (Reference) this._references.elementAt(i);
       } else {
-         if (this._references.size() <= i) {
+         if (this._references.elementAt(i) == null) {
 
             // not yet constructed, so _we_ have to
             Element refElem = super.getChildElementLocalName(i,
@@ -250,7 +253,7 @@ public class Manifest extends SignatureElementProxy {
                                  Constants._TAG_REFERENCE);
             Reference ref = new Reference(refElem, this._baseURI, this);
 
-            this._references.add(i, ref);
+            this._references.set(i, ref);
          }
 
          return (Reference) this._references.elementAt(i);

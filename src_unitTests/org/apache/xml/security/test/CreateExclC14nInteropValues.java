@@ -133,8 +133,8 @@ public class CreateExclC14nInteropValues {
                "self::Parent or (parent::Parent and not(self::Child)) or self::GrandChild or parent::GrandChild");
             tf.addTransform(Transforms.TRANSFORM_XPATH, xc.getElement());
          }
-         tf.addTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 
+         tf.addTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
          xmlSignature.addDocument("iaikTests.example1.xml", tf);
       }
 
@@ -253,6 +253,259 @@ public class CreateExclC14nInteropValues {
          xmlSignature.addDocument("iaikTests.example4.xml", tf);
       }
 
+      {
+
+         // ref 8
+         ObjectContainer obj = new ObjectContainer(doc);
+         String id = "object1";
+
+         obj.setId(id);
+
+         String xmlStr = "" + "<included    xml:lang='de'>" + "\n"
+                         + "<notIncluded xml:lang='de'>" + "\n"
+                         + "<notIncluded xml:lang='uk'>" + "\n"
+                         + "<included                 >" + "\n" + "</included>"
+                         + "\n" + "</notIncluded>" + "\n" + "</notIncluded>"
+                         + "\n" + "</included>";
+         Document importDoc =
+            db.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         obj.getElement()
+            .appendChild(doc.importNode(importDoc.getDocumentElement(), true));
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         xmlSignature.appendObject(obj);
+
+         // ref apache_8
+         Transforms tf = new Transforms(doc);
+
+         {
+            XPathContainer xc = new XPathContainer(doc);
+
+            xc.setXPath("self::node()[local-name()='included']");
+            tf.addTransform(Transforms.TRANSFORM_XPATH, xc.getElement());
+         }
+
+         xmlSignature.addDocument("#" + id, tf);
+      }
+
+      {
+
+         // ref 9
+         ObjectContainer obj = new ObjectContainer(doc);
+         String id = "object2";
+
+         obj.setId(id);
+
+         String xmlStr = "" + "<included    xml:lang='uk'>" + "\n"
+                         + "<notIncluded xml:lang='de'>" + "\n"
+                         + "<notIncluded xml:lang='uk'>" + "\n"
+                         + "<included                 >" + "\n" + "</included>"
+                         + "\n" + "</notIncluded>" + "\n" + "</notIncluded>"
+                         + "\n" + "</included>";
+         Document importDoc =
+            db.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         obj.getElement()
+            .appendChild(doc.importNode(importDoc.getDocumentElement(), true));
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         xmlSignature.appendObject(obj);
+
+         // ref apache_8
+         Transforms tf = new Transforms(doc);
+
+         {
+            XPathContainer xc = new XPathContainer(doc);
+
+            xc.setXPath("self::node()[local-name()='included']");
+            tf.addTransform(Transforms.TRANSFORM_XPATH, xc.getElement());
+         }
+
+         xmlSignature.addDocument("#" + id, tf);
+      }
+
+      {
+
+         // ref 10
+         ObjectContainer obj = new ObjectContainer(doc);
+         String id = "object3";
+
+         obj.setId(id);
+
+         String xmlStr = "" + "<included    xml:lang='de'>" + "\n"
+                         + "<notIncluded xml:lang='de'>" + "\n"
+                         + "<notIncluded xml:lang='uk'>" + "\n"
+                         + "<included    xml:lang='de'>" + "\n" + "</included>"
+                         + "\n" + "</notIncluded>" + "\n" + "</notIncluded>"
+                         + "\n" + "</included>";
+         Document importDoc =
+            db.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         obj.getElement()
+            .appendChild(doc.importNode(importDoc.getDocumentElement(), true));
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         xmlSignature.appendObject(obj);
+
+         // ref apache_8
+         Transforms tf = new Transforms(doc);
+
+         {
+            XPathContainer xc = new XPathContainer(doc);
+
+            xc.setXPath("self::node()[local-name()='included']");
+            tf.addTransform(Transforms.TRANSFORM_XPATH, xc.getElement());
+         }
+
+         xmlSignature.addDocument("#" + id, tf);
+      }
+
+      {
+
+         // ref 11
+         ObjectContainer obj = new ObjectContainer(doc);
+         String id = "object4";
+
+         obj.setId(id);
+
+         String xmlStr = "" + "<included    xml:lang='de'>" + "\n"
+                         + "<included    xml:lang='de'>" + "\n"
+                         + "<notIncluded xml:lang='uk'>" + "\n"
+                         + "<included                 >" + "\n" + "</included>"
+                         + "\n" + "</notIncluded>" + "\n" + "</included>"
+                         + "\n" + "</included>";
+         Document importDoc =
+            db.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         obj.getElement()
+            .appendChild(doc.importNode(importDoc.getDocumentElement(), true));
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         xmlSignature.appendObject(obj);
+
+         Transforms tf = new Transforms(doc);
+
+         {
+            XPathContainer xc = new XPathContainer(doc);
+
+            xc.setXPath("self::node()[local-name()='included']");
+            tf.addTransform(Transforms.TRANSFORM_XPATH, xc.getElement());
+         }
+
+         xmlSignature.addDocument("#" + id, tf);
+      }
+
+      {
+
+         // ref 12
+         ObjectContainer obj = new ObjectContainer(doc);
+         String id = "object5";
+
+         obj.setId(id);
+
+         String xmlStr = "" + "<included                         xml:lang='de'>"
+                         + "\n"
+                         + "<included                         xml:lang='de'>"
+                         + "\n"
+                         + "<notIncluded xml:space='preserve' xml:lang='uk'>"
+                         + "\n" + "<included                 >" + "\n"
+                         + "</included>" + "\n" + "</notIncluded>" + "\n"
+                         + "</included>" + "\n" + "</included>";
+         Document importDoc =
+            db.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         obj.getElement()
+            .appendChild(doc.importNode(importDoc.getDocumentElement(), true));
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         xmlSignature.appendObject(obj);
+
+         Transforms tf = new Transforms(doc);
+
+         {
+            XPathContainer xc = new XPathContainer(doc);
+
+            xc.setXPath("self::node()[local-name()='included']");
+            tf.addTransform(Transforms.TRANSFORM_XPATH, xc.getElement());
+         }
+
+         xmlSignature.addDocument("#" + id, tf);
+      }
+
+      {
+
+         // ref 13
+         ObjectContainer obj = new ObjectContainer(doc);
+         String id = "object6";
+
+         obj.setId(id);
+
+         String xmlStr = "" + "<included   xml:space='preserve'  xml:lang='de'>"
+                         + "\n"
+                         + "<included                         xml:lang='de'>"
+                         + "\n"
+                         + "<notIncluded                      xml:lang='uk'>"
+                         + "\n" + "<included>" + "\n" + "</included>" + "\n"
+                         + "</notIncluded>" + "\n" + "</included>" + "\n"
+                         + "</included>";
+         Document importDoc =
+            db.parse(new ByteArrayInputStream(xmlStr.getBytes()));
+
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         obj.getElement()
+            .appendChild(doc.importNode(importDoc.getDocumentElement(), true));
+         obj.getElement().appendChild(doc.createTextNode("\n"));
+         xmlSignature.appendObject(obj);
+
+         Transforms tf = new Transforms(doc);
+
+         {
+            XPathContainer xc = new XPathContainer(doc);
+
+            xc.setXPath("self::node()[local-name()='included']");
+            tf.addTransform(Transforms.TRANSFORM_XPATH, xc.getElement());
+         }
+
+         xmlSignature.addDocument("#" + id, tf);
+      }
+
+      {
+
+         // ref 13b
+         String id = "object6";
+         Transforms tf = new Transforms(doc);
+
+         {
+            XPathContainer xc = new XPathContainer(doc);
+
+            xc.setXPath("self::node()[local-name()='included']");
+            tf.addTransform(Transforms.TRANSFORM_XPATH, xc.getElement());
+            tf.addTransform(Transforms.TRANSFORM_C14N_OMIT_COMMENTS);
+         }
+
+         xmlSignature.addDocument("#" + id, tf);
+      }
+
+      {
+
+         // ref 13c
+         String id = "object6";
+         Transforms tf = new Transforms(doc);
+
+         {
+            XPathContainer xc = new XPathContainer(doc);
+
+            xc.setXPath("self::node()[local-name()='included']");
+            tf.addTransform(Transforms.TRANSFORM_XPATH, xc.getElement());
+            tf.addTransform(Transforms.TRANSFORM_C14N_OMIT_COMMENTS);
+            tf.addTransform(Transforms.TRANSFORM_C14N_OMIT_COMMENTS);
+         }
+
+         xmlSignature.addDocument("#" + id, tf);
+         // xmlSignature.addDocument("#" + id, tf, org.apache.xml.security.algorithms.MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1, "ref13c", null);
+      }
+
       String secretKey = "secret";
 
       xmlSignature.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
@@ -276,9 +529,15 @@ public class CreateExclC14nInteropValues {
                .getReferencedContentAfterTransformsItem(i).getBytes());
       }
 
-      XMLSignature s = new XMLSignature(doc.getDocumentElement(), signatureFile.toURL().toString());
-      boolean verify = s.checkSignatureValue(s.createSecretKey("secret".getBytes()));
+      XMLSignature s = new XMLSignature(doc.getDocumentElement(),
+                                        signatureFile.toURL().toString());
+      boolean verify =
+         s.checkSignatureValue(s.createSecretKey("secret".getBytes()));
+
       System.out.println("verify=" + verify);
 
+      System.out.println("");
+
+      XMLUtils.outputDOMc14nWithComments(doc, System.out);
    }
 }

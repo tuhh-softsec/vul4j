@@ -504,7 +504,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws SAXException
     * @throws TransformerException
     */
-   public static void testDefaultNamespaceOverridden()
+   public static void _testDefaultNamespaceOverridden()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -523,11 +523,11 @@ public class Canonicalizer20010315Test extends TestCase {
       dfactory.setNamespaceAware(true);
 
       DocumentBuilder db = dfactory.newDocumentBuilder();
-      org.xml.sax.EntityResolver resolver = new TestVectorResolver();
+      // org.xml.sax.EntityResolver resolver = new TestVectorResolver();
+      // db.setEntityResolver(resolver);
 
-      db.setEntityResolver(resolver);
-
-      Document doc = db.parse(resolver.resolveEntity(null, fileIn));
+      // Document doc = db.parse(resolver.resolveEntity(null, fileIn));
+      Document doc = db.parse(fileIn);
       Element nscontext = doc.createElement("container");
 
       nscontext.setAttribute("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
@@ -541,9 +541,9 @@ public class Canonicalizer20010315Test extends TestCase {
       Canonicalizer c14n =
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
       byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
-      InputStream refStream = resolver.resolveEntity(null,
-                                 fileRef).getByteStream();
-      byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
+      // InputStream refStream = resolver.resolveEntity(null, fileRef).getByteStream();
+      // byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
+      byte refBytes[] = JavaUtils.getBytesFromFile(fileRef);
       boolean equal = JavaUtils.binaryCompare(refBytes, c14nBytes);
 
       if (!equal) {
@@ -914,6 +914,32 @@ public class Canonicalizer20010315Test extends TestCase {
 
       String definedOutput = ""
          + "<included xml:lang=\"de\">"
+         + "<included>"
+         + "<included xml:lang=\"uk\" xml:space=\"preserve\">"
+         + "</included>"
+         + "</included>"
+         + "</included>";
+      //J+
+      assertTrue(doTestXMLAttributes(input, definedOutput, false));
+   }
+
+   public static void testXMLAttributes6()
+           throws IOException, FileNotFoundException, SAXException,
+                  ParserConfigurationException, CanonicalizationException,
+                  InvalidCanonicalizerException, TransformerException {
+      //J-
+      String input = ""
+         + "<included   xml:space='preserve'  xml:lang='de'>"
+         + "<included                         xml:lang='de'>"
+         + "<notIncluded                      xml:lang='uk'>"
+         + "<included>"
+         + "</included>"
+         + "</notIncluded>"
+         + "</included>"
+         + "</included>";
+
+      String definedOutput = ""
+         + "<included xml:lang=\"de\" xml:space=\"preserve\">"
          + "<included>"
          + "<included xml:lang=\"uk\" xml:space=\"preserve\">"
          + "</included>"

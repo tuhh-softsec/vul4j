@@ -1,9 +1,8 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -19,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -27,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -52,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European 
- * Commission in the <WebSig> project in the ISIS Programme. 
+ * The development of this software was partly funded by the European
+ * Commission in the <WebSig> project in the ISIS Programme.
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -76,6 +75,12 @@ import java.text.MessageFormat;
  */
 public class I18n {
 
+   /** Field NOT_INITIALIZED_MSG */
+   public static final String NOT_INITIALIZED_MSG =
+      "You must initialize the xml-security library correctly before you use it. "
+      + "Call the static method \"org.apache.xml.security.Init.init();\" to do that "
+      + "before you use any functionality from that library.";
+
    /** Field defaultLanguageCode */
    public static String defaultLanguageCode;    // will be set in static{} block
 
@@ -93,9 +98,14 @@ public class I18n {
 
    /** Field _countryCode */
    protected static String _countryCode = null;
-   
+
+   /**
+    * Constructor I18n
+    *
+    */
    private I18n() {
-     // we don't allow instantiation
+
+      // we don't allow instantiation
    }
 
    /**
@@ -140,11 +150,13 @@ public class I18n {
 
          return s;
       } catch (Throwable t) {
-         String s = "No message with ID \"" + msgID
-                    + "\" found in resource bundle \""
-                    + Constants.exceptionMessagesResourceBundleBase + "\"";
-
-         return s;
+         if (org.apache.xml.security.Init.isInitialized()) {
+            return "No message with ID \"" + msgID
+                   + "\" found in resource bundle \""
+                   + Constants.exceptionMessagesResourceBundleBase + "\"";
+         } else {
+            return I18n.NOT_INITIALIZED_MSG;
+         }
       }
    }
 
@@ -165,14 +177,16 @@ public class I18n {
 
          return s;
       } catch (Throwable t) {
-         String s = "No message with ID \"" + msgID
-                    + "\" found in resource bundle \""
-                    + Constants.exceptionMessagesResourceBundleBase
-                    + "\". Original Exception was a "
-                    + originalException.getClass().getName() + " and message "
-                    + originalException.getMessage();
-
-         return s;
+         if (org.apache.xml.security.Init.isInitialized()) {
+            return "No message with ID \"" + msgID
+                   + "\" found in resource bundle \""
+                   + Constants.exceptionMessagesResourceBundleBase
+                   + "\". Original Exception was a "
+                   + originalException.getClass().getName() + " and message "
+                   + originalException.getMessage();
+         } else {
+            return I18n.NOT_INITIALIZED_MSG;
+         }
       }
    }
 
@@ -191,11 +205,13 @@ public class I18n {
 
          return s;
       } catch (Throwable t) {
-         String s = "No message with ID \"" + msgID
-                    + "\" found in resource bundle \""
-                    + Constants.exceptionMessagesResourceBundleBase + "\"";
-
-         return s;
+         if (org.apache.xml.security.Init.isInitialized()) {
+            return "No message with ID \"" + msgID
+                   + "\" found in resource bundle \""
+                   + Constants.exceptionMessagesResourceBundleBase + "\"";
+         } else {
+            return I18n.NOT_INITIALIZED_MSG;
+         }
       }
    }
 

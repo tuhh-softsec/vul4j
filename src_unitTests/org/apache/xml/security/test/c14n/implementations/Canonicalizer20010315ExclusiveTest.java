@@ -123,10 +123,10 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       junit.textui.TestRunner.main(testCaseName);
    }
 
-   /** Field dbf           */
+   /** Field dbf */
    DocumentBuilderFactory dbf;
 
-   /** Field db           */
+   /** Field db */
    DocumentBuilder db;
 
    /**
@@ -165,10 +165,10 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
                   org.apache.xml.security.keys.keyresolver
                      .KeyResolverException {
 
+      File fileIn = new File(
+         "data/ie/baltimore/merlin-examples/ec-merlin-iaikTests-two/signature.xml");
 
-      File fileIn = new File("data/ie/baltimore/merlin-examples/ec-merlin-iaikTests-two/signature.xml");
       // File fileIn = new File("signature.xml");
-
       assertTrue("file exists", fileIn.exists());
 
       Document doc = this.db.parse(fileIn);
@@ -188,16 +188,7 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
             xmlSignature.getSignedInfo().getVerificationResult(i);
 
          if (singleResult) {
-            String fname = "c14n-" + i + "-apache-verified.xml";
-            JavaUtils.writeBytesToFilename(fname, xmlSignature.getSignedInfo().getReferencedContentAfterTransformsItem(i).getBytes());
-            cat.info("Nummer " + i + " verified; wrote to file " + fname);
-
             numberOfPositiveReferences++;
-         } else {
-
-            String fname = "c14n-" + i + "-apache-failed.xml";
-            JavaUtils.writeBytesToFilename(fname, xmlSignature.getSignedInfo().getReferencedContentAfterTransformsItem(i).getBytes());
-            cat.info("Nummer " + i + " failed; wrote to file " + fname);
          }
       }
 
@@ -235,10 +226,6 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       byte[] result = c.engineCanonicalizeSubTree(root);
       boolean equals = JavaUtils.binaryCompare(reference, result);
 
-      if (!equals) {
-        System.out.println("\n\n" + new String(result) + "\n");
-        }
-
       assertTrue(equals);
    }
 
@@ -272,9 +259,6 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       byte[] result = c.engineCanonicalizeSubTree(root);
       boolean equals = JavaUtils.binaryCompare(reference, result);
 
-     if (!equals) {
-        System.out.println("\n\n" + new String(result) + "\n");
-        }
       assertTrue(equals);
    }
 

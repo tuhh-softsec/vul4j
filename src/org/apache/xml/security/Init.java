@@ -102,6 +102,10 @@ public class Init {
    /** Field _initialized */
    private static boolean _alreadyInitialized = false;
 
+   public static final boolean isInitialized() {
+     return Init._alreadyInitialized;
+    }
+
    /**
     * Method init
     *
@@ -703,9 +707,5 @@ public class Init {
       public String getName() {
          return FuncHere.class.getName();
       }
-   }
-
-   static {
-      Init.init();
    }
 }

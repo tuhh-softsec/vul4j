@@ -554,9 +554,14 @@ public class XMLUtils {
    }
 
    /**
-    * Serializes the <CODE>contextNode</CODE> into the OutputStream, but
-    * supresses all Exceptions. This should only be used for debugging purposes,
-    * not in a production environment.
+    * Serializes the <CODE>contextNode</CODE> into the OutputStream, <I>but
+    * supresses all Exceptions</I>.
+    * <BR />
+    * NOTE: <I>This should only be used for debugging purposes,
+    * NOT in a production environment; this method ignores all exceptions,
+    * so you won't notice if something goes wrong. If you're asking what is to
+    * be used in a production environment, simply use the code inside the
+    * <code>try{}</code> statement, but handle the Exceptions appropriately.</I>
     *
     * @param contextNode
     * @param os
@@ -568,9 +573,13 @@ public class XMLUtils {
          os.write(Canonicalizer
             .getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS)
                .canonicalizeSubtree(contextNode));
-      } catch (IOException ex) {}
-      catch (InvalidCanonicalizerException ex) {}
-      catch (CanonicalizationException ex) {}
+      } catch (IOException ex) {
+         // throw new RuntimeException(ex.getMessage());
+      } catch (InvalidCanonicalizerException ex) {
+         // throw new RuntimeException(ex.getMessage());
+      } catch (CanonicalizationException ex) {
+         // throw new RuntimeException(ex.getMessage());
+      }
    }
 
    /**

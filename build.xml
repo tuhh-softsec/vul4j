@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- 
+<!--
      This file is intended for ANT, a Java based build tool.
      ANT is availale from http://jakarta.apache.org/ant/index.html
 
@@ -14,19 +14,19 @@
     <property name='product.Name'      value='Apache-XML-Security-J'/>
     <property name='product.name'      value='xml-security'/>
     <property name='product.shortname' value='xmlsec'/>
-    
+
     <property name='product.version.major' value='1'/>
     <property name='product.version.minor' value='0'/>
-    <property name='product.version.level' value='2'/>
+    <property name='product.version.level' value='3'/>
     <property name='product.Version'   value='${product.version.major}.${product.version.minor}.${product.version.level}'/>
     <property name='product.version'   value='${product.version.major}.${product.version.minor}.${product.version.level}'/>
     <property name='product_version'   value='${product.version.major}_${product.version.minor}_${product.version.level}'/>
     <property name="year"              value="2000-2002" />
     <property name="copyright"         value="Copyright &#169; ${year} Apache XML Project. All Rights Reserved." />
 
-<!--<property name="build.compiler" value="classic" />  
+<!--<property name="build.compiler" value="classic" />
     <property name="build.compiler" value="jikes" />-->
-    
+
     <property name="build.compiler" value="classic" />
 
     <property name="dir.src"           value="./src" />
@@ -97,7 +97,7 @@
 
     <path id="classpath.xmlsec" description="xmlsec classes; first try pure class files, then jars">
       <pathelement path="${build.classes}" />
-      
+
       <pathelement path="${build.dir}/${jar.library}" />
       <pathelement path="${build.dir}/${jar.tests}" />
       <pathelement path="${build.dir}/${jar.samples}" />
@@ -159,40 +159,35 @@
     <property name="javadoc.packages"
               value="
 org.apache.xml.security.Init,
-org.apache.xml.security.algorithms.*, 
-org.apache.xml.security.algorithms.implementations.*, 
-org.apache.xml.security.algorithms.encryption.*, 
-org.apache.xml.security.algorithms.encryption.helper.*, 
-org.apache.xml.security.algorithms.encryption.implementations.*, 
-org.apache.xml.security.algorithms.encryption.implementations.BC.*, 
-org.apache.xml.security.algorithms.encryption.params.*, 
-org.apache.xml.security.c14n.*, 
-org.apache.xml.security.c14n.implementations.*, 
-org.apache.xml.security.c14n.helper.*, 
-org.apache.xml.security.encryption.*, 
-org.apache.xml.security.encryption.type.*, 
-org.apache.xml.security.exceptions.*, 
-org.apache.xml.security.keys.*, 
-org.apache.xml.security.keys.content.*, 
-org.apache.xml.security.keys.content.keyvalues.*, 
-org.apache.xml.security.keys.content.x509.*, 
-org.apache.xml.security.keys.keyresolver.*, 
-org.apache.xml.security.keys.keyresolver.implementations.*, 
-org.apache.xml.security.keys.provider.*, 
-org.apache.xml.security.keys.storage.*, 
-org.apache.xml.security.keys.storage.implementations.*, 
-org.apache.xml.security.resource.*, 
-org.apache.xml.security.signature.*, 
-org.apache.xml.security.transforms.*, 
-org.apache.xml.security.transforms.implementations.*, 
-org.apache.xml.security.transforms.params.*, 
-org.apache.xml.security.utils.*, 
-org.apache.xml.security.utils.resolver.*, 
-org.apache.xml.security.utils.resolver.implementations.*,
-org.apache.xml.security.test.AllTests,
-org.apache.xml.security.test.ModuleTest,
-org.apache.xml.security.test.InteropTest,
-org.apache.xml.security.test.interop.*
+org.apache.xml.security.algorithms.*,
+org.apache.xml.security.algorithms.encryption.*,
+org.apache.xml.security.algorithms.encryption.helper.*,
+org.apache.xml.security.algorithms.encryption.implementations.*,
+org.apache.xml.security.algorithms.encryption.implementations.BC.*,
+org.apache.xml.security.algorithms.encryption.params.*,
+org.apache.xml.security.algorithms.implementations.*,
+org.apache.xml.security.c14n.*,
+org.apache.xml.security.c14n.helper.*,
+org.apache.xml.security.c14n.implementations.*,
+org.apache.xml.security.encryption.*,
+org.apache.xml.security.encryption.type.*,
+org.apache.xml.security.exceptions.*,
+org.apache.xml.security.keys.*,
+org.apache.xml.security.keys.content.*,
+org.apache.xml.security.keys.content.keyvalues.*,
+org.apache.xml.security.keys.content.x509.*,
+org.apache.xml.security.keys.keyresolver.*,
+org.apache.xml.security.keys.keyresolver.implementations.*,
+org.apache.xml.security.keys.storage.*,
+org.apache.xml.security.keys.storage.implementations.*,
+org.apache.xml.security.resource.*,
+org.apache.xml.security.signature.*,
+org.apache.xml.security.transforms.*,
+org.apache.xml.security.transforms.implementations.*,
+org.apache.xml.security.transforms.params.*,
+org.apache.xml.security.utils.*,
+org.apache.xml.security.utils.resolver.*,
+org.apache.xml.security.utils.resolver.implementations.*
 " />
 
     <echo message="-------------------------------------------------------------------" />
@@ -237,18 +232,18 @@ org.apache.xml.security.test.interop.*
     <echo message="                                                                   " />
   </target>
 
-  <target name="clean" depends="init" 
+  <target name="clean" depends="init"
           description="Clean up all temporary build files">
     <delete dir="${build.dir}" />
     <delete dir="./bak" />
     <delete file="log.txt" />
   </target>
 
-  <target name="prepare" depends="init" 
+  <target name="prepare" depends="init"
           description="This target generates a first build directory and checks for some libraries">
     <tstamp />
     <mkdir dir="${build.dir}" />
-    
+
     <available property="junit.present" classname="junit.framework.TestCase">
        <!-- check whether JUnit is available -->
        <classpath refid="classpath.test" />
@@ -260,10 +255,10 @@ org.apache.xml.security.test.interop.*
        <classpath refid="classpath.library" />
     </available>
 
-    <available property="xmlsec.jar.present" 
+    <available property="xmlsec.jar.present"
                file="${jar.library}" />
 
-    <available property="xmlsec.build.present" 
+    <available property="xmlsec.build.present"
                classname="org.apache.xml.security.Init">
        <classpath refid="classpath.library" />
     </available>
@@ -279,7 +274,7 @@ org.apache.xml.security.test.interop.*
     <!-- create directories -->
     <mkdir dir="${build.src}" />
     <mkdir dir="${build.classes}" />
-    <copy file="./LICENSE.txt" 
+    <copy file="./LICENSE.txt"
           tofile="${build.classes}/Apache-${product.shortname}-${product_version}-LICENSE.txt" />
 
 
@@ -289,7 +284,7 @@ org.apache.xml.security.test.interop.*
             dir="${dir.src}"
             includes="org/**,ant/**" />
     </copy>
-    <copy file="./src/MANIFEST.MF" 
+    <copy file="./src/MANIFEST.MF"
           tofile="${build.classes}/META-INF/MANIFEST.MF" />
     <replace file="${build.classes}/META-INF/MANIFEST.MF"
              token="@@VERSION@@" value="${product.version}" />
@@ -299,7 +294,7 @@ org.apache.xml.security.test.interop.*
              token="@@VERSION@@" value="${product.Name} ${product.Version}" />
   </target>
 
-  <target name="prepare-doc" depends="prepare" 
+  <target name="prepare-doc" depends="prepare"
           description="This target copies the XML documentation sources and brands the version information">
     <!-- create directories -->
     <mkdir dir="${build.doc}" />
@@ -312,19 +307,19 @@ org.apache.xml.security.test.interop.*
     </copy>
 
     <!-- substitute tokens as needed -->
-    <replace file="${build.doc.xml}/dtd/entities.ent" 
+    <replace file="${build.doc.xml}/dtd/entities.ent"
              token="@@packagenamelong@@" value="${product.Name}" />
-    <replace file="${build.doc.xml}/dtd/entities.ent" 
+    <replace file="${build.doc.xml}/dtd/entities.ent"
              token="@@packagename@@" value="${product.name}" />
-    <replace file="${build.doc.xml}/dtd/entities.ent" 
+    <replace file="${build.doc.xml}/dtd/entities.ent"
              token="@@packageversion@@" value="${product.Version}" />
-    <replace file="${build.doc.xml}/dtd/entities.ent" 
+    <replace file="${build.doc.xml}/dtd/entities.ent"
              token="@@packagedistname@@" value="${product.Name}" />
-    <replace file="${build.doc.xml}/install.xml" 
+    <replace file="${build.doc.xml}/install.xml"
              token="@@jce.download@@" value="${jce.download}" />
-    <replace file="${build.doc.xml}/install.xml" 
+    <replace file="${build.doc.xml}/install.xml"
              token="@@lib.jce@@" value="${lib.jce}" />
-    <replace file="${build.doc.xml}/install.xml" 
+    <replace file="${build.doc.xml}/install.xml"
              token="@@jce.download.file@@" value="${jce.download.file}" />
   </target>
 
@@ -363,7 +358,7 @@ org.apache.xml.security.test.interop.*
         <arg value="${doc.style}" />
         <classpath refid="classpath.doc" />
     </java>
-    
+
     <copy todir="${build.doc.html}">
         <fileset
             dir="${doc.xml}"
@@ -420,16 +415,16 @@ org.apache.xml.security.test.interop.*
           depends="prepare"
           unless="bcprov.present">
     <get src="${jce.download}"
-	 dest="${lib.jce}"
-	 verbose="true"
-	 usetimestamp="true" />
+         dest="${lib.jce}"
+         verbose="true"
+         usetimestamp="true" />
   </target>
 
   <taskdef name="md5" classname="ant.Md5Task"/>
   <target name="check-bc" depends="get-jce" description="This target checks that the digest values of the JCE library are valid">
       <md5 Md5="${jce.download.md5}" Sha1="${jce.download.sha1}" file="${lib.jce}" />
       <!-- when ant 1.5 becomes widely available, maybe the core task "checksum" can make this easier -->
-      <!-- 
+      <!--
       <checksum file="${lib.jce}" property="${jce.download.md5}"  algorithm="md5" verifyProperty="md5OK" />
       <checksum file="${lib.jce}" property="${jce.download.sha1}" algorithm="sha" verifyProperty="sha1OK" />
       -->
@@ -459,7 +454,7 @@ org.apache.xml.security.test.interop.*
     <copy todir="${build.classes}" >
       <fileset dir="${dir.src.unitTests}" includes="**/*.properties" />
       <fileset dir="${dir.src.unitTests}" includes="**/*.xml" />
-      <fileset dir="${dir.src.unitTests}" includes="**/*.zip" /> 
+      <fileset dir="${dir.src.unitTests}" includes="**/*.zip" />
     </copy>
   </target>
 
@@ -502,25 +497,25 @@ org.apache.xml.security.test.interop.*
         <arg value="org.apache.xml.security.test.AllTests" />
         <classpath refid="classpath.test" />
      </java>
-  </target>  
-    
+  </target>
+
   <target name="jar"
           depends="compile"
           description="Creates the ${jar.library}, ${jar.samples} and ${jar.samples} JAR file in ${build.dir}">
      <jar jarfile="${build.dir}/${jar.library}"
           basedir="${build.classes}"
           includes="org/apache/**, *.txt"
-          excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**" 
+          excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**"
           manifest="${build.classes}/META-INF/MANIFEST.MF" />
      <jar jarfile="${build.dir}/${jar.samples}"
           basedir="${build.classes}"
           includes="org/apache/xml/security/samples/**"
-          excludes="org/apache/xml/security/temp/**"  
+          excludes="org/apache/xml/security/temp/**"
           manifest="${build.classes}/META-INF/MANIFEST.MF" />
      <jar jarfile="${build.dir}/${jar.tests}"
           basedir="${build.classes}"
           includes="org/apache/xml/security/test/**"
-          excludes="org/apache/xml/security/temp/**"  
+          excludes="org/apache/xml/security/temp/**"
           manifest="${build.classes}/META-INF/MANIFEST.MF" />
     <!--  compress="false" -->
   </target>
@@ -542,10 +537,10 @@ org.apache.xml.security.test.interop.*
        </fileset>
     </copy>
 
-    <mkdir dir="${build.srcdist}/libs" 
+    <mkdir dir="${build.srcdist}/libs"
             description="create an empty libs so that people know where to put the 3rd party jars"/>
 
-    <zip zipfile="${build.dir}/${product.name}-src-${product_version}.zip" 
+    <zip zipfile="${build.dir}/${product.name}-src-${product_version}.zip"
          basedir="${build.srcdist}" />
   </target>
 
@@ -573,18 +568,18 @@ org.apache.xml.security.test.interop.*
      <mkdir  dir="${build.bindist}/${build.dir}" />
      <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.library}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
      <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.samples}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
-     <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.tests}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" /> 
+     <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.tests}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
 
      <mkdir dir="${build.bindist}/${build.doc}" />
      <mkdir dir="${build.bindist}/${build.doc.html}" />
      <copy todir="${build.bindist}/${build.doc.html}">
         <fileset dir="${build.doc.html}" />
      </copy>
- 
-     <zip zipfile="${build.dir}/${product.name}-bin-${product_version}.zip" 
+
+     <zip zipfile="${build.dir}/${product.name}-bin-${product_version}.zip"
           basedir="${build.bindist}" />
   </target>
-  
+
   <!-- #################################################################### -->
   <!-- #################################################################### -->
   <!-- #################################################################### -->

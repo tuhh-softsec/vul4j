@@ -69,11 +69,12 @@ import org.apache.xml.security.transforms.Transforms;
 
 
 /**
- * Implements the parameters for the <I>XML Signature XPath Filter v2.0</I>
+ * Implements the parameters for the <A
+ * HREF="http://www.w3.org/TR/xmldsig-filter2/">XPath Filter v2.0</A>.
  *
  * @author $Author$
  * @see <A HREF="http://www.w3.org/TR/xmldsig-filter2/">XPath Filter v2.0 (TR)</A>
- * @see <A HREF=http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/">XPath Filter v2.0 (editors copy)</A>
+ * @see <A HREF="http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/">XPath Filter v2.0 (editors copy)</A>
  */
 public class XPath2FilterContainer extends ElementProxy
         implements TransformParam {
