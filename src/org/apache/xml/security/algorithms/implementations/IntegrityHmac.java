@@ -33,7 +33,6 @@ import org.apache.xml.security.algorithms.SignatureAlgorithmSpi;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.HexDump;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -110,21 +109,11 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       try {
          byte[] completeResult = this._macAlgorithm.doFinal();
 
-         if (log.isDebugEnabled()) {
-         log.debug("completeResult = "
-                      + HexDump.byteArrayToHexString(completeResult));
-         log.debug("signature      = "
-                      + HexDump.byteArrayToHexString(signature));
-         }
          if ((this._HMACOutputLength == 0) || (this._HMACOutputLength >= 160)) {
             return MessageDigestAlgorithm.isEqual(completeResult, signature);
          }
          byte[] stripped = IntegrityHmac.reduceBitLength(completeResult,
                                  this._HMACOutputLength);
-         if (log.isDebugEnabled()) {
-         log.debug("stripped       = "
-                      + HexDump.byteArrayToHexString(stripped));
-         }
          return MessageDigestAlgorithm.isEqual(stripped, signature);         
       } catch (IllegalStateException ex) {
          throw new XMLSignatureException("empty", ex);
@@ -380,7 +369,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
     *
     * @param element
     */
-   protected void engineAddContextToElement(Element element)
+   public void engineAddContextToElement(Element element)
            {
 
       if (element == null) {

@@ -38,7 +38,6 @@ import org.apache.xml.security.keys.content.X509Data;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.HexDump;
 import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
@@ -619,10 +618,6 @@ public final class XMLSignature extends SignatureElementProxy {
          //retrieve the byte[] from the stored signature
          byte sigBytes[] = this.getSignatureValue();
 
-         if (log.isDebugEnabled()) {
-         	log.debug("SignatureValue = "
-                   + HexDump.byteArrayToHexString(sigBytes));
-         };
 
          //Have SignatureAlgorithm sign the input bytes and compare them to the
          //bytes that were stored in the signature.
