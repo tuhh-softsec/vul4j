@@ -2,3 +2,4 @@ build.properties
 dist
 target
 Digester.ipr
+velocity.log
