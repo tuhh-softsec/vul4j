@@ -94,6 +94,12 @@
               <include>**/*.xml</include>
             </includes>
          </resource>
+        <resource>
+           <directory>${pom.build.sourceDirectory}</directory>
+           <includes>
+             <include>**/*.dtd</include>
+           </includes>
+        </resource>
       </resources>
     </unitTest>
   </build>
