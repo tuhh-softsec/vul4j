@@ -23,6 +23,8 @@ public class Xpp3Dom
 
     protected Xpp3Dom parent;
 
+    private static final Xpp3Dom[] EMPTY_DOM_ARRAY = new Xpp3Dom[0];
+
     public Xpp3Dom( String name )
     {
         this.name = name;
@@ -109,11 +111,11 @@ public class Xpp3Dom
     {
         if ( null == childList )
         {
-            return new Xpp3Dom[0];
+            return EMPTY_DOM_ARRAY;
         }
         else
         {
-            return (Xpp3Dom[]) childList.toArray( new Xpp3Dom[0] );
+            return (Xpp3Dom[]) childList.toArray( EMPTY_DOM_ARRAY );
         }
     }
 
@@ -121,7 +123,7 @@ public class Xpp3Dom
     {
         if ( null == childList )
         {
-            return new Xpp3Dom[0];
+            return EMPTY_DOM_ARRAY;
         }
         else
         {
@@ -137,7 +139,7 @@ public class Xpp3Dom
                 }
             }
 
-            return (Xpp3Dom[]) children.toArray( new Xpp3Dom[0] );
+            return (Xpp3Dom[]) children.toArray( EMPTY_DOM_ARRAY );
         }
     }
 
@@ -149,6 +151,15 @@ public class Xpp3Dom
         }
 
         return childList.size();
+    }
+
+    public void removeChild( int i )
+    {
+        Xpp3Dom child = getChild( i );
+        childMap.values().remove( child );
+        childList.remove( i );
+        // In case of any dangling references
+        child.setParent( null );
     }
 
     // ----------------------------------------------------------------------
