@@ -1,0 +1,247 @@
+<html>
+<head>
+<title>An overview of the Digester Plugins module.</title>
+</head>
+<body>
+<h2> Introduction. </h2>
+Many applications have xml configuration files which are "extensible".
+Some examples of this are:
+<ul>
+<li>Apache log4j allows user-provided "Appender" classes to be specified in 
+    its configuration file</li>
+<li>Apache Avalon allows "components" of a user-specified class</li>
+<li>Apache Ant allows custom tasks to be defined</li>
+</ul>
+The Digester "plugins" module can be used to add this kind of functionality
+to your own applications.
+<p>
+<h2> An Example </h2>
+Let's start off with an example.
+<p>
+Given the following digester rules in the main "parsing" application:
+<pre>
+    Digester digester = new Digester();
+    PluginRules rules = new PluginRules();
+    digester.setRules(rules);
+
+    digester.addRule("program/plugin", new PluginDeclarationRule());
+
+    String pattern="program/statement";
+    Class baseClass = Statement.class;
+    Class defaultClass = StmtCompound.class;
+    PluginCreateRule pluginRule = new PluginCreateRule(baseClass, defaultClass);
+    digester.addRule(pattern, pluginRule);
+    digester.addSetNext(pattern, "addStatement", baseClass.getName());
+
+    digester.push(this);
+    digester.parse(filename);
+</pre>
+<p>
+the following input can be processed:
+<p>
+<pre>
+    &lt;program&gt;
+      &lt;plugin id="print" class="StmtPrint"/&gt;
+      &lt;plugin id="block" class="StmtCompound"/&gt;
+      &lt;plugin id="if" class="StmtIf"/&gt; 
+      &lt;plugin id="equal" class="ExprEqual"/&gt; 
+      &lt;plugin id="notempty" class="ExprNotEmpty"/&gt; 
+    
+      &lt;statement plugin-id="print" stmt-label="1"&gt;msg1&lt;/statement&gt;
+    
+      &lt;statement plugin-id="block"&gt;
+        &lt;statement plugin-id="print" stmt-label="2.1"&gt;msg2a&lt;/statement&gt;
+        &lt;statement plugin-id="print" stmt-label="2.1"&gt;msg2b&lt;/statement&gt;
+      &lt;/statement&gt;
+    
+      &lt;statement plugin-id="if"&gt;
+        &lt;expr plugin-id="equal"&gt;
+          &lt;first-param&gt;foo&lt;/first-param&gt;
+          &lt;second-param&gt;foo&lt;/second-param&gt;
+        &lt;/expr&gt;
+        &lt;statement plugin-id="print" stmt-label="foo"&gt;foo equals foo&lt;/statement&gt;
+      &lt;/statement&gt;
+    
+      &lt;statement plugin-id="if"&gt;
+        &lt;expr plugin-id="notempty"&gt;
+          &lt;param/&gt;
+        &lt;/expr&gt;
+        &lt;statement plugin-id="block"&gt;
+          &lt;statement plugin-id="print" stmt-label="bar"&gt;never reached part 1&lt;/statement&gt;
+          &lt;statement plugin-id="print" stmt-label="bar"&gt;never reached part 2&lt;/statement&gt;
+        &lt;/statement&gt;
+      &lt;/statement&gt;
+    
+    &lt;/program&gt;
+</pre>
+<p>
+Note that the original application only defined a rule for "program/statement".
+It is the input file which has defined exactly which class should
+be instantiated when the statement element is encountered, and furthermore
+the "plugin" classes have dynamically added rules for parsing elements
+nested within themselves.
+<p>
+A class used as a plugin may dynamically add its own rules to the digester,
+in order to process its attributes and any subtags in any manner it wishes.
+This may be done by either:
+<ul>
+<li> declaring a method <code>public static void addRules(Digester d, String
+pattern)</code> on the class being "plugged in", or</li>
+<li> providing a separate "rule info" class in the plugin declaration, 
+somewhat in the spirit of "BeanInfo" classes for java beans.</li>
+</ul>
+If a plugin class has a no-parameter constructor, does not expect any subtags, 
+and is content to map any attributes on the parent xml tag to 
+bean-property-setter methods on itself, then no rules need to be defined at 
+all; the class can be used as a plugin without any coding.
+<p>
+In the example above, an end user may create their own classes which implement
+the required Statement interface, then cause these custom classes to be used
+instead of, or in addition to, classes distributed with the application.
+
+<h2> Possible Applications </h2>
+
+Any application where user-specific operations may need to be performed
+that cannot be known in advance by the initial application developer may
+benefit from this module. The apache projects listed at the top of this page
+(log4j, cocoon, ant) are examples.
+<p>
+Note that the example above is an extreme example of configurability; 
+it is expected that most application would have many rules of which only
+a few would be "PluginCreateRule" rules, i.e. that the structure of the
+input data would be <i>mostly</i> fixed, with only a few points at which
+the end user could control the class being instantiated. Further, the
+"recursive" nature of the plugin example above (where statements can
+contain statements) is not expected to be typical; it is however 
+fully supported.
+
+<h2> Terminology </h2>
+
+The term "plugin declaration" refers to an xml element which matches a
+PluginDeclarationRule, where the user specifies an id-to-class mapping.
+<p>
+The term "plugin point" refers to a pattern associated with a PluginCreateRule.
+An xml element matching that pattern is expected to have a plugin-id attribute
+(but see note on "default plugins" elsewhere in this document).
+
+<h2> Limitations </h2>
+
+The user cannot replace the <i>name</i> of the tag; 
+<code>&lt;statement plugin-id="if"&gt;</code> cannot become &lt;if&gt;.
+<p>
+An instance of "PluginRules" must be used as the Rules implementation
+for the digester (see example). This class implements only the functionality
+provided by the RulesBase class, ie no extended rules matching is available.
+<p>
+No wildcard patterns are allowed to be associated with PluginCreateRule
+instances. For example <code>digester.addRule("*/statement", pcr)</code>
+is not permitted. This is simply because handling "recursive" plugins
+(ones which allow instances of themselves to be plugged in below themselves,
+as in the Statement example) becomes extremely complicated when wildcard
+patterns are involved. 
+<p>
+For technical reasons, a single instance of PluginCreateRule cannot 
+currently be associated with multiple patterns; multiple instances are 
+required. This is not expected to be a problem.
+<p>
+
+<h2> Performance </h2>
+
+For patterns which do not involve "plugin points" there is minimal
+performance impact when adding rules to the Digester, and none when
+processing input data. 
+<p>
+Processing elements which match patterns added dynamically by plugin classes 
+does have a performance impact, but not excessively so.
+
+<h2> Alternatives </h2>
+
+The "xmlrules" digester module allows modification of parsing rules
+without code changes or recompilation. However this feature is aimed
+at the developer, not the end user of an application. The differences
+between xmlrules functionality and plugins functionality are:
+<ul>
+<li> 
+With xmlrules, the full set of parsing rules is exposed. This is
+good for developers, but in most cases both too complex and too dangerous
+to require end users to edit directly.
+</li>
+<li>
+Using xmlrules requires a fair level of knowledge of the Apache Digester.
+How a user can use plugins can be explained in about 3 paragraphs. </li>
+</ul>
+
+<h2> How to write plugin classes </h2>
+
+In order to be useful, the problem domain needs to involve a base class or 
+interface which can have multiple implementations. This section assumes that
+this is the case, that you have already created a concrete implementation
+of that base class or interface, and are wondering what changes need to
+be made to that class to make it suitable for a "plugin".
+<p>
+Well, if the class has a no-argument constuctor, and only simple configuration
+needs that can be met by a SetPropertiesRule, then no changes need to be
+made at all.
+<p>
+In other circumstances, you may either define an "addRules" method on the
+class which adds any necessary rules to the digester, or a separate class
+containing that information. In the latter approach, the class containing
+the rule info may have any name of your choice, but the original class + 
+"RuleInfo" is recommended.
+<p>
+Here is the addRules method on class StmtCompound, from the original example:
+<pre>
+    public static void addRules(Digester digester, String patternPrefix)
+    {
+        digester.addSetProperties(patternPrefix);
+
+        String pattern = patternPrefix + "/statement";
+        Class baseClass = Statement.class;
+        PluginCreateRule pluginRule = new PluginCreateRule(baseClass);
+        digester.addRule(pattern, pluginRule);
+        digester.addSetNext(pattern, "addStmt", baseClass.getName());
+    }
+</pre>
+A "rule info" class consists of nothing but a static method defined as above.
+<p>
+The plugins module ensures that the addRules method is called exactly once
+for each "plugin point" in the input document. For example, if a Statement
+can be present at /program/statement and /program/statement/statement, then
+the addRules method is called once with each of those patterns as a
+parameter. Note that these calls are made in a "lazy" manner, ie only 
+when absolutely necessary, to avoid recursion problems.
+<p>
+If a plugin class does not define an "addRules" method, and the plugin
+declaration does not associate a rule info class with it, then the 
+plugins module will define a "SetPropertiesRule" by default. However if
+any custom rules are defined for the plugin class, then that implementation
+is required to define a SetPropertiesRule for itself if it desires one,
+hence the addSetProperties call above.
+<p>
+If the StmtCompound wished to define CallMethodRule rules, or any other
+Digester functionality, it could do so. The example above shows how the
+StmtCompound allows a subelement of &lt;statement&gt; at which the user
+ may plug in any class derived from Statement.
+<p>
+Note that when adding any rules, the pattern passed to the digester
+<i>must</i> start with the patternPrefix provided. A plugin cannot
+define rules with absolute paths. And because using plugins requires 
+using PluginRules, which does not support internal or trailing 
+wildcards, the pattern should not include any wildcard characters either. 
+Neither of these are expected to be problems in practice.
+
+<h2> Other features </h2>
+
+Multiple identical plugin declarations are ignored. This is useful
+when using "external entity references" to compose an XML document from
+multiple xml documents; the components don't need to worry about
+redeclaring a plugin as long as they always map the same id to the
+same class.
+<p>
+In situations where a user <i>might</i> want to specify a custom class,
+but will often want "default" behaviour, a PluginCreateRule can specify
+a default class. If the user then omits the "plugin-id" attribute on
+the matching xml element, an instance of the default class will be
+created.
+</body>
+</html>

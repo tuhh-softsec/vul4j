@@ -1,0 +1,4 @@
+<root>
+  <widget plugin-class="org.apache.commons.digester.plugins.TextLabel" label="1"/>
+  <widget plugin-class="org.apache.commons.digester.plugins.TextLabel" id="L1" label="2"/>
+</root>

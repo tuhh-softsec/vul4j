@@ -1,0 +1,31 @@
+<root>
+  <plugin id="container" 
+    class="org.apache.commons.digester.plugins.Container"
+    ruleclass="org.apache.commons.digester.plugins.ContainerCustomRules"/>
+    
+  
+  <widget plugin-id="container" id="1">
+
+    <widget plugin-id="container" id="1.1">
+    
+      <widget plugin-id="container" id="1.1.1">
+        <widget plugin-id="container" id ="1.1.1.1">
+          <plugin id="textlabel" class="org.apache.commons.digester.plugins.TextLabel"/>
+          <widget plugin-id="textlabel"/>
+          <widget plugin-id="textlabel"/>
+        </widget>
+      </widget>
+
+      <widget plugin-id="container" id="1.1,2">
+      </widget>
+      
+    </widget>
+
+    <widget plugin-id="container" id="1.2">
+      <plugin id="textlabel" class="org.apache.commons.digester.plugins.TextLabel"/>
+      <widget plugin-id="textlabel"/>
+      <widget plugin-id="textlabel"/>
+    </widget>
+
+    </widget>
+</root>

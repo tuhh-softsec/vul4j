@@ -1,0 +1,11 @@
+<root>
+  <plugin 
+     id="textlabel2" 
+     class="org.apache.commons.digester.plugins.TextLabel2"
+     ruleclass="org.apache.commons.digester.plugins.TextLabel2RuleInfo"/>
+
+  <widget plugin-id="textlabel2" id="badid">
+    <label>std label</label>
+    <alt-label>alt label</alt-label>
+  </widget>
+</root>

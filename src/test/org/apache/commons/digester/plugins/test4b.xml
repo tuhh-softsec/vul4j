@@ -1,0 +1,19 @@
+<root>
+  <plugin 
+    id="slider" 
+    class="org.apache.commons.digester.plugins.Slider"
+    method="addRangeRules"/>
+    
+  <plugin id="textlabel" class="org.apache.commons.digester.plugins.TextLabel"/>
+
+  <widget plugin-id="slider" label="slider1">
+    <min>1</min>
+    <max>2</max>
+  </widget>
+  
+  <widget plugin-id="slider" label="slider2">
+    <range min="10" max="20"/>
+  </widget>
+  
+  <widget plugin-id="textlabel" label="text1"/>
+</root>

@@ -1,0 +1,6 @@
+<root>
+  <widget plugin-class="org.apache.commons.digester.plugins.TextLabel2" id="badid">
+    <label>std label</label>
+    <alt-label>alt label</alt-label>
+  </widget>
+</root>
