@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<document>
+
+ <properties>
+  <title>Commons</title>
+  <author email="commons-dev@jakarta.apache.org">Commons Documentation Team</author>
+ </properties>
+
+ <body>
+
+<section name="The Digester Component">
+
+<p>Many Jakarta projects read XML configuration files to provide initialization
+of various Java objects within the system.  There are several ways of doing
+this, and the <em>Digester</em> component was designed to provide a common
+implementation that can be used in many different projects.</p>
+
+<p>Basically, the <em>Digester</em> package lets you configure an XML -&gt;
+Java object mapping module, which triggers certain actions called
+<em>rules</em> whenever a particular pattern of nested XML elements is
+recognized.  A rich set of predefined <em>rules</em> is available for your
+use, or you can also create your own.  Advanced features of <em>Digester</em>
+include:</p>
+<ul>
+<li>Ability to plug in your own pattern matching engine, if the standard one
+    is not sufficient for your requirements.</li>
+<li>Optional namespace-aware processing, so that you can define rules that
+    are relevant only to a particular XML namespace.</li>
+<li>Encapsulation of <em>Rules</em> into <em>RuleSets</em> that can be
+    easily and conveniently reused in more than one application that requires
+    the same type of processing.</li>
+</ul>
+
+
+</section>
+
+
+<section name="Documentation">
+
+<p>The <a href="http://jakarta.apache.org/commons/digester/RELEASE-NOTES.txt">
+Release Notes</a> document the new features and bug fixes that have been
+included in this release.</p>
+
+<p>The <a href="http://jakarta.apache.org/commons/digester/api/index.html">
+JavaDoc API documents</a> are available online.  In particular, you should
+read the package description for the <code>org.apache.commons.digester</code>
+package for detailed information on using the package.</p>
+
+</section>
+
+
+<section name="Releases">
+
+<ul>
+<li><a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-digester/v1.0/">Version 1.0</a></li>
+<li><a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-digester/v1.1.1/">Version 1.1.1</a></li>
+<li><a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-digester/v1.2/">Version 1.2</a></li>
+</ul>
+
+</section>
+
+
+</body>
+</document>

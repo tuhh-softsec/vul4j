@@ -2,7 +2,7 @@
 
 <project>
   <extend>../project.xml</extend>
-  <name>commons-digester</name>
+  <name>Digester</name>
   <id>commons-digester</id>
   <currentVersion>1.0-dev</currentVersion>
   <inceptionYear>2002</inceptionYear>
