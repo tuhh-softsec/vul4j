@@ -320,7 +320,7 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 
 	// Set type
 	if (type != NULL)
-		ret->setAttribute(MAKE_UNICODE_STRING("type"),
+		ret->setAttribute(MAKE_UNICODE_STRING("Type"),
 			MAKE_UNICODE_STRING(type));
 
 	// Set URI
