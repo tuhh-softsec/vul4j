@@ -1,4 +1,4 @@
-/* $Id: PluginRules.java,v 1.18 2004/06/11 03:48:50 skitching Exp $
+/* $Id: PluginRules.java,v 1.19 2004/06/16 03:40:18 skitching Exp $
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 
@@ -126,17 +126,25 @@ public class PluginRules implements Rules {
      * fires, in order to manage the custom rules associated with whatever 
      * concrete plugin class the user has specified.
      *
+     * @param digester is the object this rules will be associated with.
      * @param mountPoint is the digester match path for the element 
      * matching a PluginCreateRule which caused this "nested parsing scope"
-     * to begin.
+     * to begin. This is expected to be equal to digester.getMatch().
      * @param parent must be non-null.
+     * @param pluginClass is the plugin class whose custom rules will be
+     * loaded into this new PluginRules object.
      */
-     PluginRules(String mountPoint, PluginRules parent, Class pluginClass) 
+     PluginRules(
+     Digester digester, 
+     String mountPoint, 
+     PluginRules parent, 
+     Class pluginClass) 
      throws PluginException {
         // no need to set digester or decoratedRules.digester,
         // because when Digester.setRules is called, the setDigester
         // method on this object will be called.
         
+        this.digester = digester;
         this.mountPoint = mountPoint;
         this.parent = parent;
         this.rulesFactory = parent.rulesFactory;
