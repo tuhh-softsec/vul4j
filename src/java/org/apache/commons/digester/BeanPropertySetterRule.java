@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.13 2003/10/05 15:07:31 rdonkin Exp $
- * $Revision: 1.13 $
- * $Date: 2003/10/05 15:07:31 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.14 2003/10/05 19:47:21 rdonkin Exp $
+ * $Revision: 1.14 $
+ * $Date: 2003/10/05 19:47:21 $
  *
  * ====================================================================
  * 
@@ -57,7 +57,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- */  */
+ */
 
 
 package org.apache.commons.digester;
@@ -84,7 +84,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.13 $ $Date: 2003/10/05 15:07:31 $
+ * @version $Revision: 1.14 $ $Date: 2003/10/05 19:47:21 $
  */
 
 public class BeanPropertySetterRule extends Rule {
