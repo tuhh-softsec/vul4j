@@ -29,13 +29,15 @@ public interface Archiver
 
     void createArchive() throws ArchiverException, IOException;
 
-    void addDirectory( File directory ) throws Exception;
+    void addDirectory( File directory ) throws ArchiverException;
 
-    void addDirectory( File directory, String prefix ) throws Exception;
+    void addDirectory( File directory, String prefix ) throws ArchiverException;
 
-    void addDirectory( File directory, String[] includes, String[] excludes ) throws Exception;
+    void addDirectory( File directory, String[] includes, String[] excludes ) throws ArchiverException;
 
-    void addDirectory( File directory, String prefix, String[] includes, String[] excludes ) throws Exception;
+    void addDirectory( File directory, String prefix, String[] includes, String[] excludes ) throws ArchiverException;
+
+    void addFile( File inputFile, String destFileName ) throws ArchiverException;
 
     File getDestFile();
 
