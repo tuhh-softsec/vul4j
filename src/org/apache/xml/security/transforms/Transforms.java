@@ -224,29 +224,19 @@ public class Transforms extends SignatureElementProxy {
             XMLSignatureInput xmlSignatureInput,OutputStream os) throws TransformationException {
 
       try {
-        int transformLength=this.getLength();
-        int last=transformLength-1;
-         for (int i = 0; i < transformLength; i++) {
+        int last=this.getLength()-1;
+         for (int i = 0; i < last; i++) {
             Transform t = this.item(i);
             if (log.isDebugEnabled()) {
             	log.debug("Preform the (" + i + ")th " + t.getURI() + " transform");
             }
-            if (i==last) {
-            	xmlSignatureInput = t.performTransform(xmlSignatureInput, os);
-            } else {
-            	xmlSignatureInput = t.performTransform(xmlSignatureInput);
-            }
+			xmlSignatureInput = t.performTransform(xmlSignatureInput);
+         }
+         if (last>=0) {
+			Transform t = this.item(last);
+            xmlSignatureInput = t.performTransform(xmlSignatureInput, os);
          }
 
-         /*
-         // if the final result is a node set, we must c14nize
-         if (xmlSignatureInput.isNodeSet()) {
-            Canonicalizer c14n = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-            NodeList nodes = xmlSignatureInput.getNodeSet();
-            byte[] bytes = c14n.canonicalizeXPathNodeSet(nodes);
-            xmlSignatureInput = new XMLSignatureInput(bytes);
-         }
-         */
 
          return xmlSignatureInput;
       } catch (IOException ex) {
