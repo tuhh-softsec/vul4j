@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.44 2003/04/27 18:53:15 rdonkin Exp $
+        $Id: build.xml,v 1.45 2003/04/28 17:51:31 rdonkin Exp $
 -->
 
 
@@ -256,7 +256,8 @@
                                test.xmlrules,
                                test.node,
                                test.factory,
-                               test.regex
+                               test.regex,
+                               test.wdrules
                               "
    description="Run all unit test cases">
   </target>
@@ -344,6 +345,16 @@
     </java>
   </target>
 
+  <target name="test.wdrules" depends="compile.tests"
+   description="Run tests for WithDefaultsRulesWrapper">
+    <echo message="Running tests for WithDefaultsRulesWrapper ..."/>
+    <java classname="${test.runner}" fork="yes"
+        failonerror="${test.failonerror}">
+      <arg value="org.apache.commons.digester.WDRulesWrapperTestCase"/>
+      <classpath refid="test.classpath"/>
+    </java>
+  </target>
+  
   <target name="test.matching.extended" depends="compile.tests"
    description="Run rule Digester extended test cases">
     <echo message="Running rule Digester tests for ExtendedBaseRules ..."/>
