@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/BaseFunctorTest.java,v 1.2 2003/01/28 12:00:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/BaseFunctorTest.java,v 1.3 2003/01/28 12:54:37 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,7 +65,7 @@ import java.io.Serializable;
 import junit.framework.TestCase;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:30 $
+ * @version $Revision: 1.3 $ $Date: 2003/01/28 12:54:37 $
  * @author Rodney Waldhoff
  */
 public abstract class BaseFunctorTest extends TestCase {
@@ -141,6 +141,7 @@ public abstract class BaseFunctorTest extends TestCase {
         assertEquals(a,b);
         assertEquals(b,a);
         assertEquals(a.hashCode(),b.hashCode()); 
+        assertEquals(a.toString(),b.toString()); // not strictly required
     }
     
     protected void assertObjectsAreNotEqual(Object a, Object b) {

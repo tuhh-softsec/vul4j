@@ -1,5 +1,5 @@
-/* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestAll.java,v 1.2 2003/01/28 12:54:37 rwaldhoff Exp $
+/*
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestUnaryProcedureProcedure.java,v 1.1 2003/01/28 12:54:37 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,58 +57,74 @@
 package org.apache.commons.functor.adapter;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.Procedure;
+import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.NoOpProcedure;
+
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:54:37 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 12:54:37 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestUnaryProcedureProcedure extends BaseFunctorTest {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestUnaryProcedureProcedure(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTest(TestFunctionProcedure.suite());
-        suite.addTest(TestUnaryFunctionUnaryProcedure.suite());
-        suite.addTest(TestBinaryFunctionBinaryProcedure.suite());
-        
-        suite.addTest(TestProcedureFunction.suite());
-        suite.addTest(TestUnaryProcedureUnaryFunction.suite());
-        suite.addTest(TestBinaryProcedureBinaryFunction.suite());
+        return new TestSuite(TestUnaryProcedureProcedure.class);
+    }
 
-        suite.addTest(TestFunctionPredicate.suite());
-        suite.addTest(TestUnaryFunctionUnaryPredicate.suite());
-        suite.addTest(TestBinaryFunctionBinaryPredicate.suite());
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
 
-        suite.addTest(TestPredicateFunction.suite());
-        suite.addTest(TestUnaryPredicateUnaryFunction.suite());
-        suite.addTest(TestBinaryPredicateBinaryFunction.suite());
+    protected Object makeFunctor() {
+        return new UnaryProcedureProcedure(new NoOpProcedure(),"xyzzy");
+    }
 
-        suite.addTest(TestFunctionUnaryFunction.suite());
-        suite.addTest(TestUnaryFunctionBinaryFunction.suite());
-        
-        suite.addTest(TestPredicateUnaryPredicate.suite());
-        suite.addTest(TestUnaryPredicateBinaryPredicate.suite());
-        
-        suite.addTest(TestProcedureUnaryProcedure.suite());
-        suite.addTest(TestUnaryProcedureBinaryProcedure.suite());
-        
-        suite.addTest(TestUnaryFunctionFunction.suite());
-        suite.addTest(TestConstantLeftBinaryFunctionUnaryFunction.suite());
-        suite.addTest(TestConstantRightBinaryFunctionUnaryFunction.suite());
-        
-        suite.addTest(TestUnaryPredicatePredicate.suite());
-        suite.addTest(TestConstantLeftBinaryPredicateUnaryPredicate.suite());
-        suite.addTest(TestConstantRightBinaryPredicateUnaryPredicate.suite());
+    // Lifecycle
+    // ------------------------------------------------------------------------
 
-        suite.addTest(TestUnaryProcedureProcedure.suite());
-        suite.addTest(TestConstantLeftBinaryProcedureUnaryProcedure.suite());
-        suite.addTest(TestConstantRightBinaryProcedureUnaryProcedure.suite());
-        
-        return suite;
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------    
+
+    public void testRun() throws Exception {
+        Procedure p = new UnaryProcedureProcedure(new UnaryFunctionUnaryProcedure(new IdentityFunction()),Boolean.TRUE);
+        p.run();
+    }
+    
+    public void testEquals() throws Exception {
+        Procedure f = new UnaryProcedureProcedure(new NoOpProcedure(),"xyzzy");
+        assertEquals(f,f);
+        assertObjectsAreEqual(f,new UnaryProcedureProcedure(new NoOpProcedure(),"xyzzy"));
+        assertObjectsAreNotEqual(f,new NoOpProcedure());
+        assertObjectsAreNotEqual(f,new UnaryProcedureProcedure(new NoOpProcedure(),"foo"));
+        assertObjectsAreNotEqual(f,new UnaryProcedureProcedure(new UnaryFunctionUnaryProcedure(new IdentityFunction()),"xyzzy"));
+        assertObjectsAreNotEqual(f,new UnaryProcedureProcedure(null,"xyzzy"));
+        assertObjectsAreNotEqual(f,new UnaryProcedureProcedure(new NoOpProcedure(),null));
+        assertObjectsAreEqual(new UnaryProcedureProcedure(null,null),new UnaryProcedureProcedure(null,null));
+    }
+
+    public void testAdaptNull() throws Exception {
+        assertNull(UnaryProcedureProcedure.adapt(null,"xyzzy"));
+    }
+
+    public void testAdapt() throws Exception {
+        assertNotNull(UnaryProcedureProcedure.adapt(new NoOpProcedure(),"xyzzy"));
+        assertNotNull(UnaryProcedureProcedure.adapt(new NoOpProcedure(),null));
     }
 }

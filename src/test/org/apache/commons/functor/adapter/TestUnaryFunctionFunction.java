@@ -1,5 +1,5 @@
-/* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestAll.java,v 1.2 2003/01/28 12:54:37 rwaldhoff Exp $
+/*
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestUnaryFunctionFunction.java,v 1.1 2003/01/28 12:54:37 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,58 +57,75 @@
 package org.apache.commons.functor.adapter;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.Function;
+import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.IdentityFunction;
+
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:54:37 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 12:54:37 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestUnaryFunctionFunction extends BaseFunctorTest {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestUnaryFunctionFunction(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTest(TestFunctionProcedure.suite());
-        suite.addTest(TestUnaryFunctionUnaryProcedure.suite());
-        suite.addTest(TestBinaryFunctionBinaryProcedure.suite());
-        
-        suite.addTest(TestProcedureFunction.suite());
-        suite.addTest(TestUnaryProcedureUnaryFunction.suite());
-        suite.addTest(TestBinaryProcedureBinaryFunction.suite());
+        return new TestSuite(TestUnaryFunctionFunction.class);
+    }
 
-        suite.addTest(TestFunctionPredicate.suite());
-        suite.addTest(TestUnaryFunctionUnaryPredicate.suite());
-        suite.addTest(TestBinaryFunctionBinaryPredicate.suite());
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
 
-        suite.addTest(TestPredicateFunction.suite());
-        suite.addTest(TestUnaryPredicateUnaryFunction.suite());
-        suite.addTest(TestBinaryPredicateBinaryFunction.suite());
+    protected Object makeFunctor() {
+        return new UnaryFunctionFunction(new IdentityFunction(),"xyzzy");
+    }
 
-        suite.addTest(TestFunctionUnaryFunction.suite());
-        suite.addTest(TestUnaryFunctionBinaryFunction.suite());
-        
-        suite.addTest(TestPredicateUnaryPredicate.suite());
-        suite.addTest(TestUnaryPredicateBinaryPredicate.suite());
-        
-        suite.addTest(TestProcedureUnaryProcedure.suite());
-        suite.addTest(TestUnaryProcedureBinaryProcedure.suite());
-        
-        suite.addTest(TestUnaryFunctionFunction.suite());
-        suite.addTest(TestConstantLeftBinaryFunctionUnaryFunction.suite());
-        suite.addTest(TestConstantRightBinaryFunctionUnaryFunction.suite());
-        
-        suite.addTest(TestUnaryPredicatePredicate.suite());
-        suite.addTest(TestConstantLeftBinaryPredicateUnaryPredicate.suite());
-        suite.addTest(TestConstantRightBinaryPredicateUnaryPredicate.suite());
+    // Lifecycle
+    // ------------------------------------------------------------------------
 
-        suite.addTest(TestUnaryProcedureProcedure.suite());
-        suite.addTest(TestConstantLeftBinaryProcedureUnaryProcedure.suite());
-        suite.addTest(TestConstantRightBinaryProcedureUnaryProcedure.suite());
-        
-        return suite;
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------    
+
+    public void testEvaluate() throws Exception {
+        Function f = new UnaryFunctionFunction(new IdentityFunction(),"xyzzy");
+        assertEquals("xyzzy",f.evaluate());
+    }
+    
+    public void testEquals() throws Exception {
+        Function f = new UnaryFunctionFunction(new IdentityFunction(),"xyzzy");
+        assertEquals(f,f);
+        assertObjectsAreEqual(f,new UnaryFunctionFunction(new IdentityFunction(),"xyzzy"));
+        assertObjectsAreNotEqual(f,new ConstantFunction("xyzzy"));
+        assertObjectsAreNotEqual(f,new UnaryFunctionFunction(new IdentityFunction(),"foo"));
+        assertObjectsAreNotEqual(f,new UnaryFunctionFunction(new ConstantFunction("xyzzy"),"foo"));
+        assertObjectsAreNotEqual(f,new UnaryFunctionFunction(null,"xyzzy"));
+        assertObjectsAreNotEqual(f,new UnaryFunctionFunction(new IdentityFunction(),null));
+        assertObjectsAreEqual(new UnaryFunctionFunction(null,null),new UnaryFunctionFunction(null,null));
+    }
+
+    public void testAdaptNull() throws Exception {
+        assertNull(UnaryFunctionFunction.adapt(null,"xyzzy"));
+    }
+
+    public void testAdapt() throws Exception {
+        assertNotNull(UnaryFunctionFunction.adapt(new IdentityFunction(),"xyzzy"));
+        assertNotNull(UnaryFunctionFunction.adapt(new IdentityFunction(),null));
     }
 }

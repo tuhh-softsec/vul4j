@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestAll.java,v 1.2 2003/01/28 12:54:37 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/Attic/UnaryPredicatePredicate.java,v 1.1 2003/01/28 12:54:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,59 +56,81 @@
  */
 package org.apache.commons.functor.adapter;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.io.Serializable;
+
+import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:54:37 $
+ * Adapts a
+ * {@link UnaryPredicate UnaryPredicate} 
+ * to the 
+ * {@link Predicate Predicate} interface 
+ * using a constant unary argument.
+ * <p/>
+ * Note that although this class implements 
+ * {@link Serializable}, a given instance will
+ * only be truly <code>Serializable</code> if the
+ * underlying objects are.  Attempts to serialize
+ * an instance whose delegates are not 
+ * <code>Serializable</code> will result in an exception.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 12:54:36 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+public final class UnaryPredicatePredicate implements Predicate, Serializable {
+    /**
+     * @param predicate the predicate to adapt
+     * @param arg the constant argument to use
+     */
+    public UnaryPredicatePredicate(UnaryPredicate predicate, Object arg) {
+        this.predicate = predicate;
+        this.param = arg;
+    }
+ 
+    public boolean test() {
+        return predicate.test(param);
+    }   
+
+    public boolean equals(Object that) {
+        if(that instanceof UnaryPredicatePredicate) {
+            return equals((UnaryPredicatePredicate)that);
+        } else {
+            return false;
+        }
+    }
+        
+    public boolean equals(UnaryPredicatePredicate that) {
+        return that == this || ( 
+                (null != that) && 
+                (null == predicate ? null == that.predicate : predicate.equals(that.predicate)) &&
+                (null == param ? null == that.param : param.equals(that.param)) );
+                
+    }
+    
+    public int hashCode() {
+        int hash = "UnaryPredicatePredicate".hashCode();
+        if(null != predicate) {
+            hash <<= 2;
+            hash ^= predicate.hashCode();
+        }
+        if(null != param) {
+            hash <<= 2;
+            hash ^= param.hashCode();
+        }
+        return hash;
+    }
+    
+    public String toString() {
+        return "UnaryPredicatePredicate<" + predicate + "(" + param + ")>";
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTest(TestFunctionProcedure.suite());
-        suite.addTest(TestUnaryFunctionUnaryProcedure.suite());
-        suite.addTest(TestBinaryFunctionBinaryProcedure.suite());
-        
-        suite.addTest(TestProcedureFunction.suite());
-        suite.addTest(TestUnaryProcedureUnaryFunction.suite());
-        suite.addTest(TestBinaryProcedureBinaryFunction.suite());
-
-        suite.addTest(TestFunctionPredicate.suite());
-        suite.addTest(TestUnaryFunctionUnaryPredicate.suite());
-        suite.addTest(TestBinaryFunctionBinaryPredicate.suite());
-
-        suite.addTest(TestPredicateFunction.suite());
-        suite.addTest(TestUnaryPredicateUnaryFunction.suite());
-        suite.addTest(TestBinaryPredicateBinaryFunction.suite());
-
-        suite.addTest(TestFunctionUnaryFunction.suite());
-        suite.addTest(TestUnaryFunctionBinaryFunction.suite());
-        
-        suite.addTest(TestPredicateUnaryPredicate.suite());
-        suite.addTest(TestUnaryPredicateBinaryPredicate.suite());
-        
-        suite.addTest(TestProcedureUnaryProcedure.suite());
-        suite.addTest(TestUnaryProcedureBinaryProcedure.suite());
-        
-        suite.addTest(TestUnaryFunctionFunction.suite());
-        suite.addTest(TestConstantLeftBinaryFunctionUnaryFunction.suite());
-        suite.addTest(TestConstantRightBinaryFunctionUnaryFunction.suite());
-        
-        suite.addTest(TestUnaryPredicatePredicate.suite());
-        suite.addTest(TestConstantLeftBinaryPredicateUnaryPredicate.suite());
-        suite.addTest(TestConstantRightBinaryPredicateUnaryPredicate.suite());
-
-        suite.addTest(TestUnaryProcedureProcedure.suite());
-        suite.addTest(TestConstantLeftBinaryProcedureUnaryProcedure.suite());
-        suite.addTest(TestConstantRightBinaryProcedureUnaryProcedure.suite());
-        
-        return suite;
+    public static UnaryPredicatePredicate adapt(UnaryPredicate predicate, Object arg) {
+        return null == predicate ? null : new UnaryPredicatePredicate(predicate,arg);
     }
+
+    /** The {@link Predicate Predicate} I'm wrapping. */
+    private UnaryPredicate predicate = null;
+    /** The parameter to pass to that predicate. */
+    private Object param = null;
 }
