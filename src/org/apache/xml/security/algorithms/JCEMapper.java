@@ -18,12 +18,7 @@ package org.apache.xml.security.algorithms;
 
 
 
-import java.security.Key;
-import java.security.Security;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 
