@@ -466,6 +466,10 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 	XercesDOMSupport theDOMSupport;
 	XercesParserLiaison theParserLiaison(theDOMSupport);
 
+	if (mp_doc == 0) {
+		throw XSECException(XSECException::UnsupportedFunction,
+			"XPath selection only supported in C14n for full documents");
+	}
 	XalanDocument* theDoc = theParserLiaison.createDocument(mp_doc);
 
 	XalanElement * xe = theDoc->createElement(XalanDOMString("ns"));

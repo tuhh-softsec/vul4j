@@ -101,6 +101,39 @@ struct XSECNameSpaceEntry {
 //           Class definition for the list
 // --------------------------------------------------------------------------------
 
+/**
+ * @ingroup pubsig
+ */
+/*\@{*/
+
+/**
+ * @brief Class to "expand" name spaces
+ *
+ * For most things, a DOM model interoperates well with XPath.  Unfortunately,
+ * name-spaces are the one main problem.  In particular, the XPath spec
+ * states that every element node has an attribute node for its own 
+ * namespaces, and one for namespaces above that are in scope.
+ *
+ * In the DOM scheme of things, a namespace is only available in the node in
+ * which it is defined.  Normally this is not a problem, you can just just
+ * refer backwards until you find the namespace you need.  However, for XPath
+ * expressions that select namespace nodes, we need to actually promulgate
+ * the name-spaces down to every node where they are visible so that the XPath
+ * selection will work properly.
+ *
+ * This is important for Canonicalisation of the found nodes, but we cannot
+ * do this only in the canonicaliser as it does not internally understand how
+ * to do DSIG style XPath.  So the XPath is done externally, and the 
+ * resultant node set (including any selected "Expanded" attribute nodes).
+ * are passed in.
+ *
+ * The expander therefore handles the propogation of the namespace nodes, and
+ * removes the propogated nodes when it goes out of scope (or when
+ * deleteAddedNamespaces() is called).
+ *
+ */
+
+
 class CANON_EXPORT XSECNameSpaceExpander {
 
 
@@ -113,11 +146,51 @@ class CANON_EXPORT XSECNameSpaceExpander {
 
 public:
 
+    /** @name Constructors and Destructors */
+    //@{
+	
+    /**
+	 * \brief Main constructure
+	 *
+	 * Use this constructor to expand namespaces through an entire document.
+	 *
+	 * @param d The DOM document to be expanded.
+	 */
+
 	XSECNameSpaceExpander(DOMDocument *d);			// Constructor
+
+    /**
+	 * \brief Fragment constructor
+	 *
+	 * Use this constructor to expand namespaces in a given fragment only.
+	 * @note The fragment does not need to be rooted in an actual document.
+	 *
+	 * @param f The starting element of the fragment to be expanded.
+	 */
+
+	XSECNameSpaceExpander(DOMElement *f);		    // frag Constructor
+
 	~XSECNameSpaceExpander();						// Default destructor
 
+	//@}
+
 	// Operate 
+
+	/**
+	 * \brief Expand namespaces.
+	 *
+	 * Perform the expansion operation and create a list of all added nodes.
+	 */
+
 	void expandNameSpaces(void);
+
+	/**
+	 * \brief Collapse name-spaces
+	 *
+	 * Delete all namespaces added in exandNameSpaces() (using the list that
+	 * was created at that time
+	 */
+
 	void deleteAddedNamespaces(void);
 
 	// Check if a node is an added node
@@ -132,6 +205,7 @@ private:  // Functions
 	
 	NameSpaceEntryListVectorType	m_lst;			// List of added name spaces
 	DOMDocument						* mp_doc;		// The owner document
+	DOMElement                      * mp_fragment;  // If we are doing a fragment
 	bool							m_expanded;		// Have we expanded already?
 	XSECSafeBufferFormatter			* mp_formatter;
 

@@ -82,6 +82,18 @@ XSEC_USING_XERCES(DOMNamedNodeMap);
 XSECNameSpaceExpander::XSECNameSpaceExpander(DOMDocument *d) {
 
 	mp_doc = d;
+	mp_fragment = d->getDocumentElement();
+	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
+												XMLFormatter::UnRep_CharRef));
+
+	m_expanded = false;
+	
+}
+
+XSECNameSpaceExpander::XSECNameSpaceExpander(DOMElement *f) {
+
+	mp_doc = NULL;
+	mp_fragment = f;
 	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
 												XMLFormatter::UnRep_CharRef));
 
@@ -189,7 +201,7 @@ void XSECNameSpaceExpander::expandNameSpaces(void) {
 
 	DOMElement	*docElt;		// The document element - do not expand it's namespaces
 	
-	docElt = mp_doc->getDocumentElement();
+	docElt = mp_fragment; //mp_doc->getDocumentElement();
 	int count = attNodeCount(docElt);
 
 	DOMNode *c;
@@ -214,7 +226,7 @@ void XSECNameSpaceExpander::deleteAddedNamespaces(void) {
 	NameSpaceEntryListVectorType::size_type size = m_lst.size();
 	XSECNameSpaceEntry *e;
 
-	DOMElement *docElt = mp_doc->getDocumentElement();
+	DOMElement *docElt = mp_fragment; //mp_doc->getDocumentElement();
 	int 	count = attNodeCount(docElt);
 
 	NameSpaceEntryListVectorType::size_type i;
