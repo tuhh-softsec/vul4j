@@ -273,7 +273,7 @@ XMLT::XMLT(const char * str) {
 
 XMLT::~XMLT (void) {
 
-	delete[] mp_unicodeStr;
+	XMLString::release(&mp_unicodeStr);
 
 }
 

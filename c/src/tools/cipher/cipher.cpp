@@ -133,7 +133,7 @@ std::ostream& operator<< (std::ostream& target, const XMLCh * s)
 {
     char *p = XMLString::transcode(s);
     target << p;
-    delete [] p;
+    XMLString::release(&p);
     return target;
 }
 
@@ -702,7 +702,7 @@ int evaluate(int argc, char ** argv) {
 		char * msg = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during encryption/decryption operation\n   Message: "
 		<< msg << endl;
-		delete [] msg;
+		XMLString::release(&msg);
 		errorsOccured = true;
 		if (formatTarget != NULL)
 			delete formatTarget;

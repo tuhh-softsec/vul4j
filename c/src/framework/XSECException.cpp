@@ -77,7 +77,7 @@ XSECException::XSECException(const XSECException &toCopy) {
 XSECException::~XSECException() {
 
 	if (msg != NULL)
-		delete[] msg;
+		XMLString::release(&msg);
 
 }
 

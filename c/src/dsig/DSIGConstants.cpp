@@ -136,48 +136,48 @@ void DSIGConstants::create() {
 void DSIGConstants::destroy() {
 
 	// Delete the static strings
-	delete[] (XMLCh *) s_unicodeStrEmpty;
-	delete[] (XMLCh *) s_unicodeStrNL;
-	delete[] (XMLCh *) s_unicodeStrXmlns;
-	delete[] (XMLCh *) s_unicodeStrURI;
+	XMLString::release((XMLCh **) &s_unicodeStrEmpty);
+	XMLString::release((XMLCh **) &s_unicodeStrNL);
+	XMLString::release((XMLCh **) &s_unicodeStrXmlns);
+	XMLString::release((XMLCh **) &s_unicodeStrURI);
 
-	delete[] (XMLCh *) s_unicodeStrAlgorithm;
+	XMLString::release((XMLCh **) &s_unicodeStrAlgorithm);
 
-	delete[] (XMLCh *) s_unicodeStrURIRawX509;
-	delete[] (XMLCh *) s_unicodeStrURIDSIG;
-	delete[] (XMLCh *) s_unicodeStrURIEC;
-	delete[] (XMLCh *) s_unicodeStrURIXPF;
-	delete[] (XMLCh *) s_unicodeStrURIXENC;
-	delete[] (XMLCh *) s_unicodeStrURISHA1;
-	delete[] (XMLCh *) s_unicodeStrURIMD5;
-	delete[] (XMLCh *) s_unicodeStrURIBASE64;
-	delete[] (XMLCh *) s_unicodeStrURIXPATH;
-	delete[] (XMLCh *) s_unicodeStrURIXSLT;
-	delete[] (XMLCh *) s_unicodeStrURIENVELOPE;
-	delete[] (XMLCh *) s_unicodeStrURIC14N_NOC;
-	delete[] (XMLCh *) s_unicodeStrURIC14N_COM;
-	delete[] (XMLCh *) s_unicodeStrURIEXC_C14N_NOC;
-	delete[] (XMLCh *) s_unicodeStrURIEXC_C14N_COM;
-	delete[] (XMLCh *) s_unicodeStrURIDSA_SHA1;
-	delete[] (XMLCh *) s_unicodeStrURIRSA_SHA1;
-	delete[] (XMLCh *) s_unicodeStrURIHMAC_SHA1;
-	delete[] (XMLCh *) s_unicodeStrURIXMLNS;
-	delete[] (XMLCh *) s_unicodeStrURIMANIFEST;
+	XMLString::release((XMLCh **) &s_unicodeStrURIRawX509);
+	XMLString::release((XMLCh **) &s_unicodeStrURIDSIG);
+	XMLString::release((XMLCh **) &s_unicodeStrURIEC);
+	XMLString::release((XMLCh **) &s_unicodeStrURIXPF);
+	XMLString::release((XMLCh **) &s_unicodeStrURIXENC);
+	XMLString::release((XMLCh **) &s_unicodeStrURISHA1);
+	XMLString::release((XMLCh **) &s_unicodeStrURIMD5);
+	XMLString::release((XMLCh **) &s_unicodeStrURIBASE64);
+	XMLString::release((XMLCh **) &s_unicodeStrURIXPATH);
+	XMLString::release((XMLCh **) &s_unicodeStrURIXSLT);
+	XMLString::release((XMLCh **) &s_unicodeStrURIENVELOPE);
+	XMLString::release((XMLCh **) &s_unicodeStrURIC14N_NOC);
+	XMLString::release((XMLCh **) &s_unicodeStrURIC14N_COM);
+	XMLString::release((XMLCh **) &s_unicodeStrURIEXC_C14N_NOC);
+	XMLString::release((XMLCh **) &s_unicodeStrURIEXC_C14N_COM);
+	XMLString::release((XMLCh **) &s_unicodeStrURIDSA_SHA1);
+	XMLString::release((XMLCh **) &s_unicodeStrURIRSA_SHA1);
+	XMLString::release((XMLCh **) &s_unicodeStrURIHMAC_SHA1);
+	XMLString::release((XMLCh **) &s_unicodeStrURIXMLNS);
+	XMLString::release((XMLCh **) &s_unicodeStrURIMANIFEST);
 
-	delete[] (XMLCh *) s_unicodeStrURI3DES_CBC;
-	delete[] (XMLCh *) s_unicodeStrURIAES128_CBC;
-	delete[] (XMLCh *) s_unicodeStrURIAES192_CBC;
-	delete[] (XMLCh *) s_unicodeStrURIAES256_CBC;
-	delete[] (XMLCh *) s_unicodeStrURIKW_AES128;
-	delete[] (XMLCh *) s_unicodeStrURIKW_AES192;
-	delete[] (XMLCh *) s_unicodeStrURIKW_AES256;
-	delete[] (XMLCh *) s_unicodeStrURIKW_3DES;
-	delete[] (XMLCh *) s_unicodeStrURIRSA_1_5;
-	delete[] (XMLCh *) s_unicodeStrURIRSA_OAEP_MGFP1;
-	delete[] (XMLCh *) s_unicodeStrURIXENC_ELEMENT;
-	delete[] (XMLCh *) s_unicodeStrURIXENC_CONTENT;
+	XMLString::release((XMLCh **) &s_unicodeStrURI3DES_CBC);
+	XMLString::release((XMLCh **) &s_unicodeStrURIAES128_CBC);
+	XMLString::release((XMLCh **) &s_unicodeStrURIAES192_CBC);
+	XMLString::release((XMLCh **) &s_unicodeStrURIAES256_CBC);
+	XMLString::release((XMLCh **) &s_unicodeStrURIKW_AES128);
+	XMLString::release((XMLCh **) &s_unicodeStrURIKW_AES192);
+	XMLString::release((XMLCh **) &s_unicodeStrURIKW_AES256);
+	XMLString::release((XMLCh **) &s_unicodeStrURIKW_3DES);
+	XMLString::release((XMLCh **) &s_unicodeStrURIRSA_1_5);
+	XMLString::release((XMLCh **) &s_unicodeStrURIRSA_OAEP_MGFP1);
+	XMLString::release((XMLCh **) &s_unicodeStrURIXENC_ELEMENT);
+	XMLString::release((XMLCh **) &s_unicodeStrURIXENC_CONTENT);
 
-	delete[] (XMLCh *) s_unicodeStrPROVOpenSSL;
-	delete[] (XMLCh *) s_unicodeStrPROVWinCAPI;
+	XMLString::release((XMLCh **) &s_unicodeStrPROVOpenSSL);
+	XMLString::release((XMLCh **) &s_unicodeStrPROVWinCAPI);
 
 }

@@ -98,19 +98,19 @@ XSECEnv::~XSECEnv() {
 	}
 
 	if (mp_prefixNS != NULL) {
-		delete[] mp_prefixNS;
+		XMLString::release(&mp_prefixNS);
 	}
 
 	if (mp_ecPrefixNS != NULL) {
-		delete[] mp_ecPrefixNS;
+		XMLString::release(&mp_ecPrefixNS);
 	}
 	
 	if (mp_xpfPrefixNS != NULL) {
-		delete[] mp_xpfPrefixNS;
+		XMLString::release(&mp_xpfPrefixNS);
 	}
 
 	if (mp_xencPrefixNS != NULL) {
-		delete[] mp_xencPrefixNS;
+		XMLString::release(&mp_xencPrefixNS);
 	}
 
 	if (mp_URIResolver != NULL) {
@@ -146,7 +146,7 @@ XSECURIResolver * XSECEnv::getURIResolver(void) const {
 void XSECEnv::setDSIGNSPrefix(const XMLCh * prefix) {
 
 	if (mp_prefixNS != NULL)
-		delete[] mp_prefixNS;
+		XMLString::release(&mp_prefixNS);
 
 	mp_prefixNS = XMLString::replicate(prefix);
 
@@ -155,7 +155,7 @@ void XSECEnv::setDSIGNSPrefix(const XMLCh * prefix) {
 void XSECEnv::setECNSPrefix(const XMLCh * prefix) {
 
 	if (mp_ecPrefixNS != NULL)
-		delete[] mp_ecPrefixNS;
+		XMLString::release(&mp_ecPrefixNS);
 
 	mp_ecPrefixNS = XMLString::replicate(prefix);
 
@@ -164,7 +164,7 @@ void XSECEnv::setECNSPrefix(const XMLCh * prefix) {
 void XSECEnv::setXPFNSPrefix(const XMLCh * prefix) {
 
 	if (mp_xpfPrefixNS != NULL)
-		delete[] mp_xpfPrefixNS;
+		XMLString::release(&mp_xpfPrefixNS);
 
 	mp_xpfPrefixNS = XMLString::replicate(prefix);
 
@@ -173,7 +173,7 @@ void XSECEnv::setXPFNSPrefix(const XMLCh * prefix) {
 void XSECEnv::setXENCNSPrefix(const XMLCh * prefix) {
 
 	if (mp_xencPrefixNS != NULL)
-		delete[] mp_xencPrefixNS;
+		XMLString::release(&mp_xencPrefixNS);
 
 	mp_xencPrefixNS = XMLString::replicate(prefix);
 

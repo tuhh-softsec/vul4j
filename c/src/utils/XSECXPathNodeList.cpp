@@ -162,7 +162,7 @@ void XSECXPathNodeList::addNode(const DOMNode *n) {
 		for (unsigned j = 0; j < m_num; ++j) {
 			newElts[j] = mp_elts[j];
 		}
-		delete mp_elts;
+		delete[] mp_elts;
 		mp_elts = newElts;
 
 	}
@@ -181,7 +181,7 @@ void XSECXPathNodeList::addNode(const DOMNode *n) {
 		const DOMNode ** newElts = new const DOMNode*[m_size];
 		memcpy(newElts, mp_elts, sizeof(DOMNode *) * m_num);
 
-		delete mp_elts;
+		delete[] mp_elts;
 		mp_elts = newElts;
 
 	}

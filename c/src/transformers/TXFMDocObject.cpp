@@ -42,7 +42,7 @@ TXFMDocObject::TXFMDocObject(DOMDocument *doc) : TXFMBase(doc) {
 TXFMDocObject::~TXFMDocObject() {
 
 	if (fragmentId != NULL)
-		delete[] fragmentId;
+		XMLString::release(&fragmentId);
 
 }
 

@@ -77,7 +77,7 @@ XSECAlgorithmMapper::~XSECAlgorithmMapper() {
 
 	while (it != m_mapping.end()) {
 		
-		delete[] (*it)->mp_uri;
+		XMLString::release(&((*it)->mp_uri));
 		delete (*it)->mp_handler;
 		delete (*it);
 

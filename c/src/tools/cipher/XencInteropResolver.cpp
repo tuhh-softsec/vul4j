@@ -257,7 +257,7 @@ XencInteropResolver::XencInteropResolver(DOMDocument * doc, const XMLCh * baseUR
 XencInteropResolver::~XencInteropResolver() {
 
 	if (mp_baseURI != NULL)
-		delete[]mp_baseURI;
+		XMLString::release(&mp_baseURI);
 
 }
 // --------------------------------------------------------------------------------

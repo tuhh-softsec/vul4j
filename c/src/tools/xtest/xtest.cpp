@@ -898,7 +898,7 @@ count(ancestor-or-self::dsig:Signature)");
 			cerr << "Failed" << endl;
 			char * e = XMLString::transcode(sig->getErrMsgs());
 			cout << e << endl;
-			delete [] e;
+			XMLString::release(&e);
 			exit(1);
 		}
 
@@ -991,7 +991,7 @@ count(ancestor-or-self::dsig:Signature)");
 			cerr << "Failed\n" << endl;
 			char * e = XMLString::transcode(sig->getErrMsgs());
 			cerr << e << endl;
-			delete [] e;
+			XMLString::release(&e);
 			exit(1);
 		}
 
@@ -1967,7 +1967,7 @@ int main(int argc, char **argv) {
 		// Output some info
 		char * provName = XMLString::transcode(XSECPlatformUtils::g_cryptoProvider->getProviderName());
 		cerr << "Crypto Provider string : " << provName << endl;
-		delete[] provName;
+		XMLString::release(&provName);
 
 		// Test signature functions
 		if (doSignatureTest) {

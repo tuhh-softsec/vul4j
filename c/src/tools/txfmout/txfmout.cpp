@@ -97,7 +97,7 @@ std::ostream& operator<< (std::ostream& target, const XMLCh * s)
 {
     char *p = XMLString::transcode(s);
     target << p;
-    delete [] p;
+    XMLString::release(&p);
     return target;
 }
 
@@ -568,7 +568,7 @@ int main(int argc, char **argv) {
 		char * m = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during signature processing\n   Message: "
 		<< m << endl;
-		delete[] m;
+		XMLString::release(&m);
 		errorsOccured = true;
 		exit (2);
 	}

@@ -79,7 +79,7 @@ mp_cipherString(NULL) {
 XENCCipherValueImpl::~XENCCipherValueImpl() {
 
 	if (mp_cipherString != NULL)
-		delete[] mp_cipherString;
+		XMLString::release(&mp_cipherString);
 
 }
 
@@ -123,7 +123,7 @@ DOMElement * XENCCipherValueImpl::createBlankCipherValue(
 
 	// Rest
 	if (mp_cipherString != NULL) {
-		delete[] mp_cipherString;
+		XMLString::release(&mp_cipherString);
 		mp_cipherString = NULL;
 	}
 
@@ -176,7 +176,7 @@ void XENCCipherValueImpl::setCipherString(const XMLCh * value) {
 	txt->setNodeValue(value);
 
 	if (mp_cipherString != NULL)
-		delete[] mp_cipherString;
+		XMLString::release(&mp_cipherString);
 
 	mp_cipherString = XMLString::replicate(value);
 

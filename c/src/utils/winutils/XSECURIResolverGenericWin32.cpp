@@ -28,6 +28,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.10  2004/02/21 08:26:54  blautenb
+ * Use XMLString::release rather than delete[] for all Xerces strings
+ *
  * Revision 1.9  2004/02/08 10:25:40  blautenb
  * Convert to Apache 2.0 license
  *
@@ -116,7 +119,7 @@ mp_baseURI(NULL) {
 XSECURIResolverGenericWin32::~XSECURIResolverGenericWin32() {
 
 	if (mp_baseURI != NULL)
-		delete[] mp_baseURI;
+		XMLString::release(&mp_baseURI);
 
 }
 
@@ -262,7 +265,7 @@ XSECURIResolver * XSECURIResolverGenericWin32::clone(void) {
 void XSECURIResolverGenericWin32::setBaseURI(const XMLCh * uri) {
 
 	if (mp_baseURI != NULL)
-		delete[] mp_baseURI;
+		XMLString::release(&mp_baseURI);
 
 	mp_baseURI = XMLString::replicate(uri);
 

@@ -162,7 +162,7 @@ safeBuffer::~safeBuffer() {
 	}
 
 	if (mp_XMLCh != NULL)
-		delete[] mp_XMLCh;
+		XMLString::release(&mp_XMLCh);
 
 }
 
@@ -542,7 +542,7 @@ const XMLCh * safeBuffer::sbStrToXMLCh(void) {
 
 	checkBufferType(BUFFER_CHAR);
 	if (mp_XMLCh != NULL)
-		delete mp_XMLCh;
+		XMLString::release(&mp_XMLCh);
 
 	mp_XMLCh = XMLString::transcode((char *) buffer);
 
@@ -569,7 +569,7 @@ void safeBuffer::sbTranscodeIn(const XMLCh * inStr) {
 	strcpy((char *) buffer, t);
 	m_bufferType = BUFFER_CHAR;
 
-	delete[] t;
+	XMLString::release(&t);
 
 }
 
@@ -591,7 +591,7 @@ void safeBuffer::sbTranscodeIn(const char * inStr) {
 	XMLString::copyString((XMLCh *) buffer, t);
 	m_bufferType = BUFFER_UNICODE;
 	
-	delete[] t;
+	XMLString::release(&t);
 
 }
 
@@ -646,7 +646,7 @@ void safeBuffer::sbXMLChCat(const char * str) {
 
 	XMLString::catString((XMLCh *) buffer, t);
 
-	delete[] t;
+	XMLString::release(&t);
 }
 
 void safeBuffer::sbXMLChCat8(const char * str) {

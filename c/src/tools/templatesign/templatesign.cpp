@@ -1251,7 +1251,7 @@ int main(int argc, char **argv) {
 		char * m = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during signing operation\n   Message: "
 		<< m << endl;
-		delete m;
+		XMLString::release(&m);
 		errorsOccured = true;
 		exit (1);
 	}
@@ -1301,7 +1301,7 @@ int main(int argc, char **argv) {
 	cout << doc;
 
 	delete [] gEncodingName;
-	delete [] (XMLCh *) encNameStr;   // Cast to allow delete[] const
+	XMLString::release((XMLCh **) &encNameStr);   // Cast to allow delete[] const
 	delete formatTarget;
 
 #if defined (_WIN32) && defined (HAVE_WINCAPI)

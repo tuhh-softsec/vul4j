@@ -876,7 +876,7 @@ ostream& operator<< (ostream& target, const DOMString& s)
 {
     char *p = s.transcode();
     target << p;
-    delete [] p;
+    XMLString::release(&p);
     return target;
 }
 

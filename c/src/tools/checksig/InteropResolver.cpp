@@ -66,7 +66,7 @@ InteropResolver::InteropResolver(const XMLCh * baseURI) {
 InteropResolver::~InteropResolver() {
 
 	if (mp_baseURI != NULL)
-		delete[]mp_baseURI;
+		XMLString::release(&mp_baseURI);
 
 }
 
@@ -98,7 +98,7 @@ X509 * InteropResolver::nextFile2Cert(void) {
 
 		char * base = XMLString::transcode(mp_baseURI);
 		safeBuffer path = base;
-		delete[] base;
+		XMLString::release(&base);
 
 		path.sbStrcatIn("/certs/*.crt");
 
@@ -322,12 +322,12 @@ bool InteropResolver::checkMatch(DSIGKeyInfoList * lst, X509 * x) {
 				if (strcmp(xserial, cserial) == 0) {
 					
 					OPENSSL_free(xserial);
-					delete[] cserial;
+					XMLString::release(&cserial);
 					return true;
 
 				}
 				//delete[] xserial;
-				delete[] cserial;
+				XMLString::release(&cserial);
 				OPENSSL_free(xserial);
 
 			}
@@ -401,7 +401,7 @@ bool InteropResolver::checkMatch(DSIGKeyInfoList * lst, X509 * x) {
 
 				X509_NAME * x509name = X509_get_subject_name(x);
 				X509_NAME * snname = X509_NAME_create_from_txt(csn);
-				delete[] csn;
+				XMLString::release(&csn);
 
 				if (snname != NULL) {
 

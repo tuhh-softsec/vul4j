@@ -46,7 +46,7 @@ XERCES_CPP_NAMESPACE_USE
 AnonymousResolver::~AnonymousResolver() {
 
 	if (mp_baseURI != NULL)
-		delete[] mp_baseURI;
+		XMLString::release(&mp_baseURI);
 
 }
 
@@ -69,7 +69,7 @@ XSECURIResolver * AnonymousResolver::clone(void) {
 void AnonymousResolver::setBaseURI(const XMLCh * uri) {
 
 	if (mp_baseURI != NULL)
-		delete[] mp_baseURI;
+		XMLString::release(&mp_baseURI);
 
 	mp_baseURI = XMLString::replicate(uri);
 
