@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- XPath="self::Parent or (parent::Parent and not(self::default:Child)) or self::GrandChild or parent::GrandChild" -->
+<!-- additionalNSPrefixes="default http://example.org" -->
+
+<!-- Result C14N:
+<Parent>
+    <GrandChild></GrandChild>
+  </Parent>
+-->
+
+<!-- Annotation C14N:
+1. The xmlns="" of Parent is not rendered, although it is explicitly declared.
+   This is because Parent has no output parent with a default namespace decla-
+   ration that is in the node set.
+2. The xmlns="" of GrandChild is not rendered, although it is explicitly
+   declared. This is because GrandChild has no output parent with a default
+   namespace declaration that is in the node set.
+-->
+
+<!-- Result EC14N:
+<Parent>
+    <GrandChild></GrandChild>
+  </Parent>
+-->
+
+<!-- Annotation EC14N:
+See Annotation C14N.
+-->
+
+<GrandParent>
+  <Parent xmlns="">
+    <Child xmlns="http://example.org">
+      <GrandChild xmlns=""/>
+    </Child>
+  </Parent>
+</GrandParent>  

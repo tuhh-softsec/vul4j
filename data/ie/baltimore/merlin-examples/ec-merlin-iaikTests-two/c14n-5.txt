@@ -1,0 +1,3 @@
+<Parent xmlns="http://example.org/default">
+    <ns1:GrandChild xmlns:ns1="http://example.org/ns1"></ns1:GrandChild><ns1:GrandChild xmlns:ns1="http://example.org/ns1" Gender="male"></ns1:GrandChild><GrandChild></GrandChild><GrandChild xmlns:ns1="http://example.org/ns1" ns1:Gender="male"></GrandChild>
+  </Parent>
