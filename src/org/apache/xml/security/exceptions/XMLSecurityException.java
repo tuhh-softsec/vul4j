@@ -60,6 +60,13 @@ import org.apache.xml.security.utils.I18n;
  */
 public class XMLSecurityException extends Exception {
 
+	
+	
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
    /** Field originalException */
    protected Exception originalException = null;
 

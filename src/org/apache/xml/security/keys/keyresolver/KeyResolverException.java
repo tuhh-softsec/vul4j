@@ -33,6 +33,11 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 public class KeyResolverException extends XMLSecurityException {
 
    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+   /**
     * Constructor KeyResolverException
     *
     */

@@ -30,6 +30,11 @@ public class ContentHandlerAlreadyRegisteredException
         extends XMLSecurityException {
 
    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+   /**
     * Constructor ContentHandlerAlreadyRegisteredException
     *
     */

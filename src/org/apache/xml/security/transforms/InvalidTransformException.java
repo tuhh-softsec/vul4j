@@ -29,6 +29,11 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 public class InvalidTransformException extends XMLSecurityException {
 
    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+   /**
     * Constructor InvalidTransformException
     *
     */
