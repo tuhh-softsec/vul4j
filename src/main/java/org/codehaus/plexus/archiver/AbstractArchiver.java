@@ -114,7 +114,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
         
         if ( !directory.isDirectory() )
         {
-            throw new ArchiverException( directory.getName() + " isn't a directory." );
+            throw new ArchiverException( directory.getAbsolutePath() + " isn't a directory." );
         }
 
         String basedir = directory.getAbsolutePath();
@@ -140,7 +140,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     {
         if ( !inputFile.isFile() || !inputFile.exists() )
         {
-            throw new ArchiverException( inputFile + " isn't a file." );
+            throw new ArchiverException( inputFile.getAbsolutePath() + " isn't a file." );
         }
 
         destFileName = destFileName.replace( '\\', '/' );
