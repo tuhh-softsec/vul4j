@@ -20,3 +20,10 @@ junit.jar=${root}/junit.jar
 # This output is suppressed by default but can be re-enabled by
 #suppressLogOutputDuringTests=false 
 suppressLogOutputDuringTests=true
+
+# Maven Properties
+#
+# Committers using agents may need to fill in and enable the following:
+#digester.cvs=scm:cvs:lserver:rdonkin@cvs.apache.org:/home/cvs:jakarta-commons/digester/
+#maven.username=rdonkin
+
