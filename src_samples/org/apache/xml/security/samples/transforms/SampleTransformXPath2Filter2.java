@@ -182,5 +182,7 @@ public class SampleTransformXPath2Filter2 {
          System.out.println(
             "-------------------------------------------------------------");
 
+      JavaUtils.writeBytesToFilename("1.html", sig.getSignedInfo().item(0).getHTMLRepresentation().getBytes());
+
    }
 }

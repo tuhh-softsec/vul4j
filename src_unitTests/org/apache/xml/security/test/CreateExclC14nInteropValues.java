@@ -524,9 +524,7 @@ public class CreateExclC14nInteropValues {
          String fname = directory + "c14n-" + i + "-apache.xml";
 
          System.out.println(fname);
-         JavaUtils
-            .writeBytesToFilename(fname, xmlSignature.getSignedInfo()
-               .getReferencedContentAfterTransformsItem(i).getBytes());
+         JavaUtils.writeBytesToFilename(fname, xmlSignature.getSignedInfo().getReferencedContentAfterTransformsItem(i).getBytes());
       }
 
       XMLSignature s = new XMLSignature(doc.getDocumentElement(),

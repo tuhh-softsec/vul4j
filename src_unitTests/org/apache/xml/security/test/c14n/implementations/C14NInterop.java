@@ -238,13 +238,15 @@ public class C14NInterop extends InteropTest {
 
                failures++;
 
+               /*
                XMLSignatureInput result =
                   signature.getSignedInfo()
                      .getReferencedContentAfterTransformsItem(i);
 
-               JavaUtils.writeBytesToFilename(directory + "/c14n-" + i
+               JavaUtils.writeBytesToFilename("data/temp" + "/c14n-" + i
                                               + "-apache.txt", result
                                                  .getBytes());
+               */
             }
          }
       }

@@ -230,9 +230,11 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       byte[] result = c.engineCanonicalizeSubTree(root);
       boolean equals = JavaUtils.binaryCompare(reference, result);
 
+      /*
       if (!equals) {
          JavaUtils.writeBytesToFilename("data/org/apache/xml/security/c14n/inExcl/example2_2_1_c14nized.apache.xml", result);
       }
+      */
 
       assertTrue(equals);
    }

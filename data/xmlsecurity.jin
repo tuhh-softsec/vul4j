@@ -8,7 +8,9 @@
 
 version                                   = "3.5"
 
-
+conventionString                          = "EEE, MMM d, ''yy"
+paddingParenthesis             = false
+spaceBeforeConditionBang          = false
 
 ### General -- Convention
 

@@ -228,22 +228,13 @@ public class ExclusiveC14NInterop extends InteropTest {
 
             if (refVerify) {
                cat.debug("Reference " + i + " was OK");
-               /*
-               JavaUtils.writeBytesToFilename(
-                  directory + "/c14n-" + i + ".html", signature.getSignedInfo()
-                     .item(i).getHTMLRepresentation().getBytes());
-               */
             } else {
                failures++;
 
                sb.append(i + " ");
 
-               JavaUtils.writeBytesToFilename(
-                  directory + "/c14n-" + i + ".apache.txt", signature.getSignedInfo()
-                     .item(i).getContentsAfterTransformation().getBytes());
-               JavaUtils.writeBytesToFilename(
-                  directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo()
-                     .item(i).getHTMLRepresentation().getBytes());
+               // JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());
+               // JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
 
                Reference reference = signature.getSignedInfo().item(i);
                int length = reference.getTransforms().getLength();

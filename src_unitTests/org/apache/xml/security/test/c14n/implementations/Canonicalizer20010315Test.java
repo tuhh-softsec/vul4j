@@ -902,7 +902,7 @@ public class Canonicalizer20010315Test extends TestCase {
          + "</included>"
          + "</included>";
       //J+
-      assertTrue(doTestXMLAttributes(input, definedOutput, false));
+      assertTrue(doTestXMLAttributes(input, definedOutput));
    }
 
    /**
@@ -937,7 +937,7 @@ public class Canonicalizer20010315Test extends TestCase {
          + "</included>"
          + "</included>";
       //J+
-      assertTrue(doTestXMLAttributes(input, definedOutput, false));
+      assertTrue(doTestXMLAttributes(input, definedOutput));
    }
 
    /**
@@ -972,7 +972,7 @@ public class Canonicalizer20010315Test extends TestCase {
          + "</included>"
          + "</included>";
       //J+
-      assertTrue(doTestXMLAttributes(input, definedOutput, false));
+      assertTrue(doTestXMLAttributes(input, definedOutput));
    }
 
    /**
@@ -1009,7 +1009,7 @@ public class Canonicalizer20010315Test extends TestCase {
          + "</included>"
          + "</included>";
       //J+
-      assertTrue(doTestXMLAttributes(input, definedOutput, false));
+      assertTrue(doTestXMLAttributes(input, definedOutput));
    }
 
    /**
@@ -1046,7 +1046,7 @@ public class Canonicalizer20010315Test extends TestCase {
          + "</included>"
          + "</included>";
       //J+
-      assertTrue(doTestXMLAttributes(input, definedOutput, false));
+      assertTrue(doTestXMLAttributes(input, definedOutput));
    }
 
    /**
@@ -1083,7 +1083,7 @@ public class Canonicalizer20010315Test extends TestCase {
          + "</included>"
          + "</included>";
       //J+
-      assertTrue(doTestXMLAttributes(input, definedOutput, false));
+      assertTrue(doTestXMLAttributes(input, definedOutput));
    }
 
    /**
@@ -1102,7 +1102,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws TransformerException
     */
    private static boolean doTestXMLAttributes(
-           String input, String definedOutput, boolean writeResultsToFile)
+           String input, String definedOutput)
               throws IOException, FileNotFoundException, SAXException,
                      ParserConfigurationException, CanonicalizationException,
                      InvalidCanonicalizerException, TransformerException {
@@ -1128,22 +1128,6 @@ public class Canonicalizer20010315Test extends TestCase {
          xpathAPI.selectNodeList(doc, "(//*[local-name()='included'] | //@*[parent::node()[local-name()='included']])");
       byte result[] = c14nizer.canonicalizeXPathNodeSet(nodes);
       byte defined[] = definedOutput.getBytes();
-
-      if (writeResultsToFile) {
-         File fileD = new File("defined.txt");
-         FileOutputStream fd = new FileOutputStream(fileD);
-
-         fd.write(defined);
-         cat.debug("Wrote defined output from test to file "
-                   + fileD.toURL().toString());
-
-         File fileR = new File("result.txt");
-         FileOutputStream fr = new FileOutputStream(fileR);
-
-         fr.write(result);
-         cat.debug("Wrote result output from test to file "
-                   + fileR.toURL().toString());
-      }
 
       return JavaUtils.binaryCompare(defined, result);
    }
