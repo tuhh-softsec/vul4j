@@ -92,53 +92,6 @@ public class C14nHelper {
     * @param attributes
     *
     */
-
-   /*
-   public static final Object[] sortAttributes(Object[] attributes) {
-
-      if (attributes == null) {
-         return new Attr[0];
-      }
-
-      Vector namespacesVector = new Vector();
-      Vector nonNamespacesVector = new Vector();
-
-      // first, we split namespace and non-namespace attrs to sort them separately
-      for (int i = 0; i < attributes.length; i++) {
-         Attr a = (Attr) attributes[i];
-
-         if (Constants.NamespaceSpecNS.equals(a.getNamespaceURI())) {
-            namespacesVector.add(a);
-         } else {
-            nonNamespacesVector.add(a);
-         }
-      }
-
-      // sort the namespaces
-      Object[] namespaces = namespacesVector.toArray();
-
-      java.util.Arrays.sort(namespaces, new NSAttrCompare());
-
-      // sort the attributes
-      Object[] nonNamespaces = nonNamespacesVector.toArray();
-
-      java.util.Arrays.sort(nonNamespaces, new NonNSAttrCompare());
-
-      // merge them into a hole result
-      Object result[] = new Object[attributes.length];
-
-      for (int i = 0; i < namespaces.length; i++) {
-         result[i] = (Attr) namespaces[i];
-      }
-
-      for (int i = 0; i < nonNamespaces.length; i++) {
-         result[i + namespaces.length] = (Attr) nonNamespaces[i];
-      }
-
-      return result;
-   }
-   */
-
    public static final Object[] sortAttributes(Object[] attributes) {
 
       if (attributes == null) {
