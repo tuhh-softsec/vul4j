@@ -1000,6 +1000,35 @@ public class XMLUtils {
       }
    }
 
+    /**
+     * This method returns the first non-null owner document of the Node's in this Set.
+     * This method is necessary because it <I>always</I> returns a
+     * {@link Document}. {@link Node#getOwnerDocument} returns <CODE>null</CODE>
+     * if the {@link Node} is a {@link Document}.
+     *
+     * @param xpathNodeSet
+     * @return the owner document 
+     */
+    public static Document getOwnerDocument(Set xpathNodeSet) {
+       NullPointerException npe = null;
+       Iterator iterator = xpathNodeSet.iterator();
+       while(iterator.hasNext()) {
+           Node node = (Node) iterator.next();
+           if (node.getNodeType() == Node.DOCUMENT_NODE) {
+              return (Document) node;
+           } else {
+              try {
+                 return node.getOwnerDocument();
+              } catch (NullPointerException e) {
+                  npe = e;
+              }
+           }
+       }
+       throw new NullPointerException(I18n.translate("endorsed.jdk1.4.0")
+                                       + " Original message was \""
+                                       + (npe == null ? "" : npe.getMessage()) + "\"");
+    }
+    
    /** Field randomNS */
    private static String randomNS = null;
 

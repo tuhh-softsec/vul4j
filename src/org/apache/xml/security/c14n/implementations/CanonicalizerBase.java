@@ -364,9 +364,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
       }
 
       if (this._doc == null) {
-         Node n = (Node) this._xpathNodeSet.iterator().next();
-
-         this._doc = XMLUtils.getOwnerDocument(n);
+         this._doc = XMLUtils.getOwnerDocument(this._xpathNodeSet);
          this._documentElement = this._doc.getDocumentElement();
          this._rootNodeOfC14n = this._doc;
       }
