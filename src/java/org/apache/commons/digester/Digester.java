@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.57 2002/07/31 11:06:46 jstrachan Exp $
- * $Revision: 1.57 $
- * $Date: 2002/07/31 11:06:46 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.58 2002/07/31 17:23:55 patrickl Exp $
+ * $Revision: 1.58 $
+ * $Date: 2002/07/31 17:23:55 $
  *
  * ====================================================================
  *
@@ -92,8 +92,12 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
+
+
 
 
 /**
@@ -111,9 +115,14 @@ import org.xml.sax.XMLReader;
  * to <code>parse()</code> must be completed before another can be initiated
  * even from the same thread.</p>
  *
+ * <p><strong>IMPLEMENTATION NOTE</strong> - A bug in Xerces 2.0.2 prevents
+ * the support of XML schema. You need Xerces 2.1 or JAXP 1.2.1 to make
+ * that class working with XML schema</p>
+ *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.57 $ $Date: 2002/07/31 11:06:46 $
+ * @author Jean-Francois Arcand
+ * @version $Revision: 1.58 $ $Date: 2002/07/31 17:23:55 $
  */
 
 public class Digester extends DefaultHandler {
@@ -195,10 +204,10 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * The URLs of DTDs that have been registered, keyed by the public
+     * The URLs of entityValidator that have been registered, keyed by the public
      * identifier that corresponds.
      */
-    protected HashMap dtds = new HashMap();
+    protected HashMap entityValidator = new HashMap();
 
 
     /**
@@ -214,6 +223,19 @@ public class Digester extends DefaultHandler {
     protected static SAXParserFactory factory = null;
 
 
+    /**
+     * The JAXP 1.2 property required to set up the schema location.
+     */
+    private static final String JAXP_SCHEMA_SOURCE =
+        "http://java.sun.com/xml/jaxp/properties/schemaSource";
+
+    /**
+     * The JAXP 1.2 property to set up the schemaLanguage used.
+     */
+    private String JAXP_SCHEMA_LANGUAGE =
+        "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+
+    
     /**
      * The Locator associated with our parser.
      */
@@ -284,7 +306,19 @@ public class Digester extends DefaultHandler {
      */
     protected Rules rules = null;
 
-
+   /**
+     * The XML schema language to use for validating an XML instance. By
+     * default this value is set to <code>W3C_XML_SCHEMA</code>
+     */
+    private String schemaLanguage = W3C_XML_SCHEMA;
+    
+        
+    /**
+     * The XML schema to use for validating an XML instance.
+     */
+    private String schemaLocation = null;
+    
+    
     /**
      * The object stack being constructed.
      */
@@ -316,10 +350,17 @@ public class Digester extends DefaultHandler {
      */
     private Log saxLog =
         LogFactory.getLog("org.apache.commons.digester.Digester.sax");
+    
+        
+    /**
+     * The schema language supported. By default, we use this one.
+     */
+    private static final String W3C_XML_SCHEMA =
+        "http://www.w3.org/2001/XMLSchema";
+    
 
-
+    
     // ----------------------------------------------------------- Properties
-
 
     /**
      * Return the currently mapped namespace URI for the specified prefix,
@@ -329,7 +370,7 @@ public class Digester extends DefaultHandler {
      * @param prefix Prefix to look up
      */
     public String findNamespaceURI(String prefix) {
-
+        
         ArrayStack stack = (ArrayStack) namespaces.get(prefix);
         if (stack == null) {
             return (null);
@@ -492,7 +533,6 @@ public class Digester extends DefaultHandler {
      * Return the "namespace aware" flag for parsers we create.
      */
     public boolean getNamespaceAware() {
-
         return (this.namespaceAware);
 
     }
@@ -504,9 +544,7 @@ public class Digester extends DefaultHandler {
      * @param namespaceAware The new "namespace aware" flag
      */
     public void setNamespaceAware(boolean namespaceAware) {
-
         this.namespaceAware = namespaceAware;
-
     }
 
 
@@ -552,9 +590,9 @@ public class Digester extends DefaultHandler {
      * is a problem creating the parser, return <code>null</code>.
      */
     public SAXParser getParser() {
-
         // Return the parser we already created (if any)
-        if (parser != null) {
+        if (parser != null){
+            setJAXPProperties();
             return (parser);
         }
 
@@ -566,8 +604,10 @@ public class Digester extends DefaultHandler {
                 }
                 factory.setNamespaceAware(namespaceAware);
                 factory.setValidating(validating);
-                parser = factory.newSAXParser();
-                return (parser);
+                    
+                parser = factory.newSAXParser();         
+                setJAXPProperties();
+                return parser;                                                
             } catch (Exception e) {
                 log.error("Digester.getParser: ", e);
                 return (null);
@@ -575,17 +615,14 @@ public class Digester extends DefaultHandler {
         }
 
     }
-
-
     /**
      * By setting the reader in the constructor, you can bypass JAXP and
-     * be able to use digester in Weblogic 6.0.
+     * be able to use digester in Weblogic 6.0.  
      *
      * @deprecated Use getXMLReader() instead, which can throw a
      *  SAXException if the reader cannot be instantiated
      */
     public XMLReader getReader() {
-
         try {
             return (getXMLReader());
         } catch (SAXException e) {
@@ -599,17 +636,18 @@ public class Digester extends DefaultHandler {
     /**
      * Return the XMLReader to be used for parsing the input document.
      *
+     * FIX ME: there is a bug in JAXP/XERCES that prevent the use of a 
+     * parser that contains a schema with a DTD.
      * @exception SAXException if no XMLReader can be instantiated
      */
     public synchronized XMLReader getXMLReader() throws SAXException {
-
-        if (reader == null) {
+        if (reader == null){
             reader = getParser().getXMLReader();
-        }
-
-        //set up the parse
-        reader.setContentHandler(this);
-        reader.setDTDHandler(this);
+        }        
+                               
+        reader.setDTDHandler(this);           
+        reader.setContentHandler(this);        
+        
         reader.setEntityResolver(this);
         reader.setErrorHandler(this);
         return reader;
@@ -631,7 +669,25 @@ public class Digester extends DefaultHandler {
 
     }
 
-
+    
+    /**
+     * Set the JAXP 1.2 XML Schema support.
+     */
+    private void setJAXPProperties(){
+        try{
+            parser.setProperty(JAXP_SCHEMA_LANGUAGE, schemaLanguage);
+            if (schemaLocation != null){
+                parser.setProperty(JAXP_SCHEMA_SOURCE, schemaLocation);
+            }         
+        } catch (SAXNotRecognizedException e){
+            log.warn("Error: JAXP SAXParser property not recognized: "
+                + JAXP_SCHEMA_LANGUAGE);          
+        } catch (SAXNotSupportedException e){
+            log.warn("Error: JAXP SAXParser property not recognized: "
+                + JAXP_SCHEMA_LANGUAGE);   
+        }
+    }    
+    
     /**
      * Set the <code>Rules</code> implementation object containing our
      * rules collection and associated matching policy.
@@ -678,6 +734,21 @@ public class Digester extends DefaultHandler {
 
     }
 
+    /**
+     * Set the XML Schema URI used for validating a XML Instance.
+     * @param schemaURI a URI to the schema.
+     */
+    public void setSchema(String schemaURI){
+        schemaLocation = schemaURI;    
+    }   
+    
+    /**
+     * Set the XML Schema language used when parsing. By default, we use W3C.
+     * @param schemaURI a URI to the schema.
+     */
+    public void setSchemaLanguage(String schemaLanguageURI){
+        schemaLanguage = schemaLanguageURI;    
+    }   
 
     /**
      * Determine whether to use the Context ClassLoader (the one found by
@@ -989,9 +1060,8 @@ public class Digester extends DefaultHandler {
     public void startElement(String namespaceURI, String localName,
                              String qName, Attributes list)
             throws SAXException {
-
         boolean debug = log.isDebugEnabled();
-
+        
         if (saxLog.isDebugEnabled()) {
             saxLog.debug("startElement(" + namespaceURI + "," + localName + "," +
                     qName + ")");
@@ -1123,33 +1193,56 @@ public class Digester extends DefaultHandler {
      *
      * @exception SAXException if a parsing exception occurs
      */
-    public InputSource resolveEntity(String publicId, String systemId)
-            throws SAXException {
-
+      public InputSource resolveEntity(String publicId, String systemId)
+            throws SAXException {     
+                
         boolean debug = log.isDebugEnabled();
+        
         if (saxLog.isDebugEnabled()) {
             saxLog.debug("resolveEntity('" + publicId + "', '" + systemId + "')");
         }
         this.publicId = publicId;
-
+                                       
         // Has this system identifier been registered?
-        String dtdURL = null;
+        String entityURL = null;
         if (publicId != null) {
-            dtdURL = (String) dtds.get(publicId);
+            entityURL = (String) entityValidator.get(publicId);
         }
-        if (dtdURL == null) {
-            if (debug) {
-                log.debug(" Not registered, use system identifier");
+        
+        // Redirect the schema/dtd location to a local destination.
+        if (schemaLocation != null && entityValidator != null && entityURL == null){
+            try {    
+                String schemaName = null;
+                String localURI = null;
+                try{
+                    schemaName = systemId.substring(systemId.lastIndexOf("/") + 1);
+                    localURI = (String)entityValidator.get(schemaName);
+                } catch(IndexOutOfBoundsException ex){
+                    if (debug) {
+                        log.debug(" Not registered, use system identifier");
+                    }
+                    return null;
+                }   
+                
+                if ( localURI == null ){
+                    if (debug) {
+                        log.debug(" Not registered, use system identifier");
+                    }
+                    return null;
+                }         
+                return new InputSource(localURI);         
+            } catch (Exception e) {
+               throw createSAXException(e);
             }
-            return (null);
         }
+
 
         // Return an input source to our alternative URL
         if (debug) {
-            log.debug(" Resolving to alternate DTD '" + dtdURL + "'");
+            log.debug(" Resolving to alternate DTD '" + entityURL + "'");
         }
         try {
-            URL url = new URL(dtdURL);
+            URL url = new URL(entityURL);
             InputStream stream = url.openStream();
             return (new InputSource(stream));
         } catch (Exception e) {
@@ -1268,9 +1361,7 @@ public class Digester extends DefaultHandler {
         getXMLReader().parse(input);
         return (root);
 
-    }
-
-
+    }   
     /**
      * Parse the content of the specified input source using this Digester.
      * Returns the root element from the object stack (if any).
@@ -1281,7 +1372,7 @@ public class Digester extends DefaultHandler {
      * @exception SAXException if a parsing exception occurs
      */
     public Object parse(InputSource input) throws IOException, SAXException {
-
+ 
         configure();
         getXMLReader().parse(input);
         return (root);
@@ -1301,7 +1392,8 @@ public class Digester extends DefaultHandler {
     public Object parse(InputStream input) throws IOException, SAXException {
 
         configure();
-        getXMLReader().parse(new InputSource(input));
+        InputSource is = new InputSource(input);
+        getXMLReader().parse(is);
         return (root);
 
     }
@@ -1319,7 +1411,8 @@ public class Digester extends DefaultHandler {
     public Object parse(Reader reader) throws IOException, SAXException {
 
         configure();
-        getXMLReader().parse(new InputSource(reader));
+        InputSource is = new InputSource(reader);
+        getXMLReader().parse(is);
         return (root);
 
     }
@@ -1337,7 +1430,8 @@ public class Digester extends DefaultHandler {
     public Object parse(String uri) throws IOException, SAXException {
 
         configure();
-        getXMLReader().parse(uri);
+        InputSource is = new InputSource(uri);
+        getXMLReader().parse(is);
         return (root);
 
     }
@@ -1348,14 +1442,14 @@ public class Digester extends DefaultHandler {
      * This must be called before the first call to <code>parse()</code>.
      *
      * @param publicId Public identifier of the DTD to be resolved
-     * @param dtdURL The URL to use for reading this DTD
+     * @param entityURL The URL to use for reading this DTD
      */
-    public void register(String publicId, String dtdURL) {
+    public void register(String publicId, String entityURL) {
 
         if (log.isDebugEnabled()) {
-            log.debug("register('" + publicId + "', '" + dtdURL + "'");
+            log.debug("register('" + publicId + "', '" + entityURL + "'");
         }
-        dtds.put(publicId, dtdURL);
+        entityValidator.put(publicId, entityURL);
 
     }
 
@@ -1863,7 +1957,6 @@ public class Digester extends DefaultHandler {
         params.clear();
         publicId = null;
         stack.clear();
-
     }
 
 
@@ -1982,7 +2075,7 @@ public class Digester extends DefaultHandler {
      */
     Map getRegistrations() {
 
-        return (dtds);
+        return (entityValidator);
 
     }
 
@@ -2130,5 +2223,5 @@ public class Digester extends DefaultHandler {
     protected SAXException createSAXException(String message) {
         return createSAXException(message, null);
     }
-
+    
 }
