@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseGenerator.java,v 1.1 2003/07/17 22:44:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseGenerator.java,v 1.2 2003/11/25 21:03:41 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -71,7 +71,7 @@ import org.apache.commons.functor.generator.util.CollectionTransformer;
  * each subclass.
  *
  * @since 1.0
- * @version $Revision: 1.1 $ $Date: 2003/07/17 22:44:45 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/25 21:03:41 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
@@ -115,7 +115,10 @@ public abstract class BaseGenerator implements Generator {
     /** Set to true when the generator is {@link #stop stopped}. */
     private boolean stopped = false;
 
-    /** See {@link Algorithms#apply}. */
+    /** 
+     * See {@link Algorithms#apply}.
+     * @deprecated Use <code>{@link #foreach foreach}({@link UnaryFunctionUnaryProcedure UnaryFunctionUnaryProcedure}.adapt(func))</code>.
+     */
     public final Generator apply(UnaryFunction func) {
         return Algorithms.apply(this,func);
     }

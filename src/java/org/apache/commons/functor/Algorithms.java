@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.12 2003/11/25 20:47:14 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.13 2003/11/25 21:03:41 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,8 +63,11 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.functor.adapter.UnaryFunctionUnaryProcedure;
+import org.apache.commons.functor.core.NoOp;
 import org.apache.commons.functor.core.collection.FilteredIterator;
 import org.apache.commons.functor.core.collection.TransformedIterator;
+import org.apache.commons.functor.core.composite.ConditionalUnaryProcedure;
 import org.apache.commons.functor.core.composite.UnaryNot;
 import org.apache.commons.functor.generator.BaseGenerator;
 import org.apache.commons.functor.generator.Generator;
@@ -86,7 +89,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.12 $ $Date: 2003/11/25 20:47:14 $
+ * @version $Revision: 1.13 $ $Date: 2003/11/25 21:03:41 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -163,15 +166,12 @@ public final class Algorithms {
     /**
      * Returns a {@link Generator} that will apply the given {@link UnaryFunction} to each
      * generated element.
+     * @deprecated Use {@link UnaryFunctionUnaryProcedure} and run the generator yourself.
      */
-    public static final Generator apply(final Generator gen, final UnaryFunction func) {        
+    public static final Generator apply(final Generator gen, final UnaryFunction func) {
         return new BaseGenerator(gen) {
             public void run(final UnaryProcedure proc) {
-                gen.run(new UnaryProcedure() {
-                    public void run(Object obj) {
-                        proc.run(func.evaluate(obj));
-                    }
-                });
+                gen.run(new UnaryFunctionUnaryProcedure(func));
             }
         };
     }
@@ -232,7 +232,7 @@ public final class Algorithms {
     /**
      * Return the first element within the given {@link Generator} that matches
      * the given {@link UnaryPredicate UnaryPredicate}, or return the given
-     * (possibly <code>null</code> <code>Object</code> if no matching element
+     * (possibly <code>null</code>) <code>Object</code> if no matching element
      * can be found.
      *
      * @see #detect(Generator,UnaryPredicate)
@@ -240,11 +240,7 @@ public final class Algorithms {
     public static final Object detect(final Generator gen, final UnaryPredicate pred, Object ifNone) {
         FindWithinGenerator finder = new FindWithinGenerator(gen,pred);
         gen.run(finder);
-        if(finder.wasFound()) {
-            return finder.getFoundObject();
-        } else {
-            return ifNone;
-        }
+        return finder.wasFound() ? finder.getFoundObject() : ifNone;
     }
 
     /**
@@ -263,10 +259,26 @@ public final class Algorithms {
     }
 
     /**
-     * Equivalent to <code>{@link #inject(Generator,Object,BinaryFunction) inject}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),seed,func)</code>.
+     * {@link BinaryFunction#evaluate Evaluate} the pair <i>( previousResult,
+     * element )</i> for each element in the given {@link Iterator} where
+     * previousResult is initially <i>seed</i>, and thereafter the result of the
+     * evaluation of the previous element in the iterator. Returns the result
+     * of the final evaluation.
+     *
+     * <p>
+     * In code:
+     * <pre>
+     * while(iter.hasNext()) {
+     *   seed = func.evaluate(seed,iter.next());
+     * }
+     * return seed;
+     * </pre>
      */
     public static final Object inject(Iterator iter, Object seed, BinaryFunction func) {
-        return inject(new IteratorToGeneratorAdapter(iter), seed, func);
+        while(iter.hasNext()) {
+            seed = func.evaluate(seed,iter.next());
+        }
+        return seed;
     }
 
     /**
@@ -286,16 +298,9 @@ public final class Algorithms {
      * </pre>
      */
     public static final Object inject(Generator gen, final Object seed, final BinaryFunction func) {
-        final Object[] result = new Object[1];
-        result[0] = seed;
-
-        gen.run(new UnaryProcedure() {
-            public void run(Object obj) {
-                result[0] = func.evaluate(result[0], obj);
-            }
-        });
-
-        return result[0];
+        Injector injector = new Injector(seed,func);
+        gen.run(injector);
+        return injector.getResult();
     }
 
     /**
@@ -313,13 +318,7 @@ public final class Algorithms {
     public static Generator reject(final Generator gen, final UnaryPredicate pred) {
         return new BaseGenerator(gen) {
             public void run(final UnaryProcedure proc) {
-                gen.run(new UnaryProcedure() {
-                    public void run(Object obj) {
-                        if (!pred.test(obj)) {
-                            proc.run(obj);
-                        }
-                    }
-                });
+                gen.run(new ConditionalUnaryProcedure(pred,NoOp.instance(),proc));
             }
         };
     }
@@ -339,13 +338,7 @@ public final class Algorithms {
     public static final Generator select(final Generator gen, final UnaryPredicate pred) {
         return new BaseGenerator(gen) {
             public void run(final UnaryProcedure proc) {
-                gen.run(new UnaryProcedure() {
-                    public void run(Object obj) {
-                        if (pred.test(obj)) {
-                            proc.run(obj);
-                        }
-                    }
-                });
+                gen.run(new ConditionalUnaryProcedure(pred,proc,NoOp.instance()));
             }
         };
     }
@@ -364,26 +357,6 @@ public final class Algorithms {
      */
     public static final Generator until(final Generator gen, final UnaryPredicate pred) {
         return reject(gen,pred);
-        // here's the old version of this code
-        // reject(gen,pred) doesn't call stop()
-        // like this version does.
-        // should reject call stop?  
-        // is the stop call signficant here?
-        /*
-        return new BaseGenerator(gen) {
-            public void run(final UnaryProcedure proc) {
-                gen.run(new UnaryProcedure() {
-                    public void run(Object obj) {
-                        if (pred.test(obj)) {
-                            stop();
-                        } else {
-                            proc.run(obj);
-                        }
-                    }
-                });
-            }
-        };
-        */
     }
 
     /**
@@ -444,6 +417,24 @@ public final class Algorithms {
         private boolean found = false;
         private Object foundObject = null;
         private Generator generator = null;
+    }
+
+    private static class Injector implements UnaryProcedure {
+        Injector(Object seed, BinaryFunction function) {
+            this.seed = seed;
+            this.function = function;
+        }
+        
+        public void run(Object obj) {
+            seed = function.evaluate(seed,obj);
+        }
+        
+        Object getResult() {
+            return seed;
+        }
+        
+        private Object seed = null;
+        private BinaryFunction function = null;
     }
     
 }
