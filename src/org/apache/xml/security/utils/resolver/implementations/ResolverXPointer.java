@@ -90,7 +90,8 @@ public class ResolverXPointer extends ResourceResolverSpi {
       
 
       //Set resultSet = XMLUtils.convertNodelistToSet(resultNode); 
-      XMLSignatureInput result = new XMLSignatureInput(resultNode,new CachedXPathAPIHolder(doc));
+      CachedXPathAPIHolder.setDoc(doc);
+      XMLSignatureInput result = new XMLSignatureInput(resultNode);
 
       result.setMIMEType("text/xml");
 
