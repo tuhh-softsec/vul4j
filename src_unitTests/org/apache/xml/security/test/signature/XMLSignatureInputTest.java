@@ -228,7 +228,7 @@ public class XMLSignatureInputTest extends TestCase {
       String s1 =
          "<!--Small Comment Test--><RootElement><Element1/><Element2/><Element3>Text in Element3</Element3></RootElement>";
 
-      XMLUtils.circumventBug2650(doc);
+      //XMLUtils.circumventBug2650(doc);
 
       CachedXPathAPI cXPathAPI = new CachedXPathAPI();
       NodeList nl = cXPathAPI.selectNodeList(doc,

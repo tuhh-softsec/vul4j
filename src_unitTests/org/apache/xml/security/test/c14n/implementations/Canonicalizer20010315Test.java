@@ -1085,7 +1085,7 @@ public class Canonicalizer20010315Test extends TestCase {
          Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
       CachedXPathAPI xpathAPI = new CachedXPathAPI();
 
-      XMLUtils.circumventBug2650(doc);
+      //XMLUtils.circumventBug2650(doc);
 
       NodeList nodes =
          xpathAPI.selectNodeList(doc, "(//*[local-name()='included'] | //@*[parent::node()[local-name()='included']])");

@@ -159,7 +159,7 @@ public class ExclusiveC14NInterop extends InteropTest {
       org.w3c.dom.Document doc = db.parse(f);
       long start = System.currentTimeMillis();
 
-      XMLUtils.circumventBug2650(doc);
+      //XMLUtils.circumventBug2650(doc);
 
       long end = System.currentTimeMillis();
 
