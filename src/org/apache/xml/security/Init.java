@@ -121,9 +121,10 @@ public class Init {
                Class.forName("org.apache.xml.security.Init")
                   .getResourceAsStream("resource/config.xml");
             Document doc = db.parse(is);
-            Element context = XMLUtils.createDSctx(
-               doc, "x", "http://www.xmlsecurity.org/NS/#configuration");
+            Element context = doc.createElement("nscontext");
 
+            context.setAttribute(
+               "xmlns:x", "http://www.xmlsecurity.org/NS/#configuration");
             context.setAttribute("xmlns:log4j",
                                  "http://jakarta.apache.org/log4j/");
 
@@ -318,9 +319,9 @@ public class Init {
             }
 
             {
-               Element cipherAlgos = (Element) XPathAPI.selectSingleNode(
-                  doc, "/x:Configuration/x:EncryptionMethods",
-                  context);
+               Element cipherAlgos = (Element) XPathAPI.selectSingleNode(doc,
+                                        "/x:Configuration/x:EncryptionMethods",
+                                        context);
 
                EncryptionMethod.init(cipherAlgos);
             }

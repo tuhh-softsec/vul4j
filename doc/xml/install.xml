@@ -2,6 +2,9 @@
 <!DOCTYPE s1 SYSTEM "./dtd/document.dtd">
 
 <s1 title="Installation">
+	<s2 title="Prerequisite">
+	  <p>Make sure you get the Jakarta Ant Tool from <jump href="http://jakarta.apache.org/ant/">http://jakarta.apache.org/ant/</jump></p>
+	</s2>
 	<s2 title="Getting the source">
 		<p>This project's CVS repository can be checked out through anonymous (pserver) CVS with the following instruction set. The module you wish to check out must be specified as the modulename. When prompted for a password for anonymous, simply enter "anoncvs" without quotes: </p>
 <source>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
@@ -9,8 +12,21 @@ password: anoncvs
 
 cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</source>
 		<p>A HTTP interface to browse the sources online is available via <jump href="http://cvs.apache.org/viewcvs.cgi/xml-security/">http://cvs.apache.org/viewcvs.cgi/xml-security/</jump></p>
-</s2>
-
+        </s2>
+	<s2 title="Compiling the source">
+	  <p>
+	    At the command prompt type 'ant test'. If you don't
+	    use jikes as your java compiler locate the 'build.xml'
+	    file and replace the line
+	  </p>
+	  <p>
+	      &gt;property name="build.compiler" value="jikes"/&lt;
+	  </p>
+	  with
+          <p>
+	      &gt;property name="build.compiler" value="classic"/&lt;
+	  </p>
+	</s2>
 <!--	<s2 title="Unpacking the files">
 		<p>&packagename; is packaged as a ZIP file for all
 		platforms and operating systems.  You can run the Java

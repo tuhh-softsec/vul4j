@@ -112,7 +112,7 @@ public class CreateMerlinsExampleSixteen {
       String privateKeyAlias = "test";
       String privateKeyPass = "xmlsecurity";
       String certificateAlias = "test";
-      File signatureFile = new File("merlinsSixteenRecreated.xml");
+      File signatureFile = new File("merlinsSixteenRecreatedNoRetrievalMethod.xml");
       //J+
       KeyStore ks = KeyStore.getInstance(keystoreType);
       FileInputStream fis = new FileInputStream(keystoreFile);
@@ -121,6 +121,11 @@ public class CreateMerlinsExampleSixteen {
 
       PrivateKey privateKey = (PrivateKey) ks.getKey(privateKeyAlias,
                                  privateKeyPass.toCharArray());
+
+      if (privateKey == null) {
+         throw new RuntimeException("Private key is null");
+      }
+
       X509Certificate cert =
          (X509Certificate) ks.getCertificate(certificateAlias);
       javax.xml.parsers.DocumentBuilderFactory dbf =
@@ -444,6 +449,16 @@ public class CreateMerlinsExampleSixteen {
             new RetrievalMethod(
                doc, "#object-4", retrievalTransforms,
                "http://www.w3.org/2000/09/xmldsig#X509Data"));
+
+         /*
+         X509Data x509data = new X509Data(doc);
+
+         x509data.add(new XMLX509SubjectName(doc, cert));
+         x509data.add(new XMLX509IssuerSerial(doc, cert));
+         x509data.add(new XMLX509Certificate(doc, cert));
+         sig.getKeyInfo().add(x509data);
+         */
+
          System.out.println("Start signing");
          sig.sign(privateKey);
          System.out.println("Finished signing");

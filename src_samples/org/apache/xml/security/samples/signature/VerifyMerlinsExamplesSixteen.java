@@ -249,11 +249,15 @@ public class VerifyMerlinsExamplesSixteen {
          System.out.println("Did not find a KeyInfo");
       }
 
-
       SignedInfo s = signature.getSignedInfo();
       for (int i=0; i<s.getSignedContentLength(); i++) {
          System.out.println("################ Signed Resource " + i + " ################");
-         System.out.println(new String(s.getSignedContentItem(i)));
+         FileOutputStream f2 = new FileOutputStream(filename + "." + i + ".input");
+         byte[] data = s.getSignedContentItem(i);
+         f2.write(data);
+         f2.close();
+
+         System.out.println(new String(data));
          System.out.println();
       }
    }

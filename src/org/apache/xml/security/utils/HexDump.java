@@ -332,12 +332,6 @@ public class HexDump {
          }
       }
 
-      if (DEBUG) {
-         lTime = System.currentTimeMillis() - lTime;
-
-         System.out.println("DEBUG: time for conversion:" + lTime + "(ms)");
-      }
-
       return buf.toString();
    }
 
@@ -381,12 +375,6 @@ public class HexDump {
          if (i < length - 1) {
             buf.append(":");
          }
-      }
-
-      if (DEBUG) {
-         lTime = System.currentTimeMillis() - lTime;
-
-         System.out.println("DEBUG: time for conversion:" + lTime + "(ms)");
       }
 
       return buf.toString();
@@ -500,12 +488,6 @@ public class HexDump {
          if (WITH_BYTE_SEPARATOR) {
             buf[j++] = BYTE_SEPARATOR;
          }
-      }
-
-      if (DEBUG) {
-         lTime = System.currentTimeMillis() - lTime;
-
-         System.out.println("DEBUG: time for conversion:" + lTime + "(ms)");
       }
 
       return new String(buf);

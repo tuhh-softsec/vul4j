@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "<WebSig>" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -51,8 +51,8 @@
  * individuals on behalf of the Apache Software Foundation and was
  * originally based on software copyright (c) 2001, Institute for
  * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
- * The development of this software was partly funded by the European 
- * Commission in the <WebSig> project in the ISIS Programme. 
+ * The development of this software was partly funded by the European
+ * Commission in the <WebSig> project in the ISIS Programme.
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
@@ -88,6 +88,7 @@ import org.apache.xml.security.utils.Constants;
  * Unit test for {@link org.apache.xml.security.signature.XMLSignatureInput}
  *
  * @author Christian Geuer-Pollmann
+ * @see <A HREF="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=4336">Bug 4336</A>
  */
 public class XMLSignatureInputTest extends TestCase {
 
@@ -195,7 +196,8 @@ public class XMLSignatureInputTest extends TestCase {
       + "<n>3</n>"
       + "<n>4</n>"
       + "</doc>";
-   static final int _nodeSetInput1Nodes = 10;
+   // added one for xmlns:xml since Xalan 2.2.D11
+   static final int _nodeSetInput1Nodes = 11; // was 10
    static final int _nodeSetInput1NodesWithComments = _nodeSetInput1Nodes + 1;
    //J+
 
@@ -247,7 +249,8 @@ public class XMLSignatureInputTest extends TestCase {
       + "<n>3</n>"
       + "<n>4</n>"
       + "</doc>";
-   static final int _nodeSetInput2Nodes = 10;
+   // added one for xmlns:xml since Xalan 2.2.D11
+   static final int _nodeSetInput2Nodes = 11; // was 10
    static final int _nodeSetInput2NodesWithComments = _nodeSetInput2Nodes + 1;
    //J+
 
@@ -286,7 +289,8 @@ public class XMLSignatureInputTest extends TestCase {
       + "<n>3</n>"
       + "<n>4</n>"
       + "</doc>";
-   static final int _nodeSetInput3Nodes = 10;
+   // added one for xmlns:xml since Xalan 2.2.D11
+   static final int _nodeSetInput3Nodes = 11; // was 10
    static final int _nodeSetInput3NodesWithComments = _nodeSetInput3Nodes + 1;
    //J+
 
@@ -324,7 +328,8 @@ public class XMLSignatureInputTest extends TestCase {
       + "<n>2</n>"
       + "<n>3</n>"
       + "<n>4</n>";
-   static final int _nodeSetInput4Nodes = 9;
+   // added one for xmlns:xml since Xalan 2.2.D11
+   static final int _nodeSetInput4Nodes = 10; // was 9
    static final int _nodeSetInput4NodesWithComments = _nodeSetInput4Nodes + 1;
    //J+
 
@@ -415,7 +420,8 @@ public class XMLSignatureInputTest extends TestCase {
       NodeList nl = input.getNodeSet();
 
       //J-
-      assertEquals("getNodeSet1 Number of nodes", 7, nl.getLength());
+      // added one for xmlns:xml since Xalan 2.2.D11
+      assertEquals("getNodeSet1 Number of nodes", 8, nl.getLength()); // 8 was 7
       // assertEquals("getNodeSet1.item(0)", XMLUtils.getNodeTypeString(Node.COMMENT_NODE), XMLUtils.getNodeTypeString(nl.item(0).getNodeType()));
       //J+
    }

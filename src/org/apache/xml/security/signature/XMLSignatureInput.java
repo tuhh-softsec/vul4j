@@ -332,15 +332,17 @@ public class XMLSignatureInput {
             return new ByteArrayInputStream(baos.toByteArray());
          }
 
-         cat.debug("setze XPathNodeSet mit " + this._inputNodeSet.getLength()
+         cat.debug("set XPathNodeSet with " + this._inputNodeSet.getLength()
                    + " nodes");
          c14nizer.setXPathNodeSet(this._inputNodeSet);
-         cat.debug("Das nodeset wurde gesetzt mit "
+         cat.debug("The nodeset _inputNodeSet has "
                    + this._inputNodeSet.getLength() + " Nodes");
 
          /* We want to output the NodeList and do this by retrieving the Document Node
           * and outputting the Document
           */
+         cat.debug("node(0) is " +  this._inputNodeSet.item(0));
+
          Document doc = XMLUtils.getOwnerDocument(this._inputNodeSet.item(0));
          byte bytes[] = c14nizer.canonicalize(doc);
 
