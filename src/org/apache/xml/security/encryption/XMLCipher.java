@@ -704,7 +704,7 @@ public class XMLCipher {
         if(null == element) 
             logger.error("Element unexpectedly null...");
         if(_cipherMode != ENCRYPT_MODE)
-            logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+            logger.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
 		if (_algorithm == null) {
 	    	throw new XMLEncryptionException("XMLCipher instance without transformation specified");
@@ -738,7 +738,7 @@ public class XMLCipher {
         if(null == element) 
             logger.error("Element unexpectedly null...");
         if(_cipherMode != ENCRYPT_MODE)
-            logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+            logger.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
 		if (_algorithm == null) {
 	    	throw new XMLEncryptionException("XMLCipher instance without transformation specified");
@@ -952,7 +952,7 @@ public class XMLCipher {
 		if (null == element)
 			logger.error("Element unexpectedly null...");
 		if (_cipherMode != ENCRYPT_MODE)
-			logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+			logger.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
 		_contextDocument = context;
 
@@ -1116,7 +1116,7 @@ public class XMLCipher {
         if(null == element)
             logger.error("Element unexpectedly null...");
         if(_cipherMode != UNWRAP_MODE && _cipherMode != DECRYPT_MODE)
-            logger.error("XMLCipher unexpectedly not in UNWRAP_MODE or DECRYPT_MODE...");
+            logger.debug("XMLCipher unexpectedly not in UNWRAP_MODE or DECRYPT_MODE...");
 
         _contextDocument = context;
         _ek = _factory.newEncryptedKey(element);
@@ -1156,7 +1156,7 @@ public class XMLCipher {
         if(null == key) 
             logger.error("Key unexpectedly null...");
         if(_cipherMode != WRAP_MODE)
-            logger.error("XMLCipher unexpectedly not in WRAP_MODE...");
+            logger.debug("XMLCipher unexpectedly not in WRAP_MODE...");
 
 		if (_algorithm == null) {
 
@@ -1243,7 +1243,7 @@ public class XMLCipher {
         logger.debug("Decrypting key from previously loaded EncryptedKey...");
 
         if(_cipherMode != UNWRAP_MODE)
-            logger.error("XMLCipher unexpectedly not in UNWRAP_MODE...");
+            logger.debug("XMLCipher unexpectedly not in UNWRAP_MODE...");
 
 		if (algorithm == null) {
 			throw new XMLEncryptionException("Cannot decrypt a key without knowing the algorithm");
