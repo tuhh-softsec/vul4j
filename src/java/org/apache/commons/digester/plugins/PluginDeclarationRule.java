@@ -66,24 +66,6 @@ public class PluginDeclarationRule extends Rule {
                       org.xml.sax.Attributes attributes)
                       throws java.lang.Exception {
                  
-        Log log = digester.getLogger();
-        boolean debug = log.isDebugEnabled();
-        
-        String id = attributes.getValue("id");
-        String pluginClassName = attributes.getValue("class");
-        
-        if (id == null) {
-            throw new PluginInvalidInputException(
-                    "mandatory attribute id not present on tag" +
-                       " <" + name + ">");
-        }
-
-        if (pluginClassName == null) {
-            throw new PluginInvalidInputException(
-                    "mandatory attribute class not present on tag" +
-                       " <" + name + ">");
-        }
-
         int nAttrs = attributes.getLength();
         Properties props = new Properties();
         for(int i=0; i<nAttrs; ++i) {
@@ -95,42 +77,48 @@ public class PluginDeclarationRule extends Rule {
             props.setProperty(key, value);
         }
         
+        try {
+            declarePlugin(digester, props);
+        } catch(PluginInvalidInputException ex) {
+            throw new PluginInvalidInputException(
+                "Error on element [" + digester.getMatch() + 
+                "]: " + ex.getMessage());
+        }
+    }
+    
+    public static void declarePlugin(Digester digester, Properties props)
+    throws PluginException {
+        
+        Log log = digester.getLogger();
+        boolean debug = log.isDebugEnabled();
+        
+        String id = props.getProperty("id");
+        String pluginClassName = props.getProperty("class");
+        
+        if (id == null) {
+            throw new PluginInvalidInputException(
+                "mandatory attribute id not present on plugin declaration");
+        }
+
+        if (pluginClassName == null) {
+            throw new PluginInvalidInputException(
+                "mandatory attribute class not present on plugin declaration");
+        }
+
         Declaration newDecl = new Declaration(pluginClassName);
         newDecl.setId(id);
         newDecl.setProperties(props);
 
         PluginRules rc = (PluginRules) digester.getRules();
         PluginManager pm = rc.getPluginManager();
-        Declaration oldDecl = pm.getDeclarationById(id);
-        if (oldDecl != null) {
-            if (oldDecl.isEquivalent(newDecl)) {
-                // this is a redeclaration of the same plugin mapping.
-                // this could happen when using xml Entities to include
-                // external files into the main config file, or to include
-                // the same external file at multiple locations within a
-                // parent document. if the declaration is identical,
-                // then we just ignore it.
-                if (debug) {
-                    log.debug("plugin redeclaration is identical: ignoring");
-                }
-                return;
-            } else {
-                throw new PluginInvalidInputException(
-                    "Plugin id [" + id + "] is not unique");
-            }
-        }
-
-        // check whether this class has already been mapped to a different
-        // name. It might be nice someday to allow this but lets keep it
-        // simple for now.
-        if (pm.getDeclarationByClass(pluginClassName) != null) {
-            throw new PluginInvalidInputException(
-                    "Plugin id [" + id + "] maps to class [" + pluginClassName + "]" +
-                     " which has already been mapped by some other id.");
-        }
 
         newDecl.init(digester, pm);
         pm.addDeclaration(newDecl);
+        
+        // Note that it is perfectly safe to redeclare a plugin, because
+        // the declaration doesn't add any rules to digester; all it does
+        // is create a RuleLoader instance whch is *capable* of adding the
+        // rules to the digester.
     }
 }
 
