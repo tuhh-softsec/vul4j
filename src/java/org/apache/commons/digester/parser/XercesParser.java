@@ -1,4 +1,4 @@
-/* $Id: XercesParser.java,v 1.7 2004/05/10 06:37:22 skitching Exp $
+/* $Id: XercesParser.java,v 1.8 2004/11/26 04:41:45 skitching Exp $
  *
  * Copyright 2004 The Apache Software Foundation.
  * 
@@ -102,8 +102,8 @@ public class XercesParser{
                             Class.forName("org.apache.xerces.impl.Version");
             // Will return Xerces-J 2.x.0
             Method method = 
-                versionClass.getMethod("getVersion", null); 
-            String version = (String)method.invoke(null,null);
+                versionClass.getMethod("getVersion", (Class[])null); 
+            String version = (String)method.invoke(null, (Object[])null);
             versionNumber = version.substring( "Xerces-J".length() , 
                                                version.lastIndexOf(".") ); 
         } catch (Exception ex){
