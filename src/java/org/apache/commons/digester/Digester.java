@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.60 2002/08/05 20:52:30 craigmcc Exp $
- * $Revision: 1.60 $
- * $Date: 2002/08/05 20:52:30 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.61 2002/08/06 15:29:26 craigmcc Exp $
+ * $Revision: 1.61 $
+ * $Date: 2002/08/06 15:29:26 $
  *
  * ====================================================================
  *
@@ -123,7 +123,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.60 $ $Date: 2002/08/05 20:52:30 $
+ * @version $Revision: 1.61 $ $Date: 2002/08/06 15:29:26 $
  */
 
 public class Digester extends DefaultHandler {
@@ -808,7 +808,7 @@ public class Digester extends DefaultHandler {
      */
     public void setSchema(String schemaLocation){
 
-        schemaLocation = schemaLocation;
+        this.schemaLocation = schemaLocation;
 
     }   
     
