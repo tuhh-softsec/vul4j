@@ -1,4 +1,4 @@
-/* $Id: SetNestedPropertiesRule.java,v 1.8 2004/05/10 06:52:50 skitching Exp $
+/* $Id: SetNestedPropertiesRule.java,v 1.9 2004/11/30 04:40:54 skitching Exp $
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 
@@ -81,6 +81,11 @@ import org.apache.commons.logging.LogFactory;
  * underlying Rules implementation for the same pattern, so other rules
  * are not "disabled" during processing of a SetNestedPropertiesRule.</p> 
  *
+ * <p>TODO: Optimise this class. Currently, each time begin is called,
+ * new AnyChildRules and AnyChildRule objects are created. It should be
+ * possible to cache these in normal use (though watch out for when a rule
+ * instance is invoked re-entrantly!).</p>
+ *
  * @since 1.6
  */
 
@@ -94,10 +99,6 @@ public class SetNestedPropertiesRule extends Rule {
     
     private Log log = null;
     
-    private AnyChildRule anyChildRule = new AnyChildRule();
-    private AnyChildRules newRules = new AnyChildRules(anyChildRule);
-    private Rules oldRules = null;
-
     private boolean trimData = true;
     private boolean allowUnknownChildElements = false;
     
@@ -185,7 +186,6 @@ public class SetNestedPropertiesRule extends Rule {
     public void setDigester(Digester digester) {
         super.setDigester(digester);
         log = digester.getLogger();
-        anyChildRule.setDigester(digester);
     }
     
     /**
@@ -203,8 +203,16 @@ public class SetNestedPropertiesRule extends Rule {
     }
     
     /**
-     * When set to true, any child element for which there is no
+     * Determines whether an error is reported when a nested element is
+     * encountered for which there is no corresponding property-setter
+     * method.
+     * <p>
+     * When set to false, any child element for which there is no
      * corresponding object property will cause an error to be reported.
+     * <p>
+     * When set to false, any child element for which there is no
+     * corresponding object property will simply be ignored.
+     * <p>
      * The default value of this attribute is false (not allowed).
      */
     public void setAllowUnknownChildElements(boolean allowUnknownChildElements) {
@@ -225,7 +233,10 @@ public class SetNestedPropertiesRule extends Rule {
      */
     public void begin(String namespace, String name, Attributes attributes) 
                       throws Exception {
-        oldRules = digester.getRules();
+        Rules oldRules = digester.getRules();
+        AnyChildRule anyChildRule = new AnyChildRule();
+        anyChildRule.setDigester(digester);
+        AnyChildRules newRules = new AnyChildRules(anyChildRule);
         newRules.init(digester.getMatch()+"/", oldRules);
         digester.setRules(newRules);
     }
@@ -236,7 +247,8 @@ public class SetNestedPropertiesRule extends Rule {
      * child-element-matching.
      */
     public void body(String bodyText) throws Exception {
-        digester.setRules(oldRules);
+        AnyChildRules newRules = (AnyChildRules) digester.getRules();
+        digester.setRules(newRules.getOldRules());
     }
 
     /**
@@ -293,21 +305,25 @@ public class SetNestedPropertiesRule extends Rule {
                 (matchPath.indexOf('/', matchPrefix.length()) == -1)) {
                     
                 // The current element is a direct child of the element
-                // specified in the init method, so include it as the
-                // first rule in the matches list. The way that
-                // SetNestedPropertiesRule is used, it is in fact very
-                // likely to be the only match, so we optimise that
-                // solution by keeping a list with only the AnyChildRule
-                // instance in it.
+                // specified in the init method, so we want to ensure that
+                // the rule passed to this object's constructor is included
+                // in the returned list of matching rules.
                 
                 if ((match == null || match.size()==0)) {
+                    // The "real" rules class doesn't have any matches for
+                    // the specified path, so we return a list containing
+                    // just one rule: the one passed to this object's
+                    // constructor.
                     return rules;
                 }
                 else {
-                    // it might not be safe to modify the returned list,
+                    // The "real" rules class has rules that match the current
+                    // node, so we return this list *plus* the rule passed to
+                    // this object's constructor.
+                    //
+                    // It might not be safe to modify the returned list,
                     // so clone it first.
                     LinkedList newMatch = new LinkedList(match);
-                    //newMatch.addFirst(rule);
                     newMatch.addLast(rule);
                     return newMatch;
                 }
@@ -326,6 +342,10 @@ public class SetNestedPropertiesRule extends Rule {
         public void init(String prefix, Rules rules) {
             matchPrefix = prefix;
             decoratedRules = rules;
+        }
+        
+        public Rules getOldRules() {
+            return decoratedRules;
         }
     }
     
@@ -395,7 +415,15 @@ public class SetNestedPropertiesRule extends Rule {
                 }
             }
             
+            try
+            {
             BeanUtils.setProperty(top, propName, value);
+            }
+            catch(NullPointerException e) {
+                digester.log.error("NullPointerException: "
+                 + "top=" + top + ",propName=" + propName + ",value=" + value + "!");
+                 throw e;
+            }
         }
     
         public void end(String namespace, String name) throws Exception {
