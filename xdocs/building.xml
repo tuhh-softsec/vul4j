@@ -27,7 +27,7 @@
         <ol>
           <li>
             Install a recent Maven release.  Maven is available from 
-            <a href="http://jakarta.apache.org/turbine/maven/">http://jakarta.apache.org/turbine/maven/</a>.
+            <a href="http://maven.apache.org/">http://maven.apache.org/</a>.
           </li>
           <li>
             With Maven installed, you should be able to run an arbitrary maven goal from the root Commons Functor 
