@@ -1,2 +1,6 @@
-# junit.jar - JUnit 3.2+ Classpath
-junit.jar=/java/junit/junit.jar
+# junit.jar - JUnit 3.7+ Classpath
+jaxp.jaxp.jar=/java/jars/jaxp.jar
+jaxp.parser.jar=/java/jars/crimson.jar
+commons-beanutils.jar=/java/jars/commons-beanutils.jar
+commons-collections.jar=/java/jars/commons-collections.jar
+junit.jar=/java/jars/junit.jar
