@@ -4,16 +4,51 @@
   <extend>../project.xml</extend>
   <name>Digester</name>
   <id>commons-digester</id>
-  <currentVersion>1.4.1</currentVersion>
+  <currentVersion>1.5</currentVersion>
   <inceptionYear>2001</inceptionYear>
   <shortDescription>Rule based XML->Java object mapping module</shortDescription>
   <description>The Digester package lets you configure an XML->Java object mapping module which triggers certain actions called rules whenever a particular pattern of nested XML elements is recognized.</description>
 
   <versions>
     <version>
-      <id>rc1</id>
-      <name>1.4.1-RC1</name>
-      <tag>DIGESTER_1_4_1_RC1</tag>
+      <id>1.5</id>
+      <name>1.5</name>
+      <tag>DIGESTER_1_5</tag>
+    </version>
+    <version>
+      <id>1.4.1</id>
+      <name>1.4.1</name>
+      <tag>DIGESTER_1_4_1</tag>
+    </version>
+    <version>
+      <id>1.4</id>
+      <name>1.4</name>
+      <tag>DIGESTER_1_4</tag>
+    </version>
+    <version>
+      <id>1.3</id>
+      <name>1.3</name>
+      <tag>DIGESTER_1_3</tag>
+    </version>
+    <version>
+      <id>1.2</id>
+      <name>1.2</name>
+      <tag>DIGESTER_1_2</tag>
+    </version>
+    <version>
+      <id>1.1.1</id>
+      <name>1.1.1</name>
+      <tag>DIGESTER_1_1_1</tag>
+    </version>
+    <version>
+      <id>1.1</id>
+      <name>1.1</name>
+      <tag>DIGESTER_1_1</tag>
+    </version>
+    <version>
+      <id>1.0</id>
+      <name>1.0</name>
+      <tag>DIGESTER_1_0</tag>
     </version>
   </versions>
 
@@ -115,6 +150,7 @@
    <report>maven-jxr-plugin</report>
    <report>maven-license-plugin</report>
    <report>maven-linkcheck-plugin</report>
+   <report>maven-pmd-plugin</report>
    <report>maven-tasklist-plugin</report>
 <!--   <report>maven-clover-plugin</report> -->
   </reports>

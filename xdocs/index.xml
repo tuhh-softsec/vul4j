@@ -52,9 +52,12 @@ package for detailed information on using the package.</p>
 
 <section name="Releases">
  <ul>
-  <li>Version 1.4.1 (from mirror)
+  <li>Version 1.5 (from mirror) - 27 Apr 2003
    <a href="http://jakarta.apache.org/site/binindex.cgi">binary</a>
    <a href="http://jakarta.apache.org/site/sourceindex.cgi">source</a> (latest)</li>
+  <li>Version 1.4.1 (from mirror)
+   <a href="http://jakarta.apache.org/site/binindex.cgi">binary</a>
+   <a href="http://jakarta.apache.org/site/sourceindex.cgi">source</a></li>
   <li>Version 1.4 (from mirror)
     <a href="http://jakarta.apache.org/site/binindex.cgi">binary</a>
     <a href="http://jakarta.apache.org/site/sourceindex.cgi">source</a> 
@@ -69,6 +72,9 @@ package for detailed information on using the package.</p>
 <section name="Resources">
  <ul>
   <!-- newest first sounds like a reasonable rule -->
+  <li>
+   Jun 2, 2003 - <a href="http://www-106.ibm.com/developerworks/java/library/j-lucene/">IBM developerWorks article</a> by Otis Gospodnetic about parsing, indexing and searching XML with Digester and Lucene.
+  </li>
   <li>
    Oct 25, 2002 - <a href="http://www.javaworld.com">JavaWorld</a> has an 
    article on Digester entitled <a href="http://www.javaworld.com/javaworld/jw-10-2002/jw-1025-opensourceprofile.html">
