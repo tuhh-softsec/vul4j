@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.8 2003/11/16 22:37:35 rdonkin Exp $
- * $Revision: 1.8 $
- * $Date: 2003/11/16 22:37:35 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.9 2003/11/18 22:14:22 rdonkin Exp $
+ * $Revision: 1.9 $
+ * $Date: 2003/11/18 22:14:22 $
  *
  * ====================================================================
  * 
@@ -301,8 +301,8 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * associated with the specified pattern. Check all configuration data is
      * valid and remember the pattern for later.
      * 
-     * @param pattern is the digester match pattern that is associated with
-     * this rule instance, eg "root/widget".
+     * @param matchPattern is the digester match pattern that is associated 
+     * with this rule instance, eg "root/widget".
      * @exception PluginConfigurationException
      */
     public void postRegisterInit(String matchPattern)
