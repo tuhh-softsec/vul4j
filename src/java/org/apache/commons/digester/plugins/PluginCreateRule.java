@@ -1,4 +1,4 @@
-/* $Id: PluginCreateRule.java,v 1.20 2004/06/11 03:47:25 skitching Exp $
+/* $Id: PluginCreateRule.java,v 1.21 2004/06/16 03:39:18 skitching Exp $
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 
@@ -392,7 +392,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         // PluginRules constructor below causes the new instance to link
         // to the previous head-of-stack, then the Digester.setRules() makes
         // the new instance the new head-of-stack.
-        PluginRules newRules = new PluginRules(path, oldRules, pluginClass);
+        PluginRules newRules = new PluginRules(digester, path, oldRules, pluginClass);
         digester.setRules(newRules);
         
         if (debug) {
