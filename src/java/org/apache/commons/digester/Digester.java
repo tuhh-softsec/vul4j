@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.70 2003/02/02 16:09:53 rdonkin Exp $
- * $Revision: 1.70 $
- * $Date: 2003/02/02 16:09:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.71 2003/03/15 18:37:51 rdonkin Exp $
+ * $Revision: 1.71 $
+ * $Date: 2003/03/15 18:37:51 $
  *
  * ====================================================================
  *
@@ -125,7 +125,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.70 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.71 $ $Date: 2003/03/15 18:37:51 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1827,34 +1827,35 @@ public class Digester extends DefaultHandler {
     
     /**
      * Add a "factory create" rule for the specified parameters.
+     * Exceptions thrown during the object creation process will be propagated.
      *
      * @param pattern Element matching pattern
      * @param className Java class name of the object creation factory class
      */
     public void addFactoryCreate(String pattern, String className) {
 
-        addRule(pattern,
-                new FactoryCreateRule(className));
+        addFactoryCreate(pattern, className, false);
 
     }
 
 
     /**
      * Add a "factory create" rule for the specified parameters.
+     * Exceptions thrown during the object creation process will be propagated.
      *
      * @param pattern Element matching pattern
      * @param clazz Java class of the object creation factory class
      */
     public void addFactoryCreate(String pattern, Class clazz) {
 
-        addRule(pattern,
-                new FactoryCreateRule(clazz));
+        addFactoryCreate(pattern, clazz, false);
 
     }
 
 
     /**
      * Add a "factory create" rule for the specified parameters.
+     * Exceptions thrown during the object creation process will be propagated.
      *
      * @param pattern Element matching pattern
      * @param className Java class name of the object creation factory class
@@ -1864,8 +1865,102 @@ public class Digester extends DefaultHandler {
     public void addFactoryCreate(String pattern, String className,
                                  String attributeName) {
 
-        addRule(pattern,
-                new FactoryCreateRule(className, attributeName));
+        addFactoryCreate(pattern, className, attributeName, false);
+
+    }
+
+
+    /**
+     * Add a "factory create" rule for the specified parameters.
+     * Exceptions thrown during the object creation process will be propagated.
+     *
+     * @param pattern Element matching pattern
+     * @param clazz Java class of the object creation factory class
+     * @param attributeName Attribute name which, if present, overrides the
+     *  value specified by <code>className</code>
+     */
+    public void addFactoryCreate(String pattern, Class clazz,
+                                 String attributeName) {
+
+        addFactoryCreate(pattern, clazz, attributeName, false);
+
+    }
+
+
+    /**
+     * Add a "factory create" rule for the specified parameters.
+     * Exceptions thrown during the object creation process will be propagated.
+     *
+     * @param pattern Element matching pattern
+     * @param creationFactory Previously instantiated ObjectCreationFactory
+     *  to be utilized
+     */
+    public void addFactoryCreate(String pattern,
+                                 ObjectCreationFactory creationFactory) {
+
+        addFactoryCreate(pattern, creationFactory, false);
+
+    }
+
+    /**
+     * Add a "factory create" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param className Java class name of the object creation factory class
+     * @param ignoreCreateExceptions when <code>true</code> any exceptions thrown during
+     * object creation will be ignored.
+     */
+    public void addFactoryCreate(
+                                    String pattern, 
+                                    String className,
+                                    boolean ignoreCreateExceptions) {
+
+        addRule(
+                pattern,
+                new FactoryCreateRule(className, ignoreCreateExceptions));
+
+    }
+
+
+    /**
+     * Add a "factory create" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param clazz Java class of the object creation factory class
+     * @param ignoreCreateExceptions when <code>true</code> any exceptions thrown during
+     * object creation will be ignored.
+     */
+    public void addFactoryCreate(
+                                    String pattern, 
+                                    Class clazz,
+                                    boolean ignoreCreateExceptions) {
+
+        addRule(
+                pattern,
+                new FactoryCreateRule(clazz, ignoreCreateExceptions));
+
+    }
+
+
+    /**
+     * Add a "factory create" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param className Java class name of the object creation factory class
+     * @param attributeName Attribute name which, if present, overrides the
+     *  value specified by <code>className</code>
+     * @param ignoreCreateExceptions when <code>true</code> any exceptions thrown during
+     * object creation will be ignored.
+     */
+    public void addFactoryCreate(
+                                String pattern, 
+                                String className,
+                                String attributeName,
+                                boolean ignoreCreateExceptions) {
+
+        addRule(
+                pattern,
+                new FactoryCreateRule(className, attributeName, ignoreCreateExceptions));
 
     }
 
@@ -1877,12 +1972,18 @@ public class Digester extends DefaultHandler {
      * @param clazz Java class of the object creation factory class
      * @param attributeName Attribute name which, if present, overrides the
      *  value specified by <code>className</code>
+     * @param ignoreCreateExceptions when <code>true</code> any exceptions thrown during
+     * object creation will be ignored.
      */
-    public void addFactoryCreate(String pattern, Class clazz,
-                                 String attributeName) {
+    public void addFactoryCreate(
+                                    String pattern, 
+                                    Class clazz,
+                                    String attributeName,
+                                    boolean ignoreCreateExceptions) {
 
-        addRule(pattern,
-                new FactoryCreateRule(clazz, attributeName));
+        addRule(
+                pattern,
+                new FactoryCreateRule(clazz, attributeName, ignoreCreateExceptions));
 
     }
 
@@ -1893,16 +1994,18 @@ public class Digester extends DefaultHandler {
      * @param pattern Element matching pattern
      * @param creationFactory Previously instantiated ObjectCreationFactory
      *  to be utilized
+     * @param ignoreCreateExceptions when <code>true</code> any exceptions thrown during
+     * object creation will be ignored.
      */
     public void addFactoryCreate(String pattern,
-                                 ObjectCreationFactory creationFactory) {
+                                 ObjectCreationFactory creationFactory,
+                                 boolean ignoreCreateExceptions) {
 
         creationFactory.setDigester(this);
         addRule(pattern,
-                new FactoryCreateRule(creationFactory));
+                new FactoryCreateRule(creationFactory, ignoreCreateExceptions));
 
     }
-
 
     /**
      * Add an "object create" rule for the specified parameters.

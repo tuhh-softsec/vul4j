@@ -58,6 +58,7 @@
 
 package org.apache.commons.digester;
 
+import org.apache.commons.collections.ArrayStack;
 
 import org.xml.sax.Attributes;
 
@@ -73,11 +74,17 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.10 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.11 $ $Date: 2003/03/15 18:37:51 $
  */
 
 public class FactoryCreateRule extends Rule {
 
+    // ----------------------------------------------------------- Fields
+    
+    /** Should exceptions thrown by the factory be ignored? */
+    private boolean ignoreCreateExceptions;
+    /** Stock to manage */
+    private ArrayStack exceptionIgnoredStack;
 
     // ----------------------------------------------------------- Constructors
 
@@ -180,15 +187,101 @@ public class FactoryCreateRule extends Rule {
     }    
 
     /**
-     * Construct a factory create rule that will use the specified
+     * <p>Construct a factory create rule that will use the specified
      * class name to create an {@link ObjectCreationFactory} which will
-     * then be used to create an object and push it on the stack.
+     * then be used to create an object and push it on the stack.</p>
+     *
+     * <p>Exceptions thrown during the object creation process will be propagated.</p>
      *
      * @param className Java class name of the object creation factory class
      */
     public FactoryCreateRule(String className) {
 
-        this(className, null);
+        this(className, false);
+
+    }
+
+
+    /**
+     * <p>Construct a factory create rule that will use the specified
+     * class to create an {@link ObjectCreationFactory} which will
+     * then be used to create an object and push it on the stack.</p>
+     *
+     * <p>Exceptions thrown during the object creation process will be propagated.</p>
+     *
+     * @param clazz Java class name of the object creation factory class
+     */
+    public FactoryCreateRule(Class clazz) {
+
+        this(clazz, false);
+
+    }
+
+
+    /**
+     * <p>Construct a factory create rule that will use the specified
+     * class name (possibly overridden by the specified attribute if present)
+     * to create an {@link ObjectCreationFactory}, which will then be used
+     * to instantiate an object instance and push it onto the stack.</p>
+     *
+     * <p>Exceptions thrown during the object creation process will be propagated.</p>
+     *
+     * @param className Default Java class name of the factory class
+     * @param attributeName Attribute name which, if present, contains an
+     *  override of the class name of the object creation factory to create.
+     */
+    public FactoryCreateRule(String className, String attributeName) {
+
+        this(className, attributeName, false);
+
+    }
+
+
+    /**
+     * <p>Construct a factory create rule that will use the specified
+     * class (possibly overridden by the specified attribute if present)
+     * to create an {@link ObjectCreationFactory}, which will then be used
+     * to instantiate an object instance and push it onto the stack.</p>
+     *
+     * <p>Exceptions thrown during the object creation process will be propagated.</p>
+     *
+     * @param clazz Default Java class name of the factory class
+     * @param attributeName Attribute name which, if present, contains an
+     *  override of the class name of the object creation factory to create.
+     */
+    public FactoryCreateRule(Class clazz, String attributeName) {
+
+        this(clazz, attributeName, false);
+
+    }
+
+
+    /**
+     * <p>Construct a factory create rule using the given, already instantiated,
+     * {@link ObjectCreationFactory}.</p>
+     *
+     * <p>Exceptions thrown during the object creation process will be propagated.</p>
+     *
+     * @param creationFactory called on to create the object.
+     */
+    public FactoryCreateRule(ObjectCreationFactory creationFactory) {
+
+        this(creationFactory, false);
+
+    }
+    
+    /**
+     * Construct a factory create rule that will use the specified
+     * class name to create an {@link ObjectCreationFactory} which will
+     * then be used to create an object and push it on the stack.
+     *
+     * @param className Java class name of the object creation factory class
+     * @param ignoreCreateException if true, exceptions thrown by the object creation factory
+     * will be ignored.
+     */
+    public FactoryCreateRule(String className, boolean ignoreCreateExceptions) {
+
+        this(className, null, ignoreCreateExceptions);
 
     }
 
@@ -199,10 +292,12 @@ public class FactoryCreateRule extends Rule {
      * then be used to create an object and push it on the stack.
      *
      * @param clazz Java class name of the object creation factory class
+     * @param ignoreCreateException if true, exceptions thrown by the object creation factory
+     * will be ignored.
      */
-    public FactoryCreateRule(Class clazz) {
+    public FactoryCreateRule(Class clazz, boolean ignoreCreateExceptions) {
 
-        this(clazz, null);
+        this(clazz, null, ignoreCreateExceptions);
 
     }
 
@@ -216,11 +311,17 @@ public class FactoryCreateRule extends Rule {
      * @param className Default Java class name of the factory class
      * @param attributeName Attribute name which, if present, contains an
      *  override of the class name of the object creation factory to create.
+     * @param ignoreCreateException if true, exceptions thrown by the object creation factory
+     * will be ignored.
      */
-    public FactoryCreateRule(String className, String attributeName) {
+    public FactoryCreateRule(
+                                String className, 
+                                String attributeName,
+                                boolean ignoreCreateExceptions) {
 
         this.className = className;
         this.attributeName = attributeName;
+        this.ignoreCreateExceptions = ignoreCreateExceptions;
 
     }
 
@@ -234,10 +335,15 @@ public class FactoryCreateRule extends Rule {
      * @param clazz Default Java class name of the factory class
      * @param attributeName Attribute name which, if present, contains an
      *  override of the class name of the object creation factory to create.
+     * @param ignoreCreateException if true, exceptions thrown by the object creation factory
+     * will be ignored.
      */
-    public FactoryCreateRule(Class clazz, String attributeName) {
+    public FactoryCreateRule(
+                                Class clazz, 
+                                String attributeName,
+                                boolean ignoreCreateExceptions) {
 
-        this(clazz.getName(), attributeName);
+        this(clazz.getName(), attributeName, ignoreCreateExceptions);
 
     }
 
@@ -247,11 +353,15 @@ public class FactoryCreateRule extends Rule {
      * {@link ObjectCreationFactory}.
      *
      * @param creationFactory called on to create the object.
+     * @param ignoreCreateException if true, exceptions thrown by the object creation factory
+     * will be ignored.
      */
-    public FactoryCreateRule(ObjectCreationFactory creationFactory) {
+    public FactoryCreateRule(
+                            ObjectCreationFactory creationFactory, 
+                            boolean ignoreCreateExceptions) {
 
         this.creationFactory = creationFactory;
-
+        this.ignoreCreateExceptions = ignoreCreateExceptions;
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -286,22 +396,69 @@ public class FactoryCreateRule extends Rule {
      *
      * @param attributes The attribute list of this element
      */
-    public void begin(Attributes attributes) throws Exception {
-
-        Object instance = getFactory(attributes).createObject(attributes);
-        if (digester.log.isDebugEnabled()) {
-            digester.log.debug("[FactoryCreateRule]{" + digester.match +
-                    "} New " + instance.getClass().getName());
+    public void begin(String namespace, String name, Attributes attributes) throws Exception {
+        
+        if (ignoreCreateExceptions) {
+        
+            if (exceptionIgnoredStack == null) {
+                exceptionIgnoredStack = new ArrayStack();
+            }
+            
+            try {
+                Object instance = getFactory(attributes).createObject(attributes);
+                
+                if (digester.log.isDebugEnabled()) {
+                    digester.log.debug("[FactoryCreateRule]{" + digester.match +
+                            "} New " + instance.getClass().getName());
+                }
+                digester.push(instance);
+                exceptionIgnoredStack.push(Boolean.FALSE);
+                
+            } catch (Exception e) {
+                // log message and error
+                if (digester.log.isInfoEnabled()) {
+                    digester.log.info("[FactoryCreateRule] Create exception ignored: " 
+                        + ((e.getMessage() == null) ? e.getClass().getName() : e.getMessage()));
+                    if (digester.log.isDebugEnabled()) {
+                        digester.log.debug("[FactoryCreateRule] Ignored exception:", e);
+                    }
+                }
+                exceptionIgnoredStack.push(Boolean.TRUE);
+            }
+            
+        } else {
+            Object instance = getFactory(attributes).createObject(attributes);
+            
+            if (digester.log.isDebugEnabled()) {
+                digester.log.debug("[FactoryCreateRule]{" + digester.match +
+                        "} New " + instance.getClass().getName());
+            }
+            digester.push(instance);
         }
-        digester.push(instance);
-
     }
 
 
     /**
      * Process the end of this element.
      */
-    public void end() throws Exception {
+    public void end(String namespace, String name) throws Exception {
+        
+        // check if object was created 
+        // this only happens if an exception was thrown and we're ignoring them
+        if (	
+                ignoreCreateExceptions 
+                && exceptionIgnoredStack != null 
+                && !(exceptionIgnoredStack.empty())) {
+                
+            if (((Boolean) exceptionIgnoredStack.pop()).booleanValue()) {
+                // creation exception was ignored
+                // nothing was put onto the stack
+                if (digester.log.isTraceEnabled()) {
+                    digester.log.trace("[FactoryCreateRule] No creation so no push so no pop");
+                }
+                return;
+            }
+        } 
 
         Object top = digester.pop();
         if (digester.log.isDebugEnabled()) {
@@ -377,7 +534,5 @@ public class FactoryCreateRule extends Rule {
         }
         return (creationFactory);
 
-    }
-
-
+    }    
 }
