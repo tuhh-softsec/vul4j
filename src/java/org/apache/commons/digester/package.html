@@ -1,4 +1,4 @@
-<!-- $Id: package.html,v 1.32 2004/10/07 19:48:42 rdonkin Exp $
+<!-- $Id: package.html,v 1.33 2004/11/30 02:57:17 skitching Exp $
   
  Copyright 2001-2004 The Apache Software Foundation.
  
@@ -106,6 +106,17 @@ the developer to focus on the processing to be performed.</p>
     catch any <code>IOException</code> or <code>SAXException</code> that is
     thrown by the parser, or any runtime expression that is thrown by one of
     the processing rules.</li>
+</ul>
+
+<p>Alternatively a Digester may be used as a sax event hander, as follows:</p>
+<ul>
+<li>Create an instance of a sax parser (using the JAXP APIs or otherwise).</li>
+<li>Set any desired configuration properties on that parser object.</li> 
+<li>Create an instance of <code>org.apache.commons.digester.Digester</code>.</li>
+<li>Optionally, push any desired initial object(s) onto the Digester's
+    <a href="#doc.Stack">object stack</a>.</li>
+<li>Register patterns and rules with the digester instance.</li>
+<li>Call parser.parse(inputSource, digester).</li>
 </ul>
 
 <p>For example code, see <a href="#doc.Usage"> the usage 
