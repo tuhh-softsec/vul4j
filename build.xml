@@ -1,7 +1,7 @@
 <project name="Functor" default="test" basedir=".">
 <!--
   Commons-Functor Ant Build File
-  $Id: build.xml,v 1.7 2003/02/10 20:02:25 rwaldhoff Exp $
+  $Id: build.xml,v 1.8 2003/02/18 19:45:15 rwaldhoff Exp $
 -->
 
 <!-- ========== Initialize Properties ===================================== -->
@@ -74,6 +74,10 @@
   <path id="compile.classpath">
     <pathelement location="${build.home}/classes"/>
     <pathelement location="${junit.jar}"/>
+  </path>
+
+  <path id="javadoc.classpath">
+    <pathelement location="${build.home}/classes"/>
   </path>
 
 
@@ -163,15 +167,15 @@
     <mkdir dir="${dist.home}/docs"/>
     <mkdir dir="${dist.home}/docs/api"/>
     <javadoc destdir="${dist.home}/docs/api"
+             sourcepath="${source.home}"
              packagenames="org.apache.commons.*"
              author="false"
              private="true"
              version="true"
              doctitle="&lt;h1&gt;${component.title} (Version ${component.version})&lt;/h1&gt;"
              windowtitle="${component.title} (Version ${component.version})"
-             bottom="Copyright (c) 2003 - Apache Software Foundation">
-      <classpath refid="compile.classpath"/>
-      <fileset dir="${source.home}"/>
+             bottom="Copyright (c) 2003 - Apache Software Foundation. Generated ${TODAY}.">
+      <classpath refid="javadoc.classpath"/>
     </javadoc>
   </target>
 
