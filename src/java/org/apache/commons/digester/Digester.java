@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.56 2002/07/29 21:05:15 rdonkin Exp $
- * $Revision: 1.56 $
- * $Date: 2002/07/29 21:05:15 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.57 2002/07/31 11:06:46 jstrachan Exp $
+ * $Revision: 1.57 $
+ * $Date: 2002/07/31 11:06:46 $
  *
  * ====================================================================
  *
@@ -113,7 +113,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.56 $ $Date: 2002/07/29 21:05:15 $
+ * @version $Revision: 1.57 $ $Date: 2002/07/31 11:06:46 $
  */
 
 public class Digester extends DefaultHandler {
@@ -896,7 +896,7 @@ public class Digester extends DefaultHandler {
                     new String(buffer, start, len) + ")");
         }
 
-        ;	// No processing required
+        ;   // No processing required
 
     }
 
@@ -916,7 +916,7 @@ public class Digester extends DefaultHandler {
             saxLog.debug("processingInstruction('" + target + "','" + data + "')");
         }
 
-        ;	// No processing is required
+        ;   // No processing is required
 
     }
 
@@ -966,8 +966,10 @@ public class Digester extends DefaultHandler {
             saxLog.debug("startDocument()");
         }
 
-        ; // No processing required
-
+        // ensure that the digester is properly configured, as 
+        // the digester could be used as a SAX ContentHandler
+        // rather than via the parse() methods.
+        configure();
     }
 
 
@@ -1931,6 +1933,19 @@ public class Digester extends DefaultHandler {
 
     }
 
+
+    /**
+     * When the Digester is being used as a SAXContentHandler, 
+     * this method allows you to access the root object that has been
+     * created after parsing.
+     * 
+     * @return the root object that has been created after parsing
+     *  or null if the digester has not parsed any XML yet.
+     */
+    public Object getRoot() {
+        return root;
+    }
+    
 
     // ------------------------------------------------ Parameter Stack Methods
 
