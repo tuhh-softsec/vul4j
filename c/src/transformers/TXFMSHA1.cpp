@@ -101,8 +101,15 @@ void TXFMSHA1::setInput(TXFMBase * inputT) {
 	unsigned char buffer[1024];
 	unsigned int size;
 
-	while ((size = input->readBytes((XMLByte *) buffer, 1024)) != 0)
+	while ((size = input->readBytes((XMLByte *) buffer, 1024)) != 0) {
+#if 1
+		// Some useful debbugging code
+		FILE * f = fopen("debug.out","a+b");
+		fwrite(buffer, size, 1, f);
+		fclose(f);
+#endif
 		mp_h->hash(buffer, size);
+	}
 	
 	// Finalise
 

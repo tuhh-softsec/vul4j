@@ -34,6 +34,8 @@
 class XKMSLocateResult;
 class XKMSLocateRequest;
 class XKMSValidateResult;
+class XKMSStatusResult;
+class XKMSStatusRequest;
 class XKMSValidateRequest;
 class XKMSRegisterRequest;
 class XKMSRegisterResult;
@@ -162,6 +164,26 @@ public:
 		XKMSResultType::ResultMajor rmaj,
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
 		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<StatusResult\> message.
+	 * 
+	 * Generates a new StatusResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input StatusRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSStatusResponse structure
+	 */
+
+	virtual XKMSStatusResult * createStatusResult(
+		XKMSStatusRequest * request,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+		
 
 	/**
 	 * \brief Create a new \<RegisterResult\> message.
