@@ -460,13 +460,13 @@ void XKMSKeyBindingAbstractTypeImpl::setExchangeKeyUsage(void) {
 
 int XKMSKeyBindingAbstractTypeImpl::getUseKeyWithSize(void) const {
 
-	return m_useKeyWithList.size();
+	return (int) m_useKeyWithList.size();
 
 }
 
 XKMSUseKeyWith * XKMSKeyBindingAbstractTypeImpl::getUseKeyWithItem(int item) const {
 
-	if (item < 0 || item >= m_useKeyWithList.size()) {
+	if (item < 0 || item >= (int) m_useKeyWithList.size()) {
 		throw XSECException(XSECException::XKMSError,
 			"XKMSKeyBindingAbstractType::getUseKeyWithItem - item out of range");
 	}

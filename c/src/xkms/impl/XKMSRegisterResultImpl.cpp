@@ -97,7 +97,7 @@ void XKMSRegisterResultImpl::load() {
 	if (nl != NULL) {
 
 		XKMSKeyBindingImpl * kb;
-		for (int i = 0; i < nl->getLength() ; ++ i) {
+		for (unsigned int i = 0; i < nl->getLength() ; ++ i) {
 
 			XSECnew(kb, XKMSKeyBindingImpl(mp_env, (DOMElement *) nl->item(i)));
 			m_keyBindingList.push_back(kb);
@@ -144,13 +144,13 @@ XKMSMessageAbstractType::messageType XKMSRegisterResultImpl::getMessageType(void
 
 int XKMSRegisterResultImpl::getKeyBindingSize(void) const {
 
-	return m_keyBindingList.size();
+	return (int) m_keyBindingList.size();
 
 }
 
 XKMSKeyBinding * XKMSRegisterResultImpl::getKeyBindingItem(int item) const {
 
-	if (item < 0 || item >= m_keyBindingList.size()) {
+	if (item < 0 || item >= (int) m_keyBindingList.size()) {
 		throw XSECException(XSECException::XKMSError,
 			"XKMSRegisterResult::getKeyBindingItem - item out of range");
 	}

@@ -97,7 +97,7 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 	if (nl != NULL) {
 
 		XKMSRespondWithImpl * rw;
-		for (int i = 0; i < nl->getLength() ; ++ i) {
+		for (unsigned int i = 0; i < nl->getLength() ; ++ i) {
 
 			XSECnew(rw, XKMSRespondWithImpl(mp_env, (DOMElement *) nl->item(i)));
 			rw->load();
@@ -115,7 +115,7 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 	if (nl != NULL) {
 
 		XKMSResponseMechanismImpl * rm;
-		for (int i = 0; i < nl->getLength() ; ++ i) {
+		for (unsigned int i = 0; i < nl->getLength() ; ++ i) {
 
 			XSECnew(rm, XKMSResponseMechanismImpl(mp_env, (DOMElement *) nl->item(i)));
 			rm->load();
@@ -216,13 +216,13 @@ void XKMSRequestAbstractTypeImpl::setResponseLimit(unsigned int limit) {
 
 int XKMSRequestAbstractTypeImpl::getRespondWithSize(void) {
 
-	return m_respondWithList.size();
+	return (int) m_respondWithList.size();
 
 }
 
 XKMSRespondWith * XKMSRequestAbstractTypeImpl::getRespondWithItem(int item) {
 
-	if (item < 0 || item >= m_respondWithList.size()) {
+	if (item < 0 || item >= (int) m_respondWithList.size()) {
 
 		throw XSECException(XSECException::RequestAbstractTypeError,
 			"XKMSRequestAbstractTypeImpl::getRespondWithItem - item out of range");
@@ -235,7 +235,7 @@ XKMSRespondWith * XKMSRequestAbstractTypeImpl::getRespondWithItem(int item) {
 
 const XMLCh * XKMSRequestAbstractTypeImpl::getRespondWithItemStr(int item) {
 
-	if (item < 0 || item >= m_respondWithList.size()) {
+	if (item < 0 || item >= (int) m_respondWithList.size()) {
 
 		throw XSECException(XSECException::RequestAbstractTypeError,
 			"XKMSRequestAbstractTypeImpl::getRespondWithItem - item out of range");
@@ -291,13 +291,13 @@ void XKMSRequestAbstractTypeImpl::appendRespondWithItem(const XMLCh * item) {
 
 int XKMSRequestAbstractTypeImpl::getResponseMechanismSize(void) {
 
-	return m_responseMechanismList.size();
+	return (int) m_responseMechanismList.size();
 
 }
 
 XKMSResponseMechanism * XKMSRequestAbstractTypeImpl::getResponseMechanismItem(int item) {
 
-	if (item < 0 || item >= m_responseMechanismList.size()) {
+	if (item < 0 || item >= (int) m_responseMechanismList.size()) {
 
 		throw XSECException(XSECException::RequestAbstractTypeError,
 			"XKMSRequestAbstractTypeImpl::getResponseMechanismItem - item out of range");
@@ -310,7 +310,7 @@ XKMSResponseMechanism * XKMSRequestAbstractTypeImpl::getResponseMechanismItem(in
 
 const XMLCh * XKMSRequestAbstractTypeImpl::getResponseMechanismItemStr(int item) {
 
-	if (item < 0 || item >= m_responseMechanismList.size()) {
+	if (item < 0 || item >= (int) m_responseMechanismList.size()) {
 
 		throw XSECException(XSECException::RequestAbstractTypeError,
 			"XKMSRequestAbstractTypeImpl::getResponseMechanismItem - item out of range");
@@ -363,7 +363,7 @@ void XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(const XMLCh * item
 
 void XKMSRequestAbstractTypeImpl::removeResponseMechanismItem(int item) {
 
-	if (item < 0 || item >= m_responseMechanismList.size()) {
+	if (item < 0 || item >= (int) m_responseMechanismList.size()) {
 
 		throw XSECException(XSECException::RequestAbstractTypeError,
 			"XKMSRequestAbstractTypeImpl::getResponseMechanismItem - item out of range");

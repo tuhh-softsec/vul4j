@@ -145,13 +145,13 @@ XKMSMessageAbstractType::messageType XKMSCompoundResultImpl::getMessageType(void
 
 int XKMSCompoundResultImpl::getResultListSize(void) {
 
-	return m_resultList.size();
+	return (int) m_resultList.size();
 
 }
 
 XKMSResultType * XKMSCompoundResultImpl::getResultListItem(int item) {
 
-	if (item < 0 || item >= m_resultList.size()) {
+	if (item < 0 || item >= (int) m_resultList.size()) {
 
 		throw XSECException(XSECException::XKMSError,
 			"XKMSCompoundResult::getResultListItem - item out of range");

@@ -141,13 +141,13 @@ XKMSMessageAbstractType::messageType XKMSCompoundRequestImpl::getMessageType(voi
 
 int XKMSCompoundRequestImpl::getRequestListSize(void) {
 
-	return m_requestList.size();
+	return (int) m_requestList.size();
 
 }
 
 XKMSRequestAbstractType * XKMSCompoundRequestImpl::getRequestListItem(int item) {
 
-	if (item < 0 || item >= m_requestList.size()) {
+	if (item < 0 || item >= (int) m_requestList.size()) {
 
 		throw XSECException(XSECException::XKMSError,
 			"XKMSCompoundRequest::getRequestListItem - item out of range");

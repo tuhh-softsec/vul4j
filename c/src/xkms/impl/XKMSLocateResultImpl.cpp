@@ -97,7 +97,7 @@ void XKMSLocateResultImpl::load() {
 	if (nl != NULL) {
 
 		XKMSUnverifiedKeyBindingImpl * ukb;
-		for (int i = 0; i < nl->getLength() ; ++ i) {
+		for (unsigned int i = 0; i < nl->getLength() ; ++ i) {
 
 			XSECnew(ukb, XKMSUnverifiedKeyBindingImpl(mp_env, (DOMElement *) nl->item(i)));
 			m_unverifiedKeyBindingList.push_back(ukb);
@@ -144,13 +144,13 @@ XKMSMessageAbstractType::messageType XKMSLocateResultImpl::getMessageType(void) 
 
 int XKMSLocateResultImpl::getUnverifiedKeyBindingSize(void) const {
 
-	return m_unverifiedKeyBindingList.size();
+	return (int) m_unverifiedKeyBindingList.size();
 
 }
 
 XKMSUnverifiedKeyBinding * XKMSLocateResultImpl::getUnverifiedKeyBindingItem(int item) const {
 
-	if (item < 0 || item >= m_unverifiedKeyBindingList.size()) {
+	if (item < 0 || item >= (int) m_unverifiedKeyBindingList.size()) {
 		throw XSECException(XSECException::XKMSError,
 			"XKMSLocateResult::getUnverifiedKeyBindingItem - item out of range");
 	}
