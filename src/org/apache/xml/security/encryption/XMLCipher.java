@@ -324,7 +324,7 @@ public class XMLCipher {
      * @param provider the JCE provider that supplies the transformation
      * @throws <code>XMLEncryptionException</code>.
      */
-    public static XMLCipher getInstance(String transformation, String provider)
+    public static XMLCipher getProviderInstance(String transformation, String provider)
             throws XMLEncryptionException {
         // sanity checks
         logger.debug("Getting XMLCipher...");
@@ -360,6 +360,66 @@ public class XMLCipher {
         } catch (NoSuchPaddingException nspe) {
             throw new XMLEncryptionException("empty", nspe);
         }
+
+        return (instance);
+    }
+
+    /**
+     * Returns an <code>XMLCipher</code> that implements no specific
+	 * transformation, and can therefore only be used for decrypt or
+	 * unwrap operations where the encryption method is defined in the 
+	 * <code>EncryptionMethod</code> element.
+	 *
+     * @throws <code>XMLEncryptionException</code>.
+     */
+
+    public static XMLCipher getInstance()
+            throws XMLEncryptionException {
+        // sanity checks
+        logger.debug("Getting XMLCipher for no transformation...");
+
+		XMLCipher instance = new XMLCipher();
+
+        instance._algorithm = null;
+		instance._requestedJCEProvider = null;
+		instance._key = null;
+		instance._kek = null;
+		instance._contextCipher = null;
+
+        return (instance);
+    }
+
+    /**
+     * Returns an <code>XMLCipher</code> that implements no specific
+	 * transformation, and can therefore only be used for decrypt or
+	 * unwrap operations where the encryption method is defined in the 
+	 * <code>EncryptionMethod</code> element.
+	 *
+	 * Allows the caller to specify a provider that will be used for
+	 * cryptographic operations.
+     *
+     * @param provider the JCE provider that supplies the cryptographic
+	 * needs.
+     * @throws <code>XMLEncryptionException</code>.
+     */
+
+    public static XMLCipher getProviderInstance(String provider)
+            throws XMLEncryptionException {
+        // sanity checks
+
+        logger.debug("Getting XMLCipher, provider but no transformation");
+        if(null == provider)
+            logger.error("Provider unexpectedly null..");
+        if("" == provider)
+            logger.error("Provider's value unexpectedly not specified...");
+
+		XMLCipher instance = new XMLCipher();
+
+        instance._algorithm = null;
+		instance._requestedJCEProvider = provider;
+		instance._key = null;
+		instance._kek = null;
+		instance._contextCipher = null;
 
         return (instance);
     }
@@ -521,6 +581,11 @@ public class XMLCipher {
         if(_cipherMode != ENCRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
+		if (_algorithm == null) {
+
+			throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+		}
+
         String serializedOctets = _serializer.serialize(element);
         logger.debug("Serialized octets:\n" + serializedOctets);
 
@@ -639,6 +704,11 @@ public class XMLCipher {
             logger.error("Element unexpectedly null...");
         if(_cipherMode != ENCRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+
+		if (_algorithm == null) {
+
+			throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+		}
 
         NodeList children = element.getChildNodes();
         String serializedOctets = null;
@@ -893,6 +963,11 @@ public class XMLCipher {
 
         _contextDocument = context;
 
+		if (_algorithm == null) {
+
+			throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+		}
+
         String serializedOctets = _serializer.serialize(element);
         logger.debug("Serialized octets:\n" + serializedOctets);
 
@@ -1023,6 +1098,11 @@ public class XMLCipher {
             logger.error("Key unexpectedly null...");
         if(_cipherMode != WRAP_MODE)
             logger.error("XMLCipher unexpectedly not in WRAP_MODE...");
+
+		if (_algorithm == null) {
+
+			throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+		}
 
 		_contextDocument = doc;
 

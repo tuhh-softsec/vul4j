@@ -94,6 +94,42 @@ import org.w3c.dom.Node;
  *
  * @author Berin Lautenbach
  */
+
+/*
+
+Tests for merlin-xmlenc-five not currently done
+
+bad-encrypt-content-aes128-cbc-kw-aes192.xml
+decryption-transform-except.xml 
+decryption-transform.xml        
+dh0.p8                          
+dh1.p8                          
+dsa.p8                          
+encrypt-content-aes128-cbc-kw-aes192.xml
+encrypt-content-aes192-cbc-dh-sha512.xml
+encrypt-content-aes256-cbc-prop.xml
+encrypt-content-tripledes-cbc.xml
+encrypt-data-aes128-cbc.xml     
+encrypt-data-aes192-cbc-kw-aes256.xml
+encrypt-data-aes256-cbc-kw-tripledes.xml
+encrypt-data-tripledes-cbc-rsa-oaep-mgf1p-sha256.xml
+encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml
+encrypt-element-aes128-cbc-rsa-1_5.xml
+encrypt-element-aes192-cbc-ref.xml
+encrypt-element-aes256-cbc-carried-kw-aes256.xml
+encrypt-element-aes256-cbc-kw-aes256-dh-ripemd160.xml
+encrypt-element-aes256-cbc-retrieved-kw-aes256.xml
+encrypt-element-tripledes-cbc-kw-aes128.xml
+encsig-hmac-sha256-dh.xml
+encsig-hmac-sha256-kw-tripledes-dh.xml
+encsig-hmac-sha256-rsa-1_5.xml
+encsig-hmac-sha256-rsa-oaep-mgf1p.xml
+encsig-ripemd160-hmac-ripemd160-kw-tripledes.xml
+encsig-sha256-hmac-sha256-kw-aes128.xml
+encsig-sha384-hmac-sha384-kw-aes192.xml
+encsig-sha512-hmac-sha512-kw-aes256.xml
+
+*/
 public class BaltimoreEncTest extends TestCase {
 
 	private static String cardNumber;
@@ -185,6 +221,26 @@ public class BaltimoreEncTest extends TestCase {
 
 	}
 
+	/*
+	 * Check we have retrieved a Credit Card number and that it is OK
+	 * Check that the document has the correct number of nodes
+	 */
+
+	private void checkDecryptedDoc(Document d) throws Exception {
+
+		String cc = retrieveCCNumber(d);
+		log.debug("Retrieved Credit Card : " + cc);
+		assertTrue(cc, ((cc!= null) && (cc.equals(cardNumber))));
+
+		// Test cc numbers
+
+		int myNodeCount = countNodes(d);
+
+		assertTrue("Node count mismatches", 
+				   ((myNodeCount > 0) && myNodeCount == nodeCount));
+
+	}
+
 	/**
 	 * Method test_five_content_3des_cbc
 	 *
@@ -192,24 +248,13 @@ public class BaltimoreEncTest extends TestCase {
 	 *
 	 */
 
+
 	public void test_five_content_3des_cbc() throws Exception {
 
 		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-tripledes-cbc.xml";
 
-		Document dd = decryptElement(filename, XMLCipher.TRIPLEDES);
-
-		String cc = retrieveCCNumber(dd);
-
-		// Compare the retrieved number to the stored number
-
-		assertTrue(cc, ((cc != null) && (cc.equals(cardNumber))));
-		
-		// Test my numbers
-
-		int myNodeCount = countNodes(dd);
-
-		assertTrue("Node count mismatches", 
-				   ((myNodeCount > 0) && myNodeCount == nodeCount));
+		Document dd = decryptElement(filename);
+		checkDecryptedDoc(dd);
     }
 
 	/**
@@ -223,7 +268,7 @@ public class BaltimoreEncTest extends TestCase {
 
 		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes128-cbc-kw-aes192.xml";
 
-		Document dd = decryptElement(filename, XMLCipher.TRIPLEDES);
+		Document dd = decryptElement(filename);
 
 		String cc = retrieveCCNumber(dd);
 
@@ -250,7 +295,7 @@ public class BaltimoreEncTest extends TestCase {
 	 * @param key Key to use for decryption
 	 */
 
-	public Document decryptElement (String filename, String encType) 
+	public Document decryptElement (String filename) 
 		throws Exception {
 
 		XMLCipher cipher;
@@ -273,7 +318,7 @@ public class BaltimoreEncTest extends TestCase {
 		
 		// Create the XMLCipher element
 		
-		cipher = XMLCipher.getInstance(encType);
+		cipher = XMLCipher.getInstance();
 
 		// Need to pre-load the Encrypted Data so we can get the key info
 

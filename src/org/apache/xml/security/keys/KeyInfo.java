@@ -366,7 +366,7 @@ public class KeyInfo extends SignatureElementProxy {
 		throws XMLEncryptionException {
 
 		if (this._state == MODE_SIGN) {
-			XMLCipher cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+			XMLCipher cipher = XMLCipher.getInstance();
 			this._constructionElement.appendChild(cipher.martial(encryptedKey));
 		}
 
@@ -626,7 +626,7 @@ public class KeyInfo extends SignatureElementProxy {
 										  EncryptionConstants._TAG_ENCRYPTEDKEY);
 
 		if (e != null) {
-			XMLCipher cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+			XMLCipher cipher = XMLCipher.getInstance();
 			cipher.init(XMLCipher.UNWRAP_MODE, null);
 			return cipher.loadEncryptedKey(e);
 		}
