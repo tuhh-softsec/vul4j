@@ -5,3 +5,8 @@
 <!ENTITY packageversion   "@@packageversion@@">
 <!ENTITY packagedirectory "@@packagedirectory@@">
 <!ENTITY packagedistname  "@@packagedistname@@">
+
+<!ENTITY xmlsec           "Apache-XML-Security-J">
+<!ENTITY xmldsig          "W3C XML-Signature Syntax and Processing">
+<!ENTITY xmlenc           "W3C XML Encryption Syntax and Processing">
+<!ENTITY hac              "Handbook of Applied Cryptography">
