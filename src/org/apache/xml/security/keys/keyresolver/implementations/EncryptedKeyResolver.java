@@ -59,19 +59,16 @@
 package org.apache.xml.security.keys.keyresolver.implementations;
 
 import java.security.Key;
-import javax.crypto.SecretKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
-import javax.xml.transform.TransformerException;
+import javax.crypto.SecretKey;
 
-import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.encryption.EncryptedKey;
-import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
-import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
