@@ -24,9 +24,9 @@ import org.xml.sax.Attributes;
 
 
 /**
- * <p>Rule implementation that calls a method on the top (parent)
- * object, passing arguments collected from subsequent
- * <code>CallParamRule</code> rules or from the body of this
+ * <p>Rule implementation that calls a method on an object on the stack
+ * (normally the top/parent object), passing arguments collected from 
+ * subsequent <code>CallParamRule</code> rules or from the body of this
  * element. </p>
  *
  * <p>By using {@link #CallMethodRule(String methodName)} 
@@ -55,7 +55,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.31 $ $Date: 2004/02/28 13:32:52 $
+ * @version $Revision: 1.32 $ $Date: 2004/04/05 09:22:32 $
  */
 
 public class CallMethodRule extends Rule {
