@@ -68,6 +68,9 @@
  *
  */
 
+#include "AnonymousResolver.hpp"
+#include "InteropResolver.hpp"
+
 // XSEC
 
 #include <xsec/utils/XSECPlatformUtils.hpp>
@@ -116,7 +119,6 @@
 #include <xercesc/util/XMLException.hpp>
 #include <xercesc/util/XMLUri.hpp>
 #include <xercesc/util/Janitor.hpp>
-#include <xercesc/framework/URLInputSource.hpp>
 
 XSEC_USING_XERCES(XercesDOMParser);
 XSEC_USING_XERCES(XMLException);
@@ -171,103 +173,6 @@ std::ostream& operator<< (std::ostream& target, const XMLCh * s)
 #endif
 
 // ----------------------------------------------------------------------------
-//           AnonymousResolver
-// ----------------------------------------------------------------------------
-
-/*
- * The anonymous resolver is a very simple resolver used for the IAIK 
- * anonymousReferenceSignature.xml interop test example.
- * It simply takes an anonymous (NULL) uri reference and links to the 
- * relevant file in the data suite
- */
-
-#define anonURI "../digestInputs/anonymousReferenceSignature.firstReference.txt"
-
-class AnonymousResolver : public XSECURIResolver {
-
-public:
-
-	AnonymousResolver() {mp_baseURI = NULL;}
-	virtual ~AnonymousResolver() {};
-
-	// Interface method
-
-	virtual BinInputStream * resolveURI(const XMLCh * uri);
- 
-	// Interface method
-
-	virtual XSECURIResolver * clone(void);
-
-	// Extra methods
-
-	void setBaseURI(const XMLCh * uri);
-private:
-	XMLCh * mp_baseURI;
-};
-
-XSECURIResolver * AnonymousResolver::clone(void) {
-
-   	AnonymousResolver * ret;
-
-	ret = new AnonymousResolver();
-
-	if (this->mp_baseURI != 0)
-		ret->mp_baseURI = XMLString::replicate(this->mp_baseURI);
-	else
-		ret->mp_baseURI = 0;
-
-	return ret;
-
-}
-
-void AnonymousResolver::setBaseURI(const XMLCh * uri) {
-
-	if (mp_baseURI != NULL)
-		delete[] mp_baseURI;
-
-	mp_baseURI = XMLString::replicate(uri);
-
-}
-
-BinInputStream * AnonymousResolver::resolveURI(const XMLCh * uri) {
-
-	XSEC_USING_XERCES(URLInputSource);
-	XSEC_USING_XERCES(XMLURL);
-	XSEC_USING_XERCES(BinInputStream);
-
-	URLInputSource			* URLS;		// Use Xerces URL Input source
-	BinInputStream			* is;		// To handle the actual input
-
-	if (uri != NULL) {
-		throw XSECException(XSECException::ErrorOpeningURI,
-			"AnonymousResolver - only anonymous references supported");
-	}
-
-	if (mp_baseURI == 0) {
-		URLS = new URLInputSource(XMLURL(MAKE_UNICODE_STRING(anonURI)));
-	}
-	else {
-		URLS = new URLInputSource(XMLURL(XMLURL(mp_baseURI), MAKE_UNICODE_STRING(anonURI)));
-	}
-
-	// makeStream can (and is quite likely to) throw an exception
-	Janitor<URLInputSource> j_URLS(URLS);
-
-	is = URLS->makeStream();
-
-	if (is == NULL) {
-
-		throw XSECException(XSECException::ErrorOpeningURI,
-			"An error occurred in AnonymousResolver when opening an URLInputStream");
-
-	}
-
-	return is;
-}
-
-
-
-// ----------------------------------------------------------------------------
 //           Checksig
 // ----------------------------------------------------------------------------
 
@@ -305,6 +210,7 @@ int evaluate(int argc, char ** argv) {
 	XSECCryptoKey			* key = NULL;
 	bool					useXSECURIResolver = false;
 	bool                    useAnonymousResolver = false;
+	bool					useInteropResolver = false;
 #if defined(_WIN32)
 	HCRYPTPROV				win32DSSCSP = 0;		// Crypto Providers
 	HCRYPTPROV				win32RSACSP = 0;		
@@ -333,6 +239,11 @@ int evaluate(int argc, char ** argv) {
 		}
 		else if (stricmp(argv[paramCount], "--xsecresolver") == 0 || stricmp(argv[paramCount], "-x") == 0) {
 			useXSECURIResolver = true;
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--interop") == 0 || stricmp(argv[paramCount], "-i") == 0) {
+			// Use the interop key resolver
+			useInteropResolver = true;
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--anonymousresolver") == 0 || stricmp(argv[paramCount], "-a") ==0) {
@@ -549,7 +460,9 @@ int evaluate(int argc, char ** argv) {
 	// Check whether we should use the internal resolver
 
 	
-	if (useXSECURIResolver == true || useAnonymousResolver == true) {
+	if (useXSECURIResolver == true || 
+		useAnonymousResolver == true ||
+		useInteropResolver == true) {
 
 #if defined(_WIN32)
 		XSECURIResolverGenericWin32 
@@ -599,10 +512,18 @@ int evaluate(int argc, char ** argv) {
 			theAnonymousResolver.setBaseURI(uri.getUriText());
 			sig->setURIResolver(&theAnonymousResolver);
 		}
-		else {
+		else if (useXSECURIResolver == true) {
 			theResolver.setBaseURI(uri.getUriText());
 			sig->setURIResolver(&theResolver);
 		}
+
+		if (useInteropResolver == true) {
+
+			InteropResolver ires(&(uri.getUriText()[8]));
+			sig->setKeyInfoResolver(&ires);
+
+		}
+
 	}
 
 
@@ -756,7 +677,7 @@ int main(int argc, char **argv) {
 	if ( _CrtMemDifference( &s3, &s1, &s2 ) && (
 		s3.lCounts[0] > 0 ||
 		s3.lCounts[1] > 1 ||
-		s3.lCounts[2] > 1 ||
+		// s3.lCounts[2] > 2 ||  We don't worry about C Runtime
 		s3.lCounts[3] > 0 ||
 		s3.lCounts[4] > 0)) {
 

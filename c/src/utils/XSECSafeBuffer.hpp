@@ -152,11 +152,14 @@ public:
 	int sbStrstr(const XMLCh * inStr) const;
 	void sbStrinsIn(const XMLCh * inStr, unsigned int offset);
 
+	// XMLCh and char common functions
+	void sbStrlwr(void);		// Lowercase the string
 
 	// Operators
 
 	unsigned char & operator[](int n);
 	safeBuffer & operator= (const safeBuffer & cpy);
+	safeBuffer & operator= (const XMLCh * inStr);
 
 	// Get functions
 

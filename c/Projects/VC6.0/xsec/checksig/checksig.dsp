@@ -119,7 +119,6 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GX /ZI /Od /I "%LIBWWW%\Library\External" /I "%LIBWWW%\Library\Src" /I "../../../../src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD CPP /nologo /MD /W3 /GX /Od /Ob1 /I "%LIBWWW%\Library\External" /I "%LIBWWW%\Library\Src" /I "../../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# SUBTRACT CPP /Z<none>
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
 # ADD RSC /l 0xc09 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -128,7 +127,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 ../../../../Build/Win32/VC6/Debug/xsec_lib_01D.lib libeay32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2D.lib Xalan-C_1D.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 ../../../../Build/Win32/VC6/Release/xsec_lib_02.lib libeay32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2.lib crypt32.lib /nologo /subsystem:console /incremental:no /machine:I386
-# SUBTRACT LINK32 /debug /pdbtype:<none>
+# SUBTRACT LINK32 /debug
 
 !ENDIF 
 
@@ -143,12 +142,28 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\..\..\src\tools\checksig\AnonymousResolver.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\tools\checksig\checksig.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\tools\checksig\InteropResolver.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\..\..\src\tools\checksig\AnonymousResolver.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\tools\checksig\InteropResolver.hpp
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 

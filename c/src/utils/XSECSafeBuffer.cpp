@@ -73,6 +73,8 @@
 #include <xsec/utils/XSECSafeBuffer.hpp>
 #include <xsec/framework/XSECError.hpp>
 
+#include <xercesc/util/XMLUniDefs.hpp>
+
 XSEC_USING_XERCES(XMLString);
 
 // Standard includes
@@ -450,6 +452,43 @@ int safeBuffer::sbOffsetStrstr(const char * inStr, unsigned int offset) const {
 
 }
 
+// XMLCh and char common functions
+
+void safeBuffer::sbStrlwr(void) {
+
+	if (m_bufferType == BUFFER_UNKNOWN) {
+	
+		throw XSECException(XSECException::SafeBufferError,
+			"Attempt to perform an operation on a buffer of incorrect type");
+
+	}
+
+	if (m_bufferType == BUFFER_CHAR) {
+
+		unsigned int i;
+		unsigned int l = strlen((char *) buffer);
+
+		for (i = 0; i < l; ++i) {
+			if (buffer[i] >= 'A' && buffer[i] <= 'Z')
+				buffer[i] = (buffer[i] - 'A') + 'a';
+		}
+
+	}
+
+	else {
+
+		unsigned int i;
+		XMLCh * b = (XMLCh *) buffer;
+		unsigned int l = XMLString::stringLen(b);
+
+		for (i = 0; i < l; ++i) {
+			if (b[i] >= XERCES_CPP_NAMESPACE::chLatin_A && b[i] <= XERCES_CPP_NAMESPACE::chLatin_Z)
+				b[i] = (b[i] - XERCES_CPP_NAMESPACE::chLatin_A) + XERCES_CPP_NAMESPACE::chLatin_a;
+		}
+
+	}
+
+}
 // Operators
 
 unsigned char & safeBuffer::operator[](int n) {
@@ -485,6 +524,16 @@ safeBuffer & safeBuffer::operator= (const safeBuffer & cpy) {
 
 	return *this;
 }
+
+safeBuffer & safeBuffer::operator= (const XMLCh * inStr) {
+
+	checkAndExpand(XMLString::stringLen(inStr) * size_XMLCh);
+	XMLString::copyString((XMLCh *) buffer, inStr);
+	m_bufferType = BUFFER_UNICODE;
+	return *this;
+
+}
+
 
 // Unicode Functions
 
