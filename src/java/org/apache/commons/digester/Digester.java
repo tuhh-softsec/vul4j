@@ -1,4 +1,4 @@
-/* $Id: Digester.java,v 1.105 2004/09/09 20:38:21 rdonkin Exp $
+/* $Id: Digester.java,v 1.106 2004/09/18 09:17:28 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -2585,9 +2585,27 @@ public class Digester extends DefaultHandler {
     }
     
     /**
-     * When the Digester is being used as a SAXContentHandler, 
-     * this method allows you to access the root object that has been
-     * created after parsing.
+     * Returns the root element of the tree of objects created as a result
+     * of applying the rule objects to the input XML.
+     * <p>
+     * If the digester stack was "primed" by explicitly pushing a root
+     * object onto the stack before parsing started, then that root object
+     * is returned here.
+     * <p>
+     * Alternatively, if a Rule which creates an object (eg ObjectCreateRule)
+     * matched the root element of the xml, then the object created will be
+     * returned here.
+     * <p>
+     * In other cases, the object most recently pushed onto an empty digester
+     * stack is returned. This would be a most unusual use of digester, however;
+     * one of the previous configurations is much more likely.
+     * <p>
+     * Note that when using one of the Digester.parse methods, the return
+     * value from the parse method is exactly the same as the return value
+     * from this method. However when the Digester is being used as a 
+     * SAXContentHandler, no such return value is available; in this case, this
+     * method allows you to access the root object that has been created 
+     * after parsing has completed.
      * 
      * @return the root object that has been created after parsing
      *  or null if the digester has not parsed any XML yet.
@@ -2596,6 +2614,17 @@ public class Digester extends DefaultHandler {
         return root;
     }
     
+    /**
+     * This method allows the "root" variable to be reset to null.
+     * <p>
+     * It is not considered safe for a digester instance to be reused
+     * to parse multiple xml documents. However if you are determined to
+     * do so, then you should call both clear() and resetRoot() before
+     * each parse.
+     */
+    public void resetRoot() {
+        root = null;
+    }
 
     // ------------------------------------------------ Parameter Stack Methods
 
