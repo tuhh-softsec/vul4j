@@ -929,6 +929,8 @@ public class XMLSignatureInput {
          }
       }
 
+
+
       /**
        * Checks whether a Comment or ProcessingInstruction is before or after the
        * document element. This is needed for prepending or appending "\n"s.
@@ -1062,6 +1064,14 @@ public class XMLSignatureInput {
                this._writer.write("&amp;#xD;");
                break;
 
+            case ' ' :
+               this._writer.write("&middot;");
+               break;
+
+            case '\n' :
+               this._writer.write("&para;\n");
+               break;
+
             default :
                this._writer.write(c);
                break;
@@ -1121,6 +1131,14 @@ public class XMLSignatureInput {
                this._writer.write("&amp;#xD;");
                break;
 
+            case ' ' :
+               this._writer.write("&middot;");
+               break;
+
+            case '\n' :
+               this._writer.write("&para;\n");
+               break;
+
             default :
                this._writer.write(c);
                break;
@@ -1163,6 +1181,14 @@ public class XMLSignatureInput {
 
             case 0xD :
                this._writer.write("&amp;#xD;");
+               break;
+
+            case ' ' :
+               this._writer.write("&middot;");
+               break;
+
+            case '\n' :
+               this._writer.write("&para;\n");
                break;
 
             default :
