@@ -1,4 +1,4 @@
-$Id: RELEASE-NOTES.txt,v 1.11 2004/04/19 09:18:39 skitching Exp $
+$Id: RELEASE-NOTES.txt,v 1.12 2004/04/22 11:06:02 skitching Exp $
 
 
                           Commons Digester Package
@@ -84,7 +84,9 @@ Rule can be used with the default Rules class.
 
 WithDefaultsRulesWrapper
 ------------------------
-????
+A Rules class which wraps any other Rules implementation and enhances it
+so that if no rules are matched for an element in the input then a default
+set of Rule instances are returned.
 
 CallMethodRule target offset
 ----------------------------
@@ -139,7 +141,11 @@ errors are encountered.
 
 SAXLogger access
 -----------------
-?? getSAXLogger and setSAXLogger have been added. They do ????????
+Since Digester 1.2, messages have been logged about SAX events handled by
+the Digester during parsing via a "saxLog" logging object which is different 
+from the Log object that is used for "higher-level" digester messages.
+The new methods getSAXLogger and setSAXLogger on the Digester class allow 
+access to this separate Log instance.
 
 Matched rules stack
 -------------------
@@ -173,8 +179,8 @@ OTHER IMPORTANT NOTES
 
 New License
 -----------
-This release is done under the Apache License version 2.0.
-Please see the LICENSE.TXT and NOTICE.TXT files in the distribution.
+This release is done under version 2.0 of the Apache License.
+Please see the LICENSE.txt and NOTICE.txt files in the distribution.
 
 RSS Support
 -----------
@@ -202,22 +208,30 @@ All @version tags were removed as they were not considered to be useful.
 
 Commons Collections dependency
 ==============================
-The commons-collections library has recently undergone a major release.
-While Digester is "officially" released with a declared dependency of
-commons-collections 2.1, the code has been tested with version 3.0 of
-this library and there are no known issues.
+The commons-collections library has recently undergone a major release (3.0).
+Digester has been tested with both commons-collections 2.1 and 3.0 and
+there are no known issues with using either version of this library.
 
-BUG REPORTS ADDRESSED:
-======================
+BUGS FROM PREVIOUS RELEASE
+==========================
 
-NoteCreateRule: end method was not popping digester stack
-ExtendedBaseRules: ??? (see Robert)
+Reports Addressed
+------------------
 #22131 SetPropertiesRule: Avoid NPE when debugging enabled and no top object
+#24613 xmlrules DTD does not provide SetRootRule
+#25112 Cannot find digester-rules.dtd [DOCTYPE incorrect]
+#28486 ExtendedBaseRules: Match can compute "longest match" incorrectly.
 
 Outstanding Reports:
 --------------------
 #20903 ENH New rule for the digester (CallFactoryMethodRule)
 #21903 ENH Include filename or uri if Digester.parse throws an exception
+
+Bugs fixed with no bugzilla entry
+----------------------------------
+NodeCreateRule: r1.3 end method was not popping digester stack
+ExtendedBaseRules: r.11 (patternStart)
+ExtendedBaseRules: r.9 (findExactAncesterMatch(parentPattern))
 
 DEPRECATION:
 ============
