@@ -140,16 +140,16 @@ static XMLCh s_CipherReference[] = {
 
 XENCCipherDataImpl::XENCCipherDataImpl(const XSECEnv * env) :
 mp_env(env),
-mp_cipherDataNode(NULL),
+mp_cipherDataElement(NULL),
 mp_cipherValue(NULL),
 mp_cipherReference(NULL) {
 
 }
 
 
-XENCCipherDataImpl::XENCCipherDataImpl(const XSECEnv * env, DOMNode * node) :
+XENCCipherDataImpl::XENCCipherDataImpl(const XSECEnv * env, DOMElement * node) :
 mp_env(env),
-mp_cipherDataNode(node),
+mp_cipherDataElement(node),
 mp_cipherValue(NULL),
 mp_cipherReference(NULL) {
 
@@ -170,7 +170,7 @@ XENCCipherDataImpl::~XENCCipherDataImpl() {
 
 void XENCCipherDataImpl::load() {
 
-	if (mp_cipherDataNode == NULL) {
+	if (mp_cipherDataElement == NULL) {
 
 		// Attempt to load an empty encryptedType element
 		throw XSECException(XSECException::CipherDataError,
@@ -178,7 +178,7 @@ void XENCCipherDataImpl::load() {
 
 	}
 
-	if (!strEquals(getXENCLocalName(mp_cipherDataNode), s_CipherData)) {
+	if (!strEquals(getXENCLocalName(mp_cipherDataElement), s_CipherData)) {
 	
 		throw XSECException(XSECException::CipherDataError,
 			"XENCCipherData::load - called incorrect node");
@@ -188,7 +188,7 @@ void XENCCipherDataImpl::load() {
 	// Find out whether this is a CipherValue or CipherReference and load
 	// appropriately
 
-	DOMElement *tmpElt = findFirstElementChild(mp_cipherDataNode);
+	DOMElement *tmpElt = findFirstElementChild(mp_cipherDataElement);
 
 	if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_CipherValue)) {
 
@@ -239,7 +239,7 @@ DOMElement * XENCCipherDataImpl::createBlankCipherData(
 	makeQName(str, prefix, s_CipherData);
 
 	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
-	mp_cipherDataNode = ret;
+	mp_cipherDataElement = ret;
 
 	mp_env->doPrettyPrint(ret);
 

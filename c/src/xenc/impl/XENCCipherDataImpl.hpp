@@ -88,7 +88,7 @@ public:
 	XENCCipherDataImpl(const XSECEnv * env);
 	XENCCipherDataImpl(
 		const XSECEnv * env, 
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node
 	);
 
 	virtual ~XENCCipherDataImpl();
@@ -104,8 +104,8 @@ public:
 	virtual XENCCipherDataType getCipherDataType(void);
 	virtual XENCCipherValue * getCipherValue(void);
 	virtual XENCCipherReference * getCipherReference(void);
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
-		{return mp_cipherDataNode;}
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void)
+		{return mp_cipherDataElement;}
 
 
 private:
@@ -114,8 +114,8 @@ private:
 	XENCCipherDataImpl();
 
 	const XSECEnv			* mp_env;
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
-							* mp_cipherDataNode;		// Node at head of structure
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement					
+							* mp_cipherDataElement;		// Node at head of structure
 
 	XENCCipherDataType		m_cipherDataType;			// Is this a value or a reference?
 	XENCCipherValueImpl		* mp_cipherValue;			// Cipher value node

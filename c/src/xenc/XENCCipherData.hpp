@@ -92,6 +92,17 @@
  * data, an XENCEncryptedType derivative object of XENCCipher object 
  * should be used.
  *
+ * The schema for CipherData is as follows:
+ *
+ * \verbatim
+<element name='CipherData' type='xenc:CipherDataType'/>
+  <complexType name='CipherDataType'>
+     <choice>
+       <element name='CipherValue' type='base64Binary'/>
+       <element ref='xenc:CipherReference'/>
+     </choice>
+   </complexType>
+\endverbatim
  */
 
 
@@ -160,7 +171,7 @@ public:
 	 * @returns the DOM Node representing the <CipherData> element
 	 */
 
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void) = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) = 0;
 
 	//@}
 
