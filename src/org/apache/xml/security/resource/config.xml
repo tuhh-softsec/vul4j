@@ -514,9 +514,9 @@
              If you use the NULL appender-ref, all logging is disabled.
           -->
         <root>
-                <priority value ="fatal" />
-                <!-- <appender-ref ref="LOGTXT" /> -->
-                <appender-ref ref="NULL" />
+                <priority value ="debug" />
+                <appender-ref ref="LOGTXT" />
+                <!-- <appender-ref ref="NULL" /> -->
                 <!-- <appender-ref ref="chainsaw" /> -->
         </root>
 
