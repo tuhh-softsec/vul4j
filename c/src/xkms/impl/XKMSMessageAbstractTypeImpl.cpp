@@ -365,6 +365,8 @@ DSIGSignature * XKMSMessageAbstractTypeImpl::addSignature(
 	else
 		mp_messageAbstractTypeElement->appendChild(elt);
 
+	mp_signature = ret;
+
 	return ret;
 }
 
@@ -416,9 +418,25 @@ void XKMSMessageAbstractTypeImpl::appendOpaqueClientDataItem(const XMLCh * item)
 												str.rawXMLChBuffer());
 		mp_env->doPrettyPrint(mp_opaqueClientDataElement);
 
-		mp_messageAbstractTypeElement->appendChild(mp_opaqueClientDataElement);
-		mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+		/* Have to insert before anything else in the message */
+		DOMElement * te;
+		te = findFirstElementChild(mp_messageAbstractTypeElement);
+		while (te != NULL && 
+			   strEquals(getXKMSLocalName(te), XKMSConstants::s_tagSignature))
+			te = findNextElementChild(te);
 
+		if (te == NULL) {
+				
+			mp_messageAbstractTypeElement->appendChild(mp_opaqueClientDataElement);
+			mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+		}
+		else {
+			mp_messageAbstractTypeElement->insertBefore(mp_opaqueClientDataElement, te);
+			if (mp_env->getPrettyPrintFlag()) {
+				mp_messageAbstractTypeElement->insertBefore(
+					mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), te);
+			}
+		}
 	}
 
 	makeQName(str, prefix, XKMSConstants::s_tagOpaqueData);

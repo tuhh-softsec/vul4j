@@ -62,6 +62,10 @@
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 
+#include <xsec/utils/XSECBinTXFMInputStream.hpp>
+#include <xsec/dsig/DSIGReference.hpp>
+#include <xsec/dsig/DSIGReferenceList.hpp>
+
 // General
 
 #include <memory.h>
@@ -384,6 +388,8 @@ void printLocateRequestUsage(void) {
 	cerr << "                            : Add a RespondWith element\n";
 	cerr << "   --add-responsemechanism/-m <Identifier>\n";
 	cerr << "                            : Add a ResponseMechanism element\n";
+	cerr << "   --sign-rsa/-sr <filename> <passphrase>\n";
+	cerr << "           : Sign using the RSA key in file protected by passphrase\n";
 	cerr << "   --sign-dsa/-sd <filename> <passphrase>\n";
 	cerr << "           : Sign using the DSA key in file protected by passphrase\n\n";
 
@@ -650,8 +656,12 @@ void printValidateRequestUsage(void) {
 	cerr << "                            : Add a RespondWith element\n";
 	cerr << "   --add-responsemechanism/-m <Identifier>\n";
 	cerr << "                            : Add a ResponseMechanism element\n";
+	cerr << "   --sign-rsa/-sr <filename> <passphrase>\n";
+	cerr << "           : Sign using the RSA key in file protected by passphrase\n";
 	cerr << "   --sign-dsa/-sd <filename> <passphrase>\n";
-	cerr << "           : Sign using the DSA key in file protected by passphrase\n\n";
+	cerr << "           : Sign using the DSA key in file protected by passphrase\n";
+	cerr << "   --sign-cert/-sc <filename>\n";
+	cerr << "           : Add the indicated certificate to the signature KeyInfo\n\n";
 
 }
 
@@ -883,6 +893,57 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 
 			
 		} /* argv[1] = "dsa/rsa" */
+		else if (stricmp(argv[paramCount], "--sign-cert") == 0 || stricmp(argv[paramCount], "-sc") == 0) {
+			if (++paramCount >= argc) {
+				printValidateRequestUsage();
+				delete vr;
+				return NULL;
+			}
+			XSECCryptoX509 * x = loadX509(argv[paramCount]);
+			if (x == NULL) {
+				delete vr;
+				(*doc)->release();
+				cerr << "Error opening Certificate file : " << 
+					argv[paramCount] << endl;
+				return NULL;
+			}
+
+			Janitor<XSECCryptoX509> j_x(x);
+
+			DSIGSignature * sig = vr->getSignature();
+			if (sig == NULL) {
+				cerr << "Can only add Certificates to signature after signing\n";
+				return NULL;
+			}
+
+			// See if there is already an X.509 element
+			DSIGKeyInfoX509 * kix;
+			if ((kix = findX509Data(sig->getKeyInfoList())) == NULL)
+				kix = sig->appendX509Data();
+			safeBuffer sb = x->getDEREncodingSB();
+			kix->appendX509Certificate(sb.sbStrToXMLCh());
+			paramCount++;
+			/***********************************************/
+			cout << "Start doc\n";
+			outputDoc(*doc);
+			cout << "End doc\n";
+			if (sig->verify())
+				cout << "OK";
+			else
+				cout << "BAD";
+			DSIGReference * ref = sig->getReferenceList()->item(0);
+			XSECBinTXFMInputStream *is = ref->makeBinInputStream();
+			cout << "---" << endl;
+			XMLByte buf[1024];
+			int ct = is->readBytes(buf,1023);
+			while (ct != 0) {
+				buf[ct]='\0';
+				cout << buf;
+				ct = is->readBytes(buf,1023);
+			}
+			cout << "---" << endl;
+
+		}
 
 #endif
 		else {
@@ -1459,6 +1520,20 @@ void doMessageAbstractTypeDump(XKMSMessageAbstractType *msg, int level) {
 	}
 	else
 		cout << "Nonce = <NONE SET>" << endl;
+
+	/* Check for OpaqueClientData */
+	if (msg->getOpaqueClientDataSize() > 0) {
+		levelSet(level);
+		cout << "Opaque Client Data found : " << endl;
+		for (int i = 0; i < msg->getOpaqueClientDataSize(); ++i) {
+			s = XMLString::transcode(msg->getOpaqueClientDataItemStr(i));
+			if (s != NULL) {
+				levelSet(level + 1);
+				cout << i << " : " << s << endl;
+				XSEC_RELEASE_XMLCH(s);
+			}
+		}
+	}
 }
 
 void doRequestAbstractTypeDump(XKMSRequestAbstractType *msg, int level) {
