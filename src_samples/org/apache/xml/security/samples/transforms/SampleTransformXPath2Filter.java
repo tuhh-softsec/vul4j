@@ -159,7 +159,7 @@ public class SampleTransformXPath2Filter {
          System.out.println(
             "-------------------------------------------------------------");
          System.out
-            .println(new String(sig.getSignedInfo().item(0).getTransformsInput()
+            .println(new String(sig.getSignedInfo().item(0).getContentsBeforeTransformation()
                .getBytes()));
          System.out.println(
             "-------------------------------------------------------------");
