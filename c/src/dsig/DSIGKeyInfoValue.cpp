@@ -71,11 +71,12 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 XERCES_CPP_NAMESPACE_USE
 
-DSIGKeyInfoValue::DSIGKeyInfoValue(DSIGSignature * sig, DOMNode *valueNode) :
-DSIGKeyInfo(sig),
+DSIGKeyInfoValue::DSIGKeyInfoValue(const XSECEnv * env, DOMNode *valueNode) :
+DSIGKeyInfo(env),
 mp_PTextNode(0),
 mp_QTextNode(0),
 mp_GTextNode(0),
@@ -87,8 +88,8 @@ m_keyInfoType(KEYINFO_NOTSET) {
 
 }
 
-DSIGKeyInfoValue::DSIGKeyInfoValue(DSIGSignature * sig) :
-DSIGKeyInfo(sig),
+DSIGKeyInfoValue::DSIGKeyInfoValue(const XSECEnv * env) :
+DSIGKeyInfo(env),
 mp_PTextNode(0),
 mp_QTextNode(0),
 mp_GTextNode(0),
@@ -279,8 +280,8 @@ DOMElement * DSIGKeyInfoValue::createBlankDSAKeyValue(const XMLCh * P,
 	// Create the DOM Structure
 
 	safeBuffer str;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
-	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefix, "KeyValue");
 
@@ -394,8 +395,8 @@ DOMElement * DSIGKeyInfoValue::createBlankRSAKeyValue(const XMLCh * modulus,
 	// Create the DOM Structure
 
 	safeBuffer str;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
-	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefix, "KeyValue");
 

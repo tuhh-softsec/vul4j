@@ -73,6 +73,7 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 #include <xercesc/util/Janitor.hpp>
 
@@ -83,8 +84,8 @@ XERCES_CPP_NAMESPACE_USE
 // --------------------------------------------------------------------------------
 
 
-DSIGKeyInfoPGPData::DSIGKeyInfoPGPData(DSIGSignature *sig, DOMNode *pgpDataNode) : 
-DSIGKeyInfo(sig),
+DSIGKeyInfoPGPData::DSIGKeyInfoPGPData(const XSECEnv * env, DOMNode *pgpDataNode) : 
+DSIGKeyInfo(env),
 mp_keyID(NULL),
 mp_keyPacket(NULL),
 mp_keyIDTextNode(NULL),
@@ -95,8 +96,8 @@ mp_keyPacketTextNode(NULL) {
 }
 
 
-DSIGKeyInfoPGPData::DSIGKeyInfoPGPData(DSIGSignature *sig) : 
-DSIGKeyInfo(sig),
+DSIGKeyInfoPGPData::DSIGKeyInfoPGPData(const XSECEnv * env) : 
+DSIGKeyInfo(env),
 mp_keyID(NULL),
 mp_keyPacket(NULL),
 mp_keyIDTextNode(NULL),
@@ -202,8 +203,8 @@ DOMElement * DSIGKeyInfoPGPData::createBlankPGPData(const XMLCh * id, const XMLC
 	// Create the DOM Structure
 
 	safeBuffer str;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
-	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefix, "PGPData");
 
@@ -251,8 +252,8 @@ void DSIGKeyInfoPGPData::setKeyID(const XMLCh * id) {
 
 		// Need to create
 		safeBuffer str;
-		DOMDocument *doc = mp_parentSignature->getParentDocument();
-		const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+		DOMDocument *doc = mp_env->getParentDocument();
+		const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 		makeQName(str, prefix, "PGPKeyID");
 		DOMElement * t = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
@@ -290,8 +291,8 @@ void DSIGKeyInfoPGPData::setKeyPacket(const XMLCh * packet) {
 		// Need to create
 
 		safeBuffer str;
-		DOMDocument *doc = mp_parentSignature->getParentDocument();
-		const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+		DOMDocument *doc = mp_env->getParentDocument();
+		const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 		makeQName(str, prefix, "PGPKeyPacket");
 		DOMElement * t = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());

@@ -93,6 +93,7 @@
 #include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
 #include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
 #include <xsec/dsig/DSIGKeyInfoMgmtData.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 // Xerces includes
 
@@ -334,16 +335,13 @@ DSIGReferenceList * DSIGSignature::getReferenceList(void) {
 
 void DSIGSignature::setURIResolver(XSECURIResolver * resolver) {
 
-	if (mp_URIResolver != 0)
-		delete mp_URIResolver;
-
-	mp_URIResolver = resolver->clone();
+	mp_env->setURIResolver(resolver);
 
 }
 
 XSECURIResolver * DSIGSignature::getURIResolver(void) {
 
-	return mp_URIResolver;
+	return mp_env->getURIResolver();
 
 }
 
@@ -377,20 +375,18 @@ m_errStr("") {
 	mp_sigNode = sigNode;
 	mp_signingKey = NULL;
 	mp_signedInfo = NULL;
-	mp_prefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
-	mp_ecPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
-	mp_xpfPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
-	mp_URIResolver = NULL;
 	mp_KeyInfoResolver = NULL;
 	mp_KeyInfoNode = NULL;
 	m_loaded = false;
-
-	m_keyInfoList.setParentSignature(this);
 
 	// Set up our formatter
 	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
 												XMLFormatter::UnRep_CharRef));
 
+	// Set up the environment
+	XSECnew(mp_env, XSECEnv(doc));
+
+	m_keyInfoList.setEnvironment(mp_env);
 
 }
 
@@ -401,24 +397,24 @@ m_errStr("") {
 	mp_sigNode = NULL;
 	mp_signingKey = NULL;
 	mp_signedInfo = NULL;
-	mp_prefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
-	mp_ecPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
-	mp_xpfPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
-	mp_URIResolver = NULL;
 	mp_KeyInfoResolver = NULL;
 	mp_KeyInfoNode = NULL;
 	m_loaded = false;
-
-	m_keyInfoList.setParentSignature(this);
 
 	// Set up our formatter
 	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
 												XMLFormatter::UnRep_CharRef));
 
+	XSECnew(mp_env, XSECEnv(NULL));
+
+	m_keyInfoList.setEnvironment(mp_env);
 
 }
 
 DSIGSignature::~DSIGSignature() {
+
+	if (mp_env != NULL)
+		delete mp_env;
 
 	if (mp_signingKey != NULL) {
 
@@ -440,30 +436,11 @@ DSIGSignature::~DSIGSignature() {
 		mp_formatter = NULL;
 	}
 
-	if (mp_prefixNS != NULL) {
-		delete[] mp_prefixNS;
-		mp_prefixNS = NULL;
-	}
-
-	if (mp_ecPrefixNS != NULL) {
-		delete[] mp_ecPrefixNS;
-		mp_ecPrefixNS = NULL;
-	}
-	
-	if (mp_xpfPrefixNS != NULL) {
-		delete[] mp_xpfPrefixNS;
-		mp_xpfPrefixNS = NULL;
-	}
-
 	if (mp_KeyInfoResolver != NULL) {
 		delete mp_KeyInfoResolver;
 		mp_KeyInfoResolver = NULL;
 	}
 
-	if (mp_URIResolver != NULL) {
-		delete mp_URIResolver;
-		mp_URIResolver = NULL;
-	}
 
 }
 
@@ -480,30 +457,43 @@ const XMLCh * DSIGSignature::getErrMsgs() {
 
 void DSIGSignature::setDSIGNSPrefix(const XMLCh * prefix) {
 
-	if (mp_prefixNS != NULL)
-		delete[] mp_prefixNS;
-
-	mp_prefixNS = XMLString::replicate(prefix);
+	mp_env->setDSIGNSPrefix(prefix);
 
 }
 
 void DSIGSignature::setECNSPrefix(const XMLCh * prefix) {
 
-	if (mp_ecPrefixNS != NULL)
-		delete[] mp_ecPrefixNS;
-
-	mp_ecPrefixNS = XMLString::replicate(prefix);
+	mp_env->setECNSPrefix(prefix);
 
 }
 
 void DSIGSignature::setXPFNSPrefix(const XMLCh * prefix) {
 
-	if (mp_xpfPrefixNS != NULL)
-		delete[] mp_xpfPrefixNS;
-
-	mp_xpfPrefixNS = XMLString::replicate(prefix);
+	mp_env->setXPFNSPrefix(prefix);
 
 }
+
+// get
+
+const XMLCh * DSIGSignature::getDSIGNSPrefix() {
+
+	return mp_env->getDSIGNSPrefix();
+
+}
+
+
+const XMLCh * DSIGSignature::getECNSPrefix() {
+
+	return mp_env->getECNSPrefix();
+
+}
+
+const XMLCh * DSIGSignature::getXPFNSPrefix() {
+
+	return mp_env->getXPFNSPrefix();
+
+}
+
 
 DOMElement *DSIGSignature::createBlankSignature(DOMDocument *doc,
 			canonicalizationMethod cm,
@@ -511,18 +501,22 @@ DOMElement *DSIGSignature::createBlankSignature(DOMDocument *doc,
 			hashMethod hm) {
 
 	mp_doc = doc;
+	mp_env->setParentDocument(doc);
+
+	const XMLCh * prefixNS = mp_env->getDSIGNSPrefix();
+
 	safeBuffer str;
 
-	makeQName(str, mp_prefixNS, "Signature");
+	makeQName(str, prefixNS, "Signature");
 
 	DOMElement *sigNode = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 
-	if (mp_prefixNS[0] == '\0') {
+	if (prefixNS[0] == '\0') {
 		str.sbTranscodeIn("xmlns");
 	}
 	else {
 		str.sbTranscodeIn("xmlns:");
-		str.sbXMLChCat(mp_prefixNS);
+		str.sbXMLChCat(prefixNS);
 	}
 
 	sigNode->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
@@ -541,7 +535,7 @@ DOMElement *DSIGSignature::createBlankSignature(DOMDocument *doc,
 
 	// Create a dummy signature value (dummy until signed)
 
-	makeQName(str, mp_prefixNS, "SignatureValue");
+	makeQName(str, mp_env->getDSIGNSPrefix(), "SignatureValue");
 	DOMElement *sigValNode = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, 
 												  str.rawXMLChBuffer());
 	mp_signatureValueNode = sigValNode;
@@ -600,7 +594,7 @@ void DSIGSignature::createKeyInfoElement(void) {
 
 	safeBuffer str;
 
-	makeQName(str, mp_prefixNS, "KeyInfo");
+	makeQName(str, mp_env->getDSIGNSPrefix(), "KeyInfo");
 
 	mp_KeyInfoNode = mp_doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
 
@@ -635,7 +629,7 @@ DSIGKeyInfoValue * DSIGSignature::appendDSAKeyValue(const XMLCh * P,
 
 	// Create the new element
 	DSIGKeyInfoValue * v;
-	XSECnew(v, DSIGKeyInfoValue(this));
+	XSECnew(v, DSIGKeyInfoValue(mp_env));
 
 	mp_KeyInfoNode->appendChild(v->createBlankDSAKeyValue(P, Q, G, Y));
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
@@ -654,7 +648,7 @@ DSIGKeyInfoValue * DSIGSignature::appendRSAKeyValue(const XMLCh * modulus,
 
 	// Create the new element
 	DSIGKeyInfoValue * v;
-	XSECnew(v, DSIGKeyInfoValue(this));
+	XSECnew(v, DSIGKeyInfoValue(mp_env));
 
 	mp_KeyInfoNode->appendChild(v->createBlankRSAKeyValue(modulus, exponent));
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
@@ -673,7 +667,7 @@ DSIGKeyInfoX509 * DSIGSignature::appendX509Data(void) {
 
 	DSIGKeyInfoX509 * x;
 
-	XSECnew(x, DSIGKeyInfoX509(this));
+	XSECnew(x, DSIGKeyInfoX509(mp_env));
 
 	mp_KeyInfoNode->appendChild(x->createBlankX509Data());
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
@@ -691,7 +685,7 @@ DSIGKeyInfoName * DSIGSignature::appendKeyName(const XMLCh * name, bool isDName)
 
 	DSIGKeyInfoName * n;
 
-	XSECnew(n, DSIGKeyInfoName(this));
+	XSECnew(n, DSIGKeyInfoName(mp_env));
 
 	mp_KeyInfoNode->appendChild(n->createBlankKeyName(name, isDName));
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
@@ -709,7 +703,7 @@ DSIGKeyInfoPGPData * DSIGSignature::appendPGPData(const XMLCh * id, const XMLCh 
 
 	DSIGKeyInfoPGPData * p;
 
-	XSECnew(p, DSIGKeyInfoPGPData(this));
+	XSECnew(p, DSIGKeyInfoPGPData(mp_env));
 
 	mp_KeyInfoNode->appendChild(p->createBlankPGPData(id, packet));
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
@@ -726,7 +720,7 @@ DSIGKeyInfoSPKIData * DSIGSignature::appendSPKIData(const XMLCh * sexp) {
 
 	DSIGKeyInfoSPKIData * s;
 
-	XSECnew(s, DSIGKeyInfoSPKIData(this));
+	XSECnew(s, DSIGKeyInfoSPKIData(mp_env));
 
 	mp_KeyInfoNode->appendChild(s->createBlankSPKIData(sexp));
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
@@ -743,7 +737,7 @@ DSIGKeyInfoMgmtData * DSIGSignature::appendMgmtData(const XMLCh * data) {
 
 	DSIGKeyInfoMgmtData * m;
 
-	XSECnew(m, DSIGKeyInfoMgmtData(this));
+	XSECnew(m, DSIGKeyInfoMgmtData(mp_env));
 
 	mp_KeyInfoNode->appendChild(m->createBlankMgmtData(data));
 	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
@@ -780,10 +774,7 @@ void DSIGSignature::load(void) {
 	m_loaded = true;
 
 	// Find the prefix being used so that we can later use it to manipulate the signature
-	if (mp_prefixNS != NULL)
-		delete[] mp_prefixNS;
-
-	mp_prefixNS = XMLString::replicate(mp_sigNode->getPrefix());
+	mp_env->setDSIGNSPrefix(mp_sigNode->getPrefix());
 
 	// Now check for SignedInfo
 	DOMNode *tmpElt = mp_sigNode->getFirstChild();
@@ -917,7 +908,7 @@ void DSIGSignature::load(void) {
 					}
 
 					DSIGKeyInfoX509 * x509;
-					XSECnew(x509, DSIGKeyInfoX509(this));
+					XSECnew(x509, DSIGKeyInfoX509(mp_env));
 					x509->setRawRetrievalURI(URI);
 
 					this->m_keyInfoList.addKeyInfo(x509);
@@ -927,7 +918,7 @@ void DSIGSignature::load(void) {
 				else {
 
 					// Find base transform using the base URI
-					currentTxfm = DSIGReference::getURIBaseTXFM(mp_doc, URI, mp_URIResolver);
+					currentTxfm = DSIGReference::getURIBaseTXFM(mp_doc, URI, mp_env->getURIResolver());
 					TXFMChain * chain;
 					XSECnew(chain, TXFMChain(currentTxfm));
 					Janitor<TXFMChain> j_chain(chain);

@@ -82,6 +82,7 @@
 
 #include <xercesc/dom/DOM.hpp>
 
+class XSECEnv;
 class XSECBinTXFMInputStream;
 class XSECURIResolver;
 class XSECKeyInfoResolver;
@@ -425,7 +426,7 @@ public:
 	 *
 	 */
 
-	const XMLCh * getDSIGNSPrefix() {return mp_prefixNS;}
+	const XMLCh * getDSIGNSPrefix();
 
 	/**
 	 * \brief Get the NS being used for EC nodes
@@ -434,7 +435,7 @@ public:
 	 * @see #setECNSPrefix
 	 */
 
-	const XMLCh * getECNSPrefix() {return mp_ecPrefixNS;}
+	const XMLCh * getECNSPrefix();
 
 	/**
 	 * \brief Get the NS being used for XPath Filter2 nodes
@@ -443,7 +444,7 @@ public:
 	 * @see #setXPFNSPrefix
 	 */
 
-	const XMLCh * getXPFNSPrefix() {return mp_xpfPrefixNS;}
+	const XMLCh * getXPFNSPrefix();
 
 	/**
 	 * \brief
@@ -696,16 +697,13 @@ private:
 								* mp_KeyInfoNode;
 	safeBuffer					m_errStr;
 
-	// For creating functions
-	XMLCh 						* mp_prefixNS;
-	XMLCh						* mp_ecPrefixNS;
-	XMLCh						* mp_xpfPrefixNS;
-
+	// Environment
+	XSECEnv						* mp_env;
+	
 	// The signing/verifying key
 	XSECCryptoKey				* mp_signingKey;
 
 	// Resolvers
-	XSECURIResolver				* mp_URIResolver;
 	XSECKeyInfoResolver			* mp_KeyInfoResolver;
 
 	// Not implemented constructors

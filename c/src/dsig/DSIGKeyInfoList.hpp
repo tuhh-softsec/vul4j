@@ -119,12 +119,12 @@ public:
 	 *
 	 * Main constructor called by DSIGSignature
 	 *
-	 * @note Should only ever be created by a Signature class.
+	 * @note Should only ever be created by a Signature or Cipher class.
 	 *
-	 * @param sig The owning signature
+	 * @param env The environment the KeyInfo is operating within
 	 */
 
-	DSIGKeyInfoList(DSIGSignature * sig);
+	DSIGKeyInfoList(const XSECEnv * env);
 
 	/**
 	 * \brief Destructor
@@ -200,14 +200,14 @@ public:
 	DSIGKeyInfo * removeKeyInfo(size_type index);
 
 	/**
-	 * \brief Set the owning signature
+	 * \brief Set the overarching environment
 	 *
-	 * Sets the signature owner of this element
+	 * Sets the environment this list is operating within
 	 *
-	 * @param sig The owner signature
+	 * @param env Operating environment
 	 */
 
-	void setParentSignature(DSIGSignature * sig) {mp_parentSignature = sig;}
+	void setEnvironment(const XSECEnv * env) {mp_env = env;}
 
 	/**
 	 * \brief Clear out the list
@@ -234,7 +234,7 @@ private:
 	DSIGKeyInfoList();
 
 	KeyInfoListVectorType					m_keyInfoList;
-	DSIGSignature							* mp_parentSignature;
+	const XSECEnv							* mp_env;
 	// KeyInfoListVectorType::iterator			m_iterator;
 };
 

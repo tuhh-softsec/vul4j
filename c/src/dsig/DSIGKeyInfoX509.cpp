@@ -72,6 +72,7 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 #include <xercesc/util/Janitor.hpp>
 
@@ -82,8 +83,8 @@ XERCES_CPP_NAMESPACE_USE
 // --------------------------------------------------------------------------------
 
 
-DSIGKeyInfoX509::DSIGKeyInfoX509(DSIGSignature * sig, DOMNode *X509Data) :
-DSIGKeyInfo(sig),
+DSIGKeyInfoX509::DSIGKeyInfoX509(const XSECEnv * env, DOMNode *X509Data) :
+DSIGKeyInfo(env),
 mp_X509IssuerName(NULL),
 mp_X509SerialNumber(NULL),
 mp_X509SubjectName(NULL),
@@ -101,8 +102,8 @@ mp_X509SKITextNode(0) {
 
 }
 
-DSIGKeyInfoX509::DSIGKeyInfoX509(DSIGSignature * sig) :
-DSIGKeyInfo(sig),
+DSIGKeyInfoX509::DSIGKeyInfoX509(const XSECEnv * env) :
+DSIGKeyInfo(env),
 mp_X509IssuerName(NULL),
 mp_X509SerialNumber(NULL),
 mp_X509SubjectName(NULL),
@@ -383,8 +384,8 @@ DOMElement * DSIGKeyInfoX509::createBlankX509Data(void) {
 	// Create the DOM Structure
 
 	safeBuffer str;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
-	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefix, "X509Data");
 
@@ -401,8 +402,8 @@ void DSIGKeyInfoX509::setX509CRL(const XMLCh * crl) {
 	if (mp_X509CRLTextNode == 0) {
 
 		safeBuffer str;
-		DOMDocument *doc = mp_parentSignature->getParentDocument();
-		const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+		DOMDocument *doc = mp_env->getParentDocument();
+		const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 		makeQName(str, prefix, "X509CRL");
 
@@ -431,8 +432,8 @@ void DSIGKeyInfoX509::setX509SKI(const XMLCh * ski) {
 	if (mp_X509SKITextNode == 0) {
 
 		safeBuffer str;
-		DOMDocument *doc = mp_parentSignature->getParentDocument();
-		const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+		DOMDocument *doc = mp_env->getParentDocument();
+		const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 		makeQName(str, prefix, "X509SKI");
 
@@ -471,8 +472,8 @@ void DSIGKeyInfoX509::setX509SubjectName(const XMLCh * name) {
 		// Does not yet exist in the DOM
 
 		safeBuffer str;
-		DOMDocument *doc = mp_parentSignature->getParentDocument();
-		const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+		DOMDocument *doc = mp_env->getParentDocument();
+		const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 		makeQName(str, prefix, "X509SubjectName");
 
@@ -508,8 +509,8 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 		// Does not yet exist in the DOM
 
 		safeBuffer str;
-		DOMDocument *doc = mp_parentSignature->getParentDocument();
-		const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+		DOMDocument *doc = mp_env->getParentDocument();
+		const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 		makeQName(str, prefix, "X509IssuerSerial");
 
@@ -565,8 +566,8 @@ void DSIGKeyInfoX509::setRawRetrievalURI(const XMLCh * uri) {
 void DSIGKeyInfoX509::appendX509Certificate(const XMLCh * base64Certificate) {
 
 	safeBuffer str;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
-	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefix, "X509Certificate");
 

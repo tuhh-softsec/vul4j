@@ -111,17 +111,17 @@ public:
 	//@{
 
 	/**
-	 * \brief Constructor for an existing signature *
+	 * \brief Constructor for an existing KeyInfo  *
 	 *
 	 * Constructor used when loading a KeyValue node that already exists
 	 * in an XML document.
 	 *
-	 * @param sig Owning signature
+	 * @param env Operating environment
 	 * @param valueNode DOMNode at head of XML structure
 	 */
 
 	DSIGKeyInfoValue(
-		DSIGSignature * sig, 
+		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *valueNode
 	);
 
@@ -131,10 +131,10 @@ public:
 	 * Constructor used when creating a new KeyValue node to append
 	 * to a signature structure.
 	 *
-	 * @param sig Owning signature
+	 * @param env Operating environment
 	 */
 
-	DSIGKeyInfoValue(DSIGSignature * sig);
+	DSIGKeyInfoValue(const XSECEnv * env);
 
 	virtual ~DSIGKeyInfoValue();
 

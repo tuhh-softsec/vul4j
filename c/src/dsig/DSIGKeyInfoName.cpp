@@ -73,6 +73,7 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 #include <xercesc/util/Janitor.hpp>
 
@@ -83,8 +84,8 @@ XERCES_CPP_NAMESPACE_USE
 // --------------------------------------------------------------------------------
 
 
-DSIGKeyInfoName::DSIGKeyInfoName(DSIGSignature *sig, DOMNode *nameNode) : 
-DSIGKeyInfo(sig),
+DSIGKeyInfoName::DSIGKeyInfoName(const XSECEnv * env, DOMNode *nameNode) : 
+DSIGKeyInfo(env),
 mp_name(NULL),
 mp_decodedDName(NULL),
 mp_keyNameTextNode(0) {
@@ -94,8 +95,8 @@ mp_keyNameTextNode(0) {
 }
 
 
-DSIGKeyInfoName::DSIGKeyInfoName(DSIGSignature *sig) : 
-DSIGKeyInfo(sig),
+DSIGKeyInfoName::DSIGKeyInfoName(const XSECEnv * env) : 
+DSIGKeyInfo(env),
 mp_name(NULL),
 mp_decodedDName(NULL),
 mp_keyNameTextNode(0) {
@@ -179,8 +180,8 @@ DOMElement * DSIGKeyInfoName::createBlankKeyName(const XMLCh * name, bool isDNam
 	// Create the DOM Structure
 
 	safeBuffer str;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
-	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefix, "KeyName");
 

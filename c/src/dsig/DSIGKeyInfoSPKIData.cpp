@@ -71,6 +71,7 @@
 #include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 #include <xercesc/dom/DOM.hpp>
 
@@ -80,15 +81,15 @@ XERCES_CPP_NAMESPACE_USE
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------
 
-DSIGKeyInfoSPKIData::DSIGKeyInfoSPKIData(DSIGSignature * sig, DOMNode *nameNode) : 
-DSIGKeyInfo(sig) {
+DSIGKeyInfoSPKIData::DSIGKeyInfoSPKIData(const XSECEnv * env, DOMNode *nameNode) : 
+DSIGKeyInfo(env) {
 
 	mp_keyInfoDOMNode = nameNode;
 
 }
 
-DSIGKeyInfoSPKIData::DSIGKeyInfoSPKIData(DSIGSignature * sig) :
-DSIGKeyInfo(sig) {
+DSIGKeyInfoSPKIData::DSIGKeyInfoSPKIData(const XSECEnv * env) :
+DSIGKeyInfo(env) {
 
 	mp_keyInfoDOMNode = NULL;
 
@@ -196,8 +197,8 @@ DOMElement * DSIGKeyInfoSPKIData::createBlankSPKIData(const XMLCh * Sexp) {
 	// Create the DOM Structure
 
 	safeBuffer str;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
-	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefix, "SPKIData");
 
@@ -220,8 +221,8 @@ void DSIGKeyInfoSPKIData::appendSexp(const XMLCh * Sexp) {
 	m_sexpList.push_back(s);
 
 	safeBuffer str;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
-	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefix, "SPKISexp");
 

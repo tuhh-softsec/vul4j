@@ -122,25 +122,25 @@ public:
 	/**
 	 * \brief Constructor used when XML structures exist.
 	 *
-	 * Constructor called by DSIGSignature class when loading an
+	 * Constructor called by interface class when loading an
 	 * X509Data element from DOM nodes.
 	 *
-	 * @param sig Calling signature
+	 * @param env Operating environment
 	 * @param X509Data DOMNode at start of data
 	 */
 
-	DSIGKeyInfoX509(DSIGSignature * sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *X509Data);
+	DSIGKeyInfoX509(const XSECEnv * env, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *X509Data);
 
 	/**
 	 * \brief Constructor called when building XML structures
 	 *
-	 * Constructor called by DSIGSignature class when an XML
+	 * Constructor called by interface class when an XML
 	 * structure is being built by a user calling the API
 	 * 
-	 * @param sig Calling signature
+	 * @param env Operating environment
 	 */
 
-	DSIGKeyInfoX509(DSIGSignature * sig);
+	DSIGKeyInfoX509(const XSECEnv * env);
 	
 	/**
 	 * \brief Destructor
@@ -156,7 +156,7 @@ public:
 	/**
 	 * \brief Function called to load an XML structure
 	 *
-	 * Function called by DSIGSignature to load an X509Data structure
+	 * Function called by intercace class to load an X509Data structure
 	 * from DOMNodes.
 	 */
 

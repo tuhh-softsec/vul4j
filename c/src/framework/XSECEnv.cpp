@@ -60,157 +60,122 @@
 /*
  * XSEC
  *
- * DSIGKeyInfoList := Class for Loading and storing a list of KeyInfo elements
- *
- * Author(s): Berin Lautenbach
+ * XSECEnv := Configuration class - used by the other classes to retrieve
+ *            information on the environment they are working under
  *
  * $Id$
  *
  */
 
 // XSEC Includes
-#include <xsec/dsig/DSIGKeyInfoList.hpp>
-#include <xsec/dsig/DSIGKeyInfoX509.hpp>
-#include <xsec/dsig/DSIGKeyInfoName.hpp>
-#include <xsec/dsig/DSIGKeyInfoValue.hpp>
-#include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
-#include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
-#include <xsec/dsig/DSIGKeyInfoMgmtData.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/framework/XSECError.hpp>
-#include <xsec/utils/XSECDOMUtils.hpp>
-#include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/framework/XSECUriResolver.hpp>
+#include <xsec/dsig/DSIGConstants.hpp>
 
 XERCES_CPP_NAMESPACE_USE
 
-DSIGKeyInfoList::DSIGKeyInfoList(const XSECEnv * env) :
-mp_env(env) {}
 
-DSIGKeyInfoList::~DSIGKeyInfoList() {
+// --------------------------------------------------------------------------------
+//           Env
+// --------------------------------------------------------------------------------
 
-	empty();
+// Constructors and Destructors
+
+XSECEnv::XSECEnv(DOMDocument *doc) {
+
+	mp_doc = doc;
+
+	mp_prefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
+	mp_ecPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
+	mp_xpfPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
+	mp_URIResolver = NULL;
+
+	// Set up our formatter
+	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
+												XMLFormatter::UnRep_CharRef));
+
 
 }
 
-// Actions
+XSECEnv::~XSECEnv() {
 
-void DSIGKeyInfoList::addKeyInfo(DSIGKeyInfo * ref) {
+	if (mp_formatter != NULL) {
 
-	m_keyInfoList.push_back(ref);
+		delete mp_formatter;
+		mp_formatter = NULL;
+	}
 
-}
+	if (mp_prefixNS != NULL) {
+		delete[] mp_prefixNS;
+		mp_prefixNS = NULL;
+	}
 
-DSIGKeyInfo * DSIGKeyInfoList::removeKeyInfo(size_type index) {
-
-	if (index < m_keyInfoList.size())
-		return m_keyInfoList[index];
-
-	return NULL;
-
-}
-
-size_t DSIGKeyInfoList::getSize() {
-
-	return m_keyInfoList.size();
-
-}
-
-
-DSIGKeyInfo * DSIGKeyInfoList::item(size_type index) {
-
-	if (index < m_keyInfoList.size())
-		return m_keyInfoList[index];
+	if (mp_ecPrefixNS != NULL) {
+		delete[] mp_ecPrefixNS;
+		mp_ecPrefixNS = NULL;
+	}
 	
-	return NULL;
+	if (mp_xpfPrefixNS != NULL) {
+		delete[] mp_xpfPrefixNS;
+		mp_xpfPrefixNS = NULL;
+	}
 
-}
-
-void DSIGKeyInfoList::empty() {
-
-	size_type i, s;
-	s = getSize();
-
-	for (i = 0; i < s; ++i)
-		delete m_keyInfoList[i];
-
-	m_keyInfoList.clear();
-
-}
-
-bool DSIGKeyInfoList::isEmpty() {
-
-		return (m_keyInfoList.size() == 0);
+	if (mp_URIResolver != NULL) {
+		delete mp_URIResolver;
+		mp_URIResolver = NULL;
+	}
 
 }
 
 // --------------------------------------------------------------------------------
-//           Add a KeyInfo based on XML DomNode source
+//           Set and Get Resolvers
 // --------------------------------------------------------------------------------
 
 
-bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
+void XSECEnv::setURIResolver(XSECURIResolver * resolver) {
 
-	// return true if successful - does not throw if the node type is unknown
+	if (mp_URIResolver != 0)
+		delete mp_URIResolver;
 
-	if (ki == 0)
-		return false;
-
-	DSIGKeyInfo * k;
-
-	if (strEquals(getDSIGLocalName(ki), "X509Data")) {
-
-		// Have a certificate!
-		XSECnew(k, DSIGKeyInfoX509(mp_env, ki));
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "KeyName")) {
-
-		XSECnew(k, DSIGKeyInfoName(mp_env, ki));
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "KeyValue")) {
-
-		XSECnew(k, DSIGKeyInfoValue(mp_env, ki));
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "PGPData")) {
-
-		XSECnew(k, DSIGKeyInfoPGPData(mp_env, ki));
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "SPKIData")) {
-
-		XSECnew(k, DSIGKeyInfoSPKIData(mp_env, ki));
-		
-	}
-
-	else if (strEquals(getDSIGLocalName(ki), "MgmtData")) {
-
-		XSECnew(k, DSIGKeyInfoMgmtData(mp_env, ki));
-		
-	}
-
-	else {
-
-		return false;
-
-	}
-
-	// Now we know what the element type is - do the load and save
-
-	try {
-		k->load();
-	}
-	catch (...) {
-		delete k;
-		throw;
-	}
-
-	// Add
-	this->addKeyInfo(k);
-
-	return true;
+	mp_URIResolver = resolver->clone();
 
 }
 
+XSECURIResolver * XSECEnv::getURIResolver(void) {
 
+	return mp_URIResolver;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Set and Get Prefixes
+// --------------------------------------------------------------------------------
+
+void XSECEnv::setDSIGNSPrefix(const XMLCh * prefix) {
+
+	if (mp_prefixNS != NULL)
+		delete[] mp_prefixNS;
+
+	mp_prefixNS = XMLString::replicate(prefix);
+
+}
+
+void XSECEnv::setECNSPrefix(const XMLCh * prefix) {
+
+	if (mp_ecPrefixNS != NULL)
+		delete[] mp_ecPrefixNS;
+
+	mp_ecPrefixNS = XMLString::replicate(prefix);
+
+}
+
+void XSECEnv::setXPFNSPrefix(const XMLCh * prefix) {
+
+	if (mp_xpfPrefixNS != NULL)
+		delete[] mp_xpfPrefixNS;
+
+	mp_xpfPrefixNS = XMLString::replicate(prefix);
+
+}
 

@@ -60,10 +60,8 @@
 /*
  * XSEC
  *
- * XSECProvider.hpp := The main interface for users wishing to gain access
- *                     to signature objects
- *
- * Author(s): Berin Lautenbach
+ * XSECProvider.hpp := Main interface class that applications use to
+ *					   get access to Signature and Encryption functions.
  *
  * $Id$
  *

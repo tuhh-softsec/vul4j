@@ -713,6 +713,10 @@ InputPath=..\..\..\..\src\framework\XSECDefs.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\framework\XSECEnv.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\framework\XSECError.cpp
 # End Source File
 # Begin Source File
@@ -964,5 +968,9 @@ SOURCE=..\..\..\..\src\xenc\XENCEncryptedType.hpp
 SOURCE=..\..\..\..\src\xenc\XENCEncryptionMethod.hpp
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\framework\XSECEnv.cpp
+# End Source File
 # End Target
 # End Project

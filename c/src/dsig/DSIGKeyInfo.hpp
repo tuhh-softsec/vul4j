@@ -80,6 +80,7 @@
 #include <xercesc/dom/DOM.hpp>
 
 class DSIGSignature;
+class XSECEnv;
 
 /**
  * @ingroup pubsig
@@ -134,12 +135,12 @@ public:
 	/**
 	 * \brief Construct from an owning signature
 	 *
-	 * All KeyInfo types take a constructor that names the owning signature.
+	 * All KeyInfo types take a constructor that provides the controlling environment.
 	 *
-	 * @param sig The signature that owns this element
+	 * @param env The environment that the KeyInfo is operating within
 	 */
 
-	DSIGKeyInfo(DSIGSignature * sig) {mp_keyInfoDOMNode = NULL; mp_parentSignature = sig;}
+	DSIGKeyInfo(const XSECEnv * env) {mp_keyInfoDOMNode = NULL; mp_env = env;}
 
 	/**
 	 * \brief The Destructor
@@ -197,7 +198,7 @@ public:
 protected:
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode			* mp_keyInfoDOMNode;
-	DSIGSignature									* mp_parentSignature;
+	const XSECEnv									* mp_env;
 
 private:
 	DSIGKeyInfo();

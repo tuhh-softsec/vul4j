@@ -103,27 +103,27 @@ public:
 	/**
 	 * \brief Constructor used when XML exists.
 	 *
-	 * This constructor is used by DSIGSignature objects to load
+	 * This constructor is used by interface objects to load
 	 * an existing DOM structure into the Name element.
 	 *
-	 * @param sig Calling signature object.
+	 * @param env Environment KeyInfo is operating in
 	 * @param nameNode DOMNode to load information from
 	 */
 
-	DSIGKeyInfoSPKIData(DSIGSignature * sig, 
+	DSIGKeyInfoSPKIData(const XSECEnv * env, 
 						XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *nameNode);
 
 	/**
 	 * \brief Constructor used when XML needs to be created.
 	 *
-	 * This constructor is used by DSIGSignature objects to
+	 * This constructor is used by interface objects to
 	 * create a DSIGKeyInfoSPKIData object that can then be used
 	 * to create the required XML.
 	 *
-	 * @param sig Calling signature object.
+	 * @param env Operating environment
 	 */
 
-	DSIGKeyInfoSPKIData(DSIGSignature * sig);
+	DSIGKeyInfoSPKIData(const XSECEnv * env);
 
 	/**
 	 * \brief Destructor

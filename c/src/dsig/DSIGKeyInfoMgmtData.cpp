@@ -72,6 +72,7 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 #include <xercesc/util/Janitor.hpp>
 
@@ -82,8 +83,8 @@ XERCES_CPP_NAMESPACE_USE
 // --------------------------------------------------------------------------------
 
 
-DSIGKeyInfoMgmtData::DSIGKeyInfoMgmtData(DSIGSignature *sig, DOMNode *nameNode) : 
-DSIGKeyInfo(sig),
+DSIGKeyInfoMgmtData::DSIGKeyInfoMgmtData(const XSECEnv * env, DOMNode *nameNode) : 
+DSIGKeyInfo(env),
 mp_data(NULL),
 mp_dataTextNode(0) {
 
@@ -92,8 +93,8 @@ mp_dataTextNode(0) {
 }
 
 
-DSIGKeyInfoMgmtData::DSIGKeyInfoMgmtData(DSIGSignature *sig) : 
-DSIGKeyInfo(sig),
+DSIGKeyInfoMgmtData::DSIGKeyInfoMgmtData(const XSECEnv * env) : 
+DSIGKeyInfo(env),
 mp_data(NULL),
 mp_dataTextNode(0) {
 
@@ -161,8 +162,8 @@ DOMElement * DSIGKeyInfoMgmtData::createBlankMgmtData(const XMLCh * data) {
 	// Create the DOM Structure
 
 	safeBuffer str;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
-	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefix, "MgmtData");
 
