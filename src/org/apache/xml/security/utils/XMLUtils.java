@@ -309,7 +309,7 @@ public class XMLUtils {
     * @return the class asked for
     * @throws ClassNotFoundException
     */
-   protected static Class classForName(String className)
+   public static Class classForName(String className)
            throws ClassNotFoundException {
 
       ClassLoader classLoader = findClassLoader();

@@ -19,13 +19,18 @@ package org.apache.xml.security.keys.content.x509;
 
 
 import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.security.cert.X509Certificate;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -133,17 +138,50 @@ public class XMLX509SKI extends SignatureElementProxy
                                            exArgs);
          }
 
-         DerValue dervalue = new DerValue(derEncodedValue);
-
-         if (dervalue == null) {
-            throw new XMLSecurityException("certificate.noSki.null");
-         }
-
-         if (dervalue.tag != DerValue.tag_OctetString) {
-            throw new XMLSecurityException("certificate.noSki.notOctetString");
-         }
-
-         byte[] extensionValue = dervalue.getOctetString();
+          byte[] extensionValue = null;
+          
+          /**
+           * Use sun.security.util.DerValue if it is present.
+           */ 
+          try {
+              if (XMLUtils.classForName("sun.security.util.DerValue") != null) {
+                  DerValue dervalue = new DerValue(derEncodedValue);
+                  if (dervalue == null) {
+                      throw new XMLSecurityException("certificate.noSki.null");
+                  }
+                  if (dervalue.tag != DerValue.tag_OctetString) {
+                      throw new XMLSecurityException("certificate.noSki.notOctetString");
+                  }
+                  extensionValue = dervalue.getOctetString();
+              }
+          } catch (NoClassDefFoundError e) {
+          } catch (ClassNotFoundException e) {
+          }
+          
+          /**
+           * Fall back to org.bouncycastle.asn1.DERInputStream
+           */ 
+          if (extensionValue == null) {
+              try {
+                  Class clazz = XMLUtils.classForName("org.bouncycastle.asn1.DERInputStream");
+                  if (clazz != null) {
+                      Constructor constructor = clazz.getConstructor(new Class[]{InputStream.class});
+                      InputStream is = (InputStream) constructor.newInstance(new Object[]{new ByteArrayInputStream(derEncodedValue)});
+                      Method method = clazz.getMethod("readObject", new Class[]{});
+                      Object obj = method.invoke(is, new Object[]{});
+                      if (obj == null) {
+                          throw new XMLSecurityException("certificate.noSki.null");
+                      }
+                      Class clazz2 = XMLUtils.classForName("org.bouncycastle.asn1.ASN1OctetString");
+                      if (!clazz2.isInstance(obj)) {
+                          throw new XMLSecurityException("certificate.noSki.notOctetString");
+                      }
+                      Method method2 = clazz2.getMethod("getOctets", new Class[]{});
+                      extensionValue = (byte[]) method2.invoke(obj, new Object[]{});
+                  }
+              } catch (Throwable t) {
+              }
+          }
 
          /**
           * Strip away first two bytes from the DerValue (tag and length)
