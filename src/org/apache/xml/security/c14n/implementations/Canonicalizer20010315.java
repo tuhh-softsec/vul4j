@@ -182,7 +182,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                this._writer.write("\n");
             }
 
-            outputCommentToWriter((Comment) currentNode);
+            this.outputCommentToWriter((Comment) currentNode);
 
             if (position == NODE_BEFORE_DOCUMENT_ELEMENT) {
                this._writer.write("\n");
@@ -199,7 +199,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
             this._writer.write("\n");
          }
 
-         outputPItoWriter((ProcessingInstruction) currentNode);
+         this.outputPItoWriter((ProcessingInstruction) currentNode);
 
          if (position == NODE_BEFORE_DOCUMENT_ELEMENT) {
             this._writer.write("\n");
@@ -208,7 +208,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
       case Node.TEXT_NODE :
       case Node.CDATA_SECTION_NODE :
-         outputTextToWriter(currentNode.getNodeValue());
+         this.outputTextToWriter(currentNode.getNodeValue());
          break;
 
       case Node.ELEMENT_NODE :
@@ -223,7 +223,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
          // we output all Attrs which are available
          for (int i = 0; i < attrs.length; i++) {
-            outputAttrToWriter(((Attr) attrs[i]).getNodeName(),
+            this.outputAttrToWriter(((Attr) attrs[i]).getNodeName(),
                                ((Attr) attrs[i]).getNodeValue());
          }
 
@@ -533,10 +533,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
          this._writer = new OutputStreamWriter(baos, Canonicalizer.ENCODING);
-
-         Map inscopeNamespaces = new HashMap();
-         Map lostNamespaces = new HashMap();
-
          this.canonicalizeXPathNodeSet(this._rootNodeOfC14n);
          this._writer.close();
 
@@ -595,7 +591,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                this._writer.write("\n");
             }
 
-            outputCommentToWriter((Comment) currentNode);
+            this.outputCommentToWriter((Comment) currentNode);
 
             if (position == NODE_BEFORE_DOCUMENT_ELEMENT) {
                this._writer.write("\n");
@@ -611,7 +607,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                this._writer.write("\n");
             }
 
-            outputPItoWriter((ProcessingInstruction) currentNode);
+            this.outputPItoWriter((ProcessingInstruction) currentNode);
 
             if (position == NODE_BEFORE_DOCUMENT_ELEMENT) {
                this._writer.write("\n");
@@ -622,7 +618,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
       case Node.TEXT_NODE :
       case Node.CDATA_SECTION_NODE :
          if (this._xpathNodeSet.contains(currentNode)) {
-            outputTextToWriter(currentNode.getNodeValue());
+            this.outputTextToWriter(currentNode.getNodeValue());
 
             for (Node nextSibling = currentNode.getNextSibling();
                     (nextSibling != null)
@@ -637,7 +633,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                 *
                 * @see http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6329
                 */
-               outputTextToWriter(nextSibling.getNodeValue());
+               this.outputTextToWriter(nextSibling.getNodeValue());
             }
          }
          break;
@@ -658,7 +654,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          for (int i = 0; i < attrs.length; i++) {
             Attr attr = (Attr) attrs[i];
 
-            outputAttrToWriter(attr.getNodeName(), attr.getNodeValue());
+            this.outputAttrToWriter(attr.getNodeName(), attr.getNodeValue());
          }
 
          if (currentNodeIsVisible) {
