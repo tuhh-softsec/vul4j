@@ -132,32 +132,53 @@ public class ThreeSignerContractSign {
       doc.appendChild(contract);
 
       // beautifying //////
-      Text LF1 = doc.createTextNode("\n");
-      Text LF2 = doc.createTextNode("\n");
-      Text LF3 = doc.createTextNode("\n");
-      Text LF4 = doc.createTextNode("\n");
       Element condition1 = doc.createElement("condition1");
+
+      condition1.setAttribute("Id", "cond1");
+      condition1.appendChild(
+         doc.createTextNode(
+            "condition1 not covered in first signature, only binding for the second and third signer"));
+
       Element condition2 = doc.createElement("condition2");
+
+      condition2.appendChild(doc.createTextNode("condition2"));
+
       Element condition3 = doc.createElement("condition3");
 
-      condition1.appendChild(doc.createTextNode("condition1"));
-      condition2.appendChild(doc.createTextNode("condition2"));
       condition3.appendChild(doc.createTextNode("condition3"));
-      contract.appendChild(LF1);
+      contract.appendChild(doc.createTextNode("\n"));
       contract.appendChild(condition1);
-      contract.appendChild(LF2);
+      contract.appendChild(doc.createTextNode("\n"));
       contract.appendChild(condition2);
-      contract.appendChild(LF3);
+      contract.appendChild(doc.createTextNode("\n"));
       contract.appendChild(condition3);
-      contract.appendChild(LF4);
+      contract.appendChild(doc.createTextNode("\n"));
 
+      //J-
+      String id1 = "firstSigner";
+      String id2 = "secondSigner";
+      String id3 = "thirdSigner";
+
+      // sign the whole contract and no signature
+      String xp1 = "not(ancestor-or-self::ds:Signature)"
+                 + " and not(ancestor-or-self::node()[@Id='cond1'])";
+
+      // sign the whole contract and no signature but the first
+      String xp2 = "not(ancestor-or-self::ds:Signature)"
+                 + " or ancestor-or-self::ds:Signature[@Id='" + id1 + "']";
+
+      // sign the whole contract and no signature but the first and the second
+      String xp3 = "not(ancestor-or-self::ds:Signature)"
+                 + " or ancestor-or-self::ds:Signature[@Id='" + id1 + "']"
+                 + " or ancestor-or-self::ds:Signature[@Id='" + id2 + "']";
+      //J+
       //////////////////////////////////////////////////////////////////
       // first signer //////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////////
       XMLSignature firstSigner =
          new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
 
-      firstSigner.setId("firstSigner");
+      firstSigner.setId(id1);
       contract.appendChild(firstSigner.getElement());
 
       String rootnamespace = contract.getNamespaceURI();
@@ -168,11 +189,7 @@ public class ThreeSignerContractSign {
       XPathContainer xpath = new XPathContainer(doc);
 
       xpath.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
-
-      // sign the whole contract only
-      String xpathStr = "\n" + "not(ancestor-or-self::ds:Signature)" + "\n";
-
-      xpath.setXPath(xpathStr);
+      xpath.setXPath("\n" + xp1 + "\n");
       transforms.addTransform(Transforms.TRANSFORM_XPATH,
                               xpath.getElementPlusReturns());
       firstSigner.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
@@ -204,23 +221,14 @@ public class ThreeSignerContractSign {
       XMLSignature secondSigner = new XMLSignature(doc, BaseURI,
                                      XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
 
-      secondSigner.setId("secondSigner");
+      secondSigner.setId(id2);
       contract.appendChild(secondSigner.getElement());
 
       Transforms transforms2 = new Transforms(doc);
       XPathContainer xpath2 = new XPathContainer(doc);
 
       xpath2.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
-
-      // sign the whole contract and the signature already set
-      String xpathStr2 =
-         "\n" + "count(ancestor-or-self::ds:Signature|" + "\n"
-         + "here()/ancestor::ds:Signature[1]) >" + "\n"
-         + "count(ancestor-or-self::ds:Signature)" + "\n" + " and " + "\n"
-         + "count(ancestor-or-self::ds:Signature[@Id=\"thirdSigner\"]) = 0"
-         + "\n";
-
-      xpath2.setXPath(xpathStr2);
+      xpath2.setXPath("\n" + xp2 + "\n");
       transforms2.addTransform(Transforms.TRANSFORM_XPATH,
                                xpath2.getElementPlusReturns());
       secondSigner.addDocument("", transforms2, Constants.ALGO_ID_DIGEST_SHA1);
@@ -248,20 +256,14 @@ public class ThreeSignerContractSign {
       XMLSignature thirdSigner =
          new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
 
-      thirdSigner.setId("thirdSigner");
+      thirdSigner.setId(id3);
       contract.appendChild(thirdSigner.getElement());
 
       Transforms transforms3 = new Transforms(doc);
       XPathContainer xpath3 = new XPathContainer(doc);
 
       xpath3.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
-
-      // sign the whole contract and the two signatures already set
-      String xpathStr3 = "\n" + "count(ancestor-or-self::ds:Signature|" + "\n"
-                         + "here()/ancestor::ds:Signature[1]) > " + "\n"
-                         + "count(ancestor-or-self::ds:Signature)" + "\n";
-
-      xpath3.setXPath(xpathStr3);
+      xpath3.setXPath("\n" + xp3 + "\n");
       transforms3.addTransform(Transforms.TRANSFORM_XPATH,
                                xpath3.getElementPlusReturns());
       thirdSigner.addDocument("", transforms3, Constants.ALGO_ID_DIGEST_SHA1);
@@ -274,12 +276,6 @@ public class ThreeSignerContractSign {
          System.out.println("Third signer: Finished signing");
       }
 
-      FileOutputStream f = new FileOutputStream(signatureFile);
-
-      XMLUtils.outputDOMc14nWithComments(doc, f);
-      f.close();
-      System.out.println("Wrote signature to " + BaseURI);
-
       SignedInfo s3 = thirdSigner.getSignedInfo();
 
       for (int i = 0; i < s3.getSignedContentLength(); i++) {
@@ -288,6 +284,15 @@ public class ThreeSignerContractSign {
          System.out.println(new String(s3.getSignedContentItem(i)));
          System.out.println();
       }
+
+      //////////////////////////////////////////////////////////////////
+      // write away files
+      //////////////////////////////////////////////////////////////////
+      FileOutputStream f = new FileOutputStream(signatureFile);
+
+      XMLUtils.outputDOMc14nWithComments(doc, f);
+      f.close();
+      System.out.println("Wrote signature to " + BaseURI);
    }
 
    static {
