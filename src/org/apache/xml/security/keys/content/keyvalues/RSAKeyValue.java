@@ -67,7 +67,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.security.spec.RSAPublicKeySpec;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -134,7 +133,7 @@ public class RSAKeyValue extends SignatureElementProxy
       XMLUtils.addReturnToElement(this._constructionElement);
 
       if (JavaUtils.implementsInterface(
-              (Object) key, "java.security.interfaces.RSAPublicKey")) {
+              key, "java.security.interfaces.RSAPublicKey")) {
          this.addBigIntegerElement(((RSAPublicKey) key).getModulus(),
                                    Constants._TAG_MODULUS);
          this.addBigIntegerElement(((RSAPublicKey) key).getPublicExponent(),
@@ -167,7 +166,7 @@ public class RSAKeyValue extends SignatureElementProxy
                .SignatureSpecNS), this
                   .getBigIntegerFromChildElement(Constants
                      ._TAG_EXPONENT, Constants.SignatureSpecNS));
-         PublicKey pk = rsaFactory.generatePublic((KeySpec) rsaKeyspec);
+         PublicKey pk = rsaFactory.generatePublic(rsaKeyspec);
 
          return pk;
       } catch (NoSuchAlgorithmException ex) {
