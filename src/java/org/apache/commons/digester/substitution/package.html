@@ -19,5 +19,22 @@ Substitutor class. In particular, it provides an implementation that allows
 the application to define "variables" which the input data can reference
 using a syntax such as "${user.name}".
 </p>
+<p>Here's an example of setting up the VariableSubstitutor:</p>
+<pre>
+  // set up the variables the input xml can reference
+  Map vars = new HashMap();
+  vars.put("user.name", "me");
+  vars.put("os", "Linux");
+  
+  // map ${varname} to the entries in the var map
+  MultiVariableExpander expander = new MultiVariableExpander();
+  expander.addSource("$", vars);
+
+  // allow expansion in both xml attributes and element text
+  Substitutor substitutor = new VariableSubstitutor(expander);
+
+  Digester digester = new Digester();
+  digester.setSubstitutor(substitutor);
+</pre>
 </body>
 </html>
