@@ -286,6 +286,11 @@ public class Manifest extends SignatureElementProxy {
     */
    public boolean verifyReferences(boolean followManifests)
            throws MissingResourceFailureException, XMLSecurityException {
+      if (_referencesEl==null) {
+        this._referencesEl =  
+            XMLUtils.selectDsNodes(this._constructionElement.getFirstChild(),
+                         Constants._TAG_REFERENCE);
+      }
    	  if (log.isDebugEnabled()) {
    	  	log.debug("verify " +_referencesEl.length + " References");
         log.debug("I am " + (followManifests
