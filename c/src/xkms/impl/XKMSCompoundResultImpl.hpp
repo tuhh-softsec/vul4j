@@ -77,6 +77,11 @@ public:
 		ResultMajor rmaj,
 		ResultMinor rmin = XKMSResultTypeImpl::NoneMinor,
 		const XMLCh * id = NULL);
+	virtual XKMSStatusResult * createStatusResult(
+		XKMSStatusRequest * request,
+		ResultMajor rmaj,
+		ResultMinor rmin = XKMSResultTypeImpl::NoneMinor,
+		const XMLCh * id = NULL);
 	virtual XKMSResult * createResult(
 		XKMSRequestAbstractType * request,
 		ResultMajor rmaj,

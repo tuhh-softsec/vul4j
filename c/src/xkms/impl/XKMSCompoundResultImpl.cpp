@@ -31,6 +31,7 @@
 
 #include "XKMSCompoundResultImpl.hpp"
 #include "XKMSLocateResultImpl.hpp"
+#include "XKMSStatusResultImpl.hpp"
 #include "XKMSValidateResultImpl.hpp"
 #include "XKMSRegisterResultImpl.hpp"
 #include "XKMSResultImpl.hpp"
@@ -187,6 +188,22 @@ XKMSValidateResult * XKMSCompoundResultImpl::createValidateResult(
 		const XMLCh * id) {
 
 	XKMSValidateResult * r = m_factory.createValidateResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
+	m_resultList.push_back(dynamic_cast<XKMSResultTypeImpl*>(r));
+
+	mp_messageAbstractTypeElement->appendChild(r->getElement());
+	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+
+	return r;
+
+}
+
+XKMSStatusResult * XKMSCompoundResultImpl::createStatusResult(
+		XKMSStatusRequest * request,
+		ResultMajor rmaj,
+		ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSStatusResult * r = m_factory.createStatusResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
 	m_resultList.push_back(dynamic_cast<XKMSResultTypeImpl*>(r));
 
 	mp_messageAbstractTypeElement->appendChild(r->getElement());
