@@ -32,7 +32,7 @@ limitations under the License.
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
     
-    <release version="Java 1.2.1" date="February 2005(not yet released)">
+    <release version="Java 1.2.1" date="February 2005">
     	<action dev="RB" type="fix" fixes-bug="32836" context="java_general" due-to="Sylvain Dusart">
     	Fix a memory leak when using xpath or using ResourceResolver and not hitting getElementByIdUsingDOM()
     	</action>
