@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2003-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@ import org.apache.commons.digester.AbstractObjectCreationFactory;
  * see that the amount of code required to use the Digester is actually
  * quite low.
  * <p>
- * Usage: java CatalogDigester example.xml
+ * Usage: java Main example.xml
  */
-public class CatalogDigester {
+public class Main {
     
     /**
      * Main method : entry point for running this example program.
@@ -220,6 +220,6 @@ public class CatalogDigester {
     }
     
     private static void usage() {
-        System.out.println("Usage: java CatalogDigester example.xml");
+        System.out.println("Usage: java Main example.xml");
     }
 }
