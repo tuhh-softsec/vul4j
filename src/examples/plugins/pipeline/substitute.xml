@@ -1,0 +1,13 @@
+<!--
+  - Example pipeline which uses the SubstituteTransform plugin class
+  -->
+  
+<pipeline>
+  <source file="input.txt"/>
+  <transform plugin-class="SubstituteTransform">
+    <from>changeme</from>
+    <to>changed</to>
+  </transform>
+  <destination file="output.txt"/>
+</pipeline>
+  

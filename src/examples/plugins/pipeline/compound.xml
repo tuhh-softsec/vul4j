@@ -1,0 +1,16 @@
+<!--
+  - Example compound pipeline
+  -->
+  
+<pipeline>
+  <source file="input.txt"/>
+  <transform plugin-class="CompoundTransform">
+    <subtransform plugin-class="CaseTransform" case="lower"/>
+    <subtransform plugin-class="SubstituteTransform">
+      <from>changeme</from>
+      <to>transformed</to>
+    </subtransform>
+  </transform>
+  <destination file="output.txt"/>
+</pipeline>
+  

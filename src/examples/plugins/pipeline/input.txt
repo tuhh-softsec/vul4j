@@ -1,0 +1,15 @@
+This is a test input file
+for the pipeline demo.
+
+It has multiple lines of text, which
+are transformed one-by-one using
+plugin classes.
+
+HERE IS SOME ALL-UPPERCASE TEXT and here some lowercase text
+which demonstrates the Case Transform plugin.
+
+Here are some lines to demonstrate the substitution plugin:
+changeme 1
+and changeme2
+and changeme again.
+
