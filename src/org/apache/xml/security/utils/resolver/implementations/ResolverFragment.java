@@ -60,21 +60,20 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 
 
+import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xml.utils.URI;
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 
 /**
@@ -107,14 +106,12 @@ public class ResolverFragment extends ResourceResolverSpi {
            throws ResourceResolverException {
 
       String uriNodeValue = uri.getNodeValue();
-      NodeList resultNodes = null;
       Document doc = uri.getOwnerDocument();
 
       // this must be done so that Xalan can catch ALL namespaces
       XMLUtils.circumventBug2650(doc);
 
-      CachedXPathAPI cXPathAPI = new CachedXPathAPI();
-
+      Element selectedElem = null;
       if (uriNodeValue.equals("")) {
 
          /*
@@ -123,14 +120,7 @@ public class ResolverFragment extends ResourceResolverSpi {
           */
 
          log.debug("ResolverFragment with empty URI (means complete document)");
-         try {
-            resultNodes =
-               cXPathAPI.selectNodeList(doc,
-                                        Canonicalizer.XPATH_C14N_OMIT_COMMENTS);
-         } catch (javax.xml.transform.TransformerException ex) {
-            throw new ResourceResolverException("generic.EmptyMessage", ex,
-                                                uri, BaseURI);
-         }
+	 selectedElem = doc.getDocumentElement();
       } else {
 
          /*
@@ -144,28 +134,15 @@ public class ResolverFragment extends ResourceResolverSpi {
          String id = uriNodeValue.substring(1);
 
          // Element selectedElem = doc.getElementById(id);
-         Element selectedElem = IdResolver.getElementById(doc, id);
+         selectedElem = IdResolver.getElementById(doc, id);
 
          log.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
-         if (selectedElem == null) {
-            resultNodes = new HelperNodeList();
-         } else {
-            try {
-               resultNodes =
-                  cXPathAPI
-                     .selectNodeList(selectedElem, Canonicalizer
-                        .XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE);
-            } catch (javax.xml.transform.TransformerException ex) {
-               throw new ResourceResolverException("generic.EmptyMessage", ex,
-                                                   uri, BaseURI);
-            }
-         }
       }
 
-      Set resultSet = XMLUtils.convertNodelistToSet(resultNodes);
-      XMLSignatureInput result = new XMLSignatureInput(resultSet, cXPathAPI);
+      Set resultSet = dereferenceSameDocumentURI(selectedElem);
+      XMLSignatureInput result = new XMLSignatureInput(resultSet);
 
-      log.debug("We return a nodeset with " + resultNodes.getLength() + " nodes");
+      log.debug("We return a nodeset with " + resultSet.size() + " nodes");
       result.setMIMEType("text/xml");
 
       try {
@@ -276,4 +253,59 @@ public class ResolverFragment extends ResourceResolverSpi {
     *  }
     * }
     */
+
+    /**
+     * Dereferences a same-document URI fragment.
+     *
+     * @param node the node (document or element) referenced by the
+     *   URI fragment. If null, returns an empty set.
+     * @return a set of nodes (minus any comment nodes)
+     */
+    private Set dereferenceSameDocumentURI(Node node) {
+	Set nodeSet = new HashSet();
+	if (node != null) {
+	    nodeSetMinusCommentNodes(node, nodeSet, null);
+	}
+	return nodeSet;
+    }
+
+    /**
+     * Recursively traverses the subtree, and returns an XPath-equivalent
+     * node-set of all nodes traversed, excluding any comment nodes.
+     *
+     * @param node the node to traverse
+     * @param nodeSet the set of nodes traversed so far
+     * @param the previous sibling node
+     */
+    private void nodeSetMinusCommentNodes(Node node, Set nodeSet,
+	Node prevSibling) {
+	switch (node.getNodeType()) {
+            case Node.ELEMENT_NODE :
+		NamedNodeMap attrs = node.getAttributes();
+		if (attrs != null) {
+                    for (int i = 0; i<attrs.getLength(); i++) {
+                        nodeSet.add(attrs.item(i));
+                    }
+		}
+                nodeSet.add(node);
+        	Node pSibling = null;
+		for (Node child = node.getFirstChild(); child != null;
+                    child = child.getNextSibling()) {
+                    nodeSetMinusCommentNodes(child, nodeSet, pSibling);
+                    pSibling = child;
+		}
+                break;
+            case Node.TEXT_NODE :
+            case Node.CDATA_SECTION_NODE:
+		// emulate XPath which only returns the first node in
+		// contiguous text/cdata nodes
+		if (prevSibling != null &&
+                    (prevSibling.getNodeType() == Node.TEXT_NODE ||
+                     prevSibling.getNodeType() == Node.CDATA_SECTION_NODE)) {
+                    return;
+		}
+            case Node.PROCESSING_INSTRUCTION_NODE :
+		nodeSet.add(node);
+	}
+    }
 }
