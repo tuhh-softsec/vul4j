@@ -683,7 +683,8 @@ XMLCh * cleanURIEscapes(const XMLCh * str) {
 
 void makeHexByte(XMLCh * h, unsigned char b) {
 
-	unsigned char toConvert =  (b & 0xf0) >> 4;
+	unsigned char toConvert =  (b & 0xf0);
+	toConvert = (toConvert >> 4);
 
 	if (toConvert < 10)
 		h[0] = chDigit_0 + toConvert;
@@ -707,6 +708,9 @@ XMLCh * generateId(unsigned int bytes) {
 	unsigned int toGen = (bytes > 128 ? 16 : bytes);
 
 	// Get the appropriate amount of random data
+	// Need to zeroise to ensure valgrind is happy
+	memset(b, 0, 128);
+	memset(id, 0, sizeof(id));
 	if (XSECPlatformUtils::g_cryptoProvider->getRandom(b, toGen) != toGen) {
 
 		throw XSECException(XSECException::CryptoProviderError,
