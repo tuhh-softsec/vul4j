@@ -73,6 +73,8 @@ import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.transforms.*;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 
 /**
@@ -87,8 +89,8 @@ public class SignedInfo extends Manifest {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(SignedInfo.class.getName());
 
-   /** Field _SignatureMethodIsMAC */
-   boolean _SignatureMethodIsMAC = false;
+   /** Field _signatureAlgorithm */
+   private SignatureAlgorithm _signatureAlgorithm = null;
 
    /**
     * Constructor SignedInfo
@@ -107,20 +109,6 @@ public class SignedInfo extends Manifest {
    }
 
    /**
-    * Constructor SignedInfo
-    *
-    * @param doc
-    * @param CanonicalizationMethodURI
-    * @param HMACMethodURI
-    * @param HMACOutputLength
-    */
-   public SignedInfo(Document doc, String CanonicalizationMethodURI,
-                     String HMACMethodURI, int HMACOutputLength) {
-
-      /** @todo add HMAC support */
-   }
-
-   /**
     * Constructs {@link SignedInfo} using given Canoicaliztion algorithm and Signature algorithm
     *
     * @param doc <code>SignedInfo</code> is placed in this document
@@ -129,6 +117,19 @@ public class SignedInfo extends Manifest {
     */
    public SignedInfo(Document doc, String CanonicalizationMethodURI,
                      String SignatureMethodURI) {
+      this(doc, CanonicalizationMethodURI, SignatureMethodURI, 0);
+   }
+
+   /**
+    * Constructor SignedInfo
+    *
+    * @param doc
+    * @param CanonicalizationMethodURI
+    * @param SignatureMethodURI
+    * @param HMACOutputLength
+    */
+   public SignedInfo(Document doc, String CanonicalizationMethodURI,
+                     String SignatureMethodURI, int HMACOutputLength) {
 
       super(doc, Constants._TAG_SIGNEDINFO);
 
@@ -143,11 +144,16 @@ public class SignedInfo extends Manifest {
          this._constructionElement.appendChild(this._doc.createTextNode("\n"));
       }
       {
-         Element signaElem = XMLUtils.createElementInSignatureSpace(this._doc,
-                                Constants._TAG_SIGNATUREMETHOD);
+         if (HMACOutputLength > 0) {
+            this._signatureAlgorithm = new SignatureAlgorithm(this._doc,
+                    SignatureMethodURI, HMACOutputLength);
+         } else {
+            this._signatureAlgorithm = new SignatureAlgorithm(this._doc,
+                    SignatureMethodURI);
+         }
 
-         signaElem.setAttribute(Constants._ATT_ALGORITHM, SignatureMethodURI);
-         this._constructionElement.appendChild(signaElem);
+         this._constructionElement
+            .appendChild(this._signatureAlgorithm.getElement());
          this._constructionElement.appendChild(this._doc.createTextNode("\n"));
       }
    }
@@ -165,11 +171,13 @@ public class SignedInfo extends Manifest {
       // Parse the Reference childern and Id attribute in the Manifest
       super(element, BaseURI);
 
-      cat.debug("BaseURI in constuctor is " + BaseURI);
-
       // element must be of type ds:Reference
       XMLUtils.guaranteeThatElementInSignatureSpace(element,
               Constants._TAG_SIGNEDINFO);
+
+      this._signatureAlgorithm =
+         new SignatureAlgorithm(this.getSignatureMethodElement(),
+                                this.getBaseURI());
    }
 
    /**
@@ -282,6 +290,22 @@ public class SignedInfo extends Manifest {
       }
 
       return null;
+   }
+
+   /**
+    * Creates a SecretKey for the appropriate Mac algorithm based on a
+    * byte[] array password.
+    *
+    * @param secretKeyBytes
+    * @return
+    * @throws XMLSecurityException
+    */
+   public SecretKey createSecretKey(byte[] secretKeyBytes)
+           throws XMLSecurityException {
+
+      return new SecretKeySpec(secretKeyBytes,
+                               this._signatureAlgorithm
+                                  .getJCEAlgorithmString());
    }
 
    static {

@@ -645,7 +645,7 @@ public class Reference extends ElementProxy {
       boolean equal = MessageDigestAlgorithm.isEqual(elemDig, calcDig);
 
       if (!equal) {
-         cat.debug("Verification failed for URI \"" + this.getURI() + "\"");
+         cat.warn("Verification failed for URI \"" + this.getURI() + "\"");
          cat.debug("unverifiedDigestValue= " + Base64.encode(elemDig));
          cat.debug("calculatedDigestValue= " + Base64.encode(calcDig));
 
@@ -656,7 +656,7 @@ public class Reference extends ElementProxy {
             JavaUtils.writeBytesToFilename(tmp, this.getReferencedBytes());
          } catch (Exception ex) {}
       } else {
-         cat.debug("Verification successful for URI \"" + this.getURI() + "\"");
+         cat.info("Verification successful for URI \"" + this.getURI() + "\"");
       }
 
       return equal;

@@ -163,10 +163,16 @@ public class IntegrityHmacSHA1 extends SignatureAlgorithmSpi {
          byte[] completeResult = this._macAlgorithm.doFinal();
 
          if ((this._HMACOutputLength == 0) || (this._HMACOutputLength >= 160)) {
+            cat.debug("completeResult = " + HexDump.byteArrayToHexString(completeResult));
+            cat.debug("signature      = " + HexDump.byteArrayToHexString(signature));
+
             return MessageDigestAlgorithm.isEqual(completeResult, signature);
          } else {
             byte[] stripped = IntegrityHmacSHA1.reduceBitLength(completeResult,
                                  this._HMACOutputLength);
+
+            cat.debug("stripped       = " + HexDump.byteArrayToHexString(stripped));
+            cat.debug("signature      = " + HexDump.byteArrayToHexString(signature));
 
             return MessageDigestAlgorithm.isEqual(stripped, signature);
          }
@@ -225,7 +231,7 @@ public class IntegrityHmacSHA1 extends SignatureAlgorithmSpi {
 
       int bytes = length / 8;
       int abits = length % 8;
-      byte[] strippedResult = new byte[bytes + 1];
+      byte[] strippedResult = new byte[bytes + (abits == 0 ? 0 : 1)];
 
       System.arraycopy(completeResult, 0, strippedResult, 0, bytes);
 

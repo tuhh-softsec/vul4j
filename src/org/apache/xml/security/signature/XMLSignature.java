@@ -87,7 +87,8 @@ import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.*;
-import org.apache.xml.security.algorithms.implementations.SignatureDSA;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 
 /**
@@ -619,7 +620,7 @@ public class XMLSignature extends ElementProxy {
    public boolean checkSignatureValue(X509Certificate cert) throws Exception {
 
       if (cert != null) {
-         return this.checkSignatureValue(cert.getPublicKey());
+         return this.checkSignatureValue((Key) cert.getPublicKey());
       } else {
          throw new Exception("Didn't get a certificate");
       }
@@ -632,7 +633,7 @@ public class XMLSignature extends ElementProxy {
     * @return
     * @throws Exception
     */
-   public boolean checkSignatureValue(PublicKey pk) throws Exception {
+   public boolean checkSignatureValue(Key pk) throws Exception {
 
       if (!this.getSignedInfo().verify()) {
          return false;
@@ -747,6 +748,19 @@ public class XMLSignature extends ElementProxy {
     */
    public void addKeyInfo(PublicKey pk) {
       this.getKeyInfo().add(pk);
+   }
+
+   /**
+    * Proxy method for {@link SignedInfo#createSecretKey(byte[])}
+    *
+    * @param secretKeyBytes
+    * @return
+    * @throws XMLSecurityException
+    * @see SignedInfo#createSecretKey(byte[])
+    */
+   public SecretKey createSecretKey(byte[] secretKeyBytes)
+           throws XMLSecurityException {
+      return this.getSignedInfo().createSecretKey(secretKeyBytes);
    }
 
    static {
