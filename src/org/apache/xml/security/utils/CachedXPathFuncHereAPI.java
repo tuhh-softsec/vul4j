@@ -105,8 +105,11 @@ public class CachedXPathFuncHereAPI {
       return this._funcHereContext;
    }
 
-   private CachedXPathFuncHereAPI() {
-   }
+   /**
+    * Constructor CachedXPathFuncHereAPI
+    *
+    */
+   private CachedXPathFuncHereAPI() {}
 
    /**
     * Constructor CachedXPathFuncHereAPI
@@ -368,7 +371,20 @@ public class CachedXPathFuncHereAPI {
    private static String getStrFromNode(Node xpathnode) {
 
       if (xpathnode.getNodeType() == Node.TEXT_NODE) {
-         return ((Text) xpathnode).getData();
+
+         // we iterate over all siblings of the context node because eventually,
+         // the text is "polluted" with pi's or comments
+         StringBuffer sb = new StringBuffer();
+
+         for (Node currentSibling = xpathnode.getParentNode().getFirstChild();
+                 currentSibling != null;
+                 currentSibling = currentSibling.getNextSibling()) {
+            if (currentSibling.getNodeType() == Node.TEXT_NODE) {
+               sb.append(((Text) currentSibling).getData());
+            }
+         }
+
+         return sb.toString();
       } else if (xpathnode.getNodeType() == Node.ATTRIBUTE_NODE) {
          return ((Attr) xpathnode).getNodeValue();
       } else if (xpathnode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
