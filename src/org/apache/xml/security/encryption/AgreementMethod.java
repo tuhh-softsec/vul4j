@@ -77,16 +77,19 @@ import org.w3c.dom.Element;
 public interface AgreementMethod {
     /**
      * Returns an <code>byte</code> array.
+     * @return
      */
     byte[] getKANonce();
 
     /**
      * Sets the KANonce.jj
+     * @param kanonce
      */
     void setKANonce(byte[] kanonce);
 
     /**
      * Returns aditional information regarding the <code>AgreementMethod</code>.
+     * @return
      */
     Iterator getAgreementMethodInformation();
 

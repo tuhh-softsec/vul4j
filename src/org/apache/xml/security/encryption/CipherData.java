@@ -38,7 +38,9 @@ package org.apache.xml.security.encryption;
  * @author Axl Mattheus
  */
 public interface CipherData {
+    /** VALUE_TYPE ASN */
     public static final int VALUE_TYPE = 0x00000001;
+    /** REFERENCE_TYPE ASN */
     public static final int REFERENCE_TYPE = 0x00000002;
 
     /**
@@ -62,6 +64,7 @@ public interface CipherData {
      * Sets the <code>CipherData</code>'s value.
      *
      * @param value the value of the <code>CipherData</code>.
+     * @throws XMLEncryptionException
      */
     void setCipherValue(CipherValue value) throws XMLEncryptionException;
 
@@ -79,6 +82,7 @@ public interface CipherData {
      *
      * @param reference an external location containing the enctrypted octet
      *   sequence.
+     * @throws XMLEncryptionException
      */
     void setCipherReference(CipherReference reference) throws
         XMLEncryptionException;

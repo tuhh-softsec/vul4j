@@ -52,7 +52,7 @@ public interface EncryptionProperties {
     /**
      * Sets the id.
      *
-     * @param the id.
+     * @param id the id.
      */
     void setId(String id);
 

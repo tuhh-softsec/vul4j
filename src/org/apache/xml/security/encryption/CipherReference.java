@@ -58,14 +58,15 @@ public interface CipherReference {
     /**
      * Returns an <code>URI</code> that contains an identifier that should be
      * dereferenced.
+     * @return
      */
     String getURI();
 
 	/**
 	 * Gets the URI as an Attribute node.  Used to meld the CipherREference
 	 * with the XMLSignature ResourceResolvers
+     * @return
 	 */
-
 	public Attr getURIAsAttr();
 
     /**

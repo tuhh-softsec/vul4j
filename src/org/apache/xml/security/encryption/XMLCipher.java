@@ -85,51 +85,75 @@ public class XMLCipher {
 	/** Triple DES EDE (192 bit key) in CBC mode */
     public static final String TRIPLEDES =                   
         EncryptionConstants.ALGO_ID_BLOCKCIPHER_TRIPLEDES;
+    /** AES 128 Cipher */
     public static final String AES_128 =                     
         EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128;
+    /** AES 256 Cipher */
     public static final String AES_256 =                     
         EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256;
+    /** AES 192 Cipher */
     public static final String AES_192 =                     
         EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192;
+    /** RSA 1.5 Cipher */
     public static final String RSA_v1dot5 =                  
         EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSA15;
+    /** RSA OAEP Cipher */
     public static final String RSA_OAEP =                    
         EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP;
+    /** DIFFIE_HELLMAN Cipher */
     public static final String DIFFIE_HELLMAN =              
         EncryptionConstants.ALGO_ID_KEYAGREEMENT_DH;
+    /** Triple DES EDE (192 bit key) in CBC mode KEYWRAP*/
     public static final String TRIPLEDES_KeyWrap =           
         EncryptionConstants.ALGO_ID_KEYWRAP_TRIPLEDES;
+    /** AES 128 Cipher KeyWrap */
     public static final String AES_128_KeyWrap =             
         EncryptionConstants.ALGO_ID_KEYWRAP_AES128;
+    /** AES 256 Cipher KeyWrap */
     public static final String AES_256_KeyWrap =             
         EncryptionConstants.ALGO_ID_KEYWRAP_AES256;
+    /** AES 192 Cipher KeyWrap */
     public static final String AES_192_KeyWrap =             
         EncryptionConstants.ALGO_ID_KEYWRAP_AES192;
+    /** SHA1 Cipher */
     public static final String SHA1 =                        
         Constants.ALGO_ID_DIGEST_SHA1;
+    /** SHA256 Cipher */
     public static final String SHA256 =                      
         MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA256;
+    /** SHA512 Cipher */
     public static final String SHA512 =                      
         MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512;
+    /** RIPEMD Cipher */
     public static final String RIPEMD_160 =                  
         MessageDigestAlgorithm.ALGO_ID_DIGEST_RIPEMD160;
+    /** XML Signature NS */
     public static final String XML_DSIG =                    
         Constants.SignatureSpecNS;
+    /** N14C_XML */
     public static final String N14C_XML =                    
         Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+    /** N14C_XML with comments*/
     public static final String N14C_XML_WITH_COMMENTS =      
         Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS;
+    /** N14C_XML excluisve */
     public static final String EXCL_XML_N14C =               
         Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS;
+    /** N14C_XML exclusive with commetns*/
     public static final String EXCL_XML_N14C_WITH_COMMENTS = 
         Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS;
+    /** Base64 encoding */
     public static final String BASE64_ENCODING =             
         org.apache.xml.security.transforms.Transforms.TRANSFORM_BASE64_DECODE;
 	//J+
-
+    
+    /** ENCRYPT Mode */
     public static final int ENCRYPT_MODE = Cipher.ENCRYPT_MODE;
+    /** DECRYPT Mode */
     public static final int DECRYPT_MODE = Cipher.DECRYPT_MODE;
+    /** UNWRAP Mode */
     public static final int UNWRAP_MODE  = Cipher.UNWRAP_MODE;
+    /** WRAP Mode */
     public static final int WRAP_MODE    = Cipher.WRAP_MODE;
 	
     private static final String ENC_ALGORITHMS = TRIPLEDES + "\n" +
@@ -1660,8 +1684,7 @@ public class XMLCipher {
 	 * Create a CipherReference object
 	 *
      * @return
-	 * @param uri The URI that the reference will refer to
-     * @throws XMLEncryptionException
+	 * @param uri The URI that the reference will refer 
 	 */
 
 	public CipherReference createCipherReference(String uri) {
@@ -3293,19 +3316,31 @@ public class XMLCipher {
             protected EncryptedTypeImpl(CipherData data) {
                 cipherData = data;
             }
-
+            /** 
+             * 
+             * @return
+             */
             public String getId() {
                 return (id);
             }
-
+            /**
+             * 
+             * @param id
+             */
             public void setId(String id) {
                 this.id = id;
             }
-
+            /**
+             * 
+             * @return
+             */
             public String getType() {
                 return (type);
             }
-
+            /**
+             * 
+             * @param type
+             */
             public void setType(String type) {
                 URI tmpType = null;
                 try {
@@ -3315,19 +3350,31 @@ public class XMLCipher {
                 }
                 this.type = tmpType.toString();
             }
-
+            /**
+             * 
+             * @return
+             */
             public String getMimeType() {
                 return (mimeType);
             }
-
+            /**
+             * 
+             * @param type
+             */
             public void setMimeType(String type) {
                 mimeType = type;
             }
-
+            /**
+             * 
+             * @return
+             */
             public String getEncoding() {
                 return (encoding);
             }
-
+            /**
+             * 
+             * @param encoding
+             */
             public void setEncoding(String encoding) {
                 URI tmpEncoding = null;
                 try {
@@ -3337,31 +3384,52 @@ public class XMLCipher {
                 }
                 this.encoding = tmpEncoding.toString();
             }
-
+            /**
+             * 
+             * @return
+             */
             public EncryptionMethod getEncryptionMethod() {
                 return (encryptionMethod);
             }
-
+            /**
+             * 
+             * @param method
+             */
             public void setEncryptionMethod(EncryptionMethod method) {
                 encryptionMethod = method;
             }
-
+            /**
+             * 
+             * @return
+             */
             public KeyInfo getKeyInfo() {
                 return (keyInfo);
             }
-
+            /**
+             * 
+             * @param info
+             */
             public void setKeyInfo(KeyInfo info) {
                 keyInfo = info;
             }
-
+            /**
+             * 
+             * @return
+             */
             public CipherData getCipherData() {
                 return (cipherData);
             }
-
+            /**
+             * 
+             * @return
+             */
             public EncryptionProperties getEncryptionProperties() {
                 return (encryptionProperties);
             }
-
+            /**
+             * 
+             * @param properties
+             */
             public void setEncryptionProperties(
                     EncryptionProperties properties) {
                 encryptionProperties = properties;
@@ -3381,7 +3449,10 @@ public class XMLCipher {
             private int keySize = Integer.MIN_VALUE;
             private byte[] oaepParams = null;
             private List encryptionMethodInformation = null;
-
+            /**
+             * 
+             * @param algorithm
+             */
             public EncryptionMethodImpl(String algorithm) {
                 URI tmpAlgorithm = null;
                 try {
@@ -3392,35 +3463,35 @@ public class XMLCipher {
                 this.algorithm = tmpAlgorithm.toString();
                 encryptionMethodInformation = new LinkedList();
             }
-
+            /** @inheritDoc */
             public String getAlgorithm() {
                 return (algorithm);
             }
-
+            /** @inheritDoc */
             public int getKeySize() {
                 return (keySize);
             }
-
+            /** @inheritDoc */
             public void setKeySize(int size) {
                 keySize = size;
             }
-
+            /** @inheritDoc */
             public byte[] getOAEPparams() {
                 return (oaepParams);
             }
-
+            /** @inheritDoc */
             public void setOAEPparams(byte[] params) {
                 oaepParams = params;
             }
-
+            /** @inheritDoc */
             public Iterator getEncryptionMethodInformation() {
                 return (encryptionMethodInformation.iterator());
             }
-
+            /** @inheritDoc */
             public void addEncryptionMethodInformation(Element info) {
                 encryptionMethodInformation.add(info);
             }
-
+            /** @inheritDoc */
             public void removeEncryptionMethodInformation(Element info) {
                 encryptionMethodInformation.remove(info);
             }
@@ -3474,27 +3545,30 @@ public class XMLCipher {
         private class EncryptionPropertiesImpl implements EncryptionProperties {
             private String id = null;
             private List encryptionProperties = null;
-
+            /**
+             * 
+             *
+             */
             public EncryptionPropertiesImpl() {
                 encryptionProperties = new LinkedList();
             }
-
+            /** @inheritDoc */
             public String getId() {
                 return (id);
             }
-
+            /** @inheritDoc */
             public void setId(String id) {
                 this.id = id;
             }
-
+            /** @inheritDoc */
             public Iterator getEncryptionProperties() {
                 return (encryptionProperties.iterator());
             }
-
+            /** @inheritDoc */
             public void addEncryptionProperty(EncryptionProperty property) {
                 encryptionProperties.add(property);
             }
-
+            /** @inheritDoc */
             public void removeEncryptionProperty(EncryptionProperty property) {
                 encryptionProperties.remove(property);
             }
@@ -3539,14 +3613,18 @@ public class XMLCipher {
             private String attributeValue = null;
             private List encryptionInformation = null;
 
+            /**
+             * 
+             *
+             */
             public EncryptionPropertyImpl() {
                 encryptionInformation = new LinkedList();
             }
-
+            /** @inheritDoc */
             public String getTarget() {
                 return (target);
             }
-
+            /** @inheritDoc */
             public void setTarget(String target) {
                 URI tmpTarget = null;
                 try {
@@ -3556,32 +3634,32 @@ public class XMLCipher {
                 }
                 this.target = tmpTarget.toString();
             }
-
+            /** @inheritDoc */
             public String getId() {
                 return (id);
             }
-
+            /** @inheritDoc */
             public void setId(String id) {
                 this.id = id;
             }
-
+            /** @inheritDoc */
             public String getAttribute(String attribute) {
                 return (attributeValue);
             }
-
+            /** @inheritDoc */
             public void setAttribute(String attribute, String value) {
                 attributeName = attribute;
                 attributeValue = value;
             }
-
+            /** @inheritDoc */
             public Iterator getEncryptionInformation() {
                 return (encryptionInformation.iterator());
             }
-
+            /** @inheritDoc */
             public void addEncryptionInformation(Element info) {
                 encryptionInformation.add(info);
             }
-
+            /** @inheritDoc */
             public void removeEncryptionInformation(Element info) {
                 encryptionInformation.remove(info);
             }
@@ -3630,11 +3708,21 @@ public class XMLCipher {
 			public TransformsImpl() {
 				super(_contextDocument);
 			}
-
+			/**
+             * 
+			 * @param doc
+			 */
 			public TransformsImpl(Document doc) {
 				super(doc);
 			}
-
+			/**
+             * 
+			 * @param element
+			 * @throws XMLSignatureException
+			 * @throws InvalidTransformException
+			 * @throws XMLSecurityException
+			 * @throws TransformationException
+			 */
 			public TransformsImpl(Element element) 
 				throws XMLSignatureException,
 			           InvalidTransformException,
@@ -3645,7 +3733,10 @@ public class XMLCipher {
 				
 			}
 
-            /** @inheritDoc */
+            /** 
+             * 
+             * @return
+             */
 			public Element toElement() {
 
 				if (_doc == null)
@@ -3679,7 +3770,10 @@ public class XMLCipher {
         private class ReferenceListImpl implements ReferenceList {
             private Class sentry;
             private List references;
-
+            /**
+             * 
+             * @param type
+             */
             public ReferenceListImpl(int type) {
                 if (type == ReferenceList.DATA_REFERENCE) {
                     sentry = DataReference.class;
@@ -3690,29 +3784,29 @@ public class XMLCipher {
                 }
                 references = new LinkedList();
             }
-
+            /** @inheritDoc */
             public void add(Reference reference) {
                 if (!reference.getClass().equals(sentry)) {
                     throw new IllegalArgumentException();     
                 }
                  references.add(reference);                
             }
-
+            /** @inheritDoc */
             public void remove(Reference reference) {
                 if (!reference.getClass().equals(sentry)) {
                     throw new IllegalArgumentException();
                 }
                 references.remove(reference);
             }
-
+            /** @inheritDoc */
             public int size() {
                 return (references.size());
             }
-
+            /** @inheritDoc */
             public boolean isEmpty() {
                 return (references.isEmpty());
             }
-
+            /** @inheritDoc */
             public Iterator getReferences() {
                 return (references.iterator());
             }
@@ -3730,11 +3824,11 @@ public class XMLCipher {
                 }
                 return (result);
             }
-
+            /** @inheritDoc */
             public Reference newDataReference(String uri) {
                 return (new DataReference(uri));
             }
-
+            /** @inheritDoc */
             public Reference newKeyReference(String uri) {
                 return (new KeyReference(uri));
             }
@@ -3753,27 +3847,30 @@ public class XMLCipher {
                     this.uri = _uri;
                     referenceInformation = new LinkedList();
                 }
-            
+                /** @inheritDoc */
                 public String getURI() {
                     return (uri);
                 }
-
+                /** @inheritDoc */
                 public Iterator getElementRetrievalInformation() {
                     return (referenceInformation.iterator());
                 }
-
+                /** @inheritDoc */
                 public void setURI(String _uri) {
                 	this.uri = _uri;
                 }
-
+                /** @inheritDoc */
                 public void removeElementRetrievalInformation(Element node) {
                     referenceInformation.remove(node);
                 }
-
+                /** @inheritDoc */
                 public void addElementRetrievalInformation(Element node) {
                     referenceInformation.add(node);
                 }
-
+                /**
+                 * 
+                 * @return
+                 */
                 public abstract Element toElement();
 
                 Element toElement(String tagName) {
@@ -3795,7 +3892,7 @@ public class XMLCipher {
                 DataReference(String uri) {
                     super(uri);
                 }
-
+                /** @inheritDoc */
                 public Element toElement() {
                     return super.toElement(EncryptionConstants._TAG_DATAREFERENCE);
                 }
@@ -3805,7 +3902,7 @@ public class XMLCipher {
                 KeyReference(String uri) {
                     super (uri);
                 }
-
+                /** @inheritDoc */
                 public Element toElement() {
                     return super.toElement(EncryptionConstants._TAG_KEYREFERENCE);
                 }

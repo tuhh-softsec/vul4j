@@ -78,6 +78,7 @@ public interface EncryptionProperty {
     /**
      * Returns the attribute's value in the <code>xml</code> namespace.
      *
+     * @param attribute
      * @return the attribute's value.
      */
     String getAttribute(String attribute);

@@ -38,19 +38,19 @@ import java.util.Iterator;
  * </xmp>
  *
  * @author Axl Mattheus
- * @see Reference.
+ * @see Reference
  */
 public interface ReferenceList {
-
+	/** DATA TAG */
     public static final int DATA_REFERENCE = 0x00000001;
-
+    /** KEY TAG */
     public static final int KEY_REFERENCE  = 0x00000002;
 
     /**
      * Adds a reference to this reference list.
      *
      * @param reference the reference to add.
-     * @throws IllegalArgurmentException if the <code>Reference</code> is not an
+     * @throws IllegalAccessException if the <code>Reference</code> is not an
      *   instance of <code>DataReference</code> or <code>KeyReference</code>.
      */
     public void add(Reference reference);
@@ -88,12 +88,16 @@ public interface ReferenceList {
     /**
      * <code>DataReference</code> factory method. Returns a
      * <code>DataReference</code>.
+     * @param uri
+     * @return
      */
     public Reference newDataReference(String uri);
 
     /**
      * <code>KeyReference</code> factory method. Returns a
      * <code>KeyReference</code>.
+     * @param uri
+     * @return
      */
     public Reference newKeyReference(String uri);
 }

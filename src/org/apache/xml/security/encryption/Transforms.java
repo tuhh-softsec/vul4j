@@ -32,7 +32,7 @@ package org.apache.xml.security.encryption;
  * </xmp>
  *
  * @author Axl Mattheus
- * @see CipherReference.
+ * @see org.apache.xml.security.encryption.CipherReference
  */
 public interface Transforms {
     /**
@@ -63,6 +63,7 @@ public interface Transforms {
 	 * DS class, so we need to get to get the base class.
 	 * <p>
 	 * <b>Note</b> This will be removed in future versions
+     * @return
 	 */
 
 	org.apache.xml.security.transforms.Transforms getDSTransforms();

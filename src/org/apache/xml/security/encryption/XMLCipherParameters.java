@@ -18,6 +18,9 @@
 package org.apache.xml.security.encryption;
 
 
+/**
+ * Constants
+ */
 public interface XMLCipherParameters {
 
     /** */

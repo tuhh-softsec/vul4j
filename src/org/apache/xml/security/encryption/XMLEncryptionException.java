@@ -18,25 +18,47 @@ package org.apache.xml.security.encryption;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
+/**
+ * 
+ */
 public class XMLEncryptionException extends XMLSecurityException {
-
+	/**
+     * 
+	 *
+	 */
    public XMLEncryptionException() {
       super();
    }
-
+   /**
+    * 
+    * @param _msgID
+    */
    public XMLEncryptionException(String _msgID) {
       super(_msgID);
    }
-
+   /**
+    * 
+    * @param _msgID
+    * @param exArgs
+    */
    public XMLEncryptionException(String _msgID, Object exArgs[]) {
       super(_msgID, exArgs);
    }
-
+   /**
+    * 
+    * @param _msgID
+    * @param _originalException
+    */
    public XMLEncryptionException(String _msgID,
                                               Exception _originalException) {
       super(_msgID, _originalException);
    }
-
+   /**
+    * 
+    * @param _msgID
+    * @param exArgs
+    * @param _originalException
+    */
    public XMLEncryptionException(String _msgID, Object exArgs[],
                                               Exception _originalException) {
       super(_msgID, exArgs, _originalException);

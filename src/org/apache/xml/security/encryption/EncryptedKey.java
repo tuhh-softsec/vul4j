@@ -94,7 +94,7 @@ public interface EncryptedKey extends EncryptedType {
      * the <code>ds:KeyName</code> element, whitespace is also significant in
      * the value of the <code>CarriedKeyName</code> element.
      *
-     * @param an <code>Iterator</code> over all the carried names contained in
+     * @return over all the carried names contained in
      *   this <code>EncryptedKey</code>.
      */
     String getCarriedName();
