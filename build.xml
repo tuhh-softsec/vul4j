@@ -149,6 +149,8 @@
 		<include name="README"/>
 		<include name="Readme.html"/>
 		<include name="TODO"/>
+		<include name="provider.properties"/>
+		<include name="proxy.properties"/>
     </patternset>
 
     <patternset id="id.patternset.dataFiles">
@@ -235,6 +237,7 @@
             <available file="${lib.jce}" />
         </condition >
     </target >
+
     <target name="do.check.libs"
             depends="do.check.libs.jce"
             unless="has.jce.provider" >
@@ -247,7 +250,18 @@
                   algorithm="${checksum.algorithm}"
                   property="${checksum.value}"
                   verifyproperty="jce.checksum.ok" />
+		<property name="has.jce.provider" value="true"/>
     </target >
+
+	<target name="do.check.forrest">
+		<property environment="env"/>
+		<condition property="has.forrest">
+			<or>
+				<available filepath="${env.PATH}" file="forrest" />
+				<available filepath="${env.PATH}" file="forrest.bat" />
+			</or>
+		</condition>
+	</target>
 
     <!-- B U I L D  T A R G E T S -->
     <!-- source -->
@@ -526,9 +540,10 @@
     <!-- distribution targets -->
 
     <target name="build.dist"       
-		depends="build.bindist,build.srcdist" />
+		depends="build.srcdist,build.bindist" />
 
 	<target name="build.srcdist" 
+			depends="clean"
 		description="Creates the source distribution" >
 		
 		<mkdir dir="${dir.build.srcdist}"/>
@@ -628,10 +643,16 @@
     	</javadoc>
 	</target>
 
-	<target name="build.xdocs">
+	<target name="build.xdocs"
+			depends="do.check.forrest"
+			if="has.forrest">
 		<!-- Call Forrest externally -->
 		<exec executable="forrest"
-			dir="${dir.docs}" />
+			  os="Linux"
+			  dir="${dir.docs}" />
+		<exec executable="forrest.bat"
+			  os="Windows"
+			  dir="${dir.docs}" />
     </target>
     
 	<target name="clover.report.html" depends="with.clover">
