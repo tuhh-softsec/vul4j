@@ -590,16 +590,22 @@
     <echo message="                                                                   "/>
     <echo message=" available targets are:                                            "/>
     <echo message="                                                                   "/>
-    <echo message="   generate-keys   --&gt; generates new keys to be used by other      "/>
-    <echo message="                       examples                                    "/>
-    <echo message="   sign            --&gt; runs ..samples.signature.CreateSignature    "/>
-    <echo message="                       creates a signature.xml file                "/>
-    <echo message="   verify          --&gt; will verify a signature.xml file that&apos;s     "/>
-    <echo message="                       in the root directory. Main use after sign  "/>
-    <echo message="   signAndVerify   --&gt; runs sign and then verify                   "/>
-    <echo message="   mega-sample     --&gt; runs all big samples                        "/>
+    <echo message="   generate-keys     --&gt; generates new keys to be used by other"/>
+    <echo message="                         examples                     "/>
+    <echo message="   encrypt           --&gt; runs ..samples.encryption.Encryptor"/>
+    <echo message="                         creates encryptedInfo.xml and kek files"/>
+    <echo message="   decrypt           --&gt; runs ..samples.encryption.Decryptor"/>
+    <echo message="                         decrypts encrypted data in   "/>
+    <echo message="                         encryptedInfo.xml using the key in kek"/>
+    <echo message="   encryptAndDecrypt --&gt; runs encrypt and then decrypt  "/>
+    <echo message="   sign              --&gt; runs ..samples.signature.CreateSignature"/>
+    <echo message="                         creates a signature.xml file    "/>
+    <echo message="   verify            --&gt; will verify a signature.xml file that&apos;s"/>
+    <echo message="                         in the root directory. Main use after sign"/>
+    <echo message="   signAndVerify     --&gt; runs sign and then verify"/>
+    <echo message="   mega-sample       --&gt; runs all big samples   "/>
     <echo message="                                                                   "/>
-    <echo message=" See target usage for building instructions                        "/>
+    <echo message=" See target usage for building instructions      "/>
   </target>
 
   <target name="generate-keys">
@@ -612,6 +618,23 @@
       </dname>
     </genkey>
   </target>
+
+  <target depends="compile" description="encrypts xml data" name="encrypt">
+     <delete file="encryptedInfo.xml"/>
+     <delete file="kek"/>
+     <java classname="org.apache.xml.security.samples.encryption.Encrypter" failonerror="true" fork="yes" taskname="Encrypter">
+        <classpath refid="classpath.test"/>
+     </java>
+  </target>
+
+  <target depends="compile" description="decrypts xml data" name="decrypt">
+     <delete file="decryptedInfo.xml"/>
+     <java classname="org.apache.xml.security.samples.encryption.Decrypter" failonerror="true" fork="yes" taskname="Decrypter">
+        <classpath refid="classpath.test"/>
+     </java>
+  </target>
+
+  <target depends="encrypt, decrypt" description="encrypts and decrypts an element's contents" name="encryptAndDecrypt"/>
 
   <target depends="compile" description="creates a signature" name="sign">
      <delete file="signature.xml"/>
