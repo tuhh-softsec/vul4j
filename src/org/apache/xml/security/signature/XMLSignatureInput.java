@@ -272,7 +272,8 @@ public class XMLSignatureInput {
          DocumentBuilder db = dfactory.newDocumentBuilder();
 
          try {
-            db.setErrorHandler(new org.apache.xml.security.utils.IgnoreAllErrorHandler());
+            db.setErrorHandler(new org.apache.xml.security.utils
+               .IgnoreAllErrorHandler());
 
             Document document = db.parse(this.getOctetStream());
 
@@ -593,18 +594,26 @@ public class XMLSignatureInput {
       return this._cxpathAPI;
    }
 
-   public String toString()  {
+   /**
+    * Method toString
+    *
+    * @return
+    */
+   public String toString() {
+
       if (this.isNodeSet()) {
          try {
-         return "XMLSignatureInput/NodeSet/" + this.getNodeSet().getLength() + " nodes/" + this.getSourceURI();
+            return "XMLSignatureInput/NodeSet/" + this.getNodeSet().getLength()
+                   + " nodes/" + this.getSourceURI();
          } catch (Exception ex) {
-         return "XMLSignatureInput/NodeSet//" + this.getSourceURI();
+            return "XMLSignatureInput/NodeSet//" + this.getSourceURI();
          }
       } else {
          try {
-         return "XMLSignatureInput/OctetStream/" + this.getBytes().length + " octets/" + this.getSourceURI();
+            return "XMLSignatureInput/OctetStream/" + this.getBytes().length
+                   + " octets/" + this.getSourceURI();
          } catch (Exception ex) {
-         return "XMLSignatureInput/OctetStream//" + this.getSourceURI();
+            return "XMLSignatureInput/OctetStream//" + this.getSourceURI();
          }
       }
    }
