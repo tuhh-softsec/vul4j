@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginDeclarationRule.java,v 1.5 2003/10/28 23:31:08 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2003/10/28 23:31:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginDeclarationRule.java,v 1.6 2003/11/16 22:37:35 rdonkin Exp $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/16 22:37:35 $
  *
  * ====================================================================
  * 
@@ -107,11 +107,9 @@ public class PluginDeclarationRule extends Rule {
      *@exception java.lang.Exception
      */
 
-    public void begin(
-            String namespace,
-            String name,
-            org.xml.sax.Attributes attributes)
-             throws java.lang.Exception {
+    public void begin(String namespace, String name,
+                      org.xml.sax.Attributes attributes)
+                      throws java.lang.Exception {
                  
         Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();
@@ -152,8 +150,7 @@ public class PluginDeclarationRule extends Rule {
             Class ruleClass;
             try {
                 ruleClass = digester.getClassLoader().loadClass(ruleClassName);
-            }
-            catch(ClassNotFoundException cnfe) {
+            } catch(ClassNotFoundException cnfe) {
                 throw new ClassNotFoundException(
                     "Rule class [" + ruleClassName + "] not found.");
             }

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.7 2003/11/12 23:21:18 rdonkin Exp $
- * $Revision: 1.7 $
- * $Date: 2003/11/12 23:21:18 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.8 2003/11/16 22:37:35 rdonkin Exp $
+ * $Revision: 1.8 $
+ * $Date: 2003/11/16 22:37:35 $
  *
  * ====================================================================
  * 
@@ -91,36 +91,36 @@ public class PluginCreateRule extends Rule implements InitializableRule {
     public static final String GLOBAL_PLUGIN_ID_ATTR = "plugin-id";
     
     // see setGlobalPluginClassAttribute
-    private static String globalPluginClassAttrNs_ = GLOBAL_PLUGIN_CLASS_ATTR_NS;
-    private static String globalPluginClassAttr_ = GLOBAL_PLUGIN_CLASS_ATTR;
+    private static String globalPluginClassAttrNs = GLOBAL_PLUGIN_CLASS_ATTR_NS;
+    private static String globalPluginClassAttr = GLOBAL_PLUGIN_CLASS_ATTR;
 
     // see setGlobalPluginIdAttribute
-    private static String globalPluginIdAttrNs_ = GLOBAL_PLUGIN_ID_ATTR_NS;
-    private static String globalPluginIdAttr_ = GLOBAL_PLUGIN_ID_ATTR;
+    private static String globalPluginIdAttrNs = GLOBAL_PLUGIN_ID_ATTR_NS;
+    private static String globalPluginIdAttr = GLOBAL_PLUGIN_ID_ATTR;
     
     // see setPluginClassAttribute
-    private String pluginClassAttrNs_ = globalPluginClassAttrNs_;
-    private String pluginClassAttr_ = globalPluginClassAttr_;
+    private String pluginClassAttrNs = globalPluginClassAttrNs;
+    private String pluginClassAttr = globalPluginClassAttr;
     
     // see setPluginIdAttribute
-    private String pluginIdAttrNs_ = globalPluginIdAttrNs_;
-    private String pluginIdAttr_ = globalPluginIdAttr_;
+    private String pluginIdAttrNs = globalPluginIdAttrNs;
+    private String pluginIdAttr = globalPluginIdAttr;
     
     /**
      * In order to invoke the addRules method on the plugin class correctly,
      * we need to know the pattern which this rule is matched by.
      */
-    private String pattern_;
+    private String pattern;
 
     /** A base class that any plugin must derive from. */
-    private Class baseClass_ = null;
+    private Class baseClass = null;
 
     /**
      * Info about optional default plugin to be used if no plugin-id is
      * specified in the input data. This can simplify the syntax where one
      * particular plugin is usually used.
      */
-    private Declaration defaultPlugin_;
+    private Declaration defaultPlugin;
 
     /**
      * Currently, none of the Rules methods allow exceptions to be thrown.
@@ -128,14 +128,14 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * cause the digester to stop. Instead, we cache the exception and throw
      * it the first time the begin() method is called.
      */
-    private PluginConfigurationException initException_;
+    private PluginConfigurationException initException;
 
     /**
      * Our private set of rules associated with the concrete class that
      * the user requested to be instantiated. This object is only valid
      * between a call to begin() and the corresponding call to end().
      */
-    private PluginRules localRules_; 
+    private PluginRules localRules; 
     
     //-------------------- static methods -----------------------------------
     
@@ -167,10 +167,10 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * @param attrName is the attribute whose value contains the name of the
      * class to be instantiated.
      */
-    public static void setGlobalPluginClassAttribute(
-    String namespaceUri, String attrName) {
-        globalPluginClassAttrNs_ = namespaceUri;
-        globalPluginClassAttr_ = attrName;
+    public static void setGlobalPluginClassAttribute(String namespaceUri, 
+                                                     String attrName) {
+        globalPluginClassAttrNs = namespaceUri;
+        globalPluginClassAttr = attrName;
     }
 
     /**
@@ -201,10 +201,10 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * @param attrName is the attribute whose value contains the id of the
      * plugin declaration to be used when instantiating an object.
      */
-    public static void setGlobalPluginIdAttribute(
-    String namespaceUri, String attrName) {
-        globalPluginIdAttrNs_ = namespaceUri;
-        globalPluginIdAttr_ = attrName;
+    public static void setGlobalPluginIdAttribute(String namespaceUri, 
+                                                  String attrName) {
+        globalPluginIdAttrNs = namespaceUri;
+        globalPluginIdAttr = attrName;
     }
 
     //-------------------- constructors -------------------------------------
@@ -218,7 +218,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      */
     public PluginCreateRule(Class baseClass) {
         super();
-        baseClass_ = baseClass;
+        this.baseClass = baseClass;
     }
 
     /**
@@ -234,41 +234,41 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      */
     public PluginCreateRule(Class baseClass, Class dfltPluginClass) {
         super();
-        baseClass_ = baseClass;
+        this.baseClass = baseClass;
         if (dfltPluginClass != null) {
-            defaultPlugin_ = new Declaration(dfltPluginClass);
+            defaultPlugin = new Declaration(dfltPluginClass);
         }
     }
 
     //------------------- properties ---------------------------------------
 
     public void setDefaultRuleMethod(String dfltPluginRuleMethod) {
-        if (defaultPlugin_ != null) {
-            defaultPlugin_.setRuleMethod(dfltPluginRuleMethod);
+        if (defaultPlugin != null) {
+            defaultPlugin.setRuleMethod(dfltPluginRuleMethod);
         }
     }
     
     public void setDefaultRuleClass(Class dfltPluginRuleClass) {
-        if (defaultPlugin_ != null) {
-            defaultPlugin_.setRuleClass(dfltPluginRuleClass);
+        if (defaultPlugin != null) {
+            defaultPlugin.setRuleClass(dfltPluginRuleClass);
         }
     }
     
     public void setDefaultRuleResource(String dfltPluginRuleResource) {
-        if (defaultPlugin_ != null) {
-            defaultPlugin_.setRuleResource(dfltPluginRuleResource);
+        if (defaultPlugin != null) {
+            defaultPlugin.setRuleResource(dfltPluginRuleResource);
         }
     }
     
     public void setDefaultRuleFile(String dfltPluginRuleFile) {
-        if (defaultPlugin_ != null) {
-            defaultPlugin_.setRuleFile(new File(dfltPluginRuleFile));
+        if (defaultPlugin != null) {
+            defaultPlugin.setRuleFile(new File(dfltPluginRuleFile));
         }
     }
 
     public void setDefaultRuleAutoSetProperties(boolean enabled) {
-        if (defaultPlugin_ != null) {
-            defaultPlugin_.setAutoSetProperties(enabled);
+        if (defaultPlugin != null) {
+            defaultPlugin.setAutoSetProperties(enabled);
         }
     }
     
@@ -278,10 +278,9 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * <p>
      * See setGlobalPluginClassAttribute for more info.
      */
-    public void setPluginClassAttribute(
-    String namespaceUri, String attrName) {
-        pluginClassAttrNs_ = namespaceUri;
-        pluginClassAttr_ = attrName;
+    public void setPluginClassAttribute(String namespaceUri, String attrName) {
+        pluginClassAttrNs = namespaceUri;
+        pluginClassAttr = attrName;
     }
 
     /**
@@ -290,10 +289,9 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * <p>
      * See setGlobalPluginIdAttribute for more info.
      */
-    public void setPluginIdAttribute(
-    String namespaceUri, String attrName) {
-        pluginIdAttrNs_ = namespaceUri;
-        pluginIdAttr_ = attrName;
+    public void setPluginIdAttribute(String namespaceUri, String attrName) {
+        pluginIdAttrNs = namespaceUri;
+        pluginIdAttr = attrName;
     }
 
     //------------------- methods --------------------------------------------
@@ -307,8 +305,8 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * this rule instance, eg "root/widget".
      * @exception PluginConfigurationException
      */
-    public void postRegisterInit(String pattern)
-    throws PluginConfigurationException {
+    public void postRegisterInit(String matchPattern)
+                                 throws PluginConfigurationException {
         Log log = LogUtils.getLogger(digester);
         boolean debug = log.isDebugEnabled();
         if (debug) {
@@ -321,13 +319,13 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             // Note that this means that PluginCreateRule cannot be added
             // to a Rules object which has not yet been added to a
             // Digester object.
-            initException_ = new PluginConfigurationException(
+            initException = new PluginConfigurationException(
                  "Invalid invocation of postRegisterInit" + 
                  ": digester not set.");
-            throw initException_;
+            throw initException;
         }
 
-        if (pattern_ != null) {
+        if (pattern != null) {
             // We have been called twice, ie a single instance has been
             // associated with multiple patterns.
             //
@@ -335,13 +333,13 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             // multiple patterns. However for plugins, this creates some 
             // complications. Some day this may be supported; however for 
             // now we just reject this situation.
-            initException_ = new PluginConfigurationException(
+            initException = new PluginConfigurationException(
                "A single PluginCreateRule instance has been mapped to" + 
                  " multiple patterns; this is not supported.");
-            throw initException_;
+            throw initException;
         }
 
-        if (pattern.indexOf('*') != -1) {
+        if (matchPattern.indexOf('*') != -1) {
             // having wildcards in patterns is extremely difficult to
             // deal with. For now, we refuse to allow this.
             //
@@ -353,31 +351,31 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             // (b) determining whether one pattern is "below" another,
             //     as done by PluginRules. Without wildcards, "below"
             //     just means startsWith, which is easy to check.
-            initException_ = new PluginConfigurationException(
+            initException = new PluginConfigurationException(
                  "A PluginCreateRule instance has been mapped to" + 
-                 " pattern [" + pattern + "]." + 
+                 " pattern [" + matchPattern + "]." + 
                  " This pattern includes a wildcard character." + 
                  " This is not supported by the plugin architecture.");
-            throw initException_;
+            throw initException;
         }
 
-        if (baseClass_ == null) {
-            baseClass_ = Object.class;
+        if (baseClass == null) {
+            baseClass = Object.class;
         }
         
         // check default class is valid
-        if (defaultPlugin_ != null) {
-            if (!baseClass_.isAssignableFrom(defaultPlugin_.getPluginClass())) {
-                initException_ = new PluginConfigurationException(
+        if (defaultPlugin != null) {
+            if (!baseClass.isAssignableFrom(defaultPlugin.getPluginClass())) {
+                initException = new PluginConfigurationException(
                      "Default class [" + 
-                     defaultPlugin_.getPluginClass().getName() + 
+                     defaultPlugin.getPluginClass().getName() + 
                      "] does not inherit from [" + 
-                     baseClass_.getName() + "].");
-                throw initException_;
+                     baseClass.getName() + "].");
+                throw initException;
             }
 
             try {
-                defaultPlugin_.init(digester);
+                defaultPlugin.init(digester);
                 
             } catch(PluginWrappedException pwe) {
             
@@ -387,7 +385,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         }
 
         // remember the pattern for later
-        pattern_ = pattern;
+        pattern = matchPattern;
     }
 
     /**
@@ -415,45 +413,44 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * @throws PluginInvalidInputException
      * @throws PluginConfigurationException
      */
-    public void begin(
-    String namespace, String name, 
-    org.xml.sax.Attributes attributes)
-    throws java.lang.Exception {
+    public void begin(String namespace, String name,
+                      org.xml.sax.Attributes attributes)
+                      throws java.lang.Exception {
         Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();
         if (debug) {
-            log.debug("PluginCreateRule.begin" + ": pattern=[" + pattern_ + "]" + 
+            log.debug("PluginCreateRule.begin" + ": pattern=[" + pattern + "]" + 
                   " match=[" + digester.getMatch() + "]");
         }
 
-        if (initException_ != null) {
+        if (initException != null) {
             // we had a problem during initialisation that we could
             // not report then; report it now.
-            throw initException_;
+            throw initException;
         }
         
         String currMatch = digester.getMatch();
-        if (currMatch.length() == pattern_.length()) {
+        if (currMatch.length() == pattern.length()) {
             // ok here we are actually instantiating a new plugin object,
             // and storing its rules into a new Rules object
-            if (localRules_ != null) {
+            if (localRules != null) {
                 throw new PluginAssertionFailure(
-                    "Begin called when localRules_ is not null.");
+                    "Begin called when localRules is not null.");
             }
                       
             PluginRules oldRules = (PluginRules) digester.getRules();
-            localRules_ = new PluginRules(this, oldRules);
-            PluginManager pluginManager = localRules_.getPluginManager();
+            localRules = new PluginRules(this, oldRules);
+            PluginManager pluginManager = localRules.getPluginManager();
             Declaration currDeclaration = null;
             
             if (debug) {
                 log.debug("PluginCreateRule.begin: installing new plugin: " 
                     + "oldrules=" + oldRules.toString()
-                    + ", localrules=" + localRules_.toString());
+                    + ", localrules=" + localRules.toString());
             }
               
             String pluginClassName; 
-            if (pluginClassAttrNs_ == null) {
+            if (pluginClassAttrNs == null) {
                 // Yep, this is ugly.
                 //
                 // In a namespace-aware parser, the one-param version will 
@@ -461,19 +458,19 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                 //
                 // In a non-namespace-aware parser, the two-param version will 
                 // never return any attributes, ever.
-                pluginClassName = attributes.getValue(pluginClassAttr_);
+                pluginClassName = attributes.getValue(pluginClassAttr);
             } else {
                 pluginClassName = 
-                    attributes.getValue(pluginClassAttrNs_, pluginClassAttr_);
+                    attributes.getValue(pluginClassAttrNs, pluginClassAttr);
             }
 
             String pluginId; 
-            if (pluginIdAttrNs_ == null) {
-                pluginId = attributes.getValue(pluginIdAttr_);
+            if (pluginIdAttrNs == null) {
+                pluginId = attributes.getValue(pluginIdAttr);
             }
             else {
                 pluginId = 
-                    attributes.getValue(pluginIdAttrNs_, pluginIdAttr_);
+                    attributes.getValue(pluginIdAttrNs, pluginIdAttr);
             }
             
             if (pluginClassName != null) {
@@ -497,19 +494,19 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                     throw new PluginInvalidInputException(
                         "Plugin id [" + pluginId + "] is not defined.");
                 }
-            } else if (defaultPlugin_ != null) {
-                currDeclaration = defaultPlugin_;
+            } else if (defaultPlugin != null) {
+                currDeclaration = defaultPlugin;
             }
             else {
                 throw new PluginInvalidInputException(
                     "No plugin class specified for element "
-                    + pattern_);
+                    + pattern);
             }
             
             // now load up the custom rules into a private Rules instance
-            digester.setRules(localRules_);
+            digester.setRules(localRules);
         
-            currDeclaration.configure(digester, pattern_);
+            currDeclaration.configure(digester, pattern);
     
             Class pluginClass = currDeclaration.getPluginClass();
             
@@ -517,7 +514,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             getDigester().push(instance);
             if (debug) {
                 log.debug(
-                    "PluginCreateRule.begin" + ": pattern=[" + pattern_ + "]" + 
+                    "PluginCreateRule.begin" + ": pattern=[" + pattern + "]" + 
                     " match=[" + digester.getMatch() + "]" + 
                     " pushed instance of plugin [" + pluginClass.getName() + "]");
             }
@@ -533,11 +530,11 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         if (debug) {
             log.debug("PluginCreateRule.begin: firing nested rules: " 
                 + "oldrules=" + oldRules.toString()
-                + ", localrules=" + localRules_.toString());
+                + ", localrules=" + localRules.toString());
         }
 
-        // assert oldRules = localRules_.oldRules
-        digester.setRules(localRules_);
+        // assert oldRules = localRules.oldRules
+        digester.setRules(localRules);
         delegateBegin(namespace, name, attributes);
         digester.setRules(oldRules);
 
@@ -554,11 +551,11 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * @see #begin
      */
     public void body(String namespace, String name, String text)
-        throws Exception {
+                     throws Exception {
             
         Rules oldRules = digester.getRules();
-        // assert oldRules == localRules_.oldRules
-        digester.setRules(localRules_);
+        // assert oldRules == localRules.oldRules
+        digester.setRules(localRules);
         delegateBody(namespace, name, text);
         digester.setRules(oldRules);
     }
@@ -585,19 +582,19 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * @see #begin
      */
     public void end(String namespace, String name)
-             throws Exception {
+                    throws Exception {
             
         Rules oldRules = digester.getRules();
-        // assert oldRules == localRules_.parentRules
-        digester.setRules(localRules_);
+        // assert oldRules == localRules.parentRules
+        digester.setRules(localRules);
         delegateEnd(namespace, name);
         digester.setRules(oldRules);
 
         String currMatch = digester.getMatch();
-        if (currMatch.length() == pattern_.length()) {
+        if (currMatch.length() == pattern.length()) {
             // the end of the element on which the PluginCreateRule has
             // been mounted has been reached.
-            localRules_ = null;
+            localRules = null;
             ((PluginRules) oldRules).endPlugin(this);
             digester.pop();
         }
@@ -616,7 +613,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * @return The pattern value
      */
     public String getPattern() {
-        return pattern_;
+        return pattern;
     }
     
     /**
@@ -624,10 +621,9 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * in our private rules object, then executing the begin method of
      * each matching rule.
      */
-    public void delegateBegin(
-    String namespace, String name, 
-    org.xml.sax.Attributes attributes)
-    throws java.lang.Exception {
+    public void delegateBegin(String namespace, String name, 
+                              org.xml.sax.Attributes attributes)
+                              throws java.lang.Exception {
         
         // Fire "begin" events for all relevant rules
         Log log = digester.getLogger();
@@ -648,7 +644,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * Here we act like Digester.body, except against our private rules.
      */
     public void delegateBody(String namespace, String name, String text)
-    throws Exception {
+                             throws Exception {
         // Fire "body" events for all relevant rules
         Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();
@@ -668,7 +664,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * Here we act like Digester.end.
      */
     public void delegateEnd(String namespace, String name)
-    throws Exception {
+                            throws Exception {
         // Fire "end" events for all relevant rules in reverse order
         Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginRules.java,v 1.5 2003/11/02 23:26:59 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2003/11/02 23:26:59 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginRules.java,v 1.6 2003/11/16 22:37:35 rdonkin Exp $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/16 22:37:35 $
  *
  * ====================================================================
  * 
@@ -89,12 +89,12 @@ public class PluginRules implements Rules {
      * The rules implementation that we are "enhancing" with plugins
      * functionality, as per the Decorator pattern.
      */
-    private Rules decoratedRules_;
+    private Rules decoratedRules;
 
     /**
      * The Digester instance with which this Rules instance is associated.
      */
-    protected Digester digester_ = null;
+    protected Digester digester = null;
 
     /**
      * The currently active PluginCreateRule. When the begin method of a
@@ -102,13 +102,13 @@ public class PluginRules implements Rules {
      * encountered, this is cleared. Any attempt to call match() while this
      * attribute is set just causes this single rule to be returned.
      */
-    private PluginCreateRule currPluginCreateRule_ = null;
+    private PluginCreateRule currPluginCreateRule = null;
     
     /** Object which contains information about all known plugins. */
-    private PluginManager pluginManager_;
+    private PluginManager pluginManager;
 
     /** The parent rules object for this object. */
-    private Rules parent_;
+    private Rules parent;
     
     // ------------------------------------------------------------- Constructor
     
@@ -118,8 +118,8 @@ public class PluginRules implements Rules {
      * object before parsing starts.
      */
     public PluginRules() {
-        decoratedRules_ = new RulesBase();
-        pluginManager_ = new PluginManager();
+        decoratedRules = new RulesBase();
+        pluginManager = new PluginManager();
     }
 
     /**
@@ -127,8 +127,8 @@ public class PluginRules implements Rules {
      * using the specified implementation.
      */
     public PluginRules(Rules decoratedRules) {
-        decoratedRules_ = decoratedRules;
-        pluginManager_ = new PluginManager();
+        this.decoratedRules = decoratedRules;
+        pluginManager = new PluginManager();
     }
 
     /**
@@ -146,9 +146,9 @@ public class PluginRules implements Rules {
      * "inherit" declarations from further up the tree.
      */
      PluginRules(PluginCreateRule pcr, PluginRules parent) {
-        decoratedRules_ = new RulesBase();
-        parent_ = parent;
-        pluginManager_ = new PluginManager(parent.pluginManager_);
+        decoratedRules = new RulesBase();
+        this.parent = parent;
+        pluginManager = new PluginManager(parent.pluginManager);
     }
     
     // ------------------------------------------------------------- Properties
@@ -157,14 +157,14 @@ public class PluginRules implements Rules {
      * Return the parent Rules object.
      */
     public Rules getParent() {
-        return parent_;
+        return parent;
     }
     
     /**
      * Return the Digester instance with which this instance is associated.
      */
     public Digester getDigester() {
-        return (digester_);
+        return digester;
     }
 
     /**
@@ -173,8 +173,8 @@ public class PluginRules implements Rules {
      * @param digester The newly associated Digester instance
      */
     public void setDigester(Digester digester) {
-        digester_ = digester;
-        decoratedRules_.setDigester(digester);
+        this.digester = digester;
+        decoratedRules.setDigester(digester);
     }
 
     /**
@@ -182,7 +182,7 @@ public class PluginRules implements Rules {
      * added <code>Rule</code> objects.
      */
     public String getNamespaceURI() {
-        return decoratedRules_.getNamespaceURI();
+        return decoratedRules.getNamespaceURI();
     }
 
     /**
@@ -194,7 +194,7 @@ public class PluginRules implements Rules {
      *  regardless of the current namespace URI
      */
     public void setNamespaceURI(String namespaceURI) {
-        decoratedRules_.setNamespaceURI(namespaceURI);
+        decoratedRules.setNamespaceURI(namespaceURI);
     }
 
     /**
@@ -203,7 +203,7 @@ public class PluginRules implements Rules {
      * @return The pluginManager value
      */
     public PluginManager getPluginManager() {
-        return pluginManager_;
+        return pluginManager;
     }
 
     // --------------------------------------------------------- Public Methods
@@ -218,7 +218,7 @@ public class PluginRules implements Rules {
      * @return list of all Rule objects known to this Rules instance.
      */
     public List rules() {
-        return decoratedRules_.rules();
+        return decoratedRules.rules();
     }
 
     /**
@@ -228,7 +228,7 @@ public class PluginRules implements Rules {
      * @param rule Rule instance to be registered
      */
     public void add(String pattern, Rule rule) {
-        Log log = LogUtils.getLogger(digester_);
+        Log log = LogUtils.getLogger(digester);
         boolean debug = log.isDebugEnabled();
         
         if (debug) {
@@ -236,7 +236,7 @@ public class PluginRules implements Rules {
                   " to rule of type [" + rule.getClass().getName() + "]");
         }
         
-        decoratedRules_.add(pattern, rule);
+        decoratedRules.add(pattern, rule);
 
         if (rule instanceof InitializableRule) {
             try {
@@ -265,7 +265,7 @@ public class PluginRules implements Rules {
      * Clear all rules.
      */
     public void clear() {
-        decoratedRules_.clear();
+        decoratedRules.clear();
     }
     
     /**
@@ -291,7 +291,7 @@ public class PluginRules implements Rules {
      * method.
      * <p>
      * If we have encountered the start of a PluginCreateRule and have not
-     * yet encountered the end tag, then the currPluginCreateRule_ attribute
+     * yet encountered the end tag, then the currPluginCreateRule attribute
      * will be non-null. In this case, we just return this rule object as the
      * sole match. The calling Digester will then invoke the begin/body/end
      * methods on this rule, which are responsible for invoking all rules
@@ -302,7 +302,7 @@ public class PluginRules implements Rules {
      * @param pattern Nesting pattern to be matched
      */
     public List match(String namespaceURI, String pattern) {
-        Log log = LogUtils.getLogger(digester_);
+        Log log = LogUtils.getLogger(digester);
         boolean debug = log.isDebugEnabled();
         
         if (debug) {
@@ -312,19 +312,19 @@ public class PluginRules implements Rules {
         }
 
         List matches;
-        if ((currPluginCreateRule_ != null) && 
-            (pattern.length() > currPluginCreateRule_.getPattern().length())) {
+        if ((currPluginCreateRule != null) && 
+            (pattern.length() > currPluginCreateRule.getPattern().length())) {
             // assert pattern.startsWith(currPluginCreateRule.getPattern())
             if (debug) {
                 log.debug(
                     "Pattern [" + pattern + "] matching PluginCreateRule " 
-                    + currPluginCreateRule_.toString());
+                    + currPluginCreateRule.toString());
             }
             matches = new ArrayList(1);
-            matches.add(currPluginCreateRule_);
+            matches.add(currPluginCreateRule);
         }
         else {
-            matches = decoratedRules_.match(namespaceURI, pattern); 
+            matches = decoratedRules.match(namespaceURI, pattern); 
         }
 
         return matches;
@@ -340,12 +340,12 @@ public class PluginRules implements Rules {
      * endPlugin method is called.
      */
     public void beginPlugin(PluginCreateRule pcr) {
-        Log log = LogUtils.getLogger(digester_);
+        Log log = LogUtils.getLogger(digester);
         boolean debug = log.isDebugEnabled();
 
-        if (currPluginCreateRule_ != null) {
+        if (currPluginCreateRule != null) {
             throw new PluginAssertionFailure(
-                "endPlugin called when currPluginCreateRule_ is not null.");
+                "endPlugin called when currPluginCreateRule is not null.");
         }
 
         if (debug) {
@@ -354,7 +354,7 @@ public class PluginRules implements Rules {
                 + " on rules object " + this.toString());
         }
 
-        currPluginCreateRule_ = pcr;
+        currPluginCreateRule = pcr;
     }
     
     /**
@@ -362,20 +362,20 @@ public class PluginRules implements Rules {
      * See {@link #beginPlugin}.
      */
     public void endPlugin(PluginCreateRule pcr) {
-        Log log = LogUtils.getLogger(digester_);
+        Log log = LogUtils.getLogger(digester);
         boolean debug = log.isDebugEnabled();
 
-        if (currPluginCreateRule_ == null) {
+        if (currPluginCreateRule == null) {
             throw new PluginAssertionFailure(
-                "endPlugin called when currPluginCreateRule_ is null.");
+                "endPlugin called when currPluginCreateRule is null.");
         }
         
-        if (currPluginCreateRule_ != pcr) {
+        if (currPluginCreateRule != pcr) {
             throw new PluginAssertionFailure(
-                "endPlugin called with unexpected PluginCreateRule_.");
+                "endPlugin called with unexpected PluginCreateRule instance.");
         }
         
-        currPluginCreateRule_ = null;
+        currPluginCreateRule = null;
         if (debug) {
             log.debug(
                 "Leaving PluginCreateRule " + pcr.toString()

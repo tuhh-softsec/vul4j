@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/InitializableRule.java,v 1.3 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/InitializableRule.java,v 1.4 2003/11/16 22:37:35 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/16 22:37:35 $
  *
  * ====================================================================
  * 
@@ -78,9 +78,10 @@ public interface InitializableRule {
      * 
      * @param pattern is the digester match pattern that will trigger this
      *        rule.
-     * @exception PluginConfigurationException is thrown if the InitializableRule determines that
-     *            it cannot correctly initialise itself for any reason.
+     * @exception
+     *  PluginConfigurationException is thrown if the InitializableRule 
+     *  determines that it cannot correctly initialise itself for any reason.
      */
     public void postRegisterInit(String pattern)
-    throws PluginConfigurationException;
+                                 throws PluginConfigurationException;
 }

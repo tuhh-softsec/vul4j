@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginManager.java,v 1.4 2003/10/28 23:31:08 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2003/10/28 23:31:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginManager.java,v 1.5 2003/11/16 22:37:35 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/16 22:37:35 $
  *
  * ====================================================================
  * 
@@ -80,13 +80,13 @@ import org.apache.commons.logging.Log;
 public class PluginManager {
 
     /** Map of classname->Declaration */
-    private HashMap declarationsByClass_ = new HashMap();
+    private HashMap declarationsByClass = new HashMap();
 
     /** Map of id->Declaration  */
-    private HashMap declarationsById_ = new HashMap();
+    private HashMap declarationsById = new HashMap();
 
     /** the parent manager to which this one may delegate lookups. */
-    private PluginManager parent_;
+    private PluginManager parent;
 
     //------------------- constructors ---------------------------------------
     
@@ -96,7 +96,7 @@ public class PluginManager {
 
     /** Constructor. */
     public PluginManager(PluginManager parent) {
-        parent_ = parent;
+        this.parent = parent;
     }
     
     //------------------- methods --------------------------------------------
@@ -117,10 +117,10 @@ public class PluginManager {
         Class pluginClass = decl.getPluginClass();
         String id = decl.getId();
         
-        declarationsByClass_.put(pluginClass.getName(), decl);
+        declarationsByClass.put(pluginClass.getName(), decl);
             
         if (id != null) {
-            declarationsById_.put(id, decl);
+            declarationsById.put(id, decl);
             if (debug) {
                 log.debug(
                     "Indexing plugin-id [" + id + "]"
@@ -135,10 +135,10 @@ public class PluginManager {
      */
     public Declaration getDeclarationByClass(String className) {
         Declaration decl = 
-            (Declaration) declarationsByClass_.get(className);
+            (Declaration) declarationsByClass.get(className);
             
-        if ((decl == null) && (parent_ != null)) {
-            decl = parent_.getDeclarationByClass(className);
+        if ((decl == null) && (parent != null)) {
+            decl = parent.getDeclarationByClass(className);
         }
 
         return decl;
@@ -152,10 +152,10 @@ public class PluginManager {
      *@return The declaration value
      */
     public Declaration getDeclarationById(String id) {
-        Declaration decl = (Declaration) declarationsById_.get(id);
+        Declaration decl = (Declaration) declarationsById.get(id);
 
-        if ((decl == null) && (parent_ != null)) {
-            decl = parent_.getDeclarationById(id);
+        if ((decl == null) && (parent != null)) {
+            decl = parent.getDeclarationById(id);
         }
 
         return decl;

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Declaration.java,v 1.6 2003/11/02 23:26:59 rdonkin Exp $
- * $Revision: 1.6 $
- * $Date: 2003/11/02 23:26:59 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Declaration.java,v 1.7 2003/11/16 22:37:35 rdonkin Exp $
+ * $Revision: 1.7 $
+ * $Date: 2003/11/16 22:37:35 $
  *
  * ====================================================================
  * 
@@ -85,31 +85,31 @@ public class Declaration {
     public final static String DFLT_RULE_METHOD_NAME = "addRules";
    
     /** The class of the object to be instantiated. */
-    private Class pluginClass_;
+    private Class pluginClass;
 
     /** The name of the class of the object to be instantiated. */
-    private String pluginClassName_;
+    private String pluginClassName;
     
     /** See {@link #setId}. */ 
-    private String id_;
+    private String id;
     
     /** See {@link #setRuleMethod}. */
-    private String ruleMethodName_ = DFLT_RULE_METHOD_NAME;
+    private String ruleMethodName = DFLT_RULE_METHOD_NAME;
     
     /** See {@link #setRuleClass}. */ 
-    private Class ruleClass_;
+    private Class ruleClass;
     
     /** See {@link #setRuleResource}. */
-    private String ruleResource_;
+    private String ruleResource;
     
     /** See {@link #setRuleFile}. */
-    private File ruleFile_;
+    private File ruleFile;
     
     /** See {@link #setAutoSetProperties}. */
-    private boolean autoSetProperties_ = true;
+    private boolean autoSetProperties = true;
 
     /** See {@link #init}. */
-    private boolean initialised_ = false;
+    private boolean initialized = false;
     
     //---------------------- constructors ----------------------------------
 
@@ -117,15 +117,15 @@ public class Declaration {
      * Constructor.
      */
     public Declaration(Class pluginClass) {
-        pluginClass_ = pluginClass;
-        pluginClassName_ = pluginClass_.getName();
+        this.pluginClass = pluginClass;
+        this.pluginClassName = pluginClass.getName();
     }
     
     /**
      * Constructor.
      */
     public Declaration(String pluginClassName) {
-        pluginClassName_ = pluginClassName;
+        this.pluginClassName = pluginClassName;
     }
     
     //---------------------- properties -----------------------------------
@@ -135,14 +135,14 @@ public class Declaration {
      * For plugins declared "in-line", the id is null.
      */
     public void setId(String id) {
-        id_ = id;
+        this.id = id;
     }
     
     /** 
      * Sets the name of a method which defines custom rules. May be null. 
      */
     public void setRuleMethod(String ruleMethodName) {
-        ruleMethodName_ = ruleMethodName;
+        this.ruleMethodName = ruleMethodName;
     }
     
     /** 
@@ -150,7 +150,7 @@ public class Declaration {
      * for the plugin class. May be null. 
      */
     public void setRuleClass(Class ruleClass) {
-        ruleClass_ = ruleClass;
+        this.ruleClass = ruleClass;
     }
     
     /**
@@ -158,7 +158,7 @@ public class Declaration {
      * specifications of custom rules for the plugin class. May be null.
      */
     public void setRuleResource(String ruleResource) {
-        ruleResource_ = ruleResource;
+        this.ruleResource = ruleResource;
     }
     
     /**
@@ -166,12 +166,12 @@ public class Declaration {
      * for the plugin class. May be null.
      */
     public void setRuleFile(File ruleFile) {
-        ruleFile_ = ruleFile;
+        this.ruleFile = ruleFile;
     }
     
     /** See {@link #autoSetProperties}. */
     public void setAutoSetProperties(boolean autoSetProperties) {
-        autoSetProperties_ = autoSetProperties;
+        this.autoSetProperties = autoSetProperties;
     }
     
     /**
@@ -180,7 +180,7 @@ public class Declaration {
      * @return The id value. May be null.
      */
     public String getId() {
-        return id_;
+        return id;
     }
 
     /**
@@ -189,7 +189,7 @@ public class Declaration {
      * @return The pluginClass.
      */
     public Class getPluginClass() {
-        return pluginClass_;
+        return pluginClass;
     }
 
     /**
@@ -198,7 +198,7 @@ public class Declaration {
      * @return The ruleClass value. May be null.
      */
     public Class getRuleClass() {
-        return ruleClass_;
+        return ruleClass;
     }
 
     /**
@@ -212,7 +212,7 @@ public class Declaration {
      * @return true if SetPropertiesRule is automatically applied.
      */
     public boolean autoSetProperties() {
-        return autoSetProperties_;
+        return autoSetProperties;
     }
 
     //---------------------- methods -----------------------------------
@@ -221,30 +221,28 @@ public class Declaration {
      * Must be called exactly once, and must be called before any call
      * to the configure method.
      */
-    public void init(Digester digester)
-    throws PluginWrappedException {
+    public void init(Digester digester) throws PluginWrappedException {
         Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();
         if (debug) {
             log.debug("init being called!");
         }
         
-        if (initialised_) {
+        if (initialized) {
             throw new PluginAssertionFailure("Init called multiple times.");
         }
 
-        if ((pluginClass_ == null) && (pluginClassName_ != null)) {
+        if ((pluginClass == null) && (pluginClassName != null)) {
             try {
                 // load the plugin class object
-                pluginClass_ = 
-                    digester.getClassLoader().loadClass(pluginClassName_);
-            }
-            catch(ClassNotFoundException cnfe) {
+                pluginClass = 
+                    digester.getClassLoader().loadClass(pluginClassName);
+            } catch(ClassNotFoundException cnfe) {
                 throw new PluginWrappedException(
-                    "Unable to load class " + pluginClassName_, cnfe);
+                    "Unable to load class " + pluginClassName, cnfe);
             }
         }
-        initialised_ = true;        
+        initialized = true;        
     }
     
     /**
@@ -293,36 +291,35 @@ public class Declaration {
      */
      
     public void configure(Digester digester, String pattern)
-    throws PluginWrappedException {
+                          throws PluginWrappedException {
         Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();
         if (debug) {
             log.debug("configure being called!");
         }
         
-        if (!initialised_) {
-            throw new PluginAssertionFailure("Not initialised.");
+        if (!initialized) {
+            throw new PluginAssertionFailure("Not initialized.");
         }
         
         // load from explicit file
-        if (ruleFile_ != null) {
+        if (ruleFile != null) {
             InputStream is = null;
             try {
-                is = new FileInputStream(ruleFile_);
-            }
-            catch(IOException ioe) {
+                is = new FileInputStream(ruleFile);
+            } catch(IOException ioe) {
                 throw new PluginWrappedException(
-                    "Unable to process file [" + ruleFile_ + "]", ioe);
+                    "Unable to process file [" + ruleFile + "]", ioe);
             }
             loadRulesFromStream(is, digester, pattern);
             return;
         }
         
         // load from explicit resource in classpath
-        if (ruleResource_ != null) {
+        if (ruleResource != null) {
             InputStream is = 
-                pluginClass_.getClassLoader().getResourceAsStream(
-                    ruleResource_);
+                pluginClass.getClassLoader().getResourceAsStream(
+                    ruleResource);
             if (is != null) {
                 loadRulesFromStream(is, digester, pattern);
                 return;
@@ -330,8 +327,8 @@ public class Declaration {
         }
 
         // load via method on explicit Rule Class        
-        if (ruleClass_ != null) {
-            loadRulesFromClass(ruleClass_, digester, pattern);
+        if (ruleClass != null) {
+            loadRulesFromClass(ruleClass, digester, pattern);
             return;
         }
 
@@ -339,7 +336,7 @@ public class Declaration {
         {
             Class[] paramSpec = { Digester.class, String.class };
             Method ruleMethod = MethodUtils.getAccessibleMethod(
-                pluginClass_, ruleMethodName_, paramSpec);
+                pluginClass, ruleMethodName, paramSpec);
             if (ruleMethod != null) 
             {
                 try {
@@ -347,8 +344,8 @@ public class Declaration {
                     Object none = ruleMethod.invoke(null, params);
                 } catch (Exception e) {
                     throw new PluginWrappedException(
-                        "Unable to configure class [" + pluginClass_ + "]"
-                        + " using method [" + ruleMethodName_ + "]", e);
+                        "Unable to configure class [" + pluginClass + "]"
+                        + " using method [" + ruleMethodName + "]", e);
                 }
                 return;
             }
@@ -357,15 +354,14 @@ public class Declaration {
         // look for rule class
         {
             if (debug) {
-                log.debug("plugin class type:" + pluginClass_.getName());
+                log.debug("plugin class type:" + pluginClass.getName());
             }
-            String ruleClassName = pluginClass_.getName() + "RuleInfo";
+            String ruleClassName = pluginClass.getName() + "RuleInfo";
 
             Class ruleClass;
             try {
                 ruleClass = digester.getClassLoader().loadClass(ruleClassName);
-            }
-            catch(ClassNotFoundException cnfe) {
+            } catch(ClassNotFoundException cnfe) {
                 ruleClass = null;
             }
 
@@ -378,10 +374,10 @@ public class Declaration {
         // look for  resource
         {
             String resourceName = 
-                pluginClass_.getClass().getName().replace('.', '/')
+                pluginClass.getClass().getName().replace('.', '/')
                 + "RuleInfo.xml";
             InputStream is = 
-                pluginClass_.getClassLoader().getResourceAsStream(
+                pluginClass.getClassLoader().getResourceAsStream(
                     resourceName);
             if (is != null) {
                 loadRulesFromStream(is, digester, pattern);
@@ -390,7 +386,7 @@ public class Declaration {
         }
         
         // try autoSetProperties
-        if (autoSetProperties_) {
+        if (autoSetProperties) {
             if (debug) {
                 log.debug("adding autoset for pattern [" + pattern + "]");
             }
@@ -401,11 +397,9 @@ public class Declaration {
     /**
      * Load custom rules from a specified stream of xml data.
      */
-    private void loadRulesFromStream(
-    InputStream is, 
-    Digester digester,
-    String pattern) 
-    throws PluginWrappedException {
+    private void loadRulesFromStream(InputStream is, Digester digester,
+                                     String pattern) 
+                                     throws PluginWrappedException {
         try
         {
             throw new PluginAssertionFailure(
@@ -414,8 +408,7 @@ public class Declaration {
         finally {
             try {
                 is.close();
-            }
-            catch(IOException ioe) {
+            } catch(IOException ioe) {
                 Log log = digester.getLogger();
                 log.warn("Unable to close stream after reading rules", ioe);
             }
@@ -425,14 +418,12 @@ public class Declaration {
     /**
      * Load custom rules from a specified class.
      */
-    private void loadRulesFromClass(
-    Class ruleClass, 
-    Digester digester,
-    String pattern)
-    throws PluginWrappedException {
+    private void loadRulesFromClass(Class ruleClass, Digester digester,
+                                    String pattern)
+                                    throws PluginWrappedException {
         Class[] paramSpec = { Digester.class, String.class };
         Method ruleMethod = MethodUtils.getAccessibleMethod(
-            ruleClass, ruleMethodName_, paramSpec);
+            ruleClass, ruleMethodName, paramSpec);
         if (ruleMethod == null) {
             throw new PluginWrappedException(
                 "rule class specified, but rules method not found on it.");
@@ -442,9 +433,9 @@ public class Declaration {
             Object none = ruleMethod.invoke(null, params);
         } catch (Exception e) {
             throw new PluginWrappedException(
-                "Unable to configure class [" + pluginClass_ + "]"
-                + " using rule class [" + ruleClass_ + "]"
-                + " method [" + ruleMethodName_ + "]", e);
+                "Unable to configure class [" + pluginClass + "]"
+                + " using rule class [" + ruleClass + "]"
+                + " method [" + ruleMethodName + "]", e);
         } 
     }
     
@@ -457,13 +448,13 @@ public class Declaration {
      * @return true if the specified object has the same options as this one.
      */
     public boolean isEquivalent(Declaration d) {
-        if (different(id_, d.id_)) return false;
-        if (pluginClass_ != d.pluginClass_) return false;
-        if (different(ruleMethodName_, d.ruleMethodName_)) return false;
-        if (ruleClass_ != d.ruleClass_) return false;
-        if (different(ruleResource_, d.ruleResource_)) return false;
-        if (different(ruleFile_, d.ruleFile_)) return false;
-        if (autoSetProperties_ != d.autoSetProperties_) return false;
+        if (different(id, d.id)) return false;
+        if (pluginClass != d.pluginClass) return false;
+        if (different(ruleMethodName, d.ruleMethodName)) return false;
+        if (ruleClass != d.ruleClass) return false;
+        if (different(ruleResource, d.ruleResource)) return false;
+        if (different(ruleFile, d.ruleFile)) return false;
+        if (autoSetProperties != d.autoSetProperties) return false;
 
         // all significant fields match; these declarations are identical.
         return true;
