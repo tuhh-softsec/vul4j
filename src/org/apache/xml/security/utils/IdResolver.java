@@ -144,6 +144,9 @@ public class IdResolver {
             "I could find an Element using the advanced ds:Namespace searcher method: "
             + result.getTagName());
 
+         // register the ID to speed up further queries on that ID
+         IdResolver.registerElementById(result, id);
+
          return result;
       }
 
@@ -153,6 +156,9 @@ public class IdResolver {
          cat.debug(
             "I could find an Element using the advanced xenc:Namespace searcher method: "
             + result.getTagName());
+
+         // register the ID to speed up further queries on that ID
+         IdResolver.registerElementById(result, id);
 
          return result;
       }
@@ -164,6 +170,21 @@ public class IdResolver {
             "I could find an Element using the advanced SOAP-SEC:id searcher method: "
             + result.getTagName());
 
+         // register the ID to speed up further queries on that ID
+         IdResolver.registerElementById(result, id);
+
+         return result;
+      }
+
+      result = IdResolver.getElementByIdInXKMSNamespace(doc, id);
+
+      if (result != null) {
+         cat.debug("I could find an Element using the XKMS searcher method: "
+                   + result.getTagName());
+
+         // register the ID to speed up further queries on that ID
+         IdResolver.registerElementById(result, id);
+
          return result;
       }
 
@@ -174,6 +195,7 @@ public class IdResolver {
             "I could find an Element using the totally stupid and insecure Id/ID/id searcher method: "
             + result.getTagName());
 
+         // Don't register the ID, we're not sure
          return result;
       }
 
@@ -285,6 +307,53 @@ public class IdResolver {
                               "//*[@SOAP-SEC:id='" + id + "']", nscontext);
 
          return element;
+      } catch (TransformerException ex) {
+         cat.fatal("", ex);
+      }
+
+      return null;
+   }
+
+   /**
+    * Method getElementByIdInXKMSNamespace
+    *
+    * @param doc
+    * @param id
+    * @return
+    * @see http://www.w3c.org/2001/XKMS/Drafts/XKMS-20020410
+    */
+   private static Element getElementByIdInXKMSNamespace(Document doc,
+           String id) {
+
+      /*
+      xmlns:xkms="http://www.w3.org/2002/03/xkms#"
+
+      <attribute name="ID"                type="ID" use="optional"/>
+      <attribute name="OriginalRequestID" type="ID" use="optional"/>
+      <attribute name="RequestID"         type="ID" use="optional"/>
+      <attribute name="ResponseID"        type="ID" use="required"/>
+      */
+      cat.debug("getElementByIdInXKMSNamespace() Search for ID " + id);
+
+      try {
+         Element nscontext =
+            XMLUtils.createDSctx(doc, "xkms",
+                                 "http://www.w3.org/2002/03/xkms#");
+         String[] attrs = { "ID", "OriginalRequestID", "RequestID",
+                            "ResponseID" };
+
+         for (int i = 0; i < attrs.length; i++) {
+            String attr = attrs[i];
+            Element element = (Element) XPathAPI.selectSingleNode(doc,
+                                 "//xkms:*[@" + attr + "='" + id + "']",
+                                 nscontext);
+
+            if (element != null) {
+               return element;
+            }
+         }
+
+         return null;
       } catch (TransformerException ex) {
          cat.fatal("", ex);
       }
