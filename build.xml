@@ -716,23 +716,27 @@
 	</target>
 
     <!-- jars -->
-	<target name="build.jar"
-		depends="build.src,build.test,build.samples">
+	<target name="manifest">
 
 		<mkdir dir="${dir.manifest}"/>
 
 		<manifest file="${jar.manifest}" mode="replace">
-			<attribute name="Built-By" value="${user.name}"/>
-			<section name="${product.shortname}">
-				<attribute name="Implementation-Title" 
-					value="${product.Name}"/>
-				<attribute name="Implementation-Version" 
-					value="${product.Version} ${TODAY}"/>
-				<attribute name="Implementation-Vendor" 
-					value="Apache Software Foundation"/>
-			</section>
-		</manifest>
-		
+                        <attribute name="Built-By" value="${user.name}"/>
+                        <section name="${product.shortname}">
+                                <attribute name="Implementation-Title"
+                                        value="${product.Name}"/>
+                                <attribute name="Implementation-Version"
+                                        value="${product.Version} ${TODAY}"/>
+                                <attribute name="Implementation-Vendor"
+                                        value="Apache Software Foundation"/>
+                        </section>
+                </manifest>
+
+	</target>
+
+	<target name="build.jar"
+		depends="manifest,build.src,build.test,build.samples">
+
 		<!-- Main Library -->
 		<jar basedir="${dir.build.bin}" 
 			excludes="org/apache/xml/security/temp/**"
@@ -754,7 +758,19 @@
 			jarfile="${jar.tests}" 
 			manifest="${jar.manifest}"/>
 
-  </target>
+	</target>
+
+	<target name="build.src.jar"
+		depends="manifest,build.src">
+
+		<jar basedir="${dir.build.bin}" 
+			excludes="org/apache/xml/security/temp/**"
+			includes="**/LICENSE, **/NOTICE, org/apache/**, *.txt" 
+			jarfile="${jar.library}" 
+			manifest="${jar.manifest}"/>
+
+	</target>
+
 <!--
     <target name="build.jar"
             depends="env.mk.dirs" >
