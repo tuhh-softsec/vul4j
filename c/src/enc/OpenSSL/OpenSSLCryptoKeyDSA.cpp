@@ -198,6 +198,9 @@ bool OpenSSLCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 	dsa_sig->r = BN_dup(R);
 	dsa_sig->s = BN_dup(S);
 
+	BN_free(R);
+	BN_free(S);
+
 	unsigned char sigValTranslatedBuf[256];
 	unsigned char * sigValTranslated = sigValTranslatedBuf;
 	int sigValTranslatedLen;
