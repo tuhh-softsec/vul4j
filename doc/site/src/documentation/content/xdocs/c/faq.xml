@@ -82,6 +82,37 @@
 		</p>
 	  </answer>
 	</faq>
+	<faq id="elementorder">
+	  <question>
+		I sign a document and when I try to verify using the same key, it fails
+	  </question>
+	  <answer>
+		<p>
+		  After you have created the XMLSignature object, before you sign the
+		  document, you <em>must</em> embed the signature element in the owning
+		  document (which is returned by the call to 
+		  <code>DSIGSignature::createBlankSignature(...)</code>) before
+		  calling the <code>DSIGSignature::sign()</code> method,
+		</p>
+		<p>
+		  During canonicalisation of the SignedInfo element, the library looks
+		  at the parent and ancestor nodes of the Signature element to find
+		  any namespaces that the SignedInfo node has inherited.  Any that are
+		  found are embedded in the canonical form of the SignedInfo.  (This
+		  is not true when Exclusive Canonicalisation is used, but it is still
+		  good practice to insert the element node prior to the sign()
+		  method being called).
+		</p>
+		<p>
+		  If you have not embedded the signature node in the document, it will
+		  not have any parent or ancestor nodes, so it will not inherit their
+		  namespaces.  If you then embed it in the document and call <code>
+			verify()</code>, the namespaces will be found and the canonical 
+		  form of SignedInfo will be different to that generated during 
+		  <code>sign()</code>.
+		</p>
+	  </answer>
+	</faq>
   </part>
 </faqs>
 

@@ -236,9 +236,57 @@
 	</p> 
       </answer>
     </faq>
+	<faq id="elementorder">
+	  <question>
+		I sign a document and when I try to verify using the same key, it fails
+	  </question>
+	  <answer>
+		<p>
+		  After you have created the XMLSignature object, before you sign the
+		  document, you <em>must</em> embed the signature element in the owning
+		  document (using a call to <code>XMLSignature.getElement()</code> to
+		  retrieve the newly created Element node from the signature) before
+		  calling the <code>XMLSignature.sign()</code> method,
+		</p>
+		<p>
+		  During canonicalisation of the SignedInfo element, the library looks
+		  at the parent and ancestor nodes of the Signature element to find
+		  any namespaces that the SignedInfo node has inherited.  Any that are
+		  found are embedded in the canonical form of the SignedInfo.  (This
+		  is not true when Exclusive Canonicalisation is used, but it is still
+		  good practice to insert the element node prior to the sign()
+		  method being called).
+		</p>
+		<p>
+		  If you have not embedded the signature node in the document, it will
+		  not have any parent or ancestor nodes, so it will not inherit their
+		  namespaces.  If you then embed it in the document and call <code>
+			verify()</code>, the namespaces will be found and the canonical 
+		  form of SignedInfo will be different to that generated during 
+		  <code>sign()</code>.
+		</p>
+	  </answer>
+	</faq>
   </part>
 
 </faqs>
 
 
 
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->
