@@ -72,11 +72,14 @@ public:
 	static const XMLCh s_tagOpaqueClientData[];
 	static const XMLCh s_tagOpaqueData[];
 	static const XMLCh s_tagOriginalRequestId[];
+	static const XMLCh s_tagPending[];
+	static const XMLCh s_tagPendingRequest[];
 	static const XMLCh s_tagQueryKeyBinding[];
 	static const XMLCh s_tagRepresent[];
 	static const XMLCh s_tagRequestId[];
 	static const XMLCh s_tagRequestSignatureValue[];
 	static const XMLCh s_tagRespondWith[];
+	static const XMLCh s_tagResponseId[];
 	static const XMLCh s_tagResponseMechanism[];
 	static const XMLCh s_tagResult[];
 	static const XMLCh s_tagResultMajor[];

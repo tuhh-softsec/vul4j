@@ -375,6 +375,37 @@ const XMLCh XKMSConstants::s_tagOriginalRequestId[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagPending[] = {
+
+	chLatin_P,
+	chLatin_e,
+	chLatin_n,
+	chLatin_d,
+	chLatin_i,
+	chLatin_n,
+	chLatin_g,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagPendingRequest[] = {
+
+	chLatin_P,
+	chLatin_e,
+	chLatin_n,
+	chLatin_d,
+	chLatin_i,
+	chLatin_n,
+	chLatin_g,
+	chLatin_R,
+	chLatin_e,
+	chLatin_q,
+	chLatin_u,
+	chLatin_e,
+	chLatin_s,
+	chLatin_t,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagQueryKeyBinding[] = {
 
 	chLatin_Q,
@@ -462,6 +493,21 @@ const XMLCh XKMSConstants::s_tagRespondWith[] = {
 	chLatin_i,
 	chLatin_t,
 	chLatin_h,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagResponseId[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_s,
+	chLatin_p,
+	chLatin_o,
+	chLatin_n,
+	chLatin_s,
+	chLatin_e,
+	chLatin_I,
+	chLatin_d,
 	chNull
 };
 

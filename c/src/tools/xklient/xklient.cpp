@@ -40,6 +40,7 @@
 
 #include <xsec/xkms/XKMSCompoundRequest.hpp>
 #include <xsec/xkms/XKMSCompoundResult.hpp>
+#include <xsec/xkms/XKMSPendingRequest.hpp>
 #include <xsec/xkms/XKMSMessageAbstractType.hpp>
 #include <xsec/xkms/XKMSLocateRequest.hpp>
 #include <xsec/xkms/XKMSLocateResult.hpp>
@@ -858,12 +859,45 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 }
 
 // --------------------------------------------------------------------------------
+//           Create a PendingRequest
+// --------------------------------------------------------------------------------
+
+void printPendingRequestUsage(void) {
+
+	cerr << "\nUsage PendingRequest [--help|-h] <service URI> <OriginalRequestId> <ResponseId>\n";
+	cerr << "   --help/-h                : print this screen and exit\n\n";
+
+}
+
+XKMSMessageAbstractType * createPendingRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
+
+	if (paramCount +2 >= argc || 
+		(stricmp(argv[paramCount], "--help") == 0) ||
+		(stricmp(argv[paramCount], "-h") == 0)) {
+
+		printPendingRequestUsage();
+		return NULL;
+	}
+
+	/* First create the basic request */
+	XKMSMessageFactory * factory = 
+		prov.getXKMSMessageFactory();
+	XKMSPendingRequest * pr = 
+		factory->createPendingRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
+
+	pr->setOriginalRequestId(MAKE_UNICODE_STRING(argv[paramCount++]));
+	pr->setResponseId(MAKE_UNICODE_STRING(argv[paramCount++]));
+
+	return pr;
+}
+
+// --------------------------------------------------------------------------------
 //           Create a CompoundRequest
 // --------------------------------------------------------------------------------
 
 void printCompoundRequestUsage(void) {
 
-	cerr << "\nUsage CompoundRequest [--help|-h] <service URI> <LocateRequest|ValidateRequest> .... [-- LocateRequest|ValidateRequest]*\n";
+	cerr << "\nUsage CompoundRequest [--help|-h] <service URI> <LocateRequest|ValidateRequest> .... [-- LocateRequest|ValidateRequest|PendingRequest]*\n";
 	cerr << "   --help/-h                : print this screen and exit\n\n";
 
 }
@@ -1487,7 +1521,7 @@ int doMsgCreate(int argc, char ** argv, int paramCount) {
 
 void printDoRequestUsage(void) {
 
-	cerr << "\nUsage request [options] {CompoundRequest|LocateRequest|ValidateRequest} [msg specific options]\n";
+	cerr << "\nUsage request [options] {CompoundRequest|LocateRequest|ValidateRequest|PendingRequest} [msg specific options]\n";
 	cerr << "   --help/-h       : Print this screen and exit\n";
 	cerr << "   --two-phase/-t  : Indicate Two-Phase support in the request message\n\n";
 
@@ -1540,6 +1574,23 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			paramCount++;
 			XKMSValidateRequest * r = 
 				dynamic_cast<XKMSValidateRequest *> (createValidateRequest(prov, &doc, argc, argv, paramCount));
+
+			if (r == NULL) {
+				return -1;
+			}
+			if (twoPhase)
+				r->appendResponseMechanismItem(XKMSConstants::s_tagRepresent);
+
+			msg = r;
+			parmsDone = true;
+
+		}
+		else if ((stricmp(argv[paramCount], "PendingRequest") == 0) ||
+			(stricmp(argv[paramCount], "pr") == 0)) {
+
+			paramCount++;
+			XKMSPendingRequest * r = 
+				dynamic_cast<XKMSPendingRequest *> (createPendingRequest(prov, &doc, argc, argv, paramCount));
 
 			if (r == NULL) {
 				return -1;
@@ -1819,8 +1870,12 @@ void printUsage(void) {
 	cerr << "     msgdump   : Read an XKMS message and print details\n";
 	cerr << "     msgcreate : Create a message of type :\n";
 	cerr << "                 LocateRequest\n";
+	cerr << "                 ValidateRequest\n";
+	cerr << "                 PendingRequest\n";
 	cerr << "     request   : Create message of type : \n";
 	cerr << "                 LocateRequest\n";
+	cerr << "                 ValidateRequest\n";
+	cerr << "                 PendingRequest\n";
 	cerr << "                 send to service URI and output result\n\n";
 	cerr << "     Where options are :\n\n";
 	cerr << "     --text/-t\n";

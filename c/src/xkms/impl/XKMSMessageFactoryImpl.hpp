@@ -76,6 +76,16 @@ public:
 		const XMLCh * service,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		const XMLCh * id = NULL);
+	virtual XKMSPendingRequest * createPendingRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		const XMLCh * id = NULL);
+	virtual XKMSPendingRequest * createPendingRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL);
+
+
 	virtual XKMSLocateResult * createLocateResult(
 		XKMSLocateRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,

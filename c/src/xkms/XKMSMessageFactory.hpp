@@ -41,6 +41,7 @@ class XKMSRequestAbstractType;
 class XKMSResult;
 class XKMSValidateRequest;
 class XKMSValidateResult;
+class XKMSPendingRequest;
 
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
@@ -224,6 +225,47 @@ public:
 	 */
 
 	virtual XKMSValidateRequest * createValidateRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<PendingRequest\> message.
+	 * 
+	 * Generates a new PendingRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Document to create the DOM structure within.  The caller
+	 * will need to embed the DOM structure at the appropriate place in the
+	 * document (using a call to getElement to find the top level element)
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSPendingRequest structure
+	 */
+
+	virtual XKMSPendingRequest * createPendingRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL) = 0;
+		
+	/**
+	 * \brief Create a new \<PendingRequest\> message and surrounding document
+	 * 
+	 * Generates a new PendingRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSPendingRequest structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleting the PendingRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSPendingRequest * createPendingRequest(
 		const XMLCh * service,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		const XMLCh * id = NULL) = 0;

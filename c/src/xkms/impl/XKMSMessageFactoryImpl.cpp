@@ -40,6 +40,7 @@
 #include "XKMSResultImpl.hpp"
 #include "XKMSValidateRequestImpl.hpp"
 #include "XKMSValidateResultImpl.hpp"
+#include "XKMSPendingRequestImpl.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -236,6 +237,19 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 	}
 
+	else if (strEquals(name, XKMSConstants::s_tagPendingRequest)) {
+
+		// This is a <PendingRequest> message
+		XKMSPendingRequestImpl * ret;
+		XSECnew(ret, XKMSPendingRequestImpl(new XSECEnv(*mp_env), elt));
+		Janitor<XKMSPendingRequestImpl> j_ret(ret);
+
+		ret->load();
+		
+		j_ret.release();
+		return ret;
+
+	}
 
 	return NULL;
 
@@ -361,6 +375,46 @@ XKMSValidateRequest * XKMSMessageFactoryImpl::createValidateRequest(
 	(*doc)->appendChild(vri->getElement());
 
 	return vri;
+}
+
+XKMSPendingRequest * XKMSMessageFactoryImpl::createPendingRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id) {
+	
+	XKMSPendingRequestImpl * pri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(pri, XKMSPendingRequestImpl(tenv));
+	pri->createBlankPendingRequest(service, id);
+
+	return pri;
+
+}
+
+
+XKMSPendingRequest * XKMSMessageFactoryImpl::createPendingRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id) {
+
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSPendingRequest * pri = createPendingRequest(service, *doc, id);
+	(*doc)->appendChild(pri->getElement());
+
+	return pri;
 }
 
 // --------------------------------------------------------------------------------
@@ -553,17 +607,18 @@ XKMSRequestAbstractType * XKMSMessageFactoryImpl::toRequestAbstractType(XKMSMess
 	if (msg->getMessageType() == XKMSMessageAbstractType::LocateRequest) {
 		XKMSLocateRequest * lr = dynamic_cast<XKMSLocateRequest*>(msg);
 		return lr;
-
 	}
 	if (msg->getMessageType() == XKMSMessageAbstractType::ValidateRequest) {
 		XKMSValidateRequest * vr = dynamic_cast<XKMSValidateRequest*>(msg);
 		return vr;
-
 	}
 	if (msg->getMessageType() == XKMSMessageAbstractType::CompoundRequest) {
 		XKMSCompoundRequest * cr = dynamic_cast<XKMSCompoundRequest*>(msg);
 		return cr;
-
+	}
+	if (msg->getMessageType() == XKMSMessageAbstractType::PendingRequest) {
+		XKMSPendingRequest * pr = dynamic_cast<XKMSPendingRequest*>(msg);
+		return pr;
 	}
 	return NULL;
 }
@@ -573,7 +628,6 @@ XKMSResultType * XKMSMessageFactoryImpl::toResultType(XKMSMessageAbstractType *m
 	if (msg->getMessageType() == XKMSMessageAbstractType::LocateResult) {
 		XKMSLocateResult * lr = dynamic_cast<XKMSLocateResult*>(msg);
 		return lr;
-
 	}
 	if (msg->getMessageType() == XKMSMessageAbstractType::ValidateResult) {
 		XKMSValidateResult * vr = dynamic_cast<XKMSValidateResult*>(msg);
