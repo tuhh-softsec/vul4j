@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -82,6 +80,25 @@
 #include <vector>
 
 class DSIGReference;
+
+/**
+ * @ingroup pubsig
+ * @{
+ */
+
+/**
+ * @brief Holds a list of reference elements.
+ *
+ * The library holds a Signature's list of references using this class.
+ * Manifest lists are similarly held.  Developers can obtain the 
+ * list from the Signature library using DSIGSignature::getReferenceList
+ * and then iterate through each reference.
+ *
+ * The library also uses the List as the owner of the memory associated
+ * with References.  So when a list is deleted, the references are deleted
+ * at the same time.
+ *
+ */
 
 class DSIG_EXPORT DSIGReferenceList {
 
@@ -99,30 +116,87 @@ public:
 	typedef size_t			size_type;
 #endif
 
-	// Constructors and Destructors
+	/** @name Constructors and Destructors */
+	//@{
+
+	/**
+	 * \brief Construct a list
+	 */
 
 	DSIGReferenceList();
 
+	/**
+	 * \brief Destroy a list.
+	 *
+	 * Standard destructor to close down the list.
+	 *
+	 * @note Destroys the references as well as the list
+	 */
+
 	~DSIGReferenceList();
 
-	// Actions
+	//@}
 
+	/** @name List manipulation */
+	//@{
+
+	/**
+	 * \brief Add a reference to the list
+	 *
+	 * Appends the reference to the end of the list and takes ownership
+	 * of associated memory.
+	 */
+	
 	void addReference(DSIGReference * ref);
+
+	/**
+	 * \brief Remove a reference from the list
+	 *
+	 * Removes the reference at the index point and returns a pointer
+	 * to the reference removed.
+	 *
+	 * @note This also releases ownership.  It is the responsibility of
+	 * the caller to ensure the reference is deleted.
+	 *
+	 * @note This does not currently delete the reference from the Signature 
+	 *
+	 * @param index Point in the list to remove
+	 */
+	
 	DSIGReference * removeReference(size_type index);
+
+	/**
+	 * \brief Return a reference from the list
+	 *
+	 * Gets the reference at point index in the list
+	 *
+	 * @param index The pointer into the list
+	 */
+
 	DSIGReference * item(size_type index);
-	//DSIGReference * getFirstReference(void);		// Iteration start
-	//DSIGReference * getNextReference(void);			// Iterator continue
+
+	/**
+	 * \brief Find the number of elements in the list
+	 *
+	 * @returns The number of elements in the list
+	 */
+
 	size_type	getSize();
 
+	/**
+	 * \brief Clear out the list
+	 *
+	 * Simply clears the list.  Does not delete the reference elements themselves.
+	 */
+	
 	bool empty();
 
-
-	// Get information
+	//@}
 
 private:
 
 	ReferenceListVectorType					m_referenceList;
-	//ReferenceListVectorType::iterator		m_iterator;
+
 };
 
 

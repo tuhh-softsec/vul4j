@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -106,46 +104,17 @@ DSIGReferenceList::size_type DSIGReferenceList::getSize() {
 
 DSIGReference * DSIGReferenceList::removeReference(size_type index) {
 
-	if (index < m_referenceList.size())
-		return m_referenceList[index];
+	DSIGReference * ret = NULL;
+	if (index < m_referenceList.size()) {
 
-	return NULL;
-
-}
-
-/*
-DSIGReference * DSIGReferenceList::getFirstReference() {
-
-	DSIGReference * retValue;
-
-	m_iterator = m_referenceList.begin();
-
-	if (m_iterator != m_referenceList.end()) {
-		
-		retValue = *m_iterator;
-		m_iterator++;
-		return retValue;
-
+		ret = m_referenceList[index];
+		m_referenceList.erase(m_referenceList.begin() + index - 1);
+	
 	}
 
-	return NULL;
+	return ret;
 
 }
-
-DSIGReference * DSIGReferenceList::getNextReference() {
-
-	DSIGReference * retValue;
-
-	if (m_iterator == m_referenceList.end())
-		return NULL;
-
-	retValue = *m_iterator;
-	m_iterator++;
-
-	return retValue;
-
-}
-*/
 
 DSIGReference * DSIGReferenceList::item(ReferenceListVectorType::size_type index) {
 

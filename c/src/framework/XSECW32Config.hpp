@@ -89,3 +89,4 @@
 
 /* Windows direct.h */
 #define HAVE_DIRECT_H 1
+

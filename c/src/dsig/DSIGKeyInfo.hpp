@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -83,11 +81,37 @@
 
 class DSIGSignature;
 
+/**
+ * @ingroup pubsig
+ * @{
+ */
+
+/**
+ * @brief Base class for <Key*> nodes in a KeyInfo list.
+ *
+ * Digital signatures can have a number of KeyInfo elements that are
+ * used to communicate information about what key to use between the
+ * signer and the validator.
+ *
+ * In the XML-Security-C libary, KeyInfo elements are only used for
+ * holding information about keys.  They do not in themselves perform
+ * any cryptographic function.
+ *
+ */
+
+
 class DSIG_EXPORT DSIGKeyInfo {
 
 public:
 
-	// To determine key type
+	/** 
+	 * \brief List of potential KeyInfo types
+	 *
+	 * The keyIntoType enumerated type defines the KeyInfo types known by
+	 * the XML-Security-C library.
+	 *
+	 */
+	 
 
 	enum keyInfoType {
 
@@ -99,31 +123,82 @@ public:
 
 	};
 
+public:
+
+	/** @name Constructors and Destructors */
+	//@{
+
+	/**
+	 * \brief Construct from an owning signature
+	 *
+	 * All KeyInfo types take a constructor that names the owning signature.
+	 *
+	 * @param sig The signature that owns this element
+	 */
+
+	DSIGKeyInfo(DSIGSignature * sig) {mp_keyInfoDOMNode = NULL; mp_parentSignature = sig;}
+
+	/**
+	 * \brief The Destructor
+	 */
+
+	virtual ~DSIGKeyInfo() {};
+
+	//@}
+
+	/** @name Get functions */
+	//@{
+
+	/**
+	 * \brief Return type
+	 *
+	 * Can be used to find what type of KeyInfo this is
+	 */
+
+	virtual keyInfoType getKeyInfoType(void) = 0;
+
+	/**
+	 * \brief Return the DOMNode that heads up this DOMNode
+	 */
+
+	virtual const DOMNode *getKeyInfoDOMNode() {return mp_keyInfoDOMNode;}
+
+	/**
+	 * \brief Return the name of this key
+	 *
+	 * For those KeyInfo types that have a keyname, this function should return
+	 * it.  For certificates, this may be the DN.
+	 *
+	 * @returns A pointer to a buffer containing the name
+	 */
+
+	virtual const XMLCh * getKeyName(void) = 0;
+
+	//@}
+
+	/** @name Load and Set */
+	//@{
+
+	/**
+	 * \brief Load the DOM structures.
+	 *
+	 * Used by the library to instruct the object to load information from
+	 * the DOM nodes
+	 */
+
+	virtual void load() = 0;
 
 protected:
 
 	DOMNode						* mp_keyInfoDOMNode;
 	DSIGSignature				* mp_parentSignature;
 
-public:
-
-	DSIGKeyInfo(DSIGSignature * sig) {mp_keyInfoDOMNode = NULL; mp_parentSignature = sig;}
-	virtual ~DSIGKeyInfo() {};
-
-	// Methods to get information
-
-	virtual keyInfoType getKeyInfoType(void) = 0;
-	virtual const DOMNode *getKeyInfoDOMNode() {return mp_keyInfoDOMNode;}
-	virtual const XMLCh * getKeyName(void) = 0;
-
-	// Load/Set
-
-	virtual void load() = 0;
-
 private:
 	DSIGKeyInfo();
 
 };
+
+/** @} */
 
 
 

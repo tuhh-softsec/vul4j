@@ -89,46 +89,195 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
 class DSIGSignature;
 
+/**
+ * @ingroup pubsig
+ * @{
+ */
+
+/**
+ * @brief Constructs and holds a SignedInfo.
+ *
+ * The <SignedInfo> node is the container for all the information
+ * that is signed.  It contains the ReferenceList and information
+ * on the signature and canonicalisation method for the signature.
+ *
+ * Generally this class should not be manipulated directly.
+ *
+ */
+
 class DSIGSignedInfo {
 
 public:
 
-	// Constructors and Destructors
+	/** @name Constructors and Destructors */
+	//@{
+
+	/**
+	 * \brief Constructor for existing nodes
+	 *
+	 * Called by the library to construct a SignedInfo in cases
+	 * where the DOM Nodes exist and need to be loaded
+	 *
+	 * @param doc The document containing the structure to be loaded
+	 * @param pFormatter A safeBuffer formatter that will translate to UTF-8
+	 * @param signedInfoNode The node at the top of the SignedInfo tree fragment
+	 * @param parentSignature The signature that owns me
+	 */
 
 	DSIGSignedInfo(DOMDocument *doc, 
 		XSECSafeBufferFormatter * pFormatter, 
 		DOMNode *signedInfoNode,
 		DSIGSignature * parentSignature);
 
-	// For a blank signature
+
+	/**
+	 * \brief Constructor for building from scratch
+	 *
+	 * Will set up the class in preparation for building the 
+	 * DOM structure 
+	 *
+	 * @param doc The document to use to construct
+	 * @param pFormatter Formatter to use to translate to UTF-8
+	 * @param parentSignature The owning Signature
+	 */
 
 	DSIGSignedInfo(DOMDocument *doc,
 				XSECSafeBufferFormatter * pFormatter, 
 				DSIGSignature * parentSignature);
 
+	/**
+	 * \brief Destructur
+	 * 
+	 * Delete - but does not destroy the DOM Nodes
+	 *
+	 */
+
 	~DSIGSignedInfo();
 
-	// Actions
+	//@}
 
-	void load(void);				// Load the signed info from the DOM source
+	/** @name Create and Set */
+	//@{
+
+	/**
+	 * \brief Load from DOM
+	 *
+	 * Load the SignedInfo from the DOM Document
+	 *
+	 * Does not do any verification of signatures or references - 
+	 * simply loads the values
+	 */
+
+	void load(void);
+
+	/**
+	 * \brief Verify the SignedInfo
+	 *
+	 * Validates each reference contained in the SignedInfo.  Does not
+	 * validate the signature itself - this is done by DSIGSignature
+	 *
+	 * @param errStr The safeBuffer that error messages should be written to.
+	 */
+
 	bool verify(safeBuffer &errStr);
+
+	/**
+	 * \brief Hash the reference list
+	 *
+	 * Goes through each reference in the SignedInfo (including referenced
+	 * manifests), performs the digest operation and adds the digest
+	 * to the reference element
+	 */
+
 	void hash(void);				// Setup hashes for each Reference element
 
-	// Get information
+	/**
+	 * \brief Create an empty SignedInfo
+	 *
+	 * Creates the DOM structure for a SignedInfo
+	 *
+	 * Builds the DOM structures and sets the control
+	 * structures of the SignedInfo
+	 *
+	 * @param cm The canonicalisation method to set the SignedInfo as
+	 * @param sm Signature Method to use
+	 * @param hm Hash method to use (for the SignedInfo, not the references)
+	 */
 
-	DOMNode *getDOMNode(void);
-	canonicalizationMethod getCanonicalizationMethod(void);
-	hashMethod getHashMethod(void);
-	signatureMethod getSignatureMethod(void);
-	int getHMACOutputLength(void);
-	DSIGReferenceList *getReferenceList (void) {return mp_referenceList;}
-
-	// Creation
 	DOMElement *createBlankSignedInfo(canonicalizationMethod cm,
 			signatureMethod	sm,
 			hashMethod hm);
+
+	/**
+	 * \brief Create a reference to add to the SignedInfo
+	 *
+	 * Called by DSIGSignature to create and enter a new reference element
+	 *
+	 * @param URI What the reference references
+	 * @param hm Digest method to use for the reference
+	 * @type Reference type
+	 */
+
 	DSIGReference * createReference(const XMLCh * URI,
 		hashMethod hm, char * type);
+
+	//@}
+
+	/** @name Getter functions */
+	//@{
+
+	/**
+	 * \brief Get the node pointing to the top of the DOM fragment
+	 *
+	 * @returns the SignedInfo node
+	 */
+
+	DOMNode *getDOMNode(void);
+
+	/**
+	 * \brief Get the canonicalisation method 
+	 * 
+	 * @returns Canonicalisation method
+	 */
+
+	canonicalizationMethod getCanonicalizationMethod(void);
+
+	/**
+	 * \brief Get the hash method
+	 *
+	 * @returns the Hash (digest) Method
+	 */
+
+	hashMethod getHashMethod(void);
+
+	/**
+	 * \brief Get the signature method
+	 *
+	 * @returns the Signature method
+	 */
+
+	signatureMethod getSignatureMethod(void);
+
+	/**
+	 * \brief Get HMAC length
+	 * 
+	 * HMAC signatures can be truncated to a nominated length.
+	 * This returns the length used.
+	 */
+
+	int getHMACOutputLength(void);
+
+	/**
+	 * \brief Return the list of references
+	 *
+	 * Returns a pointer to the object holding the references
+	 * contained in the SignedInfo
+	 */
+
+	DSIGReferenceList *getReferenceList (void) {return mp_referenceList;}
+
+	//@}
+
 
 private:
 
@@ -150,5 +299,6 @@ private:
 
 };
 
+/** @} */
 
 #endif /* DSIGSIGNEDINFO_INCLUDE */
