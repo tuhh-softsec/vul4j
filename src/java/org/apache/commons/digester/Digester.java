@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.27 2001/11/14 20:42:04 craigmcc Exp $
- * $Revision: 1.27 $
- * $Date: 2001/11/14 20:42:04 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.28 2001/11/18 21:53:24 craigmcc Exp $
+ * $Revision: 1.28 $
+ * $Date: 2001/11/18 21:53:24 $
  *
  * ====================================================================
  *
@@ -108,7 +108,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.27 $ $Date: 2001/11/14 20:42:04 $
+ * @version $Revision: 1.28 $ $Date: 2001/11/18 21:53:24 $
  */
 
 public class Digester extends DefaultHandler {
@@ -381,6 +381,20 @@ public class Digester extends DefaultHandler {
     public int getCount() {
 
 	return (stack.size());
+
+    }
+
+
+    /**
+     * Return the name of the XML element that is currently being processed.
+     */
+    public String getCurrentElementName() {
+
+        String elementName = match;
+        int lastSlash = elementName.lastIndexOf('/');
+        if (lastSlash >= 0)
+            elementName = elementName.substring(lastSlash + 1);
+        return (elementName);
 
     }
 
@@ -1459,6 +1473,7 @@ public class Digester extends DefaultHandler {
     public void addFactoryCreate(String pattern,
                                  ObjectCreationFactory creationFactory) {
 
+        creationFactory.setDigester(this);
         addRule(pattern,
                 new FactoryCreateRule(this, creationFactory));
 
