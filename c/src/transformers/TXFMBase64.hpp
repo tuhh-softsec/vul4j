@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -112,3 +110,4 @@ public:
 private:
 	TXFMBase64();
 };
+

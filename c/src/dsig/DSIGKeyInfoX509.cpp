@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -143,8 +141,6 @@ void DSIGKeyInfoX509::load(void) {
 		throw XSECException(XSECException::LoadEmptyX509);
 
 	}
-
-	XSECSafeBufferFormatter *formatter = mp_parentSignature->getSBFormatter();
 
 	if (!strEquals(getDSIGLocalName(mp_keyInfoDOMNode), "X509Data")) {
 
@@ -297,7 +293,7 @@ int DSIGKeyInfoX509::getCertificateListSize(void) {
 
 const XMLCh * DSIGKeyInfoX509::getCertificateItem(int item) {
 
-	if (item >=0 && item < m_X509List.size())
+	if (item >=0 && (unsigned int) item < m_X509List.size())
 		return m_X509List[item]->mp_encodedX509;
 
 	return 0;

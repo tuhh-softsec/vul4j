@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -140,3 +138,4 @@ private:  // Functions
 };
 
 #endif /* XSECNAMESPACEEXPANDER_HEADER */
+

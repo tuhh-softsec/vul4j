@@ -64,10 +64,8 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
+ * $Id$
  *
- * $LOG$
- *					 
  */
 
 // XSEC

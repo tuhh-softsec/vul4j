@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *					 
  */
 
@@ -174,3 +172,4 @@ private:
 };
 
 #endif /* XSECSAFEBUFFER_INCLUDE */
+

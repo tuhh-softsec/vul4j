@@ -85,7 +85,7 @@
 
 #include <memory.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 
 #include <xercesc/util/PlatformUtils.hpp>
@@ -104,6 +104,12 @@
 
 XALAN_USING_XALAN(XPathEvaluator)
 XALAN_USING_XALAN(XalanTransformer)
+
+using std::ostream;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::flush;
 
 #endif
 

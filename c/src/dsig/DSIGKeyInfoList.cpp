@@ -149,8 +149,6 @@ bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
 	if (ki == 0)
 		return false;
 
-	XSECSafeBufferFormatter *formatter = mp_parentSignature->getSBFormatter();
-
 	if (strEquals(getDSIGLocalName(ki), "X509Data")) {
 
 		DSIGKeyInfoX509 * k;

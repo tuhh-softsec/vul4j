@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *					 
  */
 
@@ -96,3 +94,4 @@ public :
 };
 
 #endif /* XSECPLATFORMUTILS_INCLUDE */
+

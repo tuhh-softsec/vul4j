@@ -75,7 +75,7 @@
 #include <cassert>
 
 #include <memory.h>
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 
 #include <xercesc/util/PlatformUtils.hpp>
@@ -133,6 +133,12 @@ XALAN_USING_XALAN(XalanTransformer)
  * Because of all the characters, it's easiest to put the entire program
  * in the Xerces namespace
  */
+
+using std::ostream;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::flush;
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -644,11 +650,11 @@ void outputHex(unsigned char * buf, int len) {
 //
 //	}
 
-	cout << hex;
+	cout << std::ios::hex;
 	for (int i = 0; i < len; ++i) {
 		cout << "0x" << (unsigned int) buf[i] << ", ";
 	}
-	cout << dec << endl;
+	cout << std::ios::dec << endl;
 
 }
 
@@ -809,9 +815,9 @@ count(ancestor-or-self::dsig:Signature)");
 		}
 		else {
 			cerr << "Failed" << endl;
-			const char * e = XMLString::transcode(sig->getErrMsgs());
+			char * e = XMLString::transcode(sig->getErrMsgs());
 			cout << e << endl;
-			delete [] (void *) e;
+			delete [] e;
 			exit(1);
 		}
 

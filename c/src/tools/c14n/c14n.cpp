@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -80,7 +78,7 @@
 
 #include <memory.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 
 #include <xercesc/util/PlatformUtils.hpp>
@@ -100,6 +98,10 @@ XSEC_USING_XERCES(XMLString);
 XSEC_USING_XERCES(XercesDOMParser);
 XSEC_USING_XERCES(XMLPlatformUtils);
 XSEC_USING_XERCES(DOMException);
+
+using std::endl;
+using std::cout;
+using std::cerr;
 
 void printUsage(void) {
 

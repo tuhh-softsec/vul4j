@@ -92,7 +92,8 @@
 
 #include <memory.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
+#include <fstream>
 #include <stdlib.h>
 
 #if defined(HAVE_UNISTD_H)
@@ -121,6 +122,12 @@ XSEC_USING_XERCES(XercesDOMParser);
 XSEC_USING_XERCES(XMLPlatformUtils);
 XSEC_USING_XERCES(XMLUri);
 
+using std::ios;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::ofstream;
+
 #ifndef XSEC_NO_XALAN
 
 // XALAN
@@ -132,8 +139,6 @@ XALAN_USING_XALAN(XPathEvaluator)
 XALAN_USING_XALAN(XalanTransformer)
 
 #endif
-
-#include <fstream.h>
 
 #ifdef XSEC_NO_XALAN
 
@@ -292,12 +297,12 @@ void outputter::output(const unsigned char * buf, unsigned int sz) {
 
 	if (m_cout || m_out.is_open() == false) {
 
-		cout.write(buf,sz);
+		cout.write((const char *) buf,sz);
 
 	}
 	else {
 
-		m_out.write(buf, sz);
+		m_out.write((const char *) buf, sz);
 
 	}
 
@@ -555,7 +560,7 @@ int main(int argc, char **argv) {
 
 	// Find any ':' and "\" characters
 	int lastSlash;
-	for (int i = 8; i < strlen(baseURI); ++i) {
+	for (unsigned int i = 8; i < strlen(baseURI); ++i) {
 		if (baseURI[i] == '\\') {
 			lastSlash = i;
 			baseURI[i] = '/';

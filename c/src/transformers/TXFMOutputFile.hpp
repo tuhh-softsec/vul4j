@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -76,7 +74,9 @@
 
 #include <xsec/transformers/TXFMBase.hpp>
 
-#include <fstream.h>
+#include <fstream>
+
+using std::ofstream;
 
 class DSIG_EXPORT TXFMOutputFile : public TXFMBase {
 

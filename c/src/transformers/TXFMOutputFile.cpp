@@ -100,6 +100,8 @@ bool TXFMOutputFile::setFile(char * const fileName) {
 
 	// Open a file for outputting
 
+	using std::ios;
+
 	f.open(fileName, ios::binary);
 
 	if (f.is_open())
@@ -142,7 +144,7 @@ unsigned int TXFMOutputFile::readBytes(XMLByte * const toFill, unsigned int maxT
 	sz = input->readBytes(toFill, maxToFill);
 
 	if (f.is_open())
-		f.write(toFill, sz);
+		f.write((char *) toFill, sz);
 
 	return sz;
 

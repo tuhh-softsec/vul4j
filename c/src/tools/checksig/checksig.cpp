@@ -66,20 +66,6 @@
  *
  * $Id$
  *
- * $Log$
- * Revision 1.7  2003/02/20 10:34:24  blautenb
- * Check for unistd.h
- *
- * Revision 1.6  2003/02/18 11:28:12  blautenb
- * Catch and clean up after Xalan exceptions
- *
- * Revision 1.5  2003/02/17 11:22:39  blautenb
- * Now handle relative file URIs in references
- *
- * Revision 1.4  2003/02/12 11:21:03  blautenb
- * UNIX generic URI resolver
- *
- *
  */
 
 // XSEC
@@ -106,7 +92,7 @@
 
 #include <memory.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 
 #if defined(HAVE_UNISTD_H)
@@ -138,6 +124,10 @@ XSEC_USING_XERCES(XMLPlatformUtils);
 XSEC_USING_XERCES(DOMException);
 XSEC_USING_XERCES(XMLUri);
 XSEC_USING_XERCES(Janitor);
+
+using std::cerr;
+using std::cout;
+using std::endl;
 
 #ifndef XSEC_NO_XALAN
 
@@ -329,9 +319,7 @@ int evaluate(int argc, char ** argv) {
 
 		// Find any ':' and "\" characters
 		int lastSlash;
-		for (int i = 8; i < strlen(baseURI); ++i) {
-//			if (path[i] == ':')
-//				path[i] = '|';
+		for (unsigned int i = 8; i < strlen(baseURI); ++i) {
 			if (baseURI[i] == '\\') {
 				lastSlash = i;
 				baseURI[i] = '/';

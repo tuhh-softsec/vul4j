@@ -104,7 +104,7 @@
 
 XSEC_USING_XERCES(Janitor);
 
-#include <iostream.h>
+#include <iostream>
 
 // --------------------------------------------------------------------------------
 //           Some useful strings
@@ -982,8 +982,6 @@ DSIGTransformList * DSIGReference::loadTransforms(
 							DOMNode *transformsNode,
 							XSECSafeBufferFormatter * formatter,
 							DSIGSignature * sig) {
-
-	DOMDocument *d = transformsNode->getOwnerDocument();
 
 	// This is defined as a static function, not because it makes use of any static variables
 	// in the DSIGReference class, but to neatly link it to the other users

@@ -141,6 +141,9 @@ objsuffix=".${OBJEXT}"
 
 package_version_major=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $1}'`
 
+# "cache" the check for gcc -E
+
+AC_TRY_CPP()
 
 # Checks for required libraries
 AC_CHECK_LIB(m, floor)
@@ -218,45 +221,45 @@ esac
 
 # Find Xerces
 
-# First "cache" the check for gcc -E
-
-AC_TRY_CPP()
-
 # Check for Xerces using XERCESCROOT (override any system version)
 
-OLDCPPFLAGS=$CPPFLAGS
-CPPFLAGS=["${CPPFLAGS} -I${XERCESCROOT}/src"]
+if test $XERCESCROOT; then
 
-AC_MSG_CHECKING([for Xerces 2.x headers in XERCESCROOT/src])
-AC_TRY_RUN([#include <xercesc/util/XercesVersion.hpp>
-int main(int argc, char **argv) {
-if (XERCES_VERSION_MAJOR < 2)
-return 1;
-else
-return 0;
-}],
-LDFLAGS="${LDFLAGS} -L${XERCESCROOT}/lib -lxerces-c"
-xerces_found=yes
-[AC_MSG_RESULT([found])],
-CPPFLAGS=$OLD_CPPFLAGS
-[AC_MSG_RESULT([no])])
+  OLDCPPFLAGS=$CPPFLAGS
+  CPPFLAGS=["${CPPFLAGS} -I${XERCESCROOT}/src"]
+
+  AC_MSG_CHECKING([for Xerces 2.x headers in XERCESCROOT/src])
+  AC_TRY_RUN([#include <xercesc/util/XercesVersion.hpp>
+    int main(int argc, char **argv) {
+      if (XERCES_VERSION_MAJOR < 2)
+        return 1;
+      else
+        return 0;
+    }],
+    LDFLAGS="${LDFLAGS} -L${XERCESCROOT}/lib -lxerces-c"
+    xerces_found=yes
+    [AC_MSG_RESULT([found])],
+    CPPFLAGS=$OLD_CPPFLAGS
+    [AC_MSG_RESULT([no])])
+
+fi
 
 if test -z $xerces_found ; then
 
-# Xerces was not found
+  # Xerces was not found
 
-AC_MSG_CHECKING([for Xerces 2.x headers in system includes])
+  AC_MSG_CHECKING([for Xerces 2.x headers in system includes])
 
-AC_TRY_RUN([#include <xercesc/util/XercesVersion.hpp>
-int main(int argc, char **argv) {
-if (XERCES_VERSION_MAJOR < 2)
-return 1;
-else
-return 0;
-}],
-LDFLAGS="${LDFLAGS} -lxerces-c"
-[AC_MSG_RESULT([found])],
-[AC_MSG_ERROR([Xerces 2.0 not found.  Ensure XERCESCROOT points to base directory of Xerces and Xerces 2.0 or later is available])])
+  AC_TRY_RUN([#include <xercesc/util/XercesVersion.hpp>
+    int main(int argc, char **argv) {
+      if (XERCES_VERSION_MAJOR < 2)
+        return 1;
+      else
+        return 0;
+    }],
+    LDFLAGS="${LDFLAGS} -lxerces-c"
+    [AC_MSG_RESULT([found])],
+    [AC_MSG_ERROR([Xerces 2.0 not found.  Ensure XERCESCROOT points to base directory of Xerces and Xerces 2.0 or later is available])])
 
 fi
 
@@ -264,37 +267,40 @@ fi
 
 if test "$use_xalan" = "yes" ; then
 
-AC_MSG_CHECKING([for Xalan headers in XALANCROOT])
+  if test $XALANCROOT; then
 
-OLD_CPPFLAGS=$CPPFLAGS
-CPPFLAGS=["${CPPFLAGS} -I${XALANCROOT}/src"]
+    AC_MSG_CHECKING([for Xalan headers in XALANCROOT])
 
-AC_TRY_CPP([#include <Include/PlatformDefinitions.hpp>], 
-   xalan_found=yes 
-   LDFLAGS="${LDFLAGS} -L${XALANCROOT}/lib -lxalan-c1_5_0"
-   [AC_MSG_RESULT([found])], 
-   CPPFLAGS=$OLD_CPPFLAGS
-   [AC_MSG_RESULT([no])]);
+    OLD_CPPFLAGS=$CPPFLAGS
+    CPPFLAGS=["${CPPFLAGS} -I${XALANCROOT}/src"]
 
+    AC_TRY_CPP([#include <Include/PlatformDefinitions.hpp>], 
+      xalan_found=yes 
+      LDFLAGS="${LDFLAGS} -L${XALANCROOT}/lib -lxalan-c1_5_0"
+      [AC_MSG_RESULT([found])], 
+      CPPFLAGS=$OLD_CPPFLAGS
+      [AC_MSG_RESULT([no])]);
 
-if test -z $xalan_found ; then
+  fi
 
-AC_MSG_CHECKING([for Xalan in system includes])
-AC_TRY_CPP([#include <Include/PlatformDefinitions.hpp>], 
-   xalan_found=yes 
-   LDFLAGS="${LDFLAGS} -lxalan-c1_5_0"
-   [AC_MSG_RESULT([found])],
-   [AC_DEFINE(XSEC_NO_XALAN)] 
-   [AC_MSG_RESULT([no - WARNING - configuring for no Xalan])]);
+  if test -z $xalan_found ; then
 
-fi
+    AC_MSG_CHECKING([for Xalan in system includes])
+    AC_TRY_CPP([#include <Include/PlatformDefinitions.hpp>], 
+      xalan_found=yes 
+      LDFLAGS="${LDFLAGS} -lxalan-c1_5_0"
+      [AC_MSG_RESULT([found])],
+      [AC_DEFINE(XSEC_NO_XALAN)] 
+      [AC_MSG_RESULT([no - WARNING - configuring for no Xalan])]);
+
+  fi
 
 else
 
-# NO_XALAN is defined - so we skip
+  # NO_XALAN is defined - so we skip
 
-AC_MSG_NOTICE([Warning - Xalan being configured out - XPath and XSLT will not be available])
-AC_DEFINE(XSEC_NO_XALAN)
+  AC_MSG_NOTICE([Warning - Xalan being configured out - XPath and XSLT will not be available])
+  AC_DEFINE(XSEC_NO_XALAN)
 
 fi
 

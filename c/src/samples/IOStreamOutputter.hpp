@@ -67,15 +67,19 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/XMLFormatter.hpp>
-#include <iostream.h>
+#include <iostream>
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ostream;
+using std::flush;
 
 // --------------------------------------------------------------------------------
 //           Much code taken from the DOMPrint Xerces example

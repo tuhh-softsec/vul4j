@@ -67,11 +67,6 @@
  *
  * $Id$
  *
- * $Log$
- * Revision 1.3  2003/02/09 11:26:50  blautenb
- * Fixed CVS Log/Id
- *
- *
  */
 
 //XSEC includes
@@ -114,7 +109,8 @@ XALAN_USING_XALAN(XercesWrapperNavigator)
 // General includes
 #include <stdlib.h>
 #include <string.h>
-#include <iostream.h>
+
+#include <iostream>
 
 
 // --------------------------------------------------------------------------------

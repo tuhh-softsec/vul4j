@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -235,3 +233,4 @@ private:
 
 
 #endif /* XSECXPATHNODELIST_INCLUDE */
+

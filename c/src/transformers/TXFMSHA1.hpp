@@ -110,3 +110,4 @@ public:
 private:
 	TXFMSHA1();
 };
+

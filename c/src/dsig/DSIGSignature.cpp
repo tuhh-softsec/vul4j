@@ -730,7 +730,7 @@ void DSIGSignature::load(void) {
 
 				// A reference to key information held elsewhere
 
-				const XMLCh * URI;
+				const XMLCh * URI = NULL;
 				TXFMBase * currentTxfm;
 
 				DOMNamedNodeMap *atts = tmpKI->getAttributes();

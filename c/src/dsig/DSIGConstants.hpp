@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -341,3 +339,4 @@ const XMLCh * canonicalizationMethod2UNICODEURI(canonicalizationMethod cm) {
 }
 
 #endif /* DSIGCONSTANTS_HEADER */
+

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -194,3 +192,4 @@ bool strEquals (const XMLCh * str1, const char * str2) {
 }
 
 #endif /* XSECDOMUTILS_HEADER */
+

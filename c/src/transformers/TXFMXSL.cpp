@@ -199,6 +199,8 @@ void TXFMXSL::evaluateStyleSheet(const safeBuffer &sbStyleSheet) {
 	// Set up iostreams for input
 	std::istrstream	theXMLStream((char *) sbInDoc.rawBuffer(), strlen((char *) sbInDoc.rawBuffer()));
 	std::istrstream	theXSLStream((char *) sbStyleSheet.rawBuffer(), strlen((char *) sbStyleSheet.rawBuffer()));
+	//std::istringstream	theXMLStream((char *) sbInDoc.rawBuffer(), strlen((char *) sbInDoc.rawBuffer()));
+	//std::istringstream	theXSLStream((char *) sbStyleSheet.rawBuffer(), strlen((char *) sbStyleSheet.rawBuffer()));
 
 	// Now resolve
 

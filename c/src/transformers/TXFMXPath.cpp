@@ -103,8 +103,9 @@ XALAN_USING_XALAN(XSLException)
 
 #endif
 
-#ifndef XSEC_NO_XPATH
-#include <ostream.h>
+#if !defined(XSEC_NO_XPATH)
+
+#include <iostream>
 
 #define KLUDGE_PREFIX "berindsig"
 
@@ -338,8 +339,7 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 
 		// Map the "here" node - but only if part of current document
 
-		bool haveHereNode;
-		XalanNode * hereNode;
+		XalanNode * hereNode = NULL;
 
 		if (h->getOwnerDocument() == document) {
 			
@@ -356,10 +356,7 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 				}
 
 			}
-			haveHereNode = true;
 		}
-		else
-			haveHereNode = false;
 
 		// Now work out what we have to set up in the new processing
 
@@ -471,7 +468,7 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 
 		// Install the External function in the Environment handler
 
-		if (haveHereNode) {
+		if (hereNode != NULL) {
 
 			xpesd.installExternalFunctionLocal(XalanDOMString(URI_ID_DSIG), XalanDOMString("here"), DSIGXPathHere(hereNode));
 

@@ -2544,78 +2544,9 @@ objsuffix=".${OBJEXT}"
 
 package_version_major=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $1}'`
 
-
-# Checks for required libraries
-
-
-echo "$as_me:$LINENO: checking for floor in -lm" >&5
-echo $ECHO_N "checking for floor in -lm... $ECHO_C" >&6
-if test "${ac_cv_lib_m_floor+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lm  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char floor ();
-#ifdef F77_DUMMY_MAIN
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int F77_DUMMY_MAIN() { return 1; }
-#endif
-int
-main ()
-{
-floor ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_m_floor=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_cv_lib_m_floor=no
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_m_floor" >&5
-echo "${ECHO_T}$ac_cv_lib_m_floor" >&6
-if test $ac_cv_lib_m_floor = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBM 1
-_ACEOF
-
-  LIBS="-lm $LIBS"
-
-fi
+# "cache" the check for gcc -E
 
 
-# Determine the host system and Makefile fragment
-
-# Check for required includes
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2817,6 +2748,106 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+_ACEOF
+if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
+  (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
+  ac_status=$?
+  egrep -v '^ *\+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null; then
+  if test -s conftest.err; then
+    ac_cpp_err=$ac_c_preproc_warn_flag
+  else
+    ac_cpp_err=
+  fi
+else
+  ac_cpp_err=yes
+fi
+if test -z "$ac_cpp_err"; then
+  :
+else
+  echo "$as_me: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+
+fi
+rm -f conftest.err conftest.$ac_ext
+
+# Checks for required libraries
+
+echo "$as_me:$LINENO: checking for floor in -lm" >&5
+echo $ECHO_N "checking for floor in -lm... $ECHO_C" >&6
+if test "${ac_cv_lib_m_floor+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lm  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char floor ();
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+floor ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_m_floor=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_lib_m_floor=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_m_floor" >&5
+echo "${ECHO_T}$ac_cv_lib_m_floor" >&6
+if test $ac_cv_lib_m_floor = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBM 1
+_ACEOF
+
+  LIBS="-lm $LIBS"
+
+fi
+
+
+# Determine the host system and Makefile fragment
+
+# Check for required includes
 echo "$as_me:$LINENO: checking for ANSI C header files" >&5
 echo $ECHO_N "checking for ANSI C header files... $ECHO_C" >&6
 if test "${ac_cv_header_stdc+set}" = set; then
@@ -3251,46 +3282,16 @@ esac
 
 # Find Xerces
 
-# First "cache" the check for gcc -E
-
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-
-_ACEOF
-if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
-  (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
-  ac_status=$?
-  egrep -v '^ *\+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null; then
-  if test -s conftest.err; then
-    ac_cpp_err=$ac_c_preproc_warn_flag
-  else
-    ac_cpp_err=
-  fi
-else
-  ac_cpp_err=yes
-fi
-if test -z "$ac_cpp_err"; then
-  :
-else
-  echo "$as_me: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-
-fi
-rm -f conftest.err conftest.$ac_ext
-
 # Check for Xerces using XERCESCROOT (override any system version)
 
-OLDCPPFLAGS=$CPPFLAGS
-CPPFLAGS="${CPPFLAGS} -I${XERCESCROOT}/src"
+if test $XERCESCROOT; then
 
-echo "$as_me:$LINENO: checking for Xerces 2.x headers in XERCESCROOT/src" >&5
+  OLDCPPFLAGS=$CPPFLAGS
+  CPPFLAGS="${CPPFLAGS} -I${XERCESCROOT}/src"
+
+  echo "$as_me:$LINENO: checking for Xerces 2.x headers in XERCESCROOT/src" >&5
 echo $ECHO_N "checking for Xerces 2.x headers in XERCESCROOT/src... $ECHO_C" >&6
-if test "$cross_compiling" = yes; then
+  if test "$cross_compiling" = yes; then
   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling" >&5
 echo "$as_me: error: cannot run test program while cross compiling" >&2;}
    { (exit 1); exit 1; }; }
@@ -3299,12 +3300,12 @@ else
 #line $LINENO "configure"
 #include "confdefs.h"
 #include <xercesc/util/XercesVersion.hpp>
-int main(int argc, char **argv) {
-if (XERCES_VERSION_MAJOR < 2)
-return 1;
-else
-return 0;
-}
+    int main(int argc, char **argv) {
+      if (XERCES_VERSION_MAJOR < 2)
+        return 1;
+      else
+        return 0;
+    }
 _ACEOF
 rm -f conftest$ac_exeext
 if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
@@ -3318,8 +3319,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   LDFLAGS="${LDFLAGS} -L${XERCESCROOT}/lib -lxerces-c"
-xerces_found=yes
-echo "$as_me:$LINENO: result: found" >&5
+    xerces_found=yes
+    echo "$as_me:$LINENO: result: found" >&5
 echo "${ECHO_T}found" >&6
 else
   echo "$as_me: program exited with status $ac_status" >&5
@@ -3327,20 +3328,22 @@ echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
 ( exit $ac_status )
 CPPFLAGS=$OLD_CPPFLAGS
-echo "$as_me:$LINENO: result: no" >&5
+    echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 rm -f core core.* *.core conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 
+fi
+
 if test -z $xerces_found ; then
 
-# Xerces was not found
+  # Xerces was not found
 
-echo "$as_me:$LINENO: checking for Xerces 2.x headers in system includes" >&5
+  echo "$as_me:$LINENO: checking for Xerces 2.x headers in system includes" >&5
 echo $ECHO_N "checking for Xerces 2.x headers in system includes... $ECHO_C" >&6
 
-if test "$cross_compiling" = yes; then
+  if test "$cross_compiling" = yes; then
   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling" >&5
 echo "$as_me: error: cannot run test program while cross compiling" >&2;}
    { (exit 1); exit 1; }; }
@@ -3349,12 +3352,12 @@ else
 #line $LINENO "configure"
 #include "confdefs.h"
 #include <xercesc/util/XercesVersion.hpp>
-int main(int argc, char **argv) {
-if (XERCES_VERSION_MAJOR < 2)
-return 1;
-else
-return 0;
-}
+    int main(int argc, char **argv) {
+      if (XERCES_VERSION_MAJOR < 2)
+        return 1;
+      else
+        return 0;
+    }
 _ACEOF
 rm -f conftest$ac_exeext
 if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
@@ -3368,7 +3371,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   LDFLAGS="${LDFLAGS} -lxerces-c"
-echo "$as_me:$LINENO: result: found" >&5
+    echo "$as_me:$LINENO: result: found" >&5
 echo "${ECHO_T}found" >&6
 else
   echo "$as_me: program exited with status $ac_status" >&5
@@ -3388,13 +3391,15 @@ fi
 
 if test "$use_xalan" = "yes" ; then
 
-echo "$as_me:$LINENO: checking for Xalan headers in XALANCROOT" >&5
+  if test $XALANCROOT; then
+
+    echo "$as_me:$LINENO: checking for Xalan headers in XALANCROOT" >&5
 echo $ECHO_N "checking for Xalan headers in XALANCROOT... $ECHO_C" >&6
 
-OLD_CPPFLAGS=$CPPFLAGS
-CPPFLAGS="${CPPFLAGS} -I${XALANCROOT}/src"
+    OLD_CPPFLAGS=$CPPFLAGS
+    CPPFLAGS="${CPPFLAGS} -I${XALANCROOT}/src"
 
-cat >conftest.$ac_ext <<_ACEOF
+    cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 #include "confdefs.h"
 #include <Include/PlatformDefinitions.hpp>
@@ -3417,24 +3422,25 @@ else
 fi
 if test -z "$ac_cpp_err"; then
   xalan_found=yes
-   LDFLAGS="${LDFLAGS} -L${XALANCROOT}/lib -lxalan-c1_5_0"
-   echo "$as_me:$LINENO: result: found" >&5
+      LDFLAGS="${LDFLAGS} -L${XALANCROOT}/lib -lxalan-c1_5_0"
+      echo "$as_me:$LINENO: result: found" >&5
 echo "${ECHO_T}found" >&6
 else
   echo "$as_me: failed program was:" >&5
   cat conftest.$ac_ext >&5
   CPPFLAGS=$OLD_CPPFLAGS
-   echo "$as_me:$LINENO: result: no" >&5
+      echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 rm -f conftest.err conftest.$ac_ext;
 
+  fi
 
-if test -z $xalan_found ; then
+  if test -z $xalan_found ; then
 
-echo "$as_me:$LINENO: checking for Xalan in system includes" >&5
+    echo "$as_me:$LINENO: checking for Xalan in system includes" >&5
 echo $ECHO_N "checking for Xalan in system includes... $ECHO_C" >&6
-cat >conftest.$ac_ext <<_ACEOF
+    cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 #include "confdefs.h"
 #include <Include/PlatformDefinitions.hpp>
@@ -3457,8 +3463,8 @@ else
 fi
 if test -z "$ac_cpp_err"; then
   xalan_found=yes
-   LDFLAGS="${LDFLAGS} -lxalan-c1_5_0"
-   echo "$as_me:$LINENO: result: found" >&5
+      LDFLAGS="${LDFLAGS} -lxalan-c1_5_0"
+      echo "$as_me:$LINENO: result: found" >&5
 echo "${ECHO_T}found" >&6
 else
   echo "$as_me: failed program was:" >&5
@@ -3467,20 +3473,20 @@ else
 #define XSEC_NO_XALAN 1
 _ACEOF
 
-   echo "$as_me:$LINENO: result: no - WARNING - configuring for no Xalan" >&5
+      echo "$as_me:$LINENO: result: no - WARNING - configuring for no Xalan" >&5
 echo "${ECHO_T}no - WARNING - configuring for no Xalan" >&6
 fi
 rm -f conftest.err conftest.$ac_ext;
 
-fi
+  fi
 
 else
 
-# NO_XALAN is defined - so we skip
+  # NO_XALAN is defined - so we skip
 
-{ echo "$as_me:$LINENO: Warning - Xalan being configured out - XPath and XSLT will not be available" >&5
+  { echo "$as_me:$LINENO: Warning - Xalan being configured out - XPath and XSLT will not be available" >&5
 echo "$as_me: Warning - Xalan being configured out - XPath and XSLT will not be available" >&6;}
-cat >>confdefs.h <<\_ACEOF
+  cat >>confdefs.h <<\_ACEOF
 #define XSEC_NO_XALAN 1
 _ACEOF
 

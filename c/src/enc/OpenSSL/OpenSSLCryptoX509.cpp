@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -107,9 +105,8 @@ OpenSSLCryptoX509::OpenSSLCryptoX509(X509 * x) {
 
 	// Translate X509 to Base64
 
-	int sz = i2d_X509_bio(b64, x);
+	i2d_X509_bio(b64, x);
 
-	//BIO_write(b64, encryptBuf, encryptLen);
 	BIO_flush(b64);
 
 	char buf[1024];

@@ -146,3 +146,4 @@ void TXFMBase::activateComments(void) {
 		keepComments = true;
 
 }
+

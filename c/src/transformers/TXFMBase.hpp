@@ -156,7 +156,7 @@ public:
 
 	// Friends and Statics
 
-	friend TXFMChain;
+	friend class TXFMChain;
 
 
 private:
