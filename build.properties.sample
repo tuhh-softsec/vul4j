@@ -3,4 +3,5 @@ jaxp.jaxp.jar=/java/jars/jaxp.jar
 jaxp.parser.jar=/java/jars/crimson.jar
 commons-beanutils.jar=/java/jars/commons-beanutils.jar
 commons-collections.jar=/java/jars/commons-collections.jar
+commons-logging.jar=/java/jars/commons-logging.jar
 junit.jar=/java/jars/junit.jar
