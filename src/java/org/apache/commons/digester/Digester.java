@@ -14,7 +14,6 @@
  * limitations under the License.
  */ 
 
-
 package org.apache.commons.digester;
 
 
@@ -142,6 +141,8 @@ public class Digester extends DefaultHandler {
      * stack. After the end tag is reached, the matches are popped again.
      * The depth of is stack is therefore exactly the same as the current
      * "nesting" level of the input xml. 
+     *
+     * @since 1.6
      */
     protected ArrayStack matches = new ArrayStack(10);
     
@@ -554,6 +555,8 @@ public class Digester extends DefaultHandler {
     /**
      * Gets the logger used for logging SAX-related information.
      * <strong>Note</strong> the output is finely grained.
+     *
+     * @since 1.6
      */
     public Log getSAXLogger() {
         
@@ -565,6 +568,8 @@ public class Digester extends DefaultHandler {
      * Sets the logger used for logging SAX-related information.
      * <strong>Note</strong> the output is finely grained.
      * @param saxLog Log, not null
+     *
+     * @since 1.6
      */    
     public void setSAXLogger(Log saxLog) {
     
@@ -1912,6 +1917,8 @@ public class Digester extends DefaultHandler {
      * @param paramObj Any arbitrary object to be passed to the target
      * method.
      * @see CallMethodRule
+     *
+     * @since 1.6
      */    
     public void addObjectParam(String pattern, int paramIndex, 
                                Object paramObj) {
@@ -2183,6 +2190,8 @@ public class Digester extends DefaultHandler {
      * Adds an {@link SetNestedPropertiesRule}.
      *
      * @param pattern register the rule with this pattern
+     *
+     * @since 1.6
      */
     public void addSetNestedProperties(String pattern) {
     
@@ -2195,6 +2204,8 @@ public class Digester extends DefaultHandler {
      * @param pattern register the rule with this pattern
      * @param elementName elment name that a property maps to
      * @param propertyName property name of the element mapped from
+     *
+     * @since 1.6
      */
     public void addSetNestedProperties(String pattern, String elementName, String propertyName) {
     
@@ -2207,6 +2218,8 @@ public class Digester extends DefaultHandler {
      * @param pattern register the rule with this pattern
      * @param elementNames elment names that (in order) map to properties
      * @param propertyNames property names that (in order) elements are mapped to
+     *
+     * @since 1.6
      */    
     public void addSetNestedProperties(String pattern, String[] elementNames, String[] propertyNames) {
     
@@ -2471,6 +2484,8 @@ public class Digester extends DefaultHandler {
      * 
      * @param stackName the name of the stack onto which the object should be pushed
      * @param value the Object to be pushed onto the named stack.
+     *
+     * @since 1.6
      */
     public void push(String stackName, Object value) {
         ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
@@ -2491,6 +2506,8 @@ public class Digester extends DefaultHandler {
      * @return the top <code>Object</code> on the stack or or null if the stack is either 
      * empty or has not been created yet
      * @throws EmptyStackException if the named stack is empty
+     *
+     * @since 1.6
      */
     public Object pop(String stackName) {
         Object result = null;
@@ -2519,6 +2536,8 @@ public class Digester extends DefaultHandler {
      * @return the top <code>Object</code> on the stack or null if the stack is either 
      * empty or has not been created yet
      * @throws EmptyStackException if the named stack is empty 
+     *
+     * @since 1.6
      */
     public Object peek(String stackName) {
         Object result = null;
@@ -2543,6 +2562,8 @@ public class Digester extends DefaultHandler {
      * @param stackName the name of the stack whose emptiness 
      * should be evaluated
      * @return true if the given stack if empty 
+     *
+     * @since 1.6
      */
     public boolean isEmpty(String stackName) {
         boolean result = true;
@@ -2617,6 +2638,8 @@ public class Digester extends DefaultHandler {
      * Subclasses that override <code>configure</code> or who set <code>configured</code>
      * may find that this method may be called more than once.
      * </p>
+     *
+     * @since 1.6
      */
     protected void initialize() {
 
