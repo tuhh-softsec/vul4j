@@ -1,5 +1,29 @@
 package org.codehaus.plexus.util.xml;
 
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2004, The Codehaus
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
@@ -10,6 +34,9 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @version $Id$
+ */
 public class Xpp3DomBuilder
 {
     private static final boolean DEFAULT_TRIM = true;
@@ -91,10 +118,12 @@ public class Xpp3DomBuilder
                 StringBuffer valueBuffer = (StringBuffer) values.get( depth );
 
                 String text = parser.getText();
+
                 if ( trim )
                 {
                     text = text.trim();
                 }
+
                 valueBuffer.append( text );
             }
             else if ( eventType == XmlPullParser.END_TAG )
@@ -103,25 +132,14 @@ public class Xpp3DomBuilder
 
                 Xpp3Dom finishedConfiguration = (Xpp3Dom) elements.remove( depth );
 
-                String accumulatedValue = ( values.remove( depth ) ).toString();
+                String accumulatedValue = values.remove( depth ).toString();
 
                 if ( finishedConfiguration.getChildCount() == 0 )
                 {
-                    String finishedValue;
-
-                    if ( 0 == accumulatedValue.length() )
-                    {
-                        finishedValue = null;
-                    }
-                    else
-                    {
-                        finishedValue = accumulatedValue;
-                    }
-
-                    finishedConfiguration.setValue( finishedValue );
+                    finishedConfiguration.setValue( accumulatedValue );
                 }
 
-                if ( 0 == depth )
+                if ( depth == 0 )
                 {
                     return finishedConfiguration;
                 }
@@ -129,7 +147,7 @@ public class Xpp3DomBuilder
 
             eventType = parser.next();
         }
+
         throw new IllegalStateException( "End of document found before returning to 0 depth" );
     }
-
 }
