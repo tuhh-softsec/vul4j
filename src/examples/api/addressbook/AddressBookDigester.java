@@ -33,8 +33,6 @@ import org.apache.commons.digester.Digester;
  * quite low.
  * <p>
  * Usage: java Example1 example.xml
- *
- * @author Simon Kitching
  */
 public class AddressBookDigester {
     

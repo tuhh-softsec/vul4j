@@ -36,8 +36,6 @@ import org.apache.commons.digester.ExtendedBaseRules;
  * quite low.
  * <p>
  * Usage: java CatalogDigester example.xml
- *
- * @author Simon Kitching
  */
 public class CatalogDigester {
     
