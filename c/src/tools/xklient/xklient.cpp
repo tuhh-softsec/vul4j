@@ -1815,7 +1815,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 	catch (XSECException &e) {
 
 		char * m = XMLString::transcode(e.getMsg());
-		cerr << "Error sending request: " << m;
+		cerr << "Error sending request: " << m << endl;
 		XSEC_RELEASE_XMLCH(m);
 
 		delete msg;
