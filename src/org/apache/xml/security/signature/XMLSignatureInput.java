@@ -159,7 +159,6 @@ public class XMLSignatureInput {
     * method included the node and <I>all</I> his descendants in the output.
     *
     * @param rootNode
-    * @param usedXPathAPI
     */
    public XMLSignatureInput(Node rootNode)
    {
@@ -171,7 +170,6 @@ public class XMLSignatureInput {
     * Constructor XMLSignatureInput
     *
     * @param inputNodeSet
-    * @param usedXPathAPI
     */
    public XMLSignatureInput(Set inputNodeSet) {
    	    this._inputNodeSet = inputNodeSet;
@@ -286,17 +284,16 @@ public class XMLSignatureInput {
     * Returns the Octect stream(byte Stream) from input which was specified as the parameter of {@link XMLSignatureInput} constructor
     *
     * @return the Octect stream(byte Stream) from input which was specified as the parameter of {@link XMLSignatureInput} constructor
-    * @throws CanonicalizationException
     * @throws IOException
     */
    public InputStream getOctetStream()
-           throws IOException, CanonicalizationException {
+           throws IOException  {
          	  
       return getResetableInputStream();                 
 
    }
    /**
-     * @return
+     * @return real octect stream
      */
     public InputStream getOctetStreamReal () {
        return this._inputOctetStreamProxy;
@@ -470,7 +467,7 @@ public class XMLSignatureInput {
     */
    public String getHTMLRepresentation() throws XMLSignatureException {
 
-      XMLSignatureInputDebugger db = new XMLSignatureInputDebugger(this, this);
+      XMLSignatureInputDebugger db = new XMLSignatureInputDebugger(this);
 
       return db.getHTMLRepresentation();
    }
@@ -485,7 +482,7 @@ public class XMLSignatureInput {
    public String getHTMLRepresentation(Set inclusiveNamespaces)
            throws XMLSignatureException {
 
-      XMLSignatureInputDebugger db = new XMLSignatureInputDebugger(this, this,
+      XMLSignatureInputDebugger db = new XMLSignatureInputDebugger( this,
                                         inclusiveNamespaces);
 
       return db.getHTMLRepresentation();

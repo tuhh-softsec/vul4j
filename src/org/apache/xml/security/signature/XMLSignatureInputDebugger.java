@@ -40,10 +40,7 @@ import org.w3c.dom.ProcessingInstruction;
  */
 public class XMLSignatureInputDebugger {
 
-	/**
-	 * 
-	 */
-	private final XMLSignatureInput input;
+
 
 	/** Field _xmlSignatureInput */
 	private Set _xpathNodeSet;
@@ -132,21 +129,18 @@ public class XMLSignatureInputDebugger {
 	static final AttrCompare ATTR_COMPARE = new AttrCompare();
 
 	// J+
-	private XMLSignatureInputDebugger(XMLSignatureInput input) {
-		this.input = input;
+	private XMLSignatureInputDebugger() {
 		// do nothing
 	}
 
 	/**
 	 * Constructor XMLSignatureInputDebugger
 	 * 
-	 * @param xmlSignatureInput
-	 * @param input the signatur to pretty print
+	 * @param xmlSignatureInput the signatur to pretty print
 	 */
-	public XMLSignatureInputDebugger(XMLSignatureInput input,
+	public XMLSignatureInputDebugger(
 			XMLSignatureInput xmlSignatureInput) {
 
-		this.input = input;
 		if (!xmlSignatureInput.isNodeSet()) {
 			this._xpathNodeSet = null;
 		} else {
@@ -157,14 +151,13 @@ public class XMLSignatureInputDebugger {
 	/**
 	 * Constructor XMLSignatureInputDebugger
 	 * 
-	 * @param xmlSignatureInput
+	 * @param xmlSignatureInput the signatur to pretty print
 	 * @param inclusiveNamespace
-	 * @param input the signatur to pretty print
 	 */
-	public XMLSignatureInputDebugger(XMLSignatureInput input,
+	public XMLSignatureInputDebugger(
 			XMLSignatureInput xmlSignatureInput, Set inclusiveNamespace) {
 
-		this(input, xmlSignatureInput);
+		this(xmlSignatureInput);
 
 		this._inclusiveNamespaces = inclusiveNamespace;
 	}
