@@ -76,8 +76,6 @@
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
-#include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
@@ -94,7 +92,13 @@ XERCES_CPP_NAMESPACE_USE
 #	include <openssl/pem.h>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
+#   include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 #endif
+
+#if defined (HAVE_WINCAPI)
+#   include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
+#endif
+
 
 // --------------------------------------------------------------------------------
 //           Strings and keys
