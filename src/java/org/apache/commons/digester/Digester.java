@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.65 2002/08/20 00:58:55 patrickl Exp $
- * $Revision: 1.65 $
- * $Date: 2002/08/20 00:58:55 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.66 2002/08/20 02:51:46 patrickl Exp $
+ * $Revision: 1.66 $
+ * $Date: 2002/08/20 02:51:46 $
  *
  * ====================================================================
  *
@@ -124,7 +124,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.65 $ $Date: 2002/08/20 00:58:55 $
+ * @version $Revision: 1.66 $ $Date: 2002/08/20 02:51:46 $
  */
 
 public class Digester extends DefaultHandler {
@@ -628,7 +628,16 @@ public class Digester extends DefaultHandler {
 
     }
 
-
+    
+    /**
+     * Set the publid id of the current file being parse.
+     * @param publicId the DTD/Schema public's id.
+     */
+    public void setPublicId(String publicId){
+        this.publicId = publicId;
+    }
+    
+    
     /**
      * Return the public identifier of the DTD we are currently
      * parsing under, if any.
