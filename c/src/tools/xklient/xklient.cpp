@@ -214,8 +214,9 @@ XSECCryptoX509 * loadX509(const char * infile) {
 void printLocateRequestUsage(void) {
 
 	cerr << "\nUsage LocateRequest [--help|-h] <service URI> [options]\n";
-	cerr << "   --help/-h    : print this screen and exit\n\n";
-	cerr << "   ";
+	cerr << "   --help/-h                : print this screen and exit\n\n";
+	cerr << "   --add-cert/-a <filename> : add cert in filename as a KeyInfo\n";
+	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n\n";
 
 }
 
@@ -261,6 +262,16 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			paramCount++;
 		}
 
+		else if (stricmp(argv[paramCount], "--add-name") == 0 || stricmp(argv[paramCount], "-n") == 0) {
+			if (++paramCount >= argc) {
+				printLocateRequestUsage();
+				delete lr;
+				return NULL;
+			}
+			XKMSQueryKeyBinding * qkb = lr->addQueryKeyBinding();
+			qkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
 		else {
 			printLocateRequestUsage();
 			delete lr;
@@ -693,8 +704,42 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 	}
 
-	XSECSOAPRequestorSimple req(msg->getService());
-	DOMDocument * responseDoc = req.doRequest(doc);
+	try {
+		if (g_txtOut) {
+			outputDoc(doc);
+		}
+	}
+	catch (...) {
+		delete msg;
+		doc->release();
+		throw;
+	}
+
+	DOMDocument * responseDoc;
+
+	try {
+		XSECSOAPRequestorSimple req(msg->getService());
+		responseDoc = req.doRequest(doc);
+	}
+	catch (XSECException &e) {
+
+		char * m = XMLString::transcode(e.getMsg());
+		cerr << "Error sending request: " << m;
+		XMLString::release(&m);
+
+		delete msg;
+		doc->release();
+
+		return -1;
+
+	}
+	catch (...) {
+		delete msg;
+		doc->release();
+
+		throw;
+
+	}
 
 	// Cleanup request stuff
 	delete msg;
@@ -814,7 +859,7 @@ void printUsage(void) {
 	cerr << "     msgdump   : Read an XKMS message and print details\n";
 	cerr << "     msgcreate : Create a message of type :\n";
 	cerr << "                 LocateRequest\n";
-	cerr << "     dorequest : Create message of type : \n";
+	cerr << "     request   : Create message of type : \n";
 	cerr << "                 LocateRequest\n";
 	cerr << "                 send to service URI and output result\n\n";
 	cerr << "     Where options are :\n\n";

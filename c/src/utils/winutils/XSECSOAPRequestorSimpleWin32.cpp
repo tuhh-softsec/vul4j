@@ -339,8 +339,16 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
         // Most likely a 404 Not Found error.
         //   Should recognize and handle the forwarding responses.
         //
-        throw XSECException(XSECException::HTTPURIInputStreamError,
-							"Unknown HTTP response received");
+		char * q = strstr(p, "\n");
+		if (q == NULL)
+			q = strstr(p, "\r");
+		if (q != NULL)
+			*q = '\0';
+		safeBuffer sb;
+		sb.sbStrcpyIn("SOAPRequestorSimple HTTP Error : ");
+		if (strlen(p) < 256)
+			sb.sbStrcatIn(p);
+        throw XSECException(XSECException::HTTPURIInputStreamError, sb.rawCharBuffer());
     }
 
 	/* Now find out how long the return is */
