@@ -133,7 +133,7 @@ DOMElement * XKMSRegisterResultImpl::createBlankRegisterResult(
 
 XKMSMessageAbstractType::messageType XKMSRegisterResultImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::RegisterResult;
+	return XKMSMessageAbstractTypeImpl::RegisterResult;
 
 }
 

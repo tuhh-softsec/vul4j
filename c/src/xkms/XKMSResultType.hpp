@@ -64,7 +64,7 @@
  */
 
 
-class XKMSResultType : virtual public XKMSMessageAbstractType {
+class XKMSResultType : public XKMSMessageAbstractType {
 
 public:
 

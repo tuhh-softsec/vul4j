@@ -70,7 +70,7 @@ class XKMSResponseMechanism;
  */
 
 
-class XKMSRequestAbstractType : virtual public XKMSMessageAbstractType {
+class XKMSRequestAbstractType : public XKMSMessageAbstractType {
 
 	/** @name Constructors and Destructors */
 	//@{

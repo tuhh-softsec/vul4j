@@ -26,6 +26,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
+#include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
 #include <xsec/framework/XSECError.hpp>
@@ -581,8 +582,13 @@ HCRYPTKEY WinCAPICryptoSymmetricKey::createWindowsKey(
 	HCRYPTPROV p;
 	
 	if (prov == NULL || *prov == 0) {
+		if (!strEquals(XSECPlatformUtils::g_cryptoProvider->getProviderName(), DSIGConstants::s_unicodeStrPROVWinCAPI)) {
+			throw XSECCryptoException(XSECCryptoException::SymmetricError,
+				"WinCAPI:SymmetricKey - Main provider is not Windows provider"); 
+		}
+
 		WinCAPICryptoProvider * cp = 
-			dynamic_cast<WinCAPICryptoProvider*>(XSECPlatformUtils::g_cryptoProvider);
+			(WinCAPICryptoProvider*) XSECPlatformUtils::g_cryptoProvider;
 
 		p = cp->getApacheKeyStore();
 

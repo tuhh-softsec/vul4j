@@ -115,7 +115,7 @@ DOMElement * XKMSPendingRequestImpl::createBlankPendingRequest(
 
 XKMSMessageAbstractType::messageType XKMSPendingRequestImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::PendingRequest;
+	return XKMSMessageAbstractTypeImpl::PendingRequest;
 
 }
 

@@ -58,7 +58,7 @@ class XKMSQueryKeyBinding;
    <!-- /StatusRequest -->\endverbatim
  */
 
-class XKMSStatusRequest : virtual public XKMSRequestAbstractType {
+class XKMSStatusRequest : public XKMSRequestAbstractType {
 
 	/** @name Constructors and Destructors */
 	//@{

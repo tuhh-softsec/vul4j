@@ -106,7 +106,7 @@ DOMElement * XKMSResultImpl::createBlankResult(
 
 XKMSMessageAbstractType::messageType XKMSResultImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::Result;
+	return XKMSMessageAbstractTypeImpl::Result;
 
 }
 

@@ -133,7 +133,7 @@ DOMElement * XKMSValidateResultImpl::createBlankValidateResult(
 
 XKMSMessageAbstractType::messageType XKMSValidateResultImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::ValidateResult;
+	return XKMSMessageAbstractTypeImpl::ValidateResult;
 
 }
 

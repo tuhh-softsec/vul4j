@@ -103,7 +103,7 @@ void XENCAlgorithmHandlerDefault::mapURIToKey(const XMLCh * uri,
 
 	case XSECCryptoKey::KEY_SYMMETRIC :
 
-		keySymmetric = dynamic_cast<XSECCryptoSymmetricKey *>(key);
+		keySymmetric = (XSECCryptoSymmetricKey *) key;
 		if (keySymmetric != NULL) {
 			skt = keySymmetric->getSymmetricKeyType();
 
@@ -176,7 +176,7 @@ unsigned int XENCAlgorithmHandlerDefault::unwrapKeyAES(
 
 	// Do the decrypt - this cast will throw if wrong, but we should
 	// not have been able to get through algorithm checks otherwise
-	XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
+	XSECCryptoSymmetricKey * sk = (XSECCryptoSymmetricKey *) key;
 
 	int blocks = sz / 8;
 	int n = blocks - 1;
@@ -253,7 +253,7 @@ bool XENCAlgorithmHandlerDefault::wrapKeyAES(
 
 	// Do the decrypt - this cast will throw if wrong, but we should
 	// not have been able to get through algorithm checks otherwise
-	XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
+	XSECCryptoSymmetricKey * sk = (XSECCryptoSymmetricKey *) key;
 
 	int n = sz / 8;
 
@@ -345,7 +345,7 @@ unsigned int XENCAlgorithmHandlerDefault::unwrapKey3DES(
 
 	// Do the decrypt - this cast will throw if wrong, but we should
 	// not have been able to get through algorithm checks otherwise
-	XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
+	XSECCryptoSymmetricKey * sk = (XSECCryptoSymmetricKey *) key;
 
 	sk->decryptInit(false, XSECCryptoSymmetricKey::MODE_CBC, s_3DES_CMS_IV);
 	// If key is bigger than this, then we have a problem
@@ -445,7 +445,7 @@ bool XENCAlgorithmHandlerDefault::wrapKey3DES(
 
 	// Do the first encrypt - this cast will throw if wrong, but we should
 	// not have been able to get through algorithm checks otherwise
-	XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
+	XSECCryptoSymmetricKey * sk = (XSECCryptoSymmetricKey *) key;
 
 	sk->encryptInit(false);
 	// If key is bigger than this, then we have a problem
@@ -546,11 +546,9 @@ unsigned int XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer(
 			"XENCAlgorithmHandlerDefault - RSA Decrypt must use private key");
 	}
 
-	XSECCryptoKeyRSA * rsa = dynamic_cast<XSECCryptoKeyRSA *>(key);
-	if (rsa == NULL) {	
-		throw XSECException(XSECException::CipherError, 
-			"XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer - Error casting to RSA key");
-	}
+	// Know this is an RSA key, so just cast
+
+	XSECCryptoKeyRSA * rsa = (XSECCryptoKeyRSA *) key;
 
 	// Allocate an output buffer
 	unsigned char * decBuf;
@@ -747,11 +745,7 @@ bool XENCAlgorithmHandlerDefault::doRSAEncryptToSafeBuffer(
 			"XENCAlgorithmHandlerDefault - RSA Encrypt must use public key");
 	}
 
-	XSECCryptoKeyRSA * rsa = dynamic_cast<XSECCryptoKeyRSA *>(key);
-	if (rsa == NULL) {	
-		throw XSECException(XSECException::CipherError, 
-			"XENCAlgorithmHandlerDefault::doRSAEncryptToSafeBuffer - Error casting to RSA key");
-	}
+	XSECCryptoKeyRSA * rsa = (XSECCryptoKeyRSA *) key;
 	
 	// Allocate an output buffer
 	unsigned char * encBuf;

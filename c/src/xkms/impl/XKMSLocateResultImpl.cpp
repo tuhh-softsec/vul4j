@@ -133,7 +133,7 @@ DOMElement * XKMSLocateResultImpl::createBlankLocateResult(
 
 XKMSMessageAbstractType::messageType XKMSLocateResultImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::LocateResult;
+	return XKMSMessageAbstractTypeImpl::LocateResult;
 
 }
 

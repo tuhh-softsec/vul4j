@@ -104,8 +104,9 @@ void XKMSCompoundRequestImpl::load() {
 			strEquals(getXKMSLocalName(e), XKMSConstants::s_tagValidateRequest)) {
 
 			// Have a legitimate request to load
-			XKMSMessageAbstractType * m = m_factory.newMessageFromDOM(e);
-			m_requestList.push_back(dynamic_cast<XKMSRequestAbstractTypeImpl *>(m));
+			XKMSMessageAbstractTypeImpl * m = 
+				(XKMSMessageAbstractTypeImpl *) m_factory.newMessageFromDOM(e);
+			m_requestList.push_back((XKMSRequestAbstractTypeImpl *) m);
 
 		}
 
@@ -134,7 +135,7 @@ DOMElement * XKMSCompoundRequestImpl::createBlankCompoundRequest(
 
 XKMSMessageAbstractType::messageType XKMSCompoundRequestImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::CompoundRequest;
+	return XKMSMessageAbstractTypeImpl::CompoundRequest;
 
 }
 
@@ -166,7 +167,7 @@ XKMSLocateRequest * XKMSCompoundRequestImpl::createLocateRequest(
 		const XMLCh * id) {
 
 	XKMSLocateRequest * r = m_factory.createLocateRequest(service, mp_env->getParentDocument(), id);
-	m_requestList.push_back(dynamic_cast<XKMSRequestAbstractTypeImpl*>(r));
+	m_requestList.push_back((XKMSRequestAbstractTypeImpl*) r);
 
 	mp_messageAbstractTypeElement->appendChild(r->getElement());
 	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
@@ -180,7 +181,7 @@ XKMSValidateRequest * XKMSCompoundRequestImpl::createValidateRequest(
 		const XMLCh * id) {
 
 	XKMSValidateRequest * r = m_factory.createValidateRequest(service, mp_env->getParentDocument(), id);
-	m_requestList.push_back(dynamic_cast<XKMSRequestAbstractTypeImpl*>(r));
+	m_requestList.push_back((XKMSRequestAbstractTypeImpl*) r);
 
 	mp_messageAbstractTypeElement->appendChild(r->getElement());
 	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
@@ -193,7 +194,7 @@ XKMSRegisterRequest * XKMSCompoundRequestImpl::createRegisterRequest(
 		const XMLCh * id) {
 
 	XKMSRegisterRequest * r = m_factory.createRegisterRequest(service, mp_env->getParentDocument(), id);
-	m_requestList.push_back(dynamic_cast<XKMSRequestAbstractTypeImpl*>(r));
+	m_requestList.push_back((XKMSRequestAbstractTypeImpl*) r);
 
 	mp_messageAbstractTypeElement->appendChild(r->getElement());
 	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);

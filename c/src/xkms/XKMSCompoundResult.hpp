@@ -77,7 +77,7 @@ class XKMSRequestAbstractType;
 \endverbatim
  */
 
-class XKMSCompoundResult : virtual public XKMSResultType {
+class XKMSCompoundResult : public XKMSResultType {
 
 	/** @name Constructors and Destructors */
 	//@{

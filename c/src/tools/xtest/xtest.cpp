@@ -1643,7 +1643,7 @@ void unitTestEncrypt(DOMImplementation *impl) {
 #if defined (HAVE_WINCAPI)
 
 		// Use the internal key
-		WinCAPICryptoProvider *cp = dynamic_cast<WinCAPICryptoProvider *>(XSECPlatformUtils::g_cryptoProvider);
+		WinCAPICryptoProvider *cp = (WinCAPICryptoProvider *) (XSECPlatformUtils::g_cryptoProvider);
 		HCRYPTPROV p = cp->getApacheKeyStore();
 		
 		WinCAPICryptoKeyRSA * rsaKey = new WinCAPICryptoKeyRSA(p, AT_KEYEXCHANGE, true);
@@ -1927,7 +1927,7 @@ void testEncrypt(DOMImplementation *impl) {
 
 			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_NAME) {
 
-				DSIGKeyInfoName *n = dynamic_cast<DSIGKeyInfoName *>(kil->item(i));
+				DSIGKeyInfoName *n = (DSIGKeyInfoName *) (kil->item(i));
 				if (!strEquals(n->getKeyName(), s_tstKeyName)) {
 					
 					cerr << "no!" << endl;
@@ -1954,7 +1954,7 @@ void testEncrypt(DOMImplementation *impl) {
 
 			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_ENCRYPTEDKEY) {
 
-				XENCEncryptedKey * xek = dynamic_cast<XENCEncryptedKey*>(kil->item(i));
+				XENCEncryptedKey * xek = (XENCEncryptedKey*)(kil->item(i));
 
 				if (strEquals(xek->getCarriedKeyName(), s_tstCarriedKeyName)) {
 

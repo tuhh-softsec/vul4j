@@ -38,7 +38,7 @@
 class XKMSRespondWithImpl;
 class XKMSResponseMechanismImpl;
 
-class XKMSRequestAbstractTypeImpl : virtual public XKMSRequestAbstractType, public XKMSMessageAbstractTypeImpl {
+class XKMSRequestAbstractTypeImpl : public XKMSRequestAbstractType, public XKMSMessageAbstractTypeImpl {
 
 public:
 

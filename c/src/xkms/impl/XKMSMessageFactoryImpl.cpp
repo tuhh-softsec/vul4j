@@ -164,7 +164,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		ret->load();
 
-		return ret;
+		return (XKMSCompoundRequest*) ret;
 
 	}
 
@@ -176,7 +176,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		ret->load();
 
-		return ret;
+		return (XKMSCompoundRequest*) ret;
 
 	}
 
@@ -188,7 +188,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		ret->load();
 
-		return ret;
+		return (XKMSLocateRequest *) ret;
 
 	}
 
@@ -200,7 +200,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 		ret->load();
 
-		return ret;
+		return (XKMSValidateRequest *) ret;
 
 	}
 
@@ -214,7 +214,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 		ret->load();
 		
 		j_ret.release();
-		return ret;
+		return (XKMSLocateResult *) ret;
 
 	}
 
@@ -228,7 +228,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 		ret->load();
 		
 		j_ret.release();
-		return ret;
+		return (XKMSValidateResult *) ret;
 
 	}
 
@@ -242,7 +242,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 		ret->load();
 		
 		j_ret.release();
-		return ret;
+		return (XKMSResult *) ret;
 
 	}
 
@@ -256,7 +256,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 		ret->load();
 		
 		j_ret.release();
-		return ret;
+		return (XKMSPendingRequest *) ret;
 
 	}
 
@@ -270,7 +270,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 		ret->load();
 		
 		j_ret.release();
-		return ret;
+		return (XKMSStatusRequest *) ret;
 
 	}
 
@@ -284,7 +284,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 		ret->load();
 		
 		j_ret.release();
-		return ret;
+		return (XKMSStatusResult *) ret;
 
 	}
 
@@ -298,7 +298,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 		ret->load();
 		
 		j_ret.release();
-		return ret;
+		return (XKMSRegisterRequest *) ret;
 
 	}
 
@@ -312,7 +312,7 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 		ret->load();
 		
 		j_ret.release();
-		return ret;
+		return (XKMSRegisterResult *) ret;
 
 	}
 
@@ -838,58 +838,42 @@ XKMSRegisterResult * XKMSMessageFactoryImpl::createRegisterResult(
 
 XKMSRequestAbstractType * XKMSMessageFactoryImpl::toRequestAbstractType(XKMSMessageAbstractType *msg) {
 
-	if (msg->getMessageType() == XKMSMessageAbstractType::LocateRequest) {
-		XKMSLocateRequest * lr = dynamic_cast<XKMSLocateRequest*>(msg);
-		return lr;
+
+	switch (msg->getMessageType()) {
+
+	case XKMSMessageAbstractType::LocateRequest :
+	case XKMSMessageAbstractType::ValidateRequest :
+	case XKMSMessageAbstractType::CompoundRequest :
+	case XKMSMessageAbstractType::PendingRequest :
+	case XKMSMessageAbstractType::RegisterRequest :
+	case XKMSMessageAbstractType::StatusRequest :
+
+		return (XKMSRequestAbstractType *) msg;
+
+	default:
+
+		return NULL;
 	}
-	if (msg->getMessageType() == XKMSMessageAbstractType::ValidateRequest) {
-		XKMSValidateRequest * vr = dynamic_cast<XKMSValidateRequest*>(msg);
-		return vr;
-	}
-	if (msg->getMessageType() == XKMSMessageAbstractType::CompoundRequest) {
-		XKMSCompoundRequest * cr = dynamic_cast<XKMSCompoundRequest*>(msg);
-		return cr;
-	}
-	if (msg->getMessageType() == XKMSMessageAbstractType::PendingRequest) {
-		XKMSPendingRequest * pr = dynamic_cast<XKMSPendingRequest*>(msg);
-		return pr;
-	}
-	if (msg->getMessageType() == XKMSMessageAbstractType::RegisterRequest) {
-		XKMSRegisterRequest * rr = dynamic_cast<XKMSRegisterRequest*>(msg);
-		return rr;
-	}
-	if (msg->getMessageType() == XKMSMessageAbstractType::StatusRequest) {
-		XKMSStatusRequest * sr = dynamic_cast<XKMSStatusRequest*>(msg);
-		return sr;
-	}
+
 	return NULL;
+
 }
 
 XKMSResultType * XKMSMessageFactoryImpl::toResultType(XKMSMessageAbstractType *msg) {
 
-	if (msg->getMessageType() == XKMSMessageAbstractType::LocateResult) {
-		XKMSLocateResult * lr = dynamic_cast<XKMSLocateResult*>(msg);
-		return lr;
-	}
-	if (msg->getMessageType() == XKMSMessageAbstractType::ValidateResult) {
-		XKMSValidateResult * vr = dynamic_cast<XKMSValidateResult*>(msg);
-		return vr;
-	}
-	if (msg->getMessageType() == XKMSMessageAbstractType::CompoundResult) {
-		XKMSCompoundResult * cr = dynamic_cast<XKMSCompoundResult*>(msg);
-		return cr;
-	}
-	if (msg->getMessageType() == XKMSMessageAbstractType::RegisterResult) {
-		XKMSRegisterResult * rr = dynamic_cast<XKMSRegisterResult*>(msg);
-		return rr;
-	}
-	if (msg->getMessageType() == XKMSMessageAbstractType::StatusResult) {
-		XKMSStatusResult * sr = dynamic_cast<XKMSStatusResult*>(msg);
-		return sr;
-	}
-	if (msg->getMessageType() == XKMSMessageAbstractType::Result) {
-		XKMSResult * r = dynamic_cast<XKMSResult*>(msg);
-		return r;
+	switch (msg->getMessageType()) {
+
+	case XKMSMessageAbstractType::LocateResult :
+	case XKMSMessageAbstractType::ValidateResult :
+	case XKMSMessageAbstractType::CompoundResult :
+	case XKMSMessageAbstractType::RegisterResult :
+	case XKMSMessageAbstractType::StatusResult :
+	case XKMSMessageAbstractType::Result :
+
+		return (XKMSResultType *) msg;
+
+	default:
+		return NULL;
 	}
 	return NULL;
 }

@@ -125,7 +125,7 @@ DOMElement * XKMSValidateRequestImpl::createBlankValidateRequest(
 
 XKMSMessageAbstractType::messageType XKMSValidateRequestImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::ValidateRequest;
+	return XKMSMessageAbstractTypeImpl::ValidateRequest;
 
 }
 

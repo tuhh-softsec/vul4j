@@ -70,7 +70,7 @@ class XKMSRegisterRequest;
 \endverbatim
  */
 
-class XKMSCompoundRequest : virtual public XKMSRequestAbstractType {
+class XKMSCompoundRequest : public XKMSRequestAbstractType {
 
 	/** @name Constructors and Destructors */
 	//@{

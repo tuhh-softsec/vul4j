@@ -66,7 +66,7 @@ class XKMSUnverifiedKeyBinding;
 \endverbatim
  */
 
-class XKMSValidateResult : virtual public XKMSResultType {
+class XKMSValidateResult : public XKMSResultType {
 
 	/** @name Constructors and Destructors */
 	//@{

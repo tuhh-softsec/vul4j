@@ -114,7 +114,7 @@ DOMElement * XKMSStatusResultImpl::createBlankStatusResult(
 
 XKMSMessageAbstractType::messageType XKMSStatusResultImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::StatusResult;
+	return XKMSMessageAbstractTypeImpl::StatusResult;
 
 }
 

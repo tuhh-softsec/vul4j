@@ -195,7 +195,7 @@ DOMElement * XKMSRegisterRequestImpl::
 
 XKMSMessageAbstractType::messageType XKMSRegisterRequestImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::RegisterRequest;
+	return XKMSMessageAbstractTypeImpl::RegisterRequest;
 
 }
 

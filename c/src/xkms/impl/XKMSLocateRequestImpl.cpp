@@ -125,7 +125,7 @@ DOMElement * XKMSLocateRequestImpl::createBlankLocateRequest(
 
 XKMSMessageAbstractType::messageType XKMSLocateRequestImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::LocateRequest;
+	return XKMSMessageAbstractTypeImpl::LocateRequest;
 
 }
 

@@ -38,7 +38,7 @@ class DSIGSignature;
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 XSEC_DECLARE_XERCES_CLASS(DOMAttr);
 
-class XKMSMessageAbstractTypeImpl : virtual public XKMSMessageAbstractType {
+class XKMSMessageAbstractTypeImpl : public XKMSMessageAbstractType {
 
 public: 
 

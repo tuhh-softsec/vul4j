@@ -1486,7 +1486,7 @@ XKMSMessageAbstractType * createCompoundRequest(XSECProvider &prov, DOMDocument 
 
 			paramCount++;
 			XKMSLocateRequest * r = 
-				dynamic_cast<XKMSLocateRequest *> (createLocateRequest(prov, NULL, argc, argv, paramCount, cr));
+				(XKMSLocateRequest *) (createLocateRequest(prov, NULL, argc, argv, paramCount, cr));
 
 			if (r == NULL) {
 				delete cr;
@@ -1499,7 +1499,7 @@ XKMSMessageAbstractType * createCompoundRequest(XSECProvider &prov, DOMDocument 
 
 			paramCount++;
 			XKMSValidateRequest * r = 
-				dynamic_cast<XKMSValidateRequest *> (createValidateRequest(prov, NULL, argc, argv, paramCount, cr));
+				(XKMSValidateRequest *) (createValidateRequest(prov, NULL, argc, argv, paramCount, cr));
 
 			if (r == NULL) {
 				delete cr;
@@ -2088,10 +2088,10 @@ int doMsgDump(XKMSMessageAbstractType * msg) {
 
 		cout << "Compound Request\n\n";
 
-		for (i = 0 ; i < (dynamic_cast<XKMSCompoundRequest *>(msg))->getRequestListSize(); ++i) {
+		for (i = 0 ; i < ((XKMSCompoundRequest *) (msg))->getRequestListSize(); ++i) {
 
 			cout << "Message " << i << endl;
-			doMsgDump((dynamic_cast<XKMSCompoundRequest *>(msg))->getRequestListItem(i));
+			doMsgDump(((XKMSCompoundRequest *) msg)->getRequestListItem(i));
 
 		}
 		break;
@@ -2100,57 +2100,57 @@ int doMsgDump(XKMSMessageAbstractType * msg) {
 
 		cout << "Compound Result\n\n";
 
-		for (i = 0 ; i < (dynamic_cast<XKMSCompoundResult *>(msg))->getResultListSize(); ++i) {
+		for (i = 0 ; i < ((XKMSCompoundResult *)(msg))->getResultListSize(); ++i) {
 
 			cout << "Message " << i << endl;
-			doMsgDump((dynamic_cast<XKMSCompoundResult *>(msg))->getResultListItem(i));
+			doMsgDump(((XKMSCompoundResult *) msg)->getResultListItem(i));
 
 		}
 		break;
 	
 	case XKMSMessageAbstractType::LocateRequest :
 
-		doLocateRequestDump(dynamic_cast<XKMSLocateRequest *>(msg));
+		doLocateRequestDump((XKMSLocateRequest *) msg);
 		break;
 
 	case XKMSMessageAbstractType::LocateResult :
 
-		doLocateResultDump(dynamic_cast<XKMSLocateResult *>(msg));
+		doLocateResultDump((XKMSLocateResult *) msg);
 		break;
 
 	case XKMSMessageAbstractType::StatusRequest :
 
-		doStatusRequestDump(dynamic_cast<XKMSStatusRequest *>(msg));
+		doStatusRequestDump((XKMSStatusRequest *) msg);
 		break;
 
 	case XKMSMessageAbstractType::StatusResult :
 
-		doStatusResultDump(dynamic_cast<XKMSStatusResult *>(msg));
+		doStatusResultDump((XKMSStatusResult *) msg);
 		break;
 
 	case XKMSMessageAbstractType::Result :
 
-		doResultDump(dynamic_cast<XKMSResult *>(msg));
+		doResultDump((XKMSResult *) msg);
 		break;
 
 	case XKMSMessageAbstractType::ValidateRequest :
 
-		doValidateRequestDump(dynamic_cast<XKMSValidateRequest *>(msg));
+		doValidateRequestDump((XKMSValidateRequest *) msg);
 		break;
 
 	case XKMSMessageAbstractType::ValidateResult :
 
-		doValidateResultDump(dynamic_cast<XKMSValidateResult *>(msg));
+		doValidateResultDump((XKMSValidateResult *) msg);
 		break;
 
 	case XKMSMessageAbstractType::RegisterRequest :
 
-		doRegisterRequestDump(dynamic_cast<XKMSRegisterRequest *>(msg));
+		doRegisterRequestDump((XKMSRegisterRequest *) msg);
 		break;
 
 	case XKMSMessageAbstractType::RegisterResult :
 
-		doRegisterResultDump(dynamic_cast<XKMSRegisterResult *>(msg));
+		doRegisterResultDump((XKMSRegisterResult *) msg);
 		break;
 
 	default :
@@ -2381,7 +2381,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 			paramCount++;
 			XKMSLocateRequest * r = 
-				dynamic_cast<XKMSLocateRequest *> (createLocateRequest(prov, &doc, argc, argv, paramCount));
+				(XKMSLocateRequest *) (createLocateRequest(prov, &doc, argc, argv, paramCount));
 
 			if (r == NULL) {
 				return -1;
@@ -2399,7 +2399,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 			paramCount++;
 			XKMSValidateRequest * r = 
-				dynamic_cast<XKMSValidateRequest *> (createValidateRequest(prov, &doc, argc, argv, paramCount));
+				(XKMSValidateRequest *) (createValidateRequest(prov, &doc, argc, argv, paramCount));
 
 			if (r == NULL) {
 				return -1;
@@ -2416,7 +2416,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 			paramCount++;
 			XKMSRegisterRequest * r = 
-				dynamic_cast<XKMSRegisterRequest *> (createRegisterRequest(prov, &doc, argc, argv, paramCount));
+				(XKMSRegisterRequest *) (createRegisterRequest(prov, &doc, argc, argv, paramCount));
 
 			if (r == NULL) {
 				return -1;
@@ -2433,7 +2433,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 			paramCount++;
 			XKMSPendingRequest * r = 
-				dynamic_cast<XKMSPendingRequest *> (createPendingRequest(prov, &doc, argc, argv, paramCount));
+				(XKMSPendingRequest *) (createPendingRequest(prov, &doc, argc, argv, paramCount));
 
 			if (r == NULL) {
 				return -1;
@@ -2450,7 +2450,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 			paramCount++;
 			XKMSStatusRequest * r = 
-				dynamic_cast<XKMSStatusRequest *> (createStatusRequest(prov, &doc, argc, argv, paramCount));
+				(XKMSStatusRequest *) (createStatusRequest(prov, &doc, argc, argv, paramCount));
 
 			if (r == NULL) {
 				return -1;
@@ -2466,7 +2466,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			(stricmp(argv[paramCount], "cr") == 0)) {
 
 			XKMSCompoundRequest * r = 
-				dynamic_cast<XKMSCompoundRequest *> (createCompoundRequest(prov, &doc, argc, argv, paramCount + 1));
+				(XKMSCompoundRequest *) (createCompoundRequest(prov, &doc, argc, argv, paramCount + 1));
 
 			if (r == NULL) {
 				return -1;

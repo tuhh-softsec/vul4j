@@ -44,7 +44,7 @@
  * there is no result.  It is a straight instantiation of the ResultType
  */
 
-class XKMSResult : virtual public XKMSResultType {
+class XKMSResult : public XKMSResultType {
 
 	/** @name Constructors and Destructors */
 	//@{

@@ -53,9 +53,9 @@ m_remaining(0) {
 
 	try {
 		if (mp_cipher->getKeyType() == XSECCryptoKey::KEY_SYMMETRIC && m_doEncrypt)
-			(dynamic_cast<XSECCryptoSymmetricKey *>(mp_cipher))->encryptInit();
+			((XSECCryptoSymmetricKey *) (mp_cipher))->encryptInit();
 		else
-			(dynamic_cast<XSECCryptoSymmetricKey *>(mp_cipher))->decryptInit();
+			((XSECCryptoSymmetricKey *) (mp_cipher))->decryptInit();
 	}
 	catch (...) {
 		delete mp_cipher;
@@ -137,7 +137,7 @@ unsigned int TXFMCipher::readBytes(XMLByte * const toFill, unsigned int maxToFil
 		
 			if (mp_cipher->getKeyType() == XSECCryptoKey::KEY_SYMMETRIC) {
 				XSECCryptoSymmetricKey * symCipher = 
-					dynamic_cast<XSECCryptoSymmetricKey*>(mp_cipher);
+					(XSECCryptoSymmetricKey*) mp_cipher;
 				if (m_doEncrypt) {
 					
 					if (sz == 0) {

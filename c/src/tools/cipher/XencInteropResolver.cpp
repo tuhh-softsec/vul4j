@@ -343,7 +343,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
 		if (ki->getKeyInfoType() == DSIGKeyInfo::KEYINFO_NAME) {
 
-			DSIGKeyInfoName * kn = dynamic_cast<DSIGKeyInfoName *>(ki);
+			DSIGKeyInfoName * kn = (DSIGKeyInfoName *) ki;
 
 			const XMLCh * name = kn->getKeyName();
 
@@ -513,7 +513,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
 		else if (ki->getKeyInfoType() == DSIGKeyInfo::KEYINFO_X509) {
 
-			DSIGKeyInfoX509 * kix = dynamic_cast<DSIGKeyInfoX509 *> (ki);
+			DSIGKeyInfoX509 * kix = (DSIGKeyInfoX509 *) ki;
 
 			XSECCryptoX509 * XCX509 = kix->getCertificateCryptoItem(0);
 
@@ -523,7 +523,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
 				if (strEquals(XCX509->getProviderName(),DSIGConstants::s_unicodeStrPROVOpenSSL)) {
 
-					OpenSSLCryptoX509 * OSSLX509 = dynamic_cast<OpenSSLCryptoX509 *>(XCX509);
+					OpenSSLCryptoX509 * OSSLX509 = (OpenSSLCryptoX509 *) XCX509;
 					X509 * x509 = OSSLX509->getOpenSSLX509();
 
 					// Check the serial number

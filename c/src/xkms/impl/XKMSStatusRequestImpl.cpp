@@ -115,7 +115,7 @@ DOMElement * XKMSStatusRequestImpl::createBlankStatusRequest(
 
 XKMSMessageAbstractType::messageType XKMSStatusRequestImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::StatusRequest;
+	return XKMSMessageAbstractTypeImpl::StatusRequest;
 
 }
 

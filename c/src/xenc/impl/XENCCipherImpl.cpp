@@ -363,7 +363,7 @@ XSECCryptoKey * XENCCipherImpl::decryptKeyFromKeyInfoList(DSIGKeyInfoList * kil)
 
 		if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_ENCRYPTEDKEY) {
 
-			XENCEncryptedKey * ek = dynamic_cast<XENCEncryptedKey*>(kil->item(i));
+			XENCEncryptedKey * ek = (XENCEncryptedKey*) (kil->item(i));
 			volatile XMLByte buffer[1024];
 			try {
 				// Have to cast off volatile
@@ -654,7 +654,7 @@ int XENCCipherImpl::decryptKey(XENCEncryptedKey * encryptedKey, XMLByte * rawKey
 	}
 
 	// Get the raw encrypted data
-	TXFMChain * c = dynamic_cast<XENCEncryptedKeyImpl *>(encryptedKey)->createCipherTXFMChain();
+	TXFMChain * c = ((XENCEncryptedKeyImpl *) encryptedKey)->createCipherTXFMChain();
 	Janitor<TXFMChain> j_c(c);
 
 	// Get the Algorithm handler for the algorithm

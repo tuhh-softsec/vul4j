@@ -63,7 +63,7 @@ class XKMSQueryKeyBinding;
 \endverbatim
  */
 
-class XKMSLocateRequest : virtual public XKMSRequestAbstractType {
+class XKMSLocateRequest : public XKMSRequestAbstractType {
 
 	/** @name Constructors and Destructors */
 	//@{

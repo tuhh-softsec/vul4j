@@ -106,8 +106,9 @@ void XKMSCompoundResultImpl::load() {
 			strEquals(getXKMSLocalName(e), XKMSConstants::s_tagValidateResult)) {
 
 			// Have a legitimate Result to load
-			XKMSMessageAbstractType * m = m_factory.newMessageFromDOM(e);
-			m_resultList.push_back(dynamic_cast<XKMSResultTypeImpl *>(m));
+			XKMSMessageAbstractTypeImpl * m = 
+				(XKMSMessageAbstractTypeImpl *) m_factory.newMessageFromDOM(e);
+			m_resultList.push_back((XKMSResultTypeImpl *) m);
 
 		}
 
@@ -138,7 +139,7 @@ DOMElement * XKMSCompoundResultImpl::createBlankCompoundResult(
 
 XKMSMessageAbstractType::messageType XKMSCompoundResultImpl::getMessageType(void) {
 
-	return XKMSMessageAbstractType::CompoundResult;
+	return XKMSMessageAbstractTypeImpl::CompoundResult;
 
 }
 
@@ -172,7 +173,7 @@ XKMSLocateResult * XKMSCompoundResultImpl::createLocateResult(
 		const XMLCh * id) {
 
 	XKMSLocateResult * r = m_factory.createLocateResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
-	m_resultList.push_back(dynamic_cast<XKMSResultTypeImpl*>(r));
+	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
 	mp_messageAbstractTypeElement->appendChild(r->getElement());
 	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
@@ -188,7 +189,7 @@ XKMSValidateResult * XKMSCompoundResultImpl::createValidateResult(
 		const XMLCh * id) {
 
 	XKMSValidateResult * r = m_factory.createValidateResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
-	m_resultList.push_back(dynamic_cast<XKMSResultTypeImpl*>(r));
+	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
 	mp_messageAbstractTypeElement->appendChild(r->getElement());
 	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
@@ -204,7 +205,7 @@ XKMSStatusResult * XKMSCompoundResultImpl::createStatusResult(
 		const XMLCh * id) {
 
 	XKMSStatusResult * r = m_factory.createStatusResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
-	m_resultList.push_back(dynamic_cast<XKMSResultTypeImpl*>(r));
+	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
 	mp_messageAbstractTypeElement->appendChild(r->getElement());
 	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
@@ -220,7 +221,7 @@ XKMSRegisterResult * XKMSCompoundResultImpl::createRegisterResult(
 		const XMLCh * id) {
 
 	XKMSRegisterResult * r = m_factory.createRegisterResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
-	m_resultList.push_back(dynamic_cast<XKMSResultTypeImpl*>(r));
+	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
 	mp_messageAbstractTypeElement->appendChild(r->getElement());
 	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
@@ -236,7 +237,7 @@ XKMSResult * XKMSCompoundResultImpl::createResult(
 		const XMLCh * id) {
 
 	XKMSResult * r = m_factory.createResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
-	m_resultList.push_back(dynamic_cast<XKMSResultTypeImpl*>(r));
+	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
 	mp_messageAbstractTypeElement->appendChild(r->getElement());
 	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
