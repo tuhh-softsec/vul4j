@@ -39,9 +39,7 @@
 #include <xsec/xkms/XKMSLocateRequest.hpp>
 #include <xsec/xkms/XKMSQueryKeyBinding.hpp>
 
-#if defined(_WIN32)
-#    include <xsec/utils/winutils/XSECSOAPRequestorSimpleWin32.hpp>
-#endif
+#include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 
 // General
 
@@ -79,15 +77,15 @@ using std::ostream;
 #include <xalanc/XPath/XPathEvaluator.hpp>
 #include <xalanc/XalanTransformer/XalanTransformer.hpp>
 
+XALAN_USING_XALAN(XPathEvaluator)
+XALAN_USING_XALAN(XalanTransformer)
+
+#endif
+
 #if defined (HAVE_OPENSSL)
 // OpenSSL
 
 #	include <openssl/err.h>
-
-#endif
-
-XALAN_USING_XALAN(XPathEvaluator)
-XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
@@ -268,7 +266,6 @@ int createMessage(char * msgType, XSECProvider &prov, DOMDocument **doc, XKMSMes
 int doRequest(char * msgType) {
 
 	XSECProvider prov;
-	XKMSMessageFactory * factory = prov.getXKMSMessageFactory();
 
 	// Create a new message
 	XKMSMessageAbstractType * msg;
@@ -283,10 +280,8 @@ int doRequest(char * msgType) {
 
 	}
 
-#if defined(_WIN32)
-	XSECSOAPRequestorSimpleWin32 req(MAKE_UNICODE_STRING(g_serviceURI));
+	XSECSOAPRequestorSimple req(MAKE_UNICODE_STRING(g_serviceURI));
 	req.doRequest(doc);
-#endif
 
 	delete msg;
 	doc->release();
@@ -302,7 +297,6 @@ int doRequest(char * msgType) {
 int doMessageCreate(char * msgType) {
 
 	XSECProvider prov;
-	XKMSMessageFactory * factory = prov.getXKMSMessageFactory();
 
 	// Create a new message
 	XKMSMessageAbstractType * msg;

@@ -17,57 +17,60 @@
 /*
  * XSEC
  *
- * XSECSOAPRequestor:= Interface class used by the XKMS client code to
- *                     perform a SOAP request and receive response.
+ * XSECSOAPRequestorSimple := (Very) Basic implementation of a SOAP
+ *                         HTTP wrapper for testing the client code.
  *
  *
  * $Id$
  *
  */
 
-#ifndef XSECSOAPREQUESTOR_INCLUDE
-#define XSECSOAPREQUESTOR_INCLUDE
+#ifndef XSECSOAPREQUESTORSIMPLE_INCLUDE
+#define XSECSOAPREQUESTORSIMPLE_INCLUDE
 
 #include <xsec/framework/XSECDefs.hpp>
+#include <xsec/utils/XSECSOAPRequestor.hpp>
+
+#include <xercesc/util/XMLUri.hpp>
 
 XSEC_DECLARE_XERCES_CLASS(DOMDocument);
 
 /**
- * @brief Interface for SOAP Requests
- * @ingroup interfaces
+ * @ingroup xkms
+ */
+/*\@{*/
+
+/**
+ * @brief Basic HTTP implementation for SOAP Requests
  *
  * The XKMS client code needs to be able to call on a SOAP requestor
  * implementation that will handle wrapping the request in a SOAP msg
- * and transporting it to the SOAP server.  This class defines the
- * interface used by the client code to make this happen.
- *
- * Implementors need to wrap the passed in DOM document in a SOAP 1.1
- * or SOAP 1.2 msg.  E.g. (SOAP 1.2)
- * \verbatim
-   <?xml version='1.0' encoding="utf-8"?>
-   <env:Envelope xmlns:env="http://www.w3.org/2002/06/soap-envelope"> 
-    <env:Header>
-     <env:Body>
-       XKMS Request Message element 
-     </env:Body>
-    </env:Header>
-   </env:Envelope>
-\endverbatim
- * 
- * SOAP implentors may want/need to add other headers.
+ * and transporting it to the SOAP server.  This class provides a very
+ * naieve implementation that wraps the message and does a basic
+ * HTTP POST to get the message to the end server.
  *
  */
 
 
-class DSIG_EXPORT XSECSOAPRequestor {
+class DSIG_EXPORT XSECSOAPRequestorSimple : public XSECSOAPRequestor {
 
 public :
 
 	/** @name Constructors and Destructors */
 	//@{
 
-	XSECSOAPRequestor() {}
-	virtual ~XSECSOAPRequestor() {}
+	/**
+	 * \brief Constructor
+	 *
+	 * Create a SOAP requestor that can be used to access a specific
+	 * server
+	 *
+	 * @param uri The URI of the server that will be accessed.
+	 * @note The URI must be http://...
+	 */
+
+	XSECSOAPRequestorSimple(const XMLCh * uri);
+	virtual ~XSECSOAPRequestorSimple();
 
 	//@}
 
@@ -77,11 +80,8 @@ public :
 	 * \brief Do a SOAP request
 	 *
 	 * Performs a request based on the passed in DOM document and
-	 * the indicated URI.  The function is expected to return a pointer
+	 * the indicated URI.  The function is returns a pointer
 	 * to the parsed result message (with the SOAP envelope removed)
-	 *
-	 * The implementing object is expected to know how to get the
-	 * wrapped message to the server that will process the request
 	 *
 	 * @param request The DOM document containing the message to be 
 	 * wrapped and sent.
@@ -90,10 +90,17 @@ public :
 	 */
 
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *
-		doRequest(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * request) = 0;
+		doRequest(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * request);
+
+private:
+
+	char * wrapAndSerialise(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * request);
+
+	XERCES_CPP_NAMESPACE_QUALIFIER XMLUri			
+						m_uri;
 
 };
 
 
-#endif /* XSECSOAPREQUESTOR_INCLUDE */
+#endif /* XSECSOAPREQUESTORSIMPLE_INCLUDE */
 
