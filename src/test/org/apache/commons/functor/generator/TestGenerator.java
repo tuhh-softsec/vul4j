@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.2 2003/07/17 17:48:03 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.3 2003/07/17 22:44:46 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -96,7 +96,7 @@ public class TestGenerator extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
 
-        simpleGenerator = new Generator() {
+        simpleGenerator = new BaseGenerator() {
             public void run(UnaryProcedure proc) {
                 for (int i=0;i<5;i++) {
                     proc.run(new Integer(i));
@@ -164,7 +164,7 @@ public class TestGenerator extends TestCase {
 
     public void testWrappingGenerator() {
         final StringBuffer result = new StringBuffer();
-        final Generator gen = new Generator(simpleGenerator) {
+        final Generator gen = new BaseGenerator(simpleGenerator) {
             public void run(final UnaryProcedure proc) {
                 Generator wrapped = getWrappedGenerator();
                 assertSame(simpleGenerator, wrapped);

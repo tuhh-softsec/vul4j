@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/IteratorToGeneratorAdapter.java,v 1.2 2003/06/30 23:36:13 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/IteratorToGeneratorAdapter.java,v 1.3 2003/07/17 22:44:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,11 +65,11 @@ import java.util.Iterator;
  * Adapts an iterator into a generator.
  *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/06/30 23:36:13 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/17 22:44:45 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
-public class IteratorToGeneratorAdapter extends Generator {
+public class IteratorToGeneratorAdapter extends BaseGenerator {
 
     /***************************************************
      *  Instance variables

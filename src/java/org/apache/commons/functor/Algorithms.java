@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.4 2003/06/30 22:40:53 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.5 2003/07/17 22:44:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,17 +57,18 @@
 
 package org.apache.commons.functor;
 
-import org.apache.commons.functor.generator.Generator;
-import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.functor.generator.BaseGenerator;
+import org.apache.commons.functor.generator.Generator;
+import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
+
 /**
- * Utility methods and algorithms for applying functors to {@link Generator}s.
- * {@link Generator}s also define these utility methods as instance methods. The
+ * Utility methods and algorithms for applying functors to {@link IfaceGenerator}s.
+ * {@link IfaceGenerator}s also define these utility methods as instance methods. The
  * {@link #apply}, {@link #select}, and {@link #reject} methods return new
- * Generators. This becomes useful for constructing nested expressions. For
+ * IfaceGenerators. This becomes useful for constructing nested expressions. For
  * example:
  *
  * <pre>
@@ -79,25 +80,25 @@ import java.util.NoSuchElementException;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.4 $ $Date: 2003/06/30 22:40:53 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/17 22:44:45 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
 public class Algorithms {
 
     /**
-     * apply(new IteratorToGeneratorAdapter(iter),func);
+     * apply(new IteratorToGeneratorAdapater(iter),func);
      */
     public static final Generator apply(Iterator iter, UnaryFunction func) {
         return apply(new IteratorToGeneratorAdapter(iter),func);
     }
 
     /**
-     * Returns a {@link Generator} that will apply the given {@link UnaryFunction} to each
+     * Returns a {@link IfaceGenerator} that will apply the given {@link UnaryFunction} to each
      * generated element.
      */
     public static final Generator apply(final Generator gen, final UnaryFunction func) {
-        return new Generator(gen) {
+        return new BaseGenerator(gen) {
             public void run(final UnaryProcedure proc) {
                 gen.run(new UnaryProcedure() {
                     public void run(Object obj) {
@@ -109,17 +110,17 @@ public class Algorithms {
     }
 
     /**
-     * contains(new IteratorToGeneratorAdapter(iter),pred);
+     * contains(new IteratorToGeneratorAdapater(iter),pred);
      */
     public static final boolean contains(Iterator iter, UnaryPredicate pred) {
         return contains(new IteratorToGeneratorAdapter(iter),pred);
     }
 
     /**
-     * Return <code>true</code> if some element in the given {@link Generator}
+     * Return <code>true</code> if some element in the given {@link IfaceGenerator}
      * that matches the given {@link UnaryPredicate UnaryPredicate}.
      *
-     * @see #detect(Generator,UnaryPredicate)
+     * @see #detect(IfaceGenerator,UnaryPredicate)
      */
     public static final boolean contains(final Generator gen, final UnaryPredicate pred) {
         // javas' inner classes suck, i should do this a different way i guess
@@ -139,26 +140,26 @@ public class Algorithms {
     }
 
     /**
-     * detect(new IteratorToGeneratorAdapter(iter), pred);
+     * detect(new IteratorToGeneratorAdapater(iter), pred);
      */
     public static final Object detect(Iterator iter, UnaryPredicate pred) {
         return detect(new IteratorToGeneratorAdapter(iter), pred);
     }
 
     /**
-     * detect(new IteratorToGeneratorAdapter(iter), pred, ifNone);
+     * detect(new IteratorToGeneratorAdapater(iter), pred, ifNone);
      */
     public static final Object detect(Iterator iter, UnaryPredicate pred, Object ifNone) {
         return detect(new IteratorToGeneratorAdapter(iter), pred, ifNone);
     }
 
     /**
-     * Return the first element within the given {@link Generator} that matches
+     * Return the first element within the given {@link IfaceGenerator} that matches
      * the given {@link UnaryPredicate UnaryPredicate}, or throw {@link
      * java.util.NoSuchElementException NoSuchElementException} if no
      * matching element can be found.
      *
-     * @see #detect(Generator,UnaryPredicate,Object)
+     * @see #detect(IfaceGenerator,UnaryPredicate,Object)
      * @throws NoSuchElementException If no element could be found.
      */
     public static final Object detect(final Generator gen, final UnaryPredicate pred) {
@@ -180,12 +181,12 @@ public class Algorithms {
     }
 
     /**
-     * Return the first element within the given {@link Generator} that matches
+     * Return the first element within the given {@link IfaceGenerator} that matches
      * the given {@link UnaryPredicate UnaryPredicate}, or return the given
      * (possibly <code>null</code> <code>Object</code> if no matching element
      * can be found.
      *
-     * @see #detect(Generator,UnaryPredicate)
+     * @see #detect(IfaceGenerator,UnaryPredicate)
      */
     public static final Object detect(final Generator gen, final UnaryPredicate pred, Object ifNone) {
         final Object[] foundObj = new Object[1];
@@ -206,7 +207,7 @@ public class Algorithms {
     }
 
     /**
-     * foreach(new IteratorToGeneratorAdapter(iter), proc);
+     * foreach(new IteratorToGeneratorAdapater(iter), proc);
      */
     public static final void foreach(Iterator iter, UnaryProcedure proc) {
         foreach(new IteratorToGeneratorAdapter(iter), proc);
@@ -214,14 +215,14 @@ public class Algorithms {
 
     /**
      * {@link UnaryProcedure#run Apply} the given {@link UnaryProcedure
-     * UnaryProcedure} to each element in the given {@link Generator}.
+     * UnaryProcedure} to each element in the given {@link IfaceGenerator}.
      */
     public static final void foreach(Generator gen, UnaryProcedure proc) {
         gen.run(proc);
     }
 
     /**
-     * inject(new IteratorToGeneratorAdapter(iter), seed, func);
+     * inject(new IteratorToGeneratorAdapater(iter), seed, func);
      */
     public static final Object inject(Iterator iter, Object seed, BinaryFunction func) {
         return inject(new IteratorToGeneratorAdapter(iter), seed, func);
@@ -229,7 +230,7 @@ public class Algorithms {
 
     /**
      * {@link BinaryFunction#evaluate Evaluate} the pair <i>( previousResult,
-     * element )</i> for each element in the given {@link Generator} where
+     * element )</i> for each element in the given {@link IfaceGenerator} where
      * previousResult is initially <i>seed</i>, and thereafter the result of the
      * evaluation of the previous element in the iterator. Returns the result
      * of the final evaluation.
@@ -258,18 +259,18 @@ public class Algorithms {
 
 
     /**
-     * reject(new IteratorToGeneratorAdapter(iter), pred);
+     * reject(new IteratorToGeneratorAdapater(iter), pred);
      */
     public static Generator reject(Iterator iter, UnaryPredicate pred) {
         return reject(new IteratorToGeneratorAdapter(iter), pred);
     }
 
     /**
-     * Returns a {@link Generator} that will only "generate" elements that DO
+     * Returns a {@link IfaceGenerator} that will only "generate" elements that DO
      * NOT match the given predicate.
      */
     public static Generator reject(final Generator gen, final UnaryPredicate pred) {
-        return new Generator(gen) {
+        return new BaseGenerator(gen) {
             public void run(final UnaryProcedure proc) {
                 gen.run(new UnaryProcedure() {
                     public void run(Object obj) {
@@ -283,18 +284,18 @@ public class Algorithms {
     }
 
     /**
-     * select(new IteratorToGeneratorAdapter(iter), pred);
+     * select(new IteratorToGeneratorAdapater(iter), pred);
      */
     public static final Generator select(Iterator iter, UnaryPredicate pred) {
         return select(new IteratorToGeneratorAdapter(iter), pred);
     }
 
     /**
-     * Returns a {@link Generator} that will only "generate" elements that DO
+     * Returns a {@link IfaceGenerator} that will only "generate" elements that DO
      * match the given predicate.
      */
     public static final Generator select(final Generator gen, final UnaryPredicate pred) {
-        return new Generator(gen) {
+        return new BaseGenerator(gen) {
             public void run(final UnaryProcedure proc) {
                 gen.run(new UnaryProcedure() {
                     public void run(Object obj) {
@@ -308,25 +309,25 @@ public class Algorithms {
     }
 
     /**
-     * until(new IteratorToGeneratorAdapter(iter), pred);
+     * until(new IteratorToGeneratorAdapater(iter), pred);
      */
     public static final Generator until(Iterator iter, UnaryPredicate pred) {
         return until(new IteratorToGeneratorAdapter(iter), pred);
     }
 
     /**
-     * Returns a {@link Generator} that will stop when the predicate becomes
-     * true. This is useful for imposing {@link Generator} limits. For example:
+     * Returns a {@link IfaceGenerator} that will stop when the predicate becomes
+     * true. This is useful for imposing {@link IfaceGenerator} limits. For example:
      *
      * <pre>
      *  EachLine.open(file).until(new MaxIterations(1));
      * </pre>
      *
-     * Would only "generate" 1 line from the file before {@link Generator#stop
+     * Would only "generate" 1 line from the file before {@link IfaceGenerator#stop
      * stopping} the generator.
      */
     public static final Generator until(final Generator gen, final UnaryPredicate pred) {
-        return new Generator(gen) {
+        return new BaseGenerator(gen) {
             public void run(final UnaryProcedure proc) {
                 gen.run(new UnaryProcedure() {
                     public void run(Object obj) {

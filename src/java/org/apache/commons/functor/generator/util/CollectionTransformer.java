@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/CollectionTransformer.java,v 1.1 2003/06/30 11:00:13 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/CollectionTransformer.java,v 1.2 2003/07/17 22:44:46 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,19 +57,19 @@
 
 package org.apache.commons.functor.generator.util;
 
-import org.apache.commons.functor.generator.Transformer;
-import org.apache.commons.functor.generator.Generator;
-import org.apache.commons.functor.UnaryProcedure;
-
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
+
+import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.generator.Generator;
+import org.apache.commons.functor.generator.Transformer;
 
 /**
  * Transforms a generator into a collection. If a collection is not passed into
  * the constructor an ArrayList will be returned from the transform method.
  *
  * @since 1.0
- * @version $Revision: 1.1 $ $Date: 2003/06/30 11:00:13 $
+ * @version $Revision: 1.2 $ $Date: 2003/07/17 22:44:46 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
