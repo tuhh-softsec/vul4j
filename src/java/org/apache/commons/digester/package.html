@@ -1,4 +1,4 @@
-<!-- $Id: package.html,v 1.33 2004/11/30 02:57:17 skitching Exp $
+<!-- $Id: package.html,v 1.34 2005/01/18 00:57:36 skitching Exp $
   
  Copyright 2001-2004 The Apache Software Foundation.
  
@@ -54,7 +54,8 @@ standard libraries:</p>
     <ul>
     <li><a href="http://java.sun.com/xml">JAXP/1.1 Reference Implementation</a></li>
     <li><a href="http://xml.apache.org/xerces-j">Xerces</a> (Version 1.3.1 or later)</li>
-    </ul></li>
+    </ul>
+</li>
 </ul>
 <p>
 It is also dependent on a compatible set of 
@@ -300,13 +301,18 @@ the XML document you are parsing for you, without requiring any developer
 attention to this process.  Instead, you focus on deciding what functions you
 would like to have performed whenver a certain arrangement of nested elements
 is encountered in the XML document being parsed.  The mechanism for specifying
-such arrangements are called <em>element matching patterns</em>.
+such arrangements are called <em>element matching patterns</em>.</p>
+
+<p>The Digester can be configured to use different pattern-matching algorithms
+via the Digester.setRules method. However for the vast majority of cases, the
+default matching algorithm works fine. The default pattern matching behaviour
+is described below.</p>
 
 <p>A very simple element matching pattern is a simple string like "a".  This
 pattern is matched whenever an <code>&lt;a&gt;</code> top-level element is
 encountered in the XML document, no matter how many times it occurs.  Note that
 nested <code>&lt;a&gt;</code> elements will <strong>not</strong> match this
-pattern -- we will describe means to support this kind of matching later.</li>
+pattern -- we will describe means to support this kind of matching later.</p>
 
 <p>The next step up in matching pattern complexity is "a/b".  This pattern will
 be matched when a <code>&lt;b&gt;</code> element is found nested inside a
@@ -340,16 +346,38 @@ of "*/a" will match an <code>&lt;a&gt;</code> element at any nesting position
 within the document.</p>
 
 <p>It is quite possible that, when a particular XML element is being parsed,
-the pattern for more than one registered processing rule will be matched
- either because you registered more than one processing rule with the same
-matching pattern, or because one more more exact pattern matches and wildcard
-pattern matches are satisfied by the same element.</p>
+the pattern for more than one registered processing rule will be matched 
+because you registered more than one processing rule with the exact same
+matching pattern.</p>
 
-<p>When this occurs, the corresponding processing rules will all be fired in order. 
-<code>begin</code> (and <code>body</code>) method calls are executed in the 
-order that the <code>Rules</code> where initially registered with the 
-<code>Digester</code>, whilst <code>end</code> method calls are execute in 
+<p>When this occurs, the corresponding processing rules will all be fired in 
+order. Rule methods <code>begin</code> (and <code>body</code>) are executed in 
+the order that the <code>Rules</code> were initially registered with the 
+<code>Digester</code>, whilst <code>end</code> method calls are executed in 
 reverse order. In other words - the order is first in, last out.</p>
+
+<p>Note that wildcard patterns are ignored if an explicit match can be found 
+(and when multiple wildcard patterns match, only the longest, ie most 
+explicit, pattern is considered a match). The result is that rules can be 
+added for "an <a> tag anywhere", but then for that behaviour to be 
+explicitly overridden for specific cases, eg "but not an <a> that is a 
+direct child of an <x>". Therefore if you have rules A and B registered for
+pattern "*/a" then want to add an additional rule C for pattern "x/a" only, 
+then what you need to do is add *three* rules for "x/a": A, B and C. Note 
+that by using:
+<pre>
+  Rule ruleA = new ObjectCreateRule();
+  Rule ruleB = new SetNextRule();
+  Rule ruleC = new SetPropertiesRule();
+
+  digester.addRule("*/a", ruleA);
+  digester.addRule("*/a", ruleB);
+  digester.addRule("x/a", ruleA);
+  digester.addRule("x/a", ruleB);
+  digester.addRule("x/a", ruleC);
+</pre>
+you have associated the same rule instances A and B with multiple patterns, 
+thus avoiding creating extra rule object instances.</p>
 
 <a name="doc.Rules"></a>
 <h3>Processing Rules</h3>
