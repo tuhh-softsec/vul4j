@@ -135,8 +135,10 @@ public class XMLSecurityException extends Exception {
    }
 
    /**
-    * @param message
-    * @param cause
+    * Constructor XMLSecurityException
+    *
+    * @param msgID
+    * @param originalException
     */
    public XMLSecurityException(String message, Throwable cause) {
 		super(message, cause);
