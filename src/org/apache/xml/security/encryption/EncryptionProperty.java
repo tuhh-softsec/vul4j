@@ -103,7 +103,7 @@ public class EncryptionProperty extends EncryptionElementProxy {
    public void setId(String Id) {
 
       if ((this._state == MODE_CREATE) && (Id != null) && (Id.length() != 0)) {
-         this._constructionElement.setAttribute(EncryptionConstants._ATT_ID,
+         this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_ID,
                                                 Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
@@ -116,7 +116,7 @@ public class EncryptionProperty extends EncryptionElementProxy {
     */
    public String getId() {
       return this._constructionElement
-         .getAttribute(EncryptionConstants._ATT_ID);
+         .getAttributeNS(null, EncryptionConstants._ATT_ID);
    }
 
    /**
@@ -127,7 +127,7 @@ public class EncryptionProperty extends EncryptionElementProxy {
    public void setTarget(String Target) {
 
       if ((this._state == MODE_CREATE) && (Target != null)) {
-         this._constructionElement.setAttribute(EncryptionConstants._ATT_TARGET,
+         this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_TARGET,
                                                 Target);
       }
    }
@@ -139,7 +139,7 @@ public class EncryptionProperty extends EncryptionElementProxy {
     */
    public String getTarget() {
       return this._constructionElement
-         .getAttribute(EncryptionConstants._ATT_TARGET);
+         .getAttributeNS(null, EncryptionConstants._ATT_TARGET);
    }
 
    public String getBaseLocalName() {

@@ -124,10 +124,10 @@ public class XPathFilterCHGPContainer extends ElementProxy
 
       if (includeSlashPolicy) {
          this._constructionElement
-            .setAttribute(XPathFilterCHGPContainer._ATT_INCLUDESLASH, "true");
+            .setAttributeNS(null, XPathFilterCHGPContainer._ATT_INCLUDESLASH, "true");
       } else {
          this._constructionElement
-            .setAttribute(XPathFilterCHGPContainer._ATT_INCLUDESLASH, "false");
+            .setAttributeNS(null, XPathFilterCHGPContainer._ATT_INCLUDESLASH, "false");
       }
 
       if ((includeButSearch != null)
@@ -284,7 +284,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    public boolean getIncludeSlashPolicy() {
 
       return this._constructionElement
-         .getAttribute(XPathFilterCHGPContainer._ATT_INCLUDESLASH)
+         .getAttributeNS(null, XPathFilterCHGPContainer._ATT_INCLUDESLASH)
          .equals("true");
    }
 

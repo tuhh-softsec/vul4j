@@ -171,18 +171,16 @@ public abstract class ElementProxy {
       String prefix = ElementProxy.getDefaultPrefix(namespace);
 
       if (namespace == null) {
-         result = doc.createElement(localName);
+         result = doc.createElementNS(null, localName);
       } else {
          if ((prefix == null) || (prefix.length() == 0)) {
             result = doc.createElementNS(namespace, localName);
 
-            // result.setAttribute("xmlns", namespace);
             result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns",
                                   namespace);
          } else {
             result = doc.createElementNS(namespace, prefix + ":" + localName);
 
-            // result.setAttribute("xmlns:" + prefix, namespace);
             result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + prefix,
                                   namespace);
          }
@@ -549,7 +547,7 @@ public abstract class ElementProxy {
       Attr a = this._constructionElement.getAttributeNode(ns);
 
       if ((a != null) && (!a.getNodeValue().equals(uri))) {
-         Object exArgs[] = { ns, this._constructionElement.getAttribute(ns) };
+         Object exArgs[] = { ns, this._constructionElement.getAttributeNS(null, ns) };
 
          throw new XMLSecurityException(
             "namespacePrefixAlreadyUsedByOtherURI", exArgs);

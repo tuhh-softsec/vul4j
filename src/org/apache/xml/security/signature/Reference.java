@@ -295,7 +295,7 @@ public class Reference extends SignatureElementProxy {
          return null;
       }
 
-      String uri = digestMethodElem.getAttribute(Constants._ATT_ALGORITHM);
+      String uri = digestMethodElem.getAttributeNS(null, Constants._ATT_ALGORITHM);
 
       return MessageDigestAlgorithm.getInstance(this._doc, uri);
    }
@@ -308,7 +308,7 @@ public class Reference extends SignatureElementProxy {
    public void setURI(String URI) {
 
       if ((this._state == MODE_SIGN) && (URI != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_URI, URI);
+         this._constructionElement.setAttributeNS(null, Constants._ATT_URI, URI);
       }
    }
 
@@ -318,7 +318,7 @@ public class Reference extends SignatureElementProxy {
     * @return URI the <code>URI</code> of this <code>Reference</code> element
     */
    public String getURI() {
-      return this._constructionElement.getAttribute(Constants._ATT_URI);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_URI);
    }
 
    /**
@@ -329,7 +329,7 @@ public class Reference extends SignatureElementProxy {
    public void setId(String Id) {
 
       if ((this._state == MODE_SIGN) && (Id != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_ID, Id);
+         this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
    }
@@ -340,7 +340,7 @@ public class Reference extends SignatureElementProxy {
     * @return Id the <code>Id</code> attribute of this <code>Reference</code> element
     */
    public String getId() {
-      return this._constructionElement.getAttribute(Constants._ATT_ID);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
    }
 
    /**
@@ -351,7 +351,7 @@ public class Reference extends SignatureElementProxy {
    public void setType(String Type) {
 
       if ((this._state == MODE_SIGN) && (Type != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_TYPE, Type);
+         this._constructionElement.setAttributeNS(null, Constants._ATT_TYPE, Type);
       }
    }
 
@@ -361,7 +361,7 @@ public class Reference extends SignatureElementProxy {
     * @return the <code>type</code> attribute of the Reference
     */
    public String getType() {
-      return this._constructionElement.getAttribute(Constants._ATT_TYPE);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_TYPE);
    }
 
    /**

@@ -119,7 +119,7 @@ public class ObjectContainer extends SignatureElementProxy {
    public void setId(String Id) {
 
       if ((this._state == MODE_SIGN) && (Id != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_ID, Id);
+         this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
    }
@@ -130,7 +130,7 @@ public class ObjectContainer extends SignatureElementProxy {
     * @return the <code>Id</code> attribute
     */
    public String getId() {
-      return this._constructionElement.getAttribute(Constants._ATT_ID);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
    }
 
    /**
@@ -141,7 +141,7 @@ public class ObjectContainer extends SignatureElementProxy {
    public void setMimeType(String MimeType) {
 
       if ((this._state == MODE_SIGN) && (MimeType != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_MIMETYPE,
+         this._constructionElement.setAttributeNS(null, Constants._ATT_MIMETYPE,
                                                 MimeType);
       }
    }
@@ -152,7 +152,7 @@ public class ObjectContainer extends SignatureElementProxy {
     * @return the <code>MimeType</code> attribute
     */
    public String getMimeType() {
-      return this._constructionElement.getAttribute(Constants._ATT_MIMETYPE);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_MIMETYPE);
    }
 
    /**
@@ -163,7 +163,7 @@ public class ObjectContainer extends SignatureElementProxy {
    public void setEncoding(String Encoding) {
 
       if ((this._state == MODE_SIGN) && (Encoding != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_ENCODING,
+         this._constructionElement.setAttributeNS(null, Constants._ATT_ENCODING,
                                                 Encoding);
       }
    }
@@ -174,7 +174,7 @@ public class ObjectContainer extends SignatureElementProxy {
     * @return the <code>Encoding</code> attribute
     */
    public String getEncoding() {
-      return this._constructionElement.getAttribute(Constants._ATT_ENCODING);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_ENCODING);
    }
 
    /**

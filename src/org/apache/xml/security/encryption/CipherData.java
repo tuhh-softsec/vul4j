@@ -90,14 +90,14 @@ public class CipherData extends EncryptionElementProxy {
    }
    private void setNonce(int Nonce) {
       if (Nonce > 0) {
-         this._constructionElement.setAttribute(EncryptionConstants._ATT_NONCE, (new Integer(Nonce)).toString());
+         this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_NONCE, (new Integer(Nonce)).toString());
       }
    }
 
    public int getNonce() {
 
       String nonceStr =
-         this._constructionElement.getAttribute(EncryptionConstants._ATT_NONCE);
+         this._constructionElement.getAttributeNS(null, EncryptionConstants._ATT_NONCE);
 
       if ((nonceStr != null) && (nonceStr.length() > 0)) {
          return (new Integer(nonceStr)).intValue();

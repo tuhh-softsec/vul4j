@@ -85,7 +85,7 @@ public class KeyReference extends EncryptionElementProxy
 
       super(doc);
 
-      this._constructionElement.setAttribute(EncryptionConstants._ATT_URI, URI);
+      this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_URI, URI);
    }
 
    /**
@@ -107,7 +107,7 @@ public class KeyReference extends EncryptionElementProxy
     */
    public String getURI() {
       return this._constructionElement
-         .getAttribute(EncryptionConstants._ATT_URI);
+         .getAttributeNS(null, EncryptionConstants._ATT_URI);
    }
 
    public String getBaseLocalName() {

@@ -287,7 +287,7 @@ public class EncryptedData extends EncryptionElementProxy
    public void setId(String Id) {
 
       if ((this._state == MODE_CREATE) && (Id != null) && (Id.length() != 0)) {
-         this._constructionElement.setAttribute(EncryptionConstants._ATT_ID,
+         this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_ID,
                                                 Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
@@ -300,7 +300,7 @@ public class EncryptedData extends EncryptionElementProxy
     */
    public String getId() {
       return this._constructionElement
-         .getAttribute(EncryptionConstants._ATT_ID);
+         .getAttributeNS(null, EncryptionConstants._ATT_ID);
    }
 
    /**
@@ -311,7 +311,7 @@ public class EncryptedData extends EncryptionElementProxy
    public void setType(String Type) {
 
       if ((this._state == MODE_CREATE) && (Type != null)) {
-         this._constructionElement.setAttribute(EncryptionConstants._ATT_TYPE,
+         this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_TYPE,
                                                 Type);
       }
    }
@@ -323,7 +323,7 @@ public class EncryptedData extends EncryptionElementProxy
     */
    public String getType() {
       return this._constructionElement
-         .getAttribute(EncryptionConstants._ATT_TYPE);
+         .getAttributeNS(null, EncryptionConstants._ATT_TYPE);
    }
 
    /**
@@ -796,7 +796,7 @@ public class EncryptedData extends EncryptionElementProxy
 
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.newDocument();
-      Element root = doc.createElement("root");
+      Element root = doc.createElementNS(null, "root");
       String realContent = "1 USD           ";
       String desired = "999.999.999 EUR ";
       String estimated = realContent;
@@ -852,9 +852,9 @@ public class EncryptedData extends EncryptionElementProxy
       {
          org.apache.xpath.CachedXPathAPI xpath =
             new org.apache.xpath.CachedXPathAPI();
-         Element nsctx = doc.createElement("nsctx");
+         Element nsctx = doc.createElementNS(null, "nsctx");
 
-         nsctx.setAttribute("xmlns:xenc", EncryptionConstants.EncryptionSpecNS);
+         nsctx.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:xenc", EncryptionConstants.EncryptionSpecNS);
 
          Element encryptedDataElem = (Element) xpath.selectSingleNode(doc,
                                         "//xenc:EncryptedData", nsctx);

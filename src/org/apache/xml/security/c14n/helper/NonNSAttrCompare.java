@@ -107,22 +107,16 @@ public class NonNSAttrCompare implements java.util.Comparator {
       Attr attr0 = (Attr) obj0;
       Attr attr1 = (Attr) obj1;
 
-      {
-         String ns0 = attr0.getNamespaceURI();
-         String ns1 = attr1.getNamespaceURI();
-
-         if (ns0 != null && ns0.equals(Constants.NamespaceSpecNS)) {
-            throw new IllegalArgumentException("You must not supply namespace attributes: " + attr0.getNodeName() + "=\"" + attr0.getNodeValue() + "\" is a namespace");
-         }
-         if (ns1 != null && ns1.equals(Constants.NamespaceSpecNS)) {
-            throw new IllegalArgumentException("You must not supply namespace attributes: " + attr1.getNodeName() + "=\"" + attr1.getNodeValue() + "\" is a namespace");
-         }
-      }
-
-
-
       String namespaceURI0 = attr0.getNamespaceURI();
       String namespaceURI1 = attr1.getNamespaceURI();
+
+
+      if (namespaceURI0 != null && namespaceURI0.equals(Constants.NamespaceSpecNS)) {
+         throw new IllegalArgumentException("You must not supply namespace attributes: " + attr0.getNodeName() + "=\"" + attr0.getNodeValue() + "\" is a namespace");
+      }
+      if (namespaceURI1 != null && namespaceURI1.equals(Constants.NamespaceSpecNS)) {
+         throw new IllegalArgumentException("You must not supply namespace attributes: " + attr1.getNodeName() + "=\"" + attr1.getNodeValue() + "\" is a namespace");
+      }
 
       if ((namespaceURI0 == null) && (namespaceURI1 == null)) {
          String localName0 = attr0.getLocalName();

@@ -137,7 +137,7 @@ public class SignatureProperty extends SignatureElementProxy {
    public void setId(String Id) {
 
       if ((this._state == MODE_SIGN) && (Id != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_ID, Id);
+         this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
    }
@@ -148,7 +148,7 @@ public class SignatureProperty extends SignatureElementProxy {
     * @return the <code>Id</code> attribute
     */
    public String getId() {
-      return this._constructionElement.getAttribute(Constants._ATT_ID);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
    }
 
    /**
@@ -159,7 +159,7 @@ public class SignatureProperty extends SignatureElementProxy {
    public void setTarget(String Target) {
 
       if ((this._state == MODE_SIGN) && (Target != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_TARGET, Target);
+         this._constructionElement.setAttributeNS(null, Constants._ATT_TARGET, Target);
       }
    }
 
@@ -169,7 +169,7 @@ public class SignatureProperty extends SignatureElementProxy {
     * @return the <code>Target</code> attribute
     */
    public String getTarget() {
-      return this._constructionElement.getAttribute(Constants._ATT_TARGET);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_TARGET);
    }
 
    /**

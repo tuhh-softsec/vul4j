@@ -137,7 +137,7 @@ public abstract class KeyBaseType extends ElementProxy {
          String dateString = df.format(date);
 
          this._constructionElement
-            .setAttribute(ApacheKeyStoreConstants._ATT_DATE, dateString);
+            .setAttributeNS(null, ApacheKeyStoreConstants._ATT_DATE, dateString);
       }
    }
 
@@ -152,7 +152,7 @@ public abstract class KeyBaseType extends ElementProxy {
       try {
          String dateString =
             this._constructionElement
-               .getAttribute(ApacheKeyStoreConstants._ATT_DATE);
+               .getAttributeNS(null, ApacheKeyStoreConstants._ATT_DATE);
          DateFormat df = new SimpleDateFormat(DATE_STR);
 
          df.setTimeZone(TimeZone.getTimeZone("GMT"));

@@ -613,13 +613,7 @@ public class XMLUtils {
    public static Attr createAttr(Document doc, String QName, String Value,
                                  String NamespaceURI) {
 
-      Attr attr = null;
-
-      if ((NamespaceURI != null) && (NamespaceURI.length() > 0)) {
-         attr = doc.createAttributeNS(NamespaceURI, QName);
-      } else {
-         attr = doc.createAttribute(QName);
-      }
+      Attr attr = doc.createAttributeNS(NamespaceURI, QName);
 
       attr.setNodeValue(Value);
 
@@ -809,14 +803,14 @@ public class XMLUtils {
          Element element = doc.createElementNS(Constants.SignatureSpecNS,
                                                elementName);
 
-         element.setAttribute("xmlns", Constants.SignatureSpecNS);
+         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
 
          return element;
       } else {
          Element element = doc.createElementNS(Constants.SignatureSpecNS,
                                                ds + ":" + elementName);
 
-         element.setAttribute("xmlns:" + ds, Constants.SignatureSpecNS);
+         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + ds, Constants.SignatureSpecNS);
 
          return element;
       }
@@ -843,7 +837,7 @@ public class XMLUtils {
             doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
                                 elementName);
 
-         element.setAttribute("xmlns", Constants.SignatureSpecNS);
+         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
 
          return element;
       } else {
@@ -851,7 +845,7 @@ public class XMLUtils {
             doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
                                 xenc + ":" + elementName);
 
-         element.setAttribute("xmlns:" + xenc,
+         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + xenc,
                               EncryptionConstants.EncryptionSpecNS);
 
          return element;
@@ -1055,9 +1049,9 @@ public class XMLUtils {
    public static Element createDSctx(Document doc, String prefix,
                                      String namespace) {
 
-      Element ctx = doc.createElement("namespaceContext");
+      Element ctx = doc.createElementNS(null, "namespaceContext");
 
-      ctx.setAttribute("xmlns:" + prefix.trim(), namespace);
+      ctx.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + prefix.trim(), namespace);
 
       return ctx;
    }

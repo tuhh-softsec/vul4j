@@ -535,7 +535,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
             InclusiveNamespaces.prefixStr2Set(inclusiveNamespaces);
 
          this.canonicalizeXPathNodeSet(this._doc, true, new EC14nCtx());
-         this._writer.flush();
+
          this._writer.close();
 
          return baos.toByteArray();
@@ -671,8 +671,18 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          for (Node currentChild = currentNode.getFirstChild();
                  currentChild != null;
                  currentChild = currentChild.getNextSibling()) {
-            canonicalizeXPathNodeSet(currentChild, currentNodeIsVisible,
-                                     ctx.copy());
+            if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
+
+               /*
+                * We must 'clone' the inscopeXMLAttrs to allow the descendants
+                * to mess around in their own map
+                */
+               canonicalizeXPathNodeSet(currentChild, currentNodeIsVisible,
+                                        ctx.copy());
+            } else {
+               canonicalizeXPathNodeSet(currentChild, currentNodeIsVisible,
+                                        ctx);
+            }
          }
 
          if (currentNodeIsVisible) {
@@ -696,90 +706,81 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
    List getAttrs(Element currentElement, boolean parentIsVisible, EC14nCtx ctx)
            throws CanonicalizationException {
 
-      Map ns_rendered_old = ctx.n;
-      Map ns_rendered_new = new HashMap();
+      Set visiblyUtilized = new HashSet();
+
+      boolean currentElementIsInNodeset = this._xpathNodeSet.contains(currentElement);
+      if (currentElementIsInNodeset) {
+         if (currentElement.getNamespaceURI() != null) {
+            String prefix = currentElement.getPrefix();
+
+            if (prefix == null) {
+               visiblyUtilized.add("xmlns");
+            } else {
+               visiblyUtilized.add("xmlns:" + prefix);
+            }
+         }
+      }
+
+      Vector namespacesInSubset = new Vector();
+      Vector attributesInSubset = new Vector();
       NamedNodeMap attributes = currentElement.getAttributes();
       int attributesLength = attributes.getLength();
-      boolean currentElementIsInNodeset =
-         this._xpathNodeSet.contains(currentElement);
-      Vector attrResult = new Vector();
-
       for (int i = 0; i < attributesLength; i++) {
          Attr currentAttr = (Attr) attributes.item(i);
-         String name = currentAttr.getNodeName();
-         boolean nodesetContainsCurrentAttr =
-            this._xpathNodeSet.contains(currentAttr);
+         if (this._xpathNodeSet.contains(currentAttr)) {
+            String URI = currentAttr.getNamespaceURI();
+            if (URI != null && Constants.NamespaceSpecNS.equals(URI)) {
+               String value = currentAttr.getValue();
+               if (C14nHelper.namespaceIsRelative(value)) {
+                  Object exArgs[] = { currentElement.getTagName(), currentAttr.getNodeName(), value };
 
-         if (!name.startsWith("xmlns")) {
+                  throw new CanonicalizationException("c14n.Canonicalizer.RelativeNamespace", exArgs);
+               }
+               namespacesInSubset.add(currentAttr);
+            } else {
+               attributesInSubset.add(currentAttr);
 
-            // output xml:* and regular attributes
-            if (nodesetContainsCurrentAttr) {
-               attrResult.add(currentAttr);
+               String prefix = currentAttr.getPrefix();
+               if (prefix != null) {
+                  visiblyUtilized.add("xmlns:" + prefix);
+               }
             }
          }
       }
-
-      Collections.sort(attrResult,
-                       new org.apache.xml.security.c14n.helper
-                          .NonNSAttrCompare());
+      Collections.sort(namespacesInSubset,
+                       new org.apache.xml.security.c14n.helper.NSAttrCompare());
+      Collections.sort(attributesInSubset,
+                       new org.apache.xml.security.c14n.helper.NonNSAttrCompare());
 
       Vector nsResult = new Vector();
-
-      for (int i = 0; i < attributesLength; i++) {
-         Attr currentAttr = (Attr) attributes.item(i);
+      for (int i = 0; i < namespacesInSubset.size(); i++) {
+         Attr currentAttr = (Attr) namespacesInSubset.get(i);
          String name = currentAttr.getNodeName();
          String value = currentAttr.getValue();
-         boolean nodesetContainsCurrentAttr =
-            this._xpathNodeSet.contains(currentAttr);
 
          if (name.equals("xmlns") && value.equals("")) {
-
             // undeclare default namespace
-            boolean nameAlreadyVisible = ns_rendered_old.containsKey(name);
+            boolean nameAlreadyVisible = ctx.n.containsKey(name);
 
-            if (nodesetContainsCurrentAttr && nameAlreadyVisible) {
-               ns_rendered_old.remove(name);
+            if (nameAlreadyVisible) {
+               ctx.n.remove(name);
                nsResult.add(currentAttr);
             }
-         } else if (name.startsWith("xmlns") &&!value.equals("")) {
-
-            // update inscope namespaces
-            if (C14nHelper.namespaceIsRelative(value)) {
-               Object exArgs[] = { currentElement.getTagName(), name, value };
-
-               throw new CanonicalizationException(
-                  "c14n.Canonicalizer.RelativeNamespace", exArgs);
-            }
-
+         } else {
             //J-
-            boolean utilizedOrIncluded = this.utilizedOrIncluded(currentElement, name);
-            boolean nameAlreadyVisible = ns_rendered_old.containsKey(name);
-            boolean visibleButNotEqual = nameAlreadyVisible && !ns_rendered_old.get(name).equals(value);
+            // boolean utilizedOrIncluded = this.utilizedOrIncluded(currentElement, name);
+            boolean utilizedOrIncluded = visiblyUtilized.contains(name) || this._inclusiveNSSet.contains(name);
+            boolean nameAlreadyVisible = ctx.n.containsKey(name);
+            boolean visibleButNotEqual = nameAlreadyVisible && !ctx.n.get(name).equals(value);
             //J+
-            if (nodesetContainsCurrentAttr) {
-               if (utilizedOrIncluded
-                       && (!nameAlreadyVisible || visibleButNotEqual)) {
-
-                  // ns_rendered_new.put(name, value);
-                  ns_rendered_old.put(name, value);
-                  nsResult.add(currentAttr);
-               }
-            } else {
-
-               // ctx.n.remove(name);
+            if (currentElementIsInNodeset && utilizedOrIncluded && (!nameAlreadyVisible || visibleButNotEqual)) {
+               // ns_rendered_new.put(name, value);
+               ctx.n.put(name, value);
+               nsResult.add(currentAttr);
             }
          }
       }
-
-      Collections.sort(nsResult,
-                       new org.apache.xml.security.c14n.helper.NSAttrCompare());
-
-      /*
-      if (currentElementIsInNodeset) {
-         ctx.n = ns_rendered_new;
-      }
-      */
-      nsResult.addAll(attrResult);
+      nsResult.addAll(attributesInSubset);
 
       return nsResult;
    }

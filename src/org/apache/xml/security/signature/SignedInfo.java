@@ -139,7 +139,7 @@ public class SignedInfo extends Manifest {
          Element canonElem = XMLUtils.createElementInSignatureSpace(this._doc,
                                 Constants._TAG_CANONICALIZATIONMETHOD);
 
-         canonElem.setAttribute(Constants._ATT_ALGORITHM,
+         canonElem.setAttributeNS(null, Constants._ATT_ALGORITHM,
                                 CanonicalizationMethodURI);
          this._constructionElement.appendChild(canonElem);
          XMLUtils.addReturnToElement(this._constructionElement);
@@ -291,7 +291,7 @@ public class SignedInfo extends Manifest {
             }
 
             if (found) {
-               return ((Element) n).getAttribute(Constants._ATT_ALGORITHM);
+               return ((Element) n).getAttributeNS(null, Constants._ATT_ALGORITHM);
             }
          }
       }
@@ -309,7 +309,7 @@ public class SignedInfo extends Manifest {
       Element signatureElement = this.getSignatureMethodElement();
 
       if (signatureElement != null) {
-         return signatureElement.getAttribute(Constants._ATT_ALGORITHM);
+         return signatureElement.getAttributeNS(null, Constants._ATT_ALGORITHM);
       }
 
       return null;

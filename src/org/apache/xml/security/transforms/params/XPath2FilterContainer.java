@@ -119,7 +119,7 @@ public class XPath2FilterContainer extends ElementProxy
 
       super(doc);
 
-      this._constructionElement.setAttribute(XPath2FilterContainer._ATT_FILTER,
+      this._constructionElement.setAttributeNS(null, XPath2FilterContainer._ATT_FILTER,
                                              filterType);
 
       if ((xpath2filter.length() > 2)
@@ -146,7 +146,7 @@ public class XPath2FilterContainer extends ElementProxy
 
       String filterStr =
          this._constructionElement
-            .getAttribute(XPath2FilterContainer._ATT_FILTER);
+            .getAttributeNS(null, XPath2FilterContainer._ATT_FILTER);
 
       if (!filterStr
               .equals(XPath2FilterContainer
@@ -231,7 +231,7 @@ public class XPath2FilterContainer extends ElementProxy
    public boolean isIntersect() {
 
       return this._constructionElement
-         .getAttribute(XPath2FilterContainer._ATT_FILTER)
+         .getAttributeNS(null, XPath2FilterContainer._ATT_FILTER)
          .equals(XPath2FilterContainer._ATT_FILTER_VALUE_INTERSECT);
    }
 
@@ -243,7 +243,7 @@ public class XPath2FilterContainer extends ElementProxy
    public boolean isSubtract() {
 
       return this._constructionElement
-         .getAttribute(XPath2FilterContainer._ATT_FILTER)
+         .getAttributeNS(null, XPath2FilterContainer._ATT_FILTER)
          .equals(XPath2FilterContainer._ATT_FILTER_VALUE_SUBTRACT);
    }
 
@@ -255,7 +255,7 @@ public class XPath2FilterContainer extends ElementProxy
    public boolean isUnion() {
 
       return this._constructionElement
-         .getAttribute(XPath2FilterContainer._ATT_FILTER)
+         .getAttributeNS(null, XPath2FilterContainer._ATT_FILTER)
          .equals(XPath2FilterContainer._ATT_FILTER_VALUE_UNION);
    }
 

@@ -87,7 +87,7 @@ public class CipherReference extends EncryptionElementProxy {
 
       super(doc);
 
-      this._constructionElement.setAttribute(EncryptionConstants._ATT_URI, URI);
+      this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_URI, URI);
    }
 
    /**
@@ -101,7 +101,7 @@ public class CipherReference extends EncryptionElementProxy {
 
       super(doc);
 
-      this._constructionElement.setAttribute(EncryptionConstants._ATT_URI, URI);
+      this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_URI, URI);
       XMLUtils.addReturnToElement(this._constructionElement);
       this._constructionElement.appendChild(transforms.getElement());
       XMLUtils.addReturnToElement(this._constructionElement);
@@ -128,7 +128,7 @@ public class CipherReference extends EncryptionElementProxy {
     */
    public String getURI() {
       return this._constructionElement
-         .getAttribute(EncryptionConstants._ATT_URI);
+         .getAttributeNS(null, EncryptionConstants._ATT_URI);
    }
 
    /**

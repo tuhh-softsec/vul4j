@@ -115,10 +115,10 @@ public class RetrievalMethod extends SignatureElementProxy
 
       super(doc);
 
-      this._constructionElement.setAttribute(Constants._ATT_URI, URI);
+      this._constructionElement.setAttributeNS(null, Constants._ATT_URI, URI);
 
       if (Type != null) {
-         this._constructionElement.setAttribute(Constants._ATT_TYPE, Type);
+         this._constructionElement.setAttributeNS(null, Constants._ATT_TYPE, Type);
       }
 
       if (transforms != null) {
@@ -151,7 +151,7 @@ public class RetrievalMethod extends SignatureElementProxy
     * @return
     */
    public String getType() {
-      return this._constructionElement.getAttribute(Constants._ATT_TYPE);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_TYPE);
    }
 
    /**

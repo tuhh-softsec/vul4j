@@ -118,7 +118,7 @@ public final class Transform extends SignatureElementProxy {
       super(doc);
 
       try {
-         this._constructionElement.setAttribute(Constants._ATT_ALGORITHM,
+         this._constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM,
                                                 algorithmURI);
 
          String implementingClass =
@@ -182,7 +182,7 @@ public final class Transform extends SignatureElementProxy {
       super(element, BaseURI);
 
       // retrieve Algorithm Attribute from ds:Transform
-      String AlgorithmURI = element.getAttribute(Constants._ATT_ALGORITHM);
+      String AlgorithmURI = element.getAttributeNS(null, Constants._ATT_ALGORITHM);
 
       if ((AlgorithmURI == null) || (AlgorithmURI.length() == 0)) {
          Object exArgs[] = { Constants._ATT_ALGORITHM,
@@ -310,7 +310,7 @@ public final class Transform extends SignatureElementProxy {
     * @return the URI representation of Transformation algorithm
     */
    public final String getURI() {
-      return this._constructionElement.getAttribute(Constants._ATT_ALGORITHM);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_ALGORITHM);
    }
 
    /**

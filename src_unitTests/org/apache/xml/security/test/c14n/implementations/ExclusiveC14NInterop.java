@@ -190,7 +190,7 @@ public class ExclusiveC14NInterop extends InteropTest {
       assertTrue(success, success == null);
    }
 
-   public void _test_Y5() throws Exception {
+   public void test_Y5() throws Exception {
 
       // String success = t("data/interop/c14n/Y5", "signature.xml");
       String success = t("data/interop/c14n/Y5", "signatureCommented.xml");

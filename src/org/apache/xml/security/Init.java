@@ -138,11 +138,11 @@ public class Init {
             long XX_parsing_end = System.currentTimeMillis();
 
 
-            Element context = doc.createElement("nscontext");
+            Element context = doc.createElementNS(null, "nscontext");
 
-            context.setAttribute(
+            context.setAttributeNS(Constants.NamespaceSpecNS,
                "xmlns:x", "http://www.xmlsecurity.org/NS/#configuration");
-            context.setAttribute("xmlns:log4j",
+            context.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:log4j",
                                  "http://jakarta.apache.org/log4j/");
 
             long XX_configure_log4j_start = System.currentTimeMillis();
@@ -233,9 +233,9 @@ public class Init {
                   context);
 
                for (int i = 0; i < c14nElem.getLength(); i++) {
-                  String URI = ((Element) c14nElem.item(i)).getAttribute("URI");
+                  String URI = ((Element) c14nElem.item(i)).getAttributeNS(null, "URI");
                   String JAVACLASS =
-                     ((Element) c14nElem.item(i)).getAttribute("JAVACLASS");
+                     ((Element) c14nElem.item(i)).getAttributeNS(null, "JAVACLASS");
                   boolean registerClass = true;
 
                   try {
@@ -278,9 +278,9 @@ public class Init {
                   context);
 
                for (int i = 0; i < tranElem.getLength(); i++) {
-                  String URI = ((Element) tranElem.item(i)).getAttribute("URI");
+                  String URI = ((Element) tranElem.item(i)).getAttributeNS(null, "URI");
                   String JAVACLASS =
-                     ((Element) tranElem.item(i)).getAttribute("JAVACLASS");
+                     ((Element) tranElem.item(i)).getAttributeNS(null, "JAVACLASS");
                   boolean registerClass = true;
 
                   try {
@@ -321,9 +321,9 @@ public class Init {
                   context);
 
                for (int i = 0; i < sigElems.getLength(); i++) {
-                  String URI = ((Element) sigElems.item(i)).getAttribute("URI");
+                  String URI = ((Element) sigElems.item(i)).getAttributeNS(null, "URI");
                   String JAVACLASS =
-                     ((Element) sigElems.item(i)).getAttribute("JAVACLASS");
+                     ((Element) sigElems.item(i)).getAttributeNS(null, "JAVACLASS");
 
                   /** @todo handle registering */
                   boolean registerClass = true;
@@ -369,10 +369,10 @@ public class Init {
 
                for (int i = 0; i < resolverElem.getLength(); i++) {
                   String JAVACLASS =
-                     ((Element) resolverElem.item(i)).getAttribute("JAVACLASS");
+                     ((Element) resolverElem.item(i)).getAttributeNS(null, "JAVACLASS");
                   String Description =
                      ((Element) resolverElem.item(i))
-                        .getAttribute("DESCRIPTION");
+                        .getAttributeNS(null, "DESCRIPTION");
 
                   if ((Description != null) && (Description.length() > 0)) {
                      cat.debug("Register Resolver: " + JAVACLASS + ": "
@@ -402,13 +402,13 @@ public class Init {
                      for (int i = 0; i < keyElem.getLength(); i++) {
                         String namespace =
                            ((Element) keyElem.item(i))
-                              .getAttribute("NAMESPACE");
+                              .getAttributeNS(null, "NAMESPACE");
                         String localname =
                            ((Element) keyElem.item(i))
-                              .getAttribute("LOCALNAME");
+                              .getAttributeNS(null, "LOCALNAME");
                         String JAVACLASS =
                            ((Element) keyElem.item(i))
-                              .getAttribute("JAVACLASS");
+                              .getAttributeNS(null, "JAVACLASS");
 
                         cat.debug("KeyInfoContent: " + namespace + " "
                                   + localname + " " + JAVACLASS);
@@ -434,10 +434,10 @@ public class Init {
 
                for (int i = 0; i < resolverElem.getLength(); i++) {
                   String JAVACLASS =
-                     ((Element) resolverElem.item(i)).getAttribute("JAVACLASS");
+                     ((Element) resolverElem.item(i)).getAttributeNS(null, "JAVACLASS");
                   String Description =
                      ((Element) resolverElem.item(i))
-                        .getAttribute("DESCRIPTION");
+                        .getAttributeNS(null, "DESCRIPTION");
 
                   if ((Description != null) && (Description.length() > 0)) {
                      cat.debug("Register Resolver: " + JAVACLASS + ": "
@@ -462,8 +462,8 @@ public class Init {
 
                for (int i = 0; i < nl.getLength(); i++) {
                   String namespace =
-                     ((Element) nl.item(i)).getAttribute("namespace");
-                  String prefix = ((Element) nl.item(i)).getAttribute("prefix");
+                     ((Element) nl.item(i)).getAttributeNS(null, "namespace");
+                  String prefix = ((Element) nl.item(i)).getAttributeNS(null, "prefix");
 
                   cat.debug("Now I try to bind " + prefix + " to " + namespace);
                   org.apache.xml.security.utils.ElementProxy
@@ -594,11 +594,11 @@ public class Init {
 
             for (int i = 0; i < nl.getLength(); i++) {
                Element e = (Element) nl.item(i);
-               String URI = e.getAttribute("URI");
-               String keyStoreType = e.getAttribute("Type");
-               String defaultKeyAlias = e.getAttribute("DefaultKeyAlias");
-               String storePass = e.getAttribute("StorePass");
-               String KeyPass = e.getAttribute("KeyPass");
+               String URI = e.getAttributeNS(null, "URI");
+               String keyStoreType = e.getAttributeNS(null, "Type");
+               String defaultKeyAlias = e.getAttributeNS(null, "DefaultKeyAlias");
+               String storePass = e.getAttributeNS(null, "StorePass");
+               String KeyPass = e.getAttributeNS(null, "KeyPass");
 
                // org.apache.xml.security.keys.keyStorage.KeyStorage.registerStore(URI, JAVACLASS, LOCATION, DEFAULTKEYOBJECT, CONTEXT);
             }

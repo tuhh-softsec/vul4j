@@ -379,7 +379,7 @@ public class SignatureAlgorithm extends Algorithm {
     * @return the URI representation of Transformation algorithm
     */
    public final String getURI() {
-      return this._constructionElement.getAttribute(Constants._ATT_ALGORITHM);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_ALGORITHM);
    }
 
    /**

@@ -408,7 +408,7 @@ public class EncryptedKey extends EncryptionElementProxy
     */
    public String getRecipient() {
       return this._constructionElement
-         .getAttribute(EncryptionConstants._ATT_RECIPIENT);
+         .getAttributeNS(null, EncryptionConstants._ATT_RECIPIENT);
    }
 
    /**
@@ -418,7 +418,7 @@ public class EncryptedKey extends EncryptionElementProxy
     */
    public void setRecipient(String recipient) {
       if (this._state == MODE_CREATE && recipient != null && recipient.length() > 0) {
-      this._constructionElement.setAttribute(EncryptionConstants._ATT_RECIPIENT,
+      this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_RECIPIENT,
                                              recipient);
       }
    }
@@ -510,7 +510,7 @@ public class EncryptedKey extends EncryptionElementProxy
    public void setId(String Id) {
 
       if ((this._state == MODE_CREATE) && (Id != null) && (Id.length() != 0)) {
-         this._constructionElement.setAttribute(EncryptionConstants._ATT_ID,
+         this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_ID,
                                                 Id);
          IdResolver.registerElementById(this._constructionElement, Id);
       }
@@ -523,7 +523,7 @@ public class EncryptedKey extends EncryptionElementProxy
     */
    public String getId() {
       return this._constructionElement
-         .getAttribute(EncryptionConstants._ATT_ID);
+         .getAttributeNS(null, EncryptionConstants._ATT_ID);
    }
 
    /**
@@ -534,7 +534,7 @@ public class EncryptedKey extends EncryptionElementProxy
    public void setType(String Type) {
 
       if ((this._state == MODE_CREATE) && (Type != null)) {
-         this._constructionElement.setAttribute(EncryptionConstants._ATT_TYPE,
+         this._constructionElement.setAttributeNS(null, EncryptionConstants._ATT_TYPE,
                                                 Type);
       }
    }
@@ -546,7 +546,7 @@ public class EncryptedKey extends EncryptionElementProxy
     */
    public String getType() {
       return this._constructionElement
-         .getAttribute(EncryptionConstants._ATT_TYPE);
+         .getAttributeNS(null, EncryptionConstants._ATT_TYPE);
    }
 
    /**

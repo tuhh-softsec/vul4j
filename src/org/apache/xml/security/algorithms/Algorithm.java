@@ -105,7 +105,7 @@ public abstract class Algorithm extends ElementProxy {
     * @return
     */
    public String getAlgorithmURI() {
-      return this._constructionElement.getAttribute(Constants._ATT_ALGORITHM);
+      return this._constructionElement.getAttributeNS(null, Constants._ATT_ALGORITHM);
    }
 
    /**
@@ -116,7 +116,7 @@ public abstract class Algorithm extends ElementProxy {
    protected void setAlgorithmURI(String algorithmURI) {
 
       if ((this._state == MODE_CREATE) && (algorithmURI != null)) {
-         this._constructionElement.setAttribute(Constants._ATT_ALGORITHM,
+         this._constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM,
                                                 algorithmURI);
       }
    }

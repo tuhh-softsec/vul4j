@@ -263,7 +263,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
       }
    }
 
-
    /**
     * This method updates the inscopeXMLAttrs based on the currentElement and
     * returns the Attr[]s to be outputted.
@@ -280,7 +279,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
       Vector ns = new Vector();
       Vector at = new Vector();
-
       NamedNodeMap attributes = currentElement.getAttributes();
       int attributesLength = attributes.getLength();
 
@@ -367,8 +365,11 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          }
       }
 
-      Collections.sort(ns, new org.apache.xml.security.c14n.helper.NSAttrCompare());
-      Collections.sort(at, new org.apache.xml.security.c14n.helper.NonNSAttrCompare());
+      Collections.sort(ns,
+                       new org.apache.xml.security.c14n.helper.NSAttrCompare());
+      Collections.sort(at,
+                       new org.apache.xml.security.c14n.helper
+                          .NonNSAttrCompare());
       ns.addAll(at);
 
       return ns;
@@ -479,7 +480,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
          this._doc = XMLUtils.getOwnerDocument(n);
          this._documentElement = this._doc.getDocumentElement();
-         this._rootNodeOfC14n = this._doc;
       }
 
       try {
@@ -487,7 +487,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
          this._writer = new OutputStreamWriter(baos, Canonicalizer.ENCODING);
 
-         this.canonicalizeXPathNodeSet(this._rootNodeOfC14n, true,
+         this.canonicalizeXPathNodeSet(this._doc, true,
                                        new C14nCtx());
          this._writer.close();
 
@@ -657,88 +657,81 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    List getAttrs(Element currentElement, boolean parentIsVisible, C14nCtx ctx)
            throws CanonicalizationException {
 
-      C14nHelper.checkForRelativeNamespace(currentElement);
-
-      Vector attributesResult = new Vector();
-      NamedNodeMap attributes = currentElement.getAttributes();
-      int attributesLength = attributes.getLength();
       boolean currentElementIsInNodeset =
          this._xpathNodeSet.contains(currentElement);
-
-      if (currentElementIsInNodeset) {
-         for (int i = 0; i < attributesLength; i++) {
-            Attr currentAttr = (Attr) attributes.item(i);
-            String name = currentAttr.getNodeName();
-
-            if (name.startsWith("xml:")) {
-               if (this._xpathNodeSet.contains(currentAttr)) {
-                  attributesResult.add(currentAttr);
-               }
-
-               ctx.a.put(name, currentAttr);
-            }
-         }
-
-         boolean isOrphanNode = !parentIsVisible;
-
-         if (isOrphanNode) {
-
-            // if it's an orphan node, we must include all xml:* attrs all the
-            // ancestor axis along
-            Iterator it = ctx.a.keySet().iterator();
-
-            while (it.hasNext()) {
-               String name = (String) it.next();
-
-               if (!currentElement.hasAttribute(name)) {
-                  attributesResult.add(ctx.a.get(name));
-               }
-            }
-         }
-      } else {
-
-         // we're called on an invisible element
-         for (int i = 0; i < attributesLength; i++) {
-            Attr currentAttr = (Attr) attributes.item(i);
-            String name = currentAttr.getNodeName();
-
-            if (name.startsWith("xml:")) {
-               if (this._xpathNodeSet.contains(currentAttr)) {
-                  attributesResult.add(currentAttr);
-               }
-
-               // regardless whether it's outputted or not, it's on the ancestor axis
-               ctx.a.put(name, currentAttr);
-            }
-         }
-      }
-
-      // collect all namespace nodes which are in the document subset in the List L
-      Vector L = new Vector();
+      Vector namespacesInSubset = new Vector();
+      Vector attributesInSubset = new Vector();
+      Vector xmlAttributesInSubset = new Vector();
+      NamedNodeMap attributes = currentElement.getAttributes();
+      int attributesLength = attributes.getLength();
 
       for (int i = 0; i < attributesLength; i++) {
          Attr currentAttr = (Attr) attributes.item(i);
-         boolean inDocumentSubset = this._xpathNodeSet.contains(currentAttr);
+         String URI = currentAttr.getNamespaceURI();
 
-         if (inDocumentSubset) {
-            String name = currentAttr.getNodeName();
+         if (this._xpathNodeSet.contains(currentAttr)) {
+            if (URI != null) {
+               if (Constants.NamespaceSpecNS.equals(URI)) {
+                  String value = currentAttr.getValue();
 
-            if (name.startsWith("xmlns")) {
-               L.add(currentAttr);
+                  if (C14nHelper.namespaceIsRelative(value)) {
+                     Object exArgs[] = { currentElement.getTagName(),
+                                         currentAttr.getNodeName(), value };
+
+                     throw new CanonicalizationException(
+                        "c14n.Canonicalizer.RelativeNamespace", exArgs);
+                  }
+
+                  namespacesInSubset.add(currentAttr);
+               } else if (Constants.XML_LANG_SPACE_SpecNS.equals(URI)) {
+                  xmlAttributesInSubset.add(currentAttr);
+                  ctx.a.put(currentAttr.getNodeName(), currentAttr);
+               } else {
+                  attributesInSubset.add(currentAttr);
+               }
+            } else {
+               attributesInSubset.add(currentAttr);
+            }
+         } else {
+            if (URI != null && Constants.XML_LANG_SPACE_SpecNS.equals(URI)) {
+               ctx.a.put(currentAttr.getNodeName(), currentAttr);
             }
          }
       }
 
-      // sort List L
-      Collections
-         .sort(L, new org.apache.xml.security.c14n.helper.NSAttrCompare());
+      Collections.sort(namespacesInSubset,
+                       new org.apache.xml.security.c14n.helper.NSAttrCompare());
 
-      Vector LOutput = new Vector();
+      // update the ctx.a with the xml:* values
+      for (int i = 0; i < xmlAttributesInSubset.size(); i++) {
+         Attr currentAttr = (Attr) xmlAttributesInSubset.get(i);
+         String name = currentAttr.getNodeName();
+
+         ctx.a.put(name, currentAttr);
+      }
+
+      if (currentElementIsInNodeset &&!parentIsVisible) {
+         // it's an orphan node, so we must include all xml:* attrs all the
+         // ancestor axis along
+         Iterator it = ctx.a.keySet().iterator();
+
+         while (it.hasNext()) {
+            String name = (String) it.next();
+
+            attributesInSubset.add(ctx.a.get(name));
+         }
+      }
+      Collections.sort(attributesInSubset,
+                       new org.apache.xml.security.c14n.helper
+                          .NonNSAttrCompare());
+
+
+      Vector nsResult = new Vector();
       Map outputNamespaces = new HashMap();
 
-      if (L.size() > 0) {
+      if (namespacesInSubset.size() > 0) {
          int firstNonDefaultNS = -1;
-         Attr firstNode = (Attr) L.get(0);
+         Attr firstNode = (Attr) namespacesInSubset.get(0);
 
          if (!firstNode.getNodeName().equals("xmlns")) {
 
@@ -746,14 +739,10 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
             firstNonDefaultNS = 0;
 
             // if the output ancestor defines a default namespace
-            if (currentElementIsInNodeset && ctx.n.containsKey("xmlns")
-                    &&!ctx.n.get("xmlns").equals("")) {
-               Attr xmlns =
-                  this._doc.createAttributeNS(Constants.NamespaceSpecNS,
-                                              "xmlns");
-
+            if (currentElementIsInNodeset && ctx.n.containsKey("xmlns") &&!ctx.n.get("xmlns").equals("")) {
+               Attr xmlns = this._doc.createAttributeNS(Constants.NamespaceSpecNS, "xmlns");
                xmlns.setValue("");
-               LOutput.add(xmlns);
+               nsResult.add(xmlns);
             }
          } else if (firstNode.getNodeName().equals("xmlns")
                     && firstNode.getValue().equals("")) {
@@ -763,27 +752,22 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
             firstNonDefaultNS = 1;
 
             // if the output ancestor defines a default namespace
-            if (currentElementIsInNodeset && ctx.n.containsKey("xmlns")
-                    &&!ctx.n.get("xmlns").equals("")) {
-               LOutput.add(firstNode);
+            if (currentElementIsInNodeset && ctx.n.containsKey("xmlns") &&!ctx.n.get("xmlns").equals("")) {
+               nsResult.add(firstNode);
             }
          } else {
             firstNonDefaultNS = 0;
          }
 
          // handle non-empty namespaces
-         for (int i = firstNonDefaultNS; i < L.size(); i++) {
-            Attr currentAttr = (Attr) L.get(i);
+         for (int i = firstNonDefaultNS; i < namespacesInSubset.size(); i++) {
+            Attr currentAttr = (Attr) namespacesInSubset.get(i);
             String name = currentAttr.getNodeName();
-            String value = currentAttr.getValue();
 
             outputNamespaces.put(name, currentAttr);
 
-            if (ctx.n.containsKey(name)
-                    && ((Attr) ctx.n.get(name)).getValue().equals(value)) {
-               ;
-            } else {
-               LOutput.add(currentAttr);
+            if (!ctx.n.containsKey(name) || !((Attr) ctx.n.get(name)).getValue().equals(currentAttr.getValue())) {
+               nsResult.add(currentAttr);
             }
          }
       }
@@ -794,31 +778,10 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          ctx.n = outputNamespaces;
       }
 
-      /* add all 'regular' attributed to the attributesResult; 'regular' means
-       * all which are not xml:* and nor xmlns*
-       */
-      for (int i = 0; i < attributesLength; i++) {
-         Attr currentAttr = (Attr) attributes.item(i);
-         String name = currentAttr.getNodeName();
-         boolean nodesetContainsCurrentAttr =
-            this._xpathNodeSet.contains(currentAttr);
-
-         if (!name.startsWith("xml")) {
-            if (nodesetContainsCurrentAttr) {
-               attributesResult.add(currentAttr);
-            }
-         }
-      }
-
-      // sort the non-namespace attributes
-      Collections.sort(attributesResult,
-                       new org.apache.xml.security.c14n.helper
-                          .NonNSAttrCompare());
-
       // and append them to the result
-      LOutput.addAll(attributesResult);
+      nsResult.addAll(attributesInSubset);
 
-      return LOutput;
+      return nsResult;
    }
 
    /**

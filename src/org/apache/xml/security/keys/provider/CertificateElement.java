@@ -125,7 +125,7 @@ public class CertificateElement extends KeyBaseType {
 
       if (this._state == ElementProxy.MODE_CREATE) {
          this._constructionElement
-            .setAttribute(ApacheKeyStoreConstants._ATT_JCATYPE, cert.getType());
+            .setAttributeNS(null, ApacheKeyStoreConstants._ATT_JCATYPE, cert.getType());
       }
    }
 
@@ -136,7 +136,7 @@ public class CertificateElement extends KeyBaseType {
     */
    public String getJCAType() {
       return this._constructionElement
-         .getAttribute(ApacheKeyStoreConstants._ATT_JCATYPE);
+         .getAttributeNS(null, ApacheKeyStoreConstants._ATT_JCATYPE);
    }
 
    /**
