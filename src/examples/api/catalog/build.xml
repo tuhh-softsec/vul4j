@@ -99,7 +99,7 @@
   </target>
 
   <target name="run" depends="compile">
-    <java classname="CatalogDigester" fork="yes">
+    <java classname="Main" fork="yes">
       <arg value="example.xml"/>
       <classpath refid="compile.classpath"/>
       <classpath>
