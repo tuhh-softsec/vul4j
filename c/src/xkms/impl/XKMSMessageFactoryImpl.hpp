@@ -66,7 +66,7 @@ public:
 	virtual void setXKMSNSPrefix(const XMLCh * prefix);
 
 
-	friend XSECProvider;
+	friend class XSECProvider;
 
 private:
 
