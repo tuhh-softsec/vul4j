@@ -199,7 +199,7 @@ XMLCh s_tstDName[] = {
 XSECCryptoKeyHMAC * createHMACKey(const unsigned char * str) {
 
 	// Create the HMAC key
-	static first = true;
+	static bool first = true;
 
 #if defined (HAVE_OPENSSL)
 	OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
@@ -490,7 +490,7 @@ count(ancestor-or-self::dsig:Signature)");
 		len = formatTarget->getLen();
 		char * mbuf = new char [len + 1];
 		memcpy(mbuf, formatTarget->getRawBuffer(), len);
-		buf[len] = '\0';
+		mbuf[len] = '\0';
 
 		delete theSerializer;
 		delete formatTarget;
@@ -549,7 +549,7 @@ count(ancestor-or-self::dsig:Signature)");
 		int nki = kil->getSize();
 
 		cerr << "Checking Distinguished name is decoded correctly ... ";
-		for (i = 0; i < nki; ++i) {
+		for (int i = 0; i < nki; ++i) {
 
 			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_X509) {
 
