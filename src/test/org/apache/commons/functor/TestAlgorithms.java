@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.6 2003/11/25 19:21:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.7 2003/11/25 19:44:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,7 +75,7 @@ import org.apache.commons.functor.core.Offset;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2003/11/25 19:21:43 $
+ * @version $Revision: 1.7 $ $Date: 2003/11/25 19:44:08 $
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {
@@ -124,6 +124,98 @@ public class TestAlgorithms extends TestCase {
     // Tests
     // ------------------------------------------------------------------------
 
+    public void testCollect() {
+        Collection result = Algorithms.collect(list.iterator());
+        assertNotNull(result);
+        assertEquals(list.size(),result.size());
+        assertEquals(list,result);
+    }    
+
+    public void testCollect2() {
+        Set set = new HashSet();
+        assertSame(set,Algorithms.collect(list.iterator(),set));
+        assertEquals(list.size(),set.size());
+        for(Iterator iter = list.iterator(); iter.hasNext(); ) {
+            assertTrue(set.contains(iter.next()));
+        }
+    }    
+
+    public void testCollect3() {
+        Set set = new HashSet();
+        assertSame(set,Algorithms.collect(listWithDuplicates.iterator(),set));
+        assertTrue(listWithDuplicates.size() > set.size());
+        for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
+            assertTrue(set.contains(iter.next()));
+        }
+    }    
+
+    public void testDetect() {
+        assertEquals(new Integer(3),Algorithms.detect(list.iterator(),equalsThree));
+        try {
+            Algorithms.detect(list.iterator(),equalsTwentyThree);
+            fail("Expected NoSuchElementException");
+        } catch(NoSuchElementException e) {
+            // expected
+        }
+    }    
+
+    public void testDetectIfNone() {
+        assertEquals(new Integer(3),Algorithms.detect(list.iterator(),equalsThree,"Xyzzy"));
+        assertEquals("Xyzzy",Algorithms.detect(list.iterator(),equalsTwentyThree,"Xyzzy"));
+    }    
+
+    public void testForEach() {
+        Summer summer = new Summer();
+        Algorithms.foreach(list.iterator(),summer);
+        assertEquals(sum,summer.sum);
+    }    
+
+    public void testSelect1() {
+        Collection result = Algorithms.collect(Algorithms.select(list.iterator(),isEven));
+        assertNotNull(result);
+        assertEquals(evens,result);
+    }    
+
+    public void testSelect2() {
+        ArrayList result = new ArrayList();
+        assertSame(result,Algorithms.collect(Algorithms.select(list.iterator(),isEven),result));
+        assertEquals(evens,result);
+    }    
+
+    public void testReject1() {
+        Collection result = Algorithms.collect(Algorithms.reject(list.iterator(),isOdd));
+        assertNotNull(result);
+        assertEquals(evens,result);
+    }    
+
+    public void testReject2() {
+        ArrayList result = new ArrayList();
+        assertSame(result,Algorithms.collect(Algorithms.reject(list.iterator(),isOdd),result));
+        assertEquals(evens,result);
+    }    
+
+    public void testRetain() {
+        Algorithms.retain(list.iterator(),isEven);
+        assertEquals(evens,list);
+    }
+
+    public void testRemove() {
+        Algorithms.remove(list.iterator(),isOdd);
+        assertEquals(evens,list);
+    }
+
+    public void testTransform() {
+        Algorithms.transform(
+            list.listIterator(),
+            new UnaryFunction() {
+                public Object evaluate(Object obj) {
+                    return new Integer(((Number)obj).intValue()*2);
+                }
+            }
+        );
+        assertEquals(doubled,list);
+    }
+
     public void testHasPublicConstructor() {
         // some frameworks work best with instantiable classes
         assertNotNull(new Algorithms());
@@ -157,51 +249,6 @@ public class TestAlgorithms extends TestCase {
     public void testContains() {
         assertTrue(Algorithms.contains(list.iterator(),equalsThree));
         assertTrue(!Algorithms.contains(list.iterator(),equalsTwentyThree));
-    }
-
-    public void testDetect() {
-        assertEquals(new Integer(3),Algorithms.detect(list.iterator(),equalsThree));
-        try {
-            Algorithms.detect(list.iterator(),equalsTwentyThree);
-            fail("Expected NoSuchElementException");
-        } catch(NoSuchElementException e) {
-            // expected
-        }
-    }
-
-    public void testDetectIfNone() {
-        assertEquals(new Integer(3),Algorithms.detect(list.iterator(),equalsThree,"Xyzzy"));
-        assertEquals("Xyzzy",Algorithms.detect(list.iterator(),equalsTwentyThree,"Xyzzy"));
-    }
-
-    public void testForEach() {
-        Summer summer = new Summer();
-        Algorithms.foreach(list.iterator(),summer);
-        assertEquals(sum,summer.sum);
-    }
-
-    public void testSelect1() {
-        Collection result = IteratorToGeneratorAdapter.adapt(Algorithms.select(list.iterator(),isEven)).toCollection();
-        assertNotNull(result);
-        assertEquals(evens,result);
-    }
-
-    public void testSelect2() {
-        ArrayList result = new ArrayList();
-        assertSame(result,IteratorToGeneratorAdapter.adapt(Algorithms.select(list.iterator(),isEven)).to(result));
-        assertEquals(evens,result);
-    }
-
-    public void testReject1() {
-        Collection result = IteratorToGeneratorAdapter.adapt(Algorithms.reject(list.iterator(),isOdd)).toCollection();
-        assertNotNull(result);
-        assertEquals(evens,result);
-    }
-
-    public void testReject2() {
-        ArrayList result = new ArrayList();
-        assertSame(result,IteratorToGeneratorAdapter.adapt(Algorithms.reject(list.iterator(),isOdd)).to(result));
-        assertEquals(evens,result);
     }
 
     public void testInject() {
