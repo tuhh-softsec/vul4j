@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.9 2001/09/20 20:42:04 craigmcc Exp $
+        $Id: build.xml,v 1.10 2001/09/22 18:44:13 craigmcc Exp $
 -->
 
 
@@ -47,10 +47,10 @@
   <property name="component.package"       value="org.apache.commons.digester"/>
 
   <!-- The title of this component -->
-  <property name="component.title"         value="XML to Java object configuration"/>
+  <property name="component.title"         value="XML to Java Object Configuration"/>
 
   <!-- The current version number of this component -->
-  <property name="component.version"       value="1.1-dev"/>
+  <property name="component.version"       value="1.1"/>
 
   <!-- The base directory for compilation targets -->
   <property name="build.home"              value="target"/>
