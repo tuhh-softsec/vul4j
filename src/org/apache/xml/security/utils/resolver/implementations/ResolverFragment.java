@@ -116,7 +116,7 @@ public class ResolverFragment extends ResourceResolverSpi {
           * resource containing the signature
           */
 
-         // cat.debug("ResolverFragment with empty URI (means complete document)");
+         cat.debug("ResolverFragment with empty URI (means complete document)");
          try {
             resultNodes =
                cXPathAPI.selectNodeList(doc,
@@ -140,7 +140,7 @@ public class ResolverFragment extends ResourceResolverSpi {
          // Element selectedElem = doc.getElementById(id);
          Element selectedElem = IdResolver.getElementById(doc, id);
 
-         // cat.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
+         cat.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
          if (selectedElem == null) {
             resultNodes = new HelperNodeList();
          } else {
@@ -159,7 +159,7 @@ public class ResolverFragment extends ResourceResolverSpi {
       Set resultSet = XMLUtils.convertNodelistToSet(resultNodes);
       XMLSignatureInput result = new XMLSignatureInput(resultSet, cXPathAPI);
 
-      // cat.debug("We return a nodeset with " + resultNodes.getLength() + " nodes");
+      cat.debug("We return a nodeset with " + resultNodes.getLength() + " nodes");
       result.setMIMEType("text/xml");
 
       try {
@@ -183,6 +183,7 @@ public class ResolverFragment extends ResourceResolverSpi {
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
       if (uri == null) {
+         cat.debug("Quick fail for null uri");
          return false;
       }
 
@@ -191,9 +192,10 @@ public class ResolverFragment extends ResourceResolverSpi {
       if (uriNodeValue.equals("")
               || (uriNodeValue.startsWith("#")
                   &&!uriNodeValue.startsWith("#xpointer("))) {
+         cat.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
          return true;
       }
-
+      cat.debug("Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
       return false;
    }
 
