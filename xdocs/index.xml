@@ -38,14 +38,23 @@ include:</p>
 
 <section name="Documentation">
 
+<p>User documentation is available as package descriptions within the 
+<a href="http://jakarta.apache.org/commons/digester/api/index.html">JavaDoc
+API documents</a>.  In particular, you should read the package description for 
+the <code>org.apache.commons.digester</code> package for detailed information 
+on using the package.</p>
+
 <p>The <a href="http://jakarta.apache.org/commons/digester/RELEASE-NOTES.txt">
 Release Notes</a> document the new features and bug fixes that have been
 included in this release.</p>
 
-<p>The <a href="http://jakarta.apache.org/commons/digester/api/index.html">
-JavaDoc API documents</a> are available online.  In particular, you should
-read the package description for the <code>org.apache.commons.digester</code>
-package for detailed information on using the package.</p>
+<p>The "examples" directory in the CVS repository contains code which 
+demonstrates the basic functionality. In particular, you should read the 
+AddressBook example in the "api" subdirectory. You can view the examples
+directly from the CVS repository via <a
+href="http://cvs.apache.org/viewcvs.cgi/jakarta-commons/digester/src/examples/">
+the ViewCVS</a> web site, or can use CVS to download the files.
+</p>
 
 </section>
 
