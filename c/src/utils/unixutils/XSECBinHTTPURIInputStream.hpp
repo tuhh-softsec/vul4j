@@ -60,70 +60,88 @@
 /*
  * XSEC
  *
- * XSECError := General class for handling errors
+ * XSECBinHTTPURIInputStream := Re-implementation of Xerces BinHTTPInputStream
+ *                              Allows us to modify and create an input
+ *                              stream that follows re-directs which is
+ *                              necessary to fully support XML-DSIG interop
+ *                              tests
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
+ * $Id$
  *
- * $LOG$
+ * $Log$
+ * Revision 1.1  2003/02/12 11:21:03  blautenb
+ * UNIX generic URI resolver
+ *
  *
  */
 
-#include <xsec/framework/XSECError.hpp>
+#ifndef UNIXXSECBINHTTPURIINPUTSTREAM_HEADER
+#define UNIXXSECBINHTTPURIINPUTSTREAM_HEADER
+
 #include <xsec/framework/XSECDefs.hpp>
-// Real definition of strings
 
-char * XSECExceptionStrings [] = {
+#include <xercesc/util/XMLUri.hpp>
+#include <xercesc/util/XMLExceptMsgs.hpp>
+#include <xercesc/util/BinInputStream.hpp>
 
-	"No Error",
-	"Error allocating memory",
-	"No TEXT child found under <DigestValue> element",
-	"Unknown Attribute found in DSIG element",
-	"Did not find expected DSIG child element",
-	"Unknown algorithm found in <Transform> element",
-	"Transform input/output mismatch",
-	"Referenced ID is not in DOM Document",
-	"Unsupported Xpointer expression found",
-	"An error occured during an XPath evalaution",
-	"An error occured during an XSLT transformation",
-	"The called feature is unsupported (general error)",
-	"Attempted to load an empty signature node",
-	"Attempted to load a non signature DOM Node as a <Signature>",
-	"Unknown canonicalization algorithm referenced",
-	"Unknown signature and hashing algorithms referenced",
-	"Attempted to load an empty X509Data Node",
-	"Attempted to load a non X509Data node as a <X509Data>",
-	"Error occurred in OpenSSL routine",
-	"Error occured when attempting to Verify a Signature",
-	"Attempted to load an empty SignedInfo node",
-	"Attempted to load a non SignedInfo node as a <SignedInfo>",
-	"Expected URI attribute in <REFERENCE> node",
-	"A method has been called without load() being called first",
-	"An error occurred when interacting with the Crypto Provider",
-	"An error occurred during processing of <KeyInfo> list",
-	"An error occurred during a signing operation",
-	"Attempted to load an empty KeyInfoName node",
-	"Attempted to load a non <KeyName> node as a KeyName",
-	"Unknown key type found in <KeyValue> element",
-	"An error occurred during the creation of a DSIGSignature object",
-	"An error occurred when trying to open a URI input stream",
-	"An error occurred in the XSEC Provider",
-	"CATASTROPHE - An error has been found in internal state",
-	"An error occurred in the Envelope Transform handler",
-	"A function has been called which is not supported in the compiled library",
-	"An error occured in a DSIGTransform holder",
-	"An error occured in a safe buffer",
-	"An error occurred processing an HTTP request via internal resolver",
-	"Unknown Error type",
+XSEC_USING_XERCES(XMLUri);
+XSEC_USING_XERCES(BinInputStream);
+
+
+//
+// This class implements the BinInputStream interface specified by the XML
+// parser.
+//
+
+class DSIG_EXPORT XSECBinHTTPURIInputStream : public BinInputStream
+{
+public :
+    XSECBinHTTPURIInputStream(const XMLUri&  urlSource);
+    ~XSECBinHTTPURIInputStream();
+
+    unsigned int curPos() const;
+    unsigned int readBytes
+    (
+                XMLByte* const  toFill
+        , const unsigned int    maxToRead
+    );
+
+
+private :
+    // -----------------------------------------------------------------------
+    //  Private data members
+    //
+    //  fSocket
+    //      The socket representing the connection to the remote file.
+    //  fBytesProcessed
+    //      Its a rolling count of the number of bytes processed off this
+    //      input stream.
+    //  fBuffer
+    //      Holds the http header, plus the first part of the actual
+    //      data.  Filled at the time the stream is opened, data goes
+    //      out to user in response to readBytes().
+    //  fBufferPos, fBufferEnd
+    //      Pointers into fBuffer, showing start and end+1 of content
+    //      that readBytes must return.
+    // -----------------------------------------------------------------------
+
+	int getSocketHandle(const XMLUri&  urlSource);
+
+    int                 fSocket;
+    unsigned int        fBytesProcessed;
+    char                fBuffer[4000];
+    char *              fBufferEnd;
+    char *              fBufferPos;
 
 };
-//const char ** XSECExceptionStrings = XSECExceptionStringsArray;
 
 
+inline unsigned int XSECBinHTTPURIInputStream::curPos() const
+{
+    return fBytesProcessed;
+}
 
 
-
-
-
-
+#endif // UNIXXSECBINHTTPURIINPUTSTREAM_HEADER

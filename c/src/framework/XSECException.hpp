@@ -141,7 +141,8 @@ public:
 		UnsupportedFunction			= 35,
 		TransformError				= 36,
 		SafeBufferError				= 37,
-		UnknownError				= 38		// Must be last!
+		HTTPURIInputStreamError     = 38,
+		UnknownError				= 39		// Must be last!
 
 	};
 

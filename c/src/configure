@@ -1187,7 +1187,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 # Define the files we wish to generate
 
-ac_config_files="$ac_config_files Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile tools/Makefile samples/Makefile"
+ac_config_files="$ac_config_files Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile samples/Makefile"
 
 ac_config_headers="$ac_config_headers framework/XSECConfig.hpp"
 
@@ -1221,7 +1221,7 @@ fi
 
 # Create the Makefile.in files in each directory
 library_l1_src_dirs="canon transformers dsig enc framework utils"
-library_l2_src_dirs="enc/OpenSSL"
+library_l2_src_dirs="enc/OpenSSL utils/unixutils"
 
 
 
@@ -3321,6 +3321,8 @@ fi
 
 
 
+
+
 # Populate Install directories
 
 
@@ -3899,6 +3901,7 @@ do
   "enc/OpenSSL/Makefile" ) CONFIG_FILES="$CONFIG_FILES enc/OpenSSL/Makefile" ;;
   "framework/Makefile" ) CONFIG_FILES="$CONFIG_FILES framework/Makefile" ;;
   "utils/Makefile" ) CONFIG_FILES="$CONFIG_FILES utils/Makefile" ;;
+  "utils/unixutils/Makefile" ) CONFIG_FILES="$CONFIG_FILES utils/unixutils/Makefile" ;;
   "tools/Makefile" ) CONFIG_FILES="$CONFIG_FILES tools/Makefile" ;;
   "samples/Makefile" ) CONFIG_FILES="$CONFIG_FILES samples/Makefile" ;;
   "framework/XSECConfig.hpp" ) CONFIG_HEADERS="$CONFIG_HEADERS framework/XSECConfig.hpp" ;;
@@ -4015,6 +4018,7 @@ s,@enc_obj_files@,$enc_obj_files,;t t
 s,@enc_OpenSSL_obj_files@,$enc_OpenSSL_obj_files,;t t
 s,@framework_obj_files@,$framework_obj_files,;t t
 s,@utils_obj_files@,$utils_obj_files,;t t
+s,@utils_unixutils_obj_files@,$utils_unixutils_obj_files,;t t
 s,@lib_obj_files@,$lib_obj_files,;t t
 s,@canon_include_files@,$canon_include_files,;t t
 s,@transformers_include_files@,$transformers_include_files,;t t
@@ -4023,6 +4027,7 @@ s,@enc_include_files@,$enc_include_files,;t t
 s,@enc_OpenSSL_include_files@,$enc_OpenSSL_include_files,;t t
 s,@framework_include_files@,$framework_include_files,;t t
 s,@utils_include_files@,$utils_include_files,;t t
+s,@utils_unixutils_include_files@,$utils_unixutils_include_files,;t t
 s,@lib_include_files@,$lib_include_files,;t t
 s,@platform@,$platform,;t t
 s,@cxx@,$cxx,;t t

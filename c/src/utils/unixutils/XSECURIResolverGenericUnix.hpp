@@ -60,70 +60,115 @@
 /*
  * XSEC
  *
- * XSECError := General class for handling errors
+ * XSECURIResolverGenericWin32 := A URI Resolver that will work "out of
+ *                                the box" with UNIX.  Re-implements
+ *								  much Xerces code, but allows us to
+ *								  handle HTTP redirects as is required by
+ *								  the DSIG Standard
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
+ * $Id$
  *
- * $LOG$
+ * $Log$
+ * Revision 1.1  2003/02/12 11:21:04  blautenb
+ * UNIX generic URI resolver
+ *
  *
  */
 
-#include <xsec/framework/XSECError.hpp>
+#ifndef XSECURIRESOLVERGENERICUNIX_INCLUDE
+#define XSECURIRESOLVERGENERICUNIX_INCLUDE
+
 #include <xsec/framework/XSECDefs.hpp>
-// Real definition of strings
+#include <xsec/framework/XSECURIResolver.hpp>
 
-char * XSECExceptionStrings [] = {
+#include <xercesc/util/XMLString.hpp>
 
-	"No Error",
-	"Error allocating memory",
-	"No TEXT child found under <DigestValue> element",
-	"Unknown Attribute found in DSIG element",
-	"Did not find expected DSIG child element",
-	"Unknown algorithm found in <Transform> element",
-	"Transform input/output mismatch",
-	"Referenced ID is not in DOM Document",
-	"Unsupported Xpointer expression found",
-	"An error occured during an XPath evalaution",
-	"An error occured during an XSLT transformation",
-	"The called feature is unsupported (general error)",
-	"Attempted to load an empty signature node",
-	"Attempted to load a non signature DOM Node as a <Signature>",
-	"Unknown canonicalization algorithm referenced",
-	"Unknown signature and hashing algorithms referenced",
-	"Attempted to load an empty X509Data Node",
-	"Attempted to load a non X509Data node as a <X509Data>",
-	"Error occurred in OpenSSL routine",
-	"Error occured when attempting to Verify a Signature",
-	"Attempted to load an empty SignedInfo node",
-	"Attempted to load a non SignedInfo node as a <SignedInfo>",
-	"Expected URI attribute in <REFERENCE> node",
-	"A method has been called without load() being called first",
-	"An error occurred when interacting with the Crypto Provider",
-	"An error occurred during processing of <KeyInfo> list",
-	"An error occurred during a signing operation",
-	"Attempted to load an empty KeyInfoName node",
-	"Attempted to load a non <KeyName> node as a KeyName",
-	"Unknown key type found in <KeyValue> element",
-	"An error occurred during the creation of a DSIGSignature object",
-	"An error occurred when trying to open a URI input stream",
-	"An error occurred in the XSEC Provider",
-	"CATASTROPHE - An error has been found in internal state",
-	"An error occurred in the Envelope Transform handler",
-	"A function has been called which is not supported in the compiled library",
-	"An error occured in a DSIGTransform holder",
-	"An error occured in a safe buffer",
-	"An error occurred processing an HTTP request via internal resolver",
-	"Unknown Error type",
+XSEC_USING_XERCES(XMLString);
+
+
+/**
+ * @ingroup pubsig
+ */
+/*\@{*/
+
+/**
+ * @brief Generic UNIX URI Resolver.
+ *
+ * The XML Digital Signature standard makes heavy use of URIs to
+ * identify information to be referenced and signed.
+ *
+ * This class implements the XSECURIResolver for UNIX, re-using
+ * much of the Xerces code.
+ *
+ * @todo Implement a "pluggable" URI resolver that allows developers
+ * to plug in different classes for different schemes
+ */
+
+class DSIG_EXPORT XSECURIResolverGenericUnix : public XSECURIResolver {
+
+public:
+
+	/** @name Constructors and Destructors */
+	//@{
+
+	XSECURIResolverGenericUnix();
+	virtual ~XSECURIResolverGenericUnix();
+
+	//@}
+
+	/** @name Interface Methods */
+	//@{
+
+	/**
+	 * \brief Create a BYTE_STREAM from a URI.
+	 *
+	 * The resolver is required to take the input URI and
+	 * dereference it to an actual stream of octets.
+	 *
+	 * The octets are provided back to the library using
+	 * the Xerces BinInputStream class.
+	 *
+	 * @note The returned stream is "owned" by the caller, which
+	 * will delete it when processing is complete.
+	 * @param uri The string containing the URI to be de-referenced.
+	 * @returns The octet stream corresponding to the URI.
+	 */
+
+	virtual BinInputStream * resolveURI(const XMLCh * uri);
+
+	/**
+	 * \brief Clone the resolver to be installed in a new object.
+	 *
+	 * When URIResolvers are passed into signatures and other
+	 * objects, they are cloned and control of the original object
+	 * is left with the caller.
+	 *
+	 */
+
+	virtual XSECURIResolver * clone(void);
+
+	//@}
+
+	/** @name Class specific functions */
+	//@{
+
+	/**
+	 * \brief Set the base URI for relative URIs.
+	 *
+	 */
+
+	void setBaseURI(const XMLCh * uri);
+
+	//@}
+
+private:
+
+	XMLCh			* mp_baseURI;
+
 
 };
-//const char ** XSECExceptionStrings = XSECExceptionStringsArray;
 
 
-
-
-
-
-
-
+#endif /* XSECURIRESOLVERGENERICUNIX_INCLUDE */

@@ -74,6 +74,7 @@ AC_CONFIG_FILES([Makefile \
 	enc/OpenSSL/Makefile \
 	framework/Makefile \
 	utils/Makefile \
+	utils/unixutils/Makefile \
 	tools/Makefile \
 	samples/Makefile])
 AC_CONFIG_HEADERS([framework/XSECConfig.hpp])
@@ -100,7 +101,7 @@ fi
 
 # Create the Makefile.in files in each directory
 library_l1_src_dirs="canon transformers dsig enc framework utils"
-library_l2_src_dirs="enc/OpenSSL"
+library_l2_src_dirs="enc/OpenSSL utils/unixutils"
 
 AC_CONFIG_COMMANDS_PRE(
 [# Define the library directories
@@ -386,6 +387,7 @@ AC_SUBST(enc_obj_files)
 AC_SUBST(enc_OpenSSL_obj_files)
 AC_SUBST(framework_obj_files)
 AC_SUBST(utils_obj_files)
+AC_SUBST(utils_unixutils_obj_files)
 AC_SUBST(lib_obj_files)
 
 AC_SUBST(canon_include_files)
@@ -395,6 +397,7 @@ AC_SUBST(enc_include_files)
 AC_SUBST(enc_OpenSSL_include_files)
 AC_SUBST(framework_include_files)
 AC_SUBST(utils_include_files)
+AC_SUBST(utils_unixutils_include_files)
 AC_SUBST(lib_include_files)
 
 # Populate Install directories

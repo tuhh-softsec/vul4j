@@ -64,9 +64,12 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
+ * $Id$
  *
- * $LOG$
+ * $Log$
+ * Revision 1.4  2003/02/12 11:21:03  blautenb
+ * UNIX generic URI resolver
+ *
  *
  */
 
@@ -85,9 +88,9 @@
 // ugly :<
 
 #if defined(_WIN32)
-	
 #include <xsec/utils/winutils/XSECURIResolverGenericWin32.hpp>
-
+#else
+#include <xsec/utils/unixutils/XSECURIResolverGenericUnix.hpp>
 #endif
 
 // General
@@ -96,7 +99,10 @@
 #include <string.h>
 #include <iostream.h>
 #include <stdlib.h>
+
+#if defined (_DEBUG) && defined (_MSC_VER)
 #include <crtdbg.h>
+#endif
 
 
 #include <xercesc/util/PlatformUtils.hpp>
@@ -278,15 +284,19 @@ int evaluate(int argc, char ** argv) {
 
 	// Check whether we should use the internal resolver
 
-#if defined(_WIN32)
 	
 	if (useXSECURIResolver == true) {
 
-		XSECURIResolverGenericWin32 theResolver;
+#if defined(_WIN32)
+		XSECURIResolverGenericWin32 
+#else
+		XSECURIResolverGenericUnix 
+#endif
+			theResolver;
+		     
 		sig->setURIResolver(&theResolver);
 	}
 
-#endif
 
 
 	bool result;
@@ -342,7 +352,7 @@ int evaluate(int argc, char ** argv) {
 		cout << "Signature failed verification" << endl;
 		const char * e = XMLString::transcode(sig->getErrMsgs());
 		cout << e << endl;
-		delete [] (void *) e;
+		delete [] (char *) e;
 		retResult = 1;
 	}
 
@@ -359,7 +369,7 @@ int main(int argc, char **argv) {
 
 	int retResult;
 
-#if defined (_DEBUG) && defined (_WIN32)
+#if defined (_DEBUG) && defined (_MSC_VER)
 
 	// Do some memory debugging under Visual C++
 
@@ -407,7 +417,7 @@ int main(int argc, char **argv) {
 	XPathEvaluator::terminate();
 	XMLPlatformUtils::Terminate();
 
-#if defined (_DEBUG) && defined (_WIN32)
+#if defined (_DEBUG) && defined (_MSC_VER)
 
 	_CrtMemCheckpoint( &s2 );
 

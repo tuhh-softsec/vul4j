@@ -913,6 +913,18 @@ bool DSIGReference::verifyReferenceList(DSIGReferenceList * lst, safeBuffer &err
 			errStr.sbXMLChCat("\".  Reference failed to verify\n");
 
 		}
+		catch (XSECException e) {
+
+			if (e.getType() != XSECException::HTTPURIInputStreamError)
+				throw;
+
+			res = false;
+
+			errStr.sbXMLChCat("Error accessing network URI=\"");
+			errStr.sbXMLChCat(r->getURI());
+			errStr.sbXMLChCat("\".  Reference failed to verify\n");
+
+		}
 
 		// if a manifest, check the manifest list
 		if (r->isManifest())

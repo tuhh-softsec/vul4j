@@ -102,6 +102,7 @@ MKDIR=mkdir -p
 CANON_DIR = canon
 TRANSFORMERS_DIR = transformers
 UTILS_DIR = utils
+UNIXUTILS_DIR = utils/unixutils
 ENC_DIR = enc
 FRAMEWORK_DIR = framework
 DSIG_DIR = dsig
@@ -166,6 +167,7 @@ compile:
 	$(MAKE) -C ${OPENSSL_DIR} compile
 	$(MAKE) -C ${FRAMEWORK_DIR} compile
 	$(MAKE) -C ${UTILS_DIR} compile
+	$(MAKE) -C ${UNIXUTILS_DIR} compile
 
 depends:
 	$(MAKE) -C ${CANON_DIR} -s depends
@@ -175,6 +177,7 @@ depends:
 	$(MAKE) -C ${OPENSSL_DIR} -s depends
 	$(MAKE) -C ${FRAMEWORK_DIR} -s depends
 	$(MAKE) -C ${UTILS_DIR} -s depends
+	$(MAKE) -C ${UNIXUTILS_DIR} -s depends
 
 prepare:
 	$(MKDIR) ../lib
@@ -188,6 +191,7 @@ prepare:
 	$(MAKE) -C ${OPENSSL_DIR} includes
 	$(MAKE) -C ${FRAMEWORK_DIR} includes
 	$(MAKE) -C ${UTILS_DIR} includes
+	$(MAKE) -C ${UNIXUTILS_DIR} includes
 
 alltools:
 	$(MAKE) -C ${TOOLS_DIR} alltools
@@ -212,6 +216,7 @@ distclean: clean
 	$(MAKE) -C ${OPENSSL_DIR} distclean
 	$(MAKE) -C ${FRAMEWORK_DIR} distclean
 	$(MAKE) -C ${UTILS_DIR} distclean
+	$(MAKE) -C ${UNIXUTILS_DIR} distclean
 	$(MAKE) -C ${TOOLS_DIR} distclean
 	$(MAKE) -C ${SAMPLES_DIR} distclean
 	rm -f config.cache
