@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.71 2003/03/15 18:37:51 rdonkin Exp $
- * $Revision: 1.71 $
- * $Date: 2003/03/15 18:37:51 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.72 2003/04/06 19:53:18 rdonkin Exp $
+ * $Revision: 1.72 $
+ * $Date: 2003/04/06 19:53:18 $
  *
  * ====================================================================
  *
@@ -125,7 +125,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.71 $ $Date: 2003/03/15 18:37:51 $
+ * @version $Revision: 1.72 $ $Date: 2003/04/06 19:53:18 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1156,7 +1156,18 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Set the document locator associated with our parser.
+     * Gets the document locator associated with our parser.
+     *
+     * @returns the Locator supplied by the document parser
+     */
+    public Locator getDocumentLocator() {
+
+        return locator;
+
+    }
+
+    /**
+     * Sets the document locator associated with our parser.
      *
      * @param locator The new locator
      */
