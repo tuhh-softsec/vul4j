@@ -83,13 +83,6 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      */
     private PluginConfigurationException initException;
 
-    /**
-     * Our private set of rules associated with the concrete class that
-     * the user requested to be instantiated. This object is only valid
-     * between a call to begin() and the corresponding call to end().
-     */
-    private PluginRules localRules; 
-    
     //-------------------- static methods -----------------------------------
     
     /**
@@ -350,13 +343,6 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      * the plugin class are then loaded into that new Rules object.
      * Finally, any custom rules that are associated with the current pattern
      * (such as SetPropertiesRules) have their begin methods executed.
-     * <p>
-     * Because a PluginCreateRule is also a Delegate, this method is also
-     * called on the start of any element occurring below the pattern
-     * associated with this rule. In this case, this method acts like the
-     * Digester's startElement method: it fires the begin() method of every
-     * custom rule associated with the plugin class that matches that pattern.
-     * See {@link #delegateBegin}.
      * 
      * @param namespace 
      * @param name 
@@ -382,151 +368,134 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             throw initException;
         }
         
-        String currMatch = digester.getMatch();
-        if (currMatch.length() == pattern.length()) {
-            // ok here we are actually instantiating a new plugin object,
-            // and storing its rules into a new Rules object
-            if (localRules != null) {
-                throw new PluginAssertionFailure(
-                    "Begin called when localRules is not null.");
-            }
-                      
-            PluginRules oldRules = (PluginRules) digester.getRules();
-            localRules = new PluginRules(this, oldRules);
-            PluginManager pluginManager = localRules.getPluginManager();
-            Declaration currDeclaration = null;
-            
-            if (debug) {
-                log.debug("PluginCreateRule.begin: installing new plugin: " +
-                    "oldrules=" + oldRules.toString() +
-                    ", localrules=" + localRules.toString());
-            }
-              
-            String pluginClassName; 
-            if (pluginClassAttrNs == null) {
-                // Yep, this is ugly.
-                //
-                // In a namespace-aware parser, the one-param version will 
-                // return attributes with no namespace.
-                //
-                // In a non-namespace-aware parser, the two-param version will 
-                // never return any attributes, ever.
-                pluginClassName = attributes.getValue(pluginClassAttr);
-            } else {
-                pluginClassName = 
-                    attributes.getValue(pluginClassAttrNs, pluginClassAttr);
-            }
+        String path = digester.getMatch();
 
-            String pluginId; 
-            if (pluginIdAttrNs == null) {
-                pluginId = attributes.getValue(pluginIdAttr);
-            }
-            else {
-                pluginId = 
-                    attributes.getValue(pluginIdAttrNs, pluginIdAttr);
-            }
+        // create a new Rules object and effectively push it onto a stack of
+        // rules objects. The stack is actually a linked list; using the
+        // PluginRules constructor below causes the new instance to link
+        // to the previous head-of-stack, then the Digester.setRules() makes
+        // the new instance the new head-of-stack.
+        PluginRules oldRules = (PluginRules) digester.getRules();
+        PluginRules newRules = new PluginRules(path, oldRules);
+        digester.setRules(newRules);
+        
+        // load any custom rules associated with the plugin
+        PluginManager pluginManager = newRules.getPluginManager();
+        Declaration currDeclaration = null;
             
-            if (pluginClassName != null) {
-                currDeclaration = pluginManager.getDeclarationByClass(
-                    pluginClassName);
-    
-                if (currDeclaration == null) {
-                    currDeclaration = new Declaration(pluginClassName);
-                    try {
-                        currDeclaration.init(digester);
-                    } catch(PluginWrappedException pwe) {
-                        throw new PluginInvalidInputException(
-                            pwe.getMessage(), pwe.getCause());
-                    }
-                    pluginManager.addDeclaration(currDeclaration);
-                }
-            } else if (pluginId != null) {
-                currDeclaration = pluginManager.getDeclarationById(pluginId);
-                
-                if (currDeclaration == null) {
-                    throw new PluginInvalidInputException(
-                        "Plugin id [" + pluginId + "] is not defined.");
-                }
-            } else if (defaultPlugin != null) {
-                currDeclaration = defaultPlugin;
-            }
-            else {
-                throw new PluginInvalidInputException(
-                    "No plugin class specified for element " +
-                    pattern);
-            }
-            
-            // now load up the custom rules into a private Rules instance
-            digester.setRules(localRules);
-        
-            currDeclaration.configure(digester, pattern);
-    
-            Class pluginClass = currDeclaration.getPluginClass();
-            
-            Object instance = pluginClass.newInstance();
-            getDigester().push(instance);
-            if (debug) {
-                log.debug(
-                    "PluginCreateRule.begin" + ": pattern=[" + pattern + "]" + 
-                    " match=[" + digester.getMatch() + "]" + 
-                    " pushed instance of plugin [" + pluginClass.getName() + "]");
-            }
-        
-            digester.setRules(oldRules);
-
-            ((PluginRules) oldRules).beginPlugin(this);
-        }
-        
-        // fire the begin method of all custom rules
-        Rules oldRules = digester.getRules();
-        
         if (debug) {
-            log.debug("PluginCreateRule.begin: firing nested rules: " +
+            log.debug("PluginCreateRule.begin: installing new plugin: " +
                 "oldrules=" + oldRules.toString() +
-                ", localrules=" + localRules.toString());
+                ", newrules=" + newRules.toString());
+        }
+              
+        String pluginClassName; 
+        if (pluginClassAttrNs == null) {
+            // Yep, this is ugly.
+            //
+            // In a namespace-aware parser, the one-param version will 
+            // return attributes with no namespace.
+            //
+            // In a non-namespace-aware parser, the two-param version will 
+            // never return any attributes, ever.
+            pluginClassName = attributes.getValue(pluginClassAttr);
+        } else {
+            pluginClassName = 
+                attributes.getValue(pluginClassAttrNs, pluginClassAttr);
         }
 
-        // assert oldRules = localRules.oldRules
-        digester.setRules(localRules);
-        delegateBegin(namespace, name, attributes);
-        digester.setRules(oldRules);
+        String pluginId; 
+        if (pluginIdAttrNs == null) {
+            pluginId = attributes.getValue(pluginIdAttr);
+        }
+        else {
+            pluginId = 
+                attributes.getValue(pluginIdAttrNs, pluginIdAttr);
+        }
+        
+        if (pluginClassName != null) {
+            currDeclaration = pluginManager.getDeclarationByClass(
+                pluginClassName);
 
+            if (currDeclaration == null) {
+                currDeclaration = new Declaration(pluginClassName);
+                try {
+                    currDeclaration.init(digester);
+                } catch(PluginWrappedException pwe) {
+                    throw new PluginInvalidInputException(
+                        pwe.getMessage(), pwe.getCause());
+                }
+                pluginManager.addDeclaration(currDeclaration);
+            }
+        } else if (pluginId != null) {
+            currDeclaration = pluginManager.getDeclarationById(pluginId);
+                
+            if (currDeclaration == null) {
+                throw new PluginInvalidInputException(
+                    "Plugin id [" + pluginId + "] is not defined.");
+            }
+        } else if (defaultPlugin != null) {
+            currDeclaration = defaultPlugin;
+        }
+        else {
+            throw new PluginInvalidInputException(
+                "No plugin class specified for element " +
+                pattern);
+        }
+            
+        // now load up the custom rules
+        currDeclaration.configure(digester, pattern);
+
+        // and now create an instance of the plugin class
+        Class pluginClass = currDeclaration.getPluginClass();
+        
+        Object instance = pluginClass.newInstance();
+        getDigester().push(instance);
         if (debug) {
-            log.debug("PluginCreateRule.begin: restored old rules to " +
-                "oldrules=" + oldRules.toString());
+            log.debug(
+                "PluginCreateRule.begin" + ": pattern=[" + pattern + "]" + 
+                " match=[" + digester.getMatch() + "]" + 
+                " pushed instance of plugin [" + pluginClass.getName() + "]");
         }
+        
+        // and now we have to fire any custom rules which would have
+        // been matched by the same path that matched this rule, had
+        // they been loaded at that time.
+        List rules = newRules.getDecoratedRules().match(namespace, path);
+        fireBeginMethods(rules, namespace, name, attributes); 
     }
 
     /**
-     * Invoked by the digester when the closing tag matching this Rule's
-     * pattern is encountered. See {@link #delegateBody}.
+     * Process the body text of this element.
      *
-     * @see #begin
+     * @param text The body text of this element
      */
     public void body(String namespace, String name, String text)
-                     throws Exception {
-            
-        Rules oldRules = digester.getRules();
-        // assert oldRules == localRules.oldRules
-        digester.setRules(localRules);
-        delegateBody(namespace, name, text);
-        digester.setRules(oldRules);
+        throws Exception {
+
+        // While this class itself has no work to do in the body method,
+        // we do need to fire the body methods of all dynamically-added
+        // rules matching the same path as this rule. During begin, we had
+        // to manually execute the dynamic rules' begin methods because they
+        // didn't exist in the digester's Rules object when the match begin.
+        // So in order to ensure consistent ordering of rule execution, the
+        // PluginRules class deliberately avoids returning any such rules
+        // in later calls to the match method, instead relying on this
+        // object to execute them at the appropriate time.
+        //
+        // Note that this applies only to rules matching exactly the path
+        // which is also matched by this PluginCreateRule. 
+
+        String path = digester.getMatch();
+        PluginRules newRules = (PluginRules) digester.getRules();
+        List rules = newRules.getDecoratedRules().match(namespace, path);
+        fireBodyMethods(rules, namespace, name, text);
     }
-    
+
     /**
      * Invoked by the digester when the closing tag matching this Rule's
      * pattern is encountered.
      * </p>
-     * As noted on method begin, because PluginCreateRule is a Delegate,
-     * this method is also called at the end tag of every pattern that
-     * is "below" the pattern associated with this rule. In this case, we
-     * fire the end method of every custom rule associated with the 
-     * current plugin class. See {@link #delegateEnd}.
-     * <p>
-     * If we are really encountering the end tag associated with this rule
-     * (rather than the end of an element "below" that tag), then we
-     * remove the object we pushed onto the digester stack when the
-     * opening tag was encountered.
      * 
      * @param namespace Description of the Parameter
      * @param name Description of the Parameter
@@ -536,21 +505,21 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      */
     public void end(String namespace, String name)
                     throws Exception {
-            
-        Rules oldRules = digester.getRules();
-        // assert oldRules == localRules.parentRules
-        digester.setRules(localRules);
-        delegateEnd(namespace, name);
-        digester.setRules(oldRules);
 
-        String currMatch = digester.getMatch();
-        if (currMatch.length() == pattern.length()) {
-            // the end of the element on which the PluginCreateRule has
-            // been mounted has been reached.
-            localRules = null;
-            ((PluginRules) oldRules).endPlugin(this);
-            digester.pop();
-        }
+
+        // see body method for more info
+        String path = digester.getMatch();
+        PluginRules newRules = (PluginRules) digester.getRules();
+        List rules = newRules.getDecoratedRules().match(namespace, path);
+        fireEndMethods(rules, namespace, name);
+        
+        // pop the stack of PluginRules instances, which
+        // discards all custom rules associated with this plugin
+        digester.setRules(newRules.getParent());
+        
+        // and get rid of the instance of the plugin class from the
+        // digester object stack.
+        digester.pop();
     }
 
     /**
@@ -570,70 +539,92 @@ public class PluginCreateRule extends Rule implements InitializableRule {
     }
     
     /**
-     * Here we act like Digester.begin, finding a match for the pattern
-     * in our private rules object, then executing the begin method of
-     * each matching rule.
+     * Duplicate the processing that the Digester does when firing the
+     * begin methods of rules. It would be really nice if the Digester
+     * class provided a way for this functionality to just be invoked
+     * directly.
      */
-    public void delegateBegin(String namespace, String name, 
-                              org.xml.sax.Attributes attributes)
-                              throws java.lang.Exception {
+    public void fireBeginMethods(List rules,
+                      String namespace, String name,
+                      org.xml.sax.Attributes list)
+                      throws java.lang.Exception {
         
-        // Fire "begin" events for all relevant rules
-        Log log = digester.getLogger();
-        boolean debug = log.isDebugEnabled();
-        String match = digester.getMatch();
-        List rules = digester.getRules().match(namespace, match);
-        Iterator ri = rules.iterator();
-        while (ri.hasNext()) {
-            Rule rule = (Rule) ri.next();
-            if (debug) {
-                log.debug("  Fire begin() for " + rule);
+        if ((rules != null) && (rules.size() > 0)) {
+            Log log = digester.getLogger();
+            boolean debug = log.isDebugEnabled();
+            for (int i = 0; i < rules.size(); i++) {
+                try {
+                    Rule rule = (Rule) rules.get(i);
+                    if (debug) {
+                        log.debug("  Fire begin() for " + rule);
+                    }
+                    rule.begin(namespace, name, list);
+                } catch (Exception e) {
+                    throw digester.createSAXException(e);
+                } catch (Error e) {
+                    throw e;
+                }
             }
-            rule.begin(namespace, name, attributes);
+        }
+    }
+
+    /**
+     * Duplicate the processing that the Digester does when firing the
+     * body methods of rules. It would be really nice if the Digester
+     * class provided a way for this functionality to just be invoked
+     * directly.
+     */
+    private void fireBodyMethods(List rules,
+                    String namespaceURI, String name,
+                    String text) throws Exception {
+
+        if ((rules != null) && (rules.size() > 0)) {
+            Log log = digester.getLogger();
+            boolean debug = log.isDebugEnabled();
+            for (int i = 0; i < rules.size(); i++) {
+                try {
+                    Rule rule = (Rule) rules.get(i);
+                    if (debug) {
+                        log.debug("  Fire body() for " + rule);
+                    }
+                    rule.body(namespaceURI, name, text);
+                } catch (Exception e) {
+                    throw digester.createSAXException(e);
+                } catch (Error e) {
+                    throw e;
+                }
+            }
         }
     }
     
     /**
-     * Here we act like Digester.body, except against our private rules.
+     * Duplicate the processing that the Digester does when firing the
+     * end methods of rules. It would be really nice if the Digester
+     * class provided a way for this functionality to just be invoked
+     * directly.
      */
-    public void delegateBody(String namespace, String name, String text)
-                             throws Exception {
-        // Fire "body" events for all relevant rules
-        Log log = digester.getLogger();
-        boolean debug = log.isDebugEnabled();
-        String match = digester.getMatch();
-        List rules = digester.getRules().match(namespace, match);
-        Iterator ri = rules.iterator();
-        while (ri.hasNext()) {
-            Rule rule = (Rule) ri.next();
-            if (debug) {
-                log.debug("  Fire body() for " + rule);
-            }
-            rule.body(namespace, name, text);
-        }
-    }
-    
-    /**
-     * Here we act like Digester.end.
-     */
-    public void delegateEnd(String namespace, String name)
-                            throws Exception {
+    public void fireEndMethods(List rules,
+                    String namespaceURI, String name)
+                    throws Exception {
+
         // Fire "end" events for all relevant rules in reverse order
-        Log log = digester.getLogger();
-        boolean debug = log.isDebugEnabled();
-        String match = digester.getMatch();
-        List rules = digester.getRules().match(namespace, match);
-        ListIterator ri = rules.listIterator();
-        while (ri.hasNext()) {
-            ri.next();
-        }
-        
-        while (ri.hasPrevious()) {
-            Rule rule = (Rule) ri.previous();
-            if (debug) {
-                log.debug("  Fire end() for " + rule);
+        if (rules != null) {
+            Log log = digester.getLogger();
+            boolean debug = log.isDebugEnabled();
+            for (int i = 0; i < rules.size(); i++) {
+                int j = (rules.size() - i) - 1;
+                try {
+                    Rule rule = (Rule) rules.get(j);
+                    if (debug) {
+                        log.debug("  Fire end() for " + rule);
+                    }
+                    rule.end(namespaceURI, name);
+                } catch (Exception e) {
+                    throw digester.createSAXException(e);
+                } catch (Error e) {
+                    throw e;
+                }
             }
-            rule.end(namespace, name);
         }
     }
 }

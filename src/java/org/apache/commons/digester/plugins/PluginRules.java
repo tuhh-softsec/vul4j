@@ -34,34 +34,53 @@ import org.apache.commons.logging.Log;
 /**
  * A custom digester Rules manager which must be used as the Rules object
  * when using the plugins module functionality.
+ * <p>
+ * During parsing, a linked list of PluginCreateRule instances develop, and
+ * this list also acts like a stack. The original instance that was set before 
+ * the Digester started parsing is always at the tail of the list, and the
+ * Digester always holds a reference to the instance at the head of the list
+ * in the rules member. Initially, this list/stack holds just one instance,
+ * ie head and tail are the same object.
+ * <p>
+ * When the start of an xml element causes a PluginCreateRule to fire, a new 
+ * PluginRules instance is created and inserted at the head of the list (ie
+ * pushed onto the stack of Rules objects). Digester.getRules() therefore
+ * returns this new Rules object, and any custom rules associated with that 
+ * plugin are added to that instance. 
+ * <p>
+ * When the end of the xml element is encountered (and therefore the 
+ * PluginCreateRule end method fires), the stack of Rules objects is popped,
+ * so that Digester.getRules returns the previous Rules object. 
  */
 
 public class PluginRules implements Rules {
                                                
-    /** 
-     * The rules implementation that we are "enhancing" with plugins
-     * functionality, as per the Decorator pattern.
-     */
-    private Rules decoratedRules;
-
     /**
      * The Digester instance with which this Rules instance is associated.
      */
     protected Digester digester = null;
 
-    /**
-     * The currently active PluginCreateRule. When the begin method of a
-     * PluginCreateRule is encountered, this is set. When the end method is
-     * encountered, this is cleared. Any attempt to call match() while this
-     * attribute is set just causes this single rule to be returned.
+    /** 
+     * The rules implementation that we are "enhancing" with plugins
+     * functionality, as per the Decorator pattern.
      */
-    private PluginCreateRule currPluginCreateRule = null;
+    private Rules decoratedRules;
     
     /** Object which contains information about all known plugins. */
     private PluginManager pluginManager;
 
-    /** The parent rules object for this object. */
-    private Rules parent;
+    /**
+     * The path below which this rules object has responsibility.
+     * For paths shorter than or equal the mountpoint, the parent's 
+     * match is called.
+     */
+    private String mountPoint = null;
+    
+    /**
+     * The Rules object that holds rules applying "above" the mountpoint,
+     * ie the next Rules object down in the stack.
+     */
+    private PluginRules parent = null;
     
     // ------------------------------------------------------------- Constructor
     
@@ -86,22 +105,22 @@ public class PluginRules implements Rules {
 
     /**
      * Constructs a Rules instance which has a parent Rules object 
-     * (not a delegate rules object). One of these is created
-     * each time a PluginCreateRule's begin method fires, in order to
-     * manage the custom rules associated with whatever concrete plugin
-     * class the user has specified.
+     * (which is different from having a delegate rules object). 
      * <p>
-     * The first parameter is not actually used; it is required solely
-     * because a constructor with a single Rules parameter already
-     * exists.
-     * <p>
-     * The parent is recorded so that lookups of Declarations can
-     * "inherit" declarations from further up the tree.
+     * One of these is created each time a PluginCreateRule's begin method 
+     * fires, in order to manage the custom rules associated with whatever 
+     * concrete plugin class the user has specified.
      */
-     PluginRules(PluginCreateRule pcr, PluginRules parent) {
+     PluginRules(String mountPoint, PluginRules parent) {
+        // no need to set digester or decoratedRules.digester,
+        // because when Digester.setRules is called, the setDigester
+        // method on this object will be called.
+        
         decoratedRules = new RulesBase();
-        this.parent = parent;
         pluginManager = new PluginManager(parent.pluginManager);
+        
+        this.mountPoint = mountPoint;
+        this.parent = parent;
     }
     
     // ------------------------------------------------------------- Properties
@@ -162,6 +181,15 @@ public class PluginRules implements Rules {
     // --------------------------------------------------------- Public Methods
 
     /**
+     * This package-scope method is used by the PluginCreateRule class to
+     * get direct access to the rules that were dynamically added by the
+     * plugin. No other class should need access to this object.
+     */
+    Rules getDecoratedRules() {
+        return decoratedRules;
+    }
+    
+    /**
      * Return the list of rules registered with this object, in the order
      * they were registered with this object.
      * <p>
@@ -195,6 +223,27 @@ public class PluginRules implements Rules {
         if (pattern.startsWith("/"))
         {
             pattern = pattern.substring(1);
+        }
+
+        if (mountPoint != null) {
+            if (!pattern.equals(mountPoint)
+              && !pattern.startsWith(mountPoint + "/")) {
+                // This can only occur if a plugin attempts to add a
+                // rule with a pattern that doesn't start with the
+                // prefix passed to the addRules method. Plugins mustn't
+                // add rules outside the scope of the tag they were specified
+                // on, so refuse this.
+                
+                // alas, can't throw exception
+                log.warn(
+                    "An attempt was made to add a rule with a pattern that"
+                    + "is not at or below the mountpoint of the current"
+                    + " PluginRules object."
+                    + " Rule pattern: " + pattern
+                    + ", mountpoint: " + mountPoint
+                    + ", rule type: " + rule.getClass().getName());
+                return;
+            }
         }
         
         decoratedRules.add(pattern, rule);
@@ -236,111 +285,55 @@ public class PluginRules implements Rules {
      * in the order originally registered through the <code>add()</code>
      * method.
      *
-     * @param pattern Nesting pattern to be matched
+     * @param path the path to the xml nodes to be matched.
      *
      * @deprecated Call match(namespaceURI,pattern) instead.
      */
-    public List match(String pattern) {
-        return (match(null, pattern));
+    public List match(String path) {
+        return (match(null, path));
     }
 
     /**
      * Return a List of all registered Rule instances that match the specified
-     * nesting pattern, or a zero-length List if there are no matches.  If more
+     * nodepath, or a zero-length List if there are no matches.  If more
      * than one Rule instance matches, they <strong>must</strong> be returned
      * in the order originally registered through the <code>add()</code>
      * method.
      * <p>
-     * If we have encountered the start of a PluginCreateRule and have not
-     * yet encountered the end tag, then the currPluginCreateRule attribute
-     * will be non-null. In this case, we just return this rule object as the
-     * sole match. The calling Digester will then invoke the begin/body/end
-     * methods on this rule, which are responsible for invoking all rules
-     * matching nodes below itself.
-     *
      * @param namespaceURI Namespace URI for which to select matching rules,
      *  or <code>null</code> to match regardless of namespace URI
-     * @param pattern Nesting pattern to be matched
+     * @param path the path to the xml nodes to be matched.
      */
-    public List match(String namespaceURI, String pattern) {
+    public List match(String namespaceURI, String path) {
         Log log = LogUtils.getLogger(digester);
         boolean debug = log.isDebugEnabled();
         
         if (debug) {
             log.debug(
-                "Matching pattern [" + pattern +
+                "Matching path [" + path +
                 "] on rules object " + this.toString());
         }
 
         List matches;
-        if ((currPluginCreateRule != null) && 
-            (pattern.length() > currPluginCreateRule.getPattern().length())) {
-            // assert pattern.startsWith(currPluginCreateRule.getPattern())
+        if ((mountPoint != null) && 
+            (path.length() <= mountPoint.length())) {
             if (debug) {
                 log.debug(
-                    "Pattern [" + pattern + "] matching PluginCreateRule " +
-                    currPluginCreateRule.toString());
+                    "Path [" + path + "] delegated to parent.");
             }
-            matches = new ArrayList(1);
-            matches.add(currPluginCreateRule);
-        }
+            
+            matches = parent.match(namespaceURI, path);
+            
+            // Note that in the case where path equals mountPoint, 
+            // we deliberately return only the rules from the parent,
+            // even though this object may hold some rules matching
+            // this same path. See PluginCreateRule's begin, body and end
+            // methods for the reason.
+        } 
         else {
-            matches = decoratedRules.match(namespaceURI, pattern); 
+            matches = decoratedRules.match(namespaceURI, path); 
         }
 
         return matches;
-    }
-    
-    /**
-     * Called when a pattern matches a PluginCreateRule, to indicate that
-     * any attempt to match any following XML elements should simply
-     * return a single match: this PluginCreateRule.
-     * <p>
-     * In other words, once the plugin element starts, all following 
-     * subelements cause the rule object to be "matched", until the
-     * endPlugin method is called.
-     */
-    public void beginPlugin(PluginCreateRule pcr) {
-        Log log = LogUtils.getLogger(digester);
-        boolean debug = log.isDebugEnabled();
-
-        if (currPluginCreateRule != null) {
-            throw new PluginAssertionFailure(
-                "endPlugin called when currPluginCreateRule is not null.");
-        }
-
-        if (debug) {
-            log.debug(
-                "Entering PluginCreateRule " + pcr.toString() +
-                " on rules object " + this.toString());
-        }
-
-        currPluginCreateRule = pcr;
-    }
-    
-    /**
-     * Called when a pattern matches the end of a PluginCreateRule.
-     * See {@link #beginPlugin}.
-     */
-    public void endPlugin(PluginCreateRule pcr) {
-        Log log = LogUtils.getLogger(digester);
-        boolean debug = log.isDebugEnabled();
-
-        if (currPluginCreateRule == null) {
-            throw new PluginAssertionFailure(
-                "endPlugin called when currPluginCreateRule is null.");
-        }
-        
-        if (currPluginCreateRule != pcr) {
-            throw new PluginAssertionFailure(
-                "endPlugin called with unexpected PluginCreateRule instance.");
-        }
-        
-        currPluginCreateRule = null;
-        if (debug) {
-            log.debug(
-                "Leaving PluginCreateRule " + pcr.toString() +
-                " on rules object " + this.toString());
-        }
     }
 }
