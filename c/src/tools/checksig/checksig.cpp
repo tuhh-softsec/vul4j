@@ -324,6 +324,7 @@ int evaluate(int argc, char ** argv) {
 		}
 #endif
 		else {
+			cerr << "Unknown option: " << argv[paramCount] << endl << endl;
 			printUsage();
 			return 2;
 		}
