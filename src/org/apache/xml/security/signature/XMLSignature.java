@@ -360,14 +360,28 @@ public class XMLSignature extends ElementProxy {
     *
     * @return
     */
-   public byte[] getSignatureValue() {
+   public byte[] getSignatureValue() throws XMLSignatureException {
 
       cat.debug("getSignatureValue " + this._signatureValueElement);
       cat.debug("getSignatureValue base64 = "
                 + ((Text) this._signatureValueElement.getChildNodes().item(0))
                    .getData());
 
-      return Base64.decode(this._signatureValueElement);
+      byte[] signatureValue = Base64.decode(this._signatureValueElement);
+      byte[] jcebytes = null;
+      if (this.getSignedInfo().getSignatureMethodURI()
+              .equals(XMLSignature.ALGO_ID_SIGNATURE_DSA)) {
+         try {
+            jcebytes =
+               SignatureAlgorithm.convertXMLDSIGtoASN1(signatureValue);
+         } catch (IOException ex) {
+            throw new XMLSignatureException("empty", ex);
+         }
+      } else {
+         jcebytes = signatureValue;
+      }
+
+      return jcebytes;
    }
 
    /**
@@ -376,7 +390,7 @@ public class XMLSignature extends ElementProxy {
     * @param signatureValue
     * @throws XMLSignatureException
     */
-   private void setSignatureValueElement(byte[] signatureValue)
+   private void setSignatureValueElement(byte[] jcebytes)
            throws XMLSignatureException {
 
       if (this._state == MODE_SIGN) {
@@ -386,7 +400,16 @@ public class XMLSignature extends ElementProxy {
             this._signatureValueElement.removeChild(children.item(i));
          }
 
-         String base64codedValue = Base64.encode(signatureValue);
+         if (this.getSignedInfo().getSignatureMethodURI()
+                 .equals(XMLSignature.ALGO_ID_SIGNATURE_DSA)) {
+            try {
+               jcebytes = SignatureAlgorithm.convertASN1toXMLDSIG(jcebytes);
+            } catch (IOException ex) {
+               throw new XMLSignatureException("empty", ex);
+            }
+         }
+
+         String base64codedValue = Base64.encode(jcebytes);
          Text t = this._doc.createTextNode(base64codedValue);
 
          this._signatureValueElement.appendChild(t);
@@ -544,9 +567,9 @@ public class XMLSignature extends ElementProxy {
 
             sa.update(signedInfoOctets);
 
-            byte signatureValue[] = sa.sign();
+            byte jcebytes[] = sa.sign();
 
-            this.setSignatureValueElement(signatureValue);
+            this.setSignatureValueElement(jcebytes);
             cat.debug("sa.sign() finished");
          }
       } catch (IOException ex) {
@@ -627,19 +650,22 @@ public class XMLSignature extends ElementProxy {
          java.security.Signature signature =
             java.security.Signature.getInstance(jceSigID.getAlgorithmID(),
                                                 jceSigID.getProviderId());
+
          if (!this.getSignedInfo().verify()) {
             return false;
          }
 
          signature.initVerify(cert);
+
          byte inputBytes[] = this.getSignedInfo().getCanonicalizedOctetStream();
          byte sigBytes[] = this.getSignatureValue();
 
          JavaUtils.writeBytesToFilename("signedInfo.Bytes", inputBytes);
          JavaUtils.writeBytesToFilename("signature.Bytes", sigBytes);
-
          signature.update(inputBytes);
+
          boolean verify = signature.verify(sigBytes);
+
          return verify;
       } else {
          throw new Exception("Didn't get a certificate");
@@ -692,6 +718,16 @@ public class XMLSignature extends ElementProxy {
       }
    }
 
+   /**
+    * Method addDocument
+    *
+    * @param referenceURI
+    * @param trans
+    * @param digestURI
+    * @param ReferenceId
+    * @param ReferenceType
+    * @throws XMLSignatureException
+    */
    public void addDocument(
            String referenceURI, Transforms trans, String digestURI, String ReferenceId, String ReferenceType)
               throws XMLSignatureException {

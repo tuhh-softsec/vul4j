@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -59,6 +58,8 @@
  */
 package org.apache.xml.security.algorithms;
 
+
+
 import java.security.cert.Certificate;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -78,6 +79,15 @@ import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.*;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+import java.math.BigInteger;
+import org.bouncycastle.asn1.DEROutputStream;
+import org.bouncycastle.asn1.DERInputStream;
+import org.bouncycastle.asn1.DERConstructedSequence;
+import org.bouncycastle.asn1.DERInteger;
+
 
 /**
  * Allows selection of digital signature's algorithm, private keys, other security parameters, and algorithm's ID.
@@ -105,11 +115,15 @@ public class SignatureAlgorithm extends Algorithm {
    /**
     * Constructor for the brave who pass their own signature algorithms and the corresponding URI.
     *
+    * @param doc
     * @param signature
     * @param algorithmURI
     */
-   private SignatureAlgorithm(Document doc, Signature signature, String algorithmURI) {
+   private SignatureAlgorithm(Document doc, Signature signature,
+                              String algorithmURI) {
+
       super(doc, Constants._TAG_SIGNATUREMETHOD, algorithmURI);
+
       this._signatureAlgorithm = signature;
    }
 
@@ -117,24 +131,29 @@ public class SignatureAlgorithm extends Algorithm {
     * SignatureAlgorithm constructor chooses the best match for
     * the requested algorithm and constructs the full URI for it.
     *
+    * @param doc
     * @param algorithmURI
     * @return
     * @throws XMLSignatureException
     */
-   public static SignatureAlgorithm getInstance(Document doc, String algorithmURI)
-           throws XMLSignatureException {
+   public static SignatureAlgorithm getInstance(
+           Document doc, String algorithmURI) throws XMLSignatureException {
 
-      JCEMapper.ProviderIdClass algorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
+      JCEMapper.ProviderIdClass algorithmID =
+         JCEMapper.translateURItoJCEID(algorithmURI);
       Signature algorithm = null;
 
       try {
-         algorithm = Signature.getInstance(algorithmID.getAlgorithmID(), algorithmID.getProviderId());
+         algorithm = Signature.getInstance(algorithmID.getAlgorithmID(),
+                                           algorithmID.getProviderId());
       } catch (java.security.NoSuchAlgorithmException ex) {
-         Object[] exArgs = { algorithmID.getAlgorithmID(), ex.getLocalizedMessage() };
+         Object[] exArgs = { algorithmID.getAlgorithmID(),
+                             ex.getLocalizedMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
       } catch (java.security.NoSuchProviderException ex) {
-         Object[] exArgs = { algorithmID.getProviderId(), ex.getLocalizedMessage() };
+         Object[] exArgs = { algorithmID.getProviderId(),
+                             ex.getLocalizedMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
       }
@@ -156,7 +175,7 @@ public class SignatureAlgorithm extends Algorithm {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @return the result of the {@link java.security.Signature#sign} method
-    * @throws java.security.SignatureException
+    * @throws SignatureException
     */
    public byte[] sign() throws SignatureException {
       return this._signatureAlgorithm.sign();
@@ -290,5 +309,59 @@ public class SignatureAlgorithm extends Algorithm {
     */
    public boolean verify(byte[] signature) throws SignatureException {
       return this._signatureAlgorithm.verify(signature);
+   }
+
+   /**
+    * Method convertXMLDSIGtoASN1
+    *
+    * @param xmldsigbytes
+    * @return
+    * @throws IOException
+    */
+   public static byte[] convertXMLDSIGtoASN1(byte[] xmldsigbytes)
+           throws IOException {
+
+      byte rbytes[] = new byte[20];
+      byte sbytes[] = new byte[20];
+
+      System.arraycopy(xmldsigbytes, 0, rbytes, 0, 20);
+      System.arraycopy(xmldsigbytes, 20, sbytes, 0, 20);
+
+      BigInteger r = new BigInteger(rbytes);
+      BigInteger s = new BigInteger(sbytes);
+      ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+      DEROutputStream dOut = new DEROutputStream(bOut);
+      DERConstructedSequence seq = new DERConstructedSequence();
+
+      seq.addObject(new DERInteger(r));
+      seq.addObject(new DERInteger(s));
+      dOut.writeObject(seq);
+
+      return bOut.toByteArray();
+   }
+
+   /**
+    * Method convertASN1toXMLDSIG
+    *
+    * @param derbytes
+    * @return
+    * @throws IOException
+    */
+   public static byte[] convertASN1toXMLDSIG(byte derbytes[])
+           throws IOException {
+
+      ByteArrayInputStream bIn = new ByteArrayInputStream(derbytes);
+      DERInputStream dIn = new DERInputStream(bIn);
+      DERConstructedSequence seq = (DERConstructedSequence) dIn.readObject();
+      BigInteger r = ((DERInteger) seq.getObjectAt(0)).getValue();
+      BigInteger s = ((DERInteger) seq.getObjectAt(1)).getValue();
+      byte rbytes[] = r.toByteArray();
+      byte sbytes[] = s.toByteArray();
+      byte result[] = new byte[40];
+
+      System.arraycopy(rbytes, 0, result, 0, 20);
+      System.arraycopy(sbytes, 0, result, 20, 20);
+
+      return result;
    }
 }
