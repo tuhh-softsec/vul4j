@@ -23,6 +23,14 @@ limitations under the License.
     <section>
       <title>News</title>
       <section>
+      	<title>February 2005</title>
+		<p>
+		  Version 1.2.1 of the Java library has been released. 
+		  This is a bugfix version, for more detail information see the
+		  <link href="site:changes">changelog</link>.
+		</p>
+	  	</section>
+      <section>
 		<title>December 2004</title>
 		<p>
 		  Version 1.2 of the Java library has been released.  
