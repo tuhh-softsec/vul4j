@@ -68,6 +68,9 @@ import org.bouncycastle.asn1.DERConstructedSequence;
 import org.bouncycastle.asn1.DERInputStream;
 import org.bouncycastle.asn1.DERInteger;
 import org.bouncycastle.asn1.DEROutputStream;
+
+import junit.framework.TestCase;
+
 import org.apache.xml.security.utils.HexDump;
 import org.apache.xml.security.utils.Base64;
 
@@ -76,11 +79,17 @@ import org.apache.xml.security.utils.Base64;
  * Tests the conversion methods between ASN.1 and XML Signature DSA format.
  * @author $Author$
  */
-public class SignatureDSATest {
+public class SignatureDSATest extends TestCase{
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(SignatureDSATest.class.getName());
+
+
+   public SignatureDSATest(String name) {
+     super(name);
+   }
+
 
    /**
     * Method main
@@ -110,7 +119,7 @@ public class SignatureDSATest {
       System.out.println(Base64.encode(convertBIGINTtoASN1(r, s)));
    }
 
-   void test1 () throws Exception {
+   public void test1 () throws Exception {
       String rStr = "8BAC1AB6 6410435C B7181F95 B16AB97C 92B341C0";
 
       String sStr = "41E2345F 1F56DF24 58F426D1 55B4BA2D B6DCD8C8";
@@ -121,7 +130,7 @@ public class SignatureDSATest {
       BigInteger s = new BigInteger(1, HexDump.hexStringToByteArray(sStr));
 
       String encoded = Base64.encode(convertBIGINTtoXMLDSIG(r, s));
-      // assertTrue(encoded.equals(xmlEncoded));
+      assertTrue(encoded.equals(xmlEncoded));
    }
 
    /**
