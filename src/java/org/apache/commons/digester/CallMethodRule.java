@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.11 2001/12/15 19:45:56 craigmcc Exp $
- * $Revision: 1.11 $
- * $Date: 2001/12/15 19:45:56 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.12 2002/01/04 05:32:11 sanders Exp $
+ * $Revision: 1.12 $
+ * $Date: 2002/01/04 05:32:11 $
  *
  * ====================================================================
  *
@@ -78,7 +78,7 @@ import org.apache.commons.beanutils.MethodUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.11 $ $Date: 2001/12/15 19:45:56 $
+ * @version $Revision: 1.12 $ $Date: 2002/01/04 05:32:11 $
  */
 
 public class CallMethodRule extends Rule {
@@ -283,7 +283,7 @@ public class CallMethodRule extends Rule {
 
 	// Invoke the required method on the top object
 	Object top = digester.peek();
-	if (digester.getDebug() >= 1) {
+	if (digester.log.isDebugEnabled()) {
 	    StringBuffer sb = new StringBuffer("Call ");
             if (top == null)
                 sb.append("[NULL TOP]");
@@ -306,7 +306,7 @@ public class CallMethodRule extends Rule {
                     sb.append(paramTypes[i].getName());
 	    }
 	    sb.append(")");
-	    digester.log(sb.toString());
+	    digester.log.debug(sb.toString());
 	}
         MethodUtils.invokeExactMethod(top, methodName,
                                       paramValues, paramTypes);

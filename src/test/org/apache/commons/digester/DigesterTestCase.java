@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.5 2001/12/04 19:47:00 sanders Exp $
- * $Revision: 1.5 $
- * $Date: 2001/12/04 19:47:00 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.6 2002/01/04 05:32:11 sanders Exp $
+ * $Revision: 1.6 $
+ * $Date: 2002/01/04 05:32:11 $
  *
  * ====================================================================
  *
@@ -83,7 +83,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.5 $ $Date: 2001/12/04 19:47:00 $
+ * @version $Revision: 1.6 $ $Date: 2002/01/04 05:32:11 $
  */
 
 public class DigesterTestCase extends TestCase {
@@ -165,40 +165,9 @@ public class DigesterTestCase extends TestCase {
 
 
     /**
-     * Test the ability to redirect logging to an alternate destination.
-     */
-    public void testLogging() {
-
-        assertNull("Initial writer is null", digester.getWriter());
-
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        digester.setWriter(pw);
-        digester.log("This is line 1");
-        digester.log("And this is line 2");
-        String value = "This is line 1" +
-            System.getProperty("line.separator") +
-            "And this is line 2" +
-            System.getProperty("line.separator");
-        pw.flush();
-        assertEquals("Logged output identical", value, sw.toString());
-
-        digester.setWriter(null);
-        assertNull("Reset writer is null", digester.getWriter());
-
-    }
-
-
-    /**
      * Test the basic property getters and setters.
      */
     public void testProperties() {
-
-        assertEquals("Initial debug is zero", 0, digester.getDebug());
-        digester.setDebug(1);
-        assertEquals("Set debug is one", 1, digester.getDebug());
-        digester.setDebug(0);
-        assertEquals("Reset debug is zero", 0, digester.getDebug());
 
         assertNull("Initial error handler is null",
                    digester.getErrorHandler());

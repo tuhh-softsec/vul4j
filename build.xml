@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.17 2001/12/04 19:46:11 sanders Exp $
+        $Id: build.xml,v 1.18 2002/01/04 05:32:11 sanders Exp $
 -->
 
 
@@ -24,6 +24,7 @@
   <property name="commons.home"            value=".."/>
   <property name="beanutils.home"          value="${commons.home}/beanutils"/>
   <property name="collections.home"        value="${commons.home}/collections"/>
+  <property name="logging.home"            value="${commons.home}/logging"/>
 
 
 <!-- ========== Derived Values ============================================ -->
@@ -37,6 +38,8 @@
   <property name="commons-beanutils.jar"   value="${beanutils.home}/dist/commons-beanutils.jar"/>
   <property name="commons-collections.api" value="${collections.home}/dist/docs/api"/>
   <property name="commons-collections.jar" value="${collections.home}/dist/commons-collections.jar"/>
+  <property name="commons-logging.api"     value="${logging.home}/dist/docs/api"/>
+  <property name="commons-logging.jar"     value="${logging.home}/dist/commons-logging.jar"/>
 
 
 <!-- ========== Component Declarations ==================================== -->
@@ -49,7 +52,7 @@
   <property name="component.package"       value="org.apache.commons.digester"/>
 
   <!-- The title of this component -->
-  <property name="component.title"         value="XML to Java Object Configuration"/>
+  <property name="component.title"         value="Digester - XML to Java Object Configuration"/>
 
   <!-- The current version number of this component -->
   <property name="component.version"       value="1.2-dev"/>
@@ -89,6 +92,7 @@
     <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${commons-beanutils.jar}"/>
     <pathelement location="${commons-collections.jar}"/>
+    <pathelement location="${commons-logging.jar}"/>
     <pathelement location="${junit.jar}"/>
   </path>
 
@@ -105,6 +109,7 @@
     <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${commons-beanutils.jar}"/>
     <pathelement location="${commons-collections.jar}"/>
+    <pathelement location="${commons-logging.jar}"/>
   </path>
 
   <!-- Construct RSSDigester test classpath -->
@@ -114,6 +119,7 @@
     <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${commons-beanutils.jar}"/>
     <pathelement location="${commons-collections.jar}"/>
+    <pathelement location="${commons-logging.jar}"/>
   </path>
 
   <!-- Should all tests fail if one does? -->
@@ -211,6 +217,8 @@
                    href="http://jakarta.apache.org/commons/beanutils/api/"/>
       <link     offline="true" packagelistLoc="${commons-collections.api}"
                    href="http://jakarta.apache.org/commons/collections/api/"/>
+      <link     offline="true" packagelistLoc="${commons-logging.api}"
+                   href="http://jakarta.apache.org/commons/logging/api/"/>
       <classpath  refid="compile.classpath"/>
     </javadoc>
   </target>

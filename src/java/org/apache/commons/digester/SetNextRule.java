@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetNextRule.java,v 1.8 2001/12/15 19:45:56 craigmcc Exp $
- * $Revision: 1.8 $
- * $Date: 2001/12/15 19:45:56 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetNextRule.java,v 1.9 2002/01/04 05:32:11 sanders Exp $
+ * $Revision: 1.9 $
+ * $Date: 2002/01/04 05:32:11 $
  *
  * ====================================================================
  *
@@ -76,7 +76,7 @@ import org.apache.commons.beanutils.MethodUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.8 $ $Date: 2001/12/15 19:45:56 $
+ * @version $Revision: 1.9 $ $Date: 2002/01/04 05:32:11 $
  */
 
 public class SetNextRule extends Rule {
@@ -146,12 +146,12 @@ public class SetNextRule extends Rule {
 	// Identify the objects to be used
 	Object child = digester.peek(0);
 	Object parent = digester.peek(1);
-	if (digester.getDebug() >= 1) {
+	if (digester.log.isDebugEnabled()) {
             if (parent == null)
-                digester.log("Call [NULL PARENT]." +
+                digester.log.debug("Call [NULL PARENT]." +
                              methodName + "(" + child + ")");
             else
-                digester.log("Call " + parent.getClass().getName() + "." +
+                digester.log.debug("Call " + parent.getClass().getName() + "." +
                              methodName + "(" + child + ")");
         }
 

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/RSSDigester.java,v 1.1 2001/05/22 02:55:03 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/05/22 02:55:03 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/RSSDigester.java,v 1.2 2002/01/04 05:32:11 sanders Exp $
+ * $Revision: 1.2 $
+ * $Date: 2002/01/04 05:32:11 $
  *
  * ====================================================================
  *
@@ -68,6 +68,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import org.apache.commons.digester.Digester;
+import org.apache.commons.logging.LogSource;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -86,7 +87,7 @@ import org.xml.sax.SAXException;
  * example of using these classes.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/05/22 02:55:03 $
+ * @version $Revision: 1.2 $ $Date: 2002/01/04 05:32:11 $
  */
 
 public class RSSDigester extends Digester {
@@ -351,7 +352,7 @@ public class RSSDigester extends Digester {
             System.out.println("Creating new digester ...");
             RSSDigester digester = new RSSDigester();
             if ((args.length > 0) && (args[0].equals("-debug")))
-                digester.setDebug(999);
+                digester.setLogger(LogSource.getInstance("RSSDigester"));
             System.out.println("Parsing input stream ...");
             Channel channel = (Channel) digester.parse(is);
             System.out.println("Closing input stream ...");

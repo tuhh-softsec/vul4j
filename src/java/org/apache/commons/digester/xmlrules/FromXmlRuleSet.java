@@ -129,15 +129,9 @@ public class FromXmlRuleSet extends RuleSetBase {
         parser.setTarget(digester);
         
         Digester rulesDigester = new Digester();
-        
-        rulesDigester.setDebug(0);
-        
-        // fix the rules digester's logging behavior. If debug==0, logs nothing
-        // not even exception stack traces. If debug>0, log messages go to stderr.
-        rulesDigester.setWriter(new PrintWriter(new NullLogWriter(rulesDigester)));
         rulesDigester.addRuleSet(parser);
-
         rulesDigester.push(parser);
+
         try {
             rulesDigester.parse(xmlRules.openStream());
         } catch (Exception ex) {

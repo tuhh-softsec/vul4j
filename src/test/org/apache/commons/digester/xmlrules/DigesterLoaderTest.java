@@ -103,7 +103,6 @@ public class DigesterLoaderTest extends TestCase {
         assertNotNull("The test could not locate test.xml", input);
         Digester digester = DigesterLoader.createDigester(rules);
         digester.push(new ArrayList());
-        digester.setDebug(0);
         Object root = digester.parse(input.openStream());
         assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
         //System.out.println(root);

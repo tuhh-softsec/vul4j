@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.2 2001/12/04 18:01:47 jstrachan Exp $
- * $Revision: 1.2 $
- * $Date: 2001/12/04 18:01:47 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.3 2002/01/04 05:32:11 sanders Exp $
+ * $Revision: 1.3 $
+ * $Date: 2002/01/04 05:32:11 $
  *
  * ====================================================================
  *
@@ -80,7 +80,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.2 $ $Date: 2001/12/04 18:01:47 $
+ * @version $Revision: 1.3 $ $Date: 2002/01/04 05:32:11 $
  */
 
 public class BeanPropertySetterRule extends Rule {
@@ -143,8 +143,8 @@ public class BeanPropertySetterRule extends Rule {
     public void body(String bodyText) throws Exception {
 
             // log some debugging information
-            if (digester.debug>9)
-                digester.log("[BeanPropertySetterRule] Called with text " +
+            if (digester.log.isDebugEnabled())
+                digester.log.debug("[BeanPropertySetterRule] Called with text " +
                              bodyText);
 
 	    this.bodyText = bodyText.trim();
@@ -172,8 +172,7 @@ public class BeanPropertySetterRule extends Rule {
 	}
 
         // log some debugging information
-        if (digester.debug>1)
-            digester.log("[BeanPropertySetterRule] setting property " +
+        digester.log.info("[BeanPropertySetterRule] setting property " +
                          property + " with text " + bodyText);
 
         // going to use beanutils so need to specify property using map
@@ -185,8 +184,8 @@ public class BeanPropertySetterRule extends Rule {
         if (top==null) {
             // don't try to set property if null
             // just log and return
-            if (digester.debug>3)
-                digester.log("[BeanPropertySetterRule] Top object is null.");
+            if (digester.log.isDebugEnabled())
+                digester.log.debug("[BeanPropertySetterRule] Top object is null.");
             return;
         }
         

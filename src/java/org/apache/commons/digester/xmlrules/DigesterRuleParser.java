@@ -67,18 +67,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.collections.ArrayStack;
-import org.apache.commons.digester.AbstractObjectCreationFactory;
-import org.apache.commons.digester.CallMethodRule;
-import org.apache.commons.digester.FactoryCreateRule;
-import org.apache.commons.digester.ObjectCreateRule;
-import org.apache.commons.digester.Rule;
-import org.apache.commons.digester.Rules;
-import org.apache.commons.digester.RuleSetBase;
-import org.apache.commons.digester.SetNextRule;
-import org.apache.commons.digester.SetPropertiesRule;
-import org.apache.commons.digester.SetPropertiesRule;
-import org.apache.commons.digester.SetPropertyRule;
-import org.apache.commons.digester.SetTopRule;
+import org.apache.commons.digester.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -104,7 +93,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * This is the digester to which we are adding the rules that we parse
      * from the Rules XML document.
      */    
-    protected org.apache.commons.digester.Digester targetDigester;
+    protected Digester targetDigester;
 
 
     /**
@@ -153,7 +142,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * into Rule objects, and adding them to the given Digester
      * @param targetDigester the Digester to add the rules to
      */
-    public DigesterRuleParser(org.apache.commons.digester.Digester targetDigester) {
+    public DigesterRuleParser(Digester targetDigester) {
         this.targetDigester = targetDigester;
         patternStack = new PatternStack();
     }
@@ -168,7 +157,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * @param stack Stack containing the prefix pattern string to be prepended
      * to any pattern parsed by this rule set.
      */
-    private DigesterRuleParser(org.apache.commons.digester.Digester targetDigester, 
+    private DigesterRuleParser(Digester targetDigester,
         PatternStack stack, Set includedFiles) {
         this.targetDigester = targetDigester;
         patternStack = stack;
@@ -179,7 +168,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * Sets the digester into which to add the parsed rules
      * @param d the Digester to add the rules to
      */
-    public void setTarget(org.apache.commons.digester.Digester d) {
+    public void setTarget(Digester d) {
         targetDigester = d;
     }
     
@@ -223,7 +212,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * should of this method should call this implementation first: i.e. 
      * <code>super.addRuleInstances(digester);</code>
      */
-    public void addRuleInstances(org.apache.commons.digester.Digester digester) {
+    public void addRuleInstances(Digester digester) {
         final String ruleClassName = Rule.class.getName();
         digester.register(DIGESTER_PUBLIC_ID, getDigesterRulesDTD());
         
@@ -279,7 +268,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * @param digester the Digester used to parse the rules XML file
          * @param attrName The name of the attribute containing the pattern
          */
-        public PatternRule(org.apache.commons.digester.Digester digester, String attrName) {
+        public PatternRule(Digester digester, String attrName) {
             super(digester);
             this.attrName = attrName;
         }
@@ -316,7 +305,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * the parse.
      */
     private class IncludeRule extends Rule {
-        public IncludeRule(org.apache.commons.digester.Digester digester) {
+        public IncludeRule(Digester digester) {
             super(digester);
         }
         
@@ -361,10 +350,7 @@ public class DigesterRuleParser extends RuleSetBase {
             DigesterRuleParser includedSet =
                     new DigesterRuleParser(targetDigester, patternStack, includedFiles);
             includedSet.setDigesterRulesDTD(getDigesterRulesDTD());
-            org.apache.commons.digester.Digester digester = new org.apache.commons.digester.Digester();
-            // Keeps digester from outputting stack trace to stdout, if a
-            // CircularIncludeException is raised
-            digester.setWriter(new PrintWriter(new NullLogWriter(digester)));
+            Digester digester = new Digester();
             digester.addRuleSet(includedSet);
             digester.push(DigesterRuleParser.this);
             digester.parse(fileName);
@@ -442,7 +428,7 @@ public class DigesterRuleParser extends RuleSetBase {
         /**
          * This method passes through to the underlying Rules object.
          */
-        public org.apache.commons.digester.Digester getDigester() {
+        public Digester getDigester() {
             return delegate.getDigester();
         }
         
@@ -477,7 +463,7 @@ public class DigesterRuleParser extends RuleSetBase {
         /**
          * This method passes through to the underlying Rules object.
          */
-        public void setDigester(org.apache.commons.digester.Digester digester) {
+        public void setDigester(Digester digester) {
             delegate.setDigester(digester);
         }
         
