@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.10 2001/08/04 23:14:57 craigmcc Exp $
- * $Revision: 1.10 $
- * $Date: 2001/08/04 23:14:57 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.11 2001/08/04 23:46:29 craigmcc Exp $
+ * $Revision: 1.11 $
+ * $Date: 2001/08/04 23:46:29 $
  *
  * ====================================================================
  *
@@ -106,7 +106,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.10 $ $Date: 2001/08/04 23:14:57 $
+ * @version $Revision: 1.11 $ $Date: 2001/08/04 23:46:29 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1114,6 +1114,53 @@ public class Digester extends DefaultHandler {
 
 	addRule(pattern,
 	        new CallParamRule(this, paramIndex, attributeName));
+
+    }
+
+
+    /**
+     * Add a "factory create" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param className Java class name of the object creation factory class
+     */
+    public void addFactoryCreate(String pattern, String className) {
+
+        addRule(pattern,
+                new FactoryCreateRule(this, className));
+
+    }
+
+
+    /**
+     * Add a "factory create" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param className Java class name of the object creation factory class
+     * @param attributeName Attribute name which, if present, overrides the
+     *  value specified by <code>className</code>
+     */
+    public void addFactoryCreate(String pattern, String className,
+                                 String attributeName) {
+
+        addRule(pattern,
+                new FactoryCreateRule(this, className, attributeName));
+
+    }
+
+
+    /**
+     * Add a "factory create" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param creationFactory Previously instantiated ObjectCreationFactory
+     *  to be utilized
+     */
+    public void addFactoryCreate(String pattern,
+                                 ObjectCreationFactory creationFactory) {
+
+        addRule(pattern,
+                new FactoryCreateRule(this, creationFactory));
 
     }
 
