@@ -587,6 +587,10 @@ void printUsage(void) {
 	cerr << "        --winhmac/-wh <string>\n";
 	cerr << "                      Create a windows HMAC key using <string> as the password.\n";
 	cerr << "                      Uses a SHA-1 hash of the password to derive a key\n";
+#if defined (CRYPT_ACQUIRE_CACHE_FLAG)
+	cerr << "        --wincer/-wc <Subject Name>\n";
+	cerr << "                      Use the private key associated with the named certificate in the Windows certificate store\n";
+#endif /* CRYPT_ACQUIRE_CACHE_FLAG */
 	cerr << "        --windsskeyinfo/-wdi\n";
 	cerr << "                      Clear KeyInfo elements and insert DSS parameters from windows key\n";
 	cerr << "        --winrsakeyinfo/-wri\n";
@@ -970,7 +974,103 @@ int main(int argc, char **argv) {
 			paramCount++;
 		}
 
+		// Need to find a better way to check this
+		// If CryptAcquireCertificatePrivateKey is not defined in the included
+		// version of wincapi.h, CRYPT_ACQUIRE_CACHE_FLAG will not be set
+
+#if defined (CRYPT_ACQUIRE_CACHE_FLAG)
+		
+		// Code provided by Milan Tomic
+
+		else if (stricmp(argv[paramCount], "--wincer") == 0 || stricmp(argv[paramCount], "-wc") == 0) {
+			WinCAPICryptoProvider * cp;
+			PCCERT_CONTEXT          pSignerCert = NULL;
+			DWORD                   dwKeySpec;
+			HCERTSTORE				hStoreHandle;
+			HCRYPTPROV				hCryptProv;
+
+			#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
+
+			// Obtain default PROV_DSS and PROV_RSA_FULL, with default user key containers
+			if (!CryptAcquireContext(&win32DSSCSP,
+				NULL,
+				NULL,
+				PROV_DSS,
+				0)) {
+					cerr << "Error acquiring DSS Crypto Service Provider" << endl;
+					return 2;
+			}//*/
+
+			if (!CryptAcquireContext(&win32RSACSP,
+				NULL,
+				NULL,
+				PROV_RSA_FULL,
+				0)) {
+					cerr << "Error acquiring RSA Crypto Service Provider" << endl;
+					return 2;
+			}//*/
+
+			cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
+			XSECPlatformUtils::SetCryptoProvider(cp);
+
+			// Open 'Personal' certificate store 
+			if (!(hStoreHandle = CertOpenStore(CERT_STORE_PROV_SYSTEM,
+				0,
+				NULL,
+				CERT_SYSTEM_STORE_CURRENT_USER,
+				L"MY"))) {
+					cerr << "Error opening 'Personal' store." << endl;
+					return 2;
+			}
+
+			// Find desired cerificate
+			if (!(pSignerCert = CertFindCertificateInStore(hStoreHandle,
+				MY_ENCODING_TYPE,
+				0,
+				CERT_FIND_SUBJECT_STR_A,
+				argv[paramCount+1],
+				NULL))) {
+					cerr << "Can't find '" << argv[paramCount+1] << "' certificate in 'Personal' store." << endl;
+					return 2;
+			}
+
+			// Now get certificate's private key
+			if (!CryptAcquireCertificatePrivateKey(pSignerCert,
+				0,
+				NULL,
+				&hCryptProv,
+				&dwKeySpec,
+				NULL)) {
+					cerr << "Can't acquire private key of '" << argv[paramCount+1] << "' certificate." << endl;
+					exit(1);
+			}
+
+#if 0
+			//Added just for debugging
+			if (dwKeySpec == AT_SIGNATURE)
+			cerr << "Your key is AT_SIGNATURE" << endl;
+			else if (dwKeySpec == AT_KEYEXCHANGE)
+			cerr << "Your key is AT_KEYEXCHANGE" << endl;
 #endif
+			HCRYPTKEY k;
+			BOOL fResult = CryptGetUserKey(
+				hCryptProv,
+				dwKeySpec,//AT_SIGNATURE,
+				&k);
+
+			if (!fResult || k == 0) {
+				cerr << "Error obtaining default user (AT_SIGNATURE or AT_KEYEXCHANGE) key from windows RSA provider.\n";
+				exit(1);
+			};
+
+			winKeyRSA = new WinCAPICryptoKeyRSA(cp, k, true);
+			key = winKeyRSA;
+			paramCount += 2;
+		}
+
+#endif /* CRYPT_ACQUIRE_CACHE_FLAG */
+
+#endif /* HAVE_WINCAPI */
 
 		else {
 
