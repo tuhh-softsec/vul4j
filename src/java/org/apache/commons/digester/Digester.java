@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.17 2001/09/05 18:52:37 craigmcc Exp $
- * $Revision: 1.17 $
- * $Date: 2001/09/05 18:52:37 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.18 2001/09/19 17:04:09 sanders Exp $
+ * $Revision: 1.18 $
+ * $Date: 2001/09/19 17:04:09 $
  *
  * ====================================================================
  *
@@ -64,6 +64,7 @@ package org.apache.commons.digester;
 
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -87,6 +88,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -106,7 +108,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.17 $ $Date: 2001/09/05 18:52:37 $
+ * @version $Revision: 1.18 $ $Date: 2001/09/19 17:04:09 $
  */
 
 public class Digester extends DefaultHandler {
@@ -129,13 +131,30 @@ public class Digester extends DefaultHandler {
      * Construct a new Digester, allowing a SAXParser to be passed in.  This
      * allows Digester to be used in environments which are unfriendly to
      * JAXP1.1 (such as WebLogic 6.0).  Thanks for the request to change go to
-     * James House (james@interobjective.com).
+     * James House (james@interobjective.com).  This may help in places where
+     * you are able to load JAXP 1.1 classes yourself.
      */
     public Digester(SAXParser parser) {
 
 	super();
 
         this.parser = parser;
+
+    }
+
+
+    /**
+     * Construct a new Digester, allowing an XMLReader to be passed in.  This
+     * allows Digester to be used in environments which are unfriendly to
+     * JAXP1.1 (such as WebLogic 6.0).  Note that if you use this option you
+     * have to configure namespace and validation support yourself, as these
+     * properties only affect the SAXParser and emtpy constructor.
+     */
+    public Digester(XMLReader reader) {
+
+	super();
+
+        this.reader = reader;
 
     }
 
@@ -230,6 +249,12 @@ public class Digester extends DefaultHandler {
      * The SAXParser we will use to parse the input stream.
      */
     protected SAXParser parser = null;
+
+
+    /**
+     * The XMLReader used to parse digester rules.
+     */
+    protected XMLReader reader = null;
 
 
     /**
@@ -465,6 +490,32 @@ public class Digester extends DefaultHandler {
         }
 
     }
+
+
+    /**
+     * By setting the reader in the constructor, you can bypass JAXP and be able
+     * to use digester in Weblogic 6.0.
+     */
+    public synchronized XMLReader getReader() {
+
+        if (reader == null) {
+            try {
+                reader = getParser().getXMLReader();
+            } catch (SAXException se) {
+                return null;
+            }
+        }
+
+        //set up the parse
+        reader.setContentHandler(this);
+        reader.setDTDHandler(this);
+        reader.setEntityResolver(this);
+        reader.setErrorHandler(this);
+        return reader;
+    }
+
+
+
 
 
     /**
@@ -1078,7 +1129,7 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(File file) throws IOException, SAXException {
 
-	getParser().parse(file, this);
+	getReader().parse(new InputSource(new FileReader(file)));
 	return (root);
 
     }
@@ -1095,7 +1146,7 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(InputSource input) throws IOException, SAXException {
 
-	getParser().parse(input, this);
+	getReader().parse(input);
 	return (root);
 
     }
@@ -1112,7 +1163,7 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(InputStream input) throws IOException, SAXException {
 
-	getParser().parse(input, this);
+	getReader().parse(new InputSource(input));
 	return (root);
 
     }
@@ -1129,7 +1180,7 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(String uri) throws IOException, SAXException {
 
-	getParser().parse(uri, this);
+	getReader().parse(uri);
 	return (root);
 
     }
