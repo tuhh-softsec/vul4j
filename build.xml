@@ -125,7 +125,10 @@ org.apache.xml.security.utils.*
        <classpath refid="classpath.test" />
     </available>
 
-    <available property="bcprov.present" file="${lib.jce}" />
+    <available property="bcprov.present"
+               classname="org.bouncycastle.asn1.DERInputStream">
+       <classpath refid="classpath.library" />
+    </available>
   </target>
 
   <target name="get-jce"
@@ -150,7 +153,7 @@ org.apache.xml.security.utils.*
     </copy>
   </target>
 
-  <target name="compile.tests" depends="compile.library">
+  <target name="compile.tests" depends="compile.library" if="junit.present">
     <!-- Compile the java code from ${src} into ${build} -->
     <javac srcdir="${src.unitTests}" destdir="${build}">
       <classpath refid="classpath.test" />
