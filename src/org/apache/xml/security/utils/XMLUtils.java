@@ -1084,42 +1084,6 @@ public class XMLUtils {
    }
 
    /**
-    * Method indentSignature
-    *
-    * @param element
-    * @param indentString
-    * @param initialDepth
-    */
-   public static void indentSignature(Element element, String indentString,
-                                      int initialDepth) {
-
-      try {
-         NodeList returns = XPathAPI.selectNodeList(element, ".//text()");
-
-         for (int i = 0; i < returns.getLength(); i++) {
-            Text returnText = (Text) returns.item(i);
-            Element parent = (Element) returnText.getParentNode();
-            Document doc = returnText.getOwnerDocument();
-            int j = 0;
-
-            while (parent != element) {
-               j++;
-            }
-
-            String newReturn = "";
-
-            for (int k = 0; k < j; k++) {
-               newReturn += indentString;
-            }
-
-            Text newReturnText = doc.createTextNode(newReturn);
-
-            parent.replaceChild(newReturnText, returnText);
-         }
-      } catch (TransformerException ex) {}
-   }
-
-   /**
     * Method addReturnToElement
     *
     * @param elementProxy
