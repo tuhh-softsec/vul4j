@@ -308,8 +308,11 @@ public class Init {
                     	log.debug("Register Resolver: " + JAVACLASS
                                + ": For unknown purposes");
                   }
-
-                  ResourceResolver.register(JAVACLASS);
+				  try {
+					  ResourceResolver.register(JAVACLASS);
+				  } catch (Throwable e) {
+					  log.warn("Cannot register:"+JAVACLASS+" perhaps some needed jars are not installed",e);
+				  }
                   XX_configure_reg_resourceresolver_end =
                     System.currentTimeMillis();
                }               
