@@ -62,8 +62,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import java.security.Key;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -73,6 +75,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.xml.security.encryption.EncryptedData;
+import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.content.KeyName;
@@ -97,7 +100,8 @@ public class BaltimoreEncTest extends TestCase {
 	private static int nodeCount = 0;
 	private static final byte[] bobBytes = 
 		"abcdefghijklmnopqrstuvwx".getBytes();
-
+	private static final byte[] jebBytes =
+		"abcdefghijklmnopqrstuvwx".getBytes();
 
 	/** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
@@ -209,6 +213,33 @@ public class BaltimoreEncTest extends TestCase {
     }
 
 	/**
+	 * Method test_five_content_3des_cbc
+	 *
+	 * Check the merlin-enc-five element content test for 3DES
+	 *
+	 */
+
+	public void test_five_content_aes128_cbc_kw_aes192() throws Exception {
+
+		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes128-cbc-kw-aes192.xml";
+
+		Document dd = decryptElement(filename, XMLCipher.TRIPLEDES);
+
+		String cc = retrieveCCNumber(dd);
+
+		// Compare the retrieved number to the stored number
+
+		assertTrue(cc, ((cc != null) && (cc.equals(cardNumber))));
+		
+		// Test my numbers
+
+		int myNodeCount = countNodes(dd);
+
+		assertTrue("Node count mismatches", 
+				   ((myNodeCount > 0) && myNodeCount == nodeCount));
+    }
+
+	/**
 	 * Method decryptElement
 	 *
 	 * Take a key, encryption type and a file, find an encrypted element
@@ -250,14 +281,35 @@ public class BaltimoreEncTest extends TestCase {
 		EncryptedData encryptedData = cipher.loadEncryptedData(doc, ee);
 		KeyInfo ki = encryptedData.getKeyInfo();
    
-		SecretKey key = null;
-
+		Key key = null;
+		Key kek = null;
+		
 		if (ki != null) {
 			KeyName keyName = ki.itemKeyName(0);
 			if (keyName != null) {
 				key = mapKeyName(keyName.getKeyName());
 			}
+			else {
+				EncryptedKey encryptedKey = ki.itemEncryptedKey(0);
+				if (encryptedKey != null) {
+					KeyInfo kiek = encryptedKey.getKeyInfo();
+					if (kiek != null) {
+						KeyName kekKeyName = kiek.itemKeyName(0);
+						if (kekKeyName != null) {
+							kek = mapKeyName(kekKeyName.getKeyName());
+							if (kek != null) {
+								cipher.setKEK(kek);
+								key = cipher.decryptKey(encryptedKey,
+														encryptedData.
+														getEncryptionMethod().
+														getAlgorithm());
+							}
+						}
+					}
+				}
+			}
 		}
+		
 		cipher.init(XMLCipher.DECRYPT_MODE, key);
 		Document dd = cipher.doFinal(doc, ee);
 
@@ -286,6 +338,12 @@ public class BaltimoreEncTest extends TestCase {
 
 			return key;
 
+		}
+		if (name.equals("jeb")) {
+
+			// Jeb is a AES-192 key
+	        SecretKey key = new SecretKeySpec(jebBytes, "AES");
+			return key;
 		}
 
 		return null;
