@@ -34,10 +34,12 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
+#include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 
 #include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(ArrayJanitor);
+XSEC_USING_XERCES(Janitor);
 
 #include <openssl/evp.h>
 
@@ -106,6 +108,19 @@ void OpenSSLCryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
 	XSECnew(outBuf, unsigned char[len + 1]);
 	ArrayJanitor<unsigned char> j_outBuf(outBuf);
 
+	/* Had to move to our own Base64 decoder because it handles non-wrapped b64
+	   better.  Grrr. */
+
+	XSCryptCryptoBase64 *b64;
+	XSECnew(b64, XSCryptCryptoBase64);
+	Janitor<XSCryptCryptoBase64> j_b64(b64);
+
+	b64->decodeInit();
+	bufLen = b64->decode((unsigned char *) buf, len, outBuf, len);
+	bufLen += b64->decodeFinish(&outBuf[bufLen], len-bufLen);
+
+	/*
+
 	EVP_ENCODE_CTX m_dctx;
 	EVP_DecodeInit(&m_dctx);
 
@@ -120,12 +135,12 @@ void OpenSSLCryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
 		throw XSECCryptoException(XSECCryptoException::Base64Error,
 			"OpenSSL:Base64 - Error during Base64 Decode of X509 Certificate");
 	}
-
+	
 	int finalLen;
 	EVP_DecodeFinal(&m_dctx, &outBuf[bufLen], &finalLen); 
 
 	bufLen += finalLen;
-
+	*/
 	if (bufLen > 0) {
 		mp_X509=  d2i_X509(NULL, &outBuf, bufLen);
 	}

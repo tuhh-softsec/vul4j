@@ -32,8 +32,15 @@
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
+#include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
+#include <xsec/framework/XSECError.hpp>
+
+#include <xercesc/util/Janitor.hpp>
 
 #include <openssl/err.h>
+
+XERCES_CPP_NAMESPACE_USE
+
 
 // --------------------------------------------------------------------------------
 //           Decoding
@@ -160,7 +167,7 @@ BIGNUM * OpenSSLCryptoBase64::b642BN(char * b64in, unsigned int len) {
 
 	int bufLen;
 	unsigned char buf[1024];
-
+/*
 	EVP_ENCODE_CTX m_dctx;
 	EVP_DecodeInit(&m_dctx);
 	int rc = EVP_DecodeUpdate(&m_dctx, 
@@ -179,6 +186,14 @@ BIGNUM * OpenSSLCryptoBase64::b642BN(char * b64in, unsigned int len) {
 	EVP_DecodeFinal(&m_dctx, &buf[bufLen], &finalLen); 
 
 	bufLen += finalLen;
+*/
+	XSCryptCryptoBase64 *b64;
+	XSECnew(b64, XSCryptCryptoBase64);
+	Janitor<XSCryptCryptoBase64> j_b64(b64);
+
+	b64->decodeInit();
+	bufLen = b64->decode((unsigned char *) b64in, len, buf, len);
+	bufLen += b64->decodeFinish(&buf[bufLen], len-bufLen);
 
 	// Now translate to a bignum
 	return BN_dup(BN_bin2bn(buf, bufLen, NULL));
