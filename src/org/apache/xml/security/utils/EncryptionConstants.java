@@ -78,8 +78,8 @@ public class EncryptionConstants {
 
    // Attributes new in XML Encryption
    public static final String _ATT_ENCODING               = "Encoding";
-   public static final String _ATT_NONCE                  = "Nonce";
    public static final String _ATT_RECIPIENT              = "Recipient";
+   public static final String _ATT_MIMETYPE               = "MimeType";
 
    public static final String _TAG_CARRIEDKEYNAME         = "CarriedKeyName";
    public static final String _TAG_CIPHERDATA             = "CipherData";
@@ -96,6 +96,10 @@ public class EncryptionConstants {
    public static final String _TAG_OAEPPARAMS             = "OAEPparams";
    public static final String _TAG_REFERENCELIST          = "ReferenceList";
    public static final String _TAG_TRANSFORMS             = "Transforms";
+   public static final String _TAG_AGREEMENTMETHOD        = "AgreementMethod";
+   public static final String _TAG_KA_NONCE               = "KA-Nonce";
+   public static final String _TAG_ORIGINATORKEYINFO      = "OriginatorKeyInfo";
+   public static final String _TAG_RECIPIENTKEYINFO       = "RecipientKeyInfo";
 
    /** Field ENCRYPTIONSPECIFICATION_URL */
    public static final String ENCRYPTIONSPECIFICATION_URL = "http://www.w3.org/TR/2001/WD-xmlenc-core-20010626/";
@@ -122,7 +126,7 @@ public class EncryptionConstants {
    public static final String ALGO_ID_KEYTRANSPORT_RSAOAEP = EncryptionConstants.EncryptionSpecNS + "rsa-oaep-mgf1p";
 
    // Key Agreement - OPTIONAL Diffie-Hellman
-   public static final String ALGO_ID_KEYAGREEMENT_SH = EncryptionConstants.EncryptionSpecNS + "dh";
+   public static final String ALGO_ID_KEYAGREEMENT_DH = EncryptionConstants.EncryptionSpecNS + "dh";
 
    // Symmetric Key Wrap - REQUIRED TRIPLEDES KeyWrap
    public static final String ALGO_ID_KEYWRAP_TRIPLEDES = EncryptionConstants.EncryptionSpecNS + "kw-tripledes";
