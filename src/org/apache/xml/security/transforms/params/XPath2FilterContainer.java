@@ -264,18 +264,7 @@ public class XPath2FilterContainer extends ElementProxy
     * @return the XPath 2 Filter String
     */
    public String getXPathFilterStr() {
-
-      StringBuffer sb = new StringBuffer();
-      NodeList children = this._constructionElement.getChildNodes();
-      int length = children.getLength();
-
-      for (int i = 0; i < length; i++) {
-         if (children.item(i).getNodeType() == Node.TEXT_NODE) {
-            sb.append(((Text) children.item(i)).getData());
-         }
-      }
-
-      return sb.toString();
+      return this.getTextFromTextChild();
    }
 
    /**

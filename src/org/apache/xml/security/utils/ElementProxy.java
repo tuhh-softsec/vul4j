@@ -471,18 +471,9 @@ public abstract class ElementProxy {
     * Method getTextFromTextChild
     *
     * @return
-    * @throws XMLSecurityException
     */
-   public String getTextFromTextChild() throws XMLSecurityException {
-
-      try {
-         Text t = (Text) XPathAPI.selectSingleNode(this._constructionElement,
-                                                   "./text()");
-
-         return t.getData();
-      } catch (TransformerException ex) {
-         throw new XMLSecurityException("empty", ex);
-      }
+   public String getTextFromTextChild() {
+      return XMLUtils.getFullTextChildrenFromElement(this._constructionElement);
    }
 
    /**

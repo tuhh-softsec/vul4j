@@ -119,24 +119,7 @@ public class XPathContainer extends SignatureElementProxy implements TransformPa
     * @return the TEXT value of the <CODE>ds:XPath</CODE> Element.
     */
    public String getXPath() {
-
-      try {
-         NodeList textNodes = XPathAPI.selectNodeList(this._constructionElement,
-                                 "./text()");
-         String result = "";
-
-         for (int i = 0; i < textNodes.getLength(); i++) {
-            result += ((Text) textNodes.item(i)).getData();
-         }
-
-         if (result.length() == 0) {
-            return null;
-         } else {
-            return result;
-         }
-      } catch (javax.xml.transform.TransformerException ex) {
-         return null;
-      }
+      return this.getTextFromTextChild();
    }
 
    /**

@@ -101,11 +101,6 @@ public class XMLSignatureInput {
       org.apache.log4j.Category.getInstance(XMLSignatureInput.class.getName());
 
    /**
-    * The original InputStream for this XMLSignatureInput
-    */
-   // InputStream _inputOctetStream = null;
-
-   /**
     * Some InputStreams do not support the {@link java.io.InputStream#reset}
     * method, so we read it in completely and work on our Proxy.
     */

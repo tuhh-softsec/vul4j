@@ -97,7 +97,12 @@ public class XMLUtils {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(XMLUtils.class.getName());
 
+   /**
+    * Constructor XMLUtils
+    *
+    */
    private XMLUtils() {
+
       // we don't allow instantiation
    }
 
@@ -682,6 +687,29 @@ public class XMLUtils {
       element.appendChild(text);
 
       return element;
+   }
+
+   /**
+    * Method getFullTextChildrenFromElement
+    *
+    * @param element
+    * @return
+    */
+   public static String getFullTextChildrenFromElement(Element element) {
+
+      StringBuffer sb = new StringBuffer();
+      NodeList children = element.getChildNodes();
+      int iMax = children.getLength();
+
+      for (int i = 0; i < iMax; i++) {
+         Node curr = children.item(i);
+
+         if (curr.getNodeType() == Node.TEXT_NODE) {
+            sb.append(((Text) curr).getData());
+         }
+      }
+
+      return sb.toString();
    }
 
    /**

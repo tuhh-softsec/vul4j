@@ -88,11 +88,6 @@ import org.apache.xml.dtm.DTMManager;
  */
 public class TransformXPath2Filter extends TransformSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(TransformXPath2Filter.class.getName());
-
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XPATH2FILTER;
@@ -186,9 +181,6 @@ public class TransformXPath2Filter extends TransformSpi {
          HelperNodeList resultNodes = new HelperNodeList();
 
          if (xpathContainer.isIntersect()) {
-            cat.debug("Intersect: "
-                      + xpathContainer.getXPathFilterStr().trim());
-
             for (int i = 0; i < inputNodes.getLength(); i++) {
                Node currentInputNode = inputNodes.item(i);
 
@@ -200,9 +192,6 @@ public class TransformXPath2Filter extends TransformSpi {
                }
             }
          } else if (xpathContainer.isSubtract()) {
-            cat.debug("Subtract:  "
-                      + xpathContainer.getXPathFilterStr().trim());
-
             for (int i = 0; i < inputNodes.getLength(); i++) {
                Node currentInputNode = inputNodes.item(i);
 
@@ -215,9 +204,6 @@ public class TransformXPath2Filter extends TransformSpi {
                }
             }
          } else if (xpathContainer.isUnion()) {
-            cat.debug("Union:     "
-                      + xpathContainer.getXPathFilterStr().trim());
-
             for (int i = 0; i < inputNodes.getLength(); i++) {
                Node currentInputNode = inputNodes.item(i);
 
