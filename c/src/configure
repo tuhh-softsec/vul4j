@@ -261,6 +261,43 @@ PACKAGE_STRING='XML-Security-C 0.0.3'
 PACKAGE_BUGREPORT='berin@ozemail.com.au'
 
 ac_unique_file="framework"
+# Factoring default headers for most tests.
+ac_includes_default="\
+#include <stdio.h>
+#if HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+#if HAVE_SYS_STAT_H
+# include <sys/stat.h>
+#endif
+#if STDC_HEADERS
+# include <stdlib.h>
+# include <stddef.h>
+#else
+# if HAVE_STDLIB_H
+#  include <stdlib.h>
+# endif
+#endif
+#if HAVE_STRING_H
+# if !STDC_HEADERS && HAVE_MEMORY_H
+#  include <memory.h>
+# endif
+# include <string.h>
+#endif
+#if HAVE_STRINGS_H
+# include <strings.h>
+#endif
+#if HAVE_INTTYPES_H
+# include <inttypes.h>
+#else
+# if HAVE_STDINT_H
+#  include <stdint.h>
+# endif
+#endif
+#if HAVE_UNISTD_H
+# include <unistd.h>
+#endif"
+
 
 # Initialize some variables set by options.
 ac_init_help=
@@ -2508,9 +2545,6 @@ objsuffix=".${OBJEXT}"
 package_version_major=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $1}'`
 
 
-# Check for headers
-# AC_HEADER_DIRENT
-
 # Checks for required libraries
 
 
@@ -2581,131 +2615,7 @@ fi
 
 # Determine the host system and Makefile fragment
 
-# Make sure we can run config.sub.
-$ac_config_sub sun4 >/dev/null 2>&1 ||
-  { { echo "$as_me:$LINENO: error: cannot run $ac_config_sub" >&5
-echo "$as_me: error: cannot run $ac_config_sub" >&2;}
-   { (exit 1); exit 1; }; }
-
-echo "$as_me:$LINENO: checking build system type" >&5
-echo $ECHO_N "checking build system type... $ECHO_C" >&6
-if test "${ac_cv_build+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_cv_build_alias=$build_alias
-test -z "$ac_cv_build_alias" &&
-  ac_cv_build_alias=`$ac_config_guess`
-test -z "$ac_cv_build_alias" &&
-  { { echo "$as_me:$LINENO: error: cannot guess build type; you must specify one" >&5
-echo "$as_me: error: cannot guess build type; you must specify one" >&2;}
-   { (exit 1); exit 1; }; }
-ac_cv_build=`$ac_config_sub $ac_cv_build_alias` ||
-  { { echo "$as_me:$LINENO: error: $ac_config_sub $ac_cv_build_alias failed" >&5
-echo "$as_me: error: $ac_config_sub $ac_cv_build_alias failed" >&2;}
-   { (exit 1); exit 1; }; }
-
-fi
-echo "$as_me:$LINENO: result: $ac_cv_build" >&5
-echo "${ECHO_T}$ac_cv_build" >&6
-build=$ac_cv_build
-build_cpu=`echo $ac_cv_build | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
-build_vendor=`echo $ac_cv_build | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
-build_os=`echo $ac_cv_build | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
-
-
-echo "$as_me:$LINENO: checking host system type" >&5
-echo $ECHO_N "checking host system type... $ECHO_C" >&6
-if test "${ac_cv_host+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_cv_host_alias=$host_alias
-test -z "$ac_cv_host_alias" &&
-  ac_cv_host_alias=$ac_cv_build_alias
-ac_cv_host=`$ac_config_sub $ac_cv_host_alias` ||
-  { { echo "$as_me:$LINENO: error: $ac_config_sub $ac_cv_host_alias failed" >&5
-echo "$as_me: error: $ac_config_sub $ac_cv_host_alias failed" >&2;}
-   { (exit 1); exit 1; }; }
-
-fi
-echo "$as_me:$LINENO: result: $ac_cv_host" >&5
-echo "${ECHO_T}$ac_cv_host" >&6
-host=$ac_cv_host
-host_cpu=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
-host_vendor=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
-host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
-
-
-
-# Platform-specific Makefile setup
-# We have put most of the platform specific configuration here rather than
-# in the Makefile.  Autoconf is designed with platform portability in mind,
-# so by putting the complexity here we should be able to create a more
-# portable makefile.
-
-case "${host}" in
-        *-*-solaris*)   platform=SOLARIS
-						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
-						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						if test "x${CXX}" = "xg++"; then
-							PLATFORM_OPTIONS="-Wall"
-							PIC="-fPIC"
-						else
-							# Not sure if these will work - only tested with g++
-							PIC="-KPIC"
-							PLATFORM_OPTIONS="-mt -ks"
-						fi
-						# Should use -D_REENTRANT - but not yet OK
-						PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DSOLARIS"
-						CC1="${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
-						CC4="${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
-						MAKE_SHARED="${CXX} ${CXXFLAGS} -DSOLARIS -shared ${PIC}"
-						LINK="${CXX} ${CXXFLAGS} -DSOLARIS ${PIC}";;
-
-        *-*-linux*)     platform=LINUX ;
-						shlibsuffix=.so
-						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
-					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
-						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						if test "x${CXX}" = "xg++"; then
-							PLATFORM_OPTIONS="-Wall"
-							PIC="-fPIC"
-						else
-							# Not sure if these will work - only tested with g++
-							PIC="-KPIC"
-							PLATFORM_OPTIONS="-w1 -Xa -mp -prec_div"
-						fi
-						# Should use -D_REENTRANT - but not yet OK
-						PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DLINUX"
-						CC1="${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
-						CC4="${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
-						MAKE_SHARED="${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DLINUX -shared ${PIC}"
-						LINK="${CXX} ${CXXFLAGS} -DLINUX ${PIC}";;
-
-
-#        *-*-irix*)      platform=IRIX ;;
-#        *-*-aix*)       platform=AIX ;;
-#        *-*-hp*)        platform=HPUX ;
-#                        case "${host}" in
-#                            *-*-hpux11*)  osver=HPUX11;;
-#                            *-*-hpux10*)  osver=HPUX10;;
-#                            *)            osver=HPUX11;;
-#                        esac;;
-#        *-*-mvs*)       platform=OS390 ;;
-#        *-*-osf*)       platform=TRU64 ;;
-#        *-apple-darwin*)       platform=MACOSX ;;
-        *)              platform=UNKNOWN ;
-						{ { echo "$as_me:$LINENO: error: Unknown Platform.  Aborting" >&5
-echo "$as_me: error: Unknown Platform.  Aborting" >&2;}
-   { (exit 1); exit 1; }; }
-						;;
-esac
-
-# Find Xerces
-
-# First "cache" the check for gcc -E
-
+# Check for required includes
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2906,6 +2816,442 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
+
+echo "$as_me:$LINENO: checking for ANSI C header files" >&5
+echo $ECHO_N "checking for ANSI C header files... $ECHO_C" >&6
+if test "${ac_cv_header_stdc+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include <float.h>
+
+_ACEOF
+if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
+  (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
+  ac_status=$?
+  egrep -v '^ *\+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null; then
+  if test -s conftest.err; then
+    ac_cpp_err=$ac_c_preproc_warn_flag
+  else
+    ac_cpp_err=
+  fi
+else
+  ac_cpp_err=yes
+fi
+if test -z "$ac_cpp_err"; then
+  ac_cv_header_stdc=yes
+else
+  echo "$as_me: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  ac_cv_header_stdc=no
+fi
+rm -f conftest.err conftest.$ac_ext
+
+if test $ac_cv_header_stdc = yes; then
+  # SunOS 4.x string.h does not declare mem*, contrary to ANSI.
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <string.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  egrep "memchr" >/dev/null 2>&1; then
+  :
+else
+  ac_cv_header_stdc=no
+fi
+rm -f conftest*
+
+fi
+
+if test $ac_cv_header_stdc = yes; then
+  # ISC 2.0.2 stdlib.h does not declare free, contrary to ANSI.
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <stdlib.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  egrep "free" >/dev/null 2>&1; then
+  :
+else
+  ac_cv_header_stdc=no
+fi
+rm -f conftest*
+
+fi
+
+if test $ac_cv_header_stdc = yes; then
+  # /bin/cc in Irix-4.0.5 gets non-ANSI ctype macros unless using -ansi.
+  if test "$cross_compiling" = yes; then
+  :
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <ctype.h>
+#if ((' ' & 0x0FF) == 0x020)
+# define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
+# define TOUPPER(c) (ISLOWER(c) ? 'A' + ((c) - 'a') : (c))
+#else
+# define ISLOWER(c) (('a' <= (c) && (c) <= 'i') \
+                     || ('j' <= (c) && (c) <= 'r') \
+                     || ('s' <= (c) && (c) <= 'z'))
+# define TOUPPER(c) (ISLOWER(c) ? ((c) | 0x40) : (c))
+#endif
+
+#define XOR(e, f) (((e) && !(f)) || (!(e) && (f)))
+int
+main ()
+{
+  int i;
+  for (i = 0; i < 256; i++)
+    if (XOR (islower (i), ISLOWER (i))
+        || toupper (i) != TOUPPER (i))
+      exit(2);
+  exit (0);
+}
+_ACEOF
+rm -f conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  :
+else
+  echo "$as_me: program exited with status $ac_status" >&5
+echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+( exit $ac_status )
+ac_cv_header_stdc=no
+fi
+rm -f core core.* *.core conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+fi
+fi
+fi
+echo "$as_me:$LINENO: result: $ac_cv_header_stdc" >&5
+echo "${ECHO_T}$ac_cv_header_stdc" >&6
+if test $ac_cv_header_stdc = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define STDC_HEADERS 1
+_ACEOF
+
+fi
+
+# On IRIX 5.3, sys/types and inttypes.h are conflicting.
+
+
+
+
+
+
+
+
+
+for ac_header in sys/types.h sys/stat.h stdlib.h string.h memory.h strings.h \
+                  inttypes.h stdint.h unistd.h
+do
+as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6
+if eval "test \"\${$as_ac_Header+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+$ac_includes_default
+
+#include <$ac_header>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  eval "$as_ac_Header=yes"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+eval "$as_ac_Header=no"
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_Header'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_Header'}'`" >&6
+if test `eval echo '${'$as_ac_Header'}'` = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+
+for ac_header in
+do
+as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+if eval "test \"\${$as_ac_Header+set}\" = set"; then
+  echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6
+if eval "test \"\${$as_ac_Header+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_Header'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_Header'}'`" >&6
+else
+  # Is the header compilable?
+echo "$as_me:$LINENO: checking $ac_header usability" >&5
+echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+$ac_includes_default
+#include <$ac_header>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_header_compiler=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_header_compiler=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6
+
+# Is the header present?
+echo "$as_me:$LINENO: checking $ac_header presence" >&5
+echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <$ac_header>
+_ACEOF
+if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
+  (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
+  ac_status=$?
+  egrep -v '^ *\+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null; then
+  if test -s conftest.err; then
+    ac_cpp_err=$ac_c_preproc_warn_flag
+  else
+    ac_cpp_err=
+  fi
+else
+  ac_cpp_err=yes
+fi
+if test -z "$ac_cpp_err"; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  ac_header_preproc=no
+fi
+rm -f conftest.err conftest.$ac_ext
+echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc in
+  yes:no )
+    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;};;
+  no:yes )
+    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: $ac_header: check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;};;
+esac
+echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6
+if eval "test \"\${$as_ac_Header+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  eval "$as_ac_Header=$ac_header_preproc"
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_Header'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_Header'}'`" >&6
+
+fi
+if test `eval echo '${'$as_ac_Header'}'` = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+
+# Make sure we can run config.sub.
+$ac_config_sub sun4 >/dev/null 2>&1 ||
+  { { echo "$as_me:$LINENO: error: cannot run $ac_config_sub" >&5
+echo "$as_me: error: cannot run $ac_config_sub" >&2;}
+   { (exit 1); exit 1; }; }
+
+echo "$as_me:$LINENO: checking build system type" >&5
+echo $ECHO_N "checking build system type... $ECHO_C" >&6
+if test "${ac_cv_build+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_build_alias=$build_alias
+test -z "$ac_cv_build_alias" &&
+  ac_cv_build_alias=`$ac_config_guess`
+test -z "$ac_cv_build_alias" &&
+  { { echo "$as_me:$LINENO: error: cannot guess build type; you must specify one" >&5
+echo "$as_me: error: cannot guess build type; you must specify one" >&2;}
+   { (exit 1); exit 1; }; }
+ac_cv_build=`$ac_config_sub $ac_cv_build_alias` ||
+  { { echo "$as_me:$LINENO: error: $ac_config_sub $ac_cv_build_alias failed" >&5
+echo "$as_me: error: $ac_config_sub $ac_cv_build_alias failed" >&2;}
+   { (exit 1); exit 1; }; }
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_build" >&5
+echo "${ECHO_T}$ac_cv_build" >&6
+build=$ac_cv_build
+build_cpu=`echo $ac_cv_build | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
+build_vendor=`echo $ac_cv_build | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
+build_os=`echo $ac_cv_build | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
+
+
+echo "$as_me:$LINENO: checking host system type" >&5
+echo $ECHO_N "checking host system type... $ECHO_C" >&6
+if test "${ac_cv_host+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_host_alias=$host_alias
+test -z "$ac_cv_host_alias" &&
+  ac_cv_host_alias=$ac_cv_build_alias
+ac_cv_host=`$ac_config_sub $ac_cv_host_alias` ||
+  { { echo "$as_me:$LINENO: error: $ac_config_sub $ac_cv_host_alias failed" >&5
+echo "$as_me: error: $ac_config_sub $ac_cv_host_alias failed" >&2;}
+   { (exit 1); exit 1; }; }
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_host" >&5
+echo "${ECHO_T}$ac_cv_host" >&6
+host=$ac_cv_host
+host_cpu=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
+host_vendor=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
+host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
+
+
+
+# Platform-specific Makefile setup
+# We have put most of the platform specific configuration here rather than
+# in the Makefile.  Autoconf is designed with platform portability in mind,
+# so by putting the complexity here we should be able to create a more
+# portable makefile.
+
+case "${host}" in
+        *-*-solaris*)   platform=SOLARIS
+						shlibsuffix=.so
+						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
+					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
+						lib_short_name="lib${PACKAGE_TARNAME}.so"
+						if test "x${CXX}" = "xg++"; then
+							PLATFORM_OPTIONS="-Wall"
+							PIC="-fPIC"
+						else
+							# Not sure if these will work - only tested with g++
+							PIC="-KPIC"
+							PLATFORM_OPTIONS="-mt -ks"
+						fi
+						# Should use -D_REENTRANT - but not yet OK
+						PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DSOLARIS"
+						CC1="${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
+						CC4="${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
+						MAKE_SHARED="${CXX} ${CXXFLAGS} -DSOLARIS -shared ${PIC}"
+						LINK="${CXX} ${CXXFLAGS} -DSOLARIS ${PIC}";;
+
+        *-*-linux*)     platform=LINUX ;
+						shlibsuffix=.so
+						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
+					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
+						lib_short_name="lib${PACKAGE_TARNAME}.so"
+						if test "x${CXX}" = "xg++"; then
+							PLATFORM_OPTIONS="-Wall"
+							PIC="-fPIC"
+						else
+							# Not sure if these will work - only tested with g++
+							PIC="-KPIC"
+							PLATFORM_OPTIONS="-w1 -Xa -mp -prec_div"
+						fi
+						# Should use -D_REENTRANT - but not yet OK
+						PLATFORM_OPTIONS="${PLATFORM_OPTIONS} ${PIC} -DLINUX"
+						CC1="${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
+						CC4="${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"
+						MAKE_SHARED="${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DLINUX -shared ${PIC}"
+						LINK="${CXX} ${CXXFLAGS} -DLINUX ${PIC}";;
+
+
+#        *-*-irix*)      platform=IRIX ;;
+#        *-*-aix*)       platform=AIX ;;
+#        *-*-hp*)        platform=HPUX ;
+#                        case "${host}" in
+#                            *-*-hpux11*)  osver=HPUX11;;
+#                            *-*-hpux10*)  osver=HPUX10;;
+#                            *)            osver=HPUX11;;
+#                        esac;;
+#        *-*-mvs*)       platform=OS390 ;;
+#        *-*-osf*)       platform=TRU64 ;;
+#        *-apple-darwin*)       platform=MACOSX ;;
+        *)              platform=UNKNOWN ;
+						{ { echo "$as_me:$LINENO: error: Unknown Platform.  Aborting" >&5
+echo "$as_me: error: Unknown Platform.  Aborting" >&2;}
+   { (exit 1); exit 1; }; }
+						;;
+esac
+
+# Find Xerces
+
+# First "cache" the check for gcc -E
 
 cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
@@ -3142,6 +3488,7 @@ _ACEOF
 fi
 
 # Check for OpenSSL
+if test $OPENSSL ; then
 
 echo "$as_me:$LINENO: checking for OpenSSL headers in OPENSSL" >&5
 echo $ECHO_N "checking for OpenSSL headers in OPENSSL... $ECHO_C" >&6
@@ -3184,6 +3531,7 @@ echo "${ECHO_T}no" >&6
 fi
 rm -f conftest.err conftest.$ac_ext;
 
+fi
 
 if test -z $openssl_found ; then
 
@@ -4002,6 +4350,7 @@ s,@INSTALL_DATA@,$INSTALL_DATA,;t t
 s,@LN_S@,$LN_S,;t t
 s,@AWK@,$AWK,;t t
 s,@AUTOCONF@,$AUTOCONF,;t t
+s,@CPP@,$CPP,;t t
 s,@build@,$build,;t t
 s,@build_cpu@,$build_cpu,;t t
 s,@build_vendor@,$build_vendor,;t t
@@ -4010,7 +4359,6 @@ s,@host@,$host,;t t
 s,@host_cpu@,$host_cpu,;t t
 s,@host_vendor@,$host_vendor,;t t
 s,@host_os@,$host_os,;t t
-s,@CPP@,$CPP,;t t
 s,@canon_obj_files@,$canon_obj_files,;t t
 s,@transformers_obj_files@,$transformers_obj_files,;t t
 s,@dsig_obj_files@,$dsig_obj_files,;t t

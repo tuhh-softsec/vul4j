@@ -142,13 +142,13 @@ objsuffix=".${OBJEXT}"
 package_version_major=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $1}'`
 
 
-# Check for headers
-# AC_HEADER_DIRENT
-
 # Checks for required libraries
 AC_CHECK_LIB(m, floor)
 
 # Determine the host system and Makefile fragment
+
+# Check for required includes
+AC_CHECK_HEADERS
 
 AC_CANONICAL_HOST
 
@@ -299,6 +299,7 @@ AC_DEFINE(XSEC_NO_XALAN)
 fi
 
 # Check for OpenSSL
+if test $OPENSSL ; then
 
 AC_MSG_CHECKING([for OpenSSL headers in OPENSSL])
 
@@ -312,6 +313,7 @@ AC_TRY_CPP([#include <openssl/opensslv.h>],
    CPPFLAGS=$OLD_CPPFLAGS
    [AC_MSG_RESULT([no])]);
 
+fi
 
 if test -z $openssl_found ; then
 

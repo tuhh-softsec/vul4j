@@ -74,3 +74,14 @@
  */
 
 #undef XSEC_NO_XALAN
+
+/*
+ * Macros used to determine what header files exist on this
+ * system
+ */
+
+/* Posix unistd.h */
+#undef HAVE_UNISTD_H
+
+/* Windows direct.h */
+#undef HAVE_DIRECT_H
