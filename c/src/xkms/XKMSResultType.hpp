@@ -151,6 +151,18 @@ public:
 
 	virtual const XMLCh * getRequestId(void) const = 0;
 
+	/**
+	 * \brief Obtain the value of the RequestSignatureValue element
+	 *
+	 * A request can have a ResponseMechanism of RequestSignatureValue.  When this
+	 * is set, the service can place the text within the SignatureValue element into
+	 * the Result.  This call allows a consumer of the result to find the value
+	 *
+	 * @returns The original signature that was on the request message
+	 */
+
+	virtual const XMLCh * getRequestSignatureValue(void) const = 0;
+
 	//@}
 
 	/** @name Setter interface methods */
@@ -182,6 +194,18 @@ public:
 	 */
 
 	virtual void setRequestId(const XMLCh * id) = 0;
+
+	/**
+	 * \brief Set the value of the RequestSignatureValue element
+	 *
+	 * A request can have a ResponseMechanism of RequestSignatureValue.  When this
+	 * is set, the service can place the text within the SignatureValue element into
+	 * the Result.  This call allows a service to set this value in a response
+	 *
+	 * @param value The base64 encoded signature value of the original request
+	 */
+
+	virtual void setRequestSignatureValue(const XMLCh * value) = 0;
 
 	//@}
 

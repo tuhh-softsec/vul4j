@@ -69,9 +69,25 @@ void XKMSMessageFactoryImpl::copyRequestToResult(XKMSRequestAbstractType * req,
 
 	/* Copy any Opaque Data */
 
+	int i;
 	int sz = req->getOpaqueClientDataSize();
-	for (int i = 0; i < sz; ++i) {
+	for (i = 0; i < sz; ++i) {
 		res->appendOpaqueClientDataItem(req->getOpaqueClientDataItemStr(i));
+	}
+
+	/* Set RequestSignatureValue data if necessary */
+	sz = req->getResponseMechanismSize();
+	for (i = 0; i < sz; ++i) {
+		if (strEquals(req->getResponseMechanismItemStr(i), XKMSConstants::s_tagRequestSignatureValue)) {
+			DSIGSignature *s = req->getSignature();
+			if (s != NULL) {
+
+				res->setRequestSignatureValue(s->getSignatureValue());
+
+			}
+
+			break;
+		}
 	}
 
 }

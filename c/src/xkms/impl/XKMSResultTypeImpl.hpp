@@ -67,11 +67,13 @@ public:
 	virtual ResultMajor getResultMajor(void) const;
 	virtual ResultMinor getResultMinor(void) const;
 	virtual const XMLCh * getRequestId(void) const;
+	virtual const XMLCh * getRequestSignatureValue(void) const;
 
 	// Setter interface
 	virtual void setResultMajor(ResultMajor r);
 	virtual void setResultMinor(ResultMinor r);
 	virtual void setRequestId(const XMLCh * id);
+	virtual void setRequestSignatureValue(const XMLCh * value);
 
 	/* Forced inheritance from XKMSMessageAbstractTypeImpl */
 	XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS
@@ -84,6 +86,8 @@ private:
 						* mp_resultMinorAttr;
 	XERCES_CPP_NAMESPACE_QUALIFIER  DOMAttr
 						* mp_requestIdAttr;
+	XERCES_CPP_NAMESPACE_QUALIFIER  DOMElement
+						* mp_requestSignatureValueElement;
 
 	XKMSResultType::ResultMajor m_resultMajor;
 	XKMSResultType::ResultMinor m_resultMinor;
@@ -102,12 +106,17 @@ virtual ResultMinor getResultMinor(void) const \
 	{return XKMSResultTypeImpl::getResultMinor();} \
 virtual const XMLCh * getRequestId(void) const \
 	{return XKMSResultTypeImpl::getRequestId();} \
+virtual const XMLCh * getRequestSignatureValue(void) const \
+	{return XKMSResultTypeImpl::getRequestSignatureValue();} \
 virtual void setResultMajor(ResultMajor r) \
 	{XKMSResultTypeImpl::setResultMajor(r);} \
 virtual void setResultMinor(ResultMinor r) \
 	{XKMSResultTypeImpl::setResultMinor(r);} \
 virtual void setRequestId(const XMLCh * id) \
-	{XKMSResultTypeImpl::setRequestId(id);}
+	{XKMSResultTypeImpl::setRequestId(id);} \
+virtual void setRequestSignatureValue(const XMLCh * value) \
+	{XKMSResultTypeImpl::setRequestSignatureValue(value);}
+
 
 
 #endif /* XKMSRESULTTYPEIMPL_INCLUDE */

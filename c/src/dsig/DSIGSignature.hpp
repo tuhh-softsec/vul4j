@@ -477,6 +477,16 @@ public:
 	signatureMethod getSignatureMethod(void)
 	{return (mp_signedInfo != NULL ? 
 			 mp_signedInfo->getSignatureMethod() : SIGNATURE_NONE);}
+
+	/**
+	 * \brief Get the Signature Value
+	 *
+	 * Returns the base64 string holding the signature value for this signature
+	 * 
+	 * @returns the signature value string
+	 */
+
+	const XMLCh * getSignatureValue(void) const;
 		 
 	/**
 	 * \brief Helper function for sub Classes.

@@ -235,6 +235,27 @@ const XMLCh XKMSConstants::s_tagLocateResult[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagMessageExtension[] = {
+
+	chLatin_M,
+	chLatin_e,
+	chLatin_s,
+	chLatin_s,
+	chLatin_a,
+	chLatin_g,
+	chLatin_e,
+	chLatin_E,
+	chLatin_x,
+	chLatin_t,
+	chLatin_e,
+	chLatin_n,
+	chLatin_s,
+	chLatin_i,
+	chLatin_o,
+	chLatin_n,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagNonce[] = {
 
 	chLatin_N,
@@ -348,6 +369,32 @@ const XMLCh XKMSConstants::s_tagRequestId[] = {
 	chLatin_t,
 	chLatin_I,
 	chLatin_d,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagRequestSignatureValue[] = {
+
+	chLatin_R,
+	chLatin_e,
+	chLatin_q,
+	chLatin_u,
+	chLatin_e,
+	chLatin_s,
+	chLatin_t,
+	chLatin_S,
+	chLatin_i,
+	chLatin_g,
+	chLatin_n,
+	chLatin_a,
+	chLatin_t,
+	chLatin_u,
+	chLatin_r,
+	chLatin_e,
+	chLatin_V,
+	chLatin_a,
+	chLatin_l,
+	chLatin_u,
+	chLatin_e,
 	chNull
 };
 

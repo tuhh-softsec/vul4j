@@ -922,6 +922,14 @@ void doResultTypeDump(XKMSResultType *msg, int level) {
 		XMLString::release(&s);
 	}
 
+	rid = msg->getRequestSignatureValue();
+	if (rid != NULL) {
+		levelSet(level);
+		cout << "RequestSignatureValue = ";
+		s = XMLString::transcode(rid);
+		cout << s << endl;
+		XMLString::release(&s);
+	}
 }
 
 void doKeyInfoDump(DSIGKeyInfoList * l, int level) {
@@ -1474,11 +1482,10 @@ int doRequest(int argc, char ** argv, int paramCount) {
 				request->setNonce(r->getNonce());
 
 				responseDoc->release();
-				delete r;
-
 				responseDoc = req.doRequest(doc);
 
 			}
+			delete r;
 		}
 
 	}

@@ -1264,3 +1264,17 @@ bool DSIGSignature::deregisterIdAttributeName(const XMLCh * name) {
 	return mp_env->deregisterIdAttributeName(name);
 
 }
+
+// --------------------------------------------------------------------------------
+//           Other functions
+// --------------------------------------------------------------------------------
+
+const XMLCh * DSIGSignature::getSignatureValue(void) const {
+
+	if (mp_signatureValueNode == NULL)
+		return NULL;
+
+	return findFirstChildOfType(mp_signatureValueNode, DOMNode::TEXT_NODE)->getNodeValue();
+
+}
+

@@ -43,7 +43,8 @@ XKMSResultTypeImpl::XKMSResultTypeImpl(
 	const XSECEnv * env) :
 XKMSMessageAbstractTypeImpl(env),
 mp_resultMajorAttr(NULL),
-mp_resultMinorAttr(NULL)
+mp_resultMinorAttr(NULL),
+mp_requestSignatureValueElement(NULL)
 {
 
 }
@@ -51,7 +52,8 @@ mp_resultMinorAttr(NULL)
 XKMSResultTypeImpl::XKMSResultTypeImpl(
 	const XSECEnv * env, 
 	DOMElement * node) :
-XKMSMessageAbstractTypeImpl(env, node)
+XKMSMessageAbstractTypeImpl(env, node),
+mp_requestSignatureValueElement(NULL)
 {
 
 }
@@ -153,6 +155,23 @@ void XKMSResultTypeImpl::load(void) {
 	else
 		m_resultMinor = XKMSResultType::NoneMinor;
 
+	/* Check to see if there is a RequestSignatureValue node */
+	mp_requestSignatureValueElement = (DOMElement *) findFirstChildOfType(mp_messageAbstractTypeElement, DOMNode::ELEMENT_NODE);
+	while (mp_requestSignatureValueElement != NULL && 
+		!strEquals(getXKMSLocalName(mp_requestSignatureValueElement), XKMSConstants::s_tagRequestSignatureValue)) {
+
+		mp_requestSignatureValueElement = findNextElementChild(mp_requestSignatureValueElement);
+
+	}
+
+	if (mp_requestSignatureValueElement != NULL) {
+
+		if (findFirstChildOfType(mp_requestSignatureValueElement, DOMNode::TEXT_NODE) == NULL) {
+			throw XSECException(XSECException::ResultTypeError,
+				"XKMSResultType::load - RequestSignatureValue must have text node as child");
+		}
+	}
+
 }
 
 // --------------------------------------------------------------------------------
@@ -236,6 +255,15 @@ const XMLCh * XKMSResultTypeImpl::getRequestId(void) const {
 
 }
 
+const XMLCh * XKMSResultTypeImpl::getRequestSignatureValue(void) const {
+
+	if (mp_requestSignatureValueElement != NULL)
+		return findFirstChildOfType(mp_requestSignatureValueElement, 
+									DOMNode::TEXT_NODE)->getNodeValue();
+
+	return NULL;
+
+}
 
 // --------------------------------------------------------------------------------
 //           Setter interface
@@ -245,4 +273,48 @@ void XKMSResultTypeImpl::setResultMajor(ResultMajor) {}
 void XKMSResultTypeImpl::setResultMinor(ResultMinor) {}
 void XKMSResultTypeImpl::setRequestId(const XMLCh * id) {}
 
+void XKMSResultTypeImpl::setRequestSignatureValue(const XMLCh * value) {
+
+	if (mp_requestSignatureValueElement != NULL) {
+		findFirstChildOfType(mp_requestSignatureValueElement, DOMNode::TEXT_NODE)->setNodeValue(value);
+		return;
+	}
+
+	// Get some setup values
+	safeBuffer str;
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getXKMSNSPrefix();
+
+	makeQName(str, prefix, XKMSConstants::s_tagRequestSignatureValue);
+
+	mp_requestSignatureValueElement = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
+												str.rawXMLChBuffer());
+
+	mp_requestSignatureValueElement->appendChild(doc->createTextNode(value));
+
+	/* Find where this sits, and insert */
+	DOMElement * c = findFirstElementChild(mp_messageAbstractTypeElement);
+	while (c != NULL) {
+
+		if (!(strEquals(getXKMSLocalName(c), XKMSConstants::s_tagMessageExtension) ||
+			strEquals(getDSIGLocalName(c), XKMSConstants::s_tagSignature) ||
+			strEquals(getXKMSLocalName(c), XKMSConstants::s_tagOpaqueClientData)))
+			
+			break;
+
+	}
+
+	if (c != NULL) {
+		mp_messageAbstractTypeElement->insertBefore(mp_requestSignatureValueElement, c);
+		if (mp_env->getPrettyPrintFlag()) {
+			mp_messageAbstractTypeElement->insertBefore(
+				mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), c);
+		}
+	}
+	else {
+		mp_messageAbstractTypeElement->appendChild(mp_requestSignatureValueElement);
+		mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	}
+
+}
 
