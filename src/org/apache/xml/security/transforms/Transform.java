@@ -131,10 +131,17 @@ public class Transform extends SignatureElementProxy {
          this.transformSpi.setTransform(this);
 
          // give it to the current document
-         if ((contextNodes != null) && (contextNodes.getLength() > 0)) {
-            for (int i = 0; i < contextNodes.getLength(); i++) {
-               this._constructionElement.appendChild(contextNodes.item(i));
+         if (contextNodes != null) {
+            /*
+            while (contextNodes.getLength() > 0) {
+               this._constructionElement.appendChild(contextNodes.item(0));
             }
+            */
+
+            for (int i = 0; i < contextNodes.getLength(); i++) {
+               this._constructionElement.appendChild(contextNodes.item(i).cloneNode(true));
+            }
+
          }
       } catch (ClassNotFoundException ex) {
          Object exArgs[] = { algorithmURI };
