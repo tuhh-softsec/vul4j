@@ -496,7 +496,7 @@ void XENCEncryptedTypeImpl::setType(const XMLCh * uri) {
 		mp_encryptedTypeElement->setAttributeNS(NULL, s_Type, uri);
 		mp_typeAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_Type);
 
-		if (mp_typeAttr = NULL) {
+		if (mp_typeAttr == NULL) {
 
 			throw XSECException(XSECException::InternalError,
 				"XENCEncryptedTypeImpl::setTypeURI - Cannot find the attribute I just added");
@@ -529,7 +529,7 @@ void XENCEncryptedTypeImpl::setMimeType(const XMLCh * mimeType) {
 		// Need to create the node
 		mp_encryptedTypeElement->setAttributeNS(NULL, s_MimeType, mimeType);
 		mp_mimeTypeAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_MimeType);
-		if (mp_mimeTypeAttr = NULL) {
+		if (mp_mimeTypeAttr == NULL) {
 
 			throw XSECException(XSECException::InternalError,
 				"XENCEncryptedTypeImpl::setMimeType - Cannot find the attribute I just added");
@@ -563,7 +563,7 @@ void XENCEncryptedTypeImpl::setEncoding(const XMLCh * uri) {
 		mp_encryptedTypeElement->setAttributeNS(NULL, s_Encoding, uri);
 		mp_encodingAttr = mp_encryptedTypeElement->getAttributeNodeNS(NULL, s_Encoding);
 
-		if (mp_encodingAttr = NULL) {
+		if (mp_encodingAttr == NULL) {
 
 			throw XSECException(XSECException::InternalError,
 				"XENCEncryptedTypeImpl::setEncodingURI - Cannot find the attribute I just added");

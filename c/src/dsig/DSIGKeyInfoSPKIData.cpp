@@ -134,7 +134,7 @@ unsigned int DSIGKeyInfoSPKIData::getSexpSize(void) {
 
 const XMLCh * DSIGKeyInfoSPKIData::getSexp(unsigned int index) {
 
-	if (index < 0 || index >= m_sexpList.size()) {
+	if (index >= m_sexpList.size()) {
 
 		throw XSECException(XSECException::KeyInfoError,
 			"DSIGKeyInfoSPKIData::getSexp - index out of range");

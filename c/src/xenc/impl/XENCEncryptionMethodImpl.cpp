@@ -276,7 +276,7 @@ int XENCEncryptionMethodImpl::getKeySize(void) const {
 
 		const XMLCh * keyVal = mp_keySizeTextNode->getNodeValue();
 		unsigned int res = 0;
-		if (!XMLString::textToBin(keyVal, res) || res < 0) {
+		if (!XMLString::textToBin(keyVal, res)) {
 			throw XSECException(XSECException::EncryptionMethodError,
 				"XENCEncryptionMethod::getKeySize - Cannot convert KeySize to integer");
 		}

@@ -90,7 +90,7 @@ private:
 		XSECCryptoKey * key,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
 		safeBuffer & result);
-	bool XENCAlgorithmHandlerDefault::doRSAEncryptToSafeBuffer(
+	bool doRSAEncryptToSafeBuffer(
 		TXFMChain * plainText,
 		XENCEncryptionMethod * encryptionMethod,
 		XSECCryptoKey * key,
