@@ -1,4 +1,4 @@
-/* $Id: SetNestedPropertiesRuleTestCase.java,v 1.3 2004/05/07 01:29:59 skitching Exp $
+/* $Id: SetNestedPropertiesRuleTestCase.java,v 1.4 2004/11/30 04:36:46 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -325,6 +325,38 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
         SetNestedPropertiesRule rule = new SetNestedPropertiesRule();
         rule.setAllowUnknownChildElements(true);
         digester.addRule("root", rule);
+
+        SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
+        assertNotNull(bean);
+    }
+
+    /**
+     * Test that the rule works in a sane manner when the associated pattern
+     * is a wildcard such that the rule matches one of its own child elements.
+     * <p>
+     * See bugzilla entry 31393.
+     */
+    public void testRecursiveNestedProperties()
+        throws SAXException, IOException {
+
+        String testXml =
+            "<?xml version='1.0'?>" +
+            "<testbean>" +
+                "<beta>BETA BODY</beta>" +
+                "<testbean>" +
+                    "<beta>BETA BODY</beta>" +
+                "</testbean>" +
+            "</testbean>";
+
+        Reader reader = new StringReader(testXml);
+
+        // going to be setting properties on a SimpleTestBean
+        digester.addObjectCreate("*/testbean",
+                                 "org.apache.commons.digester.SimpleTestBean");
+
+        SetNestedPropertiesRule rule = new SetNestedPropertiesRule();
+        rule.setAllowUnknownChildElements(true);
+        digester.addRule("*/testbean", rule);
 
         SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
         assertNotNull(bean);
