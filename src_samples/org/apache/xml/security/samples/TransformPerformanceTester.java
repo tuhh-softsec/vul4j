@@ -126,23 +126,39 @@ public class TransformPerformanceTester {
       dbf.setNamespaceAware(true);
 
       DocumentBuilder db = dbf.newDocumentBuilder();
-
       //J-
       int counter = 10;
-      boolean simple_gif_detached = true;
+      boolean simple_gif_detached = false;
 
-      boolean pureedge_xfilter2 = true;
-      boolean pureedge_apachefilter = true;
+      boolean pureedge_xfilter2 = false;
+      boolean pureedge_apachefilter = false;
 
-      boolean xfilter2spec_xfilter2_1 = true;
-      boolean xfilter2spec_xfilter2_2 = true;
-      boolean xfilter2spec_xfilter2_3 = true;
+      boolean xfilter2spec_xfilter2_1 = false;
+      boolean xfilter2spec_xfilter2_2 = false;
+      boolean xfilter2spec_xfilter2_3 = false;
 
-      boolean xfilter2spec_apachefilter_1 = true;
-      boolean xfilter2spec_apachefilter_2 = true;
-      boolean xfilter2spec_apachefilter_3 = true;
+      boolean xfilter2spec_apachefilter_1 = false;
+      boolean xfilter2spec_apachefilter_2 = false;
+      boolean xfilter2spec_apachefilter_3 = false;
+
+      boolean apachesample_xfilter2_1 = true;
+      boolean apachesample_xfilter2_2 = true;
+      boolean apachesample_xfilter2_3 = true;
+      boolean apachesample_xfilter2_4 = true;
+      boolean apachesample_xfilter2_5 = true;
+      boolean apachesample_xfilter2_6 = true;
+      boolean apachesample_xfilter2_7 = true;
+
+      boolean apachesample_apachefilter_1 = true;
+      boolean apachesample_apachefilter_2 = true;
+      boolean apachesample_apachefilter_3 = true;
+      boolean apachesample_apachefilter_4 = true;
+      boolean apachesample_apachefilter_5 = true;
+      boolean apachesample_apachefilter_6 = true;
+      boolean apachesample_apachefilter_7 = true;
+
+      boolean apachesample_apachefilter_7_optimal = true;
       //J+
-
       if (simple_gif_detached) {
          Document doc = db.newDocument();
          long start = System.currentTimeMillis();
@@ -557,6 +573,617 @@ public class TransformPerformanceTester {
          fos.close();
 
          fos = new FileOutputStream("xfilter2spec_apachefilter_ref_3.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_apachefilter_7_optimal) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result =
+               TransformPerformanceTester
+                  .apachesample_apachefilter_7_optimal(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_apachefilter_7_optimal took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream(
+            "apachesample_apachefilter_doc_7_optimal.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream(
+            "apachesample_apachefilter_ref_7_optimal.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_apachefilter_1) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result =
+               TransformPerformanceTester.apachesample_apachefilter_1(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_apachefilter_1 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_apachefilter_doc_1.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_apachefilter_ref_1.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_apachefilter_2) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result =
+               TransformPerformanceTester.apachesample_apachefilter_2(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_apachefilter_2 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_apachefilter_doc_2.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_apachefilter_ref_2.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_apachefilter_3) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result =
+               TransformPerformanceTester.apachesample_apachefilter_3(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_apachefilter_3 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_apachefilter_doc_3.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_apachefilter_ref_3.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_apachefilter_4) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result =
+               TransformPerformanceTester.apachesample_apachefilter_4(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_apachefilter_4 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_apachefilter_doc_4.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_apachefilter_ref_4.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_apachefilter_5) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result =
+               TransformPerformanceTester.apachesample_apachefilter_5(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_apachefilter_5 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_apachefilter_doc_5.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_apachefilter_ref_5.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_apachefilter_6) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result =
+               TransformPerformanceTester.apachesample_apachefilter_6(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_apachefilter_6 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_apachefilter_doc_6.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_apachefilter_ref_6.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_apachefilter_7) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result =
+               TransformPerformanceTester.apachesample_apachefilter_7(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_apachefilter_7 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_apachefilter_doc_7.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_apachefilter_ref_7.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_xfilter2_1) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result = TransformPerformanceTester.apachesample_xfilter2_1(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_xfilter2_1 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_xfilter2_doc_1.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_xfilter2_ref_1.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_xfilter2_2) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result = TransformPerformanceTester.apachesample_xfilter2_2(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_xfilter2_2 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_xfilter2_doc_2.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_xfilter2_ref_2.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_xfilter2_3) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result = TransformPerformanceTester.apachesample_xfilter2_3(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_xfilter2_3 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_xfilter2_doc_3.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_xfilter2_ref_3.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_xfilter2_4) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result = TransformPerformanceTester.apachesample_xfilter2_4(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_xfilter2_4 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_xfilter2_doc_4.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_xfilter2_ref_4.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_xfilter2_5) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result = TransformPerformanceTester.apachesample_xfilter2_5(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_xfilter2_5 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_xfilter2_doc_5.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_xfilter2_ref_5.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_xfilter2_6) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result = TransformPerformanceTester.apachesample_xfilter2_6(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_xfilter2_6 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_xfilter2_doc_6.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_xfilter2_ref_6.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (apachesample_xfilter2_7) {
+         String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result = TransformPerformanceTester.apachesample_xfilter2_7(doc);
+
+            if (i % 10 == 0) {
+               System.out.print(".");
+            }
+         }
+
+         System.out.println("");
+
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * apachesample_xfilter2_7 took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("apachesample_xfilter2_doc_7.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("apachesample_xfilter2_ref_7.xml");
 
          fos.write(result[1]);
          fos.close();
@@ -1053,5 +1680,665 @@ public class TransformPerformanceTester {
       boolean v = sig.checkSignatureValue(sig.getKeyInfo().getPublicKey());
 
       System.out.println("Merlin: " + v);
+   }
+
+   /**
+    * Method apachesample_apachefilter_1
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_apachefilter_1(Document doc)
+           throws Exception {
+
+      String includeButSearchStr = "      //E             ";
+      String excludeButSearchStr = "/                     ";
+      String excludeStr = "                      ";
+
+      return TransformPerformanceTester.apachesample_apachefilter_x(doc,
+              includeButSearchStr, excludeButSearchStr, excludeStr);
+   }
+
+   /**
+    * Method apachesample_apachefilter_2
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_apachefilter_2(Document doc)
+           throws Exception {
+
+      String includeButSearchStr = "//B | //E             ";
+      String excludeButSearchStr = "/                     ";
+      String excludeStr = "                      ";
+
+      return TransformPerformanceTester.apachesample_apachefilter_x(doc,
+              includeButSearchStr, excludeButSearchStr, excludeStr);
+   }
+
+   /**
+    * Method apachesample_apachefilter_3
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_apachefilter_3(Document doc)
+           throws Exception {
+
+      String includeButSearchStr = "//B | //E             ";
+      String excludeButSearchStr = "/ | //C               ";
+      String excludeStr = "                      ";
+
+      return TransformPerformanceTester.apachesample_apachefilter_x(doc,
+              includeButSearchStr, excludeButSearchStr, excludeStr);
+   }
+
+   /**
+    * Method apachesample_apachefilter_4
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_apachefilter_4(Document doc)
+           throws Exception {
+
+      String includeButSearchStr = "//B | //E | //F       ";
+      String excludeButSearchStr = "/ | //C               ";
+      String excludeStr = "                      ";
+
+      return TransformPerformanceTester.apachesample_apachefilter_x(doc,
+              includeButSearchStr, excludeButSearchStr, excludeStr);
+   }
+
+   /**
+    * Method apachesample_apachefilter_5
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_apachefilter_5(Document doc)
+           throws Exception {
+
+      String includeButSearchStr = "//B | //E | //F       ";
+      String excludeButSearchStr = "/ | //C | //G         ";
+      String excludeStr = "                      ";
+
+      return TransformPerformanceTester.apachesample_apachefilter_x(doc,
+              includeButSearchStr, excludeButSearchStr, excludeStr);
+   }
+
+   /**
+    * Method apachesample_apachefilter_6
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_apachefilter_6(Document doc)
+           throws Exception {
+
+      String includeButSearchStr = "//B | //E | //F | //H ";
+      String excludeButSearchStr = "/ | //C | //G         ";
+      String excludeStr = "                      ";
+
+      return TransformPerformanceTester.apachesample_apachefilter_x(doc,
+              includeButSearchStr, excludeButSearchStr, excludeStr);
+   }
+
+   /**
+    * Method apachesample_apachefilter_7
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_apachefilter_7(Document doc)
+           throws Exception {
+
+      String includeButSearchStr = "//B | //E | //F | //H ";
+      String excludeButSearchStr = "/ | //C | //G | //@x:attr ";
+      String excludeStr = "                      ";
+
+      return TransformPerformanceTester.apachesample_apachefilter_x(doc,
+              includeButSearchStr, excludeButSearchStr, excludeStr);
+   }
+
+   /**
+    * Method apachesample_apachefilter_7_optimal
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_apachefilter_7_optimal(Document doc)
+           throws Exception {
+
+      String includeButSearchStr = "//B | //E | //F | //H ";
+      String excludeButSearchStr = "/ | //G             ";
+      String excludeStr = "//C | //D | //@x:attr ";
+
+      return TransformPerformanceTester.apachesample_apachefilter_x(doc,
+              includeButSearchStr, excludeButSearchStr, excludeStr);
+   }
+
+   /**
+    * Method apachesample_apachefilter_x
+    *
+    * @param doc
+    * @param includeButSearchStr
+    * @param excludeButSearchStr
+    * @param excludeStr
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_apachefilter_x(
+           Document doc, String includeButSearchStr, String excludeButSearchStr, String excludeStr)
+              throws Exception {
+
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      doc.getDocumentElement().appendChild(sig.getElement());
+
+      Transforms transforms = new Transforms(doc);
+
+      {
+         XPathFilterCHGPContainer xpathContainer =
+            XPathFilterCHGPContainer.getInstance(doc, includeButSearchStr,
+                                                 excludeButSearchStr,
+                                                 excludeStr);
+
+         xpathContainer.setXPathNamespaceContext("ds",
+                                                 Constants.SignatureSpecNS);
+         xpathContainer.setXPathNamespaceContext("x", "http://foo.bar/");
+         transforms.addTransform(Transforms.TRANSFORM_XPATHFILTERCHGP,
+                                 xpathContainer.getElement());
+      }
+
+      sig.addDocument("", transforms);
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      byte[] full = c14n.canonicalizeSubtree(doc);
+      byte[] ref = sig.getSignedInfo().item(0).getTransformsOutput().getBytes();
+      byte[][] result = {
+         full, ref
+      };
+
+      // we remove the signature now
+      sig.getElement().getParentNode().removeChild(sig.getElement());
+
+      return result;
+   }
+
+   /**
+    * Method apachesample_xfilter2_1
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_xfilter2_1(Document doc)
+           throws Exception {
+
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      doc.getDocumentElement().appendChild(sig.getElement());
+
+      Transforms transforms = new Transforms(doc);
+
+      {
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceIntersect(doc,
+                                    "//E").getElement());
+
+         /*
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//B").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//C").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//F").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//G").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//H").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//@x:attr").getElement());
+         */
+         transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
+         transforms
+            .setXPathNamespaceContext(Transforms
+               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
+               .TRANSFORM_XPATH2FILTER);
+      }
+
+      sig.addDocument("", transforms);
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      byte[] full = c14n.canonicalizeSubtree(doc);
+      byte[] ref = sig.getSignedInfo().item(0).getTransformsOutput().getBytes();
+      byte[][] result = {
+         full, ref
+      };
+
+      // we remove the signature now
+      sig.getElement().getParentNode().removeChild(sig.getElement());
+
+      return result;
+   }
+
+   /**
+    * Method apachesample_xfilter2_2
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_xfilter2_2(Document doc)
+           throws Exception {
+
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      doc.getDocumentElement().appendChild(sig.getElement());
+
+      Transforms transforms = new Transforms(doc);
+
+      {
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceIntersect(doc,
+                                    "//E").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//B").getElement());
+
+         /*
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//C").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//F").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//G").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//H").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//@x:attr").getElement());
+                              */
+         transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
+         transforms
+            .setXPathNamespaceContext(Transforms
+               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
+               .TRANSFORM_XPATH2FILTER);
+      }
+
+      sig.addDocument("", transforms);
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      byte[] full = c14n.canonicalizeSubtree(doc);
+      byte[] ref = sig.getSignedInfo().item(0).getTransformsOutput().getBytes();
+      byte[][] result = {
+         full, ref
+      };
+
+      // we remove the signature now
+      sig.getElement().getParentNode().removeChild(sig.getElement());
+
+      return result;
+   }
+
+   /**
+    * Method apachesample_xfilter2_3
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_xfilter2_3(Document doc)
+           throws Exception {
+
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      doc.getDocumentElement().appendChild(sig.getElement());
+
+      Transforms transforms = new Transforms(doc);
+
+      {
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceIntersect(doc,
+                                    "//E").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//B").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//C").getElement());
+         transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
+         transforms
+            .setXPathNamespaceContext(Transforms
+               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
+               .TRANSFORM_XPATH2FILTER);
+      }
+
+      sig.addDocument("", transforms);
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      byte[] full = c14n.canonicalizeSubtree(doc);
+      byte[] ref = sig.getSignedInfo().item(0).getTransformsOutput().getBytes();
+      byte[][] result = {
+         full, ref
+      };
+
+      // we remove the signature now
+      sig.getElement().getParentNode().removeChild(sig.getElement());
+
+      return result;
+   }
+
+   /**
+    * Method apachesample_xfilter2_4
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_xfilter2_4(Document doc)
+           throws Exception {
+
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      doc.getDocumentElement().appendChild(sig.getElement());
+
+      Transforms transforms = new Transforms(doc);
+
+      {
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceIntersect(doc,
+                                    "//E").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//B").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//C").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//F").getElement());
+         transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
+         transforms
+            .setXPathNamespaceContext(Transforms
+               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
+               .TRANSFORM_XPATH2FILTER);
+      }
+
+      sig.addDocument("", transforms);
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      byte[] full = c14n.canonicalizeSubtree(doc);
+      byte[] ref = sig.getSignedInfo().item(0).getTransformsOutput().getBytes();
+      byte[][] result = {
+         full, ref
+      };
+
+      // we remove the signature now
+      sig.getElement().getParentNode().removeChild(sig.getElement());
+
+      return result;
+   }
+
+   /**
+    * Method apachesample_xfilter2_5
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_xfilter2_5(Document doc)
+           throws Exception {
+
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      doc.getDocumentElement().appendChild(sig.getElement());
+
+      Transforms transforms = new Transforms(doc);
+
+      {
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceIntersect(doc,
+                                    "//E").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//B").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//C").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//F").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//G").getElement());
+         transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
+         transforms
+            .setXPathNamespaceContext(Transforms
+               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
+               .TRANSFORM_XPATH2FILTER);
+      }
+
+      sig.addDocument("", transforms);
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      byte[] full = c14n.canonicalizeSubtree(doc);
+      byte[] ref = sig.getSignedInfo().item(0).getTransformsOutput().getBytes();
+      byte[][] result = {
+         full, ref
+      };
+
+      // we remove the signature now
+      sig.getElement().getParentNode().removeChild(sig.getElement());
+
+      return result;
+   }
+
+   /**
+    * Method apachesample_xfilter2_6
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_xfilter2_6(Document doc)
+           throws Exception {
+
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      doc.getDocumentElement().appendChild(sig.getElement());
+
+      Transforms transforms = new Transforms(doc);
+
+      {
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceIntersect(doc,
+                                    "//E").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//B").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//C").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//F").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//G").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//H").getElement());
+         transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
+         transforms
+            .setXPathNamespaceContext(Transforms
+               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
+               .TRANSFORM_XPATH2FILTER);
+      }
+
+      sig.addDocument("", transforms);
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      byte[] full = c14n.canonicalizeSubtree(doc);
+      byte[] ref = sig.getSignedInfo().item(0).getTransformsOutput().getBytes();
+      byte[][] result = {
+         full, ref
+      };
+
+      // we remove the signature now
+      sig.getElement().getParentNode().removeChild(sig.getElement());
+
+      return result;
+   }
+
+   /**
+    * Method apachesample_xfilter2_7
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] apachesample_xfilter2_7(Document doc)
+           throws Exception {
+
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      doc.getDocumentElement().appendChild(sig.getElement());
+
+      Transforms transforms = new Transforms(doc);
+
+      {
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceIntersect(doc,
+                                    "//E").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//B").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//C").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//F").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//G").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceUnion(doc,
+                                    "//H").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                 XPath2FilterContainer.newInstanceSubtract(doc,
+                                    "//@x:attr").getElement());
+         transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
+         transforms
+            .setXPathNamespaceContext(Transforms
+               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
+               .TRANSFORM_XPATH2FILTER);
+      }
+
+      sig.addDocument("", transforms);
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      byte[] full = c14n.canonicalizeSubtree(doc);
+      byte[] ref = sig.getSignedInfo().item(0).getTransformsOutput().getBytes();
+      byte[][] result = {
+         full, ref
+      };
+
+      // we remove the signature now
+      sig.getElement().getParentNode().removeChild(sig.getElement());
+
+      return result;
    }
 }
