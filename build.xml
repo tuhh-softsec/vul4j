@@ -158,13 +158,13 @@ org.apache.xml.security.utils.*
 
     <!-- copy src files -->
     <copy todir="${build.src}">
-        <fileset 
+        <fileset
             dir="${src}"
             includes="org/**" />
     </copy>
-    
+
     <!-- substitute tokens as needed -->
-    <replace file="${build.src}/org/apache/xml/security/utils/Version.java" 
+    <replace file="${build.src}/org/apache/xml/security/utils/Version.java"
              token="@@VERSION@@" value="${product.Name} ${product.Version}"/>
   </target>
 
@@ -261,7 +261,7 @@ org.apache.xml.security.utils.*
           description="generates javadoc from all .java files">
     <mkdir dir="${doc.html.api}"/>
     <javadoc sourcepath="${src}"
-             destdir="${doc.html.api}"
+             destdir="${build.javadocs}"
              packagenames="${javadoc.packages}"
              classpathref="classpath.test"/>
   </target>
