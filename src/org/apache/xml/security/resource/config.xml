@@ -315,7 +315,7 @@
          </Algorithm>
       </Algorithms>
    </JCEAlgorithmMappings>
-   <ResourceBundles defaultLanguageCode="de" defaultCountryCode="DE">
+   <ResourceBundles defaultLanguageCode="en" defaultCountryCode="US">
       <ResourceBundle LanguageCode="de"
                       CountryCode="DE"
                       LOCATION="org.apache.xml.security/resource/xmlsecurity_de.properties" />
