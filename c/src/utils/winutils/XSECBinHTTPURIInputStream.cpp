@@ -73,6 +73,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.3  2003/03/15 22:41:46  blautenb
+ * Add 301 (permanently moved) support
+ *
  * Revision 1.2  2003/02/13 10:19:43  blautenb
  * Updated Xerces exceptions to Xsec exception
  *
@@ -458,8 +461,8 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
 
     int httpResponse = atoi(p);
 
-    // Check for redirect
-    if (httpResponse == 302)
+    // Check for redirect or permanently moved
+    if (httpResponse == 302 || httpResponse == 301)
     {
         //Once grows, should use a switch
         char redirectBuf[256];

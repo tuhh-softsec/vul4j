@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.2  2003/03/15 22:41:46  blautenb
+ * Add 301 (permanently moved) support
+ *
  * Revision 1.1  2003/02/12 11:21:03  blautenb
  * UNIX generic URI resolver
  *
@@ -270,7 +273,8 @@ int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource) {
     }
 
     int httpResponse = atoi(p);
-	if (httpResponse == 302) {
+
+	if (httpResponse == 302 || httpResponse = 301) {
 		//Once grows, should use a switch
 		char redirectBuf[256];
 		int q;
