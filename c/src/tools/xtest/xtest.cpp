@@ -782,7 +782,7 @@ void testEncrypt(DOMImplementation *impl) {
 	
 		// Now encrypt!
 		cerr << "Performing 3DES encryption on <category> element ... ";
-		cipher->encryptElement((DOMElement *) categoryNode);
+		cipher->encryptElement((DOMElement *) categoryNode, ENCRYPT_3DES_CBC);
 		cerr << "done\nSearching for <category> ... ";
 
 		DOMNode * t = findNode(doc, MAKE_UNICODE_STRING("category"));
