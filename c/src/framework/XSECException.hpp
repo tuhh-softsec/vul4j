@@ -150,7 +150,9 @@ public:
 		CipherDataError				= 44,
 		CipherValueError			= 45,
 		CipherError					= 46,
-		UnknownError				= 47		// Must be last!
+		AlgorithmMapperError		= 47,
+		EncryptionMethodError		= 48,
+		UnknownError				= 49		// Must be last!
 
 	};
 

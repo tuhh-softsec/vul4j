@@ -121,6 +121,8 @@ const char * XSECExceptionStrings [] = {
 	"An error occurred processing a CipherData node",
 	"An error occurred processing a CipherValue node",
 	"An error occurred in the XSECCipher processor",
+	"An error occurred in the Algorithm Mapper",
+	"An error occurred processing an EncryptionMethod node",
 	"Unknown Error type",
 
 };
