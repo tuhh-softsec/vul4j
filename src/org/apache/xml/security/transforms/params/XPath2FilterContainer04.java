@@ -76,7 +76,7 @@ import org.apache.xml.security.transforms.Transforms;
  * @see <A HREF="http://www.w3.org/TR/xmldsig-filter2/">XPath Filter v2.0 (TR)</A>
  * @see <A HREF="http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/">XPath Filter v2.0 (editors copy)</A>
  */
-public class XPath2FilterContainer extends ElementProxy
+public class XPath2FilterContainer04 extends ElementProxy
         implements TransformParam {
 
    /** Field _ATT_FILTER */
@@ -91,48 +91,36 @@ public class XPath2FilterContainer extends ElementProxy
    /** Field _ATT_FILTER_VALUE_UNION */
    private static final String _ATT_FILTER_VALUE_UNION = "union";
 
-   /** Field INTERSECT           */
-   public static final String INTERSECT =
-      XPath2FilterContainer._ATT_FILTER_VALUE_INTERSECT;
-
-   /** Field SUBTRACT           */
-   public static final String SUBTRACT =
-      XPath2FilterContainer._ATT_FILTER_VALUE_SUBTRACT;
-
-   /** Field UNION           */
-   public static final String UNION =
-      XPath2FilterContainer._ATT_FILTER_VALUE_UNION;
-
    /** Field _TAG_XPATH2 */
    public static final String _TAG_XPATH2 = "XPath";
 
    /** Field XPathFiler2NS */
    public static final String XPathFilter2NS =
-      "http://www.w3.org/2002/06/xmldsig-filter2";
+      "http://www.w3.org/2002/04/xmldsig-filter2";
 
    /**
-    * Constructor XPath2FilterContainer
+    * Constructor XPath2FilterContainer04
     *
     */
-   private XPath2FilterContainer() {
+   private XPath2FilterContainer04() {
 
       // no instantiation
    }
 
    /**
-    * Constructor XPath2FilterContainer
+    * Constructor XPath2FilterContainer04
     *
     * @param doc
     * @param xpath2filter
     * @param filterType
     */
-   private XPath2FilterContainer(Document doc, String xpath2filter,
+   private XPath2FilterContainer04(Document doc, String xpath2filter,
                                  String filterType) {
 
       super(doc);
 
-      this._constructionElement
-         .setAttributeNS(null, XPath2FilterContainer._ATT_FILTER, filterType);
+      this._constructionElement.setAttributeNS(null, XPath2FilterContainer04._ATT_FILTER,
+                                             filterType);
 
       if ((xpath2filter.length() > 2)
               && (!Character.isWhitespace(xpath2filter.charAt(0)))) {
@@ -145,129 +133,94 @@ public class XPath2FilterContainer extends ElementProxy
    }
 
    /**
-    * Constructor XPath2FilterContainer
+    * Constructor XPath2FilterContainer04
     *
     * @param element
     * @param BaseURI
     * @throws XMLSecurityException
     */
-   private XPath2FilterContainer(Element element, String BaseURI)
+   private XPath2FilterContainer04(Element element, String BaseURI)
            throws XMLSecurityException {
 
       super(element, BaseURI);
 
-      String filterStr = this._constructionElement.getAttributeNS(null,
-                            XPath2FilterContainer._ATT_FILTER);
+      String filterStr =
+         this._constructionElement
+            .getAttributeNS(null, XPath2FilterContainer04._ATT_FILTER);
 
       if (!filterStr
-              .equals(XPath2FilterContainer
+              .equals(XPath2FilterContainer04
               ._ATT_FILTER_VALUE_INTERSECT) &&!filterStr
-                 .equals(XPath2FilterContainer
+                 .equals(XPath2FilterContainer04
                  ._ATT_FILTER_VALUE_SUBTRACT) &&!filterStr
-                    .equals(XPath2FilterContainer._ATT_FILTER_VALUE_UNION)) {
-         Object exArgs[] = { XPath2FilterContainer._ATT_FILTER, filterStr,
-                             XPath2FilterContainer._ATT_FILTER_VALUE_INTERSECT
+                    .equals(XPath2FilterContainer04._ATT_FILTER_VALUE_UNION)) {
+         Object exArgs[] = { XPath2FilterContainer04._ATT_FILTER, filterStr,
+                             XPath2FilterContainer04._ATT_FILTER_VALUE_INTERSECT
                              + ", "
-                             + XPath2FilterContainer._ATT_FILTER_VALUE_SUBTRACT
+                             + XPath2FilterContainer04._ATT_FILTER_VALUE_SUBTRACT
                              + " or "
-                             + XPath2FilterContainer._ATT_FILTER_VALUE_UNION };
+                             + XPath2FilterContainer04._ATT_FILTER_VALUE_UNION };
 
          throw new XMLSecurityException("attributeValueIllegal", exArgs);
       }
    }
 
    /**
-    * Creates a new XPath2FilterContainer with the filter type "intersect".
+    * Creates a new XPath2FilterContainer04 with the filter type "intersect".
     *
     * @param doc
     * @param xpath2filter
     * @return
     */
-   public static XPath2FilterContainer newInstanceIntersect(Document doc,
+   public static XPath2FilterContainer04 newInstanceIntersect(Document doc,
            String xpath2filter) {
 
-      return new XPath2FilterContainer(doc, xpath2filter,
-                                       XPath2FilterContainer
+      return new XPath2FilterContainer04(doc, xpath2filter,
+                                       XPath2FilterContainer04
                                           ._ATT_FILTER_VALUE_INTERSECT);
    }
 
    /**
-    * Creates a new XPath2FilterContainer with the filter type "subtract".
+    * Creates a new XPath2FilterContainer04 with the filter type "subtract".
     *
     * @param doc
     * @param xpath2filter
     * @return
     */
-   public static XPath2FilterContainer newInstanceSubtract(Document doc,
+   public static XPath2FilterContainer04 newInstanceSubtract(Document doc,
            String xpath2filter) {
 
-      return new XPath2FilterContainer(doc, xpath2filter,
-                                       XPath2FilterContainer
+      return new XPath2FilterContainer04(doc, xpath2filter,
+                                       XPath2FilterContainer04
                                           ._ATT_FILTER_VALUE_SUBTRACT);
    }
 
    /**
-    * Creates a new XPath2FilterContainer with the filter type "union".
+    * Creates a new XPath2FilterContainer04 with the filter type "union".
     *
     * @param doc
     * @param xpath2filter
     * @return
     */
-   public static XPath2FilterContainer newInstanceUnion(Document doc,
+   public static XPath2FilterContainer04 newInstanceUnion(Document doc,
            String xpath2filter) {
 
-      return new XPath2FilterContainer(doc, xpath2filter,
-                                       XPath2FilterContainer
+      return new XPath2FilterContainer04(doc, xpath2filter,
+                                       XPath2FilterContainer04
                                           ._ATT_FILTER_VALUE_UNION);
    }
 
    /**
-    * Method newInstances
-    *
-    * @param doc
-    * @param params
-    * @return
-    */
-   public static NodeList newInstances(Document doc, String[][] params) {
-
-      HelperNodeList nl = new HelperNodeList();
-
-      nl.appendChild(doc.createTextNode("\n"));
-
-      for (int i = 0; i < params.length; i++) {
-         String type = params[i][0];
-         String xpath = params[i][1];
-
-         if (!(type.equals(XPath2FilterContainer
-                 ._ATT_FILTER_VALUE_INTERSECT) || type
-                    .equals(XPath2FilterContainer
-                    ._ATT_FILTER_VALUE_SUBTRACT) || type
-                       .equals(XPath2FilterContainer
-                          ._ATT_FILTER_VALUE_UNION))) {
-            throw new IllegalArgumentException("The type(" + i + ")=\"" + type
-                                               + "\" is illegal");
-         }
-
-         XPath2FilterContainer c = new XPath2FilterContainer(doc, xpath, type);
-
-         nl.appendChild(c.getElement());
-         nl.appendChild(doc.createTextNode("\n"));
-      }
-
-      return nl;
-   }
-
-   /**
-    * Creates a XPath2FilterContainer from an existing Element; needed for verification.
+    * Creates a XPath2FilterContainer04 from an existing Element; needed for verification.
     *
     * @param element
     * @param BaseURI
     * @return
     * @throws XMLSecurityException
     */
-   public static XPath2FilterContainer newInstance(
+   public static XPath2FilterContainer04 newInstance(
            Element element, String BaseURI) throws XMLSecurityException {
-      return new XPath2FilterContainer(element, BaseURI);
+      return new XPath2FilterContainer04(element, BaseURI);
    }
 
    /**
@@ -278,8 +231,8 @@ public class XPath2FilterContainer extends ElementProxy
    public boolean isIntersect() {
 
       return this._constructionElement
-         .getAttributeNS(null, XPath2FilterContainer._ATT_FILTER)
-         .equals(XPath2FilterContainer._ATT_FILTER_VALUE_INTERSECT);
+         .getAttributeNS(null, XPath2FilterContainer04._ATT_FILTER)
+         .equals(XPath2FilterContainer04._ATT_FILTER_VALUE_INTERSECT);
    }
 
    /**
@@ -290,8 +243,8 @@ public class XPath2FilterContainer extends ElementProxy
    public boolean isSubtract() {
 
       return this._constructionElement
-         .getAttributeNS(null, XPath2FilterContainer._ATT_FILTER)
-         .equals(XPath2FilterContainer._ATT_FILTER_VALUE_SUBTRACT);
+         .getAttributeNS(null, XPath2FilterContainer04._ATT_FILTER)
+         .equals(XPath2FilterContainer04._ATT_FILTER_VALUE_SUBTRACT);
    }
 
    /**
@@ -302,8 +255,8 @@ public class XPath2FilterContainer extends ElementProxy
    public boolean isUnion() {
 
       return this._constructionElement
-         .getAttributeNS(null, XPath2FilterContainer._ATT_FILTER)
-         .equals(XPath2FilterContainer._ATT_FILTER_VALUE_UNION);
+         .getAttributeNS(null, XPath2FilterContainer04._ATT_FILTER)
+         .equals(XPath2FilterContainer04._ATT_FILTER_VALUE_UNION);
    }
 
    /**
@@ -324,7 +277,6 @@ public class XPath2FilterContainer extends ElementProxy
     * @return the first Text node which contains information from the XPath 2 Filter String
     */
    public Node getXPathFilterTextNode() {
-
       NodeList children = this._constructionElement.getChildNodes();
       int length = children.getLength();
 
@@ -343,7 +295,7 @@ public class XPath2FilterContainer extends ElementProxy
     * @return
     */
    public final String getBaseLocalName() {
-      return XPath2FilterContainer._TAG_XPATH2;
+      return XPath2FilterContainer04._TAG_XPATH2;
    }
 
    /**
@@ -352,6 +304,6 @@ public class XPath2FilterContainer extends ElementProxy
     * @return
     */
    public final String getBaseNamespace() {
-      return XPath2FilterContainer.XPathFilter2NS;
+      return XPath2FilterContainer04.XPathFilter2NS;
    }
 }

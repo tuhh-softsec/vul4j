@@ -8,6 +8,17 @@
   <document label="Readme"       
             id="index"
             source="readme.xml" />
+  <!--<faqs     label='FAQs' 
+            title='Frequently Asked Questions' 
+            id='faqs'
+            source=''> 
+     <faq   title='Common FAQs' 
+            id='faq-common' 
+            source='faq-common.xml'/>
+     <faq   title='Common FAQs' 
+            id='faq-common' 
+            source='faq-common.xml'/>
+  </faqs>-->
   <external label="Download"
             href="http://xml.apache.org/security/dist/" />
   <external label="Repository"

@@ -477,24 +477,42 @@ public abstract class ElementProxy {
    }
 
    /**
-    * Method getChildElementLocalName
+    * This method returns the index&apos;th child with the given namespace
+    * and localname.
     *
     * @param index
     * @param namespace
     * @param localname
-    * @return
+    * @return null if the Element does not contain the requested child
     */
    public Element getChildElementLocalName(int index, String namespace,
                                               String localname) {
 
-      NodeList nodes =
-         this._constructionElement.getElementsByTagNameNS(namespace, localname);
+      NodeList childNodes = this._constructionElement.getChildNodes();
+      int maxLength = childNodes.getLength();
 
-      if (nodes.getLength() <= index) {
-         return null;
+      int result = -1;
+      for (int i=0; i<maxLength; i++) {
+         Node n = childNodes.item(i);
+         if (n.getNodeType() == Node.ELEMENT_NODE) {
+            String ns = n.getNamespaceURI();
+            String name = n.getLocalName();
+
+            if (namespace != null && ns != null && namespace.equals(ns) ||
+                namespace == null && ns == null) {
+               if (localname.equals(name)) {
+                  result++;
+
+                  if (result == index) {
+                     return (Element) n;
+                  }
+               }
+            }
+         }
       }
 
-      return (Element) nodes.item(index);
+      // throw new IndexOutOfBoundsException("Try to get " + index + "/" + maxLength + " {" + namespace + "}" + localname + " from " + this._constructionElement.getTagName());
+      return null;
    }
 
    /**
@@ -504,12 +522,27 @@ public abstract class ElementProxy {
     * @param localname
     * @return
     */
-   protected int length(String namespace, String localname) {
+   public int length(String namespace, String localname) {
+      NodeList childNodes = this._constructionElement.getChildNodes();
+      int maxLength = childNodes.getLength();
 
-      NodeList nodes =
-         this._constructionElement.getElementsByTagNameNS(namespace, localname);
+      int result = 0;
+      for (int i=0; i<maxLength; i++) {
+         Node n = childNodes.item(i);
+         if (n.getNodeType() == Node.ELEMENT_NODE) {
+            String ns = n.getNamespaceURI();
+            String name = n.getLocalName();
 
-      return nodes.getLength();
+            if (namespace != null && ns != null && namespace.equals(ns) ||
+                namespace == null && ns == null) {
+               if (localname.equals(name)) {
+                  result++;
+               }
+            }
+         }
+      }
+
+      return result;
    }
 
    /**

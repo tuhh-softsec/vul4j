@@ -12,6 +12,8 @@
         <ul>
             <li><jump href="api/index.html">Full API documentation</jump></li>
             <li><jump href="api/overview-tree.html">Hierarchy for all the packages</jump></li>
+            <li>If the above documentation is outdated, an always-fresh copy can be found 
+            <jump href="http://nagoya.apache.org/gump/javadoc/xml-security/build/doc/html/api/index.html">here</jump></li>
         </ul>
   </s2>
 </s1>

@@ -127,10 +127,11 @@ public class TransformPerformanceTester {
 
       DocumentBuilder db = dbf.newDocumentBuilder();
       //J-
-      int counter = 300;
-      boolean simple_gif_detached = true;
+      int counter = 50;
+      boolean simple_gif_detached = false;
 
       boolean pureedge_xfilter2 = true;
+      boolean pureedge_xfilter2_new = true;
       boolean pureedge_apachefilter = true;
 
       boolean xfilter2spec_xfilter2_1 = true;
@@ -141,23 +142,27 @@ public class TransformPerformanceTester {
       boolean xfilter2spec_apachefilter_2 = true;
       boolean xfilter2spec_apachefilter_3 = true;
 
-      boolean apachesample_xfilter2_1 = true;
-      boolean apachesample_xfilter2_2 = true;
-      boolean apachesample_xfilter2_3 = true;
-      boolean apachesample_xfilter2_4 = true;
-      boolean apachesample_xfilter2_5 = true;
-      boolean apachesample_xfilter2_6 = true;
-      boolean apachesample_xfilter2_7 = true;
+      boolean apachesample_xfilter2_1 = false;
+      boolean apachesample_xfilter2_2 = false;
+      boolean apachesample_xfilter2_3 = false;
+      boolean apachesample_xfilter2_4 = false;
+      boolean apachesample_xfilter2_5 = false;
+      boolean apachesample_xfilter2_6 = false;
+      boolean apachesample_xfilter2_7 = false;
 
-      boolean apachesample_apachefilter_1 = true;
-      boolean apachesample_apachefilter_2 = true;
-      boolean apachesample_apachefilter_3 = true;
-      boolean apachesample_apachefilter_4 = true;
-      boolean apachesample_apachefilter_5 = true;
-      boolean apachesample_apachefilter_6 = true;
-      boolean apachesample_apachefilter_7 = true;
+      boolean apachesample_apachefilter_1 = false;
+      boolean apachesample_apachefilter_2 = false;
+      boolean apachesample_apachefilter_3 = false;
+      boolean apachesample_apachefilter_4 = false;
+      boolean apachesample_apachefilter_5 = false;
+      boolean apachesample_apachefilter_6 = false;
+      boolean apachesample_apachefilter_7 = false;
 
-      boolean apachesample_apachefilter_7_optimal = true;
+      boolean apachesample_apachefilter_7_optimal = false;
+
+
+      boolean xfilter2spec_xfilter2_3_new = true;
+
       //J+
       if (simple_gif_detached) {
          Document doc = db.newDocument();
@@ -168,12 +173,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.simple_gif_detached(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -205,12 +210,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.pureedge_xfilter2(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -232,10 +237,46 @@ public class TransformPerformanceTester {
          fos.close();
       }
 
+      if (pureedge_xfilter2_new) {
+         Document doc =
+            db.parse(new FileInputStream("data/com/pureedge/LeaveRequest.xfd"));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result = TransformPerformanceTester.pureedge_xfilter2_new(doc);
+
+            if (i % 10 == 0) {
+
+               // System.out.print(".");
+            }
+         }
+
+         // System.out.println("");
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * pureedge_xfilter2_new took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("pureedge_xfilter2_new_doc.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("pureedge_xfilter2_new_ref.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
       if (pureedge_apachefilter) {
          Document doc =
             db.parse(new FileInputStream("data/com/pureedge/LeaveRequest.xfd"));
-
          long start = System.currentTimeMillis();
          byte[][] result = null;
 
@@ -243,12 +284,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.pureedge_apachefilter(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -294,12 +335,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.xfilter2spec_xfilter2_1(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -345,12 +386,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.xfilter2spec_xfilter2_2(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -396,12 +437,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.xfilter2spec_xfilter2_3(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -448,12 +489,12 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.xfilter2spec_apachefilter_1(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -500,12 +541,12 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.xfilter2spec_apachefilter_2(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -552,12 +593,12 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.xfilter2spec_apachefilter_3(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -594,12 +635,12 @@ public class TransformPerformanceTester {
                   .apachesample_apachefilter_7_optimal(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -637,12 +678,12 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_1(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -678,12 +719,12 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_2(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -719,12 +760,12 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_3(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -760,12 +801,12 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_4(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -801,12 +842,12 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_5(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -842,12 +883,12 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_6(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -883,12 +924,12 @@ public class TransformPerformanceTester {
                TransformPerformanceTester.apachesample_apachefilter_7(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -923,12 +964,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_1(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -963,12 +1004,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_2(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -1003,12 +1044,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_3(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -1043,12 +1084,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_4(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -1083,12 +1124,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_5(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -1123,12 +1164,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_6(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -1163,12 +1204,12 @@ public class TransformPerformanceTester {
             result = TransformPerformanceTester.apachesample_xfilter2_7(doc);
 
             if (i % 10 == 0) {
+
                // System.out.print(".");
             }
          }
 
          // System.out.println("");
-
          long end = System.currentTimeMillis();
          double delta = end - start;
 
@@ -1185,6 +1226,53 @@ public class TransformPerformanceTester {
          fos.close();
 
          fos = new FileOutputStream("apachesample_xfilter2_ref_7.xml");
+
+         fos.write(result[1]);
+         fos.close();
+      }
+
+      if (xfilter2spec_xfilter2_3_new) {
+         String inputDoc = "<Document>\n" + "     <ToBeSigned>\n"
+                           + "       <!-- comment -->\n" + "       <Data />\n"
+                           + "       <NotToBeSigned>\n"
+                           + "         <ReallyToBeSigned>\n"
+                           + "           <!-- comment -->\n"
+                           + "           <Data />\n"
+                           + "         </ReallyToBeSigned>\n"
+                           + "       </NotToBeSigned>\n"
+                           + "     </ToBeSigned>\n" + "     <ToBeSigned>\n"
+                           + "       <Data />\n" + "       <NotToBeSigned>\n"
+                           + "         <Data />\n"
+                           + "       </NotToBeSigned>\n"
+                           + "     </ToBeSigned>\n" + "</Document>";
+
+         //J+
+         Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+         long start = System.currentTimeMillis();
+         byte[][] result = null;
+
+         for (int i = 0; i < counter; i++) {
+            result =
+               TransformPerformanceTester.xfilter2spec_xfilter2_3_new(doc);
+         }
+
+         // System.out.println("");
+         long end = System.currentTimeMillis();
+         double delta = end - start;
+
+         System.out.println(
+            counter + " * xfilter2spec_xfilter2_3_new took "
+            + java.text.DecimalFormat.getInstance().format(delta / 1000.)
+            + " seconds");
+
+         FileOutputStream fos;
+
+         fos = new FileOutputStream("xfilter2spec_xfilter2_3_new_doc.xml");
+
+         fos.write(result[0]);
+         fos.close();
+
+         fos = new FileOutputStream("xfilter2spec_xfilter2_3_new_ref.xml");
 
          fos.write(result[1]);
          fos.close();
@@ -1208,8 +1296,8 @@ public class TransformPerformanceTester {
       Transforms transforms = new Transforms(doc);
 
       {
-         XPath2FilterContainer xpathContainer =
-            XPath2FilterContainer.newInstanceSubtract(doc,
+         XPath2FilterContainer04 xpathContainer =
+            XPath2FilterContainer04.newInstanceSubtract(doc,
          //J-
             "\n" +
             "/XFDL/page[@sid='PAGE1']/*[@sid='CHECK16' or \n" +
@@ -1226,7 +1314,7 @@ public class TransformPerformanceTester {
             //J+
          xpathContainer.setXPathNamespaceContext("ds",
                                                  Constants.SignatureSpecNS);
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
                                  xpathContainer.getElement());
       }
 
@@ -1374,8 +1462,8 @@ public class TransformPerformanceTester {
 
       Transforms transforms = new Transforms(doc);
 
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceIntersect(doc,
+      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                              XPath2FilterContainer04.newInstanceIntersect(doc,
                                  "//ToBeSigned").getElement());
       sig.addDocument("", transforms);
 
@@ -1417,11 +1505,11 @@ public class TransformPerformanceTester {
 
       Transforms transforms = new Transforms(doc);
 
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceIntersect(doc,
+      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                              XPath2FilterContainer04.newInstanceIntersect(doc,
                                  "//ToBeSigned").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceSubtract(doc,
+      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                              XPath2FilterContainer04.newInstanceSubtract(doc,
                                  "//NotToBeSigned").getElement());
       sig.addDocument("", transforms);
 
@@ -1463,14 +1551,14 @@ public class TransformPerformanceTester {
 
       Transforms transforms = new Transforms(doc);
 
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceIntersect(doc,
+      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                              XPath2FilterContainer04.newInstanceIntersect(doc,
                                  "//ToBeSigned").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceSubtract(doc,
+      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                              XPath2FilterContainer04.newInstanceSubtract(doc,
                                  "//NotToBeSigned").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceUnion(doc,
+      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                              XPath2FilterContainer04.newInstanceUnion(doc,
                                  "//ReallyToBeSigned").getElement());
       sig.addDocument("", transforms);
 
@@ -1924,35 +2012,36 @@ public class TransformPerformanceTester {
       Transforms transforms = new Transforms(doc);
 
       {
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceIntersect(doc,
-                                    "//E").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceIntersect(doc, "//E")
+                                       .getElement());
 
          /*
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//B").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceSubtract(doc,
                                     "//C").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//F").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceSubtract(doc,
                                     "//G").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//H").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceSubtract(doc,
                                     "//@x:attr").getElement());
          */
          transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
          transforms
             .setXPathNamespaceContext(Transforms
-               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
-               .TRANSFORM_XPATH2FILTER);
+               .getDefaultPrefix(Transforms
+               .TRANSFORM_XPATH2FILTER04), Transforms.TRANSFORM_XPATH2FILTER04);
       }
 
       sig.addDocument("", transforms);
@@ -1996,35 +2085,36 @@ public class TransformPerformanceTester {
       Transforms transforms = new Transforms(doc);
 
       {
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceIntersect(doc,
-                                    "//E").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceIntersect(doc, "//E")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//B").getElement());
 
          /*
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceSubtract(doc,
                                     "//C").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//F").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceSubtract(doc,
                                     "//G").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//H").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceSubtract(doc,
                                     "//@x:attr").getElement());
                               */
          transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
          transforms
             .setXPathNamespaceContext(Transforms
-               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
-               .TRANSFORM_XPATH2FILTER);
+               .getDefaultPrefix(Transforms
+               .TRANSFORM_XPATH2FILTER04), Transforms.TRANSFORM_XPATH2FILTER04);
       }
 
       sig.addDocument("", transforms);
@@ -2068,20 +2158,22 @@ public class TransformPerformanceTester {
       Transforms transforms = new Transforms(doc);
 
       {
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceIntersect(doc,
-                                    "//E").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceIntersect(doc, "//E")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//B").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
-                                    "//C").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceSubtract(doc, "//C")
+                                       .getElement());
          transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
          transforms
             .setXPathNamespaceContext(Transforms
-               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
-               .TRANSFORM_XPATH2FILTER);
+               .getDefaultPrefix(Transforms
+               .TRANSFORM_XPATH2FILTER04), Transforms.TRANSFORM_XPATH2FILTER04);
       }
 
       sig.addDocument("", transforms);
@@ -2125,23 +2217,25 @@ public class TransformPerformanceTester {
       Transforms transforms = new Transforms(doc);
 
       {
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceIntersect(doc,
-                                    "//E").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceIntersect(doc, "//E")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//B").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
-                                    "//C").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceSubtract(doc, "//C")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//F").getElement());
          transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
          transforms
             .setXPathNamespaceContext(Transforms
-               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
-               .TRANSFORM_XPATH2FILTER);
+               .getDefaultPrefix(Transforms
+               .TRANSFORM_XPATH2FILTER04), Transforms.TRANSFORM_XPATH2FILTER04);
       }
 
       sig.addDocument("", transforms);
@@ -2185,26 +2279,29 @@ public class TransformPerformanceTester {
       Transforms transforms = new Transforms(doc);
 
       {
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceIntersect(doc,
-                                    "//E").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceIntersect(doc, "//E")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//B").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
-                                    "//C").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceSubtract(doc, "//C")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//F").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
-                                    "//G").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceSubtract(doc, "//G")
+                                       .getElement());
          transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
          transforms
             .setXPathNamespaceContext(Transforms
-               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
-               .TRANSFORM_XPATH2FILTER);
+               .getDefaultPrefix(Transforms
+               .TRANSFORM_XPATH2FILTER04), Transforms.TRANSFORM_XPATH2FILTER04);
       }
 
       sig.addDocument("", transforms);
@@ -2248,29 +2345,32 @@ public class TransformPerformanceTester {
       Transforms transforms = new Transforms(doc);
 
       {
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceIntersect(doc,
-                                    "//E").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceIntersect(doc, "//E")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//B").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
-                                    "//C").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceSubtract(doc, "//C")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//F").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
-                                    "//G").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceSubtract(doc, "//G")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//H").getElement());
          transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
          transforms
             .setXPathNamespaceContext(Transforms
-               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
-               .TRANSFORM_XPATH2FILTER);
+               .getDefaultPrefix(Transforms
+               .TRANSFORM_XPATH2FILTER04), Transforms.TRANSFORM_XPATH2FILTER04);
       }
 
       sig.addDocument("", transforms);
@@ -2314,33 +2414,137 @@ public class TransformPerformanceTester {
       Transforms transforms = new Transforms(doc);
 
       {
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceIntersect(doc,
-                                    "//E").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceIntersect(doc, "//E")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//B").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
-                                    "//C").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceSubtract(doc, "//C")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//F").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
-                                    "//G").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceUnion(doc,
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceSubtract(doc, "//G")
+                                       .getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04.newInstanceUnion(doc,
                                     "//H").getElement());
-         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                                 XPath2FilterContainer.newInstanceSubtract(doc,
-                                    "//@x:attr").getElement());
+         transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER04,
+                                 XPath2FilterContainer04
+                                    .newInstanceSubtract(doc, "//@x:attr")
+                                       .getElement());
          transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
          transforms
             .setXPathNamespaceContext(Transforms
-               .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
-               .TRANSFORM_XPATH2FILTER);
+               .getDefaultPrefix(Transforms
+               .TRANSFORM_XPATH2FILTER04), Transforms.TRANSFORM_XPATH2FILTER04);
       }
+
+      sig.addDocument("", transforms);
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      byte[] full = c14n.canonicalizeSubtree(doc);
+      byte[] ref = sig.getSignedInfo().item(0).getTransformsOutput().getBytes();
+      byte[][] result = {
+         full, ref
+      };
+
+      // we remove the signature now
+      sig.getElement().getParentNode().removeChild(sig.getElement());
+
+      return result;
+   }
+
+   /**
+    * Method xfilter2spec_xfilter2_3_new
+    *
+    * @param doc
+    * @return
+    * @throws Exception
+    */
+   public static byte[][] xfilter2spec_xfilter2_3_new(Document doc)
+           throws Exception {
+
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      doc.getDocumentElement().appendChild(sig.getElement());
+
+      Transforms transforms = new Transforms(doc);
+      String params[][] = {
+         { XPath2FilterContainer.INTERSECT, "//ToBeSigned" },
+         { XPath2FilterContainer.SUBTRACT, "//NotToBeSigned" },
+         { XPath2FilterContainer.UNION, "//ReallyToBeSigned" }
+      };
+      NodeList nodeList = XPath2FilterContainer.newInstances(doc, params);
+
+      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER, nodeList);
+      transforms.setXPathNamespaceContext("xfilter2b", Transforms.TRANSFORM_XPATH2FILTER);
+      sig.addDocument("", transforms);
+
+      String secretKey = "secret";
+
+      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                  + "\" are used for signing ("
+                                  + secretKey.length() + " octets)");
+      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+
+      Canonicalizer c14n =
+         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      byte[] full = c14n.canonicalizeSubtree(doc);
+      byte[] ref = sig.getSignedInfo().item(0).getTransformsOutput().getBytes();
+      byte[][] result = {
+         full, ref
+      };
+
+      // we remove the signature now
+      sig.getElement().getParentNode().removeChild(sig.getElement());
+
+      return result;
+   }
+   public static byte[][] pureedge_xfilter2_new(Document doc) throws Exception {
+
+      XMLSignature sig = new XMLSignature(doc, null,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      doc.getDocumentElement().appendChild(sig.getElement());
+
+      Transforms transforms = new Transforms(doc);
+      String params[][] = {
+         { XPath2FilterContainer.SUBTRACT,
+         //J-
+            "\n" +
+            "/XFDL/page[@sid='PAGE1']/*[@sid='CHECK16' or \n" +
+            "                           @sid='CHECK17' or \n" +
+            "                           @sid='FIELD47' or \n" +
+            "                           @sid='BUTTON2' or \n" +
+            "                           @sid='FIELD48']\n" +
+            " | \n" +
+            "/XFDL/page/triggeritem[not(attribute::sid) | \n"  +
+            "                       /XFDL/page/*/triggeritem]\n" +
+            " | \n" +
+            "here()/ancestor::ds:Signature[1]" +
+            ""
+            //J+
+          }
+      };
+      NodeList nodeList = XPath2FilterContainer.newInstances(doc, params);
+      transforms.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER, nodeList);
 
       sig.addDocument("", transforms);
 

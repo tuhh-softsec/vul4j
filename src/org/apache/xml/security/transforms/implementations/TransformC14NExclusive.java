@@ -114,13 +114,17 @@ public class TransformC14NExclusive extends TransformSpi {
            throws CanonicalizationException, InvalidCanonicalizerException {
 
       try {
-         Element inclusiveElement =
-            this._transformObject.getChildElementLocalName(0,
-               InclusiveNamespaces.ExclusiveCanonicalizationNamespace,
-               InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES);
          InclusiveNamespaces inclusiveNamespaces = null;
 
-         if (inclusiveElement != null) {
+         if (this._transformObject
+                 .length(InclusiveNamespaces
+                    .ExclusiveCanonicalizationNamespace, InclusiveNamespaces
+                    ._TAG_EC_INCLUSIVENAMESPACES) == 1) {
+            Element inclusiveElement =
+               this._transformObject.getChildElementLocalName(0,
+                  InclusiveNamespaces.ExclusiveCanonicalizationNamespace,
+                  InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES);
+
             inclusiveNamespaces = new InclusiveNamespaces(inclusiveElement,
                     this._transformObject.getBaseURI());
          }

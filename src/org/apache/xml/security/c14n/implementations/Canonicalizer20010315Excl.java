@@ -856,6 +856,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * @throws IOException
     */
    void outputPItoWriter(ProcessingInstruction currentPI) throws IOException {
+      if (currentPI == null) {
+        return;
+      }
 
       this._writer.write("<?");
 
@@ -910,6 +913,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * @throws IOException
     */
    void outputCommentToWriter(Comment currentComment) throws IOException {
+      if (currentComment == null) {
+        return;
+      }
 
       this._writer.write("<!--");
 
@@ -941,6 +947,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * @throws IOException
     */
    void outputTextToWriter(String text) throws IOException {
+      if (text == null) {
+        return;
+      }
 
       int length = text.length();
 

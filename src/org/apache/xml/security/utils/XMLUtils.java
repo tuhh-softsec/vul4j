@@ -521,27 +521,26 @@ public class XMLUtils {
     * @param os the {@link OutputStream}
     */
    public static void outputDOM(Node contextNode, OutputStream os) {
-
-      /*
-   try {
-      TransformerFactory tFactory = TransformerFactory.newInstance();
-      Transformer transformer = tFactory.newTransformer();
-
-      transformer
-         .setOutputProperty(javax.xml.transform.OutputKeys
-            .OMIT_XML_DECLARATION, "yes");
-
-      DOMSource source = new DOMSource(contextNode);
-      StreamResult result = new StreamResult(os);
-
-      transformer.transform(source, result);
-   } catch (TransformerConfigurationException e) {
-      e.printStackTrace();
-   } catch (TransformerException e) {
-      e.printStackTrace();
+      XMLUtils.outputDOM(contextNode, os, false);
    }
-   */
+
+   /**
+    * Outputs a DOM tree to an {@link OutputStream}. <I>If an Exception is
+    * thrown during execution, it's StackTrace is output to System.out, but the
+    * Exception is not re-thrown.</I>
+    *
+    * @param contextNode root node of the DOM tree
+    * @param os the {@link OutputStream}
+    * @param addPreamble
+    */
+   public static void outputDOM(Node contextNode, OutputStream os,
+                                boolean addPreamble) {
+
       try {
+         if (addPreamble) {
+            os.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".getBytes());
+         }
+
          os.write(Canonicalizer
             .getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS)
                .canonicalizeSubtree(contextNode));
@@ -803,14 +802,16 @@ public class XMLUtils {
          Element element = doc.createElementNS(Constants.SignatureSpecNS,
                                                elementName);
 
-         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
+         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns",
+                                Constants.SignatureSpecNS);
 
          return element;
       } else {
          Element element = doc.createElementNS(Constants.SignatureSpecNS,
                                                ds + ":" + elementName);
 
-         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + ds, Constants.SignatureSpecNS);
+         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + ds,
+                                Constants.SignatureSpecNS);
 
          return element;
       }
@@ -837,7 +838,8 @@ public class XMLUtils {
             doc.createElementNS(EncryptionConstants.EncryptionSpecNS,
                                 elementName);
 
-         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
+         element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns",
+                                Constants.SignatureSpecNS);
 
          return element;
       } else {
@@ -846,7 +848,7 @@ public class XMLUtils {
                                 xenc + ":" + elementName);
 
          element.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + xenc,
-                              EncryptionConstants.EncryptionSpecNS);
+                                EncryptionConstants.EncryptionSpecNS);
 
          return element;
       }
@@ -985,7 +987,13 @@ public class XMLUtils {
       if (node.getNodeType() == Node.DOCUMENT_NODE) {
          return (Document) node;
       } else {
-         return node.getOwnerDocument();
+         try {
+            return node.getOwnerDocument();
+         } catch (NullPointerException npe) {
+            throw new NullPointerException(I18n.translate("endorsed.jdk1.4.0")
+                                           + " Original message was \""
+                                           + npe.getMessage() + "\"");
+         }
       }
    }
 
@@ -1051,7 +1059,8 @@ public class XMLUtils {
 
       Element ctx = doc.createElementNS(null, "namespaceContext");
 
-      ctx.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + prefix.trim(), namespace);
+      ctx.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + prefix.trim(),
+                         namespace);
 
       return ctx;
    }
@@ -1221,7 +1230,8 @@ public class XMLUtils {
 
                   if (name.startsWith("xmlns")) {
                      String value = currentAttr.getNodeValue();
-                     boolean mustBeDefinedInChild = !childElement.hasAttribute(name);
+                     boolean mustBeDefinedInChild =
+                        !childElement.hasAttribute(name);
 
                      if (mustBeDefinedInChild) {
                         childElement.setAttributeNS(Constants.NamespaceSpecNS,

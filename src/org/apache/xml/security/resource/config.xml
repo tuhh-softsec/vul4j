@@ -43,6 +43,9 @@
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXSLT" />
       <!-- XPath version 2 -->
       <TransformAlgorithm URI="http://www.w3.org/2002/04/xmldsig-filter2"
+                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPath2Filter04" />
+      <!-- XPath version 2b -->
+      <TransformAlgorithm URI="http://www.w3.org/2002/06/xmldsig-filter2"
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPath2Filter" />
       <!-- Christian Geuer-Pollmanns approach for XPath 2; experimantal -->
       <TransformAlgorithm URI="http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter"
@@ -479,7 +482,7 @@
    </KeyResolver>
    <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
         <!-- http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/xml/DOMConfigurator.html -->
-        <appender name="STDOUT" class="org.apache.log4j.FileAppender">
+        <appender name="LOGTXT" class="org.apache.log4j.FileAppender">
                 <param name="File" value="log.txt" />
                 <!--
                 <param name="File" value="System.out" />
@@ -494,15 +497,28 @@
                 </layout>
         </appender>
 
+        <appender name="NULL" class="org.apache.xml.security.utils.NullAppender" />
+
         <!--
         <appender name="chainsaw" class="org.apache.log4j.net.SocketAppender">
                 <param name="RemoteHost" value="localhost" />
                 <param name="Port" value="4445" />
                 <layout class="org.apache.log4j.PatternLayout">
-                <param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
+                    <param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
                 </layout>
         </appender>
         -->
+
+        <!-- if you use the LOGTXT appender-ref, a log.txt file is created in
+             your working directory.
+             If you use the NULL appender-ref, all logging is disabled.
+          -->
+        <root>
+                <priority value ="fatal" />
+                <!-- <appender-ref ref="LOGTXT" /> -->
+                <appender-ref ref="NULL" />
+                <!-- <appender-ref ref="chainsaw" /> -->
+        </root>
 
         <category name="org.apache.log4j.xml">
                 <priority value="info" />
@@ -529,18 +545,6 @@
                 <priority value="error" />
         </category>
         -->
-
-        <!--
-        <category name="org.apache.xml.security.transforms">
-                <priority value="debug" />
-        </category>
-        -->
-
-        <root>
-                <priority value ="debug" />
-                <appender-ref ref="STDOUT" />
-                <!-- <appender-ref ref="chainsaw" /> -->
-        </root>
    </log4j:configuration>
    <PrefixMappings>
       <!-- Many classes create Elements which are in a specific namespace;
@@ -556,6 +560,8 @@
                      prefix="experimental" />
       <PrefixMapping namespace="http://www.w3.org/2002/04/xmldsig-filter2"
                      prefix="dsig-xpath" />
+      <PrefixMapping namespace="http://www.w3.org/2002/06/xmldsig-filter2"
+                     prefix="xfilter2b" />
       <PrefixMapping namespace="http://www.w3.org/2001/10/xml-exc-c14n#"
                      prefix="ec" />
       <PrefixMapping namespace="http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter"

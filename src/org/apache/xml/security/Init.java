@@ -102,9 +102,14 @@ public class Init {
    /** Field _initialized */
    private static boolean _alreadyInitialized = false;
 
+   /**
+    * Method isInitialized
+    *
+    * @return
+    */
    public static final boolean isInitialized() {
-     return Init._alreadyInitialized;
-    }
+      return Init._alreadyInitialized;
+   }
 
    /**
     * Method init
@@ -116,11 +121,11 @@ public class Init {
          _alreadyInitialized = true;
 
          try {
-
-
             long XX_init_start = System.currentTimeMillis();
             long XX_prng_start = System.currentTimeMillis();
+
             PRNG.init(new java.security.SecureRandom());
+
             long XX_prng_end = System.currentTimeMillis();
 
             /* read library configuration file */
@@ -136,16 +141,16 @@ public class Init {
                   .getResourceAsStream("resource/config.xml");
             Document doc = db.parse(is);
             long XX_parsing_end = System.currentTimeMillis();
-
-
             Element context = doc.createElementNS(null, "nscontext");
 
-            context.setAttributeNS(Constants.NamespaceSpecNS,
-               "xmlns:x", "http://www.xmlsecurity.org/NS/#configuration");
+            context.setAttributeNS(
+               Constants.NamespaceSpecNS, "xmlns:x",
+               "http://www.xmlsecurity.org/NS/#configuration");
             context.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:log4j",
-                                 "http://jakarta.apache.org/log4j/");
+                                   "http://jakarta.apache.org/log4j/");
 
             long XX_configure_log4j_start = System.currentTimeMillis();
+
             {
 
                /* configure logging */
@@ -157,20 +162,27 @@ public class Init {
                      log4jElem,
                      "./x:appender[@name='STDOUT']/x:param[@name='File']/@value",
                      context);
-                  String logFileName = logfile.getNodeValue();
-                  File f = new File(logFileName);
 
-                  f.delete();
+                  if (logfile != null) {
+                     String logFileName = logfile.getNodeValue();
+                     File f = new File(logFileName);
+
+                     if (f.exists()) {
+                        f.delete();
+                     }
+                  }
                } catch (Exception ex) {}
 
                org.apache.log4j.xml.DOMConfigurator.configure(log4jElem);
                cat.info("Logging is working");
-               cat.info("Date: " + new Date(System.currentTimeMillis()).toString());
+               cat.info("Date: "
+                        + new Date(System.currentTimeMillis()).toString());
                cat.info("Version: " + Version.getVersion());
             }
-            long XX_configure_log4j_end = System.currentTimeMillis();
 
+            long XX_configure_log4j_end = System.currentTimeMillis();
             long XX_configure_i18n_start = System.currentTimeMillis();
+
             {
 
                /* configure internationalization */
@@ -191,12 +203,14 @@ public class Init {
 
                I18n.init(languageCode, countryCode);
             }
+
             long XX_configure_i18n_end = System.currentTimeMillis();
 
             /**
              * Try to register our here() implementation as internal function.
              */
             long XX_configure_reg_here_start = System.currentTimeMillis();
+
             {
                FunctionTable.installFunction("here", new FuncHere());
                cat.debug(
@@ -221,9 +235,10 @@ public class Init {
                   }
                }
             }
-            long XX_configure_reg_here_end = System.currentTimeMillis();
 
+            long XX_configure_reg_here_end = System.currentTimeMillis();
             long XX_configure_reg_c14n_start = System.currentTimeMillis();
+
             {
                Canonicalizer.init();
 
@@ -233,9 +248,11 @@ public class Init {
                   context);
 
                for (int i = 0; i < c14nElem.getLength(); i++) {
-                  String URI = ((Element) c14nElem.item(i)).getAttributeNS(null, "URI");
+                  String URI = ((Element) c14nElem.item(i)).getAttributeNS(null,
+                                  "URI");
                   String JAVACLASS =
-                     ((Element) c14nElem.item(i)).getAttributeNS(null, "JAVACLASS");
+                     ((Element) c14nElem.item(i)).getAttributeNS(null,
+                        "JAVACLASS");
                   boolean registerClass = true;
 
                   try {
@@ -266,9 +283,10 @@ public class Init {
                   }
                }
             }
-            long XX_configure_reg_c14n_end = System.currentTimeMillis();
 
+            long XX_configure_reg_c14n_end = System.currentTimeMillis();
             long XX_configure_reg_transforms_start = System.currentTimeMillis();
+
             {
                Transform.init();
 
@@ -278,9 +296,11 @@ public class Init {
                   context);
 
                for (int i = 0; i < tranElem.getLength(); i++) {
-                  String URI = ((Element) tranElem.item(i)).getAttributeNS(null, "URI");
+                  String URI = ((Element) tranElem.item(i)).getAttributeNS(null,
+                                  "URI");
                   String JAVACLASS =
-                     ((Element) tranElem.item(i)).getAttributeNS(null, "JAVACLASS");
+                     ((Element) tranElem.item(i)).getAttributeNS(null,
+                        "JAVACLASS");
                   boolean registerClass = true;
 
                   try {
@@ -288,7 +308,8 @@ public class Init {
                   } catch (ClassNotFoundException e) {
                      Object exArgs[] = { URI, JAVACLASS };
 
-                     cat.fatal(I18n.translate("algorithm.classDoesNotExist", exArgs));
+                     cat.fatal(I18n.translate("algorithm.classDoesNotExist",
+                                              exArgs));
 
                      registerClass = false;
                   }
@@ -300,18 +321,20 @@ public class Init {
                   }
                }
             }
-            long XX_configure_reg_transforms_end = System.currentTimeMillis();
 
+            long XX_configure_reg_transforms_end = System.currentTimeMillis();
             long XX_configure_reg_jcemapper_start = System.currentTimeMillis();
+
             {
                Element jcemapperElem = (Element) XPathAPI.selectSingleNode(
                   doc, "/x:Configuration/x:JCEAlgorithmMappings", context);
 
                JCEMapper.init(jcemapperElem);
             }
-            long XX_configure_reg_jcemapper_end = System.currentTimeMillis();
 
+            long XX_configure_reg_jcemapper_end = System.currentTimeMillis();
             long XX_configure_reg_sigalgos_start = System.currentTimeMillis();
+
             {
                SignatureAlgorithm.providerInit();
 
@@ -321,9 +344,11 @@ public class Init {
                   context);
 
                for (int i = 0; i < sigElems.getLength(); i++) {
-                  String URI = ((Element) sigElems.item(i)).getAttributeNS(null, "URI");
+                  String URI = ((Element) sigElems.item(i)).getAttributeNS(null,
+                                  "URI");
                   String JAVACLASS =
-                     ((Element) sigElems.item(i)).getAttributeNS(null, "JAVACLASS");
+                     ((Element) sigElems.item(i)).getAttributeNS(null,
+                        "JAVACLASS");
 
                   /** @todo handle registering */
                   boolean registerClass = true;
@@ -356,10 +381,11 @@ public class Init {
                   }
                }
             }
+
             long XX_configure_reg_sigalgos_end = System.currentTimeMillis();
+            long XX_configure_reg_resourceresolver_start =
+               System.currentTimeMillis();
 
-
-            long XX_configure_reg_resourceresolver_start = System.currentTimeMillis();
             {
                ResourceResolver.init();
 
@@ -369,10 +395,11 @@ public class Init {
 
                for (int i = 0; i < resolverElem.getLength(); i++) {
                   String JAVACLASS =
-                     ((Element) resolverElem.item(i)).getAttributeNS(null, "JAVACLASS");
+                     ((Element) resolverElem.item(i)).getAttributeNS(null,
+                        "JAVACLASS");
                   String Description =
-                     ((Element) resolverElem.item(i))
-                        .getAttributeNS(null, "DESCRIPTION");
+                     ((Element) resolverElem.item(i)).getAttributeNS(null,
+                        "DESCRIPTION");
 
                   if ((Description != null) && (Description.length() > 0)) {
                      cat.debug("Register Resolver: " + JAVACLASS + ": "
@@ -385,9 +412,11 @@ public class Init {
                   ResourceResolver.register(JAVACLASS);
                }
             }
-            long XX_configure_reg_resourceresolver_end = System.currentTimeMillis();
 
+            long XX_configure_reg_resourceresolver_end =
+               System.currentTimeMillis();
             long XX_configure_reg_keyInfo_start = System.currentTimeMillis();
+
             {
                try {
                   KeyInfo.init();
@@ -401,14 +430,14 @@ public class Init {
 
                      for (int i = 0; i < keyElem.getLength(); i++) {
                         String namespace =
-                           ((Element) keyElem.item(i))
-                              .getAttributeNS(null, "NAMESPACE");
+                           ((Element) keyElem.item(i)).getAttributeNS(null,
+                              "NAMESPACE");
                         String localname =
-                           ((Element) keyElem.item(i))
-                              .getAttributeNS(null, "LOCALNAME");
+                           ((Element) keyElem.item(i)).getAttributeNS(null,
+                              "LOCALNAME");
                         String JAVACLASS =
-                           ((Element) keyElem.item(i))
-                              .getAttributeNS(null, "JAVACLASS");
+                           ((Element) keyElem.item(i)).getAttributeNS(null,
+                              "JAVACLASS");
 
                         cat.debug("KeyInfoContent: " + namespace + " "
                                   + localname + " " + JAVACLASS);
@@ -423,9 +452,11 @@ public class Init {
                   throw e;
                }
             }
-            long XX_configure_reg_keyInfo_end = System.currentTimeMillis();
 
-            long XX_configure_reg_keyResolver_start = System.currentTimeMillis();
+            long XX_configure_reg_keyInfo_end = System.currentTimeMillis();
+            long XX_configure_reg_keyResolver_start =
+               System.currentTimeMillis();
+
             {
                KeyResolver.init();
 
@@ -434,10 +465,11 @@ public class Init {
 
                for (int i = 0; i < resolverElem.getLength(); i++) {
                   String JAVACLASS =
-                     ((Element) resolverElem.item(i)).getAttributeNS(null, "JAVACLASS");
+                     ((Element) resolverElem.item(i)).getAttributeNS(null,
+                        "JAVACLASS");
                   String Description =
-                     ((Element) resolverElem.item(i))
-                        .getAttributeNS(null, "DESCRIPTION");
+                     ((Element) resolverElem.item(i)).getAttributeNS(null,
+                        "DESCRIPTION");
 
                   if ((Description != null) && (Description.length() > 0)) {
                      cat.debug("Register Resolver: " + JAVACLASS + ": "
@@ -450,9 +482,10 @@ public class Init {
                   KeyResolver.register(JAVACLASS);
                }
             }
-            long XX_configure_reg_keyResolver_end = System.currentTimeMillis();
 
+            long XX_configure_reg_keyResolver_end = System.currentTimeMillis();
             long XX_configure_reg_prefixes_start = System.currentTimeMillis();
+
             {
                cat.debug("Now I try to bind prefixes:");
 
@@ -461,17 +494,18 @@ public class Init {
                   context);
 
                for (int i = 0; i < nl.getLength(); i++) {
-                  String namespace =
-                     ((Element) nl.item(i)).getAttributeNS(null, "namespace");
-                  String prefix = ((Element) nl.item(i)).getAttributeNS(null, "prefix");
+                  String namespace = ((Element) nl.item(i)).getAttributeNS(null,
+                                        "namespace");
+                  String prefix = ((Element) nl.item(i)).getAttributeNS(null,
+                                     "prefix");
 
                   cat.debug("Now I try to bind " + prefix + " to " + namespace);
                   org.apache.xml.security.utils.ElementProxy
                      .setDefaultPrefix(namespace, prefix);
                }
             }
-            long XX_configure_reg_prefixes_end = System.currentTimeMillis();
 
+            long XX_configure_reg_prefixes_end = System.currentTimeMillis();
             //J-
             long XX_configure_reg_encryption_start = System.currentTimeMillis();
             EncryptionMethod.providerInit();
@@ -488,7 +522,6 @@ public class Init {
             long XX_configure_reg_encryption_end = System.currentTimeMillis();
             //J+
             long XX_init_end = System.currentTimeMillis();
-
 
             //J-
             cat.debug("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
@@ -596,7 +629,8 @@ public class Init {
                Element e = (Element) nl.item(i);
                String URI = e.getAttributeNS(null, "URI");
                String keyStoreType = e.getAttributeNS(null, "Type");
-               String defaultKeyAlias = e.getAttributeNS(null, "DefaultKeyAlias");
+               String defaultKeyAlias = e.getAttributeNS(null,
+                                                         "DefaultKeyAlias");
                String storePass = e.getAttributeNS(null, "StorePass");
                String KeyPass = e.getAttributeNS(null, "KeyPass");
 

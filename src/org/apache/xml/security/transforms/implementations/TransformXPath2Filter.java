@@ -89,19 +89,30 @@ import org.apache.xml.dtm.DTMManager;
 public class TransformXPath2Filter extends TransformSpi {
 
    /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(TransformXPath2Filter.class.getName());
+   // static org.apache.log4j.Category cat = org.apache.log4j.Category.getInstance(TransformXPath2Filter.class.getName());
 
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XPATH2FILTER;
-
    //J-
+   // contains the type of the filter
+   Vector _filterTypes = new Vector();
+
+   // contains the node set
+   Vector _filterNodes = new Vector();
+
+   Set _F = null;
+   Vector _ancestors = null;
+
+   private static final String FUnion = "union";
+   private static final String FSubtract = "subtract";
+   private static final String FIntersect = "intersect";
+
    public boolean wantsOctetStream ()   { return false; }
    public boolean wantsNodeSet ()       { return true; }
    public boolean returnsOctetStream () { return false; }
    public boolean returnsNodeSet ()     { return true; }
+
    //J+
 
    /**
@@ -112,6 +123,8 @@ public class TransformXPath2Filter extends TransformSpi {
    protected String engineGetURI() {
       return this.implementedTransformURI;
    }
+
+   Set _inputSet = null;
 
    /**
     * Method enginePerformTransform
@@ -124,138 +137,100 @@ public class TransformXPath2Filter extends TransformSpi {
            throws TransformationException {
 
       try {
-         Set inputSet = input.getNodeSet();
+         long start = System.currentTimeMillis();
 
-         cat.debug("perform xfilter2 on " + inputSet.size() + " nodes");
+         this._inputSet = input.getNodeSet();
+
+         if (this._inputSet.size() == 0) {
+
+            // input node set contains no nodes
+            return input;
+         }
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
          CachedXPathAPI myXPathAPI =
             new CachedXPathAPI(input.getCachedXPathAPI());
+         Document inputDoc = null;
 
-         if (inputSet.size() == 0) {
-            Object exArgs[] = { "input node set contains no nodes" };
+         {
+            Iterator it = this._inputSet.iterator();
 
-            throw new TransformationException("empty", exArgs);
+            inputDoc = XMLUtils.getOwnerDocument((Node) it.next());
          }
 
-         Element xpathElement =
-            this._transformObject.getChildElementLocalName(0,
-               XPath2FilterContainer.XPathFilter2NS,
-               XPath2FilterContainer._TAG_XPATH2);
+         int noOfSteps =
+            this._transformObject.length(Transforms.TRANSFORM_XPATH2FILTER,
+                                         "XPath");
 
-         if (xpathElement == null) {
-            Object exArgs[] = { "dsig-xpath:XPath", "Transform" };
+         if (noOfSteps == 0) {
+            Object exArgs[] = { Transforms.TRANSFORM_XPATH2FILTER, "XPath" };
 
             throw new TransformationException("xml.WrongContent", exArgs);
          }
 
-         Document inputDoc = null;
+         if (true) {
+            XPath2FilterContainer unionDocFilter =
+               XPath2FilterContainer
+                  .newInstanceUnion(this._transformObject.getDocument(), "/");
 
-         {
-            Iterator it = inputSet.iterator();
+            _filterTypes.add(FUnion);
 
-            if (it.hasNext()) {
-               inputDoc = XMLUtils.getOwnerDocument((Node) it.next());
-            }
+            // Set root = new HashSet(); root.add(inputDoc);
+            HelperNodeList root = new HelperNodeList();
+
+            root.appendChild(inputDoc);
+            _filterNodes.add(root);
          }
 
-         XPath2FilterContainer xpathContainer =
-            XPath2FilterContainer.newInstance(xpathElement,
-                                              input.getSourceURI());
-         Document doc = this._transformObject.getElement().getOwnerDocument();
-         NodeList subtreeRoots = xPathFuncHereAPI.selectNodeList(doc,
-                                    xpathContainer.getXPathFilterTextNode(),
-                                    xpathContainer.getElement());
+         for (int i = 0; i < noOfSteps; i++) {
+            Element xpathElement =
+               this._transformObject.getChildElementLocalName(i,
+                  XPath2FilterContainer.XPathFilter2NS,
+                  XPath2FilterContainer._TAG_XPATH2);
+            XPath2FilterContainer xpathContainer =
+               XPath2FilterContainer.newInstance(xpathElement,
+                                                   input.getSourceURI());
 
-         cat.debug("subtreeRoots contains " + subtreeRoots.getLength()
-                   + " nodes");
-
-         /*
-          * foreach subtree
-          */
-         Set selectedNodes = new HashSet();
-
-         for (int i = 0; i < subtreeRoots.getLength(); i++) {
-            Node currentRootNode = subtreeRoots.item(i);
-            int currentRootNodeType = currentRootNode.getNodeType();
-
-            if ((currentRootNodeType == Node.ELEMENT_NODE)
-                    || (currentRootNodeType == Node.DOCUMENT_NODE)) {
-               NodeList nodesInSubtree =
-                  myXPathAPI
-                     .selectNodeList(currentRootNode, Canonicalizer
-                        .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
-               int jMax = nodesInSubtree.getLength();
-
-               for (int j = 0; j < jMax; j++) {
-                  selectedNodes.add(nodesInSubtree.item(j));
-               }
-            } else if ((currentRootNodeType == Node.ATTRIBUTE_NODE)
-                       || (currentRootNodeType == Node.TEXT_NODE)
-                       || (currentRootNodeType == Node.CDATA_SECTION_NODE)
-                       || (currentRootNodeType
-                           == Node.PROCESSING_INSTRUCTION_NODE)) {
-               selectedNodes.add(currentRootNode);
+            if (xpathContainer.isIntersect()) {
+               _filterTypes.add(FIntersect);
+            } else if (xpathContainer.isSubtract()) {
+               _filterTypes.add(FSubtract);
+            } else if (xpathContainer.isUnion()) {
+               _filterTypes.add(FUnion);
             } else {
-               throw new RuntimeException("unknown node type: " + currentRootNodeType + " " + currentRootNode);
+               _filterTypes.add(null);
+            }
+
+            NodeList subtreeRoots = xPathFuncHereAPI.selectNodeList(inputDoc,
+                                       xpathContainer.getXPathFilterTextNode(),
+                                       xpathContainer.getElement());
+
+            // _filterNodes.add(XMLUtils.convertNodelistToSet(subtreeRoots));
+            _filterNodes.add(subtreeRoots);
+         }
+
+         this._F = new HashSet();
+         this._ancestors = new Vector();
+
+         this.traversal(inputDoc);
+
+         Set resultSet = new HashSet();
+         Iterator it = this._inputSet.iterator();
+         while (it.hasNext()) {
+            Node n = (Node) it.next();
+            if (this._F.contains(n)) {
+               resultSet.add(n);
             }
          }
 
-         cat.debug("selection process identified " + selectedNodes.size()
-                   + " nodes");
-
-         Set resultNodes = new HashSet();
-
-         if (xpathContainer.isIntersect()) {
-            Iterator inputSetIterator = inputSet.iterator();
-
-            while (inputSetIterator.hasNext()) {
-               Node currentInputNode = (Node) inputSetIterator.next();
-
-               // if the input node is selected, include it in the output
-               if (selectedNodes.contains(currentInputNode)) {
-                  resultNodes.add(currentInputNode);
-               }
-            }
-         } else if (xpathContainer.isSubtract()) {
-            Iterator inputSetIterator = inputSet.iterator();
-
-            while (inputSetIterator.hasNext()) {
-               Node currentInputNode = (Node) inputSetIterator.next();
-
-               // if the input node is selected, do not include it
-               // otherwise, include it
-               if (!selectedNodes.contains(currentInputNode)) {
-                  resultNodes.add(currentInputNode);
-               }
-            }
-         } else if (xpathContainer.isUnion()) {
-            Iterator inputSetIterator = inputSet.iterator();
-
-            while (inputSetIterator.hasNext()) {
-               Node currentInputNode = (Node) inputSetIterator.next();
-
-               // add all input nodes to the result
-               resultNodes.add(currentInputNode);
-            }
-
-            Iterator selectedSetIterator = selectedNodes.iterator();
-
-            while (selectedSetIterator.hasNext()) {
-               Node currentSelectedNode = (Node) selectedSetIterator.next();
-
-               // add all selected nodes to the result
-               resultNodes.add(currentSelectedNode);
-            }
-         } else {
-            throw new TransformationException("empty");
-         }
-
-         XMLSignatureInput result = new XMLSignatureInput(resultNodes,
+         XMLSignatureInput result = new XMLSignatureInput(resultSet,
                                        input.getCachedXPathAPI());
 
+
          result.setSourceURI(input.getSourceURI());
+
+         long end = System.currentTimeMillis();
 
          return result;
       } catch (TransformerException ex) {
@@ -275,5 +250,164 @@ public class TransformXPath2Filter extends TransformSpi {
       } catch (SAXException ex) {
          throw new TransformationException("empty", ex);
       }
+   }
+
+   /**
+    * Method traversal
+    *
+    * @param currentNode
+    * @param Z
+    */
+   private void traversal(Node currentNode) {
+
+      this._ancestors.add(currentNode);
+
+      if (this._inputSet.contains(currentNode)) {
+
+      int iMax = this._filterTypes.size();
+      int i = 0;
+
+      searchFirstUnionWhichContainsNode: for (i = iMax - 1; i >= 0; i--) {
+         NodeList rootNodes = (NodeList) this._filterNodes.elementAt(i);
+         String type = (String) this._filterTypes.elementAt(i);
+
+         if ((type == FUnion)
+                 && rooted(currentNode, this._ancestors, rootNodes)) {
+
+            /*
+            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+               cat.debug(i + " " + ((Element) currentNode).getTagName()
+                         + " is " + type + " of " + rootNode.getNodeName());
+            }
+            */
+            break searchFirstUnionWhichContainsNode;
+         }
+      }
+
+      int IStart = i;
+
+      if (IStart == -1) {
+         IStart = 0;
+      }
+
+      boolean include = true;
+
+      // search in the subsequent steps for
+      for (int I = IStart; I < iMax; I++) {
+         NodeList rootNodes = (NodeList) this._filterNodes.elementAt(I);
+         String type = (String) this._filterTypes.elementAt(I);
+         boolean rooted = rooted(currentNode, this._ancestors, rootNodes);
+
+         if ((type == FIntersect) &&!rooted) {
+
+            /*
+            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+               cat.debug("The intersect operation from step " + I
+                         + " does not include " + currentNode.getNodeName());
+            }
+            */
+            include = false;
+
+            break;
+         } else if ((type == FSubtract) && rooted) {
+
+            /*
+            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+               cat.debug("The subtract operation from step " + I
+                         + " does subtract " + currentNode.getNodeName());
+            }
+            */
+            include = false;
+
+            break;
+         } else {
+            ;
+         }
+      }
+
+      if (include) {
+         this._F.add(currentNode);
+      }
+      }
+
+      {
+
+         // here we do the traversal
+         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+            NamedNodeMap attributes = ((Element) currentNode).getAttributes();
+            int attributesLength = attributes.getLength();
+
+            for (int x = 0; x < attributesLength; x++) {
+               Node attr = attributes.item(x);
+
+               traversal(attr);
+            }
+         }
+
+         for (Node currentChild = currentNode.getFirstChild();
+                 currentChild != null;
+                 currentChild = currentChild.getNextSibling()) {
+            traversal(currentChild);
+         }
+      }
+
+      this._ancestors.remove(currentNode);
+   }
+
+   /**
+    * Method rooted
+    *
+    * @param currentNode
+    * @param ancestors
+    * @param rootNodes
+    * @return
+    */
+   boolean rooted(Node currentNode, Vector ancestors, NodeList rootNodes) {
+
+      int length = rootNodes.getLength();
+
+      for (int i = 0; i < length; i++) {
+         Node rootNode = rootNodes.item(i);
+
+         if (ancestors.contains(rootNode)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   /**
+    * Method __isRootedBy
+    *
+    * @param ctx
+    * @param rootInQuestion
+    * @return
+    */
+   private static boolean __isRootedBy(Node ctx, Node rootInQuestion) {
+
+      if ((ctx == null) || (rootInQuestion == null)) {
+         return false;
+      }
+
+      if (rootInQuestion.getNodeType() == Node.DOCUMENT_NODE) {
+         return true;
+      }
+
+      Node n = ctx;
+
+      while (n != null) {
+         if (n == rootInQuestion) {
+            return true;
+         }
+
+         if (n.getNodeType() == Node.ATTRIBUTE_NODE) {
+            n = ((Attr) n).getOwnerElement();
+         } else {
+            n = n.getParentNode();
+         }
+      }
+
+      return false;
    }
 }

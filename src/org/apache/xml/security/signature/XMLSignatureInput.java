@@ -180,6 +180,8 @@ public class XMLSignatureInput {
            throws TransformerException {
 
       this._cxpathAPI = usedXPathAPI;
+
+      // get the Document and make all namespace nodes visible in DOM space
       Document doc = XMLUtils.getOwnerDocument(rootNode);
       XMLUtils.circumventBug2650(doc);
 
@@ -273,6 +275,7 @@ public class XMLSignatureInput {
 
             byte result[] = baos.toByteArray();
             Document document = db.parse(new ByteArrayInputStream(result));
+            XMLUtils.circumventBug2650(document);
 
             try {
                NodeList nodeList = this._cxpathAPI.selectNodeList(
@@ -310,6 +313,9 @@ public class XMLSignatureInput {
 
          /* If we have a node set but an octet stream is needed, we MUST c14nize
           * without any comments.
+          *
+          * We don't use the factory because direct instantiation should be a
+          * little bit faster...
           */
          Canonicalizer20010315OmitComments c14nizer =
             new Canonicalizer20010315OmitComments();

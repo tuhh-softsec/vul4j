@@ -1,7 +1,11 @@
-<?xml version="1.0" standalone="no"?>
+?xml version="1.0" standalone="no"?>
 <!DOCTYPE s1 SYSTEM "./dtd/document.dtd">
 
 <s1 title="Installation">
+	<s2 title="Using JDK 1.4.0">
+		<p>After SUN released the <jump href="http://java.sun.com/j2se/1.4/index.html">Java (TM) 2 Platform Standard Edition v1.4.0</jump>, the xml-security package stopped working. This is a <jump href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html">known</jump> problem: SUN packaged a beta of Xalan into the JDK 1.4.0, but the xml-security package requires a stable version of Xalan (v2.2.0 or later). To fix the problem, you have to put the xalan.jar into a special directory in your JDK: <code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code> . If you installed an out-of-the-box JDK1.4 (e.g. on Windows 2000), the "endorsed" directory does not exist: you'll have to create it by hand. <em>Putting this JAR to another location like lib/ext WILL NOT WORK.</em></p>
+		<p>For more on that, you can also check the <jump href="http://xml.apache.org/~edwingo/jaxp-faq.html#override">Unofficial JAXP FAQ</jump>.
+	</s2>
 	<s2 title="Prerequisite">
 	  <p>Make sure you get the Jakarta Ant Tool from <jump href="http://jakarta.apache.org/ant/">http://jakarta.apache.org/ant/</jump></p>
 	</s2>
@@ -92,5 +96,6 @@ cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</so
 	</s2>
 	<s2 title="Using JDK 1.4.0">
 		<p>After SUN released the <jump href="http://java.sun.com/j2se/1.4/index.html">Java (TM) 2 Platform Standard Edition v1.4.0</jump>, the xml-security package stopped working. This is a <jump href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html">known</jump> problem: SUN packaged a beta of Xalan into the JDK 1.4.0, but the xml-security package requires a stable version of Xalan (v2.2.0 or later). To fix the problem, you have to put the xalan.jar into a special directory in your JDK: <code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code> . If you installed an out-of-the-box JDK1.4 (e.g. on Windows 2000), the "endorsed" directory does not exist: you'll have to create it by hand. <em>Putting this JAR to another location like lib/ext WILL NOT WORK.</em></p>
+		<p>For more on that, you can also check the <jump href="http://xml.apache.org/~edwingo/jaxp-faq.html#override">Unofficial JAXP FAQ</jump>.
 	</s2>
 </s1>

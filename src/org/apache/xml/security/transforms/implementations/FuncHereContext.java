@@ -65,6 +65,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.CachedXPathAPI;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.security.utils.I18n;
 
 
 /**
@@ -113,11 +114,6 @@ public class FuncHereContext extends XPathContext {
     */
    private FuncHereContext() {}
 
-   // private DTMManager m_dtmManager = null;
-
-   /** Field _oldDTMManager */
-   // private DTMManager _oldDTMManager = null;
-
    /**
     * Constructor FuncHereContext
     *
@@ -137,7 +133,13 @@ public class FuncHereContext extends XPathContext {
 
       super((Object) owner);
 
-      this.m_dtmManager = xpathContext.getDTMManager();
+      try {
+         this.m_dtmManager = xpathContext.getDTMManager();
+      } catch (IllegalAccessError iae) {
+         throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
+                                      + " Original message was \""
+                                      + iae.getMessage() + "\"");
+      }
    }
 
    /**
@@ -150,7 +152,13 @@ public class FuncHereContext extends XPathContext {
 
       super((Object) owner);
 
-      this.m_dtmManager = previouslyUsed.getXPathContext().getDTMManager();
+      try {
+         this.m_dtmManager = previouslyUsed.getXPathContext().getDTMManager();
+      } catch (IllegalAccessError iae) {
+         throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
+                                      + " Original message was \""
+                                      + iae.getMessage() + "\"");
+      }
    }
 
    /**
@@ -163,6 +171,12 @@ public class FuncHereContext extends XPathContext {
 
       super((Object) owner);
 
-      this.m_dtmManager = dtmManager;
+      try {
+         this.m_dtmManager = dtmManager;
+      } catch (IllegalAccessError iae) {
+         throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
+                                      + " Original message was \""
+                                      + iae.getMessage() + "\"");
+      }
    }
 }
