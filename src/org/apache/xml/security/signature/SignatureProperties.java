@@ -188,6 +188,11 @@ public class SignatureProperties extends ElementProxy {
       return this._constructionElement.getAttribute(Constants._ATT_ID);
    }
 
+   public void addSignatureProperty(SignatureProperty sp) {
+      this._constructionElement.appendChild(sp.getElement());
+      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+   }
+
    static {
       org.apache.xml.security.Init.init();
    }

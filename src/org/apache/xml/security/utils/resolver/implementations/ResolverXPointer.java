@@ -120,9 +120,8 @@ public class ResolverXPointer extends ResourceResolverSpi {
             throw new ResourceResolverException("generic.EmptyMessage", ex,
                                                 uri, BaseURI);
          }
-      } else {
+      } else if (isXPointerId(uri, BaseURI)) {
          String id = getXPointerId(uri, BaseURI);
-         // Element selectedElem = doc.getElementById(id);
          Element selectedElem = IdResolver.getElementById(doc, id);
 
          cat.debug("Use #xpointer(id('" + id + "'))");
@@ -145,7 +144,8 @@ public class ResolverXPointer extends ResourceResolverSpi {
 
       XMLSignatureInput result = new XMLSignatureInput(resultNodes);
 
-      result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      // result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+      result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
       result.setMIMEType("text/xml");
 
       try {

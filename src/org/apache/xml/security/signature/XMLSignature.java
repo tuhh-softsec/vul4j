@@ -633,9 +633,12 @@ public class XMLSignature extends ElementProxy {
 
          signature.initVerify(cert);
          byte inputBytes[] = this.getSignedInfo().getCanonicalizedOctetStream();
-         // JavaUtils.writeBytesToFilename("signedInfo", inputBytes);
-         signature.update(inputBytes);
          byte sigBytes[] = this.getSignatureValue();
+
+         JavaUtils.writeBytesToFilename("signedInfo.Bytes", inputBytes);
+         JavaUtils.writeBytesToFilename("signature.Bytes", sigBytes);
+
+         signature.update(inputBytes);
          boolean verify = signature.verify(sigBytes);
          return verify;
       } else {
@@ -689,6 +692,13 @@ public class XMLSignature extends ElementProxy {
       }
    }
 
+   public void addDocument(
+           String referenceURI, Transforms trans, String digestURI, String ReferenceId, String ReferenceType)
+              throws XMLSignatureException {
+      this._signedInfo.addDocument(this._baseURI, referenceURI, trans,
+                                   digestURI, ReferenceId, ReferenceType);
+   }
+
    /**
     * This method is a proxy method for the {@link Manifest#addDocument} method
     *
@@ -702,7 +712,7 @@ public class XMLSignature extends ElementProxy {
            String referenceURI, Transforms trans, String digestURI)
               throws XMLSignatureException {
       this._signedInfo.addDocument(this._baseURI, referenceURI, trans,
-                                   digestURI);
+                                   digestURI, null, null);
    }
 
    /**
@@ -715,7 +725,7 @@ public class XMLSignature extends ElementProxy {
    public void addDocument(String referenceURI, Transforms trans)
            throws XMLSignatureException {
       this._signedInfo.addDocument(this._baseURI, referenceURI, trans,
-                                   Constants.ALGO_ID_DIGEST_SHA1);
+                                   Constants.ALGO_ID_DIGEST_SHA1, null, null);
    }
 
    /**
@@ -728,7 +738,7 @@ public class XMLSignature extends ElementProxy {
 
       cat.debug("The baseURI is " + this._baseURI);
       this._signedInfo.addDocument(this._baseURI, referenceURI, null,
-                                   Constants.ALGO_ID_DIGEST_SHA1);
+                                   Constants.ALGO_ID_DIGEST_SHA1, null, null);
    }
 
    /**

@@ -138,8 +138,8 @@ public class VerifyMerlinsExamplesSixteen {
       //J-
       String merlinsDir =
          "data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen/";
-      String filenames[] = { merlinsDir +
-                             "signature.xml"
+      String filenames[] = { // merlinsDir + "signature.xml"
+                             "merlinsSixteenRecreated.xml"
                              };
       //J+
       int start = 0;

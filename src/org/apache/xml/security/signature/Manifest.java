@@ -171,12 +171,20 @@ public class Manifest extends ElementProxy {
     * @throws XMLSignatureException
     */
    public void addDocument(
-           String BaseURI, String referenceURI, Transforms transforms, String digestURI)
+           String BaseURI, String referenceURI, Transforms transforms, String digestURI, String ReferenceId, String ReferenceType)
               throws XMLSignatureException {
 
       // the this._doc is handed implicitly by the this.getOwnerDocument()
       Reference ref = new Reference(this._doc, BaseURI, referenceURI, this,
                                     transforms, digestURI);
+
+      if (ReferenceId != null) {
+         ref.setId(ReferenceId);
+      }
+
+      if (ReferenceType != null) {
+         ref.setType(ReferenceType);
+      }
 
       if (this._references == null) {
          this._references = new Vector();
