@@ -9,6 +9,8 @@ public interface XMLWriter
 
     void writeText( String text );
 
+    void writeMarkup( String text );
+
     void endElement();
 
 }

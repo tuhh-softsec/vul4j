@@ -51,12 +51,25 @@ public class PrettyPrintXMLWriter implements XMLWriter
 
     public void writeText( String text )
     {
+        writeText( text, true );
+    }
+
+    public void writeMarkup( String text )
+    {
+        writeText( text, false );
+    }
+
+    private void writeText( String text, boolean escapeHtml )
+    {
         readyForNewLine = false;
         tagIsEmpty = false;
         finishTag();
-        text = text.replaceAll( "&", "&amp;" );
-        text = text.replaceAll( "<", "&lt;" );
-        text = text.replaceAll( ">", "&gt;" );
+        if ( escapeHtml )
+        {
+            text = text.replaceAll( "&", "&amp;" );
+            text = text.replaceAll( "<", "&lt;" );
+            text = text.replaceAll( ">", "&gt;" );
+        }
         write( text );
     }
 
