@@ -1,3 +1,4 @@
+
 /*
  * The Apache Software License, Version 1.1
  *
@@ -60,28 +61,20 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
-import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.objects.XObject;
+import java.io.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.TransformerException;
-import org.xml.sax.SAXException;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
-import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.transforms.*;
-import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.security.utils.*;
 import org.apache.xpath.CachedXPathAPI;
+import org.apache.xpath.objects.XObject;
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -159,14 +152,13 @@ public class TransformBase64Decode extends TransformSpi {
       } else {
          try {
             Document doc =
-               DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                  .parse(input.getOctetStream());
+               DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
+                  input.getOctetStream());
             DocumentTraversal dt = ((DocumentTraversal) doc);
             Node rootNode = (Node) doc;
 
             // we accept all nodes
-            NodeFilter nodefilter =
-               new org.apache.xml.security.c14n.helper.AlwaysAcceptNodeFilter();
+            NodeFilter nodefilter = new AlwaysAcceptNodeFilter();
             TreeWalker treewalker = dt.createTreeWalker(rootNode,
                                                         NodeFilter.SHOW_ALL,
                                                         nodefilter, true);
@@ -210,5 +202,23 @@ public class TransformBase64Decode extends TransformSpi {
       }
 
       treewalker.setCurrentNode(currentNode);
+   }
+
+   /**
+    * This {@link NodeFilter} always returns <code>true</code>
+    *
+    * @author Christian Geuer-Pollmann
+    */
+   public class AlwaysAcceptNodeFilter implements NodeFilter {
+
+      /**
+       * Method acceptNode
+       *
+       * @param n
+       *
+       */
+      public short acceptNode(Node n) {
+         return NodeFilter.FILTER_ACCEPT;
+      }
    }
 }

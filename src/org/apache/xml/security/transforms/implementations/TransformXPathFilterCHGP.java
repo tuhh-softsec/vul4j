@@ -251,8 +251,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
             Node rootNode = (Node) inputDoc;
 
             // we accept all nodes
-            NodeFilter nodefilter =
-               new org.apache.xml.security.c14n.helper.AlwaysAcceptNodeFilter();
+            NodeFilter nodefilter = new AlwaysAcceptNodeFilter();
             TreeWalker treewalker = dt.createTreeWalker(rootNode,
                                                         NodeFilter.SHOW_ALL,
                                                         nodefilter, true);
@@ -377,5 +376,23 @@ public class TransformXPathFilterCHGP extends TransformSpi {
       }
 
       return set;
+   }
+
+   /**
+    * This {@link NodeFilter} always returns <code>true</code>
+    *
+    * @author Christian Geuer-Pollmann
+    */
+   public class AlwaysAcceptNodeFilter implements NodeFilter {
+
+      /**
+       * Method acceptNode
+       *
+       * @param n
+       *
+       */
+      public short acceptNode(Node n) {
+         return NodeFilter.FILTER_ACCEPT;
+      }
    }
 }
