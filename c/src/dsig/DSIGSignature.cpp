@@ -611,6 +611,26 @@ DSIGKeyInfoValue * DSIGSignature::appendDSAKeyValue(const XMLCh * P,
 
 }
 
+DSIGKeyInfoValue * DSIGSignature::appendRSAKeyValue(const XMLCh * modulus, 
+						   const XMLCh * exponent) {
+
+	createKeyInfoElement();
+
+	// Create the new element
+	DSIGKeyInfoValue * v;
+	XSECnew(v, DSIGKeyInfoValue(this));
+
+	mp_KeyInfoNode->appendChild(v->createBlankRSAKeyValue(modulus, exponent));
+	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	// Add to the list
+	m_keyInfoList.addKeyInfo(v);
+
+	return v;
+
+}
+
+
 DSIGKeyInfoX509 * DSIGSignature::appendX509Data(void) {
 
 	createKeyInfoElement();

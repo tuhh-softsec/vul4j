@@ -90,3 +90,10 @@
 /* Windows direct.h */
 #define HAVE_DIRECT_H 1
 
+/*
+ * Macros used to identify what crypto providers are available
+ */
+
+#define HAVE_OPENSSL 1
+
+#define HAVE_WINCAPI 1

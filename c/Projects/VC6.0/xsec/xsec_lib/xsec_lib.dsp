@@ -55,7 +55,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2.lib Xalan-C_1.lib libeay32.lib /nologo /dll /machine:I386 /out:"../../../../Build/Win32/VC6/Release/xsec_lib_01.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2.lib Xalan-C_1.lib crypt32.lib libeay32.lib /nologo /dll /machine:I386 /out:"../../../../Build/Win32/VC6/Release/xsec_lib_01.dll"
 
 !ELSEIF  "$(CFG)" == "xsec_lib - Win32 Debug"
 
@@ -429,6 +429,14 @@ SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyHMAC.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyRSA.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoKeyRSA.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoProvider.cpp
 # End Source File
 # Begin Source File
@@ -741,6 +749,14 @@ SOURCE=..\..\..\..\src\transformers\TXFMEnvelope.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\transformers\TXFMMD5.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\transformers\TXFMMD5.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\transformers\TXFMOutputFile.cpp
 # End Source File
 # Begin Source File
@@ -804,13 +820,5 @@ SOURCE=..\..\..\..\src\transformers\TXFMXSL.hpp
 SOURCE=..\..\..\..\src\framework\version.rc
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\..\..\src\transformers\TXFMMD5.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\transformers\TXFMMD5.hpp
-# End Source File
 # End Target
 # End Project

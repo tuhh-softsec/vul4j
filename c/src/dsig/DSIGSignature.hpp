@@ -494,6 +494,19 @@ public:
 						   const XMLCh * Y);
 
 	/**
+	 * \brief Append a RSA KeyValue element 
+	 *
+	 * Add a new KeyInfo element for a RSA Value
+	 *
+	 * @param modulus Base64 encoded value of the modulus
+	 * @param exponent Base64 encoded value of exponent
+	 * @returns A pointer to the created object.
+	 */
+
+	DSIGKeyInfoValue * appendRSAKeyValue(const XMLCh * modulus, 
+						   const XMLCh * exponent);
+
+	/**
 	 * \brief Append a X509Data element.
 	 *
 	 * Add a new KeyInfo element for X509 data.

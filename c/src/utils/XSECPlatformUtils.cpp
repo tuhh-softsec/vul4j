@@ -72,16 +72,33 @@
 
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoProvider.hpp>
 #include <xsec/dsig/DSIGConstants.hpp>
 
 #if defined(_WIN32)
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
 #endif
 
+#if defined (HAVE_OPENSSL)
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoProvider.hpp>
+#endif
+
+#if defined (HAVE_WINCAPI)
+#	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
+#endif
+
 // Static data used by all of XSEC
 int XSECPlatformUtils::initCount = 0;
 XSECCryptoProvider * XSECPlatformUtils::g_cryptoProvider = NULL;
+
+// Determine default crypto provider
+
+#if defined (HAVE_OPENSSL)
+#	define XSEC_DEFAULT_PROVIDER	OpenSSLCryptoProvider()
+#else
+#	if defined (HAVE_WINCAPI)
+#		define XSEC_DEFAULT_PROVIDER	WinCAPICryptoProvider()
+#	endif
+#endif
 
 void XSECPlatformUtils::Initialise(XSECCryptoProvider * p) {
 
@@ -91,7 +108,12 @@ void XSECPlatformUtils::Initialise(XSECCryptoProvider * p) {
 	if (p != NULL)
 		g_cryptoProvider = p;
 	else
-		XSECnew(g_cryptoProvider, OpenSSLCryptoProvider());
+#if defined XSEC_DEFAULT_PROVIDER
+		XSECnew(g_cryptoProvider, XSEC_DEFAULT_PROVIDER);
+#else
+	throw XSECException(XSECException::CryptoProviderError,
+		"XSECPlatformUtils::Initialise() called with NULL provider, but no default defined");
+#endif
 
 	// Set up necessary constants
 	DSIGConstants::create();
