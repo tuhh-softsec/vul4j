@@ -297,7 +297,6 @@ private:
 
 	// General
 
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	* mp_valueNode;
 	keyInfoType								m_keyInfoType;
 };
 

@@ -40,9 +40,9 @@ mp_GTextNode(0),
 mp_YTextNode(0),
 mp_modulusTextNode(0),
 mp_exponentTextNode(0),
-mp_valueNode(valueNode),
 m_keyInfoType(KEYINFO_NOTSET) {
 
+		mp_keyInfoDOMNode = valueNode;
 }
 
 DSIGKeyInfoValue::DSIGKeyInfoValue(const XSECEnv * env) :
@@ -53,9 +53,9 @@ mp_GTextNode(0),
 mp_YTextNode(0),
 mp_modulusTextNode(0),
 mp_exponentTextNode(0),
-mp_valueNode(0),
 m_keyInfoType(KEYINFO_NOTSET) {
 
+	mp_keyInfoDOMNode = NULL;
 }
 
 DSIGKeyInfoValue::~DSIGKeyInfoValue() {
@@ -69,7 +69,7 @@ DSIGKeyInfoValue::~DSIGKeyInfoValue() {
 
 void DSIGKeyInfoValue::load(void) {
 
-	if (mp_valueNode == NULL || !strEquals(getDSIGLocalName(mp_valueNode), "KeyValue")) {
+	if (mp_keyInfoDOMNode == NULL || !strEquals(getDSIGLocalName(mp_keyInfoDOMNode), "KeyValue")) {
 
 		throw XSECException(XSECException::ExpectedDSIGChildNotFound,
 			"Empty or incorrect node passed to DSIGKeyInfoValue");
@@ -78,7 +78,7 @@ void DSIGKeyInfoValue::load(void) {
 
 	DOMNode *child, *p, *val;
 
-	child = mp_valueNode->getFirstChild();
+	child = mp_keyInfoDOMNode->getFirstChild();
 	while (child != NULL && child->getNodeType() != DOMNode::ELEMENT_NODE)
 		child = child->getNextSibling();
 	//child = findFirstChildOfType(mp_valueNode, DOMNode::ELEMENT_NODE);
@@ -243,7 +243,7 @@ DOMElement * DSIGKeyInfoValue::createBlankDSAKeyValue(const XMLCh * P,
 	makeQName(str, prefix, "KeyValue");
 
 	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-	mp_valueNode = ret;
+	mp_keyInfoDOMNode = ret;
 
 	makeQName(str, prefix, "DSAKeyValue");
 	DOMElement * dsa = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
@@ -358,7 +358,7 @@ DOMElement * DSIGKeyInfoValue::createBlankRSAKeyValue(const XMLCh * modulus,
 	makeQName(str, prefix, "KeyValue");
 
 	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
-	mp_valueNode = ret;
+	mp_keyInfoDOMNode = ret;
 
 	makeQName(str, prefix, "RSAKeyValue");
 	DOMElement * rsa = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
