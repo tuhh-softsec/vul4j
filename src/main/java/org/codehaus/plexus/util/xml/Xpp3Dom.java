@@ -184,6 +184,13 @@ public class Xpp3Dom
         {
             write( children[i], xmlWriter );
         }
+
+        String value = xpp3Dom.getValue();
+        if ( value != null )
+        {
+            xmlWriter.writeText( value );
+        }
+
         xmlWriter.endElement();
     }
 
