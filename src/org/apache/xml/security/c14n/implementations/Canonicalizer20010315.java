@@ -44,6 +44,8 @@ import org.w3c.dom.Node;
  */
 public abstract class Canonicalizer20010315 extends CanonicalizerBase {
 	boolean firstCall=true;
+    static final String XMLNS_URI=Constants.NamespaceSpecNS;
+    static final String XML_LANG_URI=Constants.XML_LANG_SPACE_SpecNS;
    /**
     * Constructor Canonicalizer20010315
     *
@@ -83,14 +85,14 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
          String NValue=N.getValue();
          String NUri =N.getNamespaceURI();
 
-         if (!Constants.NamespaceSpecNS.equals(NUri)) {
+         if (!XMLNS_URI.equals(NUri)) {
          	//It's not a namespace attr node. Add to the result and continue.
             result.add(N);
             continue;
          }
          
          if (XML.equals(NName)
-                 && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
+                 && XML_LANG_URI.equals(NValue)) {
          	//The default mapping for xml must not be output.
          	continue;
          }
@@ -148,12 +150,12 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                   // for all attributes in the ancestor element
                   Attr currentAncestorAttr = (Attr) ancestorAttrs.item(i);
 
-                  if (Constants.XML_LANG_SPACE_SpecNS.equals(
+                  if (XML_LANG_URI.equals(
                           currentAncestorAttr.getNamespaceURI())) {
 
                      // do we have an xml:* ?
                      if (!E.hasAttributeNS(
-                             Constants.XML_LANG_SPACE_SpecNS,
+                             XML_LANG_URI,
                              currentAncestorAttr.getLocalName())) {
 
                         // the xml:* attr is not in E
@@ -203,7 +205,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
        String NValue=N.getValue();
        String NUri =N.getNamespaceURI();
        
-       if (!Constants.NamespaceSpecNS.equals(NUri)) {
+       if (!XMLNS_URI.equals(NUri)) {
        	  //A non namespace definition node.
        	  if (isRealVisible){
        		//The node is visible add the attribute to the list of output attributes.
@@ -215,7 +217,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
 
               
        if ("xml".equals(NName)
-               && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
+               && XML_LANG_URI.equals(NValue)) {
           /* except omit namespace node with local name xml, which defines
            * the xml prefix, if its string value is http://www.w3.org/XML/1998/namespace.
            */
@@ -238,7 +240,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     }
     if (isRealVisible) {    	           
     	//The element is visible, handle the xmlns definition        
-        Attr xmlns = E.getAttributeNodeNS(Constants.NamespaceSpecNS, "xmlns");
+        Attr xmlns = E.getAttributeNodeNS(XMLNS_URI, XMLNS);
         Node n=null;
         if (xmlns == null) {
         	//No xmlns def just get the already defined.
@@ -302,12 +304,12 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                   // for all attributes in the ancestor element
                   Attr currentAncestorAttr = (Attr) ancestorAttrs.item(i);
 
-                  if (Constants.XML_LANG_SPACE_SpecNS.equals(
+                  if (XML_LANG_URI.equals(
                           currentAncestorAttr.getNamespaceURI())) {
 
                      // do we have an xml:* ?
                      if (!E.hasAttributeNS(
-                             Constants.XML_LANG_SPACE_SpecNS,
+                             XML_LANG_URI,
                              currentAncestorAttr.getLocalName())) {
 
                         // the xml:* attr is not in E
