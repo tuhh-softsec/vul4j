@@ -110,8 +110,7 @@
     <property name="lib.xerces.2" value="${dir.libs}/xmlParserAPIs.jar" />
     <property name="lib.xalan.1"  value="${dir.libs}/xalan.jar" />
     <property name="lib.xalan.2"  value="${dir.libs}/xml-apis.jar" />
-    <property name="lib.log4j"    value="${dir.libs}/log4j-1.2.5.jar" />
-    
+    <property name="lib.log4j"    value="${dir.libs}/jakarta-log4j-1.2.6.jar" />
 
     <path id="classpath.libraries" description="3rd party libs">
       <pathelement path="${lib.xerces.1}" />
@@ -522,6 +521,22 @@ org.apache.xml.security.utils.resolver
     <delete dir="${build.junit.html}" />
     <mkdir dir="${build.junit.xml}" />
     <mkdir dir="${build.junit.html}" />
+    <!-- The unit tests include so-called interoperability tests against 
+         cryptographic values generated using software from other vendors.
+         This package includes many of these vectors, but not the ones from 
+         the IBM alphaWorks XML Security Suite. They are not included because
+         IBM even has these signatures under copyright.
+         If you want to test against IBM, download xss4j from
+
+         http://www.alphaworks.ibm.com/tech/xmlsecuritysuite
+
+         and put the files into the
+
+         data/com/ibm/xss4j-20011029/
+
+         directory. If the file enveloped-rsa.sig is found in that directory,
+         IBM is 'magically' included in the test ;-))
+    -->
     <available property="ibm.available" file="data/com/ibm/xss4j-20011029/enveloped-rsa.sig"/>
     <junit printsummary="on"
            fork="true"
@@ -550,8 +565,6 @@ org.apache.xml.security.utils.resolver
       <report format="frames" todir="${build.junit.html}"/>
     </junitreport>
   </target>
-
-
 
   <target name="testjar"
           depends="prepare,check-bc"
