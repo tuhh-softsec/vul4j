@@ -169,16 +169,24 @@ public final class IOUtilTest
         int n0 = 0;
         int n1 = 0;
 
-        while ( -1 != n0 )
+        try
         {
-            n0 = is0.read( buf0 );
-            n1 = is1.read( buf1 );
-            assertTrue( "The files " + f0 + " and " + f1 +
-                        " have differing number of bytes available (" + n0 +
-                        " vs " + n1 + ")", ( n0 == n1 ) );
+            while ( -1 != n0 )
+            {
+                n0 = is0.read( buf0 );
+                n1 = is1.read( buf1 );
+                assertTrue( "The files " + f0 + " and " + f1 +
+                            " have differing number of bytes available (" + n0 +
+                            " vs " + n1 + ")", ( n0 == n1 ) );
 
-            assertTrue( "The files " + f0 + " and " + f1 +
-                        " have different content", Arrays.equals( buf0, buf1 ) );
+                assertTrue( "The files " + f0 + " and " + f1 +
+                            " have different content", Arrays.equals( buf0, buf1 ) );
+            }
+        }
+        finally
+        {
+            is0.close();
+            is1.close();
         }
     }
 
@@ -469,10 +477,7 @@ public final class IOUtilTest
         assertTrue( "Wrong output size: file.length()=" +
                     file.length() + "!=" + FILE_SIZE + 1,
                     file.length() == FILE_SIZE + 1 );
-        
-        System.gc();
 
         assertTrue( "File would not delete", ( file.delete() || ( !file.exists() ) ) );
     }
 }
-
