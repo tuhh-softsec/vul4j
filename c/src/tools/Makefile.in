@@ -1,0 +1,155 @@
+# The Apache Software License, Version 1.1
+#
+#
+# Copyright (c) 1999 The Apache Software Foundation.  All rights 
+# reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer. 
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+#
+# 3. The end-user documentation included with the redistribution,
+#    if any, must include the following acknowledgment:  
+#       "This product includes software developed by the
+#        Apache Software Foundation (http://www.apache.org/)."
+#    Alternately, this acknowledgment may appear in the software itself,
+#    if and wherever such third-party acknowledgments normally appear.
+#
+# 4. The names "<WebSig>" and "Apache Software Foundation" must
+#    not be used to endorse or promote products derived from this
+#    software without prior written permission. For written 
+#    permission, please contact apache@apache.org.
+#
+# 5. Products derived from this software may not be called "Apache",
+#    nor may "Apache" appear in their name, without prior written
+#    permission of the Apache Software Foundation.
+#
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+# ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+# USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+# OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+# ====================================================================
+#
+# This software consists of voluntary contributions made by many
+# individuals on behalf of the Apache Software Foundation and was
+# originally based on software copyright (c) 2001, Institute for
+# Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
+# The development of this software was partly funded by the European 
+# Commission in the <WebSig> project in the ISIS Programme. 
+# For more information on the Apache Software Foundation, please see
+# <http://www.apache.org/>.
+
+DEPFILE=depends
+
+#all these setting come from the arguments passed in to runConfigure.
+
+PLATFORM = @platform@
+
+CC  = @cc@
+CXX = @cxx@
+CXXFLAGS = @cxxflags@
+CPPFLAGS = @cppflags@
+
+PREFIX = @prefix@
+LDFLAGS = @ldflags@
+OBJSUFFIX = @objsuffix@
+SHLIBSUFFIX = @shlibsuffix@
+
+CC1 = @cc1@
+CC4 = @cc4@
+MAKE_SHARED = @make_shared@
+LINK = @link@
+
+LN_S = @ln_s@
+
+# Packaging
+
+PACKAGE_NAME = @package_name@
+PACKAGE_TARNAME = @package_tarname@
+PACKAGE_VERSION = @package_version@
+PACKAGE_VERSION_MAJOR = @package_version_major@
+
+# Directory specific
+SRC_BASE=..
+XSEC_INCL=-I${SRC_BASE}/../include
+
+LIBDIR=${SRC_BASE}/../lib
+BINDIR=${SRC_BASE}/../bin
+OBJDIR=${BINDIR}/obj
+
+LDXSEC=-L${LIBDIR} -l${PACKAGE_TARNAME}
+
+alltools: ${BINDIR}/xtest \
+          ${BINDIR}/c14n \
+          ${BINDIR}/checksig \
+          ${BINDIR}/templatesign \
+		  ${BINDIR}/txfmout
+
+compile: ${OBJ_FILES}
+
+#============================= xtest =============================
+
+${OBJDIR}/xtest${OBJSUFFIX}: xtest/xtest.cpp
+	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
+
+${BINDIR}/xtest: ${OBJDIR}/xtest${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $(LDXSEC) $< -o $@
+
+#============================== c14n =============================
+
+${OBJDIR}/c14n${OBJSUFFIX}: c14n/c14n.cpp
+	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
+
+${BINDIR}/c14n: ${OBJDIR}/c14n${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $(LDXSEC) $< -o $@
+
+
+#============================ checksig ===========================
+
+${OBJDIR}/checksig${OBJSUFFIX}: checksig/checksig.cpp
+	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
+
+${BINDIR}/checksig: ${OBJDIR}/checksig${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $(LDXSEC) $< -o $@
+
+#========================== templatesign =========================
+
+${OBJDIR}/templatesign${OBJSUFFIX}: templatesign/templatesign.cpp
+	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
+
+${BINDIR}/templatesign: ${OBJDIR}/templatesign${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $(LDXSEC) $< -o $@
+
+#============================= txfmout ============================
+
+${OBJDIR}/txfmout${OBJSUFFIX}: txfmout/txfmout.cpp
+	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
+
+${BINDIR}/txfmout: ${OBJDIR}/txfmout${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $(LDXSEC) $< -o $@
+
+#============================= Clean =============================
+
+distclean:
+	rm -f Makefile.bak
+	rm -f Makefile
+
+# Include Library pattern rules
+
+include ${SRC_BASE}/Makefile.incl
