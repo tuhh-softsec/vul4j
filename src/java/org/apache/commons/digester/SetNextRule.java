@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetNextRule.java,v 1.7 2001/11/14 18:54:19 craigmcc Exp $
- * $Revision: 1.7 $
- * $Date: 2001/11/14 18:54:19 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetNextRule.java,v 1.8 2001/12/15 19:45:56 craigmcc Exp $
+ * $Revision: 1.8 $
+ * $Date: 2001/12/15 19:45:56 $
  *
  * ====================================================================
  *
@@ -66,6 +66,7 @@ package org.apache.commons.digester;
 import java.lang.ClassLoader;
 import java.lang.reflect.Method;
 import org.xml.sax.Attributes;
+import org.apache.commons.beanutils.MethodUtils;
 
 
 /**
@@ -75,7 +76,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.7 $ $Date: 2001/11/14 18:54:19 $
+ * @version $Revision: 1.8 $ $Date: 2001/12/15 19:45:56 $
  */
 
 public class SetNextRule extends Rule {
@@ -161,8 +162,8 @@ public class SetNextRule extends Rule {
                 digester.getClassLoader().loadClass(paramType);
         else
 	    paramTypes[0] = child.getClass();
-	Method method = parent.getClass().getMethod(methodName, paramTypes);
-	method.invoke(parent, new Object[] { child });
+        MethodUtils.invokeExactMethod(parent, methodName,
+                                      new Object[] { child }, paramTypes);
 
     }
 

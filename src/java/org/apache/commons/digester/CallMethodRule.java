@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.10 2001/11/14 18:57:01 craigmcc Exp $
- * $Revision: 1.10 $
- * $Date: 2001/11/14 18:57:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.11 2001/12/15 19:45:56 craigmcc Exp $
+ * $Revision: 1.11 $
+ * $Date: 2001/12/15 19:45:56 $
  *
  * ====================================================================
  *
@@ -67,6 +67,7 @@ import java.lang.reflect.Method;
 import java.lang.ClassLoader;
 import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.MethodUtils;
 
 
 /**
@@ -77,7 +78,7 @@ import org.apache.commons.beanutils.ConvertUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.10 $ $Date: 2001/11/14 18:57:01 $
+ * @version $Revision: 1.11 $ $Date: 2001/12/15 19:45:56 $
  */
 
 public class CallMethodRule extends Rule {
@@ -307,8 +308,8 @@ public class CallMethodRule extends Rule {
 	    sb.append(")");
 	    digester.log(sb.toString());
 	}
-	Method method = top.getClass().getMethod(methodName, paramTypes);
-	method.invoke(top, paramValues);
+        MethodUtils.invokeExactMethod(top, methodName,
+                                      paramValues, paramTypes);
 
     }
 
