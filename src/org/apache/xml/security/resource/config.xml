@@ -298,6 +298,10 @@
                           RequiredKey="DESEDE"
                           JCEName="DESEDE/CBC/ISO10126PADDING"
                           IVJCEName="DESEDE/ECB/NOPADDING" />
+            <ProviderAlgo ProviderId="SunJCE"
+                          RequiredKey="DESEDE"
+                          JCEName="DESEDE/CBC/ISO10126PADDING"
+                          IVJCEName="AES/ECB/NOPADDING" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="DES-EDE3/CBC" />
          </Algorithm>
@@ -307,6 +311,10 @@
                     RequirementLevel="REQUIRED"
                     KeyLength="128">
             <ProviderAlgo ProviderId="BC"
+                          RequiredKey="AES"
+                          JCEName="AES/CBC/ISO10126PADDING"
+                          IVJCEName="AES/ECB/NOPADDING" />
+            <ProviderAlgo ProviderId="SunJCE"
                           RequiredKey="AES"
                           JCEName="AES/CBC/ISO10126PADDING"
                           IVJCEName="AES/ECB/NOPADDING" />
@@ -322,6 +330,10 @@
                           RequiredKey="AES"
                           JCEName="AES/CBC/ISO10126PADDING"
                           IVJCEName="AES/ECB/NOPADDING" />
+            <ProviderAlgo ProviderId="SunJCE"
+                          RequiredKey="AES"
+                          JCEName="AES/CBC/ISO10126PADDING"
+                          IVJCEName="AES/ECB/NOPADDING" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="Rijndael" />
          </Algorithm>
@@ -331,6 +343,10 @@
                     RequirementLevel="REQUIRED"
                     KeyLength="256">
             <ProviderAlgo ProviderId="BC"
+                          RequiredKey="AES"
+                          JCEName="AES/CBC/ISO10126PADDING"
+                          IVJCEName="AES/ECB/NOPADDING" />
+            <ProviderAlgo ProviderId="SunJCE"
                           RequiredKey="AES"
                           JCEName="AES/CBC/ISO10126PADDING"
                           IVJCEName="AES/ECB/NOPADDING" />
@@ -345,6 +361,9 @@
             <!-- You have to provide a core RSA mechanism here, even for
                  the bouncy castle -->
             <ProviderAlgo ProviderId="BC"
+                          JCEName="RSA/ECB/PKCS1PADDING"
+                          RequiredKey="RSA" />
+            <ProviderAlgo ProviderId="SunJCE"
                           JCEName="RSA/ECB/PKCS1PADDING"
                           RequiredKey="RSA" />
             <ProviderAlgo ProviderId="Cryptix"
@@ -365,6 +384,9 @@
             <ProviderAlgo ProviderId="BC"
                           JCEName="RSA/ECB/OAEPPADDING"
                           RequiredKey="RSA" />
+            <ProviderAlgo ProviderId="SunJCE"
+                          JCEName="RSA/ECB/OAEPWithSHA1AndMGF1Padding"
+                          RequiredKey="RSA" />
             <!-- <ProviderAlgo ProviderId="BC" JCEName="RSA/OAEP" RequiredKey="RSA" /> -->
          </Algorithm>
 
@@ -383,6 +405,9 @@
             <ProviderAlgo ProviderId="BC"
                           RequiredKey="DESEDE"
                           JCEName="DESEDEWrap" />
+            <ProviderAlgo ProviderId="SunJCE"
+                          RequiredKey="DESEDE"
+                          JCEName="DESEDE" />
             <!-- <ProviderAlgo ProviderId="BC" JCEName="DESEDEWrap" RequiredKey="DESEDE" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes128"
@@ -393,6 +418,9 @@
             <!-- We need an AES in ElectronicCodeBook (ECB) mode here without padding -->
             <ProviderAlgo ProviderId="BC"
                           JCEName="AESWrap"
+                          RequiredKey="AES" />
+            <ProviderAlgo ProviderId="SunJCE"
+                          JCEName="AES"
                           RequiredKey="AES" />
             <!-- <ProviderAlgo ProviderId="BC" JCEName="AESWrap" RequiredKey="AES" /> -->
          </Algorithm>
@@ -405,6 +433,9 @@
             <ProviderAlgo ProviderId="BC"
                           JCEName="AESWrap"
                           RequiredKey="AES" />
+            <ProviderAlgo ProviderId="SunJCE"
+                          JCEName="AES"
+                          RequiredKey="AES" />
             <!-- <ProviderAlgo ProviderId="BC" JCEName="AESWrap" RequiredKey="AES" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes256"
@@ -415,6 +446,9 @@
             <!-- We need an AES in ElectronicCodeBook (ECB) mode here without padding -->
             <ProviderAlgo ProviderId="BC"
                           JCEName="AESWrap"
+                          RequiredKey="AES" />
+            <ProviderAlgo ProviderId="SunJCE"
+                          JCEName="AES"
                           RequiredKey="AES" />
             <!-- <ProviderAlgo ProviderId="BC" JCEName="AESWrap" RequiredKey="AES" /> -->
          </Algorithm>
