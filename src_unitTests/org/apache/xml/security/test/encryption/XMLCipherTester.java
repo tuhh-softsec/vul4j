@@ -81,6 +81,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
@@ -88,6 +89,7 @@ import org.apache.xml.security.encryption.EncryptionMethod;
 import org.apache.xml.security.encryption.CipherData;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.Method;
@@ -95,6 +97,7 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 
 /**
@@ -704,6 +707,7 @@ public class XMLCipherTester extends TestCase {
         }
     }
 
+	/*
     private String toString(Element element) 
 		           throws UnsupportedEncodingException {
         OutputFormat of = new OutputFormat();
@@ -719,7 +723,6 @@ public class XMLCipherTester extends TestCase {
         }
         return (baos.toString("UTF-8"));
     }
-
     private String toString(Document document) 
 	               throws  UnsupportedEncodingException {
         OutputFormat of = new OutputFormat();
@@ -735,6 +738,23 @@ public class XMLCipherTester extends TestCase {
         }
         return (baos.toString("UTF-8"));
     }
+	*/
+
+	private String toString (Node n)
+		throws Exception {
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		Canonicalizer c14n = Canonicalizer.getInstance
+			(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+
+		byte[] serBytes = c14n.canonicalizeSubtree(n);
+		baos.write(serBytes);
+		baos.close();
+
+		return baos.toString("UTF-8");
+
+	}
+		
     private void toString(Document document, String outputFile) 
 	               throws  UnsupportedEncodingException , FileNotFoundException {
         OutputFormat of = new OutputFormat();
