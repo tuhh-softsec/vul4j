@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BoundProcedure.java,v 1.2 2003/02/18 20:35:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BoundProcedure.java,v 1.3 2003/02/19 00:54:35 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,7 +75,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * an instance whose delegates are not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/02/18 20:35:40 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/19 00:54:35 $
  * @author Rodney Waldhoff
  */
 public final class BoundProcedure implements Procedure, Serializable {
@@ -141,7 +141,7 @@ public final class BoundProcedure implements Procedure, Serializable {
      *         {@link UnaryProcedure UnaryProcedure}, or <code>null</code>
      *         if the given <code>UnaryProcedure</code> is <code>null</code>
      */
-    public static BoundProcedure adapt(UnaryProcedure procedure, Object arg) {
+    public static BoundProcedure bind(UnaryProcedure procedure, Object arg) {
         return null == procedure ? null : new BoundProcedure(procedure,arg);
     }
 

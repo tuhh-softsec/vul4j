@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundProcedure.java,v 1.1 2003/01/28 23:37:50 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundProcedure.java,v 1.2 2003/02/19 00:54:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,7 +65,7 @@ import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.NoOpProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:50 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/19 00:54:36 $
  * @author Rodney Waldhoff
  */
 public class TestBoundProcedure extends BaseFunctorTest {
@@ -120,11 +120,11 @@ public class TestBoundProcedure extends BaseFunctorTest {
     }
 
     public void testAdaptNull() throws Exception {
-        assertNull(BoundProcedure.adapt(null,"xyzzy"));
+        assertNull(BoundProcedure.bind(null,"xyzzy"));
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BoundProcedure.adapt(new NoOpProcedure(),"xyzzy"));
-        assertNotNull(BoundProcedure.adapt(new NoOpProcedure(),null));
+        assertNotNull(BoundProcedure.bind(new NoOpProcedure(),"xyzzy"));
+        assertNotNull(BoundProcedure.bind(new NoOpProcedure(),null));
     }
 }

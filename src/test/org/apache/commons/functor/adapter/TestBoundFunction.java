@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundFunction.java,v 1.1 2003/01/28 23:37:50 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundFunction.java,v 1.2 2003/02/19 00:54:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,7 +66,7 @@ import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.IdentityFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:50 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/19 00:54:36 $
  * @author Rodney Waldhoff
  */
 public class TestBoundFunction extends BaseFunctorTest {
@@ -121,11 +121,11 @@ public class TestBoundFunction extends BaseFunctorTest {
     }
 
     public void testAdaptNull() throws Exception {
-        assertNull(BoundFunction.adapt(null,"xyzzy"));
+        assertNull(BoundFunction.bind(null,"xyzzy"));
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BoundFunction.adapt(new IdentityFunction(),"xyzzy"));
-        assertNotNull(BoundFunction.adapt(new IdentityFunction(),null));
+        assertNotNull(BoundFunction.bind(new IdentityFunction(),"xyzzy"));
+        assertNotNull(BoundFunction.bind(new IdentityFunction(),null));
     }
 }

@@ -1,5 +1,5 @@
-/*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundProcedure.java,v 1.2 2003/02/19 00:54:36 rwaldhoff Exp $
+/* 
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestAll.java,v 1.1 2003/02/19 00:54:37 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,79 +54,26 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.adapter;
+package org.apache.commons.functor.core.collection;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.core.IdentityFunction;
-import org.apache.commons.functor.core.LeftIdentityFunction;
-import org.apache.commons.functor.core.NoOpProcedure;
-
 /**
- * @version $Revision: 1.2 $ $Date: 2003/02/19 00:54:36 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/19 00:54:37 $
  * @author Rodney Waldhoff
  */
-public class TestRightBoundProcedure extends BaseFunctorTest {
-
-    // Conventional
-    // ------------------------------------------------------------------------
-
-    public TestRightBoundProcedure(String testName) {
+public class TestAll extends TestCase {
+    public TestAll(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestRightBoundProcedure.class);
-    }
-
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new RightBoundProcedure(new NoOpProcedure(),"xyzzy");
-    }
-
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
-    // ------------------------------------------------------------------------    
-
-    public void testRun() throws Exception {
-        UnaryProcedure p = new RightBoundProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentityFunction()),"foo");
-        p.run(Boolean.TRUE);
-        p.run(Boolean.FALSE);
-    }
-    
-    public void testEquals() throws Exception {
-        UnaryProcedure f = new RightBoundProcedure(new NoOpProcedure(),"xyzzy");
-        assertEquals(f,f);
-        assertObjectsAreEqual(f,new RightBoundProcedure(new NoOpProcedure(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new NoOpProcedure());
-        assertObjectsAreNotEqual(f,new RightBoundProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentityFunction()),"xyzzy"));
-        assertObjectsAreNotEqual(f,new RightBoundProcedure(new NoOpProcedure(),"foo"));
-        assertObjectsAreNotEqual(f,new RightBoundProcedure(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new RightBoundProcedure(new NoOpProcedure(),null));
-        assertObjectsAreEqual(new RightBoundProcedure(null,null),new RightBoundProcedure(null,null));
-    }
-
-    public void testAdaptNull() throws Exception {
-        assertNull(RightBoundProcedure.bind(null,"xyzzy"));
-    }
-
-    public void testAdapt() throws Exception {
-        assertNotNull(RightBoundProcedure.bind(new NoOpProcedure(),"xyzzy"));
-        assertNotNull(RightBoundProcedure.bind(new NoOpProcedure(),null));
+        TestSuite suite = new TestSuite();
+        
+        suite.addTest(TestCollectionAlgorithms.suite());
+        
+        return suite;
     }
 }

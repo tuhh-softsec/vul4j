@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/RightBoundProcedure.java,v 1.1 2003/01/28 23:37:49 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/RightBoundProcedure.java,v 1.2 2003/02/19 00:54:35 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,7 +75,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * an instance whose delegates are not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:49 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/19 00:54:35 $
  * @author Rodney Waldhoff
  */
 public final class RightBoundProcedure implements UnaryProcedure, Serializable {
@@ -125,7 +125,7 @@ public final class RightBoundProcedure implements UnaryProcedure, Serializable {
         return "RightBoundProcedure<" + procedure + "(?," + param + ")>";
     }
 
-    public static RightBoundProcedure adapt(BinaryProcedure procedure, Object arg) {
+    public static RightBoundProcedure bind(BinaryProcedure procedure, Object arg) {
         return null == procedure ? null : new RightBoundProcedure(procedure,arg);
     }
 

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestLeftBoundProcedure.java,v 1.1 2003/01/28 23:37:50 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestLeftBoundProcedure.java,v 1.2 2003/02/19 00:54:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,7 +66,7 @@ import org.apache.commons.functor.core.NoOpProcedure;
 import org.apache.commons.functor.core.RightIdentityFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:50 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/19 00:54:36 $
  * @author Rodney Waldhoff
  */
 public class TestLeftBoundProcedure extends BaseFunctorTest {
@@ -122,11 +122,11 @@ public class TestLeftBoundProcedure extends BaseFunctorTest {
     }
 
     public void testAdaptNull() throws Exception {
-        assertNull(LeftBoundProcedure.adapt(null,"xyzzy"));
+        assertNull(LeftBoundProcedure.bind(null,"xyzzy"));
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(LeftBoundProcedure.adapt(new NoOpProcedure(),"xyzzy"));
-        assertNotNull(LeftBoundProcedure.adapt(new NoOpProcedure(),null));
+        assertNotNull(LeftBoundProcedure.bind(new NoOpProcedure(),"xyzzy"));
+        assertNotNull(LeftBoundProcedure.bind(new NoOpProcedure(),null));
     }
 }

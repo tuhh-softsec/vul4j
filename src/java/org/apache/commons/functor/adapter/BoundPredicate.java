@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BoundPredicate.java,v 1.2 2003/02/18 20:35:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BoundPredicate.java,v 1.3 2003/02/19 00:54:35 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,7 +75,7 @@ import org.apache.commons.functor.UnaryPredicate;
  * an instance whose delegates are not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/02/18 20:35:40 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/19 00:54:35 $
  * @author Rodney Waldhoff
  */
 public final class BoundPredicate implements Predicate, Serializable {
@@ -141,7 +141,7 @@ public final class BoundPredicate implements Predicate, Serializable {
      *         {@link UnaryPredicate UnaryPredicate}, or <code>null</code>
      *         if the given <code>UnaryPredicate</code> is <code>null</code>
      */
-    public static BoundPredicate adapt(UnaryPredicate predicate, Object arg) {
+    public static BoundPredicate bind(UnaryPredicate predicate, Object arg) {
         return null == predicate ? null : new BoundPredicate(predicate,arg);
     }
 
