@@ -323,13 +323,9 @@ public class XMLSignatureInput {
          return this._inputOctetStreamProxy;
       } else if (this.isElement()) {
          if (bytes==null) {         	
-        Canonicalizer20010315OmitComments c14nizer =
-            new Canonicalizer20010315OmitComments();                  
-         if (this.excludeNode!=null ) {
+         	Canonicalizer20010315OmitComments c14nizer =
+         		new Canonicalizer20010315OmitComments();                  
          	bytes=c14nizer.engineCanonicalizeSubTree(this._subNode,this.excludeNode);
-         } else {
-         	bytes=c14nizer.engineCanonicalizeSubTree(this._subNode);
-         }
          }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
  		baos.write(bytes);
@@ -395,15 +391,15 @@ public class XMLSignatureInput {
       }
       InputStream is = this.getOctetStream();      
       int available = is.available();
-      byte[] data = new byte[available];
+      bytes = new byte[available];
 
-      is.read(data);
+      is.read(bytes);
 
-      if (available != data.length) {
+      if (available != bytes.length) {
          throw new IOException("Not enough bytes read");
       }
 
-      return data;
+      return bytes;
    }
 
    /**

@@ -84,13 +84,10 @@ public class TransformC14N extends TransformSpi {
          } else {
          	if (input.isElement()) {
          		Node excl=input.getExcludeNode();
-         		if (excl==null) {
-         			result=c14n.engineCanonicalizeSubTree(input.getSubNode());
-         		} else {
-         			result=c14n.engineCanonicalizeSubTree(input.getSubNode(),excl);
-         		}
-         	}
-            result = c14n.engineCanonicalizeXPathNodeSet(input.getNodeSet());
+         		result=c14n.engineCanonicalizeSubTree(input.getSubNode(),excl);         		
+         	} else {
+         		result = c14n.engineCanonicalizeXPathNodeSet(input.getNodeSet());
+            }
          }
          return new XMLSignatureInput(result);
       } catch (ParserConfigurationException ex) {

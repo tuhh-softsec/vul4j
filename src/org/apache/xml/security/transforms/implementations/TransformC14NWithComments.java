@@ -84,12 +84,8 @@ public class TransformC14NWithComments extends TransformSpi {
             result = c14n.engineCanonicalize(input.getBytes());
          } else {
          	if (input.isElement()) {
-         		Node excl=input.getExcludeNode();
-         		if (excl==null) {
-         			result=c14n.engineCanonicalizeSubTree(input.getSubNode());
-         		} else {
-         			result=c14n.engineCanonicalizeSubTree(input.getSubNode(),excl);
-         		}
+         		Node excl=input.getExcludeNode();         		
+         		result=c14n.engineCanonicalizeSubTree(input.getSubNode(),excl);         		
          	} else {
          		result = c14n.engineCanonicalizeXPathNodeSet(input.getNodeSet());
          	}
