@@ -9,7 +9,7 @@
                     http://xml.apache.org/
 
      http://xml.apache.org/dist/xerces-j/old_xerces2/Xerces-J-bin.2.0.1.zip
-         xercesImpl.jar 
+         xercesImpl.jar
          xmlParserAPIs.jar
 
      http://xml.apache.org/dist/xalan-j/xalan-j_2_3_1-bin.zip
@@ -300,10 +300,10 @@ org.apache.xml.security.utils.resolver
             dir="${dir.src}"
             includes="org/**,ant/**" />
     </copy>
-    <copy file="./src/MANIFEST.MF"
+    <!-- <copy file="./src/MANIFEST.MF"
           tofile="${build.classes}/META-INF/MANIFEST.MF" />
     <replace file="${build.classes}/META-INF/MANIFEST.MF"
-             token="@@VERSION@@" value="${product.version}" />
+             token="@@VERSION@@" value="${product.version}" /> -->
 
     <!-- substitute tokens as needed -->
     <replace file="${build.src}/org/apache/xml/security/utils/Version.java"
@@ -436,7 +436,7 @@ org.apache.xml.security.utils.resolver
        package="${cvs.package}"
        dest=".."
        command="checkout"/>
-  </target> 
+  </target>
 
   <target name="get-jce"
           depends="prepare"
@@ -512,7 +512,7 @@ org.apache.xml.security.utils.resolver
         <classpath refid="classpath.test" />
      </java>
   </target>
-  
+
   <target name="test_junit"
           depends="compile.tests"
           if="junit.present"
@@ -521,9 +521,9 @@ org.apache.xml.security.utils.resolver
     <delete dir="${build.junit.html}" />
     <mkdir dir="${build.junit.xml}" />
     <mkdir dir="${build.junit.html}" />
-    <!-- The unit tests include so-called interoperability tests against 
+    <!-- The unit tests include so-called interoperability tests against
          cryptographic values generated using software from other vendors.
-         This package includes many of these vectors, but not the ones from 
+         This package includes many of these vectors, but not the ones from
          the IBM alphaWorks XML Security Suite. They are not included because
          IBM even has these signatures under copyright.
          If you want to test against IBM, download xss4j from
@@ -587,7 +587,7 @@ org.apache.xml.security.utils.resolver
        <attribute name="Built-By" value="${user.name}"/>
        <section name="${product.shortname}">
          <attribute name="Implementation-Title" value="${product.Name}" />
-         <attribute name="Implementation-Version" value="${product.Version} ${TODAY}" /> 
+         <attribute name="Implementation-Version" value="${product.Version} ${TODAY}" />
          <attribute name="Implementation-Vendor" value="Apache Software Foundation" />
       </section>
      </manifest>
@@ -688,7 +688,7 @@ org.apache.xml.security.utils.resolver
     <echo message="   sign            --> runs ..samples.signature.CreateSignature    " />
     <echo message="                       creates a signature.xml file                " />
     <echo message="   verify          --> will verify a signature.xml file that's     " />
-    <echo message="                       in the root directory. Main use after sign  " />    
+    <echo message="                       in the root directory. Main use after sign  " />
     <echo message="   signAndVerify   --> runs sign and then verify                   " />
     <echo message="   mega-sample     --> runs all big samples                        " />
     <echo message="                                                                   " />
