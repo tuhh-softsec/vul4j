@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestIntegerRange.java,v 1.2 2003/11/24 23:59:21 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestIntegerRange.java,v 1.3 2003/11/25 00:01:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/24 23:59:21 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/25 00:01:15 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -152,6 +152,12 @@ public class TestIntegerRange extends BaseFunctorTest {
         IntegerRange range = new IntegerRange(5, 0);
         assertEquals("[5, 4, 3, 2, 1]", range.toCollection().toString());
         assertEquals("[5, 4, 3, 2, 1]", range.toCollection().toString());
+    }
+
+    public void testEdgeCase() {
+        IntegerRange range = new IntegerRange(Integer.MAX_VALUE - 3, Integer.MAX_VALUE);
+        assertEquals("[2147483644, 2147483645, 2147483646]", range.toCollection().toString());
+        assertEquals("[2147483644, 2147483645, 2147483646]", range.toCollection().toString());
     }
 
     public void testEquals() {

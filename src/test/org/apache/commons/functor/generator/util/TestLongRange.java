@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestLongRange.java,v 1.1 2003/11/24 23:59:21 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestLongRange.java,v 1.2 2003/11/25 00:01:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/11/24 23:59:21 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/25 00:01:15 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -154,7 +154,7 @@ public class TestLongRange extends BaseFunctorTest {
         assertEquals("[5, 4, 3, 2, 1]", range.toCollection().toString());
     }
 
-    public void testLongRange() {
+    public void testEdgeCase() {
         LongRange range = new LongRange(Long.MAX_VALUE - 3L, Long.MAX_VALUE);
         assertEquals("[9223372036854775804, 9223372036854775805, 9223372036854775806]", range.toCollection().toString());
         assertEquals("[9223372036854775804, 9223372036854775805, 9223372036854775806]", range.toCollection().toString());
