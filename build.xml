@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.4 2001/05/22 04:19:08 craigmcc Exp $
+        $Id: build.xml,v 1.5 2001/07/15 00:10:36 craigmcc Exp $
 -->
 
 
@@ -43,11 +43,14 @@
   <!-- The name of this component -->
   <property name="component.name"          value="digester"/>
 
+  <!-- The primary package name of this component -->
+  <property name="component.package"       value="org.apache.commons.digester"/>
+
   <!-- The title of this component -->
   <property name="component.title"         value="XML to Java object configuration"/>
 
   <!-- The current version number of this component -->
-  <property name="component.version"       value="0.1-dev"/>
+  <property name="component.version"       value="1.0"/>
 
   <!-- The base directory for compilation targets -->
   <property name="build.home"              value="target"/>
@@ -124,7 +127,7 @@
   <target name="init"
    description="Initialize and evaluate conditionals">
     <echo message="-------- ${component.name} ${component.version} --------"/>
-    <filter  token="name"                  value="${component.name}"/>
+    <filter  token="name"                  value="${component.package}"/>
     <filter  token="version"               value="${component.version}"/>
   </target>
 
