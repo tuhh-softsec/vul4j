@@ -52,10 +52,11 @@
     <section>
 	  <title>Building for UNIX</title>
 	  <p>
-		XML-Security-C is currently fully supported on Linux, FreeBSD and 
+		XML-Security-C is currently fully supported on Linux and 
 		Solaris.  It is partially supported (in cases where Xalan is not 
-		required) on NetBSD and Cygwin.  It has been built and tested using 
-		GNU gcc 3.2, gcc 2.95.4, Forte C++ 5.4 (Solaris) and GNU make.
+		required) on NetBSD, FreeBSD and Cygwin.  It has been built and 
+		tested using GNU gcc 3.2, gcc 2.95.4, Forte C++ 5.4 (Solaris) and 
+		GNU make.
 	  </p>
 	  <note>
 		The UNIX XML-Security-C build process has changed radically since
