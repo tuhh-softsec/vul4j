@@ -85,9 +85,14 @@ DSIGKeyInfo(sig),
 mp_X509IssuerName(NULL),
 mp_X509SerialNumber(NULL),
 mp_X509SubjectName(NULL),
+mp_X509CRL(NULL),
+mp_X509SKI(NULL),
+mp_rawRetrievalURI(NULL),
 mp_X509SubjectNameTextNode(0),
 mp_X509IssuerNameTextNode(0),
-mp_X509SerialNumberTextNode(0) {
+mp_X509SerialNumberTextNode(0),
+mp_X509CRLTextNode(0),
+mp_X509SKITextNode(0) {
 
 	mp_keyInfoDOMNode = X509Data;
 	m_X509List.clear();
@@ -99,9 +104,14 @@ DSIGKeyInfo(sig),
 mp_X509IssuerName(NULL),
 mp_X509SerialNumber(NULL),
 mp_X509SubjectName(NULL),
+mp_X509CRL(NULL),
+mp_X509SKI(NULL),
+mp_rawRetrievalURI(NULL),
 mp_X509SubjectNameTextNode(0),
 mp_X509IssuerNameTextNode(0),
-mp_X509SerialNumberTextNode(0) {
+mp_X509SerialNumberTextNode(0),
+mp_X509CRLTextNode(0),
+mp_X509SKITextNode(0) {
 
 	mp_keyInfoDOMNode = 0;
 	m_X509List.clear();
@@ -120,6 +130,10 @@ DSIGKeyInfoX509::~DSIGKeyInfoX509() {
 	}
 
 	m_X509List.clear();
+
+	if (mp_rawRetrievalURI != NULL)
+		delete[] mp_rawRetrievalURI;
+
 	
 };
 
@@ -221,8 +235,8 @@ void DSIGKeyInfoX509::load(void) {
 
 				// Now find the serial number
 				child = tmpElt->getFirstChild();
-				while (child != 0 && child->getNodeType() != DOMNode::ELEMENT_NODE &&
-					!strEquals(getDSIGLocalName(child), "X509SerialNumber"))
+				while (child != 0 && (child->getNodeType() != DOMNode::ELEMENT_NODE ||
+					!strEquals(getDSIGLocalName(child), "X509SerialNumber")))
 					child = child->getNextSibling();
 
 				if (child == NULL) {
@@ -244,6 +258,37 @@ void DSIGKeyInfoX509::load(void) {
 				}
 
 				mp_X509SerialNumber = child->getNodeValue();
+
+			}
+
+			else if (strEquals(getDSIGLocalName(tmpElt), "X509CRL")) {
+
+				child = findFirstChildOfType(tmpElt, DOMNode::TEXT_NODE);
+
+				if (child == NULL) {
+
+					throw XSECException(XSECException::ExpectedDSIGChildNotFound,
+						"Expected TEXT_NODE child of <X509CRL>");
+
+				}
+
+				mp_X509CRLTextNode = child;
+				mp_X509CRL = child->getNodeValue();
+
+			}
+			else if (strEquals(getDSIGLocalName(tmpElt), "X509SKI")) {
+
+				child = findFirstChildOfType(tmpElt, DOMNode::TEXT_NODE);
+
+				if (child == NULL) {
+
+					throw XSECException(XSECException::ExpectedDSIGChildNotFound,
+						"Expected TEXT_NODE child of <X509SKI>");
+
+				}
+
+				mp_X509SKITextNode = child;
+				mp_X509SKI = child->getNodeValue();
 
 			}
 		}
@@ -277,6 +322,18 @@ const XMLCh * DSIGKeyInfoX509::getX509IssuerName(void) {
 
 }
 
+const XMLCh * DSIGKeyInfoX509::getX509CRL(void) {
+
+	return mp_X509CRL;
+
+}
+
+const XMLCh * DSIGKeyInfoX509::getX509SKI(void) {
+
+	return mp_X509SKI;
+
+}
+
 const XMLCh * DSIGKeyInfoX509::getX509IssuerSerialNumber(void) {
 
 	return mp_X509SerialNumber;
@@ -300,6 +357,12 @@ const XMLCh * DSIGKeyInfoX509::getCertificateItem(int item) {
 
 }
 
+const XMLCh * DSIGKeyInfoX509::getRawRetrievalURI(void) {
+
+	return mp_rawRetrievalURI;
+
+}
+
 // --------------------------------------------------------------------------------
 //           Create and Set
 // --------------------------------------------------------------------------------
@@ -319,6 +382,66 @@ DOMElement * DSIGKeyInfoX509::createBlankX509Data(void) {
 	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
 
 	return ret;
+
+}
+
+void DSIGKeyInfoX509::setX509CRL(const XMLCh * crl) {
+
+	if (mp_X509CRLTextNode == 0) {
+
+		safeBuffer str;
+		DOMDocument *doc = mp_parentSignature->getParentDocument();
+		const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+
+		makeQName(str, prefix, "X509CRL");
+
+		DOMElement * s = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
+		mp_X509CRLTextNode = doc->createTextNode(crl);
+		s->appendChild(mp_X509CRLTextNode);
+
+		// Add to the over-arching node
+		mp_keyInfoDOMNode->appendChild(s);
+		mp_keyInfoDOMNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	}
+
+	else {
+
+		mp_X509CRLTextNode->setNodeValue(crl);
+
+	}
+
+	mp_X509CRL = mp_X509CRLTextNode->getNodeValue();
+
+}
+
+void DSIGKeyInfoX509::setX509SKI(const XMLCh * ski) {
+
+	if (mp_X509SKITextNode == 0) {
+
+		safeBuffer str;
+		DOMDocument *doc = mp_parentSignature->getParentDocument();
+		const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+
+		makeQName(str, prefix, "X509SKI");
+
+		DOMElement * s = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
+		mp_X509SKITextNode = doc->createTextNode(ski);
+		s->appendChild(mp_X509SKITextNode);
+
+		// Add to the over-arching node
+		mp_keyInfoDOMNode->appendChild(s);
+		mp_keyInfoDOMNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	}
+
+	else {
+
+		mp_X509SKITextNode->setNodeValue(ski);
+
+	}
+
+	mp_X509SKI = mp_X509SKITextNode->getNodeValue();
 
 }
 
@@ -409,6 +532,14 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 
 }
 
+void DSIGKeyInfoX509::setRawRetrievalURI(const XMLCh * uri) {
+
+	if (mp_rawRetrievalURI != NULL)
+		delete[] mp_rawRetrievalURI;
+
+	mp_rawRetrievalURI = XMLString::replicate(uri);
+
+}
 
 void DSIGKeyInfoX509::appendX509Certificate(const XMLCh * base64Certificate) {
 

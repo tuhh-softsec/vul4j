@@ -120,6 +120,7 @@ XSEC_USING_XERCES(XMLString);
 
 #define URI_ID_XMLNS	"http://www.w3.org/2000/xmlns/"
 #define URI_ID_MANIFEST "http://www.w3.org/2000/09/xmldsig#Manifest"
+#define URI_ID_RAWX509  "http://www.w3.org/2000/09/xmldsig#rawX509Certificate"
 
 // Internal Crypto Providers
 
@@ -306,6 +307,7 @@ public:
 	static const XMLCh * const & s_unicodeStrURIEC;
 	static const XMLCh * const & s_unicodeStrURIXPF;
 
+	static const XMLCh * const & s_unicodeStrURIRawX509;
 	static const XMLCh * const & s_unicodeStrURISHA1;
 	static const XMLCh * const & s_unicodeStrURIMD5;		// Not recommended
 	static const XMLCh * const & s_unicodeStrURIBASE64;

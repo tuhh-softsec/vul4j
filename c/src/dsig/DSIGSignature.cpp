@@ -805,6 +805,7 @@ void DSIGSignature::load(void) {
 
 				const XMLCh * URI = NULL;
 				TXFMBase * currentTxfm;
+				bool isRawX509 = false;
 
 				DOMNamedNodeMap *atts = tmpKI->getAttributes();
 				const XMLCh * name;
@@ -823,7 +824,10 @@ void DSIGSignature::load(void) {
 
 					else if (strEquals(name, "Type")) {
 
-						// For now ignore
+						// Check if this is a raw X509 cert
+						if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURIRawX509)) {
+							isRawX509 = true;
+						}
 
 					}
 
@@ -846,98 +850,118 @@ void DSIGSignature::load(void) {
 
 				}
 
-				// Find base transform using the base URI
-				currentTxfm = DSIGReference::getURIBaseTXFM(mp_doc, URI, mp_URIResolver);
-				TXFMChain * chain;
-				XSECnew(chain, TXFMChain(currentTxfm));
-				Janitor<TXFMChain> j_chain(chain);
+				if (isRawX509 == true) {
 
-				// Now check for transforms
-				tmpKI = tmpKI->getFirstChild();
+					if (URI == NULL) {
 
-				while (tmpKI != 0 && (tmpKI->getNodeType() != DOMNode::ELEMENT_NODE))
-					// Skip text and comments
-					tmpKI = tmpKI->getNextSibling();
-
-				if (tmpKI == 0) {
-
-					throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
-							"Expected <Transforms> within <KeyInfo>");
-
-				}
-
-				if (strEquals(getDSIGLocalName(tmpKI), "Transforms")) {
-
-
-					// Process the transforms using the static function.
-					// For the moment we don't really support remote KeyInfos, so
-					// Just built the transform list, process it and then destroy it.
-
-					DSIGTransformList * l = DSIGReference::loadTransforms(
-						tmpKI,
-						mp_formatter,
-						this);
-
-					DSIGTransformList::TransformListVectorType::size_type size, i;
-					size = l->getSize();
-					for (i = 0; i < size; ++ i) {
-						try {
-							l->item(i)->appendTransformer(chain);
-						}
-						catch (...) {
-							delete l;
-							throw;
-						}
-					}
-
-					delete l;
-
-				}
-
-				// Find out the type of the final transform and process accordingly
-				
-				TXFMBase::nodeType type = chain->getLastTxfm()->getNodeType();
-
-				XSECXPathNodeList lst;
-				const DOMNode * element;
-
-				switch (type) {
-
-				case TXFMBase::DOM_NODE_DOCUMENT :
-
-					break;
-
-				case TXFMBase::DOM_NODE_DOCUMENT_FRAGMENT :
-
-					break;
-
-				case TXFMBase::DOM_NODE_XPATH_NODESET :
-
-					lst = chain->getLastTxfm()->getXPathNodeList();
-					element = lst.getFirstNode();
-
-					while (element != NULL) {
-
-						// Try to add each element - just call KeyInfoList add as it will
-						// do the check to see if it is a valud KeyInfo
-
-						m_keyInfoList.addXMLKeyInfo((DOMNode *) element);
-						element = lst.getNextNode();
+						throw XSECException(XSECException::ExpectedDSIGChildNotFound,
+							"Expected to find a URI attribute in a rawX509RetrievalMethod KeyInfo");
 
 					}
 
-					break;
+					DSIGKeyInfoX509 * x509;
+					XSECnew(x509, DSIGKeyInfoX509(this));
+					x509->setRawRetrievalURI(URI);
 
-				default :
-
-					throw XSECException(XSECException::XPathError);
+					this->m_keyInfoList.addKeyInfo(x509);
 
 				}
 
-				// Delete the transform chain
-				chain->getLastTxfm()->deleteExpandedNameSpaces();
+				else {
 
-				// Janitor will clean up chain
+					// Find base transform using the base URI
+					currentTxfm = DSIGReference::getURIBaseTXFM(mp_doc, URI, mp_URIResolver);
+					TXFMChain * chain;
+					XSECnew(chain, TXFMChain(currentTxfm));
+					Janitor<TXFMChain> j_chain(chain);
+
+					// Now check for transforms
+					tmpKI = tmpKI->getFirstChild();
+
+					while (tmpKI != 0 && (tmpKI->getNodeType() != DOMNode::ELEMENT_NODE))
+						// Skip text and comments
+						tmpKI = tmpKI->getNextSibling();
+
+					if (tmpKI == 0) {
+
+						throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+								"Expected <Transforms> within <KeyInfo>");
+
+					}
+
+					if (strEquals(getDSIGLocalName(tmpKI), "Transforms")) {
+
+
+						// Process the transforms using the static function.
+						// For the moment we don't really support remote KeyInfos, so
+						// Just built the transform list, process it and then destroy it.
+
+						DSIGTransformList * l = DSIGReference::loadTransforms(
+							tmpKI,
+							mp_formatter,
+							this);
+
+						DSIGTransformList::TransformListVectorType::size_type size, i;
+						size = l->getSize();
+						for (i = 0; i < size; ++ i) {
+							try {
+								l->item(i)->appendTransformer(chain);
+							}
+							catch (...) {
+								delete l;
+								throw;
+							}
+						}
+
+						delete l;
+
+					}
+
+					// Find out the type of the final transform and process accordingly
+					
+					TXFMBase::nodeType type = chain->getLastTxfm()->getNodeType();
+
+					XSECXPathNodeList lst;
+					const DOMNode * element;
+
+					switch (type) {
+
+					case TXFMBase::DOM_NODE_DOCUMENT :
+
+						break;
+
+					case TXFMBase::DOM_NODE_DOCUMENT_FRAGMENT :
+
+						break;
+
+					case TXFMBase::DOM_NODE_XPATH_NODESET :
+
+						lst = chain->getLastTxfm()->getXPathNodeList();
+						element = lst.getFirstNode();
+
+						while (element != NULL) {
+
+							// Try to add each element - just call KeyInfoList add as it will
+							// do the check to see if it is a valud KeyInfo
+
+							m_keyInfoList.addXMLKeyInfo((DOMNode *) element);
+							element = lst.getNextNode();
+
+						}
+
+						break;
+
+					default :
+
+						throw XSECException(XSECException::XPathError);
+
+					}
+
+					// Delete the transform chain
+					chain->getLastTxfm()->deleteExpandedNameSpaces();
+
+					// Janitor will clean up chain
+				}
 
 			} /* if getNodeName == Retrieval Method */
 

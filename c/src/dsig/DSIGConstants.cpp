@@ -99,6 +99,7 @@ static XMLCh * s_unicodeStrURIXMLNS;
 static XMLCh * s_unicodeStrURIMANIFEST;
 static XMLCh * s_unicodeStrPROVOpenSSL;
 static XMLCh * s_unicodeStrPROVWinCAPI;
+static XMLCh * s_unicodeStrURIRawX509;
 
 
 // --------------------------------------------------------------------------------
@@ -111,6 +112,7 @@ const XMLCh * const & DSIGConstants::s_unicodeStrXmlns = ::s_unicodeStrXmlns;
 
 const XMLCh * const & DSIGConstants::s_unicodeStrAlgorithm = ::s_unicodeStrAlgorithm;
 
+const XMLCh * const & DSIGConstants::s_unicodeStrURIRawX509 = ::s_unicodeStrURIRawX509;
 const XMLCh * const & DSIGConstants::s_unicodeStrURIDSIG = ::s_unicodeStrURIDSIG;
 const XMLCh * const & DSIGConstants::s_unicodeStrURIEC = ::s_unicodeStrURIEC;
 const XMLCh * const & DSIGConstants::s_unicodeStrURIXPF = ::s_unicodeStrURIXPF;
@@ -148,6 +150,7 @@ void DSIGConstants::create() {
 
 	::s_unicodeStrAlgorithm = XMLString::transcode("Algorithm");
 
+	::s_unicodeStrURIRawX509 = XMLString::transcode(URI_ID_RAWX509);
 	::s_unicodeStrURIDSIG = XMLString::transcode(URI_ID_DSIG);
 	::s_unicodeStrURIEC = XMLString::transcode(URI_ID_EC);
 	::s_unicodeStrURIXPF = XMLString::transcode(URI_ID_XPF);
@@ -181,6 +184,7 @@ void DSIGConstants::destroy() {
 
 	delete[] ::s_unicodeStrAlgorithm;
 
+	delete[] ::s_unicodeStrURIRawX509;
 	delete[] ::s_unicodeStrURIDSIG;
 	delete[] ::s_unicodeStrURIEC;
 	delete[] ::s_unicodeStrURIXPF;

@@ -212,6 +212,40 @@ public:
 	const XMLCh * getX509IssuerSerialNumber(void);
 
 	/**
+	 * \brief Get any associated CRL
+	 *
+	 * Return the string containing the base64 encoded CRL that was held in
+	 * the X509CRL node
+	 *
+	 * @returns A pointer to the string containing the CRL
+	 * (0 if not set)
+	 */
+
+	const XMLCh * getX509CRL(void);
+
+	/**
+	 * \brief Get the SKI value (if set)
+	 *
+	 * The SKI (Subject Key Identifier) can be used to reference a
+	 * required certificate.  If this was set in the KeyInfo element,
+	 * this function will return the value
+	 *
+	 * @returns the base64 encoded (plan - not DER) encoded SKI value
+	 */
+
+	const XMLCh * getX509SKI(void);
+
+	/**
+	 * \brief Return the raw Retrieval method to find this certificate
+	 *
+	 * In some cases, the KeyInfo RetrievalMethod references a raw certificate
+	 * In such cases, the library simply creates a KeyInfoX509 object and sets
+	 * this string to allow others to find the certificate
+	 */
+
+	const XMLCh * getRawRetrievalURI(void);
+
+	/**
 	 * \brief Find the number of certificates held
 	 *
 	 * Find the number of certificates held in the X509Data structures.
@@ -279,6 +313,43 @@ public:
 	void setX509IssuerSerial(const XMLCh * name, const XMLCh * serial);
 
 	/**
+	 * \brief Set the CRL element
+	 *
+	 * If an X509CRL exists, replace the value with that provided,
+	 * otherwise create a new element and set the value appropriately.
+	 *
+	 * @param crl The base64 encoded string containing the CRL
+	 */
+
+	void setX509CRL(const XMLCh * crl);
+	
+	/**
+	 * \brief Set the SKI element
+	 *
+	 * The SKI node provides a reference to the Subject Key Identifier of
+	 * a certificate.
+	 *
+	 * This function takes a base64 encoded ski and sets it into the 
+	 * appropriate node
+	 *
+	 * @param ski The base64 plain (non-DER) encoded SKI value
+	 */
+
+	void setX509SKI(const XMLCh * ski);
+
+	/**
+	 * \brief set the retrieval URI
+	 *
+	 * Generally to be used by internal library processes only.
+	 * This sets the retrieval URI - but does _not_ manipulate the DOM
+	 * in any way.
+	 *
+	 * @param uri The URI string to use
+	 */
+
+	void setRawRetrievalURI(const XMLCh * uri);
+
+	/**
 	 * \brief Add a certificate.
 	 *
 	 * Append an X509Certificate element to the list of certificates
@@ -301,12 +372,17 @@ private:
 	const XMLCh 		* mp_X509IssuerName;	// Parameters from KeyInfo (not cert)
 	const XMLCh 		* mp_X509SerialNumber;
 	const XMLCh 		* mp_X509SubjectName;
+	const XMLCh			* mp_X509CRL;
+	const XMLCh			* mp_X509SKI;
+	XMLCh				* mp_rawRetrievalURI;
 
 	// Text nodes holding information
 
 	DOMNode				* mp_X509SubjectNameTextNode;
 	DOMNode				* mp_X509IssuerNameTextNode;
 	DOMNode				* mp_X509SerialNumberTextNode;
+	DOMNode				* mp_X509CRLTextNode;
+	DOMNode				* mp_X509SKITextNode;
 
 };
 
