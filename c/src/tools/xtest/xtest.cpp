@@ -650,12 +650,120 @@ void unitTestEnvelopingSignature(DOMImplementation * impl) {
 
 }
 
+void unitTestBase64NodeSignature(DOMImplementation * impl) {
+	
+	// This tests a normal signature with a reference to a Base64 element
+
+	cerr << "Creating a base64 Element reference ... ";
+	
+	try {
+		
+		// Create a document
+    
+		DOMDocument * doc = impl->createDocument();
+
+		// Create the signature
+
+		XSECProvider prov;
+		DSIGSignature *sig;
+		DOMElement *sigNode;
+		
+		sig = prov.newSignature();
+		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
+		sig->setPrettyPrint(true);
+
+		sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA1);
+
+		doc->appendChild(sigNode);
+
+		// Add an object
+		DSIGObject * obj = sig->appendObject();
+		obj->setId(MAKE_UNICODE_STRING("ObjectId"));
+
+		// Create a text node
+		DOMText * txt= doc->createTextNode(MAKE_UNICODE_STRING("QSB0ZXN0IHN0cmluZw=="));
+		obj->appendChild(txt);
+
+		// Add a Reference
+		DSIGReference * ref = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"));
+		// Add a Base64 transform
+		ref->appendBase64Transform();
+
+		// Get a key
+		cerr << "signing ... ";
+
+		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
+		sig->sign();
+
+		cerr << "validating ... ";
+		if (!sig->verify()) {
+			cerr << "bad verify!" << endl;
+			exit(1);
+		}
+
+		cerr << "OK ... serialise and re-verify ... ";
+		if (!reValidateSig(impl, doc, createHMACKey((unsigned char *) "secret"))) {
+
+			cerr << "bad verify!" << endl;
+			exit(1);
+
+		}
+
+		cerr << "OK ... ";
+
+		// Now set to bad
+		txt->setNodeValue(MAKE_UNICODE_STRING("QSAybmQgdGVzdCBzdHJpbmc="));
+
+		cerr << "verify bad data ... ";
+		if (sig->verify()) {
+
+			cerr << "bad - should have failed!" << endl;
+			exit(1);
+
+		}
+
+		cerr << "OK (verify false) ... serialise and re-verify ... ";
+		if (reValidateSig(impl, doc, createHMACKey((unsigned char *) "secret"))) {
+
+			cerr << "bad - should have failed" << endl;
+			exit(1);
+
+		}
+
+		cerr << "OK" << endl;
+		// Reset to OK
+		txt->setNodeValue(MAKE_UNICODE_STRING("QSB0ZXN0IHN0cmluZw=="));
+		outputDoc(impl, doc);
+		doc->release();
+		
+
+	}
+
+	catch (XSECException &e)
+	{
+		cerr << "An error occured during signature processing\n   Message: ";
+		char * ce = XMLString::transcode(e.getMsg());
+		cerr << ce << endl;
+		delete ce;
+		exit(1);
+		
+	}	
+	catch (XSECCryptoException &e)
+	{
+		cerr << "A cryptographic error occured during signature processing\n   Message: "
+		<< e.getMsg() << endl;
+		exit(1);
+	}
+
+
+}
+
 
 void unitTestSignature(DOMImplementation * impl) {
 
 	// Test an enveloping signature
 	unitTestEnvelopingSignature(impl);
-
+	unitTestBase64NodeSignature(impl);
 }
 
 // --------------------------------------------------------------------------------
