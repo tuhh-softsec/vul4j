@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.52 2004/04/04 05:05:09 skitching Exp $
+        $Id: build.xml,v 1.53 2004/05/01 20:42:59 craigmcc Exp $
 -->
 
 
@@ -112,16 +112,6 @@
     <pathelement location="${build.home}/classes"/>
     <pathelement location="${build.home}/tests"/>
     <pathelement location="${junit.jar}"/>
-    <pathelement location="${jaxp.jaxp.jar}"/>
-    <pathelement location="${jaxp.parser.jar}"/>
-    <pathelement location="${commons-beanutils.jar}"/>
-    <pathelement location="${commons-collections.jar}"/>
-    <pathelement location="${commons-logging.jar}"/>
-  </path>
-
-  <!-- Construct RSSDigester test classpath -->
-  <path id="rss.classpath">
-    <pathelement location="${build.home}/classes"/>
     <pathelement location="${jaxp.jaxp.jar}"/>
     <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${commons-beanutils.jar}"/>
@@ -436,20 +426,6 @@
   </target>
 
 
-  <target name="test.rss" depends="compile.tests"
-   description="Run RSSDigester test cases">
-    <echo message="Running RSSDigester tests ..."/>
-    <condition property="logopt" value="${log.factoryopt}=${log.class}">
-      <istrue value="${suppressLogOutputDuringTests}"/>
-    </condition>
-    <java classname="org.apache.commons.digester.rss.RSSDigester"
-               fork="yes">
-      <jvmarg value="-D${logopt}"/>
-      <classpath refid="rss.classpath"/>
-    </java>
-  </target>
-
-
   <target name="test.rule" depends="compile.tests"
    description="Run rule Digester unit tests ...">
     <echo message="Running Rule tests ..."/>
@@ -534,4 +510,5 @@
       <classpath refid="test.classpath"/>
     </java>
   </target> 
+
 </project>
