@@ -515,7 +515,8 @@ org.apache.xml.security.utils.resolver.implementations.*
     <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.tests}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
 
     <mkdir dir="${build.bindist}/${build.doc}" />
-    <copy todir="${build.bindist}/${build.doc}">
+    <mkdir dir="${build.bindist}/${build.doc.html}" />
+    <copy todir="${build.bindist}/${build.doc.html}">
       <fileset dir="${build.doc.html}" />
     </copy>
 
