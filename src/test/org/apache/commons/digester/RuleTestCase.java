@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.25 2003/10/05 15:35:36 rdonkin Exp $
- * $Revision: 1.25 $
- * $Date: 2003/10/05 15:35:36 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.26 2003/10/09 21:09:48 rdonkin Exp $
+ * $Revision: 1.26 $
+ * $Date: 2003/10/09 21:09:48 $
  *
  * ====================================================================
  * 
@@ -26,8 +26,8 @@
  *    if any, must include the following acknowledgement:  
  *       "This product includes software developed by the 
  *        Apache Software Foundation (http://www.apache.org/)."
- *    Alternately, this acknowlegement may appear in the software itself,
- *    if and wherever such third-party acknowlegements normally appear.
+ *    Alternately, this acknowledgement may appear in the software itself,
+ *    if and wherever such third-party acknowledgements normally appear.
  *
  * 4. The names "Apache", "The Jakarta Project", "Commons", and "Apache Software
  *    Foundation" must not be used to endorse or promote products derived
@@ -79,7 +79,7 @@ import org.xml.sax.SAXException;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.25 $ $Date: 2003/10/05 15:35:36 $
+ * @version $Revision: 1.26 $ $Date: 2003/10/09 21:09:48 $
  */
 
 public class RuleTestCase extends TestCase {
