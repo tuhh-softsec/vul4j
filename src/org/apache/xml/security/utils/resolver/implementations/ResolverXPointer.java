@@ -112,7 +112,6 @@ public class ResolverXPointer extends ResourceResolverSpi {
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
            throws ResourceResolverException {
 
-      String uriNodeValue = uri.getNodeValue();
       NodeList resultNodes = null;
       Document doc = uri.getOwnerDocument();
 
@@ -178,29 +177,11 @@ public class ResolverXPointer extends ResourceResolverSpi {
          return false;
       }
 
-      String uriNodeValue = uri.getNodeValue();
-
       if (isXPointerSlash(uri, BaseURI) || isXPointerId(uri, BaseURI)) {
          return true;
       }
 
       return false;
-   }
-
-   /**
-    * Method isSameDocumentReference
-    *
-    * @param uri
-    * @param BaseURI
-    *
-    */
-   private static boolean isSameDocumentReference(Attr uri, String BaseURI) {
-
-      if (uri.getNodeValue().startsWith("#")) {
-         return true;
-      } else {
-         return false;
-      }
    }
 
    /**
