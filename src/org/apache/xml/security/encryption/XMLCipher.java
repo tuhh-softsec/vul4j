@@ -272,12 +272,22 @@ public class XMLCipher {
 			throw new XMLEncryptionException("empty", ice);
 		}
 
-        try {
-			String jceAlgorithm =
-				JCEMapper.translateURItoJCEID(transformation).getAlgorithmID();
+		String jceAlgorithm;
+		JCEMapper.ProviderIdClass provId = 
+			JCEMapper.translateURItoJCEID(transformation);
 
+		if (provId != null)
+			jceAlgorithm = provId.getAlgorithmID();
+		else {
+			Object exArgs[] = 
+				{ transformation,
+				  "No provider found that supports this algorithm" };
+			throw new XMLEncryptionException("algorithms.NoSuchAlgorithm",
+											 exArgs);
+		}
+
+		try {
             instance._contextCipher = Cipher.getInstance(jceAlgorithm);
-
             logger.debug("cihper.algoritm = " +
                 instance._contextCipher.getAlgorithm());
         } catch (NoSuchAlgorithmException nsae) {
@@ -1262,12 +1272,20 @@ public class XMLCipher {
 		byte [] encryptedBytes = cipherInput.getBytes();
 
 		String provider;
-		if (_requestedJCEProvider == null)
-			provider =
-				JCEMapper
-					.translateURItoJCEID(
-						encryptedKey.getEncryptionMethod().getAlgorithm())
-					.getProviderId();
+		if (_requestedJCEProvider == null) {
+			JCEMapper.ProviderIdClass provId = 
+				JCEMapper.translateURItoJCEID(
+						 encryptedKey.getEncryptionMethod().getAlgorithm());
+			if (provId != null)
+				provider = provId.getProviderId();
+			else {
+				Object exArgs[] = 
+					{ encryptedKey.getEncryptionMethod().getAlgorithm(),
+					  "No provider found that supports this algorithm" };
+				throw new XMLEncryptionException("algorithms.NoSuchAlgorithm",
+												 exArgs);
+			}
+		}
 		else
 			provider = _requestedJCEProvider;
 
@@ -1457,7 +1475,8 @@ public class XMLCipher {
 
 			if (_key == null) {
 				logger.error("XMLCipher::decryptElement called without a key and unable to resolve");
-				throw new XMLEncryptionException("Unable to decrypt without a key");
+
+				throw new XMLEncryptionException("encryption.nokey");
 			}
 		}
 
