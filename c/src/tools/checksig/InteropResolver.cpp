@@ -556,7 +556,12 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 		x509bufLen += b64.decodeFinish(&x509buf[x509bufLen], (unsigned int) strlen(transb64cert) - x509bufLen);
 
 		if (x509bufLen > 0) {
+#if defined(XSEC_OPENSSL_D2IX509_CONST_BUFFER)
+			x =  d2i_X509(NULL, (const unsigned char **) (&x509buf), x509bufLen
+);
+#else
 			x =  d2i_X509(NULL, &x509buf, x509bufLen);
+#endif
 		}
 		else 
 			return NULL;		// Something has gone wrong
@@ -579,7 +584,11 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 		crlbufLen += b64.decodeFinish(&crlbuf[crlbufLen], (unsigned int) strlen(transb64crl) - crlbufLen);
 
 		if (crlbufLen > 0) {
-			c =  d2i_X509_CRL(NULL, &crlbuf, crlbufLen);
+#if defined(XSEC_OPENSSL_D2IX509_CONST_BUFFER)
+			c =  d2i_X509_CRL(NULL, (const unsigned char **) (&crlbuf), crlbufLen);
+#else
+	c =  d2i_X509_CRL(NULL, &crlbuf, crlbufLen);
+#endif
 		}
 		else 
 			return NULL;		// Something has gone wrong

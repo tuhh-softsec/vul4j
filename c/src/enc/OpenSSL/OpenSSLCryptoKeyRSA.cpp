@@ -33,6 +33,8 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/framework/XSECError.hpp>
 
+#include <openssl/rsa.h>
+
 #include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(ArrayJanitor);

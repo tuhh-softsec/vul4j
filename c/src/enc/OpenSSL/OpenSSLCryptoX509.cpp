@@ -142,7 +142,11 @@ void OpenSSLCryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
 	bufLen += finalLen;
 	*/
 	if (bufLen > 0) {
+#if defined(XSEC_OPENSSL_D2IX509_CONST_BUFFER)
+		mp_X509=  d2i_X509(NULL, (const unsigned char **) (&outBuf), bufLen);
+#else
 		mp_X509=  d2i_X509(NULL, &outBuf, bufLen);
+#endif
 	}
 
 	// Check to see if we have a certificate....

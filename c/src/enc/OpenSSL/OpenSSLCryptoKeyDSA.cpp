@@ -32,6 +32,8 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/framework/XSECError.hpp>
 
+#include <openssl/dsa.h>
+
 OpenSSLCryptoKeyDSA::OpenSSLCryptoKeyDSA() {
 
 	// Create a new key to be loaded as we go

@@ -243,7 +243,7 @@ case "${host}" in
 						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
 						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
 						MAKE_SHARED=["${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DLINUX -shared ${PIC}"]
-						LINK=["${CXX} ${CXXFLAGS} -DLINUX ${PIC}"]
+						LINK=["${CXX} ${CXXFLAGS} -DLINUX -ldl ${PIC}"]
 						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
 						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
 						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${libdir}"]
@@ -638,6 +638,14 @@ AC_CHECK_DECL(EVP_CIPHER_CTX_set_padding(NULL,0),
 	[AC_DEFINE(XSEC_OPENSSL_CANSET_PADDING)],
 	,[#include <openssl/evp.h>])
 
+AC_MSG_CHECKING([for const input buffer in loadX509Base64Bin])
+AC_TRY_COMPILE([#include <openssl/x509.h>],
+	[ const unsigned char * buf;
+	  d2i_X509(NULL, &buf, 1);
+	],
+	[AC_MSG_RESULT([yes])]
+	[AC_DEFINE(XSEC_OPENSSL_D2IX509_CONST_BUFFER)],
+	[AC_MSG_RESULT([no])])
 
 # Build the object file lists necessary to link the library
 # At the same time, build the include list

@@ -100,7 +100,7 @@
 #undef XSEC_OPENSSL_CONST_BUFFERS
 #undef XSEC_OPENSSL_HAVE_AES
 #undef XSEC_OPENSSL_CANSET_PADDING
-
+#undef XSEC_OPENSSL_D2IX509_CONST_BUFFER
 /*
  * Macros used to determine what header files exist on this
  * system
