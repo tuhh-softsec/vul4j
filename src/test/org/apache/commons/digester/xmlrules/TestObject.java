@@ -68,12 +68,15 @@ import java.util.HashMap;
  *
  * @author David H. Martin - Initial Contribution
  * @author Scott Sanders   - Added ASL, removed external dependencies
+ * @author Tim O'Brien - Added bean property to test bean property setter rule
  */
 public class TestObject {
 
     private ArrayList children = new ArrayList();
     private String value = "";
     private Long longValue = new Long(-1L);
+
+    private String property = "";
 
     private HashMap mapValue = new HashMap();
 
@@ -125,5 +128,13 @@ public class TestObject {
 
     public String getMapValue( String name ) {
         return (String) this.mapValue.get( name );
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String pProperty) {
+        property = pProperty;
     }
 }

@@ -89,7 +89,7 @@ public class DigesterLoaderTest extends TestCase {
     }
 
     public static junit.framework.Test suite() {
-        TestSuite suite = new TestSuite(DigesterLoaderTestSuite.class);
+        TestSuite suite = new TestSuite(DigesterLoaderTest.class);
 
         return suite;
     }
@@ -155,6 +155,7 @@ public class DigesterLoaderTest extends TestCase {
         assertEquals("Wrong number of classes created", 2 , list.size());
         assertEquals("Pushed first", true , ((TestObject)list.get(0)).isPushed());
         assertEquals("Didn't push second", false , ((TestObject)list.get(1)).isPushed());
+        assertTrue("Property was set properly", ((TestObject)list.get(0)).getProperty().equals("I am a property!") ); 
     }
 
 

@@ -50,6 +50,13 @@
       <email>tobrien@apache.org</email>
     </developer>
   </developers>
+
+  <contributors>
+    <contributor>
+      <name>Bradley M. Handy</name>
+      <email>bhandy@users.sf.net</email>
+    </contributor>
+  </contributors>
   
   <dependencies>
     <dependency> 

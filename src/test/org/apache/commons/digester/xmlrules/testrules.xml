@@ -15,5 +15,6 @@
 		    	<call-param-rule pattern="mapValue" attrname="name" paramnumber="0" />
 		    	<call-param-rule pattern="mapValue" paramnumber="1"/>
 		</pattern>
+                <bean-property-setter-rule pattern="property" name="property"/>
 	</pattern>
 </digester-rules>

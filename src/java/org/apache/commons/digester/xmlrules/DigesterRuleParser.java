@@ -81,6 +81,7 @@ import org.xml.sax.SAXException;
  *
  * @author David H. Martin - Initial Contribution
  * @author Scott Sanders   - Added ASL, removed external dependencies
+ * @author Bradley M. Handy - Bean Property Setter Rule addition
  */
 
 public class DigesterRuleParser extends RuleSetBase {
@@ -222,6 +223,10 @@ public class DigesterRuleParser extends RuleSetBase {
         digester.addRule("*/pattern", new PatternRule("value"));
         
         digester.addRule("*/include", new IncludeRule());
+        
+        digester.addFactoryCreate("*/bean-property-setter-rule", new BeanPropertySetterRuleFactory());
+        digester.addRule("*/bean-property-setter-rule", new PatternRule("pattern"));
+        digester.addSetNext("*/bean-property-setter-rule", "add", ruleClassName);
         
         digester.addFactoryCreate("*/call-method-rule", new CallMethodRuleFactory());
         digester.addRule("*/call-method-rule", new PatternRule("pattern"));
@@ -488,6 +493,26 @@ public class DigesterRuleParser extends RuleSetBase {
     // used to create Rule objects and initialize them from SAX attributes.
     ///////////////////////////////////////////////////////////////////////
     
+    /**
+     * Factory for creating a BeanPropertySetterRule.
+     */
+    private class BeanPropertySetterRuleFactory extends AbstractObjectCreationFactory {
+        public Object createObject(Attributes attributes) throws Exception {
+            Rule beanPropertySetterRule = null;
+            String propertyname = attributes.getValue("propertyname");
+                
+            if (propertyname == null) {
+                // call the setter method corresponding to the element name.
+                beanPropertySetterRule = new BeanPropertySetterRule();
+            } else {
+                beanPropertySetterRule = new BeanPropertySetterRule(propertyname);
+            }
+            
+            return beanPropertySetterRule;
+        }
+        
+    }
+
     /**
      * Factory for creating a CallMethodRule.
      */

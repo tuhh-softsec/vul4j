@@ -12,6 +12,7 @@
       <mapValue name="test1">foo</mapValue>
       <mapValue name="test2">bar</mapValue>
     </call-method-rule-tests>
+    <property>I am a property!</property>
   </foo>
   <baz value="baz2"/>
   <foo value="foo3">
@@ -19,5 +20,6 @@
 	  <baz value="baz3"/>
       <foo value="foo4"/>
     </bar>
+    <property>I am a property!</property>
   </foo>
 </root>
