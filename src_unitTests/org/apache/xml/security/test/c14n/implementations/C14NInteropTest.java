@@ -50,6 +50,10 @@ public class C14NInteropTest extends InteropTest {
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(C14NInteropTest.class.getName());
 
+    static {
+        org.apache.xml.security.Init.init();
+    }
+    
    /**
     * Method suite
     *

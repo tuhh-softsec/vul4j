@@ -44,6 +44,9 @@ public class ExclusiveC14NInterop extends InteropTest {
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(ExclusiveC14NInterop.class.getName());
 
+    static {
+        org.apache.xml.security.Init.init();
+    }
    /**
     * Method suite
     *
