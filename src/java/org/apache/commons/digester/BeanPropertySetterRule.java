@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.4 2002/01/09 20:22:49 sanders Exp $
- * $Revision: 1.4 $
- * $Date: 2002/01/09 20:22:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.5 2002/01/11 01:22:13 sanders Exp $
+ * $Revision: 1.5 $
+ * $Date: 2002/01/11 01:22:13 $
  *
  * ====================================================================
  *
@@ -81,7 +81,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.4 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.5 $ $Date: 2002/01/11 01:22:13 $
  */
 
 public class BeanPropertySetterRule extends Rule {
@@ -175,8 +175,10 @@ public class BeanPropertySetterRule extends Rule {
         }
 
         // log some debugging information
-        digester.log.info("[BeanPropertySetterRule] setting property " +
-                property + " with text " + bodyText);
+        if (digester.log.isDebugEnabled()) {
+            digester.log.debug("[BeanPropertySetterRule] setting property " +
+                    property + " with text " + bodyText);
+        }
 
         // going to use beanutils so need to specify property using map
         HashMap map = new HashMap();

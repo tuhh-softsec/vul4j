@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.1 2002/01/09 20:26:05 sanders Exp $
- * $Revision: 1.1 $
- * $Date: 2002/01/09 20:26:05 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.2 2002/01/11 01:22:13 sanders Exp $
+ * $Revision: 1.2 $
+ * $Date: 2002/01/11 01:22:13 $
  *
  * ====================================================================
  *
@@ -75,7 +75,7 @@ import org.apache.commons.beanutils.MethodUtils;
  * passing the top object (child) as an argument.
  *
  * @author Scott Sanders
- * @version $Revision: 1.1 $ $Date: 2002/01/09 20:26:05 $
+ * @version $Revision: 1.2 $ $Date: 2002/01/11 01:22:13 $
  */
 
 public class SetRootRule extends Rule {
@@ -100,7 +100,7 @@ public class SetRootRule extends Rule {
 
 
     /**
-     * Construct a "set next" rule with the specified method name.
+     * Construct a "set root" rule with the specified method name.
      *
      * @param digester The associated Digester
      * @param methodName Method name of the parent method to call
