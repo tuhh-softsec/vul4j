@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rules.java,v 1.1 2001/08/04 23:14:57 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/08/04 23:14:57 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rules.java,v 1.2 2001/08/26 05:09:36 craigmcc Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/08/26 05:09:36 $
  *
  * ====================================================================
  *
@@ -73,7 +73,7 @@ import java.util.List;
  * during parsing.
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/08/04 23:14:57 $
+ * @version $Revision: 1.2 $ $Date: 2001/08/26 05:09:36 $
  */
 
 public interface Rules {
@@ -95,6 +95,24 @@ public interface Rules {
      * @param digester The newly associated Digester instance
      */
     public void setDigester(Digester digester);
+
+
+    /**
+     * Return the namespace URI that will be applied to all subsequently
+     * added <code>Rule</code> objects.
+     */
+    public String getNamespaceURI();
+
+
+    /**
+     * Set the namespace URI that will be applied to all subsequently
+     * added <code>Rule</code> objects.
+     *
+     * @param namespaceURI Namespace URI that must match on all
+     *  subsequently added rules, or <code>null</code> for matching
+     *  regardless of the current namespace URI
+     */
+    public void setNamespaceURI(String namespaceURI);
 
 
     // --------------------------------------------------------- Public Methods
@@ -123,8 +141,25 @@ public interface Rules {
      * method.
      *
      * @param pattern Nesting pattern to be matched
+     *
+     * @deprecated Call match(namespaceURI,pattern) instead.
      */
     public List match(String pattern);
+
+
+    /**
+     * Return a List of all registered Rule instances that match the specified
+     * nesting pattern, or a zero-length List if there are no matches.  If more
+     * than one Rule instance matches, they <strong>must</strong> be returned
+     * in the order originally registered through the <code>add()</code>
+     * method.
+     *
+     * @param namespaceURI Namespace URI for which to select matching rules,
+     *  or <code>null</code> to match regardless of namespace URI
+     * @param pattern Nesting pattern to be matched
+     */
+    public List match(String namespaceURI, String pattern);
+
 
 
     /**

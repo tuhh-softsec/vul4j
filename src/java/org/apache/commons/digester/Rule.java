@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rule.java,v 1.2 2001/05/12 17:25:54 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2001/05/12 17:25:54 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rule.java,v 1.3 2001/08/26 05:09:36 craigmcc Exp $
+ * $Revision: 1.3 $
+ * $Date: 2001/08/26 05:09:36 $
  *
  * ====================================================================
  *
@@ -71,7 +71,7 @@ import org.xml.sax.Attributes;
  * a corresponding nested pattern of XML elements has been matched.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.2 $ $Date: 2001/05/12 17:25:54 $
+ * @version $Revision: 1.3 $ $Date: 2001/08/26 05:09:36 $
  */
 
 public abstract class Rule {
@@ -100,6 +100,48 @@ public abstract class Rule {
      * The Digester with which this Rule is associated.
      */
     protected Digester digester = null;
+
+
+    /**
+     * The namespace URI for which this Rule is relevant, if any.
+     */
+    protected String namespaceURI = null;
+
+
+    // ------------------------------------------------------------- Properties
+
+
+    /**
+     * Return the Digester with which this Rule is associated.
+     */
+    public Digester getDigester() {
+
+        return (this.digester);
+
+    }
+
+
+    /**
+     * Return the namespace URI for which this Rule is relevant, if any.
+     */
+    public String getNamespaceURI() {
+
+        return (this.namespaceURI);
+
+    }
+
+
+    /**
+     * Set the namespace URI for which this Rule is relevant, if any.
+     *
+     * @param namespaceURI Namespace URI for which this Rule is relevant,
+     *  or <code>null</code> to match independent of namespace.
+     */
+    public void setNamespaceURI(String namespaceURI) {
+
+        this.namespaceURI = null;
+
+    }
 
 
     // --------------------------------------------------------- Public Methods

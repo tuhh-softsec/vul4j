@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.14 2001/08/20 19:18:42 craigmcc Exp $
- * $Revision: 1.14 $
- * $Date: 2001/08/20 19:18:42 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.15 2001/08/26 05:09:36 craigmcc Exp $
+ * $Revision: 1.15 $
+ * $Date: 2001/08/26 05:09:36 $
  *
  * ====================================================================
  *
@@ -106,7 +106,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.14 $ $Date: 2001/08/20 19:18:42 $
+ * @version $Revision: 1.15 $ $Date: 2001/08/26 05:09:36 $
  */
 
 public class Digester extends DefaultHandler {
@@ -209,6 +209,17 @@ public class Digester extends DefaultHandler {
 
 
     /**
+     * Registered namespaces we are currently processing.  The key is the
+     * namespace prefix that was declared in the document.  The value is an
+     * ArrayStack of the namespace URIs this prefix has been mapped to --
+     * the top Stack element is the most current one.  (This architecture
+     * is required because documents can declare nested uses of the same
+     * prefix for different Namespace URIs).
+     */
+    protected HashMap namespaces = new HashMap();
+
+
+    /**
      * The parameters stack being utilized by CallMethodRule and
      * CallParamRule rules.
      */
@@ -264,6 +275,27 @@ public class Digester extends DefaultHandler {
 
 
     // ----------------------------------------------------------- Properties
+
+
+    /**
+     * Return the currently mapped namespace URI for the specified prefix,
+     * if any; otherwise return <code>null</code>.  These mappings come and
+     * go dynamically as the document is parsed.
+     *
+     * @param prefix Prefix to look up
+     */
+    public String findNamespaceURI(String prefix) {
+
+        ArrayStack stack = (ArrayStack) namespaces.get(prefix);
+        if (stack == null)
+            return (null);
+        try {
+            return ((String) stack.peek());
+        } catch (EmptyStackException e) {
+            return (null);
+        }
+
+    }
 
 
     /**
@@ -377,6 +409,32 @@ public class Digester extends DefaultHandler {
     public void setNamespaceAware(boolean namespaceAware) {
 
         this.namespaceAware = namespaceAware;
+
+    }
+
+
+    /**
+     * Return the namespace URI that will be applied to all subsequently
+     * added <code>Rule</code> objects.
+     */
+    public String getRuleNamespaceURI() {
+
+        return (getRules().getNamespaceURI());
+
+    }
+
+
+    /**
+     * Set the namespace URI that will be applied to all subsequently
+     * added <code>Rule</code> objects.
+     *
+     * @param ruleNamespaceURI Namespace URI that must match on all
+     *  subsequently added rules, or <code>null</code> for matching
+     *  regardless of the current namespace URI
+     */
+    public void setRuleNamespaceURI(String ruleNamespaceURI) {
+
+        getRules().setNamespaceURI(ruleNamespaceURI);
 
     }
 
@@ -511,7 +569,7 @@ public class Digester extends DefaultHandler {
      }
 
 
-    // ---------------------------------------------- DocumentHandler Methods
+    // ------------------------------------------------- ContentHandler Methods
 
 
     /**
@@ -527,8 +585,8 @@ public class Digester extends DefaultHandler {
     public void characters(char buffer[], int start, int length)
       throws SAXException {
 
-	//	if (debug >= 3)
-	//	    log("characters(" + new String(buffer, start, length) + ")");
+        if (debug >= 3)
+            log("characters(" + new String(buffer, start, length) + ")");
 
 	bodyText.append(buffer, start, length);
 
@@ -542,8 +600,8 @@ public class Digester extends DefaultHandler {
      */
     public void endDocument() throws SAXException {
 
-	//	if (debug >= 3)
-	//	    log("endDocument()");
+ 	if (debug >= 3)
+            log("endDocument()");
 
 	if (getCount() > 1)
 	    log("endDocument():  " + getCount() + " elements left");
@@ -583,11 +641,12 @@ public class Digester extends DefaultHandler {
     public void endElement(String namespaceURI, String localName,
                            String qName) throws SAXException {
 
-	if (debug >= 3)
-	    log("endElement(" + match + ")");
-	List rules = getRules().match(match);
+        if (debug >= 3)
+            log("endElement(" + namespaceURI + "," + localName +
+                "," + qName + ")");
 
 	// Fire "body" events for all relevant rules
+	List rules = getRules().match(namespaceURI, match);
 	if (rules != null) {
 	    String bodyText = this.bodyText.toString().trim();
 	    for (int i = 0; i < rules.size(); i++) {
@@ -633,6 +692,33 @@ public class Digester extends DefaultHandler {
 
 
     /**
+     * Process notification that a namespace prefix is going out of scope.
+     *
+     * @param prefix Prefix that is going out of scope
+     *
+     * @exception SAXException if a parsing error is to be reported
+     */
+    public void endPrefixMapping(String prefix) throws SAXException {
+
+        if (debug >= 3)
+            log("endPrefixMapping(" + prefix + ")");
+
+        // Deregister this prefix mapping
+        ArrayStack stack = (ArrayStack) namespaces.get(prefix);
+        if (stack == null)
+            return;
+        try {
+            stack.pop();
+            if (stack.empty())
+                namespaces.remove(prefix);
+        } catch (EmptyStackException e) {
+            throw new SAXException("endPrefixMapping popped too many times");
+        }
+
+    }
+
+
+    /**
      * Process notification of ignorable whitespace received from the body of
      * an XML element.
      *
@@ -645,9 +731,9 @@ public class Digester extends DefaultHandler {
     public void ignorableWhitespace(char buffer[], int start, int len)
       throws SAXException {
 
-	//	if (debug >= 3)
-	//	    log("ignorableWhitespace(" +
-	//		new String(buffer, start, len) + ")");
+        if (debug >= 3)
+            log("ignorableWhitespace(" +
+       		new String(buffer, start, len) + ")");
 
 	;	// No processing required
 
@@ -665,8 +751,8 @@ public class Digester extends DefaultHandler {
     public void processingInstruction(String target, String data)
       throws SAXException {
 
-	//	if (debug >= 3)
-	//	    log("processingInstruction('" + target + "', '" + data + "')");
+        if (debug >= 3)
+	    log("processingInstruction('" + target + "','" + data + "')");
 
 	;	// No processing is required
 
@@ -680,10 +766,27 @@ public class Digester extends DefaultHandler {
      */
     public void setDocumentLocator(Locator locator) {
 
-	//	if (debug >= 3)
-	//	    log("setDocumentLocator()");
+        if (debug >= 3)
+	    log("setDocumentLocator(" + locator + ")");
 
 	this.locator = locator;
+
+    }
+
+
+    /**
+     * Process notification of a skipped entity.
+     *
+     * @param name Name of the skipped entity
+     *
+     * @exception SAXException if a parsing error is to be reported
+     */
+    public void skippedEntity(String name) {
+
+        if (debug >= 3)
+            log("skippedEntity(" + name + ")");
+
+        ; // No processing required
 
     }
 
@@ -695,8 +798,10 @@ public class Digester extends DefaultHandler {
      */
     public void startDocument() throws SAXException {
 
-	//	if (debug >= 3)
-	//	    log("startDocument()");
+        if (debug >= 3)
+            log("startDocument()");
+
+        ; // No processing required
 
     }
 
@@ -718,20 +823,15 @@ public class Digester extends DefaultHandler {
                              String qName, Attributes list)
         throws SAXException {
 
+        if (debug >= 3)
+            log("startElement(" + namespaceURI + "," + localName + "," +
+                qName + ")");
+
 	// Save the body text accumulated for our surrounding element
 	bodyTexts.push(bodyText);
 	bodyText.setLength(0);
 
 	// Compute the current matching rule
-        /*
-        if (!namespaceAware &&
-            ((localName == null) || (localName.length() < 1)))
-            localName = qName;
-	if (match.length() > 0)
-	    match += "/" + localName;
-	else
-	    match = localName;
-        */
         StringBuffer sb = new StringBuffer(match);
         if (match.length() > 0)
             sb.append('/');
@@ -746,7 +846,7 @@ public class Digester extends DefaultHandler {
 	    log("startElement(" + match + ")");
 
 	// Fire "begin" events for all relevant rules
-	List rules = getRules().match(match);
+	List rules = getRules().match(namespaceURI, match);
 	if (rules != null) {
 	    String bodyText = this.bodyText.toString();
 	    for (int i = 0; i < rules.size(); i++) {
@@ -765,7 +865,32 @@ public class Digester extends DefaultHandler {
     }
 
 
-    // --------------------------------------------------- DTDHandler Methods
+    /**
+     * Process notification that a namespace prefix is coming in to scope.
+     *
+     * @param prefix Prefix that is being declared
+     * @param namespaceURI Corresponding namespace URI being mapped to
+     *
+     * @exception SAXException if a parsing error is to be reported
+     */
+    public void startPrefixMapping(String prefix, String namespaceURI)
+        throws SAXException {
+
+        if (debug >= 3)
+            log("startPrefixMapping(" + prefix + "," + namespaceURI + ")");
+
+        // Register this prefix mapping
+        ArrayStack stack = (ArrayStack) namespaces.get(prefix);
+        if (stack == null) {
+            stack = new ArrayStack();
+            namespaces.put(prefix, stack);
+        }
+        stack.push(namespaceURI);
+
+    }
+
+
+    // ----------------------------------------------------- DTDHandler Methods
 
 
     /**
@@ -777,9 +902,9 @@ public class Digester extends DefaultHandler {
      */
     public void notationDecl(String name, String publicId, String systemId) {
 
-	if (debug >= 1)
-	    log("notationDecl('" + name + "', '" + publicId + "', '" +
-		systemId + "')");
+	if (debug >= 3)
+	    log("notationDecl(" + name + "," + publicId + "," +
+		systemId + ")");
 
     }
 
@@ -795,9 +920,9 @@ public class Digester extends DefaultHandler {
     public void unparsedEntityDecl(String name, String publicId,
 				   String systemId, String notation) {
 
-	if (debug >= 1)
-	    log("unparsedEntityDecl('" + name + "', '" + publicId + "', '" +
-		systemId + "', '" + notation + "')");
+	if (debug >= 3)
+	    log("unparsedEntityDecl(" + name + "," + publicId + "," +
+		systemId + "," + notation + ")");
 
     }
 

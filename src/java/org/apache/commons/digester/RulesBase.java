@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.1 2001/08/04 23:14:57 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/08/04 23:14:57 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.2 2001/08/26 05:09:36 craigmcc Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/08/26 05:09:36 $
  *
  * ====================================================================
  *
@@ -86,7 +86,7 @@ import java.util.List;
  * </ul>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/08/04 23:14:57 $
+ * @version $Revision: 1.2 $ $Date: 2001/08/26 05:09:36 $
  */
 
 public class RulesBase implements Rules {
@@ -107,6 +107,14 @@ public class RulesBase implements Rules {
      * The Digester instance with which this Rules instance is associated.
      */
     protected Digester digester = null;
+
+
+    /**
+     * The namespace URI for which subsequently added <code>Rule</code>
+     * objects are relevant, or <code>null</code> for matching independent
+     * of namespaces.
+     */
+    protected String namespaceURI = null;
 
 
     /**
@@ -142,6 +150,32 @@ public class RulesBase implements Rules {
     }
 
 
+    /**
+     * Return the namespace URI that will be applied to all subsequently
+     * added <code>Rule</code> objects.
+     */
+    public String getNamespaceURI() {
+
+        return (this.namespaceURI);
+
+    }
+
+
+    /**
+     * Set the namespace URI that will be applied to all subsequently
+     * added <code>Rule</code> objects.
+     *
+     * @param namespaceURI Namespace URI that must match on all
+     *  subsequently added rules, or <code>null</code> for matching
+     *  regardless of the current namespace URI
+     */
+    public void setNamespaceURI(String namespaceURI) {
+
+        this.namespaceURI = namespaceURI;
+
+    }
+
+
     // --------------------------------------------------------- Public Methods
 
 
@@ -159,6 +193,7 @@ public class RulesBase implements Rules {
             cache.put(pattern, list);
         }
         list.add(rule);
+        rule.setNamespaceURI(namespaceURI);
         rules.add(rule);
 
     }
@@ -183,10 +218,31 @@ public class RulesBase implements Rules {
      * method.
      *
      * @param pattern Nesting pattern to be matched
+     *
+     * @deprecated Call match(namespaceURI,pattern) instead.
      */
     public List match(String pattern) {
 
-        List rulesList = (List) this.cache.get(pattern);
+        return (match(null, pattern));
+
+    }
+
+
+    /**
+     * Return a List of all registered Rule instances that match the specified
+     * nesting pattern, or a zero-length List if there are no matches.  If more
+     * than one Rule instance matches, they <strong>must</strong> be returned
+     * in the order originally registered through the <code>add()</code>
+     * method.
+     *
+     * @param namespaceURI Namespace URI for which to select matching rules,
+     *  or <code>null</code> to match regardless of namespace URI
+     * @param pattern Nesting pattern to be matched
+     */
+    public List match(String namespaceURI, String pattern) {
+
+        // List rulesList = (List) this.cache.get(pattern);
+        List rulesList = lookup(namespaceURI, pattern);
 	if (rulesList == null) {
             // Find the longest key, ie more discriminant
             String longKey = "";
@@ -196,7 +252,8 @@ public class RulesBase implements Rules {
 		if (key.startsWith("*/")) {
 		    if (pattern.endsWith(key.substring(1))) {
                         if (key.length() > longKey.length()) {
-                            rulesList = (List) this.cache.get(key);
+                            // rulesList = (List) this.cache.get(key);
+                            rulesList = lookup(namespaceURI, key);
                             longKey = key;
                         }
 		    }
@@ -221,6 +278,39 @@ public class RulesBase implements Rules {
 
     }
 
+
+    // ------------------------------------------------------ Protected Methods
+
+
+    /**
+     * Return a List of Rule instances for the specified pattern that also
+     * match the specified namespace URI (if any).  If there are no such
+     * rules, return <code>null</code>.
+     *
+     * @param namespaceURI Namespace URI to match, or <code>null</code> to
+     *  select matching rules regardless of namespace URI
+     * @param pattern Pattern to be matched
+     */
+    protected List lookup(String namespaceURI, String pattern) {
+
+        // Optimize when no namespace URI is specified
+        List list = (List) this.cache.get(pattern);
+        if (list == null)
+            return (null);
+        if ((namespaceURI == null) || (namespaceURI.length() == 0))
+            return (list);
+
+        // Select only Rules that match on the specified namespace URI
+        ArrayList results = new ArrayList();
+        Iterator items = list.iterator();
+        while (items.hasNext()) {
+            Rule item = (Rule) items.next();
+            if (namespaceURI.equals(item.getNamespaceURI()))
+                results.add(item);
+        }
+        return (results);
+
+    }
 
 
 }
