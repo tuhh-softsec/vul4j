@@ -48,7 +48,7 @@ public class TransformXPointer extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
-    * @return
+    * @return  {@link XMLSignatureInput} as the result of transformation
     * @throws TransformationException
     *
     */

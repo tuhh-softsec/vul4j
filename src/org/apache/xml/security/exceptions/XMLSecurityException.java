@@ -237,7 +237,7 @@ public class XMLSecurityException extends Exception {
    /**
     * Method getOriginalException
     *
-    * @return
+    * @return the original exception
     */
    public Exception getOriginalException() {
       return originalException;

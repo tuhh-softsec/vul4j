@@ -134,7 +134,7 @@ public class ObjectContainer extends SignatureElementProxy {
     * Adds childe Node
     *
     * @param node childe Node
-    * @return
+    * @return the new node in the tree.
     */
    public Node appendChild(Node node) {
 

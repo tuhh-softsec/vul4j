@@ -63,7 +63,7 @@ public class MgmtData extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method getMgmtData
     *
-    * @return
+    * @return the managment data
     */
    public String getMgmtData() {
       return this.getTextFromTextChild();

@@ -203,7 +203,7 @@ public class TransformXPath extends TransformSpi {
    }
    /**
     *  @param str
-    * @return
+    * @return true if needs to be circunvent for bug.
     */
     private boolean needsCircunvent(String str) {
     	return true; //str.indexOf("namespace")>0;

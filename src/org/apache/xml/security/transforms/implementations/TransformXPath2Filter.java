@@ -312,7 +312,7 @@ public class TransformXPath2Filter extends TransformSpi {
     *
     * @param ancestors
     * @param rootNodes
-    * @return
+    * @return if rooted bye the rootnodes
     */
    boolean rooted(/*Node currentNode,*/ List ancestors, NodeList rootNodes) {
 

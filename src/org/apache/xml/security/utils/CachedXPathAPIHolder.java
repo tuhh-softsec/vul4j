@@ -38,6 +38,10 @@ public class CachedXPathAPIHolder {
     static ThreadLocal  local=new ThreadLocal();
     static ThreadLocal localDoc=new ThreadLocal();
   
+	/**
+	 * Sets the doc for the xpath transformation. Resets the cache if needed
+	 * @param doc
+	 */
 	public static void setDoc(Document doc) {                    
        if (localDoc.get()!=doc) {
             CachedXPathAPI cx=(CachedXPathAPI)local.get();
@@ -53,7 +57,7 @@ public class CachedXPathAPIHolder {
         }		
 	}
     /**
-     * @return
+     * @return the cachexpathapi for this thread
      */
     public static CachedXPathAPI getCachedXPathAPI() {        
         CachedXPathAPI cx=(CachedXPathAPI)local.get();        

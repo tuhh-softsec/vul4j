@@ -120,7 +120,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
 
    /**
     * @param signatureElement    
-    * @return
+    * @return the node that is the signature
     * @throws TransformationException
     */
     private static Node searchSignatureElement(Node signatureElement) throws TransformationException {

@@ -340,6 +340,10 @@ public class Canonicalizer {
       return (Class) _canonicalizerHash.get(URI);         
    }
    
+   /**
+    * Set the canonicalizator behaviour to not reset.
+    *
+    */
    public void notReset() {
    	    this.canonicalizerSpi.reset=false;
    }

@@ -74,7 +74,7 @@ public class KeyResolver {
    /**
     * Method length
     *
-    * @return
+    * @return the length of resolvers registed
     */
    public static int length() {
       return KeyResolver._resolverVector.size();
@@ -84,7 +84,7 @@ public class KeyResolver {
     * Method item
     *
     * @param i
-    * @return
+    * @return the number i resolver registerd
     * @throws KeyResolverException
     */
    public static KeyResolver item(int i) throws KeyResolverException {
@@ -103,7 +103,7 @@ public class KeyResolver {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    * @return the instance that happends to implement the thing.
     * 
     * @throws KeyResolverException
     */
@@ -193,7 +193,7 @@ public class KeyResolver {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    * @return resolve from the static register an element
     * 
     * @throws KeyResolverException
     */
@@ -212,8 +212,8 @@ public class KeyResolver {
     *
     * @param element
     * @param BaseURI
-    * @param storage
-    * @return
+    * @param storage 
+    * @return resolved public key from the registered from the elements
     * 
     * @throws KeyResolverException
     */
@@ -229,7 +229,7 @@ public class KeyResolver {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    * @return resolved X509certificate key from the registered from the elements
     * 
     * @throws KeyResolverException
     */
@@ -244,7 +244,7 @@ public class KeyResolver {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    * @return resolved SecretKey key from the registered from the elements
     * @throws KeyResolverException
     */
    public SecretKey resolveSecretKey(
@@ -268,7 +268,7 @@ public class KeyResolver {
     * Method getProperty
     *
     * @param key
-    * @return
+    * @return the property setted for this resolver
     */
    public String getProperty(String key) {
       return this._resolverSpi.engineGetProperty(key);
@@ -277,7 +277,7 @@ public class KeyResolver {
    /**
     * Method getPropertyKeys
     *
-    * @return
+    * @return the properties key registerd in this resolver
     */
    public String[] getPropertyKeys() {
       return this._resolverSpi.engineGetPropertyKeys();
@@ -287,7 +287,7 @@ public class KeyResolver {
     * Method understandsProperty
     *
     * @param propertyToTest
-    * @return
+    * @return true if the resolver understands property propertyToTest
     */
    public boolean understandsProperty(String propertyToTest) {
       return this._resolverSpi.understandsProperty(propertyToTest);
@@ -299,7 +299,7 @@ public class KeyResolver {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    * @return true if can resolve the key in the element
     */
    public boolean canResolve(Element element, String BaseURI,
                              StorageResolver storage) {
@@ -309,7 +309,7 @@ public class KeyResolver {
    /**
     * Method resolverClassName
     *
-    * @return
+    * @return the name of the resolver.
     */
    public String resolverClassName() {
       return this._resolverSpi.getClass().getName();

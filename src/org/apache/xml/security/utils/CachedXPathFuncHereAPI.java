@@ -59,7 +59,7 @@ public class CachedXPathFuncHereAPI {
 
    /**
     * Method getFuncHereContext
-    * @return
+    * @return the context for this object
     *
     */
    public FuncHereContext getFuncHereContext() {
@@ -360,7 +360,7 @@ public class CachedXPathFuncHereAPI {
     * Method getStrFromNode
     *
     * @param xpathnode
-    * @return
+    * @return the string for the node.
     */
    public static String getStrFromNode(Node xpathnode) {
 

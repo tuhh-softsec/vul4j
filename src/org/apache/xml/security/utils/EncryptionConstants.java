@@ -167,7 +167,7 @@ public class EncryptionConstants {
    /**
     * Method getEncryptionSpecNSprefix
     *
-    * @return
+    * @return the prefix for this node.
     */
    public static String getEncryptionSpecNSprefix() {
       return ElementProxy

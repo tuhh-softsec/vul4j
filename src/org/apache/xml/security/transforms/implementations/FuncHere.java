@@ -65,7 +65,7 @@ public class FuncHere extends Function {
     * same XML document against which the XPath expression is being evaluated.
     *
     * @param xctxt
-    * @return
+    * @return the xobject
     * @throws javax.xml.transform.TransformerException
     */
    public XObject execute(XPathContext xctxt)

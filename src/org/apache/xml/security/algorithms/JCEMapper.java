@@ -126,14 +126,16 @@ public class JCEMapper {
    }
 
    /**
-    * Gets the default Provider for obtaining the security algorithms  
+    * Gets the default Provider for obtaining the security algorithms
+    * @return the default providerId.  
     */
    public static String getProviderId() {
    		return providerName;
    }
    
    /**
-    * Sets the default Provider for obtaining the security algorithms  
+    * Sets the default Provider for obtaining the security algorithms
+    * @param provider the default providerId.  
     */
    public static void setProviderId(String provider) {
    		providerName=provider;

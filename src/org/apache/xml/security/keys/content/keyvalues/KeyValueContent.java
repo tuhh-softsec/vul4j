@@ -36,7 +36,7 @@ public interface KeyValueContent {
    /**
     * Method getPublicKey
     *
-    * @return
+    * @return the public key
     * @throws XMLSecurityException
     */
    public PublicKey getPublicKey()

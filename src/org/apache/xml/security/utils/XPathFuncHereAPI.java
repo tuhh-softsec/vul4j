@@ -286,7 +286,7 @@ public class XPathFuncHereAPI {
     * Method getStrFromNode
     *
     * @param xpathnode
-    * @return
+    * @return the string from the node
     */
    private static String getStrFromNode(Node xpathnode) {
 

@@ -86,7 +86,7 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
 	 * @param element
 	 * @param BaseURI
 	 * @param storage
-	 * @return
+	 * @return true if can resolve the key in the element
 	 *
 	 */
 

@@ -78,7 +78,7 @@ public class XMLX509SubjectName extends SignatureElementProxy
     * Method getSubjectName
     *
     *
-    * @return
+    * @return the subject name
     */
    public String getSubjectName() {
       return RFC2253Parser.normalize(this.getTextFromTextChild());

@@ -321,7 +321,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
     * Copies all nodes from a given {@link NodeList} into a {@link Set}
     *
     * @param nl
-    * @return 
+    * @return nodelist as set
     */
    private static Set nodeListToSet(NodeList nl) {
 

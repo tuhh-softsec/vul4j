@@ -77,7 +77,7 @@ public class MessageDigestAlgorithm extends Algorithm {
     *
     * @param doc
     * @param algorithmURI
-    * @return
+    * @return The MessageDigestAlgorithm element to attach in document and to digest
     * @throws XMLSignatureException
     */
    public static MessageDigestAlgorithm getInstance(

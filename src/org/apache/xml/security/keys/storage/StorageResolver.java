@@ -116,7 +116,7 @@ public class StorageResolver {
 
    /**
     * Method getIterator
-    * @return
+    * @return the iterator for the resolvers.
     *
     */
    public Iterator getIterator() {
@@ -131,7 +131,7 @@ public class StorageResolver {
    /**
     * Method hasNext
     *
-    * @return
+    * @return true if there is more elements.
     */
    public boolean hasNext() {
 
@@ -145,7 +145,7 @@ public class StorageResolver {
    /**
     * Method next
     *
-    * @return
+    * @return the next element
     */
    public X509Certificate next() {
       return (X509Certificate) this._iterator.next();

@@ -126,8 +126,7 @@ public class Reference extends SignatureElementProxy {
     * @param manifest
     * @param transforms {@link Transforms} applied to data
     * @param messageDigestAlgorithm {@link MessageDigestAlgorithm Digest algorithm} which is applied to the data
-    * $todo$ should we throw XMLSignatureException if MessageDigestAlgoURI is wrong?
-    * @param cx for speed-up the xpath selections.
+    * TODO should we throw XMLSignatureException if MessageDigestAlgoURI is wrong?
     * @throws XMLSignatureException
     */
    protected Reference(Document doc, String BaseURI, String ReferenceURI, Manifest manifest, Transforms transforms, String messageDigestAlgorithm)
@@ -176,7 +175,6 @@ public class Reference extends SignatureElementProxy {
     * @param element <code>Reference</code> element
     * @param BaseURI the URI of the resource where the XML instance was stored
     * @param manifest is the {@link Manifest} of {@link SignedInfo} in which the Reference occurs. We need this because the Manifest has the individual {@link ResourceResolver}s whcih have been set by the user
-    * @param cx The CachedXPathAPIHolder to use in this reference.
     * @throws XMLSecurityException
     */
    protected Reference(Element element, String BaseURI, Manifest manifest)
@@ -582,7 +580,7 @@ public class Reference extends SignatureElementProxy {
 
    /**
     * This method only works works after a call to verify.
-    * @return 
+    * @return the transformed output(i.e. what is going to be digested).
     */
    public XMLSignatureInput getTransformsOutput() {
       return this._transformsOutput;
@@ -592,7 +590,7 @@ public class Reference extends SignatureElementProxy {
     * This method returns the {@link XMLSignatureInput} which is referenced by the
     * <CODE>URI</CODE> Attribute.
     * @param os where to write the transformation can be null.
-    * @return
+    * @return the element to digest
     *
     * @throws XMLSignatureException
     * @see Manifest#verifyReferences()

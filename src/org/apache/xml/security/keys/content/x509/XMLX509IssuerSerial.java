@@ -114,7 +114,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     * Method getSerialNumber
     *
     *
-    * @return
+    * @return the serial number
     */
    public BigInteger getSerialNumber() {
 
@@ -131,7 +131,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     * Method getSerialNumberInteger
     *
     *
-    * @return
+    * @return the serial number as plain int
     */
    public int getSerialNumberInteger() {
       return this.getSerialNumber().intValue();
@@ -141,7 +141,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     * Method getIssuerName
     *
     *
-    * @return
+    * @return the issuer name
     */
    public String getIssuerName()  {
 

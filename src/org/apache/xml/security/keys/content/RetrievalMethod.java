@@ -97,7 +97,7 @@ public class RetrievalMethod extends SignatureElementProxy
    /**
     * Method getURIAttr
     *
-    * @return
+    * @return the URI attribute
     */
    public Attr getURIAttr() {
       return this._constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
@@ -107,13 +107,13 @@ public class RetrievalMethod extends SignatureElementProxy
     * Method getURI
     *
     * 
-    * @return
+    * @return URI string
     */
    public String getURI() {
       return this.getURIAttr().getNodeValue();
    }
 
-   /** @return */
+   /** @return the type*/
    public String getType() {
       return this._constructionElement.getAttributeNS(null, Constants._ATT_TYPE);
    }
@@ -123,7 +123,7 @@ public class RetrievalMethod extends SignatureElementProxy
     *
     *
     * @throws XMLSecurityException
-    * @return
+    * @return the transforamitons
     */
    public Transforms getTransforms() throws XMLSecurityException {
 

@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
  *
  * @author $Author$
  * @see org.apache.xml.security.transforms.implementations.FuncHere
- * @see org.apache.xml.security.utils.XPathFuncHereAPI;
+ * @see org.apache.xml.security.utils.XPathFuncHereAPI
  * @see <A HREF="http://www.w3.org/Signature/Drafts/xmldsig-core/Overview.html#function-here">XML Signature - The here() function</A>
  */
 public class FuncHereContext extends XPathContext {

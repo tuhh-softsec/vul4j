@@ -62,7 +62,7 @@ public class KeyName extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method getKeyName
     *
-    * @return
+    * @return key name
     */
    public String getKeyName() {
       return this.getTextFromTextChild();
