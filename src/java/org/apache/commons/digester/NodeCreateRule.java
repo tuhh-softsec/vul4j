@@ -111,7 +111,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * of course.</p>
  * 
  * @author Christopher Lenz
- * @version $Revision: 1.2 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.3 $ $Date: 2003/08/17 02:50:05 $
  * @since Digester 1.4
  */
 
@@ -455,6 +455,16 @@ public class NodeCreateRule extends Rule {
             builder = new NodeBuilder(doc, doc.createDocumentFragment());
         }
         xmlReader.setContentHandler(builder);
+
+    }
+
+
+    /**
+     * Pop the Node off the top of the stack.
+     */
+    public void end() throws Exception {
+
+        Object top = digester.pop();
 
     }
 
