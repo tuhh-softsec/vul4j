@@ -28,6 +28,7 @@
     <echo message="   test            --> runs the defined JUnit tests"/>
     <echo message="   clean           --> cleans up all generated files and directories"/>
     <echo message="   usage           --> provides help on using the build tool (default)"/>
+    <echo message="   jar             --> creates the JAR file"/>
     <echo message=""/>
     <echo message=" See comments inside the build.xml file for more details."/>
     <echo message="-------------------------------------------------------------"/>
@@ -55,7 +56,8 @@
     <property name="src.samples" value="src_samples" />
     <property name="src.unitTests" value="src_unitTests" />
 
-    <property name="build" value="classes" />
+    <property name="build" value="./classes" />
+    <property name="build.jar" value="./xmlsec.jar" />
 
     <property name="cvs.server" value="cvs.apache.org" />
     <property name="cvs.path" value="/home/cvs" />
@@ -153,7 +155,9 @@ org.apache.xml.security.utils.*
     </copy>
   </target>
 
-  <target name="compile.tests" depends="compile.library" if="junit.present">
+  <target name="compile.tests" 
+          depends="compile.library" 
+          if="junit.present">
     <!-- Compile the java code from ${src} into ${build} -->
     <javac srcdir="${src.unitTests}" destdir="${build}">
       <classpath refid="classpath.test" />
@@ -183,7 +187,7 @@ org.apache.xml.security.utils.*
 
   <target name="compile"
           depends="compile.library, compile.samples, compile.tests"
-          description="compile everything"/>
+          description="compile everything" />
 
   <target name="test"
           depends="init, compile.tests"
@@ -198,8 +202,10 @@ org.apache.xml.security.utils.*
      </java>
   </target>
 
-  <target name="clean" description="Clean up all temporary build files">
+  <target name="clean" 
+          description="Clean up all temporary build files">
     <delete dir="${build}" />
+    <delete file="${build.jar}" />
     <delete dir="bak" />
     <delete dir="{$doc.html.api}" />
     <delete file="log.txt" />
@@ -214,6 +220,20 @@ org.apache.xml.security.utils.*
              packagenames="${javadoc.packages}"
              classpathref="classpath.test"/>
   </target>
+  
+  <target name="jar" 
+          depends="compile" 
+          description="Creates the ${build.jar} JAR file">
+     <jar jarfile="${build.jar}" 
+          basedir="${build}" 
+          compress="false" 
+          includes="org/apache/**,META-INF/**"
+          excludes="org/apache/xml/security/temp/**" />
+  </target>
+
+  <target name="gump" 
+          description="Target for the gump run" 
+          depends="jar,javadocs,test" />
 
   <target name="generate-keys">
      <genkey alias="test2"
