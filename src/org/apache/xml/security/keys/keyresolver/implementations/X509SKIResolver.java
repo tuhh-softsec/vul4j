@@ -96,9 +96,6 @@ public class X509SKIResolver extends KeyResolverSpi {
    /** Field _x509childObject[] */
    private XMLX509SKI _x509childObject[] = null;
 
-   /** Field _currentNode */
-   private int _currentNode = 0;
-
    /**
     * Method engineCanResolve
     *

@@ -95,9 +95,6 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
    /** Field _x509childObject[] */
    private XMLX509SubjectName _x509childObject[] = null;
 
-   /** Field _currentNode */
-   private int _currentNode = 0;
-
    /**
     * Method engineCanResolve
     *
