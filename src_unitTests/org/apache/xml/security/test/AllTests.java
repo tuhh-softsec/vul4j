@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -98,6 +97,9 @@ public class AllTests {
       suite.addTest(org.apache.xml.security.test.transforms.implementations.TransformBase64DecodeTest.suite());
       suite.addTest(org.apache.xml.security.test.utils.resolver.ResourceResolverSpiTest.suite());
       suite.addTest(org.apache.xml.security.test.utils.Base64Test.suite());
+
+      suite.addTest(org.apache.xml.security.test.interop.BaltimoreTest.suite());
+      suite.addTest(org.apache.xml.security.test.interop.IAIKTest.suite());
       //J+
       return suite;
    }
