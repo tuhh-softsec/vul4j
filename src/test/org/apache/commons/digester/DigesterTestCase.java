@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.9 2002/01/23 22:38:01 sanders Exp $
- * $Revision: 1.9 $
- * $Date: 2002/01/23 22:38:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.10 2002/03/23 17:45:59 rdonkin Exp $
+ * $Revision: 1.10 $
+ * $Date: 2002/03/23 17:45:59 $
  *
  * ====================================================================
  *
@@ -80,7 +80,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.9 $ $Date: 2002/01/23 22:38:01 $
+ * @version $Revision: 1.10 $ $Date: 2002/03/23 17:45:59 $
  */
 
 public class DigesterTestCase extends TestCase {
@@ -275,9 +275,9 @@ public class DigesterTestCase extends TestCase {
                 0, digester.getRules().rules().size());
 
         // We're going to set up
-        digester.addRule("a/b/c/d", new TestRule(digester, "a/b/c/d"));
-        digester.addRule("*/d", new TestRule(digester, "*/d"));
-        digester.addRule("*/c/d", new TestRule(digester, "*/c/d"));
+        digester.addRule("a/b/c/d", new TestRule("a/b/c/d"));
+        digester.addRule("*/d", new TestRule("*/d"));
+        digester.addRule("*/c/d", new TestRule("*/c/d"));
 
         // Test exact match
         assertEquals("Exact match takes precedence 1",

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.7 2002/01/23 21:25:22 sanders Exp $
- * $Revision: 1.7 $
- * $Date: 2002/01/23 21:25:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.8 2002/03/23 17:45:58 rdonkin Exp $
+ * $Revision: 1.8 $
+ * $Date: 2002/03/23 17:45:58 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * top of the stack, based on attributes with specified names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.7 $ $Date: 2002/01/23 21:25:22 $
+ * @version $Revision: 1.8 $ $Date: 2002/03/23 17:45:58 $
  */
 
 public class SetPropertyRule extends Rule {
@@ -92,15 +92,31 @@ public class SetPropertyRule extends Rule {
      *  property to be set
      * @param value Name of the attribute that will contain the value to which
      *  the property should be set
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #SetPropertyRule(String name, String value)} instead.
      */
     public SetPropertyRule(Digester digester, String name, String value) {
 
-        super(digester);
+        this(name, value);
+
+    }
+
+    /**
+     * Construct a "set property" rule with the specified name and value
+     * attributes.
+     *
+     * @param name Name of the attribute that will contain the name of the
+     *  property to be set
+     * @param value Name of the attribute that will contain the value to which
+     *  the property should be set
+     */
+    public SetPropertyRule(String name, String value) {
+
         this.name = name;
         this.value = value;
 
     }
-
 
     // ----------------------------------------------------- Instance Variables
 

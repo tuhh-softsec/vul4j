@@ -157,17 +157,17 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         digester.setRules(new RulesBase());
 
         // add first test rule
-        TestRule firstRule = new TestRule(digester, "first");
+        TestRule firstRule = new TestRule("first");
         firstRule.setOrder(callOrder);
         digester.addRule("root/alpha", firstRule);
 
         // add second test rule
-        TestRule secondRule = new TestRule(digester, "second");
+        TestRule secondRule = new TestRule("second");
         secondRule.setOrder(callOrder);
         digester.addRule("root/alpha", secondRule);
 
         // add third test rule
-        TestRule thirdRule = new TestRule(digester, "third");
+        TestRule thirdRule = new TestRule("third");
         thirdRule.setOrder(callOrder);
         digester.addRule("root/alpha", thirdRule);
 
@@ -248,19 +248,19 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         digester.setRules(new RulesBase());
 
         // add test rule to catch body text
-        TestRule rootRule = new TestRule(digester, "root");
+        TestRule rootRule = new TestRule("root");
         digester.addRule("root", rootRule);
 
         // add test rule to catch body text
-        TestRule alphaRule = new TestRule(digester, "root/alpha");
+        TestRule alphaRule = new TestRule("root/alpha");
         digester.addRule("root/alpha", alphaRule);
 
         // add test rule to catch body text
-        TestRule betaRule = new TestRule(digester, "root/beta");
+        TestRule betaRule = new TestRule("root/beta");
         digester.addRule("root/beta", betaRule);
 
         // add test rule to catch body text
-        TestRule gammaRule = new TestRule(digester, "root/gamma");
+        TestRule gammaRule = new TestRule("root/gamma");
         digester.addRule("root/gamma", gammaRule);
 
         try {
@@ -305,10 +305,10 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         digester.addObjectCreate("root", "org.apache.commons.digester.SimpleTestBean");
 
         // we'll set property alpha with the body text of root
-        digester.addRule("root", new BeanPropertySetterRule(digester, "alpha"));
+        digester.addRule("root", new BeanPropertySetterRule("alpha"));
 
         // we'll set property beta with the body text of child element alpha
-        digester.addRule("root/alpha", new BeanPropertySetterRule(digester, "beta"));
+        digester.addRule("root/alpha", new BeanPropertySetterRule("beta"));
 
         // we'll leave property gamma alone
 
@@ -352,7 +352,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         digester.addObjectCreate("root", "org.apache.commons.digester.SimpleTestBean");
 
         // match all children of root with this rule
-        digester.addRule("root/?", new BeanPropertySetterRule(digester));
+        digester.addRule("root/?", new BeanPropertySetterRule());
 
         SimpleTestBean bean = null;
         try {

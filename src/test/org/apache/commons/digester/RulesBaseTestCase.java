@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RulesBaseTestCase.java,v 1.4 2002/01/23 22:38:01 sanders Exp $
- * $Revision: 1.4 $
- * $Date: 2002/01/23 22:38:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RulesBaseTestCase.java,v 1.5 2002/03/23 17:45:59 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2002/03/23 17:45:59 $
  *
  * ====================================================================
  *
@@ -79,7 +79,7 @@ import junit.framework.TestSuite;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.4 $ $Date: 2002/01/23 22:38:01 $
+ * @version $Revision: 1.5 $ $Date: 2002/03/23 17:45:59 $
  */
 
 public class RulesBaseTestCase extends TestCase {
@@ -203,9 +203,9 @@ public class RulesBaseTestCase extends TestCase {
                 0, digester.getRules().rules().size());
 
         // We're going to set up
-        digester.addRule("a/b/c/d", new TestRule(digester, "a/b/c/d"));
-        digester.addRule("*/d", new TestRule(digester, "*/d"));
-        digester.addRule("*/c/d", new TestRule(digester, "*/c/d"));
+        digester.addRule("a/b/c/d", new TestRule("a/b/c/d"));
+        digester.addRule("*/d", new TestRule("*/d"));
+        digester.addRule("*/c/d", new TestRule("*/c/d"));
 
         // Test exact match
         assertEquals("Exact match takes precedence 1",
@@ -248,8 +248,8 @@ public class RulesBaseTestCase extends TestCase {
                 0, digester.getRules().rules().size());
 
         // Set up rules
-        digester.addRule("alpha/beta/gamma", new TestRule(digester, "No-Namespace"));
-        digester.addRule("alpha/beta/gamma", new TestRule(digester, "Euclidean-Namespace", "euclidean"));
+        digester.addRule("alpha/beta/gamma", new TestRule("No-Namespace"));
+        digester.addRule("alpha/beta/gamma", new TestRule("Euclidean-Namespace", "euclidean"));
 
 
         list = digester.getRules().rules();
@@ -301,9 +301,9 @@ public class RulesBaseTestCase extends TestCase {
                 0, digester.getRules().rules().size());
 
         // Set up rules
-        digester.addRule("alpha/beta/gamma", new TestRule(digester, "one"));
-        digester.addRule("alpha/beta/gamma", new TestRule(digester, "two"));
-        digester.addRule("alpha/beta/gamma", new TestRule(digester, "three"));
+        digester.addRule("alpha/beta/gamma", new TestRule("one"));
+        digester.addRule("alpha/beta/gamma", new TestRule("two"));
+        digester.addRule("alpha/beta/gamma", new TestRule("three"));
 
         // test that rules are returned in set order
         List list = digester.getRules().match(null, "alpha/beta/gamma");

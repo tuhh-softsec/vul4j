@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.4 2002/03/20 20:28:28 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2002/03/20 20:28:28 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.5 2002/03/23 17:45:58 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2002/03/23 17:45:58 $
  *
  * ====================================================================
  *
@@ -81,7 +81,7 @@ import org.apache.commons.beanutils.MethodUtils;
  * See {@link #isExactMatch()} for more details.</p>
  *
  * @author Scott Sanders
- * @version $Revision: 1.4 $ $Date: 2002/03/20 20:28:28 $
+ * @version $Revision: 1.5 $ $Date: 2002/03/23 17:45:58 $
  */
 
 public class SetRootRule extends Rule {
@@ -97,10 +97,13 @@ public class SetRootRule extends Rule {
      *
      * @param digester The associated Digester
      * @param methodName Method name of the parent method to call
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #SetRootRule(String methodName)} instead.
      */
     public SetRootRule(Digester digester, String methodName) {
 
-        this(digester, methodName, null);
+        this(methodName);
 
     }
 
@@ -114,16 +117,47 @@ public class SetRootRule extends Rule {
      *  (if you wish to use a primitive type, specify the corresonding
      *  Java wrapper class instead, such as <code>java.lang.Boolean</code>
      *  for a <code>boolean</code> parameter)
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #SetRootRule(String methodName,String paramType)} instead.
      */
     public SetRootRule(Digester digester, String methodName,
                        String paramType) {
 
-        super(digester);
+        this(methodName, paramType);
+
+    }
+
+    /**
+     * Construct a "set root" rule with the specified method name.  The
+     * method's argument type is assumed to be the class of the
+     * child object.
+     *
+     * @param methodName Method name of the parent method to call
+     */
+    public SetRootRule(String methodName) {
+
+        this(methodName, null);
+
+    }
+
+
+    /**
+     * Construct a "set root" rule with the specified method name.
+     *
+     * @param methodName Method name of the parent method to call
+     * @param paramType Java class of the parent method's argument
+     *  (if you wish to use a primitive type, specify the corresonding
+     *  Java wrapper class instead, such as <code>java.lang.Boolean</code>
+     *  for a <code>boolean</code> parameter)
+     */
+    public SetRootRule(String methodName,
+                       String paramType) {
+
         this.methodName = methodName;
         this.paramType = paramType;
 
     }
-
 
     // ----------------------------------------------------- Instance Variables
 

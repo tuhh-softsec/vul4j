@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.49 2002/03/20 20:28:28 rdonkin Exp $
- * $Revision: 1.49 $
- * $Date: 2002/03/20 20:28:28 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.50 2002/03/23 17:45:57 rdonkin Exp $
+ * $Revision: 1.50 $
+ * $Date: 2002/03/23 17:45:57 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.49 $ $Date: 2002/03/20 20:28:28 $
+ * @version $Revision: 1.50 $ $Date: 2002/03/23 17:45:57 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1404,7 +1404,7 @@ public class Digester extends DefaultHandler {
     public void addBeanPropertySetter(String pattern) {
 
         addRule(pattern,
-                new BeanPropertySetterRule(this));
+                new BeanPropertySetterRule());
 
     }
 
@@ -1419,7 +1419,7 @@ public class Digester extends DefaultHandler {
                                       String propertyName) {
 
         addRule(pattern,
-                new BeanPropertySetterRule(this, propertyName));
+                new BeanPropertySetterRule(propertyName));
 
     }
 
@@ -1436,7 +1436,7 @@ public class Digester extends DefaultHandler {
                               int paramCount) {
 
         addRule(pattern,
-                new CallMethodRule(this, methodName, paramCount));
+                new CallMethodRule(methodName, paramCount));
 
     }
 
@@ -1458,8 +1458,10 @@ public class Digester extends DefaultHandler {
                               int paramCount, String paramTypes[]) {
 
         addRule(pattern,
-                new CallMethodRule(this, methodName,
-                        paramCount, paramTypes));
+                new CallMethodRule(
+                                    methodName,
+                                    paramCount, 
+                                    paramTypes));
 
     }
 
@@ -1480,8 +1482,10 @@ public class Digester extends DefaultHandler {
                               int paramCount, Class paramTypes[]) {
 
         addRule(pattern,
-                new CallMethodRule(this, methodName,
-                        paramCount, paramTypes));
+                new CallMethodRule(
+                                    methodName,
+                                    paramCount, 
+                                    paramTypes));
 
     }
 
@@ -1496,7 +1500,7 @@ public class Digester extends DefaultHandler {
     public void addCallParam(String pattern, int paramIndex) {
 
         addRule(pattern,
-                new CallParamRule(this, paramIndex));
+                new CallParamRule(paramIndex));
 
     }
 
@@ -1514,7 +1518,7 @@ public class Digester extends DefaultHandler {
                              String attributeName) {
 
         addRule(pattern,
-                new CallParamRule(this, paramIndex, attributeName));
+                new CallParamRule(paramIndex, attributeName));
 
     }
 
@@ -1528,7 +1532,7 @@ public class Digester extends DefaultHandler {
     public void addFactoryCreate(String pattern, String className) {
 
         addRule(pattern,
-                new FactoryCreateRule(this, className));
+                new FactoryCreateRule(className));
 
     }
 
@@ -1542,7 +1546,7 @@ public class Digester extends DefaultHandler {
     public void addFactoryCreate(String pattern, Class clazz) {
 
         addRule(pattern,
-                new FactoryCreateRule(this, clazz));
+                new FactoryCreateRule(clazz));
 
     }
 
@@ -1559,7 +1563,7 @@ public class Digester extends DefaultHandler {
                                  String attributeName) {
 
         addRule(pattern,
-                new FactoryCreateRule(this, className, attributeName));
+                new FactoryCreateRule(className, attributeName));
 
     }
 
@@ -1576,7 +1580,7 @@ public class Digester extends DefaultHandler {
                                  String attributeName) {
 
         addRule(pattern,
-                new FactoryCreateRule(this, clazz, attributeName));
+                new FactoryCreateRule(clazz, attributeName));
 
     }
 
@@ -1593,7 +1597,7 @@ public class Digester extends DefaultHandler {
 
         creationFactory.setDigester(this);
         addRule(pattern,
-                new FactoryCreateRule(this, creationFactory));
+                new FactoryCreateRule(creationFactory));
 
     }
 
@@ -1607,7 +1611,7 @@ public class Digester extends DefaultHandler {
     public void addObjectCreate(String pattern, String className) {
 
         addRule(pattern,
-                new ObjectCreateRule(this, className));
+                new ObjectCreateRule(className));
 
     }
 
@@ -1621,7 +1625,7 @@ public class Digester extends DefaultHandler {
     public void addObjectCreate(String pattern, Class clazz) {
 
         addRule(pattern,
-                new ObjectCreateRule(this, clazz));
+                new ObjectCreateRule(clazz));
 
     }
 
@@ -1638,7 +1642,7 @@ public class Digester extends DefaultHandler {
                                 String attributeName) {
 
         addRule(pattern,
-                new ObjectCreateRule(this, className, attributeName));
+                new ObjectCreateRule(className, attributeName));
 
     }
 
@@ -1656,7 +1660,7 @@ public class Digester extends DefaultHandler {
                                 Class clazz) {
 
         addRule(pattern,
-                new ObjectCreateRule(this, attributeName, clazz));
+                new ObjectCreateRule(attributeName, clazz));
 
     }
 
@@ -1670,7 +1674,7 @@ public class Digester extends DefaultHandler {
     public void addSetNext(String pattern, String methodName) {
 
         addRule(pattern,
-                new SetNextRule(this, methodName));
+                new SetNextRule(methodName));
 
     }
 
@@ -1689,7 +1693,7 @@ public class Digester extends DefaultHandler {
                            String paramType) {
 
         addRule(pattern,
-                new SetNextRule(this, methodName, paramType));
+                new SetNextRule(methodName, paramType));
 
     }
 
@@ -1703,7 +1707,7 @@ public class Digester extends DefaultHandler {
     public void addSetRoot(String pattern, String methodName) {
 
         addRule(pattern,
-                new SetRootRule(this, methodName));
+                new SetRootRule(methodName));
 
     }
 
@@ -1719,7 +1723,7 @@ public class Digester extends DefaultHandler {
                            String paramType) {
 
         addRule(pattern,
-                new SetRootRule(this, methodName, paramType));
+                new SetRootRule(methodName, paramType));
 
     }
 
@@ -1731,7 +1735,7 @@ public class Digester extends DefaultHandler {
     public void addSetProperties(String pattern) {
 
         addRule(pattern,
-                new SetPropertiesRule(this));
+                new SetPropertiesRule());
 
     }
 
@@ -1746,7 +1750,7 @@ public class Digester extends DefaultHandler {
     public void addSetProperty(String pattern, String name, String value) {
 
         addRule(pattern,
-                new SetPropertyRule(this, name, value));
+                new SetPropertyRule(name, value));
 
     }
 
@@ -1760,7 +1764,7 @@ public class Digester extends DefaultHandler {
     public void addSetTop(String pattern, String methodName) {
 
         addRule(pattern,
-                new SetTopRule(this, methodName));
+                new SetTopRule(methodName));
 
     }
 
@@ -1779,7 +1783,7 @@ public class Digester extends DefaultHandler {
                           String paramType) {
 
         addRule(pattern,
-                new SetTopRule(this, methodName, paramType));
+                new SetTopRule(methodName, paramType));
 
     }
 

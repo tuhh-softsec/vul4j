@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rule.java,v 1.6 2002/03/11 20:18:44 rdonkin Exp $
- * $Revision: 1.6 $
- * $Date: 2002/03/11 20:18:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rule.java,v 1.7 2002/03/23 17:45:58 rdonkin Exp $
+ * $Revision: 1.7 $
+ * $Date: 2002/03/23 17:45:58 $
  *
  * ====================================================================
  *
@@ -71,7 +71,7 @@ import org.xml.sax.Attributes;
  * a corresponding nested pattern of XML elements has been matched.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.6 $ $Date: 2002/03/11 20:18:44 $
+ * @version $Revision: 1.7 $ $Date: 2002/03/23 17:45:58 $
  */
 
 public abstract class Rule {
@@ -84,6 +84,7 @@ public abstract class Rule {
      * Constructor sets the associated Digester.
      *
      * @param digester The digester with which this rule is associated
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. Use {@link #Rule()} instead.
      */
     public Rule(Digester digester) {
 

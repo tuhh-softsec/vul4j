@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.11 2002/01/23 21:25:22 sanders Exp $
- * $Revision: 1.11 $
- * $Date: 2002/01/23 21:25:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.12 2002/03/23 17:45:58 rdonkin Exp $
+ * $Revision: 1.12 $
+ * $Date: 2002/03/23 17:45:58 $
  *
  * ====================================================================
  *
@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.11 $ $Date: 2002/01/23 21:25:22 $
+ * @version $Revision: 1.12 $ $Date: 2002/03/23 17:45:58 $
  */
 
 public class ObjectCreateRule extends Rule {
@@ -87,10 +87,13 @@ public class ObjectCreateRule extends Rule {
      *
      * @param digester The associated Digester
      * @param className Java class name of the object to be created
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #ObjectCreateRule(String className)} instead.
      */
     public ObjectCreateRule(Digester digester, String className) {
 
-        this(digester, className, (String) null);
+        this(className);
 
     }
 
@@ -100,10 +103,13 @@ public class ObjectCreateRule extends Rule {
      *
      * @param digester The associated Digester
      * @param clazz Java class name of the object to be created
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #ObjectCreateRule(Class clazz)} instead.
      */
     public ObjectCreateRule(Digester digester, Class clazz) {
 
-        this(digester, clazz.getName(), (String) null);
+        this(clazz);
 
     }
 
@@ -116,13 +122,14 @@ public class ObjectCreateRule extends Rule {
      * @param className Java class name of the object to be created
      * @param attributeName Attribute name which, if present, contains an
      *  override of the class name to create
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #ObjectCreateRule(String className, String attributeName)} instead.
      */
     public ObjectCreateRule(Digester digester, String className,
                             String attributeName) {
 
-        super(digester);
-        this.className = className;
-        this.attributeName = attributeName;
+        this (className, attributeName);
 
     }
 
@@ -135,15 +142,73 @@ public class ObjectCreateRule extends Rule {
      * @param attributeName Attribute name which, if present, contains an
      * @param clazz Java class name of the object to be created
      *  override of the class name to create
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #ObjectCreateRule(String attributeName, Class clazz)} instead.
      */
     public ObjectCreateRule(Digester digester,
                             String attributeName,
                             Class clazz) {
 
-        this(digester, clazz.getName(), attributeName);
+        this(attributeName, clazz);
 
     }
 
+    /**
+     * Construct an object create rule with the specified class name.
+     *
+     * @param className Java class name of the object to be created
+     */
+    public ObjectCreateRule(String className) {
+
+        this(className, (String) null);
+
+    }
+
+
+    /**
+     * Construct an object create rule with the specified class.
+     *
+     * @param clazz Java class name of the object to be created
+     */
+    public ObjectCreateRule(Class clazz) {
+
+        this(clazz.getName(), (String) null);
+
+    }
+
+
+    /**
+     * Construct an object create rule with the specified class name and an
+     * optional attribute name containing an override.
+     *
+     * @param className Java class name of the object to be created
+     * @param attributeName Attribute name which, if present, contains an
+     *  override of the class name to create
+     */
+    public ObjectCreateRule(String className,
+                            String attributeName) {
+
+        this.className = className;
+        this.attributeName = attributeName;
+
+    }
+
+
+    /**
+     * Construct an object create rule with the specified class and an
+     * optional attribute name containing an override.
+     *
+     * @param attributeName Attribute name which, if present, contains an
+     * @param clazz Java class name of the object to be created
+     *  override of the class name to create
+     */
+    public ObjectCreateRule(String attributeName,
+                            Class clazz) {
+
+        this(clazz.getName(), attributeName);
+
+    }
 
     // ----------------------------------------------------- Instance Variables
 

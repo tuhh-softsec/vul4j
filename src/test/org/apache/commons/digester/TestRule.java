@@ -70,7 +70,7 @@ import org.xml.sax.Attributes;
  * at the identifier.</p>
  *
  * @author Robert Burrell Donkin
- * @revision $Revision: 1.7 $ $Date: 2002/03/11 20:18:45 $
+ * @revision $Revision: 1.8 $ $Date: 2002/03/23 17:45:59 $
  */
 
 public class TestRule extends Rule {
@@ -100,30 +100,16 @@ public class TestRule extends Rule {
     }
 
     /**
-     * Old fashioned constructor.
-     *
-     * @param digester The digester with which this rule is associated
-     * @param identifier Used to tell which TestRule is which
-     */
-    public TestRule(Digester digester, String identifier) {
-
-        super(digester);
-        this.identifier = identifier;
-    }
-
-
-    /**
      * Constructor sets namespace URI.
      *
      * @param digester The digester with which this rule is associated
      * @param identifier Used to tell which TestRule is which
      * @param namespaceURI Set rule namespace
      */
-    public TestRule(Digester digester,
+    public TestRule(
                     String identifier,
                     String namespaceURI) {
 
-        super(digester);
         this.identifier = identifier;
         setNamespaceURI(namespaceURI);
 

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.7 2002/01/23 22:38:01 sanders Exp $
- * $Revision: 1.7 $
- * $Date: 2002/01/23 22:38:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.8 2002/03/23 17:45:57 rdonkin Exp $
+ * $Revision: 1.8 $
+ * $Date: 2002/03/23 17:45:57 $
  *
  * ====================================================================
  *
@@ -81,7 +81,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.7 $ $Date: 2002/01/23 22:38:01 $
+ * @version $Revision: 1.8 $ $Date: 2002/03/23 17:45:57 $
  */
 
 public class BeanPropertySetterRule extends Rule {
@@ -95,11 +95,13 @@ public class BeanPropertySetterRule extends Rule {
      *
      * @param digester associated <code>Digester</code>
      * @param propertyName name of property to set
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #BeanPropertySetterRule(String propertyName)} instead.
      */
     public BeanPropertySetterRule(Digester digester, String propertyName) {
 
-        super(digester);
-        this.propertyName = propertyName;
+        this(propertyName);
 
     }
 
@@ -110,14 +112,38 @@ public class BeanPropertySetterRule extends Rule {
      * on the top object named the same as the current element.
      *
      * @param digester associated <code>Digester</code>
+     *     
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #BeanPropertySetterRule()} instead.
      */
     public BeanPropertySetterRule(Digester digester) {
 
-        this(digester, null);
+        this();
 
     }
 
+    /**
+     * <p>Construct rule that sets the given property from the body text.</p>
+     *
+     * @param propertyName name of property to set
+     */
+    public BeanPropertySetterRule(String propertyName) {
 
+        this.propertyName = propertyName;
+
+    }
+
+    /**
+     * <p>Construct rule that automatically sets a property from the body text.
+     *
+     * <p> This construct creates a rule that sets the property
+     * on the top object named the same as the current element.
+     */
+    public BeanPropertySetterRule() {
+
+        this((String)null);
+
+    }
     // ----------------------------------------------------- Instance Variables
 
 

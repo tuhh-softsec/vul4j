@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.8 $ $Date: 2002/01/23 21:25:22 $
+ * @version $Revision: 1.9 $ $Date: 2002/03/23 17:45:58 $
  */
 
 public class FactoryCreateRule extends Rule {
@@ -89,10 +89,13 @@ public class FactoryCreateRule extends Rule {
      *
      * @param digester The associated Digester
      * @param className Java class name of the object creation factory class
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #FactoryCreateRule(String className)} instead.
      */
     public FactoryCreateRule(Digester digester, String className) {
 
-        this(digester, className, null);
+        this(className);
 
     }
 
@@ -104,10 +107,13 @@ public class FactoryCreateRule extends Rule {
      *
      * @param digester The associated Digester
      * @param clazz Java class name of the object creation factory class
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #FactoryCreateRule(Class clazz)} instead.
      */
     public FactoryCreateRule(Digester digester, Class clazz) {
 
-        this(digester, clazz, null);
+        this(clazz);
 
     }
 
@@ -122,13 +128,14 @@ public class FactoryCreateRule extends Rule {
      * @param className Default Java class name of the factory class
      * @param attributeName Attribute name which, if present, contains an
      *  override of the class name of the object creation factory to create.
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #FactoryCreateRule(String className, String attributeName)} instead.
      */
     public FactoryCreateRule(Digester digester,
                              String className, String attributeName) {
 
-        super(digester);
-        this.className = className;
-        this.attributeName = attributeName;
+        this(className, attributeName);
 
     }
 
@@ -143,11 +150,14 @@ public class FactoryCreateRule extends Rule {
      * @param clazz Default Java class name of the factory class
      * @param attributeName Attribute name which, if present, contains an
      *  override of the class name of the object creation factory to create.
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #FactoryCreateRule(Class clazz, String attributeName)} instead.
      */
     public FactoryCreateRule(Digester digester,
                              Class clazz, String attributeName) {
 
-        this(digester, clazz.getName(), attributeName);
+        this(clazz, attributeName);
 
     }
 
@@ -158,15 +168,91 @@ public class FactoryCreateRule extends Rule {
      *
      * @param digester The associated Digester
      * @param creationFactory called on to create the object.
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #FactoryCreateRule(ObjectCreationFactory creationFactory)} instead.
      */
     public FactoryCreateRule(Digester digester,
                              ObjectCreationFactory creationFactory) {
 
-        super(digester);
-        this.creationFactory = creationFactory;
+        this(creationFactory);
+
+    }    
+
+    /**
+     * Construct a factory create rule that will use the specified
+     * class name to create an {@link ObjectCreationFactory} which will
+     * then be used to create an object and push it on the stack.
+     *
+     * @param className Java class name of the object creation factory class
+     */
+    public FactoryCreateRule(String className) {
+
+        this(className, null);
 
     }
 
+
+    /**
+     * Construct a factory create rule that will use the specified
+     * class to create an {@link ObjectCreationFactory} which will
+     * then be used to create an object and push it on the stack.
+     *
+     * @param clazz Java class name of the object creation factory class
+     */
+    public FactoryCreateRule(Class clazz) {
+
+        this(clazz, null);
+
+    }
+
+
+    /**
+     * Construct a factory create rule that will use the specified
+     * class name (possibly overridden by the specified attribute if present)
+     * to create an {@link ObjectCreationFactory}, which will then be used
+     * to instantiate an object instance and push it onto the stack.
+     *
+     * @param className Default Java class name of the factory class
+     * @param attributeName Attribute name which, if present, contains an
+     *  override of the class name of the object creation factory to create.
+     */
+    public FactoryCreateRule(String className, String attributeName) {
+
+        this.className = className;
+        this.attributeName = attributeName;
+
+    }
+
+
+    /**
+     * Construct a factory create rule that will use the specified
+     * class (possibly overridden by the specified attribute if present)
+     * to create an {@link ObjectCreationFactory}, which will then be used
+     * to instantiate an object instance and push it onto the stack.
+     *
+     * @param clazz Default Java class name of the factory class
+     * @param attributeName Attribute name which, if present, contains an
+     *  override of the class name of the object creation factory to create.
+     */
+    public FactoryCreateRule(Class clazz, String attributeName) {
+
+        this(clazz.getName(), attributeName);
+
+    }
+
+
+    /**
+     * Construct a factory create rule using the given, already instantiated,
+     * {@link ObjectCreationFactory}.
+     *
+     * @param creationFactory called on to create the object.
+     */
+    public FactoryCreateRule(ObjectCreationFactory creationFactory) {
+
+        this.creationFactory = creationFactory;
+
+    }
 
     // ----------------------------------------------------- Instance Variables
 

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.7 2002/01/23 21:25:22 sanders Exp $
- * $Revision: 1.7 $
- * $Date: 2002/01/23 21:25:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.8 2002/03/23 17:45:58 rdonkin Exp $
+ * $Revision: 1.8 $
+ * $Date: 2002/03/23 17:45:58 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * stack, based on attributes with corresponding names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.7 $ $Date: 2002/01/23 21:25:22 $
+ * @version $Revision: 1.8 $ $Date: 2002/03/23 17:45:58 $
  */
 
 public class SetPropertiesRule extends Rule {
@@ -87,10 +87,23 @@ public class SetPropertiesRule extends Rule {
      * Default constructor sets only the the associated Digester.
      *
      * @param digester The digester with which this rule is associated
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #SetPropertiesRule()} instead.
      */
     public SetPropertiesRule(Digester digester) {
 
-        super(digester);
+        this();
+
+    }
+    
+
+    /**
+     * Base constructor.
+     */
+    public SetPropertiesRule() {
+
+        // nothing to set up 
 
     }
 

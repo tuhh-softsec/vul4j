@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.6 2002/01/09 20:22:49 sanders Exp $
- * $Revision: 1.6 $
- * $Date: 2002/01/09 20:22:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.7 2002/03/23 17:45:57 rdonkin Exp $
+ * $Revision: 1.7 $
+ * $Date: 2002/03/23 17:45:57 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import org.xml.sax.Attributes;
  * by a surrounding CallMethodRule rule.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.6 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.7 $ $Date: 2002/03/23 17:45:57 $
  */
 
 public class CallParamRule extends Rule {
@@ -89,10 +89,13 @@ public class CallParamRule extends Rule {
      *
      * @param digester The associated Digester
      * @param paramIndex The zero-relative parameter number
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #CallParamRule(int paramIndex)} instead.
      */
     public CallParamRule(Digester digester, int paramIndex) {
 
-        this(digester, paramIndex, null);
+        this(paramIndex);
 
     }
 
@@ -104,11 +107,40 @@ public class CallParamRule extends Rule {
      * @param digester The associated Digester
      * @param paramIndex The zero-relative parameter number
      * @param attributeName The name of the attribute to save
+     *
+     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
+     * Use {@link #CallParamRule(int paramIndex, String attributeName)} instead.
      */
     public CallParamRule(Digester digester, int paramIndex,
                          String attributeName) {
 
-        super(digester);
+        this(paramIndex, attributeName);
+
+    }
+
+    /**
+     * Construct a "call parameter" rule that will save the body text of this
+     * element as the parameter value.
+     *
+     * @param paramIndex The zero-relative parameter number
+     */
+    public CallParamRule(int paramIndex) {
+
+        this(paramIndex, null);
+
+    }
+
+
+    /**
+     * Construct a "call parameter" rule that will save the value of the
+     * specified attribute as the parameter value.
+     *
+     * @param paramIndex The zero-relative parameter number
+     * @param attributeName The name of the attribute to save
+     */
+    public CallParamRule(int paramIndex,
+                         String attributeName) {
+
         this.paramIndex = paramIndex;
         this.attributeName = attributeName;
 

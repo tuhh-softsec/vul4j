@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.3 2002/01/23 22:38:01 sanders Exp $
- * $Revision: 1.3 $
- * $Date: 2002/01/23 22:38:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.4 2002/03/23 17:45:59 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2002/03/23 17:45:59 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import junit.framework.TestSuite;
  * <p> Runs standard tests for RulesBase as well as tests of extensions.
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.3 $ $Date: 2002/01/23 22:38:01 $
+ * @version $Revision: 1.4 $ $Date: 2002/03/23 17:45:59 $
  */
 
 
@@ -134,10 +134,10 @@ public class EBRTestCase extends RulesBaseTestCase {
         // Set up rules
         // since these are all NON-UNIVERSAL matches
         // only expect one match at each stage
-        digester.addRule("alpha/beta/gamma/delta", new TestRule(digester, "exact"));
-        digester.addRule("*/beta/gamma/epsilon", new TestRule(digester, "wild_child"));
-        digester.addRule("alpha/beta/gamma/?", new TestRule(digester, "exact_parent"));
-        digester.addRule("*/beta/gamma/?", new TestRule(digester, "wild_parent"));
+        digester.addRule("alpha/beta/gamma/delta", new TestRule("exact"));
+        digester.addRule("*/beta/gamma/epsilon", new TestRule("wild_child"));
+        digester.addRule("alpha/beta/gamma/?", new TestRule("exact_parent"));
+        digester.addRule("*/beta/gamma/?", new TestRule("wild_parent"));
 
 
         List list = null;
@@ -203,15 +203,15 @@ public class EBRTestCase extends RulesBaseTestCase {
 
         // Set up rules
         // set up universal matches against non-universal ones
-        digester.addRule("alpha/beta/gamma", new TestRule(digester, "exact"));
-        digester.addRule("*/beta/gamma", new TestRule(digester, "non_wild_head"));
-        digester.addRule("!*/beta/gamma", new TestRule(digester, "universal_wild_head"));
-        digester.addRule("!alpha/beta/gamma/?", new TestRule(digester, "universal_wild_child"));
-        digester.addRule("alpha/beta/gamma/?", new TestRule(digester, "non_wild_child"));
-        digester.addRule("alpha/beta/gamma/epsilon", new TestRule(digester, "exact2"));
-        digester.addRule("alpha/epsilon/beta/gamma/zeta", new TestRule(digester, "exact3"));
-        digester.addRule("*/gamma/?", new TestRule(digester, "non_wildhead_child"));
-        digester.addRule("!*/epsilon/beta/gamma/?", new TestRule(digester, "universal_wildhead_child"));
+        digester.addRule("alpha/beta/gamma", new TestRule("exact"));
+        digester.addRule("*/beta/gamma", new TestRule("non_wild_head"));
+        digester.addRule("!*/beta/gamma", new TestRule("universal_wild_head"));
+        digester.addRule("!alpha/beta/gamma/?", new TestRule("universal_wild_child"));
+        digester.addRule("alpha/beta/gamma/?", new TestRule("non_wild_child"));
+        digester.addRule("alpha/beta/gamma/epsilon", new TestRule("exact2"));
+        digester.addRule("alpha/epsilon/beta/gamma/zeta", new TestRule("exact3"));
+        digester.addRule("*/gamma/?", new TestRule("non_wildhead_child"));
+        digester.addRule("!*/epsilon/beta/gamma/?", new TestRule("universal_wildhead_child"));
 
 
         List list = null;
@@ -287,10 +287,10 @@ public class EBRTestCase extends RulesBaseTestCase {
 
         // Set up rules
         // The combinations a little large to test everything but we'll pick a couple and try them.
-        digester.addRule("*", new TestRule(digester, "basic_wild"));
-        digester.addRule("!*", new TestRule(digester, "universal_wild"));
-        digester.addRule("alpha/beta/gamma/delta", new TestRule(digester, "exact"));
-        digester.addRule("*/beta/gamma/?", new TestRule(digester, "wild_parent"));
+        digester.addRule("*", new TestRule("basic_wild"));
+        digester.addRule("!*", new TestRule("universal_wild"));
+        digester.addRule("alpha/beta/gamma/delta", new TestRule("exact"));
+        digester.addRule("*/beta/gamma/?", new TestRule("wild_parent"));
 
 
         List list = null;
