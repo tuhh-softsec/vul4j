@@ -61,34 +61,30 @@ package org.apache.xml.security.test.encryption;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.security.Key;
-import java.security.SecureRandom;
-import javax.crypto.KeyGenerator;
+
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.apache.xml.security.encryption.*;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.apache.xml.security.encryption.EncryptedData;
+import org.apache.xml.security.encryption.XMLCipher;
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.Method;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
-import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.security.keys.content.KeyName;
-import org.apache.xml.security.test.interop.InteropTest;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Interop test for XML Encryption

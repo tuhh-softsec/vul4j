@@ -60,23 +60,20 @@ package org.apache.xml.security.test.c14n.helper;
 
 
 
-import java.io.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.xerces.dom.DOMImplementationImpl;
-import org.apache.xerces.dom.DocumentImpl;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
-import org.apache.xml.serialize.XMLSerializer;
 
-// import org.apache.xml.serialize.OutputFormat;
-import org.w3c.dom.*;
-import org.apache.xml.security.c14n.helper.*;
+import org.apache.xml.security.c14n.helper.AttrCompare;
 import org.apache.xml.security.utils.Constants;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 
 /**
