@@ -71,6 +71,7 @@ The source distibution does _not_ include
 
 The binary distibution includes
  - JAVA sample code for the library
+ - JAVA code for the unit tests
  - test vectors for the unit tests
  - Generated JavaDocs
  - The complete library compiled
