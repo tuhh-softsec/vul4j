@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<project name="Apache XML Security" default="help" basedir=".">
+    <!-- P R O P E R T Y    F I L E S -->
+    <property file="build.properties" />
+    <property file="provider.properties" />
+    <property file="proxy.properties" />
+
+
+
+
+    <!-- G L O B A L    P R O P E R T I E S -->
+    <!-- directory properties -->
+    <property name="dir.src"            value="src" />
+    <property name="dir.libs"           value="libs" />
+    <property name="dir.tests"          value="src_unitTests" />
+    <property name="dir.samples"        value="src_samples" />
+    <property name="dir.data"           value="data" />
+    <property name="dir.build"          value="build" />
+    <property name="dir.build.bin"      value="${dir.build}/classes" />
+    <property name="dir.build.libs"     value="${dir.build}/libs" />
+    <property name="dir.build.test"     value="${dir.build}/test" />
+    <property name="dir.build.docs"     value="${dir.build}/docs" />
+    <property name="dir.build.src"      value="${dir.build}/src" />
+    <property name="dir.build.dist"     value="${dir.build}/dist" />
+
+    <!-- library properties -->
+    <property name="lib.logging"        value="${dir.libs}/commons-logging.jar" />
+    <property name="lib.logging.api"    value="${dir.libs}/commons-logging-api.jar" />
+    <property name="lib.junit"          value="${dir.libs}/junit3.7.jar" />
+    <property name="lib.xalan.1"        value="${dir.libs}/xalan.jar" />
+    <property name="lib.xalan.2"        value="${dir.libs}/xml-apis.jar" />
+    <property name="lib.xerces.1"       value="${dir.libs}/xercesImpl.jar" />
+    <property name="lib.xerces.2"       value="${dir.libs}/xmlParserAPIs.jar" />
+    <property name="lib.jce"            value="${dir.libs}/${jce.provider.prefix}-${jce.provider.jar}" />
+    <property name="lib.style"          value="${dir.libs}/style-apachexml.jar" />
+    <property name="lib.stylebook"      value="${dir.libs}/stylebook-1.0-b3_xalan-2.jar" />
+
+    <!-- build variable properties -->
+
+
+
+
+    <!-- C O N D I T I O N A L    P R O P E R T I E S -->
+    <target name="do.build.src" >
+        <!-- global properties applies here -->
+    </target >
+
+
+
+
+    <!-- P A T H S -->
+    <path id="id.classpath.xalan" >
+        <pathelement path="${lib.xalan.1}" />
+        <pathelement path="${lib.xalan.2}" />
+    </path >
+    <path id="id.classpath.xerces" >
+        <pathelement path="${lib.xerces.1}" />
+        <pathelement path="${lib.xerces.2}" />
+    </path >
+    <path id="id.classpath.logging" >
+        <pathelement path="${lib.logging}" />
+        <pathelement path="${lib.logging.api}" />
+    </path >
+    <path id="id.classpath.common" >
+        <path refid="id.classpath.xalan" />
+        <path refid="id.classpath.xerces" />
+        <path refid="id.classpath.logging" />
+    </path >
+    <path id="id.classpath.crypt" >
+        <pathelement path="${lib.jce}" />
+    </path >
+    <path id="id.classpath.sig" >
+    </path >
+    <path id="id.classpath.test" >
+        <pathelement path="${lib.test}" />
+    </path >
+    <path id="id.classpath" >
+        <path refid="id.classpath.common" />
+        <path refid="id.classpath.crypt" />
+        <path refid="id.classpath.sig" />
+        <path refid="id.classpath.test" />
+    </path >
+
+
+
+
+    <!-- T A R G E T S -->
+    <!-- environment targets -->
+    <!-- set up -->
+    <target name="env.mk.dirs" unless="has.dirs" >
+        <mkdir dir="${dir.build}" />
+        <mkdir dir="${dir.build.bin}" />
+        <mkdir dir="${dir.build.docs}" />
+        <mkdir dir="${dir.build.test}" />
+        <mkdir dir="${dir.build.libs}" />
+        <mkdir dir="${dir.build.dist}" />
+        <property name="has.dirs" value="true" />
+    </target >
+
+    <!-- tear down -->
+    <target name="env.rm.dirs" >
+        <delete dir="${dir.build}" />
+    </target >
+
+    <!-- check targets -->
+    <target name="do.check.libs.jce" >
+        <condition property="has.jce.provider" >
+            <available file="${lib.jce}" />
+        </condition >
+    </target >
+    <target name="do.check.libs"
+            depends="do.check.libs.jce"
+            unless="has.jce.provider" >
+        <setproxy proxyhost="${proxy.host}"
+                  proxyport="${proxy.port}" />
+        <get src="${jce.provider.source}/${jce.provider.jar}"
+             dest="${lib.jce}"
+             verbose="true" />
+        <checksum file="${lib.jce}"
+                  algorithm="${checksum.algorithm}"
+                  property="${checksum.value}"
+                  verifyproperty="jce.checksum.ok" />
+    </target >
+
+    <!-- build targets -->
+    <!-- source -->
+    <target name="build.src"
+            depends="do.check.libs,do.build.src,env.mk.dirs"
+            if="has.jce.provider" >
+        <javac srcdir="${dir.src}"
+               destdir="${dir.build.bin}" >
+            <classpath refid="id.classpath" />
+            <include name="org/apache/xml/security/**/*.java" />
+        </javac >
+        <copy todir="${dir.build.bin}" >
+            <fileset dir="${dir.src}"
+                     includes="org/apache/xml/security/resource/*,
+                               org/apache/xml/security/resource/schema/*"
+                     excludes="org/apache/xml/security/resource/CVS,
+                               org/apache/xml/security/resource/schema/CVS" />
+        </copy >
+    </target >
+
+    <!-- documentation -->
+    <target name="build.docs" />
+
+    <!-- jars -->
+    <target name="build.jar"
+            depends="env.mk.dirs" >
+        <jar destfile="${dir.build.dist}/xml-security.jar"
+             basedir="${dir.build.bin}" >
+        </jar >
+    </target >
+
+    <!-- archive targets -->
+    <target name="build.arch"
+            depends="env.mk.dirs" >
+    </target >
+
+    <!-- aliases -->
+    <target name="build.all"        depends="env.mk.dirs,build.src,build.docs,build.jar,build.arch" />
+
+    <target name="compile"          depends="build.src" />
+    <target name="docs"             depends="build.docs" />
+    <target name="jar"              depends="build.jar" />
+    <target name="dist"             depends="build.dist" />
+    <target name="clean"            depends="env.rm.dirs"/>
+    <target name="test" />
+
+    <!-- distribution targets -->
+    <target name="build.dist"       depends="build.all" />
+
+    <!-- maintenance targets -->
+
+    <!-- help targets -->
+    <target name="help" >
+        <echo message="synopsis: ant [target]" />
+        <echo message="targets:" />
+        <echo message="compile  - builds xml-security source" />
+        <echo message="docs     - creates java documentation" />
+        <echo message="jar      - creates a jar file, containing the built source" />
+        <echo message="dist     - creates a distribution" />
+        <echo message="           (see ant help.dist for more information)" />
+        <echo message="clean    - resets the build environment" />
+        <echo message="test     - performs a series of tests" />
+        <echo message="           (see ant help.test for more information)" />
+        <echo message="help     - displays this help message (default)" />
+        <echo message="config   - optional configuration information" />
+        <echo message="           (see ant help.config for more information)" />
+    </target >
+    <target name="help.dist" >
+        <echo message="dist:" />
+        <echo message="this target will:" />
+        <echo message="1.  build the source files," />
+        <echo message="2.  create the appropriate java documentation," />
+        <echo message="3.  create distribution jars," />
+        <echo message="4.  copy the license, copies source and" />
+        <echo message="5.  creates distribution archives" />
+    </target >
+    <target name="help.test" >
+        <echo message="To be done..." />
+    </target >
+    <target name="help.config" >
+        <echo message="1.  to configure the provider setings," /> 
+        <echo message="    see the contents of provider.properties" />
+        <echo message="2.  to configure the proxy setings," /> 
+        <echo message="    see the contents of proxy.properties" />
+    </target >
+</project>
