@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.10 2004/01/10 17:34:18 rdonkin Exp $
- * $Revision: 1.10 $
- * $Date: 2004/01/10 17:34:18 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.11 2004/02/09 20:30:34 rdonkin Exp $
+ * $Revision: 1.11 $
+ * $Date: 2004/02/09 20:30:34 $
  *
  * ====================================================================
  * 
@@ -172,7 +172,7 @@ import java.util.Map;
  * these additions should not break your existing rules.</p>
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.10 $ $Date: 2004/01/10 17:34:18 $
+ * @version $Revision: 1.11 $ $Date: 2004/02/09 20:30:34 $
  */
 
 
@@ -327,13 +327,27 @@ public class ExtendedBaseRules extends RulesBase {
 
                 } else if (key.endsWith("/*")) {
                     // check for ancester match
-                    int patternStart = 0;
                     if (key.startsWith("*/")) {
-                        patternStart = 2;
-                    }
-                    ancesterMatched = 
-                        (pattern.lastIndexOf(key.substring(patternStart, key.length() - 2)) > -1);
-                                    
+                        String patternBody = key.substring(2, key.length() - 2);
+                        if (pattern.endsWith(patternBody)) {
+                            ancesterMatched = true;
+                        } else {
+                            ancesterMatched = (pattern.indexOf(patternBody + "/") > -1);
+                        }
+                    } else {
+                        String bodyPattern = key.substring(0, key.length() - 2);
+                        if (pattern.startsWith(bodyPattern))
+                        {
+                            if (pattern.length() == bodyPattern.length()) {
+                                // exact match
+                                ancesterMatched = true;
+                            } else {
+                                ancesterMatched = ( pattern.charAt(bodyPattern.length()) == '/' );
+                            }
+                        } else {
+                            ancesterMatched = false;  
+                        } 
+                    }               
                 } else {
                     // try for a base match
                     basicMatched = basicMatch(key, pattern);

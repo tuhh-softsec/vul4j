@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.11 2003/10/18 13:30:22 rdonkin Exp $
- * $Revision: 1.11 $
- * $Date: 2003/10/18 13:30:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.12 2004/02/09 20:30:34 rdonkin Exp $
+ * $Revision: 1.12 $
+ * $Date: 2004/02/09 20:30:34 $
  *
  * ====================================================================
  * 
@@ -74,7 +74,7 @@ import junit.framework.TestSuite;
  * <p> Runs standard tests for RulesBase as well as tests of extensions.
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.11 $ $Date: 2003/10/18 13:30:22 $
+ * @version $Revision: 1.12 $ $Date: 2004/02/09 20:30:34 $
  */
 
 
@@ -466,5 +466,27 @@ public class EBRTestCase extends RulesBaseTestCase {
         
         list = digester.getRules().match(null, "a/b/c/d");
         assertEquals("Long match (4)", 0, list.size());
+    }
+    
+    public void testInstructors() {
+        digester.getRules().clear();
+        
+        digester.addRule("!instructors/*", new TestRule("instructors"));
+        digester.addRule("!instructor/*", new TestRule("instructor"));
+        
+        List list = digester.getRules().match(null, "instructors");
+        assertEquals("Only expect to match instructors", 1, list.size());
+        assertEquals("Instructors expected", "instructors" , ((TestRule) list.get(0)).getIdentifier()); 
+
+    }
+    
+    public void testMiddleInstructors() {
+        digester.getRules().clear();
+        
+        digester.addRule("!instructors/*", new TestRule("instructors"));
+        
+        List list = digester.getRules().match(null, "/tosh/instructors/fiddlesticks");
+        assertEquals("No matches expected", 0, list.size());
+
     }
 }
