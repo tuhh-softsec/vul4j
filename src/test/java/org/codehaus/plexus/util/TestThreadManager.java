@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Logger;
 /**
- * Manages  a number of test threads, which notify this instance when they have 
+ * Manages  a number of test threads, which notify this manager when they have
  * completed. Allows TestCases to easily start and manage multiple test threads.  
  * 
  * <p>Created on 9/06/2003</p>
