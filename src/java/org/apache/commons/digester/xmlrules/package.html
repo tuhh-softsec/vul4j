@@ -1,0 +1,259 @@
+<html>
+  <head>
+    <title>Documentation for org.apache.commons.digester.xmlrules</title>
+  </head>
+<body bgcolor="white">
+
+<a name="doc.Description"></a>
+<p>The <code>xmlrules</code>  package provides for XML-based definition of
+rules for <code>Digester</code>. This improves maintainability of Java code,
+as rules are now defined in XML and read into <code>Digester</code> at run-time.
+</p>
+<br />
+<br />
+<div align="center">
+<a href="#doc.Intro">[Introduction]</a>
+<br />
+<a href="#doc.DTD">[DTD Overview]</a>
+<br />
+<a href="#doc.RuleElements">[Rule Elements]</a>
+<br />
+<a href="#doc.Patterns">[Matching Patterns]</a>
+<br />
+<a href="#doc.Inclusion">[Including rules files in other rules files]</a>
+<br />
+<a href="#doc.InclusionJava">[Including programmatically-created rules]</a>
+<br />
+<a href="#doc.DigesterCreation">[Creating a digester from XML]</a>
+<br />
+</div>
+
+<a name="doc.Intro"></a>
+<h3>Introduction</h3>
+
+<p>This is a brief overview of the digester-rules-in-XML feature. Briefly,
+this feature lets you define Digester rules in XML, instead of
+creating and initializing the Rules objects programmatically, which can become
+tedious.  In addition, it allows for including of one XML rules file within
+another, inclusion of programmatically created rule sets within an XML file
+(via reflection), and recursively nested matching pattern specifications.
+</p>
+
+<a name="doc.DTD"></a>
+<h2>Overview of digester-rules.dtd</h2>
+
+<p>A DTD, named <code>digester-rules.dtd</code> has been defined to help in the
+understanding of how the loader operates.
+</p>
+
+<a name="doc.RuleElements"></a>
+<h3>Rule elements:</h3>
+
+<p>The DTD defines an element type corresponding to each predefined Digester
+rule. Each rule element type includes attributes for values needed to
+initialize the rule, and an optional <code>pattern</code> attribute
+specifying the pattern to associate with the rule.
+<br />
+<br />
+The <code>DigesterLoader</code> adds the rules to the digester in the order in
+which they occur in the XML.
+<br />
+<br />
+The use of each rule element type should be self-explanatory, if you compare
+them to the API documentation for the <code>Digester</code> rules classes.
+</p>
+
+<a name="doc.Patterns"></a>
+<h3>Defining matching patterns:</h3>
+
+<p>The matching pattern is a simple, xpath-like string which the
+<code>Digester</code> uses to determine which elements to apply each rule to.
+See the <code>Digester</code> <a href="../package-summary.html">documentation</a> for
+more details.
+<br />
+There are two methods for associating patterns to rules in the XML file. One
+is for each rule element to directly define its pattern in a
+<code>pattern</code> attribute. An example would like something like:
+<pre>
+      &lt;digester-rules&gt;
+        &lt;object-create-rule pattern="*/foo" classname="Foo"/&gt;
+        &lt;set-properties-rule pattern="*/foo"/&gt;
+      &lt;/digester-rules&gt;
+</pre>
+<br />
+In the above example, an <code>ObjectCreateRule</code> is created and
+associated with the pattern "*/foo"; then a <code>SetPropertiesRule</code> is
+created and associated with the pattern "*/foo".
+<br />
+<br />
+The other method is to nest rules elements inside a
+<code>&lt;pattern&gt;</code> element. In this way, the same pattern can be
+defined for a group of rules. The following example has the same effect as the
+previous example:
+<pre>
+	   &lt;digester-rules&gt;
+		 &lt;pattern value="*/foo"&gt;
+		   &lt;object-create-rule classname="Foo"/&gt;
+		   &lt;set-properties-rule/&gt;
+		 &lt;/pattern&gt;
+	   &lt;/digester-rules&gt;
+</pre>
+<br />
+<br />
+Pattern elements can be recursively nested. If patterns are nested,	the pattern
+string is formed by concatenating all the patterns together. Example:
+<pre>
+       &lt;digester-rules&gt;
+		 &lt;pattern value="*/foo"&gt;
+		   &lt;pattern value="bar"&gt;
+			 &lt;object-create-rule classname="Foobar"/&gt;
+			 &lt;set-properties-rule/&gt;
+		   &lt;/pattern&gt;
+		 &lt;/pattern&gt;
+	   &lt;/digester-rules&gt;
+</pre>
+<br />
+In the above example, an <code>ObjectCreateRule</code> and a
+<code>SetPropertiesRule</code> are associated with the matching pattern
+"*/foo/bar".
+<br />
+The use of pattern elements and the use of the pattern attribute inside rules
+elements can be freely mixed. The next example has the same effect as the
+previous example:
+<pre>
+	   &lt;digester-rules&gt;
+		 &lt;pattern value="*/foo"&gt;
+		   &lt;object-create-rule pattern="bar" classname="Foobar"/&gt;
+		   &lt;set-properties-rule pattern="bar"/&gt;
+		 &lt;/pattern&gt;
+	   &lt;/digester-rules&gt;
+</pre>
+</p>
+
+<a name="doc.Inclusion"></a>
+<h3>Including rules XML files within other rules XML files:</h3>
+
+<p>
+The <code>&lt;include&gt</code> element lets you include one rules file within
+another. With respect to pattern concatenation, the <code>DigesterLoader</code>
+behaves as if the include file was 'macro-expanded'. Example:
+<pre>
+      File rules1.xml:
+         &lt;?xml version="1.0"?&gt;
+		 &lt;!DOCTYPE digester-rules SYSTEM "digester-rules.dtd"&gt;
+
+         &lt;digester-rules&gt;
+           &lt;pattern value="root/foo"&gt;
+             &lt;object-create-rule classname="Foo"/&gt;
+
+             &lt;include path="rules2.xml"/&gt;
+           &lt;/pattern&gt;
+         &lt;/digester-rules&gt;
+
+
+      File rules2.xml:
+         &lt;?xml version="1.0"?&gt;
+		 &lt;!DOCTYPE digester-rules SYSTEM "digester-rules.dtd"&gt;
+
+         &lt;digester-rules&gt;
+           &lt;pattern value="bar"&gt;
+             &lt;object-create-rule classname="Bar"/&gt;
+           &lt;/pattern&gt;
+         &lt;/digester-rules&gt;
+</pre>
+<br />
+Parsing rule1.xml would result in a <code>Digester</code> initialized with these
+pattern/rule pairs:
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;root/foo -> ObjectCreateRule(Foo)
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;root/foo/bar -> ObjectCreateRule(Bar)
+<br />
+<br />
+Note that the pattern for the 'bar' rule has been prepended with the 'root/foo'
+pattern. If rule2.xml was parsed by itself, it would yield a <code>Digester</code>
+initialized with this pattern/rule:
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;bar -> ObjectCreateRule(Bar)
+<br />
+<br />
+</p>
+
+<a name="doc.InclusionJava"></a>
+<h3>Including programmatically-created rules:</h3>
+
+<p>Sometimes rules cannot be easily defined via XML. Rule sets that are created
+programmatically can still be included within a digester-rules XML file. This
+is done by using an <code>&lt;include&gt;</code> element with a
+<code>class</code> attribute, containing the name of a class that implements
+<code>org.apache.commons.digester.xmlrules.DigesterRulesSource</code>.
+This interface defines one method, <code>getRules(Digester)</code>, which
+creates rules and adds them to the supplied Digester. The pattern concatenation
+works exactly as if the rules had been included from an XML file. Example:
+<pre>
+      File rules3.xml:
+         &lt;?xml version="1.0"?&gt;
+		 &lt;!DOCTYPE digester-rules SYSTEM "digester-rules.dtd"&gt;
+
+         &lt;digester-rules&gt;
+           &lt;pattern value="root/foo"&gt;
+             &lt;object-create-rule classname="Foo"/&gt;
+
+             &lt;include class="BarRuleCreator"/&gt;
+           &lt;/pattern&gt;
+         &lt;/digester-rules&gt;
+</pre>
+<br />
+BarRuleCreator class definition:
+<pre>
+          public class BarRuleCreator implements DigesterRulesSource {
+              public void getRules(Digester digester) {
+                  digester.addObjectCreate("bar", "Bar");
+              }
+          }
+</pre>
+<br />
+Parsing rules3.xml yields the same results as rules1.xml above:
+<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;root/foo -> ObjectCreateRule(Foo)
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;root/foo/bar -> ObjectCreateRule(Bar)
+</p>
+
+<a name="doc.DigesterCreation"></a>
+<h3>Creating a digester from XML:</h3>
+
+
+<p><code>FromXmlRuleSet</code> is a <code>RuleSet</code> implementation that
+initializes its <code>Digester</code> from rules defined in an XML file. The
+path to the XML file is passed to constructor.
+<br />
+<br />
+Alternatively, the convenience class </code>DigesterLoader</code> defines a
+static method,
+<code>Digester createDigester(String rulesXml) throws DigesterLoaderException</code>".
+When passing the name of the file that contains your digester rules, this
+method returns a <code>Digester</code> instance initialized with the rules.
+<br />
+<br />
+To add your own rules, you need to:
+<ul>
+<li>Update the DTD<br />You should add an element type for your rule. The
+element should have an attribute corresponding to each of the rule's
+initialization parameters.
+</li>
+<li>Define an <code>ObjectCreationFactory</code>
+</li>
+<li>Extend <code>DigesterRuleParser</code><br /><code>DigesterRuleParser</code>
+is a <code>RuleSet</code> for parsing a rules XML file. You should extend this,
+and override the <code>addRuleInstances()</code> method to add the rules for
+parsing your new element. Look in DigesterRuleParser.java to see how its done.
+</li>
+</ul>
+</p>
+
+  </body>
+</html>
