@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.2  2003/02/13 10:19:43  blautenb
+ * Updated Xerces exceptions to Xsec exception
+ *
  * Revision 1.1  2003/02/12 09:45:29  blautenb
  * Win32 Re-implementation of Xerces URIResolver to support re-directs
  *
@@ -111,8 +114,6 @@ class DSIG_EXPORT XSECURIResolverGenericWin32 : public XSECURIResolver {
 
 public:
 
-	typedef std::map<XMLCh *, char *, XMLString::compareIString> schemeMapType;
-	
 	/** @name Constructors and Destructors */
 	//@{
 

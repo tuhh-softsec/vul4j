@@ -73,6 +73,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.2  2003/02/13 10:19:43  blautenb
+ * Updated Xerces exceptions to Xsec exception
+ *
  * Revision 1.1  2003/02/12 09:45:29  blautenb
  * Win32 Re-implementation of Xerces URIResolver to support re-directs
  *
@@ -108,6 +111,7 @@ XSEC_USING_XERCES(XMLString);
 XSEC_USING_XERCES(ArrayJanitor);
 
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
+#include <xsec/framework/XSECError.hpp>
 
 HMODULE gWinsockLib = NULL;
 LPFN_GETHOSTBYNAME gWSgethostbyname = NULL;
@@ -301,16 +305,16 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
         if (numAddress == INADDR_NONE)
         {
             // Call WSAGetLastError() to get the error number.
-            ThrowXML1(NetAccessorException,
-                     XMLExcepts::NetAcc_TargetResolution, hostName);
+	        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported resolving IP address");
         }
         if ((hostEntPtr =
                 gethostbyaddr((const char *) &numAddress,
                               sizeof(unsigned long), AF_INET)) == NULL)
         {
             // Call WSAGetLastError() to get the error number.
-            ThrowXML1(NetAccessorException,
-                     XMLExcepts::NetAcc_TargetResolution, hostName);
+	        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported resolving IP address");
         }
     }
 
@@ -323,15 +327,15 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
     if (s == INVALID_SOCKET)
     {
         // Call WSAGetLastError() to get the error number.
-        ThrowXML1(NetAccessorException,
-                 XMLExcepts::NetAcc_CreateSocket, urlSource.getUriText());
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported creating socket");
     }
 
     if (connect(s, (struct sockaddr *) &sa, sizeof(sa)) == SOCKET_ERROR)
     {
         // Call WSAGetLastError() to get the error number.
-        ThrowXML1(NetAccessorException,
-                 XMLExcepts::NetAcc_ConnSocket, urlSource.getUriText());
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported connecting to socket");
     }
 
 
@@ -378,8 +382,8 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
     if ((aLent = send(s, fBuffer, lent, 0)) != lent)
     {
         // Call WSAGetLastError() to get the error number.
-        ThrowXML1(NetAccessorException,
-                 XMLExcepts::NetAcc_WriteSocket, urlSource.getUriText());
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported writing to socket");
     }
 
 
@@ -391,7 +395,8 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
     if (aLent == SOCKET_ERROR || aLent == 0)
     {
         // Call WSAGetLastError() to get the error number.
-        ThrowXML1(NetAccessorException, XMLExcepts::NetAcc_ReadSocket, urlSource.getUriText());
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported reading socket");
     }
 
     fBufferEnd = fBuffer+aLent;
@@ -426,7 +431,8 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
                 if (aLent == SOCKET_ERROR || aLent == 0)
                 {
                     // Call WSAGetLastError() to get the error number.
-                    ThrowXML1(NetAccessorException, XMLExcepts::NetAcc_ReadSocket, urlSource.getUriText());
+			        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported reading socket");
                 }
                 fBufferEnd = fBufferEnd + aLent;
                 *fBufferEnd = 0;
@@ -439,13 +445,15 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
     char *p = strstr(fBuffer, "HTTP");
     if (p == 0)
     {
-        ThrowXML1(NetAccessorException, XMLExcepts::NetAcc_ReadSocket, urlSource.getUriText());
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported reading socket");
     }
 
     p = strchr(p, ' ');
     if (p == 0)
     {
-        ThrowXML1(NetAccessorException, XMLExcepts::NetAcc_ReadSocket, urlSource.getUriText());
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported reading socket");
     }
 
     int httpResponse = atoi(p);
@@ -461,12 +469,14 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
         p = strstr(p, "Location:");
         if (p == 0)
         {
-			ThrowXML(NetAccessorException, XMLExcepts::NetAcc_ReadSocket);
+	        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported reading socket");
         }
         p = strchr(p, ' ');
 		if (p == 0)
 		{
-			ThrowXML(NetAccessorException, XMLExcepts::NetAcc_ReadSocket);
+	        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported reading socket");
 		}
 		
 		// Now read
@@ -487,7 +497,8 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
         // Most likely a 404 Not Found error.
         //   Should recognize and handle the forwarding responses.
         //
-        ThrowXML1(NetAccessorException, XMLExcepts::File_CouldNotOpenFile, urlSource.getUriText());
+        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Unknown HTTP response received");
     }
 
     return (unsigned int) s;
@@ -554,7 +565,8 @@ unsigned int XSECBinHTTPURIInputStream::readBytes(XMLByte* const    toFill
         if (len == SOCKET_ERROR)
         {
             // Call WSAGetLastError() to get the error number.
-            ThrowXML(NetAccessorException, XMLExcepts::NetAcc_ReadSocket);
+	        throw XSECException(XSECException::HTTPURIInputStreamError,
+							"Error reported reading socket");
         }
     }
 
