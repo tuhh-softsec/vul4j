@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd"
+[
+  <!ENTITY % xmlsec_entities SYSTEM "./xmlsec_entities.ent"> 
+  %xmlsec_entities; 
+]>
+
+<document> 
+  <header> 
+    <title>Downloading the Libraries</title> 
+  </header> 
+  <body> 
+	<section>
+	  <title>Obtaining the Libraries</title>
+	  <p>
+		Source and binrary distributions for both the Java and C++ libraries
+		are available from one of the Apache mirrors.
+	  </p>
+	  <p>
+		Click <jump href="http://www.apache.org/dyn/closer.cgi/xml/security/">
+		here</jump> to choose the mirror closest to you.
+	  </p>
+	  <p>
+		If all else fails, the source can be downloaded directly from
+		<jump href="http://www.apache.org/dist/xml/security/">Apache</jump>.
+	  </p>
+	</section>
+    <section> 
+      <title>Validating Distribution Signatures</title>
+      <p>
+		All distributions are provided with signature <em>.sig</em> files.
+		These contain PGP signatures for the related distribution.
+		You should validate these using the keys found in the
+		<jump href="http://www.apache.org/dist/xml/security/keys.asc">
+		  key file</jump> downloaded from the Apache site.
+	  </p>
+	  <p/>
+	  <warning>
+		You should always use a key file downloaded from the Apache site
+		directly rather than from a mirror.
+	  </warning>
+	  <p>
+		Verification can be performed using :
+	  </p>
+	  <source>
+% pgpk -a keys.asc
+% pgpv xml-security-bin-1_0_5D2.zip.sig
+  <em>or</em>
+% pgp -ka keys.asc
+% pgp xml-security-bin-1_0_5D2.zip.sig
+  <em>or</em>
+% gpg --import keys.asc
+% gpg --verify xml-security-bin-1_0_5D2.zip.sig
+	  </source>
+	</section>
+    <section>
+      <title>CVS Download</title>
+      <p>
+		For the adventurous, this project's CVS repository can be checked 
+		out through anonymous (pserver) CVS with the following instruction 
+		set.  When prompted for a password for anonymous, simply enter 
+		"anoncvs" without quotes: 
+      </p>
+      <source>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
+	password: anoncvs
+	cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout
+	xml-security
+      </source>
+	</section>
+  </body>
+</document>
+
+
+
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->
