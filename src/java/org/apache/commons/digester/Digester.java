@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.35 2002/01/05 23:02:53 craigmcc Exp $
- * $Revision: 1.35 $
- * $Date: 2002/01/05 23:02:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.36 2002/01/05 23:10:54 craigmcc Exp $
+ * $Revision: 1.36 $
+ * $Date: 2002/01/05 23:10:54 $
  *
  * ====================================================================
  *
@@ -111,7 +111,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.35 $ $Date: 2002/01/05 23:02:53 $
+ * @version $Revision: 1.36 $ $Date: 2002/01/05 23:10:54 $
  */
 
 public class Digester extends DefaultHandler {
@@ -303,8 +303,7 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * The Log to which all logging calls will be made.  By default a NoOpLog
-     * is used, which means no output is done at all.
+     * The Log to which all logging calls will be made.
      */
     protected Log log = LogSource.getInstance("org.apache.commons.digester");
 
