@@ -63,6 +63,8 @@ package org.apache.xml.security.transforms.implementations;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -146,7 +148,8 @@ public class TransformBase64Decode extends TransformSpi {
            throws IOException, CanonicalizationException,
                   TransformationException, InvalidCanonicalizerException {
 
-      if (input.isOctetStream()) {
+	 try {
+      if (input.isOctetStream() || isTextNodeSet(input.getNodeSet())) {
          try {
             byte[] base64Bytes = input.getBytes();
             byte[] decodedBytes = Base64.decode(base64Bytes);
@@ -157,7 +160,7 @@ public class TransformBase64Decode extends TransformSpi {
             throw new TransformationException("empty", ex);
          }
       } else {
-         try {
+		  try {
             Document doc =
                DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
                   input.getOctetStream());
@@ -174,19 +177,24 @@ public class TransformBase64Decode extends TransformSpi {
             process(treewalker, sb);
 
             byte[] decodedBytes = Base64.decode(sb.toString());
-
+			
             return new XMLSignatureInput(
                new ByteArrayInputStream(decodedBytes));
-         } catch (ParserConfigurationException e) {
-            throw new TransformationException("c14n.Canonicalizer.Exception",
-                                              e);
-         } catch (SAXException e) {
-            throw new TransformationException("c14n.Canonicalizer.Exception",
-                                              e);
-         } catch (Base64DecodingException ex) {
-            throw new TransformationException("empty", ex);
-         }
+		  } catch (ParserConfigurationException e) {
+			  throw new TransformationException("c14n.Canonicalizer.Exception",
+												e);
+		  } catch (SAXException e) {
+			  throw new TransformationException("SAX exception", e);
+		  } catch (Base64DecodingException ex) {
+			  throw new TransformationException("empty", ex);
+		  }
       }
+	 } catch (ParserConfigurationException e) {
+		 throw new TransformationException("c14n.Canonicalizer.Exception",
+										   e);
+	 } catch (SAXException e) {
+		 throw new TransformationException("SAX exception", e);
+	 }
    }
 
    /**
@@ -209,6 +217,25 @@ public class TransformBase64Decode extends TransformSpi {
       }
 
       treewalker.setCurrentNode(currentNode);
+   }
+
+   /**
+	* Method to take a set of nodes and check whether any are "non-text"
+	*/
+
+   private boolean isTextNodeSet(Set s) {
+
+	   boolean isText = true;
+
+	   Iterator it = s.iterator();
+	   while (it.hasNext() && isText) {
+				
+		   Node n = (Node) it.next();
+		   if (n.getNodeType() != Node.TEXT_NODE)
+			   isText = false;
+	   }
+
+	   return isText;
    }
 
    /**

@@ -58,6 +58,7 @@
  */
 package org.apache.xml.security.encryption;
 
+import org.w3c.dom.Attr;
 
 
 /**
@@ -101,6 +102,13 @@ public interface CipherReference {
      * dereferenced.
      */
     String getURI();
+
+	/**
+	 * Gets the URI as an Attribute node.  Used to meld the CipherREference
+	 * with the XMLSignature ResourceResolvers
+	 */
+
+	public Attr getURIAsAttr();
 
     /**
      * Returns the <code>Transforms</code> that specifies how to transform the

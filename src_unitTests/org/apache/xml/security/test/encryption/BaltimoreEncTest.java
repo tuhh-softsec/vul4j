@@ -112,7 +112,6 @@ decryption-transform-except.xml
 decryption-transform.xml        
 encrypt-content-aes192-cbc-dh-sha512.xml
 encrypt-data-tripledes-cbc-rsa-oaep-mgf1p-sha256.xml
-encrypt-element-aes192-cbc-ref.xml
 encrypt-element-aes256-cbc-carried-kw-aes256.xml
 encrypt-element-aes256-cbc-kw-aes256-dh-ripemd160.xml
 encrypt-element-aes256-cbc-retrieved-kw-aes256.xml
@@ -256,7 +255,7 @@ public class BaltimoreEncTest extends TestCase {
 	 * Check that the document has the correct number of nodes
 	 */
 
-	private void checkDecryptedDoc(Document d) throws Exception {
+	private void checkDecryptedDoc(Document d, boolean doNodeCheck) throws Exception {
 
 		String cc = retrieveCCNumber(d);
 		log.debug("Retrieved Credit Card : " + cc);
@@ -264,11 +263,12 @@ public class BaltimoreEncTest extends TestCase {
 
 		// Test cc numbers
 
-		int myNodeCount = countNodes(d);
+		if (doNodeCheck) {
+			int myNodeCount = countNodes(d);
 
-		assertTrue("Node count mismatches", 
-				   ((myNodeCount > 0) && myNodeCount == nodeCount));
-
+			assertTrue("Node count mismatches", 
+					   ((myNodeCount > 0) && myNodeCount == nodeCount));
+		}
 	}
 
 	/**
@@ -294,7 +294,7 @@ public class BaltimoreEncTest extends TestCase {
 		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-tripledes-cbc.xml";
 
 		Document dd = decryptElement(filename);
-		checkDecryptedDoc(dd);
+		checkDecryptedDoc(dd, true);
     }
 
 	/**
@@ -309,7 +309,7 @@ public class BaltimoreEncTest extends TestCase {
 		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes256-cbc-prop.xml";
 
 		Document dd = decryptElement(filename);
-		checkDecryptedDoc(dd);
+		checkDecryptedDoc(dd, true);
     }
 
 	/**
@@ -325,7 +325,7 @@ public class BaltimoreEncTest extends TestCase {
 		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes128-cbc-kw-aes192.xml";
 
 		Document dd = decryptElement(filename);
-		checkDecryptedDoc(dd);
+		checkDecryptedDoc(dd, true);
 
     }
 
@@ -342,7 +342,7 @@ public class BaltimoreEncTest extends TestCase {
 		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-tripledes-cbc-kw-aes128.xml";
 
 		Document dd = decryptElement(filename);
-		checkDecryptedDoc(dd);
+		checkDecryptedDoc(dd, true);
 
     }
 
@@ -359,8 +359,26 @@ public class BaltimoreEncTest extends TestCase {
 		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes128-cbc-rsa-1_5.xml";
 
 		Document dd = decryptElement(filename);
-		checkDecryptedDoc(dd);
+		checkDecryptedDoc(dd, true);
 
+    }
+
+	/**
+	 * Method test_five_element_aes192_cbc_ref
+	 *
+	 * Check the merlin-enc-five element data test for AES192 with
+	 * a CipherReference element
+	 *
+	 */
+
+	public void test_five_element_aes192_cbc_ref() throws Exception {
+
+		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes192-cbc-ref.xml";
+
+		Document dd = decryptElement(filename);
+		// Note - we don't check the node count, as it will be different
+		// due to the encrypted text remainin in the reference nodes
+		checkDecryptedDoc(dd, false);
     }
 
 	/**

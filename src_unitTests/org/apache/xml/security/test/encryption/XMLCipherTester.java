@@ -80,6 +80,10 @@ import junit.framework.TestCase;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
+import org.apache.xml.security.encryption.EncryptionMethod;
+import org.apache.xml.security.encryption.CipherData;
+import org.apache.xml.security.transforms.params.XPathContainer;
+import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.Method;
@@ -100,6 +104,8 @@ public class XMLCipherTester extends TestCase {
     private String elementIndex;
     private XMLCipher cipher;
 
+	private String tstBase64EncodedString;
+
     public XMLCipherTester(String test) {
        super(test);
     }
@@ -111,6 +117,8 @@ public class XMLCipherTester extends TestCase {
             "path");
         elementIndex = System.getProperty("org.apache.xml.enc.test.idx",
             "0");
+
+		tstBase64EncodedString = new String("YmNkZWZnaGlqa2xtbm9wcRrPXjQ1hvhDFT+EdesMAPE4F6vlT+y0HPXe0+nAGLQ8");
     }
 
     protected void tearDown() {
@@ -452,6 +460,72 @@ public class XMLCipherTester extends TestCase {
 
         Assert.assertEquals(source, target);
     }
+
+	/*
+	 * Test a Cipher Reference
+	 */
+
+	public void testSameDocumentCipherReference() throws Exception {
+
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
+
+		Document d = db.newDocument();
+
+		Element docElement = d.createElement("EncryptedDoc");
+		d.appendChild(docElement);
+
+		// Create the XMLCipher object
+		XMLCipher cipher = XMLCipher.getInstance();
+
+		EncryptedData ed = 
+			cipher.createEncryptedData(CipherData.REFERENCE_TYPE,
+									   "#CipherTextId");
+		EncryptionMethod em =
+			cipher.createEncryptionMethod(XMLCipher.AES_128);
+
+		ed.setEncryptionMethod(em);
+
+		org.apache.xml.security.encryption.Transforms xencTransforms =
+			cipher.createTransforms(d);
+		ed.getCipherData().getCipherReference().setTransforms(xencTransforms);
+		org.apache.xml.security.transforms.Transforms dsTransforms =
+			xencTransforms.getDSTransforms();
+
+		// An XPath transform
+		XPathContainer xpc = new XPathContainer(d);
+		xpc.setXPath("self::text()[parent::CipherText[@Id=\"CipherTextId\"]]");
+		dsTransforms.addTransform(org.apache.xml.security.transforms.Transforms.TRANSFORM_XPATH, 
+								  xpc.getElementPlusReturns());
+
+		// Add a Base64 Transforms
+		dsTransforms.addTransform(
+								  org.apache.xml.security.transforms.Transforms.TRANSFORM_BASE64_DECODE);
+
+		Element ee = cipher.martial(d, ed);
+
+		docElement.appendChild(ee);
+
+		// Add the cipher text
+		Element encryptedElement = d.createElement("CipherText");
+		encryptedElement.setAttributeNS(null, "Id", "CipherTextId");
+		IdResolver.registerElementById(encryptedElement, "CipherTextId");
+		encryptedElement.appendChild(d.createTextNode(tstBase64EncodedString));
+		docElement.appendChild(encryptedElement);
+		// dump(d);
+
+		// Now the decrypt, with a brand new cipher
+		XMLCipher cipherDecrypt = XMLCipher.getInstance();
+        Key key = 
+			new SecretKeySpec("abcdefghijklmnop".getBytes("ASCII"), "AES");
+
+		cipherDecrypt.init(XMLCipher.DECRYPT_MODE, key);
+		byte[] decryptBytes = cipherDecrypt.decryptToByteArray(ee);
+
+        Assert.assertEquals(new String(decryptBytes, "ASCII"), 
+							new String("A test encrypted secret"));
+
+	}
 
     private void dump(Element element) {
         OutputFormat of = new OutputFormat();

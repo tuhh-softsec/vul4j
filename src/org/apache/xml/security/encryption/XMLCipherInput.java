@@ -59,43 +59,20 @@
 
 package org.apache.xml.security.encryption;
 
-//import java.io.IOException;
-//import java.io.StringReader;
-//import java.io.StringWriter;
-//import java.io.UnsupportedEncodingException;
-//import java.io.ByteArrayOutputStream;
-//import java.lang.Integer;
-//import java.security.InvalidKeyException;
-//import java.security.Key;
-//import java.security.InvalidAlgorithmParameterException;
-//import java.security.NoSuchAlgorithmException;
-//import java.security.NoSuchProviderException;
-//import java.util.HashMap;
-//import java.util.Iterator;
-//import java.util.LinkedList;
-//import java.util.List;
-//import java.util.Map;
-//import javax.crypto.BadPaddingException;
-//import javax.crypto.Cipher;
-//import javax.crypto.IllegalBlockSizeException;
-//import javax.crypto.NoSuchPaddingException;
-//import javax.crypto.spec.IvParameterSpec;
-//import javax.xml.parsers.DocumentBuilder;
-//import javax.xml.parsers.DocumentBuilderFactory;
-//import javax.xml.parsers.ParserConfigurationException;
-//import org.apache.xml.security.keys.KeyInfo;
-//import org.apache.xml.security.utils.Constants;
-//import org.apache.xml.security.utils.EncryptionConstants;
-//import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-//import org.apache.xml.security.algorithms.JCEMapper;
-//import org.apache.xml.security.c14n.Canonicalizer;
-//import org.apache.xml.security.transforms.Transform;
-//import org.apache.xml.security.utils.ElementProxy;
+import java.io.IOException;
+
+import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.utils.resolver.ResourceResolver;
+import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.exceptions.Base64DecodingException;
-//import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.transforms.TransformationException;
 //import org.apache.xml.serialize.OutputFormat;
 //import org.apache.xml.serialize.XMLSerializer;
 //import org.apache.xml.utils.URI;
+import org.w3c.dom.Attr;
 //import org.w3c.dom.Document;
 //import org.w3c.dom.DocumentFragment;
 //import org.w3c.dom.NamedNodeMap;
@@ -191,10 +168,61 @@ public class XMLCipherInput {
 		String base64EncodedEncryptedOctets = null;
 
         if (_cipherData.getDataType() == CipherData.REFERENCE_TYPE) {
+			// Fun time!
+			logger.debug("Found a reference type CipherData");
+			CipherReference cr = _cipherData.getCipherReference();
+
+			// Need to wrap the uri in an Attribute node so that we can
+			// Pass to the resource resolvers
+
+			Attr uriAttr = cr.getURIAsAttr();
+			XMLSignatureInput input = null;
+
+			try {
+				ResourceResolver resolver = 
+					ResourceResolver.getInstance(uriAttr, null);
+				input = resolver.resolve(uriAttr, null);
+			} catch (ResourceResolverException ex) {
+				throw new XMLEncryptionException("empty", ex);
+			} catch (XMLSecurityException ex) {
+				throw new XMLEncryptionException("empty", ex);
+			}
+
+			if (input != null) {
+				logger.debug("Managed to resolve URI \"" + cr.getURI() + "\"");
+			}
+			else {
+				logger.debug("Failed to resolve URI \"" + cr.getURI() + "\"");
+			}
+		
+			// Lets see if there are any transforms
+			Transforms transforms = cr.getTransforms();
+			if (transforms != null) {
+				logger.debug ("Have transforms in cipher reference");
+				try {
+ 				    org.apache.xml.security.transforms.Transforms dsTransforms =
+						transforms.getDSTransforms();
+				    input =	dsTransforms.performTransforms(input);
+				} catch (TransformationException ex) {
+					throw new XMLEncryptionException("empty", ex);
+				}
+			}
+
+			try {
+				return input.getBytes();
+			}
+			catch (IOException ex) {
+				throw new XMLEncryptionException("empty", ex);
+			} catch (InvalidCanonicalizerException ex) {
+				throw new XMLEncryptionException("empty", ex);
+			} catch (CanonicalizationException ex) {
+				throw new XMLEncryptionException("empty", ex);
+			}
+			
             // retrieve the cipher text
         } else if (_cipherData.getDataType() == CipherData.VALUE_TYPE) {
-            CipherValue cipherValue = _cipherData.getCipherValue();
-            base64EncodedEncryptedOctets = new String(cipherValue.getValue());
+            CipherValue cv = _cipherData.getCipherValue();
+            base64EncodedEncryptedOctets = new String(cv.getValue());
         } else {
 			throw new XMLEncryptionException("CipherData.getDataType() returned unexpected value");
 		}

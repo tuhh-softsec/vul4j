@@ -93,6 +93,9 @@ import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.transforms.InvalidTransformException;
+import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xml.utils.URI;
@@ -101,6 +104,7 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.Attr;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -533,6 +537,9 @@ public class XMLCipher {
 	 *
 	 * Takes an EncryptedData object and returns a DOM Element that
 	 * represents the appropriate <code>EncryptedData</code>
+	 * <p>
+	 * <b>Note:</b> This should only be used in cases where the context
+	 * document has been passed in via a call to doFinal.
 	 *
 	 * @param encryptedData EncryptedData object to martial
 	 * @return the DOM <code>Element</code> representing the passed in
@@ -551,6 +558,10 @@ public class XMLCipher {
 	 * Takes an EncryptedKey object and returns a DOM Element that
 	 * represents the appropriate <code>EncryptedKey</code>
 	 *
+	 * <p>
+	 * <b>Note:</b> This should only be used in cases where the context
+	 * document has been passed in via a call to doFinal.
+	 *
 	 * @param encryptedKey EncryptedKey object to martial
 	 * @return the DOM <code>Element</code> representing the passed in
 	 * object */
@@ -558,6 +569,44 @@ public class XMLCipher {
 	public Element martial(EncryptedKey encryptedKey) 
 		throws XMLEncryptionException {
 
+		return (_factory.toElement (encryptedKey));
+
+	}
+
+	/**
+	 * Martial an EncryptedData
+	 *
+	 * Takes an EncryptedData object and returns a DOM Element that
+	 * represents the appropriate <code>EncryptedData</code>
+	 *
+	 * @param context The document that will own the returned nodes
+	 * @param encryptedData EncryptedData object to martial
+	 * @return the DOM <code>Element</code> representing the passed in
+	 * object */
+
+	public Element martial(Document context, EncryptedData encryptedData) 
+		throws XMLEncryptionException {
+
+		_contextDocument = context;
+		return (_factory.toElement (encryptedData));
+
+	}
+
+	/**
+	 * Martial an EncryptedKey
+	 *
+	 * Takes an EncryptedKey object and returns a DOM Element that
+	 * represents the appropriate <code>EncryptedKey</code>
+	 *
+	 * @param context The document that will own the created nodes
+	 * @param encryptedKey EncryptedKey object to martial
+	 * @return the DOM <code>Element</code> representing the passed in
+	 * object */
+
+	public Element martial(Document context, EncryptedKey encryptedKey) 
+		throws XMLEncryptionException {
+
+		_contextDocument = context;
 		return (_factory.toElement (encryptedKey));
 
 	}
@@ -1391,13 +1440,22 @@ public class XMLCipher {
         return (plainBytes);
     }
 		
-
+	/*
+	 * Expose the interface for creating XML Encryption objects
+	 */
 
     /**
      * Creates an <code>EncryptedData</code> <code>Element</code>.
      *
+	 * The newEncryptedData and newEncryptedKey methods create fairly complete
+	 * elements that are immediately useable.  All the other create* methods
+	 * return bare elements that still need to be built upon.
+	 *
+	 * @param type Either REFERENCE_TYPE or VALUE_TYPE - defines what kind of
+	 * CipherData this EncryptedData will contain.
      * @param text the Base 64 encoded, encrypted text to wrap in the
-     *   <code>EncryptedData</code>.
+     *   <code>EncryptedData</code> or the URI to set in the CipherReference
+	 * (usage will depend on the <code>type</code>
      * @return the <code>EncryptedData</code> <code>Element</code>.
      *
      * <!--
@@ -1418,24 +1476,19 @@ public class XMLCipher {
      * -->
      */
 
-    private EncryptedData createEncryptedData(int type, String value) throws
+    public EncryptedData createEncryptedData(int type, String value) throws
             XMLEncryptionException {
         EncryptedData result = null;
         CipherData data = null;
 
         switch (type) {
             case CipherData.REFERENCE_TYPE:
-                String referenceUri = null;
-                try {
-                    referenceUri = new URI(value).toString();
-                } catch (URI.MalformedURIException mfue) {
-                    throw new XMLEncryptionException("empty", mfue);
-                }
                 CipherReference cipherReference = _factory.newCipherReference(
-                    referenceUri);
+                    value);
                 data = _factory.newCipherData(type);
                 data.setCipherReference(cipherReference);
                 result = _factory.newEncryptedData(data);
+				break;
             case CipherData.VALUE_TYPE:
                 CipherValue cipherValue = _factory.newCipherValue(value);
                 data = _factory.newCipherData(type);
@@ -1445,15 +1498,23 @@ public class XMLCipher {
 
         return (result);
     }
+
     /**
-     * Creates an <code>EncryptedData</code> <code>Element</code>.
+     * Creates an <code>EncryptedKey</code> <code>Element</code>.
      *
+	 * The newEncryptedData and newEncryptedKey methods create fairly complete
+	 * elements that are immediately useable.  All the other create* methods
+	 * return bare elements that still need to be built upon.
+	 *
+	 * @param type Either REFERENCE_TYPE or VALUE_TYPE - defines what kind of
+	 * CipherData this EncryptedData will contain.
      * @param text the Base 64 encoded, encrypted text to wrap in the
-     *   <code>EncryptedData</code>.
-     * @return the <code>EncryptedData</code> <code>Element</code>.
+     *   <code>EncryptedKey</code> or the URI to set in the CipherReference
+	 * (usage will depend on the <code>type</code>
+     * @return the <code>EncryptedKey</code> <code>Element</code>.
      *
      * <!--
-     * <EncryptedData Id[OPT] Type[OPT] MimeType[OPT] Encoding[OPT]>
+     * <EncryptedKey Id[OPT] Type[OPT] MimeType[OPT] Encoding[OPT]>
      *     <EncryptionMethod/>[OPT]
      *     <ds:KeyInfo>[OPT]
      *         <EncryptedKey/>[OPT]
@@ -1470,24 +1531,19 @@ public class XMLCipher {
      * -->
      */
 
-    private EncryptedKey createEncryptedKey(int type, String value) throws
+    public EncryptedKey createEncryptedKey(int type, String value) throws
             XMLEncryptionException {
         EncryptedKey result = null;
         CipherData data = null;
 
         switch (type) {
             case CipherData.REFERENCE_TYPE:
-                String referenceUri = null;
-                try {
-                    referenceUri = new URI(value).toString();
-                } catch (URI.MalformedURIException mfue) {
-                    throw new XMLEncryptionException("empty", mfue);
-                }
                 CipherReference cipherReference = _factory.newCipherReference(
-                    referenceUri);
+                    value);
                 data = _factory.newCipherData(type);
                 data.setCipherReference(cipherReference);
                 result = _factory.newEncryptedKey(data);
+				break;
             case CipherData.VALUE_TYPE:
                 CipherValue cipherValue = _factory.newCipherValue(value);
                 data = _factory.newCipherData(type);
@@ -1497,6 +1553,106 @@ public class XMLCipher {
 
         return (result);
     }
+
+	/**
+	 * Create an AgreementMethod object
+	 *
+	 * @param algorithm Algorithm of the agreement method
+	 */
+
+	public AgreementMethod createAgreementMethod(String algorithm) throws
+		XMLEncryptionException {
+		return (_factory.newAgreementMethod(algorithm));
+	}
+
+	/**
+	 * Create a CipherData object
+	 *
+	 * @param type Type of this CipherData (either VALUE_TUPE or
+	 * REFERENCE_TYPE)
+	 */
+
+	public CipherData createCipherData(int type) {
+		return (_factory.newCipherData(type));
+	}
+
+	/**
+	 * Create a CipherReference object
+	 *
+	 * @param uri The URI that the reference will refer to
+	 */
+
+	public CipherReference createCipherReference(String uri) throws
+		XMLEncryptionException {
+		return (_factory.newCipherReference(uri));
+	}
+	
+	/**
+	 * Create a CipherValue element
+	 *
+	 * @param value The value to set the ciphertext to
+	 */
+
+	public CipherValue createCipherValue(String value) {
+		return (_factory.newCipherValue(value));
+	}
+
+	/**
+	 * Create an EncryptedMethod object
+	 *
+	 * @param algorithm Algorithm for the encryption
+	 */
+	public EncryptionMethod createEncryptionMethod(String algorithm) throws
+		XMLEncryptionException {
+		return (_factory.newEncryptionMethod(algorithm));
+	}
+
+	/**
+	 * Create an EncryptedProperties element
+	 *
+	 */
+	public EncryptionProperties createEncryptionProperties() {
+		return (_factory.newEncryptionProperties());
+	}
+
+	/**
+	 * Create a new EncryptionProperty element
+	 */
+	public EncryptionProperty createEncryptionProperty() {
+		return (_factory.newEncryptionProperty());
+	}
+
+	/**
+	 * Create a new ReferenceList object
+	 */
+	public ReferenceList createReferenceList(int type) {
+		return (new ReferenceList(type));
+	}
+	
+	/**
+	 * Create a new Transforms object
+	 * <p>
+	 * <b>Note</b>: A context document <i>must</i> have been set
+	 * elsewhere (possibly via a call to doFinal).  If not, use the
+	 * createTransforms(Document) method.
+	 */
+
+	public Transforms createTransforms() {
+		return (_factory.newTransforms());
+	}
+
+	/**
+	 * Create a new Transforms object
+	 *
+	 * Because the handling of Transforms is currently done in the signature
+	 * code, the creation of a Transforms object <b>requires</b> a
+	 * context document.
+	 *
+	 * @param doc Document that will own the created Transforms node
+	 */
+	public Transforms createTransforms(Document doc) {
+		return (_factory.newTransforms(doc));
+	}
 
     /**
      * Converts <code>String</code>s into <code>Node</code>s and visa versa.
@@ -1505,6 +1661,7 @@ public class XMLCipher {
      *
      * @author  Axl Mattheus
      */
+
     private class Serializer {
         private OutputFormat format;
         private XMLSerializer _serializer;
@@ -1691,6 +1848,7 @@ public class XMLCipher {
         }
     }
 
+
     /**
      *
      * @author Axl Mattheus
@@ -1781,6 +1939,13 @@ public class XMLCipher {
          */
         Transforms newTransforms() {
             return (new TransformsImpl());
+        }
+
+        /**
+         *
+         */
+        Transforms newTransforms(Document doc) {
+            return (new TransformsImpl(doc));
         }
 
         /**
@@ -1878,7 +2043,7 @@ public class XMLCipher {
             if (type == CipherData.VALUE_TYPE) {
                 result.setCipherValue(newCipherValue(e));
             } else if (type == CipherData.REFERENCE_TYPE) {
-                //
+                result.setCipherReference(newCipherReference(e));
             }
 
             return (result);
@@ -1896,14 +2061,35 @@ public class XMLCipher {
         // </complexType>
         CipherReference newCipherReference(Element element) throws
                 XMLEncryptionException {
-            // NOTE: ///////////////////////////////////////////////////////////
-            //
-            // This operation will be implemented during November 2002. Until
-            //then, complain.
-            // TODO: Implement.
-            String uo = "This operation is not implemented in this release.";
-            throw new XMLEncryptionException("empty",
-                new UnsupportedOperationException(uo));
+
+			Attr URIAttr = 
+				element.getAttributeNodeNS(null, EncryptionConstants._ATT_URI);
+			CipherReference result = new CipherReferenceImpl(URIAttr);
+
+			// Find any Transforms
+
+			NodeList transformsElements = element.getElementsByTagNameNS(
+                    EncryptionConstants.EncryptionSpecNS,
+                    EncryptionConstants._TAG_TRANSFORMS);
+            Element transformsElement =
+				(Element) transformsElements.item(0);
+			
+			if (transformsElement != null) {
+				logger.debug("Creating a DSIG based Transforms element");
+				try {
+					result.setTransforms(new TransformsImpl(transformsElement));
+				}
+				catch (XMLSignatureException xse) {
+					throw new XMLEncryptionException("empty", xse);
+				} catch (InvalidTransformException ite) {
+					throw new XMLEncryptionException("empty", ite);
+				} catch (XMLSecurityException xse) {
+					throw new XMLEncryptionException("empty", xse);
+				}
+
+			}
+
+			return result;
         }
 
         /**
@@ -2515,6 +2701,7 @@ public class XMLCipher {
 
             public void setCipherValue(CipherValue value) throws
                     XMLEncryptionException {
+
                 if (cipherType == REFERENCE_TYPE) {
                     throw new XMLEncryptionException("empty",
                         new UnsupportedOperationException(valueMessage));
@@ -2577,20 +2764,26 @@ public class XMLCipher {
         private class CipherReferenceImpl implements CipherReference {
             private String referenceURI = null;
             private Transforms referenceTransforms = null;
+			private Attr referenceNode = null;
 
             public CipherReferenceImpl(String uri) {
-                URI tmpReferenceURI = null;
-                try {
-                    tmpReferenceURI = new URI(uri);
-                } catch (URI.MalformedURIException mfue) {
-                    // complain
-                }
-                referenceURI = tmpReferenceURI.toString();
+				/* Don't check validity of URI as may be "" */
+                referenceURI = uri;
+				referenceNode = null;
             }
+
+			public CipherReferenceImpl(Attr uri) {
+				referenceURI = uri.getNodeValue();
+				referenceNode = uri;
+			}
 
             public String getURI() {
                 return (referenceURI);
             }
+
+			public Attr getURIAsAttr() {
+				return (referenceNode);
+			}
 
             public Transforms getTransforms() {
                 return (referenceTransforms);
@@ -3221,40 +3414,50 @@ public class XMLCipher {
         //         <element ref='ds:Transform' maxOccurs='unbounded'/>
         //     </sequence>
         // </complexType>
-        private class TransformsImpl implements Transforms {
-            private List transforms = null;
+        private class TransformsImpl extends
+		       org.apache.xml.security.transforms.Transforms 
+		       implements Transforms {
 
-            public TransformsImpl() {
-                transforms = new LinkedList();
-            }
+			/**
+			 * Construct Transforms
+			 */
 
-            public Iterator getTransforms() {
-                return (transforms.iterator());
-            }
+			public TransformsImpl() {
+				super(_contextDocument);
+			}
 
-            public void addTransform(Transform transform) {
-                transforms.add(transform);
-            }
+			public TransformsImpl(Document doc) {
+				super(doc);
+			}
 
-            public void removeTransform(Transform transform) {
-                transforms.remove(transform);
-            }
+			public TransformsImpl(Element element) 
+				throws XMLSignatureException,
+			           InvalidTransformException,
+				       XMLSecurityException,
+				       TransformationException {
 
-            // <complexType name='TransformsType'>
-            //     <sequence>
-            //         <element ref='ds:Transform' maxOccurs='unbounded'/>
-            //     </sequence>
-            // </complexType>
-            Element toElement() {
-                Element result = null;
+				super(element, "");
+				
+			}
 
-                result = ElementProxy.createElementForFamily(_contextDocument, 
-                    EncryptionConstants.EncryptionSpecNS, 
-                    EncryptionConstants._TAG_TRANSFORMS);
-                // TODO: figure out how to do this ...
+			public Element toElement() {
 
-                return (result);
-            }
+				if (_doc == null)
+					_doc = _contextDocument;
+
+				return getElement();
+			}
+
+			public org.apache.xml.security.transforms.Transforms getDSTransforms() {
+				return ((org.apache.xml.security.transforms.Transforms) this);
+			}
+
+
+			// Over-ride the namespace
+			public String getBaseNamespace() {
+				return EncryptionConstants.EncryptionSpecNS;
+			}
+
         }
     }
 }
