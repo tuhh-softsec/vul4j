@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.3 2001/05/22 04:06:27 craigmcc Exp $
- * $Revision: 1.3 $
- * $Date: 2001/05/22 04:06:27 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.4 2001/05/22 04:48:36 craigmcc Exp $
+ * $Revision: 1.4 $
+ * $Date: 2001/05/22 04:48:36 $
  *
  * ====================================================================
  *
@@ -66,6 +66,7 @@ package org.apache.commons.digester;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ import org.xml.sax.SAXParseException;
  * even from the same thread.</p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.3 $ $Date: 2001/05/22 04:06:27 $
+ * @version $Revision: 1.4 $ $Date: 2001/05/22 04:48:36 $
  */
 
 public class Digester extends DefaultHandler {
@@ -214,6 +215,13 @@ public class Digester extends DefaultHandler {
      * Do we want to use a validating parser?
      */
     protected boolean validating = false;
+
+
+    /**
+     * The PrintWriter to which we should send log output, or
+     * <code>null</code> to write to <code>System.out</code>.
+     */
+    protected PrintWriter writer = null;
 
 
     // ----------------------------------------------------------- Properties
@@ -342,6 +350,29 @@ public class Digester extends DefaultHandler {
     public void setValidating(boolean validating) {
 
 	this.validating = validating;
+
+    }
+
+
+    /**
+     * Return the logging writer for this Digester.
+     */
+    public PrintWriter getWriter() {
+
+        return (this.writer);
+
+    }
+
+
+    /**
+     * Set the logging writer for this Digester.
+     *
+     * @param writer The new PrintWriter, or <code>null</code> for
+     *  <code>System.out</code>.
+     */
+    public void setWriter(PrintWriter writer) {
+
+        this.writer = writer;
 
     }
 
@@ -734,7 +765,10 @@ public class Digester extends DefaultHandler {
      */
     public void log(String message) {
 
-	System.out.println(message);
+        if (writer == null)
+            System.out.println(message);
+        else
+            writer.println(message);
 
     }
 
@@ -748,8 +782,13 @@ public class Digester extends DefaultHandler {
      */
     public void log(String message, Throwable exception) {
 
-	System.out.println(message);
-	exception.printStackTrace(System.out);
+        if (writer == null) {
+            System.out.println(message);
+            exception.printStackTrace(System.out);
+        } else {
+            writer.println(message);
+            exception.printStackTrace(writer);
+        }
 
     }
 
