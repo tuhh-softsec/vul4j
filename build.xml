@@ -70,7 +70,7 @@
     <property name="lib.xerces" value="${libs}/xerces-1_4_3.jar" />
     <property name="lib.xalan"  value="${libs}/xalan-j_2_2_D10.jar" />
     <property name="lib.log4j"  value="${libs}/jakarta-log4j-1.1.3.jar" />
-    <property name="lib.jce"    value="${libs}/bc-jce-jdk13-108.jar" />
+    <property name="lib.jce"    value="${libs}/bc-jce-jdk13-109.jar" />
     <property name="lib.junit"  value="${libs}/junit3.7.jar" />
 
     <property name="doc" value="./doc" />
@@ -336,7 +336,6 @@ org.apache.xml.security.utils.*
   </target>
 
   <target name="createEnvelopingSignature" depends="compile.samples">
-    <echo message="Now I'll try to verify merlins example fifteen-HMAC"/>
     <java classname="org.apache.xml.security.samples.signature.CreateEnvelopingSignature"
           fork="yes">
         <classpath refid="classpath.library" />
