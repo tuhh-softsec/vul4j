@@ -86,7 +86,7 @@ public class InclusiveNamespaces extends ElementProxy
          if (prefix.equals("xmlns")) {
             sb.append("#default ");
          } else {
-            sb.append(prefix.substring("xmlns:".length()) + " ");
+            sb.append(prefix + " ");
          }
       }
 
@@ -127,8 +127,8 @@ public class InclusiveNamespaces extends ElementProxy
     * is returned as a Set containing the following Strings:
     * <UL>
     * <LI><code>xmlns</code></LI>
-    * <LI><code>xmlns:xenc</code></LI>
-    * <LI><code>xmlns:ds</code></LI>
+    * <LI><code>xenc</code></LI>
+    * <LI><code>ds</code></LI>
     * </UL>
     *
     * @param inclusiveNamespaces
