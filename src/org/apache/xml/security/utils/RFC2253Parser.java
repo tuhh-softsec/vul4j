@@ -578,7 +578,7 @@ public class RFC2253Parser {
    }
 
    /** Field i */
-   static int i = 0;
+   static int counter = 0;
 
    /**
     * Method test
@@ -587,7 +587,7 @@ public class RFC2253Parser {
     */
    static void testToXML(String st) {
 
-      System.out.println("start " + i++ + ": " + st);
+      System.out.println("start " + counter++ + ": " + st);
       System.out.println("         " + rfc2253toXMLdsig(st));
       System.out.println("");
    }
@@ -599,7 +599,7 @@ public class RFC2253Parser {
     */
    static void testToRFC(String st) {
 
-      System.out.println("start " + i++ + ": " + st);
+      System.out.println("start " + counter++ + ": " + st);
       System.out.println("         " + xmldsigtoRFC2253(st));
       System.out.println("");
    }
