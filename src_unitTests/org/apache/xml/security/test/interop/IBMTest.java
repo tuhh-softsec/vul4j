@@ -350,7 +350,7 @@ public class IBMTest extends InteropTest {
     * Method test_enveloping_exclusive
     *
     * @throws Exception
-    * @todo implement exclusive-c14n
+    * $todo$ implement exclusive-c14n
     */
    public void _not_active_test_enveloping_exclusive() throws Exception {
      // exclusive c14n not supported yet
@@ -360,7 +360,7 @@ public class IBMTest extends InteropTest {
     * Method test_enveloping_exclusive_soaped
     *
     * @throws Exception
-    * @todo implement exclusive-c14n
+    * $todo$ implement exclusive-c14n
     */
    public void _not_active_test_enveloping_exclusive_soaped() throws Exception {
      // exclusive c14n not supported yet

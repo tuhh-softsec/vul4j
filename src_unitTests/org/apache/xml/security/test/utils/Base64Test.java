@@ -114,7 +114,7 @@ public class Base64Test extends TestCase {
     * Method testA1
     *
     * @throws java.io.UnsupportedEncodingException
-    * @todo Extend more tests
+    * $todo$ Extend more tests
     */
    public static void testA1() throws java.io.UnsupportedEncodingException, Base64DecodingException {
 

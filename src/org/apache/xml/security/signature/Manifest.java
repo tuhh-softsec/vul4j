@@ -65,6 +65,11 @@ import java.io.IOException;
 import java.util.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
+import org.apache.xpath.XPathAPI;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -72,13 +77,11 @@ import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
+
 
 
 /**
- * Handles <code>&lt;ds:Manifest&gt;</code> elements
+ * Handles <code>&lt;ds:Manifest&gt;</code> elements.
  * <p> This element holds the <code>Reference</code> elements</p>
  * @author $author: $
  */
@@ -509,7 +512,7 @@ public class Manifest extends SignatureElementProxy {
    }
 
    /**
-    * Used to pass parameters like proxy servers etc. to the ResourceResolver
+    * Used to pass parameters like proxy servers etc to the ResourceResolver
     * implementation.
     *
     * @param key the key

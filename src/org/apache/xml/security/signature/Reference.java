@@ -59,7 +59,6 @@
 package org.apache.xml.security.signature;
 
 
-
 import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
@@ -67,6 +66,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.NodeIterator;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.Serializer;
 import org.apache.xml.serialize.SerializerFactory;
@@ -77,19 +82,16 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.XPathContext;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.NodeIterator;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.signature.*;
 import org.apache.xml.security.transforms.*;
+import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;
-import javax.xml.transform.TransformerException;
+
 
 
 /**
@@ -164,8 +166,8 @@ public class Reference extends SignatureElementProxy {
     * @param BaseURI the URI of the resource where the XML instance will be stored
     * @param ReferenceURI URI indicate where is data which will digested
     * @param manifest
-    * @param transforms {@link transforms} applied to data
-    * @param messageDigestAlgorithm {@link algorithms.MessageDigestAlgorithm Digest algorithm} which is applied to the data
+    * @param transforms {@link Transforms} applied to data
+    * @param messageDigestAlgorithm {@link MessageDigestAlgorithm Digest algorithm} which is applied to the data
     * $todo$ should we throw XMLSignatureException if MessageDigestAlgoURI is wrong?
     * @throws XMLSignatureException
     */
@@ -217,7 +219,7 @@ public class Reference extends SignatureElementProxy {
     * @param BaseURI the URI of the resource where the XML instance will be stored
     * @param ReferenceURI This referenceURI indicate where the data will for signature validation
     * @param manifest
-    * @param messageDigestAlgorithm  {@link algorithms.MessageDigestAlgorithm Digest algorithm} which is applied to the data
+    * @param messageDigestAlgorithm  {@link MessageDigestAlgorithm Digest algorithm} which is applied to the data
     * @throws XMLSignatureException
     */
    protected Reference(
@@ -234,7 +236,7 @@ public class Reference extends SignatureElementProxy {
     * @param BaseURI the URI of the resource where the XML instance will be stored
     * @param ReferenceURI This referenceURI indicate where the data is for signature validation
     * @param manifest
-    * @param transforms {@link transforms} applied to data
+    * @param transforms {@link Transforms} applied to data
     * @throws XMLSignatureException
     */
    protected Reference(
@@ -448,7 +450,7 @@ public class Reference extends SignatureElementProxy {
     *
     * @throws ReferenceNotInitializedException
     * @throws XMLSignatureException
-    * @ see Manifest#verifyReferences
+    * @see Manifest#verifyReferences
     */
    protected void dereferenceURIandPerformTransforms()
            throws ReferenceNotInitializedException, XMLSignatureException {

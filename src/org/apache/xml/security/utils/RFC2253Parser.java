@@ -87,7 +87,7 @@ public class RFC2253Parser {
 
       _TOXML = true;
 
-      // transfrom from RFC1779 to RFC2253
+      // Transform from RFC1779 to RFC2253
       String normalized = normalize(dn);
 
       return rfctoXML(normalized);
@@ -103,7 +103,7 @@ public class RFC2253Parser {
 
       _TOXML = false;
 
-      // transfrom from RFC1779 to RFC2253
+      // Transform from RFC1779 to RFC2253
       String normalized = normalize(dn);
 
       return xmltoRFC(normalized);

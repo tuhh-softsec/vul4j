@@ -65,27 +65,30 @@ import java.lang.IllegalArgumentException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Vector;
-import org.apache.xpath.XPathAPI;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
+import org.apache.xpath.XPathAPI;
+
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.*;
 import org.apache.xml.security.utils.*;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
 
 
 /**
- * Holder of the {@link org.apache.xml.security.transforms.Transform} steps to * Holder of the {@link org.apache.xml.security.transforms.Transform} steps to be performed on the data.
+ * Holder of the {@link org.apache.xml.security.transforms.Transform} steps to be performed on the data.
  * The input to the first Transform is the result of dereferencing the <code>URI</code> attribute of the <code>Reference</code> element.
  * The output from the last Transform is the input for the <code>DigestMethod algorithm</code>
  *
- * @author: Christian Geuer-Pollmann
+ * @author Christian Geuer-Pollmann
  * @see Transform
- * @see signature.Reference
+ * @see org.apache.xml.security.signature.Reference
  */
 public class Transforms extends SignatureElementProxy {
 

@@ -70,7 +70,7 @@ import org.apache.xml.security.keys.content.x509.*;
 
 
 /**
- * Utlity class for for <CODE>org.apache.xml.security.keys.*</CODE>
+ * Utility class for for <CODE>org.apache.xml.security.keys</CODE> package.
  *
  * @author $Author$
  */

@@ -68,7 +68,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
  * All XML Signature related exceptions inherit herefrom.
  *
  * @see MissingResourceFailureException InvalidDigestValueException InvalidSignatureValueException
- * @author: Christian Geuer-Pollmann
+ * @author Christian Geuer-Pollmann
  */
 public class XMLSignatureException extends XMLSecurityException {
 

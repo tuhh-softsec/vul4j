@@ -63,15 +63,18 @@ package org.apache.xml.security.keys.keyresolver;
 
 import java.security.cert.*;
 import java.security.PublicKey;
-import javax.crypto.SecretKey;
 import java.util.*;
+import javax.crypto.SecretKey;
+
 import org.w3c.dom.*;
+
 import org.apache.xml.security.exceptions.*;
+import org.apache.xml.security.keys.KeyInfo; //for javadoc
 import org.apache.xml.security.keys.storage.*;
 
 
 /**
- * KeyResovler is factory class for subclass of KeyResolverSpi that
+ * KeyResolver is factory class for subclass of KeyResolverSpi that
  * represent child element of KeyInfo.
  *
  * @author $Author$
@@ -201,7 +204,7 @@ public class KeyResolver {
     * This method is used for registering {@link KeyResolverSpi}s which are
     * available to <I>all</I> {@link KeyInfo} objects. This means that
     * personalized {@link KeyResolverSpi}s should only be registered directly
-    * to the {@link KeyInfo} using {@link KeyInfo#register}.
+    * to the {@link KeyInfo} using {@link KeyInfo#registerInternalKeyResolver}.
     *
     * @param className
     */
@@ -213,7 +216,7 @@ public class KeyResolver {
     * This method is used for registering {@link KeyResolverSpi}s which are
     * available to <I>all</I> {@link KeyInfo} objects. This means that
     * personalized {@link KeyResolverSpi}s should only be registered directly
-    * to the {@link KeyInfo} using {@link KeyInfo#register}.
+    * to the {@link KeyInfo} using {@link KeyInfo#registerInternalKeyResolver}.
     *
     * @param className
     */

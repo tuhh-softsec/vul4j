@@ -61,6 +61,8 @@ package org.apache.xml.security.utils;
 
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.math.BigInteger;
 import javax.xml.parsers.DocumentBuilder;
@@ -72,8 +74,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.apache.xpath.objects.XObject;
+
 import org.w3c.dom.*;
+
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.signature.XMLSignatureException;
@@ -81,9 +84,8 @@ import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xpath.XPathAPI;
-import javax.xml.transform.TransformerException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import org.apache.xpath.objects.XObject;
+
 
 
 /**
@@ -948,13 +950,13 @@ public class XMLUtils {
 
    /**
     * Verifies that the given Element is in the XML Encryption namespace
-    * {@link org.apache.xml.security.utils.Constants#EncryptionSpecNS} and that the
+    * {@link org.apache.xml.security.utils.EncryptionConstants#EncryptionSpecNS} and that the
     * local name of the Element matches the supplied on.
     *
     * @param element Element to be checked
     * @param localName
     * @throws XMLSecurityException if element is not in Encryption namespace or if the local name does not match
-    * @see org.apache.xml.security.utils.Constants#EncryptionSpecNS
+    * @see org.apache.xml.security.utils.EncryptionConstants#EncryptionSpecNS
     */
    public static void guaranteeThatElementInEncryptionSpace(
            Element element, String localName) throws XMLSecurityException {
@@ -1003,7 +1005,7 @@ public class XMLUtils {
    /**
     * Prefix for random namespaces.
     *
-    * @see #getRandomNamespace
+    * @see #getRandomNamespacePrefix
     */
    public static final String randomNSprefix =
       "http://www.xmlsecurity.org/NS#randomval";

@@ -59,40 +59,34 @@
 package org.apache.xml.security.algorithms;
 
 
-
-import java.security.cert.Certificate;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.cert.Certificate;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Collection;
+import java.util.HashMap;
 import javax.crypto.Mac;
 import javax.crypto.ShortBufferException;
-import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.XMLUtils;
+
 import org.w3c.dom.*;
-import java.util.HashMap;
+
+import org.apache.xml.security.algorithms.implementations.*;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.algorithms.implementations.*;
+import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.XMLUtils;
 
 
 /**
  * Allows selection of digital signature's algorithm, private keys, other security parameters, and algorithm's ID.
- *
- * <p>The exists no constructor but the {@link #getInstance} methods to obtain instances of this class.
- *
- * <pre>
- * SignatureAlgorithm.getInstance()
- * </pre>
  *
  * @author Christian Geuer-Pollmann
  */
@@ -376,7 +370,7 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Initalizes for this {@link Transform}
+    * Initalizes for this {@link org.apache.xml.security.transforms.Transform}
     *
     */
    public static void providerInit() {
@@ -396,10 +390,10 @@ public class SignatureAlgorithm extends Algorithm {
    }
 
    /**
-    * Registers implementing class of the transfrom algorithm with algorithmURI
+    * Registers implementing class of the Transform algorithm with algorithmURI
     *
-    * @param algorithmURI algorithmURI URI representation of <code>transfrom algorithm</code> will be specified as parameter of {@link #getInstance}, when generate. </br>
-    * @param implementingClass <code>implementingClass</code> the implementing class of {@link TransformSpi}
+    * @param algorithmURI algorithmURI URI representation of <code>Transform algorithm</code>.
+    * @param implementingClass <code>implementingClass</code> the implementing class of {@link SignatureAlgorithmSpi}
     * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI is already registered
     */
    public static void register(String algorithmURI, String implementingClass)

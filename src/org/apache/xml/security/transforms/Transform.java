@@ -86,7 +86,7 @@ import org.apache.xml.security.utils.*;
  * @author Christian Geuer-Pollmann
  * @see Transforms
  * @see TransformSpi
- * @see c14.Canonicalizer
+ * @see Canonicalizer
  *
  */
 public final class Transform extends SignatureElementProxy {
@@ -108,7 +108,7 @@ public final class Transform extends SignatureElementProxy {
     * Constructs {@link Transform}
     *
     * @param doc the {@link Document} in which <code>Transform</code> will be placed
-    * @param algorithmURI URI representation of <code>transfrom algorithm</code> will be specified as parameter of {@link #getInstance}, when generate. </br>
+    * @param algorithmURI URI representation of <code>Transform algorithm</code> will be specified as parameter of {@link #getInstance}, when generate. </br>
     * @param contextNodes the child node list of <code>Transform</code> element
     * @throws InvalidTransformException
     */
@@ -220,8 +220,8 @@ public final class Transform extends SignatureElementProxy {
     * Generates a Transform object that implements the specified <code>Transform algorithm</code> URI.
     *
     * @param algorithmURI <code>Transform algorithm</code> URI representation, such as specified in <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>Transform algorithm </a>
-    * @param doc the proxy {@link documenet}
-    * @return <code>{@link Transfrom}</code> object
+    * @param doc the proxy {@link Document}
+    * @return <code>{@link Transform}</code> object
     * @throws InvalidTransformException
     */
    public static final Transform getInstance(
@@ -234,8 +234,8 @@ public final class Transform extends SignatureElementProxy {
     *
     * @param algorithmURI <code>Transform algorithm</code> URI representation, such as specified in <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>Transform algorithm </a>
     * @param contextChild the child element of <code>Transform</code> element
-    * @param doc the proxy {@link documenet}
-    * @return <code>{@link Transfrom}</code> object
+    * @param doc the proxy {@link Document}
+    * @return <code>{@link Transform}</code> object
     * @throws InvalidTransformException
     */
    public static final Transform getInstance(
@@ -256,8 +256,8 @@ public final class Transform extends SignatureElementProxy {
     *
     * @param algorithmURI <code>Transform algorithm</code> URI form, such as specified in <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>Transform algorithm </a>
     * @param contextNodes the child node list of <code>Transform</code> element
-    * @param doc the proxy {@link documenet}
-    * @return <code>{@link Transfrom}</code> object
+    * @param doc the proxy {@link Document}
+    * @return <code>{@link Transform}</code> object
     * @throws InvalidTransformException
     */
    public static final Transform getInstance(
@@ -279,9 +279,9 @@ public final class Transform extends SignatureElementProxy {
    }
 
    /**
-    * Registers implementing class of the transfrom algorithm with algorithmURI
+    * Registers implementing class of the Transform algorithm with algorithmURI
     *
-    * @param algorithmURI algorithmURI URI representation of <code>transfrom algorithm</code> will be specified as parameter of {@link #getInstance}, when generate. </br>
+    * @param algorithmURI algorithmURI URI representation of <code>Transform algorithm</code> will be specified as parameter of {@link #getInstance}, when generate. </br>
     * @param implementingClass <code>implementingClass</code> the implementing class of {@link TransformSpi}
     * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI is already registered
     */

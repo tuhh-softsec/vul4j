@@ -74,7 +74,6 @@ import sun.security.x509.X500Name;
 /**
  *
  * @author $Author$
- * @see java.security.Principal#getSubjectName().toString()
  */
 public class XMLX509SubjectName extends SignatureElementProxy
         implements XMLX509DataContent {

@@ -61,19 +61,23 @@ package org.apache.xml.security.signature;
 
 
 import java.io.IOException;
+
 import org.w3c.dom.*;
+
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.signature.MissingResourceFailureException;
+
 import org.apache.xml.security.exceptions.*;
-import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.signature.MissingResourceFailureException;
 import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.utils.SignatureElementProxy;
 
 
 /**
@@ -106,7 +110,7 @@ public class SignatureProperty extends SignatureElementProxy {
     *
     * @param doc the {@link Document} in which <code>XMLsignature</code> is placed
     * @param Target the <code>Target</code> attribute references the <code>Signature</code> element to which the property applies
-    * @param Id the <code>Id</code> will be specified by {@link Reference#ReferenceURI} in validation
+    * @param Id the <code>Id</code> will be specified by {@link Reference#getURI} in validation
     * @throws XMLSignatureException
     */
    public SignatureProperty(Document doc, String Target, String Id)

@@ -81,7 +81,6 @@ import org.apache.xml.security.Init;
  * Signature namespace are of type <CODE>ID</CODE>.
  *
  * @author $Author$
- * @see org.apache.xml.security.utils.resolver.implementations.ResolverFragment
  * @see <A HREF="http://www.xml.com/lpt/a/2001/11/07/id.html">"Identity Crisis" on xml.com</A>
  */
 public class IdResolver {

@@ -768,7 +768,7 @@ public final class XMLSignature extends SignatureElementProxy {
     * to indicate that the References inside Manifests should be validated.
     *
     * @param followManifests
-    * @see Core validation section in the XML Signature Rec.
+    * @see <a href="http://www.w3.org/TR/xmldsig-core/#sec-CoreValidation">Core validation section in the XML Signature Rec.</a>
     */
    public void setFollowNestedManifests(boolean followManifests) {
       this._followManifestsDuringValidation = followManifests;

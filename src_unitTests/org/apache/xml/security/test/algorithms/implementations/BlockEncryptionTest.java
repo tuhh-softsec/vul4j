@@ -278,7 +278,7 @@ public class BlockEncryptionTest extends TestCase {
     * Method test_3DES
     *
     * @throws Exception
-    * @todo find the normative test vector for 3DES
+    * $todo$ find the normative test vector for 3DES
     */
    public void test_3DES() throws Exception {
 

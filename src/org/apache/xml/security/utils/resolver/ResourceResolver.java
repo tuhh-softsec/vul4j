@@ -72,7 +72,7 @@ import org.apache.xml.security.signature.XMLSignatureInput;
  * This is done by retrieving a Resolver. The resolver needs two arguments: The
  * URI in which the link to the new resource is defined and the BaseURI of the
  * file/entity in which the URI occurs (the BaseURI is the same as the SystemId
- * for {@link jaxax.xml.transform.stream.StreamSource#setSystemId(String)}.
+ * for {@link javax.xml.transform.stream.StreamSource#getSystemId}.
  *
  * <UL xml:lang="DE" LANG="DE">
  * <LI> Verschiedene Implementierungen können sich als Resolver registrieren.

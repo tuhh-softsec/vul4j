@@ -376,7 +376,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws SAXException
     * @see #test34validatingParser
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Chars">the example from the spec</A>
-    * @todo Check what we have to do to get this f*cking test working!!!
+    * $todo$ Check what we have to do to get this f*cking test working!!!
     * @throws TransformerException
     */
    public static void _test34()
@@ -839,7 +839,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * for ISO-8859-1 encoding is RECOMMENDED, and all other character encodings
     * are OPTIONAL.
     *
-    * @todo implement the test
+    * $todo$ implement the test
     * @throws CanonicalizationException
     * @throws FileNotFoundException
     * @throws IOException

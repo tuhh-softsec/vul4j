@@ -68,6 +68,12 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
+import org.apache.xpath.XPathAPI;
+
 import org.apache.xml.security.algorithms.*;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.transforms.params.XPathContainer;
@@ -75,9 +81,6 @@ import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.transforms.*;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -95,7 +98,7 @@ public class SignedInfo extends Manifest {
    private byte[] _c14nizedBytes = null;
 
    /**
-    * Overwrites {@link Manifest(org.w3c.dom.Document)} because it creates another Element.
+    * Overwrites {@link Manifest#addDocument} because it creates another Element.
     *
     * @param doc the {@link Document} in which <code>XMLsignature</code> will be placed
     * @throws XMLSecurityException

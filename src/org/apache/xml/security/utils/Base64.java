@@ -62,25 +62,27 @@ package org.apache.xml.security.utils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.StringTokenizer;
-import java.math.BigInteger;
-import org.w3c.dom.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
-import org.w3c.dom.traversal.NodeIterator;
+import java.math.BigInteger;
+import java.util.StringTokenizer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.xml.sax.SAXException;
+
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
+
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.exceptions.Base64DecodingException;
@@ -136,7 +138,7 @@ public class Base64 {
     * Returns a byte-array representation of a <code>{@link BigInteger}<code>.
     * No sign-bit is outputed.
     *
-    * <p><b>N.B.:</B> <code>{@link BigInteger}<code>'s toByteArray
+    * <b>N.B.:</B> <code>{@link BigInteger}<code>'s toByteArray
     * retunrs eventually longer arrays because of the leading sign-bit.
     *
     * @param big <code>BigInteger<code> to be converted
@@ -193,7 +195,7 @@ public class Base64 {
     * Returns a byte-array representation of a <code>{@link BigInteger}<code>.
     * No sign-bit is outputed.
     *
-    * <p><b>N.B.:</B> <code>{@link BigInteger}<code>'s toByteArray
+    * <b>N.B.:</B> <code>{@link BigInteger}<code>'s toByteArray
     * retunrs eventually longer arrays because of the leading sign-bit.
     *
     * @param big <code>BigInteger<code> to be converted
@@ -349,7 +351,7 @@ public class Base64 {
    }
 
    /**
-    * <p>Decode a Base64-encoded string to a byte array</p>
+    * Decode a Base64-encoded string to a byte array.
     *
     * @param base64 <code>String</code> encoded string (single line only !!)
     * @return Decoded data in a byte array
@@ -409,8 +411,8 @@ public class Base64 {
    }
 
    /**
-    * <p>Encode a byte array in Base64 format and return an optionally
-    * wrapped line</p>
+    * Encode a byte array in Base64 format and return an optionally
+    * wrapped line.
     *
     * @param raw <code>byte[]</code> data to be encoded
     * @param wrap <code>int<code> length of wrapped lines; No wrapping if less than 4.
@@ -471,7 +473,7 @@ public class Base64 {
     *
     * @param reader
     * @return InputStream with the decoded bytes
-    * @Exception IOException passes what the reader throws
+    * @exception IOException passes what the reader throws
     * @throws Base64DecodingException
     * @throws IOException
     */

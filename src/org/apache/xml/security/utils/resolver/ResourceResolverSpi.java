@@ -198,7 +198,6 @@ public abstract class ResourceResolverSpi {
     *         system identifier is already expanded.
     *
     * @throws Exception
-    * @see org.apache.xerces.validators.schema.TraverseSchema
     */
    public static String expandSystemId(String systemId, String currentSystemId)
            throws Exception {
@@ -313,7 +312,6 @@ public abstract class ResourceResolverSpi {
     * @param str The string to fix.
     *
     * @return Returns the fixed URI string.
-    * @see org.apache.xerces.validators.schema.TraverseSchema
     */
    public static String fixURI(String str) {
 
