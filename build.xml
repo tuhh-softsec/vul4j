@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.39 2003/03/15 18:41:04 rdonkin Exp $
+        $Id: build.xml,v 1.40 2003/03/31 00:41:14 craigmcc Exp $
 -->
 
 
@@ -170,6 +170,8 @@
     <copy    todir="${build.home}/classes" filtering="on">
       <fileset dir="${source.home}" excludes="**/*.java"/>
     </copy>
+    <copy      file="LICENSE.txt"
+              todir="${build.home}/classes/META-INF"/>
   </target>
 
 
@@ -228,11 +230,9 @@
   <target name="dist" depends="compile,javadoc"
    description="Create binary distribution">
     <mkdir      dir="${dist.home}"/>
-    <copy      file="../LICENSE"
+    <copy      file="LICENSE.txt"
               todir="${dist.home}"/>
     <mkdir      dir="${build.home}/classes/META-INF"/>
-    <copy      file="../LICENSE"
-             tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
     <copy      file="RELEASE-NOTES.txt"
               todir="${dist.home}"/>
     <jar    jarfile="${dist.home}/commons-${component.name}.jar"
