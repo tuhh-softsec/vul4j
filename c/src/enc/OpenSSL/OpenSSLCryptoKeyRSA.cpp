@@ -622,7 +622,6 @@ XSECCryptoKey * OpenSSLCryptoKeyRSA::clone() {
 
 	XSECnew(ret, OpenSSLCryptoKeyRSA);
 
-	ret->m_keyType = m_keyType;
 	ret->mp_rsaKey = RSA_new();
 
 	if (mp_oaepParams != NULL) {

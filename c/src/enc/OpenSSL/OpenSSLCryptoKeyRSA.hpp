@@ -263,7 +263,6 @@ public :
 
 private:
 
-	XSECCryptoKey::KeyType			m_keyType;
 	RSA								* mp_rsaKey;
 	unsigned char					* mp_oaepParams;
 	unsigned int					m_oaepParamsLen;
