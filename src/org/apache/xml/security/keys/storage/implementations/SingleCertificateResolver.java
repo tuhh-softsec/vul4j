@@ -141,7 +141,7 @@ public class SingleCertificateResolver extends StorageResolverSpi {
 
          this._alreadyReturned = true;
 
-         return (Object) this._certificate;
+         return this._certificate;
       }
 
       /**
