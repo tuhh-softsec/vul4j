@@ -19,6 +19,7 @@ XML documents.
 <a href="#doc.Namespace">[Namespace Aware Parsing]</a>
 <a href="#doc.Pluggable">[Pluggable Rules Processing]</a>
 <a href="#doc.RuleSets">[Encapsulated Rule Sets]</a>
+<a href="#doc.troubleshooting">[Troubleshooting]</a>
 <a href="#doc.FAQ">[FAQ]</a>
 <a href="#doc.Limits">[Known Limitations]</a>
 </div>
@@ -992,7 +993,46 @@ public class MyRuleSet extends RuleSetBase {
     the same set of nested elements at different nesting levels within an
     XML document.</li>
 </ul>
-
+<a name="doc.troubleshooting"></a>
+<h3>Troubleshooting</h3>
+<h4>Debugging Exceptions</h4>
+<p>
+<code>Digester</code> is based on <a href='http://www.saxproject.org'>SAX</a>.
+Digestion throws two kinds of <code>Exception</code>:
+</p>
+<ul>
+    <li><code>java.io.IOException</code></li>
+    <li><code>org.xml.sax.SAXException</code></li>
+</ul>
+<p>
+The first is rarely thrown and indicates the kind of fundemental IO exception
+that developers know all about. The second is thrown by SAX parsers when the processing
+of the XML cannot be completed. So, to diagnose the cause a certain familiarity with 
+the way that SAX error handling works is very useful. 
+</p>
+<h5>Diagnosing SAX Exceptions</h5>
+<p>
+This is a short, potted guide to SAX error handling strategies. It's not intended as a
+proper guide to error handling in SAX.
+</p>
+<p>
+When a SAX parser encounters a problem with the xml (well, ok - sometime after it 
+encounters a problem) it will throw a 
+<a href='http://www.saxproject.org/apidoc/org/xml/sax/SAXParseException.html'>
+SAXParseException</a>. This is a subclass of <code>SAXException</code> and contains
+a bit of extra information about what exactly when wrong - and more importantly,
+where it went wrong. If you catch an exception of this sort, you can be sure that
+the problem is with the XML and not <code>Digester</code> or your rules.
+It is usually a good idea to catch this exception and log the extra information
+to help with diagnosing the reason for the failure.
+</p>
+<p>
+General <a href='http://www.saxproject.org/apidoc/org/xml/sax/SAXException.html'>
+SAXException</a>'s may wrap a causal exception. When exceptions are
+throw by <code>Digester</code> each of these will be wrapped into a 
+<code>SAXException</code> and rethrown. So, catch these and examine the wrapped
+exception to diagnose what went wrong.
+</p>
 <a name="doc.FAQ"></a>
 <h3>Frequently Asked Questions</h3>
 <p><ul>
