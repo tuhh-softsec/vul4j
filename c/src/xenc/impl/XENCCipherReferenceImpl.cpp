@@ -144,8 +144,6 @@ void XENCCipherReferenceImpl::createTransformList(void) {
 
 void XENCCipherReferenceImpl::addTransform(DSIGTransform * txfm, DOMElement * txfmElt) {
 
-	DOMDocument *doc = mp_env->getParentDocument();
-
 	if (mp_transformList == NULL)
 		createTransformList();
 

@@ -164,7 +164,8 @@ void TXFMXSL::evaluateStyleSheet(const safeBuffer &sbStyleSheet) {
 	txoh.buffer.sbStrcpyIn("");
 	txoh.offset = 0;
 	
-	int res = xt.transform(&theXMLStream, &theXSLStream, (void *) & txoh, TransformXSLOutputFn);
+	/*int res = */
+	xt.transform(&theXMLStream, &theXSLStream, (void *) & txoh, TransformXSLOutputFn);
 
 	// Should check res
 

@@ -423,7 +423,6 @@ DSIGKeyInfoValue * DSIGKeyInfoList::appendDSAKeyValue(const XMLCh * P,
 	}
 
 	// Create the new element
-	DOMDocument * doc = mp_env->getParentDocument();
 	DSIGKeyInfoValue * v;
 	XSECnew(v, DSIGKeyInfoValue(mp_env));
 
@@ -448,7 +447,6 @@ DSIGKeyInfoValue * DSIGKeyInfoList::appendRSAKeyValue(const XMLCh * modulus,
 	}
 
 	// Create the new element
-	DOMDocument * doc = mp_env->getParentDocument();
 	DSIGKeyInfoValue * v;
 	XSECnew(v, DSIGKeyInfoValue(mp_env));
 
@@ -472,7 +470,6 @@ DSIGKeyInfoX509 * DSIGKeyInfoList::appendX509Data(void) {
 
 	}
 
-	DOMDocument * doc = mp_env->getParentDocument();
 	DSIGKeyInfoX509 * x;
 
 	XSECnew(x, DSIGKeyInfoX509(mp_env));
@@ -496,7 +493,6 @@ DSIGKeyInfoName * DSIGKeyInfoList::appendKeyName(const XMLCh * name, bool isDNam
 
 	}
 
-	DOMDocument * doc = mp_env->getParentDocument();
 	DSIGKeyInfoName * n;
 
 	XSECnew(n, DSIGKeyInfoName(mp_env));
@@ -520,7 +516,6 @@ DSIGKeyInfoPGPData * DSIGKeyInfoList::appendPGPData(const XMLCh * id, const XMLC
 
 	}
 
-	DOMDocument * doc = mp_env->getParentDocument();
 	DSIGKeyInfoPGPData * p;
 
 	XSECnew(p, DSIGKeyInfoPGPData(mp_env));
@@ -543,7 +538,6 @@ DSIGKeyInfoSPKIData * DSIGKeyInfoList::appendSPKIData(const XMLCh * sexp) {
 
 	}
 
-	DOMDocument * doc = mp_env->getParentDocument();
 	DSIGKeyInfoSPKIData * s;
 
 	XSECnew(s, DSIGKeyInfoSPKIData(mp_env));
@@ -566,7 +560,6 @@ DSIGKeyInfoMgmtData * DSIGKeyInfoList::appendMgmtData(const XMLCh * data) {
 
 	}
 
-	DOMDocument * doc = mp_env->getParentDocument();
 	DSIGKeyInfoMgmtData * m;
 
 	XSECnew(m, DSIGKeyInfoMgmtData(mp_env));
@@ -593,7 +586,6 @@ void DSIGKeyInfoList::addAndInsertKeyInfo(DSIGKeyInfo * ref) {
 
 	}
 
-	DOMDocument * doc = mp_env->getParentDocument();
 	mp_keyInfoNode->appendChild(ref->getKeyInfoDOMNode());
 	mp_env->doPrettyPrint(mp_keyInfoNode);
 

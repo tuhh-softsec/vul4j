@@ -55,7 +55,6 @@ XALAN_USING_XALAN(XalanTransformer)
 XERCES_CPP_NAMESPACE_USE
 
 DOMElement * g_toEncrypt;
-static unsigned char s_key[] = "abcdefghijklmnopqrstuvwx";
 
 char cert[] = "\n\
 MIIC7jCCAq6gAwIBAgICEAMwCQYHKoZIzjgEAzB5MQswCQYDVQQGEwJBVTEMMAoG\n\

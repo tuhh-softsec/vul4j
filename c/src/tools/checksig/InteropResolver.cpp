@@ -125,7 +125,7 @@ X509 * InteropResolver::nextFile2Cert(void) {
 #if defined(_WIN32)
 		res = _findnext(m_handle, &m_finder);
 #else
-		if (m_fcount == m_globbuf.gl_pathc)
+		if (m_fcount == (int) m_globbuf.gl_pathc)
 			res = -1;
 		else
 			res = 0;

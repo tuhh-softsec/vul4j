@@ -492,7 +492,6 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 
 		// Have something to replace current element with
 		DOMNode * p = element->getParentNode();
-		DOMNode * c = frag->getFirstChild();
 
 		// By inserting the DocumentFragment, we effectively insert the children
 		p->replaceChild(frag, element);

@@ -27,12 +27,12 @@
  */
 
 #include <xsec/framework/XSECDefs.hpp>
+#include <iostream>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
 #include <xercesc/util/Janitor.hpp>
-#include <iostream>
 XERCES_CPP_NAMESPACE_USE;
 
 #if defined (HAVE_OPENSSL)

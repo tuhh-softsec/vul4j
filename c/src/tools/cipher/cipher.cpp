@@ -199,9 +199,9 @@ int evaluate(int argc, char ** argv) {
 	bool					doXMLOutput = false;
 	XSECCryptoKey			* kek = NULL;
 	XSECCryptoKey			* key = NULL;
-	int						keyLen;
-	encryptionMethod		kekAlg;
-	encryptionMethod		keyAlg;
+	int						keyLen = 0;
+	encryptionMethod		kekAlg = ENCRYPT_NONE;
+	encryptionMethod		keyAlg = ENCRYPT_NONE;
 	DOMDocument				*doc;
 	unsigned char			keyBuf[24];
 	XMLFormatTarget			*formatTarget ;
@@ -269,7 +269,8 @@ int evaluate(int argc, char ** argv) {
 			// Have a key!
 			paramCount++;
 			bool isKEK = false;
-			XSECCryptoSymmetricKey::SymmetricKeyType loadKeyAs;
+			XSECCryptoSymmetricKey::SymmetricKeyType loadKeyAs =
+				XSECCryptoSymmetricKey::KEY_NONE;
 
 			if (stricmp(argv[paramCount], "kek") == 0) {
 				isKEK = true;
@@ -471,7 +472,7 @@ int evaluate(int argc, char ** argv) {
 			}
 		}
 
-#endif /* HAVE_OPENSSL */.
+#endif /* HAVE_OPENSSL */
 
 		else {
 			cerr << "Unknown option: " << argv[paramCount] << endl;

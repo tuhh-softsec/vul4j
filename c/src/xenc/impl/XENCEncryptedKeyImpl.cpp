@@ -97,16 +97,16 @@ static XMLCh s_Recipient[] = {
 
 
 XENCEncryptedKeyImpl::XENCEncryptedKeyImpl(const XSECEnv * env) :
-XENCEncryptedTypeImpl(env),
 XENCEncryptedKey(env),
+XENCEncryptedTypeImpl(env),
 mp_carriedKeyNameTextNode(NULL),
 mp_recipientAttr(NULL) {
 	
 }
 
 XENCEncryptedKeyImpl::XENCEncryptedKeyImpl(const XSECEnv * env, DOMElement * node) :
-XENCEncryptedTypeImpl(env, node),
 XENCEncryptedKey(env),
+XENCEncryptedTypeImpl(env, node),
 mp_carriedKeyNameTextNode(NULL),
 mp_recipientAttr(NULL) {
 

@@ -526,7 +526,6 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
 					// Check the serial number
 					BIGNUM * bnserial = ASN1_INTEGER_to_BN(x509->cert_info->serialNumber, NULL);
-					char * xserial = BN_bn2dec(bnserial);
 					BN_free(bnserial);
 
 					BIO * rsaFile = createFileBIO(mp_baseURI, "rsa.p8");
@@ -541,15 +540,6 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 					PKCS8_PRIV_KEY_INFO_free(p8inf);
 					BIO_free_all(rsaFile);
 					return k;
-						//d2i_PKCS8PrivateKey_bio(rsaFile, NULL, NULL, NULL);
-
-/*					if (strcmp(xserial, cserial) == 0) {
-					
-						OPENSSL_free(xserial);
-						delete[] cserial;
-						return true;
-
-					}*/
 
 				}
 #if defined (HAVE_WINCAPI)
