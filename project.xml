@@ -5,8 +5,18 @@
   <name>Digester</name>
   <id>commons-digester</id>
   <currentVersion>1.6-dev</currentVersion>
+
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>http://www.apache.org</url>
+    <logo>http://jakarta.apache.org/images/jakarta-logo.gif</logo>
+  </organization>
+
   <inceptionYear>2001</inceptionYear>
   <shortDescription>Rule based XML->Java object mapping module</shortDescription>
+
+  <logo>/images/logo.png</logo>
+
   <description>The Digester package lets you configure an XML->Java object mapping module which triggers certain actions called rules whenever a particular pattern of nested XML elements is recognized.</description>
 
   <repository>
