@@ -81,6 +81,7 @@ class TXFMChain;
 class XSECEnv;
 class XSECKeyInfoResolver;
 class XSECPlatformUtils;
+class DSIGKeyInfoList;
 
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 XSEC_DECLARE_XERCES_CLASS(DOMDocumentFragment);

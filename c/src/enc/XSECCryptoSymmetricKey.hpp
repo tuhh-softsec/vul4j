@@ -106,6 +106,7 @@ public :
 
 	enum SymmetricKeyType {
 
+		KEY_NONE,
 		KEY_3DES_CBC_192,			/** 192 bit (3-Key) 3DES */
 		KEY_AES_CBC_128,			/** 128 bit AES in CBC mode */
 		KEY_AES_CBC_192,			/** 192 bit AES in CBC mode */

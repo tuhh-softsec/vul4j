@@ -122,7 +122,23 @@ public:
 
 private:
 
-	void mapURIToKey(const XMLCh * uri, XSECCryptoKey * key);
+	void mapURIToKey(const XMLCh * uri, 
+		XSECCryptoKey * key,
+		XSECCryptoKey::KeyType &kt,
+		XSECCryptoSymmetricKey::SymmetricKeyType &skt,
+		bool &isSymmetricKeyWrap);
+	unsigned int doRSADecryptToSafeBuffer(
+		TXFMChain * cipherText,
+		XENCEncryptionMethod * encryptionMethod,
+		XSECCryptoKey * key,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		safeBuffer & result);
+	bool XENCAlgorithmHandlerDefault::doRSAEncryptToSafeBuffer(
+		TXFMChain * plainText,
+		XENCEncryptionMethod * encryptionMethod,
+		XSECCryptoKey * key,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		safeBuffer & result);
 	unsigned int unwrapKeyAES(
    		TXFMChain * cipherText,
 		XSECCryptoKey * key,
