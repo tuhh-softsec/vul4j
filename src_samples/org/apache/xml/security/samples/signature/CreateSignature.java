@@ -143,7 +143,14 @@ public class CreateSignature {
       Element root = doc.createElementNS("http://www.apache.org/ns/#app1",
                                          "apache:RootElement");
 
-      root.setAttribute("xmlns:apache", "http://www.apache.org/ns/#app1");
+      root.setAttributeNS(null, "attr1", "test1");
+      root.setAttributeNS(null, "attr2", "test2");
+      root.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:foo", "http://example.org/#foo");
+      root.setAttributeNS("http://example.org/#foo", "foo:attr1", "foo's test");
+
+
+
+      root.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:apache", "http://www.apache.org/ns/#app1");
       doc.appendChild(root);
       root.appendChild(doc.createTextNode("Some simple text\n"));
 
