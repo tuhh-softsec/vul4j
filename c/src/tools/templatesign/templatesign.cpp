@@ -1179,7 +1179,7 @@ int main(int argc, char **argv) {
 	delete [] (XMLCh *) encNameStr;   // Cast to allow delete[] const
 	delete formatTarget;
 
-#if defined (_WIN32)
+#if defined (_WIN32) && defined (HAVE_WINCAPI)
 	if (win32DSSCSP != 0)
 		CryptReleaseContext(win32DSSCSP,0);
 	if (win32RSACSP != 0)

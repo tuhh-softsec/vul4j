@@ -89,6 +89,8 @@ XSEC_USING_XERCES(ArrayJanitor);
 
 #include <iostream>
 
+#if defined (HAVE_OPENSSL) 
+
 InteropResolver::InteropResolver(const XMLCh * baseURI) {
 
 	if (baseURI != NULL)
@@ -689,3 +691,5 @@ XSECKeyInfoResolver * InteropResolver::clone(void) {
 }
 
 
+
+#endif /* HAVE_OPENSSL */
