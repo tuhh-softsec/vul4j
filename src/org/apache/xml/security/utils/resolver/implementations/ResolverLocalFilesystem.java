@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -129,7 +128,13 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
 
       subStr.replace('/', java.io.File.separatorChar);
 
-      return subStr;
+      if (subStr.charAt(1) == ':') {
+      	 // we're running M$ Windows, so this works fine
+         return subStr;
+      } else {
+      	 // we're running some UNIX, so we have to prepend a slash
+         return "/" + subStr;
+      }
    }
 
    /**
@@ -140,6 +145,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     * @return
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
+
       if (uri == null) {
          return false;
       }
