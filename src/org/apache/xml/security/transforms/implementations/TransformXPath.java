@@ -36,6 +36,7 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.utils.PrefixResolverDefault;
+import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -104,7 +105,7 @@ public class TransformXPath extends TransformSpi {
           */
          Set inputSet = input.getNodeSet();
          CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
+            new CachedXPathFuncHereAPI(new CachedXPathAPI() /*input.getCachedXPathAPI()*/);
          if (inputSet.size() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
 
@@ -154,14 +155,19 @@ public class TransformXPath extends TransformSpi {
                continue;
             }
             */
+            try {
             XObject includeInResult = xPathFuncHereAPI.eval(currentNode,
                                          xpathnode, prefixResolver);
-
+           
             if (includeInResult.bool()) {
                resultNodes.add(currentNode);
                // log.debug("    Added " + org.apache.xml.security.c14n.implementations.Canonicalizer20010315.getXPath(currentNode));
              } else {
                // log.debug("Not added " + org.apache.xml.security.c14n.implementations.Canonicalizer20010315.getXPath(currentNode));
+            }
+            } catch (RuntimeException e) {
+            	e.printStackTrace();
+            	throw new TransformerException("ddd");
             }
          }
 

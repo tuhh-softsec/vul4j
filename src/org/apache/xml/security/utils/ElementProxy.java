@@ -25,7 +25,6 @@ import java.util.Iterator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -110,7 +109,7 @@ public abstract class ElementProxy {
       this._doc = doc;
       this._state = ElementProxy.MODE_CREATE;
       this._constructionElement = ElementProxy.createElementForFamily(this._doc,
-              this.getBaseNamespace(), this.getBaseLocalName());
+              this.getBaseNamespace(), this.getBaseLocalName());      
    }
 
    /**
@@ -127,7 +126,7 @@ public abstract class ElementProxy {
     */
    public static Element createElementForFamily(Document doc, String namespace,
            String localName) {
-
+       //Element nscontext = XMLUtils.createDSctx(doc, "x", namespace);
       Element result = null;
       String prefix = ElementProxy.getDefaultPrefix(namespace);
 
@@ -296,6 +295,7 @@ public abstract class ElementProxy {
    public void addBase64Element(byte[] bytes, String localname) {
 
       if (bytes != null) {
+
          Element e = Base64.encodeToElement(this._doc, localname, bytes);
 
          this._constructionElement.appendChild(e);
@@ -357,7 +357,12 @@ public abstract class ElementProxy {
     */
    public BigInteger getBigIntegerFromChildElement(
            String localname, String namespace) throws XMLSecurityException {
-
+   	    
+   		return Base64.decodeBigIntegerFromText(
+   				(Text)XMLUtils.selectNode(this._constructionElement.getFirstChild(),
+   						namespace,localname,0).getFirstChild());
+        
+/*
       try {
          Element nscontext = XMLUtils.createDSctx(this._doc, "x", namespace);
          Text t = (Text) XPathAPI.selectSingleNode(this._constructionElement,
@@ -367,7 +372,7 @@ public abstract class ElementProxy {
          return Base64.decodeBigIntegerFromText(t);
       } catch (TransformerException ex) {
          throw new XMLSecurityException("empty", ex);
-      }
+      }*/   	
    }
 
    /**
@@ -380,17 +385,10 @@ public abstract class ElementProxy {
     */
    public byte[] getBytesFromChildElement(String localname, String namespace)
            throws XMLSecurityException {
-
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "x", namespace);
-         Element e =
-            (Element) XPathAPI.selectSingleNode(this._constructionElement,
-                                                "./x:" + localname, nscontext);
-
+               
+         Element e =XMLUtils.selectNode(this._constructionElement,namespace,localname,0);
+            
          return Base64.decode(e);
-      } catch (TransformerException ex) {
-         throw new XMLSecurityException("empty", ex);
-      }
    }
 
    /**
@@ -403,17 +401,12 @@ public abstract class ElementProxy {
     */
    public String getTextFromChildElement(String localname, String namespace)
            throws XMLSecurityException {
+              
+         Text t = (Text) XMLUtils.selectNode(this._constructionElement,
+                                                   namespace, localname,0
+                                                   ).getFirstChild();
 
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "x", namespace);
-         Text t = (Text) XPathAPI.selectSingleNode(this._constructionElement,
-                                                   "./x:" + localname
-                                                   + "/text()", nscontext);
-
-         return t.getData();
-      } catch (TransformerException ex) {
-         throw new XMLSecurityException("empty", ex);
-      }
+         return t.getData();      
    }
 
    /**
@@ -423,15 +416,11 @@ public abstract class ElementProxy {
     * @throws XMLSecurityException
     */
    public byte[] getBytesFromTextChild() throws XMLSecurityException {
-
-      try {
-         Text t = (Text) XPathAPI.selectSingleNode(this._constructionElement,
-                                                   "./text()");
+      
+         Text t = (Text)this._constructionElement.getFirstChild();
+                                                   
 
          return Base64.decode(t.getData());
-      } catch (TransformerException ex) {
-         throw new XMLSecurityException("empty", ex);
-      }
    }
 
    /**

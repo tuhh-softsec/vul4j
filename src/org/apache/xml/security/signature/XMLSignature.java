@@ -24,7 +24,6 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
 import javax.crypto.SecretKey;
-import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -44,9 +43,9 @@ import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 
@@ -387,20 +386,10 @@ public final class XMLSignature extends SignatureElementProxy {
 
          // get the Element from KeyInfo
          Element keyInfoElement = this._keyInfo.getElement();
-
-         try {
-            Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                     Constants.SignatureSpecNS);
-
-            // Use XPath to see if there is already one or more Objects added
-            // to the SignatureElement. According to the schema the KeyInfo
-            // should be before the Objects.
-            Element firstObject =
-               (Element) XPathAPI.selectSingleNode(this._constructionElement,
-                                                   "./ds:"
-                                                   + Constants._TAG_OBJECT
-                                                   + "[1]", nscontext);
-
+         Element firstObject=null;
+         Node sibling= this._constructionElement.getFirstChild();
+         firstObject = XMLUtils.selectDsNode(sibling,Constants._TAG_OBJECT,0);
+	   	     
             if (firstObject != null) {
 
                // add it before the object
@@ -413,10 +402,7 @@ public final class XMLSignature extends SignatureElementProxy {
                // add it as the last element to the signature
                this._constructionElement.appendChild(keyInfoElement);
                XMLUtils.addReturnToElement(this._constructionElement);
-            }
-         } catch (TransformerException ex) {
-            ex.printStackTrace();
-         }
+            }         
       }
 
       return this._keyInfo;
@@ -625,8 +611,10 @@ public final class XMLSignature extends SignatureElementProxy {
          //retrieve the byte[] from the stored signature
          byte sigBytes[] = this.getSignatureValue();
 
-         log.debug("SignatureValue = "
+         if (log.isDebugEnabled()) {
+         	log.debug("SignatureValue = "
                    + HexDump.byteArrayToHexString(sigBytes));
+         };
 
          //Have SignatureAlgorithm sign the input bytes and compare them to the
          //bytes that were stored in the signature.

@@ -32,7 +32,6 @@ import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -50,7 +49,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
         org.apache.commons.logging.LogFactory.getLog(X509CertificateResolver.class.getName());
 
    /** Field _dsaKeyElement */
-   NodeList _x509CertKeyElements = null;
+   Element[] _x509CertKeyElements = null;
 
    /**
     * Method engineCanResolve
@@ -74,19 +73,17 @@ public class X509CertificateResolver extends KeyResolverSpi {
          return false;
       }
 
-      try {
          Element nscontext = XMLUtils.createDSctx(element.getOwnerDocument(), "ds", Constants.SignatureSpecNS);
 
-         this._x509CertKeyElements = XPathAPI.selectNodeList(element,
-                 "./ds:" + Constants._TAG_X509CERTIFICATE, nscontext);
+         this._x509CertKeyElements = XMLUtils.selectDsNodes(element.getFirstChild(),
+                 Constants._TAG_X509CERTIFICATE);
 
          if ((this._x509CertKeyElements != null)
-                 && (this._x509CertKeyElements.getLength() > 0)) {
+                 && (this._x509CertKeyElements.length > 0)) {
             log.debug("Yes Sir, I can");
 
             return true;
          }
-      } catch (TransformerException ex) {}
 
       log.debug("I can't");
 
@@ -134,24 +131,24 @@ public class X509CertificateResolver extends KeyResolverSpi {
 
       try {
          if ((this._x509CertKeyElements == null)
-                 || (this._x509CertKeyElements.getLength() == 0)) {
+                 || (this._x509CertKeyElements.length == 0)) {
             boolean weCanResolve = this.engineCanResolve(element, BaseURI,
                                       storage);
 
             if (!weCanResolve || (this._x509CertKeyElements == null)
-                    || (this._x509CertKeyElements.getLength() == 0)) {
+                    || (this._x509CertKeyElements.length == 0)) {
                return null;
             }
          }
 
          this._x509certObject =
-            new XMLX509Certificate[this._x509CertKeyElements.getLength()];
+            new XMLX509Certificate[this._x509CertKeyElements.length];
 
          // populate Object array
-         for (int i = 0; i < this._x509CertKeyElements.getLength(); i++) {
+         for (int i = 0; i < this._x509CertKeyElements.length; i++) {
             this._x509certObject[i] =
-               new XMLX509Certificate((Element) this._x509CertKeyElements
-                  .item(i), BaseURI);
+               new XMLX509Certificate(this._x509CertKeyElements[i]
+                  , BaseURI);
          }
 
          for (int i = 0; i < this._x509certObject.length; i++) {

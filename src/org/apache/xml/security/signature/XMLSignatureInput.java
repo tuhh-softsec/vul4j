@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -69,7 +70,18 @@ public class XMLSignatureInput {
     * The original NodeSet for this XMLSignatureInput
     */
    Set _inputNodeSet = null;
-
+   /**
+    * The original Element
+    */
+   Node _subNode=null;
+   /**
+    * Exclude Node *for enveloped transformations*
+    */
+   Node excludeNode=null;
+   /**
+    * 
+    */
+   boolean excludeComments=false;
    /** Field _cxpathAPI */
    CachedXPathAPI _cxpathAPI;
 
@@ -139,19 +151,19 @@ public class XMLSignatureInput {
     * @throws TransformerException
     */
    public XMLSignatureInput(Node rootNode, CachedXPathAPI usedXPathAPI)
-           throws TransformerException {
+           {
 
       this._cxpathAPI = usedXPathAPI;
 
       // get the Document and make all namespace nodes visible in DOM space
-      Document doc = XMLUtils.getOwnerDocument(rootNode);
+      //After the c14n FIX is merge this is neaded
+      //Document doc = XMLUtils.getOwnerDocument(rootNode);
+      //XMLUtils.circumventBug2650(doc);
 
-      XMLUtils.circumventBug2650(doc);
-
-      NodeList result = this._cxpathAPI.selectNodeList(rootNode,
-                           Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
-
-      this._inputNodeSet = XMLUtils.convertNodelistToSet(result);
+     // NodeList result = this._cxpathAPI.selectNodeList(rootNode,
+       //                    Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+      this._subNode = rootNode;
+      //this._inputNodeSet = XMLUtils.getSetWithComments(rootNode,new HashSet());
    }
 
    /**
@@ -161,8 +173,8 @@ public class XMLSignatureInput {
     * @param rootNode
     * @throws TransformerException
     */
-   public XMLSignatureInput(Node rootNode) throws TransformerException {
-      this(rootNode, new CachedXPathAPI());
+   public XMLSignatureInput(Node rootNode)  {
+      this(rootNode, null /*new CachedXPathAPI()*/);
    }
 
    /**
@@ -172,9 +184,10 @@ public class XMLSignatureInput {
     * @param usedXPathAPI
     */
    public XMLSignatureInput(Set inputNodeSet, CachedXPathAPI usedXPathAPI) {
-      this._inputNodeSet = inputNodeSet;
-      this._cxpathAPI = usedXPathAPI;
-   }
+    this._inputNodeSet = inputNodeSet;
+    this._cxpathAPI = usedXPathAPI;
+    //    After the c14n FIX is merge this is neaded
+ }
 
    /**
     * Constructor XMLSignatureInput
@@ -191,8 +204,11 @@ public class XMLSignatureInput {
     * @param inputNodeSet
     * @deprecated Use {@link Set}s instead of {@link NodeList}s.
     */
-   public XMLSignatureInput(NodeList inputNodeSet) {
-      this(XMLUtils.convertNodelistToSet(inputNodeSet), new CachedXPathAPI());
+   public XMLSignatureInput(NodeList inputNodeSet) {   	  
+      this(XMLUtils.convertNodelistToSet(inputNodeSet), null /* new CachedXPathAPI()*/);
+      //After the c14n FIX is merge this is neaded
+      
+      //XMLUtils.circumventBug2650(XMLUtils.getOwnerDocument(inputNodeSet.item(0)));
    }
 
    /**
@@ -207,6 +223,7 @@ public class XMLSignatureInput {
       this(XMLUtils.convertNodelistToSet(inputNodeSet), usedXPathAPI);
    }
 
+   
    /**
     * Returns the node set from input which was specified as the parameter of {@link XMLSignatureInput} constructor
     *
@@ -220,8 +237,20 @@ public class XMLSignatureInput {
    public Set getNodeSet()
            throws ParserConfigurationException, IOException, SAXException,
                   CanonicalizationException, InvalidCanonicalizerException {
-
+   	  if (this.isElement() && this._inputNodeSet==null) {       
+            XMLUtils.circumventBug2650(XMLUtils.getOwnerDocument(this._subNode));
+            if (this.excludeComments) {
+            	this._inputNodeSet = XMLUtils.getSetWithoutComments(_subNode,new HashSet());
+            } else {
+   	  			this._inputNodeSet = XMLUtils.getSetWithComments(_subNode,new HashSet());
+            }
+   	  	    if (excludeNode!=null) {
+   	  		  this._inputNodeSet=XMLUtils.excludeNodeFromSet(excludeNode,this._inputNodeSet);
+   	  	  }
+   	  	return this._inputNodeSet;
+   	  }
       if (this.isNodeSet()) {
+      	 XMLUtils.circumventBug2650(XMLUtils.getOwnerDocument(this._inputNodeSet));
          return this._inputNodeSet;
       } else if (this.isOctetStream()) {
          DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
@@ -232,27 +261,15 @@ public class XMLSignatureInput {
          DocumentBuilder db = dfactory.newDocumentBuilder();
 
          // select all nodes, also the comments.
-         if (this._cxpathAPI==null) {
-            this._cxpathAPI=new CachedXPathAPI();
-         }
-
+        
          try {
             db.setErrorHandler(new org.apache.xml.security.utils
                .IgnoreAllErrorHandler());
 
             Document doc = db.parse(this.getOctetStream());
-
+            
             XMLUtils.circumventBug2650(doc);
-
-            NodeList nodeList =
-               this._cxpathAPI
-                  .selectNodeList(doc,
-                                  Canonicalizer
-                                     .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
-
-            return XMLUtils.convertNodelistToSet(nodeList);
-         } catch (TransformerException ex) {
-            throw new CanonicalizationException("generic.EmptyMessage", ex);
+            return XMLUtils.getSetWithComments(doc.getDocumentElement(), new HashSet()); /*convertNodelistToSet(nodeList);*/         
          } catch (SAXException ex) {
 
             // if a not-wellformed nodeset exists, put a container around it...
@@ -299,6 +316,19 @@ public class XMLSignatureInput {
          this._inputOctetStreamProxy.reset();
 
          return this._inputOctetStreamProxy;
+      } else if (this.isElement()) {
+        Canonicalizer20010315OmitComments c14nizer =
+            new Canonicalizer20010315OmitComments();
+         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         byte bytes[];
+         if (this.excludeNode!=null ) {
+         	bytes=c14nizer.engineCanonicalizeSubTree(this._subNode,this.excludeNode);
+         } else {
+         	bytes=c14nizer.engineCanonicalizeSubTree(this._subNode);
+         }
+ 		baos.write(bytes);
+        return new ByteArrayInputStream(baos.toByteArray());
+
       } else if (this.isNodeSet()) {
 
          /* If we have a node set but an octet stream is needed, we MUST c14nize
@@ -317,12 +347,11 @@ public class XMLSignatureInput {
             return new ByteArrayInputStream(baos.toByteArray());
          }
 
-         try {
+         try {         	
             Set nodes = this.getNodeSet();
             byte bytes[] = c14nizer.engineCanonicalizeXPathNodeSet(nodes);
 
             baos.write(bytes);
-
             /** $todo$ Clarify behavior. If isNodeSet() and we getOctetStream, do we have to this._inputOctetStream=xxx ? */
 
             /*
@@ -374,10 +403,20 @@ public class XMLSignatureInput {
     * @return true is the object has been set up with a Node set
     */
    public boolean isNodeSet() {
-      return ((this._inputOctetStreamProxy == null)
-              && (this._inputNodeSet != null));
+      return ( (this._inputOctetStreamProxy == null)
+              && (this._inputNodeSet != null) );
    }
-
+   /**
+    * Determines if the object has been set up with an Element
+    *
+    * @return true is the object has been set up with a Node set
+    */
+   public boolean isElement() {
+   		return ((this._inputOctetStreamProxy==null)&& (this._subNode!=null)
+   				&& (this._inputNodeSet==null)
+   				);
+   }
+   
    /**
     * Determines if the object has been set up with an octet stream
     *
@@ -1171,4 +1210,39 @@ public class XMLSignatureInput {
          }
       }
    }
+   /**
+    * Gets the exclude node of this XMLSignatureInput
+    * @return Returns the excludeNode.
+    */
+    public Node getExcludeNode() {
+	   return excludeNode;
+    }
+    
+    /**
+     * Sets the exclude node of this XMLSignatureInput
+     * @param excludeNode The excludeNode to set.
+     */
+     public void setExcludeNode(Node excludeNode) {
+	    this.excludeNode = excludeNode;
+     }
+
+     /**
+      * Gets the node of this XMLSignatureInput
+      * @param excludeNode The excludeNode to set.
+      */
+     public Node getSubNode() {
+  	    return _subNode;
+     }
+/**
+ * @return Returns the excludeComments.
+ */
+public boolean isExcludeComments() {
+	return excludeComments;
+}
+/**
+ * @param excludeComments The excludeComments to set.
+ */
+public void setExcludeComments(boolean excludeComments) {
+	this.excludeComments = excludeComments;
+}
 }

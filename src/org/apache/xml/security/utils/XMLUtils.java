@@ -25,8 +25,10 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
@@ -36,6 +38,7 @@ import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.transforms.implementations.TransformEnvelopedSignature;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,6 +69,44 @@ public class XMLUtils {
       // we don't allow instantiation
    }
 
+   public static Set getSetWithComments(Node rootNode,Set result) {
+   	  return getSet(rootNode,result,true);
+   }
+   public static Set getSetWithoutComments(Node rootNode,Set result) {
+ 	  return getSet(rootNode,result,false);
+ }
+   static Set getSet(Node rootNode,Set result,boolean com) {
+   	   //Set result = new HashSet();   	   
+   	   switch (rootNode.getNodeType()) {
+   	   		
+   	   			
+   	   		case Node.ELEMENT_NODE:
+   	   			result.add(rootNode);
+   	   		    NamedNodeMap nl = ((Element)rootNode).getAttributes();
+   	   		    for (int i=0;i<nl.getLength();i++) {
+   	   		    	result.add(nl.item(i));
+   	   		    }
+   	   	case Node.DOCUMENT_NODE:   	   			
+   	   			Node r=rootNode.getFirstChild();
+   	   			if (r==null) {
+   	   				break;
+   	   			}
+   	   			do {
+   	   				getSet(r,result,com);
+   	   			} while ((r=r.getNextSibling())!=null);
+   	   			break;
+   	   		case Node.COMMENT_NODE:
+   	   			if (com) {
+   	   				result.add(rootNode);
+   	   			}
+   	   			break;
+   	   		case Node.DOCUMENT_TYPE_NODE:
+   	   			break;
+   	   		default:
+   	   			result.add(rootNode);
+   	   }
+   	   return result;
+   }
    /**
     * Method getXalanVersion
     *
@@ -1272,5 +1313,104 @@ public class XMLUtils {
     */
    public static String getXPath(Node n) {
       return getXPath(n, "");
+   }
+
+/**
+ * @param sibling
+ * @param nodeName
+ * @param number
+ * @return
+ */
+   public static Element selectDsNode(Node sibling, String nodeName, int number) {
+	while (sibling!=null) {
+		if (nodeName.equals(sibling.getLocalName())
+				&& Constants.SignatureSpecNS.equals(sibling.getNamespaceURI())) {
+			if (number==0){
+				return (Element)sibling;
+			}
+			number--;
+		}
+		sibling=sibling.getNextSibling();
+	}
+	return null;
+}
+   public static Element selectNode(Node sibling, String uri,String nodeName, int number) {
+	while (sibling!=null) {
+		if (nodeName.equals(sibling.getLocalName())
+				&& uri.equals(sibling.getNamespaceURI())) {
+			if (number==0){
+				return (Element)sibling;
+			}
+			number--;
+		}
+		sibling=sibling.getNextSibling();
+	}
+	return null;
+}
+
+   public static Element[] selectDsNodes(Node sibling,String nodeName) {
+   	List list=new ArrayList();
+   	while (sibling!=null) {
+		if (nodeName.equals(sibling.getLocalName())
+				&& Constants.SignatureSpecNS.equals(sibling.getNamespaceURI())) {
+			list.add((Element)sibling);
+		}
+		sibling=sibling.getNextSibling();
+	}
+   	Element []a=new Element[list.size()];
+   	return (Element[])list.toArray(a);
+   }
+
+/**
+ * @param signatureElement
+ * @param inputSet
+ * @param resultSet
+ */
+public static Set excludeNodeFromSet(Node signatureElement, Set inputSet) {
+	Set resultSet = new HashSet();
+	Iterator iterator = inputSet.iterator();
+
+	 while (iterator.hasNext()) {
+	    Node inputNode = (Node) iterator.next();
+
+	    if (!XMLUtils
+	            .isDescendantOrSelf(signatureElement, inputNode)) {
+	       resultSet.add(inputNode);
+	    }
+	 }
+	 return resultSet;
+}
+
+/**
+    * Returns true if the descendantOrSelf is on the descendant-or-self axis
+    * of the context node.
+    *
+    * @param ctx
+    * @param descendantOrSelf
+    *
+    */
+   static boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
+
+      if (ctx == descendantOrSelf) {
+         return true;
+      }
+
+      Node parent = descendantOrSelf;
+
+      while (true) {
+         if (parent == null) {
+            return false;
+         }
+
+         if (parent == ctx) {
+            return true;
+         }
+
+         if (parent.getNodeType() == Node.ATTRIBUTE_NODE) {
+            parent = ((Attr) parent).getOwnerElement();
+         } else {
+            parent = parent.getParentNode();
+         }
+      }
    }
 }

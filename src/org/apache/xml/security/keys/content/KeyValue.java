@@ -20,7 +20,6 @@ package org.apache.xml.security.keys.content;
 
 import java.security.PublicKey;
 
-import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
@@ -29,10 +28,8 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -142,33 +139,28 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
     */
    public PublicKey getPublicKey() throws XMLSecurityException {
 
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         NodeList rsa =
-            XPathAPI.selectNodeList(this._constructionElement,
-                                    "./ds:" + Constants._TAG_RSAKEYVALUE,
-                                    nscontext);
-
-         if (rsa.getLength() > 0) {
-            RSAKeyValue kv = new RSAKeyValue((Element) rsa.item(0),
+      
+         Element rsa = XMLUtils.selectDsNode(this._constructionElement,
+         				Constants._TAG_RSAKEYVALUE,0);
+         
+         if (rsa != null) {
+            RSAKeyValue kv = new RSAKeyValue(rsa,
                                              this._baseURI);
 
             return kv.getPublicKey();
          }
 
-         NodeList dsa =
-            XPathAPI.selectNodeList(this._constructionElement,
-                                    "./ds:" + Constants._TAG_DSAKEYVALUE,
-                                    nscontext);
+         Element dsa = XMLUtils.selectDsNode(this._constructionElement,
+         		 Constants._TAG_DSAKEYVALUE,0);
+            
 
-         if (dsa.getLength() > 0) {
-            DSAKeyValue kv = new DSAKeyValue((Element) dsa.item(0),
+         if (dsa != null) {
+            DSAKeyValue kv = new DSAKeyValue(dsa,
                                              this._baseURI);
 
             return kv.getPublicKey();
          }
-      } catch (TransformerException ex) {}
+      
 
       return null;
    }

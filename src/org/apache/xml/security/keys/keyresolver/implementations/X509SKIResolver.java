@@ -32,7 +32,6 @@ import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -49,7 +48,7 @@ public class X509SKIResolver extends KeyResolverSpi {
         org.apache.commons.logging.LogFactory.getLog(X509SKIResolver.class.getName());
 
    /** Field _x509childNodes */
-   private NodeList _x509childNodes = null;
+   private Element _x509childNodes[] = null;
 
    /** Field _x509childObject[] */
    private XMLX509SKI _x509childObject[] = null;
@@ -76,20 +75,19 @@ public class X509SKIResolver extends KeyResolverSpi {
          return false;
       }
 
-      try {
+      
          Element nscontext = XMLUtils.createDSctx(element.getOwnerDocument(), "ds", Constants.SignatureSpecNS);
 
-         this._x509childNodes = XPathAPI.selectNodeList(element,
-                 "./ds:" + Constants._TAG_X509SKI, nscontext);
+         this._x509childNodes = XMLUtils.selectDsNodes(element,
+                  Constants._TAG_X509SKI);
 
          if ((this._x509childNodes != null)
-                 && (this._x509childNodes.getLength() > 0)) {
+                 && (this._x509childNodes.length > 0)) {
             log.debug("Yes Sir, I can");
 
             return true;
          }
-      } catch (TransformerException ex) {}
-
+      
       log.debug("I can't");
 
       return false;
@@ -153,11 +151,11 @@ public class X509SKIResolver extends KeyResolverSpi {
          }
 
          this._x509childObject =
-            new XMLX509SKI[this._x509childNodes.getLength()];
+            new XMLX509SKI[this._x509childNodes.length];
 
-         for (int i = 0; i < this._x509childNodes.getLength(); i++) {
+         for (int i = 0; i < this._x509childNodes.length; i++) {
             this._x509childObject[i] =
-               new XMLX509SKI((Element) this._x509childNodes.item(i), BaseURI);
+               new XMLX509SKI((Element) this._x509childNodes[i], BaseURI);
          }
 
          while (storage.hasNext()) {

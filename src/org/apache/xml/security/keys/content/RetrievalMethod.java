@@ -18,7 +18,6 @@ package org.apache.xml.security.keys.content;
 
 
 
-import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureException;
@@ -26,7 +25,6 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -125,21 +123,16 @@ public class RetrievalMethod extends SignatureElementProxy
    public Transforms getTransforms() throws XMLSecurityException {
 
       try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         Element transformsElem =
-            (Element) XPathAPI.selectSingleNode(this._constructionElement,
-                                                "./ds:"
-                                                + Constants
-                                                   ._TAG_TRANSFORMS, nscontext);
+       Element transformsElem =
+            (Element) XMLUtils.selectDsNode(this._constructionElement,                                                
+                                                Constants
+                                                   ._TAG_TRANSFORMS, 0);
 
          if (transformsElem != null) {
             return new Transforms(transformsElem, this._baseURI);
          }
 
          return null;
-      } catch (TransformerException ex) {
-         throw new XMLSecurityException("empty", ex);
       } catch (XMLSignatureException ex) {
          throw new XMLSecurityException("empty", ex);
       }

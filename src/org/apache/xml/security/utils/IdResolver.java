@@ -116,6 +116,8 @@ public class IdResolver {
 
          return result;
       }
+       // this must be done so that Xalan can catch ALL namespaces
+       //XMLUtils.circumventBug2650(doc);
 
       result = IdResolver.getElementByIdInDSNamespace(doc, id);
 

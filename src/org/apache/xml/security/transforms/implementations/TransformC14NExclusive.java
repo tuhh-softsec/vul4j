@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.bcel.classfile.Node;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclOmitComments;
@@ -91,15 +92,29 @@ public class TransformC14NExclusive extends TransformSpi {
 
          Canonicalizer20010315ExclOmitComments c14n =
             new Canonicalizer20010315ExclOmitComments();
-
+         
          if (input.isOctetStream()) {
             return new XMLSignatureInput(c14n
                .engineCanonicalize(input.getBytes()));
          } else {
+         	byte []result;
             if (inclusiveNamespaces == null) {
-               return new XMLSignatureInput(c14n
-                  .engineCanonicalizeXPathNodeSet(input.getNodeSet()));
+            	if (input.isElement()) {
+             		org.w3c.dom.Node excl=input.getExcludeNode();             	
+             		result=c14n.engineCanonicalizeSubTree(input.getSubNode(),"",excl);             		
+             	} else {
+             		result=c14n
+	                  .engineCanonicalizeXPathNodeSet(input.getNodeSet());
+             	}
+               return new XMLSignatureInput(result);
             } else {
+            	if (input.isElement()) {
+            		org.w3c.dom.Node excl=input.getExcludeNode();
+            		return new XMLSignatureInput(c14n
+                            .engineCanonicalizeSubTree(input
+                               .getSubNode(), inclusiveNamespaces
+                               .getInclusiveNamespaces(),excl));
+            	}
                return new XMLSignatureInput(c14n
                   .engineCanonicalizeXPathNodeSet(input
                      .getNodeSet(), inclusiveNamespaces

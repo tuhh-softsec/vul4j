@@ -31,6 +31,7 @@ import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -70,44 +71,40 @@ public class ResolverXPointer extends ResourceResolverSpi {
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
            throws ResourceResolverException {
 
-      NodeList resultNodes = null;
+      Node resultNode = null;
       Document doc = uri.getOwnerDocument();
 
       // this must be done so that Xalan can catch ALL namespaces
-      XMLUtils.circumventBug2650(doc);
+      //XMLUtils.circumventBug2650(doc);
 
-      CachedXPathAPI cXPathAPI = new CachedXPathAPI();
+      //CachedXPathAPI cXPathAPI = new CachedXPathAPI();
 
-      try {
+      
          if (isXPointerSlash(uri, BaseURI)) {
-            resultNodes =
-               cXPathAPI.selectNodeList(doc,
-                                        Canonicalizer.XPATH_C14N_WITH_COMMENTS);
+            resultNode = doc;
+               
          } else if (isXPointerId(uri, BaseURI)) {
             String id = getXPointerId(uri, BaseURI);
-            Element selectedElem = IdResolver.getElementById(doc, id);
+            resultNode =(Node) IdResolver.getElementById(doc, id);
 
             // log.debug("Use #xpointer(id('" + id + "')) on element " + selectedElem);
 
-            if (selectedElem == null) {
+            if (resultNode == null) {
                Object exArgs[] = { id };
 
                throw new ResourceResolverException(
                   "signature.Verification.MissingID", exArgs, uri, BaseURI);
             }
-
+            /*
             resultNodes =
                cXPathAPI
                   .selectNodeList(selectedElem, Canonicalizer
-                     .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+                     .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);*/
          }
-      } catch (javax.xml.transform.TransformerException ex) {
-         throw new ResourceResolverException("generic.EmptyMessage", ex, uri,
-                                             BaseURI);
-      }
+      
 
-      Set resultSet = XMLUtils.convertNodelistToSet(resultNodes);
-      XMLSignatureInput result = new XMLSignatureInput(resultSet, cXPathAPI);
+      //Set resultSet = XMLUtils.convertNodelistToSet(resultNode); 
+      XMLSignatureInput result = new XMLSignatureInput(resultNode);
 
       result.setMIMEType("text/xml");
 

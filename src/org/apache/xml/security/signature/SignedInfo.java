@@ -153,19 +153,24 @@ public class SignedInfo extends Manifest {
        * and replace the original not-canonicalized ds:SignedInfo by
        * the re-parsed canonicalized one.
        */
+      String c14nMethodURI=this.getCanonicalizationMethodURI();
+     if (!(c14nMethodURI.equals("http://www.w3.org/TR/2001/REC-xml-c14n-20010315") ||
+      		c14nMethodURI.equals("http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments") ||
+			c14nMethodURI.equals("http://www.w3.org/2001/10/xml-exc-c14n#") ||
+			c14nMethodURI.equals("http://www.w3.org/2001/10/xml-exc-c14n#WithComments"))) {
+      	//The c14n is not a secure one and can rewrite the URIs or like that reparse the SignedInfo to be sure    
       try {
          Canonicalizer c14nizer =
             Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
 
          this._c14nizedBytes =
             c14nizer.canonicalizeSubtree(this._constructionElement);
-
          javax.xml.parsers.DocumentBuilderFactory dbf =
             javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
          dbf.setNamespaceAware(true);
 
-         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();        
          org.w3c.dom.Document newdoc =
             db.parse(new ByteArrayInputStream(this._c14nizedBytes));
          Node imported = this._doc.importNode(newdoc.getDocumentElement(),
@@ -182,7 +187,7 @@ public class SignedInfo extends Manifest {
       } catch (SAXException ex) {
          throw new XMLSecurityException("empty", ex);
       }
-
+      }
       this._signatureAlgorithm =
          new SignatureAlgorithm(this.getSignatureMethodElement(),
                                 this.getBaseURI());
@@ -227,7 +232,7 @@ public class SignedInfo extends Manifest {
                   IOException, XMLSecurityException {
 
       if ((this._c14nizedBytes == null)
-              && (this._state == ElementProxy.MODE_SIGN)) {
+              /*&& (this._state == ElementProxy.MODE_SIGN)*/) {
          Canonicalizer c14nizer =
             Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
 

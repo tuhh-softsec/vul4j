@@ -25,7 +25,6 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -76,19 +75,13 @@ public class SignatureProperties extends SignatureElementProxy {
     * @throws XMLSignatureException
     */
    public int getLength() throws XMLSignatureException {
+      
+         Element[] propertyElems =
+            XMLUtils.selectDsNodes(this._constructionElement,
+                                     Constants._TAG_SIGNATUREPROPERTY
+                                    );
 
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         NodeList propertyElems =
-            XPathAPI.selectNodeList(this._constructionElement,
-                                    "./ds:" + Constants._TAG_SIGNATUREPROPERTY,
-                                    nscontext);
-
-         return propertyElems.getLength();
-      } catch (TransformerException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
+         return propertyElems.length;
    }
 
    /**
@@ -100,23 +93,17 @@ public class SignatureProperties extends SignatureElementProxy {
     * @throws XMLSignatureException
     */
    public SignatureProperty item(int i) throws XMLSignatureException {
-
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
+   	  try {
          Element propertyElem =
-            (Element) XPathAPI
-               .selectSingleNode(this._constructionElement, "./ds:"
-                                 + Constants._TAG_SIGNATUREPROPERTY + "["
-                                 + (i + 1) + "]", nscontext);
+            (Element) XMLUtils.selectDsNode(this._constructionElement, 
+                                 Constants._TAG_SIGNATUREPROPERTY, 
+                                 i );
 
          if (propertyElem == null) {
             return null;
          } else {
             return new SignatureProperty(propertyElem, this._baseURI);
-         }
-      } catch (TransformerException ex) {
-         throw new XMLSignatureException("empty", ex);
+         }      
       } catch (XMLSecurityException ex) {
          throw new XMLSignatureException("empty", ex);
       }

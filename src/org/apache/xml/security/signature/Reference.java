@@ -111,7 +111,6 @@ public class Reference extends SignatureElementProxy {
                                              + Constants._TAG_MANIFEST;
    //J-
    Manifest _manifest = null;
-   XMLSignatureInput _transformsInput;
    XMLSignatureInput _transformsOutput;
    //J+
 
@@ -433,14 +432,11 @@ public class Reference extends SignatureElementProxy {
 
          XMLSignatureInput input = resolver.resolve(URIAttr, this._baseURI);
 
-         this._transformsInput = new XMLSignatureInput(input.getBytes());
 
-         this._transformsInput.setSourceURI(input.getSourceURI());
+         
 
          return input;
-      } catch (IOException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (ResourceResolverException ex) {
+      }  catch (ResourceResolverException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (XMLSecurityException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
@@ -453,8 +449,22 @@ public class Reference extends SignatureElementProxy {
     *
     * @deprecated use
     */
-   public XMLSignatureInput getTransformsInput() {
-      return this._transformsInput;
+   public XMLSignatureInput getTransformsInput() throws ReferenceNotInitializedException   
+	{  
+   		XMLSignatureInput input=getContentsBeforeTransformation();
+   		XMLSignatureInput result;
+		try {
+			result = new XMLSignatureInput(input.getBytes());
+		} catch (CanonicalizationException ex) {
+			 throw new ReferenceNotInitializedException("empty", ex);
+		} catch (InvalidCanonicalizerException ex) {
+			 throw new ReferenceNotInitializedException("empty", ex);
+		} catch (IOException ex) {
+			 throw new ReferenceNotInitializedException("empty", ex);
+		}
+		result.setSourceURI(input.getSourceURI());   
+		return result;
+	
    }
 
    private XMLSignatureInput getContentsAfterTransformation(XMLSignatureInput input)
@@ -471,7 +481,6 @@ public class Reference extends SignatureElementProxy {
             this._transformsOutput.setSourceURI(output.getSourceURI());
          } else {
             output = input;
-            this._transformsOutput = this._transformsInput;
          }
 
          return output;
@@ -664,9 +673,6 @@ public class Reference extends SignatureElementProxy {
           * reduced.
           */
          if (!Reference.CacheSignedNodes) {
-            this._transformsInput = new XMLSignatureInput(input.getBytes());
-
-            this._transformsInput.setSourceURI(input.getSourceURI());
 
             this._transformsOutput = new XMLSignatureInput(output.getBytes());
 

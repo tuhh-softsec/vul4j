@@ -29,6 +29,7 @@ import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.SignatureElementProxy;

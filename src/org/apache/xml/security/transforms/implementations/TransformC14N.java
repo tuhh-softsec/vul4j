@@ -28,6 +28,7 @@ import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitCom
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.Transforms;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 
@@ -81,6 +82,14 @@ public class TransformC14N extends TransformSpi {
          if (input.isOctetStream()) {
             result = c14n.engineCanonicalize(input.getBytes());
          } else {
+         	if (input.isElement()) {
+         		Node excl=input.getExcludeNode();
+         		if (excl==null) {
+         			result=c14n.engineCanonicalizeSubTree(input.getSubNode());
+         		} else {
+         			result=c14n.engineCanonicalizeSubTree(input.getSubNode(),excl);
+         		}
+         	}
             result = c14n.engineCanonicalizeXPathNodeSet(input.getNodeSet());
          }
          return new XMLSignatureInput(result);

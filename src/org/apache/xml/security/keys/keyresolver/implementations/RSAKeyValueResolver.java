@@ -22,7 +22,6 @@ package org.apache.xml.security.keys.keyresolver.implementations;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
-import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.keyvalues.RSAKeyValue;
@@ -31,7 +30,6 @@ import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 
 
@@ -71,17 +69,13 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
       boolean isRSAKeyValue = XMLUtils.elementIsInSignatureSpace(element,
                                  Constants._TAG_RSAKEYVALUE);
 
-      if (isKeyValue) {
-         try {
-         Element nscontext = XMLUtils.createDSctx(element.getOwnerDocument(), "ds", Constants.SignatureSpecNS);
-
-            this._rsaKeyElement = (Element) XPathAPI.selectSingleNode(element,
-                    "./ds:" + Constants._TAG_RSAKEYVALUE, nscontext);
+      if (isKeyValue) {                  
+            this._rsaKeyElement = XMLUtils.selectDsNode(element.getFirstChild(),
+                    Constants._TAG_RSAKEYVALUE, 0);
 
             if (this._rsaKeyElement != null) {
                return true;
-            }
-         } catch (TransformerException ex) {}
+            }         
       } else if (isRSAKeyValue) {
 
          // this trick is needed to allow the RetrievalMethodResolver to eat a

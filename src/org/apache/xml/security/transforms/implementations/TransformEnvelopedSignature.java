@@ -97,6 +97,19 @@ public class TransformEnvelopedSignature extends TransformSpi {
             input.setNodesetXPath(Canonicalizer.XPATH_C14N_WITH_COMMENTS);
          }
          */
+         
+         Element transformElement = this._transformObject.getElement();
+         Node signatureElement = transformElement;
+         
+
+         signatureElement = searchSignatureElement(signatureElement);
+         if (input.isElement()) {
+         	XMLSignatureInput result = new XMLSignatureInput(input.getSubNode());
+         	result.setExcludeNode(signatureElement);
+         	result.setExcludeComments(input.isExcludeComments());
+         	return result;
+         }
+         //
          Set inputSet = input.getNodeSet();
 
          if (inputSet.isEmpty()) {
@@ -104,34 +117,6 @@ public class TransformEnvelopedSignature extends TransformSpi {
 
             throw new TransformationException("generic.EmptyMessage", exArgs);
          }
-
-         Element transformElement = this._transformObject.getElement();
-         Node signatureElement = transformElement;
-         boolean found = false;
-
-         searchSignatureElemLoop: while (true) {
-            if ((signatureElement == null)
-                    || (signatureElement.getNodeType() == Node.DOCUMENT_NODE)) {
-               break searchSignatureElemLoop;
-            }
-
-            if (((Element) signatureElement).getNamespaceURI()
-                    .equals(Constants
-                    .SignatureSpecNS) && ((Element) signatureElement)
-                       .getLocalName().equals(Constants._TAG_SIGNATURE)) {
-               found = true;
-
-               break searchSignatureElemLoop;
-            }
-
-            signatureElement = signatureElement.getParentNode();
-         }
-
-         if (!found) {
-            throw new TransformationException(
-               "envelopedSignatureTransformNotInSignatureElement");
-         }
-
          Document transformDoc = transformElement.getOwnerDocument();
          Document inputDoc = XMLUtils.getOwnerDocument((Node) inputSet.iterator().next());
 
@@ -139,20 +124,11 @@ public class TransformEnvelopedSignature extends TransformSpi {
             throw new TransformationException("xpath.funcHere.documentsDiffer");
          }
 
-         Set resultSet = new HashSet();
-         Iterator iterator = inputSet.iterator();
-
-         while (iterator.hasNext()) {
-            Node inputNode = (Node) iterator.next();
-
-            if (!TransformEnvelopedSignature
-                    .isDescendantOrSelf(signatureElement, inputNode)) {
-               resultSet.add(inputNode);
-            }
-         }
+         
+         Set resultSet=XMLUtils.excludeNodeFromSet(signatureElement, inputSet);
 
          XMLSignatureInput result = new XMLSignatureInput(resultSet,
-                                       input.getCachedXPathAPI());
+                                       null/*input.getCachedXPathAPI()*/);
 
          return result;
       } catch (IOException ex) {
@@ -169,35 +145,35 @@ public class TransformEnvelopedSignature extends TransformSpi {
    }
 
    /**
-    * Returns true if the descendantOrSelf is on the descendant-or-self axis
-    * of the context node.
-    *
-    * @param ctx
-    * @param descendantOrSelf
-    *
-    */
-   static boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
+ * @param signatureElement
+ * @param found
+ * @return
+ * @throws TransformationException
+ */
+private static Node searchSignatureElement(Node signatureElement) throws TransformationException {
+	boolean found=false;
+	searchSignatureElemLoop: while (true) {
+	    if ((signatureElement == null)
+	            || (signatureElement.getNodeType() == Node.DOCUMENT_NODE)) {
+	       break searchSignatureElemLoop;
+	    }
 
-      if (ctx == descendantOrSelf) {
-         return true;
-      }
+	    if (((Element) signatureElement).getNamespaceURI()
+	            .equals(Constants
+	            .SignatureSpecNS) && ((Element) signatureElement)
+	               .getLocalName().equals(Constants._TAG_SIGNATURE)) {
+	       found = true;
 
-      Node parent = descendantOrSelf;
+	       break searchSignatureElemLoop;
+	    }
 
-      while (true) {
-         if (parent == null) {
-            return false;
-         }
+	    signatureElement = signatureElement.getParentNode();
+	 }
 
-         if (parent == ctx) {
-            return true;
-         }
-
-         if (parent.getNodeType() == Node.ATTRIBUTE_NODE) {
-            parent = ((Attr) parent).getOwnerElement();
-         } else {
-            parent = parent.getParentNode();
-         }
-      }
-   }
+	 if (!found) {
+	    throw new TransformationException(
+	       "envelopedSignatureTransformNotInSignatureElement");
+	 }
+	return signatureElement;
+}
 }

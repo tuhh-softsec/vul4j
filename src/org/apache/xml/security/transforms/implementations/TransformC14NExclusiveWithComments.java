@@ -31,6 +31,7 @@ import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 
@@ -87,11 +88,24 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
 
          Canonicalizer20010315ExclWithComments c14n =
             new Canonicalizer20010315ExclWithComments();
-
+         c14n.set_includeComments(!input.isExcludeComments());
          if (input.isOctetStream()) {
             return new XMLSignatureInput(c14n
                .engineCanonicalize(input.getBytes()));
          } else {
+         	if (input.isElement()) {
+         		if (inclusiveNamespaces == null) {
+             		Node excl=input.getExcludeNode();
+         			return new XMLSignatureInput(
+         					c14n.engineCanonicalizeSubTree(input.getSubNode(),"",
+         							excl));
+         		} else {
+         		Node excl=input.getExcludeNode();
+         			return new XMLSignatureInput(
+         					c14n.engineCanonicalizeSubTree(input.getSubNode(),inclusiveNamespaces.getInclusiveNamespaces(),
+         							excl));
+         		}
+         	}
             if (inclusiveNamespaces == null) {
                return new XMLSignatureInput(c14n
                   .engineCanonicalizeXPathNodeSet(input.getNodeSet()));

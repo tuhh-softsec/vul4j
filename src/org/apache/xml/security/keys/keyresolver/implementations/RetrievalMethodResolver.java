@@ -40,6 +40,7 @@ import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 
 /**
@@ -145,11 +146,11 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                          + e.getLocalName() + " Element");
 
                if (e != null) {
-                  KeyResolver newKeyResolver = KeyResolver.getInstance(e,
+                  KeyResolver newKeyResolver = KeyResolver.getInstance(getFirstElementChild(e),
                                                   BaseURI, storage);
 
                   if (newKeyResolver != null) {
-                     return newKeyResolver.resolvePublicKey(e, BaseURI,
+                     return newKeyResolver.resolvePublicKey(getFirstElementChild(e), BaseURI,
                                                             storage);
                   }
                }
@@ -231,11 +232,11 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                          + e.getLocalName() + " Element");
 
                if (e != null) {
-                  KeyResolver newKeyResolver = KeyResolver.getInstance(e,
+                  KeyResolver newKeyResolver = KeyResolver.getInstance(getFirstElementChild(e),
                                                   BaseURI, storage);
 
                   if (newKeyResolver != null) {
-                     return newKeyResolver.resolveX509Certificate(e, BaseURI,
+                     return newKeyResolver.resolveX509Certificate(getFirstElementChild(e), BaseURI,
                              storage);
                   }
                }
@@ -294,5 +295,12 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
       return null;
+   }
+   public static Element getFirstElementChild(Element e){
+   	    Node n=e.getFirstChild();
+   	    while (n!=null && n.getNodeType()!=Node.ELEMENT_NODE) {
+   	    	n=n.getNextSibling();
+   	    }
+   		return (Element)n;
    }
 }

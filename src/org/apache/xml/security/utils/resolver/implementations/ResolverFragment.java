@@ -66,10 +66,8 @@ public class ResolverFragment extends ResourceResolverSpi {
       String uriNodeValue = uri.getNodeValue();
       Document doc = uri.getOwnerDocument();
 
-      // this must be done so that Xalan can catch ALL namespaces
-      XMLUtils.circumventBug2650(doc);
 
-      Element selectedElem = null;
+      Node selectedElem = null;
       if (uriNodeValue.equals("")) {
 
          /*
@@ -78,7 +76,7 @@ public class ResolverFragment extends ResourceResolverSpi {
           */
 
          log.debug("ResolverFragment with empty URI (means complete document)");
-	 selectedElem = doc.getDocumentElement();
+	 selectedElem = doc;
       } else {
 
          /*
@@ -97,10 +95,11 @@ public class ResolverFragment extends ResourceResolverSpi {
          log.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
       }
 
-      Set resultSet = dereferenceSameDocumentURI(selectedElem);
-      XMLSignatureInput result = new XMLSignatureInput(resultSet);
+      //Set resultSet = dereferenceSameDocumentURI(selectedElem);
+      XMLSignatureInput result = new XMLSignatureInput(selectedElem);
+      result.setExcludeComments(true);
 
-      log.debug("We return a nodeset with " + resultSet.size() + " nodes");
+      //log.debug("We return a nodeset with " + resultSet.size() + " nodes");
       result.setMIMEType("text/xml");
 
       try {
@@ -140,58 +139,4 @@ public class ResolverFragment extends ResourceResolverSpi {
       return false;
    }
 
-   /**
-     * Dereferences a same-document URI fragment.
-     *
-     * @param node the node (document or element) referenced by the
-     *   URI fragment. If null, returns an empty set.
-     * @return a set of nodes (minus any comment nodes)
-     */
-    private Set dereferenceSameDocumentURI(Node node) {
-	Set nodeSet = new HashSet();
-	if (node != null) {
-	    nodeSetMinusCommentNodes(node, nodeSet, null);
-	}
-	return nodeSet;
-    }
-
-    /**
-     * Recursively traverses the subtree, and returns an XPath-equivalent
-     * node-set of all nodes traversed, excluding any comment nodes.
-     *
-     * @param node the node to traverse
-     * @param nodeSet the set of nodes traversed so far
-     * @param the previous sibling node
-     */
-    private void nodeSetMinusCommentNodes(Node node, Set nodeSet,
-	Node prevSibling) {
-	switch (node.getNodeType()) {
-            case Node.ELEMENT_NODE :
-		NamedNodeMap attrs = node.getAttributes();
-		if (attrs != null) {
-                    for (int i = 0; i<attrs.getLength(); i++) {
-                        nodeSet.add(attrs.item(i));
-                    }
-		}
-                nodeSet.add(node);
-        	Node pSibling = null;
-		for (Node child = node.getFirstChild(); child != null;
-                    child = child.getNextSibling()) {
-                    nodeSetMinusCommentNodes(child, nodeSet, pSibling);
-                    pSibling = child;
-		}
-                break;
-            case Node.TEXT_NODE :
-            case Node.CDATA_SECTION_NODE:
-		// emulate XPath which only returns the first node in
-		// contiguous text/cdata nodes
-		if (prevSibling != null &&
-                    (prevSibling.getNodeType() == Node.TEXT_NODE ||
-                     prevSibling.getNodeType() == Node.CDATA_SECTION_NODE)) {
-                    return;
-		}
-            case Node.PROCESSING_INSTRUCTION_NODE :
-		nodeSet.add(node);
-	}
-    }
 }

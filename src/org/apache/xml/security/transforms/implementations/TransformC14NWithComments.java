@@ -28,6 +28,7 @@ import org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithCom
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.Transforms;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 
@@ -77,11 +78,21 @@ public class TransformC14NWithComments extends TransformSpi {
 
       try {
         Canonicalizer20010315WithComments c14n = new Canonicalizer20010315WithComments();
+        c14n.set_includeComments(!input.isExcludeComments());
          byte[] result = null;
          if (input.isOctetStream()) {
             result = c14n.engineCanonicalize(input.getBytes());
          } else {
-            result = c14n.engineCanonicalizeXPathNodeSet(input.getNodeSet());
+         	if (input.isElement()) {
+         		Node excl=input.getExcludeNode();
+         		if (excl==null) {
+         			result=c14n.engineCanonicalizeSubTree(input.getSubNode());
+         		} else {
+         			result=c14n.engineCanonicalizeSubTree(input.getSubNode(),excl);
+         		}
+         	} else {
+         		result = c14n.engineCanonicalizeXPathNodeSet(input.getNodeSet());
+         	}
          }
          return new XMLSignatureInput(result);
       } catch (ParserConfigurationException ex) {

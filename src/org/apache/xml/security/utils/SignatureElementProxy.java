@@ -38,6 +38,8 @@ public abstract class SignatureElementProxy extends ElementProxy {
     */
    public SignatureElementProxy(Document doc) {
       super(doc);
+      //this._constructionElement.setAttributeNS(Constants.NamespaceSpecNS,"xmlns:ds",
+        //          Constants.SignatureSpecNS);
    }
 
    /**
@@ -50,6 +52,7 @@ public abstract class SignatureElementProxy extends ElementProxy {
    public SignatureElementProxy(Element element, String BaseURI)
            throws XMLSecurityException {
       super(element, BaseURI);
+
    }
 
    /**

@@ -56,9 +56,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
    /**
     * Returns the Attr[]s to be outputted for the given element.
     * <br>
-    * IMPORTANT: This method expects to work on a modified DOM tree, i.e. a DOM which has
-    * been prepared using {@link XMLUtils#circumventBug2650(Document)}.
-    * <br>
     * The code of this method is a copy of {@link #handleAttributes(Element)},
     * whereas it takes into account that subtree-c14n is -- well -- subtree-based.
     * So if the element in question isRoot of c14n, it's parent is not in the
@@ -68,7 +65,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     * @return the Attr[]s to be outputted
     * @throws CanonicalizationException
     */
-   Object[] handleAttributesSubtree(Element E)
+   Object[] handleAttributesSubtree(Element E,  NameSpaceSymbTable ns )
            throws CanonicalizationException {
 
       boolean isRoot = E == this._rootNodeOfC14n;
@@ -76,149 +73,58 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
       // result will contain the attrs which have to be outputted
       List result = new Vector();
       NamedNodeMap attrs = E.getAttributes();
-      int attrsLength = attrs.getLength();
-
-      /* ***********************************************************************
-       * Handle xmlns=""
-       * ***********************************************************************/
-
-      // first check whether we have to output xmlns=""
-      Attr xmlns = E.getAttributeNodeNS(Constants.NamespaceSpecNS, "xmlns");
-
-      if (xmlns == null) {
-         throw new CanonicalizationException(
-            "c14n.XMLUtils.circumventBug2650forgotten");
-      }
-
-      /* To begin processing L, if the first node is not the default namespace
-       * node (a node with no namespace URI and no local name), then generate
-       * a space followed by xmlns="" if and only if the following conditions
-       * are met:
-       */
-      boolean firstNodeIsNotDefaultNamespaceNode =
-         xmlns.getNodeValue().equals("");
-
-      /* the element E that owns the axis is in the node-set
-       */
-      if (firstNodeIsNotDefaultNamespaceNode) {
-
-         /* The nearest ancestor element of E in the node-set has a default
-          * namespace node in the node-set (default namespace nodes always
-          * have non-empty values in XPath)
-          */
-         Node ancestor = E.getParentNode();
-
-         if (!isRoot && (ancestor.getNodeType() == Node.ELEMENT_NODE)) {
-            Attr xmlnsAncestor = ((Element) ancestor).getAttributeNodeNS(
-               Constants.NamespaceSpecNS, "xmlns");
-
-            if (xmlnsAncestor == null) {
-               throw new CanonicalizationException(
-                  "c14n.XMLUtils.circumventBug2650forgotten");
-            }
-
-            if (!xmlnsAncestor.getNodeValue().equals("")) {
-
-               // OK, we must output xmlns=""
-               result.add(xmlns);
-            }
-         }
-      }
-
-      /* ***********************************************************************
-       * Handle namespace axis
-       * ***********************************************************************/
-      handleNamespaces: for (int i = 0; i < attrsLength; i++) {
+      int attrsLength = attrs.getLength();      
+            
+      for (int i = 0; i < attrsLength; i++) {
          Attr N = (Attr) attrs.item(i);
+         String NName=N.getName();
+         String NValue=N.getValue();
+         String NUri =N.getNamespaceURI();
 
-         if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
-
-            // only handle namespaces here
-            continue handleNamespaces;
+         if (!Constants.NamespaceSpecNS.equals(NUri)) {
+         	//It's not a namespace attr node. Add to the result and continue.
+            result.add(N);
+            continue;
          }
 
          if (C14nHelper.namespaceIsRelative(N)) {
-            Object exArgs[] = { E.getTagName(), N.getName(), N.getNodeValue() };
-
+            Object exArgs[] = { E.getTagName(), NName, N.getNodeValue() };
             throw new CanonicalizationException(
                "c14n.Canonicalizer.RelativeNamespace", exArgs);
          }
-
-         if (N.getName().equals("xmlns") && N.getNodeValue().equals("")) {
-
-            // xmlns="" already handled
-            continue handleNamespaces;
-         }
-
+        
          if ("xml".equals(N.getLocalName())
-                 && Constants.XML_LANG_SPACE_SpecNS.equals(N.getNodeValue())) {
-
-            /* except omit namespace node with local name xml, which defines
-             * the xml prefix, if its string value is http://www.w3.org/XML/1998/namespace.
-             */
-            continue handleNamespaces;
+                 && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
+         	//The default mapping for xml must not be output.
+         	continue;
          }
-
-         /* OK, now we have a 'real' namespace in N, no attrs, no xmlns=""
-          * and no xmlns:xml="http://www.w3.org/XML/1998/namespace"
-          */
-
-         /* A namespace node N is ignored if the nearest ancestor element of E
-          * that is in the node-set has a namespace node in the node-set with
-          * the same local name and value as N.
-          *
-          * Otherwise, process the namespace node N in the same way as an
-          * attribute node, except assign the local name xmlns to the default
-          * namespace node if it exists (in XPath, the default namespace node
-          * has an empty URI and local name).
-          */
-         boolean ignoreN = false;
-         Node ancestor = E.getParentNode();
-
-         if (!isRoot && (ancestor.getNodeType() == Node.ELEMENT_NODE)) {
-            Attr NA = ((Element) ancestor).getAttributeNodeNS(
-               Constants.NamespaceSpecNS, N.getLocalName());
-
-            if ((NA != null) && NA.getNodeValue().equals(N.getNodeValue())) {
-               ignoreN = true;
-            }
-         }
-
-         if (!ignoreN) {
-            result.add(N);
-         }
+         
+         Node n=ns.addMappingAndRender(NName,NValue,N);          		 
+		 	 
+      	  if (n!=null) {
+      	  	 //Render the ns definition
+             result.add(n);
+          }        
       }
-
-      /* ***********************************************************************
-       * Handle attribute axis
-       * ***********************************************************************/
-      handleAttributes: for (int i = 0; i < attrsLength; i++) {
-         Attr a = (Attr) attrs.item(i);
-
-         if (Constants.NamespaceSpecNS.equals(a.getNamespaceURI())) {
-
-            // only handle attributes here
-            continue handleAttributes;
-         }
-
-         result.add(a);
-      }
-
-      /* The processing of an element node E MUST be modified slightly when an
-       * XPath node-set is given as input and the element's parent is omitted
-       * from the node-set. The method for processing the attribute axis of an
-       * element E in the node-set is enhanced. All element nodes along E's
-       * ancestor axis are examined for nearest occurrences of attributes in
-       * the xml namespace, such as xml:lang and xml:space (whether or not they
-       * are in the node-set). From this list of attributes, remove any that are
-       * in E's attribute axis (whether or not they are in the node-set). Then,
-       * lexicographically merge this attribute list with the nodes of E's
-       * attribute axis that are in the node-set. The result of visiting the
-       * attribute axis is computed by processing the attribute nodes in this
-       * merged attribute list.
-       */
+            	   
       if (isRoot) {
+      	//It is the first node of the subtree
+      	//Obtain all the namespaces defined in the parents, and added to the output.
+      	List s1=ns.getUnrenderedNodes();    
+      	result.addAll(s1);      		             
+      	//output the attributes in the xml namespace.
+		addXmlAttributesSubtree(E, result);
+      } 
+      
+      return C14nHelper.sortAttributes(result.toArray());
+   }
 
+   /**
+    * Float the xml:* attributes of the parent nodes to the root node of c14n
+    * @param E the root node.
+    * @param result the xml:* attributes  to output.
+    */
+   private void addXmlAttributesSubtree(Element E, List result) {
          // E is in the node-set
          Node parent = E.getParentNode();
          Map loa = new HashMap();
@@ -236,7 +142,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                   ((Element) ancestor).getAttributes();
 
                for (int i = 0; i < ancestorAttrs.getLength(); i++) {
-
                   // for all attributes in the ancestor element
                   Attr currentAncestorAttr = (Attr) ancestorAttrs.item(i);
 
@@ -266,9 +171,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
          }
       }
 
-      return C14nHelper.sortAttributes(result.toArray());
-   }
-
    /**
     * Returns the Attr[]s to be outputted for the given element.
     * <br>
@@ -279,174 +181,84 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     * @return the Attr[]s to be outputted
     * @throws CanonicalizationException
     */
-   Object[] handleAttributes(Element E) throws CanonicalizationException {
+   Object[] handleAttributes(Element E,  NameSpaceSymbTable ns ) throws CanonicalizationException {    
+    // result will contain the attrs which have to be outputted
+    List result = new Vector();
+    NamedNodeMap attrs = E.getAttributes();
+    int attrsLength = attrs.getLength();
+    boolean isRealVisible=this._xpathNodeSet.contains(E);
+            
+    for (int i = 0; i < attrsLength; i++) {
+       Attr N = (Attr) attrs.item(i);
+       String NName=N.getName();
+       String NValue=N.getValue();
+       String NUri =N.getNamespaceURI();
+       
+       if (!Constants.NamespaceSpecNS.equals(NUri)) {
+       	  //A non namespace definition node.
+       	  if (isRealVisible){
+       		//The node is visible add the attribute to the list of output attributes.
+           	result.add(N);
+          }
+       	  //keep working
+          continue;
+       }
 
-      // System.out.println("During the traversal, I encountered " + XMLUtils.getXPath(E));
-      // result will contain the attrs which have to be outputted
-      List result = new Vector();
-      NamedNodeMap attrs = E.getAttributes();
-      int attrsLength = attrs.getLength();
-
-      /* ***********************************************************************
-       * Handle xmlns=""
-       * ***********************************************************************/
-
-      // first check whether we have to output xmlns=""
-      Attr xmlns = E.getAttributeNodeNS(Constants.NamespaceSpecNS, "xmlns");
-
-      if (xmlns == null) {
-         throw new CanonicalizationException(
-            "c14n.XMLUtils.circumventBug2650forgotten");
-      }
-
-      /* To begin processing L, if the first node is not the default namespace
-       * node (a node with no namespace URI and no local name), then generate
-       * a space followed by xmlns="" if and only if the following conditions
-       * are met:
-       */
-      boolean firstNodeIsDefaultNamespaceNode =
-         !xmlns.getNodeValue().equals("") && this._xpathNodeSet.contains(xmlns);
-
-      /* the element E that owns the axis is in the node-set
-       */
-      if (this._xpathNodeSet.contains(E) &&!firstNodeIsDefaultNamespaceNode) {
-
-         /* The nearest ancestor element of E in the node-set has a default
-          * namespace node in the node-set (default namespace nodes always
-          * have non-empty values in XPath)
-          */
-         for (Node ancestor = E.getParentNode();
-                 (ancestor != null)
-                 && (ancestor.getNodeType() == Node.ELEMENT_NODE);
-                 ancestor = ancestor.getParentNode()) {
-            if (this._xpathNodeSet.contains(ancestor)) {
-               Attr xmlnsA = ((Element) ancestor).getAttributeNodeNS(
-                  Constants.NamespaceSpecNS, "xmlns");
-
-               if (xmlnsA == null) {
-                  throw new CanonicalizationException(
-                     "c14n.XMLUtils.circumventBug2650forgotten");
-               }
-
-               if (!xmlnsA.getNodeValue().equals("")
-                       && this._xpathNodeSet.contains(xmlnsA)) {
-
-                  // OK, we must output xmlns=""
-                  xmlns = this._doc.createAttributeNS(Constants.NamespaceSpecNS,
-                                                      "xmlns");
-
-                  xmlns.setValue("");
-                  result.add(xmlns);
-               }
-
-               break;
-            }
-         }
-      }
-
-      /* ***********************************************************************
-       * Handle namespace axis
-       * ***********************************************************************/
-      handleNamespaces: for (int i = 0; i < attrsLength; i++) {
-         Attr N = (Attr) attrs.item(i);
-
-         if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
-
-            // only handle namespaces here
-            continue handleNamespaces;
-         }
-
-         if (C14nHelper.namespaceIsRelative(N)) {
-            Object exArgs[] = { E.getTagName(), N.getName(), N.getNodeValue() };
-
-            throw new CanonicalizationException(
-               "c14n.Canonicalizer.RelativeNamespace", exArgs);
-         }
-
-         if (N.getName().equals("xmlns") && N.getNodeValue().equals("")) {
-
-            // xmlns="" already handled
-            continue handleNamespaces;
-         }
-
-         if (!this._xpathNodeSet.contains(N)) {
-
-            // Consider a list L containing only namespace nodes in the axis and in the node-set
-            //
-            // only if N in the node set
-            continue handleNamespaces;
-         }
-
-         if ("xml".equals(N.getLocalName())
-                 && Constants.XML_LANG_SPACE_SpecNS.equals(N.getNodeValue())) {
-
-            /* except omit namespace node with local name xml, which defines
-             * the xml prefix, if its string value is http://www.w3.org/XML/1998/namespace.
-             */
-            continue handleNamespaces;
-         }
-
-         /* OK, now we have a 'real' namespace in N, no attrs, no xmlns=""
-          * and no xmlns:xml="http://www.w3.org/XML/1998/namespace"
-          */
-
-         /* A namespace node N is ignored if the nearest ancestor element of E
-          * that is in the node-set has a namespace node in the node-set with
-          * the same local name and value as N.
-          *
-          * Otherwise, process the namespace node N in the same way as an
-          * attribute node, except assign the local name xmlns to the default
-          * namespace node if it exists (in XPath, the default namespace node
-          * has an empty URI and local name).
-          */
-         boolean ignoreN = false;
-
-         lookForAncestorsInNodeset: for (Node ancestor = E.getParentNode();
-                                            (ancestor != null)
-                                            && (ancestor.getNodeType()
-                                                == Node.ELEMENT_NODE);
-                                            ancestor =
-                                               ancestor.getParentNode()) {
-            if (this._xpathNodeSet.contains(ancestor)) {
-               Attr NA = ((Element) ancestor).getAttributeNodeNS(
-                  Constants.NamespaceSpecNS, N.getLocalName());
-
-               if ((NA != null) && NA.getNodeValue().equals(N.getNodeValue())
-                       && this._xpathNodeSet.contains(NA)) {
-                  ignoreN = true;
-               }
-
-               break lookForAncestorsInNodeset;
-            }
-         }
-
-         if (!ignoreN) {
-            result.add(N);
-         }
-      }
-
-      /* ***********************************************************************
-       * Handle attribute axis
-       * ***********************************************************************/
-      handleAttributes: for (int i = 0; i < attrsLength; i++) {
-         Attr a = (Attr) attrs.item(i);
-
-         if (Constants.NamespaceSpecNS.equals(a.getNamespaceURI())) {
-
-            // only handle attributes here
-            continue handleAttributes;
-         }
-
-         if (!this._xpathNodeSet.contains(a)) {
-
-            // only if a in the node set
-            continue handleAttributes;
-         }
-
-         result.add(a);
-      }
-
-      /* The processing of an element node E MUST be modified slightly when an
+       if (C14nHelper.namespaceIsRelative(N)) {
+          Object exArgs[] = { E.getTagName(), NName, N.getNodeValue() };
+          throw new CanonicalizationException(
+             "c14n.Canonicalizer.RelativeNamespace", exArgs);
+       }
+       
+       if ("xml".equals(N.getLocalName())
+               && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
+          /* except omit namespace node with local name xml, which defines
+           * the xml prefix, if its string value is http://www.w3.org/XML/1998/namespace.
+           */
+          continue;
+       }
+       //add the prefix binding to the ns symb table.
+       //ns.addInclusiveMapping(NName,NValue,N,isRealVisible);          
+	    if  (this._xpathNodeSet.contains(N))  {
+			    //The xpath select this node output it if needed.
+	    		Node n=null;
+	    		
+	    		n=ns.addMappingAndRenderXNodeSet(NName,NValue,N,isRealVisible); //getMappingInclusive(NName,!isRealVisible);
+	    		
+		 	 	if (n!=null) {
+		 	 		result.add(n);
+		 	 	}
+    	}
+    }
+    if (isRealVisible) {    	           
+    	//The element is visible, handle the xmlns definition        
+        Attr xmlns = E.getAttributeNodeNS(Constants.NamespaceSpecNS, "xmlns");
+        Node n=null;
+        if (xmlns == null) {
+        	//No xmlns def just get the already defined.
+        	n=ns.getMapping("xmlns");        		
+        } else if ( !this._xpathNodeSet.contains(xmlns)) {
+        	//There is a definition but the xmlns is not selected by the xpath.
+        	//then xmlns=""
+        	n=ns.addMappingAndRenderXNodeSet("xmlns","",nullNode,true);        	    		      	
+        }
+        //output the xmlns def if needed.
+        if (n!=null) {
+    			result.add(n);
+    	}
+        //Float all xml:* attributes of the unselected parent elements to this one. 
+    	addXmlAttributes(E,result);
+    }
+    
+    return C14nHelper.sortAttributes(result.toArray());   		
+   }
+   /**
+    *  Float the xml:* attributes of the unselected parent nodes to the ciurrent node.
+    * @param E
+    * @param result
+    */
+   private void addXmlAttributes(Element E, List result) {
+	/* The processing of an element node E MUST be modified slightly when an
        * XPath node-set is given as input and the element's parent is omitted
        * from the node-set. The method for processing the attribute axis of an
        * element E in the node-set is enhanced. All element nodes along E's
@@ -459,8 +271,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
        * attribute axis is computed by processing the attribute nodes in this
        * merged attribute list.
        */
-      if (this._xpathNodeSet.contains(E)) {
-
+      
          // E is in the node-set
          Node parent = E.getParentNode();
          Map loa = new HashMap();
@@ -507,10 +318,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
          while (it.hasNext()) {
             result.add(it.next());
          }
-      }
-
-      return result.toArray();
-   }
+      
+}
 
    /**
     * Always throws a CanonicalizationException because this is inclusive c14n.

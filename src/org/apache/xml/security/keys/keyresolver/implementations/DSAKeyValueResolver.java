@@ -21,7 +21,6 @@ package org.apache.xml.security.keys.keyresolver.implementations;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
-import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
@@ -30,7 +29,6 @@ import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 
 
@@ -63,19 +61,14 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
       boolean isDSAKeyValue = XMLUtils.elementIsInSignatureSpace(element,
                                  Constants._TAG_DSAKEYVALUE);
 
-      if (isKeyValue) {
-         try {
-            Element nscontext = XMLUtils.createDSctx(element.getOwnerDocument(),
-                                                     "ds",
-                                                     Constants.SignatureSpecNS);
-
-            this._dsaKeyElement = (Element) XPathAPI.selectSingleNode(element,
-                    "./ds:" + Constants._TAG_DSAKEYVALUE, nscontext);
+      if (isKeyValue) {         
+     
+            this._dsaKeyElement =
+            	XMLUtils.selectDsNode(element.getFirstChild(),Constants._TAG_DSAKEYVALUE,0);                    
 
             if (this._dsaKeyElement != null) {
                return true;
-            }
-         } catch (TransformerException ex) {}
+            }         
       } else if (isDSAKeyValue) {
 
          // this trick is needed to allow the RetrievalMethodResolver to eat a
