@@ -84,9 +84,12 @@ import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.JavaUtils;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
@@ -347,4 +350,43 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
 
       assertTrue(equals);
    }
+   
+   /**
+    * Method test223excl
+    *
+    * Provided by Gabriel McGoldrick - see e-mail of 21/11/03
+    *
+    * @throws CanonicalizationException
+    * @throws FileNotFoundException
+    * @throws IOException
+    * @throws InvalidCanonicalizerException
+    * @throws ParserConfigurationException
+    * @throws SAXException
+    * @throws TransformerException
+    * @throws XMLSecurityException
+    * @throws XMLSignatureException
+    */
+   public void test223excl()
+           throws IOException, FileNotFoundException, SAXException,
+                  ParserConfigurationException, CanonicalizationException,
+                  InvalidCanonicalizerException, TransformerException,
+                  XMLSignatureException, XMLSecurityException {
+
+      Document doc =
+         this.db
+            .parse("data/org/apache/xml/security/c14n/inExcl/example2_2_3.xml");
+      XMLUtils.circumventBug2650(doc);
+      NodeList nodes = XPathAPI.selectNodeList(doc.getDocumentElement(),
+                                 "(//. | //@* | //namespace::*)[ancestor-or-self::p]");
+      Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
+      byte[] reference = JavaUtils.getBytesFromFile(
+         "data/org/apache/xml/security/c14n/inExcl/example2_2_3_c14nized_exclusive.xml");
+      byte[] result = c.engineCanonicalizeXPathNodeSet(nodes);
+      boolean equals = JavaUtils.binaryCompare(reference, result);
+      if (!equals) {
+          log.warn("Error output = " + new String(result));
+      }
+      assertTrue(equals);
+   }
+   
 }
