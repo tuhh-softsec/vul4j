@@ -74,7 +74,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.1 $ $Date: 2001/08/04 23:46:29 $
+ * @version $Revision: 1.2 $ $Date: 2001/08/13 19:49:34 $
  */
 
 public class FactoryCreateRule extends Rule {
@@ -129,7 +129,7 @@ public class FactoryCreateRule extends Rule {
     public FactoryCreateRule(Digester digester,
                              ObjectCreationFactory creationFactory) {
 
-	super(digester);
+        super(digester);
         this.creationFactory = creationFactory;
 
     }
@@ -168,7 +168,7 @@ public class FactoryCreateRule extends Rule {
      * @param attributes The attribute list of this element
      */
     public void begin(Attributes attributes) throws Exception {
-	
+
         Object instance = getFactory(attributes).createObject(attributes);
         if (digester.getDebug() >= 1)
             digester.log("New " + instance.getClass().getName());
@@ -182,9 +182,9 @@ public class FactoryCreateRule extends Rule {
      */
     public void end() throws Exception {
 
-	Object top = digester.pop();
-	if (digester.getDebug() >= 1)
-	    digester.log("Pop " + top.getClass().getName());
+        Object top = digester.pop();
+        if (digester.getDebug() >= 1)
+            digester.log("Pop " + top.getClass().getName());
 
     }
 
@@ -194,7 +194,7 @@ public class FactoryCreateRule extends Rule {
      */
     public void finish() throws Exception {
 
-	creationFactory = null;
+        creationFactory = null;
 
     }
 
@@ -225,6 +225,7 @@ public class FactoryCreateRule extends Rule {
             Class clazz = digester.getClassLoader().loadClass(realClassName);
             creationFactory = (ObjectCreationFactory)
                 clazz.newInstance();
+            creationFactory.setDigester(digester);
         }
         return (creationFactory);
 

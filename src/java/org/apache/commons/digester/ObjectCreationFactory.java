@@ -53,7 +53,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- */	
+ */
 
 package org.apache.commons.digester;
 
@@ -65,17 +65,31 @@ import org.xml.sax.Attributes;
  * <p> Interface for use with {@link FactoryCreateRule}.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.1 $ $Date: 2001/08/04 23:46:29 $
+ * @version $Revision: 1.2 $ $Date: 2001/08/13 19:49:34 $
  */
-public interface ObjectCreationFactory 
-{	
+public interface ObjectCreationFactory
+{
 
     /**
      * <p>Factory method called by {@link FactoryCreateRule} to supply an
      * object based on the element's attributes.
      *
      * @param attributes the element's attributes
-     */ 
-    Object createObject(Attributes attributes);
+     */
+    public Object createObject(Attributes attributes);
+
+    /**
+     * <p>Returns the {@link Digester} that was set by the
+     * {@link FactoryCreateRule} upon initialization.
+     */
+    public Digester getDigester();
+
+    /**
+     * <p>Set the {@link Digester} to allow the implementation to do logging,
+     * classloading based on the digester's classloader, etc.
+     *
+     * @param digester parent Digester object
+     */
+    public void setDigester(Digester digester);
 
 }
