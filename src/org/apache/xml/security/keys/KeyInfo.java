@@ -567,7 +567,7 @@ public class KeyInfo extends SignatureElementProxy {
 	public EncryptedKey itemEncryptedKey(int i) throws XMLSecurityException {
 
 		Element e = 
-			XMLUtils.selectDsNode(this._constructionElement.getFirstChild(),
+			XMLUtils.selectXencNode(this._constructionElement.getFirstChild(),
 										  EncryptionConstants._TAG_ENCRYPTEDKEY,i);
 
 		if (e != null) {
