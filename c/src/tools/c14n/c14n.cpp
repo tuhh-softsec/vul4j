@@ -157,7 +157,7 @@ int main(int argc, char **argv) {
 	// Create and set up the parser
 
 	XercesDOMParser * parser = new XercesDOMParser;
-	parser->setDoNamespaces(false);
+	parser->setDoNamespaces(true);
 	parser->setValidationScheme(XercesDOMParser::Val_Never);
 	parser->setDoSchema(false);
 	parser->setCreateEntityReferenceNodes(false);
