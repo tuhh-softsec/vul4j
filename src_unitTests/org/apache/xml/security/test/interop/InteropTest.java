@@ -63,9 +63,9 @@ public class InteropTest extends TestCase {
     */
    protected void setUp() {
 
-      this.dbf = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+      dbf = javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      this.dbf.setNamespaceAware(true);
+      dbf.setNamespaceAware(true);
    }
 
 
@@ -83,7 +83,7 @@ public class InteropTest extends TestCase {
               throws Exception {
 
       File f = new File(filename);
-      javax.xml.parsers.DocumentBuilder db = this.dbf.newDocumentBuilder();
+      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
       Element nscontext = XMLUtils.createDSctx(doc, "ds",
                                                Constants.SignatureSpecNS);
@@ -115,7 +115,7 @@ public class InteropTest extends TestCase {
            throws Exception {
 
       File f = new File(filename);
-      javax.xml.parsers.DocumentBuilder db = this.dbf.newDocumentBuilder();
+      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc = db.parse(f);
       Element nscontext = XMLUtils.createDSctx(doc, "ds",
                                                Constants.SignatureSpecNS);
