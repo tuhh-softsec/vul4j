@@ -74,6 +74,7 @@ import org.xml.sax.SAXException;
  *
  * @author David H. Martin - Initial Contribution
  * @author Scott Sanders   - Added ASL, removed external dependencies
+ * @author Henri Chen - Added rulesDigester
  */
 
 public class DigesterLoader {
@@ -85,6 +86,24 @@ public class DigesterLoader {
      */
     public static Digester createDigester(URL rulesXml) {
         RuleSet ruleSet = new FromXmlRuleSet(rulesXml);
+        Digester digester = new Digester();
+        digester.addRuleSet(ruleSet);
+        return digester;
+    }
+
+    /**
+     * Creates a new digester and initializes it from the specified XML file.
+     * This constructor allows specifing a rulesDigester to do the XML file
+     * loading; thus no matter the XML files is packed into a jar, a war, or a
+     * ear, the rulesDigester can always find the XML files with properly set
+     * ClassLoader.
+     *
+     * @param rulesXml URL to the XML file defining the digester rules
+     * @param rulesDigester digester to load the specified XML file.
+     * @return a new Digester initialized with the rules
+     */
+    public static Digester createDigester(URL rulesXml, Digester rulesDigester) {
+        RuleSet ruleSet = new FromXmlRuleSet(rulesXml, rulesDigester);
         Digester digester = new Digester();
         digester.addRuleSet(ruleSet);
         return digester;

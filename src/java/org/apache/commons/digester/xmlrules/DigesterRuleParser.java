@@ -238,7 +238,7 @@ public class DigesterRuleParser extends RuleSetBase {
         digester.addFactoryCreate("*/set-properties-rule", new SetPropertiesRuleFactory());
         digester.addRule("*/set-properties-rule", new PatternRule(digester, "pattern"));
         digester.addSetNext("*/set-properties-rule", "add", ruleClassName);
-        
+
         digester.addRule("*/set-properties-rule/alias", new SetPropertiesAliasRule(digester));
 
         digester.addFactoryCreate("*/set-property-rule", new SetPropertyRuleFactory());
@@ -341,7 +341,7 @@ public class DigesterRuleParser extends RuleSetBase {
          */
         private void includeXMLRules(String fileName)
                 throws IOException, SAXException, CircularIncludeException {
-            URL fileURL = DigesterRuleParser.this.getClass().getClassLoader().getResource(fileName);
+            URL fileURL = getDigester().getClassLoader().getResource(fileName);
             if (fileURL == null) {
                 throw new FileNotFoundException("File \"" + fileName + "\" not found.");
             }
@@ -354,7 +354,11 @@ public class DigesterRuleParser extends RuleSetBase {
             DigesterRuleParser includedSet =
                     new DigesterRuleParser(targetDigester, patternStack, includedFiles);
             includedSet.setDigesterRulesDTD(getDigesterRulesDTD());
+
             Digester digester = new Digester();
+            digester.setUseContextClassLoader(getDigester().getUseContextClassLoader());
+            digester.setClassLoader(getDigester().getClassLoader());
+            digester.setErrorHandler(getDigester().getErrorHandler());
             digester.addRuleSet(includedSet);
             digester.push(DigesterRuleParser.this);
             digester.parse(fileName);
@@ -373,7 +377,7 @@ public class DigesterRuleParser extends RuleSetBase {
                 throws ClassNotFoundException, ClassCastException,
                 InstantiationException, IllegalAccessException {
 
-            Class cls = Class.forName(className);
+            Class cls = Class.forName(className, true, digester.getClassLoader());
             DigesterRulesSource rulesSource = (DigesterRulesSource) cls.newInstance();
 
             // wrap the digester's Rules object, to prepend pattern
@@ -495,10 +499,10 @@ public class DigesterRuleParser extends RuleSetBase {
             if (attributes.getValue("paramcount") == null) {
                 // call against empty method
                 callMethodRule = new CallMethodRule(methodName);
-                
+
             } else {
                 int paramCount = Integer.parseInt(attributes.getValue("paramcount"));
-                
+
                 String paramTypesAttr = attributes.getValue("paramtypes");
                 if (paramTypesAttr == null || paramTypesAttr.length() == 0) {
                     callMethodRule = new CallMethodRule(targetDigester, methodName,
@@ -618,7 +622,7 @@ public class DigesterRuleParser extends RuleSetBase {
      * the containing SetPropertiesRule rule.
      */
     protected class SetPropertiesAliasRule extends Rule {
-    
+
         /**
          * <p>Base constructor.
          *

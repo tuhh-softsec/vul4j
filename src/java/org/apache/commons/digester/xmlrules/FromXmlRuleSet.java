@@ -83,6 +83,7 @@ import org.xml.sax.SAXException;
  *
  * @author David H. Martin - Initial Contribution
  * @author Scott Sanders   - Added ASL, removed external dependencies
+ * @author Henri Chen - Added rulesDigester
  */
 public class FromXmlRuleSet extends RuleSetBase {
 
@@ -98,12 +99,28 @@ public class FromXmlRuleSet extends RuleSetBase {
      */
     private DigesterRuleParser parser;
 
+	/**
+	 * The digester for loading the rules xml.
+	 */
+	private Digester rulesDigester;
+
     /**
-     * Constructs a FromXmlRuleSet using the default DigesterRuleParser
+     * Constructs a FromXmlRuleSet using the default DigesterRuleParser and
+     * rulesDigester.
      * @param rulesXml the path to the XML document defining the Digester rules
      */
     public FromXmlRuleSet(URL rulesXml) {
-        this(rulesXml, new DigesterRuleParser());
+        this(rulesXml, new DigesterRuleParser(), new Digester());
+    }
+
+    /**
+     * Constructs a FromXmlRuleSet using the default DigesterRuleParser and
+     * a ruleDigester for loading the rules xml.
+     * @param rulesXml the path to the XML document defining the Digester rules
+     * @param ruleDigester the digester to read the rules xml.
+     */
+    public FromXmlRuleSet(URL rulesXml, Digester rulesDigester) {
+        this(rulesXml, new DigesterRuleParser(), rulesDigester);
     }
 
     /**
@@ -111,8 +128,18 @@ public class FromXmlRuleSet extends RuleSetBase {
      * @param parser an instance of DigesterRuleParser, for parsing the rules from XML
      */
     public FromXmlRuleSet(URL rulesXml, DigesterRuleParser parser) {
+		this(rulesXml, parser, new Digester());
+	}
+
+    /**
+     * @param rulesXml the path to the XML document defining the Digester rules
+     * @param parser an instance of DigesterRuleParser, for parsing the rules from XML
+     * @param rulesDigester the digester used to load the Xml rules.
+     */
+    public FromXmlRuleSet(URL rulesXml, DigesterRuleParser parser, Digester rulesDigester) {
         xmlRules = rulesXml;
         this.parser = parser;
+        this.rulesDigester = rulesDigester;
     }
 
     /**
@@ -129,7 +156,6 @@ public class FromXmlRuleSet extends RuleSetBase {
         parser.setDigesterRulesDTD(dtdURL.toString());
         parser.setTarget(digester);
 
-        Digester rulesDigester = new Digester();
         rulesDigester.addRuleSet(parser);
         rulesDigester.push(parser);
 
