@@ -1,13 +1,12 @@
-<model>
+<project>
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>plexus-root</artifactId>
     <groupId>plexus</groupId>
     <version>1.0</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
   <groupId>plexus</groupId>
   <artifactId>plexus-utils</artifactId>
-  <packaging>jar</packaging>
-  <name>Plexus Common Utilities</name>
   <version>1.0-alpha-2-SNAPSHOT</version>
-</model>
+  <name>Plexus Common Utilities</name>
+</project>
