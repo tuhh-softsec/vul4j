@@ -37,9 +37,6 @@ import org.xml.sax.Attributes;
  * See {@link PathCallParamRule}
  * </ul>
  * </p>
- *
- * @author Craig McClanahan
- * @version $Revision: 1.19 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public class CallParamRule extends Rule {

@@ -30,6 +30,8 @@ import org.apache.commons.logging.Log;
  * Allows the original rules for parsing the configuration file to define
  * points at which plugins are allowed, by configuring a PluginCreateRule
  * with the appropriate pattern.
+ *
+ * @since 1.6
  */
 public class PluginCreateRule extends Rule implements InitializableRule {
 

@@ -68,9 +68,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * <p><strong>Note</strong> that the current implementation does not set the namespace prefixes
  * in the exported nodes. The (usually more important) namespace URIs are set,
  * of course.</p>
- * 
- * @author Christopher Lenz
- * @version $Revision: 1.7 $ $Date: 2004/02/28 13:32:52 $
+ *
  * @since Digester 1.4
  */
 
@@ -83,8 +81,6 @@ public class NodeCreateRule extends Rule {
     /**
      * The SAX content handler that does all the actual work of assembling the 
      * DOM node tree from the SAX events.
-     * 
-     * @author <a href="mailto:cmlenz@apache.org">Christopher Lenz</a>
      */
     private class NodeBuilder
         extends DefaultHandler {

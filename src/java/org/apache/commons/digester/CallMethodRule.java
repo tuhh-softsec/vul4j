@@ -52,10 +52,6 @@ import org.xml.sax.Attributes;
  * tags nested within the one associated with the CallMethodRule will 
  * fire before the CallMethodRule invokes the target method. This behaviour is
  * not configurable. </p>
- *
- * @author Craig McClanahan
- * @author Scott Sanders
- * @version $Revision: 1.32 $ $Date: 2004/04/05 09:22:32 $
  */
 
 public class CallMethodRule extends Rule {

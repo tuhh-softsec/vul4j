@@ -42,8 +42,7 @@ import java.util.List;
  * </p>
  * <p><code>WithDefaultsRulesWrapper</code> follows the <em>Decorator</em> pattern.</p>
  *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.5 $ $Date: 2004/02/28 13:32:52 $
+ * @since 1.6
  */
 
 public class WithDefaultsRulesWrapper implements Rules {

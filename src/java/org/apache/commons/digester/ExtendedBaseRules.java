@@ -125,9 +125,6 @@ import java.util.Map;
  * special cases using non-universal rules.
  * But by using universal rules as your backbone,
  * these additions should not break your existing rules.</p>
- *
- * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.12 $ $Date: 2004/02/28 13:32:52 $
  */
 
 

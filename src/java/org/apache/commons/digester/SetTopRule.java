@@ -29,11 +29,6 @@ import org.apache.commons.beanutils.MethodUtils;
  * It is possible that this may break (some) code 
  * written against release 1.1.1 or earlier.
  * See {@link #isExactMatch()} for more details.</p>
- *
- * @author Craig McClanahan
- * @author Scott Sanders
- * @author Janek Bogucki
- * @version $Revision: 1.21 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public class SetTopRule extends Rule {

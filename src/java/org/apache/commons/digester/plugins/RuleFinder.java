@@ -35,6 +35,8 @@ import org.apache.commons.digester.Digester;
  * it possible to enhance this class in future without breaking binary
  * compatibility; it is possible to add methods to an abstract class, but
  * not to an interface. 
+ *
+ * @since 1.6
  */
 
 public abstract class RuleFinder {

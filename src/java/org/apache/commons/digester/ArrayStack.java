@@ -23,7 +23,7 @@ import java.util.EmptyStackException;
  * Commons Collections, which was the only direct dependency from Digester.</p>
  *
  * <p><strong>WARNNG</strong> - This class is public solely to allow it to be
- * used from the <code>org.apache.commons.digester.xmlrules</code> package.
+ * used from subpackages of <code>org.apache.commons.digester</code>.
  * It should not be considered part of the public API of Commons Digester.
  * If you want to use such a class yourself, you should use the one from
  * Commons Collections directly.</p>
@@ -38,12 +38,7 @@ import java.util.EmptyStackException;
  * </p>
  *
  * @see java.util.Stack
- * @since Commons Collections 1.0
- * @version $Revision: 1.2 $ $Date: 2004/02/28 13:32:52 $
- * 
- * @author Craig R. McClanahan
- * @author Paul Jack
- * @author Stephen Colebourne
+ * @since Digester 1.6 (from Commons Collections 1.0)
  */
 public class ArrayStack extends ArrayList {
 

@@ -22,8 +22,7 @@ package org.apache.commons.digester.xmlrules;
  * Thrown when parsing XML into Digester rules, if a circular inclusion occurred
  * in the xml digester rules files.
  *
- * @author David H. Martin - Initial Contribution
- * @author Scott Sanders   - Added ASL, removed external dependencies
+ * @since 1.2
  */
 
 public class CircularIncludeException extends XmlLoadException {

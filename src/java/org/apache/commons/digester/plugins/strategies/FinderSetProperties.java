@@ -40,6 +40,8 @@ import org.apache.commons.digester.plugins.PluginException;
  * This RuleFinder is typically used as the <i>last</i> RuleFinder, so that
  * automatic property setting only occurs if there is no other source of
  * custom rules available.
+ *
+ * @since 1.6
  */
 
 public class FinderSetProperties extends RuleFinder {

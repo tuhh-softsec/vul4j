@@ -26,6 +26,8 @@ import org.apache.commons.digester.Digester;
  * Represents a Class that can be instantiated by a PluginCreateRule, plus
  * info on how to load custom digester rules for mapping xml into that
  * plugged-in class.
+ *
+ * @since 1.6
  */
 public class Declaration {
    

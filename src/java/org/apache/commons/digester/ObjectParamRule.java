@@ -32,7 +32,7 @@ import org.xml.sax.Attributes;
  * </ul>
  * </p>
  *
- * @author Mark Huisman
+ * @since 1.4
  */
 
 public class ObjectParamRule extends Rule {

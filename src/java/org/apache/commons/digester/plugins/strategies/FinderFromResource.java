@@ -28,6 +28,8 @@ import org.apache.commons.digester.plugins.PluginException;
  * A rule-finding algorithm which expects the user to specify a resource
  * name (ie a file in the classpath). The file is expected to contain Digester
  * rules in xmlrules format.
+ *
+ * @since 1.6
  */
 
 public class FinderFromResource extends RuleFinder {

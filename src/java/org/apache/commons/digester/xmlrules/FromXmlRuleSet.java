@@ -28,9 +28,7 @@ import org.xml.sax.InputSource;
 /**
  * A Digester rule set where the rules come from an XML file.
  *
- * @author David H. Martin - Initial Contribution
- * @author Scott Sanders   - Added ASL, removed external dependencies
- * @author Henri Chen - Added rulesDigester
+ * @since 1.2
  */
 public class FromXmlRuleSet extends RuleSetBase {
 
@@ -154,6 +152,7 @@ public class FromXmlRuleSet extends RuleSetBase {
      * pattern string defined in the xmlrules input file.
      *
      * @see org.apache.commons.digester.RuleSetBase
+     * @since 1.6
      */
     public void addRuleInstances(
     org.apache.commons.digester.Digester digester,

@@ -37,9 +37,6 @@ import org.apache.commons.beanutils.PropertyUtils;
  * <p> Using the second method and the {@link ExtendedBaseRules} child match
  * pattern, all the child elements can be automatically mapped to properties
  * on the parent object.</p>
- *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.18 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public class BeanPropertySetterRule extends Rule {

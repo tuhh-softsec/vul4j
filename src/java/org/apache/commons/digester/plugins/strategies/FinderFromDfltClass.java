@@ -25,6 +25,8 @@ import org.apache.commons.digester.plugins.PluginException;
 /**
  * A rule-finding algorithm which looks for a method with a specific name
  * on a class whose name is derived from the plugin class name.
+ *
+ * @since 1.6
  */
 
 public class FinderFromDfltClass extends RuleFinder {

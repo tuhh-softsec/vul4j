@@ -23,8 +23,7 @@ package org.apache.commons.digester.substitution;
  * and the mechanism for determining the corresponding value to be used
  * is up to the concrete implementation.</p>
  *
- * @author Simon Kitching
- * @version $Revision: 1.3 $ $Date: 2004/02/28 13:32:53 $
+ * @since 1.6
  */
 public interface VariableExpander {
     /**

@@ -29,8 +29,7 @@ import java.util.ArrayList;
  * This is only done something actually asks for the attribute value, 
  * thereby imposing no performance penalty if the attribute is not used.</p>
  *
- * @author Simon Kitching
- * @version $Revision: 1.3 $ $Date: 2004/02/28 13:32:53 $
+ * @since 1.6
  */
 
 public class VariableAttributes implements Attributes {

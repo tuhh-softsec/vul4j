@@ -70,11 +70,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * <p><strong>IMPLEMENTATION NOTE</strong> - A bug in Xerces 2.0.2 prevents
  * the support of XML schema. You need Xerces 2.1/2.3 and up to make
  * this class working with XML schema</p>
- *
- * @author Craig McClanahan
- * @author Scott Sanders
- * @author Jean-Francois Arcand
- * @version $Revision: 1.99 $ $Date: 2004/04/02 01:53:41 $
  */
 
 public class Digester extends DefaultHandler {

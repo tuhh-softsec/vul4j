@@ -34,9 +34,7 @@ import org.xml.sax.InputSource;
  * This class manages the creation of Digester instances from XML digester
  * rules files.
  *
- * @author David H. Martin - Initial Contribution
- * @author Scott Sanders   - Added ASL, removed external dependencies
- * @author Henri Chen - Added rulesDigester
+ * @since 1.2
  */
 
 public class DigesterLoader {

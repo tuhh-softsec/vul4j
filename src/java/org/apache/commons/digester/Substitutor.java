@@ -30,10 +30,9 @@ import org.xml.sax.Attributes;
  * Of course, it is perfectly acceptable for implementations not to make 
  * substitutions and simply return the inputs.
  * </p>
- * <p>Different strategies are supported for attributes and body text.</p> 
+ * <p>Different strategies are supported for attributes and body text.</p>
  *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.6 $ $Date: 2004/02/28 13:32:52 $
+ * @since 1.6 
  */
 public abstract class Substitutor {
     

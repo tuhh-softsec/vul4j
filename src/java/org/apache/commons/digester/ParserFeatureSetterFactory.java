@@ -36,7 +36,7 @@ import org.xml.sax.SAXNotSupportedException;
  * Allows logical properties depending on logical parser versions
  * to be set.
  *
- * @author Jean-Francois Arcand
+ * @since 1.6
  */
 public class ParserFeatureSetterFactory{
 

@@ -27,6 +27,8 @@ import org.apache.commons.digester.plugins.PluginException;
 /**
  * A RuleLoader which invokes a static method on a target class, leaving that
  * method to actually instantiate and add new rules to a Digester instance.
+ *
+ * @since 1.6
  */
 
 public class LoaderFromClass extends RuleLoader {

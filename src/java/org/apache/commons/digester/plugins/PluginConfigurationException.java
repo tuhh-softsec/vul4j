@@ -22,6 +22,8 @@ package org.apache.commons.digester.plugins;
  * any option for throwing checked exceptions at some points where Plugins
  * can potentially fail, this exception extends RuntimeException so that it
  * can "tunnel" through these points.
+ *
+ * @since 1.6
  */
 
 public class PluginConfigurationException extends RuntimeException {

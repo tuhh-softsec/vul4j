@@ -21,12 +21,12 @@ package org.apache.commons.digester;
 import org.xml.sax.Attributes;
 
 /**
- * <p>Rule implementation that saves a parameter containing the <code>Digester</code> 
- * matching path for use by a surrounding <code>CallMethodRule</code>.
- * This Rule is most useful when using rule that allow extensive use of wildcards.</p>
+ * <p>Rule implementation that saves a parameter containing the 
+ * <code>Digester</code> matching path for use by a surrounding 
+ * <code>CallMethodRule</code>. This Rule is most useful when making 
+ * extensive use of wildcards in rule patterns.</p>
  *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.5 $ $Date: 2004/02/28 13:32:52 $
+ * @since 1.6
  */
 
 public class PathCallParamRule extends Rule {

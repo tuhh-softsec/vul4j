@@ -37,6 +37,8 @@ import org.apache.commons.digester.plugins.strategies.*;
  * access to the container's services such as obtaining global configuration
  * parameters for the container, or getting access to logging services. For
  * plugins, a Digester instance can be regarded as "the container".
+ *
+ * @since 1.6
  */
 
 public class PluginContext {

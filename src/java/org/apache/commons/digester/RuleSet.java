@@ -32,9 +32,6 @@ package org.apache.commons.digester;
  * <li>Digester will call the <code>addRuleInstances()</code> method of
  *     your RuleSet to configure the necessary rules.</li>
  * </ul>
- *
- * @author Craig R. McClanahan
- * @version $Revision: 1.7 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public interface RuleSet {

@@ -30,9 +30,6 @@ import org.xml.sax.Attributes;
 /**
  * Rule implementation that sets an individual property on the object at the
  * top of the stack, based on attributes with specified names.
- *
- * @author Craig McClanahan
- * @version $Revision: 1.16 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public class SetPropertyRule extends Rule {

@@ -25,9 +25,6 @@ import java.io.Serializable;
  * <p>Implementation object representing an <strong>item</strong> in the
  * <em>Rich Site Summary</em> DTD, version 0.91.  This class may be subclassed
  * to further specialize its behavior.</p>
- *
- * @author Craig R. McClanahan
- * @version $Revision: 1.9 $ $Date: 2004/02/28 13:32:53 $
  */
 
 public class Item implements Serializable {

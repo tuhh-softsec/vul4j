@@ -31,6 +31,8 @@ import org.apache.commons.logging.Log;
  * <p>
  * If the resource-file is found, then it is expected to define a set of
  * Digester rules in xmlrules format.
+ *
+ * @since 1.6
  */
 
 public class FinderFromDfltResource extends RuleFinder {

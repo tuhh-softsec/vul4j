@@ -61,6 +61,8 @@ import org.apache.commons.logging.LogFactory;
  * <code>BeanPropertySetterRule</code> and the <code>ExtendedBaseRules</code> 
  * rules manager; this <code>Rule</code>, however, works fine with the default 
  * <code>RulesBase</code> rules manager.</p>
+ *
+ * @since 1.6
  */
 
 public class SetNestedPropertiesRule extends Rule {

@@ -22,8 +22,7 @@ import java.util.ArrayList;
 /**
  * <p>Expands variable references from multiple sources.</p>
  *
- * @author Simon Kitching
- * @version $Revision: 1.3 $ $Date: 2004/02/28 13:32:53 $
+ * @since 1.6
  */
 
 public class MultiVariableExpander implements VariableExpander {

@@ -32,7 +32,7 @@ import org.xml.sax.SAXNotSupportedException;
 /**
  * Create a <code>SAXParser</code> configured to support XML Schema and DTD.
  *
- * @author Jean-Francois Arcand
+ * @since 1.6
  */
 
 public class GenericParser{

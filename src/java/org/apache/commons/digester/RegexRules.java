@@ -28,8 +28,7 @@ import java.util.List;
  * All patterns are tested to see if they match the path using the regex matcher.
  * All those that do are return in the order which the rules were added.</p>
  *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.6 $ $Date: 2004/02/28 13:32:52 $
+ * @since 1.5
  */
 
 public class RegexRules extends AbstractRulesImpl {

@@ -39,9 +39,6 @@ import java.util.List;
  *     <code>&lt;b&gt;</code> element, nested inside an <code>&lt;a&gt;</code>
  *      element, no matter how deeply the pair is nested.</li>
  * </ul>
- *
- * @author Craig R. McClanahan
- * @version $Revision: 1.16 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public class RulesBase implements Rules {

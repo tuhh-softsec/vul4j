@@ -28,9 +28,6 @@ import org.xml.sax.Attributes;
  * <p> {@link AbstractObjectCreationFactory} is an abstract
  * implementation suitable for creating anonymous
  * <code>ObjectCreationFactory</code> implementations.
- *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.11 $ $Date: 2004/02/28 13:32:52 $
  */
 public interface ObjectCreationFactory {
 

@@ -19,10 +19,8 @@ package org.apache.commons.digester;
 
 /**
  * Regular expression matching strategy for RegexRules.
- * 
- * @see RegexRules
- * @author Robert Burrell Donkin
- * @version $Revision: 1.6 $ $Date: 2004/02/28 13:32:52 $
+ *
+ * @since 1.5
  */
 
 abstract public class RegexMatcher {

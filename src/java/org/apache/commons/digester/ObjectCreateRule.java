@@ -25,10 +25,6 @@ import org.xml.sax.Attributes;
  * Rule implementation that creates a new object and pushes it
  * onto the object stack.  When the element is complete, the
  * object will be popped
- *
- * @author Craig McClanahan
- * @author Scott Sanders
- * @version $Revision: 1.17 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public class ObjectCreateRule extends Rule {

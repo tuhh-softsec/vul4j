@@ -24,10 +24,6 @@ import org.xml.sax.Attributes;
 /**
  * Concrete implementations of this class implement actions to be taken when
  * a corresponding nested pattern of XML elements has been matched.
- *
- * @author Craig McClanahan
- * @author Christopher Lenz
- * @version $Revision: 1.13 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public abstract class Rule {

@@ -36,7 +36,7 @@ import org.xml.sax.SAXNotSupportedException;
  * 2.1 was. In other to support schema validation in a portable way between 
  * parser, some features/properties need to be set.
  *
- * @author Jean-Francois Arcand
+ * @since 1.6
  */
 
 public class XercesParser{

@@ -22,9 +22,6 @@ package org.apache.commons.digester;
  * <p>Convenience base class that implements the {@link RuleSet} interface.
  * Concrete implementations should list all of their actual rule creation
  * logic in the <code>addRuleSet()</code> implementation.</p>
- *
- * @author Craig R. McClanahan
- * @version $Revision: 1.7 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public abstract class RuleSetBase implements RuleSet {

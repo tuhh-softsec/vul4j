@@ -28,8 +28,7 @@ import org.xml.sax.Attributes;
  * Supports setting an expander just for body text or just for attributes.
  * Also supported is setting no expanders for body text and for attributes. 
  *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.5 $ $Date: 2004/02/28 13:32:53 $
+ * @since 1.6
  */
 public class VariableSubstitutor extends Substitutor {
 

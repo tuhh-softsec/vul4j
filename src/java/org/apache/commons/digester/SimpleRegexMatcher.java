@@ -29,8 +29,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  * Escaping these wildcards is not supported .</p>
  *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.6 $ $Date: 2004/02/28 13:32:52 $
+ * @since 1.5
  */
 
 public class SimpleRegexMatcher extends RegexMatcher {

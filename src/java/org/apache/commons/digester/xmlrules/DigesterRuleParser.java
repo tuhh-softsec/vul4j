@@ -56,10 +56,7 @@ import org.xml.sax.SAXException;
  * This is a RuleSet that parses XML into Digester rules, and then
  * adds those rules to a 'target' Digester.
  *
- * @author David H. Martin - Initial Contribution
- * @author Scott Sanders   - Added ASL, removed external dependencies
- * @author Bradley M. Handy - Bean Property Setter Rule addition
- * 
+ * @since 1.2
  */
 
 public class DigesterRuleParser extends RuleSetBase {
@@ -160,6 +157,8 @@ public class DigesterRuleParser extends RuleSetBase {
      * Set a base pattern beneath which all the rules loaded by this
      * object will be registered. If this string is not empty, and does
      * not end in a "/", then one will be added.
+     *
+     * @since 1.6
      */
     public void setBasePath(String path) {
         if (path == null) {

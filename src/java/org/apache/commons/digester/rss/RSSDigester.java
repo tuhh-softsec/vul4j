@@ -41,9 +41,6 @@ import org.xml.sax.SAXException;
  * knows how to render itself in XML format via the <code>render()</code>
  * method.  See the test <code>main()</code> method below for an
  * example of using these classes.</p>
- *
- * @author Craig R. McClanahan
- * @version $Revision: 1.9 $ $Date: 2004/02/28 13:32:53 $
  */
 
 public class RSSDigester extends Digester {

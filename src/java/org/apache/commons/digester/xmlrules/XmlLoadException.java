@@ -21,8 +21,7 @@ package org.apache.commons.digester.xmlrules;
 /**
  * Thrown when an error occurs while parsing XML into Digester rules.
  *
- * @author David H. Martin - Initial Contribution
- * @author Scott Sanders   - Added ASL, removed external dependencies
+ * @since 1.2
  */
 public class XmlLoadException extends RuntimeException {
 

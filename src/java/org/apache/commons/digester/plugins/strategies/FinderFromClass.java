@@ -25,6 +25,8 @@ import org.apache.commons.digester.plugins.PluginException;
 /**
  * A rule-finding algorithm which expects the caller to specify a classname and
  * methodname as plugin properties.
+ *
+ * @since 1.6
  */
 
 public class FinderFromClass extends RuleFinder {

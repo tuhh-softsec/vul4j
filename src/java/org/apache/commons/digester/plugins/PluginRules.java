@@ -51,6 +51,8 @@ import org.apache.commons.logging.Log;
  * When the end of the xml element is encountered (and therefore the 
  * PluginCreateRule end method fires), the stack of Rules objects is popped,
  * so that Digester.getRules returns the previous Rules object. 
+ *
+ * @since 1.6
  */
 
 public class PluginRules implements Rules {

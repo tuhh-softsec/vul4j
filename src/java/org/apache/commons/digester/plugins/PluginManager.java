@@ -30,6 +30,8 @@ import org.apache.commons.logging.Log;
  * providing a place to share data between instances of these rules.
  * <p>
  * One instance of this class exists per PluginRules instance.
+ *
+ * @since 1.6
  */
 
 public class PluginManager {

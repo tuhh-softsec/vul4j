@@ -32,8 +32,7 @@ import java.util.List;
  * will be set correctly before it is passed to <code>registerRule</code>.
  * The subclass can then perform whatever it needs to do to register the rule.</p>
  *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.5 $ $Date: 2004/02/28 13:32:52 $
+ * @since 1.5
  */
 
 abstract public class AbstractRulesImpl implements Rules {

@@ -22,9 +22,6 @@ import org.xml.sax.Attributes;
 /**
  * <p>Abstract base class for <code>ObjectCreationFactory</code>
  * implementations.</p>
- *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.10 $ $Date: 2004/02/28 13:32:52 $
  */
 abstract public class AbstractObjectCreationFactory implements ObjectCreationFactory {
 

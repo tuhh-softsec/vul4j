@@ -25,8 +25,7 @@ import org.apache.commons.digester.Digester;
  * Interface for classes that initialize a Digester Rules object with
  * Digester Rules.
  *
- * @author David H. Martin - Initial Contribution
- * @author Scott Sanders   - Added ASL, removed external dependencies
+ * @since 1.2
  */
 
 public interface DigesterRulesSource {

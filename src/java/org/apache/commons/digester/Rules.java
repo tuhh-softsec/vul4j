@@ -26,9 +26,6 @@ import java.util.List;
  * matching patterns) plus an implementation of a matching policy that selects
  * the rules that match a particular pattern of nested elements discovered
  * during parsing.
- *
- * @author Craig R. McClanahan
- * @version $Revision: 1.9 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public interface Rules {

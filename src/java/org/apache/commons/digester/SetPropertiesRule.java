@@ -33,9 +33,6 @@ import org.xml.sax.Attributes;
  * {@link #SetPropertiesRule(String[] attributeNames, String[] propertyNames)}.
  * This allows attributes to be mapped to properties with different names.
  * Certain attributes can also be marked to be ignored.</p>
- *
- * @author Craig McClanahan
- * @version $Revision: 1.17 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public class SetPropertiesRule extends Rule {

@@ -29,9 +29,6 @@ import org.xml.sax.Attributes;
  * needed before the object can be created.  A common senario is for the
  * ObjectCreationFactory implementation to use the attributes  as parameters
  * in a call to either a factory method or to a non-empty constructor.
- *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.19 $ $Date: 2004/02/28 13:32:52 $
  */
 
 public class FactoryCreateRule extends Rule {
