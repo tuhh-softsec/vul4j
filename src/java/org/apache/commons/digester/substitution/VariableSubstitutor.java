@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/substitution/VariableSubstitutor.java,v 1.1 2003/12/02 23:21:39 rdonkin Exp $
- * $Revision: 1.1 $
- * $Date: 2003/12/02 23:21:39 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/substitution/VariableSubstitutor.java,v 1.2 2003/12/03 23:21:52 rdonkin Exp $
+ * $Revision: 1.2 $
+ * $Date: 2003/12/03 23:21:52 $
  *
  * ====================================================================
  * 
@@ -74,7 +74,7 @@ import org.xml.sax.Attributes;
  * Also supported is setting no expanders for body text and for attributes. 
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.1 $ $Date: 2003/12/02 23:21:39 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/03 23:21:52 $
  */
 public class VariableSubstitutor extends Substitutor {
 
@@ -116,6 +116,7 @@ public class VariableSubstitutor extends Substitutor {
     public VariableSubstitutor(VariableExpander attributesExpander, VariableExpander bodyTextExpander) {
         this.attributesExpander = attributesExpander;
         this.bodyTextExpander = bodyTextExpander;
+        variableAttributes = new VariableAttributes();
     }    
 
     /**
@@ -125,9 +126,6 @@ public class VariableSubstitutor extends Substitutor {
     public Attributes substitute(Attributes attributes) {
         Attributes results = attributes;
         if (attributesExpander != null) {
-            if (variableAttributes == null) {
-                variableAttributes = new VariableAttributes();
-            }
             variableAttributes.init(attributes, attributesExpander);
             results = variableAttributes;
         }
