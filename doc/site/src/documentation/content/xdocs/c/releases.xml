@@ -13,7 +13,28 @@
 		various releases of the library
 	  </p>
 	  <section>
-		<title>Version 1.00</title>
+		<title>Version 1.1.0</title>
+		<p>
+		  Version 1.1 provides bug fixes to signature functionality +
+		  beta support for XML Encryption.
+		</p>
+		<p>
+		  Changes from version 1.0.0 include :
+		</p>
+		<ul>
+		  <li>Beta implementation of XML Encryption, using an interface
+			similar to that used in the Apache Java xml-security library</li>
+		  <li>Fix for bug where large text elements would be truncated during
+			canonicalisation</li>
+		  <li>Provision of a <em>cipher</em> tool that can be used to encrypt
+			and decrypt XML documents</li>
+		  <li>Updated and improved the Windows Crypto API interface</li>
+		  <li>Other bug fixes to signature functionality</li>
+		  <li>Updated to support Xerces 2.4/2.5 and Xalan 1.7</li>
+		</ul>
+	  </section>
+	  <section>
+		<title>Changes from 0.10 - 1.00</title>
 		<p>
 		  Version 1.00 is the first release of the library considered basically
 		  stable.  The interface is fairly simple, but all the mandatory

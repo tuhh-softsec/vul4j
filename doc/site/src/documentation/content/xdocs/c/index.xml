@@ -6,26 +6,19 @@
   </header>
   
   <body>
-    <section>
-      <title>News - August 2003</title>
-      <p>
-		Version 1.00 of the library has now been released.  It features :
+	<section>
+	  <title>News - March 2004</title>
+	  <p>
+		Version 1.1 of the C++ library has been released.  Supporting
+		Xerces 2.5, 2.4 and 2.3 together with Xalan 1.6 and 1.7, this
+		version provides :
 	  </p>
 	  <ul>
-		<li>the first stable release</li>
-		<li>full implementation of all mandatory requirements of DSIG</li>
-		<li>implementation of canonicalised XML</li>
-		<li>implementation of exclusive-canonicalised XML</li>
-		<li>implementation of XPath-filter</li>
-		<li>FreeBSD, NetBSD and Cygwin builds</li>
+		<li>Beta implementation of XML Encryption</li>
+		<li>Improved support for Windows Crypto API</li>
+		<li>Bug fixes to Signature implementation</li>
 	  </ul>
-	  <p>
-		Version 1.00 is has been tested with Xerces-C v2.2 and the newly 
-		released Xalan-C v1.6.  Xerces-C v2.3 is also supported.  Note that
-		versions of Xalan prior to v1.6 are not supported (due to the new
-		changed location of include files).
-	  </p>
-    </section>
+	</section>
     <section>
       <title>Overview of the C++ Library</title>
       <p>
@@ -83,6 +76,26 @@
 		  <li>XPath Filter (to be added in next point release)</li>
 		  <li>XML Encryption (to be added post 1.00 release)</li>
 		</ul>
+	  </section>
+	  <section>
+		<title>News - August 2003</title>
+		<p>
+		  Version 1.00 of the library has now been released.  It features :
+		</p>
+		<ul>
+		  <li>the first stable release</li>
+		  <li>full implementation of all mandatory requirements of DSIG</li>
+		  <li>implementation of canonicalised XML</li>
+		  <li>implementation of exclusive-canonicalised XML</li>
+		  <li>implementation of XPath-filter</li>
+		  <li>FreeBSD, NetBSD and Cygwin builds</li>
+		</ul>
+		<p>
+		  Version 1.00 is has been tested with Xerces-C v2.2 and the newly 
+		  released Xalan-C v1.6.  Xerces-C v2.3 is also supported.  Note that
+		  versions of Xalan prior to v1.6 are not supported (due to the new
+		  changed location of include files).
+		</p>
 	  </section>
 	</section>
   </body>

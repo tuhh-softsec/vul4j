@@ -14,7 +14,7 @@
       <answer>
 		<p>
 		  The main development work for the library is done using OpenSSL, so
-		  this is the recommended option.  However, a developmental Windows
+		  this is the recommended option.  However, a Windows
 		  Crypto API interface is also now provided.
 		</p>
 		<p>
@@ -111,6 +111,43 @@
 		  form of SignedInfo will be different to that generated during 
 		  <code>sign()</code>.
 		</p>
+	  </answer>
+	</faq>
+	<faq id="ids">
+	  <question>
+		How does the library identify Id attributes?
+	  </question>
+	  <answer>
+		<p>
+		  During a signing operation, finding the correct Id attribute is
+		  vital.  Should the wrong Id Attribute be used, the wrong
+		  part of the document will be identified, and what the user signs
+		  will not be what they expect to sign.
+		</p>
+		<p>
+		  The preferred method (and the method the library uses first) of 
+		  finding an Id is via the DOM Level 2 call
+		  <em>DOMDocument::getElementById()</em>.  This indicates to the
+		  library that the Id has been explicitly identified via a schema,
+		  DTD or during document building.  However, if this call fails, the
+		  library will then search the document for attributes named "Id" or
+		  "id" with the appropriate value.  The first one found will be used
+		  as document fragment identifier.
+		</p>
+		<p>
+		  As this is a potential security exposure, this behaviour can be
+		  disabled using a call to 
+		  <em>DISGSignatures::setIdByAttributeName(false)</em>.  There are
+		  also methods provided to modify the list of attributes that will
+		  be searched.  However it is recommended that these methods not be
+		  used, and DOM attributes of Type=ID be used.
+		</p>
+		<warning>
+		  In version 1.1, the library defaults to searching for Id
+		  attributes by name if a search by Id fails.  As this is a potential
+		  security risk, this behaviour may be changed in a future version
+		  of the library.
+		</warning>
 	  </answer>
 	</faq>
   </part>

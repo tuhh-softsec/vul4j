@@ -34,6 +34,8 @@
 		<li><em>siginf</em> - A tool to read in an XML Signature and dump
 		  various details about the signature and references to the terminal
 		</li>
+		<li><em>cipher</em> - A tool to encrypt and decrypt XML documents.
+		</li>
 	  </ul>
 	  <p>
 		The tools can all be run with no command line arguments to see their

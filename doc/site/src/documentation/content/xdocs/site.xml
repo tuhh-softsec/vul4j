@@ -41,7 +41,6 @@
   <c label="C++" href="c/" tab="cpp">
     <index label="Index" href="index.html"/>
 	<install label="Installation" href="installation.html"/>
-    <programming label="Programming" href="programming.html"/>
     <cfaq label="FAQs" href="faq.html"/>
 	<external label="API Docs" href="apiDocs/index.html"/>
 	<external label="Nightly API build" href="http://nagoya.apache.org/~blautenb/xml-security-c/apiDocs/"/>
@@ -50,6 +49,11 @@
     <credits label="Credits" href="credits.html"/>
     <interop label="Interoperability" href="interop.html"/>
   </c>
+
+  <cprog label="Programming" href="c/" tab="cpp">
+	<signature label="Signatures" href="programming.html"/>
+	<enc label="Encryption" href="prog_enc.html"/>
+  </cprog>
 
   <references label="References">
     <xmldsig label="W3C XML DSig" href="http://www.w3c.org/Signature"/>
