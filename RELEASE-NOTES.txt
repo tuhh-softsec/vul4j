@@ -1,89 +1,69 @@
-$Id: RELEASE-NOTES.txt,v 1.9 2003/02/23 23:39:20 rdonkin Exp $
+$Id: RELEASE-NOTES.txt,v 1.10 2003/04/25 09:26:45 rdonkin Exp $
 
 
                           Commons Digester Package
-                                Version 1.4.1
+                                Version 1.5
                                Release Notes
 
 
 INTRODUCTION:
 ============
 
-This is a bug fix release. The release notes for 1.4 can be found below (for 
-those people upgrading from earlier versions).
-
-BUG REPORTS ADDRESSED:
-=====================
-#16233 (fixed correctly this time :-)
-
-
-
-                          Commons Digester Package
-                                Version 1.4
-                               Release Notes
-
-
-INTRODUCTION:
-============
-
-This document contains the release notes for this version of the Commons
-Digester package, and highlights changes since the previous version.
-
+This is an important maintenance release. The Digester 1.4.x releases were not fully backwards 
+compatible with previous Digester releases. This release fixes the reported incompatibilities. 
 
 NEW FEATURES:
-============
+=============
 
-Enhancements to java docs.
+Improved Java Docs
 
-Digester Enhancements:
----------------------
+CallMethodRule Can Take Parameter From Stack
+--------------------------------------------
+CallParamRule can now use an object from the main Digester stack as one of the parameters for a 
+CallMethodRule. This allows an object to be created (in the usual way) and then passed into a 
+method call taking more than one parameter.
 
-New begin, body and end methods were added that include namespace information. 
-This is an important change since it allows more sophisticated Rules to be 
-created. The old versions of these methods have been deprecated (see below) 
-but existing Rules that override these methods will continue to function correctly.
+Digester Document Locator Getter
+--------------------------------
+Added property getter for the SAX Locator associated with the document being processed.
 
-Improved support for XML schema. The scope of schema related variables has been
-changed from private to protected. The entity resolver used can now be configured
-through a property.
+ExtendedBaseRules Ancestor Tail Matching
+----------------------------------------
+Extended pattern matching language by adding ancestor tail matching. This is response to enhancement 
+request #16350.
 
-Improved support for Public ID. The property now has a setter (as well as a getter).
-Digester will no longer set a public ID to null.
+FactoryCreateRule No-Exception-Propagation Option
+-------------------------------------------------
+Added support for non-propagation of exceptions. This will (when the correct options are set) allow 
+a digestion to continue when an object creation has failed.
 
+RegexRules
+----------
+This is a new Rules implementation. It allows a regular expression language (such as Jakarta-ORO or 
+Jakarta-Regexp) to be used for pattern matching. An adapter interface allows the language of choice
+to be plugged in. A simple regex implementation is provided. 
 
-Rules Enhancements:
--------------------
+RSS Classes Now Serializable
+----------------------------
+The (object model) classes in org.apache.commons.digester.rss have now been made serializable. Though
+they were intended to be used as a worked example, some people have found them useful and wish to use
+them in situations where serialization is required.
 
-NodeCreateRule is a new rule that creates a DOM node for the matched node. This
-allows sophisticated approaches mixing DOM with digester.
+Improvement In Xml Rules
+------------------------
+Added support for specifying a BeanPropertySetterRule when using XML Rules. This is enhancement #16785.
 
-ObjectParamRule is a new rule that works with the CallMethodRule. This allows 
-arbitrary objects to be passed as parameters into a CallMethodRule method call.
-
-XMLRule Enhancements:
----------------------
-
-Improved support for loading xmlrules from jars. A new factory method was added
-to DigesterLoader together with changes to supporting code.
+Added support for call-param from stack to xml rules. Enhancement requested as bug  #16413
 
 
 BUG REPORTS ADDRESSED:
-=====================
+======================
 
-16233 - Invalid bean setters do not generate an exception
-12756 - Enhanced support for call param rules that take their values from the stack
-11693 - CallMethod rule on nested indentical elements cause parameter confusion
-14415 - InvocationTargetExceptions could be unwrapped
-13891 - Null pointer exception when setting rules
-11168 - XML-based rules def. for Digester ignores call-param-rule
+Outstanding Reports:
+--------------------
+#12997 Call the method as soon as the last parameter is encountered
+#13098 Digester Performance
+#3893 Multiple element body parts problem
 
-DEPRECATION
-===========
-
-The begin, body and end method signatures of org.apache.commons.digester.Rule 
-have now been deprecated. They have been been replaced by new begin, body and 
-end methods whose signatures contain namespace information. Digester now calls these
-new methods. Existing rules overriding the old signatures will continue to function
-correctly since each base implementation of these new methods in Rule calls 
-the old ones.
-
+DEPRECATION:
+============
