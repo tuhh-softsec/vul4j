@@ -76,13 +76,13 @@ public class ResourceResolverException extends XMLSecurityException {
    /**
     * Constructor ResourceResolverException
     *
-    * @param msgID
+    * @param _msgID
     * @param uri
     * @param BaseURI
     */
-   public ResourceResolverException(String msgID, Attr uri, String BaseURI) {
+   public ResourceResolverException(String _msgID, Attr uri, String BaseURI) {
 
-      super(msgID);
+      super(_msgID);
 
       this._uri = uri;
       this._BaseURI = BaseURI;
@@ -91,15 +91,15 @@ public class ResourceResolverException extends XMLSecurityException {
    /**
     * Constructor ResourceResolverException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     * @param uri
     * @param BaseURI
     */
-   public ResourceResolverException(String msgID, Object exArgs[], Attr uri,
+   public ResourceResolverException(String _msgID, Object exArgs[], Attr uri,
                                     String BaseURI) {
 
-      super(msgID, exArgs);
+      super(_msgID, exArgs);
 
       this._uri = uri;
       this._BaseURI = BaseURI;
@@ -108,15 +108,15 @@ public class ResourceResolverException extends XMLSecurityException {
    /**
     * Constructor ResourceResolverException
     *
-    * @param msgID
+    * @param _msgID
     * @param originalException
     * @param uri
     * @param BaseURI
     */
-   public ResourceResolverException(String msgID, Exception originalException,
+   public ResourceResolverException(String _msgID, Exception _originalException,
                                     Attr uri, String BaseURI) {
 
-      super(msgID, originalException);
+      super(_msgID, _originalException);
 
       this._uri = uri;
       this._BaseURI = BaseURI;
@@ -125,17 +125,17 @@ public class ResourceResolverException extends XMLSecurityException {
    /**
     * Constructor ResourceResolverException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     * @param originalException
     * @param uri
     * @param BaseURI
     */
-   public ResourceResolverException(String msgID, Object exArgs[],
-                                    Exception originalException, Attr uri,
+   public ResourceResolverException(String _msgID, Object exArgs[],
+                                    Exception _originalException, Attr uri,
                                     String BaseURI) {
 
-      super(msgID, exArgs, originalException);
+      super(_msgID, exArgs, _originalException);
 
       this._uri = uri;
       this._BaseURI = BaseURI;
