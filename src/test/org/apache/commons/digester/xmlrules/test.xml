@@ -5,6 +5,10 @@
     <bar>
       <foo value="foo2"/>
     </bar>
+    <call-method-rule-tests value="cmr1">
+      <longValue>555</longValue>
+      <defaultParamType>somestringvalue</defaultParamType>
+    </call-method-rule-tests>
   </foo>
   <baz value="baz2"/>
   <foo value="foo3">

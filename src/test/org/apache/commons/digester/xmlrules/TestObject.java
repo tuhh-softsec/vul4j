@@ -72,6 +72,7 @@ public class TestObject {
 
     private ArrayList children = new ArrayList();
     private String value = "";
+    private Long longValue = new Long(-1L);
 
     public TestObject() {
     }
@@ -93,4 +94,16 @@ public class TestObject {
     public void setValue(String val) {
         value = val;
     }
+
+    public void setLongValue(Long val) {
+        longValue = val;
+    }
+
+    public Long getLongValue() {
+        return longValue;
+    }
+
+    public void setStringValue(String val) {
+    }
+
 }

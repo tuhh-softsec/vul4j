@@ -3,7 +3,7 @@
 <!--
         "Digester" component of the Jakarta Commons Subproject
         DTD for the definition of Digester rules in XML.
-        $Id: digester-rules.dtd,v 1.1 2001/12/04 19:49:36 sanders Exp $
+        $Id: digester-rules.dtd,v 1.2 2002/07/08 18:26:13 rdonkin Exp $
 -->
 
 <!-- This document type defines an XML format for defining Digester rules.
@@ -71,7 +71,8 @@
 <!ATTLIST call-method-rule
     pattern    CDATA #IMPLIED
     methodname CDATA #REQUIRED
-    paramcount CDATA #REQUIRED>
+    paramcount CDATA #REQUIRED
+    paramtypes CDATA #IMPLIED>
 
 <!-- CallParamRule -->
 <!ELEMENT call-param-rule EMPTY>

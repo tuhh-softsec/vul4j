@@ -105,7 +105,7 @@ public class DigesterLoaderTest extends TestCase {
         Digester digester = DigesterLoader.createDigester(rules);
         digester.push(new ArrayList());
         Object root = digester.parse(input.openStream());
-        assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
+        assertEquals("[foo1 baz1 foo2, foo3 foo4]",root.toString());
         //System.out.println(root);
     }
 
@@ -124,7 +124,15 @@ public class DigesterLoaderTest extends TestCase {
         if (!(root instanceof ArrayList)) {
             fail("Unexpected object returned from DigesterLoader. Expected ArrayList; got " + root.getClass().getName());
         }
-        assertEquals(root.toString(), "[foo1 baz1 foo2, foo3 foo4]");
+        assertEquals( "[foo1 baz1 foo2, foo3 foo4]",root.toString());
+
+        ArrayList al = (ArrayList)root;
+        Object obj = al.get(0);
+        if (! (obj instanceof TestObject)) {
+            fail("Unexpected object returned from DigesterLoader. Expected TestObject; got " + obj.getClass().getName());
+        }
+        TestObject to = (TestObject)obj;
+        assertEquals(new Long(555),to.getLongValue());
     }
 
     /**

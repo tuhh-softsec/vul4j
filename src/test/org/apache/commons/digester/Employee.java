@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/Employee.java,v 1.3 2002/01/23 22:38:01 sanders Exp $
- * $Revision: 1.3 $
- * $Date: 2002/01/23 22:38:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/Employee.java,v 1.4 2002/07/08 18:26:13 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2002/07/08 18:26:13 $
  *
  * ====================================================================
  *
@@ -120,6 +120,19 @@ public class Employee {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    // this is to allow testing of primitive convertion 
+    private int age;
+    
+    public int getAge()
+    {
+        return age;
+    }
+    
+    public void setAge(int age)
+    {
+        this.age = age;
     }
 
     public String toString() {

@@ -63,9 +63,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.digester.*;
@@ -486,10 +488,23 @@ public class DigesterRuleParser extends RuleSetBase {
      */
     protected class CallMethodRuleFactory extends AbstractObjectCreationFactory {
         public Object createObject(Attributes attributes) {
+            Rule callMethodRule = null;
             int paramCount = Integer.parseInt(attributes.getValue("paramcount"));
             String methodName = attributes.getValue("methodname");
-            Rule callMethodRule = new CallMethodRule(digester, methodName,
-                    paramCount);
+            String paramTypesAttr = attributes.getValue("paramtypes");
+            if (paramTypesAttr == null || paramTypesAttr.length() == 0) {
+                callMethodRule = new CallMethodRule(targetDigester, methodName,
+                                                    paramCount);
+            } else {
+                // Process the comma separated list or paramTypes
+                // into an array of String class names
+                ArrayList paramTypes = new ArrayList();
+                StringTokenizer tokens = new StringTokenizer(paramTypesAttr, " \t\n\r,");
+                while (tokens.hasMoreTokens()) {
+                    paramTypes.add(tokens.nextToken());
+                }
+                callMethodRule = new CallMethodRule(targetDigester, methodName, paramCount, (String[])paramTypes.toArray(new String[0]));
+            }
             return callMethodRule;
         }
     }
