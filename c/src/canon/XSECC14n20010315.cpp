@@ -260,7 +260,7 @@ bool XSECC14n20010315::inNonExclNSList(safeBuffer &ns) {
 
 	for (int i = 0; i < size; ++i) {
 
-		if (strcmp((char *) ns.rawBuffer(), m_exclNSList[i]))
+		if (!strcmp((char *) ns.rawBuffer(), m_exclNSList[i]))
 			return true;
 
 	}
@@ -748,7 +748,7 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 		}
 		else {
 			formatBuffer[0] = '\0';
-			*formatter << e->getLocalName();
+			*formatter << a->getLocalName();
 			localName.sbStrcpyIn(formatBuffer);
 
 			processAsExclusive = !inNonExclNSList(localName);
@@ -1282,6 +1282,11 @@ int XSECC14n20010315::processNextNode() {
 										xmlnsFound = true;
 									}
 								}
+								else {
+
+									// Doesn't have a default namespace in the node-set
+									break;
+								}
 							}
 						}
 
@@ -1329,7 +1334,7 @@ int XSECC14n20010315::processNextNode() {
 			// Did we find a non empty namespace?
 			if (xmlnsFound) {
 				
-				currentName.sbStrcpyIn("xmlns");
+				currentName.sbStrcpyIn("");		// Don't include xmlns prefix
 				XSECNodeListElt * toIns;
 		
 				toIns = new XSECNodeListElt;
