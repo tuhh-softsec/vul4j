@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.1 2003/06/30 11:00:16 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.2 2003/07/17 17:48:03 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -310,16 +310,6 @@ public class TestGenerator extends TestCase {
         col = simpleGenerator.to(fillThis);
         assertSame(fillThis, col);
         assertEquals("[0, 1, 2, 3, 4]", col.toString());
-    }
-
-    public void testGeneratorException() {
-        Exception e = new GeneratorException("test");
-        assertEquals("test", e.getMessage());
-        Exception e2 = new GeneratorException("test2", e);
-        assertEquals("test2", e2.getMessage());
-        assertEquals("test", e2.getCause().getMessage());
-        Exception e3 = new GeneratorException(e);
-        assertEquals("test", e3.getCause().getMessage());
     }
 
     // Attributes
