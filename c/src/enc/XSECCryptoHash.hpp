@@ -78,6 +78,7 @@
 
 /**
  * @ingroup crypto
+ * @{
  */
 
 /**
@@ -177,6 +178,7 @@ public :
 	//@}
 
 	/** @name HMAC Functions */
+	//@{
 	
 	/**
 	 *\brief
@@ -193,6 +195,10 @@ public :
 
 	virtual void		setKey(XSECCryptoKey * key) = 0;
 
+	//@}
+
 };
+
+/** @} */
 
 #endif /* XSECCRYPTOHASH_INCLUDE */

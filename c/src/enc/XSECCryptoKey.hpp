@@ -66,20 +66,42 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
+
+
 
 #ifndef XSECCRYPTOKEY_INCLUDE
 #define XSECCRYPTOKEY_INCLUDE
 
 #include <xsec/framework/XSECDefs.hpp>
 
+/**
+ * \ingroup crypto
+ * @{
+ */
+
+/**
+ * \brief Base interface class for key material.
+ *
+ * All keys used for signing and encrypting are derived from this
+ * base interface class.  There are no methods for performing
+ * cryptographic functions, as this is a base class used to allow
+ * the library to pass key material to various objects without
+ * knowing how to directly use it.
+ */
+
 class DSIG_EXPORT XSECCryptoKey {
 
 public :
+
+	/**
+	 * \brief Key types understood by the library
+	 *
+	 * This type defines the list of key types that the library
+	 * understands.
+	 */
 
 	enum KeyType {
 
@@ -94,15 +116,47 @@ public :
 	
 	};
 
-	// Constructors/Destructors
+
+	/** @name Constructors and Destructors */
+	//@{
 	
+	/**
+	 * \brief Constructor
+	 **/
+
 	XSECCryptoKey() {};
+
+	/**
+	 * \brief Destructor 
+	 */
+
 	virtual ~XSECCryptoKey() {};
+
+	//@}
+
+	/** @name Interface classes */
+	//@{
+
+	/**
+	 * \brief Returns the type of this key.
+	 */
 
 	virtual KeyType getKeyType() {return KEY_NONE;}
 
+	/**
+	 * \brief Clone the key
+	 *
+	 * All keys need to be able to copy themselves and return
+	 * a pointer to the copy.  This allows the library to 
+	 * duplicate keys.
+	 */
+
 	virtual XSECCryptoKey * clone() = 0;
 
+  //@}
+
 };
+
+/** @} */
 
 #endif /* XSECCRYPTOKEY_INCLUDE */

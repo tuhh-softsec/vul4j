@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 #ifndef XSECCRYPTOEXCEPTION_INCLUDE
@@ -97,12 +95,13 @@ extern const char * XSECCryptoExceptionStrings[];
 /**
  * \brief Exception class used by the cryptographic modules
  *
- * <p>This exception class should be used by the Cryptographic providers
- * for reporting errors.</p>
+ * This exception class should be used by the Cryptographic providers
+ * for reporting errors. It can be used directly or by classes which
+ * inherit from it.
  *
- * <p>It's a fairly standard exception class, with a type parameter
+ * It's a fairly standard exception class, with a type parameter
  * (and associated enumerated type) and a string that can be used to
- * provide more information to the caller.</p>
+ * provide more information to the caller.
  */
 
 class DSIG_EXPORT XSECCryptoException {

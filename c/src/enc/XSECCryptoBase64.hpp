@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -81,10 +79,10 @@
  /*\@{*/
 
 /**
- * \brief Base64 encode/decode handler.
+ * \brief Base64 encode/decode handler interface class.
  *
- * <p>The XSEC library will use this class for translating bytes to/from
- * base64 encoding.</p>
+ * <p>The XSEC library will use implementations of this interface 
+ * for translating bytes to/from base64 encoding.</p>
  *
  * <p>There are many places where XML DSIG uses Base64 encoding for 
  * embedding data in the <Signature> structure.  In some cases this object
