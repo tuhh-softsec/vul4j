@@ -7,10 +7,23 @@
   <body> 
     <section>
       <title>News</title>
-      <p>
-        The site has now been re-built using the new xml.apache.org standard,
-        using Forrest.
-      </p>
+	  <section>
+		<title>May 2003</title>
+		<p>
+		  The Beta 0.20 of the C++ library has now been released.  Features:
+		</p>
+		<ul>
+		  <li>Ability to use the Windows Crypto API as a crypto provider</li>
+		  <li>Several minor bug fixes in transforms and UNIX build process</li>
+		</ul>
+	  </section>
+	  <section>
+		<title>February 2003</title>
+		<p>
+		  The site has now been re-built using the new xml.apache.org standard,
+		  using Forrest.
+		</p>
+	  </section>
     </section>
     <section>
       <title>The Project</title>

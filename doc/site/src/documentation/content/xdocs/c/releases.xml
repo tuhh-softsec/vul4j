@@ -13,7 +13,14 @@
 		various releases of the library
 	  </p>
 	  <section>
-		<title>Current Release - Beta 0.10</title>
+	    <title>Current Release - Beta 0.20</title>
+		<p>
+		  Includes a number of bug-fixes and a first cut at a provider for the
+		  Windows Crypto API.
+		</p>
+	  </section>
+	  <section>
+		<title>Changes from 0.10-0.10</title>
 		<p>
 		  The current release of the xml-security-c library is a beta of the
 		  XML Digital Signature code, and is the first version of the library
@@ -81,7 +88,7 @@
 	  <title>Future Release Plans</title>
 	  <p>
 		The current plans are to stablise the beta code and provide a sound
-		core library for digital signing.  Now that the code is at 0.10,
+		core library for digital signing.  Now that the code is at 0.20,
 		some further additions will be made to the digital signature support,
 		and a 1.00 release will be made when digital signature support is
 		fairly complete.
@@ -99,8 +106,6 @@
 		  in memory</li>
 		<li>Support for KeyInfo elements not currently implemented (PGP and
 		  SPKI)</li>
-		<li>Implementation of libgcrypt as a crypto provider</li>
-		<li>Support for PGP/GPG signatures (using libgcrypt and gpgme)</li>
 		<li>NetBSD/FreeBSD builds</li>
 		<li>Install capability in make files</li>
 	  </ul>
@@ -110,11 +115,12 @@
 	  <p>A number of items are planned for after the 1.0 major release.</p>
 	  <ul>
 		<li>XML Encryption Support</li>
-		<li>A crypto interface for the Windows CAPI</li>
 		<li>Implementation of a core set of encryption primitives to allow
 		  decoupling from OpenSSL for "light" applications</li>
 		<li>Improved <em>KeyInfo</em> resolver interface leading to...</li>
 		<li>XKMS client support</li>
+		<li>Implementation of libgcrypt as a crypto provider</li>
+		<li>Support for PGP/GPG signatures (using libgcrypt and gpgme)</li>
 		<li>Bring the API in-line with JCP 105 (if appropriate)</li>
 		<li>Eventually (the GRAND PLAN) an XKMS server implementation</li>
 	  </ul>

@@ -9,20 +9,19 @@
     <section>
       <title>News</title>
       <p>
-        The C++ library has now been fully transferred into the Apache XML
-        project.  It was previously hosted on SourceForge.
-      </p>
-      <p>
-        The first release under Apache is 0.10.  This is a Beta release,
-        with fairly complete documentation, and a stable code base.  It
-        fully validates the various interop documents held in the xml-security
-        CVS, with the exception of those related to :
-      </p>
-      <ul>
-        <li>MD5 Digests (to be added in next point release)</li>
-        <li>XPath Filter (to be added in next point release)</li>
-        <li>XML Encryption (to be added post 1.00 release)</li>
-      </ul>
+		Beta 0.2 has been released.  It covers :
+	  </p>
+	  <ul>
+		<li>some minor bug-fixes in the	code and the UNIX build system</li>
+		<li>a first cut at a Windows Crypto API provider interface</li>
+		<li>methods to extract information from signature objects; and</li>
+		<li>updates to tools to allow (and demonstrate) use of Windows CAPI
+		  and new extraction methods</li>
+	  </ul>
+	  <p>
+		Beta 0.2 is has been tested with Xerces-C v2.2 and the newly 
+		released Xalan-C v1.5.
+	  </p>
     </section>
     <section>
       <title>Overview of the C++ Library</title>
@@ -46,6 +45,27 @@
         Windows CAPI in the near future.
       </p>
     </section>
+	<section>
+	  <title>Old News</title>
+	  <section>
+		<title>February 2003</title>
+		<p>
+		  The C++ library has now been fully transferred into the Apache XML
+		  project.  It was previously hosted on SourceForge.
+		</p>
+		<p>
+		  The first release under Apache is 0.10.  This is a Beta release,
+		  with fairly complete documentation, and a stable code base.  It
+		  fully validates the various interop documents held in the xml-security
+		  CVS, with the exception of those related to :
+		</p>
+		<ul>
+		  <li>MD5 Digests (to be added in next point release)</li>
+		  <li>XPath Filter (to be added in next point release)</li>
+		  <li>XML Encryption (to be added post 1.00 release)</li>
+		</ul>
+	  </section>
+	</section>
   </body>
 </document>
 

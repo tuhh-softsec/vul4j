@@ -16,6 +16,11 @@
 		The library requires OpenSSL for cryptographic support.  Xalan-C
 		is also required if XPath and/or XSLT transformations are required.
       </p>
+	  <p>
+		Version 0.2 of the library has been tested with version 2.2 of
+		Xerces-C, verion 1.5 of Xalan-C and Version 0.9.7 (and above) of
+		OpenSSL.
+	  </p>
     </section>
 
     <section>
@@ -48,7 +53,7 @@
 	  <title>Building for UNIX</title>
 	  <p>
 		XML-Security-C is currently supported on Linux and Solaris.
-		It has been built and tested using GNU gcc 2.95.4 and GNU make.
+		It has been built and tested using GNU gcc 3.2 and GNU make.
 	  </p>
 	  <note>
 		The UNIX XML-Security-C build process has changed radically since
@@ -146,6 +151,11 @@ export OPENSSL=~/prog/extlibs/openssl-0.9.7a
 		The following subsections briefly describe how to 
 		rebuild the library, tools and samples using the supplied workspaces.
 	  </p>
+	  <note>
+		As of version 0.2, the library can be built without OpenSSL on a
+		Windows platform.  (The WinCAPI provider will be used instead).
+		See below for details on how to do this.
+	  </note>
 	  <section>
 		<title>Setup Directories</title>
 		<p>
@@ -171,11 +181,40 @@ export OPENSSL=~/prog/extlibs/openssl-0.9.7a
 
 	  </section>
 	  <section>
+		<title>Configure</title>
+		<p>
+		  If you are using Xalan and OpenSSL, no configuration is required when
+		  building from the Visual C++ v6.0 workspace.
+		</p>
+		<p>
+		  If you wish to disable OpenSSL, you should edit the file 
+		  <em>.../src/framework/XSECW32Config.hpp</em> and comment out the 
+		  line <code>#define HAVE_OPENSSL 1</code>.  This will effectively remove
+		  support for OpenSSL from the library as it is being compiled.
+		</p>
+		<p>
+		  You will also need to remove the library module <code>libeay32.lib</code>
+		  from the link->General settings in each of the projects in the
+		  XSEC workspace.
+		</p>
+		<p>
+		  To disable support for Xalan, a similar process is followed.  Edit
+		  the XSECW32Config.hpp file, and <strong>uncomment</strong> the XSEC_NO_XALAN
+		  line.  This will remove all support for Xalan from the various
+		  source code files.
+		</p>
+		<p>
+		  WHen compiling, using the "...No Xalan configurations for each
+		  project.  These are the same as the normal debug or release builds,
+		  but the Xalan library is not linked in.
+		</p>
+	  </section>
+	  <section>
 		<title>Build Library and Tools</title>
 		<p>
 		  The main workspace is found in :
 		</p>
-		<p><em>.../src/Projects/VC6.0/xsec/xsec.dsw</em></p>
+		<p><em>.../Projects/VC6.0/xsec/xsec.dsw</em></p>
 		<p>
 		  You can load this to build the tools or the library using the relevant
 		  project.  (The library is xsec_lib.)

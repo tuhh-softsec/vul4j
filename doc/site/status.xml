@@ -13,6 +13,15 @@
   <changes>
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
+    <release version="C++ 0.20" date="May 2003">
+      <action dev="BL" type="add" context="c_rel">
+	    <ul>
+		<li>Windows Crypto API interface</li>
+		<li>Basic functions to extract information from signature objects</li>
+		<li>Various bug fixes</li>
+		</ul>
+      </action>
+	</release>
     <release version="Java 1.0.5" date="unreleased">
       <action dev="KW" type="update" context="docs">
 	<p>Ported the docs to Forrest</p>
