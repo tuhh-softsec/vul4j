@@ -124,6 +124,7 @@ const char * XSECExceptionStrings [] = {
 	"An error occurred in the Algorithm Mapper",
 	"An error occurred processing an EncryptionMethod node",
 	"An error occurred processing a CipherReference node",
+	"An error occurred processing an Object node",
 	"Unknown Error type",
 
 };

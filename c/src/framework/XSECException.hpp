@@ -153,7 +153,8 @@ public:
 		AlgorithmMapperError		= 47,
 		EncryptionMethodError		= 48,
 		CipherReferenceError		= 49,
-		UnknownError				= 50		// Must be last!
+		ObjectError					= 50,
+		UnknownError				= 51		// Must be last!
 
 	};
 
