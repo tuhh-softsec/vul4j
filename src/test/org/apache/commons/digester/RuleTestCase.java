@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.18 2002/07/29 21:05:15 rdonkin Exp $
- * $Revision: 1.18 $
- * $Date: 2002/07/29 21:05:15 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.19 2002/07/31 10:48:08 jstrachan Exp $
+ * $Revision: 1.19 $
+ * $Date: 2002/07/31 10:48:08 $
  *
  * ====================================================================
  *
@@ -80,7 +80,7 @@ import junit.framework.TestSuite;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.18 $ $Date: 2002/07/29 21:05:15 $
+ * @version $Revision: 1.19 $ $Date: 2002/07/31 10:48:08 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -695,7 +695,7 @@ public class RuleTestCase extends TestCase {
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
         // try out primitive convertion
-        digester.addCallMethod("employee", "setAge", 1, new Class[] {Integer.class});
+        digester.addCallMethod("employee", "setAge", 1, new Class[] {int.class});
         digester.addCallParam("employee/age", 0);         
                 
         // Parse our test input
@@ -714,7 +714,7 @@ public class RuleTestCase extends TestCase {
         digester = new Digester();
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);      
-        digester.addCallMethod("employee", "setActive", 1, new Class[] {Boolean.class});
+        digester.addCallMethod("employee", "setActive", 1, new Class[] {boolean.class});
         digester.addCallParam("employee/active", 0);    
                 
         // Parse our test input
@@ -733,7 +733,7 @@ public class RuleTestCase extends TestCase {
         digester = new Digester();            
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class); 
-        digester.addCallMethod("employee", "setSalary", 1, new Class[] {Float.class});
+        digester.addCallMethod("employee", "setSalary", 1, new Class[] {float.class});
         digester.addCallParam("employee/salary", 0);    
                 
         // Parse our test input
