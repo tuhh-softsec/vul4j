@@ -60,7 +60,6 @@ package org.apache.xml.security.keys.content;
 
 
 
-import java.security.Key;
 import java.security.PublicKey;
 
 import javax.xml.transform.TransformerException;
@@ -151,14 +150,14 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
       XMLUtils.addReturnToElement(this._constructionElement);
 
       if (JavaUtils.implementsInterface(
-              (Object) pk, "java.security.interfaces.DSAPublicKey")) {
-         DSAKeyValue dsa = new DSAKeyValue(this._doc, (Key) pk);
+              pk, "java.security.interfaces.DSAPublicKey")) {
+         DSAKeyValue dsa = new DSAKeyValue(this._doc, pk);
 
          this._constructionElement.appendChild(dsa.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
       } else if (JavaUtils.implementsInterface(
-              (Object) pk, "java.security.interfaces.RSAPublicKey")) {
-         RSAKeyValue rsa = new RSAKeyValue(this._doc, (Key) pk);
+              pk, "java.security.interfaces.RSAPublicKey")) {
+         RSAKeyValue rsa = new RSAKeyValue(this._doc, pk);
 
          this._constructionElement.appendChild(rsa.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
