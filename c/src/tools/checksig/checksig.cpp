@@ -97,7 +97,7 @@
 
 #if defined(HAVE_UNISTD_H)
 # include <unistd.h>
-# define _MAX_PATH NAME_MAX
+# define _MAX_PATH PATH_MAX
 #else
 # if defined(HAVE_DIRECT_H)
 #  include <direct.h>
