@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.6 2003/11/26 01:18:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/map/TestPredicatedMap.java,v 1.1 2003/11/26 01:18:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,29 +54,82 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.map;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.core.IsInstanceOf;
+
+
 /**
- * @version $Revision: 1.6 $ $Date: 2003/11/26 01:18:28 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/26 01:18:28 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestPredicatedMap extends TestCase {
+
+    public TestPredicatedMap(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
+        return new TestSuite(TestPredicatedMap.class);
+    }
+    
+    private Map baseMap = null;
+    private Map predicatedMap = null;
+    public void setUp() throws Exception {
+        super.setUp();
+        baseMap = new HashMap();
+        predicatedMap = new PredicatedMap(baseMap,new IsInstanceOf(String.class),new IsInstanceOf(Integer.class));
+    }
+    
+    public void tearDown() throws Exception {
+        super.tearDown();
+        baseMap = null;
+        predicatedMap = null;
+    }
 
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-        suite.addTest(org.apache.commons.functor.example.lines.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.map.TestAll.suite());
+    // tests
+    
+    public void testCanPutMatchingPair() {
+        predicatedMap.put("xyzzy", new Integer(17));
+    }
+    public void testCantPutInvalidValue() {
+        try {
+            predicatedMap.put("xyzzy", "xyzzy");
+            fail("Expected IllegalArgumentException");            
+        } catch(IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    public void testCantPutInvalidKey() {
+        try {
+            predicatedMap.put(new Long(1), new Integer(3));
+            fail("Expected IllegalArgumentException");            
+        } catch(IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    public void testOnlyValidPairsAreAddedInPutAll() {
+        HashMap map = new HashMap();
+        map.put("one", new Integer(17));
+        map.put("two", "rejected");
+        map.put(new Integer(17), "xyzzy");
+        map.put(new Integer(7), new Integer(3));
         
-        return suite;
+        predicatedMap.putAll(map);
+        assertEquals(new Integer(17), predicatedMap.get("one"));
+        assertFalse(predicatedMap.containsKey("two"));
+/*        
+        assertFalse(predicatedMap.containsKey(new Integer(17)));
+        assertFalse(predicatedMap.containsKey(new Integer(7)));
+*/        
     }
 }

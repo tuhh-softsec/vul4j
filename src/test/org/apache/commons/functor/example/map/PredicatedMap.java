@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.6 2003/11/26 01:18:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/map/PredicatedMap.java,v 1.1 2003/11/26 01:18:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,29 +54,47 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.map;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.lang.reflect.Array;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.BinaryProcedure;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.adapter.BinaryProcedureBinaryFunction;
+import org.apache.commons.functor.core.composite.ConditionalBinaryFunction;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2003/11/26 01:18:28 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/26 01:18:28 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
-    }
+public class PredicatedMap extends FunctoredMap {
+    public PredicatedMap(Map map, final UnaryPredicate keyPredicate, final UnaryPredicate valuePredicate) {
+        super(map);
+        setOnPut(new ConditionalBinaryFunction(
+            new BinaryPredicate() {
+                public boolean test(Object a, Object b) {
+                    return keyPredicate.test(Array.get(b,0)) && 
+                        valuePredicate.test(Array.get(b,1)); 
+                }
+            },
+            DEFAULT_ON_PUT,
+            BinaryProcedureBinaryFunction.adapt(new Throw(new IllegalArgumentException()))));
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-        suite.addTest(org.apache.commons.functor.example.lines.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.map.TestAll.suite());
-        
-        return suite;
+        setOnPutAll(new BinaryProcedure() {
+            public void run(Object d, Object s) {
+                Map dest = (Map)d;
+                Map src = (Map)s;
+                for(Iterator iter = src.entrySet().iterator(); iter.hasNext(); ) {
+                    Map.Entry pair = (Map.Entry)iter.next();
+                    if(keyPredicate.test(pair.getKey()) && 
+                        valuePredicate.test(pair.getValue())) {
+                        dest.put(pair.getKey(),pair.getValue());
+                    }
+                }
+            }
+        });
     }
 }

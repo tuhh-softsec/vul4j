@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.6 2003/11/26 01:18:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/map/LazyMap.java,v 1.1 2003/11/26 01:18:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,29 +54,31 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.map;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.Map;
+
+import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.UnaryFunction;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2003/11/26 01:18:28 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/26 01:18:28 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-        suite.addTest(org.apache.commons.functor.example.lines.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.map.TestAll.suite());
-        
-        return suite;
+public class LazyMap extends FunctoredMap {
+    public LazyMap(Map map, final UnaryFunction factory) {
+        super(map);
+        setOnGet(new BinaryFunction() {
+            public Object evaluate(Object m, Object key) {
+                Map map = (Map)m;
+                if(map.containsKey(key)) {
+                    return map.get(key);
+                } else {
+                    Object value = factory.evaluate(key);                    
+                    map.put(key,value);
+                    return value;
+                }
+            }
+        });
     }
 }

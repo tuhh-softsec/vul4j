@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.6 2003/11/26 01:18:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/map/FixedSizeMap.java,v 1.1 2003/11/26 01:18:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,29 +54,51 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.map;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.lang.reflect.Array;
+import java.util.Map;
+
+import org.apache.commons.functor.Algorithms;
+import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.BinaryProcedure;
+import org.apache.commons.functor.adapter.BinaryProcedureBinaryFunction;
+import org.apache.commons.functor.core.composite.UnaryNot;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2003/11/26 01:18:28 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/26 01:18:28 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-        suite.addTest(org.apache.commons.functor.example.lines.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.map.TestAll.suite());
+public class FixedSizeMap extends FunctoredMap {
+    public FixedSizeMap(Map map) {
+        super(map);
+        setOnPut(new BinaryFunction() {
+            public Object evaluate(Object a, Object b) {
+                Map map = (Map)a;
+                Object key = Array.get(b,0);
+                Object value = Array.get(b,1);
+                if(map.containsKey(key)) {
+                    return map.put(key,value);
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            }
+        });
         
-        return suite;
+        setOnPutAll(new BinaryProcedure() {
+            public void run(Object a, Object b) {
+                Map dest = (Map)a;
+                Map src = (Map)b;
+                
+                if(Algorithms.contains(src.keySet().iterator(),UnaryNot.not(new ContainsKey(dest)))) {
+                    throw new IllegalArgumentException();
+                } else {
+                    dest.putAll(src);
+                }
+            }
+        });
+        
+        setOnRemove(new BinaryProcedureBinaryFunction(new Throw(new UnsupportedOperationException())));
+        setOnClear(new Throw(new UnsupportedOperationException()));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.6 2003/11/26 01:18:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/map/TestLazyMap.java,v 1.1 2003/11/26 01:18:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,29 +54,90 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.map;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.core.collection.Size;
+
+
 /**
- * @version $Revision: 1.6 $ $Date: 2003/11/26 01:18:28 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/26 01:18:28 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestLazyMap extends TestCase {
+
+    public TestLazyMap(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
-
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-        suite.addTest(org.apache.commons.functor.example.lines.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.map.TestAll.suite());
-        
-        return suite;
+        return new TestSuite(TestLazyMap.class);
     }
+    
+    private Map baseMap = null;
+    private Map lazyMap = null;
+    private Map expectedMap = null;
+    
+    public void setUp() throws Exception {
+        super.setUp();
+        expectedMap = new HashMap();
+        expectedMap.put("one",new Integer(3));
+        expectedMap.put("two",new Integer(3));
+        expectedMap.put("three", new Integer(5));
+        expectedMap.put("four", new Integer(4));
+        expectedMap.put("five", new Integer(4));
+
+        baseMap = new HashMap();        
+        lazyMap = new LazyMap(baseMap,Size.instance());
+    }
+    
+    public void tearDown() throws Exception {
+        super.tearDown();
+        baseMap = null;
+        lazyMap = null;
+        expectedMap = null;
+    }
+
+    // tests
+    
+    public void test() {
+        for(Iterator iter = expectedMap.keySet().iterator(); iter.hasNext();) {
+            Object key = iter.next();
+            assertFalse(baseMap.containsKey(key));
+            assertFalse(lazyMap.containsKey(key));
+            assertEquals(expectedMap.get(key),lazyMap.get(key));
+            assertEquals(expectedMap.get(key),baseMap.get(key));
+            assertTrue(lazyMap.containsKey(key));
+            assertTrue(baseMap.containsKey(key));
+        }
+        assertEquals(expectedMap,lazyMap);
+        assertEquals(expectedMap,baseMap);
+        baseMap.clear();
+        for(Iterator iter = expectedMap.keySet().iterator(); iter.hasNext();) {
+            Object key = iter.next();
+            assertFalse(baseMap.containsKey(key));
+            assertFalse(lazyMap.containsKey(key));
+            assertEquals(expectedMap.get(key),lazyMap.get(key));
+            assertEquals(expectedMap.get(key),baseMap.get(key));
+            assertTrue(lazyMap.containsKey(key));
+            assertTrue(baseMap.containsKey(key));
+        }
+        assertEquals(expectedMap,lazyMap);
+        assertEquals(expectedMap,baseMap);
+    }
+
+
+    public void testBaseMapOverrides() {
+        assertEquals(new Integer(5),lazyMap.get("xyzzy"));
+        baseMap.put("xyzzy","xyzzy");
+        assertEquals("xyzzy",lazyMap.get("xyzzy"));
+    }
+
 }
