@@ -89,7 +89,9 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
-#include <xsec/utils/winutils/XSECSOAPRequestorSimpleWin32.hpp>
+#if defined(_WIN32)
+#    include <xsec/utils/winutils/XSECSOAPRequestorSimpleWin32.hpp>
+#endif
 
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>

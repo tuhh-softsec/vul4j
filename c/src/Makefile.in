@@ -69,6 +69,8 @@ DSIG_DIR = dsig
 OPENSSL_DIR = enc/OpenSSL
 XENC_DIR = xenc
 XENCIMPL_DIR = xenc/impl
+XKMS_DIR = xkms
+XKMSIMPL_DIR = xkms/impl
 
 # Utility SRC directories
 
@@ -132,6 +134,8 @@ compile:
 	$(MAKE) -C ${UNIXUTILS_DIR} compile
 	$(MAKE) -C ${XENC_DIR} compile
 	$(MAKE) -C ${XENCIMPL_DIR} compile
+	$(MAKE) -C ${XKMS_DIR} compile
+	$(MAKE) -C ${XKMSIMPL_DIR} compile
 
 depends:
 	$(MAKE) -C ${CANON_DIR} -s depends
@@ -142,8 +146,8 @@ depends:
 	$(MAKE) -C ${FRAMEWORK_DIR} -s depends
 	$(MAKE) -C ${UTILS_DIR} -s depends
 	$(MAKE) -C ${UNIXUTILS_DIR} -s depends
-	$(MAKE) -C ${XENC_DIR} -s depends
-	$(MAKE) -C ${XENCIMPL_DIR} -s depends
+	$(MAKE) -C ${XKMS_DIR} -s depends
+	$(MAKE) -C ${XKMSIMPL_DIR} -s depends
 
 prepare:
 	$(MKDIR) ../lib
@@ -159,6 +163,7 @@ prepare:
 	$(MAKE) -C ${UTILS_DIR} includes
 	$(MAKE) -C ${UNIXUTILS_DIR} includes
 	$(MAKE) -C ${XENC_DIR} includes
+	$(MAKE) -C ${XKMS_DIR} includes
 
 alltools:
 	$(MAKE) -C ${TOOLS_DIR} alltools
@@ -179,6 +184,7 @@ install: lib
 	$(MAKE) -C ${UTILS_DIR} install
 	$(MAKE) -C ${UNIXUTILS_DIR} install
 	$(MAKE) -C ${XENC_DIR} install
+	$(MAKE) -C ${XKMS_DIR} install
 	@INSTALL_COMMAND_1@
 	@INSTALL_COMMAND_2@
 	@INSTALL_COMMAND_3@
@@ -203,6 +209,8 @@ distclean: clean
 	$(MAKE) -C ${TOOLS_DIR} distclean
 	$(MAKE) -C ${XENC_DIR} distclean
 	$(MAKE) -C ${XENCIMPL_DIR} distclean
+	$(MAKE) -C ${XKMS_DIR} distclean
+	$(MAKE) -C ${XLMSIMPL_DIR} distclean
 	rm -f config.cache
 	rm -f config.status
 	rm -f config.log

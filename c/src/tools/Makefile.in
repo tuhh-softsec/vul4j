@@ -59,7 +59,8 @@ alltools: ${BINDIR}/xtest \
           ${BINDIR}/templatesign \
 		  ${BINDIR}/txfmout \
 		  ${BINDIR}/siginf \
-		  ${BINDIR}/cipher
+		  ${BINDIR}/cipher \
+		  ${BINDIR}/xklient
 
 compile: ${OBJ_FILES}
 
@@ -128,6 +129,14 @@ ${OBJDIR}/XencInteropResolver${OBJSUFFIX}: cipher/XencInteropResolver.cpp
 
 ${BINDIR}/cipher: ${OBJDIR}/cipher${OBJSUFFIX} ${OBJDIR}/XencInteropResolver${OBJSUFFIX}
 	$(LINK) $(LDFLAGS) $^ $(LDXSEC) $(LIBS) -o $@
+
+#============================= xklient =============================
+
+${OBJDIR}/xklient${OBJSUFFIX}: xklient/xklient.cpp
+	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
+
+${BINDIR}/xklient: ${OBJDIR}/xklient${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $< $(LDXSEC) $(LIBS) -o $@
 
 #============================= Clean =============================
 
