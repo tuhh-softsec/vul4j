@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.84 2003/10/19 19:35:40 rdonkin Exp $
- * $Revision: 1.84 $
- * $Date: 2003/10/19 19:35:40 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.85 2003/10/28 23:01:00 rdonkin Exp $
+ * $Revision: 1.85 $
+ * $Date: 2003/10/28 23:01:00 $
  *
  * ====================================================================
  * 
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.84 $ $Date: 2003/10/19 19:35:40 $
+ * @version $Revision: 1.85 $ $Date: 2003/10/28 23:01:00 $
  */
 
 public class Digester extends DefaultHandler {
@@ -604,7 +604,7 @@ public class Digester extends DefaultHandler {
     /**
      * Sets the logger used for logging SAX-related information.
      * <strong>Note</strong> the output is finely grained.
-     * @param log Log, not null
+     * @param saxLog Log, not null
      */    
     public void setSAXLogger(Log saxLog) {
     

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterLoader.java,v 1.9 2003/10/22 18:28:57 rdonkin Exp $
- * $Revision: 1.9 $
- * $Date: 2003/10/22 18:28:57 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterLoader.java,v 1.10 2003/10/28 23:01:00 rdonkin Exp $
+ * $Revision: 1.10 $
+ * $Date: 2003/10/28 23:01:00 $
  *
  * ====================================================================
  * 
@@ -88,7 +88,7 @@ public class DigesterLoader {
 
     /**
      * Creates a new digester and initializes it from the specified InputSource
-     * @param inputSource load the xml rules from this InputSource
+     * @param rulesSource load the xml rules from this InputSource
      * @return a new Digester initialized with the rules
      */
     public static Digester createDigester(InputSource rulesSource) {
@@ -103,7 +103,7 @@ public class DigesterLoader {
      * This constructor allows the digester to be used to load the rules to be specified.
      * This allows properties to be configured on the Digester instance before it is used.
      *
-     * @param inputSource load the xml rules from this InputSource
+     * @param rulesSource load the xml rules from this InputSource
      * @param rulesDigester digester to load the specified XML file.
      * @return a new Digester initialized with the rules
      */
