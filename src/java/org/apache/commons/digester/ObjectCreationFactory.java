@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  * <code>ObjectCreationFactory</code> implementations.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.4 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.5 $ $Date: 2002/03/12 19:10:20 $
  */
 public interface ObjectCreationFactory {
 
@@ -82,8 +82,10 @@ public interface ObjectCreationFactory {
      * object based on the element's attributes.
      *
      * @param attributes the element's attributes
+     *
+     * @throws Exception any exception thrown will be propagated upwards
      */
-    public Object createObject(Attributes attributes);
+    public Object createObject(Attributes attributes) throws Exception;
 
     /**
      * <p>Returns the {@link Digester} that was set by the

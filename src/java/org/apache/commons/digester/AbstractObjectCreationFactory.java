@@ -66,7 +66,7 @@ import org.xml.sax.Attributes;
  * implementations.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.4 $ $Date: 2002/01/23 22:38:01 $
+ * @version $Revision: 1.5 $ $Date: 2002/03/12 19:10:20 $
  */
 abstract public class AbstractObjectCreationFactory implements ObjectCreationFactory {
 
@@ -89,8 +89,10 @@ abstract public class AbstractObjectCreationFactory implements ObjectCreationFac
      * object based on the element's attributes.
      *
      * @param attributes the element's attributes
+     *
+     * @throws Exception any exception thrown will be propagated upwards
      */
-    public abstract Object createObject(Attributes attributes);
+    public abstract Object createObject(Attributes attributes) throws Exception;
 
 
     /**
