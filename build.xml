@@ -14,7 +14,7 @@
   <target name="usage" >
     <echo message=""/>
     <echo message=""/>
-    <echo message="${Name} Build instructions"/>
+    <echo message="${product.Name} Build instructions"/>
     <echo message="-------------------------------------------------------------"/>
     <echo message=""/>
     <echo message=" available targets are:"/>
@@ -37,28 +37,41 @@
   </target>
 
   <target name="init">
-    <echo message= "---------------- ${Name} ${version} [${year}] ---------------"/>
-  </target>
+    <echo message= "---------------- ${product.Name} v${product.Version} [${year}] ---------------"/>
 
+    <property name='product.Name' value='Apache-XML-Security-J'/>
+    <property name='product.name' value='xml-security'/>
+    <property name='product.shortname' value='xmlsec'/>
+    <property name='product.Version' value='1.0.0'/>
+    <property name='product.version' value='1.0.0'/>
+    <property name='product_version' value='1_0_0'/>
 
-    <property name="Name" value="Apache-XML-Security"/>
-    <property name="version" value="0.0.1"/>
-    <property name="appendit" value="2_0_0_beta2"/>
-    <property name="year" value="1999-2001"/>
+    <property name="year" value="2000-2002"/>
     <property name="copyright" value="Copyright &#169; ${year} Apache XML Project. All Rights Reserved."/>
 
-    <!--
     <property name="build.compiler" value="classic"/>
-    -->
+    <!--
     <property name="build.compiler" value="jikes" />
+    -->
 
     <property name="src" value="src" />
     <property name="src.samples" value="src_samples" />
     <property name="src.unitTests" value="src_unitTests" />
     <property name="src.JCE.BC" value="src_JCE_BC" />
 
-    <property name="build" value="./classes" />
-    <property name="build.jar" value="./xmlsec.jar" />
+
+    <property name="build.dir" value="./build"/>
+    <property name="build.src" value="${build.dir}/src"/>
+    <property name="build.dest" value="${build.dir}/classes"/>
+    <property name="build.docs" value="${build.dir}/docs"/>
+    <property name="build.samples" value="${build.dir}/samples"/>
+    <property name="build.tests" value="${build.dir}/tests"/>
+    <property name="build.data" value="${build.dir}/data"/>
+    <property name="build.javadocs" value="${build.dir}/docs/javadocs"/>
+
+    <property name="jar.library" value="${product.shortname}.jar" />
+    <property name="jar.samples" value="${product.shortname}Samples.jar" />
+    <property name="jar.tests"   value="${product.shortname}Tests.jar" />
 
     <property name="cvs.server" value="cvs.apache.org" />
     <property name="cvs.path" value="/home/cvs" />
@@ -108,7 +121,7 @@ org.apache.xml.security.utils.*
 " />
 
     <path id="classpath.library">
-      <pathelement path="${build}" />
+      <pathelement path="${build.dest}" />
       <pathelement path="${lib.xerces}" />
       <pathelement path="${lib.xalan.1}" />
       <pathelement path="${lib.xalan.2}" />
@@ -121,10 +134,11 @@ org.apache.xml.security.utils.*
       <path refid="classpath.library" />
       <pathelement path="${lib.junit}" />
     </path>
+  </target>
 
   <target name="prepare" depends="init">
     <tstamp />
-    <mkdir dir="${build}" />
+    <mkdir dir="${build.dir}" />
     <!-- check whether JUnit is available -->
     <available property="junit.present" classname="junit.framework.TestCase">
        <classpath refid="classpath.test" />
@@ -136,6 +150,25 @@ org.apache.xml.security.utils.*
     </available>
   </target>
 
+
+  <target name="prepare-src" depends="prepare">
+    <!-- create directories -->
+    <mkdir dir="${build.src}"/>
+    <mkdir dir="${build.dest}"/>
+
+    <!-- copy src files -->
+    <copy todir="${build.src}">
+        <fileset 
+            dir="${src}"
+            includes="org/**" />
+    </copy>
+    
+    <!-- substitute tokens as needed -->
+    <replace file="${build.src}/org/apache/xml/security/utils/Version.java" 
+             token="@@VERSION@@" value="${product.Name} ${product.Version}"/>
+  </target>
+
+
   <target name="get-jce"
           depends="prepare"
           unless="bcprov.present">
@@ -145,13 +178,13 @@ org.apache.xml.security.utils.*
 	 usetimestamp="true"/>
   </target>
 
-  <target name="compile.library" depends="prepare, get-jce">
+  <target name="compile.library" depends="prepare-src, get-jce">
     <!-- Compile the java code from ${src} into ${build} -->
-    <javac srcdir="${src}" destdir="${build}">
+    <javac srcdir="${build.src}" destdir="${build.dest}">
       <classpath refid="classpath.library" />
     </javac>
     <!-- Copy Property files -->
-    <copy todir="${build}" >
+    <copy todir="${build.dest}" >
       <fileset dir="${src}" includes="**/*.properties"/>
       <fileset dir="${src}" includes="**/*.xml"/>
       <fileset dir="${src}" includes="**/*.zip"/>
@@ -161,12 +194,12 @@ org.apache.xml.security.utils.*
   <target name="compile.tests"
           depends="compile.library"
           if="junit.present">
-    <!-- Compile the java code from ${src} into ${build} -->
-    <javac srcdir="${src.unitTests}" destdir="${build}">
+    <!-- Compile the java code from ${src} into ${build.dest} -->
+    <javac srcdir="${src.unitTests}" destdir="${build.dest}">
       <classpath refid="classpath.test" />
     </javac>
     <!-- Copy Property files -->
-    <copy todir="${build}" >
+    <copy todir="${build.dest}" >
       <fileset dir="${src.unitTests}" includes="**/*.properties"/>
       <fileset dir="${src.unitTests}" includes="**/*.xml"/>
       <fileset dir="${src.unitTests}" includes="**/*.zip"/>
@@ -175,13 +208,13 @@ org.apache.xml.security.utils.*
 
   <target name="compile.samples"
           depends="compile.library">
-    <!-- Compile the java code from ${src} into ${build} -->
+    <!-- Compile the java code from ${src} into ${build.dest} -->
     <javac srcdir="${src.samples}"
-           destdir="${build}">
+           destdir="${build.dest}">
       <classpath refid="classpath.library" />
     </javac>
     <!-- Copy Property files -->
-    <copy todir="${build}" >
+    <copy todir="${build.dest}" >
       <fileset dir="${src.samples}" includes="**/*.properties"/>
       <fileset dir="${src.samples}" includes="**/*.xml"/>
       <fileset dir="${src.samples}" includes="**/*.zip"/>
@@ -192,7 +225,7 @@ org.apache.xml.security.utils.*
           depends="prepare"
           if="bcprov.present">
     <javac srcdir="${src.JCE.BC}"
-           destdir="${build}">
+           destdir="${build.dest}">
       <classpath refid="classpath.library" />
     </javac>
   </target>
@@ -216,7 +249,7 @@ org.apache.xml.security.utils.*
 
   <target name="clean"
           description="Clean up all temporary build files">
-    <delete dir="${build}" />
+    <delete dir="${build.dest}" />
     <delete file="${build.jar}" />
     <delete dir="bak" />
     <delete dir="{$doc.html.api}" />
@@ -233,15 +266,30 @@ org.apache.xml.security.utils.*
              classpathref="classpath.test"/>
   </target>
 
+<!--
+    <property name="jar.library" value="{product.shortname}.jar" />
+    <property name="jar.samples" value="{product.shortname}Samples.jar" />
+    <property name="jar.tests"   value="{product.shortname}Tests.jar" />
+-->
+
   <target name="jar"
           depends="compile"
           description="Creates the ${build.jar} JAR file">
-     <jar jarfile="${build.jar}"
-          basedir="${build}"
-          compress="false"
+     <jar jarfile="${build.dir}/${jar.library}"
+          basedir="${build.dest}"
           includes="org/apache/**,META-INF/**"
-          excludes="org/apache/xml/security/temp/**" />
+          excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**" />
+     <jar jarfile="${build.dir}/${jar.samples}"
+          basedir="${build.dest}"
+          includes="org/apache/xml/security/samples/**,META-INF/**" />
+     <jar jarfile="${build.dir}/${jar.tests}"
+          basedir="${build.dest}"
+          includes="org/apache/xml/security/test/**,META-INF/**" />
+    <!--  compress="false" -->
   </target>
+
+
+
 
   <target name="gump"
           description="Target for the gump run"
