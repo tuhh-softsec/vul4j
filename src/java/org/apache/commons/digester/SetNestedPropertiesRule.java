@@ -1,4 +1,4 @@
-/* $Id: SetNestedPropertiesRule.java,v 1.9 2004/11/30 04:40:54 skitching Exp $
+/* $Id: SetNestedPropertiesRule.java,v 1.10 2005/01/12 10:33:06 skitching Exp $
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 
@@ -210,10 +210,11 @@ public class SetNestedPropertiesRule extends Rule {
      * When set to false, any child element for which there is no
      * corresponding object property will cause an error to be reported.
      * <p>
-     * When set to false, any child element for which there is no
+     * When set to true, any child element for which there is no
      * corresponding object property will simply be ignored.
      * <p>
-     * The default value of this attribute is false (not allowed).
+     * The default value of this attribute is false (unknown child elements
+     * are not allowed).
      */
     public void setAllowUnknownChildElements(boolean allowUnknownChildElements) {
         this.allowUnknownChildElements = allowUnknownChildElements;
@@ -268,8 +269,15 @@ public class SetNestedPropertiesRule extends Rule {
      * Render a printable version of this Rule.
      */
     public String toString() {
-
-        return ("SetNestedPropertiesRule");
+        StringBuffer sb = new StringBuffer("SetNestedPropertiesRule[");
+        sb.append("allowUnknownChildElements=");
+        sb.append(allowUnknownChildElements);
+        sb.append(", trimData=");
+        sb.append(trimData);
+        sb.append(", elementNames=");
+        sb.append(elementNames);
+        sb.append("]");
+        return sb.toString();    
     }
 
     //----------------------------------------- local classes 
