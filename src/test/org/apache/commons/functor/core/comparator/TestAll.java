@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.4 2003/02/20 01:12:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestAll.java,v 1.1 2003/02/20 01:12:41 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,14 +54,14 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core;
+package org.apache.commons.functor.core.comparator;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/02/20 01:12:41 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:41 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -72,24 +72,7 @@ public class TestAll extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
-        suite.addTest(TestConstantFunction.suite());
-        suite.addTest(TestConstantPredicate.suite());
-        suite.addTest(TestNoOpProcedure.suite());
-        suite.addTest(TestIdentityFunction.suite());
-        suite.addTest(TestLeftIdentityFunction.suite());
-        suite.addTest(TestRightIdentityFunction.suite());
-        suite.addTest(TestInstanceOfPredicate.suite());
-        suite.addTest(TestIsNullPredicate.suite());
-        suite.addTest(TestIsNotNullPredicate.suite());
-        suite.addTest(TestEqualPredicate.suite());
-        suite.addTest(TestNotEqualPredicate.suite());
-        suite.addTest(TestIdentityPredicate.suite());
-        suite.addTest(TestLeftIdentityPredicate.suite());
-        suite.addTest(TestRightIdentityPredicate.suite());
-
-        suite.addTest(org.apache.commons.functor.core.composite.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.core.collection.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.core.comparator.TestAll.suite());
+        suite.addTest(TestComparableComparator.suite());
         
         return suite;
     }

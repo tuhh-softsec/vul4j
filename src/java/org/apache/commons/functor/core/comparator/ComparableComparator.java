@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.4 2003/02/20 01:12:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/ComparableComparator.java,v 1.1 2003/02/20 01:12:40 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,43 +54,54 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core;
+package org.apache.commons.functor.core.comparator;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/02/20 01:12:41 $
+ * See Commons-Collections for a public version 
+ * of this class.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:40 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+final class ComparableComparator implements Comparator, Serializable {
+    public ComparableComparator() {
+    }
+ 
+    /**
+     * @see java.util.Comparator#compare(Object, Object)
+     */
+    public int compare(Object o1, Object o2) {
+        return ((Comparable)o1).compareTo(o2);
+    }
+    
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(Object obj) {
+        return (obj instanceof ComparableComparator);
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTest(TestConstantFunction.suite());
-        suite.addTest(TestConstantPredicate.suite());
-        suite.addTest(TestNoOpProcedure.suite());
-        suite.addTest(TestIdentityFunction.suite());
-        suite.addTest(TestLeftIdentityFunction.suite());
-        suite.addTest(TestRightIdentityFunction.suite());
-        suite.addTest(TestInstanceOfPredicate.suite());
-        suite.addTest(TestIsNullPredicate.suite());
-        suite.addTest(TestIsNotNullPredicate.suite());
-        suite.addTest(TestEqualPredicate.suite());
-        suite.addTest(TestNotEqualPredicate.suite());
-        suite.addTest(TestIdentityPredicate.suite());
-        suite.addTest(TestLeftIdentityPredicate.suite());
-        suite.addTest(TestRightIdentityPredicate.suite());
-
-        suite.addTest(org.apache.commons.functor.core.composite.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.core.collection.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.core.comparator.TestAll.suite());
-        
-        return suite;
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return toString().hashCode();
     }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return" ComparableComparator";
+    }
+    
+    public static final ComparableComparator getInstance() {
+        return INSTANCE;
+    }
+    
+    public static final ComparableComparator INSTANCE = new ComparableComparator();
+
 }

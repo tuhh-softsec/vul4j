@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.4 2003/02/20 01:12:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestComparableComparator.java,v 1.1 2003/02/20 01:12:41 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,43 +54,72 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core;
+package org.apache.commons.functor.core.comparator;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/02/20 01:12:41 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:41 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestComparableComparator extends TestCase {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestComparableComparator(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTest(TestConstantFunction.suite());
-        suite.addTest(TestConstantPredicate.suite());
-        suite.addTest(TestNoOpProcedure.suite());
-        suite.addTest(TestIdentityFunction.suite());
-        suite.addTest(TestLeftIdentityFunction.suite());
-        suite.addTest(TestRightIdentityFunction.suite());
-        suite.addTest(TestInstanceOfPredicate.suite());
-        suite.addTest(TestIsNullPredicate.suite());
-        suite.addTest(TestIsNotNullPredicate.suite());
-        suite.addTest(TestEqualPredicate.suite());
-        suite.addTest(TestNotEqualPredicate.suite());
-        suite.addTest(TestIdentityPredicate.suite());
-        suite.addTest(TestLeftIdentityPredicate.suite());
-        suite.addTest(TestRightIdentityPredicate.suite());
+        return new TestSuite(TestComparableComparator.class);
+    }
 
-        suite.addTest(org.apache.commons.functor.core.composite.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.core.collection.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.core.comparator.TestAll.suite());
-        
-        return suite;
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------
+    
+    public void testCompareIntegers() {
+        assertTrue(ComparableComparator.getInstance().compare(new Integer(Integer.MIN_VALUE),new Integer(Integer.MIN_VALUE)) == 0);
+        assertTrue(ComparableComparator.getInstance().compare(new Integer(-1),new Integer(-1)) == 0);
+        assertTrue(ComparableComparator.getInstance().compare(new Integer(0),new Integer(0)) == 0);
+        assertTrue(ComparableComparator.getInstance().compare(new Integer(Integer.MAX_VALUE),new Integer(Integer.MAX_VALUE)) == 0);
+        assertTrue(ComparableComparator.getInstance().compare(new Integer(1),new Integer(1)) == 0);
+    }
+
+    public void testCompareIncomparable() {
+        try {
+            ComparableComparator.getInstance().compare(new Object(),new Integer(2));
+            fail("Expected ClassCastException");
+        } catch(ClassCastException e) {
+            // expected
+        }
+    }
+
+    public void testCompareNull() {
+        try {
+            ComparableComparator.getInstance().compare(null,new Integer(2));
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+    }
+
+    public void testEqualsAndHashCode() {
+        assertEquals(new ComparableComparator(),new ComparableComparator());
+        assertEquals(new ComparableComparator().hashCode(),new ComparableComparator().hashCode());
+        assertTrue(!new ComparableComparator().equals(null));
     }
 }
