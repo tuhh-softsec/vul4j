@@ -1,14 +1,36 @@
 <?xml version="1.0"?>
 <document>
   <properties>
-    <title>Releases</title>
+    <title>Downloads</title>
     <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
   </properties>
 
   <body>
-    <section name="Placeholder">
+    <section name="Snapshots">
       <p>
-         Placeholder.
+         Functor has not yet had an official binary release.
+         Daily, <a href="http://jakarta.apache.org/gump">Gump</a>-generated builds 
+         are available however.
+      </p>
+      <dl>
+         <dt><a href="http://gump.covalent.net/jars/latest/commons-functor">JAR</a></dt>
+         <dd>
+            The latest pre-build JAR archive is availble at 
+            <a href="http://gump.covalent.net/jars/latest/commons-functor/">http://gump.covalent.net/jars/latest/commons-functor/</a>.
+            See
+            <a href="http://gump.covalent.net/jars/">http://gump.covalent.net/jars/</a>
+            for previous versions.
+         </dd>
+         <dt><a href="http://nagoya.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/">JavaDocs</a></dt>
+         <dd>
+            JavaDoc-generated API documentation is available at 
+            <a href="http://nagoya.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/">http://nagoya.apache.org/gump/javadoc/jakarta-commons-sandbox/functor/target/dist/docs/api/</a>.
+         </dd>
+      </dl>
+      <p>
+         See 
+         <a href="http://cvs.apache.org/builds/gump/latest/commons-functor.html">http://cvs.apache.org/builds/gump/latest/commons-functor.html</a>
+         for the status of the latest Gump generated build.
       </p>
     </section>
   </body>

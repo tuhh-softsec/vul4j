@@ -51,19 +51,19 @@
       </dl>
       <p>
         The root 
-        <a href="apidocs/org/apache/commons/functor/package-summary.html"><code>functor</code></a>
+        <code><a href="apidocs/org/apache/commons/functor/package-summary.html">functor</a></code>
         package defines three signatures for each functor type--taking zero, one or 
         two <code>Object</code> arguments.
       </p>
       <p>
         The
-        <a href="apidocs/org/apache/commons/functor/adapter/package-summary.html"><code>functor.adapter</code></a>
+        <code><a href="apidocs/org/apache/commons/functor/adapter/package-summary.html">functor.adapter</a></code>
         package defines classes for adapting one functor interface to another, 
         both by signature and return type.
       </p>
       <p>
         The 
-        <a href="apidocs/org/apache/commons/functor/core/package-summary.html"><code>functor.core</code></a>
+        <code><a href="apidocs/org/apache/commons/functor/core/package-summary.html">functor.core</a></code>
         package (and its <a href="apidocs/overview-summary.html">subpackages</a>) 
         defines common functor implementations.
       </p>
