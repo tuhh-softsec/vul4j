@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.16 2003/12/01 20:27:20 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.17 2003/12/17 21:03:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -90,7 +90,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.16 $ $Date: 2003/12/01 20:27:20 $
+ * @version $Revision: 1.17 $ $Date: 2003/12/17 21:03:17 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -384,9 +384,7 @@ public final class Algorithms {
      * Tail recursion for {@link Function functions}. If the {@link Function}
      * returns another function of the same type as the original, that function
      * is executed. Functions are executed until a non function value or a
-     * function of a different type is returned. See {@link
-     * org.apache.commons.functor.util.BinarySearch} for an example of how might
-     * be used.
+     * function of a different type is returned.
      */
     public static final Object recurse(Function function) {
         Object result = null;
