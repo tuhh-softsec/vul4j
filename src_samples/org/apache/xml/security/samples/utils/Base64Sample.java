@@ -117,7 +117,7 @@ public class Base64Sample {
                         + "3246874621496829136");
       //J+
       Text base64text = doc.createTextNode(Base64.encode(bi));
-      Element root = doc.createElement("Base64");
+      Element root = doc.createElementNS(null, "Base64");
 
       doc.appendChild(root);
       root.appendChild(base64text);

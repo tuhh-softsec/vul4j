@@ -143,8 +143,8 @@ public class HereSigner {
          ObjectContainer ob1 = new ObjectContainer(doc);
          ob1.setId("object-1");
          ob1.appendChild(doc.createTextNode("\nSigned Text\n"));
-         Element c = doc.createElement("element");
-         c.setAttribute("name", "val");
+         Element c = doc.createElementNS(null, "element");
+         c.setAttributeNS(null, "name", "val");
          ob1.appendChild(c);
          sig.appendObject(ob1);
 

@@ -109,9 +109,10 @@ public class AxisVerifier {
       org.w3c.dom.Document doc = db.parse(new FileInputStream(signatureFile));
       String BaseURI = signatureFile.toURL().toString();
       CachedXPathAPI xpathAPI = new CachedXPathAPI();
-      Element nsctx = doc.createElement("nsctx");
+      Element nsctx = doc.createElementNS(null, "nsctx");
 
-      nsctx.setAttribute("xmlns:ds", Constants.SignatureSpecNS);
+      nsctx.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
+                           Constants.SignatureSpecNS);
 
       Element signatureElem = (Element) xpathAPI.selectSingleNode(doc,
                                  "//ds:Signature", nsctx);
@@ -123,16 +124,21 @@ public class AxisVerifier {
                                                : " not ") + "valid");
 
       for (int i = 0; i < sig.getSignedInfo().getSignedContentLength(); i++) {
-         boolean thisOneWasSigned = sig.getSignedInfo().getVerificationResult(i);
+         boolean thisOneWasSigned =
+            sig.getSignedInfo().getVerificationResult(i);
+
          if (thisOneWasSigned) {
             System.out.println("--- Signed Content follows ---");
-            System.out.println(new String(sig.getSignedInfo().getSignedContentItem(i)));
+            System.out
+               .println(new String(sig.getSignedInfo()
+                  .getSignedContentItem(i)));
          }
       }
+
       System.out.println("");
       System.out.println("Prior transforms");
-      System.out.println(new String(sig.getSignedInfo().getReferencedContentBeforeTransformsItem(0).getBytes()));
-
-
+      System.out
+         .println(new String(sig.getSignedInfo()
+            .getReferencedContentBeforeTransformsItem(0).getBytes()));
    }
 }

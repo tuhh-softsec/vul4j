@@ -132,7 +132,7 @@ public class CreateCollectableSignature {
       /*
       Element signedResourceElement = doc.createElementNS("http://custom/", "custom:signedContent");
       signedResourceElement.setAttributeNS(Constants.NamespaceNS, "xmlns:custom", "http://custom/");
-      signedResourceElement.setAttribute("Id", "id0");
+      signedResourceElement.setAttributeNS(null, "Id", "id0");
       */
       Element signedResourceElement = doc.createElementNS(null, "signedContent");
 

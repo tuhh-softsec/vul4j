@@ -103,8 +103,8 @@ public class CreateDonaldsAdditionalURISignature {
 
    static Document createDocument(DocumentBuilder db) throws Exception {
       Document doc = db.newDocument();
-      Element root = doc.createElement("container");
-      Element contents = doc.createElement("signedContents");
+      Element root = doc.createElementNS(null, "container");
+      Element contents = doc.createElementNS(null, "signedContents");
 
       doc.appendChild(root);
       XMLUtils.addReturnToElement(root);

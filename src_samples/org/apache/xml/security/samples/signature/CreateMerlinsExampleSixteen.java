@@ -171,7 +171,7 @@ public class CreateMerlinsExampleSixteen {
       PostScript.appendChild(doc.createTextNode("bar"));
       envelope.appendChild(PostScript);
 
-      Element Notaries = doc.createElement("Notaries");
+      Element Notaries = doc.createElementNS(null, "Notaries");
 
       Notaries.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", "");
       Notaries.setAttributeNS(null, "Id", "notaries");

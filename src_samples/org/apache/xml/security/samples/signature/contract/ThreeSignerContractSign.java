@@ -66,24 +66,25 @@ import java.security.*;
 import java.security.cert.*;
 import java.util.*;
 import javax.xml.transform.TransformerException;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.*;
+import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.*;
 import org.apache.xml.security.keys.*;
 import org.apache.xml.security.keys.content.*;
 import org.apache.xml.security.keys.content.x509.*;
 import org.apache.xml.security.keys.keyresolver.*;
 import org.apache.xml.security.keys.storage.*;
 import org.apache.xml.security.keys.storage.implementations.*;
-import org.apache.xml.security.utils.*;
-import org.apache.xml.security.transforms.*;
-import org.apache.xml.security.Init;
 import org.apache.xml.security.samples.utils.resolver.OfflineResolver;
+import org.apache.xml.security.signature.*;
+import org.apache.xml.security.transforms.*;
+import org.apache.xml.security.transforms.params.XPathContainer;
+import org.apache.xml.security.utils.*;
 import org.apache.xml.serialize.*;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.*;
+
 
 
 /**
@@ -126,26 +127,26 @@ public class ThreeSignerContractSign {
 
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc = db.newDocument();
-      Element contract = doc.createElement("contract");
+      Element contract = doc.createElementNS(null, "contract");
 
       // create contract ////////////////////////////////////////////
       doc.appendChild(contract);
 
       // beautifying //////
-      Element condition1 = doc.createElement("condition1");
+      Element condition1 = doc.createElementNS(null, "condition1");
 
-      condition1.setAttribute("Id", "cond1");
+      condition1.setAttributeNS(null, "Id", "cond1");
       condition1.appendChild(
          doc.createTextNode(
             "condition1 not covered in first signature, only binding for the second and third signer"));
 
-      Element condition2 = doc.createElement("condition2");
+      Element condition2 = doc.createElementNS(null, "condition2");
 
-      condition2.appendChild(doc.createTextNode("condition2"));
+      condition2.appendChild(doc.createTextNodeNS(null, "condition2"));
 
-      Element condition3 = doc.createElement("condition3");
+      Element condition3 = doc.createElementNS(null, "condition3");
 
-      condition3.appendChild(doc.createTextNode("condition3"));
+      condition3.appendChild(doc.createTextNodeNS(null, "condition3"));
       contract.appendChild(doc.createTextNode("\n"));
       contract.appendChild(condition1);
       contract.appendChild(doc.createTextNode("\n"));
