@@ -95,14 +95,14 @@
  * particular virtual class objects.</p>
  *
  * <p>The cryptographic interface has been kept as thin as possible.
- * In particular, the classes are not meant to provide a complete
+ * The classes are not meant to provide a complete
  * wrapper for the cryptographic libraries involved.  The application
  * program is expected to deal directly with the chosen library.  This
  * ensures that the xml-security library can perform the functions it
  * needs to, but does not constrain the application in what it can do.</p>
  *
- * <p>Thus three type of methods are available on any cryptographic
- * object.</p>
+ * <p>Therefore, three type of methods are available on any cryptographic
+ * class.</p>
  *
  * <ul>
  * <li><em>Required</em> methods are those absolutely necessary for
@@ -118,8 +118,11 @@
  * <li><em>Library Specific</em> methods are those methods that are
  * unique to a particular library.  For example, the OpenSSLCryptoX509
  * class has a Library Specific constructor that takes an OpenSSL
- * X509 structure as its argument.
+ * X509 structure as its argument.</li>
  * </ul>
+ *
+ * <p>Unless marked otherwise, all methods defined in the XSECCrypto*
+ * classes are <em>Required</em>.</p>
  *
  * <p>The particular instantiation of XSECCryptoProvider that is to 
  * be used is set via the XSECPlatformUtils#Initialise() function 
@@ -133,23 +136,12 @@
  * this time there is no way to have different signature
  * objects use different CryptoProviders</p>
  *
- * @note This abstraction layer is currently under construction and 
- * is very subject to change.  In particular, the layer currently 
- * has calls to do things like extract keys from X509 certificates.  
- * This is not strictly necessary for the library to work correctly 
- * and may be removed - or made optional.
- * @todo Add an ability to handle "optional" functions.  The library 
+ * @todo Add an ability to better handle "optional" functions.  The library 
  * should make a call to the
  * provider to see whether an optional function (e.g. extract key from 
  * X509) has been
  * provided.
  *
- * @note The virtual classes (XSECCrypto*) only describe the functions
- * necessary for the library to work.  Other functions need to also
- * be implemented to allow applications to setup and manipulate the
- * objects appropriately.  These functions have not been defined as the
- * manner in which they work is likely to be impacted by the particular
- * cryptographic library being used.
  *
  *\@{*/
 
@@ -159,6 +151,7 @@
  *\brief Maximum length (in bytes) of any expected Digest results.
  *
  * This constant defines the maximum length (in bytes) of HASH returns.
+ * We have defined it far and above the size we would normally expect.
  *
  * @todo This should really come from each of the providers and should
  * be implemented as a function call to *CryptoProvider

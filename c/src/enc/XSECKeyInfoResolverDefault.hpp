@@ -96,7 +96,8 @@
  * @note This class is <B>very</B> basic.  It does not validate
  * the trustworthyness of the key in any way.  It simply reads
  * the key from the first KeyInfo element that actually holds it
- * and returns the result (or NULL) if none is found.
+ * and returns the result (or NULL) if none is found.  It is mainly
+ * provided to allow for interoperability testing.
  *
  */
 

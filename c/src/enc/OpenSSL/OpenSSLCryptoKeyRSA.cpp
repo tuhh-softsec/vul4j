@@ -102,7 +102,7 @@ OpenSSLCryptoKeyRSA::OpenSSLCryptoKeyRSA() {
 OpenSSLCryptoKeyRSA::~OpenSSLCryptoKeyRSA() {
 
 
-	// If we have a RSA, delete it
+	// If we have a RSA, delete it (OpenSSL will clear the memory)
 
 	if (mp_rsaKey)
 		RSA_free(mp_rsaKey);

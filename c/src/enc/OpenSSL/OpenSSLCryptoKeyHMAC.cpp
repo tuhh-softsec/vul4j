@@ -76,6 +76,7 @@
 
 OpenSSLCryptoKeyHMAC::OpenSSLCryptoKeyHMAC() :m_keyBuf("") {
 
+	m_keyBuf.isSensitive();
 	m_keyLen = 0;
 
 };
@@ -83,6 +84,7 @@ OpenSSLCryptoKeyHMAC::OpenSSLCryptoKeyHMAC() :m_keyBuf("") {
 void OpenSSLCryptoKeyHMAC::setKey(unsigned char * inBuf, unsigned int inLength) {
 
 	m_keyBuf.sbMemcpyIn(inBuf, inLength);
+	m_keyBuf.isSensitive();
 	m_keyLen = inLength;
 
 }

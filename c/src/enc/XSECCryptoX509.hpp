@@ -81,7 +81,8 @@
  *
  * The library uses classes derived from this to process X509 Certificates.
  *
- * Strictly speaking, this class is not required.  However it is used by
+ * Strictly speaking, this class is not required (and is completely 
+ * <em>Optional</em>.  However it is used by
  * XSECKeyInfoResolverDefault to extract a key from a certificate in cases
  * where the caller is not worried about the trust level of the certificate.
  *

@@ -126,6 +126,7 @@ public :
 	 * If an interface class does not implement these functions, a simple
 	 * stub that does nothing should be used.
 	 */
+	//@{
 
 	/**
 	 * \brief Set the key

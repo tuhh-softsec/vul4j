@@ -73,6 +73,7 @@
 
 WinCAPICryptoKeyHMAC::WinCAPICryptoKeyHMAC() :m_keyBuf("") {
 
+	m_keyBuf.isSensitive();
 	m_keyLen = 0;
 	m_k = 0;
 

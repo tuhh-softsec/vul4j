@@ -107,7 +107,7 @@ public :
 
 	//@}
 
-	/** @name Interface Functions */
+	/** @name Mandatory Interface Functions */
 	//@{
 
 	/**

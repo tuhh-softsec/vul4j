@@ -86,6 +86,7 @@ OpenSSLCryptoKeyDSA::~OpenSSLCryptoKeyDSA() {
 
 
 	// If we have a DSA, delete it
+	// OpenSSL will ensure the memory holding any private key is overwritten
 
 	if (mp_dsaKey)
 		DSA_free(mp_dsaKey);

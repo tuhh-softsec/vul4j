@@ -129,6 +129,9 @@ public :
 
 	/**
 	 * \brief Destructor 
+	 *
+	 * Implementations must ensure that the held key is properly destroyed
+	 * (overwritten) when key objects are deleted.
 	 */
 
 	virtual ~XSECCryptoKey() {};
