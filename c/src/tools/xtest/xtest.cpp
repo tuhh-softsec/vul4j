@@ -284,6 +284,24 @@ void outputHex(unsigned char * buf, int len) {
 
 int main(int argc, char **argv) {
 
+	/* We output a version number to overcome a "feature" in Microsoft's memory
+	   leak detection */
+
+	cout << "DSIG Info (Using Apache XML-Security-C Library v" << XSEC_VERSION_MAJOR <<
+		"." << XSEC_VERSION_MEDIUM << "." << XSEC_VERSION_MINOR << ")\n";
+
+#if defined (_DEBUG) && defined (_MSC_VER)
+
+	// Do some memory debugging under Visual C++
+
+	_CrtMemState s1, s2, s3;
+
+	// At this point we are about to start really using XSEC, so
+	// Take a "before" checkpoing
+
+	_CrtMemCheckpoint( &s1 );
+
+#endif
 
 	// First initialise the XML system
 
@@ -305,227 +323,383 @@ int main(int argc, char **argv) {
 
 	}
 
-	/*
-	 * First we create a document from scratch
-	 */
+	{
 
-	cerr << "Creating a known doc and signing (HMAC-SHA1)" << endl;
-	
-	// Create a blank Document
+		/*
+		 * First we create a document from scratch
+		 */
 
-    //DOMImplementation impl;
+		cerr << "Creating a known doc and signing (HMAC-SHA1)" << endl;
+		
+		// Create a blank Document
 
-	XMLCh tempStr[100];
-    XMLString::transcode("Core", tempStr, 99);    
-    DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+		//DOMImplementation impl;
+
+		XMLCh tempStr[100];
+		XMLString::transcode("Core", tempStr, 99);    
+		DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
         
 
-    DOMDocument *doc = impl->createDocument(
-                0,                    // root element namespace URI.
-                MAKE_UNICODE_STRING("ADoc"),            // root element name
-                NULL);// DOMDocumentType());  // document type object (DTD).
+		DOMDocument *doc = impl->createDocument(
+					0,                    // root element namespace URI.
+					MAKE_UNICODE_STRING("ADoc"),            // root element name
+					NULL);// DOMDocumentType());  // document type object (DTD).
 
-    DOMElement *rootElem = doc->getDocumentElement();
-	rootElem->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
-		MAKE_UNICODE_STRING("xmlns:foo"), MAKE_UNICODE_STRING("http://www.foo.org"));
+		DOMElement *rootElem = doc->getDocumentElement();
+		rootElem->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
+			MAKE_UNICODE_STRING("xmlns:foo"), MAKE_UNICODE_STRING("http://www.foo.org"));
 
-    DOMElement  * prodElem = doc->createElement(MAKE_UNICODE_STRING("product"));
-    rootElem->appendChild(prodElem);
+		DOMElement  * prodElem = doc->createElement(MAKE_UNICODE_STRING("product"));
+		rootElem->appendChild(prodElem);
 
-    DOMText    * prodDataVal = doc->createTextNode(MAKE_UNICODE_STRING("XMLSecurityC"));
-    prodElem->appendChild(prodDataVal);
+		DOMText    * prodDataVal = doc->createTextNode(MAKE_UNICODE_STRING("XMLSecurityC"));
+		prodElem->appendChild(prodDataVal);
 
-    DOMElement  *catElem = doc->createElement(MAKE_UNICODE_STRING("category"));
-    rootElem->appendChild(catElem);
-    catElem->setAttribute(MAKE_UNICODE_STRING("idea"), MAKE_UNICODE_STRING("great"));
+		DOMElement  *catElem = doc->createElement(MAKE_UNICODE_STRING("category"));
+		rootElem->appendChild(catElem);
+		catElem->setAttribute(MAKE_UNICODE_STRING("idea"), MAKE_UNICODE_STRING("great"));
 
-    DOMText    *catDataVal = doc->createTextNode(MAKE_UNICODE_STRING("XML Security Tools"));
-    catElem->appendChild(catDataVal);
+		DOMText    *catDataVal = doc->createTextNode(MAKE_UNICODE_STRING("XML Security Tools"));
+		catElem->appendChild(catDataVal);
 
-	XSECProvider prov;
-	DSIGSignature *sig;
-	DSIGReference *ref[10];
-	DOMElement *sigNode;
-	int refCount;
+		XSECProvider prov;
+		DSIGSignature *sig;
+		DSIGReference *ref[10];
+		DOMElement *sigNode;
+		int refCount;
 
-	try {
+		try {
+			
+			/*
+			 * Now we have a document, create a signature for it.
+			 */
+			
+			sig = prov.newSignature();
+			sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
+
+			sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA1);
+			rootElem->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+			rootElem->insertBefore(doc->createComment(MAKE_UNICODE_STRING(" a comment ")), prodElem);
+			rootElem->appendChild(sigNode);
+			rootElem->insertBefore(doc->createTextNode(DSIGConstants::s_unicodeStrNL), prodElem);
+
+			/*
+			 * Add some test references
+			 */
+
+			ref[0] = sig->createReference(MAKE_UNICODE_STRING(""));
+			ref[0]->appendEnvelopedSignatureTransform();
+
+			ref[1] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+			ref[1]->appendEnvelopedSignatureTransform();
+			ref[1]->appendCanonicalizationTransform(CANON_C14N_NOC);
+
+			ref[2] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+			ref[2]->appendEnvelopedSignatureTransform();
+			ref[2]->appendCanonicalizationTransform(CANON_C14N_COM);
+
+			ref[3] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+			ref[3]->appendEnvelopedSignatureTransform();
+			ref[3]->appendCanonicalizationTransform(CANON_C14NE_NOC);
+
+			ref[4] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+			ref[4]->appendEnvelopedSignatureTransform();
+			ref[4]->appendCanonicalizationTransform(CANON_C14NE_COM);
+
+			ref[5] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+			ref[5]->appendEnvelopedSignatureTransform();
+			DSIGTransformC14n * ce = ref[5]->appendCanonicalizationTransform(CANON_C14NE_COM);
+			ce->addInclusiveNamespace("foo");
+
+			sig->setECNSPrefix(MAKE_UNICODE_STRING("ec"));
+			ref[6] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+			ref[6]->appendEnvelopedSignatureTransform();
+			ce = ref[6]->appendCanonicalizationTransform(CANON_C14NE_COM);
+			ce->addInclusiveNamespace("foo");
+
+	#ifdef XSEC_NO_XALAN
+
+			cerr << "WARNING : No testing of XPath being performed as Xalan not present" << endl;
+			refCount = 7;
+
+	#else
+			/*
+			 * Create some XPath/XPathFilter references
+			 */
+
+
+			ref[7] = sig->createReference(MAKE_UNICODE_STRING(""));
+			sig->setXPFNSPrefix(MAKE_UNICODE_STRING("xpf"));
+			DSIGTransformXPathFilter * xpf = ref[7]->appendXPathFilterTransform();
+			xpf->appendFilter(FILTER_INTERSECT, MAKE_UNICODE_STRING("//ADoc/category"));
+
+			ref[8] = sig->createReference(MAKE_UNICODE_STRING(""));
+			/*		ref[5]->appendXPathTransform("ancestor-or-self::dsig:Signature", 
+					"xmlns:dsig=http://www.w3.org/2000/09/xmldsig#"); */
+
+			DSIGTransformXPath * x = ref[8]->appendXPathTransform("count(ancestor-or-self::dsig:Signature | \
+	here()/ancestor::dsig:Signature[1]) > \
+	count(ancestor-or-self::dsig:Signature)");
+			x->setNamespace("dsig", "http://www.w3.org/2000/09/xmldsig#");
+
+			refCount = 9;
+
+	#endif
 		
-		/*
-		 * Now we have a document, create a signature for it.
-		 */
-		
-		sig = prov.newSignature();
-		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
-
-		sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA1);
-		rootElem->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-		rootElem->insertBefore(doc->createComment(MAKE_UNICODE_STRING(" a comment ")), prodElem);
-		rootElem->appendChild(sigNode);
-		rootElem->insertBefore(doc->createTextNode(DSIGConstants::s_unicodeStrNL), prodElem);
-
-		/*
-		 * Add some test references
-		 */
-
-		ref[0] = sig->createReference(MAKE_UNICODE_STRING(""));
-		ref[0]->appendEnvelopedSignatureTransform();
-
-		ref[1] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
-		ref[1]->appendEnvelopedSignatureTransform();
-		ref[1]->appendCanonicalizationTransform(CANON_C14N_NOC);
-
-		ref[2] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
-		ref[2]->appendEnvelopedSignatureTransform();
-		ref[2]->appendCanonicalizationTransform(CANON_C14N_COM);
-
-		ref[3] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
-		ref[3]->appendEnvelopedSignatureTransform();
-		ref[3]->appendCanonicalizationTransform(CANON_C14NE_NOC);
-
-		ref[4] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
-		ref[4]->appendEnvelopedSignatureTransform();
-		ref[4]->appendCanonicalizationTransform(CANON_C14NE_COM);
-
-		ref[5] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
-		ref[5]->appendEnvelopedSignatureTransform();
-		DSIGTransformC14n * ce = ref[5]->appendCanonicalizationTransform(CANON_C14NE_COM);
-		ce->addInclusiveNamespace("foo");
-
-		sig->setECNSPrefix(MAKE_UNICODE_STRING("ec"));
-		ref[6] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
-		ref[6]->appendEnvelopedSignatureTransform();
-		ce = ref[6]->appendCanonicalizationTransform(CANON_C14NE_COM);
-		ce->addInclusiveNamespace("foo");
-
-#ifdef XSEC_NO_XALAN
-
-		cerr << "WARNING : No testing of XPath being performed as Xalan not present" << endl;
-		refCount = 7;
-
-#else
-		/*
-		 * Create some XPath/XPathFilter references
-		 */
+			/*
+			 * Sign the document, using an HMAC algorithm and the key "secret"
+			 */
 
 
-		ref[7] = sig->createReference(MAKE_UNICODE_STRING(""));
-		sig->setXPFNSPrefix(MAKE_UNICODE_STRING("xpf"));
-		DSIGTransformXPathFilter * xpf = ref[7]->appendXPathFilterTransform();
-		xpf->appendFilter(FILTER_INTERSECT, MAKE_UNICODE_STRING("//ADoc/category"));
+			sig->appendKeyName(MAKE_UNICODE_STRING("The secret key is \"secret\""));
 
-		ref[8] = sig->createReference(MAKE_UNICODE_STRING(""));
-		/*		ref[5]->appendXPathTransform("ancestor-or-self::dsig:Signature", 
-				"xmlns:dsig=http://www.w3.org/2000/09/xmldsig#"); */
+			// Append a test DNames
 
-		DSIGTransformXPath * x = ref[8]->appendXPathTransform("count(ancestor-or-self::dsig:Signature | \
-here()/ancestor::dsig:Signature[1]) > \
-count(ancestor-or-self::dsig:Signature)");
-		x->setNamespace("dsig", "http://www.w3.org/2000/09/xmldsig#");
+			DSIGKeyInfoX509 * x509 = sig->appendX509Data();
+			x509->setX509SubjectName(s_tstDName);
 
-		refCount = 9;
+			// Append a test PGPData element
+			sig->appendPGPData(s_tstPGPKeyID, s_tstPGPKeyPacket);
 
-#endif
-	
-		/*
-		 * Sign the document, using an HMAC algorithm and the key "secret"
-		 */
+			// Append an SPKIData element
+			DSIGKeyInfoSPKIData * spki = sig->appendSPKIData(s_tstSexp1);
+			spki->appendSexp(s_tstSexp2);
 
+			// Append a MgmtData element
+			sig->appendMgmtData(s_tstMgmtData);
 
-		sig->appendKeyName(MAKE_UNICODE_STRING("The secret key is \"secret\""));
+			sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
+			sig->sign();
 
-		// Append a test DNames
+			cerr << "Doc signed OK - Checking values against Known Good" << endl;
 
-		DSIGKeyInfoX509 * x509 = sig->appendX509Data();
-		x509->setX509SubjectName(s_tstDName);
+			unsigned char buf[128];
+			int len;
 
-		// Append a test PGPData element
-		sig->appendPGPData(s_tstPGPKeyID, s_tstPGPKeyPacket);
+			/*
+			 * Validate the reference hash values from known good
+			 */
 
-		// Append an SPKIData element
-		DSIGKeyInfoSPKIData * spki = sig->appendSPKIData(s_tstSexp1);
-		spki->appendSexp(s_tstSexp2);
+			int i;
+			for (i = 0; i < refCount; ++i) {
 
-		// Append a MgmtData element
-		sig->appendMgmtData(s_tstMgmtData);
+				cerr << "Calculating hash for reference " << i << " ... ";
 
-		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
-		sig->sign();
+				len = (int) ref[i]->calculateHash(buf, 128);
 
-		cerr << "Doc signed OK - Checking values against Known Good" << endl;
+				cerr << " Done\nChecking -> ";
 
-		unsigned char buf[128];
-		int len;
-
-		/*
-		 * Validate the reference hash values from known good
-		 */
-
-		int i;
-		for (i = 0; i < refCount; ++i) {
-
-			cerr << "Calculating hash for reference " << i << " ... ";
-
-			len = (int) ref[i]->calculateHash(buf, 128);
-
-			cerr << " Done\nChecking -> ";
-
-			if (len != 20) {
-				cerr << "Bad (Length = " << len << ")" << endl;
-				exit (1);
-			}
-
-			for (int j = 0; j < 20; ++j) {
-
-				if (buf[j] != createdDocRefs[i][j]) {
-					cerr << "Bad at location " << j << endl;
+				if (len != 20) {
+					cerr << "Bad (Length = " << len << ")" << endl;
 					exit (1);
 				}
-			
+
+				for (int j = 0; j < 20; ++j) {
+
+					if (buf[j] != createdDocRefs[i][j]) {
+						cerr << "Bad at location " << j << endl;
+						exit (1);
+					}
+				
+				}
+				cerr << "Good.\n";
+
 			}
-			cerr << "Good.\n";
 
+			/*
+			 * Verify the signature check works
+			 */
+
+			cerr << "Running \"verifySignatureOnly()\" on calculated signature ... ";
+			if (sig->verifySignatureOnly()) {
+				cerr << "OK" << endl;
+			}
+			else {
+				cerr << "Failed" << endl;
+				char * e = XMLString::transcode(sig->getErrMsgs());
+				cout << e << endl;
+				delete [] e;
+				exit(1);
+			}
+
+			/*
+			 * Change the document and ensure the signature fails.
+			 */
+
+			cerr << "Setting incorrect key in Signature object" << endl;
+			sig->setSigningKey(createHMACKey((unsigned char *) "badsecret"));
+
+			cerr << "Running \"verifySignatureOnly()\" on calculated signature ... ";
+			if (!sig->verifySignatureOnly()) {
+				cerr << "OK (Signature bad)" << endl;
+			}
+			else {
+				cerr << "Failed (signature OK but should be bad)" << endl;
+				exit(1);
+			}
+
+			// Don't need the signature now the DOM structure is in place
+			prov.releaseSignature(sig);
+
+			/*
+			 * Now serialise the document to memory so we can re-parse and check from scratch
+			 */
+
+			cerr << "Serialising the document to a memory buffer ... ";
+
+			DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+
+			theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+			if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
+				theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+
+
+			MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
+
+			theSerializer->writeNode(formatTarget, *doc);
+
+			// Copy to a new buffer
+			len = formatTarget->getLen();
+			char * mbuf = new char [len + 1];
+			memcpy(mbuf, formatTarget->getRawBuffer(), len);
+			mbuf[len] = '\0';
+
+			delete theSerializer;
+			delete formatTarget;
+
+			cerr << "done\nParsing memory buffer back to DOM ... ";
+
+			// Also release the document so that we can re-load from scratch
+
+			doc->release();
+
+			/*
+			 * Re-parse
+			 */
+
+			XercesDOMParser parser;
+			
+			parser.setDoNamespaces(true);
+			parser.setCreateEntityReferenceNodes(true);
+
+			MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) mbuf, 
+																	len, "XSECMem");
+
+			parser.parse(*memIS);
+			doc = parser.adoptDocument();
+
+
+			delete(memIS);
+			delete[] mbuf;
+
+			cerr << "done\nValidating signature ...";
+
+			/*
+			 * Validate signature
+			 */
+
+			sig = prov.newSignatureFromDOM(doc);
+			sig->load();
+			sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
+
+			if (sig->verify()) {
+				cerr << "OK" << endl;
+			}
+			else {
+				cerr << "Failed\n" << endl;
+				char * e = XMLString::transcode(sig->getErrMsgs());
+				cerr << e << endl;
+				delete [] e;
+				exit(1);
+			}
+
+			/*
+			 * Ensure DNames are read back in and decoded properly
+			 */
+
+			DSIGKeyInfoList * kil = sig->getKeyInfoList();
+			int nki = kil->getSize();
+
+			cerr << "Checking Distinguished name is decoded correctly ... ";
+			for (i = 0; i < nki; ++i) {
+
+				if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_X509) {
+
+					if (strEquals(s_tstDName, ((DSIGKeyInfoX509 *) kil->item(i))->getX509SubjectName())) {
+						cerr << "yes" << endl;
+					}
+					else {
+						cerr << "decoded incorrectly" << endl;;
+						exit (1);
+					}
+				}
+				if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_PGPDATA) {
+					
+					cerr << "Validating PGPData read back OK ... ";
+
+					DSIGKeyInfoPGPData * p = (DSIGKeyInfoPGPData *)kil->item(i);
+
+					if (!(strEquals(p->getKeyID(), s_tstPGPKeyID) &&
+						strEquals(p->getKeyPacket(), s_tstPGPKeyPacket))) {
+
+						cerr << "no!";
+						exit(1);
+					}
+
+					cerr << "yes\n";
+				}
+				if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_SPKIDATA) {
+					
+					cerr << "Validating SPKIData read back OK ... ";
+
+					DSIGKeyInfoSPKIData * s = (DSIGKeyInfoSPKIData *)kil->item(i);
+
+					if (s->getSexpSize() != 2) {
+						cerr << "no - expected two S-expressions";
+						exit(1);
+					}
+
+					if (!(strEquals(s->getSexp(0), s_tstSexp1) &&
+						strEquals(s->getSexp(1), s_tstSexp2))) {
+
+						cerr << "no!";
+						exit(1);
+					}
+
+					cerr << "yes\n";
+				}
+				if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_MGMTDATA) {
+					
+					cerr << "Validating MgmtData read back OK ... ";
+
+					DSIGKeyInfoMgmtData * m = (DSIGKeyInfoMgmtData *)kil->item(i);
+
+					if (!strEquals(m->getData(), s_tstMgmtData)) {
+
+						cerr << "no!";
+						exit(1);
+					}
+
+					cerr << "yes\n";
+				}
+			}
 		}
 
-		/*
-		 * Verify the signature check works
-		 */
-
-		cerr << "Running \"verifySignatureOnly()\" on calculated signature ... ";
-		if (sig->verifySignatureOnly()) {
-			cerr << "OK" << endl;
-		}
-		else {
-			cerr << "Failed" << endl;
-			char * e = XMLString::transcode(sig->getErrMsgs());
-			cout << e << endl;
-			delete [] e;
+		catch (XSECException &e)
+		{
+			cerr << "An error occured during signature processing\n   Message: ";
+			char * ce = XMLString::transcode(e.getMsg());
+			cerr << ce << endl;
+			delete ce;
+			exit(1);
+			
+		}	
+		catch (XSECCryptoException &e)
+		{
+			cerr << "A cryptographic error occured during signature processing\n   Message: "
+			<< e.getMsg() << endl;
 			exit(1);
 		}
-
-		/*
-		 * Change the document and ensure the signature fails.
-		 */
-
-		cerr << "Setting incorrect key in Signature object" << endl;
-		sig->setSigningKey(createHMACKey((unsigned char *) "badsecret"));
-
-		cerr << "Running \"verifySignatureOnly()\" on calculated signature ... ";
-		if (!sig->verifySignatureOnly()) {
-			cerr << "OK (Signature bad)" << endl;
-		}
-		else {
-			cerr << "Failed (signature OK but should be bad)" << endl;
-			exit(1);
-		}
-
-		// Don't need the signature now the DOM structure is in place
-		prov.releaseSignature(sig);
-
-		/*
-		 * Now serialise the document to memory so we can re-parse and check from scratch
-		 */
-
-		cerr << "Serialising the document to a memory buffer ... ";
 
 		DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
@@ -534,172 +708,65 @@ count(ancestor-or-self::dsig:Signature)");
 			theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
 
-		MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
+		XMLFormatTarget *formatTarget = new StdOutFormatTarget();
 
 		theSerializer->writeNode(formatTarget, *doc);
-
-		// Copy to a new buffer
-		len = formatTarget->getLen();
-		char * mbuf = new char [len + 1];
-		memcpy(mbuf, formatTarget->getRawBuffer(), len);
-		mbuf[len] = '\0';
+		
+		cout << endl;
 
 		delete theSerializer;
 		delete formatTarget;
 
-		cerr << "done\nParsing memory buffer back to DOM ... ";
-
-		// Also release the document so that we can re-load from scratch
-
 		doc->release();
 
-		/*
-		 * Re-parse
-		 */
+		cerr << "All tests passed" << endl;
 
-		XercesDOMParser parser;
-		
-		parser.setDoNamespaces(true);
-		parser.setCreateEntityReferenceNodes(true);
-
-		MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) mbuf, 
-																len, "XSECMem");
-
-		parser.parse(*memIS);
-		doc = parser.adoptDocument();
-
-
-		delete(memIS);
-		delete[] mbuf;
-
-		cerr << "done\nValidating signature ...";
-
-		/*
-		 * Validate signature
-		 */
-
-		sig = prov.newSignatureFromDOM(doc);
-		sig->load();
-		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
-
-		if (sig->verify()) {
-			cerr << "OK" << endl;
-		}
-		else {
-			cerr << "Failed\n" << endl;
-			char * e = XMLString::transcode(sig->getErrMsgs());
-			cerr << e << endl;
-			delete [] e;
-			exit(1);
-		}
-
-		/*
-		 * Ensure DNames are read back in and decoded properly
-		 */
-
-		DSIGKeyInfoList * kil = sig->getKeyInfoList();
-		int nki = kil->getSize();
-
-		cerr << "Checking Distinguished name is decoded correctly ... ";
-		for (i = 0; i < nki; ++i) {
-
-			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_X509) {
-
-				if (strEquals(s_tstDName, ((DSIGKeyInfoX509 *) kil->item(i))->getX509SubjectName())) {
-					cerr << "yes" << endl;
-				}
-				else {
-					cerr << "decoded incorrectly" << endl;;
-					exit (1);
-				}
-			}
-			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_PGPDATA) {
-				
-				cerr << "Validating PGPData read back OK ... ";
-
-				DSIGKeyInfoPGPData * p = (DSIGKeyInfoPGPData *)kil->item(i);
-
-				if (!(strEquals(p->getKeyID(), s_tstPGPKeyID) &&
-					strEquals(p->getKeyPacket(), s_tstPGPKeyPacket))) {
-
-					cerr << "no!";
-					exit(1);
-				}
-
-				cerr << "yes\n";
-			}
-			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_SPKIDATA) {
-				
-				cerr << "Validating SPKIData read back OK ... ";
-
-				DSIGKeyInfoSPKIData * s = (DSIGKeyInfoSPKIData *)kil->item(i);
-
-				if (s->getSexpSize() != 2) {
-					cerr << "no - expected two S-expressions";
-					exit(1);
-				}
-
-				if (!(strEquals(s->getSexp(0), s_tstSexp1) &&
-					strEquals(s->getSexp(1), s_tstSexp2))) {
-
-					cerr << "no!";
-					exit(1);
-				}
-
-				cerr << "yes\n";
-			}
-			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_MGMTDATA) {
-				
-				cerr << "Validating MgmtData read back OK ... ";
-
-				DSIGKeyInfoMgmtData * m = (DSIGKeyInfoMgmtData *)kil->item(i);
-
-				if (!strEquals(m->getData(), s_tstMgmtData)) {
-
-					cerr << "no!";
-					exit(1);
-				}
-
-				cerr << "yes\n";
-			}
-		}
 	}
 
-	catch (XSECException &e)
-	{
-		cerr << "An error occured during signature processing\n   Message: ";
-		char * ce = XMLString::transcode(e.getMsg());
-		cerr << ce << endl;
-		delete ce;
-		exit(1);
-		
-	}	
-	catch (XSECCryptoException &e)
-	{
-		cerr << "A cryptographic error occured during signature processing\n   Message: "
-		<< e.getMsg() << endl;
-		exit(1);
+	XSECPlatformUtils::Terminate();
+#ifndef XSEC_NO_XALAN
+	XalanTransformer::terminate();
+	XPathEvaluator::terminate();
+#endif
+	XMLPlatformUtils::Terminate();
+
+#if defined (_DEBUG) && defined (_MSC_VER)
+
+	_CrtMemCheckpoint( &s2 );
+
+	if ( _CrtMemDifference( &s3, &s1, &s2 ) && (
+		s3.lCounts[0] > 0 ||
+		s3.lCounts[1] > 1 ||
+		// s3.lCounts[2] > 2 ||  We don't worry about C Runtime
+		s3.lCounts[3] > 0 ||
+		s3.lCounts[4] > 0)) {
+
+		// Note that there is generally 1 Normal and 1 CRT block
+		// still taken.  1 is from Xalan and 1 from stdio
+
+		// Send all reports to STDOUT
+		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE );
+		_CrtSetReportFile( _CRT_WARN, _CRTDBG_FILE_STDOUT );
+		_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_FILE );
+		_CrtSetReportFile( _CRT_ERROR, _CRTDBG_FILE_STDOUT );
+		_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE );
+		_CrtSetReportFile( _CRT_ASSERT, _CRTDBG_FILE_STDOUT );
+
+		// Dumpy memory stats
+
+ 		_CrtMemDumpAllObjectsSince( &s3 );
+	    _CrtMemDumpStatistics( &s3 );
 	}
 
-	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+	// Now turn off memory leak checking and end as there are some 
+	// Globals that are allocated that get seen as leaks (Xalan?)
 
-	theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
-	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
-		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+	int dbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+	dbgFlag &= ~(_CRTDBG_LEAK_CHECK_DF);
+	_CrtSetDbgFlag( dbgFlag );
 
+#endif
 
-	XMLFormatTarget *formatTarget = new StdOutFormatTarget();
-
-	theSerializer->writeNode(formatTarget, *doc);
-	
-	cout << endl;
-
-	delete theSerializer;
-	delete formatTarget;
-
-	doc->release();
-
-	cerr << "All tests passed" << endl;
 
 	return 0;
 
