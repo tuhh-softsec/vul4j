@@ -86,13 +86,22 @@ public class XMLUtils {
    	   		    for (int i=0;i<nl.getLength();i++) {
    	   		    	result.add(nl.item(i));
    	   		    }
-   	   	case Node.DOCUMENT_NODE:   	   			
+   	   	case Node.DOCUMENT_NODE:
+				boolean skipingTextNodes=false;
    	   			Node r=rootNode.getFirstChild();
    	   			if (r==null) {
    	   				break;
    	   			}
-   	   			do {
-   	   				getSet(r,result,com);
+                                do {
+                                    if (r.getNodeType()==Node.TEXT_NODE) {
+                                        if (skipingTextNodes) {
+                                            continue;
+                                        }
+                                        skipingTextNodes=true;
+                                    } else {
+                                        skipingTextNodes=false;
+                                    }
+                                    getSet(r,result,com);
    	   			} while ((r=r.getNextSibling())!=null);
    	   			break;
    	   		case Node.COMMENT_NODE:
