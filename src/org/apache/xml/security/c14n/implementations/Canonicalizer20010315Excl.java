@@ -374,9 +374,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
          }
       }
 
-      // Collections.sort(ns,new NSAttrCompare());
       Collections.sort(ns,new AttrCompare());
-      // Collections.sort(at, new NonNSAttrCompare());
       Collections.sort(at, new AttrCompare());
       ns.addAll(at);
 
@@ -621,7 +619,6 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 
                   if (!xmlnsA.getNodeValue().equals("")
                           && this._xpathNodeSet.contains(xmlnsA)) {
-
                      // OK, we must output xmlns=""
                      xmlns =
                         this._doc.createAttributeNS(Constants.NamespaceSpecNS,
