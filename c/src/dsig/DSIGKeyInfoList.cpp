@@ -74,6 +74,7 @@
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
 #include <xsec/dsig/DSIGKeyInfoValue.hpp>
 #include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
+#include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
@@ -150,89 +151,55 @@ bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
 	if (ki == 0)
 		return false;
 
-	if (strEquals(getDSIGLocalName(ki), "X509Data")) {
+	DSIGKeyInfo * k;
 
-		DSIGKeyInfoX509 * k;
+	if (strEquals(getDSIGLocalName(ki), "X509Data")) {
 
 		// Have a certificate!
 		XSECnew(k, DSIGKeyInfoX509(mp_parentSignature, ki));
-		try {
-			k->load();
-		}
-		catch (...) {
-			delete k;
-			throw;
-		}
-
-		// Add to the KeyInfo list
-		this->addKeyInfo(k);
-
-		return true;
-
 	}
 
-	if (strEquals(getDSIGLocalName(ki), "KeyName")) {
-
-		DSIGKeyInfoName * k;
+	else if (strEquals(getDSIGLocalName(ki), "KeyName")) {
 
 		XSECnew(k, DSIGKeyInfoName(mp_parentSignature, ki));
-		
-		try {
-			k->load();
-		}
-		catch (...) {
-			delete k;
-			throw;
-		}
-
-		this->addKeyInfo(k);
-
-		return true;
 	}
 
-	if (strEquals(getDSIGLocalName(ki), "KeyValue")) {
-
-		DSIGKeyInfoValue * k;
+	else if (strEquals(getDSIGLocalName(ki), "KeyValue")) {
 
 		XSECnew(k, DSIGKeyInfoValue(mp_parentSignature, ki));
+	}
+
+	else if (strEquals(getDSIGLocalName(ki), "PGPData")) {
+
+		XSECnew(k, DSIGKeyInfoPGPData(mp_parentSignature, ki));
+	}
+
+	else if (strEquals(getDSIGLocalName(ki), "SPKIData")) {
+
+		XSECnew(k, DSIGKeyInfoSPKIData(mp_parentSignature, ki));
 		
-		try {
-			k->load();
-		}
-		catch (...) {
-			delete k;
-			throw;
-		}
+	}
 
-		// Add
-		this->addKeyInfo(k);
+	else {
 
-		return true;
+		return false;
 
 	}
 
-	if (strEquals(getDSIGLocalName(ki), "PGPData")) {
+	// Now we know what the element type is - do the load and save
 
-		DSIGKeyInfoPGPData * p;
-
-		XSECnew(p, DSIGKeyInfoPGPData(mp_parentSignature, ki));
-		
-		try {
-			p->load();
-		}
-		catch (...) {
-			delete p;
-			throw;
-		}
-
-		// Add
-		this->addKeyInfo(p);
-
-		return true;
-
+	try {
+		k->load();
+	}
+	catch (...) {
+		delete k;
+		throw;
 	}
 
-	return false;
+	// Add
+	this->addKeyInfo(k);
+
+	return true;
 
 }
 

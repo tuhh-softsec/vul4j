@@ -89,6 +89,7 @@ class DSIGKeyInfoValue;
 class DSIGKeyInfoX509;
 class DSIGKeyInfoName;
 class DSIGKeyInfoPGPData;
+class DSIGKeyInfoSPKIData;
 
 /**
  * @ingroup pubsig
@@ -638,6 +639,17 @@ public:
 	 */
 
 	DSIGKeyInfoPGPData * appendPGPData(const XMLCh * id, const XMLCh * packet);
+
+	/**
+	 * \brief Append a SPKIData element
+	 *
+	 * Add a new KeyInfo element for a set of SPKI S-expressions
+	 *
+	 * @param sexp The initial S-expression to set in the SPKIData element
+	 * @returns A pointer to the created object
+	 */
+
+	DSIGKeyInfoSPKIData * appendSPKIData(const XMLCh * sexp);
 
 	//@}
 

@@ -120,6 +120,7 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
 #include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
+#include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
 
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
@@ -210,6 +211,18 @@ XMLCh s_tstPGPKeyPacket[] = {
 	chLatin_D, chLatin_u, chLatin_m, chLatin_m, chLatin_y, chSpace,
 	chLatin_P, chLatin_G, chLatin_P, chSpace,
 	chLatin_P, chLatin_a, chLatin_c, chLatin_k, chLatin_e, chLatin_t, chNull
+};
+
+XMLCh s_tstSexp1[] = {
+
+	chLatin_D, chLatin_u, chLatin_m, chLatin_m, chLatin_y, chSpace,
+	chLatin_S, chLatin_e, chLatin_x, chLatin_p, chDigit_1, chNull
+};
+
+XMLCh s_tstSexp2[] = {
+
+	chLatin_D, chLatin_u, chLatin_m, chLatin_m, chLatin_y, chSpace,
+	chLatin_S, chLatin_e, chLatin_x, chLatin_p, chDigit_2, chNull
 };
 
 // --------------------------------------------------------------------------------
@@ -419,6 +432,10 @@ count(ancestor-or-self::dsig:Signature)");
 		// Append a test PGPData element
 		sig->appendPGPData(s_tstPGPKeyID, s_tstPGPKeyPacket);
 
+		// Append an SPKIData element
+		DSIGKeyInfoSPKIData * spki = sig->appendSPKIData(s_tstSexp1);
+		spki->appendSexp(s_tstSexp2);
+
 		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
 		sig->sign();
 
@@ -592,6 +609,26 @@ count(ancestor-or-self::dsig:Signature)");
 
 				if (!(strEquals(p->getKeyID(), s_tstPGPKeyID) &&
 					strEquals(p->getKeyPacket(), s_tstPGPKeyPacket))) {
+
+					cerr << "no!";
+					exit(1);
+				}
+
+				cerr << "yes\n";
+			}
+			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_SPKIDATA) {
+				
+				cerr << "Validating SPKIData read back OK ... ";
+
+				DSIGKeyInfoSPKIData * s = (DSIGKeyInfoSPKIData *)kil->item(i);
+
+				if (s->getSexpSize() != 2) {
+					cerr << "no - expected two S-expressions";
+					exit(1);
+				}
+
+				if (!(strEquals(s->getSexp(0), s_tstSexp1) &&
+					strEquals(s->getSexp(1), s_tstSexp2))) {
 
 					cerr << "no!";
 					exit(1);

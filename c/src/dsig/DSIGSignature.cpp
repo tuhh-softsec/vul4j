@@ -91,6 +91,7 @@
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
 #include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
+#include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
 
 // Xerces includes
 
@@ -716,6 +717,24 @@ DSIGKeyInfoPGPData * DSIGSignature::appendPGPData(const XMLCh * id, const XMLCh 
 	return p;
 
 }
+
+DSIGKeyInfoSPKIData * DSIGSignature::appendSPKIData(const XMLCh * sexp) {
+
+	createKeyInfoElement();
+
+	DSIGKeyInfoSPKIData * s;
+
+	XSECnew(s, DSIGKeyInfoSPKIData(this));
+
+	mp_KeyInfoNode->appendChild(s->createBlankSPKIData(sexp));
+	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	m_keyInfoList.addKeyInfo(s);
+
+	return s;
+
+}
+
 // --------------------------------------------------------------------------------
 //           Working on Existing templates
 // --------------------------------------------------------------------------------
