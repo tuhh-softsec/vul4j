@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.5 2003/12/01 19:22:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.6 2003/12/01 20:27:20 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,6 +65,8 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.Function;
+import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.generator.util.IntegerRange;
 
 /**
@@ -107,7 +109,7 @@ import org.apache.commons.functor.generator.util.IntegerRange;
  * See http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.5 $ $Date: 2003/12/01 19:22:41 $
+ * @version $Revision: 1.6 $ $Date: 2003/12/01 20:27:20 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryChop extends TestCase {
@@ -205,6 +207,154 @@ public class TestBinaryChop extends TestCase {
                     }
                 }
                 return list.isEmpty() ? -1 : (equals(list,low,seeking) ? low : -1);
+            }
+        });
+    }
+
+    /*
+     * At http://onestepback.org/index.cgi/Tech/Programming/Kata/KataTwoVariation1.rdoc,
+     * Jim Weirich discusses Kata Two from the perspective of loop invariants.
+     * 
+     * Loop invariants provide a way of deductive reasoning about loops.
+     *   
+     * Let P, Q. and R be predicates and A and B be
+     * procedures.  Note that if:
+     *   assert(P.test()); 
+     *   A.run(); 
+     *   assert(Q.test());
+     * and 
+     *   assert(Q.test()); 
+     *   B.run(); 
+     *   assert(R.test());
+     * are both valid, then:
+     *   assert(P.test()); 
+     *   A.run(); 
+     *   B.run(); 
+     *   assert(R.test());
+     * is valid as well.
+     * 
+     * Similiarly, if INV and TERM are predicates and BODY is a procedure,
+     * then if:
+     *   assert(INV.test()); 
+     *   BODY.run(); 
+     *   assert(INV.test());
+     * is valid, then so is:
+     *   assert(INV.test()); 
+     *   do { BODY.run(); } while(! TERM.test() ); 
+     *   assert(INV.test());
+     *   assert(TERM.test());
+     * 
+     * Here INV is an "loop invariant", a statement that is true for every
+     * single iteration through the loop.  TERM is a terminating condition,
+     * a statement that is true (by construction) when the loop exits.
+     * 
+     * We can use loop invariants to reason about our iterative binary 
+     * search loop.  In particular, note that:
+     * 
+     * // assert that the list is empty, or 
+     * // the result index is between 
+     * // low (inclusive) and high (exclusive),
+     * // or high is 0 (the list is empty)
+     * Predicate INV = new Predicate() {
+     *   public boolean test() {
+     *    return high == 0 || 
+     *          (low <= result && result < high);
+     *   }
+     * };
+     * 
+     * is a valid invariant in our binary search, and that:
+     *
+     * Predicate TERM = new Predicate() {
+     *   public boolean test() {
+     *    return (high - low) <= 1;
+     *   }
+     * };
+     * 
+     * is a valid terminating condition.
+     * 
+     * The BODY in our case simply moves the endpoints 
+     * closer together, without violating  
+     * our invariant:
+     * 
+     * Procedure BODY = new Procedure() {
+     *   public void run() {
+     *     int mid = (high + low) / 2;
+     *     if(greaterThan(list,mid,seeking)) {
+     *       high = mid;
+     *     } else {
+     *       low = mid;
+     *     }
+     *   }
+     * };
+     * 
+     * One could assert our invariant before and after
+     * the execution of BODY, and the terminating condition
+     * at the end of the loop, but we can tell by construction
+     * that these assertions will hold.
+     * 
+     * Using the functor framework, we can make these notions
+     * explict.  Specifically, the construction above is:
+     * 
+     *   Algorithms.dountil(BODY,TERM); 
+     * 
+     * Since we'll want to share state among the TERM and BODY,
+     * let's declare a single interface for the TERM Predicate and
+     * the BODY Procedure.  We'll be calculating a result within
+     * the loop, so let's add a Function implementation as well,
+     * as a way of retrieving that result: 
+     */
+    interface Loop extends Predicate, Procedure, Function {
+        /** The terminating condition. */
+        boolean test();
+        /** The loop body. */
+        void run();
+        /** The result of executing the loop. */
+        Object evaluate();
+    };
+
+    /*
+     * Now we can use the Algorithms.dountil method to 
+     * execute that loop: 
+     */
+    public void testIterative2() {
+        chopTest(new BaseBinaryChop() {
+            
+            public int find(final Object seeking, final List list) {
+                Loop loop = new Loop() {
+                    int high = list.size();
+                    int low = 0;
+
+                    /** Our terminating condition. */
+                    public boolean test() {
+                        return (high - low) <= 1;                    
+                    }
+                    
+                    /** Our loop body. */
+                    public void run() {
+                        {
+                            int mid = (high + low) / 2;
+                            if(greaterThan(list,mid,seeking)) {
+                                high = mid;
+                            } else {
+                                low = mid;
+                            }
+                        }
+                    }
+                    
+                    /** 
+                     * A way of returning the result 
+                     * at the end of the loop. 
+                     */
+                    public Object evaluate() {
+                        return new Integer(
+                            list.isEmpty() ? 
+                            -1 : 
+                            (BaseBinaryChop.equals(list,low,seeking) ? low : -1));                        
+                    }
+                    
+                };
+                Algorithms.untildo(loop,loop);
+                return ((Number)loop.evaluate()).intValue();
             }
         });
     }

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.15 2003/11/25 21:16:15 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.16 2003/12/01 20:27:20 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -67,6 +67,7 @@ import org.apache.commons.functor.core.NoOp;
 import org.apache.commons.functor.core.collection.FilteredIterator;
 import org.apache.commons.functor.core.collection.TransformedIterator;
 import org.apache.commons.functor.core.composite.ConditionalUnaryProcedure;
+import org.apache.commons.functor.core.composite.Not;
 import org.apache.commons.functor.core.composite.UnaryNot;
 import org.apache.commons.functor.generator.BaseGenerator;
 import org.apache.commons.functor.generator.Generator;
@@ -89,7 +90,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.15 $ $Date: 2003/11/25 21:16:15 $
+ * @version $Revision: 1.16 $ $Date: 2003/12/01 20:27:20 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -345,6 +346,22 @@ public final class Algorithms {
                 gen.run(new ConditionalUnaryProcedure(pred,proc,NoOp.instance()));
             }
         };
+    }
+
+    public static final void dountil(Procedure proc, Predicate pred) {
+        dowhile(proc,Not.not(pred));
+    }
+
+    public static final void dowhile(Procedure proc, Predicate pred) {
+        do { proc.run(); } while(pred.test());
+    }
+
+    public static final void untildo(Predicate pred, Procedure proc) {
+        whiledo(Not.not(pred),proc);
+    }
+
+    public static final void whiledo(Predicate pred, Procedure proc) {
+        while(pred.test()) { proc.run(); }
     }
 
     /**
