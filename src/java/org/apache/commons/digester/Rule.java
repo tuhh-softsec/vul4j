@@ -1,4 +1,4 @@
-/* $Id: Rule.java,v 1.15 2004/05/10 06:30:06 skitching Exp $
+/* $Id$
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -157,7 +157,7 @@ public abstract class Rule {
     /**
      * This method is called when the body of a matching XML element
      * is encountered.  If the element has no body, this method is
-     * not called at all.
+     * called with an empty string as the body text.
      *
      * @param text The text of the body of this element
      * @deprecated Use the {@link #body(String,String,String) body} method
@@ -173,8 +173,10 @@ public abstract class Rule {
 
     /**
      * This method is called when the body of a matching XML element is 
-     * encountered.  If the element has no body, this method is not called at 
-     * all. The default implementation delegates to the deprecated method 
+     * encountered.  If the element has no body, this method is 
+     * called with an empty string as the body text.
+     * <p>
+     * The default implementation delegates to the deprecated method 
      * {@link #body(String) body} without the <code>namespace</code> and
      * <code>name</code> parameters, to retain backwards compatibility.
      *
