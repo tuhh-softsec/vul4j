@@ -17,7 +17,8 @@
 		<p>
 		  Version 1.00 is the first release of the library considered basically
 		  stable.  The interface is fairly simple, but all the mandatory
-		  requirements of the XML Digital Signature standard are implemented.
+		  requirements of the XML Digital Signature standard, canonicalised
+		  XML, exclusive canonicalised XML and XPath-Filter2 are implemented.
 		</p>
 		<p>
 		  Changes from version 0.20 include :
@@ -27,10 +28,10 @@
 			PGPData and MgmtData</li>
 		  <li>Re-implementation of XSECXPathNodeList using a binary search 
 			to speed up list searches</li>
-		  <li>Support for FreeBSD 4.7 (gcc) builds, Intel Compiler 6.0 on
+		  <li>Support for Intel Compiler 6.0 on
 			Linux and Forte CC (CC 5.4) on Solaris</li>
-		  <li>Limited support (i.e. without Xalan integration for NetBSD and 
-			Cygwin</li>
+		  <li>Limited support (i.e. without Xalan integration for NetBSD, 
+			FreeBSD and Cygwin</li>
 		  <li>A number of minor bug fixes</li>
 		</ul>
 	  </section>
@@ -111,8 +112,13 @@
 	  <p>A number of items are planned for after the 1.0 major release.</p>
 	  <ul>
 		<li>XML Encryption Support</li>
-		<li>Implementation of a core set of encryption primitives to allow
-		  decoupling from OpenSSL for "light" applications</li>
+		<li>decoupled, pluggable interface for transforms and signature types. 
+		  Currently these are hard coded into the library, so it is not
+		  possible for calling applications to "plug-in" their own signature
+		  types or transforms</li>
+		<li>Implement a SAX based canonicaliser for situations where an XML
+		  document needs to be read in and directly canonicalised (i.e. where
+		  the signature is not part of the document being processed</li>
 		<li>Improved <em>KeyInfo</em> resolver interface leading to...</li>
 		<li>XKMS client support</li>
 		<li>Implementation of libgcrypt as a crypto provider</li>
@@ -120,6 +126,8 @@
 		  gpgme)</li>
 		<li>Bring the API in-line with JCP 105 (if appropriate)</li>
 		<li>Eventually (the GRAND PLAN) an XKMS server implementation</li>
+		<li>Implementation of a core set of encryption primitives to allow
+		  decoupling from OpenSSL for "light" applications</li>
 	  </ul>
 	</section>
   </body>

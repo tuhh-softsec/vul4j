@@ -14,6 +14,9 @@
 	  <ul>
 		<li>the first stable release</li>
 		<li>full implementation of all mandatory requirements of DSIG</li>
+		<li>implementation of canonicalised XML</li>
+		<li>implementation of exclusive-canonicalised XML</li>
+		<li>implementation of XPath-filter</li>
 		<li>FreeBSD, NetBSD and Cygwin builds</li>
 	  </ul>
 	  <p>

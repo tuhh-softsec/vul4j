@@ -12,8 +12,7 @@
         <p>
           Version 1.00 of the C++ library is now released.  This is the first
           stable release of the library.  Functionality is still fairly basic,
-          but all mandatory parts of the the DSIG standard are fully 
-          implemented.
+          but all mandatory parts of the the DSIG standard are implemented.
         </p>
       </section>
 	  <section>
@@ -59,9 +58,26 @@
       <ol>
         <li>A Java library, which includes a mature Digital Signature 
           implementation.  Encryption is currently under development.</li>
-        <li>A C++ library is also now available.  Currently this is in
-          beta and supports Digital Signature processing only.</li>
+        <li>A C++ library is also now available.  Functionality is currently
+		  more basic than that provided by the Java library.</li>
       </ol>
     </section>
   </body>
 </document>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

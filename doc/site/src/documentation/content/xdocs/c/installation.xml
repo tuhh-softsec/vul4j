@@ -165,7 +165,8 @@ export OPENSSL=~/prog/extlibs/openssl-0.9.7a
 	  <note>
 		As of version 0.2, the library can be built without OpenSSL on a
 		Windows platform.  (The WinCAPI provider will be used instead).
-		See below for details on how to do this.
+		See below for details on how to do this.  This is still experimental,
+		but should work.
 	  </note>
 	  <section>
 		<title>Setup Directories</title>
