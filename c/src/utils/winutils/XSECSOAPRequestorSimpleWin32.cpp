@@ -25,11 +25,11 @@
  *
  */
 
-#include "XSECSOAPRequestorSimpleWin32.hpp"
 
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
+#include <xsec/utils/XSECSOAPRequestorSimple.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 
@@ -58,122 +58,15 @@
 XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
-//           Strings for constructing SOAP envelopes
-// --------------------------------------------------------------------------------
-
-static XMLCh s_prefix[] = {
-
-	chLatin_e,
-	chLatin_n,
-	chLatin_v,
-	chNull
-};
-
-static XMLCh s_Envelope[] = {
-
-	chLatin_E,
-	chLatin_n,
-	chLatin_v,
-	chLatin_e,
-	chLatin_l,
-	chLatin_o,
-	chLatin_p,
-	chLatin_e,
-	chNull
-};
-
-static XMLCh s_Header[] = {
-
-	chLatin_H,
-	chLatin_e,
-	chLatin_a,
-	chLatin_d,
-	chLatin_e,
-	chLatin_r,
-	chNull
-};
-
-static XMLCh s_Body[] = {
-
-	chLatin_B,
-	chLatin_o,
-	chLatin_d,
-	chLatin_y,
-	chNull
-};
-
-// --------------------------------------------------------------------------------
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------
 
 
-XSECSOAPRequestorSimpleWin32::XSECSOAPRequestorSimpleWin32(const XMLCh * uri) : m_uri(uri) {
+XSECSOAPRequestorSimple::XSECSOAPRequestorSimple(const XMLCh * uri) : m_uri(uri) {
 
 	XSECBinHTTPURIInputStream::ExternalInitialize();
 
 }
-
-XSECSOAPRequestorSimpleWin32::~XSECSOAPRequestorSimpleWin32() {
-}
-
-
-// --------------------------------------------------------------------------------
-//           Wrap and serialise the request message
-// --------------------------------------------------------------------------------
-
-char * XSECSOAPRequestorSimpleWin32::wrapAndSerialise(DOMDocument * request) {
-
-	// Create a new document to wrap the request in
-
-	XMLCh tempStr[100];
-	XMLString::transcode("Core", tempStr, 99);    
-	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
-
-	safeBuffer str;
-
-	makeQName(str, s_prefix, s_Envelope);
-
-	DOMDocument *doc = impl->createDocument(
-		XKMSConstants::s_unicodeStrURISOAP11,
-				str.rawXMLChBuffer(),
-				NULL);// DOMDocumentType());  // document type object (DTD).
-
-	DOMElement *rootElem = doc->getDocumentElement();
-
-	makeQName(str, s_prefix, s_Body);
-	DOMElement *body = doc->createElementNS(
-			XKMSConstants::s_unicodeStrURISOAP11,
-			str.rawXMLChBuffer());
-
-	rootElem->appendChild(body);
-
-	// Now replicate the request into the document
-	DOMElement * reqElement = (DOMElement *) doc->importNode(request->getDocumentElement(), true);
-	body->appendChild(reqElement);
-
-	// OK - Now we have the SOAP request as a document, we serialise to a string buffer
-	// and return
-
-	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
-
-	theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
-	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
-		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
-
-	MemBufFormatTarget *formatTarget = new MemBufFormatTarget;
-	theSerializer->writeNode(formatTarget, *doc);
-
-	// Now replicate the buffer
-	char * ret = XMLString::replicate((const char *) formatTarget->getRawBuffer());
-
-	delete theSerializer;
-	delete formatTarget;
-
-	doc->release();
-
-	return ret;
-}
-
 
 
 // --------------------------------------------------------------------------------
@@ -181,7 +74,7 @@ char * XSECSOAPRequestorSimpleWin32::wrapAndSerialise(DOMDocument * request) {
 // --------------------------------------------------------------------------------
 
 
-DOMDocument * XSECSOAPRequestorSimpleWin32::doRequest(DOMDocument * request) {
+DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 
 
 	char * content = wrapAndSerialise(request);

@@ -605,10 +605,6 @@ SOURCE=..\..\..\..\src\utils\winutils\XSECSOAPRequestorSimpleWin32.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\utils\winutils\XSECSOAPRequestorSimpleWin32.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.cpp
 # End Source File
 # Begin Source File
@@ -667,6 +663,14 @@ SOURCE=..\..\..\..\src\utils\XSECSafeBufferFormatter.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\utils\XSECSOAPRequestor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\utils\XSECSOAPRequestorSimple.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\utils\XSECSOAPRequestorSimple.hpp
 # End Source File
 # Begin Source File
 

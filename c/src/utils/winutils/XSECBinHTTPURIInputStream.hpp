@@ -30,6 +30,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.6  2004/04/21 10:14:49  blautenb
+ * Clean windows build with overarching SimpleSOAPRequestor
+ *
  * Revision 1.5  2004/04/16 12:07:23  blautenb
  * Skeleton code for XKMS MessageFactory
  *
@@ -67,7 +70,7 @@
 struct hostent;
 struct sockaddr;
 
-class XSECSOAPRequestorSimpleWin32;
+class XSECSOAPRequestorSimple;
 
 class DSIG_EXPORT XSECBinHTTPURIInputStream : public XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream
 {
@@ -81,7 +84,7 @@ public :
 
 	static void Cleanup();
 
-	friend XSECSOAPRequestorSimpleWin32;
+	friend class XSECSOAPRequestorSimple;
 
 protected:
 
