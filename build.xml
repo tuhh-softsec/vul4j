@@ -1,15 +1,16 @@
 <project name="Functor" default="test" basedir=".">
 <!--
-        $Id: build.xml,v 1.1 2003/01/28 00:17:29 rwaldhoff Exp $
+  Commons-Functor Ant Build File
+  $Id: build.xml,v 1.2 2003/01/28 20:19:43 rwaldhoff Exp $
 -->
 
 <!-- ========== Initialize Properties ===================================== -->
 
 
-  <property file="build.properties"/>                <!-- Component local   -->
-  <property file="../build.properties"/>             <!-- Commons (sandbox) local     -->
-  <property file="../../jakarta-commons/build.properties"/>             <!-- Commons local     -->
-  <property file="${user.home}/build.properties"/>   <!-- User local        -->
+  <property file="build.properties"/>                       <!-- Component local   -->
+  <property file="../build.properties"/>                    <!-- Commons (sandbox) local     -->
+  <property file="../../jakarta-commons/build.properties"/> <!-- Commons local     -->
+  <property file="${user.home}/build.properties"/>          <!-- User local        -->
 
 
 <!-- ========== External Dependencies ===================================== -->
@@ -17,7 +18,6 @@
 
   <!-- The directories corresponding to your necessary dependencies -->
   <property name="junit.home"              value="/usr/local/junit3.7"/>
-  <property name="commons.home"            value=".."/>
 
 
 <!-- ========== Derived Values ============================================ -->
@@ -49,7 +49,7 @@
   <property name="conf.home"               value="src/conf"/>
 
   <!-- The base directory for distribution targets -->
-  <property name="dist.home"               value="dist"/>
+  <property name="dist.home"               value="${build.home}/dist"/>
 
   <!-- The base directory for component sources -->
   <property name="source.home"             value="src/java"/>
@@ -161,10 +161,6 @@
   </target>
 
 
-  <target name="all" depends="clean,compile"
-   description="Clean and compile all components"/>
-
-
   <target name="javadoc" depends="compile"
    description="Create component Javadoc documentation">
     <mkdir      dir="${dist.home}"/>
@@ -185,7 +181,7 @@
   </target>
 
 
-  <target name="dist" depends="compile,javadoc"
+  <target name="dist" depends="test,javadoc"
    description="Create binary distribution">
     <mkdir      dir="${dist.home}"/>
     <copy      file="LICENSE.txt"
@@ -206,8 +202,7 @@
 
 
   <target name="test" depends="compile.tests">
-    <java classname="${test.runner}" fork="yes"
-        failonerror="${test.failonerror}">
+    <java classname="${test.runner}" fork="yes" failonerror="${test.failonerror}">
       <arg value="${test.entry}"/>
       <classpath refid="test.classpath"/>
     </java>
