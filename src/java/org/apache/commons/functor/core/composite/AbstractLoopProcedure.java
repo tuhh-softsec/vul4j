@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/AbstractLoopProcedure.java,v 1.1 2003/11/11 23:36:00 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/AbstractLoopProcedure.java,v 1.2 2003/11/12 00:06:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,7 +66,7 @@ import java.io.Serializable;
  * Abstract base class for {@link WhileDoProcedure} and {@link DoWhileProcedure}
  * used to implement loop procedures.
  * <p>
- * @version $Revision: 1.1 $ $Date: 2003/11/11 23:36:00 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/12 00:06:28 $
  * @author Herve Quiroz
  * @author Rodney Waldhoff
  */
@@ -86,11 +86,22 @@ public abstract class AbstractLoopProcedure implements Procedure, Serializable {
 		}
 	}
 
+	public int hashCode() {
+		return hashCode("AbstractLoopProcedure".hashCode());
+	}
+	
+	public String toString() {
+		return getClass().getName() + "<" + getCondition() + "," + getAction() + ">";
+	}
 	protected int hashCode(int hash) {
 		hash <<= 4;
-		hash ^= action.hashCode();
+		if(null != getAction()) {
+			hash ^= getAction().hashCode();
+		}
 		hash <<= 4;
-		hash ^= condition.hashCode();
+		if(null != getCondition()) {
+			hash ^= getCondition().hashCode();
+		}
 		return hash;
 	}
 

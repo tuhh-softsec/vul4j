@@ -1,5 +1,5 @@
-/* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAll.java,v 1.7 2003/11/12 00:06:28 rwaldhoff Exp $
+/*
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAbstractLoopProcedure.java,v 1.1 2003/11/12 00:06:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,61 +57,55 @@
 package org.apache.commons.functor.core.composite;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.Procedure;
+import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.NoOp;
+
 /**
- * @version $Revision: 1.7 $ $Date: 2003/11/12 00:06:28 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/12 00:06:28 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestAbstractLoopProcedure extends BaseFunctorTest {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestAbstractLoopProcedure(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
-
-        suite.addTest(TestAnd.suite());
-        suite.addTest(TestUnaryAnd.suite());
-        suite.addTest(TestBinaryAnd.suite());
-
-        suite.addTest(TestOr.suite());
-        suite.addTest(TestUnaryOr.suite());
-        suite.addTest(TestBinaryOr.suite());
-        
-        suite.addTest(TestNot.suite());
-        suite.addTest(TestUnaryNot.suite());
-        suite.addTest(TestBinaryNot.suite());
-
-        suite.addTest(TestSequence.suite());
-        suite.addTest(TestUnarySequence.suite());
-        suite.addTest(TestBinarySequence.suite());
-
-        suite.addTest(TestCompositeUnaryFunction.suite());
-        suite.addTest(TestUnaryCompositeBinaryFunction.suite());
-        suite.addTest(TestBinaryCompositeBinaryFunction.suite());
-
-        suite.addTest(TestTransposedFunction.suite());
-        suite.addTest(TestTransposedPredicate.suite());
-        suite.addTest(TestTransposedProcedure.suite());
-
-        suite.addTest(TestConditionalPredicate.suite());
-        suite.addTest(TestConditionalUnaryPredicate.suite());
-        suite.addTest(TestConditionalBinaryPredicate.suite());
-
-        suite.addTest(TestConditionalFunction.suite());
-        suite.addTest(TestConditionalUnaryFunction.suite());
-        suite.addTest(TestConditionalBinaryFunction.suite());
-
-        suite.addTest(TestConditionalProcedure.suite());
-        suite.addTest(TestConditionalUnaryProcedure.suite());
-        suite.addTest(TestConditionalBinaryProcedure.suite());
-        
-		suite.addTest(TestAbstractLoopProcedure.suite());
-		suite.addTest(TestWhileDoProcedure.suite());
-		suite.addTest(TestDoWhileProcedure.suite());
-        
-        return suite;
+        return new TestSuite(TestAbstractLoopProcedure.class);
     }
+
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
+
+    protected Object makeFunctor() {
+		return new MockLoopProcedure(new ConstantPredicate(false), new NoOp());
+    }
+
+	// tests
+	// ------------------------------------------------------------------------
+	public void testEqualsAndHashCodeWithNullArgs() {
+		Procedure p = new MockLoopProcedure(null,null);
+		assertNotNull(p.toString());
+		assertFalse(p.equals(null));
+		assertTrue(p.equals(p));
+		assertEquals(p.hashCode(),p.hashCode());
+	}
+
+}
+
+class MockLoopProcedure extends AbstractLoopProcedure {
+	public MockLoopProcedure(Predicate condition, Procedure action) {
+		super(condition,action);
+	}
+		
+	public void run() {
+	}
 }
