@@ -63,8 +63,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 
-import org.codehaus.plexus.PlexusTestCase;
-
 /**
  * This is used to test FileUtils for correctness.
  *
@@ -640,8 +638,11 @@ public final class FileUtilsTest
     public void testCopyDirectoryStructureWithAEmptyDirectoryStruture()
         throws Exception
     {
-        // Make a structure to copy
-        File from = new File( PlexusTestCase.getBasedir(), "src/test-input/directory-to-copy" );
+        File from = new File( getTestDirectory(), "from" );
+
+        FileUtils.deleteDirectory( from );
+
+        assertTrue( from.mkdirs() );
 
         File to = new File( getTestDirectory(), "to" );
 
@@ -654,7 +655,39 @@ public final class FileUtilsTest
         throws Exception
     {
         // Make a structure to copy
-        File from = new File( PlexusTestCase.getBasedir(), "src/test-input/directory-to-copy" );
+        File from = new File( getTestDirectory(), "from" );
+
+        FileUtils.deleteDirectory( from );
+
+        File fRoot = new File( from, "root.txt" );
+
+        File d1 = new File( from, "1" );
+
+        File d1_1 = new File( d1, "1_1" );
+
+        File d2 = new File( from, "2" );
+
+        File f2 = new File( d2, "2.txt" );
+
+        File d2_1 = new File( d2, "2_1" );
+
+        File f2_1 = new File( d2_1, "2_1.txt" );
+
+        assertTrue( from.mkdir() );
+
+        assertTrue( d1.mkdir() );
+
+        assertTrue( d1_1.mkdir() );
+
+        assertTrue( d2.mkdir() );
+
+        assertTrue( d2_1.mkdir() );
+
+        createFile( fRoot, 100 );
+
+        createFile( f2, 100 );
+
+        createFile( f2_1, 100 );
 
         File to = new File( getTestDirectory(), "to" );
 
@@ -662,9 +695,7 @@ public final class FileUtilsTest
 
         FileUtils.copyDirectoryStructure( from, to );
 
-        assertIsFile( new File( to, "root.txt" ) );
-
-        assertEqualContent( "root.txt".getBytes(), new File( to, "root.txt" ) );
+        checkFile( fRoot, new File( to, "root.txt" ) );
 
         assertIsDirectory( new File( to, "1" ) );
 
@@ -674,12 +705,8 @@ public final class FileUtilsTest
 
         assertIsDirectory( new File( to, "2/2_1" ) );
 
-        assertIsFile( new File( to, "2/2.txt" ) );
+        checkFile( f2, new File( to, "2/2.txt" ) );
 
-        assertEqualContent( "2.txt".getBytes(), new File( to, "2/2.txt" ) );
-
-        assertIsFile( new File( to, "2/2_1/2_1.txt" ) );
-
-        assertEqualContent( "2_1.txt".getBytes(), new File( to, "2/2_1/2_1.txt" ) );
+        checkFile( f2_1, new File( to, "2/2_1/2_1.txt" ) );
     }
 }
