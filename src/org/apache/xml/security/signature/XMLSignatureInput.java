@@ -180,6 +180,8 @@ public class XMLSignatureInput {
            throws TransformerException {
 
       this._cxpathAPI = usedXPathAPI;
+      Document doc = XMLUtils.getOwnerDocument(rootNode);
+      XMLUtils.circumventBug2650(doc);
 
       NodeList result = this._cxpathAPI.selectNodeList(rootNode,
                            Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);

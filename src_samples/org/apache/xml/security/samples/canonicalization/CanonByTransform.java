@@ -108,6 +108,7 @@ public class CanonByTransform {
     * @throws Exception
     */
    public static void main(String args[]) throws Exception {
+      org.apache.xml.security.Init.init();
 
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
@@ -122,13 +123,15 @@ public class CanonByTransform {
             .IgnoreAllErrorHandler());
 
       byte inputBytes[] = input.getBytes();
-      Document doc =
+      Document inputDoc =
          documentBuilder.parse(new ByteArrayInputStream(inputBytes));
 
       // after playing around, we have our document now
-      XMLSignatureInput signatureInput = new XMLSignatureInput((Node) doc);
-      Element referenceElem = doc.createElement("Reference");
-      Transforms c14nTrans = new Transforms(referenceElem, "memory://");
+      XMLSignatureInput signatureInput = new XMLSignatureInput((Node) inputDoc);
+      Document transformDoc = documentBuilder.newDocument();
+
+      Transforms c14nTrans = new Transforms(transformDoc);
+      transformDoc.appendChild(c14nTrans.getElement());
       c14nTrans.addTransform("http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments");
       XMLSignatureInput c14nResult = c14nTrans.performTransforms(signatureInput);
       byte outputBytes[] = c14nResult.getBytes();

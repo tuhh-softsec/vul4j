@@ -105,6 +105,8 @@ public class CanonDirect {
     * @throws Exception
     */
    public static void main(String args[]) throws Exception {
+      org.apache.xml.security.Init.init();
+
 
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
