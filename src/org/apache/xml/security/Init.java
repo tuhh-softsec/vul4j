@@ -151,7 +151,14 @@ public class Init {
 
             long XX_configure_log4j_start = System.currentTimeMillis();
 
-            {
+            /* Cliff Collins <collinsc@sybase.com> suggested the following change
+             * in order to let existing log4j systems work (2002-08-19).
+             */
+            org.apache.log4j.Logger root =
+               org.apache.log4j.Logger.getRootLogger();
+            Enumeration enum = root.getAllAppenders();
+
+            if (enum instanceof org.apache.log4j.helpers.NullEnumeration) {
 
                /* configure logging */
                Element log4jElem = (Element) XPathAPI.selectSingleNode(doc,
