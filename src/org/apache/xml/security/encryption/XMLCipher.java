@@ -1450,6 +1450,8 @@ public class XMLCipher {
 	 * The newEncryptedData and newEncryptedKey methods create fairly complete
 	 * elements that are immediately useable.  All the other create* methods
 	 * return bare elements that still need to be built upon.
+	 *<p>
+	 * An EncryptionMethod will still need to be added however
 	 *
 	 * @param type Either REFERENCE_TYPE or VALUE_TYPE - defines what kind of
 	 * CipherData this EncryptedData will contain.
@@ -1505,6 +1507,8 @@ public class XMLCipher {
 	 * The newEncryptedData and newEncryptedKey methods create fairly complete
 	 * elements that are immediately useable.  All the other create* methods
 	 * return bare elements that still need to be built upon.
+	 *<p>
+	 * An EncryptionMethod will still need to be added however
 	 *
 	 * @param type Either REFERENCE_TYPE or VALUE_TYPE - defines what kind of
 	 * CipherData this EncryptedData will contain.
