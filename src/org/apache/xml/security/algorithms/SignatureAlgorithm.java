@@ -119,7 +119,7 @@ public class SignatureAlgorithm extends Algorithm {
     * @throws XMLSignatureException
     */
    public SignatureAlgorithm(Document doc, String algorithmURI)
-           throws XMLSignatureException {
+           throws XMLSecurityException {
 
       super(doc, Constants._TAG_SIGNATUREMETHOD, algorithmURI);
 
@@ -152,7 +152,7 @@ public class SignatureAlgorithm extends Algorithm {
     */
    public SignatureAlgorithm(
            Document doc, String algorithmURI, int HMACOutputLength)
-              throws XMLSignatureException {
+              throws XMLSecurityException {
 
       this(doc, algorithmURI);
 
@@ -366,7 +366,11 @@ public class SignatureAlgorithm extends Algorithm {
     * @throws XMLSignatureException
     */
    public void initVerify(Key secretkey) throws XMLSignatureException {
-      this._signatureAlgorithm.engineInitVerify(secretkey);
+      if (secretkey instanceof java.security.PublicKey) {
+         this.initVerify((PublicKey) secretkey);
+      } else {
+         this._signatureAlgorithm.engineInitVerify(secretkey);
+      }
    }
 
    /**

@@ -103,7 +103,7 @@ public class SignedInfo extends Manifest {
     *
     * @param doc the {@link Document} in which <code>XMLsignature</code> will be placed
     */
-   public SignedInfo(Document doc) {
+   public SignedInfo(Document doc) throws XMLSecurityException {
       this(doc, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS,
            XMLSignature.ALGO_ID_SIGNATURE_DSA);
    }
@@ -116,7 +116,7 @@ public class SignedInfo extends Manifest {
     * @param SignatureMethodURI URI representation of the Digest and Signature algorithm
     */
    public SignedInfo(Document doc, String CanonicalizationMethodURI,
-                     String SignatureMethodURI) {
+                     String SignatureMethodURI) throws XMLSecurityException {
       this(doc, CanonicalizationMethodURI, SignatureMethodURI, 0);
    }
 
@@ -129,7 +129,7 @@ public class SignedInfo extends Manifest {
     * @param HMACOutputLength
     */
    public SignedInfo(Document doc, String CanonicalizationMethodURI,
-                     String SignatureMethodURI, int HMACOutputLength) {
+                     String SignatureMethodURI, int HMACOutputLength) throws XMLSecurityException {
 
       super(doc, Constants._TAG_SIGNEDINFO);
 

@@ -132,7 +132,7 @@ public class XMLSignature extends ElementProxy {
     */
    public XMLSignature(
            Document doc, String BaseURI, String signatureAlgorithmURI)
-              throws XMLSignatureException {
+              throws XMLSecurityException {
 
       super(doc, Constants._TAG_SIGNATURE);
 
@@ -620,7 +620,7 @@ public class XMLSignature extends ElementProxy {
    public boolean checkSignatureValue(X509Certificate cert) throws Exception {
 
       if (cert != null) {
-         return this.checkSignatureValue((Key) cert.getPublicKey());
+         return this.checkSignatureValue(cert.getPublicKey());
       } else {
          throw new Exception("Didn't get a certificate");
       }

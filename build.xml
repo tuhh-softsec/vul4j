@@ -266,4 +266,53 @@ org.apache.xml.security.utils.*
     </java>
     <delete dir="${doc.style}"/>
   </target>
+  
+  <target name="mega-sample" depends="compile.samples">
+    <echo message="Now I'll try to verify merlins example fifteen-HMAC"/>
+    <java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesFifteen"
+          fork="yes">
+        <classpath refid="classpath.library" />
+    </java>
+
+    <echo message=""/>
+    <echo message=""/>
+    <echo message=""/>
+    <echo message=""/>
+    <echo message=""/>
+    <echo message="Now I'll try to verify merlins example sixteen"/>
+    <java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesSixteen"
+          fork="yes">
+        <classpath refid="classpath.library" />
+    </java>
+
+    <echo message=""/>
+    <echo message=""/>
+    <echo message=""/>
+    <echo message=""/>
+    <echo message=""/>
+    <echo message="Now I'll create a signature in signature.xml and verify it"/>
+    <java classname="org.apache.xml.security.samples.signature.CreateSignature"
+          fork="yes">
+        <classpath refid="classpath.library" />
+    </java>
+    <java classname="org.apache.xml.security.samples.signature.VerifySignature"
+          fork="yes">
+        <classpath refid="classpath.library" />
+    </java>
+
+    <echo message=""/>
+    <echo message=""/>
+    <echo message=""/>
+    <echo message=""/>
+    <echo message=""/>
+    <echo message="Now I'll create a signature like merlin-16 but without XSLT"/>
+    <java classname="org.apache.xml.security.samples.signature.CreateMerlinsExampleSixteen"
+          fork="yes">
+        <classpath refid="classpath.library" />
+    </java>
+
+    <echo message=""/>
+    <echo message=""/>
+    <echo message="Please look into log.txt, merlinsSixteenRecreated.xml and signature.xml"/>
+  </target>
 </project>

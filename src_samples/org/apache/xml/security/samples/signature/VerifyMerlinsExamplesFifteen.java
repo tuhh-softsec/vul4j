@@ -140,16 +140,32 @@ public class VerifyMerlinsExamplesFifteen {
          "data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/";
       String filenames[] = { merlinsDir + "signature-enveloping-hmac-sha1.xml",
                              merlinsDir + "signature-enveloping-hmac-sha1-40.xml",
+                             merlinsDir + "signature-enveloped-dsa.xml",
+                             merlinsDir + "signature-enveloping-b64-dsa.xml",
+                             merlinsDir + "signature-enveloping-dsa.xml",
+                             merlinsDir + "signature-enveloping-rsa.xml",
+                             merlinsDir + "signature-external-b64-dsa.xml",
+                             merlinsDir + "signature-external-dsa.xml"
                              };
       //J+
       int start = 0;
       int end = filenames.length;
 
-      for (int i = start; i < end; i++) {
+      for (int i = start; i < 2; i++) {
          String signatureFileName = filenames[i];
 
          try {
-            verify(dbf, signatureFileName);
+            verifyHMAC(dbf, signatureFileName);
+         } catch (Exception ex) {
+            ex.printStackTrace();
+         }
+      }
+
+      for (int i = 2; i < filenames.length; i++) {
+         String signatureFileName = filenames[i];
+
+         try {
+            VerifyMerlinsExamplesSixteen.verify(dbf, signatureFileName);
          } catch (Exception ex) {
             ex.printStackTrace();
          }
@@ -163,7 +179,7 @@ public class VerifyMerlinsExamplesFifteen {
     * @param filename
     * @throws Exception
     */
-   public static void verify(DocumentBuilderFactory dbf, String filename)
+   public static void verifyHMAC(DocumentBuilderFactory dbf, String filename)
            throws Exception {
 
       File f = new File(filename);
