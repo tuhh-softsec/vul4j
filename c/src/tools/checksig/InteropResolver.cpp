@@ -261,12 +261,22 @@ X509_NAME * X509_NAME_create_from_txt(const char * n) {
 
 		// Now the value
 		j = 0;
-		while (n[idx] != 0 && (n[idx] != ',' || n[idx-1] == '\\') && 
-			n[idx] != '\n' && n[idx] != '\r') {
-			if (n[idx] != '\\')
-				value[j++] = n[idx++];
-			else
-				idx++;
+		while (n[idx] != 0 && n[idx] != '\n' && n[idx] != '\r') {
+
+			if (n[idx] == ',') {
+
+				// find out if this is a marker for end of RDN
+				int jdx = idx + 1;
+				while (n[jdx] != '\0' && n[jdx] != '=' && n[jdx] != ',')
+					++jdx;
+
+				if (n[jdx] != ',')
+					break;
+
+			}
+
+			value[j++] = n[idx++];
+
 		}
 
 		if (j == 0) {

@@ -80,7 +80,11 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/util/XMLString.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/framework/XMLFormatter.hpp>
+#include <xercesc/framework/StdOutFormatTarget.hpp>
+#include <xercesc/framework/MemBufFormatTarget.hpp>
+#include <xercesc/framework/MemBufInputSource.hpp>
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/XMLException.hpp>
@@ -162,485 +166,65 @@ unsigned char createdDocRefs [9][20] = {
 
 };
 
-
 // --------------------------------------------------------------------------------
-//           Much code taken from the DOMPrint Xerces example
-// --------------------------------------------------------------------------------
-
-static XMLFormatter*            gFormatter             = 0;
-static XMLCh*                   gEncodingName          = 0;
-static XMLFormatter::UnRepFlags gUnRepFlags            = XMLFormatter::UnRep_CharRef;
-
-
-
-
-static const XMLCh  gEndElement[] = { chOpenAngle, chForwardSlash, chNull };
-static const XMLCh  gEndPI[] = { chQuestion, chCloseAngle, chNull};
-static const XMLCh  gStartPI[] = { chOpenAngle, chQuestion, chNull };
-static const XMLCh  gXMLDecl1[] =
-{
-        chOpenAngle, chQuestion, chLatin_x, chLatin_m, chLatin_l
-    ,   chSpace, chLatin_v, chLatin_e, chLatin_r, chLatin_s, chLatin_i
-    ,   chLatin_o, chLatin_n, chEqual, chDoubleQuote, chNull
-};
-static const XMLCh  gXMLDecl2[] =
-{
-        chDoubleQuote, chSpace, chLatin_e, chLatin_n, chLatin_c
-    ,   chLatin_o, chLatin_d, chLatin_i, chLatin_n, chLatin_g, chEqual
-    ,   chDoubleQuote, chNull
-};
-static const XMLCh  gXMLDecl3[] =
-{
-        chDoubleQuote, chSpace, chLatin_s, chLatin_t, chLatin_a
-    ,   chLatin_n, chLatin_d, chLatin_a, chLatin_l, chLatin_o
-    ,   chLatin_n, chLatin_e, chEqual, chDoubleQuote, chNull
-};
-static const XMLCh  gXMLDecl4[] =
-{
-        chDoubleQuote, chQuestion, chCloseAngle
-    ,   chLF, chNull
-};
-
-static const XMLCh  gStartCDATA[] =
-{
-        chOpenAngle, chBang, chOpenSquare, chLatin_C, chLatin_D,
-        chLatin_A, chLatin_T, chLatin_A, chOpenSquare, chNull
-};
-
-static const XMLCh  gEndCDATA[] =
-{
-    chCloseSquare, chCloseSquare, chCloseAngle, chNull
-};
-static const XMLCh  gStartComment[] =
-{
-    chOpenAngle, chBang, chDash, chDash, chNull
-};
-
-static const XMLCh  gEndComment[] =
-{
-    chDash, chDash, chCloseAngle, chNull
-};
-
-static const XMLCh  gStartDoctype[] =
-{
-    chOpenAngle, chBang, chLatin_D, chLatin_O, chLatin_C, chLatin_T,
-    chLatin_Y, chLatin_P, chLatin_E, chSpace, chNull
-};
-static const XMLCh  gPublic[] =
-{
-    chLatin_P, chLatin_U, chLatin_B, chLatin_L, chLatin_I,
-    chLatin_C, chSpace, chDoubleQuote, chNull
-};
-static const XMLCh  gSystem[] =
-{
-    chLatin_S, chLatin_Y, chLatin_S, chLatin_T, chLatin_E,
-    chLatin_M, chSpace, chDoubleQuote, chNull
-};
-static const XMLCh  gStartEntity[] =
-{
-    chOpenAngle, chBang, chLatin_E, chLatin_N, chLatin_T, chLatin_I,
-    chLatin_T, chLatin_Y, chSpace, chNull
-};
-static const XMLCh  gNotation[] =
-{
-    chLatin_N, chLatin_D, chLatin_A, chLatin_T, chLatin_A,
-    chSpace, chDoubleQuote, chNull
-};
-
-
-
-// ---------------------------------------------------------------------------
-//  Local classes
-// ---------------------------------------------------------------------------
-
-class DOMPrintFormatTarget : public XMLFormatTarget
-{
-public:
-    DOMPrintFormatTarget()  {};
-    ~DOMPrintFormatTarget() {};
-
-    // -----------------------------------------------------------------------
-    //  Implementations of the format target interface
-    // -----------------------------------------------------------------------
-
-    void writeChars(const   XMLByte* const  toWrite,
-                    const   unsigned int    count,
-                            XMLFormatter * const formatter)
-    {
-        // Surprisingly, Solaris was the only platform on which
-        // required the char* cast to print out the string correctly.
-        // Without the cast, it was printing the pointer value in hex.
-        // Quite annoying, considering every other platform printed
-        // the string with the explicit cast to char* below.
-        cout.write((char *) toWrite, (int) count);
-    };
-
-private:
-    // -----------------------------------------------------------------------
-    //  Unimplemented methods.
-    // -----------------------------------------------------------------------
-    DOMPrintFormatTarget(const DOMPrintFormatTarget& other);
-    void operator=(const DOMPrintFormatTarget& rhs);
-};
-
-
-// ---------------------------------------------------------------------------
-//  ostream << DOMNode
-//
-//  Stream out a DOM node, and, recursively, all of its children. This
-//  function is the heart of writing a DOM tree out as XML source. Give it
-//  a document node and it will do the whole thing.
-// ---------------------------------------------------------------------------
-ostream& operator<<(ostream& target, DOMNode* toWrite)
-{
-    // Get the name and value out for convenience
-    const XMLCh*   nodeName = toWrite->getNodeName();
-    const XMLCh*   nodeValue = toWrite->getNodeValue();
-    unsigned long lent = XMLString::stringLen(nodeValue);
-
-    switch (toWrite->getNodeType())
-    {
-        case DOMNode::TEXT_NODE:
-        {
-            gFormatter->formatBuf(nodeValue,
-                                  lent, XMLFormatter::CharEscapes);
-            break;
-        }
-
-
-        case DOMNode::PROCESSING_INSTRUCTION_NODE :
-        {
-            *gFormatter << XMLFormatter::NoEscapes << gStartPI  << nodeName;
-            if (lent > 0)
-            {
-                *gFormatter << chSpace << nodeValue;
-            }
-            *gFormatter << XMLFormatter::NoEscapes << gEndPI;
-            break;
-        }
-
-
-        case DOMNode::DOCUMENT_NODE :
-        {
-
-            DOMNode *child = toWrite->getFirstChild();
-            while( child != 0)
-            {
-                target << child;
-                // add linefeed in requested output encoding
-                *gFormatter << chLF;
-                target << flush;
-                child = child->getNextSibling();
-            }
-            break;
-        }
-
-
-        case DOMNode::ELEMENT_NODE :
-        {
-            // The name has to be representable without any escapes
-            *gFormatter  << XMLFormatter::NoEscapes
-                         << chOpenAngle << nodeName;
-
-            // Output the element start tag.
-
-            // Output any attributes on this element
-            DOMNamedNodeMap *attributes = toWrite->getAttributes();
-            int attrCount = attributes->getLength();
-            for (int i = 0; i < attrCount; i++)
-            {
-                DOMNode  *attribute = attributes->item(i);
-
-                //
-                //  Again the name has to be completely representable. But the
-                //  attribute can have refs and requires the attribute style
-                //  escaping.
-                //
-                *gFormatter  << XMLFormatter::NoEscapes
-                             << chSpace << attribute->getNodeName()
-                             << chEqual << chDoubleQuote
-                             << XMLFormatter::AttrEscapes
-                             << attribute->getNodeValue()
-                             << XMLFormatter::NoEscapes
-                             << chDoubleQuote;
-            }
-
-            //
-            //  Test for the presence of children, which includes both
-            //  text content and nested elements.
-            //
-            DOMNode *child = toWrite->getFirstChild();
-            if (child != 0)
-            {
-                // There are children. Close start-tag, and output children.
-                // No escapes are legal here
-                *gFormatter << XMLFormatter::NoEscapes << chCloseAngle;
-
-                while( child != 0)
-                {
-                    target << child;
-                    child = child->getNextSibling();
-                }
-
-                //
-                // Done with children.  Output the end tag.
-                //
-                *gFormatter << XMLFormatter::NoEscapes << gEndElement
-                            << nodeName << chCloseAngle;
-            }
-            else
-            {
-                //
-                //  There were no children. Output the short form close of
-                //  the element start tag, making it an empty-element tag.
-                //
-                *gFormatter << XMLFormatter::NoEscapes << chForwardSlash << chCloseAngle;
-            }
-            break;
-        }
-
-
-        case DOMNode::ENTITY_REFERENCE_NODE:
-            {
-                //DOMNode *child;
-#if 0
-                for (child = toWrite.getFirstChild();
-                child != 0;
-                child = child.getNextSibling())
-                {
-                    target << child;
-                }
-#else
-                //
-                // Instead of printing the refernece tree
-                // we'd output the actual text as it appeared in the xml file.
-                // This would be the case when -e option was chosen
-                //
-                    *gFormatter << XMLFormatter::NoEscapes << chAmpersand
-                        << nodeName << chSemiColon;
-#endif
-                break;
-            }
-
-
-        case DOMNode::CDATA_SECTION_NODE:
-            {
-            *gFormatter << XMLFormatter::NoEscapes << gStartCDATA
-                        << nodeValue << gEndCDATA;
-            break;
-        }
-
-
-        case DOMNode::COMMENT_NODE:
-        {
-            *gFormatter << XMLFormatter::NoEscapes << gStartComment
-                        << nodeValue << gEndComment;
-            break;
-        }
-
-
-        case DOMNode::DOCUMENT_TYPE_NODE:
-        {
-            DOMDocumentType *doctype = (DOMDocumentType *)toWrite;;
-
-            *gFormatter << XMLFormatter::NoEscapes  << gStartDoctype
-                        << nodeName;
-
-            const XMLCh* id = doctype->getPublicId();
-            if (id != 0)
-            {
-                *gFormatter << XMLFormatter::NoEscapes << chSpace << gPublic
-                    << id << chDoubleQuote;
-                id = doctype->getSystemId();
-                if (id != 0)
-                {
-                    *gFormatter << XMLFormatter::NoEscapes << chSpace
-                       << chDoubleQuote << id << chDoubleQuote;
-                }
-            }
-            else
-            {
-                id = doctype->getSystemId();
-                if (id != 0)
-                {
-                    *gFormatter << XMLFormatter::NoEscapes << chSpace << gSystem
-                        << id << chDoubleQuote;
-                }
-            }
-
-            id = doctype->getInternalSubset();
-            if (id !=0)
-                *gFormatter << XMLFormatter::NoEscapes << chOpenSquare
-                            << id << chCloseSquare;
-
-            *gFormatter << XMLFormatter::NoEscapes << chCloseAngle;
-            break;
-        }
-
-
-        case DOMNode::ENTITY_NODE:
-        {
-            *gFormatter << XMLFormatter::NoEscapes << gStartEntity
-                        << nodeName;
-
-            const XMLCh * id = ((DOMEntity *)toWrite)->getPublicId();
-            if (id != 0)
-                *gFormatter << XMLFormatter::NoEscapes << gPublic
-                            << id << chDoubleQuote;
-
-            id = ((DOMEntity *)toWrite)->getSystemId();
-            if (id != 0)
-                *gFormatter << XMLFormatter::NoEscapes << gSystem
-                            << id << chDoubleQuote;
-
-            id = ((DOMEntity *)toWrite)->getNotationName();
-            if (id != 0)
-                *gFormatter << XMLFormatter::NoEscapes << gNotation
-                            << id << chDoubleQuote;
-
-            *gFormatter << XMLFormatter::NoEscapes << chCloseAngle << chLF;
-
-            break;
-        }
-
-/*
-        case DOMNode::NOTATION_NODE:
-        {
-            const XMLCh *  str;
-
-            *gFormatter << gXMLDecl1 << ((DOMXMLDecl *)toWrite)->getVersion();
-
-            *gFormatter << gXMLDecl2 << gEncodingName;
-
-            str = ((DOMXMLDecl *)toWrite)->getStandalone();
-            if (str != 0)
-                *gFormatter << gXMLDecl3 << str;
-
-            *gFormatter << gXMLDecl4;
-
-            break;
-        }
-
-*/
-        default:
-            cerr << "Unrecognized node type = "
-                 << (long)toWrite->getNodeType() << endl;
-    }
-    return target;
-}
-
-
-
-// ---------------------------------------------------------------------------
-//  ostream << DOMString
-//
-//  Stream out a DOM string. Doing this requires that we first transcode
-//  to char * form in the default code page for the system
-// ---------------------------------------------------------------------------
-/*ostream& operator<< (ostream& target, const DOMString& s)
-{
-    char *p = s.transcode();
-    target << p;
-    delete [] p;
-    return target;
-}
-
-
-XMLFormatter& operator<< (XMLFormatter& strm, const DOMString& s)
-{
-    unsigned int lent = s.length();
-
-	if (lent <= 0)
-		return strm;
-
-    XMLCh*  buf = new XMLCh[lent + 1];
-    XMLString::copyNString(buf, s.rawBuffer(), lent);
-    buf[lent] = 0;
-    strm << buf;
-    delete [] buf;
-    return strm;
-}*/
-
-// --------------------------------------------------------------------------------
-//           End of outputter
+//           Some test data
 // --------------------------------------------------------------------------------
 
-class DOMMemFormatTarget : public XMLFormatTarget
-{
-public:
-    
-	unsigned char * buffer;		// Buffer to write to
+// "CN=<Test,>,O=XSEC  "
 
-	DOMMemFormatTarget()  {};
-    ~DOMMemFormatTarget() {};
+XMLCh s_tstDName[] = {
 
-	void setBuffer (unsigned char * toSet) {buffer = toSet;};
+	chLatin_C,
+	chLatin_N,
+	chEqual,
+	chOpenAngle,
+	chLatin_T,
+	chLatin_e,
+	chLatin_s,
+	chLatin_t,
+	chComma,
+	chCloseAngle,
+	chComma,
+	chLatin_O,
+	chEqual,
+	chLatin_X,
+	chLatin_S,
+	chLatin_E,
+	chLatin_C,
+	chSpace,
+	chSpace
 
-
-    // -----------------------------------------------------------------------
-    //  Implementations of the format target interface
-    // -----------------------------------------------------------------------
-
-    void writeChars(const   XMLByte* const  toWrite,
-                    const   unsigned int    count,
-                            XMLFormatter * const formatter)
-    {
-        // Surprisingly, Solaris was the only platform on which
-        // required the char* cast to print out the string correctly.
-        // Without the cast, it was printing the pointer value in hex.
-        // Quite annoying, considering every other platform printed
-        // the string with the explicit cast to char* below.
-        memcpy(buffer, (char *) toWrite, (int) count);
-		buffer[count] = '\0';
-    };
-
-private:
-    // -----------------------------------------------------------------------
-    //  Unimplemented methods.
-    // -----------------------------------------------------------------------
-    DOMMemFormatTarget(const DOMMemFormatTarget& other);
-    void operator=(const DOMMemFormatTarget& rhs);
-
-	
 };
 
-// ---------------------------------------------------------------------------
-//  ostream << DOMString
-//
-//  Stream out a DOM string. Doing this requires that we first transcode
-//  to char * form in the default code page for the system
-// ---------------------------------------------------------------------------
+XSECCryptoKeyHMAC * createHMACKey(const unsigned char * str) {
 
+	// Create the HMAC key
+	static first = true;
 
-DOMPrintFormatTarget *DOMtarget;
-DOMMemFormatTarget *MEMtarget;
-XMLFormatter *formatter, *MEMformatter;
-unsigned char *charBuffer;
-
-
-
-int attributeNodeCount(DOMElement *d) {
-
-	int ret;
-
-	ret = d->getAttributes()->getLength();
-
-	DOMNode *c;
-
-	c = d->getFirstChild();
-
-	while (c != NULL) {
-
-		if (c->getNodeType() == DOMNode::ELEMENT_NODE)
-			ret += attributeNodeCount((DOMElement *) c);
-
-		c = c->getNextSibling();
-
+#if defined (HAVE_OPENSSL)
+	OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
+	if (first) {
+		cerr << "Using OpenSSL as the cryptography provider" << endl;
+		first = false;
 	}
+#else
+#	if defined (HAVE_WINCAPI)
+	WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC();
+	if (first) {
+		cerr << "Using Windows Crypto API as the cryptography provider" << endl;
+		first = false;
+	}
+#	endif
+#endif
+	hmacKey->setKey((unsigned char *) str, strlen((char *)str));
 
-	return ret;
+	return hmacKey;
 
 }
+
+// --------------------------------------------------------------------------------
+//           Utility function for outputting hex data
+// --------------------------------------------------------------------------------
 
 void outputHex(unsigned char * buf, int len) {
 
@@ -652,6 +236,9 @@ void outputHex(unsigned char * buf, int len) {
 
 }
 
+// --------------------------------------------------------------------------------
+//           Main
+// --------------------------------------------------------------------------------
 
 int main(int argc, char **argv) {
 
@@ -675,6 +262,10 @@ int main(int argc, char **argv) {
 		     << e.getMessage() << endl;
 
 	}
+
+	/*
+	 * First we create a document from scratch
+	 */
 
 	cerr << "Creating a known doc and signing (HMAC-SHA1)" << endl;
 	
@@ -717,6 +308,10 @@ int main(int argc, char **argv) {
 
 	try {
 		
+		/*
+		 * Now we have a document, create a signature for it.
+		 */
+		
 		sig = prov.newSignature();
 		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
 
@@ -725,6 +320,11 @@ int main(int argc, char **argv) {
 		rootElem->insertBefore(doc->createComment(MAKE_UNICODE_STRING(" a comment ")), prodElem);
 		rootElem->appendChild(sigNode);
 		rootElem->insertBefore(doc->createTextNode(DSIGConstants::s_unicodeStrNL), prodElem);
+
+		/*
+		 * Add some test references
+		 */
+
 		ref[0] = sig->createReference(MAKE_UNICODE_STRING(""));
 		ref[0]->appendEnvelopedSignatureTransform();
 
@@ -767,6 +367,10 @@ int main(int argc, char **argv) {
 		refCount = 8;
 
 #else
+		/*
+		 * Create some XPath/XPathFilter references
+		 */
+
 
 		ref[8] = sig->createReference(MAKE_UNICODE_STRING(""));
 		/*		ref[5]->appendXPathTransform("ancestor-or-self::dsig:Signature", 
@@ -781,27 +385,29 @@ count(ancestor-or-self::dsig:Signature)");
 
 #endif
 	
+		/*
+		 * Sign the document, using an HMAC algorithm and the key "secret"
+		 */
+
+
 		sig->appendKeyName(MAKE_UNICODE_STRING("The secret key is \"secret\""));
 
-#if defined (HAVE_OPENSSL)
-		OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
-		cerr << "Using OpenSSL as the cryptography provider" << endl;
-#else
-#	if defined (HAVE_WINCAPI)
-		WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC();
-		cerr << "Using Windows Crypto API as the cryptography provider" << endl;
-#	endif
-#endif
-		hmacKey->setKey((unsigned char *) "secret", strlen("secret"));
-		sig->setSigningKey(hmacKey);
+		// Append a test DNames
+
+		DSIGKeyInfoX509 * x509 = sig->appendX509Data();
+		x509->setX509SubjectName(s_tstDName);
+
+		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
 		sig->sign();
 
 		cerr << "Doc signed OK - Checking values against Known Good" << endl;
 
-		//
-
 		unsigned char buf[128];
 		int len;
+
+		/*
+		 * Validate the reference hash values from known good
+		 */
 
 		for (int i = 0; i < refCount; ++i) {
 
@@ -828,6 +434,10 @@ count(ancestor-or-self::dsig:Signature)");
 
 		}
 
+		/*
+		 * Verify the signature check works
+		 */
+
 		cerr << "Running \"verifySignatureOnly()\" on calculated signature ... ";
 		if (sig->verifySignatureOnly()) {
 			cerr << "OK" << endl;
@@ -840,16 +450,12 @@ count(ancestor-or-self::dsig:Signature)");
 			exit(1);
 		}
 
+		/*
+		 * Change the document and ensure the signature fails.
+		 */
+
 		cerr << "Setting incorrect key in Signature object" << endl;
-#if defined (HAVE_OPENSSL)
-		hmacKey = new OpenSSLCryptoKeyHMAC();
-#else
-#	if defined (HAVE_WINCAPI)
-		hmacKey = new WinCAPICryptoKeyHMAC();
-#	endif
-#endif
-		hmacKey->setKey((unsigned char *) "badsecret", strlen("badsecret"));
-		sig->setSigningKey(hmacKey);
+		sig->setSigningKey(createHMACKey((unsigned char *) "badsecret"));
 
 		cerr << "Running \"verifySignatureOnly()\" on calculated signature ... ";
 		if (!sig->verifySignatureOnly()) {
@@ -862,6 +468,100 @@ count(ancestor-or-self::dsig:Signature)");
 
 		// Don't need the signature now the DOM structure is in place
 		prov.releaseSignature(sig);
+
+		/*
+		 * Now serialise the document to memory so we can re-parse and check from scratch
+		 */
+
+		cerr << "Serialising the document to a memory buffer ... ";
+
+		DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+
+		theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+		if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
+			theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
+
+
+		MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
+
+		theSerializer->writeNode(formatTarget, *doc);
+
+		// Copy to a new buffer
+		len = formatTarget->getLen();
+		char * mbuf = new char [len + 1];
+		memcpy(mbuf, formatTarget->getRawBuffer(), len);
+		buf[len] = '\0';
+
+		delete theSerializer;
+		delete formatTarget;
+
+		cerr << "done\nParsing memory buffer back to DOM ... ";
+
+		// Also release the document so that we can re-load from scratch
+
+		doc->release();
+
+		/*
+		 * Re-parse
+		 */
+
+		XercesDOMParser parser;
+		
+		parser.setDoNamespaces(true);
+		parser.setCreateEntityReferenceNodes(true);
+
+		MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) mbuf, 
+																len, "XSECMem");
+
+		parser.parse(*memIS);
+		doc = parser.adoptDocument();
+
+
+		delete(memIS);
+		delete[] mbuf;
+
+		cerr << "done\nValidating signature ...";
+
+		/*
+		 * Validate signature
+		 */
+
+		sig = prov.newSignatureFromDOM(doc);
+		sig->load();
+		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
+
+		if (sig->verify()) {
+			cerr << "OK" << endl;
+		}
+		else {
+			cerr << "Failed\n" << endl;
+			char * e = XMLString::transcode(sig->getErrMsgs());
+			cerr << e << endl;
+			delete [] e;
+			exit(1);
+		}
+
+		/*
+		 * Ensure DNames are read back in and decoded properly
+		 */
+
+		DSIGKeyInfoList * kil = sig->getKeyInfoList();
+		int nki = kil->getSize();
+
+		cerr << "Checking Distinguished name is decoded correctly ... ";
+		for (i = 0; i < nki; ++i) {
+
+			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_X509) {
+
+				if (strEquals(s_tstDName, ((DSIGKeyInfoX509 *) kil->item(i))->getX509SubjectName())) {
+					cerr << "yes" << endl;
+				}
+				else {
+					cerr << "decoded incorrectly" << endl;;
+					exit (1);
+				}
+			}
+		}
 	}
 
 	catch (XSECException &e)
@@ -880,33 +580,23 @@ count(ancestor-or-self::dsig:Signature)");
 		exit(1);
 	}
 
+	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
-	// Print out the doc
+	theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
+		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
-	DOMPrintFormatTarget* formatTarget = new DOMPrintFormatTarget();
+
+	XMLFormatTarget *formatTarget = new StdOutFormatTarget();
+
+	theSerializer->writeNode(formatTarget, *doc);
 	
-    const XMLCh* encNameStr = XMLString::transcode("UTF-8");
-    DOMNode *aNode = doc->getFirstChild();
-    if (aNode->getNodeType() == DOMNode::ENTITY_NODE)
-    {
-        const XMLCh* aStr = ((DOMEntity *)aNode)->getEncoding();
-        if (!strEquals(aStr, ""))
-        {
-            encNameStr = aStr;
-        }
-    }
-    unsigned int lent = XMLString::stringLen(encNameStr);
-    gEncodingName = new XMLCh[lent + 1];
-    XMLString::copyNString(gEncodingName, encNameStr, lent);
-    gEncodingName[lent] = 0;
+	cout << endl;
 
-	
-	
-	gFormatter = new XMLFormatter("UTF-8", formatTarget,
-                                          XMLFormatter::NoEscapes, gUnRepFlags);
+	delete theSerializer;
+	delete formatTarget;
 
-
-	cout << doc;
+	doc->release();
 
 	cerr << "All tests passed" << endl;
 
