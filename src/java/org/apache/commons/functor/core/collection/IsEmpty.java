@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/IsEmpty.java,v 1.3 2003/11/24 21:38:39 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/IsEmpty.java,v 1.4 2003/11/24 23:11:48 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,11 +59,12 @@ package org.apache.commons.functor.core.collection;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/11/24 21:38:39 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/24 23:11:48 $
  * @author Rodney Waldhoff
  */
 public final class IsEmpty implements UnaryPredicate, Serializable {
@@ -78,15 +79,17 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
     
     public boolean test(Object obj) {
         if(obj instanceof Collection) {
-            return test((Collection)obj);
+            return testCollection((Collection)obj);
+        } else if(obj instanceof Map) {
+            return testMap((Map)obj);
         } else if(obj instanceof String) {
-            return test((String)obj);
+            return testString((String)obj);
         } else if(null != obj && obj.getClass().isArray()) {
             return testArray(obj);
         } else if(null == obj){
             throw new NullPointerException("Argument must not be null");
         } else {
-            throw new ClassCastException("Expected Collection, String or Array, found " + obj);
+            throw new IllegalArgumentException("Expected Collection, Map, String or Array, found " + obj.getClass());
         } 
     }
 
@@ -111,11 +114,15 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
         return "IsEmpty()";
     }
 
-    private boolean test(Collection col) {
+    private boolean testCollection(Collection col) {
         return col.isEmpty();
     }
     
-    private boolean test(String str) {
+    private boolean testMap(Map map) {
+        return map.isEmpty();
+    }
+    
+    private boolean testString(String str) {
         return 0 == str.length();
     }
     

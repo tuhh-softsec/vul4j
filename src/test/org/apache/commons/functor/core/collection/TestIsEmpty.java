@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsEmpty.java,v 1.4 2003/11/24 21:38:39 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsEmpty.java,v 1.5 2003/11/24 23:11:48 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,8 +58,10 @@ package org.apache.commons.functor.core.collection;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Test;
@@ -71,7 +73,7 @@ import org.apache.commons.functor.core.ConstantPredicate;
 import org.apache.commons.functor.core.composite.UnaryNot;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/24 21:38:39 $
+ * @version $Revision: 1.5 $ $Date: 2003/11/24 23:11:48 $
  * @author Rodney Waldhoff
  */
 public class TestIsEmpty extends BaseFunctorTest {
@@ -137,8 +139,8 @@ public class TestIsEmpty extends BaseFunctorTest {
     public void testTestNonCollection() throws Exception {
         try {
             IsEmpty.instance().test(new Integer(3));
-            fail("Expected ClassCastException");
-        } catch(ClassCastException e) {
+            fail("Expected IllegalArgumentException");
+        } catch(IllegalArgumentException e) {
             // expected
         }
     }
@@ -153,6 +155,13 @@ public class TestIsEmpty extends BaseFunctorTest {
     public void testTestString() throws Exception {
         assertTrue(! IsEmpty.instance().test("xyzzy"));
         assertTrue(IsEmpty.instance().test(""));
+    }
+
+    public void testTestMap() throws Exception {
+        Map map = new HashMap();
+        assertTrue(IsEmpty.instance().test(map));
+        map.put("x","y");
+        assertTrue(! IsEmpty.instance().test(map));
     }
 
     public void testEquals() throws Exception {
