@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rule.java,v 1.5 2002/01/09 20:22:49 sanders Exp $
- * $Revision: 1.5 $
- * $Date: 2002/01/09 20:22:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rule.java,v 1.6 2002/03/11 20:18:44 rdonkin Exp $
+ * $Revision: 1.6 $
+ * $Date: 2002/03/11 20:18:44 $
  *
  * ====================================================================
  *
@@ -71,7 +71,7 @@ import org.xml.sax.Attributes;
  * a corresponding nested pattern of XML elements has been matched.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.5 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.6 $ $Date: 2002/03/11 20:18:44 $
  */
 
 public abstract class Rule {
@@ -81,16 +81,22 @@ public abstract class Rule {
 
 
     /**
-     * Default constructor sets only the the associated Digester.
+     * Constructor sets the associated Digester.
      *
      * @param digester The digester with which this rule is associated
      */
     public Rule(Digester digester) {
 
         super();
-        this.digester = digester;
+        setDigester(digester);
 
     }
+    
+    /**
+     * <p>Base constructor.
+     * Now the digester will be set when the rule is added.</p>
+     */
+    public Rule() {}
 
 
     // ----------------------------------------------------- Instance Variables
@@ -119,7 +125,15 @@ public abstract class Rule {
         return (this.digester);
 
     }
-
+    
+    /**
+     * Set the <code>Digester</code> with which this <code>Rule</code> is associated.
+     */
+    public void setDigester(Digester digester) {
+        
+        this.digester = digester;
+        
+    }
 
     /**
      * Return the namespace URI for which this Rule is relevant, if any.

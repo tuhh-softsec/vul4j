@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.47 2002/03/11 05:01:54 craigmcc Exp $
- * $Revision: 1.47 $
- * $Date: 2002/03/11 05:01:54 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.48 2002/03/11 20:18:44 rdonkin Exp $
+ * $Revision: 1.48 $
+ * $Date: 2002/03/11 20:18:44 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.47 $ $Date: 2002/03/11 05:01:54 $
+ * @version $Revision: 1.48 $ $Date: 2002/03/11 20:18:44 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1359,13 +1359,15 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Register a new Rule matching the specified pattern.
+     * <p>Register a new Rule matching the specified pattern.
+     * This method sets the <code>Digester</code> property on the rule.</p>
      *
      * @param pattern Element matching pattern
      * @param rule Rule to be registered
      */
     public void addRule(String pattern, Rule rule) {
 
+        rule.setDigester(this);
         getRules().add(pattern, rule);
 
     }

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.9 2002/01/23 22:38:01 sanders Exp $
- * $Revision: 1.9 $
- * $Date: 2002/01/23 22:38:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.10 2002/03/11 20:18:45 rdonkin Exp $
+ * $Revision: 1.10 $
+ * $Date: 2002/03/11 20:18:45 $
  *
  * ====================================================================
  *
@@ -77,7 +77,7 @@ import junit.framework.TestSuite;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.9 $ $Date: 2002/01/23 22:38:01 $
+ * @version $Revision: 1.10 $ $Date: 2002/03/11 20:18:45 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -504,6 +504,18 @@ public class RuleTestCase extends TestCase {
 
     }
 
+    /**
+     * Test rule addition - this boils down to making sure that 
+     * digester is set properly on rule addition.
+     */
+    public void testAddRule() {
+        Digester digester = new Digester();
+        TestRule rule =  new TestRule("Test");
+        digester.addRule("/root", rule);
+        
+        assertEquals("Digester is not properly on rule addition.", digester, rule.getDigester());
+
+    }
 
     // ------------------------------------------------ Utility Support Methods
 

@@ -70,7 +70,7 @@ import org.xml.sax.Attributes;
  * at the identifier.</p>
  *
  * @author Robert Burrell Donkin
- * @revision $Revision: 1.6 $ $Date: 2002/01/23 22:38:01 $
+ * @revision $Revision: 1.7 $ $Date: 2002/03/11 20:18:45 $
  */
 
 public class TestRule extends Rule {
@@ -87,12 +87,20 @@ public class TestRule extends Rule {
     /** Used when testing call orders */
     private List order;
 
-
     // ----------------------------------------------------------- Constructors
-
 
     /**
      * Base constructor.
+     *
+     * @param identifier Used to tell which TestRule is which
+     */
+    public TestRule(String identifier) {
+        
+        this.identifier = identifier;
+    }
+
+    /**
+     * Old fashioned constructor.
      *
      * @param digester The digester with which this rule is associated
      * @param identifier Used to tell which TestRule is which
