@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.3 2003/12/01 07:26:50 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.4 2003/12/01 07:32:18 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -73,18 +73,10 @@ import java.util.List;
  */
 public class BinarySearch extends RecursiveFunction {
 // TODO: should have explict null strategy
-    /***************************************************
-     *  Instance variables
-     ***************************************************/
 
-    private List list = null;
-    private Comparable item = null;
-    private int lower = 0;
-    private int upper = 0;
 
-    /***************************************************
-     *  Constructors
-     ***************************************************/
+   // constructors
+   //---------------------------------------------------------------
 
     public BinarySearch(List list, Comparable item) {
         this.list = list; this.item = item;
@@ -96,9 +88,8 @@ public class BinarySearch extends RecursiveFunction {
         this.lower = lower; this.upper = upper;
     }
 
-    /***************************************************
-     *  Instance methods
-     ***************************************************/
+    // instance methods variables
+    //---------------------------------------------------------------
 
     /**
      * Either returns the next BinarySearch function or position of the item
@@ -124,11 +115,18 @@ public class BinarySearch extends RecursiveFunction {
         }
     }
 
-    /***************************************************
-     *  Class methods
-     ***************************************************/
+    // class methods
+    //---------------------------------------------------------------
 
     public static int execute(List list, Comparable item) {
         return ((Number)(new BinarySearch(list, item)).recurse()).intValue();
     }
+
+    // private variables
+    //---------------------------------------------------------------
+    
+    private List list = null;
+    private Comparable item = null;
+    private int lower = 0;
+    private int upper = 0;
 }
