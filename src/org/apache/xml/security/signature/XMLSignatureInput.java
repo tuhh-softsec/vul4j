@@ -88,7 +88,7 @@ public class XMLSignatureInput {
       System.arraycopy(inputOctets, 0, copy, 0, inputOctets.length);
 
       this._inputOctetStreamProxy = new ByteArrayInputStream(copy);
-      this._cxpathAPI = new CachedXPathAPI();
+      //this._cxpathAPI = new CachedXPathAPI();
    }
 
    /**
@@ -182,7 +182,7 @@ public class XMLSignatureInput {
     * @param inputNodeSet
     */
    public XMLSignatureInput(Set inputNodeSet) {
-      this(inputNodeSet, new CachedXPathAPI());
+      this(inputNodeSet, null);
    }
 
    /**
@@ -231,6 +231,11 @@ public class XMLSignatureInput {
 
          DocumentBuilder db = dfactory.newDocumentBuilder();
 
+         // select all nodes, also the comments.
+         if (this._cxpathAPI==null) {
+            this._cxpathAPI=new CachedXPathAPI();
+         }
+
          try {
             db.setErrorHandler(new org.apache.xml.security.utils
                .IgnoreAllErrorHandler());
@@ -239,7 +244,6 @@ public class XMLSignatureInput {
 
             XMLUtils.circumventBug2650(doc);
 
-            // select all nodes, also the comments.
             NodeList nodeList =
                this._cxpathAPI
                   .selectNodeList(doc,
@@ -451,6 +455,9 @@ public class XMLSignatureInput {
     * @return an existing {@link org.apache.xpath.CachedXPathAPI}
     */
    public CachedXPathAPI getCachedXPathAPI() {
+      if (this._cxpathAPI == null) {
+          this._cxpathAPI = new CachedXPathAPI();
+      }
       return this._cxpathAPI;
    }
 
