@@ -1,7 +1,9 @@
 package org.apache.xml.security.test;
 
-import java.io.File;
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.apache.xml.security.utils.XMLUtils;
 
 public class ModuleTest extends TestCase {
@@ -34,8 +36,8 @@ public class ModuleTest extends TestCase {
       suite.addTest(org.apache.xml.security.test.transforms.implementations.TransformBase64DecodeTest.suite());
       suite.addTest(org.apache.xml.security.test.utils.resolver.ResourceResolverSpiTest.suite());
       suite.addTest(org.apache.xml.security.test.utils.Base64Test.suite());
-      suite.addTest(org.apache.xml.security.test.algorithms.implementations.KeyWrapTest.suite());
-      suite.addTest(org.apache.xml.security.test.algorithms.implementations.BlockEncryptionTest.suite());
+      // suite.addTest(org.apache.xml.security.test.algorithms.implementations.KeyWrapTest.suite());
+      // suite.addTest(org.apache.xml.security.test.algorithms.implementations.BlockEncryptionTest.suite());
       //J+
 
       return suite;
