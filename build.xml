@@ -81,7 +81,7 @@
     <property name="lib.xalan.2"  value="${dir.libs}/xml-apis.jar" />
     <property name="lib.log4j"    value="${dir.libs}/jakarta-log4j-1.2beta2.jar" />
 
-    <path id="classpath.libraries">
+    <path id="classpath.libraries" description="3rd party libs">
       <pathelement path="${lib.xerces.1}" />
       <pathelement path="${lib.xerces.2}" />
       <pathelement path="${lib.xalan.1}" />
@@ -90,8 +90,16 @@
       <pathelement path="${lib.jce}" />
     </path>
 
-    <path id="classpath.library">
+    <path id="classpath.xmlsec" description="xmlsec classes; first try pure class files, then jars">
       <pathelement path="${build.classes}" />
+      
+      <pathelement path="${build.dir}/${jar.library}" />
+      <pathelement path="${build.dir}/${jar.tests}" />
+      <pathelement path="${build.dir}/${jar.samples}" />
+    </path>
+
+    <path id="classpath.library">
+      <path refid="classpath.xmlsec" />
       <path refid="classpath.libraries" />
     </path>
 
@@ -426,14 +434,14 @@ org.apache.xml.security.utils.resolver.implementations.*
 
   <target name="testjar"
           depends="prepare"
-          if="xmlsec.jar.present"
+          if="xmlsec.build.present"
           description="Starts all JUnit test cases and uses the compiled JARs">
      <java classname="junit.textui.TestRunner"
            fork="yes"
            taskname="junit"
            failonerror="true">
         <arg value="org.apache.xml.security.test.AllTests" />
-        <classpath refid="classpath.test.jar" />
+        <classpath refid="classpath.test" />
      </java>
   </target>  
     
