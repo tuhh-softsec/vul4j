@@ -394,14 +394,14 @@ following:</p>
     you wish to configure a particular property that does not have a
     corresponding attribute in the DTD.</li>
 <li><a href="SetNextRule.html">SetNextRule</a> - When the
-    <code>begin()</code> method is called, the digester analyzes the
+    <code>end()</code> method is called, the digester analyzes the
     next-to-top element on the stack, looking for a property setter method
     for a specified property.  It then calls this method, passing the object
     at the top of the stack as an argument.  This rule is commonly used to
     establish one-to-many relationships between the two objects, with the
     method name commonly being something like "addChild".</li>
 <li><a href="SetTopRule.html">SetTopRule</a> - When the
-    <code>begin()</code> method is called, the digester analyzes the
+    <code>end()</code> method is called, the digester analyzes the
     top element on the stack, looking for a property setter method for a
     specified property.  It then calls this method, passing the next-to-top
     object on the stack as an argument.  This rule would be used as an
