@@ -116,6 +116,11 @@ const char * XSECExceptionStrings [] = {
 	"An error occured in a safe buffer",
 	"An error occurred processing an HTTP request via internal resolver",
 	"An error occurred decoding a DSIG encoded Distinguished name",
+	"An error occurred during processing of an Encrypted[Data|Key] node",
+	"Did not find expected XENC child element",
+	"An error occurred processing a CipherData node",
+	"An error occurred processing a CipherValue node",
+	"An error occurred in the XSECCipher processor",
 	"Unknown Error type",
 
 };

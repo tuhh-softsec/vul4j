@@ -84,6 +84,7 @@ XSEC_USING_XERCES(XMLString);
 #define URI_ID_EC		"http://www.w3.org/2001/10/xml-exc-c14n#"
 // Also used as algorithm ID for XPATH_FILTER
 #define URI_ID_XPF		"http://www.w3.org/2002/06/xmldsig-filter2"
+#define URI_ID_XENC		"http://www.w3.org/2001/04/xmlenc#"
 
 // Hashing Algorithms
 
@@ -306,6 +307,7 @@ public:
 	static const XMLCh * s_unicodeStrURIDSIG;
 	static const XMLCh * s_unicodeStrURIEC;
 	static const XMLCh * s_unicodeStrURIXPF;
+	static const XMLCh * s_unicodeStrURIXENC;
 
 	static const XMLCh * s_unicodeStrURIRawX509;
 	static const XMLCh * s_unicodeStrURISHA1;

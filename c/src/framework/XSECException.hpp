@@ -143,7 +143,14 @@ public:
 		LoadEmptyXPathFilter		= 39,
 		XPathFilterError			= 40,
 		DNameDecodeError			= 41,
-		UnknownError				= 42		// Must be last!
+
+		// Encryption errors
+		EncryptedTypeError			= 42,
+		ExpectedXENCChildNotFound	= 43,
+		CipherDataError				= 44,
+		CipherValueError			= 45,
+		CipherError					= 46,
+		UnknownError				= 47		// Must be last!
 
 	};
 

@@ -74,6 +74,8 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECURIResolverXerces.hpp>
 
+#include "../xenc/impl/XENCCipherImpl.hpp"
+
 // --------------------------------------------------------------------------------
 //           Constructors/Destructors
 // --------------------------------------------------------------------------------
@@ -87,8 +89,9 @@ XSECProvider::XSECProvider() {
 
 XSECProvider::~XSECProvider() {
 
+	// First delete signatures
+	
 	SignatureListVectorType::iterator i;
-
 	
 	for (i = m_activeSignatures.begin(); i != m_activeSignatures.end(); ++i)
 		delete *i;
@@ -97,6 +100,16 @@ XSECProvider::~XSECProvider() {
 
 	if (mp_URIResolver != NULL)
 		delete mp_URIResolver;
+
+	// Now delete ciphers
+
+	CipherListVectorType::iterator j;
+	
+	for (j = m_activeCiphers.begin(); j != m_activeCiphers.end(); ++j)
+		delete *j;
+
+	m_activeCiphers.clear();
+
 }
 
 // --------------------------------------------------------------------------------
@@ -177,6 +190,51 @@ void XSECProvider::releaseSignature(DSIGSignature * toRelease) {
 }
 
 // --------------------------------------------------------------------------------
+//           Cipher Creation/Deletion
+// --------------------------------------------------------------------------------
+
+XENCCipher * XSECProvider::newCipher(DOMDocument * doc) {
+
+	XENCCipherImpl * ret;
+
+	XSECnew(ret, XENCCipherImpl(doc));
+
+	setup(ret);
+
+	return ret;
+
+}
+
+void XSECProvider::releaseCipher(XENCCipher * toRelease) {
+
+	// Find in the active list
+
+	CipherListVectorType::iterator i;
+
+	m_providerMutex.lock();
+	i = m_activeCiphers.begin();
+	while (i != m_activeCiphers.end() && *i != toRelease)
+		++i;
+
+	if (i == m_activeCiphers.end()) {
+
+		m_providerMutex.unlock();
+
+		throw XSECException(XSECException::ProviderError,
+			"Attempt to release a cipher that was not created by this provider");
+
+	}
+	
+	// For now - remove from list.  Would be better to recycle
+	m_activeCiphers.erase(i);
+	m_providerMutex.unlock();
+	delete toRelease;
+
+}
+
+
+
+// --------------------------------------------------------------------------------
 //           Environmental methods
 // --------------------------------------------------------------------------------
 
@@ -204,5 +262,16 @@ void XSECProvider::setup(DSIGSignature *sig) {
 	m_providerMutex.unlock();
 
 	sig->setURIResolver(mp_URIResolver);
+
+}
+
+void XSECProvider::setup(XENCCipher * cipher) {
+
+	// Called by all Signature creation methods to set up the sig
+
+	// Add to the active list
+	m_providerMutex.lock();
+	m_activeCiphers.push_back(cipher);
+	m_providerMutex.unlock();
 
 }

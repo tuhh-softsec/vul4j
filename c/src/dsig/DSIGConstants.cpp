@@ -82,6 +82,7 @@ const XMLCh * DSIGConstants::s_unicodeStrAlgorithm;
 const XMLCh * DSIGConstants::s_unicodeStrURIDSIG;
 const XMLCh * DSIGConstants::s_unicodeStrURIEC;
 const XMLCh * DSIGConstants::s_unicodeStrURIXPF;
+const XMLCh * DSIGConstants::s_unicodeStrURIXENC;
 
 const XMLCh * DSIGConstants::s_unicodeStrURIRawX509;
 const XMLCh * DSIGConstants::s_unicodeStrURISHA1;
@@ -121,6 +122,7 @@ void DSIGConstants::create() {
 	s_unicodeStrURIDSIG = XMLString::transcode(URI_ID_DSIG);
 	s_unicodeStrURIEC = XMLString::transcode(URI_ID_EC);
 	s_unicodeStrURIXPF = XMLString::transcode(URI_ID_XPF);
+	s_unicodeStrURIXENC = XMLString::transcode(URI_ID_XENC);
 	s_unicodeStrURISHA1 = XMLString::transcode(URI_ID_SHA1);
 	s_unicodeStrURIMD5 = XMLString::transcode(URI_ID_MD5);
 	s_unicodeStrURIBASE64 = XMLString::transcode(URI_ID_BASE64);
@@ -155,6 +157,7 @@ void DSIGConstants::destroy() {
 	delete[] (XMLCh *) s_unicodeStrURIDSIG;
 	delete[] (XMLCh *) s_unicodeStrURIEC;
 	delete[] (XMLCh *) s_unicodeStrURIXPF;
+	delete[] (XMLCh *) s_unicodeStrURIXENC;
 	delete[] (XMLCh *) s_unicodeStrURISHA1;
 	delete[] (XMLCh *) s_unicodeStrURIMD5;
 	delete[] (XMLCh *) s_unicodeStrURIBASE64;

@@ -182,6 +182,7 @@ public:
 	void sbXMLChAppendCh(const XMLCh c);		// Append a Unicode character to the buffer
 	void sbXMLChCat(const XMLCh *str);			// Append a UTF-16 string to the buffer
 	void sbXMLChCat(const char * str);			// Append a (transcoded) local string to the buffer
+	void sbXMLChCat8(const char * str);			// Append a (transcoded) UTF-8 string to the buffer
 
 	// Sensitive data functions
 	void isSensitive(void);

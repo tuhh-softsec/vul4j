@@ -78,6 +78,16 @@
 // Xerces
 
 #include <xercesc/util/XMLUniDefs.hpp>
+#include <xercesc/util/Janitor.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/util/TransService.hpp>
+
+XSEC_USING_XERCES(XMLTransService);
+XSEC_USING_XERCES(XMLTranscoder);
+XSEC_USING_XERCES(XMLPlatformUtils);
+XSEC_USING_XERCES(Janitor);
+XSEC_USING_XERCES(chNull);
+
 // --------------------------------------------------------------------------------
 //           Utilities to manipulate DSIG namespaces
 // --------------------------------------------------------------------------------
@@ -114,6 +124,18 @@ const XMLCh * getXPFLocalName(const DOMNode * node) {
 
 }
 
+const XMLCh DSIG_EXPORT * getXENCLocalName(const DOMNode *node) {
+
+	// XML Encryption namespace node
+
+	if (!strEquals(node->getNamespaceURI(), DSIGConstants::s_unicodeStrURIXENC))
+		return NULL;
+	else
+		return node->getLocalName();
+
+}
+
+
 // --------------------------------------------------------------------------------
 //           Find a nominated DSIG node in a document
 // --------------------------------------------------------------------------------
@@ -144,6 +166,35 @@ DOMNode *findDSIGNode(DOMNode *n, const char * nodeName) {
 }
 
 // --------------------------------------------------------------------------------
+//           Find a nominated XENC node in a document
+// --------------------------------------------------------------------------------
+
+DOMNode *findXENCNode(DOMNode *n, const char * nodeName) {
+
+	const XMLCh * name = getXENCLocalName(n);
+
+	if (strEquals(name, nodeName)) {
+
+		return n;
+
+	}
+
+	DOMNode *child = n->getFirstChild();
+
+	while (child != NULL) {
+
+		DOMNode *ret = findXENCNode(child, nodeName);
+		if (ret != NULL)
+			return ret;
+		child = child->getNextSibling();
+
+	}
+
+	return child;
+
+}
+
+// --------------------------------------------------------------------------------
 //           Find particular type of node child
 // --------------------------------------------------------------------------------
 
@@ -160,6 +211,21 @@ DOMNode *findFirstChildOfType(DOMNode *n, DOMNode::NodeType t) {
 		c = c->getNextSibling();
 
 	return c;
+
+}
+
+DOMNode * findNextChildOfType(DOMNode *n, DOMNode::NodeType t) {
+
+	DOMNode * s = n;
+
+	if (s == NULL)
+		return s;
+
+	do {
+		s = s->getNextSibling();
+	} while (s != NULL && s->getNodeType() != t);
+
+	return s;
 
 }
 
@@ -237,6 +303,57 @@ void gatherChildrenText(DOMNode * parent, safeBuffer &output) {
 		c = c->getNextSibling();
 
 	}
+
+}
+
+// --------------------------------------------------------------------------------
+//           Some UTF8 utilities
+// --------------------------------------------------------------------------------
+
+XMLCh * transcodeFromUTF8(const unsigned char * src) {
+
+	// Take a UTF-8 buffer and transcode to UTF-16
+
+	safeBuffer fullDest;
+	fullDest.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
+	XMLCh outputBuf[2050];
+
+	// Used to record byte sizes
+	unsigned char charSizes[2050];
+
+	// Grab a transcoder
+	XMLTransService::Codes failReason;
+
+	XMLTranscoder* t = 
+		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8", 
+															   failReason, 
+															   2*1024, 
+															   XMLPlatformUtils::fgMemoryManager);
+	Janitor<XMLTranscoder> j_t(t);
+
+	// Need to loop through, 2K at a time
+	unsigned int bytesEaten;
+	unsigned int totalBytesEaten = 0;
+	unsigned int bytesToEat = XMLString::stringLen((char *) src);
+
+	while (totalBytesEaten < bytesToEat) {
+
+		int toEat = (bytesToEat > 2048 ? 2048 : bytesToEat);
+
+		t->transcodeFrom(&src[totalBytesEaten], 
+						toEat, 
+						outputBuf, 
+						2048, 
+						bytesEaten, 
+						charSizes);
+
+		outputBuf[bytesEaten] = chNull;
+		fullDest.sbXMLChCat(outputBuf);
+		totalBytesEaten += bytesEaten;
+	}
+
+	// Dup and output
+	return XMLString::replicate(fullDest.rawXMLChBuffer());
 
 }
 

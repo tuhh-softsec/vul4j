@@ -73,6 +73,7 @@
 
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/xenc/XENCCipher.hpp>
 
 #include <xercesc/util/Mutexes.hpp>
 
@@ -84,13 +85,13 @@
  */
 
 /**
- * @brief The provider class for XML Digital Signatures objects.
+ * @brief The main provider class for XML Digital Signatures and Encryption objects.
  *
- * <p>The XSECProvider class is used to create and destroy signature objects.
- * It provides a number of methods to create signature objects for a variety of
- * situations - in particular creating an empty signature with which to create
- * the signature DOM structure or creating a signature based on an already
- * existing DOM structure.</p>
+ * <p>The XSECProvider class is used to create and destroy signature objects and
+ * encryption objects.  It provides a number of methods to create signature 
+ * and encryption objects for a variety of situations - in particular creating an 
+ * empty signature or cipher with which to create the DOM structure or creating a 
+ * security object based on an already existing DOM structure.</p>
  *
  */
 
@@ -101,6 +102,12 @@ class DSIG_EXPORT XSECProvider {
 	typedef vector<DSIGSignature *>			SignatureListVectorType;
 #else
 	typedef std::vector<DSIGSignature *>	SignatureListVectorType;
+#endif
+
+#if defined(XALAN_NO_NAMESPACES)
+	typedef vector<XENCCipher *>			CipherListVectorType;
+#else
+	typedef std::vector<XENCCipher *>		CipherListVectorType;
 #endif
 
 public:
@@ -196,6 +203,39 @@ public:
 
 	//@}
 
+	/** @name Encryption Creation Functions */
+	//@{
+
+	/**
+	 * \brief Create an XENCCipher object based on a particular DOM Document
+	 *
+	 * XENCCipher is an engine class that is used to wrap encryption/decryption
+	 * functions.  Unlike the Signature functions, only a XENCCipher object attached
+	 * to a particular document is required.  Arbitrary objects within this document
+	 * can then be encrypted/decrypted using this class.
+	 *
+	 * @param doc Document to attach the XENCCipher to.
+	 * @returns An implementation object for XENCCipher
+	 */
+
+	XENCCipher * newCipher(DOMDocument * doc);
+
+	/**
+	 * \brief Method to delete XENCCipher objects created via this provider
+	 *
+	 * <p>The provider keeps track of all objects by it.  This method can be used
+	 * to delete any previously created XENCCipher objects prior to the provider
+	 * being deleted.  Any XENCCipher objects not released using this function will
+	 * automatically be deleted when the provider goes out of scope (or is itself
+	 * deleted).
+	 *
+	 * @param toRelease The XENCCipher object to be deleted
+	 */
+
+	void releaseCipher(XENCCipher * toRelease);
+
+	//@}
+
 	/** @name Environmental Options */
 	//@{
 
@@ -220,8 +260,10 @@ private:
 	// Internal functions
 
 	void setup(DSIGSignature *sig);
+	void setup(XENCCipher *cipher);
 
 	SignatureListVectorType						m_activeSignatures;
+	CipherListVectorType						m_activeCiphers;
 	XSECURIResolver								* mp_URIResolver;
 	XERCES_CPP_NAMESPACE_QUALIFIER XMLMutex		m_providerMutex;
 };

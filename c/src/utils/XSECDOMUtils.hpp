@@ -117,18 +117,27 @@ private:
 const XMLCh DSIG_EXPORT * getDSIGLocalName(const DOMNode *node);
 const XMLCh DSIG_EXPORT * getECLocalName(const DOMNode *node);
 const XMLCh DSIG_EXPORT * getXPFLocalName(const DOMNode *node);
+const XMLCh DSIG_EXPORT * getXENCLocalName(const DOMNode *node);
 
 // --------------------------------------------------------------------------------
-//           Find a nominated DSIG node in a document
+//           Do UTF-8 <-> UTF-16 transcoding
+// --------------------------------------------------------------------------------
+
+XMLCh DSIG_EXPORT * transcodeFromUTF8(const unsigned char * src);
+
+// --------------------------------------------------------------------------------
+//           Find a nominated DSIG/XENC node in a document
 // --------------------------------------------------------------------------------
 
 DOMNode DSIG_EXPORT * findDSIGNode(DOMNode *n, const char * nodeName);
+DOMNode DSIG_EXPORT * findXENCNode(DOMNode *n, const char * nodeName);
 
 // --------------------------------------------------------------------------------
 //           Find particular type of node child
 // --------------------------------------------------------------------------------
 
 DOMNode DSIG_EXPORT * findFirstChildOfType(DOMNode *n, DOMNode::NodeType t);
+DOMNode DSIG_EXPORT * findNextChildOfType(DOMNode *n, DOMNode::NodeType t);
 
 // --------------------------------------------------------------------------------
 //           Make a QName
