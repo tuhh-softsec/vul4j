@@ -82,7 +82,7 @@
 /**
  * @brief Transform holder for XSLT Transforms.
  *
- * The DSIGTransformXSL class is used to hold XSLT <Transform> elements
+ * The DSIGTransformXSL class is used to hold XSLT \<Transform\> elements
  * within a document.
  *
  *

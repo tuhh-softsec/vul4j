@@ -91,7 +91,7 @@ class DSIGXPathFilterExpr;
 /**
  * @brief Transform holder for XPath Filter transforms.
  *
- * The DSIGTransformXPath class is used to hold XPath <Transform> elements
+ * The DSIGTransformXPath class is used to hold XPath \<Transform\> elements
  * within a document.
  *
  * @see TXFMXPath

@@ -86,7 +86,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
  */
 
 /**
- * @brief The class for <KeyName> nodes in a KeyInfo list.
+ * @brief The class for \<KeyName\> nodes in a KeyInfo list.
  *
  * Class for holding information on a KeyName node as well as setting
  * such a node in a signature.

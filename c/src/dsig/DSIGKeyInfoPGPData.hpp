@@ -83,7 +83,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
  */
 
 /**
- * @brief The class for <PGPData> nodes in a KeyInfo list.
+ * @brief The class for \<PGPData\> nodes in a KeyInfo list.
  *
  * Class for holding information on a PGP Data node as well as setting
  * such a node in a signature.
@@ -106,7 +106,7 @@ public:
 	 * an existing DOM structure into the PGPData element.
 	 *
 	 * @param sig Calling signature object.
-	 * @param nameNode DOMNode to load information from
+	 * @param pgpDataNode DOMNode to load information from
 	 */
 
 	DSIGKeyInfoPGPData(DSIGSignature * sig, DOMNode *pgpDataNode);
@@ -163,7 +163,7 @@ public:
 	virtual const XMLCh * getKeyPacket(void) {return mp_keyPacket;}
 
 	/**
-	 * \Get key name - unimplemented for PGP packets
+	 * \brief Get key name - unimplemented for PGP packets
 	 */
 
 	virtual const XMLCh * getKeyName(void) {return NULL;}

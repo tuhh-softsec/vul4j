@@ -107,7 +107,7 @@ class XSECURIResolver;
  * @brief The class used for manipulating Reference Elements within a signature.
  *
  * <p>The DSIGReference class creates and manipulates (including hashing and validating)
- * <Reference> elements.</p>
+ * \<Reference\> elements.</p>
  *
  */
 
@@ -187,7 +187,7 @@ public:
 	 * also need to be made to the various append*Transform methods.</p>
 	 *
 	 * @note The XSEC Library currently makes very little use of <em>type</em>
-	 * attributes in <Reference> Elements.  However this may of use to calling
+	 * attributes in \<Reference\> Elements.  However this may of use to calling
 	 * applications.
 	 *
 	 * @param URI The URI (data source) for this reference.  Set to NULL for
@@ -388,7 +388,7 @@ public:
 	/**
 	 * \brief Validate the Reference element
 	 *
-	 * Performs a #calculateHash() and a @readHash() and then compares the
+	 * Performs a #calculateHash() and a #readHash() and then compares the
 	 * results.
 	 *
 	 * @returns true iff the hash of the data matches the hash stored 
@@ -435,7 +435,7 @@ public:
 							DSIGTransformList * lst);
 
 	/**
-	 * \brief Load a Transforms list from the <Transforms> DOMNode.
+	 * \brief Load a Transforms list from the \<Transforms\> DOMNode.
 	 *
 	 * Reads the data from the XML data stored in the DOM and create
 	 * the associated DSIGTrasnformList.
@@ -471,7 +471,7 @@ public:
 	/**
 	 * \brief Load a series of references.
 	 *
-	 * Takes a series of <Reference> elements in a DOM structure
+	 * Takes a series of \<Reference\> elements in a DOM structure
 	 * and creates the corresponding ReferenceList object.
 	 *
 	 * @note Internal function - meant for use by the library

@@ -88,7 +88,7 @@ class DSIGTransform;
 /**
  * @brief The class used for holding Transform Elements within a signature.
  *
- * This class is the container for the <Transforms> list in a Reference or
+ * This class is the container for the \<Transforms\> list in a Reference or
  * KeyInfo list.  It holds a list of Transform elements that can be
  * manipulated by the caller, or asked to provide the appropriate
  * TXFM* class to actually perform a transform.

@@ -86,7 +86,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMNode);
 /**
  * @brief Transform holder for XPath transforms.
  *
- * The DSIGTransformXPath class is used to hold XPath <Transform> elements
+ * The DSIGTransformXPath class is used to hold XPath \<Transform\> elements
  * within a document.
  *
  * @see TXFMXPath

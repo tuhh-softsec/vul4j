@@ -91,11 +91,11 @@ class TXFMChain;
 /**
  * @brief The base class for transforms.
  *
- * The DSIGTransform class is the base class used to hold <Transform> elements
+ * The DSIGTransform class is the base class used to hold \<Transform\> elements
  * within a document.
  *
  * It does not in actually perform any transformations - only hold the information
- * about a transform in a <Signature> structure.
+ * about a transform in a \<Signature\> structure.
  *
  * @see TXFMBase
  *

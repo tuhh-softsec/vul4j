@@ -101,7 +101,7 @@ class DSIGKeyInfoMgmtData;
  * @brief The main class used for manipulating XML Digital Signatures.
  *
  * <p>The DSIGSignature class is used to manipulate and verify
- * <signature> blocks.  It should only ever be created via the 
+ * \<signature\> blocks.  It should only ever be created via the 
  * XSECProvider class.</p>
  *
  */
@@ -178,8 +178,8 @@ public:
 	  * <p>It performs the following operations : </p>
 	  * <ul>
 	  *		<li>Iterate through each reference and validate the hash;
-	  *		<li>Iterate through references contained in <manifest> elements;
-	  *		<li>Calculate the hash of the <SignedInfo> element; and
+	  *		<li>Iterate through references contained in \<manifest\> elements;
+	  *		<li>Calculate the hash of the \<SignedInfo\> element; and
 	  *		<li>Validate the signature of the hash previously calculated.
 	  * </ul>
 	  * 
@@ -217,8 +217,8 @@ public:
 	  * <p>It performs the following operations : </p>
 	  * <ul>
 	  *		<li>Iterate through each reference, calculate and set the hash value;
-	  *		<li>Iterate through references contained in <manifest> elements and set their values;
-	  *		<li>Calculate the hash of the <SignedInfo> element; and
+	  *		<li>Iterate through references contained in \<manifest\> elements and set their values;
+	  *		<li>Calculate the hash of the \<SignedInfo\> element; and
 	  *		<li>Calculate (and set) the signature value given the hash previously calculated.
 	  * </ul>
 	  * 
@@ -247,7 +247,7 @@ public:
 	  *
 	  * <p>The #createBlankSignature function will use this prefix to setup the
 	  * dsig namespace.  E.g. (assuming a call has been made to set the prefix to "ds")
-	  * the <Signature> element will have a namespace attribute added of</p>
+	  * the \<Signature\> element will have a namespace attribute added of</p>
 	  *
 	  * <p>xmlns:ds="http://www.w3.org/2000/09/xmldsig#"</p>
 	  *
@@ -297,10 +297,10 @@ public:
 	void setXPFNSPrefix(const XMLCh * prefix);
 
 	/**
-	 * \brief Create a <Signature> DOM structure.
+	 * \brief Create a \<Signature\> DOM structure.
 	 *
 	 * <p>The DOM structure created is still divorced from the document.  The callee
-	 * needs to take the returned <Signature> Element node and insert it at the
+	 * needs to take the returned \<Signature\> Element node and insert it at the
 	 * appropriate place in their document.</p>
 	 *
 	 * <p>The signature is a skeleton only.  There are no references or KeyInfo
@@ -315,7 +315,7 @@ public:
 	 * @param cm The canonicalisation method to use.
 	 * @param sm The signature algorithm to be used.
 	 * @param hm The Digest function to be used for the actual signatures.
-	 * @returns The newly created <Signature> element that the caller should insert in
+	 * @returns The newly created \<Signature\> element that the caller should insert in
 	 * the document.
 	 */
 
@@ -325,14 +325,14 @@ public:
 		hashMethod hm = HASH_SHA1);
 
 	/**
-	 * \brief Add a new reference to the end of the list of <Reference> nodes.
+	 * \brief Add a new reference to the end of the list of \<Reference\> nodes.
 	 *
 	 * <p>Creates a new DSIGReference, adds it to the list of references handled
 	 * by the owning DSIGSignature and also creates the skeleton DOM structure into
 	 * the document.</p>
 	 *
 	 * @note The XSEC Library currently makes very little use of <em>type</em>
-	 * attributes in <Reference> Elements.  However this may of use to calling
+	 * attributes in \<Reference\> Elements.  However this may of use to calling
 	 * applications.
 	 *
 	 * @see DSIGReference
@@ -355,9 +355,9 @@ public:
 	/**
 	 * \brief Get the hash of the Signed Value
 	 * 
-	 * Function to calculate and return the hash of the <SignedInfo>
+	 * Function to calculate and return the hash of the \<SignedInfo\>
 	 * structures (after the canonicalization defined by
-	 * <CanonicalizationMethod> has been performed).
+	 * \<CanonicalizationMethod\> has been performed).
 	 *
 	 * @param hashBuf Buffer to place the raw hash in.
 	 * @param hashBufLen The length of the buffer
@@ -454,7 +454,7 @@ public:
 	 * \brief Get canonicalisation algorithm
 	 *
 	 * Returns the canonicalisation algorithm that will be/is used
-	 * to canonicalise the <SignedInfo> element prior to hash/sign
+	 * to canonicalise the \<SignedInfo\> element prior to hash/sign
 	 *
 	 * @returns The canonicalisation method
 	 */
@@ -468,7 +468,7 @@ public:
 	 * \brief Get the hash method
 	 *
 	 * Obtain the hash (digest) algorithm that is used to generate a hash
-	 * of the canonicalised <SignedInfo> element.
+	 * of the canonicalised \<SignedInfo\> element.
 	 *
 	 * @returns the Hash (digest) Method
 	 */
@@ -481,7 +481,7 @@ public:
 	 * \brief Get the signature method
 	 *
 	 * Obtain the algorithm that will be used to generate/check the signature
-	 * of the canonicalised and hashed <SignedInfo> element.
+	 * of the canonicalised and hashed \<SignedInfo\> element.
 	 *
 	 * @returns the Signature method
 	 */
@@ -547,7 +547,7 @@ public:
 	//@{
 
 	/**
-	 * \brief Get the list of <KeyInfo> elements.
+	 * \brief Get the list of \<KeyInfo\> elements.
 	 *
 	 * <p>This function recovers list that contains the KeyInfo elements
 	 * read in from the DOM document.</p>

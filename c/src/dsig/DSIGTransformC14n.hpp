@@ -78,7 +78,7 @@
 /**
  * @brief Transform holder for C14n based transforms.
  *
- * The DSIGTransformC14n class is used to hold C14n <Transform> elements
+ * The DSIGTransformC14n class is used to hold C14n \<Transform\> elements
  * within a document.  This includes Exclusive and Comment options
  *
  *

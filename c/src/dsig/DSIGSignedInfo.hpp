@@ -97,7 +97,7 @@ class DSIGSignature;
 /**
  * @brief Constructs and holds a SignedInfo.
  *
- * The <SignedInfo> node is the container for all the information
+ * The \<SignedInfo\> node is the container for all the information
  * that is signed.  It contains the ReferenceList and information
  * on the signature and canonicalisation method for the signature.
  *

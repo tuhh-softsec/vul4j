@@ -82,7 +82,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
  */
 
 /**
- * @brief The class for <MgmtData> nodes in a KeyInfo list.
+ * @brief The class for \<MgmtData\> nodes in a KeyInfo list.
  *
  * Class for holding in band key information.
  * @note Use of this class is <em>NOT RECOMMEDED</em> within
@@ -141,7 +141,7 @@ public:
 	virtual void load(void);
 
 	/**
-	 * \Get key name - unimplemented for MgmtData
+	 * \brief Get key name - unimplemented for MgmtData
 	 */
 
 	virtual const XMLCh * getKeyName(void) {return NULL;}

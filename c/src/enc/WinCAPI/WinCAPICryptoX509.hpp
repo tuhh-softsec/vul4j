@@ -98,9 +98,6 @@ public :
 	virtual ~WinCAPICryptoX509();
 
 	//@}
-
-
-	//@}
 	/** @name Key Interface methods */
 	//@{
 

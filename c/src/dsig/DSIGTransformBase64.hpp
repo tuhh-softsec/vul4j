@@ -80,7 +80,7 @@
 /**
  * @brief Transform holder for Base 64.
  *
- * The DSIGTransformbase64 class is used to hold base64 <Transform> elements
+ * The DSIGTransformbase64 class is used to hold base64 \<Transform\> elements
  * within a document.
  *
  * This is a very simple transform with no real options.

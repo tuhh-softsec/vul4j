@@ -85,7 +85,7 @@
  * for translating bytes to/from base64 encoding.</p>
  *
  * <p>There are many places where XML DSIG uses Base64 encoding for 
- * embedding data in the <Signature> structure.  In some cases this object
+ * embedding data in the \<Signature\> structure.  In some cases this object
  * is used.  In other cases, the library passes base64 code directly to
  * the cryptographic handler.</p>
  *

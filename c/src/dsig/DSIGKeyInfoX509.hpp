@@ -87,7 +87,7 @@ XSEC_USING_XERCES(DOMElement);
  */
 
 /**
- * @brief The class for <X509Data> nodes in a KeyInfo list.
+ * @brief The class for \<X509Data\> nodes in a KeyInfo list.
  *
  * Class for holding information on a X509Data node as well as setting
  * such a node in a signature.

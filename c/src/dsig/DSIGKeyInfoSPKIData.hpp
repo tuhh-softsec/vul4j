@@ -84,7 +84,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
  */
 
 /**
- * @brief The class for <SPKIData> nodes in a KeyInfo list.
+ * @brief The class for \<SPKIData\> nodes in a KeyInfo list.
  *
  * Class for holding information on a SPKIData node as well as setting
  * such a node in a signature.
@@ -164,7 +164,7 @@ public:
 	virtual const XMLCh * getSexp(unsigned int index);
 
 	/**
-	 * \Get key name - unimplemented for SPKI packets
+	 * \brief Get key name - unimplemented for SPKI packets
 	 */
 
 	virtual const XMLCh * getKeyName(void) {return NULL;}

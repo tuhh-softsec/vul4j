@@ -249,7 +249,7 @@ public :
 	 * \brief Retrieve P
 	 *
 	 * @param b64 Buffer to place ds:CryptoBinary encoded P parameter in
-	 * @len Max amount of data to be placed in buffer
+	 * @param len Max amount of data to be placed in buffer
 	 * @returns The number of bytes placed in the buffer
 	 */
 
@@ -259,7 +259,7 @@ public :
 	 * \brief Retrieve Q
 	 *
 	 * @param b64 Buffer to place ds:CryptoBinary encoded Q parameter in
-	 * @len Max amount of data to be placed in buffer
+	 * @param len Max amount of data to be placed in buffer
 	 * @returns The number of bytes placed in the buffer
 	 */
 	
@@ -269,7 +269,7 @@ public :
 	 * \brief Retrieve G
 	 *
 	 * @param b64 Buffer to place ds:CryptoBinary encoded G parameter in
-	 * @len Max amount of data to be placed in buffer
+	 * @param len Max amount of data to be placed in buffer
 	 * @returns The number of bytes placed in the buffer
 	 */
 	
@@ -279,7 +279,7 @@ public :
 	 * \brief Retrieve Y
 	 *
 	 * @param b64 Buffer to place ds:CryptoBinary encoded Y parameter in
-	 * @len Max amount of data to be placed in buffer
+	 * @param len Max amount of data to be placed in buffer
 	 * @returns The number of bytes placed in the buffer
 	 */
 	

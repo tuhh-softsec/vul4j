@@ -100,6 +100,9 @@ class DSIG_EXPORT DSIGXPathFilterExpr {
 
 public:
 
+	/** @name Constructors and Destructors */
+	//@{
+
 	/**
 	 * \brief Constructor used for existing XML signatures
 	 *

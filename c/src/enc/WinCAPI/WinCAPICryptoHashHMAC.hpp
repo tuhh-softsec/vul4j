@@ -120,6 +120,8 @@ public :
 	 * Create the object, with the indicated algorithm
 	 * (Currently supports MD5 and SHA1)
 	 *
+	 *
+	 * @param owner Owning XSECCryptoProvider instance
 	 * @param alg Digest algorithm to use
 	 */
 	

@@ -296,9 +296,11 @@ public :
 	 *
 	 * Encodes a Windows integer in I2OSP base64 encoded format.
 	 *
-	 * @param b64 Base 64 buffer
-	 * @param b64Len Length of base64 buffer
+	 * @param n Buffer holding the Windows Integer
+	 * @param nLen Length of data in buffer
 	 * @param retLen Parameter to hold length of return integer
+	 * @returns A pointer to a buffer holding the encoded data 
+	 * (transfers ownership)
 	 */
 
 	static unsigned char * WinBN2b64(BYTE * n, DWORD nLen, unsigned int &retLen);

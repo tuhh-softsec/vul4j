@@ -116,7 +116,7 @@ public :
 
 
 	/**
-	 * \Initialise the library
+	 * \brief Initialise the library
 	 *
 	 * <b>Must</b> be called prior to using any functions in the library.
 	 *
