@@ -72,11 +72,11 @@
     <property name="jce.download.file"     value="jce-jdk13-114.jar" />
     <property name="jce.download.md5"      value="8a90f10826c0b8a4460231dcef0e0e45" />
     <property name="jce.download.sha1"     value="f3cf2677ad8fa7a038ab3a62e05afef9615ea579" />
-    
+
     <!--
-    
+
     The most recent one is this here
-    
+
     <property name="jce.download.file"     value="jce-jdk13-115.jar" />
     <property name="jce.download.md5"      value="38c40aa5c386e3ba5fac70916bcc5b0d" />
     <property name="jce.download.sha1"     value="15f5af7fc73e4ff5c059f83f47509b9720e129e7" />
@@ -84,7 +84,7 @@
 
     <property name="jce.download"          value="http://www.bouncycastle.org/download/${jce.download.file}" />
     <property name="lib.jce"               value="${dir.libs}/bc-${jce.download.file}" />
-    <property name="lib.junit"             value="${dir.libs}/junit3.7.jar" />
+    <property name="lib.junit"             value="${dir.libs}/junit.jar" />
     <property name="lib.log.api"           value="${dir.libs}/commons-logging-api.jar" />
     <property name="lib.log"               value="${dir.libs}/commons-logging.jar" />
     <property name="lib.styleApache"       value="${dir.libs}/style-apachexml.jar" />
@@ -168,11 +168,8 @@
               value="
 org.apache.xml.security.Init,
 org.apache.xml.security.algorithms,
-org.apache.xml.security.algorithms.encryption,
-org.apache.xml.security.algorithms.encryption.params,
 org.apache.xml.security.c14n,
 org.apache.xml.security.encryption,
-org.apache.xml.security.encryption.type,
 org.apache.xml.security.exceptions,
 org.apache.xml.security.keys,
 org.apache.xml.security.keys.content,
@@ -348,7 +345,7 @@ org.apache.xml.security.utils.resolver
              token="@@packageversion@@" value="${product.Version}" />
     <replace file="${build.doc.xml}/dtd/entities.ent"
              token="@@packagedistname@@" value="${product.Name}" />
-             
+
     <replace file="${build.doc.xml}/sources/install.xml"
              token="@@jce.download@@" value="${jce.download}" />
     <replace file="${build.doc.xml}/sources/install.xml"
@@ -364,14 +361,14 @@ org.apache.xml.security.utils.resolver
          <pathelement path="${lib.xalan.1}" />
        </classpath>
     </stylebook>
-    
+
     <!-- copy plain ASCII files -->
     <copy todir="${build.doc.html}">
         <fileset
             dir="${doc.xml}/sources"
             includes="**/*.txt" />
     </copy>
-    
+
     <!-- remove the patched XML sources -->
     <delete dir="${build.doc.xml}" />
   </target>
@@ -751,7 +748,7 @@ org.apache.xml.security.utils.resolver
         <classpath refid="classpath.test" />
      </java>
   </target>
-  
+
 
   <target name="AxisSignAndVerify"
           depends="axis-sign, axis-verify" />
@@ -767,7 +764,7 @@ org.apache.xml.security.utils.resolver
         <classpath refid="classpath.test" />
      </java>
   </target>
-  
+
   <target name="axis-verify"
           description="axis verify sample"
           depends="compile.samples">
