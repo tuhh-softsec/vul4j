@@ -63,7 +63,6 @@ package org.apache.xml.security.keys.content;
 import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.*;
-import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.transforms.*;

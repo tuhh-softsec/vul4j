@@ -67,7 +67,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.xpath.XPathAPI;
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.utils.*;
 
 /**

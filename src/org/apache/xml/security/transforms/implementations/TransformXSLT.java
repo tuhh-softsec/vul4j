@@ -73,7 +73,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.signature.*;
 import org.apache.xml.security.transforms.*;

@@ -72,7 +72,6 @@ import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
-import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.keys.storage.*;
 
 

@@ -124,7 +124,15 @@ public class ResolverXPointer extends ResourceResolverSpi {
          String id = getXPointerId(uri, BaseURI);
          Element selectedElem = IdResolver.getElementById(doc, id);
 
-         cat.debug("Use #xpointer(id('" + id + "'))");
+         cat.debug("Use #xpointer(id('" + id + "')) on element "
+                   + selectedElem);
+
+         if (selectedElem == null) {
+            Object exArgs[] = { id };
+
+            throw new ResourceResolverException(
+               "signature.Verification.MissingID", exArgs, uri, BaseURI);
+         }
 
          try {
             resultNodes =

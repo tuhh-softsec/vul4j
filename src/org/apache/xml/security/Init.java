@@ -74,7 +74,7 @@ import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.algorithms.encryption.EncryptionMethod;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.c14n.helper.XPathContainer;
+import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.implementations.FuncHere;

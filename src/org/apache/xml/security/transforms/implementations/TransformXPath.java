@@ -67,7 +67,7 @@ import org.xml.sax.SAXException;
 import org.w3c.dom.*;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.helper.XPathContainer;
+import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.transforms.*;
 import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.utils.*;

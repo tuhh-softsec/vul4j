@@ -75,7 +75,7 @@ cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</so
 		<p></p>
 		<p>The ant make tools initiates an automated download of the BouncyCastle JCE. The file is downloaded into the libs/ directory and a "bc-" is prepended to the filename. This is done because we want the provider name (bc means BouncyCastle) being visible in the JAR's filename. </p>
 		<p></p>
-		<p>If you are a little paranoid like all security people and don't want ant to make automated downloads or your firewall doesn't permit it, look in the ./build.xml file for the properties called</p>
+		<p>If you are a little paranoid like all security people and don't want ant to make automated downloads or your firewall doesn't permit it (preventing programs "phoning home"), look in the ./build.xml file for the properties called</p>
 		<p></p>
 		<source><![CDATA[<property 
      name="jce.download.file" 
@@ -91,6 +91,6 @@ cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</so
 		<p>If you do this by hand (pointing you favourite web browser and download it yourself), simply put a "<code>bc-</code>" in front of the filename and put it to <code>./libs/</code>, then ant won't try to make a download.</p>
 	</s2>
 	<s2 title="Using JDK 1.4.0">
-		<p>After SUN released the <jump href="http://java.sun.com/j2se/1.4/index.html">Java (TM) 2 Platform Standard Edition v1.4.0</jump>, the xml-security package stopped working. This is a <jump href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html">known</jump> problem: SUN packaged a beta of Xalan into the JDK 1.4.0, but the xml-security package requires a stable version of Xalan (v2.2.0 or later). To fix the problem, you have to put the xalan.jar into a special directory in your JDK: <code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code> .</p>
+		<p>After SUN released the <jump href="http://java.sun.com/j2se/1.4/index.html">Java (TM) 2 Platform Standard Edition v1.4.0</jump>, the xml-security package stopped working. This is a <jump href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html">known</jump> problem: SUN packaged a beta of Xalan into the JDK 1.4.0, but the xml-security package requires a stable version of Xalan (v2.2.0 or later). To fix the problem, you have to put the xalan.jar into a special directory in your JDK: <code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code> . If you installed an out-of-the-box JDK1.4 (e.g. on Windows 2000), the "endorsed" directory does not exist: you'll have to create it by hand. <em>Putting this JAR to another location like lib/ext WILL NOT WORK.</em></p>
 	</s2>
 </s1>

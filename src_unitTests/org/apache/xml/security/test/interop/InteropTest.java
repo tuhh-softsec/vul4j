@@ -13,7 +13,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.extensions.TestSetup;
 import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.keys.*;

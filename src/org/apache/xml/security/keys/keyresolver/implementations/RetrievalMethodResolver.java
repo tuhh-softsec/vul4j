@@ -69,7 +69,6 @@ import java.security.cert.*;
 import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.*;
-import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.*;
 import org.apache.xml.security.keys.content.keyvalues.*;
@@ -83,6 +82,13 @@ import org.apache.xml.security.utils.resolver.*;
 
 
 /**
+ * The RetrievalMethodResolver can retrieve public keys and certificates from
+ * other locations. The location is specified using the ds:RetrievalMethod
+ * element which points to the location. This includes the handling of raw
+ * (binary) X.509 certificate which are not encapsulated in an XML structure.
+ * If the retrieval process encounters an element which the
+ * RetrievalMethodResolver cannot handle itself, resolving of the extracted
+ * element is delegated back to the KeyResolver mechanism.
  *
  * @author $Author$
  */

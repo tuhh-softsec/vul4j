@@ -79,6 +79,10 @@ public class C14nHelper {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(C14nHelper.class.getName());
 
+   private C14nHelper() {
+      // don't allow instantiation	
+   }
+
    /**
     * Method sortAttributes
     *

@@ -56,7 +56,7 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.c14n.helper;
+package org.apache.xml.security.transforms.params;
 
 
 
@@ -73,8 +73,6 @@ import org.apache.xpath.XPathAPI;
  * and can be used directly in a DOM tree.
  *
  * @author Christian Geuer-Pollmann
- * @deprecated 405 Moved permanently: org.apache.xml.security.transforms.params.{@link org.apache.xml.security.transforms.params.XPathContainer} instead
- * @see org.apache.xml.security.transforms.params.XPathContainer
  */
 public class XPathContainer extends SignatureElementProxy {
 

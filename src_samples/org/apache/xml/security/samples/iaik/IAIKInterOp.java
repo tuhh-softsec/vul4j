@@ -69,7 +69,6 @@ import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
-import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.*;

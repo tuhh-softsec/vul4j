@@ -74,7 +74,6 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
-import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.signature.*;
 import org.apache.xml.security.transforms.implementations.TransformBase64Decode;
 import org.apache.xml.security.transforms.*;

@@ -64,7 +64,6 @@ import java.security.*;
 import java.security.cert.*;
 import java.security.spec.*;
 import javax.xml.transform.TransformerException;
-import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
 import org.apache.xml.security.keys.keyresolver.*;

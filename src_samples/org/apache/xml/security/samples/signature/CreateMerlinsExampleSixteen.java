@@ -69,7 +69,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.*;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.apache.xml.security.c14n.helper.XPathContainer;
+import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.*;

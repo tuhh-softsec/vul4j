@@ -74,7 +74,7 @@ import org.apache.xml.security.utils.*;
  *
  * @author $Author$
  */
-public class StorageResolver extends StorageResolverSpi {
+public class StorageResolver {
 
    /** Field cat */
    static org.apache.log4j.Category cat =

@@ -64,7 +64,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.helper.XPathContainer;
+import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.*;

@@ -83,7 +83,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.helper.XPathContainer;
+import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.signature.*;
 import org.apache.xml.security.transforms.*;
