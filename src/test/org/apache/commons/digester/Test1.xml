@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<employee firstName="First Name" lastName="Last Name">
+  <address type="home" street="Home Street" city="Home City"
+                        state="HS" zipCode="HmZip"/>
+  <address type="office" street="Office Street" city="Office City"
+                          state="OS" zipCode="OfZip"/>
+</employee>

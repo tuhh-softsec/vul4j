@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.6 2001/07/15 00:17:24 craigmcc Exp $
+        $Id: build.xml,v 1.7 2001/08/20 21:59:43 craigmcc Exp $
 -->
 
 
@@ -224,7 +224,7 @@
 
   <target name="test" depends="compile.tests,
                                test.digester,
-                               test.rss
+                               test.rule
                               "
    description="Run all unit test cases">
   </target>
@@ -249,6 +249,17 @@
       <classpath refid="rss.classpath"/>
     </java>
   </target>
+
+  <target name="test.rule" depends="compile.tests"
+   description="Run rule Digester unit tests ...">
+    <echo message="Running Rule tests ..."/>
+    <java classname="${test.runner}" fork="yes"
+        failonerror="${test.failonerror}">
+      <arg value="org.apache.commons.digester.RuleTestCase"/>
+      <classpath refid="test.classpath"/>
+    </java>
+  </target>
+
 
 
 </project>
