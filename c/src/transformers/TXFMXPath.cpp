@@ -329,7 +329,9 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 		switch (inputType) {
 
 		case DOM_NODE_DOCUMENT :
-
+		case DOM_NODE_XPATH_NODESET :
+			// do XPath over the whole document and, if the input was an 
+			// XPath Nodeset, then later intersect the result with the input nodelist			
 			cd = XalanDOMString("/");		// Root node
 			cexpr = cd.c_str();
 
@@ -462,8 +464,11 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 			}
 		}
 
-		xpesd.uninstallExternalFunctionGlobal(XalanDOMString(URI_ID_DSIG), XalanDOMString("here"));
-
+		if (inputType == DOM_NODE_XPATH_NODESET) {
+			//the input list was a XPATH nodeset, so we must intersect the 
+			// results of the XPath processing done above with the input nodeset
+			m_XPathMap.intersect(input->getXPathNodeList());
+		}
 	}
 
 	catch (XSLException &e) {
