@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.2 2001/05/12 17:25:53 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2001/05/12 17:25:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.3 2001/05/22 04:06:27 craigmcc Exp $
+ * $Revision: 1.3 $
+ * $Date: 2001/05/22 04:06:27 $
  *
  * ====================================================================
  *
@@ -73,6 +73,7 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.collections.ArrayStack;
@@ -103,7 +104,7 @@ import org.xml.sax.SAXParseException;
  * even from the same thread.</p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.2 $ $Date: 2001/05/12 17:25:53 $
+ * @version $Revision: 1.3 $ $Date: 2001/05/22 04:06:27 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1160,7 +1161,17 @@ public class Digester extends DefaultHandler {
     }
 
 
-    // ------------------------------------------------------ Protected Methods
+    // -------------------------------------------------------- Package Methods
+
+
+    /**
+     * Return the set of DTD URL registrations, keyed by public identifier.
+     */
+    Map getRegistrations() {
+
+        return (dtds);
+
+    }
 
 
     /**
@@ -1173,7 +1184,7 @@ public class Digester extends DefaultHandler {
      *
      * @param match The current match position
      */
-    protected List getRules(String match) {
+    List getRules(String match) {
 
         List rulesList = (List) this.rules.get(match);
 	if (rulesList == null) {
