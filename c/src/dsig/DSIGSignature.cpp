@@ -834,12 +834,15 @@ void DSIGSignature::load(void) {
 		tmpElt = findNextElementChild(tmpElt);
 
 	}
+/*
+	* Strictly speaking, this should remain, but it causes too many problems with non
+	* conforming signatures
 
 	if (tmpElt != 0) {
 		throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
 			"DSIGSignature::load - Unexpected (non Object) Element found at end of signature");
 	}
-
+*/
 }
 
 unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf, 
