@@ -109,8 +109,9 @@ void TXFMURL::setInput(const XMLCh * URL) {
 
 	// Assume we have already checked that this is a valid URL
 
-	
-	is = mp_resolver->resolveURI(URL);
+
+	if (mp_resolver != NULL)
+		is = mp_resolver->resolveURI(URL);
 
 	if (is == NULL) {
 
@@ -121,6 +122,14 @@ void TXFMURL::setInput(const XMLCh * URL) {
 
 }
 
+void TXFMURL::setInput(BinInputStream * inputStream) {
+
+	if (is != NULL)
+		delete is;
+
+	is = inputStream;
+
+}
 
 	// Methods to get tranform output type and input requirement
 

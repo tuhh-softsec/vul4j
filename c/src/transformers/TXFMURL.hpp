@@ -74,7 +74,9 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 /**
- * \brief Base transformer for URL inputs to chains
+ * \brief Base transformer for URL inputs to chains.  Also used to
+ * provide a method to provide a BinInputStream as an input method
+ *
  * @ingroup internal
  */
 
@@ -98,6 +100,7 @@ public:
 
 	virtual void setInput(TXFMBase *newInput);
 	void setInput(const XMLCh * URL);
+	void setInput(XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * inputStream);
 
 	// Methods to get tranform output type and input requirement
 
