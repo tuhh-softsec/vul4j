@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.8 2001/08/25 15:20:59 jvanzyl Exp $
- * $Revision: 1.8 $
- * $Date: 2001/08/25 15:20:59 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.9 2001/08/25 20:30:16 craigmcc Exp $
+ * $Revision: 1.9 $
+ * $Date: 2001/08/25 20:30:16 $
  *
  * ====================================================================
  *
@@ -77,7 +77,7 @@ import org.apache.commons.beanutils.ConvertUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.8 $ $Date: 2001/08/25 15:20:59 $
+ * @version $Revision: 1.9 $ $Date: 2001/08/25 20:30:16 $
  */
 
 public class CallMethodRule extends Rule {
@@ -231,7 +231,7 @@ public class CallMethodRule extends Rule {
     public void body(String bodyText) throws Exception {
 
 	if (paramCount == 0)
-	    this.bodyText = bodyText;
+	    this.bodyText = bodyText.trim();
 
     }
 
@@ -244,22 +244,34 @@ public class CallMethodRule extends Rule {
 	// Retrieve or construct the parameter values array
 	String parameters[] = null;
 	if (paramCount > 0) {
-	    parameters = (String[]) digester.popParams();
          
-         // In the case where the parameter for the method
-         // is taken from an attribute, and that attribute
-         // isn't actually defined in the source XML file.
-         if (paramCount == 1 && parameters[0] == null) {
-             return;
-         }             
-     }         
-	else {
+	    parameters = (String[]) digester.popParams();
+
+            // In the case where the parameter for the method
+            // is taken from an attribute, and that attribute
+            // isn't actually defined in the source XML file,
+            // skip the method call
+            if (paramCount == 1 && parameters[0] == null) {
+                return;
+            }             
+
+        } else {
+
+            // In the case where the parameter for the method
+            // is taken from the body text, but there is no
+            // body text included in the source XML file,
+            // skip the method call
+            if (bodyText == null) {
+                return;
+            }
+
 	    parameters = new String[1];
 	    parameters[0] = bodyText;
             if (paramTypes.length == 0) {
                 paramTypes = new Class[1];
                 paramTypes[0] = "abc".getClass();
             }
+
         }
 
 	// Construct the parameter values array we will need
