@@ -25,7 +25,6 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
 import org.apache.xml.security.keys.content.keyvalues.RSAKeyValue;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -104,14 +103,12 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
 
       XMLUtils.addReturnToElement(this._constructionElement);
 
-      if (JavaUtils.implementsInterface(
-              pk, "java.security.interfaces.DSAPublicKey")) {
+      if (pk instanceof java.security.interfaces.DSAPublicKey) {
          DSAKeyValue dsa = new DSAKeyValue(this._doc, pk);
 
          this._constructionElement.appendChild(dsa.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
-      } else if (JavaUtils.implementsInterface(
-              pk, "java.security.interfaces.RSAPublicKey")) {
+      } else if (pk instanceof java.security.interfaces.RSAPublicKey) {
          RSAKeyValue rsa = new RSAKeyValue(this._doc, pk);
 
          this._constructionElement.appendChild(rsa.getElement());
@@ -134,7 +131,7 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method getPublicKey
     *
-    * @return
+    * @return the public key
     * @throws XMLSecurityException
     */
    public PublicKey getPublicKey() throws XMLSecurityException {

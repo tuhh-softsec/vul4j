@@ -30,7 +30,6 @@ import java.security.spec.RSAPublicKeySpec;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.I18n;
-import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -90,8 +89,7 @@ public class RSAKeyValue extends SignatureElementProxy
 
       XMLUtils.addReturnToElement(this._constructionElement);
 
-      if (JavaUtils.implementsInterface(
-              key, "java.security.interfaces.RSAPublicKey")) {
+      if (key instanceof java.security.interfaces.RSAPublicKey ) {
          this.addBigIntegerElement(((RSAPublicKey) key).getModulus(),
                                    Constants._TAG_MODULUS);
          this.addBigIntegerElement(((RSAPublicKey) key).getPublicExponent(),

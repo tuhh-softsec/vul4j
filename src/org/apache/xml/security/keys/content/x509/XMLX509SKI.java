@@ -28,7 +28,6 @@ import java.lang.reflect.Method;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -104,7 +103,7 @@ public class XMLX509SKI extends SignatureElementProxy
    /**
     * Method getSKIBytes
     *
-    * @return
+    * @return the skibytes
     * @throws XMLSecurityException
     */
    public byte[] getSKIBytes() throws XMLSecurityException {
@@ -115,7 +114,7 @@ public class XMLX509SKI extends SignatureElementProxy
     * Method getSKIBytesFromCert
     *
     * @param cert
-    * @return
+    * @return sky bytes from the given certificate
     *
     * @throws XMLSecurityException
     * @see java.security.cert.X509Extension#getExtensionValue(java.lang.String)
@@ -214,7 +213,7 @@ public class XMLX509SKI extends SignatureElementProxy
       XMLX509SKI other = (XMLX509SKI) obj;
 
       try {
-         return JavaUtils.binaryCompare(other.getSKIBytes(),
+         return java.security.MessageDigest.isEqual(other.getSKIBytes(),
                                         this.getSKIBytes());
       } catch (XMLSecurityException ex) {
          return false;

@@ -26,7 +26,6 @@ import java.security.cert.X509Certificate;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -93,7 +92,7 @@ public class XMLX509Certificate extends SignatureElementProxy
    /**
     * Method getCertificateBytes
     *
-    * @return
+    * @return the certificate bytes
     * @throws XMLSecurityException
     */
    public byte[] getCertificateBytes() throws XMLSecurityException {
@@ -103,7 +102,7 @@ public class XMLX509Certificate extends SignatureElementProxy
    /**
     * Method getX509Certificate
     *
-    * @return
+    * @return the x509 certificate
     * @throws XMLSecurityException
     */
    public X509Certificate getX509Certificate() throws XMLSecurityException {
@@ -129,7 +128,7 @@ public class XMLX509Certificate extends SignatureElementProxy
    /**
     * Method getPublicKey
     *
-    * @return
+    * @return teh publickey
     * @throws XMLSecurityException
     */
    public PublicKey getPublicKey() throws XMLSecurityException {
@@ -154,7 +153,7 @@ public class XMLX509Certificate extends SignatureElementProxy
          XMLX509Certificate other = (XMLX509Certificate) obj;
 
          /** $todo$ or should be create X509Certificates and use the equals() from the Certs */
-         return JavaUtils.binaryCompare(other.getCertificateBytes(),
+         return java.security.MessageDigest.isEqual(other.getCertificateBytes(),
                                         this.getCertificateBytes());
       } catch (XMLSecurityException ex) {
          return false;

@@ -30,7 +30,6 @@ import java.security.spec.InvalidKeySpecException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.I18n;
-import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -94,8 +93,7 @@ public class DSAKeyValue extends SignatureElementProxy
 
       XMLUtils.addReturnToElement(this._constructionElement);
 
-      if (JavaUtils.implementsInterface(
-              key, "java.security.interfaces.DSAPublicKey")) {
+      if (key instanceof java.security.interfaces.DSAPublicKey) {
          this.addBigIntegerElement(((DSAPublicKey) key).getParams().getP(),
                                    Constants._TAG_P);
          this.addBigIntegerElement(((DSAPublicKey) key).getParams().getQ(),
