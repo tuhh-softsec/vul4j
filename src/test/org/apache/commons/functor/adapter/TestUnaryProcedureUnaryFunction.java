@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestUnaryProcedureUnaryFunction.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestUnaryProcedureUnaryFunction.java,v 1.4 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,11 +62,11 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryProcedureUnaryFunction extends BaseFunctorTest {
@@ -112,9 +112,9 @@ public class TestUnaryProcedureUnaryFunction extends BaseFunctorTest {
         UnaryFunction f = new UnaryProcedureUnaryFunction(new NoOp());
         assertEquals(f,f);
         assertObjectsAreEqual(f,new UnaryProcedureUnaryFunction(new NoOp()));
-        assertObjectsAreNotEqual(f,new ConstantFunction("x"));
+        assertObjectsAreNotEqual(f,new Constant("x"));
         assertObjectsAreNotEqual(f,new UnaryProcedureUnaryFunction(new UnaryProcedure() { public void run(Object a) { } }));
-        assertObjectsAreNotEqual(f,new ConstantFunction(null));
+        assertObjectsAreNotEqual(f,new Constant(null));
         assertObjectsAreNotEqual(f,new UnaryProcedureUnaryFunction(null));
         assertObjectsAreEqual(new UnaryProcedureUnaryFunction(null),new UnaryProcedureUnaryFunction(null));
     }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalPredicate.java,v 1.2 2003/03/04 23:11:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalPredicate.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,10 +60,10 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:11 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalPredicate extends BaseFunctorTest {
@@ -84,9 +84,9 @@ public class TestConditionalPredicate extends BaseFunctorTest {
 
     protected Object makeFunctor() {
         return new ConditionalPredicate(
-            new ConstantPredicate(true),
-            new ConstantPredicate(false),
-            new ConstantPredicate(true));
+            new Constant(true),
+            new Constant(false),
+            new Constant(true));
     }
 
     // Lifecycle
@@ -106,49 +106,49 @@ public class TestConditionalPredicate extends BaseFunctorTest {
     public void testTest() throws Exception {
         {
             ConditionalPredicate p = new ConditionalPredicate(
-                new ConstantPredicate(true),
-                new ConstantPredicate(true),
-                new ConstantPredicate(false));
+                new Constant(true),
+                new Constant(true),
+                new Constant(false));
             assertTrue(p.test());
         }
         {
             ConditionalPredicate p = new ConditionalPredicate(
-                new ConstantPredicate(false),
-                new ConstantPredicate(true),
-                new ConstantPredicate(false));
+                new Constant(false),
+                new Constant(true),
+                new Constant(false));
             assertTrue(!p.test());
         }
     }
     
     public void testEquals() throws Exception {
         ConditionalPredicate p = new ConditionalPredicate(
-            new ConstantPredicate(true),
-            new ConstantPredicate(true),
-            new ConstantPredicate(false));
+            new Constant(true),
+            new Constant(true),
+            new Constant(false));
         assertEquals(p,p);
         assertObjectsAreEqual(p,new ConditionalPredicate(
-            new ConstantPredicate(true),
-            new ConstantPredicate(true),
-            new ConstantPredicate(false)));
+            new Constant(true),
+            new Constant(true),
+            new Constant(false)));
         assertObjectsAreNotEqual(p,new ConditionalPredicate(
-            new ConstantPredicate(true),
-            new ConstantPredicate(false),
-            new ConstantPredicate(true)));
+            new Constant(true),
+            new Constant(false),
+            new Constant(true)));
         assertObjectsAreNotEqual(p,new ConditionalPredicate(
-            new ConstantPredicate(true),
-            new ConstantPredicate(true),
-            new ConstantPredicate(true)));
+            new Constant(true),
+            new Constant(true),
+            new Constant(true)));
         assertObjectsAreNotEqual(p,new ConditionalPredicate(
             null,
-            new ConstantPredicate(true),
-            new ConstantPredicate(true)));
+            new Constant(true),
+            new Constant(true)));
         assertObjectsAreNotEqual(p,new ConditionalPredicate(
-            new ConstantPredicate(true),
+            new Constant(true),
             null,
-            new ConstantPredicate(true)));
+            new Constant(true)));
         assertObjectsAreNotEqual(p,new ConditionalPredicate(
-            new ConstantPredicate(true),
-            new ConstantPredicate(true),
+            new Constant(true),
+            new Constant(true),
             null));
     }
 }

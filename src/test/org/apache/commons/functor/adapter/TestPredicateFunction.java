@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestPredicateFunction.java,v 1.2 2003/03/04 23:11:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestPredicateFunction.java,v 1.3 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Function;
-import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:12 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestPredicateFunction extends BaseFunctorTest {
@@ -85,7 +84,7 @@ public class TestPredicateFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new PredicateFunction(new ConstantPredicate(true));
+        return new PredicateFunction(new Constant(true));
     }
 
     // Lifecycle
@@ -103,21 +102,21 @@ public class TestPredicateFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testTestWhenTrue() throws Exception {
-        Function f = new PredicateFunction(new ConstantPredicate(true));
+        Function f = new PredicateFunction(new Constant(true));
         assertEquals(Boolean.TRUE,f.evaluate());
     }
     
     public void testTestWhenFalse() throws Exception {
-        Function f = new PredicateFunction(new ConstantPredicate(false));
+        Function f = new PredicateFunction(new Constant(false));
         assertEquals(Boolean.FALSE,f.evaluate());
     }
 
     public void testEquals() throws Exception {
-        Function f = new PredicateFunction(new ConstantPredicate(true));
+        Function f = new PredicateFunction(new Constant(true));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new PredicateFunction(new ConstantPredicate(true)));
-        assertObjectsAreNotEqual(f,new ConstantFunction("x"));
-        assertObjectsAreNotEqual(f,new PredicateFunction(new ConstantPredicate(false)));
+        assertObjectsAreEqual(f,new PredicateFunction(new Constant(true)));
+        assertObjectsAreNotEqual(f,new Constant("x"));
+        assertObjectsAreNotEqual(f,new PredicateFunction(new Constant(false)));
         assertObjectsAreNotEqual(f,new PredicateFunction(null));
         assertObjectsAreEqual(new PredicateFunction(null),new PredicateFunction(null));
     }
@@ -127,6 +126,6 @@ public class TestPredicateFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(PredicateFunction.adapt(new ConstantPredicate(true)));
+        assertNotNull(PredicateFunction.adapt(new Constant(true)));
     }
 }

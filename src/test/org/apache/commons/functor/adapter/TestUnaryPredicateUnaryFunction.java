@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestUnaryPredicateUnaryFunction.java,v 1.2 2003/01/28 12:00:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestUnaryPredicateUnaryFunction.java,v 1.3 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:30 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryPredicateUnaryFunction extends BaseFunctorTest {
@@ -85,7 +84,7 @@ public class TestUnaryPredicateUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryPredicateUnaryFunction(new ConstantPredicate(true));
+        return new UnaryPredicateUnaryFunction(new Constant(true));
     }
 
     // Lifecycle
@@ -103,21 +102,21 @@ public class TestUnaryPredicateUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testTestWhenTrue() throws Exception {
-        UnaryFunction f = new UnaryPredicateUnaryFunction(new ConstantPredicate(true));
+        UnaryFunction f = new UnaryPredicateUnaryFunction(new Constant(true));
         assertEquals(Boolean.TRUE,f.evaluate(null));
     }
     
     public void testTestWhenFalse() throws Exception {
-        UnaryFunction f = new UnaryPredicateUnaryFunction(new ConstantPredicate(false));
+        UnaryFunction f = new UnaryPredicateUnaryFunction(new Constant(false));
         assertEquals(Boolean.FALSE,f.evaluate(null));
     }
 
     public void testEquals() throws Exception {
-        UnaryFunction f = new UnaryPredicateUnaryFunction(new ConstantPredicate(true));
+        UnaryFunction f = new UnaryPredicateUnaryFunction(new Constant(true));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new UnaryPredicateUnaryFunction(new ConstantPredicate(true)));
-        assertObjectsAreNotEqual(f,new ConstantFunction("x"));
-        assertObjectsAreNotEqual(f,new UnaryPredicateUnaryFunction(new ConstantPredicate(false)));
+        assertObjectsAreEqual(f,new UnaryPredicateUnaryFunction(new Constant(true)));
+        assertObjectsAreNotEqual(f,new Constant("x"));
+        assertObjectsAreNotEqual(f,new UnaryPredicateUnaryFunction(new Constant(false)));
         assertObjectsAreNotEqual(f,new UnaryPredicateUnaryFunction(null));
         assertObjectsAreEqual(new UnaryPredicateUnaryFunction(null),new UnaryPredicateUnaryFunction(null));
     }
@@ -127,6 +126,6 @@ public class TestUnaryPredicateUnaryFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(UnaryPredicateUnaryFunction.adapt(new ConstantPredicate(true)));
+        assertNotNull(UnaryPredicateUnaryFunction.adapt(new Constant(true)));
     }
 }

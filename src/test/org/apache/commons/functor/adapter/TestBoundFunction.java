@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundFunction.java,v 1.4 2003/12/02 17:06:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundFunction.java,v 1.5 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Function;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 17:06:29 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestBoundFunction extends BaseFunctorTest {
@@ -111,9 +111,9 @@ public class TestBoundFunction extends BaseFunctorTest {
         Function f = new BoundFunction(new Identity(),"xyzzy");
         assertEquals(f,f);
         assertObjectsAreEqual(f,new BoundFunction(new Identity(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new ConstantFunction("xyzzy"));
+        assertObjectsAreNotEqual(f,new Constant("xyzzy"));
         assertObjectsAreNotEqual(f,new BoundFunction(new Identity(),"foo"));
-        assertObjectsAreNotEqual(f,new BoundFunction(new ConstantFunction("xyzzy"),"foo"));
+        assertObjectsAreNotEqual(f,new BoundFunction(new Constant("xyzzy"),"foo"));
         assertObjectsAreNotEqual(f,new BoundFunction(null,"xyzzy"));
         assertObjectsAreNotEqual(f,new BoundFunction(new Identity(),null));
         assertObjectsAreEqual(new BoundFunction(null,null),new BoundFunction(null,null));

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestDoWhileProcedure.java,v 1.1 2003/11/11 23:36:00 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestDoWhileProcedure.java,v 1.2 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Predicate;
 import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.adapter.BoundPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.NoOp;
 import org.apache.commons.functor.core.collection.IsEmpty;
 
@@ -71,7 +71,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/11/11 23:36:00 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/02 17:43:10 $
  * @author Herve Quiroz
  */
 public class TestDoWhileProcedure extends BaseFunctorTest {
@@ -91,7 +91,7 @@ public class TestDoWhileProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new DoWhileProcedure(new NoOp(), new ConstantPredicate(false));
+        return new DoWhileProcedure(new NoOp(), new Constant(false));
     }
 
     // Lifecycle
@@ -165,7 +165,7 @@ public class TestDoWhileProcedure extends BaseFunctorTest {
     public void testLoopForNothing() {
         List list=getList();
         Procedure action=new ListRemoveFirstProcedure(list);
-        Procedure procedure=new DoWhileProcedure(action, new ConstantPredicate(false));
+        Procedure procedure=new DoWhileProcedure(action, new Constant(false));
         assertTrue("The list should contain 4 elements before runnning the loop", list.size()==4);
         procedure.run();
         assertTrue("The list should contain 3 elements after runnning the loop", list.size()==3);

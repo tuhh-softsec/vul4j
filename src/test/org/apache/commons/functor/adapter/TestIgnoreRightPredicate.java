@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreRightPredicate.java,v 1.2 2003/12/02 17:06:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreRightPredicate.java,v 1.3 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/12/02 17:06:29 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestIgnoreRightPredicate extends BaseFunctorTest {
@@ -85,7 +85,7 @@ public class TestIgnoreRightPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IgnoreRightPredicate(new ConstantPredicate(true));
+        return new IgnoreRightPredicate(new Constant(true));
     }
 
     // Lifecycle
@@ -112,9 +112,9 @@ public class TestIgnoreRightPredicate extends BaseFunctorTest {
         BinaryPredicate p = new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new Identity()));
         assertEquals(p,p);
         assertObjectsAreEqual(p,new IgnoreRightPredicate(new UnaryFunctionUnaryPredicate(new Identity())));
-        assertObjectsAreNotEqual(p,new ConstantPredicate(true));
-        assertObjectsAreNotEqual(p,new IgnoreRightPredicate(new ConstantPredicate(false)));
-        assertObjectsAreNotEqual(p,new ConstantPredicate(false));
+        assertObjectsAreNotEqual(p,new Constant(true));
+        assertObjectsAreNotEqual(p,new IgnoreRightPredicate(new Constant(false)));
+        assertObjectsAreNotEqual(p,new Constant(false));
         assertObjectsAreEqual(new IgnoreRightPredicate(null),new IgnoreRightPredicate(null));
     }
 
@@ -123,6 +123,6 @@ public class TestIgnoreRightPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(IgnoreRightPredicate.adapt(new ConstantPredicate(true)));
+        assertNotNull(IgnoreRightPredicate.adapt(new Constant(true)));
     }
 }

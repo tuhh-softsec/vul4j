@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIdentity.java,v 1.1 2003/12/02 17:06:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIdentity.java,v 1.2 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/12/02 17:06:29 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestIdentity extends BaseFunctorTest {
@@ -132,7 +132,7 @@ public class TestIdentity extends BaseFunctorTest {
         assertEquals(f,f);
         assertObjectsAreEqual(f,new Identity());
         assertObjectsAreEqual(f,Identity.instance());
-        assertObjectsAreNotEqual(f,new ConstantFunction("abcde"));
+        assertObjectsAreNotEqual(f,new Constant("abcde"));
     }
     
     public void testConstant() throws Exception {

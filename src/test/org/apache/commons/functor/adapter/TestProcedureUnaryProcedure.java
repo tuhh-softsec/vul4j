@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestProcedureUnaryProcedure.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestProcedureUnaryProcedure.java,v 1.4 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestProcedureUnaryProcedure extends BaseFunctorTest {
@@ -103,7 +103,7 @@ public class TestProcedureUnaryProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testEvaluate() throws Exception {
-        UnaryProcedure p = new ProcedureUnaryProcedure(new FunctionProcedure(new ConstantFunction(null)));
+        UnaryProcedure p = new ProcedureUnaryProcedure(new FunctionProcedure(new Constant(null)));
         p.run(Boolean.TRUE);
     }
     

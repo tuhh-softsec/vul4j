@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalBinaryProcedure.java,v 1.4 2003/12/02 16:38:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalBinaryProcedure.java,v 1.5 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,12 +61,12 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryProcedure;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.LeftIdentity;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 16:38:45 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalBinaryProcedure extends BaseFunctorTest {
@@ -87,7 +87,7 @@ public class TestConditionalBinaryProcedure extends BaseFunctorTest {
 
     protected Object makeFunctor() {
         return new ConditionalBinaryProcedure(
-            new ConstantPredicate(true),
+            new Constant(true),
             new NoOp(),
             new NoOp());
     }
@@ -137,7 +137,7 @@ public class TestConditionalBinaryProcedure extends BaseFunctorTest {
             new NoOp(),
             new NoOp()));
         assertObjectsAreNotEqual(p,new ConditionalBinaryProcedure(
-            new ConstantPredicate(true),
+            new Constant(true),
             new NoOp(),
             new NoOp()));
         assertObjectsAreNotEqual(p,new ConditionalBinaryProcedure(

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestProcedureFunction.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestProcedureFunction.java,v 1.4 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,11 +62,11 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Function;
 import org.apache.commons.functor.Procedure;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestProcedureFunction extends BaseFunctorTest {
@@ -112,9 +112,9 @@ public class TestProcedureFunction extends BaseFunctorTest {
         Function f = new ProcedureFunction(new NoOp());
         assertEquals(f,f);
         assertObjectsAreEqual(f,new ProcedureFunction(new NoOp()));
-        assertObjectsAreNotEqual(f,new ConstantFunction("x"));
+        assertObjectsAreNotEqual(f,new Constant("x"));
         assertObjectsAreNotEqual(f,new ProcedureFunction(new Procedure() { public void run() { } }));
-        assertObjectsAreNotEqual(f,new ConstantFunction(null));
+        assertObjectsAreNotEqual(f,new Constant(null));
         assertObjectsAreNotEqual(f,new ProcedureFunction(null));
         assertObjectsAreEqual(new ProcedureFunction(null),new ProcedureFunction(null));
     }

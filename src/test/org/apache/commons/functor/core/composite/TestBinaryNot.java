@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.2 2003/11/24 20:31:20 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,10 +61,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/24 20:31:20 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryNot extends BaseFunctorTest {
@@ -84,7 +84,7 @@ public class TestBinaryNot extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryNot(new ConstantPredicate(true));
+        return new BinaryNot(new Constant(true));
     }
 
     // Lifecycle
@@ -102,19 +102,19 @@ public class TestBinaryNot extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testTest() throws Exception {
-        BinaryPredicate truePred = new BinaryNot(new ConstantPredicate(false));
+        BinaryPredicate truePred = new BinaryNot(new Constant(false));
         assertTrue(truePred.test(null,null));
         assertTrue(truePred.test("xyzzy","abcde"));
         assertTrue(truePred.test("xyzzy",new Integer(3)));
     }
     
     public void testEquals() throws Exception {
-        BinaryNot p = new BinaryNot(ConstantPredicate.trueInstance());
+        BinaryNot p = new BinaryNot(Constant.trueInstance());
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryNot(new ConstantPredicate(true)));
-        assertObjectsAreEqual(p,BinaryNot.not(new ConstantPredicate(true)));
-        assertObjectsAreNotEqual(p,new BinaryNot(new ConstantPredicate(false)));
-        assertObjectsAreNotEqual(p,ConstantPredicate.trueInstance());
+        assertObjectsAreEqual(p,new BinaryNot(new Constant(true)));
+        assertObjectsAreEqual(p,BinaryNot.not(new Constant(true)));
+        assertObjectsAreNotEqual(p,new BinaryNot(new Constant(false)));
+        assertObjectsAreNotEqual(p,Constant.trueInstance());
         assertObjectsAreNotEqual(p,new BinaryNot(null));
     }
 
@@ -123,6 +123,6 @@ public class TestBinaryNot extends BaseFunctorTest {
     }
 
     public void testNotNotNull() throws Exception {
-        assertNotNull(BinaryNot.not(ConstantPredicate.trueInstance()));
+        assertNotNull(BinaryNot.not(Constant.trueInstance()));
     }
 }

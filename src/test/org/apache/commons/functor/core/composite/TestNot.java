@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestNot.java,v 1.2 2003/11/24 20:31:20 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestNot.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,10 +61,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Predicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/24 20:31:20 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestNot extends BaseFunctorTest {
@@ -84,7 +84,7 @@ public class TestNot extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new Not(new ConstantPredicate(true));
+        return new Not(new Constant(true));
     }
 
     // Lifecycle
@@ -102,17 +102,17 @@ public class TestNot extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testTest() throws Exception {
-        Predicate truePred = new Not(new ConstantPredicate(false));
+        Predicate truePred = new Not(new Constant(false));
         assertTrue(truePred.test());
     }
     
     public void testEquals() throws Exception {
-        Not p = new Not(ConstantPredicate.trueInstance());
+        Not p = new Not(Constant.trueInstance());
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new Not(new ConstantPredicate(true)));
-        assertObjectsAreEqual(p,Not.not(new ConstantPredicate(true)));
-        assertObjectsAreNotEqual(p,new Not(new ConstantPredicate(false)));
-        assertObjectsAreNotEqual(p,ConstantPredicate.trueInstance());
+        assertObjectsAreEqual(p,new Not(new Constant(true)));
+        assertObjectsAreEqual(p,Not.not(new Constant(true)));
+        assertObjectsAreNotEqual(p,new Not(new Constant(false)));
+        assertObjectsAreNotEqual(p,Constant.trueInstance());
         assertObjectsAreNotEqual(p,new Not(null));
     }
 
@@ -121,6 +121,6 @@ public class TestNot extends BaseFunctorTest {
     }
 
     public void testNotNotNull() throws Exception {
-        assertNotNull(Not.not(ConstantPredicate.trueInstance()));
+        assertNotNull(Not.not(Constant.trueInstance()));
     }
 }

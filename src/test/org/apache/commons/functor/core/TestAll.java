@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.11 2003/12/02 17:06:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.12 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.11 $ $Date: 2003/12/02 17:06:29 $
+ * @version $Revision: 1.12 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -72,25 +72,27 @@ public class TestAll extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
-        suite.addTest(TestConstantFunction.suite());
-        suite.addTest(TestConstantPredicate.suite());
-
+        suite.addTest(TestNoOp.suite());
+        suite.addTest(TestConstant.suite());
         suite.addTest(TestIdentity.suite());
         suite.addTest(TestLeftIdentity.suite());
         suite.addTest(TestRightIdentity.suite());
 
-        suite.addTest(TestNoOp.suite());
+        suite.addTest(TestConstantFunction.suite());
+        suite.addTest(TestConstantPredicate.suite());
         suite.addTest(TestIdentityFunction.suite());
         suite.addTest(TestLeftIdentityFunction.suite());
         suite.addTest(TestRightIdentityFunction.suite());
+        suite.addTest(TestIdentityPredicate.suite());
+        suite.addTest(TestLeftIdentityPredicate.suite());
+        suite.addTest(TestRightIdentityPredicate.suite());
+
         suite.addTest(TestIsInstanceOf.suite());
         suite.addTest(TestIsNull.suite());
         suite.addTest(TestIsNotNull.suite());
         suite.addTest(TestIsEqual.suite());
         suite.addTest(TestIsNotEqual.suite());
-        suite.addTest(TestIdentityPredicate.suite());
-        suite.addTest(TestLeftIdentityPredicate.suite());
-        suite.addTest(TestRightIdentityPredicate.suite());
+
         suite.addTest(TestLimit.suite());
         suite.addTest(TestOffset.suite());
 

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.8 2003/12/02 17:06:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.9 2003/12/02 17:43:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -74,7 +74,7 @@ import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.IgnoreLeftFunction;
 import org.apache.commons.functor.adapter.UnaryProcedureUnaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 import org.apache.commons.functor.core.IsInstanceOf;
 import org.apache.commons.functor.core.IsNull;
@@ -96,7 +96,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  */
  
 /**
- * @version $Revision: 1.8 $ $Date: 2003/12/02 17:06:30 $
+ * @version $Revision: 1.9 $ $Date: 2003/12/02 17:43:12 $
  * @author Rodney Waldhoff
  */
 public class FlexiMapExample extends TestCase {
@@ -487,7 +487,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * returning our default when the value is otherwise null,
                      */      
-					new ConstantFunction(defaultValue),
+					new Constant(defaultValue),
                     /*
                      * and passing through all non-null values.
                      */      

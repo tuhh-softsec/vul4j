@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestTransposedPredicate.java,v 1.4 2003/12/02 16:38:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestTransposedPredicate.java,v 1.5 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,11 +62,11 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.adapter.BinaryFunctionBinaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.LeftIdentity;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 16:38:45 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestTransposedPredicate extends BaseFunctorTest {
@@ -86,7 +86,7 @@ public class TestTransposedPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new TransposedPredicate(ConstantPredicate.trueInstance());
+        return new TransposedPredicate(Constant.trueInstance());
     }
 
     // Lifecycle
@@ -110,13 +110,13 @@ public class TestTransposedPredicate extends BaseFunctorTest {
     }
         
     public void testEquals() throws Exception {
-        BinaryPredicate p = new TransposedPredicate(ConstantPredicate.trueInstance());
+        BinaryPredicate p = new TransposedPredicate(Constant.trueInstance());
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new TransposedPredicate(ConstantPredicate.trueInstance()));
-        assertObjectsAreEqual(p,TransposedPredicate.transpose(ConstantPredicate.trueInstance()));
-        assertObjectsAreNotEqual(p,new TransposedPredicate(ConstantPredicate.falseInstance()));
+        assertObjectsAreEqual(p,new TransposedPredicate(Constant.trueInstance()));
+        assertObjectsAreEqual(p,TransposedPredicate.transpose(Constant.trueInstance()));
+        assertObjectsAreNotEqual(p,new TransposedPredicate(Constant.falseInstance()));
         assertObjectsAreNotEqual(p,new TransposedPredicate(null));
-        assertObjectsAreNotEqual(p,new ConstantPredicate(true));
+        assertObjectsAreNotEqual(p,new Constant(true));
     }
 
     public void testTransposeNull() throws Exception {
@@ -124,6 +124,6 @@ public class TestTransposedPredicate extends BaseFunctorTest {
     }
 
     public void testTranspose() throws Exception {
-        assertNotNull(TransposedPredicate.transpose(new ConstantPredicate(true)));
+        assertNotNull(TransposedPredicate.transpose(new Constant(true)));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestFunctionProcedure.java,v 1.2 2003/02/24 11:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestFunctionProcedure.java,v 1.3 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,11 +62,11 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Function;
 import org.apache.commons.functor.Procedure;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/02/24 11:48:08 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestFunctionProcedure extends BaseFunctorTest {
@@ -86,7 +86,7 @@ public class TestFunctionProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new FunctionProcedure(new ConstantFunction("K"));
+        return new FunctionProcedure(new Constant("K"));
     }
 
     // Lifecycle
@@ -118,12 +118,12 @@ public class TestFunctionProcedure extends BaseFunctorTest {
     }
 
     public void testEquals() throws Exception {
-        Procedure p = new FunctionProcedure(new ConstantFunction("K"));
+        Procedure p = new FunctionProcedure(new Constant("K"));
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new FunctionProcedure(new ConstantFunction("K")));
+        assertObjectsAreEqual(p,new FunctionProcedure(new Constant("K")));
         assertObjectsAreNotEqual(p,new NoOp());
         assertObjectsAreNotEqual(p,new FunctionProcedure(null));
-        assertObjectsAreNotEqual(p,new FunctionProcedure(new ConstantFunction("J")));
+        assertObjectsAreNotEqual(p,new FunctionProcedure(new Constant("J")));
         assertObjectsAreEqual(new FunctionProcedure(null),new FunctionProcedure(null));
     }
 
@@ -132,6 +132,6 @@ public class TestFunctionProcedure extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(FunctionProcedure.adapt(new ConstantFunction("K")));
+        assertNotNull(FunctionProcedure.adapt(new Constant("K")));
     }
 }

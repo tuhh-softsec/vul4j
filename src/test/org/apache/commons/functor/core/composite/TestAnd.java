@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAnd.java,v 1.2 2003/11/24 20:31:20 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestAnd.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,10 +61,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Predicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/24 20:31:20 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestAnd extends BaseFunctorTest {
@@ -84,7 +84,7 @@ public class TestAnd extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new And(new ConstantPredicate(true),new ConstantPredicate(true));
+        return new And(new Constant(true),new Constant(true));
     }
 
     // Lifecycle
@@ -103,21 +103,21 @@ public class TestAnd extends BaseFunctorTest {
     
     public void testTrue() throws Exception {
         assertTrue((new And()).test());
-        assertTrue((new And(new ConstantPredicate(true))).test());
-        assertTrue((new And(new ConstantPredicate(true),new ConstantPredicate(true))).test());
-        assertTrue((new And(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(true))).test());
+        assertTrue((new And(new Constant(true))).test());
+        assertTrue((new And(new Constant(true),new Constant(true))).test());
+        assertTrue((new And(new Constant(true),new Constant(true),new Constant(true))).test());
         
-        And p = new And(new ConstantPredicate(true));
+        And p = new And(new Constant(true));
         assertTrue(p.test());        
         for(int i=0;i<10;i++) {
-            p.and(new ConstantPredicate(true));
+            p.and(new Constant(true));
             assertTrue(p.test());        
         }
         
-        And q = new And(new ConstantPredicate(true));
+        And q = new And(new Constant(true));
         assertTrue(q.test());        
         for(int i=0;i<10;i++) {
-            q.and(new ConstantPredicate(true));
+            q.and(new Constant(true));
             assertTrue(q.test());        
         }
         
@@ -126,21 +126,21 @@ public class TestAnd extends BaseFunctorTest {
     }
     
     public void testFalse() throws Exception {
-        assertTrue(!(new And(new ConstantPredicate(false))).test());
-        assertTrue(!(new And(new ConstantPredicate(true),new ConstantPredicate(false))).test());
-        assertTrue(!(new And(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(false))).test());
+        assertTrue(!(new And(new Constant(false))).test());
+        assertTrue(!(new And(new Constant(true),new Constant(false))).test());
+        assertTrue(!(new And(new Constant(true),new Constant(true),new Constant(false))).test());
         
-        And p = new And(new ConstantPredicate(false));
+        And p = new And(new Constant(false));
         assertTrue(!p.test());        
         for(int i=0;i<10;i++) {
-            p.and(new ConstantPredicate(false));
+            p.and(new Constant(false));
             assertTrue(!p.test());        
         }
         
-        And q = new And(new ConstantPredicate(true));
+        And q = new And(new Constant(true));
         assertTrue(q.test());        
         for(int i=0;i<10;i++) {
-            q.and(new ConstantPredicate(true));
+            q.and(new Constant(true));
             assertTrue(q.test());        
         }
         
@@ -149,7 +149,7 @@ public class TestAnd extends BaseFunctorTest {
     }
         
     public void testDuplicateAdd() throws Exception {
-        Predicate p = new ConstantPredicate(true);
+        Predicate p = new Constant(true);
         And q = new And(p,p);
         assertTrue(q.test());
         for(int i=0;i<10;i++) {
@@ -165,17 +165,17 @@ public class TestAnd extends BaseFunctorTest {
         assertObjectsAreEqual(p,q);
 
         for(int i=0;i<3;i++) {
-            p.and(ConstantPredicate.trueInstance());
+            p.and(Constant.trueInstance());
             assertObjectsAreNotEqual(p,q);
-            q.and(ConstantPredicate.trueInstance());
+            q.and(Constant.trueInstance());
             assertObjectsAreEqual(p,q);
-            p.and(new And(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
+            p.and(new And(Constant.trueInstance(),Constant.falseInstance()));
             assertObjectsAreNotEqual(p,q);            
-            q.and(new And(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
+            q.and(new And(Constant.trueInstance(),Constant.falseInstance()));
             assertObjectsAreEqual(p,q);            
         }
         
-        assertObjectsAreNotEqual(p,ConstantPredicate.trueInstance());
+        assertObjectsAreNotEqual(p,Constant.trueInstance());
     }
 
 }

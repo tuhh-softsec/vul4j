@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/ConstantFunction.java,v 1.3 2003/12/02 17:43:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Constant.java,v 1.1 2003/12/02 17:43:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,12 +59,18 @@ package org.apache.commons.functor.core;
 import java.io.Serializable;
 
 import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.Function;
+import org.apache.commons.functor.Predicate;
 import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * {@link #evaluate Evaluates} to constant value.
  * <p>
+ * {@link #test Tests} to a constant value, assuming
+ * a boolean of Boolean value is supplied.
+ *
  * Note that although this class implements 
  * {@link Serializable}, a given instance will
  * only be truly <code>Serializable</code> if the
@@ -72,15 +78,18 @@ import org.apache.commons.functor.UnaryFunction;
  * an instance whose value is not 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:12 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 17:43:12 $
  * @author Rodney Waldhoff
- * @deprecated Use {@link Constant}
  */
-public final class ConstantFunction implements Function, UnaryFunction, BinaryFunction, Serializable {
+public final class Constant implements Function, UnaryFunction, BinaryFunction, Predicate, UnaryPredicate, BinaryPredicate, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
-    public ConstantFunction(Object value) {
+    public Constant(boolean value) {
+        this(new Boolean(value));
+    }
+
+    public Constant(Object value) {
         this.value = value;
     }
  
@@ -91,27 +100,39 @@ public final class ConstantFunction implements Function, UnaryFunction, BinaryFu
     }
 
     public Object evaluate(Object obj) {
-        return value;
+        return evaluate();
     }
 
     public Object evaluate(Object left, Object right) {
-        return value;
+        return evaluate();
+    }
+
+    public boolean test() {
+        return ((Boolean)evaluate()).booleanValue();
+    }
+
+    public boolean test(Object obj) {
+        return test();
+    }
+
+    public boolean test(Object left, Object right) {
+        return test();
     }
 
     public boolean equals(Object that) {
-        if(that instanceof ConstantFunction) {
-            return equals((ConstantFunction)that);
+        if(that instanceof Constant) {
+            return equals((Constant)that);
         } else {
             return false;
         }
     }
     
-    public boolean equals(ConstantFunction that) {
+    public boolean equals(Constant that) {
         return (null != that && (null == this.value ? null == that.value : this.value.equals(that.value)));
     }
     
     public int hashCode() {
-        int hash = "ConstantFunction".hashCode();
+        int hash = "Constant".hashCode();
         if(null != value) {
             hash ^= value.hashCode();
         }
@@ -119,11 +140,53 @@ public final class ConstantFunction implements Function, UnaryFunction, BinaryFu
     }
     
     public String toString() {
-        return "ConstantFunction<" + String.valueOf(value) + ">";
+        return "Constant<" + String.valueOf(value) + ">";
     }
     
     // attributes
     // ------------------------------------------------------------------------
     private Object value;
 
+    // static methods
+    // ------------------------------------------------------------------------
+    
+    /** 
+     * Get a <code>Constant</code> that always
+     * returns <code>true</code>
+     * @return a <code>Constant</code> that always
+     *         returns <code>true</code>
+     */
+    public static Constant trueInstance() {
+        return TRUE_PREDICATE;
+    }
+
+    /** 
+     * Get a <code>Constant</code> that always
+     * returns <code>false</code>
+     * @return a <code>Constant</code> that always
+     *         returns <code>false</code>
+     */
+    public static Constant falseInstance() {
+        return FALSE_PREDICATE;
+    }
+    
+    /** 
+     * Get a <code>Constant</code> that always
+     * returns <i>value</i>
+     * @param value the constant value
+     * @return a <code>Constant</code> that always
+     *         returns <i>value</i>
+     */
+    public static Constant instance(boolean value) {
+        return value ? TRUE_PREDICATE : FALSE_PREDICATE;
+    }
+
+    public static Constant instance(Object value) {
+        return new Constant(value);
+    }
+    
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final Constant TRUE_PREDICATE = new Constant(true);
+    private static final Constant FALSE_PREDICATE = new Constant(false);
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestPredicateUnaryPredicate.java,v 1.3 2003/03/04 23:11:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestPredicateUnaryPredicate.java,v 1.4 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,10 +61,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/03/04 23:11:12 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestPredicateUnaryPredicate extends BaseFunctorTest {
@@ -84,7 +84,7 @@ public class TestPredicateUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new PredicateUnaryPredicate(new ConstantPredicate(true));
+        return new PredicateUnaryPredicate(new Constant(true));
     }
 
     // Lifecycle
@@ -102,17 +102,17 @@ public class TestPredicateUnaryPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testEvaluate() throws Exception {
-        UnaryPredicate p = new PredicateUnaryPredicate(new ConstantPredicate(true));
+        UnaryPredicate p = new PredicateUnaryPredicate(new Constant(true));
         assertTrue(p.test(null));
     }
     
     public void testEquals() throws Exception {
-        UnaryPredicate p = new PredicateUnaryPredicate(new ConstantPredicate(true));
+        UnaryPredicate p = new PredicateUnaryPredicate(new Constant(true));
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new PredicateUnaryPredicate(new ConstantPredicate(true)));
-        assertObjectsAreNotEqual(p,new ConstantPredicate(true));
-        assertObjectsAreNotEqual(p,new PredicateUnaryPredicate(new ConstantPredicate(false)));
-        assertObjectsAreNotEqual(p,new ConstantPredicate(false));
+        assertObjectsAreEqual(p,new PredicateUnaryPredicate(new Constant(true)));
+        assertObjectsAreNotEqual(p,new Constant(true));
+        assertObjectsAreNotEqual(p,new PredicateUnaryPredicate(new Constant(false)));
+        assertObjectsAreNotEqual(p,new Constant(false));
         assertObjectsAreEqual(new PredicateUnaryPredicate(null),new PredicateUnaryPredicate(null));
     }
 
@@ -121,6 +121,6 @@ public class TestPredicateUnaryPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(PredicateUnaryPredicate.adapt(new ConstantPredicate(true)));
+        assertNotNull(PredicateUnaryPredicate.adapt(new Constant(true)));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreLeftFunction.java,v 1.2 2003/12/02 17:06:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestIgnoreLeftFunction.java,v 1.3 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/12/02 17:06:29 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestIgnoreLeftFunction extends BaseFunctorTest {
@@ -85,7 +85,7 @@ public class TestIgnoreLeftFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new IgnoreLeftFunction(new ConstantFunction("xyzzy"));
+        return new IgnoreLeftFunction(new Constant("xyzzy"));
     }
 
     // Lifecycle
@@ -111,12 +111,12 @@ public class TestIgnoreLeftFunction extends BaseFunctorTest {
     }
     
     public void testEquals() throws Exception {
-        BinaryFunction f = new IgnoreLeftFunction(new ConstantFunction("xyzzy"));
+        BinaryFunction f = new IgnoreLeftFunction(new Constant("xyzzy"));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new IgnoreLeftFunction(new ConstantFunction("xyzzy")));
-        assertObjectsAreNotEqual(f,new ConstantFunction("x"));
-        assertObjectsAreNotEqual(f,new IgnoreLeftFunction(new ConstantFunction(null)));
-        assertObjectsAreNotEqual(f,new ConstantFunction(null));
+        assertObjectsAreEqual(f,new IgnoreLeftFunction(new Constant("xyzzy")));
+        assertObjectsAreNotEqual(f,new Constant("x"));
+        assertObjectsAreNotEqual(f,new IgnoreLeftFunction(new Constant(null)));
+        assertObjectsAreNotEqual(f,new Constant(null));
         assertObjectsAreNotEqual(f,new IgnoreLeftFunction(null));
         assertObjectsAreEqual(new IgnoreLeftFunction(null),new IgnoreLeftFunction(null));
     }
@@ -126,6 +126,6 @@ public class TestIgnoreLeftFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(IgnoreLeftFunction.adapt(new ConstantFunction("xyzzy")));
+        assertNotNull(IgnoreLeftFunction.adapt(new Constant("xyzzy")));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryNot.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestConstant.java,v 1.1 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,37 +54,35 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core.composite;
+package org.apache.commons.functor.core;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.UnaryPredicate;
-import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
-public class TestUnaryNot extends BaseFunctorTest {
+public class TestConstant extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestUnaryNot(String testName) {
+    public TestConstant(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestUnaryNot.class);
+        return new TestSuite(TestConstant.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryNot(new Constant(true));
+        return new Constant("K");
     }
 
     // Lifecycle
@@ -101,28 +99,72 @@ public class TestUnaryNot extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testTest() throws Exception {
-        UnaryPredicate truePred = new UnaryNot(new Constant(false));
-        assertTrue(truePred.test(null));
-        assertTrue(truePred.test("xyzzy"));
-        assertTrue(truePred.test(new Integer(3)));
+    public void testEvaluate() throws Exception {
+        Constant f = new Constant("xyzzy");
+        assertEquals("xyzzy",f.evaluate());
+        assertEquals("xyzzy",f.evaluate(null));
+        assertEquals("xyzzy",f.evaluate(null,null));
+        assertEquals("xyzzy",f.evaluate());
+        assertEquals("xyzzy",f.evaluate("foo"));
+        assertEquals("xyzzy",f.evaluate("foo",new Integer(2)));
     }
     
+    public void testEvaluateConstantNull() throws Exception {
+        Constant f = new Constant(null);
+        assertNull(f.evaluate());
+        assertNull(f.evaluate(null));
+        assertNull(f.evaluate(null,null));
+        assertNull(f.evaluate());
+        assertNull(f.evaluate("foo"));
+        assertNull(f.evaluate("foo",new Integer(2)));
+    }
+
+    public void testConstantTrue() throws Exception {
+        Constant truePred = new Constant(true);
+        assertTrue(truePred.test());
+        assertTrue(truePred.test(null));
+        assertTrue(truePred.test(null,null));
+
+        assertTrue(truePred.test());
+        assertTrue(truePred.test("foo"));
+        assertTrue(truePred.test("foo",new Integer(2)));
+    }
+    
+    public void testConstantFalse() throws Exception {
+        Constant falsePred = new Constant(false);
+        assertTrue(!falsePred.test());
+        assertTrue(!falsePred.test(null));
+        assertTrue(!falsePred.test(null,null));
+
+        assertTrue(!falsePred.test());
+        assertTrue(!falsePred.test("foo"));
+        assertTrue(!falsePred.test("foo",new Integer(2)));
+    }
+        
     public void testEquals() throws Exception {
-        UnaryNot p = new UnaryNot(Constant.trueInstance());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new UnaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,UnaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new UnaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.trueInstance());
-        assertObjectsAreNotEqual(p,new UnaryNot(null));
-    }
+        Constant f = new Constant("xyzzy");
+        assertEquals(f,f);
 
-    public void testNotNull() throws Exception {
-        assertNull(UnaryNot.not(null));
+        assertObjectsAreEqual(f,new Constant("xyzzy"));
+        assertObjectsAreNotEqual(f,new Constant("abcde"));
+        assertObjectsAreNotEqual(f,new Constant(null));
     }
+    
+    public void testConstants() throws Exception {
+        assertEquals(Constant.instance(true),Constant.instance(Boolean.TRUE));
 
-    public void testNotNotNull() throws Exception {
-        assertNotNull(UnaryNot.not(Constant.trueInstance()));
+        assertEquals(Constant.trueInstance(),Constant.trueInstance());
+        assertSame(Constant.trueInstance(),Constant.trueInstance());
+
+        assertEquals(Constant.instance(true),Constant.trueInstance());
+        assertSame(Constant.instance(true),Constant.trueInstance());
+
+        assertEquals(Constant.falseInstance(),Constant.falseInstance());
+        assertSame(Constant.falseInstance(),Constant.falseInstance());
+
+        assertEquals(Constant.instance(false),Constant.falseInstance());
+        assertSame(Constant.instance(false),Constant.falseInstance());
     }
+    
+    
 }

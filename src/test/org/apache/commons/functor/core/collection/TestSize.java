@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestSize.java,v 1.4 2003/11/24 21:31:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestSize.java,v 1.5 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -67,10 +67,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/24 21:31:30 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestSize extends BaseFunctorTest {
@@ -163,7 +163,7 @@ public class TestSize extends BaseFunctorTest {
         assertObjectsAreEqual(f,new Size());
         assertObjectsAreEqual(f,Size.instance());
         assertSame(Size.instance(),Size.instance());
-        assertObjectsAreNotEqual(f,new ConstantFunction(null));
+        assertObjectsAreNotEqual(f,new Constant(null));
         assertTrue(! f.equals((Size)null) );
     }
 

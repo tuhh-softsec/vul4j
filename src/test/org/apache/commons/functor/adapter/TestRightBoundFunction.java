@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundFunction.java,v 1.5 2003/12/02 16:50:52 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundFunction.java,v 1.6 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,12 +61,12 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.LeftIdentity;
 import org.apache.commons.functor.core.RightIdentity;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2003/12/02 16:50:52 $
+ * @version $Revision: 1.6 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestRightBoundFunction extends BaseFunctorTest {
@@ -112,7 +112,7 @@ public class TestRightBoundFunction extends BaseFunctorTest {
         UnaryFunction f = new RightBoundFunction(new LeftIdentity(),"xyzzy");
         assertEquals(f,f);
         assertObjectsAreEqual(f,new RightBoundFunction(new LeftIdentity(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new ConstantFunction("xyzzy"));
+        assertObjectsAreNotEqual(f,new Constant("xyzzy"));
         assertObjectsAreNotEqual(f,new RightBoundFunction(new RightIdentity(),"xyzzy"));
         assertObjectsAreNotEqual(f,new RightBoundFunction(new LeftIdentity(),"bar"));
         assertObjectsAreNotEqual(f,new RightBoundFunction(null,"xyzzy"));

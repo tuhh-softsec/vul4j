@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryFunction.java,v 1.3 2003/12/02 17:06:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryFunction.java,v 1.4 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,12 +60,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 17:06:30 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalUnaryFunction extends BaseFunctorTest {
@@ -86,9 +85,9 @@ public class TestConditionalUnaryFunction extends BaseFunctorTest {
 
     protected Object makeFunctor() {
         return new ConditionalUnaryFunction(
-            new ConstantPredicate(true),
-            new ConstantFunction("left"),
-            new ConstantFunction("right"));
+            new Constant(true),
+            new Constant("left"),
+            new Constant("right"));
     }
 
     // Lifecycle
@@ -108,8 +107,8 @@ public class TestConditionalUnaryFunction extends BaseFunctorTest {
     public void testEvaluate() throws Exception {
         ConditionalUnaryFunction f = new ConditionalUnaryFunction(
             new Identity(),
-            new ConstantFunction("left"),
-            new ConstantFunction("right"));
+            new Constant("left"),
+            new Constant("right"));
         assertEquals("left",f.evaluate(Boolean.TRUE));
         assertEquals("right",f.evaluate(Boolean.FALSE));
     }
@@ -117,32 +116,32 @@ public class TestConditionalUnaryFunction extends BaseFunctorTest {
     public void testEquals() throws Exception {
         ConditionalUnaryFunction f = new ConditionalUnaryFunction(
             new Identity(),
-            new ConstantFunction("left"),
-            new ConstantFunction("right"));
+            new Constant("left"),
+            new Constant("right"));
         assertEquals(f,f);
         assertObjectsAreEqual(f,new ConditionalUnaryFunction(
             new Identity(),
-            new ConstantFunction("left"),
-            new ConstantFunction("right")));
+            new Constant("left"),
+            new Constant("right")));
         assertObjectsAreNotEqual(f,new ConditionalUnaryFunction(
             new Identity(),
-            new ConstantFunction(null),
-            new ConstantFunction("right")));
+            new Constant(null),
+            new Constant("right")));
         assertObjectsAreNotEqual(f,new ConditionalUnaryFunction(
-            new ConstantPredicate(true),
-            new ConstantFunction("left"),
-            new ConstantFunction("right")));
+            new Constant(true),
+            new Constant("left"),
+            new Constant("right")));
         assertObjectsAreNotEqual(f,new ConditionalUnaryFunction(
             null,
-            new ConstantFunction("left"),
-            new ConstantFunction("right")));
+            new Constant("left"),
+            new Constant("right")));
         assertObjectsAreNotEqual(f,new ConditionalUnaryFunction(
-            new ConstantPredicate(true),
+            new Constant(true),
             null,
-            new ConstantFunction("right")));
+            new Constant("right")));
         assertObjectsAreNotEqual(f,new ConditionalUnaryFunction(
-            new ConstantPredicate(true),
-            new ConstantFunction("left"),
+            new Constant(true),
+            new Constant("left"),
             null));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestFilteredIterator.java,v 1.2 2003/11/25 19:06:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestFilteredIterator.java,v 1.3 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -67,10 +67,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/25 19:06:42 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestFilteredIterator extends BaseFunctorTest {
@@ -89,7 +89,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
     public Object makeFunctor() {
         List list = new ArrayList();
         list.add("xyzzy");        
-        return FilteredIterator.filter(list.iterator(),ConstantPredicate.trueInstance());
+        return FilteredIterator.filter(list.iterator(),Constant.trueInstance());
     }
 
     // Lifecycle
@@ -138,7 +138,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
 
     public void testAllPass2() {
         Iterator expected = list.iterator();
-        Iterator testing = new FilteredIterator(list.iterator(),ConstantPredicate.trueInstance());
+        Iterator testing = new FilteredIterator(list.iterator(),Constant.trueInstance());
         while(expected.hasNext()) {
             assertTrue(testing.hasNext());
             assertEquals(expected.next(),testing.next());
@@ -152,7 +152,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
     }
 
     public void testNonePass() {
-        Iterator testing = new FilteredIterator(Collections.EMPTY_LIST.iterator(),ConstantPredicate.falseInstance());
+        Iterator testing = new FilteredIterator(Collections.EMPTY_LIST.iterator(),Constant.falseInstance());
         assertTrue(!testing.hasNext());
     }
 
@@ -223,7 +223,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
     }
 
     public void testRemoveAll() {
-        Iterator testing = new FilteredIterator(list.iterator(),ConstantPredicate.trueInstance());
+        Iterator testing = new FilteredIterator(list.iterator(),Constant.trueInstance());
         while(testing.hasNext()) {
             testing.next();
             testing.remove();
@@ -232,7 +232,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
     }
 
     public void testRemoveWithoutHasNext() {
-        Iterator testing = new FilteredIterator(list.iterator(),ConstantPredicate.trueInstance());
+        Iterator testing = new FilteredIterator(list.iterator(),Constant.trueInstance());
         for(int i=0,m = list.size();i<m;i++) {
             testing.next();
             testing.remove();
@@ -241,7 +241,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
     }
     
     public void testFilterWithNullIteratorReturnsNull() {
-        assertNull(FilteredIterator.filter(null,ConstantPredicate.trueInstance()));
+        assertNull(FilteredIterator.filter(null,Constant.trueInstance()));
     }
     
     public void testFilterWithNullPredicateReturnsIdentity() {
@@ -257,7 +257,7 @@ public class TestFilteredIterator extends BaseFunctorTest {
             // expected
         }
         try {
-            new FilteredIterator(null,ConstantPredicate.trueInstance());
+            new FilteredIterator(null,Constant.trueInstance());
             fail("ExpectedNullPointerException");
         } catch(NullPointerException e) {
             // expected

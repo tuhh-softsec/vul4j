@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/EiffelStyleLoop.java,v 1.1 2003/12/01 21:14:47 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/EiffelStyleLoop.java,v 1.2 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,7 +59,7 @@ package org.apache.commons.functor.example.kata.two;
 import org.apache.commons.functor.Function;
 import org.apache.commons.functor.Predicate;
 import org.apache.commons.functor.Procedure;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.NoOp;
 
 /**
@@ -79,7 +79,7 @@ import org.apache.commons.functor.core.NoOp;
  * Note that <tt>new EiffelStyleLoop().run()</tt> executes just fine.
  * You only need to set the parts of the loop you want to use.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/12/01 21:14:47 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class EiffelStyleLoop implements Procedure {
@@ -150,9 +150,9 @@ public class EiffelStyleLoop implements Procedure {
     }
     
     private Procedure from = NoOp.instance();
-    private Predicate invariant = ConstantPredicate.trueInstance();
-    private Predicate variant = ConstantPredicate.trueInstance();
-    private Predicate until = ConstantPredicate.falseInstance();
+    private Predicate invariant = Constant.trueInstance();
+    private Predicate variant = Constant.trueInstance();
+    private Predicate until = Constant.falseInstance();
     private Procedure loop = NoOp.instance();        
 
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryPredicate.java,v 1.3 2003/12/02 17:06:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalUnaryPredicate.java,v 1.4 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,11 +60,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 17:06:30 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalUnaryPredicate extends BaseFunctorTest {
@@ -85,9 +85,9 @@ public class TestConditionalUnaryPredicate extends BaseFunctorTest {
 
     protected Object makeFunctor() {
         return new ConditionalUnaryPredicate(
-            new ConstantPredicate(true),
-            new ConstantPredicate(false),
-            new ConstantPredicate(true));
+            new Constant(true),
+            new Constant(false),
+            new Constant(true));
     }
 
     // Lifecycle
@@ -107,8 +107,8 @@ public class TestConditionalUnaryPredicate extends BaseFunctorTest {
     public void testTest() throws Exception {
         ConditionalUnaryPredicate p = new ConditionalUnaryPredicate(
             new Identity(),
-            new ConstantPredicate(true),
-            new ConstantPredicate(false));
+            new Constant(true),
+            new Constant(false));
         assertTrue(p.test(Boolean.TRUE));
         assertTrue(!p.test(Boolean.FALSE));
     }
@@ -116,32 +116,32 @@ public class TestConditionalUnaryPredicate extends BaseFunctorTest {
     public void testEquals() throws Exception {
         ConditionalUnaryPredicate p = new ConditionalUnaryPredicate(
             new Identity(),
-            new ConstantPredicate(true),
-            new ConstantPredicate(true));
+            new Constant(true),
+            new Constant(true));
         assertEquals(p,p);
         assertObjectsAreEqual(p,new ConditionalUnaryPredicate(
             new Identity(),
-            new ConstantPredicate(true),
-            new ConstantPredicate(true)));
+            new Constant(true),
+            new Constant(true)));
         assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
             new Identity(),
-            new ConstantPredicate(false),
-            new ConstantPredicate(true)));
+            new Constant(false),
+            new Constant(true)));
         assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
-            new ConstantPredicate(true),
-            new ConstantPredicate(true),
-            new ConstantPredicate(true)));
+            new Constant(true),
+            new Constant(true),
+            new Constant(true)));
         assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
             null,
-            new ConstantPredicate(true),
-            new ConstantPredicate(true)));
+            new Constant(true),
+            new Constant(true)));
         assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
-            new ConstantPredicate(true),
+            new Constant(true),
             null,
-            new ConstantPredicate(true)));
+            new Constant(true)));
         assertObjectsAreNotEqual(p,new ConditionalUnaryPredicate(
-            new ConstantPredicate(true),
-            new ConstantPredicate(true),
+            new Constant(true),
+            new Constant(true),
             null));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryAnd.java,v 1.2 2003/11/24 20:31:20 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryAnd.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,10 +61,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/24 20:31:20 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryAnd extends BaseFunctorTest {
@@ -84,7 +84,7 @@ public class TestBinaryAnd extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryAnd(new ConstantPredicate(true),new ConstantPredicate(true));
+        return new BinaryAnd(new Constant(true),new Constant(true));
     }
 
     // Lifecycle
@@ -103,21 +103,21 @@ public class TestBinaryAnd extends BaseFunctorTest {
     
     public void testTrue() throws Exception {
         assertTrue((new BinaryAnd()).test("xyzzy",new Integer(3)));
-        assertTrue((new BinaryAnd(new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
-        assertTrue((new BinaryAnd(new ConstantPredicate(true),new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
-        assertTrue((new BinaryAnd(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(true))).test("xyzzy",new Integer(3)));
+        assertTrue((new BinaryAnd(new Constant(true))).test("xyzzy",new Integer(3)));
+        assertTrue((new BinaryAnd(new Constant(true),new Constant(true))).test("xyzzy",new Integer(3)));
+        assertTrue((new BinaryAnd(new Constant(true),new Constant(true),new Constant(true))).test("xyzzy",new Integer(3)));
         
-        BinaryAnd p = new BinaryAnd(new ConstantPredicate(true));
+        BinaryAnd p = new BinaryAnd(new Constant(true));
         assertTrue(p.test("xyzzy",new Integer(3)));        
         for(int i=0;i<10;i++) {
-            p.and(new ConstantPredicate(true));
+            p.and(new Constant(true));
             assertTrue(p.test("xyzzy",new Integer(3)));        
         }
         
-        BinaryAnd q = new BinaryAnd(new ConstantPredicate(true));
+        BinaryAnd q = new BinaryAnd(new Constant(true));
         assertTrue(q.test("xyzzy",new Integer(3)));        
         for(int i=0;i<10;i++) {
-            q.and(new ConstantPredicate(true));
+            q.and(new Constant(true));
             assertTrue(q.test("xyzzy",new Integer(3)));        
         }
         
@@ -126,21 +126,21 @@ public class TestBinaryAnd extends BaseFunctorTest {
     }
     
     public void testFalse() throws Exception {
-        assertTrue(!(new BinaryAnd(new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
-        assertTrue(!(new BinaryAnd(new ConstantPredicate(true),new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
-        assertTrue(!(new BinaryAnd(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(false))).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryAnd(new Constant(false))).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryAnd(new Constant(true),new Constant(false))).test("xyzzy",new Integer(3)));
+        assertTrue(!(new BinaryAnd(new Constant(true),new Constant(true),new Constant(false))).test("xyzzy",new Integer(3)));
         
-        BinaryAnd p = new BinaryAnd(new ConstantPredicate(false));
+        BinaryAnd p = new BinaryAnd(new Constant(false));
         assertTrue(!p.test("xyzzy",new Integer(3)));        
         for(int i=0;i<10;i++) {
-            p.and(new ConstantPredicate(false));
+            p.and(new Constant(false));
             assertTrue(!p.test("xyzzy",new Integer(3)));        
         }
         
-        BinaryAnd q = new BinaryAnd(new ConstantPredicate(true));
+        BinaryAnd q = new BinaryAnd(new Constant(true));
         assertTrue(q.test("xyzzy",new Integer(3)));        
         for(int i=0;i<10;i++) {
-            q.and(new ConstantPredicate(true));
+            q.and(new Constant(true));
             assertTrue(q.test("xyzzy",new Integer(3)));        
         }
         
@@ -149,7 +149,7 @@ public class TestBinaryAnd extends BaseFunctorTest {
     }
         
     public void testDuplicateAdd() throws Exception {
-        BinaryPredicate p = new ConstantPredicate(true);
+        BinaryPredicate p = new Constant(true);
         BinaryAnd q = new BinaryAnd(p,p);
         assertTrue(q.test("xyzzy",new Integer(3)));
         for(int i=0;i<10;i++) {
@@ -167,17 +167,17 @@ public class TestBinaryAnd extends BaseFunctorTest {
         assertObjectsAreNotEqual(p,r);
 
         for(int i=0;i<3;i++) {
-            p.and(ConstantPredicate.trueInstance());
+            p.and(Constant.trueInstance());
             assertObjectsAreNotEqual(p,q);
-            q.and(ConstantPredicate.trueInstance());
+            q.and(Constant.trueInstance());
             assertObjectsAreEqual(p,q);
-            p.and(new BinaryAnd(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
+            p.and(new BinaryAnd(Constant.trueInstance(),Constant.falseInstance()));
             assertObjectsAreNotEqual(p,q);            
-            q.and(new BinaryAnd(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
+            q.and(new BinaryAnd(Constant.trueInstance(),Constant.falseInstance()));
             assertObjectsAreEqual(p,q);            
         }
         
-        assertObjectsAreNotEqual(p,ConstantPredicate.trueInstance());
+        assertObjectsAreNotEqual(p,Constant.trueInstance());
     }
 
 }

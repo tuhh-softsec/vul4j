@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundPredicate.java,v 1.4 2003/12/02 16:38:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundPredicate.java,v 1.5 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.LeftIdentity;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 16:38:45 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestRightBoundPredicate extends BaseFunctorTest {
@@ -85,7 +85,7 @@ public class TestRightBoundPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new RightBoundPredicate(new ConstantPredicate(true),"xyzzy");
+        return new RightBoundPredicate(new Constant(true),"xyzzy");
     }
 
     // Lifecycle
@@ -109,14 +109,14 @@ public class TestRightBoundPredicate extends BaseFunctorTest {
     }
     
     public void testEquals() throws Exception {
-        UnaryPredicate f = new RightBoundPredicate(new ConstantPredicate(true),"xyzzy");
+        UnaryPredicate f = new RightBoundPredicate(new Constant(true),"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new RightBoundPredicate(new ConstantPredicate(true),"xyzzy"));
-        assertObjectsAreNotEqual(f,new ConstantPredicate(true));
-        assertObjectsAreNotEqual(f,new RightBoundPredicate(new ConstantPredicate(false),"xyzzy"));
-        assertObjectsAreNotEqual(f,new RightBoundPredicate(new ConstantPredicate(true),"foo"));
+        assertObjectsAreEqual(f,new RightBoundPredicate(new Constant(true),"xyzzy"));
+        assertObjectsAreNotEqual(f,new Constant(true));
+        assertObjectsAreNotEqual(f,new RightBoundPredicate(new Constant(false),"xyzzy"));
+        assertObjectsAreNotEqual(f,new RightBoundPredicate(new Constant(true),"foo"));
         assertObjectsAreNotEqual(f,new RightBoundPredicate(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new RightBoundPredicate(new ConstantPredicate(true),null));
+        assertObjectsAreNotEqual(f,new RightBoundPredicate(new Constant(true),null));
         assertObjectsAreEqual(new RightBoundPredicate(null,null),new RightBoundPredicate(null,null));
     }
 
@@ -125,7 +125,7 @@ public class TestRightBoundPredicate extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(RightBoundPredicate.bind(new ConstantPredicate(false),"xyzzy"));
-        assertNotNull(RightBoundPredicate.bind(new ConstantPredicate(false),null));
+        assertNotNull(RightBoundPredicate.bind(new Constant(false),"xyzzy"));
+        assertNotNull(RightBoundPredicate.bind(new Constant(false),null));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBinaryPredicateBinaryFunction.java,v 1.2 2003/01/28 12:00:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBinaryPredicateBinaryFunction.java,v 1.3 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:30 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryPredicateBinaryFunction extends BaseFunctorTest {
@@ -85,7 +84,7 @@ public class TestBinaryPredicateBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryPredicateBinaryFunction(new ConstantPredicate(true));
+        return new BinaryPredicateBinaryFunction(new Constant(true));
     }
 
     // Lifecycle
@@ -103,21 +102,21 @@ public class TestBinaryPredicateBinaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testTestWhenTrue() throws Exception {
-        BinaryFunction f = new BinaryPredicateBinaryFunction(new ConstantPredicate(true));
+        BinaryFunction f = new BinaryPredicateBinaryFunction(new Constant(true));
         assertEquals(Boolean.TRUE,f.evaluate(null,null));
     }
     
     public void testTestWhenFalse() throws Exception {
-        BinaryFunction f = new BinaryPredicateBinaryFunction(new ConstantPredicate(false));
+        BinaryFunction f = new BinaryPredicateBinaryFunction(new Constant(false));
         assertEquals(Boolean.FALSE,f.evaluate(null,null));
     }
 
     public void testEquals() throws Exception {
-        BinaryFunction f = new BinaryPredicateBinaryFunction(new ConstantPredicate(true));
+        BinaryFunction f = new BinaryPredicateBinaryFunction(new Constant(true));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new BinaryPredicateBinaryFunction(new ConstantPredicate(true)));
-        assertObjectsAreNotEqual(f,new ConstantFunction("x"));
-        assertObjectsAreNotEqual(f,new BinaryPredicateBinaryFunction(new ConstantPredicate(false)));
+        assertObjectsAreEqual(f,new BinaryPredicateBinaryFunction(new Constant(true)));
+        assertObjectsAreNotEqual(f,new Constant("x"));
+        assertObjectsAreNotEqual(f,new BinaryPredicateBinaryFunction(new Constant(false)));
         assertObjectsAreNotEqual(f,new BinaryPredicateBinaryFunction(null));
         assertObjectsAreEqual(new BinaryPredicateBinaryFunction(null),new BinaryPredicateBinaryFunction(null));
     }
@@ -127,6 +126,6 @@ public class TestBinaryPredicateBinaryFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(BinaryPredicateBinaryFunction.adapt(new ConstantPredicate(true)));
+        assertNotNull(BinaryPredicateBinaryFunction.adapt(new Constant(true)));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalBinaryFunction.java,v 1.3 2003/12/02 16:38:45 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalBinaryFunction.java,v 1.4 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,12 +60,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.LeftIdentity;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 16:38:45 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalBinaryFunction extends BaseFunctorTest {
@@ -86,9 +85,9 @@ public class TestConditionalBinaryFunction extends BaseFunctorTest {
 
     protected Object makeFunctor() {
         return new ConditionalBinaryFunction(
-            new ConstantPredicate(true),
-            new ConstantFunction("left"),
-            new ConstantFunction("right"));
+            new Constant(true),
+            new Constant("left"),
+            new Constant("right"));
     }
 
     // Lifecycle
@@ -108,8 +107,8 @@ public class TestConditionalBinaryFunction extends BaseFunctorTest {
     public void testEvaluate() throws Exception {
         ConditionalBinaryFunction f = new ConditionalBinaryFunction(
             new LeftIdentity(),
-            new ConstantFunction("left"),
-            new ConstantFunction("right"));
+            new Constant("left"),
+            new Constant("right"));
         assertEquals("left",f.evaluate(Boolean.TRUE,null));
         assertEquals("right",f.evaluate(Boolean.FALSE,null));
     }
@@ -117,32 +116,32 @@ public class TestConditionalBinaryFunction extends BaseFunctorTest {
     public void testEquals() throws Exception {
         ConditionalBinaryFunction f = new ConditionalBinaryFunction(
             new LeftIdentity(),
-            new ConstantFunction("left"),
-            new ConstantFunction("right"));
+            new Constant("left"),
+            new Constant("right"));
         assertEquals(f,f);
         assertObjectsAreEqual(f,new ConditionalBinaryFunction(
             new LeftIdentity(),
-            new ConstantFunction("left"),
-            new ConstantFunction("right")));
+            new Constant("left"),
+            new Constant("right")));
         assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
             new LeftIdentity(),
-            new ConstantFunction(null),
-            new ConstantFunction("right")));
+            new Constant(null),
+            new Constant("right")));
         assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
-            new ConstantPredicate(true),
-            new ConstantFunction("left"),
-            new ConstantFunction("right")));
+            new Constant(true),
+            new Constant("left"),
+            new Constant("right")));
         assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
             null,
-            new ConstantFunction("left"),
-            new ConstantFunction("right")));
+            new Constant("left"),
+            new Constant("right")));
         assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
-            new ConstantPredicate(true),
+            new Constant(true),
             null,
-            new ConstantFunction("right")));
+            new Constant("right")));
         assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
-            new ConstantPredicate(true),
-            new ConstantFunction("left"),
+            new Constant(true),
+            new Constant("left"),
             null));
     }
 }

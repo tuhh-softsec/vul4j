@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryAnd.java,v 1.2 2003/11/24 20:31:20 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryAnd.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,10 +61,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
-import org.apache.commons.functor.core.ConstantPredicate;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/24 20:31:20 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryAnd extends BaseFunctorTest {
@@ -84,7 +84,7 @@ public class TestUnaryAnd extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryAnd(new ConstantPredicate(true),new ConstantPredicate(true));
+        return new UnaryAnd(new Constant(true),new Constant(true));
     }
 
     // Lifecycle
@@ -103,21 +103,21 @@ public class TestUnaryAnd extends BaseFunctorTest {
     
     public void testTrue() throws Exception {
         assertTrue((new UnaryAnd()).test("xyzzy"));
-        assertTrue((new UnaryAnd(new ConstantPredicate(true))).test("xyzzy"));
-        assertTrue((new UnaryAnd(new ConstantPredicate(true),new ConstantPredicate(true))).test("xyzzy"));
-        assertTrue((new UnaryAnd(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(true))).test("xyzzy"));
+        assertTrue((new UnaryAnd(new Constant(true))).test("xyzzy"));
+        assertTrue((new UnaryAnd(new Constant(true),new Constant(true))).test("xyzzy"));
+        assertTrue((new UnaryAnd(new Constant(true),new Constant(true),new Constant(true))).test("xyzzy"));
         
-        UnaryAnd p = new UnaryAnd(new ConstantPredicate(true));
+        UnaryAnd p = new UnaryAnd(new Constant(true));
         assertTrue(p.test("xyzzy"));        
         for(int i=0;i<10;i++) {
-            p.and(new ConstantPredicate(true));
+            p.and(new Constant(true));
             assertTrue(p.test("xyzzy"));        
         }
         
-        UnaryAnd q = new UnaryAnd(new ConstantPredicate(true));
+        UnaryAnd q = new UnaryAnd(new Constant(true));
         assertTrue(q.test("xyzzy"));        
         for(int i=0;i<10;i++) {
-            q.and(new ConstantPredicate(true));
+            q.and(new Constant(true));
             assertTrue(q.test("xyzzy"));        
         }
         
@@ -126,21 +126,21 @@ public class TestUnaryAnd extends BaseFunctorTest {
     }
     
     public void testFalse() throws Exception {
-        assertTrue(!(new UnaryAnd(new ConstantPredicate(false))).test("xyzzy"));
-        assertTrue(!(new UnaryAnd(new ConstantPredicate(true),new ConstantPredicate(false))).test("xyzzy"));
-        assertTrue(!(new UnaryAnd(new ConstantPredicate(true),new ConstantPredicate(true),new ConstantPredicate(false))).test("xyzzy"));
+        assertTrue(!(new UnaryAnd(new Constant(false))).test("xyzzy"));
+        assertTrue(!(new UnaryAnd(new Constant(true),new Constant(false))).test("xyzzy"));
+        assertTrue(!(new UnaryAnd(new Constant(true),new Constant(true),new Constant(false))).test("xyzzy"));
         
-        UnaryAnd p = new UnaryAnd(new ConstantPredicate(false));
+        UnaryAnd p = new UnaryAnd(new Constant(false));
         assertTrue(!p.test("xyzzy"));        
         for(int i=0;i<10;i++) {
-            p.and(new ConstantPredicate(false));
+            p.and(new Constant(false));
             assertTrue(!p.test("xyzzy"));        
         }
         
-        UnaryAnd q = new UnaryAnd(new ConstantPredicate(true));
+        UnaryAnd q = new UnaryAnd(new Constant(true));
         assertTrue(q.test("xyzzy"));        
         for(int i=0;i<10;i++) {
-            q.and(new ConstantPredicate(true));
+            q.and(new Constant(true));
             assertTrue(q.test("xyzzy"));        
         }
         
@@ -149,7 +149,7 @@ public class TestUnaryAnd extends BaseFunctorTest {
     }
         
     public void testDuplicateAdd() throws Exception {
-        UnaryPredicate p = new ConstantPredicate(true);
+        UnaryPredicate p = new Constant(true);
         UnaryAnd q = new UnaryAnd(p,p);
         assertTrue(q.test("xyzzy"));
         for(int i=0;i<10;i++) {
@@ -165,17 +165,17 @@ public class TestUnaryAnd extends BaseFunctorTest {
         assertObjectsAreEqual(p,q);
 
         for(int i=0;i<3;i++) {
-            p.and(ConstantPredicate.trueInstance());
+            p.and(Constant.trueInstance());
             assertObjectsAreNotEqual(p,q);
-            q.and(ConstantPredicate.trueInstance());
+            q.and(Constant.trueInstance());
             assertObjectsAreEqual(p,q);
-            p.and(new UnaryAnd(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
+            p.and(new UnaryAnd(Constant.trueInstance(),Constant.falseInstance()));
             assertObjectsAreNotEqual(p,q);            
-            q.and(new UnaryAnd(ConstantPredicate.trueInstance(),ConstantPredicate.falseInstance()));
+            q.and(new UnaryAnd(Constant.trueInstance(),Constant.falseInstance()));
             assertObjectsAreEqual(p,q);            
         }
         
-        assertObjectsAreNotEqual(p,ConstantPredicate.trueInstance());
+        assertObjectsAreNotEqual(p,Constant.trueInstance());
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestFunctionUnaryFunction.java,v 1.4 2003/03/04 23:11:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestFunctionUnaryFunction.java,v 1.5 2003/12/02 17:43:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,10 +61,10 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/03/04 23:11:12 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/02 17:43:11 $
  * @author Rodney Waldhoff
  */
 public class TestFunctionUnaryFunction extends BaseFunctorTest {
@@ -84,7 +84,7 @@ public class TestFunctionUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new FunctionUnaryFunction(new ConstantFunction("xyzzy"));
+        return new FunctionUnaryFunction(new Constant("xyzzy"));
     }
 
     // Lifecycle
@@ -102,18 +102,18 @@ public class TestFunctionUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testEvaluate() throws Exception {
-        UnaryFunction f = new FunctionUnaryFunction(new ConstantFunction("xyzzy"));
+        UnaryFunction f = new FunctionUnaryFunction(new Constant("xyzzy"));
         assertEquals("xyzzy",f.evaluate(null));
         assertEquals("xyzzy",f.evaluate("abc"));
     }
     
     public void testEquals() throws Exception {
-        UnaryFunction f = new FunctionUnaryFunction(new ConstantFunction("xyzzy"));
+        UnaryFunction f = new FunctionUnaryFunction(new Constant("xyzzy"));
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new FunctionUnaryFunction(new ConstantFunction("xyzzy")));
-        assertObjectsAreNotEqual(f,new ConstantFunction("x"));
-        assertObjectsAreNotEqual(f,new FunctionUnaryFunction(new ConstantFunction(null)));
-        assertObjectsAreNotEqual(f,new ConstantFunction(null));
+        assertObjectsAreEqual(f,new FunctionUnaryFunction(new Constant("xyzzy")));
+        assertObjectsAreNotEqual(f,new Constant("x"));
+        assertObjectsAreNotEqual(f,new FunctionUnaryFunction(new Constant(null)));
+        assertObjectsAreNotEqual(f,new Constant(null));
         assertObjectsAreNotEqual(f,new FunctionUnaryFunction(null));
         assertObjectsAreEqual(new FunctionUnaryFunction(null),new FunctionUnaryFunction(null));
     }
@@ -123,6 +123,6 @@ public class TestFunctionUnaryFunction extends BaseFunctorTest {
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(FunctionUnaryFunction.adapt(new ConstantFunction("xyzzy")));
+        assertNotNull(FunctionUnaryFunction.adapt(new Constant("xyzzy")));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestCompositeUnaryFunction.java,v 1.2 2003/12/02 17:06:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestCompositeUnaryFunction.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/12/02 17:06:30 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
  * @author Rodney Waldhoff
  */
 public class TestCompositeUnaryFunction extends BaseFunctorTest {
@@ -85,7 +85,7 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new CompositeUnaryFunction(new Identity(),new ConstantFunction(new Integer(3)));
+        return new CompositeUnaryFunction(new Identity(),new Constant(new Integer(3)));
     }
 
     // Lifecycle
@@ -107,10 +107,10 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
         assertEquals("xyzzy",(new CompositeUnaryFunction()).evaluate("xyzzy"));
         assertNull(null,(new CompositeUnaryFunction()).evaluate(null));
 
-        assertEquals(new Integer(4),(new CompositeUnaryFunction(new ConstantFunction(new Integer(4)))).evaluate(null));
+        assertEquals(new Integer(4),(new CompositeUnaryFunction(new Constant(new Integer(4)))).evaluate(null));
         
-        assertEquals(new Integer(4),(new CompositeUnaryFunction(new ConstantFunction(new Integer(4)),new ConstantFunction(new Integer(3)))).evaluate("xyzzy"));
-        assertEquals(new Integer(3),(new CompositeUnaryFunction(new ConstantFunction(new Integer(3)),new ConstantFunction(new Integer(4)))).evaluate("xyzzy"));
+        assertEquals(new Integer(4),(new CompositeUnaryFunction(new Constant(new Integer(4)),new Constant(new Integer(3)))).evaluate("xyzzy"));
+        assertEquals(new Integer(3),(new CompositeUnaryFunction(new Constant(new Integer(3)),new Constant(new Integer(4)))).evaluate("xyzzy"));
     }
     
     public void testOf() throws Exception {
@@ -137,17 +137,17 @@ public class TestCompositeUnaryFunction extends BaseFunctorTest {
         assertObjectsAreEqual(f,g);
 
         for(int i=0;i<3;i++) {
-            f.of(new ConstantFunction("x"));
+            f.of(new Constant("x"));
             assertObjectsAreNotEqual(f,g);
-            g.of(new ConstantFunction("x"));
+            g.of(new Constant("x"));
             assertObjectsAreEqual(f,g);
-            f.of(new CompositeUnaryFunction(new ConstantFunction("y"),new ConstantFunction("z")));
+            f.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
             assertObjectsAreNotEqual(f,g);            
-            g.of(new CompositeUnaryFunction(new ConstantFunction("y"),new ConstantFunction("z")));
+            g.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
             assertObjectsAreEqual(f,g);            
         }
                 
-        assertObjectsAreNotEqual(f,new ConstantFunction("y"));
+        assertObjectsAreNotEqual(f,new Constant("y"));
     }
 
 }
