@@ -295,38 +295,38 @@ public:
 
 	// General strings
 
-	static const XMLCh * const & s_unicodeStrEmpty;		// ""
-	static const XMLCh * const & s_unicodeStrNL;			// "\n"
-	static const XMLCh * const & s_unicodeStrXmlns;		// "xmlns"
+	static const XMLCh * s_unicodeStrEmpty;		// ""
+	static const XMLCh * s_unicodeStrNL;			// "\n"
+	static const XMLCh * s_unicodeStrXmlns;		// "xmlns"
 
 	// DSIG Element Strings
-	static const XMLCh * const & s_unicodeStrAlgorithm;
+	static const XMLCh * s_unicodeStrAlgorithm;
 
 	// URI_IDs
-	static const XMLCh * const & s_unicodeStrURIDSIG;
-	static const XMLCh * const & s_unicodeStrURIEC;
-	static const XMLCh * const & s_unicodeStrURIXPF;
+	static const XMLCh * s_unicodeStrURIDSIG;
+	static const XMLCh * s_unicodeStrURIEC;
+	static const XMLCh * s_unicodeStrURIXPF;
 
-	static const XMLCh * const & s_unicodeStrURIRawX509;
-	static const XMLCh * const & s_unicodeStrURISHA1;
-	static const XMLCh * const & s_unicodeStrURIMD5;		// Not recommended
-	static const XMLCh * const & s_unicodeStrURIBASE64;
-	static const XMLCh * const & s_unicodeStrURIXPATH;
-	static const XMLCh * const & s_unicodeStrURIXSLT;
-	static const XMLCh * const & s_unicodeStrURIENVELOPE;
-	static const XMLCh * const & s_unicodeStrURIC14N_NOC;
-	static const XMLCh * const & s_unicodeStrURIC14N_COM;
-	static const XMLCh * const & s_unicodeStrURIEXC_C14N_NOC;
-	static const XMLCh * const & s_unicodeStrURIEXC_C14N_COM;
-	static const XMLCh * const & s_unicodeStrURIDSA_SHA1;
-	static const XMLCh * const & s_unicodeStrURIRSA_SHA1;
-	static const XMLCh * const & s_unicodeStrURIHMAC_SHA1;
-	static const XMLCh * const & s_unicodeStrURIXMLNS;
-	static const XMLCh * const & s_unicodeStrURIMANIFEST;
+	static const XMLCh * s_unicodeStrURIRawX509;
+	static const XMLCh * s_unicodeStrURISHA1;
+	static const XMLCh * s_unicodeStrURIMD5;		// Not recommended
+	static const XMLCh * s_unicodeStrURIBASE64;
+	static const XMLCh * s_unicodeStrURIXPATH;
+	static const XMLCh * s_unicodeStrURIXSLT;
+	static const XMLCh * s_unicodeStrURIENVELOPE;
+	static const XMLCh * s_unicodeStrURIC14N_NOC;
+	static const XMLCh * s_unicodeStrURIC14N_COM;
+	static const XMLCh * s_unicodeStrURIEXC_C14N_NOC;
+	static const XMLCh * s_unicodeStrURIEXC_C14N_COM;
+	static const XMLCh * s_unicodeStrURIDSA_SHA1;
+	static const XMLCh * s_unicodeStrURIRSA_SHA1;
+	static const XMLCh * s_unicodeStrURIHMAC_SHA1;
+	static const XMLCh * s_unicodeStrURIXMLNS;
+	static const XMLCh * s_unicodeStrURIMANIFEST;
 
 	// Internal Crypto Providers
-	static const XMLCh * const & s_unicodeStrPROVOpenSSL;
-	static const XMLCh * const & s_unicodeStrPROVWinCAPI;
+	static const XMLCh * s_unicodeStrPROVOpenSSL;
+	static const XMLCh * s_unicodeStrPROVWinCAPI;
 
 
 	DSIGConstants();

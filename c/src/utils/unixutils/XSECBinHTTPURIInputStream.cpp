@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.4  2003/05/19 12:31:00  blautenb
+ * Cleaned up constants so can compile under INTEL compiler
+ *
  * Revision 1.3  2003/03/23 09:49:49  blautenb
  * Silly mistype in ==
  *
@@ -150,7 +153,7 @@ int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource) {
     if ((hostEntPtr = gethostbyname(hostNameAsCharStar)) == NULL)
     {
         unsigned long  numAddress = inet_addr(hostNameAsCharStar);
-        if (numAddress < 0)
+        if (numAddress == 0)
         {
             ThrowXML(NetAccessorException,
                      XMLExcepts::NetAcc_TargetResolution);

@@ -70,107 +70,74 @@
 #include <xsec/dsig/DSIGConstants.hpp>
 
 // --------------------------------------------------------------------------------
-//           Actual strings
+//           Constant Strings Storage
 // --------------------------------------------------------------------------------
 
-static XMLCh * s_unicodeStrEmpty;
-static XMLCh * s_unicodeStrNL;
-static XMLCh * s_unicodeStrXmlns;
+const XMLCh * DSIGConstants::s_unicodeStrEmpty;		// ""
+const XMLCh * DSIGConstants::s_unicodeStrNL;			// "\n"
+const XMLCh * DSIGConstants::s_unicodeStrXmlns;		// "xmlns"
 
-static XMLCh * s_unicodeStrAlgorithm;
+const XMLCh * DSIGConstants::s_unicodeStrAlgorithm;
 
-static XMLCh * s_unicodeStrURIDSIG;
-static XMLCh * s_unicodeStrURIEC;
-static XMLCh * s_unicodeStrURIXPF;
-static XMLCh * s_unicodeStrURISHA1;
-static XMLCh * s_unicodeStrURIMD5;
-static XMLCh * s_unicodeStrURIBASE64;
-static XMLCh * s_unicodeStrURIXPATH;
-static XMLCh * s_unicodeStrURIXSLT;
-static XMLCh * s_unicodeStrURIENVELOPE;
-static XMLCh * s_unicodeStrURIC14N_NOC;
-static XMLCh * s_unicodeStrURIC14N_COM;
-static XMLCh * s_unicodeStrURIEXC_C14N_NOC;
-static XMLCh * s_unicodeStrURIEXC_C14N_COM;
-static XMLCh * s_unicodeStrURIDSA_SHA1;
-static XMLCh * s_unicodeStrURIRSA_SHA1;
-static XMLCh * s_unicodeStrURIHMAC_SHA1;
-static XMLCh * s_unicodeStrURIXMLNS;
-static XMLCh * s_unicodeStrURIMANIFEST;
-static XMLCh * s_unicodeStrPROVOpenSSL;
-static XMLCh * s_unicodeStrPROVWinCAPI;
-static XMLCh * s_unicodeStrURIRawX509;
+const XMLCh * DSIGConstants::s_unicodeStrURIDSIG;
+const XMLCh * DSIGConstants::s_unicodeStrURIEC;
+const XMLCh * DSIGConstants::s_unicodeStrURIXPF;
 
+const XMLCh * DSIGConstants::s_unicodeStrURIRawX509;
+const XMLCh * DSIGConstants::s_unicodeStrURISHA1;
+const XMLCh * DSIGConstants::s_unicodeStrURIMD5;		// Not recommended
+const XMLCh * DSIGConstants::s_unicodeStrURIBASE64;
+const XMLCh * DSIGConstants::s_unicodeStrURIXPATH;
+const XMLCh * DSIGConstants::s_unicodeStrURIXSLT;
+const XMLCh * DSIGConstants::s_unicodeStrURIENVELOPE;
+const XMLCh * DSIGConstants::s_unicodeStrURIC14N_NOC;
+const XMLCh * DSIGConstants::s_unicodeStrURIC14N_COM;
+const XMLCh * DSIGConstants::s_unicodeStrURIEXC_C14N_NOC;
+const XMLCh * DSIGConstants::s_unicodeStrURIEXC_C14N_COM;
+const XMLCh * DSIGConstants::s_unicodeStrURIDSA_SHA1;
+const XMLCh * DSIGConstants::s_unicodeStrURIRSA_SHA1;
+const XMLCh * DSIGConstants::s_unicodeStrURIHMAC_SHA1;
+const XMLCh * DSIGConstants::s_unicodeStrURIXMLNS;
+const XMLCh * DSIGConstants::s_unicodeStrURIMANIFEST;
 
-// --------------------------------------------------------------------------------
-//           Class instances
-// --------------------------------------------------------------------------------
-
-const XMLCh * const & DSIGConstants::s_unicodeStrEmpty = ::s_unicodeStrEmpty;
-const XMLCh * const & DSIGConstants::s_unicodeStrNL = ::s_unicodeStrNL;
-const XMLCh * const & DSIGConstants::s_unicodeStrXmlns = ::s_unicodeStrXmlns;
-
-const XMLCh * const & DSIGConstants::s_unicodeStrAlgorithm = ::s_unicodeStrAlgorithm;
-
-const XMLCh * const & DSIGConstants::s_unicodeStrURIRawX509 = ::s_unicodeStrURIRawX509;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIDSIG = ::s_unicodeStrURIDSIG;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIEC = ::s_unicodeStrURIEC;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIXPF = ::s_unicodeStrURIXPF;
-const XMLCh * const & DSIGConstants::s_unicodeStrURISHA1 = ::s_unicodeStrURISHA1;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIMD5 = ::s_unicodeStrURIMD5;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIBASE64 = ::s_unicodeStrURIBASE64;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIXPATH = ::s_unicodeStrURIXPATH;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIXSLT = ::s_unicodeStrURIXSLT;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIENVELOPE = ::s_unicodeStrURIENVELOPE;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIC14N_NOC = ::s_unicodeStrURIC14N_NOC;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIC14N_COM = ::s_unicodeStrURIC14N_COM;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIEXC_C14N_NOC = ::s_unicodeStrURIEXC_C14N_NOC;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIEXC_C14N_COM = ::s_unicodeStrURIEXC_C14N_COM;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIDSA_SHA1 = ::s_unicodeStrURIDSA_SHA1;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIRSA_SHA1 = ::s_unicodeStrURIRSA_SHA1;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIHMAC_SHA1 = ::s_unicodeStrURIHMAC_SHA1;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIXMLNS = ::s_unicodeStrURIXMLNS;
-const XMLCh * const & DSIGConstants::s_unicodeStrURIMANIFEST = ::s_unicodeStrURIMANIFEST;
-
-const XMLCh * const & DSIGConstants::s_unicodeStrPROVOpenSSL = ::s_unicodeStrPROVOpenSSL;
-const XMLCh * const & DSIGConstants::s_unicodeStrPROVWinCAPI = ::s_unicodeStrPROVWinCAPI;
+const XMLCh * DSIGConstants::s_unicodeStrPROVOpenSSL;
+const XMLCh * DSIGConstants::s_unicodeStrPROVWinCAPI;
 
 // --------------------------------------------------------------------------------
-//           Constant Strings Class
+//           Constant Strings Creation and Deletion
 // --------------------------------------------------------------------------------
-
 
 void DSIGConstants::create() {
 
 	// Set up the static strings
 
-	::s_unicodeStrEmpty = XMLString::transcode("");
-	::s_unicodeStrNL = XMLString::transcode("\n");
-	::s_unicodeStrXmlns = XMLString::transcode("xmlns");
+	s_unicodeStrEmpty = XMLString::transcode("");
+	s_unicodeStrNL = XMLString::transcode("\n");
+	s_unicodeStrXmlns = XMLString::transcode("xmlns");
 
-	::s_unicodeStrAlgorithm = XMLString::transcode("Algorithm");
+	s_unicodeStrAlgorithm = XMLString::transcode("Algorithm");
 
-	::s_unicodeStrURIRawX509 = XMLString::transcode(URI_ID_RAWX509);
-	::s_unicodeStrURIDSIG = XMLString::transcode(URI_ID_DSIG);
-	::s_unicodeStrURIEC = XMLString::transcode(URI_ID_EC);
-	::s_unicodeStrURIXPF = XMLString::transcode(URI_ID_XPF);
-	::s_unicodeStrURISHA1 = XMLString::transcode(URI_ID_SHA1);
-	::s_unicodeStrURIMD5 = XMLString::transcode(URI_ID_MD5);
-	::s_unicodeStrURIBASE64 = XMLString::transcode(URI_ID_BASE64);
-	::s_unicodeStrURIXPATH = XMLString::transcode(URI_ID_XPATH);
-	::s_unicodeStrURIXSLT = XMLString::transcode(URI_ID_XSLT);
-	::s_unicodeStrURIENVELOPE = XMLString::transcode(URI_ID_ENVELOPE);
-	::s_unicodeStrURIC14N_NOC = XMLString::transcode(URI_ID_C14N_NOC);
-	::s_unicodeStrURIC14N_COM = XMLString::transcode(URI_ID_C14N_COM);
-	::s_unicodeStrURIEXC_C14N_NOC = XMLString::transcode(URI_ID_EXC_C14N_NOC);
-	::s_unicodeStrURIEXC_C14N_COM = XMLString::transcode(URI_ID_EXC_C14N_COM);
-	::s_unicodeStrURIDSA_SHA1 = XMLString::transcode(URI_ID_DSA_SHA1);
-	::s_unicodeStrURIRSA_SHA1 = XMLString::transcode(URI_ID_RSA_SHA1);
-	::s_unicodeStrURIHMAC_SHA1 = XMLString::transcode(URI_ID_HMAC_SHA1);
-	::s_unicodeStrURIXMLNS = XMLString::transcode(URI_ID_XMLNS);
-	::s_unicodeStrURIMANIFEST = XMLString::transcode(URI_ID_MANIFEST);
-	::s_unicodeStrPROVOpenSSL = XMLString::transcode(PROV_OPENSSL);
-	::s_unicodeStrPROVWinCAPI = XMLString::transcode(PROV_WINCAPI);
+	s_unicodeStrURIRawX509 = XMLString::transcode(URI_ID_RAWX509);
+	s_unicodeStrURIDSIG = XMLString::transcode(URI_ID_DSIG);
+	s_unicodeStrURIEC = XMLString::transcode(URI_ID_EC);
+	s_unicodeStrURIXPF = XMLString::transcode(URI_ID_XPF);
+	s_unicodeStrURISHA1 = XMLString::transcode(URI_ID_SHA1);
+	s_unicodeStrURIMD5 = XMLString::transcode(URI_ID_MD5);
+	s_unicodeStrURIBASE64 = XMLString::transcode(URI_ID_BASE64);
+	s_unicodeStrURIXPATH = XMLString::transcode(URI_ID_XPATH);
+	s_unicodeStrURIXSLT = XMLString::transcode(URI_ID_XSLT);
+	s_unicodeStrURIENVELOPE = XMLString::transcode(URI_ID_ENVELOPE);
+	s_unicodeStrURIC14N_NOC = XMLString::transcode(URI_ID_C14N_NOC);
+	s_unicodeStrURIC14N_COM = XMLString::transcode(URI_ID_C14N_COM);
+	s_unicodeStrURIEXC_C14N_NOC = XMLString::transcode(URI_ID_EXC_C14N_NOC);
+	s_unicodeStrURIEXC_C14N_COM = XMLString::transcode(URI_ID_EXC_C14N_COM);
+	s_unicodeStrURIDSA_SHA1 = XMLString::transcode(URI_ID_DSA_SHA1);
+	s_unicodeStrURIRSA_SHA1 = XMLString::transcode(URI_ID_RSA_SHA1);
+	s_unicodeStrURIHMAC_SHA1 = XMLString::transcode(URI_ID_HMAC_SHA1);
+	s_unicodeStrURIXMLNS = XMLString::transcode(URI_ID_XMLNS);
+	s_unicodeStrURIMANIFEST = XMLString::transcode(URI_ID_MANIFEST);
+	s_unicodeStrPROVOpenSSL = XMLString::transcode(PROV_OPENSSL);
+	s_unicodeStrPROVWinCAPI = XMLString::transcode(PROV_WINCAPI);
 
 
 }
@@ -178,33 +145,33 @@ void DSIGConstants::create() {
 void DSIGConstants::destroy() {
 
 	// Delete the static strings
-	delete[] ::s_unicodeStrEmpty;
-	delete[] ::s_unicodeStrNL;
-	delete[] ::s_unicodeStrXmlns;
+	delete[] s_unicodeStrEmpty;
+	delete[] s_unicodeStrNL;
+	delete[] s_unicodeStrXmlns;
 
-	delete[] ::s_unicodeStrAlgorithm;
+	delete[] s_unicodeStrAlgorithm;
 
-	delete[] ::s_unicodeStrURIRawX509;
-	delete[] ::s_unicodeStrURIDSIG;
-	delete[] ::s_unicodeStrURIEC;
-	delete[] ::s_unicodeStrURIXPF;
-	delete[] ::s_unicodeStrURISHA1;
-	delete[] ::s_unicodeStrURIMD5;
-	delete[] ::s_unicodeStrURIBASE64;
-	delete[] ::s_unicodeStrURIXPATH;
-	delete[] ::s_unicodeStrURIXSLT;
-	delete[] ::s_unicodeStrURIENVELOPE;
-	delete[] ::s_unicodeStrURIC14N_NOC;
-	delete[] ::s_unicodeStrURIC14N_COM;
-	delete[] ::s_unicodeStrURIEXC_C14N_NOC;
-	delete[] ::s_unicodeStrURIEXC_C14N_COM;
-	delete[] ::s_unicodeStrURIDSA_SHA1;
-	delete[] ::s_unicodeStrURIRSA_SHA1;
-	delete[] ::s_unicodeStrURIHMAC_SHA1;
-	delete[] ::s_unicodeStrURIXMLNS;
-	delete[] ::s_unicodeStrURIMANIFEST;
+	delete[] s_unicodeStrURIRawX509;
+	delete[] s_unicodeStrURIDSIG;
+	delete[] s_unicodeStrURIEC;
+	delete[] s_unicodeStrURIXPF;
+	delete[] s_unicodeStrURISHA1;
+	delete[] s_unicodeStrURIMD5;
+	delete[] s_unicodeStrURIBASE64;
+	delete[] s_unicodeStrURIXPATH;
+	delete[] s_unicodeStrURIXSLT;
+	delete[] s_unicodeStrURIENVELOPE;
+	delete[] s_unicodeStrURIC14N_NOC;
+	delete[] s_unicodeStrURIC14N_COM;
+	delete[] s_unicodeStrURIEXC_C14N_NOC;
+	delete[] s_unicodeStrURIEXC_C14N_COM;
+	delete[] s_unicodeStrURIDSA_SHA1;
+	delete[] s_unicodeStrURIRSA_SHA1;
+	delete[] s_unicodeStrURIHMAC_SHA1;
+	delete[] s_unicodeStrURIXMLNS;
+	delete[] s_unicodeStrURIMANIFEST;
 
-	delete[] ::s_unicodeStrPROVOpenSSL;
-	delete[] ::s_unicodeStrPROVWinCAPI;
+	delete[] s_unicodeStrPROVOpenSSL;
+	delete[] s_unicodeStrPROVWinCAPI;
 
 }
