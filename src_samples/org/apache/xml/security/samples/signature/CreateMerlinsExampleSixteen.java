@@ -104,6 +104,7 @@ public class CreateMerlinsExampleSixteen {
     * @throws Exception
     */
    public static void main(String unused[]) throws Exception {
+      Constants.setSignatureSpecNSprefix("");
       //J-
       String keystoreType = "JKS";
       String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";
@@ -304,36 +305,34 @@ public class CreateMerlinsExampleSixteen {
 
          xpathC.setXPath("self::text()");
          transforms.addTransform(Transforms.TRANSFORM_XPATH,
-                                 xpathC.getElement());
+                                 xpathC.getElementPlusReturns());
          sig.addDocument("#object-1", transforms,
                          Constants.ALGO_ID_DIGEST_SHA1, null,
                          "http://www.w3.org/2000/09/xmldsig#Object");
       }
-/*
       {
          Transforms transforms = new Transforms(doc);
          XPathContainer xpathC = new XPathContainer(doc);
 
-         xpathC.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
          //J-
-         xpathC.setXPath(
-  " ancestor-or-self::ds:SignedInfo "
-+ "  and"
-+ "count(ancestor-or-self::ds:Reference |"
-+ "      here()/ancestor::ds:Reference[1]) &gt;"
-+ "count(ancestor-or-self::ds:Reference)"
-+ "  or"
-+ "count(ancestor-or-self::node() |"
-+ "      id('notaries')) ="
-+ "count(ancestor-or-self::node())");
+         xpathC.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+         xpathC.setXPath("\n"
+          + " ancestor-or-self::ds:SignedInfo                    " + "\n"
+          + "  and                                               " + "\n"
+          + " count(ancestor-or-self::ds:Reference |             " + "\n"
+          + "      here()/ancestor::ds:Reference[1]) >           " + "\n"
+          + " count(ancestor-or-self::ds:Reference)              " + "\n"
+          + "  or                                                " + "\n"
+          + " count(ancestor-or-self::node() |                   " + "\n"
+          + "      id('notaries')) =                             " + "\n"
+          + " count(ancestor-or-self::node())                    " + "\n");
          //J+
          transforms.addTransform(Transforms.TRANSFORM_XPATH,
-                                 xpathC.getElement());
+                                 xpathC.getElementPlusReturns());
          transforms.addTransform(Transforms.TRANSFORM_BASE64_DECODE);
          sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1, null,
                          "http://www.w3.org/2000/09/xmldsig#Object");
       }
-      */
 
       {
          Transforms transforms = new Transforms(doc);

@@ -103,7 +103,7 @@ public class VerifySignature {
       boolean schemaValidate = false;
       final String signatureSchemaFile = "data/xmldsig-core-schema.xsd";
       // String signatureFileName = "data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/signature-enveloping-rsa.xml";
-      String signatureFileName = "signature.xml";
+      String signatureFileName = "hereSignature.xml";
 
       if (schemaValidate) {
          System.out.println("We do schema-validation");

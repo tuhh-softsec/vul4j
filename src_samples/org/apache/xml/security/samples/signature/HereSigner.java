@@ -143,6 +143,9 @@ public class HereSigner {
          ObjectContainer ob1 = new ObjectContainer(doc);
          ob1.setId("object-1");
          ob1.appendChild(doc.createTextNode("\nSigned Text\n"));
+         Element c = doc.createElement("element");
+         c.setAttribute("name", "val");
+         ob1.appendChild(c);
          sig.appendObject(ob1);
 
          Transforms transforms = new Transforms(doc);
@@ -150,13 +153,14 @@ public class HereSigner {
          xc.setXPathNamespaceContext("prof", Constants.SignatureSpecNS);
 
          //J-
-         String xpath = "\n\n"
-
-          + " ancestor-or-self::node()                                 " + "\n"
-          + "           =                                              " + "\n"
-          + " here()/ancestor::prof:Signature[1]/child::prof:Object[@Id='object-1'] " + "\n"
-
-          + "\n";
+         String xpath = "\n"
+          + "count(" + "\n"
+          + " ancestor-or-self::prof:Object " + "\n"
+          + " | " + "\n"
+          + " here()/ancestor::prof:Signature[1]/child::prof:Object[@Id='object-1']" + "\n"
+          + ") <= count(" + "\n"
+          + " ancestor-or-self::prof:Object" + "\n"
+          + ") " + "\n";
          //J+
 
          xc.setXPath(xpath);
