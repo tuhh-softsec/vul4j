@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.12 2001/08/08 03:03:00 craigmcc Exp $
- * $Revision: 1.12 $
- * $Date: 2001/08/08 03:03:00 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.13 2001/08/13 18:59:46 craigmcc Exp $
+ * $Revision: 1.13 $
+ * $Date: 2001/08/13 18:59:46 $
  *
  * ====================================================================
  *
@@ -106,7 +106,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.12 $ $Date: 2001/08/08 03:03:00 $
+ * @version $Revision: 1.13 $ $Date: 2001/08/13 18:59:46 $
  */
 
 public class Digester extends DefaultHandler {
@@ -714,6 +714,7 @@ public class Digester extends DefaultHandler {
 	bodyText.setLength(0);
 
 	// Compute the current matching rule
+        /*
         if (!namespaceAware &&
             ((localName == null) || (localName.length() < 1)))
             localName = qName;
@@ -721,9 +722,19 @@ public class Digester extends DefaultHandler {
 	    match += "/" + localName;
 	else
 	    match = localName;
+        */
+        StringBuffer sb = new StringBuffer(match);
+        if (match.length() > 0)
+            sb.append('/');
+        if (namespaceAware)
+            sb.append(qName);
+        else if ((localName == null) || (localName.length() < 1))
+            sb.append(qName);
+        else
+            sb.append(localName);
+        match = sb.toString();
 	//	if (debug >= 3)
 	//	    log("startElement(" + match + ")");
-
 
 	// Fire "begin" events for all relevant rules
 	List rules = getRules().match(match);
