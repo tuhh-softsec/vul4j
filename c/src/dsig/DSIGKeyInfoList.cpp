@@ -329,14 +329,7 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 					// Skip text and comments
 					tmpKI = tmpKI->getNextSibling();
 
-				if (tmpKI == 0) {
-
-					throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
-							"Expected <Transforms> within <KeyInfo>");
-
-				}
-
-				if (strEquals(getDSIGLocalName(tmpKI), "Transforms")) {
+				if (tmpKI != 0 && strEquals(getDSIGLocalName(tmpKI), "Transforms")) {
 
 
 					// Process the transforms using the static function.
@@ -378,6 +371,10 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 					break;
 
 				case TXFMBase::DOM_NODE_DOCUMENT_FRAGMENT :
+
+					element = chain->getLastTxfm()->getFragmentNode();
+					if (element != NULL)
+						addXMLKeyInfo((DOMNode *) element);
 
 					break;
 
@@ -421,9 +418,10 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 
 		}
 
-		tmpKI = tmpKI->getNextSibling();
+		if (tmpKI != NULL)
+			tmpKI = tmpKI->getNextSibling();
 
-		while (tmpKI != 0 && (tmpKI->getNodeType() != DOMNode::ELEMENT_NODE))
+		while (tmpKI != NULL && (tmpKI->getNodeType() != DOMNode::ELEMENT_NODE))
 			tmpKI = tmpKI->getNextSibling();
 
 	}
