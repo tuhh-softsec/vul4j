@@ -90,4 +90,7 @@ cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</so
 		<p>Here you can see that the file <code><jump href="@@jce.download@@">@@jce.download@@</jump></code> is downloaded and stored in the location <code>@@lib.jce@@</code></p>
 		<p>If you do this by hand (pointing you favourite web browser and download it yourself), simply put a "<code>bc-</code>" in front of the filename and put it to <code>./libs/</code>, then ant won't try to make a download.</p>
 	</s2>
+	<s2 title="Using JDK 1.4.0">
+		<p>After SUN released the <jump href="http://java.sun.com/j2se/1.4/index.html">Java (TM) 2 Platform Standard Edition v1.4.0</jump>, the xml-security package stopped working. This is a <jump href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html">known</jump> problem: SUN packaged a beta of Xalan into the JDK 1.4.0, but the xml-security package requires a stable version of Xalan (v2.2.0 or later). To fix the problem, you have to put the xalan.jar into a special directory in your JDK: <code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code> .</p>
+	</s2>
 </s1>
