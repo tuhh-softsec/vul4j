@@ -19,7 +19,6 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
@@ -64,12 +63,12 @@ public class ResolverXPointer extends ResourceResolverSpi {
 
       //CachedXPathAPI cXPathAPI = new CachedXPathAPI();
 
-      
-         if (isXPointerSlash(uri)) {
+      	String uriStr=uri.getNodeValue();
+         if (isXPointerSlash(uriStr)) {
             resultNode = doc;
                
-         } else if (isXPointerId(uri)) {
-            String id = getXPointerId(uri);
+         } else if (isXPointerId(uriStr)) {
+            String id = getXPointerId(uriStr);
             resultNode =IdResolver.getElementById(doc, id);
 
             // log.debug("Use #xpointer(id('" + id + "')) on element " + selectedElem);
@@ -106,8 +105,8 @@ public class ResolverXPointer extends ResourceResolverSpi {
       if (uri == null) {
          return false;
       }
-
-      if (isXPointerSlash(uri) || isXPointerId(uri)) {
+	  String uriStr =uri.getNodeValue();
+      if (isXPointerSlash(uriStr) || isXPointerId(uriStr)) {
          return true;
       }
 
@@ -120,15 +119,18 @@ public class ResolverXPointer extends ResourceResolverSpi {
     * @param uri
     * @return true if begins with xpointer
     */
-   private static boolean isXPointerSlash(Attr uri) {
+   private static boolean isXPointerSlash(String uri) {
 
-      if (uri.getNodeValue().equals("#xpointer(/)")) {
+      if (uri.equals("#xpointer(/)")) {
          return true;
       }
 
       return false;
    }
 
+   
+   private static final String XP="#xpointer(id(";
+   private static final int XP_LENGTH=XP.length();
    /**
     * Method isXPointerId
     *
@@ -136,25 +138,24 @@ public class ResolverXPointer extends ResourceResolverSpi {
     * @return it it has an xpointer id
     *
     */
-   private static boolean isXPointerId(Attr uri) {
+   private static boolean isXPointerId(String uri) {
+      
 
-      String uriNodeValue = uri.getNodeValue();
-
-      if (uriNodeValue.startsWith("#xpointer(id(")
-              && uriNodeValue.endsWith("))")) {
-         String idPlusDelim = uriNodeValue.substring("#xpointer(id(".length(),
-                                                     uriNodeValue.length()
-                                                     - "))".length());
+      if (uri.startsWith(XP)
+              && uri.endsWith("))")) {
+         String idPlusDelim = uri.substring(XP_LENGTH,
+                                                     uri.length()
+                                                     - 2);
 
          // log.debug("idPlusDelim=" + idPlusDelim);
-
+		 int idLen=idPlusDelim.length() -1;
          if (((idPlusDelim.charAt(0) == '"') && (idPlusDelim
-                 .charAt(idPlusDelim.length() - 1) == '"')) || ((idPlusDelim
+                 .charAt(idLen) == '"')) || ((idPlusDelim
                  .charAt(0) == '\'') && (idPlusDelim
-                 .charAt(idPlusDelim.length() - 1) == '\''))) {
+                 .charAt(idLen) == '\''))) {
             if (log.isDebugEnabled())
             	log.debug("Id="
-                      + idPlusDelim.substring(1, idPlusDelim.length() - 1));
+                      + idPlusDelim.substring(1, idLen));
 
             return true;
          }
@@ -167,23 +168,21 @@ public class ResolverXPointer extends ResourceResolverSpi {
     * Method getXPointerId
     *
     * @param uri
-    * @return
+    * @return xpointerId to search.
     */
-   private static String getXPointerId(Attr uri) {
+   private static String getXPointerId(String uri) {
 
-      String uriNodeValue = uri.getNodeValue();
 
-      if (uriNodeValue.startsWith("#xpointer(id(")
-              && uriNodeValue.endsWith("))")) {
-         String idPlusDelim = uriNodeValue.substring("#xpointer(id(".length(),
-                                                     uriNodeValue.length()
-                                                     - "))".length());
-
+      if (uri.startsWith(XP)
+              && uri.endsWith("))")) {
+         String idPlusDelim = uri.substring(XP_LENGTH,uri.length()
+                                                     - 2);
+		 int idLen=idPlusDelim.length() -1;
          if (((idPlusDelim.charAt(0) == '"') && (idPlusDelim
-                 .charAt(idPlusDelim.length() - 1) == '"')) || ((idPlusDelim
+                 .charAt(idLen) == '"')) || ((idPlusDelim
                  .charAt(0) == '\'') && (idPlusDelim
-                 .charAt(idPlusDelim.length() - 1) == '\''))) {
-            return idPlusDelim.substring(1, idPlusDelim.length() - 1);
+                 .charAt(idLen) == '\''))) {
+            return idPlusDelim.substring(1, idLen);
          }
       }
 

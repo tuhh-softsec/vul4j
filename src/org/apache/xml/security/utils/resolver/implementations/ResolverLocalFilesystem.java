@@ -40,13 +40,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
                     ResolverLocalFilesystem.class.getName());
 
    /**
-    * Method resolve
-    *
-    * @param uri
-    * @param BaseURI
-    * @return
-    * @throws ResourceResolverException
-    * @todo calculate the correct URI from the attribute and the BaseURI
+    * @inheritDoc
     */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
            throws ResourceResolverException {
@@ -78,7 +72,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     * Method translateUriToFilename
     *
     * @param uri
-    * @return
+    * @return the string of the filename
     */
    private static String translateUriToFilename(String uri) {
 
@@ -113,11 +107,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
    }
 
    /**
-    * Method engineCanResolve
-    *
-    * @param uri
-    * @param BaseURI
-    * @return
+    * @inheritDoc
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 

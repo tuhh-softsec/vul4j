@@ -242,10 +242,9 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    *  @return 
+    *  @return true if can be resolved
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
-
       if (uri == null) {
          log.debug("quick fail, uri == null");
 
@@ -262,15 +261,14 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
       URI uriNew = null;
 
-      try {
-         uriNew = getNewURI(uri.getNodeValue(), BaseURI);
-      } catch (URI.MalformedURIException ex) {
-         log.debug("", ex);
-      }
+	  //URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
+      if (log.isDebugEnabled())
+      	log.debug("I was asked whether I can resolve " + uriNodeValue/*uriNew.toString()*/);
 
-      if ((uriNew != null) && uriNew.getScheme().equals("http")) {
+      if ( uriNodeValue.startsWith("http:") ||
+				 BaseURI.startsWith("http:")/*uriNew.getScheme().equals("file")*/) {
          if (log.isDebugEnabled())
-        	log.debug("I state that I can resolve " + uriNew.toString());
+         	log.debug("I state that I can resolve " + uriNodeValue/*uriNew.toString()*/);
 
          return true;
       }
@@ -282,9 +280,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
    }
 
    /**
-    * Method engineGetPropertyKeys
-    *
-    * @return 
+    * @inheritDoc 
     */
    public String[] engineGetPropertyKeys() {
       return ResolverDirectHTTP.properties;

@@ -60,13 +60,8 @@ public class ResolverAnonymous extends ResourceResolverSpi {
       return this._input;
    }
 
-   /**
-    * We resolve anonymous (unspecified) URIs
-    *
-    * @param uri
-    * @param BaseURI
-    * @return
-    *
+   /**    
+    * @inheritDoc
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
       if (uri == null) {
