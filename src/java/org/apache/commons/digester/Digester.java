@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.22 2001/10/16 15:36:56 craigmcc Exp $
- * $Revision: 1.22 $
- * $Date: 2001/10/16 15:36:56 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.23 2001/10/16 23:46:34 craigmcc Exp $
+ * $Revision: 1.23 $
+ * $Date: 2001/10/16 23:46:34 $
  *
  * ====================================================================
  *
@@ -108,7 +108,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.22 $ $Date: 2001/10/16 15:36:56 $
+ * @version $Revision: 1.23 $ $Date: 2001/10/16 23:46:34 $
  */
 
 public class Digester extends DefaultHandler {
@@ -865,7 +865,7 @@ public class Digester extends DefaultHandler {
      *
      * @exception SAXException if a parsing error is to be reported
      */
-    public void skippedEntity(String name) {
+    public void skippedEntity(String name) throws SAXException {
 
         if (debug >= 3)
             log("skippedEntity(" + name + ")");

@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.12 2001/09/22 19:06:39 craigmcc Exp $
+        $Id: build.xml,v 1.13 2001/10/16 23:46:34 craigmcc Exp $
 -->
 
 
@@ -33,7 +33,9 @@
   <property name="jaxp.jaxp.jar"           value="${jaxp.home}/jaxp.jar"/>
   <property name="jaxp.parser.jar"         value="${jaxp.home}/crimson.jar"/>
   <property name="junit.jar"               value="${junit.home}/junit.jar"/>
+  <property name="commons-beanutils.api"   value="${beanutils.home}/dist/docs/api"/>
   <property name="commons-beanutils.jar"   value="${beanutils.home}/dist/commons-beanutils.jar"/>
+  <property name="commons-collections.api" value="${collections.home}/dist/docs/api"/>
   <property name="commons-collections.jar" value="${collections.home}/dist/commons-collections.jar"/>
 
 
@@ -50,7 +52,7 @@
   <property name="component.title"         value="XML to Java Object Configuration"/>
 
   <!-- The current version number of this component -->
-  <property name="component.version"       value="1.2-dev"/>
+  <property name="component.version"       value="1.1.1"/>
 
   <!-- The base directory for compilation targets -->
   <property name="build.home"              value="target"/>
@@ -204,7 +206,13 @@
                 version="true"
                doctitle="&lt;h1&gt;${component.title}&lt;/h1&gt;"
             windowtitle="${component.title} (Version ${component.version})"
-                 bottom="Copyright (c) 2001 - Apache Software Foundation"/>
+                 bottom="Copyright (c) 2001 - Apache Software Foundation">
+      <link     offline="true" packagelistLoc="${commons-beanutils.api}"
+                   href="http://jakarta.apache.org/commons/beanutils/api/"/>
+      <link     offline="true" packagelistLoc="${commons-collections.api}"
+                   href="http://jakarta.apache.org/commons/collections/api/"/>
+      <classpath  refid="compile.classpath"/>
+    </javadoc>
   </target>
 
 
