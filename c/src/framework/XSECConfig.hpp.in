@@ -52,6 +52,16 @@
 #undef XSEC_XERCES_REQUIRES_MEMMGR
 
 /*
+ * Find out the idiosyncracies of the version of Xalan we are using
+ */
+
+/* 1.9 and above have XSLException::getType() returns XalanDOMChar *, not
+   XalanDOMString
+*/
+
+#undef XSEC_XSLEXCEPTION_RETURNS_DOMSTRING
+
+/*
  * Define presence of cryptographic providers
  */
 

@@ -326,7 +326,11 @@ XSECXPathNodeList * TXFMXPathFilter::evaluateSingleExpr(DSIGXPathFilterExpr *exp
 	
 		// Collate the exception message into an XSEC message.		
 		msg.sbTranscodeIn("Xalan Exception : ");
+#if defined (XSEC_XSLEXCEPTION_RETURNS_DOMSTRING)
 		msg.sbXMLChCat(e.getType().c_str());
+#else
+		msg.sbXMLChCat(e.getType());
+#endif
 		msg.sbXMLChCat(" caught.  Message : ");
 		msg.sbXMLChCat(e.getMessage().c_str());
 

@@ -398,6 +398,26 @@ else
 
 fi
 
+
+# Check for handling of XSLException types
+if test "$xalan_found" = "yes" ; then
+
+  AC_MSG_CHECKING([XSLException::getType() returns XalanDOMString])
+
+  AC_TRY_COMPILE([#include <xalanc/PlatformSupport/XSLException.hpp>], 
+    [ try {
+          int x = 1;
+      } 
+      catch (XALAN_CPP_NAMESPACE_QUALIFIER XSLException &e) {
+        e.getType().c_str();
+      }
+    ],
+    AC_DEFINE(XSEC_XSLEXCEPTION_RETURNS_DOMSTRING)
+    [AC_MSG_RESULT([yes])], 
+    [AC_MSG_RESULT([no])]);
+
+fi
+
 AC_LANG(C)
 
 # Check for OpenSSL
