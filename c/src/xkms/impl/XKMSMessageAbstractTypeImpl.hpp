@@ -88,6 +88,11 @@ public:
 		signatureMethod	sm = SIGNATURE_DSA,
 		hashMethod hm = HASH_SHA1);
 
+	/* Opaque Client Data interface */
+	virtual int getOpaqueClientDataSize(void);
+	virtual const XMLCh * getOpaqueClientDataItemStr(int item);
+	virtual void appendOpaqueClientDataItem(const XMLCh * item);
+
 protected:
 
 	const XSECEnv		* mp_env;		// NOTE: Owned by the base message class
@@ -105,9 +110,13 @@ private:
 						* mp_nonceAttr;
 	XERCES_CPP_NAMESPACE_QUALIFIER  DOMElement
 						* mp_signatureElement;
+	XERCES_CPP_NAMESPACE_QUALIFIER  DOMElement
+						* mp_opaqueClientDataElement;
 
 	XSECProvider		m_prov;
 	DSIGSignature		* mp_signature;
+
+	int					m_opaqueClientDataSize;
 
 	// Unimplemented
 	XKMSMessageAbstractTypeImpl(void);
@@ -140,6 +149,12 @@ private:
 		canonicalizationMethod cm = CANON_C14N_NOC, \
 		signatureMethod	sm = SIGNATURE_DSA, \
 		hashMethod hm = HASH_SHA1) \
-		{return XKMSMessageAbstractTypeImpl::addSignature(cm,sm,hm);}
+		{return XKMSMessageAbstractTypeImpl::addSignature(cm,sm,hm);} \
+	virtual int getOpaqueClientDataSize(void) \
+		{return XKMSMessageAbstractTypeImpl::getOpaqueClientDataSize();} \
+	virtual const XMLCh * getOpaqueClientDataItemStr(int item) \
+		{return XKMSMessageAbstractTypeImpl::getOpaqueClientDataItemStr(item);} \
+	virtual void appendOpaqueClientDataItem(const XMLCh * item) \
+		{XKMSMessageAbstractTypeImpl::appendOpaqueClientDataItem(item);}
 
 #endif /* XKMSMESSAGEABSTRACTTYPEIMPL_INCLUDE */

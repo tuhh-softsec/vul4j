@@ -75,20 +75,7 @@ public:
 	XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS
 
 	/* Forced inheritance from RequestAbstractType */
-	virtual const XMLCh * getOriginalRequestId(void) const
-		{return XKMSRequestAbstractTypeImpl::getOriginalRequestId();}
-	virtual void setOriginalRequestId(const XMLCh * id)
-		{XKMSRequestAbstractTypeImpl::setOriginalRequestId(id);}
-	virtual int getRespondWithSize(void)
-		{return XKMSRequestAbstractTypeImpl::getRespondWithSize();}	
-	virtual XKMSRespondWith * getRespondWithItem(int item)
-		{return XKMSRequestAbstractTypeImpl::getRespondWithItem(item);}	
-	virtual const XMLCh * getRespondWithItemStr(int item)
-		{return XKMSRequestAbstractTypeImpl::getRespondWithItemStr(item);}	
-	virtual void appendRespondWithItem(XKMSRespondWith * item)
-		{XKMSRequestAbstractTypeImpl::appendRespondWithItem(item);}
-	virtual void appendRespondWithItem(const XMLCh * item)
-		{XKMSRequestAbstractTypeImpl::appendRespondWithItem(item);}
+	XKMS_REQUESTABSTRACTYPE_IMPL_METHODS
 
 private:
 

@@ -245,6 +245,42 @@ const XMLCh XKMSConstants::s_tagNonce[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagOpaqueClientData[] = {
+
+	chLatin_O,
+	chLatin_p,
+	chLatin_a,
+	chLatin_q,
+	chLatin_u,
+	chLatin_e,
+	chLatin_C,
+	chLatin_l,
+	chLatin_i,
+	chLatin_e,
+	chLatin_n,
+	chLatin_t,
+	chLatin_D,
+	chLatin_a,
+	chLatin_t,
+	chLatin_a,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagOpaqueData[] = {
+
+	chLatin_O,
+	chLatin_p,
+	chLatin_a,
+	chLatin_q,
+	chLatin_u,
+	chLatin_e,
+	chLatin_D,
+	chLatin_a,
+	chLatin_t,
+	chLatin_a,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagOriginalRequestId[] = {
 
 	chLatin_O,
@@ -540,6 +576,33 @@ const XMLCh XKMSConstants::s_tagValidReason[] = {
 	chLatin_a,
 	chLatin_s,
 	chLatin_o,
+	chLatin_n,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagX509Cert[] = {
+
+	chLatin_X,
+	chDigit_5,
+	chDigit_0,
+	chDigit_9,
+	chLatin_C,
+	chLatin_e,
+	chLatin_r,
+	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagX509Chain[] = {
+
+	chLatin_X,
+	chDigit_5,
+	chDigit_0,
+	chDigit_9,
+	chLatin_C,
+	chLatin_h,
+	chLatin_a,
+	chLatin_i,
 	chLatin_n,
 	chNull
 };

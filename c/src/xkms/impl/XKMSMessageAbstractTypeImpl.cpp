@@ -52,8 +52,10 @@ mp_idAttr(NULL),
 mp_serviceAttr(NULL),
 mp_nonceAttr(NULL),
 mp_signatureElement(NULL),
-mp_signature(NULL) {
+mp_signature(NULL),
+mp_opaqueClientDataElement(NULL) {
 
+	m_opaqueClientDataSize = 0;
 }
 
 XKMSMessageAbstractTypeImpl::XKMSMessageAbstractTypeImpl(
@@ -66,8 +68,10 @@ mp_idAttr(NULL),
 mp_serviceAttr(NULL),
 mp_nonceAttr(NULL),
 mp_signatureElement(NULL),
-mp_signature(NULL) {
+mp_signature(NULL),
+mp_opaqueClientDataElement(NULL) {
 
+	m_opaqueClientDataSize = 0;
 }
 
 XKMSMessageAbstractTypeImpl::~XKMSMessageAbstractTypeImpl() {
@@ -115,7 +119,7 @@ void XKMSMessageAbstractTypeImpl::load(void) {
 	}
 
 	// Check for <Signature> node
-	DOMElement *mp_signatureElement = (DOMElement *) findFirstChildOfType(mp_messageAbstractTypeElement, DOMNode::ELEMENT_NODE);
+	mp_signatureElement = (DOMElement *) findFirstChildOfType(mp_messageAbstractTypeElement, DOMNode::ELEMENT_NODE);
 
 	while (mp_signatureElement != NULL && 
 		!strEquals(getDSIGLocalName(mp_signatureElement), XKMSConstants::s_tagSignature)) {
@@ -134,6 +138,37 @@ void XKMSMessageAbstractTypeImpl::load(void) {
 
 	}
 
+	// Cheque for OpaqueClientData
+	mp_opaqueClientDataElement = (DOMElement *) findFirstChildOfType(mp_messageAbstractTypeElement, DOMNode::ELEMENT_NODE);
+	while (mp_opaqueClientDataElement != NULL && 
+		!strEquals(getXKMSLocalName(mp_opaqueClientDataElement), XKMSConstants::s_tagOpaqueClientData)) {
+
+		mp_opaqueClientDataElement = findNextElementChild(mp_opaqueClientDataElement);
+
+	}
+
+	if (mp_opaqueClientDataElement != NULL) {
+
+		DOMElement * c = findFirstElementChild(mp_opaqueClientDataElement);
+		while (c != NULL) {
+
+			if (!strEquals(getXKMSLocalName(c), XKMSConstants::s_tagOpaqueData)) {
+				throw XSECException(XSECException::ExpectedXKMSChildNotFound,
+					"XKMSMessageAbstractType::load - Only <OpaqueData> children allowed for <OpaqueClientData>");
+			}
+
+			if (findFirstChildOfType(c, DOMNode::TEXT_NODE) == NULL) {
+				throw XSECException(XSECException::ExpectedXKMSChildNotFound,
+					"XKMSMessageAbstractType::load - OpaqueData elements require a text child containing Base64 data");
+			}
+
+			++m_opaqueClientDataSize;
+
+			c = findNextElementChild(c);
+
+		}
+
+	}
 }
 
 // --------------------------------------------------------------------------------
@@ -329,3 +364,66 @@ DSIGSignature * XKMSMessageAbstractTypeImpl::addSignature(
 	return ret;
 }
 
+// --------------------------------------------------------------------------------
+//           Opaque Client Data interface
+// --------------------------------------------------------------------------------
+
+int XKMSMessageAbstractTypeImpl::getOpaqueClientDataSize(void) {
+
+	return m_opaqueClientDataSize;
+
+}
+const XMLCh * XKMSMessageAbstractTypeImpl::getOpaqueClientDataItemStr(int item) {
+
+	if (item < 0 || item > m_opaqueClientDataSize) {
+
+		throw XSECException(XSECException::MessageAbstractTypeError,
+			"XKMSMessageAbstractType::getOpaqueClientDataItemStr - index out of range");
+	}
+
+	DOMElement * c = findFirstElementChild(mp_opaqueClientDataElement);
+	int i = 0;
+
+	while (i < item) {
+
+		c = findNextElementChild(c);
+		if (c == NULL) {
+			throw XSECException(XSECException::MessageAbstractTypeError,
+				"XKMSMessageAbstractType::getOpaqueClientDataItemStr - index unexpectedly out of range");
+		}
+		++i;
+	}
+
+	return findFirstChildOfType(c, DOMNode::TEXT_NODE)->getNodeValue();
+
+}
+
+void XKMSMessageAbstractTypeImpl::appendOpaqueClientDataItem(const XMLCh * item) {
+
+	safeBuffer str;
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getXKMSNSPrefix();
+
+	if (mp_opaqueClientDataElement == NULL) {
+
+		makeQName(str, prefix, XKMSConstants::s_tagOpaqueClientData);
+
+		mp_opaqueClientDataElement = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
+												str.rawXMLChBuffer());
+		mp_env->doPrettyPrint(mp_opaqueClientDataElement);
+
+		mp_messageAbstractTypeElement->appendChild(mp_opaqueClientDataElement);
+		mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+
+	}
+
+	makeQName(str, prefix, XKMSConstants::s_tagOpaqueData);
+	DOMElement * e = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS,
+									str.rawXMLChBuffer());
+	e->appendChild(doc->createTextNode(item));
+	mp_opaqueClientDataElement->appendChild(e);
+	mp_env->doPrettyPrint(mp_opaqueClientDataElement);
+
+	m_opaqueClientDataSize++;
+
+}

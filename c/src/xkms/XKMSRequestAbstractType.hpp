@@ -32,6 +32,7 @@
 #include <xsec/xkms/XKMSMessageAbstractType.hpp>
 
 class XKMSRespondWith;
+class XKMSResponseMechanism;
 
 /**
  * @ingroup xkms
@@ -166,6 +167,58 @@ public:
 	 */
 
 	virtual void appendRespondWithItem(const XMLCh * item) = 0;
+
+	//@}
+
+	/** @name \<ResponseMechanism\> handling */
+	//@{
+
+	/* \brief Number of ResponseMechanism elements in this Request
+	 *
+	 * Returns the number of ResponseMechanism elements held within this request
+	 *
+	 * @returns Number of ResponseMechanism elements
+	 */
+
+	virtual int getResponseMechanismSize(void) = 0;
+
+	/*
+	 * \brief Get the nth item in the ResponseMechanism list
+	 *
+	 * @param item The item to return
+	 * @returns the nth item in the ResponseMechanism list.
+	 *
+	 */
+
+	virtual XKMSResponseMechanism * getResponseMechanismItem(int item) = 0;
+
+	/*
+	 * \brief Get the string of the nth item in the ResponseMechanism list
+	 *
+	 * @param item The item whose string is to be returned
+	 * @returns the string of the nth item in the RespondWith list.
+	 *
+	 */
+
+	virtual const XMLCh * getResponseMechanismItemStr(int item) = 0;
+
+	/*
+	 * \brief Append an item to the ResponseMechanism list
+	 *
+	 * @param item XKMSResponseMechanism object to append to the list.
+	 * @note Once passed in, this item will be owned by the library.
+	 */
+
+	virtual void appendResponseMechanismItem(XKMSResponseMechanism * item) = 0;
+
+	/*
+	 * \brief Shortcut for appending an item to the ResponseMechanism list
+	 *
+	 * @param item String to create a ResponseMechanism element around and 
+	 * append to the list.
+	 */
+
+	virtual void appendResponseMechanismItem(const XMLCh * item) = 0;
 
 	//@}
 

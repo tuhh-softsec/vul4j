@@ -239,6 +239,42 @@ public:
 
 	//@}
 
+	/** @name Opaque client data handling */
+	//@{
+
+	/**
+	 * \brief Find the number of \<OpaqueData\> elements
+	 *
+	 * The \<OpaqueClientData\> element can have multiple
+	 * \<OpaqueData\> children.  This method allows an application
+	 * to determine how many such children exist
+	 *
+	 * @return Number of \<OpaqueData\> elements
+	 */
+
+	virtual int getOpaqueClientDataSize(void) = 0;
+
+	/*
+	 * \brief Get the nth item in the OpaqueClientData list
+	 *
+	 * @param item The item to return
+	 * @returns the string of the nth item in the OpaqueClientData list.
+	 *
+	 */
+
+	virtual const XMLCh * getOpaqueClientDataItemStr(int item) = 0;
+
+	/*
+	 * \brief Append an item to the OpaqueClientData list
+	 *
+	 * @param item Base64 string to append to the list.  Will be
+	 * wrapped in a OpaqueData element.
+	 */
+
+	virtual void appendOpaqueClientDataItem(const XMLCh * item) = 0;
+
+	//@}
+
 private:
 
 	// Unimplemented

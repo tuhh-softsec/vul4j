@@ -1253,6 +1253,10 @@ SOURCE=..\..\..\..\src\xkms\XKMSRespondWith.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\XKMSResponseMechanism.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\XKMSResult.hpp
 # End Source File
 # Begin Source File
@@ -1280,5 +1284,13 @@ SOURCE=..\..\..\..\src\xkms\XKMSValidateRequest.hpp
 SOURCE=..\..\..\..\src\xkms\XKMSValidateResult.hpp
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.hpp
+# End Source File
 # End Target
 # End Project

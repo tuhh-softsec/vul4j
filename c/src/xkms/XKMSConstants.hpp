@@ -65,6 +65,8 @@ public:
 	static const XMLCh s_tagLocateRequest[];
 	static const XMLCh s_tagLocateResult[];
 	static const XMLCh s_tagNonce[];
+	static const XMLCh s_tagOpaqueClientData[];
+	static const XMLCh s_tagOpaqueData[];
 	static const XMLCh s_tagOriginalRequestId[];
 	static const XMLCh s_tagQueryKeyBinding[];
 	static const XMLCh s_tagRepresent[];
@@ -83,6 +85,8 @@ public:
 	static const XMLCh s_tagValidateRequest[];
 	static const XMLCh s_tagValidateResult[];
 	static const XMLCh s_tagValidReason[];
+	static const XMLCh s_tagX509Cert[];
+	static const XMLCh s_tagX509Chain[];
 
 	// ResultMajor codes
 

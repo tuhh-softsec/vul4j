@@ -354,7 +354,8 @@ void printLocateRequestUsage(void) {
 	cerr << "\nUsage LocateRequest [--help|-h] <service URI> [options]\n";
 	cerr << "   --help/-h                : print this screen and exit\n\n";
 	cerr << "   --add-cert/-a <filename> : add cert in filename as a KeyInfo\n";
-	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n\n";
+	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n";
+	cerr << "   --add-opaque/-o <data>   : Add an opaque data string\n";
 	cerr << "   --add-usage-sig/-us      : Add Signature Key Usage\n";
 	cerr << "   --add-usage-exc/-ux      : Add Excange Key Usage\n";
 	cerr << "   --add-usage-enc/-ue      : Add Encryption Key Usage\n";
@@ -362,6 +363,8 @@ void printLocateRequestUsage(void) {
 	cerr << "                            : Add a UseKeyWith element\n";
 	cerr << "   --add-respondwith/-r <Identifier>\n";
 	cerr << "                            : Add a RespondWith element\n";
+	cerr << "   --add-responsemechanism/-m <Identifier>\n";
+	cerr << "                            : Add a ResponseMechanism element\n";
 	cerr << "   --sign-dsa/-sd <filename> <passphrase>\n";
 	cerr << "           : Sign using the DSA key in file protected by passphrase\n\n";
 
@@ -425,6 +428,15 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			qkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
+		else if (stricmp(argv[paramCount], "--add-opaque") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+			if (++paramCount >= argc) {
+				printLocateRequestUsage();
+				delete lr;
+				return NULL;
+			}
+			lr->appendOpaqueClientDataItem(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
 		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
 			XKMSQueryKeyBinding * qkb = lr->getQueryKeyBinding();
 			if (qkb == NULL)
@@ -466,6 +478,15 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 				return NULL;
 			}
 			lr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-responsemechanism") == 0 || stricmp(argv[paramCount], "-m") == 0) {
+			if (++paramCount >= argc) {
+				printLocateRequestUsage();
+				delete lr;
+				return NULL;
+			}
+			lr->appendResponseMechanismItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
 #if defined (HAVE_OPENSSL)
@@ -585,6 +606,7 @@ void printValidateRequestUsage(void) {
 	cerr << "   --help/-h                : print this screen and exit\n\n";
 	cerr << "   --add-cert/-a <filename> : add cert in filename as a KeyInfo\n";
 	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n";
+	cerr << "   --add-opaque/-o <data>   : Add an opaque data string\n";
 	cerr << "   --add-usage-sig/-us      : Add Signature Key Usage\n";
 	cerr << "   --add-usage-exc/-ux      : Add Excange Key Usage\n";
 	cerr << "   --add-usage-enc/-ue      : Add Encryption Key Usage\n";
@@ -592,6 +614,8 @@ void printValidateRequestUsage(void) {
 	cerr << "                            : Add a UseKeyWith element\n";
 	cerr << "   --add-respondwith/-r <Identifier>\n";
 	cerr << "                            : Add a RespondWith element\n";
+	cerr << "   --add-responsemechanism/-m <Identifier>\n";
+	cerr << "                            : Add a ResponseMechanism element\n";
 	cerr << "   --sign-dsa/-sd <filename> <passphrase>\n";
 	cerr << "           : Sign using the DSA key in file protected by passphrase\n\n";
 
@@ -656,6 +680,15 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 			qkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
+		else if (stricmp(argv[paramCount], "--add-opaque") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+			if (++paramCount >= argc) {
+				printValidateRequestUsage();
+				delete vr;
+				return NULL;
+			}
+			vr->appendOpaqueClientDataItem(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
 		else if (stricmp(argv[paramCount], "--add-respondwith") == 0 || stricmp(argv[paramCount], "-r") == 0) {
 			if (++paramCount >= argc) {
 				printValidateRequestUsage();
@@ -663,6 +696,15 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 				return NULL;
 			}
 			vr->appendRespondWithItem(MAKE_UNICODE_STRING(argv[paramCount]));
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-responsemechanism") == 0 || stricmp(argv[paramCount], "-m") == 0) {
+			if (++paramCount >= argc) {
+				printLocateRequestUsage();
+				delete vr;
+				return NULL;
+			}
+			vr->appendResponseMechanismItem(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--add-usage-sig") == 0 || stricmp(argv[paramCount], "-us") == 0) {
@@ -1366,7 +1408,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			}
 
 			if (twoPhase)
-				r->appendRespondWithItem(XKMSConstants::s_tagRepresent);
+				r->appendResponseMechanismItem(XKMSConstants::s_tagRepresent);
 
 			msg = r;
 			parmsDone = true;
@@ -1382,7 +1424,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 				return -1;
 			}
 			if (twoPhase)
-				r->appendRespondWithItem(XKMSConstants::s_tagRepresent);
+				r->appendResponseMechanismItem(XKMSConstants::s_tagRepresent);
 
 			msg = r;
 			parmsDone = true;

@@ -35,6 +35,7 @@
 
 #include "XKMSRequestAbstractTypeImpl.hpp"
 #include "XKMSRespondWithImpl.hpp"
+#include "XKMSResponseMechanismImpl.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -65,6 +66,11 @@ XKMSRequestAbstractTypeImpl::~XKMSRequestAbstractTypeImpl() {
 		delete (*i);
 	}
 
+	ResponseMechanismVectorType::iterator j;
+
+	for (j = m_responseMechanismList.begin(); j < m_responseMechanismList.end(); ++j) {
+		delete (*j);
+	}
 };
 
 // --------------------------------------------------------------------------------
@@ -94,6 +100,24 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 			XSECnew(rw, XKMSRespondWithImpl(mp_env, (DOMElement *) nl->item(i)));
 			rw->load();
 			m_respondWithList.push_back(rw);
+
+		}
+
+	}
+
+	// Get any ResponseMechanism elements
+	nl = mp_messageAbstractTypeElement->getElementsByTagNameNS(
+		XKMSConstants::s_unicodeStrURIXKMS,
+		XKMSConstants::s_tagResponseMechanism);
+
+	if (nl != NULL) {
+
+		XKMSResponseMechanismImpl * rm;
+		for (int i = 0; i < nl->getLength() ; ++ i) {
+
+			XSECnew(rm, XKMSResponseMechanismImpl(mp_env, (DOMElement *) nl->item(i)));
+			rm->load();
+			m_responseMechanismList.push_back(rm);
 
 		}
 
@@ -218,6 +242,81 @@ void XKMSRequestAbstractTypeImpl::appendRespondWithItem(const XMLCh * item) {
 
 	// Add to the list
 	m_respondWithList.push_back(rw);
+
+}
+
+
+// --------------------------------------------------------------------------------
+//           ResponseMechanism handling
+// --------------------------------------------------------------------------------
+
+int XKMSRequestAbstractTypeImpl::getResponseMechanismSize(void) {
+
+	return m_responseMechanismList.size();
+
+}
+
+XKMSResponseMechanism * XKMSRequestAbstractTypeImpl::getResponseMechanismItem(int item) {
+
+	if (item < 0 || item >= m_responseMechanismList.size()) {
+
+		throw XSECException(XSECException::RequestAbstractTypeError,
+			"XKMSRequestAbstractTypeImpl::getResponseMechanismItem - item out of range");
+
+	}
+
+	return m_responseMechanismList[item];
+
+}
+
+const XMLCh * XKMSRequestAbstractTypeImpl::getResponseMechanismItemStr(int item) {
+
+	if (item < 0 || item >= m_responseMechanismList.size()) {
+
+		throw XSECException(XSECException::RequestAbstractTypeError,
+			"XKMSRequestAbstractTypeImpl::getResponseMechanismItem - item out of range");
+
+	}
+
+	return m_responseMechanismList[item]->getResponseMechanismString();
+
+}
+
+void XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(XKMSResponseMechanism * item) {
+
+}
+
+void XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(const XMLCh * item) {
+
+	XKMSResponseMechanismImpl * rw;
+	XSECnew(rw, XKMSResponseMechanismImpl(mp_env));
+
+	// Create the ResponseMechanism object
+	DOMElement * elt = rw->createBlankResponseMechanism(item);
+
+	// Add to the item
+	DOMElement * c = findFirstElementChild(mp_messageAbstractTypeElement);
+	while (c != NULL) {
+
+		if (!strEquals(getXKMSLocalName(c), XKMSConstants::s_tagResponseMechanism))
+			break;
+
+	}
+
+	if (c != NULL) {
+		mp_messageAbstractTypeElement->insertBefore(elt, c);
+		if (mp_env->getPrettyPrintFlag()) {
+			mp_messageAbstractTypeElement->insertBefore(
+				mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), c);
+		}
+	}
+	else {
+		mp_messageAbstractTypeElement->appendChild(elt);
+		mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	}
+
+	// Add to the list
+	m_responseMechanismList.push_back(rw);
 
 }
 

@@ -36,6 +36,7 @@
 #include <vector>
 
 class XKMSRespondWithImpl;
+class XKMSResponseMechanismImpl;
 
 class XKMSRequestAbstractTypeImpl : virtual public XKMSRequestAbstractType, public XKMSMessageAbstractTypeImpl {
 
@@ -74,6 +75,14 @@ public:
 	virtual void appendRespondWithItem(XKMSRespondWith * item);
 	virtual void appendRespondWithItem(const XMLCh * item);
 
+	/* ResponseMechanism handling */
+	virtual int getResponseMechanismSize(void);
+	virtual XKMSResponseMechanism * getResponseMechanismItem(int item);
+	virtual const XMLCh * getResponseMechanismItemStr(int item);
+	virtual void appendResponseMechanismItem(XKMSResponseMechanism * item);
+	virtual void appendResponseMechanismItem(const XMLCh * item);
+
+
 	/* Inherited from XKMSMessageType */
 	virtual messageType getMessageType(void) = 0;
 
@@ -109,7 +118,14 @@ private:
 	typedef std::vector<XKMSRespondWithImpl *>	RespondWithVectorType;
 #endif
 
+#if defined(XSEC_NO_NAMESPACES)
+	typedef vector<XKMSResponseMechanismImpl *>		ResponseMechanismVectorType;
+#else
+	typedef std::vector<XKMSResponseMechanismImpl *>	ResponseMechanismVectorType;
+#endif
+
 	RespondWithVectorType		m_respondWithList;		// List of m_respondWith elements
+	ResponseMechanismVectorType	m_responseMechanismList;// List of responseMechanism elements
 
 	XERCES_CPP_NAMESPACE_QUALIFIER  DOMAttr
 						* mp_originalRequestIdAttr;
@@ -120,5 +136,31 @@ private:
 	XKMSRequestAbstractTypeImpl & operator = (const XKMSRequestAbstractTypeImpl &);
 
 };
+
+#define	XKMS_REQUESTABSTRACTYPE_IMPL_METHODS \
+	virtual const XMLCh * getOriginalRequestId(void) const \
+		{return XKMSRequestAbstractTypeImpl::getOriginalRequestId();} \
+	virtual void setOriginalRequestId(const XMLCh * id) \
+		{XKMSRequestAbstractTypeImpl::setOriginalRequestId(id);} \
+	virtual int getRespondWithSize(void) \
+		{return XKMSRequestAbstractTypeImpl::getRespondWithSize();}	\
+	virtual XKMSRespondWith * getRespondWithItem(int item) \
+		{return XKMSRequestAbstractTypeImpl::getRespondWithItem(item);}	\
+	virtual const XMLCh * getRespondWithItemStr(int item) \
+		{return XKMSRequestAbstractTypeImpl::getRespondWithItemStr(item);}	\
+	virtual void appendRespondWithItem(XKMSRespondWith * item) \
+		{XKMSRequestAbstractTypeImpl::appendRespondWithItem(item);} \
+	virtual void appendRespondWithItem(const XMLCh * item) \
+		{XKMSRequestAbstractTypeImpl::appendRespondWithItem(item);} \
+	virtual int getResponseMechanismSize(void) \
+		{return XKMSRequestAbstractTypeImpl::getResponseMechanismSize();}	\
+	virtual XKMSResponseMechanism * getResponseMechanismItem(int item) \
+		{return XKMSRequestAbstractTypeImpl::getResponseMechanismItem(item);}	\
+	virtual const XMLCh * getResponseMechanismItemStr(int item) \
+		{return XKMSRequestAbstractTypeImpl::getResponseMechanismItemStr(item);}	\
+	virtual void appendResponseMechanismItem(XKMSResponseMechanism * item) \
+		{XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(item);} \
+	virtual void appendResponseMechanismItem(const XMLCh * item) \
+		{XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(item);}
 
 #endif /* XKMSREQUESTABSTRACTTYPEIMPL_INCLUDE */

@@ -61,6 +61,22 @@ XKMSMessageFactoryImpl::~XKMSMessageFactoryImpl(void) {
 };
 
 // --------------------------------------------------------------------------------
+//			Internal methods
+// --------------------------------------------------------------------------------
+
+void XKMSMessageFactoryImpl::copyRequestToResult(XKMSRequestAbstractType * req, 
+												 XKMSResultType * res) {
+
+	/* Copy any Opaque Data */
+
+	int sz = req->getOpaqueClientDataSize();
+	for (int i = 0; i < sz; ++i) {
+		res->appendOpaqueClientDataItem(req->getOpaqueClientDataItemStr(i));
+	}
+
+}
+
+// --------------------------------------------------------------------------------
 //			Set/get the namespace prefix to be used when creating nodes
 // --------------------------------------------------------------------------------
 
@@ -263,6 +279,10 @@ XKMSValidateRequest * XKMSMessageFactoryImpl::createValidateRequest(
 	return vri;
 }
 
+// --------------------------------------------------------------------------------
+//           Create a result based on a request
+// --------------------------------------------------------------------------------
+
 XKMSLocateResult * XKMSMessageFactoryImpl::createLocateResult(
 		XKMSLocateRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
@@ -278,6 +298,8 @@ XKMSLocateResult * XKMSMessageFactoryImpl::createLocateResult(
 
 	XSECnew(lri, XKMSLocateResultImpl(tenv));
 	lri->createBlankLocateResult(request->getService(), id, rmaj, rmin);
+
+	copyRequestToResult(request, (XKMSResultTypeImpl*) lri);
 
 	return lri;
 
@@ -321,6 +343,8 @@ XKMSResult * XKMSMessageFactoryImpl::createResult(
 	XSECnew(ri, XKMSResultImpl(tenv));
 	ri->createBlankResult(request->getService(), id, rmaj, rmin);
 
+	copyRequestToResult(request, (XKMSResultTypeImpl*) ri);
+
 	return ri;
 
 }
@@ -362,6 +386,8 @@ XKMSValidateResult * XKMSMessageFactoryImpl::createValidateResult(
 
 	XSECnew(vri, XKMSValidateResultImpl(tenv));
 	vri->createBlankValidateResult(request->getService(), id, rmaj, rmin);
+
+	copyRequestToResult(request, (XKMSResultTypeImpl*) vri);
 
 	return vri;
 

@@ -119,6 +119,8 @@ public:
 
 private:
 
+	// Internal methods
+	void copyRequestToResult(XKMSRequestAbstractType * req, XKMSResultType * res);
 	// Environment
 	XSECEnv					* mp_env;
 
