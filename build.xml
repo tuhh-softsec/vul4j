@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.29 2002/10/02 20:27:17 rdonkin Exp $
+        $Id: build.xml,v 1.30 2002/10/25 21:31:48 sanders Exp $
 -->
 
 
@@ -250,6 +250,7 @@
                                test.matching.extended,
                                test.rule,
                                test.callmethod,
+                               test.objectparam,
                                test.bpsr,
                                test.xmlrules,
                                test.node
@@ -282,10 +283,20 @@
 
   <target name="test.callmethod" depends="compile.tests"
    description="Run tests for CallMethodRule and CallParamRule ...">
-    <echo message="Running Rule tests ..."/>
+    <echo message="Running CallMethodRule tests ..."/>
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
       <arg value="org.apache.commons.digester.CallMethodRuleTestCase"/>
+      <classpath refid="test.classpath"/>
+    </java>
+  </target>
+
+  <target name="test.objectparam" depends="compile.tests"
+   description="Run tests for ObjectParamRule ...">
+    <echo message="Running ObjectParamRule tests ..."/>
+    <java classname="${test.runner}" fork="yes"
+        failonerror="${test.failonerror}">
+      <arg value="org.apache.commons.digester.ObjectParamRuleTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
   </target>
