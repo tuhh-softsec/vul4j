@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Attic/CollectionAlgorithms.java,v 1.4 2003/11/24 21:59:30 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Attic/CollectionAlgorithms.java,v 1.5 2003/11/24 23:09:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -71,8 +71,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * Utility methods and algorithms for applying functors 
  * to {@link Collection Collections}.
  * 
- * @deprecated Replaced by, or to be replaced by org.apache.commons.functor.Algorithms
- * @version $Revision: 1.4 $ $Date: 2003/11/24 21:59:30 $
+ * @version $Revision: 1.5 $ $Date: 2003/11/24 23:09:13 $
  * @author Rodney Waldhoff
  */
 public final class CollectionAlgorithms {
