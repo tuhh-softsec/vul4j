@@ -159,7 +159,7 @@ public class ResolverUsageHTTP {
       XMLSignature signature = new XMLSignature(dsElem, currentSystemId);
 
       // how can I reg my own keystore?
-      boolean verify = signature.verify();
+      boolean verify = signature.checkSignatureValue(signature.getKeyInfo().getPublicKey());
 
       System.out.println("Signature " + (verify
                                          ? "Verification successful"

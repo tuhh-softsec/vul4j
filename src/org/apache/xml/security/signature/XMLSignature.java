@@ -451,22 +451,26 @@ public class XMLSignature extends SignatureElementProxy {
    /**
     * Method sign
     *
-    * @param privateKey
+    * @param signingKey
     * @throws XMLSignatureException
     */
-   public void sign(PrivateKey privateKey) throws XMLSignatureException {
+   public void sign(Key signingKey) throws XMLSignatureException {
+
+      if (signingKey instanceof PublicKey) {
+         throw new IllegalArgumentException(I18n
+            .translate("algorithms.operationOnlyVerification"));
+      }
 
       try {
          if (this._state == MODE_SIGN) {
 
-            // XMLUtils.indentSignature(this._constructionElement, "   ", 0);
             Element signatureMethodElement =
                this._signedInfo.getSignatureMethodElement();
             SignatureAlgorithm sa =
                new SignatureAlgorithm(signatureMethodElement,
                                       this.getBaseURI());
 
-            sa.initSign(privateKey);
+            sa.initSign(signingKey);
 
             SignedInfo si = this.getSignedInfo();
 
@@ -489,76 +493,6 @@ public class XMLSignature extends SignatureElementProxy {
       } catch (XMLSecurityException ex) {
          throw new XMLSignatureException("empty", ex);
       }
-   }
-
-   /**
-    * Method sign
-    *
-    * @param secretKey
-    * @throws XMLSignatureException
-    */
-   public void sign(SecretKey secretKey) throws XMLSignatureException {
-
-      try {
-         if (this._state == MODE_SIGN) {
-
-            // XMLUtils.indentSignature(this._constructionElement, "   ", 0);
-            Element signatureMethodElement =
-               this._signedInfo.getSignatureMethodElement();
-            SignatureAlgorithm sa =
-               new SignatureAlgorithm(signatureMethodElement,
-                                      this.getBaseURI());
-
-            sa.initSign(secretKey);
-
-            SignedInfo si = this.getSignedInfo();
-
-            si.generateDigestValues();
-
-            byte signedInfoOctets[] = si.getCanonicalizedOctetStream();
-
-            sa.update(signedInfoOctets);
-
-            byte jcebytes[] = sa.sign();
-
-            this.setSignatureValueElement(jcebytes);
-         }
-      } catch (IOException ex) {
-         throw new XMLSignatureException("empty", ex);
-      } catch (CanonicalizationException ex) {
-         throw new XMLSignatureException("empty", ex);
-      } catch (InvalidCanonicalizerException ex) {
-         throw new XMLSignatureException("empty", ex);
-      } catch (XMLSecurityException ex) {
-         throw new XMLSignatureException("empty", ex);
-      }
-   }
-
-   /**
-    * Method sign
-    *
-    * @return
-    * @throws XMLSignatureException
-    */
-   public boolean verify() throws XMLSignatureException {
-
-      if (this._state == MODE_VERIFY) {
-         try {
-            Element signatureMethodElement =
-               this._signedInfo.getSignatureMethodElement();
-            SignatureAlgorithm sa =
-               new SignatureAlgorithm(signatureMethodElement,
-                                      this.getBaseURI());
-
-            /** @todo do real work here */
-            return false;
-         } catch (XMLSecurityException ex) {
-            throw new XMLSignatureException("empty", ex);
-         }
-      }
-
-      /** @todo fill in error message */
-      throw new XMLSignatureException("empty");
    }
 
    /**
