@@ -155,6 +155,8 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
+#include <time.h>
+
 #ifdef XSEC_NO_XALAN
 
 std::ostream& operator<< (std::ostream& target, const XMLCh * s)
@@ -546,6 +548,7 @@ int evaluate(int argc, char ** argv) {
 		return 2;
 	}
 
+#if 0
 	catch (...) {
 
 		cerr << "Unknown Exception type occured.  Cleaning up and exiting\n" << endl;
@@ -553,7 +556,7 @@ int evaluate(int argc, char ** argv) {
 		return 2;
 
 	}
-
+#endif
 	int retResult;
 
 
