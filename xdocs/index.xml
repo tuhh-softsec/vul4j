@@ -1,4 +1,19 @@
 <?xml version="1.0"?>
+<!--
+   Copyright 2003-2004 The Apache Software Foundation
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
 <document>
   <properties>
     <title>Overview</title>
@@ -7,7 +22,7 @@
   </properties>
 
   <body>
-    <section name="Functor: Function Objects for Java">
+    <section name="Commons Functor: Function Objects for Java">
       <p>
          A <em>functor</em> is a function that can be manipulated 
          as an object, or an object representing a single, generic
@@ -33,18 +48,19 @@
          See the <a href="examples.html">examples</a> for more information on some of 
          these techniques.
       </p>
+<subsection name="Status">
+<p>
+ <ul>
+  <li>This code is in the commons <i>sandbox</i></li>
+  <li>The code is unreleased</li>
+  <li>Methods and classes can and will appear and disappear without warning</li>
+  <li>If you like the code and want to push it towards a release, join the mailing list!</li>
+ </ul>
+</p>
+</subsection>
     </section>
-    <section name="Status">
-      <p>
-         Functor has not yet had an official binary release, but
-         daily binary and source snapshots are available from 
-         <a href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/">http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/</a>.
-      </p>
-      <p>
-         See the <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/STATUS.txt">STATUS</a> file for 
-         the official project status.
-      </p>
-    </section>
+    
+    
     <section name="Overview">
       <p>
          <emphasis>Commons Functor</emphasis> defines three general types of
@@ -70,5 +86,17 @@
         provide common functor implementations, adapters and utilities.
       </p>
     </section>
+    
+    
+<section name="Releases">
+<p>
+None. This is a <i>sandbox</i> component.
+</p>
+<p>
+Unofficial <a href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/">nightly builds</a>
+are available, however these should be treated with care.
+</p>
+</section>
+
   </body>
 </document>
