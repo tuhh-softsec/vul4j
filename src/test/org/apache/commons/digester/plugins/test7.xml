@@ -1,0 +1,31 @@
+<root xmlns:plugin="http://jakarta.apache.org/digester/plugins">
+  <plugin id="label" class="org.apache.commons.digester.plugins.TextLabel"/>
+  <plugin id="slider" class="org.apache.commons.digester.plugins.Slider"/>
+  <plugin id="label2" class="org.apache.commons.digester.plugins.TextLabel2"/>
+  
+  <widget plugin-id="label" id="slider" plugin:id="label2"/>
+  <widget plugin-id="label" id="slider" plugin:id="label2"/>
+  <gadget plugin-id="label" id="slider" plugin:id="label2"/>
+  <gadget plugin-id="label" id="slider" plugin:id="label2"/>
+
+  <widget 
+    plugin-class="org.apache.commons.digester.plugins.TextLabel" 
+    class="org.apache.commons.digester.plugins.Slider" 
+    plugin:class="org.apache.commons.digester.plugins.TextLabel2"/>
+    
+  <widget 
+    plugin-class="org.apache.commons.digester.plugins.TextLabel" 
+    class="org.apache.commons.digester.plugins.Slider" 
+    plugin:class="org.apache.commons.digester.plugins.TextLabel2"/>
+    
+  <gadget 
+    plugin-class="org.apache.commons.digester.plugins.TextLabel" 
+    class="org.apache.commons.digester.plugins.Slider" 
+    plugin:class="org.apache.commons.digester.plugins.TextLabel2"/>
+    
+  <gadget 
+    plugin-class="org.apache.commons.digester.plugins.TextLabel" 
+    class="org.apache.commons.digester.plugins.Slider" 
+    plugin:class="org.apache.commons.digester.plugins.TextLabel2"/>
+</root>
+
