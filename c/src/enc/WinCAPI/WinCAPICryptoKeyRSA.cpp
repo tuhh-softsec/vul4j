@@ -505,8 +505,11 @@ unsigned int WinCAPICryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 			"WinCAPI:RSA - Attempt to decrypt data with empty key");
 	}
 
+	// Have to reverse ordering of input :
 	DWORD decryptSize = inLength;
-	memcpy(plainBuf, inBuf, inLength);
+	// memcpy(plainBuf, inBuf, inLength);
+	for (unsigned int i = 0; i < inLength; ++i)
+		plainBuf[i] = inBuf[inLength - 1 - i];
 
 	switch (padding) {
 
@@ -631,6 +634,14 @@ unsigned int WinCAPICryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 
 	}
 
+	// Reverse the output
+	unsigned char *tbuf;
+	XSECnew(tbuf, unsigned char[encryptSize]);
+	ArrayJanitor<unsigned char> j_tbuf(tbuf);
+	memcpy(tbuf, cipherBuf, encryptSize);
+
+	for (unsigned int i = 0; i < encryptSize; ++i)
+		cipherBuf[i] = tbuf[encryptSize - 1 - i];
 
 	return encryptSize;
 
