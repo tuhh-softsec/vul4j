@@ -124,9 +124,16 @@ public class AxisVerifier {
                                                : " not ") + "valid");
 
       for (int i = 0; i < sig.getSignedInfo().getSignedContentLength(); i++) {
-         System.out.println("--- Signed Content follows ---");
-         System.out
-            .println(new String(sig.getSignedInfo().getSignedContentItem(i)));
+         boolean thisOneWasSigned = sig.getSignedInfo().getVerificationResult(i);
+         if (thisOneWasSigned) {
+            System.out.println("--- Signed Content follows ---");
+            System.out.println(new String(sig.getSignedInfo().getSignedContentItem(i)));
+         }
       }
+      System.out.println("");
+      System.out.println("Prior transforms");
+      System.out.println(new String(sig.getSignedInfo().getReferencedContentPriorTransformsItem(0).getBytes()));
+
+
    }
 }

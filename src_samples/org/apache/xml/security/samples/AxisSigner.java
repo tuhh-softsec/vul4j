@@ -177,7 +177,10 @@ public class AxisSigner {
       soapSignatureElem.appendChild(sig.getElement());
 
       {
-         sig.addDocument("#Body");
+         // sig.addDocument("#Body");
+         Transforms transforms = new Transforms(doc);
+         transforms.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+         sig.addDocument("", transforms);
       }
 
       {
