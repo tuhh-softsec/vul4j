@@ -76,7 +76,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 ../../../../Build/Win32/VC6/Debug/xsec_lib_02D.lib libeay32.lib xerces-c_2D.lib Xalan-C_1D.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 xerces-c_2D.lib Xalan-C_1D.lib libeay32.lib crypt32.lib /nologo /subsystem:console /map /debug /machine:I386 /pdbtype:sept
 
 !ELSEIF  "$(CFG)" == "checksig - Win32 Debug No Xalan"
 
@@ -101,7 +101,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 ../../../../Build/Win32/VC6/Debug/xsec_lib_01D.lib libeay32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2D.lib Xalan-C_1D.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 ../../../../Build/Win32/VC6/Debug/xsec_lib_02D.lib libeay32.lib xerces-c_2D.lib crypt32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 libeay32.lib xerces-c_2D.lib crypt32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
 !ELSEIF  "$(CFG)" == "checksig - Win32 Release No Xalan"
 
@@ -126,7 +126,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 ../../../../Build/Win32/VC6/Debug/xsec_lib_01D.lib libeay32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2D.lib Xalan-C_1D.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 ../../../../Build/Win32/VC6/Release/xsec_lib_02.lib libeay32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2.lib crypt32.lib /nologo /subsystem:console /incremental:no /machine:I386
+# ADD LINK32 libeay32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2.lib crypt32.lib /nologo /subsystem:console /incremental:no /machine:I386
 # SUBTRACT LINK32 /debug
 
 !ENDIF 
@@ -143,14 +143,53 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=..\..\..\..\src\tools\checksig\AnonymousResolver.cpp
+
+!IF  "$(CFG)" == "checksig - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "checksig - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "checksig - Win32 Debug No Xalan"
+
+# ADD CPP /YX
+
+!ELSEIF  "$(CFG)" == "checksig - Win32 Release No Xalan"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\tools\checksig\checksig.cpp
+
+!IF  "$(CFG)" == "checksig - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "checksig - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "checksig - Win32 Debug No Xalan"
+
+# ADD CPP /YX
+
+!ELSEIF  "$(CFG)" == "checksig - Win32 Release No Xalan"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\tools\checksig\InteropResolver.cpp
+
+!IF  "$(CFG)" == "checksig - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "checksig - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "checksig - Win32 Debug No Xalan"
+
+# ADD CPP /YX
+
+!ELSEIF  "$(CFG)" == "checksig - Win32 Release No Xalan"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Header Files"

@@ -55,7 +55,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2.lib Xalan-C_1.lib crypt32.lib libeay32.lib /nologo /dll /machine:I386 /out:"../../../../Build/Win32/VC6/Release/xsec_lib_02.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2.lib Xalan-C_1.lib crypt32.lib libeay32.lib /nologo /dll /machine:I386 /out:"../../../../Build/Win32/VC6/Release/xsec_1_0_0.dll" /implib:"../../../../Build/Win32/VC6/Release/xsec_1.lib"
+# SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "xsec_lib - Win32 Debug"
 
@@ -81,7 +82,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 xerces-c_2D.lib Xalan-C_1D.lib libeay32.lib crypt32.lib /nologo /version:0.2 /dll /debug /machine:I386 /out:"../../../../Build/Win32/VC6/Debug/xsec_lib_02D.dll" /pdbtype:sept
+# ADD LINK32 xerces-c_2D.lib Xalan-C_1D.lib crypt32.lib libeay32.lib /nologo /version:0.2 /dll /debug /machine:I386 /out:"../../../../Build/Win32/VC6/Debug/xsec_1_0_0D.dll" /implib:"../../../../Build/Win32/VC6/Debug/xsec_1D.lib" /pdbtype:sept
+# SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "xsec_lib - Win32 Debug No Xalan"
 
@@ -108,7 +110,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2D.lib Xalan-C_1D.lib libeay32.lib /nologo /version:0.2 /dll /debug /machine:I386 /out:"../../../../Build/Win32/VC6/Debug/xsec_lib_01D.dll" /pdbtype:sept
-# ADD LINK32 xerces-c_2D.lib libeay32.lib crypt32.lib /nologo /version:0.2 /dll /debug /machine:I386 /out:"../../../../Build/Win32/VC6/Debug/xsec_lib_02D.dll" /pdbtype:sept
+# ADD LINK32 xerces-c_2D.lib libeay32.lib crypt32.lib /nologo /version:0.2 /dll /debug /machine:I386 /out:"../../../../Build/Win32/VC6/Debug/xsec_1_0_0D.dll" /implib:"../../../../Build/Win32/VC6/Debug/xsec_1D.lib" /pdbtype:sept
+# SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "xsec_lib - Win32 Release No Xalan"
 
@@ -135,7 +138,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2.lib Xalan-C_1.lib libeay32.lib /nologo /dll /machine:I386 /out:"../../../../Build/Win32/VC6/Release/xsec_lib_01.dll"
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2.lib libeay32.lib crypt32.lib /nologo /dll /machine:I386 /out:"../../../../Build/Win32/VC6/Release/xsec_lib_02.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2.lib libeay32.lib crypt32.lib /nologo /dll /machine:I386 /out:"../../../../Build/Win32/VC6/Release/xsec_1_0_0.dll" /implib:"../../../../Build/Win32/VC6/Release/xsec_1.lib"
+# SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
 

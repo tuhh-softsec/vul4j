@@ -72,9 +72,9 @@
 
 #include <xercesc/util/XercesVersion.hpp>
 
-#define XSEC_VERSION	     "0.2.0"
-#define XSEC_VERSION_MAJOR   0
-#define XSEC_VERSION_MEDIUM  2
+#define XSEC_VERSION	     "1.0.0"
+#define XSEC_VERSION_MAJOR   1
+#define XSEC_VERSION_MEDIUM  0
 #define XSEC_VERSION_MINOR   0
 
 /*
@@ -112,7 +112,7 @@
 
 #define HAVE_OPENSSL 1
 
-#define HAVE_WINCAPI 1
+/* #define HAVE_WINCAPI 1 */
 
 /*
  * Macros used to determine what header files exist on this
