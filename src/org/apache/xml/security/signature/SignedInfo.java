@@ -135,7 +135,7 @@ public class SignedInfo extends Manifest {
 
       super(doc);
 
-      XMLUtils.addReturnToElement(this._constructionElement);
+      // XMLUtils.addReturnToElement(this._constructionElement);
       {
          Element canonElem = XMLUtils.createElementInSignatureSpace(this._doc,
                                 Constants._TAG_CANONICALIZATIONMETHOD);
