@@ -78,6 +78,24 @@
 
 #define HAVE_WINCAPI 1
 
+
+/*
+ * Some settings for OpenSSL if we have it
+ *
+ */
+
+#if defined (HAVE_OPENSSL)
+
+#	include <openssl/opensslv.h>
+#	if (OPENSSL_VERSION_NUMBER >= 0x00907000)
+
+#		define XSEC_OPENSSL_CONST_BUFFERS
+#		define XSEC_OPENSSL_HAVE_AES
+#		define XSEC_OPENSSL_CANSET_PADDING
+#	endif
+
+#endif
+
 /*
  * Macros used to determine what header files exist on this
  * system
@@ -88,4 +106,5 @@
 
 /* Windows direct.h */
 #define HAVE_DIRECT_H 1
+
 

@@ -395,7 +395,7 @@ unsigned int OpenSSLCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 	   so we need to work around it */
 	unsigned char *scrPlainBuf;
 	unsigned char *cipherBuf;
-	scrPlainBuf = new unsigned char[2 * m_blockSize];
+	scrPlainBuf = new unsigned char[3 * m_blockSize];
 	ArrayJanitor<unsigned char> j_scrPlainBuf(scrPlainBuf);
 	cipherBuf = new unsigned char[m_blockSize];
 	ArrayJanitor<unsigned char> j_cipherBuf(cipherBuf);
@@ -406,7 +406,7 @@ unsigned int OpenSSLCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 	unsigned int offset = 0;
 
 	/* Get any previous bytes from the m_lastBlock */
-	if (m_bytesInLastBlock > 0 & m_bytesInLastBlock <= m_blockSize) {
+	if (m_bytesInLastBlock > 0 && m_bytesInLastBlock <= m_blockSize) {
 		memcpy(scrPlainBuf, m_lastBlock, m_bytesInLastBlock);
 		offset = m_bytesInLastBlock;
 	}

@@ -243,6 +243,30 @@ XSECCryptoBase64 * WinCAPICryptoProvider::base64() {
 
 }
 
+bool WinCAPICryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
+
+	switch (alg) {
+
+	case (XSECCryptoSymmetricKey::KEY_AES_128) :
+	case (XSECCryptoSymmetricKey::KEY_AES_192) :
+	case (XSECCryptoSymmetricKey::KEY_AES_256) :
+
+		return m_haveAES;
+
+	case (XSECCryptoSymmetricKey::KEY_3DES_192) :
+
+		return true;
+
+	default:
+
+		return false;
+
+	}
+
+	return false;
+
+}
+
 XSECCryptoSymmetricKey	* WinCAPICryptoProvider::keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
 
 	// Only temporary
