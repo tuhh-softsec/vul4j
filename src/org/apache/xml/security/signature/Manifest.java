@@ -73,7 +73,7 @@ public class Manifest extends SignatureElementProxy {
    /** Field _perManifestResolvers */
    Vector _perManifestResolvers = new Vector();
 
-   CachedXPathAPIHolder cx=new CachedXPathAPIHolder();
+   //CachedXPathAPIHolder cx=new CachedXPathAPIHolder();
    /**
     * Consturts {@link Manifest}
     *
@@ -145,7 +145,7 @@ public class Manifest extends SignatureElementProxy {
 
          // the this._doc is handed implicitly by the this.getOwnerDocument()
          Reference ref = new Reference(this._doc, BaseURI, referenceURI, this,
-                                       transforms, digestURI,cx);
+                                       transforms, digestURI);
 
          if (ReferenceId != null) {
             ref.setId(ReferenceId);
@@ -213,7 +213,7 @@ public class Manifest extends SignatureElementProxy {
          if (this._references.elementAt(i) == null) {
 
             // not yet constructed, so _we_ have to            
-            Reference ref = new Reference(_referencesEl[i], this._baseURI, this,cx);
+            Reference ref = new Reference(_referencesEl[i], this._baseURI, this);
 
             this._references.set(i, ref);
          }
@@ -309,7 +309,7 @@ public class Manifest extends SignatureElementProxy {
       for (int i =
               0; i < this._referencesEl.length; i++) {
          Reference currentRef =
-            new Reference(_referencesEl[i], this._baseURI, this,cx);
+            new Reference(_referencesEl[i], this._baseURI, this);
 
          this._references.set(i, currentRef);
 

@@ -36,7 +36,6 @@ import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.DigesterOutputStream;
 import org.apache.xml.security.utils.IdResolver;
@@ -116,7 +115,6 @@ public class Reference extends SignatureElementProxy {
    //J-
    Manifest _manifest = null;
    XMLSignatureInput _transformsOutput;
-   CachedXPathAPIHolder cx;
    //J+
 
    /**
@@ -132,7 +130,7 @@ public class Reference extends SignatureElementProxy {
     * @param cx for speed-up the xpath selections.
     * @throws XMLSignatureException
     */
-   protected Reference(Document doc, String BaseURI, String ReferenceURI, Manifest manifest, Transforms transforms, String messageDigestAlgorithm,CachedXPathAPIHolder cx)
+   protected Reference(Document doc, String BaseURI, String ReferenceURI, Manifest manifest, Transforms transforms, String messageDigestAlgorithm)
            throws XMLSignatureException {
 
       super(doc);
@@ -141,7 +139,6 @@ public class Reference extends SignatureElementProxy {
 
       this._baseURI = BaseURI;
       this._manifest = manifest;
-      this.cx=cx;
 
       this.setURI(ReferenceURI);
 
@@ -182,11 +179,10 @@ public class Reference extends SignatureElementProxy {
     * @param cx The CachedXPathAPIHolder to use in this reference.
     * @throws XMLSecurityException
     */
-   protected Reference(Element element, String BaseURI, Manifest manifest,CachedXPathAPIHolder cx)
+   protected Reference(Element element, String BaseURI, Manifest manifest)
            throws XMLSecurityException {
 
-      super(element, BaseURI);
-      this.cx=cx;
+      super(element, BaseURI);      
 
       this._manifest = manifest;
    }

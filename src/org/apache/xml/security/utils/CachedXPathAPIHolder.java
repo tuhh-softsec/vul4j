@@ -17,6 +17,7 @@
 package org.apache.xml.security.utils;
 
 import org.apache.xpath.CachedXPathAPI;
+import org.w3c.dom.Document;
 
 
 /**
@@ -24,15 +25,15 @@ import org.apache.xpath.CachedXPathAPI;
  */
 public class CachedXPathAPIHolder {
     static ThreadLocal  local=new ThreadLocal();
-    //Just to call reset after a time.
-    static final int RESET_NUMBER=10;
-    static int resetCounter=RESET_NUMBER;
+    static ThreadLocal localDoc=new ThreadLocal();
+    Document doc;
     CachedXPathAPI cx;
 	/**
 	 * 
 	 */
-	public CachedXPathAPIHolder() {
+	public CachedXPathAPIHolder(Document doc) {        
 		cx=null;
+        this.doc=doc;
 		// TODO Auto-generated constructor stub
 	}
     /**
@@ -44,12 +45,14 @@ public class CachedXPathAPIHolder {
                   if (cx==null) {
                      cx=new CachedXPathAPI();
                      local.set(cx);
+                     localDoc.set(doc);
                   } else {
-                  	resetCounter--;
-                    if (resetCounter<0) {
-                    	cx.getXPathContext().reset();
-                        resetCounter=RESET_NUMBER;
-                    }
+                  	 if (localDoc.get()!=doc) {
+                  	 	//Different docs reset.
+                        cx.getXPathContext().reset();
+                        localDoc.set(doc);
+                     }
+                    
                   }
                   //cx.getXPathContext().reset();//
                   //cx=new CachedXPathAPI();

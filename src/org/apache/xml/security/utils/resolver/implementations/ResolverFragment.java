@@ -89,7 +89,7 @@ public class ResolverFragment extends ResourceResolverSpi {
       }
 
       //Set resultSet = dereferenceSameDocumentURI(selectedElem);
-      XMLSignatureInput result = new XMLSignatureInput(selectedElem,new CachedXPathAPIHolder());
+      XMLSignatureInput result = new XMLSignatureInput(selectedElem,new CachedXPathAPIHolder(doc));
       result.setExcludeComments(true);
 
       //log.debug("We return a nodeset with " + resultSet.size() + " nodes");

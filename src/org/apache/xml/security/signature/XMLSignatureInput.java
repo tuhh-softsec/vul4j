@@ -489,7 +489,16 @@ public class XMLSignatureInput {
     */
    public CachedXPathAPIHolder getCachedXPathAPI() {      
    	  if (this._cxpathAPI==null) {
-         this._cxpathAPI=new CachedXPathAPIHolder(); 
+         if (this.isOctetStream()) {
+         	this._cxpathAPI=new CachedXPathAPIHolder(null);
+         } else {
+            if (this._inputNodeSet!=null) {
+                this._cxpathAPI=new CachedXPathAPIHolder(((Node)this._inputNodeSet.iterator().next()).getOwnerDocument()); 
+            }
+            if (this.isElement()) {
+            	this._cxpathAPI=new CachedXPathAPIHolder(XMLUtils.getOwnerDocument(_subNode));
+            }
+         }
       }
       return this._cxpathAPI;
    }
