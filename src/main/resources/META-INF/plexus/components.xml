@@ -5,57 +5,68 @@
       <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>bzip2</role-hint>
       <implementation>org.codehaus.plexus.archiver.bzip2.BZip2Archiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>ear</role-hint>
       <implementation>org.codehaus.plexus.archiver.ear.EarArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>gzip</role-hint>
       <implementation>org.codehaus.plexus.archiver.gzip.GZipArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>jar</role-hint>
       <implementation>org.codehaus.plexus.archiver.jar.JarArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>tar</role-hint>
       <implementation>org.codehaus.plexus.archiver.tar.TarArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>war</role-hint>
       <implementation>org.codehaus.plexus.archiver.war.WarArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>zip</role-hint>
       <implementation>org.codehaus.plexus.archiver.zip.ZipArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <!-- UnArchiver -->
     <component>
       <role>org.codehaus.plexus.archiver.UnArchiver</role>
       <role-hint>bzip2</role-hint>
       <implementation>org.codehaus.plexus.archiver.bzip2.BZip2UnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.archiver.UnArchiver</role>
       <role-hint>gzip</role-hint>
       <implementation>org.codehaus.plexus.archiver.gzip.GZipUnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.archiver.UnArchiver</role>
       <role-hint>tar</role-hint>
       <implementation>org.codehaus.plexus.archiver.tar.TarUnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.archiver.UnArchiver</role>
       <role-hint>zip</role-hint>
       <implementation>org.codehaus.plexus.archiver.zip.ZipUnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
   </components>
 </component-set>
