@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.8 2003/11/25 21:24:19 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.9 2003/11/25 21:29:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -77,7 +77,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 import org.apache.commons.functor.generator.util.IntegerRange;
 
 /**
- * @version $Revision: 1.8 $ $Date: 2003/11/25 21:24:19 $
+ * @version $Revision: 1.9 $ $Date: 2003/11/25 21:29:17 $
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {
@@ -225,23 +225,17 @@ public class TestAlgorithms extends TestCase {
 
     public void testApplyToGenerator() {
         Generator gen = new IntegerRange(1,5);
-        UnaryFunction dbl = new UnaryFunction() {
-            public Object evaluate(Object obj) {
-                return new Integer(2*((Number)obj).intValue());
-            }
-        };
         Summer summer = new Summer();
                 
-        Algorithms.apply(gen,dbl).run(summer);
+        Algorithms.apply(gen,new Doubler()).run(summer);
         
         assertEquals(2*(1+2+3+4),summer.sum);
     }
 
     public void testApply() {
-        Collection result = IteratorToGeneratorAdapter.adapt(Algorithms.apply(list.iterator(),IdentityFunction.instance())).toCollection();
+        Collection result = IteratorToGeneratorAdapter.adapt(Algorithms.apply(list.iterator(),new Doubler())).toCollection();
         assertNotNull(result);
-        assertEquals(list.size(),result.size());
-        assertEquals(list,result);
+        assertEquals(doubled,result);
     }
 
     public void testApply2() {
@@ -347,5 +341,11 @@ public class TestAlgorithms extends TestCase {
             sum += ((Number)that).intValue();
         }
         public int sum = 0;
+    }
+    
+    static class Doubler implements UnaryFunction {
+        public Object evaluate(Object obj) {
+            return new Integer(2*((Number)obj).intValue());
+        }
     }
 }
