@@ -177,12 +177,14 @@ public abstract class ElementProxy {
             result = doc.createElementNS(namespace, localName);
 
             // result.setAttribute("xmlns", namespace);
-            result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", namespace);
+            result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns",
+                                  namespace);
          } else {
             result = doc.createElementNS(namespace, prefix + ":" + localName);
 
             // result.setAttribute("xmlns:" + prefix, namespace);
-            result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + prefix, namespace);
+            result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + prefix,
+                                  namespace);
          }
       }
 
@@ -510,6 +512,51 @@ public abstract class ElementProxy {
          this._constructionElement.getElementsByTagNameNS(namespace, localname);
 
       return nodes.getLength();
+   }
+
+   /**
+    * Adds an xmlns: definition to the Element. This can be called as follows:
+    *
+    * <PRE>
+    * // set namespace with ds prefix
+    * xpathContainer.setXPathNamespaceContext("ds", "http://www.w3.org/2000/09/xmldsig#");
+    * xpathContainer.setXPathNamespaceContext("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
+    * </PRE>
+    *
+    * @param prefix
+    * @param uri
+    * @throws XMLSecurityException
+    */
+   public void setXPathNamespaceContext(String prefix, String uri)
+           throws XMLSecurityException {
+
+      String ns;
+
+      if (prefix == null || prefix.length() == 0) {
+         ns = "xmlns";
+      } else if (prefix.equals("xmlns")) {
+         ns = "xmlns";
+      } else if (prefix.startsWith("xmlns:")) {
+         ns = "xmlns:" + prefix.substring("xmlns:".length());
+      } else {
+         ns = "xmlns:" + prefix;
+      }
+
+      if (ns.equals("xmlns")) {
+         throw new XMLSecurityException("defaultNamespaceCannotBeSetHere");
+      }
+
+      Attr a = this._constructionElement.getAttributeNode(ns);
+
+      if ((a != null) && (!a.getNodeValue().equals(uri))) {
+         Object exArgs[] = { ns, this._constructionElement.getAttribute(ns) };
+
+         throw new XMLSecurityException(
+            "namespacePrefixAlreadyUsedByOtherURI", exArgs);
+      }
+
+      this._constructionElement.setAttributeNS(Constants.NamespaceSpecNS, ns,
+                                               uri);
    }
 
    /** Field _prefixMappings */
