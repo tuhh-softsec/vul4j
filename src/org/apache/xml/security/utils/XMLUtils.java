@@ -789,6 +789,28 @@ public class XMLUtils {
     * @param number
     * @return
     */
+
+   public static Element selectXencNode(Node sibling, String nodeName, int number) {
+	while (sibling!=null) {
+		if (nodeName.equals(sibling.getLocalName())
+				&& EncryptionConstants.EncryptionSpecNS.equals(sibling.getNamespaceURI())) {
+			if (number==0){
+				return (Element)sibling;
+			}
+			number--;
+		}
+		sibling=sibling.getNextSibling();
+	}
+	return null;
+   }
+   
+
+   /**
+    * @param sibling
+    * @param nodeName
+    * @param number
+    * @return
+    */
    public static Text selectDsNodeText(Node sibling, String nodeName, int number) {
    	    Node n=selectDsNode(sibling,nodeName,number);
         if (n==null) {
