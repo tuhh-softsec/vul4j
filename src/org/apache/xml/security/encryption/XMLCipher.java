@@ -55,6 +55,7 @@ import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.EncryptionConstants;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xml.utils.URI;
@@ -2250,7 +2251,7 @@ public class XMLCipher {
          */
         CipherValue newCipherValue(Element element) throws
                 XMLEncryptionException {
-            String value = element.getFirstChild().getNodeValue();
+            String value = XMLUtils.getFullTextChildrenFromElement(element);
 
             CipherValue result = newCipherValue(value);
 
