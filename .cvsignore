@@ -1,0 +1,8 @@
+.classpath
+.project
+build.properties
+dist
+target
+tmp
+*.log
+*.gz
