@@ -10,7 +10,11 @@
     <section name="Functor: Functions as Objects">
       <p>
          A <em>functor</em> is a function that can be manipulated 
-         as an object.  Functors are a very old and very common software design
+         as an object.  
+      </p>
+<!--
+      <p>
+         Functors are a very old and very common software design
          concept, and appear in many languages in many forms.  For example, 
          functors appear in:
       </p>
@@ -26,10 +30,31 @@
          <li>Ruby as blocks</li>
          <li>etc.</li>
       </ul>
+-->      
       <p>
          In Java, functors are typically implemented as interfaces defined 
          by a single, generic member function, and that is the approach taken
          here.
+      </p>
+      <p>
+         Functors support and encourage a number of powerful programming 
+         techniques including:
+      </p>
+      <ul>
+         <li>programming in a functional style</li>
+         <li>higher order functions</li>
+         <li>internal iterators</li>
+         <li>reuse and specialization through composition rather than inheritance and overloading</li>
+         <li>generic "callback" or "extension point" APIs</li>
+         <li>generic "filters" or predicate APIs</li>
+         <li>
+            many "behavioral" design patterns, such as 
+            Visitor, Strategy, Chain of Responsibility, etc.
+         </li>
+      </ul>
+      <p>
+         See the <a href="examples.html">examples</a> for more information on some of 
+         these techniques.
       </p>
     </section>
     <section name="Overview">
