@@ -19,11 +19,9 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xml.utils.URI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -96,21 +94,13 @@ public class ResolverFragment extends ResourceResolverSpi {
       }
 
       //Set resultSet = dereferenceSameDocumentURI(selectedElem);
-      CachedXPathAPIHolder.setDoc(doc);
+      //CachedXPathAPIHolder.setDoc(doc);
       XMLSignatureInput result = new XMLSignatureInput(selectedElem);
       result.setExcludeComments(true);
 
       //log.debug("We return a nodeset with " + resultSet.size() + " nodes");
       result.setMIMEType("text/xml");
-
-      try {
-         URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
-
-         result.setSourceURI(uriNew.toString());
-      } catch (URI.MalformedURIException ex) {
-         result.setSourceURI(BaseURI);
-      }
-
+	  result.setSourceURI(BaseURI.concat(uri.getNodeValue()));      
       return result;
    }
 
@@ -131,7 +121,7 @@ public class ResolverFragment extends ResourceResolverSpi {
       String uriNodeValue = uri.getNodeValue();
 
       if (uriNodeValue.equals("")
-              || (uriNodeValue.startsWith("#")
+              || ((uriNodeValue.charAt(0)=='#')
                   &&!uriNodeValue.startsWith("#xpointer("))) {
          if (log.isDebugEnabled())
          	log.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
