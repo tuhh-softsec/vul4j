@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.8  2004/01/26 00:16:04  blautenb
+ * Remove escapes from URI before retrieving a path on the file system
+ *
  * Revision 1.7  2003/09/11 11:11:05  blautenb
  * Cleaned up usage of Xerces namespace - no longer inject into global namespace in headers
  *
@@ -108,6 +111,7 @@ XERCES_CPP_NAMESPACE_USE
 
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
+#include <xsec/utils/XSECDOMUtils.hpp>
 
 static const XMLCh gFileScheme[] = {
 
@@ -225,14 +229,17 @@ BinInputStream * XSECURIResolverGenericWin32::resolveURI(const XMLCh * uri) {
 	if (!XMLString::compareIString(xmluri->getScheme(), gFileScheme)) {
 
 		// This is a file.  We only really understand if this is localhost
-		// XMLUri has already cleaned of escape characters (%xx)
         
-		if (xmluri->getHost() == NULL || 
+		if (xmluri->getHost() == NULL || xmluri->getHost()[0] == chNull ||
 			!XMLString::compareIString(xmluri->getHost(), XMLUni::fgLocalHostString)) {
+
+			// Clean hex escapes
+			XMLCh * realPath = cleanURIEscapes(xmluri->getPath());
+			ArrayJanitor<XMLCh> j_realPath(realPath);
 
 			// Localhost
 
-            BinFileInputStream* retStrm = new BinFileInputStream(xmluri->getPath());
+            BinFileInputStream* retStrm = new BinFileInputStream(realPath);
             if (!retStrm->getIsOpen())
             {
                 delete retStrm;
