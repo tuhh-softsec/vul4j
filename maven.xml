@@ -8,4 +8,9 @@
   <maven:addPath id="maven-classpath" refid="conf-classpath"/>
 </preGoal>
 
+<postGoal name="xdoc:register-reports"> 
+  <attainGoal name="maven-checkstyle-plugin:deregister"/> 
+  <attainGoal name="maven-linkcheck-plugin:deregister"/> 
+</postGoal> 
+
 </project>
