@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<digester-rules>
+  <pattern value = "bar">
+    <pattern value="foo">
+      <object-create-rule classname="org.apache.commons.digester.xmlrules.TestObject"/>
+      <set-next-rule methodname="add" paramtype="java.lang.Object"/>
+	    <set-properties-rule/>
+    </pattern>
+  </pattern>
+</digester-rules>

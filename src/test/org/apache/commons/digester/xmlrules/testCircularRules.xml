@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<!-- Rules to test the DigesterLoader's circular include detection. 
+     Attempting to create a digester with these rules should result
+     in an exception. -->
+     
+<digester-rules>
+  <pattern value="root/foo">
+    <object-create-rule classname="org.apache.commons.digester.xmlrules.TestObject"/>
+    <set-next-rule methodname="add" paramtype="java.lang.Object"/>
+	  <set-properties-rule/>
+	  <include path="org/apache/commons/digester/xmlrules/testCircularRules.xml"/>
+  </pattern>
+</digester-rules>

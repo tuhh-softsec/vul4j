@@ -1,0 +1,16 @@
+<!-- Input data to test the DigesterLoader -->
+<root>
+  <foo value="foo1">
+    <baz  value="baz1"/>
+    <bar>
+      <foo value="foo2"/>
+    </bar>
+  </foo>
+  <baz value="baz2"/>
+  <foo value="foo3">
+    <bar>
+	  <baz value="baz3"/>
+      <foo value="foo4"/>
+    </bar>
+  </foo>
+</root>
