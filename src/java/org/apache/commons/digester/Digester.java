@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.58 2002/07/31 17:23:55 patrickl Exp $
- * $Revision: 1.58 $
- * $Date: 2002/07/31 17:23:55 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.59 2002/08/05 20:48:49 craigmcc Exp $
+ * $Revision: 1.59 $
+ * $Date: 2002/08/05 20:48:49 $
  *
  * ====================================================================
  *
@@ -78,6 +78,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -122,7 +123,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.58 $ $Date: 2002/07/31 17:23:55 $
+ * @version $Revision: 1.59 $ $Date: 2002/08/05 20:48:49 $
  */
 
 public class Digester extends DefaultHandler {
@@ -220,7 +221,7 @@ public class Digester extends DefaultHandler {
     /**
      * The SAXParserFactory that is created the first time we need it.
      */
-    protected static SAXParserFactory factory = null;
+    protected SAXParserFactory factory = null;
 
 
     /**
@@ -360,7 +361,7 @@ public class Digester extends DefaultHandler {
     
 
     
-    // ----------------------------------------------------------- Properties
+    // ------------------------------------------------------------- Properties
 
     /**
      * Return the currently mapped namespace URI for the specified prefix,
@@ -502,6 +503,75 @@ public class Digester extends DefaultHandler {
 
 
     /**
+     * Return the SAXParserFactory we will use, creating one if necessary.
+     */
+    public SAXParserFactory getFactory() {
+
+        if (factory == null) {
+            factory = SAXParserFactory.newInstance();
+            factory.setNamespaceAware(namespaceAware);
+            factory.setValidating(validating);
+        }
+        return (factory);
+
+    }
+
+
+    /**
+     * Returns a flag indicating whether the requested feature is supported
+     * by the underlying implementation of <code>org.xml.sax.XMLReader</code>.
+     * See <a href="http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description"
+     * http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description</a>
+     * for information about the standard SAX2 feature flags.
+     *
+     * @param feature Name of the feature to inquire about
+     *
+     * @exception ParserConfigurationException if a parser configuration error
+     *  occurs
+     * @exception SAXNotRecognizedException if the property name is
+     *  not recognized
+     * @exception SAXNotSupportedException if the property name is
+     *  recognized but not supported
+     */
+    public boolean getFeature(String feature)
+        throws ParserConfigurationException, SAXNotRecognizedException,
+        SAXNotSupportedException {
+
+        return (getFactory().getFeature(feature));
+
+    }
+
+
+    /**
+     * Sets a flag indicating whether the requested feature is supported
+     * by the underlying implementation of <code>org.xml.sax.XMLReader</code>.
+     * See <a href="http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description"
+     * http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description</a>
+     * for information about the standard SAX2 feature flags.  In order to be
+     * effective, this method must be called <strong>before</strong> the
+     * <code>getParser()</code> method is called for the first time, either
+     * directly or indirectly.
+     *
+     * @param feature Name of the feature to set the status for
+     * @param value The new value for this feature
+     *
+     * @exception ParserConfigurationException if a parser configuration error
+     *  occurs
+     * @exception SAXNotRecognizedException if the property name is
+     *  not recognized
+     * @exception SAXNotSupportedException if the property name is
+     *  recognized but not supported
+     */
+    public void setFeature(String feature, boolean value)
+        throws ParserConfigurationException, SAXNotRecognizedException,
+        SAXNotSupportedException {
+
+        getFactory().setFeature(feature, value);
+
+    }
+
+
+    /**
      * Return the current Logger associated with this instance of the Digester
      */
     public Log getLogger() {
@@ -520,6 +590,7 @@ public class Digester extends DefaultHandler {
 
     }
 
+
     /**
      * Return the current rule match path
      */
@@ -529,10 +600,12 @@ public class Digester extends DefaultHandler {
 
     }
 
+
     /**
      * Return the "namespace aware" flag for parsers we create.
      */
     public boolean getNamespaceAware() {
+
         return (this.namespaceAware);
 
     }
@@ -544,7 +617,9 @@ public class Digester extends DefaultHandler {
      * @param namespaceAware The new "namespace aware" flag
      */
     public void setNamespaceAware(boolean namespaceAware) {
+
         this.namespaceAware = namespaceAware;
+
     }
 
 
@@ -590,31 +665,83 @@ public class Digester extends DefaultHandler {
      * is a problem creating the parser, return <code>null</code>.
      */
     public SAXParser getParser() {
+
         // Return the parser we already created (if any)
-        if (parser != null){
-            setJAXPProperties();
+        if (parser != null) {
             return (parser);
         }
 
-        // Create and return a new parser
-        synchronized (this) {
-            try {
-                if (factory == null) {
-                    factory = SAXParserFactory.newInstance();
-                }
-                factory.setNamespaceAware(namespaceAware);
-                factory.setValidating(validating);
-                    
-                parser = factory.newSAXParser();         
-                setJAXPProperties();
-                return parser;                                                
-            } catch (Exception e) {
-                log.error("Digester.getParser: ", e);
-                return (null);
-            }
+        // Create a new parser
+        try {
+            parser = getFactory().newSAXParser();         
+        } catch (Exception e) {
+            log.error("Digester.getParser: ", e);
+            return (null);
         }
 
+        // Configure standard properties and return the new instance
+        try {
+            setProperty(JAXP_SCHEMA_LANGUAGE, schemaLanguage);
+        } catch (Exception e) {
+            log.warn("" + e);
+        }
+        try {
+            if (schemaLocation != null) {
+                setProperty(JAXP_SCHEMA_SOURCE, schemaLocation);
+            }
+        } catch (Exception e) {
+            log.warn("" + e);
+        }
+        return (parser);
+
     }
+
+
+    /**
+     * Return the current value of the specified property for the underlying
+     * <code>XMLReader</code> implementation.
+     * See <a href="http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description"
+     * http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description</a>
+     * for information about the standard SAX2 properties.
+     *
+     * @param property Property name to be retrieved
+     *
+     * @exception SAXNotRecognizedException if the property name is
+     *  not recognized
+     * @exception SAXNotSupportedException if the property name is
+     *  recognized but not supported
+     */
+    public Object getProperty(String property)
+        throws SAXNotRecognizedException, SAXNotSupportedException {
+
+        return (getParser().getProperty(property));
+
+    }
+
+
+    /**
+     * Set the current value of the specified property for the underlying
+     * <code>XMLReader</code> implementation.
+     * See <a href="http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description"
+     * http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description</a>
+     * for information about the standard SAX2 properties.
+     *
+     * @param property Property name to be set
+     * @param value Property value to be set
+     *
+     * @exception SAXNotRecognizedException if the property name is
+     *  not recognized
+     * @exception SAXNotSupportedException if the property name is
+     *  recognized but not supported
+     */
+    public void setProperty(String property, Object value)
+        throws SAXNotRecognizedException, SAXNotSupportedException {
+
+        getParser().setProperty(property, value);
+
+    }
+
+
     /**
      * By setting the reader in the constructor, you can bypass JAXP and
      * be able to use digester in Weblogic 6.0.  
@@ -623,6 +750,7 @@ public class Digester extends DefaultHandler {
      *  SAXException if the reader cannot be instantiated
      */
     public XMLReader getReader() {
+
         try {
             return (getXMLReader());
         } catch (SAXException e) {
@@ -630,27 +758,6 @@ public class Digester extends DefaultHandler {
             return (null);
         }
 
-    }
-
-
-    /**
-     * Return the XMLReader to be used for parsing the input document.
-     *
-     * FIX ME: there is a bug in JAXP/XERCES that prevent the use of a 
-     * parser that contains a schema with a DTD.
-     * @exception SAXException if no XMLReader can be instantiated
-     */
-    public synchronized XMLReader getXMLReader() throws SAXException {
-        if (reader == null){
-            reader = getParser().getXMLReader();
-        }        
-                               
-        reader.setDTDHandler(this);           
-        reader.setContentHandler(this);        
-        
-        reader.setEntityResolver(this);
-        reader.setErrorHandler(this);
-        return reader;
     }
 
 
@@ -671,24 +778,6 @@ public class Digester extends DefaultHandler {
 
     
     /**
-     * Set the JAXP 1.2 XML Schema support.
-     */
-    private void setJAXPProperties(){
-        try{
-            parser.setProperty(JAXP_SCHEMA_LANGUAGE, schemaLanguage);
-            if (schemaLocation != null){
-                parser.setProperty(JAXP_SCHEMA_SOURCE, schemaLocation);
-            }         
-        } catch (SAXNotRecognizedException e){
-            log.warn("Error: JAXP SAXParser property not recognized: "
-                + JAXP_SCHEMA_LANGUAGE);          
-        } catch (SAXNotSupportedException e){
-            log.warn("Error: JAXP SAXParser property not recognized: "
-                + JAXP_SCHEMA_LANGUAGE);   
-        }
-    }    
-    
-    /**
      * Set the <code>Rules</code> implementation object containing our
      * rules collection and associated matching policy.
      *
@@ -698,6 +787,76 @@ public class Digester extends DefaultHandler {
 
         this.rules = rules;
         this.rules.setDigester(this);
+
+    }
+
+
+    /**
+     * Return the XML Schema URI used for validating an XML instance.
+     */
+    public String getSchema() {
+
+        return (this.schemaLocation);
+
+    }
+
+
+    /**
+     * Set the XML Schema URI used for validating a XML Instance.
+     *
+     * @param schemaLocation a URI to the schema.
+     */
+    public void setSchema(String schemaLocation){
+
+        schemaLocation = schemaLocation;
+
+    }   
+    
+
+    /**
+     * Return the XML Schema language used when parsing.
+     */
+    public String getSchemaLanguage() {
+
+        return (this.schemaLanguage);
+
+    }
+
+
+    /**
+     * Set the XML Schema language used when parsing. By default, we use W3C.
+     *
+     * @param schemaLanguage a URI to the schema language.
+     */
+    public void setSchemaLanguage(String schemaLanguage){
+
+        schemaLanguage = schemaLanguage;
+
+    }   
+
+
+    /**
+     * Return the boolean as to whether the context classloader should be used.
+     */
+    public boolean getUseContextClassLoader() {
+
+        return useContextClassLoader;
+
+    }
+
+
+    /**
+     * Determine whether to use the Context ClassLoader (the one found by
+     * calling <code>Thread.currentThread().getContextClassLoader()</code>)
+     * to resolve/load classes that are defined in various rules.  If not
+     * using Context ClassLoader, then the class-loading defaults to
+     * using the calling-class' ClassLoader.
+     *
+     * @param boolean determines whether to use Context ClassLoader.
+     */
+    public void setUseContextClassLoader(boolean use) {
+
+        useContextClassLoader = use;
 
     }
 
@@ -726,43 +885,23 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Return the boolean as to whether the context classloader should be used.
-     */
-    public boolean getUseContextClassLoader() {
-
-        return useContextClassLoader;
-
-    }
-
-    /**
-     * Set the XML Schema URI used for validating a XML Instance.
-     * @param schemaURI a URI to the schema.
-     */
-    public void setSchema(String schemaURI){
-        schemaLocation = schemaURI;    
-    }   
-    
-    /**
-     * Set the XML Schema language used when parsing. By default, we use W3C.
-     * @param schemaURI a URI to the schema.
-     */
-    public void setSchemaLanguage(String schemaLanguageURI){
-        schemaLanguage = schemaLanguageURI;    
-    }   
-
-    /**
-     * Determine whether to use the Context ClassLoader (the one found by
-     * calling <code>Thread.currentThread().getContextClassLoader()</code>)
-     * to resolve/load classes that are defined in various rules.  If not
-     * using Context ClassLoader, then the class-loading defaults to
-     * using the calling-class' ClassLoader.
+     * Return the XMLReader to be used for parsing the input document.
      *
-     * @param boolean determines whether to use Context ClassLoader.
+     * FIX ME: there is a bug in JAXP/XERCES that prevent the use of a 
+     * parser that contains a schema with a DTD.
+     * @exception SAXException if no XMLReader can be instantiated
      */
-    public void setUseContextClassLoader(boolean use) {
-
-        useContextClassLoader = use;
-
+    public XMLReader getXMLReader() throws SAXException {
+        if (reader == null){
+            reader = getParser().getXMLReader();
+        }        
+                               
+        reader.setDTDHandler(this);           
+        reader.setContentHandler(this);        
+        
+        reader.setEntityResolver(this);
+        reader.setErrorHandler(this);
+        return reader;
     }
 
 
