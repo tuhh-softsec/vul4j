@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.3 2003/02/24 11:38:07 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.4 2003/02/24 11:58:27 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -77,17 +77,6 @@ import org.apache.commons.functor.core.comparator.IsGreaterThanOrEqual;
 import org.apache.commons.functor.core.comparator.IsLessThan;
 import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
 
-
-/**
- * An example of implementing the quicksort sorting algorithm 
- * using commons-functor.
- * <p> 
- * See the extensive in line comments for details.
- * 
- * @version $Revision: 1.3 $ $Date: 2003/02/24 11:38:07 $
- * @author Rodney Waldhoff
- */
-
 /*
  * ----------------------------------------------------------------------------
  * INTRODUCTION:
@@ -102,16 +91,24 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * c-style, multi-line comments (slash-star to star-slash).
  * 
  * For convenience, and to make sure this example stays up to date, 
- * we'll implement our quicksort example as a JUnit TestCase...
+ * we'll implement our quicksort example as a JUnit TestCase.
+ */
+
+/**
+ * An example of implementing the quicksort sorting algorithm 
+ * using commons-functor.
+ * <p> 
+ * See the extensive in line comments for details.
  * 
+ * @version $Revision: 1.4 $ $Date: 2003/02/24 11:58:27 $
+ * @author Rodney Waldhoff
  */
 public class Quicksort extends TestCase {
 
 /*
- * ...and declare the relevant constructor and suite() methods
+ * Let's declare the constructor and suite() methods we need
  * to ensure this test suite can be executed along with all the
  * others:
- *
  */
 
     public Quicksort(String testName) {
@@ -290,12 +287,9 @@ public class Quicksort extends TestCase {
 
 /*
  * Finally, while this quicksort implementation is intended to 
- * illustrate the use of Commons Functor, let's output some
- * timings, just to demonstrate that the performance is adequate.
- * 
- * Let's declare some constants (we'll use them again below) to
- * determine how big of a list and how many lists to sort for
- * timing purposes.
+ * illustrate the use of Commons Functor, not for performance,
+ * let's output some timings, just to demonstrate that the 
+ * performance is adequate.
  */
  
     private static final int SIZE = 1000;
@@ -376,7 +370,7 @@ public class Quicksort extends TestCase {
  * Let's save ourselves some casting and error checking by defining
  * functor subclasses that deal with java.util.List.
  *
- * Let ListFunction by a UnaryFunction that maps Lists to Lists:
+ * Let ListFunction be a UnaryFunction that operates on Lists :
  */ 
  
     public abstract class ListFunction implements UnaryFunction {
@@ -419,7 +413,9 @@ public class Quicksort extends TestCase {
  */
 
 /* 
- * ...
+ * Let's define functors for the operations we'll need.
+ * 
+ * Given a List, we want to be able to break it into its head:
  */
 
     private UnaryFunction head = new ListFunction() {
@@ -428,12 +424,19 @@ public class Quicksort extends TestCase {
         }        
     };
 
+/* 
+ * and its tail:
+ */
     private UnaryFunction tail = new ListFunction() {
         public Object evaluate(List list) {
             return list.size() < 2 ? Collections.EMPTY_LIST : list.subList(1,list.size());
         }        
     };
             
+/* 
+ * Given a List in head/tail form, we should be able to find
+ * the List of elements in the tail less than the head:
+ */
     private BinaryFunction lesserTail = new BinaryFunction() {
         public Object evaluate(Object head, Object tail) {
             return CollectionAlgorithms.select(
@@ -444,6 +447,10 @@ public class Quicksort extends TestCase {
         }
     };
 
+/* 
+ * and we should be able to find the List of elements in 
+ * the tail greater than the head:
+ */
     private BinaryFunction greaterTail = new BinaryFunction() {
         public Object evaluate(Object head, Object tail) {
             return CollectionAlgorithms.select(
@@ -454,10 +461,14 @@ public class Quicksort extends TestCase {
         }
     };
 
-    private UnaryFunction quicksort = new ConditionalUnaryFunction(
-        IsEmpty.getIsEmpty(),
-        new ConstantFunction(Collections.EMPTY_LIST),
-        new ListFunction() {
+/* 
+ * With these building blocks, our quicksort function is a 
+ * straightfoward application of the description above:
+ */
+    private UnaryFunction quicksort = new ConditionalUnaryFunction(        
+        IsEmpty.getIsEmpty(),                         /* If the list is empty, */
+        new ConstantFunction(Collections.EMPTY_LIST), /*  then return an empty list, */
+        new ListFunction() {                          /*  else, split and recurse*/
             public Object evaluate(List list) {
                 List result = new ArrayList(list.size());
                 Object h = head.evaluate(list);
