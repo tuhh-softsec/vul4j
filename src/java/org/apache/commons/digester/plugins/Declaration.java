@@ -213,32 +213,4 @@ public class Declaration {
             ruleLoader.addRules(digester, pattern);
         }
     }
-
-    /**
-     * Returns true if the declarations are equivalent. Perhaps this would be
-     * better as overriding equals, but then I should really override hash as
-     * well and I can't be bothered.
-     *
-     * @param d the Declaration object to be compared to this object.
-     * @return true if the specified object has the same options as this one.
-     */
-    public boolean isEquivalent(Declaration d) {
-        if (different(id, d.id)) return false;
-        if (pluginClass != d.pluginClass) return false;
-        if (!properties.equals(d.properties)) return false;
-
-        // all significant fields match; these declarations are identical.
-        return true;
-    }
-    
-    /**
-     * Returns true if the two objects are both null or both equal.
-     */
-    private static boolean different(Object o1, Object o2) {
-        if (o1 == null) {
-            return o1 == null;
-        }
-        
-        return o1.equals(o2);
-    }
 }
