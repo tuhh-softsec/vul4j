@@ -30,6 +30,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.5  2004/04/16 12:07:23  blautenb
+ * Skeleton code for XKMS MessageFactory
+ *
  * Revision 1.4  2004/02/08 10:25:40  blautenb
  * Convert to Apache 2.0 license
  *
@@ -64,6 +67,7 @@
 struct hostent;
 struct sockaddr;
 
+class XSECSOAPRequestorSimpleWin32;
 
 class DSIG_EXPORT XSECBinHTTPURIInputStream : public XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream
 {
@@ -76,6 +80,30 @@ public :
     unsigned int readBytes(XMLByte* const  toFill, const unsigned int    maxToRead);
 
 	static void Cleanup();
+
+	friend XSECSOAPRequestorSimpleWin32;
+
+protected:
+
+	/* 
+	 * These are called by other classes that use the loaded DLL
+	 *
+	 * Actually - this is cheating of the worst kind, but it
+	 * provides a quick way to make these calls available outside the library
+	 */
+
+	static void ExternalInitialize(void);
+
+	static hostent* gethostbyname(const char* name);
+	static unsigned long inet_addr(const char* cp);
+	static hostent* gethostbyaddr(const char* addr,int len,int type);
+	static unsigned short htons(unsigned short hostshort);
+	static unsigned short socket(int af,int type,int protocol);
+	static int connect(unsigned short s,const sockaddr* name,int namelen);
+	static int send(unsigned short s,const char* buf,int len,int flags);
+	static int recv(unsigned short s,char* buf,int len,int flags);
+	static int shutdown(unsigned int s,int how);
+	static int closesocket(unsigned int socket);
 
 
 private :
@@ -109,16 +137,6 @@ private :
 	static void Initialize();
 	unsigned int getSocketHandle(const XERCES_CPP_NAMESPACE_QUALIFIER XMLUri&  urlSource);
 
-	inline static hostent* gethostbyname(const char* name);
-	inline static unsigned long inet_addr(const char* cp);
-	inline static hostent* gethostbyaddr(const char* addr,int len,int type);
-	inline static unsigned short htons(unsigned short hostshort);
-	inline static unsigned short socket(int af,int type,int protocol);
-	inline static int connect(unsigned short s,const sockaddr* name,int namelen);
-	inline static int send(unsigned short s,const char* buf,int len,int flags);
-	inline static int recv(unsigned short s,char* buf,int len,int flags);
-	inline static int shutdown(unsigned int s,int how);
-	inline static int closesocket(unsigned int socket);
 };
 
 

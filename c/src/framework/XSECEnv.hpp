@@ -67,6 +67,7 @@ public:
 	 */
 
 	XSECEnv(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
+	XSECEnv(const XSECEnv & theOther);
 	virtual ~XSECEnv();
 
     //@}
@@ -142,6 +143,15 @@ public:
 	void setXENCNSPrefix(const XMLCh * prefix);
 
 	/**
+	 * \brief Set prefix for XKMS nodes
+	 *
+	 * Set the namespace prefix the library will use when creating
+	 * nodes in the XKMS namespace
+	 */
+
+	void setXKMSNSPrefix(const XMLCh * prefix);
+
+	/**
 	 * \brief Get the NS Prefix being used for DSIG elements.
 	 *
 	 * @returns A pointer to the buffer holding the prefix
@@ -180,6 +190,17 @@ public:
 
 	const XMLCh * getXENCNSPrefix(void) const {return mp_xencPrefixNS;}
 
+	/**
+	 * \brief Get namespace prefix for XKMS nodes
+	 *
+	 * Find the string being used by the library to prefix nodes in the 
+	 * xkms: namespace.
+	 *
+	 * @returns XKMS namespace prefix
+	 */
+
+	const XMLCh * getXKMSNSPrefix(void) const {return mp_xkmsPrefixNS;}
+	
 	//@}
 
 	/** @name Pretty Printing Functions */
@@ -409,6 +430,7 @@ private:
 	XMLCh						* mp_ecPrefixNS;
 	XMLCh						* mp_xpfPrefixNS;
 	XMLCh						* mp_xencPrefixNS;
+	XMLCh						* mp_xkmsPrefixNS;
 
 	// Resolvers
 	XSECURIResolver				* mp_URIResolver;

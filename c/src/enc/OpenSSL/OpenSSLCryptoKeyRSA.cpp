@@ -201,12 +201,19 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 	EVP_ENCODE_CTX m_dctx;
 	int rc;
 
+	char * cleanedBase64Signature;
+	unsigned int cleanedBase64SignatureLen = 0;
+
+	cleanedBase64Signature = 
+		XSECCryptoBase64::cleanBuffer(base64Signature, sigLen, cleanedBase64SignatureLen);
+	ArrayJanitor<char> j_cleanedBase64Signature(cleanedBase64Signature);
+
 	EVP_DecodeInit(&m_dctx);
 	rc = EVP_DecodeUpdate(&m_dctx, 
 						  sigVal, 
 						  &sigValLen, 
-						  (unsigned char *) base64Signature, 
-						  sigLen);
+						  (unsigned char *) cleanedBase64Signature, 
+						  cleanedBase64SignatureLen);
 
 	if (rc < 0) {
 

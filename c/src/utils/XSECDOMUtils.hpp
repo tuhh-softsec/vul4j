@@ -72,6 +72,7 @@ const XMLCh DSIG_EXPORT * getDSIGLocalName(const XERCES_CPP_NAMESPACE_QUALIFIER 
 const XMLCh DSIG_EXPORT * getECLocalName(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node);
 const XMLCh DSIG_EXPORT * getXPFLocalName(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node);
 const XMLCh DSIG_EXPORT * getXENCLocalName(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node);
+const XMLCh DSIG_EXPORT * getXKMSLocalName(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node);
 
 // --------------------------------------------------------------------------------
 //           Do UTF-8 <-> UTF-16 transcoding

@@ -19,11 +19,7 @@
  *
  * XSECDOMUtils:= Utilities to manipulate DOM within XML-SECURITY
  *
- * Author(s): Berin Lautenbach
- *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -31,6 +27,7 @@
 
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/xkms/XKMSConstants.hpp>
 
 // Xerces
 
@@ -82,6 +79,17 @@ const XMLCh DSIG_EXPORT * getXENCLocalName(const DOMNode *node) {
 	// XML Encryption namespace node
 
 	if (!strEquals(node->getNamespaceURI(), DSIGConstants::s_unicodeStrURIXENC))
+		return NULL;
+	else
+		return node->getLocalName();
+
+}
+
+const XMLCh DSIG_EXPORT * getXKMSLocalName(const DOMNode *node) {
+
+	// XKMS namespace node
+
+	if (!strEquals(node->getNamespaceURI(), XKMSConstants::s_unicodeStrURIXKMS))
 		return NULL;
 	else
 		return node->getLocalName();

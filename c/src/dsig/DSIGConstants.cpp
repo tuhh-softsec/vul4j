@@ -97,6 +97,7 @@ void DSIGConstants::create() {
 	s_unicodeStrURIEC = XMLString::transcode(URI_ID_EC);
 	s_unicodeStrURIXPF = XMLString::transcode(URI_ID_XPF);
 	s_unicodeStrURIXENC = XMLString::transcode(URI_ID_XENC);
+
 	s_unicodeStrURISHA1 = XMLString::transcode(URI_ID_SHA1);
 	s_unicodeStrURIMD5 = XMLString::transcode(URI_ID_MD5);
 	s_unicodeStrURIBASE64 = XMLString::transcode(URI_ID_BASE64);

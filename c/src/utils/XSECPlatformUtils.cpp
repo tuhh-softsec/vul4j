@@ -30,6 +30,7 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/dsig/DSIGConstants.hpp>
+#include <xsec/xkms/XKMSConstants.hpp>
 #include <xsec/framework/XSECAlgorithmMapper.hpp>
 
 #include "../xenc/impl/XENCCipherImpl.hpp"
@@ -82,6 +83,7 @@ void XSECPlatformUtils::Initialise(XSECCryptoProvider * p) {
 
 	// Set up necessary constants
 	DSIGConstants::create();
+	XKMSConstants::create();
 
 	// Initialise the safeBuffer system
 	safeBuffer::init();
@@ -117,6 +119,7 @@ void XSECPlatformUtils::Terminate(void) {
 		delete g_cryptoProvider;
 
 	DSIGConstants::destroy();
+	XKMSConstants::destroy();
 
 	// Destroy anything platform specific
 #if defined(_WIN32)

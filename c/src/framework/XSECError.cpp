@@ -82,6 +82,10 @@ const char * XSECExceptionStrings [] = {
 	"An error occurred processing an EncryptionMethod node",
 	"An error occurred processing a CipherReference node",
 	"An error occurred processing an Object node",
+	"An error occurred in XKMS processing",
+	"An expected XKMS DOM node or attribute was not found",
+	"An error occurred processing a MessageAbstractType object",
+	"An error occurred processing a RequestAbstractType object",
 	"Unknown Error type",
 
 };

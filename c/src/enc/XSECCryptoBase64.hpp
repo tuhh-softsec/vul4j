@@ -174,6 +174,27 @@ public :
 
 	//@}
 
+	/** @name Utility functions */
+	//@{
+
+	/**
+	 * \brief Clean a buffer of base64 text
+	 *
+	 * Creates a new copy of the passed in buffer with new lines in
+	 * accord with the MIME standard.
+	 *
+	 * @param buffer The buffer of base64 text to clean
+	 * @param bufLen The number of characters to clean in the buffer (0 for strlen)
+	 * @param retBufLen The number of characters placed in the cleaned buffer
+	 * @returns A clean version of the buffer
+	 * @note This is NOT re-implemented in any of the crypto interfaces.  It is 
+	 * a Base64 utility function only.
+	 */
+
+	static char * cleanBuffer(const char * buffer, unsigned int bufLen, unsigned int &retBufLen);
+
+	//@}
+
 };
 /*\@}*/
 #endif /* XSECCRYPTOBASE64_INCLUDE */

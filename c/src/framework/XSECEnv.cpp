@@ -66,6 +66,16 @@ const XMLCh s_defaultXENCPrefix[] = {
 
 };
 
+const XMLCh s_defaultXKMSPrefix[] = {
+
+	chLatin_x,
+	chLatin_k,
+	chLatin_m,
+	chLatin_s,
+	chNull
+
+};
+
 // --------------------------------------------------------------------------------
 //           Default Id names
 // --------------------------------------------------------------------------------
@@ -101,6 +111,7 @@ XSECEnv::XSECEnv(DOMDocument *doc) {
 	mp_ecPrefixNS = XMLString::replicate(s_defaultECPrefix);
 	mp_xpfPrefixNS = XMLString::replicate(s_defaultXPFPrefix);
 	mp_xencPrefixNS = XMLString::replicate(s_defaultXENCPrefix);
+	mp_xkmsPrefixNS = XMLString::replicate(s_defaultXKMSPrefix);
 
 	m_prettyPrintFlag = true;
 
@@ -115,6 +126,36 @@ XSECEnv::XSECEnv(DOMDocument *doc) {
 	// Register "Id" and "id" as valid Attribute names
 	registerIdAttributeName(s_Id);
 	registerIdAttributeName(s_id);
+
+}
+
+XSECEnv::XSECEnv(const XSECEnv & theOther) {
+
+	mp_doc = theOther.mp_doc;
+
+	mp_prefixNS = XMLString::replicate(theOther.mp_prefixNS);
+	mp_ecPrefixNS = XMLString::replicate(theOther.mp_ecPrefixNS);
+	mp_xpfPrefixNS = XMLString::replicate(theOther.mp_xpfPrefixNS);
+	mp_xencPrefixNS = XMLString::replicate(theOther.mp_xencPrefixNS);
+	mp_xkmsPrefixNS = XMLString::replicate(theOther.mp_xkmsPrefixNS);
+
+	m_prettyPrintFlag = theOther.m_prettyPrintFlag;
+
+	if (theOther.mp_URIResolver != NULL)
+		mp_URIResolver = theOther.mp_URIResolver->clone();
+	else
+		mp_URIResolver = NULL;
+
+	// Set up our formatter
+	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
+												XMLFormatter::UnRep_CharRef));
+
+	// Set up IDs
+	m_idByAttributeNameFlag = theOther.m_idByAttributeNameFlag;
+
+	for (int i = 0; i < theOther.getIdAttributeNameListSize() ; ++i) {
+		registerIdAttributeName(theOther.getIdAttributeNameListItem(i));
+	}
 
 }
 
@@ -138,6 +179,10 @@ XSECEnv::~XSECEnv() {
 
 	if (mp_xencPrefixNS != NULL) {
 		XMLString::release(&mp_xencPrefixNS);
+	}
+
+	if (mp_xkmsPrefixNS != NULL) {
+		XMLString::release(&mp_xkmsPrefixNS);
 	}
 
 	if (mp_URIResolver != NULL) {
@@ -213,6 +258,15 @@ void XSECEnv::setXENCNSPrefix(const XMLCh * prefix) {
 		XMLString::release(&mp_xencPrefixNS);
 
 	mp_xencPrefixNS = XMLString::replicate(prefix);
+
+}
+
+void XSECEnv::setXKMSNSPrefix(const XMLCh * prefix) {
+
+	if (mp_xkmsPrefixNS != NULL)
+		XMLString::release(&mp_xkmsPrefixNS);
+
+	mp_xkmsPrefixNS = XMLString::replicate(prefix);
 
 }
 

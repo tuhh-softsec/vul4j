@@ -89,6 +89,8 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
+#include <xsec/utils/winutils/XSECSOAPRequestorSimpleWin32.hpp>
+
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
@@ -107,6 +109,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::flush;
+
 
 /*
  * Because of all the characters, it's easiest to inject entire Xerces namespace
@@ -1822,6 +1825,30 @@ void testEncrypt(DOMImplementation *impl) {
 
 }
 
+// --------------------------------------------------------------------------------
+//           Test XKMS basics
+// --------------------------------------------------------------------------------
+
+void testXKMS(DOMImplementation *impl) {
+
+	// This is really a place holder
+
+	cerr << "Making POST call to server ...  " << endl;
+	
+	// Create a document
+    
+	DOMDocument * doc = createTestDoc(impl);
+	DOMNode * categoryNode = findNode(doc, MAKE_UNICODE_STRING("category"));
+
+	/*
+	XSECSOAPRequestorSimpleWin32 req(MAKE_UNICODE_STRING("http://zeus/post.php"));
+
+	req.doRequest(doc);
+	*/
+
+	doc->release();
+}
+
 	
 // --------------------------------------------------------------------------------
 //           Print usage instructions
@@ -1847,6 +1874,8 @@ void printUsage(void) {
 	cerr << "         Only run basic encryption test\n\n";
 	cerr << "     --encryption-unit-only/-u\n";
 	cerr << "         Only run encryption unit tests\n\n";
+	cerr << "     --xkms-only/-x\n";
+	cerr << "         Only run basic XKMS test\n\n";
 
 }
 // --------------------------------------------------------------------------------
@@ -1866,6 +1895,7 @@ int main(int argc, char **argv) {
 	bool		doEncryptionUnitTests = true;
 	bool		doSignatureTest = true;
 	bool		doSignatureUnitTests = true;
+	bool		doXKMSTest = true;
 
 	int paramCount = 1;
 
@@ -1889,24 +1919,35 @@ int main(int argc, char **argv) {
 			doEncryptionTest = false;
 			doEncryptionUnitTests = false;
 			doSignatureUnitTests = false;
+			doXKMSTest = false;
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--encryption-only") == 0 || stricmp(argv[paramCount], "-e") == 0) {
 			doSignatureTest = false;
 			doEncryptionUnitTests = false;
 			doSignatureUnitTests = false;
+			doXKMSTest = false;
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--encryption-unit-only") == 0 || stricmp(argv[paramCount], "-u") == 0) {
 			doEncryptionTest = false;
 			doSignatureTest = false;
 			doSignatureUnitTests = false;
+			doXKMSTest = false;
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--signature-unit-only") == 0 || stricmp(argv[paramCount], "-t") == 0) {
 			doEncryptionTest = false;
 			doSignatureTest = false;
 			doEncryptionUnitTests = false;
+			doXKMSTest = false;
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--xkms-only") == 0 || stricmp(argv[paramCount], "-x") == 0) {
+			doEncryptionTest = false;
+			doSignatureTest = false;
+			doEncryptionUnitTests = false;
+			doSignatureUnitTests = false;
 			paramCount++;
 		}
 		else {
@@ -2015,6 +2056,16 @@ int main(int argc, char **argv) {
 			cerr << endl << endl;
 
 			unitTestEncrypt(impl);
+		}
+
+		// Running XKMS Base test
+		if (doXKMSTest) {
+			cerr << endl << "====================================";
+			cerr << endl << "Performing XKMS Function";
+			cerr << endl << "====================================";
+			cerr << endl << endl;
+
+			testXKMS(impl);
 		}
 
 		cerr << endl << "All tests passed" << endl;

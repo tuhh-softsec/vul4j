@@ -473,6 +473,26 @@ XSECBinHTTPURIInputStream::XSECBinHTTPURIInputStream(const XMLUri& urlSource)
 
 }
 
+void XSECBinHTTPURIInputStream::ExternalInitialize(void) {
+
+    if(!fInitialized)
+    {
+        if (!fInitMutex)
+        {
+            XMLMutex* tmpMutex = new XMLMutex;
+            if (XMLPlatformUtils::compareAndSwap((void**)&fInitMutex, tmpMutex, 0))
+            {
+                // Someone beat us to it, so let's clean up ours
+                delete tmpMutex;
+            }
+         }
+         XMLMutexLock lock(fInitMutex);
+         if (!fInitialized)
+         {
+             Initialize();
+         }
+    }
+}
 
 
 XSECBinHTTPURIInputStream::~XSECBinHTTPURIInputStream()

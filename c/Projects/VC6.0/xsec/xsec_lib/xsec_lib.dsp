@@ -522,6 +522,10 @@ SOURCE=..\..\..\..\src\enc\WinCAPI\WinCAPICryptoX509.hpp
 # End Group
 # Begin Source File
 
+SOURCE=..\..\..\..\src\enc\XSECCryptoBase64.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\enc\XSECCryptoBase64.hpp
 # End Source File
 # Begin Source File
@@ -593,6 +597,14 @@ SOURCE=..\..\..\..\src\utils\winutils\XSECBinHTTPURIInputStream.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\utils\winutils\XSECSOAPRequestorSimpleWin32.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\utils\winutils\XSECSOAPRequestorSimpleWin32.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.cpp
 # End Source File
 # Begin Source File
@@ -647,6 +659,10 @@ SOURCE=..\..\..\..\src\utils\XSECSafeBufferFormatter.cpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\utils\XSECSafeBufferFormatter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\utils\XSECSOAPRequestor.hpp
 # End Source File
 # Begin Source File
 
@@ -1046,6 +1062,106 @@ SOURCE=..\..\..\..\src\xenc\XENCEncryptedType.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xenc\XENCEncryptionMethod.hpp
+# End Source File
+# End Group
+# Begin Group "xkms"
+
+# PROP Default_Filter ""
+# Begin Group "impl No. 1"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSKeyBindingAbstractTypeImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSKeyBindingAbstractTypeImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSLocateRequestImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSLocateRequestImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageAbstractTypeImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageAbstractTypeImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageFactoryImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageFactoryImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSQueryKeyBindingImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRequestAbstractTypeImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRequestAbstractTypeImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.hpp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSConstants.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSConstants.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSKeyBindingAbstractType.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSLocateRequest.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSMessageAbstractType.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSMessageFactory.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSQueryKeyBinding.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRequestAbstractType.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRespondWith.hpp
 # End Source File
 # End Group
 # End Target

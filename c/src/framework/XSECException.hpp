@@ -111,7 +111,13 @@ public:
 		EncryptionMethodError		= 48,
 		CipherReferenceError		= 49,
 		ObjectError					= 50,
-		UnknownError				= 51		// Must be last!
+
+		// XKMS Error
+		XKMSError					= 51,
+		ExpectedXKMSChildNotFound	= 52,
+		MessageAbstractTypeError	= 53,
+		RequestAbstractTypeError	= 54,
+		UnknownError				= 55		// Must be last!
 
 	};
 
