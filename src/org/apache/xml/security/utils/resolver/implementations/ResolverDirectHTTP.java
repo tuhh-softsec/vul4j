@@ -1,3 +1,4 @@
+
 /*
  * The Apache Software License, Version 1.1
  *
@@ -100,8 +101,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
       org.apache.log4j.Category.getInstance(ResolverDirectHTTP.class.getName());
 
    /** Field properties[] */
-   static final String properties[] = { "http.proxy.host",
-                                        "http.proxy.port",
+   static final String properties[] = { "http.proxy.host", "http.proxy.port",
                                         "http.proxy.username",
                                         "http.proxy.password",
                                         "http.basic.username",
@@ -169,7 +169,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
             System.getProperties().put("http.proxyPort", proxyPort);
          }
 
-         // make network request
+         // calculate new URI
          URI uriNew = getNewURI(uri.getNodeValue(), BaseURI);
 
          // if the URI contains a fragment, ignore it
@@ -201,6 +201,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
          }
 
          {
+
             // check if Basic authentication is required
             String auth = urlConnection.getHeaderField("WWW-Authenticate");
 
@@ -283,6 +284,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
       if (uri == null) {
          cat.debug("quick fail, uri == null");
+
          return false;
       }
 
@@ -290,16 +292,26 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
       if (uriNodeValue.equals("") || uriNodeValue.startsWith("#")) {
          cat.debug("quick fail for empty URIs and local ones");
+
          return false;
       }
 
-      URI uriNew = getNewURI(uri.getNodeValue(), BaseURI);
-      if (uriNew != null && uriNew.getScheme().equals("http")) {
-        cat.debug("I state that I can resolve " + uriNew.toString());
-        return true;
+      URI uriNew = null;
+
+      try {
+         uriNew = getNewURI(uri.getNodeValue(), BaseURI);
+      } catch (URI.MalformedURIException ex) {
+         cat.debug("", ex);
       }
-      
+
+      if ((uriNew != null) && uriNew.getScheme().equals("http")) {
+         cat.debug("I state that I can resolve " + uriNew.toString());
+
+         return true;
+      }
+
       cat.debug("I state that I can't resolve " + uriNew.toString());
+
       return false;
    }
 
@@ -311,23 +323,14 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
    public String[] engineGetPropertyKeys() {
       return ResolverDirectHTTP.properties;
    }
-   
+
    private URI getNewURI(String uri, String BaseURI)
-   {
-      URI uriNew;
-      try {
-        
-        if(BaseURI == null || "".equals(BaseURI) ){
-            uriNew = new URI(uri );
-        }
-        else {
-            uriNew = new URI(new URI(BaseURI), uri);
-        }
-  
-      } catch (URI.MalformedURIException ex) {
-        cat.debug("MalformedURIException: ", ex);
-        return null;
+           throws URI.MalformedURIException {
+
+      if ((BaseURI == null) || "".equals(BaseURI)) {
+         return new URI(uri);
+      } else {
+         return new URI(new URI(BaseURI), uri);
       }
-      return uriNew;
-  }
+   }
 }
