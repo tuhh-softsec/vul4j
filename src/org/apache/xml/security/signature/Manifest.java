@@ -485,7 +485,7 @@ public class Manifest extends SignatureElementProxy {
 
       if (this.verificationResults == null) {
          try {
-            boolean discard = this.verifyReferences();
+            this.verifyReferences();
          } catch (Exception ex) {
             throw new XMLSecurityException("generic.EmptyMessage", ex);
          }
