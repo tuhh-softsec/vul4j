@@ -192,9 +192,10 @@ are not connected to the Internet, and speeds up processing even at Internet
 connected sites (because it avoids the need to go across the network).</p>
 
 <pre>
+    URL url = new URL("/org/apache/struts/resources/struts-config_1_0.dtd");
     digester.register
       ("-//Apache Software Foundation//DTD Struts Configuration 1.0//EN",
-       "/org/apache/struts/resources/struts-config_1_0.dtd");
+       url.toString());
 </pre>
 
 <p>As a side note, the system identifier used in this example is the path
