@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RulesBaseTestCase.java,v 1.1 2001/09/05 03:33:26 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/09/05 03:33:26 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RulesBaseTestCase.java,v 1.2 2001/09/05 18:52:37 craigmcc Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/09/05 18:52:37 $
  *
  * ====================================================================
  *
@@ -87,7 +87,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/09/05 03:33:26 $
+ * @version $Revision: 1.2 $ $Date: 2001/09/05 18:52:37 $
  */
 
 public class RulesBaseTestCase extends TestCase {
@@ -173,8 +173,8 @@ public class RulesBaseTestCase extends TestCase {
         // perform tests
         List list = null;
 
-        assertNull("Initial rules list is empty",
-                   digester.getRules().match(null,"a"));
+        assertEquals("Initial rules list is empty",
+                     0, digester.getRules().match("a").size());
         digester.addSetProperties("a");
         assertEquals("Add a matching rule",
                      1, digester.getRules().match(null,"a").size());

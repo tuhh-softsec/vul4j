@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.16 2001/08/26 22:13:44 craigmcc Exp $
- * $Revision: 1.16 $
- * $Date: 2001/08/26 22:13:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.17 2001/09/05 18:52:37 craigmcc Exp $
+ * $Revision: 1.17 $
+ * $Date: 2001/09/05 18:52:37 $
  *
  * ====================================================================
  *
@@ -106,7 +106,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.16 $ $Date: 2001/08/26 22:13:44 $
+ * @version $Revision: 1.17 $ $Date: 2001/09/05 18:52:37 $
  */
 
 public class Digester extends DefaultHandler {
@@ -647,7 +647,7 @@ public class Digester extends DefaultHandler {
 
 	// Fire "body" events for all relevant rules
 	List rules = getRules().match(namespaceURI, match);
-	if (rules != null) {
+	if ((rules != null) && (rules.size() > 0)) {
 	    String bodyText = this.bodyText.toString().trim();
 	    for (int i = 0; i < rules.size(); i++) {
 		try {
@@ -845,7 +845,7 @@ public class Digester extends DefaultHandler {
 
 	// Fire "begin" events for all relevant rules
 	List rules = getRules().match(namespaceURI, match);
-	if (rules != null) {
+	if ((rules != null) && (rules.size() > 0)) {
 	    String bodyText = this.bodyText.toString();
 	    for (int i = 0; i < rules.size(); i++) {
 		try {

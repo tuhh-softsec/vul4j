@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.5 2001/09/04 02:36:44 sanders Exp $
- * $Revision: 1.5 $
- * $Date: 2001/09/04 02:36:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.6 2001/09/05 18:52:37 craigmcc Exp $
+ * $Revision: 1.6 $
+ * $Date: 2001/09/05 18:52:37 $
  *
  * ====================================================================
  *
@@ -86,7 +86,7 @@ import java.util.List;
  * </ul>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.5 $ $Date: 2001/09/04 02:36:44 $
+ * @version $Revision: 1.6 $ $Date: 2001/09/05 18:52:37 $
  */
 
 public class RulesBase implements Rules {
@@ -261,6 +261,8 @@ public class RulesBase implements Rules {
 		}
 	    }
 	}
+        if (rulesList == null)
+            rulesList = new ArrayList();
 	return (rulesList);
 
     }
