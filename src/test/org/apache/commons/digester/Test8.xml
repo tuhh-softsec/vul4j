@@ -2,7 +2,7 @@
 <toplevel>
 	<element name="A">
 		<element name="B">
-			<element name="A"/>
+			<element name="C"/>
 		</element>
 	</element>
 </toplevel>

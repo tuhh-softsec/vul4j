@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/CallMethodRuleTestCase.java,v 1.13 2004/02/16 02:26:38 skitching Exp $
- * $Revision: 1.13 $
- * $Date: 2004/02/16 02:26:38 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/CallMethodRuleTestCase.java,v 1.14 2004/02/25 07:15:28 skitching Exp $
+ * $Revision: 1.14 $
+ * $Date: 2004/02/25 07:15:28 $
  *
  * ====================================================================
  * 
@@ -150,8 +150,7 @@ public class CallMethodRuleTestCase extends TestCase {
 
     /**
      * Test method calls with the CallMethodRule rule. It should be possible
-     * to call any accessible method of the object on the top of the stack,
-     * even methods with no arguments.
+     * to call a method with no arguments using several rule syntaxes.
      */
     public void testBasic() throws SAXException, IOException {
         
@@ -195,9 +194,9 @@ public class CallMethodRuleTestCase extends TestCase {
 
 
     /**
-     * Test method calls with the CallMethodRule rule. It should be possible
-     * to call any accessible method of the object on the top of the stack,
-     * even methods with no arguments.
+     * Test CallMethodRule variants which specify the classes of the
+     * parameters to target methods. String, int, boolean, float should all 
+     * be acceptable as parameter types.
      */
     public void testSettingProperties() throws SAXException, IOException {
             
@@ -301,7 +300,8 @@ public class CallMethodRuleTestCase extends TestCase {
 
 
     /**
-     * Test nested CallMethod rules.
+     * Test nested CallMethod rules. A CallMethodRule only fires when
+     * the end tag for its associated pattern is reached..
      */
     public void testOrderNested() throws Exception {
         
@@ -322,7 +322,7 @@ public class CallMethodRuleTestCase extends TestCase {
             fail("Digester threw Exception:  " + t);
         }
         
-        assertEquals("Wrong method call order", "ABA", word.toString());
+        assertEquals("Wrong method call order", "CBA", word.toString());
 
     }
 
