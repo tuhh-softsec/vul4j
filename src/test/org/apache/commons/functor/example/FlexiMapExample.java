@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.2 2003/03/04 23:11:14 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.3 2003/03/05 00:16:38 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,8 +56,11 @@
  */
 package org.apache.commons.functor.example;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -73,12 +76,13 @@ import org.apache.commons.functor.adapter.IgnoreLeftFunction;
 import org.apache.commons.functor.adapter.UnaryProcedureUnaryFunction;
 import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.IsInstanceOf;
 import org.apache.commons.functor.core.IsNull;
 import org.apache.commons.functor.core.RightIdentityFunction;
 import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:14 $
+ * @version $Revision: 1.3 $ $Date: 2003/03/05 00:16:38 $
  * @author Rodney Waldhoff
  */
 public class FlexiMapExample extends TestCase {
@@ -153,6 +157,53 @@ public class FlexiMapExample extends TestCase {
         map.put("key", null);
         assertEquals( new Integer(0), map.get("key") );
     }
+
+	public void testIntegerValuesOnly() {
+		Map map = makeIntegerValuedMap();
+		map.put("key", new Integer(2));        
+		assertEquals( new Integer(2), map.get("key") );
+		try {
+			map.put("key2","value");
+			fail("Expected ClassCastException");
+		} catch(ClassCastException e) {
+			// expected
+		}                		
+	}
+
+	public void testMultiMap() {
+		Map map = makeMultiMap();
+
+		map.put("key", "value 1");
+		
+		{
+			Collection result = (Collection)(map.get("key"));
+			assertEquals(1,result.size());
+			assertEquals("value 1", result.iterator().next());
+		}
+
+		map.put("key", "value 2");
+
+		{
+			Collection result = (Collection)(map.get("key"));
+			assertEquals(2,result.size());
+			Iterator iter = result.iterator();
+			assertEquals("value 1", iter.next());
+			assertEquals("value 2", iter.next());
+		}
+
+		map.put("key", "value 3");
+
+		{
+			Collection result = (Collection)(map.get("key"));
+			assertEquals(3,result.size());
+			Iterator iter = result.iterator();
+			assertEquals("value 1", iter.next());
+			assertEquals("value 2", iter.next());
+			assertEquals("value 3", iter.next());
+		}
+
+	}
+
 
     static class FlexiMap implements Map {
 
@@ -244,31 +295,74 @@ public class FlexiMapExample extends TestCase {
         );
     }
 
-    private Map makeNullAsZeroMap() {
-        return new FlexiMap(
-            IgnoreLeftFunction.adapt(                        
-                new ConditionalUnaryFunction(
-                    IsNull.getIsNullPredicate(),
-                    new ConstantFunction(new Integer(0)),
-                    IdentityFunction.getIdentityFunction()
-                )
-            ),
-            null
-        );
-    }
+	private Map makeNullAsZeroMap() {
+		return new FlexiMap(
+			IgnoreLeftFunction.adapt(                        
+				new ConditionalUnaryFunction(
+					IsNull.getIsNullPredicate(),
+					new ConstantFunction(new Integer(0)),
+					IdentityFunction.getIdentityFunction()
+				)
+			),
+			null
+		);
+	}
+
+	private Map makeIntegerValuedMap() {
+		return new FlexiMap(
+			IgnoreLeftFunction.adapt(                        
+				new ConditionalUnaryFunction(
+					new IsInstanceOf(Integer.class),
+					IdentityFunction.getIdentityFunction(),
+					UnaryProcedureUnaryFunction.adapt(throwCCE)
+				)
+			),
+			null
+		);
+	}
+
+	private Map makeMultiMap() {
+		return new FlexiMap(
+			new BinaryFunction() {
+				public Object evaluate(Object oldval, Object newval) {
+					List list = null;
+					if(null == oldval) {
+						list = new ArrayList();
+					} else {
+						list = (List)oldval;
+					}
+					list.add(newval);
+					return list;
+				}
+			},
+			null
+		);
+	}
 
     private interface UniversalProcedure extends Procedure, UnaryProcedure, BinaryProcedure { }
 
-    private UniversalProcedure throwNPE = new UniversalProcedure() {
-        public void run() {
-            throw new NullPointerException();
-        }
-        public void run(Object obj) {
-            run();
-        }
-        public void run(Object left, Object right) {
-            run();
-        }
-    };
+	private UniversalProcedure throwNPE = new UniversalProcedure() {
+		public void run() {
+			throw new NullPointerException();
+		}
+		public void run(Object obj) {
+			run();
+		}
+		public void run(Object left, Object right) {
+			run();
+		}
+	};
+    
+	private UniversalProcedure throwCCE = new UniversalProcedure() {
+		public void run() {
+			throw new ClassCastException();
+		}
+		public void run(Object obj) {
+			run();
+		}
+		public void run(Object left, Object right) {
+			run();
+		}
+	};
     
 }
