@@ -47,7 +47,7 @@ public class CreateDonaldsAdditionalURISignature {
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(
-            CreateMerlinsExampleSixteen.class.getName());
+            CreateDonaldsAdditionalURISignature.class.getName());
 
    static Document createDocument(DocumentBuilder db) throws Exception {
       Document doc = db.newDocument();

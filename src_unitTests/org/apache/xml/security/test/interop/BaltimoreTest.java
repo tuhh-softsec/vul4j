@@ -44,6 +44,8 @@ public class BaltimoreTest extends InteropTest {
       "data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/";
    static String merlinsDir16 =
    	"data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen";
+   static String merlinsDir23 =
+   	"data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/";
 
    /**
     * Method suite
@@ -305,12 +307,242 @@ public class BaltimoreTest extends InteropTest {
       assertTrue(filename, verify);
    }
 
+
+   /**
+    * Method test_twenty_three_enveloping_hmac_sha1
+    *
+    * @throws Exception
+    */
+   public void test_twenty_three_enveloping_hmac_sha1() throws Exception {
+
+      String filename = merlinsDir23 + "signature-enveloping-hmac-sha1.xml";
+      boolean verify = this.verifyHMAC(filename, new OfflineResolver(), false,
+                                       "secret".getBytes("ASCII"));
+
+      if (!verify) {
+         log.error("Verification failed for " + filename);
+      }
+
+      assertTrue(filename, verify);
+   }
+
+   /**
+    * Method test_twenty_three_enveloping_hmac_sha1_40
+    *
+    * @throws Exception
+    */
+   public void test_twenty_three_enveloping_hmac_sha1_40() throws Exception {
+
+      String filename = merlinsDir23 + "signature-enveloping-hmac-sha1-40.xml";
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      byte[] hmacKey = "secret".getBytes("ASCII");
+      boolean verify = false;
+
+      try {
+         verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
+      } catch (RuntimeException ex) {
+         log.error("Verification crashed for " + filename);
+         throw ex;
+      }
+
+      if (!verify) {
+         log.error("Verification failed for " + filename);
+      }
+
+      assertTrue(filename, verify);
+   }
+
+   /**
+    * Method test_twenty_three_enveloped_dsa
+    *
+    * @throws Exception
+    */
+   public void test_twenty_three_enveloped_dsa() throws Exception {
+
+      String filename = merlinsDir23 + "signature-enveloped-dsa.xml";
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         log.error("Verification crashed for " + filename);
+         throw ex;
+      }
+
+      if (!verify) {
+         log.error("Verification failed for " + filename);
+      }
+
+      assertTrue(filename, verify);
+   }
+
+   /**
+    * Method test_twenty_three_enveloping_b64_dsa
+    *
+    * @throws Exception
+    */
+   public void test_twenty_three_enveloping_b64_dsa() throws Exception {
+
+      String filename = merlinsDir23 + "signature-enveloping-b64-dsa.xml";
+      ResourceResolverSpi resolver = null;
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         log.error("Verification crashed for " + filename);
+         throw ex;
+      }
+
+      if (!verify) {
+         log.error("Verification failed for " + filename);
+      }
+
+      assertTrue(filename, verify);
+   }
+
+   /**
+    * Method test_twenty_three_enveloping_dsa
+    *
+    * @throws Exception
+    */
+   public void test_twenty_three_enveloping_dsa() throws Exception {
+
+      String filename = merlinsDir23 + "signature-enveloping-dsa.xml";
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         log.error("Verification crashed for " + filename);
+         throw ex;
+      }
+
+      if (!verify) {
+         log.error("Verification failed for " + filename);
+      }
+
+      assertTrue(filename, verify);
+   }
+
+   /**
+    * Method test_twenty_three_enveloping_rsa
+    *
+    * @throws Exception
+    */
+   public void test_twenty_three_enveloping_rsa() throws Exception {
+
+      String filename = merlinsDir23 + "signature-enveloping-rsa.xml";
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         log.error("Verification crashed for " + filename);
+         throw ex;
+      }
+
+      if (!verify) {
+         log.error("Verification failed for " + filename);
+      }
+
+      assertTrue(filename, verify);
+   }
+
+   /**
+    * Method test_twenty_three_external_b64_dsa
+    *
+    * @throws Exception
+    */
+   public void test_twenty_three_external_b64_dsa() throws Exception {
+
+      String filename = merlinsDir23 + "signature-external-b64-dsa.xml";
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         log.error("Verification crashed for " + filename);
+         throw ex;
+      }
+
+      if (!verify) {
+         log.error("Verification failed for " + filename);
+      }
+
+      assertTrue(filename, verify);
+   }
+
+   /**
+    * Method test_twenty_three_external_dsa
+    *
+    * @throws Exception
+    */
+   public void test_twenty_three_external_dsa() throws Exception {
+
+      String filename = merlinsDir23 + "signature-external-dsa.xml";
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         log.error("Verification crashed for " + filename);
+         throw ex;
+      }
+
+      if (!verify) {
+         log.error("Verification failed for " + filename);
+      }
+
+      assertTrue(filename, verify);
+   }
+
+   /**
+    * Method test_twenty_three_external_dsa_2
+    *
+    * @throws Exception
+    */
+   public void test_twenty_three_external_dsa_2() throws Exception {
+
+      String filename =
+         merlinsDir23 + "signature.xml";
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         log.error("Verification crashed for " + filename);
+         throw ex;
+      }
+
+      if (!verify) {
+         log.error("Verification failed for " + filename);
+      }
+
+      assertTrue(filename, verify);
+   }
+
    static {
    	
    	  String basedir = System.getProperty("basedir");
    	  if(basedir != null && !"".equals(basedir)) {
    		merlinsDir15 = basedir + "/" + merlinsDir15;
    		merlinsDir16 = basedir + "/" + merlinsDir16;
+        merlinsDir23 = basedir + "/" + merlinsDir23;
    	  }
       org.apache.xml.security.Init.init();
    }

@@ -128,6 +128,20 @@ public class IAIKInterOp {
             System.out.println();
          }
       }
+
+      for (int i = 2; i < filenames.length; i++) {
+         String signatureFileName = filenames[i];
+
+         try {
+            org.apache.xml.security.samples.signature
+               .VerifyMerlinsExamplesTwentyThree.verify(dbf, signatureFileName);
+         } catch (Exception ex) {
+            System.out.println("The XML signature in file "
+                               + signatureFileName + " crashed the application (bad)");
+            ex.printStackTrace();
+            System.out.println();
+         }
+      }
    }
 
    public static void verifyAnonymous(String gregorsDir, DocumentBuilderFactory dbf) {

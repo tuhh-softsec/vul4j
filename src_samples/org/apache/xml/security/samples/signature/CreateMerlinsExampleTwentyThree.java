@@ -54,11 +54,11 @@ import org.w3c.dom.Node;
  *
  * @author $Author$
  */
-public class CreateMerlinsExampleSixteen {
+public class CreateMerlinsExampleTwentyThree {
     
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(CreateMerlinsExampleSixteen.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(CreateMerlinsExampleTwentyThree.class.getName());
 
    /**
     * Method main
@@ -75,7 +75,7 @@ public class CreateMerlinsExampleSixteen {
       String privateKeyAlias = "test";
       String privateKeyPass = "xmlsecurity";
       String certificateAlias = "test";
-      File signatureFile = new File("merlinsSixteenRecreatedNoRetrievalMethod.xml");
+      File signatureFile = new File("merlinsTwentyThreeRecreatedNoRetrievalMethod.xml");
       //J+
       KeyStore ks = KeyStore.getInstance(keystoreType);
       FileInputStream fis = new FileInputStream(keystoreFile);

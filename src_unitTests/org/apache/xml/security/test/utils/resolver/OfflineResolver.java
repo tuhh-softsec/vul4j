@@ -169,5 +169,8 @@ public class OfflineResolver extends ResourceResolverSpi {
       OfflineResolver.register(
          "http://xmldsig.pothole.com/xml-stylesheet.txt",
          basedir + "data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml");
+      OfflineResolver.register(
+         "http://www.w3.org/Signature/2002/04/xml-stylesheet.b64",
+         basedir + "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64", "text/plain");
    }
 }
