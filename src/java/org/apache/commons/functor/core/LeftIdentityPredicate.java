@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/LeftIdentityPredicate.java,v 1.1 2003/01/29 23:03:17 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/LeftIdentityPredicate.java,v 1.2 2003/11/24 20:12:16 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -67,7 +67,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * Throws an exception if the parameter isn't a 
  * non-<code>null</code> <code>Boolean</code>.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/01/29 23:03:17 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:16 $
  * @author Rodney Waldhoff
  */
 public final class LeftIdentityPredicate implements BinaryPredicate, Serializable {
@@ -102,7 +102,7 @@ public final class LeftIdentityPredicate implements BinaryPredicate, Serializabl
     
     // static methods
     // ------------------------------------------------------------------------
-    public static LeftIdentityPredicate getLeftIdentityPredicate() {
+    public static LeftIdentityPredicate instance() {
         return INSTANCE;
     }
     

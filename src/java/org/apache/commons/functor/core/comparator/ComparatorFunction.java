@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/ComparatorFunction.java,v 1.2 2003/02/21 00:12:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/ComparatorFunction.java,v 1.3 2003/11/24 20:12:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,7 +65,7 @@ import org.apache.commons.functor.BinaryFunction;
  * Adapts a {@link Comparator Comparator} to the
  * {@link BinaryFunction} interface.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/02/21 00:12:28 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:12:17 $
  * @author Rodney Waldhoff
  */
 public final class ComparatorFunction implements BinaryFunction, Serializable {
@@ -74,7 +74,7 @@ public final class ComparatorFunction implements BinaryFunction, Serializable {
     }
 
     public ComparatorFunction(Comparator comparator) {
-        this.comparator = null == comparator ? ComparableComparator.getInstance() : comparator;
+        this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
     }
     
     /**

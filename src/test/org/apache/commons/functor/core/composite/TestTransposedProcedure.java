@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestTransposedProcedure.java,v 1.3 2003/03/04 23:11:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestTransposedProcedure.java,v 1.4 2003/11/24 20:12:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.BinaryProcedure;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/03/04 23:11:11 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/24 20:12:15 $
  * @author Rodney Waldhoff
  */
 public class TestTransposedProcedure extends BaseFunctorTest {
@@ -84,7 +84,7 @@ public class TestTransposedProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new TransposedProcedure(NoOp.getNoOpProcedure());
+        return new TransposedProcedure(NoOp.instance());
     }
 
     // Lifecycle
@@ -112,11 +112,11 @@ public class TestTransposedProcedure extends BaseFunctorTest {
     }
         
     public void testEquals() throws Exception {
-        BinaryProcedure p = new TransposedProcedure(NoOp.getNoOpProcedure());
+        BinaryProcedure p = new TransposedProcedure(NoOp.instance());
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new TransposedProcedure(NoOp.getNoOpProcedure()));
-        assertObjectsAreEqual(p,TransposedProcedure.transpose(NoOp.getNoOpProcedure()));
-        assertObjectsAreNotEqual(p,new TransposedProcedure(new TransposedProcedure(NoOp.getNoOpProcedure())));
+        assertObjectsAreEqual(p,new TransposedProcedure(NoOp.instance()));
+        assertObjectsAreEqual(p,TransposedProcedure.transpose(NoOp.instance()));
+        assertObjectsAreNotEqual(p,new TransposedProcedure(new TransposedProcedure(NoOp.instance())));
         assertObjectsAreNotEqual(p,new TransposedProcedure(null));
         assertObjectsAreNotEqual(p,new NoOp());
     }

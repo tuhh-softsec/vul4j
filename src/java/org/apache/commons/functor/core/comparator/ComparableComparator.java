@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/ComparableComparator.java,v 1.1 2003/02/20 01:12:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/ComparableComparator.java,v 1.2 2003/11/24 20:12:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import java.util.Comparator;
  * See Commons-Collections for a public version 
  * of this class.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:40 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:17 $
  * @author Rodney Waldhoff
  */
 final class ComparableComparator implements Comparator, Serializable {
@@ -98,7 +98,7 @@ final class ComparableComparator implements Comparator, Serializable {
         return" ComparableComparator";
     }
     
-    public static final ComparableComparator getInstance() {
+    public static final ComparableComparator instance() {
         return INSTANCE;
     }
     

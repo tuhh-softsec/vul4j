@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/NoOp.java,v 1.1 2003/02/24 11:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/NoOp.java,v 1.2 2003/11/24 20:12:16 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,8 +64,11 @@ import org.apache.commons.functor.UnaryProcedure;
 
 /**
  * A procedure that does nothing at all.
- * 
- * @version $Revision: 1.1 $ $Date: 2003/02/24 11:48:08 $
+ * <p>
+ * Note that this class implements {@link Procedure},
+ * {@link UnaryProcedure}, and {@link BinaryProcedure}.
+ * </p>   
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:16 $
  * @author Rodney Waldhoff
  */
 public final class NoOp implements Procedure, UnaryProcedure, BinaryProcedure, Serializable {
@@ -100,7 +103,7 @@ public final class NoOp implements Procedure, UnaryProcedure, BinaryProcedure, S
     
     // static methods
     // ------------------------------------------------------------------------
-    public static NoOp getNoOpProcedure() {
+    public static NoOp instance() {
         return INSTANCE;
     }
 

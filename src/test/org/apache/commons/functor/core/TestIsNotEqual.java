@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsNotEqual.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsNotEqual.java,v 1.2 2003/11/24 20:12:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:15 $
  * @author Rodney Waldhoff
  */
 public class TestIsNotEqual extends BaseFunctorTest {
@@ -120,12 +120,12 @@ public class TestIsNotEqual extends BaseFunctorTest {
         BinaryPredicate p = new IsNotEqual();
         assertEquals(p,p);
         assertObjectsAreEqual(p,new IsNotEqual());
-        assertObjectsAreEqual(p,IsNotEqual.getNotEqualPredicate());
+        assertObjectsAreEqual(p,IsNotEqual.instance());
         assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
     }
 
     public void testConstant() throws Exception {
-        assertEquals(IsNotEqual.getNotEqualPredicate(),IsNotEqual.getNotEqualPredicate());
-        assertSame(IsNotEqual.getNotEqualPredicate(),IsNotEqual.getNotEqualPredicate());
+        assertEquals(IsNotEqual.instance(),IsNotEqual.instance());
+        assertSame(IsNotEqual.instance(),IsNotEqual.instance());
     }
 }

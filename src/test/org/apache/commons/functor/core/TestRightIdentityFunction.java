@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestRightIdentityFunction.java,v 1.2 2003/03/04 23:11:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestRightIdentityFunction.java,v 1.3 2003/11/24 20:12:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryFunction;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:12 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:12:15 $
  * @author Rodney Waldhoff
  */
 public class TestRightIdentityFunction extends BaseFunctorTest {
@@ -116,12 +116,12 @@ public class TestRightIdentityFunction extends BaseFunctorTest {
         BinaryFunction f = new RightIdentityFunction();
         assertEquals(f,f);
         assertObjectsAreEqual(f,new RightIdentityFunction());
-        assertObjectsAreEqual(f,RightIdentityFunction.getRightIdentityFunction());
+        assertObjectsAreEqual(f,RightIdentityFunction.instance());
         assertObjectsAreNotEqual(f,new ConstantFunction("abcde"));
     }
     
     public void testConstant() throws Exception {
-        assertEquals(RightIdentityFunction.getRightIdentityFunction(),RightIdentityFunction.getRightIdentityFunction());
-        assertSame(RightIdentityFunction.getRightIdentityFunction(),RightIdentityFunction.getRightIdentityFunction());
+        assertEquals(RightIdentityFunction.instance(),RightIdentityFunction.instance());
+        assertSame(RightIdentityFunction.instance(),RightIdentityFunction.instance());
     }
 }

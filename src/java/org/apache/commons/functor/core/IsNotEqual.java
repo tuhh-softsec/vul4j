@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/IsNotEqual.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/IsNotEqual.java,v 1.2 2003/11/24 20:12:16 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -69,7 +69,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * This relation is symmetric but irreflexive 
  * and not transitive.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:16 $
  * @author Rodney Waldhoff
  */
 public final class IsNotEqual implements BinaryPredicate, Serializable {
@@ -98,9 +98,9 @@ public final class IsNotEqual implements BinaryPredicate, Serializable {
         return "IsNotEqual";
     }
         
-    // static attributes
+    // static methods
     // ------------------------------------------------------------------------
-    public static IsNotEqual getNotEqualPredicate() {
+    public static IsNotEqual instance() {
         return INSTANCE;
     }
     

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsGreaterThanOrEqual.java,v 1.3 2003/03/04 17:28:21 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsGreaterThanOrEqual.java,v 1.4 2003/11/24 20:12:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,7 +68,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * When no (or a <code>null</code> <code>Comparator</code> is specified,
  * a {@link Comparable Comparable} <code>Comparator</code> is used.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/03/04 17:28:21 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/24 20:12:17 $
  * @author Rodney Waldhoff
  */
 public final class IsGreaterThanOrEqual implements BinaryPredicate, Serializable {
@@ -89,7 +89,7 @@ public final class IsGreaterThanOrEqual implements BinaryPredicate, Serializable
      *        be used.
      */
     public IsGreaterThanOrEqual(Comparator comparator) {
-        this.comparator = null == comparator ? ComparableComparator.getInstance() : comparator;
+        this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
     }
     
     /**
@@ -137,7 +137,7 @@ public final class IsGreaterThanOrEqual implements BinaryPredicate, Serializable
         return "IsGreaterThanOrEqual<" + comparator + ">";
     }
 
-    public static final IsGreaterThanOrEqual getIsGreaterThanOrEqual() {
+    public static final IsGreaterThanOrEqual instance() {
         return COMPARABLE_INSTANCE;
     }
     

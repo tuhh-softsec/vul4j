@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestNoOp.java,v 1.1 2003/02/24 11:48:09 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestNoOp.java,v 1.2 2003/11/24 20:12:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,7 +65,7 @@ import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/24 11:48:09 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:15 $
  * @author Rodney Waldhoff
  */
 public class TestNoOp extends BaseFunctorTest {
@@ -117,14 +117,14 @@ public class TestNoOp extends BaseFunctorTest {
         NoOp p = new NoOp();
         assertEquals(p,p);
         assertObjectsAreEqual(p,new NoOp());
-        assertObjectsAreEqual(p,NoOp.getNoOpProcedure());
+        assertObjectsAreEqual(p,NoOp.instance());
         assertObjectsAreNotEqual(p,new Procedure() { public void run() { } });
         assertObjectsAreNotEqual(p,new UnaryProcedure() { public void run(Object a) { } });
         assertObjectsAreNotEqual(p,new BinaryProcedure() { public void run(Object a, Object b) { } });
     }
     
     public void testConstant() throws Exception {
-        assertEquals(NoOp.getNoOpProcedure(),NoOp.getNoOpProcedure());
-        assertSame(NoOp.getNoOpProcedure(),NoOp.getNoOpProcedure());
+        assertEquals(NoOp.instance(),NoOp.instance());
+        assertSame(NoOp.instance(),NoOp.instance());
     }
 }

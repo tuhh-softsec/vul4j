@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.4 2003/07/19 22:12:25 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.5 2003/11/24 20:12:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -203,7 +203,7 @@ public class TestGenerator extends TestCase {
     // ------------------------------------------------------------------------
 
     public void testApply() {
-        Collection result = EachElement.from(list).apply(IdentityFunction.getIdentityFunction()).toCollection();
+        Collection result = EachElement.from(list).apply(IdentityFunction.instance()).toCollection();
         assertNotNull(result);
         assertEquals(list.size(),result.size());
         assertEquals(list,result);
@@ -211,7 +211,7 @@ public class TestGenerator extends TestCase {
 
     public void testApply2() {
         Set set = new HashSet();
-        assertSame(set,EachElement.from(list).apply(IdentityFunction.getIdentityFunction()).to(set));
+        assertSame(set,EachElement.from(list).apply(IdentityFunction.instance()).to(set));
         assertEquals(list.size(),set.size());
         for(Iterator iter = list.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -220,7 +220,7 @@ public class TestGenerator extends TestCase {
 
     public void testApply3() {
         Set set = new HashSet();
-        assertSame(set,EachElement.from(listWithDuplicates).apply(IdentityFunction.getIdentityFunction()).to(set));
+        assertSame(set,EachElement.from(listWithDuplicates).apply(IdentityFunction.instance()).to(set));
         assertTrue(listWithDuplicates.size() > set.size());
         for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -319,8 +319,8 @@ public class TestGenerator extends TestCase {
     private List evens = null;
     private List listWithDuplicates = null;
     private int sum = 0;
-    private UnaryPredicate equalsThree = LeftBoundPredicate.bind(IsEqual.getEqualPredicate(),new Integer(3));
-    private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.getEqualPredicate(),new Integer(23));
+    private UnaryPredicate equalsThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(3));
+    private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(23));
     private UnaryPredicate isEven = new UnaryPredicate() {
         public boolean test(Object obj) {
             return ((Number)obj).intValue() % 2 == 0;

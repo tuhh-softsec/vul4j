@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.2 2003/06/30 11:00:18 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.3 2003/11/24 20:12:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -77,7 +77,7 @@ import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsEqual;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/06/30 11:00:18 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:12:17 $
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {
@@ -132,7 +132,7 @@ public class TestAlgorithms extends TestCase {
     }
 
     public void testApply() {
-        Collection result = Algorithms.apply(list.iterator(),IdentityFunction.getIdentityFunction()).toCollection();
+        Collection result = Algorithms.apply(list.iterator(),IdentityFunction.instance()).toCollection();
         assertNotNull(result);
         assertEquals(list.size(),result.size());
         assertEquals(list,result);
@@ -140,7 +140,7 @@ public class TestAlgorithms extends TestCase {
 
     public void testApply2() {
         Set set = new HashSet();
-        assertSame(set,Algorithms.apply(list.iterator(),IdentityFunction.getIdentityFunction()).to(set));
+        assertSame(set,Algorithms.apply(list.iterator(),IdentityFunction.instance()).to(set));
         assertEquals(list.size(),set.size());
         for(Iterator iter = list.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -149,7 +149,7 @@ public class TestAlgorithms extends TestCase {
 
     public void testApply3() {
         Set set = new HashSet();
-        assertSame(set,Algorithms.apply(listWithDuplicates.iterator(),IdentityFunction.getIdentityFunction()).to(set));
+        assertSame(set,Algorithms.apply(listWithDuplicates.iterator(),IdentityFunction.instance()).to(set));
         assertTrue(listWithDuplicates.size() > set.size());
         for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -266,8 +266,8 @@ public class TestAlgorithms extends TestCase {
     private List evens = null;
     private List listWithDuplicates = null;
     private int sum = 0;
-    private UnaryPredicate equalsThree = LeftBoundPredicate.bind(IsEqual.getEqualPredicate(),new Integer(3));
-    private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.getEqualPredicate(),new Integer(23));
+    private UnaryPredicate equalsThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(3));
+    private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(23));
     private UnaryPredicate isEven = new UnaryPredicate() {
         public boolean test(Object obj) {
             return ((Number)obj).intValue() % 2 == 0;

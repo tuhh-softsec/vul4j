@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/IdentityFunction.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/IdentityFunction.java,v 1.3 2003/11/24 20:12:16 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import org.apache.commons.functor.UnaryFunction;
 /**
  * {@link #evaluate Evaluates} to its input argument.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:12:16 $
  * @author Rodney Waldhoff
  */
 public final class IdentityFunction implements UnaryFunction, Serializable {
@@ -93,7 +93,7 @@ public final class IdentityFunction implements UnaryFunction, Serializable {
     
     // static methods
     // ------------------------------------------------------------------------
-    public static IdentityFunction getIdentityFunction() {
+    public static IdentityFunction instance() {
         return INSTANCE;
     }
     

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.5 2003/03/29 01:14:22 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.6 2003/11/24 20:12:16 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -96,7 +96,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  */
  
 /**
- * @version $Revision: 1.5 $ $Date: 2003/03/29 01:14:22 $
+ * @version $Revision: 1.6 $ $Date: 2003/11/24 20:12:16 $
  * @author Rodney Waldhoff
  */
 public class FlexiMapExample extends TestCase {
@@ -449,7 +449,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * we'll test for null,
                      */      
-                    IsNull.getIsNullPredicate(),
+                    IsNull.instance(),
                     /*
                      * throwing a NullPointerException when the value is null,
                      */      
@@ -457,7 +457,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * and passing through all non-null values.
                      */      
-                    IdentityFunction.getIdentityFunction()
+                    IdentityFunction.instance()
                 )
             ),
             null
@@ -483,7 +483,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * we'll test for null,
                      */      
-					IsNull.getIsNullPredicate(),
+					IsNull.instance(),
                     /*
                      * returning our default when the value is otherwise null,
                      */      
@@ -491,7 +491,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * and passing through all non-null values.
                      */      
-					IdentityFunction.getIdentityFunction()
+					IdentityFunction.instance()
 				)
 			)
 		);
@@ -515,7 +515,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * and either pass the given value through,
                      */      
-					IdentityFunction.getIdentityFunction(),
+					IdentityFunction.instance(),
                     /*
                      * or throw a ClassCastException.
                      */      

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsNotNull.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsNotNull.java,v 1.2 2003/11/24 20:12:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:15 $
  * @author Rodney Waldhoff
  */
 public class TestIsNotNull extends BaseFunctorTest {
@@ -111,12 +111,12 @@ public class TestIsNotNull extends BaseFunctorTest {
         UnaryPredicate p = new IsNotNull();
         assertEquals(p,p);
         assertObjectsAreEqual(p,new IsNotNull());
-        assertObjectsAreEqual(p,IsNotNull.getIsNotNullPredicate());
+        assertObjectsAreEqual(p,IsNotNull.instance());
         assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
     }
 
     public void testConstant() throws Exception {
-        assertEquals(IsNotNull.getIsNotNullPredicate(),IsNotNull.getIsNotNullPredicate());
-        assertSame(IsNotNull.getIsNotNullPredicate(),IsNotNull.getIsNotNullPredicate());
+        assertEquals(IsNotNull.instance(),IsNotNull.instance());
+        assertSame(IsNotNull.instance(),IsNotNull.instance());
     }
 }

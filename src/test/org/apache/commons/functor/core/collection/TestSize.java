@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestSize.java,v 1.1 2003/02/21 00:12:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestSize.java,v 1.2 2003/11/24 20:12:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -70,7 +70,7 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.core.ConstantFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/21 00:12:28 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:17 $
  * @author Rodney Waldhoff
  */
 public class TestSize extends BaseFunctorTest {
@@ -108,31 +108,31 @@ public class TestSize extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testEvaluate() throws Exception {
-        assertEquals(new Integer(0),Size.getSize().evaluate(Collections.EMPTY_LIST));
-        assertEquals(new Integer(0),Size.getSize().evaluate(Collections.EMPTY_SET));
+        assertEquals(new Integer(0),Size.instance().evaluate(Collections.EMPTY_LIST));
+        assertEquals(new Integer(0),Size.instance().evaluate(Collections.EMPTY_SET));
         {
             List list = new ArrayList();
-            assertEquals(new Integer(0),Size.getSize().evaluate(list));
+            assertEquals(new Integer(0),Size.instance().evaluate(list));
             for(int i=0;i<2;i++) {
-                assertEquals(new Integer(i),Size.getSize().evaluate(list));                
+                assertEquals(new Integer(i),Size.instance().evaluate(list));                
                 list.add(new Integer(i));
-                assertEquals(new Integer(i+1),Size.getSize().evaluate(list));                
+                assertEquals(new Integer(i+1),Size.instance().evaluate(list));                
             }
         }
         {
             Set set = new HashSet();
-            assertEquals(new Integer(0),Size.getSize().evaluate(set));
+            assertEquals(new Integer(0),Size.instance().evaluate(set));
             for(int i=0;i<2;i++) {
-                assertEquals(new Integer(i),Size.getSize().evaluate(set));                
+                assertEquals(new Integer(i),Size.instance().evaluate(set));                
                 set.add(new Integer(i));
-                assertEquals(new Integer(i+1),Size.getSize().evaluate(set));                
+                assertEquals(new Integer(i+1),Size.instance().evaluate(set));                
             }
         }
     }
 
     public void testEvaluateNull() throws Exception {
         try {
-            Size.getSize().evaluate(null);
+            Size.instance().evaluate(null);
             fail("Expected NullPointerException");
         } catch(NullPointerException e) {
             // expected
@@ -141,7 +141,7 @@ public class TestSize extends BaseFunctorTest {
     
     public void testTestNonCollection() throws Exception {
         try {
-            Size.getSize().evaluate(new Integer(3));
+            Size.instance().evaluate(new Integer(3));
             fail("Expected ClassCastException");
         } catch(ClassCastException e) {
             // expected
@@ -152,8 +152,8 @@ public class TestSize extends BaseFunctorTest {
         UnaryFunction f = new Size();
         assertEquals(f,f);
         assertObjectsAreEqual(f,new Size());
-        assertObjectsAreEqual(f,Size.getSize());
-        assertSame(Size.getSize(),Size.getSize());
+        assertObjectsAreEqual(f,Size.instance());
+        assertSame(Size.instance(),Size.instance());
         assertObjectsAreNotEqual(f,new ConstantFunction(null));
         assertTrue(! f.equals((Size)null) );
     }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestIdentityPredicate.java,v 1.2 2003/03/04 23:11:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestIdentityPredicate.java,v 1.3 2003/11/24 20:12:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:12 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 20:12:15 $
  * @author Rodney Waldhoff
  */
 public class TestIdentityPredicate extends BaseFunctorTest {
@@ -122,12 +122,12 @@ public class TestIdentityPredicate extends BaseFunctorTest {
         UnaryPredicate f = new IdentityPredicate();
         assertEquals(f,f);
         assertObjectsAreEqual(f,new IdentityPredicate());
-        assertObjectsAreEqual(f,IdentityPredicate.getIdentityPredicate());
+        assertObjectsAreEqual(f,IdentityPredicate.instance());
         assertObjectsAreNotEqual(f,new ConstantPredicate(true));
     }
     
     public void testConstant() throws Exception {
-        assertEquals(IdentityPredicate.getIdentityPredicate(),IdentityPredicate.getIdentityPredicate());
-        assertSame(IdentityPredicate.getIdentityPredicate(),IdentityPredicate.getIdentityPredicate());
+        assertEquals(IdentityPredicate.instance(),IdentityPredicate.instance());
+        assertSame(IdentityPredicate.instance(),IdentityPredicate.instance());
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestRightIdentityPredicate.java,v 1.1 2003/01/29 23:03:18 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestRightIdentityPredicate.java,v 1.2 2003/11/24 20:12:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/29 23:03:18 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:15 $
  * @author Rodney Waldhoff
  */
 public class TestRightIdentityPredicate extends BaseFunctorTest {
@@ -122,13 +122,13 @@ public class TestRightIdentityPredicate extends BaseFunctorTest {
         RightIdentityPredicate p = new RightIdentityPredicate();
         assertEquals(p,p);
         assertObjectsAreEqual(p,new RightIdentityPredicate());
-        assertObjectsAreEqual(p,RightIdentityPredicate.getRightIdentityPredicate());
+        assertObjectsAreEqual(p,RightIdentityPredicate.instance());
         assertObjectsAreNotEqual(p,new IdentityPredicate());
         assertObjectsAreNotEqual(p,new ConstantPredicate(true));
     }
     
     public void testConstant() throws Exception {
-        assertEquals(RightIdentityPredicate.getRightIdentityPredicate(),RightIdentityPredicate.getRightIdentityPredicate());
-        assertSame(RightIdentityPredicate.getRightIdentityPredicate(),RightIdentityPredicate.getRightIdentityPredicate());
+        assertEquals(RightIdentityPredicate.instance(),RightIdentityPredicate.instance());
+        assertSame(RightIdentityPredicate.instance(),RightIdentityPredicate.instance());
     }
 }

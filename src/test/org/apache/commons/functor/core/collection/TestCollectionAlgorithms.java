@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.5 2003/03/04 23:11:14 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.6 2003/11/24 20:12:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -77,7 +77,7 @@ import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsEqual;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2003/03/04 23:11:14 $
+ * @version $Revision: 1.6 $ $Date: 2003/11/24 20:12:17 $
  * @author Rodney Waldhoff
  */
 public class TestCollectionAlgorithms extends TestCase {
@@ -132,7 +132,7 @@ public class TestCollectionAlgorithms extends TestCase {
     }    
     
     public void testCollect() {
-        Collection result = CollectionAlgorithms.collect(list.iterator(),IdentityFunction.getIdentityFunction());
+        Collection result = CollectionAlgorithms.collect(list.iterator(),IdentityFunction.instance());
         assertNotNull(result);
         assertEquals(list.size(),result.size());
         assertEquals(list,result);
@@ -140,7 +140,7 @@ public class TestCollectionAlgorithms extends TestCase {
 
     public void testCollect2() {
         Set set = new HashSet();
-        assertSame(set,CollectionAlgorithms.collect(list.iterator(),IdentityFunction.getIdentityFunction(),set));
+        assertSame(set,CollectionAlgorithms.collect(list.iterator(),IdentityFunction.instance(),set));
         assertEquals(list.size(),set.size());
         for(Iterator iter = list.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -149,7 +149,7 @@ public class TestCollectionAlgorithms extends TestCase {
 
     public void testCollect3() {
         Set set = new HashSet();
-        assertSame(set,CollectionAlgorithms.collect(listWithDuplicates.iterator(),IdentityFunction.getIdentityFunction(),set));
+        assertSame(set,CollectionAlgorithms.collect(listWithDuplicates.iterator(),IdentityFunction.instance(),set));
         assertTrue(listWithDuplicates.size() > set.size());
         for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -247,8 +247,8 @@ public class TestCollectionAlgorithms extends TestCase {
     private List evens = null;
     private List listWithDuplicates = null;    
     private int sum = 0;
-    private UnaryPredicate equalsThree = LeftBoundPredicate.bind(IsEqual.getEqualPredicate(),new Integer(3));
-    private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.getEqualPredicate(),new Integer(23));
+    private UnaryPredicate equalsThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(3));
+    private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.instance(),new Integer(23));
     private UnaryPredicate isEven = new UnaryPredicate() { 
         public boolean test(Object obj) {
             return ((Number)obj).intValue() % 2 == 0;

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/IsEmpty.java,v 1.1 2003/02/20 01:12:39 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/IsEmpty.java,v 1.2 2003/11/24 20:12:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,7 +62,7 @@ import java.util.Collection;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:39 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:17 $
  * @author Rodney Waldhoff
  */
 public final class IsEmpty implements UnaryPredicate, Serializable {
@@ -97,7 +97,7 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
         return "IsEmpty()";
     }
 
-    public static final IsEmpty getIsEmpty() {
+    public static final IsEmpty instance() {
         return INSTANCE;
     }
     

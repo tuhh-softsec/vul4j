@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsNotEquivalent.java,v 1.3 2003/03/04 17:28:21 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsNotEquivalent.java,v 1.4 2003/11/24 20:12:17 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -70,7 +70,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * 
  * @see org.apache.commons.functor.core.IsEqual
  * 
- * @version $Revision: 1.3 $ $Date: 2003/03/04 17:28:21 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/24 20:12:17 $
  * @author Rodney Waldhoff
  * 
  */
@@ -92,7 +92,7 @@ public final class IsNotEquivalent implements BinaryPredicate, Serializable {
      *        be used.
      */
     public IsNotEquivalent(Comparator comparator) {
-        this.comparator = null == comparator ? ComparableComparator.getInstance() : comparator;
+        this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
     }
     
     /**

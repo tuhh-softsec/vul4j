@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestComparableComparator.java,v 1.1 2003/02/20 01:12:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestComparableComparator.java,v 1.2 2003/11/24 20:12:16 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:41 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:16 $
  * @author Rodney Waldhoff
  */
 public class TestComparableComparator extends TestCase {
@@ -92,16 +92,16 @@ public class TestComparableComparator extends TestCase {
     // ------------------------------------------------------------------------
     
     public void testCompareIntegers() {
-        assertTrue(ComparableComparator.getInstance().compare(new Integer(Integer.MIN_VALUE),new Integer(Integer.MIN_VALUE)) == 0);
-        assertTrue(ComparableComparator.getInstance().compare(new Integer(-1),new Integer(-1)) == 0);
-        assertTrue(ComparableComparator.getInstance().compare(new Integer(0),new Integer(0)) == 0);
-        assertTrue(ComparableComparator.getInstance().compare(new Integer(Integer.MAX_VALUE),new Integer(Integer.MAX_VALUE)) == 0);
-        assertTrue(ComparableComparator.getInstance().compare(new Integer(1),new Integer(1)) == 0);
+        assertTrue(ComparableComparator.instance().compare(new Integer(Integer.MIN_VALUE),new Integer(Integer.MIN_VALUE)) == 0);
+        assertTrue(ComparableComparator.instance().compare(new Integer(-1),new Integer(-1)) == 0);
+        assertTrue(ComparableComparator.instance().compare(new Integer(0),new Integer(0)) == 0);
+        assertTrue(ComparableComparator.instance().compare(new Integer(Integer.MAX_VALUE),new Integer(Integer.MAX_VALUE)) == 0);
+        assertTrue(ComparableComparator.instance().compare(new Integer(1),new Integer(1)) == 0);
     }
 
     public void testCompareIncomparable() {
         try {
-            ComparableComparator.getInstance().compare(new Object(),new Integer(2));
+            ComparableComparator.instance().compare(new Object(),new Integer(2));
             fail("Expected ClassCastException");
         } catch(ClassCastException e) {
             // expected
@@ -110,7 +110,7 @@ public class TestComparableComparator extends TestCase {
 
     public void testCompareNull() {
         try {
-            ComparableComparator.getInstance().compare(null,new Integer(2));
+            ComparableComparator.instance().compare(null,new Integer(2));
             fail("Expected NullPointerException");
         } catch(NullPointerException e) {
             // expected
