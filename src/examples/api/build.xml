@@ -1,0 +1,83 @@
+<!-- 
+*******************************************************
+API Examples Script
+===================
+Provides helpful services to get folks up and running
+the examples quickly.
+
+* Compile - compiles all the examples to the directories
+in which the their source files reside.
+
+* Run - runs each example in turn. 
+
+Note: 
+These examples will only build and run if the 
+rights jars are in the classpath. The classpath
+can be set by copying the build.properties.sample file
+in this directory to build.properties and then setting
+the properties appropriately. Or by editing the 
+build.properties file (based on the build.properties.sample
+file in CVS) so that it contains absolute paths.
+
+Note:
+build.xml files are provided in each subdirectory. This
+provide similar fuctionality for each example individually.
+
+Note:
+The examples are graduated. It is best to look at them 
+in order. Please consult the documentation for more details.
+
+*******************************************************
+-->
+<project name="Examples" default="about" basedir=".">
+    
+  <target name='about'>
+    <echo>
+*******************************************************
+API Examples Script
+===================
+Provides helpful services to get folks up and running
+the examples quickly.
+
+* Compile - compiles all the examples to the directories
+in which the their source files reside.
+
+* Run - runs each example in turn. 
+
+Note: 
+These examples will only build and run if the 
+rights jars are in the classpath. The classpath
+can be set by copying the build.properties.sample file
+in this directory to build.properties and then setting
+the properties appropriately. Or by editing the 
+build.properties file (based on the build.properties.sample
+file in CVS) so that it contains absolute paths.
+
+Note:
+build.xml files are provided in each subdirectory. This
+provide similar fuctionality for each example individually.
+
+Note:
+The examples are graduated. It is best to look at them 
+in order. Please consult the documentation for more details.
+
+*******************************************************
+    </echo>
+  </target>
+
+  <target name="compile">
+    <ant dir="addressbook" target="compile"/>
+    <ant dir="catalog" target="compile"/>
+  </target>
+
+  <target name="run" depends="compile">
+    <ant dir="addressbook" target="compile"/>
+    <ant dir="catalog" target="compile"/>
+  </target>
+  
+  <target name="clean">
+    <ant dir="addressbook" target="clean"/>
+    <ant dir="catalog" target="clean"/>
+  </target>
+
+</project>

@@ -1,0 +1,16 @@
+# 
+# Example build properties
+# 
+# Copy this to build.properties and then edit the properties to 
+# provide local references.
+#
+
+
+myjars=/home/me/jakarta-commons-jars
+
+commons-beanutils.jar=${myjars}/commons-beanutils.jar
+commons-collections.jar=${myjars}/commons-collections.jar
+commons-logging.jar=${myjars}/commons-logging.jar
+commons-digester.jar=${myjars}/commons-digester.jar
+
+

@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.45 2003/04/28 17:51:31 rdonkin Exp $
+        $Id: build.xml,v 1.46 2003/09/28 09:41:29 rdonkin Exp $
 -->
 
 
@@ -187,6 +187,12 @@
     <copy    todir="${build.home}/tests" filtering="on">
       <fileset dir="${test.home}" excludes="**/*.java"/>
     </copy>
+  </target>
+
+
+  <target name="compile.examples" depends="compile"
+   description="Compile example code">
+    <ant dir="src/examples/api" target="compile"/>
   </target>
 
 

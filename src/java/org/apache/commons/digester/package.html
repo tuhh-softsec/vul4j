@@ -85,6 +85,9 @@ the developer to focus on the processing to be performed.</p>
     the processing rules.</li>
 </ul>
 
+<p>For example code, see <a href="#doc.Usage"> the usage 
+examples</a>, and <a href="#doc.FAQ.Examples"> the FAQ </a>. </p>
+
 <a name="doc.Properties"></a>
 <h3>Digester Configuration Properties</h3>
 
@@ -815,6 +818,11 @@ any restrictions on what other content is present in the document.</p>
 Rule Sets</a> if you wish to reuse a particular set of rules, associated
 with a particular namespace, in more than one application context.</p>
 
+<p>Note that Digester does not provide general "xpath-compliant" matching;
+only the namespace attached to the <i>last</i> element in the match path
+is involved in the matching process. Namespaces attached to parent
+elements are ignored for matching purposes.</p>
+
 <h4>Using Namespace Prefixes In Pattern Matching</h4>
 
 <p>Using rules with namespaces is very useful when you have orthogonal rulesets. 
@@ -995,13 +1003,17 @@ public class MyRuleSet extends RuleSetBase {
 </pre></code>
 This property is needed for JAXP 1.2 (XML Schema support) as required
 for the Servlet Spec. 2.4 but is not recognized by JAXP 1.1 parsers.
-This warning is harmless.
-</p></li>
-<li><strong>Where Can I Find Example Code?</strong>
+This warning is harmless.</p>
 <p>
-Digester ships with a sample application: a mapping for the <em>Rich Site Summary</em> format used
-by many newsfeeds. Download the source distribution to see how it works. 
-</p>
+</li>
+<li></a><strong>Where Can I Find Example Code?</strong>
+<a name="doc.FAQ.Examples">
+<p>Digester ships with a sample application: a mapping for the <em>Rich Site 
+Summary</em> format used by many newsfeeds. Download the source distribution 
+to see how it works.</p>
+<p>Digester also ships with a set of examples demonstrating most of the 
+features described in this document. See the "src/examples" subdirectory 
+of the source distribution.</p>
 </li>
 <li><strong>When Are You Going To Support <em>Rich Site Summary</em> Version x.y.z?</strong>
 <p>
