@@ -106,7 +106,9 @@ private:
 	TXFMBase64();
 
 	bool				m_complete;					// Is the work done
-	unsigned char		m_base64Buffer[2050];		// Always keep 2K of data
+	unsigned char		m_outputBuffer[2050];		// Always keep 2K of data
+	unsigned char		m_inputBuffer[1026];		// Always read 1026 bytes (encoding grows)
+	unsigned int		m_remaining;				// How much data is left in the buffer?
 	XSECCryptoBase64 *	mp_b64;
 	bool				m_doDecode;					// Are we encoding or decoding?
 };
