@@ -30,7 +30,7 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.utils.I18n;
-import org.apache.xml.security.utils.PRNG;
+//import org.apache.xml.security.utils.PRNG;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.w3c.dom.Attr;
@@ -80,7 +80,6 @@ public class Init {
       long XX_configure_i18n_end=0;
       long XX_configure_reg_c14n_start=0;
       long XX_configure_reg_c14n_end=0;
-      long XX_configure_reg_here_start=0;
       long XX_configure_reg_jcemapper_end=0;
       long XX_configure_reg_keyInfo_start=0;
       long XX_configure_reg_keyResolver_end=0;
@@ -96,7 +95,7 @@ public class Init {
             long XX_init_start = System.currentTimeMillis();
             long XX_prng_start = System.currentTimeMillis();
 
-            PRNG.init(new java.security.SecureRandom());
+            //PRNG.init(new java.security.SecureRandom());
 
             long XX_prng_end = System.currentTimeMillis();
 
