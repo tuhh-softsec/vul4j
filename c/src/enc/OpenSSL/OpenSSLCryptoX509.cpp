@@ -68,10 +68,16 @@
  *
  */
 
+#include <xsec/framework/XSECDefs.hpp>
+#include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
+
+#include <xercesc/util/Janitor.hpp>
+
+XSEC_USING_XERCES(ArrayJanitor);
 
 #include <openssl/evp.h>
 
@@ -127,23 +133,42 @@ OpenSSLCryptoX509::OpenSSLCryptoX509(X509 * x) {
 
 void OpenSSLCryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
 
-	// Have a Base64 buffer with a binary (DER) encoded certificate
+	// Free anything currently held.
+	
+	if (mp_X509 != NULL)
+		X509_free(mp_X509);
+	
+	// Have to implement using EVP_Decode routines due to a bug in older
+	// versions of OpenSSL BIO_f_base64
 
-	BIO * b64 = BIO_new(BIO_f_base64());
-	BIO * bmem = BIO_new(BIO_s_mem());
+	int bufLen = len;
+	unsigned char * outBuf;
+	XSECnew(outBuf, unsigned char[len + 1]);
+	ArrayJanitor<unsigned char> j_outBuf(outBuf);
 
-	// BIO_set_mem_eof_return(bmem, 1);
-	b64 = BIO_push(b64, bmem);
+	EVP_ENCODE_CTX m_dctx;
+	EVP_DecodeInit(&m_dctx);
 
-	// Now push the encoded X509
+	int rc = EVP_DecodeUpdate(&m_dctx, 
+						  outBuf, 
+						  &bufLen, 
+						  (unsigned char *) buf, 
+						  len);
 
-	BIO_write(bmem, buf, len);
+	if (rc < 0) {
 
-	// Translate to a true X509
-	mp_X509 = d2i_X509_bio(b64, NULL);
+		throw XSECCryptoException(XSECCryptoException::Base64Error,
+			"OpenSSL:Base64 - Error during Base64 Decode of X509 Certificate");
+	}
 
-	// Free the IO structures
-	BIO_free_all(b64);
+	int finalLen;
+	EVP_DecodeFinal(&m_dctx, &outBuf[bufLen], &finalLen); 
+
+	bufLen += finalLen;
+
+	if (bufLen > 0) {
+		mp_X509=  d2i_X509(NULL, &outBuf, bufLen);
+	}
 
 	// Check to see if we have a certificate....
 	if (mp_X509 == NULL) {
