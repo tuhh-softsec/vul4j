@@ -136,8 +136,9 @@
     <patternset id="distFiles">
        <include name="build.xml"/>
        <include name="INSTALL"/>
-       <include name="keys.asc"/>
-       <include name="LICENSE.txt"/>
+       <include name="KEYS"/>
+       <include name="LICENSE"/>
+       <include name="NOTICE"/>
        <include name="README"/>
        <include name="Readme.html"/>
        <include name="TODO"/>
@@ -258,7 +259,6 @@
     <!-- create directories -->
     <mkdir dir="${build.src}"/>
     <mkdir dir="${build.classes}"/>
-    <copy file="./LICENSE.txt" tofile="${build.classes}/Apache-${product.shortname}-${product_version}-LICENSE.txt"/>
 
      <!-- copy log4j.properties file so that it is in the classpath -->
      <copy file="${dir.src}/org/apache/xml/security/resource/log4j.properties" tofile="${build.classes}/log4j.properties"/>
@@ -268,6 +268,9 @@
         <fileset dir="${dir.src}" includes="org/**,ant/**"/>
     </copy>
     <mkdir dir="${build.manifest.dir}"/>
+
+    <copy file="./LICENSE" todir="${build.manifest.dir}"/>
+    <copy file="./NOTICE" todir="${build.manifest.dir}"/>
 
     <!-- <copy file="./src/MANIFEST.MF"
           tofile="${build.classes}/META-INF/MANIFEST.MF" />
@@ -495,9 +498,9 @@
       </section>
      </manifest>
 
-     <jar basedir="${build.classes}" excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**" includes="org/apache/**, *.txt" jarfile="${build.dir}/${jar.library}" manifest="${jar.manifest}"/>
-     <jar basedir="${build.classes}" excludes="org/apache/xml/security/temp/**" includes="org/apache/xml/security/samples/**" jarfile="${build.dir}/${jar.samples}" manifest="${jar.manifest}"/>
-     <jar basedir="${build.classes}" excludes="org/apache/xml/security/temp/**" includes="org/apache/xml/security/test/**" jarfile="${build.dir}/${jar.tests}" manifest="${jar.manifest}"/>
+     <jar basedir="${build.classes}" excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**" includes="**/LICENSE, **/NOTICE, org/apache/**, *.txt" jarfile="${build.dir}/${jar.library}" manifest="${jar.manifest}"/>
+     <jar basedir="${build.classes}" excludes="org/apache/xml/security/temp/**" includes="**/LICENSE, **/NOTICE, org/apache/xml/security/samples/**" jarfile="${build.dir}/${jar.samples}" manifest="${jar.manifest}"/>
+     <jar basedir="${build.classes}" excludes="org/apache/xml/security/temp/**" includes="**/LICENSE, **/NOTICE, org/apache/xml/security/test/**" jarfile="${build.dir}/${jar.tests}" manifest="${jar.manifest}"/>
     <!--  compress="false" -->
   </target>
 
