@@ -76,6 +76,8 @@
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 
+#include "MerlinFiveInteropResolver.hpp"
+
 // ugly :<
 
 #if defined(_WIN32)
@@ -176,9 +178,13 @@ void printUsage(void) {
 	cerr << "     --decrypt-element/-de\n";
 	cerr << "         Decrypt the first encrypted element found\n";
 	cerr << "     --key/-k [key string]\n";
-	cerr << "         Use the key provided in [key string] to encrypt/decrypt\n\n";
+	cerr << "         Use the key provided in [key string] to encrypt/decrypt\n";
+#if defined (HAVE_OPENSSL)
+	cerr << "     --interop/-i\n";
+	cerr << "         Use the interop resolver for Baltimore interop examples\n";
+#endif
 
-	cerr << "     Exits with codes :\n";
+	cerr << "\n     Exits with codes :\n";
 	cerr << "         0 = Decrypt/Encrypt OK\n";
 	cerr << "         1 = Decrypt/Encrypt failed\n";
 	cerr << "         2 = Processing error\n";
@@ -190,6 +196,8 @@ int evaluate(int argc, char ** argv) {
 	char					* filename = NULL;
 	char					* keyStr = NULL;
 	bool					doDecryptElement = false;
+	bool					useInteropResolver = false;
+
 
 #if defined(_WIN32) && defined (HAVE_WINCAPI)
 	HCRYPTPROV				win32DSSCSP = 0;		// Crypto Providers
@@ -211,15 +219,20 @@ int evaluate(int argc, char ** argv) {
 			paramCount++;
 			doDecryptElement = true;
 		}
-
-		if (stricmp(argv[paramCount], "--key") == 0 || stricmp(argv[paramCount], "-k") == 0) {
+#if defined (HAVE_OPENSSL)
+		else if (stricmp(argv[paramCount], "--interop") == 0 || stricmp(argv[paramCount], "-i") == 0) {
+			// Use the interop key resolver
+			useInteropResolver = true;
+			paramCount++;
+		}
+#endif
+		else if (stricmp(argv[paramCount], "--key") == 0 || stricmp(argv[paramCount], "-k") == 0) {
 
 			// Have set a key string
 			paramCount++;
 			keyStr = argv[paramCount];
 			paramCount++;
 		}
-
 		else {
 			printUsage();
 			return 2;
@@ -301,6 +314,15 @@ int evaluate(int argc, char ** argv) {
 			k->setKey((unsigned char *) keyStr, strlen(keyStr));
 			cipher->setKey(k);
 		}
+
+#if defined (HAVE_OPENSSL)
+		if (useInteropResolver == true) {
+
+			MerlinFiveInteropResolver ires(NULL);
+			cipher->setKeyInfoResolver(&ires);
+
+		}
+#endif
 		cipher->decryptElement(static_cast<DOMElement *>(n));
 
 		// Output the result
