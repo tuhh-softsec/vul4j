@@ -101,7 +101,7 @@ public class KeyElement extends KeyBaseType {
     * @param chain
     */
    public KeyElement(Document doc, String alias, Key k, char[] password,
-                     Certificate[] chain) {
+                     Certificate[] chain) throws XMLSecurityException {
 
       super(doc, alias);
 
@@ -118,7 +118,7 @@ public class KeyElement extends KeyBaseType {
     * @param chain
     */
    public KeyElement(Document doc, String alias, byte[] key,
-                     Certificate[] chain) {
+                     Certificate[] chain) throws XMLSecurityException {
 
       super(doc, alias);
 

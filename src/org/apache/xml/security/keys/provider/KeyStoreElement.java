@@ -585,10 +585,14 @@ public class KeyStoreElement extends ElementProxy {
    public void setKeyEntry(String alias, byte[] key, Certificate[] chain)
            throws KeyStoreException {
 
-      KeyElement keyElement = new KeyElement(this._doc, alias, key, chain);
+      try {
+         KeyElement keyElement = new KeyElement(this._doc, alias, key, chain);
 
-      this._constructionElement.appendChild(keyElement.getElement());
-      XMLUtils.addReturnToElement(this);
+         this._constructionElement.appendChild(keyElement.getElement());
+         XMLUtils.addReturnToElement(this);
+      } catch (XMLSecurityException ex) {
+         throw new KeyStoreException(ex.getMessage());
+      }
    }
 
    /**
@@ -604,11 +608,15 @@ public class KeyStoreElement extends ElementProxy {
            String alias, Key k, char[] password, Certificate[] chain)
               throws KeyStoreException {
 
-      KeyElement keyElement = new KeyElement(this._doc, alias, k, password,
-                                             chain);
+      try {
+         KeyElement keyElement = new KeyElement(this._doc, alias, k, password,
+                                                chain);
 
-      this._constructionElement.appendChild(keyElement.getElement());
-      XMLUtils.addReturnToElement(this);
+         this._constructionElement.appendChild(keyElement.getElement());
+         XMLUtils.addReturnToElement(this);
+      } catch (XMLSecurityException ex) {
+         throw new KeyStoreException(ex.getMessage());
+      }
    }
 
    /**
@@ -622,10 +630,12 @@ public class KeyStoreElement extends ElementProxy {
     */
    public Key getKey(String alias, char[] password)
            throws NoSuchAlgorithmException, UnrecoverableKeyException {
-      try {
-      KeyElement keyElement = new KeyElement(this.getKeyEntryElement(alias), this._baseURI);
 
-      return keyElement.unwrap(password);
+      try {
+         KeyElement keyElement = new KeyElement(this.getKeyEntryElement(alias),
+                                                this._baseURI);
+
+         return keyElement.unwrap(password);
       } catch (XMLSecurityException ex) {
          throw new UnrecoverableKeyException(ex.getMessage());
       }
