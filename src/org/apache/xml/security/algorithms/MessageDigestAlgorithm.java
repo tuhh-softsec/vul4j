@@ -87,6 +87,19 @@ public class MessageDigestAlgorithm extends Algorithm {
       org.apache.log4j.Category
          .getInstance(MessageDigestAlgorithm.class.getName());
 
+   // Message Digest - NOT RECOMMENDED MD5
+   public static final String ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5 = Constants.MoreAlgorithmsSpecNS + "md5";
+   // Digest - Required SHA1
+   public static final String ALGO_ID_DIGEST_SHA1 = Constants.SignatureSpecNS + "sha1";
+   // Message Digest - RECOMMENDED SHA256
+   public static final String ALGO_ID_DIGEST_SHA256 = EncryptionConstants.EncryptionSpecNS + "sha256";
+   // Message Digest - OPTIONAL SHA384
+   public static final String ALGO_ID_DIGEST_SHA384 = Constants.MoreAlgorithmsSpecNS + "sha384";
+   // Message Digest - OPTIONAL SHA512
+   public static final String ALGO_ID_DIGEST_SHA512 = EncryptionConstants.EncryptionSpecNS + "sha512";
+   // Message Digest - OPTIONAL RIPEMD-160
+   public static final String ALGO_ID_DIGEST_RIPEMD160 = EncryptionConstants.EncryptionSpecNS + "ripemd160";
+
    /** Field algorithm stores the actual {@link java.security.MessageDigest} */
    java.security.MessageDigest algorithm = null;
 

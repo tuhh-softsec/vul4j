@@ -86,8 +86,13 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(SignatureRSA.class.getName());
+      org.apache.log4j.Category.getInstance(SignatureBaseRSA.class.getName());
 
+   /**
+    * Method engineGetURI
+    *
+    * @return
+    */
    public abstract String engineGetURI();
 
    /** Field algorithm */
@@ -343,5 +348,54 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
    static {
       org.apache.xml.security.Init.init();
+   }
+
+   public static class SignatureRSASHA1 extends SignatureBaseRSA {
+      public SignatureRSASHA1() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1;
+      }
+   }
+   public static class SignatureRSASHA256 extends SignatureBaseRSA {
+      public SignatureRSASHA256() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256;
+      }
+   }
+   public static class SignatureRSASHA384 extends SignatureBaseRSA {
+      public SignatureRSASHA384() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384;
+      }
+   }
+   public static class SignatureRSASHA512 extends SignatureBaseRSA {
+      public SignatureRSASHA512() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512;
+      }
+   }
+   public static class SignatureRSARIPEMD160 extends SignatureBaseRSA {
+      public SignatureRSARIPEMD160() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160;
+      }
+   }
+   public static class SignatureRSAMD5 extends SignatureBaseRSA {
+      public SignatureRSAMD5() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5;
+      }
    }
 }

@@ -88,6 +88,11 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(IntegrityHmacSHA1.class.getName());
 
+   /**
+    * Method engineGetURI
+    *
+    * @return
+    */
    public abstract String engineGetURI();
 
    /** Field _macAlgorithm */
@@ -153,17 +158,23 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
          byte[] completeResult = this._macAlgorithm.doFinal();
 
          if ((this._HMACOutputLength == 0) || (this._HMACOutputLength >= 160)) {
-            cat.debug("completeResult = " + HexDump.byteArrayToHexString(completeResult));
-            cat.debug("signature      = " + HexDump.byteArrayToHexString(signature));
+            cat.debug("completeResult = "
+                      + HexDump.byteArrayToHexString(completeResult));
+            cat.debug("signature      = "
+                      + HexDump.byteArrayToHexString(signature));
 
             return MessageDigestAlgorithm.isEqual(completeResult, signature);
          } else {
-            cat.debug("completeResult = " + HexDump.byteArrayToHexString(completeResult));
+            cat.debug("completeResult = "
+                      + HexDump.byteArrayToHexString(completeResult));
+
             byte[] stripped = IntegrityHmac.reduceBitLength(completeResult,
                                  this._HMACOutputLength);
 
-            cat.debug("stripped       = " + HexDump.byteArrayToHexString(stripped));
-            cat.debug("signature      = " + HexDump.byteArrayToHexString(signature));
+            cat.debug("stripped       = "
+                      + HexDump.byteArrayToHexString(stripped));
+            cat.debug("signature      = "
+                      + HexDump.byteArrayToHexString(signature));
 
             return MessageDigestAlgorithm.isEqual(stripped, signature);
          }
@@ -204,7 +215,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
             return completeResult;
          } else {
             return IntegrityHmac.reduceBitLength(completeResult,
-                                                     this._HMACOutputLength);
+                                                 this._HMACOutputLength);
          }
       } catch (IllegalStateException ex) {
          throw new XMLSignatureException("empty", ex);
@@ -222,7 +233,9 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
 
       int bytes = length / 8;
       int abits = length % 8;
-      byte[] strippedResult = new byte[bytes + (abits == 0 ? 0 : 1)];
+      byte[] strippedResult = new byte[bytes + ((abits == 0)
+                                                ? 0
+                                                : 1)];
 
       System.arraycopy(completeResult, 0, strippedResult, 0, bytes);
 
@@ -451,5 +464,53 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
 
    static {
       org.apache.xml.security.Init.init();
+   }
+   public static class IntegrityHmacSHA1 extends IntegrityHmac {
+      public IntegrityHmacSHA1() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_MAC_HMAC_SHA1;
+      }
+   }
+   public static class IntegrityHmacSHA256 extends IntegrityHmac {
+      public IntegrityHmacSHA256() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_MAC_HMAC_SHA256;
+      }
+   }
+   public static class IntegrityHmacSHA384 extends IntegrityHmac {
+      public IntegrityHmacSHA384() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_MAC_HMAC_SHA384;
+      }
+   }
+   public static class IntegrityHmacSHA512 extends IntegrityHmac {
+      public IntegrityHmacSHA512() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_MAC_HMAC_SHA512;
+      }
+   }
+   public static class IntegrityHmacRIPEMD160 extends IntegrityHmac {
+      public IntegrityHmacRIPEMD160() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160;
+      }
+   }
+   public static class IntegrityHmacMD5 extends IntegrityHmac {
+      public IntegrityHmacMD5() throws XMLSignatureException {
+         super();
+      }
+      public String engineGetURI() {
+         return XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5;
+      }
    }
 }

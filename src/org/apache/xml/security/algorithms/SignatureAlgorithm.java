@@ -134,11 +134,17 @@ public class SignatureAlgorithm extends Algorithm {
             (SignatureAlgorithmSpi) Class.forName(implementingClass)
                .newInstance();
       } catch (ClassNotFoundException ex) {
-         throw new XMLSignatureException("empty", ex);
+         Object exArgs[] = { algorithmURI, ex.getMessage() };
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
       } catch (IllegalAccessException ex) {
-         throw new XMLSignatureException("empty", ex);
+         Object exArgs[] = { algorithmURI, ex.getMessage() };
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
       } catch (InstantiationException ex) {
-         throw new XMLSignatureException("empty", ex);
+         Object exArgs[] = { algorithmURI, ex.getMessage() };
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
+      } catch (NullPointerException ex) {
+         Object exArgs[] = { algorithmURI, ex.getMessage() };
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
       }
    }
 
@@ -189,11 +195,17 @@ public class SignatureAlgorithm extends Algorithm {
          this._signatureAlgorithm
             .engineGetContextFromElement(this._constructionElement);
       } catch (ClassNotFoundException ex) {
-         throw new XMLSignatureException("empty", ex);
+         Object exArgs[] = { algorithmURI, ex.getMessage() };
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
       } catch (IllegalAccessException ex) {
-         throw new XMLSignatureException("empty", ex);
+         Object exArgs[] = { algorithmURI, ex.getMessage() };
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
       } catch (InstantiationException ex) {
-         throw new XMLSignatureException("empty", ex);
+         Object exArgs[] = { algorithmURI, ex.getMessage() };
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
+      } catch (NullPointerException ex) {
+         Object exArgs[] = { algorithmURI, ex.getMessage() };
+         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
       }
    }
 
