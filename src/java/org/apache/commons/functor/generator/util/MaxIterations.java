@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/Attic/MaxIterations.java,v 1.1 2003/06/30 11:00:13 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/Attic/MaxIterations.java,v 1.2 2003/11/25 00:23:14 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -69,7 +69,8 @@ import org.apache.commons.functor.UnaryPredicate;
  * Would only "generate" 1 line from the file.
  *
  * @since 1.0
- * @version $Revision: 1.1 $ $Date: 2003/06/30 11:00:13 $
+ * @deprecated See Limit and Offset
+ * @version $Revision: 1.2 $ $Date: 2003/11/25 00:23:14 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
