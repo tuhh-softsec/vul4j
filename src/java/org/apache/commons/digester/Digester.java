@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.74 2003/04/16 11:23:50 jstrachan Exp $
- * $Revision: 1.74 $
- * $Date: 2003/04/16 11:23:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.75 2003/04/24 09:30:24 rdonkin Exp $
+ * $Revision: 1.75 $
+ * $Date: 2003/04/24 09:30:24 $
  *
  * ====================================================================
  *
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.74 $ $Date: 2003/04/16 11:23:50 $
+ * @version $Revision: 1.75 $ $Date: 2003/04/24 09:30:24 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1670,6 +1670,7 @@ public class Digester extends DefaultHandler {
      * Add a "bean property setter" rule for the specified parameters.
      *
      * @param pattern Element matching pattern
+     * @see BeanPropertySetterRule
      */
     public void addBeanPropertySetter(String pattern) {
 
@@ -1684,6 +1685,7 @@ public class Digester extends DefaultHandler {
      *
      * @param pattern Element matching pattern
      * @param propertyName Name of property to set
+     * @see BeanPropertySetterRule
      */
     public void addBeanPropertySetter(String pattern,
                                       String propertyName) {
@@ -1698,6 +1700,7 @@ public class Digester extends DefaultHandler {
      *
      * @param pattern Element matching pattern
      * @param methodName Method name to be called
+     * @see CallMethodRule
      */
     public void addCallMethod(String pattern, String methodName) {
 
@@ -1714,6 +1717,7 @@ public class Digester extends DefaultHandler {
      * @param methodName Method name to be called
      * @param paramCount Number of expected parameters (or zero
      *  for a single parameter from the body of this element)
+     * @see CallMethodRule
      */
     public void addCallMethod(String pattern, String methodName,
                               int paramCount) {
@@ -1740,6 +1744,7 @@ public class Digester extends DefaultHandler {
      *  (if you wish to use a primitive type, specify the corresonding
      *  Java wrapper class instead, such as <code>java.lang.Boolean</code>
      *  for a <code>boolean</code> parameter)
+     * @see CallMethodRule
      */
     public void addCallMethod(String pattern, String methodName,
                               int paramCount, String paramTypes[]) {
@@ -1768,6 +1773,7 @@ public class Digester extends DefaultHandler {
      *  (if you wish to use a primitive type, specify the corresonding
      *  Java wrapper class instead, such as <code>java.lang.Boolean</code>
      *  for a <code>boolean</code> parameter)
+     * @see CallMethodRule
      */
     public void addCallMethod(String pattern, String methodName,
                               int paramCount, Class paramTypes[]) {
@@ -1787,6 +1793,7 @@ public class Digester extends DefaultHandler {
      * @param pattern Element matching pattern
      * @param paramIndex Zero-relative parameter index to set
      *  (from the body of this element)
+     * @see CallParamRule
      */
     public void addCallParam(String pattern, int paramIndex) {
 
@@ -1804,6 +1811,7 @@ public class Digester extends DefaultHandler {
      *  (from the specified attribute)
      * @param attributeName Attribute whose value is used as the
      *  parameter value
+     * @see CallParamRule
      */
     public void addCallParam(String pattern, int paramIndex,
                              String attributeName) {
@@ -1821,6 +1829,7 @@ public class Digester extends DefaultHandler {
      *
      * @param paramIndex The zero-relative parameter number
      * @param fromStack Should the call parameter be taken from the top of the stack?
+     * @see CallParamRule
      */    
     public void addCallParam(String pattern, int paramIndex, boolean fromStack) {
     
@@ -1837,6 +1846,7 @@ public class Digester extends DefaultHandler {
      * @param fromStack Should the call parameter be taken from the top of the stack?
      * @param stackIndex set the call parameter to the stackIndex'th object down the stack,
      * where 0 is the top of the stack, 1 the next element down and so on
+     * @see CallMethodRule
      */    
     public void addCallParam(String pattern, int paramIndex, int stackIndex) {
     
@@ -1851,6 +1861,7 @@ public class Digester extends DefaultHandler {
      *
      * @param pattern Element matching pattern
      * @param className Java class name of the object creation factory class
+     * @see FactoryCreateRule
      */
     public void addFactoryCreate(String pattern, String className) {
 
@@ -1865,6 +1876,7 @@ public class Digester extends DefaultHandler {
      *
      * @param pattern Element matching pattern
      * @param clazz Java class of the object creation factory class
+     * @see FactoryCreateRule
      */
     public void addFactoryCreate(String pattern, Class clazz) {
 
@@ -1881,6 +1893,7 @@ public class Digester extends DefaultHandler {
      * @param className Java class name of the object creation factory class
      * @param attributeName Attribute name which, if present, overrides the
      *  value specified by <code>className</code>
+     * @see FactoryCreateRule
      */
     public void addFactoryCreate(String pattern, String className,
                                  String attributeName) {
@@ -1898,6 +1911,7 @@ public class Digester extends DefaultHandler {
      * @param clazz Java class of the object creation factory class
      * @param attributeName Attribute name which, if present, overrides the
      *  value specified by <code>className</code>
+     * @see FactoryCreateRule
      */
     public void addFactoryCreate(String pattern, Class clazz,
                                  String attributeName) {
@@ -1914,6 +1928,7 @@ public class Digester extends DefaultHandler {
      * @param pattern Element matching pattern
      * @param creationFactory Previously instantiated ObjectCreationFactory
      *  to be utilized
+     * @see FactoryCreateRule
      */
     public void addFactoryCreate(String pattern,
                                  ObjectCreationFactory creationFactory) {
@@ -1929,6 +1944,7 @@ public class Digester extends DefaultHandler {
      * @param className Java class name of the object creation factory class
      * @param ignoreCreateExceptions when <code>true</code> any exceptions thrown during
      * object creation will be ignored.
+     * @see FactoryCreateRule
      */
     public void addFactoryCreate(
                                     String pattern, 
@@ -1949,6 +1965,7 @@ public class Digester extends DefaultHandler {
      * @param clazz Java class of the object creation factory class
      * @param ignoreCreateExceptions when <code>true</code> any exceptions thrown during
      * object creation will be ignored.
+     * @see FactoryCreateRule
      */
     public void addFactoryCreate(
                                     String pattern, 
@@ -1971,6 +1988,7 @@ public class Digester extends DefaultHandler {
      *  value specified by <code>className</code>
      * @param ignoreCreateExceptions when <code>true</code> any exceptions thrown during
      * object creation will be ignored.
+     * @see FactoryCreateRule
      */
     public void addFactoryCreate(
                                 String pattern, 
@@ -1994,6 +2012,7 @@ public class Digester extends DefaultHandler {
      *  value specified by <code>className</code>
      * @param ignoreCreateExceptions when <code>true</code> any exceptions thrown during
      * object creation will be ignored.
+     * @see FactoryCreateRule
      */
     public void addFactoryCreate(
                                     String pattern, 
@@ -2016,6 +2035,7 @@ public class Digester extends DefaultHandler {
      *  to be utilized
      * @param ignoreCreateExceptions when <code>true</code> any exceptions thrown during
      * object creation will be ignored.
+     * @see FactoryCreateRule
      */
     public void addFactoryCreate(String pattern,
                                  ObjectCreationFactory creationFactory,
@@ -2032,6 +2052,7 @@ public class Digester extends DefaultHandler {
      *
      * @param pattern Element matching pattern
      * @param className Java class name to be created
+     * @see ObjectCreateRule
      */
     public void addObjectCreate(String pattern, String className) {
 
@@ -2046,6 +2067,7 @@ public class Digester extends DefaultHandler {
      *
      * @param pattern Element matching pattern
      * @param clazz Java class to be created
+     * @see ObjectCreateRule
      */
     public void addObjectCreate(String pattern, Class clazz) {
 
@@ -2062,6 +2084,7 @@ public class Digester extends DefaultHandler {
      * @param className Default Java class name to be created
      * @param attributeName Attribute name that optionally overrides
      *  the default Java class name to be created
+     * @see ObjectCreateRule
      */
     public void addObjectCreate(String pattern, String className,
                                 String attributeName) {
@@ -2079,6 +2102,7 @@ public class Digester extends DefaultHandler {
      * @param attributeName Attribute name that optionally overrides
      * @param clazz Default Java class to be created
      *  the default Java class name to be created
+     * @see ObjectCreateRule
      */
     public void addObjectCreate(String pattern,
                                 String attributeName,
@@ -2095,6 +2119,7 @@ public class Digester extends DefaultHandler {
      *
      * @param pattern Element matching pattern
      * @param methodName Method name to call on the parent element
+     * @see SetNextRule
      */
     public void addSetNext(String pattern, String methodName) {
 
@@ -2113,6 +2138,7 @@ public class Digester extends DefaultHandler {
      *  (if you wish to use a primitive type, specify the corresonding
      *  Java wrapper class instead, such as <code>java.lang.Boolean</code>
      *  for a <code>boolean</code> parameter)
+     * @see SetNextRule
      */
     public void addSetNext(String pattern, String methodName,
                            String paramType) {
@@ -2128,6 +2154,7 @@ public class Digester extends DefaultHandler {
      *
      * @param pattern Element matching pattern
      * @param methodName Method name to call on the root object
+     * @see SetRootRule
      */
     public void addSetRoot(String pattern, String methodName) {
 
@@ -2143,6 +2170,7 @@ public class Digester extends DefaultHandler {
      * @param pattern Element matching pattern
      * @param methodName Method name to call on the root object
      * @param paramType Java class name of the expected parameter type
+     * @see SetRootRule
      */
     public void addSetRoot(String pattern, String methodName,
                            String paramType) {
@@ -2156,6 +2184,7 @@ public class Digester extends DefaultHandler {
      * Add a "set properties" rule for the specified parameters.
      *
      * @param pattern Element matching pattern
+     * @see SetPropertiesRule
      */
     public void addSetProperties(String pattern) {
 
@@ -2171,6 +2200,7 @@ public class Digester extends DefaultHandler {
      * @param pattern Element matching pattern
      * @param attributeName map this attribute
      * @param propertyNames to this property
+     * @see SetPropertiesRule
      */
     public void addSetProperties(
                                 String pattern, 
@@ -2189,6 +2219,7 @@ public class Digester extends DefaultHandler {
      * @param pattern Element matching pattern
      * @param attributeNames names of attributes with custom mappings
      * @param propertyNames property names these attributes map to
+     * @see SetPropertiesRule
      */
     public void addSetProperties(
                                 String pattern, 
@@ -2207,6 +2238,7 @@ public class Digester extends DefaultHandler {
      * @param pattern Element matching pattern
      * @param name Attribute name containing the property name to be set
      * @param value Attribute name containing the property value to set
+     * @see SetPropertyRule
      */
     public void addSetProperty(String pattern, String name, String value) {
 
@@ -2221,6 +2253,7 @@ public class Digester extends DefaultHandler {
      *
      * @param pattern Element matching pattern
      * @param methodName Method name to call on the parent element
+     * @see SetTopRule
      */
     public void addSetTop(String pattern, String methodName) {
 
@@ -2239,6 +2272,7 @@ public class Digester extends DefaultHandler {
      *  (if you wish to use a primitive type, specify the corresonding
      *  Java wrapper class instead, such as <code>java.lang.Boolean</code>
      *  for a <code>boolean</code> parameter)
+     * @see SetTopRule
      */
     public void addSetTop(String pattern, String methodName,
                           String paramType) {

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.22 2003/04/16 11:23:50 jstrachan Exp $
- * $Revision: 1.22 $
- * $Date: 2003/04/16 11:23:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.23 2003/04/24 09:30:24 rdonkin Exp $
+ * $Revision: 1.23 $
+ * $Date: 2003/04/24 09:30:24 $
  *
  * ====================================================================
  *
@@ -77,6 +77,11 @@ import org.xml.sax.Attributes;
  * a method call can be made to a method which accepts no
  * arguments.</p>
  *
+ * <p>
+ * Incompatible method parameter types are converted 
+ * using <code>org.apache.commons.beanutils.ConvertUtils</code>.
+ * </p>
+ *
  * <p>This rule now uses {@link MethodUtils#invokeMethod} by default.
  * This increases the kinds of methods successfully and allows primitives
  * to be matched by passing in wrapper classes.
@@ -88,7 +93,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.22 $ $Date: 2003/04/16 11:23:50 $
+ * @version $Revision: 1.23 $ $Date: 2003/04/24 09:30:24 $
  */
 
 public class CallMethodRule extends Rule {
