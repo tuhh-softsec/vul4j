@@ -81,34 +81,34 @@
           Commons-Functor library.
         </p>
         <dl>
-          <dt><a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/one/package-summary.html">Kata One: Supermarket Pricing</a></dt>
+          <dt><a href="http://cvs.apache.org/viewcvs.cgi/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/kata/one/">Kata One: Supermarket Pricing</a></dt>
           <dd>
             Dave's <a href="http://pragprog.com/pragdave/Practices/Kata/KataOne.rdoc,v">Kata One</a> asks how
             one might implement supermarket pricing rules, like "three for a dollar" or "buy two get one free".
             By encapsulating tiny bits of logic, functors provide a useful solution to this problem, as 
             illustrated in the 
-            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/one/SupermarketPricingExample.html">SupermarketPricingExample</a>.
+            <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/kata/one/SupermarketPricingExample.java">SupermarketPricingExample</a>.
           </dd>
 
-          <dt><a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/two/package-summary.html">Kata Two: Binary Chop</a></dt>
+          <dt><a href="http://cvs.apache.org/viewcvs.cgi/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/kata/two/">Kata Two: Binary Chop</a></dt>
           <dd>
             <a href="http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v">Kata Two</a> asks us
             to create several different implemenations of the binary search algorithm, which once you
             get past three or four implemenations, is more difficult that it sounds.            
-            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/two/TestBinaryChop.html">TestBinaryChop</a>
+            <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java">TestBinaryChop</a>
             presents several implementations, with functor and non-functor variations.
           </dd>
 
 
-          <dt><a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/four/package-summary.html">Kata Four: Data Munging</a></dt>
+          <dt><a href="http://cvs.apache.org/viewcvs.cgi/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/kata/four/">Kata Four: Data Munging</a></dt>
           <dd>
             <a href="http://pragprog.com/pragdave/Practices/Kata/KataFour.doc,v">Kata Four</a> asks us
             to explore extreme reuse.  Our
-            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/four/DataMunger.html">DataMunger</a>
+            <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java">DataMunger</a>
             allows for very small implementations of the 
-            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/four/TestWeather.html">weather</a>
+            <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/kata/four/TestWeather.java">weather</a>
             and
-            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/kata/four/TestSoccer.html">soccer (football)</a>
+            <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/kata/four/TestSoccer.java">soccer (football)</a>
             parsers.
           </dd>
 
@@ -117,7 +117,7 @@
       
       <subsection name="Generators">        
         <p>
-          The <a href="xref-test/org/apache/commons/functor/example/lines/package-summary.html">lines</a>
+          The <a href="http://cvs.apache.org/viewcvs.cgi/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/lines/">lines</a>
           package demonstrates a functional approach to IO using Generators and the Algorithms class.
         </p>
       </subsection>      
@@ -152,22 +152,22 @@
          </p>
          <p>
             The 
-            <a href="xref-test/org/apache/commons/functor/example/FlexiMapExample.html#84">FlexiMap example</a> 
+            <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java?rev=HEAD">FlexiMap example</a> 
             applies this design to <code>java.util.Map</code>, demonstrating how 
             "pluggable" functors can be applied to a generic <code>Map</code> structure in order
             to introduce new behaviors.           
          </p>
          <p>
             The 
-            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/map/package-summary.html">map</a>
+            <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/map">map</a>
             package is a more complete example of this, implementing a number of the Commons-Collections Maps
             derived from a base 
-            <a href="http://jakarta.apache.org/commons/sandbox/functor/xref-test/org/apache/commons/functor/example/map/FunctoredMap.html">FunctoredMap</a>.
+            <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/map/FunctoredMap.java?rev=HEAD">FunctoredMap</a>.
          </p>
       </subsection>      
       <subsection name="A Quicksort Implementation">        
         <p>
-          The <a href="xref-test/org/apache/commons/functor/example/QuicksortExample.html#79">Quicksort example</a>
+          The <a href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/src/test/org/apache/commons/functor/example/QuicksortExample.java?rev=HEAD">Quicksort example</a>
           presents an implementation of the Quicksort sorting algorithm written in a functional programming
           style using Commons Functor.
         </p>
