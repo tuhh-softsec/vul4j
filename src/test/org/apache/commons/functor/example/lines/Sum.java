@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.4 2003/11/25 23:13:38 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/lines/Sum.java,v 1.1 2003/11/25 23:13:38 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,28 +54,23 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.lines;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.apache.commons.functor.BinaryFunction;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/25 23:13:38 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/25 23:13:38 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+public class Sum implements BinaryFunction {
+    public Object evaluate(Object left, Object right) {
+        return new Integer( ((Number)left).intValue() + ((Number)right).intValue() ); 
     }
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-        suite.addTest(org.apache.commons.functor.example.lines.TestLines.suite());
-        
-        return suite;
+    
+    
+    public static final Sum instance() {
+        return INSTANCE;
     }
+    
+    private static final Sum INSTANCE = new Sum();
 }

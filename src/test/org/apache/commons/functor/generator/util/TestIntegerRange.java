@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestIntegerRange.java,v 1.3 2003/11/25 00:01:15 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestIntegerRange.java,v 1.4 2003/11/25 23:13:38 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,13 +57,16 @@
 
 package org.apache.commons.functor.generator.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/11/25 00:01:15 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/25 23:13:38 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -85,6 +88,24 @@ public class TestIntegerRange extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
+
+    public void testGenerateListExample() {
+        // generates a collection of Integers from 0 (inclusive) to 10 (exclusive)
+        {
+            List list = (List)(new IntegerRange(0,10).to(new ArrayList()));
+            for(int i=0;i<10;i++) {
+                assertEquals(new Integer(i),list.get(i));
+            }
+        }
+
+        // generates a collection of Integers from 10 (inclusive) to 0 (exclusive)
+        {
+            List list = (List)(new IntegerRange(10,0).to(new ArrayList()));
+            for(int i=10;i>0;i--) {
+                assertEquals(new Integer(i),list.get(10-i));
+            }
+        }
+    }
 
     public void testStepChecking() {
         {

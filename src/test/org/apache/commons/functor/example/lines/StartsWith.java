@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.4 2003/11/25 23:13:38 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/lines/StartsWith.java,v 1.1 2003/11/25 23:13:38 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,28 +54,23 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.lines;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.apache.commons.functor.UnaryPredicate;
+
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/25 23:13:38 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/25 23:13:38 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+public class StartsWith implements UnaryPredicate {
+    public StartsWith(String prefix) {
+        this.prefix = prefix;
+    }
+    
+    public boolean test(Object obj) {
+        return null != obj && obj.toString().startsWith(prefix);
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-        suite.addTest(org.apache.commons.functor.example.lines.TestLines.suite());
-        
-        return suite;
-    }
+    private String prefix = null;
 }

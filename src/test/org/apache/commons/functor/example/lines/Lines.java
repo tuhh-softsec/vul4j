@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.4 2003/11/25 23:13:38 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/lines/Lines.java,v 1.1 2003/11/25 23:13:38 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,28 +54,70 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.lines;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
+
+import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.generator.BaseGenerator;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/25 23:13:38 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/25 23:13:38 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+public class Lines extends BaseGenerator {
+    public static Lines from(Reader reader) {
+        return new Lines(reader);
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
+    public static Lines from(File file) throws FileNotFoundException {
+        return new Lines(new FileReader(file));
+    }
 
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-        suite.addTest(org.apache.commons.functor.example.lines.TestLines.suite());
-        
-        return suite;
+    public Lines(Reader reader) {
+        if(reader instanceof BufferedReader) {
+            in = (BufferedReader)reader;
+        } else {
+            in = new BufferedReader(reader);
+        }
+    }
+    
+    public void run(UnaryProcedure proc) {
+        try {
+            for(String line = in.readLine(); line != null; line = in.readLine()) {
+                proc.run(line);
+            }
+        } catch(RuntimeException e) {
+            throw e;
+        } catch(Exception e) {
+            throw new TunneledException(e);
+        } finally {
+            stop();
+        }
+    }
+
+    public void stop() {
+        super.stop();
+        try {
+            in.close();
+        } catch(RuntimeException e) {
+            throw e;
+        } catch(Exception e) {
+            throw new TunneledException(e);
+        }
+    }
+
+    private BufferedReader in = null;
+    
+    private class TunneledException extends RuntimeException {
+        TunneledException(Exception e) {
+            super(e.toString());
+            exception = e;
+        }        
+        private Exception exception = null;
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.4 2003/11/25 23:13:38 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/lines/WordCount.java,v 1.1 2003/11/25 23:13:38 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,28 +54,25 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.lines;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.StringTokenizer;
+
+import org.apache.commons.functor.UnaryFunction;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/25 23:13:38 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/25 23:13:38 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+public class WordCount implements UnaryFunction {
+    public Object evaluate(Object obj) {
+        StringTokenizer toker = new StringTokenizer((String)obj);
+        return new Integer(toker.countTokens());
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-        suite.addTest(org.apache.commons.functor.example.lines.TestLines.suite());
-        
-        return suite;
+    public static WordCount instance() {
+        return INSTANCE;
     }
+    
+    private static final WordCount INSTANCE = new WordCount();
 }
