@@ -80,7 +80,7 @@
          </p>
          <p>
             The 
-            <a href="xref-test/org/apache/commons/functor/example/FlexiMapExample.html#88">FlexiMap example</a> 
+            <a href="xref-test/org/apache/commons/functor/example/FlexiMapExample.html#84">FlexiMap example</a> 
             applies this design to <code>java.util.Map</code>, demonstrating how 
             "pluggable" functors can be applied to a generic <code>Map</code> structure in order
             to introduce new behaviors.           
