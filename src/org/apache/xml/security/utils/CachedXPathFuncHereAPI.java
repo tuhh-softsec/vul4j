@@ -80,6 +80,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 
+
 /**
  *
  * @author $Author$
@@ -92,16 +93,32 @@ public class CachedXPathFuncHereAPI {
     */
    FuncHereContext _funcHereContext = null;
 
+   /** Field _dtmManager           */
    DTMManager _dtmManager = null;
 
+   /**
+    * Method getFuncHereContext
+    *
+    * @return
+    */
    public FuncHereContext getFuncHereContext() {
       return this._funcHereContext;
    }
 
-   public CachedXPathFuncHereAPI(DTMManager dtmManager) {
-      this._dtmManager = dtmManager;
+   /**
+    * Constructor CachedXPathFuncHereAPI
+    *
+    * @param existingXPathContext
+    */
+   public CachedXPathFuncHereAPI(XPathContext existingXPathContext) {
+      this._dtmManager = existingXPathContext.getDTMManager();
    }
 
+   /**
+    * Constructor CachedXPathFuncHereAPI
+    *
+    * @param previouslyUsed
+    */
    public CachedXPathFuncHereAPI(CachedXPathAPI previouslyUsed) {
       this._dtmManager = previouslyUsed.getXPathContext().getDTMManager();
    }
@@ -239,7 +256,6 @@ public class CachedXPathFuncHereAPI {
       return eval(contextNode, xpathnode, contextNode);
    }
 
-
    /**
     *  Evaluate XPath string to an XObject.
     *  XPath namespace prefixes are resolved from the namespaceNode.
@@ -269,7 +285,8 @@ public class CachedXPathFuncHereAPI {
       //    because XPathContext is weak in a number of areas... perhaps
       //    XPathContext should be done away with.)
       if (this._funcHereContext == null) {
-         this._funcHereContext = new FuncHereContext(xpathnode, this._dtmManager);
+         this._funcHereContext = new FuncHereContext(xpathnode,
+                                                     this._dtmManager);
       }
 
       // Create an object to resolve namespace prefixes.
@@ -302,7 +319,7 @@ public class CachedXPathFuncHereAPI {
     *   to keep the same objects around, but then thread-safety issues would arise.
     *
     *   @param contextNode The node to start searching from.
-    *   @param str A valid XPath string.
+    * @param xpathnode
     *   @param prefixResolver Will be called if the parser encounters namespace
     *                         prefixes, to resolve the prefixes to URLs.
     *   @return An XObject, which can be used to obtain a string, number, nodelist, etc, should never be null.
@@ -330,7 +347,8 @@ public class CachedXPathFuncHereAPI {
 
       // Execute the XPath, and have it return the result
       if (this._funcHereContext == null) {
-         this._funcHereContext = new FuncHereContext(xpathnode, this._dtmManager);
+         this._funcHereContext = new FuncHereContext(xpathnode,
+                                                     this._dtmManager);
       }
 
       int ctxtNode = this._funcHereContext.getDTMHandleFromNode(contextNode);
