@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.7 2003/11/25 19:44:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.8 2003/11/25 21:24:19 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -72,10 +72,12 @@ import org.apache.commons.functor.adapter.LeftBoundPredicate;
 import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsEqual;
 import org.apache.commons.functor.core.Offset;
+import org.apache.commons.functor.generator.Generator;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
+import org.apache.commons.functor.generator.util.IntegerRange;
 
 /**
- * @version $Revision: 1.7 $ $Date: 2003/11/25 19:44:08 $
+ * @version $Revision: 1.8 $ $Date: 2003/11/25 21:24:19 $
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {
@@ -219,6 +221,20 @@ public class TestAlgorithms extends TestCase {
     public void testHasPublicConstructor() {
         // some frameworks work best with instantiable classes
         assertNotNull(new Algorithms());
+    }
+
+    public void testApplyToGenerator() {
+        Generator gen = new IntegerRange(1,5);
+        UnaryFunction dbl = new UnaryFunction() {
+            public Object evaluate(Object obj) {
+                return new Integer(2*((Number)obj).intValue());
+            }
+        };
+        Summer summer = new Summer();
+                
+        Algorithms.apply(gen,dbl).run(summer);
+        
+        assertEquals(2*(1+2+3+4),summer.sum);
     }
 
     public void testApply() {

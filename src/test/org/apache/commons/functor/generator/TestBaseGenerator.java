@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestBaseGenerator.java,v 1.2 2003/11/25 21:07:34 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestBaseGenerator.java,v 1.3 2003/11/25 21:24:19 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,6 +68,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
@@ -75,6 +76,7 @@ import org.apache.commons.functor.core.IsEqual;
 import org.apache.commons.functor.core.Offset;
 import org.apache.commons.functor.generator.util.CollectionTransformer;
 import org.apache.commons.functor.generator.util.EachElement;
+import org.apache.commons.functor.generator.util.IntegerRange;
 
 /**
  * Tests the Base Generator class.
@@ -207,6 +209,20 @@ public class TestBaseGenerator extends TestCase {
 
     // Tests
     // ------------------------------------------------------------------------
+
+    public void testApply() {
+        Generator gen = new IntegerRange(1,5);
+        UnaryFunction dbl = new UnaryFunction() {
+            public Object evaluate(Object obj) {
+                return new Integer(2*((Number)obj).intValue());
+            }
+        };
+        Summer summer = new Summer();
+                
+        gen.apply(dbl).run(summer);
+        
+        assertEquals(2*(1+2+3+4),summer.sum);
+    }
 
     public void testContains() {
         assertTrue(EachElement.from(list).contains(equalsThree));
