@@ -38,6 +38,8 @@
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/enc/XSECKeyInfoResolverDefault.hpp>
 
+#include <xsec/xkms/XKMSCompoundRequest.hpp>
+#include <xsec/xkms/XKMSCompoundResult.hpp>
 #include <xsec/xkms/XKMSMessageAbstractType.hpp>
 #include <xsec/xkms/XKMSLocateRequest.hpp>
 #include <xsec/xkms/XKMSLocateResult.hpp>
@@ -370,7 +372,7 @@ void printLocateRequestUsage(void) {
 
 }
 
-XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
+XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int &paramCount, XKMSCompoundRequest * cr = NULL) {
 
 	if (paramCount >= argc || 
 		(stricmp(argv[paramCount], "--help") == 0) ||
@@ -383,10 +385,13 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 	/* First create the basic request */
 	XKMSMessageFactory * factory = 
 		prov.getXKMSMessageFactory();
-	XKMSLocateRequest * lr = 
-		factory->createLocateRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
+	XKMSLocateRequest * lr; 
+	if (cr == NULL)
+		lr = factory->createLocateRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
+	else
+		lr = cr->createLocateRequest(MAKE_UNICODE_STRING(argv[paramCount++]));
 
-	while (paramCount < argc) {
+	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
 
 		if (stricmp(argv[paramCount], "--add-cert") == 0 || stricmp(argv[paramCount], "-a") == 0) {
 			if (++paramCount >= argc) {
@@ -621,7 +626,7 @@ void printValidateRequestUsage(void) {
 
 }
 
-XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
+XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int &paramCount, XKMSCompoundRequest * cr = NULL) {
 
 	if (paramCount >= argc || 
 		(stricmp(argv[paramCount], "--help") == 0) ||
@@ -634,10 +639,14 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 	/* First create the basic request */
 	XKMSMessageFactory * factory = 
 		prov.getXKMSMessageFactory();
-	XKMSValidateRequest * vr = 
-		factory->createValidateRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
+	XKMSValidateRequest * vr;
 
-	while (paramCount < argc) {
+	if (cr == NULL)
+		vr = factory->createValidateRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
+	else
+		vr = cr->createValidateRequest(MAKE_UNICODE_STRING(argv[paramCount++]));
+
+	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
 
 		if (stricmp(argv[paramCount], "--add-cert") == 0 || stricmp(argv[paramCount], "-a") == 0) {
 			if (++paramCount >= argc) {
@@ -846,6 +855,75 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 	}
 
 	return vr;
+}
+
+// --------------------------------------------------------------------------------
+//           Create a CompoundRequest
+// --------------------------------------------------------------------------------
+
+void printCompoundRequestUsage(void) {
+
+	cerr << "\nUsage CompoundRequest [--help|-h] <service URI> <LocateRequest|ValidateRequest> .... [-- LocateRequest|ValidateRequest]*\n";
+	cerr << "   --help/-h                : print this screen and exit\n\n";
+
+}
+
+XKMSMessageAbstractType * createCompoundRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
+
+	if (paramCount >= argc || 
+		(stricmp(argv[paramCount], "--help") == 0) ||
+		(stricmp(argv[paramCount], "-h") == 0)) {
+
+		printCompoundRequestUsage();
+		return NULL;
+	}
+
+	/* First create the basic request */
+	XKMSMessageFactory * factory = 
+		prov.getXKMSMessageFactory();
+	XKMSCompoundRequest * cr = 
+		factory->createCompoundRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
+
+	while (paramCount < argc) {
+
+		if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
+			(stricmp(argv[paramCount], "lr") == 0)) {
+
+			paramCount++;
+			XKMSLocateRequest * r = 
+				dynamic_cast<XKMSLocateRequest *> (createLocateRequest(prov, NULL, argc, argv, paramCount, cr));
+
+			if (r == NULL) {
+				delete cr;
+				return NULL;
+			}
+
+		}
+		else if ((stricmp(argv[paramCount], "ValidateRequest") == 0) ||
+			(stricmp(argv[paramCount], "vr") == 0)) {
+
+			paramCount++;
+			XKMSValidateRequest * r = 
+				dynamic_cast<XKMSValidateRequest *> (createValidateRequest(prov, NULL, argc, argv, paramCount, cr));
+
+			if (r == NULL) {
+				delete cr;
+				return NULL;
+			}
+		}
+
+		else {
+			printCompoundRequestUsage();
+			delete cr;
+			(*doc)->release();
+			return NULL;
+		}
+
+		if (paramCount < argc && stricmp(argv[paramCount], "--") == 0)
+			paramCount++;
+	}
+
+	return cr;
 }
 
 // --------------------------------------------------------------------------------
@@ -1200,6 +1278,98 @@ int doResultDump(XKMSResult *msg) {
 	return 0;
 }
 
+int doMsgDump(XKMSMessageAbstractType * msg) {
+
+	if (msg->isSigned()) {
+
+		cout << "Message is signed.  Checking signature ... ";
+		try {
+
+			XSECKeyInfoResolverDefault theKeyInfoResolver;
+			DSIGSignature * sig = msg->getSignature();
+
+			// The only way we can verify is using keys read directly from the KeyInfo list,
+			// so we add a KeyInfoResolverDefault to the Signature.
+
+			sig->setKeyInfoResolver(&theKeyInfoResolver);
+
+			if (sig->verify())
+				cout << "OK!" << endl;
+			else
+				cout << "Bad!" << endl;
+
+		}
+	
+		catch (XSECException &e) {
+			cout << "Bad!.  Caught exception : " << endl;
+			char * msg = XMLString::transcode(e.getMsg());
+			cout << msg << endl;
+			XMLString::release(&msg);
+		}
+	}
+
+	int i;
+
+	switch (msg->getMessageType()) {
+
+	case XKMSMessageAbstractType::CompoundRequest :
+
+		cout << "Compound Request\n\n";
+
+		for (i = 0 ; i < (dynamic_cast<XKMSCompoundRequest *>(msg))->getRequestListSize(); ++i) {
+
+			cout << "Message " << i << endl;
+			doMsgDump((dynamic_cast<XKMSCompoundRequest *>(msg))->getRequestListItem(i));
+
+		}
+		break;
+	
+	case XKMSMessageAbstractType::CompoundResult :
+
+		cout << "Compound Result\n\n";
+
+		for (i = 0 ; i < (dynamic_cast<XKMSCompoundResult *>(msg))->getResultListSize(); ++i) {
+
+			cout << "Message " << i << endl;
+			doMsgDump((dynamic_cast<XKMSCompoundResult *>(msg))->getResultListItem(i));
+
+		}
+		break;
+	
+	case XKMSMessageAbstractType::LocateRequest :
+
+		doLocateRequestDump(dynamic_cast<XKMSLocateRequest *>(msg));
+		break;
+
+	case XKMSMessageAbstractType::LocateResult :
+
+		doLocateResultDump(dynamic_cast<XKMSLocateResult *>(msg));
+		break;
+
+	case XKMSMessageAbstractType::Result :
+
+		doResultDump(dynamic_cast<XKMSResult *>(msg));
+		break;
+
+	case XKMSMessageAbstractType::ValidateRequest :
+
+		doValidateRequestDump(dynamic_cast<XKMSValidateRequest *>(msg));
+		break;
+
+	case XKMSMessageAbstractType::ValidateResult :
+
+		doValidateResultDump(dynamic_cast<XKMSValidateResult *>(msg));
+		break;
+
+	default :
+
+		cout << "Unknown message type!" << endl;
+
+	}
+
+	return 0;
+}
+
 int doParsedMsgDump(DOMDocument * doc) {
 
 	// Get an XKMS Message Factory
@@ -1219,67 +1389,7 @@ int doParsedMsgDump(DOMDocument * doc) {
 
 		Janitor <XKMSMessageAbstractType> j_msg(msg);
 
-		if (msg->isSigned()) {
-
-			cout << "Message is signed.  Checking signature ... ";
-			try {
-
-				XSECKeyInfoResolverDefault theKeyInfoResolver;
-				DSIGSignature * sig = msg->getSignature();
-
-				// The only way we can verify is using keys read directly from the KeyInfo list,
-				// so we add a KeyInfoResolverDefault to the Signature.
-
-				sig->setKeyInfoResolver(&theKeyInfoResolver);
-
-				if (sig->verify())
-					cout << "OK!" << endl;
-				else
-					cout << "Bad!" << endl;
-
-			}
-		
-			catch (XSECException &e) {
-				cout << "Bad!.  Caught exception : " << endl;
-				char * msg = XMLString::transcode(e.getMsg());
-				cout << msg << endl;
-				XMLString::release(&msg);
-			}
-		}
-
-		switch (msg->getMessageType()) {
-
-		case XKMSMessageAbstractType::LocateRequest :
-
-			doLocateRequestDump(dynamic_cast<XKMSLocateRequest *>(msg));
-			break;
-
-		case XKMSMessageAbstractType::LocateResult :
-
-			doLocateResultDump(dynamic_cast<XKMSLocateResult *>(msg));
-			break;
-
-		case XKMSMessageAbstractType::Result :
-
-			doResultDump(dynamic_cast<XKMSResult *>(msg));
-			break;
-
-		case XKMSMessageAbstractType::ValidateRequest :
-
-			doValidateRequestDump(dynamic_cast<XKMSValidateRequest *>(msg));
-			break;
-
-		case XKMSMessageAbstractType::ValidateResult :
-
-			doValidateResultDump(dynamic_cast<XKMSValidateResult *>(msg));
-			break;
-
-		default :
-
-			cout << "Unknown message type!" << endl;
-
-		}
-
+		return doMsgDump(msg);
 
 	}
 
@@ -1346,7 +1456,8 @@ int doMsgCreate(int argc, char ** argv, int paramCount) {
 	if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
 		(stricmp(argv[paramCount], "lr") == 0)) {
 
-		msg = createLocateRequest(prov, &doc, argc, argv, paramCount + 1);
+		paramCount++;
+		msg = createLocateRequest(prov, &doc, argc, argv, paramCount);
 		if (msg == NULL) {
 			return -1;
 		}
@@ -1376,7 +1487,7 @@ int doMsgCreate(int argc, char ** argv, int paramCount) {
 
 void printDoRequestUsage(void) {
 
-	cerr << "\nUsage request [options] {LocateRequest|ValidateRequest} [msg specific options]\n";
+	cerr << "\nUsage request [options] {CompoundRequest|LocateRequest|ValidateRequest} [msg specific options]\n";
 	cerr << "   --help/-h       : Print this screen and exit\n";
 	cerr << "   --two-phase/-t  : Indicate Two-Phase support in the request message\n\n";
 
@@ -1408,8 +1519,9 @@ int doRequest(int argc, char ** argv, int paramCount) {
 		if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
 			(stricmp(argv[paramCount], "lr") == 0)) {
 
+			paramCount++;
 			XKMSLocateRequest * r = 
-				dynamic_cast<XKMSLocateRequest *> (createLocateRequest(prov, &doc, argc, argv, paramCount + 1));
+				dynamic_cast<XKMSLocateRequest *> (createLocateRequest(prov, &doc, argc, argv, paramCount));
 
 			if (r == NULL) {
 				return -1;
@@ -1425,8 +1537,25 @@ int doRequest(int argc, char ** argv, int paramCount) {
 		else if ((stricmp(argv[paramCount], "ValidateRequest") == 0) ||
 			(stricmp(argv[paramCount], "vr") == 0)) {
 
+			paramCount++;
 			XKMSValidateRequest * r = 
-				dynamic_cast<XKMSValidateRequest *> (createValidateRequest(prov, &doc, argc, argv, paramCount + 1));
+				dynamic_cast<XKMSValidateRequest *> (createValidateRequest(prov, &doc, argc, argv, paramCount));
+
+			if (r == NULL) {
+				return -1;
+			}
+			if (twoPhase)
+				r->appendResponseMechanismItem(XKMSConstants::s_tagRepresent);
+
+			msg = r;
+			parmsDone = true;
+
+		}
+		else if ((stricmp(argv[paramCount], "CompoundRequest") == 0) ||
+			(stricmp(argv[paramCount], "cr") == 0)) {
+
+			XKMSCompoundRequest * r = 
+				dynamic_cast<XKMSCompoundRequest *> (createCompoundRequest(prov, &doc, argc, argv, paramCount + 1));
 
 			if (r == NULL) {
 				return -1;

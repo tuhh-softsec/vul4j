@@ -32,9 +32,13 @@
 #include <xsec/xkms/XKMSMessageFactory.hpp>
 
 class XSECProvider;
+class XKMSCompoundRequest;
+class XKMSCompoundResult;
 class XSECEnv;
 
 class XKMSMessageFactoryImpl : public XKMSMessageFactory {
+
+protected:
 
 	XKMSMessageFactoryImpl(void);
 
@@ -64,6 +68,14 @@ public:
 		const XMLCh * service,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		const XMLCh * id = NULL);
+	virtual XKMSCompoundRequest * createCompoundRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL);
+	virtual XKMSCompoundRequest * createCompoundRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL);
 	virtual XKMSLocateResult * createLocateResult(
 		XKMSLocateRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
@@ -96,6 +108,18 @@ public:
 		const XMLCh * id = NULL);
 	virtual XKMSValidateResult * createValidateResult(
 		XKMSValidateRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSCompoundResult * createCompoundResult(
+		XKMSCompoundRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL);
+	virtual XKMSCompoundResult * createCompoundResult(
+		XKMSCompoundRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		XKMSResultType::ResultMajor rmaj,
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
@@ -116,6 +140,8 @@ public:
 
 
 	friend class XSECProvider;
+	friend class XKMSCompoundRequestImpl;
+	friend class XKMSCompoundResultImpl;
 
 private:
 

@@ -33,6 +33,8 @@
 #include <xsec/xkms/XKMSResultType.hpp>
 
 class DSIGSignature;
+class XKMSCompoundRequest;
+class XKMSCompoundResult;
 class XKMSLocateRequest;
 class XKMSLocateResult;
 class XKMSRequestAbstractType;
@@ -102,6 +104,47 @@ public:
 
 	/** @name Methods for building new messages from scratch */
 	//@{
+
+	/**
+	 * \brief Create a new \<CompoundRequest\> message.
+	 * 
+	 * Generates a new CompoundRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Document to create the DOM structure within.  The caller
+	 * will need to embed the DOM structure at the appropriate place in the
+	 * document (using a call to getElement to find the top level element)
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSCompoundRequest structure
+	 */
+
+	virtual XKMSCompoundRequest * createCompoundRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		const XMLCh * id = NULL) = 0;
+		
+	/**
+	 * \brief Create a new \<CompoundRequest\> message and surrounding document
+	 * 
+	 * Generates a new CompoundRequest message from scratch, building the DOM
+	 * as it goes.
+	 *
+	 * @param service URI
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSCompoundRequest structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleteing the CompoundRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSCompoundRequest * createCompoundRequest(
+		const XMLCh * service,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		const XMLCh * id = NULL) = 0;
 
 	/**
 	 * \brief Create a new \<LocateRequest\> message.
@@ -270,6 +313,51 @@ public:
 
 	virtual XKMSValidateResult * createValidateResult(
 		XKMSValidateRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<CompoundResult\> message.
+	 * 
+	 * Generates a new CompoundResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input CompoundRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSLocateResponse structure
+	 */
+
+	virtual XKMSCompoundResult * createCompoundResult(
+		XKMSCompoundRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
+		const XMLCh * id = NULL) = 0;
+
+	/**
+	 * \brief Create a new \<CompoundResult\> message and surrounding document
+	 * 
+	 * Generates a new CompoundResult message from scratch, building the DOM
+	 * as it goes.  The response will be based on a input ValidateRequest message
+	 * which is used to provide Id etc.
+	 *
+	 * @param request Request to base response on
+	 * @param doc Will be used to return the newly created document element in.
+	 * @param id Value to set in the Id field.  If NULL, the library will
+	 * generate a new Unique Id value.
+	 * @returns the new XKMSCompoundResponse structure
+	 * @note Like all the xsec library functions, the document is owned by
+	 * the calling application.  Deleteing the ValidateRequest object will not
+	 * delete the DOM document as well.
+	 */
+
+	virtual XKMSCompoundResult * createCompoundResult(
+		XKMSCompoundRequest * request,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
 		XKMSResultType::ResultMajor rmaj,
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,

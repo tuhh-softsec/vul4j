@@ -55,6 +55,45 @@ const XMLCh XKMSConstants::s_tagApplication[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagCompoundRequest[] = {
+
+	chLatin_C,
+	chLatin_o,
+	chLatin_m,
+	chLatin_p,
+	chLatin_o,
+	chLatin_u,
+	chLatin_n,
+	chLatin_d,
+	chLatin_R,
+	chLatin_e,
+	chLatin_q,
+	chLatin_u,
+	chLatin_e,
+	chLatin_s,
+	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagCompoundResult[] = {
+
+	chLatin_C,
+	chLatin_o,
+	chLatin_m,
+	chLatin_p,
+	chLatin_o,
+	chLatin_u,
+	chLatin_n,
+	chLatin_d,
+	chLatin_R,
+	chLatin_e,
+	chLatin_s,
+	chLatin_u,
+	chLatin_l,
+	chLatin_t,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagEncryption[] = {
 
 	chLatin_E,

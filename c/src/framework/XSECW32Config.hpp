@@ -70,6 +70,15 @@
 
 /* #define XSEC_NO_XALAN */
 
+#if !defined (XSEC_NO_XALAN)
+
+#	include <xalanc/Include/XalanVersion.hpp>
+
+#	if (_XALAN_VERSION_ <= 10800)
+#		define XSEC_XSLEXCEPTION_RETURNS_DOMSTRING	1
+#	endif
+#endif
+
 /*
  * Define presence of cryptographic providers
  */

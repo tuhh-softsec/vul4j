@@ -271,7 +271,22 @@ const XMLCh * XKMSResultTypeImpl::getRequestSignatureValue(void) const {
 
 void XKMSResultTypeImpl::setResultMajor(ResultMajor) {}
 void XKMSResultTypeImpl::setResultMinor(ResultMinor) {}
-void XKMSResultTypeImpl::setRequestId(const XMLCh * id) {}
+
+void XKMSResultTypeImpl::setRequestId(const XMLCh * id) {
+
+	if (mp_messageAbstractTypeElement == NULL) {
+
+		// Attempt update when not initialised
+		throw XSECException(XSECException::MessageAbstractTypeError,
+			"XKMSResultType::setRequestId - called on non-initialised structure");
+
+	}
+
+	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagRequestId, id);
+	mp_requestIdAttr = 
+		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagRequestId);
+
+}
 
 void XKMSResultTypeImpl::setRequestSignatureValue(const XMLCh * value) {
 

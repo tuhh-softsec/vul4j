@@ -96,6 +96,8 @@ public:
 	enum messageType {
 
 		None,					/** A default value that indicates something hasn't been set */
+		CompoundRequest,		/** A CompoundRequest message - holding multiple requests */
+		CompoundResult,			/** A CompoundResult message - holding multiple results */
 		LocateRequest,			/** A LocateRequest message */
 		LocateResult,			/** A LocateResult message */
 		ValidateRequest,		/** A ValidateRequest message */

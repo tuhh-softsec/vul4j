@@ -1080,6 +1080,22 @@ SOURCE=..\..\..\..\src\xenc\XENCEncryptionMethod.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSCompoundRequestImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSCompoundRequestImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSCompoundResultImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSCompoundResultImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSKeyBindingAbstractTypeImpl.cpp
 # End Source File
 # Begin Source File
@@ -1152,6 +1168,14 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSResultImpl.cpp
 # End Source File
 # Begin Source File
@@ -1207,6 +1231,14 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.cpp
 SOURCE=..\..\..\..\src\xkms\impl\XKMSValidateResultImpl.hpp
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSCompoundRequest.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSCompoundResult.hpp
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSConstants.cpp
@@ -1284,13 +1316,5 @@ SOURCE=..\..\..\..\src\xkms\XKMSValidateRequest.hpp
 SOURCE=..\..\..\..\src\xkms\XKMSValidateResult.hpp
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\xkms\impl\XKMSResponseMechanismImpl.hpp
-# End Source File
 # End Target
 # End Project

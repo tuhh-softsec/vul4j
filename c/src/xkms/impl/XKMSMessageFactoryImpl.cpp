@@ -32,6 +32,8 @@
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/Janitor.hpp>
 
+#include "XKMSCompoundRequestImpl.hpp"
+#include "XKMSCompoundResultImpl.hpp"
 #include "XKMSMessageFactoryImpl.hpp"
 #include "XKMSLocateRequestImpl.hpp"
 #include "XKMSLocateResultImpl.hpp"
@@ -66,6 +68,10 @@ XKMSMessageFactoryImpl::~XKMSMessageFactoryImpl(void) {
 
 void XKMSMessageFactoryImpl::copyRequestToResult(XKMSRequestAbstractType * req, 
 												 XKMSResultType * res) {
+
+
+	/* Set the requestId */
+	res->setRequestId(req->getId());
 
 	/* Copy any Opaque Data */
 
@@ -139,6 +145,30 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 
 	// See if this is a known element
 	const XMLCh * name = getXKMSLocalName(elt);
+
+	if (strEquals(name, XKMSConstants::s_tagCompoundRequest)) {
+
+		// This is a <CompoundRequest> message
+		XKMSCompoundRequestImpl * ret;
+		XSECnew(ret, XKMSCompoundRequestImpl(new XSECEnv(*mp_env), elt));
+
+		ret->load();
+
+		return ret;
+
+	}
+
+	if (strEquals(name, XKMSConstants::s_tagCompoundResult)) {
+
+		// This is a <CompoundResult> message
+		XKMSCompoundResultImpl * ret;
+		XSECnew(ret, XKMSCompoundResultImpl(new XSECEnv(*mp_env), elt));
+
+		ret->load();
+
+		return ret;
+
+	}
 
 	if (strEquals(name, XKMSConstants::s_tagLocateRequest)) {
 
@@ -215,6 +245,44 @@ XKMSMessageAbstractType * XKMSMessageFactoryImpl::newMessageFromDOM(
 //           Construction from scratch
 // --------------------------------------------------------------------------------
 
+XKMSCompoundRequest * XKMSMessageFactoryImpl::createCompoundRequest(
+		const XMLCh * service,
+		DOMDocument * doc,
+		const XMLCh * id) {
+
+	XKMSCompoundRequestImpl * cri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(cri, XKMSCompoundRequestImpl(tenv));
+	cri->createBlankCompoundRequest(service, id);
+
+	return cri;
+
+}
+
+XKMSCompoundRequest * XKMSMessageFactoryImpl::createCompoundRequest(
+		const XMLCh * service,
+		DOMDocument **doc,
+		const XMLCh * id) {
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSCompoundRequest * cri = createCompoundRequest(service, *doc, id);
+	(*doc)->appendChild(cri->getElement());
+
+	return cri;
+}
+	
 XKMSLocateRequest * XKMSMessageFactoryImpl::createLocateRequest(
 		const XMLCh * service,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
@@ -431,6 +499,50 @@ XKMSValidateResult * XKMSMessageFactoryImpl::createValidateResult(
 	return vr;
 }
 
+XKMSCompoundResult * XKMSMessageFactoryImpl::createCompoundResult(
+		XKMSCompoundRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	XKMSCompoundResultImpl * cri;
+
+	XSECEnv * tenv;
+	XSECnew(tenv, XSECEnv(*mp_env));
+	tenv->setParentDocument(doc);
+
+	XSECnew(cri, XKMSCompoundResultImpl(tenv));
+	cri->createBlankCompoundResult(request->getService(), id, rmaj, rmin);
+
+	copyRequestToResult(request, (XKMSResultTypeImpl*) cri);
+
+	return cri;
+
+}
+
+XKMSCompoundResult * XKMSMessageFactoryImpl::createCompoundResult(
+		XKMSCompoundRequest * request,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument **doc,
+		XKMSResultType::ResultMajor rmaj,
+		XKMSResultType::ResultMinor rmin,
+		const XMLCh * id) {
+
+	// Create a document to put the element in
+
+	XMLCh tempStr[100];
+	XMLString::transcode("Core", tempStr, 99);    
+	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+
+	*doc = impl->createDocument();
+
+	// Embed the new structure in the document
+	XKMSCompoundResult * cr = createCompoundResult(request, *doc, rmaj, rmin, id);
+	(*doc)->appendChild(cr->getElement());
+
+	return cr;
+}
+
 // --------------------------------------------------------------------------------
 //           Message Conversions
 // --------------------------------------------------------------------------------
@@ -448,6 +560,11 @@ XKMSRequestAbstractType * XKMSMessageFactoryImpl::toRequestAbstractType(XKMSMess
 		return vr;
 
 	}
+	if (msg->getMessageType() == XKMSMessageAbstractType::CompoundRequest) {
+		XKMSCompoundRequest * cr = dynamic_cast<XKMSCompoundRequest*>(msg);
+		return cr;
+
+	}
 	return NULL;
 }
 
@@ -461,6 +578,11 @@ XKMSResultType * XKMSMessageFactoryImpl::toResultType(XKMSMessageAbstractType *m
 	if (msg->getMessageType() == XKMSMessageAbstractType::ValidateResult) {
 		XKMSValidateResult * vr = dynamic_cast<XKMSValidateResult*>(msg);
 		return vr;
+
+	}
+	if (msg->getMessageType() == XKMSMessageAbstractType::CompoundResult) {
+		XKMSCompoundResult * cr = dynamic_cast<XKMSCompoundResult*>(msg);
+		return cr;
 
 	}
 	return NULL;

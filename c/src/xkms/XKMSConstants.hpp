@@ -52,6 +52,8 @@ public:
 
 	// Tags - note all are UTF-16, but not marked as such
 	static const XMLCh s_tagApplication[];
+	static const XMLCh s_tagCompoundRequest[];
+	static const XMLCh s_tagCompoundResult[];
 	static const XMLCh s_tagEncryption[];
 	static const XMLCh s_tagExchange[];
 	static const XMLCh s_tagId[];
