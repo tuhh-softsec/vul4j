@@ -84,6 +84,12 @@ public class EncryptionConstants {
    public static final String _TAG_REFERENCELIST          = "ReferenceList";
    public static final String _TAG_TRANSFORMS             = "Transforms";
 
+   /** Field ENCRYPTIONSPECIFICATION_URL */
+   public static final String ENCRYPTIONSPECIFICATION_URL = "http://www.w3.org/TR/2001/WD-xmlenc-core-20010626/";
+
+   /** The namespace of the <A HREF="http://www.w3.org/TR/2001/WD-xmlenc-core-20010626/">XML Encryption Syntax and Processing</A> */
+   public static final String EncryptionSpecNS = "http://www.w3.org/2001/04/xmlenc#";
+
    // Block Encryption - REQUIRED TRIPLEDES
    public static final String ALGO_ID_BLOCKCIPHER_TRIPLEDES = EncryptionConstants.EncryptionSpecNS + "tripledes-cbc";
    // Block Encryption - REQUIRED AES-128
@@ -129,12 +135,6 @@ public class EncryptionConstants {
 
    // Encoding - REQUIRED base64
    public static final String ALGO_ID_ENCODING_BASE64 = "http://www.w3.org/2000/09/xmldsig#base64";
-
-   /** Field ENCRYPTIONSPECIFICATION_URL */
-   public static final String ENCRYPTIONSPECIFICATION_URL = "http://www.w3.org/TR/2001/WD-xmlenc-core-20010626/";
-
-   /** The namespace of the <A HREF="http://www.w3.org/TR/2001/WD-xmlenc-core-20010626/">XML Encryption Syntax and Processing</A> */
-   public static final String EncryptionSpecNS = "http://www.w3.org/2001/04/xmlenc#";
    //J+
 
    /**
