@@ -185,6 +185,5 @@ public class DAGTest extends TestCase
 
             fail( e.getMessage() );
         }
-
     }
 }
