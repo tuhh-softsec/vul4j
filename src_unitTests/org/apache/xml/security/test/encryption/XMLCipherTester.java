@@ -59,8 +59,11 @@
 package org.apache.xml.security.test.encryption;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.security.Key;
 
 import javax.crypto.SecretKey;
@@ -85,6 +88,7 @@ import org.w3c.dom.Element;
 /**
  *
  * @author  Axl Mattheus
+ * @author  Berin Lautenbach
  */
 public class XMLCipherTester extends TestCase {
     private String documentName;
@@ -147,10 +151,13 @@ public class XMLCipherTester extends TestCase {
         Element e = (Element) d.getElementsByTagName(element()).item(index());
         Element ee = null;
 
-        String source = toString(d);
+        String source = null;
         String target = null;
 
         try {
+
+			source = toString(d);;
+
             // prepare for encryption
             byte[] passPhrase = "24 Bytes per DESede key!".getBytes();
             DESedeKeySpec keySpec = new DESedeKeySpec(passPhrase);
@@ -190,10 +197,13 @@ public class XMLCipherTester extends TestCase {
         Element e = (Element) d.getElementsByTagName(element()).item(index());
         Element ee = null;
 
-        String source = toString(d);
+        String source = null;
         String target = null;
 
         try {
+
+			source = toString(d);;
+
             // encrypt
             cipher = XMLCipher.getInstance(XMLCipher.AES_128);
             cipher.init(XMLCipher.ENCRYPT_MODE, key);
@@ -229,10 +239,13 @@ public class XMLCipherTester extends TestCase {
         Element e = (Element) d.getElementsByTagName(element()).item(index());
         Element ee = null;
 
-        String source = toString(d);
+        String source = null;
         String target = null;
 
         try {
+
+			source = toString(d);;
+
             // encrypt
             cipher = XMLCipher.getInstance(XMLCipher.AES_192);
             cipher.init(XMLCipher.ENCRYPT_MODE, key);
@@ -270,10 +283,13 @@ public class XMLCipherTester extends TestCase {
         Element e = (Element) d.getElementsByTagName(element()).item(index());
         Element ee = null;
 
-        String source = toString(d);
+        String source = null;
         String target = null;
 
         try {
+
+			source = toString(d);;
+
             // encrypt
             cipher = XMLCipher.getInstance(XMLCipher.AES_256);
             cipher.init(XMLCipher.ENCRYPT_MODE, key);
@@ -286,6 +302,50 @@ public class XMLCipherTester extends TestCase {
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        Assert.assertEquals(source, target);
+    }
+
+	/*
+	 * Test case for when the entire document is encrypted and decrypted
+	 * In this case the EncryptedData becomes the root element of the document
+	 */
+
+    public void testTrippleDesDocumentCipher() {
+        Document d = document(); // source
+        Document ed = null;      // target
+        Document dd = null;      // target
+        Element e = (Element) d.getDocumentElement();
+        Element ee = null;
+
+        String source = null;
+        String target = null;
+
+        try {
+			source = toString(d);;
+
+            // prepare for encryption
+            byte[] passPhrase = "24 Bytes per DESede key!".getBytes();
+            DESedeKeySpec keySpec = new DESedeKeySpec(passPhrase);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DESede");
+            SecretKey key = keyFactory.generateSecret(keySpec);
+
+            // encrypt
+            cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+            cipher.init(XMLCipher.ENCRYPT_MODE, key);
+            ed = cipher.doFinal(d, e);
+
+            //decrypt
+            cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+            cipher.init(XMLCipher.DECRYPT_MODE, key);
+            ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
+            dd = cipher.doFinal(ed, ee);
+
+            target = toString(dd);
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -321,9 +381,11 @@ public class XMLCipherTester extends TestCase {
         }
     }
 
-    private String toString(Element element) {
+    private String toString(Element element) 
+		           throws UnsupportedEncodingException {
         OutputFormat of = new OutputFormat();
         of.setIndenting(true);
+        of.setEncoding("UTF-8");
         of.setMethod(Method.XML);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DOMSerializer serializer = new XMLSerializer(baos, of);
@@ -332,12 +394,14 @@ public class XMLCipherTester extends TestCase {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return (baos.toString());
+        return (baos.toString("UTF-8"));
     }
 
-    private String toString(Document document) {
+    private String toString(Document document) 
+	               throws  UnsupportedEncodingException {
         OutputFormat of = new OutputFormat();
         of.setIndenting(true);
+		of.setEncoding("UTF-8");
         of.setMethod(Method.XML);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DOMSerializer serializer = new XMLSerializer(baos, of);
@@ -346,7 +410,21 @@ public class XMLCipherTester extends TestCase {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return (baos.toString());
+        return (baos.toString("UTF-8"));
+    }
+    private void toString(Document document, String outputFile) 
+	               throws  UnsupportedEncodingException , FileNotFoundException {
+        OutputFormat of = new OutputFormat();
+        of.setIndenting(true);
+		of.setEncoding("UTF-8");
+        of.setMethod(Method.XML);
+        FileOutputStream baos = new FileOutputStream(outputFile);
+        DOMSerializer serializer = new XMLSerializer(baos, of);
+        try {
+            serializer.serialize(document);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
    static {
       org.apache.xml.security.Init.init();
