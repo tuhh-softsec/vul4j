@@ -19,6 +19,7 @@ package org.apache.xml.security.transforms.implementations;
 
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -109,14 +110,14 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
          							excl));
          		
          	}
-            if (inclusiveNamespaces == null) {
-               return new XMLSignatureInput(c14n
-                  .engineCanonicalizeXPathNodeSet(input.getNodeSet()));
+            String inclusiveNamespacesS=null;
+            if (inclusiveNamespaces != null) {
+                inclusiveNamespacesS=inclusiveNamespaces.getInclusiveNamespaces();
             } 
+            
                return new XMLSignatureInput(c14n
-                  .engineCanonicalizeXPathNodeSet(input
-                     .getNodeSet(), inclusiveNamespaces
-                     .getInclusiveNamespaces()));
+                  .engineCanonicalizeXPathNodeSet(input.getNodeSet()
+                     , inclusiveNamespacesS));
             
          
       } catch (IOException ex) {

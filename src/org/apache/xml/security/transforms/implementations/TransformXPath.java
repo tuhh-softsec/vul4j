@@ -107,14 +107,11 @@ public class TransformXPath extends TransformSpi {
           * The evaluation of this expression includes all of the document's nodes
           * (including comments) in the node-set representing the octet stream.
           */
-         Set inputSet = input.getNodeSet();
+
+         
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());
-         if (inputSet.size() == 0) {
-            Object exArgs[] = { "input node set contains no nodes" };
-
-            throw new TransformationException("empty", exArgs);
-         }
+         
 
          Element xpathElement =XMLUtils.selectDsNode(
             this._transformObject.getElement().getFirstChild(),
@@ -125,7 +122,16 @@ public class TransformXPath extends TransformSpi {
 
             throw new TransformationException("xml.WrongContent", exArgs);
          }
+         Node xpathnode = xpathElement.getChildNodes().item(0);
+         String str=CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
+         boolean circumvent=needsCircunvent(str);
+         Set inputSet = input.getNodeSet(circumvent);
+         if (inputSet.size() == 0) {
+            Object exArgs[] = { "input node set contains no nodes" };
 
+            throw new TransformationException("empty", exArgs);
+         }
+         
          /**
           * The transform output is also an XPath node-set. The XPath expression
           * appearing in the XPath parameter is evaluated once for each node in
@@ -141,15 +147,15 @@ public class TransformXPath extends TransformSpi {
           */
          PrefixResolverDefault prefixResolver =
             new PrefixResolverDefault(xpathElement);
-         Node xpathnode = xpathElement.getChildNodes().item(0);
-
+         
+         
          if (xpathnode == null) {
             throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR,
                                    "Text must be in ds:Xpath");
          }
 
          Iterator iterator = inputSet.iterator();
-         String str=CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
+         
          while (iterator.hasNext()) {
             Node currentNode = (Node) iterator.next();
 
@@ -194,4 +200,12 @@ public class TransformXPath extends TransformSpi {
          throw new TransformationException("empty", ex);
       }
    }
+   /**
+    *  @param str
+    * @return
+    */
+    private boolean needsCircunvent(String str) {
+    	return true; //str.indexOf("namespace")>0;
+    	
+    }
 }
