@@ -56,7 +56,7 @@ XSECURIResolverXerces::XSECURIResolverXerces(const XMLCh * baseURI) {
 XSECURIResolverXerces::~XSECURIResolverXerces() {
 
 	if (mp_baseURI != NULL)
-		XMLString::release(&mp_baseURI);
+		XSEC_RELEASE_XMLCH(mp_baseURI);
 }
 
 // --------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ XSECURIResolver * XSECURIResolverXerces::clone(void) {
 void XSECURIResolverXerces::setBaseURI(const XMLCh * uri) {
 
 	if (mp_baseURI != 0)
-		XMLString::release(&mp_baseURI);
+		XSEC_RELEASE_XMLCH(mp_baseURI);
 
 	mp_baseURI = XMLString::replicate(uri);
 

@@ -1155,10 +1155,7 @@ int main(int argc, char **argv) {
 	// The last "\\" must prefix the filename
 	baseURI[lastSlash + 1] = '\0';
 
-	XMLUri * uri = new XMLUri (MAKE_UNICODE_STRING(baseURI));
-
-	theResolver.setBaseURI(uri->getUriText());
-	delete uri;
+	theResolver.setBaseURI(MAKE_UNICODE_STRING(baseURI));
 	sig->setURIResolver(&theResolver);
 
 	try {
@@ -1251,7 +1248,7 @@ int main(int argc, char **argv) {
 		char * m = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during signing operation\n   Message: "
 		<< m << endl;
-		XMLString::release(&m);
+		XSEC_RELEASE_XMLCH(m);
 		errorsOccured = true;
 		exit (1);
 	}
@@ -1301,7 +1298,8 @@ int main(int argc, char **argv) {
 	cout << doc;
 
 	delete [] gEncodingName;
-	XMLString::release((XMLCh **) &encNameStr);   // Cast to allow delete[] const
+	XMLCh * toRelease = (XMLCh *) encNameStr;
+	XSEC_RELEASE_XMLCH(toRelease);
 	delete gFormatter;
 	delete formatTarget;
 

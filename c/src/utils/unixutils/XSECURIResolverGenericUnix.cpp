@@ -28,6 +28,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.10  2004/10/10 07:00:34  blautenb
+ * Compile with Xerces 2.1
+ *
  * Revision 1.9  2004/02/21 08:26:54  blautenb
  * Use XMLString::release rather than delete[] for all Xerces strings
  *
@@ -118,7 +121,7 @@ mp_baseURI(NULL) {
 XSECURIResolverGenericUnix::~XSECURIResolverGenericUnix() {
 
 	if (mp_baseURI != NULL)
-		XMLString::release(&mp_baseURI);
+		XSEC_RELEASE_XMLCH(mp_baseURI);
 
 }
 
@@ -264,7 +267,7 @@ XSECURIResolver * XSECURIResolverGenericUnix::clone(void) {
 void XSECURIResolverGenericUnix::setBaseURI(const XMLCh * uri) {
 
 	if (mp_baseURI != NULL)
-		XMLString::release(&mp_baseURI);
+		XSEC_RELEASE_XMLCH(mp_baseURI);
 
 	mp_baseURI = XMLString::replicate(uri);
 

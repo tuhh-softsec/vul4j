@@ -85,10 +85,10 @@ DSIGKeyInfoX509::~DSIGKeyInfoX509() {
 	// encoded DName held in the DOM
 
 	if (mp_X509IssuerName != NULL)
-		XMLString::release(&mp_X509IssuerName);
+		XSEC_RELEASE_XMLCH(mp_X509IssuerName);
 
 	if (mp_X509SubjectName != NULL)
-		XMLString::release(&mp_X509SubjectName);
+		XSEC_RELEASE_XMLCH(mp_X509SubjectName);
 
 	X509ListType::iterator i;
 
@@ -103,7 +103,7 @@ DSIGKeyInfoX509::~DSIGKeyInfoX509() {
 	m_X509List.clear();
 
 	if (mp_rawRetrievalURI != NULL)
-		XMLString::release(&mp_rawRetrievalURI);
+		XSEC_RELEASE_XMLCH(mp_rawRetrievalURI);
 
 	
 };
@@ -431,7 +431,7 @@ void DSIGKeyInfoX509::setX509SKI(const XMLCh * ski) {
 void DSIGKeyInfoX509::setX509SubjectName(const XMLCh * name) {
 
 	if (mp_X509SubjectName != NULL)
-		XMLString::release(&mp_X509SubjectName);
+		XSEC_RELEASE_XMLCH(mp_X509SubjectName);
 
 	mp_X509SubjectName = XMLString::replicate(name);
 	
@@ -468,7 +468,7 @@ void DSIGKeyInfoX509::setX509SubjectName(const XMLCh * name) {
 void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * serial) {
 
 	if (mp_X509IssuerName != NULL)
-		XMLString::release(&mp_X509IssuerName);
+		XSEC_RELEASE_XMLCH(mp_X509IssuerName);
 
 	mp_X509IssuerName = XMLString::replicate(name);
 	
@@ -528,7 +528,7 @@ void DSIGKeyInfoX509::setX509IssuerSerial(const XMLCh * name, const XMLCh * seri
 void DSIGKeyInfoX509::setRawRetrievalURI(const XMLCh * uri) {
 
 	if (mp_rawRetrievalURI != NULL)
-		XMLString::release(&mp_rawRetrievalURI);
+		XSEC_RELEASE_XMLCH(mp_rawRetrievalURI);
 
 	mp_rawRetrievalURI = XMLString::replicate(uri);
 

@@ -907,7 +907,7 @@ count(ancestor-or-self::dsig:Signature)");
 			cerr << "Failed" << endl;
 			char * e = XMLString::transcode(sig->getErrMsgs());
 			cout << e << endl;
-			XMLString::release(&e);
+			XSEC_RELEASE_XMLCH(e);
 			exit(1);
 		}
 
@@ -1000,7 +1000,7 @@ count(ancestor-or-self::dsig:Signature)");
 			cerr << "Failed\n" << endl;
 			char * e = XMLString::transcode(sig->getErrMsgs());
 			cerr << e << endl;
-			XMLString::release(&e);
+			XSEC_RELEASE_XMLCH(e);
 			exit(1);
 		}
 
@@ -1131,7 +1131,9 @@ void unitTestCipherReference(DOMImplementation * impl) {
 		DOMElement * cipherVal = doc->createElement(MAKE_UNICODE_STRING("MyCipherValue"));
 		rootElem->appendChild(cipherVal);
 		cipherVal->setAttribute(MAKE_UNICODE_STRING("Id"), MAKE_UNICODE_STRING("CipherText"));
+#if defined(XSEC_XERCES_HAS_SETIDATTRIBUTE)
 		cipherVal->setIdAttribute(MAKE_UNICODE_STRING("Id"));
+#endif
 
 		cipherVal->appendChild(doc->createTextNode(MAKE_UNICODE_STRING((char *) s_tstBase64EncodedString)));
 
@@ -2017,7 +2019,7 @@ int main(int argc, char **argv) {
 		// Output some info
 		char * provName = XMLString::transcode(XSECPlatformUtils::g_cryptoProvider->getProviderName());
 		cerr << "Crypto Provider string : " << provName << endl;
-		XMLString::release(&provName);
+		XSEC_RELEASE_XMLCH(provName);
 
 		// Test signature functions
 		if (doSignatureTest) {

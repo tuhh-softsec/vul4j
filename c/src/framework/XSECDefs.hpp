@@ -78,6 +78,11 @@
 #	define XSEC_DECLARE_XERCES_STRUCT(NAME) struct NAME;
 #endif
 
+#if defined (XSEC_XERCES_XMLSTRING_HAS_RELEASE)
+#    define XSEC_RELEASE_XMLCH(x) XMLString::release(&x)
+#else
+#    define XSEC_RELEASE_XMLCH(x) delete[] x;
+#endif
 
 // --------------------------------------------------------------------------------
 //           Project Library Handling

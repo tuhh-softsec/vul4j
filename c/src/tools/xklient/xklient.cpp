@@ -63,6 +63,9 @@
 #include <iostream>
 #include <stdlib.h>
 
+#include <sys/time.h>
+#include <time.h>
+
 #if defined (_DEBUG) && defined (_MSC_VER)
 #include <crtdbg.h>
 #endif
@@ -138,7 +141,7 @@ ostream& operator<< (ostream& target, const XMLCh * s)
 {
     char *p = XMLString::transcode(s);
     target << p;
-    XMLString::release(&p);
+    XSEC_RELEASE_XMLCH(p);
     return target;
 }
 
@@ -152,7 +155,7 @@ public:
 		mp_cStr = XMLString::transcode(in);
 	}
 	~X2C() {
-		XMLString::release(&mp_cStr);
+		XSEC_RELEASE_XMLCH(mp_cStr);
 	}
 
 	char * str(void) {
@@ -319,8 +322,8 @@ void xkmsErrorHandler::outputError(const SAXParseException &exc) {
 	else {
 		cerr << msg << endl;
 	}
-	XMLString::release(&msg);
-	XMLString::release(&systemId);
+	XSEC_RELEASE_XMLCH(msg);
+	XSEC_RELEASE_XMLCH(systemId);
 
 }
 
@@ -560,10 +563,10 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 
 				sig->appendDSAKeyValue(P,Q,G,Y);
 
-				XMLString::release(&P);
-				XMLString::release(&Q);
-				XMLString::release(&G);
-				XMLString::release(&Y);
+				XSEC_RELEASE_XMLCH(P);
+				XSEC_RELEASE_XMLCH(Q);
+				XSEC_RELEASE_XMLCH(G);
+				XSEC_RELEASE_XMLCH(Y);
 			}
 			else {
 				if (pkey->type != EVP_PKEY_RSA) {
@@ -576,8 +579,8 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 				XMLCh * mod = BN2b64(pkey->pkey.rsa->n);
 				XMLCh * exp = BN2b64(pkey->pkey.rsa->e);
 				sig->appendRSAKeyValue(mod, exp);
-				XMLString::release(&mod);
-				XMLString::release(&exp);
+				XSEC_RELEASE_XMLCH(mod);
+				XSEC_RELEASE_XMLCH(exp);
 
 			}
 
@@ -816,10 +819,10 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 
 				sig->appendDSAKeyValue(P,Q,G,Y);
 
-				XMLString::release(&P);
-				XMLString::release(&Q);
-				XMLString::release(&G);
-				XMLString::release(&Y);
+				XSEC_RELEASE_XMLCH(P);
+				XSEC_RELEASE_XMLCH(Q);
+				XSEC_RELEASE_XMLCH(G);
+				XSEC_RELEASE_XMLCH(Y);
 			}
 			else {
 				if (pkey->type != EVP_PKEY_RSA) {
@@ -832,8 +835,8 @@ XKMSMessageAbstractType * createValidateRequest(XSECProvider &prov, DOMDocument 
 				XMLCh * mod = BN2b64(pkey->pkey.rsa->n);
 				XMLCh * exp = BN2b64(pkey->pkey.rsa->e);
 				sig->appendRSAKeyValue(mod, exp);
-				XMLString::release(&mod);
-				XMLString::release(&exp);
+				XSEC_RELEASE_XMLCH(mod);
+				XSEC_RELEASE_XMLCH(exp);
 
 			}
 
@@ -1008,18 +1011,18 @@ void doMessageAbstractTypeDump(XKMSMessageAbstractType *msg, int level) {
 	char * s = XMLString::transcode(msg->getId());
 	levelSet(level);
 	cout << "Id = " << s << endl;
-	XMLString::release(&s);
+	XSEC_RELEASE_XMLCH(s);
 
 	s = XMLString::transcode(msg->getService());
 	levelSet(level);
 	cout << "Service URI = " << s << endl;
-	XMLString::release(&s);
+	XSEC_RELEASE_XMLCH(s);
 
 	s = XMLString::transcode(msg->getNonce());
 	levelSet(level);
 	if (s != NULL) {
 		cout << "Nonce = " << s << endl;
-		XMLString::release(&s);
+		XSEC_RELEASE_XMLCH(s);
 	}
 	else
 		cout << "Nonce = <NONE SET>" << endl;
@@ -1036,7 +1039,7 @@ void doRequestAbstractTypeDump(XKMSRequestAbstractType *msg, int level) {
 		levelSet(level +1);
 		char * s = XMLString::transcode(msg->getRespondWithItemStr(j));
 		cout << "Item " << j+1 << " : " << s << endl;
-		XMLString::release(&s);
+		XSEC_RELEASE_XMLCH(s);
 	}
 	
 }
@@ -1051,14 +1054,14 @@ void doResultTypeDump(XKMSResultType *msg, int level) {
 		cout << "Result is in response to MsgID : ";
 		s = XMLString::transcode(rid);
 		cout << s << endl;
-		XMLString::release(&s);
+		XSEC_RELEASE_XMLCH(s);
 	}
 
 	levelSet(level);
 	cout << "Result Major code = ";
 	s = XMLString::transcode(XKMSConstants::s_tagResultMajorCodes[msg->getResultMajor()]);
 	cout << s << endl;
-	XMLString::release(&s);
+	XSEC_RELEASE_XMLCH(s);
 
 	XKMSResultType::ResultMinor rm = msg->getResultMinor();
 	if (rm != XKMSResultType::NoneMinor) {
@@ -1066,7 +1069,7 @@ void doResultTypeDump(XKMSResultType *msg, int level) {
 		cout << "Result Minor code = ";
 		char * s = XMLString::transcode(XKMSConstants::s_tagResultMinorCodes[rm]);
 		cout << s << endl;
-		XMLString::release(&s);
+		XSEC_RELEASE_XMLCH(s);
 	}
 
 	rid = msg->getRequestSignatureValue();
@@ -1075,7 +1078,7 @@ void doResultTypeDump(XKMSResultType *msg, int level) {
 		cout << "RequestSignatureValue = ";
 		s = XMLString::transcode(rid);
 		cout << s << endl;
-		XMLString::release(&s);
+		XSEC_RELEASE_XMLCH(s);
 	}
 }
 
@@ -1194,8 +1197,8 @@ void doKeyBindingAbstractDump(XKMSKeyBindingAbstractType * msg, int level) {
 		cout << "Application : \"" << a << "\"\n";
 		levelSet(level+2);
 		cout << "Identifier  : \"" << i << "\"" << endl;
-		XMLString::release(&a);
-		XMLString::release(&i);
+		XSEC_RELEASE_XMLCH(a);
+		XSEC_RELEASE_XMLCH(i);
 
 	}
 
@@ -1222,10 +1225,10 @@ void doStatusReasonDump(XKMSStatus::StatusValue v, XKMSStatus *s, int level) {
 			levelSet(level);
 			char * rc = XMLString::transcode(XKMSConstants::s_tagStatusReasonCodes[i]);
 			cout << sr << "Reason = " << rc << endl;
-			XMLString::release(&rc);
+			XSEC_RELEASE_XMLCH(rc);
 		}
 	}
-	XMLString::release(&sr);
+	XSEC_RELEASE_XMLCH(sr);
 
 }
 
@@ -1240,7 +1243,7 @@ void doKeyBindingDump(XKMSKeyBinding * kb, int level) {
 	char * sr = XMLString::transcode(XKMSConstants::s_tagStatusValueCodes[s->getStatusValue()]);
 	levelSet(level);
 	cout << "Status = " << sr << endl;
-	XMLString::release(&sr);
+	XSEC_RELEASE_XMLCH(sr);
 
 	/* Dump the status reasons */
 	doStatusReasonDump(XKMSStatus::Valid, s, level+1);
@@ -1395,7 +1398,7 @@ int doMsgDump(XKMSMessageAbstractType * msg) {
 			cout << "Bad!.  Caught exception : " << endl;
 			char * msg = XMLString::transcode(e.getMsg());
 			cout << msg << endl;
-			XMLString::release(&msg);
+			XSEC_RELEASE_XMLCH(msg);
 		}
 	}
 
@@ -1498,7 +1501,7 @@ int doParsedMsgDump(DOMDocument * doc) {
 		char * msg = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during message loading\n   Message: "
 		<< msg << endl;
-		XMLString::release(&msg);
+		XSEC_RELEASE_XMLCH(msg);
 		errorsOccured = true;
 		return 2;
 	}
@@ -1758,8 +1761,28 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 	try {
 		XSECSOAPRequestorSimple req(msg->getService());
+		struct timeval tv1, tv2;
+		gettimeofday(&tv1, NULL);
+
 		req.setEnvelopeType(et);
+
 		responseDoc = req.doRequest(doc);
+		gettimeofday(&tv2, NULL);
+		long seconds = tv2.tv_sec - tv1.tv_sec;
+		long useconds;
+		if (seconds != 0) {
+			useconds = 1000000 - tv1.tv_usec + tv2.tv_usec;
+			seconds--;
+		}
+		else {
+			useconds = tv2.tv_usec - tv1.tv_usec;
+		}
+		if (useconds >= 1000000) {
+			useconds -= 1000000;
+			seconds++;
+		}
+
+		cout << "Time takend for request = " << seconds << " seconds, " << useconds << " useconds" << endl;
 
 		/* If two-phase - re-do the request */
 		if (twoPhase) {
@@ -1793,7 +1816,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 		char * m = XMLString::transcode(e.getMsg());
 		cerr << "Error sending request: " << m;
-		XMLString::release(&m);
+		XSEC_RELEASE_XMLCH(m);
 
 		delete msg;
 		doc->release();
@@ -1949,7 +1972,7 @@ int doMsgDump(int argc, char ** argv, int paramCount) {
 		char * msg = XMLString::transcode(e.getMessage());
         cerr << "An error occured during parsing\n   Message: "
              << msg << endl;
-		XMLString::release(&msg);
+		XSEC_RELEASE_XMLCH(msg);
         errorsOccured = true;
     }
 

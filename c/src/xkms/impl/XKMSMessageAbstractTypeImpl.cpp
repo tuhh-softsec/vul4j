@@ -224,7 +224,9 @@ DOMElement * XKMSMessageAbstractTypeImpl::createBlankMessageAbstractType(
 	ArrayJanitor<XMLCh> j_myId(myId);
 
 	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagId, myId);
+#if defined (XSEC_XERCES_HAS_SETIDATTRIBUTE)
 	mp_messageAbstractTypeElement->setIdAttributeNS(NULL, XKMSConstants::s_tagId);
+#endif
 	mp_idAttr = 
 		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagId);
 
@@ -292,7 +294,9 @@ void XKMSMessageAbstractTypeImpl::setId(const XMLCh * id) {
 	}
 
 	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagId, id);
+#if defined (XSEC_XERCES_HAS_SETIDATTRIBUTE)	
 	mp_messageAbstractTypeElement->setIdAttributeNS(NULL, XKMSConstants::s_tagId);
+#endif
 	mp_idAttr = 
 		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagId);
 

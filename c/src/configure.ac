@@ -356,6 +356,27 @@ AC_TRY_COMPILE([#include <xercesc/framework/XMLFormatter.hpp>
 	[AC_DEFINE(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)],
 	[AC_MSG_RESULT([no])])
 	
+AC_MSG_CHECKING([whether Xerces XMLString has ::release])
+
+AC_TRY_COMPILE([#include <xercesc/util/XMLString.hpp>],
+	[using namespace XERCES_CPP_NAMESPACE;
+		XMLCh * tst;
+		XMLString::release(&tst);
+	],
+	[AC_MSG_RESULT([yes])]
+	[AC_DEFINE(XSEC_XERCES_XMLSTRING_HAS_RELEASE)],
+	[AC_MSG_RESULT([no])])
+
+AC_MSG_CHECKING([whether Xerces XMLElement has ::setIdAttribute])
+
+AC_TRY_COMPILE([#include <xercesc/dom/DOM.hpp>],
+	[using namespace XERCES_CPP_NAMESPACE;
+		DOMElement * elt;
+		elt->setIdAttribute(NULL);
+	],
+	[AC_MSG_RESULT([yes])]
+	[AC_DEFINE(XSEC_XERCES_XMLSTRING_HAS_RELEASE)],
+	[AC_MSG_RESULT([no])])
 
 # Now check for Xalan
 

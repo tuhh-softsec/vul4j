@@ -36,6 +36,8 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/TransService.hpp>
 
+#include <string.h>
+
 XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
@@ -281,7 +283,7 @@ XMLT::XMLT(const char * str) {
 
 XMLT::~XMLT (void) {
 
-	XMLString::release(&mp_unicodeStr);
+	XSEC_RELEASE_XMLCH(mp_unicodeStr);
 
 }
 

@@ -178,7 +178,7 @@ public:
 private:
 
 	// Internal functions
-	unsigned int findNodeIndex(const XERCES_CPP_NAMESPACE::DOMNode * n);
+	unsigned int findNodeIndex(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);
 
 	const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	
 									** mp_elts;			// The current list of elements

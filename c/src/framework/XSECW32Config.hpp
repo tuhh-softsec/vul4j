@@ -52,6 +52,14 @@
 
 #	define XSEC_XERCES_REQUIRES_MEMMGR 1
 
+/* Does XMLString::release() exist */
+
+#define XSEC_XERCES_XMLSTRING_HAS_RELEASE 1
+
+/* Is it possible to setIdAttributes? - DOM level 3 call */
+
+#define XSEC_XERCES_HAS_SETIDATTRIBUTE 1
+
 #else
 /*
  * In version 2.2, the XMLUri class was broken for relative URI de-referencing

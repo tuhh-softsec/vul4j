@@ -290,10 +290,17 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 		redirectBuf[q] = '\0';
 		
 		// Try to find this location
+#if 0
+		// Does not work in Xerces 2.1 as there is no XMLUri::operator=
 		m_uri = XMLUri(XMLString::transcode(redirectBuf));
 
 		return doRequest(request);
+#endif
+		XMLCh * recString = XMLString::transcode(redirectBuf);
+		ArrayJanitor<XMLCh> j_recString(recString);
 
+		XSECSOAPRequestorSimple recurse(recString);
+		return recurse.doRequest(request);
 
 	}
 

@@ -43,7 +43,7 @@ TXFMDocObject::TXFMDocObject(DOMDocument *doc) : TXFMBase(doc) {
 TXFMDocObject::~TXFMDocObject() {
 
 	if (fragmentId != NULL)
-		XMLString::release(&fragmentId);
+		XSEC_RELEASE_XMLCH(fragmentId);
 
 }
 

@@ -27,6 +27,17 @@
 
 #include <xsec/dsig/DSIGConstants.hpp>
 
+// We need a special version of XSEC_RELEASE_XMLCH
+
+#undef XSEC_RELEASE_XMLCH
+
+#if defined (XSEC_XERCES_XMLSTRING_HAS_RELEASE)
+#    define XSEC_RELEASE_XMLCH(x) XMLString::release((XMLCh **) &x)
+#else
+#    define XSEC_RELEASE_XMLCH(x) delete[] x;
+#endif
+
+
 // --------------------------------------------------------------------------------
 //           Constant Strings Storage
 // --------------------------------------------------------------------------------
@@ -137,48 +148,48 @@ void DSIGConstants::create() {
 void DSIGConstants::destroy() {
 
 	// Delete the static strings
-	XMLString::release((XMLCh **) &s_unicodeStrEmpty);
-	XMLString::release((XMLCh **) &s_unicodeStrNL);
-	XMLString::release((XMLCh **) &s_unicodeStrXmlns);
-	XMLString::release((XMLCh **) &s_unicodeStrURI);
+	XSEC_RELEASE_XMLCH(s_unicodeStrEmpty);
+	XSEC_RELEASE_XMLCH(s_unicodeStrNL);
+	XSEC_RELEASE_XMLCH(s_unicodeStrXmlns);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURI);
 
-	XMLString::release((XMLCh **) &s_unicodeStrAlgorithm);
+	XSEC_RELEASE_XMLCH(s_unicodeStrAlgorithm);
 
-	XMLString::release((XMLCh **) &s_unicodeStrURIRawX509);
-	XMLString::release((XMLCh **) &s_unicodeStrURIDSIG);
-	XMLString::release((XMLCh **) &s_unicodeStrURIEC);
-	XMLString::release((XMLCh **) &s_unicodeStrURIXPF);
-	XMLString::release((XMLCh **) &s_unicodeStrURIXENC);
-	XMLString::release((XMLCh **) &s_unicodeStrURISHA1);
-	XMLString::release((XMLCh **) &s_unicodeStrURIMD5);
-	XMLString::release((XMLCh **) &s_unicodeStrURIBASE64);
-	XMLString::release((XMLCh **) &s_unicodeStrURIXPATH);
-	XMLString::release((XMLCh **) &s_unicodeStrURIXSLT);
-	XMLString::release((XMLCh **) &s_unicodeStrURIENVELOPE);
-	XMLString::release((XMLCh **) &s_unicodeStrURIC14N_NOC);
-	XMLString::release((XMLCh **) &s_unicodeStrURIC14N_COM);
-	XMLString::release((XMLCh **) &s_unicodeStrURIEXC_C14N_NOC);
-	XMLString::release((XMLCh **) &s_unicodeStrURIEXC_C14N_COM);
-	XMLString::release((XMLCh **) &s_unicodeStrURIDSA_SHA1);
-	XMLString::release((XMLCh **) &s_unicodeStrURIRSA_SHA1);
-	XMLString::release((XMLCh **) &s_unicodeStrURIHMAC_SHA1);
-	XMLString::release((XMLCh **) &s_unicodeStrURIXMLNS);
-	XMLString::release((XMLCh **) &s_unicodeStrURIMANIFEST);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIRawX509);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIDSIG);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIEC);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIXPF);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIXENC);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA1);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIMD5);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIBASE64);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIXPATH);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIXSLT);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIENVELOPE);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIC14N_NOC);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIC14N_COM);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIEXC_C14N_NOC);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIEXC_C14N_COM);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIDSA_SHA1);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIRSA_SHA1);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIHMAC_SHA1);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIXMLNS);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIMANIFEST);
 
-	XMLString::release((XMLCh **) &s_unicodeStrURI3DES_CBC);
-	XMLString::release((XMLCh **) &s_unicodeStrURIAES128_CBC);
-	XMLString::release((XMLCh **) &s_unicodeStrURIAES192_CBC);
-	XMLString::release((XMLCh **) &s_unicodeStrURIAES256_CBC);
-	XMLString::release((XMLCh **) &s_unicodeStrURIKW_AES128);
-	XMLString::release((XMLCh **) &s_unicodeStrURIKW_AES192);
-	XMLString::release((XMLCh **) &s_unicodeStrURIKW_AES256);
-	XMLString::release((XMLCh **) &s_unicodeStrURIKW_3DES);
-	XMLString::release((XMLCh **) &s_unicodeStrURIRSA_1_5);
-	XMLString::release((XMLCh **) &s_unicodeStrURIRSA_OAEP_MGFP1);
-	XMLString::release((XMLCh **) &s_unicodeStrURIXENC_ELEMENT);
-	XMLString::release((XMLCh **) &s_unicodeStrURIXENC_CONTENT);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURI3DES_CBC);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIAES128_CBC);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIAES192_CBC);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIAES256_CBC);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIKW_AES128);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIKW_AES192);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIKW_AES256);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIKW_3DES);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIRSA_1_5);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIRSA_OAEP_MGFP1);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIXENC_ELEMENT);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIXENC_CONTENT);
 
-	XMLString::release((XMLCh **) &s_unicodeStrPROVOpenSSL);
-	XMLString::release((XMLCh **) &s_unicodeStrPROVWinCAPI);
+	XSEC_RELEASE_XMLCH(s_unicodeStrPROVOpenSSL);
+	XSEC_RELEASE_XMLCH(s_unicodeStrPROVWinCAPI);
 
 }

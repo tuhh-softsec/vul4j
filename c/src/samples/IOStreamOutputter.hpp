@@ -38,6 +38,10 @@ using std::endl;
 using std::ostream;
 using std::flush;
 
+#if !defined(XERCES_CPP_NAMESPACE_QUALIFIER)
+#    define XERCES_CPP_NAMESPACE_QUALIFIER
+#endif
+
 // --------------------------------------------------------------------------------
 //           Much code taken from the DOMPrint Xerces example
 // --------------------------------------------------------------------------------

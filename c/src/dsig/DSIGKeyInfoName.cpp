@@ -66,7 +66,7 @@ mp_keyNameTextNode(0) {
 DSIGKeyInfoName::~DSIGKeyInfoName() {
 
 	if (mp_decodedDName != NULL)
-		XMLString::release(&mp_decodedDName);
+		XSEC_RELEASE_XMLCH(mp_decodedDName);
 
 };
 
@@ -181,7 +181,7 @@ void DSIGKeyInfoName::setKeyName(const XMLCh * name, bool isDName) {
 
 	if (mp_decodedDName != NULL) {
 
-		XMLString::release(&mp_decodedDName);
+		XSEC_RELEASE_XMLCH(mp_decodedDName);
 		mp_decodedDName = NULL;
 
 	}

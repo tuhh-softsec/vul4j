@@ -133,7 +133,7 @@ std::ostream& operator<< (std::ostream& target, const XMLCh * s)
 {
     char *p = XMLString::transcode(s);
     target << p;
-    XMLString::release(&p);
+    XSEC_RELEASE_XMLCH(p);
     return target;
 }
 
@@ -619,9 +619,10 @@ int evaluate(int argc, char ** argv) {
 				// The last "\\" must prefix the filename
 				baseURI[lastSlash + 1] = '\0';
 
-				XMLUri uri(MAKE_UNICODE_STRING(baseURI));
+				XMLCh * uriT = XMLString::transcode(baseURI);
+				ArrayJanitor<XMLCh> j_uriT(uriT);
 
-				XencInteropResolver ires(doc, &(uri.getUriText()[8]));
+				XencInteropResolver ires(doc, &(uriT[8]));
 				cipher->setKeyInfoResolver(&ires);
 
 			}
@@ -693,11 +694,11 @@ int evaluate(int argc, char ** argv) {
 			// Output the result
 
 			XMLCh core[] = {
-				XERCES_CPP_NAMESPACE :: chLatin_C,
-				XERCES_CPP_NAMESPACE :: chLatin_o,
-				XERCES_CPP_NAMESPACE :: chLatin_r,
-				XERCES_CPP_NAMESPACE :: chLatin_e,
-				XERCES_CPP_NAMESPACE :: chNull
+				XERCES_CPP_NAMESPACE_QUALIFIER chLatin_C,
+				XERCES_CPP_NAMESPACE_QUALIFIER chLatin_o,
+				XERCES_CPP_NAMESPACE_QUALIFIER chLatin_r,
+				XERCES_CPP_NAMESPACE_QUALIFIER chLatin_e,
+				XERCES_CPP_NAMESPACE_QUALIFIER chNull
 			};
 
 			DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(core);
@@ -719,7 +720,7 @@ int evaluate(int argc, char ** argv) {
 		char * msg = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during encryption/decryption operation\n   Message: "
 		<< msg << endl;
-		XMLString::release(&msg);
+		XSEC_RELEASE_XMLCH(msg);
 		errorsOccured = true;
 		if (formatTarget != NULL)
 			delete formatTarget;

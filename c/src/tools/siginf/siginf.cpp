@@ -93,7 +93,7 @@ ostream& operator<< (ostream& target, const XMLCh * s)
 {
     char *p = XMLString::transcode(s);
     target << p;
-    XMLString::release(&p);
+    XSEC_RELEASE_XMLCH(p);
     return target;
 }
 
@@ -107,7 +107,7 @@ public:
 		mp_cStr = XMLString::transcode(in);
 	}
 	~X2C() {
-		XMLString::release(&mp_cStr);
+		XSEC_RELEASE_XMLCH(mp_cStr);
 	}
 
 	char * str(void) {
@@ -248,7 +248,7 @@ void outputTransform(DSIGTransform * t, int level) {
 				// Now the expression
 				char * str = XMLString::transcode(e->getFilter());
 				cout << str << "\"" << endl;
-				XMLString::release(&str);
+				XSEC_RELEASE_XMLCH(str);
 
 			}
 
@@ -464,7 +464,7 @@ int evaluate(int argc, char ** argv) {
 		char * msg = XMLString::transcode(e.getMessage());
         cerr << "An error occured during parsing\n   Message: "
              << msg << endl;
-		XMLString::release(&msg);
+		XSEC_RELEASE_XMLCH(msg);
         errorsOccured = true;
     }
 
@@ -526,7 +526,7 @@ int evaluate(int argc, char ** argv) {
 		char * msg = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during signature loading\n   Message: "
 		<< msg << endl;
-		XMLString::release(&msg);
+		XSEC_RELEASE_XMLCH(msg);
 		errorsOccured = true;
 		return 2;
 	}

@@ -116,7 +116,7 @@ std::ostream& operator<< (std::ostream& target, const XMLCh * s)
 {
     char *p = XMLString::transcode(s);
     target << p;
-    XMLString::release(&p);
+    XSEC_RELEASE_XMLCH(p);
     return target;
 }
 
@@ -425,23 +425,25 @@ int evaluate(int argc, char ** argv) {
 
 		// The last "\\" must prefix the filename
 		baseURI[lastSlash + 1] = '\0';
+		XMLCh * baseURIXMLCh = XMLString::transcode(baseURI);
+		ArrayJanitor<XMLCh> j_baseURIXMLCh(baseURIXMLCh);
 
 		XMLUri uri(MAKE_UNICODE_STRING(baseURI));
 
 		if (useAnonymousResolver == true) {
 			// AnonymousResolver takes precedence
-			theAnonymousResolver.setBaseURI(uri.getUriText());
+			theAnonymousResolver.setBaseURI(baseURIXMLCh);
 			sig->setURIResolver(&theAnonymousResolver);
 		}
 		else if (useXSECURIResolver == true) {
-			theResolver.setBaseURI(uri.getUriText());
+			theResolver.setBaseURI(baseURIXMLCh);
 			sig->setURIResolver(&theResolver);
 		}
 
 #if defined (HAVE_OPENSSL)
 		if (useInteropResolver == true) {
 
-			InteropResolver ires(&(uri.getUriText()[8]));
+			InteropResolver ires(&(baseURIXMLCh[8]));
 			sig->setKeyInfoResolver(&ires);
 
 		}
@@ -488,7 +490,7 @@ int evaluate(int argc, char ** argv) {
 		char * msg = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during signature verification\n   Message: "
 		<< msg << endl;
-		XMLString::release(&msg);
+		XSEC_RELEASE_XMLCH(msg);
 		errorsOccured = true;
 		return 2;
 	}
@@ -526,9 +528,9 @@ int evaluate(int argc, char ** argv) {
 	}
 	else {
 		cout << "Signature failed verification" << endl;
-		const char * e = XMLString::transcode(sig->getErrMsgs());
+		char * e = XMLString::transcode(sig->getErrMsgs());
 		cout << e << endl;
-		XMLString::release((char **) &e);
+		XSEC_RELEASE_XMLCH(e);
 		retResult = 1;
 	}
 

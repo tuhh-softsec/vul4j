@@ -270,7 +270,7 @@ DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
 	mp_encryptedTypeElement = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
 
 	// Set namespace
-	if (prefix[0] == XERCES_CPP_NAMESPACE::chNull) {
+	if (prefix[0] == XERCES_CPP_NAMESPACE_QUALIFIER chNull) {
 		str.sbTranscodeIn("xmlns");
 	}
 	else {

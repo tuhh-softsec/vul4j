@@ -66,7 +66,7 @@ InteropResolver::InteropResolver(const XMLCh * baseURI) {
 InteropResolver::~InteropResolver() {
 
 	if (mp_baseURI != NULL)
-		XMLString::release(&mp_baseURI);
+		XSEC_RELEASE_XMLCH(mp_baseURI);
 
 }
 
@@ -98,7 +98,7 @@ X509 * InteropResolver::nextFile2Cert(void) {
 
 		char * base = XMLString::transcode(mp_baseURI);
 		safeBuffer path = base;
-		XMLString::release(&base);
+		XSEC_RELEASE_XMLCH(base);
 
 		path.sbStrcatIn("/certs/*.crt");
 
@@ -322,12 +322,12 @@ bool InteropResolver::checkMatch(DSIGKeyInfoList * lst, X509 * x) {
 				if (strcmp(xserial, cserial) == 0) {
 					
 					OPENSSL_free(xserial);
-					XMLString::release(&cserial);
+					XSEC_RELEASE_XMLCH(cserial);
 					return true;
 
 				}
 				//delete[] xserial;
-				XMLString::release(&cserial);
+				XSEC_RELEASE_XMLCH(cserial);
 				OPENSSL_free(xserial);
 
 			}
@@ -401,7 +401,7 @@ bool InteropResolver::checkMatch(DSIGKeyInfoList * lst, X509 * x) {
 
 				X509_NAME * x509name = X509_get_subject_name(x);
 				X509_NAME * snname = X509_NAME_create_from_txt(csn);
-				XMLString::release(&csn);
+				XSEC_RELEASE_XMLCH(csn);
 
 				if (snname != NULL) {
 
@@ -506,20 +506,20 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 			if (kn->getKeyName() != NULL) {
 
 				static XMLCh certStr[] = {
-					XERCES_CPP_NAMESPACE :: chLatin_c,
-					XERCES_CPP_NAMESPACE :: chLatin_e,
-					XERCES_CPP_NAMESPACE :: chLatin_r,
-					XERCES_CPP_NAMESPACE :: chLatin_t,
-					XERCES_CPP_NAMESPACE :: chLatin_s,
-					XERCES_CPP_NAMESPACE :: chForwardSlash,
-					XERCES_CPP_NAMESPACE :: chNull
+					XERCES_CPP_NAMESPACE_QUALIFIER chLatin_c,
+					XERCES_CPP_NAMESPACE_QUALIFIER chLatin_e,
+					XERCES_CPP_NAMESPACE_QUALIFIER chLatin_r,
+					XERCES_CPP_NAMESPACE_QUALIFIER chLatin_t,
+					XERCES_CPP_NAMESPACE_QUALIFIER chLatin_s,
+					XERCES_CPP_NAMESPACE_QUALIFIER chForwardSlash,
+					XERCES_CPP_NAMESPACE_QUALIFIER chNull
 				};
 				static XMLCh extStr[] = {
-					XERCES_CPP_NAMESPACE :: chPeriod,
-					XERCES_CPP_NAMESPACE :: chLatin_c,
-					XERCES_CPP_NAMESPACE :: chLatin_r,
-					XERCES_CPP_NAMESPACE :: chLatin_t,
-					XERCES_CPP_NAMESPACE :: chNull
+					XERCES_CPP_NAMESPACE_QUALIFIER chPeriod,
+					XERCES_CPP_NAMESPACE_QUALIFIER chLatin_c,
+					XERCES_CPP_NAMESPACE_QUALIFIER chLatin_r,
+					XERCES_CPP_NAMESPACE_QUALIFIER chLatin_t,
+					XERCES_CPP_NAMESPACE_QUALIFIER chNull
 				};
 
 				safeBuffer fname;

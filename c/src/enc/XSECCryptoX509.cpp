@@ -28,6 +28,8 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
+#include <string.h>
+
 void XSECCryptoX509::loadX509PEM(const char * buf, unsigned int len) {
 
 	const char * b;

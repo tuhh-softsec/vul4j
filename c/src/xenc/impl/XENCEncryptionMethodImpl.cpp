@@ -326,7 +326,7 @@ void XENCEncryptionMethodImpl::setDigestMethod(const XMLCh * method) {
 
 		// Set namespace
 
-		if (prefix[0] == XERCES_CPP_NAMESPACE::chNull) {
+		if (prefix[0] == XERCES_CPP_NAMESPACE_QUALIFIER chNull) {
 			str.sbTranscodeIn("xmlns");
 		}
 		else {

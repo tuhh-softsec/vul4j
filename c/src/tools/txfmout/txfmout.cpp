@@ -97,7 +97,7 @@ std::ostream& operator<< (std::ostream& target, const XMLCh * s)
 {
     char *p = XMLString::transcode(s);
     target << p;
-    XMLString::release(&p);
+    XSEC_RELEASE_XMLCH(p);
     return target;
 }
 
@@ -524,9 +524,7 @@ int main(int argc, char **argv) {
 	// The last "\\" must prefix the filename
 	baseURI[lastSlash + 1] = '\0';
 
-	XMLUri uri(MAKE_UNICODE_STRING(baseURI));
-
-	theResolver.setBaseURI(uri.getUriText());
+	theResolver.setBaseURI(MAKE_UNICODE_STRING(baseURI));
 
 	sig->setURIResolver(&theResolver);
 
@@ -569,7 +567,7 @@ int main(int argc, char **argv) {
 		char * m = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during signature processing\n   Message: "
 		<< m << endl;
-		XMLString::release(&m);
+		XSEC_RELEASE_XMLCH(m);
 		errorsOccured = true;
 		exit (2);
 	}

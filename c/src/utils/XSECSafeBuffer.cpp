@@ -166,7 +166,7 @@ safeBuffer::~safeBuffer() {
 	}
 
 	if (mp_XMLCh != NULL)
-		XMLString::release(&mp_XMLCh);
+		XSEC_RELEASE_XMLCH(mp_XMLCh);
 
 }
 
@@ -459,8 +459,8 @@ void safeBuffer::sbStrlwr(void) {
 		unsigned int l = XMLString::stringLen(b);
 
 		for (i = 0; i < l; ++i) {
-			if (b[i] >= XERCES_CPP_NAMESPACE::chLatin_A && b[i] <= XERCES_CPP_NAMESPACE::chLatin_Z)
-				b[i] = (b[i] - XERCES_CPP_NAMESPACE::chLatin_A) + XERCES_CPP_NAMESPACE::chLatin_a;
+			if (b[i] >= XERCES_CPP_NAMESPACE_QUALIFIER chLatin_A && b[i] <= XERCES_CPP_NAMESPACE_QUALIFIER chLatin_Z)
+				b[i] = (b[i] - XERCES_CPP_NAMESPACE_QUALIFIER chLatin_A) + XERCES_CPP_NAMESPACE_QUALIFIER chLatin_a;
 		}
 
 	}
@@ -546,7 +546,7 @@ const XMLCh * safeBuffer::sbStrToXMLCh(void) {
 
 	checkBufferType(BUFFER_CHAR);
 	if (mp_XMLCh != NULL)
-		XMLString::release(&mp_XMLCh);
+		XSEC_RELEASE_XMLCH(mp_XMLCh);
 
 	mp_XMLCh = XMLString::transcode((char *) buffer);
 
@@ -573,7 +573,7 @@ void safeBuffer::sbTranscodeIn(const XMLCh * inStr) {
 	strcpy((char *) buffer, t);
 	m_bufferType = BUFFER_CHAR;
 
-	XMLString::release(&t);
+	XSEC_RELEASE_XMLCH(t);
 
 }
 
@@ -595,7 +595,7 @@ void safeBuffer::sbTranscodeIn(const char * inStr) {
 	XMLString::copyString((XMLCh *) buffer, t);
 	m_bufferType = BUFFER_UNICODE;
 	
-	XMLString::release(&t);
+	XSEC_RELEASE_XMLCH(t);
 
 }
 
@@ -650,7 +650,7 @@ void safeBuffer::sbXMLChCat(const char * str) {
 
 	XMLString::catString((XMLCh *) buffer, t);
 
-	XMLString::release(&t);
+	XSEC_RELEASE_XMLCH(t);
 }
 
 void safeBuffer::sbXMLChCat8(const char * str) {

@@ -191,7 +191,7 @@ int main (int argc, char **argv) {
 			if (kname != NULL) {
 				char * n = XMLString::transcode(kname);
 				cout << "Key Name = " << n << endl;
-				XMLString::release(&n);
+				XSEC_RELEASE_XMLCH(n);
 			}
 		}
 
@@ -206,7 +206,7 @@ int main (int argc, char **argv) {
 			char * err = XMLString::transcode(sig->getErrMsgs());
 			cout << "Incorrect Signature\n";
 			cout << err << endl;
-			XMLString::release(&err);
+			XSEC_RELEASE_XMLCH(err);
 		}
 
 		amt->setNodeValue(MAKE_UNICODE_STRING("$0.50"));
@@ -220,7 +220,7 @@ int main (int argc, char **argv) {
 			char * err = XMLString::transcode(sig->getErrMsgs());
 			cout << "Incorrect Signature\n";
 			cout << err << endl;
-			XMLString::release(&err);
+			XSEC_RELEASE_XMLCH(err);
 		}
 
 		amt->setNodeValue(MAKE_UNICODE_STRING("$16.50"));
@@ -234,7 +234,7 @@ int main (int argc, char **argv) {
 			char * err = XMLString::transcode(sig->getErrMsgs());
 			cout << "Incorrect Signature\n";
 			cout << err << endl;
-			XMLString::release(&err);
+			XSEC_RELEASE_XMLCH(err);
 		}
 
 

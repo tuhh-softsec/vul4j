@@ -166,23 +166,23 @@ XSECEnv::~XSECEnv() {
 	}
 
 	if (mp_prefixNS != NULL) {
-		XMLString::release(&mp_prefixNS);
+		XSEC_RELEASE_XMLCH(mp_prefixNS);
 	}
 
 	if (mp_ecPrefixNS != NULL) {
-		XMLString::release(&mp_ecPrefixNS);
+		XSEC_RELEASE_XMLCH(mp_ecPrefixNS);
 	}
 	
 	if (mp_xpfPrefixNS != NULL) {
-		XMLString::release(&mp_xpfPrefixNS);
+		XSEC_RELEASE_XMLCH(mp_xpfPrefixNS);
 	}
 
 	if (mp_xencPrefixNS != NULL) {
-		XMLString::release(&mp_xencPrefixNS);
+		XSEC_RELEASE_XMLCH(mp_xencPrefixNS);
 	}
 
 	if (mp_xkmsPrefixNS != NULL) {
-		XMLString::release(&mp_xkmsPrefixNS);
+		XSEC_RELEASE_XMLCH(mp_xkmsPrefixNS);
 	}
 
 	if (mp_URIResolver != NULL) {
@@ -193,7 +193,7 @@ XSECEnv::~XSECEnv() {
 	IdNameVectorType::iterator it;
 
 	for (it = m_idAttributeNameList.begin(); it != m_idAttributeNameList.end(); it++) {
-		XMLString::release(&(*it));
+		XSEC_RELEASE_XMLCH((*it));
 	}
 
 	m_idAttributeNameList.empty();
@@ -228,7 +228,7 @@ XSECURIResolver * XSECEnv::getURIResolver(void) const {
 void XSECEnv::setDSIGNSPrefix(const XMLCh * prefix) {
 
 	if (mp_prefixNS != NULL)
-		XMLString::release(&mp_prefixNS);
+		XSEC_RELEASE_XMLCH(mp_prefixNS);
 
 	mp_prefixNS = XMLString::replicate(prefix);
 
@@ -237,7 +237,7 @@ void XSECEnv::setDSIGNSPrefix(const XMLCh * prefix) {
 void XSECEnv::setECNSPrefix(const XMLCh * prefix) {
 
 	if (mp_ecPrefixNS != NULL)
-		XMLString::release(&mp_ecPrefixNS);
+		XSEC_RELEASE_XMLCH(mp_ecPrefixNS);
 
 	mp_ecPrefixNS = XMLString::replicate(prefix);
 
@@ -246,7 +246,7 @@ void XSECEnv::setECNSPrefix(const XMLCh * prefix) {
 void XSECEnv::setXPFNSPrefix(const XMLCh * prefix) {
 
 	if (mp_xpfPrefixNS != NULL)
-		XMLString::release(&mp_xpfPrefixNS);
+		XSEC_RELEASE_XMLCH(mp_xpfPrefixNS);
 
 	mp_xpfPrefixNS = XMLString::replicate(prefix);
 
@@ -255,7 +255,7 @@ void XSECEnv::setXPFNSPrefix(const XMLCh * prefix) {
 void XSECEnv::setXENCNSPrefix(const XMLCh * prefix) {
 
 	if (mp_xencPrefixNS != NULL)
-		XMLString::release(&mp_xencPrefixNS);
+		XSEC_RELEASE_XMLCH(mp_xencPrefixNS);
 
 	mp_xencPrefixNS = XMLString::replicate(prefix);
 
@@ -264,7 +264,7 @@ void XSECEnv::setXENCNSPrefix(const XMLCh * prefix) {
 void XSECEnv::setXKMSNSPrefix(const XMLCh * prefix) {
 
 	if (mp_xkmsPrefixNS != NULL)
-		XMLString::release(&mp_xkmsPrefixNS);
+		XSEC_RELEASE_XMLCH(mp_xkmsPrefixNS);
 
 	mp_xkmsPrefixNS = XMLString::replicate(prefix);
 
@@ -316,7 +316,7 @@ bool XSECEnv::deregisterIdAttributeName(const XMLCh * name) {
 		if (strEquals(*it, name)) {
 
 			// Remove this item
-			XMLString::release(&(*it));
+			XSEC_RELEASE_XMLCH((*it));
 			m_idAttributeNameList.erase(it);
 			return true;
 		}

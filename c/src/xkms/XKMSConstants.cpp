@@ -29,6 +29,16 @@
 #include <xercesc/util/XMLString.hpp>
 
 XERCES_CPP_NAMESPACE_USE
+
+#undef XSEC_RELEASE_XMLCH
+
+#if defined (XSEC_XERCES_XMLSTRING_HAS_RELEASE)
+#    define XSEC_RELEASE_XMLCH(x) XMLString::release((XMLCh **) &x)
+#else
+#    define XSEC_RELEASE_XMLCH(x) delete[] x;
+#endif
+
+
 // --------------------------------------------------------------------------------
 //           Constant Strings Storage
 // --------------------------------------------------------------------------------
@@ -1236,8 +1246,8 @@ void XKMSConstants::create() {
 
 void XKMSConstants::destroy() {
 
-	XMLString::release((XMLCh **) &s_unicodeStrURIXKMS);
-	XMLString::release((XMLCh **) &s_unicodeStrURISOAP11);
-	XMLString::release((XMLCh **) &s_unicodeStrURISOAP12);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIXKMS);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURISOAP11);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURISOAP12);
 
 }
