@@ -61,7 +61,6 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -240,9 +239,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
          }
 
          String mimeType = urlConnection.getHeaderField("Content-Type");
-         String contentLength = urlConnection.getHeaderField("Content-Length");
          InputStream inputStream = urlConnection.getInputStream();
-         BufferedInputStream bufIn = new BufferedInputStream(inputStream);
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
          byte buf[] = new byte[4096];
          int read = 0;
