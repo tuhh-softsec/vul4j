@@ -96,19 +96,6 @@ XALAN_USING_XALAN(XalanTransformer)
 //           Global definitions
 // --------------------------------------------------------------------------------
 
-enum eProcessingMode {
-
-	ModeNone,			// No mode yet set
-	ModeMsgDump,		// We are here to simply parse and dump an XKMS message
-	ModeMsgCreate,		// Creating a msg from scratch
-	ModeDoRequest,		// Create a message and send to service
-
-};
-
-char * g_inputFile = NULL;
-char * g_msgType = NULL;
-char * g_serviceURI = NULL;
-char * g_certFile = NULL;
 bool g_txtOut = false;
 
 int doParsedMsgDump(DOMDocument * doc);
@@ -221,25 +208,48 @@ XSECCryptoX509 * loadX509(const char * infile) {
 }
 
 // --------------------------------------------------------------------------------
-//           Create a message
+//           Create a LocateRequest
 // --------------------------------------------------------------------------------
 
-int createMessage(char * msgType, XSECProvider &prov, DOMDocument **doc, XKMSMessageAbstractType **msg) {
+void printLocateRequestUsage(void) {
 
-	XKMSMessageFactory * factory = prov.getXKMSMessageFactory();
+	cerr << "\nUsage LocateRequest [--help|-h] <service URI> [options]\n";
+	cerr << "   --help/-h    : print this screen and exit\n\n";
+	cerr << "   ";
 
-	// Create a new message
-	if (!stricmp(msgType, "LocateRequest")) {
+}
 
-		XKMSLocateRequest * lr = factory->createLocateRequest(MAKE_UNICODE_STRING(g_serviceURI), doc);
+XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
 
-		if (g_certFile != NULL) {
-			XSECCryptoX509 * x = loadX509(g_certFile);
+	if (paramCount >= argc || 
+		(stricmp(argv[paramCount], "--help") == 0) ||
+		(stricmp(argv[paramCount], "-h") == 0)) {
+
+		printLocateRequestUsage();
+		return NULL;
+	}
+
+	/* First create the basic request */
+	XKMSMessageFactory * factory = 
+		prov.getXKMSMessageFactory();
+	XKMSLocateRequest * lr = 
+		factory->createLocateRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
+
+	while (paramCount < argc) {
+
+		if (stricmp(argv[paramCount], "--add-cert") == 0 || stricmp(argv[paramCount], "-a") == 0) {
+			if (++paramCount >= argc) {
+				printLocateRequestUsage();
+				delete lr;
+				return NULL;
+			}
+			XSECCryptoX509 * x = loadX509(argv[paramCount]);
 			if (x == NULL) {
 				delete lr;
 				(*doc)->release();
-				cerr << "Error opening Certificate file : " << g_certFile << endl;
-				return 1;
+				cerr << "Error opening Certificate file : " << 
+					argv[paramCount] << endl;
+				return NULL;
 			}
 
 			Janitor<XSECCryptoX509> j_x(x);
@@ -248,95 +258,18 @@ int createMessage(char * msgType, XSECProvider &prov, DOMDocument **doc, XKMSMes
 			DSIGKeyInfoX509 * kix = qkb->appendX509Data();
 			safeBuffer sb = x->getDEREncodingSB();
 			kix->appendX509Certificate(sb.sbStrToXMLCh());
-
+			paramCount++;
 		}
 
-		*msg = lr;
-	}
-	else {
-
-		cerr << "Unknown message type : " << msgType << endl;
-		return 2;
-	
-	}
-
-	return 0;
-	
-}
-	
-// --------------------------------------------------------------------------------
-//           doRequest
-// --------------------------------------------------------------------------------
-
-int doRequest(char * msgType) {
-
-	XSECProvider prov;
-
-	// Create a new message
-	XKMSMessageAbstractType * msg;
-	DOMDocument * doc;
-
-	if (createMessage(msgType, prov, &doc, &msg) != 0)
-		return 2;
-
-	if (g_txtOut) {
-
-		outputDoc(doc);
-
-	}
-
-	XSECSOAPRequestorSimple req(MAKE_UNICODE_STRING(g_serviceURI));
-	DOMDocument * responseDoc = req.doRequest(doc);
-
-	// Cleanup request stuff
-	delete msg;
-	doc->release();
-
-	// Now lets process the result
-
-	int ret;
-	
-	try {
-		if (g_txtOut) {
-			outputDoc(responseDoc);
+		else {
+			printLocateRequestUsage();
+			delete lr;
+			(*doc)->release();
+			return NULL;
 		}
-		ret = doParsedMsgDump(responseDoc);
-	}
-	catch (...) {
-		responseDoc->release();
-		throw;
-	}
-	
-	responseDoc->release();
-	return ret;
-}
-
-// --------------------------------------------------------------------------------
-//           MsgCreate
-// --------------------------------------------------------------------------------
-
-int doMessageCreate(char * msgType) {
-
-	XSECProvider prov;
-
-	// Create a new message
-	XKMSMessageAbstractType * msg;
-	DOMDocument * doc;
-
-	if (createMessage(msgType, prov, &doc, &msg) != 0)
-		return 2;
-
-	if (g_txtOut) {
-
-		outputDoc(doc);
-
 	}
 
-	delete msg;
-	doc->release();
-
-	return 0;
-
+	return lr;
 }
 
 // --------------------------------------------------------------------------------
@@ -669,10 +602,153 @@ int doParsedMsgDump(DOMDocument * doc) {
 	return 0;
 }
 
-int doMsgDump(void) {
+// --------------------------------------------------------------------------------
+//           Base MessageCreate module
+// --------------------------------------------------------------------------------
+
+void printMsgCreateUsage(void) {
+
+	cerr << "\nUsage messagecreate [options] {LocateRequest} [msg specific options]\n";
+	cerr << "   --help/-h    : print this screen and exit\n\n";
+
+}
+
+int doMsgCreate(int argc, char ** argv, int paramCount) {
+
+	XSECProvider prov;
+	DOMDocument * doc;
+	XKMSMessageAbstractType *msg;
+
+	if (paramCount >= argc || 
+		(stricmp(argv[paramCount], "--help") == 0) ||
+		(stricmp(argv[paramCount], "-h") == 0)) {
+		printMsgCreateUsage();
+		return -1;
+	}
+
+	if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
+		(stricmp(argv[paramCount], "lr") == 0)) {
+
+		msg = createLocateRequest(prov, &doc, argc, argv, paramCount + 1);
+		if (msg == NULL) {
+			return -1;
+		}
+
+	}
+	else {
+
+		printMsgCreateUsage();
+		return -1;
+
+	}
+
+	outputDoc(doc);
+	
+	// Cleanup message stuff
+	delete msg;
+	doc->release();
+
+	return 0;
+
+}
+
+
+// --------------------------------------------------------------------------------
+//           Base request module
+// --------------------------------------------------------------------------------
+
+void printDoRequestUsage(void) {
+
+	cerr << "\nUsage request [options] {LocateRequest} [msg specific options]\n";
+	cerr << "   --help/-h    : print this screen and exit\n\n";
+
+}
+
+int doRequest(int argc, char ** argv, int paramCount) {
+
+	XSECProvider prov;
+	DOMDocument * doc;
+	XKMSMessageAbstractType *msg;
+
+	if (paramCount >= argc || 
+		(stricmp(argv[paramCount], "--help") == 0) ||
+		(stricmp(argv[paramCount], "-h") == 0)) {
+		printDoRequestUsage();
+		return -1;
+	}
+
+	if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
+		(stricmp(argv[paramCount], "lr") == 0)) {
+
+		msg = createLocateRequest(prov, &doc, argc, argv, paramCount + 1);
+		if (msg == NULL) {
+			return -1;
+		}
+
+	}
+	else {
+
+		printDoRequestUsage();
+		return -1;
+
+	}
+
+	XSECSOAPRequestorSimple req(msg->getService());
+	DOMDocument * responseDoc = req.doRequest(doc);
+
+	// Cleanup request stuff
+	delete msg;
+	doc->release();
+
+	// Now lets process the result
+
+	int ret;
+	
+	try {
+		if (g_txtOut) {
+			outputDoc(responseDoc);
+		}
+		ret = doParsedMsgDump(responseDoc);
+	}
+	catch (...) {
+		responseDoc->release();
+		throw;
+	}
+	
+	responseDoc->release();
+	return ret;
+
+}
+
+
+// --------------------------------------------------------------------------------
+//           Base msgdump module
+// --------------------------------------------------------------------------------
+
+
+void printMsgDumpUsage(void) {
+
+	cerr << "\nUsage msgdump [options] <filename>\n";
+	cerr << "   --help/-h    : print this screen and exit\n\n";
+    cerr << "   filename = name of file containing XKMS msg to dump\n\n";
+
+}
+
+int doMsgDump(int argc, char ** argv, int paramCount) {
+
+	char * inputFile = NULL;
+
+	if (paramCount != (argc - 1) || 
+		(stricmp(argv[paramCount], "--help") == 0) ||
+		(stricmp(argv[paramCount], "-h") ==0)) {
+		printMsgDumpUsage();
+		return -1;
+	}
+
+	inputFile = argv[paramCount];
 
 	// Dump the details of an XKMS message to the console
-	cout << "Decoding XKMS Message contained in " << g_inputFile << endl;
+	cout << "Decoding XKMS Message contained in " << inputFile << endl;
 	
 	// Create and set up the parser
 
@@ -688,7 +764,7 @@ int doMsgDump(void) {
 	int errorCount = 0;
     try
     {
-    	parser->parse(g_inputFile);
+    	parser->parse(inputFile);
         errorCount = parser->getErrorCount();
     }
 
@@ -734,7 +810,7 @@ int doMsgDump(void) {
 
 void printUsage(void) {
 
-	cerr << "\nUsage: siging {msgdump|msgcreate [type]} [options]\n\n";
+	cerr << "\nUsage: xklient [base options] {msgdump|msgcreate|dorequest} [command specific options]\n\n";
 	cerr << "     msgdump   : Read an XKMS message and print details\n";
 	cerr << "     msgcreate : Create a message of type :\n";
 	cerr << "                 LocateRequest\n";
@@ -742,115 +818,51 @@ void printUsage(void) {
 	cerr << "                 LocateRequest\n";
 	cerr << "                 send to service URI and output result\n\n";
 	cerr << "     Where options are :\n\n";
-	cerr << "     --infile/-i {filename}\n";
-	cerr << "         File to read as input\n";
 	cerr << "     --text/-t\n";
 	cerr << "         Print any created XML to screen\n";
-	cerr << "     --add-cert/-a {filename}\n";
-	cerr << "         Add the cert in the specified file to msg\n";
-	cerr << "     --service/-s\n";
-	cerr << "         Service URI to use in created messages\n\n";
 
 }
 
 int evaluate(int argc, char ** argv) {
 	
-	eProcessingMode			mode = ModeNone;
-
-
 	if (argc < 2) {
 
 		printUsage();
 		return 2;
 	}
 
-	int paramCount = 2;
-
-	if (!stricmp (argv[1], "msgdump")) {
-
-		mode = ModeMsgDump;
-
-	}
-
-	else if (!stricmp (argv[1], "msgcreate")) {
-
-		mode=ModeMsgCreate;
-		g_msgType = argv[paramCount];
-		paramCount++;
-	}
-
-	else if (!stricmp (argv[1], "dorequest")) {
-
-		mode=ModeDoRequest;
-		g_msgType = argv[paramCount];
-		paramCount++;
-	}
-
-	else {
-
-		printUsage();
-		return 2;
-
-	}
+	int paramCount = 1;
 
 	// Run through parameters
 
 	while (paramCount < argc) {
 
-		if (stricmp(argv[paramCount], "--infile") == 0 || stricmp(argv[paramCount], "-i") == 0) {
-			if (++paramCount >= argc) {
-				printUsage();
-				return 2;
-			}
-			g_inputFile = argv[paramCount];
-			paramCount++;
-		}
-
-		else if (stricmp(argv[paramCount], "--add-cert") == 0 || stricmp(argv[paramCount], "-a") == 0) {
-			if (++paramCount >= argc) {
-				printUsage();
-				return 2;
-			}
-			g_certFile = argv[paramCount];
-			paramCount++;
-		}
-		else if (stricmp(argv[paramCount], "--text") == 0 || stricmp(argv[paramCount], "-t") == 0) {
+		if (stricmp(argv[paramCount], "--text") == 0 || stricmp(argv[paramCount], "-t") == 0) {
 			g_txtOut = true;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--service") == 0 || stricmp(argv[paramCount], "-s") == 0) {
-			if (++paramCount >= argc) {
-				printUsage();
-				return 2;
-			}
-			g_serviceURI = argv[paramCount];
-			paramCount++;
+		else if (stricmp(argv[paramCount], "MsgDump") == 0 || stricmp(argv[paramCount], "md") == 0) {
+			
+			// Perform a MsgDump operation
+			return doMsgDump(argc, argv, paramCount +1);
+
+		}
+		else if (stricmp(argv[paramCount], "MsgCreate") == 0 || stricmp(argv[paramCount], "mc") == 0) {
+			
+			// Perform a MsgDump operation
+			return doMsgCreate(argc, argv, paramCount +1);
+
+		}
+		else if (stricmp(argv[paramCount], "Request") == 0 || stricmp(argv[paramCount], "req") == 0) {
+			
+			// Perform a MsgDump operation
+			return doRequest(argc, argv, paramCount +1);
+
 		}
 		else {
 			printUsage();
 			return 2;
 		}
-	}
-
-	switch (mode) {
-
-	case ModeMsgDump :
-
-		return doMsgDump();
-
-	case ModeMsgCreate :
-
-		return doMessageCreate(g_msgType);
-		
-	case ModeDoRequest :
-
-		return doRequest(g_msgType);
-
-	default :
-
-		cerr << "Catastrophic error - somehow I don't know what I'm doing!\n";
-		return 3;
-
 	}
 
 	return 1;
