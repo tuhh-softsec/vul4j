@@ -66,6 +66,7 @@ import java.io.IOException;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.KeyFactory;
+import java.security.PublicKey;
 import java.security.PrivateKey;
 import java.security.Key;
 import javax.crypto.SecretKey;
@@ -86,7 +87,11 @@ import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.keys.content.X509Data;
+import org.apache.xml.security.keys.keyresolver.KeyResolverException;
+import org.apache.xml.security.keys.keyresolver.KeyResolver;
+import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.Method;
@@ -220,9 +225,12 @@ public class BaltimoreEncTest extends TestCase {
 			KeyFactory.getInstance("RSA");
 			rsaKey = keyFactory.generatePrivate(pkcs8Spec);
 	
-		// Initialise the library and get out of here
+		// Initialise the library
 
 		org.apache.xml.security.Init.init();
+
+		// Register our key resolver
+		KeyResolver.register("org.apache.xml.security.test.encryption.BobKeyResolver");
 	}
 
 	/**
@@ -536,6 +544,7 @@ public class BaltimoreEncTest extends TestCase {
 		Key key = findKey(encryptedData);
 		
 		cipher.init(XMLCipher.DECRYPT_MODE, key);
+               
 		byte[] dd = cipher.decryptToByteArray(ee);
 
 		return dd;
@@ -551,7 +560,7 @@ public class BaltimoreEncTest extends TestCase {
 	 */
 
 	public SecretKey mapKeyName(String name) throws Exception {
-
+		/*
 		if (name.equals("bob")) {
 
 			// Bob is a DESEDE key
@@ -564,6 +573,7 @@ public class BaltimoreEncTest extends TestCase {
 			return key;
 
 		}
+		*/
 		if (name.equals("job")) {
 
 			// Jeb is a AES-128 key
@@ -645,8 +655,7 @@ public class BaltimoreEncTest extends TestCase {
 		}
 		if (kek != null) {
 			XMLCipher cipher = XMLCipher.getInstance();
-			cipher.init(XMLCipher.DECRYPT_MODE, null);
-			cipher.setKEK(kek);
+			cipher.init(XMLCipher.UNWRAP_MODE, kek);
 			key = cipher.decryptKey(encryptedKey,
 									encryptedData.
 									getEncryptionMethod().
@@ -723,4 +732,5 @@ public class BaltimoreEncTest extends TestCase {
         }
         return (baos.toString());
     }
+
 }

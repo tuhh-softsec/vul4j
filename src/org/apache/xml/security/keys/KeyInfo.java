@@ -749,19 +749,12 @@ public class KeyInfo extends SignatureElementProxy {
    }
 
    /**
-    * This method returns a secret (symmetric) key. This is for XML Encryption.
-    *
-    */
-   public SecretKey getSecretKey() throws KeyResolverException {
-      return null;
-   }
-
-   /**
     * This method returns the public key.
     *
     *
     * @throws KeyResolverException
     */
+
    public PublicKey getPublicKey() throws KeyResolverException {
 
       PublicKey pk = this.getPublicKeyFromInternalResolvers();
@@ -1064,6 +1057,156 @@ public class KeyInfo extends SignatureElementProxy {
 
                         if (cert != null) {
                            return cert;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+      return null;
+   }
+
+   /**
+    * This method returns a secret (symmetric) key. This is for XML Encryption.
+    *
+    */
+   public SecretKey getSecretKey() throws KeyResolverException {
+      SecretKey sk = this.getSecretKeyFromInternalResolvers();
+
+      if (sk != null) {
+         log.debug("I could find a secret key using the per-KeyInfo key resolvers");
+
+         return sk;
+      } else {
+         log.debug("I couldn't find a secret key using the per-KeyInfo key resolvers");
+      }
+
+      sk = this.getSecretKeyFromStaticResolvers();
+
+      if (sk != null) {
+         log.debug("I could find a secret key using the system-wide key resolvers");
+
+         return sk;
+      } else {
+         log.debug("I couldn't find a secret key using the system-wide key resolvers");
+      }
+
+      return null;
+   }
+
+   /**
+    * Searches the library wide keyresolvers for Secret keys
+    *
+    *
+    * @throws KeyResolverException
+    */
+
+   SecretKey getSecretKeyFromStaticResolvers() throws KeyResolverException {
+
+      for (int i = 0; i < KeyResolver.length(); i++) {
+         KeyResolver keyResolver = KeyResolver.item(i);
+
+         for (int j = 0;
+                 j < this._constructionElement.getChildNodes().getLength();
+                 j++) {
+            Node currentChild =
+               this._constructionElement.getChildNodes().item(j);
+
+            if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
+               if (this._storageResolvers.size() == 0) {
+
+                  // if we do not have storage resolvers, we verify with null
+                  StorageResolver storage = null;
+
+                  if (keyResolver.canResolve((Element) currentChild,
+                                             this.getBaseURI(), storage)) {
+                     SecretKey sk  =
+                        keyResolver.resolveSecretKey((Element) currentChild,
+                                                     this.getBaseURI(),
+                                                     storage);
+
+                     if (sk != null) {
+                        return sk;
+                     }
+                  }
+               } else {
+                  for (int k = 0; k < this._storageResolvers.size(); k++) {
+                     StorageResolver storage =
+                        (StorageResolver) this._storageResolvers.elementAt(k);
+
+                     if (keyResolver.canResolve((Element) currentChild,
+                                                this.getBaseURI(), storage)) {
+                        SecretKey sk =
+                           keyResolver.resolveSecretKey((Element) currentChild,
+                                                        this.getBaseURI(),
+                                                        storage);
+
+                        if (sk != null) {
+                           return sk;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+      return null;
+   }
+
+   /**
+    * Searches the per-KeyInfo keyresolvers for secret keys
+    *
+    *
+    * @throws KeyResolverException
+    */
+
+   SecretKey getSecretKeyFromInternalResolvers() throws KeyResolverException {
+
+      for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
+         KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
+
+         log.debug("Try " + keyResolver.getClass().getName());
+
+         for (int j = 0;
+                 j < this._constructionElement.getChildNodes().getLength();
+                 j++) {
+            Node currentChild =
+               this._constructionElement.getChildNodes().item(j);
+
+            if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
+               if (this._storageResolvers.size() == 0) {
+
+                  // if we do not have storage resolvers, we verify with null
+                  StorageResolver storage = null;
+
+                  if (keyResolver.engineCanResolve((Element) currentChild,
+                                                   this.getBaseURI(),
+                                                   storage)) {
+                     SecretKey sk =
+                        keyResolver
+                           .engineResolveSecretKey((Element) currentChild, this
+                              .getBaseURI(), storage);
+
+                     if (sk != null) {
+                        return sk;
+                     }
+                  }
+               } else {
+                  for (int k = 0; k < this._storageResolvers.size(); k++) {
+                     StorageResolver storage =
+                        (StorageResolver) this._storageResolvers.elementAt(k);
+
+                     if (keyResolver.engineCanResolve((Element) currentChild,
+                                                      this.getBaseURI(),
+                                                      storage)) {
+                        SecretKey sk = keyResolver
+                           .engineResolveSecretKey((Element) currentChild, this
+                              .getBaseURI(), storage);
+
+                        if (sk != null) {
+                           return sk;
                         }
                      }
                   }

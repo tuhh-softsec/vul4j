@@ -75,6 +75,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -83,6 +84,9 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.xml.security.keys.keyresolver.implementations.EncryptedKeyResolver;
+import org.apache.xml.security.keys.keyresolver.KeyResolverException;
+import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.EncryptionConstants;
@@ -1190,13 +1194,29 @@ public class XMLCipher {
 
         logger.debug("Decrypting key from previously loaded EncryptedKey...");
 
-        if(_cipherMode != DECRYPT_MODE && _cipherMode != UNWRAP_MODE)
-            logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+        if(_cipherMode != UNWRAP_MODE)
+            logger.error("XMLCipher unexpectedly not in UNWRAP_MODE...");
 
-		if (_kek == null) {
-			// For now take the easy apprach and just throw
-			logger.error("XMLCipher::decryptKey called without a KEK");
-			throw new XMLEncryptionException("Unable to decrypt without a KEK");
+		if (algorithm == null) {
+			throw new XMLEncryptionException("Cannot decrypt a key without knowing the algorithm");
+		}
+
+		if (_key == null) {
+
+			logger.debug("Trying to find a KEK via key resolvers");
+
+			KeyInfo ki = encryptedKey.getKeyInfo();
+			if (ki != null) {
+				try {
+					_key = ki.getSecretKey();
+				}
+				catch (Exception e) {
+				}
+			}
+			if (_key == null) {
+				logger.error("XMLCipher::decryptKey called without a KEK and cannot resolve");
+				throw new XMLEncryptionException("Unable to decrypt without a KEK");
+			}
 		}
 
 		// Obtain the encrypted octets 
@@ -1238,7 +1258,7 @@ public class XMLCipher {
 		Key ret;
 
 		try {		
-			c.init(Cipher.UNWRAP_MODE, _kek);
+			c.init(Cipher.UNWRAP_MODE, _key);
 			ret = c.unwrap(encryptedBytes, jceKeyAlgorithm, Cipher.SECRET_KEY);
 			
 		} catch (InvalidKeyException ike) {
@@ -1253,6 +1273,23 @@ public class XMLCipher {
 
     }
 		
+	/**
+	 * Decrypt a key from a passed in EncryptedKey structure.  This version
+	 * is used mainly internally, when  the cipher already has an
+	 * EncryptedData loaded.  The algorithm URI will be read from the 
+	 * EncryptedData
+	 *
+	 * @param encryptedKey Previously loaded EncryptedKey that needs
+	 * to be decrypted.
+	 * @returns a key corresponding to the give type
+	 */
+
+	public Key decryptKey(EncryptedKey encryptedKey) throws
+	            XMLEncryptionException {
+
+		return decryptKey(encryptedKey, _ed.getEncryptionMethod().getAlgorithm());
+
+	}
 
     /**
      * Removes the contents of a <code>Node</code>.
@@ -1283,12 +1320,6 @@ public class XMLCipher {
 
         if(_cipherMode != DECRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
-
-		if (_key == null) {
-			// For now take the easy apprach and just throw
-			logger.error("XMLCipher::decryptElement called without a key");
-			throw new XMLEncryptionException("Unable to decrypt without a key");
-		}
 
 		String octets;
 		try {
@@ -1360,13 +1391,31 @@ public class XMLCipher {
         if(_cipherMode != DECRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
 
-		if (_key == null) {
-			// For now take the easy apprach and just throw
-			logger.error("XMLCipher::decryptToByteArray called without a key");
-			throw new XMLEncryptionException("Unable to decrypt without a key");
-		}
-
         EncryptedData encryptedData = _factory.newEncryptedData(element);
+
+		if (_key == null) {
+
+			KeyInfo ki = encryptedData.getKeyInfo();
+
+			if (ki != null) {
+				try {
+					// Add a EncryptedKey resolver
+					ki.registerInternalKeyResolver(
+			             new EncryptedKeyResolver(encryptedData.
+												  getEncryptionMethod().
+												  getAlgorithm(), 
+												  _kek));
+					_key = ki.getSecretKey();
+				} catch (KeyResolverException kre) {
+					// We will throw in a second...
+				}
+			}
+
+			if (_key == null) {
+				logger.error("XMLCipher::decryptElement called without a key and unable to resolve");
+				throw new XMLEncryptionException("Unable to decrypt without a key");
+			}
+		}
 
 		// Obtain the encrypted octets 
 		XMLCipherInput cipherInput = new XMLCipherInput(encryptedData);

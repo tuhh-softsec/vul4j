@@ -158,10 +158,10 @@ public class XMLCipherTester extends TestCase {
 
 	/**
 	 * Test encryption using a generated AES 128 bit key that is
-	 * encrypted using a AES 192 bit key.  Then reverse
+	 * encrypted using a AES 192 bit key.  Then reverse using the KEK
 	 */
 
-	public void testAES128ElementAES192KWCipher() {
+	public void testAES128ElementAES192KWCipherUsingKEK() {
 
 		Document d = document(); // source
 		Document ed = null;
@@ -182,7 +182,7 @@ public class XMLCipherTester extends TestCase {
 
 			// Generate a traffic key
 			KeyGenerator keygen = KeyGenerator.getInstance("AES");
-			keygen.init(192);
+			keygen.init(128);
 			Key key = keygen.generateKey();
 
             cipher = XMLCipher.getInstance(XMLCipher.AES_192_KeyWrap);
@@ -209,8 +209,78 @@ public class XMLCipherTester extends TestCase {
             ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
             cipher = XMLCipher.getInstance(XMLCipher.AES_128);
             cipher.init(XMLCipher.DECRYPT_MODE, null);
-			EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
+			cipher.setKEK(kek);
+			dd = cipher.doFinal(ed, ee);
 
+            target = toString(dd);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        Assert.assertEquals(source, target);
+    }
+  
+
+	/**
+	 * Test encryption using a generated AES 192 bit key that is
+	 * encrypted using a 3DES key.  Then reverse by decrypting 
+	 * EncryptedKey by hand
+	 */
+
+	public void testAES192ElementAES256KWCipher() {
+
+		Document d = document(); // source
+		Document ed = null;
+		Document dd = null;
+		Element e = (Element) d.getElementsByTagName(element()).item(index());
+		Element ee = null;
+
+		String source = null;
+		String target = null;
+
+        try {
+
+			source = toString(d);;
+
+			// Set up a Key Encryption Key
+			byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
+            DESedeKeySpec keySpec = new DESedeKeySpec(bits192);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DESede");
+            Key kek = keyFactory.generateSecret(keySpec);
+
+			// Generate a traffic key
+			KeyGenerator keygen = KeyGenerator.getInstance("AES");
+			keygen.init(192);
+			Key key = keygen.generateKey();
+
+            cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES_KeyWrap);
+			cipher.init(XMLCipher.WRAP_MODE, kek);
+			EncryptedKey encryptedKey = cipher.encryptKey(d, key);
+
+            // encrypt
+            cipher = XMLCipher.getInstance(XMLCipher.AES_192);
+            cipher.init(XMLCipher.ENCRYPT_MODE, key);
+			EncryptedData builder = cipher.getEncryptedData();
+
+			KeyInfo builderKeyInfo = builder.getKeyInfo();
+			if (builderKeyInfo == null) {
+				builderKeyInfo = new KeyInfo(d);
+				builder.setKeyInfo(builderKeyInfo);
+			}
+
+			builderKeyInfo.add(encryptedKey);
+
+            ed = cipher.doFinal(d, e);
+
+            //decrypt
+			key = null;
+            ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
+            cipher = XMLCipher.getInstance();
+            cipher.init(XMLCipher.DECRYPT_MODE, null);
+
+			EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
+			
 			if(encryptedData == null) {
 				System.out.println("ed is null");
 			}
@@ -220,16 +290,15 @@ public class XMLCipherTester extends TestCase {
 			EncryptedKey ek = encryptedData.getKeyInfo().itemEncryptedKey(0);
 
 			if (ek != null) {
-				XMLCipher keyCipher = XMLCipher.getInstance(XMLCipher.AES_128);
+				XMLCipher keyCipher = XMLCipher.getInstance();
 				keyCipher.init(XMLCipher.UNWRAP_MODE, kek);
-				keyCipher.setKEK(kek);
 				key = keyCipher.decryptKey(ek, encryptedData.getEncryptionMethod().getAlgorithm());
 			}
 
-            cipher.init(XMLCipher.DECRYPT_MODE, key);
-			XMLCipher cipher3 = XMLCipher.getInstance(XMLCipher.AES_128);
-			cipher3.init(XMLCipher.WRAP_MODE, null);
-            dd = cipher.doFinal(ed, ee);
+			// Create a new cipher just to be paranoid
+			XMLCipher cipher3 = XMLCipher.getInstance();
+			cipher3.init(XMLCipher.DECRYPT_MODE, key);
+            dd = cipher3.doFinal(ed, ee);
 
             target = toString(dd);
         } catch (Exception ex) {
@@ -238,7 +307,6 @@ public class XMLCipherTester extends TestCase {
 
         Assert.assertEquals(source, target);
     }
-  
 
     public void testTrippleDesElementCipher() {
         Document d = document(); // source
