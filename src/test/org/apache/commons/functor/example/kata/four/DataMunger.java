@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/Attic/BaseDataMunger.java,v 1.2 2003/12/02 01:03:23 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.1 2003/12/02 01:12:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,6 +56,7 @@
  */
 package org.apache.commons.functor.example.kata.four;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.StringTokenizer;
@@ -68,21 +69,21 @@ import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
 import org.apache.commons.functor.example.lines.Lines;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/12/02 01:03:23 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 01:12:07 $
  * @author Rodney Waldhoff
  */
-public abstract class BaseDataMunger implements UnaryFunction {
+public class DataMunger {
 
-    protected final UnaryFunction getEvaluator(final int selected, final int col1, final int col2) {
-        return new UnaryFunction() {
-            public Object evaluate(final Object obj) {
-                return nthColumn(selected).evaluate(
-                    Algorithms.inject(
-                        Lines.from(resource(obj)).where(nthColumnIsInteger(0)), 
-                        null,
-                        lesserSpread(col1,col2)));
-            }
-        };
+    public static final Object process(final InputStream file, final int selected, final int col1, final int col2) {
+        return process(new InputStreamReader(file),selected,col1,col2);
+    }
+
+    public static final Object process(final Reader file, final int selected, final int col1, final int col2) {
+        return nthColumn(selected).evaluate(
+            Algorithms.inject(
+                Lines.from(file).where(nthColumnIsInteger(0)), 
+                null,
+                lesserSpread(col1,col2)));            
     }
     
 
@@ -90,7 +91,7 @@ public abstract class BaseDataMunger implements UnaryFunction {
      * A UnaryFunction that selects the nth column from the input 
      * String and converts it to an Integer.
      */
-    private final UnaryFunction nthInteger(int n) {  
+    private static final UnaryFunction nthInteger(int n) {  
         return new CompositeUnaryFunction(toInteger(),nthColumn(n));
     }
 
@@ -98,7 +99,7 @@ public abstract class BaseDataMunger implements UnaryFunction {
      * Selects the nth column from the input 
      * obj (String) and converts it to an int.
      */
-    private final int nthInteger(int n, Object obj) {
+    private static final int nthInteger(int n, Object obj) {
         return toInt(nthInteger(n).evaluate(obj));  
     }
 
@@ -107,7 +108,7 @@ public abstract class BaseDataMunger implements UnaryFunction {
      * in the input String can be converted into an Integer.
      * See {@link #toInteger}.
      */
-    private final UnaryPredicate nthColumnIsInteger(final int n) {
+    private static final UnaryPredicate nthColumnIsInteger(final int n) {
         return new UnaryPredicate() {
             public boolean test(Object obj) {
                 try {
@@ -125,7 +126,7 @@ public abstract class BaseDataMunger implements UnaryFunction {
      * delimited column in the given input String, or 
      * null if there is no such column.
      */
-    private final static UnaryFunction nthColumn(final int n) {
+    private static final UnaryFunction nthColumn(final int n) {
         return new UnaryFunction() {
             public Object evaluate(Object obj) {
                 StringTokenizer toker = new StringTokenizer((String)obj);
@@ -140,7 +141,7 @@ public abstract class BaseDataMunger implements UnaryFunction {
     /** 
      * Accessor method for {@link #TO_INTEGER}.
      */
-    private final UnaryFunction toInteger() {
+    private static final UnaryFunction toInteger() {
         return TO_INTEGER;
     }
     
@@ -149,7 +150,7 @@ public abstract class BaseDataMunger implements UnaryFunction {
      * Any trailing characters that aren't digits
      * are ignored.
      */
-    private final UnaryFunction TO_INTEGER = new UnaryFunction() {
+    private static final UnaryFunction TO_INTEGER = new UnaryFunction() {
         public Object evaluate(Object obj) {
             return evaluate((String)obj);
         }
@@ -177,7 +178,7 @@ public abstract class BaseDataMunger implements UnaryFunction {
      * String arguments, and return the argument
      * whose difference is smallest.
      */
-    private final BinaryFunction lesserSpread(final int col1, final int col2) {
+    private static final BinaryFunction lesserSpread(final int col1, final int col2) {
         return new BinaryFunction() {
             public Object evaluate(Object left, Object right) {
                 if(null == left) {
@@ -196,14 +197,8 @@ public abstract class BaseDataMunger implements UnaryFunction {
     /**
      * Convert the given Number into an int.
      */    
-    private int toInt(Object obj) {
+    private static int toInt(Object obj) {
         return ((Number)obj).intValue();
     }
     
-    /**
-     * Open an InputStreamReader on the specified (String) resource.
-     */    
-    private Reader resource(Object resource) {
-        return new InputStreamReader(getClass().getResourceAsStream((String)resource)); 
-    }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/TestSoccer.java,v 1.1 2003/12/02 01:01:59 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/TestSoccer.java,v 1.2 2003/12/02 01:12:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import junit.framework.TestSuite;
  * See http://pragprog.com/pragdave/Practices/Kata/KataFour.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/12/02 01:01:59 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/02 01:12:07 $
  * @author Rodney Waldhoff
  */
 public class TestSoccer extends TestCase {
@@ -77,7 +77,9 @@ public class TestSoccer extends TestCase {
     }
     
     public void test() throws Exception {
-        assertEquals("Aston_Villa",new Soccer().evaluate("soccer.txt"));            
+        assertEquals(
+            "Aston_Villa",
+            DataMunger.process(getClass().getResourceAsStream("soccer.txt"),1,6,8));            
     }
 
 }
