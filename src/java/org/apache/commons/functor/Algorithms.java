@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.11 2003/11/25 19:39:44 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.12 2003/11/25 20:47:14 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -86,7 +86,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.11 $ $Date: 2003/11/25 19:39:44 $
+ * @version $Revision: 1.12 $ $Date: 2003/11/25 20:47:14 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -164,7 +164,7 @@ public final class Algorithms {
      * Returns a {@link Generator} that will apply the given {@link UnaryFunction} to each
      * generated element.
      */
-    public static final Generator apply(final Generator gen, final UnaryFunction func) {
+    public static final Generator apply(final Generator gen, final UnaryFunction func) {        
         return new BaseGenerator(gen) {
             public void run(final UnaryProcedure proc) {
                 gen.run(new UnaryProcedure() {
@@ -190,21 +190,10 @@ public final class Algorithms {
      *
      * @see #detect(Generator,UnaryPredicate)
      */
-    public static final boolean contains(final Generator gen, final UnaryPredicate pred) {
-        // javas' inner classes suck, i should do this a different way i guess
-        final boolean[] returnCode = new boolean[1];
-        returnCode[0] = false;
-
-        gen.run(new UnaryProcedure() {
-            public void run(Object obj) {
-                if (pred.test(obj)) {
-                    returnCode[0] = true;
-                    gen.stop();
-                }
-            }
-        });
-
-        return returnCode[0];
+    public static final boolean contains(Generator gen, UnaryPredicate pred) {
+        FindWithinGenerator finder = new FindWithinGenerator(gen,pred);
+        gen.run(finder);
+        return finder.wasFound();
     }
 
     /**
@@ -231,18 +220,10 @@ public final class Algorithms {
      * @throws NoSuchElementException If no element could be found.
      */
     public static final Object detect(final Generator gen, final UnaryPredicate pred) {
-        final Object[] foundObj = new Object[1];
-        gen.run(new UnaryProcedure() {
-            public void run(Object obj) {
-                if(pred.test(obj)) {
-                    foundObj[0] = obj;
-                    gen.stop();
-                }
-            }
-        });
-
-        if (foundObj[0] != null) {
-            return foundObj[0];
+        FindWithinGenerator finder = new FindWithinGenerator(gen,pred);
+        gen.run(finder);
+        if(finder.wasFound()) {
+            return finder.getFoundObject();
         } else {
             throw new NoSuchElementException("No element matching " + pred + " was found.");
         }
@@ -257,18 +238,10 @@ public final class Algorithms {
      * @see #detect(Generator,UnaryPredicate)
      */
     public static final Object detect(final Generator gen, final UnaryPredicate pred, Object ifNone) {
-        final Object[] foundObj = new Object[1];
-        gen.run(new UnaryProcedure() {
-            public void run(Object obj) {
-                if(pred.test(obj)) {
-                    foundObj[0] = obj;
-                    gen.stop();
-                }
-            }
-        });
-
-        if (foundObj[0] != null) {
-            return foundObj[0];
+        FindWithinGenerator finder = new FindWithinGenerator(gen,pred);
+        gen.run(finder);
+        if(finder.wasFound()) {
+            return finder.getFoundObject();
         } else {
             return ifNone;
         }
@@ -439,4 +412,38 @@ public final class Algorithms {
 
         return result;
     }
+    
+    // inner classes
+    //---------------------------------------------------------------
+    
+    private static class FindWithinGenerator implements UnaryProcedure {
+        FindWithinGenerator(Generator gen, UnaryPredicate pred) {
+            this.generator = gen;
+            this.predicate = pred;
+            this.found = false;
+            this.foundObject = null;
+        }
+
+        public void run(Object obj) {
+            if(predicate.test(obj)) {
+                found = true;
+                foundObject = obj;
+                generator.stop();
+            }
+        }
+        
+        boolean wasFound() {
+            return found;
+        }
+        
+        Object getFoundObject() {
+            return foundObject;
+        }
+        
+        private UnaryPredicate predicate = null;
+        private boolean found = false;
+        private Object foundObject = null;
+        private Generator generator = null;
+    }
+    
 }
