@@ -603,7 +603,7 @@ org.apache.xml.security.utils.resolver
     <!--  compress="false" -->
   </target>
 
-  <target name="srcdist" depends="prepare" description="Creates the source distribution">
+  <target name="srcdist" depends="clean,prepare,test" description="Creates the source distribution">
      <mkdir dir="${build.srcdist}" />
 
      <copy todir="${build.srcdist}">
@@ -627,7 +627,7 @@ org.apache.xml.security.utils.resolver
          basedir="${build.srcdist}" />
   </target>
 
-  <target name="bindist" depends="compile,jar,doc,javadoc" description="Creates the binary distribution">
+  <target name="bindist" depends="clean,compile,test,jar,doc,javadoc" description="Creates the binary distribution">
      <mkdir dir="${build.bindist}" />
      <copy todir="${build.bindist}">
         <fileset dir=".">
