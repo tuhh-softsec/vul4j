@@ -225,6 +225,37 @@ DOMNode * findNextChildOfType(DOMNode *n, DOMNode::NodeType t) {
 
 }
 
+DOMElement *findFirstElementChild(DOMNode *n) {
+
+	DOMNode *c;
+
+	if (n == NULL) 
+		return NULL;
+
+	c = n->getFirstChild();
+
+	while (c != NULL && c->getNodeType() != DOMNode::ELEMENT_NODE)
+		c = c->getNextSibling();
+
+	return (DOMElement *) c;
+
+}
+
+DOMElement * findNextElementChild(DOMNode *n) {
+
+	DOMNode * s = n;
+
+	if (s == NULL)
+		return NULL;
+
+	do {
+		s = s->getNextSibling();
+	} while (s != NULL && s->getNodeType() != DOMNode::ELEMENT_NODE);
+
+	return (DOMElement *) s;
+
+}
+
 // --------------------------------------------------------------------------------
 //           Make a QName
 // --------------------------------------------------------------------------------

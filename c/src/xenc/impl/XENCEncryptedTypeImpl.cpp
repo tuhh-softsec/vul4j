@@ -251,14 +251,14 @@ void XENCEncryptedTypeImpl::load() {
 	// Don't know what the node name should be (held by super class), 
 	// so go straight to the children
 	
-	DOMNode *tmpElt = findFirstChildOfType(mp_encryptedTypeNode, DOMNode::ELEMENT_NODE);
+	DOMElement *tmpElt = (DOMElement *) findFirstChildOfType(mp_encryptedTypeNode, DOMNode::ELEMENT_NODE);
 
 	if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_EncryptionMethod)) {
 
 		XSECnew(mp_encryptionMethod, XENCEncryptionMethodImpl(mp_env, tmpElt));
 		mp_encryptionMethod->load();
 
-		tmpElt = findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
+		tmpElt = (DOMElement *) findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
 
 	}
 
@@ -270,7 +270,7 @@ void XENCEncryptedTypeImpl::load() {
 
 		// Find the next node
 
-		tmpElt = findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
+		tmpElt = (DOMElement *) findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
 
 	}
 
@@ -280,7 +280,7 @@ void XENCEncryptedTypeImpl::load() {
 
 		XSECnew(mp_cipherData, XENCCipherDataImpl(mp_env, tmpElt));
 		mp_cipherData->load();
-		tmpElt = findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
+		tmpElt = (DOMElement *) findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
 
 	}
 

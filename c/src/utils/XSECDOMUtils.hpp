@@ -136,6 +136,9 @@ XERCES_CPP_NAMESPACE_QUALIFIER DOMNode DSIG_EXPORT * findXENCNode(XERCES_CPP_NAM
 XERCES_CPP_NAMESPACE_QUALIFIER DOMNode DSIG_EXPORT * findFirstChildOfType(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *n, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode::NodeType t);
 XERCES_CPP_NAMESPACE_QUALIFIER DOMNode DSIG_EXPORT * findNextChildOfType(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *n, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode::NodeType t);
 
+XERCES_CPP_NAMESPACE_QUALIFIER DOMElement DSIG_EXPORT * findFirstElementChild(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *n);
+XERCES_CPP_NAMESPACE_QUALIFIER DOMElement DSIG_EXPORT * findNextElementChild(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *n);
+
 // --------------------------------------------------------------------------------
 //           Make a QName
 // --------------------------------------------------------------------------------

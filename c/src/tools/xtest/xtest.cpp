@@ -127,6 +127,7 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <xsec/xenc/XENCCipher.hpp>
 #include <xsec/xenc/XENCEncryptedData.hpp>
 #include <xsec/xenc/XENCEncryptedKey.hpp>
+#include <xsec/xenc/XENCEncryptionMethod.hpp>
 
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
@@ -1347,6 +1348,10 @@ void testEncrypt(DOMImplementation *impl) {
 		encryptedData->setEncodingURI(s_tstEncoding);
 		encryptedData->setMimeType(s_tstMimeType);
 
+		// Set a KeySize
+		cerr << "done\nSetting <KeySize> ... ";
+		encryptedData->getEncryptionMethod()->setKeySize(192);
+
 		cerr << "done\nSearching for <category> ... ";
 
 		DOMNode * t = findNode(doc, MAKE_UNICODE_STRING("category"));
@@ -1484,6 +1489,14 @@ void testEncrypt(DOMImplementation *impl) {
 		}
 		if (encryptedData->getEncodingURI() == NULL || !strEquals(encryptedData->getEncodingURI(), s_tstEncoding)) {
 			cerr << "Bad Encoding" << endl;
+			exit(1);
+		}
+
+		cerr << "OK" << endl;
+
+		cerr << "Checking KeySize in EncryptionMethod ... ";
+		if (encryptedData->getEncryptionMethod() == NULL || encryptedData->getEncryptionMethod()->getKeySize() != 192) {
+			cerr << "Bad KeySize" << endl;
 			exit(1);
 		}
 

@@ -89,6 +89,17 @@
  * this information, otherwise the library will not be able to
  * decrypt the data.
  *
+ * It is defined as :
+ *
+ * <complexType name='EncryptionMethodType' mixed='true'>
+ *   <sequence>
+ *     <element name='KeySize' minOccurs='0' type='xenc:KeySizeType'/>
+ *     <element name='OAEPparams' minOccurs='0' type='base64Binary'/>
+ *     <any namespace='##other' minOccurs='0' maxOccurs='unbounded'/>
+ *   </sequence>
+ *   <attribute name='Algorithm' type='anyURI' use='required'/>
+ * </complexType>
+ *
  */
 
 
@@ -137,12 +148,22 @@ public:
 	virtual const XMLCh * getOAEPparams(void) = 0;
 
 	/**
-	 * \brief Get the DOM Node of this structure
+	 * \brief Get the KeySize that was set in this EncryptionMethod.
 	 *
-	 * @returns the DOM Node representing the <EncryptionMethod> element
+	 * This field would not normally be used for the encryption algorithms
+	 * explicitly referenced in the XML Encryption standard.  It is provided
+	 * mainly for stream ciphers that have a variable key length
 	 */
 
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void) = 0;
+	virtual int getKeySize(void) = 0;
+
+	/**
+	 * \brief Get the DOM Element Node of this structure
+	 *
+	 * @returns the DOM Element Node representing the <EncryptionMethod> element
+	 */
+
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) = 0;
 
 
 	//@}
@@ -173,6 +194,18 @@ public:
 	 */
 
 	virtual void setOAEPparams(const XMLCh * params) = 0;
+
+	/**
+	 * \brief Set the KeySize that in this EncryptionMethod.
+	 *
+	 * This field would not normally be used for the encryption algorithms
+	 * explicitly referenced in the XML Encryption standard.  It is provided
+	 * mainly for stream ciphers that have a variable key length
+	 */
+
+	virtual void setKeySize(int size) = 0;
+
+	//@}
 
 private:
 

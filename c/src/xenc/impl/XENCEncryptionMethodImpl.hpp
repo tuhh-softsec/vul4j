@@ -85,7 +85,7 @@ public:
 	XENCEncryptionMethodImpl(const XSECEnv * env);
 	XENCEncryptionMethodImpl(
 		const XSECEnv * env, 
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
 	);
 	virtual ~XENCEncryptionMethodImpl();
 
@@ -97,13 +97,15 @@ public:
 						const XMLCh * algorithm);
 
 	// Interface
-	const XMLCh * getAlgorithm(void) {return mp_algorithm;}
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
-		{return mp_encryptionMethodNode;}
+	const XMLCh * getAlgorithm(void);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void)
+		{return mp_encryptionMethodElement;}
 	virtual const XMLCh * getDigestMethod(void);
 	virtual const XMLCh * getOAEPparams(void);
+	virtual int getKeySize(void);
 	virtual void setDigestMethod(const XMLCh * method);
 	virtual void setOAEPparams(const XMLCh * params);
+	virtual void setKeySize(int size);
 
 
 
@@ -115,13 +117,16 @@ private:
 	XENCEncryptionMethodImpl & operator = (const XENCEncryptionMethodImpl &);
 
 	const XSECEnv				* mp_env;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement					
+								* mp_encryptionMethodElement;	// Node at head of structure
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
+								* mp_algorithmAttr;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
-								* mp_encryptionMethodNode;	// Node at head of structure
-	XMLCh						* mp_algorithm;
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
-								* mp_digestAlgorithmAttributeNode;
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
+								* mp_digestAlgorithmAttr;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
 								* mp_oaepParamsTextNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
+								* mp_keySizeTextNode;
 };
 
 #endif /* XENCENCRYPTIONMETHODIMPL_INCLUDE */
