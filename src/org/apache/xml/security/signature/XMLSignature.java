@@ -19,6 +19,7 @@ package org.apache.xml.security.signature;
 
 
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.security.Key;
 import java.security.PublicKey;
@@ -497,7 +498,11 @@ public final class XMLSignature extends SignatureElementProxy {
             // generate digest values for all References in this SignedInfo
             si.generateDigestValues();
             OutputStream so=new BufferedOutputStream(new SignerOutputStream(sa));
-            
+            try {
+                so.close();
+            } catch (IOException e) {
+                //Imposible
+            }
             // get the canonicalized bytes from SignedInfo
             si.signInOctectStream(so);
 
@@ -603,7 +608,13 @@ public final class XMLSignature extends SignatureElementProxy {
 
          // Get the canonicalized (normalized) SignedInfo
          SignerOutputStream so=new SignerOutputStream(sa);
-         this._signedInfo.signInOctectStream(so);
+         BufferedOutputStream bos=new BufferedOutputStream(so);
+         this._signedInfo.signInOctectStream(bos);
+         try {
+			bos.close();
+		} catch (IOException e) {
+			//Imposible
+		}
          
          //retrieve the byte[] from the stored signature
          byte sigBytes[] = this.getSignatureValue();
