@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAll.java,v 1.2 2003/02/20 01:12:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAll.java,v 1.3 2003/06/29 21:46:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/02/20 01:12:41 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/29 21:46:12 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -77,6 +77,8 @@ public class TestAll extends TestCase {
         // sub-packages
         suite.addTest(org.apache.commons.functor.adapter.TestAll.suite());
         suite.addTest(org.apache.commons.functor.core.TestAll.suite());
+        suite.addTest(org.apache.commons.functor.util.TestAll.suite());
+        suite.addTest(org.apache.commons.functor.generators.TestAll.suite());
         suite.addTest(org.apache.commons.functor.example.TestAll.suite());
         
         return suite;

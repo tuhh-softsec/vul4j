@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsWithinRange.java,v 1.1 2003/06/24 15:17:03 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsWithinRange.java,v 1.2 2003/06/29 21:46:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,8 +62,9 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/06/24 15:17:03 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/29 21:46:12 $
  * @author Rodney Waldhoff
+ * @author Jason Horman
  */
 public class TestIsWithinRange extends BaseFunctorTest {
 
