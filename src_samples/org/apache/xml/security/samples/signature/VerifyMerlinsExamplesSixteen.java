@@ -201,6 +201,11 @@ public class VerifyMerlinsExamplesSixteen {
                               "//ds:Signature[1]", nscontext);
       XMLSignature signature = new XMLSignature(sigElement,
                                                 f.toURL().toString());
+
+      signature.getSignedInfo()
+         .addResourceResolver(new org.apache.xml.security.samples.utils.resolver
+            .OfflineResolver());
+
       signature.setFollowNestedManifests(false);
 
       // signature.addResourceResolver(new OfflineResolver());

@@ -134,7 +134,7 @@ public class CreateEnvelopingSignature {
 
       {
          ObjectContainer obj = new ObjectContainer(doc);
-         Element anElement = doc.createElement("InsideObject");
+         Element anElement = doc.createElementNS(null, "InsideObject");
 
          anElement.appendChild(doc.createTextNode("A text in a box"));
          obj.appendChild(anElement);

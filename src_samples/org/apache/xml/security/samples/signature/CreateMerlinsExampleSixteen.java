@@ -140,8 +140,8 @@ public class CreateMerlinsExampleSixteen {
       Element envelope = doc.createElementNS("http://www.usps.gov/",
                                              "Envelope");
 
-      envelope.setAttribute("xmlns", "http://www.usps.gov/");
-      envelope.setAttribute("xmlns:foo", "http://www.usps.gov/foo");
+      envelope.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", "http://www.usps.gov/");
+      envelope.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:foo", "http://www.usps.gov/foo");
       envelope.appendChild(doc.createTextNode("\n"));
       doc.appendChild(doc.createComment(" Preamble "));
       doc.appendChild(envelope);
@@ -173,21 +173,21 @@ public class CreateMerlinsExampleSixteen {
 
       Element Notaries = doc.createElement("Notaries");
 
-      Notaries.setAttribute("xmlns", "");
-      Notaries.setAttribute("Id", "notaries");
+      Notaries.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", "");
+      Notaries.setAttributeNS(null, "Id", "notaries");
       IdResolver.registerElementById(Notaries, "Id");
 
       {
-         Element Notary = doc.createElement("Notary");
+         Element Notary = doc.createElementNS(null, "Notary");
 
-         Notary.setAttribute("name", "Great, A. T.");
+         Notary.setAttributeNS(null, "name", "Great, A. T.");
          Notaries.appendChild(Notary);
       }
 
       {
-         Element Notary = doc.createElement("Notary");
+         Element Notary = doc.createElementNS(null, "Notary");
 
-         Notary.setAttribute("name", "Hun, A. T.");
+         Notary.setAttributeNS(null, "name", "Hun, A. T.");
          Notaries.appendChild(Notary);
       }
 
@@ -233,9 +233,9 @@ public class CreateMerlinsExampleSixteen {
 
          object.setId("object-3");
 
-         Element nonc = doc.createElement("NonCommentandus");
+         Element nonc = doc.createElementNS(null, "NonCommentandus");
 
-         nonc.setAttribute("xmlns", "");
+         nonc.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", "");
          nonc.appendChild(doc.createComment(" Commentandum "));
          object.appendChild(doc.createTextNode("\n        "));
          object.appendChild(nonc);
@@ -262,7 +262,7 @@ public class CreateMerlinsExampleSixteen {
          Element signedAdress = doc.createElementNS("urn:demo",
                                                     "SignedAddress");
 
-         signedAdress.setAttribute("xmlns", "urn:demo");
+         signedAdress.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", "urn:demo");
 
          Element IP = doc.createElementNS("urn:demo", "IP");
 

@@ -131,16 +131,15 @@ public class AxisSigner {
        *
        */
       String soapNS = "http://www.w3.org/2001/12/soap-envelope";
-      String env = "env";
-      String envPrefix = env + ":";
-      Element envelopeElement = doc.createElementNS(soapNS,
-                                   envPrefix + "Envelope");
+      String SOAPSECNS = "http://schemas.xmlsoap.org/soap/security/2000-12";
 
-      envelopeElement.setAttribute("xmlns:" + env, soapNS);
+      Element envelopeElement = doc.createElementNS(soapNS, "env:Envelope");
+
+      envelopeElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:env", soapNS);
       doc.appendChild(envelopeElement);
 
-      Element headerElem = doc.createElementNS(soapNS, envPrefix + "Header");
-      Element bodyElem = doc.createElementNS(soapNS, envPrefix + "Body");
+      Element headerElem = doc.createElementNS(soapNS, "env:Header");
+      Element bodyElem = doc.createElementNS(soapNS, "env:Body");
 
       envelopeElement.appendChild(doc.createTextNode("\n"));
       envelopeElement.appendChild(headerElem);
@@ -151,17 +150,14 @@ public class AxisSigner {
          .appendChild(doc
             .createTextNode("This is signed together with it's Body ancestor"));
 
-      String SOAPSECNS = "http://schemas.xmlsoap.org/soap/security/2000-12";
-      String SOAPSECprefix = "SOAP-SEC";
 
-      bodyElem.setAttributeNS(SOAPSECNS, SOAPSECprefix + ":" + "id", "Body");
+      bodyElem.setAttributeNS(SOAPSECNS, "SOAP-SEC:id", "Body");
 
-      Element soapSignatureElem = doc.createElementNS(SOAPSECNS,
-                                     SOAPSECprefix + ":" + "Signature");
+      Element soapSignatureElem = doc.createElementNS(SOAPSECNS, "SOAP-SEC:Signature");
 
-      envelopeElement.setAttribute("xmlns:" + SOAPSECprefix, SOAPSECNS);
-      envelopeElement.setAttribute(env + ":" + "actor", "some-uri");
-      envelopeElement.setAttribute(env + ":" + "mustUnderstand", "1");
+      envelopeElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:SOAP-SEC", SOAPSECNS);
+      envelopeElement.setAttributeNS(null, "actor", "some-uri");
+      envelopeElement.setAttributeNS(null, "mustUnderstand", "1");
       envelopeElement.appendChild(doc.createTextNode("\n"));
       headerElem.appendChild(soapSignatureElem);
 
@@ -176,10 +172,13 @@ public class AxisSigner {
       soapSignatureElem.appendChild(sig.getElement());
 
       {
-         // sig.addDocument("#Body");
+         sig.addDocument("#Body");
+
+         /*
          Transforms transforms = new Transforms(doc);
          transforms.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
          sig.addDocument("", transforms);
+         */
       }
 
       {

@@ -125,16 +125,16 @@ public class CreateCollectableSignature {
 
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc = db.newDocument();
-      Element rootElement = doc.createElement("root");
+      Element rootElement = doc.createElementNS(null, "root");
 
       doc.appendChild(rootElement);
 
       /*
       Element signedResourceElement = doc.createElementNS("http://custom/", "custom:signedContent");
-      signedResourceElement.setAttribute("xmlns:custom", "http://custom/");
+      signedResourceElement.setAttributeNS(Constants.NamespaceNS, "xmlns:custom", "http://custom/");
       signedResourceElement.setAttribute("Id", "id0");
       */
-      Element signedResourceElement = doc.createElement("signedContent");
+      Element signedResourceElement = doc.createElementNS(null, "signedContent");
 
       signedResourceElement.appendChild(doc.createTextNode("Signed Text\n"));
       rootElement.appendChild(signedResourceElement);
