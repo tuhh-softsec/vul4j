@@ -1,6 +1,6 @@
-/* $Id: MultiVariableExpander.java,v 1.5 2004/05/10 06:30:08 skitching Exp $
+/* $Id: MultiVariableExpander.java,v 1.6 2004/05/10 06:46:30 skitching Exp $
  *
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2003-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
