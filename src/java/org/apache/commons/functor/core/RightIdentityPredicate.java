@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.2 2003/01/29 23:03:18 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/RightIdentityPredicate.java,v 1.1 2003/01/29 23:03:18 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,39 +56,57 @@
  */
 package org.apache.commons.functor.core;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.io.Serializable;
+
+import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/29 23:03:18 $
+ * {@link #test Tests} to the <code>boolean</code>
+ * value of the <code>Boolean</code>-valued right
+ * hand parameter.
+ * Throws an exception if the parameter isn't a 
+ * non-<code>null</code> <code>Boolean</code>.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/01/29 23:03:18 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+public final class RightIdentityPredicate implements BinaryPredicate, Serializable {
+    
+    // constructor
+    // ------------------------------------------------------------------------
+    public RightIdentityPredicate() {
+    }
+ 
+    // functor interface
+    // ------------------------------------------------------------------------
+
+    public boolean test(Object left, Object right) {
+        return test((Boolean)right);
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTest(TestConstantFunction.suite());
-        suite.addTest(TestConstantPredicate.suite());
-        suite.addTest(TestNoOpProcedure.suite());
-        suite.addTest(TestIdentityFunction.suite());
-        suite.addTest(TestLeftIdentityFunction.suite());
-        suite.addTest(TestRightIdentityFunction.suite());
-        suite.addTest(TestInstanceOfPredicate.suite());
-        suite.addTest(TestIsNullPredicate.suite());
-        suite.addTest(TestIsNotNullPredicate.suite());
-        suite.addTest(TestEqualPredicate.suite());
-        suite.addTest(TestNotEqualPredicate.suite());
-        suite.addTest(TestIdentityPredicate.suite());
-        suite.addTest(TestLeftIdentityPredicate.suite());
-        suite.addTest(TestRightIdentityPredicate.suite());
-
-        suite.addTest(org.apache.commons.functor.core.composite.TestAll.suite());
-        
-        return suite;
+    private boolean test(Boolean bool) {
+        return bool.booleanValue();
     }
+
+    public boolean equals(Object that) {
+        return (that instanceof RightIdentityPredicate);
+    }
+    
+    public int hashCode() {
+        return "RightIdentityPredicate".hashCode();
+    }
+    
+    public String toString() {
+        return "RightIdentityPredicate";
+    }
+    
+    // static methods
+    // ------------------------------------------------------------------------
+    public static RightIdentityPredicate getRightIdentityPredicate() {
+        return INSTANCE;
+    }
+    
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final RightIdentityPredicate INSTANCE = new RightIdentityPredicate();
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.2 2003/01/29 23:03:18 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestRightIdentityPredicate.java,v 1.1 2003/01/29 23:03:18 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,38 +57,78 @@
 package org.apache.commons.functor.core;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.BinaryPredicate;
+
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/29 23:03:18 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/29 23:03:18 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestRightIdentityPredicate extends BaseFunctorTest {
+
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestRightIdentityPredicate(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTest(TestConstantFunction.suite());
-        suite.addTest(TestConstantPredicate.suite());
-        suite.addTest(TestNoOpProcedure.suite());
-        suite.addTest(TestIdentityFunction.suite());
-        suite.addTest(TestLeftIdentityFunction.suite());
-        suite.addTest(TestRightIdentityFunction.suite());
-        suite.addTest(TestInstanceOfPredicate.suite());
-        suite.addTest(TestIsNullPredicate.suite());
-        suite.addTest(TestIsNotNullPredicate.suite());
-        suite.addTest(TestEqualPredicate.suite());
-        suite.addTest(TestNotEqualPredicate.suite());
-        suite.addTest(TestIdentityPredicate.suite());
-        suite.addTest(TestLeftIdentityPredicate.suite());
-        suite.addTest(TestRightIdentityPredicate.suite());
+        return new TestSuite(TestRightIdentityPredicate.class);
+    }
 
-        suite.addTest(org.apache.commons.functor.core.composite.TestAll.suite());
-        
-        return suite;
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
+
+    protected Object makeFunctor() {
+        return new RightIdentityPredicate();
+    }
+    
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------
+    
+    public void testTest() throws Exception {
+        BinaryPredicate p = new RightIdentityPredicate();
+        assertTrue(p.test(null,Boolean.TRUE));
+        assertTrue(!p.test(null,Boolean.FALSE));
+        try {
+            p.test(null,"true");
+            fail("Expected ClassCastException");
+        } catch(ClassCastException e) {
+            // expected
+        }
+        try {
+            p.test(null,null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+    }
+    
+    public void testEquals() throws Exception {
+        RightIdentityPredicate p = new RightIdentityPredicate();
+        assertEquals(p,p);
+        assertObjectsAreEqual(p,new RightIdentityPredicate());
+        assertObjectsAreEqual(p,RightIdentityPredicate.getRightIdentityPredicate());
+        assertObjectsAreNotEqual(p,new IdentityPredicate());
+        assertObjectsAreNotEqual(p,new ConstantPredicate(true));
+    }
+    
+    public void testConstant() throws Exception {
+        assertEquals(RightIdentityPredicate.getRightIdentityPredicate(),RightIdentityPredicate.getRightIdentityPredicate());
+        assertSame(RightIdentityPredicate.getRightIdentityPredicate(),RightIdentityPredicate.getRightIdentityPredicate());
     }
 }
