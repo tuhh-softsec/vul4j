@@ -142,6 +142,22 @@ public class TarUnArchiver extends AbstractZipUnArchiver
         }
 
         /**
+         *  Constructor
+         */
+        public UntarCompressionMethod( String method )
+        {
+            super();
+            try
+            {
+                setValue( method );
+            }
+            catch ( ArchiverException ae )
+            {
+                //Do nothing
+            }
+        }
+
+        /**
          * Get valid enumeration values
          *
          * @return valid values
