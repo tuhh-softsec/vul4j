@@ -18,9 +18,11 @@ package org.apache.xml.security;
 
 
 
-import java.io.*;
-import java.lang.reflect.Method;
-import javax.xml.parsers.*;
+import java.io.InputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -28,13 +30,17 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.implementations.FuncHere;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.utils.I18n;
+import org.apache.xml.security.utils.PRNG;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
-import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.compiler.FuncLoader;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.functions.Function;
-import org.w3c.dom.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 
 /**
@@ -53,6 +59,9 @@ public class Init {
 
    /** Field _initialized */
    private static boolean _alreadyInitialized = false;
+   
+   /** The namespace for CONF file **/
+   public static final String CONF_NS="http://www.xmlsecurity.org/NS/#configuration";
 
    /**
     * Method isInitialized
@@ -69,7 +78,22 @@ public class Init {
     */
    public synchronized static void init() {
 
-      if (!_alreadyInitialized) {
+      if (_alreadyInitialized) {
+        return;
+      }
+      long XX_configure_i18n_end=0;
+      long XX_configure_reg_c14n_start=0;
+      long XX_configure_reg_c14n_end=0;
+      long XX_configure_reg_here_start=0;
+      long XX_configure_reg_jcemapper_end=0;
+      long XX_configure_reg_keyInfo_start=0;
+      long XX_configure_reg_keyResolver_end=0;
+      long XX_configure_reg_prefixes_start=0;
+      long XX_configure_reg_resourceresolver_start=0;
+      long XX_configure_reg_sigalgos_end=0;
+      long XX_configure_reg_transforms_end=0;
+      long XX_configure_reg_keyInfo_end=0;
+      long XX_configure_reg_keyResolver_start=0;
          _alreadyInitialized = true;
 
          try {
@@ -95,26 +119,47 @@ public class Init {
                   .getResourceAsStream(cfile != null ? cfile : "resource/config.xml");
 
             Document doc = db.parse(is);
-            long XX_parsing_end = System.currentTimeMillis();
-            Element context = doc.createElementNS(null, "nscontext");
-
-            context.setAttributeNS(
-               Constants.NamespaceSpecNS, "xmlns:x",
-                    "http://www.xmlsecurity.org/NS/#configuration");
-            CachedXPathAPI cx=new CachedXPathAPI();
-            long XX_configure_i18n_start = System.currentTimeMillis();
-
+            long XX_parsing_end = System.currentTimeMillis();            
+            XX_configure_reg_here_start = System.currentTimeMillis();
+            registerHereFunction();
+            long XX_configure_reg_here_end = System.currentTimeMillis();
+            //CachedXPathAPI cx=new CachedXPathAPI();
+            long XX_configure_i18n_start = 0;            
+            
             {
+                XX_configure_reg_keyInfo_start = System.currentTimeMillis();
+               try {
+                  KeyInfo.init();
+               } catch (Exception e) {
+                  e.printStackTrace();
 
+                  throw e;
+               }
+               XX_configure_reg_keyInfo_end = System.currentTimeMillis();
+            }
+            
+			long XX_configure_reg_transforms_start=0;
+			long XX_configure_reg_jcemapper_start=0;
+			long XX_configure_reg_sigalgos_start=0;
+			long XX_configure_reg_resourceresolver_end=0;
+			long XX_configure_reg_prefixes_end=0;
+            Node config=doc.getFirstChild();
+            for (;config!=null;config=config.getNextSibling()) {
+            	if ("Configuration".equals(config.getLocalName())) {
+            		break;
+                }
+            }
+			for (Node el=config.getFirstChild();el!=null;el=el.getNextSibling()) {
+                if (!(el instanceof Element)) {
+                	continue;
+                }
+                String tag=el.getLocalName();
+            if (tag.equals("ResourceBundles")){
+                XX_configure_i18n_start = System.currentTimeMillis();
+            	Element resource=(Element)el;
                /* configure internationalization */
-               Attr langAttr = (Attr) cx.selectSingleNode(
-                  doc,
-                  "/x:Configuration/x:ResourceBundles/@defaultLanguageCode",
-                  context);
-               Attr countryAttr = (Attr) cx.selectSingleNode(
-                  doc,
-                  "/x:Configuration/x:ResourceBundles/@defaultCountryCode",
-                  context);
+               Attr langAttr = resource.getAttributeNode("defaultLanguageCode");
+               Attr countryAttr = resource.getAttributeNode("defaultCountryCode");
                String languageCode = (langAttr == null)
                                      ? null
                                      : langAttr.getNodeValue();
@@ -123,68 +168,23 @@ public class Init {
                                     : countryAttr.getNodeValue();
 
                I18n.init(languageCode, countryCode);
+               XX_configure_i18n_end = System.currentTimeMillis();
             }
-
-            long XX_configure_i18n_end = System.currentTimeMillis();
-
-            /**
-             * Try to register our here() implementation as internal function.
-             */
-            long XX_configure_reg_here_start = System.currentTimeMillis();
-
-            {
-                FunctionTable.installFunction("here", new FuncHere());
-                log.debug("Registered class " + FuncHere.class.getName()
-                        + " for XPath function 'here()' function in internal table");
-
-                /* The following tweak by "Eric Olson" <ego@alum.mit.edu>
-                 * is to enable xml-security to play with JDK 1.4 which
-                 * unfortunately bundles an old version of Xalan
-                 */
-                FuncLoader funcHereLoader = new FuncHereLoader();
-
-                try {
-                    java.lang.reflect.Field mFunctions = FunctionTable.class.getField("m_functions");
-                    FuncLoader[] m_functions = (FuncLoader[]) mFunctions.get(null);
-
-                    for (int i = 0; i < m_functions.length; i++) {
-                        FuncLoader loader = m_functions[i];
-
-                        if (loader != null) {
-                            log.debug("Func " + i + " " + loader.getName());
-
-                            if (loader.getName().equals(funcHereLoader.getName())) {
-                                m_functions[i] = funcHereLoader;
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    log.info("Unable to patch xalan function table.", e);
-                }
-            }
-             
-            long XX_configure_reg_here_end = System.currentTimeMillis();
-            long XX_configure_reg_c14n_start = System.currentTimeMillis();
-
-            {
+           
+            if (tag.equals("CanonicalizationMethods")){
+                XX_configure_reg_c14n_start = System.currentTimeMillis();
                Canonicalizer.init();
+               Element[] list=XMLUtils.selectNodes(el.getFirstChild(),CONF_NS,"CanonicalizationMethod");               
 
-               NodeList c14nElem = cx.selectNodeList(
-                  doc,
-                  "/x:Configuration/x:CanonicalizationMethods/x:CanonicalizationMethod",
-                  context);
-
-               for (int i = 0; i < c14nElem.getLength(); i++) {
-                  String URI = ((Element) c14nElem.item(i)).getAttributeNS(null,
+               for (int i = 0; i < list.length; i++) {
+                  String URI = list[i].getAttributeNS(null,
                                   "URI");
                   String JAVACLASS =
-                     ((Element) c14nElem.item(i)).getAttributeNS(null,
+                     list[i].getAttributeNS(null,
                         "JAVACLASS");
-                  boolean registerClass = true;
-
                   try {
-                     Class c = Class.forName(JAVACLASS);
-                     Method methods[] = c.getMethods();
+                      Class.forName(JAVACLASS);
+/*                     Method methods[] = c.getMethods();
 
                      for (int j = 0; j < methods.length; j++) {
                         Method currMeth = methods[j];
@@ -193,139 +193,114 @@ public class Init {
                                 .equals(JAVACLASS)) {
                            log.debug(currMeth.getDeclaringClass());
                         }
-                     }
+                     }*/
+                     log.debug("Canonicalizer.register(" + URI + ", "
+                            + JAVACLASS + ")");
+                     Canonicalizer.register(URI, JAVACLASS);
                   } catch (ClassNotFoundException e) {
                      Object exArgs[] = { URI, JAVACLASS };
 
                      log.fatal(I18n.translate("algorithm.classDoesNotExist",
                                               exArgs));
-
-                     registerClass = false;
-                  }
-
-                  if (registerClass) {
-                     log.debug("Canonicalizer.register(" + URI + ", "
-                               + JAVACLASS + ")");
-                     Canonicalizer.register(URI, JAVACLASS);
                   }
                }
+               XX_configure_reg_c14n_end = System.currentTimeMillis();
             }
-
-            long XX_configure_reg_c14n_end = System.currentTimeMillis();
-            long XX_configure_reg_transforms_start = System.currentTimeMillis();
-
-            {
+                        
+            if (tag.equals("TransformAlgorithms")){
+               XX_configure_reg_transforms_start = System.currentTimeMillis();
                Transform.init();
 
-               NodeList tranElem = cx.selectNodeList(
-                  doc,
-                  "/x:Configuration/x:TransformAlgorithms/x:TransformAlgorithm",
-                  context);
+               Element[] tranElem = XMLUtils.selectNodes(el.getFirstChild(),CONF_NS,"TransformAlgorithm");
 
-               for (int i = 0; i < tranElem.getLength(); i++) {
-                  String URI = ((Element) tranElem.item(i)).getAttributeNS(null,
+               for (int i = 0; i < tranElem.length; i++) {
+                  String URI = tranElem[i].getAttributeNS(null,
                                   "URI");
                   String JAVACLASS =
-                     ((Element) tranElem.item(i)).getAttributeNS(null,
+                     tranElem[i].getAttributeNS(null,
                         "JAVACLASS");
-                  boolean registerClass = true;
-
                   try {
                      Class.forName(JAVACLASS);
+                     log.debug("Transform.register(" + URI + ", " + JAVACLASS
+                            + ")");
+                     Transform.register(URI, JAVACLASS);
                   } catch (ClassNotFoundException e) {
                      Object exArgs[] = { URI, JAVACLASS };
 
                      log.fatal(I18n.translate("algorithm.classDoesNotExist",
                                               exArgs));
 
-                     registerClass = false;
-                  }
-
-                  if (registerClass) {
-                     log.debug("Transform.register(" + URI + ", " + JAVACLASS
-                               + ")");
-                     Transform.register(URI, JAVACLASS);
                   }
                }
+               XX_configure_reg_transforms_end = System.currentTimeMillis();
+            }
+                        
+
+            if ("JCEAlgorithmMappings".equals(tag)){
+               XX_configure_reg_jcemapper_start = System.currentTimeMillis();
+               JCEMapper.init((Element)el);
+               XX_configure_reg_jcemapper_end = System.currentTimeMillis();
             }
 
-            long XX_configure_reg_transforms_end = System.currentTimeMillis();
-            long XX_configure_reg_jcemapper_start = System.currentTimeMillis();
+                        
 
-            {
-               Element jcemapperElem = (Element) cx.selectSingleNode(
-                  doc, "/x:Configuration/x:JCEAlgorithmMappings", context);
-
-               JCEMapper.init(jcemapperElem,cx);
-            }
-
-            long XX_configure_reg_jcemapper_end = System.currentTimeMillis();
-            long XX_configure_reg_sigalgos_start = System.currentTimeMillis();
-
-            {
+            if (tag.equals("SignatureAlgorithms")){
+               XX_configure_reg_sigalgos_start = System.currentTimeMillis();
                SignatureAlgorithm.providerInit();
 
-               NodeList sigElems = cx.selectNodeList(
-                  doc,
-                  "/x:Configuration/x:SignatureAlgorithms/x:SignatureAlgorithm",
-                  context);
+               Element[] sigElems = XMLUtils.selectNodes(el.getFirstChild(), CONF_NS,                  
+                  "SignatureAlgorithm");
 
-               for (int i = 0; i < sigElems.getLength(); i++) {
-                  String URI = ((Element) sigElems.item(i)).getAttributeNS(null,
+               for (int i = 0; i < sigElems.length; i++) {
+                  String URI = sigElems[i].getAttributeNS(null,
                                   "URI");
                   String JAVACLASS =
-                     ((Element) sigElems.item(i)).getAttributeNS(null,
+                    sigElems[i].getAttributeNS(null,
                         "JAVACLASS");
 
                   /** $todo$ handle registering */
-                  boolean registerClass = true;
 
                   try {
-                     Class c = Class.forName(JAVACLASS);
-                     Method methods[] = c.getMethods();
+                      Class.forName(JAVACLASS);
+ //                    Method methods[] = c.getMethods();
 
-                     for (int j = 0; j < methods.length; j++) {
-                        Method currMeth = methods[j];
-
-                        if (currMeth.getDeclaringClass().getName()
-                                .equals(JAVACLASS)) {
-                           log.debug(currMeth.getDeclaringClass());
-                        }
-                     }
+//                     for (int j = 0; j < methods.length; j++) {
+//                        Method currMeth = methods[j];
+//
+//                        if (currMeth.getDeclaringClass().getName()
+//                                .equals(JAVACLASS)) {
+//                           log.debug(currMeth.getDeclaringClass());
+//                        }
+//                     }
+                     log.debug("SignatureAlgorithm.register(" + URI + ", "
+                            + JAVACLASS + ")");
+                     SignatureAlgorithm.register(URI, JAVACLASS);
                   } catch (ClassNotFoundException e) {
                      Object exArgs[] = { URI, JAVACLASS };
 
                      log.fatal(I18n.translate("algorithm.classDoesNotExist",
                                               exArgs));
 
-                     registerClass = false;
-                  }
-
-                  if (registerClass) {
-                     log.debug("SignatureAlgorithm.register(" + URI + ", "
-                               + JAVACLASS + ")");
-                     SignatureAlgorithm.register(URI, JAVACLASS);
                   }
                }
+               XX_configure_reg_sigalgos_end = System.currentTimeMillis();
             }
 
-            long XX_configure_reg_sigalgos_end = System.currentTimeMillis();
-            long XX_configure_reg_resourceresolver_start =
-               System.currentTimeMillis();
-
-            {
+            
+            
+            if (tag.equals("ResourceResolvers")){
+               XX_configure_reg_resourceresolver_start = System.currentTimeMillis();
                ResourceResolver.init();
 
-               NodeList resolverElem = cx.selectNodeList(
-                  doc, "/x:Configuration/x:ResourceResolvers/x:Resolver",
-                  context);
+               Element[]resolverElem = XMLUtils.selectNodes(el.getFirstChild(),CONF_NS,
+                  "Resolver");
 
-               for (int i = 0; i < resolverElem.getLength(); i++) {
+               for (int i = 0; i < resolverElem.length; i++) {
                   String JAVACLASS =
-                     ((Element) resolverElem.item(i)).getAttributeNS(null,
+                      resolverElem[i].getAttributeNS(null,
                         "JAVACLASS");
                   String Description =
-                     ((Element) resolverElem.item(i)).getAttributeNS(null,
+                     resolverElem[i].getAttributeNS(null,
                         "DESCRIPTION");
 
                   if ((Description != null) && (Description.length() > 0)) {
@@ -337,39 +312,29 @@ public class Init {
                   }
 
                   ResourceResolver.register(JAVACLASS);
-               }
+                  XX_configure_reg_resourceresolver_end =
+                    System.currentTimeMillis();
+               }               
+
             }
 
-            long XX_configure_reg_resourceresolver_end =
-               System.currentTimeMillis();
-            long XX_configure_reg_keyInfo_start = System.currentTimeMillis();
+            
 
-            {
-               try {
-                  KeyInfo.init();
-               } catch (Exception e) {
-                  e.printStackTrace();
+            
 
-                  throw e;
-               }
-            }
-
-            long XX_configure_reg_keyInfo_end = System.currentTimeMillis();
-            long XX_configure_reg_keyResolver_start =
-               System.currentTimeMillis();
-
-            {
+                        
+            if (tag.equals("KeyResolver")){
+               XX_configure_reg_keyResolver_start =System.currentTimeMillis();
                KeyResolver.init();
 
-               NodeList resolverElem = cx.selectNodeList(
-                  doc, "/x:Configuration/x:KeyResolver/x:Resolver", context);
+               Element[] resolverElem = XMLUtils.selectNodes(el.getFirstChild(), CONF_NS,"Resolver");
 
-               for (int i = 0; i < resolverElem.getLength(); i++) {
+               for (int i = 0; i < resolverElem.length; i++) {
                   String JAVACLASS =
-                     ((Element) resolverElem.item(i)).getAttributeNS(null,
+                     resolverElem[i].getAttributeNS(null,
                         "JAVACLASS");
                   String Description =
-                     ((Element) resolverElem.item(i)).getAttributeNS(null,
+                     resolverElem[i].getAttributeNS(null,
                         "DESCRIPTION");
 
                   if ((Description != null) && (Description.length() > 0)) {
@@ -382,58 +347,102 @@ public class Init {
 
                   KeyResolver.register(JAVACLASS);
                }
+               XX_configure_reg_keyResolver_end = System.currentTimeMillis();
             }
 
-            long XX_configure_reg_keyResolver_end = System.currentTimeMillis();
-            long XX_configure_reg_prefixes_start = System.currentTimeMillis();
-
-            {
+                        
+            if (tag.equals("PrefixMappings")){
+                XX_configure_reg_prefixes_start = System.currentTimeMillis();
                log.debug("Now I try to bind prefixes:");
 
-               NodeList nl = cx.selectNodeList(
-                  doc, "/x:Configuration/x:PrefixMappings/x:PrefixMapping",
-                  context);
+               Element[] nl = XMLUtils.selectNodes(el.getFirstChild(), CONF_NS,"PrefixMapping");
 
-               for (int i = 0; i < nl.getLength(); i++) {
-                  String namespace = ((Element) nl.item(i)).getAttributeNS(null,
+               for (int i = 0; i < nl.length; i++) {
+                  String namespace = nl[i].getAttributeNS(null,
                                         "namespace");
-                  String prefix = ((Element) nl.item(i)).getAttributeNS(null,
+                  String prefix = nl[i].getAttributeNS(null,
                                      "prefix");
 
                   log.debug("Now I try to bind " + prefix + " to " + namespace);
                   org.apache.xml.security.utils.ElementProxy
                      .setDefaultPrefix(namespace, prefix);
                }
+               XX_configure_reg_prefixes_end = System.currentTimeMillis();
             }
-
-            long XX_configure_reg_prefixes_end = System.currentTimeMillis();
+            }
+            
             long XX_init_end = System.currentTimeMillis();
 
             //J-
-            log.debug("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
-            log.debug("  XX_prng                           " + ((int)(XX_prng_end - XX_prng_start)) + " ms");
-            log.debug("  XX_parsing                        " + ((int)(XX_parsing_end - XX_parsing_start)) + " ms");
-            log.debug("  XX_configure_i18n                 " + ((int)(XX_configure_i18n_end- XX_configure_i18n_start)) + " ms");
-            log.debug("  XX_configure_reg_c14n             " + ((int)(XX_configure_reg_c14n_end- XX_configure_reg_c14n_start)) + " ms");
-            log.debug("  XX_configure_reg_here             " + ((int)(XX_configure_reg_here_end- XX_configure_reg_here_start)) + " ms");
-            log.debug("  XX_configure_reg_jcemapper        " + ((int)(XX_configure_reg_jcemapper_end- XX_configure_reg_jcemapper_start)) + " ms");
-            log.debug("  XX_configure_reg_keyInfo          " + ((int)(XX_configure_reg_keyInfo_end- XX_configure_reg_keyInfo_start)) + " ms");
-            log.debug("  XX_configure_reg_keyResolver      " + ((int)(XX_configure_reg_keyResolver_end- XX_configure_reg_keyResolver_start)) + " ms");
-            log.debug("  XX_configure_reg_prefixes         " + ((int)(XX_configure_reg_prefixes_end- XX_configure_reg_prefixes_start)) + " ms");
-            log.debug("  XX_configure_reg_resourceresolver " + ((int)(XX_configure_reg_resourceresolver_end- XX_configure_reg_resourceresolver_start)) + " ms");
-            log.debug("  XX_configure_reg_sigalgos         " + ((int)(XX_configure_reg_sigalgos_end- XX_configure_reg_sigalgos_start)) + " ms");
-            log.debug("  XX_configure_reg_transforms       " + ((int)(XX_configure_reg_transforms_end- XX_configure_reg_transforms_start)) + " ms");
+            log.error("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
+            log.error("  XX_prng                           " + ((int)(XX_prng_end - XX_prng_start)) + " ms");
+            log.error("  XX_parsing                        " + ((int)(XX_parsing_end - XX_parsing_start)) + " ms");
+            
+            log.error("  XX_configure_i18n                 " + ((int)(XX_configure_i18n_end- XX_configure_i18n_start)) + " ms");
+			log.error("  XX_configure_reg_c14n             " + ((int)(XX_configure_reg_c14n_end- XX_configure_reg_c14n_start)) + " ms");            
+			log.error("  XX_configure_reg_here             " + ((int)(XX_configure_reg_here_end- XX_configure_reg_here_start)) + " ms");            
+			log.error("  XX_configure_reg_jcemapper        " + ((int)(XX_configure_reg_jcemapper_end- XX_configure_reg_jcemapper_start)) + " ms");
+            
+			
+			log.error("  XX_configure_reg_keyInfo          " + ((int)(XX_configure_reg_keyInfo_end- XX_configure_reg_keyInfo_start)) + " ms");            
+			
+			log.error("  XX_configure_reg_keyResolver      " + ((int)(XX_configure_reg_keyResolver_end- XX_configure_reg_keyResolver_start)) + " ms");            
+			log.error("  XX_configure_reg_prefixes         " + ((int)(XX_configure_reg_prefixes_end- XX_configure_reg_prefixes_start)) + " ms");            
+			log.error("  XX_configure_reg_resourceresolver " + ((int)(XX_configure_reg_resourceresolver_end- XX_configure_reg_resourceresolver_start)) + " ms");            
+			log.error("  XX_configure_reg_sigalgos         " + ((int)(XX_configure_reg_sigalgos_end- XX_configure_reg_sigalgos_start)) + " ms");            
+			log.error("  XX_configure_reg_transforms       " + ((int)(XX_configure_reg_transforms_end- XX_configure_reg_transforms_start)) + " ms");
             //J+
          } catch (Exception e) {
             log.fatal("Bad: ", e);
             e.printStackTrace();
          }
-      }
+      
    }
 
 
 
    /**
+ * 
+ */
+private static void registerHereFunction() {
+	/**
+	 * Try to register our here() implementation as internal function.
+	 */            
+	{	    
+	    FunctionTable.installFunction("here", new FuncHere());
+	    log.debug("Registered class " + FuncHere.class.getName()
+	            + " for XPath function 'here()' function in internal table");
+
+	    /* The following tweak by "Eric Olson" <ego@alum.mit.edu>
+	     * is to enable xml-security to play with JDK 1.4 which
+	     * unfortunately bundles an old version of Xalan
+	     */
+	    FuncLoader funcHereLoader = new FuncHereLoader();
+
+	    try {
+	        java.lang.reflect.Field mFunctions = FunctionTable.class.getField("m_functions");
+	        FuncLoader[] m_functions = (FuncLoader[]) mFunctions.get(null);
+
+	        for (int i = 0; i < m_functions.length; i++) {
+	            FuncLoader loader = m_functions[i];
+
+	            if (loader != null) {
+	                log.debug("Func " + i + " " + loader.getName());
+
+	                if (loader.getName().equals(funcHereLoader.getName())) {
+	                    m_functions[i] = funcHereLoader;
+	                }
+	            }
+	        }
+	    } catch (Exception e) {
+	        log.info("Unable to patch xalan function table.", e);
+	    }
+	}
+}
+
+
+
+/**
     * Class FuncHereLoader
     *
     * @author $Author$

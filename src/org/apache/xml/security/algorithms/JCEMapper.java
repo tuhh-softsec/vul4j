@@ -21,17 +21,17 @@ package org.apache.xml.security.algorithms;
 import java.security.Key;
 import java.security.Provider;
 import java.security.Security;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-import javax.xml.transform.TransformerException;
 
+import org.apache.xml.security.Init;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+
 
 
 /**
@@ -45,36 +45,80 @@ public class JCEMapper {
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(JCEMapper.class.getName());
 
-   /** Field _providerList */
-   private static Element _providerList = null;
 
-   /** Field _nscontext */
-   private static Element _nscontext = null;
-   
-   private static CachedXPathAPI cx=null;
    
    private static Map uriToProvider = new HashMap();
    private static Map cacheProviderIsInClassPath = new HashMap();
+   
+   private static Map providersMap = new HashMap();
+   private static Map algorithmsMap = new HashMap();
 
    /**
     * Method init
     *
     * @param mappingElement
-    * @param cx for using in the xpath searchs
     * @throws Exception
     */
-   public static void init(Element mappingElement,CachedXPathAPI cx) throws Exception {
+   public static void init(Element mappingElement) throws Exception {
 
-      JCEMapper._providerList = mappingElement;
+      //JCEMapper._providerList = mappingElement;
 
-      Document doc = mappingElement.getOwnerDocument();
-
-      JCEMapper._nscontext =
-         XMLUtils.createDSctx(doc, "x",
-                              "http://www.xmlsecurity.org/NS/#configuration");
-      JCEMapper.cx=cx;
+      //Document doc = mappingElement.getOwnerDocument();
+      loadProviders((Element)mappingElement.getElementsByTagName("Providers").item(0));
+      loadAlgorithms((Element)mappingElement.getElementsByTagName("Algorithms").item(0));
    }
 
+   static void loadProviders( Element providers) {
+   	    Element[] elements=XMLUtils.selectNodes(providers.getFirstChild(),Init.CONF_NS,"Provider");
+        for (int i=0;i<elements.length;i++) {
+            Element el=elements[i];
+            String id=el.getAttribute("Id");
+            List list=(List) providersMap.get(id);
+            if (list==null) {
+            	list=new ArrayList();
+            }
+            list.add(new ProviderJCE(el));
+        	providersMap.put(id,list);
+        }
+   }
+   static ProviderJCE getProvider(String id) {
+    List list=(List) providersMap.get(id);
+   	if (list==null) {
+   		return null;
+    }
+    return (ProviderJCE) list.get(0);
+    
+   }
+   static List getProviders(String id) {
+    List list=(List) providersMap.get(id);
+    if (list==null) {
+        return null;
+    }
+    return list;    
+   }
+   static void loadAlgorithms( Element algorithmsEl) {
+        Element[] algorithms=XMLUtils.selectNodes(algorithmsEl.getFirstChild(),Init.CONF_NS,"Algorithm");
+    for (int i=0;i<algorithms.length;i++) {
+        Element el=algorithms[i];
+        String id=el.getAttribute("URI");
+        Algorithm providerAlgoMap=new Algorithm(el);
+        Element []providerAlgos=XMLUtils.selectNodes(el.getFirstChild(),Init.CONF_NS,"ProviderAlgo");
+        for (int j=0;j<providerAlgos.length;j++) {
+            Element elp=providerAlgos[j];
+            AlgorithmMapping idA=new AlgorithmMapping(providerAlgoMap,elp);            
+        	providerAlgoMap.put(idA.ProviderId,idA);
+        }
+        algorithmsMap.put(id,providerAlgoMap);
+    }
+    
+   }
+   static AlgorithmMapping getAlgorithmMapping(String algoURI,String providerId) {
+   	    Map algo=(Map) algorithmsMap.get(algoURI);
+        return (AlgorithmMapping) algo.get(providerId);
+   }
+   static Algorithm getAlgorithmMapping(String algoURI) {
+   	   return ((Algorithm)algorithmsMap.get(algoURI));
+   }
    /**
     * This method takes a Provider ID and tries to register this provider in the JCE.
     *
@@ -85,12 +129,8 @@ public class JCEMapper {
    public static boolean addProvider(String Id) {
 
       try {
-         if (Security.getProvider(Id) == null) {
-            Element providerElem = (Element) cx.selectSingleNode(
-               JCEMapper._providerList,
-               "./x:Providers/x:Provider[@Id='" + Id + "']",
-               JCEMapper._nscontext);
-            String providerClass = providerElem.getAttributeNS(null, "Class");
+         if (Security.getProvider(Id) == null) {            
+            String providerClass =  getProvider(Id).providerClass;
             java.security.Provider prov =
                (java.security.Provider) Class.forName(providerClass)
                   .newInstance();
@@ -108,7 +148,7 @@ public class JCEMapper {
                }
             }
          }
-      } catch (TransformerException ex) {}
+      } 
       catch (ClassNotFoundException ex) {}
       catch (IllegalAccessException ex) {}
       catch (InstantiationException ex) {}
@@ -134,18 +174,12 @@ public class JCEMapper {
       	return true;
       }
 
-
-      try {
+       
 		  /* Allow for mulitple provider entries with same Id */
-		  NodeList providers = cx.selectNodeList(JCEMapper._providerList,
-													   "./x:Providers/x:Provider[@Id='"
-													   + providerId + "']",
-													   JCEMapper._nscontext);
+		  List providers = getProviders(providerId);
 
-         for (int i = 0; available == false && i < providers.getLength(); i++) {
-            Element pro = (Element) providers.item(i);
-
-			String providerClass = pro.getAttributeNS(null, "Class");
+         for (int i = 0; available == false && i < providers.size(); i++) {            
+			String providerClass = ((ProviderJCE)providers.get(i)).providerClass;
 			try {
 				java.security.Provider prov =
 					(java.security.Provider) Class.forName(providerClass).newInstance();
@@ -160,10 +194,7 @@ public class JCEMapper {
 			} catch (InstantiationException ex) {
 				//do nothing
 			}
-		 }
-      } catch (TransformerException ex) {
-		//do nothing
-      }
+		 }      
       
       cacheProviderIsInClassPath.put(providerId,new Boolean(available));
       return available;
@@ -205,23 +236,21 @@ public class JCEMapper {
       }
 
 
-      try {
+      
  
-         NodeList providers = cx.selectNodeList(JCEMapper._providerList,
-                                 "./x:Algorithms/x:Algorithm[@URI='"
-                                 + AlgorithmURI + "']/x:ProviderAlgo",
-                                 JCEMapper._nscontext);
+         Iterator providers=getAlgorithmMapping(AlgorithmURI)
+         .values()
+         .iterator();
+         
+         while (providers.hasNext()) {
+            
+            AlgorithmMapping map= (AlgorithmMapping)providers.next();                        
 
-         for (int i = 0; i < providers.getLength(); i++) {
-            Element pro = (Element) providers.item(i);
-            String jceName = pro.getAttributeNS(null, "JCEName");
-            String providerId = pro.getAttributeNS(null, "ProviderId");
+            if (JCEMapper.getProviderIsInClassPath(map.ProviderId)) {
+               JCEMapper.addProvider(map.ProviderId);
 
-            if (JCEMapper.getProviderIsInClassPath(providerId)) {
-               JCEMapper.addProvider(providerId);
-
-               ProviderIdClass result = new ProviderIdClass(jceName,
-                                           providerId);
+               ProviderIdClass result = new ProviderIdClass(map.JCEName,
+                                           map.ProviderId);
 
                log.debug("Found " + result.getAlgorithmID() + " from provider "
                          + result.getProviderId());
@@ -230,11 +259,7 @@ public class JCEMapper {
                return result;
             }
          }
-      } catch (TransformerException ex) {
-         log.debug("Found nothing: " + ex.getMessage());
-      }
-
-      return null;
+         return null;
    }
 
    /**
@@ -255,13 +280,9 @@ public class JCEMapper {
          return null;
       }
 
-      try {
-         Element pro = (Element) cx.selectSingleNode(
-            JCEMapper._providerList,
-            "./x:Algorithms/x:Algorithm[@URI='" + AlgorithmURI
-            + "']/x:ProviderAlgo[@ProviderId='" + requestedProviderId + "']",
-            JCEMapper._nscontext);
-         String jceName = pro.getAttributeNS(null, "JCEName");
+
+         
+         String jceName = getAlgorithmMapping(AlgorithmURI,requestedProviderId).JCEName;
 
          JCEMapper.addProvider(requestedProviderId);
 
@@ -272,11 +293,6 @@ public class JCEMapper {
                    + result.getProviderId());
 
          return result;
-      } catch (TransformerException ex) {
-         log.debug("Found nothing: " + ex.getMessage());
-      }
-
-      return null;
    }
 
    /**
@@ -291,25 +307,18 @@ public class JCEMapper {
 
       log.debug("Request for URI " + AlgorithmURI);
 
-      try {
-         NodeList providers = cx.selectNodeList(JCEMapper._providerList,
-                                 "./x:Algorithms/x:Algorithm[@URI='"
-                                 + AlgorithmURI + "']/x:ProviderAlgo",
-                                 JCEMapper._nscontext);
-
-         for (int i = 0; i < providers.getLength(); i++) {
-            Element pro = (Element) providers.item(i);
-            Attr jceName = pro.getAttributeNodeNS(null, "JCEName");
-
-            log.debug("Found " + jceName.getNodeValue());
+         Iterator alth=getAlgorithmMapping(AlgorithmURI).entrySet().iterator();
+         String uri=null;
+         
+         while (alth.hasNext()) {
+            String cur=((AlgorithmMapping)alth.next()).JCEName;
+            if (uri==null)
+                uri=cur;
+            log.debug("Found " + cur);
          }
 
-         return ((Element) providers.item(0)).getAttributeNS(null, "JCEName");
-      } catch (TransformerException ex) {
-         log.debug("Found nothing: " + ex.getMessage());
-
-         return "";
-      }
+         return uri;
+      
    }
 
    /**
@@ -320,16 +329,8 @@ public class JCEMapper {
     */
    public static int getKeyTypeFromURI(String AlgorithmURI) {
 
-      try {
-         Attr algoclassAttr =
-            (Attr) cx.selectSingleNode(JCEMapper._providerList,
-                                             "./x:Algorithms/x:Algorithm[@URI='"
-                                             + AlgorithmURI
-                                             + "']/@AlgorithmClass", JCEMapper
-                                                ._nscontext);
+         String algoclass = getAlgorithmMapping(AlgorithmURI).algorithmClass;
 
-         if (algoclassAttr != null) {            
-            String algoclass = algoclassAttr.getNodeValue();
 
             if (algoclass.equals(JCEMapper.KEYTYPE_BLOCK_ENCRYPTION)) {
                return javax.crypto.Cipher.SECRET_KEY;
@@ -340,10 +341,6 @@ public class JCEMapper {
             } else if (algoclass.equals(JCEMapper.KEYTYPE_KEY_TRANSPORT)) {
                return javax.crypto.Cipher.SECRET_KEY;
             }
-         }
-      } catch (TransformerException ex) {
-         log.debug("Found nothing: " + ex.getMessage());
-      }
 
       return -1;
    }
@@ -356,22 +353,11 @@ public class JCEMapper {
     */
    public static int getKeyLengthFromURI(String AlgorithmURI) {
 
-      try {
-         Attr algoclassAttr =
-            (Attr) cx.selectSingleNode(JCEMapper._providerList,
-                                             "./x:Algorithms/x:Algorithm[@URI='"
-                                             + AlgorithmURI + "']/@KeyLength",
-                                             JCEMapper._nscontext);
-
-         if (algoclassAttr != null) {
-            return Integer.parseInt(algoclassAttr.getNodeValue());
-         }
-      } catch (TransformerException ex) {
-         log.debug("Found nothing: " + ex.getMessage());
-      }
-
-      return 0;
-   }
+      
+         
+            return Integer.parseInt(getAlgorithmMapping(AlgorithmURI).keyLength);
+         
+    }
 
    /**
     * Method getJCEKeyAlgorithmFromURI
@@ -384,23 +370,9 @@ public class JCEMapper {
    public static String getJCEKeyAlgorithmFromURI(String AlgorithmURI,
            String ProviderId) {
 
-      try {
-         Attr algoclassAttr =
-            (Attr) cx.selectSingleNode(JCEMapper._providerList,
-                                             "./x:Algorithms/x:Algorithm[@URI='"
-                                             + AlgorithmURI
-                                             + "']/x:ProviderAlgo[@ProviderId='"
-                                             + ProviderId + "']/@RequiredKey",
-                                             JCEMapper._nscontext);
-
-         if (algoclassAttr != null) {
-            return algoclassAttr.getNodeValue();
-         }
-      } catch (TransformerException ex) {
-         log.debug("Found nothing: " + ex.getMessage());
-      }
-
-      return null;
+   
+   	return  getAlgorithmMapping(AlgorithmURI,ProviderId).RequiredKey;
+    
    }
 
 
@@ -411,24 +383,8 @@ public class JCEMapper {
     */
     public static String getJCEIVAlgorithmFromURI(String AlgorithmURI,
            String ProviderId) {
-
-      try {
-         Attr algoclassAttr =
-            (Attr) cx.selectSingleNode(JCEMapper._providerList,
-                                             "./x:Algorithms/x:Algorithm[@URI='"
-                                             + AlgorithmURI
-                                             + "']/x:ProviderAlgo[@ProviderId='"
-                                             + ProviderId + "']/@IVJCEName",
-                                             JCEMapper._nscontext);
-
-         if (algoclassAttr != null) {
-            return algoclassAttr.getNodeValue();
-         }
-      } catch (TransformerException ex) {
-         log.debug("Found nothing: " + ex.getMessage());
-      }
-
-      return null;
+    	return  getAlgorithmMapping(AlgorithmURI,ProviderId).IVJCEName;
+      
    }
 
    /** Field KEYTYPE_SYMMETRIC_KEY_WRAP           */
@@ -455,26 +411,26 @@ public class JCEMapper {
     *
     */
    public static String getURIfromKey(Key key, String type) {
-
+      
       String JCEalgo = key.getAlgorithm();
       String keyLength = new Integer(key.getEncoded().length * 8).toString();
-
-      try {
-         Attr URI = (Attr) cx.selectSingleNode(
-            JCEMapper._providerList,
-            "./x:Algorithms/x:Algorithm[@KeyLength='" + keyLength
+      
+      //try {
+         //Attr URI = (Attr) cx.selectSingleNode(
+            //JCEMapper._providerList,
+          String xpath=  "./x:Algorithms/x:Algorithm[@KeyLength='" + keyLength
             + "' and @AlgorithmClass='" + type
-            + "']/x:ProviderAlgo[@RequiredKey='" + JCEalgo + "']/../@URI",
-            JCEMapper._nscontext);
+            + "']/x:ProviderAlgo[@RequiredKey='" + JCEalgo + "']/../@URI";          
+            //,JCEMapper._nscontext);
 
-         if (URI != null) {
+         /*if (URI != null) {
             return URI.getNodeValue();
-         }
-      } catch (TransformerException ex) {
-         log.debug("Found nothing: " + ex.getMessage());
-      }
-
-      return null;
+         }*/
+      //} catch (TransformerException ex) {
+       //  log.debug("Found nothing: " + ex.getMessage());
+      //}
+      
+      return xpath;
    }
 
    /*
@@ -486,7 +442,57 @@ public class JCEMapper {
       return JCEMapper.getURIfromKey(key, JCEMapper.KEYTYPE_BLOCK_ENCRYPTION);
    }
    */
-
+   /**
+    * Represents the ProviderJCE xml element
+    */
+   public  static class ProviderJCE {
+     String providerClass;
+     /**
+      * Gets the data from element.
+      * @param el
+      */
+     public ProviderJCE(Element el) {
+        providerClass = el.getAttributeNS(null, "Class");        
+     }	
+   }
+   /**
+    * Represents the Algorithm xml element
+    */   
+   public static class Algorithm extends HashMap {
+   	    String algorithmClass;
+   	    String keyLength;
+        /**
+         * Gets data from element
+         * @param el
+         */
+        public Algorithm(Element el) {
+        	algorithmClass=el.getAttribute("AlgorithmClass");
+            keyLength=el.getAttribute("KeyLength");
+        }
+   }
+   /**
+    * Represents the AlgorithmMapping xml element
+    */
+   public static class AlgorithmMapping {
+   	   String RequiredKey;
+       String ProviderId;
+       String JCEName;
+       String IVJCEName;
+       Algorithm algo;
+       /**
+        * Gets data from element
+        * @param algo
+        * @param el
+        */
+       public AlgorithmMapping(Algorithm algo,Element el) {
+        this.algo=algo;
+        RequiredKey=el.getAttribute("RequiredKey");
+        ProviderId=el.getAttribute("ProviderId");
+        JCEName=el.getAttribute("JCEName");
+        IVJCEName=el.getAttribute("IVJCEName");
+    }
+   }
+   
    /**
     * Class ProviderIdClass
     *
