@@ -140,34 +140,51 @@ public abstract class ElementProxy {
     */
    public ElementProxy(Document doc) {
 
+      this();
+
       if (doc == null) {
          throw new RuntimeException("Document is null");
       }
 
       this._doc = doc;
       this._state = ElementProxy.MODE_CREATE;
+      this._constructionElement = ElementProxy.createElementForFamily(this._doc,
+              this.getBaseNamespace(), this.getBaseLocalName());
+   }
 
-      String prefix = ElementProxy.getDefaultPrefix(this.getBaseNamespace());
+   /**
+    * This method creates an Element in a given namespace with a given localname.
+    * It uses the {@link ElementProxy#getDefaultPrefix} method to decide whether
+    * a particular prefix is bound to that namespace.
+    * <BR />
+    * This method was refactored out of the constructor.
+    *
+    * @param doc
+    * @param namespace
+    * @param localName
+    * @return
+    */
+   public static Element createElementForFamily(Document doc, String namespace,
+           String localName) {
 
-      if (this.getBaseNamespace() == null) {
-         this._constructionElement = doc.createElement(this.getBaseLocalName());
+      Element result = null;
+      String prefix = ElementProxy.getDefaultPrefix(namespace);
+
+      if (namespace == null) {
+         result = doc.createElement(localName);
       } else {
          if ((prefix == null) || (prefix.length() == 0)) {
-            this._constructionElement =
-               doc.createElementNS(this.getBaseNamespace(),
-                                   this.getBaseLocalName());
+            result = doc.createElementNS(namespace, localName);
 
-            this._constructionElement.setAttribute("xmlns",
-                                                   this.getBaseNamespace());
+            result.setAttribute("xmlns", namespace);
          } else {
-            this._constructionElement =
-               doc.createElementNS(this.getBaseNamespace(),
-                                   prefix + ":" + this.getBaseLocalName());
+            result = doc.createElementNS(namespace, prefix + ":" + localName);
 
-            this._constructionElement.setAttribute("xmlns:" + prefix,
-                                                   this.getBaseNamespace());
+            result.setAttribute("xmlns:" + prefix, namespace);
          }
       }
+
+      return result;
    }
 
    /**
@@ -201,6 +218,8 @@ public abstract class ElementProxy {
     */
    public ElementProxy(Element element, String BaseURI)
            throws XMLSecurityException {
+
+      this();
 
       if (element == null) {
          throw new XMLSecurityException("ElementProxy.nullElement");
@@ -241,6 +260,11 @@ public abstract class ElementProxy {
       return nl;
    }
 
+   /**
+    * Method getDocument
+    *
+    * @return
+    */
    public Document getDocument() {
       return this._doc;
    }
@@ -323,7 +347,7 @@ public abstract class ElementProxy {
 
       e.appendChild(t);
       this._constructionElement.appendChild(e);
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      XMLUtils.addReturnToElement(this._constructionElement);
    }
 
    /**
@@ -334,7 +358,7 @@ public abstract class ElementProxy {
    public void addBase64Text(byte[] bytes) {
 
       if (bytes != null) {
-         Text t = this._doc.createTextNode(Base64.encode(bytes));
+         Text t = this._doc.createTextNode("\n" + Base64.encode(bytes) + "\n");
 
          this._constructionElement.appendChild(t);
       }
@@ -470,17 +494,14 @@ public abstract class ElementProxy {
    protected Element getChildElementLocalName(int index, String namespace,
                                               String localname) {
 
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds", namespace);
-         Element e =
-            (Element) XPathAPI.selectSingleNode(this._constructionElement,
-                                                "./ds:" + localname + "["
-                                                + (index + 1) + "]", nscontext);
+      NodeList nodes =
+         this._constructionElement.getElementsByTagNameNS(namespace, localname);
 
-         return e;
-      } catch (TransformerException ex) {}
+      if (nodes.getLength() <= index) {
+         return null;
+      }
 
-      return null;
+      return (Element) nodes.item(index);
    }
 
    /**
@@ -492,15 +513,10 @@ public abstract class ElementProxy {
     */
    protected int length(String namespace, String localname) {
 
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds", namespace);
-         NodeList nl = XPathAPI.selectNodeList(this._constructionElement,
-                                               "./ds:" + localname, nscontext);
+      NodeList nodes =
+         this._constructionElement.getElementsByTagNameNS(namespace, localname);
 
-         return nl.getLength();
-      } catch (TransformerException ex) {}
-
-      return 0;
+      return nodes.getLength();
    }
 
    /** Field _prefixMappings */
