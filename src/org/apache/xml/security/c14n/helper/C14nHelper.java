@@ -61,9 +61,10 @@ package org.apache.xml.security.c14n.helper;
 
 
 import org.w3c.dom.*;
-import java.util.Comparator;
+import java.util.*;
 import java.util.Arrays;
 import org.apache.xml.utils.URI;
+import org.apache.xml.security.utils.*;
 import java.net.MalformedURLException;
 import org.apache.xml.security.c14n.CanonicalizationException;
 
@@ -85,62 +86,55 @@ public class C14nHelper {
    }
 
    /**
-    * Method sortAttributes
+    * Sorts a list of attributes according to the c14n spec. The list can contain
+    * both namespaces and regular attributes.
     *
-    * @param namednodemap
+    * @param attributes
     *
-   public static final Attr[] sortAttributes(NamedNodeMap namednodemap) {
+    */
+   public static final Object[] sortAttributes(Object[] attributes) {
 
-      if (namednodemap == null) {
+      if (attributes == null) {
          return new Attr[0];
       }
 
-      Attr aattr[] = new Attr[namednodemap.getLength()];
+      Vector namespacesVector = new Vector();
+      Vector nonNamespacesVector = new Vector();
 
-      for (int j = 0; j < namednodemap.getLength(); j++) {
-         aattr[j] = (Attr) namednodemap.item(j);
+      // first, we split namespace and non-namespace attrs to sort them separately
+      for (int i = 0; i < attributes.length; i++) {
+         Attr a = (Attr) attributes[i];
+
+         if (Constants.NamespaceSpecNS.equals(a.getNamespaceURI())) {
+            namespacesVector.add(a);
+         } else {
+            nonNamespacesVector.add(a);
+         }
       }
 
-      java.util.Arrays.sort(aattr, new AttrCompare());
+      // sort the namespaces
+      Object[] namespaces = namespacesVector.toArray();
 
-      // java.util.Sort.quicksort(aattr, new AttrCompare());
-      return aattr;
-   }
-    */
+      java.util.Arrays.sort(namespaces, new NSAttrCompare());
 
-   /**
-    * Method sortAttributes
-    *
-    * @param namednodemap
-    *
-   public static final Attr[] sortAttributes(Attr[] namednodemap) {
+      // sort the attributes
+      Object[] nonNamespaces = nonNamespacesVector.toArray();
 
-      if (namednodemap == null) {
-         return new Attr[0];
+      java.util.Arrays.sort(nonNamespaces, new NonNSAttrCompare());
+
+      // merge them into a hole result
+      Object result[] = new Object[attributes.length];
+
+      for (int i = 0; i < namespaces.length; i++) {
+         result[i] = (Attr) namespaces[i];
       }
 
-      java.util.Arrays.sort(namednodemap, new AttrCompare());
+      for (int i = 0; i < nonNamespaces.length; i++) {
+         result[i + namespaces.length] = (Attr) nonNamespaces[i];
+      }
 
-      // java.util.Sort.quicksort(namednodemap, new AttrCompare());
-      return namednodemap;
+      return result;
    }
-    */
-
-   /**
-    * Method sortAttributes
-    *
-    * @param namednodemap
-    *
-   public static final Object[] sortAttributes(Object[] namednodemap) {
-
-      for (
-
-      java.util.Arrays.sort(namednodemap, new AttrCompare());
-
-      // java.util.Sort.quicksort(namednodemap, new AttrCompare());
-      return namednodemap;
-   }
-    */
 
    /**
     * Normalizes an {@link Attr}ibute value
@@ -299,7 +293,6 @@ public class C14nHelper {
     * Method namespaceIsRelative
     *
     * @param namespace
-    *
     */
    public static boolean namespaceIsRelative(Attr namespace) {
       return !namespaceIsAbsolute(namespace);
@@ -309,7 +302,6 @@ public class C14nHelper {
     * Method namespaceIsRelative
     *
     * @param namespaceValue
-    *
     */
    public static boolean namespaceIsRelative(String namespaceValue) {
       return !namespaceIsAbsolute(namespaceValue);
@@ -319,7 +311,6 @@ public class C14nHelper {
     * Method namespaceIsAbsolute
     *
     * @param namespace
-    *
     */
    public static boolean namespaceIsAbsolute(Attr namespace) {
       return namespaceIsAbsolute(namespace.getValue());
@@ -329,7 +320,6 @@ public class C14nHelper {
     * Method namespaceIsAbsolute
     *
     * @param namespaceValue
-    *
     */
    public static boolean namespaceIsAbsolute(String namespaceValue) {
 
