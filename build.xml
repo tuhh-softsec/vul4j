@@ -834,7 +834,7 @@
 
     <target depends="init" name="help.test" >
         <echo message="test			- runs all unit and interop tests" />
-        <echo message="test_exc_c14 - runs the exclusive c14 tests" />
+        <echo message="test_exc_c14n - runs the exclusive c14n tests" />
         <echo message="test_xenc	- does all encryption related tests" />
         <echo message="clover		- generates clover coverage reports" />
     </target >
