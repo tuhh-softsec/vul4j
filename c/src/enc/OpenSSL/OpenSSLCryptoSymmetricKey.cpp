@@ -315,12 +315,12 @@ unsigned int OpenSSLCryptoSymmetricKey::decrypt(const unsigned char * inBuf,
 
 	int outl = maxOutLength;
 
-	if (inLength - offset > maxOutLength) {
+	if (inLength - offset + m_bytesInLastBlock > maxOutLength) {
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
 			"OpenSSLSymmetricKey::decrypt - Not enough space in output buffer");
 	}
 
-	if (EVP_DecryptUpdate(&m_ctx, &plainBuf[m_bytesInLastBlock], &outl, &inBuf[offset], inLength - m_bytesInLastBlock - offset) == 0) {
+	if (EVP_DecryptUpdate(&m_ctx, &plainBuf[m_bytesInLastBlock], &outl, &inBuf[offset], inLength - offset) == 0) {
 
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
 			"OpenSSL:SymmetricKey - Error during OpenSSL decrypt"); 
