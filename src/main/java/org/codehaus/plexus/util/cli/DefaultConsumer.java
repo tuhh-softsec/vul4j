@@ -21,7 +21,8 @@ package org.codehaus.plexus.util.cli;
  * @author <a href="mailto:evenisse@apache.org">Emmanuel Venisse</a>
  * @version $Id$
  */
-public class DefaultConsumer implements StreamConsumer
+public class DefaultConsumer
+	implements StreamConsumer
 {
     public void consumeLine(String line)
     {

@@ -29,7 +29,7 @@ public abstract class CommandLineUtils
     }
 
     public static int executeCommandLine( Commandline cl, StreamConsumer systemOut, StreamConsumer systemErr )
-    	throws Exception
+    	throws CommandLineException
     {
         if ( cl == null )
         {
@@ -69,7 +69,7 @@ public abstract class CommandLineUtils
         }
         catch( InterruptedException ex )
         {
-            throw new Exception( "Error while executing external command.", ex );
+            throw new CommandLineException( "Error while executing external command.", ex );
         }
         finally
         {

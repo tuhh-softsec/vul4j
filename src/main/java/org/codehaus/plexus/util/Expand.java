@@ -84,7 +84,7 @@ public class Expand
     /**
      * Do the work.
      *
-     * @exception BuildException Thrown in unrecoverable error.
+     * @exception Exception Thrown in unrecoverable error.
      */
     public void execute()
         throws Exception

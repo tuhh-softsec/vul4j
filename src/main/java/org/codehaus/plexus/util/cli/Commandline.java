@@ -56,7 +56,6 @@ package org.codehaus.plexus.util.cli;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -82,7 +81,8 @@ import java.util.Vector;
  * @author thomas.haas@softwired-inc.com
  * @author <a href="mailto:stefan.bodewig@epost.de">Stefan Bodewig</a>
  */
-public class Commandline implements Cloneable
+public class Commandline
+	implements Cloneable
 {
     
     protected static final String OS_NAME = "os.name";
@@ -90,8 +90,8 @@ public class Commandline implements Cloneable
 
     private String shell = null;
     private Vector shellArgs = new Vector();
-    private String executable = null;
-    private Vector arguments = new Vector();
+    protected String executable = null;
+    protected Vector arguments = new Vector();
     private File workingDir = null;
 
     public Commandline( String toProcess )
@@ -246,39 +246,6 @@ public class Commandline implements Cloneable
     }
     
     /**
-     * <p>Gets the shell or command-line interpretor for the detected operating system, 
-     * and the shell arguments.</p>
-     */
-    private String getDefaultShell()
-    {
-        if ( shell != null )
-        {
-            String args = "";
-            for (Enumeration enums = shellArgs.elements(); enums.hasMoreElements(); )
-            {
-                args += (String)enums.nextElement();
-                if (enums.hasMoreElements())
-                {
-                    args += " ";
-                }
-            }
-            
-            if (args.length() > 0)
-            {
-                return shell + " " + args;
-            }
-            else
-            {
-                return shell;
-            }
-        }
-        else
-        {
-            return "";
-        }
-    }
-    
-    /**
      * Creates an argument object.
      *
      * <p>Each commandline object has at most one instance of the
@@ -428,16 +395,16 @@ public class Commandline implements Cloneable
      * as is. If it contains double quotes, use single quotes - else
      * surround the argument by double quotes.</p>
      *
-     * @exception Exception if the argument contains both, single
+     * @exception CommandLineException if the argument contains both, single
      *                           and double quotes.
      */
-    public static String quoteArgument( String argument ) throws Exception
+    public static String quoteArgument( String argument ) throws CommandLineException
     {
         if ( argument.indexOf( "\"" ) > -1 )
         {
             if ( argument.indexOf( "\'" ) > -1 )
             {
-                throw new Exception( "Can't handle single and double quotes in same argument" );
+                throw new CommandLineException( "Can't handle single and double quotes in same argument" );
             }
             else
             {
@@ -556,7 +523,7 @@ public class Commandline implements Cloneable
 
         if ( state == inQuote || state == inDoubleQuote )
         {
-            throw new Exception( "unbalanced quotes in " + toProcess );
+            throw new CommandLineException( "unbalanced quotes in " + toProcess );
         }
 
         String[] args = new String[v.size()];
@@ -625,29 +592,33 @@ public class Commandline implements Cloneable
      * Executes the command.
      */
     public Process execute()
-        throws IOException
+        throws CommandLineException
     {
         Process process = null;
 
-        if ( workingDir == null )
+        try
         {
-//            System.err.println( "Executing \"" + this + "\"" );
-            process = Runtime.getRuntime().exec( getShellCommandline() );
+            if ( workingDir == null )
+            {
+                process = Runtime.getRuntime().exec( getShellCommandline() );
+            }
+            else
+            {
+                if ( !workingDir.exists() )
+                {
+                    throw new CommandLineException( "Working directory \"" + workingDir.getPath() + "\" does not exist!" );
+                }
+                else if ( !workingDir.isDirectory() )
+                {
+                    throw new CommandLineException( "Path \"" + workingDir.getPath() + "\" does not specify a directory." );
+                }
+
+                process = Runtime.getRuntime().exec( getShellCommandline(), null, workingDir );
+            }
         }
-        else
+        catch( IOException ex )
         {
-            if ( !workingDir.exists() )
-            {
-                throw new IOException( "Working directory \"" + workingDir.getPath() + "\" does not exist!" );
-            }
-            else if ( !workingDir.isDirectory() )
-            {
-                throw new IOException( "Path \"" + workingDir.getPath() + "\" does not specify a directory." );
-            }
-
-//            System.err.println( "Executing \"" + this + "\" in directory " + workingDir.getAbsolutePath();
-
-            process = Runtime.getRuntime().exec( getShellCommandline(), null, workingDir );
+            throw new CommandLineException( "Error while executing process.", ex );
         }
 
         return process;

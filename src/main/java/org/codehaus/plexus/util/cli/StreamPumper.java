@@ -60,6 +60,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import org.codehaus.plexus.util.IOUtil;
+
 /**
  * Class to pump the error stream during Process's runtime. Copied from the Ant
  * built-in task.
@@ -120,6 +122,7 @@ public class StreamPumper
                 if ( out != null )
                 {
                     out.println( s );
+
                     out.flush();
                 }
 
@@ -132,14 +135,7 @@ public class StreamPumper
         }
         finally
         {
-            try
-            {
-                in.close();
-            }
-            catch ( IOException e )
-            {
-                // do nothing
-            }
+            IOUtil.close( in );
         }
 
         done = true;
@@ -155,10 +151,7 @@ public class StreamPumper
 
     public void close()
     {
-        if ( out != null )
-        {
-            out.close();
-        }
+        IOUtil.close( out );
     }
 
     public boolean isDone()

@@ -34,6 +34,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
+
 package org.codehaus.plexus.util.cli;
 
 /**
@@ -46,7 +47,6 @@ package org.codehaus.plexus.util.cli;
  */
 public interface StreamConsumer
 {
-
     /**
      * Called when the StreamPumper pumps a line from the Stream.
      */
