@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.10 2003/11/25 19:21:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.11 2003/11/25 19:39:44 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,7 +57,10 @@
 
 package org.apache.commons.functor;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.functor.core.collection.FilteredIterator;
@@ -83,12 +86,72 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.10 $ $Date: 2003/11/25 19:21:43 $
+ * @version $Revision: 1.11 $ $Date: 2003/11/25 19:39:44 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
-public class Algorithms {
+public final class Algorithms {
 
+    /** Public constructor for bean-ish APIs */
+    public Algorithms() {        
+    }
+
+    public static Collection collect(Iterator iter) {
+        return collect(iter,new ArrayList());
+    }
+    
+    public static Collection collect(Iterator iter, Collection col) {
+        while(iter.hasNext()) {
+            col.add(iter.next());
+        }
+        return col;
+    }
+    
+    /**
+     * {@link ListIterator#set Set} each element of the
+     * given {@link ListIterator ListIterator} to
+     * the result of applying the 
+     * given {@link UnaryFunction UnaryFunction} to
+     * its original value.
+     */
+    public static void transform(ListIterator iter, UnaryFunction func) {
+        while(iter.hasNext()) {
+            iter.set(func.evaluate(iter.next()));
+        }
+    }
+
+    /**
+     * {@link Iterator#remove Remove} from the
+     * given {@link Iterator Iterator} all elements 
+     * that fail to match the
+     * given {@link UnaryPredicate UnaryPredicate}.
+     * 
+     * @see #remove(Iterator,UnaryPredicate)
+     */
+    public static void retain(Iterator iter, UnaryPredicate pred) {
+        while(iter.hasNext()) {
+            if(!(pred.test(iter.next()))) {
+                iter.remove();
+            }
+        }
+    }
+
+    /**
+     * {@link Iterator#remove Renmove} from the
+     * given {@link Iterator Iterator} all elements 
+     * that match the
+     * given {@link UnaryPredicate UnaryPredicate}.
+     * 
+     * @see #retain(Iterator,UnaryPredicate)
+     */
+    public static void remove(Iterator iter, UnaryPredicate pred) {
+        while(iter.hasNext()) {
+            if(pred.test(iter.next())) {
+                iter.remove();
+            }
+        }        
+    }
+    
     /**
      * Returns an {@link Iterator} that will apply the given {@link UnaryFunction} to each
      * element when accessed.

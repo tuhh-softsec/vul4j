@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.8 2003/11/24 23:09:13 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.9 2003/11/25 19:39:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,16 +68,16 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
-import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsEqual;
 
 /**
- * @version $Revision: 1.8 $ $Date: 2003/11/24 23:09:13 $
+ * @version $Revision: 1.9 $ $Date: 2003/11/25 19:39:45 $
  * @author Rodney Waldhoff
  */
 public class TestCollectionAlgorithms extends TestCase {
@@ -128,11 +128,11 @@ public class TestCollectionAlgorithms extends TestCase {
     
     public void testHasPublicConstructor() {
         // some frameworks work best with instantiable classes
-        assertNotNull(new CollectionAlgorithms());
+        assertNotNull(new Algorithms());
     }    
     
     public void testCollect() {
-        Collection result = CollectionAlgorithms.collect(list.iterator(),IdentityFunction.instance());
+        Collection result = Algorithms.collect(list.iterator());
         assertNotNull(result);
         assertEquals(list.size(),result.size());
         assertEquals(list,result);
@@ -140,7 +140,7 @@ public class TestCollectionAlgorithms extends TestCase {
 
     public void testCollect2() {
         Set set = new HashSet();
-        assertSame(set,CollectionAlgorithms.collect(list.iterator(),IdentityFunction.instance(),set));
+        assertSame(set,Algorithms.collect(list.iterator(),set));
         assertEquals(list.size(),set.size());
         for(Iterator iter = list.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -149,7 +149,7 @@ public class TestCollectionAlgorithms extends TestCase {
 
     public void testCollect3() {
         Set set = new HashSet();
-        assertSame(set,CollectionAlgorithms.collect(listWithDuplicates.iterator(),IdentityFunction.instance(),set));
+        assertSame(set,Algorithms.collect(listWithDuplicates.iterator(),set));
         assertTrue(listWithDuplicates.size() > set.size());
         for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -157,14 +157,14 @@ public class TestCollectionAlgorithms extends TestCase {
     }    
 
     public void testContains() {
-        assertTrue(CollectionAlgorithms.contains(list.iterator(),equalsThree));
-        assertTrue(!CollectionAlgorithms.contains(list.iterator(),equalsTwentyThree));
+        assertTrue(Algorithms.contains(list.iterator(),equalsThree));
+        assertTrue(!Algorithms.contains(list.iterator(),equalsTwentyThree));
     }    
 
     public void testDetect() {
-        assertEquals(new Integer(3),CollectionAlgorithms.detect(list.iterator(),equalsThree));
+        assertEquals(new Integer(3),Algorithms.detect(list.iterator(),equalsThree));
         try {
-            CollectionAlgorithms.detect(list.iterator(),equalsTwentyThree);
+            Algorithms.detect(list.iterator(),equalsTwentyThree);
             fail("Expected NoSuchElementException");
         } catch(NoSuchElementException e) {
             // expected
@@ -172,42 +172,42 @@ public class TestCollectionAlgorithms extends TestCase {
     }    
 
     public void testDetectIfNone() {
-        assertEquals(new Integer(3),CollectionAlgorithms.detect(list.iterator(),equalsThree,"Xyzzy"));
-        assertEquals("Xyzzy",CollectionAlgorithms.detect(list.iterator(),equalsTwentyThree,"Xyzzy"));
+        assertEquals(new Integer(3),Algorithms.detect(list.iterator(),equalsThree,"Xyzzy"));
+        assertEquals("Xyzzy",Algorithms.detect(list.iterator(),equalsTwentyThree,"Xyzzy"));
     }    
 
     public void testForEach() {
         Summer summer = new Summer();
-        CollectionAlgorithms.foreach(list.iterator(),summer);
+        Algorithms.foreach(list.iterator(),summer);
         assertEquals(sum,summer.sum);
     }    
 
     public void testSelect1() {
-        Collection result = CollectionAlgorithms.select(list.iterator(),isEven);
+        Collection result = Algorithms.collect(Algorithms.select(list.iterator(),isEven));
         assertNotNull(result);
         assertEquals(evens,result);
     }    
 
     public void testSelect2() {
         ArrayList result = new ArrayList();
-        assertSame(result,CollectionAlgorithms.select(list.iterator(),isEven,result));
+        assertSame(result,Algorithms.collect(Algorithms.select(list.iterator(),isEven),result));
         assertEquals(evens,result);
     }    
 
     public void testReject1() {
-        Collection result = CollectionAlgorithms.reject(list.iterator(),isOdd);
+        Collection result = Algorithms.collect(Algorithms.reject(list.iterator(),isOdd));
         assertNotNull(result);
         assertEquals(evens,result);
     }    
 
     public void testReject2() {
         ArrayList result = new ArrayList();
-        assertSame(result,CollectionAlgorithms.reject(list.iterator(),isOdd,result));
+        assertSame(result,Algorithms.collect(Algorithms.reject(list.iterator(),isOdd),result));
         assertEquals(evens,result);
     }    
 
     public void testInject() {
-        Object result = CollectionAlgorithms.inject(
+        Object result = Algorithms.inject(
             list.iterator(),
             new Integer(0),
             new BinaryFunction() {
@@ -219,17 +219,17 @@ public class TestCollectionAlgorithms extends TestCase {
     }    
 
     public void testRetain() {
-        CollectionAlgorithms.retain(list.iterator(),isEven);
+        Algorithms.retain(list.iterator(),isEven);
         assertEquals(evens,list);
     }
 
     public void testRemove() {
-        CollectionAlgorithms.remove(list.iterator(),isOdd);
+        Algorithms.remove(list.iterator(),isOdd);
         assertEquals(evens,list);
     }
 
     public void testTransform() {
-        CollectionAlgorithms.transform(
+        Algorithms.transform(
             list.listIterator(),
             new UnaryFunction() {
                 public Object evaluate(Object obj) {
