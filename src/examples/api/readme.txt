@@ -30,3 +30,5 @@ The examples are graduated in the following order:
 
 1. addressbook
 2. catalog
+3. dbinsert
+4. document-markup
