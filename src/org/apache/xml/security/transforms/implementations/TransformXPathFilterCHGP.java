@@ -95,35 +95,33 @@ public class TransformXPathFilterCHGP extends TransformSpi {
    public boolean returnsOctetStream () { return false; }
    public boolean returnsNodeSet ()     { return true; }
    //J+
+   //J-
 
-   /** Field STATE_INCLUDE */
-   static final Integer STATE_INCLUDE = new Integer(0);
-
-   /** Field STATE_EXCLUDE_BUT_SEARCH */
+   // values for state and stateStack
+   static final Integer STATE_INCLUDE =            new Integer(0);
    static final Integer STATE_EXCLUDE_BUT_SEARCH = new Integer(1);
+   static final Integer STATE_EXCLUDE =            new Integer(2); // this is never assigned. Just for clarity
 
-   /** Field STATE_EXCLUDE */
-   static final Integer STATE_EXCLUDE = new Integer(2);
-
-   /** Field state */
+   // the current state during the traversal
    Integer state = TransformXPathFilterCHGP.STATE_EXCLUDE_BUT_SEARCH;
 
-   /** Field stateStack */
+   // the state of the ancestors during the traversal
    List stateStack = new Vector();
+   //J+
 
-   /** Field inputSet */
+   /** all nodes which are in the input XPath node set */
    Set inputSet;
 
-   /** Field includeSearchSet */
+   /** all nodes which are tagged include-but-search */
    Set includeSearchSet;
 
-   /** Field excludeSearchSet */
+   /** all nodes which are tagged exclude-but-search */
    Set excludeSearchSet;
 
-   /** Field excludeSet */
+   /** all nodes which are tagged exclude */
    Set excludeSet;
 
-   /** Field resultSet */
+   /** the result XPath node set */
    Set resultSet;
 
    /**
@@ -164,6 +162,8 @@ public class TransformXPathFilterCHGP extends TransformSpi {
 
          Element transformElement = this._transformObject.getElement();
          Document doc = transformElement.getOwnerDocument();
+
+         // create the XPathFilterCHGPContainer so that we easily can read it out
          Element nscontext =
             XMLUtils.createDSctx(doc, "dsig-xpathalt",
                                  Transforms.TRANSFORM_XPATHFILTERCHGP);
@@ -180,12 +180,16 @@ public class TransformXPathFilterCHGP extends TransformSpi {
             throw new TransformationException("xml.WrongContent", exArgs);
          }
 
-         Document inputDoc = XMLUtils.getOwnerDocument(inputNodes.item(0));
          XPathFilterCHGPContainer xpathContainer =
             XPathFilterCHGPContainer.getInstance(xpathElement,
                                                  input.getSourceURI());
 
+         // get the document (root node) for the traversal
+         Document inputDoc = XMLUtils.getOwnerDocument(inputNodes.item(0));
+
          {
+
+            // 'tag' the include-but-search nodes
             Node includeButSearchCtxNode =
                xpathContainer.getHereContextNodeIncludeButSearch();
             NodeList includeButSearchNodes = null;
@@ -199,6 +203,8 @@ public class TransformXPathFilterCHGP extends TransformSpi {
          }
 
          {
+
+            // 'tag' the exclude-but-search nodes
             Node excludeButSearchCtxNode =
                xpathContainer.getHereContextNodeExcludeButSearch();
             NodeList excludeButSearchNodes = null;
@@ -212,6 +218,8 @@ public class TransformXPathFilterCHGP extends TransformSpi {
          }
 
          {
+
+            // 'tag' the exclude nodes
             Node excludeCtxNode = xpathContainer.getHereContextNodeExclude();
             NodeList excludeNodes = null;
 
@@ -223,12 +231,17 @@ public class TransformXPathFilterCHGP extends TransformSpi {
             this.excludeSet = nodeListToSet(excludeNodes);
          }
 
+         // copy the inputNodes into a real set
          this.inputSet = nodeListToSet(inputNodes);
+
+         // create empty set for results
          this.resultSet = new HashSet();
 
          {
             DocumentTraversal dt = ((DocumentTraversal) inputDoc);
             Node rootNode = (Node) inputDoc;
+
+            // we accept all nodes
             NodeFilter nodefilter =
                new org.apache.xml.security.c14n.helper.AlwaysAcceptNodeFilter();
             TreeWalker treewalker = dt.createTreeWalker(rootNode,
@@ -244,6 +257,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
             process(treewalker);
          }
 
+         // copy the nodes from the resultSet into the XMLSignatureResult result
          HelperNodeList resultNodes = new HelperNodeList();
          Iterator it = this.resultSet.iterator();
 
@@ -285,45 +299,40 @@ public class TransformXPathFilterCHGP extends TransformSpi {
 
       Node currentNode = treewalker.getCurrentNode();
 
-      if (this.includeSearchSet.contains(currentNode)) {
-         this.state = TransformXPathFilterCHGP.STATE_INCLUDE;
+      if (this.excludeSet.contains(currentNode)) {
 
-         // we must search so we cannot return;
-      } else if (this.excludeSearchSet.contains(currentNode)) {
-         this.state = TransformXPathFilterCHGP.STATE_EXCLUDE_BUT_SEARCH;
-
-         // we must search so we cannot return;
-      } else if (this.excludeSet.contains(currentNode)) {
-
-         /* this is what allows optimization: if the subtree cannot contain any
+         /* THIS is what allows optimization: if the subtree cannot contain any
           * nodes which are to be included, we do not descend.
           *
-          * It would also work to put all nodes from the exclude set to the
+          * It would also work to move all nodes from the exclude set to the
           * excludeButSearch set. But it would be waste of time.
           */
-
-         // assignment only for clarity; never needed because never checked:
-         // this.state = TransformXPathFilterCHGP.STATE_EXCLUDE;
-         //
          treewalker.setCurrentNode(currentNode);
 
          return;
+      } else if (this.includeSearchSet.contains(currentNode)) {
+         this.state = TransformXPathFilterCHGP.STATE_INCLUDE;
+      } else if (this.excludeSearchSet.contains(currentNode)) {
+         this.state = TransformXPathFilterCHGP.STATE_EXCLUDE_BUT_SEARCH;
       }
 
       /* This works actually as a filter: We can only decide to not include
        * nodes in the result; We do not include nodes which haven't been
-       * in the inputSet.
+       * in the inputSet (no union operation).
        */
       if (this.inputSet.contains(currentNode)
               && (this.state == TransformXPathFilterCHGP.STATE_INCLUDE)) {
          this.resultSet.add(currentNode);
 
+         // the treewalker does not descend into the attributes, so we must check them by hand
          if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
             NamedNodeMap nnm = ((Element) currentNode).getAttributes();
 
             for (int i = 0; i < nnm.getLength(); i++) {
                Node attr = nnm.item(i);
 
+               // if the node was in the input XPath node set AND
+               // is NOT deselected by this transform
                if (this.inputSet.contains(attr)
                        &&!this.excludeSearchSet.contains(attr)
                        &&!this.excludeSet.contains(attr)) {
@@ -351,12 +360,12 @@ public class TransformXPathFilterCHGP extends TransformSpi {
    }
 
    /**
-    * Method nodeListToSet
+    * Copies all nodes from a given {@link NodeList} into a {@link Set}
     *
     * @param nl
     * @return
     */
-   static Set nodeListToSet(NodeList nl) {
+   private static Set nodeListToSet(NodeList nl) {
 
       Set set = new HashSet();
       int iMax = ((nl == null)
