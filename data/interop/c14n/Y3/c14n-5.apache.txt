@@ -1,3 +1,0 @@
-<Parent>
-    <ns1:GrandChild></ns1:GrandChild><ns1:GrandChild Gender="male"></ns1:GrandChild><GrandChild></GrandChild><GrandChild ns1:Gender="male"></GrandChild>
-  </Parent>
