@@ -126,7 +126,7 @@ public class Base64 {
    /**
     * Method getBase64WrapLength
     *
-    * @return
+    *
     */
    public static int getBase64WrapLength() {
       return Base64._base64length;
@@ -240,7 +240,7 @@ public class Base64 {
     * Method decodeBigIntegerFromElement
     *
     * @param element
-    * @return
+    *
     * @throws Base64DecodingException
     */
    public static BigInteger decodeBigIntegerFromElement(Element element)
@@ -252,7 +252,7 @@ public class Base64 {
     * Method decodeBigIntegerFromText
     *
     * @param text
-    * @return
+    *
     * @throws Base64DecodingException
     */
    public static BigInteger decodeBigIntegerFromText(Text text)
@@ -289,7 +289,7 @@ public class Base64 {
     * them as input for the <CODE>Base64.decode()</CODE> function.
     *
     * @param element
-    * @return
+    *
     * @todo not tested yet
     * @throws Base64DecodingException
     */
@@ -315,7 +315,7 @@ public class Base64 {
     * @param doc
     * @param localName
     * @param bytes
-    * @return
+    *
     */
    public static Element encodeToElement(Document doc, String localName,
                                          byte[] bytes) {
@@ -334,7 +334,7 @@ public class Base64 {
     *
     * @param base64
     *
-    * @return
+    *
     * @throws Base64DecodingException
     */
    public static byte[] decode(byte[] base64) throws Base64DecodingException {
@@ -495,7 +495,7 @@ public class Base64 {
     *
     * @param raw
     * @param offset
-    * @return
+    *
     */
    protected static char[] encodeBlock(byte[] raw, int offset) {
 
@@ -542,7 +542,7 @@ public class Base64 {
     *
     * @param raw
     * @param offset
-    * @return
+    *
     */
    protected static char[] encodeFullBlock(byte[] raw, int offset) {
 
@@ -575,7 +575,7 @@ public class Base64 {
     * Method getChar
     *
     * @param sixBit
-    * @return
+    *
     */
    protected static char getChar(int sixBit) {
 
@@ -606,7 +606,7 @@ public class Base64 {
     * Method getValue
     *
     * @param c
-    * @return
+    *
     */
    protected static int getValue(char c) {
 

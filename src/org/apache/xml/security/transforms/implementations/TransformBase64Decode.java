@@ -119,7 +119,7 @@ public class TransformBase64Decode extends TransformSpi {
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    protected String engineGetURI() {
       return this.implementedTransformURI;
@@ -136,7 +136,7 @@ public class TransformBase64Decode extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
-    * @return
+    *
     * @throws CanonicalizationException
     * @throws IOException
     * @throws InvalidCanonicalizerException

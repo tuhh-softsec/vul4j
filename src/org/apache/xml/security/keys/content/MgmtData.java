@@ -105,7 +105,7 @@ public class MgmtData extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method getMgmtData
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public String getMgmtData() throws XMLSecurityException {

@@ -127,7 +127,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    protected String engineGetURI() {
       return this.implementedTransformURI;
@@ -137,7 +137,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
-    * @return
+    *
     * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
@@ -363,7 +363,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
     * Copies all nodes from a given {@link NodeList} into a {@link Set}
     *
     * @param nl
-    * @return
+    *
     */
    private static Set nodeListToSet(NodeList nl) {
 

@@ -102,7 +102,7 @@ public abstract class Algorithm extends ElementProxy {
    /**
     * Method getAlgorithmURI
     *
-    * @return
+    *
     */
    public String getAlgorithmURI() {
       return this._constructionElement.getAttributeNS(null, Constants._ATT_ALGORITHM);

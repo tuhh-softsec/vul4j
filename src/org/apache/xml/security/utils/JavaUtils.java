@@ -134,7 +134,7 @@ public class JavaUtils {
     *
     * @param object
     * @param className
-    * @return
+    *
     */
    public static boolean instanceOf(Object object, String className) {
 
@@ -219,7 +219,7 @@ public class JavaUtils {
     * Method getBytesFromFile
     *
     * @param fileName
-    * @return
+    *
     * @throws FileNotFoundException
     * @throws IOException
     */
@@ -271,7 +271,7 @@ public class JavaUtils {
     * them as a byte array.
     *
     * @param inputStream
-    * @return
+    *
     * @throws FileNotFoundException
     * @throws IOException
     */

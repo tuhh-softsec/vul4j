@@ -116,7 +116,7 @@ public abstract class KeyBaseType extends ElementProxy {
    /**
     * Method getBaseNamespace
     *
-    * @return
+    *
     */
    public String getBaseNamespace() {
       return ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE;
@@ -144,7 +144,7 @@ public abstract class KeyBaseType extends ElementProxy {
    /**
     * Method getDate
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public Date getDate() throws XMLSecurityException {
@@ -166,7 +166,7 @@ public abstract class KeyBaseType extends ElementProxy {
    /**
     * Method getAlias
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public String getAlias() throws XMLSecurityException {

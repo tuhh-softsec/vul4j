@@ -173,7 +173,7 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method getPublicKey
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public PublicKey getPublicKey() throws XMLSecurityException {

@@ -91,7 +91,7 @@ public abstract class CanonicalizerSpi {
     *
     * @param inputBytes
     *
-    * @return
+    *
     *
     * @throws CanonicalizationException
     * @throws java.io.IOException
@@ -148,7 +148,7 @@ public abstract class CanonicalizerSpi {
     * Method engineCanonicalizeXPathNodeSet
     *
     * @param xpathNodeSet
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeXPathNodeSet(NodeList xpathNodeSet)

@@ -98,7 +98,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     */
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
@@ -142,7 +142,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     * @throws KeyResolverException
     */
    public PublicKey engineResolvePublicKey(
@@ -165,7 +165,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     * @throws KeyResolverException
     */
    public X509Certificate engineResolveX509Certificate(
@@ -216,7 +216,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     * @throws KeyResolverException
     */
    public javax.crypto.SecretKey engineResolveSecretKey(

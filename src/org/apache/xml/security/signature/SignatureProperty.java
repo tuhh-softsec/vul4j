@@ -176,7 +176,7 @@ public class SignatureProperty extends SignatureElementProxy {
     * Method appendChild
     *
     * @param node
-    * @return
+    *
     */
    public Node appendChild(Node node) {
       return this._constructionElement.appendChild(node);

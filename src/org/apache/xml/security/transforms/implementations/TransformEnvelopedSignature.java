@@ -103,7 +103,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    protected String engineGetURI() {
       return this.implementedTransformURI;
@@ -113,7 +113,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
     * This transform performs the Enveloped-Signature-Transform by
     *
     * @param input
-    * @return
+    *
     * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
@@ -215,7 +215,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
     *
     * @param ctx
     * @param descendantOrSelf
-    * @return
+    *
     */
    static boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
 

@@ -124,7 +124,7 @@ public class ReferenceList extends EncryptionElementProxy {
    /**
     * Method getLengthDataReference
     *
-    * @return
+    *
     */
    public int getLengthDataReference() {
       return 0;
@@ -133,7 +133,7 @@ public class ReferenceList extends EncryptionElementProxy {
    /**
     * Method getLengthKeyReference
     *
-    * @return
+    *
     */
    public int getLengthKeyReference() {
       return 0;
@@ -143,7 +143,7 @@ public class ReferenceList extends EncryptionElementProxy {
     * Method itemDataReference
     *
     * @param i
-    * @return
+    *
     */
    public DataReference itemDataReference(int i) {
       return null;
@@ -153,7 +153,7 @@ public class ReferenceList extends EncryptionElementProxy {
     * Method itemKeyReference
     *
     * @param i
-    * @return
+    *
     */
    public KeyReference itemKeyReference(int i) {
       return null;

@@ -96,7 +96,7 @@ public class TransformC14NExclusive extends TransformSpi {
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    protected String engineGetURI() {
       return this.implementedTransformURI;
@@ -106,7 +106,7 @@ public class TransformC14NExclusive extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
-    * @return
+    *
     * @throws CanonicalizationException
     * @throws InvalidCanonicalizerException
     */

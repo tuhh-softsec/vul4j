@@ -162,7 +162,7 @@ public abstract class ElementProxy {
     * @param doc
     * @param namespace
     * @param localName
-    * @return
+    *
     */
    public static Element createElementForFamily(Document doc, String namespace,
            String localName) {
@@ -266,7 +266,7 @@ public abstract class ElementProxy {
    /**
     * Method getDocument
     *
-    * @return
+    *
     */
    public Document getDocument() {
       return this._doc;
@@ -275,7 +275,7 @@ public abstract class ElementProxy {
    /**
     * Method getBaseURI
     *
-    * @return
+    *
     */
    public String getBaseURI() {
       return this._baseURI;
@@ -391,7 +391,7 @@ public abstract class ElementProxy {
     *
     * @param localname
     * @param namespace
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public BigInteger getBigIntegerFromChildElement(
@@ -414,7 +414,7 @@ public abstract class ElementProxy {
     *
     * @param localname
     * @param namespace
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] getBytesFromChildElement(String localname, String namespace)
@@ -437,7 +437,7 @@ public abstract class ElementProxy {
     *
     * @param localname
     * @param namespace
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public String getTextFromChildElement(String localname, String namespace)
@@ -458,7 +458,7 @@ public abstract class ElementProxy {
    /**
     * Method getBytesFromTextChild
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] getBytesFromTextChild() throws XMLSecurityException {
@@ -476,7 +476,7 @@ public abstract class ElementProxy {
    /**
     * Method getTextFromTextChild
     *
-    * @return
+    *
     */
    public String getTextFromTextChild() {
       return XMLUtils.getFullTextChildrenFromElement(this._constructionElement);
@@ -527,7 +527,7 @@ public abstract class ElementProxy {
     *
     * @param namespace
     * @param localname
-    * @return
+    *
     */
    public int length(String namespace, String localname) {
 
@@ -635,7 +635,7 @@ public abstract class ElementProxy {
     * Method getDefaultPrefix
     *
     * @param namespace
-    * @return
+    *
     */
    public static String getDefaultPrefix(String namespace) {
 

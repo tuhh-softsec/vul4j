@@ -76,7 +76,7 @@ public class AlwaysAcceptNodeFilter implements NodeFilter {
     * Method acceptNode
     *
     * @param n
-    * @return
+    *
     */
    public short acceptNode(Node n) {
       return FILTER_ACCEPT;

@@ -94,7 +94,7 @@ public class ResolverFragment extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     * @throws ResourceResolverException
     */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
@@ -178,7 +178,7 @@ public class ResolverFragment extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
@@ -202,7 +202,7 @@ public class ResolverFragment extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     * @throws URI.MalformedURIException
     */
    private static boolean isSameDocumentReference(Attr uri, String BaseURI)
@@ -223,7 +223,7 @@ public class ResolverFragment extends ResourceResolverSpi {
     * @param uri
     * @param BaseURI
     * @param input
-    * @return
+    *
     * @throws ResourceResolverException
     * private static XMLSignatureInput selectIdentifiedPortions(
     *       Attr uri, String BaseURI, XMLSignatureInput input)

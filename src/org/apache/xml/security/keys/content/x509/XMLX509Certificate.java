@@ -129,7 +129,7 @@ public class XMLX509Certificate extends SignatureElementProxy
    /**
     * Method getCertificateBytes
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] getCertificateBytes() throws XMLSecurityException {
@@ -139,7 +139,7 @@ public class XMLX509Certificate extends SignatureElementProxy
    /**
     * Method getX509Certificate
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public X509Certificate getX509Certificate() throws XMLSecurityException {
@@ -165,7 +165,7 @@ public class XMLX509Certificate extends SignatureElementProxy
    /**
     * Method getPublicKey
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public PublicKey getPublicKey() throws XMLSecurityException {
@@ -183,7 +183,7 @@ public class XMLX509Certificate extends SignatureElementProxy
     * Method equals
     *
     * @param obj
-    * @return
+    *
     */
    public boolean equals(Object obj) {
 

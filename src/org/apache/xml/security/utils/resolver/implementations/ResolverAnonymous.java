@@ -37,7 +37,7 @@ public class ResolverAnonymous extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
       if (uri == null) {
@@ -49,7 +49,7 @@ public class ResolverAnonymous extends ResourceResolverSpi {
    /**
     * Method engineGetPropertyKeys
     *
-    * @return
+    *
     */
    public String[] engineGetPropertyKeys() {
       return new String[0];

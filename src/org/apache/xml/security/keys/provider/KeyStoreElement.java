@@ -114,7 +114,7 @@ public class KeyStoreElement extends ElementProxy {
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return ApacheKeyStoreConstants._TAG_KEYSTORE;
@@ -123,7 +123,7 @@ public class KeyStoreElement extends ElementProxy {
    /**
     * Method getBaseNamespace
     *
-    * @return
+    *
     */
    public String getBaseNamespace() {
       return ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE;
@@ -197,7 +197,7 @@ public class KeyStoreElement extends ElementProxy {
    /**
     * Method getSignatureElement
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public Element getSignatureElement() throws XMLSecurityException {
@@ -219,7 +219,7 @@ public class KeyStoreElement extends ElementProxy {
     * Method verify
     *
     * @param password
-    * @return
+    *
     * @throws IOException
     */
    public boolean verify(char[] password) throws IOException {
@@ -277,7 +277,7 @@ public class KeyStoreElement extends ElementProxy {
     *
     * @param signature
     * @param password
-    * @return
+    *
     * @throws XMLSecurityException
     */
    private static SecretKey generateKeyFromPass(
@@ -294,7 +294,7 @@ public class KeyStoreElement extends ElementProxy {
    /**
     * Method getNumberOfKeys
     *
-    * @return
+    *
     */
    public int getNumberOfKeys() {
       return this.length(ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE,
@@ -304,7 +304,7 @@ public class KeyStoreElement extends ElementProxy {
    /**
     * Method getNumberOfCertificates
     *
-    * @return
+    *
     */
    public int getNumberOfCertificates() {
       return this.length(ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE,
@@ -314,7 +314,7 @@ public class KeyStoreElement extends ElementProxy {
    /**
     * Method getAliases
     *
-    * @return
+    *
     */
    public Enumeration aliases() {
 
@@ -349,7 +349,7 @@ public class KeyStoreElement extends ElementProxy {
     * Method isCertificateEntry
     *
     * @param alias
-    * @return
+    *
     */
    public boolean isCertificateEntry(String alias) {
 
@@ -362,7 +362,7 @@ public class KeyStoreElement extends ElementProxy {
     * Method isKeyEntry
     *
     * @param alias
-    * @return
+    *
     */
    public boolean isKeyEntry(String alias) {
 
@@ -375,7 +375,7 @@ public class KeyStoreElement extends ElementProxy {
     * Method getCertificateEntryElement
     *
     * @param alias
-    * @return
+    *
     */
    public Element getCertificateEntryElement(String alias) {
 
@@ -407,7 +407,7 @@ public class KeyStoreElement extends ElementProxy {
     * Method getKeyEntryElement
     *
     * @param alias
-    * @return
+    *
     */
    public Element getKeyEntryElement(String alias) {
 
@@ -439,7 +439,7 @@ public class KeyStoreElement extends ElementProxy {
     * Method getCertificate
     *
     * @param alias
-    * @return
+    *
     */
    public Certificate getCertificate(String alias) {
 
@@ -465,7 +465,7 @@ public class KeyStoreElement extends ElementProxy {
     * Method getCreationDate
     *
     * @param alias
-    * @return
+    *
     */
    public Date getCreationDate(String alias) {
 
@@ -534,7 +534,7 @@ public class KeyStoreElement extends ElementProxy {
     * Method engineGetCertificateChain
     *
     * @param alias
-    * @return
+    *
     */
    public Certificate[] getCertificateChain(String alias) {
 
@@ -624,7 +624,7 @@ public class KeyStoreElement extends ElementProxy {
     *
     * @param alias
     * @param password
-    * @return
+    *
     * @throws NoSuchAlgorithmException
     * @throws UnrecoverableKeyException
     */
@@ -668,7 +668,7 @@ public class KeyStoreElement extends ElementProxy {
       /**
        * Method hasMoreElements
        *
-       * @return
+       *
        */
       public boolean hasMoreElements() {
          return this._i < this._v.size();
@@ -677,7 +677,7 @@ public class KeyStoreElement extends ElementProxy {
       /**
        * Method nextElement
        *
-       * @return
+       *
        */
       public Object nextElement() {
 

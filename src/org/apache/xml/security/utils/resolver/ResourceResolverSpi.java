@@ -88,7 +88,7 @@ public abstract class ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     * @throws ResourceResolverException
     */
    public abstract XMLSignatureInput engineResolve(Attr uri, String BaseURI)
@@ -121,7 +121,7 @@ public abstract class ResourceResolverSpi {
     * Method engineGetProperty
     *
     * @param key
-    * @return
+    *
     */
    public String engineGetProperty(String key) {
 
@@ -150,14 +150,14 @@ public abstract class ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    public abstract boolean engineCanResolve(Attr uri, String BaseURI);
 
    /**
     * Method engineGetPropertyKeys
     *
-    * @return
+    *
     */
    public String[] engineGetPropertyKeys() {
       return new String[0];
@@ -167,7 +167,7 @@ public abstract class ResourceResolverSpi {
     * Method understandsProperty
     *
     * @param propertyToTest
-    * @return
+    *
     */
    public boolean understandsProperty(String propertyToTest) {
 
@@ -272,7 +272,7 @@ public abstract class ResourceResolverSpi {
     * Method makeFilesystemToURI
     *
     * @param str
-    * @return
+    *
     */
    public static String makeFilesystemToURI(String str) {
 
@@ -285,7 +285,7 @@ public abstract class ResourceResolverSpi {
     * Method isDosFilename
     *
     * @param str
-    * @return
+    *
     */
    private static boolean isDosFilename(String str) {
 

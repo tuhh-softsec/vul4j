@@ -34,21 +34,21 @@ public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
    /**
     * Method getRequiredProviderName
     *
-    * @return
+    *
     */
    public abstract String getRequiredProviderName();
 
    /**
     * Method getImplementedAlgorithmURI
     *
-    * @return
+    *
     */
    public abstract String getImplementedAlgorithmURI();
 
    /**
     * Method getImplementedAlgorithmType
     *
-    * @return
+    *
     */
    public int getImplementedAlgorithmType() {
       return EncryptionMethodSpi.ALGOTYPE_SYMMETRIC_KEY_WRAP;
@@ -57,7 +57,7 @@ public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
    /**
     * Method engineGetBlockSize
     *
-    * @return
+    *
     */
    public int engineGetBlockSize() {
       return this._cipher.getBlockSize();
@@ -66,7 +66,7 @@ public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
    /**
     * Method engineGetIvLength
     *
-    * @return
+    *
     */
    public abstract int engineGetIvLength();
 
@@ -75,7 +75,7 @@ public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
     *
     * @param doc
     * @param params
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public EncryptionMethodParams engineInit(
@@ -128,7 +128,7 @@ public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
     *
     * @param contentKey
     * @param wrapKey
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineWrap(Key contentKey, Key wrapKey)
@@ -142,7 +142,7 @@ public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
     * @param contentKey
     * @param wrapKey
     * @param IV
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineWrap(Key contentKey, Key wrapKey, byte[] IV)
@@ -162,7 +162,7 @@ public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
     * @param wrappedKey
     * @param wrapKey
     * @param wrappedKeyURI
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public Key engineUnwrap(byte[] wrappedKey, Key wrapKey, String wrappedKeyURI)
@@ -213,7 +213,7 @@ public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
     *
     * @param plaintextBytes
     * @param contentKey
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey)
@@ -228,7 +228,7 @@ public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
     * @param plaintextBytes
     * @param contentKey
     * @param IV
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey, byte[] IV)
@@ -242,7 +242,7 @@ public abstract class KeyWrapImpl_AES_BC extends EncryptionMethodSpi {
     *
     * @param ciphertextBytes
     * @param contentKey
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineDecrypt(byte[] ciphertextBytes, Key contentKey)

@@ -106,7 +106,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    protected String engineGetURI() {
       return this._URI;
@@ -164,7 +164,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signature
-    * @return
+    *
     * @throws XMLSignatureException
     */
    protected boolean engineVerify(byte[] signature)
@@ -335,7 +335,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEAlgorithmString
     *
-    * @return
+    *
     */
    protected String engineGetJCEAlgorithmString() {
       return this._signatureAlgorithm.getAlgorithm();
@@ -344,7 +344,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEProviderName
     *
-    * @return
+    *
     */
    protected String engineGetJCEProviderName() {
       return this._signatureAlgorithm.getProvider().getName();
@@ -357,7 +357,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     * pairs; the XML Signature requires the core BigInteger values.
     *
     * @param xmldsigbytes
-    * @return
+    *
     * @throws IOException
     * @see org.bouncycastle.jce.provider.JDKDSASigner#derEncode
     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
@@ -398,7 +398,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     * pairs; the XML Signature requires the core BigInteger values.
     *
     * @param derbytes
-    * @return
+    *
     * @throws IOException
     * @see org.bouncycastle.jce.provider.JDKDSASigner#derDecode
     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
@@ -442,7 +442,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     *
     * @see org.bouncycastle.jce.provider.JDKDSASigner#derEncode
     * @param bigIntegerArray
-    * @return
+    *
     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
    private static byte[] normalizeBigIntegerArray(byte bigIntegerArray[]) {
 
@@ -470,7 +470,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     * pairs; the XML Signature requires the core BigInteger values.
     *
     * @param asn1Bytes
-    * @return
+    *
     * @throws IOException
     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
     */
@@ -511,7 +511,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     * pairs; the XML Signature requires the core BigInteger values.
     *
     * @param xmldsigBytes
-    * @return
+    *
     * @throws IOException
     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
     */

@@ -117,7 +117,7 @@ public class NullAppender extends org.apache.log4j.AppenderSkeleton {
    /**
     * Method requiresLayout
     *
-    * @return
+    *
     */
    public boolean requiresLayout() {
       return false;

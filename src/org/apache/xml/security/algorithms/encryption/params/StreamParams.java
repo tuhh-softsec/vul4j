@@ -77,7 +77,7 @@ public class StreamParams extends EncryptionMethodParams {
    /**
     * Method getAlgorithmURI
     *
-    * @return
+    *
     */
    public String getAlgorithmURI() {
       return null;
@@ -95,7 +95,7 @@ public class StreamParams extends EncryptionMethodParams {
    /**
     * Method getKeySize
     *
-    * @return
+    *
     */
    public int getKeySize() {
       return this._keySize;
@@ -105,7 +105,7 @@ public class StreamParams extends EncryptionMethodParams {
     * Method createChildNodes
     *
     * @param doc
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public DocumentFragment createChildNodes(Document doc)

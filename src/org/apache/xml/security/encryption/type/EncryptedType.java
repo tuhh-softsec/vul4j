@@ -78,7 +78,7 @@ public interface EncryptedType {
    /**
     * Method getEncryptionMethod
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public EncryptionMethod getEncryptionMethod() throws XMLSecurityException;
@@ -86,7 +86,7 @@ public interface EncryptedType {
    /**
     * Method getKeyInfo
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public KeyInfo getKeyInfo() throws XMLSecurityException;
@@ -94,7 +94,7 @@ public interface EncryptedType {
    /**
     * Method getCipherData
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public CipherData getCipherData() throws XMLSecurityException;
@@ -102,7 +102,7 @@ public interface EncryptedType {
    /**
     * Method getEncryptionProperties
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public EncryptionProperties getEncryptionProperties()
@@ -111,42 +111,42 @@ public interface EncryptedType {
    /**
     * Method getId
     *
-    * @return
+    *
     */
    public String getId();
 
    /**
     * Method getType
     *
-    * @return
+    *
     */
    public String getType();
 
    /**
     * Method getTypeIsElement
     *
-    * @return
+    *
     */
    public boolean getTypeIsElement();
 
    /**
     * Method getTypeIsContent
     *
-    * @return
+    *
     */
    public boolean getTypeIsContent();
 
    /**
     * Method getTypeIsMediaType
     *
-    * @return
+    *
     */
    public boolean getTypeIsMediaType();
 
    /**
     * Method getMediaTypeOfType
     *
-    * @return
+    *
     */
    public String getMediaTypeOfType();
 }

@@ -108,7 +108,7 @@ public class XMLX509CRL extends SignatureElementProxy
    /**
     * Method getCRLBytes
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] getCRLBytes() throws XMLSecurityException {

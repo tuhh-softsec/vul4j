@@ -87,7 +87,7 @@ public class KeyTransportImpl_RSAPKCS15_BC extends KeyTransportImpl {
    /**
     * Method engineGetIvLength
     *
-    * @return
+    *
     */
    public int engineGetIvLength() {
       return -1;
@@ -96,7 +96,7 @@ public class KeyTransportImpl_RSAPKCS15_BC extends KeyTransportImpl {
    /**
     * Method getImplementedAlgorithmURI
     *
-    * @return
+    *
     */
    public String getImplementedAlgorithmURI() {
       return EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSA15;
@@ -105,7 +105,7 @@ public class KeyTransportImpl_RSAPKCS15_BC extends KeyTransportImpl {
    /**
     * Method engineGetBlockSize
     *
-    * @return
+    *
     */
    public int engineGetBlockSize() {
       if (this._cipher != null) {
@@ -164,7 +164,7 @@ public class KeyTransportImpl_RSAPKCS15_BC extends KeyTransportImpl {
     *
     * @param contentKey
     * @param wrapKey
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] engineWrap(Key contentKey, Key wrapKey)
@@ -193,7 +193,7 @@ public class KeyTransportImpl_RSAPKCS15_BC extends KeyTransportImpl {
     * @param wrappedKey
     * @param wrapKey
     * @param wrappedKeyAlgoURI
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public Key engineUnwrap(

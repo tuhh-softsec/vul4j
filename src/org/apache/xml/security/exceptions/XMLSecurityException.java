@@ -195,7 +195,7 @@ public class XMLSecurityException extends Exception {
    /**
     * Method getMsgID
     *
-    * @return
+    *
     */
    public String getMsgID() {
 
@@ -209,7 +209,7 @@ public class XMLSecurityException extends Exception {
    /**
     * Method toString
     *
-    * @return
+    *
     */
    public String toString() {
 
@@ -276,7 +276,7 @@ public class XMLSecurityException extends Exception {
    /**
     * Method getOriginalException
     *
-    * @return
+    *
     */
    public Exception getOriginalException() {
       return originalException;

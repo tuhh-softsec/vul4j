@@ -118,7 +118,7 @@ public class I18n {
     *
     * @param message
     * @param args is an <CODE>Object[]</CODE> array of strings which are inserted into the String which is retrieved from the <CODE>ResouceBundle</CODE>
-    * @return
+    *
     */
    public static String translate(String message, Object[] args) {
       return getExceptionMessage(message, args);
@@ -131,7 +131,7 @@ public class I18n {
     * <CODE>XMLSecurityException.getExceptionMEssage()</CODE>
     *
     * @param message
-    * @return
+    *
     */
    public static String translate(String message) {
       return getExceptionMessage(message);
@@ -141,7 +141,7 @@ public class I18n {
     * Method getExceptionMessage
     *
     * @param msgID
-    * @return
+    *
     */
    public static String getExceptionMessage(String msgID) {
 
@@ -165,7 +165,7 @@ public class I18n {
     *
     * @param msgID
     * @param originalException
-    * @return
+    *
     */
    public static String getExceptionMessage(String msgID,
                                             Exception originalException) {
@@ -195,7 +195,7 @@ public class I18n {
     *
     * @param msgID
     * @param exArgs
-    * @return
+    *
     */
    public static String getExceptionMessage(String msgID, Object exArgs[]) {
 

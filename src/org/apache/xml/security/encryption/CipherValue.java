@@ -104,7 +104,7 @@ public class CipherValue extends EncryptionElementProxy {
    /**
     * Method getCipherText
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] getCipherText() throws XMLSecurityException {

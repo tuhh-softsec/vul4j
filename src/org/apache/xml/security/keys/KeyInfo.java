@@ -356,7 +356,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method lengthKeyName
     *
-    * @return
+    *
     */
    public int lengthKeyName() {
       return this.length(Constants.SignatureSpecNS, Constants._TAG_KEYNAME);
@@ -365,7 +365,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method lengthKeyValue
     *
-    * @return
+    *
     */
    public int lengthKeyValue() {
       return this.length(Constants.SignatureSpecNS, Constants._TAG_KEYVALUE);
@@ -374,7 +374,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method lengthMgmtData
     *
-    * @return
+    *
     */
    public int lengthMgmtData() {
       return this.length(Constants.SignatureSpecNS, Constants._TAG_MGMTDATA);
@@ -383,7 +383,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method lengthPGPData
     *
-    * @return
+    *
     */
    public int lengthPGPData() {
       return this.length(Constants.SignatureSpecNS, Constants._TAG_PGPDATA);
@@ -392,7 +392,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method lengthRetrievalMethod
     *
-    * @return
+    *
     */
    public int lengthRetrievalMethod() {
       return this.length(Constants.SignatureSpecNS,
@@ -402,7 +402,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method lengthSPKIData
     *
-    * @return
+    *
     */
    public int lengthSPKIData() {
       return this.length(Constants.SignatureSpecNS, Constants._TAG_SPKIDATA);
@@ -411,7 +411,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method lengthX509Data
     *
-    * @return
+    *
     */
    public int lengthX509Data() {
       return this.length(Constants.SignatureSpecNS, Constants._TAG_X509DATA);
@@ -420,7 +420,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method lengthUnknownElement
     *
-    * @return
+    *
     */
    public int lengthUnknownElement() {
 
@@ -448,7 +448,7 @@ public class KeyInfo extends SignatureElementProxy {
     * Method itemKeyName
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public KeyName itemKeyName(int i) throws XMLSecurityException {
@@ -467,7 +467,7 @@ public class KeyInfo extends SignatureElementProxy {
     * Method itemKeyValue
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public KeyValue itemKeyValue(int i) throws XMLSecurityException {
@@ -486,7 +486,7 @@ public class KeyInfo extends SignatureElementProxy {
     * Method itemMgmtData
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public MgmtData itemMgmtData(int i) throws XMLSecurityException {
@@ -505,7 +505,7 @@ public class KeyInfo extends SignatureElementProxy {
     * Method itemPGPData
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public PGPData itemPGPData(int i) throws XMLSecurityException {
@@ -524,7 +524,7 @@ public class KeyInfo extends SignatureElementProxy {
     * Method itemRetrievalMethod
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public RetrievalMethod itemRetrievalMethod(int i)
@@ -544,7 +544,7 @@ public class KeyInfo extends SignatureElementProxy {
     * Method itemSPKIData
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public SPKIData itemSPKIData(int i) throws XMLSecurityException {
@@ -563,7 +563,7 @@ public class KeyInfo extends SignatureElementProxy {
     * Method itemX509Data
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public X509Data itemX509Data(int i) throws XMLSecurityException {
@@ -582,7 +582,7 @@ public class KeyInfo extends SignatureElementProxy {
     * Method itemUnknownElement
     *
     * @param i
-    * @return
+    *
     */
    public Element itemUnknownElement(int i) {
 
@@ -613,7 +613,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method isEmpty
     *
-    * @return
+    *
     */
    public boolean isEmpty() {
       return this._constructionElement.getChildNodes().getLength() == 0;
@@ -622,7 +622,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method containsKeyName
     *
-    * @return
+    *
     */
    public boolean containsKeyName() {
       return this.lengthKeyName() > 0;
@@ -631,7 +631,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method containsKeyValue
     *
-    * @return
+    *
     */
    public boolean containsKeyValue() {
       return this.lengthKeyValue() > 0;
@@ -640,7 +640,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method containsMgmtData
     *
-    * @return
+    *
     */
    public boolean containsMgmtData() {
       return this.lengthMgmtData() > 0;
@@ -649,7 +649,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method containsPGPData
     *
-    * @return
+    *
     */
    public boolean containsPGPData() {
       return this.lengthPGPData() > 0;
@@ -658,7 +658,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method containsRetrievalMethod
     *
-    * @return
+    *
     */
    public boolean containsRetrievalMethod() {
       return this.lengthRetrievalMethod() > 0;
@@ -667,7 +667,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method containsSPKIData
     *
-    * @return
+    *
     */
    public boolean containsSPKIData() {
       return this.lengthSPKIData() > 0;
@@ -676,7 +676,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method containsUnknownElement
     *
-    * @return
+    *
     */
    public boolean containsUnknownElement() {
       return this.lengthUnknownElement() > 0;
@@ -685,7 +685,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method containsX509Data
     *
-    * @return
+    *
     */
    public boolean containsX509Data() {
       return this.lengthX509Data() > 0;
@@ -702,7 +702,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * This method returns the public key.
     *
-    * @return
+    *
     * @throws KeyResolverException
     */
    public PublicKey getPublicKey() throws KeyResolverException {
@@ -733,7 +733,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Searches the library wide keyresolvers for public keys
     *
-    * @return
+    *
     * @throws KeyResolverException
     */
    PublicKey getPublicKeyFromStaticResolvers() throws KeyResolverException {
@@ -792,7 +792,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Searches the per-KeyInfo keyresolvers for public keys
     *
-    * @return
+    *
     * @throws KeyResolverException
     */
    PublicKey getPublicKeyFromInternalResolvers() throws KeyResolverException {
@@ -854,7 +854,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method getX509Certificate
     *
-    * @return
+    *
     * @throws KeyResolverException
     */
    public X509Certificate getX509Certificate() throws KeyResolverException {
@@ -893,7 +893,7 @@ public class KeyInfo extends SignatureElementProxy {
     * child elements. Each combination of {@link KeyResolver} and child element
     * is checked against all {@link StorageResolver}s.
     *
-    * @return
+    *
     * @throws KeyResolverException
     */
    X509Certificate getX509CertificateFromStaticResolvers()
@@ -955,7 +955,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method getX509CertificateFromInternalResolvers
     *
-    * @return
+    *
     * @throws KeyResolverException
     */
    X509Certificate getX509CertificateFromInternalResolvers()
@@ -1036,7 +1036,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method lengthInternalKeyResolver
     *
-    * @return
+    *
     */
    int lengthInternalKeyResolver() {
       return this._internalKeyResolvers.size();
@@ -1046,7 +1046,7 @@ public class KeyInfo extends SignatureElementProxy {
     * Method itemInternalKeyResolver
     *
     * @param i
-    * @return
+    *
     */
    KeyResolverSpi itemInternalKeyResolver(int i) {
       return (KeyResolverSpi) this._internalKeyResolvers.elementAt(i);
@@ -1070,7 +1070,7 @@ public class KeyInfo extends SignatureElementProxy {
    /**
     * Method getStorageResolvers
     *
-    * @return
+    *
     */
    Vector getStorageResolvers() {
       return this._storageResolvers;

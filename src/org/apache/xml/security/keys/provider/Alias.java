@@ -94,7 +94,7 @@ public class Alias extends ElementProxy {
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return ApacheKeyStoreConstants._TAG_ALIAS;
@@ -103,7 +103,7 @@ public class Alias extends ElementProxy {
    /**
     * Method getBaseNamespace
     *
-    * @return
+    *
     */
    public String getBaseNamespace() {
       return ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE;
@@ -130,7 +130,7 @@ public class Alias extends ElementProxy {
    /**
     * Method getAlias
     *
-    * @return
+    *
     */
    public String getAlias() {
       return ((Text) this._constructionElement.getFirstChild()).getData();

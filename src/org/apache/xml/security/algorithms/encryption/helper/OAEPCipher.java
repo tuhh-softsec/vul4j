@@ -148,7 +148,7 @@ public class OAEPCipher {
    /**
     * Method getInputBlockSize
     *
-    * @return
+    *
     */
    public int getInputBlockSize() {
 
@@ -165,7 +165,7 @@ public class OAEPCipher {
    /**
     * Method getOutputBlockSize
     *
-    * @return
+    *
     */
    public int getOutputBlockSize() {
 
@@ -185,7 +185,7 @@ public class OAEPCipher {
     * @param in
     * @param inOff
     * @param inLen
-    * @return
+    *
     * @throws BadPaddingException
     * @throws IllegalBlockSizeException
     * @throws InvalidCipherTextException
@@ -209,7 +209,7 @@ public class OAEPCipher {
     * @param in
     * @param inOff
     * @param inLen
-    * @return
+    *
     * @throws BadPaddingException
     * @throws IllegalBlockSizeException
     * @throws InvalidCipherTextException
@@ -278,7 +278,7 @@ public class OAEPCipher {
     * @param in
     * @param inOff
     * @param inLen
-    * @return
+    *
     * @throws BadPaddingException
     * @throws IllegalBlockSizeException
     * @exception InvalidCipherTextException if the decryypted block turns out to
@@ -396,7 +396,7 @@ public class OAEPCipher {
     * @param zLen
     * @param length
     * @param Hash
-    * @return
+    *
     * @throws IllegalArgumentException
     */
    static byte[] maskGeneratorFunction1(

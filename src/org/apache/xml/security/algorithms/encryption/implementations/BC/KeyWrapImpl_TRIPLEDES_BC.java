@@ -91,7 +91,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
    /**
     * Method engineGetIvLength
     *
-    * @return
+    *
     */
    public int engineGetIvLength() {
       return 8;
@@ -100,7 +100,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
    /**
     * Method getImplementedAlgorithmURI
     *
-    * @return
+    *
     */
    public String getImplementedAlgorithmURI() {
       return EncryptionConstants.ALGO_ID_KEYWRAP_TRIPLEDES;
@@ -109,7 +109,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
    /**
     * Method getRequiredProviderName
     *
-    * @return
+    *
     */
    public String getRequiredProviderName() {
       return "BC";
@@ -118,7 +118,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
    /**
     * Method getImplementedAlgorithmType
     *
-    * @return
+    *
     */
    public int getImplementedAlgorithmType() {
       return EncryptionMethodSpi.ALGOTYPE_SYMMETRIC_KEY_WRAP;
@@ -127,7 +127,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
    /**
     * Method engineGetBlockSize
     *
-    * @return
+    *
     */
    public int engineGetBlockSize() {
       return this._cipher.getBlockSize();
@@ -138,7 +138,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
     *
     * @param doc
     * @param params
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public EncryptionMethodParams engineInit(
@@ -173,7 +173,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
     * Method engineInit
     *
     * @param encryptionMethodElem
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public EncryptionMethodParams engineInit(Element encryptionMethodElem)
@@ -210,7 +210,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
     *
     * @param contentKey
     * @param wrapKey
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineWrap(Key contentKey, Key wrapKey)
@@ -224,7 +224,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
     * @param contentKey
     * @param wrapKey
     * @param IV
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineWrap(Key contentKey, Key wrapKey, byte[] IV)
@@ -250,7 +250,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
     * @param wrappedKey
     * @param wrapKey
     * @param wrappedKeyURI
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public Key engineUnwrap(byte[] wrappedKey, Key wrapKey, String wrappedKeyURI)
@@ -302,7 +302,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
     *
     * @param plaintextBytes
     * @param contentKey
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey)
@@ -317,7 +317,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
     * @param plaintextBytes
     * @param contentKey
     * @param IV
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey, byte[] IV)
@@ -331,7 +331,7 @@ public class KeyWrapImpl_TRIPLEDES_BC extends EncryptionMethodSpi {
     *
     * @param ciphertextBytes
     * @param contentKey
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineDecrypt(byte[] ciphertextBytes, Key contentKey)

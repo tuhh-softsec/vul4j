@@ -317,7 +317,7 @@ public class SignedInfo extends Manifest {
    /**
     * Method getSignatureMethodElement
     *
-    * @return
+    *
     */
    public Element getSignatureMethodElement() {
 
@@ -352,7 +352,7 @@ public class SignedInfo extends Manifest {
     * byte[] array password.
     *
     * @param secretKeyBytes
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public SecretKey createSecretKey(byte[] secretKeyBytes)
@@ -366,7 +366,7 @@ public class SignedInfo extends Manifest {
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return Constants._TAG_SIGNEDINFO;

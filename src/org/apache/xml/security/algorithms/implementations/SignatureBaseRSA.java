@@ -91,7 +91,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    public abstract String engineGetURI();
 
@@ -150,7 +150,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signature
-    * @return
+    *
     * @throws XMLSignatureException
     */
    protected boolean engineVerify(byte[] signature)
@@ -311,7 +311,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEAlgorithmString
     *
-    * @return
+    *
     */
    protected String engineGetJCEAlgorithmString() {
       return this._signatureAlgorithm.getAlgorithm();
@@ -320,7 +320,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEProviderName
     *
-    * @return
+    *
     */
    protected String engineGetJCEProviderName() {
       return this._signatureAlgorithm.getProvider().getName();
@@ -371,7 +371,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1;
@@ -398,7 +398,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256;
@@ -425,7 +425,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384;
@@ -452,7 +452,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512;
@@ -479,7 +479,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160;
@@ -506,7 +506,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5;

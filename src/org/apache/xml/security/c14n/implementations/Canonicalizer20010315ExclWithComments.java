@@ -83,7 +83,7 @@ public class Canonicalizer20010315ExclWithComments
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    public final String engineGetURI() {
       return Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS;
@@ -92,7 +92,7 @@ public class Canonicalizer20010315ExclWithComments
    /**
     * Method engineGetIncludeComments
     *
-    * @return
+    *
     */
    public final boolean engineGetIncludeComments() {
       return true;

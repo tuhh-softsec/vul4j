@@ -350,7 +350,7 @@ public final class Transform extends SignatureElementProxy {
     * Method getImplementingClass
     *
     * @param URI
-    * @return
+    *
     */
    private static String getImplementingClass(String URI) {
 

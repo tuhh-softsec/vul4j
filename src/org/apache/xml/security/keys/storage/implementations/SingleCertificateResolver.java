@@ -93,7 +93,7 @@ public class SingleCertificateResolver extends StorageResolverSpi {
    /**
     * Method getIterator
     *
-    * @return
+    *
     */
    public Iterator getIterator() {
       return this._iterator;
@@ -125,7 +125,7 @@ public class SingleCertificateResolver extends StorageResolverSpi {
       /**
        * Method hasNext
        *
-       * @return
+       *
        */
       public boolean hasNext() {
          return (!this._alreadyReturned);
@@ -134,7 +134,7 @@ public class SingleCertificateResolver extends StorageResolverSpi {
       /**
        * Method next
        *
-       * @return
+       *
        */
       public Object next() {
 

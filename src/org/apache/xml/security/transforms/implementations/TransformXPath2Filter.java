@@ -118,7 +118,7 @@ public class TransformXPath2Filter extends TransformSpi {
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    protected String engineGetURI() {
       return this.implementedTransformURI;
@@ -130,7 +130,7 @@ public class TransformXPath2Filter extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
-    * @return
+    *
     * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
@@ -360,7 +360,7 @@ public class TransformXPath2Filter extends TransformSpi {
     * @param currentNode
     * @param ancestors
     * @param rootNodes
-    * @return
+    *
     */
    boolean rooted(Node currentNode, Vector ancestors, NodeList rootNodes) {
 
@@ -382,7 +382,7 @@ public class TransformXPath2Filter extends TransformSpi {
     *
     * @param ctx
     * @param rootInQuestion
-    * @return
+    *
     */
    private static boolean __isRootedBy(Node ctx, Node rootInQuestion) {
 

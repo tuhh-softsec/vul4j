@@ -86,7 +86,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     * @throws ResourceResolverException
     * @todo calculate the correct URI from the attribute and the BaseURI
     */
@@ -120,7 +120,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     * Method translateUriToFilename
     *
     * @param uri
-    * @return
+    *
     */
    private static String translateUriToFilename(String uri) {
 
@@ -142,7 +142,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 

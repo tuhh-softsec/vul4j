@@ -102,7 +102,7 @@ public class CarriedKeyName extends EncryptionElementProxy {
    /**
     * Method getCarriedKeyName
     *
-    * @return
+    *
     */
    public String getCarriedKeyName() {
       return ((Text) this._constructionElement.getFirstChild()).getData();

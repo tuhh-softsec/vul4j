@@ -81,7 +81,7 @@ public class RFC2253Parser {
     * Method rfc2253toXMLdsig
     *
     * @param dn
-    * @return
+    *
     */
    public static String rfc2253toXMLdsig(String dn) {
 
@@ -97,7 +97,7 @@ public class RFC2253Parser {
     * Method xmldsigtoRFC2253
     *
     * @param dn
-    * @return
+    *
     */
    public static String xmldsigtoRFC2253(String dn) {
 
@@ -113,7 +113,7 @@ public class RFC2253Parser {
     * Method normalize
     *
     * @param dn
-    * @return
+    *
     */
    public static String normalize(String dn) {
 
@@ -153,7 +153,7 @@ public class RFC2253Parser {
     * Method parseRDN
     *
     * @param str
-    * @return
+    *
     * @throws IOException
     */
    static String parseRDN(String str) throws IOException {
@@ -183,7 +183,7 @@ public class RFC2253Parser {
     * Method parseATAV
     *
     * @param str
-    * @return
+    *
     * @throws IOException
     */
    static String parseATAV(String str) throws IOException {
@@ -204,7 +204,7 @@ public class RFC2253Parser {
     * Method normalizeAT
     *
     * @param str
-    * @return
+    *
     */
    static String normalizeAT(String str) {
 
@@ -221,7 +221,7 @@ public class RFC2253Parser {
     * Method normalizeV
     *
     * @param str
-    * @return
+    *
     * @throws IOException
     */
    static String normalizeV(String str) throws IOException {
@@ -267,7 +267,7 @@ public class RFC2253Parser {
     * Method rfctoXML
     *
     * @param string
-    * @return
+    *
     */
    static String rfctoXML(String string) {
 
@@ -284,7 +284,7 @@ public class RFC2253Parser {
     * Method xmltoRFC
     *
     * @param string
-    * @return
+    *
     */
    static String xmltoRFC(String string) {
 
@@ -301,7 +301,7 @@ public class RFC2253Parser {
     * Method changeLess32toRFC
     *
     * @param string
-    * @return
+    *
     * @throws IOException
     */
    static String changeLess32toRFC(String string) throws IOException {
@@ -344,7 +344,7 @@ public class RFC2253Parser {
     * Method changeLess32toXML
     *
     * @param string
-    * @return
+    *
     * @throws IOException
     */
    static String changeLess32toXML(String string) throws IOException {
@@ -369,7 +369,7 @@ public class RFC2253Parser {
     * Method changeWStoXML
     *
     * @param string
-    * @return
+    *
     * @throws IOException
     */
    static String changeWStoXML(String string) throws IOException {
@@ -407,7 +407,7 @@ public class RFC2253Parser {
     * Method changeWStoRFC
     *
     * @param string
-    * @return
+    *
     * @throws IOException
     */
    static String changeWStoRFC(String string) throws IOException {
@@ -431,7 +431,7 @@ public class RFC2253Parser {
     * Method semicolonToComma
     *
     * @param str
-    * @return
+    *
     */
    static String semicolonToComma(String str) {
       return removeWSandReplace(str, ";", ",");
@@ -442,7 +442,7 @@ public class RFC2253Parser {
     *
     * @param str
     * @param symbol
-    * @return
+    *
     */
    static String removeWhiteSpace(String str, String symbol) {
       return removeWSandReplace(str, symbol, symbol);
@@ -454,7 +454,7 @@ public class RFC2253Parser {
     * @param str
     * @param symbol
     * @param replace
-    * @return
+    *
     */
    static String removeWSandReplace(String str, String symbol, String replace) {
 
@@ -485,7 +485,7 @@ public class RFC2253Parser {
     * @param s
     * @param i
     * @param j
-    * @return
+    *
     */
    private static int countQuotes(String s, int i, int j) {
 
@@ -506,7 +506,7 @@ public class RFC2253Parser {
     * Method trim
     *
     * @param str
-    * @return
+    *
     */
    static String trim(String str) {
 

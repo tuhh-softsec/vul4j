@@ -74,7 +74,7 @@ public abstract class EncryptionMethodParams {
     * Method createChildNodes
     *
     * @param doc
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public abstract DocumentFragment createChildNodes(Document doc)
@@ -83,7 +83,7 @@ public abstract class EncryptionMethodParams {
    /**
     * Method getAlgorithmURI
     *
-    * @return
+    *
     */
    public abstract String getAlgorithmURI();
 }

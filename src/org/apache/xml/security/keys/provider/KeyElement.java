@@ -177,7 +177,7 @@ public class KeyElement extends KeyBaseType {
     * Method unwrap
     *
     * @param password
-    * @return
+    *
     * @throws NoSuchAlgorithmException
     * @throws UnrecoverableKeyException
     */
@@ -214,7 +214,7 @@ public class KeyElement extends KeyBaseType {
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return ApacheKeyStoreConstants._TAG_KEY;
@@ -267,7 +267,7 @@ public class KeyElement extends KeyBaseType {
     * Method getCertificateChain
     *
     * @param alias
-    * @return
+    *
     */
    public Certificate[] getCertificateChain(String alias) {
 
@@ -317,7 +317,7 @@ public class KeyElement extends KeyBaseType {
     *
     * @param algorithmURI
     * @param password
-    * @return
+    *
     * @throws XMLSecurityException
     */
    private static Key createWrapKey(String algorithmURI, char[] password)

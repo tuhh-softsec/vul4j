@@ -105,7 +105,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     */
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
@@ -126,7 +126,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     * @throws KeyResolverException
     */
    public PublicKey engineResolvePublicKey(
@@ -211,7 +211,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     * @throws KeyResolverException
     */
    public X509Certificate engineResolveX509Certificate(
@@ -296,7 +296,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * Parses a byte array and returns the parsed Element.
     *
     * @param bytes
-    * @return
+    *
     * @throws KeyResolverException if something goes wrong
     */
    Element getDocFromBytes(byte[] bytes) throws KeyResolverException {
@@ -327,7 +327,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     * @throws KeyResolverException
     */
    public javax.crypto.SecretKey engineResolveSecretKey(

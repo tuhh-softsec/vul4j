@@ -72,7 +72,7 @@ public class BlockEncryptionImpl_AES192_BC extends BlockEncryptionImpl {
    /**
     * Method engineGetIvLength
     *
-    * @return
+    *
     */
    public int engineGetIvLength() {
       return 16;
@@ -81,7 +81,7 @@ public class BlockEncryptionImpl_AES192_BC extends BlockEncryptionImpl {
    /**
     * Method getImplementedAlgorithmURI
     *
-    * @return
+    *
     */
    public String getImplementedAlgorithmURI() {
       return EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192;
@@ -90,7 +90,7 @@ public class BlockEncryptionImpl_AES192_BC extends BlockEncryptionImpl {
    /**
     * Method getRequiredProviderName
     *
-    * @return
+    *
     */
    public String getRequiredProviderName() {
       return "BC";

@@ -86,7 +86,7 @@ public class OAEPParams extends EncryptionMethodParams {
    /**
     * Method getAlgorithmURI
     *
-    * @return
+    *
     */
    public String getAlgorithmURI() {
       return EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP;
@@ -144,7 +144,7 @@ public class OAEPParams extends EncryptionMethodParams {
    /**
     * Method getDigestMethodURI
     *
-    * @return
+    *
     */
    public String getDigestMethodURI() {
       return this._digestMethodURI;
@@ -153,7 +153,7 @@ public class OAEPParams extends EncryptionMethodParams {
    /**
     * Method getOAEPParamBytes
     *
-    * @return
+    *
     */
    public byte[] getOAEPParamBytes() {
       return this._OAEPParamBytes;
@@ -163,7 +163,7 @@ public class OAEPParams extends EncryptionMethodParams {
     * Method createChildNodes
     *
     * @param doc
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public DocumentFragment createChildNodes(Document doc)

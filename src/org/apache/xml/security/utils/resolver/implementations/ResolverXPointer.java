@@ -101,7 +101,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     * @throws ResourceResolverException
     */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
@@ -165,7 +165,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
@@ -187,7 +187,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    private static boolean isSameDocumentReference(Attr uri, String BaseURI) {
 
@@ -203,7 +203,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    private static boolean isXPointerSlash(Attr uri, String BaseURI) {
 
@@ -219,7 +219,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    private static boolean isXPointerId(Attr uri, String BaseURI) {
 
@@ -252,7 +252,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    private static String getXPointerId(Attr uri, String BaseURI) {
 

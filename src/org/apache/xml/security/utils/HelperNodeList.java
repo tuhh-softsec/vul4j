@@ -95,7 +95,7 @@ public class HelperNodeList implements NodeList {
     * Method item
     *
     * @param index
-    * @return
+    *
     */
    public Node item(int index) {
 
@@ -107,7 +107,7 @@ public class HelperNodeList implements NodeList {
    /**
     * Method getLength
     *
-    * @return
+    *
     */
    public int getLength() {
       return nodes.size();

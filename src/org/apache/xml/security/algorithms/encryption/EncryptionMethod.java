@@ -101,7 +101,7 @@ public class EncryptionMethod extends Algorithm {
    /**
     * Method getBaseNamespace
     *
-    * @return
+    *
     */
    public String getBaseNamespace() {
       return EncryptionConstants.EncryptionSpecNS;
@@ -110,7 +110,7 @@ public class EncryptionMethod extends Algorithm {
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return EncryptionConstants._TAG_ENCRYPTIONMETHOD;
@@ -131,7 +131,7 @@ public class EncryptionMethod extends Algorithm {
    /**
     * Method getUsableInEncryptedData
     *
-    * @return
+    *
     */
    public boolean getUsableInEncryptedData() {
 
@@ -162,7 +162,7 @@ public class EncryptionMethod extends Algorithm {
    /**
     * Method getUsableInEncryptedKey
     *
-    * @return
+    *
     */
    public boolean getUsableInEncryptedKey() {
 
@@ -309,7 +309,7 @@ public class EncryptionMethod extends Algorithm {
     *
     * @param contentKey
     * @param wrapKey
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] wrap(Key contentKey, Key wrapKey) throws XMLSecurityException {
@@ -322,7 +322,7 @@ public class EncryptionMethod extends Algorithm {
     * @param contentKey
     * @param wrapKey
     * @param IV
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] wrap(Key contentKey, Key wrapKey, byte[] IV)
@@ -336,7 +336,7 @@ public class EncryptionMethod extends Algorithm {
     * @param wrappedKey
     * @param wrapKey
     * @param wrappedKeyAlgoURI
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public Key unwrap(byte[] wrappedKey, Key wrapKey, String wrappedKeyAlgoURI)
@@ -349,7 +349,7 @@ public class EncryptionMethod extends Algorithm {
     *
     * @param plaintextBytes
     * @param contentKey
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] encrypt(byte[] plaintextBytes, Key contentKey)
@@ -363,7 +363,7 @@ public class EncryptionMethod extends Algorithm {
     * @param plaintextBytes
     * @param contentKey
     * @param IV
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] encrypt(byte[] plaintextBytes, Key contentKey, byte[] IV)
@@ -376,7 +376,7 @@ public class EncryptionMethod extends Algorithm {
     *
     * @param ciphertextBytes
     * @param contentKey
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] decrypt(byte[] ciphertextBytes, Key contentKey)
@@ -387,7 +387,7 @@ public class EncryptionMethod extends Algorithm {
    /**
     * Method getParams
     *
-    * @return
+    *
     */
    public EncryptionMethodParams getParams() {
       return this._encMethodParams;
@@ -396,7 +396,7 @@ public class EncryptionMethod extends Algorithm {
    /**
     * Method getIvLength
     *
-    * @return
+    *
     */
    public int getIvLength() {
       return this._emSpi.engineGetIvLength();
@@ -405,7 +405,7 @@ public class EncryptionMethod extends Algorithm {
    /**
     * Method getBlockSize
     *
-    * @return
+    *
     */
    public int getBlockSize() {
       return this._emSpi.engineGetBlockSize();
@@ -415,7 +415,7 @@ public class EncryptionMethod extends Algorithm {
     * Method createSecretKeyFromBytes
     *
     * @param encodedKey
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public Key createSecretKeyFromBytes(byte encodedKey[])
@@ -452,7 +452,7 @@ public class EncryptionMethod extends Algorithm {
     *
     * @param algorithmURI
     * @param implementingClass
-    * @return
+    *
     */
    public static boolean register(String algorithmURI,
                                   String implementingClass) {

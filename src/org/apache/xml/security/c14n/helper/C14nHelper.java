@@ -88,7 +88,7 @@ public class C14nHelper {
     * Method sortAttributes
     *
     * @param namednodemap
-    * @return
+    *
    public static final Attr[] sortAttributes(NamedNodeMap namednodemap) {
 
       if (namednodemap == null) {
@@ -112,7 +112,7 @@ public class C14nHelper {
     * Method sortAttributes
     *
     * @param namednodemap
-    * @return
+    *
    public static final Attr[] sortAttributes(Attr[] namednodemap) {
 
       if (namednodemap == null) {
@@ -130,7 +130,7 @@ public class C14nHelper {
     * Method sortAttributes
     *
     * @param namednodemap
-    * @return
+    *
    public static final Object[] sortAttributes(Object[] namednodemap) {
 
       for (
@@ -299,7 +299,7 @@ public class C14nHelper {
     * Method namespaceIsRelative
     *
     * @param namespace
-    * @return
+    *
     */
    public static boolean namespaceIsRelative(Attr namespace) {
       return !namespaceIsAbsolute(namespace);
@@ -309,7 +309,7 @@ public class C14nHelper {
     * Method namespaceIsRelative
     *
     * @param namespaceValue
-    * @return
+    *
     */
    public static boolean namespaceIsRelative(String namespaceValue) {
       return !namespaceIsAbsolute(namespaceValue);
@@ -319,7 +319,7 @@ public class C14nHelper {
     * Method namespaceIsAbsolute
     *
     * @param namespace
-    * @return
+    *
     */
    public static boolean namespaceIsAbsolute(Attr namespace) {
       return namespaceIsAbsolute(namespace.getValue());
@@ -329,7 +329,7 @@ public class C14nHelper {
     * Method namespaceIsAbsolute
     *
     * @param namespaceValue
-    * @return
+    *
     */
    public static boolean namespaceIsAbsolute(String namespaceValue) {
 

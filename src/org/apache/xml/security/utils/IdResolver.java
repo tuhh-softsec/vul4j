@@ -128,7 +128,7 @@ public class IdResolver {
     *
     * @param doc
     * @param id
-    * @return
+    *
     */
    public static Element getElementById(Document doc, String id) {
 
@@ -214,7 +214,7 @@ public class IdResolver {
     *
     * @param doc
     * @param id
-    * @return
+    *
     */
    private static Element getElementByIdType(Document doc, String id) {
 
@@ -228,7 +228,7 @@ public class IdResolver {
     *
     * @param doc
     * @param id
-    * @return
+    *
     */
    private static Element getElementByIdInDSNamespace(Document doc, String id) {
 
@@ -271,7 +271,7 @@ public class IdResolver {
     *
     * @param doc
     * @param id
-    * @return
+    *
     */
    private static Element getElementByIdInXENCNamespace(Document doc,
            String id) {
@@ -299,7 +299,7 @@ public class IdResolver {
     *
     * @param doc
     * @param id
-    * @return
+    *
     */
    private static Element getElementByIdInSOAPSignatureNamespace(Document doc,
            String id) {
@@ -326,7 +326,7 @@ public class IdResolver {
     *
     * @param doc
     * @param id
-    * @return
+    *
     * @see http://www.w3c.org/2001/XKMS/Drafts/XKMS-20020410
     */
    private static Element getElementByIdInXKMSNamespace(Document doc,
@@ -373,7 +373,7 @@ public class IdResolver {
     *
     * @param doc
     * @param id
-    * @return
+    *
     */
    private static Element getElementByIdUnsafeMatchByIdName(Document doc,
            String id) {

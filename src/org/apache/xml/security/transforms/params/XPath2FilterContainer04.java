@@ -170,7 +170,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     *
     * @param doc
     * @param xpath2filter
-    * @return
+    *
     */
    public static XPath2FilterContainer04 newInstanceIntersect(Document doc,
            String xpath2filter) {
@@ -185,7 +185,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     *
     * @param doc
     * @param xpath2filter
-    * @return
+    *
     */
    public static XPath2FilterContainer04 newInstanceSubtract(Document doc,
            String xpath2filter) {
@@ -200,7 +200,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     *
     * @param doc
     * @param xpath2filter
-    * @return
+    *
     */
    public static XPath2FilterContainer04 newInstanceUnion(Document doc,
            String xpath2filter) {
@@ -215,7 +215,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     *
     * @param element
     * @param BaseURI
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public static XPath2FilterContainer04 newInstance(
@@ -292,7 +292,7 @@ public class XPath2FilterContainer04 extends ElementProxy
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public final String getBaseLocalName() {
       return XPath2FilterContainer04._TAG_XPATH2;
@@ -301,7 +301,7 @@ public class XPath2FilterContainer04 extends ElementProxy
    /**
     * Method getBaseNamespace
     *
-    * @return
+    *
     */
    public final String getBaseNamespace() {
       return XPath2FilterContainer04.XPathFilter2NS;

@@ -120,7 +120,7 @@ public class PKCS15Cipher {
    /**
     * Method getInputBlockSize
     *
-    * @return
+    *
     */
    public int getInputBlockSize() {
 
@@ -136,7 +136,7 @@ public class PKCS15Cipher {
    /**
     * Method getOutputBlockSize
     *
-    * @return
+    *
     */
    public int getOutputBlockSize() {
 
@@ -155,7 +155,7 @@ public class PKCS15Cipher {
     * @param in
     * @param inOff
     * @param inLen
-    * @return
+    *
     * @throws BadPaddingException
     * @throws IllegalBlockSizeException
     * @throws InvalidCipherTextException
@@ -179,7 +179,7 @@ public class PKCS15Cipher {
     * @param in
     * @param inOff
     * @param inLen
-    * @return
+    *
     * @throws BadPaddingException
     * @throws IllegalBlockSizeException
     * @throws InvalidCipherTextException
@@ -215,7 +215,7 @@ public class PKCS15Cipher {
     * @param in
     * @param inOff
     * @param inLen
-    * @return
+    *
     * @throws BadPaddingException
     * @throws IllegalBlockSizeException
     * @exception InvalidCipherTextException if the decrypted block is not in PKCS1 format.

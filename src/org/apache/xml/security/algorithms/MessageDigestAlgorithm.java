@@ -122,7 +122,7 @@ public class MessageDigestAlgorithm extends Algorithm {
     *
     * @param doc
     * @param algorithmURI
-    * @return
+    *
     * @throws XMLSignatureException
     */
    public static MessageDigestAlgorithm getInstance(
@@ -282,7 +282,7 @@ public class MessageDigestAlgorithm extends Algorithm {
    /**
     * Method getBaseNamespace
     *
-    * @return
+    *
     */
    public String getBaseNamespace() {
       return Constants.SignatureSpecNS;

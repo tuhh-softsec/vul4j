@@ -97,7 +97,7 @@ public class C14nNodeFilter implements NodeFilter {
     *
     * @param node
     *
-    * @return
+    *
     *
     */
    public short acceptNode(Node node) {

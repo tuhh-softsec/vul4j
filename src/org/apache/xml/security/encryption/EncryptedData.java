@@ -200,7 +200,7 @@ public class EncryptedData extends EncryptionElementProxy
    /**
     * Method getEncryptionMethod
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public EncryptionMethod getEncryptionMethod() throws XMLSecurityException {
@@ -223,7 +223,7 @@ public class EncryptedData extends EncryptionElementProxy
    /**
     * Method getKeyInfo
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public KeyInfo getKeyInfo() throws XMLSecurityException {
@@ -242,7 +242,7 @@ public class EncryptedData extends EncryptionElementProxy
    /**
     * Method getCipherData
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public CipherData getCipherData() throws XMLSecurityException {
@@ -261,7 +261,7 @@ public class EncryptedData extends EncryptionElementProxy
    /**
     * Method getEncryptionProperties
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public EncryptionProperties getEncryptionProperties()
@@ -319,7 +319,7 @@ public class EncryptedData extends EncryptionElementProxy
    /**
     * Method getType
     *
-    * @return
+    *
     */
    public String getType() {
       return this._constructionElement
@@ -329,7 +329,7 @@ public class EncryptedData extends EncryptionElementProxy
    /**
     * Method getTypeIsElement
     *
-    * @return
+    *
     */
    public boolean getTypeIsElement() {
 
@@ -345,7 +345,7 @@ public class EncryptedData extends EncryptionElementProxy
    /**
     * Method getTypeIsContent
     *
-    * @return
+    *
     */
    public boolean getTypeIsContent() {
 
@@ -361,7 +361,7 @@ public class EncryptedData extends EncryptionElementProxy
    /**
     * Method getTypeIsMediaType
     *
-    * @return
+    *
     */
    public boolean getTypeIsMediaType() {
 
@@ -377,7 +377,7 @@ public class EncryptedData extends EncryptionElementProxy
    /**
     * Method getMediaTypeOfType
     *
-    * @return
+    *
     */
    public String getMediaTypeOfType() {
 
@@ -394,7 +394,7 @@ public class EncryptedData extends EncryptionElementProxy
     *
     * @param oldElement
     * @param newContent
-    * @return
+    *
     */
    public static Element replace(Element oldElement, NodeList newContent) {
 
@@ -502,7 +502,7 @@ public class EncryptedData extends EncryptionElementProxy
     *
     * @param oldElement
     * @param plaintextBytes
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public static Element replace(Element oldElement, byte[] plaintextBytes)
@@ -540,7 +540,7 @@ public class EncryptedData extends EncryptionElementProxy
     * Method createSecretKeyFromBytes
     *
     * @param encodedKey
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public Key createSecretKeyFromBytes(byte encodedKey[])
@@ -929,7 +929,7 @@ public class EncryptedData extends EncryptionElementProxy
     * @param a
     * @param b
     * @param c
-    * @return
+    *
     */
    public static int min(int a, int b, int c) {
       return min(min(a, b), c);
@@ -940,7 +940,7 @@ public class EncryptedData extends EncryptionElementProxy
     *
     * @param a
     * @param b
-    * @return
+    *
     */
    public static int min(int a, int b) {
 

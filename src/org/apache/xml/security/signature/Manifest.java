@@ -559,7 +559,7 @@ public class Manifest extends SignatureElementProxy {
     * Method getSignedContentItem
     *
     * @param i
-    * @return
+    *
     * @throws XMLSignatureException
     */
    public byte[] getSignedContentItem(int i) throws XMLSignatureException {
@@ -581,7 +581,7 @@ public class Manifest extends SignatureElementProxy {
     * Method getReferencedContentPriorTransformsItem
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public XMLSignatureInput getReferencedContentBeforeTransformsItem(int i)
@@ -593,7 +593,7 @@ public class Manifest extends SignatureElementProxy {
     * Method getReferencedContentAfterTransformsItem
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public XMLSignatureInput getReferencedContentAfterTransformsItem(int i)
@@ -604,7 +604,7 @@ public class Manifest extends SignatureElementProxy {
    /**
     * Method getSignedContentLength
     *
-    * @return
+    *
     */
    public int getSignedContentLength() {
       return this.getLength();
@@ -613,7 +613,7 @@ public class Manifest extends SignatureElementProxy {
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return Constants._TAG_MANIFEST;

@@ -108,7 +108,7 @@ public class TransformXPath extends TransformSpi {
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    protected String engineGetURI() {
       return this.implementedTransformURI;
@@ -118,7 +118,7 @@ public class TransformXPath extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
-    * @return
+    *
     * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)

@@ -222,7 +222,7 @@ public class ApacheKeyStore extends KeyStoreSpi {
    /**
     *
     * @param alias
-    * @return
+    *
     */
    public boolean engineContainsAlias(String alias) {
 
@@ -250,7 +250,7 @@ public class ApacheKeyStore extends KeyStoreSpi {
    /**
     *
     * @param cert
-    * @return
+    *
     */
    public String engineGetCertificateAlias(Certificate cert) {
       Enumeration aliases = this.engineAliases();
@@ -270,7 +270,7 @@ public class ApacheKeyStore extends KeyStoreSpi {
 
    /**
     *
-    * @return
+    *
     */
    public int engineSize() {
       return this._keyStoreElement.getNumberOfKeys()
@@ -279,7 +279,7 @@ public class ApacheKeyStore extends KeyStoreSpi {
 
    /**
     *
-    * @return
+    *
     */
    public Enumeration engineAliases() {
       return this._keyStoreElement.aliases();

@@ -147,7 +147,7 @@ public class RSAKeyValue extends SignatureElementProxy
    /**
     * Method getPublicKey
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public PublicKey getPublicKey() throws XMLSecurityException {

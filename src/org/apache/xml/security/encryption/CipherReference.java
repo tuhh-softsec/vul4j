@@ -124,7 +124,7 @@ public class CipherReference extends EncryptionElementProxy {
    /**
     * Method getURI
     *
-    * @return
+    *
     */
    public String getURI() {
       return this._constructionElement
@@ -134,7 +134,7 @@ public class CipherReference extends EncryptionElementProxy {
    /**
     * Method getTransforms
     *
-    * @return
+    *
     */
    public Transforms getTransforms() {
 

@@ -97,7 +97,7 @@ public class KeyStoreResolver extends StorageResolverSpi {
    /**
     * Method getIterator
     *
-    * @return
+    *
     */
    public Iterator getIterator() {
       return this._iterator;
@@ -138,7 +138,7 @@ public class KeyStoreResolver extends StorageResolverSpi {
       /**
        * Method hasNext
        *
-       * @return
+       *
        */
       public boolean hasNext() {
          return this._aliases.hasMoreElements();
@@ -147,7 +147,7 @@ public class KeyStoreResolver extends StorageResolverSpi {
       /**
        * Method next
        *
-       * @return
+       *
        */
       public Object next() {
 

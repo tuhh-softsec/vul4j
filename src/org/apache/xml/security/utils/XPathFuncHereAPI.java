@@ -330,7 +330,7 @@ public class XPathFuncHereAPI {
     * Method getStrFromNode
     *
     * @param xpathnode
-    * @return
+    *
     */
    private static String getStrFromNode(Node xpathnode) {
 

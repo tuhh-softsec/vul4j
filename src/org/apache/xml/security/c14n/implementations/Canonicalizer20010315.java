@@ -104,7 +104,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * Method engineCanonicalizeSubTree
     *
     * @param rootNode
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeSubTree(Node rootNode)
@@ -381,7 +381,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * names/values.
     *
     * @param apexElement
-    * @return
+    *
     */
    public static Map getinscopeNamespaces(Element apexElement) {
 
@@ -463,7 +463,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * Method engineCanonicalizeXPathNodeSet
     *
     * @param xpathNodeSet
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet)
@@ -651,7 +651,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @param currentElement
     * @param parentIsVisible
     * @param ctx
-    * @return
+    *
     * @throws CanonicalizationException
     */
    List getAttrs(Element currentElement, boolean parentIsVisible, C14nCtx ctx)
@@ -985,7 +985,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     *
     * @param xpathNodeSet
     * @param inclusiveNamespaces
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeXPathNodeSet(
@@ -1002,7 +1002,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     *
     * @param rootNode
     * @param inclusiveNamespaces
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeSubTree(
@@ -1051,7 +1051,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
       /**
        * Method copy
        *
-       * @return
+       *
        */
       public C14nCtx copy() {
 

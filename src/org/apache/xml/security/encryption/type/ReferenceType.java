@@ -70,7 +70,7 @@ public interface ReferenceType {
    /**
     * Method getURI
     *
-    * @return
+    *
     */
    public String getURI();
 }

@@ -130,7 +130,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     * @throws ResourceResolverException
     * @todo calculate the correct URI from the attribute and the BaseURI
     */
@@ -277,7 +277,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
@@ -309,7 +309,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
    /**
     * Method engineGetPropertyKeys
     *
-    * @return
+    *
     */
    public String[] engineGetPropertyKeys() {
       return ResolverDirectHTTP.properties;

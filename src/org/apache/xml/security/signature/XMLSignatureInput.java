@@ -471,7 +471,7 @@ public class XMLSignatureInput {
    /**
     * Method toString
     *
-    * @return
+    *
     */
    public String toString() {
 

@@ -109,7 +109,7 @@ public class XMLUtils {
    /**
     * Method getXalanVersion
     *
-    * @return
+    *
     */
    public static String getXalanVersion() {
 
@@ -140,7 +140,7 @@ public class XMLUtils {
    /**
     * Method getXercesVersion
     *
-    * @return
+    *
     */
    public static String getXercesVersion() {
 
@@ -165,7 +165,7 @@ public class XMLUtils {
    /**
     * Method getXalan1Version
     *
-    * @return
+    *
     */
    private static String getXalan1Version() {
 
@@ -200,7 +200,7 @@ public class XMLUtils {
    /**
     * Method getXalan20Version
     *
-    * @return
+    *
     */
    private static String getXalan20Version() {
 
@@ -223,7 +223,7 @@ public class XMLUtils {
    /**
     * Method getXalan2Version
     *
-    * @return
+    *
     */
    private static String getXalan2Version() {
 
@@ -250,7 +250,7 @@ public class XMLUtils {
    /**
     * Method getXerces1Version
     *
-    * @return
+    *
     */
    private static String getXerces1Version() {
 
@@ -272,7 +272,7 @@ public class XMLUtils {
    /**
     * Method getXerces2Version
     *
-    * @return
+    *
     */
    private static String getXerces2Version() {
 
@@ -383,7 +383,7 @@ public class XMLUtils {
     * Method getNodeTypeString
     *
     * @param n
-    * @return
+    *
     */
    public static String getNodeTypeString(Node n) {
       return getNodeTypeString(n.getNodeType());
@@ -393,7 +393,7 @@ public class XMLUtils {
     * Returns all ancestor elements of a given node up to the document element
     *
     * @param ctxNode
-    * @return
+    *
     */
    public static Vector getAncestorElements(Node ctxNode) {
 
@@ -419,7 +419,7 @@ public class XMLUtils {
     *
     * @param ctxNode
     * @param rootElement
-    * @return
+    *
     */
    public static Vector getAncestorElements(Node ctxNode, Node rootElement) {
 
@@ -447,7 +447,7 @@ public class XMLUtils {
     * Method getDirectChildrenElements
     *
     * @param parentElement
-    * @return
+    *
     */
    public static NodeList getDirectChildrenElements(Element parentElement) {
 
@@ -471,7 +471,7 @@ public class XMLUtils {
     * @param parentElement
     * @param childLocalName
     * @param childNamespaceURI
-    * @return
+    *
     */
    public static Element getDirectChild(Element parentElement,
                                         String childLocalName,
@@ -698,7 +698,7 @@ public class XMLUtils {
     * Method getFullTextChildrenFromElement
     *
     * @param element
-    * @return
+    *
     */
    public static String getFullTextChildrenFromElement(Element element) {
 
@@ -1052,7 +1052,7 @@ public class XMLUtils {
     * @param doc
     * @param prefix
     * @param namespace
-    * @return
+    *
     */
    public static Element createDSctx(Document doc, String prefix,
                                      String namespace) {
@@ -1074,7 +1074,7 @@ public class XMLUtils {
     *
     * @param doc
     * @param prefix
-    * @return
+    *
     */
    public static Element createDSctx(Document doc, String prefix) {
       return XMLUtils.createDSctx(doc, prefix, Constants.SignatureSpecNS);
@@ -1156,7 +1156,7 @@ public class XMLUtils {
     * Method convertNodelistToSet
     *
     * @param xpathNodeSet
-    * @return
+    *
     */
    public static Set convertNodelistToSet(NodeList xpathNodeSet) {
 
@@ -1178,7 +1178,7 @@ public class XMLUtils {
     * Method convertSetToNodelist
     *
     * @param set
-    * @return
+    *
     */
    public static NodeList convertSetToNodelist(Set set) {
 
@@ -1264,7 +1264,7 @@ public class XMLUtils {
     *
     * @param n
     * @param result
-    * @return
+    *
     */
    private static String getXPath(Node n, String result) {
 
@@ -1301,7 +1301,7 @@ public class XMLUtils {
     * Simple tool to return the position of a particular node in an XPath like String.
     *
     * @param n
-    * @return
+    *
     */
    public static String getXPath(Node n) {
       return getXPath(n, "");

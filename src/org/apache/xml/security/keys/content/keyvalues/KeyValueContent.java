@@ -79,7 +79,7 @@ public interface KeyValueContent {
    /**
     * Method getPublicKey
     *
-    * @return
+    *
     * @throws InvalidKeySpecException
     * @throws NoSuchAlgorithmException
     */

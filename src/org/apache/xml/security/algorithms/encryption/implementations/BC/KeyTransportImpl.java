@@ -87,7 +87,7 @@ public abstract class KeyTransportImpl extends EncryptionMethodSpi {
    /**
     * Method getRequiredProviderName
     *
-    * @return
+    *
     */
    public String getRequiredProviderName() {
       return "BC";
@@ -96,7 +96,7 @@ public abstract class KeyTransportImpl extends EncryptionMethodSpi {
    /**
     * Method getImplementedAlgorithmType
     *
-    * @return
+    *
     */
    public int getImplementedAlgorithmType() {
       return EncryptionMethodSpi.ALGOTYPE_KEY_TRANSPORT;
@@ -108,7 +108,7 @@ public abstract class KeyTransportImpl extends EncryptionMethodSpi {
     * @param contentKey
     * @param wrapKey
     * @param IV
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] engineWrap(Key contentKey, Key wrapKey, byte[] IV)
@@ -121,7 +121,7 @@ public abstract class KeyTransportImpl extends EncryptionMethodSpi {
     *
     * @param plaintextBytes
     * @param contentKey
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey)
@@ -136,7 +136,7 @@ public abstract class KeyTransportImpl extends EncryptionMethodSpi {
     * @param plaintextBytes
     * @param contentKey
     * @param IV
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey, byte[] IV)
@@ -150,7 +150,7 @@ public abstract class KeyTransportImpl extends EncryptionMethodSpi {
     *
     * @param ciphertextBytes
     * @param contentKey
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] engineDecrypt(byte[] ciphertextBytes, Key contentKey)

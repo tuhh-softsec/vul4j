@@ -97,7 +97,7 @@ public class AESWrapper {
     * @param keyToBeWrappedK
     * @param wrapKey
     * @param IV
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] wrap(Key keyToBeWrappedK, Key wrapKey, byte[] IV)
@@ -166,7 +166,7 @@ public class AESWrapper {
     *
     * @param wrappedKey
     * @param wrapKey
-    * @return
+    *
     * @throws InvalidCipherTextException
     * @throws XMLSecurityException
     */

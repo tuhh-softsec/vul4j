@@ -236,7 +236,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getReferenceList
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public ReferenceList getReferenceList() throws XMLSecurityException {
@@ -298,7 +298,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getLengthDataReference
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public int getLengthDataReference() throws XMLSecurityException {
@@ -315,7 +315,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getLengthKeyReference
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public int getLengthKeyReference() throws XMLSecurityException {
@@ -333,7 +333,7 @@ public class EncryptedKey extends EncryptionElementProxy
     * Method itemDataReference
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public DataReference itemDataReference(int i) throws XMLSecurityException {
@@ -347,7 +347,7 @@ public class EncryptedKey extends EncryptionElementProxy
     * Method itemKeyReference
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public KeyReference itemKeyReference(int i) throws XMLSecurityException {
@@ -384,7 +384,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getCarriedKeyName
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public CarriedKeyName getCarriedKeyName() throws XMLSecurityException {
@@ -404,7 +404,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getRecipient
     *
-    * @return
+    *
     */
    public String getRecipient() {
       return this._constructionElement
@@ -426,7 +426,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getEncryptionMethod
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public EncryptionMethod getEncryptionMethod() throws XMLSecurityException {
@@ -446,7 +446,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getKeyInfo
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public KeyInfo getKeyInfo() throws XMLSecurityException {
@@ -465,7 +465,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getCipherData
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public CipherData getCipherData() throws XMLSecurityException {
@@ -484,7 +484,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getEncryptionProperties
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public EncryptionProperties getEncryptionProperties()
@@ -542,7 +542,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getType
     *
-    * @return
+    *
     */
    public String getType() {
       return this._constructionElement
@@ -552,7 +552,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getTypeIsElement
     *
-    * @return
+    *
     */
    public boolean getTypeIsElement() {
 
@@ -568,7 +568,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getTypeIsContent
     *
-    * @return
+    *
     */
    public boolean getTypeIsContent() {
 
@@ -584,7 +584,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getTypeIsMediaType
     *
-    * @return
+    *
     */
    public boolean getTypeIsMediaType() {
 
@@ -600,7 +600,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getMediaTypeOfType
     *
-    * @return
+    *
     */
    public String getMediaTypeOfType() {
 
@@ -615,7 +615,7 @@ public class EncryptedKey extends EncryptionElementProxy
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return EncryptionConstants._TAG_ENCRYPTEDKEY;

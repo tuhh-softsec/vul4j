@@ -344,7 +344,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthIssuerSerial
     *
-    * @return
+    *
     */
    public int lengthIssuerSerial() {
       return this.length(Constants.SignatureSpecNS,
@@ -354,7 +354,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthSKI
     *
-    * @return
+    *
     */
    public int lengthSKI() {
       return this.length(Constants.SignatureSpecNS, Constants._TAG_X509SKI);
@@ -363,7 +363,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthSubjectName
     *
-    * @return
+    *
     */
    public int lengthSubjectName() {
       return this.length(Constants.SignatureSpecNS,
@@ -373,7 +373,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthCertificate
     *
-    * @return
+    *
     */
    public int lengthCertificate() {
       return this.length(Constants.SignatureSpecNS,
@@ -383,7 +383,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthCRL
     *
-    * @return
+    *
     */
    public int lengthCRL() {
       return this.length(Constants.SignatureSpecNS, Constants._TAG_X509CRL);
@@ -392,7 +392,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method lengthUnknownElement
     *
-    * @return
+    *
     */
    public int lengthUnknownElement() {
 
@@ -415,7 +415,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     * Method itemIssuerSerial
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public XMLX509IssuerSerial itemIssuerSerial(int i)
@@ -436,7 +436,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     * Method itemSKI
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public XMLX509SKI itemSKI(int i) throws XMLSecurityException {
@@ -455,7 +455,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     * Method itemSubjectName
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public XMLX509SubjectName itemSubjectName(int i)
@@ -475,7 +475,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     * Method itemCertificate
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public XMLX509Certificate itemCertificate(int i)
@@ -495,7 +495,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     * Method itemCRL
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public XMLX509CRL itemCRL(int i) throws XMLSecurityException {
@@ -514,7 +514,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     * Method itemUnknownElement
     *
     * @param i
-    * @return
+    *
     * @todo implement
     */
    public Element itemUnknownElement(int i) {
@@ -524,7 +524,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsIssuerSerial
     *
-    * @return
+    *
     */
    public boolean containsIssuerSerial() {
       return this.lengthIssuerSerial() > 0;
@@ -533,7 +533,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsSKI
     *
-    * @return
+    *
     */
    public boolean containsSKI() {
       return this.lengthSKI() > 0;
@@ -542,7 +542,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsSubjectName
     *
-    * @return
+    *
     */
    public boolean containsSubjectName() {
       return this.lengthSubjectName() > 0;
@@ -551,7 +551,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsCertificate
     *
-    * @return
+    *
     */
    public boolean containsCertificate() {
       return this.lengthCertificate() > 0;
@@ -560,7 +560,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsCRL
     *
-    * @return
+    *
     */
    public boolean containsCRL() {
       return this.lengthCRL() > 0;
@@ -569,7 +569,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method containsUnknownElement
     *
-    * @return
+    *
     */
    public boolean containsUnknownElement() {
       return this.lengthUnknownElement() > 0;

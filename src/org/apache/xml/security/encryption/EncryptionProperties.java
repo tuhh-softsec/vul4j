@@ -106,7 +106,7 @@ public class EncryptionProperties extends EncryptionElementProxy {
    /**
     * Method getLength
     *
-    * @return
+    *
     */
    public int getLength() {
 
@@ -123,7 +123,7 @@ public class EncryptionProperties extends EncryptionElementProxy {
     * Method item
     *
     * @param i
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public EncryptionProperty item(int i) throws XMLSecurityException {

@@ -143,7 +143,7 @@ public class Canonicalizer {
     * Method getInstance
     *
     * @param algorithmURI
-    * @return
+    *
     * @throws InvalidCanonicalizerException
     */
    public static final Canonicalizer getInstance(String algorithmURI)
@@ -180,7 +180,7 @@ public class Canonicalizer {
    /**
     * Method getURI
     *
-    * @return
+    *
     */
    public final String getURI() {
       return this.canonicalizerSpi.engineGetURI();
@@ -189,7 +189,7 @@ public class Canonicalizer {
    /**
     * Method getIncludeComments
     *
-    * @return
+    *
     */
    public boolean getIncludeComments() {
       return this.canonicalizerSpi.engineGetIncludeComments();
@@ -201,7 +201,7 @@ public class Canonicalizer {
     * wrapped with a <CODE>&gt;a&lt;...&gt;/a&lt;</CODE>.
     *
     * @param inputBytes
-    * @return
+    *
     * @throws CanonicalizationException
     * @throws java.io.IOException
     * @throws javax.xml.parsers.ParserConfigurationException
@@ -258,7 +258,7 @@ public class Canonicalizer {
     * Canonicalizes the subtree rooted by <CODE>node</CODE>.
     *
     * @param node
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeSubtree(Node node)
@@ -271,7 +271,7 @@ public class Canonicalizer {
     *
     * @param node
     * @param inclusiveNamespaces
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeSubtree(Node node, String inclusiveNamespaces)
@@ -285,7 +285,7 @@ public class Canonicalizer {
     * as a list of XPath nodes, not as a list of subtrees.
     *
     * @param xpathNodeSet
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeXPathNodeSet(NodeList xpathNodeSet)
@@ -299,7 +299,7 @@ public class Canonicalizer {
     *
     * @param xpathNodeSet
     * @param inclusiveNamespaces
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeXPathNodeSet(
@@ -313,7 +313,7 @@ public class Canonicalizer {
     * Canonicalizes an XPath node set.
     *
     * @param xpathNodeSet
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeXPathNodeSet(Set xpathNodeSet)
@@ -326,7 +326,7 @@ public class Canonicalizer {
     *
     * @param xpathNodeSet
     * @param inclusiveNamespaces
-    * @return
+    *
     * @throws CanonicalizationException
     */
    public byte[] canonicalizeXPathNodeSet(
@@ -349,7 +349,7 @@ public class Canonicalizer {
     * Method getImplementingClass
     *
     * @param URI
-    * @return
+    *
     */
    private static String getImplementingClass(String URI) {
 

@@ -96,7 +96,7 @@ public abstract class EncryptionElementProxy extends ElementProxy {
    /**
     * Method getBaseNamespace
     *
-    * @return
+    *
     */
    public final String getBaseNamespace() {
       return EncryptionConstants.EncryptionSpecNS;

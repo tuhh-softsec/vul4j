@@ -94,22 +94,22 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Handles <code>&lt;ds:Signature&gt;</code> elements.
  * This is the main class that deals with creating and verifying signatures.
- * <br>
- * There are 2 constructors, 1 for creating a signature from scratch (during a
- * signing process) and 1 that parses an existing signature from an element
- * and creates all the Java Objects.
- * <br>
- * The addDocument* methods are used to add References with optional
- * transforms during signing.
- * <br>
- * addKeyInfo* methods are to add Certificates and Keys to the
- * KeyInfo tags during signing.
- * <br>
- * Finally appendObject allows a user to add any XML Structure as an
- * ObjectContainer during signing.
- * <br>
- * The sign and checkSignatureValue methods are used to sign and validate the
- * signature.
+ * 
+ * <p>There are 2 types of constructors for this class. The ones that take a
+ * document, baseURI and 1 or more Java Objects. This is mostly used for 
+ * signing purposes.
+ * The other constructor is the one that takes a DOM Element and a BaseURI.
+ * This is used mostly with for verifying, when you have a SignatureElement.
+ * 
+ * There are a few different types of methods:
+ * <ul><li>The addDocument* methods are used to add References with optional
+ * transforms during signing. </li>
+ * <li>addKeyInfo* methods are to add Certificates and Keys to the
+ * KeyInfo tags during signing. </li>
+ * <li>appendObject allows a user to add any XML Structure as an
+ * ObjectContainer during signing.</li>
+ * <li>sign and checkSignatureValue methods are used to sign and validate the
+ * signature. </li></ul>
  *
  * @author $Author$
  */
@@ -681,13 +681,11 @@ public final class XMLSignature extends SignatureElementProxy {
 
    /**
     * This method is a proxy method for the {@link Manifest#addDocument} method.
-    * COMMENT: Cut and paste from Manifest and forgot to change? This doesn't
-    * make much sense otherwise.
     *
     * @param referenceURI URI according to the XML Signature specification.
     * @param trans List of transformations to be applied.
     * @param digestURI URI of the digest algorithm to be used.
-    * @see Manifest#addDocument(org.apache.xml.security.signature.XMLSignatureInput, java.lang.String, org.apache.xml.security.transforms.Transforms, java.lang.String)
+    * @see Manifest#addDocument
     * @throws XMLSignatureException
     */
    public void addDocument(
@@ -754,7 +752,7 @@ public final class XMLSignature extends SignatureElementProxy {
     * from octets.
     *
     * @param secretKeyBytes
-    * @return
+    *
     * @throws XMLSecurityException
     * @see SignedInfo#createSecretKey(byte[])
     */

@@ -94,7 +94,7 @@ public abstract class KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     */
    abstract public boolean engineCanResolve(Element element, String BaseURI,
                                             StorageResolver storage);
@@ -105,7 +105,7 @@ public abstract class KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     * @throws KeyResolverException
     */
    abstract public PublicKey engineResolvePublicKey(
@@ -118,7 +118,7 @@ public abstract class KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     * @throws KeyResolverException
     */
    abstract public X509Certificate engineResolveX509Certificate(
@@ -131,7 +131,7 @@ public abstract class KeyResolverSpi {
     * @param element
     * @param BaseURI
     * @param storage
-    * @return
+    *
     * @throws KeyResolverException
     */
    abstract public SecretKey engineResolveSecretKey(
@@ -168,7 +168,7 @@ public abstract class KeyResolverSpi {
     * Method engineGetProperty
     *
     * @param key
-    * @return
+    *
     */
    public String engineGetProperty(String key) {
 
@@ -190,7 +190,7 @@ public abstract class KeyResolverSpi {
    /**
     * Method engineGetPropertyKeys
     *
-    * @return
+    *
     */
    public String[] engineGetPropertyKeys() {
       return new String[0];
@@ -200,7 +200,7 @@ public abstract class KeyResolverSpi {
     * Method understandsProperty
     *
     * @param propertyToTest
-    * @return
+    *
     */
    public boolean understandsProperty(String propertyToTest) {
 

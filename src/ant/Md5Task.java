@@ -164,7 +164,7 @@ public class Md5Task extends Task {
     * Method getBytesFromFile
     *
     * @param fileName
-    * @return
+    *
     * @throws FileNotFoundException
     * @throws IOException
     */

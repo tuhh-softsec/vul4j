@@ -249,7 +249,7 @@ public class SignatureAlgorithm extends Algorithm {
    /**
     * Method getJCEProviderName
     *
-    * @return
+    *
     */
    public String getJCEProviderName() {
       return this._signatureAlgorithm.engineGetJCEProviderName();
@@ -358,7 +358,7 @@ public class SignatureAlgorithm extends Algorithm {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signature
-    * @return
+    *
     * @throws XMLSignatureException
     */
    public boolean verify(byte[] signature) throws XMLSignatureException {
@@ -427,7 +427,7 @@ public class SignatureAlgorithm extends Algorithm {
     * Method getImplementingClass
     *
     * @param URI
-    * @return
+    *
     */
    private static String getImplementingClass(String URI) {
 
@@ -441,7 +441,7 @@ public class SignatureAlgorithm extends Algorithm {
    /**
     * Method getBaseNamespace
     *
-    * @return
+    *
     */
    public String getBaseNamespace() {
       return Constants.SignatureSpecNS;
@@ -450,7 +450,7 @@ public class SignatureAlgorithm extends Algorithm {
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return Constants._TAG_SIGNATUREMETHOD;

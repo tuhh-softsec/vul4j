@@ -503,7 +503,7 @@ public class Reference extends SignatureElementProxy {
    /**
     * Method getTransforms
     *
-    * @return
+    *
     * @throws InvalidTransformException
     * @throws TransformationException
     * @throws XMLSecurityException
@@ -530,7 +530,7 @@ public class Reference extends SignatureElementProxy {
    /**
     * Method getReferencedBytes
     *
-    * @return
+    *
     * @throws ReferenceNotInitializedException
     * @throws XMLSignatureException
     */
@@ -555,7 +555,7 @@ public class Reference extends SignatureElementProxy {
    /**
     * Method resolverResult
     *
-    * @return
+    *
     * @throws ReferenceNotInitializedException
     * @throws XMLSignatureException
     */
@@ -628,7 +628,7 @@ public class Reference extends SignatureElementProxy {
    /**
     * Method getTransformsInput
     *
-    * @return
+    *
     */
    public XMLSignatureInput getTransformsInput() {
       return this._transformsInput;
@@ -637,7 +637,7 @@ public class Reference extends SignatureElementProxy {
    /**
     * Method getTransformsOutput
     *
-    * @return
+    *
     */
    public XMLSignatureInput getTransformsOutput() {
       return this._transformsOutput;
@@ -646,7 +646,7 @@ public class Reference extends SignatureElementProxy {
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return Constants._TAG_REFERENCE;

@@ -122,7 +122,7 @@ public class XMLX509SubjectName extends SignatureElementProxy
    /**
     * Method getSubjectName
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public String getSubjectName() throws XMLSecurityException {
@@ -136,7 +136,7 @@ public class XMLX509SubjectName extends SignatureElementProxy
     * @param orgUnit
     * @param org
     * @param country
-    * @return
+    *
     * @throws IOException
     */
    public static X500Name createX500Name(
@@ -154,7 +154,7 @@ public class XMLX509SubjectName extends SignatureElementProxy
     * @param locality
     * @param state
     * @param country
-    * @return
+    *
     * @throws IOException
     */
    public static X500Name createX500Name(
@@ -167,7 +167,7 @@ public class XMLX509SubjectName extends SignatureElementProxy
     * Method equals
     *
     * @param obj
-    * @return
+    *
     */
    public boolean equals(Object obj) {
 

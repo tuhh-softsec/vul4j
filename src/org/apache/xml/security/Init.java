@@ -105,7 +105,7 @@ public class Init {
    /**
     * Method isInitialized
     *
-    * @return
+    *
     */
    public static final boolean isInitialized() {
       return Init._alreadyInitialized;
@@ -692,7 +692,7 @@ public class Init {
     *
     * @param namespace
     * @param localname
-    * @return
+    *
     */
    private static String qualifyNamespace(String namespace, String localname) {
       return "{" + namespace + "}" + localname;
@@ -703,7 +703,7 @@ public class Init {
     *
     * @param namespace
     * @param localname
-    * @return
+    *
     */
    public static String getKeyInfoContentHandler(String namespace,
            String localname) {
@@ -767,7 +767,7 @@ public class Init {
       /**
        * Method getFunction
        *
-       * @return
+       *
        * @throws javax.xml.transform.TransformerException
        */
       public Function getFunction()
@@ -778,7 +778,7 @@ public class Init {
       /**
        * Method getName
        *
-       * @return
+       *
        */
       public String getName() {
          return FuncHere.class.getName();

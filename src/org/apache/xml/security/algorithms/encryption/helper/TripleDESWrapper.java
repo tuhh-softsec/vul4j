@@ -108,7 +108,7 @@ public class TripleDESWrapper {
     * @param keyToBeWrapped
     * @param wrapKey
     * @param IV
-    * @return
+    *
     * @throws IllegalBlockSizeException
     * @throws InvalidAlgorithmParameterException
     * @throws InvalidKeyException
@@ -223,7 +223,7 @@ public class TripleDESWrapper {
     *
     * @param wrappedKey
     * @param wrapKey
-    * @return
+    *
     * @throws InvalidCipherTextException
     * @throws XMLSecurityException
     */
@@ -360,7 +360,7 @@ public class TripleDESWrapper {
     * - Use the first 8 octets of this hash as the checksum value.
     *
     * @param key
-    * @return
+    *
     * @see http://www.w3.org/TR/xmlenc-core/#sec-CMSKeyChecksum
     */
    private byte[] calculateCMSKeyChecksum(byte[] key) {
@@ -379,7 +379,7 @@ public class TripleDESWrapper {
    /**
     * @param key
     * @param checksum
-    * @return
+    *
     * @see http://www.w3.org/TR/xmlenc-core/#sec-CMSKeyChecksum
     */
    private boolean checkCMSKeyChecksum(byte[] key, byte[] checksum) {

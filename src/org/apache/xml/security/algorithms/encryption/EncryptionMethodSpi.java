@@ -106,7 +106,7 @@ public abstract class EncryptionMethodSpi {
    /**
     * Method getImplementedAlgorithmJCE
     *
-    * @return
+    *
     */
    protected String getImplementedAlgorithmJCE() {
 

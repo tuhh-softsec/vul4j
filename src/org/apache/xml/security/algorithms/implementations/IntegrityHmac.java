@@ -92,7 +92,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    public abstract String engineGetURI();
 
@@ -149,7 +149,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signature
-    * @return
+    *
     * @throws XMLSignatureException
     */
    protected boolean engineVerify(byte[] signature)
@@ -237,7 +237,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
     *
     * @param completeResult
     * @param length
-    * @return
+    *
     */
    private static byte[] reduceBitLength(byte completeResult[], int length) {
 
@@ -378,7 +378,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEAlgorithmString
     *
-    * @return
+    *
     */
    protected String engineGetJCEAlgorithmString() {
 
@@ -390,7 +390,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEAlgorithmString
     *
-    * @return
+    *
     */
    protected String engineGetJCEProviderName() {
       return this._macAlgorithm.getProvider().getName();
@@ -486,7 +486,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_SHA1;
@@ -513,7 +513,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_SHA256;
@@ -540,7 +540,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_SHA384;
@@ -567,7 +567,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_SHA512;
@@ -594,7 +594,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160;
@@ -621,7 +621,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       /**
        * Method engineGetURI
        *
-       * @return
+       *
        */
       public String engineGetURI() {
          return XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5;

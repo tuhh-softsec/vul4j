@@ -152,7 +152,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
    /**
     * Method getSerialNumber
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public BigInteger getSerialNumber() throws XMLSecurityException {
@@ -169,7 +169,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
    /**
     * Method getSerialNumberInteger
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public int getSerialNumberInteger() throws XMLSecurityException {
@@ -179,7 +179,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
    /**
     * Method getIssuerName
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public String getIssuerName() throws XMLSecurityException {
@@ -194,7 +194,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     * Method equals
     *
     * @param obj
-    * @return
+    *
     */
    public boolean equals(Object obj) {
 

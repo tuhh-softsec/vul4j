@@ -99,21 +99,21 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
    /**
     * Method getRequiredProviderName
     *
-    * @return
+    *
     */
    public abstract String getRequiredProviderName();
 
    /**
     * Method getImplementedAlgorithmURI
     *
-    * @return
+    *
     */
    public abstract String getImplementedAlgorithmURI();
 
    /**
     * Method getImplementedAlgorithmType
     *
-    * @return
+    *
     */
    public int getImplementedAlgorithmType() {
       return EncryptionMethodSpi.ALGOTYPE_BLOCK_ENCRYPTION;
@@ -122,7 +122,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
    /**
     * Method engineGetBlockSize
     *
-    * @return
+    *
     */
    public int engineGetBlockSize() {
 
@@ -139,7 +139,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
    /**
     * Method engineGetIvLength
     *
-    * @return
+    *
     */
    public abstract int engineGetIvLength();
 
@@ -148,7 +148,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
     *
     * @param doc
     * @param params
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public EncryptionMethodParams engineInit(
@@ -178,7 +178,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
     * Method engineInit
     *
     * @param encryptionMethodElem
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public EncryptionMethodParams engineInit(Element encryptionMethodElem)
@@ -208,7 +208,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
     *
     * @param contentKey
     * @param wrapKey
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineWrap(Key contentKey, Key wrapKey)
@@ -222,7 +222,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
     * @param parm1
     * @param parm2
     * @param parm3
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineWrap(Key parm1, Key parm2, byte[] parm3)
@@ -236,7 +236,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
     * @param parm1
     * @param parm2
     * @param parm3
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public Key engineUnwrap(byte[] parm1, Key parm2, String parm3)
@@ -249,7 +249,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
     *
     * @param plaintextBytes
     * @param contentKey
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey)
@@ -260,7 +260,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
    /**
     * Method getImplementedIVAlgorithmJCE
     *
-    * @return
+    *
     */
    private String getImplementedIVAlgorithmJCE() {
 
@@ -275,7 +275,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
     * @param plaintextBytes
     * @param contentKey
     * @param IV
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey, byte[] IV)
@@ -348,7 +348,7 @@ public abstract class BlockEncryptionImpl extends EncryptionMethodSpi {
     *
     * @param ciphertextBytes
     * @param contentKey
-    * @return
+    *
     * @throws org.apache.xml.security.exceptions.XMLSecurityException
     */
    public byte[] engineDecrypt(byte[] ciphertextBytes, Key contentKey)

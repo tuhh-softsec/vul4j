@@ -102,7 +102,7 @@ public abstract class SignatureAlgorithmSpi {
    /**
     * Method engineGetJCEProviderName
     *
-    * @return
+    *
     */
    protected abstract String engineGetJCEProviderName();
 
@@ -194,7 +194,7 @@ public abstract class SignatureAlgorithmSpi {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param signature
-    * @return
+    *
     * @throws XMLSignatureException
     */
    protected abstract boolean engineVerify(byte[] signature)

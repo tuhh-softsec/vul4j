@@ -132,7 +132,7 @@ public class CertificateElement extends KeyBaseType {
    /**
     * Method getJCAType
     *
-    * @return
+    *
     */
    public String getJCAType() {
       return this._constructionElement
@@ -142,7 +142,7 @@ public class CertificateElement extends KeyBaseType {
    /**
     * Method getCertificate
     *
-    * @return
+    *
     * @throws CertificateException
     * @throws XMLSecurityException
     */
@@ -170,7 +170,7 @@ public class CertificateElement extends KeyBaseType {
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return ApacheKeyStoreConstants._TAG_CERTIFICATE;

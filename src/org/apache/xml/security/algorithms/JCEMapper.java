@@ -106,7 +106,7 @@ public class JCEMapper {
     * This method takes a Provider ID and tries to register this provider in the JCE.
     *
     * @param Id
-    * @return
+    *
     */
    public static boolean addProvider(String Id) {
 
@@ -146,7 +146,7 @@ public class JCEMapper {
     * Method getProviderIsAvailable
     *
     * @param providerId
-    * @return
+    *
     */
    public static boolean getProviderIsInClassPath(String providerId) {
 
@@ -201,7 +201,7 @@ public class JCEMapper {
     * Method translateURItoJCEID
     *
     * @param AlgorithmURI
-    * @return
+    *
     */
    public static ProviderIdClass translateURItoJCEID(String AlgorithmURI) {
 
@@ -249,7 +249,7 @@ public class JCEMapper {
     *
     * @param AlgorithmURI
     * @param requestedProviderId
-    * @return
+    *
     */
    public static ProviderIdClass translateURItoJCEID(String AlgorithmURI,
            String requestedProviderId) {
@@ -289,7 +289,7 @@ public class JCEMapper {
     * Method getAlgorithmClassFromURI
     *
     * @param AlgorithmURI
-    * @return
+    *
     */
    public static String getAlgorithmClassFromURI(String AlgorithmURI) {
 
@@ -320,7 +320,7 @@ public class JCEMapper {
     * Method getKeyTypeFromURI
     *
     * @param AlgorithmURI
-    * @return
+    *
     */
    public static int getKeyTypeFromURI(String AlgorithmURI) {
 
@@ -356,7 +356,7 @@ public class JCEMapper {
     * Returns the keylength in bit for a particular algorithm.
     *
     * @param AlgorithmURI
-    * @return
+    *
     */
    public static int getKeyLengthFromURI(String AlgorithmURI) {
 
@@ -382,7 +382,7 @@ public class JCEMapper {
     *
     * @param AlgorithmURI
     * @param ProviderId
-    * @return
+    *
     */
    public static String getJCEKeyAlgorithmFromURI(String AlgorithmURI,
            String ProviderId) {
@@ -449,7 +449,7 @@ public class JCEMapper {
     *
     * @param key
     * @param type
-    * @return
+    *
     */
    public static String getURIfromKey(Key key, String type) {
 
@@ -512,7 +512,7 @@ public class JCEMapper {
       /**
        * Method getJceId
        *
-       * @return
+       *
        */
       public String getAlgorithmID() {
          return this._algorithmId;
@@ -521,7 +521,7 @@ public class JCEMapper {
       /**
        * Method getProvider
        *
-       * @return
+       *
        */
       public String getProviderId() {
          return this._providerId;

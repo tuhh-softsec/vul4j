@@ -72,7 +72,7 @@ public class KeyWrapImpl_AES192_BC extends KeyWrapImpl_AES_BC {
    /**
     * Method engineGetIvLength
     *
-    * @return
+    *
     */
    public int engineGetIvLength() {
       return -1;
@@ -81,7 +81,7 @@ public class KeyWrapImpl_AES192_BC extends KeyWrapImpl_AES_BC {
    /**
     * Method getImplementedAlgorithmURI
     *
-    * @return
+    *
     */
    public String getImplementedAlgorithmURI() {
       return EncryptionConstants.ALGO_ID_KEYWRAP_AES192;
@@ -90,7 +90,7 @@ public class KeyWrapImpl_AES192_BC extends KeyWrapImpl_AES_BC {
    /**
     * Method getRequiredProviderName
     *
-    * @return
+    *
     */
    public String getRequiredProviderName() {
       return "BC";

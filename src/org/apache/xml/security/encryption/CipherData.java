@@ -176,7 +176,7 @@ public class CipherData extends EncryptionElementProxy {
    /**
     * Method getCipherValue
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public CipherValue getCipherValue() throws XMLSecurityException {
@@ -195,7 +195,7 @@ public class CipherData extends EncryptionElementProxy {
    /**
     * Method getCipherReference
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public CipherReference getCipherReference() throws XMLSecurityException {
@@ -215,7 +215,7 @@ public class CipherData extends EncryptionElementProxy {
    /**
     * Method isCipherValue
     *
-    * @return
+    *
     */
    public boolean isCipherValue() {
 
@@ -233,7 +233,7 @@ public class CipherData extends EncryptionElementProxy {
    /**
     * Method isCipherReference
     *
-    * @return
+    *
     */
    public boolean isCipherReference() {
 
@@ -251,7 +251,7 @@ public class CipherData extends EncryptionElementProxy {
    /**
     * Method isNotYetFilled
     *
-    * @return
+    *
     */
    public boolean isNotYetFilled() {
       return (!this.isCipherReference() &&!this.isCipherValue());

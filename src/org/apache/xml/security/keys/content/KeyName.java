@@ -105,7 +105,7 @@ public class KeyName extends SignatureElementProxy implements KeyInfoContent {
    /**
     * Method getKeyName
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public String getKeyName() throws XMLSecurityException {

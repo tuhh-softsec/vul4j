@@ -138,7 +138,7 @@ public class XMLX509SKI extends SignatureElementProxy
    /**
     * Method getSKIBytes
     *
-    * @return
+    *
     * @throws XMLSecurityException
     */
    public byte[] getSKIBytes() throws XMLSecurityException {
@@ -149,7 +149,7 @@ public class XMLX509SKI extends SignatureElementProxy
     * Method getSKIBytesFromCert
     *
     * @param cert
-    * @return
+    *
     * @throws XMLSecurityException
     * @see java.security.cert.X509Extension#getExtensionValue(java.lang.String)
     */
@@ -221,7 +221,7 @@ public class XMLX509SKI extends SignatureElementProxy
     * Method equals
     *
     * @param obj
-    * @return
+    *
     */
    public boolean equals(Object obj) {
 

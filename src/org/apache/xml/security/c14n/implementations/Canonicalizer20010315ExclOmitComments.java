@@ -13,7 +13,7 @@ public class Canonicalizer20010315ExclOmitComments
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    public final String engineGetURI() {
       return Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS;
@@ -22,7 +22,7 @@ public class Canonicalizer20010315ExclOmitComments
    /**
     * Method engineGetIncludeComments
     *
-    * @return
+    *
     */
    public final boolean engineGetIncludeComments() {
       return false;

@@ -141,7 +141,7 @@ public class InclusiveNamespaces extends ElementProxy
    /**
     * Method getInclusiveNamespaces
     *
-    * @return
+    *
     */
    public String getInclusiveNamespaces() {
       return this._constructionElement
@@ -175,7 +175,7 @@ public class InclusiveNamespaces extends ElementProxy
     * </UL>
     *
     * @param inclusiveNamespaces
-    * @return
+    *
     */
    public static Set prefixStr2Set(String inclusiveNamespaces) {
 
@@ -204,7 +204,7 @@ public class InclusiveNamespaces extends ElementProxy
    /**
     * Method getBaseNamespace
     *
-    * @return
+    *
     */
    public String getBaseNamespace() {
       return InclusiveNamespaces.ExclusiveCanonicalizationNamespace;
@@ -213,7 +213,7 @@ public class InclusiveNamespaces extends ElementProxy
    /**
     * Method getBaseLocalName
     *
-    * @return
+    *
     */
    public String getBaseLocalName() {
       return InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES;
