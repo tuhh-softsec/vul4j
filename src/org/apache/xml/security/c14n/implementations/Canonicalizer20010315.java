@@ -44,7 +44,7 @@ import org.w3c.dom.Node;
  * @version $Revision$
  */
 public abstract class Canonicalizer20010315 extends CanonicalizerBase {
-
+	boolean firstCall=true;
    /**
     * Constructor Canonicalizer20010315
     *
@@ -70,11 +70,11 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     */
    Iterator handleAttributesSubtree(Element E,  NameSpaceSymbTable ns )
            throws CanonicalizationException {
-
-      boolean isRoot = E == this._rootNodeOfC14n;
-
+   	  if (!E.hasAttributes() && !firstCall) {
+         return null; 
+      }
       // result will contain the attrs which have to be outputted
-      SortedSet result = new TreeSet(COMPARE);
+      SortedSet result = new TreeSet(COMPARE);      
       NamedNodeMap attrs = E.getAttributes();
       int attrsLength = attrs.getLength();      
             
@@ -109,13 +109,13 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
           }        
       }
             	   
-      if (isRoot) {
+      if (firstCall) {
       	//It is the first node of the subtree
       	//Obtain all the namespaces defined in the parents, and added to the output.
-      	List s1=ns.getUnrenderedNodes();    
-      	result.addAll(s1);      		             
+      	ns.getUnrenderedNodes(result);          	      		            
       	//output the attributes in the xml namespace.
 		addXmlAttributesSubtree(E, result);
+        firstCall=false;
       } 
       
       return result.iterator();
@@ -138,10 +138,12 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                     (ancestor != null)
                     && (ancestor.getNodeType() == Node.ELEMENT_NODE);
                     ancestor = ancestor.getParentNode()) {
-
+               Element el=((Element) ancestor);
+               if (!el.hasAttributes()) {
+                    continue;
+               }
                // for all ancestor elements
-               NamedNodeMap ancestorAttrs =
-                  ((Element) ancestor).getAttributes();
+               NamedNodeMap ancestorAttrs = el.getAttributes();
 
                for (int i = 0; i < ancestorAttrs.getLength(); i++) {
                   // for all attributes in the ancestor element
@@ -166,11 +168,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
             }
          }
 
-         Iterator it = loa.values().iterator();
-
-         while (it.hasNext()) {
-            result.add(it.next());
-         }
+         result.addAll( loa.values());
+         
       }
 
    /**
@@ -187,10 +186,14 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     */
    Iterator handleAttributes(Element E,  NameSpaceSymbTable ns ) throws CanonicalizationException {    
     // result will contain the attrs which have to be outputted
+    boolean isRealVisible=this._xpathNodeSet.contains(E);    
+    NamedNodeMap attrs = null;
+    int attrsLength = 0;
+    if (E.hasAttributes()) {
+        attrs=E.getAttributes();
+       attrsLength= attrs.getLength();
+    }
     
-    NamedNodeMap attrs = E.getAttributes();
-    int attrsLength = attrs.getLength();
-    boolean isRealVisible=this._xpathNodeSet.contains(E);
     
     SortedSet result = new TreeSet(COMPARE);
     
@@ -223,10 +226,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
        //ns.addInclusiveMapping(NName,NValue,N,isRealVisible);          
 	    if  (this._xpathNodeSet.contains(N))  {
 			    //The xpath select this node output it if needed.
-	    		Node n=null;
-	    		
-	    		n=ns.addMappingAndRenderXNodeSet(NName,NValue,N,isRealVisible); //getMappingInclusive(NName,!isRealVisible);
-	    		
+	    		Node n=ns.addMappingAndRenderXNodeSet(NName,NValue,N,isRealVisible); 	    		
 		 	 	if (n!=null) {
 		 	 		result.add(n);
                     if (C14nHelper.namespaceIsRelative(N)) {
@@ -291,10 +291,12 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                     (ancestor != null)
                     && (ancestor.getNodeType() == Node.ELEMENT_NODE);
                     ancestor = ancestor.getParentNode()) {
-
+            	Element el=((Element) ancestor);
+                if (!el.hasAttributes()) {
+                	continue;
+                }
                // for all ancestor elements
-               NamedNodeMap ancestorAttrs =
-                  ((Element) ancestor).getAttributes();
+               NamedNodeMap ancestorAttrs =el.getAttributes();
 
                for (int i = 0; i < ancestorAttrs.getLength(); i++) {
 
@@ -319,13 +321,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                }
             }
          }
-
-         Iterator it = loa.values().iterator();
-
-         while (it.hasNext()) {
-            result.add(it.next());
-         }
-      
+         result.addAll(loa.values());
+               
 }
 
    /**

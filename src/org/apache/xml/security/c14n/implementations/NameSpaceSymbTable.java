@@ -17,6 +17,7 @@
 package org.apache.xml.security.c14n.implementations;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,10 +58,10 @@ public class NameSpaceSymbTable {
     /**
 	 * Get all the unrendered nodes in the name space.
 	 * For Inclusive rendering
-     * @return the list of unrendered xmlns definitions.
+     * @param result the list where to fill the unrendered xmlns definitions.
 	 **/       
-	public  List getUnrenderedNodes() {		
-	   List result=new ArrayList();
+	public  void getUnrenderedNodes(Collection result) {		
+	   //List result=new ArrayList();
 	   Iterator it=symb.entrySet().iterator();
 	   while (it.hasNext()) {	   	   
 	   		NameSpaceSymbEntry n=(NameSpaceSymbEntry)((Map.Entry)it.next()).getValue();
@@ -69,8 +70,7 @@ public class NameSpaceSymbTable {
 	   			result.add(n.n);
 	   			n.rendered=true;
 	   		}
-	   }
-	   return result;
+	   }	   
 	}
 	
 	/**
