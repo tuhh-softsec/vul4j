@@ -72,6 +72,8 @@
 
 #include <xsec/transformers/TXFMC14n.hpp>
 #include <xsec/framework/XSECException.hpp>
+#include <xsec/transformers/TXFMParser.hpp>
+#include <xsec/framework/XSECError.hpp>
 
 TXFMC14n::TXFMC14n(DOMDocument *doc) : TXFMBase(doc) {
 
@@ -90,13 +92,24 @@ TXFMC14n::~TXFMC14n() {
 
 void TXFMC14n::setInput(TXFMBase *newInput) {
 
-	if (newInput->getOutputType() != TXFMBase::DOM_NODES) {
+	if (newInput->getOutputType() == TXFMBase::BYTE_STREAM) {
 
-		throw XSECException(XSECException::TransformInputOutputFail, "C14n canonicalisation transform requires DOM_NODES input");
+		//throw XSECException(XSECException::TransformInputOutputFail, "C14n canonicalisation transform requires DOM_NODES input");
+		// Need to parse into DOM_NODES
+		TXFMParser * parser;
+		XSECnew(parser, TXFMParser(mp_expansionDoc));
+		try{
+			parser->setInput(newInput);
+		}
+		catch (...) {
+			delete parser;
+			throw;
+		}
 
+		input = parser;
 	}
-
-	input = newInput;
+	else
+		input = newInput;
 
 	// Set up for comments  - by default we ALWAYS strip comments
 

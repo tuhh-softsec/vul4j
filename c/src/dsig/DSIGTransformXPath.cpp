@@ -78,6 +78,10 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
+#include <xercesc/util/Janitor.hpp>
+
+XSEC_USING_XERCES(Janitor);
+
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------
@@ -126,10 +130,12 @@ TXFMBase * DSIGTransformXPath::createTransformer(TXFMBase * input) {
 	TXFMXPath *x;
 	// XPath transform
 	XSECnew(x, TXFMXPath(mp_txfmNode->getOwnerDocument()));
+	Janitor<TXFMXPath> j_x(x);
 	x->setInput(input);
 	x->setNameSpace(mp_NSMap);
 	x->evaluateExpr(mp_txfmNode, m_expr);
-
+	
+	j_x.release();
 	return x;
 	
 #endif /* NO_XPATH */

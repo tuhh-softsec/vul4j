@@ -76,7 +76,10 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
+#include <xercesc/util/Janitor.hpp>
+
 XSEC_USING_XERCES(DOMNamedNodeMap);
+XSEC_USING_XERCES(Janitor);
 
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors
@@ -117,6 +120,8 @@ TXFMBase * DSIGTransformC14n::createTransformer(TXFMBase * input) {
 	TXFMC14n * c;
 	
 	XSECnew(c, TXFMC14n(mp_txfmNode->getOwnerDocument()));
+	Janitor<TXFMC14n> j_c(c);
+
 	c->setInput(input);
 
 	switch (m_cMethod) {
@@ -151,6 +156,7 @@ TXFMBase * DSIGTransformC14n::createTransformer(TXFMBase * input) {
 
 	}
 
+	j_c.release();
 	return c;
 
 }

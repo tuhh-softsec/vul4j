@@ -961,9 +961,15 @@ TXFMBase * DSIGReference::createTXFMChainFromList(TXFMBase * input,
 
 	for (i = 0; i < size; ++i) {
 	
-		nextTxfm = lst->item(i)->createTransformer(txfm);
-		// nextTxfm->setInput(txfm);
-		txfm = nextTxfm;
+		try {
+			nextTxfm = lst->item(i)->createTransformer(txfm);
+			// nextTxfm->setInput(txfm);
+			txfm = nextTxfm;
+		}
+		catch (...) {
+			deleteTXFMChain(txfm);
+			throw;
+		}
 
 	}
 
