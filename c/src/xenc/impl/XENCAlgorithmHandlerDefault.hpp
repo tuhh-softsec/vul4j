@@ -97,6 +97,13 @@ public:
 		safeBuffer & result
 	);
 
+	virtual bool appendDecryptCipherTXFM(
+		TXFMChain * cipherText,
+		XENCEncryptionMethod * encryptionMethod,
+		XSECCryptoKey * key,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc
+	);
+
 	virtual bool encryptToSafeBuffer(
 		TXFMChain * plainText,
 		XENCEncryptionMethod * encryptionMethod,

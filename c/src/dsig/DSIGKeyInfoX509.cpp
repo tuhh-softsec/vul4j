@@ -137,6 +137,8 @@ DSIGKeyInfoX509::~DSIGKeyInfoX509() {
 
 	for (i = m_X509List.begin(); i != m_X509List.end(); ++i) {
 
+		if ((*i)->mp_cryptoX509 != NULL)
+			delete ((*i)->mp_cryptoX509);
 		delete (*i);
 
 	}
@@ -199,6 +201,10 @@ void DSIGKeyInfoX509::load(void) {
 					m_X509List.push_back(h);
 
 					h->mp_encodedX509 = certElt->getNodeValue();
+					h->mp_cryptoX509 = XSECPlatformUtils::g_cryptoProvider->X509();
+					char * charX509 = XMLString::transcode(h->mp_encodedX509);
+					ArrayJanitor<char> j_charX509(charX509);
+					h->mp_cryptoX509->loadX509Base64Bin(charX509, strlen(charX509));
 
 				}
 			}
@@ -367,6 +373,14 @@ const XMLCh * DSIGKeyInfoX509::getCertificateItem(int item) {
 
 	return 0;
 
+}
+
+XSECCryptoX509 * DSIGKeyInfoX509::getCertificateCryptoItem(int item) {
+
+	if (item >=0 && (unsigned int) item < m_X509List.size())
+		return m_X509List[item]->mp_cryptoX509;
+
+	return 0;
 }
 
 const XMLCh * DSIGKeyInfoX509::getRawRetrievalURI(void) {
@@ -583,5 +597,9 @@ void DSIGKeyInfoX509::appendX509Certificate(const XMLCh * base64Certificate) {
 	X509Holder * h;
 	XSECnew(h, X509Holder);
 	h->mp_encodedX509 = b64Txt->getNodeValue();
+	h->mp_cryptoX509 = XSECPlatformUtils::g_cryptoProvider->X509();
+	char * charX509 = XMLString::transcode(h->mp_encodedX509);
+	ArrayJanitor<char> j_charX509(charX509);
+	h->mp_cryptoX509->loadX509Base64Bin(charX509, strlen(charX509));
 	
 }

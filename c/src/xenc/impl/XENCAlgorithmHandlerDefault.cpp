@@ -129,7 +129,57 @@ void XENCAlgorithmHandlerDefault::mapURIToKey(const XMLCh * uri, XSECCryptoKey *
 				"XENCAlgorithmHandlerDefault - 3DES Algorithm, but not a 3DES key");
 		
 		}
+
+		return;
 	}
+
+	if (strEquals(uri, DSIGConstants::s_unicodeStrURIAES128_CBC)) {
+
+		// 3 Key 3DES in CBC mode.
+		if (key->getKeyType() != XSECCryptoKey::KEY_SYMMETRIC || 
+			dynamic_cast<XSECCryptoSymmetricKey *>(key)->getSymmetricKeyType() !=
+			XSECCryptoSymmetricKey::KEY_AES_CBC_128) {
+
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - AES128 Algorithm, but not a AES128 key");
+		
+		}
+
+		return;
+	}
+
+	if (strEquals(uri, DSIGConstants::s_unicodeStrURIAES192_CBC)) {
+
+		// 3 Key 3DES in CBC mode.
+		if (key->getKeyType() != XSECCryptoKey::KEY_SYMMETRIC || 
+			dynamic_cast<XSECCryptoSymmetricKey *>(key)->getSymmetricKeyType() !=
+			XSECCryptoSymmetricKey::KEY_AES_CBC_192) {
+
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - AES192 Algorithm, but not a AES192 key");
+		
+		}
+
+		return;
+	}
+
+	if (strEquals(uri, DSIGConstants::s_unicodeStrURIAES256_CBC)) {
+
+		// 3 Key 3DES in CBC mode.
+		if (key->getKeyType() != XSECCryptoKey::KEY_SYMMETRIC || 
+			dynamic_cast<XSECCryptoSymmetricKey *>(key)->getSymmetricKeyType() !=
+			XSECCryptoSymmetricKey::KEY_AES_CBC_256) {
+
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - AES256 Algorithm, but not a AES256 key");
+		
+		}
+
+		return;
+	}
+
+	throw XSECException(XSECException::CipherError, 
+		"XENCAlgorithmHandlerDefault - URI not recognised for Symmetric Key encryption check");
 
 }
 	
@@ -358,6 +408,32 @@ Keep for DES keywrap
 #endif
 
 // --------------------------------------------------------------------------------
+//			InputStream decryption
+// --------------------------------------------------------------------------------
+	
+bool XENCAlgorithmHandlerDefault::appendDecryptCipherTXFM(
+		TXFMChain * cipherText,
+		XENCEncryptionMethod * encryptionMethod,
+		XSECCryptoKey * key,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc
+		) {
+
+	// We only support this for bulk Symmetric key algorithms
+
+	mapURIToKey(encryptionMethod->getAlgorithm(), key);
+
+	// Add the decryption TXFM
+
+	TXFMCipher * tcipher;
+	XSECnew(tcipher, TXFMCipher(doc, key, false));
+
+	cipherText->appendTxfm(tcipher);
+
+	return true;
+}
+
+
+// --------------------------------------------------------------------------------
 //			SafeBuffer decryption
 // --------------------------------------------------------------------------------
 
@@ -387,14 +463,90 @@ unsigned int XENCAlgorithmHandlerDefault::decryptToSafeBuffer(
 
 	}
 
+	if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIKW_AES192)) {
+
+		if (key->getKeyType() != XSECCryptoKey::KEY_SYMMETRIC || 
+			dynamic_cast<XSECCryptoSymmetricKey *>(key)->getSymmetricKeyType() !=
+			XSECCryptoSymmetricKey::KEY_AES_ECB_192) {
+
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - 192bit AES Algorithm, but not a AES (ECB) 192 bit key");
+		
+		}
+
+		isAESKeyWrap = true;
+
+	}
+	
+	if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIKW_AES256)) {
+
+		if (key->getKeyType() != XSECCryptoKey::KEY_SYMMETRIC || 
+			dynamic_cast<XSECCryptoSymmetricKey *>(key)->getSymmetricKeyType() !=
+			XSECCryptoSymmetricKey::KEY_AES_ECB_256) {
+
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - 256bit AES Algorithm, but not a AES (ECB) 256 bit key");
+		
+		}
+
+		isAESKeyWrap = true;
+
+	}
+
 	if (isAESKeyWrap == true) {
 
 		return unwrapKeyAES(cipherText, key, result);
 
 	}
 
-		
+	// Is this an RSA key?
+	if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIRSA_1_5)) {
 
+		if (key->getKeyType() != XSECCryptoKey::KEY_RSA_PRIVATE && 
+			key->getKeyType() != XSECCryptoKey::KEY_RSA_PAIR) {
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - RSA Decrypt URI but not an RSA key");
+		}
+
+		XSECCryptoKeyRSA * rsa = dynamic_cast<XSECCryptoKeyRSA *>(key);
+		
+		// Allocate an output buffer
+		unsigned char * decBuf;
+		XSECnew(decBuf, unsigned char[rsa->getLength()]);
+		ArrayJanitor<unsigned char> j_decBuf(decBuf);
+
+		// Input
+		TXFMBase * b = cipherText->getLastTxfm();
+		safeBuffer cipherSB;
+		XMLByte buf[1024];
+		unsigned int offset = 0;
+
+		int bytesRead = b->readBytes(buf, 1024);
+		while (bytesRead > 0) {
+			cipherSB.sbMemcpyIn(offset, buf, bytesRead);
+			offset += bytesRead;
+			bytesRead = b->readBytes(buf, 1024);
+		}
+
+
+		// Do decrypt
+		unsigned int decryptLen = rsa->privateDecrypt(cipherSB.rawBuffer(), 
+													  decBuf, 
+													  offset, 
+													  rsa->getLength(), 
+													  XSECCryptoKeyRSA::PAD_PKCS_1_5, 
+													  HASH_NONE, 
+													  NULL, 
+													  0);
+
+		// Copy to output
+		result.sbMemcpyIn(decBuf, decryptLen);
+		
+		memset(decBuf, 0, decryptLen);
+
+		return decryptLen;
+
+	}
 
 	// The default case is to just do a standard, padded block decrypt.
 	// So the only thing we have to do is ensure key type matches URI.
@@ -459,12 +611,102 @@ bool XENCAlgorithmHandlerDefault::encryptToSafeBuffer(
 
 	}
 
+	if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIKW_AES192)) {
+
+		if (key->getKeyType() != XSECCryptoKey::KEY_SYMMETRIC || 
+			dynamic_cast<XSECCryptoSymmetricKey *>(key)->getSymmetricKeyType() !=
+			XSECCryptoSymmetricKey::KEY_AES_ECB_192) {
+
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - 192bit AES Algorithm, but not a AES (ECB) 192 bit key");
+		
+		}
+
+		isAESKeyWrap = true;
+
+	}
+
+	if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIKW_AES256)) {
+
+		if (key->getKeyType() != XSECCryptoKey::KEY_SYMMETRIC || 
+			dynamic_cast<XSECCryptoSymmetricKey *>(key)->getSymmetricKeyType() !=
+			XSECCryptoSymmetricKey::KEY_AES_ECB_256) {
+
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - 256bit AES Algorithm, but not a AES (ECB) 256 bit key");
+		
+		}
+
+		isAESKeyWrap = true;
+
+	}
+
 	if (isAESKeyWrap == true) {
 
 		return wrapKeyAES(plainText, key, result);
 
 	}
 	
+	// Is this an RSA key?
+	if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIRSA_1_5)) {
+
+		if (key->getKeyType() != XSECCryptoKey::KEY_RSA_PUBLIC && 
+			key->getKeyType() != XSECCryptoKey::KEY_RSA_PAIR) {
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - RSA Encrypt URI but not an RSA public key");
+		}
+
+		XSECCryptoKeyRSA * rsa = dynamic_cast<XSECCryptoKeyRSA *>(key);
+		
+		// Allocate an output buffer
+		unsigned char * encBuf;
+		XSECnew(encBuf, unsigned char[rsa->getLength()]);
+		ArrayJanitor<unsigned char> j_encBuf(encBuf);
+
+		// Input
+		TXFMBase * b = plainText->getLastTxfm();
+		safeBuffer plainSB;
+		plainSB.isSensitive();
+
+		XMLByte buf[1024];
+		unsigned int offset = 0;
+
+		int bytesRead = b->readBytes(buf, 1024);
+		while (bytesRead > 0) {
+			plainSB.sbMemcpyIn(offset, buf, bytesRead);
+			offset += bytesRead;
+			bytesRead = b->readBytes(buf, 1024);
+		}
+
+
+		// Do decrypt
+		unsigned int encryptLen = rsa->publicEncrypt(plainSB.rawBuffer(), 
+													  encBuf, 
+													  offset, 
+													  rsa->getLength(), 
+													  XSECCryptoKeyRSA::PAD_PKCS_1_5, 
+													  HASH_NONE, 
+													  NULL, 
+													  0);
+
+		// Now need to base64 encode
+		XSECCryptoBase64 * b64 = 
+			XSECPlatformUtils::g_cryptoProvider->base64();
+		Janitor<XSECCryptoBase64> j_b64(b64);
+
+		b64->encodeInit();
+		encryptLen = b64->encode(encBuf, encryptLen, buf, 1024);
+		result.sbMemcpyIn(buf, encryptLen);
+		unsigned int finalLen = b64->encodeFinish(buf, 1024);
+		result.sbMemcpyIn(encryptLen, buf, finalLen);
+		result[encryptLen + finalLen] = '\0';
+
+		// This is a string, so set the buffer correctly
+		result.setBufferType(safeBuffer::BUFFER_CHAR);
+
+		return true;
+
+	}
 	
 	// Check the URI and key match
 
@@ -503,6 +745,42 @@ XSECCryptoKey * XENCAlgorithmHandlerDefault::createKeyForURI(
 		// 3 Key 3DES in CBC mode.
 		XSECCryptoSymmetricKey * sk = 
 			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
+
+		sk->setKey(keyBuffer, keyLen);
+
+		return sk;
+
+	}
+
+	if (strEquals(uri, DSIGConstants::s_unicodeStrURIAES128_CBC)) {
+
+		// AES 128bit key in CBC mode.
+		XSECCryptoSymmetricKey * sk = 
+			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_CBC_128);
+
+		sk->setKey(keyBuffer, keyLen);
+
+		return sk;
+
+	}
+
+	if (strEquals(uri, DSIGConstants::s_unicodeStrURIAES192_CBC)) {
+
+		// AES 192bit key in CBC mode.
+		XSECCryptoSymmetricKey * sk = 
+			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_CBC_192);
+
+		sk->setKey(keyBuffer, keyLen);
+
+		return sk;
+
+	}
+	
+	if (strEquals(uri, DSIGConstants::s_unicodeStrURIAES256_CBC)) {
+
+		// AES 192bit key in CBC mode.
+		XSECCryptoSymmetricKey * sk = 
+			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_CBC_256);
 
 		sk->setKey(keyBuffer, keyLen);
 

@@ -82,6 +82,7 @@
 #include <xsec/framework/XSECAlgorithmMapper.hpp>
 #include <xsec/framework/XSECAlgorithmHandler.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
+#include <xsec/utils/XSECBinTXFMInputStream.hpp>
 
 #include "XENCCipherImpl.hpp"
 #include "XENCEncryptedDataImpl.hpp"
@@ -183,7 +184,13 @@ void XENCCipherImpl::Initialise(void) {
 	// Register default encryption algorithm handlers
 
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURI3DES_CBC, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIAES128_CBC, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIAES192_CBC, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIAES256_CBC, def);
 	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIKW_AES128, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIKW_AES192, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIKW_AES256, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_1_5, def);
 
 }
 
@@ -381,6 +388,56 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 //			Decrypt an Element and replace in original document
 // --------------------------------------------------------------------------------
 
+XSECCryptoKey * XENCCipherImpl::decryptKeyFromKeyInfoList(DSIGKeyInfoList * kil) {
+
+	XSECCryptoKey * ret = NULL;
+	XSECAlgorithmHandler *handler;
+
+	int kLen = kil->getSize();
+
+	for (int i = 0; ret == NULL && i < kLen ; ++ i) {
+
+		if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_ENCRYPTEDKEY) {
+
+			XENCEncryptedKey * ek = dynamic_cast<XENCEncryptedKey*>(kil->item(i));
+			volatile XMLByte buffer[1024];
+			try {
+				// Have to cast off volatile
+				int keySize = decryptKey(ek, (XMLByte *) buffer, 1024);
+
+				if (keySize > 0) {
+					// Try to map the key
+
+					XENCEncryptionMethod * encryptionMethod = 
+						mp_encryptedData->getEncryptionMethod();
+
+					if (encryptionMethod != NULL) {
+	
+						handler = 
+							XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
+								mp_encryptedData->getEncryptionMethod()->getAlgorithm());
+
+						if (handler != NULL)
+							ret = handler->createKeyForURI(
+										mp_encryptedData->getEncryptionMethod()->getAlgorithm(),
+										(XMLByte *) buffer,
+										keySize);
+					}
+				}
+			} catch (...) {
+				memset((void *) buffer, 0, 1024);
+				throw;
+			}
+
+			// Clear out the key buffer
+			memset((void *) buffer, 0, 1024);
+		}
+	}
+
+	return ret;
+}
+
+
 DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 
 	XSECAlgorithmHandler *handler;
@@ -403,6 +460,9 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 
 		if (mp_key == NULL) {
 
+			mp_key = decryptKeyFromKeyInfoList(mp_encryptedData->getKeyInfoList());
+
+#if 0
 			// See if we can decrypt a key in the KeyInfo list
 			DSIGKeyInfoList * kil = mp_encryptedData->getKeyInfoList();
 			int kLen = kil->getSize();
@@ -445,6 +505,7 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 					memset((void *) buffer, 0, 1024);
 				}
 			}
+#endif
 		}
 
 		if (mp_key == NULL) {
@@ -520,6 +581,101 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 }
 
 // --------------------------------------------------------------------------------
+//			Decrypt data to an input stream
+// --------------------------------------------------------------------------------
+
+XSECBinTXFMInputStream * XENCCipherImpl::decryptToBinInputStream(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
+		) {
+	
+	
+	XSECAlgorithmHandler *handler;
+
+	// First of all load the element
+	if (mp_encryptedData != NULL)
+		delete mp_encryptedData;
+
+	XSECnew(mp_encryptedData, 
+		XENCEncryptedDataImpl(mp_env, dynamic_cast<DOMNode *>(element)));
+
+	// Load
+	mp_encryptedData->load();
+
+	// Make sure we have a key before we do anything else too drastic
+	if (mp_key == NULL) {
+
+		if (mp_keyInfoResolver != NULL)
+			mp_key = mp_keyInfoResolver->resolveKey(mp_encryptedData->getKeyInfoList());
+
+		if (mp_key == NULL) {
+
+			mp_key = decryptKeyFromKeyInfoList(mp_encryptedData->getKeyInfoList());
+
+		}
+
+		if (mp_key == NULL) {
+
+			throw XSECException(XSECException::CipherError, 
+				"XENCCipherImpl::decryptToBinInputStream - No key set and cannot resolve");
+		}
+	}
+
+	// Get the raw encrypted data
+	TXFMChain * c = mp_encryptedData->createCipherTXFMChain();
+	Janitor<TXFMChain> j_c(c);
+
+	// Get the Algorithm handler for the algorithm
+	XENCEncryptionMethod * encryptionMethod = mp_encryptedData->getEncryptionMethod();
+
+	if (encryptionMethod != NULL) {
+		
+		handler = 
+			XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
+				mp_encryptedData->getEncryptionMethod()->getAlgorithm());
+	
+	}
+
+	else {
+
+		handler =
+			XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
+				XSECAlgorithmMapper::s_defaultEncryptionMapping);
+
+	}
+
+	safeBuffer sb("");
+
+	if (handler != NULL) {
+
+		if (handler->appendDecryptCipherTXFM(c, 
+			mp_encryptedData->getEncryptionMethod(), 
+			mp_key,
+			mp_env->getParentDocument()) != true) {
+				throw XSECException(XSECException::CipherError, 
+					"XENCCipherImpl::decryptToBinInputStream - error appending final transform");
+		}
+
+	}
+	else {
+
+		// Very strange if we get here - any problems should throw an
+		// exception in the AlgorithmMapper.
+
+		throw XSECException(XSECException::CipherError, 
+			"XENCCipherImpl::decryptElement - Error retrieving a handler for algorithm");
+
+	}
+
+	// Wrap in a Bin input stream
+	XSECBinTXFMInputStream * ret;
+	ret = new XSECBinTXFMInputStream(c);	// Probs with MSVC++ mean no XSECnew
+	j_c.release();		// Now owned by "ret"
+
+	return ret;
+
+}
+
+// --------------------------------------------------------------------------------
 //			Decrypt a key in an XENCEncryptedKey element
 // --------------------------------------------------------------------------------
 
@@ -588,6 +744,29 @@ int XENCCipherImpl::decryptKey(XENCEncryptedKey * encryptedKey, XMLByte * rawKey
 
 	return keySize;
 }
+// --------------------------------------------------------------------------------
+//			Decrypt a key from a DOM structure
+// --------------------------------------------------------------------------------
+
+int XENCCipherImpl::decryptKey(
+		DOMElement * keyNode,
+		XMLByte * rawKey,
+		int maxKeySize
+		) {
+
+	XENCEncryptedKeyImpl * encryptedKey;
+	XSECnew(encryptedKey, 
+		XENCEncryptedKeyImpl(mp_env, dynamic_cast<DOMNode *>(keyNode)));
+	Janitor<XENCEncryptedKeyImpl> j_encryptedKey(encryptedKey);
+
+	// Load
+	encryptedKey->load();
+
+	// Now decrypt!
+	return decryptKey(encryptedKey, rawKey, maxKeySize);
+
+}
+
 
 // --------------------------------------------------------------------------------
 //			Encrypt a key

@@ -239,7 +239,8 @@ DOMElement * XENCCipherDataImpl::createBlankCipherData(
 	// Set the type
 	if (type == VALUE_TYPE) {
 		
-		// Should set the type attribute
+		// Should also set in the DOM
+		m_cipherDataType = VALUE_TYPE;
 
 		// Create the Cipher Value
 		XSECnew(mp_cipherValue, XENCCipherValueImpl(mp_env));

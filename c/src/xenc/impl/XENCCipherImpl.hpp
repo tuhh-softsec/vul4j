@@ -95,11 +95,20 @@ public:
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * 
 		decryptElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element);
+	XSECBinTXFMInputStream * decryptToBinInputStream(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
+	);
 
 	// Decrypting Keys
 	virtual int decryptKey(XENCEncryptedKey * encryptedKey, 
 		XMLByte * rawKey,
 		int maxKeySize);
+	virtual int decryptKey(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * keyNode,
+		XMLByte * rawKey,
+		int maxKeySize
+	);
+
 
 	// Implementation for encryption Elements
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * encryptElement(
@@ -155,6 +164,7 @@ private:
 								safeBuffer &content, 
 								XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * ctx
 							);
+	XSECCryptoKey * decryptKeyFromKeyInfoList(DSIGKeyInfoList * kil);
 
 	// Unimplemented constructor
 	XENCCipherImpl();

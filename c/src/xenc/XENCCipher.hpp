@@ -84,6 +84,7 @@ class XSECCryptoKey;
 class XENCEncryptedData;
 class XENCEncryptedKey;
 class XSECKeyInfoResolver;
+class XSECBinTXFMInputStream;
 
 /**
  * @defgroup xenc XML Encryption Implementation
@@ -150,6 +151,27 @@ public:
 	) = 0;
 
 	/**
+	 * \brief Decrypt the nominated element and put the output to an InputStream.
+	 *
+	 * Decrypts the passed in element, which must be the root
+	 * node of a \<EncryptedData\> method.
+	 *
+	 * This call does not change the source DOM in any way.  It simply
+	 * processes the encrypted data and provides an InputStream that the
+	 * caller can read from to read the plain text data.
+	 *
+	 * @param element Root of EncryptedData DOM structyre to decrypt
+	 * @returns A BinInputStream object that the application can use to
+	 * read the decrypted data.
+	 * @throws XSECException if the decryption fails, or if this is
+	 * not a valid EncryptedData DOM structure.
+	 */
+
+	virtual XSECBinTXFMInputStream * decryptToBinInputStream(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
+	) = 0;
+
+	/**
 	 * \brief Decrypt a key
 	 *
 	 * Reads in the passed in KeyInfo structure for an EncryptedKey and 
@@ -162,6 +184,24 @@ public:
 
 	virtual int decryptKey(
 		XENCEncryptedKey * encryptedKey,
+		XMLByte * rawKey,
+		int maxKeySize
+	) = 0;
+
+	/**
+	 * \brief Decrypt a key directly from DOM
+	 *
+	 * Loads an EncryptedKey from DOM and then decrypts the key.
+	 * If a NULL buffer is passed in, will simply load the key and return
+	 *
+	 * @param keyNode Node to load from
+	 * @param rawKey Buffer to decrypt to
+	 * @param maxKeySize Length of rawKey buffer
+	 * @returns The number of bytes decrypted
+	 */
+
+	virtual int decryptKey(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * keyNode,
 		XMLByte * rawKey,
 		int maxKeySize
 	) = 0;

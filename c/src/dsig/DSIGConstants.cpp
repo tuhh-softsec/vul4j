@@ -101,7 +101,13 @@ const XMLCh * DSIGConstants::s_unicodeStrURIHMAC_SHA1;
 const XMLCh * DSIGConstants::s_unicodeStrURIXMLNS;
 const XMLCh * DSIGConstants::s_unicodeStrURIMANIFEST;
 const XMLCh * DSIGConstants::s_unicodeStrURI3DES_CBC;
+const XMLCh * DSIGConstants::s_unicodeStrURIAES128_CBC;
+const XMLCh * DSIGConstants::s_unicodeStrURIAES192_CBC;
+const XMLCh * DSIGConstants::s_unicodeStrURIAES256_CBC;
 const XMLCh * DSIGConstants::s_unicodeStrURIKW_AES128;
+const XMLCh * DSIGConstants::s_unicodeStrURIKW_AES192;
+const XMLCh * DSIGConstants::s_unicodeStrURIKW_AES256;
+const XMLCh * DSIGConstants::s_unicodeStrURIRSA_1_5;
 const XMLCh * DSIGConstants::s_unicodeStrPROVOpenSSL;
 const XMLCh * DSIGConstants::s_unicodeStrPROVWinCAPI;
 
@@ -141,8 +147,14 @@ void DSIGConstants::create() {
 	s_unicodeStrURIMANIFEST = XMLString::transcode(URI_ID_MANIFEST);
 	
 	s_unicodeStrURI3DES_CBC	= XMLString::transcode(URI_ID_3DES_CBC);
+	s_unicodeStrURIAES128_CBC	= XMLString::transcode(URI_ID_AES128_CBC);
+	s_unicodeStrURIAES192_CBC	= XMLString::transcode(URI_ID_AES192_CBC);
+	s_unicodeStrURIAES256_CBC	= XMLString::transcode(URI_ID_AES256_CBC);
 	s_unicodeStrURIKW_AES128 = XMLString::transcode(URI_ID_KW_AES128);
-	
+	s_unicodeStrURIKW_AES192 = XMLString::transcode(URI_ID_KW_AES192);
+	s_unicodeStrURIKW_AES256 = XMLString::transcode(URI_ID_KW_AES256);
+	s_unicodeStrURIRSA_1_5 = XMLString::transcode(URI_ID_RSA_1_5);
+
 	s_unicodeStrPROVOpenSSL = XMLString::transcode(PROV_OPENSSL);
 	s_unicodeStrPROVWinCAPI = XMLString::transcode(PROV_WINCAPI);
 
@@ -180,7 +192,13 @@ void DSIGConstants::destroy() {
 	delete[] (XMLCh *) s_unicodeStrURIMANIFEST;
 
 	delete[] (XMLCh *) s_unicodeStrURI3DES_CBC;
+	delete[] (XMLCh *) s_unicodeStrURIAES128_CBC;
+	delete[] (XMLCh *) s_unicodeStrURIAES192_CBC;
+	delete[] (XMLCh *) s_unicodeStrURIAES256_CBC;
 	delete[] (XMLCh *) s_unicodeStrURIKW_AES128;
+	delete[] (XMLCh *) s_unicodeStrURIKW_AES192;
+	delete[] (XMLCh *) s_unicodeStrURIKW_AES256;
+	delete[] (XMLCh *) s_unicodeStrURIRSA_1_5;
 
 	delete[] (XMLCh *) s_unicodeStrPROVOpenSSL;
 	delete[] (XMLCh *) s_unicodeStrPROVWinCAPI;

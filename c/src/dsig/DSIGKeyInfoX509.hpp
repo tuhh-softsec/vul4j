@@ -268,6 +268,17 @@ public:
 	const XMLCh * getCertificateItem(int item);
 
 	/**
+	 * \brief Get the Crypto Interface X509 structure version of the certificate
+	 *
+	 * Use the index to find the required certificate and return a pointer
+	 * to the XSECCryptoX509 cert
+	 *
+	 * @returns A pointer to the XSECCryptoX509 cert structure
+	 */
+
+	XSECCryptoX509 * getCertificateCryptoItem(int item);
+
+	/**
 	 * \brief Interface function to find the type of this KeyInfo
 	 */
 	

@@ -88,14 +88,22 @@ XSEC_USING_XERCES(XMLString);
 
 // Hashing Algorithms
 
-#define URI_ID_SHA1		"http://www.w3.org/2000/09/xmldsig#sha1"
-#define URI_ID_MD5		"http://www.w3.org/2001/04/xmldsig-more#md5"
+#define URI_ID_SHA1			"http://www.w3.org/2000/09/xmldsig#sha1"
+#define URI_ID_MD5			"http://www.w3.org/2001/04/xmldsig-more#md5"
 
 // Encryption Algorithms
-#define URI_ID_3DES_CBC	"http://www.w3.org/2001/04/xmlenc#tripledes-cbc"
+#define URI_ID_3DES_CBC		"http://www.w3.org/2001/04/xmlenc#tripledes-cbc"
+#define URI_ID_AES128_CBC	"http://www.w3.org/2001/04/xmlenc#aes128-cbc"
+#define URI_ID_AES192_CBC	"http://www.w3.org/2001/04/xmlenc#aes192-cbc"
+#define URI_ID_AES256_CBC	"http://www.w3.org/2001/04/xmlenc#aes256-cbc"
 
 // Key Wrap Algorithm
-#define URI_ID_KW_AES128 "http://www.w3.org/2001/04/xmlenc#kw-aes128"
+#define URI_ID_KW_AES128	"http://www.w3.org/2001/04/xmlenc#kw-aes128"
+#define URI_ID_KW_AES192	"http://www.w3.org/2001/04/xmlenc#kw-aes192"
+#define URI_ID_KW_AES256	"http://www.w3.org/2001/04/xmlenc#kw-aes256"
+
+// Key Transport algorithms
+#define URI_ID_RSA_1_5		"http://www.w3.org/2001/04/xmlenc#rsa-1_5" 
 
 // Transforms
 
@@ -135,7 +143,6 @@ XSEC_USING_XERCES(XMLString);
 #define PROV_WINCAPI	"WinCAPI Provider"
 
 // Enumerated Types
-
 
 enum canonicalizationMethod {
 
@@ -186,7 +193,13 @@ enum encryptionMethod {
 
 	ENCRYPT_NONE			= 0,				// No method defined
 	ENCRYPT_3DES_CBC		= 1,				// Use 3DES
-	ENCRYPT_KW_AES128		= 2					// KeyWrap - AES128
+	ENCRYPT_AES128_CBC		= 2,				// 128 bit AES in CBC mode
+	ENCRYPT_AES192_CBC		= 3,				// 192 bit AES in CBC mode
+	ENCRYPT_AES256_CBC		= 4,				// 256 bit AES in CBC mode
+	ENCRYPT_KW_AES128		= 5,				// KeyWrap - AES128
+	ENCRYPT_KW_AES192		= 6,				// KeyWrap - AES192
+	ENCRYPT_KW_AES256		= 7,				// KeyWrap - AES256
+	ENCRYPT_RSA_15			= 8					// RSA with PKCS 1.5 padding
 
 };
 
@@ -310,11 +323,41 @@ bool encryptionMethod2URI(safeBuffer &uri, encryptionMethod em) {
 		uri = URI_ID_3DES_CBC;
 		break;
 
+	case (ENCRYPT_AES128_CBC) :
+
+		uri = URI_ID_AES128_CBC;
+		break;
+
+	case (ENCRYPT_AES192_CBC) :
+
+		uri = URI_ID_AES192_CBC;
+		break;
+
+	case (ENCRYPT_AES256_CBC) :
+
+		uri = URI_ID_AES256_CBC;
+		break;
+
 	case (ENCRYPT_KW_AES128) :
 
 		uri = URI_ID_KW_AES128;
 		break;
 
+	case (ENCRYPT_KW_AES192) :
+
+		uri = URI_ID_KW_AES192;
+		break;
+
+	case (ENCRYPT_KW_AES256) :
+
+		uri = URI_ID_KW_AES256;
+		break;
+
+	case (ENCRYPT_RSA_15) :
+
+		uri = URI_ID_RSA_1_5;
+		break;
+		
 	default:
 
 		return false;
@@ -367,7 +410,13 @@ public:
 
 	// URIs for Encryption
 	static const XMLCh * s_unicodeStrURI3DES_CBC;
+	static const XMLCh * s_unicodeStrURIAES128_CBC;	
+	static const XMLCh * s_unicodeStrURIAES192_CBC;	
+	static const XMLCh * s_unicodeStrURIAES256_CBC;	
 	static const XMLCh * s_unicodeStrURIKW_AES128;
+	static const XMLCh * s_unicodeStrURIKW_AES192;
+	static const XMLCh * s_unicodeStrURIKW_AES256;
+	static const XMLCh * s_unicodeStrURIRSA_1_5;
 
 	// Internal Crypto Providers
 	static const XMLCh * s_unicodeStrPROVOpenSSL;
