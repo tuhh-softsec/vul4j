@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.76 2003/04/25 10:24:08 rdonkin Exp $
- * $Revision: 1.76 $
- * $Date: 2003/04/25 10:24:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.77 2003/05/07 09:28:24 rdonkin Exp $
+ * $Revision: 1.77 $
+ * $Date: 2003/05/07 09:28:24 $
  *
  * ====================================================================
  *
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.76 $ $Date: 2003/04/25 10:24:08 $
+ * @version $Revision: 1.77 $ $Date: 2003/05/07 09:28:24 $
  */
 
 public class Digester extends DefaultHandler {
@@ -2446,7 +2446,7 @@ public class Digester extends DefaultHandler {
      * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
      * See {@link #params}.</p>
      */
-    Object peekParams() {
+    public Object peekParams() {
 
         try {
             return (params.peek());
@@ -2469,7 +2469,7 @@ public class Digester extends DefaultHandler {
      * @param n Index of the desired element, where 0 is the top of the stack,
      *  1 is the next element down, and so on.
      */
-    Object peekParams(int n) {
+    public Object peekParams(int n) {
 
         try {
             return (params.peek(n));
@@ -2488,7 +2488,7 @@ public class Digester extends DefaultHandler {
      * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
      * See {@link #params}.</p>
      */
-    Object popParams() {
+    public Object popParams() {
 
         try {
             if (log.isTraceEnabled()) {
@@ -2511,7 +2511,7 @@ public class Digester extends DefaultHandler {
      *
      * @param object The new object
      */
-    void pushParams(Object object) {
+    public void pushParams(Object object) {
         if (log.isTraceEnabled()) {
             log.trace("Pushing params");
         }
