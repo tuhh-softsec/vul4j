@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.20 2001/10/11 00:28:42 craigmcc Exp $
- * $Revision: 1.20 $
- * $Date: 2001/10/11 00:28:42 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.21 2001/10/13 01:34:59 craigmcc Exp $
+ * $Revision: 1.21 $
+ * $Date: 2001/10/13 01:34:59 $
  *
  * ====================================================================
  *
@@ -108,7 +108,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.20 $ $Date: 2001/10/11 00:28:42 $
+ * @version $Revision: 1.21 $ $Date: 2001/10/13 01:34:59 $
  */
 
 public class Digester extends DefaultHandler {
@@ -181,6 +181,12 @@ public class Digester extends DefaultHandler {
      * <code>useContextClassLoader</code> variable.
      */
     protected ClassLoader classLoader = null;
+
+
+    /**
+     * Has this Digester been configured yet?
+     */
+    protected boolean configured = false;
 
 
     /**
@@ -1141,6 +1147,7 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(File file) throws IOException, SAXException {
 
+        configure();
 	getReader().parse(new InputSource(new FileReader(file)));
 	return (root);
 
@@ -1158,6 +1165,7 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(InputSource input) throws IOException, SAXException {
 
+        configure();
 	getReader().parse(input);
 	return (root);
 
@@ -1175,6 +1183,7 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(InputStream input) throws IOException, SAXException {
 
+        configure();
 	getReader().parse(new InputSource(input));
 	return (root);
 
@@ -1192,6 +1201,7 @@ public class Digester extends DefaultHandler {
      */
     public Object parse(String uri) throws IOException, SAXException {
 
+        configure();
 	getReader().parse(uri);
 	return (root);
 
@@ -1601,6 +1611,29 @@ public class Digester extends DefaultHandler {
 
 
     // ------------------------------------------------ Parameter Stack Methods
+
+
+    // ------------------------------------------------------ Protected Methods
+
+
+    /**
+     * Provide a hook for lazy configuration of this <code>Digester</code>
+     * instance.  The default implementation does nothing, but subclasses
+     * can override as needed.
+     */
+    protected void configure() {
+
+        // Do not configure more than once
+        if (configured)
+            return;
+
+        // Perform lazy configuration as needed
+        ; // Nothing required by default
+
+        // Set the configuration flag to avoid repeating
+        configured = true;
+
+    }
 
 
     // -------------------------------------------------------- Package Methods
