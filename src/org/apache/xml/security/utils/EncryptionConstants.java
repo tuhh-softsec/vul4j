@@ -69,21 +69,25 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
  */
 public class EncryptionConstants {
    //J-
-   public static final String _ATT_ID                     = Constants._ATT_ID;
-   public static final String _ATT_TYPE                   = Constants._ATT_TYPE;
+   // Attributes that exist in XML Signature in the same way
    public static final String _ATT_ALGORITHM              = Constants._ATT_ALGORITHM;
-   public static final String _ATT_URI                    = Constants._ATT_URI;
+   public static final String _ATT_ID                     = Constants._ATT_ID;
    public static final String _ATT_TARGET                 = Constants._ATT_TARGET;
+   public static final String _ATT_TYPE                   = Constants._ATT_TYPE;
+   public static final String _ATT_URI                    = Constants._ATT_URI;
+
+   // Attributes new in XML Encryption
+   public static final String _ATT_ENCODING               = "Encoding";
    public static final String _ATT_NONCE                  = "Nonce";
    public static final String _ATT_RECIPIENT              = "Recipient";
-   public static final String _ATT_ENCODING               = "Encoding";
 
    public static final String _TAG_CARRIEDKEYNAME         = "CarriedKeyName";
-   public static final String _TAG_ENCRYPTEDDATA          = "EncryptedData";
    public static final String _TAG_CIPHERDATA             = "CipherData";
-   public static final String _TAG_CIPHERVALUE            = "CipherValue";
    public static final String _TAG_CIPHERREFERENCE        = "CipherReference";
+   public static final String _TAG_CIPHERVALUE            = "CipherValue";
    public static final String _TAG_DATAREFERENCE          = "DataReference";
+   public static final String _TAG_ENCRYPTEDDATA          = "EncryptedData";
+   public static final String _TAG_ENCRYPTEDKEY           = "EncryptedKey";
    public static final String _TAG_ENCRYPTIONMETHOD       = "EncryptionMethod";
    public static final String _TAG_ENCRYPTIONPROPERTIES   = "EncryptionProperties";
    public static final String _TAG_ENCRYPTIONPROPERTY     = "EncryptionProperty";
@@ -98,6 +102,10 @@ public class EncryptionConstants {
 
    /** The namespace of the <A HREF="http://www.w3.org/TR/2001/WD-xmlenc-core-20010626/">XML Encryption Syntax and Processing</A> */
    public static final String EncryptionSpecNS = "http://www.w3.org/2001/04/xmlenc#";
+
+   public static final String TYPE_CONTENT                = EncryptionSpecNS + "Content";
+   public static final String TYPE_ELEMENT                = EncryptionSpecNS + "Element";
+   public static final String TYPE_MEDIATYPE              = "http://www.isi.edu/in-notes/iana/assignments/media-types/"; // + "*/*";
 
    // Block Encryption - REQUIRED TRIPLEDES
    public static final String ALGO_ID_BLOCKCIPHER_TRIPLEDES = EncryptionConstants.EncryptionSpecNS + "tripledes-cbc";
