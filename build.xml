@@ -69,6 +69,7 @@
     <property name="jar.library"       value="${product.shortname}.jar" />
     <property name="jar.samples"       value="${product.shortname}Samples.jar" />
     <property name="jar.tests"         value="${product.shortname}Tests.jar" />
+    <property name="jar.manifest"      value="${build.classes}/META-INF/MANIFEST.MF"/>
 
     <property name="cvs.server"        value="cvs.apache.org" />
     <property name="cvs.path"          value="/home/cvs" />
@@ -108,6 +109,7 @@
     <property name="lib.xalan.1"  value="${dir.libs}/xalan.jar" />
     <property name="lib.xalan.2"  value="${dir.libs}/xml-apis.jar" />
     <property name="lib.log4j"    value="${dir.libs}/log4j-1.2.5.jar" />
+    
 
     <path id="classpath.libraries" description="3rd party libs">
       <pathelement path="${lib.xerces.1}" />
@@ -182,35 +184,24 @@
     <property name="javadoc.packages"
               value="
 org.apache.xml.security.Init,
-org.apache.xml.security.algorithms.*,
-org.apache.xml.security.algorithms.encryption.*,
-org.apache.xml.security.algorithms.encryption.helper.*,
-org.apache.xml.security.algorithms.encryption.implementations.*,
-org.apache.xml.security.algorithms.encryption.implementations.BC.*,
-org.apache.xml.security.algorithms.encryption.params.*,
-org.apache.xml.security.algorithms.implementations.*,
-org.apache.xml.security.c14n.*,
-org.apache.xml.security.c14n.helper.*,
-org.apache.xml.security.c14n.implementations.*,
-org.apache.xml.security.encryption.*,
-org.apache.xml.security.encryption.type.*,
-org.apache.xml.security.exceptions.*,
-org.apache.xml.security.keys.*,
-org.apache.xml.security.keys.content.*,
-org.apache.xml.security.keys.content.keyvalues.*,
-org.apache.xml.security.keys.content.x509.*,
-org.apache.xml.security.keys.keyresolver.*,
-org.apache.xml.security.keys.keyresolver.implementations.*,
-org.apache.xml.security.keys.storage.*,
-org.apache.xml.security.keys.storage.implementations.*,
-org.apache.xml.security.resource.*,
-org.apache.xml.security.signature.*,
-org.apache.xml.security.transforms.*,
-org.apache.xml.security.transforms.implementations.*,
-org.apache.xml.security.transforms.params.*,
-org.apache.xml.security.utils.*,
-org.apache.xml.security.utils.resolver.*,
-org.apache.xml.security.utils.resolver.implementations.*
+org.apache.xml.security.algorithms,
+org.apache.xml.security.algorithms.encryption,
+org.apache.xml.security.algorithms.encryption.params,
+org.apache.xml.security.c14n,
+org.apache.xml.security.encryption,
+org.apache.xml.security.encryption.type,
+org.apache.xml.security.exceptions,
+org.apache.xml.security.keys,
+org.apache.xml.security.keys.content,
+org.apache.xml.security.keys.content.keyvalues,
+org.apache.xml.security.keys.content.x509,
+org.apache.xml.security.keys.keyresolver,
+org.apache.xml.security.keys.storage,
+org.apache.xml.security.signature,
+org.apache.xml.security.transforms,
+org.apache.xml.security.transforms.params,
+org.apache.xml.security.utils,
+org.apache.xml.security.utils.resolver
 " />
 
     <echo message="-------------------------------------------------------------------" />
@@ -246,6 +237,7 @@ org.apache.xml.security.utils.resolver.implementations.*
     <echo message="                       directories                                 " />
     <echo message="   jar             --> creates the JAR file                        " />
     <echo message="   gump            --> includes javadoc, compile jar and test      " />
+    <echo message="   examples        --> List the commands to run some examples      " />
     <echo message="                                                                   " />
     <echo message="   usage           --> provides help on using the build tool       " />
     <echo message="                       (default)                                   " />
@@ -356,6 +348,7 @@ org.apache.xml.security.utils.resolver.implementations.*
     <javadoc destdir="${build.javadoc}"
              packagenames="${javadoc.packages}"
              classpathref="classpath.test">
+             <!--additionalparam="-breakiterator">-->
        <sourcepath>
           <pathelement location="${build.src}" />
           <pathelement location="${dir.src.unitTests}" />
@@ -524,22 +517,32 @@ org.apache.xml.security.utils.resolver.implementations.*
 
   <target name="jar"
           depends="compile"
-          description="Creates the ${jar.library}, ${jar.samples} and ${jar.samples} JAR file in ${build.dir}">
+          description="Creates the ${jar.library}, ${jar.samples} and ${jar.tests} JAR file in ${build.dir}">
+
+     <manifest file="${jar.manifest}" mode="replace">
+       <attribute name="Built-By" value="${user.name}"/>
+       <section name="${product.shortname}">
+         <attribute name="Implementation-Title" value="${product.Name}" />
+         <attribute name="Implementation-Version" value="${product.Version} ${TODAY}" /> 
+         <attribute name="Implementation-Vendor" value="Apache Software Foundation" />
+      </section>
+     </manifest>
+
      <jar jarfile="${build.dir}/${jar.library}"
           basedir="${build.classes}"
           includes="org/apache/**, *.txt"
           excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**"
-          manifest="${build.classes}/META-INF/MANIFEST.MF" />
+          manifest="${jar.manifest}"/>
      <jar jarfile="${build.dir}/${jar.samples}"
           basedir="${build.classes}"
           includes="org/apache/xml/security/samples/**"
           excludes="org/apache/xml/security/temp/**"
-          manifest="${build.classes}/META-INF/MANIFEST.MF" />
+          manifest="${jar.manifest}"/>
      <jar jarfile="${build.dir}/${jar.tests}"
           basedir="${build.classes}"
           includes="org/apache/xml/security/test/**"
           excludes="org/apache/xml/security/temp/**"
-          manifest="${build.classes}/META-INF/MANIFEST.MF" />
+          manifest="${jar.manifest}"/>
     <!--  compress="false" -->
   </target>
 
@@ -608,6 +611,25 @@ org.apache.xml.security.utils.resolver.implementations.*
   <!-- #################################################################### -->
   <!-- #################################################################### -->
   <!-- #################################################################### -->
+
+  <target name="examples">
+    <echo message="                                                                   " />
+    <echo message=" Running examples instructions                                     " />
+    <echo message="-------------------------------------------------------------------" />
+    <echo message="                                                                   " />
+    <echo message=" available targets are:                                            " />
+    <echo message="                                                                   " />
+    <echo message="   generate-keys   --> generates new keys to be used by other      " />
+    <echo message="                       examples                                    " />
+    <echo message="   sign            --> runs ..samples.signature.CreateSignature    " />
+    <echo message="                       creates a signature.xml file                " />
+    <echo message="   verify          --> will verify a signature.xml file that's     " />
+    <echo message="                       in the root directory. Main use after sign  " />    
+    <echo message="   signAndVerify   --> runs sign and then verify                   " />
+    <echo message="   mega-sample     --> runs all big samples                        " />
+    <echo message="                                                                   " />
+    <echo message=" See target usage for building instructions                        " />
+  </target>
 
   <target name="generate-keys">
      <genkey alias="test2"
