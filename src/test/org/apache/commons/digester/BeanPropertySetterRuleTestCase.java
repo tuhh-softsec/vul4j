@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,6 +63,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -325,6 +326,40 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
                 bean.getGamma() == null);
 
     }
+
+    /**
+     * Test that trying to set an unknown property throws an exception.
+     */
+    public void testSetUnknownProperty() {
+
+        // going to be setting properties on a SimpleTestBean
+        digester.addObjectCreate("root",
+                                 "org.apache.commons.digester.SimpleTestBean");
+
+        // attempt to set an unknown property name
+        digester.addRule("root/alpha",
+                         new BeanPropertySetterRule("unknown"));
+
+        // Attempt to parse the input
+        try {
+            SimpleTestBean bean = (SimpleTestBean)
+                digester.parse(xmlTestReader());
+            fail("Should have thrown NoSuchMethodException");
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            if (e instanceof InvocationTargetException) {
+                Throwable t =
+                    ((InvocationTargetException) e).getTargetException();
+                if (t instanceof NoSuchMethodException) {
+                    ; // Expected result
+                } else {
+                    fail("Should have thrown NoSuchMethodException, threw " + t);
+                }
+            }
+        }
+
+    }
+
 
     /**
      * Test that you can successfully automatically set properties.

@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.9 2002/10/02 19:23:12 rdonkin Exp $
- * $Revision: 1.9 $
- * $Date: 2002/10/02 19:23:12 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.10 2003/01/18 18:47:08 craigmcc Exp $
+ * $Revision: 1.10 $
+ * $Date: 2003/01/18 18:47:08 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,6 +66,7 @@ package org.apache.commons.digester;
 import java.util.HashMap;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 
 
 /**
@@ -81,7 +82,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.9 $ $Date: 2002/10/02 19:23:12 $
+ * @version $Revision: 1.10 $ $Date: 2003/01/18 18:47:08 $
  */
 
 public class BeanPropertySetterRule extends Rule {
@@ -206,30 +207,23 @@ public class BeanPropertySetterRule extends Rule {
             property = name;
         }
 
+        // Get a reference to the top object
+        Object top = digester.peek();
+
         // log some debugging information
         if (digester.log.isDebugEnabled()) {
             digester.log.debug("[BeanPropertySetterRule]{" + digester.match +
-                    "} Setting property " + property + " with text " +
-                    bodyText);
+                    "} Set " + top.getClass().getName() + " property " +
+                               property + " with text " + bodyText);
         }
 
-        // going to use beanutils so need to specify property using map
-        HashMap map = new HashMap();
-        map.put(property, bodyText);
+        // Force an exception if the property does not exist
+        // (BeanUtils.setProperty() silently returns in this case)
+        PropertyUtils.getProperty(top, property);
 
-        // examine top object
-        Object top = digester.peek();
-        if (top == null) {
-            // don't try to set property if null
-            // just log and return
-            if (digester.log.isDebugEnabled()) {
-                digester.log.debug("[BeanPropertySetterRule]{" +
-                        digester.match + "} Top object is null.");
-            }
-        } else {
-            // populate property on top object
-            BeanUtils.populate(top, map);
-        }
+        // Set the property (with conversion as necessary)
+        BeanUtils.setProperty(top, property, bodyText);
+
     }
 
 

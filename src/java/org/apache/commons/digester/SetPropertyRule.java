@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.8 2002/03/23 17:45:58 rdonkin Exp $
- * $Revision: 1.8 $
- * $Date: 2002/03/23 17:45:58 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.9 2003/01/18 18:47:08 craigmcc Exp $
+ * $Revision: 1.9 $
+ * $Date: 2003/01/18 18:47:08 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,6 +67,7 @@ import java.util.HashMap;
 
 import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 
 
 /**
@@ -74,7 +75,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * top of the stack, based on attributes with specified names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.8 $ $Date: 2002/03/23 17:45:58 $
+ * @version $Revision: 1.9 $ $Date: 2003/01/18 18:47:08 $
  */
 
 public class SetPropertyRule extends Rule {
@@ -147,7 +148,6 @@ public class SetPropertyRule extends Rule {
         // Identify the actual property name and value to be used
         String actualName = null;
         String actualValue = null;
-        HashMap values = new HashMap();
         for (int i = 0; i < attributes.getLength(); i++) {
             String name = attributes.getLocalName(i);
             if ("".equals(name)) {
@@ -160,16 +160,23 @@ public class SetPropertyRule extends Rule {
                 actualValue = value;
             }
         }
-        values.put(actualName, actualValue);
 
-        // Populate the corresponding property of the top object
+        // Get a reference to the top object
         Object top = digester.peek();
+
+        // Log some debugging information
         if (digester.log.isDebugEnabled()) {
             digester.log.debug("[SetPropertyRule]{" + digester.match +
                     "} Set " + top.getClass().getName() + " property " +
                     actualName + " to " + actualValue);
         }
-        BeanUtils.populate(top, values);
+
+        // Force an exception if the property does not exist
+        // (BeanUtils.setProperty() sildently returns in this case)
+        PropertyUtils.getProperty(top, actualName);
+
+        // Set the property (with conversion as necessary)
+        BeanUtils.setProperty(top, actualName, actualValue);
 
     }
 
