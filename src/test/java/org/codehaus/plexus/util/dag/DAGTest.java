@@ -23,18 +23,34 @@ public class DAGTest extends TestCase
 
         dag.addVertex( "b" );
         assertEquals( 2, dag.getVerticies().size() );
-        assertEquals( "a", dag.getVertex( "a" ).getLabel() );
-        assertEquals( "b", dag.getVertex( "b" ).getLabel() );
+        
         assertFalse( dag.hasEdge( "a", "b" ) );
         assertFalse( dag.hasEdge( "b", "a" ) );
-
+        
+        Vertex a = dag.getVertex( "a" );
+        Vertex b = dag.getVertex( "b" );
+        assertEquals( "a", a.getLabel() );
+        assertEquals( "b", b.getLabel() );
+        
+        dag.addEdge( "a", "b" );
+        assertTrue( a.getChildren().contains( b ) );
+        assertTrue( b.getParents().contains( a ) );
+        assertTrue( dag.hasEdge( "a", "b" ) );
+        assertFalse( dag.hasEdge( "b", "a" ) );
+        
+        
+        
+        
         dag.addEdge( "c", "d" );
         assertEquals( 4, dag.getVerticies().size() );
-        assertEquals( "a", dag.getVertex( "a" ).getLabel() );
-        assertEquals( "b", dag.getVertex( "b" ).getLabel() );
-        assertEquals( "c", dag.getVertex( "c" ).getLabel() );
-        assertEquals( "d", dag.getVertex( "d" ).getLabel() );
-        assertFalse( dag.hasEdge( "a", "b" ) );
+        
+        Vertex c = dag.getVertex( "c" );
+        Vertex d = dag.getVertex( "d" );
+        
+        assertEquals( "a", a.getLabel() );
+        assertEquals( "b", b.getLabel() );
+        assertEquals( "c", c.getLabel() );
+        assertEquals( "d", d.getLabel() );        
         assertFalse( dag.hasEdge( "b", "a" ) );
         assertFalse( dag.hasEdge( "a", "c" ) );
         assertFalse( dag.hasEdge( "a", "d" ) );
@@ -49,6 +65,22 @@ public class DAGTest extends TestCase
         assertTrue( labels.contains( "c" ) );
         assertTrue( labels.contains( "d" ) );
 
+        dag.addEdge( "a", "d" );
+        
+        assertTrue( a.getChildren().contains( d ) );
+        assertTrue( d.getParents().contains( a ) );
+        
+        // "b" and "d" are children of "a"
+        assertEquals( 2,a.getChildren().size() );
+        
+        assertTrue( a.getChildLabels().contains( "b" )  );
+        assertTrue( a.getChildLabels().contains( "d" )  );
+        
+        // "a" and "c" are parents of "d" 
+        assertEquals( 2,d.getParents().size() );
+        
+        assertTrue( d.getParentLabels().contains( "a" )  );
+        assertTrue( d.getParentLabels().contains( "c" )  );
 
     }
 }
