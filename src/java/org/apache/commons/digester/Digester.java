@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.18 2001/09/19 17:04:09 sanders Exp $
- * $Revision: 1.18 $
- * $Date: 2001/09/19 17:04:09 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.19 2001/09/21 10:00:41 jstrachan Exp $
+ * $Revision: 1.19 $
+ * $Date: 2001/09/21 10:00:41 $
  *
  * ====================================================================
  *
@@ -108,7 +108,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.18 $ $Date: 2001/09/19 17:04:09 $
+ * @version $Revision: 1.19 $ $Date: 2001/09/21 10:00:41 $
  */
 
 public class Digester extends DefaultHandler {
@@ -667,7 +667,10 @@ public class Digester extends DefaultHandler {
                 rule.finish();
             } catch (Exception e) {
                 log("Finish event threw exception", e);
-                throw new SAXException(e);
+                throw createSAXException(e);
+            } catch (Throwable t) {
+                log("Finish event threw exception", t);
+                throw createSAXException(t.getMessage());
             }
 	}
 
@@ -708,8 +711,11 @@ public class Digester extends DefaultHandler {
                     rule.body(bodyText);
 		} catch (Exception e) {
 		    log("Body event threw exception", e);
-		    throw new SAXException(e);
-		}
+		    throw createSAXException(e);
+		} catch (Throwable t) {
+                    log("Body event threw exception", t);
+		    throw createSAXException(t.getMessage());
+                }
 	    }
 	}
 
@@ -727,8 +733,11 @@ public class Digester extends DefaultHandler {
                     rule.end();
 		} catch (Exception e) {
 		    log("End event threw exception", e);
-		    throw new SAXException(e);
-		}
+		    throw createSAXException(e);
+		} catch (Throwable t) {
+		    log("End event threw exception", t);
+		    throw createSAXException(t.getMessage());
+                }
 	    }
 	}
 
@@ -763,7 +772,7 @@ public class Digester extends DefaultHandler {
             if (stack.empty())
                 namespaces.remove(prefix);
         } catch (EmptyStackException e) {
-            throw new SAXException("endPrefixMapping popped too many times");
+            throw createSAXException("endPrefixMapping popped too many times");
         }
 
     }
@@ -906,7 +915,10 @@ public class Digester extends DefaultHandler {
                     rule.begin(list);
 		} catch (Exception e) {
 		    log("Begin event threw exception", e);
-		    throw new SAXException(e);
+		    throw createSAXException(e);
+		} catch (Throwable t) {
+		    log("Begin event threw exception", t);
+		    throw createSAXException(t.getMessage());
 		}
 	    }
 	}
@@ -1011,7 +1023,7 @@ public class Digester extends DefaultHandler {
             InputStream stream = url.openStream();
             return (new InputSource(stream));
         } catch (Exception e) {
-            throw new SAXException(e);
+            throw createSAXException(e);
         }
 
     }
@@ -1685,5 +1697,50 @@ public class Digester extends DefaultHandler {
 
     }
 
+    /**
+     * Create a SAX exception which also understands about the location in
+     * the digester file where the exception occurs
+     *
+     * @return the new exception
+     */
+    protected SAXException createSAXException(String message, Exception e) {
+        if ( locator != null ) {
+            String error = "Error at (" + locator.getLineNumber() + ", " 
+                + locator.getColumnNumber() + ": " + message;
+            if ( e != null ) {
+                return new SAXParseException( error, locator, e );
+            }
+            else {
+                return new SAXParseException( error, locator );
+            }
+        }
+        System.out.println( "No Locator!" );
+        if ( e != null ) {
+            return new SAXException(message, e);
+        }
+        else {
+            return new SAXException(message);
+        }
+    }
+    
+    /**
+     * Create a SAX exception which also understands about the location in
+     * the digester file where the exception occurs
+     *
+     * @return the new exception
+     */
+    protected SAXException createSAXException(Exception e) {
+        return createSAXException(e.getMessage(), e);
+    }
+    
+    /**
+     * Create a SAX exception which also understands about the location in
+     * the digester file where the exception occurs
+     *
+     * @return the new exception
+     */
+    protected SAXException createSAXException(String message) {
+        return createSAXException(message, null);
+    }
 
 }
