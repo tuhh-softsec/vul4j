@@ -269,12 +269,12 @@ public class ExclusiveC14NInterop extends InteropTest {
 
                sb.append(i + " ");
 
-               XMLSignatureInput result =
-                  signature.getSignedInfo()
-                     .getReferencedContentAfterTransformsItem(i);
-
                JavaUtils.writeBytesToFilename(
-                  directory + "/c14n-" + i + ".apache.txt", result.getBytes());
+                  directory + "/c14n-" + i + ".apache.txt", signature.getSignedInfo()
+                     .item(i).getContentsAfterTransformation().getBytes());
+               JavaUtils.writeBytesToFilename(
+                  directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo()
+                     .item(i).getHTMLRepresentation().getBytes());
 
                Reference reference = signature.getSignedInfo().item(i);
                int length = reference.getTransforms().getLength();
