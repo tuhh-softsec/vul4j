@@ -887,5 +887,9 @@ XKMSResultType * XKMSMessageFactoryImpl::toResultType(XKMSMessageAbstractType *m
 		XKMSStatusResult * sr = dynamic_cast<XKMSStatusResult*>(msg);
 		return sr;
 	}
+	if (msg->getMessageType() == XKMSMessageAbstractType::Result) {
+		XKMSResult * r = dynamic_cast<XKMSResult*>(msg);
+		return r;
+	}
 	return NULL;
 }
