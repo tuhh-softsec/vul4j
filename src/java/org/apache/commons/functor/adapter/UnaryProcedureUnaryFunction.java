@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/UnaryProcedureUnaryFunction.java,v 1.1 2003/01/27 19:33:39 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/UnaryProcedureUnaryFunction.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,7 +75,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:39 $
+ * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
  * @author Rodney Waldhoff
  */
 public final class UnaryProcedureUnaryFunction implements UnaryFunction, Serializable {

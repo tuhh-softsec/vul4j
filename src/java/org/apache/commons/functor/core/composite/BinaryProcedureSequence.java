@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/BinaryProcedureSequence.java,v 1.1 2003/01/27 19:33:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Attic/BinaryProcedureSequence.java,v 1.2 2003/01/28 12:00:29 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -78,7 +78,7 @@ import org.apache.commons.functor.BinaryProcedure;
  * <code>Serializable</code> will result in an exception.
  * </p>
  * 
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:40 $
+ * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:29 $
  * @author Rodney Waldhoff
  */
 public class BinaryProcedureSequence implements BinaryProcedure, Serializable {

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/EqualPredicate.java,v 1.1 2003/01/27 19:33:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/EqualPredicate.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -72,7 +72,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * <code>Object.equals</code> contract.
  * </p>
  * 
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:40 $
+ * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
  * @author Rodney Waldhoff
  */
 public final class EqualPredicate implements BinaryPredicate, Serializable {

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBinaryProcedureBinaryFunction.java,v 1.1 2003/01/27 19:33:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBinaryProcedureBinaryFunction.java,v 1.2 2003/01/28 12:00:30 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,7 +66,7 @@ import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.NoOpProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:41 $
+ * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:30 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryProcedureBinaryFunction extends BaseFunctorTest {

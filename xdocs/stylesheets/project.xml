@@ -10,7 +10,7 @@
            <item name="Commons Functor"               href="/index.html" />
        </menu>
        <menu name="Project Files">
-           <item name="Downloads"                      href="/download.html"/>
+           <item name="Downloads"                     href="/download.html"/>
            <item name="Source (Browse)"               href="http://cvs.apache.org/viewcvs/jakarta-commons-sandbox/functor/"/>
            <item name="Source (CVS)"                  href="http://jakarta.apache.org/site/cvsindex.html"/>
            <item name="License"                       href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/LICENSE.txt"/>

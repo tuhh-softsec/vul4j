@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/IsNullPredicate.java,v 1.1 2003/01/27 19:33:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/IsNullPredicate.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,7 +65,7 @@ import org.apache.commons.functor.UnaryPredicate;
  * <code>true</code> iff its argument 
  * is <code>null</code>.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:40 $
+ * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
  * @author Rodney Waldhoff
  */
 public final class IsNullPredicate implements UnaryPredicate, Serializable {
