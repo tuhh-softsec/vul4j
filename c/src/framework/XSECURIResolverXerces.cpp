@@ -122,6 +122,10 @@ XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream * XSECURIResolverXerces::resolveUR
 	URLInputSource			* URLS;		// Use Xerces URL Input source
 	BinInputStream			* is;		// To handle the actual input
 
+	if (uri == NULL) {
+		throw XSECException(XSECException::ErrorOpeningURI,
+			"XSECURIResolverXerces - anonymous references not supported in default URI Resolvers");
+	}
 
 	if (mp_baseURI == 0) {
 		XSECnew(URLS, URLInputSource(XMLURL(uri)));

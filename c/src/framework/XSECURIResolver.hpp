@@ -128,7 +128,8 @@ public:
 	 *
 	 * @note The returned stream is "owned" by the caller, which
 	 * will delete it when processing is complete.
-	 * @param uri The string containing the URI to be de-referenced.
+	 * @param uri The string containing the URI to be de-referenced.  NULL
+	 * if this is an anonymous reference.
 	 * @returns The octet stream corresponding to the URI.
 	 */
 

@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.3  2003/05/10 07:23:36  blautenb
+ * Updates to support anonymous references
+ *
  * Revision 1.2  2003/02/17 11:21:45  blautenb
  * Work around for Xerces XMLUri bug
  *
@@ -155,6 +158,11 @@ BinInputStream * XSECURIResolverGenericWin32::resolveURI(const XMLCh * uri) {
 	XSEC_USING_XERCES(BinFileInputStream);
 
 	XMLUri					* xmluri;
+
+	if (uri == NULL) {
+		throw XSECException(XSECException::ErrorOpeningURI,
+			"XSECURIResolverGenericWin32 - anonymous references not supported in default URI Resolvers");
+	}
 
 	// Create the appropriate XMLUri objects
 	if (mp_baseURI != NULL) {

@@ -190,7 +190,8 @@ public:
 	 * attributes in <Reference> Elements.  However this may of use to calling
 	 * applications.
 	 *
-	 * @param URI The URI (data source) for this reference.
+	 * @param URI The URI (data source) for this reference.  Set to NULL for
+	 * an anonymous reference.
 	 * @param hm The type of Digest to be used (generally SHA-1)
 	 * @param type A type string (as defined by XML Signature).
 	 * @returns The root Reference element of the newly created DOM structure.
@@ -534,6 +535,8 @@ private:
 	DOMNode						* mp_hashValueNode;		// Node where the Hash value is stored
 	DSIGSignature				* mp_parentSignature;	// Owner signature
 	DSIGTransformList			* mp_transformList;		// List of transforms
+	
+	bool                        m_loaded;
 
 	DSIGReference();
 

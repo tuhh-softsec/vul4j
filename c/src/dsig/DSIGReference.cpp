@@ -164,6 +164,7 @@ DSIGReference::DSIGReference(DSIGSignature * sig, DOMNode *dom) {
 	mp_transformList = NULL;
 	mp_URI = NULL;
 	m_isManifest = false;
+	m_loaded = false;
 
 }
 
@@ -182,6 +183,7 @@ DSIGReference::DSIGReference(DSIGSignature *sig) {
 	me_hashMethod = HASH_NONE;
 	mp_URI = NULL;
 	m_isManifest = false;
+	m_loaded = false;
 
 };
 
@@ -365,8 +367,14 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 			MAKE_UNICODE_STRING(type));
 
 	// Set URI
-	ret->setAttribute(s_unicodeStrURI, URI);
-	mp_URI = ret->getAttribute(s_unicodeStrURI); // Used later on as a pointer
+	if (URI != NULL) {
+		ret->setAttribute(s_unicodeStrURI, URI);
+		mp_URI = ret->getAttribute(s_unicodeStrURI); // Used later on as a pointer
+	}
+	else {
+		// Anonymous reference
+		mp_URI = NULL;
+	}
 
 	// Create hash and hashValue nodes
 	makeQName(str, prefix, "DigestMethod");
@@ -392,6 +400,7 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 	ret->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
 	mp_hashValueNode->appendChild(doc->createTextNode(MAKE_UNICODE_STRING("Not yet calculated")));
 	
+	m_loaded = true;
 	return ret;
 
 }
@@ -447,7 +456,8 @@ TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 
 	// Determine if this is a full URL or a pointer to a URL
 
-	if (URI[0] != 0 && URI[0] != XERCES_CPP_NAMESPACE_QUALIFIER chPound) {
+	if (URI == NULL || (URI[0] != 0 && 
+		URI[0] != XERCES_CPP_NAMESPACE_QUALIFIER chPound)) {
 
 		TXFMURL * retTransform;
 
@@ -605,12 +615,6 @@ void DSIGReference::load(void) {
 
 	}
 
-	// Check to ensure the URI was set
-
-	if (mp_URI == NULL) {
-		throw XSECException(XSECException::ExpectedReferenceURI);
-	}
-
 	// Now check for Transforms
 	tmpElt = mp_referenceNode->getFirstChild();
 
@@ -763,6 +767,8 @@ void DSIGReference::load(void) {
 
 	} /* m_isManifest */
 
+	m_loaded = true;
+
 }
 
 // --------------------------------------------------------------------------------
@@ -823,7 +829,7 @@ XSECBinTXFMInputStream * DSIGReference::makeBinInputStream(void) const {
 	TXFMChain * txfmChain;
 	TXFMBase * currentTxfm;
 
-	if (mp_URI == NULL) {
+	if (m_loaded == false) {
 
 		throw XSECException(XSECException::NotLoaded, 
 			"calculateHash() called in DSIGReference before load()");
@@ -1231,7 +1237,7 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 
 	unsigned int size;
 
-	if (mp_URI == NULL) {
+	if (m_loaded == false) {
 
 		throw XSECException(XSECException::NotLoaded, 
 			"calculateHash() called in DSIGReference before load()");
