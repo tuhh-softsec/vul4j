@@ -85,6 +85,52 @@
 #	if (_XALAN_VERSION_ <= 10800)
 #		define XSEC_XSLEXCEPTION_RETURNS_DOMSTRING	1
 #	endif
+#	if (_XALAN_VERSION_ >= 10900)
+		
+		/* 1.9 and above have XSLException::getType() returns XalanDOMChar *, not
+			XalanDOMString
+		*/
+
+#		undef XSEC_XSLEXCEPTION_RETURNS_DOMSTRING 1
+
+		/* 1.9 and above do not take a XercesDOMSupport as input to the ctor */
+
+#		undef XSEC_XERCESPARSERLIAISON_REQS_DOMSUPPORT
+
+		/* 1.9 and above require a NodeRefList as input to XPathEvaluator::
+		   selectNodeList 
+		*/
+
+#		define XSEC_SELECTNODELIST_REQS_NODEREFLIST
+
+		/* 1.9 and above use MemoryManager for the XPath Function classes
+		*/
+
+#		define XSEC_XALAN_REQS_MEMORYMANAGER
+#	else
+		/* 1.9 and above have XSLException::getType() returns XalanDOMChar *, not
+			XalanDOMString
+		*/
+
+#		define XSEC_XSLEXCEPTION_RETURNS_DOMSTRING 1
+
+		/* 1.9 and above do not take a XercesDOMSupport as input to the ctor */
+
+#		define XSEC_XERCESPARSERLIAISON_REQS_DOMSUPPORT
+
+		/* 1.9 and above require a NodeRefList as input to XPathEvaluator::
+		   selectNodeList 
+		*/
+
+#		undef XSEC_SELECTNODELIST_REQS_NODEREFLIST
+
+		/* 1.9 and above use MemoryManager for the XPath Function classes
+		*/
+
+#		undef XSEC_XALAN_REQS_MEMORYMANAGER
+
+#	endif
+
 #endif
 
 /*
