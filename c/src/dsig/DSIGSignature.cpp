@@ -377,6 +377,7 @@ m_errStr("") {
 	mp_doc = doc;
 	mp_sigNode = sigNode;
 	mp_signingKey = NULL;
+	mp_signedInfo = NULL;
 	mp_prefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
 	mp_ecPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
 	mp_xpfPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
@@ -400,6 +401,7 @@ m_errStr("") {
 	mp_doc = NULL;
 	mp_sigNode = NULL;
 	mp_signingKey = NULL;
+	mp_signedInfo = NULL;
 	mp_prefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
 	mp_ecPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
 	mp_xpfPrefixNS = XMLString::replicate(DSIGConstants::s_unicodeStrEmpty);
