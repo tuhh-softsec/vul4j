@@ -45,57 +45,57 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- *
  * @author <a href="mailto:pj@thoughtworks.com">Paul Julius</a>
  */
 public class StreamPumperTest extends TestCase
 {
     private String lineSeparator;
-    
+
     /**
      * @param testName
      */
-    public StreamPumperTest(String testName)
+    public StreamPumperTest( String testName )
     {
-        super(testName);
+        super( testName );
     }
-    
+
     /*
      * @see TestCase#setUp()
      */
     public void setUp() throws Exception
     {
         super.setUp();
-        lineSeparator = System.getProperty("line.separator");
+        lineSeparator = System.getProperty( "line.separator" );
     }
-    
-    public void testPumping() {
+
+    public void testPumping()
+    {
         String line1 = "line1";
         String line2 = "line2";
         String lines = line1 + "\n" + line2;
         ByteArrayInputStream inputStream =
-                new ByteArrayInputStream(lines.getBytes());
+            new ByteArrayInputStream( lines.getBytes() );
 
         TestConsumer consumer = new TestConsumer();
-        StreamPumper pumper = new StreamPumper(inputStream, consumer);
-        new Thread(pumper).run();
+        StreamPumper pumper = new StreamPumper( inputStream, consumer );
+        new Thread( pumper ).run();
 
         //Check the consumer to see if it got both lines.
-        assertTrue(consumer.wasLineConsumed(line1, 1000));
-        assertTrue(consumer.wasLineConsumed(line2, 1000));
+        assertTrue( consumer.wasLineConsumed( line1, 1000 ) );
+        assertTrue( consumer.wasLineConsumed( line2, 1000 ) );
     }
-    
+
     public void testPumpingWithPrintWriter()
     {
         String inputString = "This a test string";
-        ByteArrayInputStream bais = new ByteArrayInputStream(inputString.getBytes());
+        ByteArrayInputStream bais = new ByteArrayInputStream( inputString.getBytes() );
         StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        StreamPumper pumper = new StreamPumper(bais, pw);
+        PrintWriter pw = new PrintWriter( sw );
+        StreamPumper pumper = new StreamPumper( bais, pw );
         pumper.run();
         pumper.flush();
-        System.out.println("aaa"+sw.toString());
-        assertEquals("This a test string" + lineSeparator, sw.toString());
+        System.out.println( "aaa" + sw.toString() );
+        assertEquals( "This a test string" + lineSeparator, sw.toString() );
         pumper.close();
     }
 }
@@ -103,7 +103,8 @@ public class StreamPumperTest extends TestCase
 /**
  * Used by the test to track whether a line actually got consumed or not.
  */
-class TestConsumer implements StreamConsumer {
+class TestConsumer implements StreamConsumer
+{
 
     private List lines = new ArrayList();
 
@@ -113,36 +114,44 @@ class TestConsumer implements StreamConsumer {
      * consumed.
      *
      * @param testLine Line to test for.
-     * @param timeout Number of milliseconds to wait for the line.
+     * @param timeout  Number of milliseconds to wait for the line.
      * @return true if the line gets consumed, else false.
      */
-    public boolean wasLineConsumed(String testLine, long timeout) {
+    public boolean wasLineConsumed( String testLine, long timeout )
+    {
 
         long start = System.currentTimeMillis();
         long trialTime = 0;
 
-        do {
-            if (lines.contains(testLine)) {
+        do
+        {
+            if ( lines.contains( testLine ) )
+            {
                 return true;
             }
 
             //Sleep a bit.
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
+            try
+            {
+                Thread.sleep( 10 );
+            }
+            catch ( InterruptedException e )
+            {
                 //ignoring...
             }
 
             //How long have been waiting for the line?
             trialTime = System.currentTimeMillis() - start;
 
-        } while (trialTime < timeout);
+        }
+        while ( trialTime < timeout );
 
         //If we got here, then the line wasn't consume within the timeout
         return false;
     }
 
-    public void consumeLine(String line) {
-        lines.add(line);
+    public void consumeLine( String line )
+    {
+        lines.add( line );
     }
 }

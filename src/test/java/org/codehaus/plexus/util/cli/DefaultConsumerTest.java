@@ -16,7 +16,7 @@ package org.codehaus.plexus.util.cli;
  * limitations under the License.
  * ====================================================================
  */
- 
+
 import junit.framework.TestCase;
 
 public class DefaultConsumerTest extends TestCase
@@ -24,9 +24,9 @@ public class DefaultConsumerTest extends TestCase
     /**
      * @param testName
      */
-    public DefaultConsumerTest(String testName)
+    public DefaultConsumerTest( String testName )
     {
-        super(testName);
+        super( testName );
     }
 
     /*
@@ -36,11 +36,11 @@ public class DefaultConsumerTest extends TestCase
     {
         super.setUp();
     }
-    
+
     public void testConsumeLine()
     {
         DefaultConsumer cons = new DefaultConsumer();
-        cons.consumeLine("Test DefaultConsumer consumeLine");
+        cons.consumeLine( "Test DefaultConsumer consumeLine" );
     }
-    
+
 }
