@@ -19,6 +19,7 @@ XML documents.
 <a href="#doc.Namespace">[Namespace Aware Parsing]</a>
 <a href="#doc.Pluggable">[Pluggable Rules Processing]</a>
 <a href="#doc.RuleSets">[Encapsulated Rule Sets]</a>
+<a href="#doc.NamedStacks">[Using Named Stacks For Inter-Rule Communication]</a>
 <a href="#doc.RegisteringDTDs">[Registering DTDs]</a>
 <a href="#doc.troubleshooting">[Troubleshooting]</a>
 <a href="#doc.FAQ">[FAQ]</a>
@@ -1024,6 +1025,47 @@ public class MyRuleSet extends RuleSetBase {
     the same set of nested elements at different nesting levels within an
     XML document.</li>
 </ul>
+<a name="doc.NamedStacks"></a>
+<h3>Using Named Stacks For Inter-Rule Communication</h3>
+<p>
+<code>Digester</code> is based on <code>Rule</code>'s working together to process xml.
+For anything other than the most trival processing, communication between 
+<code>Rule</code>'s is necessary. Since <code>Rule</code>'s are processed in sequence,
+this usually means storing an Object somewhere where later instances can retrieve it.
+</p>
+<p>
+<code>Digester</code> is based on SAX. The most natural data structure to use with 
+SAX based xml processing is the stack. This allows more powerful processes to be
+specified more simply since the pushing and popping of objects can mimic the 
+nested structure of the xml. 
+</p>
+<p>
+<code>Digester</code> uses two basic stacks: one for the main beans and the other 
+for parameters for method calls. These are inadequate for complex processing 
+where many different <code>Rule</code>'s need to communicate through different
+channels.
+</p>
+<p>
+In this case, it is recommended that named stacks are used. In addition to the
+two basic stacks, <code>Digester</code> allows rules to use an unlimited number
+of other stacks referred two by an identifying string (the name). (That's where
+the term <em>named stack</em> comes from.) These stacks are 
+accessed through calls to:
+</p>
+<ul>
+    <li><a href='Digester.html#push(java.lang.String, java.lang.Object)'>
+        void push(String stackName, Object value)</a></li>
+    <li><a href='Digester.html#pop(java.lang.String)'>
+        Object pop(String stackName)</a></li>
+    <li><a href='Digester.html#peek(java.lang.String)'>
+        Object peek(String stackName)</a></li>
+</ul>
+<p>
+<strong>Note:</strong> all stack names beginning with <code>org.apache.commons.digester</code>
+are reserved for future use by the <code>Digester</code> component. It is also recommended
+that users choose stack names perfixed by the name of their own domain to avoid conflicts
+with other <code>Rule</code> implementations.
+</p>
 <a name="doc.RegisteringDTDs"></a>
 <h3>Registering DTDs</h3>
 

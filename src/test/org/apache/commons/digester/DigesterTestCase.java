@@ -17,7 +17,7 @@
 
 package org.apache.commons.digester;
 
-
+import java.math.BigDecimal;
 import java.net.URL;
 import java.io.StringReader;
 import java.util.Iterator;
@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.17 $ $Date: 2004/02/28 13:32:54 $
+ * @version $Revision: 1.18 $ $Date: 2004/03/07 19:37:08 $
  */
 
 public class DigesterTestCase extends TestCase {
@@ -380,5 +380,38 @@ public class DigesterTestCase extends TestCase {
         assertEquals("Substituted python attribute value", "Cleese", tsr.attributes.getValue("", "python"));
     }
     
+    /** Tests the push-peek-pop cycle for a named stack */
+    public void testNamedStackPushPeekPop() throws Exception
+    {
+        BigDecimal archimedesAveragePi = new BigDecimal("3.1418");
+        String testStackName = "org.apache.commons.digester.tests.testNamedStackPushPeekPop";
+        Digester digester = new Digester();
+        assertNull("Stack starts empty:", digester.peek(testStackName));
+        digester.push(testStackName, archimedesAveragePi);
+        assertEquals("Peeked value:", archimedesAveragePi, digester.peek(testStackName));
+        assertEquals("Popped value:", archimedesAveragePi, digester.pop(testStackName));
+        assertNull("Stack ends empty:", digester.peek(testStackName));
+    }
+    
+    /** Tests that values are stored independently */
+    public void testNamedIndependence()
+    {
+        String testStackOneName = "org.apache.commons.digester.tests.testNamedIndependenceOne";
+        String testStackTwoName = "org.apache.commons.digester.tests.testNamedIndependenceTwo";
+        Digester digester = new Digester();
+        digester.push(testStackOneName, "Tweedledum");
+        digester.push(testStackTwoName, "Tweedledee");
+        assertEquals("Popped value one:", "Tweedledum", digester.pop(testStackOneName));
+        assertEquals("Popped value two:", "Tweedledee", digester.pop(testStackTwoName));
+    }
+    
+    /** Tests popping named stack not yet pushed */
+    public void testPopNamedStackNotPushed() 
+    {
+        String testStackName = "org.apache.commons.digester.tests.testPopNamedStackNotPushed";
+        Digester digester = new Digester();
+        digester.pop(testStackName);
+        digester.peek(testStackName);
+    }
     
 }

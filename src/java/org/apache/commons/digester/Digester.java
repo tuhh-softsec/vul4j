@@ -74,7 +74,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.94 $ $Date: 2004/02/28 13:32:52 $
+ * @version $Revision: 1.95 $ $Date: 2004/03/07 19:37:07 $
  */
 
 public class Digester extends DefaultHandler {
@@ -313,6 +313,9 @@ public class Digester extends DefaultHandler {
      * This may be null and so a null check is always required before use.
      */
     protected Substitutor substitutor;
+    
+    /** Stacks used for interrule communication, indexed by name String */
+    private HashMap stacksByName = new HashMap();
     
     // ------------------------------------------------------------- Properties
 
@@ -2454,6 +2457,55 @@ public class Digester extends DefaultHandler {
         }
         stack.push(object);
 
+    }
+
+    /**
+     * Pushes the given object onto the stack with the given name.
+     * If no stack already exists with the given name then one will be created.
+     * 
+     * @param stackName the name of the stack onto which the object should be pushed
+     * @param value the Object to be pushed onto the named stack.
+     */
+    public void push(String stackName, Object value) {
+        ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
+        if (namedStack == null) {
+            namedStack = new ArrayStack();
+            stacksByName.put(stackName, namedStack);
+        }
+        namedStack.push(value);
+    }
+
+    /**
+     * Pops (gets and removes) the top object from the stack with the given name.
+     * 
+     * @param stackName the name of the stack from which the top value is to be popped
+     * @return the top <code>Object</code> on the stack or or null if the stack is either 
+     * empty or has not been created yet
+     */
+    public Object pop(String stackName) {
+        Object result = null;
+        ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
+        if (namedStack != null && !namedStack.isEmpty()) {
+            result = namedStack.pop();
+        }
+        return result;
+    }
+    
+    /**
+     * Gets the top object from the stack with the given name.
+     * This method does not remove the object from the stack.
+     *
+     * @param stackName the name of the stack to be peeked
+     * @return the top <code>Object</code> on the stack or null if the stack is either 
+     * empty or has not been created yet
+     */
+    public Object peek(String stackName) {
+        Object result = null;
+        ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
+        if (namedStack != null && !namedStack.isEmpty()) {
+            result = namedStack.peek();
+        }
+        return result;
     }
 
 
