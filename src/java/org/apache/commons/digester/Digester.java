@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.23 2001/10/16 23:46:34 craigmcc Exp $
- * $Revision: 1.23 $
- * $Date: 2001/10/16 23:46:34 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.24 2001/11/14 18:42:16 craigmcc Exp $
+ * $Revision: 1.24 $
+ * $Date: 2001/11/14 18:42:16 $
  *
  * ====================================================================
  *
@@ -108,7 +108,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.23 $ $Date: 2001/10/16 23:46:34 $
+ * @version $Revision: 1.24 $ $Date: 2001/11/14 18:42:16 $
  */
 
 public class Digester extends DefaultHandler {
@@ -719,9 +719,12 @@ public class Digester extends DefaultHandler {
     public void endElement(String namespaceURI, String localName,
                            String qName) throws SAXException {
 
-        if (debug >= 3)
+        if (debug >= 3) {
             log("endElement(" + namespaceURI + "," + localName +
                 "," + qName + ")");
+            log("  match='" + match + "'");
+            log("  bodyText='" + bodyText + "'");
+        }
 
 	// Fire "body" events for all relevant rules
 	List rules = getRules().match(namespaceURI, match);
@@ -741,10 +744,15 @@ public class Digester extends DefaultHandler {
 		    throw createSAXException(t.getMessage());
                 }
 	    }
-	}
+	} else {
+            if (debug >= 3)
+                log("  No rules found matching '" + match + "'.");
+        }
 
 	// Recover the body text from the surrounding element
 	bodyText = (StringBuffer) bodyTexts.pop();
+        if (debug >= 4)
+            log("  Popping body text '" + bodyText.toString() + "'");
 
 	// Fire "end" events for all relevant rules in reverse order
 	if (rules != null) {
@@ -913,6 +921,8 @@ public class Digester extends DefaultHandler {
 
 	// Save the body text accumulated for our surrounding element
 	bodyTexts.push(bodyText);
+        if (debug >= 4)
+            log("  Pushing body text '" + bodyText.toString() + "'");
 	bodyText.setLength(0);
 
 	// Compute the current matching rule
@@ -945,7 +955,10 @@ public class Digester extends DefaultHandler {
 		    throw createSAXException(t.getMessage());
 		}
 	    }
-	}
+	} else {
+            if (debug >= 3)
+                log("  No rules found matching '" + match + "'.");
+        }
 
     }
 
@@ -1576,6 +1589,8 @@ public class Digester extends DefaultHandler {
 	try {
 	    return (stack.peek());
 	} catch (EmptyStackException e) {
+            if (debug >= 1)
+                log("Empty stack (returning null)");
 	    return (null);
 	}
 
@@ -1595,6 +1610,8 @@ public class Digester extends DefaultHandler {
 	try {
 	    return (stack.peek(n));
 	} catch (EmptyStackException e) {
+            if (debug >= 1)
+                log("Empty stack (returning null)");
 	    return (null);
 	}
 
@@ -1610,6 +1627,8 @@ public class Digester extends DefaultHandler {
 	try {
 	    return (stack.pop());
 	} catch (EmptyStackException e) {
+            if (debug >= 1)
+                log("Empty stack (returning null)");
 	    return (null);
 	}
 
