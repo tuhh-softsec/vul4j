@@ -781,7 +781,7 @@ int main(int argc, char **argv) {
 			WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC(0);
 #	endif
 #endif
-			hmacKey->setKey((unsigned char *) argv[paramCount + 1], strlen(argv[paramCount + 1]));
+			hmacKey->setKey((unsigned char *) argv[paramCount + 1], (unsigned int) strlen(argv[paramCount + 1]));
 			key = hmacKey;
 			paramCount += 2;
 
@@ -905,7 +905,7 @@ int main(int argc, char **argv) {
 			fResult = CryptHashData(
 				h,
 				(unsigned char *) argv[paramCount],
-				strlen(argv[paramCount]),
+				(DWORD) strlen(argv[paramCount]),
 				0);
 			
 			if (fResult == 0) {
@@ -1010,7 +1010,7 @@ int main(int argc, char **argv) {
 					exit(1);
 			}
 
-			cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
+			cp = new WinCAPICryptoProvider();
 			XSECPlatformUtils::SetCryptoProvider(cp);
 
 			HCRYPTKEY k;
@@ -1024,7 +1024,7 @@ int main(int argc, char **argv) {
 				exit(1);
 			};
 
-			winKeyRSA = new WinCAPICryptoKeyRSA(cp, k, true);
+			winKeyRSA = new WinCAPICryptoKeyRSA(win32RSACSP, k);
 			key = winKeyRSA;
 			paramCount += 2;
 
@@ -1220,7 +1220,7 @@ int main(int argc, char **argv) {
 			int i;
 			// Have some certificates - see if there is already an X509 list
 			DSIGKeyInfoList * kiList = sig->getKeyInfoList();
-			int kiSize = kiList->getSize();
+			int kiSize = (int) kiList->getSize();
 
 			for (i = 0; i < kiSize; ++i) {
 

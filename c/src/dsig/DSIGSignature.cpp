@@ -92,7 +92,7 @@ bool compareBase64StringToRaw(safeBuffer &b64SB,
 	b64Str[1023] = '\0';	// Just in case
 
 	b64->decodeInit();
-	outputLen = b64->decode((unsigned char *) b64Str, strlen((char *) b64Str), outputStr, 1024);
+	outputLen = b64->decode((unsigned char *) b64Str, (unsigned int) strlen((char *) b64Str), outputStr, 1024);
 	outputLen += b64->decodeFinish(&outputStr[outputLen], 1024 - outputLen);
 
 	// Compare
@@ -339,13 +339,13 @@ DSIGObject * DSIGSignature::appendObject(void) {
 
 int DSIGSignature::getObjectLength(void) {
 
-	return m_objects.size();
+	return (unsigned int) m_objects.size();
 
 }
 
 DSIGObject * DSIGSignature::getObjectItem(int i) {
 
-	if ( i < 0 || i >= m_objects.size()) {
+	if ( i < 0 || i >= ((int) m_objects.size())) {
 		throw XSECException(XSECException::ObjectError,
 			"DSIGSignature::getObjectItem - index out of range");
 	}
@@ -435,7 +435,7 @@ DSIGSignature::~DSIGSignature() {
 	}
 
 	// Delete any object items
-	for (int i = 0; i < m_objects.size(); ++i) {
+	for (int i = 0; i < ((int) m_objects.size()); ++i) {
 		delete (m_objects[i]);
 	}
 

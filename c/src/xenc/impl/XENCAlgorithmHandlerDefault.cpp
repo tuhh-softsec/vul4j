@@ -600,7 +600,7 @@ unsigned int XENCAlgorithmHandlerDefault::doRSADecryptToSafeBuffer(
 			char * oaepParamsStr = XMLString::transcode(oaepParams);
 			ArrayJanitor<char> j_oaepParamsStr(oaepParamsStr);
 
-			unsigned int bufLen = strlen(oaepParamsStr);
+			unsigned int bufLen = (unsigned int) strlen(oaepParamsStr);
 			oaepParamsBuf = new unsigned char[bufLen];
 			ArrayJanitor<unsigned char> j_oaepParamsBuf(oaepParamsBuf);
 

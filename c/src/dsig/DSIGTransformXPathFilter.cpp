@@ -200,7 +200,7 @@ void DSIGTransformXPathFilter::load(void) {
 
 unsigned int DSIGTransformXPathFilter::getExprNum(void) {
 
-	return m_exprs.size();
+	return (unsigned int) m_exprs.size();
 
 }
 

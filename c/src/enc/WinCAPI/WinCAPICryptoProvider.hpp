@@ -31,8 +31,12 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoProvider.hpp>
 
+#if defined (_WIN32_WINNT)
+#	undef _WIN32_WINNT
+#endif
 #define _WIN32_WINNT 0x0400
 #include <wincrypt.h>
+
 
 // For older versions of wincrypt.h
 

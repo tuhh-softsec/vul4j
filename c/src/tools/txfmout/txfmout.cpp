@@ -297,7 +297,7 @@ void outputReferenceList (DSIGReferenceList * lst, outputter & theOutputter, int
 
 	lstSz = 0;
 
-	lstSz = lst->getSize();
+	lstSz = (int) lst->getSize();
 
 	for (i = 0; i < lstSz; ++i) {
 

@@ -59,8 +59,8 @@ CallbackSizeType TransformXSLOutputFn(const char * s, CallbackSizeType sz, void 
 
 	TransformXSLOutputHolder * output = (TransformXSLOutputHolder *) data;
 
-	output->buffer.sbMemcpyIn(output->offset, s, sz);
-	output->offset += sz;
+	output->buffer.sbMemcpyIn(output->offset, s, (int) sz);
+	output->offset += (int) sz;
 	output->buffer[output->offset] = '\0';
 
 	return sz;
@@ -154,8 +154,8 @@ void TXFMXSL::setInput(TXFMBase *newInput) {
 void TXFMXSL::evaluateStyleSheet(const safeBuffer &sbStyleSheet) {
 
 	// Set up iostreams for input
-	std::istrstream	theXMLStream((char *) sbInDoc.rawBuffer(), strlen((char *) sbInDoc.rawBuffer()));
-	std::istrstream	theXSLStream((char *) sbStyleSheet.rawBuffer(), strlen((char *) sbStyleSheet.rawBuffer()));
+	std::istrstream	theXMLStream((char *) sbInDoc.rawBuffer(), (int) strlen((char *) sbInDoc.rawBuffer()));
+	std::istrstream	theXSLStream((char *) sbStyleSheet.rawBuffer(), (int) strlen((char *) sbStyleSheet.rawBuffer()));
 
 	// Now resolve
 

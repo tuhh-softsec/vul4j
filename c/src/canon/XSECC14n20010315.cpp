@@ -192,7 +192,7 @@ bool visiblyUtilises(DOMNode *node, safeBuffer &ns) {
 
 bool XSECC14n20010315::inNonExclNSList(safeBuffer &ns) {
 
-	int size = m_exclNSList.size();
+	int size = (int) m_exclNSList.size();
 
 	for (int i = 0; i < size; ++i) {
 
@@ -342,7 +342,7 @@ XSECC14n20010315::~XSECC14n20010315() {
 		delete mp_formatter;
 
 	// Clear out the exclusive namespace list
-	int size = m_exclNSList.size();
+	int size = (int) m_exclNSList.size();
 
 	for (int i = 0; i < size; ++i) {
 
@@ -446,7 +446,7 @@ int XSECC14n20010315::XPathSelectNodes(const char * XPathExpr) {
 	XercesDocumentWrapper *theWrapper = theParserLiaison.mapDocumentToWrapper(theDoc);
 	XercesWrapperNavigator theWrapperNavigator(theWrapper);
 
-	int size = theResult.getLength();
+	int size = (int) theResult.getLength();
 	const DOMNode *item;
 	
 	for (int i = 0; i < size; ++ i) {

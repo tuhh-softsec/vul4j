@@ -128,7 +128,7 @@ void DSIGKeyInfoSPKIData::load(void) {
 
 unsigned int DSIGKeyInfoSPKIData::getSexpSize(void) {
 
-	return m_sexpList.size();
+	return (unsigned int) m_sexpList.size();
 
 }
 

@@ -74,7 +74,7 @@ InteropResolver::~InteropResolver() {
 
 void reverseSlash(safeBuffer &path) {
 
-	for (int i = 0; i < strlen(path.rawCharBuffer()); ++i) {
+	for (int i = 0; i < (int) strlen(path.rawCharBuffer()); ++i) {
 
 		if (path[i] == '/')
 			path[i] = '\\';
@@ -108,7 +108,7 @@ X509 * InteropResolver::nextFile2Cert(void) {
 
 		reverseSlash(path);
 
-		m_handle = _findfirst(path.rawCharBuffer(), &m_finder);
+		m_handle = (long) _findfirst(path.rawCharBuffer(), &m_finder);
 		res = m_handle;
 #else
 		if (glob(path.rawCharBuffer(), 0, NULL, &m_globbuf) != 0)
@@ -297,7 +297,7 @@ bool InteropResolver::checkMatch(DSIGKeyInfoList * lst, X509 * x) {
 	// Check if the parameters in x match the required certificate
 
 
-	int sz = lst->getSize();
+	int sz = (int) lst->getSize();
 	DSIGKeyInfo* k;
 	
 	for (int i = 0; i < sz; ++i) {
@@ -342,7 +342,7 @@ bool InteropResolver::checkMatch(DSIGKeyInfoList * lst, X509 * x) {
 			if (ski != NULL) {
 
 				char * cski = XMLString::transcode(ski);
-				int clen = strlen(cski);
+				int clen = (int) strlen(cski);
 				unsigned char * xski = new unsigned char[clen];
 				ArrayJanitor<char> j_cski(cski);
 				ArrayJanitor <unsigned char> j_xski(xski);
@@ -465,7 +465,7 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 	const XMLCh * b64cert = NULL;
 	const XMLCh * b64crl = NULL;
 
-	int lstSize = lst->getSize();
+	int lstSize = (int) lst->getSize();
 
 	for (int i = 0; i < lstSize; ++i) {
 
@@ -552,8 +552,8 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 		X509 *x;
 
 		b64.decodeInit();
-		x509bufLen = b64.decode((unsigned char *) transb64cert, strlen(transb64cert), x509buf, strlen(transb64cert));
-		x509bufLen += b64.decodeFinish(&x509buf[x509bufLen], strlen(transb64cert) - x509bufLen);
+		x509bufLen = b64.decode((unsigned char *) transb64cert, (unsigned int) strlen(transb64cert), x509buf, (unsigned int) strlen(transb64cert));
+		x509bufLen += b64.decodeFinish(&x509buf[x509bufLen], (unsigned int) strlen(transb64cert) - x509bufLen);
 
 		if (x509bufLen > 0) {
 			x =  d2i_X509(NULL, &x509buf, x509bufLen);
@@ -575,8 +575,8 @@ XSECCryptoKey * InteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 		X509_CRL * c;
 
 		b64.decodeInit();
-		crlbufLen = b64.decode((unsigned char*) transb64crl, strlen(transb64crl), crlbuf, strlen(transb64crl));
-		crlbufLen += b64.decodeFinish(&crlbuf[crlbufLen], strlen(transb64crl) - crlbufLen);
+		crlbufLen = b64.decode((unsigned char*) transb64crl, (unsigned int) strlen(transb64crl), crlbuf, (unsigned int) strlen(transb64crl));
+		crlbufLen += b64.decodeFinish(&crlbuf[crlbufLen], (unsigned int) strlen(transb64crl) - crlbufLen);
 
 		if (crlbufLen > 0) {
 			c =  d2i_X509_CRL(NULL, &crlbuf, crlbufLen);

@@ -85,7 +85,7 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 				safeBuffer transX509;
 
 				transX509 << (*mp_formatter << x509Str);
-				x509->loadX509Base64Bin(transX509.rawCharBuffer(), strlen(transX509.rawCharBuffer()));
+				x509->loadX509Base64Bin(transX509.rawCharBuffer(), (unsigned int) strlen(transX509.rawCharBuffer()));
 				ret = x509->clonePublicKey();
 			}
 
@@ -104,13 +104,13 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 			safeBuffer value;
 
 			value << (*mp_formatter << ((DSIGKeyInfoValue *) lst->item(i))->getDSAP());
-			dsa->loadPBase64BigNums(value.rawCharBuffer(), strlen(value.rawCharBuffer()));
+			dsa->loadPBase64BigNums(value.rawCharBuffer(), (unsigned int) strlen(value.rawCharBuffer()));
 			value << (*mp_formatter << ((DSIGKeyInfoValue *) lst->item(i))->getDSAQ());
-			dsa->loadQBase64BigNums(value.rawCharBuffer(), strlen(value.rawCharBuffer()));
+			dsa->loadQBase64BigNums(value.rawCharBuffer(), (unsigned int) strlen(value.rawCharBuffer()));
 			value << (*mp_formatter << ((DSIGKeyInfoValue *) lst->item(i))->getDSAG());
-			dsa->loadGBase64BigNums(value.rawCharBuffer(), strlen(value.rawCharBuffer()));
+			dsa->loadGBase64BigNums(value.rawCharBuffer(), (unsigned int) strlen(value.rawCharBuffer()));
 			value << (*mp_formatter << ((DSIGKeyInfoValue *) lst->item(i))->getDSAY());
-			dsa->loadYBase64BigNums(value.rawCharBuffer(), strlen(value.rawCharBuffer()));
+			dsa->loadYBase64BigNums(value.rawCharBuffer(), (unsigned int) strlen(value.rawCharBuffer()));
 
 			j_dsa.release();
 			return dsa;
@@ -126,9 +126,9 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 			safeBuffer value;
 
 			value << (*mp_formatter << ((DSIGKeyInfoValue *) lst->item(i))->getRSAModulus());
-			rsa->loadPublicModulusBase64BigNums(value.rawCharBuffer(), strlen(value.rawCharBuffer()));
+			rsa->loadPublicModulusBase64BigNums(value.rawCharBuffer(), (unsigned int) strlen(value.rawCharBuffer()));
 			value << (*mp_formatter << ((DSIGKeyInfoValue *) lst->item(i))->getRSAExponent());
-			rsa->loadPublicExponentBase64BigNums(value.rawCharBuffer(), strlen(value.rawCharBuffer()));
+			rsa->loadPublicExponentBase64BigNums(value.rawCharBuffer(), (unsigned int) strlen(value.rawCharBuffer()));
 
 			j_rsa.release();
 			return rsa;

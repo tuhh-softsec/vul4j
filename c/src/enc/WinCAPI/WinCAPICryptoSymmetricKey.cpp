@@ -346,7 +346,7 @@ void WinCAPICryptoSymmetricKey::encryptCtxInit(const unsigned char * iv) {
 
 	// Set up the context according to the required cipher type
 
-	const unsigned char * usedIV;
+	const unsigned char * usedIV = NULL;
 	unsigned char genIV[256];
 	DWORD cryptMode;
 
@@ -437,7 +437,8 @@ void WinCAPICryptoSymmetricKey::encryptCtxInit(const unsigned char * iv) {
 
 	}
 
-	memcpy(m_lastBlock, usedIV, m_ivSize);
+	if (usedIV != NULL && m_ivSize > 0)
+		memcpy(m_lastBlock, usedIV, m_ivSize);
 
 
 }

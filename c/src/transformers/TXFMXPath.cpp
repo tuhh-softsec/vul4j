@@ -32,8 +32,16 @@
 
 #ifndef XSEC_NO_XALAN
 
+#if defined(_MSC_VER)
+#	pragma warning(disable: 4267)
+#endif
+
 #include <xalanc/XPath/XObjectFactoryDefault.hpp>
 #include <xalanc/XPath/XPathExecutionContextDefault.hpp>
+
+#if defined(_MSC_VER)
+#	pragma warning(default: 4267)
+#endif
 
 // Xalan namespace usage
 XALAN_USING_XALAN(XPathProcessorImpl)
@@ -451,7 +459,7 @@ void TXFMXPath::evaluateExpr(DOMNode *h, safeBuffer expr) {
 
 		const NodeRefListBase&	lst = xObj->nodeset();
 		
-		int size = lst.getLength();
+		int size = (int) lst.getLength();
 		const DOMNode *item;
 		
 		for (int i = 0; i < size; ++ i) {

@@ -267,7 +267,7 @@ XencInteropResolver::~XencInteropResolver() {
 
 void reverseSlash(safeBuffer &path) {
 
-	for (int i = 0; i < strlen(path.rawCharBuffer()); ++i) {
+	for (int i = 0; i < (int) strlen(path.rawCharBuffer()); ++i) {
 
 		if (path[i] == '/')
 			path[i] = '\\';
@@ -333,7 +333,7 @@ BIO * createFileBIO(const XMLCh * baseURI, const char * name) {
 
 XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
-	int lstSize = lst->getSize();
+	int lstSize = (int) lst->getSize();
 
 	for (int i = 0; i < lstSize; ++i) {
 
@@ -351,7 +351,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				XSECCryptoSymmetricKey * k = 
 					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
 				try {
-					k->setKey((unsigned char *) s_bobKey, strlen(s_bobKey));
+					k->setKey((unsigned char *) s_bobKey, (unsigned int) strlen(s_bobKey));
 				} catch (...) {
 					delete k;
 					throw;
@@ -362,7 +362,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				XSECCryptoSymmetricKey * k = 
 					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
 				try {
-					k->setKey((unsigned char *) s_jobKey, strlen(s_jobKey));
+					k->setKey((unsigned char *) s_jobKey, (unsigned int) strlen(s_jobKey));
 				} catch(...) {
 					delete k;
 					throw;
@@ -373,7 +373,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				XSECCryptoSymmetricKey * k = 
 					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
 				try {
-					k->setKey((unsigned char *) s_jebKey, strlen(s_jebKey));
+					k->setKey((unsigned char *) s_jebKey, (unsigned int) strlen(s_jebKey));
 				} catch(...) {
 					delete k;
 					throw;
@@ -384,7 +384,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				XSECCryptoSymmetricKey * k = 
 					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
 				try {
-					k->setKey((unsigned char *) s_jedKey, strlen(s_jedKey));
+					k->setKey((unsigned char *) s_jedKey, (unsigned int) strlen(s_jedKey));
 				} catch(...) {
 					delete k;
 					throw;

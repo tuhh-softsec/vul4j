@@ -174,7 +174,7 @@ unsigned short XSECBinHTTPURIInputStream::htons(unsigned short hostshort)
 
 unsigned short XSECBinHTTPURIInputStream::socket(int af,int type,int protocol)
 {
-	return (*gWSsocket)(af,type,protocol);
+	return (unsigned short) (*gWSsocket)(af,type,protocol);
 }
 
 int XSECBinHTTPURIInputStream::connect(unsigned short s,const sockaddr* name,int namelen)
@@ -273,7 +273,7 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
 							"Error reported creating socket");
     }
 
-    if (connect(s, (struct sockaddr *) &sa, sizeof(sa)) == SOCKET_ERROR)
+    if (connect((unsigned short) s, (struct sockaddr *) &sa, sizeof(sa)) == SOCKET_ERROR)
     {
         // Call WSAGetLastError() to get the error number.
         throw XSECException(XSECException::HTTPURIInputStreamError,
@@ -313,15 +313,15 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
     if (portNumber != 80)
     {
         strcat(fBuffer, ":");
-        int i = strlen(fBuffer);
+        int i = (int) strlen(fBuffer);
         _itoa(portNumber, fBuffer+i, 10);
     }
     strcat(fBuffer, "\r\n\r\n");
 
     // Send the http request
-    int lent = strlen(fBuffer);
+    int lent = (int) strlen(fBuffer);
     int  aLent = 0;
-    if ((aLent = send(s, fBuffer, lent, 0)) != lent)
+    if ((aLent = send((unsigned short) s, fBuffer, lent, 0)) != lent)
     {
         // Call WSAGetLastError() to get the error number.
         throw XSECException(XSECException::HTTPURIInputStreamError,
@@ -333,7 +333,7 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
     // get the response, check the http header for errors from the server.
     //
     memset(fBuffer, 0, sizeof(fBuffer));
-    aLent = recv(s, fBuffer, sizeof(fBuffer)-1, 0);
+    aLent = recv((unsigned short) s, fBuffer, sizeof(fBuffer)-1, 0);
     if (aLent == SOCKET_ERROR || aLent == 0)
     {
         // Call WSAGetLastError() to get the error number.
@@ -369,7 +369,7 @@ unsigned int XSECBinHTTPURIInputStream::getSocketHandle(const XMLUri&  urlSource
             {
                 //
                 // Header is not yet read, do another recv() to get more data...
-                aLent = recv(s, fBufferEnd, (sizeof(fBuffer) - 1) - (fBufferEnd - fBuffer), 0);
+                aLent = recv((unsigned short) s, fBufferEnd, (sizeof(fBuffer) - 1) - (fBufferEnd - fBuffer), 0);
                 if (aLent == SOCKET_ERROR || aLent == 0)
                 {
                     // Call WSAGetLastError() to get the error number.
@@ -488,7 +488,7 @@ XSECBinHTTPURIInputStream::~XSECBinHTTPURIInputStream()
 unsigned int XSECBinHTTPURIInputStream::readBytes(XMLByte* const    toFill
                                     , const unsigned int    maxToRead)
 {
-    unsigned int len = fBufferEnd - fBufferPos;
+    unsigned int len = (unsigned int) (fBufferEnd - fBufferPos);
     if (len > 0)
     {
         // If there's any data left over in the buffer into which we first
@@ -503,7 +503,7 @@ unsigned int XSECBinHTTPURIInputStream::readBytes(XMLByte* const    toFill
         // There was no data in the local buffer.
         // Read some from the socket, straight into our caller's buffer.
         //
-        len = recv((SOCKET) fSocketHandle, (char *) toFill, maxToRead, 0);
+        len = recv(fSocketHandle, (char *) toFill, maxToRead, 0);
         if (len == SOCKET_ERROR)
         {
             // Call WSAGetLastError() to get the error number.

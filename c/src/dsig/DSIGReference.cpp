@@ -835,7 +835,7 @@ void DSIGReference::hashReferenceList(DSIGReferenceList *lst, bool interlocking)
 // Run through a list of hashes and checkHash for each one
 
 	DSIGReference * r;
-	int i = lst->getSize();
+	int i = (int) lst->getSize();
 	safeBuffer errStr;
 	errStr.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
 
@@ -877,7 +877,7 @@ bool DSIGReference::verifyReferenceList(DSIGReferenceList * lst, safeBuffer &err
 	DSIGReference * r;
 	bool res = true;
 
-	int size = lst->getSize();
+	int size = (int) lst->getSize();
 
 	for (int i = 0; i < size; ++i) {
 

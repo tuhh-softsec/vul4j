@@ -234,7 +234,7 @@ bool XSECEnv::getIdByAttributeName(void) const {
 
 bool XSECEnv::isRegisteredIdAttributeName(const XMLCh * name) const {
 
-	int sz = m_idAttributeNameList.size();
+	int sz = (int) m_idAttributeNameList.size();
 
 	for (int i = 0; i < sz; ++i) {
 		if (strEquals(m_idAttributeNameList[i], name))
@@ -273,13 +273,13 @@ bool XSECEnv::deregisterIdAttributeName(const XMLCh * name) {
 
 int XSECEnv::getIdAttributeNameListSize() const {
 
-	return m_idAttributeNameList.size();
+	return (int) m_idAttributeNameList.size();
 
 }
 
 const XMLCh * XSECEnv::getIdAttributeNameListItem(int index) const {
 
-	if (index >= 0 && index < m_idAttributeNameList.size())
+	if (index >= 0 && index < (int) m_idAttributeNameList.size())
 		return m_idAttributeNameList[index];
 
 	return NULL;

@@ -332,7 +332,7 @@ XSECCryptoKeyHMAC * createHMACKey(const unsigned char * str) {
 #	endif
 #endif
 
-	hmacKey->setKey((unsigned char *) str, strlen((char *)str));
+	hmacKey->setKey((unsigned char *) str, (unsigned int) strlen((char *)str));
 
 	return hmacKey;
 
@@ -722,7 +722,11 @@ void unitTestSignature(DOMImplementation * impl) {
 
 	// Test an enveloping signature
 	unitTestEnvelopingSignature(impl);
+#ifndef XSEC_NO_XALAN
 	unitTestBase64NodeSignature(impl);
+#else
+	cerr << "Skipping base64 node test (Requires XPath)" << endl;
+#endif
 }
 
 // --------------------------------------------------------------------------------
@@ -1001,7 +1005,7 @@ count(ancestor-or-self::dsig:Signature)");
 		 */
 
 		DSIGKeyInfoList * kil = sig->getKeyInfoList();
-		int nki = kil->getSize();
+		int nki = (int) kil->getSize();
 
 		cerr << "Checking Distinguished name is decoded correctly ... ";
 		for (i = 0; i < nki; ++i) {
@@ -1334,7 +1338,7 @@ void unitTestKeyEncrypt(DOMImplementation *impl, XSECCryptoKey * k, encryptionMe
 		cipher->setKEK(k);
 
 		XENCEncryptedKey * encryptedKey;
-		encryptedKey = cipher->encryptKey(toEncryptStr, strlen((char *) toEncryptStr), em);
+		encryptedKey = cipher->encryptKey(toEncryptStr, (unsigned int) strlen((char *) toEncryptStr), em);
 		Janitor<XENCEncryptedKey> j_encryptedKey(encryptedKey);
 
 		rootElem->appendChild(encryptedKey->getElement());
@@ -1427,7 +1431,7 @@ void unitTestEncrypt(DOMImplementation *impl) {
 
 		cerr << "RSA OAEP key wrap + params... ";
 		k = new OpenSSLCryptoKeyRSA(pk);
-		k->setOAEPparams(s_tstOAEPparams, strlen((char *) s_tstOAEPparams));
+		k->setOAEPparams(s_tstOAEPparams, (unsigned int) strlen((char *) s_tstOAEPparams));
 
 		unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_OAEP_MGFP1);
 
@@ -1533,7 +1537,7 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		cerr << "Unit testing 3DES CBC encryption" << endl;
 		unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_3DES_CBC, false);
 		unitTestElementContentEncrypt(impl, ks, ENCRYPT_3DES_CBC, true);
-
+#ifndef XSEC_NO_XALAN
 		if (g_haveAES) {
 			cerr << "Unit testing CipherReference creation and decryption" << endl;
 			unitTestCipherReference(impl);
@@ -1541,6 +1545,9 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		else {
 			cerr << "Skipped Cipher Reference Test (uses AES)" << endl;
 		}
+#else
+		cerr << "Skipped Cipher Reference Test (requires XPath)" << endl;
+#endif
 
 	}
 	catch (XSECCryptoException &e)
@@ -1716,7 +1723,7 @@ void testEncrypt(DOMImplementation *impl) {
 		}
 
 		DSIGKeyInfoList * kil = encryptedData->getKeyInfoList();
-		int nki = kil->getSize();
+		int nki = (int) kil->getSize();
 		bool foundNameOK = false;
 
 		int i;

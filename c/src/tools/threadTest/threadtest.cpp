@@ -249,7 +249,7 @@ DWORD WINAPI doSignThread (LPVOID Param) {
 #else
 		WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC(0);
 #endif
-		hmacKey->setKey((unsigned char *) "secret", strlen("secret"));
+		hmacKey->setKey((unsigned char *) "secret", (unsigned int) strlen("secret"));
 		sig->setSigningKey(hmacKey);
 		sig->sign();
 
@@ -331,7 +331,8 @@ DWORD WINAPI doVerifyThread (LPVOID Param) {
 
 		// Now parse and validate the signature
 		MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) buf, 
-															strlen(buf), "XSECMem");
+															(unsigned int) strlen(buf), 
+															"XSECMem");
 
 		parser->parse(*memIS);
 
@@ -363,7 +364,7 @@ DWORD WINAPI doVerifyThread (LPVOID Param) {
 		WinCAPICryptoKeyHMAC *hmacKey = new WinCAPICryptoKeyHMAC(0);
 #endif
 
-		hmacKey->setKey((unsigned char *) secretKey, strlen(secretKey));
+		hmacKey->setKey((unsigned char *) secretKey, (unsigned int) strlen(secretKey));
 		sig->setSigningKey(hmacKey);
 		sig->load();
 		if (sig->verify() != true) {
@@ -470,7 +471,7 @@ DWORD WINAPI doOutputThread (LPVOID Param) {
 		cerr << "Ops/Sec: " << total - lastVerifyTotal << endl << endl;
 		lastVerifyTotal = total;
 		cerr << "Total Errors : " << g_errors << endl;
-		cerr << "Buffers in Queue : " << g_toVerifyQueue.size() << endl;
+		cerr << "Buffers in Queue : " << (unsigned int) g_toVerifyQueue.size() << endl;
 		
 		// Go to sleep for a second
 
@@ -574,7 +575,7 @@ void runThreads(DOMImplementation * impl, int nThreads) {
 
 	hThreads.push_back(h2Thread);
 
-	WaitForMultipleObjects(hThreads.size(), &hThreads[0], TRUE, INFINITE);
+	WaitForMultipleObjects((DWORD) hThreads.size(), &hThreads[0], TRUE, INFINITE);
 
 	for (i = 0; i < nThreads; ++i)
 	{

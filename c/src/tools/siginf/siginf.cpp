@@ -275,7 +275,7 @@ void outputTransform(DSIGTransform * t, int level) {
 		
 void outputReferences(DSIGReferenceList *rl, int level) {
 
-	int s = rl->getSize();
+	int s = (int) rl->getSize();
 
 	for (int i = 0; i < s; ++i) {
 	
@@ -292,7 +292,7 @@ void outputReferences(DSIGReferenceList *rl, int level) {
 		DSIGTransformList * tl = rl->item(i)->getTransforms();
 		if (tl != NULL) {
 
-			int tlSize = tl->getSize();
+			int tlSize = (int) tl->getSize();
 			for (int j = 0 ; j < tlSize; ++j) {
 
 				levelSet(level+1);
@@ -604,7 +604,7 @@ int main(int argc, char **argv) {
 
 	if ( _CrtMemDifference( &s3, &s1, &s2 ) && s3.lCounts[1] > 1) {
 
-		std::cerr << "Total count = " << s3.lTotalCount << endl;
+		std::cerr << "Total count = " << (unsigned int) s3.lTotalCount << endl;
 
 		// Send all reports to STDOUT
 		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE );

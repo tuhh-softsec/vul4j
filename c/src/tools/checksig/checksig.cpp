@@ -244,7 +244,7 @@ int evaluate(int argc, char ** argv) {
 				fResult = CryptHashData(
 					h,
 					(unsigned char *) argv[paramCount],
-					strlen(argv[paramCount]),
+					(DWORD) strlen(argv[paramCount]),
 					0);
 				
 				if (fResult == 0) {
@@ -466,7 +466,7 @@ int evaluate(int argc, char ** argv) {
 			hmacKey = new WinCAPICryptoKeyHMAC(0);
 #	endif
 #endif
-			hmacKey->setKey((unsigned char *) hmacKeyStr, strlen(hmacKeyStr));
+			hmacKey->setKey((unsigned char *) hmacKeyStr, (unsigned int) strlen(hmacKeyStr));
 			sig->setSigningKey(hmacKey);
 
 		}

@@ -352,7 +352,7 @@ XSECCryptoKey * XENCCipherImpl::decryptKeyFromKeyInfoList(DSIGKeyInfoList * kil)
 	XSECCryptoKey * ret = NULL;
 	XSECAlgorithmHandler *handler;
 
-	int kLen = kil->getSize();
+	int kLen = (int) kil->getSize();
 
 	for (int i = 0; ret == NULL && i < kLen ; ++ i) {
 
@@ -666,7 +666,7 @@ int XENCCipherImpl::decryptKey(XENCEncryptedKey * encryptedKey, XMLByte * rawKey
 
 	}
 
-	keySize = (keySize < maxKeySize ? keySize : maxKeySize);
+	keySize = (keySize < (unsigned int) maxKeySize ? keySize : (unsigned int) maxKeySize);
 	memcpy(rawKey, sb.rawBuffer(), keySize);
 
 	return keySize;

@@ -38,6 +38,10 @@ XERCES_CPP_NAMESPACE_USE
 
 #ifndef XSEC_NO_XALAN
 
+#if defined(_MSC_VER)
+#	pragma warning(disable: 4267)
+#endif
+
 #include <xalanc/XalanDOM/XalanDocument.hpp>
 #include <xalanc/XalanDOM/XalanDOMString.hpp>
 #include <xalanc/XercesParserLiaison/XercesDocumentWrapper.hpp>
@@ -53,6 +57,10 @@ XERCES_CPP_NAMESPACE_USE
 #include <xalanc/XPath/XObjectFactoryDefault.hpp>
 #include <xalanc/XPath/XPathExecutionContextDefault.hpp>
 #include <xalanc/XSLT/XSLTResultTarget.hpp>
+
+#if defined(_MSC_VER)
+#	pragma warning(default: 4267)
+#endif
 
 // Xalan namespace usage
 XALAN_USING_XALAN(XPathProcessorImpl)
@@ -283,7 +291,7 @@ XSECXPathNodeList * TXFMXPathFilter::evaluateSingleExpr(DSIGXPathFilterExpr *exp
 
 		const NodeRefListBase&	lst = xObj->nodeset();
 		
-		int size = lst.getLength();
+		int size = (int) lst.getLength();
 		const DOMNode *item;
 		
 		XSECXPathNodeList * ret;

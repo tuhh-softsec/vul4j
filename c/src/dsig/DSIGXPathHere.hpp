@@ -29,6 +29,10 @@
 
 #ifndef XSEC_NO_XALAN
 
+#if defined(_MSC_VER)
+#	pragma warning(disable: 4267)
+#endif
+
 #include <xalanc/Include/PlatformDefinitions.hpp>
 #include <xalanc/XalanTransformer/XalanTransformer.hpp>
 #include <xalanc/XPath/XObjectFactory.hpp>
@@ -39,6 +43,10 @@
 #include <xalanc/XPath/XObjectTypeCallback.hpp>
 #include <xalanc/XPath/MutableNodeRefList.hpp>
 #include <xalanc/XPath/NodeRefListBase.hpp>
+
+#if defined(_MSC_VER)
+#	pragma warning(default: 4267)
+#endif
 
 // Namespace usage
 
