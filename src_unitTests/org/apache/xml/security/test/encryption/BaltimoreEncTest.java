@@ -16,9 +16,7 @@
  */
 package org.apache.xml.security.test.encryption;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -49,10 +47,6 @@ import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xml.serialize.DOMSerializer;
-import org.apache.xml.serialize.Method;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -122,16 +116,9 @@ public class BaltimoreEncTest extends TestCase {
 	}
 	
 	/**
-	 * Method main
-	 *
-	 * @param args
+	 * Method setUp
 	 */
-	
 	protected void setUp() throws Exception {
-		
-		String[] testCaseName = { "-noloading",
-								  BaltimoreEncTest.class.getName() };
-	
 		// Create the comparison strings
 	
 		DocumentBuilderFactory dbf =
@@ -710,47 +697,4 @@ public class BaltimoreEncTest extends TestCase {
 		return count;
 
 	}
-
-    private static void dump(Document document) {
-        OutputFormat of = new OutputFormat();
-        of.setIndenting(true);
-        of.setMethod(Method.XML);
-        of.setOmitDocumentType(true);
-        of.setOmitXMLDeclaration(true);
-        DOMSerializer serializer = new XMLSerializer(System.out, of);
-        try {
-            serializer.serialize(document);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
-
-    private static String toString(Element element) {
-        OutputFormat of = new OutputFormat();
-        of.setIndenting(true);
-        of.setMethod(Method.XML);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DOMSerializer serializer = new XMLSerializer(baos, of);
-        try {
-            serializer.serialize(element);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return (baos.toString());
-    }
-
-    private static String toString(Document document) {
-        OutputFormat of = new OutputFormat();
-        of.setIndenting(true);
-        of.setMethod(Method.XML);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DOMSerializer serializer = new XMLSerializer(baos, of);
-        try {
-            serializer.serialize(document);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return (baos.toString());
-    }
-
 }

@@ -17,11 +17,7 @@
 package org.apache.xml.security.test.encryption;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.KeyPairGenerator;
 import java.security.KeyPair;
@@ -51,12 +47,7 @@ import org.apache.xml.security.encryption.EncryptionMethod;
 import org.apache.xml.security.encryption.CipherData;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.IdResolver;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.serialize.DOMSerializer;
-import org.apache.xml.serialize.Method;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -670,67 +661,6 @@ public class XMLCipherTester extends TestCase {
 
 	}
 
-    private void dump(Element element) {
-        OutputFormat of = new OutputFormat();
-        of.setIndenting(true);
-        of.setMethod(Method.XML);
-        of.setOmitDocumentType(true);
-        of.setOmitXMLDeclaration(true);
-        DOMSerializer serializer = new XMLSerializer(System.out, of);
-        try {
-            serializer.serialize(element);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
-
-    private void dump(Document document) {
-        OutputFormat of = new OutputFormat();
-        of.setIndenting(true);
-        of.setMethod(Method.XML);
-        of.setOmitDocumentType(true);
-        of.setOmitXMLDeclaration(true);
-        DOMSerializer serializer = new XMLSerializer(System.out, of);
-        try {
-            serializer.serialize(document);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
-
-	/*
-    private String toString(Element element) 
-		           throws UnsupportedEncodingException {
-        OutputFormat of = new OutputFormat();
-        of.setIndenting(true);
-        of.setEncoding("UTF-8");
-        of.setMethod(Method.XML);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DOMSerializer serializer = new XMLSerializer(baos, of);
-        try {
-            serializer.serialize(element);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return (baos.toString("UTF-8"));
-    }
-    private String toString(Document document) 
-	               throws  UnsupportedEncodingException {
-        OutputFormat of = new OutputFormat();
-        of.setIndenting(true);
-		of.setEncoding("UTF-8");
-        of.setMethod(Method.XML);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DOMSerializer serializer = new XMLSerializer(baos, of);
-        try {
-            serializer.serialize(document);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return (baos.toString("UTF-8"));
-    }
-	*/
-
 	private String toString (Node n)
 		throws Exception {
 
@@ -746,20 +676,6 @@ public class XMLCipherTester extends TestCase {
 
 	}
 		
-    private void toString(Document document, String outputFile) 
-	               throws  UnsupportedEncodingException , FileNotFoundException {
-        OutputFormat of = new OutputFormat();
-        of.setIndenting(true);
-		of.setEncoding("UTF-8");
-        of.setMethod(Method.XML);
-        FileOutputStream baos = new FileOutputStream(outputFile);
-        DOMSerializer serializer = new XMLSerializer(baos, of);
-        try {
-            serializer.serialize(document);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
    static {
       org.apache.xml.security.Init.init();
    }
