@@ -1,7 +1,7 @@
-/*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterRuleParser.java,v 1.19 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.19 $
- * $Date: 2003/10/09 21:09:48 $
+  /*
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterRuleParser.java,v 1.20 2003/10/23 20:06:09 rdonkin Exp $
+ * $Revision: 1.20 $
+ * $Date: 2003/10/23 20:06:09 $
  *
  * ====================================================================
  * 
@@ -72,7 +72,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.commons.beanutils.ConvertUtils;
+
 import org.apache.commons.collections.ArrayStack;
+
 import org.apache.commons.digester.AbstractObjectCreationFactory;
 import org.apache.commons.digester.BeanPropertySetterRule;
 import org.apache.commons.digester.CallMethodRule;
@@ -87,6 +90,8 @@ import org.apache.commons.digester.SetNextRule;
 import org.apache.commons.digester.SetPropertiesRule;
 import org.apache.commons.digester.SetPropertyRule;
 import org.apache.commons.digester.SetTopRule;
+import org.apache.commons.digester.ObjectParamRule;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -248,6 +253,10 @@ public class DigesterRuleParser extends RuleSetBase {
         digester.addFactoryCreate("*/call-method-rule", new CallMethodRuleFactory());
         digester.addRule("*/call-method-rule", new PatternRule("pattern"));
         digester.addSetNext("*/call-method-rule", "add", ruleClassName);
+
+        digester.addFactoryCreate("*/object-param-rule", new ObjectParamRuleFactory());
+        digester.addRule("*/object-param-rule", new PatternRule("pattern"));
+        digester.addSetNext("*/object-param-rule", "add", ruleClassName);
         
         digester.addFactoryCreate("*/call-param-rule", new CallParamRuleFactory());
         digester.addRule("*/call-param-rule", new PatternRule("pattern"));
@@ -602,6 +611,43 @@ public class DigesterRuleParser extends RuleSetBase {
             return callParamRule;
         }
     }
+    
+    /**
+     * Factory for creating a ObjectParamRule
+     */
+    protected class ObjectParamRuleFactory extends AbstractObjectCreationFactory {
+        public Object createObject(Attributes attributes) throws Exception {
+            // create callparamrule
+            int paramIndex = Integer.parseInt(attributes.getValue("paramnumber"));
+            String attributeName = attributes.getValue("attrname");
+            String type = attributes.getValue("type");
+            String value = attributes.getValue("value");
+
+            Rule objectParamRule = null;
+
+            // type name is requried
+            if (type == null) {
+                throw new RuntimeException("Attribute 'type' is required.");
+            }
+
+            // create object instance
+            Object param = null;
+            Class clazz = Class.forName(type);
+            if (value == null) {
+                param = clazz.newInstance();
+            } else {
+                param = ConvertUtils.convert(value, clazz);
+            }
+
+            if (attributeName == null) {
+                objectParamRule = new ObjectParamRule(paramIndex, param);
+            } else {
+                objectParamRule = new ObjectParamRule(paramIndex, attributeName, param);
+            }
+            return objectParamRule;
+        }
+     }
+
     
     /**
      * Factory for creating a FactoryCreateRule

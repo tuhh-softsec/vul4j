@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/xmlrules/DigesterLoaderTestSuite.java,v 1.5 2003/10/09 21:09:50 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2003/10/09 21:09:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/xmlrules/DigesterLoaderTestSuite.java,v 1.6 2003/10/23 20:07:02 rdonkin Exp $
+ * $Revision: 1.6 $
+ * $Date: 2003/10/23 20:07:02 $
  *
  * ====================================================================
  * 
@@ -87,6 +87,7 @@ public class DigesterLoaderTestSuite extends TestCase {
         TestSuite suite = new TestSuite();
         suite.addTestSuite(DigesterLoaderTest.class);
         suite.addTestSuite(DigesterPatternStackTest.class);
+        suite.addTestSuite(DigesterLoaderRulesTest.class);
 
         return suite;
     }

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/xmlrules/CallParamTestObject.java,v 1.5 2003/10/23 20:07:02 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2003/10/23 20:07:02 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/xmlrules/DigesterLoaderRulesTest.java,v 1.1 2003/10/23 20:06:43 rdonkin Exp $
+ * $Revision: 1.1 $
+ * $Date: 2003/10/23 20:06:43 $
  *
  * ====================================================================
  * 
@@ -58,49 +58,64 @@
  * <http://www.apache.org/>.
  *
  */ 
-
 package org.apache.commons.digester.xmlrules;
 
+import java.io.StringReader;
 
+import junit.framework.TestCase;
+
+import org.xml.sax.InputSource;
+
+import org.apache.commons.digester.Digester;
 
 /**
- * Object for use with testing call param rules.
+ * Tests for digester loader rule implementations,
  *
  * @author Robert Burrell Donkin
  */
-public class CallParamTestObject {
-    
-    private String left = "UNSET";
-    private String right = "UNSET";
-    private String middle = "UNSET";
-    
-    public void triple(String left, String middle, String right) {
-        this.left = left;
-        this.right = right;
-        this.middle = middle;
-    }
-   
-    public void duo(String left, String right) {
-        this.left = left;
-        this.right = right;
-    }
-      
-    public String getLeft() {
-        return left;
-    }
-    
-    public String getRight() {
-        return right;
-    }
-    
-    public String getMiddle() {
-        return middle;
-    }
 
+public class DigesterLoaderRulesTest extends TestCase {
 
-
+    public DigesterLoaderRulesTest(java.lang.String testName) {
+        super(testName);
+    }
     
-    public String toString() {
-        return "LEFT: " + left + " MIDDLE:" + middle + " RIGHT:" + right;
+    /** Basic test for object param rule */
+    public void testObjectParamRule() throws Exception {
+        String xmlRules = 
+            "<?xml version='1.0'?>" +
+            "<digester-rules>" + 
+            "  <pattern value='root'>" +
+            "     <pattern value='foo'>" +
+            "        <call-method-rule " +
+            "                methodname='duo' " +
+            "                paramcount='2' " +
+            "                paramtypes='java.lang.String,java.lang.String'/>" +
+            "        <pattern value='bar'>" +
+            "           <object-param-rule paramnumber='0' type='java.lang.String' />" +
+            "        </pattern>" +
+            "        <pattern value='rab'>" +
+            "           <object-param-rule paramnumber='1' type='java.lang.String' value='tester.test' />" +
+            "        </pattern>" +
+            "     </pattern>" +
+            "   </pattern>" +
+            "</digester-rules>";
+        
+        String xml = 
+            "<?xml version='1.0'?>" + 
+            "<root>" +
+            "  <foo>" +
+            "    <bar/>" +
+            "    <rab/>" +
+            "  </foo>" +
+            "</root>";
+            
+        CallParamTestObject testObject = new CallParamTestObject();
+        Digester digester = DigesterLoader.createDigester(new InputSource(new StringReader(xmlRules)));
+        digester.push(testObject);    
+        digester.parse(new InputSource(new StringReader(xml)));
+        assertEquals("First param", "", testObject.getLeft());
+        assertEquals("Param with default set", "tester.test", testObject.getRight());
+        
     }
 }

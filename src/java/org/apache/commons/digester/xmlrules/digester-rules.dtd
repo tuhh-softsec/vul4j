@@ -3,20 +3,21 @@
 <!--
         "Digester" component of the Jakarta Commons Subproject
         DTD for the definition of Digester rules in XML.
-        $Id: digester-rules.dtd,v 1.9 2003/07/07 20:52:12 rdonkin Exp $
+        $Id: digester-rules.dtd,v 1.10 2003/10/23 20:06:09 rdonkin Exp $
 -->
 
 <!-- This document type defines an XML format for defining Digester rules.
      Digester is a framework for pattern-matching-based parsing of XML into
      Java objects. See http://jakarta.apache.org/commons/digester.html.  -->
 
-<!ENTITY % rule-elements "bean-property-setter-rule | call-method-rule | call-param-rule |
+<!ENTITY % rule-elements "bean-property-setter-rule | call-method-rule |
+                   call-param-rule | object-param-rule |
                    factory-create-rule | object-create-rule |
                    set-properties-rule | set-property-rule | set-top-rule |
                    set-next-rule" >
 
 <!-- digester-rules is the root element. -->
-<!ELEMENT digester-rules (pattern | include | bean-property-setter-rule | call-method-rule | call-param-rule | factory-create-rule | object-create-rule | set-properties-rule | set-property-rule | set-top-rule | set-next-rule )*>
+<!ELEMENT digester-rules (pattern | include | bean-property-setter-rule | call-method-rule | call-param-rule |  object-param-rule | factory-create-rule | object-create-rule | set-properties-rule | set-property-rule | set-top-rule | set-next-rule )*>
 
 
 <!-- <pattern> defines a matching pattern, or part of a matching pattern. Any
@@ -91,6 +92,28 @@
     paramnumber CDATA #REQUIRED
     attrname CDATA #IMPLIED
     from-stack CDATA #IMPLIED>
+    
+<!--
+    ObjectParamRule
+    attrname  
+           - an arbitrary Object defined programatically, assigned if the 
+             element pattern AND specified attribute name are matched
+    param 
+           - an arbitrary Object defined programatically, assigned when the 
+             element pattern associated with the Rule is matched
+    type 
+           - class name for object
+    value 
+           - initial value for the object
+    -->
+<!ELEMENT object-param-rule EMPTY>
+<!ATTLIST object-param-rule
+    pattern  CDATA #IMPLIED
+    paramnumber CDATA #REQUIRED
+    param CDATA #REQUIRED
+    attrname CDATA #IMPLIED
+    type CDATA #REQUIRED
+    value CDATA #IMPLIED>
 
 <!-- 
     FactoryCreateRule 
