@@ -114,7 +114,7 @@ public:
 	virtual const XMLCh * getFragmentId();
 	
 private:
-	TXFMSHA1();
+	TXFMMD5();
 };
 
 
