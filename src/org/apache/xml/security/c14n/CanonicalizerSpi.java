@@ -89,13 +89,13 @@ public abstract class CanonicalizerSpi {
       org.apache.log4j.Category.getInstance(CanonicalizerSpi.class.getName());
 
    /** Field BEFORE_DOCUMENT_ELEM */
-   protected static final short BEFORE_DOCUMENT_ELEM = 0;
+   public static final short BEFORE_DOCUMENT_ELEM = 0;
 
    /** Field INSIDE_DOCUMENT_ELEM */
-   protected static final short INSIDE_DOCUMENT_ELEM = 1;
+   public static final short INSIDE_DOCUMENT_ELEM = 1;
 
    /** Field AFTER_DOCUMENT_ELEM */
-   protected static final short AFTER_DOCUMENT_ELEM = 2;
+   public static final short AFTER_DOCUMENT_ELEM = 2;
 
    /** Field implementedTransformURI */
    protected String implementedTransformURI = null;
