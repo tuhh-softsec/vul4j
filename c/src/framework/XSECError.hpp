@@ -46,17 +46,27 @@ extern const char * XSECExceptionStrings [];
 
 /** @} */
 
-#if defined (_WIN32) && defined (_DEBUG)
+#if defined (_WIN32) && defined (_DEBUG) && defined (_XSEC_DO_MEMDEBUG_OLD)
 
 #	define XSECnew( a, b ) \
-	if (( a = DEBUG_NEW b ) == NULL) { \
+	try {
+		if (( a = DEBUG_NEW b ) == NULL) { \
+			throw XSECException (XSECException::MemoryAllocationFail); \
+		}
+	} \
+	catch (...) { \
 		throw XSECException (XSECException::MemoryAllocationFail); \
 	}
 
 #else 
 
 #	define XSECnew(a, b) \
-	if ((a = new b) == NULL) { \
+	try {\
+		if ((a = new b) == NULL) { \
+			throw XSECException (XSECException::MemoryAllocationFail); \
+		} \
+	} \
+	catch (...) { \
 		throw XSECException (XSECException::MemoryAllocationFail); \
 	}
 #endif

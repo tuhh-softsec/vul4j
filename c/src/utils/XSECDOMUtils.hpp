@@ -161,7 +161,7 @@ bool strEquals (const char * str1, const XMLCh * str2) {
 	if (str1XMLCh != NULL) {
 
 		ret = (XMLString::compareString(str1XMLCh, str2) == 0);
-		delete str1XMLCh;
+		XSEC_RELEASE_XMLCH(str1XMLCh);
 
 	}
 	else
@@ -180,7 +180,7 @@ bool strEquals (const XMLCh * str1, const char * str2) {
 	if (str2XMLCh != NULL) {
 
 		ret = (XMLString::compareString(str1, str2XMLCh) == 0);
-		delete [] str2XMLCh;
+		XSEC_RELEASE_XMLCH(str2XMLCh);
 
 	}
 	else

@@ -2150,7 +2150,7 @@ int main(int argc, char **argv) {
 	}
 
 
-#if defined (_DEBUG) && defined (_MSC_VER)
+#if defined (_DEBUG) && defined (_MSC_VER) && defined (_XSEC_DO_MEMDEBUG)
 
 	// Do some memory debugging under Visual C++
 
@@ -2272,7 +2272,7 @@ int main(int argc, char **argv) {
 #endif
 	XMLPlatformUtils::Terminate();
 
-#if defined (_DEBUG) && defined (_MSC_VER)
+#if defined (_DEBUG) && defined (_MSC_VER) && defined (_XSEC_DO_MEMDEBUG)
 
 	_CrtMemCheckpoint( &s2 );
 

@@ -15,17 +15,17 @@
 			OutputDirectory="../../../../Build/Win32/VC7/Debug"
 			IntermediateDirectory="../../../../Build/Win32/VC7/Debug/obj"
 			ConfigurationType="2"
-			UseOfMFC="2"
+			UseOfMFC="0"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../../../include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG"
+				PreprocessorDefinitions="_XSEC_DO_MEMDEBUG;WIN32;_DEBUG;_WINDOWS;_USRDLL;XSEC_LIB_EXPORTS;PROJ_CANON;PROJ_DSIG"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				RuntimeTypeInfo="TRUE"
+				RuntimeTypeInfo="FALSE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"
@@ -35,7 +35,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib crypt32.lib libeay32.lib"
+				AdditionalDependencies="xerces-c_2D.lib Xalan-C_1D.lib crypt32.lib libeay32.lib "
 				OutputFile="$(OutDir)/xsec_1_1_0D.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -80,7 +80,7 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
-				RuntimeTypeInfo="TRUE"
+				RuntimeTypeInfo="FALSE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"

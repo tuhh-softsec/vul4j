@@ -30,25 +30,24 @@
 #ifndef XSECDEFS_HEADER
 #define XSECDEFS_HEADER
 
-// Include the generated include file
-
-#if defined (_WIN32)
-#	if defined (_DEBUG)
-#		include <afx.h>
-#		include <crtdbg.h>
-#	else
-#		define WIN32_LEAN_AND_MEAN
-#		include <windows.h>
-#	endif
-#	include <xsec/framework/XSECW32Config.hpp>
-#else
-#	include <xsec/framework/XSECConfig.hpp>
-#endif
-
 // General includes
 
 #include <assert.h>
 #include <stdlib.h>
+
+// Include the generated include file
+
+#if defined (_WIN32)
+#	include <xsec/framework/XSECW32Config.hpp>
+#	if defined (_DEBUG) && defined (_XSEC_DO_MEMDEBUG)
+#		define _CRTDBG_MAP_ALLOC
+#		include <crtdbg.h>
+#	endif
+#	define WIN32_LEAN_AND_MEAN
+#	include <windows.h>
+#else
+#	include <xsec/framework/XSECConfig.hpp>
+#endif
 
 // Xalan
 
