@@ -1,0 +1,35 @@
+$Id: RELEASE-NOTES.txt,v 1.1 2002/01/12 22:43:05 sanders Exp $
+
+                          Commons Digester Package
+                                Version 1.2
+                               Release Notes
+
+
+INTRODUCTION:
+
+This document contains the release notes for this version of the Commons
+Digester package, and highlights changes since the previous version.  The
+current release adds new features and bug fixes, and is being done now to
+follow the release early/release often mentality.
+
+
+NEW FEATURES:
+
+* XMLRules.  Allows a Digester user to define Digester Rules in xml, and then
+  load them at runtime.
+
+* Logging.  Digester has been updated to use the Commons logging package.  This
+  will allow the Digester user to plug in their logging system.  Check out the
+  Commons logging package for more information.
+
+
+BUG FIXES:
+
+* XMLRules.  Allows a Digester user to define Digester Rules in xml, and then
+  load them at runtime.
+
+* Rule.body() used to get a trim()'ed version of the body text.  This can affect
+  some systems adversely.  Digester's built-in Rule implementations trim()
+  internally to maintain behavior of previous releases, but rule implementors
+  should take this into account.
+
