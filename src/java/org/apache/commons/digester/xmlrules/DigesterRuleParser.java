@@ -1,4 +1,4 @@
-/* $Id: DigesterRuleParser.java,v 1.30 2004/09/09 20:38:21 rdonkin Exp $
+/* $Id: DigesterRuleParser.java,v 1.31 2005/01/12 10:47:03 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -42,6 +42,7 @@ import org.apache.commons.digester.ObjectCreateRule;
 import org.apache.commons.digester.Rule;
 import org.apache.commons.digester.RuleSetBase;
 import org.apache.commons.digester.Rules;
+import org.apache.commons.digester.SetNestedPropertiesRule;
 import org.apache.commons.digester.SetNextRule;
 import org.apache.commons.digester.SetPropertiesRule;
 import org.apache.commons.digester.SetPropertyRule;
@@ -254,6 +255,12 @@ public class DigesterRuleParser extends RuleSetBase {
         digester.addFactoryCreate("*/set-property-rule", new SetPropertyRuleFactory());
         digester.addRule("*/set-property-rule", new PatternRule("pattern"));
         digester.addSetNext("*/set-property-rule", "add", ruleClassName);
+        
+        digester.addFactoryCreate("*/set-nested-properties-rule", new SetNestedPropertiesRuleFactory());
+        digester.addRule("*/set-nested-properties-rule", new PatternRule("pattern"));
+        digester.addSetNext("*/set-nested-properties-rule", "add", ruleClassName);
+        
+        digester.addRule("*/set-nested-properties-rule/alias", new SetNestedPropertiesAliasRule());
         
         digester.addFactoryCreate("*/set-top-rule", new SetTopRuleFactory());
         digester.addRule("*/set-top-rule", new PatternRule("pattern"));
@@ -682,6 +689,19 @@ public class DigesterRuleParser extends RuleSetBase {
     }
     
     /**
+     * Factory for creating a SetNestedPropertiesRule
+     */
+    protected class SetNestedPropertiesRuleFactory extends AbstractObjectCreationFactory {
+        public Object createObject(Attributes attributes) {
+           boolean allowUnknownChildElements = 
+                "true".equalsIgnoreCase(attributes.getValue("allow-unknown-child-elements"));
+                SetNestedPropertiesRule snpr = new SetNestedPropertiesRule();
+                snpr.setAllowUnknownChildElements( allowUnknownChildElements );
+                return snpr;
+        }
+    }
+    
+    /**
      * Factory for creating a SetTopRuleFactory
      */
     protected class SetTopRuleFactory extends AbstractObjectCreationFactory {
@@ -742,6 +762,32 @@ public class DigesterRuleParser extends RuleSetBase {
             String propName = attributes.getValue("prop-name");
     
             SetPropertiesRule rule = (SetPropertiesRule) digester.peek();
+            rule.addAlias(attrName, propName);
+        }
+    }
+
+    /**
+     * A rule for adding a attribute-property alias to the custom alias mappings of
+     * the containing SetNestedPropertiesRule rule.
+     */
+    protected class SetNestedPropertiesAliasRule extends Rule {
+        
+        /**
+         * <p>Base constructor.</p>
+         */
+        public SetNestedPropertiesAliasRule() {
+            super();
+        }
+        
+        /**
+         * Add the alias to the SetNestedPropertiesRule object created by the
+         * enclosing <set-nested-properties-rule> tag.
+         */
+        public void begin(Attributes attributes) {
+            String attrName = attributes.getValue("attr-name");
+            String propName = attributes.getValue("prop-name");
+    
+            SetNestedPropertiesRule rule = (SetNestedPropertiesRule) digester.peek();
             rule.addAlias(attrName, propName);
         }
     }
