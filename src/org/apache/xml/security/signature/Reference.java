@@ -406,7 +406,7 @@ public class Reference extends SignatureElementProxy {
     * @return a XMLSignature with a byte array.
     * @throws ReferenceNotInitializedException
     *
-    * @deprecated use
+    * @deprecated use getContentsBeforeTransformation
     */
    public XMLSignatureInput getTransformsInput() throws ReferenceNotInitializedException   
 	{  
