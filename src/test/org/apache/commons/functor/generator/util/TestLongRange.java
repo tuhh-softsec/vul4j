@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestIntegerRange.java,v 1.2 2003/11/24 23:59:21 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestLongRange.java,v 1.1 2003/11/24 23:59:21 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,24 +63,24 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/24 23:59:21 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/24 23:59:21 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
-public class TestIntegerRange extends BaseFunctorTest {
+public class TestLongRange extends BaseFunctorTest {
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestIntegerRange(String name) {
+    public TestLongRange(String name) {
         super(name);
     }
 
     public static Test suite() {
-        return new TestSuite(TestIntegerRange.class);
+        return new TestSuite(TestLongRange.class);
     }
 
     protected Object makeFunctor() throws Exception {
-        return new IntegerRange(10, 20);
+        return new LongRange(10, 20);
     }
 
     // Tests
@@ -88,34 +88,34 @@ public class TestIntegerRange extends BaseFunctorTest {
 
     public void testStepChecking() {
         {
-            new IntegerRange(2, 2, 0); // step of 0 is ok when range is empty
+            new LongRange(2, 2, 0); // step of 0 is ok when range is empty
         }
         {
-            new IntegerRange(2, 2, 1); // positive step is ok when range is empty
+            new LongRange(2, 2, 1); // positive step is ok when range is empty
         }
         {
-            new IntegerRange(2, 2, -1); // negative step is ok when range is empty
+            new LongRange(2, 2, -1); // negative step is ok when range is empty
         }
         {
-            new IntegerRange(0, 1, 10); // big steps are ok
+            new LongRange(0, 1, 10); // big steps are ok
         }
         {
-            new IntegerRange(1, 0, -10); // big steps are ok
+            new LongRange(1, 0, -10); // big steps are ok
         }
         try {
-            new IntegerRange(0, 1, 0);
+            new LongRange(0, 1, 0);
             fail("Expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
             // expected 
         }  
         try {
-            new IntegerRange(0, 1, -1);
+            new LongRange(0, 1, -1);
             fail("Expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
             // expected 
         }  
         try {
-            new IntegerRange(0, -1, 1);
+            new LongRange(0, -1, 1);
             fail("Expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
             // expected 
@@ -123,44 +123,50 @@ public class TestIntegerRange extends BaseFunctorTest {
     }
 
     public void testObjectConstructor() {
-        IntegerRange range = new IntegerRange(new Integer(0), new Integer(5));
+        LongRange range = new LongRange(new Long(0), new Long(5));
         assertEquals("[0, 1, 2, 3, 4]", range.toCollection().toString());
-        range = new IntegerRange(new Integer(0), new Integer(5), new Integer(1));
+        range = new LongRange(new Integer(0), new Long(5), new Long(1));
         assertEquals("[0, 1, 2, 3, 4]", range.toCollection().toString());
     }
 
 
     public void testReverseStep() {
-        IntegerRange range = new IntegerRange(10, 0, -2);
+        LongRange range = new LongRange(10, 0, -2);
         assertEquals("[10, 8, 6, 4, 2]", range.toCollection().toString());
         assertEquals("[10, 8, 6, 4, 2]", range.toCollection().toString());
     }
 
     public void testStep() {
-        IntegerRange range = new IntegerRange(0, 10, 2);
+        LongRange range = new LongRange(0, 10, 2);
         assertEquals("[0, 2, 4, 6, 8]", range.toCollection().toString());
         assertEquals("[0, 2, 4, 6, 8]", range.toCollection().toString());
     }
 
     public void testForwardRange() {
-        IntegerRange range = new IntegerRange(0, 5);
+        LongRange range = new LongRange(0, 5);
         assertEquals("[0, 1, 2, 3, 4]", range.toCollection().toString());
         assertEquals("[0, 1, 2, 3, 4]", range.toCollection().toString());
     }
 
     public void testReverseRange() {
-        IntegerRange range = new IntegerRange(5, 0);
+        LongRange range = new LongRange(5, 0);
         assertEquals("[5, 4, 3, 2, 1]", range.toCollection().toString());
         assertEquals("[5, 4, 3, 2, 1]", range.toCollection().toString());
     }
 
+    public void testLongRange() {
+        LongRange range = new LongRange(Long.MAX_VALUE - 3L, Long.MAX_VALUE);
+        assertEquals("[9223372036854775804, 9223372036854775805, 9223372036854775806]", range.toCollection().toString());
+        assertEquals("[9223372036854775804, 9223372036854775805, 9223372036854775806]", range.toCollection().toString());
+    }
+
     public void testEquals() {
-        IntegerRange range = new IntegerRange(1, 5);
+        LongRange range = new LongRange(1, 5);
         assertObjectsAreEqual(range, range);
-        assertObjectsAreEqual(range, new IntegerRange(1, 5));
-        assertObjectsAreEqual(range, new IntegerRange(1, 5, 1));
-        assertObjectsAreEqual(range, new IntegerRange(new Long(1), new Long(5)));
-        assertObjectsAreEqual(range, new IntegerRange(new Long(1), new Long(5), new Long(1)));
+        assertObjectsAreEqual(range, new LongRange(1, 5));
+        assertObjectsAreEqual(range, new LongRange(1, 5, 1));
+        assertObjectsAreEqual(range, new LongRange(new Integer(1), new Long(5)));
+        assertObjectsAreEqual(range, new LongRange(new Long(1), new Short((short)5), new Long(1)));
     }
 
 }

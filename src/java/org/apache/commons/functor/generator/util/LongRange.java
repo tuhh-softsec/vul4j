@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/IntegerRange.java,v 1.2 2003/11/24 23:59:21 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/LongRange.java,v 1.1 2003/11/24 23:59:21 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,28 +65,28 @@ import org.apache.commons.functor.generator.BaseGenerator;
  * A generator for the range <i>from</i> (inclusive) to <i>to</i> (exclusive).
  *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/11/24 23:59:21 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/24 23:59:21 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
-public final class IntegerRange extends BaseGenerator {
+public final class LongRange extends BaseGenerator {
 
     // constructors
     //---------------------------------------------------------------
 
-    public IntegerRange(Number from, Number to) {
-        this(from.intValue(),to.intValue());
+    public LongRange(Number from, Number to) {
+        this(from.longValue(),to.longValue());
     }
 
-    public IntegerRange(Number from, Number to, Number step) {
-        this(from.intValue(),to.intValue(),step.intValue());
+    public LongRange(Number from, Number to, Number step) {
+        this(from.longValue(),to.longValue(),step.longValue());
     }
         
-    public IntegerRange(int from, int to) {
+    public LongRange(long from, long to) {
         this(from,to,defaultStep(from,to));
     }
 
-    public IntegerRange(int from, int to, int step) {
+    public LongRange(long from, long to, long step) {
         if(from != to && signOf(step) != signOf(to-from)) {
             throw new IllegalArgumentException("Will never reach " + to + " from " + from + " using step " + step);
         } else {
@@ -100,24 +100,24 @@ public final class IntegerRange extends BaseGenerator {
     //---------------------------------------------------------------
 
     public void run(UnaryProcedure proc) {
-        if(signOf(step) == -1) {
-            for(int i=from; i > to; i += step) {
-                proc.run(new Integer(i));
+        if(signOf(step) == -1L) {
+            for(long i=from; i > to; i += step) {
+                proc.run(new Long(i));
             }
         } else {
-            for(int i=from; i < to; i += step) {
-                proc.run(new Integer(i));
+            for(long i=from; i < to; i += step) {
+                proc.run(new Long(i));
             }
         }
     }
 
     public String toString() {
-        return "IntegerRange<" + from + "," + to + "," + step + ">";
+        return "LongRange<" + from + "," + to + "," + step + ">";
     }
 
     public boolean equals(Object obj) {
-        if(obj instanceof IntegerRange) {
-            IntegerRange that = (IntegerRange)obj;
+        if(obj instanceof LongRange) {
+            LongRange that = (LongRange)obj;
             return this.from == that.from && this.to == that.to && this.step == that.step;
         } else {
             return false;
@@ -125,7 +125,7 @@ public final class IntegerRange extends BaseGenerator {
     }
 
     public int hashCode() {
-        int hash = "IntegerRange".hashCode();
+        int hash = "LongRange".hashCode();
         hash <<= 2;
         hash ^= from;
         hash <<= 2;
@@ -138,7 +138,7 @@ public final class IntegerRange extends BaseGenerator {
     // private methods
     //---------------------------------------------------------------
         
-    private static int signOf(int value) {
+    private static long signOf(long value) {
         if(value < 0) {
             return -1;
         } else if(value > 0) {
@@ -148,20 +148,20 @@ public final class IntegerRange extends BaseGenerator {
         }
     }
 
-    private static int defaultStep(int from, int to) {
+    private static long defaultStep(long from, long to) {
         if(from > to) {
-            return -1;
+            return -1L;
         } else {
-            return 1;
+            return 1L;
         }
     }
 
     // attributes
     //---------------------------------------------------------------
         
-    private int from;
-    private int to;
-    private int step;
+    private long from;
+    private long to;
+    private long step;
 
 
 }
