@@ -103,6 +103,18 @@ public :
 	virtual void loadX509Base64Bin(const char * buf, unsigned int len) = 0;
 
 	/**
+	 * \brief Load a PEM encoded certificate into the object.
+	 *
+	 * Take a PEM encoded certificate and load.
+	 *
+	 * @param buf A buffer containing the PEM encoded certificate
+	 * @param len The number of bytes of data in the certificate.
+	 * (0 if the string is null terminated.)
+	 */
+
+	void loadX509PEM(const char * buf, unsigned int len = 0);
+
+	/**
 	 * \brief Get a Base64 DER encoded copy of the certificate
 	 *
 	 * @returns A safeBuffer containing the DER encoded certificate
