@@ -1,69 +1,225 @@
-$Id: RELEASE-NOTES.txt,v 1.10 2003/04/25 09:26:45 rdonkin Exp $
+$Id: RELEASE-NOTES.txt,v 1.11 2004/04/19 09:18:39 skitching Exp $
 
 
                           Commons Digester Package
-                                Version 1.5
+                                Version 1.6
                                Release Notes
 
 
 INTRODUCTION:
 ============
 
-This is an important maintenance release. The Digester 1.4.x releases were not fully backwards 
-compatible with previous Digester releases. This release fixes the reported incompatibilities. 
+This is mostly a feature release. A few minor bugs have been fixed (as listed
+below) but Digester 1.5 proved a very stable release.
 
+BACKWARDS INCOMPATIBILITIES
+===========================
+
+ArrayStack
+----------
+Previously, Digester required the collections library, simply for a single 
+class: ArrayStack. To avoid depending explicitly on the commons-collections 
+library, a copy of this class has been made within the digester library. All 
+places which once used the collections version now use the digester version. 
+Unfortunately, this will require all user classes which subclass the
+modified classes to be recompiled. The affected classes are:
+  CallParamRule (member bodyTextStack)
+  Digester (members bodyTexts, params and stack)
+  FactoryCreateRule
+  xmlrules.DigesterRuleParser
+  
 NEW FEATURES:
 =============
 
 Improved Java Docs
+------------------
+As usual, documentation has improved in this release. 
 
-CallMethodRule Can Take Parameter From Stack
---------------------------------------------
-CallParamRule can now use an object from the main Digester stack as one of the parameters for a 
-CallMethodRule. This allows an object to be created (in the usual way) and then passed into a 
-method call taking more than one parameter.
+Plugins
+-------
+There is a new package org.apache.commons.digester.plugins which provides
+the facility for rules to declare "plugin points" in the parsed xml at
+which users can specify their own classes to be instantiated and potentially
+configured via the same xml file. This allows xml configuration files to
+be "user extendable", in the manner that log4j, ant, etc. are (though with
+even more flexibility in many ways). See the package documentation for
+more information.
 
-Digester Document Locator Getter
---------------------------------
-Added property getter for the SAX Locator associated with the document being processed.
+Substitution and Variable Expansion
+-----------------------------------
+Via the Substitutor class and the Digester.setSubstitutor method, xml
+attributes and element data can be manipulated before being seen by any
+Rule instances. Taking advantage of this framework, a VariableSubstitutor
+class is provided which allows the parsing app to set up a table of values
+that can be referenced via "${varname}" syntax (and variants thereof) in 
+the input xml. See the package documentation for 
+org.apache.commons.digester.substitution for more information. 
 
-ExtendedBaseRules Ancestor Tail Matching
-----------------------------------------
-Extended pattern matching language by adding ancestor tail matching. This is response to enhancement 
-request #16350.
+Parser Feature Setter
+-----------------------------------
+The ParserFeatureSetterFactory class (plus the helper classes in the
+new org.apache.commons.digester.parser package) provides a portable
+mechanism for setting some parser features which have not yet been
+standardised by JAXP or similar specifications. See the package
+documentation for more information.
 
-FactoryCreateRule No-Exception-Propagation Option
--------------------------------------------------
-Added support for non-propagation of exceptions. This will (when the correct options are set) allow 
-a digestion to continue when an object creation has failed.
+PathCallParamRule
+-----------------
+This new Rule class allows the "path" to the current xml node, or 
+just the name of the current xml node, to be passed as a parameter
+of a CallMethodRule.
 
-RegexRules
-----------
-This is a new Rules implementation. It allows a regular expression language (such as Jakarta-ORO or 
-Jakarta-Regexp) to be used for pattern matching. An adapter interface allows the language of choice
-to be plugged in. A simple regex implementation is provided. 
-
-RSS Classes Now Serializable
-----------------------------
-The (object model) classes in org.apache.commons.digester.rss have now been made serializable. Though
-they were intended to be used as a worked example, some people have found them useful and wish to use
-them in situations where serialization is required.
-
-Improvement In Xml Rules
+SetNestedPropertiesRule
 ------------------------
-Added support for specifying a BeanPropertySetterRule when using XML Rules. This is enhancement #16785.
+Allows child elements to be mapped to bean properties, like the
+SetPropertiesRule maps attributes to bean properties. Example:
+  <widget>
+    <width>1</width>
+    <height>2</height>
+    <label>Hello, World</label>
+  </widget>
+This could previously be done via the BeanPropertySetterRule and the
+ExtendedBaseRules engine with trailing-wildcard support, but this
+Rule can be used with the default Rules class.
 
-Added support for call-param from stack to xml rules. Enhancement requested as bug  #16413
+WithDefaultsRulesWrapper
+------------------------
+????
 
+CallMethodRule target offset
+----------------------------
+Constructors now exist on this rule to allow the target object on which the
+method is invoked to be specified as an offset on the digester object stack.
+Previously, CallMethodRule always targetted the top object on the stack. Note
+that at the current time, factory methods for these constructors do not
+exist on the Digester class; the Rule needs to be constructed directly then
+added to the digester to access this (not commonly needed) functionality. 
+
+CallMethodRule handling of return value from invoked method
+------------------------------------------------------------
+A protected method "processMethodCallResult" on the CallMethodRule has
+been created so that it is simple to subclass this Rule and override this
+method to implement special checks or other processing of the return value
+of a method invoked via this rule.
+
+Digester lazy initialization
+----------------------------
+A new "initialize" method has been added that subclasses of Digester can
+override to perform any initialization they wish to do before parsing
+commences, but do not wish to do in the constructor.
+
+Digester new Rule factory methods
+---------------------------------
+Factory methods have been added for the new CallParamPathRule and
+SetNestedPropertiesRule. A factory method for the pre-existing
+ObjectParamRule class has also been added.
+
+Note that the new Plugin rules do not have factory methods, nor do the
+new variants on the CallMethodRule which take an "offset" parameter. Use of
+these rules is considered rare enough that a factory method is not
+necessary. This may be revised at a later time.
+
+Named Stacks
+------------
+The digester now provides push, pop, peek and isEmpty methods that take
+a stack name as a parameter. These can be used for any purpose that new
+Rule classes find useful. 
+
+Param stack access now public
+------------------------------
+The previously package-scope methods for accessing the digester's parameter
+stack are now public. This makes it possible for users to implement new
+"call param" rules in their own namespace.
+
+The createSAXException methods are now public
+----------------------------------------------
+These previously protected methods are now public, so that Rule classes
+(both user-implemented and in subpackages of Digester) can call them when
+errors are encountered.
+
+SAXLogger access
+-----------------
+?? getSAXLogger and setSAXLogger have been added. They do ????????
+
+Matched rules stack
+-------------------
+New member "matches" on class Digester holds a stack where each element is a 
+list of matching rules. When a child xml element is entered, the list of
+matches is pushed onto the stack, and at end it is popped off. This
+yields performance benefits, and potentially useful info for use by
+rule classes.
+
+Entity Resolver changes
+-----------------------
+The digester's default entity resolver behaviour is now to try resolving via
+the SYSTEM id if the PUBLIC id is not present.
+
+XMLRules new features
+-----------------------
+The ability to load rules from an InputSource has been added.
+Support has been added for SetRootRule and ObjectParamRule.
+The "context class loader" will be used, if one exists, when
+resolving "include" statements in xmlrules files.
+FromXmlRuleSet rulesets can now be added to a Digester instance 
+starting at a base pattern specified by the caller.
+A getCause() method has been added to the XmlLoadException class.
+
+RuleSetBase allows patterns ending in '/'
+-----------------------------------------
+The subject of this one says it all.
+
+OTHER IMPORTANT NOTES
+======================
+
+New License
+-----------
+This release is done under the Apache License version 2.0.
+Please see the LICENSE.TXT and NOTICE.TXT files in the distribution.
+
+RSS Support
+-----------
+The RSS package present in previous distributions of Digester was only ever 
+intended to be a "worked example", so the code has been moved to the
+"src/examples/api/rss" directory within the CVS repository, and is no
+longer part of the standard Digester binary distribution. However
+the same package structure has been preserved, so any users who were using the
+rss code in production should just have to compile the example code and
+include that additional jar in the classpath.
+
+Examples Added
+--------------
+Several examples have been added to CVS at src/examples, for the enlightenment
+of new Digester users.
+
+Author and Version javadoc tags removed
+---------------------------------------
+All @author tags were removed, as per Apache Foundation policy. A list of
+all the developers and contributors involved in Digester can still be
+found via the Digester website, or in the "project.xml" file in the base
+directory of the Digester CVS repository.
+
+All @version tags were removed as they were not considered to be useful.
+
+Commons Collections dependency
+==============================
+The commons-collections library has recently undergone a major release.
+While Digester is "officially" released with a declared dependency of
+commons-collections 2.1, the code has been tested with version 3.0 of
+this library and there are no known issues.
 
 BUG REPORTS ADDRESSED:
 ======================
 
+NoteCreateRule: end method was not popping digester stack
+ExtendedBaseRules: ??? (see Robert)
+#22131 SetPropertiesRule: Avoid NPE when debugging enabled and no top object
+
 Outstanding Reports:
 --------------------
-#12997 Call the method as soon as the last parameter is encountered
-#13098 Digester Performance
-#3893 Multiple element body parts problem
+#20903 ENH New rule for the digester (CallFactoryMethodRule)
+#21903 ENH Include filename or uri if Digester.parse throws an exception
 
 DEPRECATION:
 ============
+None
+
