@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.7  2004/02/03 11:00:03  blautenb
+ * Add Space handling to UNIX URL handling
+ *
  * Revision 1.6  2004/01/26 00:29:48  blautenb
  * Check for Xerces new way of handling NULL hostnames in URIs
  *
@@ -104,6 +107,7 @@
 XERCES_CPP_NAMESPACE_USE
 
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/utils/unixutils/XSECBinHTTPURIInputStream.hpp>
 
 static const XMLCh gFileScheme[] = {
@@ -228,9 +232,13 @@ BinInputStream * XSECURIResolverGenericUnix::resolveURI(const XMLCh * uri) {
 		if (xmluri->getHost() == NULL || xmluri->getHost()[0] == chNull ||
 			!XMLString::compareIString(xmluri->getHost(), XMLUni::fgLocalHostString)) {
 
+			// Clean hex escapes
+			XMLCh * realPath = cleanURIEscapes(xmluri->getPath());
+			ArrayJanitor<XMLCh> j_realPath(realPath);
+
 			// Localhost
 
-            BinFileInputStream* retStrm = new BinFileInputStream(xmluri->getPath());
+            BinFileInputStream* retStrm = new BinFileInputStream(realPath);
             if (!retStrm->getIsOpen())
             {
                 delete retStrm;
