@@ -92,6 +92,12 @@
       <includes>
         <include>org/apache/commons/functor/TestAll.java</include>
       </includes>
+      <resources>
+        <resource>
+          <directory>src/test</directory>
+          <include>**/*.txt</include>
+        </resource>
+      </resources>
     </unitTest>
   </build>
 </project>
