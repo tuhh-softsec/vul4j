@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.16 2001/11/20 00:37:25 craigmcc Exp $
+        $Id: build.xml,v 1.17 2001/12/04 19:46:11 sanders Exp $
 -->
 
 
@@ -20,7 +20,7 @@
 
   <!-- The directories corresponding to your necessary dependencies -->
   <property name="jaxp.home"               value="/usr/local/jaxp1.1"/>
-  <property name="junit.home"              value="/usr/local/junit3.5"/>
+  <property name="junit.home"              value="/usr/local/junit3.7"/>
   <property name="commons.home"            value=".."/>
   <property name="beanutils.home"          value="${commons.home}/beanutils"/>
   <property name="collections.home"        value="${commons.home}/collections"/>
@@ -235,9 +235,21 @@
                                test.matching,
                                test.matching.extended,
                                test.rule,
-                               test.bpsr
+                               test.bpsr,
+                               test.xmlrules
                               "
    description="Run all unit test cases">
+  </target>
+
+
+  <target name="test.xmlrules" depends="compile.tests"
+   description="Run tests for loading Digester rules from XML ...">
+    <echo message="Running xmlrules tests ..."/>
+    <java classname="${test.runner}" fork="yes"
+        failonerror="${test.failonerror}">
+      <arg value="org.apache.commons.digester.xmlrules.DigesterLoaderTestSuite"/>
+      <classpath refid="test.classpath"/>
+    </java>
   </target>
 
 
