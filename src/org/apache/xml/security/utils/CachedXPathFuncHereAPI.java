@@ -337,7 +337,7 @@ public class CachedXPathFuncHereAPI {
             Throwable th= ex.getCause();            
             if (th instanceof ClassNotFoundException) {
                  if (th.getMessage().indexOf("FuncHere")>0) {
-                 	throw new RuntimeException(I18n.translate("endorsed.jdk1.4.0"));
+                 	throw new RuntimeException(I18n.translate("endorsed.jdk1.4.0"),ex);
                  }
               }
               throw ex;
