@@ -693,7 +693,11 @@ int evaluate(int argc, char ** argv) {
 			if (encryptFileAsData) {
 
 				// Create a BinInputStream
+#if defined(XSEC_XERCES_REQUIRES_MEMMGR)
 				BinFileInputStream * is = new BinFileInputStream(filename, XMLPlatformUtils::fgMemoryManager);
+#else
+				BinFileInputStream * is = new BinFileInputStream(filename);
+#endif
 				xenc = cipher->encryptBinInputStream(is, keyAlg);
 
 				// Replace the document element
