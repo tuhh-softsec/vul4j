@@ -78,6 +78,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
          }
         noElements=false;
          Element currentElem = (Element) sibling;
+         sibling=sibling.getNextSibling();
          String localname = currentElem.getLocalName();
 
          if (currentElem.getNamespaceURI().equals(Constants.SignatureSpecNS)) {
