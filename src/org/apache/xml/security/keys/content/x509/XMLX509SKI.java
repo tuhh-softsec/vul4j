@@ -143,8 +143,7 @@ public class XMLX509SKI extends SignatureElementProxy
           /**
            * Use sun.security.util.DerValue if it is present.
            */ 
-          try {
-              if (XMLUtils.classForName("sun.security.util.DerValue") != null) {
+          try {              
                   DerValue dervalue = new DerValue(derEncodedValue);
                   if (dervalue == null) {
                       throw new XMLSecurityException("certificate.noSki.null");
@@ -152,10 +151,8 @@ public class XMLX509SKI extends SignatureElementProxy
                   if (dervalue.tag != DerValue.tag_OctetString) {
                       throw new XMLSecurityException("certificate.noSki.notOctetString");
                   }
-                  extensionValue = dervalue.getOctetString();
-              }
+                  extensionValue = dervalue.getOctetString();              
           } catch (NoClassDefFoundError e) {
-          } catch (ClassNotFoundException e) {
           }
           
           /**
@@ -163,7 +160,7 @@ public class XMLX509SKI extends SignatureElementProxy
            */ 
           if (extensionValue == null) {
               try {
-                  Class clazz = XMLUtils.classForName("org.bouncycastle.asn1.DERInputStream");
+                  Class clazz = Class.forName("org.bouncycastle.asn1.DERInputStream");
                   if (clazz != null) {
                       Constructor constructor = clazz.getConstructor(new Class[]{InputStream.class});
                       InputStream is = (InputStream) constructor.newInstance(new Object[]{new ByteArrayInputStream(derEncodedValue)});
@@ -172,7 +169,7 @@ public class XMLX509SKI extends SignatureElementProxy
                       if (obj == null) {
                           throw new XMLSecurityException("certificate.noSki.null");
                       }
-                      Class clazz2 = XMLUtils.classForName("org.bouncycastle.asn1.ASN1OctetString");
+                      Class clazz2 = Class.forName("org.bouncycastle.asn1.ASN1OctetString");
                       if (!clazz2.isInstance(obj)) {
                           throw new XMLSecurityException("certificate.noSki.notOctetString");
                       }
