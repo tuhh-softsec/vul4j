@@ -24,10 +24,10 @@ import java.util.List;
  * <p><code>Rules</code> <em>Decorator</em> that returns default rules 
  * when no matches are returned by the wrapped implementation.</p>
  *
- * <p>This allows default <code>Rule</code>'s to be added to any existing 
- * <code>Rules</code> implementation. 
- * These default <code>Rule</code>'s will be returned for any match for which 
- * the wrapped implementation does not return any matches.</p>
+ * <p>This allows default <code>Rule</code> instances to be added to any 
+ * existing <code>Rules</code> implementation. These default <code>Rule</code> 
+ * instances will be returned for any match for which the wrapped 
+ * implementation does not return any matches.</p>
  * <p> For example,
  * <pre>
  *   Rule alpha;
