@@ -272,6 +272,8 @@ public class XMLSignatureInput {
          DocumentBuilder db = dfactory.newDocumentBuilder();
 
          try {
+            db.setErrorHandler(new org.apache.xml.security.utils.IgnoreAllErrorHandler());
+
             Document document = db.parse(this.getOctetStream());
 
             if (XMLSignatureInput.useFlatNodes) {
