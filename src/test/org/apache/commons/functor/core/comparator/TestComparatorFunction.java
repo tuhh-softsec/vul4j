@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestComparatorFunction.java,v 1.1 2003/02/20 01:12:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestComparatorFunction.java,v 1.2 2003/02/21 00:12:29 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,13 +56,15 @@
  */
 package org.apache.commons.functor.core.comparator;
 
+import java.util.Collections;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:41 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/21 00:12:29 $
  * @author Rodney Waldhoff
  */
 public class TestComparatorFunction extends BaseFunctorTest {
@@ -88,9 +90,46 @@ public class TestComparatorFunction extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testEqualsAndHashCode() {
-        assertEquals(new ComparatorFunction(),new ComparatorFunction(new ComparableComparator()));
-        assertEquals(new ComparatorFunction().hashCode(),new ComparatorFunction().hashCode());
-        assertTrue(!new ComparatorFunction().equals(null));
+    public void testEvaluate() {
+        ComparatorFunction f = new ComparatorFunction();
+
+        assertTrue(((Integer)(f.evaluate(new Integer(Integer.MAX_VALUE),new Integer(Integer.MAX_VALUE)))).intValue() == 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(Integer.MAX_VALUE),new Integer(1)))).intValue() > 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(Integer.MAX_VALUE),new Integer(0)))).intValue() > 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(Integer.MAX_VALUE),new Integer(-1)))).intValue() > 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(Integer.MAX_VALUE),new Integer(Integer.MIN_VALUE)))).intValue() > 0);
+
+        assertTrue(((Integer)(f.evaluate(new Integer(1),new Integer(Integer.MAX_VALUE)))).intValue() < 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(1),new Integer(1)))).intValue() == 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(1),new Integer(0)))).intValue() > 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(1),new Integer(-1)))).intValue() > 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(1),new Integer(Integer.MIN_VALUE)))).intValue() > 0);
+        
+        assertTrue(((Integer)(f.evaluate(new Integer(0),new Integer(Integer.MAX_VALUE)))).intValue() < 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(0),new Integer(1)))).intValue() < 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(0),new Integer(0)))).intValue() == 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(0),new Integer(-1)))).intValue() > 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(0),new Integer(Integer.MIN_VALUE)))).intValue() > 0);
+        
+        assertTrue(((Integer)(f.evaluate(new Integer(-1),new Integer(Integer.MAX_VALUE)))).intValue() < 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(-1),new Integer(1)))).intValue() < 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(-1),new Integer(0)))).intValue() < 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(-1),new Integer(-1)))).intValue() == 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(-1),new Integer(Integer.MIN_VALUE)))).intValue() > 0);
+
+        assertTrue(((Integer)(f.evaluate(new Integer(Integer.MIN_VALUE),new Integer(Integer.MAX_VALUE)))).intValue() < 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(Integer.MIN_VALUE),new Integer(1)))).intValue() < 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(Integer.MIN_VALUE),new Integer(0)))).intValue() < 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(Integer.MIN_VALUE),new Integer(-1)))).intValue() < 0);
+        assertTrue(((Integer)(f.evaluate(new Integer(Integer.MIN_VALUE),new Integer(Integer.MIN_VALUE)))).intValue() == 0);
+    }
+
+    public void testEquals() {
+        ComparatorFunction f = new ComparatorFunction();
+        assertObjectsAreEqual(f,f);
+        assertObjectsAreEqual(f,new ComparatorFunction(null));
+        assertObjectsAreEqual(new ComparatorFunction(null),new ComparatorFunction(null));
+        assertObjectsAreEqual(f,new ComparatorFunction(new ComparableComparator()));
+        assertObjectsAreNotEqual(f,new ComparatorFunction(Collections.reverseOrder()));
     }
 }

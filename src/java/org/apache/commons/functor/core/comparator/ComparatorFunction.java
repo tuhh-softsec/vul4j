@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/ComparatorFunction.java,v 1.1 2003/02/20 01:12:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/ComparatorFunction.java,v 1.2 2003/02/21 00:12:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,16 +65,16 @@ import org.apache.commons.functor.BinaryFunction;
  * Adapts a {@link Comparator Comparator} to the
  * {@link BinaryFunction} interface.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:40 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/21 00:12:28 $
  * @author Rodney Waldhoff
  */
 public final class ComparatorFunction implements BinaryFunction, Serializable {
     public ComparatorFunction() {
-        this(ComparableComparator.getInstance());
+        this(null);
     }
 
     public ComparatorFunction(Comparator comparator) {
-        this.comparator = comparator;
+        this.comparator = null == comparator ? ComparableComparator.getInstance() : comparator;
     }
     
     /**
@@ -99,19 +99,14 @@ public final class ComparatorFunction implements BinaryFunction, Serializable {
      * @see #equals(Object)
      */
     public boolean equals(ComparatorFunction that) {
-        return null != that && 
-            null == comparator ? null == that.comparator : comparator.equals(that.comparator);
+        return null != that && comparator.equals(that.comparator);
     }
 
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        int hash = "ComparatorFunction".hashCode();
-        if(null != comparator) {
-            hash ^= comparator.hashCode();
-        }
-        return hash;
+        return "ComparatorFunction".hashCode() ^ comparator.hashCode();
     }
 
     /**

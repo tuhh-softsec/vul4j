@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.1 2003/02/20 01:12:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.2 2003/02/21 00:12:29 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -79,12 +79,12 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
 
 
 /**
- * An example of implemeting the quicksort sorting algorithm 
+ * An example of implementing the quicksort sorting algorithm 
  * using commons-functor.
  * <p> 
- * See the extensive inline comments for details.
+ * See the extensive in line comments for details.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/21 00:12:29 $
  * @author Rodney Waldhoff
  */
 
@@ -101,7 +101,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * Within this source file, the "literate" comments will use
  * c-style, multi-line comments (slash-star to star-slash).
  * 
- * For convienience, and to make sure this example stays up to date, 
+ * For convenience, and to make sure this example stays up to date, 
  * we'll implement our quicksort example as a JUnit TestCase...
  * 
  */
@@ -164,7 +164,7 @@ public class Quicksort extends TestCase {
     }    
 
 /*
- * Similiarly, sorting an List composed of a single element
+ * Similarly, sorting an List composed of a single element
  * should produce an equivalent list:
  */
 
@@ -359,7 +359,7 @@ public class Quicksort extends TestCase {
          */
         System.out.println();        
         System.out.println(
-            "QuickSort Example: Sorted " + COUNT + 
+            "Quicksort Example: Sorted " + COUNT + 
             " lists of " + SIZE + 
             " elements in " + elapsed + " millis (" + 
             avgmillis + 

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestPredicatedIterator.java,v 1.1 2003/02/20 01:12:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestPredicatedIterator.java,v 1.2 2003/02/21 00:12:28 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -69,7 +70,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:41 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/21 00:12:28 $
  * @author Rodney Waldhoff
  */
 public class TestPredicatedIterator extends TestCase {
@@ -149,6 +150,90 @@ public class TestPredicatedIterator extends TestCase {
         assertTrue(!testing.hasNext());
     }
 
+    public void testNextWithoutHasNext() {
+        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        Iterator expected = evens.iterator();
+        while(expected.hasNext()) {
+            assertEquals(expected.next(),testing.next());
+        }
+        assertTrue(!(testing.hasNext()));
+    }
+
+    public void testNextAfterEndOfList() {
+        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        Iterator expected = evens.iterator();
+        while(expected.hasNext()) {
+            assertEquals(expected.next(),testing.next());
+        }
+        try {
+            testing.next();
+            fail("ExpectedNoSuchElementException");
+        } catch(NoSuchElementException e) {
+            // expected
+        }
+    }
+
+    public void testNextOnEmptyList() {
+        Iterator testing = new PredicatedIterator(isEven,Collections.EMPTY_LIST.iterator());
+        try {
+            testing.next();
+            fail("ExpectedNoSuchElementException");
+        } catch(NoSuchElementException e) {
+            // expected
+        }
+    }
+    
+    public void testRemoveBeforeNext() {
+        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        try {
+            testing.remove();
+            fail("IllegalStateException");
+        } catch(IllegalStateException e) {
+            // expected
+        }
+    }
+    
+    public void testRemoveAfterNext() {
+        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        testing.next();
+        testing.remove();
+        try {
+            testing.remove();
+            fail("IllegalStateException");
+        } catch(IllegalStateException e) {
+            // expected
+        }
+    }
+    
+    public void testRemoveSome() {
+        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        while(testing.hasNext()) {
+            testing.next();
+            testing.remove();
+        }
+        for(Iterator iter = list.iterator(); iter.hasNext();) {
+            assertTrue(! isEven.test(iter.next()) );
+        }
+    }
+
+    public void testRemoveAll() {
+        Iterator testing = new PredicatedIterator(ConstantPredicate.getTruePredicate(),list.iterator());
+        while(testing.hasNext()) {
+            testing.next();
+            testing.remove();
+        }
+        assertTrue(list.isEmpty());
+    }
+
+    public void testRemoveWithoutHasNext() {
+        Iterator testing = new PredicatedIterator(ConstantPredicate.getTruePredicate(),list.iterator());
+        for(int i=0,m = list.size();i<m;i++) {
+            testing.next();
+            testing.remove();
+        }
+        assertTrue(list.isEmpty());
+    }
+    
     // Attributes
     // ------------------------------------------------------------------------
     private List list = null;    
