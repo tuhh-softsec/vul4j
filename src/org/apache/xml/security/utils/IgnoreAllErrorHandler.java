@@ -59,7 +59,6 @@
 package org.apache.xml.security.utils;
 
 
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -73,40 +72,56 @@ import org.xml.sax.SAXParseException;
  */
 public class IgnoreAllErrorHandler implements ErrorHandler {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(IgnoreAllErrorHandler.class.getName());
+	/** {@link org.apache.commons.logging} logging facility */
+	static org.apache.commons.logging.Log log =
+		org.apache.commons.logging.LogFactory.getLog(
+			IgnoreAllErrorHandler.class.getName());
 
-   /** Field throwExceptions */
-   static final boolean warnOnExceptions = true;
+	/** Field throwExceptions */
+	static final boolean warnOnExceptions =	System.getProperty(
+		"org.apache.xml.security.test.warn.on.exceptions", "false").equals("true");
 
-   /** Field throwExceptions           */
-   static final boolean throwExceptions = false;
+	/** Field throwExceptions           */
+	static final boolean throwExceptions = System.getProperty(
+		"org.apache.xml.security.test.throw.exceptions", "false").equals("true");
 
-   //J-
-    public void warning (SAXParseException ex) throws SAXException {
-       if (IgnoreAllErrorHandler.warnOnExceptions) {
-          log.warn("", ex);
-       }
-       if (IgnoreAllErrorHandler.throwExceptions) {
-          throw ex;
-       }
-    }
-    public void error (SAXParseException ex) throws SAXException {
-       if (IgnoreAllErrorHandler.warnOnExceptions) {
-          log.error("", ex);
-       }
-       if (IgnoreAllErrorHandler.throwExceptions) {
-          throw ex;
-       }
-    }
-    public void fatalError (SAXParseException ex) throws SAXException {
-       if (IgnoreAllErrorHandler.warnOnExceptions) {
-          log.warn("", ex);
-       }
-       if (IgnoreAllErrorHandler.throwExceptions) {
-          throw ex;
-       }
-    }
-    //J+
+	
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
+	 */
+	public void warning(SAXParseException ex) throws SAXException {
+		if (IgnoreAllErrorHandler.warnOnExceptions) {
+			log.warn("", ex);
+		}
+		if (IgnoreAllErrorHandler.throwExceptions) {
+			throw ex;
+		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
+	 */
+	public void error(SAXParseException ex) throws SAXException {
+		if (IgnoreAllErrorHandler.warnOnExceptions) {
+			log.error("", ex);
+		}
+		if (IgnoreAllErrorHandler.throwExceptions) {
+			throw ex;
+		}
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
+	 */
+	public void fatalError(SAXParseException ex) throws SAXException {
+		if (IgnoreAllErrorHandler.warnOnExceptions) {
+			log.warn("", ex);
+		}
+		if (IgnoreAllErrorHandler.throwExceptions) {
+			throw ex;
+		}
+	}
 }
