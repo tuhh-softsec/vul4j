@@ -614,7 +614,7 @@ org.apache.xml.security.utils.resolver
            <patternset refid="srcSamplesFiles" />
            <patternset refid="dataFiles" />
 
-           <include name="doc/xml/**/*" />
+           <include name="${doc.xml}/**/*" />
            <include name="ant/**/*" />
            <exclude name="**/CVS/**" />
        </fileset>
@@ -642,11 +642,13 @@ org.apache.xml.security.utils.resolver
 
      <mkdir  dir="${build.bindist}/${dir.libs}" />
      <copy todir="${build.bindist}/${dir.libs}" file="${lib.junit}" />
+     <copy todir="${build.bindist}/${dir.libs}" file="${lib.log4j}" />
+     <copy todir="${build.bindist}/${dir.libs}" file="${lib.styleApache}" />
+     <copy todir="${build.bindist}/${dir.libs}" file="${lib.stylebook}" />
      <copy todir="${build.bindist}/${dir.libs}" file="${lib.xerces.1}" />
      <copy todir="${build.bindist}/${dir.libs}" file="${lib.xerces.2}" />
      <copy todir="${build.bindist}/${dir.libs}" file="${lib.xalan.1}" />
      <copy todir="${build.bindist}/${dir.libs}" file="${lib.xalan.2}" />
-     <copy todir="${build.bindist}/${dir.libs}" file="${lib.log4j}" />
 
      <mkdir  dir="${build.bindist}/${build.dir}" />
      <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.library}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
