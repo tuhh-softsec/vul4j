@@ -44,7 +44,7 @@ public abstract class ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    * @return the resource wrapped arround a XMLSignatureInput
     *
     * @throws ResourceResolverException
     */
@@ -78,7 +78,7 @@ public abstract class ResourceResolverSpi {
     * Method engineGetProperty
     *
     * @param key
-    * @return
+    * @return the value of the property
     */
    public String engineGetProperty(String key) {
 
@@ -111,14 +111,14 @@ public abstract class ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    * @return true if the engine can resolve the uri
     */
    public abstract boolean engineCanResolve(Attr uri, String BaseURI);
 
    /**
     * Method engineGetPropertyKeys
     *
-    * @return
+    * @return the property keys
     */
    public String[] engineGetPropertyKeys() {
       return new String[0];
@@ -128,7 +128,7 @@ public abstract class ResourceResolverSpi {
     * Method understandsProperty
     *
     * @param propertyToTest
-    * @return
+    * @return true if understands the property
     */
    public boolean understandsProperty(String propertyToTest) {
 

@@ -40,7 +40,7 @@ public class RFC2253Parser {
     * Method rfc2253toXMLdsig
     *
     * @param dn
-    * @return
+    * @return normalized string
     *
     */
    public static String rfc2253toXMLdsig(String dn) {
@@ -57,7 +57,7 @@ public class RFC2253Parser {
     * Method xmldsigtoRFC2253
     *
     * @param dn
-    * @return 
+    * @return normalized string
     */
    public static String xmldsigtoRFC2253(String dn) {
 
@@ -73,7 +73,7 @@ public class RFC2253Parser {
     * Method normalize
     *
     * @param dn
-    * @return 
+    * @return normalized string
     */
    public static String normalize(String dn) {
 
@@ -113,7 +113,7 @@ public class RFC2253Parser {
     * Method parseRDN
     *
     * @param str
-    * @return 
+    * @return normalized string
     * @throws IOException
     */
    static String parseRDN(String str) throws IOException {
@@ -143,7 +143,7 @@ public class RFC2253Parser {
     * Method parseATAV
     *
     * @param str
-    * @return 
+    * @return normalized string
     * @throws IOException
     */
    static String parseATAV(String str) throws IOException {
@@ -164,7 +164,7 @@ public class RFC2253Parser {
     * Method normalizeAT
     *
     * @param str
-    * @return 
+    * @return normalized string
     */
    static String normalizeAT(String str) {
 
@@ -181,7 +181,7 @@ public class RFC2253Parser {
     * Method normalizeV
     *
     * @param str
-    * @return 
+    * @return normalized string
     * @throws IOException
     */
    static String normalizeV(String str) throws IOException {
@@ -227,7 +227,7 @@ public class RFC2253Parser {
     * Method rfctoXML
     *
     * @param string
-    * @return 
+    * @return normalized string
     */
    static String rfctoXML(String string) {
 
@@ -244,7 +244,7 @@ public class RFC2253Parser {
     * Method xmltoRFC
     *
     * @param string
-    * @return 
+    * @return normalized string
     */
    static String xmltoRFC(String string) {
 
@@ -261,7 +261,7 @@ public class RFC2253Parser {
     * Method changeLess32toRFC
     *
     * @param string
-    * @return 
+    * @return normalized string
     * @throws IOException
     */
    static String changeLess32toRFC(String string) throws IOException {
@@ -304,7 +304,7 @@ public class RFC2253Parser {
     * Method changeLess32toXML
     *
     * @param string
-    * @return 
+    * @return normalized string
     * @throws IOException
     */
    static String changeLess32toXML(String string) throws IOException {
@@ -329,7 +329,7 @@ public class RFC2253Parser {
     * Method changeWStoXML
     *
     * @param string
-    * @return 
+    * @return normalized string
     * @throws IOException
     */
    static String changeWStoXML(String string) throws IOException {
@@ -367,7 +367,7 @@ public class RFC2253Parser {
     * Method changeWStoRFC
     *
     * @param string
-    * @return 
+    * @return normalized string
     */
    static String changeWStoRFC(String string) {
 
@@ -390,7 +390,7 @@ public class RFC2253Parser {
     * Method semicolonToComma
     *
     * @param str
-    * @return 
+    * @return normalized string
     */
    static String semicolonToComma(String str) {
       return removeWSandReplace(str, ";", ",");
@@ -401,7 +401,7 @@ public class RFC2253Parser {
     *
     * @param str
     * @param symbol
-    * @return 
+    * @return normalized string
     */
    static String removeWhiteSpace(String str, String symbol) {
       return removeWSandReplace(str, symbol, symbol);
@@ -413,7 +413,7 @@ public class RFC2253Parser {
     * @param str
     * @param symbol
     * @param replace
-    * @return 
+    * @return normalized string
     */
    static String removeWSandReplace(String str, String symbol, String replace) {
 
@@ -444,7 +444,7 @@ public class RFC2253Parser {
     * @param s
     * @param i
     * @param j
-    * @return 
+    * @return number of quotes
     */
    private static int countQuotes(String s, int i, int j) {
 
@@ -465,7 +465,7 @@ public class RFC2253Parser {
     * Method trim
     *
     * @param str
-    * @return 
+    * @return the string
     */
    static String trim(String str) {
 

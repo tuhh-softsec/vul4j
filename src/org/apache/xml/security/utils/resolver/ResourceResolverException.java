@@ -115,7 +115,7 @@ public class ResourceResolverException extends XMLSecurityException {
    
    /**
     * 
-    * @return
+    * @return the uri
     */
    public Attr getURI() {
       return this._uri;
@@ -133,7 +133,7 @@ public class ResourceResolverException extends XMLSecurityException {
    
    /**
     * 
-    * @return
+    * @return the basUri
     */
    public String getBaseURI() {
       return this._BaseURI;

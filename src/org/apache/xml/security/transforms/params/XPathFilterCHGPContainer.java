@@ -136,7 +136,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
     * Method indentXPathText
     *
     * @param xp
-    * @return
+    * @return the string with enters
     */
    static String indentXPathText(String xp) {
 
@@ -213,7 +213,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getIncludeButSearch
     *
-    * @return
+    * @return the string
     */
    public String getIncludeButSearch() {
       return this.getXStr(XPathFilterCHGPContainer._TAG_INCLUDE_BUT_SEARCH);
@@ -222,7 +222,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getExcludeButSearch
     *
-    * @return
+    * @return the string
     */
    public String getExcludeButSearch() {
       return this.getXStr(XPathFilterCHGPContainer._TAG_EXCLUDE_BUT_SEARCH);
@@ -231,7 +231,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getExclude
     *
-    * @return
+    * @return the string
     */
    public String getExclude() {
       return this.getXStr(XPathFilterCHGPContainer._TAG_EXCLUDE);
@@ -240,7 +240,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getIncludeSlashPolicy
     *
-    * @return
+    * @return the string
     */
    public boolean getIncludeSlashPolicy() {
 
@@ -271,7 +271,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getHereContextNodeIncludeButSearch
     *
-    * @return
+    * @return the string
     */
    public Node getHereContextNodeIncludeButSearch() {
       return this
@@ -281,7 +281,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getHereContextNodeExcludeButSearch
     *
-    * @return
+    * @return the string
     */
    public Node getHereContextNodeExcludeButSearch() {
       return this
@@ -291,7 +291,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
    /**
     * Method getHereContextNodeExclude
     *
-    * @return
+    * @return the string
     */
    public Node getHereContextNodeExclude() {
       return this.getHereContextNode(XPathFilterCHGPContainer._TAG_EXCLUDE);

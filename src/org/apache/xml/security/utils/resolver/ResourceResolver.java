@@ -95,7 +95,7 @@ public class ResourceResolver {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    * @return the instnace
     *
     * @throws ResourceResolverException
     */
@@ -128,7 +128,7 @@ public class ResourceResolver {
     * @param uri
     * @param BaseURI
     * @param individualResolvers
-    * @return
+    * @return the instance
     *
     * @throws ResourceResolverException
     */
@@ -212,7 +212,7 @@ public class ResourceResolver {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    * @return the resource
     *
     * @throws ResourceResolverException
     */
@@ -229,7 +229,7 @@ public class ResourceResolver {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    * @return the resource
     *
     * @throws ResourceResolverException
     */
@@ -252,7 +252,7 @@ public class ResourceResolver {
     * Method getProperty
     *
     * @param key
-    * @return
+    * @return the value of the property
     */
    public String getProperty(String key) {
       return this._resolverSpi.engineGetProperty(key);
@@ -270,7 +270,7 @@ public class ResourceResolver {
    /**
     * Method getPropertyKeys
     *
-    * @return
+    * @return all property keys.
     */
    public String[] getPropertyKeys() {
       return this._resolverSpi.engineGetPropertyKeys();
@@ -280,7 +280,7 @@ public class ResourceResolver {
     * Method understandsProperty
     *
     * @param propertyToTest
-    * @return
+    * @return true if the resolver understands the property
     */
    public boolean understandsProperty(String propertyToTest) {
       return this._resolverSpi.understandsProperty(propertyToTest);
@@ -291,7 +291,7 @@ public class ResourceResolver {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    * @return true if it can resolve the uri
     */
    private boolean canResolve(Attr uri, String BaseURI) {
       return this._resolverSpi.engineCanResolve(uri, BaseURI);

@@ -62,7 +62,7 @@ public class HelperNodeList implements NodeList {
     * Method item
     *
     * @param index
-    * @return 
+    * @return node with inde i
     */
    public Node item(int index) {
 
@@ -74,7 +74,7 @@ public class HelperNodeList implements NodeList {
    /**
     * Method getLength
     *
-    *  @return 
+    *  @return length of the list
     */
    public int getLength() {
       return nodes.size();
@@ -96,7 +96,7 @@ public class HelperNodeList implements NodeList {
    }
 
    /**
-    * @return
+    * @return the document that contains this nodelist
     */
    public Document getOwnerDocument() {
       if (this.getLength() == 0) {

@@ -188,7 +188,7 @@ public class XMLUtils {
     * Method getFullTextChildrenFromElement
     *
     * @param element
-    * @return
+    * @return the string of chi;ds
     */
    public static String getFullTextChildrenFromElement(Element element) {
 
@@ -356,7 +356,7 @@ public class XMLUtils {
     * @param doc
     * @param prefix
     * @param namespace
-    * @return
+    * @return the element.
     */
    public static Element createDSctx(Document doc, String prefix,
                                      String namespace) {
@@ -391,7 +391,7 @@ public class XMLUtils {
     * Method convertNodelistToSet
     *
     * @param xpathNodeSet
-    * @return
+    * @return the set with the nodelist
     */
    public static Set convertNodelistToSet(NodeList xpathNodeSet) {
 
@@ -491,7 +491,7 @@ public class XMLUtils {
     * @param sibling
     * @param nodeName
     * @param number
-    * @return
+    * @return nodes with the constrain
     */
    public static Element selectDsNode(Node sibling, String nodeName, int number) {
 	while (sibling!=null) {
@@ -511,7 +511,7 @@ public class XMLUtils {
     * @param sibling
     * @param nodeName
     * @param number
-    * @return
+    * @return nodes with the constrain
     */
 
    public static Element selectXencNode(Node sibling, String nodeName, int number) {
@@ -533,7 +533,7 @@ public class XMLUtils {
     * @param sibling
     * @param nodeName
     * @param number
-    * @return
+    * @return nodes with the constrain
     */
    public static Text selectDsNodeText(Node sibling, String nodeName, int number) {
    	    Node n=selectDsNode(sibling,nodeName,number);
@@ -552,7 +552,7 @@ public class XMLUtils {
     * @param uri
     * @param nodeName
     * @param number
-    * @return
+    * @return nodes with the constrain
     */
    public static Text selectNodeText(Node sibling, String uri, String nodeName, int number) {
         Node n=selectNode(sibling,uri,nodeName,number);
@@ -571,7 +571,7 @@ public class XMLUtils {
     * @param uri
     * @param nodeName
     * @param number
-    * @return
+    * @return nodes with the constrain
     */
    public static Element selectNode(Node sibling, String uri,String nodeName, int number) {
 	while (sibling!=null) {
@@ -590,7 +590,7 @@ public class XMLUtils {
    /**
     * @param sibling
     * @param nodeName    
-    * @return
+    * @return nodes with the constrain
     */
    public static Element[] selectDsNodes(Node sibling,String nodeName) {
      return selectNodes(sibling,Constants.SignatureSpecNS,nodeName);
@@ -600,7 +600,7 @@ public class XMLUtils {
     * @param sibling
     * @param uri
     * @param nodeName
-    * @return
+    * @return nodes with the constrain
     */
     public static Element[] selectNodes(Node sibling,String uri,String nodeName) {
     	int size=20;
@@ -629,7 +629,7 @@ public class XMLUtils {
    /**
     * @param signatureElement
     * @param inputSet
-    * @return
+    * @return nodes with the constrain
     */
     public static Set excludeNodeFromSet(Node signatureElement, Set inputSet) {
 	  Set resultSet = new HashSet();
@@ -652,7 +652,7 @@ public class XMLUtils {
     *
     * @param ctx
     * @param descendantOrSelf
-    * @return
+    * @return true if the node is descendant
     */
    static boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
 

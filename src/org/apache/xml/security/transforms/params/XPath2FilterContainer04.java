@@ -129,7 +129,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     *
     * @param doc
     * @param xpath2filter
-    * @return
+    * @return the instance
     */
    public static XPath2FilterContainer04 newInstanceIntersect(Document doc,
            String xpath2filter) {
@@ -144,7 +144,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     *
     * @param doc
     * @param xpath2filter
-    * @return
+    * @return the instance
     */
    public static XPath2FilterContainer04 newInstanceSubtract(Document doc,
            String xpath2filter) {
@@ -159,7 +159,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     *
     * @param doc
     * @param xpath2filter
-    * @return
+    * @return the instance
     */
    public static XPath2FilterContainer04 newInstanceUnion(Document doc,
            String xpath2filter) {
@@ -174,7 +174,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     *
     * @param element
     * @param BaseURI
-    * @return
+    * @return the instance
     *
     * @throws XMLSecurityException
     */

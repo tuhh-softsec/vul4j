@@ -29,7 +29,6 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.SignatureElementProxy;
-import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
