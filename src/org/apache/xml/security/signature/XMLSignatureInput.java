@@ -434,6 +434,16 @@ public class XMLSignatureInput {
       return ( ((this._inputOctetStreamProxy != null) || bytes!=null)
               && ((this._inputNodeSet == null) && _subNode ==null));
    }
+   
+   /**
+    * Determines if the object has been set up with a ByteArray
+    *
+    * @return true is the object has been set up with an octet stream
+    */
+   public boolean isByteArray() {
+      return ( (bytes!=null)
+              && ((this._inputNodeSet == null) && _subNode ==null));
+   }
 
    /**
     * Is the object correctly set up?
