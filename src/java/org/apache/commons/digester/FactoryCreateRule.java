@@ -74,7 +74,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.2 $ $Date: 2001/08/13 19:49:34 $
+ * @version $Revision: 1.3 $ $Date: 2001/08/20 16:10:13 $
  */
 
 public class FactoryCreateRule extends Rule {
@@ -194,7 +194,8 @@ public class FactoryCreateRule extends Rule {
      */
     public void finish() throws Exception {
 
-        creationFactory = null;
+        if (attributeName != null)
+            creationFactory = null;
 
     }
 

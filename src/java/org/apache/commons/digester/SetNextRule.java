@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetNextRule.java,v 1.4 2001/08/04 22:26:37 craigmcc Exp $
- * $Revision: 1.4 $
- * $Date: 2001/08/04 22:26:37 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetNextRule.java,v 1.5 2001/08/20 16:10:13 craigmcc Exp $
+ * $Revision: 1.5 $
+ * $Date: 2001/08/20 16:10:13 $
  *
  * ====================================================================
  *
@@ -75,7 +75,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.4 $ $Date: 2001/08/04 22:26:37 $
+ * @version $Revision: 1.5 $ $Date: 2001/08/20 16:10:13 $
  */
 
 public class SetNextRule extends Rule {
@@ -158,17 +158,6 @@ public class SetNextRule extends Rule {
 	    paramTypes[0] = child.getClass();
 	Method method = parent.getClass().getMethod(methodName, paramTypes);
 	method.invoke(parent, new Object[] { child });
-
-    }
-
-
-    /**
-     * Clean up after parsing is complete.
-     */
-    public void finish() throws Exception {
-
-	methodName = null;
-	paramType = null;
 
     }
 

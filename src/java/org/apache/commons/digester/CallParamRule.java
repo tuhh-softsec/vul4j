@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.2 2001/05/12 17:25:53 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2001/05/12 17:25:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.3 2001/08/20 16:10:13 craigmcc Exp $
+ * $Revision: 1.3 $
+ * $Date: 2001/08/20 16:10:13 $
  *
  * ====================================================================
  *
@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  * by a surrounding CallMethodRule rule.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.2 $ $Date: 2001/05/12 17:25:53 $
+ * @version $Revision: 1.3 $ $Date: 2001/08/20 16:10:13 $
  */
 
 public class CallParamRule extends Rule {
@@ -180,7 +180,6 @@ public class CallParamRule extends Rule {
      */
     public void finish() throws Exception {
 
-	attributeName = null;
 	bodyText = null;
 
     }

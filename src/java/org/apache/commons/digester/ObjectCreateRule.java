@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.4 2001/08/04 22:26:37 craigmcc Exp $
- * $Revision: 1.4 $
- * $Date: 2001/08/04 22:26:37 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.5 2001/08/20 16:10:13 craigmcc Exp $
+ * $Revision: 1.5 $
+ * $Date: 2001/08/20 16:10:13 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.4 $ $Date: 2001/08/04 22:26:37 $
+ * @version $Revision: 1.5 $ $Date: 2001/08/20 16:10:13 $
  */
 
 public class ObjectCreateRule extends Rule {
@@ -166,17 +166,6 @@ public class ObjectCreateRule extends Rule {
 	Object top = digester.pop();
 	if (digester.getDebug() >= 1)
 	    digester.log("Pop " + top.getClass().getName());
-
-    }
-
-
-    /**
-     * Clean up after parsing is complete.
-     */
-    public void finish() throws Exception {
-
-	attributeName = null;
-	className = null;
 
     }
 
