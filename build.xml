@@ -1,7 +1,7 @@
 <project name="Functor" default="test" basedir=".">
 <!--
   Commons-Functor Ant Build File
-  $Id: build.xml,v 1.11 2003/04/02 00:07:41 rwaldhoff Exp $
+  $Id: build.xml,v 1.12 2003/12/17 20:52:30 rwaldhoff Exp $
 -->
 
 <!-- ========== Initialize Properties ===================================== -->
@@ -88,6 +88,7 @@
   <path id="test.classpath">
     <pathelement location="${build.home}/classes"/>
     <pathelement location="${build.home}/test-classes"/>
+    <pathelement location="${test.home}"/>
     <pathelement location="${junit.jar}"/>
   </path>
 
