@@ -3,7 +3,7 @@
 <!--
         "Digester" component of the Jakarta Commons Subproject
         DTD for the definition of Digester rules in XML.
-        $Id: digester-rules.dtd,v 1.6 2003/03/10 21:10:11 tobrien Exp $
+        $Id: digester-rules.dtd,v 1.7 2003/03/15 18:38:54 rdonkin Exp $
 -->
 
 <!-- This document type defines an XML format for defining Digester rules.
@@ -87,12 +87,19 @@
     paramnumber CDATA #REQUIRED
     attrname CDATA #IMPLIED>
 
-<!-- FactoryCreateRule -->
+<!-- 
+    FactoryCreateRule 
+    
+    ignore-exceptions - if this attribute is (ignore case) 'true' then any exceptions
+                        thrown by the object create rule will be ignore.
+                        This will allow processing to continue.
+    -->
 <!ELEMENT factory-create-rule EMPTY>
 <!ATTLIST factory-create-rule
     pattern   CDATA #IMPLIED
     classname CDATA #REQUIRED
-    attrname  CDATA #IMPLIED>
+    attrname  CDATA #IMPLIED
+    ignore-exceptions  CDATA #IMPLIED> 
 
 <!-- ObjectCreateRule -->
 <!ELEMENT object-create-rule EMPTY>

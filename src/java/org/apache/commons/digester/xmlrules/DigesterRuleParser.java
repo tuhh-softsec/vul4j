@@ -568,10 +568,12 @@ public class DigesterRuleParser extends RuleSetBase {
         public Object createObject(Attributes attributes) {
             String className = attributes.getValue("classname");
             String attrName = attributes.getValue("attrname");
+            boolean ignoreExceptions = 
+                "true".equalsIgnoreCase(attributes.getValue("ignore-exceptions"));
             return (attrName == null || attrName.length() == 0) ?
-                new FactoryCreateRule( className)
+                new FactoryCreateRule( className, ignoreExceptions)
                 :
-                new FactoryCreateRule( className, attrName);
+                new FactoryCreateRule( className, attrName, ignoreExceptions);
         }
     }
     
