@@ -195,6 +195,8 @@ public class XMLCipher {
 	private Map enc2IV;
 	private Key localKey;
 	private Key localKEK;
+	private EncryptedKey kiEncryptedKey;  // To add to the KeyInfo list of 
+	                                      // an Encrypted Data
 
     /**
      * Creates a new <code>XMLCipher</code>.
@@ -370,7 +372,8 @@ public class XMLCipher {
     public void init(int opmode, Key key) throws XMLEncryptionException {
         // sanity checks
         logger.debug("Initializing XMLCipher...");
-        if (opmode != ENCRYPT_MODE && opmode != DECRYPT_MODE)
+        if (opmode != ENCRYPT_MODE && opmode != DECRYPT_MODE && 
+			opmode != WRAP_MODE && opmode != UNWRAP_MODE)
             logger.error("Mode unexpectedly invalid...");
         logger.debug("opmode = " +
             ((opmode == ENCRYPT_MODE) ? "ENCRYPT_MODE" : "DECRYPT_MODE"));
@@ -895,12 +898,89 @@ public class XMLCipher {
 		return (loadEncryptedKey(element.getOwnerDocument(), element));
     }
 
+	/**
+	 * Adds an encrypted key to the list of encrypted keys that will
+	 * be added to an EncryptedData structure
+	 */
+
+	public void addEncryptedKey(EncryptedKey toAdd) {
+		kiEncryptedKey = toAdd;
+	}
+
     /**
-     * Decrypts an <code>EncryptedKey</code> object.
+     * Encrypts a key to an EncryptedKey structure
+	 *
+	 * @param key Key to encrypt (will use previously set KEK to 
+	 * perform encryption
      */
-    public EncryptedKey encryptKey(Document context, Element element) throws
+
+    public EncryptedKey encryptKey(Key key) throws
             XMLEncryptionException {
-        return (null);
+
+        logger.debug("Encrypting key ...");
+
+        if(null == key) 
+            logger.error("Key unexpectedly null...");
+        if(cipherMode != WRAP_MODE)
+            logger.error("XMLCipher unexpectedly not in WRAP_MODE...");
+
+        byte[] encryptedBytes = null;
+		// Now create the working cipher
+
+		String jceAlgorithm =
+			JCEMapper.translateURItoJCEID(algorithm).getAlgorithmID();
+		String provider;
+
+		if (requestedJCEProvider == null)
+			provider =
+				JCEMapper.translateURItoJCEID(algorithm).getProviderId();
+		else
+			provider = requestedJCEProvider;
+
+		logger.debug("provider = " + provider + "alg = " + jceAlgorithm);
+
+		Cipher c;
+		try {
+			c = Cipher.getInstance(jceAlgorithm, provider);
+		} catch (NoSuchAlgorithmException nsae) {
+			throw new XMLEncryptionException("empty", nsae);
+		} catch (NoSuchProviderException nspre) {
+			throw new XMLEncryptionException("empty", nspre);
+		} catch (NoSuchPaddingException nspae) {
+			throw new XMLEncryptionException("empty", nspae);
+		}
+
+		// Now perform the encryption
+
+		try {
+			// Should internally generate an IV
+			// todo - allow user to set an IV
+			c.init(Cipher.WRAP_MODE, localKey);
+			encryptedBytes = c.wrap(key);
+		} catch (InvalidKeyException ike) {
+			throw new XMLEncryptionException("empty", ike);
+		} catch (IllegalBlockSizeException ibse) {
+			throw new XMLEncryptionException("empty", ibse);
+		}
+
+        String base64EncodedEncryptedOctets = new BASE64Encoder().encode(
+            encryptedBytes);
+
+        logger.debug("Encrypted key octets:\n" + base64EncodedEncryptedOctets);
+        logger.debug("Encrypted key octets length = " +
+            base64EncodedEncryptedOctets.length());
+
+        EncryptedKey encryptedKey = createEncryptedKey(CipherData.VALUE_TYPE,
+            base64EncodedEncryptedOctets);
+        try {
+            EncryptionMethod method = factory.newEncryptionMethod(
+                new URI(algorithm).toString());
+            encryptedKey.setEncryptionMethod(method);
+        } catch (URI.MalformedURIException mfue) {
+            throw new XMLEncryptionException("empty", mfue);
+        }
+
+        return (encryptedKey);
     }
 
 	/**
@@ -917,7 +997,7 @@ public class XMLCipher {
 
         logger.debug("Decrypting key from previously loaded EncryptedKey...");
 
-        if(cipherMode != DECRYPT_MODE)
+        if(cipherMode != DECRYPT_MODE && cipherMode != UNWRAP_MODE)
             logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
 
 		if (localKEK == null) {
@@ -988,6 +1068,8 @@ public class XMLCipher {
 		} catch (NoSuchAlgorithmException nsae) {
 			throw new XMLEncryptionException("empty", nsae);
 		}
+
+		logger.info("Decryption of key type " + algorithm + " OK");
 
 		return ret;
 
@@ -1217,6 +1299,58 @@ public class XMLCipher {
                 data = factory.newCipherData(type);
                 data.setCipherValue(cipherValue);
                 result = factory.newEncryptedData(data);
+        }
+
+        return (result);
+    }
+    /**
+     * Creates an <code>EncryptedData</code> <code>Element</code>.
+     *
+     * @param text the Base 64 encoded, encrypted text to wrap in the
+     *   <code>EncryptedData</code>.
+     * @return the <code>EncryptedData</code> <code>Element</code>.
+     *
+     * <!--
+     * <EncryptedData Id[OPT] Type[OPT] MimeType[OPT] Encoding[OPT]>
+     *     <EncryptionMethod/>[OPT]
+     *     <ds:KeyInfo>[OPT]
+     *         <EncryptedKey/>[OPT]
+     *         <AgreementMethod/>[OPT]
+     *         <ds:KeyName/>[OPT]
+     *         <ds:RetrievalMethod/>[OPT]
+     *         <ds:[MUL]/>[OPT]
+     *     </ds:KeyInfo>
+     *     <CipherData>[MAN]
+     *         <CipherValue/> XOR <CipherReference/>
+     *     </CipherData>
+     *     <EncryptionProperties/>[OPT]
+     * </EncryptedData>
+     * -->
+     */
+
+    private EncryptedKey createEncryptedKey(int type, String value) throws
+            XMLEncryptionException {
+        EncryptedKey result = null;
+        CipherData data = null;
+
+        switch (type) {
+            case CipherData.REFERENCE_TYPE:
+                String referenceUri = null;
+                try {
+                    referenceUri = new URI(value).toString();
+                } catch (URI.MalformedURIException mfue) {
+                    throw new XMLEncryptionException("empty", mfue);
+                }
+                CipherReference cipherReference = factory.newCipherReference(
+                    referenceUri);
+                data = factory.newCipherData(type);
+                data.setCipherReference(cipherReference);
+                result = factory.newEncryptedKey(data);
+            case CipherData.VALUE_TYPE:
+                CipherValue cipherValue = factory.newCipherValue(value);
+                data = factory.newCipherData(type);
+                data.setCipherValue(cipherValue);
+                result = factory.newEncryptedKey(data);
         }
 
         return (result);
@@ -2453,9 +2587,19 @@ public class XMLCipher {
                     result.appendChild(((EncryptionMethodImpl)
                         super.getEncryptionMethod()).toElement());
                 }
+				/*
                 if (null != super.getKeyInfo()) {
                     // TODO: complete
                 }
+				*/
+				if (kiEncryptedKey != null) {
+
+					// Temporarily just add this
+					KeyInfo ki = new KeyInfo(contextDocument);
+					ki.addUnknownElement(((EncryptedKeyImpl) kiEncryptedKey).toElement());
+					result.appendChild(ki.getElement());
+				};
+
                 result.appendChild(
                     ((CipherDataImpl) super.getCipherData()).toElement());
                 if (null != super.getEncryptionProperties()) {
@@ -2554,7 +2698,7 @@ public class XMLCipher {
             Element toElement() {
                 Element result = ElementProxy.createElementForFamily(
                     contextDocument, EncryptionConstants.EncryptionSpecNS, 
-                    EncryptionConstants._TAG_ENCRYPTEDDATA);
+                    EncryptionConstants._TAG_ENCRYPTEDKEY);
 
                 if (null != super.getId()) {
                     result.setAttributeNS(
@@ -2590,7 +2734,7 @@ public class XMLCipher {
                     result.appendChild(((EncryptionPropertiesImpl)
                         super.getEncryptionProperties()).toElement());
                 }
-                if (!referenceList.isEmpty()) {
+                if (referenceList != null && !referenceList.isEmpty()) {
                     // TODO: complete
                 }
                 if (null != carriedName) {
