@@ -253,7 +253,9 @@ public class XMLSignatureInput {
    	  	return this._inputNodeSet;
    	  }
       if (this.isNodeSet()) {
-      	 XMLUtils.circumventBug2650(XMLUtils.getOwnerDocument(this._inputNodeSet));
+         if (!this._inputNodeSet.isEmpty()) {
+      	    XMLUtils.circumventBug2650(XMLUtils.getOwnerDocument(this._inputNodeSet));
+         }
          return this._inputNodeSet;
       } else if (this.isOctetStream()) {
          DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
