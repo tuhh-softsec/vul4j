@@ -62,27 +62,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.security.Key;
-import java.security.SecureRandom;
-import javax.crypto.KeyGenerator;
+
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.xml.security.encryption.EncryptedData;
+
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.Method;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 /**
