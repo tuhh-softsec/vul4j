@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.6 2001/06/24 17:02:21 sanders Exp $
- * $Revision: 1.6 $
- * $Date: 2001/06/24 17:02:21 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.7 2001/07/19 20:55:52 sanders Exp $
+ * $Revision: 1.7 $
+ * $Date: 2001/07/19 20:55:52 $
  *
  * ====================================================================
  *
@@ -105,7 +105,8 @@ import org.xml.sax.SAXParseException;
  * even from the same thread.</p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.6 $ $Date: 2001/06/24 17:02:21 $
+ * @author Scott Sanders
+ * @version $Revision: 1.7 $ $Date: 2001/07/19 20:55:52 $
  */
 
 public class Digester extends DefaultHandler {
@@ -140,6 +141,13 @@ public class Digester extends DefaultHandler {
 
 
     // --------------------------------------------------- Instance Variables
+
+
+    /**
+     * Do we want to use the Context ClassLoader when loading classes
+     * for instantiating new objects?  Default is <code>false</code>.
+     */
+    protected boolean useContextClassLoader = false;
 
 
     /**
@@ -390,6 +398,32 @@ public class Digester extends DefaultHandler {
         this.writer = writer;
 
     }
+
+
+    /**
+     * Return the boolean as to whether the context classloader should be used.
+     */
+    public boolean getUseContextClassLoader() {
+
+        return useContextClassLoader;
+
+    }
+
+
+    /**
+     * Determine whether to use the Context ClassLoader (the one found by
+     * calling <code>Thread.currentThread().getContextClassLoader()</code>)
+     * to resolve/load classes that are defined in various rules.  If not
+     * using Context ClassLoader, then the class-loading defaults to
+     * using the calling-class' ClassLoader.
+     *
+     * @param boolean determines whether to use Context ClassLoader.
+     */
+    public void setUseContextClassLoader(boolean use) {
+
+        useContextClassLoader = use;
+
+     }
 
 
     // ---------------------------------------------- DocumentHandler Methods
