@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-Copyright 2003-2004 The Apache Software Foundation
+Copyright 2003-2005 The Apache Software Foundation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ limitations under the License.
     <person name="Karel Wouters"      email="karel.wouters@esat.kuleuven.ac.be"      id="KW" />
     <person name="Raul Benito Garcia" email="raul@apache.org" id="RB"/>
     <person name="Vishal Mahajan" email="Vishal.Mahajan@Sun.COM" id="VM"/>
+    <person name="Milan Tomic" email="milan@setcce.org" id="MT"/>
     <!-- Add more people here -->
   </developers>
   
