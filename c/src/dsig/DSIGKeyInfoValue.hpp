@@ -269,7 +269,7 @@ public:
 	 * @param modulus Base64 encoded value of Modulus to set
 	 * @param exponent Base64 encoded value of the Exponent to set
 	 * @returns The DOM structure of the RSAValue that has been created
-	 */;
+	 */
 	
 	DOMElement * DSIGKeyInfoValue::createBlankRSAKeyValue(const XMLCh * modulus,
 		const XMLCh * exponent);

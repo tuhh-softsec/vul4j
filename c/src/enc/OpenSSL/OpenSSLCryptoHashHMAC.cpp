@@ -124,7 +124,7 @@ void OpenSSLCryptoHashHMAC::setKey(XSECCryptoKey *key) {
 
 	}
 
-	unsigned int m_keyLen = ((XSECCryptoKeyHMAC *) key)->getKey(m_keyBuf);
+	m_keyLen = ((XSECCryptoKeyHMAC *) key)->getKey(m_keyBuf);
 
 
 	HMAC_Init(&m_hctx, 

@@ -306,7 +306,7 @@ DSIGTransformC14n * DSIGReference::appendCanonicalizationTransform(canonicalizat
 
 }	
 
-DSIGTransformXPath * DSIGReference::appendXPathTransform(char * expr) {
+DSIGTransformXPath * DSIGReference::appendXPathTransform(const char * expr) {
 
 	DOMElement *txfmElt;
 	DSIGTransformXPath * txfm;

@@ -85,7 +85,7 @@
  * an exception number.
  */
 
-extern char * XSECExceptionStrings [];
+extern const char * XSECExceptionStrings [];
 
 /** @} */
 

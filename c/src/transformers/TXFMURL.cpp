@@ -101,7 +101,7 @@ TXFMURL::~TXFMURL() {
 
 	// Methods to set the inputs
 
-void TXFMURL::setInput(TXFMBase *input) {
+void TXFMURL::setInput(TXFMBase *newInput) {
 
 	// Not possible as this needs to be the start of a tranform pipe
 

@@ -93,6 +93,7 @@ XSEC_USING_XERCES(Janitor);
 XALAN_USING_XALAN(XSLTResultTarget)
 
 // Function used to output data to a safeBuffer
+extern "C" {
 
 typedef struct TransformXSLOutputHolderStruct {
 
@@ -111,6 +112,7 @@ CallbackSizeType TransformXSLOutputFn(const char * s, CallbackSizeType sz, void 
 
 	return sz;
 
+}
 }
 
 // -----------------------------------------------------------------------

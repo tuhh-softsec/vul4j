@@ -114,9 +114,6 @@ private:
 
 	safeBuffer			sbInDoc;
 
-	// The actual transformer elements
-	XalanTransformer xt;
-	
 	DOMDocument		* document;
 	
 	DOMDocument		* docOut;			// The output from the transformation

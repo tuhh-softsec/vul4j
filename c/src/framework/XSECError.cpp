@@ -74,7 +74,7 @@
 #include <xsec/framework/XSECDefs.hpp>
 // Real definition of strings
 
-char * XSECExceptionStrings [] = {
+const char * XSECExceptionStrings [] = {
 
 	"No Error",
 	"Error allocating memory",

@@ -91,7 +91,7 @@ public:
 
 	// Methods to set the inputs
 
-	virtual void setInput(TXFMBase *input);
+	virtual void setInput(TXFMBase *newInput);
 	void setInput(const safeBuffer sbIn);
 	void setInput(const safeBuffer sbIn, unsigned int sbSize); 
 

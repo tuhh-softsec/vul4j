@@ -230,7 +230,7 @@ public:
 	 * @returns The newly created XPath transform
 	 */
 
-	DSIGTransformXPath * appendXPathTransform(char * expr);
+	DSIGTransformXPath * appendXPathTransform(const char * expr);
 	
 	/**
 	 * \brief Append an XPath-Filter2 Transform to the Reference.

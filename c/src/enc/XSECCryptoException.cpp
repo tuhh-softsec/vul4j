@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -88,7 +86,7 @@ extern const char * XSECCryptoExceptionStrings[] = {
 
 };
 
-XSECCryptoException::XSECCryptoException(XSECCryptoExceptionType eNum, char * inMsg) {
+XSECCryptoException::XSECCryptoException(XSECCryptoExceptionType eNum, const char * inMsg) {
 
 	if (eNum > UnknownError)
 		type = UnknownError;

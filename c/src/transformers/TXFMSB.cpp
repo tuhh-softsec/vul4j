@@ -89,7 +89,7 @@ TXFMSB::~TXFMSB() {
 
 	// Methods to set the inputs
 
-void TXFMSB::setInput(TXFMBase *input) {
+void TXFMSB::setInput(TXFMBase *newInput) {
 
 	// Not possible as this needs to be the start of a tranform pipe
 

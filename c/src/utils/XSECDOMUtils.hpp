@@ -122,7 +122,7 @@ const XMLCh DSIG_EXPORT * getXPFLocalName(const DOMNode *node);
 //           Find a nominated DSIG node in a document
 // --------------------------------------------------------------------------------
 
-DOMNode DSIG_EXPORT * findDSIGNode(DOMNode *n, char * nodeName);
+DOMNode DSIG_EXPORT * findDSIGNode(DOMNode *n, const char * nodeName);
 
 // --------------------------------------------------------------------------------
 //           Find particular type of node child
@@ -134,8 +134,8 @@ DOMNode DSIG_EXPORT * findFirstChildOfType(DOMNode *n, DOMNode::NodeType t);
 //           Make a QName
 // --------------------------------------------------------------------------------
 
-safeBuffer DSIG_EXPORT &makeQName(safeBuffer & qname, safeBuffer &prefix, char * localName);
-safeBuffer DSIG_EXPORT &makeQName(safeBuffer & qname, const XMLCh *prefix, char * localName);
+safeBuffer DSIG_EXPORT &makeQName(safeBuffer & qname, safeBuffer &prefix, const char * localName);
+safeBuffer DSIG_EXPORT &makeQName(safeBuffer & qname, const XMLCh *prefix, const char * localName);
 
 // --------------------------------------------------------------------------------
 //           Gather text from children

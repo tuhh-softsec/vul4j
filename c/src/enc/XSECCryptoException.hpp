@@ -150,7 +150,7 @@ public:
 	 * XSECCryptoExceptionStrings
 	 */
 
-	XSECCryptoException(XSECCryptoExceptionType eNum, char * inMsg = NULL);
+	XSECCryptoException(XSECCryptoExceptionType eNum, const char * inMsg = NULL);
 
 	/**
 	 * \brief safeBuffer constructor

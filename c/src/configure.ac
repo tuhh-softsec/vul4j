@@ -180,13 +180,13 @@ case "${host}" in
 						else
 							# Not sure if these will work - only tested with g++
 							PIC=["-KPIC"]
-							PLATFORM_OPTIONS=["-mt -ks"]
+							PLATFORM_OPTIONS=["-mt"]
 						fi
 						# Should use -D_REENTRANT - but not yet OK
 						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DSOLARIS"]
 						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
 						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
-						MAKE_SHARED=["${CXX} ${CXXFLAGS} -DSOLARIS -shared ${PIC}"]
+						MAKE_SHARED=["${CXX} ${CXXFLAGS} -DSOLARIS -G ${PIC}"]
 						LINK=["${CXX} ${CXXFLAGS} -DSOLARIS ${PIC}"]
 						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
 						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
@@ -383,7 +383,7 @@ if test "$use_xalan" = "yes" ; then
     OLD_CPPFLAGS=$CPPFLAGS
     CPPFLAGS=["${CPPFLAGS} -I${XALANCROOT}/src"]
 
-    AC_TRY_CPP([#include <Include/PlatformDefinitions.hpp>], 
+    AC_TRY_CPP([#include <Include/XalanVersion.hpp>], 
       xalan_found=yes 
       LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c1_5_0"
       [AC_MSG_RESULT([found])], 
@@ -395,7 +395,7 @@ if test "$use_xalan" = "yes" ; then
   if test -z $xalan_found ; then
 
     AC_MSG_CHECKING([for Xalan in system includes])
-    AC_TRY_CPP([#include <Include/PlatformDefinitions.hpp>], 
+    AC_TRY_CPP([#include <Include/XalanVersion.hpp>], 
       xalan_found=yes 
       LIBS="${LIBS} -lxalan-c1_5_0"
       [AC_MSG_RESULT([found])],

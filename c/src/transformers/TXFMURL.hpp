@@ -97,7 +97,7 @@ public:
 
 	// Methods to set the inputs
 
-	virtual void setInput(TXFMBase *input);
+	virtual void setInput(TXFMBase *newInput);
 	void setInput(const XMLCh * URL);
 
 	// Methods to get tranform output type and input requirement

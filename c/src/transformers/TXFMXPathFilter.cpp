@@ -444,7 +444,7 @@ void TXFMXPathFilter::walkDocument(DOMNode * n) {
 
 	DOMNode * current = n;
 	DOMNode * next;
-	DOMNode * attParent;
+	DOMNode * attParent = NULL; 	/* Assign NULL to remove spurious Forte warning */
 	bool done = false;
 	bool treeUp = false;
 	DOMNamedNodeMap * atts = n->getAttributes();

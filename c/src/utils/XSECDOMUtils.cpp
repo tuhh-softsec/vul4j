@@ -118,7 +118,7 @@ const XMLCh * getXPFLocalName(const DOMNode * node) {
 //           Find a nominated DSIG node in a document
 // --------------------------------------------------------------------------------
 
-DOMNode *findDSIGNode(DOMNode *n, char * nodeName) {
+DOMNode *findDSIGNode(DOMNode *n, const char * nodeName) {
 
 	const XMLCh * name = getDSIGLocalName(n);
 
@@ -167,7 +167,7 @@ DOMNode *findFirstChildOfType(DOMNode *n, DOMNode::NodeType t) {
 //           Make a QName
 // --------------------------------------------------------------------------------
 
-safeBuffer &makeQName(safeBuffer & qname, safeBuffer &prefix, char * localName) {
+safeBuffer &makeQName(safeBuffer & qname, safeBuffer &prefix, const char * localName) {
 
 	if (prefix[0] == '\0') {
 		qname = localName;
@@ -181,7 +181,7 @@ safeBuffer &makeQName(safeBuffer & qname, safeBuffer &prefix, char * localName) 
 	return qname;
 
 }
-safeBuffer &makeQName(safeBuffer & qname, const XMLCh *prefix, char * localName) {
+safeBuffer &makeQName(safeBuffer & qname, const XMLCh *prefix, const char * localName) {
 
 	if (prefix == NULL || prefix[0] == 0) {
 		qname.sbTranscodeIn(localName);

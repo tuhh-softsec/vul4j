@@ -229,13 +229,15 @@ void DSIGTransformC14n::load(void) {
 
 		// Exclusive, so there may be an InclusiveNamespaces node
 
-		DOMNode *mp_inclNSNode = mp_txfmNode->getFirstChild();
+		DOMNode * inclNSNode = mp_txfmNode->getFirstChild();
 		
-		while (mp_inclNSNode != NULL && (mp_inclNSNode->getNodeType() != DOMNode::ELEMENT_NODE ||
-			!strEquals(getECLocalName(mp_inclNSNode), "InclusiveNamespaces")))
-				mp_inclNSNode = mp_inclNSNode->getNextSibling();
+		while (inclNSNode != NULL && (inclNSNode->getNodeType() != DOMNode::ELEMENT_NODE ||
+			!strEquals(getECLocalName(inclNSNode), "InclusiveNamespaces")))
+				inclNSNode = inclNSNode->getNextSibling();
 
-		if (mp_inclNSNode != 0) {
+		if (inclNSNode != 0) {
+
+			mp_inclNSNode = static_cast<DOMElement *>(inclNSNode);
 
 			// Have a prefix list
 			atts = mp_inclNSNode->getAttributes();

@@ -191,7 +191,7 @@ public :
 		KEY_NONE			= 0,        /**< Key is empty - type unknown */
 		KEY_DSA_PUB			= 1,		/**< DSA key - Public part only */
 		KEY_DSA_PRIV		= 2,		/**< DSA key - Private part only */
-		KEY_DSA_PAIR		= 3,		/**< DSA key - Full Key Pair */
+		KEY_DSA_PAIR		= 3		/**< DSA key - Full Key Pair */
 
 	};
 
@@ -203,7 +203,7 @@ public :
 	enum CryptoAlgorithmType {
 
 		ALG_NONE			= 0,       /**< Used for catching errors */
-		ALG_DSA				= 1,       /**< Digital Signature Algorithm */
+		ALG_DSA				= 1        /**< Digital Signature Algorithm */
 
 	};
 
