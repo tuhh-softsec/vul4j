@@ -1,0 +1,10 @@
+If we sign a Manifest, we have to ensure that the References inside the Manifest have correct digest values (that we do not blindly sign contents which an attacker wants us to sign). Additionally, the signed contents of such a (nested) Manifest have to be made available to the user. Currently, only the 1st level contents (what is referenced by SignedInfo) are available using XMLSignature.getSignedInfo().getSignedContent(int i). Same comments apply to sigining a ds:Reference from another Manifest or SignedInfo. 
+
+Question: What is an appropriate processing model if the user signs a ds:Manifest or a ds:Reference ? 
+Possible choices include:
+- only process the SignedInfo. Make information about signed Manifests, References or Signatures available to the user. Now it's up to the user to decide whether he follows this hint or not.
+- using the XMLSignature.setFollowNestedManifests(true) method, it can be defined that all Mianifests have to be valid, also Manifests which are referenced from Manifests. 
+- the user could define a length how many Manifests have to be followed. But this makes not much sense, cause it makes Signature something 'analog', allowing to scale whether validation fails or not.
+
+
+
