@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Declaration.java,v 1.5 2003/10/28 23:31:08 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2003/10/28 23:31:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Declaration.java,v 1.6 2003/11/02 23:26:59 rdonkin Exp $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/02 23:26:59 $
  *
  * ====================================================================
  * 
@@ -230,7 +230,7 @@ public class Declaration {
         }
         
         if (initialised_) {
-            throw new PluginAssertionError("Init called multiple times.");
+            throw new PluginAssertionFailure("Init called multiple times.");
         }
 
         if ((pluginClass_ == null) && (pluginClassName_ != null)) {
@@ -301,7 +301,7 @@ public class Declaration {
         }
         
         if (!initialised_) {
-            throw new PluginAssertionError("Not initialised.");
+            throw new PluginAssertionFailure("Not initialised.");
         }
         
         // load from explicit file
@@ -408,7 +408,7 @@ public class Declaration {
     throws PluginWrappedException {
         try
         {
-            throw new PluginAssertionError(
+            throw new PluginAssertionFailure(
                 "Load from stream not yet supported.");
         }
         finally {

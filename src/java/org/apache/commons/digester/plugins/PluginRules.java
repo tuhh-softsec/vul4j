@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginRules.java,v 1.4 2003/10/28 23:31:08 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2003/10/28 23:31:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginRules.java,v 1.5 2003/11/02 23:26:59 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2003/11/02 23:26:59 $
  *
  * ====================================================================
  * 
@@ -344,7 +344,7 @@ public class PluginRules implements Rules {
         boolean debug = log.isDebugEnabled();
 
         if (currPluginCreateRule_ != null) {
-            throw new PluginAssertionError(
+            throw new PluginAssertionFailure(
                 "endPlugin called when currPluginCreateRule_ is not null.");
         }
 
@@ -366,12 +366,12 @@ public class PluginRules implements Rules {
         boolean debug = log.isDebugEnabled();
 
         if (currPluginCreateRule_ == null) {
-            throw new PluginAssertionError(
+            throw new PluginAssertionFailure(
                 "endPlugin called when currPluginCreateRule_ is null.");
         }
         
         if (currPluginCreateRule_ != pcr) {
-            throw new PluginAssertionError(
+            throw new PluginAssertionFailure(
                 "endPlugin called with unexpected PluginCreateRule_.");
         }
         

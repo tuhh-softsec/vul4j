@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.5 2003/10/28 23:31:08 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2003/10/28 23:31:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginCreateRule.java,v 1.6 2003/11/02 23:26:59 rdonkin Exp $
+ * $Revision: 1.6 $
+ * $Date: 2003/11/02 23:26:59 $
  *
  * ====================================================================
  * 
@@ -319,7 +319,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             // ok here we are actually instantiating a new plugin object,
             // and storing its rules into a new Rules object
             if (localRules_ != null) {
-                throw new PluginAssertionError(
+                throw new PluginAssertionFailure(
                     "Begin called when localRules_ is not null.");
             }
                       

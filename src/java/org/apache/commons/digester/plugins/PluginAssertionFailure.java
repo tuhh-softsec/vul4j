@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/Attic/PluginAssertionError.java,v 1.3 2003/10/09 21:09:48 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2003/10/09 21:09:48 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/plugins/PluginAssertionFailure.java,v 1.1 2003/11/02 23:26:42 rdonkin Exp $
+ * $Revision: 1.1 $
+ * $Date: 2003/11/02 23:26:42 $
  *
  * ====================================================================
  * 
@@ -63,17 +63,39 @@ package org.apache.commons.digester.plugins;
 
 /**
  * Thrown when a bug is detected in the plugins code.
+ * <p>
+ * This class is intended to be used in assertion statements, similar to
+ * the way that java 1.4's native assertion mechanism is used. However there
+ * is a difference: when a java 1.4 assertion fails, an AssertionError
+ * is thrown, which is a subclass of Error; here, the PluginAssertionFailure
+ * class extends RuntimeException rather than Error.
+ * <p>
+ * This difference in design is because throwing Error objects is not
+ * good in a container-based architecture.
+ * <p>
+ * Example:
+ * <pre>
+ *   if (impossibleCondition) {
+ *     throw new PluginAssertionFailure(
+ *       "internal error: impossible condition is true");
+ *   }
+ * </pre> 
+ * <p>
+ * Note that PluginAssertionFailure should <i>not</i> be thrown when user 
+ * input is bad, or when code external to the Digester module passes invalid 
+ * parameters to a plugins method. It should be used only in checks for 
+ * problems which indicate internal bugs within the plugins module.
  *
  * @author Simon Kitching
  */
-public class PluginAssertionError extends Error {
+public class PluginAssertionFailure extends RuntimeException {
 
     private Throwable cause = null;
 
     /**
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginAssertionError(Throwable cause) {
+    public PluginAssertionFailure(Throwable cause) {
         this(cause.getMessage());
         this.cause = cause;
     }
@@ -81,7 +103,7 @@ public class PluginAssertionError extends Error {
     /**
      * @param msg describes the reason this exception is being thrown.
      */
-    public PluginAssertionError(String msg) {
+    public PluginAssertionFailure(String msg) {
         super(msg);
     }
 
@@ -89,7 +111,7 @@ public class PluginAssertionError extends Error {
      * @param msg describes the reason this exception is being thrown.
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginAssertionError(String msg, Throwable cause) {
+    public PluginAssertionFailure(String msg, Throwable cause) {
         this(msg);
         this.cause = cause;
     }
