@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.39 2002/01/12 22:32:37 sanders Exp $
- * $Revision: 1.39 $
- * $Date: 2002/01/12 22:32:37 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.40 2002/01/15 02:37:17 sanders Exp $
+ * $Revision: 1.40 $
+ * $Date: 2002/01/15 02:37:17 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.39 $ $Date: 2002/01/12 22:32:37 $
+ * @version $Revision: 1.40 $ $Date: 2002/01/15 02:37:17 $
  */
 
 public class Digester extends DefaultHandler {
@@ -477,6 +477,14 @@ public class Digester extends DefaultHandler {
 
     }
 
+    /**
+     * Return the current rule match path
+     */
+    public String getMatch() {
+
+        return match;
+
+    }
 
     /**
      * Return the "namespace aware" flag for parsers we create.
