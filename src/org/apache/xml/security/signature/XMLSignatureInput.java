@@ -175,7 +175,7 @@ public class XMLSignatureInput {
       XMLUtils.circumventBug2650(doc);
 
       NodeList result = this._cxpathAPI.selectNodeList(rootNode,
-         Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+                           Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
 
       this._inputNodeSet = XMLUtils.convertNodelistToSet(result);
    }
@@ -212,6 +212,28 @@ public class XMLSignatureInput {
    }
 
    /**
+    * Constructor XMLSignatureInput
+    *
+    * @param inputNodeSet
+    * @deprecated Use {@link Set}s instead of {@link NodeList}s.
+    */
+   public XMLSignatureInput(NodeList inputNodeSet) {
+      this(XMLUtils.convertNodelistToSet(inputNodeSet), new CachedXPathAPI());
+   }
+
+   /**
+    * Constructor XMLSignatureInput
+    *
+    * @param inputNodeSet
+    * @param usedXPathAPI
+    * @deprecated Use {@link Set}s instead of {@link NodeList}s.
+    */
+   public XMLSignatureInput(NodeList inputNodeSet,
+                            CachedXPathAPI usedXPathAPI) {
+      this(XMLUtils.convertNodelistToSet(inputNodeSet), usedXPathAPI);
+   }
+
+   /**
     * Returns the node set from input which was specified as the parameter of {@link XMLSignatureInput} constructor
     *
     * @return the node set
@@ -236,16 +258,19 @@ public class XMLSignatureInput {
          DocumentBuilder db = dfactory.newDocumentBuilder();
 
          try {
-            db.setErrorHandler(
-               new org.apache.xml.security.utils.IgnoreAllErrorHandler());
+            db.setErrorHandler(new org.apache.xml.security.utils
+               .IgnoreAllErrorHandler());
 
             Document doc = db.parse(this.getOctetStream());
 
             XMLUtils.circumventBug2650(doc);
 
             // select all nodes, also the comments.
-            NodeList nodeList = this._cxpathAPI.selectNodeList(doc,
-               Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+            NodeList nodeList =
+               this._cxpathAPI
+                  .selectNodeList(doc,
+                                  Canonicalizer
+                                     .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
 
             return XMLUtils.convertNodelistToSet(nodeList);
          } catch (TransformerException ex) {
@@ -265,7 +290,8 @@ public class XMLSignatureInput {
             XMLUtils.circumventBug2650(document);
 
             try {
-               NodeList nodeList = this._cxpathAPI.selectNodeList(document,
+               NodeList nodeList = this._cxpathAPI.selectNodeList(
+                  document,
                   "(//. | //@* | //namespace::*)[not(self::node()=/) and not(self::node=/container)]");
 
                return XMLUtils.convertNodelistToSet(nodeList);
@@ -500,7 +526,7 @@ public class XMLSignatureInput {
            throws XMLSignatureException {
 
       XMLSignatureInputDebugger db = new XMLSignatureInputDebugger(this,
-         inclusiveNamespaces);
+                                        inclusiveNamespaces);
 
       return db.getHTMLRepresentation();
    }
@@ -525,9 +551,48 @@ public class XMLSignatureInput {
 
       /** Field _writer */
       private Writer _writer = null;
-
       //J-
-      public static final String HTMLPrefix = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head><style type=\"text/css\"><!-- .INCLUDED { color: #000000; background-color: #FFFFFF; font-weight: bold; } .EXCLUDED { color: #666666; background-color: #999999; } .INCLUDEDINCLUSIVENAMESPACE {	color: #0000FF; background-color: #FFFFFF; font-weight: bold; font-style: italic; } .EXCLUDEDINCLUSIVENAMESPACE { color: #0000FF; background-color: #999999; font-style: italic; } --> </style> </head><body bgcolor=\"#999999\"><pre>";
+      // public static final String HTMLPrefix = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head><style type=\"text/css\"><!-- .INCLUDED { color: #000000; background-color: #FFFFFF; font-weight: bold; } .EXCLUDED { color: #666666; background-color: #999999; } .INCLUDEDINCLUSIVENAMESPACE {	color: #0000FF; background-color: #FFFFFF; font-weight: bold; font-style: italic; } .EXCLUDEDINCLUSIVENAMESPACE { color: #0000FF; background-color: #999999; font-style: italic; } --> </style> </head><body bgcolor=\"#999999\"><pre>";
+      public static final String HTMLPrefix = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n"
+                 + "<html>\n"
+                 + "<head>\n"
+                 + "<title>Caninical XML node set</title>\n"
+                 + "<style type=\"text/css\">\n"
+                 + "<!-- \n"
+                 + ".INCLUDED { \n"
+                 + "   color: #000000; \n"
+                 + "   background-color: \n"
+                 + "   #FFFFFF; \n"
+                 + "   font-weight: bold; } \n"
+                 + ".EXCLUDED { \n"
+                 + "   color: #666666; \n"
+                 + "   background-color: \n"
+                 + "   #999999; } \n"
+                 + ".INCLUDEDINCLUSIVENAMESPACE { \n"
+                 + "   color: #0000FF; \n"
+                 + "   background-color: #FFFFFF; \n"
+                 + "   font-weight: bold; \n"
+                 + "   font-style: italic; } \n"
+                 + ".EXCLUDEDINCLUSIVENAMESPACE { \n"
+                 + "   color: #0000FF; \n"
+                 + "   background-color: #999999; \n"
+                 + "   font-style: italic; } \n"
+                 + "--> \n"
+                 + "</style> \n"
+                 + "</head>\n"
+                 + "<body bgcolor=\"#999999\">\n"
+                 + "<h1>Explanation of the output</h1>\n"
+                 + "<p>The following text contains the nodeset of the given Reference before it is canonicalized. There exist four different styles to indicate how a given node is treated.</p>\n"
+                 + "<ul>\n"
+                 + "<li class=\"INCLUDED\">A node which is in the node set is labeled using the INCLUDED style.</li>\n"
+                 + "<li class=\"EXCLUDED\">A node which is <em>NOT</em> in the node set is labeled EXCLUDED style.</li>\n"
+                 + "<li class=\"INCLUDEDINCLUSIVENAMESPACE\">A namespace which is in the node set AND in the InclusiveNamespaces PrefixList is labeled using the INCLUDEDINCLUSIVENAMESPACE style.</li>\n"
+                 + "<li class=\"EXCLUDEDINCLUSIVENAMESPACE\">A namespace which is in NOT the node set AND in the InclusiveNamespaces PrefixList is labeled using the INCLUDEDINCLUSIVENAMESPACE style.</li>\n"
+                 + "</ul>\n"
+                 + "<h1>Output</h1>\n"
+                 + "<pre>\n" ;
+
+
       public static final String HTMLSuffix = "</pre></body></html>";
 
       public static final String HTMLExcludePrefix = "<span class=\"EXCLUDED\">";
@@ -572,8 +637,9 @@ public class XMLSignatureInput {
        * @param inclusiveNamespace
        * @throws XMLSignatureException
        */
-      public XMLSignatureInputDebugger(XMLSignatureInput xmlSignatureInput, Set inclusiveNamespace)
-              throws XMLSignatureException {
+      public XMLSignatureInputDebugger(
+              XMLSignatureInput xmlSignatureInput, Set inclusiveNamespace)
+                 throws XMLSignatureException {
 
          this(xmlSignatureInput);
 
@@ -715,12 +781,13 @@ public class XMLSignatureInput {
 
             outputTextToWriter(currentNode.getNodeValue());
 
-            for (Node nextSibling = currentNode.getNextSibling();
-                    (nextSibling != null)
-                    && ((nextSibling.getNodeType() == Node.TEXT_NODE)
-                        || (nextSibling.getNodeType()
-                            == Node.CDATA_SECTION_NODE));
-                    nextSibling = nextSibling.getNextSibling()) {
+            for (Node nextSibling =
+                    currentNode
+                       .getNextSibling(); (nextSibling != null) && ((nextSibling
+                          .getNodeType() == Node.TEXT_NODE) || (nextSibling
+                             .getNodeType() == Node
+                                .CDATA_SECTION_NODE)); nextSibling =
+                                   nextSibling.getNextSibling()) {
 
                /* The XPath data model allows to select only the first of a
                 * sequence of mixed text and CDATA nodes. But we must output
@@ -766,30 +833,34 @@ public class XMLSignatureInput {
             }
 
             Object attrs3[] =
-               org.apache.xml.security.c14n.helper.C14nHelper.sortAttributes(
-                  attrs2);
+               org.apache.xml.security.c14n.helper.C14nHelper
+                  .sortAttributes(attrs2);
 
             for (int i = 0; i < attrsLength; i++) {
                Attr a = (Attr) attrs3[i];
-
                boolean included = this._xpathNodeSet.contains(a);
-               boolean inclusive = this._inclusiveNamespaces.contains(a.getName());
+               boolean inclusive =
+                  this._inclusiveNamespaces.contains(a.getName());
 
                if (included) {
                   if (inclusive) {
-                      // included and inclusive
-                      this._writer.write(HTMLIncludedInclusiveNamespacePrefix);
+
+                     // included and inclusive
+                     this._writer.write(HTMLIncludedInclusiveNamespacePrefix);
                   } else {
-                      // included and not inclusive
-                      this._writer.write(HTMLIncludePrefix);
+
+                     // included and not inclusive
+                     this._writer.write(HTMLIncludePrefix);
                   }
                } else {
                   if (inclusive) {
-                      // excluded and inclusive
-                      this._writer.write(HTMLExcludedInclusiveNamespacePrefix);
+
+                     // excluded and inclusive
+                     this._writer.write(HTMLExcludedInclusiveNamespacePrefix);
                   } else {
-                      // excluded and not inclusive
-                      this._writer.write(HTMLExcludePrefix);
+
+                     // excluded and not inclusive
+                     this._writer.write(HTMLExcludePrefix);
                   }
                }
 
@@ -797,19 +868,23 @@ public class XMLSignatureInput {
 
                if (included) {
                   if (inclusive) {
-                      // included and inclusive
-                      this._writer.write(HTMLIncludedInclusiveNamespaceSuffix);
+
+                     // included and inclusive
+                     this._writer.write(HTMLIncludedInclusiveNamespaceSuffix);
                   } else {
-                      // included and not inclusive
-                      this._writer.write(HTMLIncludeSuffix);
+
+                     // included and not inclusive
+                     this._writer.write(HTMLIncludeSuffix);
                   }
                } else {
                   if (inclusive) {
-                      // excluded and inclusive
-                      this._writer.write(HTMLExcludedInclusiveNamespaceSuffix);
+
+                     // excluded and inclusive
+                     this._writer.write(HTMLExcludedInclusiveNamespaceSuffix);
                   } else {
-                      // excluded and not inclusive
-                      this._writer.write(HTMLExcludeSuffix);
+
+                     // excluded and not inclusive
+                     this._writer.write(HTMLExcludeSuffix);
                   }
                }
             }
