@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.5 2001/06/11 19:56:18 craigmcc Exp $
- * $Revision: 1.5 $
- * $Date: 2001/06/11 19:56:18 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.6 2001/06/24 17:02:21 sanders Exp $
+ * $Revision: 1.6 $
+ * $Date: 2001/06/24 17:02:21 $
  *
  * ====================================================================
  *
@@ -105,7 +105,7 @@ import org.xml.sax.SAXParseException;
  * even from the same thread.</p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.5 $ $Date: 2001/06/11 19:56:18 $
+ * @version $Revision: 1.6 $ $Date: 2001/06/24 17:02:21 $
  */
 
 public class Digester extends DefaultHandler {
@@ -120,6 +120,21 @@ public class Digester extends DefaultHandler {
     public Digester() {
 
 	super();
+
+    }
+
+
+    /**
+     * Construct a new Digester, allowing a SAXParser to be passed in.  This
+     * allows Digester to be used in environments which are unfriendly to
+     * JAXP1.1 (such as WebLogic 6.0).  Thanks for the request to change go to
+     * James House (james@interobjective.com).
+     */
+    public Digester(SAXParser parser) {
+
+	super();
+
+        this.parser = parser;
 
     }
 
@@ -440,12 +455,12 @@ public class Digester extends DefaultHandler {
     /**
      * Process notification of the end of an XML element being reached.
      *
-     * @param uri - The Namespace URI, or the empty string if the 
-     *   element has no Namespace URI or if Namespace processing is not 
+     * @param uri - The Namespace URI, or the empty string if the
+     *   element has no Namespace URI or if Namespace processing is not
      *   being performed.
-     * @param localName - The local name (without prefix), or the empty 
+     * @param localName - The local name (without prefix), or the empty
      *   string if Namespace processing is not being performed.
-     * @param qName - The qualified XML 1.0 name (with prefix), or the 
+     * @param qName - The qualified XML 1.0 name (with prefix), or the
      *   empty string if qualified names are not available.
      * @exception SAXException if a parsing error is to be reported
      */
@@ -571,17 +586,17 @@ public class Digester extends DefaultHandler {
     /**
      * Process notification of the start of an XML element being reached.
      *
-     * @param uri The Namespace URI, or the empty string if the element 
+     * @param uri The Namespace URI, or the empty string if the element
      *   has no Namespace URI or if Namespace processing is not being performed.
-     * @param localName The local name (without prefix), or the empty 
+     * @param localName The local name (without prefix), or the empty
      *   string if Namespace processing is not being performed.
-     * @param qName The qualified name (with prefix), or the empty 
+     * @param qName The qualified name (with prefix), or the empty
      *   string if qualified names are not available.\
-     * @param list The attributes attached to the element. If there are 
+     * @param list The attributes attached to the element. If there are
      *   no attributes, it shall be an empty Attributes object.
      * @exception SAXException if a parsing error is to be reported
      */
-    public void startElement(String namespaceURI, String localName, 
+    public void startElement(String namespaceURI, String localName,
                              String qName, Attributes list)
         throws SAXException {
 
