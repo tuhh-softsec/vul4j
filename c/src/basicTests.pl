@@ -123,6 +123,11 @@ my $have_xalan = 1;
 my $no_xalan_failures = 13;
 my $expected_failures = 0;
 
+# What tests should we run?
+
+my $doenc = 1;
+my $dosig = 1;
+
 my @dsig_array=(
 
 "at/iaik/ixsil/coreFeatures/signatures/anonymousReferenceSignature.xml,-a,n,n",
@@ -288,7 +293,9 @@ foreach (@ARGV) {
 
  SWITCH: {
     if (/^--noxalan$/ || /^-x$/) {$have_xalan = 0; last SWITCH;}
-    if (/^--nopothole$/ || /^-x$/) {$have_pothole = 0; last SWITCH;}
+    if (/^--nopothole$/ || /^-p$/) {$have_pothole = 0; last SWITCH;}
+	if (/^--nosig$/) {$dosig = 0; last SWITCH;}
+	if (/^--noenc$/) {$doenc = 0; last SWITCH;}
     print STDERR "Unknown command : " . $_ . "\n\n";
     print_args();
   }
@@ -296,97 +303,105 @@ foreach (@ARGV) {
 
 # Run the signature tests
 
-print "\n\n";
-print "Running XML Digital Signature Interop Tests\n";
-print "-------------------------------------------\n\n";
+if ($dosig) {
 
-foreach (@dsig_array) {
+  print "\n\n";
+  print "Running XML Digital Signature Interop Tests\n";
+  print "-------------------------------------------\n\n";
 
-  $total_dsig_count++;
+  foreach (@dsig_array) {
 
-  my @fields = split(/\,/, $_);
-  my $file_name = $fields[$dsig_file];
-  my $args = $fields[$dsig_args];
-  my $xalan_flag = $fields[$dsig_flag_xalan];
-  my $pothole_flag = $fields[$dsig_flag_pothole];
+	$total_dsig_count++;
 
-  if ((($xalan_flag eq "n") | $have_xalan) & (($pothole_flag eq 'n') || $have_pothole)) {
+	my @fields = split(/\,/, $_);
+	my $file_name = $fields[$dsig_file];
+	my $args = $fields[$dsig_args];
+	my $xalan_flag = $fields[$dsig_flag_xalan];
+	my $pothole_flag = $fields[$dsig_flag_pothole];
+	
+	if ((($xalan_flag eq "n") | $have_xalan) & (($pothole_flag eq 'n') || $have_pothole)) {
+	
+	  my $result = `$checksig $checksig_args $args $data_dir/$file_name`;
 
-	my $result = `$checksig $checksig_args $args $data_dir/$file_name`;
+	  if ($? == 0) {
+		print "$file_name OK\n";
+		$dsig_pass_count++;
+	  }
+	  else {
+		print "\nFAILURE\n";
+		print "---------\n";
+		print "\n$file_name failed.  \n\nMessage was \n\n$result\n\n";
+		print "---------\n\n";
+		$dsig_failure_count++;
+	  }
+	} else {
 
-	if ($? == 0) {
-	  print "$file_name OK\n";
-	  $dsig_pass_count++;
+	  print "$file_name SKIPPED\n";
+	  $dsig_skipped_count++;
+
 	}
-	else {
-	  print "\nFAILURE\n";
-	  print "---------\n";
-	  print "\n$file_name failed.  \n\nMessage was \n\n$result\n\n";
-	  print "---------\n\n";
-	  $dsig_failure_count++;
-	}
-  } else {
 
-	print "$file_name SKIPPED\n";
-	$dsig_skipped_count++;
+  };
 
-  }
-
-};
-
-print "\n\n";
-print "DSIG Tests complete\n\n";
-print "Total Tests    = $total_dsig_count\n";
-print "Number Passed  = $dsig_pass_count\n";
-print "Number Skipped = $dsig_skipped_count\n";
-print "Number Failed  = $dsig_failure_count\n\n";
-print "-------------------------------------------\n\n";
+  print "\n\n";
+  print "DSIG Tests complete\n\n";
+  print "Total Tests    = $total_dsig_count\n";
+  print "Number Passed  = $dsig_pass_count\n";
+  print "Number Skipped = $dsig_skipped_count\n";
+  print "Number Failed  = $dsig_failure_count\n\n";
+  print "-------------------------------------------\n\n";
+}
 
 # Now run the encryption tests
 
-print "\n\n";
-print "Running XML Encryption Interop Tests\n";
-print "------------------------------------\n\n";
+if ($doenc) {
 
-foreach (@xenc_array) {
+  print "\n\n";
+  print "Running XML Encryption Interop Tests\n";
+  print "------------------------------------\n\n";
 
-  $total_xenc_count++;
+  foreach (@xenc_array) {
 
-  my @fields = split(/\s*,\s*/, $_);
-  my $expected_result = $fields[$xenc_result];
-  my $file_name = $fields[$xenc_file];
-  my $args = $fields[$xenc_args];
-  my $xalan_flag = $fields[$xenc_flag_xalan];
+	$total_xenc_count++;
 
-  if (($xalan_flag eq "n") | $have_xalan) {
+	my @fields = split(/\s*,\s*/, $_);
+	my $expected_result = $fields[$xenc_result];
+	my $file_name = $fields[$xenc_file];
+	my $args = $fields[$xenc_args];
+	my $xalan_flag = $fields[$xenc_flag_xalan];
 
-	my $result = `$cipher $args $data_dir/$file_name`;
+	if (($xalan_flag eq "n") | $have_xalan) {
 
-	if ($? == 0 && $result =~ /$expected_result/) {
-	  print "$file_name OK\n";
-	  $xenc_pass_count++;
-	}
-	else {
-	  print "\nFAILURE\n";
-	  print "---------\n";
-	  print "\n$file_name failed.  \n\nOutput was \n\n$result\n\n";
-	  print "---------\n\n";
-	  $xenc_failure_count++;
-	}
-  } else {
+	  my $result = `$cipher $args $data_dir/$file_name`;
 
-	print "$file_name SKIPPED\n";
-	$xenc_skipped_count++;
-  }	
+	  if ($? == 0 && $result =~ /$expected_result/) {
+		print "$file_name OK\n";
+		$xenc_pass_count++;
+	  }
+	  else {
+		print "\nFAILURE\n";
+		print "---------\n";
+		print "\n$file_name failed.  \n\nOutput was \n\n$result\n\n";
+		print "---------\n\n";
+		$xenc_failure_count++;
+	  }
+	} else {
 
-};
+	  print "$file_name SKIPPED\n";
+	  $xenc_skipped_count++;
+	}	
 
-print "\n\n";
-print "XENC Tests complete\n\n";
-print "Total Tests    = $total_xenc_count\n";
-print "Number Passed  = $xenc_pass_count\n";
-print "Number Skipped = $xenc_skipped_count\n";
-print "Number Failed  = $xenc_failure_count\n\n";
+  };
+
+  print "\n\n";
+  print "XENC Tests complete\n\n";
+  print "Total Tests    = $total_xenc_count\n";
+  print "Number Passed  = $xenc_pass_count\n";
+  print "Number Skipped = $xenc_skipped_count\n";
+  print "Number Failed  = $xenc_failure_count\n\n";
+}
+
+# Now the totals
 
 my $total_count = $total_dsig_count + $total_xenc_count;
 my $total_passed = $dsig_pass_count + $xenc_pass_count;
