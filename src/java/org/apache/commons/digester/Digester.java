@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.21 2001/10/13 01:34:59 craigmcc Exp $
- * $Revision: 1.21 $
- * $Date: 2001/10/13 01:34:59 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.22 2001/10/16 15:36:56 craigmcc Exp $
+ * $Revision: 1.22 $
+ * $Date: 2001/10/16 15:36:56 $
  *
  * ====================================================================
  *
@@ -108,7 +108,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.21 $ $Date: 2001/10/13 01:34:59 $
+ * @version $Revision: 1.22 $ $Date: 2001/10/16 15:36:56 $
  */
 
 public class Digester extends DefaultHandler {
@@ -255,6 +255,13 @@ public class Digester extends DefaultHandler {
      * The SAXParser we will use to parse the input stream.
      */
     protected SAXParser parser = null;
+
+
+    /**
+     * The public identifier of the DTD we are currently parsing under
+     * (if any).
+     */
+    protected String publicId = null;
 
 
     /**
@@ -440,6 +447,17 @@ public class Digester extends DefaultHandler {
     public void setNamespaceAware(boolean namespaceAware) {
 
         this.namespaceAware = namespaceAware;
+
+    }
+
+
+    /**
+     * Return the public identifier of the DTD we are currently
+     * parsing under, if any.
+     */
+    public String getPublicId() {
+
+        return (this.publicId);
 
     }
 
@@ -1010,6 +1028,7 @@ public class Digester extends DefaultHandler {
 
 	if (debug >= 1)
 	    log("resolveEntity('" + publicId + "', '" + systemId + "')");
+        this.publicId = publicId;
 
 	// Has this system identifier been registered?
 	String dtdURL = null;
@@ -1542,6 +1561,7 @@ public class Digester extends DefaultHandler {
 	match = "";
         bodyTexts.clear();
         params.clear();
+        publicId = null;
         stack.clear();
 
     }
