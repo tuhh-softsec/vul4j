@@ -64,16 +64,6 @@ public class TransformXPath extends TransformSpi {
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XPATH;
 
-   //J-
-   /** @inheritDoc */
-   public boolean wantsOctetStream ()   { return false; }
-   /** @inheritDoc */
-   public boolean wantsNodeSet ()       { return true; }
-   /** @inheritDoc */
-   public boolean returnsOctetStream () { return false; }
-   /** @inheritDoc */
-   public boolean returnsNodeSet ()     { return true; }
-   //J+
 
    /**
     * Method engineGetURI
@@ -107,7 +97,7 @@ public class TransformXPath extends TransformSpi {
           * The evaluation of this expression includes all of the document's nodes
           * (including comments) in the node-set representing the octet stream.
           */
-
+		  CachedXPathAPIHolder.setDoc(this._transformObject.getElement().getOwnerDocument());
          
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());
@@ -155,7 +145,21 @@ public class TransformXPath extends TransformSpi {
          }
 
          Iterator iterator = inputSet.iterator();
-         
+//		 if (iterator.hasNext()) {
+//			 System.err.println(str);
+//			 Node n1=(Node)iterator.next();		 
+//			 XObject objects=xPathFuncHereAPI.selectNodeList(XMLUtils.getOwnerDocument(n1),
+//                 xpathnode, str,prefixResolver);
+//			 NodeList nl=objects.nodelist();
+//			 int length=nl.getLength();
+//			 for (int i=0;i<length; i++) {
+//				 Node n=nl.item(i);
+//				 if (inputSet.contains(n)) {
+//					 resultNodes.add(n);
+//				 }			 				 
+//			 }
+//		 }
+				 
          while (iterator.hasNext()) {
             Node currentNode = (Node) iterator.next();
 

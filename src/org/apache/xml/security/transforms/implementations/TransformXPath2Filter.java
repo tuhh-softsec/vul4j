@@ -80,16 +80,6 @@ public class TransformXPath2Filter extends TransformSpi {
    private static final String FSubtract = "subtract";
    private static final String FIntersect = "intersect";
 
-   /** @inheritDoc */
-   public boolean wantsOctetStream ()   { return false; }
-   /** @inheritDoc */
-   public boolean wantsNodeSet ()       { return true; }
-   /** @inheritDoc */
-   public boolean returnsOctetStream () { return false; }
-   /** @inheritDoc */
-   public boolean returnsNodeSet ()     { return true; }
-
-   //J+
 
    /**
     * Method engineGetURI
@@ -111,7 +101,7 @@ public class TransformXPath2Filter extends TransformSpi {
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
            throws TransformationException {
-
+	  CachedXPathAPIHolder.setDoc(this._transformObject.getElement().getOwnerDocument());
       try {
 
          this._inputSet = input.getNodeSet(true);

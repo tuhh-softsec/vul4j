@@ -59,17 +59,6 @@ public class TransformXPathFilterCHGP extends TransformSpi {
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XPATHFILTERCHGP;
 
-   //J-
-   /** @inheritDoc */
-   public boolean wantsOctetStream ()   { return false; }
-   /** @inheritDoc */
-   public boolean wantsNodeSet ()       { return true; }
-   /** @inheritDoc */
-   public boolean returnsOctetStream () { return false; }
-   /** @inheritDoc */
-   public boolean returnsNodeSet ()     { return true; }
-   //J+
-   //J-
 
    // values for state and stateStack
    static final Integer STATE_INCLUDE =            new Integer(0);
@@ -116,7 +105,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
            throws TransformationException {
-
+	  CachedXPathAPIHolder.setDoc(this._transformObject.getElement().getOwnerDocument());
       try {
          this.inputSet = input.getNodeSet(true);
 

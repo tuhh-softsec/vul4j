@@ -65,16 +65,6 @@ public class TransformXPath2Filter04 extends TransformSpi {
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XPATH2FILTER04;
 
-   //J-
-   /** @inheritDoc */
-   public boolean wantsOctetStream ()   { return false; }
-   /** @inheritDoc */
-   public boolean wantsNodeSet ()       { return true; }
-   /** @inheritDoc */
-   public boolean returnsOctetStream () { return false; }
-   /** @inheritDoc */
-   public boolean returnsNodeSet ()     { return true; }
-   //J+
 
    /**
     * Method engineGetURI
@@ -88,7 +78,7 @@ public class TransformXPath2Filter04 extends TransformSpi {
    /** @inheritDoc */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
            throws TransformationException {
-
+	  CachedXPathAPIHolder.setDoc(this._transformObject.getElement().getOwnerDocument());
       try {
          Set inputSet = input.getNodeSet(true);
          if (log.isDebugEnabled())
