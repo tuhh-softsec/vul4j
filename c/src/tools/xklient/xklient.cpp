@@ -40,6 +40,7 @@
 #include <xsec/xkms/XKMSLocateRequest.hpp>
 #include <xsec/xkms/XKMSLocateResult.hpp>
 #include <xsec/xkms/XKMSQueryKeyBinding.hpp>
+#include <xsec/xkms/XKMSUseKeyWith.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
@@ -217,6 +218,8 @@ void printLocateRequestUsage(void) {
 	cerr << "   --help/-h                : print this screen and exit\n\n";
 	cerr << "   --add-cert/-a <filename> : add cert in filename as a KeyInfo\n";
 	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n\n";
+	cerr << "   --add-usekeywith/-u <Application URI> <Identifier>\n";
+	cerr << "                            : Add a UseKeyWith element\n\n";
 
 }
 
@@ -271,6 +274,19 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			XKMSQueryKeyBinding * qkb = lr->addQueryKeyBinding();
 			qkb->appendKeyName(MAKE_UNICODE_STRING(argv[paramCount]));
 			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--add-usekeywith") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+			if (++paramCount >= argc + 1) {
+				printLocateRequestUsage();
+				delete lr;
+				return NULL;
+			}
+			XKMSQueryKeyBinding *qkb = lr->getQueryKeyBinding();
+			if (qkb == NULL)
+				qkb = lr->addQueryKeyBinding();
+
+			qkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
+			paramCount += 2;
 		}
 		else {
 			printLocateRequestUsage();
@@ -455,6 +471,29 @@ void doKeyBindingDump(XKMSKeyBindingAbstractType * msg, int level) {
 		cout << "yes" << endl;
 	else
 		cout << "no" << endl;
+
+	int n = msg->getUseKeyWithSize();
+	levelSet(level+1);
+	if (n == 0) {
+		cout << "No UseKeyWith items found" << endl;
+	}
+	else {
+		cout << "UseKeyWith items : \n";
+	}
+
+	for (int i = 0; i < msg->getUseKeyWithSize() ; ++i) {
+
+		XKMSUseKeyWith * ukw = msg->getUseKeyWithItem(i);
+		levelSet(level+2);
+		char * a = XMLString::transcode(ukw->getApplication());
+		char * i = XMLString::transcode(ukw->getIdentifier());
+		cout << "Application : \"" << a << "\"\n";
+		levelSet(level+2);
+		cout << "Identifier  : \"" << i << "\"" << endl;
+		XMLString::release(&a);
+		XMLString::release(&i);
+
+	}
 
 	// Now dump any KeyInfo
 	levelSet(level+1);

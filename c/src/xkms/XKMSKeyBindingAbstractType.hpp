@@ -37,7 +37,7 @@ class DSIGKeyInfoPGPData;
 class DSIGKeyInfoSPKIData;
 class DSIGKeyInfoValue;
 class DSIGKeyInfoX509;
-
+class XKMSUseKeyWith;
 
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
@@ -319,6 +319,43 @@ public:
 	 */
 
 	virtual DSIGKeyInfoMgmtData * appendMgmtData(const XMLCh * data) = 0;
+
+	//@}
+
+	/** @name UseKeyWith handling  */
+	//@{
+
+	/**
+	 * \brief Find number of UseKeyWith elements
+	 *
+	 * @returns the number of UseKeyWith items within the KeyBinding
+	 */
+
+	virtual int getUseKeyWithSize(void) const = 0;
+
+	/*
+	 * \brief Obtain an UseKeyWith item
+	 *
+	 * @param item Index of the item to return (0 = first element)
+	 * @returns the UseKeyWith referenced by "item"
+	 */
+
+	virtual XKMSUseKeyWith * getUseKeyWithItem(int item) const = 0;
+
+	/*
+	 * \brief Append a new UnverifiedKeyBinding element
+	 *
+	 * Allows callers to append a new UnverifiedKeyBinding item.
+	 * The item is initially empty of KeyInfo elements - these must be added
+	 * by the caller.
+	 *
+	 * @returns the newly created UnverifiedKeyBinding object (already inserted
+	 * in the LocateResult
+	 */
+
+	virtual XKMSUseKeyWith * appendUseKeyWithItem(
+			const XMLCh * application,  
+			const XMLCh * identifier) = 0;
 
 	//@}
 

@@ -1158,6 +1158,14 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.cpp
 
 SOURCE=..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSUseKeyWithImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSUseKeyWithImpl.hpp
+# End Source File
 # End Group
 # Begin Source File
 
@@ -1206,6 +1214,10 @@ SOURCE=..\..\..\..\src\xkms\XKMSResultType.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSUnverifiedKeyBinding.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSUseKeyWith.hpp
 # End Source File
 # End Group
 # End Target

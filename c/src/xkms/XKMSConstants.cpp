@@ -39,6 +39,22 @@ const XMLCh * XKMSConstants::s_unicodeStrURISOAP12;
 
 // NOTE All tags are unicode (UTF-16) - but are not marked as such
 
+const XMLCh XKMSConstants::s_tagApplication[] = {
+
+	chLatin_A,
+	chLatin_p,
+	chLatin_p,
+	chLatin_l,
+	chLatin_i,
+	chLatin_c,
+	chLatin_a,
+	chLatin_t,
+	chLatin_i,
+	chLatin_o,
+	chLatin_n,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagEncryption[] = {
 
 	chLatin_E,
@@ -71,6 +87,21 @@ const XMLCh XKMSConstants::s_tagId[] = {
 
 	chLatin_I,
 	chLatin_d,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagIdentifier[] = {
+
+	chLatin_I,
+	chLatin_d,
+	chLatin_e,
+	chLatin_n,
+	chLatin_t,
+	chLatin_i,
+	chLatin_f,
+	chLatin_i,
+	chLatin_e,
+	chLatin_r,
 	chNull
 };
 
@@ -287,6 +318,21 @@ const XMLCh XKMSConstants::s_tagUnverifiedKeyBinding[] = {
 	chLatin_i,
 	chLatin_n,
 	chLatin_g,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagUseKeyWith[] = {
+
+	chLatin_U,
+	chLatin_s,
+	chLatin_e,
+	chLatin_K,
+	chLatin_e,
+	chLatin_y,
+	chLatin_W,
+	chLatin_i,
+	chLatin_t,
+	chLatin_h,
 	chNull
 };
 

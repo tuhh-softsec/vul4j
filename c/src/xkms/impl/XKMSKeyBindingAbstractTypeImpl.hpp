@@ -31,10 +31,13 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/xkms/XKMSKeyBindingAbstractType.hpp>
 
+#include <vector>
+
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
 class XSECEnv;
 class DSIGKeyInfoList;
+class XKMSUseKeyWithImpl;
 
 class XKMSKeyBindingAbstractTypeImpl : public XKMSKeyBindingAbstractType {
 
@@ -92,6 +95,13 @@ public:
 	virtual DSIGKeyInfoSPKIData * appendSPKIData(const XMLCh * sexp);
 	virtual DSIGKeyInfoMgmtData * appendMgmtData(const XMLCh * data);
 
+	/* UseKeyWith handling */
+
+	virtual int getUseKeyWithSize(void) const;
+	virtual XKMSUseKeyWith * getUseKeyWithItem(int item) const;
+	virtual XKMSUseKeyWith * appendUseKeyWithItem(
+			const XMLCh * application,  
+			const XMLCh * identifier);
 
 protected:
 
@@ -101,6 +111,14 @@ protected:
 
 private:
 
+#if defined(XSEC_NO_NAMESPACES)
+	typedef vector<XKMSUseKeyWithImpl *>		UseKeyWithVectorType;
+#else
+	typedef std::vector<XKMSUseKeyWithImpl *>	UseKeyWithVectorType;
+#endif
+
+	UseKeyWithVectorType	m_useKeyWithList;
+	
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
 					* mp_idAttr;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement
@@ -166,7 +184,16 @@ private:
 	virtual DSIGKeyInfoSPKIData * appendSPKIData(const XMLCh * sexp) \
 		{return XKMSKeyBindingAbstractTypeImpl::appendSPKIData(sexp);} \
 	virtual DSIGKeyInfoMgmtData * appendMgmtData(const XMLCh * data) \
-		{return XKMSKeyBindingAbstractTypeImpl::appendMgmtData(data);}
+		{return XKMSKeyBindingAbstractTypeImpl::appendMgmtData(data);} \
+	virtual int getUseKeyWithSize(void) const \
+		{return XKMSKeyBindingAbstractTypeImpl::getUseKeyWithSize();} \
+	virtual XKMSUseKeyWith * getUseKeyWithItem(int item) const \
+		{return XKMSKeyBindingAbstractTypeImpl::getUseKeyWithItem(item);} \
+	virtual XKMSUseKeyWith * appendUseKeyWithItem( \
+			const XMLCh * application,  \
+			const XMLCh * identifier) \
+		{return XKMSKeyBindingAbstractTypeImpl::appendUseKeyWithItem(application, identifier);}
+
 
 
 #endif /* XKMSKEYBINDINGABSTRACTTYPEIMPL_INCLUDE */

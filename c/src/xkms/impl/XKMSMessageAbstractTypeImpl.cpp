@@ -32,6 +32,7 @@
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
+#include <xercesc/util/Janitor.hpp>
 
 #include "XKMSMessageAbstractTypeImpl.hpp"
 
@@ -177,12 +178,14 @@ DOMElement * XKMSMessageAbstractTypeImpl::createBlankMessageAbstractType(
 
 
 	// Setup the id
-	XMLCh anAtt[] = {chLatin_a,chLatin_n,chLatin_A,chLatin_t,chLatin_t,chNull};
-	const XMLCh * myId;
+	XMLCh * myId;
+
 	if (id != NULL)
-		myId = id;
+		myId = XMLString::replicate(id);
 	else
-		myId = anAtt;
+		myId = generateId();
+
+	ArrayJanitor<XMLCh> j_myId(myId);
 
 	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagId, myId);
 	mp_messageAbstractTypeElement->setIdAttributeNS(NULL, XKMSConstants::s_tagId);

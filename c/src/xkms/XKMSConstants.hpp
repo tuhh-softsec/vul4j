@@ -50,9 +50,11 @@ public:
 	static const XMLCh * s_unicodeStrURISOAP12;
 
 	// Tags - note all are UTF-16, but not marked as such
+	static const XMLCh s_tagApplication[];
 	static const XMLCh s_tagEncryption[];
 	static const XMLCh s_tagExchange[];
 	static const XMLCh s_tagId[];
+	static const XMLCh s_tagIdentifier[];
 	static const XMLCh s_tagKeyInfo[];
 	static const XMLCh s_tagKeyUsage[];
 	static const XMLCh s_tagKeyValue[];
@@ -67,6 +69,7 @@ public:
 	static const XMLCh s_tagService[];
 	static const XMLCh s_tagSignature[];
 	static const XMLCh s_tagUnverifiedKeyBinding[];
+	static const XMLCh s_tagUseKeyWith[];
 
 	// ResultMajor codes
 

@@ -33,6 +33,7 @@
 #include <xercesc/dom/DOM.hpp>
 
 #include "XKMSKeyBindingAbstractTypeImpl.hpp"
+#include "XKMSUseKeyWithImpl.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -73,6 +74,10 @@ XKMSKeyBindingAbstractTypeImpl::~XKMSKeyBindingAbstractTypeImpl() {
 
 	if (mp_keyInfoList != NULL)
 		delete mp_keyInfoList;
+
+	UseKeyWithVectorType::iterator i;
+	for (i = m_useKeyWithList.begin(); i < m_useKeyWithList.end(); ++i)
+		delete (*i);
 
 }
 
@@ -132,6 +137,16 @@ void XKMSKeyBindingAbstractTypeImpl::load(void) {
 		tmpElt = findNextElementChild(tmpElt);
 	}
 
+	while (tmpElt != NULL && strEquals(getXKMSLocalName(tmpElt), XKMSConstants::s_tagUseKeyWith)) {
+
+		XKMSUseKeyWithImpl *ukw;
+		XSECnew(ukw, XKMSUseKeyWithImpl(mp_env, tmpElt));
+
+		m_useKeyWithList.push_back(ukw);
+		ukw->load();
+
+		tmpElt = findNextElementChild(tmpElt);
+	}
 }
 
 // --------------------------------------------------------------------------------
@@ -149,6 +164,8 @@ DOMElement * XKMSKeyBindingAbstractTypeImpl::createBlankKeyBindingAbstractType(c
 
 	mp_keyBindingAbstractTypeElement = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
 												str.rawXMLChBuffer());
+
+	mp_env->doPrettyPrint(mp_keyBindingAbstractTypeElement);
 
 	return mp_keyBindingAbstractTypeElement;
 
@@ -245,9 +262,9 @@ void XKMSKeyBindingAbstractTypeImpl::createKeyInfoElement(void) {
 
 	if (insertBefore != NULL) {
 
-		mp_keyBindingAbstractTypeElement->insertBefore(mp_keyInfoElement, insertBefore);
 		if (mp_env->getPrettyPrintFlag() == true)
 			mp_keyBindingAbstractTypeElement->insertBefore(mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), insertBefore);
+		mp_keyBindingAbstractTypeElement->insertBefore(mp_keyInfoElement, insertBefore);
 
 	}
 
@@ -343,3 +360,45 @@ void XKMSKeyBindingAbstractTypeImpl::setSignatureKeyUsage(void) {
 void XKMSKeyBindingAbstractTypeImpl::setExchangeKeyUsage(void) {
 }
 
+
+// --------------------------------------------------------------------------------
+//           UseKeyWith handling
+// --------------------------------------------------------------------------------
+
+int XKMSKeyBindingAbstractTypeImpl::getUseKeyWithSize(void) const {
+
+	return m_useKeyWithList.size();
+
+}
+
+XKMSUseKeyWith * XKMSKeyBindingAbstractTypeImpl::getUseKeyWithItem(int item) const {
+
+	if (item < 0 || item >= m_useKeyWithList.size()) {
+		throw XSECException(XSECException::XKMSError,
+			"XKMSKeyBindingAbstractType::getUseKeyWithItem - item out of range");
+	}
+
+	return m_useKeyWithList[item];
+
+}
+
+XKMSUseKeyWith * XKMSKeyBindingAbstractTypeImpl::appendUseKeyWithItem(
+			const XMLCh * application,  
+			const XMLCh * identifier) {
+
+	XKMSUseKeyWithImpl * u;
+
+	XSECnew(u, XKMSUseKeyWithImpl(mp_env));
+
+	m_useKeyWithList.push_back(u);
+
+	DOMElement * e = u->createBlankUseKeyWith(application, identifier);
+
+	// Append the element
+
+	mp_keyBindingAbstractTypeElement->appendChild(e);
+	mp_env->doPrettyPrint(mp_keyBindingAbstractTypeElement);
+
+	return u;
+
+}
