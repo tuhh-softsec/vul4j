@@ -71,7 +71,9 @@
     <property name="jar.library"       value="${product.shortname}.jar" />
     <property name="jar.samples"       value="${product.shortname}Samples.jar" />
     <property name="jar.tests"         value="${product.shortname}Tests.jar" />
-    <property name="jar.manifest"      value="${build.classes}/META-INF/MANIFEST.MF"/>
+
+    <property name="build.manifest.dir" value="${build.classes}/META-INF"/>
+    <property name="jar.manifest"       value="${build.manifest.dir}/MANIFEST.MF"/>
 
     <property name="cvs.server"        value="cvs.apache.org" />
     <property name="cvs.path"          value="/home/cvs" />
@@ -308,6 +310,8 @@ org.apache.xml.security.utils.resolver
             dir="${dir.src}"
             includes="org/**,ant/**" />
     </copy>
+    <mkdir dir="${build.manifest.dir}" />
+
     <!-- <copy file="./src/MANIFEST.MF"
           tofile="${build.classes}/META-INF/MANIFEST.MF" />
     <replace file="${build.classes}/META-INF/MANIFEST.MF"
