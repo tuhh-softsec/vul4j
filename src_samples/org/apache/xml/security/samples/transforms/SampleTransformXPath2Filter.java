@@ -150,14 +150,13 @@ public class SampleTransformXPath2Filter {
       doc.getDocumentElement().appendChild(doc.createTextNode("\n"));
 
       Transforms transforms = new Transforms(doc);
+
+      String filters[][] = {{XPath2FilterContainer.INTERSECT, "//ToBeSigned"},
+                            {XPath2FilterContainer.SUBTRACT,  "//NotToBeSigned"},
+                            {XPath2FilterContainer.UNION,     "//ReallyToBeSigned"}};
       //J-
 
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-         XPath2FilterContainer.newInstanceIntersect(doc, "//ToBeSigned").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-         XPath2FilterContainer.newInstanceSubtract(doc, "//NotToBeSigned").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-         XPath2FilterContainer.newInstanceUnion(doc, "//ReallyToBeSigned").getElement());
+      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER, XPath2FilterContainer.newInstances(doc, filters));
       if (withComments) {
          transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
       }
@@ -168,7 +167,7 @@ public class SampleTransformXPath2Filter {
       transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER, x.getElement());
       */
       //J+
-      sig.addDocument("", transforms);
+      sig.addDocument("#xpointer(/)", transforms);
 
       String secretKey = "secret";
 
@@ -215,6 +214,9 @@ public class SampleTransformXPath2Filter {
          System.out.println(
             "-------------------------------------------------------------");
       }
+
+      JavaUtils.writeBytesToFilename("xfilter2.html",
+      sig.getSignedInfo().item(0).getHTMLRepresentation().getBytes());
    }
 
    /**
