@@ -83,8 +83,13 @@ public class IdResolver {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(IdResolver.class.getName());
 
+   /**
+    * Constructor IdResolver
+    *
+    */
    private IdResolver() {
-     // we don't allow instantiation
+
+      // we don't allow instantiation
    }
 
    /**
@@ -142,6 +147,16 @@ public class IdResolver {
          return result;
       }
 
+      result = IdResolver.getElementByIdInXENCNamespace(doc, id);
+
+      if (result != null) {
+         cat.debug(
+            "I could find an Element using the advanced xenc:Namespace searcher method: "
+            + result.getTagName());
+
+         return result;
+      }
+
       result = IdResolver.getElementByIdInSOAPSignatureNamespace(doc, id);
 
       if (result != null) {
@@ -162,7 +177,6 @@ public class IdResolver {
          return result;
       }
 
-
       return null;
    }
 
@@ -174,7 +188,9 @@ public class IdResolver {
     * @return
     */
    private static Element getElementByIdType(Document doc, String id) {
+
       cat.debug("getElementByIdType() Search for ID " + id);
+
       return doc.getElementById(id);
    }
 
@@ -222,6 +238,34 @@ public class IdResolver {
    }
 
    /**
+    * Method getElementByIdInXENCNamespace
+    *
+    * @param doc
+    * @param id
+    * @return
+    */
+   private static Element getElementByIdInXENCNamespace(Document doc,
+           String id) {
+
+      cat.debug("getElementByIdInXENCNamespace() Search for ID " + id);
+
+      try {
+         Element nscontext =
+            XMLUtils.createDSctx(doc, "xenc",
+                                 org.apache.xml.security.utils
+                                    .EncryptionConstants.EncryptionSpecNS);
+         Element element = (Element) XPathAPI.selectSingleNode(doc,
+                              "//xenc:*[@Id='" + id + "']", nscontext);
+
+         return element;
+      } catch (TransformerException ex) {
+         cat.fatal("", ex);
+      }
+
+      return null;
+   }
+
+   /**
     * Method getElementByIdInSOAPSignatureNamespace
     *
     * @param doc
@@ -232,6 +276,7 @@ public class IdResolver {
            String id) {
 
       cat.debug("getElementByIdInSOAPSignatureNamespace() Search for ID " + id);
+
       try {
          Element nscontext = XMLUtils.createDSctx(
             doc, "SOAP-SEC",
@@ -247,20 +292,36 @@ public class IdResolver {
       return null;
    }
 
+   /**
+    * Method getElementByIdUnsafeMatchByIdName
+    *
+    * @param doc
+    * @param id
+    * @return
+    */
    private static Element getElementByIdUnsafeMatchByIdName(Document doc,
            String id) {
 
       cat.debug("getElementByIdUnsafeMatchByIdName() Search for ID " + id);
+
       try {
-         Element element_Id = (Element) XPathAPI.selectSingleNode(doc, "//*[@Id='" + id + "']");
+         Element element_Id = (Element) XPathAPI.selectSingleNode(doc,
+                                 "//*[@Id='" + id + "']");
+
          if (element_Id != null) {
             return element_Id;
          }
-         Element element_ID = (Element) XPathAPI.selectSingleNode(doc, "//*[@ID='" + id + "']");
+
+         Element element_ID = (Element) XPathAPI.selectSingleNode(doc,
+                                 "//*[@ID='" + id + "']");
+
          if (element_ID != null) {
             return element_ID;
          }
-         Element element_id = (Element) XPathAPI.selectSingleNode(doc, "//*[@id='" + id + "']");
+
+         Element element_id = (Element) XPathAPI.selectSingleNode(doc,
+                                 "//*[@id='" + id + "']");
+
          if (element_id != null) {
             return element_id;
          }
