@@ -69,7 +69,7 @@ import org.xml.sax.Attributes;
  * at the identifier.</p>
  *
  * @author Robert Burrell Donkin
- * @revision $Revision: 1.3 $ $Date: 2001/11/14 19:54:05 $
+ * @revision $Revision: 1.4 $ $Date: 2001/11/20 00:37:25 $
  */
 
 public class TestRule extends Rule {
@@ -136,7 +136,7 @@ public class TestRule extends Rule {
      * 'Body' call.
      */
     public void body(String text) {
-        this.bodyText = bodyText;
+        this.bodyText = text;
         appendCall();
     }
 
