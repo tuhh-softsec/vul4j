@@ -38,7 +38,7 @@
   <target name="init">
     <echo message= "---------------- ${Name} ${version} [${year}] ---------------"/>
   </target>
-  
+
 
     <property name="Name" value="Apache-XML-Security"/>
     <property name="version" value="0.0.1"/>
@@ -54,9 +54,9 @@
     <property name="src" value="src" />
     <property name="src.samples" value="src_samples" />
     <property name="src.unitTests" value="src_unitTests" />
-    
+
     <property name="build" value="classes" />
-  
+
     <property name="cvs.server" value="cvs.apache.org" />
     <property name="cvs.path" value="/home/cvs" />
     <property name="cvs.package" value="xml-security" />
@@ -65,14 +65,14 @@
     <property name="cvs.user.anonymous" value="anonymous" />
     <property name="cvs.cvsRoot.developer" value=":ext:${cvs.user.developer}@${cvs.server}:${cvs.path}" />
     <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}" />
-  
+
     <property name="libs" value="libs" />
     <property name="lib.xerces" value="${libs}/xerces-1_4_3.jar" />
     <property name="lib.xalan"  value="${libs}/xalan-j_2_2_D10.jar" />
     <property name="lib.log4j"  value="${libs}/jakarta-log4j-1.1.3.jar" />
     <property name="lib.jce"    value="${libs}/bc-jce-jdk13-108.jar" />
     <property name="lib.junit"  value="${libs}/junit3.7.jar" />
-    
+
     <property name="doc" value="./doc" />
     <property name="doc.html" value="${doc}/html" />
     <property name="doc.pdf" value="${doc}/pdf" />
@@ -107,7 +107,7 @@ org.apache.xml.security.utils.*
       <pathelement path="${lib.log4j}" />
       <pathelement path="${lib.jce}" />
     </path>
-  
+
     <path id="classpath.test">
       <!-- classpath for test is librarypath plus log4j -->
       <path refid="classpath.library" />
@@ -150,10 +150,10 @@ org.apache.xml.security.utils.*
     </copy>
   </target>
 
-  <target name="compile.samples" 
+  <target name="compile.samples"
           depends="compile.library">
     <!-- Compile the java code from ${src} into ${build} -->
-    <javac srcdir="${src.samples}" 
+    <javac srcdir="${src.samples}"
            destdir="${build}">
       <classpath refid="classpath.library" />
     </javac>
@@ -165,8 +165,8 @@ org.apache.xml.security.utils.*
     </copy>
   </target>
 
-  <target name="compile" 
-          depends="compile.library, compile.samples, compile.tests" 
+  <target name="compile"
+          depends="compile.library, compile.samples, compile.tests"
           description="compile everything"/>
 
   <target name="test"
@@ -267,7 +267,7 @@ org.apache.xml.security.utils.*
     </java>
     <delete dir="${doc.style}"/>
   </target>
-  
+
   <target name="mega-sample" depends="compile.samples">
     <echo message="Now I'll try to verify merlins example fifteen-HMAC"/>
     <java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesFifteen"
@@ -333,5 +333,13 @@ org.apache.xml.security.utils.*
              docletpath="${lib.doclet.mif}"
              additionalparam="-book data/websigMiflet.xml -batch dzbatcher -print pdf"
              classpathref="classpath.doclet.mif" />
+  </target>
+
+  <target name="createEnvelopingSignature" depends="compile.samples">
+    <echo message="Now I'll try to verify merlins example fifteen-HMAC"/>
+    <java classname="org.apache.xml.security.samples.signature.CreateEnvelopingSignature"
+          fork="yes">
+        <classpath refid="classpath.library" />
+    </java>
   </target>
 </project>
