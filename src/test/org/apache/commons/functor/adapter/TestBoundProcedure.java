@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestUnaryFunctionFunction.java,v 1.1 2003/01/28 12:54:37 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundProcedure.java,v 1.1 2003/01/28 23:37:50 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,33 +60,32 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.Function;
-import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
+import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.NoOpProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/28 12:54:37 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:50 $
  * @author Rodney Waldhoff
  */
-public class TestUnaryFunctionFunction extends BaseFunctorTest {
+public class TestBoundProcedure extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestUnaryFunctionFunction(String testName) {
+    public TestBoundProcedure(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestUnaryFunctionFunction.class);
+        return new TestSuite(TestBoundProcedure.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new UnaryFunctionFunction(new IdentityFunction(),"xyzzy");
+        return new BoundProcedure(new NoOpProcedure(),"xyzzy");
     }
 
     // Lifecycle
@@ -103,29 +102,29 @@ public class TestUnaryFunctionFunction extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------    
 
-    public void testEvaluate() throws Exception {
-        Function f = new UnaryFunctionFunction(new IdentityFunction(),"xyzzy");
-        assertEquals("xyzzy",f.evaluate());
+    public void testRun() throws Exception {
+        Procedure p = new BoundProcedure(new UnaryFunctionUnaryProcedure(new IdentityFunction()),Boolean.TRUE);
+        p.run();
     }
     
     public void testEquals() throws Exception {
-        Function f = new UnaryFunctionFunction(new IdentityFunction(),"xyzzy");
+        Procedure f = new BoundProcedure(new NoOpProcedure(),"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new UnaryFunctionFunction(new IdentityFunction(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new ConstantFunction("xyzzy"));
-        assertObjectsAreNotEqual(f,new UnaryFunctionFunction(new IdentityFunction(),"foo"));
-        assertObjectsAreNotEqual(f,new UnaryFunctionFunction(new ConstantFunction("xyzzy"),"foo"));
-        assertObjectsAreNotEqual(f,new UnaryFunctionFunction(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new UnaryFunctionFunction(new IdentityFunction(),null));
-        assertObjectsAreEqual(new UnaryFunctionFunction(null,null),new UnaryFunctionFunction(null,null));
+        assertObjectsAreEqual(f,new BoundProcedure(new NoOpProcedure(),"xyzzy"));
+        assertObjectsAreNotEqual(f,new NoOpProcedure());
+        assertObjectsAreNotEqual(f,new BoundProcedure(new NoOpProcedure(),"foo"));
+        assertObjectsAreNotEqual(f,new BoundProcedure(new UnaryFunctionUnaryProcedure(new IdentityFunction()),"xyzzy"));
+        assertObjectsAreNotEqual(f,new BoundProcedure(null,"xyzzy"));
+        assertObjectsAreNotEqual(f,new BoundProcedure(new NoOpProcedure(),null));
+        assertObjectsAreEqual(new BoundProcedure(null,null),new BoundProcedure(null,null));
     }
 
     public void testAdaptNull() throws Exception {
-        assertNull(UnaryFunctionFunction.adapt(null,"xyzzy"));
+        assertNull(BoundProcedure.adapt(null,"xyzzy"));
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(UnaryFunctionFunction.adapt(new IdentityFunction(),"xyzzy"));
-        assertNotNull(UnaryFunctionFunction.adapt(new IdentityFunction(),null));
+        assertNotNull(BoundProcedure.adapt(new NoOpProcedure(),"xyzzy"));
+        assertNotNull(BoundProcedure.adapt(new NoOpProcedure(),null));
     }
 }

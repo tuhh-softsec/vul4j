@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestConstantLeftBinaryPredicateUnaryPredicate.java,v 1.1 2003/01/28 12:54:37 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundPredicate.java,v 1.1 2003/01/28 23:37:50 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,31 +63,31 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 import org.apache.commons.functor.core.IdentityFunction;
-import org.apache.commons.functor.core.LeftIdentityFunction;
 import org.apache.commons.functor.core.RightIdentityFunction;
+import org.apache.commons.functor.core.LeftIdentityFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/28 12:54:37 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:50 $
  * @author Rodney Waldhoff
  */
-public class TestConstantLeftBinaryPredicateUnaryPredicate extends BaseFunctorTest {
+public class TestRightBoundPredicate extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestConstantLeftBinaryPredicateUnaryPredicate(String testName) {
+    public TestRightBoundPredicate(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestConstantLeftBinaryPredicateUnaryPredicate.class);
+        return new TestSuite(TestRightBoundPredicate.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConstantLeftBinaryPredicateUnaryPredicate(new ConstantPredicate(true),"xyzzy");
+        return new RightBoundPredicate(new ConstantPredicate(true),"xyzzy");
     }
 
     // Lifecycle
@@ -105,29 +105,29 @@ public class TestConstantLeftBinaryPredicateUnaryPredicate extends BaseFunctorTe
     // ------------------------------------------------------------------------    
 
     public void testTest() throws Exception {
-        UnaryPredicate p = new ConstantLeftBinaryPredicateUnaryPredicate(new BinaryFunctionBinaryPredicate(new RightIdentityFunction()),"foo");
-        assertEquals(true,p.test(Boolean.TRUE));
-        assertEquals(false,p.test(Boolean.FALSE));
+        UnaryPredicate f = new RightBoundPredicate(new BinaryFunctionBinaryPredicate(new LeftIdentityFunction()),"foo");
+        assertEquals(true,f.test(Boolean.TRUE));
+        assertEquals(false,f.test(Boolean.FALSE));
     }
     
     public void testEquals() throws Exception {
-        UnaryPredicate p = new ConstantLeftBinaryPredicateUnaryPredicate(new ConstantPredicate(true),"xyzzy");
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new ConstantLeftBinaryPredicateUnaryPredicate(new ConstantPredicate(true),"xyzzy"));
-        assertObjectsAreNotEqual(p,new ConstantPredicate(true));
-        assertObjectsAreNotEqual(p,new ConstantLeftBinaryPredicateUnaryPredicate(new ConstantPredicate(false),"xyzzy"));
-        assertObjectsAreNotEqual(p,new ConstantLeftBinaryPredicateUnaryPredicate(new ConstantPredicate(true),"foo"));
-        assertObjectsAreNotEqual(p,new ConstantLeftBinaryPredicateUnaryPredicate(null,"xyzzy"));
-        assertObjectsAreNotEqual(p,new ConstantLeftBinaryPredicateUnaryPredicate(new ConstantPredicate(true),null));
-        assertObjectsAreEqual(new ConstantLeftBinaryPredicateUnaryPredicate(null,null),new ConstantLeftBinaryPredicateUnaryPredicate(null,null));
+        UnaryPredicate f = new RightBoundPredicate(new ConstantPredicate(true),"xyzzy");
+        assertEquals(f,f);
+        assertObjectsAreEqual(f,new RightBoundPredicate(new ConstantPredicate(true),"xyzzy"));
+        assertObjectsAreNotEqual(f,new ConstantPredicate(true));
+        assertObjectsAreNotEqual(f,new RightBoundPredicate(new ConstantPredicate(false),"xyzzy"));
+        assertObjectsAreNotEqual(f,new RightBoundPredicate(new ConstantPredicate(true),"foo"));
+        assertObjectsAreNotEqual(f,new RightBoundPredicate(null,"xyzzy"));
+        assertObjectsAreNotEqual(f,new RightBoundPredicate(new ConstantPredicate(true),null));
+        assertObjectsAreEqual(new RightBoundPredicate(null,null),new RightBoundPredicate(null,null));
     }
 
     public void testAdaptNull() throws Exception {
-        assertNull(ConstantLeftBinaryPredicateUnaryPredicate.adapt(null,"xyzzy"));
+        assertNull(RightBoundPredicate.adapt(null,"xyzzy"));
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(ConstantLeftBinaryPredicateUnaryPredicate.adapt(new ConstantPredicate(false),"xyzzy"));
-        assertNotNull(ConstantLeftBinaryPredicateUnaryPredicate.adapt(new ConstantPredicate(false),null));
+        assertNotNull(RightBoundPredicate.adapt(new ConstantPredicate(false),"xyzzy"));
+        assertNotNull(RightBoundPredicate.adapt(new ConstantPredicate(false),null));
     }
 }

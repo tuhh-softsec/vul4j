@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/Attic/ConstantLeftBinaryProcedureUnaryProcedure.java,v 1.2 2003/01/28 20:36:44 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/LeftBoundFunction.java,v 1.1 2003/01/28 23:37:49 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,14 +58,14 @@ package org.apache.commons.functor.adapter;
 
 import java.io.Serializable;
 
-import org.apache.commons.functor.BinaryProcedure;
-import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.UnaryFunction;
 
 /**
  * Adapts a
- * {@link BinaryProcedure BinaryProcedure} 
+ * {@link BinaryFunction BinaryFunction} 
  * to the 
- * {@link UnaryProcedure UnaryProcedure} interface 
+ * {@link UnaryFunction UnaryFunction} interface 
  * using a constant left-side argument.
  * <p/>
  * Note that although this class implements 
@@ -75,44 +75,44 @@ import org.apache.commons.functor.UnaryProcedure;
  * an instance whose delegates are not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 20:36:44 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:49 $
  * @author Rodney Waldhoff
  */
-public final class ConstantLeftBinaryProcedureUnaryProcedure implements UnaryProcedure, Serializable {
+public final class LeftBoundFunction implements UnaryFunction, Serializable {
     /**
-     * @param procedure the procedure to adapt
+     * @param function the function to adapt
      * @param arg the constant argument to use
      */
-    public ConstantLeftBinaryProcedureUnaryProcedure(BinaryProcedure procedure, Object arg) {
-        this.procedure = procedure;
+    public LeftBoundFunction(BinaryFunction function, Object arg) {
+        this.function = function;
         this.param = arg;
     }
  
-    public void run(Object obj) {
-        procedure.run(param,obj);
+    public Object evaluate(Object obj) {
+        return function.evaluate(param,obj);
     }   
 
     public boolean equals(Object that) {
-        if(that instanceof ConstantLeftBinaryProcedureUnaryProcedure) {
-            return equals((ConstantLeftBinaryProcedureUnaryProcedure)that);
+        if(that instanceof LeftBoundFunction) {
+            return equals((LeftBoundFunction)that);
         } else {
             return false;
         }
     }
         
-    public boolean equals(ConstantLeftBinaryProcedureUnaryProcedure that) {
+    public boolean equals(LeftBoundFunction that) {
         return that == this || ( 
                 (null != that) && 
-                (null == procedure ? null == that.procedure : procedure.equals(that.procedure)) &&
+                (null == function ? null == that.function : function.equals(that.function)) &&
                 (null == param ? null == that.param : param.equals(that.param)) );
                 
     }
     
     public int hashCode() {
-        int hash = "ConstantLeftBinaryProcedureUnaryProcedure".hashCode();
-        if(null != procedure) {
+        int hash = "LeftBoundFunction".hashCode();
+        if(null != function) {
             hash <<= 2;
-            hash ^= procedure.hashCode();
+            hash ^= function.hashCode();
         }
         if(null != param) {
             hash <<= 2;
@@ -122,15 +122,15 @@ public final class ConstantLeftBinaryProcedureUnaryProcedure implements UnaryPro
     }
     
     public String toString() {
-        return "ConstantLeftBinaryProcedureUnaryProcedure<" + procedure + "(" + param + ",?)>";
+        return "LeftBoundFunction<" + function + "(" + param + ",?)>";
     }
 
-    public static ConstantLeftBinaryProcedureUnaryProcedure adapt(BinaryProcedure procedure, Object arg) {
-        return null == procedure ? null : new ConstantLeftBinaryProcedureUnaryProcedure(procedure,arg);
+    public static LeftBoundFunction adapt(BinaryFunction function, Object arg) {
+        return null == function ? null : new LeftBoundFunction(function,arg);
     }
 
-    /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure procedure = null;
-    /** The parameter to pass to that procedure. */
+    /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
+    private BinaryFunction function = null;
+    /** The parameter to pass to that function. */
     private Object param = null;
 }

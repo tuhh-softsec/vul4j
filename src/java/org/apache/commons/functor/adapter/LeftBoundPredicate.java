@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/Attic/ConstantRightBinaryProcedureUnaryProcedure.java,v 1.2 2003/01/28 20:36:44 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/LeftBoundPredicate.java,v 1.1 2003/01/28 23:37:49 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,14 +58,14 @@ package org.apache.commons.functor.adapter;
 
 import java.io.Serializable;
 
-import org.apache.commons.functor.BinaryProcedure;
-import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * Adapts a
- * {@link BinaryProcedure BinaryProcedure} 
+ * {@link BinaryPredicate BinaryPredicate} 
  * to the 
- * {@link UnaryProcedure UnaryProcedure} interface 
+ * {@link UnaryPredicate UnaryPredicate} interface 
  * using a constant left-side argument.
  * <p/>
  * Note that although this class implements 
@@ -75,44 +75,44 @@ import org.apache.commons.functor.UnaryProcedure;
  * an instance whose delegates are not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 20:36:44 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:49 $
  * @author Rodney Waldhoff
  */
-public final class ConstantRightBinaryProcedureUnaryProcedure implements UnaryProcedure, Serializable {
+public final class LeftBoundPredicate implements UnaryPredicate, Serializable {
     /**
-     * @param procedure the procedure to adapt
+     * @param predicate the predicate to adapt
      * @param arg the constant argument to use
      */
-    public ConstantRightBinaryProcedureUnaryProcedure(BinaryProcedure procedure, Object arg) {
-        this.procedure = procedure;
+    public LeftBoundPredicate(BinaryPredicate predicate, Object arg) {
+        this.predicate = predicate;
         this.param = arg;
     }
  
-    public void run(Object obj) {
-        procedure.run(obj,param);
+    public boolean test(Object obj) {
+        return predicate.test(param,obj);
     }   
 
     public boolean equals(Object that) {
-        if(that instanceof ConstantRightBinaryProcedureUnaryProcedure) {
-            return equals((ConstantRightBinaryProcedureUnaryProcedure)that);
+        if(that instanceof LeftBoundPredicate) {
+            return equals((LeftBoundPredicate)that);
         } else {
             return false;
         }
     }
         
-    public boolean equals(ConstantRightBinaryProcedureUnaryProcedure that) {
+    public boolean equals(LeftBoundPredicate that) {
         return that == this || ( 
                 (null != that) && 
-                (null == procedure ? null == that.procedure : procedure.equals(that.procedure)) &&
+                (null == predicate ? null == that.predicate : predicate.equals(that.predicate)) &&
                 (null == param ? null == that.param : param.equals(that.param)) );
                 
     }
     
     public int hashCode() {
-        int hash = "ConstantRightBinaryProcedureUnaryProcedure".hashCode();
-        if(null != procedure) {
+        int hash = "LeftBoundPredicate".hashCode();
+        if(null != predicate) {
             hash <<= 2;
-            hash ^= procedure.hashCode();
+            hash ^= predicate.hashCode();
         }
         if(null != param) {
             hash <<= 2;
@@ -122,15 +122,15 @@ public final class ConstantRightBinaryProcedureUnaryProcedure implements UnaryPr
     }
     
     public String toString() {
-        return "ConstantRightBinaryProcedureUnaryProcedure<" + procedure + "(?," + param + ")>";
+        return "LeftBoundPredicate<" + predicate + "(" + param + ",?)>";
     }
 
-    public static ConstantRightBinaryProcedureUnaryProcedure adapt(BinaryProcedure procedure, Object arg) {
-        return null == procedure ? null : new ConstantRightBinaryProcedureUnaryProcedure(procedure,arg);
+    public static LeftBoundPredicate adapt(BinaryPredicate predicate, Object arg) {
+        return null == predicate ? null : new LeftBoundPredicate(predicate,arg);
     }
 
-    /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure procedure = null;
-    /** The parameter to pass to that procedure. */
+    /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
+    private BinaryPredicate predicate = null;
+    /** The parameter to pass to that predicate. */
     private Object param = null;
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/Attic/UnaryPredicatePredicate.java,v 1.2 2003/01/28 20:36:44 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BoundFunction.java,v 1.1 2003/01/28 23:37:49 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,14 +58,14 @@ package org.apache.commons.functor.adapter;
 
 import java.io.Serializable;
 
-import org.apache.commons.functor.Predicate;
-import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.Function;
+import org.apache.commons.functor.UnaryFunction;
 
 /**
  * Adapts a
- * {@link UnaryPredicate UnaryPredicate} 
+ * {@link UnaryFunction UnaryFunction} 
  * to the 
- * {@link Predicate Predicate} interface 
+ * {@link Function Function} interface 
  * using a constant unary argument.
  * <p/>
  * Note that although this class implements 
@@ -75,44 +75,44 @@ import org.apache.commons.functor.UnaryPredicate;
  * an instance whose delegates are not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 20:36:44 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:49 $
  * @author Rodney Waldhoff
  */
-public final class UnaryPredicatePredicate implements Predicate, Serializable {
+public final class BoundFunction implements Function, Serializable {
     /**
-     * @param predicate the predicate to adapt
+     * @param function the function to adapt
      * @param arg the constant argument to use
      */
-    public UnaryPredicatePredicate(UnaryPredicate predicate, Object arg) {
-        this.predicate = predicate;
+    public BoundFunction(UnaryFunction function, Object arg) {
+        this.function = function;
         this.param = arg;
     }
  
-    public boolean test() {
-        return predicate.test(param);
+    public Object evaluate() {
+        return function.evaluate(param);
     }   
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryPredicatePredicate) {
-            return equals((UnaryPredicatePredicate)that);
+        if(that instanceof BoundFunction) {
+            return equals((BoundFunction)that);
         } else {
             return false;
         }
     }
         
-    public boolean equals(UnaryPredicatePredicate that) {
+    public boolean equals(BoundFunction that) {
         return that == this || ( 
                 (null != that) && 
-                (null == predicate ? null == that.predicate : predicate.equals(that.predicate)) &&
+                (null == function ? null == that.function : function.equals(that.function)) &&
                 (null == param ? null == that.param : param.equals(that.param)) );
                 
     }
     
     public int hashCode() {
-        int hash = "UnaryPredicatePredicate".hashCode();
-        if(null != predicate) {
+        int hash = "BoundFunction".hashCode();
+        if(null != function) {
             hash <<= 2;
-            hash ^= predicate.hashCode();
+            hash ^= function.hashCode();
         }
         if(null != param) {
             hash <<= 2;
@@ -122,15 +122,15 @@ public final class UnaryPredicatePredicate implements Predicate, Serializable {
     }
     
     public String toString() {
-        return "UnaryPredicatePredicate<" + predicate + "(" + param + ")>";
+        return "BoundFunction<" + function + "(" + param + ")>";
     }
 
-    public static UnaryPredicatePredicate adapt(UnaryPredicate predicate, Object arg) {
-        return null == predicate ? null : new UnaryPredicatePredicate(predicate,arg);
+    public static BoundFunction adapt(UnaryFunction function, Object arg) {
+        return null == function ? null : new BoundFunction(function,arg);
     }
 
-    /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate predicate = null;
-    /** The parameter to pass to that predicate. */
+    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
+    private UnaryFunction function = null;
+    /** The parameter to pass to that function. */
     private Object param = null;
 }

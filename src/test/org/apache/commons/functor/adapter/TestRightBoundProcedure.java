@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestConstantRightBinaryProcedureUnaryProcedure.java,v 1.1 2003/01/28 12:54:37 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundProcedure.java,v 1.1 2003/01/28 23:37:50 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,27 +66,27 @@ import org.apache.commons.functor.core.LeftIdentityFunction;
 import org.apache.commons.functor.core.NoOpProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/28 12:54:37 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:50 $
  * @author Rodney Waldhoff
  */
-public class TestConstantRightBinaryProcedureUnaryProcedure extends BaseFunctorTest {
+public class TestRightBoundProcedure extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestConstantRightBinaryProcedureUnaryProcedure(String testName) {
+    public TestRightBoundProcedure(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestConstantRightBinaryProcedureUnaryProcedure.class);
+        return new TestSuite(TestRightBoundProcedure.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConstantRightBinaryProcedureUnaryProcedure(new NoOpProcedure(),"xyzzy");
+        return new RightBoundProcedure(new NoOpProcedure(),"xyzzy");
     }
 
     // Lifecycle
@@ -104,29 +104,29 @@ public class TestConstantRightBinaryProcedureUnaryProcedure extends BaseFunctorT
     // ------------------------------------------------------------------------    
 
     public void testRun() throws Exception {
-        UnaryProcedure p = new ConstantRightBinaryProcedureUnaryProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentityFunction()),"foo");
+        UnaryProcedure p = new RightBoundProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentityFunction()),"foo");
         p.run(Boolean.TRUE);
         p.run(Boolean.FALSE);
     }
     
     public void testEquals() throws Exception {
-        UnaryProcedure f = new ConstantRightBinaryProcedureUnaryProcedure(new NoOpProcedure(),"xyzzy");
+        UnaryProcedure f = new RightBoundProcedure(new NoOpProcedure(),"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new ConstantRightBinaryProcedureUnaryProcedure(new NoOpProcedure(),"xyzzy"));
+        assertObjectsAreEqual(f,new RightBoundProcedure(new NoOpProcedure(),"xyzzy"));
         assertObjectsAreNotEqual(f,new NoOpProcedure());
-        assertObjectsAreNotEqual(f,new ConstantRightBinaryProcedureUnaryProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentityFunction()),"xyzzy"));
-        assertObjectsAreNotEqual(f,new ConstantRightBinaryProcedureUnaryProcedure(new NoOpProcedure(),"foo"));
-        assertObjectsAreNotEqual(f,new ConstantRightBinaryProcedureUnaryProcedure(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new ConstantRightBinaryProcedureUnaryProcedure(new NoOpProcedure(),null));
-        assertObjectsAreEqual(new ConstantRightBinaryProcedureUnaryProcedure(null,null),new ConstantRightBinaryProcedureUnaryProcedure(null,null));
+        assertObjectsAreNotEqual(f,new RightBoundProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentityFunction()),"xyzzy"));
+        assertObjectsAreNotEqual(f,new RightBoundProcedure(new NoOpProcedure(),"foo"));
+        assertObjectsAreNotEqual(f,new RightBoundProcedure(null,"xyzzy"));
+        assertObjectsAreNotEqual(f,new RightBoundProcedure(new NoOpProcedure(),null));
+        assertObjectsAreEqual(new RightBoundProcedure(null,null),new RightBoundProcedure(null,null));
     }
 
     public void testAdaptNull() throws Exception {
-        assertNull(ConstantRightBinaryProcedureUnaryProcedure.adapt(null,"xyzzy"));
+        assertNull(RightBoundProcedure.adapt(null,"xyzzy"));
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(ConstantRightBinaryProcedureUnaryProcedure.adapt(new NoOpProcedure(),"xyzzy"));
-        assertNotNull(ConstantRightBinaryProcedureUnaryProcedure.adapt(new NoOpProcedure(),null));
+        assertNotNull(RightBoundProcedure.adapt(new NoOpProcedure(),"xyzzy"));
+        assertNotNull(RightBoundProcedure.adapt(new NoOpProcedure(),null));
     }
 }

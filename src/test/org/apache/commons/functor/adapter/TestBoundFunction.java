@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/Attic/TestConstantLeftBinaryProcedureUnaryProcedure.java,v 1.1 2003/01/28 12:54:37 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBoundFunction.java,v 1.1 2003/01/28 23:37:50 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,33 +60,33 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.UnaryProcedure;
+import org.apache.commons.functor.Function;
+import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.IdentityFunction;
-import org.apache.commons.functor.core.NoOpProcedure;
-import org.apache.commons.functor.core.RightIdentityFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/28 12:54:37 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:50 $
  * @author Rodney Waldhoff
  */
-public class TestConstantLeftBinaryProcedureUnaryProcedure extends BaseFunctorTest {
+public class TestBoundFunction extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestConstantLeftBinaryProcedureUnaryProcedure(String testName) {
+    public TestBoundFunction(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestConstantLeftBinaryProcedureUnaryProcedure.class);
+        return new TestSuite(TestBoundFunction.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new ConstantLeftBinaryProcedureUnaryProcedure(new NoOpProcedure(),"xyzzy");
+        return new BoundFunction(new IdentityFunction(),"xyzzy");
     }
 
     // Lifecycle
@@ -103,30 +103,29 @@ public class TestConstantLeftBinaryProcedureUnaryProcedure extends BaseFunctorTe
     // Tests
     // ------------------------------------------------------------------------    
 
-    public void testRun() throws Exception {
-        UnaryProcedure p = new ConstantLeftBinaryProcedureUnaryProcedure(new BinaryFunctionBinaryProcedure(new RightIdentityFunction()),"foo");
-        p.run(Boolean.TRUE);
-        p.run(Boolean.FALSE);
+    public void testEvaluate() throws Exception {
+        Function f = new BoundFunction(new IdentityFunction(),"xyzzy");
+        assertEquals("xyzzy",f.evaluate());
     }
     
     public void testEquals() throws Exception {
-        UnaryProcedure f = new ConstantLeftBinaryProcedureUnaryProcedure(new NoOpProcedure(),"xyzzy");
+        Function f = new BoundFunction(new IdentityFunction(),"xyzzy");
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new ConstantLeftBinaryProcedureUnaryProcedure(new NoOpProcedure(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new NoOpProcedure());        
-        assertObjectsAreNotEqual(f,new ConstantLeftBinaryProcedureUnaryProcedure(new BinaryFunctionBinaryProcedure(new RightIdentityFunction()),"xyzzy"));
-        assertObjectsAreNotEqual(f,new ConstantLeftBinaryProcedureUnaryProcedure(new NoOpProcedure(),"foo"));
-        assertObjectsAreNotEqual(f,new ConstantLeftBinaryProcedureUnaryProcedure(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new ConstantLeftBinaryProcedureUnaryProcedure(new NoOpProcedure(),null));
-        assertObjectsAreEqual(new ConstantLeftBinaryProcedureUnaryProcedure(null,null),new ConstantLeftBinaryProcedureUnaryProcedure(null,null));
+        assertObjectsAreEqual(f,new BoundFunction(new IdentityFunction(),"xyzzy"));
+        assertObjectsAreNotEqual(f,new ConstantFunction("xyzzy"));
+        assertObjectsAreNotEqual(f,new BoundFunction(new IdentityFunction(),"foo"));
+        assertObjectsAreNotEqual(f,new BoundFunction(new ConstantFunction("xyzzy"),"foo"));
+        assertObjectsAreNotEqual(f,new BoundFunction(null,"xyzzy"));
+        assertObjectsAreNotEqual(f,new BoundFunction(new IdentityFunction(),null));
+        assertObjectsAreEqual(new BoundFunction(null,null),new BoundFunction(null,null));
     }
 
     public void testAdaptNull() throws Exception {
-        assertNull(ConstantLeftBinaryProcedureUnaryProcedure.adapt(null,"xyzzy"));
+        assertNull(BoundFunction.adapt(null,"xyzzy"));
     }
 
     public void testAdapt() throws Exception {
-        assertNotNull(ConstantLeftBinaryProcedureUnaryProcedure.adapt(new NoOpProcedure(),"xyzzy"));
-        assertNotNull(ConstantLeftBinaryProcedureUnaryProcedure.adapt(new NoOpProcedure(),null));
+        assertNotNull(BoundFunction.adapt(new IdentityFunction(),"xyzzy"));
+        assertNotNull(BoundFunction.adapt(new IdentityFunction(),null));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/Attic/ConstantRightBinaryFunctionUnaryFunction.java,v 1.2 2003/01/28 20:36:44 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/RightBoundPredicate.java,v 1.1 2003/01/28 23:37:49 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,15 +58,15 @@ package org.apache.commons.functor.adapter;
 
 import java.io.Serializable;
 
-import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
  * Adapts a
- * {@link BinaryFunction BinaryFunction} 
+ * {@link BinaryPredicate BinaryPredicate} 
  * to the 
- * {@link UnaryFunction UnaryFunction} interface 
- * using a constant right-side argument.
+ * {@link UnaryPredicate UnaryPredicate} interface 
+ * using a constant left-side argument.
  * <p/>
  * Note that although this class implements 
  * {@link Serializable}, a given instance will
@@ -75,44 +75,44 @@ import org.apache.commons.functor.UnaryFunction;
  * an instance whose delegates are not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 20:36:44 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:49 $
  * @author Rodney Waldhoff
  */
-public final class ConstantRightBinaryFunctionUnaryFunction implements UnaryFunction, Serializable {
+public final class RightBoundPredicate implements UnaryPredicate, Serializable {
     /**
-     * @param function the function to adapt
+     * @param predicate the predicate to adapt
      * @param arg the constant argument to use
      */
-    public ConstantRightBinaryFunctionUnaryFunction(BinaryFunction function, Object arg) {
-        this.function = function;
+    public RightBoundPredicate(BinaryPredicate predicate, Object arg) {
+        this.predicate = predicate;
         this.param = arg;
     }
  
-    public Object evaluate(Object obj) {
-        return function.evaluate(obj,param);
+    public boolean test(Object obj) {
+        return predicate.test(obj,param);
     }   
 
     public boolean equals(Object that) {
-        if(that instanceof ConstantRightBinaryFunctionUnaryFunction) {
-            return equals((ConstantRightBinaryFunctionUnaryFunction)that);
+        if(that instanceof RightBoundPredicate) {
+            return equals((RightBoundPredicate)that);
         } else {
             return false;
         }
     }
         
-    public boolean equals(ConstantRightBinaryFunctionUnaryFunction that) {
+    public boolean equals(RightBoundPredicate that) {
         return that == this || ( 
                 (null != that) && 
-                (null == function ? null == that.function : function.equals(that.function)) &&
+                (null == predicate ? null == that.predicate : predicate.equals(that.predicate)) &&
                 (null == param ? null == that.param : param.equals(that.param)) );
                 
     }
     
     public int hashCode() {
-        int hash = "ConstantRightBinaryFunctionUnaryFunction".hashCode();
-        if(null != function) {
+        int hash = "RightBoundPredicate".hashCode();
+        if(null != predicate) {
             hash <<= 2;
-            hash ^= function.hashCode();
+            hash ^= predicate.hashCode();
         }
         if(null != param) {
             hash <<= 2;
@@ -122,15 +122,15 @@ public final class ConstantRightBinaryFunctionUnaryFunction implements UnaryFunc
     }
     
     public String toString() {
-        return "ConstantRightBinaryFunctionUnaryFunction<" + function + "(?," + param + ")>";
+        return "RightBoundPredicate<" + predicate + "(?," + param + ")>";
     }
 
-    public static ConstantRightBinaryFunctionUnaryFunction adapt(BinaryFunction function, Object arg) {
-        return null == function ? null : new ConstantRightBinaryFunctionUnaryFunction(function,arg);
+    public static RightBoundPredicate adapt(BinaryPredicate predicate, Object arg) {
+        return null == predicate ? null : new RightBoundPredicate(predicate,arg);
     }
 
-    /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction function = null;
-    /** The parameter to pass to that function. */
+    /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
+    private BinaryPredicate predicate = null;
+    /** The parameter to pass to that predicate. */
     private Object param = null;
 }

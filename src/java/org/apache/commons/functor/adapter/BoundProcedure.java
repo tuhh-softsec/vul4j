@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/Attic/UnaryProcedureProcedure.java,v 1.2 2003/01/28 20:36:44 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BoundProcedure.java,v 1.1 2003/01/28 23:37:49 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,15 +75,15 @@ import org.apache.commons.functor.UnaryProcedure;
  * an instance whose delegates are not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 20:36:44 $
+ * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:49 $
  * @author Rodney Waldhoff
  */
-public final class UnaryProcedureProcedure implements Procedure, Serializable {
+public final class BoundProcedure implements Procedure, Serializable {
     /**
      * @param procedure the procedure to adapt
      * @param arg the constant argument to use
      */
-    public UnaryProcedureProcedure(UnaryProcedure procedure, Object arg) {
+    public BoundProcedure(UnaryProcedure procedure, Object arg) {
         this.procedure = procedure;
         this.param = arg;
     }
@@ -93,14 +93,14 @@ public final class UnaryProcedureProcedure implements Procedure, Serializable {
     }   
 
     public boolean equals(Object that) {
-        if(that instanceof UnaryProcedureProcedure) {
-            return equals((UnaryProcedureProcedure)that);
+        if(that instanceof BoundProcedure) {
+            return equals((BoundProcedure)that);
         } else {
             return false;
         }
     }
         
-    public boolean equals(UnaryProcedureProcedure that) {
+    public boolean equals(BoundProcedure that) {
         return that == this || ( 
                 (null != that) && 
                 (null == procedure ? null == that.procedure : procedure.equals(that.procedure)) &&
@@ -109,7 +109,7 @@ public final class UnaryProcedureProcedure implements Procedure, Serializable {
     }
     
     public int hashCode() {
-        int hash = "UnaryProcedureProcedure".hashCode();
+        int hash = "BoundProcedure".hashCode();
         if(null != procedure) {
             hash <<= 2;
             hash ^= procedure.hashCode();
@@ -122,11 +122,11 @@ public final class UnaryProcedureProcedure implements Procedure, Serializable {
     }
     
     public String toString() {
-        return "UnaryProcedureProcedure<" + procedure + "(" + param + ")>";
+        return "BoundProcedure<" + procedure + "(" + param + ")>";
     }
 
-    public static UnaryProcedureProcedure adapt(UnaryProcedure procedure, Object arg) {
-        return null == procedure ? null : new UnaryProcedureProcedure(procedure,arg);
+    public static BoundProcedure adapt(UnaryProcedure procedure, Object arg) {
+        return null == procedure ? null : new BoundProcedure(procedure,arg);
     }
 
     /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */

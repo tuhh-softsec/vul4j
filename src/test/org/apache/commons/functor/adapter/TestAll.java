@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestAll.java,v 1.2 2003/01/28 12:54:37 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestAll.java,v 1.3 2003/01/28 23:37:50 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:54:37 $
+ * @version $Revision: 1.3 $ $Date: 2003/01/28 23:37:50 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -97,17 +97,17 @@ public class TestAll extends TestCase {
         suite.addTest(TestProcedureUnaryProcedure.suite());
         suite.addTest(TestUnaryProcedureBinaryProcedure.suite());
         
-        suite.addTest(TestUnaryFunctionFunction.suite());
-        suite.addTest(TestConstantLeftBinaryFunctionUnaryFunction.suite());
-        suite.addTest(TestConstantRightBinaryFunctionUnaryFunction.suite());
+        suite.addTest(TestBoundFunction.suite());
+        suite.addTest(TestLeftBoundFunction.suite());
+        suite.addTest(TestRightBoundFunction.suite());
         
-        suite.addTest(TestUnaryPredicatePredicate.suite());
-        suite.addTest(TestConstantLeftBinaryPredicateUnaryPredicate.suite());
-        suite.addTest(TestConstantRightBinaryPredicateUnaryPredicate.suite());
+        suite.addTest(TestBoundPredicate.suite());
+        suite.addTest(TestLeftBoundPredicate.suite());
+        suite.addTest(TestRightBoundPredicate.suite());
 
-        suite.addTest(TestUnaryProcedureProcedure.suite());
-        suite.addTest(TestConstantLeftBinaryProcedureUnaryProcedure.suite());
-        suite.addTest(TestConstantRightBinaryProcedureUnaryProcedure.suite());
+        suite.addTest(TestBoundProcedure.suite());
+        suite.addTest(TestLeftBoundProcedure.suite());
+        suite.addTest(TestRightBoundProcedure.suite());
         
         return suite;
     }
