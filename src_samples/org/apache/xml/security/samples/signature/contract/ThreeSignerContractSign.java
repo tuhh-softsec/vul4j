@@ -159,17 +159,26 @@ public class ThreeSignerContractSign {
       String id2 = "secondSigner";
       String id3 = "thirdSigner";
 
-      // sign the whole contract and no signature
-      String xp1 = "not(ancestor-or-self::ds:Signature)"
-                 + " and not(ancestor-or-self::node()[@Id='cond1'])";
+      // sign the whole contract and no signature and exclude condition1
+      String xp1Old = "not(ancestor-or-self::ds:Signature)"
+            + " and not(ancestor-or-self::node()[@Id='cond1'])";
+
+      // sign the contract with condition2 and codition3 and no signature
+      String xp1 = "not(ancestor-or-self::ds:Signature)" + "\n"
+                + " and (" + "\n"
+                + "    (ancestor-or-self::node() = /contract/condition2) " + "\n"
+                + " or (ancestor-or-self::node() = /contract/condition3) " + "\n"
+                + " or (self::node() = /contract) " + "\n"
+                + " or ((parent::node() = /contract) and (self::text()))" + "\n"
+                + ")";
 
       // sign the whole contract and no signature but the first
-      String xp2 = "not(ancestor-or-self::ds:Signature)"
+      String xp2 = "not(ancestor-or-self::ds:Signature)" + "\n"
                  + " or ancestor-or-self::ds:Signature[@Id='" + id1 + "']";
 
       // sign the whole contract and no signature but the first and the second
-      String xp3 = "not(ancestor-or-self::ds:Signature)"
-                 + " or ancestor-or-self::ds:Signature[@Id='" + id1 + "']"
+      String xp3 = "not(ancestor-or-self::ds:Signature)" + "\n"
+                 + " or ancestor-or-self::ds:Signature[@Id='" + id1 + "']" + "\n"
                  + " or ancestor-or-self::ds:Signature[@Id='" + id2 + "']";
       //J+
       //////////////////////////////////////////////////////////////////
