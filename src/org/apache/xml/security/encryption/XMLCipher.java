@@ -93,6 +93,7 @@ import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.exceptions.Base64DecodingException;
@@ -203,6 +204,8 @@ public class XMLCipher {
     private String _algorithm = null;
 	/** Cryptographic provider requested by caller */
 	private String _requestedJCEProvider = null;
+	/** Holds c14n to serialize, if initialized then _always_ use this c14n to serialize */
+	private Canonicalizer _canon;
 	/** Used for creation of DOM nodes in WRAP and ENCRYPT modes */
     private Document _contextDocument;
 	/** Instance of factory used to create XML Encryption objects */
@@ -305,6 +308,17 @@ public class XMLCipher {
 		instance._key = null;
 		instance._kek = null;
 
+
+		/* Create a canonicaliser - used when serialising DOM to octets
+		 * prior to encryption (and for the reverse) */
+
+		try {
+			instance._canon = Canonicalizer.getInstance
+				(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+		} catch (InvalidCanonicalizerException ice) {
+			throw new XMLEncryptionException("empty", ice);
+		}
+
         try {
 			String jceAlgorithm =
 				JCEMapper.translateURItoJCEID(transformation).getAlgorithmID();
@@ -322,6 +336,39 @@ public class XMLCipher {
         return (instance);
     }
 
+	/**
+	 * Returns an <code>XMLCipher</code> that implements the specified
+	 * transformation, operates on the specified context document and serializes
+	 * the document with the specified canonicalization algorithm before it
+	 * encrypts the document.
+	 * <p>
+	 * 
+	 * @param transformation	the name of the transformation, e.g.,
+	 *   						<code>XMLCipher.TRIPLEDES</code> which is 
+	 * 							shorthand for
+	 *   				&quot;http://www.w3.org/2001/04/xmlenc#tripledes-cbc&quot;
+	 * @param canon				the name of the c14n algorithm, if
+	 * 							<code>null</code> use standard serializer 
+	 * @return
+	 * @throws XMLEncryptionException
+	 */
+
+	public static XMLCipher getInstance(String transformation, String canon)
+		throws XMLEncryptionException {
+		XMLCipher instance = XMLCipher.getInstance(transformation);
+
+		if (canon != null) {
+			try {
+				instance._canon = Canonicalizer.getInstance(canon);
+			} catch (InvalidCanonicalizerException ice) {
+				throw new XMLEncryptionException("empty", ice);
+			}
+		}
+
+		return instance;
+	}
+
+
     /**
      * Returns an <code>XMLCipher</code> that implements the specified
      * transformation and operates on the specified context document.
@@ -332,6 +379,7 @@ public class XMLCipher {
      * @param provider the JCE provider that supplies the transformation
      * @throws <code>XMLEncryptionException</code>.
      */
+
     public static XMLCipher getProviderInstance(String transformation, String provider)
             throws XMLEncryptionException {
         // sanity checks
@@ -352,6 +400,16 @@ public class XMLCipher {
 		instance._key = null;
 		instance._kek = null;
 
+		/* Create a canonicaliser - used when serialising DOM to octets
+		 * prior to encryption (and for the reverse) */
+
+		try {
+			instance._canon = Canonicalizer.getInstance
+				(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+		} catch (InvalidCanonicalizerException ice) {
+			throw new XMLEncryptionException("empty", ice);
+		}
+
         try {
 			String jceAlgorithm =
 				JCEMapper.translateURItoJCEID(transformation).getAlgorithmID();
@@ -371,6 +429,40 @@ public class XMLCipher {
 
         return (instance);
     }
+	
+	/**
+	 * Returns an <code>XMLCipher</code> that implements the specified
+     * transformation, operates on the specified context document and serializes
+     * the document with the specified canonicalization algorithm before it
+     * encrypts the document.
+     * <p>
+	 * 
+	 * @param transformation	the name of the transformation, e.g.,
+     *   						<code>XMLCipher.TRIPLEDES</code> which is 
+     * 							shorthand for
+     *   				&quot;http://www.w3.org/2001/04/xmlenc#tripledes-cbc&quot;
+	 * @param provider  		the JCE provider that supplies the transformation
+	 * @param canon				the name of the c14n algorithm, if
+	 * 							<code>null</code> use standard serializer 
+	 * @return
+	 * @throws Exception
+	 */
+	public static XMLCipher getProviderInstance(
+		String transformation,
+		String provider,
+		String canon)
+		throws XMLEncryptionException {
+
+		XMLCipher instance = XMLCipher.getProviderInstance(transformation, provider);
+		if (canon != null) {
+			try {
+				instance._canon = Canonicalizer.getInstance(canon);
+			} catch (InvalidCanonicalizerException ice) {
+				throw new XMLEncryptionException("empty", ice);
+			}
+		}
+		return instance;
+	}
 
     /**
      * Returns an <code>XMLCipher</code> that implements no specific
@@ -393,6 +485,16 @@ public class XMLCipher {
 		instance._key = null;
 		instance._kek = null;
 		instance._contextCipher = null;
+
+		/* Create a canonicaliser - used when serialising DOM to octets
+		 * prior to encryption (and for the reverse) */
+
+		try {
+			instance._canon = Canonicalizer.getInstance
+				(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+		} catch (InvalidCanonicalizerException ice) {
+			throw new XMLEncryptionException("empty", ice);
+		}
 
         return (instance);
     }
@@ -428,6 +530,13 @@ public class XMLCipher {
 		instance._key = null;
 		instance._kek = null;
 		instance._contextCipher = null;
+
+		try {
+			instance._canon = Canonicalizer.getInstance
+				(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+		} catch (InvalidCanonicalizerException ice) {
+			throw new XMLEncryptionException("empty", ice);
+		}
 
         return (instance);
     }
@@ -627,17 +736,17 @@ public class XMLCipher {
      */
 
     private Document encryptElement(Element element) throws
-            XMLEncryptionException {
+            /* XMLEncryption */Exception {
         logger.debug("Encrypting element...");
         if(null == element) 
             logger.error("Element unexpectedly null...");
         if(_cipherMode != ENCRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
-	if (_algorithm == null) {
-	    throw new XMLEncryptionException("XMLCipher instance without transformation specified");
-	}
-	encryptData(_contextDocument, element, false);
+		if (_algorithm == null) {
+	    	throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+		}
+		encryptData(_contextDocument, element, false);
 
         Element encryptedElement = _factory.toElement(_ed);
 
@@ -661,17 +770,17 @@ public class XMLCipher {
      *   <code>Element</code>.
      */
     private Document encryptElementContent(Element element) throws
-            XMLEncryptionException {
+            /* XMLEncryption */Exception {
         logger.debug("Encrypting element content...");
         if(null == element) 
             logger.error("Element unexpectedly null...");
         if(_cipherMode != ENCRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
-	if (_algorithm == null) {
-	    throw new XMLEncryptionException("XMLCipher instance without transformation specified");
-	}
-	encryptData(_contextDocument, element, true);	
+		if (_algorithm == null) {
+	    	throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+		}
+		encryptData(_contextDocument, element, true);	
 
         Element encryptedElement = _factory.toElement(_ed);
 
@@ -691,7 +800,7 @@ public class XMLCipher {
      * @throws XMLEnccryptionException to indicate any exceptional conditions.
      */
     public Document doFinal(Document context, Document source) throws
-            XMLEncryptionException {
+            /* XMLEncryption */Exception {
         logger.debug("Processing source document...");
         if(null == context)
             logger.error("Context document unexpectedly null...");
@@ -731,7 +840,7 @@ public class XMLCipher {
      * @throws XMLEnccryptionException to indicate any exceptional conditions.
      */
     public Document doFinal(Document context, Element element) throws
-            XMLEncryptionException {
+            /* XMLEncryption */Exception {
         logger.debug("Processing source element...");
         if(null == context)
             logger.error("Context document unexpectedly null...");
@@ -773,7 +882,7 @@ public class XMLCipher {
      * @throws XMLEnccryptionException to indicate any exceptional conditions.
      */
     public Document doFinal(Document context, Element element, boolean content)
-            throws XMLEncryptionException {
+            throws /* XMLEncryption*/ Exception {
         logger.debug("Processing source element...");
         if(null == context)
             logger.error("Context document unexpectedly null...");
@@ -868,69 +977,70 @@ public class XMLCipher {
      */
 
     public EncryptedData encryptData(Document context, Element element) throws 
-            XMLEncryptionException {
+            /* XMLEncryption */Exception {
 	return encryptData(context, element, false);
     }
 
     private EncryptedData encryptData(Document context, Element element, boolean contentMode) throws
-            XMLEncryptionException {
-        logger.debug("Encrypting element...");
-        if(null == context)
-            logger.error("Context document unexpectedly null...");
-        if(null == element)
-            logger.error("Element unexpectedly null...");
-        if(_cipherMode != ENCRYPT_MODE)
-            logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+            /* XMLEncryption */ Exception {
+		logger.debug("Encrypting element...");
+		if (null == context)
+			logger.error("Context document unexpectedly null...");
+		if (null == element)
+			logger.error("Element unexpectedly null...");
+		if (_cipherMode != ENCRYPT_MODE)
+			logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
-        _contextDocument = context;
+		_contextDocument = context;
 
-	if (_algorithm == null) {
-	    throw new XMLEncryptionException("XMLCipher instance without transformation specified");
-	}
-	
-
-        String serializedOctets = null;
-	if (contentMode) {
-	    NodeList children = element.getChildNodes();
-	    if ((null != children)) {
-		serializedOctets = _serializer.serialize(children);
-	    }
-	    else {
-		Object exArgs[] = {"Element has no content."};
-		throw new XMLEncryptionException("empty", exArgs);
-	    }
-        }
-	else {
-	    serializedOctets = _serializer.serialize(element);
-	}
-	logger.debug("Serialized octets:\n" + serializedOctets);
-
-        byte[] encryptedBytes = null;
-		// Now create the working cipher
-
-		String jceAlgorithm =
-			JCEMapper.translateURItoJCEID(_algorithm).getAlgorithmID();
-		String provider;
-
-		if (_requestedJCEProvider == null)
-			provider =
-				JCEMapper.translateURItoJCEID(_algorithm).getProviderId();
-		else
-			provider = _requestedJCEProvider;
-
-		logger.debug("provider = " + provider + "alg = " + jceAlgorithm);
-
-		Cipher c;
-		try {
-			c = Cipher.getInstance(jceAlgorithm, provider);
-		} catch (NoSuchAlgorithmException nsae) {
-			throw new XMLEncryptionException("empty", nsae);
-		} catch (NoSuchProviderException nspre) {
-			throw new XMLEncryptionException("empty", nspre);
-		} catch (NoSuchPaddingException nspae) {
-			throw new XMLEncryptionException("empty", nspae);
+		if (_algorithm == null) {
+			throw new XMLEncryptionException("XMLCipher instance without transformation specified");
 		}
 
+		String serializedOctets = null;
+		if (contentMode) {
+			NodeList children = element.getChildNodes();
+			if ((null != children)) {
+				serializedOctets = _serializer.serialize(children);
+			} else {
+				Object exArgs[] = { "Element has no content." };
+				throw new XMLEncryptionException("empty", exArgs);
+			}
+		} else {
+			serializedOctets = _serializer.serialize(element);
+		}
+		logger.debug("Serialized octets:\n" + serializedOctets);
+
+        byte[] encryptedBytes = null;
+
+		// Now create the working cipher if none was created already
+		Cipher c;
+		if (_contextCipher == null) {
+			String jceAlgorithm =
+				JCEMapper.translateURItoJCEID(_algorithm).getAlgorithmID();
+			String provider;
+
+			if (_requestedJCEProvider == null)
+				provider =
+					JCEMapper.translateURItoJCEID(_algorithm).getProviderId();
+			else
+				provider = _requestedJCEProvider;
+
+			logger.debug("provider = " + provider + "alg = " + jceAlgorithm);
+
+			try {
+				c = Cipher.getInstance(jceAlgorithm, provider);
+			} catch (NoSuchAlgorithmException nsae) {
+				throw new XMLEncryptionException("empty", nsae);
+			} catch (NoSuchProviderException nspre) {
+				throw new XMLEncryptionException("empty", nspre);
+			} catch (NoSuchPaddingException nspae) {
+				throw new XMLEncryptionException("empty", nspae);
+			}
+		}
+		else {
+			c = _contextCipher;
+		}
 		// Now perform the encryption
 
 		try {
@@ -978,24 +1088,25 @@ public class XMLCipher {
         logger.debug("Encrypted octets length = " +
             base64EncodedEncryptedOctets.length());
 
-        try {
-	    CipherData cd = _ed.getCipherData();
-	    CipherValue cv = cd.getCipherValue();
-	    // cv.setValue(base64EncodedEncryptedOctets.getBytes());
-		cv.setValue(base64EncodedEncryptedOctets);
+		try {
+			CipherData cd = _ed.getCipherData();
+			CipherValue cv = cd.getCipherValue();
+			// cv.setValue(base64EncodedEncryptedOctets.getBytes());
+			cv.setValue(base64EncodedEncryptedOctets);
 
-	    if (contentMode) {
-		_ed.setType(new URI(EncryptionConstants.TYPE_CONTENT).toString());
-	    }
-	    else {
-		_ed.setType(new URI(EncryptionConstants.TYPE_ELEMENT).toString());
-	    }
-            EncryptionMethod method = _factory.newEncryptionMethod(
-		 new URI(_algorithm).toString());
-            _ed.setEncryptionMethod(method);
-        } catch (URI.MalformedURIException mfue) {
-            throw new XMLEncryptionException("empty", mfue);
-        }
+			if (contentMode) {
+				_ed.setType(
+					new URI(EncryptionConstants.TYPE_CONTENT).toString());
+			} else {
+				_ed.setType(
+					new URI(EncryptionConstants.TYPE_ELEMENT).toString());
+			}
+			EncryptionMethod method =
+				_factory.newEncryptionMethod(new URI(_algorithm).toString());
+			_ed.setEncryptionMethod(method);
+		} catch (URI.MalformedURIException mfue) {
+			throw new XMLEncryptionException("empty", mfue);
+		}
         return (_ed);
     }
 
@@ -1091,32 +1202,36 @@ public class XMLCipher {
 
 		_contextDocument = doc;
 
-        byte[] encryptedBytes = null;
-		// Now create the working cipher
-
-		String jceAlgorithm =
-			JCEMapper.translateURItoJCEID(_algorithm).getAlgorithmID();
-		String provider;
-
-		if (_requestedJCEProvider == null)
-			provider =
-				JCEMapper.translateURItoJCEID(_algorithm).getProviderId();
-		else
-			provider = _requestedJCEProvider;
-
-		logger.debug("provider = " + provider + "alg = " + jceAlgorithm);
-
+		byte[] encryptedBytes = null;
 		Cipher c;
-		try {
-			c = Cipher.getInstance(jceAlgorithm, provider);
-		} catch (NoSuchAlgorithmException nsae) {
-			throw new XMLEncryptionException("empty", nsae);
-		} catch (NoSuchProviderException nspre) {
-			throw new XMLEncryptionException("empty", nspre);
-		} catch (NoSuchPaddingException nspae) {
-			throw new XMLEncryptionException("empty", nspae);
-		}
 
+		if (_contextCipher == null) {
+			// Now create the working cipher
+
+			String jceAlgorithm =
+				JCEMapper.translateURItoJCEID(_algorithm).getAlgorithmID();
+			String provider;
+
+			if (_requestedJCEProvider == null)
+				provider =
+					JCEMapper.translateURItoJCEID(_algorithm).getProviderId();
+			else
+				provider = _requestedJCEProvider;
+
+			logger.debug("provider = " + provider + "alg = " + jceAlgorithm);
+
+			try {
+				c = Cipher.getInstance(jceAlgorithm, provider);
+			} catch (NoSuchAlgorithmException nsae) {
+				throw new XMLEncryptionException("empty", nsae);
+			} catch (NoSuchProviderException nspre) {
+				throw new XMLEncryptionException("empty", nspre);
+			} catch (NoSuchPaddingException nspae) {
+				throw new XMLEncryptionException("empty", nspae);
+			}
+		} else {
+			c = _contextCipher;
+		}
 		// Now perform the encryption
 
 		try {
@@ -1193,36 +1308,43 @@ public class XMLCipher {
 		XMLCipherInput cipherInput = new XMLCipherInput(encryptedKey);
 		byte [] encryptedBytes = cipherInput.getBytes();
 
-		// Now create the working cipher
-
-		String jceAlgorithm = 
-			JCEMapper.translateURItoJCEID(encryptedKey.getEncryptionMethod()
-										  .getAlgorithm()).getAlgorithmID();
 		String provider;
-
 		if (_requestedJCEProvider == null)
 			provider =
-				JCEMapper.translateURItoJCEID(encryptedKey
-											  .getEncryptionMethod()
-											  .getAlgorithm())
-				.getProviderId();
+				JCEMapper
+					.translateURItoJCEID(
+						encryptedKey.getEncryptionMethod().getAlgorithm())
+					.getProviderId();
 		else
 			provider = _requestedJCEProvider;
 
-		String jceKeyAlgorithm = 
+		String jceKeyAlgorithm =
 			JCEMapper.getJCEKeyAlgorithmFromURI(algorithm, provider);
 		logger.debug("JCE Provider = " + provider);
-		logger.debug("JCE Algorithm = " + jceAlgorithm);
 
 		Cipher c;
-		try {
-			c = Cipher.getInstance(jceAlgorithm, provider);
-		} catch (NoSuchAlgorithmException nsae) {
-			throw new XMLEncryptionException("empty", nsae);
-		} catch (NoSuchProviderException nspre) {
-			throw new XMLEncryptionException("empty", nspre);
-		} catch (NoSuchPaddingException nspae) {
-			throw new XMLEncryptionException("empty", nspae);
+		if (_contextCipher == null) {
+			// Now create the working cipher
+
+			String jceAlgorithm =
+				JCEMapper
+					.translateURItoJCEID(
+						encryptedKey.getEncryptionMethod().getAlgorithm())
+					.getAlgorithmID();
+
+			logger.debug("JCE Algorithm = " + jceAlgorithm);
+
+			try {
+				c = Cipher.getInstance(jceAlgorithm, provider);
+			} catch (NoSuchAlgorithmException nsae) {
+				throw new XMLEncryptionException("empty", nsae);
+			} catch (NoSuchProviderException nspre) {
+				throw new XMLEncryptionException("empty", nspre);
+			} catch (NoSuchPaddingException nspae) {
+				throw new XMLEncryptionException("empty", nspae);
+			}
+		} else {
+			c = _contextCipher;
 		}
 
 		Key ret;
@@ -1691,27 +1813,44 @@ public class XMLCipher {
         /**
          * Initialize the <code>XMLSerializer</code> with the specified context
          * <code>Document</code>.
-         *
+         * <p/>
+         * Setup OutputFormat in a way that the serialization does <b>not</b>
+         * modifiy the contents, that is it shall not do any pretty printing
+         * and so on. This would destroy the original content before 
+         * encryption. If that content was signed before encryption and the 
+         * serialization modifies the content the signature verification will
+         * fail.
+         * 
          * @param document the context <code>Document</code>.
          */
         Serializer() {
             format = new OutputFormat();
             format.setEncoding("UTF-8");
             format.setOmitDocumentType(true);
-            format.setOmitXMLDeclaration(true);
+			format.setOmitXMLDeclaration(true);
+			format.setOmitComments(false);
             format.setPreserveSpace(true);
+			format.setIndenting(false);
+
         }
 
         /**
          * Returns a <code>String</code> representation of the specified
          * <code>Document</code>.
+         * <p/>
+         * Refer also to comments about setup of format.
          *
          * @param doc the <code>Document</code> to serialize.
          * @return the <code>String</code> representation of the serilaized
          *   <code>Document</code>.
          * @throws
          */
-        String serialize(Document document) throws XMLEncryptionException {
+        String serialize(Document document) throws Exception {
+        	
+        	if (_canon != null) {
+        		return canonSerialize(document);
+        	}
+        	
             StringWriter output = new StringWriter();
             _serializer = new XMLSerializer(output, format);
 
@@ -1727,66 +1866,90 @@ public class XMLCipher {
         /**
          * Returns a <code>String</code> representation of the specified
          * <code>Element</code>.
+         * <p/>
+         * Refer also to comments about setup of format.
          *
          * @param doc the <code>Element</code> to serialize.
          * @return the <code>String</code> representation of the serilaized
          *   <code>Element</code>.
          * @throws XMLEncryptionException
          */
-        String serialize(Element element) throws XMLEncryptionException {
-            // StringWriter output = new StringWriter();
-			ByteArrayOutputStream output = new ByteArrayOutputStream();
-            _serializer = new XMLSerializer(output, format);
+		String serialize(Element element) throws Exception {
 
-            try {
-                _serializer.serialize(element);
-            } catch (IOException ioe) {
-                throw new XMLEncryptionException("empty", ioe);
-            }
-
-
-			String ret = null;
-			try {
-				ret = output.toString("UTF-8");
-			} catch (UnsupportedEncodingException uee) {
-				throw new XMLEncryptionException("empty", uee);
+			if (_canon != null) {
+				return canonSerialize(element);
 			}
-            return ret;
-        }
+
+			StringWriter output = new StringWriter();
+			_serializer = new XMLSerializer(output, format);
+
+			try {
+				_serializer.serialize(element);
+			} catch (IOException ioe) {
+				throw new XMLEncryptionException("empty", ioe);
+			}
+			return (output.toString());
+		}
 
         /**
          * Returns a <code>String</code> representation of the specified
          * <code>NodeList</code>.
-         *
+         * <p/>
+         * This is a special case because the NodeList may represent a
+         * <code>DocumentFragment</code>. A document fragement may be a
+         * non-valid XML document (refer to appropriate description of
+         * W3C) because it my start with a non-element node, e.g. a text
+         * node.
+         * <p/>
+         * The methods first converts the node list into a document fragment.
+         * Special care is taken to not destroy the current document, thus
+         * the method clones the nodes (deep cloning) before it appends
+         * them to the document fragment.
+         * <p/>
+         * Refer also to comments about setup of format.
+         * 
          * @param doc the <code>NodeList</code> to serialize.
          * @return the <code>String</code> representation of the serilaized
          *   <code>NodeList</code>.
          * @throws
          */
-        String serialize(NodeList content) throws XMLEncryptionException {
-            StringWriter output = new StringWriter();
-            _serializer = new XMLSerializer(output, format);
-
-            try {
-                for (int i =0; i < content.getLength(); i++) {
-                    Node n = content.item(i);
-                    if (null != n) {
-			int nodeType = n.getNodeType();
-			if (nodeType == Node.ELEMENT_NODE) {
-			    _serializer.serialize((Element) n);
+        String serialize(NodeList content) throws Exception { //XMLEncryptionException {
+        	
+			if (_canon != null) {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				for (int i = 0; i < content.getLength(); i++) {
+					byte[] canonBytes =
+						_canon.canonicalizeSubtree(content.item(i));
+					baos.write(canonBytes);
+				}
+				baos.close();
+				return baos.toString("UTF-8");
 			}
-			else if (nodeType == Node.TEXT_NODE) {
-			    output.write(n.getNodeValue());
-			}
-                    }
-                }
-            } catch (IOException ioe) {
-                throw new XMLEncryptionException("empty", ioe);
-            }
+			  
+			StringWriter output = new StringWriter();
+			_serializer = new XMLSerializer(output, format);
 
-            return (output.toString());
+			DocumentFragment parts = _contextDocument.createDocumentFragment();
+			for (int i = 0; i < content.getLength(); i++) {
+				Node n = content.item(i);
+				Node newN = n.cloneNode(true);
+				parts.appendChild(newN);
+			}
+			try {
+				_serializer.serialize((DocumentFragment)parts);
+			} catch (IOException ioe) {
+				throw new XMLEncryptionException("empty", ioe);
+			}
+			return (output.toString());			
         }
 
+		String canonSerialize(Node node) throws Exception {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] canonBytes = _canon.canonicalizeSubtree(node);
+			baos.write(canonBytes);
+			baos.close();
+			return baos.toString("UTF-8");
+		}
         /**
          *
          */
@@ -1817,7 +1980,7 @@ public class XMLCipher {
 				for (int i = 0 ; i < length ; ++i) {
 					Node att = atts.item(i);
 					if (att.getNodeName().startsWith("xmlns:") ||
-						att.getNodeName() == "xmlns") {
+						att.getNodeName().equals("xmlns")) {
 					
 						// Check to see if this node has already been found
 						Node p = ctx;
