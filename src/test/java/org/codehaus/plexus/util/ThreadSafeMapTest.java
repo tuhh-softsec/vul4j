@@ -79,7 +79,10 @@ public class ThreadSafeMapTest extends TestCase
         {
             try
             {
-                wait();
+                if( registry.isStillRunningThreads() )
+                {
+                	wait();
+                } 
             }
             catch (InterruptedException e)
             {

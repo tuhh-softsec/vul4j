@@ -67,6 +67,17 @@ public class TestThreadManager
 	{       
 		return failedThreads;
 	}
+	
+	/**
+	 * Return the object which threads can wait on to be notified
+	 * when all the test threads have completed running
+	 * 
+	 * @return
+	 */
+	public Object getNotifyObject()
+	{
+		return notify;
+	}
 
 
 	public boolean hasFailedThreads()
@@ -109,7 +120,7 @@ public class TestThreadManager
 	/* (non-Javadoc)
 	* @see java.util.Collection#remove(java.lang.Object)
 	*/
-	public void completed(AbstractTestThread thread)
+	public synchronized void completed(AbstractTestThread thread)
 	{
 		toRunThreads.remove(thread);
 		runThreads.add(thread);
