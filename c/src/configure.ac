@@ -218,6 +218,28 @@ case "${host}" in
 
 						;;
 
+        *-*-freebsd*)   platform=FREEBSD 
+						shlibsuffix=.so
+						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
+					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
+						lib_short_name="lib${PACKAGE_TARNAME}.so"
+						PLATFORM_OPTIONS=["-Wall"]
+						PIC=["-fPIC"]
+
+						# Should use -D_REENTRANT - but not yet OK
+						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DFREEBSD"]
+						CC1=["${CXX} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
+						CC4=["${CC} ${CXXFLAGS} ${PLATFORM_OPTIONS}"]
+						MAKE_SHARED=["${CXX} ${CXXFLAGS} -DFREEBSD -shared ${PIC}"]
+						LINK=["${CXX} ${CXXFLAGS} -DFREEBSD ${PIC}"]
+						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
+						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
+						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${libdir}"]
+						INSTALL_COMMAND_2=["\$(RM) \${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBMAJORNAME}"]
+						INSTALL_COMMAND_3=["\$(RM) \${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBSHORTNAME}"]
+
+						;;
+
         *-*-linux*)     platform=LINUX ;
 						shlibsuffix=.so
 						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
