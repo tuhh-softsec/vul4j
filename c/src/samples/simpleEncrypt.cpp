@@ -180,7 +180,7 @@ int main (int argc, char **argv) {
 
 		/* First lets load the public key in the certificate */
 		OpenSSLCryptoX509 * x509 = new OpenSSLCryptoX509();
-		x509->loadX509Base64Bin(cert, strlen(cert));
+		x509->loadX509Base64Bin(cert, (unsigned int) strlen(cert));
 	
 		/* Now set the Key Encrypting Key (NOTE: Not the normal key) */
 		cipher->setKEK(x509->clonePublicKey());

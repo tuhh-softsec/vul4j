@@ -126,7 +126,7 @@ int main (int argc, char **argv) {
 
 	// Create an input source
 
-	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) letter, strlen(letter), "XSECMem");
+	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) letter, (unsigned int) strlen(letter), "XSECMem");
 
 	int errorCount = 0;
 

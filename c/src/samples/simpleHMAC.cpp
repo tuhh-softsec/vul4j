@@ -140,7 +140,7 @@ int main (int argc, char **argv) {
 		// Set the HMAC Key to be the string "secret"
 
 		OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
-		hmacKey->setKey((unsigned char *) "secret", strlen("secret"));
+		hmacKey->setKey((unsigned char *) "secret", (unsigned int) strlen("secret"));
 		sig->setSigningKey(hmacKey);
 
 		// Add a KeyInfo element

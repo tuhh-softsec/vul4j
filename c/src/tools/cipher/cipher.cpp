@@ -466,13 +466,12 @@ int evaluate(int argc, char ** argv) {
 				paramCount += 2;
 				
 			} /* argv[1] = "--x509cert" */
+#endif /* HAVE_OPENSSL */
 			else {
 				printUsage();
 				return 2;
 			}
 		}
-
-#endif /* HAVE_OPENSSL */
 
 		else {
 			cerr << "Unknown option: " << argv[paramCount] << endl;

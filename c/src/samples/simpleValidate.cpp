@@ -133,7 +133,7 @@ int main (int argc, char **argv) {
 
 	// Create an input source
 
-	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) docToValidate, strlen(docToValidate), "XSECMem");
+	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) docToValidate, (unsigned int) strlen(docToValidate), "XSECMem");
 
 	int errorCount = 0;
 
@@ -176,7 +176,7 @@ int main (int argc, char **argv) {
 		// Use the OpenSSL interface objects to get a signing key
 
 		OpenSSLCryptoX509 * x509 = new OpenSSLCryptoX509();
-		x509->loadX509Base64Bin(cert, strlen(cert));
+		x509->loadX509Base64Bin(cert, (unsigned int) strlen(cert));
 		
 		sig->load();
 		DSIGKeyInfoList * kinfList = sig->getKeyInfoList();

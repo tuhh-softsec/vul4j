@@ -298,6 +298,8 @@ XSECCryptoSymmetricKey * XencInteropResolver::makeSymmetricKey(XSECCryptoSymmetr
 
 }
 
+#if defined (HAVE_OPENSSL)
+
 BIO * createFileBIO(const XMLCh * baseURI, const char * name) {
 
 	// Open file URI relative to the encrypted file
@@ -326,7 +328,7 @@ BIO * createFileBIO(const XMLCh * baseURI, const char * name) {
 
 	return bioFile;
 }
-
+#endif
 // --------------------------------------------------------------------------------
 //           Resolver
 // --------------------------------------------------------------------------------
@@ -436,7 +438,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				}
 				return k;
 			}
-
+#if defined (HAVE_OPENSSL)
 			if (strEquals(s_phaosRSAName, name)) {
 
 				// This is the Phaos RSA key
@@ -454,7 +456,7 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				return k;
 
 			}
-
+#endif
 
 			// If we get this far, we don't know it.  So look for EncryptedKey elements
 			// containing this name as a CarriedKeyName
