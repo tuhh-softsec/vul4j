@@ -91,15 +91,15 @@ public class XPath2FilterContainer extends ElementProxy
    /** Field _ATT_FILTER_VALUE_UNION */
    private static final String _ATT_FILTER_VALUE_UNION = "union";
 
-   /** Field INTERSECT           */
+   /** Field INTERSECT */
    public static final String INTERSECT =
       XPath2FilterContainer._ATT_FILTER_VALUE_INTERSECT;
 
-   /** Field SUBTRACT           */
+   /** Field SUBTRACT */
    public static final String SUBTRACT =
       XPath2FilterContainer._ATT_FILTER_VALUE_SUBTRACT;
 
-   /** Field UNION           */
+   /** Field UNION */
    public static final String UNION =
       XPath2FilterContainer._ATT_FILTER_VALUE_UNION;
 
@@ -133,15 +133,7 @@ public class XPath2FilterContainer extends ElementProxy
 
       this._constructionElement
          .setAttributeNS(null, XPath2FilterContainer._ATT_FILTER, filterType);
-
-      if ((xpath2filter.length() > 2)
-              && (!Character.isWhitespace(xpath2filter.charAt(0)))) {
-         this._constructionElement.appendChild(doc.createTextNode("\n"
-                 + xpath2filter + "\n"));
-      } else {
-         this._constructionElement
-            .appendChild(doc.createTextNode(xpath2filter));
-      }
+      this._constructionElement.appendChild(doc.createTextNode(xpath2filter));
    }
 
    /**
