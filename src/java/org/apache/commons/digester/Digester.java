@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.8 2001/08/04 22:04:15 craigmcc Exp $
- * $Revision: 1.8 $
- * $Date: 2001/08/04 22:04:15 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.9 2001/08/04 22:26:37 craigmcc Exp $
+ * $Revision: 1.9 $
+ * $Date: 2001/08/04 22:26:37 $
  *
  * ====================================================================
  *
@@ -106,7 +106,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.8 $ $Date: 2001/08/04 22:04:15 $
+ * @version $Revision: 1.9 $ $Date: 2001/08/04 22:26:37 $
  */
 
 public class Digester extends DefaultHandler {
@@ -144,13 +144,6 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Do we want to use the Context ClassLoader when loading classes
-     * for instantiating new objects?  Default is <code>false</code>.
-     */
-    protected boolean useContextClassLoader = false;
-
-
-    /**
      * The body text of the current element.
      */
     protected StringBuffer bodyText = new StringBuffer();
@@ -160,6 +153,15 @@ public class Digester extends DefaultHandler {
      * The stack of body text string buffers for surrounding elements.
      */
     protected ArrayStack bodyTexts = new ArrayStack();
+
+
+    /**
+     * The class loader to use for instantiating application objects.
+     * If not specified, the context class loader, or the class loader
+     * used to load Digester itself, is used, based on the value of the
+     * <code>useContextClassLoader</code> variable.
+     */
+    protected ClassLoader classLoader = null;
 
 
     /**
@@ -235,6 +237,13 @@ public class Digester extends DefaultHandler {
 
 
     /**
+     * Do we want to use the Context ClassLoader when loading classes
+     * for instantiating new objects?  Default is <code>false</code>.
+     */
+    protected boolean useContextClassLoader = false;
+
+
+    /**
      * Do we want to use a validating parser?
      */
     protected boolean validating = false;
@@ -248,6 +257,45 @@ public class Digester extends DefaultHandler {
 
 
     // ----------------------------------------------------------- Properties
+
+
+    /**
+     * Return the class loader to be used for instantiating application objects
+     * when required.  This is determined based upon the following rules:
+     * <ul>
+     * <li>The class loader set by <code>setClassLoader()</code>, if any</li>
+     * <li>The thread context class loader, if it exists and the
+     *     <code>useContextClassLoader</code> property is set to true</li>
+     * <li>The class loader used to load the Digester class itself.
+     * </ul>
+     */
+    public ClassLoader getClassLoader() {
+
+        if (this.classLoader != null)
+            return (this.classLoader);
+        if (this.useContextClassLoader) {
+            ClassLoader classLoader =
+                Thread.currentThread().getContextClassLoader();
+            if (classLoader != null)
+                return (classLoader);
+        }
+        return (this.getClass().getClassLoader());
+
+    }
+
+
+    /**
+     * Set the class loader to be used for instantiating application objects
+     * when required.
+     *
+     * @param classLoader The new class loader to use, or <code>null</code>
+     *  to revert to the standard rules
+     */
+    public void setClassLoader(ClassLoader classLoader) {
+
+        this.classLoader = classLoader;
+
+    }
 
 
     /**

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.3 2001/07/19 20:55:52 sanders Exp $
- * $Revision: 1.3 $
- * $Date: 2001/07/19 20:55:52 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.4 2001/08/04 22:26:37 craigmcc Exp $
+ * $Revision: 1.4 $
+ * $Date: 2001/08/04 22:26:37 $
  *
  * ====================================================================
  *
@@ -77,7 +77,7 @@ import org.apache.commons.beanutils.ConvertUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.3 $ $Date: 2001/07/19 20:55:52 $
+ * @version $Revision: 1.4 $ $Date: 2001/08/04 22:26:37 $
  */
 
 public class CallMethodRule extends Rule {
@@ -129,19 +129,8 @@ public class CallMethodRule extends Rule {
             this.paramTypes = new Class[paramTypes.length];
             for (int i = 0; i < this.paramTypes.length; i++) {
                 try {
-
-                    // Check to see if the context class loader is set, and if so, use
-                    // it (only if allowed to by the associated digester), as it may
-                    // be set in server-side environments and Class.forName() may
-                    // cause issues
-                    ClassLoader ctxLoader =
-                        Thread.currentThread().getContextClassLoader();
-                    if (ctxLoader!=null && digester.getUseContextClassLoader()) {
-                        this.paramTypes[i] = ctxLoader.loadClass(paramTypes[i]);
-                    } else {
-                        this.paramTypes[i] = Class.forName(paramTypes[i]);
-                    }
-
+                    this.paramTypes[i] =
+                        digester.getClassLoader().loadClass(paramTypes[i]);
                 } catch (ClassNotFoundException e) {
                     this.paramTypes[i] = null; // Will cause NPE later
                 }
