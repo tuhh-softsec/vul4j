@@ -87,8 +87,17 @@ my $checksig_args = "-x";
 
 # Program setup
 
-my $checksig = "../bin/checksig";
-my $cipher = "../bin/cipher";
+my $checksig;
+my $cipher;
+
+if ($^O =~ m/Win/) {
+  $checksig = "../Build/Win32/VC6/Debug/checksig.exe";
+  $cipher = "../Build/Win32/VC6/Debug/cipher.exe";
+}
+else {
+  $checksig = "../bin/checksig";
+  $cipher = "../bin/cipher";
+}
 
 # Directory setup
 my $data_dir = "../../data";
@@ -236,6 +245,7 @@ foreach (@dsig_array) {
   my $args = $fields[$dsig_args];
 
   my $result = `$checksig $checksig_args $args $data_dir/$file_name`;
+
   if ($? == 0) {
 	print "$file_name OK\n";
 	$dsig_pass_count++;
@@ -281,7 +291,7 @@ foreach (@xenc_array) {
   else {
 	print "\nFAILURE\n";
 	print "---------\n";
-	print "\n$file_name failed.  \n\nOutut was \n\n$result\n\n";
+	print "\n$file_name failed.  \n\nOutput was \n\n$result\n\n";
 	print "---------\n\n";
 	$xenc_failure_count++;
   }
