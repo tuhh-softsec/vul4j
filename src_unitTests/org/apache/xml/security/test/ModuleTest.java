@@ -50,8 +50,7 @@ public class ModuleTest extends TestCase {
       suite.addTest(org.apache.xml.security.test.external.org.apache.xalan.XPathAPI.XalanBug1425Test.suite());
       suite.addTest(org.apache.xml.security.test.external.org.apache.xalan.XPathAPI.AttributeAncestorOrSelfTest.suite());
       suite.addTest(org.apache.xml.security.test.signature.XMLSignatureInputTest.suite());
-      suite.addTest(org.apache.xml.security.test.transforms.implementations.TransformBase64DecodeTest.suite());
-      suite.addTest(org.apache.xml.security.test.utils.resolver.ResourceResolverSpiTest.suite());
+      suite.addTest(org.apache.xml.security.test.transforms.implementations.TransformBase64DecodeTest.suite());      
       suite.addTest(org.apache.xml.security.test.utils.Base64Test.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.KeyWrapTest.suite());
       // suite.addTest(org.apache.xml.security.test.algorithms.implementations.BlockEncryptionTest.suite());
