@@ -199,7 +199,7 @@ public class XMLCipher {
      * @since 1.0.
      */
     private XMLCipher() {
-        logger.info("Constructing XMLCipher...");
+        logger.debug("Constructing XMLCipher...");
 
         factory = new Factory();
         serializer = new Serializer();
@@ -273,7 +273,7 @@ public class XMLCipher {
     public static XMLCipher getInstance(String transformation) throws
             XMLEncryptionException {
         // sanity checks
-        logger.info("Getting XMLCipher...");
+        logger.debug("Getting XMLCipher...");
         if (null == transformation)
             logger.error("Transformation unexpectedly null...");
         if(!isValidEncryptionAlgorithm(transformation))
@@ -313,7 +313,7 @@ public class XMLCipher {
     public static XMLCipher getInstance(String transformation, String provider)
             throws XMLEncryptionException {
         // sanity checks
-        logger.info("Getting XMLCipher...");
+        logger.debug("Getting XMLCipher...");
         if (null == transformation)
             logger.error("Transformation unexpectedly null...");
         if(null == provider)
@@ -362,7 +362,7 @@ public class XMLCipher {
      */
     public void init(int opmode, Key key) throws XMLEncryptionException {
         // sanity checks
-        logger.info("Initializing XMLCipher...");
+        logger.debug("Initializing XMLCipher...");
         if (opmode != ENCRYPT_MODE && opmode != DECRYPT_MODE)
             logger.error("Mode unexpectedly invalid...");
         logger.debug("opmode = " +
@@ -385,7 +385,7 @@ public class XMLCipher {
      */
     private Document encryptElement(Element element) throws
             XMLEncryptionException {
-        logger.info("Encrypting element...");
+        logger.debug("Encrypting element...");
         if(null == element) 
             logger.error("Element unexpectedly null...");
         if(cipherMode != ENCRYPT_MODE)
@@ -500,7 +500,7 @@ public class XMLCipher {
      */
     private Document encryptElementContent(Element element) throws
             XMLEncryptionException {
-        logger.info("Encrypting element content...");
+        logger.debug("Encrypting element content...");
         if(null == element) 
             logger.error("Element unexpectedly null...");
         if(cipherMode != ENCRYPT_MODE)
@@ -570,7 +570,7 @@ public class XMLCipher {
      */
     public Document doFinal(Document context, Document source) throws
             XMLEncryptionException {
-        logger.info("Processing source document...");
+        logger.debug("Processing source document...");
         if(null == context)
             logger.error("Context document unexpectedly null...");
         if(null == source)
@@ -610,7 +610,7 @@ public class XMLCipher {
      */
     public Document doFinal(Document context, Element element) throws
             XMLEncryptionException {
-        logger.info("Processing source element...");
+        logger.debug("Processing source element...");
         if(null == context)
             logger.error("Context document unexpectedly null...");
         if(null == element)
@@ -652,7 +652,7 @@ public class XMLCipher {
      */
     public Document doFinal(Document context, Element element, boolean content)
             throws XMLEncryptionException {
-        logger.info("Processing source element...");
+        logger.debug("Processing source element...");
         if(null == context)
             logger.error("Context document unexpectedly null...");
         if(null == element)
@@ -665,7 +665,7 @@ public class XMLCipher {
         switch (cipherMode) {
         case DECRYPT_MODE:
             if (content) {
-                // BUG! Fix!
+                result = decryptElementContent(element);
             } else {
                 result = decryptElement(element);
             }
@@ -744,7 +744,7 @@ public class XMLCipher {
      */
     public EncryptedData encryptData(Document context, Element element) throws
             XMLEncryptionException {
-        logger.info("Encrypting element...");
+        logger.debug("Encrypting element...");
         if(null == context)
             logger.error("Context document unexpectedly null...");
         if(null == element)
@@ -807,7 +807,7 @@ public class XMLCipher {
      */
     public EncryptedData loadEncryptedData(Document context, Element element) 
 		throws XMLEncryptionException {
-        logger.info("Loading encrypted element...");
+        logger.debug("Loading encrypted element...");
         if(null == context)
             logger.error("Context document unexpectedly null...");
         if(null == element)
@@ -857,7 +857,7 @@ public class XMLCipher {
     private Document decryptElement(Element element) throws
             XMLEncryptionException {
 
-        logger.info("Decrypting element...");
+        logger.debug("Decrypting element...");
 
         if(cipherMode != DECRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
@@ -966,6 +966,25 @@ public class XMLCipher {
 
         return (contextDocument);
     }
+    
+
+	/**
+	 * 
+	 * @param element
+	 */
+    private Document decryptElementContent(Element element) throws 
+    		XMLEncryptionException {
+    	Element e = (Element) element.getElementsByTagNameNS(
+    		EncryptionConstants.EncryptionSpecNS, 
+    		EncryptionConstants._TAG_ENCRYPTEDDATA).item(0);
+    	
+    	if (null == e) {
+    		throw new XMLEncryptionException("No EncryptedData child element.");
+    	}
+    	
+    	return (decryptElement(e));
+    }
+
 
     /**
      * Creates an <code>EncryptedData</code> <code>Element</code>.
@@ -1316,7 +1335,8 @@ public class XMLCipher {
                 //complain
             }
 
-            String algorithm = element.getAttributeNS(null, EncryptionConstants._ATT_ALGORITHM);
+            String algorithm = element.getAttributeNS(null, 
+            	EncryptionConstants._ATT_ALGORITHM);
             AgreementMethod result = newAgreementMethod(algorithm);
 
             Element kaNonceElement = (Element) element.getElementsByTagNameNS(
