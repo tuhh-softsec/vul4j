@@ -525,7 +525,7 @@
         </category>
 
         <category name="org.apache.xml.security">
-                <priority value="fatal" />
+                <priority value="debug" />
         </category>
 
         <category name="org.apache.xml.security.test.AllTests">
@@ -563,9 +563,9 @@
       <PrefixMapping namespace="http://www.xmlsecurity.org/experimental#"
                      prefix="experimental" />
       <PrefixMapping namespace="http://www.w3.org/2002/04/xmldsig-filter2"
-                     prefix="dsig-xpath" />
+                     prefix="dsig-xpath-old" />
       <PrefixMapping namespace="http://www.w3.org/2002/06/xmldsig-filter2"
-                     prefix="xfilter2b" />
+                     prefix="dsig-xpath" />
       <PrefixMapping namespace="http://www.w3.org/2001/10/xml-exc-c14n#"
                      prefix="ec" />
       <PrefixMapping namespace="http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter"
