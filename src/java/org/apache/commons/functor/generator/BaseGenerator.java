@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseGenerator.java,v 1.4 2003/11/25 21:16:15 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseGenerator.java,v 1.5 2003/12/02 01:01:59 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -71,7 +71,7 @@ import org.apache.commons.functor.generator.util.CollectionTransformer;
  * each subclass.
  *
  * @since 1.0
- * @version $Revision: 1.4 $ $Date: 2003/11/25 21:16:15 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/02 01:01:59 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
@@ -152,6 +152,11 @@ public abstract class BaseGenerator implements Generator {
 
     /** See {@link Algorithms#select}. */
     public final Generator select(UnaryPredicate pred) {
+        return Algorithms.select(this, pred);
+    }
+
+    /** See {@link Algorithms#select}. */
+    public final Generator where(UnaryPredicate pred) {
         return Algorithms.select(this, pred);
     }
 

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/TestAll.java,v 1.3 2003/12/02 01:01:59 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/TestWeather.java,v 1.1 2003/12/02 01:01:59 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,26 +54,31 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example.kata;
+package org.apache.commons.functor.example.kata.four;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 01:01:59 $
+ * See http://pragprog.com/pragdave/Practices/Kata/KataFour.rdoc,v
+ * for more information on this Kata.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 01:01:59 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
+public class TestWeather extends TestCase {
+    public TestWeather(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTest(org.apache.commons.functor.example.kata.one.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.kata.two.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.kata.four.TestAll.suite());
-        return suite;
+        return new TestSuite(TestWeather.class);
     }
+
+    public void test() throws Exception {
+        assertEquals("14",new Weather().evaluate("weather.txt"));            
+    }
+
 }
+

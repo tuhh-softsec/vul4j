@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/TestAll.java,v 1.3 2003/12/02 01:01:59 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/Attic/Soccer.java,v 1.1 2003/12/02 01:01:59 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,26 +54,15 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example.kata;
+package org.apache.commons.functor.example.kata.four;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 01:01:59 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 01:01:59 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTest(org.apache.commons.functor.example.kata.one.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.kata.two.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.kata.four.TestAll.suite());
-        return suite;
+public class Soccer extends BaseDataMunger {
+    public Object evaluate(Object obj) {
+        return getEvaluator(1,6,8).evaluate(obj);
     }
 }

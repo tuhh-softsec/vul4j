@@ -1,5 +1,5 @@
 /*
- * $Id: Generator.java,v 1.7 2003/11/25 21:16:15 rwaldhoff Exp $
+ * $Id: Generator.java,v 1.8 2003/12/02 01:01:59 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.7 $ $Date: 2003/11/25 21:16:15 $
+ * @version $Revision: 1.8 $ $Date: 2003/12/02 01:01:59 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -91,6 +91,8 @@ public interface Generator {
     public abstract Generator reject(UnaryPredicate pred);
     /** See {@link org.apache.commons.functor.Algorithms#select}. */
     public abstract Generator select(UnaryPredicate pred);
+    /** See {@link org.apache.commons.functor.Algorithms#select}. */
+    public abstract Generator where(UnaryPredicate pred);
     /** See {@link org.apache.commons.functor.Algorithms#until}. */
     public abstract Generator until(UnaryPredicate pred);
     /**
