@@ -119,7 +119,7 @@ public class FuncHereContext extends XPathContext {
     * @param owner
     */
    public FuncHereContext(Node owner) {
-      super((Object) owner);
+      super(owner);
    }
 
    /**
@@ -130,7 +130,7 @@ public class FuncHereContext extends XPathContext {
     */
    public FuncHereContext(Node owner, XPathContext xpathContext) {
 
-      super((Object) owner);
+      super(owner);
 
       try {
          super.m_dtmManager = xpathContext.getDTMManager();
@@ -149,7 +149,7 @@ public class FuncHereContext extends XPathContext {
     */
    public FuncHereContext(Node owner, CachedXPathAPI previouslyUsed) {
 
-      super((Object) owner);
+      super(owner);
 
       try {
          super.m_dtmManager = previouslyUsed.getXPathContext().getDTMManager();
@@ -168,7 +168,7 @@ public class FuncHereContext extends XPathContext {
     */
    public FuncHereContext(Node owner, DTMManager dtmManager) {
 
-      super((Object) owner);
+      super(owner);
 
       try {
          super.m_dtmManager = dtmManager;

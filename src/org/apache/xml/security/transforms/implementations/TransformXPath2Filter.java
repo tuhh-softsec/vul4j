@@ -80,8 +80,6 @@ import org.apache.xml.security.transforms.params.XPath2FilterContainer;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.CachedXPathAPI;
-import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -151,7 +149,6 @@ public class TransformXPath2Filter extends TransformSpi {
            throws TransformationException {
 
       try {
-         long start = System.currentTimeMillis();
 
          this._inputSet = input.getNodeSet();
 
@@ -163,8 +160,6 @@ public class TransformXPath2Filter extends TransformSpi {
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
-         CachedXPathAPI myXPathAPI =
-            new CachedXPathAPI(input.getCachedXPathAPI());
          Document inputDoc = null;
 
          {
@@ -184,10 +179,6 @@ public class TransformXPath2Filter extends TransformSpi {
          }
 
          if (true) {
-            XPath2FilterContainer unionDocFilter =
-               XPath2FilterContainer
-                  .newInstanceUnion(this._transformObject.getDocument(), "/");
-
             _filterTypes.add(FUnion);
 
             // Set root = new HashSet(); root.add(inputDoc);
@@ -243,8 +234,6 @@ public class TransformXPath2Filter extends TransformSpi {
 
 
          result.setSourceURI(input.getSourceURI());
-
-         long end = System.currentTimeMillis();
 
          return result;
       } catch (TransformerException ex) {
@@ -335,7 +324,7 @@ public class TransformXPath2Filter extends TransformSpi {
 
             break;
          } else {
-            ;
+			//do nothing
          }
       }
 
@@ -385,40 +374,6 @@ public class TransformXPath2Filter extends TransformSpi {
 
          if (ancestors.contains(rootNode)) {
             return true;
-         }
-      }
-
-      return false;
-   }
-
-   /**
-    * Method __isRootedBy
-    *
-    * @param ctx
-    * @param rootInQuestion
-    *
-    */
-   private static boolean __isRootedBy(Node ctx, Node rootInQuestion) {
-
-      if ((ctx == null) || (rootInQuestion == null)) {
-         return false;
-      }
-
-      if (rootInQuestion.getNodeType() == Node.DOCUMENT_NODE) {
-         return true;
-      }
-
-      Node n = ctx;
-
-      while (n != null) {
-         if (n == rootInQuestion) {
-            return true;
-         }
-
-         if (n.getNodeType() == Node.ATTRIBUTE_NODE) {
-            n = ((Attr) n).getOwnerElement();
-         } else {
-            n = n.getParentNode();
          }
       }
 

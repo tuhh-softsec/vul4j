@@ -85,7 +85,6 @@ import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 
 /**
@@ -172,7 +171,7 @@ public class TransformXSLT extends TransformSpi {
          {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             Transformer transformer = tFactory.newTransformer();
-            DOMSource source = new DOMSource((Node) _xsltElement);
+            DOMSource source = new DOMSource(_xsltElement);
             StreamResult result = new StreamResult(os);
 
             transformer.transform(source, result);

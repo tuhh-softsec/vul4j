@@ -78,7 +78,6 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -148,9 +147,6 @@ public class TransformXPath extends TransformSpi {
          Set inputSet = input.getNodeSet();
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
-         CachedXPathAPI myXPathAPI =
-            new CachedXPathAPI(input.getCachedXPathAPI());
-
          if (inputSet.size() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
 

@@ -78,7 +78,6 @@ import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer04;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -157,16 +156,6 @@ public class TransformXPath2Filter04 extends TransformSpi {
             Object exArgs[] = { "dsig-xpath:XPath", "Transform" };
 
             throw new TransformationException("xml.WrongContent", exArgs);
-         }
-
-         Document inputDoc = null;
-
-         {
-            Iterator it = inputSet.iterator();
-
-            if (it.hasNext()) {
-               inputDoc = XMLUtils.getOwnerDocument((Node) it.next());
-            }
          }
 
          XPath2FilterContainer04 xpathContainer =
