@@ -111,15 +111,6 @@ parse.</p>
           used to load the <code>Digester</code> class itself.</td>
     </tr>
     <tr>
-      <td align="center">debug</td>
-      <td>An integer defining the amount of debugging output that will be
-          written to <code>System.out()</code> as the parse progresses.  This
-          is useful when tracking down where parsing problems are occurring.
-          The default value of zero means no debugging output will be generated
-          -- increasing values generally cause the generation of more verbose
-          and detailed debugging information.</td>
-    </tr>
-    <tr>
       <td align="center">errorHandler</td>
       <td>You can optionally specify a SAX <code>ErrorHandler</code> that
           is notified when parsing errors occur.  By default, any parsing
@@ -456,26 +447,45 @@ class.  For example, the following code sequence:</p>
 <a name="doc.Logging"></a>
 <h3>Logging</h3>
 
-<p>Logging is a vital tool for debugging Digester rulesets. Digester can log copious 
-amounts of debugging information. So, you need to know how logging works 
-before you start using Digester seriously.</p>
+<p>Logging is a vital tool for debugging Digester rulesets. Digester can log
+copious amounts of debugging information. So, you need to know how logging
+works before you start using Digester seriously.</p>
 
-<p>Digester uses <a href="http://jakarta.apache.org/commons/logging.html">Jakarta
-Commons Logging</a>. This component is not really a logging framework - rather
+<p>Digester uses
+<a href="http://jakarta.apache.org/commons/logging.html">Jakarta Commons
+Logging</a>.  This component is not really a logging framework - rather
 an extensible, configurable bridge. It can be configured to swallow all log 
 messages, to provide very basic logging by itself or to pass logging messages
-on to more sophisticated logging frameworks. Commons-logging comes with connectors
-for many popular logging frameworks. Consult the commons-logging documentation for
-more information.</p>
+on to more sophisticated logging frameworks. Commons-Logging comes with
+connectors for many popular logging frameworks. Consult the commons-logging
+documentation for more information.</p>
 
-<p>Two main logs are used by Digester. 
+<p>Two main logs are used by Digester:</p>
 <ul>
-<li>SAX-related messages are logged to 
-<strong><code>org.apache.commons.digester.Digester.sax</code></strong>. This log gives 
-information about the basic SAX events received by digester.</li>
-<li><strong><code>org.apache.commons.digester.Digester</code></strong> is used for 
- everything else. You'll probably want to have this log turned up during debugging but turned down
- during production due to the high message volume.</li></ul></p>
+<li>SAX-related messages are logged to
+    <strong><code>org.apache.commons.digester.Digester.sax</code></strong>.
+    This log gives information about the basic SAX events received by
+    Digester.</li>
+<li><strong><code>org.apache.commons.digester.Digester</code></strong> is used
+    for everything else. You'll probably want to have this log turned up during
+    debugging but turned down during production due to the high message
+    volume.</li>
+</ul>
+
+<p>Complete documentation of how to configure Commons-Logging can be found
+in the Commons Logging package documentation.  However, as a simple example,
+let's assume that you want to use the <code>SimpleLog</code> implementation
+that is included in Commons-Logging, and set up Digester to log events from
+the <code>Digester</code> logger at the DEBUG level, while you want to log
+events from the <code>Digester.log</code> logger at the INFO level.  You can
+accomplish this by creating a <code>commons-logging.properties</code> file
+in your classpath (or setting corresponding system properties on the command
+line that starts your application) with the following contents:</p>
+<pre>
+  org.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
+  org.apache.commons.logging.simplelog.log.org.apache.commons.digester.Digester=debug
+  org.apache.commons.logging.simplelog.log.org.apache.commons.digester.Digester.sax=info
+</pre>
 
 <a name="doc.Usage"></a>
 <h3>Usage Examples</h3>
