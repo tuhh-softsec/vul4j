@@ -92,6 +92,7 @@ class DSIGKeyInfoName;
 class DSIGKeyInfoPGPData;
 class DSIGKeyInfoSPKIData;
 class DSIGKeyInfoMgmtData;
+class DSIGObject;
 
 /**
  * @ingroup pubsig
@@ -695,9 +696,51 @@ public:
 
 	//@}
 
+	/** @name Object handling */
+	//@{
+
+	/**
+	 * \brief Append an object container
+	 *
+	 * Create a new Object (i.e. a Signature <Object> which is a container
+	 * element used to hold information that needs to be signed within the
+	 * signature - i.e. in enveloping mode
+	 *
+	 * @returns the newly created DSIGObject
+	 */
+
+	DSIGObject * appendObject(void);
+
+	/**
+	 * \brief Find the number of ds:Object nodes within the Signature
+	 *
+	 * @returns the number of ds:Object nodes held in the Signature, 0 if none
+	 */
+
+	int getObjectLength(void);
+
+	/**
+	 * \brief Get a particular ds:Object from within the Signature
+	 *
+	 * @returns the ith Object from the list of ds:Object nodes in the signature.
+	 * Items are ordered in tree order.
+	 */
+
+	DSIGObject * getObjectItem(int i);
+
+	//@}
+
 	friend class XSECProvider;
 
 private:
+
+	// For holding DSIGObject nodes
+#if defined(XSEC_NO_NAMESPACES)
+	typedef vector<DSIGObject *>			ObjectVectorType;
+#else
+	typedef std::vector<DSIGObject *>		ObjectVectorType;
+#endif
+
 
 	// Internal functions
 	void createKeyInfoElement(void);
@@ -726,6 +769,10 @@ private:
 
 	// Resolvers
 	XSECKeyInfoResolver			* mp_KeyInfoResolver;
+
+	// Objects
+
+	ObjectVectorType			m_objects;
 
 	// Not implemented constructors
 

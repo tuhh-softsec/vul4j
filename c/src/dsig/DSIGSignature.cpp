@@ -72,6 +72,7 @@
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/dsig/DSIGConstants.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
+#include <xsec/dsig/DSIGObject.hpp>
 #include <xsec/dsig/DSIGReference.hpp>
 #include <xsec/dsig/DSIGTransformList.hpp>
 #include <xsec/transformers/TXFMDocObject.hpp>
@@ -360,6 +361,41 @@ XSECKeyInfoResolver * DSIGSignature::getKeyInfoResolver(void) {
 
 }
 
+// --------------------------------------------------------------------------------
+//           Object Handling
+// --------------------------------------------------------------------------------
+
+DSIGObject * DSIGSignature::appendObject(void) {
+
+	DSIGObject * ret;
+	XSECnew(ret, DSIGObject(mp_env));
+	DOMElement * elt = ret->createBlankObject();
+
+	mp_sigNode->appendChild(elt);
+	mp_env->doPrettyPrint(mp_sigNode);
+
+	m_objects.push_back(ret);
+
+	return ret;
+
+}
+
+int DSIGSignature::getObjectLength(void) {
+
+	return m_objects.size();
+
+}
+
+DSIGObject * DSIGSignature::getObjectItem(int i) {
+
+	if ( i < 0 || i >= m_objects.size()) {
+		throw XSECException(XSECException::ObjectError,
+			"DSIGSignature::getObjectItem - index out of range");
+	}
+
+	return m_objects[i];
+
+}
 
 // --------------------------------------------------------------------------------
 //           Signature
@@ -441,6 +477,10 @@ DSIGSignature::~DSIGSignature() {
 		mp_KeyInfoResolver = NULL;
 	}
 
+	// Delete any object items
+	for (int i = 0; i < m_objects.size(); ++i) {
+		delete (m_objects[i]);
+	}
 
 }
 
@@ -772,13 +812,32 @@ void DSIGSignature::load(void) {
 		strEquals(getDSIGLocalName(tmpElt), "KeyInfo")))
 		tmpElt = tmpElt->getNextSibling();
 
-	if (tmpElt != 0) {
+	if (tmpElt != 0 && strEquals(getDSIGLocalName(tmpElt), "KeyInfo")) {
 
 		// Have a keyInfo
 
 		mp_KeyInfoNode = tmpElt;		// In case we later want to manipulate it
 
 		m_keyInfoList.loadListFromXML(tmpElt);
+
+		tmpElt = findNextElementChild(tmpElt);
+	}
+
+	while (tmpElt != 0 && strEquals(getDSIGLocalName(tmpElt), "Object")) {
+
+		DSIGObject * obj;
+		XSECnew(obj, DSIGObject(mp_env, tmpElt));
+		obj->load();
+
+		m_objects.push_back(obj);
+
+		tmpElt = findNextElementChild(tmpElt);
+
+	}
+
+	if (tmpElt != 0) {
+		throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
+			"DSIGSignature::load - Unexpected (non Object) Element found at end of signature");
 	}
 
 }
