@@ -151,7 +151,7 @@ AC_CHECK_LIB(m, floor)
 # Determine the host system and Makefile fragment
 
 # Check for required includes
-AC_CHECK_HEADERS
+AC_CHECK_HEADERS(unistd.h direct.h)
 
 AC_CANONICAL_HOST
 

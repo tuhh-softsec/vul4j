@@ -148,7 +148,7 @@
 #	define XSEC_NO_COVARIANT_RETURN_TYPE
 
 #elif defined(__GNUC__)
-
+#elif defined(__INTEL_COMPILER)
 #else
 #error Unknown compiler.
 #endif
