@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.xml.security.exceptions.Base64DecodingException;
+import org.apache.xml.security.utils.Base64;
 
 
 /**
@@ -76,17 +77,57 @@ public class Base64Test extends TestCase {
    public static void testA1() throws java.io.UnsupportedEncodingException, Base64DecodingException {
 
       String textData = "Hallo";
-      String result0 =
-         org.apache.xml.security.utils.Base64
-            .encode(textData.getBytes("UTF-8"));
+      String result0 = Base64.encode(textData.getBytes("UTF-8"));
 
       assertNotNull("Result of encoding result0", result0);
 
-      byte resultBytes[] = org.apache.xml.security.utils.Base64.decode(result0);
+      byte resultBytes[] = Base64.decode(result0);
       String resultStr = new String(resultBytes, "UTF-8");
 
       assertEquals("Result of decoding", 0, textData.compareTo(resultStr));
    }
+
+   /**
+    * Method testWrap1
+    *
+	* Test for correct line wrapping at end of an exactly 76 char string
+	*
+    * @throws java.io.UnsupportedEncodingException
+    */
+
+	public static void testWrap1() 
+		throws java.io.UnsupportedEncodingException, Base64DecodingException {
+
+		String inputData = "The quick brown fox jumps over the lazy dog and some extr";
+		String expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRy";
+		String result = Base64.encode(inputData.getBytes("UTF-8"));
+		assertEquals("Result of encoding", result, expectedResult);
+
+		String result2 = new String(Base64.decode(result), "UTF-8");
+		assertEquals("Result of encoding", result2, inputData);
+
+	}
+
+   /**
+    * Method testWrap2
+    *
+	* Test for correct line wrapping after more than 76 characters
+	*
+    * @throws java.io.UnsupportedEncodingException
+    */
+
+	public static void testWrap2() 
+		throws java.io.UnsupportedEncodingException, Base64DecodingException {
+
+		String inputData = "The quick brown fox jumps over the lazy dog and some extra text that will cause a line wrap";
+		String expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRy\nYSB0ZXh0IHRoYXQgd2lsbCBjYXVzZSBhIGxpbmUgd3JhcA==";
+		String result = Base64.encode(inputData.getBytes("UTF-8"));
+		assertEquals("Result of encoding", result, expectedResult);
+
+		String result2 = new String(Base64.decode(result), "UTF-8");
+		assertEquals("Result of encoding", result2, inputData);
+
+	}
 
    static {
       org.apache.xml.security.Init.init();
