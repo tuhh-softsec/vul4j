@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestBaseGenerator.java,v 1.3 2003/11/25 21:24:19 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestBaseGenerator.java,v 1.4 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -250,10 +250,12 @@ public class TestBaseGenerator extends TestCase {
         assertEquals(sum,summer.sum);
     }
 
+    public void testWhere() {
+        assertEquals(evens,EachElement.from(list).where(isEven).toCollection());
+    }
+
     public void testSelect1() {
-        Collection result = EachElement.from(list).select(isEven).toCollection();
-        assertNotNull(result);
-        assertEquals(evens,result);
+        assertEquals(evens,EachElement.from(list).select(isEven).toCollection());
     }
 
     public void testSelect2() {
@@ -263,9 +265,7 @@ public class TestBaseGenerator extends TestCase {
     }
 
     public void testReject1() {
-        Collection result = EachElement.from(list).reject(isOdd).toCollection();
-        assertNotNull(result);
-        assertEquals(evens,result);
+        assertEquals(evens,EachElement.from(list).reject(isOdd).toCollection());
     }
 
     public void testReject2() {

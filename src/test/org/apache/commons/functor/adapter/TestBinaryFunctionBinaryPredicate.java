@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBinaryFunctionBinaryPredicate.java,v 1.4 2003/12/02 17:43:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestBinaryFunctionBinaryPredicate.java,v 1.5 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 17:43:11 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryFunctionBinaryPredicate extends BaseFunctorTest {
@@ -135,7 +135,7 @@ public class TestBinaryFunctionBinaryPredicate extends BaseFunctorTest {
         BinaryPredicate p = new BinaryFunctionBinaryPredicate(new Constant(Boolean.TRUE));
         assertEquals(p,p);
         assertObjectsAreEqual(p,new BinaryFunctionBinaryPredicate(new Constant(Boolean.TRUE)));
-        assertObjectsAreNotEqual(p,Constant.trueInstance());
+        assertObjectsAreNotEqual(p,Constant.truePredicate());
         assertObjectsAreNotEqual(p,new BinaryFunctionBinaryPredicate(null));
         assertObjectsAreNotEqual(p,new BinaryFunctionBinaryPredicate(new Constant(Boolean.FALSE)));
         assertObjectsAreEqual(new BinaryFunctionBinaryPredicate(null),new BinaryFunctionBinaryPredicate(null));

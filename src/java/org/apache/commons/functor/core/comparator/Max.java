@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/Max.java,v 1.1 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,75 +54,72 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core.composite;
+package org.apache.commons.functor.core.comparator;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
+import java.util.Comparator;
 
-import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.core.Constant;
+import org.apache.commons.functor.BinaryFunction;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
+ * Adapts a {@link Comparator Comparator} to the
+ * {@link BinaryFunction} interface.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
-public class TestBinaryNot extends BaseFunctorTest {
-
-    // Conventional
-    // ------------------------------------------------------------------------
-
-    public TestBinaryNot(String testName) {
-        super(testName);
+public final class Max implements BinaryFunction, Serializable {
+    public Max() {
+        this(null);
     }
 
-    public static Test suite() {
-        return new TestSuite(TestBinaryNot.class);
-    }
-
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new BinaryNot(new Constant(true));
-    }
-
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
-    // ------------------------------------------------------------------------
-    
-    public void testTest() throws Exception {
-        BinaryPredicate truePred = new BinaryNot(new Constant(false));
-        assertTrue(truePred.test(null,null));
-        assertTrue(truePred.test("xyzzy","abcde"));
-        assertTrue(truePred.test("xyzzy",new Integer(3)));
+    public Max(Comparator comparator) {
+        this.comparator = null == comparator ? ComparableComparator.instance() : comparator;
     }
     
-    public void testEquals() throws Exception {
-        BinaryNot p = new BinaryNot(Constant.truePredicate());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,BinaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new BinaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new BinaryNot(null));
+    /**
+     * @see org.apache.commons.functor.BinaryFunction#evaluate(Object, Object)
+     */
+    public Object evaluate(Object left, Object right) {
+        return (comparator.compare(left,right) >= 0) ? left : right; 
     }
 
-    public void testNotNull() throws Exception {
-        assertNull(BinaryNot.not(null));
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(Object that) {
+        if(that instanceof Max) {
+            return equals((Max)that);
+        } else {
+            return false;
+        }
     }
 
-    public void testNotNotNull() throws Exception {
-        assertNotNull(BinaryNot.not(Constant.truePredicate()));
+    /**
+     * @see #equals(Object)
+     */
+    public boolean equals(Max that) {
+        return null != that && comparator.equals(that.comparator);
     }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return "Max".hashCode() ^ comparator.hashCode();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return "Max<" + comparator + ">";
+    }
+
+    public static Max instance() {
+        return INSTANCE;
+    }
+    
+    private Comparator comparator = null;
+    private static final Max INSTANCE = new Max();
 }

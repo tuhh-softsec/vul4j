@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.9 2003/12/02 17:43:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.10 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -70,16 +70,17 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryProcedure;
+import org.apache.commons.functor.Function;
 import org.apache.commons.functor.Procedure;
+import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.IgnoreLeftFunction;
-import org.apache.commons.functor.adapter.UnaryProcedureUnaryFunction;
 import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 import org.apache.commons.functor.core.IsInstanceOf;
 import org.apache.commons.functor.core.IsNull;
 import org.apache.commons.functor.core.RightIdentity;
-import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
+import org.apache.commons.functor.core.composite.Conditional;
 
 /*
  * ----------------------------------------------------------------------------
@@ -96,7 +97,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  */
  
 /**
- * @version $Revision: 1.9 $ $Date: 2003/12/02 17:43:12 $
+ * @version $Revision: 1.10 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
 public class FlexiMapExample extends TestCase {
@@ -328,18 +329,8 @@ public class FlexiMapExample extends TestCase {
          * from the map.
          */
         public FlexiMap(BinaryFunction putfn, BinaryFunction getfn) {
-            if(null == putfn) {
-                onPut = new RightIdentity();
-            } else {
-                onPut = putfn;
-            }
-            
-            if(null == getfn) {
-                onGet = new RightIdentity();
-            } else {
-                onGet = getfn;
-            }
-            
+            onPut = null == putfn ? RightIdentity.instance() : putfn;
+            onGet = null == getfn ? RightIdentity.instance() : getfn;
             proxiedMap = new HashMap();
         }        
 
@@ -445,7 +436,7 @@ public class FlexiMapExample extends TestCase {
                 /*
                  * and for the right-hand,
                  */      
-                new ConditionalUnaryFunction(
+                Conditional.function(
                     /*
                      * we'll test for null,
                      */      
@@ -453,7 +444,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * throwing a NullPointerException when the value is null,
                      */      
-                    UnaryProcedureUnaryFunction.adapt(throwNPE),
+                    (UnaryFunction)throwNPE,
                     /*
                      * and passing through all non-null values.
                      */      
@@ -479,7 +470,7 @@ public class FlexiMapExample extends TestCase {
                 /*
                  * and for the right-hand,
                  */      
-				new ConditionalUnaryFunction(
+				Conditional.function(
                     /*
                      * we'll test for null,
                      */      
@@ -507,7 +498,7 @@ public class FlexiMapExample extends TestCase {
              * ignore the left-hand argument,
              */
 			IgnoreLeftFunction.adapt(                        
-				new ConditionalUnaryFunction(
+				Conditional.function(
                     /*
                      * we'll test the type of the right-hand argument,
                      */      
@@ -519,7 +510,7 @@ public class FlexiMapExample extends TestCase {
                     /*
                      * or throw a ClassCastException.
                      */      
-					UnaryProcedureUnaryFunction.adapt(throwCCE)
+					(UnaryFunction)throwCCE
 				)
 			),
 			null
@@ -588,13 +579,15 @@ public class FlexiMapExample extends TestCase {
 	}
 
     /*
-     * (This "UniversalProcedure" type provides a procedure 
+     * (This "UniversalFunctor" type provides a functor 
      * that takes the same action regardless of the number of
      * parameters. We used it above to throw Exceptions when 
      * needed.)
      */
      
-    private abstract class UniversalProcedure implements Procedure, UnaryProcedure, BinaryProcedure {
+    private abstract class UniversalFunctor implements 
+        Procedure, UnaryProcedure, BinaryProcedure, 
+        Function, UnaryFunction, BinaryFunction {
         public abstract void run();
 
         public void run(Object obj) {
@@ -603,15 +596,27 @@ public class FlexiMapExample extends TestCase {
         public void run(Object left, Object right) {
             run();
         }
+        public Object evaluate() {
+            run();
+            return null;
+        }
+        public Object evaluate(Object obj) {
+            run();
+            return null;
+        }
+        public Object evaluate(Object left, Object right) {
+            run();
+            return null;
+        }
     }
 
-	private UniversalProcedure throwNPE = new UniversalProcedure() {
+	private UniversalFunctor throwNPE = new UniversalFunctor() {
 		public void run() {
 			throw new NullPointerException();
 		}
 	};
     
-	private UniversalProcedure throwCCE = new UniversalProcedure() {
+	private UniversalFunctor throwCCE = new UniversalFunctor() {
 		public void run() {
 			throw new ClassCastException();
 		}

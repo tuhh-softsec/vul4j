@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestCompositeUnaryProcedure.java,v 1.1 2003/12/03 01:04:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,31 +60,32 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.core.Constant;
+import org.apache.commons.functor.core.Identity;
+import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:11 $
  * @author Rodney Waldhoff
  */
-public class TestBinaryNot extends BaseFunctorTest {
+public class TestCompositeUnaryProcedure extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestBinaryNot(String testName) {
+    public TestCompositeUnaryProcedure(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestBinaryNot.class);
+        return new TestSuite(TestCompositeUnaryProcedure.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryNot(new Constant(true));
+        return new CompositeUnaryProcedure(new NoOp(),new Constant(true));
     }
 
     // Lifecycle
@@ -101,28 +102,32 @@ public class TestBinaryNot extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testTest() throws Exception {
-        BinaryPredicate truePred = new BinaryNot(new Constant(false));
-        assertTrue(truePred.test(null,null));
-        assertTrue(truePred.test("xyzzy","abcde"));
-        assertTrue(truePred.test("xyzzy",new Integer(3)));
+    public void testRun() throws Exception {
+        new CompositeUnaryProcedure(new NoOp(),new Identity()).run(null);
+    }
+    
+    public void testOf() throws Exception {
+        new CompositeUnaryProcedure(new NoOp()).of(new Identity()).run(null);
     }
     
     public void testEquals() throws Exception {
-        BinaryNot p = new BinaryNot(Constant.truePredicate());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,BinaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new BinaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new BinaryNot(null));
+        CompositeUnaryProcedure f = new CompositeUnaryProcedure(new NoOp());
+        assertEquals(f,f);
+        CompositeUnaryProcedure g = new CompositeUnaryProcedure(new NoOp());
+        assertObjectsAreEqual(f,g);
+
+        for(int i=0;i<3;i++) {
+            f.of(new Constant("x"));
+            assertObjectsAreNotEqual(f,g);
+            g.of(new Constant("x"));
+            assertObjectsAreEqual(f,g);
+            f.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
+            assertObjectsAreNotEqual(f,g);            
+            g.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
+            assertObjectsAreEqual(f,g);            
+        }
+                
+        assertObjectsAreNotEqual(f,new Constant(false));
     }
 
-    public void testNotNull() throws Exception {
-        assertNull(BinaryNot.not(null));
-    }
-
-    public void testNotNotNull() throws Exception {
-        assertNotNull(BinaryNot.not(Constant.truePredicate()));
-    }
 }

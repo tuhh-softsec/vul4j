@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/EiffelStyleLoop.java,v 1.2 2003/12/02 17:43:10 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/EiffelStyleLoop.java,v 1.3 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -79,7 +79,7 @@ import org.apache.commons.functor.core.NoOp;
  * Note that <tt>new EiffelStyleLoop().run()</tt> executes just fine.
  * You only need to set the parts of the loop you want to use.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/12/02 17:43:10 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
 public class EiffelStyleLoop implements Procedure {
@@ -150,9 +150,9 @@ public class EiffelStyleLoop implements Procedure {
     }
     
     private Procedure from = NoOp.instance();
-    private Predicate invariant = Constant.trueInstance();
-    private Predicate variant = Constant.trueInstance();
-    private Predicate until = Constant.falseInstance();
+    private Predicate invariant = Constant.truePredicate();
+    private Predicate variant = Constant.truePredicate();
+    private Predicate until = Constant.falsePredicate();
     private Procedure loop = NoOp.instance();        
 
 }

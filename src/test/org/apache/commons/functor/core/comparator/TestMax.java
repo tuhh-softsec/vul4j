@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestMax.java,v 1.1 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,75 +54,64 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core.composite;
+package org.apache.commons.functor.core.comparator;
+
+import java.util.Collections;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
-public class TestBinaryNot extends BaseFunctorTest {
+public class TestMax extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestBinaryNot(String testName) {
+    public TestMax(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestBinaryNot.class);
+        return new TestSuite(TestMax.class);
     }
 
-    // Functor Testing Framework
+    // Framework
     // ------------------------------------------------------------------------
-
+    
     protected Object makeFunctor() {
-        return new BinaryNot(new Constant(true));
+        return new Max();
     }
 
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    private Integer MIN = new Integer(Integer.MIN_VALUE); 
+    private Integer MINUS_TWO = new Integer(-2); 
+    private Integer ZERO = new Integer(0); 
+    private Integer ONE = new Integer(1); 
+    private Integer MAX = new Integer(Integer.MAX_VALUE); 
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testTest() throws Exception {
-        BinaryPredicate truePred = new BinaryNot(new Constant(false));
-        assertTrue(truePred.test(null,null));
-        assertTrue(truePred.test("xyzzy","abcde"));
-        assertTrue(truePred.test("xyzzy",new Integer(3)));
-    }
-    
-    public void testEquals() throws Exception {
-        BinaryNot p = new BinaryNot(Constant.truePredicate());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,BinaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new BinaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new BinaryNot(null));
+    public void testEvaluate() {
+        Max f = new Max();
+        assertEquals(ONE,f.evaluate(ONE,ONE));
+        assertEquals(ONE,f.evaluate(ZERO,ONE));
+        assertEquals(ONE,f.evaluate(ONE,ZERO));
+        assertEquals(MAX,f.evaluate(ONE,MAX));
+        assertEquals(MAX,f.evaluate(MIN,MAX));
+        assertEquals(MINUS_TWO,f.evaluate(MIN,MINUS_TWO));
     }
 
-    public void testNotNull() throws Exception {
-        assertNull(BinaryNot.not(null));
-    }
-
-    public void testNotNotNull() throws Exception {
-        assertNotNull(BinaryNot.not(Constant.truePredicate()));
+    public void testEquals() {
+        Max f = new Max();
+        assertObjectsAreEqual(f,f);
+        assertObjectsAreEqual(f,Max.instance());
+        assertObjectsAreEqual(f,new Max(null));
+        assertObjectsAreEqual(new Max(null),new Max(null));
+        assertObjectsAreEqual(f,new Max(new ComparableComparator()));
+        assertObjectsAreNotEqual(f,new Max(Collections.reverseOrder()));
     }
 }

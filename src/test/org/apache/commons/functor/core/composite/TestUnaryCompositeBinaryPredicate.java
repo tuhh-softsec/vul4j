@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryCompositeBinaryPredicate.java,v 1.1 2003/12/03 01:04:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,29 +62,35 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.core.Constant;
+import org.apache.commons.functor.core.Identity;
+import org.apache.commons.functor.core.LeftIdentity;
+import org.apache.commons.functor.core.RightIdentity;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:11 $
  * @author Rodney Waldhoff
  */
-public class TestBinaryNot extends BaseFunctorTest {
+public class TestUnaryCompositeBinaryPredicate extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestBinaryNot(String testName) {
+    public TestUnaryCompositeBinaryPredicate(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestBinaryNot.class);
+        return new TestSuite(TestUnaryCompositeBinaryPredicate.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryNot(new Constant(true));
+        return new UnaryCompositeBinaryPredicate(
+            new RightIdentity(),
+            new Constant(Boolean.FALSE),
+            new Identity());
     }
 
     // Lifecycle
@@ -100,29 +106,38 @@ public class TestBinaryNot extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
-    
-    public void testTest() throws Exception {
-        BinaryPredicate truePred = new BinaryNot(new Constant(false));
-        assertTrue(truePred.test(null,null));
-        assertTrue(truePred.test("xyzzy","abcde"));
-        assertTrue(truePred.test("xyzzy",new Integer(3)));
+   
+    public void testEvaluate() throws Exception {
+        BinaryPredicate f = new UnaryCompositeBinaryPredicate(
+            new RightIdentity(),
+            new Constant(Boolean.FALSE),
+            new Identity());
+        assertEquals(true,f.test(Boolean.TRUE,Boolean.TRUE));
+        assertEquals(true,f.test(null,Boolean.TRUE));
     }
     
     public void testEquals() throws Exception {
-        BinaryNot p = new BinaryNot(Constant.truePredicate());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,BinaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new BinaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new BinaryNot(null));
+        BinaryPredicate f = new UnaryCompositeBinaryPredicate(
+            new LeftIdentity(),
+            new Constant(true),
+            new Constant(false));
+        assertEquals(f,f);
+        assertObjectsAreEqual(f,new UnaryCompositeBinaryPredicate(
+            new LeftIdentity(),
+            new Constant(true),
+            new Constant(false)));
+        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryPredicate(
+            new RightIdentity(),
+            new Constant(true),
+            new Constant(false)));
+        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryPredicate(
+            new LeftIdentity(),
+            new Identity(),
+            new Constant(true)));
+        assertObjectsAreNotEqual(f,new UnaryCompositeBinaryPredicate(null,null,null));
+        assertObjectsAreEqual(
+            new UnaryCompositeBinaryPredicate(null,null,null),
+            new UnaryCompositeBinaryPredicate(null,null,null));
     }
 
-    public void testNotNull() throws Exception {
-        assertNull(BinaryNot.not(null));
-    }
-
-    public void testNotNotNull() throws Exception {
-        assertNotNull(BinaryNot.not(Constant.truePredicate()));
-    }
 }

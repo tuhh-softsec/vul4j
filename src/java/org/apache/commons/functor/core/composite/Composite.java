@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/Composite.java,v 1.1 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,73 +56,46 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.core.Constant;
+import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
+ * Utility methods for creating composite functors.
+ * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
-public class TestBinaryNot extends BaseFunctorTest {
+public final class Composite {
 
-    // Conventional
+    // constructor - for beanish apis
+    // ------------------------------------------------------------------------
+    public Composite() { }
+ 
     // ------------------------------------------------------------------------
 
-    public TestBinaryNot(String testName) {
-        super(testName);
+    public static final CompositeUnaryProcedure procedure(UnaryProcedure p, UnaryFunction f) {        
+        return new CompositeUnaryProcedure(p,f);
     }
 
-    public static Test suite() {
-        return new TestSuite(TestBinaryNot.class);
+    public static final CompositeUnaryPredicate predicate(UnaryPredicate p, UnaryFunction f) {        
+        return new CompositeUnaryPredicate(p,f);
     }
 
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new BinaryNot(new Constant(true));
+    public static final BinaryPredicate predicate(BinaryPredicate p, UnaryFunction f, UnaryFunction g) {        
+        return new UnaryCompositeBinaryPredicate(p,f,g);
     }
 
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
+    public static final CompositeUnaryFunction function(UnaryFunction f, UnaryFunction g) {
+        return new CompositeUnaryFunction(f,g);
     }
 
-    public void tearDown() throws Exception {
-        super.tearDown();
+    public static final BinaryFunction function(BinaryFunction f, UnaryFunction g, UnaryFunction h) {
+        return new UnaryCompositeBinaryFunction(f,g,h);
     }
 
-    // Tests
-    // ------------------------------------------------------------------------
-    
-    public void testTest() throws Exception {
-        BinaryPredicate truePred = new BinaryNot(new Constant(false));
-        assertTrue(truePred.test(null,null));
-        assertTrue(truePred.test("xyzzy","abcde"));
-        assertTrue(truePred.test("xyzzy",new Integer(3)));
-    }
-    
-    public void testEquals() throws Exception {
-        BinaryNot p = new BinaryNot(Constant.truePredicate());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,BinaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new BinaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new BinaryNot(null));
-    }
-
-    public void testNotNull() throws Exception {
-        assertNull(BinaryNot.not(null));
-    }
-
-    public void testNotNotNull() throws Exception {
-        assertNotNull(BinaryNot.not(Constant.truePredicate()));
+    public static final BinaryFunction function(BinaryFunction f, BinaryFunction g, BinaryFunction h) {
+        return new BinaryCompositeBinaryFunction(f,g,h);
     }
 }

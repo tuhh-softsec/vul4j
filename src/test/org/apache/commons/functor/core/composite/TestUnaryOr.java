@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryOr.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryOr.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryOr extends BaseFunctorTest {
@@ -169,22 +169,22 @@ public class TestUnaryOr extends BaseFunctorTest {
         assertObjectsAreNotEqual(p,r);
         
         for(int i=0;i<3;i++) {
-            p.or(Constant.trueInstance());
+            p.or(Constant.truePredicate());
             assertObjectsAreNotEqual(p,q);
-            q.or(Constant.trueInstance());
+            q.or(Constant.truePredicate());
             assertObjectsAreEqual(p,q);
-            r.and(Constant.trueInstance());
+            r.and(Constant.truePredicate());
             assertObjectsAreNotEqual(p,r);
 
-            p.or(new UnaryOr(Constant.trueInstance(),Constant.falseInstance()));
+            p.or(new UnaryOr(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreNotEqual(p,q);            
-            q.or(new UnaryOr(Constant.trueInstance(),Constant.falseInstance()));
+            q.or(new UnaryOr(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreEqual(p,q);            
-            r.and(new UnaryOr(Constant.trueInstance(),Constant.falseInstance()));
+            r.and(new UnaryOr(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreNotEqual(p,r);
         }
         
-        assertObjectsAreNotEqual(p,Constant.trueInstance());
+        assertObjectsAreNotEqual(p,Constant.truePredicate());
     }
 
 }

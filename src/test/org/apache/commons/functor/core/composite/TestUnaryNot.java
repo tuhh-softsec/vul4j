@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryNot.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryNot.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryNot extends BaseFunctorTest {
@@ -109,12 +109,12 @@ public class TestUnaryNot extends BaseFunctorTest {
     }
     
     public void testEquals() throws Exception {
-        UnaryNot p = new UnaryNot(Constant.trueInstance());
+        UnaryNot p = new UnaryNot(Constant.truePredicate());
         assertEquals(p,p);
         assertObjectsAreEqual(p,new UnaryNot(new Constant(true)));
         assertObjectsAreEqual(p,UnaryNot.not(new Constant(true)));
         assertObjectsAreNotEqual(p,new UnaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.trueInstance());
+        assertObjectsAreNotEqual(p,Constant.truePredicate());
         assertObjectsAreNotEqual(p,new UnaryNot(null));
     }
 
@@ -123,6 +123,6 @@ public class TestUnaryNot extends BaseFunctorTest {
     }
 
     public void testNotNotNull() throws Exception {
-        assertNotNull(UnaryNot.not(Constant.trueInstance()));
+        assertNotNull(UnaryNot.not(Constant.truePredicate()));
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/UnaryCompositeBinaryPredicate.java,v 1.1 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,73 +56,84 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
 
-import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
-import org.apache.commons.functor.core.Constant;
+import org.apache.commons.functor.UnaryFunction;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
+ * A {@link BinaryPredicate BinaryPredicate} composed of
+ * one binary predicate, <i>p</i>, and two unary
+ * functions, <i>f</i> and <i>g</i>,
+ * evaluating the ordered parameters <i>x</i>, <i>y</i> 
+ * to <code><i>p</i>(<i>f</i>(<i>x</i>),<i>g</i>(<i>y</i>))</code>.
+ * <p>
+ * Note that although this class implements 
+ * {@link Serializable}, a given instance will
+ * only be truly <code>Serializable</code> if all the
+ * underlying functors are.  Attempts to serialize
+ * an instance whose delegates are not all 
+ * <code>Serializable</code> will result in an exception.
+ * </p>
+ * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
-public class TestBinaryNot extends BaseFunctorTest {
+public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializable {
 
-    // Conventional
+    // constructor
     // ------------------------------------------------------------------------
-
-    public TestBinaryNot(String testName) {
-        super(testName);
+    public UnaryCompositeBinaryPredicate(BinaryPredicate f, UnaryFunction g, UnaryFunction h) {
+        binary = f;
+        leftUnary = g;
+        rightUnary = h;        
     }
 
-    public static Test suite() {
-        return new TestSuite(TestBinaryNot.class);
-    }
-
-    // Functor Testing Framework
+    // function interface
     // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new BinaryNot(new Constant(true));
+    public boolean test(Object left, Object right) {
+        return binary.test(leftUnary.evaluate(left), rightUnary.evaluate(right));
     }
 
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
-    // ------------------------------------------------------------------------
-    
-    public void testTest() throws Exception {
-        BinaryPredicate truePred = new BinaryNot(new Constant(false));
-        assertTrue(truePred.test(null,null));
-        assertTrue(truePred.test("xyzzy","abcde"));
-        assertTrue(truePred.test("xyzzy",new Integer(3)));
+    public boolean equals(Object that) {
+        if(that instanceof UnaryCompositeBinaryPredicate) {
+            return equals((UnaryCompositeBinaryPredicate)that);
+        } else {
+            return false;
+        }
     }
     
-    public void testEquals() throws Exception {
-        BinaryNot p = new BinaryNot(Constant.truePredicate());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,BinaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new BinaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new BinaryNot(null));
+    public boolean equals(UnaryCompositeBinaryPredicate that) {
+        return (null != that) &&
+            (null == binary ? null == that.binary : binary.equals(that.binary)) &&
+            (null == leftUnary ? null == that.leftUnary : leftUnary.equals(that.leftUnary)) &&
+            (null == rightUnary ? null == that.rightUnary : rightUnary.equals(that.rightUnary));
     }
+    
+    public int hashCode() {
+        int hash = "UnaryCompositeBinaryPredicate".hashCode();
+        if(null != binary) {
+            hash <<= 4;
+            hash ^= binary.hashCode();            
+        }
+        if(null != leftUnary) {
+            hash <<= 4;
+            hash ^= leftUnary.hashCode();            
+        }
+        if(null != rightUnary) {
+            hash <<= 4;
+            hash ^= rightUnary.hashCode();            
+        }
+        return hash;
+    }
+    
+    public String toString() {
+        return "UnaryCompositeBinaryPredicate<" + binary + ";" + leftUnary + ";" + rightUnary + ">";
+    }
+        
+    // attributes
+    // ------------------------------------------------------------------------
+    private BinaryPredicate binary = null;
+    private UnaryFunction leftUnary = null;
+    private UnaryFunction rightUnary = null;
 
-    public void testNotNull() throws Exception {
-        assertNull(BinaryNot.not(null));
-    }
-
-    public void testNotNotNull() throws Exception {
-        assertNotNull(BinaryNot.not(Constant.truePredicate()));
-    }
 }

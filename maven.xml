@@ -1,12 +1,20 @@
-<project default="test" xmlns:j="jelly:core" xmlns:maven="jelly:maven">
+<project default="test" xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:ant="jelly:ant">
 
 <preGoal name="maven-jdepend-plugin:report">
-  <!-- add src/conf to the classpath, so that jdepend can find jdepend.properties -->
-  <path id="conf-classpath">
+  <path id="addl-classpath">
+    <!-- add src/conf to the classpath, so that jdepend can find jdepend.properties -->
     <pathelement location="${basedir}/src/conf"/>
   </path>
-  <maven:addPath id="maven-classpath" refid="conf-classpath"/>
+  <maven:addPath id="maven-classpath" refid="addl-classpath"/>
 </preGoal>
+
+<postGoal name="clover:on">
+  <ant:copy todir="${basedir}/target/clover/classes">
+    <ant:fileset dir="${basedir}/src/test/">
+      <ant:include name="**/*.txt"/>
+    </ant:fileset>
+  </ant:copy>
+</postGoal>
 
 <postGoal name="xdoc:register-reports"> 
   <attainGoal name="maven-checkstyle-plugin:deregister"/> 

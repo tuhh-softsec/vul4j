@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestConstant.java,v 1.1 2003/12/02 17:43:10 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestConstant.java,v 1.2 2003/12/03 01:04:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/12/02 17:43:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/03 01:04:11 $
  * @author Rodney Waldhoff
  */
 public class TestConstant extends BaseFunctorTest {
@@ -151,19 +151,19 @@ public class TestConstant extends BaseFunctorTest {
     }
     
     public void testConstants() throws Exception {
-        assertEquals(Constant.instance(true),Constant.instance(Boolean.TRUE));
+        assertEquals(Constant.predicate(true),Constant.instance(Boolean.TRUE));
 
-        assertEquals(Constant.trueInstance(),Constant.trueInstance());
-        assertSame(Constant.trueInstance(),Constant.trueInstance());
+        assertEquals(Constant.truePredicate(),Constant.truePredicate());
+        assertSame(Constant.truePredicate(),Constant.truePredicate());
 
-        assertEquals(Constant.instance(true),Constant.trueInstance());
-        assertSame(Constant.instance(true),Constant.trueInstance());
+        assertEquals(Constant.predicate(true),Constant.truePredicate());
+        assertSame(Constant.predicate(true),Constant.truePredicate());
 
-        assertEquals(Constant.falseInstance(),Constant.falseInstance());
-        assertSame(Constant.falseInstance(),Constant.falseInstance());
+        assertEquals(Constant.falsePredicate(),Constant.falsePredicate());
+        assertSame(Constant.falsePredicate(),Constant.falsePredicate());
 
-        assertEquals(Constant.instance(false),Constant.falseInstance());
-        assertSame(Constant.instance(false),Constant.falseInstance());
+        assertEquals(Constant.predicate(false),Constant.falsePredicate());
+        assertSame(Constant.predicate(false),Constant.falsePredicate());
     }
     
     

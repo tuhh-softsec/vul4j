@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditional.java,v 1.1 2003/12/03 01:04:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,72 +57,49 @@
 package org.apache.commons.functor.core.composite;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.core.Constant;
+import org.apache.commons.functor.core.Identity;
+import org.apache.commons.functor.core.IsNull;
+import org.apache.commons.functor.core.NoOp;
+import org.apache.commons.functor.core.comparator.IsGreaterThan;
+import org.apache.commons.functor.core.comparator.Max;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:11 $
  * @author Rodney Waldhoff
  */
-public class TestBinaryNot extends BaseFunctorTest {
+public class TestConditional extends TestCase {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestBinaryNot(String testName) {
+    public TestConditional(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestBinaryNot.class);
-    }
-
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new BinaryNot(new Constant(true));
-    }
-
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
+        return new TestSuite(TestConditional.class);
     }
 
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testTest() throws Exception {
-        BinaryPredicate truePred = new BinaryNot(new Constant(false));
-        assertTrue(truePred.test(null,null));
-        assertTrue(truePred.test("xyzzy","abcde"));
-        assertTrue(truePred.test("xyzzy",new Integer(3)));
-    }
-    
-    public void testEquals() throws Exception {
-        BinaryNot p = new BinaryNot(Constant.truePredicate());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,BinaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new BinaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new BinaryNot(null));
+    public void testHasNoArgConstructor() throws Exception {
+        assertNotNull(new Conditional());
     }
 
-    public void testNotNull() throws Exception {
-        assertNull(BinaryNot.not(null));
+    public void testUnaryMethods() {
+        assertNotNull(Conditional.procedure(IsNull.instance(),NoOp.instance(),NoOp.instance()));   
+        assertNotNull(Conditional.function(IsNull.instance(),Identity.instance(),Identity.instance()));   
+        assertNotNull(Conditional.predicate(IsNull.instance(),Constant.truePredicate(),Constant.truePredicate()));   
     }
 
-    public void testNotNotNull() throws Exception {
-        assertNotNull(BinaryNot.not(Constant.truePredicate()));
+    public void testBinaryMethods() {
+        assertNotNull(Conditional.procedure(IsGreaterThan.instance(),NoOp.instance(),NoOp.instance()));   
+        assertNotNull(Conditional.function(IsGreaterThan.instance(),Max.instance(),Max.instance()));   
+        assertNotNull(Conditional.predicate(IsGreaterThan.instance(),Constant.truePredicate(),Constant.truePredicate()));   
     }
 }

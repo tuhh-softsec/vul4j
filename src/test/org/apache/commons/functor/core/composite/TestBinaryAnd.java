@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryAnd.java,v 1.3 2003/12/02 17:43:10 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryAnd.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.core.Constant;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/02 17:43:10 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryAnd extends BaseFunctorTest {
@@ -167,17 +167,17 @@ public class TestBinaryAnd extends BaseFunctorTest {
         assertObjectsAreNotEqual(p,r);
 
         for(int i=0;i<3;i++) {
-            p.and(Constant.trueInstance());
+            p.and(Constant.truePredicate());
             assertObjectsAreNotEqual(p,q);
-            q.and(Constant.trueInstance());
+            q.and(Constant.truePredicate());
             assertObjectsAreEqual(p,q);
-            p.and(new BinaryAnd(Constant.trueInstance(),Constant.falseInstance()));
+            p.and(new BinaryAnd(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreNotEqual(p,q);            
-            q.and(new BinaryAnd(Constant.trueInstance(),Constant.falseInstance()));
+            q.and(new BinaryAnd(Constant.truePredicate(),Constant.falsePredicate()));
             assertObjectsAreEqual(p,q);            
         }
         
-        assertObjectsAreNotEqual(p,Constant.trueInstance());
+        assertObjectsAreNotEqual(p,Constant.truePredicate());
     }
 
 }

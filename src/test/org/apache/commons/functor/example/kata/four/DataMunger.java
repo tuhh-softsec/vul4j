@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.4 2003/12/02 16:50:52 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.5 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,27 +63,19 @@ import java.io.Reader;
 import org.apache.commons.functor.Algorithms;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.adapter.BinaryFunctionBinaryPredicate;
-import org.apache.commons.functor.adapter.BinaryPredicateBinaryFunction;
-import org.apache.commons.functor.adapter.IgnoreLeftFunction;
-import org.apache.commons.functor.adapter.IgnoreRightFunction;
-import org.apache.commons.functor.adapter.IgnoreRightPredicate;
-import org.apache.commons.functor.adapter.UnaryFunctionUnaryPredicate;
-import org.apache.commons.functor.adapter.UnaryPredicateUnaryFunction;
 import org.apache.commons.functor.core.IsNull;
 import org.apache.commons.functor.core.LeftIdentity;
 import org.apache.commons.functor.core.RightIdentity;
 import org.apache.commons.functor.core.comparator.IsLessThan;
-import org.apache.commons.functor.core.composite.BinaryCompositeBinaryFunction;
-import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
+import org.apache.commons.functor.core.composite.Composite;
+import org.apache.commons.functor.core.composite.Conditional;
 import org.apache.commons.functor.core.composite.ConditionalBinaryFunction;
-import org.apache.commons.functor.core.composite.UnaryCompositeBinaryFunction;
 import org.apache.commons.functor.example.kata.one.BinaryFunctionUnaryFunction;
 import org.apache.commons.functor.example.kata.one.Subtract;
 import org.apache.commons.functor.example.lines.Lines;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 16:50:52 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
 public class DataMunger {
@@ -96,8 +88,7 @@ public class DataMunger {
         return NthColumn.instance(selected).evaluate(
             Algorithms.inject(
                 Lines.from(file).where(
-                    UnaryFunctionUnaryPredicate.adapt(
-                        new CompositeUnaryFunction(UnaryPredicateUnaryFunction.adapt(IsInteger.instance()),NthColumn.instance(0)))),
+                    Composite.predicate(IsInteger.instance(),NthColumn.instance(0))),                    
                 null,
                 lesserSpread(col1,col2)));            
     }
@@ -111,28 +102,27 @@ public class DataMunger {
      */
     private static final BinaryFunction lesserSpread(final int col1, final int col2) {
         return new ConditionalBinaryFunction(            
-            IgnoreRightPredicate.adapt(IsNull.instance()), // if left is null
-            RightIdentity.instance(),              // return right
-            new ConditionalBinaryFunction(                 // else calculate spread and compare
-                BinaryFunctionBinaryPredicate.adapt(       
-                    new BinaryCompositeBinaryFunction(
-                        BinaryPredicateBinaryFunction.adapt(IsLessThan.instance()),
-                        IgnoreRightFunction.adapt(absSpread(col1,col2)),
-                        IgnoreLeftFunction.adapt(absSpread(col1,col2)))),
-                LeftIdentity.instance(),
-                RightIdentity.instance()
+            IsNull.left(),                                 // if left is null
+            RightIdentity.instance(),                      // return right
+            Conditional.function(                          // else the parameter with the least spread
+                Composite.predicate(                       // if left is less than right
+                    IsLessThan.instance(),
+                    absSpread(col1,col2),
+                    absSpread(col1,col2)),
+                LeftIdentity.instance(),                   // return left
+                RightIdentity.instance()                   // else return right 
             )
         );
     }
 
     private static UnaryFunction absSpread(final int col1, final int col2) {
-        return new CompositeUnaryFunction(
-            Abs.instance(), 
+        return Composite.function(
+            Abs.instance(),
             new BinaryFunctionUnaryFunction(
-                new UnaryCompositeBinaryFunction(
+                Composite.function(
                     Subtract.instance(),
-                    new CompositeUnaryFunction(ToInteger.instance(),NthColumn.instance(col1)),
-                    new CompositeUnaryFunction(ToInteger.instance(),NthColumn.instance(col2)))
+                    Composite.function(ToInteger.instance(),NthColumn.instance(col1)),
+                    Composite.function(ToInteger.instance(),NthColumn.instance(col2)))
                 ));
     }
 

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestBinaryNot.java,v 1.4 2003/12/03 01:04:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestCompositeUnaryPredicate.java,v 1.1 2003/12/03 01:04:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,31 +60,31 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.core.Constant;
+import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/03 01:04:11 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:11 $
  * @author Rodney Waldhoff
  */
-public class TestBinaryNot extends BaseFunctorTest {
+public class TestCompositeUnaryPredicate extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestBinaryNot(String testName) {
+    public TestCompositeUnaryPredicate(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestBinaryNot.class);
+        return new TestSuite(TestCompositeUnaryPredicate.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new BinaryNot(new Constant(true));
+        return new CompositeUnaryPredicate(new Identity(),new Constant(true));
     }
 
     // Lifecycle
@@ -101,28 +101,40 @@ public class TestBinaryNot extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testTest() throws Exception {
-        BinaryPredicate truePred = new BinaryNot(new Constant(false));
-        assertTrue(truePred.test(null,null));
-        assertTrue(truePred.test("xyzzy","abcde"));
-        assertTrue(truePred.test("xyzzy",new Integer(3)));
+    public void testEvaluate() throws Exception {
+        assertEquals(true,(new CompositeUnaryPredicate(new Constant(true))).test(null));
+        
+        assertEquals(true,(new CompositeUnaryPredicate(new Constant(true),new Constant(new Integer(3)))).test("xyzzy"));
+        assertEquals(false,(new CompositeUnaryPredicate(new Constant(false),new Constant(new Integer(4)))).test("xyzzy"));
+    }
+    
+    public void testOf() throws Exception {
+        CompositeUnaryPredicate f = new CompositeUnaryPredicate(new Constant(true));
+        assertTrue(f.test(null));
+        for(int i=0;i<10;i++) {
+            f.of(new Constant(false));
+            assertEquals(true,f.test(null));
+        }
     }
     
     public void testEquals() throws Exception {
-        BinaryNot p = new BinaryNot(Constant.truePredicate());
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new BinaryNot(new Constant(true)));
-        assertObjectsAreEqual(p,BinaryNot.not(new Constant(true)));
-        assertObjectsAreNotEqual(p,new BinaryNot(new Constant(false)));
-        assertObjectsAreNotEqual(p,Constant.truePredicate());
-        assertObjectsAreNotEqual(p,new BinaryNot(null));
+        CompositeUnaryPredicate f = new CompositeUnaryPredicate(new Constant(true));
+        assertEquals(f,f);
+        CompositeUnaryPredicate g = new CompositeUnaryPredicate(new Constant(true));
+        assertObjectsAreEqual(f,g);
+
+        for(int i=0;i<3;i++) {
+            f.of(new Constant("x"));
+            assertObjectsAreNotEqual(f,g);
+            g.of(new Constant("x"));
+            assertObjectsAreEqual(f,g);
+            f.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
+            assertObjectsAreNotEqual(f,g);            
+            g.of(new CompositeUnaryFunction(new Constant("y"),new Constant("z")));
+            assertObjectsAreEqual(f,g);            
+        }
+                
+        assertObjectsAreNotEqual(f,new Constant(false));
     }
 
-    public void testNotNull() throws Exception {
-        assertNull(BinaryNot.not(null));
-    }
-
-    public void testNotNotNull() throws Exception {
-        assertNotNull(BinaryNot.not(Constant.truePredicate()));
-    }
 }

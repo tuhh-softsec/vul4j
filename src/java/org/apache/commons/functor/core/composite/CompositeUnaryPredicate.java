@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/IsNull.java,v 1.3 2003/12/03 01:04:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/CompositeUnaryPredicate.java,v 1.1 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,67 +54,102 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core;
+package org.apache.commons.functor.core.composite;
 
 import java.io.Serializable;
 
-import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
-import org.apache.commons.functor.adapter.IgnoreLeftPredicate;
-import org.apache.commons.functor.adapter.IgnoreRightPredicate;
 
 /**
- * {@link #test Tests} 
- * <code>true</code> iff its argument 
- * is <code>null</code>.
- * 
- * @version $Revision: 1.3 $ $Date: 2003/12/03 01:04:12 $
+ * A {@link UnaryPredicate UnaryPredicate} 
+ * representing the composition of 
+ * {@link UnaryFunction UnaryFunctions},
+ * "chaining" the output of one to the input
+ * of another.  For example, 
+ * <pre>new CompositeUnaryPredicate(p).of(f)</code>
+ * {@link #test tests} to 
+ * <code>p.test(f.evaluate(obj))</code>, and
+ * <pre>new CompositeUnaryPredicate(p).of(f).of(g)</pre>
+ * {@link #test tests} to 
+ * <code>p.test(f.evaluate(g.evaluate(obj)))</code>.
+ * <p>
+ * Note that although this class implements 
+ * {@link Serializable}, a given instance will
+ * only be truly <code>Serializable</code> if all the
+ * underlying functors are.  Attempts to serialize
+ * an instance whose delegates are not all 
+ * <code>Serializable</code> will result in an exception.
+ * </p>
+ * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
-public final class IsNull implements UnaryPredicate, Serializable {
+public final class CompositeUnaryPredicate implements UnaryPredicate, Serializable {
 
     // constructor
     // ------------------------------------------------------------------------
-    public IsNull() {
+    public CompositeUnaryPredicate(UnaryPredicate p) {
+        if(null == p) { throw new NullPointerException(); }
+        this.predicate = p;
+        this.function = new CompositeUnaryFunction();
+    }
+
+    public CompositeUnaryPredicate(UnaryPredicate p, UnaryFunction f) {
+        if(null == p) { throw new NullPointerException(); }
+        if(null == f) { throw new NullPointerException(); }
+        this.predicate = p;
+        this.function = new CompositeUnaryFunction(f);
+    }
+
+    public CompositeUnaryPredicate(UnaryPredicate p, UnaryFunction f, UnaryFunction g) {
+        if(null == p) { throw new NullPointerException(); }
+        if(null == f) { throw new NullPointerException(); }
+        if(null == g) { throw new NullPointerException(); }
+        this.predicate = p;
+        this.function = new CompositeUnaryFunction(f).of(g);
+    }
+
+    // modifiers
+    // ------------------------------------------------------------------------ 
+    public CompositeUnaryPredicate of(UnaryFunction f) {
+        function.of(f);
+        return this;
     }
  
     // predicate interface
     // ------------------------------------------------------------------------
-
     public boolean test(Object obj) {
-        return (null == obj);
+        return predicate.test(function.evaluate(obj)); 
     }
 
     public boolean equals(Object that) {
-        return that instanceof IsNull;
+        if(that instanceof CompositeUnaryPredicate) {
+            return equals((CompositeUnaryPredicate)that);
+        } else {
+            return false;
+        }
+    }
+    
+    public boolean equals(CompositeUnaryPredicate that) {
+        return null != that && predicate.equals(that.predicate) && function.equals(that.function);
     }
     
     public int hashCode() {
-        return "IsNull".hashCode();
+        int hash = "CompositeUnaryPredicate".hashCode();
+        hash <<= 2;
+        hash ^= predicate.hashCode();
+        hash <<= 2;
+        hash ^= function.hashCode();
+        return hash;
     }
     
     public String toString() {
-        return "IsNull";
-    }
-        
-    // static methods
-    // ------------------------------------------------------------------------
-    public static IsNull instance() {
-        return INSTANCE;
+        return "CompositeUnaryFunction<" + predicate + ";" + function + ">";
     }
     
-    public static BinaryPredicate left() {
-        return LEFT;
-    }
-
-    public static BinaryPredicate right() {
-        return RIGHT;
-    }
-    
-    // static attributes
+    // attributes
     // ------------------------------------------------------------------------
-    private static final IsNull INSTANCE = new IsNull();
-    private static final BinaryPredicate LEFT = IgnoreRightPredicate.adapt(instance());
-    private static final BinaryPredicate RIGHT = IgnoreLeftPredicate.adapt(instance());
+    private CompositeUnaryFunction function = null;
+    private UnaryPredicate predicate = null;
 
 }

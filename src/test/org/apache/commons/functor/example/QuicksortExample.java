@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/QuicksortExample.java,v 1.9 2003/12/02 17:43:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/QuicksortExample.java,v 1.10 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -94,7 +94,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * <p> 
  * See the extensive in line comments for details.
  * 
- * @version $Revision: 1.9 $ $Date: 2003/12/02 17:43:12 $
+ * @version $Revision: 1.10 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
 public class QuicksortExample extends TestCase {
@@ -318,13 +318,13 @@ public class QuicksortExample extends TestCase {
 
         /*
          * Whew, that was a lot of processing.  Now figure out
-         * how long it took on average (per list):
+         * how long it took on average (per list)
+         * and print a simply summary:
          */
+
+        /*
         double avgmillis = ((double)elapsed) / ((double)COUNT);
 
-        /* 
-         * and print a simple summary.
-         */
         System.out.println();
         System.out.println(
             "Quicksort Example: Sorted "
@@ -339,6 +339,7 @@ public class QuicksortExample extends TestCase {
                 + (avgmillis / 1000D)
                 + " seconds on average).");
         System.out.println();
+        */
     }
 
 

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsNull.java,v 1.4 2003/12/02 17:43:10 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsNull.java,v 1.5 2003/12/03 01:04:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,7 +63,7 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 17:43:10 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/03 01:04:11 $
  * @author Rodney Waldhoff
  */
 public class TestIsNull extends BaseFunctorTest {
@@ -107,12 +107,19 @@ public class TestIsNull extends BaseFunctorTest {
         assertTrue(!p.test(new Integer(3)));
     }
         
+    public void testAsBinary() throws Exception {
+        assertTrue( IsNull.left().test(null,"not null"));
+        assertTrue(!IsNull.left().test("not null",null));
+        assertTrue( IsNull.right().test("not null",null));
+        assertTrue(!IsNull.right().test(null,"not null"));
+    }
+        
     public void testEquals() throws Exception {
         UnaryPredicate p = new IsNull();
         assertEquals(p,p);
         assertObjectsAreEqual(p,new IsNull());
         assertObjectsAreEqual(p,IsNull.instance());
-        assertObjectsAreNotEqual(p,Constant.trueInstance());
+        assertObjectsAreNotEqual(p,Constant.truePredicate());
     }
 
     public void testConstant() throws Exception {

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Constant.java,v 1.1 2003/12/02 17:43:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Constant.java,v 1.2 2003/12/03 01:04:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -78,7 +78,7 @@ import org.apache.commons.functor.UnaryPredicate;
  * an instance whose value is not 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/12/02 17:43:12 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/03 01:04:12 $
  * @author Rodney Waldhoff
  */
 public final class Constant implements Function, UnaryFunction, BinaryFunction, Predicate, UnaryPredicate, BinaryPredicate, Serializable {
@@ -156,7 +156,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * @return a <code>Constant</code> that always
      *         returns <code>true</code>
      */
-    public static Constant trueInstance() {
+    public static Constant truePredicate() {
         return TRUE_PREDICATE;
     }
 
@@ -166,7 +166,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * @return a <code>Constant</code> that always
      *         returns <code>false</code>
      */
-    public static Constant falseInstance() {
+    public static Constant falsePredicate() {
         return FALSE_PREDICATE;
     }
     
@@ -177,7 +177,7 @@ public final class Constant implements Function, UnaryFunction, BinaryFunction, 
      * @return a <code>Constant</code> that always
      *         returns <i>value</i>
      */
-    public static Constant instance(boolean value) {
+    public static Constant predicate(boolean value) {
         return value ? TRUE_PREDICATE : FALSE_PREDICATE;
     }
 
