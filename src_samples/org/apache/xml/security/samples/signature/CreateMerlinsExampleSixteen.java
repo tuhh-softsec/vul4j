@@ -486,7 +486,7 @@ public class CreateMerlinsExampleSixteen {
     * Method createObject4
     *
     * @param sig
-    * @return
+    *
     * @throws Exception
     */
    public static Element createObject4(XMLSignature sig) throws Exception {

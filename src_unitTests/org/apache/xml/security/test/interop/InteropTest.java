@@ -73,7 +73,7 @@ public class InteropTest extends TestCase {
     * @param filename
     * @param resolver
     * @param hmacKey
-    * @return
+    *
     * @throws Exception
     */
    public boolean verifyHMAC(
@@ -106,7 +106,7 @@ public class InteropTest extends TestCase {
     *
     * @param filename
     * @param resolver
-    * @return
+    *
     * @throws Exception
     */
   public boolean verify(String filename, ResourceResolverSpi resolver, boolean followManifests)

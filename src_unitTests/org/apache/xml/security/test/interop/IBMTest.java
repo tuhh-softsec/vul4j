@@ -114,7 +114,7 @@ public class IBMTest extends InteropTest {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
 

@@ -112,7 +112,7 @@ public class BaltimoreTest extends InteropTest {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       TestSuite suite = new TestSuite(BaltimoreTest.class);

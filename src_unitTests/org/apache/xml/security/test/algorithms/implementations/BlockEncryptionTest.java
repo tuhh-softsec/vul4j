@@ -95,7 +95,7 @@ public class BlockEncryptionTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(BlockEncryptionTest.class);
@@ -151,7 +151,7 @@ public class BlockEncryptionTest extends TestCase {
     * @param plainStr
     * @param cipherStr
     * @param IVStr
-    * @return
+    *
     * @throws Exception
     */
    int encryptDecrypt(

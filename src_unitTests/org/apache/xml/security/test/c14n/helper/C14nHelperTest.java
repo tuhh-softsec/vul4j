@@ -100,7 +100,7 @@ public class C14nHelperTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(C14nHelperTest.class);

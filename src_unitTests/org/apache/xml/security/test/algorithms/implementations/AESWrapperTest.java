@@ -28,7 +28,7 @@ public class AESWrapperTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(AESWrapperTest.class);
@@ -82,7 +82,7 @@ public class AESWrapperTest extends TestCase {
     * @param KEK
     * @param keyData
     * @param ciphertext
-    * @return
+    *
     * @throws Exception
     */
    private boolean wrapUnwrap(String KEK, String keyData, String ciphertext)
@@ -214,7 +214,7 @@ public class AESWrapperTest extends TestCase {
     * Converts readable hex-String to byteArray
     *
     * @param strA
-    * @return
+    *
     */
    public static byte[] hexStringToByteArray(String strA) {
       ByteArrayOutputStream result = new ByteArrayOutputStream();

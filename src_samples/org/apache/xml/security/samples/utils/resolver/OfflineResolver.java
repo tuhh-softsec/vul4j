@@ -89,7 +89,7 @@ public class OfflineResolver extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     * @throws ResourceResolverException
     */
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
@@ -132,7 +132,7 @@ public class OfflineResolver extends ResourceResolverSpi {
     *
     * @param uri
     * @param BaseURI
-    * @return
+    *
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 

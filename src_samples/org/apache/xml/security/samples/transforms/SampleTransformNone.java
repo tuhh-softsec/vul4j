@@ -86,7 +86,7 @@ public class SampleTransformNone extends TransformSpi {
    /**
     * Method engineGetURI
     *
-    * @return
+    *
     */
    protected String engineGetURI() {
       return this.implementedTransformURI;
@@ -103,7 +103,7 @@ public class SampleTransformNone extends TransformSpi {
     * Method enginePerformTransform
     *
     * @param input
-    * @return
+    *
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input) {
       return input;

@@ -98,7 +98,7 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(Canonicalizer20010315ExclusiveTest.class);

@@ -101,7 +101,7 @@ public class XMLSignatureInputTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(XMLSignatureInputTest.class);
@@ -343,7 +343,7 @@ public class XMLSignatureInputTest extends TestCase {
    /**
     * Method getNodeSet1
     *
-    * @return
+    *
     * @throws ParserConfigurationException
     * @throws TransformerException
     */

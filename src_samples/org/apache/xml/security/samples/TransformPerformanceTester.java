@@ -1283,7 +1283,7 @@ public class TransformPerformanceTester {
     * Method pureedge_xfilter2
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] pureedge_xfilter2(Document doc) throws Exception {
@@ -1345,7 +1345,7 @@ public class TransformPerformanceTester {
     * Method pureedge_apachefilter
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] pureedge_apachefilter(Document doc) throws Exception {
@@ -1412,7 +1412,7 @@ public class TransformPerformanceTester {
     * Method simple_gif_detached
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] simple_gif_detached(Document doc) throws Exception {
@@ -1449,7 +1449,7 @@ public class TransformPerformanceTester {
     * Method xfilter2spec_xfilter2_1
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] xfilter2spec_xfilter2_1(Document doc)
@@ -1492,7 +1492,7 @@ public class TransformPerformanceTester {
     * Method xfilter2spec_xfilter2_2
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] xfilter2spec_xfilter2_2(Document doc)
@@ -1538,7 +1538,7 @@ public class TransformPerformanceTester {
     * Method xfilter2spec_xfilter2
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] xfilter2spec_xfilter2_3(Document doc)
@@ -1587,7 +1587,7 @@ public class TransformPerformanceTester {
     * Method xfilter2spec_apachefilter
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] xfilter2spec_apachefilter_1(Document doc)
@@ -1642,7 +1642,7 @@ public class TransformPerformanceTester {
     * Method xfilter2spec_apachefilter
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] xfilter2spec_apachefilter_2(Document doc)
@@ -1697,7 +1697,7 @@ public class TransformPerformanceTester {
     * Method xfilter2spec_apachefilter
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] xfilter2spec_apachefilter_3(Document doc)
@@ -1779,7 +1779,7 @@ public class TransformPerformanceTester {
     * Method apachesample_apachefilter_1
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_apachefilter_1(Document doc)
@@ -1799,7 +1799,7 @@ public class TransformPerformanceTester {
     * Method apachesample_apachefilter_2
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_apachefilter_2(Document doc)
@@ -1819,7 +1819,7 @@ public class TransformPerformanceTester {
     * Method apachesample_apachefilter_3
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_apachefilter_3(Document doc)
@@ -1839,7 +1839,7 @@ public class TransformPerformanceTester {
     * Method apachesample_apachefilter_4
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_apachefilter_4(Document doc)
@@ -1859,7 +1859,7 @@ public class TransformPerformanceTester {
     * Method apachesample_apachefilter_5
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_apachefilter_5(Document doc)
@@ -1879,7 +1879,7 @@ public class TransformPerformanceTester {
     * Method apachesample_apachefilter_6
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_apachefilter_6(Document doc)
@@ -1899,7 +1899,7 @@ public class TransformPerformanceTester {
     * Method apachesample_apachefilter_7
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_apachefilter_7(Document doc)
@@ -1919,7 +1919,7 @@ public class TransformPerformanceTester {
     * Method apachesample_apachefilter_7_optimal
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_apachefilter_7_optimal(Document doc)
@@ -1943,7 +1943,7 @@ public class TransformPerformanceTester {
     * @param includeButSearchStr
     * @param excludeButSearchStr
     * @param excludeStr
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_apachefilter_x(
@@ -1998,7 +1998,7 @@ public class TransformPerformanceTester {
     * Method apachesample_xfilter2_1
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_xfilter2_1(Document doc)
@@ -2071,7 +2071,7 @@ public class TransformPerformanceTester {
     * Method apachesample_xfilter2_2
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_xfilter2_2(Document doc)
@@ -2144,7 +2144,7 @@ public class TransformPerformanceTester {
     * Method apachesample_xfilter2_3
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_xfilter2_3(Document doc)
@@ -2203,7 +2203,7 @@ public class TransformPerformanceTester {
     * Method apachesample_xfilter2_4
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_xfilter2_4(Document doc)
@@ -2265,7 +2265,7 @@ public class TransformPerformanceTester {
     * Method apachesample_xfilter2_5
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_xfilter2_5(Document doc)
@@ -2331,7 +2331,7 @@ public class TransformPerformanceTester {
     * Method apachesample_xfilter2_6
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_xfilter2_6(Document doc)
@@ -2400,7 +2400,7 @@ public class TransformPerformanceTester {
     * Method apachesample_xfilter2_7
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] apachesample_xfilter2_7(Document doc)
@@ -2473,7 +2473,7 @@ public class TransformPerformanceTester {
     * Method xfilter2spec_xfilter2_3_new
     *
     * @param doc
-    * @return
+    *
     * @throws Exception
     */
    public static byte[][] xfilter2spec_xfilter2_3_new(Document doc)

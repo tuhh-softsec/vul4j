@@ -96,7 +96,7 @@ public class AttributeAncestorOrSelf extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(AttributeAncestorOrSelf.class);
@@ -130,7 +130,7 @@ public class AttributeAncestorOrSelf extends TestCase {
     * @param xmlString
     * @param ctxNodeStr
     * @param evalStr
-    * @return
+    *
     * @throws Exception
     */
    static private boolean isAncestorOf(

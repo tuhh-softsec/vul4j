@@ -17,7 +17,7 @@ public class ModuleTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
 

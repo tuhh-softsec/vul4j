@@ -115,7 +115,7 @@ public class XalanBug1425Test extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(XalanBug1425Test.class);
@@ -148,7 +148,7 @@ public class XalanBug1425Test extends TestCase {
     *
     * @param xmlString
     * @param xpath
-    * @return
+    *
     * @throws Exception
     */
    static private boolean containsDocumentElement(

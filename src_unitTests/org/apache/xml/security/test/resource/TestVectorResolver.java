@@ -88,7 +88,7 @@ public class TestVectorResolver implements EntityResolver {
    /**
     * Method getCurrentDir
     *
-    * @return
+    *
     * @throws IOException
     */
    private String getCurrentDir() throws IOException {
@@ -105,7 +105,7 @@ public class TestVectorResolver implements EntityResolver {
     * Method getFileName
     *
     * @param systemId
-    * @return
+    *
     * @throws IOException
     */
    private String getFileName(String systemId) throws IOException {
@@ -124,7 +124,7 @@ public class TestVectorResolver implements EntityResolver {
     * Method getFilePath
     *
     * @param systemId
-    * @return
+    *
     * @throws IOException
     */
    private String getFilePath(String systemId) throws IOException {
@@ -163,7 +163,7 @@ public class TestVectorResolver implements EntityResolver {
     * Method getInputSource
     *
     * @param systemId
-    * @return
+    *
     */
    private InputStream getInputStream(String systemId) {
 
@@ -185,7 +185,7 @@ public class TestVectorResolver implements EntityResolver {
     *
     * @param publicId
     * @param systemId
-    * @return
+    *
     */
    public InputSource resolveEntity(String publicId, String systemId) {
 

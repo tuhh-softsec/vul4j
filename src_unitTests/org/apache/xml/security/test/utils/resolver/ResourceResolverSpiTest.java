@@ -85,7 +85,7 @@ public class ResourceResolverSpiTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(ResourceResolverSpiTest.class);

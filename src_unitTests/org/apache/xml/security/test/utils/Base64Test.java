@@ -83,7 +83,7 @@ public class Base64Test extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(Base64Test.class);

@@ -96,7 +96,7 @@ public class TransformBase64DecodeTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(TransformBase64DecodeTest.class);
@@ -144,7 +144,7 @@ public class TransformBase64DecodeTest extends TestCase {
    /**
     * Method createElement
     *
-    * @return
+    *
     * @throws ParserConfigurationException
     */
    private static Element createElement() throws ParserConfigurationException {

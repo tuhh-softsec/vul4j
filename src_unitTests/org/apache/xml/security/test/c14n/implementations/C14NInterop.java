@@ -102,7 +102,7 @@ public class C14NInterop extends InteropTest {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(C14NInterop.class);
@@ -195,7 +195,7 @@ public class C14NInterop extends InteropTest {
     *
     * @param directory
     * @param file
-    * @return
+    *
     * @throws Exception
     */
    public boolean t(String directory, String file) throws Exception {

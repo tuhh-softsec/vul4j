@@ -102,7 +102,7 @@ public class ExclusiveC14NInterop extends InteropTest {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(ExclusiveC14NInterop.class);
@@ -209,7 +209,7 @@ public class ExclusiveC14NInterop extends InteropTest {
     *
     * @param directory
     * @param file
-    * @return
+    *
     * @throws Exception
     */
    public String t(String directory, String file) throws Exception {

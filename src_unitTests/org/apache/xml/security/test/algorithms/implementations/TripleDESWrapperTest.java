@@ -87,7 +87,7 @@ public class TripleDESWrapperTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(TripleDESWrapperTest.class);
@@ -143,7 +143,7 @@ public class TripleDESWrapperTest extends TestCase {
     * @param keyData
     * @param ciphertext
     * @param IVStr
-    * @return
+    *
     * @throws Exception
     */
    private boolean wrapUnwrap(

@@ -83,7 +83,7 @@ public class AllTests extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
 

@@ -23,7 +23,7 @@ public class InteropTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
 

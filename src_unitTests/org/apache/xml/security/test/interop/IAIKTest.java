@@ -111,7 +111,7 @@ public class IAIKTest extends InteropTest {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
 

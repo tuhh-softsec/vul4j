@@ -129,7 +129,7 @@ public class SignatureDSATest {
     *
     * @param r
     * @param s
-    * @return
+    *
     * @throws IOException
     */
    private static byte[] convertBIGINTtoASN1(BigInteger r, BigInteger s)
@@ -151,7 +151,7 @@ public class SignatureDSATest {
     *
     * @param r
     * @param s
-    * @return
+    *
     * @throws IOException
     */
    private static byte[] convertBIGINTtoXMLDSIG(BigInteger r, BigInteger s)
@@ -175,7 +175,7 @@ public class SignatureDSATest {
     * Method convertASN1toBIGINT
     *
     * @param derbytes
-    * @return
+    *
     * @throws IOException
     */
    private static BigInteger[] convertASN1toBIGINT(byte derbytes[])
@@ -198,7 +198,7 @@ public class SignatureDSATest {
     * Method convertXMLDSIGtoBIGINT
     *
     * @param xmldsigbytes
-    * @return
+    *
     * @throws IOException
     */
    private static BigInteger[] convertXMLDSIGtoBIGINT(byte[] xmldsigbytes)
@@ -228,7 +228,7 @@ public class SignatureDSATest {
     * pairs; the XML Signature requires the core BigInteger values.
     *
     * @param derbytes
-    * @return
+    *
     * @throws IOException
     * @see org.bouncycastle.jce.provider.JDKDSASigner#derDecode
     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
@@ -248,7 +248,7 @@ public class SignatureDSATest {
     * pairs; the XML Signature requires the core BigInteger values.
     *
     * @param xmldsigbytes
-    * @return
+    *
     * @throws IOException
     * @see org.bouncycastle.jce.provider.JDKDSASigner#derEncode
     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
@@ -265,7 +265,7 @@ public class SignatureDSATest {
     * Method normalizeBigIntegerArray
     *
     * @param bigIntegerArray
-    * @return
+    *
     */
    private static byte[] normalizeBigIntegerArray(byte bigIntegerArray[]) {
 

@@ -102,7 +102,7 @@ public class Canonicalizer20010315Test extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(Canonicalizer20010315Test.class);
@@ -887,7 +887,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @param input
     * @param definedOutput
     * @param writeResultsToFile
-    * @return
+    *
     * @throws CanonicalizationException
     * @throws FileNotFoundException
     * @throws IOException
@@ -952,7 +952,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @param c14nURI
     * @param validating
     * @param xpath
-    * @return
+    *
     * @throws CanonicalizationException
     * @throws FileNotFoundException
     * @throws IOException
@@ -1028,7 +1028,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * UTF-16 encoded XML document which is serialized to byte[] and returned.
     *
     * @param input
-    * @return
+    *
     * @throws IOException
     * @throws ParserConfigurationException
     * @throws SAXException

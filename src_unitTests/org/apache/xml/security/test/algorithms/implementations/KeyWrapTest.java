@@ -104,7 +104,7 @@ public class KeyWrapTest extends TestCase {
    /**
     * Method suite
     *
-    * @return
+    *
     */
    public static Test suite() {
       return new TestSuite(KeyWrapTest.class);
@@ -159,7 +159,7 @@ public class KeyWrapTest extends TestCase {
     * @param CEKstr
     * @param CEKtype
     * @param WrappedStr
-    * @return
+    *
     * @throws Exception
     */
    int wrapUnwrap(
@@ -178,7 +178,7 @@ public class KeyWrapTest extends TestCase {
     * @param CEKtype
     * @param WrappedStr
     * @param IV
-    * @return
+    *
     * @throws Exception
     */
    int wrapUnwrap(
