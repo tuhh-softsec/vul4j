@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.68 2002/10/02 19:23:12 rdonkin Exp $
- * $Revision: 1.68 $
- * $Date: 2002/10/02 19:23:12 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.69 2002/12/16 02:14:15 craigmcc Exp $
+ * $Revision: 1.69 $
+ * $Date: 2002/12/16 02:14:15 $
  *
  * ====================================================================
  *
@@ -70,6 +70,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.68 $ $Date: 2002/10/02 19:23:12 $
+ * @version $Revision: 1.69 $ $Date: 2002/12/16 02:14:15 $
  */
 
 public class Digester extends DefaultHandler {
@@ -2368,6 +2369,13 @@ public class Digester extends DefaultHandler {
      * @return the new exception
      */
     protected SAXException createSAXException(String message, Exception e) {
+        if ((e != null) &&
+            (e instanceof InvocationTargetException)) {
+            Throwable t = ((InvocationTargetException) e).getTargetException();
+            if ((t != null) && (t instanceof Exception)) {
+                e = (Exception) t;
+            }
+        }
         if (locator != null) {
             String error = "Error at (" + locator.getLineNumber() + ", "
                     + locator.getColumnNumber() + ": " + message;
@@ -2392,6 +2400,12 @@ public class Digester extends DefaultHandler {
      * @return the new exception
      */
     protected SAXException createSAXException(Exception e) {
+        if (e instanceof InvocationTargetException) {
+            Throwable t = ((InvocationTargetException) e).getTargetException();
+            if ((t != null) && (t instanceof Exception)) {
+                e = (Exception) t;
+            }
+        }
         return createSAXException(e.getMessage(), e);
     }
 
