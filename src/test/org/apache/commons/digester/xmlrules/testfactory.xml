@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE digester-rules PUBLIC "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
+<digester-rules>
+    <pattern value="root">
+        <factory-create-rule 
+            classname="org.apache.commons.digester.TestObjectCreationFactory" 
+            ignore-exceptions='true'/>
+        <set-next-rule methodname="add"/>
+    </pattern>
+</digester-rules>

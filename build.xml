@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.38 2003/03/02 11:33:49 rdonkin Exp $
+        $Id: build.xml,v 1.39 2003/03/15 18:41:04 rdonkin Exp $
 -->
 
 
@@ -254,11 +254,21 @@
                                test.bpsr,
                                test.spr,
                                test.xmlrules,
-                               test.node
+                               test.node,
+                               test.factory
                               "
    description="Run all unit test cases">
   </target>
 
+  <target name="test.factory" depends="compile.tests"
+   description="Run tests for loading Digester rules from XML ...">
+    <echo message="Running factory create tests ..."/>
+    <java classname="${test.runner}" fork="yes"
+        failonerror="${test.failonerror}">
+      <arg value="org.apache.commons.digester.TestFactoryCreate"/>
+      <classpath refid="test.classpath"/>
+    </java>
+  </target>
 
   <target name="test.xmlrules" depends="compile.tests"
    description="Run tests for loading Digester rules from XML ...">
