@@ -35,6 +35,7 @@
 
 // Xerces includes
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -1119,7 +1120,11 @@ int XSECC14n20010315::processNextNode() {
 						}
 
 						// Append the local name as the secondary key
-						m_formatBuffer << (*mp_formatter << tmpAtts->item(i)->getLocalName());
+						const XMLCh * ln = tmpAtts->item(i)->getNodeName();
+						int index = XMLString::indexOf(ln, chColon);
+						if (index >= 0)
+							ln = &ln[index+1];
+						m_formatBuffer << (*mp_formatter << ln);
 						toIns->sortString.sbStrcatIn(m_formatBuffer);
 
 						// Insert node
