@@ -572,8 +572,8 @@ org.apache.xml.security.utils.resolver
   <target name="test_xenc"
           depends="compile.tests"
           if="junit.present"
-          description="Runs merlin-five encryption interop">
-     <java classname="org.apache.xml.security.test.encryption.BaltimoreEncTest"
+          description="Runs encryption interop and unit tests">
+     <java classname="org.apache.xml.security.test.EncryptionTest"
            fork="yes"
            taskname="junit"
            failonerror="true">

@@ -76,6 +76,8 @@ import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.Method;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.test.interop.InteropTest;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
@@ -85,6 +87,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
@@ -92,10 +95,13 @@ import junit.framework.TestSuite;
  *
  * @author Berin Lautenbach
  */
-public class BaltimoreEncTest extends InteropTest {
+public class BaltimoreEncTest extends TestCase {
 
 	private static String cardNumber;
 	private static int nodeCount = 0;
+	private static final byte[] bobBytes = 
+		"abcdefghijklmnopqrstuvwx".getBytes();
+
 
 	/** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
@@ -106,7 +112,7 @@ public class BaltimoreEncTest extends InteropTest {
 	 *
 	 *
 	 */
-	public static Test suite() {
+	public static Test suite() throws Exception {
 		return new TestSuite(BaltimoreEncTest.class);
 	}
 
@@ -125,7 +131,7 @@ public class BaltimoreEncTest extends InteropTest {
 	 * @param args
 	 */
 
-	public static void main(String[] args) throws Exception {
+	protected void setUp() throws Exception {
 		
 		String[] testCaseName = { "-noloading",
 								  BaltimoreEncTest.class.getName() };
@@ -152,7 +158,6 @@ public class BaltimoreEncTest extends InteropTest {
 		// Initialise the library and get out of here
 
 		org.apache.xml.security.Init.init();
-		junit.textui.TestRunner.main(testCaseName);
 	}
 
 	/**
@@ -191,15 +196,10 @@ public class BaltimoreEncTest extends InteropTest {
 
 		String filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-tripledes-cbc.xml";
 
-		byte[] passPhrase = "abcdefghijklmnopqrstuvwx".getBytes();
-		DESedeKeySpec keySpec = new DESedeKeySpec(passPhrase);
-		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DESede");
-		SecretKey key = keyFactory.generateSecret(keySpec);
-
-		Document dd = decryptElement(filename, XMLCipher.TRIPLEDES, key);
+		Document dd = decryptElement(filename, XMLCipher.TRIPLEDES);
 
 		String cc = retrieveCCNumber(dd);
-		
+
 		// Compare the retrieved number to the stored number
 
 		assertTrue(cc, ((cc != null) && (cc.equals(cardNumber))));
@@ -223,9 +223,7 @@ public class BaltimoreEncTest extends InteropTest {
 	 * @param key Key to use for decryption
 	 */
 
-	static Document decryptElement (String filename, 
-								String encType, 
-								SecretKey key) 
+	public Document decryptElement (String filename, String encType) 
 		throws Exception {
 
 		XMLCipher cipher;
@@ -249,13 +247,54 @@ public class BaltimoreEncTest extends InteropTest {
 		// Create the XMLCipher element
 		
 		cipher = XMLCipher.getInstance(encType);
-		cipher.init(XMLCipher.DECRYPT_MODE, key);
+
+		// Need to pre-load the Encrypted Data so we can get the key info
+
 		ee = (Element) doc.getElementsByTagName("EncryptedData").item(0);
+		EncryptedData encryptedData = cipher.loadEncryptedData(doc, ee);
+		KeyInfo ki = encryptedData.getKeyInfo();
+   
+		SecretKey key = null;
+
+		if (ki != null) {
+			KeyName keyName = ki.itemKeyName(0);
+			if (keyName != null) {
+				key = mapKeyName(keyName.getKeyName());
+			}
+		}
+		cipher.init(XMLCipher.DECRYPT_MODE, key);
 		Document dd = cipher.doFinal(doc, ee);
-		
+
 		return dd;
 			
     }
+
+	/** 
+	 * Method mapKeyName
+	 *
+	 * Create a secret key from a key name for merlin-five
+	 *
+	 * @param name Name to map a key from
+	 */
+
+	public SecretKey mapKeyName(String name) throws Exception {
+
+		if (name.equals("bob")) {
+
+			// Bob is a DESEDE key
+
+			DESedeKeySpec keySpec = new DESedeKeySpec(bobBytes);
+			SecretKeyFactory keyFactory = 
+				SecretKeyFactory.getInstance("DESede");
+			SecretKey key = keyFactory.generateSecret(keySpec);
+
+			return key;
+
+		}
+
+		return null;
+
+	}
 
 	/**
 	 * Method countNodes
