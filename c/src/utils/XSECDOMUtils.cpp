@@ -347,7 +347,8 @@ XMLCh * transcodeFromUTF8(const unsigned char * src) {
 	Janitor<XMLTranscoder> j_t(t);
 
 	// Need to loop through, 2K at a time
-	unsigned int bytesEaten;
+	unsigned int bytesEaten, bytesEatenCounter;
+	unsigned int charactersEaten;
 	unsigned int totalBytesEaten = 0;
 	unsigned int bytesToEat = XMLString::stringLen((char *) src);
 
@@ -365,7 +366,14 @@ XMLCh * transcodeFromUTF8(const unsigned char * src) {
 						bytesEaten, 
 						charSizes);
 
-		outputBuf[bytesEaten] = chNull;
+		// Determine how many characters were used
+		bytesEatenCounter = 0;
+		charactersEaten = 0;
+		while (bytesEatenCounter < bytesEaten) {
+			bytesEatenCounter += charSizes[charactersEaten++];
+		}
+		
+		outputBuf[charactersEaten] = chNull;
 		fullDest.sbXMLChCat(outputBuf);
 		totalBytesEaten += bytesEaten;
 	}
