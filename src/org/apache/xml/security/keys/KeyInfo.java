@@ -785,8 +785,8 @@ public class KeyInfo extends SignatureElementProxy {
 
       for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
          KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
-
-         log.debug("Try " + keyResolver.getClass().getName());
+         if (log.isDebugEnabled())
+         	log.debug("Try " + keyResolver.getClass().getName());
 
          Node currentChild=this._constructionElement.getFirstChild();
          while (currentChild!=null)      {    
@@ -881,8 +881,8 @@ public class KeyInfo extends SignatureElementProxy {
     */
    X509Certificate getX509CertificateFromStaticResolvers()
            throws KeyResolverException {
-
-      log.debug("Start getX509CertificateFromStaticResolvers() with "
+      if (log.isDebugEnabled())
+      	log.debug("Start getX509CertificateFromStaticResolvers() with "
                 + KeyResolver.length() + " resolvers");
 
       for (int i = 0; i < KeyResolver.length(); i++) {
@@ -938,14 +938,14 @@ public class KeyInfo extends SignatureElementProxy {
     */
    X509Certificate getX509CertificateFromInternalResolvers()
            throws KeyResolverException {
-
-      log.debug("Start getX509CertificateFromInternalResolvers() with "
+      if (log.isDebugEnabled())
+      	log.debug("Start getX509CertificateFromInternalResolvers() with "
                 + this.lengthInternalKeyResolver() + " resolvers");
 
       for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
          KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
-
-         log.debug("Try " + keyResolver.getClass().getName());
+         if (log.isDebugEnabled())
+         	log.debug("Try " + keyResolver.getClass().getName());
 
          Node currentChild=this._constructionElement.getFirstChild();
          while (currentChild!=null)      {    
@@ -1089,8 +1089,8 @@ public class KeyInfo extends SignatureElementProxy {
 
       for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
          KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
-
-         log.debug("Try " + keyResolver.getClass().getName());
+         if (log.isDebugEnabled())
+         	log.debug("Try " + keyResolver.getClass().getName());
 
          Node currentChild=this._constructionElement.getFirstChild();
          while (currentChild!=null)      {    

@@ -58,8 +58,8 @@ public class X509CertificateResolver extends KeyResolverSpi {
     */
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
-
-      log.debug("Can I resolve " + element.getTagName() + "?");
+   	  if (log.isDebugEnabled())
+   	  	log.debug("Can I resolve " + element.getTagName() + "?");
 
       if (!XMLUtils.elementIsInSignatureSpace(element,
                  Constants._TAG_X509DATA)) {

@@ -73,7 +73,8 @@ public class XMLUtils {
       }
       getSetRec(rootNode,result,exclude,com);
    }
-   static void getSetRec(Node rootNode,Set result,Node exclude ,boolean com) {
+   static final void getSetRec(final Node rootNode,final Set result,
+        final Node exclude ,final boolean com) {
    	   //Set result = new HashSet();
        if (rootNode==exclude) {
           return;
@@ -350,8 +351,10 @@ public class XMLUtils {
     * @param log
     */
    public static void spitOutVersions(org.apache.commons.logging.Log log) {
-      log.debug(XMLUtils.getXercesVersion());
-      log.debug(XMLUtils.getXalanVersion());
+   	  if (log.isDebugEnabled()) {
+   	  	log.debug(XMLUtils.getXercesVersion());   	  	
+        log.debug(XMLUtils.getXalanVersion());
+      }
    }
 
    /** Field nodeTypeString */

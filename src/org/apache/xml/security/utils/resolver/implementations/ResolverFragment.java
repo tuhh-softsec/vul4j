@@ -84,8 +84,8 @@ public class ResolverFragment extends ResourceResolverSpi {
 
          // Element selectedElem = doc.getElementById(id);
          selectedElem = IdResolver.getElementById(doc, id);
-
-         log.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
+         if (log.isDebugEnabled())
+         	log.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
       }
 
       //Set resultSet = dereferenceSameDocumentURI(selectedElem);
@@ -125,10 +125,12 @@ public class ResolverFragment extends ResourceResolverSpi {
       if (uriNodeValue.equals("")
               || (uriNodeValue.startsWith("#")
                   &&!uriNodeValue.startsWith("#xpointer("))) {
-         log.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
+         if (log.isDebugEnabled())
+         	log.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
          return true;
       }
-      log.debug("Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
+      if (log.isDebugEnabled())
+      	log.debug("Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
       return false;
    }
 

@@ -49,8 +49,8 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
    /** @inheritDoc */
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
-
-      log.debug("Can I resolve " + element.getTagName());
+   	  if (log.isDebugEnabled())
+   	  	log.debug("Can I resolve " + element.getTagName());
 
       if (element == null) {
          return false;

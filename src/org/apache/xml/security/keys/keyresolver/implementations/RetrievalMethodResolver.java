@@ -103,8 +103,8 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 
          if (resRes != null) {
             XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
-
-            log.debug("Before applying Transforms, resource has "
+            if (log.isDebugEnabled())
+            	log.debug("Before applying Transforms, resource has "
                       + resource.getBytes().length + "bytes");
 
             if (transforms != null) {
@@ -112,10 +112,11 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 
                resource = transforms.performTransforms(resource);
             }
-
-            log.debug("After applying Transforms, resource has "
+            if (log.isDebugEnabled()) {
+            	log.debug("After applying Transforms, resource has "
                       + resource.getBytes().length + "bytes");
-            log.debug("Resolved to resource " + resource.getSourceURI());
+            	log.debug("Resolved to resource " + resource.getSourceURI());
+            }
 
             byte inputBytes[] = resource.getBytes();
 
@@ -135,11 +136,12 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             } else {
 
                // otherwise, we parse the resource, create an Element and delegate
-               log.debug("we have to parse " + inputBytes.length + " bytes");
+                if (log.isDebugEnabled())
+                	log.debug("we have to parse " + inputBytes.length + " bytes");
 
                Element e = this.getDocFromBytes(inputBytes);
-
-               log.debug("Now we have a {" + e.getNamespaceURI() + "}"
+               if (log.isDebugEnabled())
+               	    log.debug("Now we have a {" + e.getNamespaceURI() + "}"
                          + e.getLocalName() + " Element");
 
                if (e != null) {
@@ -180,15 +182,15 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
          RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
          Attr uri = rm.getURIAttr();
          Transforms transforms = rm.getTransforms();
-
-         log.debug("Asked to resolve URI " + uri);
+         if (log.isDebugEnabled())
+         	log.debug("Asked to resolve URI " + uri);
 
          ResourceResolver resRes = ResourceResolver.getInstance(uri, BaseURI);
 
          if (resRes != null) {
             XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
-
-            log.debug("Before applying Transforms, resource has "
+            if (log.isDebugEnabled())
+            	log.debug("Before applying Transforms, resource has "
                       + resource.getBytes().length + "bytes");
 
             if (transforms != null) {
@@ -196,10 +198,12 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 
                resource = transforms.performTransforms(resource);
             }
-
-            log.debug("After applying Transforms, resource has "
+            
+            if (log.isDebugEnabled()) {
+            	log.debug("After applying Transforms, resource has "
                       + resource.getBytes().length + "bytes");
-            log.debug("Resolved to resource " + resource.getSourceURI());
+            	log.debug("Resolved to resource " + resource.getSourceURI());
+            }
 
             byte inputBytes[] = resource.getBytes();
 
@@ -220,11 +224,13 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             } else {
 
                // otherwise, we parse the resource, create an Element and delegate
-               log.debug("we have to parse " + inputBytes.length + " bytes");
+                if (log.isDebugEnabled())
+                	log.debug("we have to parse " + inputBytes.length + " bytes");
 
                Element e = this.getDocFromBytes(inputBytes);
 
-               log.debug("Now we have a {" + e.getNamespaceURI() + "}"
+               if (log.isDebugEnabled())
+               	    log.debug("Now we have a {" + e.getNamespaceURI() + "}"
                          + e.getLocalName() + " Element");
 
                if (e != null) {

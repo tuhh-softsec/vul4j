@@ -127,7 +127,8 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
          // switch on proxy usage
          if (useProxy) {
-            log.debug("Use of HTTP proxy enabled: " + proxyHost + ":"
+            if (log.isDebugEnabled())
+            	log.debug("Use of HTTP proxy enabled: " + proxyHost + ":"
                       + proxyPort);
             System.getProperties().put("http.proxySet", "true");
             System.getProperties().put("http.proxyHost", proxyHost);
@@ -268,12 +269,14 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
       }
 
       if ((uriNew != null) && uriNew.getScheme().equals("http")) {
-         log.debug("I state that I can resolve " + uriNew.toString());
+         if (log.isDebugEnabled())
+        	log.debug("I state that I can resolve " + uriNew.toString());
 
          return true;
       }
 
-      log.debug("I state that I can't resolve " + uriNew.toString());
+      if (log.isDebugEnabled())
+      	log.debug("I state that I can't resolve " + uriNew.toString());
 
       return false;
    }

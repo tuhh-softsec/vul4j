@@ -47,8 +47,8 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
     /** @inheritDoc */
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
-
-      log.debug("Can I resolve " + element.getTagName() + "?");
+      if (log.isDebugEnabled())
+      	log.debug("Can I resolve " + element.getTagName() + "?");
 
       X509Data x509data = null;
       try {
@@ -114,19 +114,22 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
             X509Certificate cert = storage.next();
             XMLX509IssuerSerial certSerial = new XMLX509IssuerSerial(element.getOwnerDocument(), cert);
 
-            log.debug("Found Certificate Issuer: "
+            if (log.isDebugEnabled()) {
+            	log.debug("Found Certificate Issuer: "
                       + certSerial.getIssuerName());
-            log.debug("Found Certificate Serial: "
+            	log.debug("Found Certificate Serial: "
                       + certSerial.getSerialNumber().toString());
+            }
 
             for (int i=0; i<noOfISS; i++) {
                XMLX509IssuerSerial xmliss = x509data.itemIssuerSerial(i);
 
-               log.debug("Found Element Issuer:     "
+               if (log.isDebugEnabled()) {
+               	    log.debug("Found Element Issuer:     "
                          + xmliss.getIssuerName());
-               log.debug("Found Element Serial:     "
+               	    log.debug("Found Element Serial:     "
                          + xmliss.getSerialNumber().toString());
-
+               }
 
                if (certSerial.equals(xmliss)) {
                   log.debug("match !!! ");

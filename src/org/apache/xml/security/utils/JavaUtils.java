@@ -281,17 +281,19 @@ public class JavaUtils {
       long lFreeMemAfter = runtime.freeMemory();
       long lTotalMemAfter = runtime.totalMemory();
 
-      log.debug("* Garbage collection took " + time + " seconds.");
-      log.debug("* Memory before gc()... free:" + lFreeMemBefore + "= "
+      if (log.isDebugEnabled()) {
+      	log.debug("* Garbage collection took " + time + " seconds.");
+      	log.debug("* Memory before gc()... free:" + lFreeMemBefore + "= "
                 + lFreeMemBefore / 1024 + "KB,...total:" + lTotalMemBefore
                 + "= " + lTotalMemBefore / 1024 + "KB,...  used:"
                 + (lTotalMemBefore - lFreeMemBefore) + "= "
                 + (lTotalMemBefore - lFreeMemBefore) / 1024 + "KB");
-      log.debug("* Memory after: gc()... free:" + lFreeMemAfter + "= "
+      	log.debug("* Memory after: gc()... free:" + lFreeMemAfter + "= "
                 + lFreeMemAfter / 1024 + "KB,...total:" + lTotalMemAfter + "= "
                 + lTotalMemAfter / 1024 + "KB,...  used:"
                 + (lTotalMemAfter - lFreeMemAfter) + "= "
                 + (lTotalMemAfter - lFreeMemAfter) / 1024 + "KB");
-      log.debug("</METHOD>");
+      	log.debug("</METHOD>");
+      }
    }
 }

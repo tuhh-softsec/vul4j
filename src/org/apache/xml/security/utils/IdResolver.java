@@ -194,7 +194,8 @@ public class IdResolver {
      * @return the element obtained by the Id, or null if it is not found.
      */
     private static Element getElementByIdUsingDOM(Document doc, String id) {
-        log.debug("getElementByIdUsingDOM() Search for ID " + id);
+        if (log.isDebugEnabled())
+        	log.debug("getElementByIdUsingDOM() Search for ID " + id);
         return doc.getElementById(id);
     }
 
@@ -206,7 +207,8 @@ public class IdResolver {
     * @return the element obtained by the Id, or null if it is not found.
     */
    private static Element getElementByIdType(Document doc, String id) {
-      log.debug("getElementByIdType() Search for ID " + id);
+   	  if (log.isDebugEnabled())
+   	  	log.debug("getElementByIdType() Search for ID " + id);
        WeakHashMap elementMap = (WeakHashMap) docMap.get(doc);
        if (elementMap != null) {
            WeakReference weakReference = (WeakReference) elementMap.get(id);
@@ -228,8 +230,8 @@ public class IdResolver {
     */
    private static Element getElementByIdInDSNamespace(Document doc, String id
             ,CachedXPathAPI cx) {
-
-      log.debug("getElementByIdInDSNamespace() Search for ID " + id);
+   	  if (log.isDebugEnabled())
+   	  	log.debug("getElementByIdInDSNamespace() Search for ID " + id);
 
       try {
          Element nscontext = XMLUtils.createDSctx(doc, "ds",
@@ -273,8 +275,8 @@ public class IdResolver {
     */
    private static Element getElementByIdInXENCNamespace(Document doc,
            String id, CachedXPathAPI cx) {
-
-      log.debug("getElementByIdInXENCNamespace() Search for ID " + id);
+      if (log.isDebugEnabled())
+      	log.debug("getElementByIdInXENCNamespace() Search for ID " + id);
 
       try {
          Element nscontext =
@@ -302,8 +304,8 @@ public class IdResolver {
     */
    private static Element getElementByIdInSOAPSignatureNamespace(Document doc,
            String id, CachedXPathAPI cx) {
-
-      log.debug("getElementByIdInSOAPSignatureNamespace() Search for ID " + id);
+   	  if (log.isDebugEnabled())
+   	  	log.debug("getElementByIdInSOAPSignatureNamespace() Search for ID " + id);
 
       try {
          Element nscontext = XMLUtils.createDSctx(
@@ -340,7 +342,8 @@ public class IdResolver {
       <attribute name="RequestID"         type="ID" use="optional"/>
       <attribute name="ResponseID"        type="ID" use="required"/>
       */
-      log.debug("getElementByIdInXKMSNamespace() Search for ID " + id);
+   	  if (log.isDebugEnabled())
+   	  	log.debug("getElementByIdInXKMSNamespace() Search for ID " + id);
 
       try {
          Element nscontext =
@@ -378,8 +381,8 @@ public class IdResolver {
     */
    private static Element getElementByIdUnsafeMatchByIdName(Document doc,
            String id, CachedXPathAPI cx) {
-
-      log.debug("getElementByIdUnsafeMatchByIdName() Search for ID " + id);
+   	  if (log.isDebugEnabled())
+   	  	log.debug("getElementByIdUnsafeMatchByIdName() Search for ID " + id);
 
       try {
          Element element_Id = (Element) cx.selectSingleNode(doc,

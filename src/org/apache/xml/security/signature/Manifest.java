@@ -287,11 +287,8 @@ public class Manifest extends SignatureElementProxy {
    public boolean verifyReferences(boolean followManifests)
            throws MissingResourceFailureException, XMLSecurityException {
    	  if (log.isDebugEnabled()) {
-      log.debug(
-         "verify "
-         +_referencesEl.length
-         + " References");
-      log.debug("I am " + (followManifests
+   	  	log.debug("verify " +_referencesEl.length + " References");
+        log.debug("I am " + (followManifests
                            ? ""
                            : "not") + " requested to follow nested Manifests");
       }
@@ -320,8 +317,8 @@ public class Manifest extends SignatureElementProxy {
             if (!currentRefVerified) {
                verify = false;
             }
-
-            log.debug("The Reference has Type " + currentRef.getType());
+            if (log.isDebugEnabled())
+            	log.debug("The Reference has Type " + currentRef.getType());
 
             // was verification successful till now and do we want to verify the Manifest?
             if (verify && followManifests

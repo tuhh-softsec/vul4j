@@ -116,7 +116,8 @@ public class ResourceResolver {
                                                 exArgs, e, uri, BaseURI);
          }
 
-         log.debug("check resolvability by class " + currentClass);
+         if (log.isDebugEnabled())
+         	log.debug("check resolvability by class " + currentClass);
 
          if ((resolver != null) && resolver.canResolve(uri, BaseURI)) {
             return resolver;
@@ -144,9 +145,10 @@ public class ResourceResolver {
    public static final ResourceResolver getInstance(
            Attr uri, String BaseURI, Vector individualResolvers)
               throws ResourceResolverException {
-
-      log.debug("I was asked to create a ResourceResolver and got " + individualResolvers.size());
-      log.debug(" extra resolvers to my existing " + ResourceResolver._resolverVector.size() + " system-wide resolvers");
+      if (log.isDebugEnabled()) {
+      	log.debug("I was asked to create a ResourceResolver and got " + individualResolvers.size());
+      	log.debug(" extra resolvers to my existing " + ResourceResolver._resolverVector.size() + " system-wide resolvers");
+      }
 
       // first check the individual Resolvers
       if ((individualResolvers != null) && (individualResolvers.size() > 0)) {
@@ -156,8 +158,8 @@ public class ResourceResolver {
 
             if (resolver != null) {
                String currentClass = resolver._resolverSpi.getClass().getName();
-
-               log.debug("check resolvability by class " + currentClass);
+               if (log.isDebugEnabled())
+               	log.debug("check resolvability by class " + currentClass);
 
                if (resolver.canResolve(uri, BaseURI)) {
                   return resolver;
@@ -181,8 +183,8 @@ public class ResourceResolver {
             throw new ResourceResolverException("utils.resolver.noClass",
                                                 exArgs, e, uri, BaseURI);
          }
-
-         log.debug("check resolvability by class " + currentClass);
+         if (log.isDebugEnabled())
+         	log.debug("check resolvability by class " + currentClass);
 
          if ((resolver != null) && resolver.canResolve(uri, BaseURI)) {
             return resolver;

@@ -194,7 +194,8 @@ public class Init {
                            log.debug(currMeth.getDeclaringClass());
                         }
                      }*/
-                     log.debug("Canonicalizer.register(" + URI + ", "
+                      if (log.isDebugEnabled())
+                      	log.debug("Canonicalizer.register(" + URI + ", "
                             + JAVACLASS + ")");
                      Canonicalizer.register(URI, JAVACLASS);
                   } catch (ClassNotFoundException e) {
@@ -221,7 +222,8 @@ public class Init {
                         "JAVACLASS");
                   try {
                      Class.forName(JAVACLASS);
-                     log.debug("Transform.register(" + URI + ", " + JAVACLASS
+                     if (log.isDebugEnabled())
+                     	log.debug("Transform.register(" + URI + ", " + JAVACLASS
                             + ")");
                      Transform.register(URI, JAVACLASS);
                   } catch (ClassNotFoundException e) {
@@ -272,7 +274,8 @@ public class Init {
 //                           log.debug(currMeth.getDeclaringClass());
 //                        }
 //                     }
-                     log.debug("SignatureAlgorithm.register(" + URI + ", "
+                      if (log.isDebugEnabled())
+                      	log.debug("SignatureAlgorithm.register(" + URI + ", "
                             + JAVACLASS + ")");
                      SignatureAlgorithm.register(URI, JAVACLASS);
                   } catch (ClassNotFoundException e) {
@@ -304,10 +307,12 @@ public class Init {
                         "DESCRIPTION");
 
                   if ((Description != null) && (Description.length() > 0)) {
-                     log.debug("Register Resolver: " + JAVACLASS + ": "
+                    if (log.isDebugEnabled())
+                    	log.debug("Register Resolver: " + JAVACLASS + ": "
                                + Description);
                   } else {
-                     log.debug("Register Resolver: " + JAVACLASS
+                    if (log.isDebugEnabled())
+                    	log.debug("Register Resolver: " + JAVACLASS
                                + ": For unknown purposes");
                   }
 
@@ -338,10 +343,12 @@ public class Init {
                         "DESCRIPTION");
 
                   if ((Description != null) && (Description.length() > 0)) {
-                     log.debug("Register Resolver: " + JAVACLASS + ": "
+                    if (log.isDebugEnabled())
+                    	log.debug("Register Resolver: " + JAVACLASS + ": "
                                + Description);
                   } else {
-                     log.debug("Register Resolver: " + JAVACLASS
+                    if (log.isDebugEnabled())
+                    	log.debug("Register Resolver: " + JAVACLASS
                                + ": For unknown purposes");
                   }
 
@@ -353,7 +360,8 @@ public class Init {
                         
             if (tag.equals("PrefixMappings")){
                 XX_configure_reg_prefixes_start = System.currentTimeMillis();
-               log.debug("Now I try to bind prefixes:");
+                if (log.isDebugEnabled())
+                	log.debug("Now I try to bind prefixes:");
 
                Element[] nl = XMLUtils.selectNodes(el.getFirstChild(), CONF_NS,"PrefixMapping");
 
@@ -362,8 +370,8 @@ public class Init {
                                         "namespace");
                   String prefix = nl[i].getAttributeNS(null,
                                      "prefix");
-
-                  log.debug("Now I try to bind " + prefix + " to " + namespace);
+                  if (log.isDebugEnabled())
+                  	log.debug("Now I try to bind " + prefix + " to " + namespace);
                   org.apache.xml.security.utils.ElementProxy
                      .setDefaultPrefix(namespace, prefix);
                }
@@ -374,24 +382,21 @@ public class Init {
             long XX_init_end = System.currentTimeMillis();
 
             //J-
-            log.error("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
-            log.error("  XX_prng                           " + ((int)(XX_prng_end - XX_prng_start)) + " ms");
-            log.error("  XX_parsing                        " + ((int)(XX_parsing_end - XX_parsing_start)) + " ms");
-            
-            log.error("  XX_configure_i18n                 " + ((int)(XX_configure_i18n_end- XX_configure_i18n_start)) + " ms");
-			log.error("  XX_configure_reg_c14n             " + ((int)(XX_configure_reg_c14n_end- XX_configure_reg_c14n_start)) + " ms");            
-			log.error("  XX_configure_reg_here             " + ((int)(XX_configure_reg_here_end- XX_configure_reg_here_start)) + " ms");            
-			log.error("  XX_configure_reg_jcemapper        " + ((int)(XX_configure_reg_jcemapper_end- XX_configure_reg_jcemapper_start)) + " ms");
-            
-			
-			log.error("  XX_configure_reg_keyInfo          " + ((int)(XX_configure_reg_keyInfo_end- XX_configure_reg_keyInfo_start)) + " ms");            
-			
-			log.error("  XX_configure_reg_keyResolver      " + ((int)(XX_configure_reg_keyResolver_end- XX_configure_reg_keyResolver_start)) + " ms");            
-			log.error("  XX_configure_reg_prefixes         " + ((int)(XX_configure_reg_prefixes_end- XX_configure_reg_prefixes_start)) + " ms");            
-			log.error("  XX_configure_reg_resourceresolver " + ((int)(XX_configure_reg_resourceresolver_end- XX_configure_reg_resourceresolver_start)) + " ms");            
-			log.error("  XX_configure_reg_sigalgos         " + ((int)(XX_configure_reg_sigalgos_end- XX_configure_reg_sigalgos_start)) + " ms");            
-			log.error("  XX_configure_reg_transforms       " + ((int)(XX_configure_reg_transforms_end- XX_configure_reg_transforms_start)) + " ms");
-            //J+
+            if (log.isDebugEnabled()) {
+            	log.error("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
+                log.error("  XX_prng                           " + ((int)(XX_prng_end - XX_prng_start)) + " ms");
+                log.error("  XX_parsing                        " + ((int)(XX_parsing_end - XX_parsing_start)) + " ms");            
+                log.error("  XX_configure_i18n                 " + ((int)(XX_configure_i18n_end- XX_configure_i18n_start)) + " ms");
+			    log.error("  XX_configure_reg_c14n             " + ((int)(XX_configure_reg_c14n_end- XX_configure_reg_c14n_start)) + " ms");            
+			    log.error("  XX_configure_reg_here             " + ((int)(XX_configure_reg_here_end- XX_configure_reg_here_start)) + " ms");            
+			    log.error("  XX_configure_reg_jcemapper        " + ((int)(XX_configure_reg_jcemapper_end- XX_configure_reg_jcemapper_start)) + " ms");            		
+			    log.error("  XX_configure_reg_keyInfo          " + ((int)(XX_configure_reg_keyInfo_end- XX_configure_reg_keyInfo_start)) + " ms");            			
+			    log.error("  XX_configure_reg_keyResolver      " + ((int)(XX_configure_reg_keyResolver_end- XX_configure_reg_keyResolver_start)) + " ms");            
+			    log.error("  XX_configure_reg_prefixes         " + ((int)(XX_configure_reg_prefixes_end- XX_configure_reg_prefixes_start)) + " ms");            
+			    log.error("  XX_configure_reg_resourceresolver " + ((int)(XX_configure_reg_resourceresolver_end- XX_configure_reg_resourceresolver_start)) + " ms");            
+			    log.error("  XX_configure_reg_sigalgos         " + ((int)(XX_configure_reg_sigalgos_end- XX_configure_reg_sigalgos_start)) + " ms");            
+			    log.error("  XX_configure_reg_transforms       " + ((int)(XX_configure_reg_transforms_end- XX_configure_reg_transforms_start)) + " ms");
+            }
          } catch (Exception e) {
             log.fatal("Bad: ", e);
             e.printStackTrace();
@@ -410,7 +415,8 @@ private static void registerHereFunction() {
 	 */            
 	{	    
 	    FunctionTable.installFunction("here", new FuncHere());
-	    log.debug("Registered class " + FuncHere.class.getName()
+        if (log.isDebugEnabled())
+        	log.debug("Registered class " + FuncHere.class.getName()
 	            + " for XPath function 'here()' function in internal table");
 
 	    /* The following tweak by "Eric Olson" <ego@alum.mit.edu>
@@ -427,7 +433,8 @@ private static void registerHereFunction() {
 	            FuncLoader loader = m_functions[i];
 
 	            if (loader != null) {
-	                log.debug("Func " + i + " " + loader.getName());
+                    if (log.isDebugEnabled())
+                    	log.debug("Func " + i + " " + loader.getName());
 
 	                if (loader.getName().equals(funcHereLoader.getName())) {
 	                    m_functions[i] = funcHereLoader;

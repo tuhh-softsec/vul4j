@@ -59,8 +59,8 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
       JCEMapper.ProviderIdClass algorithmID =
          JCEMapper.translateURItoJCEID(this.engineGetURI());
-
-      log.debug("Created SignatureDSA using " + algorithmID.getAlgorithmID()
+      if (log.isDebugEnabled())
+      	log.debug("Created SignatureDSA using " + algorithmID.getAlgorithmID()
                 + " " + algorithmID.getProviderId());
 
       try {

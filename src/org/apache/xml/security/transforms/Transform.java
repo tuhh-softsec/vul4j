@@ -89,10 +89,11 @@ public final class Transform extends SignatureElementProxy {
 
          String implementingClass =
             Transform.getImplementingClass(algorithmURI);
-
-         log.debug("Create URI \"" + algorithmURI + "\" class \""
+         if (log.isDebugEnabled()) {
+         	log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
-         log.debug("The NodeList is " + contextNodes);
+         	log.debug("The NodeList is " + contextNodes);
+         }
 
          // create the custom Transform object
          this.transformSpi =

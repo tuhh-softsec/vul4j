@@ -90,8 +90,8 @@ public class TransformXPath2Filter04 extends TransformSpi {
 
       try {
          Set inputSet = input.getNodeSet();
-
-         log.debug("perform xfilter2 on " + inputSet.size() + " nodes");
+         if (log.isDebugEnabled())
+         	log.debug("perform xfilter2 on " + inputSet.size() + " nodes");
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI().getCachedXPathAPI());
@@ -123,8 +123,8 @@ public class TransformXPath2Filter04 extends TransformSpi {
                                     xpathContainer.getXPathFilterTextNode(),
                                     CachedXPathFuncHereAPI.getStrFromNode(xpathContainer.getXPathFilterTextNode()),
                                     xpathContainer.getElement());
-
-         log.debug("subtreeRoots contains " + subtreeRoots.getLength()
+         if (log.isDebugEnabled())
+         	log.debug("subtreeRoots contains " + subtreeRoots.getLength()
                    + " nodes");
 
          /*
@@ -157,8 +157,8 @@ public class TransformXPath2Filter04 extends TransformSpi {
                throw new RuntimeException("unknown node type: " + currentRootNodeType + " " + currentRootNode);
             }
          }
-
-         log.debug("selection process identified " + selectedNodes.size()
+         if (log.isDebugEnabled())
+         	log.debug("selection process identified " + selectedNodes.size()
                    + " nodes");
 
          Set resultNodes = new HashSet();

@@ -121,8 +121,8 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
       String text =
          this.getTextFromChildElement(Constants._TAG_X509SERIALNUMBER,
                                       Constants.SignatureSpecNS);
-
-      log.debug("In dem X509SerialNumber wurde gefunden: " + text);
+      if (log.isDebugEnabled())
+      	log.debug("In dem X509SerialNumber wurde gefunden: " + text);
 
       return new BigInteger(text);
    }

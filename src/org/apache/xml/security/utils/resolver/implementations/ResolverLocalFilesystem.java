@@ -133,11 +133,12 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
 
       try {
          URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
-
-         log.debug("I was asked whether I can resolve " + uriNew.toString());
+         if (log.isDebugEnabled())
+         	log.debug("I was asked whether I can resolve " + uriNew.toString());
 
          if (uriNew.getScheme().equals("file")) {
-            log.debug("I state that I can resolve " + uriNew.toString());
+            if (log.isDebugEnabled())
+            	log.debug("I state that I can resolve " + uriNew.toString());
 
             return true;
          }

@@ -253,7 +253,8 @@ public abstract class ResourceResolverSpi {
                                   && (ch3 != '/'));
 
          if (isDosFilename) {
-            log.debug("Found DOS filename: " + str);
+            if (log.isDebugEnabled())
+            	log.debug("Found DOS filename: " + str);
          }
       }
 

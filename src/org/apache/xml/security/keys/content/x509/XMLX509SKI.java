@@ -195,7 +195,8 @@ public class XMLX509SKI extends SignatureElementProxy
          byte abyte0[] = new byte[derEncodedValue.length - 4];
          System.arraycopy(derEncodedValue, 4, abyte0, 0, abyte0.length);
          */
-         log.debug("Base64 of SKI is " + Base64.encode(abyte0));
+         if (log.isDebugEnabled())
+         	log.debug("Base64 of SKI is " + Base64.encode(abyte0));
 
          return abyte0;
       } catch (IOException ex) {

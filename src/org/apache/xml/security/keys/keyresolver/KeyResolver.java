@@ -130,8 +130,8 @@ public class KeyResolver {
 
             throw new KeyResolverException("utils.resolver.noClass", exArgs, e);
          }
-
-         log.debug("check resolvability by class " + currentClass);
+         if (log.isDebugEnabled())
+         	log.debug("check resolvability by class " + currentClass);
 
          if ((resolver != null)
                  && resolver.canResolve(element, BaseURI, storage)) {

@@ -65,8 +65,8 @@ public class SignatureAlgorithm extends Algorithm {
       try {
          String implementingClass =
             SignatureAlgorithm.getImplementingClass(algorithmURI);
-
-         log.debug("Create URI \"" + algorithmURI + "\" class \""
+         if (log.isDebugEnabled())
+         	log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
 
          this._signatureAlgorithm =
@@ -131,8 +131,8 @@ public class SignatureAlgorithm extends Algorithm {
       try {
          String implementingClass =
             SignatureAlgorithm.getImplementingClass(algorithmURI);
-
-         log.debug("Create URI \"" + algorithmURI + "\" class \""
+         if (log.isDebugEnabled())
+         	log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
 
          this._signatureAlgorithm =
@@ -346,7 +346,8 @@ public class SignatureAlgorithm extends Algorithm {
            throws AlgorithmAlreadyRegisteredException {
 
       {
-         log.debug("Try to register " + algorithmURI + " " + implementingClass);
+         if (log.isDebugEnabled())
+         	log.debug("Try to register " + algorithmURI + " " + implementingClass);
 
          // are we already registered?
          String registeredClass =

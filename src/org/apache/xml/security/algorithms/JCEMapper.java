@@ -136,7 +136,8 @@ public class JCEMapper {
                   .newInstance();
 
             if (java.security.Security.getProvider(Id) == null) {
-               log.debug("The provider " + Id
+                if (log.isDebugEnabled())
+                	log.debug("The provider " + Id
                          + " had to be added to the java.security.Security");
                java.security.Security.addProvider(prov);
 
@@ -227,8 +228,8 @@ public class JCEMapper {
     *
     */
    public static ProviderIdClass translateURItoJCEID(String AlgorithmURI) {
-
-      log.debug("Request for URI " + AlgorithmURI);
+   	  if (log.isDebugEnabled())
+   	  	log.debug("Request for URI " + AlgorithmURI);
 
       ProviderIdClass prov=(ProviderIdClass) uriToProvider.get(AlgorithmURI);
       if (prov!=null) {
@@ -251,8 +252,8 @@ public class JCEMapper {
 
                ProviderIdClass result = new ProviderIdClass(map.JCEName,
                                            map.ProviderId);
-
-               log.debug("Found " + result.getAlgorithmID() + " from provider "
+               if (log.isDebugEnabled())
+               	log.debug("Found " + result.getAlgorithmID() + " from provider "
                          + result.getProviderId());
 
                uriToProvider.put(AlgorithmURI,result);
@@ -272,8 +273,8 @@ public class JCEMapper {
     */
    public static ProviderIdClass translateURItoJCEID(String AlgorithmURI,
            String requestedProviderId) {
-
-      log.debug("Request for URI " + AlgorithmURI + " from provider "
+   	  if (log.isDebugEnabled())
+   	  	log.debug("Request for URI " + AlgorithmURI + " from provider "
                 + requestedProviderId);
 
       if (!JCEMapper.getProviderIsInClassPath(requestedProviderId)) {
@@ -288,8 +289,8 @@ public class JCEMapper {
 
          ProviderIdClass result = new ProviderIdClass(jceName,
                                      requestedProviderId);
-
-         log.debug("Found " + result.getAlgorithmID() + " from provider "
+         if (log.isDebugEnabled())
+         	log.debug("Found " + result.getAlgorithmID() + " from provider "
                    + result.getProviderId());
 
          return result;
@@ -304,8 +305,8 @@ public class JCEMapper {
     *
     */
    public static String getAlgorithmClassFromURI(String AlgorithmURI) {
-
-      log.debug("Request for URI " + AlgorithmURI);
+   	  if (log.isDebugEnabled())
+   	  	log.debug("Request for URI " + AlgorithmURI);
 
          Iterator alth=getAlgorithmMapping(AlgorithmURI).entrySet().iterator();
          String uri=null;
@@ -314,7 +315,8 @@ public class JCEMapper {
             String cur=((AlgorithmMapping)alth.next()).JCEName;
             if (uri==null)
                 uri=cur;
-            log.debug("Found " + cur);
+            if (log.isDebugEnabled())
+            	log.debug("Found " + cur);
          }
 
          return uri;

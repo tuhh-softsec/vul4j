@@ -70,8 +70,8 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
 
       JCEMapper.ProviderIdClass algorithmID =
          JCEMapper.translateURItoJCEID(SignatureDSA._URI);
-
-      log.debug("Created SignatureDSA using " + algorithmID.getAlgorithmID()
+      if (log.isDebugEnabled())
+      	log.debug("Created SignatureDSA using " + algorithmID.getAlgorithmID()
                 + " " + algorithmID.getProviderId());
 
       try {
@@ -111,7 +111,8 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
            throws XMLSignatureException {
 
       try {
-         log.debug("Called DSA.verify() on " + Base64.encode(signature));
+         if (log.isDebugEnabled())
+         	log.debug("Called DSA.verify() on " + Base64.encode(signature));
 
          byte[] jcebytes = SignatureDSA.convertXMLDSIGtoASN1(signature);
 
