@@ -258,6 +258,8 @@ public:
 
 private:
 
+
+
 	// Internal functions
 
 	void setup(DSIGSignature *sig);

@@ -76,6 +76,9 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoProvider.hpp>
 
+class XSECAlgorithmMapper;
+class XSECAlgorithmHandler;
+
 #include <stdio.h>
 
 /**
@@ -114,6 +117,32 @@ public :
 
 	static XSECCryptoProvider * g_cryptoProvider;
 
+	/**
+	 * \brief The global Algorithm Mapper
+	 *
+	 * The algorithm mapper is used to map algorithm type URI strings
+	 * to algorithm implementations.  Note that this is a level of
+	 * indirection above actual cryptographic algorithms.  For example:
+	 *
+	 * URI = http://www.w3.org/2001/04/xmlenc#tripledes-cbc
+	 *
+	 * is the URI for 3DES in CBC mode.  The mapper will return an
+	 * algorithm handler that understands what this means in terms of
+	 * IVs and how to call the XSECCryptoKey interface.  It then uses the
+	 * cryptographic provider to actually perform the encryption.
+	 *
+	 * This allows applications to provide new algorithm types.  The
+	 * mapper is used to map the type string to the means of doing the
+	 * encryption, and a new XSECCryptoKey derivative can be provided
+	 * to perform the actual crypo work.
+	 *
+	 * @note The provider should only be added to via the
+	 * XSECPlatformUtils::addAlgorithmHandler() call.
+	 *
+	 * @see #addAlgorithmHandler()
+	 */
+
+	static const XSECAlgorithmMapper * g_algorithmMapper;
 
 	/**
 	 * \brief Initialise the library
@@ -146,6 +175,27 @@ public :
 	 */
 
 	static void SetCryptoProvider(XSECCryptoProvider * p);
+
+	/**
+	 * \brief Add a new algorithm Handler
+	 *
+	 * Application developers can extend the XSECAlgorithmHandler class to
+	 * implement new cryptographic algorithms.  This will then allow the
+	 * library to call the provided handler whenever trying to process a
+	 * type it doesn't understand.
+	 *
+	 * Any handler previously registered for this URI will be overwritten,
+	 * allowing callers to overwrite the handlers for default URIs.
+	 *
+	 * @see XSECAlgorithmHandler
+	 * @note This is <b>not</b> thread safe.  Algorithm handlers should
+	 * be added prior to any processing of signatures etc.
+	 * @param uri Type URI that maps to this handler
+	 * @param handler The handler to be used whenever this URI is seen by
+	 * the library.
+	 */
+
+	static void registerAlgorithmHandler(const XMLCh * uri, const XSECAlgorithmHandler & handler);
 
 	/**
 	 * \brief Terminate

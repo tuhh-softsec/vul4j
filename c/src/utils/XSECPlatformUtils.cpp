@@ -73,6 +73,9 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/dsig/DSIGConstants.hpp>
+#include <xsec/framework/XSECAlgorithmMapper.hpp>
+
+#include "../xenc/impl/XENCCipherImpl.hpp"
 
 #if defined(_WIN32)
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
@@ -89,6 +92,11 @@
 // Static data used by all of XSEC
 int XSECPlatformUtils::initCount = 0;
 XSECCryptoProvider * XSECPlatformUtils::g_cryptoProvider = NULL;
+
+// Have a const copy for external usage
+const XSECAlgorithmMapper * XSECPlatformUtils::g_algorithmMapper = NULL;
+
+XSECAlgorithmMapper * internalMapper = NULL;
 
 // Determine default crypto provider
 
@@ -121,6 +129,13 @@ void XSECPlatformUtils::Initialise(XSECCryptoProvider * p) {
 	// Initialise the safeBuffer system
 	safeBuffer::init();
 
+	// Initialise Algorithm Mapper
+	XSECnew(internalMapper, XSECAlgorithmMapper);
+	g_algorithmMapper = internalMapper;
+
+	// Initialise the XENCCipherImpl class
+	XENCCipherImpl::Initialise();
+
 };
 
 void XSECPlatformUtils::SetCryptoProvider(XSECCryptoProvider * p) {
@@ -138,6 +153,9 @@ void XSECPlatformUtils::Terminate(void) {
 	if (--initCount > 0)
 		return;
 
+	// Clean out the algorithm mapper
+	delete internalMapper;
+
 	if (g_cryptoProvider != NULL)
 		delete g_cryptoProvider;
 
@@ -149,3 +167,12 @@ void XSECPlatformUtils::Terminate(void) {
 #endif
 
 }
+
+void XSECPlatformUtils::registerAlgorithmHandler(
+		const XMLCh * uri, 
+		const XSECAlgorithmHandler & handler) {
+
+	internalMapper->registerHandler(uri, handler);
+
+}
+
