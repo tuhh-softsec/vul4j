@@ -47,7 +47,7 @@
 #include <xercesc/util/XMLExceptMsgs.hpp>
 #include <xercesc/util/Janitor.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
-
+#include <iostream>
 XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
@@ -227,23 +227,36 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
     //  (Delimited by a blank line)
     // Hang on to any data for use by the first read from this BinHTTPURLInputStream.
     //
-    fBufferPos = strstr(fBuffer, "\r\n\r\n");
-    if (fBufferPos != 0)
-    {
-        fBufferPos += 4;
-        *(fBufferPos-2) = 0;
-    }
-    else
-    {
-        fBufferPos = strstr(fBuffer, "\n\n");
-        if (fBufferPos != 0)
-        {
-            fBufferPos += 2;
-            *(fBufferPos-1) = 0;
-        }
-        else
-            fBufferPos = fBufferEnd;
-    }
+	bool headerRead = false;
+	do {
+		fBufferPos = strstr(fBuffer, "\r\n\r\n");
+		if (fBufferPos != 0) {
+			fBufferPos += 4;
+			*(fBufferPos-2) = 0;
+			headerRead = true;
+		}
+		else {
+			fBufferPos = strstr(fBuffer, "\n\n");
+			if (fBufferPos != 0) {
+				fBufferPos += 2;
+				*(fBufferPos-1) = 0;
+				headerRead = true;
+			}
+			else {
+				//
+				// Header is not yet read, do another recv() to get more data...
+				aLent = read(s, 
+							 fBufferEnd, 
+							 (sizeof(fBuffer) - 1) - (fBufferEnd - fBuffer));
+				if (aLent <= 0) {
+					throw XSECException(XSECException::HTTPURIInputStreamError,
+										"Error reported reading socket");
+				}
+				fBufferEnd = fBufferEnd + aLent;
+				*fBufferEnd = 0;
+			}
+		}
+    } while(headerRead == false);
 
     // Make sure the header includes an HTTP 200 OK response.
     //
