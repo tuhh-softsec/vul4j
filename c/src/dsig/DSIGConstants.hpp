@@ -82,6 +82,8 @@ XSEC_USING_XERCES(XMLString);
 
 #define URI_ID_DSIG		"http://www.w3.org/2000/09/xmldsig#"
 #define URI_ID_EC		"http://www.w3.org/2001/10/xml-exc-c14n#"
+// Also used as algorithm ID for XPATH_FILTER
+#define URI_ID_XPF		"http://www.w3.org/2002/06/xmldsig-filter2"
 
 // Hashing Algorithms
 
@@ -159,9 +161,19 @@ enum transformType {
 	TRANSFORM_EXC_C14N,
 	TRANSFORM_ENVELOPED_SIGNATURE,
 	TRANSFORM_XPATH,
-	TRANSFORM_XSLT
+	TRANSFORM_XSLT,
+	TRANSFORM_XPATH_FILTER
 
 };
+
+enum xpathFilterType {
+
+	FILTER_UNION			= 0,	/** Results should be added to previous nodeset */
+	FILTER_INTERSECT		= 1,	/** Results should be included if in prev nodeset */
+	FILTER_SUBTRACT			= 2		/** Results should be subtracted from prev nodeset */
+
+};
+
 
 // --------------------------------------------------------------------------------
 //           Some utility functions
@@ -292,6 +304,8 @@ public:
 	// URI_IDs
 	static const XMLCh * const & s_unicodeStrURIDSIG;
 	static const XMLCh * const & s_unicodeStrURIEC;
+	static const XMLCh * const & s_unicodeStrURIXPF;
+
 	static const XMLCh * const & s_unicodeStrURISHA1;
 	static const XMLCh * const & s_unicodeStrURIMD5;		// Not recommended
 	static const XMLCh * const & s_unicodeStrURIBASE64;

@@ -276,6 +276,24 @@ public:
 	void setECNSPrefix(const XMLCh * prefix);
 
 	/**
+	  * \brief Set the prefix be used for the XPath-Filter2 namespace.
+	  *
+	  * The XPathFilter definition uses its own namespace.  This
+	  * method can be used to set the prefix that the library will use
+	  * when creating elements in this namespace
+	  *
+	  * <p>xmlns:ds="http://www.w3.org/2002/06/xmldsig-filter2"</p>
+	  *
+	  * If no prefix is set, the default namespace will be used
+	  *
+	  * @see #createBlankSignature
+	  * @param prefix The UTF-16 encoided NS prefix to use for the XPath
+	  * filter nodes
+	  */
+
+	void setXPFNSPrefix(const XMLCh * prefix);
+
+	/**
 	 * \brief Create a <Signature> DOM structure.
 	 *
 	 * <p>The DOM structure created is still divorced from the document.  The callee
@@ -407,6 +425,15 @@ public:
 	 */
 
 	const XMLCh * getECNSPrefix() {return mp_ecPrefixNS;}
+
+	/**
+	 * \brief Get the NS being used for XPath Filter2 nodes
+	 *
+	 * @returns A pointer to the buffer holding the prefix
+	 * @see #setXPFNSPrefix
+	 */
+
+	const XMLCh * getXPFNSPrefix() {return mp_xpfPrefixNS;}
 
 	/**
 	 * \brief
@@ -621,6 +648,7 @@ private:
 	// For creating functions
 	XMLCh 						* mp_prefixNS;
 	XMLCh						* mp_ecPrefixNS;
+	XMLCh						* mp_xpfPrefixNS;
 
 	// The signing/verifying key
 	XSECCryptoKey				* mp_signingKey;

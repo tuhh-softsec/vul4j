@@ -140,7 +140,9 @@ public:
 		TransformError				= 36,
 		SafeBufferError				= 37,
 		HTTPURIInputStreamError     = 38,
-		UnknownError				= 39		// Must be last!
+		LoadEmptyXPathFilter		= 39,
+		XPathFilterError			= 40,
+		UnknownError				= 41		// Must be last!
 
 	};
 

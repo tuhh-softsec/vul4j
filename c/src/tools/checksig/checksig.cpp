@@ -577,7 +577,7 @@ int evaluate(int argc, char ** argv) {
 		CryptReleaseContext(win32RSACSP, 0);
 	}
 #endif
-	prov.releaseSignature(sig);
+	//prov.releaseSignature(sig);
 	// Janitor will clean up the parser
 	return retResult;
 
@@ -634,7 +634,15 @@ int main(int argc, char **argv) {
 
 	_CrtMemCheckpoint( &s2 );
 
-	if ( _CrtMemDifference( &s3, &s1, &s2 ) ) {
+	if ( _CrtMemDifference( &s3, &s1, &s2 ) && (
+		s3.lCounts[0] > 0 ||
+		s3.lCounts[1] > 1 ||
+		s3.lCounts[2] > 1 ||
+		s3.lCounts[3] > 0 ||
+		s3.lCounts[4] > 0)) {
+
+		// Note that there is generally 1 Normal and 1 CRT block
+		// still taken.  1 is from Xalan and 1 from stdio
 
 		// Send all reports to STDOUT
 		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE );

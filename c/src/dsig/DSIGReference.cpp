@@ -89,6 +89,7 @@
 #include <xsec/dsig/DSIGTransformBase64.hpp>
 #include <xsec/dsig/DSIGTransformEnvelope.hpp>
 #include <xsec/dsig/DSIGTransformXPath.hpp>
+#include <xsec/dsig/DSIGTransformXPathFilter.hpp>
 #include <xsec/dsig/DSIGTransformXSL.hpp>
 #include <xsec/dsig/DSIGTransformC14n.hpp>
 
@@ -316,6 +317,22 @@ DSIGTransformXPath * DSIGReference::appendXPathTransform(char * expr) {
 
 	return txfm;
 }
+
+DSIGTransformXPathFilter * DSIGReference::appendXPathFilterTransform(void) {
+
+	DOMElement *txfmElt;
+	DSIGTransformXPathFilter * txfm;
+
+	XSECnew(txfm, DSIGTransformXPathFilter(mp_parentSignature));
+	txfmElt = txfm->createBlankTransform(mp_parentSignature->getParentDocument());
+
+	addTransform(txfm, txfmElt);
+	txfmElt->appendChild(mp_parentSignature->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	return txfm;
+}
+
+
 
 // --------------------------------------------------------------------------------
 //           Creation of blanks
@@ -1061,6 +1078,16 @@ DSIGTransformList * DSIGReference::loadTransforms(
 			XSECnew(x, DSIGTransformXPath(sig, transforms));
 			lst->addTransform(x);
 			x->load();
+		}
+
+		else if (algorithm.sbStrcmp(URI_ID_XPF) == 0) {
+
+			DSIGTransformXPathFilter * xpf;
+
+			XSECnew(xpf, DSIGTransformXPathFilter(sig, transforms));
+			lst->addTransform(xpf);
+			xpf->load();
+
 		}
 		
 		else if (algorithm.sbStrcmp(URI_ID_ENVELOPE) == 0) {

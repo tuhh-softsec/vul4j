@@ -299,6 +299,25 @@ void safeBuffer::sbStrinsIn(const char * inStr, unsigned int offset) {
 
 }
 
+void safeBuffer::sbStrinsIn(const XMLCh * inStr, unsigned int offset) {
+
+	checkBufferType(BUFFER_UNICODE);
+	
+	unsigned int bl = XMLString::stringLen((XMLCh *) buffer) * size_XMLCh;
+	unsigned int il = XMLString::stringLen((XMLCh *) inStr) * size_XMLCh;
+
+	unsigned int xoffset = offset * size_XMLCh;
+	if (xoffset > bl) {
+		throw XSECException(XSECException::SafeBufferError,
+			"Attempt to insert string after termination point");
+	}
+
+	checkAndExpand(bl + il);
+
+	memmove(&buffer[xoffset + il], &buffer[xoffset], bl - xoffset + size_XMLCh);
+	memcpy(&buffer[xoffset], inStr, il);
+
+}
 
 
 void safeBuffer::sbMemcpyOut(void *outBuf, int n) const {
@@ -384,7 +403,27 @@ int safeBuffer::sbStrstr(const char * inStr) const {
 
 	return d;
 
-}	
+}
+
+int safeBuffer::sbStrstr(const XMLCh * inStr) const {
+
+	XMLCh * p;
+	int d;
+
+	checkBufferType(BUFFER_UNICODE);
+	p = XMLString::findAny((XMLCh *) buffer, inStr);
+
+	if (p == NULL)
+		return -1;
+
+	d = ((unsigned int) ((p - (unsigned int) buffer)) / size_XMLCh);
+
+	if (d < 0 || (unsigned int) d > bufferSize)
+		return -1;
+
+	return d;
+
+}
 
 int safeBuffer::sbOffsetStrstr(const char * inStr, unsigned int offset) const {
 

@@ -116,6 +116,7 @@ private:
 
 const XMLCh DSIG_EXPORT * getDSIGLocalName(const DOMNode *node);
 const XMLCh DSIG_EXPORT * getECLocalName(const DOMNode *node);
+const XMLCh DSIG_EXPORT * getXPFLocalName(const DOMNode *node);
 
 // --------------------------------------------------------------------------------
 //           Find a nominated DSIG node in a document

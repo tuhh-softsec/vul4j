@@ -87,6 +87,7 @@
 
 #include <xsec/transformers/TXFMOutputFile.hpp>
 #include <xsec/dsig/DSIGTransformXPath.hpp>
+#include <xsec/dsig/DSIGTransformXPathFilter.hpp>
 #include <xsec/dsig/DSIGTransformC14n.hpp>
 
 // XALAN
@@ -139,7 +140,7 @@ XERCES_CPP_NAMESPACE_USE
 //           Known "Good" Values
 // --------------------------------------------------------------------------------
 
-unsigned char createdDocRefs [8][20] = {
+unsigned char createdDocRefs [9][20] = {
 	{ 0x51, 0x3c, 0xb5, 0xdf, 0xb9, 0x1e, 0x9d, 0xaf, 0xd4, 0x4a,
 	  0x95, 0x79, 0xf1, 0xd6, 0x54, 0xe, 0xb0, 0xb0, 0x29, 0xe3, },
 	{ 0x51, 0x3c, 0xb5, 0xdf, 0xb9, 0x1e, 0x9d, 0xaf, 0xd4, 0x4a, 
@@ -154,6 +155,8 @@ unsigned char createdDocRefs [8][20] = {
 	  0xdb, 0xb3, 0xee, 0x46, 0x66, 0x8f, 0xe1, 0xb6, 0x30, 0x9d, },
 	{ 0x52, 0x74, 0xc3, 0xe4, 0xc5, 0xf7, 0x20, 0xb0, 0xd9, 0x52, 
 	  0xdb, 0xb3, 0xee, 0x46, 0x66, 0x8f, 0xe1, 0xb6, 0x30, 0x9d, },
+	{ 0x3c, 0x80, 0x4, 0x94, 0xa5, 0xbe, 0xf6, 0x16, 0x40, 0xe0, 
+  	  0x24, 0xd5, 0x65, 0x39, 0xc, 0x18, 0x21, 0x3d, 0xa5, 0x51, },
   	{ 0x51, 0x3c, 0xb5, 0xdf, 0xb9, 0x1e, 0x9d, 0xaf, 0xd4, 0x4a, 
 	  0x95, 0x79, 0xf1, 0xd6, 0x54, 0xe, 0xb0, 0xb0, 0x29, 0xe3, }
 
@@ -641,7 +644,7 @@ int attributeNodeCount(DOMElement *d) {
 
 void outputHex(unsigned char * buf, int len) {
 
-	cout << std::ios::hex;
+	cout << std::hex;
 	for (int i = 0; i < len; ++i) {
 		cout << "0x" << (unsigned int) buf[i] << ", ";
 	}
@@ -752,23 +755,29 @@ int main(int argc, char **argv) {
 		ce = ref[6]->appendCanonicalizationTransform(CANON_C14NE_COM);
 		ce->addInclusiveNamespace("foo");
 
+		ref[7] = sig->createReference(MAKE_UNICODE_STRING(""));
+		sig->setXPFNSPrefix(MAKE_UNICODE_STRING("xpf"));
+		DSIGTransformXPathFilter * xpf = ref[7]->appendXPathFilterTransform();
+		xpf->appendFilter(FILTER_INTERSECT, MAKE_UNICODE_STRING("//ADoc/category"));
+
+
 #ifdef XSEC_NO_XALAN
 
 		cerr << "WARNING : No testing of XPath being performed as Xalan not present" << endl;
-		refCount = 7;
+		refCount = 8;
 
 #else
 
-		ref[7] = sig->createReference(MAKE_UNICODE_STRING(""));
+		ref[8] = sig->createReference(MAKE_UNICODE_STRING(""));
 		/*		ref[5]->appendXPathTransform("ancestor-or-self::dsig:Signature", 
 				"xmlns:dsig=http://www.w3.org/2000/09/xmldsig#"); */
 
-		DSIGTransformXPath * x = ref[7]->appendXPathTransform("count(ancestor-or-self::dsig:Signature | \
+		DSIGTransformXPath * x = ref[8]->appendXPathTransform("count(ancestor-or-self::dsig:Signature | \
 here()/ancestor::dsig:Signature[1]) > \
 count(ancestor-or-self::dsig:Signature)");
 		x->setNamespace("dsig", "http://www.w3.org/2000/09/xmldsig#");
 
-		refCount = 8;
+		refCount = 9;
 
 #endif
 	

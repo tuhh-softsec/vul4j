@@ -294,11 +294,27 @@ SOURCE=..\..\..\..\src\dsig\DSIGTransformXPath.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\dsig\DSIGTransformXPathFilter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\dsig\DSIGTransformXPathFilter.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\dsig\DSIGTransformXSL.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\dsig\DSIGTransformXSL.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\dsig\DSIGXPathFilterExpr.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\dsig\DSIGXPathFilterExpr.hpp
 # End Source File
 # Begin Source File
 
@@ -820,5 +836,13 @@ SOURCE=..\..\..\..\src\transformers\TXFMXSL.hpp
 SOURCE=..\..\..\..\src\framework\version.rc
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\transformers\TXFMXPathFilter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\transformers\TXFMXPathFilter.hpp
+# End Source File
 # End Target
 # End Project

@@ -148,6 +148,10 @@ public:
 	int sbStrstr(const char * inStr) const;
 	int sbOffsetStrstr(const char * inStr, unsigned int offset) const;
 
+	// XMLCh versions
+	int sbStrstr(const XMLCh * inStr) const;
+	void sbStrinsIn(const XMLCh * inStr, unsigned int offset);
+
 
 	// Operators
 

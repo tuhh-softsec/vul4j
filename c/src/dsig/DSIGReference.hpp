@@ -89,6 +89,7 @@ class DSIGTransformBase64;
 class DSIGTransformC14n;
 class DSIGTransformEnvelope;
 class DSIGTransformXPath;
+class DSIGTransformXPathFilter;
 class DSIGTransformXSL;
 class DSIGSignature;
 
@@ -230,6 +231,18 @@ public:
 
 	DSIGTransformXPath * appendXPathTransform(char * expr);
 	
+	/**
+	 * \brief Append an XPath-Filter2 Transform to the Reference.
+	 *
+	 * The returned DSIGTransformXPathFilter will have no actual filter
+	 * expressions loaded, but calls can be made to
+	 * DSIGTransformXPathFilter::appendTransform to add them.
+	 *
+	 * @returns The newly created XPath Filter transform
+	 */
+
+	DSIGTransformXPathFilter * appendXPathFilterTransform(void);
+
 	/**
 	 * \brief Append an XSLT Transform to the Reference.
 	 *

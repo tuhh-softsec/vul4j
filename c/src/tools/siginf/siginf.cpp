@@ -84,6 +84,8 @@
 #include <xsec/dsig/DSIGTransformBase64.hpp>
 #include <xsec/dsig/DSIGTransformXSL.hpp>
 #include <xsec/dsig/DSIGTransformXPath.hpp>
+#include <xsec/dsig/DSIGTransformXPathFilter.hpp>
+#include <xsec/dsig/DSIGXPathFilterExpr.hpp>
 #include <xsec/dsig/DSIGTransformEnvelope.hpp>
 
 #include <xsec/dsig/DSIGTransformList.hpp>
@@ -261,6 +263,45 @@ void outputTransform(DSIGTransform * t, int level) {
 			// Hmm - this is really a bug.  This should return a XMLCh string
 			cout << "Expr : " << xp->getExpression() << endl;
 			return;
+		}
+
+	case (TRANSFORM_XPATH_FILTER) :
+		{
+			DSIGTransformXPathFilter * xpf = (DSIGTransformXPathFilter *) t;
+
+			cout << "XPath-Filter2" << endl;
+
+			unsigned int s = xpf->getExprNum();
+			
+			for (unsigned int i = 0; i < s; ++i) {
+
+				levelSet(level);
+				cout << "Filter : ";
+
+				DSIGXPathFilterExpr * e = xpf->expr(i);
+
+				switch (e->getFilterType()) {
+
+				case FILTER_UNION :
+					cout << "union : \"";
+					break;
+				case FILTER_INTERSECT :
+					cout << "intersect : \"";
+					break;
+				default :
+					cout << "subtract : \"";
+
+				}
+
+				// Now the expression
+				char * str = XMLString::transcode(e->getFilter());
+				cout << str << "\"" << endl;
+				delete[] str;
+
+			}
+
+			break;
+
 		}
 
 	case (TRANSFORM_XSLT) :
@@ -609,7 +650,9 @@ int main(int argc, char **argv) {
 
 	_CrtMemCheckpoint( &s2 );
 
-	if ( _CrtMemDifference( &s3, &s1, &s2 ) ) {
+	if ( _CrtMemDifference( &s3, &s1, &s2 ) && s3.lCounts[1] > 1) {
+
+		std::cerr << "Total count = " << s3.lTotalCount << endl;
 
 		// Send all reports to STDOUT
 		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE );

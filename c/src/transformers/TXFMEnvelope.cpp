@@ -213,6 +213,17 @@ void TXFMEnvelope::evaluateEnvelope(DOMNode *t) {
 
 	}
 
+	// Check if sigNode is an ancestor of mp_startNode - if so, just return
+	DOMNode * c = mp_startNode;
+	while (c != NULL) {
+
+		if (c == sigNode)
+			return;
+
+		c = c->getParentNode();
+
+	}
+
 	addEnvelopeNode(mp_startNode, m_XPathMap, sigNode);
 
 }

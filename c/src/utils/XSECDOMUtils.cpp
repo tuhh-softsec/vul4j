@@ -102,6 +102,17 @@ const XMLCh * getECLocalName(const DOMNode * node) {
 
 }
 
+const XMLCh * getXPFLocalName(const DOMNode * node) {
+
+	// XPath Filter namespace
+
+	if (!strEquals(node->getNamespaceURI(), DSIGConstants::s_unicodeStrURIXPF))
+		return NULL;
+	else
+		return node->getLocalName();
+
+}
+
 // --------------------------------------------------------------------------------
 //           Find a nominated DSIG node in a document
 // --------------------------------------------------------------------------------
