@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestEachElement.java,v 1.1 2003/06/30 11:00:13 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestEachElement.java,v 1.2 2003/07/19 22:12:25 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,6 +60,7 @@ package org.apache.commons.functor.generator.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +91,7 @@ public class TestEachElement extends BaseFunctorTest {
     }
 
     protected Object makeFunctor() throws Exception {
-        return new EachElement(new ArrayList());
+        return EachElement.from(new ArrayList());
     }
 
     // Lifecycle
@@ -127,6 +128,14 @@ public class TestEachElement extends BaseFunctorTest {
 
     // Tests
     // ------------------------------------------------------------------------
+
+    public void testFromNull() {
+        assertNull(EachElement.from((Collection)null));
+        assertNull(EachElement.from((Map)null));
+        assertNull(EachElement.from((Iterator)null));
+        assertNull(EachElement.from((Object[])null));
+    }
+
 
     public void testWithList() {
         Collection col = EachElement.from(list).toCollection();
@@ -170,8 +179,4 @@ public class TestEachElement extends BaseFunctorTest {
         assertEquals("[0, 1, 2, 3, 4]", col.toString());
     }
 
-    public void testWithGenerator() {
-        Collection col = EachElement.from(EachElement.from(list)).toCollection();
-        assertEquals("[0, 1, 2, 3, 4]", col.toString());
-    }
 }

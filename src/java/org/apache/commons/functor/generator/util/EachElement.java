@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/EachElement.java,v 1.2 2003/07/17 22:44:46 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/EachElement.java,v 1.3 2003/07/19 22:12:25 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,8 +62,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.generator.BaseGenerator;
 import org.apache.commons.functor.generator.Generator;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
@@ -71,94 +69,40 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * Generator for each element of a collection.
  *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/07/17 22:44:46 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/19 22:12:25 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
-public class EachElement extends BaseGenerator {
-
-    /***************************************************
-     *  Instance variables
-     ***************************************************/
-
-    private Generator generator = null;
-
-    /***************************************************
-     *  Constructors
-     ***************************************************/
-
-    /**
-     * Generator for collections.
-     */
-    public EachElement(Collection collection) {
-        generator = new IteratorToGeneratorAdapter(collection.iterator());
+public final class EachElement {
+    public static final Generator from(Collection collection) {
+        if(null == collection) {
+            return null;
+        } else {
+            return EachElement.from(collection.iterator());
+        }
     }
 
-    /**
-     * Generator for maps. Generates {@link java.util.Map.Entry} objects.
-     */
-    public EachElement(Map map) {
-        generator = new IteratorToGeneratorAdapter(map.entrySet().iterator());
+    public static final Generator from(Map map) {
+        if(null == map) {
+            return null;
+        } else {
+            return EachElement.from(map.entrySet().iterator());
+        }
     }
 
-    /**
-     * Generator for arrays.
-     */
-    public EachElement(Object[] array) {
-        generator = new IteratorToGeneratorAdapter(Arrays.asList(array).iterator());
+    public static final Generator from(Object[] array) {
+        if(null == array) {
+            return null;
+        } else {
+            return EachElement.from(Arrays.asList(array).iterator());
+        }
     }
 
-    /**
-     * EachElement over a generator.
-     */
-    public EachElement(Generator generator) {
-        this.generator = generator;
-    }
-
-    /**
-     * EachElement over a iterator.
-     */
-    public EachElement(Iterator iter) {
-        this.generator = new IteratorToGeneratorAdapter(iter);
-    }
-
-    /***************************************************
-     *  Instance methods
-     ***************************************************/
-
-    public void run(UnaryProcedure proc) {
-        generator.run(proc);
-    }
-
-    public void stop() {
-        generator.stop();
-    }
-
-    public String toString() {
-        return "EachElement<" + generator + ">";
-    }
-
-    /***************************************************
-     *  Class methods
-     ***************************************************/
-
-    public static final EachElement from(Collection col) {
-        return new EachElement(col);
-    }
-
-    public static final EachElement from(Map map) {
-        return new EachElement(map);
-    }
-
-    public static final EachElement from(Object[] array) {
-        return new EachElement(array);
-    }
-
-    public static final EachElement from(Iterator iter) {
-        return new EachElement(iter);
-    }
-
-    public static final EachElement from(Generator gen) {
-        return new EachElement(gen);
+    public static final Generator from(Iterator iter) {
+        if(null == iter) {
+            return null;
+        } else {
+            return new IteratorToGeneratorAdapter(iter);
+        }
     }
 }

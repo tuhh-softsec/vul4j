@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.3 2003/07/17 22:44:46 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.4 2003/07/19 22:12:25 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -203,7 +203,7 @@ public class TestGenerator extends TestCase {
     // ------------------------------------------------------------------------
 
     public void testApply() {
-        Collection result = new EachElement(list).apply(IdentityFunction.getIdentityFunction()).toCollection();
+        Collection result = EachElement.from(list).apply(IdentityFunction.getIdentityFunction()).toCollection();
         assertNotNull(result);
         assertEquals(list.size(),result.size());
         assertEquals(list,result);
@@ -211,7 +211,7 @@ public class TestGenerator extends TestCase {
 
     public void testApply2() {
         Set set = new HashSet();
-        assertSame(set,new EachElement(list).apply(IdentityFunction.getIdentityFunction()).to(set));
+        assertSame(set,EachElement.from(list).apply(IdentityFunction.getIdentityFunction()).to(set));
         assertEquals(list.size(),set.size());
         for(Iterator iter = list.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -220,7 +220,7 @@ public class TestGenerator extends TestCase {
 
     public void testApply3() {
         Set set = new HashSet();
-        assertSame(set,new EachElement(listWithDuplicates).apply(IdentityFunction.getIdentityFunction()).to(set));
+        assertSame(set,EachElement.from(listWithDuplicates).apply(IdentityFunction.getIdentityFunction()).to(set));
         assertTrue(listWithDuplicates.size() > set.size());
         for(Iterator iter = listWithDuplicates.iterator(); iter.hasNext(); ) {
             assertTrue(set.contains(iter.next()));
@@ -228,14 +228,14 @@ public class TestGenerator extends TestCase {
     }
 
     public void testContains() {
-        assertTrue(new EachElement(list).contains(equalsThree));
-        assertTrue(!new EachElement(list).contains(equalsTwentyThree));
+        assertTrue(EachElement.from(list).contains(equalsThree));
+        assertTrue(!EachElement.from(list).contains(equalsTwentyThree));
     }
 
     public void testDetect() {
-        assertEquals(new Integer(3),new EachElement(list).detect(equalsThree));
+        assertEquals(new Integer(3),EachElement.from(list).detect(equalsThree));
         try {
-            new EachElement(list).detect(equalsTwentyThree);
+            EachElement.from(list).detect(equalsTwentyThree);
             fail("Expected NoSuchElementException");
         } catch(NoSuchElementException e) {
             // expected
@@ -243,42 +243,42 @@ public class TestGenerator extends TestCase {
     }
 
     public void testDetectIfNone() {
-        assertEquals(new Integer(3),new EachElement(list).detect(equalsThree,"Xyzzy"));
-        assertEquals("Xyzzy",new EachElement(list).detect(equalsTwentyThree,"Xyzzy"));
+        assertEquals(new Integer(3),EachElement.from(list).detect(equalsThree,"Xyzzy"));
+        assertEquals("Xyzzy",EachElement.from(list).detect(equalsTwentyThree,"Xyzzy"));
     }
 
     public void testForEach() {
         Summer summer = new Summer();
-        new EachElement(list).foreach(summer);
+        EachElement.from(list).foreach(summer);
         assertEquals(sum,summer.sum);
     }
 
     public void testSelect1() {
-        Collection result = new EachElement(list).select(isEven).toCollection();
+        Collection result = EachElement.from(list).select(isEven).toCollection();
         assertNotNull(result);
         assertEquals(evens,result);
     }
 
     public void testSelect2() {
         ArrayList result = new ArrayList();
-        assertSame(result,new EachElement(list).select(isEven).to(result));
+        assertSame(result,EachElement.from(list).select(isEven).to(result));
         assertEquals(evens,result);
     }
 
     public void testReject1() {
-        Collection result = new EachElement(list).reject(isOdd).toCollection();
+        Collection result = EachElement.from(list).reject(isOdd).toCollection();
         assertNotNull(result);
         assertEquals(evens,result);
     }
 
     public void testReject2() {
         ArrayList result = new ArrayList();
-        assertSame(result,new EachElement(list).reject(isOdd).to(result));
+        assertSame(result,EachElement.from(list).reject(isOdd).to(result));
         assertEquals(evens,result);
     }
 
     public void testInject() {
-        Object result = new EachElement(list).inject(
+        Object result = EachElement.from(list).inject(
             new Integer(0),
             new BinaryFunction() {
                 public Object evaluate(Object a, Object b) {
