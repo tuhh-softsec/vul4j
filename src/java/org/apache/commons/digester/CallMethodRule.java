@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.29 2004/02/16 02:26:38 skitching Exp $
- * $Revision: 1.29 $
- * $Date: 2004/02/16 02:26:38 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.30 2004/02/28 00:01:31 skitching Exp $
+ * $Revision: 1.30 $
+ * $Date: 2004/02/28 00:01:31 $
  *
  * ====================================================================
  * 
@@ -72,13 +72,13 @@ import org.xml.sax.Attributes;
  * <p>Rule implementation that calls a method on the top (parent)
  * object, passing arguments collected from subsequent
  * <code>CallParamRule</code> rules or from the body of this
- * element. 
- * By using {@link #CallMethodRule(String methodName)} 
+ * element. </p>
+ *
+ * <p>By using {@link #CallMethodRule(String methodName)} 
  * a method call can be made to a method which accepts no
  * arguments.</p>
  *
- * <p>
- * Incompatible method parameter types are converted 
+ * <p>Incompatible method parameter types are converted 
  * using <code>org.apache.commons.beanutils.ConvertUtils</code>.
  * </p>
  *
@@ -91,9 +91,16 @@ import org.xml.sax.Attributes;
  * Setting the <code>UseExactMatch</code> to true reverts to the use of this 
  * method.</p>
  *
+ * <p>Note that the target method is invoked when the  <i>end</i> of
+ * the tag the CallMethodRule fired on is encountered, <i>not</i> when the
+ * last parameter becomes available. This implies that rules which fire on
+ * tags nested within the one associated with the CallMethodRule will 
+ * fire before the CallMethodRule invokes the target method. This behaviour is
+ * not configurable. </p>
+ *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.29 $ $Date: 2004/02/16 02:26:38 $
+ * @version $Revision: 1.30 $ $Date: 2004/02/28 00:01:31 $
  */
 
 public class CallMethodRule extends Rule {
