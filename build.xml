@@ -1,7 +1,7 @@
 <project name="Functor" default="test" basedir=".">
 <!--
   Commons-Functor Ant Build File
-  $Id: build.xml,v 1.6 2003/02/08 23:24:58 rwaldhoff Exp $
+  $Id: build.xml,v 1.7 2003/02/10 20:02:25 rwaldhoff Exp $
 -->
 
 <!-- ========== Initialize Properties ===================================== -->
@@ -99,6 +99,7 @@
 
 
   <target name="init" description="Initialize and evaluate conditionals">
+    <tstamp/>
     <echo message="-------- ${component.name} ${component.version} --------"/>
     <filter token="name"                  value="${component.package}"/>
     <filter token="version"               value="${component.version}"/>
@@ -114,7 +115,6 @@
 
 
   <target name="static" depends="prepare" description="Copy static files to build directory">
-    <tstamp/>
     <copy todir="${build.home}/conf" filtering="on">
       <fileset dir="${conf.home}" includes="*.MF"/>
     </copy>
@@ -158,13 +158,11 @@
   </target>
 
 
-  <target name="javadoc" depends="compile" description="Create component Javadoc documentation">
+  <target name="javadoc" depends="prepare" description="Create component Javadoc documentation">
     <mkdir dir="${dist.home}"/>
     <mkdir dir="${dist.home}/docs"/>
     <mkdir dir="${dist.home}/docs/api"/>
-    <echo message="[debug] value of $${source.home} is ${source.home}"/>
-    <javadoc sourcepath="${source.home}"
-             destdir="${dist.home}/docs/api"
+    <javadoc destdir="${dist.home}/docs/api"
              packagenames="org.apache.commons.*"
              author="false"
              private="true"
@@ -172,25 +170,19 @@
              doctitle="&lt;h1&gt;${component.title} (Version ${component.version})&lt;/h1&gt;"
              windowtitle="${component.title} (Version ${component.version})"
              bottom="Copyright (c) 2003 - Apache Software Foundation">
-<!--
-             overview="src/java/overview.html"
--->
       <classpath refid="compile.classpath"/>
+      <fileset dir="${source.home}"/>
     </javadoc>
   </target>
 
 
-  <target name="dist" depends="clean,test,javadoc" description="Create binary distribution">
+  <target name="dist" depends="test,javadoc" description="Create binary distribution">
     <mkdir dir="${dist.home}"/>
     <copy file="LICENSE.txt" 
           todir="${dist.home}"/>
     <mkdir dir="${build.home}/classes/META-INF"/>
     <copy file="LICENSE.txt" 
           tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
-<!--
-    <copy file="RELEASE-NOTES.txt"
-          todir="${dist.home}"/>
--->              
     <jar jarfile="${dist.home}/commons-${component.name}.jar"
          basedir="${build.home}/classes"/>
   </target>
@@ -205,5 +197,9 @@
       <classpath refid="test.classpath"/>
     </java>
   </target>
+
+<!-- ========== Gump Targets ============================================== -->
+
+  <target name="gump" depends="clean,test,dist"/>
 
 </project>
