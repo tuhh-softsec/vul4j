@@ -90,16 +90,16 @@
  * decrypt the data.
  *
  * It is defined as :
- *
- * <complexType name='EncryptionMethodType' mixed='true'>
- *   <sequence>
- *     <element name='KeySize' minOccurs='0' type='xenc:KeySizeType'/>
- *     <element name='OAEPparams' minOccurs='0' type='base64Binary'/>
- *     <any namespace='##other' minOccurs='0' maxOccurs='unbounded'/>
- *   </sequence>
- *   <attribute name='Algorithm' type='anyURI' use='required'/>
- * </complexType>
- *
+ * \verbatim
+  <complexType name='EncryptionMethodType' mixed='true'>
+    <sequence>
+      <element name='KeySize' minOccurs='0' type='xenc:KeySizeType'/>
+      <element name='OAEPparams' minOccurs='0' type='base64Binary'/>
+      <any namespace='##other' minOccurs='0' maxOccurs='unbounded'/>
+    </sequence>
+    <attribute name='Algorithm' type='anyURI' use='required'/>
+  </complexType>
+  \endverbatim
  */
 
 
@@ -160,7 +160,7 @@ public:
 	/**
 	 * \brief Get the DOM Element Node of this structure
 	 *
-	 * @returns the DOM Element Node representing the <EncryptionMethod> element
+	 * @returns the DOM Element Node representing the \<EncryptionMethod\> element
 	 */
 
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) = 0;
