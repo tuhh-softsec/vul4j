@@ -79,6 +79,12 @@
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 
+#if defined(_WIN32)
+#	include <xsec/utils/winutils/XSECURIResolverGenericWin32.hpp>
+#else
+#	include <xsec/utils/unixutils/XSECURIResolverGenericUnix.hpp>
+#endif
+
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
@@ -104,12 +110,24 @@
 #include <iostream>
 #include <stdlib.h>
 
+#if defined(HAVE_UNISTD_H)
+# include <unistd.h>
+# define _MAX_PATH PATH_MAX
+#else
+# if defined(HAVE_DIRECT_H)
+#  include <direct.h>
+# endif
+#endif
+
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/util/XMLException.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
+#include <xercesc/util/XMLNetAccessor.hpp>
+#include <xercesc/util/XMLUri.hpp>
 
 #ifndef XSEC_NO_XALAN
 
@@ -1137,6 +1155,54 @@ int main(int argc, char **argv) {
 	XSECProvider prov;
 	DSIGSignature * sig = prov.newSignatureFromDOM(theDOM, sigNode);
 
+	// Use the internal URI resolver
+#if defined(_WIN32)
+	XSECURIResolverGenericWin32 
+#else
+	XSECURIResolverGenericUnix 
+#endif
+			theResolver;
+
+     
+	// Map out base path of the file
+	char * filename=argv[argc-1];
+	char path[_MAX_PATH];
+	char baseURI[(_MAX_PATH * 2) + 10];
+	getcwd(path, _MAX_PATH);
+
+	strcpy(baseURI, "file:///");		
+
+	// Ugly and nasty but quick
+	if (filename[0] != '\\' && filename[0] != '/' && filename[1] != ':') {
+		strcat(baseURI, path);
+		strcat(baseURI, "/");
+	} else if (path[1] == ':') {
+		path[2] = '\0';
+		strcat(baseURI, path);
+	}
+
+	strcat(baseURI, filename);
+
+	// Find any ':' and "\" characters
+	int lastSlash = 0;
+	for (unsigned int i = 8; i < strlen(baseURI); ++i) {
+		if (baseURI[i] == '\\') {
+			lastSlash = i;
+			baseURI[i] = '/';
+		}
+		else if (baseURI[i] == '/')
+			lastSlash = i;
+	}
+
+	// The last "\\" must prefix the filename
+	baseURI[lastSlash + 1] = '\0';
+
+	XMLUri * uri = new XMLUri (MAKE_UNICODE_STRING(baseURI));
+
+	theResolver.setBaseURI(uri->getUriText());
+	delete uri;
+	sig->setURIResolver(&theResolver);
+
 	try {
 		sig->load();
 		if (clearKeyInfo == true)
@@ -1225,11 +1291,17 @@ int main(int argc, char **argv) {
 
 	catch (XSECException &e) {
 		char * m = XMLString::transcode(e.getMsg());
-		cerr << "An error occured during signature verification\n   Message: "
+		cerr << "An error occured during signing operation\n   Message: "
 		<< m << endl;
 		delete m;
 		errorsOccured = true;
 		exit (1);
+	}
+
+	catch (NetAccessorException) {
+		cerr << "A network error occurred during signing operation\n" << endl;
+		errorsOccured = true;
+		exit(1);
 	}
 
 	// Print out the result
