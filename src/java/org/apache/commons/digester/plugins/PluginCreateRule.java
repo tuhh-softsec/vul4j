@@ -1,4 +1,4 @@
-/* $Id: PluginCreateRule.java,v 1.19 2004/05/10 06:44:13 skitching Exp $
+/* $Id: PluginCreateRule.java,v 1.20 2004/06/11 03:47:25 skitching Exp $
  *
  * Copyright 2003-2004 The Apache Software Foundation.
  * 
@@ -319,27 +319,11 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             throw initException;
         }
         
-        String path = digester.getMatch();
-
-        // create a new Rules object and effectively push it onto a stack of
-        // rules objects. The stack is actually a linked list; using the
-        // PluginRules constructor below causes the new instance to link
-        // to the previous head-of-stack, then the Digester.setRules() makes
-        // the new instance the new head-of-stack.
-        PluginRules oldRules = (PluginRules) digester.getRules();
-        PluginRules newRules = new PluginRules(path, oldRules);
-        digester.setRules(newRules);
-        
         // load any custom rules associated with the plugin
-        PluginManager pluginManager = newRules.getPluginManager();
+        PluginRules oldRules = (PluginRules) digester.getRules();
+        PluginManager pluginManager = oldRules.getPluginManager();
         Declaration currDeclaration = null;
             
-        if (debug) {
-            log.debug("PluginCreateRule.begin: installing new plugin: " +
-                "oldrules=" + oldRules.toString() +
-                ", newrules=" + newRules.toString());
-        }
-              
         String pluginClassName; 
         if (pluginClassAttrNs == null) {
             // Yep, this is ugly.
@@ -398,12 +382,29 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                 pattern);
         }
             
-        // now load up the custom rules
-        currDeclaration.configure(digester, pattern);
-
-        // and now create an instance of the plugin class
+        // get the class of the user plugged-in type
         Class pluginClass = currDeclaration.getPluginClass();
         
+        String path = digester.getMatch();
+
+        // create a new Rules object and effectively push it onto a stack of
+        // rules objects. The stack is actually a linked list; using the
+        // PluginRules constructor below causes the new instance to link
+        // to the previous head-of-stack, then the Digester.setRules() makes
+        // the new instance the new head-of-stack.
+        PluginRules newRules = new PluginRules(path, oldRules, pluginClass);
+        digester.setRules(newRules);
+        
+        if (debug) {
+            log.debug("PluginCreateRule.begin: installing new plugin: " +
+                "oldrules=" + oldRules.toString() +
+                ", newrules=" + newRules.toString());
+        }
+              
+        // load up the custom rules
+        currDeclaration.configure(digester, pattern);
+
+        // create an instance of the plugin class
         Object instance = pluginClass.newInstance();
         getDigester().push(instance);
         if (debug) {
