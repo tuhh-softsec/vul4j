@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.2 2003/12/01 07:19:56 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.3 2003/12/01 07:26:50 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -71,9 +71,8 @@ import java.util.List;
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
-
 public class BinarySearch extends RecursiveFunction {
-
+// TODO: should have explict null strategy
     /***************************************************
      *  Instance variables
      ***************************************************/
@@ -129,7 +128,7 @@ public class BinarySearch extends RecursiveFunction {
      *  Class methods
      ***************************************************/
 
-    public static Integer execute(List list, Comparable item) {
-        return (Integer)(new BinarySearch(list, item)).recurse();
+    public static int execute(List list, Comparable item) {
+        return ((Number)(new BinarySearch(list, item)).recurse()).intValue();
     }
 }
