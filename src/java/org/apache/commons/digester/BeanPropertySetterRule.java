@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.10 2003/01/18 18:47:08 craigmcc Exp $
- * $Revision: 1.10 $
- * $Date: 2003/01/18 18:47:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.11 2003/02/05 01:47:42 craigmcc Exp $
+ * $Revision: 1.11 $
+ * $Date: 2003/02/05 01:47:42 $
  *
  * ====================================================================
  *
@@ -63,9 +63,12 @@
 package org.apache.commons.digester;
 
 
+import java.beans.PropertyDescriptor;
 import java.util.HashMap;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
 
 
@@ -82,7 +85,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.10 $ $Date: 2003/01/18 18:47:08 $
+ * @version $Revision: 1.11 $ $Date: 2003/02/05 01:47:42 $
  */
 
 public class BeanPropertySetterRule extends Rule {
@@ -196,6 +199,9 @@ public class BeanPropertySetterRule extends Rule {
      *   no namespace
      * @param name the local name if the parser is namespace aware, or just 
      *   the element name otherwise
+     *
+     * @exception NoSuchMethodException if the bean does not
+     *  have a writeable property of the specified name
      */
     public void end(String namespace, String name) throws Exception {
 
@@ -219,7 +225,21 @@ public class BeanPropertySetterRule extends Rule {
 
         // Force an exception if the property does not exist
         // (BeanUtils.setProperty() silently returns in this case)
-        PropertyUtils.getProperty(top, property);
+        if (top instanceof DynaBean) {
+            DynaProperty desc =
+                ((DynaBean) top).getDynaClass().getDynaProperty(property);
+            if (desc == null) {
+                throw new NoSuchMethodException
+                    ("Bean has no property named " + property);
+            }
+        } else /* this is a standard JavaBean */ {
+            PropertyDescriptor desc =
+                PropertyUtils.getPropertyDescriptor(top, property);
+            if (desc == null) {
+                throw new NoSuchMethodException
+                    ("Bean has no property named " + property);
+            }
+        }
 
         // Set the property (with conversion as necessary)
         BeanUtils.setProperty(top, property, bodyText);

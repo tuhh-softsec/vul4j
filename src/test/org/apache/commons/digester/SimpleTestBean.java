@@ -70,6 +70,8 @@ public class SimpleTestBean {
 
     private String gamma;
 
+    private String delta;
+
     public String getAlpha() {
         return alpha;
     }
@@ -94,6 +96,14 @@ public class SimpleTestBean {
         this.gamma = gamma;
     }
 
+    public String getDeltaValue() {      // Retrieves "write only" value
+        return delta;
+    }
+
+    public void setDelta(String delta) { // "delta" is a write-only property
+        this.delta = delta;
+    }
+
     public String toString() {
         StringBuffer sb = new StringBuffer("[SimpleTestBean]");
         sb.append(" alpha=");
@@ -102,6 +112,8 @@ public class SimpleTestBean {
         sb.append(beta);
         sb.append(" gamma=");
         sb.append(gamma);
+        sb.append(" delta=");
+        sb.append(delta);
 
         return sb.toString();
     }

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.9 2003/01/18 18:47:08 craigmcc Exp $
- * $Revision: 1.9 $
- * $Date: 2003/01/18 18:47:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.10 2003/02/05 01:47:42 craigmcc Exp $
+ * $Revision: 1.10 $
+ * $Date: 2003/02/05 01:47:42 $
  *
  * ====================================================================
  *
@@ -63,10 +63,13 @@
 package org.apache.commons.digester;
 
 
+import java.beans.PropertyDescriptor;
 import java.util.HashMap;
 
 import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
 
 
@@ -75,7 +78,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * top of the stack, based on attributes with specified names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.9 $ $Date: 2003/01/18 18:47:08 $
+ * @version $Revision: 1.10 $ $Date: 2003/02/05 01:47:42 $
  */
 
 public class SetPropertyRule extends Rule {
@@ -142,6 +145,9 @@ public class SetPropertyRule extends Rule {
      *
      * @param context The associated context
      * @param attributes The attribute list of this element
+     *
+     * @exception NoSuchMethodException if the bean does not
+     *  have a writeable property of the specified name
      */
     public void begin(Attributes attributes) throws Exception {
 
@@ -172,8 +178,22 @@ public class SetPropertyRule extends Rule {
         }
 
         // Force an exception if the property does not exist
-        // (BeanUtils.setProperty() sildently returns in this case)
-        PropertyUtils.getProperty(top, actualName);
+        // (BeanUtils.setProperty() silently returns in this case)
+        if (top instanceof DynaBean) {
+            DynaProperty desc =
+                ((DynaBean) top).getDynaClass().getDynaProperty(actualName);
+            if (desc == null) {
+                throw new NoSuchMethodException
+                    ("Bean has no property named " + actualName);
+            }
+        } else /* this is a standard JavaBean */ {
+            PropertyDescriptor desc =
+                PropertyUtils.getPropertyDescriptor(top, actualName);
+            if (desc == null) {
+                throw new NoSuchMethodException
+                    ("Bean has no property named " + actualName);
+            }
+        }
 
         // Set the property (with conversion as necessary)
         BeanUtils.setProperty(top, actualName, actualValue);

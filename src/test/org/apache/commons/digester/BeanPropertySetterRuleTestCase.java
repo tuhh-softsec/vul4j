@@ -88,8 +88,13 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
      * Simple test xml document used in the tests.
      */
     protected final static String TEST_XML =
-        "<?xml version='1.0'?><root>ROOT BODY<alpha>ALPHA BODY</alpha>" +
-        "<beta>BETA BODY</beta><gamma>GAMMA BODY</gamma></root>";
+        "<?xml version='1.0'?>" +
+        "<root>ROOT BODY" +
+        "<alpha>ALPHA BODY</alpha>" +
+        "<beta>BETA BODY</beta>" +
+        "<gamma>GAMMA BODY</gamma>" +
+        "<delta>DELTA BODY</delta>" +
+        "</root>";
 
 
     /**
@@ -308,6 +313,9 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
 
         // we'll leave property gamma alone
 
+        // we'll set property delta (a write-only property) also
+        digester.addRule("root/delta", new BeanPropertySetterRule("delta"));
+
         SimpleTestBean bean = (SimpleTestBean) digester.parse(xmlTestReader());
 
         // check properties are set correctly
@@ -325,7 +333,13 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
                 "Property gamma not set correctly",
                 bean.getGamma() == null);
 
+        assertEquals("Property delta not set correctly",
+                     "DELTA BODY",
+                     bean.getDeltaValue());
+                    
+
     }
+
 
     /**
      * Test that trying to set an unknown property throws an exception.

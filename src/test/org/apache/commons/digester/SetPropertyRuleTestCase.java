@@ -89,6 +89,7 @@ public class SetPropertyRuleTestCase extends TestCase {
         "<?xml version='1.0'?><root>" +
         "<set name='alpha' value='ALPHA VALUE'/>" +
         "<set name='beta' value='BETA VALUE'/>" +
+        "<set name='delta' value='DELTA VALUE'/>" +
         "</root>";
 
     /**
@@ -181,6 +182,9 @@ public class SetPropertyRuleTestCase extends TestCase {
                      bean.getBeta());
         assertNull("gamma property not set",
                    bean.getGamma());
+        assertEquals("delta property set",
+                     "DELTA VALUE",
+                     bean.getDeltaValue());
 
     }
 
