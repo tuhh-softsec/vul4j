@@ -131,14 +131,14 @@ public class ThreeSignerContractVerify {
             String keyValue = keyName.getFirstChild().getNodeValue();
 
             System.out
-               .println("The XML signature number " + (i + 1) + " in file "
-                        + BaseURI + " is "
+               .println("The signature number " + (i + 1) + " is "
                         + (signature
                            .checkSignatureValue(signature
                               .createSecretKey(keyValue.getBytes()))
                            ? "valid (good)"
                            : "invalid !!!!! (bad)"));
 
+            /*
             SignedInfo s = signature.getSignedInfo();
 
             for (int j = 0; j < s.getSignedContentLength(); j++) {
@@ -147,6 +147,7 @@ public class ThreeSignerContractVerify {
                System.out.println(new String(s.getSignedContentItem(j)));
                System.out.println();
             }
+            */
          }
       } catch (Exception ex) {
          ex.printStackTrace();

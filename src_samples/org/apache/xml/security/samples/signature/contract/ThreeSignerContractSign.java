@@ -184,124 +184,200 @@ public class ThreeSignerContractSign {
       //////////////////////////////////////////////////////////////////
       // first signer //////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////////
-      XMLSignature firstSigner =
-         new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
-
-      firstSigner.setId(id1);
-      contract.appendChild(firstSigner.getElement());
-
-      String rootnamespace = contract.getNamespaceURI();
-      boolean rootprefixed = (rootnamespace != null)
-                             && (rootnamespace.length() > 0);
-      String rootlocalname = contract.getNodeName();
-      Transforms transforms = new Transforms(doc);
-      XPathContainer xpath = new XPathContainer(doc);
-
-      xpath.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
-      xpath.setXPath("\n" + xp1 + "\n");
-      transforms.addTransform(Transforms.TRANSFORM_XPATH,
-                              xpath.getElementPlusReturns());
-      firstSigner.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
-
       {
+         XMLSignature firstSigner =
+            new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
 
-         // not really secure ///////////////////
-         firstSigner.getKeyInfo().add(new KeyName(doc, "First signer key"));
+         firstSigner.setId(id1);
+         contract.appendChild(firstSigner.getElement());
 
-         ////////////////////////////////////////////////
-         System.out.println("First signer: Start signing");
-         firstSigner
-            .sign(firstSigner.createSecretKey("First signer key".getBytes()));
-         System.out.println("First signer: Finished signing");
-      }
+         String rootnamespace = contract.getNamespaceURI();
+         boolean rootprefixed = (rootnamespace != null)
+                                && (rootnamespace.length() > 0);
+         String rootlocalname = contract.getNodeName();
+         Transforms transforms = new Transforms(doc);
+         XPathContainer xpath = new XPathContainer(doc);
 
-      SignedInfo s = firstSigner.getSignedInfo();
+         xpath.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+         xpath.setXPath("\n" + xp1 + "\n");
+         transforms.addTransform(Transforms.TRANSFORM_XPATH,
+                                 xpath.getElementPlusReturns());
+         firstSigner.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
 
-      for (int i = 0; i < s.getSignedContentLength(); i++) {
-         System.out.println("################ Signed Resource " + i
-                            + " ################");
-         System.out.println(new String(s.getSignedContentItem(i)));
-         System.out.println();
+         {
+
+            // not really secure ///////////////////
+            firstSigner.getKeyInfo().add(new KeyName(doc, "First signer key"));
+
+            ////////////////////////////////////////////////
+            System.out.println("First signer: Start signing");
+            firstSigner
+               .sign(firstSigner
+                  .createSecretKey("First signer key".getBytes()));
+            System.out.println("First signer: Finished signing");
+         }
+
+         SignedInfo s = firstSigner.getSignedInfo();
+
+         for (int i = 0; i < s.getSignedContentLength(); i++) {
+            System.out.println("################ Signed Resource " + i
+                               + " ################");
+            System.out.println(new String(s.getSignedContentItem(i)));
+            System.out.println();
+         }
       }
 
       //////////////////////////////////////////////////////////////////
       // second signer /////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////////
-      XMLSignature secondSigner = new XMLSignature(doc, BaseURI,
-                                     XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
-
-      secondSigner.setId(id2);
-      contract.appendChild(secondSigner.getElement());
-
-      Transforms transforms2 = new Transforms(doc);
-      XPathContainer xpath2 = new XPathContainer(doc);
-
-      xpath2.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
-      xpath2.setXPath("\n" + xp2 + "\n");
-      transforms2.addTransform(Transforms.TRANSFORM_XPATH,
-                               xpath2.getElementPlusReturns());
-      secondSigner.addDocument("", transforms2, Constants.ALGO_ID_DIGEST_SHA1);
-
       {
-         secondSigner.getKeyInfo().add(new KeyName(doc, "Second signer key"));
-         System.out.println("Second signer: Start signing");
-         secondSigner
-            .sign(secondSigner.createSecretKey("Second signer key".getBytes()));
-         System.out.println("Second signer: Finished signing");
-      }
+         XMLSignature secondSigner = new XMLSignature(doc, BaseURI,
+                                        XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
 
-      SignedInfo s2 = secondSigner.getSignedInfo();
+         secondSigner.setId(id2);
+         contract.appendChild(secondSigner.getElement());
 
-      for (int i = 0; i < s2.getSignedContentLength(); i++) {
-         System.out.println("################ Signed Resource " + i
-                            + " ################");
-         System.out.println(new String(s2.getSignedContentItem(i)));
-         System.out.println();
+         Transforms transforms2 = new Transforms(doc);
+         XPathContainer xpath2 = new XPathContainer(doc);
+
+         xpath2.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+         xpath2.setXPath("\n" + xp2 + "\n");
+         transforms2.addTransform(Transforms.TRANSFORM_XPATH,
+                                  xpath2.getElementPlusReturns());
+         secondSigner.addDocument("", transforms2,
+                                  Constants.ALGO_ID_DIGEST_SHA1);
+
+         {
+            secondSigner.getKeyInfo().add(new KeyName(doc,
+                                                      "Second signer key"));
+            System.out.println("Second signer: Start signing");
+            secondSigner
+               .sign(secondSigner
+                  .createSecretKey("Second signer key".getBytes()));
+            System.out.println("Second signer: Finished signing");
+         }
+
+         SignedInfo s2 = secondSigner.getSignedInfo();
+
+         for (int i = 0; i < s2.getSignedContentLength(); i++) {
+            System.out.println("################ Signed Resource " + i
+                               + " ################");
+            System.out.println(new String(s2.getSignedContentItem(i)));
+            System.out.println();
+         }
       }
 
       //////////////////////////////////////////////////////////////////
       // third signer //////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////////
-      XMLSignature thirdSigner =
-         new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
-
-      thirdSigner.setId(id3);
-      contract.appendChild(thirdSigner.getElement());
-
-      Transforms transforms3 = new Transforms(doc);
-      XPathContainer xpath3 = new XPathContainer(doc);
-
-      xpath3.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
-      xpath3.setXPath("\n" + xp3 + "\n");
-      transforms3.addTransform(Transforms.TRANSFORM_XPATH,
-                               xpath3.getElementPlusReturns());
-      thirdSigner.addDocument("", transforms3, Constants.ALGO_ID_DIGEST_SHA1);
-
       {
-         thirdSigner.getKeyInfo().add(new KeyName(doc, "Third signer key"));
-         System.out.println("Third signer: Start signing");
-         thirdSigner
-            .sign(thirdSigner.createSecretKey("Third signer key".getBytes()));
-         System.out.println("Third signer: Finished signing");
+         XMLSignature thirdSigner =
+            new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+         thirdSigner.setId(id3);
+         contract.appendChild(thirdSigner.getElement());
+
+         Transforms transforms3 = new Transforms(doc);
+         XPathContainer xpath3 = new XPathContainer(doc);
+
+         xpath3.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+         xpath3.setXPath("\n" + xp3 + "\n");
+         transforms3.addTransform(Transforms.TRANSFORM_XPATH,
+                                  xpath3.getElementPlusReturns());
+         thirdSigner.addDocument("", transforms3,
+                                 Constants.ALGO_ID_DIGEST_SHA1);
+
+         {
+            thirdSigner.getKeyInfo().add(new KeyName(doc, "Third signer key"));
+            System.out.println("Third signer: Start signing");
+            thirdSigner
+               .sign(thirdSigner
+                  .createSecretKey("Third signer key".getBytes()));
+            System.out.println("Third signer: Finished signing");
+         }
+
+         SignedInfo s3 = thirdSigner.getSignedInfo();
+
+         for (int i = 0; i < s3.getSignedContentLength(); i++) {
+            System.out.println("################ Signed Resource " + i
+                               + " ################");
+            System.out.println(new String(s3.getSignedContentItem(i)));
+            System.out.println();
+         }
       }
 
-      SignedInfo s3 = thirdSigner.getSignedInfo();
+      //////////////////////////////////////////////////////////////////
+      // forth signer //////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////
+      {
+         XMLSignature forthSigner =
+            new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
 
-      for (int i = 0; i < s3.getSignedContentLength(); i++) {
-         System.out.println("################ Signed Resource " + i
-                            + " ################");
-         System.out.println(new String(s3.getSignedContentItem(i)));
-         System.out.println();
+         forthSigner.setId("sig4");
+         contract.appendChild(forthSigner.getElement());
+
+         {
+
+            // first of all, add the basic document without signatures
+            Transforms transforms4 = new Transforms(doc);
+            XPathContainer xpath4 = new XPathContainer(doc);
+
+            xpath4.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+            xpath4.setXPath("\n" + "not(ancestor-or-self::ds:Signature)"
+                            + "\n");
+            transforms4.addTransform(Transforms.TRANSFORM_XPATH,
+                                     xpath4.getElementPlusReturns());
+            forthSigner.addDocument("", transforms4,
+                                    Constants.ALGO_ID_DIGEST_SHA1);
+         }
+
+         {
+
+            // then add the different signatures
+
+            /*
+            Transforms transforms4 = new Transforms(doc);
+            XPathContainer xpath4 = new XPathContainer(doc);
+
+            xpath4.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+            xpath4.setXPath("\n" + "ancestor-or-self::ds:Signature[@Id='" + id1 + "']" + "\n");
+            transforms4.addTransform(Transforms.TRANSFORM_XPATH, xpath4.getElementPlusReturns());
+            forthSigner.addDocument("#xpointer(id('firstSigner'))", transforms4, Constants.ALGO_ID_DIGEST_SHA1, null, "ds:Signature");
+            */
+            forthSigner.addDocument("#xpointer(id('firstSigner'))", null,
+                                    Constants.ALGO_ID_DIGEST_SHA1, null,
+                                    "ds:Signature");
+         }
+
+         {
+            forthSigner.getKeyInfo().add(new KeyName(doc, "Forth signer key"));
+            System.out.println("Forth signer: Start signing");
+            forthSigner
+               .sign(forthSigner
+                  .createSecretKey("Forth signer key".getBytes()));
+            System.out.println("Forth signer: Finished signing");
+         }
+
+         SignedInfo s4 = forthSigner.getSignedInfo();
+
+         for (int i = 0; i < s4.getSignedContentLength(); i++) {
+            System.out.println("################ Signed Resource " + i
+                               + " ################");
+            System.out.println(new String(s4.getSignedContentItem(i)));
+            System.out.println();
+         }
       }
 
       //////////////////////////////////////////////////////////////////
       // write away files
       //////////////////////////////////////////////////////////////////
-      FileOutputStream f = new FileOutputStream(signatureFile);
+      {
+         FileOutputStream f = new FileOutputStream(signatureFile);
 
-      XMLUtils.outputDOMc14nWithComments(doc, f);
-      f.close();
-      System.out.println("Wrote signature to " + BaseURI);
+         XMLUtils.outputDOMc14nWithComments(doc, f);
+         f.close();
+         System.out.println("Wrote signature to " + BaseURI);
+      }
    }
 
    static {

@@ -608,6 +608,7 @@ public class Reference extends SignatureElementProxy {
             cat.debug("unverifiedDigestValue= " + Base64.encode(elemDig));
             cat.debug("calculatedDigestValue= " + Base64.encode(calcDig));
 
+            /*
             try {
                String tmp = new Long(System.currentTimeMillis()).toString()
                             + ".txt";
@@ -615,6 +616,7 @@ public class Reference extends SignatureElementProxy {
                cat.warn("Wrote \"" + this.getURI() + "\" to file " + tmp);
                JavaUtils.writeBytesToFilename(tmp, this.getReferencedBytes());
             } catch (Exception ex) {}
+            */
          }
       } else {
          cat.info("Verification successful for URI \"" + this.getURI() + "\"");
