@@ -97,7 +97,15 @@ static XMLCh s_bobName[] = {
 	chNull
 };
 
+static XMLCh s_jobName[] = {
+	chLatin_j,
+	chLatin_o,
+	chLatin_b,
+	chNull
+};
+
 static char s_bobKey[] = "abcdefghijklmnopqrstuvwx";
+static char s_jobKey[] = "abcdefghijklmnop";
 
 
 // --------------------------------------------------------------------------------
@@ -149,6 +157,13 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				k->setKey((unsigned char *) s_bobKey, strlen(s_bobKey));
 				return k;
 			}
+			if (strEquals(s_jobName, name)) {
+				OpenSSLCryptoSymmetricKey * k;
+				k = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
+				k->setKey((unsigned char *) s_jobKey, strlen(s_bobKey));
+				return k;
+			}
+
 		}
 
 	}

@@ -128,6 +128,7 @@ XALAN_USING_XALAN(XalanTransformer)
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
+#	include <openssl/rand.h>
 #endif
 #if defined (HAVE_WINCAPI)
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
@@ -775,6 +776,23 @@ void testEncrypt(DOMImplementation *impl) {
 		 * Now we have a document, find the data node.
 		 */
 
+		// Generate a key
+		unsigned char randomBuffer[256];
+
+#if defined (HAVE_OPENSSL) 
+		if (RAND_status() != 1) {
+
+			cerr << "Warning - OpenSSL random not properly initialised" << endl;
+
+		}
+
+		if (RAND_bytes(randomBuffer, 128) != 1) {
+
+			cerr << "Error - OpenSSL random did not generate data" << endl;
+			exit(1);
+		}
+#endif
+
 		static char keyStr[] = "abcdefghijklmnopqrstuvwx";
 
 		cipher = prov.newCipher(doc);
@@ -784,7 +802,7 @@ void testEncrypt(DOMImplementation *impl) {
 
 		OpenSSLCryptoSymmetricKey * k;
 		k = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
-		k->setKey((unsigned char *) keyStr, strlen(keyStr));
+		k->setKey((unsigned char *) randomBuffer, 24);
 		cipher->setKey(k);
 	
 		// Now encrypt!
@@ -807,6 +825,22 @@ void testEncrypt(DOMImplementation *impl) {
 		else
 			cerr << "not found (OK - now encrypted)" << endl;
 
+		// Now try to encrypt the Key
+
+		cerr << "Encrypting symmetric key ... " << endl;
+
+		OpenSSLCryptoSymmetricKey * kek;
+		kek = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
+		kek->setKey((unsigned char *) keyStr, 16);
+		cipher->setKEK(kek);
+
+		XENCEncryptedKey * encryptedKey;
+		encryptedKey = cipher->encryptKey(randomBuffer, 24, ENCRYPT_KW_AES128);
+
+		cerr << "done!" << endl;
+
+		encryptedData->appendEncryptedKey(encryptedKey);
+
 		outputDoc(impl, doc);
 
 		// OK - Now we try to decrypt
@@ -816,9 +850,9 @@ void testEncrypt(DOMImplementation *impl) {
 		XENCCipher * cipher2 = prov.newCipher(doc);
 
 		OpenSSLCryptoSymmetricKey * k2;
-		k2 = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
-		k2->setKey((unsigned char *) keyStr, strlen(keyStr));
-		cipher2->setKey(k2);
+		k2 = new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
+		k2->setKey((unsigned char *) keyStr, 16);
+		cipher2->setKEK(k2);
 
 		cerr << "Decrypting ... ";
 		cipher2->decryptElement(static_cast<DOMElement *>(n));
