@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.40 2002/01/15 02:37:17 sanders Exp $
- * $Revision: 1.40 $
- * $Date: 2002/01/15 02:37:17 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.41 2002/01/17 01:51:21 craigmcc Exp $
+ * $Revision: 1.41 $
+ * $Date: 2002/01/17 01:51:21 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.40 $ $Date: 2002/01/15 02:37:17 $
+ * @version $Revision: 1.41 $ $Date: 2002/01/17 01:51:21 $
  */
 
 public class Digester extends DefaultHandler {
@@ -403,11 +403,12 @@ public class Digester extends DefaultHandler {
     /**
      * Return the debugging detail level of our currently enabled logger.
      *
-     * @deprecated Call getLogger() and use it's getLevel() method
+     * @deprecated Configure the logger using standard mechanisms
+     *  for your implementation
      */
     public int getDebug() {
 
-        return (log.getLevel());
+        return (0);
 
     }
 
@@ -418,20 +419,12 @@ public class Digester extends DefaultHandler {
      * @param debug New debugging detail level (0=off, increasing integers
      *  for more detail)
      *
-     * @deprecated Call getLogger() and use its setLevel() method
+     * @deprecated Configure the logger using standard mechanisms
+     *  for your immplementation
      */
     public void setDebug(int debug) {
 
-        // Compute an appropriate level value
-        int level = Log.INFO;
-        if (debug >= 1) {
-            level = Log.DEBUG;
-        } else if (debug == 0) {
-            level = Log.ERROR;
-        }
-
-        // Tell our Log to use the new level
-        log.setLevel(level);
+        ; // No action is taken
 
     }
 
