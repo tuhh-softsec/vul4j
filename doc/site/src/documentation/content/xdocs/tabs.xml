@@ -12,8 +12,8 @@
     directory (ends in '/'), in which case /index.html will be added
     -->
 
-    <tab label="Home" dir=""/>
-    <tab label="Java" dir="Java"/>
-    <tab label="C++" dir="c"/>
+    <tab id="home" label="Home" dir=""/>
+    <tab id="java" label="Java" dir="Java"/>
+    <tab id="cpp" label="C++" dir="c"/>
 
 </tabs>

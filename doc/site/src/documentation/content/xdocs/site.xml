@@ -4,7 +4,7 @@
   <!ENTITY % xmlsec_entities SYSTEM "xmlsec_entities.ent"> 
   %xmlsec_entities; 
 ]>
-<site label="XML Security" href="" xmlns="http://apache.org/forrest/linkmap/1.0">
+<site label="XML Security" href="" xmlns="http://apache.org/forrest/linkmap/1.0" tab="home">
 
   <about label="About">
     <index label="Index" href="index.html"/>
@@ -25,7 +25,7 @@
     <mail-lists label="Mail lists" href="mail-lists.html"/>
   </getting-involved>
 
-  <java label="Java" href="Java/">
+  <java label="Java" href="Java/" tab="java">
     <!-- changes label="Changes" href="changes.html"/ -->
     <index label="Index" href="index.html"/>
     <installation label="Installation" href="installation.html" />
@@ -38,7 +38,7 @@
     <resolvers label="Resolvermania" href="resolver.html"/>
   </java>
 
-  <c label="C++" href="c/">
+  <c label="C++" href="c/" tab="cpp">
     <index label="Index" href="index.html"/>
 	<install label="Installation" href="installation.html"/>
     <programming label="Programming" href="programming.html"/>
