@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+  <SignedInfo>
+    <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+    <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+    <Reference URI="#envelopedData">
+      <Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+      </Transforms>
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+      <DigestValue>ikRJTZzM7uWpaXtmIcJyTwmt8Qw=</DigestValue>
+    </Reference>
+  </SignedInfo>
+  <SignatureValue>dDA7vm8Kss5sLocYMg/lWdUDYVsfTQJ8QfmALKDFr3BrARmBZBqAOVffS2Xw/dlYeQBfUWPINv7/
+ciYjUz0xCg==</SignatureValue><KeyInfo>
+    <KeyValue>
+    <RSAKeyValue>
+        <Modulus>uHlPl0BIKYNLN6c22IYwxJYYFV6g8Oxk7ZlyiqFi/DRbDW3e5b5QBNxUof0QMaCfgYGYQshtTtQH
+2Ft5PAFZ0Q==</Modulus>
+        <Exponent>EQ==</Exponent>
+      </RSAKeyValue>
+    </KeyValue>
+  </KeyInfo>
+<dsig:Object Id="envelopedData" xmlns="" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><FOO xmlns="http://www.foo.org/foo">
+foo
+</FOO></dsig:Object></Signature>

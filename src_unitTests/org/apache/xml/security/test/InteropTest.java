@@ -34,6 +34,7 @@ public class InteropTest extends TestCase {
       // interoperability tests using test vectors from other implementations
       suite.addTest(org.apache.xml.security.test.interop.BaltimoreTest.suite());
       suite.addTest(org.apache.xml.security.test.interop.IAIKTest.suite());
+      suite.addTest(org.apache.xml.security.test.interop.RSASecurityTest.suite());
 
       {
          /*
