@@ -562,9 +562,6 @@ public class XMLSignatureInput {
       /** Field _doc */
       private Document _doc = null;
 
-      /** Field _documentElement */
-      private Element _documentElement = null;
-
       /** Field _writer */
       private Writer _writer = null;
       //J-
@@ -628,7 +625,7 @@ public class XMLSignatureInput {
       private static final int NODE_AFTER_DOCUMENT_ELEMENT = 1;
       //J+
       private XMLSignatureInputDebugger() {
-         ;
+         // do nothing
       }
 
       /**
@@ -679,7 +676,6 @@ public class XMLSignatureInput {
             Node n = (Node) this._xpathNodeSet.iterator().next();
 
             this._doc = XMLUtils.getOwnerDocument(n);
-            this._documentElement = this._doc.getDocumentElement();
          }
 
          try {
@@ -694,7 +690,6 @@ public class XMLSignatureInput {
          } finally {
             this._xpathNodeSet = null;
             this._doc = null;
-            this._documentElement = null;
             this._writer = null;
          }
       }
@@ -709,9 +704,6 @@ public class XMLSignatureInput {
               throws XMLSignatureException, IOException {
 
          int currentNodeType = currentNode.getNodeType();
-         boolean currentNodeIsVisible =
-            this._xpathNodeSet.contains(currentNode);
-
          switch (currentNodeType) {
 
          case Node.DOCUMENT_TYPE_NODE :
