@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.2 2001/05/12 17:25:54 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2001/05/12 17:25:54 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.3 2001/08/15 20:35:43 craigmcc Exp $
+ * $Revision: 1.3 $
+ * $Date: 2001/08/15 20:35:43 $
  *
  * ====================================================================
  *
@@ -73,7 +73,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * stack, based on attributes with corresponding names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.2 $ $Date: 2001/05/12 17:25:54 $
+ * @version $Revision: 1.3 $ $Date: 2001/08/15 20:35:43 $
  */
 
 public class SetPropertiesRule extends Rule {
@@ -109,7 +109,12 @@ public class SetPropertiesRule extends Rule {
 	HashMap values = new HashMap();
 	for (int i = 0; i < attributes.getLength(); i++) {
 	    String name = attributes.getLocalName(i);
+            if ("".equals(name))
+                name = attributes.getQName(i);
 	    String value = attributes.getValue(i);
+            if (digester.getDebug() >= 9)
+                digester.log("  Setting property '" + name + "' to '" +
+                             value + "'");
 	    values.put(name, value);
 	}
 
