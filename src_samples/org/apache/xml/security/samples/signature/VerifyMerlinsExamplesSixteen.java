@@ -137,6 +137,7 @@ public class VerifyMerlinsExamplesSixteen {
 
       //J-
       String filenames[] = { // "16signature.xml"
+                             // "merlinsSixteenRecreated.xml"
                              "data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen/signature.xml"
                              };
       //J+
@@ -203,7 +204,7 @@ public class VerifyMerlinsExamplesSixteen {
                               "//ds:Signature[1]", nscontext);
       XMLSignature signature = new XMLSignature(sigElement,
                                                 f.toURL().toString());
-      signature.setFollowNestedManifests(true);
+      signature.setFollowNestedManifests(false);
 
       signature.addResourceResolver(new OfflineResolver());
 

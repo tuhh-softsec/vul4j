@@ -310,6 +310,7 @@ public class CreateMerlinsExampleSixteen {
                          Constants.ALGO_ID_DIGEST_SHA1, null,
                          "http://www.w3.org/2000/09/xmldsig#Object");
       }
+      /*
       {
          Transforms transforms = new Transforms(doc);
          XPathContainer xpathC = new XPathContainer(doc);
@@ -332,6 +333,7 @@ public class CreateMerlinsExampleSixteen {
          sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1, null,
                          "http://www.w3.org/2000/09/xmldsig#Object");
       }
+      */
 
       {
          Transforms transforms = new Transforms(doc);

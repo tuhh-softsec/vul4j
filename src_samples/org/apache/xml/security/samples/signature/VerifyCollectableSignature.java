@@ -62,40 +62,32 @@ package org.apache.xml.security.samples.signature;
 
 import java.io.*;
 import java.lang.reflect.*;
-import java.security.*;
+import java.security.PublicKey;
 import java.security.cert.*;
 import java.util.*;
 import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.*;
-import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.*;
 import org.apache.xml.security.keys.*;
 import org.apache.xml.security.keys.content.*;
-import org.apache.xml.security.keys.content.x509.*;
-import org.apache.xml.security.keys.keyresolver.*;
-import org.apache.xml.security.keys.storage.*;
-import org.apache.xml.security.keys.storage.implementations.*;
 import org.apache.xml.security.utils.*;
-import org.apache.xml.security.transforms.*;
 import org.apache.xml.security.Init;
-import org.apache.xml.security.samples.utils.resolver.OfflineResolver;
-import org.apache.xml.serialize.*;
 
 
 /**
  *
- *
  * @author $Author$
  */
-public class CreateEnvelopingSignature {
+public class VerifyCollectableSignature {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(CreateSignature.class.getName());
+      org.apache.log4j.Category
+         .getInstance(VerifyCollectableSignature.class.getName());
 
    /**
     * Method main
@@ -104,69 +96,58 @@ public class CreateEnvelopingSignature {
     * @throws Exception
     */
    public static void main(String unused[]) throws Exception {
-      //J-
-      String keystoreType = "JKS";
-      String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";
-      String keystorePass = "xmlsecurity";
-      String privateKeyAlias = "test";
-      String privateKeyPass = "xmlsecurity";
-      String certificateAlias = "test";
-      File signatureFile = new File("signature.xml");
-      //J+
-      KeyStore ks = KeyStore.getInstance(keystoreType);
-      FileInputStream fis = new FileInputStream(keystoreFile);
 
-      ks.load(fis, keystorePass.toCharArray());
-
-      PrivateKey privateKey = (PrivateKey) ks.getKey(privateKeyAlias,
-                                 privateKeyPass.toCharArray());
       javax.xml.parsers.DocumentBuilderFactory dbf =
          javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
       dbf.setNamespaceAware(true);
+      dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
 
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.newDocument();
-      String BaseURI = signatureFile.toURL().toString();
-      XMLSignature sig = new XMLSignature(doc, BaseURI,
-                                          XMLSignature.ALGO_ID_SIGNATURE_DSA);
+      try {
+         File signatureFile = new File("collectableSignature.xml");
+         String BaseURI = signatureFile.toURL().toString();
 
-      doc.appendChild(sig.getElement());
+         System.out.println("Try to verify "
+                            + signatureFile.toURL().toString());
 
-      {
-         ObjectContainer obj = new ObjectContainer(doc);
-         Element anElement = doc.createElement("InsideObject");
+         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
 
-         anElement.appendChild(doc.createTextNode("A text in a box"));
-         obj.appendChild(anElement);
+         db.setErrorHandler(new org.apache.xml.security.utils
+            .IgnoreAllErrorHandler());
 
-         String Id = "TheFirstObject";
+         org.w3c.dom.Document doc =
+            db.parse(new java.io.FileInputStream(signatureFile));
+         Element nscontext = XMLUtils.createDSctx(doc, "ds",
+                                                  Constants.SignatureSpecNS);
+         NodeList signatureElems = XPathAPI.selectNodeList(doc,
+                                      "//ds:Signature", nscontext);
 
-         obj.setId(Id);
-         sig.appendObject(obj);
+         for (int i = 0; i < signatureElems.getLength(); i++) {
+            Element sigElement = (Element) signatureElems.item(i);
+            XMLSignature signature = new XMLSignature(sigElement, BaseURI);
+            byte[] secretKey = "secretValue".getBytes();
 
-         Transforms transforms = new Transforms(doc);
+            System.out
+               .println("The XML signature number " + i + " in file " + BaseURI + " is "
+                        + (signature
+                           .checkSignatureValue(signature
+                              .createSecretKey(CreateCollectableSignature
+                                 .passphrase.getBytes()))
+                           ? "valid (good)"
+                           : "invalid !!!!! (bad)"));
 
-         transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
-         sig.addDocument("#" + Id, transforms, Constants.ALGO_ID_DIGEST_SHA1);
+            SignedInfo s = signature.getSignedInfo();
+
+            for (int j = 0; j < s.getSignedContentLength(); j++) {
+               System.out.println("################ Signed Resource " + i + "/" + j
+                                  + " ################");
+               System.out.println(new String(s.getSignedContentItem(j)));
+               System.out.println();
+            }
+         }
+      } catch (Exception ex) {
+         ex.printStackTrace();
       }
-
-      {
-         X509Certificate cert =
-            (X509Certificate) ks.getCertificate(certificateAlias);
-
-         sig.addKeyInfo(cert);
-         sig.addKeyInfo(cert.getPublicKey());
-         System.out.println("Start signing");
-         sig.sign(privateKey);
-         System.out.println("Finished signing");
-      }
-
-      FileOutputStream f = new FileOutputStream(signatureFile);
-
-      XMLUtils.outputDOMc14nWithComments(doc, f);
-      f.close();
-      System.out.println("Wrote signature to " + BaseURI);
    }
 
    static {

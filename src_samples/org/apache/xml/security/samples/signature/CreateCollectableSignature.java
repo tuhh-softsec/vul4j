@@ -87,15 +87,21 @@ import org.apache.xml.serialize.*;
 
 
 /**
- *
+ * This program creates a Signature which can be used for cut-and-paste to be
+ * put into a larger document.
  *
  * @author $Author$
  */
-public class CreateEnvelopingSignature {
+public class CreateCollectableSignature {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(CreateSignature.class.getName());
+      org.apache.log4j.Category
+         .getInstance(CreateCollectableSignature.class.getName());
+
+   /** Field passphrase           */
+   public static final String passphrase =
+      "The super-mega-secret public static passphrase";
 
    /**
     * Method main
@@ -105,21 +111,9 @@ public class CreateEnvelopingSignature {
     */
    public static void main(String unused[]) throws Exception {
       //J-
-      String keystoreType = "JKS";
-      String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";
-      String keystorePass = "xmlsecurity";
-      String privateKeyAlias = "test";
-      String privateKeyPass = "xmlsecurity";
-      String certificateAlias = "test";
-      File signatureFile = new File("signature.xml");
+      File signatureFile = new File("collectableSignature.xml");
+      String BaseURI = signatureFile.toURL().toString();
       //J+
-      KeyStore ks = KeyStore.getInstance(keystoreType);
-      FileInputStream fis = new FileInputStream(keystoreFile);
-
-      ks.load(fis, keystorePass.toCharArray());
-
-      PrivateKey privateKey = (PrivateKey) ks.getKey(privateKeyAlias,
-                                 privateKeyPass.toCharArray());
       javax.xml.parsers.DocumentBuilderFactory dbf =
          javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
@@ -127,38 +121,73 @@ public class CreateEnvelopingSignature {
 
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc = db.newDocument();
-      String BaseURI = signatureFile.toURL().toString();
-      XMLSignature sig = new XMLSignature(doc, BaseURI,
-                                          XMLSignature.ALGO_ID_SIGNATURE_DSA);
+      Element rootElement = doc.createElement("root");
 
-      doc.appendChild(sig.getElement());
+      doc.appendChild(rootElement);
+
+      /*
+      Element signedResourceElement = doc.createElementNS("http://custom/", "custom:signedContent");
+      signedResourceElement.setAttribute("xmlns:custom", "http://custom/");
+      signedResourceElement.setAttribute("Id", "id0");
+      */
+      Element signedResourceElement = doc.createElement("signedContent");
+
+      signedResourceElement.appendChild(doc.createTextNode("Signed Text\n"));
+      rootElement.appendChild(signedResourceElement);
+
+      XMLSignature sig = new XMLSignature(doc, BaseURI,
+                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+      signedResourceElement.appendChild(sig.getElement());
 
       {
-         ObjectContainer obj = new ObjectContainer(doc);
-         Element anElement = doc.createElement("InsideObject");
-
-         anElement.appendChild(doc.createTextNode("A text in a box"));
-         obj.appendChild(anElement);
-
-         String Id = "TheFirstObject";
-
-         obj.setId(Id);
-         sig.appendObject(obj);
-
+         String rootnamespace = signedResourceElement.getNamespaceURI();
+         boolean rootprefixed = (rootnamespace != null)
+                                && (rootnamespace.length() > 0);
+         String rootlocalname = signedResourceElement.getNodeName();
          Transforms transforms = new Transforms(doc);
+         XPathContainer xpath = new XPathContainer(doc);
 
-         transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
-         sig.addDocument("#" + Id, transforms, Constants.ALGO_ID_DIGEST_SHA1);
+         xpath.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+
+         if (rootprefixed) {
+            xpath.setXPathNamespaceContext("root", rootnamespace);
+         }
+
+         //J-
+         String xpathStr = "\n"
+          + "count(                                                                 " + "\n"
+          + " ancestor-or-self::" + (rootprefixed ? "root:" : "") + rootlocalname + "" + "\n"
+          + " |                                                                     " + "\n"
+          + " here()/ancestor::" + (rootprefixed ? "root:" : "") + rootlocalname + "[1] " + "\n"
+          + ") <= count(                                                             " + "\n"
+          + " ancestor-or-self::" + (rootprefixed ? "root:" : "") + rootlocalname + "" + "\n"
+          + ")                                                                      " + "\n"
+          + " and                                                                   " + "\n"
+          + "count(                                                                 " + "\n"
+          + " ancestor-or-self::ds:Signature                                        " + "\n"
+          + " |                                                                     " + "\n"
+          + " here()/ancestor::ds:Signature[1]                                      " + "\n"
+          + ") > count(                                                             " + "\n"
+          + " ancestor-or-self::ds:Signature                                        " + "\n"
+          + ")                                                                      " + "\n"
+
+
+
+          ;
+         //J+
+         xpath.setXPath(xpathStr);
+         transforms.addTransform(Transforms.TRANSFORM_XPATH,
+                                 xpath.getElementPlusReturns());
+         sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
       }
 
       {
-         X509Certificate cert =
-            (X509Certificate) ks.getCertificate(certificateAlias);
-
-         sig.addKeyInfo(cert);
-         sig.addKeyInfo(cert.getPublicKey());
+         sig.getKeyInfo()
+            .add(new KeyName(doc, CreateCollectableSignature.passphrase));
          System.out.println("Start signing");
-         sig.sign(privateKey);
+         sig.sign(sig
+            .createSecretKey(CreateCollectableSignature.passphrase.getBytes()));
          System.out.println("Finished signing");
       }
 
@@ -167,9 +196,20 @@ public class CreateEnvelopingSignature {
       XMLUtils.outputDOMc14nWithComments(doc, f);
       f.close();
       System.out.println("Wrote signature to " + BaseURI);
+
+      SignedInfo s = sig.getSignedInfo();
+
+      for (int i = 0; i < s.getSignedContentLength(); i++) {
+         System.out.println("################ Signed Resource " + i
+                            + " ################");
+         System.out.println(new String(s.getSignedContentItem(i)));
+         System.out.println();
+      }
    }
 
    static {
       org.apache.xml.security.Init.init();
+
+      // org.apache.xml.security.utils.Constants.setSignatureSpecNSprefix("");
    }
 }

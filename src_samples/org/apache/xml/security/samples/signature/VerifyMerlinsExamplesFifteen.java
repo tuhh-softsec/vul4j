@@ -149,7 +149,8 @@ public class VerifyMerlinsExamplesFifteen {
                              };
       //J+
       int start = 0;
-      int end = filenames.length;
+      // int end = filenames.length;
+      int end = 2;
 
       for (int i = start; i < 2; i++) {
          String signatureFileName = filenames[i];
