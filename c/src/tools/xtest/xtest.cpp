@@ -192,7 +192,8 @@ XMLCh s_tstDName[] = {
 	chLatin_E,
 	chLatin_C,
 	chSpace,
-	chSpace
+	chSpace,
+	chNull
 
 };
 
@@ -355,22 +356,21 @@ int main(int argc, char **argv) {
 		ce = ref[6]->appendCanonicalizationTransform(CANON_C14NE_COM);
 		ce->addInclusiveNamespace("foo");
 
-		ref[7] = sig->createReference(MAKE_UNICODE_STRING(""));
-		sig->setXPFNSPrefix(MAKE_UNICODE_STRING("xpf"));
-		DSIGTransformXPathFilter * xpf = ref[7]->appendXPathFilterTransform();
-		xpf->appendFilter(FILTER_INTERSECT, MAKE_UNICODE_STRING("//ADoc/category"));
-
-
 #ifdef XSEC_NO_XALAN
 
 		cerr << "WARNING : No testing of XPath being performed as Xalan not present" << endl;
-		refCount = 8;
+		refCount = 7;
 
 #else
 		/*
 		 * Create some XPath/XPathFilter references
 		 */
 
+
+		ref[7] = sig->createReference(MAKE_UNICODE_STRING(""));
+		sig->setXPFNSPrefix(MAKE_UNICODE_STRING("xpf"));
+		DSIGTransformXPathFilter * xpf = ref[7]->appendXPathFilterTransform();
+		xpf->appendFilter(FILTER_INTERSECT, MAKE_UNICODE_STRING("//ADoc/category"));
 
 		ref[8] = sig->createReference(MAKE_UNICODE_STRING(""));
 		/*		ref[5]->appendXPathTransform("ancestor-or-self::dsig:Signature", 
@@ -409,7 +409,8 @@ count(ancestor-or-self::dsig:Signature)");
 		 * Validate the reference hash values from known good
 		 */
 
-		for (int i = 0; i < refCount; ++i) {
+		int i;
+		for (i = 0; i < refCount; ++i) {
 
 			cerr << "Calculating hash for reference " << i << " ... ";
 
@@ -549,7 +550,7 @@ count(ancestor-or-self::dsig:Signature)");
 		int nki = kil->getSize();
 
 		cerr << "Checking Distinguished name is decoded correctly ... ";
-		for (int i = 0; i < nki; ++i) {
+		for (i = 0; i < nki; ++i) {
 
 			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_X509) {
 

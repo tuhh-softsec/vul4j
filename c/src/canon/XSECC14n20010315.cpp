@@ -70,6 +70,7 @@
  */
 
 //XSEC includes
+#include <xsec/framework/XSECDefs.hpp>
 #include <xsec/canon/XSECC14n20010315.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
@@ -357,8 +358,13 @@ void XSECC14n20010315::init() {
 	c14ntarget = new c14nFormatTarget();
 	c14ntarget->setBuffer(&formatBuffer);
 
+#if defined(XSEC_XERCES_FORMATTER_REQUIRES_VERSION)
+	formatter = new XMLFormatter("UTF-8", 0, c14ntarget, XMLFormatter::NoEscapes, 
+												XMLFormatter::UnRep_CharRef);
+#else
 	formatter = new XMLFormatter("UTF-8", c14ntarget, XMLFormatter::NoEscapes, 
 												XMLFormatter::UnRep_CharRef);
+#endif
 	formatBuffer.setBufferType(safeBuffer::BUFFER_CHAR);
 
 	// Set up for first attribute list

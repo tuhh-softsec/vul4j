@@ -70,10 +70,32 @@
  *
  */
 
+#include <xercesc/util/XercesVersion.hpp>
+
 #define XSEC_VERSION	     "0.2.0"
 #define XSEC_VERSION_MAJOR   0
 #define XSEC_VERSION_MEDIUM  2
 #define XSEC_VERSION_MINOR   0
+
+/*
+ * Because we don't have a configure script, we need to rely on version
+ * numbers to understand library idiosycracies
+ */
+
+#if (XERCES_VERSION_MAJOR >= 2) && (XERCES_VERSION_MINOR >= 3)
+/* 
+ * As of version 2.3, xerces requires a version parameter in XMLFormatter
+ * constructors
+ */
+#	define XSEC_XERCES_FORMATTER_REQUIRES_VERSION 1
+#else
+/*
+ * In version 2.2, the XMLUri class was broken for relative URI de-referencing
+ */
+#	define XSEC_XERCES_BROKEN_XMLURI 1
+#endif
+
+
 
 /*
  * The following defines whether Xalan integration is required.
@@ -82,7 +104,7 @@
  * Activate this #define if Xalan is not required (or desired)
  */
 
-/* #define XSEC_NO_XALAN */
+#define XSEC_NO_XALAN
 
 /*
  * Define presence of cryptographic providers

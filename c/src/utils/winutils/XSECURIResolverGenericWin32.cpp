@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.4  2003/05/22 11:42:06  blautenb
+ * Updates so Windows version will compile with Xerces 2.3
+ *
  * Revision 1.3  2003/05/10 07:23:36  blautenb
  * Updates to support anonymous references
  *
@@ -168,9 +171,11 @@ BinInputStream * XSECURIResolverGenericWin32::resolveURI(const XMLCh * uri) {
 	if (mp_baseURI != NULL) {
 		XMLUri	* turi;
 
-#if XERCES_VERSION_MAJOR == 2 && XERCES_VERSION_MINOR < 3
+#if defined(XSEC_XERCES_BROKEN_XMLURI)
 
 		// XMLUri relative paths are broken, so we need to strip out ".."
+		// Doesn't fix the whole problem, but gets us somewhere
+
 		XMLCh * b = XMLString::replicate(mp_baseURI);
 		ArrayJanitor<XMLCh> j_b(b);
 		XMLCh * r = XMLString::replicate(uri);
