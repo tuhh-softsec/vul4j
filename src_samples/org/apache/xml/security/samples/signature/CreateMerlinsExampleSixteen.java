@@ -471,6 +471,15 @@ public class CreateMerlinsExampleSixteen {
       System.out.println("Wrote signature to " + BaseURI);
 
       SignedInfo s = sig.getSignedInfo();
+      for (int i=0; i<s.getLength(); i++) {
+         Reference r = s.item(i);
+         String fn = "merlin16_"+i+".html";
+         System.out.println("Wrote Reference " + i + " to file " + fn);
+         JavaUtils.writeBytesToFilename(fn, r.getHTMLRepresentation().getBytes());
+      }
+
+
+      /*
       for (int i=0; i<s.getSignedContentLength(); i++) {
          if (s.item(i).getType().equals(Reference.MANIFEST_URI)) {
             System.out.println("################ Signed Manifest " + i + " ################");
@@ -480,6 +489,7 @@ public class CreateMerlinsExampleSixteen {
          System.out.println(new String(s.getSignedContentItem(i)));
          System.out.println();
       }
+      */
    }
 
    /**
