@@ -37,16 +37,6 @@ import org.xml.sax.SAXException;
  */
 public class OverlappingCallMethodRuleTestCase extends TestCase {
 
-
-    // ----------------------------------------------------- Instance Variables
-
-
-    /**
-     * The digester instance we will be processing.
-     */
-    protected Digester digester = null;
-
-
     // ----------------------------------------------------------- Constructors
 
 
