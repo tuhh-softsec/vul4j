@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.8 2002/07/10 18:12:33 rdonkin Exp $
- * $Revision: 1.8 $
- * $Date: 2002/07/10 18:12:33 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.9 2002/10/29 20:17:11 craigmcc Exp $
+ * $Revision: 1.9 $
+ * $Date: 2002/10/29 20:17:11 $
  *
  * ====================================================================
  *
@@ -86,7 +86,7 @@ import java.util.List;
  * </ul>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.8 $ $Date: 2002/07/10 18:12:33 $
+ * @version $Revision: 1.9 $ $Date: 2002/10/29 20:17:11 $
  */
 
 public class RulesBase implements Rules {
@@ -146,6 +146,11 @@ public class RulesBase implements Rules {
     public void setDigester(Digester digester) {
 
         this.digester = digester;
+        Iterator items = rules.iterator();
+        while (items.hasNext()) {
+            Rule item = (Rule) items.next();
+            item.setDigester(digester);
+        }
 
     }
 
@@ -194,6 +199,9 @@ public class RulesBase implements Rules {
         }
         list.add(rule);
         rules.add(rule);
+        if (this.digester != null) {
+            rule.setDigester(this.digester);
+        }
         if (this.namespaceURI != null) {
             rule.setNamespaceURI(this.namespaceURI);
         }
