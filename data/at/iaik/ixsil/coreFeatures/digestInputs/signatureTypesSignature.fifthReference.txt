@@ -1,0 +1,1 @@
+<dsig:Object xmlns="http://iaik.at#Envelope" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" Id="objectId">A text from IAIK</dsig:Object>

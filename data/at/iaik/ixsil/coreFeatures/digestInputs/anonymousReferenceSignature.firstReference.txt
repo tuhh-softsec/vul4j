@@ -1,0 +1,3 @@
+<Anonymous xmlns="http://anonymous.com">
+  This XML file is referenced via an anonymous Reference in the XML signature.
+</Anonymous>

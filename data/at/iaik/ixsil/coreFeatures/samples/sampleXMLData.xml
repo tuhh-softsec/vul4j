@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE Sample
+  [
+    <!ELEMENT Sample (DataItem) >
+    <!ELEMENT DataItem (#PCDATA) >
+    <!ATTLIST DataItem Id ID #IMPLIED>
+  ]
+>
+
+<Sample xmlns="http://iaik.at#Sample">
+  <DataItem Id="DataItem">
+    Some Data from IAIK
+  </DataItem>
+</Sample>

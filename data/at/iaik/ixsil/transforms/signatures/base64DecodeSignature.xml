@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dsig:Signature xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><dsig:Reference URI="../samples/sampleBase64EncodedData.txt"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#base64"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>60NvZvtdTB+7UnlLp/H24p7h4bs=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>CFDfVk22iawglDdrEIygmWhpPrj0DyWnxLhPBSgHXp6i31oVbicHAOvThv7TyVKd
+eE6K2b5AKOErBwVncngMBmpwtJIoKOgUhgNe4DskfeSdk44OJkT63h0EJxJhUHqz
+NtBe7QrmynpbFnOedDDZwMA9/I8RU0Eq/jikz9nqNdU=</dsig:SignatureValue><dsig:KeyInfo><dsig:KeyValue><dsig:RSAKeyValue><dsig:Modulus>sDa5yzUv4IJmBY60GZCnkQSAhpG7tgxepi6sj3DlCzxjTtO5MNrjI9sK3WhimpNi
+NDmagzNEjxP3+x1huxL19GoIxZgr5O7E/F2IInSASVZTQsvWZlNauhRs0KZAszIS
+FchvrihILLoUf4tzaOSe6jgMEq6IkO0dWVpcFpAjXTc=</dsig:Modulus><dsig:Exponent>Aw==</dsig:Exponent></dsig:RSAKeyValue></dsig:KeyValue></dsig:KeyInfo></dsig:Signature>
