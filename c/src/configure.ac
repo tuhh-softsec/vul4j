@@ -117,6 +117,19 @@ package_lib_version=${package_lib_major}.${package_lib_minor}
 AC_TRY_CPP()
 AC_LANG(C++)
 AC_TRY_CPP()
+
+# Check for Intel > 8.0 (which fools configure into thinking it is GNU
+if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
+	AC_MSG_CHECKING([for Intel compiler disguised as GNU])
+	intel_check=`${CXX} -v 2>&1 | ${AWK} '{print $1}'`
+	if test "x${intel_check}" = "xVersion"; then
+		AC_MSG_RESULT([yes])
+		ac_cv_cxx_compiler_gnu="no"
+	else
+		AC_MSG_RESULT([no])
+	fi
+fi
+
 AC_LANG(C)
 
 # Checks for required libraries
@@ -220,7 +233,7 @@ case "${host}" in
 						else
 							# Not sure if these will work - only tested with g++
 							PIC=["-KPIC"]
-							PLATFORM_OPTIONS=["-w1 -Xa -mp -prec_div"]
+							PLATFORM_OPTIONS=["-w1 -mp -prec_div"]
 						fi
 						# Should use -D_REENTRANT - but not yet OK
 						PLATFORM_OPTIONS=["${PLATFORM_OPTIONS} ${PIC} -DLINUX"]
