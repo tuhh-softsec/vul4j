@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RulesBaseTestCase.java,v 1.5 2002/03/23 17:45:59 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2002/03/23 17:45:59 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RulesBaseTestCase.java,v 1.6 2002/07/10 18:12:33 rdonkin Exp $
+ * $Revision: 1.6 $
+ * $Date: 2002/07/10 18:12:33 $
  *
  * ====================================================================
  *
@@ -79,7 +79,7 @@ import junit.framework.TestSuite;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.5 $ $Date: 2002/03/23 17:45:59 $
+ * @version $Revision: 1.6 $ $Date: 2002/07/10 18:12:33 $
  */
 
 public class RulesBaseTestCase extends TestCase {
@@ -228,6 +228,16 @@ public class RulesBaseTestCase extends TestCase {
                 "*/c/d",
                 ((TestRule) digester.getRules().match(null, "x/c/d").iterator().next()).getIdentifier());
 
+        // Test wildcard tail matching at the top level,
+        // i.e. the wildcard is nothing
+        digester.addRule("*/a", new TestRule("*/a"));
+        assertEquals("Wildcard tail matching rule 3",
+                     1,
+                     digester.getRules().match(null,"a").size());
+
+        assertEquals("Wildcard tail matching rule 3 (match too much)",
+                     0,
+                     digester.getRules().match(null,"aa").size());
         // clean up
         digester.getRules().clear();
 

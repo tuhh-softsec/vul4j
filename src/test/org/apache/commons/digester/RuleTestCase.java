@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.15 2002/07/08 21:25:30 rdonkin Exp $
- * $Revision: 1.15 $
- * $Date: 2002/07/08 21:25:30 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.16 2002/07/10 18:12:33 rdonkin Exp $
+ * $Revision: 1.16 $
+ * $Date: 2002/07/10 18:12:33 $
  *
  * ====================================================================
  *
@@ -80,7 +80,7 @@ import junit.framework.TestSuite;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.15 $ $Date: 2002/07/08 21:25:30 $
+ * @version $Revision: 1.16 $ $Date: 2002/07/10 18:12:33 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -696,8 +696,7 @@ public class RuleTestCase extends TestCase {
         }
         */
     }
-
-
+    
     // ------------------------------------------------ Utility Support Methods
 
 

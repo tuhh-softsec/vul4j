@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.7 2002/01/09 20:22:49 sanders Exp $
- * $Revision: 1.7 $
- * $Date: 2002/01/09 20:22:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.8 2002/07/10 18:12:33 rdonkin Exp $
+ * $Revision: 1.8 $
+ * $Date: 2002/07/10 18:12:33 $
  *
  * ====================================================================
  *
@@ -86,7 +86,7 @@ import java.util.List;
  * </ul>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.7 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.8 $ $Date: 2002/07/10 18:12:33 $
  */
 
 public class RulesBase implements Rules {
@@ -252,7 +252,8 @@ public class RulesBase implements Rules {
             while (keys.hasNext()) {
                 String key = (String) keys.next();
                 if (key.startsWith("*/")) {
-                    if (pattern.endsWith(key.substring(1))) {
+                    if (pattern.equals(key.substring(2)) ||
+                        pattern.endsWith(key.substring(1))) {
                         if (key.length() > longKey.length()) {
                             // rulesList = (List) this.cache.get(key);
                             rulesList = lookup(namespaceURI, key);

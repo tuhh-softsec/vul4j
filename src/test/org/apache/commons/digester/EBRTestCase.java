@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.4 2002/03/23 17:45:59 rdonkin Exp $
- * $Revision: 1.4 $
- * $Date: 2002/03/23 17:45:59 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.5 2002/07/10 18:12:33 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2002/07/10 18:12:33 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import junit.framework.TestSuite;
  * <p> Runs standard tests for RulesBase as well as tests of extensions.
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.4 $ $Date: 2002/03/23 17:45:59 $
+ * @version $Revision: 1.5 $ $Date: 2002/07/10 18:12:33 $
  */
 
 
@@ -327,6 +327,58 @@ public class EBRTestCase extends RulesBaseTestCase {
         assertEquals("Testing wild mismatch (H)", "basic_wild", ((TestRule) it.next()).getIdentifier());
         assertEquals("Testing wild mismatch (I)", "universal_wild", ((TestRule) it.next()).getIdentifier());
 
+
+        // clean up
+        digester.getRules().clear();
+
+    }
+    
+    
+
+    /**
+     * Basic test of wild matches.
+     * A universal will match matches anything!
+     * A non-universal will match matches anything not matched by something else.
+     * This method tests non-universal and universal wild matches.
+     */
+    public void testRootTailMatch() {
+
+        // clear any existing rules
+        digester.getRules().clear();
+
+        assertEquals("Initial rules list is empty",
+                0, digester.getRules().rules().size());
+
+        // Set up rules
+        // The combinations a little large to test everything but we'll pick a couple and try them.
+        digester.addRule("*/a", new TestRule("a_tail"));
+
+
+        List list = null;
+        Iterator it = null;
+
+        list = digester.getRules().match(null, "a");
+
+        assertEquals("Testing tail wrong size (A)", 1, list.size());
+        assertEquals("Testing tail mismatch (B)", "a_tail", ((TestRule) list.get(0)).getIdentifier());
+
+
+        list = digester.getRules().match(null, "beta/a");
+
+        assertEquals("Testing tail wrong size (C)", 1, list.size());
+        assertEquals("Testing tail mismatch (D)", "a_tail", ((TestRule) list.get(0)).getIdentifier());
+
+        list = digester.getRules().match(null, "be/aaa");
+
+        assertEquals("Testing tail no matches (E)", 0, list.size());
+        
+        list = digester.getRules().match(null, "aaa");
+
+        assertEquals("Testing tail no matches (F)", 0, list.size());
+        
+        list = digester.getRules().match(null, "a/beta");
+
+        assertEquals("Testing tail no matches (G)", 0, list.size());
 
         // clean up
         digester.getRules().clear();

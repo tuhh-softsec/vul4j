@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestRuleSet.java,v 1.4 2002/01/23 22:38:01 sanders Exp $
- * $Revision: 1.4 $
- * $Date: 2002/01/23 22:38:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestRuleSet.java,v 1.5 2002/07/10 18:12:33 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2002/07/10 18:12:33 $
  *
  * ====================================================================
  *
@@ -68,7 +68,7 @@ package org.apache.commons.digester;
  * optionally associated with a particular namespace URI.
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.4 $ $Date: 2002/01/23 22:38:01 $
+ * @version $Revision: 1.5 $ $Date: 2002/07/10 18:12:33 $
  */
 
 public class TestRuleSet extends RuleSetBase {
@@ -152,6 +152,6 @@ public class TestRuleSet extends RuleSetBase {
                 "addAddress");
 
     }
-
+    
 
 }

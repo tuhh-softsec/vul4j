@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.2 2002/01/09 20:22:49 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2002/01/09 20:22:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.3 2002/07/10 18:12:33 rdonkin Exp $
+ * $Revision: 1.3 $
+ * $Date: 2002/07/10 18:12:33 $
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
@@ -156,7 +156,7 @@ import java.util.Comparator;
  * these additions should not break your existing rules.</p>
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.2 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.3 $ $Date: 2002/07/10 18:12:33 $
  */
 
 
@@ -405,7 +405,8 @@ public class ExtendedBaseRules extends RulesBase {
      * Matches the end of the pattern to the key.
      */
     private boolean basicMatch(String key, String pattern) {
-        return pattern.endsWith(key.substring(1));
+        return (pattern.equals(key.substring(2)) ||
+                pattern.endsWith(key.substring(1)));
     }
 
 }
