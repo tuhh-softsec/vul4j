@@ -170,6 +170,28 @@ public class CallMethodRuleTestCase extends TestCase {
 
 
     /**
+     * Test method calls with the CallMethodRule reading from the element
+     * body, with no CallParamMethod rules added.
+     */
+    public void testCallMethodOnly() throws Exception {
+
+        // Configure the digester as required
+        digester.addObjectCreate("employee", Employee.class);
+        digester.addCallMethod("employee/firstName", "setFirstName", 0);
+        digester.addCallMethod("employee/lastName", "setLastName", 0);
+
+        // Parse our test input
+        Employee employee = (Employee)
+            digester.parse(getInputStream("Test9.xml"));
+        assertNotNull("parsed an employee", employee);
+
+        // Validate that the property setters were called
+        assertEquals("Set first name", "First Name", employee.getFirstName());
+        assertEquals("Set last name", "Last Name", employee.getLastName());
+    }
+
+
+    /**
      * Test method calls with the CallMethodRule rule. It should be possible
      * to call any accessible method of the object on the top of the stack,
      * even methods with no arguments.
