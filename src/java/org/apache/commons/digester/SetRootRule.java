@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.3 2002/01/23 21:25:22 sanders Exp $
- * $Revision: 1.3 $
- * $Date: 2002/01/23 21:25:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.4 2002/03/20 20:28:28 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2002/03/20 20:28:28 $
  *
  * ====================================================================
  *
@@ -71,11 +71,17 @@ import org.apache.commons.beanutils.MethodUtils;
 
 
 /**
- * Rule implementation that calls a method on the root object on the stack,
+ * <p>Rule implementation that calls a method on the root object on the stack,
  * passing the top object (child) as an argument.
+ * It is important to remember that this rule acts on <code>end</code>.</p>
+ *
+ * <p>This rule now supports more flexible method matching by default.
+ * It is possible that this may break (some) code 
+ * written against release 1.1.1 or earlier.
+ * See {@link #isExactMatch()} for more details.</p>
  *
  * @author Scott Sanders
- * @version $Revision: 1.3 $ $Date: 2002/01/23 21:25:22 $
+ * @version $Revision: 1.4 $ $Date: 2002/03/20 20:28:28 $
  */
 
 public class SetRootRule extends Rule {
@@ -132,10 +138,54 @@ public class SetRootRule extends Rule {
      * The Java class name of the parameter type expected by the method.
      */
     protected String paramType = null;
+    
+    /**
+     * Should we use exact matching? Default is no.
+     */
+    protected boolean useExactMatch = false;
 
 
     // --------------------------------------------------------- Public Methods
 
+
+    /**
+     * <p>Is exact matching being used?</p>
+     *
+     * <p>This rule uses <code>org.apache.commons.beanutils.MethodUtils</code> 
+     * to introspect the relevent objects so that the right method can be called.
+     * Originally, <code>MethodUtils.invokeExactMethod</code> was used.
+     * This matches methods very strictly 
+     * and so may not find a matching method when one exists.
+     * This is still the behaviour when exact matching is enabled.</p>
+     *
+     * <p>When exact matching is disabled, <code>MethodUtils.invokeMethod</code> is used.
+     * This method finds more methods but is less precise when there are several methods 
+     * with correct signatures.
+     * So, if you want to choose an exact signature you might need to enable this property.</p>
+     *
+     * <p>The default setting is to disable exact matches.</p>
+     *
+     * @return true iff exact matching is enabled
+     * @since Digester Release 1.1.1
+     */
+    public boolean isExactMatch() {
+    
+        return useExactMatch;
+    }
+    
+    
+    /**
+     * <p>Set whether exact matching is enabled.</p>
+     *
+     * <p>See {@link #isExactMatch()}.</p>
+     *
+     * @param useExactMatch should this rule use exact method matching
+     * @since Digester Release 1.1.1
+     */
+    public void setExactMatch(boolean useExactMatch) {
+
+        this.useExactMatch = useExactMatch;
+    }
 
     /**
      * Process the end of this element.
@@ -165,9 +215,18 @@ public class SetRootRule extends Rule {
         } else {
             paramTypes[0] = child.getClass();
         }
-        MethodUtils.invokeExactMethod(parent, methodName,
+        
+        if (useExactMatch) {
+        
+            MethodUtils.invokeExactMethod(parent, methodName,
                 new Object[]{ child }, paramTypes);
-
+                
+        } else {
+        
+            MethodUtils.invokeMethod(parent, methodName,
+                new Object[]{ child }, paramTypes);
+        
+        }
     }
 
 

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.12 2002/01/27 00:52:06 craigmcc Exp $
- * $Revision: 1.12 $
- * $Date: 2002/01/27 00:52:06 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.13 2002/03/20 20:28:28 rdonkin Exp $
+ * $Revision: 1.13 $
+ * $Date: 2002/03/20 20:28:28 $
  *
  * ====================================================================
  *
@@ -71,13 +71,18 @@ import org.apache.commons.beanutils.MethodUtils;
 
 
 /**
- * Rule implementation that calls a "set parent" method on the top (child)
- * object, passing the (top-1) (parent) object as an argument.
+ * <p>Rule implementation that calls a "set parent" method on the top (child)
+ * object, passing the (top-1) (parent) object as an argument.</p>
+ *
+ * <p>This rule now supports more flexible method matching by default.
+ * It is possible that this may break (some) code 
+ * written against release 1.1.1 or earlier.
+ * See {@link #isExactMatch()} for more details.</p>
  *
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Janek Bogucki
- * @version $Revision: 1.12 $ $Date: 2002/01/27 00:52:06 $
+ * @version $Revision: 1.13 $ $Date: 2002/03/20 20:28:28 $
  */
 
 public class SetTopRule extends Rule {
@@ -134,11 +139,53 @@ public class SetTopRule extends Rule {
      * The Java class name of the parameter type expected by the method.
      */
     protected String paramType = null;
+    
+    /**
+     * Should we use exact matching? Default is no.
+     */
+    protected boolean useExactMatch = false;
 
 
     // --------------------------------------------------------- Public Methods
 
+    /**
+     * <p>Is exact matching being used?</p>
+     *
+     * <p>This rule uses <code>org.apache.commons.beanutils.MethodUtils</code> 
+     * to introspect the relevent objects so that the right method can be called.
+     * Originally, <code>MethodUtils.invokeExactMethod</code> was used.
+     * This matches methods very strictly 
+     * and so may not find a matching method when one exists.
+     * This is still the behaviour when exact matching is enabled.</p>
+     *
+     * <p>When exact matching is disabled, <code>MethodUtils.invokeMethod</code> is used.
+     * This method finds more methods but is less precise when there are several methods 
+     * with correct signatures.
+     * So, if you want to choose an exact signature you might need to enable this property.</p>
+     *
+     * <p>The default setting is to disable exact matches.</p>
+     *
+     * @return true iff exact matching is enabled
+     * @since Digester Release 1.1.1
+     */
+    public boolean isExactMatch() {
+    
+        return useExactMatch;
+    }
+    
+    /**
+     * <p>Set whether exact matching is enabled.</p>
+     *
+     * <p>See {@link #isExactMatch()}.</p>
+     *
+     * @param useExactMatch should this rule use exact method matching
+     * @since Digester Release 1.1.1
+     */
+    public void setExactMatch(boolean useExactMatch) {
 
+        this.useExactMatch = useExactMatch;
+    }
+    
     /**
      * Process the end of this element.
      */
@@ -147,6 +194,7 @@ public class SetTopRule extends Rule {
         // Identify the objects to be used
         Object child = digester.peek(0);
         Object parent = digester.peek(1);
+        
         if (digester.log.isDebugEnabled()) {
             if (child == null) {
                 digester.log.debug("[SetTopRule]{" + digester.match +
@@ -167,9 +215,18 @@ public class SetTopRule extends Rule {
         } else {
             paramTypes[0] = parent.getClass();
         }
-        MethodUtils.invokeExactMethod(child, methodName,
-                new Object[]{ parent }, paramTypes);
 
+        if (useExactMatch) {
+        
+            MethodUtils.invokeExactMethod(child, methodName,
+                new Object[]{ parent }, paramTypes);
+                
+        } else {
+        
+            MethodUtils.invokeMethod(child, methodName,
+                new Object[]{ parent }, paramTypes);
+        
+        }
     }
 
 

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.10 2002/03/11 20:18:45 rdonkin Exp $
- * $Revision: 1.10 $
- * $Date: 2002/03/11 20:18:45 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.11 2002/03/20 20:28:28 rdonkin Exp $
+ * $Revision: 1.11 $
+ * $Date: 2002/03/20 20:28:28 $
  *
  * ====================================================================
  *
@@ -66,6 +66,8 @@ package org.apache.commons.digester;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.util.ArrayList;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -77,7 +79,7 @@ import junit.framework.TestSuite;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.10 $ $Date: 2002/03/11 20:18:45 $
+ * @version $Revision: 1.11 $ $Date: 2002/03/20 20:28:28 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -516,6 +518,82 @@ public class RuleTestCase extends TestCase {
         assertEquals("Digester is not properly on rule addition.", digester, rule.getDigester());
 
     }
+    
+
+    public void testSetNext() throws Exception {
+        Digester digester = new Digester();
+        digester.setRules(new ExtendedBaseRules());
+        digester.setValidating(false);
+        
+        
+        digester.addObjectCreate("!*/b", BetaBean.class);
+        digester.addObjectCreate("!*/a", AlphaBean.class);
+        digester.addObjectCreate("root", ArrayList.class);
+        digester.addSetProperties("!*");
+        digester.addSetNext("!*/b/?", "setChild");
+        digester.addSetNext("!*/a/?", "setChild");
+        digester.addSetNext("!root/?", "add");
+        ArrayList root = (ArrayList) digester.parse(getInputStream("Test4.xml"));
+        
+        assertEquals("Wrong array size", 2, root.size());
+        AlphaBean one = (AlphaBean) root.get(0);
+        assertTrue(one.getChild() instanceof BetaBean);
+        BetaBean two = (BetaBean) one.getChild();
+        assertEquals("Wrong name (1)", two.getName() , "TWO");
+        assertTrue(two.getChild() instanceof AlphaBean);
+        AlphaBean three = (AlphaBean) two.getChild(); 
+        assertEquals("Wrong name (2)", three.getName() , "THREE");       
+        BetaBean four = (BetaBean) root.get(1);
+        assertEquals("Wrong name (3)", four.getName() , "FOUR");
+        assertTrue(four.getChild() instanceof BetaBean);
+        BetaBean five = (BetaBean) four.getChild(); 
+        assertEquals("Wrong name (4)", five.getName() , "FIVE");               
+        
+    }
+    
+    
+    public void testSetTop() throws Exception {
+        Digester digester = new Digester();
+        digester.setRules(new ExtendedBaseRules());
+        digester.setValidating(false);
+        
+        
+        digester.addObjectCreate("!*/b", BetaBean.class);
+        digester.addObjectCreate("!*/a", AlphaBean.class);
+        digester.addObjectCreate("root", ArrayList.class);
+        digester.addSetProperties("!*");
+        digester.addSetTop("!*/b/?", "setParent");
+        digester.addSetTop("!*/a/?", "setParent");
+        digester.addSetRoot("!*/a", "add");
+        digester.addSetRoot("!*/b", "add");
+        ArrayList root = (ArrayList) digester.parse(getInputStream("Test4.xml"));
+        
+        assertEquals("Wrong array size", 5, root.size());
+        
+        // note that the array is in popped order (rather than pushed)
+        
+        Object obj = root.get(1);
+        assertTrue("TWO should be a BetaBean", obj instanceof BetaBean);
+        BetaBean two = (BetaBean) obj;
+        assertNotNull("Two's parent should not be null", two.getParent());
+        assertEquals("Wrong name (1)", "TWO", two.getName());
+        assertEquals("Wrong name (2)", "ONE", two.getParent().getName() );
+        
+        obj = root.get(0);
+        assertTrue("THREE should be an AlphaBean", obj instanceof AlphaBean);
+        AlphaBean three = (AlphaBean) obj;
+        assertNotNull("Three's parent should not be null", three.getParent());
+        assertEquals("Wrong name (3)", "THREE", three.getName());
+        assertEquals("Wrong name (4)", "TWO", three.getParent().getName());
+        
+        obj = root.get(3);
+        assertTrue("FIVE should be a BetaBean", obj instanceof BetaBean);
+        BetaBean five = (BetaBean) obj;
+        assertNotNull("Five's parent should not be null", five.getParent());
+        assertEquals("Wrong name (5)", "FIVE", five.getName());
+        assertEquals("Wrong name (6)", "FOUR", five.getParent().getName());
+
+    }
 
     // ------------------------------------------------ Utility Support Methods
 
@@ -580,6 +658,5 @@ public class RuleTestCase extends TestCase {
                 office.getZipCode());
 
     }
-
 
 }

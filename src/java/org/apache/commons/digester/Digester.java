@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.48 2002/03/11 20:18:44 rdonkin Exp $
- * $Revision: 1.48 $
- * $Date: 2002/03/11 20:18:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.49 2002/03/20 20:28:28 rdonkin Exp $
+ * $Revision: 1.49 $
+ * $Date: 2002/03/20 20:28:28 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.48 $ $Date: 2002/03/11 20:18:44 $
+ * @version $Revision: 1.49 $ $Date: 2002/03/20 20:28:28 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1693,6 +1693,35 @@ public class Digester extends DefaultHandler {
 
     }
 
+
+    /**
+     * Add {@link SetRootRule} with the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param methodName Method name to call on the root object
+     */
+    public void addSetRoot(String pattern, String methodName) {
+
+        addRule(pattern,
+                new SetRootRule(this, methodName));
+
+    }
+
+
+    /**
+     * Add {@link SetRootRule} with the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param methodName Method name to call on the root object
+     * @param paramType Java class name of the expected parameter type
+     */
+    public void addSetRoot(String pattern, String methodName,
+                           String paramType) {
+
+        addRule(pattern,
+                new SetRootRule(this, methodName, paramType));
+
+    }
 
     /**
      * Add a "set properties" rule for the specified parameters.
