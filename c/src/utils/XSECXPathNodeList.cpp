@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -76,7 +74,7 @@
 #include <xsec/utils/XSECXPathNodeList.hpp>
 #include <xsec/framework/XSECError.hpp>
 
-
+#include <string.h>
 
 
 

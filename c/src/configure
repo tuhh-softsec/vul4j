@@ -1252,8 +1252,8 @@ if test "$enable_debug" = "yes" ; then
 	CFLAGS="${CFLAGS} -g"
 	CXXFLAGS="${CXXFLAGS} -g"
 else
-	CFLAGS="${CFLAGS} -O -DNDEBUG"
-	CXXFLAGS="${CXXFLAGS} -O -DNDEBUG"
+	CFLAGS="${CFLAGS} -O2 -DNDEBUG"
+	CXXFLAGS="${CXXFLAGS} -O2 -DNDEBUG"
 fi
 
 # Create the Makefile.in files in each directory
