@@ -268,8 +268,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
         addingNewFiles = true;
         if (doUpdate && !zipFile.exists()) {
             doUpdate = false;
-//            getLogger().debug( "ignoring update attribute as " + archiveType
-//                + " doesn't exist." );
+            getLogger().debug( "ignoring update attribute as " + archiveType + " doesn't exist." );
         }
 
         boolean success = false;
@@ -289,7 +288,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
                 }
                 catch (SecurityException e)
                 {
-//                    getLogger().debug( e.toString() );
+                    getLogger().debug( e.toString() );
                     throw new ArchiverException(
                         "Not allowed to rename old file ("
                         + zipFile.getAbsolutePath()
@@ -297,7 +296,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
                 }
                 catch (IOException e)
                 {
-//                    getLogger().debug( e.toString() );
+                    getLogger().debug( e.toString() );
                     throw new ArchiverException(
                         "Unable to rename old file ("
                         + zipFile.getAbsolutePath()
@@ -307,7 +306,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
 
             String action = doUpdate ? "Updating " : "Building ";
 
-//            getLogger().info( action + archiveType + ": " + zipFile.getAbsolutePath() );
+            getLogger().info( action + archiveType + ": " + zipFile.getAbsolutePath() );
 
             ZipOutputStream zOut = null;
             try
@@ -343,8 +342,8 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
                 {
                     if (!renamedFile.delete())
                     {
-//                        getLogger().warn ("Warning: unable to delete temporary file "
-//                            + renamedFile.getName());
+                        getLogger().warn ("Warning: unable to delete temporary file "
+                            + renamedFile.getName());
                     }
                 }
                 success = true;
@@ -547,7 +546,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
         if (entries.contains(vPath)) {
 
             if (duplicate.equals("preserve")) {
-//                getLogger().info( vPath + " already added, skipping" );
+                getLogger().info( vPath + " already added, skipping" );
                 return;
             } else if (duplicate.equals("fail")) {
                 throw new ArchiverException("Duplicate file " + vPath
@@ -555,11 +554,11 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
                                          + "attribute is 'fail'.");
             } else {
                 // duplicate equal to add, so we continue
-//                getLogger().debug( "duplicate file " + vPath
-//                    + " found, adding." );
+                getLogger().debug( "duplicate file " + vPath
+                    + " found, adding." );
             }
         } else {
-//            getLogger().debug( "adding entry " + vPath );
+            getLogger().debug( "adding entry " + vPath );
         }
 
         entries.put(vPath, vPath);
@@ -665,7 +664,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
             return;
         }
 
-//        getLogger().debug( "adding directory " + vPath );
+        getLogger().debug( "adding directory " + vPath );
         addedDirs.put(vPath, vPath);
 
         if (!skipWriting) {
