@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -76,6 +74,7 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoX509.hpp>
 
+#if defined (HAVE_OPENSSL)
 #include <openssl/x509.h>
 #include <openssl/bio.h>
 
@@ -169,6 +168,6 @@ private:
 	safeBuffer		m_DERX509;
 };
 
-
+#endif /* HAVE_OPENSSL */
 #endif /* OPENSSLCRYPTOX509_INCLUDE */
 

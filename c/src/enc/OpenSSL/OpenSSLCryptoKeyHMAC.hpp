@@ -73,6 +73,8 @@
 
 #include <xsec/enc/XSECCryptoKeyHMAC.hpp>
 
+#if defined (HAVE_OPENSSL)
+
 /**
  * \ingroup opensslcrypto
  * @{
@@ -166,5 +168,7 @@ private:
 	safeBuffer			m_keyBuf;
 	unsigned int		m_keyLen;
 };
+
+#endif /* HAVE_OPENSSL */
 
 #endif /* OPENSSLCRYPTOKEYHMAC_INCLUDE */

@@ -76,7 +76,9 @@
 
 // OpenSSL Includes
 
-#include <openssl/evp.h>
+#if defined (HAVE_OPENSSL)
+
+#	include <openssl/evp.h>
 
 /**
  * @ingroup opensslcrypto
@@ -189,4 +191,5 @@ private:
 
 };
 
+#endif /* HAVE_OPENSSL */
 #endif /* OPENSSLCRYPTOHASHSHA1_INCLUDE */

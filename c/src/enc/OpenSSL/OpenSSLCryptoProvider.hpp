@@ -74,6 +74,8 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECCryptoProvider.hpp>
 
+#if defined (HAVE_OPENSSL)
+
 /**
  * @defgroup opensslcrypto OpenSSL Interface
  * @ingroup crypto
@@ -221,4 +223,5 @@ public :
 
 };
 
+#endif /* HAVE_OPENSSL */
 #endif /* OPENSSLCRYPTOPROVIDER_INCLUDE */

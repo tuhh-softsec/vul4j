@@ -76,6 +76,7 @@
 #include <xsec/utils/XSECSafeBuffer.hpp>
 
 // OpenSSL Includes
+#if defined (HAVE_OPENSSL)
 
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
@@ -215,5 +216,5 @@ private:
 	bool				m_initialised;
 
 };
-
+#endif /* HAVE_OPENSSL */
 #endif /* OPENSSLCRYPTOHASHHMAC_INCLUDE */

@@ -75,8 +75,8 @@
 #include <xsec/enc/XSECCryptoBase64.hpp>
 
 // OpenSSL
-
-#include <openssl/evp.h>
+#if defined (HAVE_OPENSSL)
+#	include <openssl/evp.h>
 
 /**
  * @ingroup opensslcrypto
@@ -236,4 +236,5 @@ private :
 
 /*\@}*/
 
+#endif /* HAVE_OPENSSL */
 #endif /* OPENSSLCRYPTOBASE64_INCLUDE */
