@@ -80,7 +80,7 @@
 //           IPAD/OPAD definitions
 // --------------------------------------------------------------------------------
 
-unsigned char ipad[] = {
+static unsigned char ipad[] = {
 
 	0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36,
 	0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36,
@@ -92,7 +92,7 @@ unsigned char ipad[] = {
 	0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36, 0x36,
 };
 
-unsigned char opad[] = {
+static unsigned char opad[] = {
 
 	0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 
 	0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 
@@ -119,6 +119,11 @@ WinCAPICryptoHashHMAC::WinCAPICryptoHashHMAC(WinCAPICryptoProvider * owner, Hash
 	case (XSECCryptoHash::HASH_SHA1) :
 	
 		m_algId = CALG_SHA;
+		break;
+
+	case (XSECCryptoHash::HASH_MD5) :
+	
+		m_algId = CALG_MD5;
 		break;
 
 	default :
@@ -197,16 +202,40 @@ void WinCAPICryptoHashHMAC::setKey(XSECCryptoKey *key) {
 		HCRYPTKEY k = ((WinCAPICryptoKeyHMAC *) key)->getWinKey();
 
 		fResult = CryptCreateHash(
-			mp_ownerProvider->getProvider(),
-			m_algId,
+			mp_ownerProvider->getProviderRSA(),
+			CALG_HMAC,
 			k,
 			0,
 			&m_h);
 
 		if (fResult == 0 || m_h == 0) {
+			DWORD error = GetLastError();
 			throw XSECCryptoException(XSECCryptoException::MDError,
 				"WinCAPI:Hash::setKey - Error creating internally keyed hash object"); 
 		}
+
+		// Set the HMAC algorithm
+		HMAC_INFO hi;
+
+		hi.HashAlgid = m_algId;
+		hi.pbInnerString = NULL;		// Use default inner and outer strings
+		hi.cbInnerString = 0;
+		hi.pbOuterString = NULL;
+		hi.cbOuterString = 0;
+
+		fResult = CryptSetHashParam(
+			m_h,
+			HP_HMAC_INFO,
+			(BYTE *) &hi,
+			0);
+
+		if (fResult == 0 || m_h == 0) {
+			DWORD error = GetLastError();
+			throw XSECCryptoException(XSECCryptoException::MDError,
+				"WinCAPI:Hash::setKey - Error setting HASH_INFO object"); 
+		}
+
+
 
 		return;
 
@@ -222,7 +251,7 @@ void WinCAPICryptoHashHMAC::setKey(XSECCryptoKey *key) {
 		HCRYPTHASH h;
 
 		fResult = CryptCreateHash(
-			mp_ownerProvider->getProvider(),
+			mp_ownerProvider->getProviderDSS(),
 			m_algId,
 			0,
 			0,
@@ -277,7 +306,7 @@ void WinCAPICryptoHashHMAC::setKey(XSECCryptoKey *key) {
 
 	// Now create the hash object, and start with the ipad operation
 	fResult = CryptCreateHash(
-		mp_ownerProvider->getProvider(),
+		mp_ownerProvider->getProviderDSS(),
 		m_algId,
 		0,
 		0,
@@ -349,7 +378,7 @@ unsigned int WinCAPICryptoHashHMAC::finish(unsigned char * hash,
 	// Perform the opad operation
 	HCRYPTHASH h;
 	fResult = CryptCreateHash(
-		mp_ownerProvider->getProvider(),
+		mp_ownerProvider->getProviderDSS(),
 		m_algId,
 		0,
 		0,

@@ -78,11 +78,6 @@
 
 XSEC_USING_XERCES(ArrayJanitor);
 
-#define BLOBHEADERLEN	0x08
-#define DSSPUBKEYLEN	0x08
-#define DSSSEEDLEN		0x18
-
-
 WinCAPICryptoKeyDSA::WinCAPICryptoKeyDSA(WinCAPICryptoProvider * owner) {
 
 	// Create a new key to be loaded as we go
@@ -228,7 +223,7 @@ void WinCAPICryptoKeyDSA::importKey(void) {
 
 	// First build a buffer to hold everything
 	BYTE * blobBuffer;
-	unsigned int blobBufferLen = BLOBHEADERLEN + DSSPUBKEYLEN + (3 * m_PLen) + 0x14 + DSSSEEDLEN;
+	unsigned int blobBufferLen = WINCAPI_BLOBHEADERLEN + WINCAPI_DSSPUBKEYLEN + (3 * m_PLen) + 0x14 + WINCAPI_DSSSEEDLEN;
 	XSECnew(blobBuffer, BYTE[blobBufferLen]);
 	ArrayJanitor<BYTE> j_blobBuffer(blobBuffer);
 
@@ -241,14 +236,14 @@ void WinCAPICryptoKeyDSA::importKey(void) {
 	header->aiKeyAlg = CALG_DSS_SIGN;
 
 	// Now the public key header
-	DSSPUBKEY * pubkey = (DSSPUBKEY *) (blobBuffer + BLOBHEADERLEN);
+	DSSPUBKEY * pubkey = (DSSPUBKEY *) (blobBuffer + WINCAPI_BLOBHEADERLEN);
 
 	pubkey->magic = 0x31535344;		// ASCII encoding of DSS1
 	pubkey->bitlen = m_PLen * 8;		// Number of bits in prime modulus
 
 	// Now copy in each of the keys
 	BYTE * i = (BYTE *) (pubkey);
-	i += DSSPUBKEYLEN;
+	i += WINCAPI_DSSPUBKEYLEN;
 
 	memcpy(i, mp_P, m_PLen);
 	i+= m_PLen;
@@ -277,12 +272,12 @@ void WinCAPICryptoKeyDSA::importKey(void) {
 		*i++ = 0;
 
 	// Set seed to 0
-	for (j = 0; j < DSSSEEDLEN; ++j)
+	for (j = 0; j < WINCAPI_DSSSEEDLEN; ++j)
 		*i++ = 0xFF;	// SEED Counter set to 0xFFFFFFFF will cause seed to be ignored
 
 	// Now that we have the blob, import
 	BOOL fResult = CryptImportKey(
-					mp_ownerProvider->getProvider(),
+					mp_ownerProvider->getProviderDSS(),
 					blobBuffer,
 					blobBufferLen,
 					0,				// Not signed
@@ -351,7 +346,7 @@ bool WinCAPICryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 	// Have to create a Windows hash object and feed in the hash
 	BOOL fResult;
 	HCRYPTHASH h;
-	fResult = CryptCreateHash(mp_ownerProvider->getProvider(), 
+	fResult = CryptCreateHash(mp_ownerProvider->getProviderDSS(), 
 					CALG_SHA1, 
 					0, 
 					0,
@@ -431,7 +426,7 @@ unsigned int WinCAPICryptoKeyDSA::signBase64Signature(unsigned char * hashBuf,
 	// Have to create a Windows hash object and feed in the hash
 	BOOL fResult;
 	HCRYPTHASH h;
-	fResult = CryptCreateHash(mp_ownerProvider->getProvider(), 
+	fResult = CryptCreateHash(mp_ownerProvider->getProviderDSS(), 
 					CALG_SHA1, 
 					0, 
 					0,
@@ -517,7 +512,7 @@ XSECCryptoKey * WinCAPICryptoKeyDSA::clone() {
 		CryptExportKey(m_key, 0, PUBLICKEYBLOB, 0, keyBuf, &keyBufLen);
 
 		// Now re-import
-		CryptImportKey(mp_ownerProvider->getProvider(), keyBuf, keyBufLen, NULL, 0, &ret->m_key);
+		CryptImportKey(mp_ownerProvider->getProviderDSS(), keyBuf, keyBufLen, NULL, 0, &ret->m_key);
 	}
 
 	ret->m_PLen = m_PLen;
@@ -601,13 +596,13 @@ void WinCAPICryptoKeyDSA::loadParamsFromKey(void) {
 			"WinCAPI:DSA - Error exporting public key");
 	}
 
-	DSSPUBKEY * pk = (DSSPUBKEY *) ( blob + BLOBHEADERLEN );
+	DSSPUBKEY * pk = (DSSPUBKEY *) ( blob + WINCAPI_BLOBHEADERLEN );
 	DWORD keyLen = pk->bitlen / 8;
 
 	// Copy the keys
 	
 	BYTE * i = (BYTE *) ( pk );
-	i += DSSPUBKEYLEN;
+	i += WINCAPI_DSSPUBKEYLEN;
 	if (mp_P != NULL)
 		delete[] mp_P;
 

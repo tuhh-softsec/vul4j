@@ -74,33 +74,49 @@
 #include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoX509.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoKeyDSA.hpp>
+#include <xsec/enc/WinCAPI/WinCAPICryptoKeyRSA.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoHash.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoHashHMAC.hpp>
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
-
- /*
- * For now, we rely on OpenSSL for many functions as we
- * build the interface
- */
-
-#include <xsec/enc/OpenSSL/OpenSSLCryptoProvider.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 
 #include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(ArrayJanitor);
 
 WinCAPICryptoProvider::WinCAPICryptoProvider(
-						HCRYPTPROV provDSS) {
-
-	OpenSSL_add_all_digests();		// Initialise Openssl
-	SSLeay_add_all_algorithms();
+						HCRYPTPROV provDSS,
+						HCRYPTPROV provRSA) {
 
 	// Copy parameters for later use
 
 	m_provDSS = provDSS; 
+	m_provRSA = provRSA;
 
+}
+
+WinCAPICryptoProvider::WinCAPICryptoProvider() {
+
+	// Obtain default PROV_DSS and PROV_RSA_FULL, with default user key containers
+	if (!CryptAcquireContext(&m_provDSS,
+		NULL,
+		NULL,
+		PROV_DSS,
+		0)) 
+	{
+		throw XSECException(XSECException::InternalError,
+			"WinCAPICryptoProvider() - Error obtaining default PROV_DSS");
+	}
+
+	if (!CryptAcquireContext(&m_provRSA,
+		NULL,
+		NULL,
+		PROV_RSA_FULL,
+		0)) 
+	{
+		throw XSECException(XSECException::InternalError,
+			"WinCAPICryptoProvider() - Error obtaining default PROV_RSA_FULL");
+	}
 }
 
 
@@ -130,6 +146,26 @@ XSECCryptoHash * WinCAPICryptoProvider::hashHMACSHA1() {
 
 }
 
+XSECCryptoHash	* WinCAPICryptoProvider::hashMD5() {
+
+	WinCAPICryptoHash * ret;
+
+	XSECnew(ret, WinCAPICryptoHash(this, XSECCryptoHash::HASH_MD5));
+
+	return ret;
+
+}
+
+XSECCryptoHash * WinCAPICryptoProvider::hashHMACMD5() {
+
+	WinCAPICryptoHashHMAC * ret;
+
+	XSECnew(ret, WinCAPICryptoHashHMAC(this, XSECCryptoHash::HASH_MD5));
+
+	return ret;
+
+}
+
 XSECCryptoKeyDSA * WinCAPICryptoProvider::keyDSA() {
 	
 	WinCAPICryptoKeyDSA * ret;
@@ -142,9 +178,9 @@ XSECCryptoKeyDSA * WinCAPICryptoProvider::keyDSA() {
 
 XSECCryptoKeyRSA * WinCAPICryptoProvider::keyRSA() {
 	
-	OpenSSLCryptoKeyRSA * ret;
+	WinCAPICryptoKeyRSA * ret;
 
-	XSECnew(ret, OpenSSLCryptoKeyRSA());
+	XSECnew(ret, WinCAPICryptoKeyRSA(this));
 
 	return ret;
 
@@ -225,7 +261,7 @@ unsigned char * WinCAPICryptoProvider::WinBN2b64(BYTE * n, DWORD nLen, unsigned 
 	
 	unsigned char * b64;
 	// Naieve length calculation
-	unsigned int bufLen = nLen * 2;
+	unsigned int bufLen = nLen * 2 + 4;
 
 	XSECnew(b64, unsigned char[bufLen]);
 	ArrayJanitor<unsigned char> j_b64(b64);

@@ -60,7 +60,7 @@
 /*
  * XSEC
  *
- * WinCAPICryptoProvider := Base class to handle Windows Crypto API
+ * WinCAPICryptoKeyRSA := Windows implementation of RSA Keys
  *
  * Author(s): Berin Lautenbach
  *
@@ -68,117 +68,93 @@
  *
  */
 
-#ifndef WINCAPICRYPTOPROVIDER_INCLUDE
-#define WINCAPICRYPTOPROVIDER_INCLUDE
+#ifndef WINCAPICRYPTOKEYRSA_INCLUDE
+#define WINCAPICRYPTOKEYRSA_INCLUDE
 
-#include <xsec/framework/XSECDefs.hpp>
-#include <xsec/enc/XSECCryptoProvider.hpp>
+#include <xsec/enc/XSECCryptoKeyRSA.hpp>
 
-#define _WIN32_WINNT 0x0400
+#if !defined(_WIN32_WINNT)
+#	define _WIN32_WINNT 0x0400
+#endif
+
 #include <wincrypt.h>
 
+class WinCAPICryptoProvider;
 
-#define WINCAPI_BLOBHEADERLEN	0x08
-#define WINCAPI_DSSPUBKEYLEN	0x08
-#define WINCAPI_DSSSEEDLEN		0x18
-#define WINCAPI_RSAPUBKEYLEN	0x0C
-
-
-/**
- * @defgroup wincapicrypto Windows Crypto API Interface
- * @ingroup crypto
- * The WinCAPI crypto provides an experimental inerface to
- * the Windows Cryptographic API
- */
- /*\@{*/
-
-class DSIG_EXPORT WinCAPICryptoProvider : public XSECCryptoProvider {
-
+class DSIG_EXPORT WinCAPICryptoKeyRSA : public XSECCryptoKeyRSA {
 
 public :
 
 	// Constructors/Destructors
-
-	/**
-	 * \brief Create a Windows CAPI interface layer
-	 *
-	 * Windows CSPs work under a provider model.  The user should specify
-	 * which CSP to use and which key container to use.
-	 *
-	 * @param provDSS DSS provider - must be of type PROV_DSS
-	 * @param provRSA RSA provider - must be of type PROV_RSA_FULL
-	 */
 	
-	WinCAPICryptoProvider(HCRYPTPROV provDSS, HCRYPTPROV provRSA);
+	WinCAPICryptoKeyRSA(WinCAPICryptoProvider * owner);
 
 	/**
-	 * \brief Create a Windows CAPI interface layer.
+	 * \brief Dedicated WinCAPI constructor
 	 *
-	 * The default constructor will use the default providers and containers
-	 * 
-	 * @note This call will fail if the user has not generated keys in the
-	 * default DSS and RSA provider containers
+	 * Create a RSA key for use in XSEC from an existing HCRYPTKEY
+	 *
+	 * @param owner The owner provider object (needed to find CSP)
+	 * @param k The key to use
+	 * @param havePrivate The CSP holds the private key as well as public
+	 * @note k is owned by the library.  When the wrapper 
+	 * WinCAPICryptoKeyRSA is deleted, k will be destroyed using
+	 * CryptDestroyKey()
 	 */
 
-	WinCAPICryptoProvider();
+	WinCAPICryptoKeyRSA(WinCAPICryptoProvider * owner, HCRYPTKEY k, bool havePrivate = false);
 
-	virtual ~WinCAPICryptoProvider();
+	virtual ~WinCAPICryptoKeyRSA();
 
-	// Hashing classes
-	virtual XSECCryptoHash			* hashSHA1();
-	virtual XSECCryptoHash			* hashHMACSHA1();
-	virtual XSECCryptoHash			* hashMD5();
-	virtual XSECCryptoHash			* hashHMACMD5();
+	// Generic key functions
 
-	// Encode/Decode
-	virtual XSECCryptoBase64		* base64();
+	virtual XSECCryptoKey::KeyType getKeyType();
+	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVWinCAPI;}
+	virtual XSECCryptoKey * clone();
 
-	// Keys
-	virtual XSECCryptoKeyDSA		* keyDSA();
-	virtual XSECCryptoKeyRSA		* keyRSA();
+	// RSA Specific Functions
 
-	// X509
-	virtual XSECCryptoX509			* X509();
+	virtual void loadPublicModulusBase64BigNums(const char * b64, unsigned int len);
+	virtual void loadPublicExponentBase64BigNums(const char * b64, unsigned int len);
 
+	// Signature functions
 
-	// WinCAPI Unique
-	HCRYPTPROV getProviderDSS(void) {return m_provDSS;}
-	HCRYPTPROV getProviderRSA(void) {return m_provRSA;}
+	virtual bool verifySHA1PKCS1Base64Signature(const unsigned char * hashBuf, 
+								 unsigned int hashLen,
+								 const char * base64Signature,
+								 unsigned int sigLen);
 
-	/**
-	 * \brief Translate B64 I2OS integer to a WinCAPI int.
-	 *
-	 * Decodes a Base64 integer and reverses the order to allow loading into
-	 * a Windows CAPI function.  (CAPI uses Little Endian storage of integers).
-	 *
-	 * @param b64 Base 64 string
-	 * @param b64Len Length of base64 string
-	 * @param retLen Parameter to hold length of return integer
-	 */
+	virtual unsigned int signSHA1PKCS1Base64Signature(unsigned char * hashBuf,
+		unsigned int hashLen,
+		char * base64SignatureBuf,
+		unsigned int base64SignatureBufLen);
 
-	static BYTE * b642WinBN(const char * b64, unsigned int b64Len, unsigned int &retLen);
+	// "Extra" WinCAPI functions
 
-	/**
-	 * \brief Translate a WinCAPI int to a B64 I2OS integer .
-	 *
-	 * Encodes a Windows integer in I2OSP base64 encoded format.
-	 *
-	 * @param b64 Base 64 buffer
-	 * @param b64Len Length of base64 buffer
-	 * @param retLen Parameter to hold length of return integer
-	 */
+	WinCAPICryptoKeyRSA(HCRYPTKEY k);
 
-	static unsigned char * WinBN2b64(BYTE * n, DWORD nLen, unsigned int &retLen);
+	// Some useful functions for extracting parameters from a Windows key
 
-	/*\@}*/
-
-
+	unsigned int getExponentBase64BigNums(char * b64, unsigned int len);
+	unsigned int getModulusBase64BigNums(char * b64, unsigned int len);
 
 private:
 
-	HCRYPTPROV		m_provDSS;
-	HCRYPTPROV		m_provRSA;
+	HCRYPTKEY					m_key;	
+	WinCAPICryptoProvider		* mp_ownerProvider;
+	bool						m_havePrivate;		// Do we have the private key?
+
+	BYTE						* mp_modulus;
+	BYTE						* mp_exponent;
+
+	unsigned int				m_modulusLen;
+	unsigned int				m_exponentLen;
+
+	// Instruct to import from parameters
+
+	void importKey(void);
+	void loadParamsFromKey(void);
 
 };
 
-#endif /* WINCAPICRYPTOPROVIDER_INCLUDE */
+#endif /* WINCAPICRYPTOKEYRSA_INCLUDE */

@@ -73,7 +73,7 @@
 #include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoX509.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoKeyDSA.hpp>
-//#include <xsec/enc/WinCAPI/WinCAPICryptoKeyRSA.hpp>
+#include <xsec/enc/WinCAPI/WinCAPICryptoKeyRSA.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 
@@ -139,7 +139,7 @@ XSECCryptoKey::KeyType WinCAPICryptoX509::getPublicKeyType() {
 	if (lstrcmp(mp_certContext->pCertInfo->SubjectPublicKeyInfo.Algorithm.pszObjId, CRYPTO_OID_DSA) == 0)
 		return XSECCryptoKey::KEY_DSA_PUBLIC;
 
-	if (lstrcmp(mp_certContext->pCertInfo->SubjectPublicKeyInfo.Algorithm.pszObjId, "RSA") == 0)
+	if (lstrcmp(mp_certContext->pCertInfo->SubjectPublicKeyInfo.Algorithm.pszObjId, szOID_RSA_RSA) == 0)
 		return XSECCryptoKey::KEY_RSA_PUBLIC;
 
 	return XSECCryptoKey::KEY_NONE;
@@ -164,7 +164,7 @@ XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() {
 	if (getPublicKeyType() == XSECCryptoKey::KEY_DSA_PUBLIC) {
 
 		fResult= CryptImportPublicKeyInfo(
-			   mp_ownerProvider->getProvider(),
+			   mp_ownerProvider->getProviderDSS(),
 			   X509_ASN_ENCODING,
 			   &(mp_certContext->pCertInfo->SubjectPublicKeyInfo),
 			   &key);
@@ -180,6 +180,30 @@ XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() {
 
 		WinCAPICryptoKeyDSA * ret;
 		XSECnew(ret, WinCAPICryptoKeyDSA(mp_ownerProvider, key));
+
+		return ret;
+
+	}
+
+	if (getPublicKeyType() == XSECCryptoKey::KEY_RSA_PUBLIC) {
+
+		fResult= CryptImportPublicKeyInfo(
+			   mp_ownerProvider->getProviderRSA(),
+			   X509_ASN_ENCODING,
+			   &(mp_certContext->pCertInfo->SubjectPublicKeyInfo),
+			   &key);
+                 
+
+		if (fResult == FALSE) {
+			throw XSECCryptoException(XSECCryptoException::X509Error,
+				"WinCAPI:X509 - Error loading public key info from certificate");
+		}
+
+		// Now that we have a handle for the DSA key, create a DSA Key object to
+		// wrap it in
+
+		WinCAPICryptoKeyRSA * ret;
+		XSECnew(ret, WinCAPICryptoKeyRSA(mp_ownerProvider, key));
 
 		return ret;
 

@@ -113,6 +113,11 @@ void WinCAPICryptoHash::reset(void) {
 		alg_id = CALG_SHA;
 		break;
 
+	case (XSECCryptoHash::HASH_MD5) :
+	
+		alg_id = CALG_MD5;
+		break;
+
 	default :
 
 		alg_id = 0;
@@ -126,7 +131,7 @@ void WinCAPICryptoHash::reset(void) {
 	}
 
 	fResult = CryptCreateHash(
-		mp_ownerProvider->getProvider(),
+		mp_ownerProvider->getProviderDSS(),
 		alg_id,
 		0,
 		0,
