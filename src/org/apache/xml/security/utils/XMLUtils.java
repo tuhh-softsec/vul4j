@@ -661,23 +661,28 @@ public class XMLUtils {
    public static BigInteger getBigintFromElement(Element element)
            throws XMLSignatureException {
 
-      if (element.getChildNodes().getLength() != 1) {
-         throw new XMLSignatureException("signature.Util.TooManyChilds");
+      try {
+         if (element.getChildNodes().getLength() != 1) {
+            throw new XMLSignatureException("signature.Util.TooManyChilds");
+         }
+
+         Node child = element.getFirstChild();
+
+         if ((child == null) || (child.getNodeType() != Node.TEXT_NODE)) {
+            throw new XMLSignatureException("signature.Util.NonTextNode");
+         }
+
+         Text text = (Text) child;
+         String textData = text.getData();
+         byte magnitude[] =
+            org.apache.xml.security.utils.Base64.decode(textData);
+         int signum = 1;
+         BigInteger bigInteger = new BigInteger(signum, magnitude);
+
+         return bigInteger;
+      } catch (Base64DecodingException ex) {
+         throw new XMLSignatureException("empty", ex);
       }
-
-      Node child = element.getFirstChild();
-
-      if ((child == null) || (child.getNodeType() != Node.TEXT_NODE)) {
-         throw new XMLSignatureException("signature.Util.NonTextNode");
-      }
-
-      Text text = (Text) child;
-      String textData = text.getData();
-      byte magnitude[] = org.apache.xml.security.utils.Base64.decode(textData);
-      int signum = 1;
-      BigInteger bigInteger = new BigInteger(signum, magnitude);
-
-      return bigInteger;
    }
 
    /**
@@ -690,21 +695,25 @@ public class XMLUtils {
    public static byte[] getBytesFromElement(Element element)
            throws XMLSignatureException {
 
-      if (element.getChildNodes().getLength() != 1) {
-         throw new XMLSignatureException("signature.Util.TooManyChilds");
+      try {
+         if (element.getChildNodes().getLength() != 1) {
+            throw new XMLSignatureException("signature.Util.TooManyChilds");
+         }
+
+         Node child = element.getFirstChild();
+
+         if ((child == null) || (child.getNodeType() != Node.TEXT_NODE)) {
+            throw new XMLSignatureException("signature.Util.NonTextNode");
+         }
+
+         Text text = (Text) child;
+         String textData = text.getData();
+         byte bytes[] = org.apache.xml.security.utils.Base64.decode(textData);
+
+         return bytes;
+      } catch (Base64DecodingException ex) {
+         throw new XMLSignatureException("empty", ex);
       }
-
-      Node child = element.getFirstChild();
-
-      if ((child == null) || (child.getNodeType() != Node.TEXT_NODE)) {
-         throw new XMLSignatureException("signature.Util.NonTextNode");
-      }
-
-      Text text = (Text) child;
-      String textData = text.getData();
-      byte bytes[] = org.apache.xml.security.utils.Base64.decode(textData);
-
-      return bytes;
    }
 
    /**
@@ -1027,18 +1036,39 @@ public class XMLUtils {
       } catch (TransformerException ex) {}
    }
 
+   /**
+    * Method addReturnToElement
+    *
+    * @param elementProxy
+    */
    public static void addReturnToElement(ElementProxy elementProxy) {
+
       Document doc = elementProxy._doc;
+
       elementProxy.getElement().appendChild(doc.createTextNode("\n"));
    }
 
+   /**
+    * Method addReturnToElement
+    *
+    * @param e
+    */
    public static void addReturnToElement(Element e) {
+
       Document doc = e.getOwnerDocument();
+
       e.appendChild(doc.createTextNode("\n"));
    }
 
+   /**
+    * Method addReturnToNode
+    *
+    * @param n
+    */
    public static void addReturnToNode(Node n) {
+
       Document doc = n.getOwnerDocument();
+
       n.appendChild(doc.createTextNode("\n"));
    }
 

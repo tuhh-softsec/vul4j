@@ -70,6 +70,7 @@ import org.apache.xpath.objects.XObject;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
+import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -150,10 +151,15 @@ public class TransformBase64Decode extends TransformSpi {
                   TransformationException, InvalidCanonicalizerException {
 
       if (input.isOctetStream()) {
-         byte[] base64Bytes = input.getBytes();
-         byte[] decodedBytes = Base64.decode(base64Bytes);
+         try {
+            byte[] base64Bytes = input.getBytes();
+            byte[] decodedBytes = Base64.decode(base64Bytes);
 
-         return new XMLSignatureInput(new ByteArrayInputStream(decodedBytes));
+            return new XMLSignatureInput(
+               new ByteArrayInputStream(decodedBytes));
+         } catch (Base64DecodingException ex) {
+            throw new TransformationException("empty", ex);
+         }
       } else {
          try {
             String resultString = "";
@@ -191,14 +197,16 @@ public class TransformBase64Decode extends TransformSpi {
             return new XMLSignatureInput(
                new ByteArrayInputStream(decodedBytes));
          } catch (ParserConfigurationException e) {
-            throw new CanonicalizationException("c14n.Canonicalizer.Exception",
+            throw new TransformationException("c14n.Canonicalizer.Exception",
                                                 e);
          } catch (SAXException e) {
-            throw new CanonicalizationException("c14n.Canonicalizer.Exception",
+            throw new TransformationException("c14n.Canonicalizer.Exception",
                                                 e);
          } catch (TransformerException e) {
-            throw new CanonicalizationException("c14n.Canonicalizer.Exception",
+            throw new TransformationException("c14n.Canonicalizer.Exception",
                                                 e);
+         } catch (Base64DecodingException ex) {
+            throw new TransformationException("empty", ex);
          }
       }
    }

@@ -251,12 +251,16 @@ public class XMLSignature extends SignatureElementProxy {
     */
    public byte[] getSignatureValue() throws XMLSignatureException {
 
-      Element signatureValueElem = this.getChildElementLocalName(0,
-                                      Constants.SignatureSpecNS,
-                                      Constants._TAG_SIGNATUREVALUE);
-      byte[] signatureValue = Base64.decode(signatureValueElem);
+      try {
+         Element signatureValueElem = this.getChildElementLocalName(0,
+                                         Constants.SignatureSpecNS,
+                                         Constants._TAG_SIGNATUREVALUE);
+         byte[] signatureValue = Base64.decode(signatureValueElem);
 
-      return signatureValue;
+         return signatureValue;
+      } catch (Base64DecodingException ex) {
+         throw new XMLSignatureException("empty", ex);
+      }
    }
 
    /**

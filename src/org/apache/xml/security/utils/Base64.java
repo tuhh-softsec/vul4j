@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -84,6 +83,7 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.exceptions.Base64DecodingException;
 
 
 /**
@@ -104,10 +104,10 @@ public class Base64 {
    /** Field LINE_SEPARATOR */
    public static final String LINE_SEPARATOR = "\n";
 
-   /** Field BASE64DEFAULTLENGTH           */
+   /** Field BASE64DEFAULTLENGTH */
    public static final int BASE64DEFAULTLENGTH = 76;
 
-   /** Field _base64length           */
+   /** Field _base64length */
    static int _base64length = Base64.BASE64DEFAULTLENGTH;
 
    /**
@@ -237,8 +237,10 @@ public class Base64 {
     *
     * @param element
     * @return
+    * @throws Base64DecodingException
     */
-   public static BigInteger decodeBigIntegerFromElement(Element element) {
+   public static BigInteger decodeBigIntegerFromElement(Element element)
+           throws Base64DecodingException {
       return new BigInteger(1, Base64.decode(element));
    }
 
@@ -247,8 +249,10 @@ public class Base64 {
     *
     * @param text
     * @return
+    * @throws Base64DecodingException
     */
-   public static BigInteger decodeBigIntegerFromText(Text text) {
+   public static BigInteger decodeBigIntegerFromText(Text text)
+           throws Base64DecodingException {
       return new BigInteger(1, Base64.decode(text.getData()));
    }
 
@@ -283,8 +287,9 @@ public class Base64 {
     * @param element
     * @return
     * @todo not tested yet
+    * @throws Base64DecodingException
     */
-   public static byte[] decode(Element element) {
+   public static byte[] decode(Element element) throws Base64DecodingException {
 
       NodeList nl = element.getChildNodes();
       StringBuffer sb = new StringBuffer();
@@ -326,8 +331,9 @@ public class Base64 {
     * @param base64
     *
     * @return
+    * @throws Base64DecodingException
     */
-   public static byte[] decode(byte[] base64) {
+   public static byte[] decode(byte[] base64) throws Base64DecodingException {
 
       try {
          return decode(new String(base64, "UTF-8"));
@@ -343,53 +349,59 @@ public class Base64 {
     *
     * @param base64 <code>String</code> encoded string (single line only !!)
     * @return Decoded data in a byte array
+    * @throws Base64DecodingException
     */
-   public static byte[] decode(String base64) {
+   public static byte[] decode(String base64) throws Base64DecodingException {
 
-      if (base64.length() < 30) {
-          cat.debug("I was asked to decode \"" + base64 + "\"");
-      } else {
-          cat.debug("I was asked to decode \"" + base64.substring(0, 20) + "...\"");
-      }
-
-      //strip whitespace from anywhere in the string.  Not the most memory
-      //efficient solution but elegant anyway :-)
-      StringTokenizer tok = new StringTokenizer(base64, " \n\r\t", false);
-      StringBuffer buf = new StringBuffer(base64.length());
-
-      while (tok.hasMoreElements()) {
-         buf.append(tok.nextToken());
-      }
-
-      base64 = buf.toString();
-
-      int pad = 0;
-
-      for (int i = base64.length() - 1; (i > 0) && (base64.charAt(i) == '=');
-              i--) {
-         pad++;
-      }
-
-      int length = base64.length() / 4 * 3 - pad;
-      byte[] raw = new byte[length];
-
-      for (int i = 0, rawIndex = 0; i < base64.length();
-              i += 4, rawIndex += 3) {
-         int block = (getValue(base64.charAt(i)) << 18)
-                     + (getValue(base64.charAt(i + 1)) << 12)
-                     + (getValue(base64.charAt(i + 2)) << 6)
-                     + (getValue(base64.charAt(i + 3)));
-
-         for (int j = 2; j >= 0; j--) {
-            if (rawIndex + j < raw.length) {
-               raw[rawIndex + j] = (byte) (block & 0xff);
-            }
-
-            block >>= 8;
+      try {
+         if (base64.length() < 30) {
+            cat.debug("I was asked to decode \"" + base64 + "\"");
+         } else {
+            cat.debug("I was asked to decode \"" + base64.substring(0, 20)
+                      + "...\"");
          }
-      }
 
-      return raw;
+         //strip whitespace from anywhere in the string.  Not the most memory
+         //efficient solution but elegant anyway :-)
+         StringTokenizer tok = new StringTokenizer(base64, " \n\r\t", false);
+         StringBuffer buf = new StringBuffer(base64.length());
+
+         while (tok.hasMoreElements()) {
+            buf.append(tok.nextToken());
+         }
+
+         base64 = buf.toString();
+
+         int pad = 0;
+
+         for (int i = base64.length() - 1;
+                 (i > 0) && (base64.charAt(i) == '='); i--) {
+            pad++;
+         }
+
+         int length = base64.length() / 4 * 3 - pad;
+         byte[] raw = new byte[length];
+
+         for (int i = 0, rawIndex = 0; i < base64.length();
+                 i += 4, rawIndex += 3) {
+            int block = (getValue(base64.charAt(i)) << 18)
+                        + (getValue(base64.charAt(i + 1)) << 12)
+                        + (getValue(base64.charAt(i + 2)) << 6)
+                        + (getValue(base64.charAt(i + 3)));
+
+            for (int j = 2; j >= 0; j--) {
+               if (rawIndex + j < raw.length) {
+                  raw[rawIndex + j] = (byte) (block & 0xff);
+               }
+
+               block >>= 8;
+            }
+         }
+
+         return raw;
+      } catch (IndexOutOfBoundsException ex) {
+         throw new Base64DecodingException("utils.Base64.IllegalBitlength", ex);
+      }
    }
 
    /**
@@ -456,9 +468,11 @@ public class Base64 {
     * @param reader
     * @return InputStream with the decoded bytes
     * @Exception IOException passes what the reader throws
+    * @throws Base64DecodingException
     * @throws IOException
     */
-   public static byte[] decode(BufferedReader reader) throws IOException {
+   public static byte[] decode(BufferedReader reader)
+           throws IOException, Base64DecodingException {
 
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       String line;

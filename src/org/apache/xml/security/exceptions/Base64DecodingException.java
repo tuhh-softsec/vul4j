@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -57,81 +56,67 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.test.utils;
+package org.apache.xml.security.exceptions;
 
-
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.apache.xml.security.exceptions.Base64DecodingException;
-import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.Constants;
 
 
 /**
- * Unit test for {@link org.apache.xml.security.utils.Base64}
+ *
+ *
+ *
  *
  * @author Christian Geuer-Pollmann
+ *
  */
-public class Base64Test extends TestCase {
-
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Base64Test.class.getName());
+public class Base64DecodingException extends XMLSecurityException {
 
    /**
-    * Method suite
+    * Constructor Base64DecodingException
     *
-    * @return
     */
-   public static Test suite() {
-      return new TestSuite(Base64Test.class);
+   public Base64DecodingException() {
+      super();
    }
 
    /**
+    * Constructor Base64DecodingException
     *
-    * @param Name_
+    * @param msgID
     */
-   public Base64Test(String Name_) {
-      super(Name_);
+   public Base64DecodingException(String msgID) {
+      super(msgID);
    }
 
    /**
+    * Constructor Base64DecodingException
     *
-    * @param args
+    * @param msgID
+    * @param exArgs
     */
-   public static void main(String[] args) {
-
-      String[] testCaseName = { "-noloading", Base64Test.class.getName() };
-
-      junit.textui.TestRunner.main(testCaseName);
-
-      // junit.swingui.TestRunner.main(testCaseName);
-   }    //public static void main(String[] args)
-
-   /**
-    * Method testA1
-    *
-    * @throws java.io.UnsupportedEncodingException
-    * @todo Extend more tests
-    */
-   public static void testA1() throws java.io.UnsupportedEncodingException, Base64DecodingException {
-
-      String textData = "Hallo";
-      String result0 =
-         org.apache.xml.security.utils.Base64
-            .encode(textData.getBytes("UTF-8"));
-
-      assertNotNull("Result of encoding result0", result0);
-
-      byte resultBytes[] = org.apache.xml.security.utils.Base64.decode(result0);
-      String resultStr = new String(resultBytes, "UTF-8");
-
-      assertEquals("Result of decoding", 0, textData.compareTo(resultStr));
+   public Base64DecodingException(String msgID, Object exArgs[]) {
+      super(msgID, exArgs);
    }
 
-   static {
-      org.apache.xml.security.Init.init();
+   /**
+    * Constructor Base64DecodingException
+    *
+    * @param msgID
+    * @param originalException
+    */
+   public Base64DecodingException(String msgID,
+                                              Exception originalException) {
+      super(msgID, originalException);
+   }
+
+   /**
+    * Constructor Base64DecodingException
+    *
+    * @param msgID
+    * @param exArgs
+    * @param originalException
+    */
+   public Base64DecodingException(String msgID, Object exArgs[],
+                                              Exception originalException) {
+      super(msgID, exArgs, originalException);
    }
 }
