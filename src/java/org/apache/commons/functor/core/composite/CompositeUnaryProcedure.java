@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/CompositeUnaryProcedure.java,v 1.1 2003/12/03 01:04:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/CompositeUnaryProcedure.java,v 1.2 2003/12/03 01:07:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -81,7 +81,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:12 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/03 01:07:36 $
  * @author Rodney Waldhoff
  */
 public final class CompositeUnaryProcedure implements UnaryProcedure, Serializable {
@@ -99,14 +99,6 @@ public final class CompositeUnaryProcedure implements UnaryProcedure, Serializab
         if(null == f) { throw new NullPointerException(); }
         this.procedure = p;
         this.function = new CompositeUnaryFunction(f);
-    }
-
-    public CompositeUnaryProcedure(UnaryProcedure p, UnaryFunction f, UnaryFunction g) {
-        if(null == p) { throw new NullPointerException(); }
-        if(null == f) { throw new NullPointerException(); }
-        if(null == g) { throw new NullPointerException(); }
-        this.procedure = p;
-        this.function = new CompositeUnaryFunction(f).of(g);
     }
 
     // modifiers

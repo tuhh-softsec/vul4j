@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestCompositeUnaryProcedure.java,v 1.1 2003/12/03 01:04:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestCompositeUnaryProcedure.java,v 1.2 2003/12/03 01:07:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -65,7 +65,7 @@ import org.apache.commons.functor.core.Identity;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:11 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/03 01:07:36 $
  * @author Rodney Waldhoff
  */
 public class TestCompositeUnaryProcedure extends BaseFunctorTest {
@@ -106,6 +106,20 @@ public class TestCompositeUnaryProcedure extends BaseFunctorTest {
         new CompositeUnaryProcedure(new NoOp(),new Identity()).run(null);
     }
     
+    public void testNullNotAllowed() throws Exception {
+        try {
+            new CompositeUnaryProcedure(null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+        try {
+            new CompositeUnaryProcedure(NoOp.instance(),null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+    }
     public void testOf() throws Exception {
         new CompositeUnaryProcedure(new NoOp()).of(new Identity()).run(null);
     }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestCompositeUnaryPredicate.java,v 1.1 2003/12/03 01:04:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestCompositeUnaryPredicate.java,v 1.2 2003/12/03 01:07:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -64,7 +64,7 @@ import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/12/03 01:04:11 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/03 01:07:36 $
  * @author Rodney Waldhoff
  */
 public class TestCompositeUnaryPredicate extends BaseFunctorTest {
@@ -101,13 +101,27 @@ public class TestCompositeUnaryPredicate extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
     
-    public void testEvaluate() throws Exception {
-        assertEquals(true,(new CompositeUnaryPredicate(new Constant(true))).test(null));
-        
+    public void testTest() throws Exception {
+        assertEquals(true,(new CompositeUnaryPredicate(new Constant(true))).test(null));        
         assertEquals(true,(new CompositeUnaryPredicate(new Constant(true),new Constant(new Integer(3)))).test("xyzzy"));
         assertEquals(false,(new CompositeUnaryPredicate(new Constant(false),new Constant(new Integer(4)))).test("xyzzy"));
     }
-    
+
+    public void testNullNotAllowed() throws Exception {
+        try {
+            new CompositeUnaryPredicate(null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+        try {
+            new CompositeUnaryPredicate(Constant.truePredicate(),null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+    }
+        
     public void testOf() throws Exception {
         CompositeUnaryPredicate f = new CompositeUnaryPredicate(new Constant(true));
         assertTrue(f.test(null));
