@@ -1,12 +1,13 @@
-<project>
-  <modelVersion>4.0.0</modelVersion>
+<model>
   <parent>
-    <groupId>plexus</groupId>
     <artifactId>plexus-components</artifactId>
+    <groupId>plexus</groupId>
     <version>1.0</version>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>plexus</groupId>
   <artifactId>plexus-archiver</artifactId>
-  <version>1.0-alpha-1-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <name>Plexus Archiver Component</name>
-</project>
+  <version>1.0-alpha-1-SNAPSHOT</version>
+</model>
