@@ -1,4 +1,4 @@
-/* $Id: Digester.java,v 1.103 2004/05/10 07:15:20 skitching Exp $
+/* $Id: Digester.java,v 1.104 2004/06/08 08:26:10 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -2404,6 +2404,11 @@ public class Digester extends DefaultHandler {
 
     /**
      * Clear the current contents of the object stack.
+     * <p>
+     * Calling this method <i>might</i> allow another document of the same type
+     * to be correctly parsed. However this method was not intended for this 
+     * purpose. In general, a separate Digester object should be created for
+     * each document to be parsed.
      */
     public void clear() {
 
