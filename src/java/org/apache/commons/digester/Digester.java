@@ -74,7 +74,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.97 $ $Date: 2004/03/23 07:07:54 $
+ * @version $Revision: 1.98 $ $Date: 2004/03/29 20:34:54 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1409,13 +1409,13 @@ public class Digester extends DefaultHandler {
                 }
                 return (null);
                 
-                } else {
-                    // try to resolve using system ID
-                    if (log.isDebugEnabled()) {
-                        log.debug(" Trying to resolve using system ID '" + systemId + "'");
-                    } 
-                    entityURL = systemId;
-                }
+            } else {
+                // try to resolve using system ID
+                if (log.isDebugEnabled()) {
+                    log.debug(" Trying to resolve using system ID '" + systemId + "'");
+                } 
+                entityURL = systemId;
+            }
         }
         
         // Return an input source to our alternative URL
