@@ -1,0 +1,2 @@
+<project default="test" xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:doc="doc">
+</project>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<project name="Commons - Functor" href="http://jakarta.apache.org/commons/sandbox/functor">
+    <title>Commons Functor</title>
+    <!--
+      Note: Per the .vsl file, links starting with "/" become "./...".
+    -->
+    <body>
+       <menu name="Home">
+           <item name="Jakarta&#xA0;Commons"          href="http://jakarta.apache.org/commons/index.html" />
+           <item name="Commons Functor"               href="/index.html" />
+       </menu>
+       <menu name="Project Files">
+           <item name="Downloads"                      href="/download.html"/>
+           <item name="Source (Browse)"               href="http://cvs.apache.org/viewcvs/jakarta-commons-sandbox/functor/"/>
+           <item name="Source (CVS)"                  href="http://jakarta.apache.org/site/cvsindex.html"/>
+           <item name="License"                       href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/LICENSE.txt"/>
+           <item name="Original&#xA0;Proposal"        href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/PROPOSAL.html"/>
+       </menu>
+    </body>
+</project>

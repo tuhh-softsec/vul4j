@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+    <title>Overview</title>
+    <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+    <author email="rwaldhoff@apache.org">Rodney Waldhoff</author>
+  </properties>
+
+  <body>
+    <section name="Functor: Functions as Objects">
+      <p>
+         A <em>functor</em> is a function that can be manipulated 
+         as an object.  Functors are a very old and very common software design
+         concept, and appear in many languages in many forms.  For example, 
+         functors appear in:
+      </p>
+      <ul>
+         <li>LISP as funargs or closures</li>
+         <li>Smalltalk as blocks and closures</li>
+         <li>
+            functional programming languages such as Prolog, ML, and 
+            Haskell (<code>functor</code> is even a keyword in Haskell)
+         </li>
+         <li>C as function pointers</li>
+         <li>C++'s Standard Template Library as functor objects</li>
+         <li>Ruby as blocks</li>
+         <li>etc.</li>
+      </ul>
+      <p>
+         In Java, functors are typically implemented as interfaces defined 
+         by a single, generic member function, and that is the approach taken
+         here.
+      </p>
+      <p>
+        Functors support a number of interesting and powerful design strategies
+        [...]
+      </p>
+    </section>
+    <section name="Overview">
+      <p>
+         <emphasis>Commons Functor</emphasis> defines three general types of
+         functors:
+      </p>
+      <dl>
+        <dt>predicates</dt>
+        <dd>functors that return a <code>boolean</code> value</dd>
+        <dt>functions</dt>
+        <dd>functors that return an <code>Object</code> value</dd>
+        <dt>procedures</dt>
+        <dd>functors that don't return anything</dd>
+      </dl>
+      <p>
+        The root 
+        <a href="apidocs/org/apache/commons/functor/package-summary.html"><code>functor</code></a>
+        package defines three signatures for each functor type--taking zero, one or 
+        two <code>Object</code> arguments.
+      </p>
+      <p>
+        The
+        <a href="apidocs/org/apache/commons/functor/adapter/package-summary.html"><code>functor.adapter</code></a>
+        package defines classes for adapting one functor interface to another, 
+        both by signature and return type.
+      </p>
+      <p>
+        The 
+        <a href="apidocs/org/apache/commons/functor/core/package-summary.html"><code>functor.core</code></a>
+        package (and its <a href="apidocs/overview-summary.html">subpackages</a>) 
+        defines common functor implementations.
+      </p>
+    </section>
+  </body>
+</document>
