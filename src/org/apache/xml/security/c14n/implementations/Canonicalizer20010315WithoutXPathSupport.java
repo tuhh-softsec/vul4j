@@ -123,7 +123,7 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
     * @todo shall we throw Exceptions ?
     * @param node
     */
-   public void engineMakeVisible(Node node) {}
+   public void engineMakeVisible(Node node) { throw new RuntimeException("Operation not supported");}
 
    /**
     * This method is only needed for XPath based implememtations

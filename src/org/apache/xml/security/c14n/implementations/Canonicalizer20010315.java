@@ -841,6 +841,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   newAttr.setNodeValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
+
+                  cat.debug("XXX: Add " + ((Element) ctxNode).getTagName() + "/@" + newAttr);
+
                   this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             } else {
@@ -852,6 +855,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   newAttr.setValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
+
+                  cat.debug("XXX: Add " + ((Element) ctxNode).getTagName() + "/@" + newAttr);
                   this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             }
@@ -879,6 +884,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   newAttr.setValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
+
+
+                  cat.debug("XXX: Add " + ((Element) ctxNode).getTagName() + "/@" + newAttr);
                   this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             } else {
@@ -922,6 +930,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                      newAttr.setValue(invisAttr.getValue());
                      ((Element) ctxNode).setAttributeNode(newAttr);
                      engineMakeVisible(newAttr);
+
+
+                     cat.debug("XXX: Add " + ((Element) ctxNode).getTagName() + "/@" + newAttr);
                      this._attrsToBeRemovedAfterC14n.add(newAttr);
                   }
                } else {
@@ -933,6 +944,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   newAttr.setValue(invisAttr.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
+
+
+                  cat.debug("XXX: Add " + ((Element) ctxNode).getTagName() + "/@" + newAttr);
                   this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             } else {
@@ -1088,14 +1102,12 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    private void removeNSAttrs() {
 
       for (int i = 0; i < this._attrsToBeRemovedAfterC14n.size(); i++) {
-         Attr currentNSdecl =
-            (Attr) this._attrsToBeRemovedAfterC14n.elementAt(i);
+         Attr currentNSdecl = (Attr) this._attrsToBeRemovedAfterC14n.elementAt(i);
          Element ownerElem = currentNSdecl.getOwnerElement();
 
-         if (ownerElem != null) {
-            ownerElem.removeAttributeNode(currentNSdecl);
-         }
+         ownerElem.removeAttributeNode(currentNSdecl);
       }
+      this._attrsToBeRemovedAfterC14n.clear();
    }
 
    static {
