@@ -379,7 +379,11 @@ unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 	case XSECCryptoKeyRSA::PAD_PKCS_1_5 :
 
 		decryptSize = RSA_private_decrypt(inLength,
+#if defined(XSEC_OPENSSL_CONST_BUFFERS)
 							inBuf,
+#else
+						    (unsigned char *) inBuf,
+#endif
 							plainBuf,
 							mp_rsaKey,
 							RSA_PKCS1_PADDING);
@@ -402,7 +406,11 @@ unsigned int OpenSSLCryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 			ArrayJanitor<unsigned char> j_tBuf(tBuf);
 
 			decryptSize = RSA_private_decrypt(inLength,
-								inBuf,
+#if defined(XSEC_OPENSSL_CONST_BUFFERS)
+							    inBuf,
+#else
+						        (unsigned char *) inBuf,
+#endif
 								tBuf,
 								mp_rsaKey,
 								RSA_NO_PADDING);
@@ -473,7 +481,11 @@ unsigned int OpenSSLCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 	case XSECCryptoKeyRSA::PAD_PKCS_1_5 :
 
 		encryptSize = RSA_public_encrypt(inLength,
-							inBuf,
+#if defined(XSEC_OPENSSL_CONST_BUFFERS)
+  					        inBuf,
+#else
+						    (unsigned char *) inBuf,
+#endif
 							cipherBuf,
 							mp_rsaKey,
 							RSA_PKCS1_PADDING);
@@ -504,7 +516,11 @@ unsigned int OpenSSLCryptoKeyRSA::publicEncrypt(const unsigned char * inBuf,
 
 			encryptSize = RSA_padding_add_PKCS1_OAEP(tBuf,
 													 num,
-													 inBuf,
+#if defined(XSEC_OPENSSL_CONST_BUFFERS)
+  					                                 inBuf,
+#else
+						                             (unsigned char *) inBuf,
+#endif
 													 inLength,
 													 mp_oaepParams,
 													 m_oaepParamsLen);

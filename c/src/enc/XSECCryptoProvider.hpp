@@ -259,6 +259,15 @@ public :
 	virtual XSECCryptoX509			* X509() = 0;
 
 	/**
+	 * \brief Determine whether a given algorithm is supported
+	 *
+	 * A call that can be used to determine whether a given 
+	 * symmetric algorithm is supported
+	 */
+
+	virtual bool algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) = 0;
+
+	/**
 	 * \brief Return a Symmetric Key implementation object.
 	 *
 	 * Call used by the library to obtain a bulk encryption

@@ -121,6 +121,7 @@ XERCES_CPP_NAMESPACE_USE
 
 bool	g_printDocs = false;
 bool	g_useWinCAPI = false;
+bool    g_haveAES = true;
 
 // --------------------------------------------------------------------------------
 //           Known "Good" Values
@@ -1458,28 +1459,33 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		}
 #endif
 
+		XSECCryptoSymmetricKey * ks;
 
-		cerr << "AES 128 key wrap... ";
+		if (g_haveAES) {
+			cerr << "AES 128 key wrap... ";
 
-		XSECCryptoSymmetricKey * ks =
-				XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
-		ks->setKey((unsigned char *) s_keyStr, 16);
+			ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
+			ks->setKey((unsigned char *) s_keyStr, 16);
 		
-		unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES128);
+			unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES128);
 
-		cerr << "AES 192 key wrap... ";
+			cerr << "AES 192 key wrap... ";
 
-		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
-		ks->setKey((unsigned char *) s_keyStr, 24);
+			ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
+			ks->setKey((unsigned char *) s_keyStr, 24);
 		
-		unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES192);
+			unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES192);
 
-		cerr << "AES 256 key wrap... ";
+			cerr << "AES 256 key wrap... ";
 
-		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
-		ks->setKey((unsigned char *) s_keyStr, 32);
+			ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
+			ks->setKey((unsigned char *) s_keyStr, 32);
 		
-		unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES256);
+			unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES256);
+		}
+
+		else 
+			cerr << "Skipped AES key wrap tests" << endl;
 
 		cerr << "Triple DES key wrap... ";
 
@@ -1489,29 +1495,35 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_3DES);
 
 		// Now do Element encrypts
-		// 128 AES
-		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
-		ks->setKey((unsigned char *) s_keyStr, 16);
 
-		cerr << "Unit testing AES 128 bit CBC encryption" << endl;
-		unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_AES128_CBC, false);
-		unitTestElementContentEncrypt(impl, ks, ENCRYPT_AES128_CBC, true);
+		if (g_haveAES) {
+			// 128 AES
+			ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
+			ks->setKey((unsigned char *) s_keyStr, 16);
 
-		//192 AES
-		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
-		ks->setKey((unsigned char *) s_keyStr, 24);
+			cerr << "Unit testing AES 128 bit CBC encryption" << endl;
+			unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_AES128_CBC, false);
+			unitTestElementContentEncrypt(impl, ks, ENCRYPT_AES128_CBC, true);
 
-		cerr << "Unit testing AES 192 bit CBC encryption" << endl;
-		unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_AES192_CBC, false);
-		unitTestElementContentEncrypt(impl, ks, ENCRYPT_AES192_CBC, true);
+			//192 AES
+			ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
+			ks->setKey((unsigned char *) s_keyStr, 24);
+
+			cerr << "Unit testing AES 192 bit CBC encryption" << endl;
+			unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_AES192_CBC, false);
+			unitTestElementContentEncrypt(impl, ks, ENCRYPT_AES192_CBC, true);
 
 		// 256 AES
-		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
-		ks->setKey((unsigned char *) s_keyStr, 32);
+			ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
+			ks->setKey((unsigned char *) s_keyStr, 32);
 
-		cerr << "Unit testing AES 256 bit CBC encryption" << endl;
-		unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_AES256_CBC, false);
-		unitTestElementContentEncrypt(impl, ks, ENCRYPT_AES256_CBC, true);
+			cerr << "Unit testing AES 256 bit CBC encryption" << endl;
+			unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_AES256_CBC, false);
+			unitTestElementContentEncrypt(impl, ks, ENCRYPT_AES256_CBC, true);
+		}
+
+		else
+			cerr << "Skipped AES Element tests" << endl;
 
 		// 192 3DES
 		ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
@@ -1521,8 +1533,13 @@ void unitTestEncrypt(DOMImplementation *impl) {
 		unitTestElementContentEncrypt(impl, ks->clone(), ENCRYPT_3DES_CBC, false);
 		unitTestElementContentEncrypt(impl, ks, ENCRYPT_3DES_CBC, true);
 
-		cerr << "Unit testing CipherReference creation and decryption" << endl;
-		unitTestCipherReference(impl);
+		if (g_haveAES) {
+			cerr << "Unit testing CipherReference creation and decryption" << endl;
+			unitTestCipherReference(impl);
+		}
+		else {
+			cerr << "Skipped Cipher Reference Test (uses AES)" << endl;
+		}
 
 	}
 	catch (XSECCryptoException &e)
@@ -1619,14 +1636,25 @@ void testEncrypt(DOMImplementation *impl) {
 
 		cerr << "Encrypting symmetric key ... " << endl;
 
-		XSECCryptoSymmetricKey * kek =
-			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
-		kek->setKey((unsigned char *) s_keyStr, 16);
+		XSECCryptoSymmetricKey * kek;
+		if (g_haveAES) {
+
+			kek = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
+			kek->setKey((unsigned char *) s_keyStr, 16);
+		}
+		else {
+			kek = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
+			kek->setKey((unsigned char *) s_keyStr, 24);
+
+		}
+		
 		cipher->setKEK(kek);
 
 		XENCEncryptedKey * encryptedKey;
-		encryptedKey = cipher->encryptKey(randomBuffer, 24, ENCRYPT_KW_AES128);
-
+		if (g_haveAES)
+			encryptedKey = cipher->encryptKey(randomBuffer, 24, ENCRYPT_KW_AES128);
+		else
+			encryptedKey = cipher->encryptKey(randomBuffer, 24, ENCRYPT_KW_3DES);
 		cerr << "done!" << endl;
 
 		cerr << "Adding CarriedKeyName and Recipient to encryptedKey ... " << endl;
@@ -1644,9 +1672,20 @@ void testEncrypt(DOMImplementation *impl) {
 
 		XENCCipher * cipher2 = prov.newCipher(doc);
 
-		XSECCryptoSymmetricKey * k2 = 
-			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
-		k2->setKey((unsigned char *) s_keyStr, 16);
+		XSECCryptoSymmetricKey * k2;
+		
+		if (g_haveAES) {
+
+			k2 = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
+			k2->setKey((unsigned char *) s_keyStr, 16);
+		}
+		
+		else {
+			k2 = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
+			k2->setKey((unsigned char *) s_keyStr, 24);
+
+		}
+
 		cipher2->setKEK(k2);
 
 		cerr << "Decrypting ... ";
@@ -1916,6 +1955,10 @@ int main(int argc, char **argv) {
 	{
 
 		// Set up for tests
+
+		g_haveAES = XSECPlatformUtils::g_cryptoProvider->algorithmSupported(XSECCryptoSymmetricKey::KEY_AES_128);
+
+		// Setup for building documents
 
 		XMLCh tempStr[100];
 		XMLString::transcode("Core", tempStr, 99);    

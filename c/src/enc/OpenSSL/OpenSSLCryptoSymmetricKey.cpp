@@ -31,6 +31,10 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
+#include <xercesc/util/Janitor.hpp>
+#include <iostream>
+XERCES_CPP_NAMESPACE_USE;
+
 #if defined (HAVE_OPENSSL)
 
 #include <string.h>
@@ -135,17 +139,30 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 
 			}
 
-			EVP_DecryptInit_ex(&m_ctx, EVP_des_ede3_cbc(), NULL, m_keyBuf.rawBuffer(), iv);
+			/* Do not use "_ex" calls yet - as want backwards compatibility
+			   with 0.9.6 */
+
+#if defined(XSEC_OPENSSL_CONST_BUFFERS)
+			EVP_DecryptInit(&m_ctx, EVP_des_ede3_cbc(),m_keyBuf.rawBuffer(), iv);
+#else
+			EVP_DecryptInit(&m_ctx, EVP_des_ede3_cbc(),(unsigned char *) m_keyBuf.rawBuffer(), (unsigned char *) iv);
+#endif
 			m_ivSize = 8;
 		}
 		else {
-			EVP_DecryptInit_ex(&m_ctx, EVP_des_ede3_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
+#if defined(XSEC_OPENSSL_CONST_BUFFERS)
+			EVP_DecryptInit(&m_ctx, EVP_des_ede3(), m_keyBuf.rawBuffer(), NULL);
+#else
+			EVP_DecryptInit(&m_ctx, EVP_des_ede3(), (unsigned char *) m_keyBuf.rawBuffer(), NULL);
+#endif
 			m_ivSize = 0;
 		}
 
 
 		m_blockSize = 8;
 		break;
+
+#if defined (XSEC_OPENSSL_HAVE_AES)
 
 	case (XSECCryptoSymmetricKey::KEY_AES_128) :
 
@@ -220,6 +237,16 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 		m_blockSize = 16;
 
 		break;
+#else 
+
+	case (XSECCryptoSymmetricKey::KEY_AES_128) :
+	case (XSECCryptoSymmetricKey::KEY_AES_192) :
+	case (XSECCryptoSymmetricKey::KEY_AES_256) :
+
+		throw XSECCryptoException(XSECCryptoException::UnsupportedAlgorithm,
+			 "OpenSSL:SymmetricKey - AES not supported in this version of OpenSSL");
+
+#endif /* XSEC_OPENSSL_HAVE_AES */
 	
 	default :
 
@@ -237,7 +264,10 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 	m_bytesInLastBlock = 0;
 
 	// Disable OpenSSL padding - The interop samples have broken PKCS padding - AARGHH
+
+#if defined (XSEC_OPENSSL_CANSET_PADDING)
 	EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
+#endif
 
 	// Return number of bytes chewed up by IV
 	return m_ivSize;
@@ -282,8 +312,11 @@ unsigned int OpenSSLCryptoSymmetricKey::decrypt(const unsigned char * inBuf,
 			"OpenSSLSymmetricKey::decrypt - Not enough space in output buffer");
 	}
 
+#if defined (XSEC_OPENSSL_CONST_BUFFERS)
 	if (EVP_DecryptUpdate(&m_ctx, &plainBuf[m_bytesInLastBlock], &outl, &inBuf[offset], inLength - offset) == 0) {
-
+#else
+	if (EVP_DecryptUpdate(&m_ctx, &plainBuf[m_bytesInLastBlock], &outl, (unsigned char *) &inBuf[offset], inLength - offset) == 0) {
+#endif
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
 			"OpenSSL:SymmetricKey - Error during OpenSSL decrypt"); 
 
@@ -315,13 +348,15 @@ unsigned int OpenSSLCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 	int outl = maxOutLength;
 	m_initialised = false;
 
-	if (EVP_DecryptFinal_ex(&m_ctx, plainBuf, &outl) == 0) {
+#if defined (XSEC_OPENSSL_CANSET_PADDING)
+
+	if (EVP_DecryptFinal(&m_ctx, plainBuf, &outl) == 0) {
 
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
 			"OpenSSL:SymmetricKey - Error during OpenSSL decrypt finalisation"); 
 
 	}
-
+	
 	if (outl > 0) {
 	
 		// Should never see any bytes output, as we are not padding
@@ -354,6 +389,70 @@ unsigned int OpenSSLCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 
 	return outl;
 
+#else
+
+	/* Working with a version of OpenSSL that *always* performs padding
+	   so we need to work around it */
+	unsigned char *scrPlainBuf;
+	unsigned char *cipherBuf;
+	scrPlainBuf = new unsigned char[2 * m_blockSize];
+	ArrayJanitor<unsigned char> j_scrPlainBuf(scrPlainBuf);
+	cipherBuf = new unsigned char[m_blockSize];
+	ArrayJanitor<unsigned char> j_cipherBuf(cipherBuf);
+
+	/* Zeroise the cipher buffer */
+	memset(cipherBuf, 0, m_blockSize);
+
+	unsigned int offset = 0;
+
+	/* Get any previous bytes from the m_lastBlock */
+	if (m_bytesInLastBlock > 0 & m_bytesInLastBlock <= m_blockSize) {
+		memcpy(scrPlainBuf, m_lastBlock, m_bytesInLastBlock);
+		offset = m_bytesInLastBlock;
+	}
+
+	outl = m_blockSize;
+
+	/* This is really ugly - but we have to trick OpenSSL into thinking there
+       is more, so that it sends us the lasts block with the padding in it.
+       We can then clean that up ourselves
+	*/
+
+	if (EVP_DecryptUpdate(&m_ctx, &scrPlainBuf[offset], &outl, cipherBuf, m_blockSize) == 0) {
+		throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			"OpenSSL:SymmetricKey - Error cecrypting final block during OpenSSL");
+	} 
+
+	outl += offset;
+
+	if (m_doPad && offset > 0) {
+
+		/* Strip any padding */
+		outl -= scrPlainBuf[outl - 1];
+
+		if (outl > (2 * m_blockSize) || outl < 0) {
+			
+			throw XSECCryptoException(XSECCryptoException::SymmetricError,
+				"OpenSSL:SymmetricKey::decryptFinish - Out of range padding value in final block"); 
+	
+		}
+
+	}
+
+	if (outl > (int) maxOutLength) {
+		throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			"OpenSSLSymmetricKey::decryptFinish - **WARNING** - Plaintext output > maxOutLength!"); 
+	}
+
+	if (outl > 0) {
+
+		memcpy(plainBuf, scrPlainBuf, outl);
+
+	}
+
+	return outl;
+#endif
+
 }
 
 // --------------------------------------------------------------------------------
@@ -383,7 +482,7 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(bool doPad,
 
 	// Set up the context according to the required cipher type
 
-	const unsigned char * usedIV;
+	const unsigned char * usedIV = NULL;
 	unsigned char genIV[256];
 
 	// Tell the library that the IV still has to be sent
@@ -412,17 +511,25 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(bool doPad,
 			else
 				usedIV = iv;
 
-			EVP_EncryptInit_ex(&m_ctx, EVP_des_ede3_cbc(), NULL, m_keyBuf.rawBuffer(), usedIV);
-
+#if defined (XSEC_OPENSSL_CONST_BUFFERS)
+			EVP_EncryptInit(&m_ctx, EVP_des_ede3_cbc(), m_keyBuf.rawBuffer(), usedIV);
+#else
+			EVP_EncryptInit(&m_ctx, EVP_des_ede3_cbc(), (unsigned char *) m_keyBuf.rawBuffer(), (unsigned char *) usedIV);
+#endif
 		}
 		else {
-
-			EVP_EncryptInit_ex(&m_ctx, EVP_des_ede3_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
+#if defined (XSEC_OPENSSL_CONST_BUFFERS)
+			EVP_EncryptInit(&m_ctx, EVP_des_ede3_ecb(), m_keyBuf.rawBuffer(), NULL);
+#else
+			EVP_EncryptInit(&m_ctx, EVP_des_ede3(), (unsigned char *) m_keyBuf.rawBuffer(), NULL);
+#endif
 		}
 
 
 		m_blockSize = 8;
 		break;
+
+#if defined (XSEC_OPENSSL_HAVE_AES)
 
 	case (XSECCryptoSymmetricKey::KEY_AES_128) :
 
@@ -518,6 +625,17 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(bool doPad,
 		m_blockSize = 16;
 		break;
 
+#else 
+
+	case (XSECCryptoSymmetricKey::KEY_AES_128) :
+	case (XSECCryptoSymmetricKey::KEY_AES_192) :
+	case (XSECCryptoSymmetricKey::KEY_AES_256) :
+
+		throw XSECCryptoException(XSECCryptoException::UnsupportedAlgorithm,
+			 "OpenSSL:SymmetricKey - AES not supported in this version of OpenSSL");
+
+#endif /* XSEC_OPENSSL_HAVE_AES */
+
 	default :
 
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
@@ -534,6 +652,7 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(bool doPad,
 	else
 		m_ivSize = 0;
 
+#if defined (XSEC_OPENSSL_CANSET_PADDING)
 	// Setup padding
 	if (m_doPad) {
 		EVP_CIPHER_CTX_set_padding(&m_ctx, 1);
@@ -541,6 +660,7 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(bool doPad,
 	else {
 		EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
 	}
+#endif
 
 	return true;
 
@@ -578,8 +698,11 @@ unsigned int OpenSSLCryptoSymmetricKey::encrypt(const unsigned char * inBuf,
 			"OpenSSL:SymmetricKey - Not enough space in output buffer for encrypt"); 
 
 	}
-
+#if defined (XSEC_OPENSSL_CONST_BUFFERS)
 	if (EVP_EncryptUpdate(&m_ctx, &cipherBuf[offset], &outl, inBuf, inLength) == 0) {
+#else
+	if (EVP_EncryptUpdate(&m_ctx, &cipherBuf[offset], &outl, (unsigned char *) inBuf, inLength) == 0) {
+#endif
 
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
 			"OpenSSL:SymmetricKey - Error during OpenSSL encrypt"); 
@@ -596,10 +719,10 @@ unsigned int OpenSSLCryptoSymmetricKey::encryptFinish(unsigned char * cipherBuf,
 	int outl = maxOutLength;
 	m_initialised = false;
 
-	if (EVP_EncryptFinal_ex(&m_ctx, cipherBuf, &outl) == 0) {
+	if (EVP_EncryptFinal(&m_ctx, cipherBuf, &outl) == 0) {
 
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
-			"OpenSSLSymmetricKey::encryptFinish - Error during OpenSSL decrypt finalisation"); 
+		  "OpenSSLSymmetricKey::encryptFinish - Error during OpenSSL decrypt finalisation"); 
 
 	}
 
@@ -607,6 +730,20 @@ unsigned int OpenSSLCryptoSymmetricKey::encryptFinish(unsigned char * cipherBuf,
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
 			"OpenSSLSymmetricKey::encryptFinish - **WARNING** - Cipheroutput > maxOutLength!"); 
 	}
+	
+#if !defined (XSEC_OPENSSL_CANSET_PADDING)
+	if (!m_doPad) {
+
+		if (outl < m_blockSize) {
+			throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			   "OpenSSLSymmetricKey::encryptFinish - cannot remove padding!"); 
+		}
+
+		outl -= m_blockSize;
+
+	}
+
+#endif
 
 	return outl;
 

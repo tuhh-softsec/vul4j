@@ -150,6 +150,33 @@ XSECCryptoBase64 * OpenSSLCryptoProvider::base64() {
 
 }
 
+bool OpenSSLCryptoProvider::algorithmSupported(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
+
+	switch (alg) {
+
+	case (XSECCryptoSymmetricKey::KEY_AES_128) :
+	case (XSECCryptoSymmetricKey::KEY_AES_192) :
+	case (XSECCryptoSymmetricKey::KEY_AES_256) :
+
+#if !defined (XSEC_OPENSSL_HAVE_AES)
+		return false;
+#endif
+	case (XSECCryptoSymmetricKey::KEY_3DES_192) :
+
+		return true;
+
+	default:
+
+		return false;
+
+	}
+
+	return false;
+
+}
+
+
+
 XSECCryptoSymmetricKey	* OpenSSLCryptoProvider::keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg) {
 
 	OpenSSLCryptoSymmetricKey * ret;

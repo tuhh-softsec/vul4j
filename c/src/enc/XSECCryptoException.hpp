@@ -87,7 +87,8 @@ public:
 		RSAError					= 7,		// RSA Error
 		SymmetricError				= 8,
 		UnsupportedError			= 9,		// Called function is not supported
-		UnknownError				= 10		// Must be last!
+		UnsupportedAlgorithm        = 10,
+		UnknownError				= 11		// Must be last!
 
 	};
 

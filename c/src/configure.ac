@@ -456,7 +456,7 @@ AC_CHECK_LIB([crypto],
       [EVP_DecryptInit],
       openssllib_found=yes,
       [LIBS=$OLD_LIBS]
-	  [AC_MSG_ERROR(["Unable to find libcrypto in OPENSSL"])])
+	  [AC_MSG_ERROR(["Unable to find libcrypto"])])
 
   fi
 
@@ -474,6 +474,36 @@ AC_TRY_CPP([#include <openssl/opensslv.h>],
    [AC_MSG_ERROR([OpenSSL header files not found.  Please define OPENSSL])]);
 
 fi
+
+# Now try to find out some things about this version of OpenSSL
+
+AC_LANG(C++)
+
+AC_MSG_CHECKING([for const input buffers in OpenSSL])
+AC_TRY_COMPILE([#include <openssl/rsa.h>],
+	[ const unsigned char * buf;
+	  unsigned char * outbuf;
+	  RSA rsa;
+
+		RSA_private_decrypt(1,
+							buf,
+							outbuf,
+							&rsa,
+							RSA_PKCS1_PADDING);
+
+	],
+	[AC_MSG_RESULT([yes])]
+	[AC_DEFINE(XSEC_OPENSSL_CONST_BUFFERS)],
+	[AC_MSG_RESULT([no])])
+
+AC_CHECK_DECL(EVP_aes_128_cbc,
+	[AC_DEFINE(XSEC_OPENSSL_HAVE_AES)],
+	,[#include <openssl/evp.h>])
+
+AC_CHECK_DECL(EVP_CIPHER_CTX_set_padding(NULL,0),
+	[AC_DEFINE(XSEC_OPENSSL_CANSET_PADDING)],
+	,[#include <openssl/evp.h>])
+
 
 # Build the object file lists necessary to link the library
 # At the same time, build the include list

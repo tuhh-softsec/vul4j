@@ -117,6 +117,7 @@ my $dsig_flag_pothole = 3;
 # What components do we have available?
 my $have_pothole = 1;
 my $have_xalan = 1;
+my $have_aes = 1;
 
 # What kind of test results should we expect?
 # Without xalan, 13 tests will fail
@@ -202,28 +203,29 @@ my $xenc_result = 0;
 my $xenc_file = 1;
 my $xenc_args = 2;
 my $xenc_flag_xalan = 3;
+my $xenc_flag_aes = 4;
 
 my @xenc_array=(
 #bad-encrypt-content-aes128-cbc-kw-aes192.xml
 #decryption-transform-except.xml
 #decryption-transform.xml
-"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes128-cbc-kw-aes192.xml,-i -de,n",
-"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes256-cbc-prop.xml,-i -de,n",
-"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-tripledes-cbc.xml,-i -de,n",
+"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes128-cbc-kw-aes192.xml,-i -de,n,y",
+"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes256-cbc-prop.xml,-i -de,n,y",
+"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-tripledes-cbc.xml,-i -de,n,n",
 
-"top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes128-cbc.xml,-i,n",
-"top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes192-cbc-kw-aes256.xml,-i,n",
-"top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes256-cbc-kw-tripledes.xml,-i,n",
-"top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml,-i,n",
-"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes128-cbc-rsa-1_5.xml,-i -de,n",
+"top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes128-cbc.xml,-i,n,y",
+"top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes192-cbc-kw-aes256.xml,-i,n,y",
+"top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes256-cbc-kw-tripledes.xml,-i,n,y",
+"top secret message,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml,-i,n,n",
+"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes128-cbc-rsa-1_5.xml,-i -de,n,y",
 
 # CipherRef now supported
 
-"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes192-cbc-ref.xml,-i -de,y",
+"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes192-cbc-ref.xml,-i -de,y,y",
 
-"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes256-cbc-carried-kw-aes256.xml,-i -de,n",
-"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes256-cbc-retrieved-kw-aes256.xml,-i -de,n",
-"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-tripledes-cbc-kw-aes128.xml,-i -de,n",
+"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes256-cbc-carried-kw-aes256.xml,-i -de,n,y",
+"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes256-cbc-retrieved-kw-aes256.xml,-i -de,n,y",
+"<Number>1234 567890 12345</Number>,ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-tripledes-cbc-kw-aes128.xml,-i -de,n,y",
 
 # Unsupported Key-wraps
 #encrypt-content-aes192-cbc-dh-sha512.xml
@@ -253,36 +255,36 @@ my @xenc_array=(
 # PHAOS interop tests.  Commented out tests are currently
 # not supported
 # bad-alg-enc-element-aes128-kw-3des.xml
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-3des-kw-aes192.xml,-i -de,n",
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-aes128-kw-3des.xml,-i -de,n",
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-aes192-kw-aes256.xml,-i -de,n",
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-aes256-kt-rsa1_5.xml,-i -de,n",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-3des-kw-aes192.xml,-i -de,n,y",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-aes128-kw-3des.xml,-i -de,n,y",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-aes192-kw-aes256.xml,-i -de,n,y",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-aes256-kt-rsa1_5.xml,-i -de,n,y",
 # enc-element-3des-ka-dh.xml
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-3des-kt-rsa1_5.xml,-i -de,n",
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-3des-kt-rsa_oaep_sha1.xml,-i -de,n",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-3des-kt-rsa1_5.xml,-i -de,n,n",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-3des-kt-rsa_oaep_sha1.xml,-i -de,n,n",
 # enc-element-3des-kt-rsa_oaep_sha256.xml
 # enc-element-3des-kt-rsa_oaep_sha512.xml
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-3des-kw-3des.xml,-i -de,n",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-3des-kw-3des.xml,-i -de,n,n",
 # enc-element-aes128-ka-dh.xml
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kt-rsa1_5.xml,-i -de,n",
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kt-rsa_oaep_sha1.xml,-i -de,n",
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kw-aes128.xml,-i -de,n",
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kw-aes256.xml,-i -de,n",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kt-rsa1_5.xml,-i -de,n,y",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kt-rsa_oaep_sha1.xml,-i -de,n,y",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kw-aes128.xml,-i -de,n,y",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kw-aes256.xml,-i -de,n,y",
 # enc-element-aes192-ka-dh.xml
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes192-kt-rsa_oaep_sha1.xml,-i -de,n",
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes192-kw-aes192.xml,-i -de,n",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes192-kt-rsa_oaep_sha1.xml,-i -de,n,y",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes192-kw-aes192.xml,-i -de,n,y",
 # enc-element-aes256-ka-dh.xml
-"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes256-kw-aes256.xml,-i -de,n",
-"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-3des-kw-aes256.xml,-i,n",
-"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-aes128-kw-aes192.xml,-i,n",
-"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-aes192-kt-rsa1_5.xml,-i,n",
-"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-aes256-kt-rsa_oaep_sha1.xml,-i,n"
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes256-kw-aes256.xml,-i -de,n,y",
+"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-3des-kw-aes256.xml,-i,n,y",
+"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-aes128-kw-aes192.xml,-i,n,y",
+"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-aes192-kt-rsa1_5.xml,-i,n,y",
+"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-aes256-kt-rsa_oaep_sha1.xml,-i,n,y"
 
 );
 
 sub print_args {
 
-  print STDERR "\nUsage: basicTests.pl [--noxalan] [--nopothole]\n\n";
+  print STDERR "\nUsage: basicTests.pl [--noxalan] [--nopothole] [--noaes]\n\n";
   exit(1);
 
 }
@@ -294,6 +296,7 @@ foreach (@ARGV) {
  SWITCH: {
     if (/^--noxalan$/ || /^-x$/) {$have_xalan = 0; last SWITCH;}
     if (/^--nopothole$/ || /^-p$/) {$have_pothole = 0; last SWITCH;}
+    if (/^--noaes$/ || /^-a$/) {$have_aes = 0; last SWITCH;}
 	if (/^--nosig$/) {$dosig = 0; last SWITCH;}
 	if (/^--noenc$/) {$doenc = 0; last SWITCH;}
     print STDERR "Unknown command : " . $_ . "\n\n";
@@ -318,7 +321,7 @@ if ($dosig) {
 	my $args = $fields[$dsig_args];
 	my $xalan_flag = $fields[$dsig_flag_xalan];
 	my $pothole_flag = $fields[$dsig_flag_pothole];
-	
+
 	if ((($xalan_flag eq "n") | $have_xalan) & (($pothole_flag eq 'n') || $have_pothole)) {
 	
 	  my $result = `$checksig $checksig_args $args $data_dir/$file_name`;
@@ -369,8 +372,9 @@ if ($doenc) {
 	my $file_name = $fields[$xenc_file];
 	my $args = $fields[$xenc_args];
 	my $xalan_flag = $fields[$xenc_flag_xalan];
+	my $aes_flag = $fields[$xenc_flag_aes];
 
-	if (($xalan_flag eq "n") | $have_xalan) {
+	if ((($xalan_flag eq "n") | $have_xalan) & (($aes_flag eq "n") | $have_aes)) {
 
 	  my $result = `$cipher $args $data_dir/$file_name`;
 

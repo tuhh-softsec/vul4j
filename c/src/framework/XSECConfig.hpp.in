@@ -60,6 +60,15 @@
 #undef HAVE_WINCAPI
 
 /*
+ * Some settings for OpenSSL if we have it
+ *
+ */
+
+#undef XSEC_OPENSSL_CONST_BUFFERS
+#undef XSEC_OPENSSL_HAVE_AES
+#undef XSEC_OPENSSL_CANSET_PADDING
+
+/*
  * Macros used to determine what header files exist on this
  * system
  */

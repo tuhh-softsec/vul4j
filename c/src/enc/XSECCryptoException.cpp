@@ -40,7 +40,8 @@ extern const char * XSECCryptoExceptionStrings[] = {
 	"X509 Error",
 	"DSA Error",
 	"RSA Error",
-	"Symmetric Error"
+	"Symmetric Error",
+	"Unsupported Algorithm"
 
 };
 
