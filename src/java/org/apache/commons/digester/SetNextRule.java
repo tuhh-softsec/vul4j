@@ -31,6 +31,14 @@ import org.apache.commons.beanutils.MethodUtils;
  * It is possible that this may break (some) code 
  * written against release 1.1.1 or earlier.
  * See {@link #isExactMatch()} for more details.</p> 
+ *
+ * <p>Note that while CallMethodRule uses commons-beanutils' data-conversion
+ * functionality (ConvertUtils class) to convert parameter values into
+ * the appropriate type for the parameter to the called method, this
+ * rule does not. Needing to use ConvertUtils functionality when building
+ * parent-child relationships is expected to be very rare; however if you 
+ * do need this then instead of using this rule, create a CallMethodRule
+ * specifying targetOffset of 1 in the constructor.</p>
  */
 
 public class SetNextRule extends Rule {
