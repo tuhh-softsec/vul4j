@@ -66,6 +66,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.xml.sax.SAXException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -85,7 +87,8 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
      * Simple test xml document used in the tests.
      */
     protected final static String TEST_XML =
-            "<?xml version='1.0'?><root>ROOT BODY<alpha>ALPHA BODY</alpha><beta>BETA BODY</beta><gamma>GAMMA BODY</gamma></root>";
+        "<?xml version='1.0'?><root>ROOT BODY<alpha>ALPHA BODY</alpha>" +
+        "<beta>BETA BODY</beta><gamma>GAMMA BODY</gamma></root>";
 
 
     /**
@@ -150,7 +153,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
      * This is a general digester test but it fits into here pretty well.
      * This tests that the rule calling order is properly enforced.
      */
-    public void testDigesterRuleCallOrder() {
+    public void testDigesterRuleCallOrder() throws SAXException, IOException {
 
         List callOrder = new ArrayList();
 
@@ -173,12 +176,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         digester.addRule("root/alpha", thirdRule);
 
 
-        try {
-            digester.parse(xmlTestReader());
-
-        } catch (Throwable t) {
-            fail("Exception prevented test execution: " + t);
-        }
+        digester.parse(xmlTestReader());
 
         // we should have nine entries in our list of calls
 
@@ -243,7 +241,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
      * This is a general digester test but it fits into here pretty well.
      * This tests that the body text stack is functioning correctly.
      */
-    public void testDigesterBodyTextStack() {
+    public void testDigesterBodyTextStack() throws SAXException, IOException {
 
         // use the standard rules
         digester.setRules(new RulesBase());
@@ -264,12 +262,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         TestRule gammaRule = new TestRule("root/gamma");
         digester.addRule("root/gamma", gammaRule);
 
-        try {
-            digester.parse(xmlTestReader());
-
-        } catch (Throwable t) {
-            fail("Exception prevented test execution: " + t);
-        }
+        digester.parse(xmlTestReader());
 
         assertEquals(
                 "Root body text not set correct.",
@@ -297,13 +290,14 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
     /**
      * Test that you can successfully set a given property
      */
-    public void testSetGivenProperty() {
+    public void testSetGivenProperty() throws SAXException, IOException {
 
         // use the standard rules
         digester.setRules(new RulesBase());
 
         // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate("root", "org.apache.commons.digester.SimpleTestBean");
+        digester.addObjectCreate("root",
+                                 "org.apache.commons.digester.SimpleTestBean");
 
         // we'll set property alpha with the body text of root
         digester.addRule("root", new BeanPropertySetterRule("alpha"));
@@ -313,16 +307,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
 
         // we'll leave property gamma alone
 
-
-        SimpleTestBean bean = null;
-        try {
-            bean = (SimpleTestBean) digester.parse(xmlTestReader());
-
-        } catch (Throwable t) {
-            fail("Exception prevented test execution: " + t);
-        }
-
-
+        SimpleTestBean bean = (SimpleTestBean) digester.parse(xmlTestReader());
 
         // check properties are set correctly
         assertEquals(
@@ -344,25 +329,20 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
     /**
      * Test that you can successfully automatically set properties.
      */
-    public void testAutomaticallySetProperties() {
+    public void testAutomaticallySetProperties()
+        throws SAXException, IOException {
 
         // need the extended rules
         digester.setRules(new ExtendedBaseRules());
 
         // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate("root", "org.apache.commons.digester.SimpleTestBean");
+        digester.addObjectCreate("root",
+                                 "org.apache.commons.digester.SimpleTestBean");
 
         // match all children of root with this rule
         digester.addRule("root/?", new BeanPropertySetterRule());
 
-        SimpleTestBean bean = null;
-        try {
-            bean = (SimpleTestBean) digester.parse(xmlTestReader());
-
-        } catch (Throwable t) {
-            fail("Exception prevented test execution: " + t);
-        }
-
+        SimpleTestBean bean = (SimpleTestBean) digester.parse(xmlTestReader());
 
         // check properties are set correctly
         assertEquals(

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.19 2002/07/31 10:48:08 jstrachan Exp $
- * $Revision: 1.19 $
- * $Date: 2002/07/31 10:48:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.20 2002/09/04 18:01:16 rdonkin Exp $
+ * $Revision: 1.20 $
+ * $Date: 2002/09/04 18:01:16 $
  *
  * ====================================================================
  *
@@ -73,6 +73,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.xml.sax.SAXException;
 
 /**
  * <p>Test Case for the Digester class.  These tests perform parsing of
@@ -80,7 +81,7 @@ import junit.framework.TestSuite;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.19 $ $Date: 2002/07/31 10:48:08 $
+ * @version $Revision: 1.20 $ $Date: 2002/09/04 18:01:16 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -152,7 +153,7 @@ public class RuleTestCase extends TestCase {
      * the stack, which should cause an appropriate Employee object to be
      * returned.
      */
-    public void testObjectCreate1() {
+    public void testObjectCreate1() throws SAXException, IOException {
 
         // Configure the digester as required
         digester.addObjectCreate("employee",
@@ -161,11 +162,8 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input.
         Object root = null;
-        try {
-            root = digester.parse(getInputStream("Test1.xml"));
-        } catch (Throwable t) {
-            fail("Digester threw IOException: " + t);
-        }
+        root = digester.parse(getInputStream("Test1.xml"));
+
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
                 root instanceof Employee);
@@ -187,7 +185,7 @@ public class RuleTestCase extends TestCase {
      * returned.  The processing rules will process the nested Address elements
      * as well, but will not attempt to add them to the Employee.
      */
-    public void testObjectCreate2() {
+    public void testObjectCreate2() throws SAXException, IOException {
 
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
@@ -198,11 +196,8 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input.
         Object root = null;
-        try {
-            root = digester.parse(getInputStream("Test1.xml"));
-        } catch (Throwable t) {
-            fail("Digester threw IOException: " + t);
-        }
+        root = digester.parse(getInputStream("Test1.xml"));
+
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
                 root instanceof Employee);
@@ -224,7 +219,7 @@ public class RuleTestCase extends TestCase {
      * returned.  The processing rules will process the nested Address elements
      * as well, and will add them to the owning Employee.
      */
-    public void testObjectCreate3() {
+    public void testObjectCreate3() throws SAXException, IOException {
 
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
@@ -237,11 +232,8 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input once
         Object root = null;
-        try {
-            root = digester.parse(getInputStream("Test1.xml"));
-        } catch (Throwable t) {
-            fail("Digester threw IOException: " + t);
-        }
+        root = digester.parse(getInputStream("Test1.xml"));
+
         validateObjectCreate3(root);
 
         // Parse the same input again
@@ -259,7 +251,7 @@ public class RuleTestCase extends TestCase {
      * Same as testObjectCreate1(), except use individual call method rules
      * to set the properties of the Employee.
      */
-    public void testObjectCreate4() {
+    public void testObjectCreate4() throws SAXException, IOException {
 
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
@@ -273,11 +265,8 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input.
         Object root = null;
-        try {
-            root = digester.parse(getInputStream("Test1.xml"));
-        } catch (Throwable t) {
-            fail("Digester threw IOException: " + t);
-        }
+        root = digester.parse(getInputStream("Test1.xml"));
+
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
                 root instanceof Employee);
@@ -299,7 +288,7 @@ public class RuleTestCase extends TestCase {
      * a paramCount=0 (ie the body of the element is the argument of the 
      * method).
      */
-    public void testObjectCreate5() {
+    public void testObjectCreate5() throws SAXException, IOException {
 
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
@@ -309,11 +298,8 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input.
         Object root = null;
-        try {
-            root = digester.parse(getInputStream("Test5.xml"));
-        } catch (Throwable t) {
-            fail("Digester threw IOException: " + t);
-        }
+        root = digester.parse(getInputStream("Test5.xml"));
+
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
                 root instanceof Employee);
@@ -332,7 +318,7 @@ public class RuleTestCase extends TestCase {
      * It should be possible to parse the same input twice, and get trees
      * of objects that are isomorphic but not be identical object instances.
      */
-    public void testRepeatedParse() {
+    public void testRepeatedParse() throws SAXException, IOException {
 
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
@@ -345,20 +331,14 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input the first time
         Object root1 = null;
-        try {
-            root1 = digester.parse(getInputStream("Test1.xml"));
-        } catch (Throwable t) {
-            fail("Digester #1 threw Exception:  " + t);
-        }
+        root1 = digester.parse(getInputStream("Test1.xml"));
+
         validateObjectCreate3(root1);
 
         // Parse our test input the second time
         Object root2 = null;
-        try {
-            root2 = digester.parse(getInputStream("Test1.xml"));
-        } catch (Throwable t) {
-            fail("Digester #2 threw Exception:  " + t);
-        }
+        root2 = digester.parse(getInputStream("Test1.xml"));
+
         validateObjectCreate3(root2);
 
         // Make sure that it was a different root
@@ -374,7 +354,7 @@ public class RuleTestCase extends TestCase {
      * returned.  The processing rules will process the nested Address elements
      * as well, but will not attempt to add them to the Employee.
      */
-    public void testRuleSet1() {
+    public void testRuleSet1() throws SAXException, IOException {
 
         // Configure the digester as required
         RuleSet rs = new TestRuleSet();
@@ -382,11 +362,7 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input.
         Object root = null;
-        try {
-            root = digester.parse(getInputStream("Test1.xml"));
-        } catch (Throwable t) {
-            fail("Digester threw IOException: " + t);
-        }
+        root = digester.parse(getInputStream("Test1.xml"));
 
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
@@ -409,7 +385,7 @@ public class RuleTestCase extends TestCase {
     /**
      * Same as <code>testRuleSet1</code> except using a single namespace.
      */
-    public void testRuleSet2() {
+    public void testRuleSet2() throws SAXException, IOException {
 
         // Configure the digester as required
         digester.setNamespaceAware(true);
@@ -419,11 +395,7 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input.
         Object root = null;
-        try {
-            root = digester.parse(getInputStream("Test2.xml"));
-        } catch (Throwable t) {
-            fail("Digester threw IOException: " + t);
-        }
+        root = digester.parse(getInputStream("Test2.xml"));
 
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
@@ -448,7 +420,7 @@ public class RuleTestCase extends TestCase {
      * for employee that we should recognize, and a namespace for
      * address that we should skip.
      */
-    public void testRuleSet3() {
+    public void testRuleSet3() throws SAXException, IOException {
 
         // Configure the digester as required
         digester.setNamespaceAware(true);
@@ -458,11 +430,7 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input.
         Object root = null;
-        try {
-            root = digester.parse(getInputStream("Test3.xml"));
-        } catch (Throwable t) {
-            fail("Digester threw IOException: " + t);
-        }
+        root = digester.parse(getInputStream("Test3.xml"));
 
         assertNotNull("Digester returned an object", root);
         assertTrue("Digester returned an Employee",
@@ -492,7 +460,7 @@ public class RuleTestCase extends TestCase {
      * with the top-1 (parent) object as an argument.  The three argument
      * form is tested in <code>testSetTopRule2</code>.
      */
-    public void testSetTopRule1() {
+    public void testSetTopRule1() throws SAXException, IOException {
 
         // Configure the digester as required
         digester.addObjectCreate("employee",
@@ -505,11 +473,7 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input.
         Object root = null;
-        try {
-            root = digester.parse(getInputStream("Test1.xml"));
-        } catch (Exception t) {
-            fail("Digester threw Exception: " + t);
-        }
+        root = digester.parse(getInputStream("Test1.xml"));
         validateObjectCreate3(root);
 
     }
@@ -519,7 +483,7 @@ public class RuleTestCase extends TestCase {
      * Same as <code>testSetTopRule1</code> except using the three argument
      * form of the SetTopRule rule.
      */
-    public void testSetTopRule2() {
+    public void testSetTopRule2() throws SAXException, IOException {
 
         // Configure the digester as required
         digester.addObjectCreate("employee",
@@ -533,11 +497,8 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input.
         Object root = null;
-        try {
-            root = digester.parse(getInputStream("Test1.xml"));
-        } catch (Exception t) {
-            fail("Digester threw Exception: " + t);
-        }
+        root = digester.parse(getInputStream("Test1.xml"));
+
         validateObjectCreate3(root);
 
     }
@@ -551,12 +512,13 @@ public class RuleTestCase extends TestCase {
         TestRule rule =  new TestRule("Test");
         digester.addRule("/root", rule);
         
-        assertEquals("Digester is not properly on rule addition.", digester, rule.getDigester());
+        assertEquals("Digester is not properly on rule addition.", 
+                        digester, rule.getDigester());
 
     }
     
 
-    public void testSetNext() throws Exception {
+    public void testSetNext() throws SAXException, IOException {
         Digester digester = new Digester();
         digester.setRules(new ExtendedBaseRules());
         digester.setValidating(false);
@@ -569,7 +531,8 @@ public class RuleTestCase extends TestCase {
         digester.addSetNext("!*/b/?", "setChild");
         digester.addSetNext("!*/a/?", "setChild");
         digester.addSetNext("!root/?", "add");
-        ArrayList root = (ArrayList) digester.parse(getInputStream("Test4.xml"));
+        ArrayList root = 
+            (ArrayList) digester.parse(getInputStream("Test4.xml"));
         
         assertEquals("Wrong array size", 2, root.size());
         AlphaBean one = (AlphaBean) root.get(0);
@@ -588,7 +551,7 @@ public class RuleTestCase extends TestCase {
     }
     
     
-    public void testSetTop() throws Exception {
+    public void testSetTop() throws SAXException, IOException {
         Digester digester = new Digester();
         digester.setRules(new ExtendedBaseRules());
         digester.setValidating(false);
@@ -602,7 +565,8 @@ public class RuleTestCase extends TestCase {
         digester.addSetTop("!*/a/?", "setParent");
         digester.addSetRoot("!*/a", "add");
         digester.addSetRoot("!*/b", "add");
-        ArrayList root = (ArrayList) digester.parse(getInputStream("Test4.xml"));
+        ArrayList root = 
+            (ArrayList) digester.parse(getInputStream("Test4.xml"));
         
         assertEquals("Wrong array size", 5, root.size());
         
@@ -637,7 +601,7 @@ public class RuleTestCase extends TestCase {
      * to call any accessible method of the object on the top of the stack,
      * even methods with no arguments.
      */
-    public void testCallMethod() throws Exception {
+    public void testCallMethod() throws SAXException, IOException {
         
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
@@ -650,14 +614,8 @@ public class RuleTestCase extends TestCase {
 
         // Parse our test input
         Object root1 = null;
-        try {
-            // an exception will be thrown if the method can't be found
-            root1 = digester.parse(getInputStream("Test5.xml"));
-            
-        } catch (Throwable t) {
-            // this means that the method can't be found and so the test fails
-            fail("Digester threw Exception:  " + t);
-        }
+        // an exception will be thrown if the method can't be found
+        root1 = digester.parse(getInputStream("Test5.xml"));
 
     }
 
@@ -666,7 +624,7 @@ public class RuleTestCase extends TestCase {
      * to call any accessible method of the object on the top of the stack,
      * even methods with no arguments.
      */
-    public void testCallMethod2() throws Exception {
+    public void testCallMethod2() throws SAXException, IOException {
         
         //I was preparing this test case to fix another bug
         //    i'll uncomment it once i've fixed it
@@ -674,85 +632,71 @@ public class RuleTestCase extends TestCase {
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
         // try all syntax permutations
-        digester.addCallMethod("employee", "setLastName", 1, new String[] {"java.lang.String"});
+        digester.addCallMethod("employee", "setLastName", 1, 
+                                new String[] {"java.lang.String"});
         digester.addCallParam("employee/lastName", 0);
                 
         // Parse our test input
         Object root1 = null;
-        try {
-            // an exception will be thrown if the method can't be found
-            root1 = digester.parse(getInputStream("Test5.xml"));
-            Employee employee = (Employee) root1;
-            assertEquals("Failed to call Employee.setLastName", "Last Name", employee.getLastName()); 
-            
-        } catch (Throwable t) {
-            // this means that the method can't be found and so the test fails
-            fail("Digester threw Exception:  " + t);
-        }
+        
+        // an exception will be thrown if the method can't be found
+        root1 = digester.parse(getInputStream("Test5.xml"));
+        Employee employee = (Employee) root1;
+        assertEquals("Failed to call Employee.setLastName", 
+                    "Last Name", employee.getLastName()); 
         
 
         digester = new Digester();
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);
         // try out primitive convertion
-        digester.addCallMethod("employee", "setAge", 1, new Class[] {int.class});
+        digester.addCallMethod("employee", "setAge", 1, 
+                                new Class[] {int.class});
         digester.addCallParam("employee/age", 0);         
                 
         // Parse our test input
         root1 = null;
-        try {
-            // an exception will be thrown if the method can't be found
-            root1 = digester.parse(getInputStream("Test5.xml"));
-            Employee employee = (Employee) root1;
-            assertEquals("Failed to call Employee.setAge", 21, employee.getAge()); 
-            
-        } catch (Throwable t) {
-            // this means that the method can't be found and so the test fails
-            fail("Digester threw Exception:  " + t);
-        }
+        
+        // an exception will be thrown if the method can't be found
+        root1 = digester.parse(getInputStream("Test5.xml"));
+        employee = (Employee) root1;
+        assertEquals("Failed to call Employee.setAge", 21, employee.getAge()); 
         
         digester = new Digester();
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class);      
-        digester.addCallMethod("employee", "setActive", 1, new Class[] {boolean.class});
+        digester.addCallMethod("employee", "setActive", 1, 
+                                new Class[] {boolean.class});
         digester.addCallParam("employee/active", 0);    
                 
         // Parse our test input
         root1 = null;
-        try {
-            // an exception will be thrown if the method can't be found
-            root1 = digester.parse(getInputStream("Test5.xml"));
-            Employee employee = (Employee) root1;
-            assertEquals("Failed to call Employee.setActive", true, employee.isActive()); 
-            
-        } catch (Throwable t) {
-            // this means that the method can't be found and so the test fails
-            fail("Digester threw Exception:  " + t);
-        }
+
+        // an exception will be thrown if the method can't be found
+        root1 = digester.parse(getInputStream("Test5.xml"));
+        employee = (Employee) root1;
+        assertEquals("Failed to call Employee.setActive", 
+                        true, employee.isActive()); 
         
         digester = new Digester();            
         // Configure the digester as required
         digester.addObjectCreate("employee", Employee.class); 
-        digester.addCallMethod("employee", "setSalary", 1, new Class[] {float.class});
+        digester.addCallMethod("employee", "setSalary", 1, 
+                                new Class[] {float.class});
         digester.addCallParam("employee/salary", 0);    
                 
         // Parse our test input
         root1 = null;
-        try {
-            // an exception will be thrown if the method can't be found
-            root1 = digester.parse(getInputStream("Test5.xml"));
-            Employee employee = (Employee) root1;
-            assertEquals("Failed to call Employee.setSalary", 1000000.0f, employee.getSalary(), 0.1f); 
-
-        } catch (Throwable t) {
-            // this means that the method can't be found and so the test fails
-            fail("Digester threw Exception:  " + t);
-        }
+        // an exception will be thrown if the method can't be found
+        root1 = digester.parse(getInputStream("Test5.xml"));
+        employee = (Employee) root1;
+        assertEquals("Failed to call Employee.setSalary", 
+                        1000000.0f, employee.getSalary(), 0.1f); 
     }
     
     /**
      */
-    public void testSetCustomProperties() throws Exception {
+    public void testSetCustomProperties() throws SAXException, IOException {
         
         Digester digester = new Digester();
         
@@ -779,7 +723,8 @@ public class RuleTestCase extends TestCase {
         digester.addSetProperties("toplevel/four", "alt-city", "city");
         
 
-        ArrayList root = (ArrayList) digester.parse(getInputStream("Test7.xml"));
+        ArrayList root = 
+            (ArrayList) digester.parse(getInputStream("Test7.xml"));
         
         assertEquals("Wrong array size", 4, root.size());
         
@@ -789,28 +734,32 @@ public class RuleTestCase extends TestCase {
         obj = root.get(0);
         assertTrue("(1) Should be an Address ", obj instanceof Address);
         Address addressOne = (Address) obj;
-        assertEquals("(1) Street attribute", "New Street", addressOne.getStreet());
+        assertEquals("(1) Street attribute", "New Street", 
+                    addressOne.getStreet());
         assertEquals("(1) City attribute", "Las Vegas", addressOne.getCity());
         assertEquals("(1) State attribute", "Nevada", addressOne.getState());
         
         obj = root.get(1);
         assertTrue("(2) Should be an Address ", obj instanceof Address);
         Address addressTwo = (Address) obj;
-        assertEquals("(2) Street attribute", "Old Street", addressTwo.getStreet());
+        assertEquals("(2) Street attribute", "Old Street", 
+                    addressTwo.getStreet());
         assertEquals("(2) City attribute", "Portland", addressTwo.getCity());
         assertEquals("(2) State attribute", "Oregon", addressTwo.getState());
         
         obj = root.get(2);
         assertTrue("(3) Should be an Address ", obj instanceof Address);
         Address addressThree = (Address) obj;
-        assertEquals("(3) Street attribute", "4th Street", addressThree.getStreet());
+        assertEquals("(3) Street attribute", "4th Street", 
+                    addressThree.getStreet());
         assertEquals("(3) City attribute", "Dayton", addressThree.getCity());
         assertEquals("(3) State attribute", "US" , addressThree.getState());
        
         obj = root.get(3);
         assertTrue("(4) Should be an Address ", obj instanceof Address);
         Address addressFour = (Address) obj;
-        assertEquals("(4) Street attribute", "6th Street", addressFour.getStreet());
+        assertEquals("(4) Street attribute", "6th Street", 
+                    addressFour.getStreet());
         assertEquals("(4) City attribute", "Cleveland", addressFour.getCity());
         assertEquals("(4) State attribute", "Ohio", addressFour.getState());
         
