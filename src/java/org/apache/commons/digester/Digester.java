@@ -74,7 +74,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.96 $ $Date: 2004/03/15 21:44:53 $
+ * @version $Revision: 1.97 $ $Date: 2004/03/23 07:07:54 $
  */
 
 public class Digester extends DefaultHandler {
@@ -2738,7 +2738,7 @@ public class Digester extends DefaultHandler {
      *
      * @return the new exception
      */
-    protected SAXException createSAXException(String message, Exception e) {
+    public SAXException createSAXException(String message, Exception e) {
         if ((e != null) &&
             (e instanceof InvocationTargetException)) {
             Throwable t = ((InvocationTargetException) e).getTargetException();
@@ -2769,7 +2769,7 @@ public class Digester extends DefaultHandler {
      *
      * @return the new exception
      */
-    protected SAXException createSAXException(Exception e) {
+    public SAXException createSAXException(Exception e) {
         if (e instanceof InvocationTargetException) {
             Throwable t = ((InvocationTargetException) e).getTargetException();
             if ((t != null) && (t instanceof Exception)) {
@@ -2785,7 +2785,7 @@ public class Digester extends DefaultHandler {
      *
      * @return the new exception
      */
-    protected SAXException createSAXException(String message) {
+    public SAXException createSAXException(String message) {
         return createSAXException(message, null);
     }
     
