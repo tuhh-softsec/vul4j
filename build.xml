@@ -433,7 +433,7 @@ org.apache.xml.security.utils.resolver.implementations.*
   </target>
 
   <target name="testjar"
-          depends="prepare"
+          depends="prepare,get-jce"
           if="xmlsec.build.present"
           description="Starts all JUnit test cases and uses the compiled JARs">
      <java classname="junit.textui.TestRunner"
