@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsEmpty.java,v 1.3 2003/11/24 20:12:17 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsEmpty.java,v 1.4 2003/11/24 21:38:39 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -71,7 +71,7 @@ import org.apache.commons.functor.core.ConstantPredicate;
 import org.apache.commons.functor.core.composite.UnaryNot;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/11/24 20:12:17 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/24 21:38:39 $
  * @author Rodney Waldhoff
  */
 public class TestIsEmpty extends BaseFunctorTest {
@@ -143,6 +143,18 @@ public class TestIsEmpty extends BaseFunctorTest {
         }
     }
     
+    public void testTestArray() throws Exception {
+        assertTrue(! IsEmpty.instance().test(new int[10]));
+        assertTrue(! IsEmpty.instance().test(new Object[10]));
+        assertTrue(IsEmpty.instance().test(new int[0]));
+        assertTrue(IsEmpty.instance().test(new Object[0]));
+    }
+
+    public void testTestString() throws Exception {
+        assertTrue(! IsEmpty.instance().test("xyzzy"));
+        assertTrue(IsEmpty.instance().test(""));
+    }
+
     public void testEquals() throws Exception {
         UnaryPredicate p = new IsEmpty();
         assertEquals(p,p);

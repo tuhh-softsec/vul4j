@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/IsEmpty.java,v 1.2 2003/11/24 20:12:17 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/IsEmpty.java,v 1.3 2003/11/24 21:38:39 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,12 +57,13 @@
 package org.apache.commons.functor.core.collection;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.Collection;
 
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/24 20:12:17 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/24 21:38:39 $
  * @author Rodney Waldhoff
  */
 public final class IsEmpty implements UnaryPredicate, Serializable {
@@ -71,9 +72,22 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
     // ------------------------------------------------------------------------
     
     public IsEmpty() { }
+
+    // instance methods
+    // ------------------------------------------------------------------------
     
     public boolean test(Object obj) {
-        return ((Collection)obj).isEmpty();
+        if(obj instanceof Collection) {
+            return test((Collection)obj);
+        } else if(obj instanceof String) {
+            return test((String)obj);
+        } else if(null != obj && obj.getClass().isArray()) {
+            return testArray(obj);
+        } else if(null == obj){
+            throw new NullPointerException("Argument must not be null");
+        } else {
+            throw new ClassCastException("Expected Collection, String or Array, found " + obj);
+        } 
     }
 
     /**
@@ -97,9 +111,27 @@ public final class IsEmpty implements UnaryPredicate, Serializable {
         return "IsEmpty()";
     }
 
+    private boolean test(Collection col) {
+        return col.isEmpty();
+    }
+    
+    private boolean test(String str) {
+        return 0 == str.length();
+    }
+    
+    private boolean testArray(Object array) {
+        return 0 == Array.getLength(array);
+    }
+
+    // class methods
+    // ------------------------------------------------------------------------
+    
     public static final IsEmpty instance() {
         return INSTANCE;
     }
+    
+    // class variables
+    // ------------------------------------------------------------------------
     
     private static final IsEmpty INSTANCE = new IsEmpty();
 
