@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.63 2002/08/10 22:05:42 patrickl Exp $
- * $Revision: 1.63 $
- * $Date: 2002/08/10 22:05:42 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.64 2002/08/15 16:42:08 patrickl Exp $
+ * $Revision: 1.64 $
+ * $Date: 2002/08/15 16:42:08 $
  *
  * ====================================================================
  *
@@ -123,7 +123,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.63 $ $Date: 2002/08/10 22:05:42 $
+ * @version $Revision: 1.64 $ $Date: 2002/08/15 16:42:08 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1201,7 +1201,7 @@ public class Digester extends DefaultHandler {
             saxLog.debug("startElement(" + namespaceURI + "," + localName + "," +
                     qName + ")");
         }
-
+        
         // Save the body text accumulated for our surrounding element
         bodyTexts.push(bodyText);
         if (debug) {
@@ -1337,7 +1337,8 @@ public class Digester extends DefaultHandler {
         if (saxLog.isDebugEnabled()) {
             saxLog.debug("resolveEntity('" + publicId + "', '" + systemId + "')");
         }
-        this.publicId = publicId;
+        if (publicId != null)
+            this.publicId = publicId;
                                        
         // Has this system identifier been registered?
         String entityURL = null;
