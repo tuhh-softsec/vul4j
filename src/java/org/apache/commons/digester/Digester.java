@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.67 2002/09/30 19:48:50 rdonkin Exp $
- * $Revision: 1.67 $
- * $Date: 2002/09/30 19:48:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.68 2002/10/02 19:23:12 rdonkin Exp $
+ * $Revision: 1.68 $
+ * $Date: 2002/10/02 19:23:12 $
  *
  * ====================================================================
  *
@@ -124,7 +124,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.67 $ $Date: 2002/09/30 19:48:50 $
+ * @version $Revision: 1.68 $ $Date: 2002/10/02 19:23:12 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1013,6 +1013,13 @@ public class Digester extends DefaultHandler {
             log.debug("  bodyText='" + bodyText + "'");
         }
 
+        // the actual element name is either in localName or qName, depending 
+        // on whether the parser is namespace aware
+        String name = localName;
+        if ((name == null) || (name.length() < 1)) {
+            name = qName;
+        }
+
         // Fire "body" events for all relevant rules
         List rules = getRules().match(namespaceURI, match);
         if ((rules != null) && (rules.size() > 0)) {
@@ -1023,7 +1030,7 @@ public class Digester extends DefaultHandler {
                     if (debug) {
                         log.debug("  Fire body() for " + rule);
                     }
-                    rule.body(bodyText);
+                    rule.body(namespaceURI, name, bodyText);
                 } catch (Exception e) {
                     log.error("Body event threw exception", e);
                     throw createSAXException(e);
@@ -1053,7 +1060,7 @@ public class Digester extends DefaultHandler {
                     if (debug) {
                         log.debug("  Fire end() for " + rule);
                     }
-                    rule.end();
+                    rule.end(namespaceURI, name);
                 } catch (Exception e) {
                     log.error("End event threw exception", e);
                     throw createSAXException(e);
@@ -1229,16 +1236,19 @@ public class Digester extends DefaultHandler {
         }
         bodyText = new StringBuffer();
 
+        // the actual element name is either in localName or qName, depending 
+        // on whether the parser is namespace aware
+        String name = localName;
+        if ((name == null) || (name.length() < 1)) {
+            name = qName;
+        }
+
         // Compute the current matching rule
         StringBuffer sb = new StringBuffer(match);
         if (match.length() > 0) {
             sb.append('/');
         }
-        if ((localName == null) || (localName.length() < 1)) {
-            sb.append(qName);
-        } else {
-            sb.append(localName);
-        }
+        sb.append(name);
         match = sb.toString();
         if (debug) {
             log.debug("  New match='" + match + "'");
@@ -1254,7 +1264,7 @@ public class Digester extends DefaultHandler {
                     if (debug) {
                         log.debug("  Fire begin() for " + rule);
                     }
-                    rule.begin(list);
+                    rule.begin(namespaceURI, name, list);
                 } catch (Exception e) {
                     log.error("Begin event threw exception", e);
                     throw createSAXException(e);

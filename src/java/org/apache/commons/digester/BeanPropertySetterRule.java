@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.8 2002/03/23 17:45:57 rdonkin Exp $
- * $Revision: 1.8 $
- * $Date: 2002/03/23 17:45:57 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.9 2002/10/02 19:23:12 rdonkin Exp $
+ * $Revision: 1.9 $
+ * $Date: 2002/10/02 19:23:12 $
  *
  * ====================================================================
  *
@@ -81,7 +81,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.8 $ $Date: 2002/03/23 17:45:57 $
+ * @version $Revision: 1.9 $ $Date: 2002/10/02 19:23:12 $
  */
 
 public class BeanPropertySetterRule extends Rule {
@@ -144,6 +144,7 @@ public class BeanPropertySetterRule extends Rule {
         this((String)null);
 
     }
+    
     // ----------------------------------------------------- Instance Variables
 
 
@@ -165,45 +166,51 @@ public class BeanPropertySetterRule extends Rule {
     /**
      * Process the body text of this element.
      *
-     * @param bodyText The body text of this element
+     * @param namespace the namespace URI of the matching element, or an 
+     *   empty string if the parser is not namespace aware or the element has
+     *   no namespace
+     * @param name the local name if the parser is namespace aware, or just 
+     *   the element name otherwise
+     * @param text The text of the body of this element
      */
-    public void body(String bodyText) throws Exception {
+    public void body(String namespace, String name, String text)
+        throws Exception {
 
         // log some debugging information
         if (digester.log.isDebugEnabled()) {
             digester.log.debug("[BeanPropertySetterRule]{" +
-                    digester.match + "} Called with text " + bodyText);
+                    digester.match + "} Called with text '" + text + "'");
         }
 
-        this.bodyText = bodyText.trim();
+        bodyText = text.trim();
 
     }
 
 
     /**
      * Process the end of this element.
+     *
+     * @param namespace the namespace URI of the matching element, or an 
+     *   empty string if the parser is not namespace aware or the element has
+     *   no namespace
+     * @param name the local name if the parser is namespace aware, or just 
+     *   the element name otherwise
      */
-    public void end() throws Exception {
+    public void end(String namespace, String name) throws Exception {
 
         String property = propertyName;
 
         if (property == null) {
             // If we don't have a specific property name,
             // use the element name.
-            String match = digester.match;
-            int slash = match.lastIndexOf('/');
-            if (slash >= 0) {
-                match = match.substring(slash + 1);
-            }
-
-            property = match;
-
+            property = name;
         }
 
         // log some debugging information
         if (digester.log.isDebugEnabled()) {
             digester.log.debug("[BeanPropertySetterRule]{" + digester.match +
-                    "} Setting property " + property + " with text " + bodyText);
+                    "} Setting property " + property + " with text " +
+                    bodyText);
         }
 
         // going to use beanutils so need to specify property using map
@@ -219,12 +226,10 @@ public class BeanPropertySetterRule extends Rule {
                 digester.log.debug("[BeanPropertySetterRule]{" +
                         digester.match + "} Top object is null.");
             }
-            return;
+        } else {
+            // populate property on top object
+            BeanUtils.populate(top, map);
         }
-
-        // populate property on top object
-        BeanUtils.populate(top, map);
-
     }
 
 
