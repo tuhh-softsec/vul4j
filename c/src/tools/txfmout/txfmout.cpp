@@ -79,7 +79,6 @@
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #include <xsec/utils/XSECBinTXFMInputStream.hpp>
 
 #if defined(_WIN32)

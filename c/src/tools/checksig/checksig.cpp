@@ -60,7 +60,7 @@
 /*
  * XSEC
  *
- * checkSig := tool to check a signature embedded in an XML file
+ * checkSig := (Very ugly) tool to check a signature embedded in an XML file
  *
  * Author(s): Berin Lautenbach
  *
@@ -77,16 +77,14 @@
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #include <xsec/enc/XSECKeyInfoResolverDefault.hpp>
 
 // ugly :<
 
 #if defined(_WIN32)
-#include <xsec/utils/winutils/XSECURIResolverGenericWin32.hpp>
-#include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
+#	include <xsec/utils/winutils/XSECURIResolverGenericWin32.hpp>
 #else
-#include <xsec/utils/unixutils/XSECURIResolverGenericUnix.hpp>
+#	include <xsec/utils/unixutils/XSECURIResolverGenericUnix.hpp>
 #endif
 
 // General
@@ -142,9 +140,20 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
+#if defined (HAVE_OPENSSL)
 // OpenSSL
 
-#include <openssl/err.h>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
+#	include <openssl/err.h>
+
+#endif
+
+#if defined (HAVE_WINCAPI)
+
+#	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
+#	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
+
+#endif
 
 #ifdef XSEC_NO_XALAN
 
@@ -168,9 +177,14 @@ void printUsage(void) {
 	cerr << "         Set an hmac key using the <string>\n\n";
 	cerr << "     --xsecresolver/-x\n";
 	cerr << "         Use the xml-security test XMLDSig URI resolver\n\n";
-#if defined(_WIN32)
+#if defined(HAVE_WINCAPI)
+#	if defined (HAVE_OPENSSL)
 	cerr << "     --wincapi/-w\n";
 	cerr << "         Use the Windows CAPI crypto Provider\n\n";
+#	endif
+	cerr << "     --winhmackey/-wh <string>\n";
+	cerr << "         Use the Windows CAPI crypto provider and hash the <string>\n";
+	cerr << "         into a Windows key using SHA-1\n\n";
 #endif
 	cerr << "     Exits with codes :\n";
 	cerr << "         0 = Signature OK\n";
@@ -183,10 +197,11 @@ int evaluate(int argc, char ** argv) {
 	
 	char					* filename = NULL;
 	char					* hmacKeyStr = NULL;
-	OpenSSLCryptoKeyHMAC	* hmacKey;
+	XSECCryptoKey			* key = NULL;
 	bool					useXSECURIResolver = false;
 #if defined(_WIN32)
-	HCRYPTPROV				win32CSP = 0;		// Crypto Provider
+	HCRYPTPROV				win32DSSCSP = 0;		// Crypto Providers
+	HCRYPTPROV				win32RSACSP = 0;		
 #endif
 
 	bool skipRefs = false;
@@ -214,24 +229,92 @@ int evaluate(int argc, char ** argv) {
 			useXSECURIResolver = true;
 			paramCount++;
 		}
-#if defined (_WIN32)
-		else if (stricmp(argv[paramCount], "--wincapi") == 0 || stricmp(argv[paramCount], "-w") == 0) {
-			WinCAPICryptoProvider * cp;
-			// Obtain default PROV_DSS
-			if (!CryptAcquireContext(&win32CSP,
-				NULL,
-				NULL,
-				PROV_DSS,
-				0)) {
-					cerr << "Error acquiring DSS Crypto Service Provider" << endl;
-					return 2;
+#if defined (HAVE_WINCAPI)
+		else if (stricmp(argv[paramCount], "--wincapi") == 0 || stricmp(argv[paramCount], "-w") == 0 ||
+			stricmp(argv[paramCount], "--winhmackey") == 0 || stricmp(argv[paramCount], "-wh") == 0) {
+
+			if (win32DSSCSP == 0) {
+				WinCAPICryptoProvider * cp;
+				// Obtain default PROV_DSS
+				if (!CryptAcquireContext(&win32DSSCSP,
+					NULL,
+					NULL,
+					PROV_DSS,
+					0)) {
+						cerr << "Error acquiring DSS Crypto Service Provider" << endl;
+						return 2;
+				}
+
+				if (!CryptAcquireContext(&win32RSACSP,
+					NULL,
+					NULL,
+					PROV_RSA_FULL,
+					0)) {
+						cerr << "Error acquiring RSA Crypto Service Provider" << endl;
+						return 2;
+				}
+
+				// Use default DSS provider
+				cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
+				XSECPlatformUtils::SetCryptoProvider(cp);
 			}
 
-			// Use default DSS provider
-			cp = new WinCAPICryptoProvider(win32CSP);
-			XSECPlatformUtils::SetCryptoProvider(cp);
+			if (stricmp(argv[paramCount], "--winhmackey") == 0 || stricmp(argv[paramCount], "-wh") == 0) {
+
+				// Create a SHA-1 based key based on the <string> parameter
+
+				paramCount++;
+
+				HCRYPTKEY k;
+				HCRYPTHASH h;
+				BOOL fResult = CryptCreateHash(
+					win32RSACSP,
+					CALG_SHA,
+					0,
+					0,
+					&h);
+
+				if (fResult == 0) {
+					cerr << "Error creating hash to create windows hmac key from password" << endl;
+					return 2;
+				}
+				fResult = CryptHashData(
+					h,
+					(unsigned char *) argv[paramCount],
+					strlen(argv[paramCount]),
+					0);
+				
+				if (fResult == 0) {
+					cerr << "Error hashing password to create windows hmac key" << endl;
+					return 2;
+				}
+
+				// Now create a key
+				fResult = CryptDeriveKey(
+					win32RSACSP,
+					CALG_RC2,
+					h,
+					CRYPT_EXPORTABLE,
+					&k);
+
+				if (fResult == 0) {
+					cerr << "Error deriving key from hash value" << endl;
+					return 2;
+				}
+
+				// Wrap in a WinCAPI object
+				WinCAPICryptoKeyHMAC * hk;
+				hk = new WinCAPICryptoKeyHMAC();
+				hk->setWinKey(k); 
+
+				key = hk;
+
+				CryptDestroyHash(h);
+
+			}
+
 			paramCount++;
-		
+
 		}
 #endif
 		else {
@@ -239,6 +322,37 @@ int evaluate(int argc, char ** argv) {
 			return 2;
 		}
 	}
+
+#if defined (HAVE_WINCAPI) && !defined(HAVE_OPENSSL)
+
+	if (win32DSSCSP == 0) {
+		WinCAPICryptoProvider * cp;
+		// Obtain default PROV_DSS
+		if (!CryptAcquireContext(&win32DSSCSP,
+			NULL,
+			NULL,
+			PROV_DSS,
+			0)) {
+				cerr << "Error acquiring DSS Crypto Service Provider" << endl;
+				return 2;
+		}
+
+		if (!CryptAcquireContext(&win32RSACSP,
+			NULL,
+			NULL,
+			PROV_RSA_FULL,
+			0)) {
+				cerr << "Error acquiring RSA Crypto Service Provider" << endl;
+				return 2;
+		}
+
+		// Use default DSS provider
+		cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
+		XSECPlatformUtils::SetCryptoProvider(cp);
+
+	}
+
+#endif
 
 	if (paramCount >= argc) {
 		printUsage();
@@ -382,9 +496,22 @@ int evaluate(int argc, char ** argv) {
 		// Load a key if necessary
 		if (hmacKeyStr != NULL) {
 
+#if defined (HAVE_OPENSSL)
+			OpenSSLCryptoKeyHMAC	* hmacKey;
 			hmacKey = new OpenSSLCryptoKeyHMAC();
+#else
+#	if defined (HAVE_WINCAPI)
+			WinCAPICryptoKeyHMAC	* hmacKey;
+			hmacKey = new WinCAPICryptoKeyHMAC();
+#	endif
+#endif
 			hmacKey->setKey((unsigned char *) hmacKeyStr, strlen(hmacKeyStr));
 			sig->setSigningKey(hmacKey);
+
+		}
+		else if (key != NULL) {
+
+			sig->setSigningKey(key);
 
 		}
 
@@ -408,12 +535,14 @@ int evaluate(int argc, char ** argv) {
 		<< e.getMsg() << endl;
 		errorsOccured = true;
 
+#if defined (HAVE_OPENSSL)
 		ERR_load_crypto_strings();
 		BIO * bio_err;
 		if ((bio_err=BIO_new(BIO_s_file())) != NULL)
 			BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
 
 		ERR_print_errors(bio_err);
+#endif
 		return 2;
 	}
 
@@ -440,9 +569,12 @@ int evaluate(int argc, char ** argv) {
 		retResult = 1;
 	}
 
-#if defined (_WIN32)
-	if (win32CSP != 0) {
-		CryptReleaseContext(win32CSP, 0);
+#if defined (HAVE_WINCAPI)
+	if (win32DSSCSP != 0) {
+		CryptReleaseContext(win32DSSCSP, 0);
+	}
+	if (win32RSACSP != 0) {
+		CryptReleaseContext(win32RSACSP, 0);
 	}
 #endif
 	prov.releaseSignature(sig);

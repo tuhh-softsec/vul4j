@@ -112,10 +112,16 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/utils/XSECNameSpaceExpander.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
+
+#if defined (HAVE_OPENSSL)
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
+#endif
+#if defined (HAVE_WINCAPI)
+#	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
+#endif
 
 using std::ostream;
 using std::cout;
@@ -760,7 +766,15 @@ count(ancestor-or-self::dsig:Signature)");
 	
 		sig->appendKeyName(MAKE_UNICODE_STRING("The secret key is \"secret\""));
 
+#if defined (HAVE_OPENSSL)
 		OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
+		cerr << "Using OpenSSL as the cryptography provider" << endl;
+#else
+#	if defined (HAVE_WINCAPI)
+		WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC();
+		cerr << "Using Windows Crypto API as the cryptography provider" << endl;
+#	endif
+#endif
 		hmacKey->setKey((unsigned char *) "secret", strlen("secret"));
 		sig->setSigningKey(hmacKey);
 		sig->sign();
@@ -810,7 +824,13 @@ count(ancestor-or-self::dsig:Signature)");
 		}
 
 		cerr << "Setting incorrect key in Signature object" << endl;
+#if defined (HAVE_OPENSSL)
 		hmacKey = new OpenSSLCryptoKeyHMAC();
+#else
+#	if defined (HAVE_WINCAPI)
+		hmacKey = new WinCAPICryptoKeyHMAC();
+#	endif
+#endif
 		hmacKey->setKey((unsigned char *) "badsecret", strlen("badsecret"));
 		sig->setSigningKey(hmacKey);
 

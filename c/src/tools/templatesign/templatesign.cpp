@@ -78,23 +78,25 @@
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 
-// OpenSSL
+#if defined (HAVE_OPENSSL)
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 
-#include <openssl/bio.h>
-#include <openssl/dsa.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <openssl/pem.h>
+#	include <openssl/bio.h>
+#	include <openssl/dsa.h>
+#	include <openssl/err.h>
+#	include <openssl/evp.h>
+#	include <openssl/pem.h>
+#endif
 
-
-#if defined(_WIN32)
+#if defined(HAVE_WINCAPI)
 #	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyDSA.hpp>
+#	include <xsec/enc/WinCAPI/WinCAPICryptoKeyRSA.hpp>
+#	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
 #endif
 
 #include <memory.h>
@@ -557,28 +559,38 @@ unsigned char *charBuffer;
 void printUsage(void) {
 
 	cerr << "\nUsage: templatesign <key options> <file to sign>\n\n";
+#if defined (HAVE_OPENSSL)
 	cerr << "    Where <key options> are one of :\n\n";
 	cerr << "        --dsakey/-d  <dsa private key file> <password>\n";
 	cerr << "                     <dsa private key file> contains a PEM encoded private key\n";
 	cerr << "                     <password> is the password used to decrypt the key file\n";
-#if defined (_WIN32)
+#	if defined (HAVE_WINCAPI)
 	cerr << "                     NOTE: Not usable if --wincapi previously set\n";
-#endif
+#	endif
 	cerr << "        --rsakey/-r <rsa private key file> <password>\n";
 	cerr << "                     <rsa privatekey file> contains a PEM encoded private key\n";
 	cerr << "                     <password> is the password used to decrypt the key file\n";
+	cerr << "        --x509cert/-x <filename>\n";
+	cerr << "                      <filename> contains a PEM certificate to be added as a KeyInfo\n";
+#endif
 	cerr << "        --hmackey/-h <string>\n";
 	cerr << "                     <string> is the hmac key to set\n";
 	cerr << "        --clearkeys/-c\n";
 	cerr << "                      Clears out any current KeyInfo elements in the file\n";
-	cerr << "        --x509cert/-x <filename>\n";
-	cerr << "                      <filename> contains a PEM certificate to be added as a KeyInfo\n";
-#if defined(_WIN32)
+#if defined(HAVE_WINCAPI)
 	cerr << "        --windss/-wd\n";
 	cerr << "                      Use the default user AT_SIGNATURE key from default\n";
 	cerr << "                      Windows DSS CSP\n";
+	cerr << "        --winrsa/-wr\n";
+	cerr << "                      Use the default user AT_SIGNATURE key from default\n";
+	cerr << "                      Windows RSA CSP\n";
+	cerr << "        --winhmac/-wh <string>\n";
+	cerr << "                      Create a windows HMAC key using <string> as the password.\n";
+	cerr << "                      Uses a SHA-1 hash of the password to derive a key\n";
 	cerr << "        --windsskeyinfo/-wdi\n";
 	cerr << "                      Clear KeyInfo elements and insert DSS parameters from windows key\n";
+	cerr << "        --winrsakeyinfo/-wri\n";
+	cerr << "                      Clear KeyInfo elements and insert RSA parameters from windows key\n";
 #endif
 
 
@@ -588,14 +600,19 @@ int main(int argc, char **argv) {
 
 	XSECCryptoKey				* key = NULL;
 	DSIGKeyInfoX509				* keyInfoX509 = NULL;
+#if defined (HAVE_OPENSSL)
 	OpenSSLCryptoX509			* certs[128];
+#endif
 	int							certCount = 0;
 	int							paramCount;
 	bool						clearKeyInfo = false;
-#if defined(_WIN32)
-	HCRYPTPROV					win32CSP = 0;		// Crypto Provider
+#if defined(HAVE_WINCAPI)
+	HCRYPTPROV					win32DSSCSP = 0;		// Crypto Provider
+	HCRYPTPROV					win32RSACSP = 0;		// Crypto Provider
 	bool						winDssKeyInfo = false;
-	WinCAPICryptoKeyDSA			* winKey = NULL;
+	bool						winRsaKeyInfo = false;
+	WinCAPICryptoKeyDSA			* winKeyDSA = NULL;
+	WinCAPICryptoKeyRSA			* winKeyRSA = NULL;
 #endif
 
 	// Initialise the XML system
@@ -619,12 +636,16 @@ int main(int argc, char **argv) {
 
 	}
 
+#if defined (HAVE_OPENSSL)
+	
 	// Initialise OpenSSL
 	ERR_load_crypto_strings();
 	BIO * bio_err;
 	
 	if ((bio_err=BIO_new(BIO_s_file())) != NULL)
 		BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
+
+#endif
 
 	if (argc < 2) {
 
@@ -637,6 +658,8 @@ int main(int argc, char **argv) {
 	while (paramCount < argc - 1) {
 
 		// Run through all parameters
+
+#if defined (HAVE_OPENSSL)
 
 		if (stricmp(argv[paramCount], "--dsakey") == 0 || stricmp(argv[paramCount], "-d") == 0 ||
 			stricmp(argv[paramCount], "--rsakey") == 0 || stricmp(argv[paramCount], "-r") == 0) {
@@ -766,10 +789,18 @@ int main(int argc, char **argv) {
 			paramCount += 2;
 			
 		} /* argv[1] = "--x509cert" */
+		
+		else 
+#endif
+		if (stricmp(argv[paramCount], "--hmackey") == 0 || stricmp(argv[paramCount], "-h") == 0) {
 
-		else if (stricmp(argv[paramCount], "--hmackey") == 0 || stricmp(argv[paramCount], "-h") == 0) {
-
+#if defined (HAVE_OPENSSL)
 			OpenSSLCryptoKeyHMAC * hmacKey = new OpenSSLCryptoKeyHMAC();
+#else
+#	if defined (HAVE_WINCAPI)
+			WinCAPICryptoKeyHMAC * hmacKey = new WinCAPICryptoKeyHMAC();
+#	endif
+#endif
 			hmacKey->setKey((unsigned char *) argv[paramCount + 1], strlen(argv[paramCount + 1]));
 			key = hmacKey;
 			paramCount += 2;
@@ -783,11 +814,11 @@ int main(int argc, char **argv) {
 
 		}
 
-#if defined (_WIN32)
+#if defined (HAVE_WINCAPI)
 		else if (stricmp(argv[paramCount], "--windss") == 0 || stricmp(argv[paramCount], "-wd") == 0) {
 			WinCAPICryptoProvider * cp;
 			// Obtain default PROV_DSS, with default user key container
-			if (!CryptAcquireContext(&win32CSP,
+			if (!CryptAcquireContext(&win32DSSCSP,
 				NULL,
 				NULL,
 				PROV_DSS,
@@ -795,13 +826,14 @@ int main(int argc, char **argv) {
 					cerr << "Error acquiring DSS Crypto Service Provider" << endl;
 					return 2;
 			}
-			cp = new WinCAPICryptoProvider(win32CSP);
+			// We know RSA provider is not required
+			cp = new WinCAPICryptoProvider(win32DSSCSP, 0);
 			XSECPlatformUtils::SetCryptoProvider(cp);
 			
 			// Now get the key
 			HCRYPTKEY k;
 			BOOL fResult = CryptGetUserKey(
-				win32CSP,
+				win32DSSCSP,
 				AT_SIGNATURE,
 				&k);
 
@@ -809,12 +841,132 @@ int main(int argc, char **argv) {
 				cerr << "Error obtaining default user AT_SIGNATURE key from windows DSS provider\n";
 				exit(1);
 			};
-			winKey = new WinCAPICryptoKeyDSA(cp, k, true);
-			key = winKey;
+			winKeyDSA = new WinCAPICryptoKeyDSA(cp, k, true);
+			key = winKeyDSA;
 			paramCount++;
 		}
+
+		else if (stricmp(argv[paramCount], "--winrsa") == 0 || stricmp(argv[paramCount], "-wr") == 0) {
+			WinCAPICryptoProvider * cp;
+			// Obtain default PROV_DSS and PROV_RSA_FULL, with default user key containers
+			if (!CryptAcquireContext(&win32DSSCSP,
+				NULL,
+				NULL,
+				PROV_DSS,
+				0)) {
+					cerr << "Error acquiring DSS Crypto Service Provider" << endl;
+					return 2;
+			}
+
+			if (!CryptAcquireContext(&win32RSACSP,
+				NULL,
+				NULL,
+				PROV_RSA_FULL,
+				0)) {
+					cerr << "Error acquiring RSA Crypto Service Provider" << endl;
+					return 2;
+			}
+
+			cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
+			XSECPlatformUtils::SetCryptoProvider(cp);
+			
+			// Now get the key
+			HCRYPTKEY k;
+			BOOL fResult = CryptGetUserKey(
+				win32RSACSP,
+				AT_SIGNATURE,
+				&k);
+
+			if (!fResult || k == 0) {
+				cerr << "Error obtaining default user AT_SIGNATURE key from windows RSA provider\n";
+				exit(1);
+			};
+
+			winKeyRSA = new WinCAPICryptoKeyRSA(cp, k, true);
+			key = winKeyRSA;
+			paramCount++;
+		}
+
+		else if (stricmp(argv[paramCount], "--winhmac") == 0 || stricmp(argv[paramCount], "-wh") == 0) {
+
+			WinCAPICryptoProvider * cp;
+			// Obtain default PROV_DSS, with default user key container
+			if (!CryptAcquireContext(&win32DSSCSP,
+				NULL,
+				NULL,
+				PROV_DSS,
+				0)) {
+					cerr << "Error acquiring DSS Crypto Service Provider" << endl;
+					return 2;
+			}
+			if (!CryptAcquireContext(&win32RSACSP,
+				NULL,
+				NULL,
+				PROV_RSA_FULL,
+				0)) {
+					cerr << "Error acquiring RSA Crypto Service Provider" << endl;
+					return 2;
+			}
+			cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
+			XSECPlatformUtils::SetCryptoProvider(cp);
+
+			paramCount++;
+			HCRYPTKEY k;
+			HCRYPTHASH h;
+			BOOL fResult = CryptCreateHash(
+				win32RSACSP,
+				CALG_SHA,
+				0,
+				0,
+				&h);
+
+			if (fResult == 0) {
+				cerr << "Error creating hash to create windows hmac key from password" << endl;
+				return 2;
+			}
+			fResult = CryptHashData(
+				h,
+				(unsigned char *) argv[paramCount],
+				strlen(argv[paramCount]),
+				0);
+			
+			if (fResult == 0) {
+				cerr << "Error hashing password to create windows hmac key" << endl;
+				return 2;
+			}
+
+			// Now create a key
+			fResult = CryptDeriveKey(
+				win32RSACSP,
+				CALG_RC2,
+				h,
+				CRYPT_EXPORTABLE,
+				&k);
+
+			if (fResult == 0) {
+				cerr << "Error deriving key from hash value" << endl;
+				return 2;
+			}
+
+			// Wrap in a WinCAPI object
+			WinCAPICryptoKeyHMAC * hk;
+			hk = new WinCAPICryptoKeyHMAC();
+			hk->setWinKey(k); 
+
+			key = hk;
+
+			CryptDestroyHash(h);
+			paramCount++;
+
+		}
+
 		else if (stricmp(argv[paramCount], "--windsskeyinfo") == 0 || stricmp(argv[paramCount], "-wdi") == 0) {
 			winDssKeyInfo = true;
+			paramCount++;
+		}
+
+		else if (stricmp(argv[paramCount], "--winrsakeyinfo") == 0 || stricmp(argv[paramCount], "-wri") == 0) {
+			winRsaKeyInfo = true;
 			paramCount++;
 		}
 
@@ -897,8 +1049,6 @@ int main(int argc, char **argv) {
 	XSECProvider prov;
 	DSIGSignature * sig = prov.newSignatureFromDOM(theDOM, sigNode);
 
-	int i;
-
 	try {
 		sig->load();
 		if (clearKeyInfo == true)
@@ -909,22 +1059,22 @@ int main(int argc, char **argv) {
 
 		// Add any KeyInfo elements
 
-#if defined(_WIN32)
+#if defined(HAVE_WINCAPI)
 
-		if (winDssKeyInfo == true && winKey != NULL) {
+		if (winDssKeyInfo == true && winKeyDSA != NULL) {
 			char pBuf[1024];
 			char qBuf[1024];
 			char gBuf[1024];
 			char yBuf[1024];
 
 			unsigned int i;
-			i = winKey->getPBase64BigNums((char *) pBuf, 1024);
+			i = winKeyDSA->getPBase64BigNums((char *) pBuf, 1024);
 			pBuf[i] = '\0';
-			i = winKey->getQBase64BigNums((char *) qBuf, 1024);
+			i = winKeyDSA->getQBase64BigNums((char *) qBuf, 1024);
 			qBuf[i] = '\0';
-			i = winKey->getGBase64BigNums((char *) gBuf, 1024);
+			i = winKeyDSA->getGBase64BigNums((char *) gBuf, 1024);
 			gBuf[i] = '\0';
-			i = winKey->getYBase64BigNums((char *) yBuf, 1024);
+			i = winKeyDSA->getYBase64BigNums((char *) yBuf, 1024);
 			yBuf[i] = '\0';
 
 			sig->clearKeyInfo();
@@ -935,10 +1085,27 @@ int main(int argc, char **argv) {
 				MAKE_UNICODE_STRING(yBuf));
 		}
 
-#endif
+		if (winRsaKeyInfo == true && winKeyRSA != NULL) {
+			char eBuf[1024];
+			char mBuf[1024];
 
+			unsigned int i;
+			i = winKeyRSA->getExponentBase64BigNums((char *) eBuf, 1024);
+			eBuf[i] = '\0';
+			i = winKeyRSA->getModulusBase64BigNums((char *) mBuf, 1024);
+			mBuf[i] = '\0';
+
+			sig->clearKeyInfo();
+			sig->appendRSAKeyValue(
+				MAKE_UNICODE_STRING(mBuf),
+				MAKE_UNICODE_STRING(eBuf));
+		}
+
+#endif
+#if defined (HAVE_OPENSSL)
 		if (certCount > 0) {
 
+			int i;
 			// Have some certificates - see if there is already an X509 list
 			DSIGKeyInfoList * kiList = sig->getKeyInfoList();
 			int kiSize = kiList->getSize();
@@ -965,6 +1132,7 @@ int main(int argc, char **argv) {
 			}
 
 		} /* certCount > 0 */
+#endif
 	}
 
 	catch (XSECException &e) {
@@ -1007,8 +1175,10 @@ int main(int argc, char **argv) {
 	delete formatTarget;
 
 #if defined (_WIN32)
-	if (win32CSP != 0)
-		CryptReleaseContext(win32CSP,0);
+	if (win32DSSCSP != 0)
+		CryptReleaseContext(win32DSSCSP,0);
+	if (win32RSACSP != 0)
+		CryptReleaseContext(win32RSACSP,0);
 #endif
 
 	prov.releaseSignature(sig);
