@@ -4,7 +4,7 @@
 <s1 title="Readme">
 	<s2 title="XML Security Release">
 		<p>The &packagenamelong; &packageversion; supports the <jump href="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/">XML-Signature Syntax and Processing</jump> recommendation.</p>
-                <p>Note that there is no standard API avaliable at the moment. SUN is working on a JAVA Specification Request <jump href="http://jcp.org/jsr/detail/105.jsp">JSR-105: XML Digital Signature APIs</jump> on an API for XML Signature and <jump href="http://jcp.org/jsr/detail/106.jsp">JSR-106: XML Digital Encryption APIs</jump>, but until no, nothing has been published. So, this software does <em>not</em> conform to any of these specifications.</p>
+                <p>Note that there is no standard API avaliable at the moment. SUN is working on a JAVA Specification Request <jump href="http://jcp.org/jsr/detail/105.jsp">JSR-105: XML Digital Signature APIs</jump> on an API for XML Signature and <jump href="http://jcp.org/jsr/detail/106.jsp">JSR-106: XML Digital Encryption APIs</jump>, but until now, nothing has been published. So, this software does <em>not</em> conform to any of these specifications.</p>
 	</s2>
 	<s2 title="License Information">
 		<p>The XML Security package is available in both source code and precompiled binary (JAR files) form. Both  packages are made available under the <jump href='LICENSE.txt'>Apache Software License</jump>.</p>
