@@ -160,7 +160,10 @@ public class IAIKInterOp {
             org.apache.xml.security.samples.signature
                .VerifyMerlinsExamplesFifteen.verifyHMAC(dbf, signatureFileName);
          } catch (Exception ex) {
+            System.out.println("The XML signature in file "
+                               + signatureFileName + " crashed the application (bad)");
             ex.printStackTrace();
+            System.out.println();
          }
       }
 
@@ -171,16 +174,19 @@ public class IAIKInterOp {
             org.apache.xml.security.samples.signature
                .VerifyMerlinsExamplesSixteen.verify(dbf, signatureFileName);
          } catch (Exception ex) {
+            System.out.println("The XML signature in file "
+                               + signatureFileName + " crashed the application (bad)");
             ex.printStackTrace();
+            System.out.println();
          }
       }
    }
 
    public static void verifyAnonymous(String gregorsDir, DocumentBuilderFactory dbf) {
-      try {
          String filename =
             gregorsDir
             + "coreFeatures/signatures/anonymousReferenceSignature.xml";
+      try {
          String anonymousRef =
             gregorsDir + "coreFeatures/samples/anonymousReferenceContent.xml";
          ResourceResolverSpi resolver = new ResolverAnonymous(anonymousRef);
@@ -229,7 +235,10 @@ public class IAIKInterOp {
             System.out.println("Did not find a KeyInfo");
          }
       } catch (Exception ex) {
-         ex.printStackTrace();
+            System.out.println("The XML signature in file "
+                               + filename + " crashed the application (bad)");
+            ex.printStackTrace();
+            System.out.println();
       }
    }
 

@@ -189,6 +189,13 @@ public class TransformXPath extends TransformSpi {
          }
 
          for (int i = 0; i < inputNodes.getLength(); i++) {
+            /* Same solution as in TransformBase64 ?
+            if (inputNodes.item(i).getClass().getName().equals(
+               "org.apache.xml.dtm.ref.dom2dtm.DOM2DTM$defaultNamespaceDeclarationNode")) {
+               continue;
+            }
+            */
+
             XObject includeInResult = XPathFuncHereAPI.eval(inputNodes.item(i),
                                          xpathnode, prefixResolver);
 
