@@ -1,9 +1,9 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseTransformer.java,v 1.1 2003/11/25 19:55:02 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseTransformer.java,v 1.2 2004/01/05 18:11:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,8 +59,9 @@ package org.apache.commons.functor.generator;
 
 /**
  * @since 1.0
- * @version $Revision: 1.1 $ $Date: 2003/11/25 19:55:02 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/05 18:11:36 $
  * @author Rodney Waldhoff
+ * @deprecated To be removed.
  */
 public abstract class BaseTransformer implements Transformer {
     public abstract Object transform(Generator gen);

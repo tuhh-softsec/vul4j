@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/CollectionTransformer.java,v 1.3 2003/11/25 19:55:03 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/CollectionTransformer.java,v 1.4 2004/01/05 18:11:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,8 +60,8 @@ package org.apache.commons.functor.generator.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.generator.BaseTransformer;
 import org.apache.commons.functor.generator.Generator;
 
 /**
@@ -69,22 +69,18 @@ import org.apache.commons.functor.generator.Generator;
  * the constructor an ArrayList will be returned from the transform method.
  *
  * @since 1.0
- * @version $Revision: 1.3 $ $Date: 2003/11/25 19:55:03 $
+ * @version $Revision: 1.4 $ $Date: 2004/01/05 18:11:36 $
  * @author Jason Horman (jason@jhorman.org)
  */
 
-public class CollectionTransformer extends BaseTransformer {
+public class CollectionTransformer implements UnaryFunction {
 
-    /***************************************************
-     *  Instance variables
-     ***************************************************/
-
+	// instance methods
+	//---------------------------------------------------
     private Collection toFill = null;
 
-    /***************************************************
-     *  Constructors
-     ***************************************************/
-
+	// constructors
+	//---------------------------------------------------
     public CollectionTransformer() {
         toFill = new ArrayList();
     }
@@ -93,11 +89,13 @@ public class CollectionTransformer extends BaseTransformer {
         this.toFill = toFill;
     }
 
-    /***************************************************
-     *  Instance methods
-     ***************************************************/
+	// instance methods
+	//---------------------------------------------------
+	public Object evaluate(Object obj) {
+		return evaluate((Generator)obj);
+	}
 
-    public Object transform(Generator generator) {
+    public Object evaluate(Generator generator) {
         generator.run(new UnaryProcedure() {
             public void run(Object obj) {
                 toFill.add(obj);

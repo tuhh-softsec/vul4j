@@ -1,9 +1,9 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestBaseTransformer.java,v 1.1 2003/11/25 19:55:03 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestBaseTransformer.java,v 1.2 2004/01/05 18:11:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,8 +62,9 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/11/25 19:55:03 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/05 18:11:36 $
  * @author Rodney Waldhoff
+ * @deprecated BaseTransformer is going to be removed.
  */
 public class TestBaseTransformer extends TestCase {
 

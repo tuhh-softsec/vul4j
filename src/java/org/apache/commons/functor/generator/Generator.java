@@ -1,9 +1,9 @@
 /*
- * $Id: Generator.java,v 1.8 2003/12/02 01:01:59 rwaldhoff Exp $
+ * $Id: Generator.java,v 1.9 2004/01/05 18:11:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.8 $ $Date: 2003/12/02 01:01:59 $
+ * @version $Revision: 1.9 $ $Date: 2004/01/05 18:11:36 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -96,11 +96,11 @@ public interface Generator {
     /** See {@link org.apache.commons.functor.Algorithms#until}. */
     public abstract Generator until(UnaryPredicate pred);
     /**
-     * {@link Transformer Transforms} this generator using the passed in
+     * Transforms this generator using the passed in
      * transformer. An example transformer might turn the contents of the
      * generator into a {@link Collection} of elements.
      */
-    public abstract Object to(Transformer transformer);
+    public abstract Object to(UnaryFunction transformer);
     /** Same as to(new CollectionTransformer(collection)). */
     public abstract Collection to(Collection collection);
     /** Same as to(new CollectionTransformer()). */

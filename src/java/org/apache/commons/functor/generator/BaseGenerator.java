@@ -1,9 +1,9 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseGenerator.java,v 1.5 2003/12/02 01:01:59 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseGenerator.java,v 1.6 2004/01/05 18:11:36 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ import org.apache.commons.functor.generator.util.CollectionTransformer;
  * each subclass.
  *
  * @since 1.0
- * @version $Revision: 1.5 $ $Date: 2003/12/02 01:01:59 $
+ * @version $Revision: 1.6 $ $Date: 2004/01/05 18:11:36 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
@@ -170,8 +170,8 @@ public abstract class BaseGenerator implements Generator {
      * transformer. An example transformer might turn the contents of the
      * generator into a {@link Collection} of elements.
      */
-    public final Object to(Transformer transformer) {
-        return transformer.transform(this);
+    public final Object to(UnaryFunction transformer) {
+        return transformer.evaluate(this);
     }
 
     /** Same as to(new CollectionTransformer(collection)). */
