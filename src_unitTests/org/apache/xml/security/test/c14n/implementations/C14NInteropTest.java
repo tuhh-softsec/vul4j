@@ -32,7 +32,6 @@ import org.apache.xml.security.test.interop.InteropTest;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

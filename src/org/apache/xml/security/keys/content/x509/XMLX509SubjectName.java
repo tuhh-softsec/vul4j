@@ -18,7 +18,6 @@ package org.apache.xml.security.keys.content.x509;
 
 
 
-import java.io.IOException;
 import java.security.cert.X509Certificate;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;

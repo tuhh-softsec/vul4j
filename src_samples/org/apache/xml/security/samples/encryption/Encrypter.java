@@ -18,7 +18,6 @@ package org.apache.xml.security.samples.encryption;
 
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import java.security.Key;
@@ -30,7 +29,6 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.Constants;
 
 import org.w3c.dom.Document;

@@ -16,7 +16,6 @@
  */
 package org.apache.xml.security.utils;
 
-import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Document;
 

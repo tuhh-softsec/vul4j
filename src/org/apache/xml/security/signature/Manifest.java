@@ -30,7 +30,6 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.IdResolver;

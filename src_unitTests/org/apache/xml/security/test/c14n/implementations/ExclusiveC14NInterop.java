@@ -28,7 +28,6 @@ import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.test.interop.InteropTest;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.JavaUtils;
 import org.w3c.dom.Element;
 

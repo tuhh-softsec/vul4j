@@ -38,7 +38,6 @@ import org.apache.xml.security.transforms.params.XPathFilterCHGPContainer;
 import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
