@@ -498,7 +498,7 @@ public class XMLSignatureInputTest extends TestCase {
     * Method testIsInitialized
     *
     */
-   public static void testIsInitializedWithOctetStream() {
+   public static void testIsInitializedWithOctetStream() throws IOException {
 
       InputStream inputStream =
          new ByteArrayInputStream(_octetStreamTextInput.getBytes());
@@ -511,7 +511,7 @@ public class XMLSignatureInputTest extends TestCase {
     * Method testOctetStreamIsOctetStream
     *
     */
-   public static void testOctetStreamIsOctetStream() {
+   public static void testOctetStreamIsOctetStream() throws IOException {
 
       InputStream inputStream =
          new ByteArrayInputStream(_octetStreamTextInput.getBytes());
@@ -524,7 +524,7 @@ public class XMLSignatureInputTest extends TestCase {
     * Method testOctetStreamIsNotNodeSet
     *
     */
-   public static void testOctetStreamIsNotNodeSet() {
+   public static void testOctetStreamIsNotNodeSet() throws IOException {
 
       InputStream inputStream =
          new ByteArrayInputStream(_octetStreamTextInput.getBytes());

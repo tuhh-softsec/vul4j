@@ -266,15 +266,15 @@ public class JavaUtils {
    }
 
    /**
-    * Method getBytesFromStream
+    * This method reads all bytes from the given InputStream till EOF and returns
+    * them as a byte array.
     *
     * @param inputStream
     * @return
     * @throws FileNotFoundException
     * @throws IOException
     */
-   public static byte[] getBytesFromStream(InputStream inputStream)
-           throws FileNotFoundException, IOException {
+   public static byte[] getBytesFromStream(InputStream inputStream) throws IOException {
 
       byte refBytes[] = null;
 

@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -85,9 +84,14 @@ public class MyResolver extends ResourceResolverSpi {
    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
            throws ResourceResolverException {
 
-      ByteArrayInputStream is = new ByteArrayInputStream("string".getBytes());
+      try {
+         ByteArrayInputStream is =
+            new ByteArrayInputStream("string".getBytes());
 
-      return new XMLSignatureInput(is);
+         return new XMLSignatureInput(is);
+      } catch (IOException ex) {
+         throw new ResourceResolverException("empty", ex, uri, BaseURI);
+      }
    }
 
    /**

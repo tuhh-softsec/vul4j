@@ -79,6 +79,7 @@ import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.JavaUtils;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
@@ -99,19 +100,16 @@ public class XMLSignatureInput {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(XMLSignatureInput.class.getName());
 
-   /** Field useFlatNodes */
-   static final boolean useFlatNodes = false;
-
    /**
     * The original InputStream for this XMLSignatureInput
     */
-   InputStream _inputOctetStream = null;
+   // InputStream _inputOctetStream = null;
 
    /**
     * Some InputStreams do not support the {@link java.io.InputStream#reset}
     * method, so we read it in completely and work on our Proxy.
     */
-   ByteArrayInputStream _inputOctetStreamProxy = null;
+   InputStream _inputOctetStreamProxy = null;
 
    /**
     * The original NodeSet for this XMLSignatureInput
@@ -139,16 +137,6 @@ public class XMLSignatureInput {
    String _xpathString = Canonicalizer.XPATH_C14N_OMIT_COMMENTS;
 
    /**
-    * Constructs a <code>XMLSignatureInput</code> from {@link InputStream an octet stream} which made from XML document , node
-    *
-    * @param inputOctetStream {@link InputStream} which including XML document or node
-    */
-   public XMLSignatureInput(InputStream inputOctetStream) {
-      this._inputOctetStream = inputOctetStream;
-      this._cxpathAPI = new CachedXPathAPI();
-   }
-
-   /**
     * Construct a XMLSignatureInput from an octet array.
     * <p>
     * This is a comfort method, which internally converts the byte[] array into an InputStream
@@ -156,8 +144,19 @@ public class XMLSignatureInput {
     * @param inputOctets an octet array which including XML document or node
     */
    public XMLSignatureInput(byte[] inputOctets) {
-      this._inputOctetStream = new ByteArrayInputStream(inputOctets);
+      this._inputOctetStreamProxy = new ByteArrayInputStream(inputOctets);
       this._cxpathAPI = new CachedXPathAPI();
+   }
+
+   /**
+    * Constructs a <code>XMLSignatureInput</code> from an octet stream. The
+    * stream is directly read.
+    *
+    * @param inputOctetStream
+    */
+   public XMLSignatureInput(InputStream inputOctetStream) throws IOException {
+      this(JavaUtils.getBytesFromStream(inputOctetStream));
+      inputOctetStream = null; // free object reference
    }
 
    /**
@@ -168,8 +167,7 @@ public class XMLSignatureInput {
     * @param inputStr the input String which including XML document or node
     */
    public XMLSignatureInput(String inputStr) {
-      this._inputOctetStream = new ByteArrayInputStream(inputStr.getBytes());
-      this._cxpathAPI = new CachedXPathAPI();
+      this(inputStr.getBytes());
    }
 
    /**
@@ -183,41 +181,38 @@ public class XMLSignatureInput {
     */
    public XMLSignatureInput(String inputStr, String encoding)
            throws UnsupportedEncodingException {
-
-      this._inputOctetStream =
-         new ByteArrayInputStream(inputStr.getBytes(encoding));
-      this._cxpathAPI = new CachedXPathAPI();
+      this(inputStr.getBytes(encoding));
    }
 
    /**
-    * Construct a XMLSignatureInput from a node set. Only the nodes from the
-    * <CODE>inputNodeSet</CODE> occur in the output.
+    * Construct a XMLSignatureInput from a subtree rooted by rootNode. This method included the node
+    * and <I>all</I> his descendants in the output.
     *
-    * @param inputNodeSet is the node set
+    * @param rootNode
+    * @param usedXPathAPI
+    * @throws TransformerException
     */
-   private XMLSignatureInput(NodeList inputNodeSet) {
-      this._inputNodeSet = inputNodeSet;
-      this._cxpathAPI = new CachedXPathAPI();
+   public XMLSignatureInput(Node rootNode, CachedXPathAPI usedXPathAPI)
+           throws TransformerException {
+
+      this._cxpathAPI = usedXPathAPI;
+      this._inputNodeSet = this._cxpathAPI.selectNodeList(rootNode,
+              Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
    }
 
    /**
-    * Construct a XMLSignatureInput from a Node. This method included the node
+    * Construct a XMLSignatureInput from a subtree rooted by rootNode. This method included the node
     * and <I>all</I> his descendants in the output.
     *
     * @param node
     * @throws TransformerException
     */
-   public XMLSignatureInput(Node node) throws TransformerException {
-
-      cat.debug("Start " + _xpathString + " on Node " + node.getNodeName());
-
-      this._cxpathAPI = new CachedXPathAPI();
-      this._inputNodeSet = this._cxpathAPI.selectNodeList(node,
-              Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+   public XMLSignatureInput(Node rootNode) throws TransformerException {
+      this(rootNode, new CachedXPathAPI());
    }
 
    /**
-    * Construct a XMLSignatureInput from a node set. Only the nodes from the
+    * Construct a XMLSignatureInput from an XPath node set. Only the nodes from the
     * <CODE>inputNodeSet</CODE> occur in the output.
     *
     * @param inputNodeSet is the node set
@@ -230,21 +225,13 @@ public class XMLSignatureInput {
    }
 
    /**
-    * Construct a XMLSignatureInput from a Node. This method included the node
-    * and <I>all</I> his descendants in the output.
+    * Construct a XMLSignatureInput from a node set. Only the nodes from the
+    * <CODE>inputNodeSet</CODE> occur in the output.
     *
-    * @param node
-    * @param usedXPathAPI
-    * @throws TransformerException
+    * @param inputNodeSet is the node set
     */
-   public XMLSignatureInput(Node node, CachedXPathAPI usedXPathAPI)
-           throws TransformerException {
-
-      cat.debug("Start " + _xpathString + " on Node " + node.getNodeName());
-
-      this._cxpathAPI = usedXPathAPI;
-      this._inputNodeSet = this._cxpathAPI.selectNodeList(node,
-              Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+   private XMLSignatureInput(NodeList inputNodeSet) {
+      this(inputNodeSet, new CachedXPathAPI());
    }
 
    /**
@@ -277,11 +264,7 @@ public class XMLSignatureInput {
 
             Document document = db.parse(this.getOctetStream());
 
-            if (XMLSignatureInput.useFlatNodes) {
-               return document.getChildNodes();
-            } else {
-               return this._cxpathAPI.selectNodeList(document, _xpathString);
-            }
+            return this._cxpathAPI.selectNodeList(document, _xpathString);
          } catch (TransformerException ex) {
             throw new CanonicalizationException("generic.EmptyMessage", ex);
          } catch (SAXException ex) {
@@ -294,31 +277,23 @@ public class XMLSignatureInput {
             baos.write(this.getBytes());
             baos.write((new String("</" + container + ">")).getBytes());
 
-            if (XMLSignatureInput.useFlatNodes) {
-               byte result[] = baos.toByteArray();
-               Document document = db.parse(new ByteArrayInputStream(result));
+            byte result[] = baos.toByteArray();
+            Document document = db.parse(new ByteArrayInputStream(result));
 
-               return document.getFirstChild().getChildNodes();
-            } else {
-               byte result[] = baos.toByteArray();
-               Document document = db.parse(new ByteArrayInputStream(result));
+            try {
+               String noDocument = "not(self::node()=/)";
 
-               try {
-                  String noDocument = "not(self::node()=/)";
+               // String noDocumentElement = "not(local-name()='" + container + "')"
+               String noDocumentElement = "not(self::node=/node())";
+               String xpathStr =
+                  "(//. | //@* | //namespace::*)[not(self::comment()) and "
+                  + noDocument + " and " + noDocumentElement + "]";
+               NodeList nodes = this._cxpathAPI.selectNodeList(document,
+                                   xpathStr);
 
-                  // String noDocumentElement = "not(local-name()='" + container + "')"
-                  String noDocumentElement = "not(self::node=/node())";
-                  String xpathStr =
-                     "(//. | //@* | //namespace::*)[not(self::comment()) and "
-                     + noDocument + " and " + noDocumentElement + "]";
-                  NodeList nodes = this._cxpathAPI.selectNodeList(document,
-                                      xpathStr);
-
-                  return nodes;
-               } catch (TransformerException ex2) {
-                  throw new CanonicalizationException("generic.EmptyMessage",
-                                                      ex2);
-               }
+               return nodes;
+            } catch (TransformerException ex2) {
+               throw new CanonicalizationException("generic.EmptyMessage", ex2);
             }
          }
       }
@@ -340,29 +315,9 @@ public class XMLSignatureInput {
                   InvalidCanonicalizerException {
 
       if (this.isOctetStream()) {
-         if (this._inputOctetStream.markSupported()) {
+         this._inputOctetStreamProxy.reset();
 
-            // no need to read in the complete stream, because we can reset()
-            this._inputOctetStream.reset();
-
-            return this._inputOctetStream;
-         } else {
-            if (this._inputOctetStreamProxy == null) {
-
-               // read in complete InputStream into internal byte[] array.
-               byte[] _inputOctets =
-                  new byte[this._inputOctetStream.available()];
-
-               this._inputOctetStream.read(_inputOctets);
-
-               this._inputOctetStreamProxy =
-                  new ByteArrayInputStream(_inputOctets);
-            } else {
-               this._inputOctetStreamProxy.reset();
-            }
-
-            return this._inputOctetStreamProxy;
-         }
+         return this._inputOctetStreamProxy;
       } else if (this.isNodeSet()) {
 
          /* serialize Element(s) and output them
@@ -439,7 +394,7 @@ public class XMLSignatureInput {
     * @return true is the object has been set up with a Node set
     */
    public boolean isNodeSet() {
-      return ((this._inputOctetStream == null) && (this._inputNodeSet != null));
+      return ((this._inputOctetStreamProxy == null) && (this._inputNodeSet != null));
    }
 
    /**
@@ -448,7 +403,7 @@ public class XMLSignatureInput {
     * @return true is the object has been set up with an octet stream
     */
    public boolean isOctetStream() {
-      return ((this._inputOctetStream != null) && (this._inputNodeSet == null));
+      return ((this._inputOctetStreamProxy != null) && (this._inputNodeSet == null));
    }
 
    /**

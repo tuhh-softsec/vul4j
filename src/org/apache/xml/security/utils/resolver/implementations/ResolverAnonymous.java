@@ -20,11 +20,11 @@ public class ResolverAnonymous extends ResourceResolverSpi {
 
    private XMLSignatureInput _input = null;
 
-   public ResolverAnonymous(String filename) throws FileNotFoundException {
+   public ResolverAnonymous(String filename) throws FileNotFoundException, IOException {
       this._input = new XMLSignatureInput(new FileInputStream(filename));
    }
 
-   public ResolverAnonymous(InputStream is) {
+   public ResolverAnonymous(InputStream is) throws IOException {
       this._input = new XMLSignatureInput(is);
    }
 
