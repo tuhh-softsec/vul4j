@@ -155,6 +155,8 @@ public class Reference extends SignatureElementProxy {
    Element _transformsElement = null;
    Element _digestValueElement = null;
    Manifest _manifest = null;
+   XMLSignatureInput _transformsInput;
+   XMLSignatureInput _transformsOutput;
    //J+
 
    /**
@@ -493,8 +495,6 @@ public class Reference extends SignatureElementProxy {
          Text t = this._doc.createTextNode(base64codedValue);
 
          this._digestValueElement.appendChild(t);
-      } else {
-         ;
       }
    }
 
@@ -507,7 +507,7 @@ public class Reference extends SignatureElementProxy {
     * @throws XMLSignatureException
     * @ see Manifest#verifyReferences
     */
-   protected XMLSignatureInput getReferencedXMLSignatureInput()
+   protected void dereferenceURIandPerformTransforms()
            throws ReferenceNotInitializedException, XMLSignatureException {
 
       try {
@@ -536,12 +536,11 @@ public class Reference extends SignatureElementProxy {
 
          resolver.addProperties(this._manifest._resolverProperties);
 
-         XMLSignatureInput xmlSignatureInput = resolver.resolve(URIAttr,
-                                                  this._baseURI);
+         this._transformsInput = resolver.resolve(URIAttr, this._baseURI);
 
          try {
             cat.debug("After resolving, the document has "
-                      + xmlSignatureInput.getNodeSet().getLength() + " nodes");
+                      + this._transformsInput.getNodeSet().getLength() + " nodes");
          } catch (Exception ex) {}
 
          if (this._transformsElement != null) {
@@ -552,16 +551,15 @@ public class Reference extends SignatureElementProxy {
                cat.debug("The Reference contains " + transforms.getLength()
                          + " Transforms, so I perform them");
                cat.debug("Before the transforms, the document has "
-                         + xmlSignatureInput.getNodeSet().getLength()
+                         + this._transformsInput.getNodeSet().getLength()
                          + " nodes");
             } catch (Exception ex) {}
 
-            xmlSignatureInput = transforms.performTransforms(xmlSignatureInput);
+            this._transformsOutput = transforms.performTransforms(this._transformsInput);
          } else {
             cat.debug("The Reference contains no Transforms, so I skip them");
+            this._transformsOutput = this._transformsInput;
          }
-
-         return xmlSignatureInput;
       } catch (ResourceResolverException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (CanonicalizationException ex) {
@@ -586,9 +584,8 @@ public class Reference extends SignatureElementProxy {
            throws ReferenceNotInitializedException, XMLSignatureException {
 
       try {
-         byte[] signedBytes = this.getReferencedXMLSignatureInput().getBytes();
-
-         this._manifest.addSignedContent(signedBytes);
+         this.dereferenceURIandPerformTransforms();
+         byte[] signedBytes = this._transformsOutput.getBytes();
 
          return signedBytes;
       } catch (IOException ex) {
@@ -613,21 +610,14 @@ public class Reference extends SignatureElementProxy {
       try {
          byte[] data = this.getReferencedBytes();
 
-         /*
-         if (false) {
-            String tmp = new Long(System.currentTimeMillis()).toString()
-                         + ".txt";
-
-            cat.info("Wrote \"" + this.getURI() + "\" to file " + tmp);
-            JavaUtils.writeBytesToFilename(tmp, data);
-         }
-         */
          MessageDigestAlgorithm mda = this.getMessageDigestAlgorithm();
 
          mda.reset();
          mda.update(data);
 
          byte calculatedDigestValue[] = mda.digest();
+
+         cat.fatal("data.length = " + data.length);
 
          //J-
          if (data.length < 20) {
@@ -677,6 +667,14 @@ public class Reference extends SignatureElementProxy {
       }
 
       return equal;
+   }
+
+   public XMLSignatureInput getTransformsInput() {
+      return this._transformsInput;
+   }
+
+   public XMLSignatureInput getTransformsOutput() {
+      return this._transformsOutput;
    }
 
    public String getBaseLocalName() {

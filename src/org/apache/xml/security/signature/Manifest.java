@@ -95,6 +95,21 @@ public class Manifest extends SignatureElementProxy {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(Manifest.class.getName());
 
+   /** Field _references */
+   Vector _references;
+
+   /** Field verificationResults[] */
+   private boolean verificationResults[] = null;
+
+   /** Field _signedContents */
+   Vector _signedContents = new Vector();
+
+   /** Field _resolverProperties */
+   HashMap _resolverProperties = new HashMap(10);
+
+   /** Field _perManifestResolvers */
+   Vector _perManifestResolvers = new Vector();
+
    /**
     * Consturts {@link Manifest}
     *
@@ -103,33 +118,26 @@ public class Manifest extends SignatureElementProxy {
    public Manifest(Document doc) {
 
       super(doc);
+
       XMLUtils.addReturnToElement(this._constructionElement);
    }
-
-   /**
-    * This is only called if we call super() in SignedInfo
-    * @param doc
-    * @param signedinfoelementname
-   Manifest(Document doc, String signedinfoelementname) {
-      super(doc, signedinfoelementname);
-   }
-   */
 
    /**
     * Constructor Manifest
     *
     * @param element
     * @param BaseURI
-    * @param localname
     * @throws XMLSecurityException
     */
-   public Manifest(Element element, String BaseURI) throws XMLSecurityException {
+   public Manifest(Element element, String BaseURI)
+           throws XMLSecurityException {
 
       super(element, BaseURI);
 
       // check out Reference children
       {
-         if (this.getLength() == 0) {
+         if (this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE)
+                 == 0) {
 
             // At least one Reference must be present. Bad.
             Object exArgs[] = { Constants._TAG_REFERENCE,
@@ -139,6 +147,7 @@ public class Manifest extends SignatureElementProxy {
                                    I18n.translate("xml.WrongContent", exArgs));
          }
       }
+      this._references = new Vector(this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE));
    }
 
    /**
@@ -179,9 +188,6 @@ public class Manifest extends SignatureElementProxy {
       XMLUtils.addReturnToElement(this._constructionElement);
    }
 
-   /** Field _references */
-   Vector _references;
-
    /**
     * The calculation of the DigestValues in the References must be after the
     * References are already added to the document and during the signing
@@ -206,10 +212,9 @@ public class Manifest extends SignatureElementProxy {
     * Return the nonnegative number of added references.
     *
     * @return the number of references
-    * @throws XMLSecurityException
     */
-   public int getLength() throws XMLSecurityException {
-      return this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE);
+   public int getLength() {
+      return this._references.size();
    }
 
    /**
@@ -218,18 +223,9 @@ public class Manifest extends SignatureElementProxy {
     *
     * @param i Index of the requested {@link Reference}
     * @return the <it>i</it><sup>th</sup> reference
-    * @throws XMLSecurityException
     */
-   public Reference item(int i) throws XMLSecurityException {
-
-      Element refElem = this.getChildElementLocalName(i,
-                           Constants.SignatureSpecNS, Constants._TAG_REFERENCE);
-
-      if (refElem == null) {
-         return null;
-      } else {
-         return new Reference(refElem, this._baseURI, this);
-      }
+   public Reference item(int i) {
+      return (Reference) this._references.elementAt(i);
    }
 
    /**
@@ -297,21 +293,29 @@ public class Manifest extends SignatureElementProxy {
    public boolean verifyReferences(boolean followManifests)
            throws MissingResourceFailureException, XMLSecurityException {
 
-      cat.debug("verify " + this.getLength() + " References");
+      cat.debug(
+         "verify "
+         + this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE)
+         + " References");
       cat.debug("I am " + (followManifests
                            ? ""
                            : "not") + " requested to follow nested Manifests");
 
       boolean verify = true;
 
-      if (this.getLength() == 0) {
+      if (this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE)
+              == 0) {
          throw new XMLSecurityException("empty");
       }
 
-      this.verificationResults = new boolean[this.getLength()];
+      this.verificationResults = new boolean[this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE)];
 
-      for (int i = 0; i < this.getLength(); i++) {
-         Reference currentRef = this.item(i);
+      for (int i = 0; i < this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE); i++) {
+         Reference currentRef =
+            new Reference(this
+               .getChildElementLocalName(i, Constants.SignatureSpecNS, Constants
+               ._TAG_REFERENCE), this._baseURI, this);
+         this._references.add(currentRef);
 
          /* if only one item does not verify, the whole verification fails */
          try {
@@ -331,8 +335,10 @@ public class Manifest extends SignatureElementProxy {
                cat.debug("We have to follow a nested Manifest");
 
                try {
+                  currentRef.dereferenceURIandPerformTransforms();
+
                   XMLSignatureInput signedManifestNodes =
-                     currentRef.getReferencedXMLSignatureInput();
+                     currentRef.getTransformsOutput();
                   NodeList nl = signedManifestNodes.getNodeSet();
                   Manifest referencedManifest = null;
 
@@ -394,9 +400,6 @@ public class Manifest extends SignatureElementProxy {
       return verify;
    }
 
-   /** Field verificationResults[] */
-   private boolean verificationResults[] = null;
-
    /**
     * Method setVerificationResult
     *
@@ -445,12 +448,6 @@ public class Manifest extends SignatureElementProxy {
 
       return this.verificationResults[index];
    }
-
-   /** Field _resolverProperties */
-   HashMap _resolverProperties = new HashMap(10);
-
-   /** Field _perManifestResolvers */
-   Vector _perManifestResolvers = new Vector();
 
    /**
     * Adds Resource Resolver for retrieving resources at specified <code>URI</code> attribute in <code>reference</code> element
@@ -523,26 +520,44 @@ public class Manifest extends SignatureElementProxy {
       return (String) this._resolverProperties.get(key);
    }
 
-   /** Field _signedContents */
-   Vector _signedContents = new Vector();
-
-   /**
-    * Method addSignedContent
-    *
-    * @param signedBytes
-    */
-   protected void addSignedContent(byte signedBytes[]) {
-      this._signedContents.add(signedBytes);
-   }
-
    /**
     * Method getSignedContentItem
     *
     * @param i
     * @return
+    * @throws XMLSignatureException
     */
-   public byte[] getSignedContentItem(int i) {
-      return (byte[]) this._signedContents.get(i);
+   public byte[] getSignedContentItem(int i) throws XMLSignatureException {
+
+      try {
+         return this.getReferencedContentAfterTransformsItem(i).getBytes();
+      } catch (IOException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (CanonicalizationException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (InvalidCanonicalizerException ex) {
+         throw new XMLSignatureException("empty", ex);
+      }
+   }
+
+   /**
+    * Method getReferencedContentPriorTransformsItem
+    *
+    * @param i
+    * @return
+    */
+   public XMLSignatureInput getReferencedContentPriorTransformsItem(int i) {
+      return this.item(i).getTransformsInput();
+   }
+
+   /**
+    * Method getReferencedContentAfterTransformsItem
+    *
+    * @param i
+    * @return
+    */
+   public XMLSignatureInput getReferencedContentAfterTransformsItem(int i) {
+      return this.item(i).getTransformsOutput();
    }
 
    /**
@@ -551,9 +566,14 @@ public class Manifest extends SignatureElementProxy {
     * @return
     */
    public int getSignedContentLength() {
-      return this._signedContents.size();
+      return this.getLength();
    }
 
+   /**
+    * Method getBaseLocalName
+    *
+    * @return
+    */
    public String getBaseLocalName() {
       return Constants._TAG_MANIFEST;
    }
