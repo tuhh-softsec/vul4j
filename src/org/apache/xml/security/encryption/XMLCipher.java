@@ -266,7 +266,7 @@ public class XMLCipher {
         if (null == transformation)
             logger.error("Transformation unexpectedly null...");
         if(!isValidEncryptionAlgorithm(transformation))
-            logger.error("Alogorithm unvalid, expected one of " + ENC_ALGORITHMS);
+            logger.error("Algorithm non-standard, expected one of " + ENC_ALGORITHMS);
 
 		XMLCipher instance = new XMLCipher();
 
@@ -356,7 +356,7 @@ public class XMLCipher {
         if("" == provider)
             logger.error("Provider's value unexpectedly not specified...");
         if(!isValidEncryptionAlgorithm(transformation))
-            logger.error("Alogorithm unvalid, expected one of " + ENC_ALGORITHMS);
+            logger.warn("Algorithm non-standard, expected one of " + ENC_ALGORITHMS);
 
 		XMLCipher instance = new XMLCipher();
 

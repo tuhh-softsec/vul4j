@@ -576,7 +576,7 @@ public class Base64 {
        //first last bits.
        if (!isData( (d1 = base64Data[dataIndex++]) ) ||
             !isData( (d2 = base64Data[dataIndex++]) )) {
-                throw new Base64DecodingException("Error while decoding");//if found "no data" just return null
+                throw new Base64DecodingException("decoding.general");//if found "no data" just return null
         }
 
         b1 = base64Alphabet[d1];
@@ -588,18 +588,18 @@ public class Base64 {
             !isData( (d4 ) )) {//Check if they are PAD characters
             if (isPad( d3 ) && isPad( d4)) {               //Two PAD e.g. 3c[Pad][Pad]
                 if ((b2 & 0xf) != 0)//last 4 bits should be zero
-                        throw new Base64DecodingException("Error while decoding");
+                        throw new Base64DecodingException("decoding.general");
                 decodedData = new byte[ encodedIndex + 1 ];                
                 decodedData[encodedIndex]   = (byte)(  b1 <<2 | b2>>4 ) ;                
             } else if (!isPad( d3) && isPad(d4)) {               //One PAD  e.g. 3cQ[Pad]
                 b3 = base64Alphabet[ d3 ];
                 if ((b3 & 0x3 ) != 0)//last 2 bits should be zero
-                        throw new Base64DecodingException("Error while decoding");
+                        throw new Base64DecodingException("decoding.general");
                 decodedData = new byte[ encodedIndex + 2 ];                
                 decodedData[encodedIndex++] = (byte)(  b1 <<2 | b2>>4 );
                 decodedData[encodedIndex]   = (byte)(((b2 & 0xf)<<4 ) |( (b3>>2) & 0xf) );                
             } else {
-                throw new Base64DecodingException("Error while decoding");//an error  like "3c[Pad]r", "3cdX", "3cXd", "3cXX" where X is non data
+                throw new Base64DecodingException("decoding.general");//an error  like "3c[Pad]r", "3cdX", "3cXd", "3cXX" where X is non data
             }
         } else {
             //No PAD e.g 3cQl
@@ -619,7 +619,7 @@ public class Base64 {
                !isData( (d2 = base64Data[dataIndex++]) )||
                !isData( (d3 = base64Data[dataIndex++]) )||
                !isData( (d4 = base64Data[dataIndex++]) ))
-            throw new Base64DecodingException("Error while decoding");//if found "no data" just return null
+            throw new Base64DecodingException("decoding.general");//if found "no data" just return null
 
            b1 = base64Alphabet[d1];
            b2 = base64Alphabet[d2];
@@ -671,7 +671,7 @@ public class Base64 {
             !isData( (d2 = base64Data[dataIndex++]) )||
             !isData( (d3 = base64Data[dataIndex++]) )||
             !isData( (d4 = base64Data[dataIndex++]) ))
-         throw new Base64DecodingException("Error while decoding");//if found "no data" just return null
+         throw new Base64DecodingException("decoding.general");//if found "no data" just return null
 
         b1 = base64Alphabet[d1];
         b2 = base64Alphabet[d2];
@@ -685,7 +685,7 @@ public class Base64 {
 //  first last bits.
     if (!isData( (d1 = base64Data[dataIndex++]) ) ||
          !isData( (d2 = base64Data[dataIndex++]) )) {
-             throw new Base64DecodingException("Error while decoding");//if found "no data" just return null
+             throw new Base64DecodingException("decoding.general");//if found "no data" just return null
      }
 
      b1 = base64Alphabet[d1];
@@ -697,16 +697,16 @@ public class Base64 {
          !isData( (d4 ) )) {//Check if they are PAD characters
          if (isPad( d3 ) && isPad( d4)) {               //Two PAD e.g. 3c[Pad][Pad]
              if ((b2 & 0xf) != 0)//last 4 bits should be zero
-                     throw new Base64DecodingException("Error while decoding");                             
+                     throw new Base64DecodingException("decoding.general");                             
              os.write( (byte)(  b1 <<2 | b2>>4 ) );                
          } else if (!isPad( d3) && isPad(d4)) {               //One PAD  e.g. 3cQ[Pad]
              b3 = base64Alphabet[ d3 ];
              if ((b3 & 0x3 ) != 0)//last 2 bits should be zero
-                     throw new Base64DecodingException("Error while decoding");                            
+                     throw new Base64DecodingException("decoding.general");                            
              os.write( (byte)(  b1 <<2 | b2>>4 ));
              os.write( (byte)(((b2 & 0xf)<<4 ) |( (b3>>2) & 0xf) ));                
          } else {
-             throw new Base64DecodingException("Error while decoding");//an error  like "3c[Pad]r", "3cdX", "3cXd", "3cXX" where X is non data
+             throw new Base64DecodingException("decoding.general");//an error  like "3c[Pad]r", "3cdX", "3cXd", "3cXX" where X is non data
          }
      } else {
          //No PAD e.g 3cQl         
@@ -752,7 +752,7 @@ public class Base64 {
             break;   
         }
         if (!isData(readed)) {
-         throw new Base64DecodingException("Error while decoding");//if found "no data" just return null
+         throw new Base64DecodingException("decoding.general");//if found "no data" just return null
         } 
         
         data[index++]=readed;
@@ -779,16 +779,16 @@ public class Base64 {
          !isData( (d4 ) )) {//Check if they are PAD characters
          if (isPad( d3 ) && isPad( d4)) {               //Two PAD e.g. 3c[Pad][Pad]
              if ((b2 & 0xf) != 0)//last 4 bits should be zero
-                     throw new Base64DecodingException("Error while decoding");                             
+                     throw new Base64DecodingException("decoding.general");                             
              os.write( (byte)(  b1 <<2 | b2>>4 ) );                
          } else if (!isPad( d3) && isPad(d4)) {               //One PAD  e.g. 3cQ[Pad]
              b3 = base64Alphabet[ d3 ];
              if ((b3 & 0x3 ) != 0)//last 2 bits should be zero
-                     throw new Base64DecodingException("Error while decoding");                            
+                     throw new Base64DecodingException("decoding.general");                            
              os.write( (byte)(  b1 <<2 | b2>>4 ));
              os.write( (byte)(((b2 & 0xf)<<4 ) |( (b3>>2) & 0xf) ));                
          } else {
-             throw new Base64DecodingException("Error while decoding");//an error  like "3c[Pad]r", "3cdX", "3cXd", "3cXX" where X is non data
+             throw new Base64DecodingException("decoding.general");//an error  like "3c[Pad]r", "3cdX", "3cXd", "3cXX" where X is non data
          }
      } else {
          //No PAD e.g 3cQl         
