@@ -80,15 +80,17 @@
          </p>
          <p>
             The 
-            <a href="xref-test/org/apache/commons/functor/example/FlexiMapExample.html#88">FlexiMap</a> 
-            example applies this design to <code>java.util.Map</code>, demonstrating how 
+            <a href="xref-test/org/apache/commons/functor/example/FlexiMapExample.html#88">FlexiMap example</a> 
+            applies this design to <code>java.util.Map</code>, demonstrating how 
             "pluggable" functors can be applied to a generic <code>Map</code> structure in order
             to introduce new behaviors.           
          </p>
       </subsection>      
-      <subsection name="A Functional Quicksort Implementation">
+      <subsection name="A Quicksort Implementation">        
         <p>
-          See the <a href="xref-test/org/apache/commons/functor/example/QuicksortExample.html#79">Quicksort</a> example.
+          The <a href="xref-test/org/apache/commons/functor/example/QuicksortExample.html#79">Quicksort example</a>
+          presents an implementation of the Quicksort sorting algorithm written in a functional programming
+          style using Commons Functor.
         </p>
       </subsection>      
     </section>
