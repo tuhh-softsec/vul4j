@@ -70,12 +70,14 @@
 
 #include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/enc/XSECCryptoException.hpp>
 
 WinCAPICryptoKeyHMAC::WinCAPICryptoKeyHMAC() :m_keyBuf("") {
 
 	m_keyBuf.isSensitive();
 	m_keyLen = 0;
 	m_k = 0;
+	m_p = 0;
 
 };
 
@@ -102,6 +104,27 @@ XSECCryptoKey * WinCAPICryptoKeyHMAC::clone() {
 	ret->m_keyBuf = m_keyBuf;
 	ret->m_keyLen = m_keyLen;
 
+	ret->m_p = m_p;
+
+	if (m_k != 0) {
+#if (_WIN32_WINNT > 0x0400)
+		if (CryptDuplicateKey(m_k,
+			 				  0,
+							  0,
+							  &(ret->m_k)) == 0 ) {
+
+			throw XSECCryptoException(XSECCryptoException::MDError,
+				"WinCAPI:KeyHMAC Error attempting to clone key parameters");
+
+		}
+#else
+		throw XSECCryptoException(XSECCryptoException::MDError,
+			"Unable to clone keys in Windows NT 4.0 and below");
+#endif
+	}
+	else
+		ret->m_k = 0;
+
 	return ret;
 
 }
@@ -110,7 +133,7 @@ XSECCryptoKey * WinCAPICryptoKeyHMAC::clone() {
 //           Windows Specific Keys
 // --------------------------------------------------------------------------------
 
-void WinCAPICryptoKeyHMAC::setWinKey(HCRYPTKEY k) {
+void WinCAPICryptoKeyHMAC::setWinKey(HCRYPTPROV p, HCRYPTKEY k) {
 
 	if (m_k != 0) {
 
@@ -119,11 +142,18 @@ void WinCAPICryptoKeyHMAC::setWinKey(HCRYPTKEY k) {
 	}
 
 	m_k = k;
+	m_p = p;
 
 }
 
 HCRYPTKEY WinCAPICryptoKeyHMAC::getWinKey(void) {
 
 	return m_k;
+
+}
+
+HCRYPTPROV WinCAPICryptoKeyHMAC::getWinKeyProv(void) {
+
+	return m_p;
 
 }

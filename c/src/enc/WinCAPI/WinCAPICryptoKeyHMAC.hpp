@@ -178,10 +178,13 @@ public :
 	 * Set a Windows Crypto key that has been either derived via the
 	 * various Crypt functions or has been loaded from an encrypted BLOB
 	 *
+	 * @param p Handle to provider context used to create this key.  Note
+	 * it is the responsibility of the caller to release the context.
 	 * @param k Windows CAPI key to load
+	 * Note that the library now owns this key (and will destroy it).
 	 */
 
-	void setWinKey(HCRYPTKEY k);
+	void setWinKey(HCRYPTPROV p, HCRYPTKEY k);
 
 	/**
 	 * \brief Get a windows key
@@ -194,6 +197,17 @@ public :
 
 	HCRYPTKEY getWinKey(void);
 
+	/**
+	 * \brief Get a windows key provider
+	 *
+	 * Used by WinCAPICryptoHashHMAC to retrieve the provider handle associated
+	 * with an HMAC key in order to load it into the HMAC function.
+	 *
+	 * @returns The key to use or 0 if this object does not hold one
+	 */
+
+	HCRYPTPROV getWinKeyProv(void);
+
 	//@}
 
 private:
@@ -202,6 +216,7 @@ private:
 	unsigned int		m_keyLen;
 
 	HCRYPTKEY			m_k;
+	HCRYPTPROV			m_p;
 };
 
 #endif /* WINCAPICRYPTOKEYHMAC_INCLUDE */

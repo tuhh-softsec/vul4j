@@ -85,22 +85,12 @@
 XSEC_USING_XERCES(ArrayJanitor);
 
 WinCAPICryptoProvider::WinCAPICryptoProvider(
-						HCRYPTPROV provDSS,
-						HCRYPTPROV provRSA) {
+						LPCSTR provDSSName, 
+						LPCSTR provRSAName) {
 
-	// Copy parameters for later use
-
-	m_provDSS = provDSS; 
-	m_provRSA = provRSA;
-
-}
-
-WinCAPICryptoProvider::WinCAPICryptoProvider() {
-
-	// Obtain default PROV_DSS and PROV_RSA_FULL, with default user key containers
 	if (!CryptAcquireContext(&m_provDSS,
 		NULL,
-		NULL,
+		provDSSName,
 		PROV_DSS,
 		CRYPT_VERIFYCONTEXT)) 
 	{
@@ -110,17 +100,33 @@ WinCAPICryptoProvider::WinCAPICryptoProvider() {
 
 	if (!CryptAcquireContext(&m_provRSA,
 		NULL,
-		NULL,
+		provRSAName,
 		PROV_RSA_FULL,
 		CRYPT_VERIFYCONTEXT)) 
 	{
 		throw XSECException(XSECException::InternalError,
 			"WinCAPICryptoProvider() - Error obtaining default PROV_RSA_FULL");
 	}
+
+	// Copy parameters for later use
+
+	if (provDSSName != NULL)
+		m_provDSSName = strdup(provDSSName); 
+	else
+		m_provDSSName = NULL;
+
+	if (provRSAName != NULL)
+		m_provRSAName = strdup(provRSAName);
+	else
+		m_provRSAName = NULL;
+
 }
 
-
 WinCAPICryptoProvider::~WinCAPICryptoProvider() {
+
+
+	CryptReleaseContext(m_provRSA, 0);
+	CryptReleaseContext(m_provDSS, 0);
 
 }
 

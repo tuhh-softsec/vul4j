@@ -208,10 +208,6 @@ int evaluate(int argc, char ** argv) {
 	bool					useXSECURIResolver = false;
 	bool                    useAnonymousResolver = false;
 	bool					useInteropResolver = false;
-#if defined(_WIN32) && defined (HAVE_WINCAPI)
-	HCRYPTPROV				win32DSSCSP = 0;		// Crypto Providers
-	HCRYPTPROV				win32RSACSP = 0;		
-#endif
 
 	bool skipRefs = false;
 
@@ -253,37 +249,26 @@ int evaluate(int argc, char ** argv) {
 		else if (stricmp(argv[paramCount], "--wincapi") == 0 || stricmp(argv[paramCount], "-w") == 0 ||
 			stricmp(argv[paramCount], "--winhmackey") == 0 || stricmp(argv[paramCount], "-wh") == 0) {
 
-			if (win32DSSCSP == 0) {
-				WinCAPICryptoProvider * cp;
-				// Obtain default PROV_DSS
-				if (!CryptAcquireContext(&win32DSSCSP,
-					NULL,
-					NULL,
-					PROV_DSS,
-					CRYPT_VERIFYCONTEXT)) {
-						cerr << "Error acquiring DSS Crypto Service Provider" << endl;
-						return 2;
-				}
-
-				if (!CryptAcquireContext(&win32RSACSP,
-					NULL,
-					NULL,
-					PROV_RSA_FULL,
-					CRYPT_VERIFYCONTEXT)) {
-						cerr << "Error acquiring RSA Crypto Service Provider" << endl;
-						return 2;
-				}
-
-				// Use default DSS provider
-				cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
-				XSECPlatformUtils::SetCryptoProvider(cp);
-			}
+			WinCAPICryptoProvider * cp = new WinCAPICryptoProvider();
+			XSECPlatformUtils::SetCryptoProvider(cp);
 
 			if (stricmp(argv[paramCount], "--winhmackey") == 0 || stricmp(argv[paramCount], "-wh") == 0) {
 
 				// Create a SHA-1 based key based on the <string> parameter
 
 				paramCount++;
+
+				HCRYPTPROV				win32RSACSP;		
+
+				if (!CryptAcquireContext(&win32RSACSP,
+					NULL,
+					NULL,
+					PROV_RSA_FULL,
+					CRYPT_VERIFYCONTEXT)) 
+				{
+					cerr << "Error obtaining default RSA_PROV" << endl;
+					return 2;
+				}
 
 				HCRYPTKEY k;
 				HCRYPTHASH h;
@@ -325,11 +310,12 @@ int evaluate(int argc, char ** argv) {
 				// Wrap in a WinCAPI object
 				WinCAPICryptoKeyHMAC * hk;
 				hk = new WinCAPICryptoKeyHMAC();
-				hk->setWinKey(k); 
+				hk->setWinKey(win32RSACSP, k); 
 
 				key = hk;
 
 				CryptDestroyHash(h);
+//				CryptReleaseContext(win32RSACSP, 0);
 
 			}
 
@@ -610,15 +596,6 @@ int evaluate(int argc, char ** argv) {
 		retResult = 1;
 	}
 
-#if defined (HAVE_WINCAPI)
-	if (win32DSSCSP != 0) {
-		CryptReleaseContext(win32DSSCSP, 0);
-	}
-	if (win32RSACSP != 0) {
-		CryptReleaseContext(win32RSACSP, 0);
-	}
-#endif
-	//prov.releaseSignature(sig);
 	// Janitor will clean up the parser
 	return retResult;
 

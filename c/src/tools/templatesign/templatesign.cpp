@@ -831,7 +831,7 @@ int main(int argc, char **argv) {
 					return 2;
 			}
 			// We know RSA provider is not required
-			cp = new WinCAPICryptoProvider(win32DSSCSP, 0);
+			cp = new WinCAPICryptoProvider();
 			XSECPlatformUtils::SetCryptoProvider(cp);
 			
 			// Now get the key
@@ -871,7 +871,7 @@ int main(int argc, char **argv) {
 					return 2;
 			}
 
-			cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
+			cp = new WinCAPICryptoProvider();
 			XSECPlatformUtils::SetCryptoProvider(cp);
 			
 			// Now get the key
@@ -894,15 +894,7 @@ int main(int argc, char **argv) {
 		else if (stricmp(argv[paramCount], "--winhmac") == 0 || stricmp(argv[paramCount], "-wh") == 0) {
 
 			WinCAPICryptoProvider * cp;
-			// Obtain default PROV_DSS, with default user key container
-			if (!CryptAcquireContext(&win32DSSCSP,
-				NULL,
-				NULL,
-				PROV_DSS,
-				0)) {
-					cerr << "Error acquiring DSS Crypto Service Provider" << endl;
-					return 2;
-			}
+			// Obtain default PROV_RSA, with default user key container
 			if (!CryptAcquireContext(&win32RSACSP,
 				NULL,
 				NULL,
@@ -911,7 +903,7 @@ int main(int argc, char **argv) {
 					cerr << "Error acquiring RSA Crypto Service Provider" << endl;
 					return 2;
 			}
-			cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
+			cp = new WinCAPICryptoProvider();
 			XSECPlatformUtils::SetCryptoProvider(cp);
 
 			paramCount++;
@@ -955,7 +947,7 @@ int main(int argc, char **argv) {
 			// Wrap in a WinCAPI object
 			WinCAPICryptoKeyHMAC * hk;
 			hk = new WinCAPICryptoKeyHMAC();
-			hk->setWinKey(k); 
+			hk->setWinKey(win32RSACSP, k); 
 
 			key = hk;
 

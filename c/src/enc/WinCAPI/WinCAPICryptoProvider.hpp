@@ -119,24 +119,15 @@ public :
 	 * \brief Create a Windows CAPI interface layer
 	 *
 	 * Windows CSPs work under a provider model.  The user should specify
-	 * which CSP to use and which key container to use.
+	 * which CSP to use.
 	 *
-	 * @param provDSS DSS provider - must be of type PROV_DSS
-	 * @param provRSA RSA provider - must be of type PROV_RSA_FULL
+	 * @param provDSSName Name of DSS provider - must be of type PROV_DSS.
+	 * Will use the default Windows DSS provider if nothing passed in.
+	 * @param provRSAName RSA provider - must be of type PROV_RSA_FULL.
+	 * Will use the default RSA_FULL provider if nothing passed in
 	 */
 	
-	WinCAPICryptoProvider(HCRYPTPROV provDSS, HCRYPTPROV provRSA);
-
-	/**
-	 * \brief Create a Windows CAPI interface layer.
-	 *
-	 * The default constructor will use the default providers and containers
-	 * 
-	 * @note This call will fail if the user has not generated keys in the
-	 * default DSS and RSA provider containers
-	 */
-
-	WinCAPICryptoProvider();
+	WinCAPICryptoProvider(LPCSTR provDSSName = NULL, LPCSTR provRSAName = NULL);
 
 	virtual ~WinCAPICryptoProvider();
 
@@ -338,6 +329,8 @@ private:
 
 	HCRYPTPROV		m_provDSS;
 	HCRYPTPROV		m_provRSA;
+	LPCSTR			m_provDSSName;
+	LPCSTR			m_provRSAName;
 
 };
 

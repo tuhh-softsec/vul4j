@@ -199,10 +199,11 @@ void WinCAPICryptoHashHMAC::setKey(XSECCryptoKey *key) {
 	if (strEquals(key->getProviderName(), DSIGConstants::s_unicodeStrPROVWinCAPI) &&
 		((WinCAPICryptoKeyHMAC *) key)->getWinKey() != 0) {
 
+		HCRYPTPROV p = ((WinCAPICryptoKeyHMAC *) key)->getWinKeyProv();
 		HCRYPTKEY k = ((WinCAPICryptoKeyHMAC *) key)->getWinKey();
 
 		fResult = CryptCreateHash(
-			mp_ownerProvider->getProviderRSA(),
+			p,
 			CALG_HMAC,
 			k,
 			0,

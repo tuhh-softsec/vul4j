@@ -74,6 +74,8 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
+#if defined (HAVE_OPENSSL)
+
 #include <string.h>
 
 #include <openssl/rand.h>
@@ -507,3 +509,5 @@ unsigned int OpenSSLCryptoSymmetricKey::encryptFinish(unsigned char * cipherBuf,
 	return outl;
 
 }
+
+#endif /* HAVE_OPENSSL */
