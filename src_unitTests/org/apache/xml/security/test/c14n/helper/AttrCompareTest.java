@@ -188,27 +188,23 @@ public class AttrCompareTest extends TestCase {
 
       AttrCompare attrCompare = new AttrCompare();
 
-      assertEquals("attrCompare.compare((Object) attr0, (Object) attr1)", -1,
-                   attrCompare.compare(attr0, attr1));
-      assertEquals("attrCompare.compare((Object) attr1, (Object) attr0)", 1,
-                   attrCompare.compare(attr1, attr0));
+      assertTrue(attr0 + " < " + attr1, attrCompare.compare(attr0, attr1) < 0);
+      assertTrue(attr1 + " < " + attr0, attrCompare.compare(attr1, attr0) > 0);
    }
 
    public static void testA2() throws ParserConfigurationException {
 
       Document doc = createDoc("documentElement");
-      Attr attr0 = doc.createAttributeNS("http://goo", "goo:foo");
-      Attr attr1 = doc.createAttributeNS(null, "foo");
+      Attr attr0 = doc.createAttributeNS(null, "foo");
+      Attr attr1 = doc.createAttributeNS("http://goo", "goo:foo");
 
       System.out.println("Attr1: " + attr1 + " (" + attr1.getLocalName()  +")");
 
 
       AttrCompare attrCompare = new AttrCompare();
 
-      assertEquals("attrCompare.compare((Object) attr0, (Object) attr1)", 1,
-                   attrCompare.compare(attr0, attr1));
-      assertEquals("attrCompare.compare((Object) attr1, (Object) attr0)", -1,
-                   attrCompare.compare(attr1, attr0));
+      assertTrue(attr0 + " < " + attr1, attrCompare.compare(attr0, attr1) < 0);
+      assertTrue(attr1 + " < " + attr0, attrCompare.compare(attr1, attr0) > 0);
 
    }
 
@@ -240,10 +236,8 @@ public class AttrCompareTest extends TestCase {
 
       AttrCompare attrCompare = new AttrCompare();
 
-      assertEquals("attrCompare.compare((Object) attr0, (Object) attr1)", -1,
-                   attrCompare.compare(attr0, attr1));
-      assertEquals("attrCompare.compare((Object) attr1, (Object) attr0)", 1,
-                   attrCompare.compare(attr1, attr0));
+      assertTrue(attr0 + " < " + attr1, attrCompare.compare(attr0, attr1) < 0);
+      assertTrue(attr1 + " < " + attr0, attrCompare.compare(attr1, attr0) > 0);
    }
 
    /**
@@ -300,11 +294,8 @@ public class AttrCompareTest extends TestCase {
          for (int j = i + 1; j < attrs.length; j++) {
             Attr attr0 = attrs[i];
             Attr attr1 = attrs[j];
-            assertEquals(attr0 + " > " + attr1,
-                         -1,
-                         attrCompare.compare(attr0, attr1));
-            assertEquals(attr0 + " < " + attr1,
-                         1, attrCompare.compare(attr0, attr1));
+            assertTrue(attr0 + " < " + attr1, attrCompare.compare(attr0, attr1) < 0);
+            assertTrue(attr1 + " < " + attr0, attrCompare.compare(attr1, attr0) > 0);
          }
       }
    }
