@@ -83,15 +83,54 @@
     <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}" />
 
     <property name="libs"         value="libs" />
-    <property name="lib.xerces"   value="${libs}/xerces-1_4_4.jar" />
-    <property name="lib.xalan.1"  value="${libs}/xalan-j_2_2_D13_xalan.jar" />
-    <property name="lib.xalan.2"  value="${libs}/xalan-j_2_2_D13_xml-apis.jar" />
-    <property name="lib.log4j"    value="${libs}/jakarta-log4j-1.2alpha5.jar" />
+
+    <!--
+    Date: Sat, 26 Jan 2002 16:22:07 +1100
+    From: David Hook <dgh@wumpus.com.au>
+    To: Christian Geuer-Pollmann <geuer-pollmann@nue.et-inf.uni-siegen.de>
+    Subject: Re: "New" HMAC and Signature algorithms ?
+
+    It's ready to go, you can find the beta's at:
+
+    basic signed jar - http://www.bouncycastle.org/bcprov-jdk13-112b.jar
+    signed jar with JCE as well- http://www.bouncycastle.org/jce-jdk13-112b.jar
+    source - http://www.bouncycastle.org/crypto.tar.gz
+
+    Regards,
+    David.
+    -->
+    <property name="jce.download.file" value="jce-jdk13-112b.jar" />
+    <!--
+    <property name="jce.download" value="http://www.bouncycastle.org/download/${jce.download.file}" />
+    -->
+    <property name="jce.download" value="http://www.bouncycastle.org/${jce.download.file}" />
+    <property name="lib.jce"      value="${libs}/bc-${jce.download.file}" />
+
+    <!-- http://download.sourceforge.net/junit/junit3.7.zip -->
     <property name="lib.junit"    value="${libs}/junit3.7.jar" />
 
-    <property name="jce.download.file" value="jce-jdk13-111.jar" />
-    <property name="jce.download" value="http://www.bouncycastle.org/download/${jce.download.file}" />
-    <property name="lib.jce"      value="${libs}/bc-${jce.download.file}" />
+    <property name="lib.xerces.1" value="${libs}/xercesImpl.jar" />
+    <property name="lib.xerces.2" value="${libs}/xmlParserAPIs.jar" />
+    <property name="lib.xalan.1"  value="${libs}/xalan.jar" />
+    <property name="lib.xalan.2"  value="${libs}/xml-apis.jar" />
+    <property name="lib.log4j"    value="${libs}/jakarta-log4j-1.2alpha5.jar" />
+
+    <path id="classpath.library">
+      <pathelement path="${build.dest}" />
+      <pathelement path="${lib.xerces.1}" />
+      <pathelement path="${lib.xerces.2}" />
+      <pathelement path="${lib.xalan.1}" />
+      <pathelement path="${lib.xalan.2}" />
+      <pathelement path="${lib.log4j}" />
+      <pathelement path="${lib.jce}" />
+    </path>
+
+    <path id="classpath.test">
+      <!-- classpath for test is librarypath plus log4j -->
+      <path refid="classpath.library" />
+      <pathelement path="${lib.junit}" />
+    </path>
+  </target>
 
     <property name="doc" value="./doc" />
     <property name="doc.html" value="${doc}/html" />
@@ -120,22 +159,6 @@ org.apache.xml.security.transforms.implementations.*,
 org.apache.xml.security.utils.*
 " />
 
-    <path id="classpath.library">
-      <pathelement path="${build.dest}" />
-      <pathelement path="${lib.xerces}" />
-      <pathelement path="${lib.xalan.1}" />
-      <pathelement path="${lib.xalan.2}" />
-      <pathelement path="${lib.log4j}" />
-      <pathelement path="${lib.jce}" />
-    </path>
-
-    <path id="classpath.test">
-      <!-- classpath for test is librarypath plus log4j -->
-      <path refid="classpath.library" />
-      <pathelement path="${lib.junit}" />
-    </path>
-  </target>
-
   <target name="prepare" depends="init">
     <tstamp />
     <mkdir dir="${build.dir}" />
@@ -149,7 +172,6 @@ org.apache.xml.security.utils.*
        <classpath refid="classpath.library" />
     </available>
   </target>
-
 
   <target name="prepare-src" depends="prepare">
     <!-- create directories -->
