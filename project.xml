@@ -65,6 +65,10 @@
      <name>Jason Horman</name>
      <email>jason AT jhorman DOT org</email>
    </contributor>
+   <contributor>
+     <name>Herve Quiroz</name>
+     <email>herve DOT quiroz AT esil DOT univ DASH mrs DOT fr</email>
+   </contributor>
   </contributors>
 
   <dependencies>
