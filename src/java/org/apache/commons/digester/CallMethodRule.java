@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.9 2001/08/25 20:30:16 craigmcc Exp $
- * $Revision: 1.9 $
- * $Date: 2001/08/25 20:30:16 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.10 2001/11/14 18:57:01 craigmcc Exp $
+ * $Revision: 1.10 $
+ * $Date: 2001/11/14 18:57:01 $
  *
  * ====================================================================
  *
@@ -77,7 +77,7 @@ import org.apache.commons.beanutils.ConvertUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.9 $ $Date: 2001/08/25 20:30:16 $
+ * @version $Revision: 1.10 $ $Date: 2001/11/14 18:57:01 $
  */
 
 public class CallMethodRule extends Rule {
@@ -284,7 +284,10 @@ public class CallMethodRule extends Rule {
 	Object top = digester.peek();
 	if (digester.getDebug() >= 1) {
 	    StringBuffer sb = new StringBuffer("Call ");
-	    sb.append(top.getClass().getName());
+            if (top == null)
+                sb.append("[NULL TOP]");
+            else
+                sb.append(top.getClass().getName());
 	    sb.append(".");
 	    sb.append(methodName);
 	    sb.append("(");
