@@ -31,10 +31,6 @@
          by a single, generic member function, and that is the approach taken
          here.
       </p>
-      <p>
-        Functors support a number of interesting and powerful design strategies
-        [...]
-      </p>
     </section>
     <section name="Overview">
       <p>
@@ -56,16 +52,9 @@
         two <code>Object</code> arguments.
       </p>
       <p>
-        The
-        <code><a href="apidocs/org/apache/commons/functor/adapter/package-summary.html">functor.adapter</a></code>
-        package defines classes for adapting one functor interface to another, 
-        both by signature and return type.
-      </p>
-      <p>
         The 
-        <code><a href="apidocs/org/apache/commons/functor/core/package-summary.html">functor.core</a></code>
-        package (and its <a href="apidocs/overview-summary.html">subpackages</a>) 
-        defines common functor implementations.
+        <a href="apidocs/index.html">remaining packages</a>
+        provide common functor implementations, adapters and utilities.
       </p>
     </section>
   </body>

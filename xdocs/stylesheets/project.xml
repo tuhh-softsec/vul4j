@@ -9,10 +9,18 @@
            <item name="Jakarta&#xA0;Commons"          href="http://jakarta.apache.org/commons/index.html" />
            <item name="Commons&#xA0;Functor"          href="/index.html" />
        </menu>
-       <menu name="Project&#xA0;Files">
+       <menu name="Using Functor">
+           <item name="Examples"                      href="/examples.html"/>
            <item name="Downloads"                     href="/download.html"/>
+           <item name="Snapshots"                     href="http://cvs.apache.org/builds/jakarta-commons/nightly/commons-functor/"/>
+       </menu>
+       <menu name="Developing Functor">
+           <item name="Building"                      href="/building.html"/>
+           <item name="Test&#xA0;Coverage"            href="/clover/index.html"/>
            <item name="Source&#xA0;(Browse)"          href="http://cvs.apache.org/viewcvs/jakarta-commons-sandbox/functor/"/>
            <item name="Source&#xA0;(CVS)"             href="http://jakarta.apache.org/site/cvsindex.html"/>
+       </menu>
+       <menu name="Administrivia">
            <item name="License"                       href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/LICENSE.txt"/>
            <item name="Original&#xA0;Proposal"        href="http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-commons-sandbox/functor/PROPOSAL.html"/>
        </menu>

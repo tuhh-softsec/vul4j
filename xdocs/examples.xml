@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+    <title>Examples</title>
+    <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+    <author email="rwaldhoff@apache.org">Rodney Waldhoff</author>
+  </properties>
+
+  <body>
+    <section name="Examples">
+      <p>
+         We've begun to develop some example code that demonstrates the use and
+         utility of the Functor component.
+      </p>
+      <subsection name="Code Reuse Through Composition">
+        <p>
+          See the <a href="xref-test/org/apache/commons/functor/example/FlexiMapExample.html#88">FlexiMap</a> example.
+        </p>
+      </subsection>      
+      <subsection name="A Functional Quicksort Implementation">
+        <p>
+          See the <a href="xref-test/org/apache/commons/functor/example/Quicksort.html#79">Quicksort</a> example.
+        </p>
+      </subsection>      
+    </section>
+  </body>
+</document>
