@@ -21,6 +21,7 @@ package org.apache.xml.security.utils.resolver.implementations;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xml.utils.URI;
 import org.w3c.dom.Attr;
@@ -53,7 +54,8 @@ public class ResolverFragment extends ResourceResolverSpi {
     * @param BaseURI
     *
     */
-   public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
+   public XMLSignatureInput engineResolve(Attr uri, String BaseURI) 
+       throws ResourceResolverException
    {
 
       String uriNodeValue = uri.getNodeValue();
@@ -84,12 +86,18 @@ public class ResolverFragment extends ResourceResolverSpi {
 
          // Element selectedElem = doc.getElementById(id);
          selectedElem = IdResolver.getElementById(doc, id);
+         if (selectedElem==null) {
+         	Object exArgs[] = { id };
+            throw new ResourceResolverException(
+               "signature.Verification.MissingID", exArgs, uri, BaseURI);
+         }
          if (log.isDebugEnabled())
          	log.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
       }
 
       //Set resultSet = dereferenceSameDocumentURI(selectedElem);
-      XMLSignatureInput result = new XMLSignatureInput(selectedElem,new CachedXPathAPIHolder(doc));
+      CachedXPathAPIHolder.setDoc(doc);
+      XMLSignatureInput result = new XMLSignatureInput(selectedElem);
       result.setExcludeComments(true);
 
       //log.debug("We return a nodeset with " + resultSet.size() + " nodes");
