@@ -103,7 +103,7 @@ public class VerifySignature {
       boolean schemaValidate = false;
       final String signatureSchemaFile = "data/xmldsig-core-schema.xsd";
       // String signatureFileName = "data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/signature-enveloping-rsa.xml";
-      String signatureFileName = "signature.xml";
+      String signatureFileName = "hereSignature.xml";
 
       if (schemaValidate) {
          System.out.println("We do schema-validation");
@@ -187,9 +187,11 @@ public class VerifySignature {
             X509Certificate cert = signature.getKeyInfo().getX509Certificate();
 
             if (cert != null) {
+               /*
                System.out.println(
                   "I try to verify the signature using the X509 Certificate: "
                   + cert);
+               */
                System.out.println("The XML signature in file "
                                   + f.toURL().toString() + " is "
                                   + (signature.checkSignatureValue(cert)
@@ -201,9 +203,11 @@ public class VerifySignature {
                PublicKey pk = signature.getKeyInfo().getPublicKey();
 
                if (pk != null) {
+                  /*
                   System.out.println(
                      "I try to verify the signature using the public key: "
                      + pk);
+                  */
                   System.out.println("The XML signature in file "
                                      + f.toURL().toString() + " is "
                                      + (signature.checkSignatureValue(pk)

@@ -78,6 +78,8 @@ import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;
 import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathAPI;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -166,6 +168,8 @@ public class Manifest extends ElementProxy {
     * @param referenceURI <code>URI</code> attribute in <code>Reference</code> for specifing where data is
     * @param transforms org.apache.xml.security.signature.Transforms object with an ordered list of transformations to be performed.
     * @param digestURI The digest algorthim URI to be used.
+    * @param ReferenceId
+    * @param ReferenceType
     * @throws XMLSignatureException
     */
    public void addDocument(
@@ -309,19 +313,45 @@ public class Manifest extends ElementProxy {
     */
    public boolean verifyReferences()
            throws MissingResourceFailureException, XMLSecurityException {
+      return this.verifyReferences(false);
+   }
+
+   /**
+    * Used to do a <A HREF="http://www.w3.org/TR/xmldsig-core/#def-ValidationReference">reference
+    * validation</A> of all enclosed references using the {@link Reference#verify} method.
+    *
+    * <p>This step loops through all {@link Reference}s and does verify the hash
+    * values. If one or more verifications fail, the method returns
+    * <code>false</code>. If <i>all</i> verifications are successful,
+    * it returns <code>true</code>. The results of the individual reference
+    * validations are available by using the {@link #getVerificationResult(int)} method
+    *
+    * @param followManifests
+    * @return true if all References verify, false if one or more do not verify.
+    * @throws MissingResourceFailureException if a {@link Reference} does not verify (throws a {@link org.apache.xml.security.signature.ReferenceNotInitializedException} because of an uninitialized {@link XMLSignatureInput}
+    * @see org.apache.xml.security.signature.Reference#verify
+    * @see org.apache.xml.security.signature.SignedInfo#verify
+    * @see org.apache.xml.security.signature.MissingResourceFailureException
+    * @throws XMLSecurityException
+    */
+   public boolean verifyReferences(boolean followManifests)
+           throws MissingResourceFailureException, XMLSecurityException {
 
       cat.debug("verify " + this.getLength() + " References");
+      cat.debug("I am " + (followManifests
+                           ? ""
+                           : "not") + " requested to follow nested Manifests");
 
       boolean verify = true;
 
-      if (this.getLength() > 0) {
-         this.verificationResults = new boolean[this.getLength()];
+      if (this.getLength() == 0) {
+         throw new XMLSecurityException("empty");
       }
+
+      this.verificationResults = new boolean[this.getLength()];
 
       for (int i = 0; i < this.getLength(); i++) {
          Reference currentRef = this.item(i);
-
-         currentRef.setManifest(this);
 
          /* if only one item does not verify, the whole verification fails */
          try {
@@ -331,6 +361,61 @@ public class Manifest extends ElementProxy {
 
             if (!currentRefVerified) {
                verify = false;
+            }
+
+            cat.debug("The Reference has Type " + currentRef.getType());
+
+            // was verification successful till now and do we want to verify the Manifest?
+            if (verify && followManifests
+                    && currentRef.typeIsReferenceToManifest()) {
+               cat.debug("We have to follow a nested Manifest");
+
+               try {
+                  XMLSignatureInput signedManifestNodes =
+                     currentRef.getReferencedXMLSignatureInput();
+                  NodeList nl = signedManifestNodes.getNodeSet();
+                  Manifest referencedManifest = null;
+
+                  findManifest: for (int j = 0; j < nl.getLength(); j++) {
+                     if (nl.item(j).getNodeType() == Node.ELEMENT_NODE) {
+                        try {
+                           referencedManifest =
+                              new Manifest((Element) nl.item(j),
+                                           signedManifestNodes.getSourceURI());
+
+                           break findManifest;
+                        } catch (XMLSecurityException ex) {
+
+                           // Hm, seems not to be a ds:Manifest
+                        }
+                     }
+                  }
+
+                  if (referencedManifest == null) {
+
+                     // The Reference stated that it points to a ds:Manifest
+                     // but we did not find a ds:Manifest in the signed area
+                     throw new MissingResourceFailureException("empty",
+                                                               currentRef);
+                  }
+
+                  boolean referencedManifestValid =
+                     referencedManifest.verifyReferences(true);
+
+                  if (!referencedManifestValid) {
+                     verify = false;
+
+                     cat.warn("The nested Manifest was invalid (bad)");
+                  } else {
+                     cat.debug("The nested Manifest was valid (good)");
+                  }
+               } catch (IOException ex) {
+                  throw new ReferenceNotInitializedException("empty", ex);
+               } catch (ParserConfigurationException ex) {
+                  throw new ReferenceNotInitializedException("empty", ex);
+               } catch (SAXException ex) {
+                  throw new ReferenceNotInitializedException("empty", ex);
+               }
             }
          } catch (ReferenceNotInitializedException ex) {
             Object exArgs[] = { currentRef.getURI() };

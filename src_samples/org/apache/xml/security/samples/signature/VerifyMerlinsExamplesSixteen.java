@@ -136,10 +136,7 @@ public class VerifyMerlinsExamplesSixteen {
       dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
 
       //J-
-      String merlinsDir =
-         "data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen/";
-      String filenames[] = { merlinsDir + "signature.xml"
-                             // "merlinsSixteenRecreated.xml"
+      String filenames[] = { "16signature.xml"
                              };
       //J+
       int start = 0;
@@ -205,6 +202,7 @@ public class VerifyMerlinsExamplesSixteen {
                               "//ds:Signature[1]", nscontext);
       XMLSignature signature = new XMLSignature(sigElement,
                                                 f.toURL().toString());
+      signature.setFollowNestedManifests(true);
 
       signature.addResourceResolver(new OfflineResolver());
 

@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -707,19 +706,23 @@ public class XMLUtils {
          throw new RuntimeException("Document is null");
       }
 
-      Element element = doc.createElementNS(
-         Constants.SignatureSpecNS,
-         Constants.xmlOutputProperties.getSignatureSpecNSprefix() + ":"
-         + elementName);
       String ds = Constants.getSignatureSpecNSprefix();
 
       if ((ds == null) || (ds.length() == 0)) {
-         element.setAttribute("xmlns", Constants.SignatureSpecNS);
-      } else {
-         element.setAttribute("xmlns:" + ds, Constants.SignatureSpecNS);
-      }
+         Element element = doc.createElementNS(Constants.SignatureSpecNS,
+                                               elementName);
 
-      return element;
+         element.setAttribute("xmlns", Constants.SignatureSpecNS);
+
+         return element;
+      } else {
+         Element element = doc.createElementNS(Constants.SignatureSpecNS,
+                                               ds + ":" + elementName);
+
+         element.setAttribute("xmlns:" + ds, Constants.SignatureSpecNS);
+
+         return element;
+      }
    }
 
    /**
@@ -849,16 +852,41 @@ public class XMLUtils {
       return XMLUtils.randomNS;
    }
 
-   public static Element createDSctx(Document doc, String prefix, String namespace) {
+   /**
+    * Method createDSctx
+    *
+    * @param doc
+    * @param prefix
+    * @param namespace
+    * @return
+    */
+   public static Element createDSctx(Document doc, String prefix,
+                                     String namespace) {
+
       Element ctx = doc.createElement("namespaceContext");
+
       ctx.setAttribute("xmlns:" + prefix.trim(), namespace);
+
       return ctx;
    }
 
+   /**
+    * Method createDSctx
+    *
+    * @param doc
+    * @param prefix
+    * @return
+    */
    public static Element createDSctx(Document doc, String prefix) {
       return XMLUtils.createDSctx(doc, prefix, Constants.SignatureSpecNS);
    }
 
+   /**
+    * Method createDSctx
+    *
+    * @param doc
+    * @return
+    */
    public static Element createDSctx(Document doc) {
       return XMLUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
    }

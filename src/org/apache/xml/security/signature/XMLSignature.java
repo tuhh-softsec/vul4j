@@ -121,6 +121,8 @@ public class XMLSignature extends ElementProxy {
    /** ds:Signature.ds:KeyInfo */
    KeyInfo _keyInfo = null;
 
+   boolean _followManifestsDuringValidation = false;
+
    /**
     * This creates a new <CODE>ds:Signature</CODE> Element and adds an empty
     * <CODE>ds:SignedInfo</CODE> to it.
@@ -635,7 +637,7 @@ public class XMLSignature extends ElementProxy {
     */
    public boolean checkSignatureValue(Key pk) throws Exception {
 
-      if (!this.getSignedInfo().verify()) {
+      if (!this.getSignedInfo().verify(this._followManifestsDuringValidation)) {
          return false;
       }
 
@@ -761,6 +763,10 @@ public class XMLSignature extends ElementProxy {
    public SecretKey createSecretKey(byte[] secretKeyBytes)
            throws XMLSecurityException {
       return this.getSignedInfo().createSecretKey(secretKeyBytes);
+   }
+
+   public void setFollowNestedManifests(boolean followManifests) {
+     this._followManifestsDuringValidation = followManifests;
    }
 
    static {

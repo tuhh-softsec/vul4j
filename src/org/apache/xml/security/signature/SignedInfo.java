@@ -102,6 +102,7 @@ public class SignedInfo extends Manifest {
     * Overwrites {@link Manifest(org.w3c.dom.Document)} because it creates another Element.
     *
     * @param doc the {@link Document} in which <code>XMLsignature</code> will be placed
+    * @throws XMLSecurityException
     */
    public SignedInfo(Document doc) throws XMLSecurityException {
       this(doc, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS,
@@ -114,9 +115,11 @@ public class SignedInfo extends Manifest {
     * @param doc <code>SignedInfo</code> is placed in this document
     * @param CanonicalizationMethodURI URI representation of the Canonicalization method
     * @param SignatureMethodURI URI representation of the Digest and Signature algorithm
+    * @throws XMLSecurityException
     */
-   public SignedInfo(Document doc, String CanonicalizationMethodURI,
-                     String SignatureMethodURI) throws XMLSecurityException {
+   public SignedInfo(
+           Document doc, String CanonicalizationMethodURI, String SignatureMethodURI)
+              throws XMLSecurityException {
       this(doc, CanonicalizationMethodURI, SignatureMethodURI, 0);
    }
 
@@ -127,9 +130,11 @@ public class SignedInfo extends Manifest {
     * @param CanonicalizationMethodURI
     * @param SignatureMethodURI
     * @param HMACOutputLength
+    * @throws XMLSecurityException
     */
-   public SignedInfo(Document doc, String CanonicalizationMethodURI,
-                     String SignatureMethodURI, int HMACOutputLength) throws XMLSecurityException {
+   public SignedInfo(
+           Document doc, String CanonicalizationMethodURI, String SignatureMethodURI, int HMACOutputLength)
+              throws XMLSecurityException {
 
       super(doc, Constants._TAG_SIGNEDINFO);
 
@@ -189,7 +194,20 @@ public class SignedInfo extends Manifest {
     */
    public boolean verify()
            throws MissingResourceFailureException, XMLSecurityException {
-      return super.verifyReferences();
+      return super.verifyReferences(false);
+   }
+
+   /**
+    * Tests core validation process
+    *
+    * @param followManifests defines whether the verification process has to verify referenced <CODE>ds:Manifest</CODE>s, too
+    * @return true if verification was successful
+    * @throws MissingResourceFailureException
+    * @throws XMLSecurityException
+    */
+   public boolean verify(boolean followManifests)
+           throws MissingResourceFailureException, XMLSecurityException {
+      return super.verifyReferences(followManifests);
    }
 
    /**

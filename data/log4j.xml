@@ -52,6 +52,7 @@
 	<category name="org.apache.xml.security.utils.ElementProxy">
 		<priority value="fatal" />
 	</category>
+        <!--
 	<category name="org.apache.xml.security.utils.resolver.implementations">
 		<priority value="info" />
 	</category>
@@ -61,7 +62,11 @@
 	<category name="org.apache.xml.security.c14n.Canonicalizer">
 		<priority value="fatal" />
 	</category>
+        -->
 
+	<category name="org.apache.xml.security.transforms.implementations.FuncHere">
+		<priority value="fatal" />
+	</category>
 	<root>
 		<priority value ="debug" />
 		<appender-ref ref="STDOUT" />

@@ -194,6 +194,9 @@ public class TransformXPath extends TransformSpi {
 
             if (includeInResult.bool()) {
                resultNodes.appendChild(inputNodes.item(i));
+               cat.debug("Included: (+) " + inputNodes.item(i));
+            } else {
+               cat.debug("Excluded:     " + inputNodes.item(i));
             }
          }
 

@@ -125,7 +125,6 @@ public class FuncHere extends Function {
       cat.debug("xpathOwnerNode.getNodeValue() = "
                 + xpathOwnerNode.getNodeValue());
       */
-
       int currentNode = xctxt.getCurrentNode();
       DTM dtm = xctxt.getDTM(currentNode);
       int docContext = dtm.getDocument();
@@ -154,17 +153,38 @@ public class FuncHere extends Function {
       {
          int hereNode = DTM.NULL;
 
-         if (dtm.getNodeType(xpathOwnerNodeDTM) == Node.ATTRIBUTE_NODE) {
-            hereNode = xpathOwnerNodeDTM;
-         } else if (dtm.getNodeType(xpathOwnerNodeDTM)
-                    == Node.PROCESSING_INSTRUCTION_NODE) {
-            hereNode = xpathOwnerNodeDTM;
-         } else if (dtm.getNodeType(xpathOwnerNodeDTM) == Node.TEXT_NODE) {
-            hereNode = dtm.getParent(xpathOwnerNodeDTM);
-         }
+         switch (dtm.getNodeType(xpathOwnerNodeDTM)) {
 
-         if (DTM.NULL != hereNode) {
+         case Node.ATTRIBUTE_NODE : {
+            // returns a node-set containing the attribute
+            hereNode = xpathOwnerNodeDTM;
+
             nodeSet.addNode(hereNode);
+            cat.debug("here() in Attribute");
+
+            break;
+         }
+         case Node.PROCESSING_INSTRUCTION_NODE : {
+            // returns a node-set containing the processing instruction node
+            hereNode = xpathOwnerNodeDTM;
+
+            nodeSet.addNode(hereNode);
+            cat.debug("here() in ProcessingInstruction");
+
+            break;
+         }
+         case Node.TEXT_NODE : {
+            // returns a node-set containing the parent element of the
+            // text node that directly bears the XPath expression
+            hereNode = dtm.getParent(xpathOwnerNodeDTM);
+
+            cat.debug("here() in Text");
+            nodeSet.addNode(hereNode);
+
+            break;
+         }
+         default :
+            break;
          }
       }
 

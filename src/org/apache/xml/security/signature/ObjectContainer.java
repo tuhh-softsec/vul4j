@@ -96,7 +96,7 @@ public class ObjectContainer extends ElementProxy {
     */
    public ObjectContainer(Document doc) {
       super(doc, Constants._TAG_OBJECT);
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+      // this._constructionElement.appendChild(this._doc.createTextNode("\n"));
    }
 
    /**
@@ -190,7 +190,11 @@ public class ObjectContainer extends ElementProxy {
     * @param node childe Node
     */
    public Node appendChild(Node node) {
-      return this._constructionElement.appendChild(node);
+      Node result = null;
+      if (this._state == MODE_SIGN) {
+         result = this._constructionElement.appendChild(node);
+      }
+      return result;
    }
 
    static {

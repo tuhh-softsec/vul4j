@@ -75,6 +75,7 @@
     
     <property name="doc" value="./doc" />
     <property name="doc.html" value="${doc}/html" />
+    <property name="doc.pdf" value="${doc}/pdf" />
     <property name="doc.html.api" value="${doc.html}/api" />
     <property name="javadoc.packages"
               value="
@@ -314,5 +315,23 @@ org.apache.xml.security.utils.*
     <echo message=""/>
     <echo message=""/>
     <echo message="Please look into log.txt, merlinsSixteenRecreated.xml and signature.xml"/>
+  </target>
+
+
+  <property name="lib.doclet.mif" value="${tools.dir}/mifdoclet.jar" />
+  <path id="classpath.doclet.mif">
+    <path refid="classpath.library" />
+    <pathelement path="${lib.doclet.mif}"/>
+  </path>
+  <target name="javadoc-pdf"
+          description="Generates javadoc in Adobe MakerInterchangeFormat (.mif) from all .java files">
+    <mkdir dir="${doc.pdf}"/>
+    <javadoc sourcepath="${src}"
+             destdir="${doc.pdf}"
+             packagenames="${javadoc.packages}"
+             doclet="com.sun.tools.doclets.mif.MIFDoclet"
+             docletpath="${lib.doclet.mif}"
+             additionalparam="-book data/websigMiflet.xml -batch dzbatcher -print pdf"
+             classpathref="classpath.doclet.mif" />
   </target>
 </project>

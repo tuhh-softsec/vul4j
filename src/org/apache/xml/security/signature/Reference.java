@@ -299,6 +299,8 @@ public class Reference extends ElementProxy {
       XMLUtils.guaranteeThatElementInSignatureSpace(element,
               Constants._TAG_REFERENCE);
 
+      this._manifest = manifest;
+
       try {
          Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
                                                   Constants.SignatureSpecNS);
@@ -309,15 +311,6 @@ public class Reference extends ElementProxy {
       } catch (TransformerException ex) {
          throw new XMLSecurityException("empty", ex);
       }
-   }
-
-   /**
-    * Method setManifest
-    *
-    * @param manifest
-    */
-   void setManifest(Manifest manifest) {
-      this._manifest = manifest;
    }
 
    /**
@@ -509,13 +502,13 @@ public class Reference extends ElementProxy {
    }
 
    /**
-    * Method getReferencedBytes
+    * Method getReferencedXMLSignatureInput
     *
     * @return
     * @throws ReferenceNotInitializedException
     * @throws XMLSignatureException
     */
-   public byte[] getReferencedBytes()
+   public XMLSignatureInput getReferencedXMLSignatureInput()
            throws ReferenceNotInitializedException, XMLSignatureException {
 
       try {
@@ -569,10 +562,8 @@ public class Reference extends ElementProxy {
             cat.debug("The Reference contains no Transforms, so I skip them");
          }
 
-         return xmlSignatureInput.getBytes();
+         return xmlSignatureInput;
       } catch (ResourceResolverException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (IOException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (CanonicalizationException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
@@ -581,6 +572,27 @@ public class Reference extends ElementProxy {
       } catch (TransformationException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (XMLSecurityException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      }
+   }
+
+   /**
+    * Method getReferencedBytes
+    *
+    * @return
+    * @throws ReferenceNotInitializedException
+    * @throws XMLSignatureException
+    */
+   public byte[] getReferencedBytes()
+           throws ReferenceNotInitializedException, XMLSignatureException {
+
+      try {
+         return this.getReferencedXMLSignatureInput().getBytes();
+      } catch (IOException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      } catch (CanonicalizationException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      } catch (InvalidCanonicalizerException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       }
    }
@@ -641,7 +653,6 @@ public class Reference extends ElementProxy {
 
       byte[] elemDig = this.getDigestValueFromElement();
       byte[] calcDig = this.calculateDigest();
-
       boolean equal = MessageDigestAlgorithm.isEqual(elemDig, calcDig);
 
       if (!equal) {
@@ -652,6 +663,7 @@ public class Reference extends ElementProxy {
          try {
             String tmp = new Long(System.currentTimeMillis()).toString()
                          + ".txt";
+
             cat.info("Wrote \"" + this.getURI() + "\" to file " + tmp);
             JavaUtils.writeBytesToFilename(tmp, this.getReferencedBytes());
          } catch (Exception ex) {}
