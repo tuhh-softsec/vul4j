@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.43 2002/01/27 01:40:42 craigmcc Exp $
- * $Revision: 1.43 $
- * $Date: 2002/01/27 01:40:42 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.44 2002/01/27 01:53:03 craigmcc Exp $
+ * $Revision: 1.44 $
+ * $Date: 2002/01/27 01:53:03 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.43 $ $Date: 2002/01/27 01:40:42 $
+ * @version $Revision: 1.44 $ $Date: 2002/01/27 01:53:03 $
  */
 
 public class Digester extends DefaultHandler {
@@ -575,17 +575,33 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * By setting the reader in the constructor, you can bypass JAXP and be able
-     * to use digester in Weblogic 6.0.
+     * By setting the reader in the constructor, you can bypass JAXP and
+     * be able to use digester in Weblogic 6.0.
+     *
+     * @deprecated Use getXMLReader() instead, which can throw a
+     *  SAXException if the reader cannot be instantiated
      */
-    public synchronized XMLReader getReader() {
+    public XMLReader getReader() {
+
+        try {
+            return (getXMLReader());
+        } catch (SAXException e) {
+            log.error("Cannot get XMLReader", e);
+            return (null);
+        }
+
+    }
+
+
+    /**
+     * Return the XMLReader to be used for parsing the input document.
+     *
+     * @exception SAXException if no XMLReader can be instantiated
+     */
+    public synchronized XMLReader getXMLReader() throws SAXException {
 
         if (reader == null) {
-            try {
-                reader = getParser().getXMLReader();
-            } catch (SAXException se) {
-                return null;
-            }
+            reader = getParser().getXMLReader();
         }
 
         //set up the parse
@@ -1244,7 +1260,7 @@ public class Digester extends DefaultHandler {
     public Object parse(File file) throws IOException, SAXException {
 
         configure();
-        getReader().parse(new InputSource(new FileReader(file)));
+        getXMLReader().parse(new InputSource(new FileReader(file)));
         return (root);
 
     }
@@ -1262,7 +1278,7 @@ public class Digester extends DefaultHandler {
     public Object parse(InputSource input) throws IOException, SAXException {
 
         configure();
-        getReader().parse(input);
+        getXMLReader().parse(input);
         return (root);
 
     }
@@ -1280,7 +1296,7 @@ public class Digester extends DefaultHandler {
     public Object parse(InputStream input) throws IOException, SAXException {
 
         configure();
-        getReader().parse(new InputSource(input));
+        getXMLReader().parse(new InputSource(input));
         return (root);
 
     }
@@ -1298,7 +1314,7 @@ public class Digester extends DefaultHandler {
     public Object parse(Reader reader) throws IOException, SAXException {
 
         configure();
-        getReader().parse(new InputSource(reader));
+        getXMLReader().parse(new InputSource(reader));
         return (root);
 
     }
@@ -1316,7 +1332,7 @@ public class Digester extends DefaultHandler {
     public Object parse(String uri) throws IOException, SAXException {
 
         configure();
-        getReader().parse(uri);
+        getXMLReader().parse(uri);
         return (root);
 
     }
