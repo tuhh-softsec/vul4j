@@ -1,3 +1,19 @@
+<!-- $Id: package.html,v 1.31 2004/09/09 20:38:21 rdonkin Exp $
+  
+ Copyright 2001-2004 The Apache Software Foundation.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+--> 
 <html>
 <head>
 <title>Package Documentation for org.apache.commons.digester Package</title>
@@ -23,31 +39,35 @@ XML documents.
 <a href="#doc.RegisteringDTDs">[Registering DTDs]</a>
 <a href="#doc.troubleshooting">[Troubleshooting]</a>
 <a href="#doc.FAQ">[FAQ]</a>
+<a href="#doc.extensions">[Extensions]</a>
 <a href="#doc.Limits">[Known Limitations]</a>
 </div>
 
 <a name="doc.Depend"></a>
 <h3>External Dependencies</h3>
 
+<p>The <em>Digester</em> component is dependent upon implementations of the following 
+standard libraries:</p>
 <ul>
-  <li>An XML parser conforming to
-    <a href="http://java.sun.com/products/xml">JAXP
-    </a>, version 1.1 or later (the first one to support SAX 2.0)
-  </li>
-  <li>
-    <a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-beanutils">
-Beanutils Package (Jakarta Commons)</a>, version 1.5 or later
-  </li>
-  <li>
-    <a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-collections">
-Collections Package (Jakarta Commons)</a>, version 2.1 or later
-  </li>
-  <li>
-    <a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-logging">
-Commons Logging Package (Jakarta Commons)</a>, version 1.0.2 or later
-  </li>
+<li><strong>XML Parser</strong> compatible with the JAXP/1.1 specification.
+    Examples compatible implementations include:
+    <ul>
+    <li><a href="http://java.sun.com/xml">JAXP/1.1 Reference Implementation</a></li>
+    <li><a href="http://xml.apache.org/xerces-j">Xerces</a> (Version 1.3.1 or later)</li>
+    </ul></li>
 </ul>
-
+<p>
+It is also dependent on a compatible set of 
+<a href='http://jakarta.apache.org/commons'>Jakarta Commons</a> library components:
+</p>
+<blockquote>
+    <table border="1" cellspacing="2" cellpadding="3">
+        <tr class="a"><th colspan="4">Compatible Dependency Sets</th></tr>   
+        <tr class="b"><td>Digester</td><td>+Logging 1.0.x</td><td>+BeanUtils 1.x</td><td>+Collections 2.x</td></tr>
+        <tr class="a"><td>Digester</td><td>+Logging 1.0.x</td><td>+BeanUtils 1.x</td><td>+Collections 3.x</td></tr>
+        <tr class="b"><td>Digester</td><td>+Logging 1.0.x</td><td>+BeanUtils 1.7</td><td>-</td></tr>
+    </table>
+</blockquote>
 <a name="doc.Intro"></a>
 <h3>Introduction</h3>
 
@@ -1056,7 +1076,7 @@ different channels.
 <p>
 In this case, it is recommended that named stacks are used. In addition to the
 two basic stacks, <code>Digester</code> allows rules to use an unlimited number
-of other stacks referred two by an identifying string (the name). (That's where
+of other stacks referred to by an identifying string (the name). (That's where
 the term <em>named stack</em> comes from.) These stacks are 
 accessed through calls to:
 </p>
@@ -1071,7 +1091,7 @@ accessed through calls to:
 <p>
 <strong>Note:</strong> all stack names beginning with <code>org.apache.commons.digester</code>
 are reserved for future use by the <code>Digester</code> component. It is also recommended
-that users choose stack names perfixed by the name of their own domain to avoid conflicts
+that users choose stack names prefixed by the name of their own domain to avoid conflicts
 with other <code>Rule</code> implementations.
 </p>
 <a name="doc.RegisteringDTDs"></a>
@@ -1255,6 +1275,29 @@ common-dev mailing list</a>
 </p>
 </li>
 </ul>
+<a name="doc.extensions"></a>
+<h3>Extensions</h3>
+<p>
+Three extension packages are included within the Digester distribution.
+These provide extra functionality extending the core Digester concepts.
+Detailed descriptions are contained within their own package documentation.
+</p>
+<ul>
+    <li>
+<a href='plugins/package-summary.html'>plugins</a> provides a framework for the easy
+dynamic addition of rules during a Digestion. Rules can trigger the dynamic addition 
+of other rules in an intuitive fashion.
+    </li>
+    <li>
+<a href='substitution/package-summary.html'>substitution</a> provides for 
+manipulation of attributes and element body text before it is processed by the rules.
+    </li>
+    <li>
+<a href='xmlrules/package-summary.html'>xmlrules</a> package contains a
+system allowing digester rule configurations to be specifed through an xml file.
+    </li>
+</ul>
+
 <a name="doc.Limits"></a>
 <h3>Known Limitations</h3>
 <h4>Accessing Public Methods In A Default Access Superclass</h4>

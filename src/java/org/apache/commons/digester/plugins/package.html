@@ -1,3 +1,19 @@
+<!-- $Id: package.html,v 1.6 2004/09/09 20:38:21 rdonkin Exp $
+  
+ Copyright 2001-2004 The Apache Software Foundation.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+--> 
 <html>
 <head>
 <title>An overview of the Digester Plugins module.</title>
@@ -78,7 +94,7 @@ This may be done by several mechanisms, including:
 pattern)</code> on the class being "plugged in", or</li>
 <li> providing a separate "rule info" class, somewhat in the spirit of 
 "BeanInfo" classes for java beans, or</li>
-<li> providing an xmlrules file which defines the associated parsing rules./li>
+<li> providing an xmlrules file which defines the associated parsing rules.</li>
 </ul>
 If a plugin class has a no-parameter constructor, does not expect any subtags, 
 and is satisfied with mapping any attributes on the parent xml tag to 
@@ -92,8 +108,8 @@ instead of, or in addition to, classes distributed with the application.
 <h2> Plugin Declarations </h2>
 
 As well as the syntax shown above, where plugin classnames were defined
-as they were used, plugin classes can be pre-dedeclared (provided the application
-associates a PluginDeclarationRule with a tag for that purpose). Example:
+as they were used, plugin classes can be pre-declared (provided the application
+associates a <code>PluginDeclarationRule</code> with a tag for that purpose). Example:
 <p>
 The plugin class can be declared once:
 <pre>
@@ -104,12 +120,12 @@ and later referenced via the short "id" value:
   &lt;sometag plugin-id="widget" ... &gt;
 </pre>
 
-<h2> Possible Applications </h2>
+<h2> Suggested Applications </h2>
 
 Any application where user-specific operations may need to be performed
 that cannot be known in advance by the initial application developer may
-benefit from this module. Applications in the style of the apache projects 
-listed at the top of this page (log4j, cocoon, ant) are examples.
+benefit from this module. Applications in the style of the Apache projects 
+listed at the top of this page (Log4j, Cocoon, Ant) are examples.
 <p>
 Note also that plugged-in classes can themselves allow user-defined classes
 to be plugged in within their configuration. This allows a very simple
@@ -130,7 +146,7 @@ The user cannot replace the <i>name</i> of the tag used as the plugin-point;
 <code>&lt;statement plugin-id="if"&gt;</code> cannot become &lt;if&gt;.
 <p>
 An instance of "PluginRules" must be used as the Rules implementation
-for the digester (see example). However a PluginRules can use any other Rules
+for the Digester (see example). However a PluginRules can use any other Rules
 implementation as its rule-matching engine, so this is not a significant issue.
 Plugged-in classes may only use the default RulesBase matching for the rules
 they add dynamically.

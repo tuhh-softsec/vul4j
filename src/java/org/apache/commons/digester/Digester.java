@@ -1,4 +1,4 @@
-/* $Id: Digester.java,v 1.104 2004/06/08 08:26:10 skitching Exp $
+/* $Id: Digester.java,v 1.105 2004/09/09 20:38:21 rdonkin Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -37,6 +37,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.collections.ArrayStack;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;

@@ -1,4 +1,4 @@
-$Id: RELEASE-NOTES.txt,v 1.13 2004/05/01 20:49:56 craigmcc Exp $
+$Id: RELEASE-NOTES.txt,v 1.14 2004/09/09 20:38:19 rdonkin Exp $
 
 
                           Commons Digester Package
@@ -10,35 +10,54 @@ INTRODUCTION:
 ============
 
 This is mostly a feature release. A few minor bugs have been fixed (as listed
-below) but Digester 1.5 proved a very stable release.
+below) but Digester 1.5 proved to be a very stable release.
 
-BACKWARDS INCOMPATIBILITIES
-===========================
+IMPORTANT NOTES
+===============
 
-ArrayStack
-----------
-Previously, Digester required the collections library, simply for a single 
-class: ArrayStack. To avoid depending explicitly on the commons-collections 
-library, a copy of this class has been made within the digester library. All 
-places which once used the collections version now use the digester version. 
-Unfortunately, this will require all user classes which subclass the
-modified classes to be recompiled. The affected classes are:
-  CallParamRule (member bodyTextStack)
-  Digester (members bodyTexts, params and stack)
-  FactoryCreateRule
-  xmlrules.DigesterRuleParser
-
-RSS Example
+New License
 -----------
-Previously, Digester included example code for processing RSS (Really Simple
-Syndication) streams in the core commons-digester.jar distribution, with the
-code in package "org.apache.commons.digester.rss".  This code has been migrated
-to the new source directory "src/examples/rss", complete with a build.xml script
-that can recreate a new JAR file (commons-digester-rss.jar) containing this
-code.  The Java package name has not changed, so the only impact on applications
-actually using these classes will be the need to acquire the sources, build the
-new JAR file, and add it toyour classpath.
+This release is done under version 2.0 of the Apache License.
+Please see the LICENSE.txt and NOTICE.txt files in the distribution.
 
+RSS Support
+-----------
+The RSS package present in previous distributions of Digester was only ever 
+intended to be a "worked example", so the code has been moved to the
+"src/examples/api/rss" directory within the CVS repository, and is no
+longer part of the standard Digester binary distribution. However
+the same package structure has been preserved, so any users who were using the
+rss code in production should just have to compile the example code and
+include that additional jar in the classpath. These classes are still contained
+in the source distribution and so (for those for which such things matter)
+are still officially released (though no longer distributed in the binary).
+
+Examples Added
+--------------
+Several examples have been added to CVS at src/examples, for the enlightenment
+of new Digester users. They can be access either through CVS or by grabbing the
+source distribution.
+
+Author and Version javadoc tags removed
+---------------------------------------
+All @author tags were removed, as per Apache Foundation policy. A list of
+all the developers and contributors involved in Digester can still be
+found via the Digester website, or in the "project.xml" file in the base
+directory of the Digester CVS repository.
+
+All @version tags were removed as they were not considered to be useful.
+
+Dependencies
+------------
+The 1.6 Digester release supports greater choice for the user in terms of it's
+dependencies. By choosing the correct combination of dependencies, Digester
+can be used with either (incompatible) series of commons-collection releases
+or none at all.
+
+Compatible Dependency Sets:
+   Digester 1.6 + Logging 1.0.x + BeanUtils 1.x + Collections 2.x
+   Digester 1.6 + Logging 1.0.x + BeanUtils 1.x + Collections 3.x
+   Digester 1.6 + Logging 1.0.x + BeanUtils 1.7
 
 NEW FEATURES:
 =============
@@ -186,45 +205,12 @@ RuleSetBase allows patterns ending in '/'
 -----------------------------------------
 The subject of this one says it all.
 
-
-OTHER IMPORTANT NOTES
-======================
-
-New License
------------
-This release is done under version 2.0 of the Apache License.
-Please see the LICENSE.txt and NOTICE.txt files in the distribution.
-
-RSS Support
------------
-The RSS package present in previous distributions of Digester was only ever 
-intended to be a "worked example", so the code has been moved to the
-"src/examples/api/rss" directory within the CVS repository, and is no
-longer part of the standard Digester binary distribution. However
-the same package structure has been preserved, so any users who were using the
-rss code in production should just have to compile the example code and
-include that additional jar in the classpath.
-
-Examples Added
---------------
-Several examples have been added to CVS at src/examples, for the enlightenment
-of new Digester users.
-
-Author and Version javadoc tags removed
----------------------------------------
-All @author tags were removed, as per Apache Foundation policy. A list of
-all the developers and contributors involved in Digester can still be
-found via the Digester website, or in the "project.xml" file in the base
-directory of the Digester CVS repository.
-
-All @version tags were removed as they were not considered to be useful.
-
-
 Commons Collections dependency
 ==============================
 The commons-collections library has recently undergone a major release (3.0).
 Digester has been tested with both commons-collections 2.1 and 3.0 and
-there are no known issues with using either version of this library.
+there are no known issues with using either version of this library. See above
+for the list of compatible dependency sets.
 
 
 BUGS FROM PREVIOUS RELEASE

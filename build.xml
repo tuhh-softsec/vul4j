@@ -1,9 +1,25 @@
+<!--
+   Copyright 2001-2004 The Apache Software Foundation
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
 <project name="Digester" default="compile" basedir=".">
 
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.53 2004/05/01 20:42:59 craigmcc Exp $
+        $Id: build.xml,v 1.54 2004/09/09 20:38:19 rdonkin Exp $
 -->
 
 
@@ -55,7 +71,7 @@
   <property name="component.title"         value="Digester - XML to Java Object Configuration"/>
 
   <!-- The current version number of this component -->
-  <property name="component.version"       value="1.6-dev"/>
+  <property name="component.version"       value="1.6"/>
 
   <!-- The base directory for compilation targets -->
   <property name="build.home"              value="target"/>
@@ -91,6 +107,7 @@
     <pathelement location="${jaxp.jaxp.jar}"/>
     <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${commons-beanutils.jar}"/>
+    <pathelement location="${commons-collections.jar}"/>
     <pathelement location="${commons-logging.jar}"/>
     <pathelement location="${junit.jar}"/>
   </path>
@@ -218,7 +235,19 @@
                overview="src/java/overview.html"
                doctitle="&lt;h1&gt;${component.title} (Version ${component.version})&lt;/h1&gt;"
             windowtitle="${component.title} (Version ${component.version})"
-                 bottom="Copyright (c) 2001-2003 - Apache Software Foundation">
+                 bottom='Copyright (c) 2001-2004 - Apache Software Foundation &lt;!-- 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+                 --&gt;'>
       <link     offline="true" packagelistLoc="${commons-beanutils.api}"
                    href="http://jakarta.apache.org/commons/beanutils/api/"/>
       <link     offline="true" packagelistLoc="${commons-collections.api}"
@@ -237,6 +266,8 @@
               todir="${dist.home}"/>
     <mkdir      dir="${build.home}/classes/META-INF"/>
     <copy      file="RELEASE-NOTES.txt"
+              todir="${dist.home}"/>
+    <copy      file="NOTICE.txt"
               todir="${dist.home}"/>
     <jar    jarfile="${dist.home}/commons-${component.name}.jar"
             basedir="${build.home}/classes"

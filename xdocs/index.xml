@@ -60,6 +60,55 @@ the ViewCVS</a> web site, or can use CVS to download the files.
 
 
 <section name="Releases">
+    <subsection name='Digester 1.6 Release'>
+        <p>
+Digester 1.6 is an important release adding extra functionality 
+as well as fixes for bugs. It represents an important milestone in the evolution
+of the Digester 1 design codebase.
+        </p>
+        <p>
+Digester has a dependency on
+<a href='http://jakarta.apache.org/commons/collections'>Commons Collections</a>.
+This threatens to raise compatibility issues 
+now that two incompatible series of releases exist.
+Fortunately, this dependency is only upon a single mature class (ArrayStack) and the versions
+of this class to be found in different versions of the library are binary compatible. 
+Therefore a release from the 2.x series or from the 3.x series of commons collections
+will do equally well (even though these libraries are incompatible). The dependency can
+alternatively be satisfied by including the latest BeanUtils release (1.7) 
+(which includes the class). 
+        </p>
+        <p>
+The dependencies neccessary for Digester 1.6 can be summarized as follows:
+        </p>
+<table>
+<tr>
+<th colspan='4'>Compatible Dependency Sets</th>
+</tr>
+<tr>
+<td>Digester</td>
+<td>+Logging 1.0.x</td>
+<td>+BeanUtils 1.x</td>
+<td>+Collections 2.x</td>
+</tr>
+<tr>
+<td>Digester</td>
+<td>+Logging 1.0.x</td>
+<td>+BeanUtils 1.x</td>
+<td>+Collections 3.x</td>
+</tr>
+<tr>
+<td>Digester</td>
+<td>+Logging 1.0.x</td>
+<td>+BeanUtils 1.7</td>
+<td>-</td>
+</tr>
+</table>
+        <p>
+Digester 1.6.0 release is currently in preparation.
+        </p>
+    </subsection>
+    <subsection name='Older Releases'>
  <ul>
   <li>Version 1.5 (from mirror) - 27 Apr 2003
    <a href="http://jakarta.apache.org/site/binindex.cgi">binary</a>
@@ -76,6 +125,7 @@ the ViewCVS</a> web site, or can use CVS to download the files.
   <li><a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-digester/v1.1.1/">Version 1.1.1</a></li>
   <li><a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-digester/v1.0/">Version 1.0</a></li>
  </ul>
+    </subsection>
 </section>
 
 <section name="Resources">
