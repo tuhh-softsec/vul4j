@@ -1,0 +1,150 @@
+Changelog for "Apache xml-security" <http://xml.apache.org/security/>
+
+
+##############################################################################
+# New in v1.0.3                                                   24. May 2002
+##############################################################################
+
+IMPORTANT:
+
+ - The different classes do not call Init.init() any longer. This must be done 
+   by YOU in your application. If you miss that, you'll get many 
+   AlgorithmNotRegistered exceptions...
+
+--------------------------------
+
+Summary:
+ 
+ - The software is faster. Especially canonicalization is between 
+   factor 5--80 faster than the old one.
+ 
+ - Some deprecated methods in the Canonicalizer are deleted.
+ 
+ - We support Exclusive Canonicalization
+ 
+ - We support the XPath Filter version 2.0 Draft.
+
+--------------------------------
+
+Optimizations and speed-up
+
+ - canonicalization
+   - inclusive c14n is now faster (factor between 5 and 80)
+ - transforms
+   - enveloped-signature is now faster (no XPath ops any more)
+   - base64 is now faster (no XPath ops any more)
+   - c14n is now faster (due to faster c14n algo)
+
+--------------------------------
+
+Signature package:
+
+ - The XMLSignatureInput which is used for passing node sets and octet 
+   streams into transforms and which is also the result of transforms
+   uses a java.util.Set now instead of a NodeList for the internal
+   representation of xpath node sets. This allows easier queries in the
+   form: Is node N part of the node set. 
+   
+   The implication is that you can also pass a Set which contains the nodes
+   to be canonicalized to the Canonicalizers using
+   public byte[] canonicalizeXPathNodeSet(Set xpathNodeSet)
+
+--------------------------------
+
+Canonicalizer:
+
+ - A bug (well, my understanding of c14n) is corrected regarding the
+   canonicalization of node sets. That bug related to the xml:* 
+   attributes. See xmldsig mailing list archive @ w3.org for details.
+
+ - removed are the methods
+
+   - public byte[] canonicalize(Node node)
+   - public byte[] canonicalizeDocument(Document doc)
+   - public byte[] canonicalizeSingleNode(Node rootNode)
+
+     replaced by public byte[] canonicalizeSubtree(Node node)
+
+   - public byte[] canonicalize(NodeList xpathNodeSet)
+
+     replaced by public byte[] canonicalizeXPathNodeSet(NodeList xpathNodeSet)
+   
+   - public void setXPath(Object xpath)
+   - public Object getXPath()
+   - public String getXPathString()
+   - public void setXPathNodeSet(NodeList nodeList)
+   
+     These are no longer in use. If you want to c14nize an xpath 
+     node set, select it using CachedXPathAPI and then apply 
+     canonicalizeXPathNodeSet to the node set. 
+   
+   - public void setRemoveNSAttrs(boolean remove)
+   - public boolean getRemoveNSAttrs() 
+   
+     The c14nizers do not add any attributes (namespaces or xml:*)
+     to the document, so these method make no sense.
+     
+ - The Canonicalizer now supports "Exclusive XML Canonicalization 
+   Version 1.0" <http://www.w3.org/Signature/Drafts/xml-exc-c14n>, Rev 1.58.
+   
+   For that reason, the c14n methods allow an additional String parameter 
+   for passing the inclusive namespaces.
+   
+   public byte[] canonicalizeSubtree(Node node, 
+                                     String inclusiveNamespaces)
+   public byte[] canonicalizeXPathNodeSet(NodeList xpathNodeSet, 
+                                          String inclusiveNamespaces)
+   
+   Such a string looks e.g. like this 
+   
+     String inclusiveNamespaces = "ds xenc ex #default";
+     
+   For more on exclusive c14n, see the spec. If you pass this parameter to the
+   regular (inclusive) c14nizer, you'll get a 
+   CanonicalizationException("c14n.Canonicalizer.UnsupportedOperation")
+   
+--------------------------------
+
+Transforms:
+   
+ - The exclusive c14n is also supported by the transform framework. 
+   The parameter for the inclusive namespaces is the class
+   org.apache.xml.security.transforms.params.InclusiveNamespaces
+   
+   If you want to make a Transform like this, do that:
+   
+   Document doc = ...;
+   Transforms transforms = new Transforms(doc);
+   InclusiveNamespaces incNS = new InclusiveNamespaces(doc, "ns2");
+   transforms.addTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS,
+                           incNS.getElement());
+                           
+ - The XPathContainer for the XPath transform is now moved from the
+   org.apache.xml.security.c14n.helper package to 
+   org.apache.xml.security.transforms.params.XPathContainer
+
+ - The enveloped-signature transform is faster now. We don't do costly
+   XPath operations but 'simple' DOM ops.
+
+ - Base64 is faster (no XPath ops).
+
+ - The TransformXPath2Filter is now supported by the package. It can be used by
+   using the identifier Transforms.TRANSFORM_XPATH2FILTER in conjuction with the 
+   XPath2FilterContainer for passing parameters. To know what xfilter2 is, see
+   http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/ :
+
+   Document doc = ...;
+   Transforms transforms = new Transforms(doc);
+   XPath2FilterContainer x2c = 
+         // intersect
+         XPath2FilterContainer.newInstanceIntersect(doc, "//a");
+         // subtract
+         XPath2FilterContainer.newInstanceSubtract(doc, "//a");
+         // union
+         XPath2FilterContainer.newInstanceUnion(doc, "//a");
+   
+   transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                           x2c.getElement());
+   
+--------------------------------
+  
