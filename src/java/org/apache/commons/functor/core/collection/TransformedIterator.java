@@ -20,7 +20,7 @@ import java.util.Iterator;
 import org.apache.commons.functor.UnaryFunction;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class TransformedIterator implements Iterator {

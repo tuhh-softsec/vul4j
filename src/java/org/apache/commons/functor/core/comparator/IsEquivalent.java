@@ -31,7 +31,7 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * 
  * @see org.apache.commons.functor.core.IsEqual
  * 
- * @version $Revision: 1.6 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  * 
  */

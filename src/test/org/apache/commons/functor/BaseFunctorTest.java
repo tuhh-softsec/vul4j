@@ -24,7 +24,7 @@ import java.io.Serializable;
 import junit.framework.TestCase;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2004/02/28 03:35:26 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public abstract class BaseFunctorTest extends TestCase {

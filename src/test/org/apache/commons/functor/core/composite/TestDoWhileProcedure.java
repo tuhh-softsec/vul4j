@@ -30,7 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:28 $
+ * @version $Revision$ $Date$
  * @author Herve Quiroz
  */
 public class TestDoWhileProcedure extends BaseFunctorTest {

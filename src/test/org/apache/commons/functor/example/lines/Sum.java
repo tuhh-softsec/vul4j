@@ -18,7 +18,7 @@ package org.apache.commons.functor.example.lines;
 import org.apache.commons.functor.BinaryFunction;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:29 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class Sum implements BinaryFunction {

@@ -24,7 +24,7 @@ import org.apache.commons.functor.core.Constant;
 import org.apache.commons.functor.core.Identity;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2004/02/28 03:35:26 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestBoundPredicate extends BaseFunctorTest {

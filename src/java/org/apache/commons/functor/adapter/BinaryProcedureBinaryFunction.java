@@ -34,7 +34,7 @@ import org.apache.commons.functor.BinaryProcedure;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/28 03:35:23 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class BinaryProcedureBinaryFunction implements BinaryFunction, Serializable {

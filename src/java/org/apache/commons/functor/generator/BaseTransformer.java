@@ -18,7 +18,7 @@ package org.apache.commons.functor.generator;
 
 /**
  * @since 1.0
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:26 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  * @deprecated To be removed.
  */

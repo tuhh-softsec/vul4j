@@ -24,7 +24,7 @@ import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:27 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestNoOp extends BaseFunctorTest {

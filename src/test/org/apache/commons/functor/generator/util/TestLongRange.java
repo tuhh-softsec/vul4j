@@ -25,7 +25,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2004/02/28 03:35:30 $
+ * @version $Revision$ $Date$
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */

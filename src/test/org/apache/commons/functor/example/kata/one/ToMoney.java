@@ -19,7 +19,7 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:29 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class ToMoney implements UnaryFunction {

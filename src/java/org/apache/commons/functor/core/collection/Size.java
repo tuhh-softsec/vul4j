@@ -24,7 +24,7 @@ import org.apache.commons.functor.UnaryFunction;
 /**
  * Returns the size of the specified Collection, or the length
  * of the specified array or String.
- * @version $Revision: 1.4 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class Size implements UnaryFunction, Serializable {

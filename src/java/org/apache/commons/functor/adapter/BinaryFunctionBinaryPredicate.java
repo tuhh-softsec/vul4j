@@ -33,7 +33,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:23 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Serializable {

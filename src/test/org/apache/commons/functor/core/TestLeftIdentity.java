@@ -23,7 +23,7 @@ import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2004/02/28 03:35:27 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestLeftIdentity extends BaseFunctorTest {

@@ -24,7 +24,7 @@ import org.apache.commons.functor.core.NoOp;
 import org.apache.commons.functor.core.RightIdentity;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2004/02/28 03:35:26 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestLeftBoundProcedure extends BaseFunctorTest {

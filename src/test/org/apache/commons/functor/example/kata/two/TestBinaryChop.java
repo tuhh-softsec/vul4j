@@ -68,7 +68,7 @@ import org.apache.commons.functor.generator.util.IntegerRange;
  * See http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.9 $ $Date: 2004/02/28 03:35:29 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestBinaryChop extends TestCase {

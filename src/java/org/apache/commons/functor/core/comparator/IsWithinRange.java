@@ -24,7 +24,7 @@ import org.apache.commons.functor.UnaryPredicate;
  * within a range. The range is defined in the constructor.
  *
  * @since 1.0
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author  Jason Horman (jason@jhorman.org)
  */
 

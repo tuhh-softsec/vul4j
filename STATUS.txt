@@ -1,5 +1,5 @@
 Commons Functor Status
-$Revision: 1.1 $ $Date$
+$Revision$ $Date$
 http://jakarta.apache.org/commons/sandbox/functor/
 
 Summary:

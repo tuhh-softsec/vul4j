@@ -28,7 +28,7 @@ import org.apache.commons.functor.generator.Generator;
  * the constructor an ArrayList will be returned from the transform method.
  *
  * @since 1.0
- * @version $Revision: 1.5 $ $Date: 2004/02/28 03:35:26 $
+ * @version $Revision$ $Date$
  * @author Jason Horman (jason@jhorman.org)
  */
 

@@ -24,7 +24,7 @@ import org.apache.commons.functor.Predicate;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:27 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestOffset extends BaseFunctorTest {

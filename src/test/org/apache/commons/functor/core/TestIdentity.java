@@ -23,7 +23,7 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:27 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestIdentity extends BaseFunctorTest {

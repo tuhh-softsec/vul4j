@@ -24,7 +24,7 @@ import org.apache.commons.functor.BinaryFunction;
  * Adapts a {@link Comparator Comparator} to the
  * {@link BinaryFunction} interface.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class ComparatorFunction implements BinaryFunction, Serializable {

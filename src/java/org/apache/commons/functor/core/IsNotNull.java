@@ -24,7 +24,7 @@ import org.apache.commons.functor.UnaryPredicate;
  * <code>false</code> iff its argument 
  * is <code>null</code>.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class IsNotNull implements UnaryPredicate, Serializable {

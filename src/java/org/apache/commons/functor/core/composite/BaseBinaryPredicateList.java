@@ -33,7 +33,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 abstract class BaseBinaryPredicateList implements BinaryPredicate, Serializable {

@@ -25,7 +25,7 @@ import java.io.Serializable;
  * Abstract base class for {@link WhileDoProcedure} and {@link DoWhileProcedure}
  * used to implement loop procedures.
  * <p>
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Herve Quiroz
  * @author Rodney Waldhoff
  */

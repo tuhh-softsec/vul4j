@@ -22,7 +22,7 @@ package org.apache.commons.functor;
  * {@link java.io.Serializable Serializable}.
  * </p>
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:22 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public interface BinaryFunction {

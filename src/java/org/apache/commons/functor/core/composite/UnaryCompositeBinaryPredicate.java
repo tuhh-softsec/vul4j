@@ -34,7 +34,7 @@ import org.apache.commons.functor.UnaryFunction;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:25 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class UnaryCompositeBinaryPredicate implements BinaryPredicate, Serializable {

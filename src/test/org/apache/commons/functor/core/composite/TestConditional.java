@@ -27,7 +27,7 @@ import org.apache.commons.functor.core.comparator.IsGreaterThan;
 import org.apache.commons.functor.core.comparator.Max;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:28 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestConditional extends TestCase {

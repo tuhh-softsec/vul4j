@@ -29,7 +29,7 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
  * When no (or a <code>null</code> <code>Comparator</code> is specified,
  * a {@link Comparable Comparable} <code>Comparator</code> is used.
  * 
- * @version $Revision: 1.6 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class IsLessThan implements BinaryPredicate, Serializable {

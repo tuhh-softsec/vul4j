@@ -22,7 +22,7 @@ import java.util.Comparator;
  * See Commons-Collections for a public version 
  * of this class.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 final class ComparableComparator implements Comparator, Serializable {

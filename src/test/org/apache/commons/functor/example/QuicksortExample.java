@@ -53,7 +53,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * <p> 
  * See the extensive in line comments for details.
  * 
- * @version $Revision: 1.11 $ $Date: 2004/02/28 03:35:29 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class QuicksortExample extends TestCase {

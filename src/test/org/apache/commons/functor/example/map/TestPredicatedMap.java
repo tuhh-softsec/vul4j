@@ -26,7 +26,7 @@ import org.apache.commons.functor.core.IsInstanceOf;
 
 
 /**
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:30 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestPredicatedMap extends TestCase {

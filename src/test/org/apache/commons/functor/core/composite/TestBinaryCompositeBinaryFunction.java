@@ -25,7 +25,7 @@ import org.apache.commons.functor.core.LeftIdentity;
 import org.apache.commons.functor.core.RightIdentity;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2004/02/28 03:35:28 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestBinaryCompositeBinaryFunction extends BaseFunctorTest {

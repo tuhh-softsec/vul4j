@@ -24,7 +24,7 @@ import junit.framework.TestSuite;
 
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:30 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestFixedSizeMap extends TestCase {
@@ -66,7 +66,8 @@ public class TestFixedSizeMap extends TestCase {
             fail("Expected IllegalArgumentException");
         } catch(IllegalArgumentException e) {
             // expected
-        }    }
+        }
+    }
 
     public void testCantPutNewPairViaPutAll() {
         Map map = new HashMap();

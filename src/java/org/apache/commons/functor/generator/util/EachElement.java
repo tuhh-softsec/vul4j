@@ -28,7 +28,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * Generator for each element of a collection.
  *
  * @since 1.0
- * @version $Revision: 1.4 $ $Date: 2004/02/28 03:35:26 $
+ * @version $Revision$ $Date$
  * @author  Jason Horman (jason@jhorman.org)
  */
 

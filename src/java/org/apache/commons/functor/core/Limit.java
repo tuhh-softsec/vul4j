@@ -25,7 +25,7 @@ import org.apache.commons.functor.UnaryPredicate;
  * the first <i>n</i> times it is invoked. 
  *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */

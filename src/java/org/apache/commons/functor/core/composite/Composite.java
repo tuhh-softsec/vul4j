@@ -23,7 +23,7 @@ import org.apache.commons.functor.UnaryProcedure;
 
 /**
  * Utility methods for creating composite functors.
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:25 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class Composite {

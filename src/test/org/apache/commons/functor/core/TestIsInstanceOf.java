@@ -22,7 +22,7 @@ import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2004/02/28 03:35:27 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestIsInstanceOf extends BaseFunctorTest {

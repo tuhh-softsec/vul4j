@@ -24,7 +24,7 @@ import org.apache.commons.functor.UnaryFunction;
  * Trailing, non-{@link Character#isDigit digit} characters
  * are ignored.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:29 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class ToInteger implements UnaryFunction {

@@ -23,7 +23,7 @@ import org.apache.commons.functor.UnaryFunction;
  * Evaluates the input String to extrace the nth whitespace
  * delmited column.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:29 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class NthColumn implements UnaryFunction {

@@ -30,7 +30,7 @@ import org.apache.commons.functor.generator.util.CollectionTransformer;
  * each subclass.
  *
  * @since 1.0
- * @version $Revision: 1.7 $ $Date: 2004/02/28 03:35:25 $
+ * @version $Revision$ $Date$
  * @author  Jason Horman (jason@jhorman.org)
  */
 

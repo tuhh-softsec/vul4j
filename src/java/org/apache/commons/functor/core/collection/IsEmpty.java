@@ -23,7 +23,7 @@ import java.util.Map;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2004/02/28 03:35:24 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public final class IsEmpty implements UnaryPredicate, Serializable {

@@ -16,7 +16,7 @@
 -->
 <!--
   Commons-Functor Ant Build File
-  $Id: build.xml,v 1.13 2004/02/28 17:12:07 scolebourne Exp $
+  $Id$
 -->
 
 <!-- ========== Initialize Properties ===================================== -->

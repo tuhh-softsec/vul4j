@@ -24,7 +24,7 @@ import java.util.Iterator;
  * Adapts an {@link Iterator} to the {@link Generator} interface.
  * 
  * @since 1.0
- * @version $Revision: 1.5 $ $Date: 2004/02/28 03:35:26 $
+ * @version $Revision$ $Date$
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */

@@ -38,7 +38,7 @@ import org.apache.commons.functor.example.lines.Lines;
  * 
  * DataMunger wires together various functors and exposes them
  * as static utility methhods. 
- * @version $Revision: 1.9 $ $Date: 2004/02/28 03:35:29 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class DataMunger {

@@ -24,7 +24,7 @@ import org.apache.commons.functor.generator.BaseGenerator;
  * A generator for the range <i>from</i> (inclusive) to <i>to</i> (exclusive).
  *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2004/02/28 03:35:26 $
+ * @version $Revision$ $Date$
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */

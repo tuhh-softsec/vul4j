@@ -37,7 +37,7 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 import org.apache.commons.functor.generator.util.IntegerRange;
 
 /**
- * @version $Revision: 1.12 $ $Date: 2004/02/28 03:35:26 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {

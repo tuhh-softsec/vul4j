@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2004/02/28 03:35:30 $
+ * @version $Revision$ $Date$
  * @author Rodney Waldhoff
  * @deprecated BaseTransformer is going to be removed.
  */
