@@ -104,7 +104,7 @@
  * Activate this #define if Xalan is not required (or desired)
  */
 
-#define XSEC_NO_XALAN
+/* #define XSEC_NO_XALAN */
 
 /*
  * Define presence of cryptographic providers
