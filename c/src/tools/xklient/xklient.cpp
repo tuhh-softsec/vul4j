@@ -70,8 +70,13 @@
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/framework/StdOutFormatTarget.hpp>
 #include <xercesc/util/XMLException.hpp>
+#include <xercesc/framework/LocalFileInputSource.hpp>
 #include <xercesc/util/XMLUri.hpp>
 #include <xercesc/util/Janitor.hpp>
+#include <xercesc/sax/ErrorHandler.hpp>
+#include <xercesc/sax/SAXParseException.hpp>
+#include <xercesc/sax/EntityResolver.hpp>
+#include <xercesc/sax/InputSource.hpp>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -256,6 +261,66 @@ XMLCh * BN2b64(BIGNUM * bn) {
 }
 
 #endif
+
+class xkmsErrorHandler : public ErrorHandler {
+
+public:
+	
+	xkmsErrorHandler() {}
+	~xkmsErrorHandler() {}
+
+	// Interface
+	virtual void 	warning (const SAXParseException &exc);
+	virtual void 	error (const SAXParseException &exc);
+	virtual void 	fatalError (const SAXParseException &exc);
+	virtual void 	resetErrors ();
+	
+private:
+
+	void outputError(const SAXParseException &exc);
+
+};
+
+void xkmsErrorHandler::outputError(const SAXParseException &exc) {
+
+	char * systemId = XMLString::transcode(exc.getSystemId());
+	char * msg = XMLString::transcode(exc.getMessage());
+	if (exc.getLineNumber() > 0 || exc.getColumnNumber() > 0) {
+		cerr << "File: " << systemId << " Line : " << exc.getLineNumber() << " Column : " 
+			<< exc.getColumnNumber() << ". " << msg << endl;
+	}
+	else {
+		cerr << msg << endl;
+	}
+	XMLString::release(&msg);
+	XMLString::release(&systemId);
+
+}
+
+void xkmsErrorHandler::warning(const SAXParseException &exc) {
+
+	cerr << "Parser warning - ";
+	outputError(exc);
+
+}
+
+void xkmsErrorHandler::error (const SAXParseException &exc) {
+
+	cerr << "Parser error - ";
+	outputError(exc);
+
+}
+
+void xkmsErrorHandler::fatalError (const SAXParseException &exc) {
+
+	cerr << "Parser fatal error - ";
+	outputError(exc);
+
+}
+
+void xkmsErrorHandler::resetErrors () {
+
+}
 
 
 // --------------------------------------------------------------------------------
@@ -846,8 +911,41 @@ void doUnverifiedKeyBindingDump(XKMSUnverifiedKeyBinding * ukb, int level) {
 
 }
 
+void doStatusReasonDump(XKMSStatus::StatusValue v, XKMSStatus *s, int level) {
+
+	char * sr = XMLString::transcode(XKMSConstants::s_tagStatusValueCodes[v]);
+	for (XKMSStatus::StatusReason i = XKMSStatus::Signature; i > XKMSStatus::ReasonUndefined; i = (XKMSStatus::StatusReason) (i-1)) {
+
+		if (s->getStatusReason(v, i)) {
+			levelSet(level);
+			char * rc = XMLString::transcode(XKMSConstants::s_tagStatusReasonCodes[i]);
+			cout << sr << "Reason = " << rc << endl;
+			XMLString::release(&rc);
+		}
+	}
+	XMLString::release(&sr);
+
+}
+
 void doKeyBindingDump(XKMSKeyBinding * kb, int level) {
 
+	/* Dump the status */
+
+	XKMSStatus * s = kb->getStatus();
+	if (s == NULL)
+		return;
+
+	char * sr = XMLString::transcode(XKMSConstants::s_tagStatusValueCodes[s->getStatusValue()]);
+	levelSet(level);
+	cout << "Status = " << sr << endl;
+	XMLString::release(&sr);
+
+	/* Dump the status reasons */
+	doStatusReasonDump(XKMSStatus::Valid, s, level+1);
+	doStatusReasonDump(XKMSStatus::Invalid, s, level+1);
+	doStatusReasonDump(XKMSStatus::Indeterminate, s, level+1);
+
+	/* Now the actual key */
 	doKeyBindingAbstractDump((XKMSKeyBindingAbstractType *) kb, level);
 
 }
@@ -1233,10 +1331,37 @@ int doRequest(int argc, char ** argv, int paramCount) {
 // --------------------------------------------------------------------------------
 
 
+#if 0
+class XMLSchemaDTDResolver : public EntityResolver { 
+
+public: 
+
+	XMLSchemaDTDResolver() {}
+	~XMLSchemaDTDResolver() {}
+	
+	InputSource * resolveEntity (const XMLCh* const publicId, const XMLCh* const systemId);
+	
+};
+
+InputSource * XMLSchemaDTDResolver::resolveEntity (const XMLCh* const publicId, 
+												   const XMLCh* const systemId) { 
+	
+
+	
+	if (strEquals(systemId, "http://www.w3.org/2001/XMLSchema")) { 	
+		return new LocalFileInputSource(MAKE_UNICODE_STRING("C:\\prog\\SRC\\xml-security\\c\\Build\\Win32\\VC6\\Debug\\XMLSchema.dtd")); 
+	} 
+	else { 
+		return NULL; 
+	}
+
+}
+#endif
 void printMsgDumpUsage(void) {
 
 	cerr << "\nUsage msgdump [options] <filename>\n";
-	cerr << "   --help/-h    : print this screen and exit\n\n";
+	cerr << "   --help/-h      : print this screen and exit\n";
+	cerr << "   --validate/-v  : validate the input messages\n\n";
     cerr << "   filename = name of file containing XKMS msg to dump\n\n";
 
 }
@@ -1244,10 +1369,31 @@ void printMsgDumpUsage(void) {
 int doMsgDump(int argc, char ** argv, int paramCount) {
 
 	char * inputFile = NULL;
+	bool doValidate = false;
 
-	if (paramCount != (argc - 1) || 
+	if (paramCount >= argc || 
 		(stricmp(argv[paramCount], "--help") == 0) ||
-		(stricmp(argv[paramCount], "-h") ==0)) {
+		(stricmp(argv[paramCount], "-h") == 0)) {
+		printMsgDumpUsage();
+		return -1;
+	}
+
+	while (paramCount < argc-1) {
+		if ((stricmp(argv[paramCount], "--validate") == 0) ||
+			(stricmp(argv[paramCount], "-v") == 0)) {
+
+			doValidate = true;
+			paramCount++;
+
+		}
+		else {
+
+			printMsgDumpUsage();
+			return -1;
+		}
+	}
+
+	if (paramCount >= argc) {
 		printMsgDumpUsage();
 		return -1;
 	}
@@ -1265,7 +1411,22 @@ int doMsgDump(int argc, char ** argv, int paramCount) {
 	parser->setDoNamespaces(true);
 	parser->setCreateEntityReferenceNodes(true);
 
-	// Now parse out file
+	// Error handling
+	xkmsErrorHandler xeh;
+	parser->setErrorHandler(&xeh);
+
+#if 0
+	// Local load of XMLSchema.dtd
+	XMLSchemaDTDResolver sdr;
+	parser->setEntityResolver(&sdr);
+#endif
+
+	// Schema handling
+	if (doValidate) {
+		parser->setDoSchema(true);
+		parser->setDoValidation(true);
+		parser->setExternalSchemaLocation("http://www.w3.org/2002/03/xkms# http://www.w3.org/TR/xkms2/Schemas/xkms.xsd");
+	}
 
 	bool errorsOccured = false;
 	int errorCount = 0;

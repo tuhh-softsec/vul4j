@@ -30,6 +30,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/xkms/XKMSResultType.hpp>
+#include <xsec/xkms/XKMSStatus.hpp>
 
 class XKMSKeyBinding;
 class XKMSUnverifiedKeyBinding;
@@ -116,11 +117,13 @@ public:
 	 * The item is initially empty of KeyInfo elements - these must be added
 	 * by the caller.
 	 *
+	 * @param status The status (Valid, Invalid or Indeterminate) of this
+	 * key
 	 * @returns the newly created KeyBinding object (already inserted
 	 * in the ValidateResult
 	 */
 
-	virtual XKMSKeyBinding * appendKeyBindingItem(void ) = 0;
+	virtual XKMSKeyBinding * appendKeyBindingItem(XKMSStatus::StatusValue status) = 0;
 
 	//@}
 

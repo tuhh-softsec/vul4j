@@ -55,6 +55,8 @@ public:
 	static const XMLCh s_tagExchange[];
 	static const XMLCh s_tagId[];
 	static const XMLCh s_tagIdentifier[];
+	static const XMLCh s_tagIndeterminateReason[];
+	static const XMLCh s_tagInvalidReason[];
 	static const XMLCh s_tagKeyBinding[];
 	static const XMLCh s_tagKeyInfo[];
 	static const XMLCh s_tagKeyUsage[];
@@ -70,15 +72,20 @@ public:
 	static const XMLCh s_tagResultMinor[];
 	static const XMLCh s_tagService[];
 	static const XMLCh s_tagSignature[];
+	static const XMLCh s_tagStatus[];
+	static const XMLCh s_tagStatusValue[];
 	static const XMLCh s_tagUnverifiedKeyBinding[];
 	static const XMLCh s_tagUseKeyWith[];
 	static const XMLCh s_tagValidateRequest[];
 	static const XMLCh s_tagValidateResult[];
+	static const XMLCh s_tagValidReason[];
 
 	// ResultMajor codes
 
 	static const XMLCh s_tagResultMajorCodes[][16];
 	static const XMLCh s_tagResultMinorCodes[][20];
+	static const XMLCh s_tagStatusValueCodes[][15];
+	static const XMLCh s_tagStatusReasonCodes[][17];
 
 	XKMSConstants();
 

@@ -30,8 +30,11 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/xkms/XKMSKeyBinding.hpp>
+#include <xsec/xkms/XKMSStatus.hpp>
 
 #include "XKMSKeyBindingAbstractTypeImpl.hpp"
+
+class XKMSStatusImpl;
 
 class XKMSKeyBindingImpl : public XKMSKeyBinding, public XKMSKeyBindingAbstractTypeImpl {
 
@@ -53,12 +56,17 @@ public:
 
 	// Create
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *
-		createBlankKeyBinding(void);
+		createBlankKeyBinding(XKMSStatus::StatusValue status);
+
+	// Interface
+	virtual XKMSStatus * getStatus(void) const;
 
 	// Import methods from XKMSKeyBindingAbstractType
 	XKMS_KEYBINDINGABSTRACTYPE_IMPL_METHODS
 
 private:
+
+	XKMSStatusImpl		* mp_status;
 
 	// Unimplemented
 	XKMSKeyBindingImpl(void);

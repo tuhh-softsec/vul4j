@@ -66,7 +66,7 @@ public:
 	// Interface methods
 	virtual int getKeyBindingSize(void) const;
 	virtual XKMSKeyBinding * getKeyBindingItem(int item) const;
-	virtual XKMSKeyBinding * appendKeyBindingItem(void);
+	virtual XKMSKeyBinding * appendKeyBindingItem(XKMSStatus::StatusValue status);
 
 
 	/* Implemented from MessageAbstractType */

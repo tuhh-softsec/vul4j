@@ -59,6 +59,7 @@
    <!-- /KeyBinding -->\endverbatim
  */
 
+class XKMSStatus;
 
 class XKMSKeyBinding : public XKMSKeyBindingAbstractType {
 
@@ -73,6 +74,24 @@ public:
 
 	virtual ~XKMSKeyBinding() {};
 
+	//@}
+
+	/** @name Status handling */
+	//@{
+
+	/**
+	 * \brief Obtain the status element for this KeyBinding
+	 *
+	 * The \<Status\> element is used to describe to the caller the
+	 * validity of they key being described.  This call is used to
+	 * obtain the status element
+	 *
+	 * @return A pointer to the XKMSStatus element
+	 */
+
+	virtual XKMSStatus * getStatus(void) const = 0;
+
+	//@}
 
 private:
 

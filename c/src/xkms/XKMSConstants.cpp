@@ -105,6 +105,48 @@ const XMLCh XKMSConstants::s_tagIdentifier[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagInvalidReason[] = {
+
+	chLatin_I,
+	chLatin_n,
+	chLatin_v,
+	chLatin_a,
+	chLatin_l,
+	chLatin_i,
+	chLatin_d,
+	chLatin_R,
+	chLatin_e,
+	chLatin_a,
+	chLatin_s,
+	chLatin_o,
+	chLatin_n,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagIndeterminateReason[] = {
+
+	chLatin_I,
+	chLatin_n,
+	chLatin_d,
+	chLatin_e,
+	chLatin_t,
+	chLatin_e,
+	chLatin_r,
+	chLatin_m,
+	chLatin_i,
+	chLatin_n,
+	chLatin_a,
+	chLatin_t,
+	chLatin_e,
+	chLatin_R,
+	chLatin_e,
+	chLatin_a,
+	chLatin_s,
+	chLatin_o,
+	chLatin_n,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagKeyBinding[] = {
 
 	chLatin_K,
@@ -322,6 +364,33 @@ const XMLCh XKMSConstants::s_tagSignature[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagStatus[] = {
+
+	chLatin_S,
+	chLatin_t,
+	chLatin_a,
+	chLatin_t,
+	chLatin_u,
+	chLatin_s,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagStatusValue[] = {
+
+	chLatin_S,
+	chLatin_t,
+	chLatin_a,
+	chLatin_t,
+	chLatin_u,
+	chLatin_s,
+	chLatin_V,
+	chLatin_a,
+	chLatin_l,
+	chLatin_u,
+	chLatin_e,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagUnverifiedKeyBinding[] = {
 
 	chLatin_U,
@@ -398,6 +467,22 @@ const XMLCh XKMSConstants::s_tagValidateResult[] = {
 	chLatin_u,
 	chLatin_l,
 	chLatin_t,
+	chNull
+};
+
+const XMLCh XKMSConstants::s_tagValidReason[] = {
+
+	chLatin_V,
+	chLatin_a,
+	chLatin_l,
+	chLatin_i,
+	chLatin_d,
+	chLatin_R,
+	chLatin_e,
+	chLatin_a,
+	chLatin_s,
+	chLatin_o,
+	chLatin_n,
 	chNull
 };
 
@@ -671,22 +756,147 @@ const XMLCh XKMSConstants::s_tagResultMinorCodes[][20] = {
 	},
 
 };
-	
-/*	
-	enum ResultMinor {
-		None,
-		NoMatch,
-		TooManyResponses,
-		Incomplete,
-		Failure,
-		Refused,
-		NoAuthentication,
-		MessageNotSupported,
-		UnknownResponseId,
-		RepresentRequired,
-		NotSynchronous
-*/
-// --------------------------------------------------------------------------------
+
+const XMLCh XKMSConstants::s_tagStatusValueCodes[][15] = {
+
+	{
+		chLatin_U,
+		chLatin_n,
+		chLatin_d,
+		chLatin_e,
+		chLatin_f,
+		chLatin_i,
+		chLatin_n,
+		chLatin_e,
+		chLatin_d,
+		chNull
+	},
+
+	{			
+		chLatin_V,
+		chLatin_a,
+		chLatin_l,
+		chLatin_i,
+		chLatin_d,
+		chNull
+	},
+
+	{
+		chLatin_I,
+		chLatin_n,
+		chLatin_v,
+		chLatin_a,
+		chLatin_l,
+		chLatin_i,
+		chLatin_d,
+		chNull
+	},
+
+	{
+		chLatin_I,
+		chLatin_n,
+		chLatin_d,
+		chLatin_e,
+		chLatin_t,
+		chLatin_e,
+		chLatin_r,
+		chLatin_m,
+		chLatin_i,
+		chLatin_n,
+		chLatin_a,
+		chLatin_t,
+		chLatin_e,
+		chNull
+	},
+
+};
+
+const XMLCh XKMSConstants::s_tagStatusReasonCodes[][17] = {
+
+	{
+		chLatin_U,
+		chLatin_n,
+		chLatin_d,
+		chLatin_e,
+		chLatin_f,
+		chLatin_i,
+		chLatin_n,
+		chLatin_e,
+		chLatin_d,
+		chNull
+	},
+
+	{
+		chLatin_I,
+		chLatin_s,
+		chLatin_s,
+		chLatin_u,
+		chLatin_e,
+		chLatin_r,
+		chLatin_T,
+		chLatin_r,
+		chLatin_u,
+		chLatin_s,
+		chLatin_t,
+		chNull
+	},
+
+	{			
+		chLatin_R,
+		chLatin_e,
+		chLatin_v,
+		chLatin_o,
+		chLatin_c,
+		chLatin_a,
+		chLatin_t,
+		chLatin_i,
+		chLatin_o,
+		chLatin_n,
+		chLatin_S,
+		chLatin_t,
+		chLatin_a,
+		chLatin_t,
+		chLatin_u,
+		chLatin_s,
+		chNull
+	},
+
+	{
+		chLatin_V,
+		chLatin_a,
+		chLatin_l,
+		chLatin_i,
+		chLatin_d,
+		chLatin_i,
+		chLatin_t,
+		chLatin_y,
+		chLatin_I,
+		chLatin_n,
+		chLatin_t,
+		chLatin_e,
+		chLatin_r,
+		chLatin_v,
+		chLatin_a,
+		chLatin_l,
+		chNull
+	},
+
+	{
+		chLatin_S,
+		chLatin_i,
+		chLatin_g,
+		chLatin_n,
+		chLatin_a,
+		chLatin_t,
+		chLatin_u,
+		chLatin_r,
+		chLatin_e,
+		chNull
+	},
+
+};
+
+	// --------------------------------------------------------------------------------
 //           Constant Strings Creation and Deletion
 // --------------------------------------------------------------------------------
 

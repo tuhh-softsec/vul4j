@@ -118,7 +118,8 @@ public:
 		MessageAbstractTypeError	= 53,
 		RequestAbstractTypeError	= 54,
 		ResultTypeError				= 55,
-		UnknownError				= 56		// Must be last!
+		StatusError 				= 56,
+		UnknownError				= 57		// Must be last!
 
 	};
 

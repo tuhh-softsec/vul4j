@@ -27,11 +27,13 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 
 #include <xercesc/dom/DOM.hpp>
 
 #include "XKMSKeyBindingImpl.hpp"
+#include "XKMSStatusImpl.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -69,16 +71,48 @@ void XKMSKeyBindingImpl::load(void) {
 
 	XKMSKeyBindingAbstractTypeImpl::load();
 
+	/* Find the status element */
+	DOMNodeList * nl = mp_keyBindingAbstractTypeElement->getElementsByTagNameNS(
+		XKMSConstants::s_unicodeStrURIXKMS,
+		XKMSConstants::s_tagStatus);
+
+	if (nl == NULL || nl->getLength() != 1) {
+		throw XSECException(XSECException::ExpectedXKMSChildNotFound,
+			"XKMSKeyBinding::load - Status value not found");
+	}
+
+	XSECnew(mp_status, XKMSStatusImpl(mp_env, (DOMElement*) nl->item(0)));
+	mp_status->load();
+
 }
 
 // --------------------------------------------------------------------------------
 //           Create
 // --------------------------------------------------------------------------------
 
-DOMElement * XKMSKeyBindingImpl::createBlankKeyBinding(void) {
+DOMElement * XKMSKeyBindingImpl::createBlankKeyBinding(XKMSStatus::StatusValue status) {
 
-	return XKMSKeyBindingAbstractTypeImpl::
+	DOMElement * ret = XKMSKeyBindingAbstractTypeImpl::
 				createBlankKeyBindingAbstractType(XKMSConstants::s_tagKeyBinding);
+
+	mp_env->doPrettyPrint(ret);
+
+	// Create the status element
+	XSECnew(mp_status, XKMSStatusImpl(mp_env));
+	ret->appendChild(mp_status->createBlankStatus(status));
+	mp_env->doPrettyPrint(ret);
+
+	return ret;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Status handling
+// --------------------------------------------------------------------------------
+
+XKMSStatus * XKMSKeyBindingImpl::getStatus(void) const {
+
+	return mp_status;
 
 }
 

@@ -87,6 +87,7 @@ const char * XSECExceptionStrings [] = {
 	"An error occurred processing a MessageAbstractType object",
 	"An error occurred processing a RequestAbstractType object",
 	"An error occurred processing a ResultType object",
+	"An error occurred processing a Status object",
 	"Unknown Error type",
 
 };

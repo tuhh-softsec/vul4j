@@ -159,7 +159,7 @@ XKMSKeyBinding * XKMSValidateResultImpl::getKeyBindingItem(int item) const {
 
 }
 
-XKMSKeyBinding * XKMSValidateResultImpl::appendKeyBindingItem(void) {
+XKMSKeyBinding * XKMSValidateResultImpl::appendKeyBindingItem(XKMSStatus::StatusValue status) {
 
 	XKMSKeyBindingImpl * u;
 
@@ -167,7 +167,7 @@ XKMSKeyBinding * XKMSValidateResultImpl::appendKeyBindingItem(void) {
 
 	m_keyBindingList.push_back(u);
 
-	DOMElement * e = u->createBlankKeyBinding();
+	DOMElement * e = u->createBlankKeyBinding(status);
 
 	// Append the element
 
