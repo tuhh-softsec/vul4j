@@ -25,7 +25,7 @@
       </p>
       <p>
 	You can get your local working copy of the
-        <link href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/xml-security">latest and
+        <link href="http://cvs.apache.org/viewcvs.cgi/xml-security">latest and
 	  greatest code</link> (which you find in the xml-security module in the CVS code
 	repository. Review the todo list, choose a task (or perhaps you have noticed
 	something that needs patching). Make the changes, do the testing, generate a
@@ -42,7 +42,7 @@
       </p>
       <ul>
         <li>
-	  Answering questions on the <code>users</code> mailing list - there
+	  Answering questions on the mailing list - there
           is often a problem of having too many questioners and not enough experts to
           respond to all the questions.
 	</li>
@@ -59,7 +59,7 @@
       <li>
 	  Specifying/analysing/designing new features - and beyond. (If you
 	  wish to get involved with this, please join the mailing list, install
-	  and try out Forrest and read some of the 
+	  and try out xml-security and read some of the 
 	  <link href="site:mail-lists">mail archives</link>. You should have a strong
           "fluency" in XML technologies especially XMLDSig and XML Encryption,
 	  Java or C++ and a basic understanding of the architecture of this
@@ -84,7 +84,7 @@
       </p>
       <p> 
 	Have a look at the <link href="site:java/installation">Java</link> or
-	<link href="site:c/installation">C++</link> installation pages to see
+	<link href="site:c/install">C++</link> installation pages to see
 	how to get a local copy of the source.
       </p>
     </section> <anchor id="ssh"/>
@@ -103,9 +103,6 @@
       <ul>
         <li><link href="http://cvsbook.red-bean.com/">The CVS Book</link></li>
 	<li><link href="http://www.cvshome.org/">www.cvshome.org</link></li>
-	<li><link href="https://sourceforge.net/cvs/?group_id=32701"></link> -
-	  See the bottom of the page for links to tips for UNIX and Windows. Even if you
-	  are on UNIX, the Windows page will also help.</li>
       </ul>
     </section> <anchor id="procedure"/>
     <section>
