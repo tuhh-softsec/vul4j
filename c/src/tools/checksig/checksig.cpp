@@ -187,6 +187,10 @@ void printUsage(void) {
 	cerr << "         Set an hmac key using the <string>\n\n";
 	cerr << "     --xsecresolver/-x\n";
 	cerr << "         Use the xml-security test XMLDSig URI resolver\n\n";
+#if defined (HAVE_OPENSSL)
+	cerr << "     --interop/-i\n";
+	cerr << "         Use the interop resolver for Baltimore interop examples\n\n";
+#endif
 #if defined(HAVE_WINCAPI)
 #	if defined (HAVE_OPENSSL)
 	cerr << "     --wincapi/-w\n";
@@ -211,7 +215,7 @@ int evaluate(int argc, char ** argv) {
 	bool					useXSECURIResolver = false;
 	bool                    useAnonymousResolver = false;
 	bool					useInteropResolver = false;
-#if defined(_WIN32)
+#if defined(_WIN32) && defined (HAVE_WINCAPI)
 	HCRYPTPROV				win32DSSCSP = 0;		// Crypto Providers
 	HCRYPTPROV				win32RSACSP = 0;		
 #endif
@@ -241,11 +245,13 @@ int evaluate(int argc, char ** argv) {
 			useXSECURIResolver = true;
 			paramCount++;
 		}
+#if defined (HAVE_OPENSSL)
 		else if (stricmp(argv[paramCount], "--interop") == 0 || stricmp(argv[paramCount], "-i") == 0) {
 			// Use the interop key resolver
 			useInteropResolver = true;
 			paramCount++;
 		}
+#endif
 		else if (stricmp(argv[paramCount], "--anonymousresolver") == 0 || stricmp(argv[paramCount], "-a") ==0) {
 			useAnonymousResolver = true;
 			paramCount++;
@@ -261,7 +267,7 @@ int evaluate(int argc, char ** argv) {
 					NULL,
 					NULL,
 					PROV_DSS,
-					0)) {
+					CRYPT_VERIFYCONTEXT)) {
 						cerr << "Error acquiring DSS Crypto Service Provider" << endl;
 						return 2;
 				}
@@ -270,7 +276,7 @@ int evaluate(int argc, char ** argv) {
 					NULL,
 					NULL,
 					PROV_RSA_FULL,
-					0)) {
+					CRYPT_VERIFYCONTEXT)) {
 						cerr << "Error acquiring RSA Crypto Service Provider" << endl;
 						return 2;
 				}
@@ -353,7 +359,7 @@ int evaluate(int argc, char ** argv) {
 			NULL,
 			NULL,
 			PROV_DSS,
-			0)) {
+			CRYPT_VERIFYCONTEXT)) {
 				cerr << "Error acquiring DSS Crypto Service Provider" << endl;
 				return 2;
 		}
@@ -362,7 +368,7 @@ int evaluate(int argc, char ** argv) {
 			NULL,
 			NULL,
 			PROV_RSA_FULL,
-			0)) {
+			CRYPT_VERIFYCONTEXT)) {
 				cerr << "Error acquiring RSA Crypto Service Provider" << endl;
 				return 2;
 		}
@@ -517,12 +523,14 @@ int evaluate(int argc, char ** argv) {
 			sig->setURIResolver(&theResolver);
 		}
 
+#if defined (HAVE_OPENSSL)
 		if (useInteropResolver == true) {
 
 			InteropResolver ires(&(uri.getUriText()[8]));
 			sig->setKeyInfoResolver(&ires);
 
 		}
+#endif
 
 	}
 
