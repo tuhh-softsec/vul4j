@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.12 2003/12/02 17:43:10 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestAll.java,v 1.13 2003/12/17 21:02:49 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.12 $ $Date: 2003/12/02 17:43:10 $
+ * @version $Revision: 1.13 $ $Date: 2003/12/17 21:02:49 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -77,15 +77,6 @@ public class TestAll extends TestCase {
         suite.addTest(TestIdentity.suite());
         suite.addTest(TestLeftIdentity.suite());
         suite.addTest(TestRightIdentity.suite());
-
-        suite.addTest(TestConstantFunction.suite());
-        suite.addTest(TestConstantPredicate.suite());
-        suite.addTest(TestIdentityFunction.suite());
-        suite.addTest(TestLeftIdentityFunction.suite());
-        suite.addTest(TestRightIdentityFunction.suite());
-        suite.addTest(TestIdentityPredicate.suite());
-        suite.addTest(TestLeftIdentityPredicate.suite());
-        suite.addTest(TestRightIdentityPredicate.suite());
 
         suite.addTest(TestIsInstanceOf.suite());
         suite.addTest(TestIsNull.suite());
