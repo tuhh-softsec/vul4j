@@ -64,9 +64,9 @@ import java.security.cert.Certificate;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
@@ -79,14 +79,10 @@ import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.*;
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
-import java.math.BigInteger;
-import org.bouncycastle.asn1.DEROutputStream;
-import org.bouncycastle.asn1.DERInputStream;
-import org.bouncycastle.asn1.DERConstructedSequence;
-import org.bouncycastle.asn1.DERInteger;
+import java.util.HashMap;
+import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.algorithms.implementations.*;
 
 
 /**
@@ -106,94 +102,135 @@ public class SignatureAlgorithm extends Algorithm {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(SignatureAlgorithm.class.getName());
 
-   /** Field algorithm */
-   private java.security.Signature _signatureAlgorithm = null;
+   /** Field _alreadyInitialized */
+   static boolean _alreadyInitialized = false;
 
-   /** Field algorithm */
-   private Mac _macAlgorithm = null;
+   /** All available algorithm classes are registered here */
+   static HashMap _algorithmHash = null;
+
+   /** Field _signatureAlgorithm */
+   protected SignatureAlgorithmSpi _signatureAlgorithm = null;
 
    /**
-    * Constructor for the brave who pass their own signature algorithms and the corresponding URI.
+    * Constructor SignatureAlgorithm
     *
     * @param doc
-    * @param signature
     * @param algorithmURI
+    * @throws XMLSignatureException
     */
-   private SignatureAlgorithm(Document doc, Signature signature,
-                              String algorithmURI) {
+   public SignatureAlgorithm(Document doc, String algorithmURI)
+           throws XMLSignatureException {
 
       super(doc, Constants._TAG_SIGNATUREMETHOD, algorithmURI);
 
-      this._signatureAlgorithm = signature;
+      try {
+         String implementingClass =
+            SignatureAlgorithm.getImplementingClass(algorithmURI);
+
+         cat.debug("Create URI \"" + algorithmURI + "\" class \""
+                   + implementingClass + "\"");
+
+         this._signatureAlgorithm =
+            (SignatureAlgorithmSpi) Class.forName(implementingClass)
+               .newInstance();
+      } catch (ClassNotFoundException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (IllegalAccessException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (InstantiationException ex) {
+         throw new XMLSignatureException("empty", ex);
+      }
    }
 
    /**
-    * SignatureAlgorithm constructor chooses the best match for
-    * the requested algorithm and constructs the full URI for it.
+    * Constructor SignatureAlgorithm
     *
     * @param doc
     * @param algorithmURI
-    * @return
+    * @param HMACOutputLength
     * @throws XMLSignatureException
     */
-   public static SignatureAlgorithm getInstance(
-           Document doc, String algorithmURI) throws XMLSignatureException {
+   public SignatureAlgorithm(
+           Document doc, String algorithmURI, int HMACOutputLength)
+              throws XMLSignatureException {
 
-      JCEMapper.ProviderIdClass algorithmID =
-         JCEMapper.translateURItoJCEID(algorithmURI);
-      Signature algorithm = null;
+      this(doc, algorithmURI);
+
+      this._signatureAlgorithm.engineSetHMACOutputLength(HMACOutputLength);
+      this._signatureAlgorithm
+         .engineAddContextToElement(this._constructionElement);
+   }
+
+   /**
+    * Constructor SignatureAlgorithm
+    *
+    * @param element
+    * @param BaseURI
+    * @throws XMLSecurityException
+    */
+   public SignatureAlgorithm(Element element, String BaseURI)
+           throws XMLSecurityException {
+
+      super(element, BaseURI);
+
+      XMLUtils.guaranteeThatElementInSignatureSpace(element,
+              Constants._TAG_SIGNATUREMETHOD);
+
+      String algorithmURI = this.getURI();
 
       try {
-         algorithm = Signature.getInstance(algorithmID.getAlgorithmID(),
-                                           algorithmID.getProviderId());
-      } catch (java.security.NoSuchAlgorithmException ex) {
-         Object[] exArgs = { algorithmID.getAlgorithmID(),
-                             ex.getLocalizedMessage() };
+         String implementingClass =
+            SignatureAlgorithm.getImplementingClass(algorithmURI);
 
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
-      } catch (java.security.NoSuchProviderException ex) {
-         Object[] exArgs = { algorithmID.getProviderId(),
-                             ex.getLocalizedMessage() };
+         cat.debug("Create URI \"" + algorithmURI + "\" class \""
+                   + implementingClass + "\"");
 
-         throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
+         this._signatureAlgorithm =
+            (SignatureAlgorithmSpi) Class.forName(implementingClass)
+               .newInstance();
+
+         this._signatureAlgorithm
+            .engineGetContextFromElement(this._constructionElement);
+      } catch (ClassNotFoundException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (IllegalAccessException ex) {
+         throw new XMLSignatureException("empty", ex);
+      } catch (InstantiationException ex) {
+         throw new XMLSignatureException("empty", ex);
       }
-
-      return new SignatureAlgorithm(doc, algorithm, algorithmURI);
    }
 
-   /**
-    * Returns the actual {@link java.security.Signature} algorithm object
-    *
-    * @return the actual {@link java.security.Signature} algorithm object
-    */
-   public java.security.Signature getAlgorithm() {
-      return this._signatureAlgorithm;
+   /*
+   public static final SignatureAlgorithm getInstance(
+           Document doc, String algorithmURI) throws XMLSignatureException {
+      cat.debug("Doc = " + doc);
+      cat.debug("algorithmURI = " + algorithmURI);
+      org.apache.xml.security.Init.init();
+      return new SignatureAlgorithm(doc, algorithmURI);
    }
+
+   public static final SignatureAlgorithm getInstance(
+           Document doc, String algorithmURI, int HMACOutputLength) throws XMLSignatureException {
+      org.apache.xml.security.Init.init();
+      return new SignatureAlgorithm(doc, algorithmURI, HMACOutputLength);
+   }
+
+   public static final SignatureAlgorithm getInstance(
+           Element element, String BaseURI) throws XMLSecurityException {
+      org.apache.xml.security.Init.init();
+      return new SignatureAlgorithm(element, BaseURI);
+   }
+   */
 
    /**
     * Proxy method for {@link java.security.Signature#sign}
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @return the result of the {@link java.security.Signature#sign} method
-    * @throws SignatureException
+    * @throws XMLSignatureException
     */
-   public byte[] sign() throws SignatureException {
-      return this._signatureAlgorithm.sign();
-   }
-
-   /**
-    * Proxy method for {@link java.security.Signature#sign}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param outbuf
-    * @param offset
-    * @param len
-    * @return the result of the {@link java.security.Signature#sign} method
-    * @throws java.security.SignatureException
-    */
-   public int sign(byte outbuf[], int offset, int len)
-           throws java.security.SignatureException {
-      return this._signatureAlgorithm.sign(outbuf, offset, len);
+   public byte[] sign() throws XMLSignatureException {
+      return this._signatureAlgorithm.engineSign();
    }
 
    /**
@@ -203,28 +240,16 @@ public class SignatureAlgorithm extends Algorithm {
     * @return the result of the {@link java.security.Signature#getAlgorithm} method
     */
    public String getJCEAlgorithmString() {
-      return this._signatureAlgorithm.getAlgorithm();
+      return this._signatureAlgorithm.engineGetJCEAlgorithmString();
    }
 
    /**
-    * Proxy method for {@link java.security.Signature#getProvider}
-    * which is executed on the internal {@link java.security.Signature} object.
+    * Method getJCEProviderName
     *
-    * @return the result of the {@link java.security.Signature#getProvider} method
+    * @return
     */
-   public java.security.Provider getJCEProvider() {
-      return this._signatureAlgorithm.getProvider();
-   }
-
-   /**
-    * Proxy method for {@link java.security.Signature#update}
-    * which is executed on the internal {@link java.security.Signature} object.
-    *
-    * @param input
-    * @throws SignatureException
-    */
-   public void update(byte[] input) throws SignatureException {
-      this._signatureAlgorithm.update(input);
+   public String getJCEProviderName() {
+      return this._signatureAlgorithm.engineGetJCEProviderName();
    }
 
    /**
@@ -232,10 +257,21 @@ public class SignatureAlgorithm extends Algorithm {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param input
-    * @throws SignatureException
+    * @throws XMLSignatureException
     */
-   public void update(byte input) throws SignatureException {
-      this._signatureAlgorithm.update(input);
+   public void update(byte[] input) throws XMLSignatureException {
+      this._signatureAlgorithm.engineUpdate(input);
+   }
+
+   /**
+    * Proxy method for {@link java.security.Signature#update}
+    * which is executed on the internal {@link java.security.Signature} object.
+    *
+    * @param input
+    * @throws XMLSignatureException
+    */
+   public void update(byte input) throws XMLSignatureException {
+      this._signatureAlgorithm.engineUpdate(input);
    }
 
    /**
@@ -245,11 +281,11 @@ public class SignatureAlgorithm extends Algorithm {
     * @param buf
     * @param offset
     * @param len
-    * @throws SignatureException
+    * @throws XMLSignatureException
     */
    public void update(byte buf[], int offset, int len)
-           throws SignatureException {
-      this._signatureAlgorithm.update(buf, offset, len);
+           throws XMLSignatureException {
+      this._signatureAlgorithm.engineUpdate(buf, offset, len);
    }
 
    /**
@@ -258,11 +294,11 @@ public class SignatureAlgorithm extends Algorithm {
     *
     * @param privateKey
     * @param secureRandom
-    * @throws InvalidKeyException
+    * @throws XMLSignatureException
     */
    public void initSign(PrivateKey privateKey, SecureRandom secureRandom)
-           throws InvalidKeyException {
-      this._signatureAlgorithm.initSign(privateKey, secureRandom);
+           throws XMLSignatureException {
+      this._signatureAlgorithm.engineInitSign(privateKey, secureRandom);
    }
 
    /**
@@ -270,10 +306,34 @@ public class SignatureAlgorithm extends Algorithm {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param privateKey
-    * @throws InvalidKeyException
+    * @throws XMLSignatureException
     */
-   public void initSign(PrivateKey privateKey) throws InvalidKeyException {
-      this._signatureAlgorithm.initSign(privateKey);
+   public void initSign(PrivateKey privateKey) throws XMLSignatureException {
+      this._signatureAlgorithm.engineInitSign(privateKey);
+   }
+
+   /**
+    * Method initSign
+    *
+    * @param secretKey
+    * @throws XMLSignatureException
+    */
+   public void initSign(Key secretKey) throws XMLSignatureException {
+      this._signatureAlgorithm.engineInitSign(secretKey);
+   }
+
+   /**
+    * Method initSign
+    *
+    * @param secretKey
+    * @param algorithmParameterSpec
+    * @throws XMLSignatureException
+    */
+   public void initSign(
+           Key secretKey, AlgorithmParameterSpec algorithmParameterSpec)
+              throws XMLSignatureException {
+      this._signatureAlgorithm.engineInitSign(secretKey,
+                                              algorithmParameterSpec);
    }
 
    /**
@@ -281,11 +341,11 @@ public class SignatureAlgorithm extends Algorithm {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param params
-    * @throws InvalidAlgorithmParameterException
+    * @throws XMLSignatureException
     */
    public void setParameter(AlgorithmParameterSpec params)
-           throws InvalidAlgorithmParameterException {
-      this._signatureAlgorithm.setParameter(params);
+           throws XMLSignatureException {
+      this._signatureAlgorithm.engineSetParameter(params);
    }
 
    /**
@@ -293,10 +353,20 @@ public class SignatureAlgorithm extends Algorithm {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param publickey
-    * @throws InvalidKeyException
+    * @throws XMLSignatureException
     */
-   public void initVerify(PublicKey publickey) throws InvalidKeyException {
-      this._signatureAlgorithm.initVerify(publickey);
+   public void initVerify(PublicKey publickey) throws XMLSignatureException {
+      this._signatureAlgorithm.engineInitVerify(publickey);
+   }
+
+   /**
+    * Method initVerify
+    *
+    * @param secretkey
+    * @throws XMLSignatureException
+    */
+   public void initVerify(Key secretkey) throws XMLSignatureException {
+      this._signatureAlgorithm.engineInitVerify(secretkey);
    }
 
    /**
@@ -305,63 +375,85 @@ public class SignatureAlgorithm extends Algorithm {
     *
     * @param signature
     * @return
-    * @throws SignatureException
+    * @throws XMLSignatureException
     */
-   public boolean verify(byte[] signature) throws SignatureException {
-      return this._signatureAlgorithm.verify(signature);
+   public boolean verify(byte[] signature) throws XMLSignatureException {
+      return this._signatureAlgorithm.engineVerify(signature);
    }
 
    /**
-    * Method convertXMLDSIGtoASN1
+    * Returns the URI representation of Transformation algorithm
     *
-    * @param xmldsigbytes
-    * @return
-    * @throws IOException
+    * @return the URI representation of Transformation algorithm
     */
-   public static byte[] convertXMLDSIGtoASN1(byte[] xmldsigbytes)
-           throws IOException {
-
-      byte rbytes[] = new byte[20];
-      byte sbytes[] = new byte[20];
-
-      System.arraycopy(xmldsigbytes, 0, rbytes, 0, 20);
-      System.arraycopy(xmldsigbytes, 20, sbytes, 0, 20);
-
-      BigInteger r = new BigInteger(rbytes);
-      BigInteger s = new BigInteger(sbytes);
-      ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-      DEROutputStream dOut = new DEROutputStream(bOut);
-      DERConstructedSequence seq = new DERConstructedSequence();
-
-      seq.addObject(new DERInteger(r));
-      seq.addObject(new DERInteger(s));
-      dOut.writeObject(seq);
-
-      return bOut.toByteArray();
+   public final String getURI() {
+      return this._constructionElement.getAttribute(Constants._ATT_ALGORITHM);
    }
 
    /**
-    * Method convertASN1toXMLDSIG
+    * Initalizes for this {@link Transform}
     *
-    * @param derbytes
-    * @return
-    * @throws IOException
     */
-   public static byte[] convertASN1toXMLDSIG(byte derbytes[])
-           throws IOException {
+   public static void providerInit() {
 
-      ByteArrayInputStream bIn = new ByteArrayInputStream(derbytes);
-      DERInputStream dIn = new DERInputStream(bIn);
-      DERConstructedSequence seq = (DERConstructedSequence) dIn.readObject();
-      BigInteger r = ((DERInteger) seq.getObjectAt(0)).getValue();
-      BigInteger s = ((DERInteger) seq.getObjectAt(1)).getValue();
-      byte rbytes[] = r.toByteArray();
-      byte sbytes[] = s.toByteArray();
-      byte result[] = new byte[40];
+      if (SignatureAlgorithm.cat == null) {
+         SignatureAlgorithm.cat =
+            org.apache.log4j.Category
+               .getInstance(SignatureAlgorithm.class.getName());
+      }
 
-      System.arraycopy(rbytes, 0, result, 0, 20);
-      System.arraycopy(sbytes, 0, result, 20, 20);
+      cat.debug("Init() called");
 
-      return result;
+      if (!SignatureAlgorithm._alreadyInitialized) {
+         SignatureAlgorithm._algorithmHash = new HashMap(10);
+         SignatureAlgorithm._alreadyInitialized = true;
+      }
+   }
+
+   /**
+    * Registers implementing class of the transfrom algorithm with algorithmURI
+    *
+    * @param algorithmURI algorithmURI URI representation of <code>transfrom algorithm</code> will be specified as parameter of {@link #getInstance}, when generate. </br>
+    * @param implementingClass <code>implementingClass</code> the implementing class of {@link TransformSpi}
+    * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI is already registered
+    */
+   public static void register(String algorithmURI, String implementingClass)
+           throws AlgorithmAlreadyRegisteredException {
+
+      {
+         cat.debug("Try to register " + algorithmURI + " " + implementingClass);
+
+         // are we already registered?
+         String registeredClass =
+            SignatureAlgorithm.getImplementingClass(algorithmURI);
+
+         if ((registeredClass != null) && (registeredClass.length() != 0)) {
+            Object exArgs[] = { algorithmURI, registeredClass };
+
+            throw new AlgorithmAlreadyRegisteredException(
+               "algorithm.alreadyRegistered", exArgs);
+         }
+
+         SignatureAlgorithm._algorithmHash.put(algorithmURI, implementingClass);
+      }
+   }
+
+   /**
+    * Method getImplementingClass
+    *
+    * @param URI
+    * @return
+    */
+   private static String getImplementingClass(String URI) {
+
+      if (SignatureAlgorithm._algorithmHash == null) {
+         return null;
+      }
+
+      return (String) SignatureAlgorithm._algorithmHash.get(URI);
+   }
+
+   static {
+      org.apache.xml.security.Init.init();
    }
 }

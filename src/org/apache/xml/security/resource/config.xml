@@ -34,6 +34,14 @@
       <TransformAlgorithm URI="http://www.w3.org/TR/2001/WD-xptr-20010108"
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPointer" />
    </TransformAlgorithms>
+   <SignatureAlgorithms JAVACLASS="org.apache.xml.security.algorithms.SignatureAlgorithm">
+      <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureDSA" />
+      <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#rsa-sha1"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.SignatureRSA" />
+      <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
+                          JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmacSHA1" />
+   </SignatureAlgorithms>
    <JCEAlgorithmMappings>
       <!-- Here, individual providers can be registered; each provider
            is identified by Id which is referenced by ProviderId of the
@@ -64,10 +72,10 @@
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     Description="Digital Signature Algorithm with SHA-1 message digest"
                     AlgorithmClass="Signature">
-            <ProviderAlgo ProviderId="SUN"
-                          JCEName="DSAWithSHA1" />
             <ProviderAlgo ProviderId="BC"
                           JCEName="DSA" />
+            <ProviderAlgo ProviderId="SUN"
+                          JCEName="DSAWithSHA1" />
             <ProviderAlgo ProviderId="IAIK"
                           JCEName="DSA" />
          </Algorithm>

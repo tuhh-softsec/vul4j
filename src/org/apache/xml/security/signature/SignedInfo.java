@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -91,6 +90,10 @@ public class SignedInfo extends Manifest {
    /** Field _SignatureMethodIsMAC */
    boolean _SignatureMethodIsMAC = false;
 
+   /**
+    * Constructor SignedInfo
+    *
+    */
    private SignedInfo() {}
 
    /**
@@ -103,6 +106,14 @@ public class SignedInfo extends Manifest {
            XMLSignature.ALGO_ID_SIGNATURE_DSA);
    }
 
+   /**
+    * Constructor SignedInfo
+    *
+    * @param doc
+    * @param CanonicalizationMethodURI
+    * @param HMACMethodURI
+    * @param HMACOutputLength
+    */
    public SignedInfo(Document doc, String CanonicalizationMethodURI,
                      String HMACMethodURI, int HMACOutputLength) {
 
@@ -116,14 +127,18 @@ public class SignedInfo extends Manifest {
     * @param CanonicalizationMethodURI URI representation of the Canonicalization method
     * @param SignatureMethodURI URI representation of the Digest and Signature algorithm
     */
-   public SignedInfo(Document doc, String CanonicalizationMethodURI, String SignatureMethodURI) {
-      super(doc, Constants._TAG_SIGNEDINFO);
-      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
+   public SignedInfo(Document doc, String CanonicalizationMethodURI,
+                     String SignatureMethodURI) {
 
+      super(doc, Constants._TAG_SIGNEDINFO);
+
+      this._constructionElement.appendChild(this._doc.createTextNode("\n"));
       {
          Element canonElem = XMLUtils.createElementInSignatureSpace(this._doc,
                                 Constants._TAG_CANONICALIZATIONMETHOD);
-         canonElem.setAttribute(Constants._ATT_ALGORITHM, CanonicalizationMethodURI);
+
+         canonElem.setAttribute(Constants._ATT_ALGORITHM,
+                                CanonicalizationMethodURI);
          this._constructionElement.appendChild(canonElem);
          this._constructionElement.appendChild(this._doc.createTextNode("\n"));
       }
@@ -162,8 +177,10 @@ public class SignedInfo extends Manifest {
     *
     * @return true if verification was successful
     * @throws MissingResourceFailureException
+    * @throws XMLSecurityException
     */
-   public boolean verify() throws MissingResourceFailureException, XMLSecurityException {
+   public boolean verify()
+           throws MissingResourceFailureException, XMLSecurityException {
       return super.verifyReferences();
    }
 
@@ -174,7 +191,6 @@ public class SignedInfo extends Manifest {
     * @throws CanonicalizationException
     * @throws IOException
     * @throws InvalidCanonicalizerException
-    * @throws NotYetImplementedException
     * @throws XMLSecurityException
     */
    public byte[] getCanonicalizedOctetStream()
@@ -226,6 +242,22 @@ public class SignedInfo extends Manifest {
     */
    public String getSignatureMethodURI() {
 
+      Element signatureElement = this.getSignatureMethodElement();
+
+      if (signatureElement != null) {
+         return signatureElement.getAttribute(Constants._ATT_ALGORITHM);
+      }
+
+      return null;
+   }
+
+   /**
+    * Method getSignatureMethodElement
+    *
+    * @return
+    */
+   public Element getSignatureMethodElement() {
+
       NodeList children = this._constructionElement.getChildNodes();
 
       for (int i = 0; i < children.getLength(); i++) {
@@ -244,7 +276,7 @@ public class SignedInfo extends Manifest {
             }
 
             if (found) {
-               return ((Element) n).getAttribute(Constants._ATT_ALGORITHM);
+               return (Element) n;
             }
          }
       }

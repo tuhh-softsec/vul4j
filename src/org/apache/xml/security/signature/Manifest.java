@@ -130,8 +130,6 @@ public class Manifest extends ElementProxy {
 
       super(element, BaseURI);
 
-      this._state = MODE_VERIFY;
-
       cat.debug("Create Manifest or SignedInfo from Element with BaseURI "
                 + this._baseURI);
 

@@ -69,8 +69,6 @@ public class CreateEnvelopingSignature {
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       org.w3c.dom.Document doc = db.newDocument();
 
-
-
       String BaseURI = signatureFile.toURL().toString();
       XMLSignature sig = new XMLSignature(doc, BaseURI,
                                           XMLSignature.ALGO_ID_SIGNATURE_DSA);

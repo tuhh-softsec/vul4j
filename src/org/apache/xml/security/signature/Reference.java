@@ -299,8 +299,6 @@ public class Reference extends ElementProxy {
       XMLUtils.guaranteeThatElementInSignatureSpace(element,
               Constants._TAG_REFERENCE);
 
-      this._state = MODE_VERIFY;
-
       try {
          Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
                                                   Constants.SignatureSpecNS);

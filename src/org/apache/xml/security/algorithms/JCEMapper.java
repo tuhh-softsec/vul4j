@@ -273,8 +273,8 @@ public class JCEMapper {
       /**
        * Constructor ProviderIdClass
        *
-       * @param JCEID
-       * @param ProviderClass
+       * @param AlgorithmID
+       * @param ProviderId
        */
       protected ProviderIdClass(String AlgorithmID, String ProviderId) {
          this._algorithmId = AlgorithmID;

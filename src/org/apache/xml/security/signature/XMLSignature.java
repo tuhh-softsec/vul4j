@@ -61,14 +61,17 @@ package org.apache.xml.security.signature;
 
 
 import java.io.IOException;
-import java.security.*;
-import java.security.cert.*;
+import java.security.Key;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apache.xml.security.algorithms.*;
+import org.apache.xml.security.algorithms.implementations.*;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.c14n.helper.XPathContainer;
 import org.apache.xml.security.exceptions.*;
@@ -84,6 +87,7 @@ import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.*;
+import org.apache.xml.security.algorithms.implementations.SignatureDSA;
 
 
 /**
@@ -98,16 +102,13 @@ public class XMLSignature extends ElementProxy {
       org.apache.log4j.Category.getInstance(XMLSignature.class.getName());
    //J-
    /** MAC - Required HMAC-SHA1 */
-   public static final String ALGO_ID_MAC_HMAC_SHA1 =
-      Constants.SignatureSpecNS + "hmac-sha1";
+   public static final String ALGO_ID_MAC_HMAC_SHA1 = IntegrityHmacSHA1._URI;
 
    /** Signature - Required DSAwithSHA1 (DSS) */
-   public static final String ALGO_ID_SIGNATURE_DSA =
-      Constants.SignatureSpecNS + "dsa-sha1";
+   public static final String ALGO_ID_SIGNATURE_DSA = SignatureDSA._URI;
 
    /** Signature - Recommended RSAwithSHA1 */
-   public static final String ALGO_ID_SIGNATURE_RSA =
-      Constants.SignatureSpecNS + "rsa-sha1";
+   public static final String ALGO_ID_SIGNATURE_RSA = SignatureRSA._URI;
    //J+
 
    /** ds:Signature.ds:SignedInfo element */
@@ -359,6 +360,7 @@ public class XMLSignature extends ElementProxy {
     * Method getSignatureValue
     *
     * @return
+    * @throws XMLSignatureException
     */
    public byte[] getSignatureValue() throws XMLSignatureException {
 
@@ -368,29 +370,17 @@ public class XMLSignature extends ElementProxy {
                    .getData());
 
       byte[] signatureValue = Base64.decode(this._signatureValueElement);
-      byte[] jcebytes = null;
-      if (this.getSignedInfo().getSignatureMethodURI()
-              .equals(XMLSignature.ALGO_ID_SIGNATURE_DSA)) {
-         try {
-            jcebytes =
-               SignatureAlgorithm.convertXMLDSIGtoASN1(signatureValue);
-         } catch (IOException ex) {
-            throw new XMLSignatureException("empty", ex);
-         }
-      } else {
-         jcebytes = signatureValue;
-      }
 
-      return jcebytes;
+      return signatureValue;
    }
 
    /**
     * Method setSignatureValueElement
     *
-    * @param signatureValue
+    * @param bytes
     * @throws XMLSignatureException
     */
-   private void setSignatureValueElement(byte[] jcebytes)
+   private void setSignatureValueElement(byte[] bytes)
            throws XMLSignatureException {
 
       if (this._state == MODE_SIGN) {
@@ -400,16 +390,7 @@ public class XMLSignature extends ElementProxy {
             this._signatureValueElement.removeChild(children.item(i));
          }
 
-         if (this.getSignedInfo().getSignatureMethodURI()
-                 .equals(XMLSignature.ALGO_ID_SIGNATURE_DSA)) {
-            try {
-               jcebytes = SignatureAlgorithm.convertASN1toXMLDSIG(jcebytes);
-            } catch (IOException ex) {
-               throw new XMLSignatureException("empty", ex);
-            }
-         }
-
-         String base64codedValue = Base64.encode(jcebytes);
+         String base64codedValue = Base64.encode(bytes);
          Text t = this._doc.createTextNode(base64codedValue);
 
          this._signatureValueElement.appendChild(t);
@@ -429,6 +410,8 @@ public class XMLSignature extends ElementProxy {
       if ((this._state == MODE_SIGN) && (this._keyInfo == null)) {
          this._keyInfo = new KeyInfo(this._doc);
 
+         Element keyInfoElement = this._keyInfo.getElement();
+
          try {
             Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
                                                      Constants.SignatureSpecNS);
@@ -440,22 +423,19 @@ public class XMLSignature extends ElementProxy {
 
             if (firstObject != null) {
                cat.debug("Found a ds:Object");
-               this._constructionElement
-                  .insertBefore(this._keyInfo.getElement(), firstObject);
+               this._constructionElement.insertBefore(keyInfoElement,
+                                                      firstObject);
                this._constructionElement
                   .insertBefore(this._doc.createTextNode("\n"), firstObject);
             } else {
                cat.debug("Found no ds:Object");
-               this._constructionElement
-                  .appendChild(this._keyInfo.getElement());
+               this._constructionElement.appendChild(keyInfoElement);
                this._constructionElement
                   .appendChild(this._doc.createTextNode("\n"));
             }
          } catch (TransformerException ex) {
             ex.printStackTrace();
          }
-
-         this._constructionElement.appendChild(this._keyInfo.getElement());
       }
 
       return this._keyInfo;
@@ -552,10 +532,11 @@ public class XMLSignature extends ElementProxy {
 
       try {
          if (this._state == MODE_SIGN) {
-            String signatureMethodURI =
-               this._signedInfo.getSignatureMethodURI();
-            SignatureAlgorithm sa = SignatureAlgorithm.getInstance(this._doc,
-                                       signatureMethodURI);
+            Element signatureMethodElement =
+               this._signedInfo.getSignatureMethodElement();
+            SignatureAlgorithm sa =
+               new SignatureAlgorithm(signatureMethodElement,
+                                      this.getBaseURI());
 
             sa.initSign(privateKey);
 
@@ -573,10 +554,6 @@ public class XMLSignature extends ElementProxy {
             cat.debug("sa.sign() finished");
          }
       } catch (IOException ex) {
-         throw new XMLSignatureException("empty", ex);
-      } catch (SignatureException ex) {
-         throw new XMLSignatureException("empty", ex);
-      } catch (InvalidKeyException ex) {
          throw new XMLSignatureException("empty", ex);
       } catch (CanonicalizationException ex) {
          throw new XMLSignatureException("empty", ex);
@@ -596,23 +573,22 @@ public class XMLSignature extends ElementProxy {
    public boolean verify() throws XMLSignatureException {
 
       if (this._state == MODE_VERIFY) {
-         String signatureMethodURI = this._signedInfo.getSignatureMethodURI();
-         SignatureAlgorithm sa = SignatureAlgorithm.getInstance(this._doc,
-                                    signatureMethodURI);
+         try {
+            Element signatureMethodElement =
+               this._signedInfo.getSignatureMethodElement();
+            SignatureAlgorithm sa =
+               new SignatureAlgorithm(signatureMethodElement,
+                                      this.getBaseURI());
 
-         cat.debug("I would use " + sa.getAlgorithm().getAlgorithm()
-                   + " to verify");
-
-         /** @todo do real work here */
-         return false;
-      } else {
-
-         /** @todo fill in error message */
-         Object exArgs[] = {
-         };
-
-         throw new XMLSignatureException("", exArgs);
+            /** @todo do real work here */
+            return false;
+         } catch (XMLSecurityException ex) {
+            throw new XMLSignatureException("empty", ex);
+         }
       }
+
+      /** @todo fill in error message */
+      throw new XMLSignatureException("empty");
    }
 
    /**
@@ -643,30 +619,7 @@ public class XMLSignature extends ElementProxy {
    public boolean checkSignatureValue(X509Certificate cert) throws Exception {
 
       if (cert != null) {
-         String SignatureMethodURI =
-            this.getSignedInfo().getSignatureMethodURI();
-         JCEMapper.ProviderIdClass jceSigID =
-            JCEMapper.translateURItoJCEID(SignatureMethodURI);
-         java.security.Signature signature =
-            java.security.Signature.getInstance(jceSigID.getAlgorithmID(),
-                                                jceSigID.getProviderId());
-
-         if (!this.getSignedInfo().verify()) {
-            return false;
-         }
-
-         signature.initVerify(cert);
-
-         byte inputBytes[] = this.getSignedInfo().getCanonicalizedOctetStream();
-         byte sigBytes[] = this.getSignatureValue();
-
-         JavaUtils.writeBytesToFilename("signedInfo.Bytes", inputBytes);
-         JavaUtils.writeBytesToFilename("signature.Bytes", sigBytes);
-         signature.update(inputBytes);
-
-         boolean verify = signature.verify(sigBytes);
-
-         return verify;
+         return this.checkSignatureValue(cert.getPublicKey());
       } else {
          throw new Exception("Didn't get a certificate");
       }
@@ -679,38 +632,34 @@ public class XMLSignature extends ElementProxy {
     * @return
     * @throws Exception
     */
-   public boolean checkSignatureValue(java.security.PublicKey pk)
-           throws Exception {
+   public boolean checkSignatureValue(PublicKey pk) throws Exception {
 
       if (!this.getSignedInfo().verify()) {
          return false;
       }
 
-      String SignatureMethodURI = this.getSignedInfo().getSignatureMethodURI();
-      JCEMapper.ProviderIdClass jceSigID =
-         JCEMapper.translateURItoJCEID(SignatureMethodURI);
+      SignatureAlgorithm sa =
+         new SignatureAlgorithm(this.getSignedInfo()
+            .getSignatureMethodElement(), this.getBaseURI());
 
-      cat.debug("SignatureMethodURI = " + SignatureMethodURI);
-      cat.debug("jceSigID = " + jceSigID.getAlgorithmID());
-
-      java.security.Signature signature =
-         java.security.Signature.getInstance(jceSigID.getAlgorithmID(),
-                                             jceSigID.getProviderId());
+      cat.debug("SignatureMethodURI = " + sa.getAlgorithmURI());
+      cat.debug("jceSigAlgorithm    = " + sa.getJCEAlgorithmString());
+      cat.debug("jceSigProvider     = " + sa.getJCEProviderName());
 
       if (pk != null) {
-         signature.initVerify(pk);
          cat.debug("PublicKey = " + pk);
+         sa.initVerify(pk);
 
          byte inputBytes[] = this._signedInfo.getCanonicalizedOctetStream();
 
-         signature.update(inputBytes);
+         sa.update(inputBytes);
 
          byte sigBytes[] = this.getSignatureValue();
 
          cat.debug("SignatureValue = "
                    + HexDump.byteArrayToHexString(sigBytes));
 
-         boolean verify = signature.verify(sigBytes);
+         boolean verify = sa.verify(sigBytes);
 
          return verify;
       } else {

@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -59,30 +58,56 @@
  */
 package org.apache.xml.security.algorithms;
 
+
+
 import org.w3c.dom.*;
 import org.apache.xml.security.utils.*;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 
 
 /**
  * The Algorithm class which stores the Algorithm URI as a string.
  *
  */
-public class Algorithm extends ElementProxy{
+public class Algorithm extends ElementProxy {
 
    /** Field cat */
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(Algorithm.class.getName());
 
    /**
-    * Constructor for the brave who pass their own signature algorithms.
     *
+    * @param doc
+    * @param localname
     * @param algorithmURI is the URI of the algorithm as String
     */
    public Algorithm(Document doc, String localname, String algorithmURI) {
+
       super(doc, localname);
+
+      this._constructionElement =
+         XMLUtils.createElementInSignatureSpace(this._doc, localname);
+
       this.setAlgorithmURI(algorithmURI);
    }
 
+   /**
+    * Constructor Algorithm
+    *
+    * @param element
+    * @param BaseURI
+    * @throws XMLSecurityException
+    */
+   public Algorithm(Element element, String BaseURI)
+           throws XMLSecurityException {
+      super(element, BaseURI);
+   }
+
+   /**
+    * Method getAlgorithmURI
+    *
+    * @return
+    */
    public String getAlgorithmURI() {
       return this._constructionElement.getAttribute(Constants._ATT_ID);
    }
@@ -93,8 +118,10 @@ public class Algorithm extends ElementProxy{
     * @param algorithmURI is the URI of the algorithm as String
     */
    protected void setAlgorithmURI(String algorithmURI) {
-      if ((this._state == MODE_SIGN) && algorithmURI != null) {
-         this._constructionElement.setAttribute(Constants._ATT_ALGORITHM, algorithmURI);
+
+      if ((this._state == MODE_SIGN) && (algorithmURI != null)) {
+         this._constructionElement.setAttribute(Constants._ATT_ALGORITHM,
+                                                algorithmURI);
       }
    }
 
