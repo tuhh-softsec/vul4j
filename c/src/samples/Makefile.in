@@ -96,7 +96,9 @@ OBJDIR=${BINDIR}/obj
 LDXSEC=-L${LIBDIR} -l${PACKAGE_TARNAME}
 
 allsamples: ${BINDIR}/simpleHMAC \
-          ${BINDIR}/simpleValidate
+          ${BINDIR}/simpleValidate \
+          ${BINDIR}/simpleEncrypt \
+          ${BINDIR}/simpleDecrypt
 
 #========================== simpleHMAC ==========================
 
@@ -112,6 +114,16 @@ ${BINDIR}/simpleHMAC: ${OBJDIR}/simpleHMAC${OBJSUFFIX} ${OBJDIR}/IOStreamOutputt
 #	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
 ${BINDIR}/simpleValidate: ${OBJDIR}/simpleValidate${OBJSUFFIX} ${OBJDIR}/IOStreamOutputter${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $^ $(LDXSEC) $(LIBS) -o $@
+
+#========================= simpleEncrypt ========================
+
+${BINDIR}/simpleEncrypt: ${OBJDIR}/simpleEncrypt${OBJSUFFIX} ${OBJDIR}/IOStreamOutputter${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $^ $(LDXSEC) $(LIBS) -o $@
+
+#========================= simpleDecrypt ========================
+
+${BINDIR}/simpleDecrypt: ${OBJDIR}/simpleDecrypt${OBJSUFFIX} ${OBJDIR}/IOStreamOutputter${OBJSUFFIX}
 	$(LINK) $(LDFLAGS) $^ $(LDXSEC) $(LIBS) -o $@
 
 #============================= Clean =============================
