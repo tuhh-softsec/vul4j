@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [<!ATTLIST e9 attr CDATA 'default'>]>
+<doc xmlns:foo="http://www.bar.org" xml:base="http://www.example.org/2002/">
+   <e1 />
+   <e2 />
+   <e3 id="elem3" name="elem3" />
+   <e4 id="elem4" name="elem4" />
+   <e5 xmlns:b="http://www.ietf.org" xmlns:a="http://www.w3.org" xmlns="http://example.org" a:attr="out" attr="I'm" attr2="all" b:attr="sorted" />
+   <e6 xmlns:a="http://www.w3.org" test="../baz" xmlns="">
+       <e7 xmlns="http://www.ietf.org">
+           <e8 xmlns="" a:foo="bar" xmlns:a="http://www.w3.org">
+               <e9 xmlns:a="http://www.ietf.org" xmlns="" />
+           </e8>
+       </e7>
+   </e6>
+   <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+      <SignedInfo>
+         <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+         <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1" />
+         <Reference URI="">
+            <Transforms>
+               <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+                  <XPath>
+                     ancestor-or-self::e6
+                  </XPath>
+               </Transform>
+               <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+            </Transforms>
+            <DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#md5" />
+            <DigestValue>AaBWmuBu+YJ6/VVXKwlrdA==</DigestValue>
+         </Reference>
+         <Reference URI="">
+            <Transforms>
+               <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+                  <XPath>
+                     ancestor-or-self::e6
+                  </XPath>
+               </Transform>
+               <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+            </Transforms>
+            <DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#md5" />
+            <DigestValue>SjyCLpdMX/5X+8Wueu3tlg==</DigestValue>
+         </Reference>
+         <Reference URI="">
+            <Transforms>
+               <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+                  <XPath>
+                     ancestor-or-self::e6
+                  </XPath>
+               </Transform>
+               <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                  <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="a" />
+               </Transform>
+            </Transforms>
+            <DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#md5" />
+            <DigestValue>lOOQdTLkMX7sv41ZlpwO0g==</DigestValue>
+         </Reference>
+      </SignedInfo>
+      <SignatureValue>
+         QY8y1yZWODi6TR/vlmHwz17B6dk5mekvRNJozYZUBovxQat0F2o4/Q==
+      </SignatureValue>
+      <KeyInfo>
+         <KeyValue>
+            <DSAKeyValue>
+               <P>
+                  8FkJgwdyizV5Vd0m6DA/DZsdweJdnkueYVUd7L8aA4JpZxrlCI/M7mDE/OGhEhgB
+                  nFzSTrBjSFpT7DG66uy7oJeE+RgkXO7EWWOEglMPwaZgGgi1oZarv95VOx3uO8W8
+                  L7+S/3AuHNUZQD4b5bpdYAmjXFwz6dl0mKiXAvVuP9E=
+               </P>
+               <Q>
+                  mFf8DiMVNFXy0vag9oNGNW/g4u0=
+               </Q>
+               <G>
+                  g8gRdNlq9EOTR2TjmVApqCAZAq3jEjOIxXbs8JBiZ+U7dV9geeXEy13GbYoP23Qr
+                  apZQo+35diw+cMYPHjN+iUCwUkiGWv7/piAK+Ootfw03etL8XiVWjtL5NBof2CNp
+                  wmAw7mrwmNG092y1e6HXSGMMZpaoth/P8xhsxCQsqI8=
+               </G>
+               <Y>
+                  j0V14dc/I+okDAeG4ZbWUzb3HTFkEOC6feOMo5Dk218GcPqEKroVHaDBF9CmRV1v
+                  B8MUOExB+6ZNHfcs5Vaw0HVn62YiEBzrmKikx6SxO4Dg9L8I5WbHn37vxUKvHs8r
+                  7+rma3kpZQftTMiBpJ8XK8Z6jg8VhuJqo9yZZO+p3I0=
+               </Y>
+            </DSAKeyValue>
+         </KeyValue>
+      </KeyInfo>
+   </Signature>
+</doc>
+

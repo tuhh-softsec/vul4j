@@ -1,0 +1,82 @@
+<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod>
+    <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"></SignatureMethod>
+    <Reference URI="iaikTests.example1.xml">
+      <Transforms>
+        <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+          <XPath>self::Parent or (parent::Parent and not(self::Child)) or self::GrandChild or parent::GrandChild</XPath>
+        </Transform>
+      </Transforms>
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+      <DigestValue>ayC7IAjulu8Ujs1l7IOkr09X9Lo=</DigestValue>
+    </Reference>
+    <Reference URI="iaikTests.example1.xml">
+      <Transforms>
+        <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+          <XPath>self::Parent or (parent::Parent and not(self::Child)) or self::GrandChild or parent::GrandChild</XPath>
+        </Transform>
+        <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+      </Transforms>
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+      <DigestValue>tYcPYeXWUpBwCJKaPHpnT+oc7FQ=</DigestValue>
+    </Reference>
+    <Reference URI="iaikTests.example2.xml">
+      <Transforms>
+        <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+          <XPath xmlns:default="http://example.org">self::Parent or (parent::Parent and not(self::default:Child)) or self::GrandChild or parent::GrandChild</XPath>
+        </Transform>
+      </Transforms>
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+      <DigestValue>3/E99/WWurMo5RB3R9mPMi8TNek=</DigestValue>
+    </Reference>
+    <Reference URI="iaikTests.example2.xml">
+      <Transforms>
+        <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+          <XPath xmlns:default="http://example.org">self::Parent or (parent::Parent and not(self::default:Child)) or self::GrandChild or parent::GrandChild</XPath>
+        </Transform>
+        <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+      </Transforms>
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+      <DigestValue>3/E99/WWurMo5RB3R9mPMi8TNek=</DigestValue>
+    </Reference>
+    <Reference URI="iaikTests.example3.xml">
+      <Transforms>
+        <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+          <XPath xmlns:default="http://example.org/default" xmlns:ns1="http://example.org/ns1">self::default:Parent or (parent::default:Parent and not(self::default:Child)) or self::ns1:GrandChild or parent::ns1:GrandChild or self::default:GrandChild or parent::default:GrandChild</XPath>
+        </Transform>
+      </Transforms>
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+      <DigestValue>+9y4JHXxsQSJitQS+qdtKd7P5LE=</DigestValue>
+    </Reference>
+    <Reference URI="iaikTests.example3.xml">
+      <Transforms>
+        <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+          <XPath xmlns:default="http://example.org/default" xmlns:ns1="http://example.org/ns1">self::default:Parent or (parent::default:Parent and not(self::default:Child)) or self::ns1:GrandChild or parent::ns1:GrandChild or self::default:GrandChild or parent::default:GrandChild</XPath>
+        </Transform>
+        <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+      </Transforms>
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+      <DigestValue>HLOhaTrExlTg9ARVdOhHdm1DAKk=</DigestValue>
+    </Reference>
+    <Reference URI="iaikTests.example4.xml">
+      <Transforms>
+        <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+          <XPath xmlns:ns1="http://example.org/ns1">self::Parent or (parent::Parent and not(self::Child)) or self::ns1:GrandChild or parent::ns1:GrandChild</XPath>
+        </Transform>
+      </Transforms>
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+      <DigestValue>C+g6VAAmq2rWCqmCfHpLn7BFB/c=</DigestValue>
+    </Reference>
+    <Reference URI="iaikTests.example4.xml">
+      <Transforms>
+        <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+          <XPath xmlns:ns1="http://example.org/ns1">self::Parent or (parent::Parent and not(self::Child)) or self::ns1:GrandChild or parent::ns1:GrandChild</XPath>
+        </Transform>
+        <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+          <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="ns2"></InclusiveNamespaces>
+        </Transform>
+      </Transforms>
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+      <DigestValue>C+g6VAAmq2rWCqmCfHpLn7BFB/c=</DigestValue>
+    </Reference>
+  </SignedInfo>

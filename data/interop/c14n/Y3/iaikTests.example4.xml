@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- XPath="self::Parent or (parent::Parent and not(self::Child)) or self::ns1:GrandChild or parent::ns1:GrandChild" -->
+<!-- additionalNSPrefixes="ns1 http://example.org/ns1" -->
+
+<!-- InlusiveNamespacePrefixList="ns2" -->
+
+<!-- Result C14N:
+<Parent>
+    <ns1:GrandChild xmlns:ns1="http://example.org/ns1" xmlns:ns2="http://example.org/ns2"></ns1:GrandChild>
+  </Parent>    
+ -->
+
+<!-- Annotation C14N:
+1. The namespace nodes ns1 und ns2 are rendered for GrandChild, since
+   they are both in scope for GrandChild and in the output node set.   
+-->
+
+<!-- Result EC14N:
+<Parent>
+    <ns1:GrandChild xmlns:ns1="http://example.org/ns1" xmlns:ns2="http://example.org/ns2"></ns1:GrandChild>
+  </Parent>    
+-->
+
+<!-- Annotation EC14N:
+1. The namespace node ns1 is rendered for GrandChild since it is visibly
+   utilized by GrandChild.
+2. The namespace node ns2 is rendered since it is on the 
+   InlusiveNamespacePrefixList and is therefore treated as in C14N mode.
+-->
+
+<GrandParent>
+  <Parent>
+    <Child xmlns:ns1="http://example.org/ns1" xmlns:ns2="http://example.org/ns2">
+      <ns1:GrandChild/>
+    </Child>
+  </Parent>
+</GrandParent>  
