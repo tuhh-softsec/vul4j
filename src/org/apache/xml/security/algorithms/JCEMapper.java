@@ -117,25 +117,32 @@ public class JCEMapper {
       boolean available = false;
 
       try {
-         Element pro =
-            (Element) XPathAPI.selectSingleNode(JCEMapper._providerList,
-                                                "./x:Providers/x:Provider[@Id='"
-                                                + providerId + "']",
-                                                JCEMapper._nscontext);
-         String providerClass = pro.getAttributeNS(null, "Class");
-         java.security.Provider prov =
-            (java.security.Provider) Class.forName(providerClass).newInstance();
+		  /* Allow for mulitple provider entries with same Id */
+		  NodeList providers = XPathAPI.selectNodeList(JCEMapper._providerList,
+													   "./x:Providers/x:Provider[@Id='"
+													   + providerId + "']",
+													   JCEMapper._nscontext);
 
-         if (prov != null) {
-            available = true;
-         }
+         for (int i = 0; available == false && i < providers.getLength(); i++) {
+            Element pro = (Element) providers.item(i);
+
+			String providerClass = pro.getAttributeNS(null, "Class");
+			try {
+				java.security.Provider prov =
+					(java.security.Provider) Class.forName(providerClass).newInstance();
+
+				if (prov != null) {
+					available = true;
+				}
+			} catch (ClassNotFoundException ex) {
+				//do nothing
+			} catch (IllegalAccessException ex) {
+				//do nothing
+			} catch (InstantiationException ex) {
+				//do nothing
+			}
+		 }
       } catch (TransformerException ex) {
-		//do nothing
-      } catch (ClassNotFoundException ex) {
-		//do nothing
-      } catch (IllegalAccessException ex) {
-		//do nothing
-      } catch (InstantiationException ex) {
 		//do nothing
       }
 
