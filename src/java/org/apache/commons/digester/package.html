@@ -68,7 +68,7 @@ the developer to focus on the processing to be performed.</p>
 <li>Set any desired <a href="#doc.Properties">configuration properties</a>
     that will customize the operation of the Digester when you next initiate
     a parse operation.</li>
-<li>Push any desired initial object(s) onto the Digester's
+<li>Optionally, push any desired initial object(s) onto the Digester's
     <a href="#doc.Stack">object stack</a>.</li>
 <li>Register all of the <a href="#doc.Patterns">element matching patterns</a>
     for which you wish to have <a href="#doc.Rules">processing rules</a>
@@ -250,13 +250,17 @@ features of the Digester functionality:</p>
     does, it would appear that the first object you create (i.e. the object
     created by the outermost XML element you process) will disappear from the
     stack by the time that XML parsing is completed, because the end of the
-    element would have been encountered.  To deal with this, the normal
-    approach is to push a reference to some application global object onto the
-    stack before the parse begins, and arrange that a parent-child
-    relationship be created (by appropriate processing rules) between this
-    manually pushed object and the one that is dynamically created.  In this
-    way, the pushed object will retain a reference to the dynamically created
-    object (and therefore all of its children) after the parse finishes.</li>
+    element would have been encountered.  However, Digester will maintain a
+    reference to the very first object ever pushed onto the object stack,
+    and will return it to you
+    as the return value from the <code>parse()</code> call.  Alternatively,
+    you can push a reference to some application object onto the stack before
+    calling <code>parse()</code>, and arrange that a parent-child relationship
+    be created (by appropriate processing rules) between this manually pushed
+    object and the ones that are dynamically created.  In this way,
+    the pushed object will retain a reference to the dynamically created objects
+    (and therefore all of their children), and will be returned to you after
+    the parse finishes as well.</li>
 </ul>
 
 <a name="doc.Patterns"></a>
@@ -476,6 +480,87 @@ information about the basic SAX events received by digester.</li>
 <a name="doc.Usage"></a>
 <h3>Usage Examples</h3>
 
+
+<h5>Creating a Simple Object Tree</h5>
+
+<p>Let's assume that you have two simple JavaBeans, <code>Foo</code> and
+<code>Bar</code>, with the following method signatures:</p>
+<pre>
+  package mypackage;
+  public class Foo {
+    public void addBar(Bar bar);
+    public Bar findBar(int id);
+    public Iterator getBars();
+    public String getName();
+    public void setName(String name);
+  }
+
+  public mypackage;
+  public class Bar {
+    public int getId();
+    public void setId(int id);
+    public String getTitle();
+    public void setTitle(String title);
+  }
+</pre>
+
+<p>and you wish to use Digester to parse the following XML document:</p>
+
+<pre>
+  &lt;foo name="The Parent"&gt;
+    &lt;bar id="123" title="The First Child"/&gt;
+    &lt;bar id="456" title="The Second Child"/&gt;
+  &lt;/foo&gt;
+</pre>
+
+<p>A simple approach will be to use the following Digester in the following way
+to set up the parsing rules, and then process an input file containing this
+document:</p>
+
+<pre>
+  Digester digester = new Digester();
+  digester.setValidating(false);
+  digester.addObjectCreate("foo", "mypackage.Foo");
+  digester.addSetProperties("foo");
+  digester.addObjectCreate("foo/bar", "mypackage.Bar");
+  digester.addSetProperties("foo/bar");
+  digester.addSetNext("foo/bar", "addBar", "mypackage.Bar");
+  Foo foo = (Foo) digester.parse();
+</pre>
+
+<p>In order, these rules do the following tasks:</p>
+<ol>
+<li>When the outermost <code>&lt;foo&gt;</code> element is encountered,
+    create a new instance of <code>mypackage.Foo</code> and push it
+    on to the object stack.  At the end of the <code>&lt;foo&gt;</code>
+    element, this object will be popped off of the stack.</li>
+<li>Cause properties of the top object on the stack (i.e. the <code>Foo</code>
+    object that was just created and pushed) to be set based on the values
+    of the attributes of this XML element.</li>
+<li>When a nested <code>&lt;bar&gt;</code> element is encountered,
+    create a new instance of <code>mypackage.Bar</code> and push it
+    on to the object stack.  At the end of the <code>&lt;bar&gt;</code>
+    element, this object will be popped off of the stack (i.e. after the
+    remaining rules matching <code>foo/bar</code> are processed).</li>
+<li>Cause properties of the top object on the stack (i.e. the <code>Bar</code>
+    object that was just created and pushed) to be set based on the values
+    of the attributes of this XML element.  Note that type conversions
+    are automatically performed (such as String to int for the <code>id</code>
+    property), for all converters registered with the <code>ConvertUtils</code>
+    class from <code>commons-beanutils</code> package.</li>
+<li>Cause the <code>addBar</code> method of the next-to-top element on the
+    object stack (which is why this is called the "set <em>next</em>" rule)
+    to be called, passing the element that is on the top of the stack, which
+    must be of type <code>mypackage.Bar</code>.  This is the rule that causes
+    the parent/child relationship to be created.</li>
+</ol>
+
+<p>Once the parse is completed, the first object that was ever pushed on to the
+stack (the <code>Foo</code> object in this case) is returned to you.  It will
+have had its properties set, and all of its child <code>Bar</code> objects
+created for you.</p>
+
+
 <h5>Processing A Struts Configuration File</h5>
 
 <p>As stated earlier, the primary reason that the
@@ -499,8 +584,7 @@ Digester features.  First, let's look at how the Digester instance is
 created and initialized:</p>
 <pre>
     Digester digester = new Digester();
-    digester.push(this);
-    digester.setDebug(detail);
+    digester.push(this); // Push controller servlet onto the stack
     digester.setValidating(true);
 </pre>
 
@@ -569,6 +653,7 @@ the following actions take place:</p>
 information that was defined in the <code>struts-config.xml</code> file is
 now represented as collections of objects cached within the Struts controller
 servlet, as well as being exposed as servlet context attributes.</p>
+
 
 <h5>Parsing Body Text In XML Files</h5>
 
@@ -652,6 +737,7 @@ brevity in this example):</p>
     (which should be the <code>ServletBean</code> we pushed earlier) is
     popped off the object stack.</li>
 </ul>
+
 
 <a name="doc.Namespace"></a>
 <h3>Namespace Aware Parsing</h3>
