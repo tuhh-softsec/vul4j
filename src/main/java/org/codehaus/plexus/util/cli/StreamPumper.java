@@ -1,3 +1,29 @@
+package org.codehaus.plexus.util.cli;
+
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2004, The Codehaus
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 /********************************************************************************
  * CruiseControl, a Continuous Integration Toolkit
  * Copyright (c) 2001-2003, ThoughtWorks, Inc.
@@ -52,8 +78,6 @@
  * ====================================================================
  */
 
-package org.codehaus.plexus.util.cli;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,7 +89,7 @@ import org.codehaus.plexus.util.IOUtil;
 /**
  * Class to pump the error stream during Process's runtime. Copied from the Ant
  * built-in task.
- * 
+ *
  * @since June 11, 2001
  * @author <a href="mailto:fvancea@maxiq.com">Florin Vancea </a>
  * @author <a href="mailto:pj@thoughtworks.com">Paul Julius </a>
@@ -129,16 +153,21 @@ public class StreamPumper
                 s = in.readLine();
             }
         }
-        catch ( IOException e )
+        catch ( Throwable e )
         {
-            // do nothing
+            // Catched everything so the streams will be closed and flagged as done.
         }
         finally
         {
             IOUtil.close( in );
-        }
 
-        done = true;
+            done = true;
+
+            synchronized( this )
+            {
+                this.notifyAll();
+            }
+        }
     }
 
     public void flush()

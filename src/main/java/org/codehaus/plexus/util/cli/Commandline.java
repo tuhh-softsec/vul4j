@@ -1,3 +1,29 @@
+package org.codehaus.plexus.util.cli;
+
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2004, The Codehaus
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 /********************************************************************************
  * CruiseControl, a Continuous Integration Toolkit
  * Copyright (c) 2001-2003, ThoughtWorks, Inc.
@@ -52,8 +78,6 @@
  * ====================================================================
  */
 
-package org.codehaus.plexus.util.cli;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -84,7 +108,7 @@ import java.util.Vector;
 public class Commandline
 	implements Cloneable
 {
-    
+
     protected static final String OS_NAME = "os.name";
     protected static final String WINDOWS = "Windows";
 
@@ -222,19 +246,19 @@ public class Commandline
 
 
     /**
-     * <p>Sets the shell or command-line interpretor for the detected operating system, 
+     * <p>Sets the shell or command-line interpretor for the detected operating system,
      * and the shell arguments.</p>
      */
     private void setDefaultShell() {
         String os = System.getProperty(OS_NAME);
-        
-        //If this is windows set the shell to command.com or cmd.exe with correct arguments. 
+
+        //If this is windows set the shell to command.com or cmd.exe with correct arguments.
         if ( os.indexOf(WINDOWS) != -1 )
         {
-            if (os.indexOf("95") != -1 || os.indexOf("98") != -1 || os.indexOf("Me") != -1) 
+            if (os.indexOf("95") != -1 || os.indexOf("98") != -1 || os.indexOf("Me") != -1)
             {
                 shell = "COMMAND.COM";
-                shellArgs.add("/C"); 
+                shellArgs.add("/C");
             }
             else
             {
@@ -244,7 +268,7 @@ public class Commandline
             }
         }
     }
-    
+
     /**
      * Creates an argument object.
      *
@@ -308,7 +332,7 @@ public class Commandline
             createArgument().setValue( line[i] );
         }
     }
-    
+
     /**
      * Returns the executable and all defined arguments.
      */
@@ -337,8 +361,8 @@ public class Commandline
             shellCount = 1;
         }
         shellCount += shellArgs.size();
-        final String[] args = getArguments();        
-        
+        final String[] args = getArguments();
+
         String[] result = new String[shellCount + args.length + (( executable == null )? 0:1)];
         //Build shell and arguments into result
         if ( shell != null )
