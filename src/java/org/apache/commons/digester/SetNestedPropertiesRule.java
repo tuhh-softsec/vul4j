@@ -44,10 +44,10 @@ import org.apache.commons.logging.LogFactory;
  *
  * <p>Example input that can be processed by this rule:</p>
  * <pre>
- * [point]
- *  [x]7[/x]
- *  [y]9[/y]
- * [/point]
+ *   [point]
+ *    [x]7[/x]
+ *    [y]9[/y]
+ *   [/point]
  * </pre>
  *
  * <p>This rule supports custom mapping of attribute names to property names.
@@ -57,13 +57,10 @@ import org.apache.commons.logging.LogFactory;
  * This allows child elements to be mapped to properties with different names.
  * Certain elements can also be marked to be ignored.</p>
  *
- * <p>
- * A very similar effect can be achieved using a combination of the 
- * <code>BeanPropertySetterRule</code> and the <code>ExtendedBaseRules</code> rules manager; this
- * <code>Rule</code>, however, works fine with the default <code>RulesBase</code> rules manager.</p>
- *
- * @author Simon Kitching
- * @version $Revision: 1.3 $ $Date: 2004/02/28 13:32:52 $
+ * <p>A very similar effect can be achieved using a combination of the 
+ * <code>BeanPropertySetterRule</code> and the <code>ExtendedBaseRules</code> 
+ * rules manager; this <code>Rule</code>, however, works fine with the default 
+ * <code>RulesBase</code> rules manager.</p>
  */
 
 public class SetNestedPropertiesRule extends Rule {
