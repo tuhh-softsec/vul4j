@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.42 2002/01/23 21:25:22 sanders Exp $
- * $Revision: 1.42 $
- * $Date: 2002/01/23 21:25:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.43 2002/01/27 01:40:42 craigmcc Exp $
+ * $Revision: 1.43 $
+ * $Date: 2002/01/27 01:40:42 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.42 $ $Date: 2002/01/23 21:25:22 $
+ * @version $Revision: 1.43 $ $Date: 2002/01/27 01:40:42 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1763,7 +1763,7 @@ public class Digester extends DefaultHandler {
         try {
             return (stack.peek());
         } catch (EmptyStackException e) {
-            log.info("Empty stack (returning null)");
+            log.warn("Empty stack (returning null)");
             return (null);
         }
 
@@ -1783,7 +1783,7 @@ public class Digester extends DefaultHandler {
         try {
             return (stack.peek(n));
         } catch (EmptyStackException e) {
-            log.info("Empty stack (returning null)");
+            log.warn("Empty stack (returning null)");
             return (null);
         }
 
@@ -1799,7 +1799,7 @@ public class Digester extends DefaultHandler {
         try {
             return (stack.pop());
         } catch (EmptyStackException e) {
-            log.info("Empty stack (returning null)");
+            log.warn("Empty stack (returning null)");
             return (null);
         }
 
@@ -1890,6 +1890,7 @@ public class Digester extends DefaultHandler {
         try {
             return (params.peek());
         } catch (EmptyStackException e) {
+            log.warn("Empty stack (returning null)");
             return (null);
         }
 
@@ -1909,6 +1910,7 @@ public class Digester extends DefaultHandler {
         try {
             return (params.peek(n));
         } catch (EmptyStackException e) {
+            log.warn("Empty stack (returning null)");
             return (null);
         }
 
@@ -1924,6 +1926,7 @@ public class Digester extends DefaultHandler {
         try {
             return (params.pop());
         } catch (EmptyStackException e) {
+            log.warn("Empty stack (returning null)");
             return (null);
         }
 
