@@ -209,59 +209,6 @@ public class JCEMapper {
       }
    }
 
-   /**
-    * Converts a algorithm URI into a JCE algorithm identifier.
-    *
-    * @param AlgorithmURI is the URI of the algorithm
-    * @return the JCE identifier.
-    * public static String translateURItoJCEID_old(String AlgorithmURI) {
-    *
-    *  for (int i = 0; i < algorithms.length; i++) {
-    *     if (((String) algorithms[i][_INDEX_URI]).equals(AlgorithmURI)) {
-    *        return algorithms[i][_INDEX_SHORT_ALIAS];
-    *     }
-    *  }
-    *
-    *  return "";
-    * }
-    *
-    * //J-
-    * static int _INDEX_TYPE        = 0;
-    * static int _INDEX_LONG_ALIAS  = 1;
-    * static int _INDEX_SHORT_ALIAS = 2;
-    * static int _INDEX_URI         = 3;
-    *
-    * public static String algorithms[][] = {
-    *  { "Signature",
-    *    "Alg.Alias.Signature.DSAWithSHA1",
-    *    "DSAWithSHA1",
-    *    Constants.ALGO_ID_SIGNATURE_DSA },
-    *  { "Signature",
-    *    "Signature.SHA1withRSA",
-    *    "SHA1withRSA",
-    *    Constants.ALGO_ID_SIGNATURE_RSA },
-    *  { "MessageDigest",
-    *    "Alg.Alias.MessageDigest.SHA-1",
-    *    "SHA-1",
-    *    Constants.ALGO_ID_DIGEST_SHA1 },
-    *  { "Mac",
-    *    "HmacSHA1",
-    *    "HmacSHA1",
-    *    Constants.ALGO_ID_MAC_HMAC_SHA1 },
-    * };
-    * //J+
-    *
-    * public static void a(String url) {
-    *  System.out.println("Mapped " + url + " to " + JCEMapper.translateURItoJCEID(url));
-    * }
-    *
-    * public static void main(String unused[]) throws Exception {
-    *  a(Constants.ALGO_ID_SIGNATURE_DSA);
-    *  a(Constants.ALGO_ID_SIGNATURE_RSA);
-    *  a(Constants.ALGO_ID_DIGEST_SHA1);
-    *  a(Constants.ALGO_ID_MAC_HMAC_SHA1);
-    * }
-    */
    public static class ProviderIdClass {
 
       /** Field _jceid */

@@ -200,28 +200,6 @@ public class SignatureAlgorithm extends Algorithm {
       }
    }
 
-   /*
-   public static final SignatureAlgorithm getInstance(
-           Document doc, String algorithmURI) throws XMLSignatureException {
-      cat.debug("Doc = " + doc);
-      cat.debug("algorithmURI = " + algorithmURI);
-      org.apache.xml.security.Init.init();
-      return new SignatureAlgorithm(doc, algorithmURI);
-   }
-
-   public static final SignatureAlgorithm getInstance(
-           Document doc, String algorithmURI, int HMACOutputLength) throws XMLSignatureException {
-      org.apache.xml.security.Init.init();
-      return new SignatureAlgorithm(doc, algorithmURI, HMACOutputLength);
-   }
-
-   public static final SignatureAlgorithm getInstance(
-           Element element, String BaseURI) throws XMLSecurityException {
-      org.apache.xml.security.Init.init();
-      return new SignatureAlgorithm(element, BaseURI);
-   }
-   */
-
    /**
     * Proxy method for {@link java.security.Signature#sign}
     * which is executed on the internal {@link java.security.Signature} object.
