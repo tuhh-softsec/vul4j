@@ -569,6 +569,18 @@ org.apache.xml.security.utils.resolver
      </java>
   </target>
 
+  <target name="test_xenc"
+          depends="compile.tests"
+          if="junit.present"
+          description="Runs merlin-five encryption interop">
+     <java classname="org.apache.xml.security.test.encryption.BaltimoreEncTest"
+           fork="yes"
+           taskname="junit"
+           failonerror="true">
+        <classpath refid="classpath.test" />
+     </java>
+  </target>
+
   <target name="testjar"
           depends="prepare,check-bc"
           if="xmlsec.build.present"
