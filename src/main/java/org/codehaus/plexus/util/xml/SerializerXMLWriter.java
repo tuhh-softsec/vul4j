@@ -1,6 +1,6 @@
 package org.codehaus.plexus.util.xml;
 
-import org.codehaus.plexus.util.xml.pull.MXSerializer;
+import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.Stack;
 public class SerializerXMLWriter
     implements XMLWriter
 {
-    private final MXSerializer serializer;
+    private final XmlSerializer serializer;
 
     private final String namespace;
 
@@ -25,7 +25,7 @@ public class SerializerXMLWriter
 
     private List exceptions;
 
-    public SerializerXMLWriter( String namespace, MXSerializer serializer )
+    public SerializerXMLWriter( String namespace, XmlSerializer serializer )
     {
         this.serializer = serializer;
         this.namespace = namespace;

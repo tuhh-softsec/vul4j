@@ -1,6 +1,6 @@
 package org.codehaus.plexus.util.xml;
 
-import org.codehaus.plexus.util.xml.pull.MXSerializer;
+import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -187,7 +187,7 @@ public class Xpp3Dom
         xmlWriter.endElement();
     }
 
-    public void writeToSerializer( String namespace, MXSerializer serializer )
+    public void writeToSerializer( String namespace, XmlSerializer serializer )
         throws IOException
     {
         // TODO: Xpp3DomWriter?
