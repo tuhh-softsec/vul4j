@@ -35,6 +35,7 @@ import org.apache.xpath.XPathAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -245,20 +246,30 @@ public class Transforms extends SignatureElementProxy {
     * @return the number of transformations
     * @throws TransformationException
     */
-   public int getLength() throws TransformationException {
-
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         NodeList transformElems =
-            XPathAPI.selectNodeList(this._constructionElement,
-                                    "./ds:Transform", nscontext);
-
-         return transformElems.getLength();
-      } catch (TransformerException ex) {
-         throw new TransformationException("empty", ex);
-      }
-   }
+   public int getLength() throws TransformationException
+   {
+		/*Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
+	                                              Constants.SignatureSpecNS);
+	     NodeList transformElems =
+	        XPathAPI.selectNodeList(this._constructionElement,
+	                                "./ds:Transform", nscontext);
+	     return transformElems.getLength();*/
+	      int size=0;
+	      Node sibling= this._constructionElement.getFirstChild();
+	      while (sibling!=null)
+	      {
+	          if ("Transform".equals(sibling.getLocalName())
+	                  && Constants.SignatureSpecNS.equals(sibling.getNamespaceURI())) {
+	              size++;
+	          }
+	          sibling=sibling.getNextSibling();
+	      }
+	      if (size==0)
+	      {
+	          throw new TransformationException("empty");
+	      }
+          return size;
+  }
 
    /**
     * Return the <it>i</it><sup>th</sup> <code>{@link Transform}</code>.

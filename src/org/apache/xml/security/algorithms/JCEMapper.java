@@ -21,6 +21,8 @@ package org.apache.xml.security.algorithms;
 import java.security.Key;
 import java.security.Provider;
 import java.security.Security;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -48,6 +50,8 @@ public class JCEMapper {
 
    /** Field _nscontext */
    private static Element _nscontext = null;
+   
+   private static Map uriToProvider = new HashMap();
 
    /**
     * Method init
@@ -179,13 +183,13 @@ public class JCEMapper {
       log.debug("Request for URI " + AlgorithmURI);
 
       try {
+      	
+      	ProviderIdClass prov=(ProviderIdClass)
+		uriToProvider.get(AlgorithmURI);
+		          if (prov!=null) {
+		              return prov;
+		          }
 
-         /*
-         Attr jceName = (Attr) XPathAPI.selectSingleNode(
-            JCEMapper._providerList,
-            "./x:Algorithms/x:Algorithm[@URI='" + AlgorithmURI
-            + "']/x:Provider[1]/@JCEName", JCEMapper._nscontext);
-         */
          NodeList providers = XPathAPI.selectNodeList(JCEMapper._providerList,
                                  "./x:Algorithms/x:Algorithm[@URI='"
                                  + AlgorithmURI + "']/x:ProviderAlgo",
@@ -205,6 +209,7 @@ public class JCEMapper {
                log.debug("Found " + result.getAlgorithmID() + " from provider "
                          + result.getProviderId());
 
+               uriToProvider.put(AlgorithmURI,result);
                return result;
             }
          }
