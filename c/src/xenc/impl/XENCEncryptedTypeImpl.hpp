@@ -74,22 +74,24 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/xenc/XENCEncryptedType.hpp>
+#include <xsec/dsig/DSIGKeyInfoList.hpp>
 
 // Forward declarations
 
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
-class XENCCipherImpl;
 class XENCCipherDataImpl;
+class XENCEncryptionMethodImpl;
 class TXFMChain;
+class XSECEnv;
 
 class XENCEncryptedTypeImpl : public XENCEncryptedType {
 
 public:
 
-	XENCEncryptedTypeImpl(XENCCipherImpl * cipher);
+	XENCEncryptedTypeImpl(const XSECEnv * env);
 	XENCEncryptedTypeImpl(
-		XENCCipherImpl * cipher, 
+		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
 	);
 
@@ -103,11 +105,15 @@ public:
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * createBlankEncryptedType(
 						XMLCh * localName,
 						XENCCipherData::XENCCipherDataType type, 
+						const XMLCh * algorithm,
 						const XMLCh * value);
 
 	// Interface Methods
 	virtual XENCCipherData * getCipherData(void);
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getDOMNode();
+	virtual DSIGKeyInfoList * getKeyInfoList(void) {return &m_keyInfoList;}
+	virtual XENCEncryptionMethod * getEncryptionMethod(void);
+
 
 protected:
 
@@ -116,10 +122,16 @@ protected:
 
 	TXFMChain * createCipherTXFMChain(void);
 
-	XENCCipherImpl			* mp_cipher;
+	const XSECEnv				* mp_env;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
-							* mp_encryptedTypeNode;		// Node at head of structure
-	XENCCipherDataImpl		* mp_cipherData;
+								* mp_encryptedTypeNode;		// Node at head of structure
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
+								* mp_keyInfoNode;			// Any underlying KeyInfo
+	XENCCipherDataImpl			* mp_cipherData;
+	XENCEncryptionMethodImpl	* mp_encryptionMethod;
+
+	// Hold the XML Digital Signature KeyInfo list
+	DSIGKeyInfoList			m_keyInfoList;
 
 	friend class XENCCipherImpl;
 };

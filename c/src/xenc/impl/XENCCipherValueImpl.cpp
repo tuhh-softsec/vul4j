@@ -74,6 +74,7 @@
 
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 #include <xercesc/util/XMLUniDefs.hpp>
 
@@ -103,15 +104,15 @@ static XMLCh s_CipherValue[] = {
 //			Constructors/Destructors
 // --------------------------------------------------------------------------------
 
-XENCCipherValueImpl::XENCCipherValueImpl(XENCCipherImpl * cipher) :
-mp_cipher(cipher),
+XENCCipherValueImpl::XENCCipherValueImpl(const XSECEnv * env) :
+mp_env(env),
 mp_cipherValueNode(NULL),
 mp_cipherString(NULL) {
 
 }
 
-XENCCipherValueImpl::XENCCipherValueImpl(XENCCipherImpl * cipher, DOMNode * node) :
-mp_cipher(cipher),
+XENCCipherValueImpl::XENCCipherValueImpl(const XSECEnv * env, DOMNode * node) :
+mp_env(env),
 mp_cipherValueNode(node),
 mp_cipherString(NULL) {
 
@@ -171,8 +172,8 @@ DOMElement * XENCCipherValueImpl::createBlankCipherValue(
 
 	// Get some setup values
 	safeBuffer str;
-	DOMDocument *doc = mp_cipher->getDocument();
-	const XMLCh * prefix = mp_cipher->getXENCNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getXENCNSPrefix();
 
 	makeQName(str, prefix, s_CipherValue);
 
@@ -198,3 +199,28 @@ const XMLCh * XENCCipherValueImpl::getCipherString(void) {
 
 }
 
+void XENCCipherValueImpl::setCipherString(const XMLCh * value) {
+
+	if (mp_cipherValueNode == NULL) {
+
+		throw XSECException(XSECException::CipherValueError,
+			"XENCCipherData::setCipherString - called on empty DOM");
+
+	}
+
+	// Find first text child
+	DOMNode * txt = findFirstChildOfType(mp_cipherValueNode, DOMNode::TEXT_NODE);
+	
+	if (txt == NULL) {
+		throw XSECException(XSECException::CipherValueError,
+			"XENCCipherData::setCipherString - Error finding text node");
+	}
+
+	txt->setNodeValue(value);
+
+	if (mp_cipherString != NULL)
+		delete[] mp_cipherString;
+
+	mp_cipherString = XMLString::replicate(value);
+
+}

@@ -72,12 +72,14 @@
 #include "XENCCipherImpl.hpp"
 #include "XENCCipherDataImpl.hpp"
 #include "XENCEncryptedTypeImpl.hpp"
+#include "XENCEncryptionMethodImpl.hpp"
 
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/transformers/TXFMBase64.hpp>
 #include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/transformers/TXFMSB.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/util/Janitor.hpp>
@@ -140,18 +142,22 @@ static XMLCh s_CipherData[] = {
 //			Constructors and Destructors
 // --------------------------------------------------------------------------------
 
-XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(XENCCipherImpl * cipher) :
-mp_cipher(cipher),
+XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(const XSECEnv * env) :
+mp_env(env),
 mp_encryptedTypeNode(NULL),
-mp_cipherData(NULL) {
+mp_cipherData(NULL),
+mp_encryptionMethod(NULL),
+m_keyInfoList(env) {
 
 }
 
 
-XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(XENCCipherImpl * cipher, DOMNode * node) :
-mp_cipher(cipher),
+XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(const XSECEnv * env, DOMNode * node) :
+mp_env(env),
 mp_encryptedTypeNode(node),
-mp_cipherData(NULL) {
+mp_cipherData(NULL),
+mp_encryptionMethod(NULL),
+m_keyInfoList(env) {
 
 }
 
@@ -159,6 +165,9 @@ XENCEncryptedTypeImpl::~XENCEncryptedTypeImpl() {
 
 	if (mp_cipherData != NULL)
 		delete mp_cipherData;
+
+	if (mp_encryptionMethod != NULL)
+		delete mp_encryptionMethod;
 
 }
 
@@ -183,7 +192,8 @@ void XENCEncryptedTypeImpl::load() {
 
 	if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_EncryptionMethod)) {
 
-		// For now, ignore
+		XSECnew(mp_encryptionMethod, XENCEncryptionMethodImpl(mp_env, tmpElt));
+		mp_encryptionMethod->load();
 
 		tmpElt = findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
 
@@ -191,7 +201,11 @@ void XENCEncryptedTypeImpl::load() {
 
 	if (tmpElt != NULL && strEquals(getDSIGLocalName(tmpElt), s_KeyInfo)) {
 
-		// For now, ignore
+		// Load
+		mp_keyInfoNode = tmpElt;
+		m_keyInfoList.loadListFromXML(tmpElt);
+
+		// Find the next node
 
 		tmpElt = findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
 
@@ -199,7 +213,7 @@ void XENCEncryptedTypeImpl::load() {
 
 	if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_CipherData)) {
 
-		XSECnew(mp_cipherData, XENCCipherDataImpl(mp_cipher, tmpElt));
+		XSECnew(mp_cipherData, XENCCipherDataImpl(mp_env, tmpElt));
 		mp_cipherData->load();
 		tmpElt = findNextChildOfType(tmpElt, DOMNode::ELEMENT_NODE);
 
@@ -223,15 +237,17 @@ void XENCEncryptedTypeImpl::load() {
 DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
 						XMLCh * localName,
 						XENCCipherData::XENCCipherDataType type, 
+						const XMLCh * algorithm,
 						const XMLCh * value) {
 
 	// Reset
 	mp_cipherData = NULL;
+	mp_encryptionMethod = NULL;
 
 	// Get some setup values
 	safeBuffer str;
-	DOMDocument *doc = mp_cipher->getDocument();
-	const XMLCh * prefix = mp_cipher->getXENCNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getXENCNSPrefix();
 
 	makeQName(str, prefix, localName);
 
@@ -251,9 +267,19 @@ DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
 							str.rawXMLChBuffer(), 
 							DSIGConstants::s_unicodeStrURIXENC);
 
+	// Create the EncryptionMethod
+	if (algorithm != NULL) {
+
+		XSECnew(mp_encryptionMethod, XENCEncryptionMethodImpl(mp_env));
+		DOMNode * encryptionMethodNode = 
+			mp_encryptionMethod->createBlankEncryptedType(algorithm);
+
+		ret->appendChild(encryptionMethodNode);
+
+	}
 
 	// Create the cipher Data
-	XSECnew(mp_cipherData, XENCCipherDataImpl(mp_cipher));
+	XSECnew(mp_cipherData, XENCCipherDataImpl(mp_env));
 	DOMNode * cipherDataNode = mp_cipherData->createBlankCipherData(type, value);
 
 	// Add to EncryptedType
@@ -280,7 +306,7 @@ TXFMChain * XENCEncryptedTypeImpl::createCipherTXFMChain(void) {
 		ArrayJanitor<char> j_b64(b64);
 
 		TXFMSB *sb;
-		XSECnew(sb, TXFMSB(mp_cipher->getDocument()));
+		XSECnew(sb, TXFMSB(mp_env->getParentDocument()));
 
 		sb->setInput(safeBuffer(b64));
 
@@ -289,7 +315,7 @@ TXFMChain * XENCEncryptedTypeImpl::createCipherTXFMChain(void) {
 
 		// Create a base64 decoder
 		TXFMBase64 * tb64;
-		XSECnew(tb64, TXFMBase64(mp_cipher->getDocument()));
+		XSECnew(tb64, TXFMBase64(mp_env->getParentDocument()));
 
 		chain->appendTxfm(tb64);
 
@@ -323,4 +349,10 @@ DOMElement * XENCEncryptedTypeImpl::getDOMNode() {
 		return static_cast<DOMElement*>(mp_encryptedTypeNode);
 
 	return NULL;
+}
+
+XENCEncryptionMethod * XENCEncryptedTypeImpl::getEncryptionMethod(void) {
+	
+	return mp_encryptionMethod;
+
 }

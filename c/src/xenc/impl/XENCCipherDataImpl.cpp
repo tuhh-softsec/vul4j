@@ -73,6 +73,7 @@
 
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 #include <xercesc/util/XMLUniDefs.hpp>
 
@@ -137,16 +138,16 @@ static XMLCh s_CipherReference[] = {
 //			Constructors and Destructors
 // --------------------------------------------------------------------------------
 
-XENCCipherDataImpl::XENCCipherDataImpl(XENCCipherImpl * cipher) :
-mp_cipher(cipher),
+XENCCipherDataImpl::XENCCipherDataImpl(const XSECEnv * env) :
+mp_env(env),
 mp_cipherDataNode(NULL),
 mp_cipherValue(NULL) {
 
 }
 
 
-XENCCipherDataImpl::XENCCipherDataImpl(XENCCipherImpl * cipher, DOMNode * node) :
-mp_cipher(cipher),
+XENCCipherDataImpl::XENCCipherDataImpl(const XSECEnv * env, DOMNode * node) :
+mp_env(env),
 mp_cipherDataNode(node),
 mp_cipherValue(NULL) {
 
@@ -187,7 +188,7 @@ void XENCCipherDataImpl::load() {
 	if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_CipherValue)) {
 
 		m_cipherDataType = VALUE_TYPE;
-		XSECnew(mp_cipherValue, XENCCipherValueImpl(mp_cipher, tmpElt));
+		XSECnew(mp_cipherValue, XENCCipherValueImpl(mp_env, tmpElt));
 		mp_cipherValue->load();
 
 	}
@@ -225,8 +226,8 @@ DOMElement * XENCCipherDataImpl::createBlankCipherData(
 
 	// Get some setup values
 	safeBuffer str;
-	DOMDocument *doc = mp_cipher->getDocument();
-	const XMLCh * prefix = mp_cipher->getXENCNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getXENCNSPrefix();
 
 	makeQName(str, prefix, s_CipherData);
 
@@ -239,7 +240,7 @@ DOMElement * XENCCipherDataImpl::createBlankCipherData(
 		// Should set the type attribute
 
 		// Create the Cipher Value
-		XSECnew(mp_cipherValue, XENCCipherValueImpl(mp_cipher));
+		XSECnew(mp_cipherValue, XENCCipherValueImpl(mp_env));
 		DOMNode * cipherValueNode = mp_cipherValue->createBlankCipherValue(value);
 
 		ret->appendChild(cipherValueNode);

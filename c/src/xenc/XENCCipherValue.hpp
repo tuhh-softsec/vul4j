@@ -117,6 +117,23 @@ public:
 
 	//@}
 
+	/** @name Set Interface Methods */
+	//@{
+
+	/**
+	 * \brief Set the encrypted value
+	 *
+	 * Sets the base64 encoded string held in the CipherValue.
+	 *
+	 * @note This should not normally be called directly - use the XENCCipher
+	 * interface for normal operation
+	 *
+	 * @param value The string to set
+	 */
+
+	virtual void setCipherString(const XMLCh * value) = 0;
+
+	//@}
 private:
 
 	// Unimplemented

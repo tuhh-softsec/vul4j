@@ -94,7 +94,33 @@
 
 class XENCEncryptionMethod {
 
+public:
 
+	XENCEncryptionMethod() {};
+
+	virtual ~XENCEncryptionMethod() {};
+
+	/** @name Getter Methods */
+	//@{
+
+	/**
+	 * \brief Get the algorithm
+	 *
+	 * Return the Algorithm URI representing the encryption type for this
+	 * encrypted data
+	 *
+	 * @returns the URI representing the algorithm
+	 */
+
+	virtual const XMLCh * getAlgorithm(void) = 0;
+
+	//@}
+
+private:
+
+	// Unimplemented
+	XENCEncryptionMethod(const XENCEncryptionMethod &);
+	XENCEncryptionMethod & operator = (const XENCEncryptionMethod &);
 
 };
 

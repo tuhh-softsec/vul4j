@@ -78,6 +78,9 @@ class safeBuffer;
 class XSECProvider;
 class XENCEncryptedDataImpl;
 class TXFMChain;
+class XSECEnv;
+class XSECKeyInfoResolver;
+class XSECPlatformUtils;
 
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 XSEC_DECLARE_XERCES_CLASS(DOMDocumentFragment);
@@ -95,7 +98,9 @@ public:
 
 	// Implementation for encryption Elements
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * encryptElement(
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element);
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * uri = NULL);
 
 	// Getter methods
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * getDocument(void) 
@@ -104,20 +109,25 @@ public:
 
 	// Setter methods
 	void setKey(XSECCryptoKey * key) {mp_key = key;}
+	void setKeyInfoResolver(const XSECKeyInfoResolver * resolver);
+
 	void setXENCNSPrefix(const XMLCh * prefix);
 	
 	// Creation methods
-	XENCEncryptedData * createEncryptedData(XENCCipherData::XENCCipherDataType type, 
-											XMLCh * value);
+	XENCEncryptedData * createEncryptedData(XENCCipherData::XENCCipherDataType type,
+											const XMLCh * algorithm,
+											const XMLCh * value);
 
+protected:
+
+	// Initialisation
+	static void Initialise(void);
 
 protected:
 
 	// Protected to prevent direct creation of objects
 	XENCCipherImpl(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc);
 
-	// Creates a transform chain that gives the decrypted data
-	TXFMChain * createDecryptionTXFMChain(void);
 private:
 
 	// Internal functions
@@ -139,11 +149,14 @@ private:
 	// Key
 	XSECCryptoKey			* mp_key;
 
-	// Prefix
-	XMLCh					* mp_xencPrefixNS;
+	// Environment
+	XSECEnv					* mp_env;
 
+	// Resolvers
+	XSECKeyInfoResolver		* mp_keyInfoResolver;
 
 	friend class XSECProvider;
+	friend class XSECPlatformUtils;
 
 };
 

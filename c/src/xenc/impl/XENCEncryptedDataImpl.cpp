@@ -106,13 +106,13 @@ static XMLCh s_EncryptedData[] = {
 // --------------------------------------------------------------------------------
 
 
-XENCEncryptedDataImpl::XENCEncryptedDataImpl(XENCCipherImpl * cipher) :
-XENCEncryptedTypeImpl(cipher) {
+XENCEncryptedDataImpl::XENCEncryptedDataImpl(const XSECEnv * env) :
+XENCEncryptedTypeImpl(env) {
 	
 }
 
-XENCEncryptedDataImpl::XENCEncryptedDataImpl(XENCCipherImpl * cipher, DOMNode * node) :
-XENCEncryptedTypeImpl(cipher, node) {
+XENCEncryptedDataImpl::XENCEncryptedDataImpl(const XSECEnv * env, DOMNode * node) :
+XENCEncryptedTypeImpl(env, node) {
 
 }
 
@@ -152,9 +152,10 @@ void XENCEncryptedDataImpl::load(void) {
 
 DOMElement * XENCEncryptedDataImpl::createBlankEncryptedData(
 									XENCCipherData::XENCCipherDataType type, 
+									const XMLCh * algorithm,
 									const XMLCh * value) {
 
-	return createBlankEncryptedType(s_EncryptedData, type, value);
+	return createBlankEncryptedType(s_EncryptedData, type, algorithm, value);
 
 }
 

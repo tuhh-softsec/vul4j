@@ -79,13 +79,15 @@
 
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
+class XSECEnv;
+
 class XENCCipherValueImpl : public XENCCipherValue {
 
 public:
 
-	XENCCipherValueImpl(XENCCipherImpl * cipher);
+	XENCCipherValueImpl(const XSECEnv * env);
 	XENCCipherValueImpl(
-		XENCCipherImpl * cipher, 
+		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
 	);
 
@@ -99,7 +101,8 @@ public:
 
 	// Interface methods
 
-	const XMLCh * getCipherString(void);
+	virtual const XMLCh * getCipherString(void);
+	virtual void setCipherString(const XMLCh * value);
 
 private:
 
@@ -107,7 +110,7 @@ private:
 	XENCCipherValueImpl(const XENCCipherValueImpl &);
 	XENCCipherValueImpl & operator = (const XENCCipherValueImpl &);
 
-	XENCCipher				* mp_cipher;
+	const XSECEnv			* mp_env;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
 							* mp_cipherValueNode;
 	XMLCh					* mp_cipherString;		// EncryptedData

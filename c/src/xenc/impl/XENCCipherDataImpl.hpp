@@ -84,9 +84,9 @@ class XENCCipherDataImpl : public XENCCipherData {
 
 public:
 
-	XENCCipherDataImpl(XENCCipherImpl * cipher);
+	XENCCipherDataImpl(const XSECEnv * env);
 	XENCCipherDataImpl(
-		XENCCipherImpl * cipher, 
+		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node
 	);
 
@@ -109,7 +109,7 @@ private:
 	// Unimplemented constructor
 	XENCCipherDataImpl();
 
-	XENCCipherImpl			* mp_cipher;
+	const XSECEnv			* mp_env;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
 							* mp_cipherDataNode;		// Node at head of structure
 

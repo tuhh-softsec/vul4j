@@ -73,6 +73,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/xenc/XENCCipherData.hpp>
+#include <xsec/dsig/DSIGConstants.hpp>
 
 // Xerces
 
@@ -81,6 +82,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMDocument);
 
 class XSECCryptoKey;
 class XENCEncryptedData;
+class XSECKeyInfoResolver;
 
 /**
  * @defgroup xenc XML Encryption Implementation
@@ -158,13 +160,22 @@ public:
 	 * is replaced with an EncryptedData element
 	 *
 	 * @param element Element (and children) to encrypt
+	 * @param em The encryptionMethod to use for this encryption.  Use
+	 * ENCRYPT_NONE if a user defined type is required.
+	 * @param algorithmURI If ENCRYPT_NONE is passed in, this will be
+	 * used to set the algorithm URI.  If this is also NULL - no
+	 * EncryptionMethod will be set.  <b>NULL Value Unsupported if em not
+	 * set!  It's use could cause problems!</b>
+	 *
 	 * @returns The owning document with the element replaced, or NULL
 	 * if the decryption fails for some reason (normally an exception).
 	 * @throws XSECException if the encryption fails.
 	 */
 
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * encryptElement(
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL
 	) = 0;
 
 	//@}
@@ -211,6 +222,22 @@ public:
 	virtual void setKey(XSECCryptoKey * key) = 0;
 
 	/**
+	 * \brief Register a KeyInfoResolver 
+	 *
+	 * Registers a KeyInfoResolver to be used by the cipher when 
+	 * it needs to find a key to be used to decrypt some ciper text
+	 *
+	 * @note The library will use the #clone() function from the resolver
+	 * to get a copy.  The passed in resolver remains the property of
+	 * the calling function
+	 *
+	 * @param resolver Resolver to clone and use for resolving keys
+	 *
+	 */
+
+	virtual void setKeyInfoResolver(const XSECKeyInfoResolver * resolver) = 0;
+
+	/**
 	 * \brief Set prefix for XENC nodes
 	 *
 	 * Set the namespace prefix the library will use when creating
@@ -237,12 +264,15 @@ public:
 	 * EncryptedData and delete any currently being held.
 	 *
 	 * @param type Should this set up a CipherReference or a CipherValue
+	 * @param algorithm URI string to use for the Algorithm attribute in EncryptionMethod.
+	 * Set to NULL for no defined algorithm.
 	 * @param value String to set the cipher data to if the type is VALUE_TYPE
 	 * @returns An XENCEncryptedData object
 	 */
 
-	virtual XENCEncryptedData * createEncryptedData(XENCCipherData::XENCCipherDataType type, 
-													XMLCh * value) = 0;
+	virtual XENCEncryptedData * createEncryptedData(XENCCipherData::XENCCipherDataType type,
+													const XMLCh * algorithm,
+													const XMLCh * value) = 0;
 
 	//@}
 

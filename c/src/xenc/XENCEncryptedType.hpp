@@ -77,6 +77,8 @@
 #include <xsec/framework/XSECDefs.hpp>
 
 class XENCCipherData;
+class DSIGKeyInfoList;
+class XENCEncryptionMethod;
 
 /**
  * @ingroup xenc
@@ -112,7 +114,7 @@ public:
 
 	virtual ~XENCEncryptedType() {};
 
-	/** @name Interface Methods */
+	/** @name Basic Interface Methods */
 	//@{
 
 	/**
@@ -127,6 +129,20 @@ public:
 	virtual XENCCipherData * getCipherData(void) = 0;
 
 	/**
+	 * \brief Retrieve the EncryptionMethod element
+	 *
+	 * The EncryptionMethod element holds information about the 
+	 * encryption algorithm to be used to encrypt/decrypt the data
+	 *
+	 * This method provides a means to extract the EncryptionMethod
+	 * element from the EncryptedType
+	 *
+	 * @returns The EncryptionMethod element
+	 */
+
+	virtual XENCEncryptionMethod * getEncryptionMethod(void) = 0;
+
+	/**
 	 * \brief Retrieve the DOM Node that heads up the structure
 	 *
 	 * If this object has been fully created, this call will provide
@@ -139,13 +155,34 @@ public:
 
 	//@}
 
+	/** @name KeyInfo Element Manipulation */
+	
+	//@{
+
+	/**
+	 * \brief Get the list of \<KeyInfo\> elements.
+	 *
+	 * <p>This function recovers list that contains the KeyInfo elements
+	 * read in from the DOM document.</p>
+	 *
+	 * <p>This list should be used by calling applications to determine what key
+	 * is appropriate for decrypting the document.</p>
+	 *
+	 * @note The list should never be modified directly.  If you need to
+	 * add keyInfo elements, call the appropriate functions in EncryptedType
+	 *
+	 * @returns A pointer to the DSIGKeyInfoList object held by the XENCCipher
+	 */
+	
+	virtual DSIGKeyInfoList * getKeyInfoList(void) = 0;
+
+	//@}
+
 private:
 
 	// Unimplemented
 	XENCEncryptedType(const XENCEncryptedType &);
 	XENCEncryptedType & operator = (const XENCEncryptedType &);
-
-
 
 };
 
