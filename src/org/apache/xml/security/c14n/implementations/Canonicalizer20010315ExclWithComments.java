@@ -66,7 +66,6 @@ import org.apache.xml.security.c14n.Canonicalizer;
 /**
  * Class Canonicalizer20010315ExclWithComments
  *
- * @author $Author$
  * @version $Revision$
  */
 public class Canonicalizer20010315ExclWithComments

@@ -91,24 +91,7 @@ import org.apache.xml.security.transforms.params.InclusiveNamespaces;
  * @version $Revision$
  * @see <A HREF="http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/">"Exclusive XML Canonicalization, Version 1.0"</A>
  */
-public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
-   //J-
-   boolean _includeComments = false;
-
-   Set _xpathNodeSet = null;
-
-   /**
-    * This Set contains the names (Strings like "xmlns" or "xmlns:foo") of
-    * the inclusive namespaces.
-    */
-   Set _inclusiveNSSet = null;
-
-   Document _doc = null;
-   Element _documentElement = null;
-   Node _rootNodeOfC14n = null;
-   HashMap _renderedPrefixesForElement = null;
-   Writer _writer = null;
-   //J+
+public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 
    /**
     * Constructor Canonicalizer20010315Excl
@@ -116,7 +99,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * @param includeComments
     */
    public Canonicalizer20010315Excl(boolean includeComments) {
-      this._includeComments = includeComments;
+      super(includeComments);
    }
 
    /**
@@ -400,100 +383,20 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
    }
 
    /**
-    * Collects all relevant xml:* and attributes from all ancestor
-    * Elements from rootNode and creates a Map containg the attribute
-    * names/values.
+    * Method handleAttributesSubtree
     *
-    * @param apexNode
-    *
+    * @param E
     * @throws CanonicalizationException
     */
-   Map getInscopeNamespaces(Node apexNode) throws CanonicalizationException {
-
-      Map result = new HashMap();
-
-      if (apexNode.getNodeType() != Node.ELEMENT_NODE) {
-         return result;
-      }
-
-      Element apexElement = (Element) apexNode;
-
-      for (Node parent = apexElement.getParentNode();
-              ((parent != null) && (parent.getNodeType() == Node.ELEMENT_NODE));
-              parent = parent.getParentNode()) {
-         NamedNodeMap attributes = parent.getAttributes();
-         int nrOfAttrs = attributes.getLength();
-
-         for (int i = 0; i < nrOfAttrs; i++) {
-            Attr currentAttr = (Attr) attributes.item(i);
-            String name = currentAttr.getNodeName();
-            String value = currentAttr.getValue();
-
-            if (name.equals("xmlns") && value.equals("")) {
-               result.remove(name);
-            } else if (name.startsWith("xmlns") &&!value.equals("")) {
-               if (!result.containsKey(name)) {
-                  result.put(name, value);
-               }
-            }
-         }
-      }
-
-      return result;
-   }
-
-   //J-
-   private static final int NODE_BEFORE_DOCUMENT_ELEMENT = -1;
-   private static final int NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT = 0;
-   private static final int NODE_AFTER_DOCUMENT_ELEMENT = 1;
-   //J+
-
-   /**
-    * Checks whether a Comment or ProcessingInstruction is before or after the
-    * document element. This is needed for prepending or appending "\n"s.
-    *
-    * @param currentNode comment or pi to check
-    * @return NODE_BEFORE_DOCUMENT_ELEMENT, NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT or NODE_AFTER_DOCUMENT_ELEMENT
-    * @see NODE_BEFORE_DOCUMENT_ELEMENT
-    * @see NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT
-    * @see NODE_AFTER_DOCUMENT_ELEMENT
-    */
-   static int getPositionRelativeToDocumentElement(Node currentNode) {
-
-      if (currentNode == null) {
-         return NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
-      }
-
-      Document doc = currentNode.getOwnerDocument();
-
-      if (currentNode.getParentNode() != doc) {
-         return NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
-      }
-
-      Element documentElement = doc.getDocumentElement();
-
-      if (documentElement == null) {
-         return NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
-      }
-
-      if (documentElement == currentNode) {
-         return NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
-      }
-
-      for (Node x = currentNode; x != null; x = x.getNextSibling()) {
-         if (x == documentElement) {
-            return NODE_BEFORE_DOCUMENT_ELEMENT;
-         }
-      }
-
-      return NODE_AFTER_DOCUMENT_ELEMENT;
+   Object[] handleAttributesSubtree(Element E)
+           throws CanonicalizationException {
+      throw new RuntimeException("Not yet implemented");
    }
 
    /**
     * Method engineCanonicalizeXPathNodeSet
     *
     * @param xpathNodeSet
-    *
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet)
@@ -506,51 +409,20 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     *
     * @param xpathNodeSet
     * @param inclusiveNamespaces
-    *
     * @throws CanonicalizationException
     */
    public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet, String inclusiveNamespaces)
            throws CanonicalizationException {
 
-      this._xpathNodeSet = xpathNodeSet;
-
-      if (this._xpathNodeSet.size() == 0) {
-         return new byte[0];
-      }
-
-      {
-
-         // get only a single node as anchor to fetch the owner document
-         Node n = (Node) this._xpathNodeSet.iterator().next();
-
-         this._doc = XMLUtils.getOwnerDocument(n);
-         this._documentElement = this._doc.getDocumentElement();
-      }
-
       try {
-         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-         this._writer = new OutputStreamWriter(baos, Canonicalizer.ENCODING);
          this._inclusiveNSSet =
             InclusiveNamespaces.prefixStr2Set(inclusiveNamespaces);
          this._renderedPrefixesForElement = new HashMap();
 
-         this.canonicalizeXPathNodeSet(this._doc);
-         this._writer.close();
-
-         return baos.toByteArray();
-      } catch (UnsupportedEncodingException ex) {
-         throw new CanonicalizationException("empty", ex);
-      } catch (IOException ex) {
-         throw new CanonicalizationException("empty", ex);
+         return super.engineCanonicalizeXPathNodeSet(xpathNodeSet);
       } finally {
-         this._xpathNodeSet = null;
          this._inclusiveNSSet = null;
-         this._rootNodeOfC14n = null;
-         this._doc = null;
-         this._documentElement = null;
          this._renderedPrefixesForElement = null;
-         this._writer = null;
       }
    }
 
@@ -681,302 +553,6 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          this._renderedPrefixesForElement.remove(currentElement);
          break;
       }
-   }
-
-   /**
-    * Normalizes an {@link Attr}ibute value
-    *
-    * The string value of the node is modified by replacing
-    * <UL>
-    * <LI>all ampersands (&) with <CODE>&amp;amp;</CODE></LI>
-    * <LI>all open angle brackets (<) with <CODE>&amp;lt;</CODE></LI>
-    * <LI>all quotation mark characters with <CODE>&amp;quot;</CODE></LI>
-    * <LI>and the whitespace characters <CODE>#x9</CODE>, #xA, and #xD, with character
-    * references. The character references are written in uppercase
-    * hexadecimal with no leading zeroes (for example, <CODE>#xD</CODE> is represented
-    * by the character reference <CODE>&amp;#xD;</CODE>)</LI>
-    * </UL>
-    *
-    * @param name
-    * @param value
-    * @throws IOException
-    */
-   void outputAttrToWriter(String name, String value) throws IOException {
-
-      this._writer.write(" ");
-      this._writer.write(name);
-      this._writer.write("=\"");
-
-      int length = value.length();
-
-      for (int i = 0; i < length; i++) {
-         char c = value.charAt(i);
-
-         switch (c) {
-
-         case '&' :
-            this._writer.write("&amp;");
-            break;
-
-         case '<' :
-            this._writer.write("&lt;");
-            break;
-
-         case '"' :
-            this._writer.write("&quot;");
-            break;
-
-         case 0x09 :    // '\t'
-            this._writer.write("&#x9;");
-            break;
-
-         case 0x0A :    // '\n'
-            this._writer.write("&#xA;");
-            break;
-
-         case 0x0D :    // '\r'
-            this._writer.write("&#xD;");
-            break;
-
-         default :
-            this._writer.write(c);
-            break;
-         }
-      }
-
-      this._writer.write("\"");
-   }
-
-   /**
-    * Normalizes a {@link org.w3c.dom.Comment} value
-    *
-    * @param currentPI
-    * @throws IOException
-    */
-   void outputPItoWriter(ProcessingInstruction currentPI) throws IOException {
-
-      if (currentPI == null) {
-         return;
-      }
-
-      this._writer.write("<?");
-
-      String target = currentPI.getTarget();
-      int length = target.length();
-
-      for (int i = 0; i < length; i++) {
-         char c = target.charAt(i);
-
-         switch (c) {
-
-         case 0x0D :
-            this._writer.write("&#xD;");
-            break;
-
-         default :
-            this._writer.write(c);
-            break;
-         }
-      }
-
-      String data = currentPI.getData();
-
-      length = data.length();
-
-      if ((data != null) && (length > 0)) {
-         this._writer.write(" ");
-
-         for (int i = 0; i < length; i++) {
-            char c = data.charAt(i);
-
-            switch (c) {
-
-            case 0x0D :
-               this._writer.write("&#xD;");
-               break;
-
-            default :
-               this._writer.write(c);
-               break;
-            }
-         }
-      }
-
-      this._writer.write("?>");
-   }
-
-   /**
-    * Method outputCommentToWriter
-    *
-    * @param currentComment
-    * @throws IOException
-    */
-   void outputCommentToWriter(Comment currentComment) throws IOException {
-
-      if (currentComment == null) {
-         return;
-      }
-
-      this._writer.write("<!--");
-
-      String data = currentComment.getData();
-      int length = data.length();
-
-      for (int i = 0; i < length; i++) {
-         char c = data.charAt(i);
-
-         switch (c) {
-
-         case 0x0D :
-            this._writer.write("&#xD;");
-            break;
-
-         default :
-            this._writer.write(c);
-            break;
-         }
-      }
-
-      this._writer.write("-->");
-   }
-
-   /**
-    * Method outputTextToWriter
-    *
-    * @param text
-    * @throws IOException
-    */
-   void outputTextToWriter(String text) throws IOException {
-
-      if (text == null) {
-         return;
-      }
-
-      int length = text.length();
-
-      for (int i = 0; i < length; i++) {
-         char c = text.charAt(i);
-
-         switch (c) {
-
-         case '&' :
-            this._writer.write("&amp;");
-            break;
-
-         case '<' :
-            this._writer.write("&lt;");
-            break;
-
-         case '>' :
-            this._writer.write("&gt;");
-            break;
-
-         case 0xD :
-            this._writer.write("&#xD;");
-            break;
-
-         default :
-            this._writer.write(c);
-            break;
-         }
-      }
-   }
-
-   /**
-    * Returns <code>true</code> is the namespace is either utilized by the
-    * given element or included by the includedNamespaces parameter.
-    *
-    * @param element
-    * @param namespace
-    *
-    */
-   public boolean utilizedOrIncluded(Element element, String namespace) {
-
-      if (this._inclusiveNSSet.contains(namespace)) {
-
-         // included;
-         return true;
-      }
-
-      boolean utilized = this.visiblyUtilized(element).contains(namespace);
-
-      return utilized;
-   }
-
-   /**
-    * Method visiblyUtilized
-    *
-    * @param element
-    * @return a Set of namespace names.
-    */
-   public Set visiblyUtilized(Element element) {
-
-      Set result = new HashSet();
-
-      if (this._xpathNodeSet == null) {
-
-         // we are in the canonicalizeSubtree part
-         if (element.getNamespaceURI() != null) {
-            String prefix = element.getPrefix();
-
-            if (prefix == null) {
-               result.add("xmlns");
-            } else {
-               result.add("xmlns:" + prefix);
-            }
-         }
-
-         NamedNodeMap attributes = element.getAttributes();
-         int attributesLength = attributes.getLength();
-
-         // if the attribute is not xmlns:... and not xml:... but
-         // a:..., add xmlns:a to the list
-         for (int i = 0; i < attributesLength; i++) {
-            Attr currentAttr = (Attr) attributes.item(i);
-            String prefix = currentAttr.getPrefix();
-
-            if (prefix != null) {
-               if (!prefix.equals("xml") &&!prefix.equals("xmlns")) {
-                  result.add("xmlns:" + prefix);
-               }
-            }
-         }
-      } else {
-         if (this._xpathNodeSet.contains(element)) {
-
-            // we are in the canonicalizeXPathNodeSet part
-            if (element.getNamespaceURI() != null) {
-               String prefix = element.getPrefix();
-
-               if ((prefix == null) || (prefix.length() == 0)) {
-                  result.add("xmlns");
-               } else {
-                  result.add("xmlns:" + prefix);
-               }
-            }
-
-            NamedNodeMap attributes = element.getAttributes();
-            int attributesLength = attributes.getLength();
-
-            // if the attribute is not xmlns:... and not xml:... but
-            // a:..., add xmlns:a to the list
-            for (int i = 0; i < attributesLength; i++) {
-               Attr currentAttr = (Attr) attributes.item(i);
-
-               if (this._xpathNodeSet.contains(currentAttr)) {
-                  String prefix = currentAttr.getPrefix();
-
-                  if (prefix != null) {
-                     if (!prefix.equals("xml") &&!prefix.equals("xmlns")) {
-                        result.add("xmlns:" + prefix);
-                     }
-                  }
-               }
-            }
-         }
-      }
-
-      return result;
    }
 
    /**
@@ -1499,5 +1075,145 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
       Object sortedResultAsArray[] = C14nHelper.sortAttributes(resultAsArray);
 
       return sortedResultAsArray;
+   }
+
+   /**
+    * Collects all relevant xml:* and attributes from all ancestor
+    * Elements from rootNode and creates a Map containg the attribute
+    * names/values.
+    *
+    * @param apexNode
+    *
+    * @throws CanonicalizationException
+    */
+   Map getInscopeNamespaces(Node apexNode) throws CanonicalizationException {
+
+      Map result = new HashMap();
+
+      if (apexNode.getNodeType() != Node.ELEMENT_NODE) {
+         return result;
+      }
+
+      Element apexElement = (Element) apexNode;
+
+      for (Node parent = apexElement.getParentNode();
+              ((parent != null) && (parent.getNodeType() == Node.ELEMENT_NODE));
+              parent = parent.getParentNode()) {
+         NamedNodeMap attributes = parent.getAttributes();
+         int nrOfAttrs = attributes.getLength();
+
+         for (int i = 0; i < nrOfAttrs; i++) {
+            Attr currentAttr = (Attr) attributes.item(i);
+            String name = currentAttr.getNodeName();
+            String value = currentAttr.getValue();
+
+            if (name.equals("xmlns") && value.equals("")) {
+               result.remove(name);
+            } else if (name.startsWith("xmlns") &&!value.equals("")) {
+               if (!result.containsKey(name)) {
+                  result.put(name, value);
+               }
+            }
+         }
+      }
+
+      return result;
+   }
+
+   /**
+    * Returns <code>true</code> is the namespace is either utilized by the
+    * given element or included by the includedNamespaces parameter.
+    *
+    * @param element
+    * @param namespace
+    *
+    */
+   public boolean utilizedOrIncluded(Element element, String namespace) {
+
+      if (this._inclusiveNSSet.contains(namespace)) {
+
+         // included;
+         return true;
+      }
+
+      boolean utilized = this.visiblyUtilized(element).contains(namespace);
+
+      return utilized;
+   }
+
+   /**
+    * Method visiblyUtilized
+    *
+    * @param element
+    * @return a Set of namespace names.
+    */
+   public Set visiblyUtilized(Element element) {
+
+      Set result = new HashSet();
+
+      if (this._xpathNodeSet == null) {
+
+         // we are in the canonicalizeSubtree part
+         if (element.getNamespaceURI() != null) {
+            String prefix = element.getPrefix();
+
+            if (prefix == null) {
+               result.add("xmlns");
+            } else {
+               result.add("xmlns:" + prefix);
+            }
+         }
+
+         NamedNodeMap attributes = element.getAttributes();
+         int attributesLength = attributes.getLength();
+
+         // if the attribute is not xmlns:... and not xml:... but
+         // a:..., add xmlns:a to the list
+         for (int i = 0; i < attributesLength; i++) {
+            Attr currentAttr = (Attr) attributes.item(i);
+            String prefix = currentAttr.getPrefix();
+
+            if (prefix != null) {
+               if (!prefix.equals("xml") &&!prefix.equals("xmlns")) {
+                  result.add("xmlns:" + prefix);
+               }
+            }
+         }
+      } else {
+         if (this._xpathNodeSet.contains(element)) {
+
+            // we are in the canonicalizeXPathNodeSet part
+            if (element.getNamespaceURI() != null) {
+               String prefix = element.getPrefix();
+
+               if ((prefix == null) || (prefix.length() == 0)) {
+                  result.add("xmlns");
+               } else {
+                  result.add("xmlns:" + prefix);
+               }
+            }
+
+            NamedNodeMap attributes = element.getAttributes();
+            int attributesLength = attributes.getLength();
+
+            // if the attribute is not xmlns:... and not xml:... but
+            // a:..., add xmlns:a to the list
+            for (int i = 0; i < attributesLength; i++) {
+               Attr currentAttr = (Attr) attributes.item(i);
+
+               if (this._xpathNodeSet.contains(currentAttr)) {
+                  String prefix = currentAttr.getPrefix();
+
+                  if (prefix != null) {
+                     if (!prefix.equals("xml") &&!prefix.equals("xmlns")) {
+                        result.add("xmlns:" + prefix);
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+      return result;
    }
 }
