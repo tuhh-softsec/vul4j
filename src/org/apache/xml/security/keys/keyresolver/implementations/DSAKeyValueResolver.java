@@ -159,7 +159,7 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
 
          return pk;
       } catch (XMLSecurityException ex) {
-         ;
+		//do nothing
       }
 
       return null;
