@@ -3,7 +3,7 @@
 <!--
         "Digester" component of the Jakarta Commons Subproject
         DTD for the definition of Digester rules in XML.
-        $Id: digester-rules.dtd,v 1.7 2003/03/15 18:38:54 rdonkin Exp $
+        $Id: digester-rules.dtd,v 1.8 2003/03/27 18:54:45 rdonkin Exp $
 -->
 
 <!-- This document type defines an XML format for defining Digester rules.
@@ -80,12 +80,17 @@
     paramcount CDATA #IMPLIED
     paramtypes CDATA #IMPLIED>
 
-<!-- CallParamRule -->
+<!-- 
+    CallParamRule 
+    attrname - set param from attribute value (cannot be combined with from-stack)
+    from-stack - set param from stack (cannot be combined with attrname)
+    -->
 <!ELEMENT call-param-rule EMPTY>
 <!ATTLIST call-param-rule
     pattern  CDATA #IMPLIED
     paramnumber CDATA #REQUIRED
-    attrname CDATA #IMPLIED>
+    attrname CDATA #IMPLIED
+    from-stack CDATA #IMPLIED>
 
 <!-- 
     FactoryCreateRule 

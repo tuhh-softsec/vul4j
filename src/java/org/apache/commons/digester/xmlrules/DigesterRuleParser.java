@@ -556,7 +556,29 @@ public class DigesterRuleParser extends RuleSetBase {
             // create callparamrule
             int paramIndex = Integer.parseInt(attributes.getValue("paramnumber"));
             String attributeName = attributes.getValue("attrname");
-            Rule callParamRule = new CallParamRule( paramIndex, attributeName );
+            String fromStack = attributes.getValue("from-stack");
+            Rule callParamRule = null;
+            if (attributeName == null) {
+                if (fromStack == null) {
+                
+                    callParamRule = new CallParamRule( paramIndex );
+                
+                } else {
+
+                    callParamRule = new CallParamRule( paramIndex, Boolean.valueOf(fromStack).booleanValue());
+                    
+                }
+            } else {
+                if (fromStack == null) {
+                    
+                    callParamRule = new CallParamRule( paramIndex, attributeName );
+                    
+                    
+                } else {
+                    // specifying both from-stack and attribute name is not allowed
+                    throw new RuntimeException("Attributes from-stack and attrname cannot both be present.");
+                }
+            }
             return callParamRule;
         }
     }

@@ -296,4 +296,24 @@ public class DigesterLoaderTest extends TestCase {
         }        
     }
 
+    public void testCallParamRule() throws Exception {
+    
+        URL rules = ClassLoader.getSystemResource
+            ("org/apache/commons/digester/xmlrules/test-call-param-rules.xml");
+        
+        String xml = "<?xml version='1.0' ?>"
+                     + "<root><foo attr='long'><bar>short</bar><foobar><ping>tosh</ping></foobar></foo></root>";
+        
+        CallParamTestObject testObject = new CallParamTestObject();
+        
+        DigesterLoader.load(
+                                    rules, 
+                                    getClass().getClassLoader(), 
+                                    new StringReader(xml),
+                                    testObject);        
+                                                                        
+        assertEquals("Incorrect left value", "long", testObject.getLeft());
+        assertEquals("Incorrect middle value", "short", testObject.getMiddle());
+        assertEquals("Incorrect right value", "", testObject.getRight());
+    }
 }
