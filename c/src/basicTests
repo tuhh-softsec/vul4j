@@ -77,10 +77,22 @@ DDIR=${XSECCROOT}/data
 CHECKSIG=${XSECCROOT}/bin/checksig
 CHECKSIG_ARGS="-x"
 
+CIPHER=${XSECCROOT}/bin/cipher
+ENCDIR=${DDIR}/ie/baltimore/merlin-examples/merlin-xmlenc-five
+
 FAILURE_COUNT=0
 PASS_COUNT=0
 
+ENCRYPTION_FAILURE_COUNT=0
+ENCRYPTION_PASS_COUNT=0
+
+DO_SIG="yes"
+
 testSig() {
+
+	if [[ "$DO_SIG" != "yes" ]]; then
+		return
+	fi
 
 	$CHECKSIG $CHECKSIG_ARGS $1 $2 $3 $4 $5 $6 $7 $8 $9
 	if [ $? != 0 ]; then
@@ -91,6 +103,27 @@ testSig() {
 	fi
 }
 
+testEnc() {
+
+	RESULT=`$CIPHER $3 $4 $5 $6 ${ENCDIR}/$2 | grep "$1"`
+
+	if [[ "$RESULT" == "" ]]; then
+		echo $2 FAILED
+		ENCRYPTION_FAILURE_COUNT=$(( $ENCRYPTION_FAILURE_COUNT + 1))
+	else
+		echo $2 OK
+		ENCRYPTION_PASS_COUNT=$(( $ENCRYPTION_PASS_COUNT + 1))
+	fi
+}
+
+if [ "$1" == "-nosig" ]; then
+	DO_SIG="no"
+else
+
+echo
+echo Running Signature Interop Tests
+echo ===============================
+echo
 
 # IXSIL Examples
 
@@ -178,4 +211,80 @@ echo Passed = $PASS_COUNT [expected 39 if local copy of potholed, 37 if not]
 echo Failed = $FAILURE_COUNT [expected 0 if local copy of pothole, 2 if not]
 echo
 
+fi
 
+if [ "$1" == "-noenc" ]; then
+	DO_ENC="no";
+else
+
+echo
+echo Running Encryption Interop Tests
+echo ================================
+echo
+
+#bad-encrypt-content-aes128-cbc-kw-aes192.xml
+#decryption-transform-except.xml
+#decryption-transform.xml
+testEnc "<Number>1234 567890 12345</Number>" encrypt-content-aes128-cbc-kw-aes192.xml -i -de
+testEnc "<Number>1234 567890 12345</Number>" encrypt-content-aes256-cbc-prop.xml -i -de
+testEnc "<Number>1234 567890 12345</Number>" encrypt-content-tripledes-cbc.xml -i -de
+
+testEnc "top secret message" encrypt-data-aes128-cbc.xml -i
+testEnc "top secret message" encrypt-data-aes192-cbc-kw-aes256.xml -i
+testEnc "top secret message" encrypt-data-aes256-cbc-kw-tripledes.xml -i
+testEnc "top secret message" encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml -i
+testEnc "<Number>1234 567890 12345</Number>" encrypt-element-aes128-cbc-rsa-1_5.xml  -i -de
+
+# CipherRef not yet supported
+
+# testEnc "<Number>1234 567890 12345</Number>" encrypt-element-aes192-cbc-ref.xml -i -de
+
+testEnc "<Number>1234 567890 12345</Number>" encrypt-element-aes256-cbc-carried-kw-aes256.xml -i -de
+testEnc "<Number>1234 567890 12345</Number>" encrypt-element-aes256-cbc-retrieved-kw-aes256.xml -i -de
+testEnc "<Number>1234 567890 12345</Number>" encrypt-element-tripledes-cbc-kw-aes128.xml -i -de
+
+# Unsupported Key-wraps
+#encrypt-content-aes192-cbc-dh-sha512.xml
+#encrypt-data-tripledes-cbc-rsa-oaep-mgf1p-sha256.xml
+#encrypt-element-aes256-cbc-kw-aes256-dh-ripemd160.xml
+
+# Don't yet support encrypted keysin signatures (or SHA-2/Ripemd)
+
+#encsig-hmac-sha256-dh.xml
+#encsig-hmac-sha256-kw-tripledes-dh.xml
+#encsig-hmac-sha256-rsa-1_5.xml
+#encsig-hmac-sha256-rsa-oaep-mgf1p.xml
+#encsig-ripemd160-hmac-ripemd160-kw-tripledes.xml
+#encsig-sha256-hmac-sha256-kw-aes128.xml
+#encsig-sha384-hmac-sha384-kw-aes192.xml
+#encsig-sha512-hmac-sha512-kw-aes256.xml
+
+# Don't yet check for bad encryption
+
+#bad-encrypt-content-aes128-cbc-kw-aes192.xml
+
+# Don't yet support signature decryption transforms
+
+#decryption-transform-except.xml
+#decryption-transform.xml
+
+echo
+echo
+echo Encryption Interop Tests Completed
+echo ==================================
+echo 
+echo Passed = $ENCRYPTION_PASS_COUNT
+echo Failed = $ENCRYPTION_FAILURE_COUNT
+echo
+
+fi
+
+TOTAL_PASS=$(( $PASS_COUNT + $ENCRYPTION_PASS_COUNT ))
+TOTAL_FAIL=$(( $FAILURE_COUNT + $ENCRYPTION_FAILURE_COUNT ))
+TOTAL_TESTS=$(( $TOTAL_PASS + $TOTAL_FAIL ))
+
+echo
+echo Total Tests  = $TOTAL_TESTS
+echo Total Passed = $TOTAL_PASS
+echo Total Failed = $TOTAL_FAIL
+echo
