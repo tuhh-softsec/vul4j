@@ -107,12 +107,14 @@ char * XSECSOAPRequestorSimple::wrapAndSerialise(DOMDocument * request) {
 	XMLString::transcode("Core", tempStr, 99);    
 	DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
 	DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+	Janitor<DOMWriter> j_theSerializer(theSerializer);
 
 	theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
 	if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
 		theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
 	MemBufFormatTarget *formatTarget = new MemBufFormatTarget;
+	Janitor<MemBufFormatTarget> j_formatTarget(formatTarget);
 
 	if (m_envelopeType != ENVELOPE_NONE) {
 
@@ -173,12 +175,8 @@ char * XSECSOAPRequestorSimple::wrapAndSerialise(DOMDocument * request) {
 	}
 
 	// Now replicate the buffer
-	char * ret = XMLString::replicate((const char *) formatTarget->getRawBuffer());
+	return XMLString::replicate((const char *) formatTarget->getRawBuffer());
 
-	delete theSerializer;
-	delete formatTarget;
-
-	return ret;
 }
 
 // --------------------------------------------------------------------------------
