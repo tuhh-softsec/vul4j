@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -159,7 +157,13 @@ bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
 
 		// Have a certificate!
 		XSECnew(k, DSIGKeyInfoX509(mp_parentSignature, ki));
-		k->load();
+		try {
+			k->load();
+		}
+		catch (...) {
+			delete k;
+			throw;
+		}
 
 		// Add to the KeyInfo list
 		this->addKeyInfo(k);
@@ -173,7 +177,14 @@ bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
 		DSIGKeyInfoName * k;
 
 		XSECnew(k, DSIGKeyInfoName(mp_parentSignature, ki));
-		k->load();
+		
+		try {
+			k->load();
+		}
+		catch (...) {
+			delete k;
+			throw;
+		}
 
 		this->addKeyInfo(k);
 
@@ -185,7 +196,14 @@ bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
 		DSIGKeyInfoValue * k;
 
 		XSECnew(k, DSIGKeyInfoValue(mp_parentSignature, ki));
-		k->load();
+		
+		try {
+			k->load();
+		}
+		catch (...) {
+			delete k;
+			throw;
+		}
 
 		// Add
 		this->addKeyInfo(k);

@@ -66,9 +66,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -80,3 +78,14 @@
  */
 
 /* #define XSEC_NO_XALAN */
+
+/*
+ * Macros used to determine what header files exist on this
+ * system
+ */
+
+/* Posix unistd.h */
+/* #define HAVE_UNISTD_H */
+
+/* Windows direct.h */
+#define HAVE_DIRECT_H 1

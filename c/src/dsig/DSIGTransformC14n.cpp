@@ -73,6 +73,7 @@
 #include <xsec/dsig/DSIGTransformC14n.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/transformers/TXFMC14n.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
@@ -115,14 +116,12 @@ transformType DSIGTransformC14n::getTransformType() {
 
 }
 
-TXFMBase * DSIGTransformC14n::createTransformer(TXFMBase * input) {
+void DSIGTransformC14n::appendTransformer(TXFMChain * input) {
 
 	TXFMC14n * c;
 	
 	XSECnew(c, TXFMC14n(mp_txfmNode->getOwnerDocument()));
-	Janitor<TXFMC14n> j_c(c);
-
-	c->setInput(input);
+	input->appendTxfm(c);
 
 	switch (m_cMethod) {
 
@@ -155,9 +154,6 @@ TXFMBase * DSIGTransformC14n::createTransformer(TXFMBase * input) {
 		}
 
 	}
-
-	j_c.release();
-	return c;
 
 }
 

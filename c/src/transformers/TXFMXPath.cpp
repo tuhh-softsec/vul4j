@@ -252,6 +252,7 @@ void TXFMXPath::setInput(TXFMBase *newInput) {
 		}
 		catch (...) {
 			delete parser;
+			input = newInput;
 			throw;
 		}
 

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -81,6 +79,7 @@
 #include <xsec/transformers/TXFMSHA1.hpp>
 #include <xsec/transformers/TXFMBase64.hpp>
 #include <xsec/transformers/TXFMC14n.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/XSECCryptoKeyDSA.hpp>
 #include <xsec/enc/XSECCryptoKeyRSA.hpp>
@@ -245,12 +244,17 @@ void convertRawToBase64String(safeBuffer &b64SB,
 
 XSECBinTXFMInputStream * DSIGSignature::makeBinInputStream(void) const {
 
-	TXFMBase * input, * can;
+	TXFMBase * txfm;
 
 	// Create the starting point for the transform list
 
-	XSECnew(input, TXFMDocObject(mp_doc));
-	((TXFMDocObject *) input)->setInput(mp_doc, mp_signedInfo->getDOMNode());
+	XSECnew(txfm, TXFMDocObject(mp_doc));
+
+	TXFMChain * chain;
+	XSECnew(chain, TXFMChain(txfm));
+	Janitor<TXFMChain> j_chain(chain);
+
+	((TXFMDocObject *) txfm)->setInput(mp_doc, mp_signedInfo->getDOMNode());
 	
 	// canonicalise the SignedInfo content
 
@@ -258,15 +262,17 @@ XSECBinTXFMInputStream * DSIGSignature::makeBinInputStream(void) const {
 
 	case CANON_C14N_NOC :
 
-		XSECnew(can, TXFMC14n(mp_doc));
-		can->stripComments();
+		XSECnew(txfm, TXFMC14n(mp_doc));
+		chain->appendTxfm(txfm);
+		txfm->stripComments();
 		
 		break;
 
 	case CANON_C14N_COM :
 
-		XSECnew(can, TXFMC14n(mp_doc));
-		can->activateComments();
+		XSECnew(txfm, TXFMC14n(mp_doc));
+		chain->appendTxfm(txfm);
+		txfm->activateComments();
 
 		break;
 
@@ -277,13 +283,12 @@ XSECBinTXFMInputStream * DSIGSignature::makeBinInputStream(void) const {
 
 	}
 
-	can->setInput(input);
-
 	// Now create the InputStream
 
 	XSECBinTXFMInputStream * ret;
 
-	XSECnew(ret, XSECBinTXFMInputStream(can));
+	XSECnew(ret, XSECBinTXFMInputStream(chain));
+	j_chain.release();
 
 	return ret;
 
@@ -770,6 +775,9 @@ void DSIGSignature::load(void) {
 
 				// Find base transform using the base URI
 				currentTxfm = DSIGReference::getURIBaseTXFM(mp_doc, URI, mp_URIResolver);
+				TXFMChain * chain;
+				XSECnew(chain, TXFMChain(currentTxfm));
+				Janitor<TXFMChain> j_chain(chain);
 
 				// Now check for transforms
 				tmpKI = tmpKI->getFirstChild();
@@ -801,10 +809,9 @@ void DSIGSignature::load(void) {
 					size = l->getSize();
 					for (i = 0; i < size; ++ i) {
 						try {
-							currentTxfm = l->item(i)->createTransformer(currentTxfm);
+							l->item(i)->appendTransformer(chain);
 						}
 						catch (...) {
-							deleteTXFMChain(currentTxfm);
 							delete l;
 							throw;
 						}
@@ -816,7 +823,7 @@ void DSIGSignature::load(void) {
 
 				// Find out the type of the final transform and process accordingly
 				
-				TXFMBase::nodeType type = currentTxfm->getNodeType();
+				TXFMBase::nodeType type = chain->getLastTxfm()->getNodeType();
 
 				XSECXPathNodeList lst;
 				const DOMNode * element;
@@ -833,7 +840,7 @@ void DSIGSignature::load(void) {
 
 				case TXFMBase::DOM_NODE_XPATH_NODESET :
 
-					lst = currentTxfm->getXPathNodeList();
+					lst = chain->getLastTxfm()->getXPathNodeList();
 					element = lst.getFirstNode();
 
 					while (element != NULL) {
@@ -855,11 +862,9 @@ void DSIGSignature::load(void) {
 				}
 
 				// Delete the transform chain
-				if (currentTxfm != NULL) {
-					currentTxfm->deleteExpandedNameSpaces();
-					deleteTXFMChain(currentTxfm);
+				chain->getLastTxfm()->deleteExpandedNameSpaces();
 
-				}
+				// Janitor will clean up chain
 
 			} /* if getNodeName == Retrieval Method */
 
@@ -888,11 +893,15 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 
 	// Calculate the hash and store in the hashBuf
 
-	TXFMBase * hashVal, * tmpTfm;
+	TXFMBase * txfm;
+	TXFMChain * chain;
 
 	// First we calculate the hash.  Start off by creating a starting point
-	XSECnew(hashVal, TXFMDocObject(mp_doc));
-	((TXFMDocObject *) hashVal)->setInput(mp_doc, mp_signedInfo->getDOMNode());
+	XSECnew(txfm, TXFMDocObject(mp_doc));
+	XSECnew(chain, TXFMChain(txfm));
+	Janitor<TXFMChain> j_chain(chain);
+
+	((TXFMDocObject *) txfm)->setInput(mp_doc, mp_signedInfo->getDOMNode());
 	
 	// canonicalise the SignedInfo content
 
@@ -900,15 +909,17 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 
 	case CANON_C14N_NOC :
 
-		XSECnew(tmpTfm, TXFMC14n(mp_doc));
-		tmpTfm->stripComments();
+		XSECnew(txfm, TXFMC14n(mp_doc));
+		chain->appendTxfm(txfm);
+		txfm->stripComments();
 		
 		break;
 
 	case CANON_C14N_COM :
 
-		XSECnew(tmpTfm, TXFMC14n(mp_doc));
-		tmpTfm->activateComments();
+		XSECnew(txfm, TXFMC14n(mp_doc));
+		chain->appendTxfm(txfm);
+		txfm->activateComments();
 
 		break;
 
@@ -919,9 +930,6 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 
 	}
 
-	tmpTfm->setInput(hashVal);
-	hashVal = tmpTfm;
-
 	// Setup Hash
 
 	switch (mp_signedInfo->getHashMethod()) {
@@ -929,10 +937,10 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 	case HASH_SHA1 :
 
 		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
-			XSECnew(tmpTfm, TXFMSHA1(mp_doc, mp_signingKey));
+			XSECnew(txfm, TXFMSHA1(mp_doc, mp_signingKey));
 		}
 		else  {
-			XSECnew(tmpTfm, TXFMSHA1(mp_doc));
+			XSECnew(txfm, TXFMSHA1(mp_doc));
 		}
 
 		break;
@@ -952,16 +960,12 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 	hashVal=of;
 #endif
 
-	tmpTfm->setInput(hashVal);
-	hashVal = tmpTfm;
+	chain->appendTxfm(txfm);
 
 	// Write hash to the buffer
 	int hashLen;
 
-	hashLen = hashVal->readBytes((XMLByte *) hashBuf, hashBufLen);
-
-	// Clean up transforms
-	deleteTXFMChain(hashVal);
+	hashLen = chain->getLastTxfm()->readBytes((XMLByte *) hashBuf, hashBufLen);
 
 	return hashLen;
 
@@ -1146,6 +1150,9 @@ void DSIGSignature::sign(void) {
 		
 
 	}
+
+	// Reset error string in case we have any reference problems.
+	m_errStr.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
 
 	// Set up the reference list hashes - including any manifests
 	mp_signedInfo->hash();

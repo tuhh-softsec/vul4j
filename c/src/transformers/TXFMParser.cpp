@@ -66,23 +66,21 @@
  *
  * $Id$
  *
- * $Log$
- * Revision 1.1  2003/02/17 11:20:03  blautenb
- * Parser Transformer to convert a BYTE_STREAM to DOM_NODES
- *
- *
  */
 
 #include <xsec/transformers/TXFMParser.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECTXFMInputSource.hpp>
 
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
+#include <xercesc/util/Janitor.hpp>
 
 XSEC_USING_XERCES(XercesDOMParser);
 XSEC_USING_XERCES(MemBufInputSource);
+XSEC_USING_XERCES(Janitor);
 
 
 
@@ -150,7 +148,11 @@ void TXFMParser::setInput(TXFMBase *newInput) {
 	input = newInput;
 
 	// Create a InputStream
-	XSECTXFMInputSource is(newInput, false);
+	TXFMChain * chain;
+	XSECnew(chain, TXFMChain(newInput, false));
+	Janitor<TXFMChain> j_chain(chain);
+
+	XSECTXFMInputSource is(chain, false);
 
 	// Create a XercesParser and parse!
 	XercesDOMParser parser;

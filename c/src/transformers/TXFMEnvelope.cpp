@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -89,13 +87,13 @@ TXFMEnvelope::~TXFMEnvelope() {
 
 void TXFMEnvelope::setInput(TXFMBase *newInput) {
 
-		if (newInput->getOutputType() != TXFMBase::DOM_NODES) {
+	input = newInput;
+
+	if (newInput->getOutputType() != TXFMBase::DOM_NODES) {
 
 		throw XSECException(XSECException::TransformInputOutputFail, "XPath requires DOM_NODES input type");
 
 	}
-
-	input = newInput;
 
 	// Expand if necessary
 	this->expandNameSpaces();

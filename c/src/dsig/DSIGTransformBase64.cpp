@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -76,6 +74,7 @@
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/transformers/TXFMBase64.hpp>
 #include <xsec/transformers/TXFMC14n.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/transformers/TXFMXPath.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
@@ -107,13 +106,11 @@ transformType DSIGTransformBase64::getTransformType() {
 }
 
 
-TXFMBase * DSIGTransformBase64::createTransformer(TXFMBase * input) {
-
-	TXFMBase *newInput;
+void DSIGTransformBase64::appendTransformer(TXFMChain * input) {
 
 	// If the input is a Nodeset then we need to find the text from the input
 
-	if (input->getOutputType() == TXFMBase::DOM_NODES) {
+	if (input->getLastTxfm()->getOutputType() == TXFMBase::DOM_NODES) {
 
 
 #ifdef XSEC_NO_XPATH
@@ -128,7 +125,7 @@ TXFMBase * DSIGTransformBase64::createTransformer(TXFMBase * input) {
 		TXFMXPath *x;
 		
 		XSECnew(x, TXFMXPath(mp_txfmNode->getOwnerDocument()));
-		x->setInput(input);
+		input->appendTxfm(x);
 		((TXFMXPath *) x)->evaluateExpr(mp_txfmNode, "self::text()");
 		
 		TXFMC14n *c;
@@ -136,25 +133,16 @@ TXFMBase * DSIGTransformBase64::createTransformer(TXFMBase * input) {
 		// Now use c14n to translate to BYTES
 		
 		XSECnew(c, TXFMC14n(mp_txfmNode->getOwnerDocument()));
-		c->setInput(x);
-
-		newInput = c;
+		input->appendTxfm(c);
 #endif
-
-	}
-
-	else {
-
-		newInput = input;
 
 	}
 
 	// Now the actual Base64
 
-	TXFMBase64 *b = new TXFMBase64(mp_txfmNode->getOwnerDocument());
-	b->setInput(newInput);
-
-	return b;
+	TXFMBase64 *b;
+	XSECnew(b, TXFMBase64(mp_txfmNode->getOwnerDocument()));
+	input->appendTxfm(b);
 
 }
 

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -170,6 +168,8 @@ TXFMXSL::~TXFMXSL() {
 
 void TXFMXSL::setInput(TXFMBase *newInput) {
 
+	input = newInput;
+
 	if (newInput->getOutputType() != TXFMBase::BYTE_STREAM) {
 
 		throw XSECException(XSECException::TransformInputOutputFail, "XSL requires DOM_NODES input type");
@@ -178,8 +178,6 @@ void TXFMXSL::setInput(TXFMBase *newInput) {
 
 	// Should have a method to check if the input is a straight URL - if it is, just read the
 	// URL name and create an XSLTInputSource with this as the input ID.
-
-	input = newInput;
 
 	int size = 0;
 	int count = 0;

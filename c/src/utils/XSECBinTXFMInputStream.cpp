@@ -73,6 +73,7 @@
 
 #include <xsec/utils/XSECBinTXFMInputStream.hpp>
 #include <xsec/transformers/TXFMBase.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/framework/XSECError.hpp>
 
 // ---------------------------------------------------------------------------
@@ -80,8 +81,9 @@
 // ---------------------------------------------------------------------------
 
 
-XSECBinTXFMInputStream::XSECBinTXFMInputStream(TXFMBase * lst, bool deleteWhenDone) :
-mp_txfm(lst),
+XSECBinTXFMInputStream::XSECBinTXFMInputStream(TXFMChain * lst, bool deleteWhenDone) :
+mp_txfm(lst->getLastTxfm()),
+mp_chain(lst),
 m_deleteWhenDone(deleteWhenDone),
 m_deleted(false),
 m_done(false),
@@ -100,8 +102,8 @@ XSECBinTXFMInputStream::~XSECBinTXFMInputStream() {
 
 	if (m_deleteWhenDone == true && m_deleted == false) {
 
-		deleteTXFMChain(mp_txfm);
-		m_deleted = false;
+		delete mp_chain;
+		m_deleted = true;
 
 	}
 
@@ -133,8 +135,9 @@ unsigned int XSECBinTXFMInputStream::readBytes(XMLByte* const  toFill,
 
 		if (m_deleteWhenDone) {
 
-			deleteTXFMChain(mp_txfm);
+			delete mp_chain;
 			mp_txfm = 0;
+			mp_chain = 0;
 			m_deleted = true;
 
 		}

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -154,7 +152,7 @@ public:
 	 * to construct a complete Transform list.
 	 */
 
-	virtual TXFMBase * createTransformer(TXFMBase * input);
+	virtual void appendTransformer(TXFMChain * input);
 
 	/**
 	 * \brief Construct blank Envelope Transform element.

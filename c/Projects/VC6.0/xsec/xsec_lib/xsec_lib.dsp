@@ -653,6 +653,14 @@ SOURCE=..\..\..\..\src\transformers\TXFMC14n.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\transformers\TXFMChain.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\transformers\TXFMChain.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\transformers\TXFMDocObject.cpp
 # End Source File
 # Begin Source File

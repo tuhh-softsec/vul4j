@@ -77,6 +77,7 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xercesc/util/BinInputStream.hpp>
 
+class TXFMChain;
 class TXFMBase;
 
 /**
@@ -88,9 +89,9 @@ class TXFMBase;
  */
 
 /**
- * @brief BinInputSource wrapper for a TXFMList.
+ * @brief BinInputSource wrapper for a TXFMChain.
  *
- * This class provides a wrapper for a TXFMList.  It can be used to either provide
+ * This class provides a wrapper for a TXFMChain.  It can be used to either provide
  * a nice interface to applications wishing to read the BYTESTREAM output of a 
  * TXFM chain, or, as it is derived from BinInputStream, provide an input to the
  * Xerces Parser.
@@ -109,12 +110,12 @@ public :
 	/**
 	 * \brief Construct around an existing transform list
 	 *
-	 * @param lst The final TXFM element in the input chain.
+	 * @param lst The input TXFM chain.
 	 * @param deleteWhenDone Flag to instruct the class to delete the chain when
 	 * done.  By default set to true.
 	 */
 
-    XSECBinTXFMInputStream(TXFMBase * lst, bool deleteWhenDone = true);
+    XSECBinTXFMInputStream(TXFMChain * lst, bool deleteWhenDone = true);
 
 	/**
 	 * \brief Destructor
@@ -173,6 +174,7 @@ public :
 private :
 
 	TXFMBase					* mp_txfm;			// End point of list
+	TXFMChain					* mp_chain;			// The actual chain
 	bool						m_deleteWhenDone;	// Do we delete?
 	bool						m_deleted;			// Have we deleted?
 	bool						m_done;				// Are we done?

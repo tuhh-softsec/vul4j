@@ -93,6 +93,7 @@ class DSIGTransformXSL;
 class DSIGSignature;
 
 class TXFMBase;
+class TXFMChain;
 class XSECBinTXFMInputStream;
 class XSECURIResolver;
 
@@ -393,7 +394,7 @@ public:
 	 * transforms.
 	 */
 
-	static TXFMBase * DSIGReference::createTXFMChainFromList(TXFMBase * input, 
+	static TXFMChain * DSIGReference::createTXFMChainFromList(TXFMBase * input, 
 							DSIGTransformList * lst);
 
 	/**

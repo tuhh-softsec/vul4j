@@ -67,6 +67,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.2  2003/02/21 11:53:09  blautenb
+ * TXFMChain to prevent memory leaks
+ *
  * Revision 1.1  2003/02/17 11:19:12  blautenb
  * Class to use a transform as an InputSource to Xerces
  *
@@ -80,7 +83,7 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xercesc/sax/InputSource.hpp>
 
-class TXFMBase;
+class TXFMChain;
 
 XSEC_DECLARE_XERCES_CLASS(BinInputStream);
 
@@ -118,7 +121,7 @@ public :
 	 * done.  By default set to true.
 	 */
 
-    XSECTXFMInputSource(TXFMBase * lst, bool deleteWhenDone = true);
+    XSECTXFMInputSource(TXFMChain * lst, bool deleteWhenDone = true);
 
 	/**
 	 * \brief Destructor
@@ -146,7 +149,7 @@ public :
 
 private :
 
-	mutable TXFMBase			* mp_txfm;			// End point of list
+	mutable TXFMChain			* mp_chain;			// End point of list
 	bool						m_deleteWhenDone;	// Do we delete?
 
 };

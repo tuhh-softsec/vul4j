@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -76,6 +74,7 @@
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/transformers/TXFMEnvelope.hpp>
 #include <xsec/transformers/TXFMC14n.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/transformers/TXFMXPath.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
@@ -107,7 +106,7 @@ transformType DSIGTransformEnvelope::getTransformType() {
 }
 
 
-TXFMBase * DSIGTransformEnvelope::createTransformer(TXFMBase * input) {
+void DSIGTransformEnvelope::appendTransformer(TXFMChain * input) {
 
 #ifdef XSEC_USE_XPATH_ENVELOPE
 
@@ -115,7 +114,7 @@ TXFMBase * DSIGTransformEnvelope::createTransformer(TXFMBase * input) {
 	
 	// Special XPath transform
 	XSECnew(x, TXFMXPath(mp_txfmNode->getOwnerDocument()));
-	x->setInput(input);
+	input->appendTxfm(x);
 	
 	// Execute the envelope expression
 	x->evaluateEnvelope(mp_txfmNode);
@@ -126,14 +125,12 @@ TXFMBase * DSIGTransformEnvelope::createTransformer(TXFMBase * input) {
 	// Use the Envelope transform
 	
 	XSECnew(x, TXFMEnvelope(mp_txfmNode->getOwnerDocument()));
-	x->setInput(input);
+	input->appendTxfm(x);
 
 	// Execute envelope
 	x->evaluateEnvelope(mp_txfmNode);
 
 #endif
-
-	return x;
 
 }
 

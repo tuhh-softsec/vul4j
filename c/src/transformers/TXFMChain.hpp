@@ -60,7 +60,8 @@
 /*
  * XSEC
  *
- * TXFMParser := A transformer used to transform a byte stream to DOM Nodes
+ * TXFMChain := List class that holds and manipulates a chain of TXFM 
+ *              objects.
  *
  * Author(s): Berin Lautenbach
  *
@@ -68,48 +69,39 @@
  *
  */
 
-#ifndef TXFMPARSER_INCLUDE
-#define TXFMPARSER_INCLUDE
+#ifndef TXFMCHAIN_INCLUDE
+#define TXFMCHAIN_INCLUDE
 
-#include <xsec/transformers/TXFMBase.hpp>
+#include <xsec/framework/XSECDefs.hpp>
 
-class DSIG_EXPORT TXFMParser : public TXFMBase {
+class TXFMBase;
+
+class DSIG_EXPORT TXFMChain {
 
 public:
 
-	// Constructors and destructors
+	// Constructors/destructors
 
-	TXFMParser(DOMDocument *);
-	~TXFMParser();
+	TXFMChain(TXFMBase * baseTxfm, bool deleteChainWhenDone = true);
+	~TXFMChain();
 
-	// Methods to get tranform output type and input requirement
+	// Manipulate
+	void appendTxfm(TXFMBase * txfm);
+	TXFMBase * getLastTxfm(void);
 
-	virtual TXFMBase::ioType getInputType(void);
-	virtual TXFMBase::ioType getOutputType(void);
-	virtual nodeType getNodeType(void);
-
-	// Methods to set input data
-
-	virtual void setInput(TXFMBase * newInput);
-
-	// Methods to get output data
-
-	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
-	virtual const XMLCh * getFragmentId();
-
-	// Name space management
-	virtual bool nameSpacesExpanded(void);
-	virtual void expandNameSpaces(void);
-
-	
 private:
-	
-	TXFMParser();
 
-	DOMDocument			* mp_parsedDoc;
+	TXFMChain();
+	TXFMChain(TXFMChain &toCopy);
+
+	TXFMBase				* mp_currentTxfm;
+	bool					m_deleteChainWhenDone;
+
+	void deleteTXFMChain(TXFMBase * toDelete);
 
 };
 
-#endif /* #define TXFMPARSER_INCLUDE */
+inline
+TXFMBase * TXFMChain::getLastTxfm(void) {return mp_currentTxfm;}
+
+#endif /* TXFMCHAIN_INCLUDE */

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -155,7 +153,7 @@ public:
 	 *
 	 */
 
-	virtual TXFMBase * createTransformer(TXFMBase * input);
+	virtual void appendTransformer(TXFMChain * input);
 
 	/**
 	 * \brief Construct blank XSLT Transform element.

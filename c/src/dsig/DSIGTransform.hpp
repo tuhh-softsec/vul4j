@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -83,7 +81,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMDocument);
 #include <stdio.h>
 
 class DSIGSignature;
-class TXFMBase;
+class TXFMChain;
 
 /**
  * @ingroup pubsig
@@ -172,13 +170,13 @@ public:
 	virtual transformType getTransformType() = 0;
 	
 	/**
-	 * \brief Create the transformer element.
+	 * \brief Create the transformer element and append to an existing Chain.
 	 *
 	 * Implemented by each Transform class and used by the DSIGSignature
-	 * to construct a complete Transform list.
+	 * to construct a complete Transform chain (TXFMChain).
 	 */
 
-	virtual TXFMBase * createTransformer(TXFMBase * input) = 0;
+	virtual void appendTransformer(TXFMChain * input) = 0;
 
 	/**
 	 * \brief Construct a new transform.

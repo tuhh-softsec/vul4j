@@ -129,24 +129,7 @@ void TXFMBase::deleteExpandedNameSpaces(void) {
 	if (input != NULL)
 		input->deleteExpandedNameSpaces();
 
-}
-
-
-
-// -----------------------------------------------------------------------
-//  deleteTransformChain = easy way to delete an entire chain of transforms
-// -----------------------------------------------------------------------
-
-
-void deleteTXFMChain(TXFMBase * toDelete) {
-
-	if (toDelete != NULL) {
-		deleteTXFMChain(toDelete->input);
-		delete toDelete;
-	}
-
-}
-		
+}		
 
 void TXFMBase::activateComments(void) {
 

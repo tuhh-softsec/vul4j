@@ -159,7 +159,7 @@ safeBuffer &makeQName(safeBuffer & qname, safeBuffer &prefix, char * localName) 
 }
 safeBuffer &makeQName(safeBuffer & qname, const XMLCh *prefix, char * localName) {
 
-	if (prefix[0] == 0) {
+	if (prefix == NULL || prefix[0] == 0) {
 		qname.sbTranscodeIn(localName);
 	}
 	else {

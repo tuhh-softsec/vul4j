@@ -73,6 +73,7 @@
 #include <xsec/transformers/TXFMXPath.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/transformers/TXFMC14n.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
@@ -116,7 +117,7 @@ transformType DSIGTransformXPath::getTransformType() {
 
 }
 
-TXFMBase * DSIGTransformXPath::createTransformer(TXFMBase * input) {
+void DSIGTransformXPath::appendTransformer(TXFMChain * input) {
 
 #ifdef XSEC_NO_XPATH
 
@@ -128,13 +129,9 @@ TXFMBase * DSIGTransformXPath::createTransformer(TXFMBase * input) {
 	TXFMXPath *x;
 	// XPath transform
 	XSECnew(x, TXFMXPath(mp_txfmNode->getOwnerDocument()));
-	Janitor<TXFMXPath> j_x(x);
-	x->setInput(input);
+	input->appendTxfm(x);
 	x->setNameSpace(mp_NSMap);
 	x->evaluateExpr(mp_txfmNode, m_expr);
-	
-	j_x.release();
-	return x;
 	
 #endif /* NO_XPATH */
 

@@ -60,7 +60,8 @@
 /*
  * XSEC
  *
- * TXFMParser := A transformer used to transform a byte stream to DOM Nodes
+ * TXFMChain := List class that holds and manipulates a chain of TXFM 
+ *              objects.
  *
  * Author(s): Berin Lautenbach
  *
@@ -68,48 +69,56 @@
  *
  */
 
-#ifndef TXFMPARSER_INCLUDE
-#define TXFMPARSER_INCLUDE
-
 #include <xsec/transformers/TXFMBase.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
 
-class DSIG_EXPORT TXFMParser : public TXFMBase {
 
-public:
+// -----------------------------------------------------------------------
+//  deleteTransformChain = easy way to delete an entire chain of transforms
+// -----------------------------------------------------------------------
 
-	// Constructors and destructors
 
-	TXFMParser(DOMDocument *);
-	~TXFMParser();
+void TXFMChain::deleteTXFMChain(TXFMBase * toDelete) {
 
-	// Methods to get tranform output type and input requirement
+	if (toDelete != NULL) {
+		deleteTXFMChain(toDelete->input);
+		delete toDelete;
+	}
 
-	virtual TXFMBase::ioType getInputType(void);
-	virtual TXFMBase::ioType getOutputType(void);
-	virtual nodeType getNodeType(void);
+}
 
-	// Methods to set input data
+// --------------------------------------------------------------------------------
+//           Constructors/Destructors
+// --------------------------------------------------------------------------------
 
-	virtual void setInput(TXFMBase * newInput);
+TXFMChain::TXFMChain(TXFMBase * baseTxfm, bool deleteChainWhenDone) :
+mp_currentTxfm(baseTxfm),
+m_deleteChainWhenDone(deleteChainWhenDone) {
+}
 
-	// Methods to get output data
+TXFMChain::~TXFMChain() {
 
-	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
-	virtual DOMDocument *getDocument();
-	virtual DOMNode *getFragmentNode();
-	virtual const XMLCh * getFragmentId();
+	if (m_deleteChainWhenDone)
+		deleteTXFMChain(mp_currentTxfm);
 
-	// Name space management
-	virtual bool nameSpacesExpanded(void);
-	virtual void expandNameSpaces(void);
+}
 
-	
-private:
-	
-	TXFMParser();
+// --------------------------------------------------------------------------------
+//           Read hash
+// --------------------------------------------------------------------------------
 
-	DOMDocument			* mp_parsedDoc;
+void TXFMChain::appendTxfm(TXFMBase * txfm) {
 
-};
+	TXFMBase * oldTxfm = mp_currentTxfm;
+	mp_currentTxfm = txfm;
 
-#endif /* #define TXFMPARSER_INCLUDE */
+	// This may throw an exception, but if it does each TXFM type 
+	// Guarantees that it will have made the input part of the 
+	// chain before such an exception.  So the caller can clear out
+	// the entire chain - including the new txfm - by deleting
+	// *this.
+
+	txfm->setInput(oldTxfm);
+
+}
+

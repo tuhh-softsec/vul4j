@@ -67,14 +67,6 @@
  *
  * $Id$
  *
- * $Log$
- * Revision 1.4  2003/02/20 10:34:24  blautenb
- * Check for unistd.h
- *
- * Revision 1.3  2003/02/17 11:22:39  blautenb
- * Now handle relative file URIs in references
- *
- *
  */
 
 // XSEC
@@ -617,8 +609,10 @@ int main(int argc, char **argv) {
 	}
 
 	catch (XSECException &e) {
+		char * m = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during signature processing\n   Message: "
-		<< e.getMsg() << endl;
+		<< m << endl;
+		delete[] m;
 		errorsOccured = true;
 		exit (2);
 	}

@@ -64,20 +64,14 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
-
-// Xerces
-
-#include <xercesc/util/XMLNetAccessor.hpp>
-#include <xercesc/util/XMLUniDefs.hpp>
 
 // XSEC includes
 
 #include <xsec/dsig/DSIGReference.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/transformers/TXFMURL.hpp>
 #include <xsec/transformers/TXFMDocObject.hpp>
 #include <xsec/transformers/TXFMOutputFile.hpp>
@@ -101,6 +95,14 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/utils/XSECBinTXFMInputStream.hpp>
+
+// Xerces
+
+#include <xercesc/util/XMLNetAccessor.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
+#include <xercesc/util/Janitor.hpp>
+
+XSEC_USING_XERCES(Janitor);
 
 #include <iostream.h>
 
@@ -452,6 +454,7 @@ TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 	// Have a fragment URI from the local document
 	TXFMDocObject * to;
 	XSECnew(to, TXFMDocObject(doc));
+	Janitor<TXFMDocObject> j_to(to);
 	
 	// Find out what sort of object pointer this is.
 	
@@ -516,7 +519,9 @@ TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 		
 	}
 	
+	j_to.release();
 	return to;
+
 }
 
 // --------------------------------------------------------------------------------
@@ -750,6 +755,7 @@ DSIGReferenceList *DSIGReference::loadReferenceListFromXML(DSIGSignature * sig, 
 	DSIGReference * r;
 
 	XSECnew(refList, DSIGReferenceList());
+	Janitor<DSIGReferenceList> j_refList(refList);
 
 	while (tmpRef != 0) {
 
@@ -777,7 +783,8 @@ DSIGReferenceList *DSIGReference::loadReferenceListFromXML(DSIGSignature * sig, 
 			tmpRef = tmpRef->getNextSibling();
 
 	}
-
+	
+	j_refList.release();
 	return refList;
 
 }
@@ -789,6 +796,7 @@ XSECBinTXFMInputStream * DSIGReference::makeBinInputStream(void) const {
 
 	// First set up for input
 
+	TXFMChain * txfmChain;
 	TXFMBase * currentTxfm;
 
 	if (mp_URI == NULL) {
@@ -802,35 +810,29 @@ XSECBinTXFMInputStream * DSIGReference::makeBinInputStream(void) const {
 	currentTxfm = getURIBaseTXFM(mp_referenceNode->getOwnerDocument(), mp_URI,
 		mp_parentSignature->getURIResolver());
 
-	// Now check for Transforms
+	// Set up the transform chain
 
-	if (mp_transformList != NULL) {
-
-		// Process the transforms using the static function.
-
-		currentTxfm = createTXFMChainFromList(currentTxfm, mp_transformList);
-	
-
-	}
+	txfmChain = createTXFMChainFromList(currentTxfm, mp_transformList);
+	Janitor<TXFMChain> j_txfmChain(txfmChain);
 			
 	DOMDocument *d = mp_referenceNode->getOwnerDocument();
 
 	// All transforms done.  If necessary, change the type from nodes to bytes
 	
-	if (currentTxfm->getOutputType() == TXFMBase::DOM_NODES) {
+	if (txfmChain->getLastTxfm()->getOutputType() == TXFMBase::DOM_NODES) {
 
 		TXFMC14n * c14n;
 		XSECnew(c14n, TXFMC14n(d));
-		c14n->setInput(currentTxfm);
-
-		currentTxfm= c14n;
+		txfmChain->appendTxfm(c14n);
 
 	}
 
 	// Now create the InputStream
 
 	XSECBinTXFMInputStream * ret;
-	XSECnew(ret, XSECBinTXFMInputStream(currentTxfm));
+	XSECnew(ret, XSECBinTXFMInputStream(txfmChain));
+	j_txfmChain.release();		// Now owned by "ret"
+
 	return ret;
 
 }
@@ -847,6 +849,7 @@ void DSIGReference::hashReferenceList(DSIGReferenceList *lst, bool interlocking)
 	DSIGReference * r;
 	int i = lst->getSize();
 	safeBuffer errStr;
+	errStr.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
 
 	// Run a VERY naieve process at the moment that assumes the list will "settle"
 	// after N iterations through the list.  This will settle any inter-locking references
@@ -939,41 +942,35 @@ bool DSIGReference::verifyReferenceList(DSIGReferenceList * lst, safeBuffer &err
 //           processTransforms
 // --------------------------------------------------------------------------------
 
-TXFMBase * DSIGReference::createTXFMChainFromList(TXFMBase * input, 
+TXFMChain * DSIGReference::createTXFMChainFromList(TXFMBase * input, 
 							DSIGTransformList * lst) {
 
+	TXFMChain * ret;
+	XSECnew(ret, TXFMChain(input));
+
 	if (lst == NULL)
-		return input;
+		return ret;
+
+	Janitor<TXFMChain> j_ret(ret);
 
 	DSIGTransformList::TransformListVectorType::size_type size, i;
 
 	size = lst->getSize();
 
-	if (size == 0)
-		return input;
+	if (size > 0) {
 
-	TXFMBase * txfm;		// The transform we are working on;
-	TXFMBase * nextTxfm;	// The transform we are creating
-	
-	txfm = input;
+		// Iterate through the list
 
-	// Iterate through the list
+		for (i = 0; i < size; ++i) {
+		
+			lst->item(i)->appendTransformer(ret);
 
-	for (i = 0; i < size; ++i) {
-	
-		try {
-			nextTxfm = lst->item(i)->createTransformer(txfm);
-			// nextTxfm->setInput(txfm);
-			txfm = nextTxfm;
-		}
-		catch (...) {
-			deleteTXFMChain(txfm);
-			throw;
 		}
 
 	}
 
-	return txfm;
+	j_ret.release();
+	return ret;
 
 }
 
@@ -1001,6 +998,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 	// Create the list
 	DSIGTransformList * lst;
 	XSECnew(lst, DSIGTransformList());
+	Janitor<DSIGTransformList> j_lst(lst);
 
 	// Find First transform
 	
@@ -1047,33 +1045,33 @@ DSIGTransformList * DSIGReference::loadTransforms(
 		if (algorithm.sbStrcmp(URI_ID_BASE64) == 0) {
 			
 			DSIGTransformBase64 * b;
-			b = new DSIGTransformBase64(sig, transforms);
-			b->load();
+			XSECnew(b, DSIGTransformBase64(sig, transforms));
 			lst->addTransform(b);
+			b->load();
 		}
 		
 		else if (algorithm.sbStrcmp(URI_ID_XPATH) == 0) {
 
 			DSIGTransformXPath * x;
-			x = new DSIGTransformXPath(sig, transforms);
-			x->load();
+			XSECnew(x, DSIGTransformXPath(sig, transforms));
 			lst->addTransform(x);
+			x->load();
 		}
 		
 		else if (algorithm.sbStrcmp(URI_ID_ENVELOPE) == 0) {
 
 			DSIGTransformEnvelope * e;
-			e = new DSIGTransformEnvelope(sig, transforms);
-			e->load();
+			XSECnew(e, DSIGTransformEnvelope(sig, transforms));
 			lst->addTransform(e);
+			e->load();
 		}
 
 		else if (algorithm.sbStrcmp(URI_ID_XSLT) == 0) {
 			
 			DSIGTransformXSL * x;
-			x = new DSIGTransformXSL(sig, transforms);
-			x->load();
+			XSECnew(x, DSIGTransformXSL(sig, transforms));
 			lst->addTransform(x);
+			x->load();
 
 		}
 
@@ -1084,9 +1082,9 @@ DSIGTransformList * DSIGReference::loadTransforms(
 				 algorithm.sbStrcmp(URI_ID_EXC_C14N_NOC) == 0) {
 			
 			DSIGTransformC14n * c;
-			c = new DSIGTransformC14n(sig, transforms);
-			c->load();
+			XSECnew(c, DSIGTransformC14n(sig, transforms));
 			lst->addTransform(c);
+			c->load();
 
 		}
 		
@@ -1110,7 +1108,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 		
 	} /* while (transforms != NULL) */
 			
-
+	j_lst.release();
 	return lst;
 }
 
@@ -1131,13 +1129,15 @@ void DSIGReference::setHash(void) {
 	// Calculate the base64 value
 
 	XSECCryptoBase64 *	b64 = XSECPlatformUtils::g_cryptoProvider->base64();
-	
+
 	if (!b64) {
 
 		throw XSECException(XSECException::CryptoProviderError, 
 				"Error requesting Base64 object from Crypto Provider");
 
 	}
+
+	Janitor<XSECCryptoBase64> j_b64(b64);
 
 	b64->encodeInit();
 	base64HashLen = b64->encode(calculatedHashVal, 
@@ -1146,7 +1146,6 @@ void DSIGReference::setHash(void) {
 								CRYPTO_MAX_HASH_SIZE * 2);
 	base64HashLen += b64->encodeFinish(&base64Hash[base64HashLen],
 										(CRYPTO_MAX_HASH_SIZE * 2) - base64HashLen);
-	delete b64;
 
 	// Ensure the string is terminated
 	if (base64Hash[base64HashLen-1] == '\n')
@@ -1195,7 +1194,9 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 
 	// First set up for input
 
-	TXFMBase * currentTxfm, * nextInput;
+	TXFMBase * currentTxfm;
+	TXFMChain * chain;
+
 	unsigned int size;
 
 	if (mp_URI == NULL) {
@@ -1209,28 +1210,22 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 	currentTxfm = getURIBaseTXFM(mp_referenceNode->getOwnerDocument(), mp_URI,
 		mp_parentSignature->getURIResolver());
 
-	// Now check for Transforms
+	// Now build the transforms list
+	// Note this passes ownership of currentTxfm to the function, so it is the
+	// responsibility of createTXFMChain to ensure it gets deleted if this throws.
 
-	if (mp_transformList != NULL) {
-
-		// Process the transforms using the static function.
-
-		currentTxfm = createTXFMChainFromList(currentTxfm, mp_transformList);
+	chain = createTXFMChainFromList(currentTxfm, mp_transformList);
+	Janitor<TXFMChain> j_chain(chain);
 	
-
-	}
-			
 	DOMDocument *d = mp_referenceNode->getOwnerDocument();
 
 	// All transforms done.  If necessary, change the type from nodes to bytes
 	
-	if (currentTxfm->getOutputType() == TXFMBase::DOM_NODES) {
+	if (chain->getLastTxfm()->getOutputType() == TXFMBase::DOM_NODES) {
 
 		TXFMC14n * c14n;
 		XSECnew(c14n, TXFMC14n(d));
-		c14n->setInput(currentTxfm);
-
-		currentTxfm= c14n;
+		chain->appendTxfm(c14n);
 
 	}
 	
@@ -1238,8 +1233,8 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 
 	if (mp_preHash != NULL) {
 
-		mp_preHash->setInput(currentTxfm);
-		currentTxfm= mp_preHash;
+		chain->appendTxfm(mp_preHash);
+		mp_preHash = NULL;	// Can't be re-used
 
 	}
 
@@ -1247,11 +1242,9 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 	TXFMOutputFile * of = new TXFMOutputFile(d);
 
 	of->setFile("Output");
-	of->setInput(currentTxfm);
-	currentTxfm =of;
+	chain->(of);
 #endif
 
-	nextInput = currentTxfm;
 	
 	// Determine what the digest method actually is
 
@@ -1270,16 +1263,12 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 	}
 
 	// Now we have the hashing transform, run it.
-	
-	currentTxfm->setInput(nextInput);
 
-	// Now get the value
-
-	size = currentTxfm->readBytes(toFill, maxToFill);
+	chain->appendTxfm(currentTxfm);
+	size = chain->getLastTxfm()->readBytes(toFill, maxToFill);
 
 	// Clean out document if necessary
-	currentTxfm->deleteExpandedNameSpaces();
-	deleteTXFMChain(currentTxfm);
+	chain->getLastTxfm()->deleteExpandedNameSpaces();
 
 	return size;
 
@@ -1299,7 +1288,7 @@ unsigned int DSIGReference::readHash(XMLByte *toFill, unsigned int maxToFill) {
 	DOMNode *tmpElt;
 	//const XMLCh * stringHash;
 
-	TXFMBase * nextInput, *currentTransform;
+	TXFMBase * nextInput;
 
 	DOMDocument *d = mp_referenceNode->getOwnerDocument();
 
@@ -1330,31 +1319,27 @@ unsigned int DSIGReference::readHash(XMLByte *toFill, unsigned int maxToFill) {
 
 	// Now have the value of the string - create a transform around it
 	
-	nextInput = (TXFMBase *) new TXFMSB(d);
-
-	if (nextInput == NULL)
-		throw XSECException(XSECException::MemoryAllocationFail);
-
+	XSECnew(nextInput, TXFMSB(d));
 	((TXFMSB *) nextInput)->setInput(b64HashVal);
+
+	// Create a transform chain (really as a janitor for the entire list)
+	TXFMChain * chain;
+	XSECnew(chain, TXFMChain(nextInput));
+	Janitor<TXFMChain> j_chain(chain);
 
 	// Now create the base64 transform
 
-	currentTransform = new TXFMBase64(d);
-
-	if (currentTransform == NULL)
-		throw XSECException(XSECException::MemoryAllocationFail);
+	XSECnew(nextInput, TXFMBase64(d));
+	chain->appendTxfm(nextInput);
 	
-	currentTransform->setInput(nextInput);
-
 	// Now get the value
 
-	size = currentTransform->readBytes(toFill, maxToFill);
+	size = chain->getLastTxfm()->readBytes(toFill, maxToFill);
 
-	// Delete the transforms
+	// Clear any documentat modifications
 
-	currentTransform->deleteExpandedNameSpaces();
-	deleteTXFMChain(currentTransform);
-
+	chain->getLastTxfm()->deleteExpandedNameSpaces();
+	
 	return size;
 
 }

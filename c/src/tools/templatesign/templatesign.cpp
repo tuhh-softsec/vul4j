@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -876,8 +874,10 @@ int main(int argc, char **argv) {
 	}
 
 	catch (XSECException &e) {
+		char * m = XMLString::transcode(e.getMsg());
 		cerr << "An error occured during signature verification\n   Message: "
-		<< e.getMsg() << endl;
+		<< m << endl;
+		delete m;
 		errorsOccured = true;
 		exit (1);
 	}

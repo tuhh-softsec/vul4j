@@ -67,6 +67,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.2  2003/02/21 11:53:09  blautenb
+ * TXFMChain to prevent memory leaks
+ *
  * Revision 1.1  2003/02/17 11:19:12  blautenb
  * Class to use a transform as an InputSource to Xerces
  *
@@ -88,9 +91,9 @@ XSEC_USING_XERCES(BinInputStream);
 //           Construct/Destruct
 // --------------------------------------------------------------------------------
 
-XSECTXFMInputSource::XSECTXFMInputSource(TXFMBase * lst, bool deleteWhenDone) :
+XSECTXFMInputSource::XSECTXFMInputSource(TXFMChain * chain, bool deleteWhenDone) :
 
-mp_txfm(lst),
+mp_chain(chain),
 m_deleteWhenDone(deleteWhenDone) {
 }
 
@@ -107,7 +110,7 @@ BinInputStream* XSECTXFMInputSource::makeStream() const {
 
 	XSECBinTXFMInputStream * ret;
 
-	XSECnew(ret, XSECBinTXFMInputStream(mp_txfm, m_deleteWhenDone));
+	XSECnew(ret, XSECBinTXFMInputStream(mp_chain, m_deleteWhenDone));
 
 	return ret;
 

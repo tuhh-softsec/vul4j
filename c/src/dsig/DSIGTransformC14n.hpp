@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -154,7 +152,7 @@ public:
 	 * when consructing a TXFM List that includes canonicalisation (nearly always)
 	 */
 
-	virtual TXFMBase * createTransformer(TXFMBase * input);
+	virtual void appendTransformer(TXFMChain * input);
 
 	/**
 	 * \brief Construct blank Canonicalisation Transform element.

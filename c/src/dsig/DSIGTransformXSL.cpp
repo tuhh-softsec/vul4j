@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -76,6 +74,7 @@
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/transformers/TXFMXSL.hpp>
 #include <xsec/transformers/TXFMC14n.hpp>
+#include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
@@ -108,7 +107,7 @@ transformType DSIGTransformXSL::getTransformType() {
 }
 
 
-TXFMBase * DSIGTransformXSL::createTransformer(TXFMBase * input) {
+void DSIGTransformXSL::appendTransformer(TXFMChain * input) {
 
 
 #ifdef XSEC_NO_XSLT
@@ -125,23 +124,19 @@ TXFMBase * DSIGTransformXSL::createTransformer(TXFMBase * input) {
 
 	// XSLT Transform - requires a byte stream input
 	
-	if (input->getOutputType() == TXFMBase::DOM_NODES) {
+	if (input->getLastTxfm()->getOutputType() == TXFMBase::DOM_NODES) {
 		
 		// Use c14n to translate to BYTES
 		
 		XSECnew(nextInput, TXFMC14n(mp_txfmNode->getOwnerDocument()));
-		nextInput->setInput(input);		
-	}
-	else {
-		nextInput = input;
-
+		input->appendTxfm(nextInput);
 	}
 
 	TXFMXSL * x;
 	
 	// Create the XSLT transform
 	XSECnew(x, TXFMXSL(mp_txfmNode->getOwnerDocument()));
-	x->setInput(nextInput);
+	input->appendTxfm(x);
 	
 	// Again use C14n (convenient) to translate to a SafeBuffer
 	
@@ -161,8 +156,6 @@ TXFMBase * DSIGTransformXSL::createTransformer(TXFMBase * input) {
 	sbStyleSheet[size] = '\0';		// Terminate as though a string
 	
 	x->evaluateStyleSheet(sbStyleSheet);
-
-	return x;
 
 #endif /* NO_XSLT */
 

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -82,9 +80,9 @@
 
 #include <xercesc/util/BinInputStream.hpp>
 
-
 #include <stdlib.h>
 
+class TXFMChain;
 
 class DSIG_EXPORT TXFMBase {
 
@@ -123,6 +121,9 @@ public:
 
 
 	// Methods to set the inputs
+	// NOTE:  If this throws an exception, the implementation class
+	// MUST have added the newInput to it's chain to ensure that
+	// Deletion of the chain will include everything.
 
 	virtual void setInput(TXFMBase *newInput) = 0;
 
@@ -155,14 +156,12 @@ public:
 
 	// Friends and Statics
 
-	friend void deleteTXFMChain(TXFMBase * toDelete);
+	friend TXFMChain;
 
 
 private:
 
 	TXFMBase();
 };
-
-void deleteTXFMChain(TXFMBase * toDelete);
 
 #endif /* #define TXFMBASE_INCLUDE */

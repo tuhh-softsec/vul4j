@@ -65,9 +65,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -86,13 +84,13 @@ TXFMOutputFile::~TXFMOutputFile() {
 
 void TXFMOutputFile::setInput(TXFMBase *newInput) {
 
+	input = newInput;
+
 	if (newInput->getOutputType() != TXFMBase::BYTE_STREAM) {
 
 		throw XSECException(XSECException::TransformInputOutputFail, "OutputFile transform requires BYTE_STREAM input");
 
 	}
-
-	input = newInput;
 
 	keepComments = input->getCommentsStatus();
 

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -103,6 +101,7 @@ void TXFMC14n::setInput(TXFMBase *newInput) {
 		}
 		catch (...) {
 			delete parser;
+			input = newInput;		// Ensure chain will be deleted.
 			throw;
 		}
 

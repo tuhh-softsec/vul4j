@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -163,7 +161,7 @@ public:
 	 * @returns The TXFMXPath transformer associated with this Transform
 	 */
 
-	virtual TXFMBase * createTransformer(TXFMBase * input);
+	virtual void appendTransformer(TXFMChain * input);
 
 	/**
 	 * \brief Construct blank XPath Transform element.
