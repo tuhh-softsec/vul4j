@@ -1,4 +1,22 @@
-$Id: RELEASE-NOTES.txt,v 1.8 2003/02/03 18:40:28 rdonkin Exp $
+$Id: RELEASE-NOTES.txt,v 1.9 2003/02/23 23:39:20 rdonkin Exp $
+
+
+                          Commons Digester Package
+                                Version 1.4.1
+                               Release Notes
+
+
+INTRODUCTION:
+============
+
+This is a bug fix release. The release notes for 1.4 can be found below (for 
+those people upgrading from earlier versions).
+
+BUG REPORTS ADDRESSED:
+=====================
+#16233 (fixed correctly this time :-)
+
+
 
                           Commons Digester Package
                                 Version 1.4
