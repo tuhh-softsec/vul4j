@@ -106,7 +106,9 @@ public :
 
 	enum SymmetricKeyType {
 
-		KEY_3DES_CBC_192
+		KEY_3DES_CBC_192,			/** 192 bit (3-Key) 3DES */
+		KEY_AES_CBC_128,			/** 128 bit AES in CBC mode */
+		KEY_AES_ECB_128				/** 128 bit AES in ECB mode */
 
 	};
 
@@ -193,12 +195,13 @@ public :
 	 * implementations should assume that the start of the
 	 * cipher text stream will in fact be the IV.
 	 *
+	 * @param doPad By default, we perform padding for last block
 	 * @param iv Initialisation Vector to be used.  NULL if one is
 	 * not required, or if IV will be set from data stream
 	 * @returns true if the initialisation succeeded.
 	 */
 
-	virtual bool decryptInit(const unsigned char * iv = NULL) = 0;
+	virtual bool decryptInit(bool doPad = true, const unsigned char * iv = NULL) = 0;
 
 	/**
 	 * \brief Continue an decrypt operation using this key.

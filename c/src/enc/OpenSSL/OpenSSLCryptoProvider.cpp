@@ -82,6 +82,10 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 
+#include <xsec/enc/XSECCryptoException.hpp>
+
+#include <openssl/rand.h>
+
 OpenSSLCryptoProvider::OpenSSLCryptoProvider() {
 
 	OpenSSL_add_all_digests();		// Initialise Openssl
@@ -182,6 +186,27 @@ XSECCryptoSymmetricKey	* OpenSSLCryptoProvider::keySymmetric(XSECCryptoSymmetric
 	XSECnew(ret, OpenSSLCryptoSymmetricKey(alg));
 
 	return ret;
+
+}
+
+unsigned int OpenSSLCryptoProvider::getRandom(unsigned char * buffer, unsigned int numOctets) {
+
+	if (RAND_status() != 1) {
+
+		throw XSECCryptoException(XSECCryptoException::GeneralError,
+			"OpenSSLCryptoProvider::getRandom - OpenSSL random not properly initialised"); 
+	}
+
+	int res = RAND_bytes(buffer, numOctets);
+
+	if (res == 0) {
+
+		throw XSECCryptoException(XSECCryptoException::GeneralError,
+			"OpenSSLCryptoProvider::getRandom - Error obtaining random octets"); 
+	
+	}
+
+	return numOctets;
 
 }
 

@@ -94,6 +94,9 @@ XSEC_USING_XERCES(XMLString);
 // Encryption Algorithms
 #define URI_ID_3DES_CBC	"http://www.w3.org/2001/04/xmlenc#tripledes-cbc"
 
+// Key Wrap Algorithm
+#define URI_ID_KW_AES128 "http://www.w3.org/2001/04/xmlenc#kw-aes128"
+
 // Transforms
 
 #define URI_ID_BASE64			"http://www.w3.org/2000/09/xmldsig#base64"
@@ -182,7 +185,8 @@ enum xpathFilterType {
 enum encryptionMethod {
 
 	ENCRYPT_NONE			= 0,				// No method defined
-	ENCRYPT_3DES_CBC		= 1					// Use 3DES
+	ENCRYPT_3DES_CBC		= 1,				// Use 3DES
+	ENCRYPT_KW_AES128		= 2					// KeyWrap - AES128
 
 };
 
@@ -306,6 +310,11 @@ bool encryptionMethod2URI(safeBuffer &uri, encryptionMethod em) {
 		uri = URI_ID_3DES_CBC;
 		break;
 
+	case (ENCRYPT_KW_AES128) :
+
+		uri = URI_ID_KW_AES128;
+		break;
+
 	default:
 
 		return false;
@@ -358,6 +367,7 @@ public:
 
 	// URIs for Encryption
 	static const XMLCh * s_unicodeStrURI3DES_CBC;
+	static const XMLCh * s_unicodeStrURIKW_AES128;
 
 	// Internal Crypto Providers
 	static const XMLCh * s_unicodeStrPROVOpenSSL;

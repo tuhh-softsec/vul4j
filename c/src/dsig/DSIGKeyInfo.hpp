@@ -123,7 +123,8 @@ public:
 		KEYINFO_NAME			= 5,			// A name of a key (application dependant)
 		KEYINFO_PGPDATA			= 6,			// A PGP key
 		KEYINFO_SPKIDATA		= 7,
-		KEYINFO_MGMTDATA		= 8				// Management data
+		KEYINFO_MGMTDATA		= 8,			// Management data
+		KEYINFO_ENCRYPTEDKEY	= 9				// XML Encryption - Encrypted Key
 
 	};
 
@@ -165,7 +166,7 @@ public:
 	 * \brief Return the DOMNode that heads up this DOMNode
 	 */
 
-	virtual const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getKeyInfoDOMNode() 
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getKeyInfoDOMNode() 
 		{return mp_keyInfoDOMNode;}
 
 	/**

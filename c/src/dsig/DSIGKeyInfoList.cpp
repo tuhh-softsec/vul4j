@@ -85,6 +85,8 @@
 #include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/transformers/TXFMBase.hpp>
 
+#include "../xenc/impl/XENCEncryptedKeyImpl.hpp"
+
 #include <xercesc/util/Janitor.hpp>
 
 XERCES_CPP_NAMESPACE_USE
@@ -194,6 +196,12 @@ bool DSIGKeyInfoList::addXMLKeyInfo(DOMNode *ki) {
 	else if (strEquals(getDSIGLocalName(ki), "MgmtData")) {
 
 		XSECnew(k, DSIGKeyInfoMgmtData(mp_env, ki));
+		
+	}
+
+	else if (strEquals(getXENCLocalName(ki), "EncryptedKey")) {
+
+		XSECnew(k, XENCEncryptedKeyImpl(mp_env, ki));
 		
 	}
 
@@ -614,5 +622,26 @@ DSIGKeyInfoMgmtData * DSIGKeyInfoList::appendMgmtData(const XMLCh * data) {
 	addKeyInfo(m);
 
 	return m;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Some helper functions
+// --------------------------------------------------------------------------------
+
+void DSIGKeyInfoList::addAndInsertKeyInfo(DSIGKeyInfo * ref) {
+
+	if (mp_keyInfoNode == NULL) {
+
+		throw XSECException(XSECException::KeyInfoError, 
+			"KeyInfoList - Attempt to create MgmtData before creating KeyInfo");
+
+	}
+
+	DOMDocument * doc = mp_env->getParentDocument();
+	mp_keyInfoNode->appendChild(ref->getKeyInfoDOMNode());
+	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	addKeyInfo(ref);
 
 }

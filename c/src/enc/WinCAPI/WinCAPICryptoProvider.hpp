@@ -317,6 +317,21 @@ public :
 
 	virtual XSECCryptoSymmetricKey	* keySymmetric(XSECCryptoSymmetricKey::SymmetricKeyType alg);
 
+	/**
+	 * \brief Obtain some random octets
+	 *
+	 * For generation of IVs and the like, the library needs to be able
+	 * to obtain "random" octets.  The library uses this call to the 
+	 * crypto provider to obtain what it needs.
+	 *
+	 * @param buffer The buffer to place the random data in
+	 * @param numOctets Number of bytes required
+	 * @returns Number of bytes obtained.
+	 */
+
+	virtual unsigned int getRandom(unsigned char * buffer, unsigned int numOctets);
+
+
 	//@}
 
 private:

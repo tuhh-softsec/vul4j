@@ -219,6 +219,14 @@ XSECCryptoSymmetricKey	* WinCAPICryptoProvider::keySymmetric(XSECCryptoSymmetric
 
 }
 
+unsigned int WinCAPICryptoProvider::getRandom(unsigned char * buffer, unsigned int numOctets) {
+
+	throw XSECException(XSECException::InternalError,
+		"WinCAPICryptoProvider() - Random generation not yet supported");
+
+}
+
+
 
 // --------------------------------------------------------------------------------
 //     Translate a Base64 number to a Windows (little endian) integer

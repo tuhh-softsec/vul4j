@@ -175,12 +175,13 @@ public :
 	 * Callers can pass in an IV.  If one is not provided, 
 	 * then it is assumed that the algorithm will not require one.
 	 *
+	 * @param doPad By default, we perform padding for last block
 	 * @param iv Initialisation Vector to be used.  NULL if one is
 	 * not required.
 	 * @returns true if the initialisation succeeded.
 	 */
 
-	virtual bool decryptInit(const unsigned char * iv = NULL);
+	virtual bool decryptInit(bool doPad = true, const unsigned char * iv = NULL);
 
 	/**
 	 * \brief Continue an decrypt operation using this key.
@@ -321,7 +322,7 @@ private:
 	int								m_ivSize;
 	int								m_bytesInLastBlock;
 	bool							m_ivSent;		// Has the IV been put in the stream
-
+	bool							m_doPad;		// Do we pad last block?
 };
 
 

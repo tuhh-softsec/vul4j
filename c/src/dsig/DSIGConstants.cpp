@@ -101,6 +101,7 @@ const XMLCh * DSIGConstants::s_unicodeStrURIHMAC_SHA1;
 const XMLCh * DSIGConstants::s_unicodeStrURIXMLNS;
 const XMLCh * DSIGConstants::s_unicodeStrURIMANIFEST;
 const XMLCh * DSIGConstants::s_unicodeStrURI3DES_CBC;
+const XMLCh * DSIGConstants::s_unicodeStrURIKW_AES128;
 const XMLCh * DSIGConstants::s_unicodeStrPROVOpenSSL;
 const XMLCh * DSIGConstants::s_unicodeStrPROVWinCAPI;
 
@@ -140,6 +141,7 @@ void DSIGConstants::create() {
 	s_unicodeStrURIMANIFEST = XMLString::transcode(URI_ID_MANIFEST);
 	
 	s_unicodeStrURI3DES_CBC	= XMLString::transcode(URI_ID_3DES_CBC);
+	s_unicodeStrURIKW_AES128 = XMLString::transcode(URI_ID_KW_AES128);
 	
 	s_unicodeStrPROVOpenSSL = XMLString::transcode(PROV_OPENSSL);
 	s_unicodeStrPROVWinCAPI = XMLString::transcode(PROV_WINCAPI);
@@ -178,6 +180,7 @@ void DSIGConstants::destroy() {
 	delete[] (XMLCh *) s_unicodeStrURIMANIFEST;
 
 	delete[] (XMLCh *) s_unicodeStrURI3DES_CBC;
+	delete[] (XMLCh *) s_unicodeStrURIKW_AES128;
 
 	delete[] (XMLCh *) s_unicodeStrPROVOpenSSL;
 	delete[] (XMLCh *) s_unicodeStrPROVWinCAPI;

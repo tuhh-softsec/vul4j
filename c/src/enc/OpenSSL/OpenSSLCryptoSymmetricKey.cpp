@@ -76,6 +76,8 @@
 
 #include <string.h>
 
+#include <openssl/rand.h>
+
 // --------------------------------------------------------------------------------
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------
@@ -183,6 +185,46 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 
 		break;
 
+	case (XSECCryptoSymmetricKey::KEY_AES_CBC_128) :
+
+		// An AES key
+
+		if (iv == NULL) {
+
+			return 0;	// Cannot initialise without an IV
+
+		}
+
+		EVP_CIPHER_CTX_init(&m_ctx);
+		EVP_DecryptInit_ex(&m_ctx, EVP_aes_128_cbc(), NULL, m_keyBuf.rawBuffer(), iv);
+		// Turn off padding
+		EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
+
+		// That means we have to handle padding, so we always hold back
+		// 8 bytes of data.
+		m_blockSize = 8;
+		m_bytesInLastBlock = 0;
+
+		return 8;	// AES uses a 64 bit IV
+
+		break;
+
+	case (XSECCryptoSymmetricKey::KEY_AES_ECB_128) :
+
+		// An AES key
+
+		EVP_CIPHER_CTX_init(&m_ctx);
+		EVP_DecryptInit_ex(&m_ctx, EVP_aes_128_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
+		// Turn off padding
+		EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
+
+		m_blockSize = 0;
+		m_bytesInLastBlock = 0;
+
+		return 0;	// ECB - no key
+
+		break;
+	
 	default :
 
 		// Cannot do this without an IV
@@ -195,10 +237,10 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 }
 
 
-bool OpenSSLCryptoSymmetricKey::decryptInit(const unsigned char * iv) {
+bool OpenSSLCryptoSymmetricKey::decryptInit(bool doPad, const unsigned char * iv) {
 
+	m_doPad = doPad;
 	decryptCtxInit(iv);
-
 	return true;
 
 }
@@ -231,8 +273,8 @@ unsigned int OpenSSLCryptoSymmetricKey::decrypt(const unsigned char * inBuf,
 
 	}
 
-	// Store the last block
-	if (m_blockSize > 0 && outl >= m_blockSize) {
+	// Store the last block if we are padding
+	if (m_doPad && m_blockSize > 0 && outl >= m_blockSize) {
 
 		// Output will always be *at least* the blocksize
 
@@ -273,7 +315,7 @@ unsigned int OpenSSLCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 	}
 
 	// Calculate any padding issues
-	if (m_bytesInLastBlock == m_blockSize) {
+	if (m_doPad && m_bytesInLastBlock == m_blockSize) {
 
 		outl = m_blockSize - m_lastBlock[m_blockSize - 1];
 
@@ -313,9 +355,10 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
 	// Set up the context according to the required cipher type
 
 	const unsigned char * usedIV;
-	const unsigned char tstIV[] = "abcdefghijklmnopqrstuvwxyz";
+	unsigned char genIV[256];
 
 	// Tell the library that the IV still has to be sent
+
 	m_ivSent = false;
 
 	switch (m_keyType) {
@@ -326,7 +369,13 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
 
 		if (iv == NULL) {
 			
-			usedIV = tstIV;
+			bool res = ((RAND_status() == 1) && (RAND_bytes(genIV, 256) == 1));
+			if (res == false) {
+				throw XSECCryptoException(XSECCryptoException::SymmetricError,
+					"OpenSSL:SymmetricKey - Error generating random IV");
+			}
+
+			usedIV = genIV;
 			//return 0;	// Cannot initialise without an IV
 
 		}
@@ -346,6 +395,47 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
 
 		break;
 
+	case (XSECCryptoSymmetricKey::KEY_AES_CBC_128) :
+
+		// An AES key
+
+		if (iv == NULL) {
+			
+			bool res = ((RAND_status() == 1) && (RAND_bytes(genIV, 256) == 1));
+			if (res == false) {
+				throw XSECCryptoException(XSECCryptoException::SymmetricError,
+					"OpenSSL:SymmetricKey - Error generating random IV");
+			}
+
+			usedIV = genIV;
+			//return 0;	// Cannot initialise without an IV
+
+		}
+		else
+			usedIV = iv;
+
+		EVP_EncryptInit_ex(&m_ctx, EVP_aes_128_cbc(), NULL, m_keyBuf.rawBuffer(), usedIV);
+
+		m_blockSize = 16;
+		m_ivSize = 16;
+		memcpy(m_lastBlock, usedIV, m_ivSize);
+		m_bytesInLastBlock = 0;
+
+		break;
+
+	case (XSECCryptoSymmetricKey::KEY_AES_ECB_128) :
+
+		// An AES key
+
+		EVP_EncryptInit_ex(&m_ctx, EVP_aes_128_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
+		EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
+
+		m_blockSize = 16;
+		m_ivSize = 0;
+		m_bytesInLastBlock = 0;
+
+		break;
+	
 	default :
 
 		// Cannot do this without an IV

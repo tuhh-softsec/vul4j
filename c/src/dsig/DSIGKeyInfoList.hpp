@@ -176,11 +176,26 @@ public:
 	 * Adds a KeyInfo element that has already been built
 	 * into the list.
 	 *
+	 * @note This method does <b>not</b> insert the KeyInfo into the DOM
+	 * structure - it assumes it is already there and just adds to the list.
 	 * @param ref The KeyInfo to add
 	 */
 
 	void addKeyInfo(DSIGKeyInfo * ref);
 
+	/**
+	 * \brief Add an already created KeyInfo 
+	 *
+	 * Adds a KeyInfo element that has already been built
+	 * into the list.
+	 *
+	 * @note This method finds the DOM node of the KeyInfo and inserts it
+	 * into the <KeyInfo/> list in the DOM.
+	 * @param ref The KeyInfo to add
+	 */
+
+	void addAndInsertKeyInfo(DSIGKeyInfo * ref);	
+	
 	/**
 	 * \brief Read from DOM and create.
 	 *

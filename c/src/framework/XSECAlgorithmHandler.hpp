@@ -179,14 +179,36 @@ public:
 	 * @param encryptionMethod Information about the algorithm to use
 	 * @param key The key that has been determined via a resolver or
 	 * that has been provided by the calling application.
+	 * @returns The number of plain bytes placed in the safeBuffer
 	 */
 
-	virtual bool decryptToSafeBuffer(
+	virtual unsigned int decryptToSafeBuffer(
 		TXFMChain * cipherText,
 		XENCEncryptionMethod * encryptionMethod,
 		XSECCryptoKey * key,
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
 		safeBuffer & result
+	) = 0;
+
+	//@}
+
+	/** @name Key handling */
+	//@{
+
+	/**
+	 * \brief Create a key that will support a given URI
+	 *
+	 * Given a URI string and a raw bit string, create the associated key
+	 *
+	 * @param uri URI string to match key to
+	 * @param keyBuffer Raw bits to set in the key
+	 * @param keyLen Number of bytes in the key
+	 */
+
+	virtual XSECCryptoKey * createKeyForURI(
+		const XMLCh * uri,
+		unsigned char * keyBuffer,
+		unsigned int keyLen
 	) = 0;
 
 	//@}
