@@ -522,7 +522,7 @@ public class BaltimoreEncTest extends TestCase {
 		dbf.setNamespaceAware(true);
 		dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
 		String basedir = System.getProperty("basedir");
-		if(basedir != null || !"".equals(basedir)) {
+		if(basedir != null && !"".equals(basedir)) {
 			filename = basedir + "/" + filename;
 		}
 		File f = new File(filename);
