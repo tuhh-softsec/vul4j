@@ -1,4 +1,4 @@
-/* $Id: RulesBase.java,v 1.18 2004/05/10 06:30:06 skitching Exp $
+/* $Id: RulesBase.java,v 1.19 2005/01/18 00:58:16 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -40,6 +40,13 @@ import java.util.List;
  *     <code>&lt;b&gt;</code> element, nested inside an <code>&lt;a&gt;</code>
  *      element, no matter how deeply the pair is nested.</li>
  * </ul>
+ *
+ * <p>Note that wildcard patterns are ignored if an explicit match can be found 
+ * (and when multiple wildcard patterns match, only the longest, ie most 
+ * explicit, pattern is considered a match).</p>
+ *
+ * <p>See the package documentation for package org.apache.commons.digester 
+ * for more information.</p>
  */
 
 public class RulesBase implements Rules {
