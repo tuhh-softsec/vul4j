@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsGreaterThan.java,v 1.2 2003/03/04 17:28:21 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/comparator/TestIsGreaterThan.java,v 1.3 2003/03/04 23:11:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,12 +59,10 @@ package org.apache.commons.functor.core.comparator;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 17:28:21 $
+ * @version $Revision: 1.3 $ $Date: 2003/03/04 23:11:13 $
  * @author Rodney Waldhoff
  */
 public class TestIsGreaterThan extends BaseComparisonPredicateTest {

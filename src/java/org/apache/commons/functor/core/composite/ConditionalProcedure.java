@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/ConditionalProcedure.java,v 1.3 2003/02/02 21:46:19 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/composite/ConditionalProcedure.java,v 1.4 2003/03/04 23:11:15 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -58,8 +58,8 @@ package org.apache.commons.functor.core.composite;
 
 import java.io.Serializable;
 
-import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.Predicate;
+import org.apache.commons.functor.Procedure;
 
 /**
  * A {@link Procedure Procedure} 
@@ -77,7 +77,7 @@ import org.apache.commons.functor.Predicate;
  * an instance whose delegates are not all 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.3 $ $Date: 2003/02/02 21:46:19 $
+ * @version $Revision: 1.4 $ $Date: 2003/03/04 23:11:15 $
  * @author Rodney Waldhoff
  */
 public final class ConditionalProcedure implements Procedure, Serializable {

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestPredicateFunction.java,v 1.1 2003/01/27 19:33:41 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestPredicateFunction.java,v 1.2 2003/03/04 23:11:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,12 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.Function;
-import org.apache.commons.functor.Predicate;
 import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:41 $
+ * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:12 $
  * @author Rodney Waldhoff
  */
 public class TestPredicateFunction extends BaseFunctorTest {

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.6 2003/03/04 17:59:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.7 2003/03/04 23:11:14 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,9 +66,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.BinaryPredicate;
 import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.adapter.RightBoundPredicate;
 import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.collection.CollectionAlgorithms;
@@ -100,7 +98,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * <p> 
  * See the extensive in line comments for details.
  * 
- * @version $Revision: 1.6 $ $Date: 2003/03/04 17:59:29 $
+ * @version $Revision: 1.7 $ $Date: 2003/03/04 23:11:14 $
  * @author Rodney Waldhoff
  */
 public class Quicksort extends TestCase {

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/IgnoreRightFunction.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/IgnoreRightFunction.java,v 1.2 2003/03/04 23:11:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -59,7 +59,6 @@ package org.apache.commons.functor.adapter;
 import java.io.Serializable;
 
 import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.Function;
 import org.apache.commons.functor.UnaryFunction;
 
 /**
@@ -76,7 +75,7 @@ import org.apache.commons.functor.UnaryFunction;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
+ * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:13 $
  * @author Rodney Waldhoff
  */
 public final class IgnoreRightFunction implements BinaryFunction, Serializable {

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryCompositeBinaryFunction.java,v 1.1 2003/02/01 14:23:05 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestUnaryCompositeBinaryFunction.java,v 1.2 2003/03/04 23:11:11 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,14 +62,12 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.ConstantPredicate;
 import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.LeftIdentityFunction;
-import org.apache.commons.functor.core.LeftIdentityPredicate;
 import org.apache.commons.functor.core.RightIdentityFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/01 14:23:05 $
+ * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:11 $
  * @author Rodney Waldhoff
  */
 public class TestUnaryCompositeBinaryFunction extends BaseFunctorTest {

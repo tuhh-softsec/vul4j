@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Attic/PredicatedIterator.java,v 1.1 2003/02/20 01:12:39 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Attic/PredicatedIterator.java,v 1.2 2003/03/04 23:11:14 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,19 +56,13 @@
  */
 package org.apache.commons.functor.core.collection;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.functor.BinaryFunction;
-import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
-import org.apache.commons.functor.UnaryProcedure;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:39 $
+ * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:14 $
  * @author Rodney Waldhoff
  */
 public class PredicatedIterator implements Iterator {

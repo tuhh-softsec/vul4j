@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.4 2003/02/24 11:38:07 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.5 2003/03/04 23:11:14 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -73,11 +73,11 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
-import org.apache.commons.functor.core.IsEqual;
 import org.apache.commons.functor.core.IdentityFunction;
+import org.apache.commons.functor.core.IsEqual;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/02/24 11:38:07 $
+ * @version $Revision: 1.5 $ $Date: 2003/03/04 23:11:14 $
  * @author Rodney Waldhoff
  */
 public class TestCollectionAlgorithms extends TestCase {

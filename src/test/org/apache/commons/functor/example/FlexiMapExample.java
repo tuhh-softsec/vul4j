@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.1 2003/03/04 21:33:56 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.2 2003/03/04 23:11:14 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -69,21 +69,16 @@ import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.BinaryProcedure;
 import org.apache.commons.functor.Procedure;
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.adapter.BinaryProcedureBinaryFunction;
 import org.apache.commons.functor.adapter.IgnoreLeftFunction;
-import org.apache.commons.functor.adapter.IgnoreLeftPredicate;
-import org.apache.commons.functor.adapter.IgnoreRightPredicate;
 import org.apache.commons.functor.adapter.UnaryProcedureUnaryFunction;
 import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsNull;
 import org.apache.commons.functor.core.RightIdentityFunction;
-import org.apache.commons.functor.core.composite.BinaryOr;
-import org.apache.commons.functor.core.composite.ConditionalBinaryFunction;
 import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/03/04 21:33:56 $
+ * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:14 $
  * @author Rodney Waldhoff
  */
 public class FlexiMapExample extends TestCase {

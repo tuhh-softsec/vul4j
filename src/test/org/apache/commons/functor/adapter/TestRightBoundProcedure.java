@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundProcedure.java,v 1.3 2003/02/24 11:48:08 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundProcedure.java,v 1.4 2003/03/04 23:11:12 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,12 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.LeftIdentityFunction;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/02/24 11:48:08 $
+ * @version $Revision: 1.4 $ $Date: 2003/03/04 23:11:12 $
  * @author Rodney Waldhoff
  */
 public class TestRightBoundProcedure extends BaseFunctorTest {
