@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/TestAll.java,v 1.2 2003/12/01 07:30:24 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/Attic/FunctoredChop.java,v 1.1 2003/12/01 07:30:24 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,25 +54,20 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example.kata;
+package org.apache.commons.functor.example.kata.two;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.List;
 
-/**
- * @version $Revision: 1.2 $ $Date: 2003/12/01 07:30:24 $
- * @author Rodney Waldhoff
- */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+import org.apache.commons.functor.BinaryFunction;
+
+public class FunctoredChop extends BaseBinaryChop {
+    public FunctoredChop(BinaryFunction function) {
+        this.function = function;
+    }
+    
+    public int find(Object seeking, List list) {
+        return ((Number)function.evaluate(seeking,list)).intValue();
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTest(org.apache.commons.functor.example.kata.one.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.kata.two.TestAll.suite());
-        return suite;
-    }
+    private BinaryFunction function;
 }

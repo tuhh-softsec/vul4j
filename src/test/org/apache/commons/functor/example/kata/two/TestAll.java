@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/TestAll.java,v 1.2 2003/12/01 07:30:24 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestAll.java,v 1.1 2003/12/01 07:30:24 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,14 +54,17 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example.kata;
+package org.apache.commons.functor.example.kata.two;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/12/01 07:30:24 $
+ * See http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v
+ * for more information on this Kata.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/12/01 07:30:24 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -71,8 +74,7 @@ public class TestAll extends TestCase {
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(org.apache.commons.functor.example.kata.one.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.kata.two.TestAll.suite());
+        suite.addTest(TestBinaryChop.suite());
         return suite;
     }
 }
