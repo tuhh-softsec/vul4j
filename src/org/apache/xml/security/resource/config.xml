@@ -39,6 +39,10 @@
            is identified by Id which is referenced by ProviderId of the
            Provider Element in the Algorithm Element -->
       <Providers>
+         <Provider Id="BC"
+                   Class="org.bouncycastle.jce.provider.BouncyCastleProvider"
+                   Info="BouncyCastle Security Provider v1.08"
+                   ProviderURL="http://www.bouncycastle.org/" />
          <Provider Id="SUN"
                    Class="sun.security.provider.Sun"
                    Info="SUN (DSA key/parameter generation; DSA signing; SHA-1, MD5 digests; SecureRandom; X.509 certificates; JKS keystore)"
@@ -56,30 +60,34 @@
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     Description="Digital Signature Algorithm with SHA-1 message digest"
                     AlgorithmClass="Signature">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="DSA" />
             <ProviderAlgo ProviderId="SUN"
-                          JCEName="DSAWithSHA1"
-                          JCEAlias="Alg.Alias.Signature.DSAWithSHA1" />
+                          JCEName="DSAWithSHA1" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#rsa-sha1"
                     Description="RSA Signature with SHA-1 message digest"
                     AlgorithmClass="Signature">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="SHA1WithRSAEncryption" />
             <ProviderAlgo ProviderId="SunRsaSign"
-                          JCEName="SHA1withRSA"
-                          JCEAlias="Signature.SHA1withRSA" />
+                          JCEName="SHA1withRSA" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#sha1"
                     Description="SHA-1 message digest"
                     AlgorithmClass="MessageDigest">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="SHA-1" />
             <ProviderAlgo ProviderId="SUN"
-                          JCEName="SHA-1"
-                          JCEAlias="Alg.Alias.MessageDigest.SHA-1" />
+                          JCEName="SHA-1" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
                     Description="Message Authentication code using SHA1"
                     AlgorithmClass="Mac">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="HMACSHA1" />
             <ProviderAlgo ProviderId="SunJCE"
-                          JCEName="HmacSHA1"
-                          JCEAlias="Mac.HmacSHA1" />
+                          JCEName="HmacSHA1" />
          </Algorithm>
       </Algorithms>
    </JCEAlgorithmMappings>
