@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.21 2002/09/24 20:50:07 rdonkin Exp $
- * $Revision: 1.21 $
- * $Date: 2002/09/24 20:50:07 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.22 2002/09/30 19:48:51 rdonkin Exp $
+ * $Revision: 1.22 $
+ * $Date: 2002/09/30 19:48:51 $
  *
  * ====================================================================
  *
@@ -81,7 +81,7 @@ import org.xml.sax.SAXException;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.21 $ $Date: 2002/09/24 20:50:07 $
+ * @version $Revision: 1.22 $ $Date: 2002/09/30 19:48:51 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -597,104 +597,6 @@ public class RuleTestCase extends TestCase {
 
 
     /**
-     * Test method calls with the CallMethodRule rule. It should be possible
-     * to call any accessible method of the object on the top of the stack,
-     * even methods with no arguments.
-     */
-    public void testCallMethod() throws SAXException, IOException {
-        
-        // Configure the digester as required
-        digester.addObjectCreate("employee", Employee.class);
-        // try all syntax permutations
-        digester.addCallMethod("employee", "toString", 0, (Class[])null);
-        digester.addCallMethod("employee", "toString", 0, (String[])null);
-        digester.addCallMethod("employee", "toString", 0, new Class[] {});
-        digester.addCallMethod("employee", "toString", 0, new String[] {});
-        digester.addCallMethod("employee", "toString");
-
-        // Parse our test input
-        Object root1 = null;
-        // an exception will be thrown if the method can't be found
-        root1 = digester.parse(getInputStream("Test5.xml"));
-
-    }
-
-    /**
-     * Test method calls with the CallMethodRule rule. It should be possible
-     * to call any accessible method of the object on the top of the stack,
-     * even methods with no arguments.
-     */
-    public void testCallMethod2() throws SAXException, IOException {
-        
-        //I was preparing this test case to fix another bug
-        //    i'll uncomment it once i've fixed it
-            
-        // Configure the digester as required
-        digester.addObjectCreate("employee", Employee.class);
-        // try all syntax permutations
-        digester.addCallMethod("employee", "setLastName", 1, 
-                                new String[] {"java.lang.String"});
-        digester.addCallParam("employee/lastName", 0);
-                
-        // Parse our test input
-        Object root1 = null;
-        
-        // an exception will be thrown if the method can't be found
-        root1 = digester.parse(getInputStream("Test5.xml"));
-        Employee employee = (Employee) root1;
-        assertEquals("Failed to call Employee.setLastName", 
-                    "Last Name", employee.getLastName()); 
-        
-
-        digester = new Digester();
-        // Configure the digester as required
-        digester.addObjectCreate("employee", Employee.class);
-        // try out primitive convertion
-        digester.addCallMethod("employee", "setAge", 1, 
-                                new Class[] {int.class});
-        digester.addCallParam("employee/age", 0);         
-                
-        // Parse our test input
-        root1 = null;
-        
-        // an exception will be thrown if the method can't be found
-        root1 = digester.parse(getInputStream("Test5.xml"));
-        employee = (Employee) root1;
-        assertEquals("Failed to call Employee.setAge", 21, employee.getAge()); 
-        
-        digester = new Digester();
-        // Configure the digester as required
-        digester.addObjectCreate("employee", Employee.class);      
-        digester.addCallMethod("employee", "setActive", 1, 
-                                new Class[] {boolean.class});
-        digester.addCallParam("employee/active", 0);    
-                
-        // Parse our test input
-        root1 = null;
-
-        // an exception will be thrown if the method can't be found
-        root1 = digester.parse(getInputStream("Test5.xml"));
-        employee = (Employee) root1;
-        assertEquals("Failed to call Employee.setActive", 
-                        true, employee.isActive()); 
-        
-        digester = new Digester();            
-        // Configure the digester as required
-        digester.addObjectCreate("employee", Employee.class); 
-        digester.addCallMethod("employee", "setSalary", 1, 
-                                new Class[] {float.class});
-        digester.addCallParam("employee/salary", 0);    
-                
-        // Parse our test input
-        root1 = null;
-        // an exception will be thrown if the method can't be found
-        root1 = digester.parse(getInputStream("Test5.xml"));
-        employee = (Employee) root1;
-        assertEquals("Failed to call Employee.setSalary", 
-                        1000000.0f, employee.getSalary(), 0.1f); 
-    }
-    
-    /**
      */
     public void testSetCustomProperties() throws SAXException, IOException {
         
@@ -830,29 +732,4 @@ public class RuleTestCase extends TestCase {
     }
     
 
-    /**
-     * Test nested CallMethod rules.
-     */
-    public void testCallMethod3() throws Exception {
-        
-        // Configure the digester as required
-        StringBuffer word = new StringBuffer();
-        digester.push(word);
-        digester.addCallMethod("*/element", "append", 1);
-        digester.addCallParam("*/element", 0, "name");
-        
-        // Parse our test input
-        Object root1 = null;
-        try {
-            // an exception will be thrown if the method can't be found
-            root1 = digester.parse(getInputStream("Test8.xml"));
-            
-        } catch (Throwable t) {
-            // this means that the method can't be found and so the test fails
-            fail("Digester threw Exception:  " + t);
-        }
-        
-        assertEquals("Wrong method call order", "ABA", word.toString());
-
-    }
 }

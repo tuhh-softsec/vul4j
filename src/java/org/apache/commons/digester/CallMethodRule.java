@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.18 2002/07/29 21:05:15 rdonkin Exp $
- * $Revision: 1.18 $
- * $Date: 2002/07/29 21:05:15 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.19 2002/09/30 19:48:50 rdonkin Exp $
+ * $Revision: 1.19 $
+ * $Date: 2002/09/30 19:48:50 $
  *
  * ====================================================================
  *
@@ -91,7 +91,7 @@ import org.apache.commons.beanutils.MethodUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.18 $ $Date: 2002/07/29 21:05:15 $
+ * @version $Revision: 1.19 $ $Date: 2002/09/30 19:48:50 $
  */
 
 public class CallMethodRule extends Rule {
@@ -372,7 +372,7 @@ public class CallMethodRule extends Rule {
 
         // Push an array to capture the parameter values if necessary
         if (paramCount > 0) {
-            String parameters[] = new String[paramCount];
+            Object parameters[] = new Object[paramCount];
             for (int i = 0; i < parameters.length; i++) {
                 parameters[i] = null;
             }
@@ -402,10 +402,10 @@ public class CallMethodRule extends Rule {
     public void end() throws Exception {
 
         // Retrieve or construct the parameter values array
-        String parameters[] = null;
+        Object parameters[] = null;
         if (paramCount > 0) {
 
-            parameters = (String[]) digester.popParams();
+            parameters = (Object[]) digester.popParams();
             
             if (digester.log.isTraceEnabled()) {
                 for (int i=0,size=parameters.length;i<size;i++) {
@@ -431,7 +431,7 @@ public class CallMethodRule extends Rule {
                 return;
             }
 
-            parameters = new String[1];
+            parameters = new Object[1];
             parameters[0] = bodyText;
             if (paramTypes.length == 0) {
                 paramTypes = new Class[1];
@@ -441,10 +441,18 @@ public class CallMethodRule extends Rule {
         }
 
         // Construct the parameter values array we will need
+        // We only do the conversion if the param value is a String and
+        // the specified paramType is not String. 
         Object paramValues[] = new Object[paramTypes.length];
         for (int i = 0; i < paramTypes.length; i++) {
-            paramValues[i] =
-                    ConvertUtils.convert(parameters[i], paramTypes[i]);
+            if(parameters[i] instanceof String && 
+               !String.class.isAssignableFrom(paramTypes[i])) {
+                
+                paramValues[i] =
+                        ConvertUtils.convert((String) parameters[i], paramTypes[i]);
+            } else {
+                paramValues[i] = parameters[i];
+            }
         }
 
         // Invoke the required method on the top object

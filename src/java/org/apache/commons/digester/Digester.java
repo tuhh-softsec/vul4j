@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.66 2002/08/20 02:51:46 patrickl Exp $
- * $Revision: 1.66 $
- * $Date: 2002/08/20 02:51:46 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.67 2002/09/30 19:48:50 rdonkin Exp $
+ * $Revision: 1.67 $
+ * $Date: 2002/09/30 19:48:50 $
  *
  * ====================================================================
  *
@@ -124,7 +124,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.66 $ $Date: 2002/08/20 02:51:46 $
+ * @version $Revision: 1.67 $ $Date: 2002/09/30 19:48:50 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1798,6 +1798,22 @@ public class Digester extends DefaultHandler {
     }
 
 
+    /**
+     * Add a "call parameter" rule.
+     * This will either take a parameter from the stack 
+     * or from the current element body text. 
+     *
+     * @param paramIndex The zero-relative parameter number
+     * @param fromStack Should the call parameter be taken from the top of the stack?
+     */    
+    public void addCallParam(String pattern, int paramIndex, boolean fromStack) {
+    
+        addRule(pattern,
+                new CallParamRule(paramIndex, fromStack));
+      
+    }
+
+    
     /**
      * Add a "factory create" rule for the specified parameters.
      *

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.8 2002/09/24 20:50:07 rdonkin Exp $
- * $Revision: 1.8 $
- * $Date: 2002/09/24 20:50:07 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.9 2002/09/30 19:48:50 rdonkin Exp $
+ * $Revision: 1.9 $
+ * $Date: 2002/09/30 19:48:50 $
  *
  * ====================================================================
  *
@@ -69,12 +69,22 @@ import org.xml.sax.Attributes;
 
 
 /**
- * Rule implementation that saves a parameter from either an attribute of
- * this element, or from the element body, to be used in a call generated
- * by a surrounding CallMethodRule rule.
+ * <p>Rule implementation that saves a parameter for use by a surrounding 
+ * <code>CallMethodRule<code>.</p>
+ *
+ * <p>This parameter may be:
+ * <ul>
+ * <li>from an attribute of the current element
+ * See {@link #CallParamRule(int paramIndex, String attributeName)}
+ * <li>from current the element body
+ * See {@link #CallParamRule(int paramIndex)}
+ * <li>from the top object on the stack. 
+ * See {@link #CallParamRule(int paramIndex, boolean fromStack)}
+ * </ul>
+ * </p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.8 $ $Date: 2002/09/24 20:50:07 $
+ * @version $Revision: 1.9 $ $Date: 2002/09/30 19:48:50 $
  */
 
 public class CallParamRule extends Rule {
@@ -147,6 +157,19 @@ public class CallParamRule extends Rule {
     }
 
 
+    /**
+     * Construct a "call parameter" rule.
+     *
+     * @param paramIndex The zero-relative parameter number
+     * @param fromStack should this parameter be taken from the top of the stack?
+     */    
+    public CallParamRule(int paramIndex, boolean fromStack) {
+    
+        this.paramIndex = paramIndex;  
+        this.fromStack = fromStack;
+       
+    }
+ 
     // ----------------------------------------------------- Instance Variables
 
 
@@ -157,15 +180,15 @@ public class CallParamRule extends Rule {
 
 
     /**
-     * The body text collected from this element.
-     */
-    protected String bodyText = null;
-
-
-    /**
      * The zero-relative index of the parameter we are saving.
      */
     protected int paramIndex = 0;
+
+
+    /**
+     * The position of the object from the top of the stack
+     */
+    protected boolean fromStack = false;
 
 
     // --------------------------------------------------------- Public Methods
@@ -178,12 +201,36 @@ public class CallParamRule extends Rule {
      */
     public void begin(Attributes attributes) throws Exception {
 
+        Object param = null;
+        
         if (attributeName != null) {
-            bodyText = attributes.getValue(attributeName);
-            String parameters[] = (String[]) digester.peekParams();
-            parameters[paramIndex] = bodyText;
+        
+            param = attributes.getValue(attributeName);
+            
+        } else if(fromStack) {
+        
+            param = digester.peek();
+            
+            if (digester.log.isDebugEnabled()) {
+            
+                StringBuffer sb = new StringBuffer("[CallParamRule]{");
+                sb.append(digester.match);
+                sb.append("} Save from stack; from stack?").append(fromStack);
+                sb.append("; object=").append(param);
+                digester.log.debug(sb.toString());
+            }   
         }
-
+        
+        // Have to save the param object to the param stack frame here.
+        // Can't wait until end(). Otherwise, the object will be lost.
+        // We can't save the object as instance variables, as 
+        // the instance variables will be overwritten
+        // if this CallParamRule is reused in subsequent nesting.
+        
+        if(param != null) {
+            Object parameters[] = (Object[]) digester.peekParams();
+            parameters[paramIndex] = param;
+        }
     }
 
 
@@ -194,35 +241,12 @@ public class CallParamRule extends Rule {
      */
     public void body(String bodyText) throws Exception {
 
-        if (attributeName == null) {
-            this.bodyText = bodyText.trim();
+        if (attributeName == null && !fromStack) {
+            Object parameters[] = (Object[]) digester.peekParams();
+            parameters[paramIndex] = bodyText.trim();
         }
 
     }
-
-
-    /**
-     * Process the end of this element.
-     */
-    public void end() throws Exception {
-
-        if (attributeName == null) {
-            String parameters[] = (String[]) digester.peekParams();
-            parameters[paramIndex] = bodyText;
-        }
-
-    }
-
-
-    /**
-     * Clean up after parsing is complete.
-     */
-    public void finish() throws Exception {
-
-        bodyText = null;
-
-    }
-
 
     /**
      * Render a printable version of this Rule.
@@ -234,6 +258,8 @@ public class CallParamRule extends Rule {
         sb.append(paramIndex);
         sb.append(", attributeName=");
         sb.append(attributeName);
+        sb.append(", from stack=");
+        sb.append(fromStack);
         sb.append("]");
         return (sb.toString());
 
