@@ -29,6 +29,9 @@
 #include <xsec/framework/XSECEnv.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+#include <xsec/xkms/XKMSConstants.hpp>
+
+#include <xercesc/util/XMLUniDefs.hpp>
 
 #include "XKMSRespondWithImpl.hpp"
 
@@ -82,6 +85,29 @@ void XKMSRespondWithImpl::load(void) {
 	}
 
 }
+// --------------------------------------------------------------------------------
+//           Create
+// --------------------------------------------------------------------------------
+
+DOMElement * XKMSRespondWithImpl::createBlankRespondWith(const XMLCh * item) {
+
+	// Get some setup values
+	safeBuffer str;
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getXKMSNSPrefix();
+
+	makeQName(str, prefix, XKMSConstants::s_tagRespondWith);
+
+	mp_respondWithElement = doc->createElementNS(XKMSConstants::s_unicodeStrURIXKMS, 
+												str.rawXMLChBuffer());
+
+	// Create the RespondWith item
+	makeQName(str, prefix, item);
+	mp_respondWithTextNode = doc->createTextNode(str.rawXMLChBuffer());
+	mp_respondWithElement->appendChild(mp_respondWithTextNode);
+
+	return mp_respondWithElement;
+}
 
 // --------------------------------------------------------------------------------
 //           Get interface
@@ -89,12 +115,19 @@ void XKMSRespondWithImpl::load(void) {
 
 const XMLCh * XKMSRespondWithImpl::getRespondWithString(void) const {
 
-	if (mp_respondWithTextNode != NULL)
-		return mp_respondWithTextNode->getNodeValue();
+	if (mp_respondWithTextNode == NULL) {
 
-	throw XSECException(XSECException::XKMSError,
+		throw XSECException(XSECException::XKMSError,
 			"XKMSRespondWith::getRespondWithString - Attempt to get prior to initialisation");
-	
+	}
+	const XMLCh * r = mp_respondWithTextNode->getNodeValue();
+
+	int index = XMLString::indexOf(r, chColon);
+	if (index == -1)
+		return r;
+
+	return &r[index+1];
+
 }
 
 // --------------------------------------------------------------------------------
@@ -103,12 +136,23 @@ const XMLCh * XKMSRespondWithImpl::getRespondWithString(void) const {
 
 void XKMSRespondWithImpl::setRespondWithString(const XMLCh * str) {
 
-	if (mp_respondWithTextNode != NULL)
-		mp_respondWithTextNode->setNodeValue(str);
-	else {
+	if (mp_respondWithTextNode == NULL) {
 
 		throw XSECException(XSECException::XKMSError,
 			"XKMSRespondWith::setRespondWithString - Attempt to set prior to initialisation");
 	}
+
+	safeBuffer sb;
+	sb.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
+
+	if (mp_env->getXKMSNSPrefix() != NULL) {
+		sb.sbXMLChCat(mp_env->getXKMSNSPrefix());
+		sb.sbXMLChAppendCh(chColon);
+	}
+
+	sb.sbXMLChCat(str);
+
+	mp_respondWithTextNode->setNodeValue(sb.rawXMLChBuffer());
+
 }
 

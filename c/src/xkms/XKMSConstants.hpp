@@ -64,9 +64,12 @@ public:
 	static const XMLCh s_tagLocateRequest[];
 	static const XMLCh s_tagLocateResult[];
 	static const XMLCh s_tagNonce[];
+	static const XMLCh s_tagOriginalRequestId[];
 	static const XMLCh s_tagQueryKeyBinding[];
+	static const XMLCh s_tagRepresent[];
 	static const XMLCh s_tagRequestId[];
 	static const XMLCh s_tagRespondWith[];
+	static const XMLCh s_tagResponseMechanism[];
 	static const XMLCh s_tagResult[];
 	static const XMLCh s_tagResultMajor[];
 	static const XMLCh s_tagResultMinor[];

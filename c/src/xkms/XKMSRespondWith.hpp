@@ -83,7 +83,8 @@ public:
 	 * Each RespondWith element has a text node that defines the Key type to
 	 * be returned.
 	 *
-	 * @returns a pointer to the RespondWith string for this element
+	 * @returns a pointer to the RespondWith string for this element - note that the
+	 * xkms namespace part of the QName (if any) is stripped away.
 	 */
 
 	virtual const XMLCh * getRespondWithString(void) const = 0;
@@ -98,7 +99,8 @@ public:
 	 *
 	 * Allows a calling application to set a new RespondWith string
 	 * 
-	 * @param str The string to set (overwriting any previous value)
+	 * @param str The string to set (overwriting any previous value).  Do not add
+	 * any local name part - this will be added by the implementation.
 	 * @note The library does not check that the string is a value RespondWith string.
 	 */
 

@@ -1222,7 +1222,8 @@ int doMsgCreate(int argc, char ** argv, int paramCount) {
 void printDoRequestUsage(void) {
 
 	cerr << "\nUsage request [options] {LocateRequest|ValidateRequest} [msg specific options]\n";
-	cerr << "   --help/-h    : print this screen and exit\n\n";
+	cerr << "   --help/-h       : Print this screen and exit\n";
+	cerr << "   --two-phase/-t  : Indicate Two-Phase support in the request message\n\n";
 
 }
 
@@ -1231,6 +1232,8 @@ int doRequest(int argc, char ** argv, int paramCount) {
 	XSECProvider prov;
 	DOMDocument * doc;
 	XKMSMessageAbstractType *msg;
+	bool twoPhase = false;
+	bool parmsDone = false;
 
 	if (paramCount >= argc || 
 		(stricmp(argv[paramCount], "--help") == 0) ||
@@ -1239,29 +1242,53 @@ int doRequest(int argc, char ** argv, int paramCount) {
 		return -1;
 	}
 
-	if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
-		(stricmp(argv[paramCount], "lr") == 0)) {
+	while (!parmsDone) {
+		if ((stricmp(argv[paramCount], "--two-phase") == 0) ||
+			(stricmp(argv[paramCount], "-t") == 0)) {
 
-		msg = createLocateRequest(prov, &doc, argc, argv, paramCount + 1);
-		if (msg == NULL) {
-			return -1;
+			twoPhase = true;
+			paramCount++;
+
 		}
+		if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
+			(stricmp(argv[paramCount], "lr") == 0)) {
 
-	}
-	else if ((stricmp(argv[paramCount], "ValidateRequest") == 0) ||
-		(stricmp(argv[paramCount], "vr") == 0)) {
+			XKMSLocateRequest * r = 
+				dynamic_cast<XKMSLocateRequest *> (createLocateRequest(prov, &doc, argc, argv, paramCount + 1));
 
-		msg = createValidateRequest(prov, &doc, argc, argv, paramCount + 1);
-		if (msg == NULL) {
-			return -1;
+			if (r == NULL) {
+				return -1;
+			}
+
+			if (twoPhase)
+				r->appendRespondWithItem(XKMSConstants::s_tagRepresent);
+
+			msg = r;
+			parmsDone = true;
+
 		}
+		else if ((stricmp(argv[paramCount], "ValidateRequest") == 0) ||
+			(stricmp(argv[paramCount], "vr") == 0)) {
 
-	}
-	else {
+			XKMSValidateRequest * r = 
+				dynamic_cast<XKMSValidateRequest *> (createValidateRequest(prov, &doc, argc, argv, paramCount + 1));
 
-		printDoRequestUsage();
-		return -1;
+			if (r == NULL) {
+				return -1;
+			}
+			if (twoPhase)
+				r->appendRespondWithItem(XKMSConstants::s_tagRepresent);
 
+			msg = r;
+			parmsDone = true;
+
+		}
+		else {
+
+			printDoRequestUsage();
+			return -1;
+
+		}
 	}
 
 	try {
@@ -1280,6 +1307,33 @@ int doRequest(int argc, char ** argv, int paramCount) {
 	try {
 		XSECSOAPRequestorSimple req(msg->getService());
 		responseDoc = req.doRequest(doc);
+
+		/* If two-phase - re-do the request */
+		if (twoPhase) {
+
+			XKMSMessageFactory * f = prov.getXKMSMessageFactory();
+			XKMSResultType * r = f->toResultType(f->newMessageFromDOM(responseDoc->getDocumentElement()));
+			if (r->getResultMajor() == XKMSResultType::Represent) {
+
+				cerr << "Intermediate response of a two phase sequence received\n\n";
+
+				if (g_txtOut) {
+					outputDoc(responseDoc);
+				}
+				doParsedMsgDump(responseDoc);
+
+				XKMSRequestAbstractType * request = f->toRequestAbstractType(msg);
+				request->setOriginalRequestId(request->getId());
+				request->setNonce(r->getNonce());
+
+				responseDoc->release();
+				delete r;
+
+				responseDoc = req.doRequest(doc);
+
+			}
+		}
+
 	}
 	catch (XSECException &e) {
 

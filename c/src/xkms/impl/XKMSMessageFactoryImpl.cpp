@@ -389,3 +389,37 @@ XKMSValidateResult * XKMSMessageFactoryImpl::createValidateResult(
 	return vr;
 }
 
+// --------------------------------------------------------------------------------
+//           Message Conversions
+// --------------------------------------------------------------------------------
+
+
+XKMSRequestAbstractType * XKMSMessageFactoryImpl::toRequestAbstractType(XKMSMessageAbstractType *msg) {
+
+	if (msg->getMessageType() == XKMSMessageAbstractType::LocateRequest) {
+		XKMSLocateRequest * lr = dynamic_cast<XKMSLocateRequest*>(msg);
+		return lr;
+
+	}
+	if (msg->getMessageType() == XKMSMessageAbstractType::ValidateRequest) {
+		XKMSValidateRequest * vr = dynamic_cast<XKMSValidateRequest*>(msg);
+		return vr;
+
+	}
+	return NULL;
+}
+
+XKMSResultType * XKMSMessageFactoryImpl::toResultType(XKMSMessageAbstractType *msg) {
+
+	if (msg->getMessageType() == XKMSMessageAbstractType::LocateResult) {
+		XKMSLocateResult * lr = dynamic_cast<XKMSLocateResult*>(msg);
+		return lr;
+
+	}
+	if (msg->getMessageType() == XKMSMessageAbstractType::ValidateResult) {
+		XKMSValidateResult * vr = dynamic_cast<XKMSValidateResult*>(msg);
+		return vr;
+
+	}
+	return NULL;
+}

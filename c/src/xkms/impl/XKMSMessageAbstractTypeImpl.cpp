@@ -246,9 +246,54 @@ const XMLCh * XKMSMessageAbstractTypeImpl::getNonce(void) const {
 //           Setter Interfaces
 // --------------------------------------------------------------------------------
 
-void XKMSMessageAbstractTypeImpl::setId(const XMLCh * id) {}
-void XKMSMessageAbstractTypeImpl::setService(const XMLCh * service) {}
-void XKMSMessageAbstractTypeImpl::setNonce(const XMLCh * uri) {}
+void XKMSMessageAbstractTypeImpl::setId(const XMLCh * id) {
+
+	if (mp_messageAbstractTypeElement == NULL) {
+
+		// Attempt update when not initialised
+		throw XSECException(XSECException::MessageAbstractTypeError,
+			"XKMSMessageAbstractType::setId - called on non-initialised structure");
+
+	}
+
+	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagId, id);
+	mp_messageAbstractTypeElement->setIdAttributeNS(NULL, XKMSConstants::s_tagId);
+	mp_idAttr = 
+		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagId);
+
+}
+
+void XKMSMessageAbstractTypeImpl::setService(const XMLCh * service) {
+
+	if (mp_messageAbstractTypeElement == NULL) {
+
+		// Attempt update when not initialised
+		throw XSECException(XSECException::MessageAbstractTypeError,
+			"XKMSMessageAbstractType::setService - called on non-initialised structure");
+
+	}
+
+	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagService, service);
+	mp_serviceAttr = 
+		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagService);
+
+}
+
+void XKMSMessageAbstractTypeImpl::setNonce(const XMLCh * uri) {
+	
+	if (mp_messageAbstractTypeElement == NULL) {
+
+		// Attempt update when not initialised
+		throw XSECException(XSECException::MessageAbstractTypeError,
+			"XKMSMessageAbstractType::setNonce - called on non-initialised structure");
+
+	}
+
+	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagNonce, uri);
+	mp_serviceAttr = 
+		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagNonce);
+
+}
 
 DSIGSignature * XKMSMessageAbstractTypeImpl::addSignature(
 		canonicalizationMethod cm,

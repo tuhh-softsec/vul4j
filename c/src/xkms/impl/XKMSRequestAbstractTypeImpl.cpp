@@ -27,6 +27,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 
 #include <xercesc/dom/DOM.hpp>
@@ -45,7 +46,7 @@ XKMSRequestAbstractTypeImpl::XKMSRequestAbstractTypeImpl(
 	const XSECEnv * env) :
 XKMSMessageAbstractTypeImpl(env)
 {
-
+	mp_originalRequestIdAttr = NULL;
 }
 
 XKMSRequestAbstractTypeImpl::XKMSRequestAbstractTypeImpl(
@@ -53,7 +54,7 @@ XKMSRequestAbstractTypeImpl::XKMSRequestAbstractTypeImpl(
 	DOMElement * node) :
 XKMSMessageAbstractTypeImpl(env, node)
 {
-
+	mp_originalRequestIdAttr = NULL;
 }
 
 XKMSRequestAbstractTypeImpl::~XKMSRequestAbstractTypeImpl() {
@@ -98,6 +99,9 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 
 	}
 
+	mp_originalRequestIdAttr = 
+		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagOriginalRequestId);
+
 	XKMSMessageAbstractTypeImpl::load();
 
 }
@@ -121,10 +125,25 @@ DOMElement * XKMSRequestAbstractTypeImpl::createBlankRequestAbstractType(
 
 const XMLCh * XKMSRequestAbstractTypeImpl::getOriginalRequestId(void) const {
 
+	if (mp_originalRequestIdAttr != NULL)
+		return mp_originalRequestIdAttr->getNodeValue();
+
 	return NULL;
 }
 
 void XKMSRequestAbstractTypeImpl::setOriginalRequestId(const XMLCh * id) {
+	
+	if (mp_messageAbstractTypeElement == NULL) {
+
+		// Attempt update when not initialised
+		throw XSECException(XSECException::MessageAbstractTypeError,
+			"XKMSRequestAbstractType::setOriginalRequestId - called on non-initialised structure");
+
+	}
+
+	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagOriginalRequestId, id);
+	mp_originalRequestIdAttr = 
+		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagOriginalRequestId);
 
 }
 
@@ -169,6 +188,36 @@ void XKMSRequestAbstractTypeImpl::appendRespondWithItem(XKMSRespondWith * item) 
 }
 
 void XKMSRequestAbstractTypeImpl::appendRespondWithItem(const XMLCh * item) {
+
+	XKMSRespondWithImpl * rw;
+	XSECnew(rw, XKMSRespondWithImpl(mp_env));
+
+	// Create the RespondWith object
+	DOMElement * elt = rw->createBlankRespondWith(item);
+
+	// Add to the item
+	DOMElement * c = findFirstElementChild(mp_messageAbstractTypeElement);
+	while (c != NULL) {
+
+		if (!strEquals(getXKMSLocalName(c), XKMSConstants::s_tagResponseMechanism))
+			break;
+
+	}
+
+	if (c != NULL) {
+		mp_messageAbstractTypeElement->insertBefore(elt, c);
+		if (mp_env->getPrettyPrintFlag()) {
+			mp_messageAbstractTypeElement->insertBefore(
+				mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), c);
+		}
+	}
+	else {
+		mp_messageAbstractTypeElement->appendChild(elt);
+		mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	}
+
+	// Add to the list
+	m_respondWithList.push_back(rw);
 
 }
 

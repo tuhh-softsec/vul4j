@@ -388,6 +388,34 @@ public:
 
 	//@}
 
+	/** @name Message Conversions */
+	//@{
+
+	/**
+	 * \brief Convert to a Request type
+	 *
+	 * Used to convert a MessageAbstractType to a RequestAbstractType
+	 *
+	 * @param msg The message to convert
+	 * @return the same message typecast to a RequestAbstractType (if NULL otherwise)
+	 * otherwise
+	 */
+
+	virtual XKMSRequestAbstractType * toRequestAbstractType(XKMSMessageAbstractType *msg) = 0;
+
+	/**
+	 * \brief Convert to a Result type
+	 *
+	 * Used to convert a MessageAbstractType to a ResultType
+	 *
+	 * @param msg The message to convert
+	 * @return the same message typecast to a ResultType (if OK - NULL otherwise)
+	 * otherwise
+	 */
+
+	virtual XKMSResultType * toResultType(XKMSMessageAbstractType *msg) = 0;
+
+	//@}
 private:
 
 	// Unimplemented

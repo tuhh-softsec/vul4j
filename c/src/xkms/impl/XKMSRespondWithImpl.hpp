@@ -48,6 +48,10 @@ public:
 	// load
 	void load(void);
 
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * 
+		createBlankRespondWith(
+		const XMLCh * item);
+
 	/* Getter Interface Methods */
 
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const {

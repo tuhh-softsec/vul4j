@@ -101,6 +101,11 @@ public:
 		XKMSResultType::ResultMinor rmin = XKMSResultType::NoneMinor,
 		const XMLCh * id = NULL);
 
+	/* Conversions */
+	virtual XKMSRequestAbstractType * toRequestAbstractType(XKMSMessageAbstractType *msg);
+	virtual XKMSResultType * toResultType(XKMSMessageAbstractType *msg);
+
+
 
 	/* Environment Manipulation */
 	virtual void setDSIGNSPrefix(const XMLCh * prefix);

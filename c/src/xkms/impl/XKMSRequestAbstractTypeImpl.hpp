@@ -111,6 +111,9 @@ private:
 
 	RespondWithVectorType		m_respondWithList;		// List of m_respondWith elements
 
+	XERCES_CPP_NAMESPACE_QUALIFIER  DOMAttr
+						* mp_originalRequestIdAttr;
+
 	// Unimplemented
 	XKMSRequestAbstractTypeImpl(void);
 	XKMSRequestAbstractTypeImpl(const XKMSRequestAbstractTypeImpl &);
