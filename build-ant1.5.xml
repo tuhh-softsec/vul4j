@@ -10,12 +10,12 @@
 
     <!-- G L O B A L    P R O P E R T I E S -->
     <!-- directory properties -->
-    <property name="dir.src"            value="src" />
-    <property name="dir.libs"           value="libs" />
-    <property name="dir.tests"          value="src_unitTests" />
-    <property name="dir.samples"        value="src_samples" />
-    <property name="dir.data"           value="data" />
-    <property name="dir.build"          value="build" />
+    <property name="dir.src"            value="${basedir}/src" />
+    <property name="dir.libs"           value="${basedir}/libs" />
+    <property name="dir.tests"          value="${basedir}/src_unitTests" />
+    <property name="dir.samples"        value="${basedir}/src_samples" />
+    <property name="dir.data"           value="${basedir}/data" />
+    <property name="dir.build"          value="${basedir}/build" />
     <property name="dir.build.bin"      value="${dir.build}/classes" />
     <property name="dir.build.libs"     value="${dir.build}/libs" />
     <property name="dir.build.test"     value="${dir.build}/test" />
@@ -130,14 +130,14 @@
         <javac srcdir="${dir.src}"
                destdir="${dir.build.bin}" >
             <classpath refid="id.classpath" />
-            <include name="org/apache/xml/security/**/*.java" />
+            <include name="**/org/apache/xml/security/**/*.java" />
         </javac >
         <copy todir="${dir.build.bin}" >
             <fileset dir="${dir.src}"
-                     includes="org/apache/xml/security/resource/*,
-                               org/apache/xml/security/resource/schema/*"
-                     excludes="org/apache/xml/security/resource/CVS,
-                               org/apache/xml/security/resource/schema/CVS" />
+                     includes="**/org/apache/xml/security/resource/*,
+                               **/org/apache/xml/security/resource/schema/*"
+                     excludes="**/org/apache/xml/security/resource/CVS,
+                               **/org/apache/xml/security/resource/schema/CVS" />
         </copy >
     </target >
 
@@ -201,9 +201,9 @@
         <echo message="To be done..." />
     </target >
     <target name="help.config" >
-        <echo message="1.  to configure the provider setings," /> 
+        <echo message="1.  to configure the provider setings," />
         <echo message="    see the contents of provider.properties" />
-        <echo message="2.  to configure the proxy setings," /> 
+        <echo message="2.  to configure the proxy setings," />
         <echo message="    see the contents of proxy.properties" />
     </target >
 </project>
