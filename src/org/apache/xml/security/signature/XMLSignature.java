@@ -138,13 +138,28 @@ public class XMLSignature extends SignatureElementProxy {
     * This creates a new <CODE>ds:Signature</CODE> Element and adds an empty
     * <CODE>ds:SignedInfo</CODE> to it.
     *
-    * @param doc
-    * @param BaseURI
-    * @param signatureAlgorithmURI
-    * @throws XMLSecurityException
     */
    public XMLSignature(
-           Document doc, String BaseURI, String signatureAlgorithmURI)
+           Document doc, String BaseURI, String SignatureMethodURI)
+              throws XMLSecurityException {
+
+      this(doc, BaseURI, SignatureMethodURI, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+   }
+
+   public XMLSignature(
+           Document doc, String BaseURI, String SignatureMethodURI, String CanonicalizationMethodURI)
+              throws XMLSecurityException {
+      this(doc, BaseURI, SignatureMethodURI, 0, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+   }
+
+
+   /**
+    * This creates a new <CODE>ds:Signature</CODE> Element and adds an empty
+    * <CODE>ds:SignedInfo</CODE> to it.
+    *
+    */
+   public XMLSignature(
+           Document doc, String BaseURI, String SignatureMethodURI, int HMACOutputLength, String CanonicalizationMethodURI)
               throws XMLSecurityException {
 
       super(doc);
@@ -153,8 +168,8 @@ public class XMLSignature extends SignatureElementProxy {
 
       this._baseURI = BaseURI;
       this._signedInfo =
-         new SignedInfo(this._doc, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS,
-                        signatureAlgorithmURI);
+         new SignedInfo(this._doc,
+                        SignatureMethodURI, HMACOutputLength, CanonicalizationMethodURI);
 
       this._constructionElement.appendChild(this._signedInfo.getElement());
       XMLUtils.addReturnToElement(this._constructionElement);
@@ -167,6 +182,7 @@ public class XMLSignature extends SignatureElementProxy {
       this._constructionElement.appendChild(signatureValueElement);
       XMLUtils.addReturnToElement(this._constructionElement);
    }
+
 
    /**
     * Constructor XMLSignature
@@ -188,8 +204,8 @@ public class XMLSignature extends SignatureElementProxy {
                                   Constants._TAG_SIGNEDINFO);
 
       if (signedInfoElem == null) {
-         Object exArgs[] = { Constants._TAG_SIGNEDINFO,
-                             Constants._TAG_SIGNATURE };
+         Object exArgs[] = { "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNEDINFO,
+                             "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNATURE };
 
          throw new XMLSignatureException("xml.WrongContent", exArgs);
       }
@@ -202,8 +218,8 @@ public class XMLSignature extends SignatureElementProxy {
                                          Constants._TAG_SIGNATUREVALUE);
 
       if (signatureValueElement == null) {
-         Object exArgs[] = { Constants._TAG_SIGNATUREVALUE,
-                             Constants._TAG_SIGNATURE };
+         Object exArgs[] = { "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNATUREVALUE,
+                             "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNATURE };
 
          throw new XMLSignatureException("xml.WrongContent", exArgs);
       }

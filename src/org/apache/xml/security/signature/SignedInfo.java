@@ -101,8 +101,7 @@ public class SignedInfo extends Manifest {
     * @throws XMLSecurityException
     */
    public SignedInfo(Document doc) throws XMLSecurityException {
-      this(doc, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS,
-           XMLSignature.ALGO_ID_SIGNATURE_DSA);
+      this(doc, XMLSignature.ALGO_ID_SIGNATURE_DSA, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
    }
 
    /**
@@ -114,9 +113,9 @@ public class SignedInfo extends Manifest {
     * @throws XMLSecurityException
     */
    public SignedInfo(
-           Document doc, String CanonicalizationMethodURI, String SignatureMethodURI)
+           Document doc, String SignatureMethodURI, String CanonicalizationMethodURI)
               throws XMLSecurityException {
-      this(doc, CanonicalizationMethodURI, SignatureMethodURI, 0);
+      this(doc, SignatureMethodURI, 0, CanonicalizationMethodURI);
    }
 
    /**
@@ -129,7 +128,7 @@ public class SignedInfo extends Manifest {
     * @throws XMLSecurityException
     */
    public SignedInfo(
-           Document doc, String CanonicalizationMethodURI, String SignatureMethodURI, int HMACOutputLength)
+           Document doc, String SignatureMethodURI, int HMACOutputLength, String CanonicalizationMethodURI)
               throws XMLSecurityException {
 
       super(doc);
