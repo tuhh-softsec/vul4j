@@ -88,6 +88,7 @@
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/util/XMLException.hpp>
+#include <xercesc/util/Janitor.hpp>
 
 #include <xsec/transformers/TXFMOutputFile.hpp>
 #include <xsec/dsig/DSIGTransformXPath.hpp>
@@ -124,12 +125,16 @@ XALAN_USING_XALAN(XalanTransformer)
 #include <xsec/dsig/DSIGKeyInfoMgmtData.hpp>
 #include <xsec/xenc/XENCCipher.hpp>
 #include <xsec/xenc/XENCEncryptedData.hpp>
+#include <xsec/xenc/XENCEncryptedKey.hpp>
 
 #include <xsec/enc/XSECCryptoSymmetricKey.hpp>
 
 #if defined (HAVE_OPENSSL)
 #	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #	include <openssl/rand.h>
+#	include <openssl/evp.h>
+#	include <openssl/pem.h>
 #endif
 #if defined (HAVE_WINCAPI)
 #	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
@@ -250,6 +255,32 @@ XMLCh s_tstMgmtData[] = {
 	chLatin_D, chLatin_a, chLatin_t, chLatin_a, chNull
 
 };
+
+// --------------------------------------------------------------------------------
+//           Some test keys
+// --------------------------------------------------------------------------------
+
+// A PKCS8 PEM encoded PrivateKey structure (not Encrypted)
+
+char s_tstRSAPrivateKey[] = "\n\
+-----BEGIN RSA PRIVATE KEY-----\n\
+MIICXAIBAAKBgQDQj3pktZckAzwshRnfvLhz3daNU6xpAzoHo3qjCftxDwH1RynP\n\
+A5eycJVkV8mwH2C1PFktpjtQTZ2CvPjuKmUV5zEvmYzuIo6SWYaVZN/PJjzsEZMa\n\
+VA+U8GhfX1YF/rsuFzXCi8r6FVd3LN//pXHEwoDGdJUdlpdVEuX1iFKlNQIDAQAB\n\
+AoGAYQ7Uc7e6Xa0PvNw4XVHzOSC870pISxqQT+u5b9R+anAEhkQW5dsTJpyUOX1N\n\
+RCRmGhG6oq7gnY9xRN1yr0uVfJNtc9/HnzJL7L1jeJC8Ub+zbEBvNuPDL2P21ArW\n\
+tcXRycUlfRCRBLop7rfOYPXsjtboAGnQY/6hK4rOF4XGrQUCQQD3Euj+0mZqRRZ4\n\
+M1yN2wVP0mKOMg2i/HZXaNeVd9X/wyBgK6b7BxHf6onf/mIBWnJnRBlvdCrSdhuT\n\
+lPKEoSgvAkEA2BhfWwQihqD4qJcV65nfosjzOZG41rHX69nIqHI7Ejx5ZgeQByH9\n\
+Ym96yXoSpZj9ZlFsJYNogTBBnUBjs+jL2wJAFjpVS9eR7y2X/+hfA0QZDj1XMIPA\n\
+RlGANAzymDfXwNLFLuG+fAb+zK5FCSnRl12TvUabIzPIRnbptDVKPDRjcQJBALn8\n\
+0CVv+59P8HR6BR3QRBDBT8Xey+3NB4Aw42lHV9wsPHg6ThY1hPYx6MZ70IzCjmZ/\n\
+8cqfvVRjijWj86wm0z0CQFKfRfBRraOZqfmOiAB4+ILhbJwKBBO6avX9TPgMYkyN\n\
+mWKCxS+9fPiy1iI+G+B9xkw2gJ9i8P81t7fsOvdTDFA=\n\
+-----END RSA PRIVATE KEY-----";
+
+static char s_keyStr[] = "abcdefghijklmnopqrstuvwxyzabcdef";
+
 
 // --------------------------------------------------------------------------------
 //           Find a node
@@ -749,6 +780,151 @@ count(ancestor-or-self::dsig:Signature)");
 }
 
 // --------------------------------------------------------------------------------
+//           Unit tests for test encrypt/Decrypt
+// --------------------------------------------------------------------------------
+
+void unitTestKeyEncrypt(DOMImplementation *impl, XSECCryptoKey * k, encryptionMethod em) {
+
+	// Create a document that we will embed the encrypted key in
+	DOMDocument *doc = impl->createDocument(
+				0,                    // root element namespace URI.
+				MAKE_UNICODE_STRING("ADoc"),            // root element name
+				NULL);// DOMDocumentType());  // document type object (DTD).
+
+	DOMElement *rootElem = doc->getDocumentElement();
+
+	// Use key k to wrap a test key, decrypt it and make sure it is still OK
+	XSECProvider prov;
+	XENCCipher * cipher;
+
+	try {
+		
+		// Encrypt a dummy key
+
+		cerr << "encrypt ... ";
+
+		static unsigned char toEncryptStr[] = "A test key to use for da";
+
+		cipher = prov.newCipher(doc);
+		cipher->setXENCNSPrefix(MAKE_UNICODE_STRING("xenc"));
+		cipher->setPrettyPrint(true);
+
+		// Set a key
+
+		cipher->setKEK(k);
+
+		XENCEncryptedKey * encryptedKey;
+		encryptedKey = cipher->encryptKey(toEncryptStr, strlen((char *) toEncryptStr), em);
+		Janitor<XENCEncryptedKey> j_encryptedKey(encryptedKey);
+
+		rootElem->appendChild(encryptedKey->getDOMNode());
+
+		// Decrypt
+		cerr << "decrypt ... ";
+
+		XMLByte decBuf[64];
+		cipher->decryptKey(encryptedKey, decBuf, 64);
+
+		// Check
+		cerr << "comparing ... ";
+		if (memcmp(decBuf, toEncryptStr, strlen((char *) toEncryptStr)) == 0) {
+			cerr << "OK ... ";
+		}
+		else {
+			cerr << "different = failed!" << endl;
+			exit(2);
+		}
+		
+		cerr << "decrypt from DOM ... ";
+		// Decrypt from DOM
+		DOMNode * keyNode = findXENCNode(doc, "EncryptedKey");
+		if (keyNode == NULL) {
+			cerr << "no key - failed!" << endl;
+			exit(2);
+		}
+		memset(decBuf, 0, 64);
+		cipher->decryptKey((DOMElement *) keyNode, decBuf, 64);
+
+		cerr << "comparing ... ";
+		if (memcmp(decBuf, toEncryptStr, strlen((char *) toEncryptStr)) == 0) {
+			cerr << "OK" << endl;
+		}
+		else {
+			cerr << "different = failed!" << endl;
+			exit(2);
+		}
+
+	}
+
+	catch (XSECException &e)
+	{
+		cerr << "failed\n";
+		cerr << "An error occured during signature processing\n   Message: ";
+		char * ce = XMLString::transcode(e.getMsg());
+		cerr << ce << endl;
+		delete ce;
+		exit(1);
+		
+	}	
+	catch (XSECCryptoException &e)
+	{
+		cerr << "failed\n";
+		cerr << "A cryptographic error occured during signature processing\n   Message: "
+		<< e.getMsg() << endl;
+		exit(1);
+	}
+
+	outputDoc(impl, doc);
+	doc->release();
+
+}
+
+
+
+void unitTestEncrypt(DOMImplementation *impl) {
+
+	// Key wraps
+	cerr << "RSA key wrap... ";
+	
+#if defined (HAVE_OPENSSL)
+	// Load the key
+	BIO * bioMem = BIO_new(BIO_s_mem());
+	BIO_puts(bioMem, s_tstRSAPrivateKey);
+	EVP_PKEY * pk = PEM_read_bio_PrivateKey(bioMem, NULL, NULL, NULL);
+
+	OpenSSLCryptoKeyRSA * k = new OpenSSLCryptoKeyRSA(pk);
+
+	BIO_free(bioMem);
+	EVP_PKEY_free(pk);
+
+	unitTestKeyEncrypt(impl, k, ENCRYPT_RSA_15);
+
+#endif
+
+	cerr << "AES 128 key wrap... ";
+
+	XSECCryptoSymmetricKey * ks =
+			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
+	ks->setKey((unsigned char *) s_keyStr, 16);
+	
+	unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES128);
+
+	cerr << "AES 192 key wrap... ";
+
+	ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_192);
+	ks->setKey((unsigned char *) s_keyStr, 24);
+	
+	unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES192);
+
+	cerr << "AES 256 key wrap... ";
+
+	ks = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_256);
+	ks->setKey((unsigned char *) s_keyStr, 32);
+	
+	unitTestKeyEncrypt(impl, ks, ENCRYPT_KW_AES256);
+
+}
+// --------------------------------------------------------------------------------
 //           Test encrypt/Decrypt
 // --------------------------------------------------------------------------------
 
@@ -788,8 +964,6 @@ void testEncrypt(DOMImplementation *impl) {
 		
 		}
 
-		static char keyStr[] = "abcdefghijklmnopqrstuvwx";
-
 		cipher = prov.newCipher(doc);
 		cipher->setXENCNSPrefix(MAKE_UNICODE_STRING("xenc"));
 		cipher->setPrettyPrint(true);
@@ -827,7 +1001,7 @@ void testEncrypt(DOMImplementation *impl) {
 
 		XSECCryptoSymmetricKey * kek =
 			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
-		kek->setKey((unsigned char *) keyStr, 16);
+		kek->setKey((unsigned char *) s_keyStr, 16);
 		cipher->setKEK(kek);
 
 		XENCEncryptedKey * encryptedKey;
@@ -847,7 +1021,7 @@ void testEncrypt(DOMImplementation *impl) {
 
 		XSECCryptoSymmetricKey * k2 = 
 			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
-		k2->setKey((unsigned char *) keyStr, 16);
+		k2->setKey((unsigned char *) s_keyStr, 16);
 		cipher2->setKEK(k2);
 
 		cerr << "Decrypting ... ";
@@ -941,6 +1115,8 @@ void printUsage(void) {
 	cerr << "         Only run signature tests\n\n";
 	cerr << "     --encryption-only/-e\n";
 	cerr << "         Only run encryption tests\n\n";
+	cerr << "     --encryption-unit-only/-u\n";
+	cerr << "         Only run encryption unit tests\n\n";
 
 }
 // --------------------------------------------------------------------------------
@@ -957,6 +1133,7 @@ int main(int argc, char **argv) {
 
 	// Check parameters
 	bool		doEncryptionTest = true;
+	bool		doEncryptionUnitTests = true;
 	bool		doSignatureTest = true;
 
 	int paramCount = 1;
@@ -973,9 +1150,16 @@ int main(int argc, char **argv) {
 		}
 		else if (stricmp(argv[paramCount], "--signature-only") == 0 || stricmp(argv[paramCount], "-s") == 0) {
 			doEncryptionTest = false;
+			doEncryptionUnitTests = false;
 			paramCount++;
 		}
 		else if (stricmp(argv[paramCount], "--encryption-only") == 0 || stricmp(argv[paramCount], "-e") == 0) {
+			doSignatureTest = false;
+			doEncryptionUnitTests = false;
+			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--encryption-unit-only") == 0 || stricmp(argv[paramCount], "-u") == 0) {
+			doEncryptionTest = false;
 			doSignatureTest = false;
 			paramCount++;
 		}
@@ -1045,6 +1229,16 @@ int main(int argc, char **argv) {
 			cerr << endl << endl;
 
 			testEncrypt(impl);
+		}
+
+		// Running Encryption Unit test
+		if (doEncryptionUnitTests) {
+			cerr << endl << "====================================";
+			cerr << endl << "Performing Encryption Unit Tests";
+			cerr << endl << "====================================";
+			cerr << endl << endl;
+
+			unitTestEncrypt(impl);
 		}
 
 		cerr << endl << "All tests passed" << endl;
