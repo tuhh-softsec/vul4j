@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -101,9 +100,12 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
       org.apache.log4j.Category.getInstance(ResolverDirectHTTP.class.getName());
 
    /** Field properties[] */
-   static final String properties[] = { "http.proxy.host", "http.proxy.port",
+   static final String properties[] = { "http.proxy.host",
+                                        "http.proxy.port",
                                         "http.proxy.username",
-                                        "http.proxy.password" };
+                                        "http.proxy.password",
+                                        "http.basic.username",
+                                        "http.basic.password" };
 
    /** Field HttpProxyHost */
    private static final int HttpProxyHost = 0;
@@ -116,6 +118,12 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
    /** Field HttpProxyPass */
    private static final int HttpProxyPass = 3;
+
+   /** Field HttpProxyUser */
+   private static final int HttpBasicUser = 4;
+
+   /** Field HttpProxyPass */
+   private static final int HttpBasicPass = 5;
 
    /**
     * Method resolve
@@ -144,12 +152,8 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
          String oldProxySet =
             (String) System.getProperties().get("http.proxySet");
-
-         // String oldProxyHost = (String) System.getProperties().get("proxyHost");
          String oldProxyHost =
             (String) System.getProperties().get("http.proxyHost");
-
-         // String oldProxyPort = (String) System.getProperties().get("proxyPort");
          String oldProxyPort =
             (String) System.getProperties().get("http.proxyPort");
          boolean switchBackProxy = ((oldProxySet != null)
@@ -161,11 +165,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
             cat.debug("Use of HTTP proxy enabled: " + proxyHost + ":"
                       + proxyPort);
             System.getProperties().put("http.proxySet", "true");
-
-            // System.getProperties().put("proxyHost", proxyHost);
             System.getProperties().put("http.proxyHost", proxyHost);
-
-            // System.getProperties().put("proxyPort", proxyPort);
             System.getProperties().put("http.proxyPort", proxyPort);
          }
 
@@ -178,9 +178,11 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
          uriNewNoFrag.setFragment(null);
 
          URL url = new URL(uriNewNoFrag.toString());
-         HttpURLConnection a;
+         URLConnection urlConnection = url.openConnection();
 
          {
+
+            // set proxy pass
             String proxyUser =
                engineGetProperty(ResolverDirectHTTP
                   .properties[ResolverDirectHTTP.HttpProxyUser]);
@@ -189,17 +191,46 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
                   .properties[ResolverDirectHTTP.HttpProxyPass]);
 
             if ((proxyUser != null) && (proxyPass != null)) {
-               URLConnection connection = url.openConnection();
                String password = proxyUser + ":" + proxyPass;
                String encodedPassword = Base64.encode(password.getBytes());
 
                // or was it Proxy-Authenticate ?
-               connection.setRequestProperty("Proxy-Authorization",
-                                             encodedPassword);
+               urlConnection.setRequestProperty("Proxy-Authorization",
+                                                encodedPassword);
             }
          }
 
-         URLConnection urlConnection = url.openConnection();
+         {
+            // check if Basic authentication is required
+            String auth = urlConnection.getHeaderField("WWW-Authenticate");
+
+            if (auth != null) {
+
+               // do http basic authentication
+               if (auth.startsWith("Basic")) {
+                  String user =
+                     engineGetProperty(ResolverDirectHTTP
+                        .properties[ResolverDirectHTTP.HttpBasicUser]);
+                  String pass =
+                     engineGetProperty(ResolverDirectHTTP
+                        .properties[ResolverDirectHTTP.HttpBasicPass]);
+
+                  if ((user != null) && (pass != null)) {
+                     urlConnection = url.openConnection();
+
+                     String password = user + ":" + pass;
+                     String encodedPassword =
+                        Base64.encode(password.getBytes());
+
+                     // set authentication property in the http header
+                     urlConnection.setRequestProperty("Authorization",
+                                                      "Basic "
+                                                      + encodedPassword);
+                  }
+               }
+            }
+         }
+
          String mimeType = urlConnection.getHeaderField("Content-Type");
          String contentLength = urlConnection.getHeaderField("Content-Length");
          InputStream inputStream = urlConnection.getInputStream();
@@ -227,11 +258,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
          // switch off proxy usage
          if (switchBackProxy) {
             System.getProperties().put("http.proxySet", oldProxySet);
-
-            // System.getProperties().put("proxyHost", oldProxyHost);
             System.getProperties().put("http.proxyHost", oldProxyHost);
-
-            // System.getProperties().put("proxyPort", oldProxyPort);
             System.getProperties().put("http.proxyPort", oldProxyPort);
          }
 
@@ -253,6 +280,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
     * @return
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
+
       if (uri == null) {
          return false;
       }
