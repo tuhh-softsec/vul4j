@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@ import org.xml.sax.Attributes;
  * at the identifier.</p>
  *
  * @author Robert Burrell Donkin
- * @revision $Revision: 1.8 $ $Date: 2002/03/23 17:45:59 $
+ * @revision $Revision: 1.9 $ $Date: 2003/02/02 15:52:14 $
  */
 
 public class TestRule extends Rule {

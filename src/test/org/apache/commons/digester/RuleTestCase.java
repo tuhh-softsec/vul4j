@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.22 2002/09/30 19:48:51 rdonkin Exp $
- * $Revision: 1.22 $
- * $Date: 2002/09/30 19:48:51 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.23 2003/02/02 15:52:14 rdonkin Exp $
+ * $Revision: 1.23 $
+ * $Date: 2003/02/02 15:52:14 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ import org.xml.sax.SAXException;
  *
  * @author Craig R. McClanahan
  * @author Janek Bogucki
- * @version $Revision: 1.22 $ $Date: 2002/09/30 19:48:51 $
+ * @version $Revision: 1.23 $ $Date: 2003/02/02 15:52:14 $
  */
 
 public class RuleTestCase extends TestCase {

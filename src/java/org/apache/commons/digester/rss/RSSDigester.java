@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/RSSDigester.java,v 1.4 2002/02/14 07:04:01 craigmcc Exp $
- * $Revision: 1.4 $
- * $Date: 2002/02/14 07:04:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/RSSDigester.java,v 1.5 2003/02/02 15:53:56 rdonkin Exp $
+ * $Revision: 1.5 $
+ * $Date: 2003/02/02 15:53:56 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ import org.xml.sax.SAXException;
  * example of using these classes.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.4 $ $Date: 2002/02/14 07:04:01 $
+ * @version $Revision: 1.5 $ $Date: 2003/02/02 15:53:56 $
  */
 
 public class RSSDigester extends Digester {

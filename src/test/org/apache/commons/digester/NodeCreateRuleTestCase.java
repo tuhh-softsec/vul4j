@@ -3,7 +3,7 @@
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ import org.xml.sax.SAXException;
  * <p>Test case for the <code>NodeCreateRule</code>.
  * 
  * @author Christopher Lenz
- * @version $Revision: 1.1 $ $Date: 2002/10/02 20:27:18 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/02 15:52:14 $
  */
 
 public class NodeCreateRuleTestCase extends TestCase {

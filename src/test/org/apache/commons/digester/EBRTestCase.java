@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.5 2002/07/10 18:12:33 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2002/07/10 18:12:33 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/EBRTestCase.java,v 1.6 2003/02/02 15:52:14 rdonkin Exp $
+ * $Revision: 1.6 $
+ * $Date: 2003/02/02 15:52:14 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ import junit.framework.TestSuite;
  * <p> Runs standard tests for RulesBase as well as tests of extensions.
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.5 $ $Date: 2002/07/10 18:12:33 $
+ * @version $Revision: 1.6 $ $Date: 2003/02/02 15:52:14 $
  */
 
 

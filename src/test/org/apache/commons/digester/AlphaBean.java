@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/AlphaBean.java,v 1.1 2002/03/20 20:28:28 rdonkin Exp $
- * $Revision: 1.1 $
- * $Date: 2002/03/20 20:28:28 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/AlphaBean.java,v 1.2 2003/02/02 15:53:57 rdonkin Exp $
+ * $Revision: 1.2 $
+ * $Date: 2003/02/02 15:53:57 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without

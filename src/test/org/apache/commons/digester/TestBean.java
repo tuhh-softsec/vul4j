@@ -1,13 +1,13 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestBean.java,v 1.3 2002/01/23 22:38:01 sanders Exp $
- * $Revision: 1.3 $
- * $Date: 2002/01/23 22:38:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestBean.java,v 1.4 2003/02/02 15:52:14 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2003/02/02 15:52:14 $
  *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,7 @@ package org.apache.commons.digester;
  * General purpose test bean for Digester tests.
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.3 $ $Date: 2002/01/23 22:38:01 $
+ * @version $Revision: 1.4 $ $Date: 2003/02/02 15:52:14 $
  */
 
 public class TestBean {
