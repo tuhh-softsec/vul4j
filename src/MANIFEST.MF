@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Created-By: Ant 1.4.1
+Implementation-Title: xml-security
+Implementation-Version: @@VERSION@@
+Implementation-Vendor: "Apache Software Foundation"
+
