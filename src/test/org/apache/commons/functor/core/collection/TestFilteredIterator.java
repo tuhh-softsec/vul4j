@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestPredicatedIterator.java,v 1.3 2003/11/24 20:31:20 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestFilteredIterator.java,v 1.1 2003/11/25 19:02:42 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,27 +63,33 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/11/24 20:31:20 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/25 19:02:42 $
  * @author Rodney Waldhoff
  */
-public class TestPredicatedIterator extends TestCase {
+public class TestFilteredIterator extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestPredicatedIterator(String testName) {
+    public TestFilteredIterator(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestPredicatedIterator.class);
+        return new TestSuite(TestFilteredIterator.class);
+    }
+
+    public Object makeFunctor() {
+        List list = new ArrayList();
+        list.add("xyzzy");        
+        return FilteredIterator.filter(ConstantPredicate.trueInstance(),list.iterator());
     }
 
     // Lifecycle
@@ -112,7 +118,7 @@ public class TestPredicatedIterator extends TestCase {
     
     public void testSomePass() {
         Iterator expected = evens.iterator();
-        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        Iterator testing = new FilteredIterator(isEven,list.iterator());
         while(expected.hasNext()) {
             assertTrue(testing.hasNext());
             assertEquals(expected.next(),testing.next());
@@ -122,7 +128,7 @@ public class TestPredicatedIterator extends TestCase {
 
     public void testAllPass() {
         Iterator expected = evens.iterator();
-        Iterator testing = new PredicatedIterator(isEven,evens.iterator());
+        Iterator testing = new FilteredIterator(isEven,evens.iterator());
         while(expected.hasNext()) {
             assertTrue(testing.hasNext());
             assertEquals(expected.next(),testing.next());
@@ -132,7 +138,7 @@ public class TestPredicatedIterator extends TestCase {
 
     public void testAllPass2() {
         Iterator expected = list.iterator();
-        Iterator testing = new PredicatedIterator(ConstantPredicate.trueInstance(),list.iterator());
+        Iterator testing = new FilteredIterator(ConstantPredicate.trueInstance(),list.iterator());
         while(expected.hasNext()) {
             assertTrue(testing.hasNext());
             assertEquals(expected.next(),testing.next());
@@ -141,17 +147,17 @@ public class TestPredicatedIterator extends TestCase {
     }
 
     public void testEmptyList() {
-        Iterator testing = new PredicatedIterator(isEven,Collections.EMPTY_LIST.iterator());
+        Iterator testing = new FilteredIterator(isEven,Collections.EMPTY_LIST.iterator());
         assertTrue(!testing.hasNext());
     }
 
     public void testNonePass() {
-        Iterator testing = new PredicatedIterator(ConstantPredicate.falseInstance(),Collections.EMPTY_LIST.iterator());
+        Iterator testing = new FilteredIterator(ConstantPredicate.falseInstance(),Collections.EMPTY_LIST.iterator());
         assertTrue(!testing.hasNext());
     }
 
     public void testNextWithoutHasNext() {
-        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        Iterator testing = new FilteredIterator(isEven,list.iterator());
         Iterator expected = evens.iterator();
         while(expected.hasNext()) {
             assertEquals(expected.next(),testing.next());
@@ -160,7 +166,7 @@ public class TestPredicatedIterator extends TestCase {
     }
 
     public void testNextAfterEndOfList() {
-        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        Iterator testing = new FilteredIterator(isEven,list.iterator());
         Iterator expected = evens.iterator();
         while(expected.hasNext()) {
             assertEquals(expected.next(),testing.next());
@@ -174,7 +180,7 @@ public class TestPredicatedIterator extends TestCase {
     }
 
     public void testNextOnEmptyList() {
-        Iterator testing = new PredicatedIterator(isEven,Collections.EMPTY_LIST.iterator());
+        Iterator testing = new FilteredIterator(isEven,Collections.EMPTY_LIST.iterator());
         try {
             testing.next();
             fail("ExpectedNoSuchElementException");
@@ -184,7 +190,7 @@ public class TestPredicatedIterator extends TestCase {
     }
     
     public void testRemoveBeforeNext() {
-        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        Iterator testing = new FilteredIterator(isEven,list.iterator());
         try {
             testing.remove();
             fail("IllegalStateException");
@@ -194,7 +200,7 @@ public class TestPredicatedIterator extends TestCase {
     }
     
     public void testRemoveAfterNext() {
-        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        Iterator testing = new FilteredIterator(isEven,list.iterator());
         testing.next();
         testing.remove();
         try {
@@ -206,7 +212,7 @@ public class TestPredicatedIterator extends TestCase {
     }
     
     public void testRemoveSome() {
-        Iterator testing = new PredicatedIterator(isEven,list.iterator());
+        Iterator testing = new FilteredIterator(isEven,list.iterator());
         while(testing.hasNext()) {
             testing.next();
             testing.remove();
@@ -217,7 +223,7 @@ public class TestPredicatedIterator extends TestCase {
     }
 
     public void testRemoveAll() {
-        Iterator testing = new PredicatedIterator(ConstantPredicate.trueInstance(),list.iterator());
+        Iterator testing = new FilteredIterator(ConstantPredicate.trueInstance(),list.iterator());
         while(testing.hasNext()) {
             testing.next();
             testing.remove();
@@ -226,7 +232,7 @@ public class TestPredicatedIterator extends TestCase {
     }
 
     public void testRemoveWithoutHasNext() {
-        Iterator testing = new PredicatedIterator(ConstantPredicate.trueInstance(),list.iterator());
+        Iterator testing = new FilteredIterator(ConstantPredicate.trueInstance(),list.iterator());
         for(int i=0,m = list.size();i<m;i++) {
             testing.next();
             testing.remove();
@@ -234,6 +240,37 @@ public class TestPredicatedIterator extends TestCase {
         assertTrue(list.isEmpty());
     }
     
+    public void testFilterWithNullIteratorReturnsNull() {
+        assertNull(FilteredIterator.filter(ConstantPredicate.trueInstance(),null));
+    }
+    
+    public void testFilterWithNullPredicateReturnsIdentity() {
+        Iterator iter = list.iterator();
+        assertSame(iter,FilteredIterator.filter(null,iter));
+    }
+
+    public void testConstructorProhibitsNull() {
+        try {
+            new FilteredIterator(null,null);
+            fail("ExpectedNullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+        try {
+            new FilteredIterator(ConstantPredicate.trueInstance(),null);
+            fail("ExpectedNullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+        try {
+            new FilteredIterator(null,list.iterator());
+            fail("ExpectedNullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
+    }
+    
+
     // Attributes
     // ------------------------------------------------------------------------
     private List list = null;    

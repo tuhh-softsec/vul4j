@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/Attic/PredicatedIterator.java,v 1.2 2003/03/04 23:11:14 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/collection/TransformedIterator.java,v 1.1 2003/11/25 19:02:42 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,22 +57,25 @@
 package org.apache.commons.functor.core.collection;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
-import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.UnaryFunction;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 23:11:14 $
+ * @version $Revision: 1.1 $ $Date: 2003/11/25 19:02:42 $
  * @author Rodney Waldhoff
  */
-public class PredicatedIterator implements Iterator {
+public final class TransformedIterator implements Iterator {
 
     // constructor
     // ------------------------------------------------------------------------
     
-    public PredicatedIterator(UnaryPredicate predicate, Iterator iterator) {
-        this.predicate = predicate;
-        this.iterator = iterator;
+    public TransformedIterator(UnaryFunction function, Iterator iterator) {
+        if(null == iterator || null == function) {
+            throw new NullPointerException();
+        } else {
+            this.function = function;
+            this.iterator = iterator;
+        }
     }
     
     // iterator methods
@@ -82,71 +85,58 @@ public class PredicatedIterator implements Iterator {
      * @see java.util.Iterator#hasNext()
      */
     public boolean hasNext() {
-        if(nextSet) {
-            return true;
-        } else {
-            return setNext();
-        }
+        return iterator.hasNext();
     }
 
     /**
      * @see java.util.Iterator#next()
      */
     public Object next() {
-        if(hasNext()) {            
-            return returnNext();
-        } else {
-            throw new NoSuchElementException();
-        }
+        return function.evaluate(iterator.next());
     }
 
     /**
      * @see java.util.Iterator#remove()
      */
     public void remove() {
-        if(canRemove) {
-            canRemove = false;
-            iterator.remove();
+        iterator.remove();
+    }
+
+    public boolean equals(Object obj) {
+        if(obj instanceof TransformedIterator) {
+            TransformedIterator that = (TransformedIterator)obj;
+            return function.equals(that.function) && iterator.equals(that.iterator);  
         } else {
-            throw new IllegalStateException();
+            return false;
         }
     }
+
+    public int hashCode() {
+        int hash = "TransformedIterator".hashCode();
+        hash <<= 2;
+        hash ^= function.hashCode();
+        hash <<= 2;
+        hash ^= iterator.hashCode();
+        return hash;
+    }
+
+    public String toString() {
+        return "TransformedIterator<" + function + "," + iterator + ">";
+    }
     
- 
-    // private
+    // class methods
     // ------------------------------------------------------------------------
     
-    private boolean setNext() {
-        while(iterator.hasNext()) {
-            canRemove = false;
-            Object obj = iterator.next();
-            if(predicate.test(obj)) {
-                next = obj;
-                nextSet = true;
-                return true;
-            }
-        }
-        next = null;
-        nextSet = false;
-        return false;
+    public static Iterator transform(UnaryFunction func, Iterator iter) {
+        return null == func ? iter : (null == iter ? null : new TransformedIterator(func,iter));
     }
  
-    private Object returnNext() {
-        Object temp = next;
-        canRemove = true;
-        next = null;
-        nextSet = false;
-        return temp;
-    }
  
     // attributes
     // ------------------------------------------------------------------------
     
-    private UnaryPredicate predicate = null;
+    private UnaryFunction function = null;
     private Iterator iterator = null;
-    private Object next = null;
-    private boolean nextSet = false;
-    private boolean canRemove = false;
     
 
 }
