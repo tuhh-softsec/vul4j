@@ -1200,10 +1200,6 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterRequestImpl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\xkms\XKMSRegisterResult.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\xkms\impl\XKMSRegisterResultImpl.cpp
 # End Source File
 # Begin Source File
@@ -1378,6 +1374,10 @@ SOURCE=..\..\..\..\src\xkms\XKMSQueryKeyBinding.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSRegisterRequest.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSRegisterResult.hpp
 # End Source File
 # Begin Source File
 

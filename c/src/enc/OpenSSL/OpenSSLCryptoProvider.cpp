@@ -40,6 +40,8 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 
+#include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
+
 #include <xsec/enc/XSECCryptoException.hpp>
 
 #include <openssl/rand.h>
@@ -152,10 +154,15 @@ XSECCryptoX509 * OpenSSLCryptoProvider::X509() {
 
 XSECCryptoBase64 * OpenSSLCryptoProvider::base64() {
 
+#if 0
 	OpenSSLCryptoBase64 * ret;
 
 	XSECnew(ret, OpenSSLCryptoBase64());
+#else
+	XSCryptCryptoBase64 *ret;
+	XSECnew(ret, XSCryptCryptoBase64);
 
+#endif
 	return ret;
 
 }

@@ -858,6 +858,10 @@ XKMSRequestAbstractType * XKMSMessageFactoryImpl::toRequestAbstractType(XKMSMess
 		XKMSRegisterRequest * rr = dynamic_cast<XKMSRegisterRequest*>(msg);
 		return rr;
 	}
+	if (msg->getMessageType() == XKMSMessageAbstractType::StatusRequest) {
+		XKMSStatusRequest * sr = dynamic_cast<XKMSStatusRequest*>(msg);
+		return sr;
+	}
 	return NULL;
 }
 
@@ -878,6 +882,10 @@ XKMSResultType * XKMSMessageFactoryImpl::toResultType(XKMSMessageAbstractType *m
 	if (msg->getMessageType() == XKMSMessageAbstractType::RegisterResult) {
 		XKMSRegisterResult * rr = dynamic_cast<XKMSRegisterResult*>(msg);
 		return rr;
+	}
+	if (msg->getMessageType() == XKMSMessageAbstractType::StatusResult) {
+		XKMSStatusResult * sr = dynamic_cast<XKMSStatusResult*>(msg);
+		return sr;
 	}
 	return NULL;
 }

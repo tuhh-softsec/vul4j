@@ -1277,14 +1277,14 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 
 void printPendingRequestUsage(void) {
 
-	cerr << "\nUsage PendingRequest [--help|-h] <service URI> <OriginalRequestId> <ResponseId>\n";
+	cerr << "\nUsage PendingRequest [--help|-h] <service URI> <OriginalRequestId> [ResponseId]\n";
 	cerr << "   --help/-h                : print this screen and exit\n\n";
 
 }
 
 XKMSMessageAbstractType * createPendingRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
 
-	if (paramCount +2 >= argc || 
+	if (paramCount +1 >= argc || 
 		(stricmp(argv[paramCount], "--help") == 0) ||
 		(stricmp(argv[paramCount], "-h") == 0)) {
 
@@ -1299,7 +1299,8 @@ XKMSMessageAbstractType * createPendingRequest(XSECProvider &prov, DOMDocument *
 		factory->createPendingRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
 
 	pr->setOriginalRequestId(MAKE_UNICODE_STRING(argv[paramCount++]));
-	pr->setResponseId(MAKE_UNICODE_STRING(argv[paramCount++]));
+	if (paramCount != argc)
+		pr->setResponseId(MAKE_UNICODE_STRING(argv[paramCount++]));
 
 	return pr;
 }
@@ -1317,7 +1318,7 @@ void printStatusRequestUsage(void) {
 
 XKMSMessageAbstractType * createStatusRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
 
-	if (paramCount +2 >= argc || 
+	if (paramCount +1 >= argc || 
 		(stricmp(argv[paramCount], "--help") == 0) ||
 		(stricmp(argv[paramCount], "-h") == 0)) {
 
