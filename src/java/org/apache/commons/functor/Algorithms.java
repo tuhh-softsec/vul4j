@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.2 2003/06/24 15:49:58 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.3 2003/06/30 11:00:16 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,8 +57,8 @@
 
 package org.apache.commons.functor;
 
-import org.apache.commons.functor.generators.Generator;
-import org.apache.commons.functor.generators.IteratorToGeneratorAdapter;
+import org.apache.commons.functor.generator.Generator;
+import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -79,7 +79,7 @@ import java.util.NoSuchElementException;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:58 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/30 11:00:16 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/io/Attic/EachLine.java,v 1.2 2003/06/24 15:49:58 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/io/Attic/EachLine.java,v 1.1 2003/06/30 11:00:18 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -55,11 +55,11 @@
  *
  */
 
-package org.apache.commons.functor.generators.io;
+package org.apache.commons.functor.generator.io;
 
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.generators.GeneratorException;
-import org.apache.commons.functor.generators.Generator;
+import org.apache.commons.functor.generator.GeneratorException;
+import org.apache.commons.functor.generator.Generator;
 
 import java.io.*;
 
@@ -69,7 +69,7 @@ import java.io.*;
  * re-use this generator.
  *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:58 $
+ * @version $Revision: 1.1 $ $Date: 2003/06/30 11:00:18 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 

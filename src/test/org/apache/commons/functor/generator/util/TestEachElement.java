@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generators/io/Attic/TestEachLine.java,v 1.1 2003/06/24 15:17:01 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestEachElement.java,v 1.1 2003/06/30 11:00:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -55,40 +55,42 @@
  *
  */
 
-package org.apache.commons.functor.generators.io;
+package org.apache.commons.functor.generator.util;
 
-import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.generators.util.MaxIterations;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import java.io.StringReader;
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.Reader;
-import java.util.Collection;
+import org.apache.commons.functor.BaseFunctorTest;
 
 /**
  * @author Jason Horman (jason@jhorman.org)
  */
 
-public class TestEachLine extends BaseFunctorTest {
+public class TestEachElement extends BaseFunctorTest {
 
-    private String testString = null;
+    private List list = null;
+    private Map map = null;
+    private Object[] array = null;
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestEachLine(String name) {
+    public TestEachElement(String name) {
         super(name);
     }
 
     public static Test suite() {
-        return new TestSuite(TestEachLine.class);
+        return new TestSuite(TestEachElement.class);
     }
 
     protected Object makeFunctor() throws Exception {
-        return new EachLine(new StringReader("test string"));
+        return new EachElement(new ArrayList());
     }
 
     // Lifecycle
@@ -96,36 +98,80 @@ public class TestEachLine extends BaseFunctorTest {
 
     public void setUp() throws Exception {
         super.setUp();
-        testString = "test1f1|test1f2|test1f3\n" +
-                     "test2f1|test2f2|test2f3\n" +
-                     "test3f1|test3f2|test3f3\n";
+
+        list = new ArrayList();
+        list.add(new Integer(0));
+        list.add(new Integer(1));
+        list.add(new Integer(2));
+        list.add(new Integer(3));
+        list.add(new Integer(4));
+
+        map = new HashMap();
+        map.put("1", "1-1");
+        map.put("2", "2-1");
+        map.put("3", "3-1");
+        map.put("4", "4-1");
+        map.put("5", "5-1");
+
+        array = new String[5];
+        array[0] = "1";
+        array[1] = "2";
+        array[2] = "3";
+        array[3] = "4";
+        array[4] = "5";
     }
 
-    public void testConstructors() throws Exception {
-        EachLine gen = EachLine.from(new File("test"));
-        gen = EachLine.from(new File("test"), "encoding");
-
-        Reader reader = new StringReader("test");
-        gen = EachLine.from(reader);
-        reader = gen.getReader();
-        assertTrue("reader should have been wrapped by bufferedreader",
-                   reader instanceof BufferedReader);
-        assertEquals("test", ((BufferedReader)reader).readLine());
-
-        reader = new BufferedReader(new StringReader("test"));
-        gen = EachLine.from(reader);
-        assertSame(reader, gen.getReader());
-        reader = gen.getReader();
-        assertEquals("test", ((BufferedReader)reader).readLine());
+    public void tearDown() throws Exception {
+        super.tearDown();
     }
 
-    public void testBasicRead() {
-        Collection c = EachLine.from(new StringReader(testString)).toCollection();
-        assertEquals(c.toString(), "[test1f1|test1f2|test1f3, test2f1|test2f2|test2f3, test3f1|test3f2|test3f3]");
+    // Tests
+    // ------------------------------------------------------------------------
+
+    public void testWithList() {
+        Collection col = EachElement.from(list).toCollection();
+        assertEquals("[0, 1, 2, 3, 4]", col.toString());
     }
 
-    public void testStopping() {
-        Collection c = EachLine.from(new StringReader(testString)).until(new MaxIterations(2)).toCollection();
-        assertEquals(c.toString(), "[test1f1|test1f2|test1f3, test2f1|test2f2|test2f3]");
+    public void testWithMap() {
+        List col = (List) EachElement.from(map).toCollection();
+        int i = 0;
+        for (;i<col.size();i++) {
+            Map.Entry entry = (Map.Entry) col.get(i);
+            if (entry.getKey().equals("1")) {
+                assertEquals("1-1", entry.getValue());
+            } else if (entry.getKey().equals("2")) {
+                assertEquals("2-1", entry.getValue());
+            } else if (entry.getKey().equals("3")) {
+                assertEquals("3-1", entry.getValue());
+            } else if (entry.getKey().equals("4")) {
+                assertEquals("4-1", entry.getValue());
+            } else if (entry.getKey().equals("5")) {
+                assertEquals("5-1", entry.getValue());
+            }
+        }
+
+        assertEquals(5, i);
+    }
+
+    public void testWithArray() {
+        Collection col = EachElement.from(array).toCollection();
+        assertEquals("[1, 2, 3, 4, 5]", col.toString());
+    }
+
+    public void testWithStop() {
+        Collection col = EachElement.from(list).until(new MaxIterations(3)).toCollection();
+        assertEquals("[0, 1, 2]", col.toString());
+
+    }
+
+    public void testWithIterator() {
+        Collection col = EachElement.from(list.iterator()).toCollection();
+        assertEquals("[0, 1, 2, 3, 4]", col.toString());
+    }
+
+    public void testWithGenerator() {
+        Collection col = EachElement.from(EachElement.from(list)).toCollection();
+        assertEquals("[0, 1, 2, 3, 4]", col.toString());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.1 2003/06/24 15:17:01 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.2 2003/06/30 11:00:18 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -71,13 +71,13 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.generators.util.MaxIterations;
+import org.apache.commons.functor.generator.util.MaxIterations;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
 import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsEqual;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/06/24 15:17:01 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/30 11:00:18 $
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/NumberRange.java,v 1.2 2003/06/24 15:49:57 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/Attic/NumberRange.java,v 1.1 2003/06/30 11:00:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -55,17 +55,17 @@
  *
  */
 
-package org.apache.commons.functor.generators.util;
+package org.apache.commons.functor.generator.util;
 
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.generators.Generator;
+import org.apache.commons.functor.generator.Generator;
 
 /**
  * Generator for a numeric range. If {@link #min} <= {@link #max} generation
  * will be forward, if {@link #min} > {@link #max} generation will be backward.
  *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:57 $
+ * @version $Revision: 1.1 $ $Date: 2003/06/30 11:00:13 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generators/io/Attic/TestAll.java,v 1.1 2003/06/24 15:17:01 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/Attic/GeneratorException.java,v 1.1 2003/06/30 11:00:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,24 +54,27 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.generators.io;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+package org.apache.commons.functor.generator;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/06/24 15:17:01 $
- * @author Rodney Waldhoff
+ * Runtime exception thrown by Generators.
+ *
+ * @since 1.0
+ * @version $Revision: 1.1 $ $Date: 2003/06/30 11:00:13 $
+ * @author  Jason Horman (jason@jhorman.org)
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+
+public class GeneratorException extends RuntimeException {
+    public GeneratorException(String message) {
+        super(message);
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTest(TestEachLine.suite());
-        return suite;
+    public GeneratorException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public GeneratorException(Throwable cause) {
+        super(cause);
     }
 }

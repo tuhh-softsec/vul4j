@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/CollectionTransformer.java,v 1.2 2003/06/24 15:49:58 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/Attic/MaxIterations.java,v 1.1 2003/06/30 11:00:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -55,55 +55,50 @@
  *
  */
 
-package org.apache.commons.functor.generators.util;
+package org.apache.commons.functor.generator.util;
 
-import org.apache.commons.functor.generators.Transformer;
-import org.apache.commons.functor.generators.Generator;
-import org.apache.commons.functor.UnaryProcedure;
-
-import java.util.Collection;
-import java.util.ArrayList;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * Transforms a generator into a collection. If a collection is not passed into
- * the constructor an ArrayList will be returned from the transform method.
+ * Limits generators to a certain number of iterations. For example:
+ *
+ * <pre>
+ *  EachLine.open(file).until(new MaxIterations(1));
+ * </pre>
+ *
+ * Would only "generate" 1 line from the file.
  *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:58 $
+ * @version $Revision: 1.1 $ $Date: 2003/06/30 11:00:13 $
  * @author  Jason Horman (jason@jhorman.org)
  */
 
-public class CollectionTransformer implements Transformer {
+public class MaxIterations implements UnaryPredicate {
 
     /***************************************************
      *  Instance variables
      ***************************************************/
 
-    private Collection toFill = null;
+    private int maxIters = 0;
+    private int currentIter = 0;
 
     /***************************************************
      *  Constructors
      ***************************************************/
 
-    public CollectionTransformer() {
-        toFill = new ArrayList();
-    }
-
-    public CollectionTransformer(Collection toFill) {
-        this.toFill = toFill;
+    public MaxIterations(int maxIters) {
+        this.maxIters = maxIters;
     }
 
     /***************************************************
      *  Instance methods
      ***************************************************/
 
-    public Object transform(Generator generator) {
-        generator.run(new UnaryProcedure() {
-            public void run(Object obj) {
-                toFill.add(obj);
-            }
-        });
+    public boolean test(Object obj) {
+        if (++currentIter > maxIters) {
+            return true;
+        }
 
-        return toFill;
+        return false;
     }
 }

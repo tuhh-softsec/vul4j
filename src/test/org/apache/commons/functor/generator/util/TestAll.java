@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/Attic/IteratorToGeneratorAdapter.java,v 1.2 2003/06/24 15:49:58 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/util/TestAll.java,v 1.1 2003/06/30 11:00:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,49 +54,25 @@
  * <http://www.apache.org/>.
  *
  */
+package org.apache.commons.functor.generator.util;
 
-package org.apache.commons.functor.generators;
-
-import org.apache.commons.functor.UnaryProcedure;
-
-import java.util.Iterator;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
- * Adapts an iterator into a generator.
- *
- * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:58 $
- * @author  Jason Horman (jason@jhorman.org)
+ * @version $Revision: 1.1 $ $Date: 2003/06/30 11:00:13 $
+ * @author Rodney Waldhoff
  */
-
-public class IteratorToGeneratorAdapter extends Generator {
-
-    /***************************************************
-     *  Instance variables
-     ***************************************************/
-
-    private Iterator iter = null;
-
-    /***************************************************
-     *  Constructors
-     ***************************************************/
-
-    public IteratorToGeneratorAdapter(Iterator iter) {
-        this.iter = iter;
+public class TestAll extends TestCase {
+    public TestAll(String testName) {
+        super(testName);
     }
 
-    /***************************************************
-     *  Instance methods
-     ***************************************************/
-
-    public void run(UnaryProcedure proc) {
-        while(iter.hasNext()) {
-            proc.run(iter.next());
-            if (isStopped()) break;
-        }
-    }
-
-    public String toString() {
-        return "IteratorToGeneratorAdapter<" + iter + ">";
+    public static Test suite() {
+        TestSuite suite = new TestSuite();
+        suite.addTest(TestEachElement.suite());
+        suite.addTest(TestNumberRange.suite());
+        return suite;
     }
 }

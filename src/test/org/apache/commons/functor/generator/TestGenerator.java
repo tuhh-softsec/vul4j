@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generators/Attic/TestGenerator.java,v 1.1 2003/06/24 15:17:01 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/Attic/TestGenerator.java,v 1.1 2003/06/30 11:00:16 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -55,7 +55,7 @@
  *
  */
 
-package org.apache.commons.functor.generators;
+package org.apache.commons.functor.generator;
 
 import junit.framework.TestCase;
 import junit.framework.Test;
@@ -64,9 +64,9 @@ import org.apache.commons.functor.*;
 import org.apache.commons.functor.core.IsEqual;
 import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
-import org.apache.commons.functor.generators.util.CollectionTransformer;
-import org.apache.commons.functor.generators.util.EachElement;
-import org.apache.commons.functor.generators.util.MaxIterations;
+import org.apache.commons.functor.generator.util.CollectionTransformer;
+import org.apache.commons.functor.generator.util.EachElement;
+import org.apache.commons.functor.generator.util.MaxIterations;
 
 import java.util.*;
 

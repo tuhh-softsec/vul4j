@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generators/util/Attic/MaxIterations.java,v 1.2 2003/06/24 15:49:57 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/io/Attic/TestEachLine.java,v 1.1 2003/06/30 11:00:18 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -55,50 +55,77 @@
  *
  */
 
-package org.apache.commons.functor.generators.util;
+package org.apache.commons.functor.generator.io;
 
-import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.generator.util.MaxIterations;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import java.io.StringReader;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.Reader;
+import java.util.Collection;
 
 /**
- * Limits generators to a certain number of iterations. For example:
- *
- * <pre>
- *  EachLine.open(file).until(new MaxIterations(1));
- * </pre>
- *
- * Would only "generate" 1 line from the file.
- *
- * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/06/24 15:49:57 $
- * @author  Jason Horman (jason@jhorman.org)
+ * @author Jason Horman (jason@jhorman.org)
  */
 
-public class MaxIterations implements UnaryPredicate {
+public class TestEachLine extends BaseFunctorTest {
 
-    /***************************************************
-     *  Instance variables
-     ***************************************************/
+    private String testString = null;
 
-    private int maxIters = 0;
-    private int currentIter = 0;
+    // Conventional
+    // ------------------------------------------------------------------------
 
-    /***************************************************
-     *  Constructors
-     ***************************************************/
-
-    public MaxIterations(int maxIters) {
-        this.maxIters = maxIters;
+    public TestEachLine(String name) {
+        super(name);
     }
 
-    /***************************************************
-     *  Instance methods
-     ***************************************************/
+    public static Test suite() {
+        return new TestSuite(TestEachLine.class);
+    }
 
-    public boolean test(Object obj) {
-        if (++currentIter > maxIters) {
-            return true;
-        }
+    protected Object makeFunctor() throws Exception {
+        return new EachLine(new StringReader("test string"));
+    }
 
-        return false;
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
+        testString = "test1f1|test1f2|test1f3\n" +
+                     "test2f1|test2f2|test2f3\n" +
+                     "test3f1|test3f2|test3f3\n";
+    }
+
+    public void testConstructors() throws Exception {
+        EachLine gen = EachLine.from(new File("test"));
+        gen = EachLine.from(new File("test"), "encoding");
+
+        Reader reader = new StringReader("test");
+        gen = EachLine.from(reader);
+        reader = gen.getReader();
+        assertTrue("reader should have been wrapped by bufferedreader",
+                   reader instanceof BufferedReader);
+        assertEquals("test", ((BufferedReader)reader).readLine());
+
+        reader = new BufferedReader(new StringReader("test"));
+        gen = EachLine.from(reader);
+        assertSame(reader, gen.getReader());
+        reader = gen.getReader();
+        assertEquals("test", ((BufferedReader)reader).readLine());
+    }
+
+    public void testBasicRead() {
+        Collection c = EachLine.from(new StringReader(testString)).toCollection();
+        assertEquals(c.toString(), "[test1f1|test1f2|test1f3, test2f1|test2f2|test2f3, test3f1|test3f2|test3f3]");
+    }
+
+    public void testStopping() {
+        Collection c = EachLine.from(new StringReader(testString)).until(new MaxIterations(2)).toCollection();
+        assertEquals(c.toString(), "[test1f1|test1f2|test1f3, test2f1|test2f2|test2f3]");
     }
 }

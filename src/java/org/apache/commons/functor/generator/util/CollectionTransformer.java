@@ -1,5 +1,5 @@
-/* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAll.java,v 1.4 2003/06/30 11:00:18 rwaldhoff Exp $
+/*
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/util/CollectionTransformer.java,v 1.1 2003/06/30 11:00:13 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -26,7 +26,7 @@
  *    if and wherever such third-party acknowledgments normally appear.
  *
  * 4. The names "The Jakarta Project", "Commons", and "Apache Software
- *    Foundation" must not be used to endorse or promote products derived 
+ *    Foundation" must not be used to endorse or promote products derived
  *    from this software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
@@ -54,33 +54,56 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+package org.apache.commons.functor.generator.util;
+
+import org.apache.commons.functor.generator.Transformer;
+import org.apache.commons.functor.generator.Generator;
+import org.apache.commons.functor.UnaryProcedure;
+
+import java.util.Collection;
+import java.util.ArrayList;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/06/30 11:00:18 $
- * @author Rodney Waldhoff
+ * Transforms a generator into a collection. If a collection is not passed into
+ * the constructor an ArrayList will be returned from the transform method.
+ *
+ * @since 1.0
+ * @version $Revision: 1.1 $ $Date: 2003/06/30 11:00:13 $
+ * @author  Jason Horman (jason@jhorman.org)
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+
+public class CollectionTransformer implements Transformer {
+
+    /***************************************************
+     *  Instance variables
+     ***************************************************/
+
+    private Collection toFill = null;
+
+    /***************************************************
+     *  Constructors
+     ***************************************************/
+
+    public CollectionTransformer() {
+        toFill = new ArrayList();
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
+    public CollectionTransformer(Collection toFill) {
+        this.toFill = toFill;
+    }
 
-        // functor package
-        
-        // sub-packages
-        suite.addTest(org.apache.commons.functor.adapter.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.core.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.util.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.generator.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.TestAll.suite());
-        
-        return suite;
+    /***************************************************
+     *  Instance methods
+     ***************************************************/
+
+    public Object transform(Generator generator) {
+        generator.run(new UnaryProcedure() {
+            public void run(Object obj) {
+                toFill.add(obj);
+            }
+        });
+
+        return toFill;
     }
 }
