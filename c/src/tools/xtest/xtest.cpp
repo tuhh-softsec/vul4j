@@ -143,11 +143,34 @@ unsigned char createdDocRefs [9][20] = {
 	  0xdb, 0xb3, 0xee, 0x46, 0x66, 0x8f, 0xe1, 0xb6, 0x30, 0x9d, },
 	{ 0x52, 0x74, 0xc3, 0xe4, 0xc5, 0xf7, 0x20, 0xb0, 0xd9, 0x52, 
 	  0xdb, 0xb3, 0xee, 0x46, 0x66, 0x8f, 0xe1, 0xb6, 0x30, 0x9d, },
-	{ 0x3c, 0x80, 0x4, 0x94, 0xa5, 0xbe, 0xf6, 0x16, 0x40, 0xe0, 
-  	  0x24, 0xd5, 0x65, 0x39, 0xc, 0x18, 0x21, 0x3d, 0xa5, 0x51, },
+	{ 0x69, 0xBA, 0xF1, 0x53, 0x7D, 0x81, 0x78, 0xCA, 0xCA, 0x60,
+  	  0x3B, 0x2F, 0x55, 0x9C, 0x8E, 0x5F, 0xEB, 0x35, 0x38, 0x25, },
   	{ 0x51, 0x3c, 0xb5, 0xdf, 0xb9, 0x1e, 0x9d, 0xaf, 0xd4, 0x4a, 
 	  0x95, 0x79, 0xf1, 0xd6, 0x54, 0xe, 0xb0, 0xb0, 0x29, 0xe3, }
 
+};
+
+unsigned char longShaRefs [4][64] = {
+
+	{ 0x7f, 0xa4, 0xab, 0xe8, 0x07, 0x06, 0x35, 0xf3, 0xa3, 0x56,
+	  0xe8, 0x64, 0x2d, 0xc4, 0x7c, 0x8c, 0x1e, 0x48, 0x74, 0xf0,
+	  0x48, 0x63, 0x1b, 0xea, 0x57, 0xec, 0x96, 0xa6, },
+	{ 0x75, 0xec, 0xba, 0x51, 0xda, 0xb7, 0x42, 0x16, 0x34, 0x2d,
+	  0xd7, 0x4e, 0x6a, 0x33, 0xb6, 0xb3, 0xe3, 0x2d, 0x28, 0xf6, 
+	  0x7b, 0x87, 0x21, 0xfd, 0xd2, 0x2e, 0x50, 0xb9, 0x55, 0x81, 
+	  0x23, 0x06, },
+	{ 0x99, 0x25, 0x92, 0xa3, 0xa9, 0x44, 0x12, 0x4d, 0xa1, 0x86, 
+	  0x3f, 0x81, 0xd3, 0xa7, 0x37, 0x61, 0xff, 0x86, 0x9f, 0x02, 
+	  0x16, 0x48, 0x16, 0xa0, 0xec, 0x7c, 0xd5, 0x33, 0x30, 0xeb, 
+	  0xb2, 0x9f, 0x93, 0xb9, 0x4a, 0x32, 0x20, 0x2e, 0x8a, 0xfd,
+      0xa6, 0x6e, 0x67, 0x1d, 0x96, 0xcd, 0xf1, 0xcb, },
+	{ 0xf8, 0xf5, 0xf3, 0xb6, 0xab, 0x7c, 0x25, 0x52, 0x06, 0x23, 
+	  0x2c, 0x9f, 0x4e, 0x25, 0x0f, 0x16, 0x58, 0xf3, 0xc6, 0xdc, 
+	  0xb4, 0x85, 0x04, 0x3d, 0x9f, 0xee, 0x7d, 0x5d, 0x73, 0x86, 
+	  0xe3, 0xd4, 0x3a, 0xe0, 0xd5, 0x8a, 0xec, 0x7f, 0xd4, 0x63,
+      0x4f, 0x9a, 0xcf, 0xfa, 0x15, 0xdb, 0x0f, 0xe5, 0x09, 0x6b, 
+	  0xf1, 0xa1, 0x36, 0x05, 0x42, 0x69, 0x49, 0xc3, 0x9e, 0x8c, 
+	  0x99, 0xa6, 0x75, 0xae, },
 };
 
 // --------------------------------------------------------------------------------
@@ -719,6 +742,166 @@ void unitTestBase64NodeSignature(DOMImplementation * impl) {
 }
 
 
+void unitTestLongSHA(DOMImplementation * impl) {
+	
+	// This tests an enveloping signature as the root node, using SHA224/256/384/512
+
+	cerr << "Creating long SHA references using SHA512 HMAC... ";
+	
+	try {
+		
+		// Create a document
+    
+		DOMDocument * doc = impl->createDocument();
+
+		// Create the signature
+
+		XSECProvider prov;
+		DSIGSignature *sig;
+		DOMElement *sigNode;
+		DSIGReference *ref[4];
+		
+		sig = prov.newSignature();
+		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
+		sig->setPrettyPrint(true);
+
+		sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA512);
+
+		doc->appendChild(sigNode);
+
+		// Add an object
+		DSIGObject * obj = sig->appendObject();
+		obj->setId(MAKE_UNICODE_STRING("ObjectId"));
+
+		// Create a text node
+		DOMText * txt= doc->createTextNode(MAKE_UNICODE_STRING("A test string"));
+		obj->appendChild(txt);
+
+		// Add a Reference
+		cerr << "224 ... ";
+		ref[0] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), HASH_SHA224);
+		cerr << "256 ... ";
+		ref[1] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), HASH_SHA256);
+		cerr << "384 ... ";
+		ref[2] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), HASH_SHA384);
+		cerr << "512 ... ";
+		ref[3] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), HASH_SHA512);
+
+		// Get a key
+		cerr << "signing ... ";
+
+		sig->setSigningKey(createHMACKey((unsigned char *) "secret"));
+		sig->sign();
+
+		cerr << "validating ... ";
+		if (!sig->verify()) {
+			cerr << "bad verify!" << endl;
+			exit(1);
+		}
+
+		cerr << "OK ... serialise and re-verify ... ";
+		if (!reValidateSig(impl, doc, createHMACKey((unsigned char *) "secret"))) {
+
+			cerr << "bad verify!" << endl;
+			exit(1);
+
+		}
+
+		cerr << "OK ... ";
+
+		// Now set to bad
+		txt->setNodeValue(MAKE_UNICODE_STRING("A bad string"));
+
+		cerr << "verify bad data ... ";
+		if (sig->verify()) {
+
+			cerr << "bad - should have failed!" << endl;
+			exit(1);
+
+		}
+
+		cerr << "OK (verify false) ... serialise and re-verify ... ";
+		if (reValidateSig(impl, doc, createHMACKey((unsigned char *) "secret"))) {
+
+			cerr << "bad - should have failed" << endl;
+			exit(1);
+
+		}
+
+		cerr << "OK" << endl;
+		// Reset to OK
+		txt->setNodeValue(MAKE_UNICODE_STRING("A test string"));
+
+		// Now check the references
+		cerr << "  Checking reference values against known good" << endl;
+
+		unsigned char buf[128];
+		int len;
+
+		const char * shastrings[] = {
+			"SHA224",
+			"SHA256",
+			"SHA384",
+			"SHA512"
+		};
+
+		/*
+		 * Validate the reference hash values from known good
+		 */
+
+		int i;
+		for (i = 0; i < 4; ++i) {
+
+			cerr << "    Calculating hash for reference " << shastrings[i] << " ... ";
+
+			len = (int) ref[i]->calculateHash(buf, 128);
+
+			cerr << " Done\n      Checking -> ";
+
+			if (len < 20) {
+				cerr << "Bad (Length = " << len << ")" << endl;
+				exit (1);
+			}
+
+			for (int j = 0; j < len; ++j) {
+
+				if (buf[j] != longShaRefs[i][j]) {
+					cerr << "Bad at location " << j << endl;
+					for (j = 0; j < len; ++j) {
+						fprintf(stderr, "0x%02x, ", buf[j]);
+					}
+					exit (1);
+				}
+			
+			}
+			cerr << "Good.\n";
+
+		}
+
+		outputDoc(impl, doc);
+		doc->release();
+		
+
+	}
+
+	catch (XSECException &e)
+	{
+		cerr << "An error occured during signature processing\n   Message: ";
+		char * ce = XMLString::transcode(e.getMsg());
+		cerr << ce << endl;
+		delete ce;
+		exit(1);
+		
+	}	
+	catch (XSECCryptoException &e)
+	{
+		cerr << "A cryptographic error occured during signature processing\n   Message: "
+		<< e.getMsg() << endl;
+		exit(1);
+	}
+
+}
+	
 void unitTestSignature(DOMImplementation * impl) {
 
 	// Test an enveloping signature
@@ -728,6 +911,12 @@ void unitTestSignature(DOMImplementation * impl) {
 #else
 	cerr << "Skipping base64 node test (Requires XPath)" << endl;
 #endif
+
+	// Test "long" sha hashes
+	if (XSECPlatformUtils::g_cryptoProvider->algorithmSupported(XSECCryptoHash::HASH_SHA512))
+		unitTestLongSHA(impl);
+	else
+		cerr << "Skipping long SHA hash tests as SHA512 not supported by crypto provider" << endl;
 }
 
 // --------------------------------------------------------------------------------
