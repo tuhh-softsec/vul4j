@@ -132,16 +132,17 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
       }
 
       try {
-         URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
-         if (log.isDebugEnabled())
-         	log.debug("I was asked whether I can resolve " + uriNew.toString());
+	         //URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
+	         if (log.isDebugEnabled())
+	         	log.debug("I was asked whether I can resolve " + uriNodeValue/*uriNew.toString()*/);
 
-         if (uriNew.getScheme().equals("file")) {
-            if (log.isDebugEnabled())
-            	log.debug("I state that I can resolve " + uriNew.toString());
+	         if ( uriNodeValue.startsWith("file:") ||
+					 BaseURI.startsWith("file:")/*uriNew.getScheme().equals("file")*/) {
+	            if (log.isDebugEnabled())
+	            	log.debug("I state that I can resolve " + uriNodeValue/*uriNew.toString()*/);
 
-            return true;
-         }
+	            return true;
+	         }
       } catch (Exception e) {}
 
       log.debug("But I can't");

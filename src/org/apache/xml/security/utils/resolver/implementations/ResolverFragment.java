@@ -99,8 +99,9 @@ public class ResolverFragment extends ResourceResolverSpi {
       result.setExcludeComments(true);
 
       //log.debug("We return a nodeset with " + resultSet.size() + " nodes");
-      result.setMIMEType("text/xml");
-	  result.setSourceURI(BaseURI.concat(uri.getNodeValue()));      
+      result.setMIMEType("text/xml");	  
+	  result.setSourceURI((BaseURI != null) ? BaseURI.concat(uri.getNodeValue()) :
+		  uri.getNodeValue());      
       return result;
    }
 
