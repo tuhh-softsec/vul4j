@@ -60,8 +60,8 @@
 /*
  * XSEC
  *
- * MerlinFiveInteropResolver := Class to resolve key elements into certificates for
- *						merlin-xenc-five interop test
+ * XencInteropResolver := Class to resolve key elements into certificates for
+ *						interop test
  *
  * Author(s): Berin Lautenbach
  *
@@ -81,12 +81,12 @@
 #    include <glob.h>
 #endif
 
-class MerlinFiveInteropResolver : public XSECKeyInfoResolver {
+class XencInteropResolver : public XSECKeyInfoResolver {
 
 public :
 
-	MerlinFiveInteropResolver(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc, const XMLCh * baseURI);
-	~MerlinFiveInteropResolver();
+	XencInteropResolver(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc, const XMLCh * baseURI);
+	~XencInteropResolver();
 
 	// Interface functions
 

@@ -79,7 +79,7 @@
 #include <xsec/xenc/XENCEncryptedData.hpp>
 #include <xsec/xenc/XENCEncryptedKey.hpp>
 
-#include "MerlinFiveInteropResolver.hpp"
+#include "XencInteropResolver.hpp"
 
 // ugly :<
 
@@ -647,7 +647,7 @@ int evaluate(int argc, char ** argv) {
 
 				XMLUri uri(MAKE_UNICODE_STRING(baseURI));
 
-				MerlinFiveInteropResolver ires(doc, &(uri.getUriText()[8]));
+				XencInteropResolver ires(doc, &(uri.getUriText()[8]));
 				cipher->setKeyInfoResolver(&ires);
 
 			}

@@ -69,7 +69,7 @@
 
 // XSEC
 
-#include "MerlinFiveInteropResolver.hpp"
+#include "XencInteropResolver.hpp"
 
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECProvider.hpp>
@@ -146,7 +146,7 @@ static char s_jedKey[] = "abcdefghijklmnopqrstuvwxyz012345";
 // --------------------------------------------------------------------------------
 
 
-MerlinFiveInteropResolver::MerlinFiveInteropResolver(DOMDocument * doc, const XMLCh * baseURI) {
+XencInteropResolver::XencInteropResolver(DOMDocument * doc, const XMLCh * baseURI) {
 
 	if (baseURI != NULL)
 		mp_baseURI = XMLString::replicate(baseURI);
@@ -162,7 +162,7 @@ MerlinFiveInteropResolver::MerlinFiveInteropResolver(DOMDocument * doc, const XM
 }
 
 
-MerlinFiveInteropResolver::~MerlinFiveInteropResolver() {
+XencInteropResolver::~XencInteropResolver() {
 
 	if (mp_baseURI != NULL)
 		delete[]mp_baseURI;
@@ -186,7 +186,7 @@ void reverseSlash(safeBuffer &path) {
 
 #endif
 	
-XSECCryptoSymmetricKey * MerlinFiveInteropResolver::makeSymmetricKey(XSECCryptoSymmetricKey::SymmetricKeyType type) {
+XSECCryptoSymmetricKey * XencInteropResolver::makeSymmetricKey(XSECCryptoSymmetricKey::SymmetricKeyType type) {
 
 #if defined (HAVE_OPENSSL)
 
@@ -239,7 +239,7 @@ BIO * createFileBIO(const XMLCh * baseURI, const char * name) {
 //           Resolver
 // --------------------------------------------------------------------------------
 
-XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
+XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
 	int lstSize = lst->getSize();
 
@@ -415,9 +415,9 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
 }
 
-XSECKeyInfoResolver * MerlinFiveInteropResolver::clone(void) const {
+XSECKeyInfoResolver * XencInteropResolver::clone(void) const {
 
-	return new MerlinFiveInteropResolver(mp_doc, mp_baseURI);
+	return new XencInteropResolver(mp_doc, mp_baseURI);
 
 }
 
