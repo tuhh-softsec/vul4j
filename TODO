@@ -6,6 +6,15 @@ Possible choices include:
 - using the XMLSignature.setFollowNestedManifests(true) method, it can be defined that all Mianifests have to be valid, also Manifests which are referenced from Manifests. 
 - the user could define a length how many Manifests have to be followed. But this makes not much sense, cause it makes Signature something 'analog', allowing to scale whether validation fails or not.
 
+TODO for 1.2.1:
+ [X] Fix the memory leak when using xpath or using ResourceResolver and not hitting 
+  	  getElementByIdUsingDOM() [http://issues.apache.org/bugzilla/show_bug.cgi?id=32836]
+ [X] Fix the bug with using XPath2Filter and inclusive c14n
+ [X] Fix the bug arrouse in reusing Canonicalizers
+ [X] Fix base64transformation bug [http://issues.apache.org/bugzilla/show_bug.cgi?id=33393 ]
+ [ ] Fix the XMLsignatureInput reset() bug.
+ [ ] Clean unused jar (xmlParserAPI.jar,etc) and check and stored new versions.
+ [ ] generated the dist jar with version (i.e. xmlsec-1.2.1.jar instead of plain xmlsec.jar)
 TODO for 1.3:
 RAUL:
 
@@ -13,4 +22,6 @@ RAUL:
 [ ] Deferred XPath till needed.
 [ ] Integrate the SAX patch and add Signing
 [ ] More examples.
+[ ] Change Symbol table to a more efficient structure
+[ ] Optimize ouputstream with native jce, nio & threads.
 [ ] ...
