@@ -77,7 +77,7 @@ public class InteropTest extends TestCase {
     * @return
     * @throws Exception
     */
-   boolean verifyHMAC(
+   public boolean verifyHMAC(
            String filename, ResourceResolverSpi resolver, boolean followManifests, byte[] hmacKey)
               throws Exception {
 
@@ -110,7 +110,7 @@ public class InteropTest extends TestCase {
     * @return
     * @throws Exception
     */
-  boolean verify(String filename, ResourceResolverSpi resolver, boolean followManifests)
+  public boolean verify(String filename, ResourceResolverSpi resolver, boolean followManifests)
            throws Exception {
 
       File f = new File(filename);

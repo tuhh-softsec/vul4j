@@ -37,8 +37,6 @@
   </target>
 
   <target name="init">
-    <echo message= "---------------- ${product.Name} v${product.Version} [${year}] ---------------"/>
-
     <property name='product.Name' value='Apache-XML-Security-J'/>
     <property name='product.name' value='xml-security'/>
     <property name='product.shortname' value='xmlsec'/>
@@ -48,6 +46,8 @@
 
     <property name="year" value="2000-2002"/>
     <property name="copyright" value="Copyright &#169; ${year} Apache XML Project. All Rights Reserved."/>
+
+    <echo message= "---------------- ${product.Name} v${product.Version} [${year}] ---------------"/>
 
     <property name="build.compiler" value="classic"/>
     <!--
@@ -59,15 +59,16 @@
     <property name="src.unitTests" value="src_unitTests" />
     <property name="src.JCE.BC" value="src_JCE_BC" />
 
-
     <property name="build.dir" value="./build"/>
     <property name="build.src" value="${build.dir}/src"/>
     <property name="build.dest" value="${build.dir}/classes"/>
-    <property name="build.docs" value="${build.dir}/docs"/>
     <property name="build.samples" value="${build.dir}/samples"/>
     <property name="build.tests" value="${build.dir}/tests"/>
     <property name="build.data" value="${build.dir}/data"/>
-    <property name="build.javadocs" value="${build.dir}/docs/javadocs"/>
+    <property name="build.docs" value="${build.dir}/docs"/>
+    <property name="build.javadocs" value="${build.docs}/javadocs"/>
+    <property name="build.srcdist" value="${build.dir}/dist_src"/>
+    <property name="build.bindist" value="${build.dir}/dist_bin"/>
 
     <property name="jar.library" value="${product.shortname}.jar" />
     <property name="jar.samples" value="${product.shortname}Samples.jar" />
@@ -81,6 +82,15 @@
     <property name="cvs.user.anonymous" value="anonymous" />
     <property name="cvs.cvsRoot.developer" value=":ext:${cvs.user.developer}@${cvs.server}:${cvs.path}" />
     <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}" />
+
+    <property name="tools.dir" value="./tools"/>
+    <property name="doc.xml" value="${doc}/xml"/>
+    <property name="doc.html" value="${doc}/html"/>
+    <property name="doc.book" value="${doc.xml}/docs-book.xml"/>
+    <property name="doc.style" value="${doc.xml}/style-apachexml"/>
+    <property name="doc.style.jar" value="${tools.dir}/style-apachexml.jar"/>
+    <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
+    <property name="doc.generator.package" value="${tools.dir}/stylebook-1.0-b2.jar"/>
 
     <property name="libs"         value="libs" />
 
@@ -99,11 +109,8 @@
     Regards,
     David.
     -->
-    <property name="jce.download.file" value="jce-jdk13-112b.jar" />
-    <!--
+    <property name="jce.download.file" value="jce-jdk13-112.jar" />
     <property name="jce.download" value="http://www.bouncycastle.org/download/${jce.download.file}" />
-    -->
-    <property name="jce.download" value="http://www.bouncycastle.org/${jce.download.file}" />
     <property name="lib.jce"      value="${libs}/bc-${jce.download.file}" />
 
     <!-- http://download.sourceforge.net/junit/junit3.7.zip -->
@@ -139,24 +146,35 @@
     <property name="javadoc.packages"
               value="
 org.apache.xml.security.Init,
-org.apache.xml.security.algorithms.*,
-org.apache.xml.security.c14n.*,
-org.apache.xml.security.c14n.helper.*,
-org.apache.xml.security.c14n.implementations.*,
-org.apache.xml.security.exceptions.*,
-org.apache.xml.security.interfaces.*,
-org.apache.xml.security.keys.*,
-org.apache.xml.security.keys.content.*,
-org.apache.xml.security.keys.content.keyvalues.*,
-org.apache.xml.security.keys.content.x509.*,
-org.apache.xml.security.keys.keyresolver.*,
-org.apache.xml.security.keys.keyresolver.implementations.*,
-org.apache.xml.security.keys.storage.*,
-org.apache.xml.security.keys.storage.implementations.*,
-org.apache.xml.security.signature.*,
-org.apache.xml.security.transforms.*,
-org.apache.xml.security.transforms.implementations.*,
-org.apache.xml.security.utils.*
+org.apache.xml.security.algorithms.*, 
+org.apache.xml.security.algorithms.encryption.*, 
+org.apache.xml.security.algorithms.encryption.helper.*, 
+org.apache.xml.security.algorithms.encryption.implementations.*, 
+org.apache.xml.security.algorithms.encryption.implementations.BC.*, 
+org.apache.xml.security.algorithms.encryption.params.*, 
+org.apache.xml.security.algorithms.implementations.*, 
+org.apache.xml.security.c14n.*, 
+org.apache.xml.security.c14n.helper.*, 
+org.apache.xml.security.c14n.implementations.*, 
+org.apache.xml.security.encryption.*, 
+org.apache.xml.security.encryption.type.*, 
+org.apache.xml.security.exceptions.*, 
+org.apache.xml.security.keys.*, 
+org.apache.xml.security.keys.content.*, 
+org.apache.xml.security.keys.content.keyvalues.*, 
+org.apache.xml.security.keys.content.x509.*, 
+org.apache.xml.security.keys.keyresolver.*, 
+org.apache.xml.security.keys.keyresolver.implementations.*, 
+org.apache.xml.security.keys.provider.*, 
+org.apache.xml.security.keys.storage.*, 
+org.apache.xml.security.keys.storage.implementations.*, 
+org.apache.xml.security.resource.*, 
+org.apache.xml.security.signature.*, 
+org.apache.xml.security.transforms.*, 
+org.apache.xml.security.transforms.implementations.*, 
+org.apache.xml.security.utils.*, 
+org.apache.xml.security.utils.resolver.*, 
+org.apache.xml.security.utils.resolver.implementations.*
 " />
 
   <target name="prepare" depends="init">
@@ -281,7 +299,9 @@ org.apache.xml.security.utils.*
   <target name="javadocs"
           depends="compile"
           description="generates javadoc from all .java files">
-    <mkdir dir="${doc.html.api}"/>
+    <mkdir dir="${build.docs}"/>
+    <mkdir dir="${build.javadocs}"/>
+
     <javadoc sourcepath="${src}"
              destdir="${build.javadocs}"
              packagenames="${javadoc.packages}"
@@ -309,8 +329,6 @@ org.apache.xml.security.utils.*
           includes="org/apache/xml/security/test/**,META-INF/**" />
     <!--  compress="false" -->
   </target>
-
-
 
 
   <target name="gump"
@@ -359,15 +377,6 @@ org.apache.xml.security.utils.*
   <target name="signAndVerify"
           description="creates and verifies a signature"
           depends="sign, verify" />
-
-  <property name="tools.dir" value="./tools"/>
-  <property name="doc.xml" value="${doc}/xml"/>
-  <property name="doc.html" value="${doc}/html"/>
-  <property name="doc.book" value="${doc.xml}/docs-book.xml"/>
-  <property name="doc.style" value="${doc.xml}/style-apachexml"/>
-  <property name="doc.style.jar" value="${tools.dir}/style-apachexml.jar"/>
-  <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
-  <property name="doc.generator.package" value="${tools.dir}/stylebook-1.0-b2.jar"/>
 
   <target name="docs">
     <mkdir dir="${doc.html}"/>
@@ -459,4 +468,95 @@ org.apache.xml.security.utils.*
         <classpath refid="classpath.library" />
     </java>
   </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the source distribution                                     -->
+  <!-- =================================================================== -->
+  <target name="srcdist" depends="init" >
+     <mkdir dir="${build.dir}"/>
+     <mkdir dir="${build.srcdist}"/>
+     <mkdir dir="${build.srcdist}/libs"/>
+     <copy todir="${build.srcdist}">
+      <fileset dir=".">
+
+        <include name="build.xml"/>
+        <include name="README"/>
+        <include name="INSTALL"/>
+        <include name="LICENSE.txt"/>
+        <include name="TODO"/>
+        <include name="keys.asc"/>
+
+        <include name="data/**"/>
+        <exclude name="data/de/uni-siegen/**"/>
+        <exclude name="data/com/ibm/xss4j-20011029/**"/>
+
+        <include name="${src}/**" />
+        <include name="${src.samples}/**" />
+        <include name="${src.unitTests}/**" />
+        <include name="doc/xml/**" />
+
+        <exclude name="**/CVS/**"/>
+      </fileset>
+    </copy>
+
+    <zip zipfile="${product.name}-src-${product_version}.zip" 
+         basedir="${build.srcdist}"
+         />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the binary distribution                                     -->
+  <!-- =================================================================== -->
+  <target name="bindist" depends="javadocs, docs, compile" >
+     <mkdir dir="${build.bindist}"/>
+     <mkdir dir="${build.bindist}/${libs}"/>
+     <copy todir="${build.bindist}">
+      <fileset dir=".">
+
+        <include name="build.xml"/>
+        <include name="README"/>
+        <include name="INSTALL"/>
+        <include name="LICENSE.txt"/>
+        <include name="TODO"/>
+        <include name="keys.asc"/>
+
+        <include name="data/**"/>
+        <exclude name="data/de/uni-siegen/**"/>
+        <exclude name="data/com/ibm/xss4j-20011029/**"/>
+
+        <include name="${lib.junit}" />
+        <include name="${lib.xerces.1}" />
+        <include name="${lib.xerces.2}" />
+        <include name="${lib.xalan.1}" />
+        <include name="${lib.xalan.2}" />
+        <include name="${lib.log4j}" />
+
+        <include name="${src.samples}/**" />
+
+        <exclude name="**/CVS/**"/>
+      </fileset>
+    </copy>
+    <jar jarfile="${build.bindist}/${libs}/${jar.library}"
+         basedir="${build.dest}"
+         includes="org/apache/**,META-INF/**"
+         excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**" />
+    <jar jarfile="${build.bindist}/${libs}/${jar.samples}"
+         basedir="${build.dest}"
+         includes="org/apache/xml/security/samples/**,META-INF/**" />
+    <jar jarfile="${build.bindist}/${libs}/${jar.tests}"
+         basedir="${build.dest}"
+         includes="org/apache/xml/security/test/**,META-INF/**" />
+    <copy todir="${build.bindist}/doc/api">
+      <fileset dir="${build.javadocs}"/>
+    </copy>
+    <copy todir="${build.bindist}/doc">
+      <fileset dir="${doc.html}"/>
+    </copy>
+
+    <zip zipfile="${product.name}-bin-${product_version}.zip" 
+         basedir="${build.bindist}"
+         />
+  </target>
+  
+  <target name="dist" depends="srcdist, bindist" />
 </project>

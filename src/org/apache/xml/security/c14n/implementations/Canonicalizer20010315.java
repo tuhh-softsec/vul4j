@@ -369,6 +369,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          if (engineVisible(currentNode)) {
             printwriter
                .print(C14nHelper.normalizeText(currentNode.getNodeValue()));
+         } else {
+            cat.error(currentNode + " not visible");
          }
          break;
 
