@@ -1,7 +1,7 @@
-$Id: RELEASE-NOTES.txt,v 1.4 2002/04/28 03:38:29 craigmcc Exp $
+$Id: RELEASE-NOTES.txt,v 1.5 2002/08/13 16:28:59 sanders Exp $
 
                           Commons Digester Package
-                                Version 1.2
+                                Version 1.3
                                Release Notes
 
 
@@ -15,66 +15,63 @@ Digester package, and highlights changes since the previous version.
 NEW FEATURES:
 ============
 
-
-Logging:
--------
-
-All components of the commons-digester package now use the commons-logging
-package for logging, which means that the Digester classes will transparently
-adapt to whatever logging implementation your application is using.  Set the
-logging detail level to DEBUG or TRACE to receive debugging output.  The
-following log names are utilized:
-  org.apache.commons.digester.Digester
-  org.apache.commons.digester.Digester.sax
+Minor javadoc enhancements.
+Minor test case enhancements.
 
 
-XML Rules Support:
------------------
+Infrastructure Enhancements:
+----------------------------
 
-You can now define Digester Rules in an XML-based format that is loaded at
-runtime, rather than requiring programmatic declaration of the relevant rules.
-Details are in the org.apache.commons.digester.xmlrules package.
+Digester can now be built using Maven. 
+See http://jakarta.apache.org/turbine/maven for more details.
 
 
 Digester Enhancements:
 ---------------------
 
-The parse() method that accepts a File parameter will now create an InputSource
-that declares a system identifier for the file containing the XML document to
-be parsed.  This allows relative references to other XML entities to be
-resolved correctly.
+Fixed bug with CallMethodRule introduced when constructors accepting the 
+digester as a parameter were depricated. CallMethodRule now waits until the 
+digester is set before loading classes from classnames.
+
+Digester can now be used as a SAX ContentHandler as an alternative to 
+calling the parse() methods. The patch ensures that the configure() method is 
+called when used on a SAX stream as well as adding a new getRoot() method that 
+can be used to extract the parsed object after the SAX events have been 
+streamed into the digester.
+
+JAXP 1.2 XML Schema support.
+
+Add support for public getFeature() and setFeature() methods to configure the 
+SAXParserFactory.  Also added getProperty() and setProperty() methods to do the
+same sort of thing for SAXParser properties.
 
 
-Rule Enhancements:
------------------
+Rules Enhancements:
+-------------------
 
-A no-arguments constructor for Rule has been added, so that you can dynamically
-instantiate Rule instances like any other JavaBean.
+Fixed a bug in the rules implementations which meant that root tail matches 
+were missed. Also added unit tests for the bug.  
 
-Rules that invoke methods dynamically now take advantage of the new
-commons-beanutils facilities for matching methods by compatible argument types,
-rather than requiring an exact match.
+An implmentation of overridden attribute->property name mappings for 
+SetPropertiesRule. Some of the code plus much of the inspiration came from a 
+patch created by Simon Kitching. The feeling on the list when this was 
+originally discussed was that really there is no good reason why this 
+functionality is needed - alternative mechanisms existed. Recently, one good 
+example was posted on the user list - that of the often problematic mapping of 
+an xml attribute named class. This patch allows attribute->property name 
+mappings to be overriden both through standard digester constructors and 
+through xmlrules.  
 
-You can now use CallMethodRule to call methods that take no arguments.
+Added support for primitive method calls to CallMethodRule.
 
-New BeanPropertySetterRule allows you to set arbitrary properties of the
-top element on the evaluation stack.
 
-New SetRootRule allows convenient access to the root element on the
-evaluation stack.
+XMLRule Enhancements:
+---------------------
 
+XMLRules now allow paramtypes to be passed in.
 
 
 BUG REPORTS ADDRESSED:
 =====================
 
-4519 Digester#parse() throws NullPointerException if unable to instantiate
-     SAX parser
-4553 Digester always logs exceptions
-5804 SetTopRule description: swap parent and child?
-6043 [PATCH] for SetTopRule.java to fix misleading debug message and other
-     clarifications
-6290 Unsafe handling of Throwable
-6524 Minor error in digester java-doc
-8244 CallMethodRule can't be used to call no arg methods
-8461 Digester parse(File) is crippled in two aspects
+8244 CallMethodRule rule can't be used to call no arg methods
