@@ -1,4 +1,4 @@
-/* $Id: VariableExpansionTestCase.java,v 1.3 2004/05/07 01:30:00 skitching Exp $
+/* $Id: VariableExpansionTestCase.java,v 1.4 2004/09/18 09:31:11 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -18,8 +18,9 @@
 
 package org.apache.commons.digester.substitution;
 
-import org.apache.commons.digester.SimpleTestBean;
+import org.apache.commons.digester.CallMethodRule;
 import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.SimpleTestBean;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -36,7 +37,7 @@ import org.xml.sax.SAXException;
  * <p>Test Case for the variable expansion facility in Digester.
  *
  * @author Simon Kitching
- * @version $Revision: 1.3 $ $Date: 2004/05/07 01:30:00 $
+ * @version $Revision: 1.4 $ $Date: 2004/09/18 09:31:11 $
  */
 
 public class VariableExpansionTestCase extends TestCase {
@@ -83,6 +84,45 @@ public class VariableExpansionTestCase extends TestCase {
         simpleTestBeans.add(bean);
     }
     
+    // implementation of source shared by the variable expander and
+    // is updatable during digesting via an Ant-like property element
+    private HashMap mutableSource=new HashMap();
+
+    /**
+     * Used in test case "testExpansionWithMutableSource", where the
+     * set of variables available to be substituted into the xml is
+     * updated as the xml is parsed.
+     */
+    public void addProperty(String key, String value) {
+        mutableSource.put(key, value);
+    }
+
+    /**
+     * Creates a Digester configured to show Ant-like capability.
+     * 
+     * @return a Digester with rules and variable substitutor
+     */
+    private Digester createDigesterThatCanDoAnt() {
+        Digester digester = new Digester();
+
+        MultiVariableExpander expander = new MultiVariableExpander();
+        expander.addSource("$", mutableSource);
+        digester.setSubstitutor(new VariableSubstitutor(expander));
+
+        int useRootObj = -1;
+        Class[] callerArgTypes = new Class[] {String.class, String.class};
+        CallMethodRule caller = new CallMethodRule(useRootObj, "addProperty",
+            callerArgTypes.length, callerArgTypes);
+        digester.addRule("root/property", caller);
+        digester.addCallParam("root/property", 0, "name");
+        digester.addCallParam("root/property", 1, "value");
+
+        digester.addObjectCreate("root/bean", SimpleTestBean.class);
+        digester.addSetProperties("root/bean");
+        digester.addSetNext("root/bean", "addSimpleTestBean");
+        return digester;
+    }
+
     // ------------------------------------------------ Individual Test Methods
 
     /**
@@ -257,5 +297,72 @@ public class VariableExpansionTestCase extends TestCase {
             // expected, due to reference to undefined variable
         }
     }
-}
 
+    /**
+     * First of two tests added to verify that the substitution
+     * framework is capable of processing Ant-like properties.
+     *
+     * The tests above essentially verify that if a property
+     * was pre-set (e.g. using the "-D" option to Ant), then
+     * the property could be expanded via a variable used either
+     * in an attribute or in body text.
+     *
+     * This test shows that if properties were also set while
+     * processing a document, you could still perform variable
+     * expansion (i.e. just like using the "property" task in Ant).
+     *
+     * @throws IOException
+     * @throws SAXException
+     */
+    public void testExpansionWithMutableSource() throws SAXException, IOException {
+        String xml =
+            "<root>" +
+              "<property name='attr' value='prop.value'/>" +
+              "<bean alpha='${attr}'/>" +
+            "</root>";
+        StringReader input = new StringReader(xml);
+        Digester digester = createDigesterThatCanDoAnt();
+
+        simpleTestBeans.clear();
+        digester.push(this);
+        digester.parse(input);
+
+        assertEquals(1, simpleTestBeans.size());
+        SimpleTestBean bean = (SimpleTestBean) simpleTestBeans.get(0);
+        assertEquals("prop.value", bean.getAlpha());
+    }
+
+    /**
+     * Second of two tests added to verify that the substitution
+     * framework is capable of processing Ant-like properties.
+     *
+     * This test shows that if properties were also set while
+     * processing a document, the resulting variables could also
+     * be expanded within a property element.  This is thus
+     * effectively a "closure" test, since it shows that the
+     * mechanism used to bind properties is also capable of
+     * having property values that are driven by property variables.
+     *
+     * @throws IOException
+     * @throws SAXException
+     */
+    public void testExpansionOfPropertyInProperty() throws SAXException, IOException {
+        String xml =
+            "<root>" +
+              "<property name='attr1' value='prop.value1'/>" +
+              "<property name='attr2' value='substituted-${attr1}'/>" +
+              "<bean alpha='${attr2}'/>" +
+            "</root>";
+        StringReader input = new StringReader(xml);
+        Digester digester = createDigesterThatCanDoAnt();
+
+        simpleTestBeans.clear();
+        digester.push(this);
+        digester.parse(input);
+
+        assertEquals(1, simpleTestBeans.size());
+        SimpleTestBean bean = (SimpleTestBean) simpleTestBeans.get(0);
+        assertEquals("substituted-prop.value1", bean.getAlpha());
+    }
+
+}
