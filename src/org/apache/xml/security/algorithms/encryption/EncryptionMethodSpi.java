@@ -117,6 +117,15 @@ public abstract class EncryptionMethodSpi {
       return pic.getAlgorithmID();
    }
 
+   public static final String getKeyTypeString(int keyType) {
+      switch (keyType) {
+        case Cipher.PUBLIC_KEY : return "PUBLIC_KEY";
+        case Cipher.PRIVATE_KEY : return "PRIVATE_KEY";
+        case Cipher.SECRET_KEY : return "SECRET_KEY";
+        default: return "UNKNOWN_KEY";
+      }
+   }
+
    //J-
    public static final int ALGOTYPE_BLOCK_ENCRYPTION   = 1;
    public static final int ALGOTYPE_STREAM_ENCRYPTION  = 2;

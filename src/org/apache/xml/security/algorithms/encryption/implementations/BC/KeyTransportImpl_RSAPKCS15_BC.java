@@ -156,6 +156,20 @@ public class KeyTransportImpl_RSAPKCS15_BC extends KeyTransportImpl {
             "encryption.algorithmCannotEatInitParams");
       }
 
+      try {
+         Cipher rsaCipher =
+            Cipher.getInstance(this.getImplementedAlgorithmJCE(),
+                               this.getRequiredProviderName());
+
+         this._cipher = new PKCS15Cipher(rsaCipher);
+      } catch (NoSuchAlgorithmException ex) {
+         throw new XMLSecurityException("empty", ex);
+      } catch (NoSuchProviderException ex) {
+         throw new XMLSecurityException("empty", ex);
+      } catch (NoSuchPaddingException ex) {
+         throw new XMLSecurityException("empty", ex);
+      }
+
       return null;
    }
 
@@ -208,6 +222,10 @@ public class KeyTransportImpl_RSAPKCS15_BC extends KeyTransportImpl {
                .translateURItoJCEID(wrappedKeyAlgoURI, this
                   .getRequiredProviderName()).getAlgorithmID();
          int keyType = JCEMapper.getKeyTypeFromURI(wrappedKeyAlgoURI);
+         if (keyType == -1) {
+            throw new XMLSecurityException("empty", new Exception("Could not determine type of key " + wrappedKeyAlgoURI));
+         }
+
          byte[] decoded = this._cipher.decodeBlock(wrappedKey, 0,
                                                    wrappedKey.length);
 

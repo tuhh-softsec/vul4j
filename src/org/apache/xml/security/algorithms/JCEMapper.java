@@ -343,6 +343,8 @@ public class JCEMapper {
                return javax.crypto.Cipher.SECRET_KEY;
             } else if (algoclass.equals(JCEMapper.KEYTYPE_SYMMETRIC_KEY_WRAP)) {
                return javax.crypto.Cipher.SECRET_KEY;
+            } else if (algoclass.equals(JCEMapper.KEYTYPE_KEY_TRANSPORT)) {
+               return javax.crypto.Cipher.SECRET_KEY;
             }
          }
       } catch (TransformerException ex) {
