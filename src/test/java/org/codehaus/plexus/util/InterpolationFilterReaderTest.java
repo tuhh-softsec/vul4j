@@ -24,8 +24,11 @@ package org.codehaus.plexus.util;
  * SOFTWARE.
  */
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,6 +62,22 @@ public class InterpolationFilterReaderTest
         throws Exception
     {
     }
+
+    /*
+     * Added and commented by jdcasey@03-Feb-2005 because it is a bug in the 
+     * InterpolationFilterReader.
+     */
+//    public void testShouldInterpolateExpressionAtEndOfDataWithInvalidEndToken() throws IOException
+//    {
+//        String testStr = "This is a ${test";
+//        InterpolationFilterReader iReader = new InterpolationFilterReader(new StringReader(testStr), Collections.singletonMap("test", "TestValue"));
+//        BufferedReader reader = new BufferedReader(iReader);
+//        
+//        String result = reader.readLine();
+//        
+//        System.out.println("Result of read: \'" + result + "\'");
+//        assertEquals("This is a TestValue", result);
+//    }
 
     public void testDefaultInterpolationWithNonInterpolatedValueAtEnd()
         throws Exception
