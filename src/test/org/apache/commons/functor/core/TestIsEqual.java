@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestInstanceOfPredicate.java,v 1.1 2003/01/27 19:33:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsEqual.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,30 +60,30 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.UnaryPredicate;
+import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:42 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
  * @author Rodney Waldhoff
  */
-public class TestInstanceOfPredicate extends BaseFunctorTest {
+public class TestIsEqual extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestInstanceOfPredicate(String testName) {
+    public TestIsEqual(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestInstanceOfPredicate.class);
+        return new TestSuite(TestIsEqual.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new InstanceOfPredicate(String.class);
+        return new IsEqual();
     }
     
     // Lifecycle
@@ -101,30 +101,32 @@ public class TestInstanceOfPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testTest() throws Exception {
-        UnaryPredicate p = new InstanceOfPredicate(Number.class);
-        assertTrue(!p.test(null));
-        assertTrue(!p.test("foo"));
-        assertTrue(p.test(new Integer(3)));
-        assertTrue(p.test((Object)(new Integer(3))));
-        assertTrue(p.test((new Long(3L))));
+        IsEqual p = new IsEqual();
+        assertTrue("For symmetry, two nulls should be equal",p.test(null,null));
+        assertTrue(p.test("foo","foo"));
+        assertTrue(!p.test(null,"foo"));
+        assertTrue(!p.test("foo",null));
+        assertTrue(p.test(new Integer(3),new Integer(3)));
+        assertTrue(!p.test(null,new Integer(3)));
+        assertTrue(!p.test(new Integer(3),null));
+
+        assertTrue(!p.test(new Integer(3),new Integer(4)));
+        assertTrue(!p.test(new Integer(4),new Integer(3)));
+        assertTrue(!p.test("3",new Integer(3)));
+        assertTrue(!p.test(new Integer(3),"3"));
     }
-    
-    public void testInstanceOfNull() throws Exception {
-        UnaryPredicate p = new InstanceOfPredicate(null);
-        try {
-            p.test("foo");
-            fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
-            // expected
-        }
-    }
-    
+        
     public void testEquals() throws Exception {
-        UnaryPredicate p = new InstanceOfPredicate(Object.class);
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new InstanceOfPredicate(Object.class));
-        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
-        assertObjectsAreNotEqual(p,new InstanceOfPredicate(null));
-        assertObjectsAreNotEqual(p,new InstanceOfPredicate(String.class));
+        BinaryPredicate f = new IsEqual();
+        assertEquals(f,f);
+
+        assertObjectsAreEqual(f,new IsEqual());
+        assertObjectsAreEqual(f,IsEqual.getEqualPredicate());
+        assertObjectsAreNotEqual(f,ConstantPredicate.getTruePredicate());
+    }
+
+    public void testConstant() throws Exception {
+        assertEquals(IsEqual.getEqualPredicate(),IsEqual.getEqualPredicate());
+        assertSame(IsEqual.getEqualPredicate(),IsEqual.getEqualPredicate());
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/EqualPredicate.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsNotNull.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,59 +56,67 @@
  */
 package org.apache.commons.functor.core;
 
-import java.io.Serializable;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
-import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.BaseFunctorTest;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * {@link #test Tests} 
- * <code>true</code> iff its arguments are 
- * {@link Object#equals equal} or both 
- * <code>null</code>.
- * <p>
- * This relation is 
- * an equivalence relation on 
- * the set of objects that adhere to the 
- * <code>Object.equals</code> contract.
- * </p>
- * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
  * @author Rodney Waldhoff
  */
-public final class EqualPredicate implements BinaryPredicate, Serializable {
+public class TestIsNotNull extends BaseFunctorTest {
 
-    // constructor
-    // ------------------------------------------------------------------------
-    public EqualPredicate() {
-    }
- 
-    // predicate interface
+    // Conventional
     // ------------------------------------------------------------------------
 
-    public boolean test(Object left, Object right) {
-        return (null == left ? null == right : left.equals(right));
+    public TestIsNotNull(String testName) {
+        super(testName);
     }
 
-    public boolean equals(Object that) {
-        return that instanceof EqualPredicate;
+    public static Test suite() {
+        return new TestSuite(TestIsNotNull.class);
+    }
+
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
+
+    protected Object makeFunctor() {
+        return new IsNotNull();
     }
     
-    public int hashCode() {
-        return "EqualPredicate".hashCode();
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
     }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------
     
-    public String toString() {
-        return "EqualPredicate";
+    public void testTest() throws Exception {
+        UnaryPredicate p = new IsNotNull();
+        assertTrue(!p.test(null));
+        assertTrue(p.test("foo"));
+        assertTrue(p.test(new Integer(3)));
     }
         
-    // static attributes
-    // ------------------------------------------------------------------------
-    public static EqualPredicate getEqualPredicate() {
-        return INSTANCE;
+    public void testEquals() throws Exception {
+        UnaryPredicate p = new IsNotNull();
+        assertEquals(p,p);
+        assertObjectsAreEqual(p,new IsNotNull());
+        assertObjectsAreEqual(p,IsNotNull.getIsNotNullPredicate());
+        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
     }
-    
-    // static attributes
-    // ------------------------------------------------------------------------
-    private static final EqualPredicate INSTANCE = new EqualPredicate();
 
+    public void testConstant() throws Exception {
+        assertEquals(IsNotNull.getIsNotNullPredicate(),IsNotNull.getIsNotNullPredicate());
+        assertSame(IsNotNull.getIsNotNullPredicate(),IsNotNull.getIsNotNullPredicate());
+    }
 }

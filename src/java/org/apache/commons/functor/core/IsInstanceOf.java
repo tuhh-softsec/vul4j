@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/Attic/LessThan.java,v 1.1 2003/02/20 01:12:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/IsInstanceOf.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,94 +54,62 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core.comparator;
+package org.apache.commons.functor.core;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
-import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * A {@link BinaryPredicate BinaryPredicate} that {@link #test tests}
- * <code>true</code> iff the left argument is greater than the
- * right argument under the specified {@link Comparator}.
- * When no (or a <code>null</code> <code>Comparator</code> is specified,
- * a {@link Comparable Comparable} <code>Comparator</code> is used.
+ * {@link #test Tests} 
+ * <code>true</code> iff its argument 
+ * {@link Class#isInstance is an instance} 
+ * of some specified {@link Class Class}.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:40 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
  * @author Rodney Waldhoff
  */
-public final class LessThan implements BinaryPredicate, Serializable {
-    /**
-     * Construct a <code>LessThan</code> {@link BinaryPredicate predicate}
-     * for {@link Comparable Comparable}s.
-     */
-    public LessThan() {
-        this(null);
+public final class IsInstanceOf implements UnaryPredicate, Serializable {
+
+    // constructor
+    // ------------------------------------------------------------------------
+    public IsInstanceOf(Class klass) {
+        this.klass = klass;
+    }
+ 
+    // predicate interface
+    // ------------------------------------------------------------------------
+
+    public boolean test(Object obj) {
+        return klass.isInstance(obj);
     }
 
-    /**
-     * Construct a <code>LessThan</code> {@link BinaryPredicate predicate}
-     * for the given {@link Comparator Comparator}.
-     * 
-     * @param comparator the {@link Comparator Comparator}, when <code>null</code>,
-     *        a <code>Comparator</code> for {@link Comparable Comparable}s will
-     *        be used.
-     */
-    public LessThan(Comparator comparator) {
-        this.comparator = null == comparator ? ComparableComparator.getInstance() : comparator;
-    }
-    
-    /**
-     * Return <code>true</code> iff the <i>left</i> parameter is 
-     * less than the <i>right</i> parameter under my current
-     * {@link Comparator Comparator}.
-     */
-    public boolean test(Object left, Object right) {
-        return comparator.compare(left,right) < 0;
-    }
-
-    /**
-     * @see java.lang.Object#equals(Object)
-     */
     public boolean equals(Object that) {
-        if(that instanceof LessThan) {
-            return equals((LessThan)that);
+        if(that instanceof IsInstanceOf) {
+            return equals((IsInstanceOf)that);
         } else {
             return false;
         }
     }
-
-    /**
-     * @see #equals(Object)
-     */
-    public boolean equals(LessThan that) {
-        return null != that && 
-            null == comparator ? null == that.comparator : comparator.equals(that.comparator);
+    
+    public boolean equals(IsInstanceOf that) {
+        return (null != that && (null == this.klass ? null == that.klass : this.klass.equals(that.klass)));
     }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
+    
     public int hashCode() {
-        int hash = "LessThan".hashCode();
-        if(null != comparator) {
-            hash ^= comparator.hashCode();
+        int hash = "IsInstanceOf".hashCode();
+        if(null != klass) {
+            hash ^= klass.hashCode();
         }
         return hash;
     }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
+    
     public String toString() {
-        return "LessThan<" + comparator + ">";
-    }
-
-    public static final LessThan getLessThan() {
-        return COMPARABLE_INSTANCE;
+        return "IsInstanceOf<" + klass + ">";
     }
     
-    private Comparator comparator = null;
-    private static final LessThan COMPARABLE_INSTANCE = new LessThan();
+    // attributes
+    // ------------------------------------------------------------------------
+    private Class klass;
+
 }

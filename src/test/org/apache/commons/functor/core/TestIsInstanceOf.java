@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/InstanceOfPredicate.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsInstanceOf.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,60 +56,75 @@
  */
 package org.apache.commons.functor.core;
 
-import java.io.Serializable;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
+import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * {@link #test Tests} 
- * <code>true</code> iff its argument 
- * {@link Class#isInstance is an instance} 
- * of some specified {@link Class Class}.
- * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
  * @author Rodney Waldhoff
  */
-public final class InstanceOfPredicate implements UnaryPredicate, Serializable {
+public class TestIsInstanceOf extends BaseFunctorTest {
 
-    // constructor
-    // ------------------------------------------------------------------------
-    public InstanceOfPredicate(Class klass) {
-        this.klass = klass;
-    }
- 
-    // predicate interface
+    // Conventional
     // ------------------------------------------------------------------------
 
-    public boolean test(Object obj) {
-        return klass.isInstance(obj);
+    public TestIsInstanceOf(String testName) {
+        super(testName);
     }
 
-    public boolean equals(Object that) {
-        if(that instanceof InstanceOfPredicate) {
-            return equals((InstanceOfPredicate)that);
-        } else {
-            return false;
+    public static Test suite() {
+        return new TestSuite(TestIsInstanceOf.class);
+    }
+
+    // Functor Testing Framework
+    // ------------------------------------------------------------------------
+
+    protected Object makeFunctor() {
+        return new IsInstanceOf(String.class);
+    }
+    
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    // Tests
+    // ------------------------------------------------------------------------
+    
+    public void testTest() throws Exception {
+        UnaryPredicate p = new IsInstanceOf(Number.class);
+        assertTrue(!p.test(null));
+        assertTrue(!p.test("foo"));
+        assertTrue(p.test(new Integer(3)));
+        assertTrue(p.test((Object)(new Integer(3))));
+        assertTrue(p.test((new Long(3L))));
+    }
+    
+    public void testInstanceOfNull() throws Exception {
+        UnaryPredicate p = new IsInstanceOf(null);
+        try {
+            p.test("foo");
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
         }
     }
     
-    public boolean equals(InstanceOfPredicate that) {
-        return (null != that && (null == this.klass ? null == that.klass : this.klass.equals(that.klass)));
+    public void testEquals() throws Exception {
+        UnaryPredicate p = new IsInstanceOf(Object.class);
+        assertEquals(p,p);
+        assertObjectsAreEqual(p,new IsInstanceOf(Object.class));
+        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
+        assertObjectsAreNotEqual(p,new IsInstanceOf(null));
+        assertObjectsAreNotEqual(p,new IsInstanceOf(String.class));
     }
-    
-    public int hashCode() {
-        int hash = "InstanceOfPredicate".hashCode();
-        if(null != klass) {
-            hash ^= klass.hashCode();
-        }
-        return hash;
-    }
-    
-    public String toString() {
-        return "InstanceOfPredicate<" + klass + ">";
-    }
-    
-    // attributes
-    // ------------------------------------------------------------------------
-    private Class klass;
-
 }

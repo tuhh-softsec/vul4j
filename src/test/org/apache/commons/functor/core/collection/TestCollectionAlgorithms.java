@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.3 2003/02/19 12:34:20 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.4 2003/02/24 11:38:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -73,11 +73,11 @@ import org.apache.commons.functor.UnaryFunction;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.UnaryProcedure;
 import org.apache.commons.functor.adapter.LeftBoundPredicate;
-import org.apache.commons.functor.core.EqualPredicate;
+import org.apache.commons.functor.core.IsEqual;
 import org.apache.commons.functor.core.IdentityFunction;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/02/19 12:34:20 $
+ * @version $Revision: 1.4 $ $Date: 2003/02/24 11:38:07 $
  * @author Rodney Waldhoff
  */
 public class TestCollectionAlgorithms extends TestCase {
@@ -247,8 +247,8 @@ public class TestCollectionAlgorithms extends TestCase {
     private List evens = null;
     private List listWithDuplicates = null;    
     private int sum = 0;
-    private UnaryPredicate equalsThree = LeftBoundPredicate.bind(EqualPredicate.getEqualPredicate(),new Integer(3));
-    private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(EqualPredicate.getEqualPredicate(),new Integer(23));
+    private UnaryPredicate equalsThree = LeftBoundPredicate.bind(IsEqual.getEqualPredicate(),new Integer(3));
+    private UnaryPredicate equalsTwentyThree = LeftBoundPredicate.bind(IsEqual.getEqualPredicate(),new Integer(23));
     private UnaryPredicate isEven = new UnaryPredicate() { 
         public boolean test(Object obj) {
             return ((Number)obj).intValue() % 2 == 0;

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/Attic/NotEquivalent.java,v 1.1 2003/02/20 01:12:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsEquivalent.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,53 +63,53 @@ import org.apache.commons.functor.BinaryPredicate;
 
 /**
  * A {@link BinaryPredicate BinaryPredicate} that {@link #test tests}
- * <code>true</code> iff the left argument is not equal to the
+ * <code>true</code> iff the left argument is equal to the
  * right argument under the specified {@link Comparator}.
  * When no (or a <code>null</code> <code>Comparator</code> is specified,
  * a {@link Comparable Comparable} <code>Comparator</code> is used.
  * 
- * @see org.apache.commons.functor.core.EqualPredicate
+ * @see org.apache.commons.functor.core.IsEqual
  * 
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:40 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
  * @author Rodney Waldhoff
  * 
  */
-public final class NotEquivalent implements BinaryPredicate, Serializable {
+public final class IsEquivalent implements BinaryPredicate, Serializable {
     /**
-     * Construct a <code>NotEquivalent</code> {@link BinaryPredicate predicate}
+     * Construct an <code>IsEquivalent</code> {@link BinaryPredicate predicate}
      * for {@link Comparable Comparable}s.
      */
-    public NotEquivalent() {
+    public IsEquivalent() {
         this(null);
     }
 
     /**
-     * Construct a <code>NotEquivalent</code> {@link BinaryPredicate predicate}
+     * Construct an <code>IsEquivalent</code> {@link BinaryPredicate predicate}
      * for the given {@link Comparator Comparator}.
      * 
      * @param comparator the {@link Comparator Comparator}, when <code>null</code>,
      *        a <code>Comparator</code> for {@link Comparable Comparable}s will
      *        be used.
      */
-    public NotEquivalent(Comparator comparator) {
+    public IsEquivalent(Comparator comparator) {
         this.comparator = null == comparator ? ComparableComparator.getInstance() : comparator;
     }
     
     /**
      * Return <code>true</code> iff the <i>left</i> parameter is 
-     * not equal to the <i>right</i> parameter under my current
+     * equal to the <i>right</i> parameter under my current
      * {@link Comparator Comparator}.
      */
     public boolean test(Object left, Object right) {
-        return comparator.compare(left,right) != 0;
+        return comparator.compare(left,right) == 0;
     }
 
     /**
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(Object that) {
-        if(that instanceof NotEquivalent) {
-            return equals((NotEquivalent)that);
+        if(that instanceof IsEquivalent) {
+            return equals((IsEquivalent)that);
         } else {
             return false;
         }
@@ -118,7 +118,7 @@ public final class NotEquivalent implements BinaryPredicate, Serializable {
     /**
      * @see #equals(Object)
      */
-    public boolean equals(NotEquivalent that) {
+    public boolean equals(IsEquivalent that) {
         return null != that && 
             null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
@@ -127,7 +127,7 @@ public final class NotEquivalent implements BinaryPredicate, Serializable {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        int hash = "NotEquivalent".hashCode();
+        int hash = "IsEquivalent".hashCode();
         if(null != comparator) {
             hash ^= comparator.hashCode();
         }
@@ -138,13 +138,13 @@ public final class NotEquivalent implements BinaryPredicate, Serializable {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return "NotEquivalent<" + comparator + ">";
+        return "IsEquivalent<" + comparator + ">";
     }
 
-    public static final NotEquivalent getNotEquivalent() {
+    public static final IsEquivalent getEquivalent() {
         return COMPARABLE_INSTANCE;
     }
     
     private Comparator comparator = null;
-    private static final NotEquivalent COMPARABLE_INSTANCE = new NotEquivalent();
+    private static final IsEquivalent COMPARABLE_INSTANCE = new IsEquivalent();
 }

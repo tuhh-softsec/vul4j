@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/Attic/NotEqualPredicate.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsGreaterThanOrEqual.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,58 +54,94 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core;
+package org.apache.commons.functor.core.comparator;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * {@link #test Tests} 
- * <code>true</code> iff its arguments are 
- * not {@link Object#equals equal} or both 
- * <code>null</code>.
- * <p>
- * This relation is symmetric but irreflexive 
- * and not transitive.
- * </p>
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
+ * A {@link BinaryPredicate BinaryPredicate} that {@link #test tests}
+ * <code>true</code> iff the left argument is greater than or equal
+ * to the right argument under the specified {@link Comparator}.
+ * When no (or a <code>null</code> <code>Comparator</code> is specified,
+ * a {@link Comparable Comparable} <code>Comparator</code> is used.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
  * @author Rodney Waldhoff
  */
-public final class NotEqualPredicate implements BinaryPredicate, Serializable {
-
-    // constructor
-    // ------------------------------------------------------------------------
-    public NotEqualPredicate() {
+public final class IsGreaterThanOrEqual implements BinaryPredicate, Serializable {
+    /**
+     * Construct a <code>IsGreaterThanOrEqual</code> {@link BinaryPredicate predicate}
+     * for {@link Comparable Comparable}s.
+     */
+    public IsGreaterThanOrEqual() {
+        this(null);
     }
- 
-    // predicate interface
-    // ------------------------------------------------------------------------
 
+    /**
+     * Construct a <code>IsGreaterThanOrEqual</code> {@link BinaryPredicate predicate}
+     * for the given {@link Comparator Comparator}.
+     * 
+     * @param comparator the {@link Comparator Comparator}, when <code>null</code>,
+     *        a <code>Comparator</code> for {@link Comparable Comparable}s will
+     *        be used.
+     */
+    public IsGreaterThanOrEqual(Comparator comparator) {
+        this.comparator = null == comparator ? ComparableComparator.getInstance() : comparator;
+    }
+    
+    /**
+     * Return <code>true</code> iff the <i>left</i> parameter is 
+     * greater than or equal to the <i>right</i> parameter under my current
+     * {@link Comparator Comparator}.
+     */
     public boolean test(Object left, Object right) {
-        return (null == left ? null != right : !left.equals(right));
+        return comparator.compare(left,right) >= 0;
     }
 
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
     public boolean equals(Object that) {
-        return that instanceof NotEqualPredicate;
+        if(that instanceof IsGreaterThanOrEqual) {
+            return equals((IsGreaterThanOrEqual)that);
+        } else {
+            return false;
+        }
     }
-    
-    public int hashCode() {
-        return "NotEqualPredicate".hashCode();
-    }
-    
-    public String toString() {
-        return "NotEqualPredicate";
-    }
-        
-    // static attributes
-    // ------------------------------------------------------------------------
-    public static NotEqualPredicate getNotEqualPredicate() {
-        return INSTANCE;
-    }
-    
-    // static attributes
-    // ------------------------------------------------------------------------
-    private static final NotEqualPredicate INSTANCE = new NotEqualPredicate();
 
+    /**
+     * @see #equals(Object)
+     */
+    public boolean equals(IsGreaterThanOrEqual that) {
+        return null != that && 
+            null == comparator ? null == that.comparator : comparator.equals(that.comparator);
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int hash = "IsGreaterThanOrEqual".hashCode();
+        if(null != comparator) {
+            hash ^= comparator.hashCode();
+        }
+        return hash;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return "IsGreaterThanOrEqual<" + comparator + ">";
+    }
+
+    public static final IsGreaterThanOrEqual getGreaterThanOrEqual() {
+        return COMPARABLE_INSTANCE;
+    }
+    
+    private Comparator comparator = null;
+    private static final IsGreaterThanOrEqual COMPARABLE_INSTANCE = new IsGreaterThanOrEqual();
 }

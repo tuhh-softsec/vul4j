@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestEqualPredicate.java,v 1.1 2003/01/27 19:33:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsLessThan.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,79 +54,94 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.core;
+package org.apache.commons.functor.core.comparator;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
+import java.util.Comparator;
 
-import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:42 $
+ * A {@link BinaryPredicate BinaryPredicate} that {@link #test tests}
+ * <code>true</code> iff the left argument is greater than the
+ * right argument under the specified {@link Comparator}.
+ * When no (or a <code>null</code> <code>Comparator</code> is specified,
+ * a {@link Comparable Comparable} <code>Comparator</code> is used.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
  * @author Rodney Waldhoff
  */
-public class TestEqualPredicate extends BaseFunctorTest {
-
-    // Conventional
-    // ------------------------------------------------------------------------
-
-    public TestEqualPredicate(String testName) {
-        super(testName);
+public final class IsLessThan implements BinaryPredicate, Serializable {
+    /**
+     * Construct a <code>IsLessThan</code> {@link BinaryPredicate predicate}
+     * for {@link Comparable Comparable}s.
+     */
+    public IsLessThan() {
+        this(null);
     }
 
-    public static Test suite() {
-        return new TestSuite(TestEqualPredicate.class);
-    }
-
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new EqualPredicate();
+    /**
+     * Construct a <code>IsLessThan</code> {@link BinaryPredicate predicate}
+     * for the given {@link Comparator Comparator}.
+     * 
+     * @param comparator the {@link Comparator Comparator}, when <code>null</code>,
+     *        a <code>Comparator</code> for {@link Comparable Comparable}s will
+     *        be used.
+     */
+    public IsLessThan(Comparator comparator) {
+        this.comparator = null == comparator ? ComparableComparator.getInstance() : comparator;
     }
     
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
+    /**
+     * Return <code>true</code> iff the <i>left</i> parameter is 
+     * less than the <i>right</i> parameter under my current
+     * {@link Comparator Comparator}.
+     */
+    public boolean test(Object left, Object right) {
+        return comparator.compare(left,right) < 0;
     }
 
-    public void tearDown() throws Exception {
-        super.tearDown();
+    /**
+     * @see java.lang.Object#equals(Object)
+     */
+    public boolean equals(Object that) {
+        if(that instanceof IsLessThan) {
+            return equals((IsLessThan)that);
+        } else {
+            return false;
+        }
     }
 
-    // Tests
-    // ------------------------------------------------------------------------
+    /**
+     * @see #equals(Object)
+     */
+    public boolean equals(IsLessThan that) {
+        return null != that && 
+            null == comparator ? null == that.comparator : comparator.equals(that.comparator);
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int hash = "IsLessThan".hashCode();
+        if(null != comparator) {
+            hash ^= comparator.hashCode();
+        }
+        return hash;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return "IsLessThan<" + comparator + ">";
+    }
+
+    public static final IsLessThan getLessThan() {
+        return COMPARABLE_INSTANCE;
+    }
     
-    public void testTest() throws Exception {
-        EqualPredicate p = new EqualPredicate();
-        assertTrue("For symmetry, two nulls should be equal",p.test(null,null));
-        assertTrue(p.test("foo","foo"));
-        assertTrue(!p.test(null,"foo"));
-        assertTrue(!p.test("foo",null));
-        assertTrue(p.test(new Integer(3),new Integer(3)));
-        assertTrue(!p.test(null,new Integer(3)));
-        assertTrue(!p.test(new Integer(3),null));
-
-        assertTrue(!p.test(new Integer(3),new Integer(4)));
-        assertTrue(!p.test(new Integer(4),new Integer(3)));
-        assertTrue(!p.test("3",new Integer(3)));
-        assertTrue(!p.test(new Integer(3),"3"));
-    }
-        
-    public void testEquals() throws Exception {
-        BinaryPredicate f = new EqualPredicate();
-        assertEquals(f,f);
-
-        assertObjectsAreEqual(f,new EqualPredicate());
-        assertObjectsAreEqual(f,EqualPredicate.getEqualPredicate());
-        assertObjectsAreNotEqual(f,ConstantPredicate.getTruePredicate());
-    }
-
-    public void testConstant() throws Exception {
-        assertEquals(EqualPredicate.getEqualPredicate(),EqualPredicate.getEqualPredicate());
-        assertSame(EqualPredicate.getEqualPredicate(),EqualPredicate.getEqualPredicate());
-    }
+    private Comparator comparator = null;
+    private static final IsLessThan COMPARABLE_INSTANCE = new IsLessThan();
 }

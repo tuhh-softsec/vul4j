@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.2 2003/02/21 00:12:29 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.3 2003/02/24 11:38:07 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -73,8 +73,8 @@ import org.apache.commons.functor.adapter.RightBoundPredicate;
 import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.collection.CollectionAlgorithms;
 import org.apache.commons.functor.core.collection.IsEmpty;
-import org.apache.commons.functor.core.comparator.GreaterThanOrEqual;
-import org.apache.commons.functor.core.comparator.LessThan;
+import org.apache.commons.functor.core.comparator.IsGreaterThanOrEqual;
+import org.apache.commons.functor.core.comparator.IsLessThan;
 import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
 
 
@@ -84,7 +84,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * <p> 
  * See the extensive in line comments for details.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/02/21 00:12:29 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/24 11:38:07 $
  * @author Rodney Waldhoff
  */
 
@@ -439,7 +439,7 @@ public class Quicksort extends TestCase {
             return CollectionAlgorithms.select(
                 ((List)tail).iterator(),
                 RightBoundPredicate.bind(
-                    LessThan.getLessThan(),
+                    IsLessThan.getLessThan(),
                     head));            
         }
     };
@@ -449,7 +449,7 @@ public class Quicksort extends TestCase {
             return CollectionAlgorithms.select(
                 ((List)tail).iterator(),
                 RightBoundPredicate.bind(
-                    GreaterThanOrEqual.getGreaterThanOrEqual(),
+                    IsGreaterThanOrEqual.getGreaterThanOrEqual(),
                     head));            
         }
     };

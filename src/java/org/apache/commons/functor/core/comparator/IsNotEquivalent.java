@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/Attic/LessThanOrEqual.java,v 1.1 2003/02/20 01:12:40 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/comparator/IsNotEquivalent.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -63,50 +63,53 @@ import org.apache.commons.functor.BinaryPredicate;
 
 /**
  * A {@link BinaryPredicate BinaryPredicate} that {@link #test tests}
- * <code>true</code> iff the left argument is less than or equal to the
+ * <code>true</code> iff the left argument is not equal to the
  * right argument under the specified {@link Comparator}.
  * When no (or a <code>null</code> <code>Comparator</code> is specified,
  * a {@link Comparable Comparable} <code>Comparator</code> is used.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/02/20 01:12:40 $
+ * @see org.apache.commons.functor.core.IsEqual
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
  * @author Rodney Waldhoff
+ * 
  */
-public final class LessThanOrEqual implements BinaryPredicate, Serializable {
+public final class IsNotEquivalent implements BinaryPredicate, Serializable {
     /**
-     * Construct a <code>LessThanOrEqual</code> {@link BinaryPredicate predicate}
+     * Construct a <code>IsNotEquivalent</code> {@link BinaryPredicate predicate}
      * for {@link Comparable Comparable}s.
      */
-    public LessThanOrEqual() {
+    public IsNotEquivalent() {
         this(null);
     }
 
     /**
-     * Construct a <code>LessThanOrEqual</code> {@link BinaryPredicate predicate}
+     * Construct a <code>IsNotEquivalent</code> {@link BinaryPredicate predicate}
      * for the given {@link Comparator Comparator}.
      * 
      * @param comparator the {@link Comparator Comparator}, when <code>null</code>,
      *        a <code>Comparator</code> for {@link Comparable Comparable}s will
      *        be used.
      */
-    public LessThanOrEqual(Comparator comparator) {
+    public IsNotEquivalent(Comparator comparator) {
         this.comparator = null == comparator ? ComparableComparator.getInstance() : comparator;
     }
     
     /**
      * Return <code>true</code> iff the <i>left</i> parameter is 
-     * less than or equal to the <i>right</i> parameter under my current
+     * not equal to the <i>right</i> parameter under my current
      * {@link Comparator Comparator}.
      */
     public boolean test(Object left, Object right) {
-        return comparator.compare(left,right) <= 0;
+        return comparator.compare(left,right) != 0;
     }
 
     /**
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(Object that) {
-        if(that instanceof LessThanOrEqual) {
-            return equals((LessThanOrEqual)that);
+        if(that instanceof IsNotEquivalent) {
+            return equals((IsNotEquivalent)that);
         } else {
             return false;
         }
@@ -115,7 +118,7 @@ public final class LessThanOrEqual implements BinaryPredicate, Serializable {
     /**
      * @see #equals(Object)
      */
-    public boolean equals(LessThanOrEqual that) {
+    public boolean equals(IsNotEquivalent that) {
         return null != that && 
             null == comparator ? null == that.comparator : comparator.equals(that.comparator);
     }
@@ -124,7 +127,7 @@ public final class LessThanOrEqual implements BinaryPredicate, Serializable {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        int hash = "LessThanOrEqual".hashCode();
+        int hash = "IsNotEquivalent".hashCode();
         if(null != comparator) {
             hash ^= comparator.hashCode();
         }
@@ -135,13 +138,13 @@ public final class LessThanOrEqual implements BinaryPredicate, Serializable {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return "LessThanOrEqual<" + comparator + ">";
+        return "IsNotEquivalent<" + comparator + ">";
     }
 
-    public static final LessThanOrEqual getLessThanOrEqual() {
+    public static final IsNotEquivalent getNotEquivalent() {
         return COMPARABLE_INSTANCE;
     }
     
     private Comparator comparator = null;
-    private static final LessThanOrEqual COMPARABLE_INSTANCE = new LessThanOrEqual();
+    private static final IsNotEquivalent COMPARABLE_INSTANCE = new IsNotEquivalent();
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestNotEqualPredicate.java,v 1.1 2003/01/27 19:33:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestIsNull.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,30 +60,30 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.BinaryPredicate;
+import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:42 $
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
  * @author Rodney Waldhoff
  */
-public class TestNotEqualPredicate extends BaseFunctorTest {
+public class TestIsNull extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestNotEqualPredicate(String testName) {
+    public TestIsNull(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestNotEqualPredicate.class);
+        return new TestSuite(TestIsNull.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new NotEqualPredicate();
+        return new IsNull();
     }
     
     // Lifecycle
@@ -101,31 +101,22 @@ public class TestNotEqualPredicate extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testTest() throws Exception {
-        NotEqualPredicate p = new NotEqualPredicate();
-        assertTrue("For symmetry, two nulls should be equal",!p.test(null,null));
-        assertTrue(!p.test("foo","foo"));
-        assertTrue(p.test(null,"foo"));
-        assertTrue(p.test("foo",null));
-        assertTrue(!p.test(new Integer(3),new Integer(3)));
-        assertTrue(p.test(null,new Integer(3)));
-        assertTrue(p.test(new Integer(3),null));
-
-        assertTrue(p.test(new Integer(3),new Integer(4)));
-        assertTrue(p.test(new Integer(4),new Integer(3)));
-        assertTrue(p.test("3",new Integer(3)));
-        assertTrue(p.test(new Integer(3),"3"));
+        UnaryPredicate p = new IsNull();
+        assertTrue(p.test(null));
+        assertTrue(!p.test("foo"));
+        assertTrue(!p.test(new Integer(3)));
     }
         
     public void testEquals() throws Exception {
-        BinaryPredicate p = new NotEqualPredicate();
+        UnaryPredicate p = new IsNull();
         assertEquals(p,p);
-        assertObjectsAreEqual(p,new NotEqualPredicate());
-        assertObjectsAreEqual(p,NotEqualPredicate.getNotEqualPredicate());
+        assertObjectsAreEqual(p,new IsNull());
+        assertObjectsAreEqual(p,IsNull.getIsNullPredicate());
         assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
     }
 
     public void testConstant() throws Exception {
-        assertEquals(NotEqualPredicate.getNotEqualPredicate(),NotEqualPredicate.getNotEqualPredicate());
-        assertSame(NotEqualPredicate.getNotEqualPredicate(),NotEqualPredicate.getNotEqualPredicate());
+        assertEquals(IsNull.getIsNullPredicate(),IsNull.getIsNullPredicate());
+        assertSame(IsNull.getIsNullPredicate(),IsNull.getIsNullPredicate());
     }
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/Attic/TestIsNotNullPredicate.java,v 1.1 2003/01/27 19:33:42 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/IsNotNull.java,v 1.1 2003/02/24 11:38:06 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -56,67 +56,52 @@
  */
 package org.apache.commons.functor.core;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
 
-import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:42 $
+ * {@link #test Tests} 
+ * <code>false</code> iff its argument 
+ * is <code>null</code>.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/02/24 11:38:06 $
  * @author Rodney Waldhoff
  */
-public class TestIsNotNullPredicate extends BaseFunctorTest {
+public final class IsNotNull implements UnaryPredicate, Serializable {
 
-    // Conventional
+    // constructor
+    // ------------------------------------------------------------------------
+    public IsNotNull() {
+    }
+ 
+    // predicate interface
     // ------------------------------------------------------------------------
 
-    public TestIsNotNullPredicate(String testName) {
-        super(testName);
+    public boolean test(Object obj) {
+        return (null != obj);
     }
 
-    public static Test suite() {
-        return new TestSuite(TestIsNotNullPredicate.class);
-    }
-
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new IsNotNullPredicate();
+    public boolean equals(Object that) {
+        return that instanceof IsNotNull;
     }
     
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
+    public int hashCode() {
+        return "IsNotNull".hashCode();
     }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
-    // ------------------------------------------------------------------------
     
-    public void testTest() throws Exception {
-        UnaryPredicate p = new IsNotNullPredicate();
-        assertTrue(!p.test(null));
-        assertTrue(p.test("foo"));
-        assertTrue(p.test(new Integer(3)));
+    public String toString() {
+        return "IsNotNull";
     }
         
-    public void testEquals() throws Exception {
-        UnaryPredicate p = new IsNotNullPredicate();
-        assertEquals(p,p);
-        assertObjectsAreEqual(p,new IsNotNullPredicate());
-        assertObjectsAreEqual(p,IsNotNullPredicate.getIsNotNullPredicate());
-        assertObjectsAreNotEqual(p,ConstantPredicate.getTruePredicate());
+    // static attributes
+    // ------------------------------------------------------------------------
+    public static IsNotNull getIsNotNullPredicate() {
+        return INSTANCE;
     }
+    
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final IsNotNull INSTANCE = new IsNotNull();
 
-    public void testConstant() throws Exception {
-        assertEquals(IsNotNullPredicate.getIsNotNullPredicate(),IsNotNullPredicate.getIsNotNullPredicate());
-        assertSame(IsNotNullPredicate.getIsNotNullPredicate(),IsNotNullPredicate.getIsNotNullPredicate());
-    }
 }
