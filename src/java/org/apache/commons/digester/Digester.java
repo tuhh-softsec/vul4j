@@ -74,7 +74,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.95 $ $Date: 2004/03/07 19:37:07 $
+ * @version $Revision: 1.96 $ $Date: 2004/03/15 21:44:53 $
  */
 
 public class Digester extends DefaultHandler {
@@ -2476,39 +2476,77 @@ public class Digester extends DefaultHandler {
     }
 
     /**
-     * Pops (gets and removes) the top object from the stack with the given name.
+     * <p>Pops (gets and removes) the top object from the stack with the given name.</p>
+     *
+     * <p><strong>Note:</strong> a stack is considered empty
+     * if no objects have been pushed onto it yet.</p>
      * 
      * @param stackName the name of the stack from which the top value is to be popped
      * @return the top <code>Object</code> on the stack or or null if the stack is either 
      * empty or has not been created yet
+     * @throws EmptyStackException if the named stack is empty
      */
     public Object pop(String stackName) {
         Object result = null;
         ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
-        if (namedStack != null && !namedStack.isEmpty()) {
+        if (namedStack == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Stack '" + stackName + "' is empty");
+            }
+            throw new EmptyStackException();
+            
+        } else {
+        
             result = namedStack.pop();
         }
         return result;
     }
     
     /**
-     * Gets the top object from the stack with the given name.
+     * <p>Gets the top object from the stack with the given name.
      * This method does not remove the object from the stack.
+     * </p>
+     * <p><strong>Note:</strong> a stack is considered empty
+     * if no objects have been pushed onto it yet.</p>
      *
      * @param stackName the name of the stack to be peeked
      * @return the top <code>Object</code> on the stack or null if the stack is either 
      * empty or has not been created yet
+     * @throws EmptyStackException if the named stack is empty 
      */
     public Object peek(String stackName) {
         Object result = null;
         ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
-        if (namedStack != null && !namedStack.isEmpty()) {
+        if (namedStack == null ) {
+            if (log.isDebugEnabled()) {
+                log.debug("Stack '" + stackName + "' is empty");
+            }        
+            throw new EmptyStackException();
+        
+        } else {
+        
             result = namedStack.peek();
         }
         return result;
     }
 
-
+    /**
+     * <p>Is the stack with the given name empty?</p>
+     * <p><strong>Note:</strong> a stack is considered empty
+     * if no objects have been pushed onto it yet.</p>
+     * @param stackName the name of the stack whose emptiness 
+     * should be evaluated
+     * @return true if the given stack if empty 
+     */
+    public boolean isEmpty(String stackName) {
+        boolean result = true;
+        ArrayStack namedStack = (ArrayStack) stacksByName.get(stackName);
+        if (namedStack != null ) {
+            result = namedStack.isEmpty();
+        }
+        return result;
+    }
+    
     /**
      * When the Digester is being used as a SAXContentHandler, 
      * this method allows you to access the root object that has been

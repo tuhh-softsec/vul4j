@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.EmptyStackException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -40,7 +41,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.18 $ $Date: 2004/03/07 19:37:08 $
+ * @version $Revision: 1.19 $ $Date: 2004/03/15 21:44:53 $
  */
 
 public class DigesterTestCase extends TestCase {
@@ -386,11 +387,11 @@ public class DigesterTestCase extends TestCase {
         BigDecimal archimedesAveragePi = new BigDecimal("3.1418");
         String testStackName = "org.apache.commons.digester.tests.testNamedStackPushPeekPop";
         Digester digester = new Digester();
-        assertNull("Stack starts empty:", digester.peek(testStackName));
+        assertTrue("Stack starts empty:", digester.isEmpty(testStackName));
         digester.push(testStackName, archimedesAveragePi);
         assertEquals("Peeked value:", archimedesAveragePi, digester.peek(testStackName));
         assertEquals("Popped value:", archimedesAveragePi, digester.pop(testStackName));
-        assertNull("Stack ends empty:", digester.peek(testStackName));
+        assertTrue("Stack ends empty:", digester.isEmpty(testStackName));
     }
     
     /** Tests that values are stored independently */
@@ -410,8 +411,48 @@ public class DigesterTestCase extends TestCase {
     {
         String testStackName = "org.apache.commons.digester.tests.testPopNamedStackNotPushed";
         Digester digester = new Digester();
-        digester.pop(testStackName);
+        try {
+        
+            digester.pop(testStackName);
+            fail("Expected an EmptyStackException");
+            
+        } catch (EmptyStackException e) {
+            // expected
+        }
+        
+        try {
+        
+            digester.peek(testStackName);
+            fail("Expected an EmptyStackException");
+            
+        } catch (EmptyStackException e) {
+            // expected
+        }
+    }
+    
+    /** Tests for isEmpty */
+    public void testNamedStackIsEmpty()
+    {
+        String testStackName = "org.apache.commons.digester.tests.testNamedStackIsEmpty";
+        Digester digester = new Digester();
+        assertTrue(
+            "A named stack that has no object pushed onto it yet should be empty", 
+            digester.isEmpty(testStackName));
+            
+        digester.push(testStackName, "Some test value");
+        assertFalse(
+            "A named stack that has an object pushed onto it should be not empty",
+            digester.isEmpty(testStackName));
+            
         digester.peek(testStackName);
+        assertFalse(
+            "Peek should not effect whether the stack is empty",
+            digester.isEmpty(testStackName));
+        
+        digester.pop(testStackName);
+        assertTrue(
+            "A named stack that has it's last object popped is empty", 
+            digester.isEmpty(testStackName));
     }
     
 }
