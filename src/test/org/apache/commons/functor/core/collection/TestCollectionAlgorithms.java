@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.6 2003/11/24 20:12:17 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/Attic/TestCollectionAlgorithms.java,v 1.7 2003/11/24 21:59:30 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -77,7 +77,8 @@ import org.apache.commons.functor.core.IdentityFunction;
 import org.apache.commons.functor.core.IsEqual;
 
 /**
- * @version $Revision: 1.6 $ $Date: 2003/11/24 20:12:17 $
+ * @version $Revision: 1.7 $ $Date: 2003/11/24 21:59:30 $
+ * @deprecated The CollectionAlgorithms class has been deprecated
  * @author Rodney Waldhoff
  */
 public class TestCollectionAlgorithms extends TestCase {
