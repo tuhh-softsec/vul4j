@@ -21,10 +21,11 @@ RAUL:
 
 [X] Remove XPath in IdResolver.
 [X] Deferred XPath till needed.
-[ ] Clean unneed XPath
+[X] Clean unneed XPath
 [ ] Integrate the SAX patch and add Signing
 [ ] More examples.
 [ ] Change Symbol table to a more efficient and simple structure
+[ ] constrac name bindings on the fly like XMLSerialicer does.
 [ ] Optimize ouputstream with native jce, nio & threads.
 [ ] Migrate to JSR105 API
 [ ] ...
