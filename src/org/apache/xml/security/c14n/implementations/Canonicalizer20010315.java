@@ -74,9 +74,10 @@ import org.xml.sax.*;
 
 
 /**
- * Class Canonicalizer20010315
+ * Implements <A HREF="http://www.w3.org/TR/2001/REC-xml-c14n-20010315">Canonical
+ * XML Version 1.0</A>, a W3C Recommendation from 15 March 2001.
  *
- * @author $Author$
+ * @author Christian Geuer-Pollmann <geuerp@apache.org>
  * @version $Revision$
  */
 public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
@@ -224,7 +225,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          // we output all Attrs which are available
          for (int i = 0; i < attrs.length; i++) {
             this.outputAttrToWriter(((Attr) attrs[i]).getNodeName(),
-                               ((Attr) attrs[i]).getNodeValue());
+                                    ((Attr) attrs[i]).getNodeValue());
          }
 
          this._writer.write(">");
@@ -533,6 +534,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
          this._writer = new OutputStreamWriter(baos, Canonicalizer.ENCODING);
+
          this.canonicalizeXPathNodeSet(this._rootNodeOfC14n);
          this._writer.close();
 
@@ -689,6 +691,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     */
    Object[] handleAttributes(Element E) throws CanonicalizationException {
 
+      // System.out.println("During the traversal, I encountered " + XMLUtils.getXPath(E));
       // result will contain the attrs which have to be outputted
       List result = new Vector();
       NamedNodeMap attrs = E.getAttributes();
@@ -711,13 +714,12 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
        * a space followed by xmlns="" if and only if the following conditions
        * are met:
        */
-      boolean firstNodeIsNotDefaultNamespaceNode =
-         xmlns.getNodeValue().equals("");
+      boolean firstNodeIsDefaultNamespaceNode =
+         !xmlns.getNodeValue().equals("") && this._xpathNodeSet.contains(xmlns);
 
       /* the element E that owns the axis is in the node-set
        */
-      if (firstNodeIsNotDefaultNamespaceNode
-              && this._xpathNodeSet.contains(E)) {
+      if (this._xpathNodeSet.contains(E) &&!firstNodeIsDefaultNamespaceNode) {
 
          /* The nearest ancestor element of E in the node-set has a default
           * namespace node in the node-set (default namespace nodes always
@@ -728,17 +730,22 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                  && (ancestor.getNodeType() == Node.ELEMENT_NODE);
                  ancestor = ancestor.getParentNode()) {
             if (this._xpathNodeSet.contains(ancestor)) {
-               Attr xmlnsAncestor = ((Element) ancestor).getAttributeNodeNS(
+               Attr xmlnsA = ((Element) ancestor).getAttributeNodeNS(
                   Constants.NamespaceSpecNS, "xmlns");
 
-               if (xmlnsAncestor == null) {
+               if (xmlnsA == null) {
                   throw new CanonicalizationException(
                      "c14n.XMLUtils.circumventBug2650forgotten");
                }
 
-               if (!xmlnsAncestor.getNodeValue().equals("")) {
+               if (!xmlnsA.getNodeValue().equals("")
+                       && this._xpathNodeSet.contains(xmlnsA)) {
 
                   // OK, we must output xmlns=""
+                  xmlns = this._doc.createAttributeNS(Constants.NamespaceSpecNS,
+                                                      "xmlns");
+
+                  xmlns.setValue("");
                   result.add(xmlns);
                }
 

@@ -1,3 +1,4 @@
+
 /*
  * The Apache Software License, Version 1.1
  *
@@ -77,31 +78,35 @@ import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 
 
 /**
- * Implements <A HREF="http://www.w3.org/Signature/Drafts/xml-exc-c14n">"Exclusive
- * XML Canonicalization, Version 1.0"</A>, Rev 1.58.
+ * Implements &quot;<A HREF="http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/">Exclusive XML Canonicalization, Version 1.0</A>&quot;
  * <BR />
  * Credits: During restructuring of the Canonicalizer framework, René Kollmorgen from
  * Software AG submitted an implementation of ExclC14n which fitted into the old
  * architecture and which based heavily on my old (and slow) implementation of
  * "Canonical XML". A big "thank you" to René for this.
  * <BR />
- * THIS implementation is a complete rewrite of the algorithm.
+ * <i>THIS</i> implementation is a complete rewrite of the algorithm.
  *
- * @author $Author$
+ * @author Christian Geuer-Pollmann <geuerp@apache.org>
  * @version $Revision$
- * @see <A HREF="http://www.w3.org/Signature/Drafts/xml-exc-c14n">"Exclusive XML Canonicalization, Version 1.0"</A>, Rev 1.58.
+ * @see <A HREF="http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/">"Exclusive XML Canonicalization, Version 1.0"</A>
  */
 public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
    //J-
    boolean _includeComments = false;
 
    Set _xpathNodeSet = null;
+
+   /**
+    * This Set contains the names (Strings like "xmlns" or "xmlns:foo") of
+    * the inclusive namespaces.
+    */
    Set _inclusiveNSSet = null;
 
    Document _doc = null;
    Element _documentElement = null;
    Node _rootNodeOfC14n = null;
-
+   HashMap _renderedPrefixesForElement = null;
    Writer _writer = null;
    //J+
 
@@ -134,9 +139,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     *
     * @throws CanonicalizationException
     */
-   public byte[] engineCanonicalizeSubTree(
-           Node rootNode, String inclusiveNamespaces)
-              throws CanonicalizationException {
+   public byte[] engineCanonicalizeSubTree(Node rootNode, String inclusiveNamespaces)
+           throws CanonicalizationException {
 
       this._rootNodeOfC14n = rootNode;
       this._doc = XMLUtils.getOwnerDocument(this._rootNodeOfC14n);
@@ -180,9 +184,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * @throws CanonicalizationException
     * @throws IOException
     */
-   void canonicalizeSubTree(
-           Node currentNode, Map inscopeNamespaces, Map alreadyVisible)
-              throws CanonicalizationException, IOException {
+   void canonicalizeSubTree(Node currentNode, Map inscopeNamespaces, Map alreadyVisible)
+           throws CanonicalizationException, IOException {
 
       int currentNodeType = currentNode.getNodeType();
 
@@ -251,7 +254,6 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
             updateInscopeNamespacesAndReturnVisibleAttrs(currentElement,
                inscopeNamespaces, alreadyVisible);
 
-
          // we output all Attrs which are available
          for (int i = 0; i < attrs.size(); i++) {
             outputAttrToWriter(((Attr) attrs.get(i)).getNodeName(),
@@ -296,13 +298,11 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * @return the Attr[]s to be outputted
     * @throws CanonicalizationException
     */
-   List updateInscopeNamespacesAndReturnVisibleAttrs(
-           Element currentElement, Map inscopeNamespaces, Map alreadyVisible)
-              throws CanonicalizationException {
+   List updateInscopeNamespacesAndReturnVisibleAttrs(Element currentElement, Map inscopeNamespaces, Map alreadyVisible)
+           throws CanonicalizationException {
 
       Vector ns = new Vector();
       Vector at = new Vector();
-
       NamedNodeMap attributes = currentElement.getAttributes();
       int attributesLength = attributes.getLength();
 
@@ -370,8 +370,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          } else if (this.utilizedOrIncluded(currentElement, name)
                     && (!alreadyVisible.containsKey(name)
                         || (alreadyVisible.containsKey(name)
-                            &&!alreadyVisible.get(name)
-                               .equals(inscopeValue)))) {
+                            &&!alreadyVisible.get(name).equals(
+                               inscopeValue)))) {
             if (C14nHelper.namespaceIsRelative(inscopeValue)) {
                Object exArgs[] = { currentElement.getTagName(), name,
                                    inscopeValue };
@@ -390,9 +390,10 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          }
       }
 
-      Collections.sort(ns, new org.apache.xml.security.c14n.helper.NSAttrCompare());
-      Collections.sort(at, new org.apache.xml.security.c14n.helper.NonNSAttrCompare());
-
+      Collections.sort(ns,
+                       new org.apache.xml.security.c14n.helper.NSAttrCompare());
+      Collections.sort(
+         at, new org.apache.xml.security.c14n.helper.NonNSAttrCompare());
       ns.addAll(at);
 
       return ns;
@@ -508,9 +509,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     *
     * @throws CanonicalizationException
     */
-   public byte[] engineCanonicalizeXPathNodeSet(
-           Set xpathNodeSet, String inclusiveNamespaces)
-              throws CanonicalizationException {
+   public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet, String inclusiveNamespaces)
+           throws CanonicalizationException {
 
       this._xpathNodeSet = xpathNodeSet;
 
@@ -533,9 +533,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          this._writer = new OutputStreamWriter(baos, Canonicalizer.ENCODING);
          this._inclusiveNSSet =
             InclusiveNamespaces.prefixStr2Set(inclusiveNamespaces);
+         this._renderedPrefixesForElement = new HashMap();
 
-         this.canonicalizeXPathNodeSet(this._doc, true, new EC14nCtx());
-
+         this.canonicalizeXPathNodeSet(this._doc);
          this._writer.close();
 
          return baos.toByteArray();
@@ -549,6 +549,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          this._rootNodeOfC14n = null;
          this._doc = null;
          this._documentElement = null;
+         this._renderedPrefixesForElement = null;
          this._writer = null;
       }
    }
@@ -557,14 +558,11 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * Method canonicalizeXPathNodeSet
     *
     * @param currentNode
-    * @param parentIsVisible
-    * @param ctx
     * @throws CanonicalizationException
     * @throws IOException
     */
-   void canonicalizeXPathNodeSet(
-           Node currentNode, boolean parentIsVisible, EC14nCtx ctx)
-              throws CanonicalizationException, IOException {
+   void canonicalizeXPathNodeSet(Node currentNode)
+           throws CanonicalizationException, IOException {
 
       int currentNodeType = currentNode.getNodeType();
       boolean currentNodeIsVisible = this._xpathNodeSet.contains(currentNode);
@@ -584,7 +582,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          for (Node currentChild = currentNode.getFirstChild();
                  currentChild != null;
                  currentChild = currentChild.getNextSibling()) {
-            canonicalizeXPathNodeSet(currentChild, true, ctx);
+            this.canonicalizeXPathNodeSet(currentChild);
          }
          break;
 
@@ -597,7 +595,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
                this._writer.write("\n");
             }
 
-            outputCommentToWriter((Comment) currentNode);
+            this.outputCommentToWriter((Comment) currentNode);
 
             if (position == NODE_BEFORE_DOCUMENT_ELEMENT) {
                this._writer.write("\n");
@@ -613,7 +611,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
                this._writer.write("\n");
             }
 
-            outputPItoWriter((ProcessingInstruction) currentNode);
+            this.outputPItoWriter((ProcessingInstruction) currentNode);
 
             if (position == NODE_BEFORE_DOCUMENT_ELEMENT) {
                this._writer.write("\n");
@@ -626,13 +624,12 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          if (this._xpathNodeSet.contains(currentNode)) {
             outputTextToWriter(currentNode.getNodeValue());
 
-            for (Node nextSibling =
-                    currentNode
-                       .getNextSibling(); (nextSibling != null) && ((nextSibling
-                          .getNodeType() == Node.TEXT_NODE) || (nextSibling
-                             .getNodeType() == Node
-                                .CDATA_SECTION_NODE)); nextSibling =
-                                   nextSibling.getNextSibling()) {
+            for (Node nextSibling = currentNode.getNextSibling();
+                    (nextSibling != null)
+                    && ((nextSibling.getNodeType() == Node.TEXT_NODE)
+                        || (nextSibling.getNodeType()
+                            == Node.CDATA_SECTION_NODE));
+                    nextSibling = nextSibling.getNextSibling()) {
 
                /* The XPath data model allows to select only the first of a
                 * sequence of mixed text and CDATA nodes. But we must output
@@ -640,7 +637,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
                 *
                 * @see http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6329
                 */
-               outputTextToWriter(nextSibling.getNodeValue());
+               this.outputTextToWriter(nextSibling.getNodeValue());
             }
          }
          break;
@@ -648,19 +645,20 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
       case Node.ELEMENT_NODE :
          Element currentElement = (Element) currentNode;
 
+         this._renderedPrefixesForElement.put(currentElement, new HashSet());
+
          if (currentNodeIsVisible) {
             this._writer.write("<");
             this._writer.write(currentElement.getTagName());
          }
 
          // we output all Attrs which are available
-         List attrs = this.getAttrs(currentElement, parentIsVisible, ctx);
-         int attrsLength = attrs.size();
+         Object attrs[] = this.handleAttributes(currentElement);
 
-         for (int i = 0; i < attrsLength; i++) {
-            Attr a = (Attr) attrs.get(i);
+         for (int i = 0; i < attrs.length; i++) {
+            Attr a = (Attr) attrs[i];
 
-            outputAttrToWriter(a.getNodeName(), a.getNodeValue());
+            this.outputAttrToWriter(a.getNodeName(), a.getNodeValue());
          }
 
          if (currentNodeIsVisible) {
@@ -671,18 +669,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          for (Node currentChild = currentNode.getFirstChild();
                  currentChild != null;
                  currentChild = currentChild.getNextSibling()) {
-            if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
-
-               /*
-                * We must 'clone' the inscopeXMLAttrs to allow the descendants
-                * to mess around in their own map
-                */
-               canonicalizeXPathNodeSet(currentChild, currentNodeIsVisible,
-                                        ctx.copy());
-            } else {
-               canonicalizeXPathNodeSet(currentChild, currentNodeIsVisible,
-                                        ctx);
-            }
+            this.canonicalizeXPathNodeSet(currentChild);
          }
 
          if (currentNodeIsVisible) {
@@ -690,99 +677,10 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
             this._writer.write(currentElement.getTagName());
             this._writer.write(">");
          }
+
+         this._renderedPrefixesForElement.remove(currentElement);
          break;
       }
-   }
-
-   /**
-    * Method getAttrs
-    *
-    * @param currentElement
-    * @param parentIsVisible
-    * @param ctx
-    *
-    * @throws CanonicalizationException
-    */
-   List getAttrs(Element currentElement, boolean parentIsVisible, EC14nCtx ctx)
-           throws CanonicalizationException {
-
-      Set visiblyUtilized = new HashSet();
-
-      boolean currentElementIsInNodeset = this._xpathNodeSet.contains(currentElement);
-      if (currentElementIsInNodeset) {
-         if (currentElement.getNamespaceURI() != null) {
-            String prefix = currentElement.getPrefix();
-
-            if (prefix == null) {
-               visiblyUtilized.add("xmlns");
-            } else {
-               visiblyUtilized.add("xmlns:" + prefix);
-            }
-         }
-      }
-
-      Vector namespacesInSubset = new Vector();
-      Vector attributesInSubset = new Vector();
-      NamedNodeMap attributes = currentElement.getAttributes();
-      int attributesLength = attributes.getLength();
-      for (int i = 0; i < attributesLength; i++) {
-         Attr currentAttr = (Attr) attributes.item(i);
-         if (this._xpathNodeSet.contains(currentAttr)) {
-            String URI = currentAttr.getNamespaceURI();
-            if (URI != null && Constants.NamespaceSpecNS.equals(URI)) {
-               String value = currentAttr.getValue();
-               if (C14nHelper.namespaceIsRelative(value)) {
-                  Object exArgs[] = { currentElement.getTagName(), currentAttr.getNodeName(), value };
-
-                  throw new CanonicalizationException("c14n.Canonicalizer.RelativeNamespace", exArgs);
-               }
-               namespacesInSubset.add(currentAttr);
-            } else {
-               attributesInSubset.add(currentAttr);
-
-               String prefix = currentAttr.getPrefix();
-               if (prefix != null) {
-                  visiblyUtilized.add("xmlns:" + prefix);
-               }
-            }
-         }
-      }
-      Collections.sort(namespacesInSubset,
-                       new org.apache.xml.security.c14n.helper.NSAttrCompare());
-      Collections.sort(attributesInSubset,
-                       new org.apache.xml.security.c14n.helper.NonNSAttrCompare());
-
-      Vector nsResult = new Vector();
-      for (int i = 0; i < namespacesInSubset.size(); i++) {
-         Attr currentAttr = (Attr) namespacesInSubset.get(i);
-         String name = currentAttr.getNodeName();
-         String value = currentAttr.getValue();
-
-         if (name.equals("xmlns") && value.equals("")) {
-            // undeclare default namespace
-            boolean nameAlreadyVisible = ctx.n.containsKey(name);
-
-            if (nameAlreadyVisible) {
-               ctx.n.remove(name);
-               nsResult.add(currentAttr);
-            }
-         } else {
-            //J-
-            // boolean utilizedOrIncluded = this.utilizedOrIncluded(currentElement, name);
-            boolean utilizedOrIncluded = visiblyUtilized.contains(name) || this._inclusiveNSSet.contains(name);
-            boolean nameAlreadyVisible = ctx.n.containsKey(name);
-            boolean visibleButNotEqual = nameAlreadyVisible && !ctx.n.get(name).equals(value);
-            //J+
-            if (currentElementIsInNodeset && utilizedOrIncluded && (!nameAlreadyVisible || visibleButNotEqual)) {
-               // ns_rendered_new.put(name, value);
-               ctx.n.put(name, value);
-               nsResult.add(currentAttr);
-            }
-         }
-      }
-      nsResult.addAll(attributesInSubset);
-
-      return nsResult;
    }
 
    /**
@@ -856,8 +754,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * @throws IOException
     */
    void outputPItoWriter(ProcessingInstruction currentPI) throws IOException {
+
       if (currentPI == null) {
-        return;
+         return;
       }
 
       this._writer.write("<?");
@@ -913,8 +812,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * @throws IOException
     */
    void outputCommentToWriter(Comment currentComment) throws IOException {
+
       if (currentComment == null) {
-        return;
+         return;
       }
 
       this._writer.write("<!--");
@@ -947,8 +847,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * @throws IOException
     */
    void outputTextToWriter(String text) throws IOException {
+
       if (text == null) {
-        return;
+         return;
       }
 
       int length = text.length();
@@ -1006,7 +907,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
     * Method visiblyUtilized
     *
     * @param element
-    *
+    * @return a Set of namespace names.
     */
    public Set visiblyUtilized(Element element) {
 
@@ -1016,12 +917,12 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
 
          // we are in the canonicalizeSubtree part
          if (element.getNamespaceURI() != null) {
-            String elementPrefix = element.getPrefix();
+            String prefix = element.getPrefix();
 
-            if (elementPrefix == null) {
+            if (prefix == null) {
                result.add("xmlns");
             } else {
-               result.add("xmlns:" + elementPrefix);
+               result.add("xmlns:" + prefix);
             }
          }
 
@@ -1032,45 +933,44 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
          // a:..., add xmlns:a to the list
          for (int i = 0; i < attributesLength; i++) {
             Attr currentAttr = (Attr) attributes.item(i);
+            String prefix = currentAttr.getPrefix();
 
-            if (currentAttr.getNamespaceURI() != null) {
-               String attrPrefix = currentAttr.getPrefix();
-
-               if ((attrPrefix != null) &&!attrPrefix.equals("xml")
-                       &&!attrPrefix.equals("xmlns")) {
-                  result.add("xmlns:" + attrPrefix);
+            if (prefix != null) {
+               if (!prefix.equals("xml") &&!prefix.equals("xmlns")) {
+                  result.add("xmlns:" + prefix);
                }
             }
          }
-      } else if ((this._xpathNodeSet != null)
-                 && this._xpathNodeSet.contains(element)) {
+      } else {
+         if (this._xpathNodeSet.contains(element)) {
 
-         // we are in the canonicalizeXPathNodeSet part
-         if (element.getNamespaceURI() != null) {
-            String elementPrefix = element.getPrefix();
+            // we are in the canonicalizeXPathNodeSet part
+            if (element.getNamespaceURI() != null) {
+               String prefix = element.getPrefix();
 
-            if ((elementPrefix == null) || (elementPrefix.length() == 0)) {
-               result.add("xmlns");
-            } else {
-               result.add("xmlns:" + elementPrefix);
+               if ((prefix == null) || (prefix.length() == 0)) {
+                  result.add("xmlns");
+               } else {
+                  result.add("xmlns:" + prefix);
+               }
             }
-         }
 
-         NamedNodeMap attributes = element.getAttributes();
-         int attributesLength = attributes.getLength();
+            NamedNodeMap attributes = element.getAttributes();
+            int attributesLength = attributes.getLength();
 
-         // if the attribute is not xmlns:... and not xml:... but
-         // a:..., add xmlns:a to the list
-         for (int i = 0; i < attributesLength; i++) {
-            Attr currentAttr = (Attr) attributes.item(i);
+            // if the attribute is not xmlns:... and not xml:... but
+            // a:..., add xmlns:a to the list
+            for (int i = 0; i < attributesLength; i++) {
+               Attr currentAttr = (Attr) attributes.item(i);
 
-            if (this._xpathNodeSet.contains(currentAttr)
-                    && (currentAttr.getNamespaceURI() != null)) {
-               String attrPrefix = currentAttr.getPrefix();
+               if (this._xpathNodeSet.contains(currentAttr)) {
+                  String prefix = currentAttr.getPrefix();
 
-               if ((attrPrefix != null) &&!attrPrefix.equals("xml")
-                       &&!attrPrefix.equals("xmlns")) {
-                  result.add("xmlns:" + attrPrefix);
+                  if (prefix != null) {
+                     if (!prefix.equals("xml") &&!prefix.equals("xmlns")) {
+                        result.add("xmlns:" + prefix);
+                     }
+                  }
                }
             }
          }
@@ -1080,45 +980,524 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerSpi {
    }
 
    /**
-    * Class EC14nCtx
     *
-    * @author $Author$
-    * @version $Revision$
+    * @param E
+    * @throws CanonicalizationException
     */
-   class EC14nCtx {
+   Object[] handleAttributes(Element E) throws CanonicalizationException {
 
-      /** Field n */
-      Map n;
+      // System.out.println("During the traversal, I encountered " + XMLUtils.getXPath(E));
+      // result will contain the attrs which have to be outputted
+      List result = new Vector();
+      HashSet namespacePrefixesOutputForCurrentElement =
+         (HashSet) this._renderedPrefixesForElement.get(E);
+      NamedNodeMap attrs = E.getAttributes();
+      int attrsLength = attrs.getLength();
 
-      /**
-       * Constructor EC14nCtx
-       *
-       */
-      public EC14nCtx() {
-         this.n = new HashMap();
+      if (this._inclusiveNSSet.contains("xmlns")) {
+
+         // handle the default namespace if the #default token is in the prefix list
+
+         /* ***********************************************************************
+          * Handle xmlns=""
+          * ***********************************************************************/
+
+         // first check whether we have to output xmlns=""
+         Attr xmlns = E.getAttributeNodeNS(Constants.NamespaceSpecNS, "xmlns");
+
+         if (xmlns == null) {
+            throw new CanonicalizationException(
+               "c14n.XMLUtils.circumventBug2650forgotten");
+         }
+
+         /* To begin processing L, if the first node is not the default namespace
+          * node (a node with no namespace URI and no local name), then generate
+          * a space followed by xmlns="" if and only if the following conditions
+          * are met:
+          */
+         boolean firstNodeIsDefaultNamespaceNode =
+            !xmlns.getNodeValue().equals("")
+            && this._xpathNodeSet.contains(xmlns);
+
+         /* the element E that owns the axis is in the node-set
+          */
+         if (!firstNodeIsDefaultNamespaceNode
+                 && this._xpathNodeSet.contains(E)) {
+
+            /* The nearest output ancestor element of E has a default
+             * namespace node in the node-set
+             */
+            for (Node ancestor = E.getParentNode();
+                    (ancestor != null)
+                    && (ancestor.getNodeType() == Node.ELEMENT_NODE);
+                    ancestor = ancestor.getParentNode()) {
+               if (this._xpathNodeSet.contains(ancestor)) {
+
+                  // we're on an output ancestor
+                  Attr xmlnsA = ((Element) ancestor).getAttributeNodeNS(
+                     Constants.NamespaceSpecNS, "xmlns");
+
+                  if (xmlnsA == null) {
+                     throw new CanonicalizationException(
+                        "c14n.XMLUtils.circumventBug2650forgotten");
+                  }
+
+                  if (!xmlnsA.getNodeValue().equals("")
+                          && this._xpathNodeSet.contains(xmlnsA)) {
+
+                     // OK, we must output xmlns=""
+                     xmlns =
+                        this._doc.createAttributeNS(Constants.NamespaceSpecNS,
+                                                    "xmlns");
+
+                     xmlns.setValue("");
+                     result.add(xmlns);
+                  }
+
+                  break;
+               }
+            }
+         }
       }
 
-      /**
-       * Constructor EC14nCtx
+      /*
+       * [xmlns not present in the prefix list]
+       * If the token representing the default namespace is not present in
+       * InclusiveNamespaces PrefixList, then the rules for rendering xmlns=""
+       * are changed as follows. When canonicalizing the namespace axis of an
+       * element E that is in the node-set, output xmlns="" if and only if all
+       * of the conditions are met:
        *
-       * @param n
+       * (1) E is in the node set, and
+       * (2) E visibly utilizes the default namespace (i.e., it has no namespace prefix), and
+       * (3) E has no default namespace node in the node-set, and
+       * (4) the nearest output ancestor of E that visibly utilizes the
+       *     default namespace has a default namespace node in the node-set.
        */
-      public EC14nCtx(Map n) {
-         this.n = n;
+      if (!this._inclusiveNSSet.contains("xmlns")) {
+
+         // #default is not present in InclusiveNamespaces PrefixList
+         if (this._xpathNodeSet.contains(E)) {
+
+            // E is in the node set
+            if (E.getPrefix() == null) {
+
+               // it has no namespace prefix, i.e. E visibly utilizes the default namespace
+               Attr xmlns = E.getAttributeNodeNS(Constants.NamespaceSpecNS,
+                                                 "xmlns");
+
+               if (xmlns == null) {
+                  throw new CanonicalizationException(
+                     "c14n.XMLUtils.circumventBug2650forgotten");
+               }
+
+               if (xmlns.getValue().equals("")) {
+
+                  // it has no default namespace in the node set
+                  searchForNearestOutputAncestorWhichUtilizesDefault: for (
+                          Node ancestor = E.getParentNode();
+                                                                              (ancestor != null)
+                                                                              && (ancestor.getNodeType()
+                                                                                 == Node.ELEMENT_NODE);
+                                                                              ancestor = ancestor
+                                                                              .getParentNode()) {
+                     if (!this._xpathNodeSet.contains(ancestor)) {
+                        continue searchForNearestOutputAncestorWhichUtilizesDefault;
+                     }
+
+                     Element ancestorElement = (Element) ancestor;
+
+                     // now we are on an output ancestor
+                     if (ancestorElement.getPrefix() == null) {
+
+                        // it utilizes the default, so our search found an end, so we must break
+                        Attr xmlnsA = ancestorElement.getAttributeNodeNS(
+                           Constants.NamespaceSpecNS, "xmlns");
+
+                        if (xmlnsA == null) {
+                           throw new CanonicalizationException(
+                              "c14n.XMLUtils.circumventBug2650forgotten");
+                        }
+
+                        if (!xmlnsA.getValue().equals("")) {
+
+                           // has a default namespace
+                           if (this._xpathNodeSet.contains(xmlnsA)) {
+
+                              // in the node set
+                              result.add(xmlns);
+                           }
+                        }
+
+                        break searchForNearestOutputAncestorWhichUtilizesDefault;
+                     }
+                  }
+               } else {
+
+                  // !xmlns.getValue().equals("")
+                  //
+                  // the inclusivePrefixList does not contain the #default token,
+                  // but E *HAS* a non-empty default namespace in the node set.
+                  // now we must see what to do
+                  boolean foundAnOutputAncestor = false;
+
+                  searchForNearestOutputAncestorWhichUtilizesDefault: for (
+                          Node ancestor = E.getParentNode();
+                                                                              (ancestor != null)
+                                                                              && (ancestor.getNodeType()
+                                                                                 == Node.ELEMENT_NODE);
+                                                                              ancestor = ancestor
+                                                                              .getParentNode()) {
+                     if (!this._xpathNodeSet.contains(ancestor)) {
+                        continue searchForNearestOutputAncestorWhichUtilizesDefault;
+                     }
+
+                     Element ancestorElement = (Element) ancestor;
+                     Attr xmlnsA = ancestorElement.getAttributeNodeNS(
+                        Constants.NamespaceSpecNS, "xmlns");
+
+                     if (xmlnsA == null) {
+                        throw new CanonicalizationException(
+                           "c14n.XMLUtils.circumventBug2650forgotten");
+                     }
+
+                     // now we are on an output ancestor
+                     if (ancestorElement.getPrefix() == null) {
+
+                        // it utilizes the default, so our search found an end, so we must break
+                        foundAnOutputAncestor = true;
+
+                        boolean valueEquals =
+                           xmlnsA.getValue().equals(xmlns.getValue());
+                        boolean inNodeset = this._xpathNodeSet.contains(xmlnsA);
+
+                        // boolean alreadyOutputted = ((Set)this._renderedPrefixesForElement.get(ancestorElement)).contains(xmlns.getName());
+                        if (valueEquals) {
+                           if (inNodeset) {
+                              ;    // do nothing
+                           } else {
+                              ;
+                           }
+                        } else {
+                           if (inNodeset) {
+
+                              // has a different namespace value in the node set
+                              result.add(xmlns);
+
+                              if (xmlns.getPrefix() != null) {
+                                 namespacePrefixesOutputForCurrentElement.add(
+                                    xmlns.getName());
+                              }
+                           } else {
+                              ;
+                           }
+                        }
+
+                        break searchForNearestOutputAncestorWhichUtilizesDefault;
+                     }
+                  }
+
+                  if (!foundAnOutputAncestor) {
+
+                     // we did not find an output ancestor of E which utilizes
+                     // the default namespace, so we must output the non-empty
+                     // default namespace
+                     result.add(xmlns);
+
+                     if (xmlns.getPrefix() != null) {
+                        namespacePrefixesOutputForCurrentElement.add(
+                           xmlns.getName());
+                     }
+                  }
+               }
+            }
+         }
       }
 
-      /**
-       * Method copy
-       *
-       *
-       */
-      public EC14nCtx copy() {
+      /* ***********************************************************************
+       * Handle namespace axis
+       * ***********************************************************************/
+      handleNamespacesWhichAreIncludedInInclusiveNamespaces: for (int i = 0;
+                                                                     i < attrsLength;
+                                                                     i++) {
+         Attr N = (Attr) attrs.item(i);
 
-         EC14nCtx c = new EC14nCtx();
+         if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
 
-         c.n = new HashMap(this.n);
+            // only handle namespaces here
+            continue handleNamespacesWhichAreIncludedInInclusiveNamespaces;
+         }
 
-         return c;
+         if (C14nHelper.namespaceIsRelative(N)) {
+            Object exArgs[] = { E.getTagName(), N.getName(), N.getNodeValue() };
+
+            throw new CanonicalizationException(
+               "c14n.Canonicalizer.RelativeNamespace", exArgs);
+         }
+
+         if ("xml".equals(N.getLocalName())
+                 && Constants.XML_LANG_SPACE_SpecNS.equals(N.getNodeValue())) {
+
+            /* except omit namespace node with local name xml, which defines
+             * the xml prefix, if its string value is http://www.w3.org/XML/1998/namespace.
+             */
+            continue handleNamespacesWhichAreIncludedInInclusiveNamespaces;
+         }
+
+         if (N.getName().equals("xmlns") && N.getNodeValue().equals("")) {
+
+            // xmlns="" already handled
+            continue handleNamespacesWhichAreIncludedInInclusiveNamespaces;
+         }
+
+         if (!this._inclusiveNSSet.contains(N.getName())) {
+
+            /*
+             * The Exclusive XML Canonicalization method may receive an
+             * additional, possibly null, parameter InclusiveNamespaces PrefixList
+             * containing a list of namespace prefixes and/or a token indicating
+             * the presence of the default namespace.
+             * All namespace nodes appearing on this list are handled as provided in Canonical XML.
+             */
+            continue handleNamespacesWhichAreIncludedInInclusiveNamespaces;
+         }
+
+         if (!this._xpathNodeSet.contains(N)) {
+
+            // Consider a list L containing only namespace nodes in the axis and in the node-set
+            //
+            // only if N in the node set
+            continue handleNamespacesWhichAreIncludedInInclusiveNamespaces;
+         }
+
+         /* OK, now we have a 'real' namespace in N, no attrs, no xmlns=""
+          * and no xmlns:xml="http://www.w3.org/XML/1998/namespace"
+          */
+
+         /* A namespace node N is ignored if the nearest ancestor element of E
+          * that is in the node-set has a namespace node in the node-set with
+          * the same local name and value as N.
+          *
+          * Otherwise, process the namespace node N in the same way as an
+          * attribute node, except assign the local name xmlns to the default
+          * namespace node if it exists (in XPath, the default namespace node
+          * has an empty URI and local name).
+          */
+         boolean ignoreN = false;
+
+         lookForAncestorsInNodeset: for (Node ancestor = E.getParentNode();
+                                            (ancestor != null)
+                                            && (ancestor.getNodeType()
+                                                == Node.ELEMENT_NODE);
+                                            ancestor =
+                                               ancestor.getParentNode()) {
+            if (this._xpathNodeSet.contains(ancestor)) {
+               Attr NA = ((Element) ancestor).getAttributeNodeNS(
+                  Constants.NamespaceSpecNS, N.getLocalName());
+
+               if ((NA != null) && NA.getNodeValue().equals(N.getNodeValue())
+                       && this._xpathNodeSet.contains(NA)) {
+                  ignoreN = true;
+               }
+
+               break lookForAncestorsInNodeset;
+            }
+         }
+
+         if (!ignoreN) {
+            result.add(N);
+
+            if (N.getPrefix() != null) {
+               namespacePrefixesOutputForCurrentElement.add(N.getName());
+            }
+         }
       }
+
+      /* **********************************************************************
+       * [xmlns:* not present in the prefix list]                             *
+       * **********************************************************************/
+      Set visiblyUtilized = this.visiblyUtilized(E);
+
+      handleNamespacesWhichAreNotIncludedInInclusiveNamespaces: for (int i = 0;
+                                                                        i < attrsLength;
+                                                                        i++) {
+         Attr N = (Attr) attrs.item(i);
+
+         if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
+
+            // only handle namespaces here
+            continue handleNamespacesWhichAreNotIncludedInInclusiveNamespaces;
+         }
+
+         if (C14nHelper.namespaceIsRelative(N)) {
+            Object exArgs[] = { E.getTagName(), N.getName(), N.getNodeValue() };
+
+            throw new CanonicalizationException(
+               "c14n.Canonicalizer.RelativeNamespace", exArgs);
+         }
+
+         if (N.getName().equals("xmlns")) {
+
+            // xmlns already handled
+            continue handleNamespacesWhichAreNotIncludedInInclusiveNamespaces;
+         }
+
+         if ("xml".equals(N.getLocalName())
+                 && Constants.XML_LANG_SPACE_SpecNS.equals(N.getNodeValue())) {
+
+            /* except omit namespace node with local name xml, which defines
+             * the xml prefix, if its string value is http://www.w3.org/XML/1998/namespace.
+             */
+            continue handleNamespacesWhichAreNotIncludedInInclusiveNamespaces;
+         }
+
+         if (this._inclusiveNSSet.contains(N.getName())) {
+
+            // A namespace node N with a prefix that does not appear
+            continue handleNamespacesWhichAreNotIncludedInInclusiveNamespaces;
+         }
+
+         if (!this._xpathNodeSet.contains(N)) {
+
+            // c14n: Consider a list L containing only  namespace nodes in the axis and *IN THE NODE-SET*
+            continue handleNamespacesWhichAreNotIncludedInInclusiveNamespaces;
+         }
+
+         /*
+          * [xmlns:* not present in the prefix list]
+          * A namespace node N with a prefix that does not appear in the
+          * InclusiveNamespaces PrefixList is rendered if all of the conditions
+          * are met:
+          *
+          * (1)  Its parent element E is in the node-set, and
+          * (2)  N is visibly utilized by its parent element E, and
+          * (3a) the prefix has not yet been rendered by any output ancestor, or
+          * (3b) the nearest output ancestor of E that visibly utilizes the
+          *      namespace prefix does not have a namespace node in the node-set
+          *      with the same namespace prefix and value as N.
+          */
+         if (this._xpathNodeSet.contains(E)) {
+
+            // (1) Its parent element E is in the node-set, and
+            if (visiblyUtilized.contains(N.getName())) {
+
+               // (2) N is visibly utilized by its parent element E
+               boolean renderedByAnOutputAncestor = false;
+
+               if (E != this._documentElement) {
+
+                  // this ensure that we have ancestors where we have to look
+                  // whether the prefix has been rendered
+                  for (Node ancestor = E.getParentNode(); ancestor != this._doc;
+                          ancestor = ancestor.getParentNode()) {
+                     if (this._xpathNodeSet.contains(ancestor)) {
+
+                        // which prefixes have been rendered by ancestor
+                        HashSet prefixesRenderedInAncestor =
+                           (HashSet) this._renderedPrefixesForElement.get(
+                              ancestor);
+
+                        if (prefixesRenderedInAncestor.contains(N.getName())) {
+
+                           // the prefix HAS been rendered by an output ancestor
+                           renderedByAnOutputAncestor = true;
+
+                           break;
+                        }
+                     }
+                  }
+               }
+
+               if (!renderedByAnOutputAncestor) {
+                  result.add(N);
+
+                  if (N.getPrefix() != null) {
+                     namespacePrefixesOutputForCurrentElement.add(N.getName());
+                  }
+
+                  continue handleNamespacesWhichAreNotIncludedInInclusiveNamespaces;
+               }
+
+               // now handle (3b)
+               searchForNearestOutputAncestorWhichUtilizesPrefix: for (
+                       Node ancestor = E.getParentNode();
+                                                                          (ancestor != null)
+                                                                          && (ancestor.getNodeType()
+                                                                             == Node.ELEMENT_NODE);
+                                                                          ancestor = ancestor
+                                                                          .getParentNode()) {
+                  if (!this._xpathNodeSet.contains(ancestor)) {
+                     continue searchForNearestOutputAncestorWhichUtilizesPrefix;
+                  }
+
+                  Element ancestorElement = (Element) ancestor;
+
+                  // now we are on an output ancestor
+                  Set utilizedByAncestor =
+                     this.visiblyUtilized(ancestorElement);
+
+                  if (utilizedByAncestor.contains(N.getName())) {
+
+                     // it utilizes the prefix, so our search found an end, so we must break
+                     Attr xmlnsA = ancestorElement.getAttributeNodeNS(
+                        Constants.NamespaceSpecNS, N.getLocalName());
+
+                     if (xmlnsA == null) {
+
+                        // the nearest output ancestor does not have a namespace node
+                        result.add(N);
+
+                        if (N.getPrefix() != null) {
+                           namespacePrefixesOutputForCurrentElement.add(
+                              N.getName());
+                        }
+
+                        continue handleNamespacesWhichAreNotIncludedInInclusiveNamespaces;
+                     }
+
+                     boolean inNodeSet = this._xpathNodeSet.contains(xmlnsA);
+                     final boolean prefixEquals = true;
+                     boolean valueEquals =
+                        N.getValue().equals(xmlnsA.getValue());
+
+                     if (!inNodeSet && prefixEquals && valueEquals) {
+                        result.add(N);
+
+                        if (N.getPrefix() != null) {
+                           namespacePrefixesOutputForCurrentElement.add(
+                              N.getName());
+                        }
+
+                        continue handleNamespacesWhichAreNotIncludedInInclusiveNamespaces;
+                     }
+
+                     break searchForNearestOutputAncestorWhichUtilizesPrefix;
+                  }
+               }    // searchForNearestOutputAncestorWhichUtilizesPrefix
+            }
+         }
+      }
+
+      /*
+       * Handle the regular attributes
+       */
+      for (int i = 0; i < attrsLength; i++) {
+         Attr attr = (Attr) attrs.item(i);
+
+         if (!Constants.NamespaceSpecNS.equals(attr.getNamespaceURI())) {
+
+            // we have an attribute, not a namespace
+            if (this._xpathNodeSet.contains(attr)) {
+
+               // output attributes which are in the node set
+               result.add(attr);
+            }
+         }
+      }
+
+      Object resultAsArray[] = result.toArray();
+      Object sortedResultAsArray[] = C14nHelper.sortAttributes(resultAsArray);
+
+      return sortedResultAsArray;
    }
 }
