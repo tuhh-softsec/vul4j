@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.1 2001/05/03 00:28:32 craigmcc Exp $
+        $Id: build.xml,v 1.2 2001/05/12 16:45:34 sanders Exp $
 -->
 
 
@@ -33,8 +33,8 @@
   <property name="jaxp.jaxp.jar"           value="${jaxp.home}/jaxp.jar"/>
   <property name="jaxp.parser.jar"         value="${jaxp.home}/crimson.jar"/>
   <property name="junit.jar"               value="${junit.home}/junit.jar"/>
-  <property name="commons-beanutils.jar"   value="${beanutils.home}/build/commons-beanutils.jar"/>
-  <property name="commons-collections.jar" value="${collections.home}/build/commons-collections.jar"/>
+  <property name="commons-beanutils.jar"   value="${beanutils.home}/dist/commons-beanutils.jar"/>
+  <property name="commons-collections.jar" value="${collections.home}/dist/commons-collections.jar"/>
 
 
 <!-- ========== Component Declarations ==================================== -->
