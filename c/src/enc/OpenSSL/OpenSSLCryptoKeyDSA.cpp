@@ -67,6 +67,8 @@
  * $Id$
  *
  */
+#include <xsec/framework/XSECDefs.hpp>
+#if defined (HAVE_OPENSSL)
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp>
@@ -201,21 +203,6 @@ bool OpenSSLCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 	unsigned char sigVal[512];
 	int sigValLen;
 	int err;
-
-
-	/*
-	BIO * b64 = BIO_new(BIO_f_base64());
-	BIO * bmem = BIO_new(BIO_s_mem());
-
-	BIO_set_mem_eof_return(bmem, 0);
-	b64 = BIO_push(b64, bmem);
-
-	// Translate signature from Base64
-
-	BIO_write(bmem, base64Signature, sigLen);
-	sigValLen = BIO_read(b64, sigVal, 512);
-
-  */
 
 	EVP_ENCODE_CTX m_dctx;
 	int rc;
@@ -382,3 +369,5 @@ XSECCryptoKey * OpenSSLCryptoKeyDSA::clone() {
 	return ret;
 
 }
+
+#endif /* HAVE_OPENSSL */

@@ -68,6 +68,9 @@
  *
  */
 
+#include <xsec/framework/XSECDefs.hpp>
+#if defined (HAVE_OPENSSL)
+
 #include <xsec/framework/XSECError.hpp>
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoProvider.hpp>
@@ -171,3 +174,5 @@ XSECCryptoBase64 * OpenSSLCryptoProvider::base64() {
 	return ret;
 
 }
+
+#endif /* HAVE_OPENSSL */

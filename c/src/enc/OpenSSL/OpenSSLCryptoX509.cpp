@@ -69,6 +69,9 @@
  */
 
 #include <xsec/framework/XSECDefs.hpp>
+#if defined (HAVE_OPENSSL)
+
+#include <xsec/framework/XSECDefs.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
@@ -269,4 +272,4 @@ XSECCryptoKey * OpenSSLCryptoX509::clonePublicKey() {
 
 }
 
-
+#endif /* HAVE_OPENSSL */

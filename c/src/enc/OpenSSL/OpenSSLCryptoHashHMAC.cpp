@@ -64,11 +64,13 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
+
+#include <xsec/framework/XSECDefs.hpp>
+#if defined (HAVE_OPENSSL)
+
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoHashHMAC.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
@@ -189,3 +191,4 @@ XSECCryptoHash::HashType OpenSSLCryptoHashHMAC::getHashType(void) {
 
 }
 
+#endif /* HAVE_OPENSSL */

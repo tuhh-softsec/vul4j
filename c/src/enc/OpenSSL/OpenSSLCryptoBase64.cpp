@@ -70,6 +70,9 @@
  *
  */
 
+#include <xsec/framework/XSECDefs.hpp>
+#if defined (HAVE_OPENSSL)
+
 #include <xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 
@@ -225,3 +228,4 @@ BIGNUM * OpenSSLCryptoBase64::b642BN(char * b64in, unsigned int len) {
 
 }
 
+#endif /* HAVE_OPENSSL */

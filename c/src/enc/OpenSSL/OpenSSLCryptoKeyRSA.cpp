@@ -68,6 +68,9 @@
  *
  */
 
+#include <xsec/framework/XSECDefs.hpp>
+#if defined (HAVE_OPENSSL)
+
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
@@ -398,3 +401,5 @@ XSECCryptoKey * OpenSSLCryptoKeyRSA::clone() {
 	return ret;
 
 }
+
+#endif /* HAVE_OPENSSL */

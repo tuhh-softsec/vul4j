@@ -64,11 +64,12 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
+
+#include <xsec/framework/XSECDefs.hpp>
+#if defined (HAVE_OPENSSL)
 
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #include <xsec/framework/XSECError.hpp>
@@ -106,3 +107,4 @@ XSECCryptoKey * OpenSSLCryptoKeyHMAC::clone() {
 
 }
 
+#endif /* HAVE_OPENSSL */
