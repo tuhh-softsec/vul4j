@@ -1,7 +1,7 @@
 <project name="Functor" default="test" basedir=".">
 <!--
   Commons-Functor Ant Build File
-  $Id: build.xml,v 1.8 2003/02/18 19:45:15 rwaldhoff Exp $
+  $Id: build.xml,v 1.9 2003/02/27 13:09:57 rwaldhoff Exp $
 -->
 
 <!-- ========== Initialize Properties ===================================== -->
@@ -49,7 +49,7 @@
   <property name="conf.home"               value="src/conf"/>
 
   <!-- The base directory for distribution targets -->
-  <property name="dist.home"               value="${build.home}/dist"/>
+  <property name="dist.home"               value="dist"/>
 
   <!-- The base directory for component sources -->
   <property name="source.home"             value="src/java"/>
