@@ -207,6 +207,54 @@ DOMDocument * XSECSOAPRequestorSimple::parseAndUnwrap(const char * buf, unsigned
 		throw XSECException(XSECException::HTTPURIInputStreamError,
 							"Could not find message within SOAP body");
 
+	/* See if this is a soap fault */
+	if (strEquals(e->getLocalName(), "Fault")) {
+
+		// Something has gone wrong somewhere!
+		safeBuffer sb;
+		sb.sbTranscodeIn("SOAP Fault : ");
+
+		// Find the fault code
+
+		e = findFirstElementChild(e);
+		while (e != NULL && !strEquals(e->getLocalName(), "Code"))
+			e = findNextElementChild(e);
+		
+		if (e != NULL) {
+			DOMNode * c = findFirstElementChild(e);
+			while (c != NULL && !strEquals(c->getLocalName(), "Value"))
+				c = findNextElementChild(c);
+			if (c != NULL) {
+				DOMNode * t = findFirstChildOfType(c, DOMNode::TEXT_NODE);
+				if (t != NULL) {
+					sb.sbXMLChCat(t->getNodeValue());
+					sb.sbXMLChCat(" : ");
+				}
+			}
+		}
+
+		// Find the reason
+		while (e != NULL && !strEquals(e->getLocalName(), "Reason"))
+			e = findNextElementChild(e);
+
+		if (e != NULL) {
+			DOMNode * t = findFirstChildOfType(e, DOMNode::TEXT_NODE);
+			if (t != NULL) {
+				sb.sbXMLChCat(t->getNodeValue());
+			}
+
+		}
+
+		retDoc->release();
+
+		char * msg = XMLString::transcode(sb.rawXMLChBuffer());
+		ArrayJanitor<char> j_msg(msg);
+
+		throw XSECException(XSECException::HTTPURIInputStreamError,
+							msg);
+	}
+
+
 	retDoc->appendChild(retDoc->importNode(e, true));
 
 	return retDoc;
