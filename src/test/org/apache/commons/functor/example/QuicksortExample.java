@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/Attic/Quicksort.java,v 1.7 2003/03/04 23:11:14 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/QuicksortExample.java,v 1.1 2003/03/12 00:12:44 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -82,7 +82,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  */
 
 /* 
- * Here's an example of the Quicksort sorting algorithm, implemented using
+ * Here's an example of the QuicksortExample sorting algorithm, implemented using
  * commons-functor.
  * 
  * We'll write this quicksort implementation in a literate programming style,
@@ -98,10 +98,10 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
  * <p> 
  * See the extensive in line comments for details.
  * 
- * @version $Revision: 1.7 $ $Date: 2003/03/04 23:11:14 $
+ * @version $Revision: 1.1 $ $Date: 2003/03/12 00:12:44 $
  * @author Rodney Waldhoff
  */
-public class Quicksort extends TestCase {
+public class QuicksortExample extends TestCase {
 
 /*
  * Let's declare the constructor and suite() methods we need
@@ -109,12 +109,12 @@ public class Quicksort extends TestCase {
  * others:
  */
 
-    public Quicksort(String testName) {
+    public QuicksortExample(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(Quicksort.class);
+        return new TestSuite(QuicksortExample.class);
     }
 
  
@@ -138,7 +138,7 @@ public class Quicksort extends TestCase {
  
 /*
  * In "test first" style, let's start with the some functional descriptions
- * of what'd we'd like our Quicksort to do, expressed as unit tests.
+ * of what'd we'd like our QuicksortExample to do, expressed as unit tests.
  * 
  * In our tests, we'll use a "quicksort" method which takes a List and
  * returns a (new) sorted List.  We'll define that method a bit later.
@@ -354,7 +354,7 @@ public class Quicksort extends TestCase {
          */
         System.out.println();        
         System.out.println(
-            "Quicksort Example: Sorted " + COUNT + 
+            "QuicksortExample Example: Sorted " + COUNT + 
             " lists of " + SIZE + 
             " elements in " + elapsed + " millis (" + 
             avgmillis + 

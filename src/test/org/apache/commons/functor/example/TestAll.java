@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.2 2003/03/04 21:33:56 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.3 2003/03/12 00:12:44 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/03/04 21:33:56 $
+ * @version $Revision: 1.3 $ $Date: 2003/03/12 00:12:44 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -73,7 +73,7 @@ public class TestAll extends TestCase {
         TestSuite suite = new TestSuite();
 
         suite.addTest(FlexiMapExample.suite());
-        suite.addTest(Quicksort.suite());
+        suite.addTest(QuicksortExample.suite());
         
         return suite;
     }
