@@ -151,7 +151,7 @@ public class DAGTest extends TestCase
         dag.addEdge( "f", "g" );
         
         
-        List actual = dag.getPredessorLabels(  "b"  );
+        List actual = dag.getPredecessorLabels( "b"  );
         
         List expected = new ArrayList();
 
