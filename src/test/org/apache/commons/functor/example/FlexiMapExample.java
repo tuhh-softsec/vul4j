@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.3 2003/03/05 00:16:38 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/FlexiMapExample.java,v 1.4 2003/03/05 01:12:47 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -82,7 +82,7 @@ import org.apache.commons.functor.core.RightIdentityFunction;
 import org.apache.commons.functor.core.composite.ConditionalUnaryFunction;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/03/05 00:16:38 $
+ * @version $Revision: 1.4 $ $Date: 2003/03/05 01:12:47 $
  * @author Rodney Waldhoff
  */
 public class FlexiMapExample extends TestCase {
@@ -204,6 +204,15 @@ public class FlexiMapExample extends TestCase {
 
 	}
 
+	public void testStringConcatMap() {
+		Map map = makeStringConcatMap();
+		map.put("key", "value 1");
+		assertEquals("value 1",map.get("key"));
+		map.put("key", "value 2");
+		assertEquals("value 1, value 2",map.get("key"));
+		map.put("key", "value 3");
+		assertEquals("value 1, value 2, value 3",map.get("key"));
+	}
 
     static class FlexiMap implements Map {
 
@@ -224,9 +233,9 @@ public class FlexiMapExample extends TestCase {
         }        
         
         public Object put(Object key, Object value) {
-            Object oldvalue = get(key);
+            Object oldvalue = proxiedMap.get(key);
             proxiedMap.put(key, onPut.evaluate(oldvalue, value));
-            return oldvalue;
+            return onGet.evaluate(key,oldvalue);
         }
 
         public Object get(Object key) {
@@ -336,6 +345,33 @@ public class FlexiMapExample extends TestCase {
 				}
 			},
 			null
+		);
+	}
+
+	private Map makeStringConcatMap() {
+		return new FlexiMap(
+			new BinaryFunction() {
+				public Object evaluate(Object oldval, Object newval) {
+					StringBuffer buf = null;
+					if(null == oldval) {
+						buf = new StringBuffer();
+					} else {
+						buf = (StringBuffer)oldval;
+						buf.append(", ");
+					}
+					buf.append(newval);
+					return buf;
+				}
+			},
+			new BinaryFunction() {
+				public Object evaluate(Object key, Object val) {
+					if(null == val) {
+						return null;
+					} else {
+						return ((StringBuffer)val).toString();
+					}
+				}
+			}
 		);
 	}
 
