@@ -57,7 +57,7 @@
 
 # Process this file with autoconf to produce a configure script
 
-AC_INIT([[XML-Security-C]], [0.0.3], [berin@ozemail.com.au], [xml-security-c])
+AC_INIT([[XML-Security-C]], [0.2.0], [berin@ozemail.com.au], [xml-security-c])
 
 # framework is a unique directory in src/ - allows configure to check
 # it is running in the correct directory
@@ -140,6 +140,8 @@ objsuffix=".${OBJEXT}"
 # Set up versions
 
 package_version_major=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $1}'`
+package_version_medium=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $2}'`
+package_version_minor=`echo ${PACKAGE_VERSION} | ${AWK} -F '.' '{print $3}'`
 
 # "cache" the check for gcc -E
 
@@ -167,7 +169,8 @@ case "${host}" in
 						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
 					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
 						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						if test "x${CXX}" = "xg++"; then
+						if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
+						# if test "x${CXX}" = "xg++"; then
 							PLATFORM_OPTIONS=["-Wall"]
 							PIC=["-fPIC"]
 						else
@@ -187,7 +190,8 @@ case "${host}" in
 						lib_name="lib${PACKAGE_TARNAME}.so.${PACKAGE_VERSION}"
 					    lib_major_name="lib${PACKAGE_TARNAME}.so.${package_version_major}"
 						lib_short_name="lib${PACKAGE_TARNAME}.so"
-						if test "x${CXX}" = "xg++"; then
+						#if test "x${CXX}" = "xg++"; then
+						if test "x${ac_cv_cxx_compiler_gnu}" = "xyes"; then
 							PLATFORM_OPTIONS=["-Wall"]
 							PIC=["-fPIC"]
 						else
@@ -314,6 +318,7 @@ CPPFLAGS=["${CPPFLAGS} -I${OPENSSL}/include"]
 
 AC_TRY_CPP([#include <openssl/opensslv.h>], 
    openssl_found=yes 
+   AC_DEFINE(HAVE_OPENSSL)
    LDFLAGS="${LDFLAGS} -L${OPENSSL} -lcrypto"
    [AC_MSG_RESULT([found])], 
    CPPFLAGS=$OLD_CPPFLAGS
@@ -326,6 +331,7 @@ if test -z $openssl_found ; then
 AC_MSG_CHECKING([for OpenSSL in system includes])
 AC_TRY_CPP([#include <openssl/opensslv.h>], 
    openssl_found=yes 
+   AC_DEFINE(HAVE_OPENSSL)
    LDFLAGS="${LDFLAGS} -lcrypto"
    [AC_MSG_RESULT([found])],
    [AC_MSG_RESULT([no])]
@@ -475,6 +481,11 @@ AC_SUBST(shlibsuffix)
 package_version=${PACKAGE_VERSION}
 AC_SUBST(package_version)
 AC_SUBST(package_version_major)
+AC_DEFINE_UNQUOTED(XSEC_VERSION, "$package_version")
+AC_DEFINE_UNQUOTED(XSEC_VERSION_MAJOR, $package_version_major)
+AC_DEFINE_UNQUOTED(XSEC_VERSION_MEDIUM, $package_version_medium)
+AC_DEFINE_UNQUOTED(XSEC_VERSION_MINOR, $package_version_minor)
+
 package_name=${PACKAGE_NAME}
 AC_SUBST(package_name)
 package_tarname=${PACKAGE_TARNAME}

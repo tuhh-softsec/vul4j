@@ -157,7 +157,7 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #ifdef XSEC_NO_XALAN
 
-ostream& operator<< (ostream& target, const XMLCh * s)
+std::ostream& operator<< (std::ostream& target, const XMLCh * s)
 {
     char *p = XMLString::transcode(s);
     target << p;
@@ -467,7 +467,7 @@ int evaluate(int argc, char ** argv) {
 		strcat(baseURI, filename);
 
 		// Find any ':' and "\" characters
-		int lastSlash;
+		int lastSlash = 0;
 		for (unsigned int i = 8; i < strlen(baseURI); ++i) {
 			if (baseURI[i] == '\\') {
 				lastSlash = i;

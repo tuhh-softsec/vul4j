@@ -121,13 +121,13 @@
 XALAN_USING_XALAN(XPathEvaluator)
 XALAN_USING_XALAN(XalanTransformer)
 
+#endif
+
 using std::ostream;
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::flush;
-
-#endif
 
 // Uplift entire program into Xerces namespace
 
@@ -1171,7 +1171,7 @@ int main(int argc, char **argv) {
 	cout << doc;
 
 	delete [] gEncodingName;
-	delete [] (void *) encNameStr;
+	delete [] (XMLCh *) encNameStr;   // Cast to allow delete[] const
 	delete formatTarget;
 
 #if defined (_WIN32)

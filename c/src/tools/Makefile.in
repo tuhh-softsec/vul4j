@@ -99,7 +99,8 @@ alltools: ${BINDIR}/xtest \
           ${BINDIR}/c14n \
           ${BINDIR}/checksig \
           ${BINDIR}/templatesign \
-		  ${BINDIR}/txfmout
+		  ${BINDIR}/txfmout \
+		  ${BINDIR}/siginf
 
 compile: ${OBJ_FILES}
 
@@ -142,6 +143,14 @@ ${OBJDIR}/txfmout${OBJSUFFIX}: txfmout/txfmout.cpp
 	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
 
 ${BINDIR}/txfmout: ${OBJDIR}/txfmout${OBJSUFFIX}
+	$(LINK) $(LDFLAGS) $(LDXSEC) $< -o $@
+
+#============================= siginf =============================
+
+${OBJDIR}/siginf${OBJSUFFIX}: siginf/siginf.cpp
+	${CC1} -c ${CPPFLAGS} ${XSEC_INCL} -o ${@} $<
+
+${BINDIR}/siginf: ${OBJDIR}/siginf${OBJSUFFIX}
 	$(LINK) $(LDFLAGS) $(LDXSEC) $< -o $@
 
 #============================= Clean =============================

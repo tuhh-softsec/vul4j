@@ -66,6 +66,11 @@
  *
  */
 
+#undef XSEC_VERSION
+#undef XSEC_VERSION_MAJOR
+#undef XSEC_VERSION_MEDIUM
+#undef XSEC_VERSION_MINOR
+
 /*
  * The following defines whether Xalan integration is required.
  *
@@ -74,6 +79,14 @@
  */
 
 #undef XSEC_NO_XALAN
+
+/*
+ * Define presence of cryptographic providers
+ */
+
+#undef HAVE_OPENSSL
+
+#undef HAVE_WINCAPI
 
 /*
  * Macros used to determine what header files exist on this

@@ -70,7 +70,9 @@
  *
  */
 
-#define XSEC_VERSION	0.11
+#define XSEC_VERSION	     "0.2.0"
+#define XSEC_VERSION_MAJOR   
+#define XSEC_VERSION_MINOR
 
 /*
  * The following defines whether Xalan integration is required.
@@ -80,6 +82,14 @@
  */
 
 /* #define XSEC_NO_XALAN */
+
+/*
+ * Define presence of cryptographic providers
+ */
+
+#define HAVE_OPENSSL 1
+
+#define HAVE_WINCAPI 1
 
 /*
  * Macros used to determine what header files exist on this
@@ -92,10 +102,3 @@
 /* Windows direct.h */
 #define HAVE_DIRECT_H 1
 
-/*
- * Macros used to identify what crypto providers are available
- */
-
-#define HAVE_OPENSSL 1
-
-#define HAVE_WINCAPI 1

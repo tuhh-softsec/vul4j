@@ -133,21 +133,6 @@ XALAN_USING_XALAN(XalanTransformer)
 
 #endif
 
-#if defined (HAVE_OPENSSL)
-// OpenSSL
-
-#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
-#	include <openssl/err.h>
-
-#endif
-
-#if defined (HAVE_WINCAPI)
-
-#	include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
-#	include <xsec/enc/WinCAPI/WinCAPICryptoKeyHMAC.hpp>
-
-#endif
-
 #ifdef XSEC_NO_XALAN
 
 ostream& operator<< (ostream& target, const XMLCh * s)
@@ -280,7 +265,6 @@ void outputTransform(DSIGTransform * t, int level) {
 
 	case (TRANSFORM_XSLT) :
 		{
-			DSIGTransformXSL *xslt = (DSIGTransformXSL *) t;
 
 			cout << "XSLT" << endl;
 			// Really should serialise and output stylesheet.
@@ -545,7 +529,7 @@ int evaluate(int argc, char ** argv) {
 
 	catch (XSECException &e) {
 		char * msg = XMLString::transcode(e.getMsg());
-		cerr << "An error occured during signature verification\n   Message: "
+		cerr << "An error occured during signature loading\n   Message: "
 		<< msg << endl;
 		delete [] msg;
 		errorsOccured = true;
