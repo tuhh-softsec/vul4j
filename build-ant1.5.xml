@@ -11,22 +11,26 @@
     <!-- G L O B A L    P R O P E R T I E S -->
     <!-- directory properties -->
     <property name="dir.src"            value="${basedir}/src" />
+    <property name="dir.src.test"       value="${basedir}/src_unitTests" />
+    <property name="dir.src.samples"    value="${basedir}/src_samples" />
     <property name="dir.libs"           value="${basedir}/libs" />
-    <property name="dir.tests"          value="${basedir}/src_unitTests" />
-    <property name="dir.samples"        value="${basedir}/src_samples" />
     <property name="dir.data"           value="${basedir}/data" />
     <property name="dir.build"          value="${basedir}/build" />
     <property name="dir.build.bin"      value="${dir.build}/classes" />
     <property name="dir.build.libs"     value="${dir.build}/libs" />
     <property name="dir.build.test"     value="${dir.build}/test" />
     <property name="dir.build.docs"     value="${dir.build}/docs" />
+    <property name="dir.build.docs.xml" value="${dir.build.docs}/xml" />
+    <property name="dir.build.docs.html" value="${dir.build.docs}/html" />
     <property name="dir.build.src"      value="${dir.build}/src" />
     <property name="dir.build.dist"     value="${dir.build}/dist" />
+    <property name="dir.build.junit.xml"  value="${dir.build.docs.xml}/junit" />
+    <property name="dir.build.junit.html" value="${dir.build.docs.html}/junit" />
+    <property name="dir.build.javadoc"    value="${dir.build.docs.html}/javadoc" />
 
     <!-- library properties -->
     <property name="lib.logging"        value="${dir.libs}/commons-logging.jar" />
     <property name="lib.logging.api"    value="${dir.libs}/commons-logging-api.jar" />
-    <property name="lib.junit"          value="${dir.libs}/junit3.7.jar" />
     <property name="lib.xalan.1"        value="${dir.libs}/xalan.jar" />
     <property name="lib.xalan.2"        value="${dir.libs}/xml-apis.jar" />
     <property name="lib.xerces.1"       value="${dir.libs}/xercesImpl.jar" />
@@ -34,6 +38,10 @@
     <property name="lib.jce"            value="${dir.libs}/${jce.provider.prefix}-${jce.provider.jar}" />
     <property name="lib.style"          value="${dir.libs}/style-apachexml.jar" />
     <property name="lib.stylebook"      value="${dir.libs}/stylebook-1.0-b3_xalan-2.jar" />
+    <!--property name="lib.junit"			value="${ant.home}/lib/junit.jar" /-->
+    
+    <!-- javadoc properties -->
+    <property name="javadoc.packages" value=" org.apache.xml.security.Init, org.apache.xml.security.algorithms, org.apache.xml.security.c14n, org.apache.xml.security.encryption, org.apache.xml.security.exceptions, org.apache.xml.security.keys, org.apache.xml.security.keys.content, org.apache.xml.security.keys.content.keyvalues, org.apache.xml.security.keys.content.x509, org.apache.xml.security.keys.keyresolver, org.apache.xml.security.keys.storage, org.apache.xml.security.signature, org.apache.xml.security.transforms, org.apache.xml.security.transforms.params, org.apache.xml.security.utils, org.apache.xml.security.utils.resolver "/>
 
     <!-- build variable properties -->
 
@@ -71,14 +79,16 @@
     </path >
     <path id="id.classpath.sig" >
     </path >
-    <path id="id.classpath.test" >
-        <pathelement path="${lib.test}" />
-    </path >
     <path id="id.classpath" >
         <path refid="id.classpath.common" />
         <path refid="id.classpath.crypt" />
         <path refid="id.classpath.sig" />
-        <path refid="id.classpath.test" />
+    </path >
+    <path id="id.classpath.test" >
+        <path refid="id.classpath" />
+        <pathelement path="${dir.build.bin}"/>
+        <!--pathelement path="${lib.junit}"/ -->
+        <pathelement path="${dir.build.test}"/>
     </path >
 
 
@@ -140,9 +150,103 @@
                                **/org/apache/xml/security/resource/schema/CVS" />
         </copy >
     </target >
+    
+    <!-- tests -->
+    <target name="build.test"
+    		depends="build.src">
+    	<javac srcdir="${dir.src.test}"
+               destdir="${dir.build.test}">
+        	<classpath refid="id.classpath.test" />
+        	<include name="**/org/apache/xml/security/**/*.java" />
+        </javac>
+        <copy todir="${dir.build.test}">
+	      	<fileset dir="${dir.src.test}" includes="**/*.properties"/>
+      		<fileset dir="${dir.src.test}" includes="**/*.xml"/>
+      		<fileset dir="${dir.src.test}" includes="**/*.zip"/>
+    	</copy>
+    </target>
+  
+	<!-- test targets -->  
+	<!-- big test -->
+	<target name="test"
+			depends="build.test"
+			description="Starts all Junit tests">
+	    <delete dir="${dir.build.junit.xml}"/>
+	    <delete dir="${dir.build.junit.html}"/>
+	    <mkdir dir="${dir.build.junit.xml}"/>
+	    <mkdir dir="${dir.build.junit.html}"/>
+	    <!-- The unit tests include so-called interoperability tests against
+	         cryptographic values generated using software from other vendors.
+	         This package includes many of these vectors, but not the ones from
+	         the IBM alphaWorks XML Security Suite. They are not included because
+	         IBM even has these signatures under copyright.
+	         If you want to test against IBM, download xss4j from
+	
+	         http://www.alphaworks.ibm.com/tech/xmlsecuritysuite
+	
+	         and put the files into the
+	
+	         data/com/ibm/xss4j-20030127/
+	
+	         directory. If the file enveloped-rsa.sig is found in that directory,
+	         IBM is 'magically' included in the test ;-))
+	    -->
+	    <available file="data/com/ibm/xss4j-20030127/enveloped-rsa.sig" property="ibm.available"/>
+	    <junit filtertrace="true" fork="true" printsummary="on" failureproperty="build.test.failed">
+	       <jvmarg value="-Djava.compiler=NONE"/>
+	       <sysproperty key="basedir" value="${basedir}"/>
+	       <classpath refid="id.classpath.test"/>
+	       <formatter type="xml"/>
+	       <!-- Also put output to screen -->
+	       <formatter type="plain" usefile="false"/>
+	       <batchtest fork="yes" todir="${dir.build.junit.xml}">
+	         <fileset dir="${dir.src.test}">
+	           <include name="**/*Test*.java"/>
+	           <include name="org/apache/xml/security/test/c14n/implementations/ExclusiveC14NInterop.java"/>
+	           <exclude name="org/apache/xml/security/test/*Test*.java"/>
+	           <exclude name="org/apache/xml/security/test/interop/InteropTest.java"/>
+	           <exclude name="**/TestVectorResolver.java"/>
+	           <exclude name="**/IBMTest.java"/>
+	         </fileset>
+	       </batchtest>
+	       <test if="ibm.available" name="org.apache.xml.security.test.interop.IBMTest" todir="${dir.build.junit.xml}"/>
+	    </junit>
+	    <junitreport todir="${dir.build.junit.xml}">
+	      <fileset dir="${dir.build.junit.xml}">
+	        <include name="TEST-*.xml"/>
+	      </fileset>
+	      <report format="frames" todir="${dir.build.junit.html}"/>
+	    </junitreport>
+	    <fail if="build.test.failed" message="Unit Tests Failed"/>
+	</target>
+  
+    <target name="test_exc_c14n"
+    		depends="build.test"
+    		description="Runs exclusive c14n interop (Y1, Y2, Y3, Y4)">
+       	<java classname="org.apache.xml.security.test.c14n.implementations.ExclusiveC14NInterop" failonerror="true" fork="yes" taskname="junit">
+          	<classpath refid="classpath.test"/>
+       	</java>
+    </target>
+
+    <target name="test_xenc"
+    		depends="build.test"
+    		description="Runs encryption interop and unit tests">
+       <java classname="org.apache.xml.security.test.EncryptionTest" failonerror="true" fork="yes" taskname="junit">
+          <classpath refid="classpath.test"/>
+       </java>
+    </target>
 
     <!-- documentation -->
-    <target name="build.docs" />
+    <target name="build.docs">
+		<mkdir dir="${dir.build.javadoc}"/>
+		<javadoc classpathref="id.classpath"
+				 destdir="${dir.build.javadoc}"
+				 packagenames="${javadoc.packages}">
+        	<sourcepath>
+          		<pathelement location="${dir.src}"/>
+	        </sourcepath>
+    	</javadoc>
+    </target>    
 
     <!-- jars -->
     <target name="build.jar"
@@ -165,7 +269,7 @@
     <target name="jar"              depends="build.jar" />
     <target name="dist"             depends="build.dist" />
     <target name="clean"            depends="env.rm.dirs"/>
-    <target name="test" />
+    <target name="gump"				depends="clean, docs, test"/>
 
     <!-- distribution targets -->
     <target name="build.dist"       depends="build.all" />
