@@ -95,6 +95,11 @@ public abstract class AbstractUnArchiver extends AbstractLogEnabled
             throw new ArchiverException( "The source must not be a directory." );
         }
 
+        if ( ! sourceFile.exists() )
+        {
+            throw new ArchiverException( "The source doesn't exists." );
+        }
+
         if ( destDirectory == null && destFile == null )
         {
             throw new ArchiverException( "The destination isn't define." );

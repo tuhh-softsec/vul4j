@@ -25,6 +25,8 @@ import java.io.File;
  */
 public interface Archiver
 {
+    String ROLE = Archiver.class.getName();
+
     void createArchive() throws ArchiverException, IOException;
 
     void addDirectory( File directory ) throws Exception;

@@ -25,6 +25,8 @@ import java.io.File;
  */
 public interface UnArchiver
 {
+    String ROLE = UnArchiver.class.getName();
+
     void extract() throws ArchiverException, IOException;
 
     File getDestDirectory();
