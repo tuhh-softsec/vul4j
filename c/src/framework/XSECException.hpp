@@ -117,7 +117,8 @@ public:
 		ExpectedXKMSChildNotFound	= 52,
 		MessageAbstractTypeError	= 53,
 		RequestAbstractTypeError	= 54,
-		UnknownError				= 55		// Must be last!
+		ResultTypeError				= 55,
+		UnknownError				= 56		// Must be last!
 
 	};
 

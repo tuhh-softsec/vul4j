@@ -86,6 +86,7 @@ const char * XSECExceptionStrings [] = {
 	"An expected XKMS DOM node or attribute was not found",
 	"An error occurred processing a MessageAbstractType object",
 	"An error occurred processing a RequestAbstractType object",
+	"An error occurred processing a ResultType object",
 	"Unknown Error type",
 
 };
