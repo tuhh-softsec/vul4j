@@ -135,7 +135,7 @@ public :
 	 * @see XSECKeyInfoResolver::clone()
 	 */
 
-	virtual XSECKeyInfoResolver * clone(void);
+	virtual XSECKeyInfoResolver * clone(void) const;
 
 	//@}
 

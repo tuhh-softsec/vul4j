@@ -654,6 +654,18 @@ SOURCE=..\..\..\..\src\utils\XSECXPathNodeList.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\..\..\src\framework\XSECAlgorithmHandler.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\framework\XSECAlgorithmMapper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\framework\XSECAlgorithmMapper.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\framework\XSECDefs.hpp
 
 !IF  "$(CFG)" == "xsec_lib - Win32 Release"
@@ -710,6 +722,10 @@ InputPath=..\..\..\..\src\framework\XSECDefs.hpp
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\framework\XSECEnv.cpp
 # End Source File
 # Begin Source File
 
@@ -904,6 +920,14 @@ SOURCE=..\..\..\..\src\framework\version.rc
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xenc\impl\XENCAlgorithmHandlerDefault.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCAlgorithmHandlerDefault.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xenc\impl\XENCCipherDataImpl.cpp
 # End Source File
 # Begin Source File
@@ -942,6 +966,14 @@ SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.cpp
 
 SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptionMethodImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptionMethodImpl.hpp
+# End Source File
 # End Group
 # Begin Source File
 
@@ -968,9 +1000,5 @@ SOURCE=..\..\..\..\src\xenc\XENCEncryptedType.hpp
 SOURCE=..\..\..\..\src\xenc\XENCEncryptionMethod.hpp
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\..\..\src\framework\XSECEnv.cpp
-# End Source File
 # End Target
 # End Project

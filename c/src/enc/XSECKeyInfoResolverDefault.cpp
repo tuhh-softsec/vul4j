@@ -189,7 +189,7 @@ XSECCryptoKey * XSECKeyInfoResolverDefault::resolveKey(DSIGKeyInfoList * lst) {
 }
 
 
-XSECKeyInfoResolver * XSECKeyInfoResolverDefault::clone(void) {
+XSECKeyInfoResolver * XSECKeyInfoResolverDefault::clone(void) const {
 
 	return new XSECKeyInfoResolverDefault();
 

@@ -136,7 +136,7 @@ public :
 	 *
 	 */
 
-	virtual XSECKeyInfoResolver * clone(void) = 0;
+	virtual XSECKeyInfoResolver * clone(void) const = 0;
 
 	//@}
 
