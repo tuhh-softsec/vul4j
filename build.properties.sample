@@ -1,5 +1,7 @@
-jaxp.jaxp.jar=/java/jars/jaxp.jar
-jaxp.parser.jar=/java/jars/crimson.jar
+root=/java/jars
+jaxp.home=${root}
+jaxp.jaxp.jar=${jaxp.home}/jaxp.jar
+jaxp.parser.jar=${jaxp.home}/crimson.jar
 
 # Commons projects -- correct if 'ant dist' is run on each project in the
 # default CVS directory layout
@@ -11,4 +13,4 @@ commons-logging.home=../logging/dist
 commons-logging.jar=${commons-logging.home}/commons-logging.jar
 
 # junit.jar - JUnit 3.7+ Classpath
-junit.jar=/java/jars/junit.jar
+junit.jar=${root}/junit.jar
