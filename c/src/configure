@@ -3802,7 +3802,7 @@ echo $ECHO_N "checking for Xalan headers in XALANCROOT... $ECHO_C" >&6
     cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 #include "confdefs.h"
-#include <Include/XalanVersion.hpp>
+#include <xalanc/Include/XalanVersion.hpp>
 _ACEOF
 if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
   (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
@@ -3822,7 +3822,7 @@ else
 fi
 if test -z "$ac_cpp_err"; then
   xalan_found=yes
-      LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c1_5_0"
+      LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c"
       echo "$as_me:$LINENO: result: found" >&5
 echo "${ECHO_T}found" >&6
 else
@@ -3843,7 +3843,7 @@ echo $ECHO_N "checking for Xalan in system includes... $ECHO_C" >&6
     cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 #include "confdefs.h"
-#include <Include/XalanVersion.hpp>
+#include <xalanc/Include/XalanVersion.hpp>
 _ACEOF
 if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
   (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
@@ -3863,7 +3863,7 @@ else
 fi
 if test -z "$ac_cpp_err"; then
   xalan_found=yes
-      LIBS="${LIBS} -lxalan-c1_5_0"
+      LIBS="${LIBS} -lxalan-c"
       echo "$as_me:$LINENO: result: found" >&5
 echo "${ECHO_T}found" >&6
 else

@@ -387,9 +387,9 @@ if test "$use_xalan" = "yes" ; then
     OLD_CPPFLAGS=$CPPFLAGS
     CPPFLAGS=["${CPPFLAGS} -I${XALANCROOT}/src"]
 
-    AC_TRY_CPP([#include <Include/XalanVersion.hpp>], 
+    AC_TRY_CPP([#include <xalanc/Include/XalanVersion.hpp>], 
       xalan_found=yes 
-      LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c1_5_0"
+      LIBS="${LIBS} -L${XALANCROOT}/lib -lxalan-c"
       [AC_MSG_RESULT([found])], 
       CPPFLAGS=$OLD_CPPFLAGS
       [AC_MSG_RESULT([no])]);
@@ -399,9 +399,9 @@ if test "$use_xalan" = "yes" ; then
   if test -z $xalan_found ; then
 
     AC_MSG_CHECKING([for Xalan in system includes])
-    AC_TRY_CPP([#include <Include/XalanVersion.hpp>], 
+    AC_TRY_CPP([#include <xalanc/Include/XalanVersion.hpp>], 
       xalan_found=yes 
-      LIBS="${LIBS} -lxalan-c1_5_0"
+      LIBS="${LIBS} -lxalan-c"
       [AC_MSG_RESULT([found])],
       [AC_DEFINE(XSEC_NO_XALAN)] 
       [AC_MSG_RESULT([no - WARNING - configuring for no Xalan])]);
