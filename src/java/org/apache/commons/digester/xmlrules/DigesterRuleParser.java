@@ -1,7 +1,7 @@
   /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterRuleParser.java,v 1.20 2003/10/23 20:06:09 rdonkin Exp $
- * $Revision: 1.20 $
- * $Date: 2003/10/23 20:06:09 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/xmlrules/DigesterRuleParser.java,v 1.21 2003/10/28 22:31:02 rdonkin Exp $
+ * $Revision: 1.21 $
+ * $Date: 2003/10/28 22:31:02 $
  *
  * ====================================================================
  * 
@@ -456,7 +456,13 @@ public class DigesterRuleParser extends RuleSetBase {
          * by concatenating the pattern prefix with the given pattern.
          */
         public void add(String pattern, Rule rule) {
-            delegate.add(prefix + pattern, rule);
+            StringBuffer buffer = new StringBuffer();
+            buffer.append(prefix);
+            if (!pattern.startsWith("/")) {
+                buffer.append('/'); 
+            }
+            buffer.append(pattern);
+            delegate.add(buffer.toString(), rule);
         }
         
         /**
