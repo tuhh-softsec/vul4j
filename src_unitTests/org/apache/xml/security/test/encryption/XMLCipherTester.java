@@ -66,6 +66,7 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
@@ -77,6 +78,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.xml.security.encryption.XMLCipher;
+import org.apache.xml.security.encryption.EncryptedData;
+import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.Method;
 import org.apache.xml.serialize.OutputFormat;
@@ -143,6 +146,72 @@ public class XMLCipherTester extends TestCase {
 
         return (result);
     }
+
+	/**
+	 * Test encryption using a generated AES 128 bit key that is
+	 * encrypted using a AES 192 bit key.  Then reverse
+	 */
+
+	public void testAES128ElementAES192KWCipher() {
+
+		Document d = document(); // source
+		Document ed = null;
+		Document dd = null;
+		Element e = (Element) d.getElementsByTagName(element()).item(index());
+		Element ee = null;
+
+		String source = null;
+		String target = null;
+
+        try {
+
+			source = toString(d);;
+
+			// Set up a Key Encryption Key
+			byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
+			Key kek = new SecretKeySpec(bits192, "AES");
+
+			// Generate a traffic key
+			KeyGenerator keygen = KeyGenerator.getInstance("AES");
+			keygen.init(192);
+			Key key = keygen.generateKey();
+
+            cipher = XMLCipher.getInstance(XMLCipher.AES_192_KeyWrap);
+			cipher.init(XMLCipher.WRAP_MODE, kek);
+			EncryptedKey encryptedKey = cipher.encryptKey(key);
+			cipher.addEncryptedKey(encryptedKey);
+
+            // encrypt
+            cipher = XMLCipher.getInstance(XMLCipher.AES_128);
+            cipher.init(XMLCipher.ENCRYPT_MODE, key);
+            ed = cipher.doFinal(d, e);
+
+            //decrypt
+			key = null;
+            ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
+            cipher = XMLCipher.getInstance(XMLCipher.AES_128);
+            cipher.init(XMLCipher.DECRYPT_MODE, null);
+			EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
+			EncryptedKey ek = encryptedData.getKeyInfo().itemEncryptedKey(0);
+
+			if (ek != null) {
+				XMLCipher keyCipher = XMLCipher.getInstance(XMLCipher.AES_128);
+				keyCipher.init(XMLCipher.UNWRAP_MODE, kek);
+				keyCipher.setKEK(kek);
+				key = keyCipher.decryptKey(ek, encryptedData.getEncryptionMethod().getAlgorithm());
+			}
+
+            cipher.init(XMLCipher.DECRYPT_MODE, key);
+            dd = cipher.doFinal(ed, ee);
+
+            target = toString(dd);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        Assert.assertEquals(source, target);
+    }
+  
 
     public void testTrippleDesElementCipher() {
         Document d = document(); // source
