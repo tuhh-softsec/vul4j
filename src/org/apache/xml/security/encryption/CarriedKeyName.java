@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -57,85 +56,95 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.utils;
+package org.apache.xml.security.encryption;
 
 
 
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.keys.content.KeyName;
+import org.apache.xml.security.exceptions.*;
+import org.apache.xml.security.utils.*;
 import org.w3c.dom.*;
-import java.util.ArrayList;
-import org.apache.xml.security.utils.XMLUtils;
 
 
 /**
+ * This class maps to the <CODE>xenc:CarriedKeyName</CODE> element.
  *
- *
- * @author Christian Geuer-Pollmann
- *
+ * @author $Author$
  */
-public class HelperNodeList implements NodeList {
-
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(HelperNodeList.class.getName());
-
-   /** Field nodes */
-   ArrayList nodes = new ArrayList(20);
-
-   boolean _allNodesMustHaveSameParent = false;
-
-   public HelperNodeList() {
-      this(false);
-   }
-
-   public HelperNodeList(boolean allNodesMustHaveSameParent) {
-      this._allNodesMustHaveSameParent = allNodesMustHaveSameParent;
-   }
+public class CarriedKeyName extends EncryptionElementProxy {
 
    /**
-    * Method item
+    * Constructor CarriedKeyName
     *
-    * @param index
-    * @return
+    * @param doc
+    * @param carriedKeyName
     */
-   public Node item(int index) {
+   public CarriedKeyName(Document doc, String carriedKeyName) {
 
-      // cat.debug("item(" + index + ") of " + this.getLength() + " nodes");
+      super(doc, EncryptionConstants._TAG_CARRIEDKEYNAME);
 
-      return (Node) nodes.get(index);
+      this.setCarriedKeyName(carriedKeyName);
    }
 
    /**
-    * Method getLength
+    * Constructor CarriedKeyName
+    *
+    * @param element
+    * @param BaseURI
+    * @throws XMLSecurityException
+    */
+   public CarriedKeyName(Element element, String BaseURI)
+           throws XMLSecurityException {
+      super(element, BaseURI, EncryptionConstants._TAG_CARRIEDKEYNAME);
+   }
+
+   /**
+    * Method getCarriedKeyName
     *
     * @return
     */
-   public int getLength() {
-      return nodes.size();
+   public String getCarriedKeyName() {
+      return ((Text) this._constructionElement.getFirstChild()).getData();
    }
 
    /**
-    * Method appendChild
+    * Method setCarriedKeyName
     *
-    * @param node
+    * @param carriedKeyName
     */
-   public void appendChild(Node node) throws IllegalArgumentException {
-      if (this._allNodesMustHaveSameParent && this.getLength() > 0) {
-         if (this.item(0).getParentNode() != node.getParentNode()) {
-            throw new IllegalArgumentException("Nodes have not the same Parent");
+   public void setCarriedKeyName(String carriedKeyName) {
+
+      while (this._constructionElement.hasChildNodes()) {
+         this._constructionElement
+            .removeChild(this._constructionElement.getFirstChild());
+      }
+
+      this._constructionElement
+         .appendChild(this._doc.createTextNode(carriedKeyName));
+   }
+
+   /**
+    * Return true if the CarriedKeyName carries a key which os references by
+    * the KeyInfo.
+    *
+    * @param ki
+    * @return true if the CarriedKeyName carries a key which os references by the KeyInfo
+    * @throws XMLSecurityException
+    */
+   public boolean matchesAgainstKeyInfo(KeyInfo ki)
+           throws XMLSecurityException {
+
+      String thisName = this.getCarriedKeyName();
+
+      for (int i = 0; i < ki.lengthKeyName(); i++) {
+         KeyName kn = ki.itemKeyName(i);
+
+         if (thisName.equals(kn.getKeyName())) {
+            return true;
          }
       }
-      nodes.add(node);
-   }
 
-   public Document getOwnerDocument() {
-      if (this.getLength() == 0) {
-         return null;
-      } else {
-         return XMLUtils.getOwnerDocument(this.item(0));
-      }
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
+      return false;
    }
 }

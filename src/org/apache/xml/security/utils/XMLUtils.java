@@ -442,6 +442,40 @@ public class XMLUtils {
    }
 
    /**
+    * Method getDirectChild
+    *
+    * @param parentElement
+    * @param childLocalName
+    * @param childNamespaceURI
+    * @return
+    */
+   public static Element getDirectChild(Element parentElement,
+                                        String childLocalName,
+                                        String childNamespaceURI) {
+
+      NodeList nl = parentElement.getChildNodes();
+      Vector results = new Vector();
+
+      for (int i = 0; i < nl.getLength(); i++) {
+         Node n = nl.item(i);
+
+         if (n.getNodeType() == Node.ELEMENT_NODE) {
+            if (((Element) n).getLocalName().equals(childLocalName)
+                    && ((Element) n).getNamespaceURI()
+                       .equals(childNamespaceURI)) {
+               results.add(n);
+            }
+         }
+      }
+
+      if (results.size() != 1) {
+         return null;
+      }
+
+      return (Element) results.elementAt(0);
+   }
+
+   /**
     * Outputs a DOM tree to a file.
     *
     * @param contextNode root node of the DOM tree

@@ -107,8 +107,9 @@ public class JCEMapper {
     * This method takes a Provider ID and tries to register this provider in the JCE.
     *
     * @param Id
+    * @return
     */
-   public static void addProvider(String Id) {
+   public static boolean addProvider(String Id) {
 
       try {
          if (Security.getProvider(Id) == null) {
@@ -125,12 +126,21 @@ public class JCEMapper {
                cat.debug("The provider " + Id
                          + " had to be added to the java.security.Security");
                java.security.Security.addProvider(prov);
+
+               Provider registeredProvider =
+                  java.security.Security.getProvider(Id);
+
+               if (registeredProvider != null) {
+                  return true;
+               }
             }
          }
       } catch (TransformerException ex) {}
       catch (ClassNotFoundException ex) {}
       catch (IllegalAccessException ex) {}
       catch (InstantiationException ex) {}
+
+      return false;
    }
 
    /**
@@ -139,7 +149,7 @@ public class JCEMapper {
     * @param providerId
     * @return
     */
-   public static boolean getProviderIsAvailable(String providerId) {
+   public static boolean getProviderIsInClassPath(String providerId) {
 
       boolean available = false;
 
@@ -170,6 +180,25 @@ public class JCEMapper {
    }
 
    /**
+    * Return <CODE>true</CODE> if the Provider with the given
+    * <CODE>providerId</CODE> is available in {@link java.security.Security}.
+    *
+    * @param providerId
+    * @return <CODE>true</CODE> if the Provider with the given <CODE>providerId</CODE> is available in {@link java.security.Security}
+    */
+   public static boolean getProviderIsRegisteredAtSecurity(String providerId) {
+
+      java.security.Provider prov =
+         java.security.Security.getProvider(providerId);
+
+      if (prov != null) {
+         return true;
+      }
+
+      return false;
+   }
+
+   /**
     * Method translateURItoJCEID
     *
     * @param AlgorithmURI
@@ -197,7 +226,7 @@ public class JCEMapper {
             String jceName = pro.getAttribute("JCEName");
             String providerId = pro.getAttribute("ProviderId");
 
-            if (JCEMapper.getProviderIsAvailable(providerId)) {
+            if (JCEMapper.getProviderIsInClassPath(providerId)) {
                JCEMapper.addProvider(providerId);
 
                ProviderIdClass result = new ProviderIdClass(jceName,
@@ -229,7 +258,7 @@ public class JCEMapper {
       cat.debug("Request for URI " + AlgorithmURI + " from provider "
                 + requestedProviderId);
 
-      if (!JCEMapper.getProviderIsAvailable(requestedProviderId)) {
+      if (!JCEMapper.getProviderIsInClassPath(requestedProviderId)) {
          return null;
       }
 
@@ -243,7 +272,8 @@ public class JCEMapper {
 
          JCEMapper.addProvider(requestedProviderId);
 
-         ProviderIdClass result = new ProviderIdClass(jceName, requestedProviderId);
+         ProviderIdClass result = new ProviderIdClass(jceName,
+                                     requestedProviderId);
 
          cat.debug("Found " + result.getAlgorithmID() + " from provider "
                    + result.getProviderId());
@@ -286,6 +316,122 @@ public class JCEMapper {
          return "";
       }
    }
+
+   /**
+    * Method getKeyTypeFromURI
+    *
+    * @param AlgorithmURI
+    * @return
+    */
+   public static int getKeyTypeFromURI(String AlgorithmURI) {
+
+      try {
+         Attr algoclassAttr =
+            (Attr) XPathAPI.selectSingleNode(JCEMapper._providerList,
+                                             "./x:Algorithms/x:Algorithm[@URI='"
+                                             + AlgorithmURI
+                                             + "']/@AlgorithmClass", JCEMapper
+                                                ._nscontext);
+
+         if (algoclassAttr == null) {
+            return -1;
+         } else {
+            String algoclass = algoclassAttr.getNodeValue();
+
+            if (algoclass.equals(JCEMapper.KEYTYPE_BLOCK_ENCRYPTION)) {
+               return javax.crypto.Cipher.SECRET_KEY;
+            } else if (algoclass.equals("Mac")) {
+               return javax.crypto.Cipher.SECRET_KEY;
+            } else if (algoclass.equals(JCEMapper.KEYTYPE_SYMMETRIC_KEY_WRAP)) {
+               return javax.crypto.Cipher.SECRET_KEY;
+            }
+         }
+      } catch (TransformerException ex) {
+         cat.debug("Found nothing: " + ex.getMessage());
+      }
+
+      return -1;
+   }
+
+   /**
+    * Method getKeyLengthFromURI
+    *
+    * @param AlgorithmURI
+    * @return
+    */
+   public static int getKeyLengthFromURI(String AlgorithmURI) {
+
+      try {
+         Attr algoclassAttr =
+            (Attr) XPathAPI.selectSingleNode(JCEMapper._providerList,
+                                             "./x:Algorithms/x:Algorithm[@URI='"
+                                             + AlgorithmURI + "']/@KeyLength",
+                                             JCEMapper._nscontext);
+
+         if (algoclassAttr != null) {
+            return Integer.parseInt(algoclassAttr.getNodeValue());
+         }
+      } catch (TransformerException ex) {
+         cat.debug("Found nothing: " + ex.getMessage());
+      }
+
+      return 0;
+   }
+
+   public static String getJCEKeyAlgorithmFromURI(String AlgorithmURI, String ProviderId) {
+
+      try {
+         Attr algoclassAttr =
+            (Attr) XPathAPI.selectSingleNode(JCEMapper._providerList,
+                                             "./x:Algorithms/x:Algorithm[@URI='"
+                                             + AlgorithmURI + "']/x:ProviderAlgo[@ProviderId='"
+                                             + ProviderId + "']/@RequiredKey",
+                                             JCEMapper._nscontext);
+
+         if (algoclassAttr != null) {
+            return algoclassAttr.getNodeValue();
+         }
+      } catch (TransformerException ex) {
+         cat.debug("Found nothing: " + ex.getMessage());
+      }
+
+      return null;
+   }
+
+   public static final String KEYTYPE_SYMMETRIC_KEY_WRAP = "SymmetricKeyWrap";
+   public static final String KEYTYPE_BLOCK_ENCRYPTION = "BlockEncryption";
+   public static final String KEYTYPE_KEY_TRANSPORT = "KeyTransport";
+
+   public static String getURIfromKey(Key key, String type) {
+      String JCEalgo = key.getAlgorithm();
+      String keyLength = new Integer(key.getEncoded().length*8).toString();
+
+      try {
+         Attr URI = (Attr) XPathAPI.selectSingleNode(
+            JCEMapper._providerList,
+            "./x:Algorithms/x:Algorithm[@KeyLength='" + keyLength
+            + "' and @AlgorithmClass='" + type + "']/x:ProviderAlgo[@RequiredKey='"
+            + JCEalgo + "']/../@URI", JCEMapper._nscontext);
+
+         if (URI != null) {
+            return URI.getNodeValue();
+         }
+      } catch (TransformerException ex) {
+         cat.debug("Found nothing: " + ex.getMessage());
+      }
+
+      return null;
+   }
+
+   /*
+   public static String getWrapURIfromKey(Key key) {
+      return JCEMapper.getURIfromKey(key, JCEMapper.KEYTYPE_SYMMETRIC_KEY_WRAP);
+   }
+
+   public static String getCipherURIfromKey(Key key) {
+      return JCEMapper.getURIfromKey(key, JCEMapper.KEYTYPE_BLOCK_ENCRYPTION);
+   }
+   */
 
    /**
     * Class ProviderIdClass

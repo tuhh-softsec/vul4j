@@ -68,6 +68,8 @@ import javax.crypto.*;
 import javax.crypto.spec.*;
 import javax.xml.transform.TransformerException;
 import org.apache.xml.security.algorithms.Algorithm;
+import org.apache.xml.security.algorithms.encryption.params
+   .EncryptionMethodParams;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
@@ -79,18 +81,6 @@ import org.w3c.dom.*;
 
 /**
  *
- * What has to be set and get?
- * - BlockLength (implicitly given by URI)
- * - KeyLength (implicitly given by URI)
- * - Padding Mechanism (implicitly given by URI)
- * - Mode of operation (Cipher Block Chaining (CBC)) (implicitly given by URI)
- *
- * - initialization vector IV
- *   - length
- *   - value
- * - the key itself
- * - Encrypt / Decrypt mode
- *
  * @author $Author$
  */
 public class EncryptionMethod extends Algorithm {
@@ -99,352 +89,11 @@ public class EncryptionMethod extends Algorithm {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(EncryptionMethod.class.getName());
 
-   /** Contains the Element from the configuration file */
-   static Element _cipherAlgos;
+   /** Field _emSpi */
+   EncryptionMethodSpi _emSpi = null;
 
-   /** Field _cipherAlgorithmSpi */
-   EncryptionMethodSpi _cipherAlgorithmSpi = null;
-
-   /** Needed for stream ciphers */
-   int _keySize = -1;
-
-   /** Needed for RSA-OAEP Key Transport */
-   MessageDigestAlgorithm _OAEPdigestAlgorithm = null;
-
-   /** Needed for RSA-OAEP Key Transport */
-   byte[] _OAEPparams = null;
-
-   /**
-    * Method init
-    *
-    * @param cipherAlgos
-    */
-   public synchronized static void init(Element cipherAlgos) {
-
-      if (EncryptionMethod.cat == null) {
-         EncryptionMethod.cat =
-            org.apache.log4j.Category
-               .getInstance(EncryptionMethod.class.getName());
-
-         cat.error(
-            "init: The EncryptionMethod.cat was null; I had to create it");
-      }
-
-      if (EncryptionMethod._cipherAlgos == null) {
-
-         // only set it during the first call
-         EncryptionMethod._cipherAlgos = cipherAlgos;
-      }
-
-      cat.debug("init: The EncryptionMethod._cipherAlgos element I have is "
-                + EncryptionMethod._cipherAlgos);
-   }
-
-   /**
-    * Constructor EncryptionMethod
-    *
-    * @param element
-    * @param BaseURI
-    * @throws XMLSecurityException
-    */
-   public EncryptionMethod(Element element, String BaseURI)
-           throws XMLSecurityException {
-
-      super(element, BaseURI, EncryptionConstants._TAG_ENCRYPTIONMETHOD);
-
-      try {
-         Element nscontext = this._doc.createElement("prefixResolver");
-
-         nscontext.setAttribute("xmlns:ds", Constants.SignatureSpecNS);
-         nscontext.setAttribute("xmlns:xenc",
-                                EncryptionConstants.EncryptionSpecNS);
-
-         // This is needed for Stream Encryption Algorithms
-         {
-            Text KeySizeText =
-               (Text) XPathAPI.selectSingleNode(this._constructionElement,
-                                                "./xenc:KeySize/text()",
-                                                nscontext);
-
-            if (KeySizeText != null) {
-               cat.debug("Found a KeySize of " + KeySizeText.getData());
-
-               this._keySize = Integer.parseInt(KeySizeText.getData());
-            } else {
-               cat.debug("Didn't find a KeySize");
-            }
-         }
-
-         // This is needed for RSA-OAEP Key Transport
-         {
-            Attr DigestMethod =
-               (Attr) XPathAPI.selectSingleNode(this._constructionElement,
-                                                "./ds:"
-                                                + Constants._TAG_DIGESTMETHOD
-                                                + "/@"
-                                                + Constants
-                                                   ._ATT_ALGORITHM, nscontext);
-
-            if (DigestMethod != null) {
-               this._OAEPdigestAlgorithm =
-                  MessageDigestAlgorithm.getInstance(this._doc,
-                                                     DigestMethod
-                                                        .getNodeValue());
-            }
-
-            Text oaepParam =
-               (Text) XPathAPI
-                  .selectSingleNode(this._constructionElement, "./xenc:"
-                                    + EncryptionConstants._TAG_OAEPPARAMS
-                                    + "/text()", nscontext);
-
-            if (oaepParam != null) {
-               this._OAEPparams = Base64.decode(oaepParam.getData());
-            }
-         }
-
-         // after parsing all the EncryptionMethod children, check the
-         this._cipherAlgorithmSpi =
-            EncryptionMethod.createEncryptionMethodSpi(this.getAlgorithmURI());
-
-         if ((this._keySize != -1)
-                 && (this._keySize
-                     != this._cipherAlgorithmSpi.engineGetKeySize())) {
-            Object exArgs[] = { Integer.toString(this._keySize),
-                                Integer
-                                   .toString(this._cipherAlgorithmSpi
-                                      .engineGetKeySize()) };
-
-            throw new XMLSecurityException("encryption.ExplicitKeySizeMismatch",
-                                           exArgs);
-         }
-      } catch (TransformerException ex) {
-         throw new XMLSecurityException("empty", ex);
-      }
-   }
-
-   /**
-    * Constructor EncryptionMethod
-    *
-    * @param doc
-    * @param AlgorithmURI
-    * @throws XMLSecurityException
-    */
-   public EncryptionMethod(Document doc, String AlgorithmURI)
-           throws XMLSecurityException {
-
-      super(doc, EncryptionConstants._TAG_ENCRYPTIONMETHOD,
-            EncryptionConstants.EncryptionSpecNS, AlgorithmURI);
-
-      this._cipherAlgorithmSpi =
-         EncryptionMethod.createEncryptionMethodSpi(AlgorithmURI);
-   }
-
-   /**
-    * Method createEncryptionMethodSpi
-    *
-    * @param AlgorithmURI
-    * @return
-    * @throws XMLSecurityException
-    */
-   private synchronized static EncryptionMethodSpi createEncryptionMethodSpi(
-           String AlgorithmURI) throws XMLSecurityException {
-
-      cat.debug("createEncryptionMethodSpi called()");
-
-      EncryptionMethodSpi encryptionMethodSpi = null;
-
-      if (EncryptionMethod._cipherAlgos == null) {
-
-         // not yet initialized ?!?
-         Object exArgs[] = { EncryptionMethod.class.getName() };
-
-         throw new XMLSecurityException("notYetInitialized", exArgs);
-      }
-
-      try {
-         Element nscontext =
-            EncryptionMethod._cipherAlgos.getOwnerDocument()
-               .createElement("nscontext");
-
-         nscontext.setAttribute("xmlns:x",
-                                "http://www.xmlsecurity.org/NS/#configuration");
-
-         NodeList nl =
-            XPathAPI.selectNodeList(EncryptionMethod._cipherAlgos,
-                                    "./x:EncryptionMethod[@URI='"
-                                    + AlgorithmURI + "']/x:ProviderAlgo",
-                                    nscontext);
-
-         for (int i = 0; i < nl.getLength(); i++) {
-            Element provElem = (Element) nl.item(i);
-            String ProviderIdAttr = provElem.getAttribute("ProviderId");
-            String JCENameAttr = provElem.getAttribute("JCEName");
-            String JAVACLASSAttr = provElem.getAttribute("JAVACLASS");
-
-            cat.debug("ProviderIdAttr = " + ProviderIdAttr);
-            cat.debug("JCENameAttr = " + JCENameAttr);
-            cat.debug("JAVACLASSAttr = " + JAVACLASSAttr);
-
-            if (JCEMapper.getProviderIsAvailable(ProviderIdAttr)) {
-               try {
-                  encryptionMethodSpi =
-                     (EncryptionMethodSpi) Class.forName(JAVACLASSAttr)
-                        .newInstance();
-               } catch (java.lang.ClassNotFoundException ex) {
-
-                  // ignore
-               } catch (java.lang.IllegalAccessException ex) {
-
-                  // ignore
-               } catch (java.lang.InstantiationException ex) {
-
-                  // ignore
-               }
-            }
-         }
-      } catch (TransformerException ex) {
-         Object exArgs[] = { AlgorithmURI };
-
-         throw new XMLSecurityException("empty", ex);
-      }
-
-      if (encryptionMethodSpi == null) {
-
-         // no Provider found who could do the job?
-         Object exArgs[] = { AlgorithmURI };
-
-         throw new XMLSecurityException("algorithms.NoSuchAlgorithm", exArgs);
-      }
-
-      return encryptionMethodSpi;
-   }
-
-   /**
-    * Factory method for constructing a message digest algorithm by name.
-    *
-    * @param doc
-    * @param AlgorithmURI
-    * @return
-    * @throws XMLSecurityException
-    */
-   public static EncryptionMethod getInstance(Document doc, String AlgorithmURI)
-           throws XMLSecurityException {
-      return new EncryptionMethod(doc, AlgorithmURI);
-   }
-
-   /**
-    * Method getExplicitKeySize
-    *
-    * @return
-    */
-   public int getKeySize() {
-      return this._keySize;
-   }
-
-   /**
-    * Method getOAEPMessageDigest
-    *
-    * @return
-    */
-   public MessageDigestAlgorithm getOAEPMessageDigest() {
-      return this._OAEPdigestAlgorithm;
-   }
-
-   /**
-    * Method getOAEPParams
-    *
-    * @return
-    */
-   public byte[] getOAEPParams() {
-      return this._OAEPparams;
-   }
-
-   /**
-    * Proxy method for {@link javax.crypto.Cipher#getAlgorithm}
-    * which is executed on the internal {@link javax.crypto.Cipher} object.
-    *
-    * @return the result of the {@link javax.crypto.Cipher#getAlgorithm} method
-    */
-   public String getJCEAlgorithmString() {
-      return this._cipherAlgorithmSpi.engineGetJCEAlgorithmString();
-   }
-
-   /**
-    * Proxy method for {@link javax.crypto.Cipher#getProvider}
-    * which is executed on the internal {@link javax.crypto.Cipher} object.
-    *
-    * @return the result of the {@link javax.crypto.Cipher#getProvider} method
-    */
-   public java.security.Provider getJCEProvider() {
-      return this._cipherAlgorithmSpi.engineGetJCEProvider();
-   }
-
-   /**
-    * Proxy method for {@link javax.crypto.Cipher#getBlockSize}
-    * which is executed on the internal {@link javax.crypto.Cipher} object.
-    *
-    * @return the result of the {@link javax.crypto.Cipher#getBlockSize} method
-    */
-   public int getBlockSize() {
-      return this._cipherAlgorithmSpi.engineGetBlockSize();
-   }
-
-   /**
-    * Proxy method for {@link javax.crypto.Cipher#getExemptionMechanism}
-    * which is executed on the internal {@link javax.crypto.Cipher} object.
-    *
-    * @return the result of the {@link javax.crypto.Cipher#getExemptionMechanism} method
-    */
-   public ExemptionMechanism getExemptionMechanism() {
-      return this._cipherAlgorithmSpi.engineGetExemptionMechanism();
-   }
-
-   /**
-    * Proxy method for {@link javax.crypto.Cipher#getIV}
-    * which is executed on the internal {@link javax.crypto.Cipher} object.
-    *
-    * @return the result of the {@link javax.crypto.Cipher#getIV} method
-    */
-   public byte[] getIV() {
-      return this._cipherAlgorithmSpi.engineGetIV();
-   }
-
-   /**
-    * Proxy method for {@link javax.crypto.Cipher#getOutputSize(int)}
-    * which is executed on the internal {@link javax.crypto.Cipher} object.
-    *
-    * @param inputLen
-    * @return the result of the {@link javax.crypto.Cipher#getOutputSize(int)} method
-    */
-   public int getOutputSize(int inputLen) {
-      return this._cipherAlgorithmSpi.engineGetOutputSize(inputLen);
-   }
-
-   /**
-    * Proxy method for {@link javax.crypto.Cipher#update}
-    * which is executed on the internal {@link javax.crypto.Cipher} object.
-    *
-    * @param input
-    * @throws XMLSecurityException
-    */
-   public void update(byte[] input) throws XMLSecurityException {
-      this._cipherAlgorithmSpi.engineUpdate(input);
-   }
-
-   /**
-    * Proxy method for {@link javax.crypto.Cipher#update}
-    * which is executed on the internal {@link javax.crypto.Cipher} object.
-    *
-    * @param buf
-    * @param offset
-    * @param len
-    * @throws XMLSecurityException
-    */
-   public void update(byte buf[], int offset, int len)
-           throws XMLSecurityException {
-      this._cipherAlgorithmSpi.engineUpdate(buf, offset, len);
-   }
+   /** Field _encMethodParams */
+   EncryptionMethodParams _encMethodParams = null;
 
    /**
     * Method getBaseNamespace
@@ -456,47 +105,472 @@ public class EncryptionMethod extends Algorithm {
    }
 
    /**
-    * Method main
+    * Constructor EncryptionMethod
     *
-    * @param unused
-    * @throws Exception
-    * @todo delete from production version
+    * @param doc
+    * @param algorithmURI
+    * @throws XMLSecurityException
     */
-   public static void main(String unused[]) throws Exception {
+   public EncryptionMethod(Document doc, String algorithmURI)
+           throws XMLSecurityException {
+      this(doc, algorithmURI, null);
+   }
 
-      org.apache.xml.security.Init.init();
-
-      //J-
-      final String xmlStr = "" +
-      "<EncryptionMethod Algorithm='http://www.w3.org/2001/04/xmlenc#aes128-cbc' xmlns='http://www.w3.org/2001/04/xmlenc#'>" + "\n" +
-      "  <KeySize>128</KeySize>" + "\n" +
-      "</EncryptionMethod>" + "\n" +
-      "" + "\n" +
-      "";
-      //J+
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
-
-      dbf.setNamespaceAware(true);
-
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc =
-         db.parse(new java.io.ByteArrayInputStream(xmlStr.getBytes()));
-      EncryptionMethod c = new EncryptionMethod(doc.getDocumentElement(),
-                                                "file://1.xml");
-
-      System.out.println(c.getAlgorithmURI());
-      System.out.println(c.getKeySize());
-
-      if (c.getOAEPMessageDigest() != null) {
-         System.out.println(c.getOAEPMessageDigest().getAlgorithmURI());
-      }
-
-      if (c.getOAEPParams() != null) {
-         System.out.println("OAEPParams.length=" + c.getOAEPParams().length);
+   public boolean getUsableInEncryptedData() {
+      int type = this._emSpi.getImplementedAlgorithmType();
+      switch (type) {
+         case EncryptionMethodSpi.ALGOTYPE_BLOCK_ENCRYPTION: return true;
+         case EncryptionMethodSpi.ALGOTYPE_STREAM_ENCRYPTION: return true;
+         case EncryptionMethodSpi.ALGOTYPE_SYMMETRIC_KEY_WRAP: return false;
+         case EncryptionMethodSpi.ALGOTYPE_KEY_TRANSPORT: return false;
+         case EncryptionMethodSpi.ALGOTYPE_KEY_AGREEMENT: return false;
+         default: return false;
       }
    }
 
+   public boolean getUsableInEncryptedKey() {
+      int type = this._emSpi.getImplementedAlgorithmType();
+      switch (type) {
+         case EncryptionMethodSpi.ALGOTYPE_BLOCK_ENCRYPTION: return false;
+         case EncryptionMethodSpi.ALGOTYPE_STREAM_ENCRYPTION: return false;
+         case EncryptionMethodSpi.ALGOTYPE_SYMMETRIC_KEY_WRAP: return true;
+         case EncryptionMethodSpi.ALGOTYPE_KEY_TRANSPORT: return true;
+         case EncryptionMethodSpi.ALGOTYPE_KEY_AGREEMENT: return true;
+         default: return false;
+      }
+   }
+
+   /**
+    * Constructor EncryptionMethod
+    *
+    * @param doc
+    * @param algorithmURI
+    * @param params
+    * @throws XMLSecurityException
+    */
+   public EncryptionMethod(
+           Document doc, String algorithmURI, EncryptionMethodParams params)
+              throws XMLSecurityException {
+
+      super(doc, EncryptionConstants._TAG_ENCRYPTIONMETHOD,
+            EncryptionConstants.EncryptionSpecNS, algorithmURI);
+
+      Vector v = (Vector) this._algorithmHash.get(algorithmURI);
+
+      if (v == null) {
+         Object exArgs[] = { "Could not find a registered Provider" };
+
+         throw new XMLSecurityException("empty");
+      }
+
+      searchForWorkingClass: for (int i = 0; i < v.size(); i++) {
+         try {
+            String implementingClass = (String) v.elementAt(i);
+
+            this._emSpi =
+               (EncryptionMethodSpi) Class.forName(implementingClass)
+                  .newInstance();
+
+            if ((this._emSpi != null)
+                    && this._emSpi.getRequiredProviderAvailable()) {
+               cat.debug("Create URI \"" + algorithmURI + "\" class \""
+                         + implementingClass + "\"");
+
+               break searchForWorkingClass;
+            }
+         } catch (ClassNotFoundException ex) {
+            throw new XMLSecurityException("empty", ex);
+         } catch (IllegalAccessException ex) {
+            throw new XMLSecurityException("empty", ex);
+         } catch (InstantiationException ex) {
+            throw new XMLSecurityException("empty", ex);
+         }
+      }
+
+      if (this._emSpi == null) {
+         Object exArgs[] = { "Could not find a registered Provider" };
+
+         throw new XMLSecurityException("empty");
+      }
+
+      this._encMethodParams = this._emSpi.engineInit(doc, params);
+
+      if (this._encMethodParams != null) {
+         this._constructionElement
+            .appendChild(this._encMethodParams.createChildNodes(this._doc));
+      }
+   }
+
+   /**
+    * Constructor EncryptionMethod
+    *
+    * @param element
+    * @param BaseURI
+    * @throws XMLSecurityException
+    */
+   public EncryptionMethod(Element element, String BaseURI)
+           throws XMLSecurityException {
+      super(element, BaseURI, EncryptionConstants._TAG_ENCRYPTIONMETHOD);
+      String algorithmURI = this.getAlgorithmURI();
+
+      Vector v = (Vector) this._algorithmHash.get(algorithmURI);
+
+      if (v == null) {
+         Object exArgs[] = { "Could not find a registered Provider" };
+
+         throw new XMLSecurityException("empty");
+      }
+
+      searchForWorkingClass: for (int i = 0; i < v.size(); i++) {
+         try {
+            String implementingClass = (String) v.elementAt(i);
+
+            this._emSpi =
+               (EncryptionMethodSpi) Class.forName(implementingClass)
+                  .newInstance();
+
+            if ((this._emSpi != null)
+                    && this._emSpi.getRequiredProviderAvailable()) {
+               cat.debug("Create URI \"" + algorithmURI + "\" class \""
+                         + implementingClass + "\"");
+
+               break searchForWorkingClass;
+            }
+         } catch (ClassNotFoundException ex) {
+            throw new XMLSecurityException("empty", ex);
+         } catch (IllegalAccessException ex) {
+            throw new XMLSecurityException("empty", ex);
+         } catch (InstantiationException ex) {
+            throw new XMLSecurityException("empty", ex);
+         }
+      }
+
+      if (this._emSpi == null) {
+         Object exArgs[] = { "Could not find a registered Provider" };
+
+         throw new XMLSecurityException("empty");
+      }
+
+      this._encMethodParams = this._emSpi.engineInit(this._constructionElement);
+   }
+
+   /**
+    * Method wrap
+    *
+    * @param contentKey
+    * @param wrapKey
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] wrap(Key contentKey, Key wrapKey) throws XMLSecurityException {
+      return this._emSpi.engineWrap(contentKey, wrapKey);
+   }
+
+   /**
+    * Method wrap
+    *
+    * @param contentKey
+    * @param wrapKey
+    * @param IV
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] wrap(Key contentKey, Key wrapKey, byte[] IV)
+           throws XMLSecurityException {
+      return this._emSpi.engineWrap(contentKey, wrapKey, IV);
+   }
+
+   /**
+    * Method unwrap
+    *
+    * @param wrappedKey
+    * @param wrapKey
+    * @param wrappedKeyAlgoURI
+    * @return
+    * @throws XMLSecurityException
+    */
+   public Key unwrap(byte[] wrappedKey, Key wrapKey, String wrappedKeyAlgoURI)
+           throws XMLSecurityException {
+      return this._emSpi.engineUnwrap(wrappedKey, wrapKey, wrappedKeyAlgoURI);
+   }
+
+   /**
+    * Method encrypt
+    *
+    * @param plaintextBytes
+    * @param contentKey
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] encrypt(byte[] plaintextBytes, Key contentKey)
+           throws XMLSecurityException {
+      return this._emSpi.engineEncrypt(plaintextBytes, contentKey);
+   }
+
+   /**
+    * Method encrypt
+    *
+    * @param plaintextBytes
+    * @param contentKey
+    * @param IV
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] encrypt(byte[] plaintextBytes, Key contentKey, byte[] IV)
+           throws XMLSecurityException {
+      return this._emSpi.engineEncrypt(plaintextBytes, contentKey, IV);
+   }
+
+   /**
+    * Method decrypt
+    *
+    * @param ciphertextBytes
+    * @param contentKey
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] decrypt(byte[] ciphertextBytes, Key contentKey)
+           throws XMLSecurityException {
+      return this._emSpi.engineDecrypt(ciphertextBytes, contentKey);
+   }
+
+   /**
+    * Method encrypt
+    *
+    * @param plaintextBytes
+    * @param contentKey
+    * @param nonceLength
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] encrypt(byte[] plaintextBytes, Key contentKey, int nonceLength)
+           throws XMLSecurityException {
+
+      byte[] finalPlaintext = new byte[plaintextBytes.length + nonceLength];
+      byte[] nonce = PRNG.createBytes(nonceLength);
+
+      System.arraycopy(nonce, 0, finalPlaintext, 0, nonce.length);
+      System.arraycopy(plaintextBytes, 0, finalPlaintext, nonce.length,
+                       plaintextBytes.length);
+
+      return this.encrypt(finalPlaintext, contentKey);
+   }
+
+   /**
+    * Method encrypt
+    *
+    * @param plaintextBytes
+    * @param contentKey
+    * @param nonceLength
+    * @param IV
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] encrypt(
+           byte[] plaintextBytes, Key contentKey, int nonceLength, byte[] IV)
+              throws XMLSecurityException {
+
+      byte[] finalPlaintext = new byte[plaintextBytes.length + nonceLength];
+      byte[] nonce = PRNG.createBytes(nonceLength);
+
+      System.arraycopy(nonce, 0, finalPlaintext, 0, nonce.length);
+      System.arraycopy(plaintextBytes, 0, finalPlaintext, nonce.length,
+                       plaintextBytes.length);
+
+      return this.encrypt(finalPlaintext, contentKey, IV);
+   }
+
+   /**
+    * Method decrypt
+    *
+    * @param ciphertextBytes
+    * @param contentKey
+    * @param nonceLength
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] decrypt(
+           byte[] ciphertextBytes, Key contentKey, int nonceLength)
+              throws XMLSecurityException {
+
+      byte[] plaintext = this.decrypt(ciphertextBytes, contentKey);
+      int finalPlaintextLength = plaintext.length - nonceLength;
+
+      if (finalPlaintextLength <= 0) {
+         throw new XMLSecurityException(
+            "encryption.nonceLongerThanDecryptedPlaintext");
+      }
+
+      byte[] finalPlaintext = new byte[finalPlaintextLength];
+
+      System.arraycopy(plaintext, nonceLength, finalPlaintext, 0,
+                       finalPlaintextLength);
+
+      return finalPlaintext;
+   }
+
+   /**
+    * Method getParams
+    *
+    * @return
+    */
+   public EncryptionMethodParams getParams() {
+      return this._encMethodParams;
+   }
+
+   /**
+    * Method getIvLength
+    *
+    * @return
+    */
+   public int getIvLength() {
+      return this._emSpi.engineGetIvLength();
+   }
+
+   /**
+    * Method getBlockSize
+    *
+    * @return
+    */
+   public int getBlockSize() {
+      return this._emSpi.engineGetBlockSize();
+   }
+
+   /**
+    * Method createSecretKeyFromBytes
+    *
+    * @param encodedKey
+    * @return
+    * @throws XMLSecurityException
+    */
+   public Key createSecretKeyFromBytes(byte encodedKey[])
+           throws XMLSecurityException {
+
+      String JceAlgo =
+         JCEMapper
+            .getJCEKeyAlgorithmFromURI(this._emSpi
+               .getImplementedAlgorithmURI(), this._emSpi
+               .getRequiredProviderName());
+
+      return new SecretKeySpec(encodedKey, JceAlgo);
+   }
+
+   /** Field _alreadyInitialized */
+   static boolean _alreadyInitialized = false;
+
+   /** All available algorithm classes are registered here */
+   static HashMap _algorithmHash = null;
+
+   /**
+    * Method providerInit
+    *
+    */
+   public static void providerInit() {
+
+      if (EncryptionMethod.cat == null) {
+         EncryptionMethod.cat =
+            org.apache.log4j.Category
+               .getInstance(EncryptionMethod.class.getName());
+      }
+
+      cat.debug("Init() called");
+
+      if (!EncryptionMethod._alreadyInitialized) {
+         EncryptionMethod._algorithmHash = new HashMap(10);
+         EncryptionMethod._alreadyInitialized = true;
+      }
+   }
+
+   /**
+    * Method register
+    *
+    * @param algorithmURI
+    * @param implementingClass
+    * @return
+    */
+   public static boolean register(String algorithmURI,
+                                  String implementingClass) {
+
+      Vector v = (Vector) EncryptionMethod._algorithmHash.get(algorithmURI);
+
+      if (v == null) {
+         v = new Vector();
+
+         EncryptionMethod._algorithmHash.put(algorithmURI, v);
+      }
+
+      try {
+         Class c = Class.forName(implementingClass);
+
+         // System.out.println(c.getSuperclass().getSuperclass().getName());
+         if (c != null) {
+            EncryptionMethodSpi emSpi = (EncryptionMethodSpi) c.newInstance();
+
+            if (emSpi.getRequiredProviderAvailable()) {
+               v.add(implementingClass);
+
+               return true;
+            } else {
+               cat.debug("Try to register class " + implementingClass
+                         + " but Provider " + emSpi.getRequiredProviderName()
+                         + " not available");
+            }
+         } else {
+            cat.debug("Try to register class " + implementingClass
+                      + " but Class not available");
+         }
+      } catch (ClassNotFoundException ex) {
+         cat.debug("Try to register class " + implementingClass
+                   + " but Class not found: ", ex);
+      } catch (IllegalAccessException ex) {
+         cat.debug("Try to register class " + implementingClass
+                   + " but Class not found: ", ex);
+      } catch (InstantiationException ex) {
+         cat.debug("Try to register class " + implementingClass
+                   + " but Class not found: ", ex);
+      }
+
+      return false;
+   }
+
+   //J-
+   public String encryptB64(byte[] plaintextBytes, Key contentKey, int nonceLength, byte[] IV) throws XMLSecurityException {
+       byte ciphertextBytes[] = this.encrypt(plaintextBytes, contentKey, nonceLength, IV);
+       return Base64.encode(ciphertextBytes);
+   }
+   public String encryptB64(byte[] plaintextBytes, Key contentKey, int nonceLength) throws XMLSecurityException {
+       byte ciphertextBytes[] = this.encrypt(plaintextBytes, contentKey, nonceLength);
+       return Base64.encode(ciphertextBytes);
+   }
+   public String encryptB64(byte[] plaintextBytes, Key contentKey, byte[] IV) throws XMLSecurityException {
+       byte ciphertextBytes[] = this.encrypt(plaintextBytes, contentKey, IV);
+       return Base64.encode(ciphertextBytes);
+   }
+   public String encryptB64(byte[] plaintextBytes, Key contentKey) throws XMLSecurityException {
+       byte ciphertextBytes[] = this.encrypt(plaintextBytes, contentKey);
+       return Base64.encode(ciphertextBytes);
+   }
+   public byte[] decryptB64(String ciphertext, Key contentKey, int nonceLength) throws XMLSecurityException {
+       byte ciphertextBytes[] = Base64.decode(ciphertext);
+       return this.decrypt(ciphertextBytes, contentKey, nonceLength);
+   }
+   public byte[] decryptB64(String ciphertext, Key contentKey) throws XMLSecurityException {
+       byte ciphertextBytes[] = Base64.decode(ciphertext);
+       return this.decrypt(ciphertextBytes, contentKey);
+   }
+   public String wrapB64(Key contentKey, Key wrapKey) throws XMLSecurityException {
+       byte wrappedKeyBytes[] = this.wrap(contentKey, wrapKey);
+       return Base64.encode(wrappedKeyBytes);
+   }
+   public String wrapB64(Key contentKey, Key wrapKey, byte[] IV) throws XMLSecurityException {
+       byte wrappedKeyBytes[] = this.wrap(contentKey, wrapKey, IV);
+       return Base64.encode(wrappedKeyBytes);
+   }
+   public Key unwrapB64(String wrappedKey, Key wrapKey, String wrappedKeyAlgoURI) throws XMLSecurityException {
+       byte wrappedKeyBytes[] = Base64.decode(wrappedKey);
+       return this.unwrap(wrappedKeyBytes, wrapKey, wrappedKeyAlgoURI);
+   }
+   //J+
    static {
       org.apache.xml.security.Init.init();
    }

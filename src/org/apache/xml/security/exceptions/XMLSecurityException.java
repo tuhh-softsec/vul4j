@@ -237,8 +237,7 @@ public class XMLSecurityException extends Exception {
    public void printStackTrace() {
 
       synchronized (System.err) {
-         System.err.println(this.getClass().getName() + ": "
-                            + this.getLocalizedMessage());
+         super.printStackTrace(System.err);
          this.originalException.printStackTrace(System.err);
       }
    }
@@ -249,9 +248,7 @@ public class XMLSecurityException extends Exception {
     * @param printwriter
     */
    public void printStackTrace(PrintWriter printwriter) {
-
-      printwriter.println(this.getClass().getName() + ": "
-                          + this.getLocalizedMessage());
+      super.printStackTrace(printwriter);
       this.originalException.printStackTrace(printwriter);
    }
 
@@ -261,9 +258,7 @@ public class XMLSecurityException extends Exception {
     * @param printstream
     */
    public void printStackTrace(PrintStream printstream) {
-
-      printstream.println(this.getClass().getName() + ": "
-                          + this.getLocalizedMessage());
+      super.printStackTrace(printstream);
       this.originalException.printStackTrace(printstream);
    }
 

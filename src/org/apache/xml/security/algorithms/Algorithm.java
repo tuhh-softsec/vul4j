@@ -119,7 +119,7 @@ public abstract class Algorithm extends ElementProxy {
     */
    protected void setAlgorithmURI(String algorithmURI) {
 
-      if ((this._state == MODE_SIGN) && (algorithmURI != null)) {
+      if ((this._state == MODE_CREATE) && (algorithmURI != null)) {
          this._constructionElement.setAttribute(Constants._ATT_ALGORITHM,
                                                 algorithmURI);
       }

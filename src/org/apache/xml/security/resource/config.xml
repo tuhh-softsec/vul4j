@@ -42,6 +42,7 @@
       <SignatureAlgorithm URI="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
                           JAVACLASS="org.apache.xml.security.algorithms.implementations.IntegrityHmacSHA1" />
    </SignatureAlgorithms>
+   <!--
    <EncryptionMethods>
       <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#aes128-cbc">
          <ProviderAlgo ProviderId="BC"
@@ -69,6 +70,7 @@
                        JAVACLASS="" />
       </EncryptionMethod>
    </EncryptionMethods>
+   -->
    <JCEAlgorithmMappings>
       <!-- Here, individual providers can be registered; each provider
            is identified by Id which is referenced by ProviderId of the
@@ -176,36 +178,44 @@
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#tripledes-cbc"
                     Description="Block encryption using Triple-DES"
                     AlgorithmClass="BlockEncryption"
-                    RequirementLevel="REQUIRED">
+                    RequirementLevel="REQUIRED"
+                    KeyLength="192">
             <ProviderAlgo ProviderId="BC"
-                          JCEName="DESEDE" />
+                          RequiredKey="DESEDE"
+                          JCEName="DESEDE/CBC/ISO10126PADDING" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="DES-EDE3/CBC" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#aes128-cbc"
                     Description="Block encryption using AES with a key length of 128 bit"
                     AlgorithmClass="BlockEncryption"
-                    RequirementLevel="REQUIRED">
+                    RequirementLevel="REQUIRED"
+                    KeyLength="128">
             <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL/CBC/PKCS5Padding" />
+                          RequiredKey="AES"
+                          JCEName="AES/CBC/ISO10126PADDING" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="Rijndael" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#aes192-cbc"
                     Description="Block encryption using AES with a key length of 192 bit"
                     AlgorithmClass="BlockEncryption"
-                    RequirementLevel="OPTIONAL">
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="192">
             <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL" />
+                          RequiredKey="AES"
+                          JCEName="AES/CBC/ISO10126PADDING" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="Rijndael" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#aes256-cbc"
                     Description="Block encryption using AES with a key length of 256 bit"
                     AlgorithmClass="BlockEncryption"
-                    RequirementLevel="REQUIRED">
+                    RequirementLevel="REQUIRED"
+                    KeyLength="256">
             <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL" />
+                          RequiredKey="AES"
+                          JCEName="AES/CBC/ISO10126PADDING" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="Rijndael" />
          </Algorithm>
@@ -213,17 +223,32 @@
                     Description="Key Transport RSA-v1.5"
                     AlgorithmClass="KeyTransport"
                     RequirementLevel="REQUIRED">
+            <!-- You have to provide a core RSA mechanism here, even for
+                 the bouncy castle -->
             <ProviderAlgo ProviderId="BC"
-                          JCEName="RSA/PKCS1" />
+                          JCEName="RSA"
+                          RequiredKey="RSA" />
             <ProviderAlgo ProviderId="Cryptix"
-                          JCEName="RSA/ECB/PKCS#1" />
+                          JCEName="RSA"
+                          RequiredKey="RSA" />
+            <!-- <ProviderAlgo ProviderId="BC"
+                          JCEName="RSA/PKCS1"
+                          RequiredKey="RSA" />
+            <ProviderAlgo ProviderId="Cryptix"
+                          JCEName="RSA/ECB/PKCS#1" /> -->
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"
                     Description="Key Transport RSA-OAEP"
                     AlgorithmClass="KeyTransport"
                     RequirementLevel="REQUIRED">
+            <!-- You have to provide a core RSA mechanism here, even for
+                 the bouncy castle -->
+<!--        <ProviderAlgo ProviderId="BC"
+                          JCEName="RSA/OAEP"
+                          RequiredKey="RSA" /> -->
             <ProviderAlgo ProviderId="BC"
-                          JCEName="RSA/OAEP" />
+                          JCEName="RSA"
+                          RequiredKey="RSA" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#dh"
                     Description="Key Agreement Diffie-Hellman"
@@ -235,30 +260,38 @@
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-tripledes"
                     Description="Symmetric Key Wrap using Triple DES"
                     AlgorithmClass="SymmetricKeyWrap"
-                    RequirementLevel="REQUIRED">
+                    RequirementLevel="REQUIRED"
+                    KeyLength="192">
             <ProviderAlgo ProviderId="BC"
-                          JCEName="DESEDE/CBC/NOPADDING" />
+                          JCEName="DESEDEWrap"
+                          RequiredKey="DESEDE" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes128"
                     Description="Symmetric Key Wrap using AES with a key length of 128 bit"
                     AlgorithmClass="SymmetricKeyWrap"
-                    RequirementLevel="REQUIRED">
-            <!-- <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL" /> -->
+                    RequirementLevel="REQUIRED"
+                    KeyLength="128">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="AESWrap"
+                          RequiredKey="AES" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes192"
                     Description="Symmetric Key Wrap using AES with a key length of 192 bit"
                     AlgorithmClass="SymmetricKeyWrap"
-                    RequirementLevel="OPTIONAL">
-            <!-- <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL" /> -->
+                    RequirementLevel="OPTIONAL"
+                    KeyLength="192">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="AESWrap"
+                          RequiredKey="AES" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#kw-aes256"
                     Description="Symmetric Key Wrap using AES with a key length of 256 bit"
                     AlgorithmClass="SymmetricKeyWrap"
-                    RequirementLevel="REQUIRED">
-            <!-- <ProviderAlgo ProviderId="BC"
-                          JCEName="RIJNDAEL" /> -->
+                    RequirementLevel="REQUIRED"
+                    KeyLength="256">
+            <ProviderAlgo ProviderId="BC"
+                          JCEName="AESWrap"
+                          RequiredKey="AES" />
          </Algorithm>
       </Algorithms>
    </JCEAlgorithmMappings>
@@ -413,5 +446,7 @@
                      prefix="ds" />
       <PrefixMapping namespace="http://www.w3.org/2001/04/xmlenc#"
                      prefix="xenc" />
+      <PrefixMapping namespace="http://www.xmlsecurity.org/experimental#"
+                     prefix="experimental" />
    </PrefixMappings>
 </Configuration>

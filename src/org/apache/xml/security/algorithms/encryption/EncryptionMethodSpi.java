@@ -60,15 +60,15 @@ package org.apache.xml.security.algorithms.encryption;
 
 
 
-import java.security.Provider;
-import java.security.Key;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import javax.crypto.SecretKey;
-import javax.crypto.ExemptionMechanism;
-import java.security.SecureRandom;
-import java.security.spec.AlgorithmParameterSpec;
+import java.security.*;
+import java.security.spec.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import org.apache.xml.security.algorithms.*;
+import org.apache.xml.security.algorithms.encryption.*;
+import org.apache.xml.security.algorithms.encryption.params.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.utils.*;
 import org.w3c.dom.*;
 
 
@@ -82,130 +82,73 @@ public abstract class EncryptionMethodSpi {
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(EncryptionMethodSpi.class.getName());
 
-   /** Field algorithm */
-   protected javax.crypto.Cipher _cipherAlgorithm = null;
+   /**
+    * Return <CODE>true</CODE> if this Provider which is required by this
+    * class is available, otherwise <CODE>false</CODE>.
+    *
+    * @return <CODE>true</CODE> if this Provider which is required by this class is available, otherwise <CODE>false</CODE>.
+    */
+   public boolean getRequiredProviderAvailable() {
+
+      String Id = this.getRequiredProviderName();
+
+      if (JCEMapper.getProviderIsRegisteredAtSecurity(Id)) {
+         return true;
+      } else {
+         if (JCEMapper.getProviderIsInClassPath(Id)) {
+            return JCEMapper.addProvider(Id);
+         } else {
+            return false;
+         }
+      }
+   }
 
    /**
-    * Method engineGetJCEAlgorithmString
+    * Method getImplementedAlgorithmJCE
     *
     * @return
     */
-   protected String engineGetJCEAlgorithmString() {
-      return this._cipherAlgorithm.getAlgorithm();
+   protected String getImplementedAlgorithmJCE() {
+
+      JCEMapper.ProviderIdClass pic =
+         JCEMapper.translateURItoJCEID(this.getImplementedAlgorithmURI(),
+                                       this.getRequiredProviderName());
+
+      return pic.getAlgorithmID();
    }
 
-   /**
-    * Method engineGetJCEProviderName
-    *
-    * @return
-    */
-   protected String engineGetJCEProviderName() {
-      return this._cipherAlgorithm.getProvider().getName();
-   }
+   //J-
+   public static final int ALGOTYPE_BLOCK_ENCRYPTION   = 1;
+   public static final int ALGOTYPE_STREAM_ENCRYPTION  = 2;
+   public static final int ALGOTYPE_KEY_TRANSPORT      = 3;
+   public static final int ALGOTYPE_SYMMETRIC_KEY_WRAP = 4;
+   public static final int ALGOTYPE_KEY_AGREEMENT      = 5;
 
-   /**
-    * Method engineGetJCEProvider
-    *
-    * @return
-    */
-   protected Provider engineGetJCEProvider() {
-      return this._cipherAlgorithm.getProvider();
-   }
+   public abstract int    getImplementedAlgorithmType();
+   public abstract String getImplementedAlgorithmURI();
+   public abstract String getRequiredProviderName();
 
-   /**
-    * Method engineGetIV
-    *
-    * @return
-    */
-   protected byte[] engineGetIV() {
-      return this._cipherAlgorithm.getIV();
-   }
+   public abstract int    engineGetBlockSize();
+   public abstract int    engineGetIvLength();
 
-   /**
-    * Method engineGetOutputSize
-    *
-    * @param inputLen
-    * @return
-    */
-   protected int engineGetOutputSize(int inputLen) {
-      return this._cipherAlgorithm.getOutputSize(inputLen);
-   }
+   public abstract byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey)
+                          throws XMLSecurityException;
+   public abstract byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey, byte[] IV)
+                          throws XMLSecurityException;
+   public abstract byte[] engineDecrypt(byte[] ciphertextBytes, Key contentKey)
+                          throws XMLSecurityException;
 
-   /**
-    * Method engineGetExemptionMechanism
-    *
-    * @return
-    */
-   protected ExemptionMechanism engineGetExemptionMechanism() {
-      return this._cipherAlgorithm.getExemptionMechanism();
-   }
-
-   protected abstract byte[] engineUpdate(byte buf[])
-           throws XMLSecurityException;
-   protected abstract byte[] engineUpdate(byte buf[], int offset, int len) throws XMLSecurityException;
-
-   /** Field _doc */
-   Document _doc = null;
-
-   /**
-    * Method engineSetDocument
-    *
-    * @param doc
-    */
-   protected void engineSetDocument(Document doc) {
-      this._doc = doc;
-   }
-
-   /** Field _constructionElement */
-   Element _constructionElement = null;
-
-   /**
-    * Method engineGetContextFromElement
-    *
-    * @param element
-    * @throws XMLSecurityException
-    */
-   protected void engineReadContextFromElement(Element element)
-           throws XMLSecurityException {
-      this._constructionElement = element;
-   }
-
-   /**
-    * Method engineAddContextToElement
-    *
-    * @param element
-    * @throws XMLSecurityException
-    */
-   protected void engineAddContextToElement(Element element)
-           throws XMLSecurityException {}
-
-   /**
-    * Returns the Algorithm URI of the instantiated encryption method.
-    *
-    * @return the Algorithm URI of the instantiated encryption method.
-    */
-   protected abstract String engineGetURI();
-
-   /**
-    * Returns the key size which is implemented by the instantiated encryption method.
-    *
-    * @return the key size which is implemented by the instantiated encryption method.
-    */
-   protected abstract int  engineGetKeySize();
-   protected abstract int  engineGetBlockSize();
-
-   /**
-    * Der init kann durchgeführt werden:
-    *
-    * init(Cipher.ENCRYPT_MODE, byte[] key, SecureRandom sr)
-    * init(Cipher.ENCRYPT_MODE, byte[] key, byte[] iv)
-    * init(Cipher.ENCRYPT_MODE, PublicKey pk,
-    * init(Cipher.ENCRYPT_MODE, Certificate cert,
-    * init(Cipher.DECRYPT_MODE, byte[] key,
-    * init(Cipher.DECRYPT_MODE, PrivateKey pk,
-    */
-   protected abstract void engineInit(int opmode, byte[] key, SecureRandom sr) throws XMLSecurityException;
-   protected abstract void engineInit(int opmode, byte[] key) throws XMLSecurityException;
+   public abstract byte[] engineWrap(Key contentKey, Key wrapKey)
+                          throws XMLSecurityException;
+   public abstract byte[] engineWrap(Key contentKey, Key wrapKey, byte[] IV)
+                          throws XMLSecurityException;
+   public abstract Key    engineUnwrap(byte[] wrappedKey, Key wrapKey, String wrappedKeyAlgoURI)
+                          throws XMLSecurityException;
+   public abstract EncryptionMethodParams engineInit(Document doc, EncryptionMethodParams params)
+                          throws XMLSecurityException;
+   public abstract EncryptionMethodParams engineInit(Element encryptionMethodElem)
+                          throws XMLSecurityException;
+   //J+
 
    static {
       org.apache.xml.security.Init.init();

@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -57,85 +56,66 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.utils;
+package org.apache.xml.security.algorithms.encryption.helper;
 
 
 
-import org.w3c.dom.*;
-import java.util.ArrayList;
-import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 
 
 /**
  *
- *
- * @author Christian Geuer-Pollmann
- *
+ * @author $Author$
  */
-public class HelperNodeList implements NodeList {
+public class InvalidCipherTextException extends XMLSecurityException {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(HelperNodeList.class.getName());
-
-   /** Field nodes */
-   ArrayList nodes = new ArrayList(20);
-
-   boolean _allNodesMustHaveSameParent = false;
-
-   public HelperNodeList() {
-      this(false);
-   }
-
-   public HelperNodeList(boolean allNodesMustHaveSameParent) {
-      this._allNodesMustHaveSameParent = allNodesMustHaveSameParent;
+   /**
+    * Constructor InvalidCipherTextException
+    *
+    */
+   public InvalidCipherTextException() {
+      super();
    }
 
    /**
-    * Method item
+    * Constructor InvalidCipherTextException
     *
-    * @param index
-    * @return
+    * @param msgID
     */
-   public Node item(int index) {
-
-      // cat.debug("item(" + index + ") of " + this.getLength() + " nodes");
-
-      return (Node) nodes.get(index);
+   public InvalidCipherTextException(String msgID) {
+      super(msgID);
    }
 
    /**
-    * Method getLength
+    * Constructor InvalidCipherTextException
     *
-    * @return
+    * @param msgID
+    * @param exArgs
     */
-   public int getLength() {
-      return nodes.size();
+   public InvalidCipherTextException(String msgID, Object exArgs[]) {
+      super(msgID, exArgs);
    }
 
    /**
-    * Method appendChild
+    * Constructor InvalidCipherTextException
     *
-    * @param node
+    * @param msgID
+    * @param originalException
     */
-   public void appendChild(Node node) throws IllegalArgumentException {
-      if (this._allNodesMustHaveSameParent && this.getLength() > 0) {
-         if (this.item(0).getParentNode() != node.getParentNode()) {
-            throw new IllegalArgumentException("Nodes have not the same Parent");
-         }
-      }
-      nodes.add(node);
+   public InvalidCipherTextException(String msgID,
+                                     Exception originalException) {
+      super(msgID, originalException);
    }
 
-   public Document getOwnerDocument() {
-      if (this.getLength() == 0) {
-         return null;
-      } else {
-         return XMLUtils.getOwnerDocument(this.item(0));
-      }
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
+   /**
+    * Constructor InvalidCipherTextException
+    *
+    * @param msgID
+    * @param exArgs
+    * @param originalException
+    */
+   public InvalidCipherTextException(String msgID, Object exArgs[],
+                                     Exception originalException) {
+      super(msgID, exArgs, originalException);
    }
 }

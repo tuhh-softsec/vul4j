@@ -67,6 +67,7 @@ import javax.xml.parsers.*;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.compiler.FunctionTable;
 import org.w3c.dom.*;
+import org.apache.xml.security.algorithms.encryption.EncryptionMethod;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.algorithms.encryption.EncryptionMethod;
 import org.apache.xml.security.algorithms.JCEMapper;
@@ -107,6 +108,8 @@ public class Init {
 
       if (!_alreadyInitialized) {
          _alreadyInitialized = true;
+
+         PRNG.init(new java.security.SecureRandom());
 
          try {
 
@@ -318,6 +321,7 @@ public class Init {
                }
             }
 
+            /*
             {
                Element cipherAlgos = (Element) XPathAPI.selectSingleNode(doc,
                                         "/x:Configuration/x:EncryptionMethods",
@@ -325,6 +329,7 @@ public class Init {
 
                EncryptionMethod.init(cipherAlgos);
             }
+            */
 
             {
                ResourceResolver.init();
@@ -430,6 +435,21 @@ public class Init {
                      .setDefaultPrefix(namespace, prefix);
                }
             }
+
+         //J-
+         EncryptionMethod.providerInit();
+         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_TRIPLEDES,     "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_TRIPLEDES_BC");
+         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES128,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES128_BC");
+         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES192,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES192_BC");
+         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYWRAP_AES256,        "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyWrapImpl_AES256_BC");
+         EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_TRIPLEDES, "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_TRIPLEDES_BC");
+         EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES128_BC");
+         EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES192_BC");
+         EncryptionMethod.register(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256,    "org.apache.xml.security.algorithms.encryption.implementations.BC.BlockEncryptionImpl_AES256_BC");
+         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP,  "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyTransportImpl_RSAOAEP_BC");
+         EncryptionMethod.register(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSA15,    "org.apache.xml.security.algorithms.encryption.implementations.BC.KeyTransportImpl_RSAPKCS15_BC");
+         //J+
+
          } catch (Exception e) {
             cat.fatal("Bad: ", e);
             e.printStackTrace();

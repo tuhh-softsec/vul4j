@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -57,85 +56,106 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.utils;
+package org.apache.xml.security.algorithms.encryption.implementations.BC;
 
 
 
+import java.io.*;
+import java.security.*;
+import java.security.spec.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import org.apache.xml.security.algorithms.*;
+import org.apache.xml.security.algorithms.encryption.*;
+import org.apache.xml.security.algorithms.encryption.helper.*;
+import org.apache.xml.security.algorithms.encryption.params.*;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.utils.EncryptionConstants;
+import org.apache.xml.security.utils.PRNG;
 import org.w3c.dom.*;
-import java.util.ArrayList;
-import org.apache.xml.security.utils.XMLUtils;
 
 
 /**
  *
- *
- * @author Christian Geuer-Pollmann
- *
+ * @author $Author$
  */
-public class HelperNodeList implements NodeList {
+public abstract class KeyTransportImpl extends EncryptionMethodSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(HelperNodeList.class.getName());
-
-   /** Field nodes */
-   ArrayList nodes = new ArrayList(20);
-
-   boolean _allNodesMustHaveSameParent = false;
-
-   public HelperNodeList() {
-      this(false);
-   }
-
-   public HelperNodeList(boolean allNodesMustHaveSameParent) {
-      this._allNodesMustHaveSameParent = allNodesMustHaveSameParent;
-   }
+   /** Field _doc */
+   Document _doc;
 
    /**
-    * Method item
-    *
-    * @param index
-    * @return
-    */
-   public Node item(int index) {
-
-      // cat.debug("item(" + index + ") of " + this.getLength() + " nodes");
-
-      return (Node) nodes.get(index);
-   }
-
-   /**
-    * Method getLength
+    * Method getRequiredProviderName
     *
     * @return
     */
-   public int getLength() {
-      return nodes.size();
+   public String getRequiredProviderName() {
+      return "BC";
    }
 
    /**
-    * Method appendChild
+    * Method getImplementedAlgorithmType
     *
-    * @param node
+    * @return
     */
-   public void appendChild(Node node) throws IllegalArgumentException {
-      if (this._allNodesMustHaveSameParent && this.getLength() > 0) {
-         if (this.item(0).getParentNode() != node.getParentNode()) {
-            throw new IllegalArgumentException("Nodes have not the same Parent");
-         }
-      }
-      nodes.add(node);
+   public int getImplementedAlgorithmType() {
+      return EncryptionMethodSpi.ALGOTYPE_KEY_TRANSPORT;
    }
 
-   public Document getOwnerDocument() {
-      if (this.getLength() == 0) {
-         return null;
-      } else {
-         return XMLUtils.getOwnerDocument(this.item(0));
-      }
+   /**
+    * Method engineWrap
+    *
+    * @param contentKey
+    * @param wrapKey
+    * @param IV
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] engineWrap(Key contentKey, Key wrapKey, byte[] IV)
+           throws XMLSecurityException {
+      throw new XMLSecurityException("encryption.algorithmCannotUnderstandIV");
    }
 
-   static {
-      org.apache.xml.security.Init.init();
+   /**
+    * Method engineEncrypt
+    *
+    * @param plaintextBytes
+    * @param contentKey
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey)
+           throws XMLSecurityException {
+      throw new XMLSecurityException(
+         "encryption.algorithmCannotEncryptDecrypt");
+   }
+
+   /**
+    * Method engineEncrypt
+    *
+    * @param plaintextBytes
+    * @param contentKey
+    * @param IV
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] engineEncrypt(byte[] plaintextBytes, Key contentKey, byte[] IV)
+           throws XMLSecurityException {
+      throw new XMLSecurityException(
+         "encryption.algorithmCannotEncryptDecrypt");
+   }
+
+   /**
+    * Method engineDecrypt
+    *
+    * @param ciphertextBytes
+    * @param contentKey
+    * @return
+    * @throws XMLSecurityException
+    */
+   public byte[] engineDecrypt(byte[] ciphertextBytes, Key contentKey)
+           throws XMLSecurityException {
+      throw new XMLSecurityException(
+         "encryption.algorithmCannotEncryptDecrypt");
    }
 }

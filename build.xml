@@ -55,6 +55,7 @@
     <property name="src" value="src" />
     <property name="src.samples" value="src_samples" />
     <property name="src.unitTests" value="src_unitTests" />
+    <property name="src.JCE.BC" value="src_JCE_BC" />
 
     <property name="build" value="./classes" />
     <property name="build.jar" value="./xmlsec.jar" />
@@ -185,6 +186,15 @@ org.apache.xml.security.utils.*
       <fileset dir="${src.samples}" includes="**/*.xml"/>
       <fileset dir="${src.samples}" includes="**/*.zip"/>
     </copy>
+  </target>
+
+  <target name="compile.JCE.BC"
+          depends="prepare"
+          if="bcprov.present">
+    <javac srcdir="${src.JCE.BC}"
+           destdir="${build}">
+      <classpath refid="classpath.library" />
+    </javac>
   </target>
 
   <target name="compile"
