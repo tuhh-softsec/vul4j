@@ -38,6 +38,7 @@
 #include <errno.h>
 
 #include <xsec/utils/XSECSOAPRequestorSimple.hpp>
+#include <xsec/utils/XSECSafeBuffer.hpp>
 #include <xsec/framework/XSECError.hpp>
 
 #include <xercesc/dom/DOM.hpp>
@@ -301,8 +302,17 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
         // Most likely a 404 Not Found error.
         //   Should recognize and handle the forwarding responses.
         //
-		throw XSECException(XSECException::HTTPURIInputStreamError,
-						"Unknown HTTP Response");
+		char * q = strstr(p, "\n");
+		if (q == NULL)
+			q = strstr(p, "\r");
+		if (q != NULL)
+			*q = '\0';
+		safeBuffer sb;
+		sb.sbStrcpyIn("SOAPRequestorSimple HTTP Error : ");
+		if (strlen(p) < 256)
+			sb.sbStrcatIn(p);
+        throw XSECException(XSECException::HTTPURIInputStreamError, sb.rawCharBuffer());
+
     }
 
 	/* Now find out how long the return is */

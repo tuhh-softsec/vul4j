@@ -716,7 +716,8 @@ XMLCh * generateId(unsigned int bytes) {
 
 	id[0] = chLatin_I;
 
-	for (unsigned int i = 0; i < toGen; ++i) {
+	unsigned int i;
+	for (i = 0; i < toGen; ++i) {
 
 		makeHexByte(&id[1+(i*2)], b[i]);
 
