@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.61 2002/08/06 15:29:26 craigmcc Exp $
- * $Revision: 1.61 $
- * $Date: 2002/08/06 15:29:26 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.62 2002/08/10 09:45:54 rdonkin Exp $
+ * $Revision: 1.62 $
+ * $Date: 2002/08/10 09:45:54 $
  *
  * ====================================================================
  *
@@ -123,7 +123,7 @@ import org.xml.sax.XMLReader;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.61 $ $Date: 2002/08/06 15:29:26 $
+ * @version $Revision: 1.62 $ $Date: 2002/08/10 09:45:54 $
  */
 
 public class Digester extends DefaultHandler {
@@ -681,12 +681,8 @@ public class Digester extends DefaultHandler {
 
         // Configure standard properties and return the new instance
         try {
-            setProperty(JAXP_SCHEMA_LANGUAGE, schemaLanguage);
-        } catch (Exception e) {
-            log.warn("" + e);
-        }
-        try {
             if (schemaLocation != null) {
+                setProperty(JAXP_SCHEMA_LANGUAGE, schemaLanguage);
                 setProperty(JAXP_SCHEMA_SOURCE, schemaLocation);
             }
         } catch (Exception e) {
@@ -830,7 +826,7 @@ public class Digester extends DefaultHandler {
      */
     public void setSchemaLanguage(String schemaLanguage){
 
-        schemaLanguage = schemaLanguage;
+        this.schemaLanguage = schemaLanguage;
 
     }   
 
