@@ -511,13 +511,13 @@ public class Reference extends ElementProxy {
    }
 
    /**
-    * Method resolverResult
+    * Method getReferencedBytes
     *
     * @return
     * @throws ReferenceNotInitializedException
     * @throws XMLSignatureException
     */
-   private byte[] calculateDigest()
+   public byte[] getReferencedBytes()
            throws ReferenceNotInitializedException, XMLSignatureException {
 
       try {
@@ -571,7 +571,34 @@ public class Reference extends ElementProxy {
             cat.debug("The Reference contains no Transforms, so I skip them");
          }
 
-         byte data[] = xmlSignatureInput.getBytes();
+         return xmlSignatureInput.getBytes();
+      } catch (ResourceResolverException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      } catch (IOException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      } catch (CanonicalizationException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      } catch (InvalidCanonicalizerException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      } catch (TransformationException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      } catch (XMLSecurityException ex) {
+         throw new ReferenceNotInitializedException("empty", ex);
+      }
+   }
+
+   /**
+    * Method resolverResult
+    *
+    * @return
+    * @throws ReferenceNotInitializedException
+    * @throws XMLSignatureException
+    */
+   private byte[] calculateDigest()
+           throws ReferenceNotInitializedException, XMLSignatureException {
+
+      try {
+         byte[] data = this.getReferencedBytes();
 
          /*
          if (false) {
@@ -582,7 +609,6 @@ public class Reference extends ElementProxy {
             JavaUtils.writeBytesToFilename(tmp, data);
          }
          */
-
          MessageDigestAlgorithm mda = this.getMessageDigestAlgorithm();
 
          mda.reset();
@@ -598,16 +624,6 @@ public class Reference extends ElementProxy {
          }
          //J+
          return calculatedDigestValue;
-      } catch (ResourceResolverException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (IOException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (CanonicalizationException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (InvalidCanonicalizerException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
-      } catch (TransformationException ex) {
-         throw new ReferenceNotInitializedException("empty", ex);
       } catch (XMLSecurityException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       }
@@ -628,10 +644,24 @@ public class Reference extends ElementProxy {
       byte[] elemDig = this.getDigestValueFromElement();
       byte[] calcDig = this.calculateDigest();
 
-      cat.debug("unverifiedDigestValue= " + Base64.encode(elemDig));
-      cat.debug("calculatedDigestValue= " + Base64.encode(calcDig));
+      boolean equal = MessageDigestAlgorithm.isEqual(elemDig, calcDig);
 
-      return MessageDigestAlgorithm.isEqual(elemDig, calcDig);
+      if (!equal) {
+         cat.debug("Verification failed for URI " + this.getURI());
+         cat.debug("unverifiedDigestValue= " + Base64.encode(elemDig));
+         cat.debug("calculatedDigestValue= " + Base64.encode(calcDig));
+
+         try {
+            String tmp = new Long(System.currentTimeMillis()).toString()
+                         + ".txt";
+            cat.info("Wrote \"" + this.getURI() + "\" to file " + tmp);
+            JavaUtils.writeBytesToFilename(tmp, this.getReferencedBytes());
+         } catch (Exception ex) {}
+      } else {
+         cat.debug("Verification successful for URI " + this.getURI());
+      }
+
+      return equal;
    }
 
    static {

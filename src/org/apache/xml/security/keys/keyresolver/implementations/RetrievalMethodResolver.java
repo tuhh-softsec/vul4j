@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -149,7 +148,8 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                resource = transforms.performTransforms(resource);
             }
 
-            cat.debug("After applying Transforms, resource has " + resource.getBytes().length + "bytes");
+            cat.debug("After applying Transforms, resource has "
+                      + resource.getBytes().length + "bytes");
             cat.debug("Resolved to resource " + resource.getSourceURI());
 
             byte inputBytes[] = resource.getBytes();
@@ -222,25 +222,8 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 
          ResourceResolver resRes = ResourceResolver.getInstance(uri, BaseURI);
 
-         cat.debug("I didn't got a ResourceResolver");
-
          if (resRes != null) {
             XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
-
-            if (cat.isDebugEnabled()) {
-               cat.debug("CHGP: I got " + resource.getBytes().length
-                         + " bytes ");
-
-               if (resource.getBytes().length > 0) {
-                  try {
-                     java.io.FileOutputStream fos =
-                        new java.io.FileOutputStream("out.xml");
-
-                     fos.write(resource.getBytes());
-                     fos.close();
-                  } catch (Exception ex) {}
-               }
-            }
 
             cat.debug("Before applying Transforms, resource has "
                       + resource.getBytes().length + "bytes");

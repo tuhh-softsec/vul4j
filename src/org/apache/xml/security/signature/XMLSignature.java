@@ -627,21 +627,16 @@ public class XMLSignature extends ElementProxy {
          java.security.Signature signature =
             java.security.Signature.getInstance(jceSigID.getAlgorithmID(),
                                                 jceSigID.getProviderId());
-
-         signature.initVerify(cert);
-
-         byte inputBytes[] = this.getSignedInfo().getCanonicalizedOctetStream();
-
-         JavaUtils.writeBytesToFilename("signedInfo", inputBytes);
-         signature.update(inputBytes);
-
-         byte sigBytes[] = this.getSignatureValue();
-         boolean verify = signature.verify(sigBytes);
-
          if (!this.getSignedInfo().verify()) {
             return false;
          }
 
+         signature.initVerify(cert);
+         byte inputBytes[] = this.getSignedInfo().getCanonicalizedOctetStream();
+         // JavaUtils.writeBytesToFilename("signedInfo", inputBytes);
+         signature.update(inputBytes);
+         byte sigBytes[] = this.getSignatureValue();
+         boolean verify = signature.verify(sigBytes);
          return verify;
       } else {
          throw new Exception("Didn't get a certificate");

@@ -991,10 +991,17 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    private void checkForRelativeNamespace(Node ctxNode)
            throws CanonicalizationException {
 
+      if (ctxNode != null && ctxNode.getNodeType() == Node.ELEMENT_NODE) {
+
       NamedNodeMap attributes = ctxNode.getAttributes();
 
+      cat.debug("checkForRelativeNamespace("+ ctxNode + ")");
       for (int i = 0; i < attributes.getLength(); i++) {
+         cat.debug("checkForRelativeNamespace " + (Attr) attributes.item(i));
          C14nHelper.assertNotRelativeNS((Attr) attributes.item(i));
+      }
+      } else {
+         cat.error("Called checkForRelativeNamespace() on a " + ctxNode);
       }
    }
 

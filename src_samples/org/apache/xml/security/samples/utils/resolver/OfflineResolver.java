@@ -190,5 +190,8 @@ public class OfflineResolver extends ResourceResolverSpi {
       OfflineResolver.register(
          "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/id2.xml",
          "data/org/apache/xml/security/temp/id2.xml", "text/xml");
+      OfflineResolver.register(
+         "http://xmldsig.pothole.com/xml-stylesheet.txt",
+         "data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml");
    }
 }

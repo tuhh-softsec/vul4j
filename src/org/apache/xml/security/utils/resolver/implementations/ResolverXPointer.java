@@ -139,7 +139,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
       }
 
       for (int i = 0; i < resultNodes.getLength(); i++) {
-         cat.debug("item " + i
+         cat.debug("item " + i + " "
                    + XMLUtils.getNodeTypeString(resultNodes.item(i)));
       }
 
