@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.7 2003/12/01 05:29:09 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/one/ToMoney.java,v 1.1 2003/12/01 05:29:08 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,31 +54,31 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.kata.one;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.apache.commons.functor.UnaryFunction;
+import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
 
 /**
- * @version $Revision: 1.7 $ $Date: 2003/12/01 05:29:09 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/01 05:29:08 $
  * @author Rodney Waldhoff
  */
-public class TestAll extends TestCase {
-    public TestAll(String testName) {
-        super(testName);
+public class ToMoney implements UnaryFunction {
+    public Object evaluate(Object cents) {
+        return evaluate((Number)cents);
     }
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-
-        suite.addTest(org.apache.commons.functor.example.lines.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.map.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.kata.TestAll.suite());
-        
-        return suite;
+    public Object evaluate(Number cents) {
+        return new Money(cents.intValue());
     }
+    
+    public static ToMoney instance() {
+        return INSTANCE;
+    }
+
+    public static UnaryFunction from(UnaryFunction fn) {
+        return new CompositeUnaryFunction(instance(),fn);
+    }
+
+    private static ToMoney INSTANCE = new ToMoney();
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/TestAll.java,v 1.7 2003/12/01 05:29:09 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/TestAll.java,v 1.1 2003/12/01 05:29:09 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,14 +54,14 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.example;
+package org.apache.commons.functor.example.kata;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version $Revision: 1.7 $ $Date: 2003/12/01 05:29:09 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/01 05:29:09 $
  * @author Rodney Waldhoff
  */
 public class TestAll extends TestCase {
@@ -72,12 +72,7 @@ public class TestAll extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite();
 
-        suite.addTest(FlexiMapExample.suite());
-        suite.addTest(QuicksortExample.suite());
-
-        suite.addTest(org.apache.commons.functor.example.lines.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.map.TestAll.suite());
-        suite.addTest(org.apache.commons.functor.example.kata.TestAll.suite());
+        suite.addTest(org.apache.commons.functor.example.kata.one.TestAll.suite());
         
         return suite;
     }
