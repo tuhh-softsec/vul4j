@@ -77,7 +77,6 @@
 #ifndef XSEC_NO_XPATH
 
 #include <xalanc/XalanDOM/XalanDocument.hpp>
-#include <xalanc/XercesParserLiaison/XercesDocumentBridge.hpp>
 #include <xalanc/XercesParserLiaison/XercesDOMSupport.hpp>
 #include <xalanc/XercesParserLiaison/XercesParserLiaison.hpp>
 #include <xalanc/XPath/NodeRefList.hpp>
