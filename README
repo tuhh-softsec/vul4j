@@ -1,0 +1,2 @@
+In Version v1.0.4, there is one test case which fails (interop test for exclusive c14n). This is related to very esoteric node sets (The Y4 test vector from <http://www.w3.org/Signature/2002/02/01-exc-c14n-interop.html>). 
+

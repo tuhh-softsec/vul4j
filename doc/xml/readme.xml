@@ -3,10 +3,11 @@
 
 <s1 title="Readme">
 	<s2 title="News">
-		<p>Version &packageversion; now supports new W3C drafts:</p>
+		<p>Version 1.0.4 released on 15. July 2002; minor improvements. The most significant is that people who did not install Xalan properly under JDK 1.4.0 get a more specific error message. It uses the most recent version of the BouncyCastle JCE now. </p>
+		<p>Version 1.0.3 now supports new W3C specs:</p>
 		<ul>
-		<li><jump href="http://www.w3.org/Signature/Drafts/xml-exc-c14n">Exclusive XML Canonicalization Version 1.0, W3C Proposed Recommendation May 2002</jump> and</li>
-		<li><jump href="http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/">XML-Signature XPath Filter 2.0, W3C Working Draft 25 April 2002</jump></li>
+		<li><jump href="http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/">Exclusive XML Canonicalization Version 1.0, W3C Recommendation 18 July 2002</jump>. (There is no interop to test vector <jump href="http://www.w3.org/Signature/2002/02/01-exc-c14n-interop.html">Y4</jump> because of a problem in Xalan)</li>
+		<li><jump href="http://www.w3.org/TR/2002/CR-xmldsig-filter2-20020718/">XML-Signature XPath Filter 2.0, W3C Candidate Recommendation 18 July 2002 </jump></li>
 		</ul>
 		<p>Canonicalization is written completely new: it's about 5-80 times faster than the implementation in version 1.0.2. It's highly recommended to upgrade to the new version. </p>
 	</s2>

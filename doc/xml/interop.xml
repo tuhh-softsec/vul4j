@@ -3,6 +3,9 @@
 
 <!-- <jump href=""></jump> -->
 <s1 title="Interoperability">
+        <s2 title="Problems">
+           <p>In Version v1.0.4, there is one test case which fails (interop test for exclusive c14n). This is related to very esoteric node sets (The Y4 test vector from <jump href="http://www.w3.org/Signature/2002/02/01-exc-c14n-interop.html">the interop matrix</jump>). </p>
+        </s2>
 	<s2 title="Interoperability issues">
 		<p>As it can be seen on the <jump href="http://www.w3.org/Signature/">working group homepage</jump>, there are some interoperability reports, namely for <jump href="http://www.w3.org/Signature/2000/10/10-c14n-interop.html">Canonical XML</jump>, <jump href="http://www.w3.org/Signature/2002/02/01-exc-c14n-interop.html">Exclusive Canonical XML</jump> and <jump href="http://www.w3.org/TR/xmldsig-core/2001/04/05-xmldsig-interop.html">XML Signature</jump>.</p>
 		<p>Interoperability depends heavily on test vectors, this means that implementation A has to check whether the signatures from implementation B can be verified. For this purpose, we have a collection of different test vectors in our <code>data/</code> directory. The directory includes test vectors from</p>
