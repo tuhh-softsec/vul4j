@@ -60,75 +60,116 @@
 /*
  * XSEC
  *
- * XSECAlgorithmHandlerDefault := Interface class to define handling of
- *								  default encryption algorithms
+ * XENCEncryptedKeyImpl := Implementation for holder object for EncryptedKeys
  *
  * $Id$
  *
  */
 
-#ifndef XENCALGHANDLERDEFAULT_INCLUDE
-#define XENCALGHANDLERDEFAULT_INCLUDE
-
-// XSEC Includes
-
 #include <xsec/framework/XSECDefs.hpp>
-#include <xsec/framework/XSECAlgorithmHandler.hpp>
 
-class TXFMChain;
-class XENCEncryptionMethod;
-class XSECCryptoKey;
+#include "XENCCipherImpl.hpp"
+#include "XENCEncryptedKeyImpl.hpp"
+#include "XENCCipherDataImpl.hpp"
 
-// Xerces
+#include <xsec/framework/XSECError.hpp>
+#include <xsec/utils/XSECDOMUtils.hpp>
 
-class XENCAlgorithmHandlerDefault : public XSECAlgorithmHandler {
+#include <xercesc/util/XMLUniDefs.hpp>
 
-public:
-	
-	
-	virtual ~XENCAlgorithmHandlerDefault() {};
+XERCES_CPP_NAMESPACE_USE
 
+// --------------------------------------------------------------------------------
+//			UNICODE Strings
+// --------------------------------------------------------------------------------
 
-	virtual unsigned int decryptToSafeBuffer(
-		TXFMChain * cipherText,
-		XENCEncryptionMethod * encryptionMethod,
-		XSECCryptoKey * key,
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
-		safeBuffer & result
-	);
+static XMLCh s_EncryptedKey[] = {
 
-	virtual bool encryptToSafeBuffer(
-		TXFMChain * plainText,
-		XENCEncryptionMethod * encryptionMethod,
-		XSECCryptoKey * key,
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
-		safeBuffer & result
-	);
-
-	virtual XSECCryptoKey * createKeyForURI(
-		const XMLCh * uri,
-		unsigned char * keyBuffer,
-		unsigned int keyLen
-	);
-
-	virtual XSECAlgorithmHandler * clone(void) const;
-
-private:
-
-	void mapURIToKey(const XMLCh * uri, XSECCryptoKey * key);
-	unsigned int unwrapKeyAES(
-   		TXFMChain * cipherText,
-		XSECCryptoKey * key,
-		safeBuffer & result);
-	bool wrapKeyAES(
-   		TXFMChain * cipherText,
-		XSECCryptoKey * key,
-		safeBuffer & result);
-
-
+	chLatin_E,
+	chLatin_n,
+	chLatin_c,
+	chLatin_r,
+	chLatin_y,
+	chLatin_p,
+	chLatin_t,
+	chLatin_e,
+	chLatin_d,
+	chLatin_K,
+	chLatin_e,
+	chLatin_y,
+	chNull,
 };
 
-/*\@}*/
+// --------------------------------------------------------------------------------
+//			Construct/Destruct
+// --------------------------------------------------------------------------------
 
-#endif /* XENCALGHANDLERDEFAULT_INCLUDE */
+
+XENCEncryptedKeyImpl::XENCEncryptedKeyImpl(const XSECEnv * env) :
+XENCEncryptedTypeImpl(env),
+XENCEncryptedKey(env) {
+	
+}
+
+XENCEncryptedKeyImpl::XENCEncryptedKeyImpl(const XSECEnv * env, DOMNode * node) :
+XENCEncryptedTypeImpl(env, node),
+XENCEncryptedKey(env) {
+
+}
+
+XENCEncryptedKeyImpl::~XENCEncryptedKeyImpl() {
+
+}
+
+// --------------------------------------------------------------------------------
+//			Load
+// --------------------------------------------------------------------------------
+
+void XENCEncryptedKeyImpl::load(void) {
+
+	if (mp_encryptedTypeNode == NULL) {
+
+		// Attempt to load an empty encryptedData element
+		throw XSECException(XSECException::EncryptedTypeError,
+			"XENCEncryptedKey::load - called on empty DOM");
+
+	}
+
+	if (!strEquals(getXENCLocalName(mp_encryptedTypeNode), s_EncryptedKey)) {
+
+		// Attempt to load an empty encryptedKey element
+		throw XSECException(XSECException::EncryptedTypeError,
+			"XENCEncryptedKey::load - called on non EncryptedData node");
+
+	}
+
+	// Now call the virtual function we overloaded to get here.
+	XENCEncryptedTypeImpl::load();
+
+	// Set up the keyInfo node
+	mp_keyInfoDOMNode = mp_encryptedTypeNode;
+
+}
+// --------------------------------------------------------------------------------
+//			Create from scratch
+// --------------------------------------------------------------------------------
+
+DOMElement * XENCEncryptedKeyImpl::createBlankEncryptedKey(
+									XENCCipherData::XENCCipherDataType type, 
+									const XMLCh * algorithm,
+									const XMLCh * value) {
+
+	DOMElement * ret = createBlankEncryptedType(s_EncryptedKey, type, algorithm, value);
+
+	// Set up the KeyInfo information
+	mp_keyInfoDOMNode = mp_encryptedTypeNode;
+
+	return ret;
+
+}
+
+// --------------------------------------------------------------------------------
+//			Interface Methods
+// --------------------------------------------------------------------------------
+
 

@@ -80,6 +80,7 @@ class XENCCipherData;
 class DSIGKeyInfoList;
 class DSIGKeyInfoName;
 class XENCEncryptionMethod;
+class XENCEncryptedKey;
 
 /**
  * @ingroup xenc
@@ -199,6 +200,18 @@ public:
 
 	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false) = 0;
 
+	/**
+	 * \brief Append an already created EncryptedKey.
+	 *
+	 * Add an already created EncryptedKey.
+	 *
+	 * @note The encryptedKey becomes the property of the owning EncryptedType
+	 * object and will be deleted upon its destruction.
+	 *
+	 * @param encryptedKey A pointer to the encrypted Key
+	 */
+
+	virtual void appendEncryptedKey(XENCEncryptedKey * encryptedKey) = 0;
 	//@}
 
 private:

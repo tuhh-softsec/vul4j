@@ -60,75 +60,69 @@
 /*
  * XSEC
  *
- * XSECAlgorithmHandlerDefault := Interface class to define handling of
- *								  default encryption algorithms
+ * XENCEncryptedKey := Definition for holder object for EncryptedKey 
  *
  * $Id$
  *
  */
 
-#ifndef XENCALGHANDLERDEFAULT_INCLUDE
-#define XENCALGHANDLERDEFAULT_INCLUDE
+#ifndef XENCENCRYPTEDKEY_INCLUDE
+#define XENCENCRYPTEDKEY_INCLUDE
 
 // XSEC Includes
 
 #include <xsec/framework/XSECDefs.hpp>
-#include <xsec/framework/XSECAlgorithmHandler.hpp>
+#include <xsec/dsig/DSIGKeyInfo.hpp>
+#include <xsec/xenc/XENCEncryptedType.hpp>
+#include <xsec/xenc/XENCCipherData.hpp>
 
-class TXFMChain;
-class XENCEncryptionMethod;
-class XSECCryptoKey;
+/**
+ * @ingroup xenc
+ * @{
+ */
 
-// Xerces
+/**
+ * @brief Interface definition for the EncryptedKey object
+ *
+ * The \<EncryptedKey\> element is an abstract type which builds
+ * on the EncryptedType element for encrypted data (as opposed to
+ * encrypted data).
+ *
+ * In general, this class should not be used directly.  For most
+ * applications, callers will want to use the XENCCipher class
+ * instead.
+ */
 
-class XENCAlgorithmHandlerDefault : public XSECAlgorithmHandler {
+
+class XENCEncryptedKey : public XENCEncryptedType, public DSIGKeyInfo {
+
+	/** @name Constructors and Destructors */
+	//@{
+
+protected:
+
+	// Because we inherit from KeyInfo, we need to implement a slightly different 
+	// constructor.
+
+	XENCEncryptedKey(const XSECEnv * env) : DSIGKeyInfo(env) {};
 
 public:
-	
-	
-	virtual ~XENCAlgorithmHandlerDefault() {};
+
+	virtual ~XENCEncryptedKey() {};
+
+	/** @name Get Interface Methods */
+	//@{
 
 
-	virtual unsigned int decryptToSafeBuffer(
-		TXFMChain * cipherText,
-		XENCEncryptionMethod * encryptionMethod,
-		XSECCryptoKey * key,
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
-		safeBuffer & result
-	);
-
-	virtual bool encryptToSafeBuffer(
-		TXFMChain * plainText,
-		XENCEncryptionMethod * encryptionMethod,
-		XSECCryptoKey * key,
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
-		safeBuffer & result
-	);
-
-	virtual XSECCryptoKey * createKeyForURI(
-		const XMLCh * uri,
-		unsigned char * keyBuffer,
-		unsigned int keyLen
-	);
-
-	virtual XSECAlgorithmHandler * clone(void) const;
+	//@}
 
 private:
 
-	void mapURIToKey(const XMLCh * uri, XSECCryptoKey * key);
-	unsigned int unwrapKeyAES(
-   		TXFMChain * cipherText,
-		XSECCryptoKey * key,
-		safeBuffer & result);
-	bool wrapKeyAES(
-   		TXFMChain * cipherText,
-		XSECCryptoKey * key,
-		safeBuffer & result);
+	// Unimplemented
+	XENCEncryptedKey(const XENCEncryptedKey &);
+	XENCEncryptedKey & operator = (const XENCEncryptedKey &);
 
 
 };
 
-/*\@}*/
-
-#endif /* XENCALGHANDLERDEFAULT_INCLUDE */
-
+#endif /* XENCENCRYPTEDKEY_INCLUDE */

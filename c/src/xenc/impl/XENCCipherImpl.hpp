@@ -96,11 +96,25 @@ public:
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * 
 		decryptElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element);
 
+	// Decrypting Keys
+	virtual int decryptKey(XENCEncryptedKey * encryptedKey, 
+		XMLByte * rawKey,
+		int maxKeySize);
+
 	// Implementation for encryption Elements
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * encryptElement(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
 		encryptionMethod em,
 		const XMLCh * uri = NULL);
+
+	// Encrypt a key
+	virtual XENCEncryptedKey * encryptKey(
+		const unsigned char * keyBuffer,
+		unsigned int keyLen,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL
+	);
+
 
 	// Getter methods
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * getDocument(void) 
@@ -109,7 +123,8 @@ public:
 	virtual XENCEncryptedData * getEncryptedData(void);
 
 	// Setter methods
-	void setKey(XSECCryptoKey * key) {mp_key = key;}
+	void setKey(XSECCryptoKey * key);
+	void setKEK(XSECCryptoKey * key);
 	void setKeyInfoResolver(const XSECKeyInfoResolver * resolver);
 
 	void setXENCNSPrefix(const XMLCh * prefix);
@@ -149,6 +164,9 @@ private:
 
 	// Key
 	XSECCryptoKey			* mp_key;
+
+	// KEK
+	XSECCryptoKey			* mp_kek;
 
 	// Environment
 	XSECEnv					* mp_env;

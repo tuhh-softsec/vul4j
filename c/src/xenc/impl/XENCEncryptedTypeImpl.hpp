@@ -117,6 +117,8 @@ public:
 	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false);
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
 		{return mp_encryptedTypeNode;}
+	virtual void appendEncryptedKey(XENCEncryptedKey * encryptedKey);
+
 
 
 protected:

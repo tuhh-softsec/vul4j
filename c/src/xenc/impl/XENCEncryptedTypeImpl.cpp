@@ -74,6 +74,8 @@
 #include "XENCEncryptedTypeImpl.hpp"
 #include "XENCEncryptionMethodImpl.hpp"
 
+#include <xsec/xenc/XENCEncryptedKey.hpp>
+
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/transformers/TXFMBase64.hpp>
@@ -423,5 +425,12 @@ DSIGKeyInfoName * XENCEncryptedTypeImpl::appendKeyName(const XMLCh * name, bool 
 
 	createKeyInfoElement();
 	return m_keyInfoList.appendKeyName(name, isDName);
+
+}
+
+void XENCEncryptedTypeImpl::appendEncryptedKey(XENCEncryptedKey * encryptedKey) {
+
+	createKeyInfoElement();
+	m_keyInfoList.addAndInsertKeyInfo(encryptedKey);
 
 }

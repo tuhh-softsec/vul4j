@@ -82,6 +82,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMDocument);
 
 class XSECCryptoKey;
 class XENCEncryptedData;
+class XENCEncryptedKey;
 class XSECKeyInfoResolver;
 
 /**
@@ -148,6 +149,23 @@ public:
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element
 	) = 0;
 
+	/**
+	 * \brief Decrypt a key
+	 *
+	 * Reads in the passed in KeyInfo structure for an EncryptedKey and 
+	 * decrypts the key to a buffer.
+	 *
+	 * @param encryptedKey the already loaded encryptedKey structure
+	 * @param rawKey Buffer to place the decrypted key into
+	 * @param maxKeySize Maximum number of bytes to place in the buffer
+	 */
+
+	virtual int decryptKey(
+		XENCEncryptedKey * encryptedKey,
+		XMLByte * rawKey,
+		int maxKeySize
+	) = 0;
+
 	//@}
 
 	/** @name Encryption Functions */
@@ -174,6 +192,28 @@ public:
 
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * encryptElement(
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * element,
+		encryptionMethod em,
+		const XMLCh * algorithmURI = NULL
+	) = 0;
+
+	/**
+	 * \brief Encrypt a buffer of data as a key
+	 *
+	 * Encrypts the passed in data and creates an EncryptedKey element
+	 *
+	 * @param keyBuffer The key data to encrypt
+	 * @param keyLen Bytes to encrypt
+	 * @param em The encryptionMethod to use for this encryption.  Use
+	 * ENCRYPT_NONE if a user defined type is required.
+	 * @param algorithmURI If ENCRYPT_NONE is used for em, this will be
+	 * used as the algorithm URI.
+	 *
+	 * @returns The EncryptedKey element
+	 */
+
+	virtual XENCEncryptedKey * encryptKey(
+		const unsigned char * keyBuffer,
+		unsigned int keyLen,
 		encryptionMethod em,
 		const XMLCh * algorithmURI = NULL
 	) = 0;
@@ -231,6 +271,21 @@ public:
 	 */
 
 	virtual void setKey(XSECCryptoKey * key) = 0;
+
+	/**
+	 * \brief Set Key Encryption Key for next operation
+	 *
+	 * Set the passed in key for the next key decryption/encryption
+	 * operation.
+	 *
+	 * @note This key will only be used to decrypt EncryptedKey elements.
+	 * To set a key for decrypting an EncryptedData use #setKey instead.
+	 *
+	 * @param key Key to use
+	 * @note This function will take ownership of the key and delete it when done.
+	 */
+
+	virtual void setKEK(XSECCryptoKey * key) = 0;
 
 	/**
 	 * \brief Register a KeyInfoResolver 

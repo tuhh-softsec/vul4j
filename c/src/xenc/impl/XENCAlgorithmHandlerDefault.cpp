@@ -82,8 +82,35 @@
 #include "XENCAlgorithmHandlerDefault.hpp"
 
 #include <xercesc/dom/DOM.hpp>
+#include <xercesc/util/Janitor.hpp>
 
 XERCES_CPP_NAMESPACE_USE
+
+#define _MY_MAX_KEY_SIZE 2048
+
+unsigned char s_3DES_CMS_IV [] = {
+	0x4a,
+	0xdd,
+	0xa2,
+	0x2c,
+	0x79,
+	0xe8,
+	0x21,
+	0x05
+};
+
+unsigned char s_AES_IV [] = {
+
+	0xA6,
+	0xA6,
+	0xA6,
+	0xA6,
+	0xA6,
+	0xA6,
+	0xA6,
+	0xA6
+
+};
 
 // --------------------------------------------------------------------------------
 //			Internal functions
@@ -106,19 +133,267 @@ void XENCAlgorithmHandlerDefault::mapURIToKey(const XMLCh * uri, XSECCryptoKey *
 
 }
 	
+unsigned int XENCAlgorithmHandlerDefault::unwrapKeyAES(
+   		TXFMChain * cipherText,
+		XSECCryptoKey * key,
+		safeBuffer & result) {
 
+	// Cat the encrypted key
+	XMLByte buf[_MY_MAX_KEY_SIZE];
+	XMLByte aesBuf[16];
+	XMLByte aesOutBuf[16];
+	TXFMBase * b = cipherText->getLastTxfm();
+	int sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
+
+	if (sz <= 0) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault - AES Wrapped Key not found");
+	}
+
+	if (sz == _MY_MAX_KEY_SIZE) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault - Key to decrypt too big!");
+	}
+
+	// Find number of blocks, and ensure we are a multiple of 64 bits
+	if (sz % 8 != 0) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault - AES wrapped key not a multiple of 64");
+	}
+
+	// Do the decrypt - this cast will throw if wrong, but we should
+	// not have been able to get through algorithm checks otherwise
+	XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
+
+	int blocks = sz / 8;
+	int n = blocks - 1;
+	for (int j = 5; j >= 0; j--) {
+		for (int i = n ; i > 0 ; --i) {
+
+			// Gather blocks to decrypt
+			// A
+			memcpy(aesBuf, buf, 8);
+			// Ri
+			memcpy(&aesBuf[8], &buf[8 * i], 8);
+			// A mod t
+			aesBuf[7] ^= ((n * j) + i);
+
+			// do decrypt
+			sk->decryptInit();
+			int sz = sk->decrypt(aesBuf, aesOutBuf, 16, 16);
+			sz += sk->decryptFinish(&aesOutBuf[sz], 16 - sz);
+
+			if (sz != 16) {
+				throw XSECException(XSECException::CipherError, 
+					"XENCAlgorithmHandlerDefault - Error performing decrypt in AES Unwrap");
+			}
+
+			// Copy back to where we are
+			// A
+			memcpy(buf, aesOutBuf, 8);
+			// Ri
+			memcpy(&buf[8 * i], &aesOutBuf[8], 8);
+
+		}
+	}
+
+	// Check is valid
+	if (memcmp(buf, s_AES_IV, 8) != 0) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault - decrypt failed - AES IV is not correct");
+	}
+
+	// Copy to safebuffer
+	result.sbMemcpyIn(&buf[8], n * 8);
+
+	return n * 8;
+}
+
+bool XENCAlgorithmHandlerDefault::wrapKeyAES(
+   		TXFMChain * cipherText,
+		XSECCryptoKey * key,
+		safeBuffer & result) {
+
+	// get the raw key
+	XMLByte buf[_MY_MAX_KEY_SIZE + 8];
+	memcpy(buf, s_AES_IV, 8);
+	XMLByte aesBuf[16];
+	XMLByte aesOutBuf[16];
+	TXFMBase * b = cipherText->getLastTxfm();
+	int sz = b->readBytes(&buf[8], _MY_MAX_KEY_SIZE);
+
+	if (sz <= 0) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault - Key not found");
+	}
+
+	if (sz == _MY_MAX_KEY_SIZE) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault - Key to encrypt too big!");
+	}
+
+	// Find number of blocks, and ensure we are a multiple of 64 bits
+	if (sz % 8 != 0) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCAlgorithmHandlerDefault - AES wrapped key not a multiple of 64");
+	}
+
+	// Do the decrypt - this cast will throw if wrong, but we should
+	// not have been able to get through algorithm checks otherwise
+	XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
+
+	int n = sz / 8;
+	int blocks = n + 1;
+
+	for (int j = 0; j <= 5; ++j) {
+		for (int i = 1 ; i <= n ; ++i) {
+
+			// Gather blocks to decrypt
+			// A
+			memcpy(aesBuf, buf, 8);
+			// Ri
+			memcpy(&aesBuf[8], &buf[8 * i], 8);
+
+			// do encrypt
+			sk->encryptInit();
+			int sz = sk->encrypt(aesBuf, aesOutBuf, 16, 16);
+			sz += sk->encryptFinish(&aesOutBuf[sz], 16 - sz);
+
+			if (sz != 16) {
+				throw XSECException(XSECException::CipherError, 
+					"XENCAlgorithmHandlerDefault - Error performing encrypt in AES wrap");
+			}
+
+			// Copy back to where we are
+			// A
+			memcpy(buf, aesOutBuf, 8);
+			// A mod t
+			buf[7] ^= ((n * j) + i);
+			// Ri
+			memcpy(&buf[8 * i], &aesOutBuf[8], 8);
+
+		}
+	}
+
+	// Now we have to base64 encode
+	XSECCryptoBase64 * b64 = XSECPlatformUtils::g_cryptoProvider->base64();
+
+	if (!b64) {
+
+		throw XSECException(XSECException::CryptoProviderError, 
+				"XENCAlgorithmHandlerDefault - Error getting base64 encoder in AES wrap");
+
+	}
+
+	Janitor<XSECCryptoBase64> j_b64(b64);
+	unsigned char * b64Buffer;
+	int bufLen = ((n + 1) * 8) * 3;
+	XSECnew(b64Buffer, unsigned char[bufLen + 1]);// Overkill
+	ArrayJanitor<unsigned char> j_b64Buffer(b64Buffer);
+
+	b64->encodeInit();
+	int outputLen = b64->encode (buf, (n+1) * 8, b64Buffer, bufLen);
+	outputLen += b64->encodeFinish(&b64Buffer[outputLen], bufLen - outputLen);
+	b64Buffer[outputLen] = '\0';
+
+	// Copy to safebuffer
+	result.sbStrcpyIn((const char *) b64Buffer);
+
+	return true;
+}
+
+#if 0
+
+Keep for DES keywrap
+
+		// Perform an unwrap on the key
+		safeBuffer cipherSB;
+
+		// Set the IV
+		cipherSB.sbMemcpyIn(s_CMSIV, 8);
+
+		// Cat the encrypted key
+		XMLByte buf[_MY_MAX_KEY_SIZE];
+		TXFMBase * b = cipherText->getLastTxfm();
+		int offset = 8;
+		int sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
+
+		while (sz > 0) {
+			cipherSB.sbMemcpyIn(offset, buf, sz);
+			offset += sz;
+			sz = b->readBytes(buf, _MY_MAX_KEY_SIZE);
+		}
+
+		if (offset > _MY_MAX_KEY_SIZE) {
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - Key to decrypt too big!");
+		}
+
+		// Do the decrypt - this cast will throw if wrong, but we should
+		// not have been able to get through algorithm checks otherwise
+		XSECCryptoSymmetricKey * sk = dynamic_cast<XSECCryptoSymmetricKey *>(key);
+
+		sk->decryptInit(false);	// No padding
+		// If key is bigger than this, then we have a problem
+		sz = sk->decrypt(cipherSB.rawBuffer(), buf, offset, _MY_MAX_KEY_SIZE);
+
+		sz += sk->decryptFinish(&buf[sz], _MY_MAX_KEY_SIZE - sz);
+
+		if (sz <= 0) {
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - Error decrypting key!");
+		}
+
+		// We now have the first cut, reverse the key
+		XMLByte buf2[_MY_MAX_KEY_SIZE];
+		for (int i = 0; i < sz; ++ i) {
+			buf2[sz - i] = buf[i];
+		}
+
+		// decrypt again
+		sk->decryptInit(false);
+		offset = sk->decrypt(buf2, buf, sz, _MY_MAX_KEY_SIZE);
+		offset += sk->decryptFinish(&buf[offset], _MY_MAX_KEY_SIZE - offset);
+
+#endif
 
 // --------------------------------------------------------------------------------
 //			SafeBuffer decryption
 // --------------------------------------------------------------------------------
 
-bool XENCAlgorithmHandlerDefault::decryptToSafeBuffer(
+unsigned int XENCAlgorithmHandlerDefault::decryptToSafeBuffer(
 		TXFMChain * cipherText,
 		XENCEncryptionMethod * encryptionMethod,
 		XSECCryptoKey * key,
 		DOMDocument * doc,
 		safeBuffer & result
 		) {
+
+	bool isAESKeyWrap = false;
+
+	// Is this a keyWrap URI?
+	if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIKW_AES128)) {
+
+		if (key->getKeyType() != XSECCryptoKey::KEY_SYMMETRIC || 
+			dynamic_cast<XSECCryptoSymmetricKey *>(key)->getSymmetricKeyType() !=
+			XSECCryptoSymmetricKey::KEY_AES_ECB_128) {
+
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - 128bit AES Algorithm, but not a AES (ECB) 128 bit key");
+		
+		}
+
+		isAESKeyWrap = true;
+
+	}
+
+	if (isAESKeyWrap == true) {
+
+		return unwrapKeyAES(cipherText, key, result);
+
+	}
+
+		
 
 
 	// The default case is to just do a standard, padded block decrypt.
@@ -136,9 +411,20 @@ bool XENCAlgorithmHandlerDefault::decryptToSafeBuffer(
 	// Do the decrypt to the safeBuffer
 
 	result.sbStrcpyIn("");
-	result << cipherText->getLastTxfm();
+	unsigned int offset = 0;
+	XMLByte buf[1024];
+	TXFMBase * b = cipherText->getLastTxfm();
 
-	return true;
+	int bytesRead = b->readBytes(buf, 1024);
+	while (bytesRead > 0) {
+		result.sbMemcpyIn(offset, buf, bytesRead);
+		offset += bytesRead;
+		bytesRead = b->readBytes(buf, 1024);
+	}
+
+	result[offset] = '\0'; 
+
+	return offset;
 
 }
 
@@ -154,6 +440,32 @@ bool XENCAlgorithmHandlerDefault::encryptToSafeBuffer(
 		safeBuffer & result
 		) {
 
+
+	bool isAESKeyWrap = false;
+
+	// Is this a keyWrap URI?
+	if (strEquals(encryptionMethod->getAlgorithm(), DSIGConstants::s_unicodeStrURIKW_AES128)) {
+
+		if (key->getKeyType() != XSECCryptoKey::KEY_SYMMETRIC || 
+			dynamic_cast<XSECCryptoSymmetricKey *>(key)->getSymmetricKeyType() !=
+			XSECCryptoSymmetricKey::KEY_AES_ECB_128) {
+
+			throw XSECException(XSECException::CipherError, 
+				"XENCAlgorithmHandlerDefault - 128bit AES Algorithm, but not a AES (ECB) 128 bit key");
+		
+		}
+
+		isAESKeyWrap = true;
+
+	}
+
+	if (isAESKeyWrap == true) {
+
+		return wrapKeyAES(plainText, key, result);
+
+	}
+	
+	
 	// Check the URI and key match
 
 	mapURIToKey(encryptionMethod->getAlgorithm(), key);
@@ -176,6 +488,35 @@ bool XENCAlgorithmHandlerDefault::encryptToSafeBuffer(
 	return true;
 
 }
+// --------------------------------------------------------------------------------
+//			Key Creation
+// --------------------------------------------------------------------------------
+
+XSECCryptoKey * XENCAlgorithmHandlerDefault::createKeyForURI(
+		const XMLCh * uri,
+		unsigned char * keyBuffer,
+		unsigned int keyLen
+		) {
+
+	if (strEquals(uri, DSIGConstants::s_unicodeStrURI3DES_CBC)) {
+
+		// 3 Key 3DES in CBC mode.
+		XSECCryptoSymmetricKey * sk = 
+			XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
+
+		sk->setKey(keyBuffer, keyLen);
+
+		return sk;
+
+	}
+
+	throw XSECException(XSECException::CipherError, 
+		"XENCAlgorithmHandlerDefault - URI Provided, but cannot create associated key");
+
+	return NULL;
+
+}
+
 
 // --------------------------------------------------------------------------------
 //			Clone

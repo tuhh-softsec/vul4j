@@ -960,6 +960,14 @@ SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedDataImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedKeyImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedKeyImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xenc\impl\XENCEncryptedTypeImpl.cpp
 # End Source File
 # Begin Source File
@@ -990,6 +998,10 @@ SOURCE=..\..\..\..\src\xenc\XENCCipherValue.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xenc\XENCEncryptedData.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xenc\XENCEncryptedKey.hpp
 # End Source File
 # Begin Source File
 

@@ -114,6 +114,8 @@ public:
 		{return XENCEncryptedTypeImpl::appendKeyName(name, isDName);}
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
 		{return XENCEncryptedTypeImpl::getDOMNode();}
+	virtual void appendEncryptedKey(XENCEncryptedKey * encryptedKey)
+		{XENCEncryptedTypeImpl::appendEncryptedKey(encryptedKey);}
 
 private:
 
