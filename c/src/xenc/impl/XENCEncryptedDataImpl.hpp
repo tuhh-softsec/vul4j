@@ -104,12 +104,16 @@ public:
 	// Inherited from XENCEncryptedData - need to re-implement
 	virtual XENCCipherData * getCipherData(void) 
 		{return XENCEncryptedTypeImpl::getCipherData();}
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getDOMNode()
-		{return XENCEncryptedTypeImpl::getDOMNode();}
 	virtual DSIGKeyInfoList * getKeyInfoList(void)
 		{return XENCEncryptedTypeImpl::getKeyInfoList();}
 	virtual XENCEncryptionMethod * getEncryptionMethod(void)
 		{return XENCEncryptedTypeImpl::getEncryptionMethod();}
+	virtual void clearKeyInfo(void)
+		{XENCEncryptedTypeImpl::clearKeyInfo();}
+	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false)
+		{return XENCEncryptedTypeImpl::appendKeyName(name, isDName);}
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
+		{return XENCEncryptedTypeImpl::getDOMNode();}
 
 private:
 

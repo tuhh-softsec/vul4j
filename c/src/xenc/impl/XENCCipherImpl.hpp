@@ -106,6 +106,7 @@ public:
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * getDocument(void) 
 		{return mp_doc;}
 	const XMLCh * getXENCNSPrefix(void) const;
+	virtual XENCEncryptedData * getEncryptedData(void);
 
 	// Setter methods
 	void setKey(XSECCryptoKey * key) {mp_key = key;}

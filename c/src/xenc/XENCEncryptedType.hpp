@@ -78,6 +78,7 @@
 
 class XENCCipherData;
 class DSIGKeyInfoList;
+class DSIGKeyInfoName;
 class XENCEncryptionMethod;
 
 /**
@@ -151,7 +152,7 @@ public:
 	 * @returns the DOMNode that heads up this structure
 	 */
 
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getDOMNode() = 0;
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode() = 0;
 
 	//@}
 
@@ -175,6 +176,28 @@ public:
 	 */
 	
 	virtual DSIGKeyInfoList * getKeyInfoList(void) = 0;
+
+	/**
+	 * \brief Clear out all KeyInfo elements in the signature.
+	 *
+	 * This function will delete all KeyInfo elements from both the EncryptedType
+	 * object <em>and the associated DOM</em>.
+	 *
+	 */
+
+	virtual void clearKeyInfo(void) = 0;
+
+	/**
+	 * \brief Append a KeyName element.
+	 *
+	 * Add a new KeyInfo element for a key name.
+	 *
+	 * @param name The name of the key to set in the XML
+	 * @param isDName Treat the name as a Distinguished name and encode accordingly
+	 * @returns A pointer to the created object
+	 */
+
+	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false) = 0;
 
 	//@}
 

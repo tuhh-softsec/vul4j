@@ -103,6 +103,8 @@ public:
 
 	virtual const XMLCh * getCipherString(void);
 	virtual void setCipherString(const XMLCh * value);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
+		{return mp_cipherValueNode;}
 
 private:
 

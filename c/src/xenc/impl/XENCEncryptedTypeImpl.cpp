@@ -145,6 +145,8 @@ static XMLCh s_CipherData[] = {
 XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(const XSECEnv * env) :
 mp_env(env),
 mp_encryptedTypeNode(NULL),
+mp_keyInfoNode(NULL),
+mp_cipherDataNode(NULL),
 mp_cipherData(NULL),
 mp_encryptionMethod(NULL),
 m_keyInfoList(env) {
@@ -155,6 +157,8 @@ m_keyInfoList(env) {
 XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(const XSECEnv * env, DOMNode * node) :
 mp_env(env),
 mp_encryptedTypeNode(node),
+mp_keyInfoNode(NULL),
+mp_cipherDataNode(NULL),
 mp_cipherData(NULL),
 mp_encryptionMethod(NULL),
 m_keyInfoList(env) {
@@ -212,6 +216,8 @@ void XENCEncryptedTypeImpl::load() {
 	}
 
 	if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_CipherData)) {
+
+		mp_cipherDataNode = tmpElt;
 
 		XSECnew(mp_cipherData, XENCCipherDataImpl(mp_env, tmpElt));
 		mp_cipherData->load();
@@ -280,10 +286,10 @@ DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
 
 	// Create the cipher Data
 	XSECnew(mp_cipherData, XENCCipherDataImpl(mp_env));
-	DOMNode * cipherDataNode = mp_cipherData->createBlankCipherData(type, value);
+	mp_cipherDataNode = mp_cipherData->createBlankCipherData(type, value);
 
 	// Add to EncryptedType
-	ret->appendChild(cipherDataNode);
+	ret->appendChild(mp_cipherDataNode);
 
 	return ret;
 
@@ -343,16 +349,79 @@ XENCCipherData * XENCEncryptedTypeImpl::getCipherData(void) {
 
 }
 
-DOMElement * XENCEncryptedTypeImpl::getDOMNode() {
-
-	if (mp_encryptedTypeNode->getNodeType() == DOMNode::ELEMENT_NODE)
-		return static_cast<DOMElement*>(mp_encryptedTypeNode);
-
-	return NULL;
-}
-
 XENCEncryptionMethod * XENCEncryptedTypeImpl::getEncryptionMethod(void) {
 	
 	return mp_encryptionMethod;
+
+}
+
+// --------------------------------------------------------------------------------
+//			KeyInfo elements
+// --------------------------------------------------------------------------------
+
+void XENCEncryptedTypeImpl::clearKeyInfo(void) {
+
+	if (mp_keyInfoNode == NULL)
+		return;
+
+	if (mp_encryptedTypeNode->removeChild(mp_keyInfoNode) != mp_keyInfoNode) {
+
+		throw XSECException(XSECException::ExpectedDSIGChildNotFound,
+			"Attempted to remove KeyInfo node but it is no longer a child of <EncryptedType>");
+
+	}
+
+	mp_keyInfoNode->release();		// No longer required
+
+	mp_keyInfoNode = NULL;
+
+	// Clear out the list
+	m_keyInfoList.empty();
+
+}
+
+void XENCEncryptedTypeImpl::createKeyInfoElement(void) {
+
+	if (mp_keyInfoNode != NULL)
+		return;
+
+	safeBuffer str;
+
+	const XMLCh * prefixNS = mp_env->getDSIGNSPrefix();
+	makeQName(str, prefixNS, "KeyInfo");
+
+	mp_keyInfoNode = m_keyInfoList.createKeyInfo();
+
+	// Place the node before the CipherData node
+	if (mp_cipherDataNode == NULL) {
+
+		throw XSECException(XSECException::EncryptedTypeError,
+			"XENCEncryptedTypeImpl::createKeyInfoElement - unable to find CipherData node");
+
+	}
+
+	mp_encryptedTypeNode->insertBefore(mp_keyInfoNode, mp_cipherDataNode);
+	
+	// Need to add the DS namespace
+
+	if (prefixNS[0] == '\0') {
+		str.sbTranscodeIn("xmlns");
+	}
+	else {
+		str.sbTranscodeIn("xmlns:");
+		str.sbXMLChCat(prefixNS);
+	}
+
+	static_cast<DOMElement *>(mp_keyInfoNode)->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
+							str.rawXMLChBuffer(), 
+							DSIGConstants::s_unicodeStrURIDSIG);
+
+}
+
+
+DSIGKeyInfoName * XENCEncryptedTypeImpl::appendKeyName(const XMLCh * name, bool isDName) {
+
+	createKeyInfoElement();
+	return m_keyInfoList.appendKeyName(name, isDName);
 
 }

@@ -90,7 +90,8 @@
 XERCES_CPP_NAMESPACE_USE
 
 DSIGKeyInfoList::DSIGKeyInfoList(const XSECEnv * env) :
-mp_env(env) {}
+mp_env(env),
+mp_keyInfoNode(NULL) {}
 
 DSIGKeyInfoList::~DSIGKeyInfoList() {
 
@@ -420,4 +421,198 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 	}
 
 	return true;
+}
+
+// --------------------------------------------------------------------------------
+//           Create new KeyInfo elements
+// --------------------------------------------------------------------------------
+
+DOMElement * DSIGKeyInfoList::createKeyInfo(void) {
+
+	// Assume that someone else has looked after the DOM
+	empty();
+
+	safeBuffer str;
+	DOMDocument * doc = mp_env->getParentDocument();
+
+	makeQName(str, mp_env->getDSIGNSPrefix(), "KeyInfo");
+
+	DOMElement * ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
+
+	mp_keyInfoNode = ret;
+	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	return ret;	
+
+}
+
+
+DSIGKeyInfoValue * DSIGKeyInfoList::appendDSAKeyValue(const XMLCh * P, 
+						   const XMLCh * Q, 
+						   const XMLCh * G, 
+						   const XMLCh * Y) {
+
+	if (mp_keyInfoNode == NULL) {
+
+		throw XSECException(XSECException::KeyInfoError, 
+			"KeyInfoList - Attempt to create DSAKeyValue before creating KeyInfo");
+
+	}
+
+	// Create the new element
+	DOMDocument * doc = mp_env->getParentDocument();
+	DSIGKeyInfoValue * v;
+	XSECnew(v, DSIGKeyInfoValue(mp_env));
+
+	mp_keyInfoNode->appendChild(v->createBlankDSAKeyValue(P, Q, G, Y));
+	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	// Add to the list
+	addKeyInfo(v);
+
+	return v;
+
+}
+
+DSIGKeyInfoValue * DSIGKeyInfoList::appendRSAKeyValue(const XMLCh * modulus, 
+						   const XMLCh * exponent) {
+
+	if (mp_keyInfoNode == NULL) {
+
+		throw XSECException(XSECException::KeyInfoError, 
+			"KeyInfoList - Attempt to create RSAKeyValue before creating KeyInfo");
+
+	}
+
+	// Create the new element
+	DOMDocument * doc = mp_env->getParentDocument();
+	DSIGKeyInfoValue * v;
+	XSECnew(v, DSIGKeyInfoValue(mp_env));
+
+	mp_keyInfoNode->appendChild(v->createBlankRSAKeyValue(modulus, exponent));
+	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	// Add to the list
+	addKeyInfo(v);
+
+	return v;
+
+}
+
+
+DSIGKeyInfoX509 * DSIGKeyInfoList::appendX509Data(void) {
+
+	if (mp_keyInfoNode == NULL) {
+
+		throw XSECException(XSECException::KeyInfoError, 
+			"KeyInfoList - Attempt to create X509Data before creating KeyInfo");
+
+	}
+
+	DOMDocument * doc = mp_env->getParentDocument();
+	DSIGKeyInfoX509 * x;
+
+	XSECnew(x, DSIGKeyInfoX509(mp_env));
+
+	mp_keyInfoNode->appendChild(x->createBlankX509Data());
+	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	// Add to the list
+	addKeyInfo(x);
+
+	return x;
+
+}
+
+DSIGKeyInfoName * DSIGKeyInfoList::appendKeyName(const XMLCh * name, bool isDName) {
+
+	if (mp_keyInfoNode == NULL) {
+
+		throw XSECException(XSECException::KeyInfoError, 
+			"KeyInfoList - Attempt to create KeyName before creating KeyInfo");
+
+	}
+
+	DOMDocument * doc = mp_env->getParentDocument();
+	DSIGKeyInfoName * n;
+
+	XSECnew(n, DSIGKeyInfoName(mp_env));
+
+	mp_keyInfoNode->appendChild(n->createBlankKeyName(name, isDName));
+	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	// Add to the list
+	addKeyInfo(n);
+
+	return n;
+
+}
+
+DSIGKeyInfoPGPData * DSIGKeyInfoList::appendPGPData(const XMLCh * id, const XMLCh * packet) {
+
+	if (mp_keyInfoNode == NULL) {
+
+		throw XSECException(XSECException::KeyInfoError, 
+			"KeyInfoList - Attempt to create PGPData before creating KeyInfo");
+
+	}
+
+	DOMDocument * doc = mp_env->getParentDocument();
+	DSIGKeyInfoPGPData * p;
+
+	XSECnew(p, DSIGKeyInfoPGPData(mp_env));
+
+	mp_keyInfoNode->appendChild(p->createBlankPGPData(id, packet));
+	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	addKeyInfo(p);
+
+	return p;
+
+}
+
+DSIGKeyInfoSPKIData * DSIGKeyInfoList::appendSPKIData(const XMLCh * sexp) {
+
+	if (mp_keyInfoNode == NULL) {
+
+		throw XSECException(XSECException::KeyInfoError, 
+			"KeyInfoList - Attempt to create SPKIData before creating KeyInfo");
+
+	}
+
+	DOMDocument * doc = mp_env->getParentDocument();
+	DSIGKeyInfoSPKIData * s;
+
+	XSECnew(s, DSIGKeyInfoSPKIData(mp_env));
+
+	mp_keyInfoNode->appendChild(s->createBlankSPKIData(sexp));
+	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	addKeyInfo(s);
+
+	return s;
+
+}
+
+DSIGKeyInfoMgmtData * DSIGKeyInfoList::appendMgmtData(const XMLCh * data) {
+
+	if (mp_keyInfoNode == NULL) {
+
+		throw XSECException(XSECException::KeyInfoError, 
+			"KeyInfoList - Attempt to create MgmtData before creating KeyInfo");
+
+	}
+
+	DOMDocument * doc = mp_env->getParentDocument();
+	DSIGKeyInfoMgmtData * m;
+
+	XSECnew(m, DSIGKeyInfoMgmtData(mp_env));
+
+	mp_keyInfoNode->appendChild(m->createBlankMgmtData(data));
+	mp_keyInfoNode->appendChild(doc->createTextNode(DSIGConstants::s_unicodeStrNL));
+
+	addKeyInfo(m);
+
+	return m;
+
 }

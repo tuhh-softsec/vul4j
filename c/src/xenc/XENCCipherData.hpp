@@ -145,6 +145,14 @@ public:
 
 	virtual XENCCipherValue * getCipherValue(void) = 0;
 
+	/**
+	 * \brief Get the DOM Node of this structure
+	 *
+	 * @returns the DOM Node representing the <CipherData> element
+	 */
+
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void) = 0;
+
 	//@}
 
 private:

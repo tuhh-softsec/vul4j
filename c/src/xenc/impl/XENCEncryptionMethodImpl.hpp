@@ -98,6 +98,8 @@ public:
 
 	// Interface
 	const XMLCh * getAlgorithm(void) {return mp_algorithm;}
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
+		{return mp_encryptionMethodNode;}
 
 private:
 

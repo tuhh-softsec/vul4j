@@ -110,9 +110,13 @@ public:
 
 	// Interface Methods
 	virtual XENCCipherData * getCipherData(void);
-	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getDOMNode();
+	//virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getDOMNode();
 	virtual DSIGKeyInfoList * getKeyInfoList(void) {return &m_keyInfoList;}
 	virtual XENCEncryptionMethod * getEncryptionMethod(void);
+	virtual void clearKeyInfo(void);
+	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
+		{return mp_encryptedTypeNode;}
 
 
 protected:
@@ -122,11 +126,16 @@ protected:
 
 	TXFMChain * createCipherTXFMChain(void);
 
+	// Worker function to start building the KeyInfo list
+	void createKeyInfoElement(void);
+
 	const XSECEnv				* mp_env;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
 								* mp_encryptedTypeNode;		// Node at head of structure
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
 								* mp_keyInfoNode;			// Any underlying KeyInfo
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
+								* mp_cipherDataNode;		// CipherData structure
 	XENCCipherDataImpl			* mp_cipherData;
 	XENCEncryptionMethodImpl	* mp_encryptionMethod;
 

@@ -102,6 +102,8 @@ public:
 	// Interface methods
 	virtual XENCCipherDataType getCipherDataType(void);
 	virtual XENCCipherValue * getCipherValue(void);
+	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getDOMNode(void)
+		{return mp_cipherDataNode;}
 
 
 private:

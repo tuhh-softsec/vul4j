@@ -129,6 +129,12 @@ const XMLCh s_noData[] = {
 	chNull
 };
 
+const XMLCh s_ds[] = {
+	chLatin_d,
+	chLatin_s,
+	chNull
+};
+
 // --------------------------------------------------------------------------------
 //			Constructors
 // --------------------------------------------------------------------------------
@@ -140,6 +146,7 @@ mp_key(NULL),
 mp_keyInfoResolver(NULL) {
 
 	XSECnew(mp_env, XSECEnv(doc));
+	mp_env->setDSIGNSPrefix(s_ds);
 
 }
 
@@ -198,6 +205,16 @@ void XENCCipherImpl::setKeyInfoResolver(const XSECKeyInfoResolver * resolver) {
 		delete mp_keyInfoResolver;
 
 	mp_keyInfoResolver = resolver->clone();
+
+}
+
+// --------------------------------------------------------------------------------
+//			Key Info resolvers
+// --------------------------------------------------------------------------------
+
+XENCEncryptedData * XENCCipherImpl::getEncryptedData(void) {
+
+	return mp_encryptedData;
 
 }
 
@@ -423,7 +440,7 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 
 	}
 
-	return NULL;
+	return mp_env->getParentDocument();
 
 }
 

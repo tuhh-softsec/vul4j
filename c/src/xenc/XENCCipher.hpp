@@ -204,6 +204,17 @@ public:
 
 	virtual const XMLCh * getXENCNSPrefix(void) const = 0;
 
+	/**
+	 * \brief Get the EncryptedData element
+	 *
+	 * Allows the user to get the EncryptedData element that was last processed/
+	 * created by this XENCCipher object.
+	 *
+	 * @returns The last used EncryptedData
+	 */
+
+	virtual XENCEncryptedData * getEncryptedData(void) = 0;
+
 	//@}
 
 	/** @name Setter Functions */

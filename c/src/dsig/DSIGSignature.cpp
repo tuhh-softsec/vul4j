@@ -596,7 +596,7 @@ void DSIGSignature::createKeyInfoElement(void) {
 
 	makeQName(str, mp_env->getDSIGNSPrefix(), "KeyInfo");
 
-	mp_KeyInfoNode = mp_doc->createElementNS(DSIGConstants::s_unicodeStrURIDSIG, str.rawXMLChBuffer());
+	mp_KeyInfoNode = m_keyInfoList.createKeyInfo();
 
 	// Append the node to the end of the signature
 	
@@ -614,11 +614,7 @@ void DSIGSignature::createKeyInfoElement(void) {
 			afterSignatureValue);
 	}
 
-	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-	
-
 }
-
 
 DSIGKeyInfoValue * DSIGSignature::appendDSAKeyValue(const XMLCh * P, 
 						   const XMLCh * Q, 
@@ -626,18 +622,7 @@ DSIGKeyInfoValue * DSIGSignature::appendDSAKeyValue(const XMLCh * P,
 						   const XMLCh * Y) {
 
 	createKeyInfoElement();
-
-	// Create the new element
-	DSIGKeyInfoValue * v;
-	XSECnew(v, DSIGKeyInfoValue(mp_env));
-
-	mp_KeyInfoNode->appendChild(v->createBlankDSAKeyValue(P, Q, G, Y));
-	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-
-	// Add to the list
-	m_keyInfoList.addKeyInfo(v);
-
-	return v;
+	return m_keyInfoList.appendDSAKeyValue(P, Q, G, Y);
 
 }
 
@@ -645,18 +630,7 @@ DSIGKeyInfoValue * DSIGSignature::appendRSAKeyValue(const XMLCh * modulus,
 						   const XMLCh * exponent) {
 
 	createKeyInfoElement();
-
-	// Create the new element
-	DSIGKeyInfoValue * v;
-	XSECnew(v, DSIGKeyInfoValue(mp_env));
-
-	mp_KeyInfoNode->appendChild(v->createBlankRSAKeyValue(modulus, exponent));
-	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-
-	// Add to the list
-	m_keyInfoList.addKeyInfo(v);
-
-	return v;
+	return m_keyInfoList.appendRSAKeyValue(modulus, exponent);
 
 }
 
@@ -664,87 +638,35 @@ DSIGKeyInfoValue * DSIGSignature::appendRSAKeyValue(const XMLCh * modulus,
 DSIGKeyInfoX509 * DSIGSignature::appendX509Data(void) {
 
 	createKeyInfoElement();
-
-	DSIGKeyInfoX509 * x;
-
-	XSECnew(x, DSIGKeyInfoX509(mp_env));
-
-	mp_KeyInfoNode->appendChild(x->createBlankX509Data());
-	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-
-	// Add to the list
-	m_keyInfoList.addKeyInfo(x);
-
-	return x;
+	return m_keyInfoList.appendX509Data();
 
 }
 
 DSIGKeyInfoName * DSIGSignature::appendKeyName(const XMLCh * name, bool isDName) {
 
 	createKeyInfoElement();
-
-	DSIGKeyInfoName * n;
-
-	XSECnew(n, DSIGKeyInfoName(mp_env));
-
-	mp_KeyInfoNode->appendChild(n->createBlankKeyName(name, isDName));
-	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-
-	// Add to the list
-	m_keyInfoList.addKeyInfo(n);
-
-	return n;
+	return m_keyInfoList.appendKeyName(name, isDName);
 
 }
 
 DSIGKeyInfoPGPData * DSIGSignature::appendPGPData(const XMLCh * id, const XMLCh * packet) {
 
 	createKeyInfoElement();
-
-	DSIGKeyInfoPGPData * p;
-
-	XSECnew(p, DSIGKeyInfoPGPData(mp_env));
-
-	mp_KeyInfoNode->appendChild(p->createBlankPGPData(id, packet));
-	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-
-	m_keyInfoList.addKeyInfo(p);
-
-	return p;
+	return m_keyInfoList.appendPGPData(id, packet);
 
 }
 
 DSIGKeyInfoSPKIData * DSIGSignature::appendSPKIData(const XMLCh * sexp) {
 
 	createKeyInfoElement();
-
-	DSIGKeyInfoSPKIData * s;
-
-	XSECnew(s, DSIGKeyInfoSPKIData(mp_env));
-
-	mp_KeyInfoNode->appendChild(s->createBlankSPKIData(sexp));
-	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-
-	m_keyInfoList.addKeyInfo(s);
-
-	return s;
+	return m_keyInfoList.appendSPKIData(sexp);
 
 }
 
 DSIGKeyInfoMgmtData * DSIGSignature::appendMgmtData(const XMLCh * data) {
 
 	createKeyInfoElement();
-
-	DSIGKeyInfoMgmtData * m;
-
-	XSECnew(m, DSIGKeyInfoMgmtData(mp_env));
-
-	mp_KeyInfoNode->appendChild(m->createBlankMgmtData(data));
-	mp_KeyInfoNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
-
-	m_keyInfoList.addKeyInfo(m);
-
-	return m;
+	return m_keyInfoList.appendMgmtData(data);
 
 }
 

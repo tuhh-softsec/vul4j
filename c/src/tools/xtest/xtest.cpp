@@ -208,6 +208,13 @@ XMLCh s_tstDName[] = {
 
 };
 
+XMLCh s_tstKeyName[] = {
+
+	chLatin_F, chLatin_r, chLatin_e, chLatin_d, chSingleQuote,
+	chLatin_s, chSpace, chLatin_n, chLatin_a, chLatin_m,
+	chLatin_e, chNull
+};
+
 XMLCh s_tstPGPKeyID[] = {
 
 	chLatin_D, chLatin_u, chLatin_m, chLatin_m, chLatin_y, chSpace,
@@ -783,6 +790,11 @@ void testEncrypt(DOMImplementation *impl) {
 		// Now encrypt!
 		cerr << "Performing 3DES encryption on <category> element ... ";
 		cipher->encryptElement((DOMElement *) categoryNode, ENCRYPT_3DES_CBC);
+
+		// Add a KeyInfo
+		cerr << "done\nAppending a <KeyName> ... ";
+		XENCEncryptedData * encryptedData = cipher->getEncryptedData();
+		encryptedData->appendKeyName(s_tstKeyName);
 		cerr << "done\nSearching for <category> ... ";
 
 		DOMNode * t = findNode(doc, MAKE_UNICODE_STRING("category"));
@@ -809,7 +821,7 @@ void testEncrypt(DOMImplementation *impl) {
 		cipher2->setKey(k2);
 
 		cerr << "Decrypting ... ";
-		cipher->decryptElement(static_cast<DOMElement *>(n));
+		cipher2->decryptElement(static_cast<DOMElement *>(n));
 		cerr << "done" << endl;
 
 		cerr << "Checking for <category> element ... ";
@@ -824,6 +836,41 @@ void testEncrypt(DOMImplementation *impl) {
 		}
 		else
 			cerr << "found" << endl;
+
+		cerr << "Checking <KeyName> element is set correctly ... ";
+
+		encryptedData = cipher2->getEncryptedData();
+
+		if (encryptedData == NULL) {
+			cerr << "no - cannot access EncryptedData element" << endl;
+			exit(1);
+		}
+
+		DSIGKeyInfoList * kil = encryptedData->getKeyInfoList();
+		int nki = kil->getSize();
+		bool foundNameOK = false;
+
+		for (int i = 0; i < nki; ++i) {
+
+			if (kil->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_NAME) {
+
+				DSIGKeyInfoName *n = dynamic_cast<DSIGKeyInfoName *>(kil->item(i));
+				if (!strEquals(n->getKeyName(), s_tstKeyName)) {
+					
+					cerr << "no!" << endl;
+					exit (1);
+				}
+				foundNameOK = true;
+				break;
+			}
+		}
+
+		if (foundNameOK == false) {
+			cerr << "no!" << endl;
+			exit(1);
+		}
+		else
+			cerr << "yes." << endl;
 
 	}
 	catch (XSECException &e)
