@@ -60,10 +60,16 @@ package org.apache.xml.security.c14n;
 
 
 
+import java.io.ByteArrayInputStream;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import javax.xml.parsers.*;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 import org.w3c.dom.*;
 import org.apache.xml.security.exceptions.*;
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -78,56 +84,26 @@ import org.apache.xml.security.utils.JavaUtils;
  */
 public class Canonicalizer {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Canonicalizer.class.getName());
-
+   //J-
    /** The output encoding of canonicalized data */
    public static final String ENCODING = "UTF8";
 
-   /** Field XPATH_NO_COMMENTS */
    private static final String XPATH_NO_COMMENTS = "[not(self::comment())]";
+   public static final String XPATH_C14N_WITH_COMMENTS = "(//. | //@* | //namespace::*)";
+   public static final String XPATH_C14N_OMIT_COMMENTS = XPATH_C14N_WITH_COMMENTS + XPATH_NO_COMMENTS;
+   public static final String XPATH_C14N_WITH_COMMENTS_SINGLE_NODE = "(.//. | .//@* | .//namespace::*)";
+   public static final String XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE = XPATH_C14N_WITH_COMMENTS_SINGLE_NODE + XPATH_NO_COMMENTS;
 
-   /** The XPath for Canonicalization - Recommended Canonical XML with Comments */
-   public static final String XPATH_C14N_WITH_COMMENTS =
-      "(//. | //@* | //namespace::*)";
+   public static final String ALGO_ID_C14N_OMIT_COMMENTS = "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
+   public static final String ALGO_ID_C14N_WITH_COMMENTS = ALGO_ID_C14N_OMIT_COMMENTS + "#WithComments";
+   public static final String ALGO_ID_C14N_EXCL_OMIT_COMMENTS = "http://www.w3.org/2001/10/xml-exc-c14n#";
+   public static final String ALGO_ID_C14N_EXCL_WITH_COMMENTS = ALGO_ID_C14N_EXCL_OMIT_COMMENTS + "WithComments";
 
-   /** The XPath for Canonicalization - Required Canonical XML (omits comments) */
-   public static final String XPATH_C14N_OMIT_COMMENTS =
-      XPATH_C14N_WITH_COMMENTS + XPATH_NO_COMMENTS;
-
-   /** The XPath for Canonicalization of a single Node with Comments */
-   public static final String XPATH_C14N_WITH_COMMENTS_SINGLE_NODE =
-      "(.//. | .//@* | .//namespace::*)";
-
-   /** The XPath for Canonicalization of a single Node (omits comments) */
-   public static final String XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE =
-      XPATH_C14N_WITH_COMMENTS_SINGLE_NODE + XPATH_NO_COMMENTS;
-
-   /** Field ALGO_ID_C14N_OMIT_COMMENTS */
-   public static final String ALGO_ID_C14N_OMIT_COMMENTS =
-      "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
-
-   /** Field ALGO_ID_C14N_WITH_COMMENTS */
-   public static final String ALGO_ID_C14N_WITH_COMMENTS =
-      ALGO_ID_C14N_OMIT_COMMENTS + "#WithComments";
-
-   /** Canonicalization - Required Exclusive Canonicalization (omits comments) */
-   public static final String ALGO_ID_C14N_EXCL = Constants.SignatureSpecNS
-                                                     + "excludeC14N";
-
-   /** Canonicalization - Recommended Exclusive Canonicalization with Comments */
-   public static final String ALGO_ID_C14N_EXCL_WITHCOMMENTS =
-      Constants.SignatureSpecNS + "excludeC14NwithComments";
-
-   /** Field canonicalizerSpi */
-   protected CanonicalizerSpi canonicalizerSpi = null;
-
-   /** Field _alreadyInitialized */
    static boolean _alreadyInitialized = false;
+   static Map _canonicalizerHash = null;
 
-   /** Field _canonicalizerHash */
-   static HashMap _canonicalizerHash = null;
+   protected CanonicalizerSpi canonicalizerSpi = null;
+   //J+
 
    /**
     * Method init
@@ -135,9 +111,9 @@ public class Canonicalizer {
     */
    public static void init() {
 
-      if (!_alreadyInitialized) {
-         _canonicalizerHash = new HashMap(10);
-         _alreadyInitialized = true;
+      if (!Canonicalizer._alreadyInitialized) {
+         Canonicalizer._canonicalizerHash = new HashMap(10);
+         Canonicalizer._alreadyInitialized = true;
       }
    }
 
@@ -156,19 +132,6 @@ public class Canonicalizer {
          this.canonicalizerSpi =
             (CanonicalizerSpi) Class.forName(implementingClass).newInstance();
       } catch (Exception e) {
-         if (_canonicalizerHash == null) {
-            cat.fatal("The _canonicalizerHash is null");
-         } else {
-            Iterator i = _canonicalizerHash.keySet().iterator();
-
-            while (i.hasNext()) {
-               String URI = (String) i.next();
-
-               cat.debug("The URI " + URI + "maps to "
-                         + getImplementingClass(URI));
-            }
-         }
-
          Object exArgs[] = { algorithmURI };
 
          throw new InvalidCanonicalizerException(
@@ -186,30 +149,7 @@ public class Canonicalizer {
    public static final Canonicalizer getInstance(String algorithmURI)
            throws InvalidCanonicalizerException {
 
-      org.apache.xml.security.Init.init();
-
       Canonicalizer c14nizer = new Canonicalizer(algorithmURI);
-
-      return c14nizer;
-   }
-
-   /**
-    * Method getInstance
-    *
-    * @param algorithmURI
-    * @param xpath
-    * @return
-    * @throws InvalidCanonicalizerException
-    */
-   public static final Canonicalizer getInstance(
-           String algorithmURI, Object xpath)
-              throws InvalidCanonicalizerException {
-
-      org.apache.xml.security.Init.init();
-
-      Canonicalizer c14nizer = new Canonicalizer(algorithmURI);
-
-      c14nizer.setXPath(xpath);
 
       return c14nizer;
    }
@@ -224,10 +164,6 @@ public class Canonicalizer {
    public static void register(String algorithmURI, String implementingClass)
            throws AlgorithmAlreadyRegisteredException {
 
-      org.apache.xml.security.Init.init();
-      cat.debug("Try to register Canonicalizer " + algorithmURI + " to class "
-                + implementingClass);
-
       // check whether URI is already registered
       String registeredClass = getImplementingClass(algorithmURI);
 
@@ -238,8 +174,6 @@ public class Canonicalizer {
             "algorithm.alreadyRegistered", exArgs);
       }
 
-      cat.debug("Map of C14N " + algorithmURI + " to class "
-                + implementingClass);
       _canonicalizerHash.put(algorithmURI, implementingClass);
    }
 
@@ -253,111 +187,12 @@ public class Canonicalizer {
    }
 
    /**
-    * Method setValidating
-    *
-    * @param validating
-    */
-   public void setValidating(boolean validating) {
-      this.canonicalizerSpi.engineSetValidating(validating);
-   }
-
-   /**
-    * Method getValidating
-    *
-    * @return
-    */
-   public boolean getValidating() {
-      return this.canonicalizerSpi.engineGetValidating();
-   }
-
-   /**
-    * Method setIncludeComments
-    *
-    * @param includeComments
-    */
-   public void setIncludeComments(boolean includeComments) {
-      this.canonicalizerSpi.engineSetIncludeComments(includeComments);
-   }
-
-   /**
     * Method getIncludeComments
     *
     * @return
     */
    public boolean getIncludeComments() {
       return this.canonicalizerSpi.engineGetIncludeComments();
-   }
-
-   /**
-    * Canonicalizes the subtree rooted by <CODE>node</CODE>.
-    *
-    * @param node
-    * @return
-    * @throws CanonicalizationException
-    * @deprecated use {@link #canonicalizeSubtree(Node)} instead
-    * @see #canonicalizeSubtree(Node)
-    */
-   public byte[] canonicalize(Node node) throws CanonicalizationException {
-      return this.canonicalizeSubtree(node);
-   }
-
-   /**
-    * Canonicalizes the (sub)-tree rooted by <CODE>doc</CODE>.
-    *
-    * @param doc
-    * @return
-    * @throws CanonicalizationException
-    * @deprecated use {@link #canonicalizeSubtree(Node)} instead
-    * @see #canonicalizeSubtree(Node)
-    */
-   public byte[] canonicalizeDocument(Document doc)
-           throws CanonicalizationException {
-      return this.canonicalizeSubtree(doc);
-   }
-
-   /**
-    * Canonicalizes the subtree rooted by <CODE>rootNode</CODE>.
-    *
-    * @param rootNode
-    * @return
-    * @throws CanonicalizationException
-    * @deprecated use {@link #canonicalizeSubtree(Node)} instead
-    * @see #canonicalizeSubtree(Node)
-    */
-   public byte[] canonicalizeSingleNode(Node rootNode)
-           throws CanonicalizationException {
-      return this.canonicalizeSubtree(rootNode);
-   }
-
-   /**
-    * Method canonicalize
-    *
-    * @param xpathNodeSet
-    * @return
-    * @throws CanonicalizationException
-    * @deprecated use {@link #canonicalizeXPathNodeSet(NodeList)} instead
-    * @see #canonicalizeXPathNodeSet(NodeList)
-    */
-   public byte[] canonicalize(NodeList xpathNodeSet)
-           throws CanonicalizationException {
-      return this.canonicalizeXPathNodeSet(xpathNodeSet);
-   }
-
-   /**
-    * Canonicalizes the subtree rooted by <CODE>node</CODE>.
-    *
-    * @param node
-    * @return
-    * @throws CanonicalizationException
-    */
-   public byte[] canonicalizeSubtree(Node node)
-           throws CanonicalizationException {
-
-      if (node == null) {
-         cat.error("I was asked to canonicalize a null node");
-      }
-
-      return this.canonicalizerSpi.engineCanonicalizeSubTree(node);
    }
 
    /**
@@ -376,7 +211,73 @@ public class Canonicalizer {
            throws javax.xml.parsers.ParserConfigurationException,
                   java.io.IOException, org.xml.sax.SAXException,
                   CanonicalizationException {
-      return this.canonicalizerSpi.engineCanonicalize(inputBytes);
+
+      ByteArrayInputStream bais = new ByteArrayInputStream(inputBytes);
+      InputSource in = new InputSource(bais);
+      DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+
+      dfactory.setNamespaceAware(true);
+
+      // needs to validate for ID attribute nomalization
+      dfactory.setValidating(true);
+
+      DocumentBuilder db = dfactory.newDocumentBuilder();
+
+      /*
+       * for some of the test vectors from the specification,
+       * there has to be a validatin parser for ID attributes, default
+       * attribute values, NMTOKENS, etc.
+       * Unfortunaltely, the test vectors do use different DTDs or
+       * even no DTD. So Xerces 1.3.1 fires many warnings about using
+       * ErrorHandlers.
+       *
+       * Text from the spec:
+       *
+       * The input octet stream MUST contain a well-formed XML document,
+       * but the input need not be validated. However, the attribute
+       * value normalization and entity reference resolution MUST be
+       * performed in accordance with the behaviors of a validating
+       * XML processor. As well, nodes for default attributes (declared
+       * in the ATTLIST with an AttValue but not specified) are created
+       * in each element. Thus, the declarations in the document type
+       * declaration are used to help create the canonical form, even
+       * though the document type declaration is not retained in the
+       * canonical form.
+       *
+       */
+      db.setErrorHandler(new org.apache.xml.security.utils
+         .IgnoreAllErrorHandler());
+
+      Document document = db.parse(in);
+      byte result[] = this.canonicalizeSubtree(document);
+
+      return result;
+   }
+
+   /**
+    * Canonicalizes the subtree rooted by <CODE>node</CODE>.
+    *
+    * @param node
+    * @return
+    * @throws CanonicalizationException
+    */
+   public byte[] canonicalizeSubtree(Node node)
+           throws CanonicalizationException {
+      return this.canonicalizerSpi.engineCanonicalizeSubTree(node);
+   }
+
+   /**
+    * Canonicalizes the subtree rooted by <CODE>node</CODE>.
+    *
+    * @param node
+    * @param inclusiveNamespaces
+    * @return
+    * @throws CanonicalizationException
+    */
+   public byte[] canonicalizeSubtree(Node node, String inclusiveNamespaces)
+           throws CanonicalizationException {
+      return this.canonicalizerSpi.engineCanonicalizeSubTree(node,
+              inclusiveNamespaces);
    }
 
    /**
@@ -393,48 +294,55 @@ public class Canonicalizer {
    }
 
    /**
+    * Canonicalizes an XPath node set. The <CODE>xpathNodeSet</CODE> is treated
+    * as a list of XPath nodes, not as a list of subtrees.
+    *
+    * @param xpathNodeSet
+    * @param inclusiveNamespaces
+    * @return
+    * @throws CanonicalizationException
+    */
+   public byte[] canonicalizeXPathNodeSet(
+           NodeList xpathNodeSet, String inclusiveNamespaces)
+              throws CanonicalizationException {
+      return this.canonicalizerSpi.engineCanonicalizeXPathNodeSet(xpathNodeSet,
+              inclusiveNamespaces);
+   }
+
+   /**
+    * Canonicalizes an XPath node set.
+    *
+    * @param xpathNodeSet
+    * @return
+    * @throws CanonicalizationException
+    */
+   public byte[] canonicalizeXPathNodeSet(Set xpathNodeSet)
+           throws CanonicalizationException {
+      return this.canonicalizerSpi.engineCanonicalizeXPathNodeSet(xpathNodeSet);
+   }
+
+   /**
+    * Canonicalizes an XPath node set.
+    *
+    * @param xpathNodeSet
+    * @param inclusiveNamespaces
+    * @return
+    * @throws CanonicalizationException
+    */
+   public byte[] canonicalizeXPathNodeSet(
+           Set xpathNodeSet, String inclusiveNamespaces)
+              throws CanonicalizationException {
+      return this.canonicalizerSpi.engineCanonicalizeXPathNodeSet(xpathNodeSet,
+              inclusiveNamespaces);
+   }
+
+   /**
     * Returns the name of the implementing {@link CanonicalizerSpi} class
     *
     * @return the name of the implementing {@link CanonicalizerSpi} class
     */
    public String getImplementingCanonicalizerClass() {
       return this.canonicalizerSpi.getClass().getName();
-   }
-
-   /**
-    * Proxy method for {@link CanonicalizerSpi#engineSetXPath}.
-    *
-    * @param xpath
-    */
-   public void setXPath(Object xpath) {
-      this.canonicalizerSpi.engineSetXPath(xpath);
-   }
-
-   /**
-    * Method getXPath
-    *
-    * @return
-    */
-   public Object getXPath() {
-      return this.canonicalizerSpi.engineGetXPath();
-   }
-
-   /**
-    * Method getXPathString
-    *
-    * @return
-    */
-   public String getXPathString() {
-      return this.canonicalizerSpi.engineGetXPathString();
-   }
-
-   /**
-    * Method setXPathNodeSet
-    *
-    * @param nodeList
-    */
-   public void setXPathNodeSet(NodeList nodeList) {
-      this.canonicalizerSpi.engineSetXPathNodeSet(nodeList);
    }
 
    /**
@@ -456,39 +364,5 @@ public class Canonicalizer {
       }
 
       return null;
-   }
-
-   /**
-    * Defines whether possibly added NS decls have to be removed after c14n.
-    * <BR />
-    * During c14n of a document with only a document subset visible,
-    * Attributes for namespace declarations are created in 'visible' Elements.
-    * This means that after c14n, the infoset of the document is modified because
-    * this process added namespace attrs. If this is a problem, the added
-    * attributes have to be removed from the DOM after c14n.
-    *
-    * @param remove
-    */
-   public void setRemoveNSAttrs(boolean remove) {
-      this.canonicalizerSpi.engineSetRemoveNSAttrs(remove);
-   }
-
-   /**
-    * Returns whether possibly added NS decls have to be removed after c14n.
-    * <BR />
-    * During c14n of a document with only a document subset visible,
-    * Attributes for namespace declarations are created in 'visible' Elements.
-    * This means that after c14n, the infoset of the document is modified because
-    * this process added namespace attrs. If this is a problem, the added
-    * attributes have to be removed from the DOM after c14n.
-    *
-    * @return
-    */
-   public boolean getRemoveNSAttrs() {
-      return this.canonicalizerSpi.engineGetRemoveNSAttrs();
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
    }
 }
