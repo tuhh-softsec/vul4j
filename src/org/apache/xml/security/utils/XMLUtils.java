@@ -334,7 +334,7 @@ public class XMLUtils {
       Method m = null;
 
       try {
-         m = Thread.class.getMethod("getContextClassLoader", null);
+         m = Thread.class.getMethod("getContextClassLoader", new Class[]{});
       } catch (NoSuchMethodException e) {
 
          // Assume that we are running JDK 1.1, use the current ClassLoader
@@ -342,7 +342,7 @@ public class XMLUtils {
       }
 
       try {
-         return (ClassLoader) m.invoke(Thread.currentThread(), null);
+         return (ClassLoader) m.invoke(Thread.currentThread(), new Object[]{});
       } catch (Exception e) {
          throw new RuntimeException(e.toString());
       }
