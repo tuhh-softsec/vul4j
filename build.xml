@@ -56,6 +56,7 @@
     <!-- library properties -->
     <property name="lib.logging"        value="${dir.libs}/commons-logging.jar" />
     <property name="lib.logging.api"    value="${dir.libs}/commons-logging-api.jar" />
+    <property name="lib.log4j"          value="${dir.libs}/log4j-1.2.8.jar" />
     <property name="lib.xalan.1"        value="${dir.libs}/xalan.jar" />
     <property name="lib.xalan.2"        value="${dir.libs}/xml-apis.jar" />
     <property name="lib.xerces.1"       value="${dir.libs}/xercesImpl.jar" />
@@ -110,6 +111,7 @@
     <path id="id.classpath.logging" >
         <pathelement location="${lib.logging}" />
         <pathelement location="${lib.logging.api}" />
+        <pathelement location="${lib.log4j}" />
     </path >
     <path id="id.classpath.common" >
         <path refid="id.classpath.xalan" />
