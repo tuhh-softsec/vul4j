@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Package Documentation for org.apache.struts.digester Package</title>
+<title>Package Documentation for org.apache.commons.digester Package</title>
 </head>
 <body bgcolor="white">
 The Digester package provides for rules-based processing of arbitrary
@@ -43,7 +43,7 @@ the developer to focus on the processing to be performed.</p>
 <p>In order to use a Digester, the following basic steps are required:</p>
 <ul>
 <li>Create a new instance of the
-    <code>org.apache.struts.digester.Digester</code> class.  Previously
+    <code>org.apache.commons.digester.Digester</code> class.  Previously
     created Digester instances may be safely reused, as long as you have
     completed any previously requested parse, and you do not try to utilize
     a particular Digester instance from more than one thread at a time.</li>
@@ -70,7 +70,7 @@ the developer to focus on the processing to be performed.</p>
 <a name="doc.Properties"></a>
 <h3>Digester Configuration Properties</h3>
 
-<p>A <code>org.apache.struts.digester.Digester</code> instance contains several
+<p>A <code>org.apache.commons.digester.Digester</code> instance contains several
 configuration properties that can be used to customize its operation.  These
 properties <strong>must</strong> be configured before you call one of the
 <code>parse()</code> variants, in order for them to take effect on that
@@ -131,7 +131,7 @@ classes -- typically from the <code>struts.jar</code> file.</p>
 <a name="doc.Stack"></a>
 <h3>The Object Stack</h3>
 
-<p>One very common use of <code>org.apache.struts.digester.Digester</code>
+<p>One very common use of <code>org.apache.commons.digester.Digester</code>
 technology is to dynamically construct a tree of Java objects, whose internal
 organization, as well as the details of property settings on these objects,
 are configured based on the contents of the XML document.  In fact, the
@@ -188,7 +188,7 @@ features of the Digester functionality:</p>
 <a name="doc.Patterns"></a>
 <h3>Element Matching Patterns</h3>
 
-<p>A primary feature of the <code>org.apache.struts.digester.Digester</code>
+<p>A primary feature of the <code>org.apache.commons.digester.Digester</code>
 parser is that the Digester automatically navigates the element hierarchy of
 the XML document you are parsing for you, without requiring any developer
 attention to this process.  Instead, you focus on deciding what functions you
@@ -250,7 +250,7 @@ of processing rules is to define <strong>what</strong> should happen when the
 patterns are matched.</p>
 
 <p>Formally, a processing rule is a Java class that subclasses the
-<a href="Rule.html">org.apache.struts.digester.Rule</a> interface.  Each Rule
+<a href="Rule.html">org.apache.commons.digester.Rule</a> interface.  Each Rule
 implements one or more of the following event methods that are called at
 well-defined times when the matching patterns corresponding to this rule
 trigger it:</p>
@@ -365,7 +365,7 @@ class.  For example, the following code sequence:</p>
 <h5>Processing The Struts Configuration File</h5>
 
 <p>As stated earlier, the primary reason that the
-<code>org.apache.struts.digester.Digester</code> package exists is because the
+<code>org.apache.commons.digester.Digester</code> package exists is because the
 Struts controller servlet itself needed a robust, flexible, easy to extend
 mechanism for processing the contents of the <code>struts-config.xml</code>
 configuration that describes nearly every aspect of a Struts-based application.
