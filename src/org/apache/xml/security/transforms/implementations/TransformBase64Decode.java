@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -160,6 +159,14 @@ public class TransformBase64Decode extends TransformSpi {
 
             for (int i = 0; i < inputNodeSet.getLength(); i++) {
                Node node = inputNodeSet.item(i);
+
+               System.out.println(i + " " + node);
+
+               if (node.getClass().getName().equals(
+                       "org.apache.xml.dtm.ref.dom2dtm.DOM2DTM$defaultNamespaceDeclarationNode")) {
+                  continue;
+               }
+
                NodeList resultNodeSet = XPathAPI.selectNodeList(node,
                                            "self::text()");
                int resultNodeSetGetLength = resultNodeSet.getLength();
