@@ -630,8 +630,14 @@ int evaluate(int argc, char ** argv) {
 			DOMNode * n = findXENCNode(doc, "EncryptedData");
 
 			if (doDecryptElement) {
-				// Find the EncryptedData node
-				cipher->decryptElement(static_cast<DOMElement *>(n));
+				while (n != NULL) {
+
+					// decrypt
+					cipher->decryptElement(static_cast<DOMElement *>(n));
+
+					// Find the next EncryptedData node
+					n = findXENCNode(doc, "EncryptedData");
+				}
 
 			}
 			else {

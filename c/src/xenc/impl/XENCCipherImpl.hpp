@@ -152,9 +152,11 @@ private:
 
 	// Key
 	XSECCryptoKey			* mp_key;
+	bool					m_keyDerived;		// Was this derived or loaded?
 
 	// KEK
 	XSECCryptoKey			* mp_kek;
+	bool					m_kekDerived;		// Was this derived or loaded?
 
 	// Environment
 	XSECEnv					* mp_env;

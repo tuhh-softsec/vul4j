@@ -111,6 +111,8 @@ mp_keyInfoResolver(NULL) {
 
 	XSECnew(mp_env, XSECEnv(doc));
 	mp_env->setDSIGNSPrefix(s_ds);
+	m_keyDerived = false;
+	m_kekDerived = false;
 
 }
 
@@ -203,6 +205,7 @@ void XENCCipherImpl::setKey(XSECCryptoKey * key) {
 		delete mp_key;
 
 	mp_key = key;
+	m_keyDerived = false;
 
 }
 
@@ -212,6 +215,7 @@ void XENCCipherImpl::setKEK(XSECCryptoKey * key) {
 		delete mp_kek;
 
 	mp_kek = key;
+	m_kekDerived = false;
 
 }
 
@@ -429,6 +433,11 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 	
 	}
 
+	if (m_keyDerived && mp_key) {
+		delete mp_key;
+		mp_key = NULL;
+	}
+
 	// Make sure we have a key before we do anything else too drastic
 	if (mp_key == NULL) {
 
@@ -446,6 +455,8 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 			throw XSECException(XSECException::CipherError, 
 				"XENCCipherImpl::decryptElement - No key set and cannot resolve");
 		}
+
+		m_keyDerived = true;
 	}
 
 	// Get the raw encrypted data
@@ -533,6 +544,12 @@ XSECBinTXFMInputStream * XENCCipherImpl::decryptToBinInputStream(
 	// Load
 	mp_encryptedData->load();
 
+	// Check key is valid
+	if (m_keyDerived && mp_key) {
+		delete mp_key;
+		mp_key = NULL;
+	}
+
 	// Make sure we have a key before we do anything else too drastic
 	if (mp_key == NULL) {
 
@@ -550,6 +567,8 @@ XSECBinTXFMInputStream * XENCCipherImpl::decryptToBinInputStream(
 			throw XSECException(XSECException::CipherError, 
 				"XENCCipherImpl::decryptToBinInputStream - No key set and cannot resolve");
 		}
+
+		m_keyDerived = true;
 	}
 
 	// Get the raw encrypted data
@@ -613,6 +632,13 @@ XSECBinTXFMInputStream * XENCCipherImpl::decryptToBinInputStream(
 
 int XENCCipherImpl::decryptKey(XENCEncryptedKey * encryptedKey, XMLByte * rawKey, int maxKeySize) {
 
+
+	// Check KEK is valid
+	if (m_kekDerived && mp_kek) {
+		delete mp_kek;
+		mp_kek = NULL;
+	}
+
 	// Make sure we have a key before we do anything else too drastic
 	if (mp_kek == NULL) {
 
@@ -624,6 +650,7 @@ int XENCCipherImpl::decryptKey(XENCEncryptedKey * encryptedKey, XMLByte * rawKey
 			throw XSECException(XSECException::CipherError, 
 				"XENCCipherImpl::decryptKey - No KEK set and cannot resolve");
 		}
+		m_kekDerived = true;
 	}
 
 	// Get the raw encrypted data
