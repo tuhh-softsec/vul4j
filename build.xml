@@ -13,11 +13,11 @@
 
     <property name="product.version.major" value="1"/>
     <property name="product.version.minor" value="1"/>
-    <property name="product.version.level" value="alpha1"/>
+    <property name="product.version.level" value="0"/>
     <property name="product.Version" value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
     <property name="product.version" value="${product.version.major}.${product.version.minor}.${product.version.level}"/>
     <property name="product_version" value="${product.version.major}_${product.version.minor}_${product.version.level}"/>
-    <property name="year" value="2000-2003"/>
+    <property name="year" value="2000-2004"/>
     <property name="copyright" value="Copyright © ${year} Apache XML Project. All Rights Reserved."/>
 
     <!-- Give user a chance to override without editing this file
