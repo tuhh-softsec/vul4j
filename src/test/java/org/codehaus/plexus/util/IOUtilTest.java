@@ -130,9 +130,8 @@ public final class IOUtilTest
 
     public void tearDown()
     {
-        File f = new File( "test" );
-
-        f.delete();
+        testFile.delete();
+        testDirectory.delete();
     }
 
     public IOUtilTest( String name )
@@ -472,7 +471,7 @@ public final class IOUtilTest
                     file.length() + "!=" + FILE_SIZE + 1,
                     file.length() == FILE_SIZE + 1 );
 
-        //assertTrue( "File would not delete", (file.delete() || ( !file.exists() )));
+        assertTrue( "File would not delete", (file.delete() || ( !file.exists() )));
     }
 }
 
