@@ -67,14 +67,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.MissingResourceFailureException;
-import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.ReferenceNotInitializedException;
-import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.*;
@@ -120,6 +113,8 @@ public class Manifest extends SignatureElementProxy {
       super(doc);
 
       XMLUtils.addReturnToElement(this._constructionElement);
+
+      this._references = new Vector();
    }
 
    /**
@@ -148,6 +143,7 @@ public class Manifest extends SignatureElementProxy {
          }
       }
 
+      // create Vector of appropriate length
       this._references = new Vector(this.length(Constants.SignatureSpecNS,
                                                 Constants._TAG_REFERENCE));
    }
@@ -187,7 +183,10 @@ public class Manifest extends SignatureElementProxy {
             this._references = new Vector();
          }
 
+         // add Reference object to our cache vector
          this._references.add(ref);
+
+         // add the Element of the Reference object to the Manifest/SignedInfo
          this._constructionElement.appendChild(ref.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
       }
@@ -206,6 +205,8 @@ public class Manifest extends SignatureElementProxy {
 
       if (this._state == MODE_SIGN) {
          for (int i = 0; i < this._references.size(); i++) {
+
+            // update the cached Reference object, the Element content is automatically updated
             Reference currentRef = (Reference) this._references.elementAt(i);
 
             currentRef.generateDigestValue();
@@ -245,12 +246,18 @@ public class Manifest extends SignatureElementProxy {
       if (this._state == MODE_SIGN) {
          return (Reference) this._references.elementAt(i);
       } else {
-         Element refElem = this.getChildElementLocalName(0,
-                              Constants.SignatureSpecNS,
-                              Constants._TAG_REFERENCE);
-         Reference ref = new Reference(refElem, this._baseURI, this);
+         if (this._references.elementAt(i) != null) {
+            return (Reference) this._references.elementAt(i);
+         } else {
+            Element refElem = this.getChildElementLocalName(i,
+                                 Constants.SignatureSpecNS,
+                                 Constants._TAG_REFERENCE);
+            Reference ref = new Reference(refElem, this._baseURI, this);
 
-         return ref;
+            this._references.setElementAt(ref, i);
+
+            return ref;
+         }
       }
    }
 
