@@ -102,7 +102,7 @@ WinCAPICryptoProvider::WinCAPICryptoProvider() {
 		NULL,
 		NULL,
 		PROV_DSS,
-		0)) 
+		CRYPT_VERIFYCONTEXT)) 
 	{
 		throw XSECException(XSECException::InternalError,
 			"WinCAPICryptoProvider() - Error obtaining default PROV_DSS");
@@ -112,7 +112,7 @@ WinCAPICryptoProvider::WinCAPICryptoProvider() {
 		NULL,
 		NULL,
 		PROV_RSA_FULL,
-		0)) 
+		CRYPT_VERIFYCONTEXT)) 
 	{
 		throw XSECException(XSECException::InternalError,
 			"WinCAPICryptoProvider() - Error obtaining default PROV_RSA_FULL");
