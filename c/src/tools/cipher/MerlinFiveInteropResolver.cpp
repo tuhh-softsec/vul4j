@@ -74,6 +74,7 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/enc/XSECKeyInfoResolver.hpp>
 #include <xsec/dsig/DSIGKeyInfoName.hpp>
+#include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
 #include <xsec/enc/WinCAPI/WinCAPICryptoSymmetricKey.hpp>
@@ -86,6 +87,13 @@ XERCES_CPP_NAMESPACE_USE
 
 #if !defined (HAVE_OPENSSL) && !defined (HAVE_WINCAPI)
 #	error Require OpenSSL or Windows Crypto API for the Merlin Resolver
+#endif
+
+#if defined (HAVE_OPENSSL)
+#	include <openssl/x509.h>
+#	include <openssl/pem.h>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
 #endif
 
 // --------------------------------------------------------------------------------
@@ -106,8 +114,24 @@ static XMLCh s_jobName[] = {
 	chNull
 };
 
+static XMLCh s_jebName[] = {
+	chLatin_j,
+	chLatin_e,
+	chLatin_b,
+	chNull
+};
+
+static XMLCh s_jedName[] = {
+	chLatin_j,
+	chLatin_e,
+	chLatin_d,
+	chNull
+};
+
 static char s_bobKey[] = "abcdefghijklmnopqrstuvwx";
 static char s_jobKey[] = "abcdefghijklmnop";
+static char s_jebKey[] = "abcdefghijklmnopqrstuvwx";
+static char s_jedKey[] = "abcdefghijklmnopqrstuvwxyz012345";
 
 
 // --------------------------------------------------------------------------------
@@ -138,6 +162,20 @@ MerlinFiveInteropResolver::~MerlinFiveInteropResolver() {
 // --------------------------------------------------------------------------------
 //			Utility functions
 // --------------------------------------------------------------------------------
+#if defined(_WIN32)
+
+void reverseSlash(safeBuffer &path) {
+
+	for (int i = 0; i < strlen(path.rawCharBuffer()); ++i) {
+
+		if (path[i] == '/')
+			path[i] = '\\';
+
+	}
+
+}
+
+#endif
 	
 XSECCryptoSymmetricKey * MerlinFiveInteropResolver::makeSymmetricKey(XSECCryptoSymmetricKey::SymmetricKeyType type) {
 
@@ -157,6 +195,35 @@ XSECCryptoSymmetricKey * MerlinFiveInteropResolver::makeSymmetricKey(XSECCryptoS
 
 #endif
 
+}
+
+BIO * createFileBIO(const XMLCh * baseURI, const char * name) {
+
+	// Open file URI relative to the encrypted file
+
+	BIO * bioFile;
+	if ((bioFile = BIO_new(BIO_s_file())) == NULL) {
+		
+		return NULL;
+
+	}
+
+	safeBuffer fname;
+	fname.sbTranscodeIn(baseURI);
+	fname.sbStrcatIn("/");
+	fname.sbStrcatIn(name);
+
+#if defined(_WIN32)
+	reverseSlash(fname);
+#endif
+
+	if (BIO_read_filename(bioFile, fname.rawCharBuffer()) <= 0) {
+		
+		return NULL;
+
+	}
+
+	return bioFile;
 }
 
 // --------------------------------------------------------------------------------
@@ -201,9 +268,75 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				}
 				return k;
 			}
+			if (strEquals(s_jebName, name)) {
+				XSECCryptoSymmetricKey * k = 
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_192);
+				try {
+					k->setKey((unsigned char *) s_jebKey, strlen(s_jebKey));
+				} catch(...) {
+					delete k;
+					throw;
+				}
+				return k;
+			}
+			if (strEquals(s_jedName, name)) {
+				XSECCryptoSymmetricKey * k = 
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_256);
+				try {
+					k->setKey((unsigned char *) s_jedKey, strlen(s_jedKey));
+				} catch(...) {
+					delete k;
+					throw;
+				}
+				return k;
+			}
 
 		}
 
+		else if (ki->getKeyInfoType() == DSIGKeyInfo::KEYINFO_X509) {
+
+			DSIGKeyInfoX509 * kix = dynamic_cast<DSIGKeyInfoX509 *> (ki);
+
+			XSECCryptoX509 * XCX509 = kix->getCertificateCryptoItem(0);
+
+			if (XCX509 != 0) {
+#if defined (HAVE_OPENSSL)
+
+
+				if (strEquals(XCX509->getProviderName(),DSIGConstants::s_unicodeStrPROVOpenSSL)) {
+
+					OpenSSLCryptoX509 * OSSLX509 = dynamic_cast<OpenSSLCryptoX509 *>(XCX509);
+					X509 * x509 = OSSLX509->getOpenSSLX509();
+
+					// Check the serial number
+					BIGNUM * bnserial = ASN1_INTEGER_to_BN(x509->cert_info->serialNumber, NULL);
+					char * xserial = BN_bn2dec(bnserial);
+					BN_free(bnserial);
+
+					BIO * rsaFile = createFileBIO(mp_baseURI, "rsa.p8");
+					if (rsaFile == NULL)
+						return NULL;
+
+					PKCS8_PRIV_KEY_INFO * p8inf;
+					p8inf = d2i_PKCS8_PRIV_KEY_INFO_bio(rsaFile, NULL);
+
+					EVP_PKEY * pk = EVP_PKCS82PKEY(p8inf);
+					OpenSSLCryptoKeyRSA * k = new OpenSSLCryptoKeyRSA(pk);
+					return k;
+						//d2i_PKCS8PrivateKey_bio(rsaFile, NULL, NULL, NULL);
+
+/*					if (strcmp(xserial, cserial) == 0) {
+					
+						OPENSSL_free(xserial);
+						delete[] cserial;
+						return true;
+
+					}*/
+
+				}
+			}
+#endif
+		}
 	}
 
 	return NULL;

@@ -75,6 +75,7 @@
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoSymmetricKey.hpp>
+#include <xsec/utils/XSECBinTXFMInputStream.hpp>
 
 #include "MerlinFiveInteropResolver.hpp"
 
@@ -343,41 +344,88 @@ int evaluate(int argc, char ** argv) {
 
 		if (useInteropResolver == true) {
 
-			MerlinFiveInteropResolver ires(NULL);
+			// Map out base path of the file
+			char path[_MAX_PATH];
+			char baseURI[(_MAX_PATH * 2) + 10];
+			getcwd(path, _MAX_PATH);
+
+			strcpy(baseURI, "file:///");		
+
+			// Ugly and nasty but quick
+			if (filename[0] != '\\' && filename[0] != '/' && filename[1] != ':') {
+				strcat(baseURI, path);
+				strcat(baseURI, "/");
+			} else if (path[1] == ':') {
+				path[2] = '\0';
+				strcat(baseURI, path);
+			}
+
+			strcat(baseURI, filename);
+
+			// Find any ':' and "\" characters
+			int lastSlash = 0;
+			for (unsigned int i = 8; i < strlen(baseURI); ++i) {
+				if (baseURI[i] == '\\') {
+					lastSlash = i;
+					baseURI[i] = '/';
+				}
+				else if (baseURI[i] == '/')
+					lastSlash = i;
+			}
+
+			// The last "\\" must prefix the filename
+			baseURI[lastSlash + 1] = '\0';
+
+			XMLUri uri(MAKE_UNICODE_STRING(baseURI));
+
+			MerlinFiveInteropResolver ires(&(uri.getUriText()[8]));
 			cipher->setKeyInfoResolver(&ires);
 
 		}
+		if (doDecryptElement) {
+			cipher->decryptElement(static_cast<DOMElement *>(n));
 
-		cipher->decryptElement(static_cast<DOMElement *>(n));
+			// Output the result
 
-		// Output the result
+			XMLCh core[] = {
+				XERCES_CPP_NAMESPACE :: chLatin_C,
+				XERCES_CPP_NAMESPACE :: chLatin_o,
+				XERCES_CPP_NAMESPACE :: chLatin_r,
+				XERCES_CPP_NAMESPACE :: chLatin_e,
+				XERCES_CPP_NAMESPACE :: chNull
+			};
 
-		XMLCh core[] = {
-			XERCES_CPP_NAMESPACE :: chLatin_C,
-			XERCES_CPP_NAMESPACE :: chLatin_o,
-			XERCES_CPP_NAMESPACE :: chLatin_r,
-			XERCES_CPP_NAMESPACE :: chLatin_e,
-			XERCES_CPP_NAMESPACE :: chNull
-		};
+			DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(core);
+			DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
-		DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(core);
-		DOMWriter         *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
-
-		theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
-		if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
-			theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
-
-
-		XMLFormatTarget *formatTarget = new StdOutFormatTarget();
-
-		theSerializer->writeNode(formatTarget, *doc);
-		
-		cout << endl;
-
-		delete theSerializer;
-		delete formatTarget;
+			theSerializer->setEncoding(MAKE_UNICODE_STRING("UTF-8"));
+			if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false))
+				theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
 
+			XMLFormatTarget *formatTarget = new StdOutFormatTarget();
+
+			theSerializer->writeNode(formatTarget, *doc);
+			
+			cout << endl;
+
+			delete theSerializer;
+			delete formatTarget;
+
+		}
+
+		else {
+
+			XSECBinTXFMInputStream * bis = cipher->decryptToBinInputStream(static_cast<DOMElement *>(n));
+			XMLByte buf[1024];			
+			unsigned int read = bis->readBytes(buf, 1023);
+			while (read > 0) {
+				buf[read] = '\0';
+				cout << buf;
+				read = bis->readBytes(buf, 1023);
+			}
+			delete bis;
+		}
 	}
 
 	catch (XSECException &e) {

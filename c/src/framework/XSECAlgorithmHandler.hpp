@@ -78,6 +78,7 @@ class TXFMChain;
 class XENCEncryptionMethod;
 class XSECCryptoKey;
 class safeBuffer;
+class XSECBinTXFMInputStream;
 
 XSEC_DECLARE_XERCES_CLASS(DOMDocument);
 
@@ -189,6 +190,35 @@ public:
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc,
 		safeBuffer & result
 	) = 0;
+
+	/**
+	 * \brief Append an appropriate decrypt TXFMer to a cipher txfm chain.
+	 *
+	 * This method takes a TXFMChain that will provide the cipher
+	 * text data, and appends the appropriate cipher transformer to
+	 * decrypt the output.
+	 *
+	 * The EncryptionMethod object is provided so that any algorithm
+	 * specific parameters can be found by the processor.  It also
+	 * allows applications to embed multiple algorithms in a single
+	 * processing object.  The Type value can then be read from the
+	 * EncryptionMethod object to determine what to do.
+	 *
+	 * @param cipherText Chain that will provide the cipherText.
+	 * Ownership remains with the caller - do not delete.
+	 * @param encryptionMethod Information about the algorithm to use
+	 * @param key The key that has been determined via a resolver or
+	 * that has been provided by the calling application.
+	 * @returns The resulting BinInputStream
+	 */
+
+	virtual bool appendDecryptCipherTXFM(
+		TXFMChain * cipherText,
+		XENCEncryptionMethod * encryptionMethod,
+		XSECCryptoKey * key,
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc
+	) = 0;
+
 
 	//@}
 
