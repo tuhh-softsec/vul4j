@@ -718,8 +718,4 @@ public class XMLSignature extends SignatureElementProxy {
    public String getBaseLocalName() {
       return Constants._TAG_SIGNATURE;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -109,7 +109,7 @@ public class Base64 {
 
    /** Field _base64length */
    static int _base64length = Base64.BASE64DEFAULTLENGTH;
-   
+
    private Base64() {
      // we don't allow instantiation
    }
@@ -676,9 +676,5 @@ public class Base64 {
          (Element) doc.getDocumentElement().getChildNodes().item(0);
 
       System.out.println(new String(decode(base64Elem)));
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
    }
 }

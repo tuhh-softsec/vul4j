@@ -70,16 +70,17 @@ import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import javax.xml.parsers.*;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.c14n.*;
+import org.apache.xml.security.c14n.implementations.*;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.JavaUtils;
+import org.apache.xml.security.utils.HelperNodeList;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
@@ -96,10 +97,6 @@ import org.apache.xpath.XPathContext;
  */
 public class XMLSignatureInput {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(XMLSignatureInput.class.getName());
-
    /**
     * Some InputStreams do not support the {@link java.io.InputStream#reset}
     * method, so we read it in completely and work on our Proxy.
@@ -109,27 +106,10 @@ public class XMLSignatureInput {
    /**
     * The original NodeSet for this XMLSignatureInput
     */
-   NodeList _inputNodeSet = null;
+   Set _inputNodeSet = null;
 
    /** Field _cxpathAPI */
    CachedXPathAPI _cxpathAPI;
-
-   /**
-    *  If we serialize a NodeSet, will Comment nodes be included?
-    *  <p>
-    *  If we look in section 4.3.3.2 The Reference Processing Model, there is stated:
-    *  <ul>
-    *  <li>If the data object is a node-set and the next transform requires
-    *      octets, the signature application MUST attempt to convert the
-    *      node-set to an octet stream using the REQUIRED canonicalization algorithm [XML-C14N].</li>
-    *  </ul>
-    * <p>
-    * From my understanding, Canonical XML (omits comments) is the only c14n algorithm which is REQUIRED.
-    */
-   String _canonicalizerURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
-
-   /** Field _xpathString */
-   String _xpathString = Canonicalizer.XPATH_C14N_OMIT_COMMENTS;
 
    /**
     * Construct a XMLSignatureInput from an octet array.
@@ -139,7 +119,13 @@ public class XMLSignatureInput {
     * @param inputOctets an octet array which including XML document or node
     */
    public XMLSignatureInput(byte[] inputOctets) {
-      this._inputOctetStreamProxy = new ByteArrayInputStream(inputOctets);
+
+      // defensive copy
+      byte[] copy = new byte[inputOctets.length];
+
+      System.arraycopy(inputOctets, 0, copy, 0, inputOctets.length);
+
+      this._inputOctetStreamProxy = new ByteArrayInputStream(copy);
       this._cxpathAPI = new CachedXPathAPI();
    }
 
@@ -148,10 +134,13 @@ public class XMLSignatureInput {
     * stream is directly read.
     *
     * @param inputOctetStream
+    * @throws IOException
     */
    public XMLSignatureInput(InputStream inputOctetStream) throws IOException {
+
       this(JavaUtils.getBytesFromStream(inputOctetStream));
-      inputOctetStream = null; // free object reference
+
+      inputOctetStream = null;    // free object reference
    }
 
    /**
@@ -180,8 +169,8 @@ public class XMLSignatureInput {
    }
 
    /**
-    * Construct a XMLSignatureInput from a subtree rooted by rootNode. This method included the node
-    * and <I>all</I> his descendants in the output.
+    * Construct a XMLSignatureInput from a subtree rooted by rootNode. This
+    * method included the node and <I>all</I> his descendants in the output.
     *
     * @param rootNode
     * @param usedXPathAPI
@@ -191,15 +180,18 @@ public class XMLSignatureInput {
            throws TransformerException {
 
       this._cxpathAPI = usedXPathAPI;
-      this._inputNodeSet = this._cxpathAPI.selectNodeList(rootNode,
-              Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+
+      NodeList result = this._cxpathAPI.selectNodeList(rootNode,
+                           Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+
+      this._inputNodeSet = XMLUtils.convertNodelistToSet(result);
    }
 
    /**
     * Construct a XMLSignatureInput from a subtree rooted by rootNode. This method included the node
     * and <I>all</I> his descendants in the output.
     *
-    * @param node
+    * @param rootNode
     * @throws TransformerException
     */
    public XMLSignatureInput(Node rootNode) throws TransformerException {
@@ -212,10 +204,9 @@ public class XMLSignatureInput {
     *
     * @param inputNodeSet is the node set
     * @param usedXPathAPI
-    */
    public XMLSignatureInput(NodeList inputNodeSet,
                             CachedXPathAPI usedXPathAPI) {
-      this._inputNodeSet = inputNodeSet;
+      this._inputNodeSet = XMLUtils.convertNodelistToSet(inputNodeSet);
       this._cxpathAPI = usedXPathAPI;
    }
 
@@ -224,8 +215,28 @@ public class XMLSignatureInput {
     * <CODE>inputNodeSet</CODE> occur in the output.
     *
     * @param inputNodeSet is the node set
-    */
    private XMLSignatureInput(NodeList inputNodeSet) {
+      this(inputNodeSet, new CachedXPathAPI());
+   }
+    */
+
+   /**
+    * Constructor XMLSignatureInput
+    *
+    * @param inputNodeSet
+    * @param usedXPathAPI
+    */
+   public XMLSignatureInput(Set inputNodeSet, CachedXPathAPI usedXPathAPI) {
+      this._inputNodeSet = inputNodeSet;
+      this._cxpathAPI = usedXPathAPI;
+   }
+
+   /**
+    * Constructor XMLSignatureInput
+    *
+    * @param inputNodeSet
+    */
+   public XMLSignatureInput(Set inputNodeSet) {
       this(inputNodeSet, new CachedXPathAPI());
    }
 
@@ -239,7 +250,7 @@ public class XMLSignatureInput {
     * @throws ParserConfigurationException
     * @throws SAXException
     */
-   public NodeList getNodeSet()
+   public Set getNodeSet()
            throws ParserConfigurationException, IOException, SAXException,
                   CanonicalizationException, InvalidCanonicalizerException {
 
@@ -259,34 +270,32 @@ public class XMLSignatureInput {
 
             Document document = db.parse(this.getOctetStream());
 
-            return this._cxpathAPI.selectNodeList(document, _xpathString);
+            // select all nodes, also the comments.
+            NodeList nodeList = this._cxpathAPI
+               .selectNodeList(document,
+                               Canonicalizer
+                                  .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+            return XMLUtils.convertNodelistToSet(nodeList);
          } catch (TransformerException ex) {
             throw new CanonicalizationException("generic.EmptyMessage", ex);
          } catch (SAXException ex) {
 
             // if a not-wellformed nodeset exists, put a container around it...
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            String container = "container";
 
-            baos.write((new String("<" + container + ">")).getBytes());
+            baos.write("<container>".getBytes());
             baos.write(this.getBytes());
-            baos.write((new String("</" + container + ">")).getBytes());
+            baos.write("</container>".getBytes());
 
             byte result[] = baos.toByteArray();
             Document document = db.parse(new ByteArrayInputStream(result));
 
             try {
-               String noDocument = "not(self::node()=/)";
+               NodeList nodeList = this._cxpathAPI.selectNodeList(
+                  document,
+                  "(//. | //@* | //namespace::*)[not(self::node()=/) and not(self::node=/container)]");
 
-               // String noDocumentElement = "not(local-name()='" + container + "')"
-               String noDocumentElement = "not(self::node=/node())";
-               String xpathStr =
-                  "(//. | //@* | //namespace::*)[not(self::comment()) and "
-                  + noDocument + " and " + noDocumentElement + "]";
-               NodeList nodes = this._cxpathAPI.selectNodeList(document,
-                                   xpathStr);
-
-               return nodes;
+               return XMLUtils.convertNodelistToSet(nodeList);
             } catch (TransformerException ex2) {
                throw new CanonicalizationException("generic.EmptyMessage", ex2);
             }
@@ -315,42 +324,37 @@ public class XMLSignatureInput {
          return this._inputOctetStreamProxy;
       } else if (this.isNodeSet()) {
 
-         /* serialize Element(s) and output them
+         /* If we have a node set but an octet stream is needed, we MUST c14nize
+          * without any comments.
           */
-         Canonicalizer c14nizer =
-            Canonicalizer.getInstance(this._canonicalizerURI);
+         Canonicalizer20010315OmitComments c14nizer = new Canonicalizer20010315OmitComments();
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-         if (this._inputNodeSet.getLength() == 0) {
+         if (this._inputNodeSet.size() == 0) {
 
             // empty nodeset
             return new ByteArrayInputStream(baos.toByteArray());
          }
 
-         cat.debug("set XPathNodeSet with " + this._inputNodeSet.getLength()
-                   + " nodes");
-         c14nizer.setXPathNodeSet(this._inputNodeSet);
-         cat.debug("The nodeset _inputNodeSet has "
-                   + this._inputNodeSet.getLength() + " Nodes");
+         try {
+            Set nodes = this.getNodeSet();
+            byte bytes[] = c14nizer.engineCanonicalizeXPathNodeSet(nodes);
 
-         /* We want to output the NodeList and do this by retrieving the Document Node
-          * and outputting the Document
-          */
-         cat.debug("node(0) is " + this._inputNodeSet.item(0));
+            baos.write(bytes);
 
-         Document doc = XMLUtils.getOwnerDocument(this._inputNodeSet.item(0));
-         byte bytes[] = c14nizer.canonicalizeSubtree(doc);
+            /** @todo Clarify behavior. If isNodeSet() and we getOctetStream, do we have to this._inputOctetStream=xxx ? */
 
-         baos.write(bytes);
-
-         /** @todo Clarify behavior. If isNodeSet() and we getOctetStream, do we have to this._inputOctetStream=xxx ? */
-
-         /*
-         this._inputOctetStream = new ByteArrayInputStream(baos.toByteArray());
-         this._inputNodeSet = null;
-         return this._inputOctetStream;
-         */
-         return new ByteArrayInputStream(baos.toByteArray());
+            /*
+            this._inputOctetStream = new ByteArrayInputStream(baos.toByteArray());
+            this._inputNodeSet = null;
+            return this._inputOctetStream;
+            */
+            return new ByteArrayInputStream(baos.toByteArray());
+         } catch (SAXException ex) {
+            throw new CanonicalizationException("empty", ex);
+         } catch (ParserConfigurationException ex) {
+            throw new CanonicalizationException("empty", ex);
+         }
       }
 
       throw new RuntimeException(
@@ -389,7 +393,8 @@ public class XMLSignatureInput {
     * @return true is the object has been set up with a Node set
     */
    public boolean isNodeSet() {
-      return ((this._inputOctetStreamProxy == null) && (this._inputNodeSet != null));
+      return ((this._inputOctetStreamProxy == null)
+              && (this._inputNodeSet != null));
    }
 
    /**
@@ -398,7 +403,8 @@ public class XMLSignatureInput {
     * @return true is the object has been set up with an octet stream
     */
    public boolean isOctetStream() {
-      return ((this._inputOctetStreamProxy != null) && (this._inputNodeSet == null));
+      return ((this._inputOctetStreamProxy != null)
+              && (this._inputNodeSet == null));
    }
 
    /**
@@ -408,42 +414,6 @@ public class XMLSignatureInput {
     */
    public boolean isInitialized() {
       return (this.isOctetStream() || this.isNodeSet());
-   }
-
-   /**
-    * Defines whether Comment nodes should be included if we serialize a NodeSet
-    *
-    * @param canonicalizerURI
-    */
-   public void setCanonicalizerURI(String canonicalizerURI) {
-      this._canonicalizerURI = canonicalizerURI;
-   }
-
-   /**
-    * If we serialize a NodeSet, will Comment nodes be included?
-    *
-    * @return true if Comment nodes are included in a serialized node set
-    */
-   public String getCanonicalizerURI() {
-      return this._canonicalizerURI;
-   }
-
-   /**
-    * Sets <code>XPath expression</code> want to get node set
-    *
-    * @param selectedNodesetXPath <code>XPath</code> want to get node set
-    */
-   public void setNodesetXPath(String selectedNodesetXPath) {
-      this._xpathString = selectedNodesetXPath;
-   }
-
-   /**
-    * Returns <code>XPath expression</code> want to get node set
-    *
-    * @return <code>XPath expression</code> want to get node set
-    */
-   public String getNodesetXPath() {
-      return this._xpathString;
    }
 
    /**
@@ -497,43 +467,6 @@ public class XMLSignatureInput {
    }
 
    /**
-    * Method main
-    *
-    * @param args
-    * @throws Exception
-    */
-   public static void main(String args[]) throws Exception {
-
-      String inputStr =
-         "<?xml version=\"1.0\"?>\n" + "<!-- full document --><_doc>"
-         + "<n xmlns:ietf='http://www.ietf.org/'><ietf:comment>1</ietf:comment></n><n>2</n><n>3</n><n>4</n>"
-         + "</_doc>";
-
-      inputStr =
-         "<n xmlns:ietf='http://www.ietf.org/'><ietf:comment xmlns:ietf='http://www.ietf.org/'>1</ietf:comment></n><n>2</n><n>3</n><n>4</n>";
-
-      XMLSignatureInput input = new XMLSignatureInput(inputStr.getBytes());
-      NodeList nl = input.getNodeSet();
-
-      if (nl.getLength() == 0) {
-         System.out.println("No Nodes found");
-      } else {
-         for (int i = 0; i < nl.getLength(); i++) {
-            Node n = nl.item(i);
-
-            System.out.println(XMLUtils.getNodeTypeString(n) + " "
-                               + n.getNodeName());
-         }
-      }
-
-      Canonicalizer c =
-         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-
-      c.setXPathNodeSet(nl);
-      System.out.println(new String(c.canonicalizeXPathNodeSet(nl)));
-   }
-
-   /**
     * This method gives access to an {@link org.apache.xpath.CachedXPathAPI}
     * object which was used for creating the internal node set and which MUST be
     * used for subsequent operations on this node set.
@@ -553,7 +486,7 @@ public class XMLSignatureInput {
 
       if (this.isNodeSet()) {
          try {
-            return "XMLSignatureInput/NodeSet/" + this.getNodeSet().getLength()
+            return "XMLSignatureInput/NodeSet/" + this._inputNodeSet.size()
                    + " nodes/" + this.getSourceURI();
          } catch (Exception ex) {
             return "XMLSignatureInput/NodeSet//" + this.getSourceURI();
@@ -566,9 +499,5 @@ public class XMLSignatureInput {
             return "XMLSignatureInput/OctetStream//" + this.getSourceURI();
          }
       }
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
    }
 }

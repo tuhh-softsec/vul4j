@@ -63,12 +63,15 @@ package org.apache.xml.security.transforms.implementations;
 import java.io.IOException;
 import java.io.ByteArrayInputStream;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.c14n.*;
 import org.apache.xml.security.c14n.implementations.*;
 import org.apache.xml.security.transforms.*;
+import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
+import org.w3c.dom.*;
 
 
 /**
@@ -77,14 +80,14 @@ import org.xml.sax.SAXException;
  *
  * @author Christian Geuer-Pollmann
  */
-public class TransformC14NWithComments extends TransformSpi {
+public class TransformC14NExclusiveWithComments extends TransformSpi {
 
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
-      Transforms.TRANSFORM_C14N_WITH_COMMENTS;
+      Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS;
 
    //J-
-   public boolean wantsOctetStream ()   { return true; }
+   public boolean wantsOctetStream ()   { return false; }
    public boolean wantsNodeSet ()       { return true; }
    public boolean returnsOctetStream () { return true; }
    public boolean returnsNodeSet ()     { return false; }
@@ -105,38 +108,48 @@ public class TransformC14NWithComments extends TransformSpi {
     * @param input
     * @return
     * @throws CanonicalizationException
-    * @throws IOException
     * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
     */
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
-           throws IOException, CanonicalizationException,
-                  InvalidCanonicalizerException, ParserConfigurationException,
-                  SAXException {
+           throws CanonicalizationException, InvalidCanonicalizerException {
 
       try {
-        Canonicalizer20010315WithComments c14n = new Canonicalizer20010315WithComments();
-         byte[] result = null;
-         if (input.isOctetStream()) {
-            result = c14n.engineCanonicalize(input.getBytes());
-         } else {
-            result = c14n.engineCanonicalizeXPathNodeSet(input.getNodeSet());
+         Element inclusiveElement =
+            this._transformObject.getChildElementLocalName(0,
+               InclusiveNamespaces.ExclusiveCanonicalizationNamespace,
+               InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES);
+         InclusiveNamespaces inclusiveNamespaces = null;
+
+         if (inclusiveElement != null) {
+            inclusiveNamespaces = new InclusiveNamespaces(inclusiveElement,
+                    this._transformObject.getBaseURI());
          }
-         return new XMLSignatureInput(result);
+
+         Canonicalizer20010315ExclWithComments c14n =
+            new Canonicalizer20010315ExclWithComments();
+
+         if (input.isOctetStream()) {
+            return new XMLSignatureInput(c14n
+               .engineCanonicalize(input.getBytes()));
+         } else {
+            if (inclusiveNamespaces == null) {
+               return new XMLSignatureInput(c14n
+                  .engineCanonicalizeXPathNodeSet(input.getNodeSet()));
+            } else {
+               return new XMLSignatureInput(c14n
+                  .engineCanonicalizeXPathNodeSet(input
+                     .getNodeSet(), inclusiveNamespaces
+                     .getInclusiveNamespaces()));
+            }
+         }
+      } catch (IOException ex) {
+         throw new CanonicalizationException("empty", ex);
       } catch (ParserConfigurationException ex) {
-         Object[] exArgs = { ex.getMessage() };
-         CanonicalizationException cex = new CanonicalizationException(
-            "c14n.Canonicalizer.ParserConfigurationException", exArgs);
-
-         throw cex;
+         throw new CanonicalizationException("empty", ex);
+      } catch (XMLSecurityException ex) {
+         throw new CanonicalizationException("empty", ex);
       } catch (SAXException ex) {
-         Object[] exArgs = { ex.toString() };
-         CanonicalizationException cex =
-            new CanonicalizationException("c14n.Canonicalizer.SAXException",
-                                          exArgs);
-
-         throw cex;
+         throw new CanonicalizationException("empty", ex);
       }
    }
 }

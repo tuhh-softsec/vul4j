@@ -91,8 +91,4 @@ public class SPKIData extends SignatureElementProxy implements KeyInfoContent {
    public String getBaseLocalName() {
       return Constants._TAG_SPKIDATA;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -400,8 +400,4 @@ public class IdResolver {
 
       return null;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

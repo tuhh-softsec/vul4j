@@ -115,8 +115,4 @@ public class MgmtData extends SignatureElementProxy implements KeyInfoContent {
    public String getBaseLocalName() {
       return Constants._TAG_MGMTDATA;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

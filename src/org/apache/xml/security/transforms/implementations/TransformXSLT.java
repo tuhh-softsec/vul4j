@@ -92,10 +92,6 @@ import org.xml.sax.SAXException;
  */
 public class TransformXSLT extends TransformSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(TransformXSLT.class.getName());
-
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XSLT;
@@ -189,25 +185,17 @@ public class TransformXSLT extends TransformSpi {
       } catch (InvalidCanonicalizerException ex) {
          Object exArgs[] = { ex.getMessage() };
 
-         cat.error(I18n.translate("generic.EmptyMessage", exArgs), ex);
-
          throw new TransformationException("generic.EmptyMessage", exArgs, ex);
       } catch (XMLSecurityException ex) {
          Object exArgs[] = { ex.getMessage() };
-
-         cat.error(I18n.translate("generic.EmptyMessage", exArgs), ex);
 
          throw new TransformationException("generic.EmptyMessage", exArgs, ex);
       } catch (TransformerConfigurationException ex) {
          Object exArgs[] = { ex.getMessage() };
 
-         cat.error(I18n.translate("generic.EmptyMessage", exArgs), ex);
-
          throw new TransformationException("generic.EmptyMessage", exArgs, ex);
       } catch (TransformerException ex) {
          Object exArgs[] = { ex.getMessage() };
-
-         cat.error(I18n.translate("generic.EmptyMessage", exArgs), ex);
 
          throw new TransformationException("generic.EmptyMessage", exArgs, ex);
       }

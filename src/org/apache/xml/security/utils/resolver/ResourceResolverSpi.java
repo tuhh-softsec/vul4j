@@ -352,8 +352,4 @@ public abstract class ResourceResolverSpi {
       // done
       return str;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

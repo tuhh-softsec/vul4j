@@ -205,8 +205,4 @@ public class XMLX509Certificate extends SignatureElementProxy
    public String getBaseLocalName() {
       return Constants._TAG_X509CERTIFICATE;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

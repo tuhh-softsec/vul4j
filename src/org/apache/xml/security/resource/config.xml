@@ -9,14 +9,11 @@
                               JAVACLASS="org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments" />
       <CanonicalizationMethod URI="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"
                               JAVACLASS="org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithComments" />
-      <CanonicalizationMethod URI="http://www.w3.org/2000/09/xmldsig#excludeC14N"
-                              JAVACLASS="org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclOmitComments" />
-      <CanonicalizationMethod URI="http://www.w3.org/2000/09/xmldsig#excludeC14NwithComments"
-                              JAVACLASS="org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclWithComments" />
-      <CanonicalizationMethod URI="http://www.xmlsecurity.org/canonicalizerWithoutXPath"
-                              JAVACLASS="org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithoutXPathSupportOmitComments" />
-      <CanonicalizationMethod URI="http://www.xmlsecurity.org/canonicalizerWithoutXPath#withComments"
-                              JAVACLASS="org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithoutXPathSupportWithComments" />
+
+      <CanonicalizationMethod URI="http://www.w3.org/2001/10/xml-exc-c14n#"
+                              JAVACLASS="org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclOmitComments"/>
+      <CanonicalizationMethod URI="http://www.w3.org/2001/10/xml-exc-c14n#WithComments"
+                              JAVACLASS="org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclWithComments"/>
    </CanonicalizationMethods>
    <TransformAlgorithms>
       <TransformAlgorithm URI="http://www.w3.org/2000/09/xmldsig#base64"
@@ -31,8 +28,12 @@
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformEnvelopedSignature" />
       <TransformAlgorithm URI="http://www.w3.org/TR/1999/REC-xslt-19991116"
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXSLT" />
-<!--      <TransformAlgorithm URI="http://www.w3.org/TR/2001/WD-xptr-20010108"
-                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPointer" /> -->
+
+      <TransformAlgorithm URI="http://www.w3.org/2001/10/xml-exc-c14n#"
+                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformC14NExclusive" />
+      <TransformAlgorithm URI="http://www.w3.org/2001/10/xml-exc-c14n#WithComments"
+                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformC14NExclusiveWithComments" />
+
       <TransformAlgorithm URI="http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter"
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPathFilterCHGP" />
       <TransformAlgorithm URI="http://www.w3.org/2002/04/xmldsig-filter2"
@@ -481,80 +482,92 @@
    <!-- <Log4J configFile="data/log4j.xml" /> -->
    <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
         <!-- http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/xml/DOMConfigurator.html -->
-   	<appender name="STDOUT" class="org.apache.log4j.FileAppender">
-		<param name="File" value="log.txt" />
-		<!--
-		<param name="File" value="System.out" />
-		-->
+        <appender name="STDOUT" class="org.apache.log4j.FileAppender">
+                <param name="File" value="log.txt" />
+                <!--
+                <param name="File" value="System.out" />
+                -->
 
-		<layout class="org.apache.log4j.PatternLayout">
+                <layout class="org.apache.log4j.PatternLayout">
 
-		<param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
-		<!--
-		<param name="ConversionPattern" value="%d %-5p %C{10}:%-4L - %m\n"/>
-		-->
-		</layout>
-	</appender>
+                <param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
+                <!--
+                <param name="ConversionPattern" value="%d %-5p %C{10}:%-4L - %m\n"/>
+                -->
+                </layout>
+        </appender>
 
-	<!--
-	<appender name="chainsaw" class="org.apache.log4j.net.SocketAppender">
-		<param name="RemoteHost" value="localhost" />
-		<param name="Port" value="4445" />
-		<layout class="org.apache.log4j.PatternLayout">
-		<param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
-		</layout>
-	</appender>
+        <!--
+        <appender name="chainsaw" class="org.apache.log4j.net.SocketAppender">
+                <param name="RemoteHost" value="localhost" />
+                <param name="Port" value="4445" />
+                <layout class="org.apache.log4j.PatternLayout">
+                <param name="ConversionPattern" value="%-5p %C{1}:%L - %m\n"/>
+                </layout>
+        </appender>
         -->
 
-	<category name="org.apache.log4j.xml">
-		<priority value="info" />
-	</category>
+        <category name="org.apache.log4j.xml">
+                <priority value="info" />
+        </category>
 
-	<category name="org.apache.xml.security">
-		<priority value="fatal" />
-	</category>
+        <category name="org.apache.xml.security">
+                <priority value="debug" />
+        </category>
+        <category name="org.apache.xml.security.Init">
+                <priority value="fatal" />
+        </category>
+        <category name="org.apache.xml.security.algorithms.SignatureAlgorithm">
+                <priority value="error" />
+        </category>
+        <category name="org.apache.xml.security.c14n.Canonicalizer">
+                <priority value="debug" />
+        </category>
+        <category name="org.apache.xml.security.c14n.helper.AttrCompare">
+                <priority value="error" />
+        </category>
 
 
         <!--
-	<category name="org.apache.xml.security.transforms">
-		<priority value="debug" />
-	</category>
+        <category name="org.apache.xml.security.transforms">
+                <priority value="debug" />
+        </category>
         -->
 
-	<!--
-	<category name="org.apache.xml.security.test.resource.TestVectorResolver">
-		<priority value="fatal" />
-	</category>
-	<category name="org.apache.xml.security.Init">
-		<priority value="error" />
-	</category>
-	<category name="org.apache.xml.security.c14n.helper.AttrCompare">
-		<priority value="fatal" />
-	</category>
-	<category name="org.apache.xml.security.c14n.helper.NamespaceSearcher">
-		<priority value="fatal" />
-	</category>
-	<category name="org.apache.xml.security.utils.ElementProxy">
-		<priority value="fatal" />
-	</category>
-	<category name="org.apache.xml.security.utils.resolver.implementations">
-		<priority value="info" />
-	</category>
-	<category name="org.apache.xml.security.transforms.implementations">
-		<priority value="info" />
-	</category>
-	<category name="org.apache.xml.security.c14n.Canonicalizer">
-		<priority value="fatal" />
-	</category>
-	<category name="org.apache.xml.security.transforms.implementations.FuncHere">
-		<priority value="fatal" />
-	</category>
+        <!--
+        <category name="org.apache.xml.security.test.resource.TestVectorResolver">
+                <priority value="fatal" />
+        </category>
+        <category name="org.apache.xml.security.Init">
+                <priority value="error" />
+        </category>
+        <category name="org.apache.xml.security.c14n.helper.AttrCompare">
+                <priority value="fatal" />
+        </category>
+        <category name="org.apache.xml.security.c14n.helper.NamespaceSearcher">
+                <priority value="fatal" />
+        </category>
+        <category name="org.apache.xml.security.utils.ElementProxy">
+                <priority value="fatal" />
+        </category>
+        <category name="org.apache.xml.security.utils.resolver.implementations">
+                <priority value="info" />
+        </category>
+        <category name="org.apache.xml.security.transforms.implementations">
+                <priority value="info" />
+        </category>
+        <category name="org.apache.xml.security.c14n.Canonicalizer">
+                <priority value="fatal" />
+        </category>
+        <category name="org.apache.xml.security.transforms.implementations.FuncHere">
+                <priority value="fatal" />
+        </category>
         -->
-	<root>
-		<priority value ="debug" />
-		<appender-ref ref="STDOUT" />
-		<!-- <appender-ref ref="chainsaw" /> -->
-	</root>
+        <root>
+                <priority value ="debug" />
+                <appender-ref ref="STDOUT" />
+                <!-- <appender-ref ref="chainsaw" /> -->
+        </root>
    </log4j:configuration>
    <PrefixMappings>
       <PrefixMapping namespace="http://www.w3.org/2000/09/xmldsig#"
@@ -565,6 +578,8 @@
                      prefix="experimental" />
       <PrefixMapping namespace="http://www.w3.org/2002/04/xmldsig-filter2"
                      prefix="dsig-xpath" />
+      <PrefixMapping namespace="http://www.w3.org/2001/10/xml-exc-c14n#"
+                     prefix="ec" />
       <PrefixMapping namespace="http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter"
                      prefix="xx" />
    </PrefixMappings>

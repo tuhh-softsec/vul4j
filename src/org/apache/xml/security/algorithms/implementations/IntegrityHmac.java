@@ -462,9 +462,6 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       throw new XMLSignatureException("algorithms.operationOnlyForSignature");
    }
 
-   static {
-      org.apache.xml.security.Init.init();
-   }
    public static class IntegrityHmacSHA1 extends IntegrityHmac {
       public IntegrityHmacSHA1() throws XMLSignatureException {
          super();

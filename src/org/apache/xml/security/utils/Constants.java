@@ -110,7 +110,7 @@ public class Constants {
    public static final String SignatureSpecNS   = "http://www.w3.org/2000/09/xmldsig#";
    public static final String MoreAlgorithmsSpecNS   = "http://www.w3.org/2001/04/xmldsig-more#";
 
-   // public static final String NamespaceSpecNS = "http://www.w3.org/XML/1998/namespace";
+   public static final String XML_LANG_SPACE_SpecNS = "http://www.w3.org/XML/1998/namespace";
    public static final String NamespaceSpecNS = "http://www.w3.org/2000/xmlns/";
 
    public static final String _ATT_ALGORITHM              = "Algorithm";
@@ -226,9 +226,5 @@ public class Constants {
     */
    public static String getSignatureSpecNSprefix() {
       return ElementProxy.getDefaultPrefix(Constants.SignatureSpecNS);
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
    }
 }

@@ -64,6 +64,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.ByteArrayInputStream;
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import org.w3c.dom.*;
@@ -83,260 +84,6 @@ import org.apache.xml.security.utils.I18n;
  * @author Christian Geuer-Pollmann
  */
 public abstract class CanonicalizerSpi {
-
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(CanonicalizerSpi.class.getName());
-
-   /** Field BEFORE_DOCUMENT_ELEM */
-   public static final short BEFORE_DOCUMENT_ELEM = 0;
-
-   /** Field INSIDE_DOCUMENT_ELEM */
-   public static final short INSIDE_DOCUMENT_ELEM = 1;
-
-   /** Field AFTER_DOCUMENT_ELEM */
-   public static final short AFTER_DOCUMENT_ELEM = 2;
-
-   /** Field implementedTransformURI */
-   protected String implementedTransformURI = null;
-
-   /** Field validating */
-   private boolean _validating = false;
-
-   /** Field includeComments */
-   private boolean _includeComments = false;
-
-   /** Field _engineXpathObject */
-   private Object _engineXpathObject = null;
-
-   /** Field _engineXpathString */
-   private String _engineXpathString = null;
-
-   /**
-    * Method engineSetURI
-    *
-    * @param algorithmURI
-    */
-   public void engineSetURI(String algorithmURI) {
-      this.implementedTransformURI = algorithmURI;
-   }
-
-   /**
-    * Method engineGetURI
-    *
-    * @return
-    */
-   public String engineGetURI() {
-      return this.implementedTransformURI;
-   }
-
-   /**
-    * Method engineSetValidating
-    *
-    * @param validating
-    */
-   public void engineSetValidating(boolean validating) {
-      this._validating = validating;
-   }
-
-   /**
-    * Method engineGetValidating
-    *
-    * @return
-    */
-   public boolean engineGetValidating() {
-      return this._validating;
-   }
-
-   /**
-    * Method engineSetIncludeComments
-    *
-    * @param includeComments
-    */
-   public void engineSetIncludeComments(boolean includeComments) {
-      this._includeComments = includeComments;
-   }
-
-   /**
-    * Method engineGetIncludeComments
-    *
-    * @return
-    */
-   public boolean engineGetIncludeComments() {
-      return this._includeComments;
-   }
-
-   // public abstract void engineOutput(Document document, OutputStream out) throws IOException, CanonicalizationException;
-
-   /**
-    * Sets the XPath which is beeing used by this Canonicalizer. This method
-    * can get the XPath as pure String, as an ds:XPath element or as
-    * {@link NodeList} which contains a ds:XPath element.
-    *
-    * @param _context
-    * @throws DOMException
-    * @throws IllegalArgumentException
-    */
-   public void engineSetXPath(Object _context)
-           throws IllegalArgumentException, DOMException {
-
-      cat.debug("engineSetXPath(" + _context.getClass().getName() + ") called");
-
-      if (_context == null) {
-         return;
-      }
-
-      this._engineXpathObject = _context;
-
-      /** @todo check whether length of XPathString can be 0 */
-      if (_context instanceof String) {
-         cat.debug("Treat input as String");
-
-         this._engineXpathString = (String) _context;
-      } else if (_context instanceof Element) {
-         cat.debug("Treat input as Element");
-
-         Element contextElement = (Element) _context;
-
-         if (!contextElement.getNamespaceURI().equals(Constants.SignatureSpecNS)
-                 ||!contextElement.getLocalName().equals(Constants._TAG_XPATH)
-                 || (contextElement.getChildNodes().getLength() != 1)) {
-            throw new IllegalArgumentException(
-               "Must be a single ds:XPath element with Text child");
-         }
-
-         Text xpathText = (Text) ((Element) _context).getFirstChild();
-
-         this._engineXpathString = xpathText.getData();
-
-         if ((this._engineXpathString == null)
-                 || (this._engineXpathString.length() == 0)) {
-            Object exArgs[] = { "", Constants._TAG_TRANSFORM };
-
-            throw new DOMException(DOMException.WRONG_DOCUMENT_ERR,
-                                   I18n.translate("xml.WrongContent", exArgs));
-         }
-      } else if (_context instanceof NodeList) {
-         cat.debug("Treat input as NodeList");
-
-         NodeList nl = (NodeList) _context;
-         String XPathString = null;
-
-         for (int i = 0; i < nl.getLength(); i++) {
-            Node n = nl.item(i);
-
-            //J-
-            if ((n.getNodeType() == Node.ELEMENT_NODE) &&
-                ((Element) n).getNamespaceURI().equals(Constants.SignatureSpecNS) &&
-                ((Element) n).getLocalName().equals(Constants._TAG_XPATH)) {
-               this._engineXpathObject = n;
-               this._engineXpathString = (String) ((Text) n.getFirstChild()).getData();
-            }
-            //J+
-         }
-
-         if ((this._engineXpathString == null)
-                 || (this._engineXpathString.length() == 0)) {
-            Object exArgs[] = { "a single ds:XPath element with Text",
-                                Constants._TAG_TRANSFORM };
-
-            throw new DOMException(DOMException.WRONG_DOCUMENT_ERR,
-                                   I18n.translate("xml.WrongContent", exArgs));
-         }
-      } else {
-         throw new IllegalArgumentException("No XPath has been supplied");
-      }
-
-      cat.debug("The XPath " + this._engineXpathString + " has been set");
-   }
-
-   /**
-    * Returns the XPath which is beeing used by this Canonicalizer;
-    *
-    * @return the XPath which is beeing used by this Canonicalizer;
-    */
-   public Object engineGetXPath() {
-      return this._engineXpathObject;
-   }
-
-   /**
-    * Method engineGetXPathString
-    *
-    * @return
-    */
-   public String engineGetXPathString() {
-      return this._engineXpathString;
-   }
-
-   /**
-    * Method engineC14nFiles
-    *
-    * @param inFile
-    * @param outFile
-    */
-   public void engineC14nFiles(String inFile, String outFile) {
-
-      String systemId = inFile;
-      String outputFileName = outFile;
-
-      try {
-         InputSource in = new InputSource(systemId);
-         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-
-         // needs to validate for ID attribute nomalization
-         dfactory.setValidating(this.engineGetValidating());
-         dfactory.setNamespaceAware(true);
-
-         DocumentBuilder db = dfactory.newDocumentBuilder();
-
-         /*
-          * for some of the test vectors from the specification,
-          * there has to be a validating parser for ID attributes, default
-          * attribute values, NMTOKENS, etc.
-          * Unfortunaltely, the test vectors do use different DTDs or
-          * even no DTD. So Xerces 1.3.1 fires many warnings about using
-          * ErrorHandlers.
-          *
-          * Text from the spec:
-          *
-          * The input octet stream MUST contain a well-formed XML document,
-          * but the input need not be validated. However, the attribute
-          * value normalization and entity reference resolution MUST be
-          * performed in accordance with the behaviors of a validating
-          * XML processor. As well, nodes for default attributes (declared
-          * in the ATTLIST with an AttValue but not specified) are created
-          * in each element. Thus, the declarations in the document type
-          * declaration are used to help create the canonical form, even
-          * though the document type declaration is not retained in the
-          * canonical form.
-          *
-          */
-
-         // ErrorHandler eh = new C14NErrorHandler();
-         // db.setErrorHandler(eh);
-         Document document = db.parse(in);
-         byte result[] = this.engineCanonicalizeSubTree(document);
-         FileOutputStream fos = new FileOutputStream(outputFileName);
-
-         fos.write(result);
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
-
-   /**
-    * Compatibility method for implementations that use
-    * {@link de.uni_siegen.xmlsecurity.util.C14N} as Canonicalizer
-    *
-    * @param document
-    * @param out
-    * @throws CanonicalizationException
-    * @throws IOException
-    */
-   public void engineOutput(Document document, OutputStream out)
-           throws IOException, CanonicalizationException {
-      out.write(this.engineCanonicalizeSubTree(document));
-   }
 
    /**
     * Method canonicalize
@@ -362,7 +109,6 @@ public abstract class CanonicalizerSpi {
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
       // needs to validate for ID attribute nomalization
-      dfactory.setValidating(this.engineGetValidating());
       dfactory.setNamespaceAware(true);
 
       DocumentBuilder db = dfactory.newDocumentBuilder();
@@ -399,69 +145,43 @@ public abstract class CanonicalizerSpi {
    }
 
    /**
-    * Method engineCanonicalizeSubTree
+    * Method engineCanonicalizeXPathNodeSet
     *
-    * @param node
+    * @param xpathNodeSet
     * @return
     * @throws CanonicalizationException
     */
+   public byte[] engineCanonicalizeXPathNodeSet(NodeList xpathNodeSet)
+           throws CanonicalizationException {
+
+      return this
+         .engineCanonicalizeXPathNodeSet(XMLUtils
+            .convertNodelistToSet(xpathNodeSet));
+   }
+
+   public byte[] engineCanonicalizeXPathNodeSet(NodeList xpathNodeSet, String inclusiveNamespaces)
+           throws CanonicalizationException {
+
+      return this
+         .engineCanonicalizeXPathNodeSet(XMLUtils
+            .convertNodelistToSet(xpathNodeSet), inclusiveNamespaces);
+   }
+
+   //J-
+   public abstract String engineGetURI();
+
+   public abstract boolean engineGetIncludeComments();
+
+   public abstract byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet)
+      throws CanonicalizationException;
+
+   public abstract byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet, String inclusiveNamespaces)
+      throws CanonicalizationException;
+
    public abstract byte[] engineCanonicalizeSubTree(Node rootNode)
       throws CanonicalizationException;
 
-   /**
-    * Method engineCanonicalizeXPathNodeSet
-    *
-    * @param selectedNodes
-    * @return
-    * @throws CanonicalizationException
-    */
-   public abstract byte[] engineCanonicalizeXPathNodeSet(NodeList xpathNodeSet)
+   public abstract byte[] engineCanonicalizeSubTree(Node rootNode, String inclusiveNamespaces)
       throws CanonicalizationException;
-
-   /**
-    * Method engineVisible
-    *
-    * @param node
-    * @return
-    */
-   public abstract boolean engineVisible(Node node);
-
-   /**
-    * Method engineMakeVisible
-    *
-    * @param node
-    */
-   public abstract void engineMakeVisible(Node node);
-
-   /**
-    * Method engineMakeInVisible
-    *
-    * @param node
-    */
-   public abstract void engineMakeInVisible(Node node);
-
-   /**
-    * Method engineSetXPathNodeSet
-    *
-    * @param nodeList
-    */
-   public abstract void engineSetXPathNodeSet(NodeList nodeList);
-
-   /**
-    * Method engineSetRemoveNSAttrs
-    *
-    * @param remove
-    */
-   public abstract void engineSetRemoveNSAttrs(boolean remove);
-
-   /**
-    * Method engineGetRemoveNSAttrs
-    *
-    * @return
-    */
-   public abstract boolean engineGetRemoveNSAttrs();
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
+   //J+
 }

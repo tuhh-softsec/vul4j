@@ -72,10 +72,24 @@ public class Canonicalizer20010315WithComments extends Canonicalizer20010315 {
     *
     */
    public Canonicalizer20010315WithComments() {
+      super(true);
+   }
 
-      this.engineSetIncludeComments(true);
-      this.engineSetURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-      // this.engineSetXPath(Canonicalizer.XPATH_C14N_WITH_COMMENTS);
-      this.engineSetXPath(Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
+   /**
+    * Method engineGetURI
+    *
+    * @return
+    */
+   public final String engineGetURI() {
+      return Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS;
+   }
+
+   /**
+    * Method engineGetIncludeComments
+    *
+    * @return
+    */
+   public final boolean engineGetIncludeComments() {
+      return true;
    }
 }

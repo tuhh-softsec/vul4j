@@ -115,8 +115,4 @@ public class KeyName extends SignatureElementProxy implements KeyInfoContent {
    public String getBaseLocalName() {
       return Constants._TAG_KEYNAME;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

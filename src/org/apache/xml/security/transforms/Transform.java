@@ -372,8 +372,4 @@ public final class Transform extends SignatureElementProxy {
    public String getBaseLocalName() {
       return Constants._TAG_TRANSFORM;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -256,9 +256,6 @@ public class JavaUtils {
          if (filename != null && bytes != null) {
             File f = new File(filename);
 
-            cat.debug("writeBytesToFilename: Try to write " + bytes.length + " to file "
-                      + f.toURL().toString());
-
             FileOutputStream fos = new FileOutputStream(f);
 
             fos.write(bytes);
@@ -330,9 +327,5 @@ public class JavaUtils {
                 + (lTotalMemAfter - lFreeMemAfter) + "= "
                 + (lTotalMemAfter - lFreeMemAfter) / 1024 + "KB");
       cat.debug("</METHOD>");
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
    }
 }

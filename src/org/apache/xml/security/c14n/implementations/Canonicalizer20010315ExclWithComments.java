@@ -56,87 +56,45 @@
  * For more information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.security.transforms.implementations;
+package org.apache.xml.security.c14n.implementations;
 
 
 
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.c14n.*;
-import org.apache.xml.security.c14n.implementations.*;
-import org.apache.xml.security.transforms.*;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
+import org.apache.xml.security.c14n.Canonicalizer;
 
 
 /**
- * Implements the <CODE>http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments</CODE>
- * transform.
+ * Class Canonicalizer20010315ExclWithComments
  *
- * @author Christian Geuer-Pollmann
+ * @author $Author$
+ * @version $Revision$
  */
-public class TransformC14NWithComments extends TransformSpi {
+public class Canonicalizer20010315ExclWithComments
+        extends Canonicalizer20010315Excl {
 
-   /** Field implementedTransformURI */
-   public static final String implementedTransformURI =
-      Transforms.TRANSFORM_C14N_WITH_COMMENTS;
-
-   //J-
-   public boolean wantsOctetStream ()   { return true; }
-   public boolean wantsNodeSet ()       { return true; }
-   public boolean returnsOctetStream () { return true; }
-   public boolean returnsNodeSet ()     { return false; }
-   //J+
+   /**
+    * Constructor Canonicalizer20010315ExclWithComments
+    *
+    */
+   public Canonicalizer20010315ExclWithComments() {
+      super(true);
+   }
 
    /**
     * Method engineGetURI
     *
     * @return
     */
-   protected String engineGetURI() {
-      return this.implementedTransformURI;
+   public final String engineGetURI() {
+      return Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS;
    }
 
    /**
-    * Method enginePerformTransform
+    * Method engineGetIncludeComments
     *
-    * @param input
     * @return
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
     */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
-           throws IOException, CanonicalizationException,
-                  InvalidCanonicalizerException, ParserConfigurationException,
-                  SAXException {
-
-      try {
-        Canonicalizer20010315WithComments c14n = new Canonicalizer20010315WithComments();
-         byte[] result = null;
-         if (input.isOctetStream()) {
-            result = c14n.engineCanonicalize(input.getBytes());
-         } else {
-            result = c14n.engineCanonicalizeXPathNodeSet(input.getNodeSet());
-         }
-         return new XMLSignatureInput(result);
-      } catch (ParserConfigurationException ex) {
-         Object[] exArgs = { ex.getMessage() };
-         CanonicalizationException cex = new CanonicalizationException(
-            "c14n.Canonicalizer.ParserConfigurationException", exArgs);
-
-         throw cex;
-      } catch (SAXException ex) {
-         Object[] exArgs = { ex.toString() };
-         CanonicalizationException cex =
-            new CanonicalizationException("c14n.Canonicalizer.SAXException",
-                                          exArgs);
-
-         throw cex;
-      }
+   public final boolean engineGetIncludeComments() {
+      return true;
    }
 }

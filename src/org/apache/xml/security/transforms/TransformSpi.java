@@ -142,8 +142,4 @@ public abstract class TransformSpi {
     * @return the URI representation of <code>Transformation algorithm</code>
     */
    protected abstract String engineGetURI();
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

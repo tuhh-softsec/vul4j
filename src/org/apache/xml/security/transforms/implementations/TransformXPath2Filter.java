@@ -119,32 +119,22 @@ public class TransformXPath2Filter extends TransformSpi {
            throws TransformationException {
 
       try {
-         if (input.isOctetStream()) {
-            input.setNodesetXPath(Canonicalizer.XPATH_C14N_WITH_COMMENTS);
-         }
-
-         NodeList inputNodes = input.getNodeSet();
+         Set inputSet = input.getNodeSet();
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
          CachedXPathAPI myXPathAPI =
             new CachedXPathAPI(input.getCachedXPathAPI());
 
-         if (inputNodes.getLength() == 0) {
+         if (inputSet.size() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
 
             throw new TransformationException("empty", exArgs);
          }
 
-         Element transformElement = this._transformObject.getElement();
-         Document doc = transformElement.getOwnerDocument();
-         Element nscontext =
-            XMLUtils.createDSctx(doc, "dsig-xpath",
-                                 XPath2FilterContainer.XPathFilter2NS);
          Element xpathElement =
-            (Element) myXPathAPI.selectSingleNode(transformElement,
-                                                  "./dsig-xpath:"
-                                                  + XPath2FilterContainer
-                                                     ._TAG_XPATH2, nscontext);
+            this._transformObject.getChildElementLocalName(0,
+               XPath2FilterContainer.XPathFilter2NS, XPath2FilterContainer
+                                                     ._TAG_XPATH2);
 
          if (xpathElement == null) {
             Object exArgs[] = { "dsig-xpath:XPath", "Transform" };
@@ -152,10 +142,20 @@ public class TransformXPath2Filter extends TransformSpi {
             throw new TransformationException("xml.WrongContent", exArgs);
          }
 
-         Document inputDoc = XMLUtils.getOwnerDocument(inputNodes.item(0));
+         Document inputDoc = null;
+
+         {
+            Iterator it = inputSet.iterator();
+
+            if (it.hasNext()) {
+               inputDoc = XMLUtils.getOwnerDocument((Node) it.next());
+            }
+         }
+
          XPath2FilterContainer xpathContainer =
             XPath2FilterContainer.newInstance(xpathElement,
                                               input.getSourceURI());
+         Document doc = this._transformObject.getElement().getOwnerDocument();
          NodeList subtreeRoots = xPathFuncHereAPI.selectNodeList(doc,
                                     xpathContainer.getXPathFilterTextNode(),
                                     xpathContainer.getElement());
@@ -178,43 +178,48 @@ public class TransformXPath2Filter extends TransformSpi {
             }
          }
 
-         HelperNodeList resultNodes = new HelperNodeList();
+         Set resultNodes = new HashSet();
 
          if (xpathContainer.isIntersect()) {
-            for (int i = 0; i < inputNodes.getLength(); i++) {
-               Node currentInputNode = inputNodes.item(i);
+            Iterator inputSetIterator = inputSet.iterator();
+
+            while (inputSetIterator.hasNext()) {
+               Node currentInputNode = (Node) inputSetIterator.next();
 
                // if the input node is selected, include it in the output
                if (selectedNodes.contains(currentInputNode)) {
-                  resultNodes.appendChild(currentInputNode);
-               } else {
-                  ;
+                  resultNodes.add(currentInputNode);
                }
             }
          } else if (xpathContainer.isSubtract()) {
-            for (int i = 0; i < inputNodes.getLength(); i++) {
-               Node currentInputNode = inputNodes.item(i);
+            Iterator inputSetIterator = inputSet.iterator();
+
+            while (inputSetIterator.hasNext()) {
+               Node currentInputNode = (Node) inputSetIterator.next();
 
                // if the input node is selected, do not include it
                // otherwise, include it
-               if (selectedNodes.contains(currentInputNode)) {
-                  ;
-               } else {
-                  resultNodes.appendChild(currentInputNode);
+               if (!selectedNodes.contains(currentInputNode)) {
+                  resultNodes.add(currentInputNode);
                }
             }
          } else if (xpathContainer.isUnion()) {
-            for (int i = 0; i < inputNodes.getLength(); i++) {
-               Node currentInputNode = inputNodes.item(i);
+            Iterator inputSetIterator = inputSet.iterator();
 
-               // add all input nodes to the selected nodes
-               selectedNodes.add(currentInputNode);
+            while (inputSetIterator.hasNext()) {
+               Node currentInputNode = (Node) inputSetIterator.next();
+
+               // add all input nodes to the result
+               resultNodes.add(currentInputNode);
             }
 
-            Iterator iterator = selectedNodes.iterator();
+            Iterator selectedSetIterator = selectedNodes.iterator();
 
-            while (iterator.hasNext()) {
-               resultNodes.appendChild((Node) iterator.next());
+            while (selectedSetIterator.hasNext()) {
+               Node currentSelectedNode = (Node) selectedSetIterator.next();
+
+               // add all selected nodes to the result
+               resultNodes.add(currentSelectedNode);
             }
          } else {
             throw new TransformationException("empty");

@@ -118,8 +118,4 @@ public class XMLX509CRL extends SignatureElementProxy
    public String getBaseLocalName() {
       return Constants._TAG_X509CRL;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -165,8 +165,4 @@ public class FuncHereContext extends XPathContext {
 
       this.m_dtmManager = dtmManager;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

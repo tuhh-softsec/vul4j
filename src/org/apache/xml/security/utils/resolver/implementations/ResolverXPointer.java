@@ -62,6 +62,7 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 import java.net.*;
 import java.io.*;
+import java.util.*;
 import org.w3c.dom.*;
 import org.apache.xml.utils.URI;
 import org.apache.xpath.CachedXPathAPI;
@@ -145,15 +146,9 @@ public class ResolverXPointer extends ResourceResolverSpi {
          }
       }
 
-      for (int i = 0; i < resultNodes.getLength(); i++) {
-         cat.debug("item " + i + " "
-                   + XMLUtils.getNodeTypeString(resultNodes.item(i)));
-      }
+      Set resultSet = XMLUtils.convertNodelistToSet(resultNodes);
+      XMLSignatureInput result = new XMLSignatureInput(resultSet, cXPathAPI);
 
-      XMLSignatureInput result = new XMLSignatureInput(resultNodes, cXPathAPI);
-
-      // result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-      result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
       result.setMIMEType("text/xml");
 
       try {

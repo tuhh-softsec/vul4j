@@ -134,8 +134,4 @@ public class HelperNodeList implements NodeList {
          return XMLUtils.getOwnerDocument(this.item(0));
       }
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

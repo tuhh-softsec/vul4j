@@ -891,8 +891,4 @@ public class HexDump {
 
       System.out.println("ba = " + toHexString(ba));
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -216,8 +216,4 @@ public abstract class KeyResolverSpi {
 
       return false;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

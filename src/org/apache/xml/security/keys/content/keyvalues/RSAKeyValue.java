@@ -176,8 +176,4 @@ public class RSAKeyValue extends SignatureElementProxy
    public String getBaseLocalName() {
       return Constants._TAG_RSAKEYVALUE;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

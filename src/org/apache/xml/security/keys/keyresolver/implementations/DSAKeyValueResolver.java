@@ -80,11 +80,6 @@ import org.w3c.dom.*;
  */
 public class DSAKeyValueResolver extends KeyResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(DSAKeyValueResolver.class.getName());
-
    /** Field _dsaKeyElement */
    private Element _dsaKeyElement = null;
 
@@ -98,8 +93,6 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
     */
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
-
-      cat.debug("Can I resolve " + element.getTagName());
 
       if (element == null) {
          return false;
@@ -128,8 +121,6 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
          // this trick is needed to allow the RetrievalMethodResolver to eat a
          // ds:DSAKeyValue directly (without KeyValue)
          this._dsaKeyElement = element;
-
-         cat.debug("We are asked to resole a pure DSAKeyValue");
 
          return true;
       }
@@ -164,11 +155,9 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
                                                    BaseURI);
          PublicKey pk = dsaKeyValue.getPublicKey();
 
-         cat.debug("We return DSA: " + pk);
-
          return pk;
       } catch (XMLSecurityException ex) {
-         cat.debug("XMLSecurityException", ex);
+         ;
       }
 
       return null;

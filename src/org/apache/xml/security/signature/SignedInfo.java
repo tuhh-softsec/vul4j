@@ -88,12 +88,11 @@ import org.xml.sax.SAXException;
  */
 public class SignedInfo extends Manifest {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(SignedInfo.class.getName());
-
    /** Field _signatureAlgorithm */
    private SignatureAlgorithm _signatureAlgorithm = null;
+
+   /** Field _c14nizedBytes           */
+   private byte[] _c14nizedBytes = null;
 
    /**
     * Overwrites {@link Manifest(org.w3c.dom.Document)} because it creates another Element.
@@ -182,8 +181,10 @@ public class SignedInfo extends Manifest {
       try {
          Canonicalizer c14nizer =
             Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
-         byte c14nizedBytes[] =
+
+         this._c14nizedBytes =
             c14nizer.canonicalizeSubtree(this._constructionElement);
+
          javax.xml.parsers.DocumentBuilderFactory dbf =
             javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
@@ -191,7 +192,7 @@ public class SignedInfo extends Manifest {
 
          javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
          org.w3c.dom.Document newdoc =
-            db.parse(new ByteArrayInputStream(c14nizedBytes));
+            db.parse(new ByteArrayInputStream(this._c14nizedBytes));
          Node imported = this._doc.importNode(newdoc.getDocumentElement(),
                                               true);
 
@@ -250,9 +251,19 @@ public class SignedInfo extends Manifest {
            throws CanonicalizationException, InvalidCanonicalizerException,
                   IOException, XMLSecurityException {
 
-      Canonicalizer c14nizer =
-         Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
-      byte[] output = c14nizer.canonicalizeSubtree(this._constructionElement);
+      if ((this._c14nizedBytes == null)
+              && (this._state == ElementProxy.MODE_SIGN)) {
+         Canonicalizer c14nizer =
+            Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
+
+         this._c14nizedBytes =
+            c14nizer.canonicalizeSubtree(this._constructionElement);
+      }
+
+      // make defensive copy
+      byte[] output = new byte[this._c14nizedBytes.length];
+
+      System.arraycopy(this._c14nizedBytes, 0, output, 0, output.length);
 
       return output;
    }
@@ -353,11 +364,12 @@ public class SignedInfo extends Manifest {
                                   .getJCEAlgorithmString());
    }
 
+   /**
+    * Method getBaseLocalName
+    *
+    * @return
+    */
    public String getBaseLocalName() {
       return Constants._TAG_SIGNEDINFO;
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
    }
 }

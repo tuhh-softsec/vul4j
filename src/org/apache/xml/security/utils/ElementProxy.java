@@ -486,7 +486,7 @@ public abstract class ElementProxy {
     * @param localname
     * @return
     */
-   protected Element getChildElementLocalName(int index, String namespace,
+   public Element getChildElementLocalName(int index, String namespace,
                                               String localname) {
 
       NodeList nodes =
@@ -601,10 +601,4 @@ public abstract class ElementProxy {
 
       return prefix;
    }
-
-   /*
-   static {
-      org.apache.xml.security.Init.init();
-   }
-   */
 }

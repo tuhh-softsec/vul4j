@@ -140,11 +140,11 @@ public abstract class SignatureAlgorithmSpi {
 
    /**
     * Proxy method for {@link java.security.Signature#initSign}
-    * which is executed on the internal {@link java.security.Signature} object. 
+    * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param privateKey
     * @param secureRandom
-    * @throws XMLSignatureException if this method is called on a MAC 
+    * @throws XMLSignatureException if this method is called on a MAC
     */
    protected abstract void engineInitSign(
       PrivateKey privateKey, SecureRandom secureRandom)
@@ -155,7 +155,7 @@ public abstract class SignatureAlgorithmSpi {
     * which is executed on the internal {@link java.security.Signature} object.
     *
     * @param privateKey
-    * @throws XMLSignatureException if this method is called on a MAC 
+    * @throws XMLSignatureException if this method is called on a MAC
     */
    protected abstract void engineInitSign(PrivateKey privateKey)
       throws XMLSignatureException;
@@ -274,8 +274,4 @@ public abstract class SignatureAlgorithmSpi {
     */
    protected abstract void engineSetHMACOutputLength(int HMACOutputLength)
       throws XMLSignatureException;
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

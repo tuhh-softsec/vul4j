@@ -78,10 +78,6 @@ import org.apache.xpath.XPathAPI;
  */
 public class XPathContainer extends SignatureElementProxy implements TransformParam {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(XPathContainer.class.getName());
-
    /**
     * Constructor XPathContainer
     *
@@ -107,9 +103,6 @@ public class XPathContainer extends SignatureElementProxy implements TransformPa
       }
 
       Text xpathText = this._doc.createTextNode(xpath);
-
-      cat.debug("Added " + xpathText.getData() + " to Element "
-                + this._constructionElement.getTagName());
       this._constructionElement.appendChild(xpathText);
    }
 
@@ -120,52 +113,6 @@ public class XPathContainer extends SignatureElementProxy implements TransformPa
     */
    public String getXPath() {
       return this.getTextFromTextChild();
-   }
-
-   /**
-    * Adds an xmlns: definition to the Element. This can be called as follows:
-    *
-    * <PRE>
-    * // set namespace with ds prefix
-    * xpathContainer.setXPathNamespaceContext("ds", "http://www.w3.org/2000/09/xmldsig#");
-    * xpathContainer.setXPathNamespaceContext("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
-    * </PRE>
-    *
-    * @param prefix
-    * @param uri
-    * @throws TransformationException
-    */
-   public void setXPathNamespaceContext(String prefix, String uri)
-           throws TransformationException {
-
-      String ns;
-
-      if (prefix == null) {
-         ns = "xmlns";
-      } else if (prefix.length() == 0) {
-         ns = "xmlns";
-      } else if (prefix.equals("xmlns")) {
-         ns = "xmlns";
-      } else if (prefix.startsWith("xmlns:")) {
-         ns = "xmlns:" + prefix.substring("xmlns:".length());
-      } else {
-         ns = "xmlns:" + prefix;
-      }
-
-      if (ns.equals("xmlns")) {
-         throw new TransformationException("defaultNamespaceCannotBeSetHere");
-      }
-
-      Attr a = this._constructionElement.getAttributeNode(ns);
-
-
-      if ((a != null) && (!a.getNodeValue().equals(uri))) {
-          Object exArgs[] = { ns, this._constructionElement.getAttribute(ns)};
-
-         throw new TransformationException("namespacePrefixAlreadyUsedByOtherURI", exArgs);
-      }
-
-      this._constructionElement.setAttribute(ns, uri);
    }
 
    public String getBaseLocalName() {

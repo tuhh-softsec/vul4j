@@ -75,11 +75,12 @@ import org.apache.xml.security.c14n.CanonicalizationException;
  */
 public class C14nHelper {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(C14nHelper.class.getName());
-
+   /**
+    * Constructor C14nHelper
+    *
+    */
    private C14nHelper() {
+
       // don't allow instantiation
    }
 
@@ -114,6 +115,24 @@ public class C14nHelper {
     * @return
     */
    public static final Attr[] sortAttributes(Attr[] namednodemap) {
+
+      if (namednodemap == null) {
+         return new Attr[0];
+      }
+
+      java.util.Arrays.sort(namednodemap, new AttrCompare());
+
+      // java.util.Sort.quicksort(namednodemap, new AttrCompare());
+      return namednodemap;
+   }
+
+   /**
+    * Method sortAttributes
+    *
+    * @param namednodemap
+    * @return
+    */
+   public static final Object[] sortAttributes(Object[] namednodemap) {
 
       if (namednodemap == null) {
          return new Attr[0];
@@ -321,6 +340,22 @@ public class C14nHelper {
          return true;
       }
 
+      boolean foundColon = false;
+      int length = namespaceValue.length();
+
+      for (int i = 0; i < length; i++) {
+         char c = namespaceValue.charAt(i);
+
+         if (c == ':') {
+            foundColon = true;
+         } else if (!foundColon && (c == '/')) {
+            return false;
+         }
+      }
+
+      return foundColon;
+
+      /*
       try {
          URI uri = new URI(namespaceValue);
          String Scheme = uri.getScheme();
@@ -328,7 +363,7 @@ public class C14nHelper {
 
          if (Scheme != null) {
             protocolOK = uri.getScheme().length() > 0;
-            cat.debug("Scheme = " + Scheme);
+
             if (Scheme.equals("urn")) {
                return true;
             }
@@ -339,24 +374,13 @@ public class C14nHelper {
 
          if (Host != null) {
             hostOK = uri.getHost().length() > 0;
-            cat.debug("Host = " + Host);
          }
 
-         /*
-         cat.debug("URI \"" + namespaceValue + "\" hat protocol=\""
-                   + uri.getScheme() + "\" and host=\"" + uri.getHost()
-                   + "\" and path=\"" + uri.getPath() + "\"");
-
-         */
          return (protocolOK && hostOK);
       } catch (URI.MalformedURIException ex) {
-
-         /*
-         cat.debug("URI \"" + namespaceValue
-                   + "\" hat eine URI.MalformedURIException geworfen");
-         */
          return false;
       }
+      */
    }
 
    /**
@@ -381,8 +405,6 @@ public class C14nHelper {
          if (namespaceIsRelative(attr)) {
             String parentName = attr.getOwnerElement().getTagName();
             String attrValue = attr.getValue();
-
-
             Object exArgs[] = { parentName, nodeAttrName, attrValue };
 
             throw new CanonicalizationException(
@@ -391,7 +413,45 @@ public class C14nHelper {
       }
    }
 
-   static {
-      org.apache.xml.security.Init.init();
+   /**
+    * This method throws a CanonicalizationException if the supplied Document
+    * is not able to be traversed using a TreeWalker.
+    *
+    * @param document
+    * @throws CanonicalizationException
+    */
+   public static void checkTraversability(Document document)
+           throws CanonicalizationException {
+
+      if (!document.isSupported("Traversal", "2.0")) {
+         Object exArgs[] = {
+            document.getImplementation().getClass().getName() };
+
+         throw new CanonicalizationException(
+            "c14n.Canonicalizer.TraversalNotSupported", exArgs);
+      }
+   }
+
+   /**
+    * This method throws a CanonicalizationException if the supplied Element
+    * contains any relative namespaces.
+    *
+    * @param ctxNode
+    * @throws CanonicalizationException
+    * @see C14nHelper#assertNotRelativeNS(Attr)
+    */
+   public static void checkForRelativeNamespace(Element ctxNode)
+           throws CanonicalizationException {
+
+      if (ctxNode != null) {
+         NamedNodeMap attributes = ctxNode.getAttributes();
+
+         for (int i = 0; i < attributes.getLength(); i++) {
+            C14nHelper.assertNotRelativeNS((Attr) attributes.item(i));
+         }
+      } else {
+         throw new CanonicalizationException(
+            "Called checkForRelativeNamespace() on null");
+      }
    }
 }

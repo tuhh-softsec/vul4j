@@ -1108,12 +1108,4 @@ public class KeyInfo extends SignatureElementProxy {
    public String getBaseLocalName() {
       return Constants._TAG_KEYINFO;
    }
-
-   //J+
-   static {
-      org.apache.xml.security.Init.init();
-
-      KeyInfo.cat =
-         org.apache.log4j.Category.getInstance(KeyInfo.class.getName());
-   }
 }

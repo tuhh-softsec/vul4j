@@ -562,8 +562,4 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    protected void engineInitSign(Key secretKey) throws XMLSignatureException {
       throw new XMLSignatureException("algorithms.operationOnlyForMAC");
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

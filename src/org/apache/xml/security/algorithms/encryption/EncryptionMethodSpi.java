@@ -149,8 +149,4 @@ public abstract class EncryptionMethodSpi {
    public abstract EncryptionMethodParams engineInit(Element encryptionMethodElem)
                           throws XMLSecurityException;
    //J+
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -106,7 +106,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
    Integer state = TransformXPathFilterCHGP.STATE_EXCLUDE_BUT_SEARCH;
 
    // the state of the ancestors during the traversal
-   List stateStack = new Vector();
+   Stack stateStack = new Stack();
    //J+
 
    /** all nodes which are in the input XPath node set */
@@ -144,17 +144,14 @@ public class TransformXPathFilterCHGP extends TransformSpi {
            throws TransformationException {
 
       try {
-         if (input.isOctetStream()) {
-            input.setNodesetXPath(Canonicalizer.XPATH_C14N_WITH_COMMENTS);
-         }
+         this.inputSet = input.getNodeSet();
 
-         NodeList inputNodes = input.getNodeSet();
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
          CachedXPathAPI myXPathAPI =
             new CachedXPathAPI(input.getCachedXPathAPI());
 
-         if (inputNodes.getLength() == 0) {
+         if (this.inputSet.size() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
 
             throw new TransformationException("empty", exArgs);
@@ -185,7 +182,15 @@ public class TransformXPathFilterCHGP extends TransformSpi {
                                                  input.getSourceURI());
 
          // get the document (root node) for the traversal
-         Document inputDoc = XMLUtils.getOwnerDocument(inputNodes.item(0));
+         Document inputDoc = null;
+
+         {
+            Iterator it = this.inputSet.iterator();
+
+            if (it.hasNext()) {
+               inputDoc = XMLUtils.getOwnerDocument((Node) it.next());
+            }
+         }
 
          {
 
@@ -231,14 +236,12 @@ public class TransformXPathFilterCHGP extends TransformSpi {
             this.excludeSet = nodeListToSet(excludeNodes);
          }
 
-         if (xpathContainer.getIncludeSlashPolicy() == XPathFilterCHGPContainer.IncludeSlash) {
+         if (xpathContainer.getIncludeSlashPolicy()
+                 == XPathFilterCHGPContainer.IncludeSlash) {
             this.includeSearchSet.add(inputDoc);
          } else {
             this.excludeSearchSet.add(inputDoc);
          }
-
-         // copy the inputNodes into a real set
-         this.inputSet = nodeListToSet(inputNodes);
 
          // create empty set for results
          this.resultSet = new HashSet();
@@ -263,15 +266,7 @@ public class TransformXPathFilterCHGP extends TransformSpi {
             process(treewalker);
          }
 
-         // copy the nodes from the resultSet into the XMLSignatureResult result
-         HelperNodeList resultNodes = new HelperNodeList();
-         Iterator it = this.resultSet.iterator();
-
-         while (it.hasNext()) {
-            resultNodes.appendChild((Node) it.next());
-         }
-
-         XMLSignatureInput result = new XMLSignatureInput(resultNodes,
+         XMLSignatureInput result = new XMLSignatureInput(resultSet,
                                        input.getCachedXPathAPI());
 
          result.setSourceURI(input.getSourceURI());
@@ -352,14 +347,13 @@ public class TransformXPathFilterCHGP extends TransformSpi {
               node1 = treewalker.nextSibling()) {
 
          // store state before descend
-         this.stateStack.add(this.state);
+         this.stateStack.push(this.state);
 
          // descend
          process(treewalker);
 
          // restore state after descend
-         this.state = (Integer) this.stateStack.remove(this.stateStack.size()
-                 - 1);
+         this.state = (Integer) this.stateStack.pop();
       }
 
       treewalker.setCurrentNode(currentNode);

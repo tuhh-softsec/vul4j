@@ -289,52 +289,6 @@ public class XPath2FilterContainer extends ElementProxy
    }
 
    /**
-    * Adds an xmlns: definition to the Element. This can be called as follows:
-    *
-    * <PRE>
-    * // set namespace with ds prefix
-    * xpathContainer.setXPathNamespaceContext("ds", "http://www.w3.org/2000/09/xmldsig#");
-    * xpathContainer.setXPathNamespaceContext("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
-    * </PRE>
-    *
-    * @param prefix
-    * @param uri
-    * @throws TransformationException
-    */
-   public void setXPathNamespaceContext(String prefix, String uri)
-           throws TransformationException {
-
-      String ns;
-
-      if (prefix == null) {
-         ns = "xmlns";
-      } else if (prefix.length() == 0) {
-         ns = "xmlns";
-      } else if (prefix.equals("xmlns")) {
-         ns = "xmlns";
-      } else if (prefix.startsWith("xmlns:")) {
-         ns = "xmlns:" + prefix.substring("xmlns:".length());
-      } else {
-         ns = "xmlns:" + prefix;
-      }
-
-      if (ns.equals("xmlns")) {
-         throw new TransformationException("defaultNamespaceCannotBeSetHere");
-      }
-
-      Attr a = this._constructionElement.getAttributeNode(ns);
-
-      if ((a != null) && (!a.getNodeValue().equals(uri))) {
-         Object exArgs[] = { ns, this._constructionElement.getAttribute(ns) };
-
-         throw new TransformationException(
-            "namespacePrefixAlreadyUsedByOtherURI", exArgs);
-      }
-
-      this._constructionElement.setAttribute(ns, uri);
-   }
-
-   /**
     * Method getBaseLocalName
     *
     * @return
@@ -351,47 +305,4 @@ public class XPath2FilterContainer extends ElementProxy
    public final String getBaseNamespace() {
       return XPath2FilterContainer.XPathFilter2NS;
    }
-
-   //*
-
-   /**
-    * Method main
-    *
-    * @param args
-    * @throws Exception
-    */
-   public static void main(String args[]) throws Exception {
-
-      org.apache.xml.security.Init.init();
-
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
-
-      dbf.setNamespaceAware(true);
-
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.newDocument();
-      XPath2FilterContainer c = XPath2FilterContainer.newInstanceSubtract(doc,
-                                   "//ds:Signature");
-
-      c.setXPathNamespaceContext("xmlns", Constants.SignatureSpecNS);
-      doc.appendChild(c.getElement());
-
-      org.apache.xml.security.c14n.Canonicalizer c14n =
-         org.apache.xml.security.c14n.Canonicalizer
-            .getInstance(org.apache.xml.security.c14n.Canonicalizer
-               .ALGO_ID_C14N_WITH_COMMENTS);
-
-      System.out.println(new String(c14n.canonicalizeSubtree(doc)));
-
-      XPath2FilterContainer c2 =
-         XPath2FilterContainer.newInstance(doc.getDocumentElement(), null);
-
-      System.out.println("intersect:   " + c2.isIntersect());
-      System.out.println("subtract:    " + c2.isSubtract());
-      System.out.println("union:       " + c2.isUnion());
-      System.out.println("\"" + c2.getXPathFilterStr().trim() + "\"");
-   }
-
-   //*/
 }

@@ -85,8 +85,7 @@ import org.xml.sax.SAXException;
 public class Manifest extends SignatureElementProxy {
 
    /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Manifest.class.getName());
+   static org.apache.log4j.Category cat = org.apache.log4j.Category.getInstance(Manifest.class.getName());
 
    /** Field _references */
    Vector _references;
@@ -374,14 +373,20 @@ public class Manifest extends SignatureElementProxy {
 
                   XMLSignatureInput signedManifestNodes =
                      currentRef.getTransformsOutput();
-                  NodeList nl = signedManifestNodes.getNodeSet();
+                  Set nl = signedManifestNodes.getNodeSet();
                   Manifest referencedManifest = null;
+                  Iterator nlIterator = nl.iterator();
 
-                  findManifest: for (int j = 0; j < nl.getLength(); j++) {
-                     if (nl.item(j).getNodeType() == Node.ELEMENT_NODE) {
+                  findManifest: while (nlIterator.hasNext()) {
+                     Node n = (Node) nlIterator.next();
+
+                     if ((n.getNodeType() == Node.ELEMENT_NODE) && ((Element) n)
+                             .getNamespaceURI()
+                             .equals(Constants.SignatureSpecNS) && ((Element) n)
+                             .getLocalName().equals(Constants._TAG_MANIFEST)) {
                         try {
                            referencedManifest =
-                              new Manifest((Element) nl.item(j),
+                              new Manifest((Element) n,
                                            signedManifestNodes.getSourceURI());
 
                            break findManifest;
@@ -617,9 +622,5 @@ public class Manifest extends SignatureElementProxy {
     */
    public String getBaseLocalName() {
       return Constants._TAG_MANIFEST;
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
    }
 }

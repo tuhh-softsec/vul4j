@@ -398,43 +398,4 @@ public class TripleDESWrapper {
 
       return true;
    }
-
-   /**
-    * Method main
-    *
-    * @param unused
-    * @throws Exception
-    */
-   public static void main(String unused[]) throws Exception {
-      //J-
-       String CEK    = "2923 bf85 e06d d6ae 5291 49f1 f1ba e9ea b3a7 da3d 860d 3e98";
-       String KEK    = "255e 0d1c 07b6 46df b313 4cc8 43ba 8aa7 1f02 5b7c 0838 251f";
-       String IV     = "5dd4 cbfc 96f5 453b";
-       String RESULT = "6901 0761 8ef0 92b3 b48c a179 6b23 4ae9 fa33 ebb4 1596 0403 " +
-                       "7db5 d6a8 4eb3 aac2 768c 6327 75a4 67d4";
-       //J+
-      org.apache.xml.security.Init.init();
-      Security
-         .addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-
-      Cipher cipher = Cipher.getInstance("DESEDE/CBC/NOPADDING", "BC");
-      MessageDigest digest = MessageDigest.getInstance("SHA1", "BC");
-      TripleDESWrapper tdw = new TripleDESWrapper(cipher, digest);
-      Key wrapKey = new SecretKeySpec(HexDump.hexStringToByteArray(KEK),
-                                      "DESEDE");
-      byte[] result = tdw.wrap(HexDump.hexStringToByteArray(CEK), wrapKey,
-                               HexDump.hexStringToByteArray(IV));
-
-      System.out.println(HexDump.byteArrayToHexString(result));
-      System.out
-         .println(HexDump
-            .byteArrayToHexString(HexDump.hexStringToByteArray(RESULT)));
-
-      byte[] unwrapped = tdw.unwrap(result, wrapKey);
-
-      System.out.println(HexDump.byteArrayToHexString(unwrapped));
-      System.out
-         .println(HexDump
-            .byteArrayToHexString(HexDump.hexStringToByteArray(CEK)));
-   }
 }

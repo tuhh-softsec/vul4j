@@ -65,9 +65,10 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.*;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 import org.apache.xml.security.exceptions.Base64DecodingException;
@@ -110,11 +111,6 @@ import org.apache.xpath.CachedXPathAPI;
  * @see org.apache.xml.security.utils.Base64
  */
 public class TransformBase64Decode extends TransformSpi {
-
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(TransformBase64Decode.class.getName());
 
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
@@ -162,52 +158,57 @@ public class TransformBase64Decode extends TransformSpi {
          }
       } else {
          try {
-            String resultString = "";
-            NodeList inputNodeSet = input.getNodeSet();
+            Document doc =
+               DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                  .parse(input.getOctetStream());
+            DocumentTraversal dt = ((DocumentTraversal) doc);
+            Node rootNode = (Node) doc;
 
-            for (int i = 0; i < inputNodeSet.getLength(); i++) {
-               Node node = inputNodeSet.item(i);
+            // we accept all nodes
+            NodeFilter nodefilter =
+               new org.apache.xml.security.c14n.helper.AlwaysAcceptNodeFilter();
+            TreeWalker treewalker = dt.createTreeWalker(rootNode,
+                                                        NodeFilter.SHOW_ALL,
+                                                        nodefilter, true);
+            StringBuffer sb = new StringBuffer();
 
-               /*
-               if (node.getClass().getName().equals(
-                       "org.apache.xml.dtm.ref.dom2dtm.DOM2DTM$defaultNamespaceDeclarationNode")) {
-                  continue;
-               }
-               */
-               CachedXPathAPI myXPathAPI =
-                  new CachedXPathAPI(input.getCachedXPathAPI());
-               NodeList resultNodeSet = myXPathAPI.selectNodeList(node,
-                                           "self::text()");
-               int resultNodeSetGetLength = resultNodeSet.getLength();
+            process(treewalker, sb);
 
-               if (resultNodeSetGetLength == 1) {
-                  resultString += ((Text) resultNodeSet.item(0)).getData();
-               } else if (resultNodeSetGetLength > 1) {
-                  Object exArgs[] = {
-                     "Something fishy is going on: 'self::text()' returned "
-                     + resultNodeSetGetLength + " nodes" };
-
-                  throw new TransformationException("generic.EmptyMessage",
-                                                    exArgs);
-               }
-            }
-
-            byte[] decodedBytes = Base64.decode(resultString);
+            byte[] decodedBytes = Base64.decode(sb.toString());
 
             return new XMLSignatureInput(
                new ByteArrayInputStream(decodedBytes));
          } catch (ParserConfigurationException e) {
             throw new TransformationException("c14n.Canonicalizer.Exception",
-                                                e);
+                                              e);
          } catch (SAXException e) {
             throw new TransformationException("c14n.Canonicalizer.Exception",
-                                                e);
-         } catch (TransformerException e) {
-            throw new TransformationException("c14n.Canonicalizer.Exception",
-                                                e);
+                                              e);
          } catch (Base64DecodingException ex) {
             throw new TransformationException("empty", ex);
          }
       }
+   }
+
+   /**
+    * Method process
+    *
+    * @param treewalker
+    * @param sb
+    */
+   private void process(TreeWalker treewalker, StringBuffer sb) {
+
+      Node currentNode = treewalker.getCurrentNode();
+
+      if (currentNode.getNodeType() == Node.TEXT_NODE) {
+         sb.append(((Text) currentNode).getData());
+      }
+
+      for (Node node1 = treewalker.firstChild(); node1 != null;
+              node1 = treewalker.nextSibling()) {
+         process(treewalker, sb);
+      }
+
+      treewalker.setCurrentNode(currentNode);
    }
 }

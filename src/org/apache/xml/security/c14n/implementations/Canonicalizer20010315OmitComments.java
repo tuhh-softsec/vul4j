@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -66,11 +65,7 @@ import org.apache.xml.security.c14n.Canonicalizer;
 
 /**
  *
- *
- *
- *
  * @author Christian Geuer-Pollmann
- *
  */
 public class Canonicalizer20010315OmitComments extends Canonicalizer20010315 {
 
@@ -79,10 +74,24 @@ public class Canonicalizer20010315OmitComments extends Canonicalizer20010315 {
     *
     */
    public Canonicalizer20010315OmitComments() {
+      super(false);
+   }
 
-      this.engineSetIncludeComments(false);
-      this.engineSetURI(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-      // this.engineSetXPath(Canonicalizer.XPATH_C14N_OMIT_COMMENTS);
-      this.engineSetXPath(Canonicalizer.XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE);
+   /**
+    * Method engineGetURI
+    *
+    * @return
+    */
+   public final String engineGetURI() {
+      return Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+   }
+
+   /**
+    * Method engineGetIncludeComments
+    *
+    * @return
+    */
+   public final boolean engineGetIncludeComments() {
+      return false;
    }
 }

@@ -346,8 +346,4 @@ public class KeyResolver {
    public String resolverClassName() {
       return this._resolverSpi.getClass().getName();
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

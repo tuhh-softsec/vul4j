@@ -61,6 +61,7 @@ package org.apache.xml.security.transforms.implementations;
 
 
 import java.io.IOException;
+import java.util.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apache.xml.security.c14n.*;
@@ -87,11 +88,6 @@ import org.apache.xml.dtm.DTMManager;
  * @author Christian Geuer-Pollmann
  */
 public class TransformEnvelopedSignature extends TransformSpi {
-
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(TransformEnvelopedSignature.class.getName());
 
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
@@ -136,107 +132,73 @@ public class TransformEnvelopedSignature extends TransformSpi {
           * The evaluation of this expression includes all of the document's nodes
           * (including comments) in the node-set representing the octet stream.
           */
+
+         /*
          if (input.isOctetStream()) {
             input.setNodesetXPath(Canonicalizer.XPATH_C14N_WITH_COMMENTS);
          }
+         */
+         Set inputSet = input.getNodeSet();
 
-         NodeList inputNodes = input.getNodeSet();
-
-         if (inputNodes.getLength() == 0) {
+         if (inputSet.isEmpty()) {
             Object exArgs[] = { "input node set contains no nodes" };
 
             throw new TransformationException("generic.EmptyMessage", exArgs);
          }
 
-         HelperNodeList resultNodes = new HelperNodeList();
+         Element transformElement = this._transformObject.getElement();
+         Node signatureElement = transformElement;
+         boolean found = false;
 
-         /**
-          * compile XPath for evaluation; this is taken from {@link XPathAPI#eval}
-          */
-         Document doc = XMLUtils.getOwnerDocument(inputNodes.item(0));
-         Element nscontext = XMLUtils.createDSctx(doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         PrefixResolverDefault prefixResolver =
-            new PrefixResolverDefault(nscontext);
-         XPath xpath = new XPath("count(ancestor-or-self::ds:Signature | "
-                                 + "here()/ancestor::ds:Signature[1]) > "
-                                 + "count(ancestor-or-self::ds:Signature)",
-                                 null, prefixResolver, XPath.SELECT, null);
-
-         // now set the xPathContext with the XPath Text node as owner document;
-         // this is important for the here() function; as defined by the spec,
-         // the here function will return an empty nodeset because we have no
-         // node that bears our xpath expression.
-         //
-         // Well, the Algorithm Attribute does not contain the XPath, but for
-         // our purpose to get the here() function running, it works
-         Node algorithmAttr =
-            this._transformObject.getElement()
-               .getAttributeNode(Constants._ATT_ALGORITHM);
-         FuncHereContext funcHereCtx = new FuncHereContext(algorithmAttr,
-                                          input.getCachedXPathAPI());
-
-         funcHereCtx.setNamespaceContext(prefixResolver);
-         cat.debug("Selected " + algorithmAttr
-                   + " attribute as owner for FuncHereContext");
-
-         /*
-         // create a DTMIterator from the input node set
-         // (does not work in Xalan 2.2.D7) ;-(
-         org.apache.xpath.NodeSetDTM dtmIterator =
-            new org.apache.xpath.NodeSetDTM(inputNodes, funcHereCtx);
-
-         funcHereCtx.pushContextNodeList(dtmIterator);
-         */
-         DTMManager dtmManager =
-            input.getCachedXPathAPI().getXPathContext().getDTMManager();
-         org.apache.xpath.NodeSetDTM dtmIterator =
-            new org.apache.xpath.NodeSetDTM(dtmManager);
-
-         for (int i = 0; i < inputNodes.getLength(); i++) {
-            dtmIterator
-               .addNode(dtmManager.getDTMHandleFromNode(inputNodes.item(i)));
-         }
-
-         funcHereCtx.pushContextNodeList(dtmIterator);
-
-         for (int i = 0; i < inputNodes.getLength(); i++) {
-            Node currentContextNode = inputNodes.item(i);
-            XObject value = xpath.execute((XPathContext) funcHereCtx,
-                                          currentContextNode, prefixResolver);
-
-            if (value.getType() != XObject.CLASS_BOOLEAN) {
-               throw new TransformerException(
-                  "The XPath.execute() method did not return an XBoolean");
+         searchSignatureElemLoop: while (true) {
+            if ((signatureElement == null)
+                    || (signatureElement.getNodeType() == Node.DOCUMENT_NODE)) {
+               break searchSignatureElemLoop;
             }
 
-            if (value.bool()) {
-               cat.debug("added ("
-                         + ((currentContextNode.getNamespaceURI() != null)
-                            ? "{" + currentContextNode.getNamespaceURI() + "} "
-                            : "") + currentContextNode.getNodeName() + ")");
-               resultNodes.appendChild(currentContextNode);
-            } else {
-               cat.debug("not added ("
-                         + ((currentContextNode.getNamespaceURI() != null)
-                            ? "{" + currentContextNode.getNamespaceURI() + "} "
-                            : "") + currentContextNode.getNodeName() + ")");
+            if (((Element) signatureElement).getNamespaceURI()
+                    .equals(Constants
+                    .SignatureSpecNS) && ((Element) signatureElement)
+                       .getLocalName().equals(Constants._TAG_SIGNATURE)) {
+               found = true;
+
+               break searchSignatureElemLoop;
+            }
+
+            signatureElement = signatureElement.getParentNode();
+         }
+
+         if (!found) {
+            throw new TransformationException(
+               "envelopedSignatureTransformNotInSignatureElement");
+         }
+
+         Document transformDoc = transformElement.getOwnerDocument();
+         Document inputDoc = XMLUtils.getOwnerDocument((Node) inputSet.iterator().next());
+
+         if (transformDoc != inputDoc) {
+            throw new TransformationException("xpath.funcHere.documentsDiffer");
+         }
+
+         Set resultSet = new HashSet();
+         Iterator iterator = inputSet.iterator();
+
+         while (iterator.hasNext()) {
+            Node inputNode = (Node) iterator.next();
+
+            if (!TransformEnvelopedSignature
+                    .isDescendantOrSelf(signatureElement, inputNode)) {
+               resultSet.add(inputNode);
             }
          }
 
-         XMLSignatureInput result = new XMLSignatureInput(resultNodes,
+         XMLSignatureInput result = new XMLSignatureInput(resultSet,
                                        input.getCachedXPathAPI());
-
-         cat.debug(
-            "TransformsEnvelopedSignature finished processing and returns "
-            + resultNodes.getLength() + " nodes");
 
          return result;
       } catch (IOException ex) {
          throw new TransformationException("empty", ex);
       } catch (SAXException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (TransformerException ex) {
          throw new TransformationException("empty", ex);
       } catch (ParserConfigurationException ex) {
          throw new TransformationException("empty", ex);
@@ -244,6 +206,39 @@ public class TransformEnvelopedSignature extends TransformSpi {
          throw new TransformationException("empty", ex);
       } catch (InvalidCanonicalizerException ex) {
          throw new TransformationException("empty", ex);
+      }
+   }
+
+   /**
+    * Returns true if the descendantOrSelf is on the descendant-or-self axis
+    * of the context node.
+    *
+    * @param ctx
+    * @param descendantOrSelf
+    * @return
+    */
+   static boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
+
+      if (ctx == descendantOrSelf) {
+         return true;
+      }
+
+      Node parent = descendantOrSelf;
+
+      while (true) {
+         if (parent == null) {
+            return false;
+         }
+
+         if (parent == ctx) {
+            return true;
+         }
+
+         if (parent.getNodeType() == Node.ATTRIBUTE_NODE) {
+            parent = ((Attr) parent).getOwnerElement();
+         } else {
+            parent = parent.getParentNode();
+         }
       }
    }
 }

@@ -186,8 +186,4 @@ public class RetrievalMethod extends SignatureElementProxy
    public String getBaseLocalName() {
       return Constants._TAG_RETRIEVALMETHOD;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

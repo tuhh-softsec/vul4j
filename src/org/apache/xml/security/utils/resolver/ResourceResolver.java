@@ -352,8 +352,4 @@ public class ResourceResolver {
    private boolean canResolve(Attr uri, String BaseURI) {
       return this._resolverSpi.engineCanResolve(uri, BaseURI);
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -197,8 +197,4 @@ public class ObjectContainer extends SignatureElementProxy {
    public String getBaseLocalName() {
       return Constants._TAG_OBJECT;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

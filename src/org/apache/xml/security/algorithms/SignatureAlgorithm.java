@@ -457,8 +457,4 @@ public class SignatureAlgorithm extends Algorithm {
    public String getBaseLocalName() {
       return Constants._TAG_SIGNATUREMETHOD;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

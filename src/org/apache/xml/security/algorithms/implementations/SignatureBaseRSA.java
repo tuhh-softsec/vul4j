@@ -346,10 +346,6 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       throw new XMLSignatureException("algorithms.operationOnlyForMAC");
    }
 
-   static {
-      org.apache.xml.security.Init.init();
-   }
-
    public static class SignatureRSASHA1 extends SignatureBaseRSA {
       public SignatureRSASHA1() throws XMLSignatureException {
          super();

@@ -651,8 +651,4 @@ public class Reference extends SignatureElementProxy {
    public String getBaseLocalName() {
       return Constants._TAG_REFERENCE;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -61,7 +61,7 @@ package org.apache.xml.security.utils;
 
 
 import java.io.*;
-import java.util.Vector;
+import java.util.*;
 import java.math.BigInteger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -1133,7 +1133,43 @@ public class XMLUtils {
       n.appendChild(doc.createTextNode("\n"));
    }
 
-   static {
-      org.apache.xml.security.Init.init();
+   /**
+    * Method convertNodelistToSet
+    *
+    * @param xpathNodeSet
+    * @return
+    */
+   public static Set convertNodelistToSet(NodeList xpathNodeSet) {
+
+      if (xpathNodeSet == null) {
+         return new HashSet();
+      }
+
+      int length = xpathNodeSet.getLength();
+      Set set = new HashSet(length);
+
+      for (int i = 0; i < length; i++) {
+         set.add(xpathNodeSet.item(i));
+      }
+
+      return set;
+   }
+
+   /**
+    * Method convertSetToNodelist
+    *
+    * @param set
+    * @return
+    */
+   public static NodeList convertSetToNodelist(Set set) {
+
+      HelperNodeList result = new HelperNodeList();
+      Iterator it = set.iterator();
+
+      while (it.hasNext()) {
+         result.appendChild((Node) it.next());
+      }
+
+      return result;
    }
 }

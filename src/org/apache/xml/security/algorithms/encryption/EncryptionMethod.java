@@ -533,9 +533,5 @@ public class EncryptionMethod extends Algorithm {
        byte wrappedKeyBytes[] = Base64.decode(wrappedKey);
        return this.unwrap(wrappedKeyBytes, wrapKey, wrappedKeyAlgoURI);
    }
-
    //J+
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

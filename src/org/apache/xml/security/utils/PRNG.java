@@ -63,8 +63,4 @@ public class PRNG {
   public boolean nextBoolean() {
      return this._sr.nextBoolean();
   }
-
-  static {
-     org.apache.xml.security.Init.init();
-  }
 }

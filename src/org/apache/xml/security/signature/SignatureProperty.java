@@ -185,8 +185,4 @@ public class SignatureProperty extends SignatureElementProxy {
    public String getBaseLocalName() {
       return Constants._TAG_SIGNATUREPROPERTY;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -242,8 +242,4 @@ public class XMLX509SKI extends SignatureElementProxy
    public String getBaseLocalName() {
       return Constants._TAG_X509SKI;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

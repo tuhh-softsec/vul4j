@@ -62,6 +62,7 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 import java.net.*;
 import java.io.*;
+import java.util.*;
 import org.w3c.dom.*;
 import org.apache.xml.utils.URI;
 import org.apache.xpath.CachedXPathAPI;
@@ -153,7 +154,8 @@ public class ResolverFragment extends ResourceResolverSpi {
          }
       }
 
-      XMLSignatureInput result = new XMLSignatureInput(resultNodes, cXPathAPI);
+      Set resultSet = XMLUtils.convertNodelistToSet(resultNodes);
+      XMLSignatureInput result = new XMLSignatureInput(resultSet, cXPathAPI);
 
       cat.debug("We return a nodeset with " + resultNodes.getLength()
                 + " nodes");

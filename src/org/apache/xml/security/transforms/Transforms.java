@@ -74,6 +74,8 @@ import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.*;
 import org.apache.xml.security.utils.*;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -96,9 +98,9 @@ public class Transforms extends SignatureElementProxy {
    /** Canonicalization - Recommended Canonical XML with Comments */
    public static final String TRANSFORM_C14N_WITH_COMMENTS = Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS;
    /** Canonicalization - Required Exclusive Canonicalization (omits comments) */
-   public static final String TRANSFORM_C14N_EXCL = Constants.SignatureSpecNS + "excludeC14N";
+   public static final String TRANSFORM_C14N_EXCL_OMIT_COMMENTS = Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS;
    /** Canonicalization - Recommended Exclusive Canonicalization with Comments */
-   public static final String TRANSFORM_C14N_EXCL_WITHCOMMENTS = Constants.SignatureSpecNS + "excludeC14NwithComments";
+   public static final String TRANSFORM_C14N_EXCL_WITH_COMMENTS = Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS;
    /** Transform - Optional XSLT */
    public static final String TRANSFORM_XSLT = "http://www.w3.org/TR/1999/REC-xslt-19991116";
    /** Transform - Required base64 decoding */
@@ -254,9 +256,21 @@ public class Transforms extends SignatureElementProxy {
             xmlSignatureInput = t.performTransform(xmlSignatureInput);
          }
 
+         /*
+         // if the final result is a node set, we must c14nize
+         if (xmlSignatureInput.isNodeSet()) {
+            Canonicalizer c14n = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+            NodeList nodes = xmlSignatureInput.getNodeSet();
+            byte[] bytes = c14n.canonicalizeXPathNodeSet(nodes);
+            xmlSignatureInput = new XMLSignatureInput(bytes);
+         }
+         */
+
          return xmlSignatureInput;
       } catch (IOException ex) {
          throw new TransformationException("empty", ex);
+      // } catch (ParserConfigurationException ex) { throw new TransformationException("empty", ex);
+      // } catch (SAXException ex) { throw new TransformationException("empty", ex);
       } catch (CanonicalizationException ex) {
          throw new TransformationException("empty", ex);
       } catch (InvalidCanonicalizerException ex) {
@@ -319,9 +333,5 @@ public class Transforms extends SignatureElementProxy {
 
    public String getBaseLocalName() {
       return Constants._TAG_TRANSFORMS;
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
    }
 }

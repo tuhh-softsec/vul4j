@@ -90,8 +90,4 @@ public class PGPData extends SignatureElementProxy implements KeyInfoContent {
    public String getBaseLocalName() {
       return Constants._TAG_PGPDATA;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -219,8 +219,4 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
    public String getBaseLocalName() {
       return Constants._TAG_X509ISSUERSERIAL;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

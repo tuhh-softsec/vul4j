@@ -291,8 +291,4 @@ public class MessageDigestAlgorithm extends Algorithm {
    public String getBaseLocalName() {
       return Constants._TAG_DIGESTMETHOD;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

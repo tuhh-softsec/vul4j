@@ -527,8 +527,4 @@ public class JCEMapper {
          return this._providerId;
       }
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

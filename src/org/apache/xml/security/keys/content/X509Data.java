@@ -578,8 +578,4 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
    public String getBaseLocalName() {
       return Constants._TAG_X509DATA;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

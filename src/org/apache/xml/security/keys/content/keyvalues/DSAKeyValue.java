@@ -186,8 +186,4 @@ public class DSAKeyValue extends SignatureElementProxy
    public String getBaseLocalName() {
       return Constants._TAG_DSAKEYVALUE;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

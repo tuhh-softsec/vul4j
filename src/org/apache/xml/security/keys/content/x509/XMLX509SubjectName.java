@@ -193,8 +193,4 @@ public class XMLX509SubjectName extends SignatureElementProxy
    public String getBaseLocalName() {
       return Constants._TAG_X509SUBJECTNAME;
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -181,8 +181,4 @@ public class EncryptionConstants {
       return ElementProxy
          .getDefaultPrefix(EncryptionConstants.EncryptionSpecNS);
    }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -78,10 +78,6 @@ import org.apache.xml.security.transforms.*;
  */
 public class TransformXPointer extends TransformSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(TransformXPointer.class.getName());
-
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XPOINTER;
