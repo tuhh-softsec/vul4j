@@ -114,7 +114,11 @@
          <Provider Id="Cryptix"
                    Class="cryptix.provider.Cryptix"
                    Info="Cryptix JCE provider v3.001002"
-                   ProviderURL="http://www.cryptix.org//" />
+                   ProviderURL="http://www.cryptix.org/" />
+         <Provider Id="IBM"
+                   Class="com.ibm.crypto.provider.IBMJCE"
+                   Info="IBM JCE Provider"
+                   ProviderURL="http://www.ibm.com/"/>          
       </Providers>
       <Algorithms>
          <!-- MessageDigest Algorithms -->
@@ -126,6 +130,8 @@
             <ProviderAlgo ProviderId="BC"
                           JCEName="MD5" />
             <ProviderAlgo ProviderId="SUN"
+                          JCEName="MD5" />
+            <ProviderAlgo ProviderId="IBMJCE"
                           JCEName="MD5" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#ripemd160"
@@ -149,6 +155,8 @@
                           JCEName="SHA-1" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="SHA-1" />
+            <ProviderAlgo ProviderId="IBMJCE"
+                          JCEName="SHA1" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#sha256"
                     Description="SHA-1 message digest with 256 bit"
@@ -190,6 +198,8 @@
                           JCEName="DSAWithSHA1" />
             <ProviderAlgo ProviderId="IAIK"
                           JCEName="DSA" />
+            <ProviderAlgo ProviderId="IBMJCE"
+                          JCEName="SHA1WithDSA" />             
          </Algorithm>
 
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-md5"
@@ -200,6 +210,8 @@
             <ProviderAlgo ProviderId="BC"
                           JCEName="MD5WithRSAEncryption" />
             <ProviderAlgo ProviderId="SunRsaSign"
+                          JCEName="MD5WithRSA" />
+            <ProviderAlgo ProviderId="IBMJCE"
                           JCEName="MD5WithRSA" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160"
@@ -222,6 +234,8 @@
                           JCEName="SHA-1/RSA" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="SHA-1/RSA" />
+            <ProviderAlgo ProviderId="IBMJCE"
+                          JCEName="SHA1withRSA" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
                     Description="RSA Signature with SHA-256 message digest"
@@ -258,6 +272,8 @@
                           JCEName="HMACMD5" />
             <ProviderAlgo ProviderId="SunJCE"
                           JCEName="HmacMD5" />
+            <ProviderAlgo ProviderId="IBMJCE"
+                          JCEName="HMAC-MD5" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-ripemd160"
                     Description="Message Authentication code using RIPEMD-160"
@@ -279,6 +295,8 @@
                           JCEName="HMAC/SHA" />
             <ProviderAlgo ProviderId="Cryptix"
                           JCEName="HMAC-SHA-1" />
+            <ProviderAlgo ProviderId="IBMJCE"
+                          JCEName="HMAC-SHA1" />
          </Algorithm>
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#hmac-sha256"
                     Description="Message Authentication code using SHA-256"
