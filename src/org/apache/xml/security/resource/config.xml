@@ -115,7 +115,7 @@
                    Class="cryptix.provider.Cryptix"
                    Info="Cryptix JCE provider v3.001002"
                    ProviderURL="http://www.cryptix.org/" />
-         <Provider Id="IBM"
+         <Provider Id="IBMJCE"
                    Class="com.ibm.crypto.provider.IBMJCE"
                    Info="IBM JCE Provider"
                    ProviderURL="http://www.ibm.com/"/>          
