@@ -809,6 +809,20 @@ public class Reference extends SignatureElementProxy {
    }
 
    /**
+    * Returns the digest value.
+    *
+    * @return the digest value.
+    * @throws Base64DecodingException if Reference contains no proper base64 encoded data.
+    */
+   public byte[] getDigestValue() throws Base64DecodingException {
+      Element digestValueElem = this.getChildElementLocalName(0,
+         Constants.SignatureSpecNS, Constants._TAG_DIGESTVALUE);
+      byte[] elemDig = Base64.decode(digestValueElem);
+      return elemDig;
+   }
+
+
+   /**
     * Tests reference valdiation is success or false
     *
     * @return true if reference valdiation is success, otherwise false
@@ -818,9 +832,7 @@ public class Reference extends SignatureElementProxy {
    public boolean verify()
            throws ReferenceNotInitializedException, XMLSecurityException {
 
-      Element digestValueElem = this.getChildElementLocalName(0,
-         Constants.SignatureSpecNS, Constants._TAG_DIGESTVALUE);
-      byte[] elemDig = Base64.decode(digestValueElem);
+      byte[] elemDig = this.getDigestValue();
       byte[] calcDig = this.calculateDigest();
       boolean equal = MessageDigestAlgorithm.isEqual(elemDig, calcDig);
 
