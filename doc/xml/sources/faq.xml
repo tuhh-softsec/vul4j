@@ -5,7 +5,7 @@
 	<faq>
 		<q>Where's the archive for this list?</q>
 		<a>
-			<p>A very good question! Currently, <resource-ref idref="mail-arch-gmane"/> is archiving the mailing list. This service also makes the mailinglist reachable with a news reader.</p>
+			<p>Currently, <resource-ref idref="mail-arch-gmane"/> is archiving the mailing list. This service also makes the mailinglist reachable with a news reader.</p>
 			<p>If this service ever fails/stops, you can still use the ezmlm mailing list controller to recieve previous messages by email. Send an empty email to <human-resource-ref idref="mailhelp"/> for detailed information on how to use this service </p>
 		</a>
 	</faq>
@@ -53,14 +53,6 @@
 		</a>
 	</faq>
 	<faq>
-		<q>I'm using JDK1.4.0</q>
-		<a>
-			<p>After SUN released the  <jump href="http://java.sun.com/j2se/1.4/index.html"> Java (TM) 2 Platform Standard Edition v1.4.0 </jump>, the xml-security package stopped working. This is a  <jump href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html"> known </jump> problem: SUN packaged a beta of Xalan into the JDK1.4.0, but the xml-security package requires a stable version of Xalan (v2.2.0 or later). To fix the problem, you have to put the xalan.jar into a special directory in your JDK: <code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code>. If you installed an out-of-the-box JDK1.4 (e.g. on Windows 2000), the &quot;endorsed&quot; directory does not exist: you'll have to create it by hand.  <em>Putting this JAR to another location like lib/ext WILL NOT WORK.</em>
-			</p>
-			<p>For more on that, you can also check the  <jump href="http://xml.apache.org/~edwingo/jaxp-faq.html#override"> Unofficial JAXP FAQ </jump>. </p>
-		</a>
-	</faq>
-	<faq>
 		<q>What's up with the Bouncy Castle CSP? / Where is my CSP?</q>
 		<a>
 			<p>There is <em>no</em> JCE bundled together with this distribution. This is because the Apache Project is hosted in the US where some export restrictions apply to the cryptographic primitives. </p>
@@ -91,6 +83,14 @@
 			
 			<p>The String BaseURI is the systemID on which the Object will be stored in the future. This is needed to resolve relative links in the <code>Reference</code> elements which point to the filesystem or something similar. </p>
 			<p>Example: Imagine that you want to create a signature to store it on a web server as  <code>http://www.acme.com/signatures/sig1.xml</code>. So <code>BaseURI=&quot;http://www.acme.com/sig1.xml&quot;</code>. This means that if you create a <code>Reference</code> with <code>URI=&quot;../index.html&quot;</code>, the library can easily use it's HTTPResourceResolver to fetch <code>http://www.acme.com/index.html</code> without that you have to say <code>URI=&quot;http://www.acme.com/index.html&quot;</code>. </p>
+		</a>
+	</faq>
+	<faq>
+		<q>I'm using JDK1.4.0</q>
+		<a>
+			<p>After SUN released the  <jump href="http://java.sun.com/j2se/1.4/index.html"> Java (TM) 2 Platform Standard Edition v1.4.0 </jump>, the xml-security package stopped working. This is a  <jump href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html"> known </jump> problem: SUN packaged a beta of Xalan into the JDK1.4.0, but the xml-security package requires a stable version of Xalan (v2.2.0 or later). To fix the problem, you have to put the xalan.jar into a special directory in your JDK: <code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code>. If you installed an out-of-the-box JDK1.4 (e.g. on Windows 2000), the &quot;endorsed&quot; directory does not exist: you'll have to create it by hand.  <em>Putting this JAR to another location like lib/ext WILL NOT WORK.</em>
+			</p>
+			<p>For more on that, you can also check the  <jump href="http://xml.apache.org/~edwingo/jaxp-faq.html#override"> Unofficial JAXP FAQ </jump>. </p>
 		</a>
 	</faq>
 	<faq>

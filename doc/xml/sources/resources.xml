@@ -17,7 +17,7 @@
 >
 ]>
 <resources>
-	<resource id="mail-arch-gmane" title="Gmane" location="http://www.gmane.org/"/>
+	<resource id="mail-arch-gmane" title="Gmane" location="http://news.gmane.org/thread.php?group=gmane.text.xml.security.devel"/>
 	<resource id="xmldsig" title="&xmldsig;" location="http://www.w3c.org/Signature"/>
 	<resource id="xmlenc" title="&xmlenc;" location="http://www.w3c.org/Encryption"/>
 	<resource id="hac" title="&hac;" location="http://www.cacr.math.uwaterloo.ca/hac/"/>
