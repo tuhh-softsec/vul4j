@@ -244,12 +244,13 @@ public :
 	 * but the algorithm requires one (e.g. 3DES_CBC), then
 	 * implementations are required to generate one.
 	 *
+	 * @param doPad By default, we perform padding for last block
 	 * @param iv Initialisation Vector to be used.  NULL if one is
 	 * not required, or if IV is to be generated
 	 * @returns true if the initialisation succeeded.
 	 */
 
-	virtual bool encryptInit(const unsigned char * iv = NULL);
+	virtual bool encryptInit(bool doPad = true, const unsigned char * iv = NULL);
 
 	/**
 	 * \brief Continue an encryption operation using this key.

@@ -85,7 +85,7 @@
 
 #include <wincrypt.h>
 
-#define MAX_BLOCK_SIZE		32
+#define WINCAPI_MAX_BLOCK_SIZE		32
 
 /**
  * \ingroup wincapicrypto
@@ -356,7 +356,7 @@ private:
 	bool							m_initialised;
 	bool							m_doPad;
 
-	unsigned char					m_lastBlock[MAX_BLOCK_SIZE];
+	unsigned char					m_lastBlock[WINCAPI_MAX_BLOCK_SIZE];
 	unsigned int					m_bytesInLastBlock;
 	unsigned int					m_blockSize;
 	unsigned int					m_ivSize;

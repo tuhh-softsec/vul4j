@@ -131,7 +131,10 @@ XSECCryptoKey * WinCAPICryptoSymmetricKey::clone() {
 
 	if (m_k != 0) {
 
-#if (_WIN32_WINNT >= 0x0400)
+#if (_WIN32_WINNT > 0x0400)
+
+		// Only supported in Win2K and above
+
 		if (CryptDuplicateKey(m_k,
 			 				  0,
 							  0,
@@ -142,8 +145,9 @@ XSECCryptoKey * WinCAPICryptoSymmetricKey::clone() {
 
 		}
 #else
-		throw XSECCryptoException(XSECCryptoException::SymmetricError,
-			"Unable to clone keys in Windows NT 4.0 and below");
+
+		ret->setKey(m_keyBuf.rawBuffer(), m_keyLen);
+
 #endif
 	}
 	else
@@ -583,6 +587,13 @@ HCRYPTKEY WinCAPICryptoSymmetricKey::createWindowsKey(
 	// Find out how long the output will be
 	DWORD outl = 0;
 	if (!CryptEncrypt(k, 0, TRUE, 0, 0, &outl, keyLen)) {
+		DWORD error = GetLastError();
+		if (error == NTE_BAD_KEY) {
+			// We throw either way, but this is *likely* to be an unsupported OS issue
+			throw XSECCryptoException(XSECCryptoException::SymmetricError,
+				"WinCAPI:SymmetricKey::createWindowsKey - Error encrypting a key - is this >= Windows 2000?");
+		}
+
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
 			"WinCAPI:SymmetricKey - Unable to determine space required to encrypt key");
 	}

@@ -175,15 +175,9 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 		}
 
 		EVP_DecryptInit_ex(&m_ctx, EVP_des_ede3_cbc(), NULL, m_keyBuf.rawBuffer(), iv);
-		// Turn off padding
-		EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
 
-		// That means we have to handle padding, so we always hold back
-		// 8 bytes of data.
 		m_blockSize = 8;
-		m_bytesInLastBlock = 0;
-
-		return 8;	// 3DEC_CBC uses a 64 bit IV
+		m_ivSize = 8;
 
 		break;
 
@@ -197,17 +191,10 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 
 		}
 
-		EVP_CIPHER_CTX_init(&m_ctx);
 		EVP_DecryptInit_ex(&m_ctx, EVP_aes_128_cbc(), NULL, m_keyBuf.rawBuffer(), iv);
-		// Turn off padding
-		EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
 
-		// That means we have to handle padding, so we always hold back
-		// 8 bytes of data.
-		m_blockSize = 8;
-		m_bytesInLastBlock = 0;
-
-		return 8;	// AES uses a 64 bit IV
+		m_blockSize = 16;
+		m_ivSize = 16;
 
 		break;
 
@@ -215,15 +202,10 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 
 		// An AES key
 
-		EVP_CIPHER_CTX_init(&m_ctx);
 		EVP_DecryptInit_ex(&m_ctx, EVP_aes_128_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
-		// Turn off padding
-		EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
 
-		m_blockSize = 0;
-		m_bytesInLastBlock = 0;
-
-		return 0;	// ECB - no key
+		m_blockSize = 16;
+		m_ivSize = 0;
 
 		break;
 	
@@ -235,7 +217,15 @@ int OpenSSLCryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 
 	}
 
-	return 0;
+	// Reset some parameters
+	m_initialised = true;
+	m_bytesInLastBlock = 0;
+
+	// Disable OpenSSL padding - The interop samples have broken PKCS padding - AARGHH
+	EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
+
+	// Return number of bytes chewed up by IV
+	return m_ivSize;
 }
 
 
@@ -267,6 +257,11 @@ unsigned int OpenSSLCryptoSymmetricKey::decrypt(const unsigned char * inBuf,
 	}
 
 	int outl = maxOutLength;
+
+	if (inLength - offset > maxOutLength) {
+		throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			"OpenSSLSymmetricKey::decrypt - Not enough space in output buffer");
+	}
 
 	if (EVP_DecryptUpdate(&m_ctx, &plainBuf[m_bytesInLastBlock], &outl, &inBuf[offset], inLength - m_bytesInLastBlock - offset) == 0) {
 
@@ -332,6 +327,11 @@ unsigned int OpenSSLCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 
 	}
 
+	if ((unsigned int) outl > maxOutLength) {
+		throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			"OpenSSLSymmetricKey::decryptFinish - **WARNING** - Plaintext output > maxOutLength!"); 
+	}
+
 	return outl;
 
 }
@@ -340,10 +340,12 @@ unsigned int OpenSSLCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 //           Encrypt
 // --------------------------------------------------------------------------------
 
-bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
+bool OpenSSLCryptoSymmetricKey::encryptInit(bool doPad, const unsigned char * iv) {
 
 	if (m_initialised == true)
 		return true;
+
+	m_doPad = doPad;
 	
 	if (m_keyLen == 0) {
 
@@ -352,7 +354,9 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
 
 	}
 
+	// Do some parameter initialisation
 	m_initialised = true;
+	m_bytesInLastBlock = 0;
 
 	// Set up the context according to the required cipher type
 
@@ -371,29 +375,22 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
 
 		if (iv == NULL) {
 			
-			bool res = ((RAND_status() == 1) && (RAND_bytes(genIV, 256) == 1));
+			bool res = ((RAND_status() == 1) && (RAND_bytes(genIV, 8) == 1));
 			if (res == false) {
 				throw XSECCryptoException(XSECCryptoException::SymmetricError,
 					"OpenSSL:SymmetricKey - Error generating random IV");
 			}
 
 			usedIV = genIV;
-			//return 0;	// Cannot initialise without an IV
 
 		}
 		else
 			usedIV = iv;
 
 		EVP_EncryptInit_ex(&m_ctx, EVP_des_ede3_cbc(), NULL, m_keyBuf.rawBuffer(), usedIV);
-		// Turn off padding
-		// EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
-
-		// That means we have to handle padding, so we always hold back
-		// 8 bytes of data.
 		m_blockSize = 8;
 		m_ivSize = 8;
 		memcpy(m_lastBlock, usedIV, m_ivSize);
-		m_bytesInLastBlock = 0;
 
 		break;
 
@@ -403,14 +400,13 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
 
 		if (iv == NULL) {
 			
-			bool res = ((RAND_status() == 1) && (RAND_bytes(genIV, 256) == 1));
+			bool res = ((RAND_status() == 1) && (RAND_bytes(genIV, 16) == 1));
 			if (res == false) {
 				throw XSECCryptoException(XSECCryptoException::SymmetricError,
 					"OpenSSL:SymmetricKey - Error generating random IV");
 			}
 
 			usedIV = genIV;
-			//return 0;	// Cannot initialise without an IV
 
 		}
 		else
@@ -421,7 +417,6 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
 		m_blockSize = 16;
 		m_ivSize = 16;
 		memcpy(m_lastBlock, usedIV, m_ivSize);
-		m_bytesInLastBlock = 0;
 
 		break;
 
@@ -430,11 +425,9 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
 		// An AES key
 
 		EVP_EncryptInit_ex(&m_ctx, EVP_aes_128_ecb(), NULL, m_keyBuf.rawBuffer(), NULL);
-		EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
 
 		m_blockSize = 16;
 		m_ivSize = 0;
-		m_bytesInLastBlock = 0;
 
 		break;
 	
@@ -444,6 +437,14 @@ bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
 			"OpenSSL:SymmetricKey - Unknown key type"); 
 
+	}
+
+	// Setup padding
+	if (m_doPad) {
+		EVP_CIPHER_CTX_set_padding(&m_ctx, 1);
+	}
+	else {
+		EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
 	}
 
 	return true;
@@ -502,8 +503,13 @@ unsigned int OpenSSLCryptoSymmetricKey::encryptFinish(unsigned char * cipherBuf,
 	if (EVP_EncryptFinal_ex(&m_ctx, cipherBuf, &outl) == 0) {
 
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
-			"OpenSSL:SymmetricKey - Error during OpenSSL decrypt finalisation"); 
+			"OpenSSLSymmetricKey::encryptFinish - Error during OpenSSL decrypt finalisation"); 
 
+	}
+
+	if ((unsigned int) outl > maxOutLength) {
+		throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			"OpenSSLSymmetricKey::encryptFinish - **WARNING** - Cipheroutput > maxOutLength!"); 
 	}
 
 	return outl;

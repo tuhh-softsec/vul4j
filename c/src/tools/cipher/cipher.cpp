@@ -186,6 +186,10 @@ void printUsage(void) {
 	cerr << "         Use the key provided in [key string] to encrypt/decrypt\n";
 	cerr << "     --interop/-i\n";
 	cerr << "         Use the interop resolver for Baltimore interop examples\n";
+#if defined (HAVE_OPENSSL) && defined (HAVE_WINCAPI)
+	cerr << "     --wincapi/-w\n";
+	cerr << "         Use Windows Crypto API rather than OpenSSL\n";
+#endif
 
 	cerr << "\n     Exits with codes :\n";
 	cerr << "         0 = Decrypt/Encrypt OK\n";
@@ -231,6 +235,14 @@ int evaluate(int argc, char ** argv) {
 			useInteropResolver = true;
 			paramCount++;
 		}
+#if defined (HAVE_WINCAPI) && defined (HAVE_OPENSSL)
+		else if (stricmp(argv[paramCount], "--wincapi") == 0 || stricmp(argv[paramCount], "-w") == 0) {
+			// Use the interop key resolver
+			WinCAPICryptoProvider * cp = new WinCAPICryptoProvider();
+			XSECPlatformUtils::SetCryptoProvider(cp);
+			paramCount++;
+		}
+#endif
 		else if (stricmp(argv[paramCount], "--key") == 0 || stricmp(argv[paramCount], "-k") == 0) {
 
 			// Have set a key string
