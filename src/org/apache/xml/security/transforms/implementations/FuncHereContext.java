@@ -134,7 +134,7 @@ public class FuncHereContext extends XPathContext {
       super((Object) owner);
 
       try {
-         this.m_dtmManager = xpathContext.getDTMManager();
+         super.m_dtmManager = xpathContext.getDTMManager();
       } catch (IllegalAccessError iae) {
          throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
                                       + " Original message was \""
@@ -153,7 +153,7 @@ public class FuncHereContext extends XPathContext {
       super((Object) owner);
 
       try {
-         this.m_dtmManager = previouslyUsed.getXPathContext().getDTMManager();
+         super.m_dtmManager = previouslyUsed.getXPathContext().getDTMManager();
       } catch (IllegalAccessError iae) {
          throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
                                       + " Original message was \""
@@ -172,7 +172,7 @@ public class FuncHereContext extends XPathContext {
       super((Object) owner);
 
       try {
-         this.m_dtmManager = dtmManager;
+         super.m_dtmManager = dtmManager;
       } catch (IllegalAccessError iae) {
          throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
                                       + " Original message was \""
