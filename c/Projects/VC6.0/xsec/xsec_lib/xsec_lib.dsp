@@ -436,6 +436,26 @@ SOURCE=..\..\..\..\src\enc\XSECKeyInfoResolverDefault.hpp
 # Begin Group "utils"
 
 # PROP Default_Filter ""
+# Begin Group "winutils"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\utils\winutils\XSECBinHTTPURIInputStream.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\utils\winutils\XSECBinHTTPURIInputStream.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.hpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\..\..\src\utils\XSECBinTXFMInputStream.cpp

@@ -82,6 +82,14 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
 #include <xsec/enc/XSECKeyInfoResolverDefault.hpp>
 
+// ugly :<
+
+#if defined(_WIN32)
+	
+#include <xsec/utils/winutils/XSECURIResolverGenericWin32.hpp>
+
+#endif
+
 // General
 
 #include <memory.h>
@@ -136,9 +144,11 @@ void printUsage(void) {
 	cerr << "\nUsage: checksig [options] <input file name>\n\n";
 	cerr << "     Where options are :\n\n";
 	cerr << "     --skiprefs/-s\n";
-	cerr << "         Skip checking references - check signature only\n";
+	cerr << "         Skip checking references - check signature only\n\n";
 	cerr << "     --hmackey/-h <string>\n";
 	cerr << "         Set an hmac key using the <string>\n\n";
+	cerr << "     --xsecresolver/-x\n";
+	cerr << "         Use the xml-security test XMLDSig URI resolver\n\n";
 	cerr << "     Exits with codes :\n";
 	cerr << "         0 = Signature OK\n";
 	cerr << "         1 = Signature Bad\n";
@@ -151,13 +161,14 @@ int evaluate(int argc, char ** argv) {
 	char					* filename = NULL;
 	char					* hmacKeyStr = NULL;
 	OpenSSLCryptoKeyHMAC	* hmacKey;
+	bool					useXSECURIResolver = false;
 
 	bool skipRefs = false;
 
 	if (argc < 2) {
 
 		printUsage();
-		exit (2);
+		return 2;
 	}
 
 	// Run through parameters
@@ -173,15 +184,19 @@ int evaluate(int argc, char ** argv) {
 			skipRefs = true;
 			paramCount++;
 		}
+		else if (stricmp(argv[paramCount], "--xsecresolver") == 0 || stricmp(argv[paramCount], "-x") == 0) {
+			useXSECURIResolver = true;
+			paramCount++;
+		}
 		else {
 			printUsage();
-			exit(2);
+			return 2;
 		}
 	}
 
 	if (paramCount >= argc) {
 		printUsage();
-		exit (2);
+		return 2;
 	}
 
 	filename = argv[paramCount];
@@ -260,6 +275,19 @@ int evaluate(int argc, char ** argv) {
 	// so we add a KeyInfoResolverDefault to the Signature.
 
 	sig->setKeyInfoResolver(&theKeyInfoResolver);
+
+	// Check whether we should use the internal resolver
+
+#if defined(_WIN32)
+	
+	if (useXSECURIResolver == true) {
+
+		XSECURIResolverGenericWin32 theResolver;
+		sig->setURIResolver(&theResolver);
+	}
+
+#endif
+
 
 	bool result;
 

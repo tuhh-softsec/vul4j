@@ -60,62 +60,118 @@
 /*
  * XSEC
  *
- * XSECPlatformUtils:= To support the platform we run in
+ * XSECURIResolverGenericWin32 := A URI Resolver that will work "out of
+ *                                the box" with Windows.  Re-implements
+ *								  much Xerces code, but allows us to
+ *								  handle HTTP redirects as is required by
+ *								  the DSIG Standard
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
+ * $Id$
  *
- * $LOG$
- *					 
+ * $Log$
+ * Revision 1.1  2003/02/12 09:45:29  blautenb
+ * Win32 Re-implementation of Xerces URIResolver to support re-directs
+ *
+ *
  */
 
-// XSEC
+#ifndef XSECURIRESOLVERGENERICWIN32_INCLUDE
+#define XSECURIRESOLVERGENERICWIN32_INCLUDE
 
-#include <xsec/utils/XSECPlatformUtils.hpp>
-#include <xsec/framework/XSECError.hpp>
-#include <xsec/enc/OpenSSL/OpenSSLCryptoProvider.hpp>
-#include <xsec/dsig/DSIGConstants.hpp>
+#include <xsec/framework/XSECDefs.hpp>
+#include <xsec/framework/XSECURIResolver.hpp>
 
-#if defined(_WIN32)
-#include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
-#endif
+#include <xercesc/util/XMLString.hpp>
 
-// Static data used by all of XSEC
-int XSECPlatformUtils::initCount = 0;
-XSECCryptoProvider * XSECPlatformUtils::g_cryptoProvider = NULL;
+#include <map>
 
-void XSECPlatformUtils::Initialise(XSECCryptoProvider * p) {
+XSEC_USING_XERCES(XMLString);
 
-	if (++initCount > 1)
-		return;
 
-	if (p != NULL)
-		g_cryptoProvider = p;
-	else
-		XSECnew(g_cryptoProvider, OpenSSLCryptoProvider());
+/**
+ * @ingroup pubsig
+ */
+/*\@{*/
 
-	// Set up necessary constants
-	DSIGConstants::create();
+/**
+ * @brief Generic Windows URI Resolver.
+ *
+ * The XML Digital Signature standard makes heavy use of URIs to
+ * identify information to be referenced and signed.
+ *
+ * This class implements the XSECURIResolver for Windows32, re-using
+ * much of the Xerces code.
+ *
+ * @todo Re-implement using the Windows Internet API
+ */
 
-	// Initialise the safeBuffer system
-	safeBuffer::init();
+class DSIG_EXPORT XSECURIResolverGenericWin32 : public XSECURIResolver {
+
+public:
+
+	typedef std::map<XMLCh *, char *, XMLString::compareIString> schemeMapType;
+	
+	/** @name Constructors and Destructors */
+	//@{
+
+	XSECURIResolverGenericWin32();
+	virtual ~XSECURIResolverGenericWin32();
+
+	//@}
+
+	/** @name Interface Methods */
+	//@{
+
+	/**
+	 * \brief Create a BYTE_STREAM from a URI.
+	 *
+	 * The resolver is required to take the input URI and
+	 * dereference it to an actual stream of octets.
+	 *
+	 * The octets are provided back to the library using
+	 * the Xerces BinInputStream class.
+	 *
+	 * @note The returned stream is "owned" by the caller, which
+	 * will delete it when processing is complete.
+	 * @param uri The string containing the URI to be de-referenced.
+	 * @returns The octet stream corresponding to the URI.
+	 */
+
+	virtual BinInputStream * resolveURI(const XMLCh * uri);
+
+	/**
+	 * \brief Clone the resolver to be installed in a new object.
+	 *
+	 * When URIResolvers are passed into signatures and other
+	 * objects, they are cloned and control of the original object
+	 * is left with the caller.
+	 *
+	 */
+
+	virtual XSECURIResolver * clone(void);
+
+	//@}
+
+	/** @name Class specific functions */
+	//@{
+
+	/**
+	 * \brief Set the base URI for relative URIs.
+	 *
+	 */
+
+	void setBaseURI(const XMLCh * uri);
+
+	//@}
+
+private:
+
+	XMLCh			* mp_baseURI;
+
 
 };
 
-void XSECPlatformUtils::Terminate(void) {
 
-	if (--initCount > 0)
-		return;
-
-	if (g_cryptoProvider != NULL)
-		delete g_cryptoProvider;
-
-	DSIGConstants::destroy();
-
-	// Destroy anything platform specific
-#if defined(_WIN32)
-	XSECBinHTTPURIInputStream::Cleanup();
-#endif
-
-}
+#endif /* XSECURIRESOLVERGENERICWIN32_INCLUDE */
