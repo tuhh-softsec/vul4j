@@ -227,14 +227,15 @@ public abstract class ElementProxy {
          throw new XMLSecurityException("ElementProxy.nullElement");
       }
 
-      cat.debug("setElement(\"" + element.getTagName() + "\", \"" + BaseURI + "\")");
+      cat.debug("setElement(\"" + element.getTagName() + "\", \"" + BaseURI
+                + "\")");
 
       this._doc = element.getOwnerDocument();
       this._state = ElementProxy.MODE_PROCESS;
       this._constructionElement = element;
       this._baseURI = BaseURI;
 
-      this.guaranteeThatElementInCorrectSpace(this.getBaseLocalName());
+      this.guaranteeThatElementInCorrectSpace();
    }
 
    /**
@@ -283,20 +284,25 @@ public abstract class ElementProxy {
    /**
     * Method guaranteeThatElementInCorrectSpace
     *
-    * @param localname
     * @throws XMLSecurityException
     */
-   public void guaranteeThatElementInCorrectSpace(String localname)
+   public void guaranteeThatElementInCorrectSpace()
            throws XMLSecurityException {
 
-      if ((localname == null) || (localname.equals(""))
-              || (this._constructionElement == null)
-              || (this._constructionElement.getNamespaceURI() == null)
-              || (!this._constructionElement.getLocalName().equals(localname))
-              || (!this._constructionElement.getNamespaceURI()
-                 .equals(this.getBaseNamespace()))) {
-         Object exArgs[] = { localname,
-                             this._constructionElement.getLocalName() };
+      String localnameSHOULDBE = this.getBaseLocalName();
+      String namespaceSHOULDBE = this.getBaseNamespace();
+      String qnameSHOULDBE = "{" + ((namespaceSHOULDBE == null)
+                                    ? ""
+                                    : namespaceSHOULDBE) + "}"
+                                                         + localnameSHOULDBE;
+      String localnameIS = this._constructionElement.getLocalName();
+      String namespaceIS = this._constructionElement.getNamespaceURI();
+      String qnameIS = "{" + ((namespaceIS == null)
+                              ? ""
+                              : namespaceIS) + "}" + localnameIS;
+
+      if (!qnameIS.equals(qnameSHOULDBE)) {
+         Object exArgs[] = { qnameSHOULDBE, qnameIS };
 
          throw new XMLSecurityException("xml.WrongElement", exArgs);
       }
@@ -486,20 +492,21 @@ public abstract class ElementProxy {
     * @return null if the Element does not contain the requested child
     */
    public Element getChildElementLocalName(int index, String namespace,
-                                              String localname) {
+                                           String localname) {
 
       NodeList childNodes = this._constructionElement.getChildNodes();
       int maxLength = childNodes.getLength();
-
       int result = -1;
-      for (int i=0; i<maxLength; i++) {
+
+      for (int i = 0; i < maxLength; i++) {
          Node n = childNodes.item(i);
+
          if (n.getNodeType() == Node.ELEMENT_NODE) {
             String ns = n.getNamespaceURI();
             String name = n.getLocalName();
 
-            if (namespace != null && ns != null && namespace.equals(ns) ||
-                namespace == null && ns == null) {
+            if (((namespace != null) && (ns != null) && namespace.equals(ns))
+                    || ((namespace == null) && (ns == null))) {
                if (localname.equals(name)) {
                   result++;
 
@@ -523,18 +530,20 @@ public abstract class ElementProxy {
     * @return
     */
    public int length(String namespace, String localname) {
+
       NodeList childNodes = this._constructionElement.getChildNodes();
       int maxLength = childNodes.getLength();
-
       int result = 0;
-      for (int i=0; i<maxLength; i++) {
+
+      for (int i = 0; i < maxLength; i++) {
          Node n = childNodes.item(i);
+
          if (n.getNodeType() == Node.ELEMENT_NODE) {
             String ns = n.getNamespaceURI();
             String name = n.getLocalName();
 
-            if (namespace != null && ns != null && namespace.equals(ns) ||
-                namespace == null && ns == null) {
+            if (((namespace != null) && (ns != null) && namespace.equals(ns))
+                    || ((namespace == null) && (ns == null))) {
                if (localname.equals(name)) {
                   result++;
                }
@@ -563,7 +572,7 @@ public abstract class ElementProxy {
 
       String ns;
 
-      if (prefix == null || prefix.length() == 0) {
+      if ((prefix == null) || (prefix.length() == 0)) {
          ns = "xmlns";
       } else if (prefix.equals("xmlns")) {
          ns = "xmlns";
@@ -580,10 +589,12 @@ public abstract class ElementProxy {
       Attr a = this._constructionElement.getAttributeNode(ns);
 
       if ((a != null) && (!a.getNodeValue().equals(uri))) {
-         Object exArgs[] = { ns, this._constructionElement.getAttributeNS(null, ns) };
+         Object exArgs[] = { ns,
+                             this._constructionElement.getAttributeNS(null,
+                                                                      ns) };
 
-         throw new XMLSecurityException(
-            "namespacePrefixAlreadyUsedByOtherURI", exArgs);
+         throw new XMLSecurityException("namespacePrefixAlreadyUsedByOtherURI",
+                                        exArgs);
       }
 
       this._constructionElement.setAttributeNS(Constants.NamespaceSpecNS, ns,
