@@ -71,6 +71,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.CanonicalizerSpi;
 import org.apache.xml.security.c14n.helper.C14nNodeFilter;
@@ -114,7 +115,8 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
     * @return
     */
    public boolean engineVisible(Node node) {
-      return true;
+      throw new UnsupportedOperationException(I18n
+         .translate("c14n.Canonicalizer.UnsupportedOperation"));
    }
 
    /**
@@ -123,7 +125,10 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
     * @todo shall we throw Exceptions ?
     * @param node
     */
-   public void engineMakeVisible(Node node) { throw new RuntimeException("Operation not supported");}
+   public void engineMakeVisible(Node node) {
+      throw new UnsupportedOperationException(I18n
+         .translate("c14n.Canonicalizer.UnsupportedOperation"));
+   }
 
    /**
     * This method is only needed for XPath based implememtations
@@ -131,7 +136,10 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
     * @todo shall we throw Exceptions ?
     * @param node
     */
-   public void engineMakeInVisible(Node node) {}
+   public void engineMakeInVisible(Node node) {
+      throw new UnsupportedOperationException(I18n
+         .translate("c14n.Canonicalizer.UnsupportedOperation"));
+   }
 
    /**
     * This method is only needed for XPath based implememtations
@@ -139,7 +147,10 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
     * @todo shall we throw Exceptions ?
     * @param nodeList
     */
-   public void engineSetXPathNodeSet(NodeList nodeList) {}
+   public void engineSetXPathNodeSet(NodeList nodeList) {
+      throw new UnsupportedOperationException(I18n
+         .translate("c14n.Canonicalizer.UnsupportedOperation"));
+   }
 
    /**
     * Constructor Canonicalizer20010315
@@ -168,7 +179,8 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
     */
    public byte[] engineCanonicalize(NodeList selectedNodes)
            throws CanonicalizationException {
-      return null;
+      throw new CanonicalizationException(
+         "c14n.Canonicalizer.UnsupportedOperation");
    }
 
    /**
@@ -371,10 +383,10 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
          break;
 
       case Node.ELEMENT_NODE :
-         if (currentNode
-                 == currentNode.getOwnerDocument().getDocumentElement()) {
-            processingPos = CanonicalizerSpi.INSIDE_DOCUMENT_ELEM;
-         }
+         // if (currentNode == currentNode.getOwnerDocument().getDocumentElement()) {
+         processingPos = CanonicalizerSpi.INSIDE_DOCUMENT_ELEM;
+         // }
+         Canonicalizer20010315.checkForRelativeNamespace(currentNode);
 
          printwriter.print('<');
          printwriter.print(currentNode.getNodeName());
@@ -589,8 +601,8 @@ public abstract class Canonicalizer20010315WithoutXPathSupport
     * @param remove
     */
    public void engineSetRemoveNSAttrs(boolean remove) {
-      throw new IllegalArgumentException(
-         "This parameter cannot be set in this implementation");
+      throw new UnsupportedOperationException(I18n
+         .translate("c14n.Canonicalizer.UnsupportedOperation"));
    }
 
    /**

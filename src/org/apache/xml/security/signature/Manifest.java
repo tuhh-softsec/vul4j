@@ -244,20 +244,22 @@ public class Manifest extends SignatureElementProxy {
    public Reference item(int i) throws XMLSecurityException {
 
       if (this._state == MODE_SIGN) {
+
+         // we already have real objects
          return (Reference) this._references.elementAt(i);
       } else {
-         if (this._references.elementAt(i) != null) {
-            return (Reference) this._references.elementAt(i);
-         } else {
+         if (this._references.elementAt(i) == null) {
+
+            // not yet constructed, so we have to
             Element refElem = this.getChildElementLocalName(i,
                                  Constants.SignatureSpecNS,
                                  Constants._TAG_REFERENCE);
             Reference ref = new Reference(refElem, this._baseURI, this);
 
             this._references.setElementAt(ref, i);
-
-            return ref;
          }
+
+         return (Reference) this._references.elementAt(i);
       }
    }
 

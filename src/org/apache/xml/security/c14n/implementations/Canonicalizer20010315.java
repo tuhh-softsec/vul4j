@@ -261,6 +261,35 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
        */
       if (this.hmVisibleNodes == null) {
          try {
+            //J-
+            /*
+            if ((this.engineGetXPathString().equals(Canonicalizer.XPATH_C14N_WITH_COMMENTS) ||
+                 this.engineGetXPathString().equals(Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE) ||
+                 this.engineGetXPathString().equals(Canonicalizer.XPATH_C14N_OMIT_COMMENTS) ||
+                 this.engineGetXPathString().equals(Canonicalizer.XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE))) {
+               //J+
+               // we do a c14n without strange features, so why use the XPath compliant version
+               CanonicalizerSpi c14nizer = null;
+
+               if (this.engineGetXPathString()
+                       .equals(Canonicalizer
+                       .XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE) || this
+                          .engineGetXPathString()
+                          .equals(Canonicalizer.XPATH_C14N_OMIT_COMMENTS)) {
+                  c14nizer =
+                     new Canonicalizer20010315WithoutXPathSupportOmitComments();
+               } else {
+                  c14nizer =
+                     new Canonicalizer20010315WithoutXPathSupportWithComments();
+               }
+
+               if (c14nizer == null) {
+                  return null;
+               }
+
+               return c14nizer.engineCanonicalize(node);
+            } else {
+            */
             NodeList selected = null;
 
             if (this.engineGetXPath() instanceof Element) {
@@ -274,6 +303,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
 
             cat.debug("xpath is" + this.engineGetXPathString());
             this.engineSetXPathNodeSet(selected);
+
+            // }
          } catch (TransformerException e) {
             Object exArgs[] = { "TransformerException: " + e.getMessage() };
 
@@ -841,9 +872,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   newAttr.setNodeValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
-
-                  cat.debug("XXX: Add " + ((Element) ctxNode).getTagName() + "/@" + newAttr);
-
                   this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             } else {
@@ -855,8 +883,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   newAttr.setValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
-
-                  cat.debug("XXX: Add " + ((Element) ctxNode).getTagName() + "/@" + newAttr);
                   this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             }
@@ -884,9 +910,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   newAttr.setValue(invisDefNS.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
-
-
-                  cat.debug("XXX: Add " + ((Element) ctxNode).getTagName() + "/@" + newAttr);
                   this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             } else {
@@ -930,9 +953,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                      newAttr.setValue(invisAttr.getValue());
                      ((Element) ctxNode).setAttributeNode(newAttr);
                      engineMakeVisible(newAttr);
-
-
-                     cat.debug("XXX: Add " + ((Element) ctxNode).getTagName() + "/@" + newAttr);
                      this._attrsToBeRemovedAfterC14n.add(newAttr);
                   }
                } else {
@@ -944,9 +964,6 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
                   newAttr.setValue(invisAttr.getValue());
                   ((Element) ctxNode).setAttributeNode(newAttr);
                   engineMakeVisible(newAttr);
-
-
-                  cat.debug("XXX: Add " + ((Element) ctxNode).getTagName() + "/@" + newAttr);
                   this._attrsToBeRemovedAfterC14n.add(newAttr);
                }
             } else {
@@ -1060,7 +1077,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
     * @param ctxNode
     * @throws CanonicalizationException
     */
-   private void checkForRelativeNamespace(Node ctxNode)
+   protected static void checkForRelativeNamespace(Node ctxNode)
            throws CanonicalizationException {
 
       if ((ctxNode != null) && (ctxNode.getNodeType() == Node.ELEMENT_NODE)) {
@@ -1102,11 +1119,13 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
    private void removeNSAttrs() {
 
       for (int i = 0; i < this._attrsToBeRemovedAfterC14n.size(); i++) {
-         Attr currentNSdecl = (Attr) this._attrsToBeRemovedAfterC14n.elementAt(i);
+         Attr currentNSdecl =
+            (Attr) this._attrsToBeRemovedAfterC14n.elementAt(i);
          Element ownerElem = currentNSdecl.getOwnerElement();
 
          ownerElem.removeAttributeNode(currentNSdecl);
       }
+
       this._attrsToBeRemovedAfterC14n.clear();
    }
 

@@ -206,28 +206,40 @@ org.apache.xml.security.test.interop.*
     <echo message="   compile.library --> compiles the source code                    " />
     <echo message="   compile.samples --> compiles the samples source code            " />
     <echo message="   compile.tests   --> compiles the tests source code              " />
+    <echo message="                                                                   " />
     <echo message="   doc             --> generates the HTML documentation            " />
+    <echo message="                       use Readme.html to come to the docu         " />
     <echo message="   javadoc         --> generates the API documentation             " />
     <echo message="                       (needs Java > 1.2)                          " />
+    <echo message="                                                                   " />
     <echo message="   test            --> runs the defined JUnit tests                " />
+    <echo message="   testjar         --> runs the defined JUnit tests but runs on    " />
+    <echo message="                       compiled jar files instead of the class     " />
+    <echo message="                       files; this should be used if you have the  " />
+    <echo message="                       binary-only distribution                    " />
+    <echo message="                                                                   " />
     <echo message="   clean           --> cleans up all generated files and           " />
     <echo message="                       directories                                 " />
+    <echo message="   jar             --> creates the JAR file                        " />
+    <echo message="   gump            --> includes javadoc, compile jar and test      " />
+    <echo message="                                                                   " />
     <echo message="   usage           --> provides help on using the build tool       " />
     <echo message="                       (default)                                   " />
-    <echo message="   jar             --> creates the JAR file                        " />
     <echo message="                                                                   " />
     <echo message=" See comments inside the build.xml file for more details.          " />
     <echo message="-------------------------------------------------------------------" />
     <echo message="                                                                   " />
   </target>
 
-  <target name="clean" depends="init" description="Clean up all temporary build files">
+  <target name="clean" depends="init" 
+          description="Clean up all temporary build files">
     <delete dir="${build.dir}" />
     <delete dir="./bak" />
     <delete file="log.txt" />
   </target>
 
-  <target name="prepare" depends="init" description="This target generates a first build directory and checks for some libraries">
+  <target name="prepare" depends="init" 
+          description="This target generates a first build directory and checks for some libraries">
     <tstamp />
     <mkdir dir="${build.dir}" />
     
@@ -261,6 +273,9 @@ org.apache.xml.security.test.interop.*
     <!-- create directories -->
     <mkdir dir="${build.src}" />
     <mkdir dir="${build.classes}" />
+    <copy file="./LICENSE.txt" 
+          tofile="${build.classes}/Apache-${product.shortname}-${product_version}-LICENSE.txt" />
+
 
     <!-- copy src files -->
     <copy todir="${build.src}">
@@ -274,7 +289,8 @@ org.apache.xml.security.test.interop.*
              token="@@VERSION@@" value="${product.Name} ${product.Version}" />
   </target>
 
-  <target name="prepare-doc" depends="prepare" description="This target copies the XML documentation sources and brands the version information">
+  <target name="prepare-doc" depends="prepare" 
+          description="This target copies the XML documentation sources and brands the version information">
     <!-- create directories -->
     <mkdir dir="${build.doc}" />
     <mkdir dir="${build.doc.xml}" />
@@ -473,7 +489,7 @@ org.apache.xml.security.test.interop.*
           description="Creates the ${jar.library}, ${jar.samples} and ${jar.samples} JAR file in ${build.dir}">
      <jar jarfile="${build.dir}/${jar.library}"
           basedir="${build.classes}"
-          includes="org/apache/**, META-INF/**"
+          includes="org/apache/**, META-INF/**, *.txt"
           excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**" />
      <jar jarfile="${build.dir}/${jar.samples}"
           basedir="${build.classes}"

@@ -596,14 +596,16 @@ public class Canonicalizer20010315Test extends TestCase {
          Canonicalizer c14n =
             Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
          byte c14nBytes[] = c14n.canonicalize(doc);
-         FileOutputStream fos = new FileOutputStream(
-            "data/org/apache/xml/security/out/relativeNS.xml");
 
+         /*
+         FileOutputStream fos = new FileOutputStream("data/org/apache/xml/security/out/relativeNS.xml");
          fos.write(c14nBytes);
+         fos.close();
+         */
       } catch (CanonicalizationException cex) {
 
          // if we reach this point - good.
-         cat.debug("We catched the C14nEx: " + cex.getMessage());
+         cat.debug("We catched the C14nEx, that's good: " + cex.getMessage());
 
          weCatchedTheRelativeNS = true;
       }
