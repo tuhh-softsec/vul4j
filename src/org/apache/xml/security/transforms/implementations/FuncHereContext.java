@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -67,6 +66,7 @@ import org.apache.xpath.CachedXPathAPI;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.dtm.DTMManager;
 
+
 /**
  * {@link FuncHereContext} extends {@link XPathContext} for supplying context
  * for the <CODE>here()</CODE> function. The here() function needs to know
@@ -113,6 +113,7 @@ public class FuncHereContext extends XPathContext {
     */
    private FuncHereContext() {}
 
+   /** Field _oldDTMManager           */
    private DTMManager _oldDTMManager = null;
 
    /**
@@ -124,22 +125,43 @@ public class FuncHereContext extends XPathContext {
       super((Object) owner);
    }
 
-   public FuncHereContext(Node owner, DTMManager dtmManager) {
+   /**
+    * Constructor FuncHereContext
+    *
+    * @param owner
+    * @param xpathContext
+    */
+   public FuncHereContext(Node owner, XPathContext xpathContext) {
+
       super((Object) owner);
-      this._oldDTMManager = super.getDTMManager();
-      super.setDTMManager(dtmManager);
+
+      this.m_dtmManager = xpathContext.getDTMManager();
    }
 
+   /**
+    * Constructor FuncHereContext
+    *
+    * @param owner
+    * @param previouslyUsed
+    */
    public FuncHereContext(Node owner, CachedXPathAPI previouslyUsed) {
+
       super((Object) owner);
-      this._oldDTMManager = super.getDTMManager();
-      super.setDTMManager(previouslyUsed.getXPathContext().getDTMManager());
+
+      this.m_dtmManager = previouslyUsed.getXPathContext().getDTMManager();
    }
 
-   public FuncHereContext(Node owner, CachedXPathFuncHereAPI previouslyUsed) {
+   /**
+    * Constructor FuncHereContext
+    *
+    * @param owner
+    * @param dtmManager
+    */
+   public FuncHereContext(Node owner, DTMManager dtmManager) {
+
       super((Object) owner);
-      this._oldDTMManager = super.getDTMManager();
-      super.setDTMManager(previouslyUsed.getFuncHereContext().getDTMManager());
+
+      this.m_dtmManager = dtmManager;
    }
 
    static {

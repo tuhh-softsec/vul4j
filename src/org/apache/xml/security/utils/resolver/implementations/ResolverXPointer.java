@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -116,7 +115,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
          try {
             resultNodes =
                cXPathAPI.selectNodeList(doc,
-                                       Canonicalizer.XPATH_C14N_WITH_COMMENTS);
+                                        Canonicalizer.XPATH_C14N_WITH_COMMENTS);
          } catch (javax.xml.transform.TransformerException ex) {
             throw new ResourceResolverException("generic.EmptyMessage", ex,
                                                 uri, BaseURI);
@@ -143,7 +142,8 @@ public class ResolverXPointer extends ResourceResolverSpi {
                    + XMLUtils.getNodeTypeString(resultNodes.item(i)));
       }
 
-      XMLSignatureInput result = new XMLSignatureInput(resultNodes, cXPathAPI.getXPathContext().getDTMManager());
+      XMLSignatureInput result = new XMLSignatureInput(resultNodes,
+                                    cXPathAPI.getXPathContext());
 
       // result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
       result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
@@ -168,6 +168,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     * @return
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
+
       if (uri == null) {
          return false;
       }

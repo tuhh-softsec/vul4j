@@ -22,7 +22,7 @@ import org.apache.xml.security.keys.content.x509.*;
 import org.apache.xml.security.keys.keyresolver.*;
 import org.apache.xml.security.keys.storage.*;
 import org.apache.xml.security.keys.storage.implementations.*;
-import org.apache.xml.security.samples.utils.resolver.OfflineResolver;
+import org.apache.xml.security.test.utils.resolver.OfflineResolver;
 import org.apache.xml.security.signature.*;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;

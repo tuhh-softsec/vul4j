@@ -167,6 +167,11 @@ public class CreateEnvelopingSignature {
       XMLUtils.outputDOMc14nWithComments(doc, f);
       f.close();
       System.out.println("Wrote signature to " + BaseURI);
+
+      for (int i=0; i<sig.getSignedInfo().getSignedContentLength(); i++) {
+         System.out.println("--- Signed Content follows ---");
+         System.out.println(new String(sig.getSignedInfo().getSignedContentItem(i)));
+      }
    }
 
    static {

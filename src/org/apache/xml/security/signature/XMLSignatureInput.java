@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -84,9 +83,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import org.xml.sax.SAXException;
-// import org.apache.xpath.XPathAPI;
 import org.apache.xpath.CachedXPathAPI;
-import org.apache.xml.dtm.DTMManager;
+import org.apache.xpath.XPathContext;
 
 
 /**
@@ -120,7 +118,8 @@ public class XMLSignatureInput {
     */
    NodeList _inputNodeSet = null;
 
-   DTMManager _myDTMManager = null;
+   /** Field xpathSupport */
+   XPathContext xpathSupport;
 
    /**
     *  If we serialize a NodeSet, will Comment nodes be included?
@@ -146,7 +145,7 @@ public class XMLSignatureInput {
     */
    public XMLSignatureInput(InputStream inputOctetStream) {
       this._inputOctetStream = inputOctetStream;
-      this._myDTMManager = new CachedXPathAPI().getXPathContext().getDTMManager();
+      this.xpathSupport = new CachedXPathAPI().getXPathContext();
    }
 
    /**
@@ -158,7 +157,7 @@ public class XMLSignatureInput {
     */
    public XMLSignatureInput(byte[] inputOctets) {
       this._inputOctetStream = new ByteArrayInputStream(inputOctets);
-      this._myDTMManager = new CachedXPathAPI().getXPathContext().getDTMManager();
+      this.xpathSupport = new CachedXPathAPI().getXPathContext();
    }
 
    /**
@@ -170,7 +169,7 @@ public class XMLSignatureInput {
     */
    public XMLSignatureInput(String inputStr) {
       this._inputOctetStream = new ByteArrayInputStream(inputStr.getBytes());
-      this._myDTMManager = new CachedXPathAPI().getXPathContext().getDTMManager();
+      this.xpathSupport = new CachedXPathAPI().getXPathContext();
    }
 
    /**
@@ -184,9 +183,10 @@ public class XMLSignatureInput {
     */
    public XMLSignatureInput(String inputStr, String encoding)
            throws UnsupportedEncodingException {
+
       this._inputOctetStream =
          new ByteArrayInputStream(inputStr.getBytes(encoding));
-      this._myDTMManager = new CachedXPathAPI().getXPathContext().getDTMManager();
+      this.xpathSupport = new CachedXPathAPI().getXPathContext();
    }
 
    /**
@@ -197,7 +197,7 @@ public class XMLSignatureInput {
     */
    private XMLSignatureInput(NodeList inputNodeSet) {
       this._inputNodeSet = inputNodeSet;
-      this._myDTMManager = new CachedXPathAPI().getXPathContext().getDTMManager();
+      this.xpathSupport = new CachedXPathAPI().getXPathContext();
    }
 
    /**
@@ -212,7 +212,8 @@ public class XMLSignatureInput {
       cat.debug("Start " + _xpathString + " on Node " + node.getNodeName());
 
       CachedXPathAPI myXPathAPI = new CachedXPathAPI();
-      this._myDTMManager = myXPathAPI.getXPathContext().getDTMManager();
+
+      this.xpathSupport = myXPathAPI.getXPathContext();
       this._inputNodeSet = myXPathAPI.selectNodeList(node,
               Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
    }
@@ -222,10 +223,11 @@ public class XMLSignatureInput {
     * <CODE>inputNodeSet</CODE> occur in the output.
     *
     * @param inputNodeSet is the node set
+    * @param xpathContext
     */
-   public XMLSignatureInput(NodeList inputNodeSet, DTMManager dtmManager) {
+   public XMLSignatureInput(NodeList inputNodeSet, XPathContext xpathContext) {
       this._inputNodeSet = inputNodeSet;
-      this._myDTMManager = dtmManager;
+      this.xpathSupport = xpathContext;
    }
 
    /**
@@ -233,15 +235,17 @@ public class XMLSignatureInput {
     * and <I>all</I> his descendants in the output.
     *
     * @param node
+    * @param xpathContext
     * @throws TransformerException
     */
-   public XMLSignatureInput(Node node, DTMManager dtmManager) throws TransformerException {
+   public XMLSignatureInput(Node node, XPathContext xpathContext)
+           throws TransformerException {
 
       cat.debug("Start " + _xpathString + " on Node " + node.getNodeName());
-      this._myDTMManager = dtmManager;
 
-      CachedXPathAPI myXPathAPI = new CachedXPathAPI();
-      myXPathAPI.getXPathContext().setDTMManager(this._myDTMManager);
+      this.xpathSupport = xpathContext;
+
+      CachedXPathAPI myXPathAPI = new CachedXPathAPI(xpathContext);
 
       this._inputNodeSet = myXPathAPI.selectNodeList(node,
               Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
@@ -277,8 +281,9 @@ public class XMLSignatureInput {
             if (XMLSignatureInput.useFlatNodes) {
                return document.getChildNodes();
             } else {
-               CachedXPathAPI myXPathAPI = new CachedXPathAPI();
-               myXPathAPI.getXPathContext().setDTMManager(this._myDTMManager);
+               CachedXPathAPI myXPathAPI =
+                  new CachedXPathAPI(this.xpathSupport);
+
                return myXPathAPI.selectNodeList(document, _xpathString);
             }
          } catch (TransformerException ex) {
@@ -310,10 +315,10 @@ public class XMLSignatureInput {
                   String xpathStr =
                      "(//. | //@* | //namespace::*)[not(self::comment()) and "
                      + noDocument + " and " + noDocumentElement + "]";
-                  CachedXPathAPI myXPathAPI = new CachedXPathAPI();
-                  myXPathAPI.getXPathContext().setDTMManager(this._myDTMManager);
-
-                  NodeList nodes = myXPathAPI.selectNodeList(document, xpathStr);
+                  CachedXPathAPI myXPathAPI =
+                     new CachedXPathAPI(this.xpathSupport);
+                  NodeList nodes = myXPathAPI.selectNodeList(document,
+                                                             xpathStr);
 
                   return nodes;
                } catch (TransformerException ex2) {
@@ -387,7 +392,7 @@ public class XMLSignatureInput {
          /* We want to output the NodeList and do this by retrieving the Document Node
           * and outputting the Document
           */
-         cat.debug("node(0) is " +  this._inputNodeSet.item(0));
+         cat.debug("node(0) is " + this._inputNodeSet.item(0));
 
          Document doc = XMLUtils.getOwnerDocument(this._inputNodeSet.item(0));
          byte bytes[] = c14nizer.canonicalize(doc);
@@ -526,7 +531,7 @@ public class XMLSignatureInput {
       this._MIMEType = MIMEType;
    }
 
-   /** Field _SourceURI           */
+   /** Field _SourceURI */
    private String _SourceURI = null;
 
    /**
@@ -584,8 +589,13 @@ public class XMLSignatureInput {
       System.out.println(new String(c.canonicalize(nl)));
    }
 
-   public DTMManager getDTMManager() {
-      return this._myDTMManager;
+   /**
+    * Method getXPathContext
+    *
+    * @return
+    */
+   public XPathContext getXPathContext() {
+      return this.xpathSupport;
    }
 
    static {

@@ -75,7 +75,7 @@
     <property name="lib.log4j"    value="${libs}/jakarta-log4j-1.2alpha5.jar" />
     <property name="lib.junit"    value="${libs}/junit3.7.jar" />
 
-    <property name="jce.download.file" value="jce-jdk13-110.jar" />
+    <property name="jce.download.file" value="jce-jdk13-111.jar" />
     <property name="jce.download" value="http://www.bouncycastle.org/download/${jce.download.file}" />
     <property name="lib.jce"      value="${libs}/bc-${jce.download.file}" />
 
@@ -235,7 +235,7 @@ org.apache.xml.security.utils.*
 
   <target name="gump"
           description="Target for the gump run"
-          depends="jar,javadocs,test" />
+          depends="clean,jar,test" />
 
   <target name="generate-keys">
      <genkey alias="test2"

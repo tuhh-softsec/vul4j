@@ -365,6 +365,59 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
+    * Method convertXMLDSIGtoASN1_WITHOUT_ASN1
+    *
+    * Thanks to Stef Hoeben (UTIMACO) for contributing the code without ASN.1
+    * requirement.
+    *
+    * @param xmldsigbytes
+    * @return
+    * @throws IOException
+    */
+   private static byte[] convertXMLDSIGtoASN1_UTIMACO(byte[] xmldsigbytes)
+           throws IOException {
+
+      // Remove the leading zeros from r and s
+      int rLen = 20;
+      int i = 0;
+
+      while (xmldsigbytes[i++] == 0) {    // r: from 0 .. 19
+         rLen--;
+      }
+
+      int sLen = 20;
+
+      i = 0;
+
+      while (xmldsigbytes[20 + i++] == 0) {    // s: from 20 .. 39
+         sLen--;
+      }
+
+      // Length of the sequence = 1 tag byte + 1 length byte + length of r
+      //                        + 1 tag byte + 1 length byte + length of s
+      int sequenceLen = rLen + sLen + 4;
+
+      // Total length = 1 tag byte + 1 length byte + length of the sequence
+      byte[] result = new byte[sequenceLen + 2];
+
+      i = 0;
+      result[i++] = 0x30;    // tag
+      result[i++] = (byte) sequenceLen;    // length
+      result[i++] = 0x02;    // tag = INTEGER
+      result[i++] = (byte) rLen;    // length of r
+
+      System.arraycopy(xmldsigbytes, 20 - rLen, result, i, rLen);    // r
+
+      i += rLen;
+      result[i++] = 0x02;    // tag = INTEGER
+      result[i++] = (byte) sLen;    // length of s
+
+      System.arraycopy(xmldsigbytes, 40 - sLen, result, i, sLen);    // s
+
+      return result;
+   }
+
+   /**
     * Converts an ASN.1 DSA value to a XML Signature DSA Value.
     *
     * The JAVA JCE DSA Signature algorithm creates ASN.1 encoded (r,s) value
@@ -412,10 +465,53 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
    }
 
    /**
+    * Method convertASN1toXMLDSIG_WITHOUT_ASN1
     *
+    * Thanks to Stef Hoeben (UTIMACO) for contributing the code without ASN.1
+    * requirement.
+    *
+    * @param derbytes
+    * @return
+    * @throws IOException
+    */
+   private static byte[] convertASN1toXMLDSIG_UTIMACO(byte derbytes[])
+           throws IOException {
+
+      if ((derbytes[0] != 0x30) && (2 + derbytes[1] > derbytes.length)) {
+         throw new IOException(I18n.translate("signature.DSA.invalidFormat"));
+      }
+
+      byte[] result = new byte[40];    // byte array of 40 zeros
+
+      // r
+      if ((derbytes[2] != 0x02) && (4 + derbytes[3] > derbytes.length)) {
+         throw new IOException(I18n.translate("signature.DSA.invalidFormat"));
+      }
+
+      int rLen = derbytes[3];
+
+      System.arraycopy(derbytes, 4, result, 20 - rLen, rLen);
+
+      // s
+      int sStart = 4 + rLen;
+
+      if ((derbytes[sStart] != 0x02)
+              && (4 + rLen + 2 + derbytes[sStart + 1] > derbytes.length)) {
+         throw new IOException(I18n.translate("signature.DSA.invalidFormat"));
+      }
+
+      int sLen = derbytes[sStart + 1];
+
+      System.arraycopy(derbytes, sStart + 2, result, 40 - sLen, sLen);
+
+      return result;
+   }
+
+   /**
+    *
+    * @see org.bouncycastle.jce.provider.JDKDSASigner#derEncode
     * @param bigIntegerArray
     * @return
-    * @see org.bouncycastle.jce.provider.JDKDSASigner#derEncode
     * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
     */
    private static byte[] normalizeBigIntegerArray(byte bigIntegerArray[]) {

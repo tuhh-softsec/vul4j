@@ -60,6 +60,7 @@ package org.apache.xml.security.test;
 
 
 
+import java.io.File;
 import junit.framework.*;
 import org.apache.xml.security.utils.XMLUtils;
 
@@ -102,10 +103,23 @@ public class AllTests {
       suite.addTest(org.apache.xml.security.test.interop.BaltimoreTest.suite());
       suite.addTest(org.apache.xml.security.test.interop.IAIKTest.suite());
 
-      /** @todo can only be added when we have test values which are not
-       *  copyrighted by xss4j
-       */
-      // suite.addTest(org.apache.xml.security.test.interop.IBMTest.suite());
+      {
+         /*
+          * To make interop against the IBM xss4j examples, download the
+          * XSS4j from http://www.alphaworks.ibm.com/tech/xmlsecuritysuite
+          * and extract the test signatures from
+          * xss4j-20011029.zip#/xss4j/data/dsig
+          * in the directory
+          * data/com/ibm/xss4j-20011029/
+          * then the interop test is performed against these values, too.
+          */
+         String filename = "data/com/ibm/xss4j-20011029/enveloped-rsa.sig";
+         File f = new File(filename);
+         if (f.exists()) {
+            suite.addTest(org.apache.xml.security.test.interop.IBMTest.suite());
+         }
+      }
+
       //J+
       return suite;
    }

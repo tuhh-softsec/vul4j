@@ -115,7 +115,7 @@ public class ResolverFragment extends ResourceResolverSpi {
          try {
             resultNodes =
                cXPathAPI.selectNodeList(doc,
-                                       Canonicalizer.XPATH_C14N_OMIT_COMMENTS);
+                                        Canonicalizer.XPATH_C14N_OMIT_COMMENTS);
          } catch (javax.xml.transform.TransformerException ex) {
             throw new ResourceResolverException("generic.EmptyMessage", ex,
                                                 uri, BaseURI);
@@ -153,7 +153,8 @@ public class ResolverFragment extends ResourceResolverSpi {
          }
       }
 
-      XMLSignatureInput result = new XMLSignatureInput(resultNodes, cXPathAPI.getXPathContext().getDTMManager());
+      XMLSignatureInput result = new XMLSignatureInput(resultNodes,
+                                    cXPathAPI.getXPathContext());
 
       cat.debug("We return a nodeset with " + resultNodes.getLength()
                 + " nodes");
@@ -180,6 +181,7 @@ public class ResolverFragment extends ResourceResolverSpi {
     * @return
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
+
       if (uri == null) {
          return false;
       }

@@ -81,7 +81,7 @@ import org.apache.xml.security.keys.content.x509.*;
 import org.apache.xml.security.keys.keyresolver.*;
 import org.apache.xml.security.keys.storage.*;
 import org.apache.xml.security.keys.storage.implementations.*;
-import org.apache.xml.security.samples.utils.resolver.OfflineResolver;
+import org.apache.xml.security.test.utils.resolver.OfflineResolver;
 import org.apache.xml.security.signature.*;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.utils.resolver.*;
@@ -161,6 +161,7 @@ public class IAIKTest extends InteropTest {
          verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 
@@ -190,6 +191,7 @@ public class IAIKTest extends InteropTest {
          verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 
@@ -205,7 +207,36 @@ public class IAIKTest extends InteropTest {
     *
     * @throws Exception
     */
-   public void test_coreFeatures_signatures_manifestSignature()
+   public void test_coreFeatures_signatures_manifestSignature_core()
+           throws Exception {
+
+      String filename = gregorsDir
+                        + "coreFeatures/signatures/manifestSignature.xml";
+      ResourceResolverSpi resolver = null;
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         cat.error("Core validation crashed for " + filename);
+
+         throw ex;
+      }
+
+      if (!verify) {
+         cat.error("Core validation failed for " + filename);
+      }
+
+      assertTrue("Core validation failed for " + filename, verify);
+   }
+
+   /**
+    * Method test_coreFeatures_signatures_manifestSignature_manifest
+    *
+    * @throws Exception
+    */
+   public void test_coreFeatures_signatures_manifestSignature_manifest()
            throws Exception {
 
       String filename = gregorsDir
@@ -218,14 +249,15 @@ public class IAIKTest extends InteropTest {
          verify = this.verify(filename, resolver, followManifests);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 
       if (!verify) {
-         cat.error("Verification failed for " + filename);
+         cat.error("Following the ds:Manifest failed for " + filename);
       }
 
-      assertTrue("Verification failed for " + filename, verify);
+      assertTrue("Following the ds:Manifest failed for " + filename, verify);
    }
 
    /**
@@ -246,6 +278,7 @@ public class IAIKTest extends InteropTest {
          verify = this.verify(filename, resolver, followManifests);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 
@@ -276,6 +309,7 @@ public class IAIKTest extends InteropTest {
          verify = this.verify(filename, resolver, followManifests);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 
@@ -304,6 +338,7 @@ public class IAIKTest extends InteropTest {
          verify = this.verify(filename, resolver, followManifests);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 
@@ -332,6 +367,7 @@ public class IAIKTest extends InteropTest {
          verify = this.verify(filename, resolver, followManifests);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 
@@ -360,6 +396,7 @@ public class IAIKTest extends InteropTest {
          verify = this.verify(filename, resolver, followManifests);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 
@@ -386,6 +423,7 @@ public class IAIKTest extends InteropTest {
          verify = this.verify(filename, resolver, followManifests);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 
@@ -414,6 +452,7 @@ public class IAIKTest extends InteropTest {
          verify = this.verify(filename, resolver, followManifests);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 
@@ -440,6 +479,7 @@ public class IAIKTest extends InteropTest {
          verify = this.verify(filename, resolver, followManifests);
       } catch (RuntimeException ex) {
          cat.error("Verification crashed for " + filename);
+
          throw ex;
       }
 

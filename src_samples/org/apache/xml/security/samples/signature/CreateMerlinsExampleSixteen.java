@@ -472,7 +472,11 @@ public class CreateMerlinsExampleSixteen {
 
       SignedInfo s = sig.getSignedInfo();
       for (int i=0; i<s.getSignedContentLength(); i++) {
-         System.out.println("################ Signed Resource " + i + " ################");
+         if (s.item(i).getType().equals(Reference.MANIFEST_URI)) {
+            System.out.println("################ Signed Manifest " + i + " ################");
+         } else {
+            System.out.println("################ Signed Resource " + i + " ################");
+         }
          System.out.println(new String(s.getSignedContentItem(i)));
          System.out.println();
       }
@@ -490,6 +494,7 @@ public class CreateMerlinsExampleSixteen {
       Document doc = sig.getElement().getOwnerDocument();
       String BaseURI = sig.getBaseURI();
       Manifest manifest = new Manifest(doc);
+      manifest.addResourceResolver(new OfflineResolver());
 
       manifest.setId("manifest-1");
       manifest.addDocument(BaseURI, "http://www.w3.org/TR/xml-stylesheet",
@@ -546,6 +551,7 @@ public class CreateMerlinsExampleSixteen {
       manifest.addDocument(BaseURI, "#notaries", transforms,
                            Constants.ALGO_ID_DIGEST_SHA1, null, null);
 
+      manifest.generateDigestValues();
       return manifest.getElement();
    }
 

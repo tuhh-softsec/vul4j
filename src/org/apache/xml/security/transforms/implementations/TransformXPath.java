@@ -77,6 +77,7 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.dtm.DTMManager;
 
+
 /**
  * Class TransformXPath
  *
@@ -141,12 +142,15 @@ public class TransformXPath extends TransformSpi {
          }
 
          NodeList inputNodes = input.getNodeSet();
-         CachedXPathFuncHereAPI xPathFuncHereAPI = new CachedXPathFuncHereAPI(input.getDTMManager());
+         CachedXPathFuncHereAPI xPathFuncHereAPI =
+            new CachedXPathFuncHereAPI(input.getXPathContext());
+         CachedXPathAPI myXPathAPI =
+            new CachedXPathAPI(input.getXPathContext());
 
          if (inputNodes.getLength() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
 
-            throw new TransformationException("generic.EmptyMessage", exArgs);
+            throw new TransformationException("empty", exArgs);
          }
 
          Element transformElement = this._transformObject.getElement();
@@ -156,13 +160,11 @@ public class TransformXPath extends TransformSpi {
 
          cat.debug("The Transform Element is " + transformElement);
 
-         DTMManager dtmManager = input.getDTMManager();
-         CachedXPathAPI myXPathAPI = new CachedXPathAPI();
-         myXPathAPI.getXPathContext().setDTMManager(dtmManager);
-
          Element xpathElement =
             (Element) myXPathAPI.selectSingleNode(transformElement,
-               "./ds:" + Constants._TAG_XPATH, nscontext);
+                                                  "./ds:"
+                                                  + Constants
+                                                     ._TAG_XPATH, nscontext);
 
          if (xpathElement == null) {
             Object exArgs[] = { "ds:XPath", "Transform" };
@@ -200,7 +202,6 @@ public class TransformXPath extends TransformSpi {
                continue;
             }
             */
-
             XObject includeInResult = xPathFuncHereAPI.eval(inputNodes.item(i),
                                          xpathnode, prefixResolver);
 
@@ -212,27 +213,28 @@ public class TransformXPath extends TransformSpi {
             }
          }
 
-         XMLSignatureInput result = new XMLSignatureInput(resultNodes, dtmManager);
+         XMLSignatureInput result = new XMLSignatureInput(resultNodes,
+                                       input.getXPathContext());
 
          result.setSourceURI(input.getSourceURI());
 
          return result;
       } catch (TransformerException ex) {
-         throw new TransformationException("generic.EmptyMessage", ex);
+         throw new TransformationException("empty", ex);
       } catch (DOMException ex) {
-         throw new TransformationException("generic.EmptyMessage", ex);
+         throw new TransformationException("empty", ex);
       } catch (IOException ex) {
-         throw new TransformationException("generic.EmptyMessage", ex);
+         throw new TransformationException("empty", ex);
       } catch (CanonicalizationException ex) {
-         throw new TransformationException("generic.EmptyMessage", ex);
+         throw new TransformationException("empty", ex);
       } catch (InvalidCanonicalizerException ex) {
-         throw new TransformationException("generic.EmptyMessage", ex);
+         throw new TransformationException("empty", ex);
       } catch (ParserConfigurationException ex) {
-         throw new TransformationException("generic.EmptyMessage", ex);
+         throw new TransformationException("empty", ex);
       } catch (XMLSecurityException ex) {
-         throw new TransformationException("generic.EmptyMessage", ex);
+         throw new TransformationException("empty", ex);
       } catch (SAXException ex) {
-         throw new TransformationException("generic.EmptyMessage", ex);
+         throw new TransformationException("empty", ex);
       }
    }
 }
