@@ -18,7 +18,6 @@ package org.apache.xml.security.utils;
 
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,7 +56,7 @@ public class JavaUtils {
 
       {
          FileInputStream fisRef = new FileInputStream(fileName);
-         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream();
          byte buf[] = new byte[1024];
          int len;
 
@@ -108,7 +107,7 @@ public class JavaUtils {
       byte refBytes[] = null;
 
       {
-         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream();
          byte buf[] = new byte[1024];
          int len;
 

@@ -34,6 +34,7 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.CanonicalizerSpi;
 import org.apache.xml.security.c14n.helper.AttrCompare;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.UnsyncByteArrayOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -90,7 +91,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * in subtree canonicalizations.
     */
    Node _excludeNode =null;
-   OutputStream _writer = new ByteArrayOutputStream();//null;
+   OutputStream _writer = new UnsyncByteArrayOutputStream();//null;
 
    /**
     * Constructor CanonicalizerBase
