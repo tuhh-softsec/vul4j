@@ -100,8 +100,10 @@ import org.xml.sax.SAXException;
  */
 public class TransformXPath2Filter extends TransformSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   // static org.apache.log4j.Category cat = org.apache.log4j.Category.getInstance(TransformXPath2Filter.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+//    static org.apache.commons.logging.Log log = 
+//        org.apache.commons.logging.LogFactory.getLog(
+//                            TransformXPath2Filter.class.getName());
 
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
@@ -288,7 +290,7 @@ public class TransformXPath2Filter extends TransformSpi {
 
             /*
             if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-               cat.debug(i + " " + ((Element) currentNode).getTagName()
+               log.debug(i + " " + ((Element) currentNode).getTagName()
                          + " is " + type + " of " + rootNode.getNodeName());
             }
             */
@@ -314,7 +316,7 @@ public class TransformXPath2Filter extends TransformSpi {
 
             /*
             if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-               cat.debug("The intersect operation from step " + I
+               log.debug("The intersect operation from step " + I
                          + " does not include " + currentNode.getNodeName());
             }
             */
@@ -325,7 +327,7 @@ public class TransformXPath2Filter extends TransformSpi {
 
             /*
             if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-               cat.debug("The subtract operation from step " + I
+               log.debug("The subtract operation from step " + I
                          + " does subtract " + currentNode.getNodeName());
             }
             */

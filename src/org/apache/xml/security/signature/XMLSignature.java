@@ -117,9 +117,10 @@ import org.w3c.dom.Text;
  */
 public final class XMLSignature extends SignatureElementProxy {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(XMLSignature.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+   static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(XMLSignature.class.getName());
+   
    //J-
    /** MAC - Required HMAC-SHA1 */
    public static final String ALGO_ID_MAC_HMAC_SHA1 = Constants.SignatureSpecNS + "hmac-sha1";
@@ -654,10 +655,10 @@ public final class XMLSignature extends SignatureElementProxy {
             new SignatureAlgorithm(this.getSignedInfo()
                .getSignatureMethodElement(), this.getBaseURI());
 
-         cat.debug("SignatureMethodURI = " + sa.getAlgorithmURI());
-         cat.debug("jceSigAlgorithm    = " + sa.getJCEAlgorithmString());
-         cat.debug("jceSigProvider     = " + sa.getJCEProviderName());
-         cat.debug("PublicKey = " + pk);
+         log.debug("SignatureMethodURI = " + sa.getAlgorithmURI());
+         log.debug("jceSigAlgorithm    = " + sa.getJCEAlgorithmString());
+         log.debug("jceSigProvider     = " + sa.getJCEProviderName());
+         log.debug("PublicKey = " + pk);
          sa.initVerify(pk);
 
          // Get the canonicalized (normalized) SignedInfo
@@ -669,7 +670,7 @@ public final class XMLSignature extends SignatureElementProxy {
          //retrieve the byte[] from the stored signature
          byte sigBytes[] = this.getSignatureValue();
 
-         cat.debug("SignatureValue = "
+         log.debug("SignatureValue = "
                    + HexDump.byteArrayToHexString(sigBytes));
 
          //Have SignatureAlgorithm sign the input bytes and compare them to the

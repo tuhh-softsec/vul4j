@@ -85,10 +85,10 @@ import org.w3c.dom.Element;
  */
 public class CreateCollectableSignature {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(CreateCollectableSignature.class.getName());
+    /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    CreateCollectableSignature.class.getName());
 
    /** Field passphrase */
    public static final String passphrase =

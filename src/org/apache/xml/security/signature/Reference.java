@@ -140,9 +140,9 @@ public class Reference extends SignatureElementProxy {
    /** Field CacheSignedNodes */
    public static boolean CacheSignedNodes = false;
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Reference.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Reference.class.getName());
 
    /** Field OBJECT_URI */
    public static final String OBJECT_URI = Constants.SignatureSpecNS
@@ -793,9 +793,9 @@ public class Reference extends SignatureElementProxy {
 
          //J-
          if (data.length < 20) {
-            cat.debug(new String(data));
+            log.debug(new String(data));
          } else {
-            cat.debug(new String(data).substring(0, 20) + " ...");
+            log.debug(new String(data).substring(0, 20) + " ...");
          }
          //J+
          return calculatedDigestValue;
@@ -833,9 +833,9 @@ public class Reference extends SignatureElementProxy {
       boolean equal = MessageDigestAlgorithm.isEqual(elemDig, calcDig);
 
       if (!equal) {
-         cat.warn("Verification failed for URI \"" + this.getURI() + "\"");
+         log.warn("Verification failed for URI \"" + this.getURI() + "\"");
       } else {
-         cat.info("Verification successful for URI \"" + this.getURI() + "\"");
+         log.info("Verification successful for URI \"" + this.getURI() + "\"");
       }
 
       return equal;

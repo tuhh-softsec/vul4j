@@ -98,9 +98,9 @@ import org.xml.sax.SAXException;
  */
 public class XMLSignatureInputTest extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat = org.apache.log4j.Category.getInstance(
-      XMLSignatureInputTest.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(XMLSignatureInputTest.class.getName());
 
    /**
     * Method suite
@@ -149,7 +149,7 @@ public class XMLSignatureInputTest extends TestCase {
    private void printNodeSet(NodeList nl) {
 
       for (int i = 0; i < nl.getLength(); i++) {
-         cat.debug("Type "
+         log.debug("Type "
                    + XMLUtils.getNodeTypeString(nl.item(i).getNodeType()));
       }
    }

@@ -93,9 +93,10 @@ import org.w3c.dom.NodeList;
  */
 public class ResolverXPointer extends ResourceResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(ResolverXPointer.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                            ResolverXPointer.class.getName());
 
    /**
     * Method engineResolve
@@ -129,7 +130,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
             String id = getXPointerId(uri, BaseURI);
             Element selectedElem = IdResolver.getElementById(doc, id);
 
-            // cat.debug("Use #xpointer(id('" + id + "')) on element " + selectedElem);
+            // log.debug("Use #xpointer(id('" + id + "')) on element " + selectedElem);
 
             if (selectedElem == null) {
                Object exArgs[] = { id };
@@ -235,13 +236,13 @@ public class ResolverXPointer extends ResourceResolverSpi {
                                                      uriNodeValue.length()
                                                      - "))".length());
 
-         // cat.debug("idPlusDelim=" + idPlusDelim);
+         // log.debug("idPlusDelim=" + idPlusDelim);
 
          if (((idPlusDelim.charAt(0) == '"') && (idPlusDelim
                  .charAt(idPlusDelim.length() - 1) == '"')) || ((idPlusDelim
                  .charAt(0) == '\'') && (idPlusDelim
                  .charAt(idPlusDelim.length() - 1) == '\''))) {
-            cat.debug("Id="
+            log.debug("Id="
                       + idPlusDelim.substring(1, idPlusDelim.length() - 1));
 
             return true;

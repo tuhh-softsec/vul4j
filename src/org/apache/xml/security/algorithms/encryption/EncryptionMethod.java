@@ -85,9 +85,9 @@ import org.w3c.dom.Element;
  */
 public class EncryptionMethod extends Algorithm {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(EncryptionMethod.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(EncryptionMethod.class.getName());
 
    /** Field _emSpi */
    EncryptionMethodSpi _emSpi = null;
@@ -219,7 +219,7 @@ public class EncryptionMethod extends Algorithm {
 
             if ((this._emSpi != null)
                     && this._emSpi.getRequiredProviderAvailable()) {
-               cat.debug("Create URI \"" + algorithmURI + "\" class \""
+               log.debug("Create URI \"" + algorithmURI + "\" class \""
                          + implementingClass + "\"");
 
                break searchForWorkingClass;
@@ -278,7 +278,7 @@ public class EncryptionMethod extends Algorithm {
 
             if ((this._emSpi != null)
                     && this._emSpi.getRequiredProviderAvailable()) {
-               cat.debug("Create URI \"" + algorithmURI + "\" class \""
+               log.debug("Create URI \"" + algorithmURI + "\" class \""
                          + implementingClass + "\"");
 
                break searchForWorkingClass;
@@ -474,22 +474,22 @@ public class EncryptionMethod extends Algorithm {
 
                return true;
             } else {
-               cat.debug("Try to register class " + implementingClass
+               log.debug("Try to register class " + implementingClass
                          + " but Provider " + emSpi.getRequiredProviderName()
                          + " not available");
             }
          } else {
-            cat.debug("Try to register class " + implementingClass
+            log.debug("Try to register class " + implementingClass
                       + " but Class not available");
          }
       } catch (ClassNotFoundException ex) {
-         cat.debug("Try to register class " + implementingClass
+         log.debug("Try to register class " + implementingClass
                    + " but Class not found: ", ex);
       } catch (IllegalAccessException ex) {
-         cat.debug("Try to register class " + implementingClass
+         log.debug("Try to register class " + implementingClass
                    + " but Class not found: ", ex);
       } catch (InstantiationException ex) {
-         cat.debug("Try to register class " + implementingClass
+         log.debug("Try to register class " + implementingClass
                    + " but Class not found: ", ex);
       }
 

@@ -76,9 +76,9 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
  */
 public class RSASecurityTest extends InteropTest {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(RSASecurityTest.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(RSASecurityTest.class.getName());
 
    /** Field blakesDir           */
    static final String blakesDir =
@@ -123,7 +123,7 @@ public class RSASecurityTest extends InteropTest {
       boolean verify = this.verify(filename, resolver, followManifests);
 
       if (!verify) {
-         cat.error("Verification failed for " + filename);
+         log.error("Verification failed for " + filename);
       }
 
       assertTrue(filename, verify);
@@ -138,7 +138,7 @@ public class RSASecurityTest extends InteropTest {
       boolean verify = this.verify(filename, resolver, followManifests);
 
       if (!verify) {
-         cat.error("Verification failed for " + filename);
+         log.error("Verification failed for " + filename);
       }
 
       assertTrue(filename, verify);

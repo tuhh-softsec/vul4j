@@ -126,9 +126,9 @@ import org.w3c.dom.NodeList;
  */
 public class KeyInfo extends SignatureElementProxy {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(KeyInfo.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(KeyInfo.class.getName());
 
    /** Field _dsns */
    Element _dsns = null;
@@ -721,21 +721,21 @@ public class KeyInfo extends SignatureElementProxy {
       PublicKey pk = this.getPublicKeyFromInternalResolvers();
 
       if (pk != null) {
-         cat.debug("I could find a key using the per-KeyInfo key resolvers");
+         log.debug("I could find a key using the per-KeyInfo key resolvers");
 
          return pk;
       } else {
-         cat.debug("I couldn't find a key using the per-KeyInfo key resolvers");
+         log.debug("I couldn't find a key using the per-KeyInfo key resolvers");
       }
 
       pk = this.getPublicKeyFromStaticResolvers();
 
       if (pk != null) {
-         cat.debug("I could find a key using the system-wide key resolvers");
+         log.debug("I could find a key using the system-wide key resolvers");
 
          return pk;
       } else {
-         cat.debug("I couldn't find a key using the system-wide key resolvers");
+         log.debug("I couldn't find a key using the system-wide key resolvers");
       }
 
       return null;
@@ -811,7 +811,7 @@ public class KeyInfo extends SignatureElementProxy {
       for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
          KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
 
-         cat.debug("Try " + keyResolver.getClass().getName());
+         log.debug("Try " + keyResolver.getClass().getName());
 
          for (int j = 0;
                  j < this._constructionElement.getChildNodes().getLength();
@@ -874,12 +874,12 @@ public class KeyInfo extends SignatureElementProxy {
       X509Certificate cert = this.getX509CertificateFromInternalResolvers();
 
       if (cert != null) {
-         cat.debug(
+         log.debug(
             "I could find a X509Certificate using the per-KeyInfo key resolvers");
 
          return cert;
       } else {
-         cat.debug(
+         log.debug(
             "I couldn't find a X509Certificate using the per-KeyInfo key resolvers");
       }
 
@@ -887,12 +887,12 @@ public class KeyInfo extends SignatureElementProxy {
       cert = this.getX509CertificateFromStaticResolvers();
 
       if (cert != null) {
-         cat.debug(
+         log.debug(
             "I could find a X509Certificate using the system-wide key resolvers");
 
          return cert;
       } else {
-         cat.debug(
+         log.debug(
             "I couldn't find a X509Certificate using the system-wide key resolvers");
       }
 
@@ -910,7 +910,7 @@ public class KeyInfo extends SignatureElementProxy {
    X509Certificate getX509CertificateFromStaticResolvers()
            throws KeyResolverException {
 
-      cat.debug("Start getX509CertificateFromStaticResolvers() with "
+      log.debug("Start getX509CertificateFromStaticResolvers() with "
                 + KeyResolver.length() + " resolvers");
 
       for (int i = 0; i < KeyResolver.length(); i++) {
@@ -972,13 +972,13 @@ public class KeyInfo extends SignatureElementProxy {
    X509Certificate getX509CertificateFromInternalResolvers()
            throws KeyResolverException {
 
-      cat.debug("Start getX509CertificateFromInternalResolvers() with "
+      log.debug("Start getX509CertificateFromInternalResolvers() with "
                 + this.lengthInternalKeyResolver() + " resolvers");
 
       for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
          KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
 
-         cat.debug("Try " + keyResolver.getClass().getName());
+         log.debug("Try " + keyResolver.getClass().getName());
 
          for (int j = 0;
                  j < this._constructionElement.getChildNodes().getLength();
@@ -1092,16 +1092,16 @@ public class KeyInfo extends SignatureElementProxy {
    public static void init() {
 
       if (!KeyInfo._alreadyInitialized) {
-         if (KeyInfo.cat == null) {
+         if (KeyInfo.log == null) {
 
             /**
              * $todo$ why the hell does the static initialization from the
              *  start not work ?
              */
-            KeyInfo.cat =
-               org.apache.log4j.Category.getInstance(KeyInfo.class.getName());
+            KeyInfo.log =
+                    org.apache.commons.logging.LogFactory.getLog(KeyInfo.class.getName());
 
-            cat.error("Had to assign cat in the init() function");
+            log.error("Had to assign log in the init() function");
          }
 
          // KeyInfo._contentHandlerHash = new HashMap(10);

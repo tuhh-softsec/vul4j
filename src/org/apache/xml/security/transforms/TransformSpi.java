@@ -79,9 +79,9 @@ import org.xml.sax.SAXException;
  */
 public abstract class TransformSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(TransformSpi.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(TransformSpi.class.getName());
 
    protected Transform _transformObject = null;
    protected void setTransform(Transform transform) {

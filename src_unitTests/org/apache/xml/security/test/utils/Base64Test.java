@@ -75,9 +75,9 @@ import org.apache.xml.security.exceptions.Base64DecodingException;
  */
 public class Base64Test extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Base64Test.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Base64Test.class.getName());
 
    /**
     * Method suite

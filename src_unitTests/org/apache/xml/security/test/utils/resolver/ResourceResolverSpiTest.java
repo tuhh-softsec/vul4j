@@ -78,10 +78,10 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
  */
 public class ResourceResolverSpiTest extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(ResourceResolverSpiTest.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    ResourceResolverSpiTest.class.getName());
 
    /**
     * Method suite

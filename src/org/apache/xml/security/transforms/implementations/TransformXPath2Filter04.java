@@ -97,10 +97,10 @@ import org.xml.sax.SAXException;
  */
 public class TransformXPath2Filter04 extends TransformSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(TransformXPath2Filter04.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                        TransformXPath2Filter04.class.getName());
 
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =
@@ -135,7 +135,7 @@ public class TransformXPath2Filter04 extends TransformSpi {
       try {
          Set inputSet = input.getNodeSet();
 
-         cat.debug("perform xfilter2 on " + inputSet.size() + " nodes");
+         log.debug("perform xfilter2 on " + inputSet.size() + " nodes");
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
@@ -177,7 +177,7 @@ public class TransformXPath2Filter04 extends TransformSpi {
                                     xpathContainer.getXPathFilterTextNode(),
                                     xpathContainer.getElement());
 
-         cat.debug("subtreeRoots contains " + subtreeRoots.getLength()
+         log.debug("subtreeRoots contains " + subtreeRoots.getLength()
                    + " nodes");
 
          /*
@@ -211,7 +211,7 @@ public class TransformXPath2Filter04 extends TransformSpi {
             }
          }
 
-         cat.debug("selection process identified " + selectedNodes.size()
+         log.debug("selection process identified " + selectedNodes.size()
                    + " nodes");
 
          Set resultNodes = new HashSet();

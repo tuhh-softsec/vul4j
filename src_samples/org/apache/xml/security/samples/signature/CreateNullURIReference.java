@@ -80,10 +80,10 @@ import org.apache.xml.security.utils.XMLUtils;
  */
 public class CreateNullURIReference {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(CreateNullURIReference.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                        CreateNullURIReference.class.getName());
 
    /**
     * Method main

@@ -87,10 +87,9 @@ import org.w3c.dom.NodeList;
  */
 public class X509CertificateResolver extends KeyResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(X509CertificateResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(X509CertificateResolver.class.getName());
 
    /** Field _dsaKeyElement */
    NodeList _x509CertKeyElements = null;
@@ -106,13 +105,13 @@ public class X509CertificateResolver extends KeyResolverSpi {
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
 
-      cat.debug("Can I resolve " + element.getTagName() + "?");
+      log.debug("Can I resolve " + element.getTagName() + "?");
 
       try {
          XMLUtils.guaranteeThatElementInSignatureSpace(element,
                  Constants._TAG_X509DATA);
       } catch (XMLSignatureException ex) {
-         cat.debug("I can't");
+         log.debug("I can't");
 
          return false;
       }
@@ -125,13 +124,13 @@ public class X509CertificateResolver extends KeyResolverSpi {
 
          if ((this._x509CertKeyElements != null)
                  && (this._x509CertKeyElements.getLength() > 0)) {
-            cat.debug("Yes Sir, I can");
+            log.debug("Yes Sir, I can");
 
             return true;
          }
       } catch (TransformerException ex) {}
 
-      cat.debug("I can't");
+      log.debug("I can't");
 
       return false;
    }
@@ -207,7 +206,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
 
          return null;
       } catch (XMLSecurityException ex) {
-         cat.debug("XMLSecurityException", ex);
+         log.debug("XMLSecurityException", ex);
 
          throw new KeyResolverException("generic.EmptyMessage", ex);
       }

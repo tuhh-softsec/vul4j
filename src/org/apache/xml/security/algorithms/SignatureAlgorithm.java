@@ -79,9 +79,9 @@ import org.w3c.dom.Element;
  */
 public class SignatureAlgorithm extends Algorithm {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(SignatureAlgorithm.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(SignatureAlgorithm.class.getName());
 
    /** Field _alreadyInitialized */
    static boolean _alreadyInitialized = false;
@@ -108,7 +108,7 @@ public class SignatureAlgorithm extends Algorithm {
          String implementingClass =
             SignatureAlgorithm.getImplementingClass(algorithmURI);
 
-         cat.debug("Create URI \"" + algorithmURI + "\" class \""
+         log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
 
          this._signatureAlgorithm =
@@ -174,7 +174,7 @@ public class SignatureAlgorithm extends Algorithm {
          String implementingClass =
             SignatureAlgorithm.getImplementingClass(algorithmURI);
 
-         cat.debug("Create URI \"" + algorithmURI + "\" class \""
+         log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
 
          this._signatureAlgorithm =
@@ -362,13 +362,13 @@ public class SignatureAlgorithm extends Algorithm {
     */
    public static void providerInit() {
 
-      if (SignatureAlgorithm.cat == null) {
-         SignatureAlgorithm.cat =
-            org.apache.log4j.Category
-               .getInstance(SignatureAlgorithm.class.getName());
+      if (SignatureAlgorithm.log == null) {
+         SignatureAlgorithm.log =
+            org.apache.commons.logging.LogFactory
+               .getLog(SignatureAlgorithm.class.getName());
       }
 
-      cat.debug("Init() called");
+      log.debug("Init() called");
 
       if (!SignatureAlgorithm._alreadyInitialized) {
          SignatureAlgorithm._algorithmHash = new HashMap(10);
@@ -387,7 +387,7 @@ public class SignatureAlgorithm extends Algorithm {
            throws AlgorithmAlreadyRegisteredException {
 
       {
-         cat.debug("Try to register " + algorithmURI + " " + implementingClass);
+         log.debug("Try to register " + algorithmURI + " " + implementingClass);
 
          // are we already registered?
          String registeredClass =

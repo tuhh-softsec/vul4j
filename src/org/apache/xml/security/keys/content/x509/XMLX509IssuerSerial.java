@@ -79,10 +79,10 @@ import org.w3c.dom.Element;
 public class XMLX509IssuerSerial extends SignatureElementProxy
         implements XMLX509DataContent {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(XMLX509IssuerSerial.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    XMLX509IssuerSerial.class.getName());
 
    /**
     * Constructor XMLX509IssuerSerial
@@ -164,7 +164,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
          this.getTextFromChildElement(Constants._TAG_X509SERIALNUMBER,
                                       Constants.SignatureSpecNS);
 
-      cat.debug("In dem X509SerialNumber wurde gefunden: " + text);
+      log.debug("In dem X509SerialNumber wurde gefunden: " + text);
 
       return new BigInteger(text);
    }

@@ -82,9 +82,9 @@ import org.w3c.dom.Element;
  */
 public class ExclusiveC14NInterop extends InteropTest {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat = org.apache.log4j.Category.getInstance(
-      ExclusiveC14NInterop.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(ExclusiveC14NInterop.class.getName());
 
    /**
     * Method suite
@@ -197,7 +197,7 @@ public class ExclusiveC14NInterop extends InteropTest {
 
       long end = System.currentTimeMillis();
 
-      cat.debug("fixSubtree took " + (int) (end - start));
+      log.debug("fixSubtree took " + (int) (end - start));
 
       Element sigElement =
          (Element) doc.getElementsByTagNameNS(Constants.SignatureSpecNS,
@@ -207,7 +207,7 @@ public class ExclusiveC14NInterop extends InteropTest {
       boolean verify =
          signature.checkSignatureValue(signature.getKeyInfo().getPublicKey());
 
-      cat.debug("   signature.checkSignatureValue finished: " + verify);
+      log.debug("   signature.checkSignatureValue finished: " + verify);
 
       int failures = 0;
 
@@ -221,7 +221,7 @@ public class ExclusiveC14NInterop extends InteropTest {
             JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
 
             if (refVerify) {
-               cat.debug("Reference " + i + " was OK");
+               log.debug("Reference " + i + " was OK");
             } else {
                failures++;
 
@@ -235,7 +235,7 @@ public class ExclusiveC14NInterop extends InteropTest {
                String algo = reference.getTransforms().item(length
                   - 1).getURI();
 
-               cat.debug("Reference " + i + " failed: " + algo);
+               log.debug("Reference " + i + " failed: " + algo);
             }
          }
 

@@ -8,9 +8,9 @@ import org.apache.xml.security.utils.XMLUtils;
 
 public class ModuleTest extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(ModuleTest.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(ModuleTest.class.getName());
 
    public ModuleTest(String test) {
       super(test);
@@ -50,7 +50,7 @@ public class ModuleTest extends TestCase {
     */
    public static void main(String[] args) {
 
-      XMLUtils.spitOutVersions(cat);
+      XMLUtils.spitOutVersions(log);
 
       boolean useTextUI = true;
 

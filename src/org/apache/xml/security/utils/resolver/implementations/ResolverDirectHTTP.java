@@ -102,9 +102,10 @@ import org.w3c.dom.Attr;
  */
 public class ResolverDirectHTTP extends ResourceResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(ResolverDirectHTTP.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                            ResolverDirectHTTP.class.getName());
 
    /** Field properties[] */
    static final String properties[] = { "http.proxy.host", "http.proxy.port",
@@ -168,7 +169,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
          // switch on proxy usage
          if (useProxy) {
-            cat.debug("Use of HTTP proxy enabled: " + proxyHost + ":"
+            log.debug("Use of HTTP proxy enabled: " + proxyHost + ":"
                       + proxyPort);
             System.getProperties().put("http.proxySet", "true");
             System.getProperties().put("http.proxyHost", proxyHost);
@@ -253,7 +254,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
             summarized += read;
          }
 
-         cat.debug("Fetched " + summarized + " bytes from URI "
+         log.debug("Fetched " + summarized + " bytes from URI "
                    + uriNew.toString());
 
          XMLSignatureInput result = new XMLSignatureInput(baos.toByteArray());
@@ -289,7 +290,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
       if (uri == null) {
-         cat.debug("quick fail, uri == null");
+         log.debug("quick fail, uri == null");
 
          return false;
       }
@@ -297,7 +298,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
       String uriNodeValue = uri.getNodeValue();
 
       if (uriNodeValue.equals("") || uriNodeValue.startsWith("#")) {
-         cat.debug("quick fail for empty URIs and local ones");
+         log.debug("quick fail for empty URIs and local ones");
 
          return false;
       }
@@ -307,16 +308,16 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
       try {
          uriNew = getNewURI(uri.getNodeValue(), BaseURI);
       } catch (URI.MalformedURIException ex) {
-         cat.debug("", ex);
+         log.debug("", ex);
       }
 
       if ((uriNew != null) && uriNew.getScheme().equals("http")) {
-         cat.debug("I state that I can resolve " + uriNew.toString());
+         log.debug("I state that I can resolve " + uriNew.toString());
 
          return true;
       }
 
-      cat.debug("I state that I can't resolve " + uriNew.toString());
+      log.debug("I state that I can't resolve " + uriNew.toString());
 
       return false;
    }

@@ -82,9 +82,9 @@ import org.apache.xml.security.signature.XMLSignatureException;
  */
 public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(SignatureBaseRSA.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(SignatureBaseRSA.class.getName());
 
    /**
     * Method engineGetURI
@@ -106,7 +106,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
       JCEMapper.ProviderIdClass algorithmID =
          JCEMapper.translateURItoJCEID(this.engineGetURI());
 
-      cat.debug("Created SignatureDSA using " + algorithmID.getAlgorithmID()
+      log.debug("Created SignatureDSA using " + algorithmID.getAlgorithmID()
                 + " " + algorithmID.getProviderId());
 
       try {

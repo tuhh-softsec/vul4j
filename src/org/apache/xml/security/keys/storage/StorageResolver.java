@@ -77,9 +77,9 @@ import org.apache.xml.security.keys.storage.implementations.SingleCertificateRes
  */
 public class StorageResolver {
 
-   /** Field cat */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(StorageResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(StorageResolver.class.getName());
 
    /** Field _storageResolvers */
    Vector _storageResolvers = new Vector();
@@ -133,7 +133,7 @@ public class StorageResolver {
       try {
          this.add(new KeyStoreResolver(keyStore));
       } catch (StorageResolverException ex) {
-         cat.error("Could not add KeyStore because of: ", ex);
+         log.error("Could not add KeyStore because of: ", ex);
       }
    }
 

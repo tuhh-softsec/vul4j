@@ -83,10 +83,10 @@ import org.w3c.dom.Element;
  */
 public class RSAKeyValueResolver extends KeyResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(RSAKeyValueResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                        RSAKeyValueResolver.class.getName());
 
    /** Field _rsaKeyElement */
    private Element _rsaKeyElement = null;
@@ -102,7 +102,7 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
 
-      cat.debug("Can I resolve " + element.getTagName());
+      log.debug("Can I resolve " + element.getTagName());
 
       if (element == null) {
          return false;
@@ -164,7 +164,7 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
 
          return rsaKeyValue.getPublicKey();
       } catch (XMLSecurityException ex) {
-         cat.debug("XMLSecurityException", ex);
+         log.debug("XMLSecurityException", ex);
       }
 
       return null;

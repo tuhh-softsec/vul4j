@@ -344,7 +344,7 @@ public class SignedInfo extends Manifest {
       for (int i = 0; i < children.getLength(); i++) {
          Node n = children.item(i);
 
-         cat.debug("Looking for SignatureMethodURI in " + n);
+         log.debug("Looking for SignatureMethodURI in " + n);
 
          if (n.getNodeType() == Node.ELEMENT_NODE) {
             boolean found = true;

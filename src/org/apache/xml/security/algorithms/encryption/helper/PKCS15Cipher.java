@@ -71,7 +71,6 @@ import javax.crypto.IllegalBlockSizeException;
 /**
  *
  * @author $Author$
- * @see org.bouncycastle.crypto.encodings.PKCS1Encoding
  */
 public class PKCS15Cipher {
 

@@ -81,9 +81,9 @@ import org.w3c.dom.Element;
 public class XMLX509Certificate extends SignatureElementProxy
         implements XMLX509DataContent {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(XMLX509Certificate.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(XMLX509Certificate.class.getName());
 
    /** Field JCA_CERT_ID */
    public static final String JCA_CERT_ID = "X.509";

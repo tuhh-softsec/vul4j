@@ -76,13 +76,11 @@ import javax.crypto.IllegalBlockSizeException;
 
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.HexDump;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 
 /**
  *
  * @author $Author$
- * @see org.bouncycastle.crypto.encodings.OAEPEncoding
  */
 public class OAEPCipher {
 
@@ -448,9 +446,6 @@ public class OAEPCipher {
     * @throws Exception
     */
    public static void main(String[] args) throws Exception {
-
-      Security.addProvider(new BouncyCastleProvider());
-
       Cipher rsaCipher = Cipher.getInstance("RSA", "BC");
       MessageDigest sha1 = MessageDigest.getInstance("SHA-1", "BC");
       byte encodingParams[] = Base64.decode("9lWu3Q==");

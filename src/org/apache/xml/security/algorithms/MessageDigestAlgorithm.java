@@ -78,10 +78,10 @@ import org.w3c.dom.Document;
  */
 public class MessageDigestAlgorithm extends Algorithm {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(MessageDigestAlgorithm.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    MessageDigestAlgorithm.class.getName());
 
    // Message Digest - NOT RECOMMENDED MD5
    public static final String ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5 = Constants.MoreAlgorithmsSpecNS + "md5";

@@ -89,10 +89,10 @@ import org.w3c.dom.Text;
  * @author $Author$
  */
 public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
-
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(IntegrityHmacSHA1.class.getName());
+    
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(IntegrityHmacSHA1.class.getName());
 
    /**
     * Method engineGetURI
@@ -117,7 +117,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
       JCEMapper.ProviderIdClass algorithmID =
          JCEMapper.translateURItoJCEID(this.engineGetURI());
 
-      cat.debug("Created IntegrityHmacSHA1 using "
+      log.debug("Created IntegrityHmacSHA1 using "
                 + algorithmID.getAlgorithmID() + " "
                 + algorithmID.getProviderId());
 
@@ -164,22 +164,22 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
          byte[] completeResult = this._macAlgorithm.doFinal();
 
          if ((this._HMACOutputLength == 0) || (this._HMACOutputLength >= 160)) {
-            cat.debug("completeResult = "
+            log.debug("completeResult = "
                       + HexDump.byteArrayToHexString(completeResult));
-            cat.debug("signature      = "
+            log.debug("signature      = "
                       + HexDump.byteArrayToHexString(signature));
 
             return MessageDigestAlgorithm.isEqual(completeResult, signature);
          } else {
-            cat.debug("completeResult = "
+            log.debug("completeResult = "
                       + HexDump.byteArrayToHexString(completeResult));
 
             byte[] stripped = IntegrityHmac.reduceBitLength(completeResult,
                                  this._HMACOutputLength);
 
-            cat.debug("stripped       = "
+            log.debug("stripped       = "
                       + HexDump.byteArrayToHexString(stripped));
-            cat.debug("signature      = "
+            log.debug("signature      = "
                       + HexDump.byteArrayToHexString(signature));
 
             return MessageDigestAlgorithm.isEqual(stripped, signature);
@@ -387,7 +387,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
     */
    protected String engineGetJCEAlgorithmString() {
 
-      cat.debug("engineGetJCEAlgorithmString()");
+      log.debug("engineGetJCEAlgorithmString()");
 
       return this._macAlgorithm.getAlgorithm();
    }

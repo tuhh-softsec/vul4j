@@ -75,10 +75,9 @@ import org.w3c.dom.Element;
  */
 public abstract class SignatureAlgorithmSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(SignatureAlgorithmSpi.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(SignatureAlgorithmSpi.class.getName());
 
    /** Field _signatureAlgorithmObject */
    private SignatureAlgorithm _signatureAlgorithmObject = null;

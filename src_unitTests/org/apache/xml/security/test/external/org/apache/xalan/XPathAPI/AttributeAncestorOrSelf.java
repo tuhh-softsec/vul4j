@@ -86,10 +86,10 @@ import org.w3c.dom.Node;
  */
 public class AttributeAncestorOrSelf extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(AttributeAncestorOrSelf.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    AttributeAncestorOrSelf.class.getName());
 
    /** Field xercesVerStr */
    static String xercesVerStr = XMLUtils.getXercesVersion();

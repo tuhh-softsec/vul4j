@@ -95,10 +95,10 @@ import org.w3c.dom.Node;
  */
 public class TransformBase64DecodeTest extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(TransformBase64DecodeTest.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    TransformBase64DecodeTest.class.getName());
 
    /**
     * Method suite
@@ -143,7 +143,7 @@ public class TransformBase64DecodeTest extends TestCase {
       if (doc == null) {
           throw new RuntimeException("Could not create a Document");
       } else {
-         cat.debug("I could create the Document");
+         log.debug("I could create the Document");
       }
       return doc;
    }

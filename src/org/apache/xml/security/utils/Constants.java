@@ -74,9 +74,9 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
  */
 public class Constants {
 
-   /** Log4j logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Constants.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+   static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Constants.class.getName());
 
    /** Field configurationFile */
    public static String configurationFile = "data/websig.conf";

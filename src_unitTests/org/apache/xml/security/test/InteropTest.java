@@ -17,9 +17,9 @@ import org.apache.xml.security.utils.XMLUtils;
 
 public class InteropTest extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(InteropTest.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(InteropTest.class.getName());
 
    public InteropTest(String test) {
       super(test);
@@ -70,7 +70,7 @@ public class InteropTest extends TestCase {
     */
    public static void main(String[] args) {
 
-      XMLUtils.spitOutVersions(cat);
+      XMLUtils.spitOutVersions(log);
 
       boolean useTextUI = true;
 

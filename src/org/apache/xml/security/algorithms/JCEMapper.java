@@ -81,9 +81,9 @@ import org.w3c.dom.NodeList;
  */
 public class JCEMapper {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(JCEMapper.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(JCEMapper.class.getName());
 
    /** Field _providerList */
    private static Element _providerList = null;
@@ -128,7 +128,7 @@ public class JCEMapper {
                   .newInstance();
 
             if (java.security.Security.getProvider(Id) == null) {
-               cat.debug("The provider " + Id
+               log.debug("The provider " + Id
                          + " had to be added to the java.security.Security");
                java.security.Security.addProvider(prov);
 
@@ -211,7 +211,7 @@ public class JCEMapper {
     */
    public static ProviderIdClass translateURItoJCEID(String AlgorithmURI) {
 
-      cat.debug("Request for URI " + AlgorithmURI);
+      log.debug("Request for URI " + AlgorithmURI);
 
       try {
 
@@ -237,14 +237,14 @@ public class JCEMapper {
                ProviderIdClass result = new ProviderIdClass(jceName,
                                            providerId);
 
-               cat.debug("Found " + result.getAlgorithmID() + " from provider "
+               log.debug("Found " + result.getAlgorithmID() + " from provider "
                          + result.getProviderId());
 
                return result;
             }
          }
       } catch (TransformerException ex) {
-         cat.debug("Found nothing: " + ex.getMessage());
+         log.debug("Found nothing: " + ex.getMessage());
       }
 
       return null;
@@ -260,7 +260,7 @@ public class JCEMapper {
    public static ProviderIdClass translateURItoJCEID(String AlgorithmURI,
            String requestedProviderId) {
 
-      cat.debug("Request for URI " + AlgorithmURI + " from provider "
+      log.debug("Request for URI " + AlgorithmURI + " from provider "
                 + requestedProviderId);
 
       if (!JCEMapper.getProviderIsInClassPath(requestedProviderId)) {
@@ -280,12 +280,12 @@ public class JCEMapper {
          ProviderIdClass result = new ProviderIdClass(jceName,
                                      requestedProviderId);
 
-         cat.debug("Found " + result.getAlgorithmID() + " from provider "
+         log.debug("Found " + result.getAlgorithmID() + " from provider "
                    + result.getProviderId());
 
          return result;
       } catch (TransformerException ex) {
-         cat.debug("Found nothing: " + ex.getMessage());
+         log.debug("Found nothing: " + ex.getMessage());
       }
 
       return null;
@@ -299,7 +299,7 @@ public class JCEMapper {
     */
    public static String getAlgorithmClassFromURI(String AlgorithmURI) {
 
-      cat.debug("Request for URI " + AlgorithmURI);
+      log.debug("Request for URI " + AlgorithmURI);
 
       try {
          NodeList providers = XPathAPI.selectNodeList(JCEMapper._providerList,
@@ -311,12 +311,12 @@ public class JCEMapper {
             Element pro = (Element) providers.item(i);
             Attr jceName = pro.getAttributeNodeNS(null, "JCEName");
 
-            cat.debug("Found " + jceName.getNodeValue());
+            log.debug("Found " + jceName.getNodeValue());
          }
 
          return ((Element) providers.item(0)).getAttributeNS(null, "JCEName");
       } catch (TransformerException ex) {
-         cat.debug("Found nothing: " + ex.getMessage());
+         log.debug("Found nothing: " + ex.getMessage());
 
          return "";
       }
@@ -354,7 +354,7 @@ public class JCEMapper {
             }
          }
       } catch (TransformerException ex) {
-         cat.debug("Found nothing: " + ex.getMessage());
+         log.debug("Found nothing: " + ex.getMessage());
       }
 
       return -1;
@@ -379,7 +379,7 @@ public class JCEMapper {
             return Integer.parseInt(algoclassAttr.getNodeValue());
          }
       } catch (TransformerException ex) {
-         cat.debug("Found nothing: " + ex.getMessage());
+         log.debug("Found nothing: " + ex.getMessage());
       }
 
       return 0;
@@ -408,7 +408,7 @@ public class JCEMapper {
             return algoclassAttr.getNodeValue();
          }
       } catch (TransformerException ex) {
-         cat.debug("Found nothing: " + ex.getMessage());
+         log.debug("Found nothing: " + ex.getMessage());
       }
 
       return null;
@@ -431,7 +431,7 @@ public class JCEMapper {
             return algoclassAttr.getNodeValue();
          }
       } catch (TransformerException ex) {
-         cat.debug("Found nothing: " + ex.getMessage());
+         log.debug("Found nothing: " + ex.getMessage());
       }
 
       return null;
@@ -476,7 +476,7 @@ public class JCEMapper {
             return URI.getNodeValue();
          }
       } catch (TransformerException ex) {
-         cat.debug("Found nothing: " + ex.getMessage());
+         log.debug("Found nothing: " + ex.getMessage());
       }
 
       return null;

@@ -88,9 +88,9 @@ import org.w3c.dom.Node;
  */
 public class C14NInterop extends InteropTest {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(C14NInterop.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(C14NInterop.class.getName());
 
    /**
     * Method suite
@@ -208,7 +208,7 @@ public class C14NInterop extends InteropTest {
 
       long end = System.currentTimeMillis();
 
-      cat.debug("fixSubtree took " + (int) (end - start));
+      log.debug("fixSubtree took " + (int) (end - start));
 
       Element sigElement =
          (Element) doc.getElementsByTagNameNS(Constants.SignatureSpecNS,
@@ -225,9 +225,9 @@ public class C14NInterop extends InteropTest {
                signature.getSignedInfo().getVerificationResult(i);
 
             if (refVerify) {
-               cat.debug("Reference " + i + " was OK");
+               log.debug("Reference " + i + " was OK");
             } else {
-               cat.debug("Reference " + i + " failed");
+               log.debug("Reference " + i + " failed");
 
                failures++;
 
@@ -287,7 +287,7 @@ public class C14NInterop extends InteropTest {
       A_A.appendChild(A_B);
       A_B.appendChild(A_C);
 
-      cat.info("Created document");
+      log.info("Created document");
 
 
       Canonicalizer20010315OmitComments c = new Canonicalizer20010315OmitComments();
@@ -304,15 +304,15 @@ public class C14NInterop extends InteropTest {
       XPath2FilterContainer xf2_2 = XPath2FilterContainer.newInstanceSubtract(doc, "//namespace::*[local-name()='B']");
       transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER, xf2_2.getElement());
 
-      cat.info("Created signature object");
+      log.info("Created signature object");
 
       sig.addDocument("", transforms);
 
-      cat.info("Reference added");
+      log.info("Reference added");
 
       sig.sign(sig.createSecretKey("secret".getBytes()));
 
-      cat.info("Signing finished");
+      log.info("Signing finished");
 
       XMLSignatureInput s = sig.getSignedInfo().getReferencedContentAfterTransformsItem(0);
       Set nodes = s.getNodeSet();
@@ -326,7 +326,7 @@ public class C14NInterop extends InteropTest {
             System.out.println("<" + ((Element)n).getTagName() + " />");
          }
       }
-      cat.info("finished");
+      log.info("finished");
 
       System.out.println("###########################");
       System.out.println(new String(s.getBytes()));

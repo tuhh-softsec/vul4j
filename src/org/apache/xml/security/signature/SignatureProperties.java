@@ -84,10 +84,9 @@ import org.w3c.dom.NodeList;
  */
 public class SignatureProperties extends SignatureElementProxy {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(SignatureProperties.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(SignatureProperties.class.getName());
 
    /**
     * Constructor SignatureProperties

@@ -86,9 +86,9 @@ import org.w3c.dom.Element;
 public class DSAKeyValue extends SignatureElementProxy
         implements KeyValueContent {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(DSAKeyValue.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(DSAKeyValue.class.getName());
 
    /**
     * Constructor DSAKeyValue

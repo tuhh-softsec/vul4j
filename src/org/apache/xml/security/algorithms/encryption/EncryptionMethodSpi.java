@@ -77,9 +77,9 @@ import org.w3c.dom.Element;
  */
 public abstract class EncryptionMethodSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(EncryptionMethodSpi.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(EncryptionMethodSpi.class.getName());
 
    /**
     * Return <CODE>true</CODE> if this Provider which is required by this

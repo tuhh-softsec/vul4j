@@ -84,10 +84,10 @@ import org.w3c.dom.NodeList;
  */
 public class X509SubjectNameResolver extends KeyResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(X509SubjectNameResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    X509SubjectNameResolver.class.getName());
 
    /** Field _x509childNodes */
    private NodeList _x509childNodes = null;
@@ -109,13 +109,13 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
 
-      cat.debug("Can I resolve " + element.getTagName() + "?");
+      log.debug("Can I resolve " + element.getTagName() + "?");
 
       try {
          XMLUtils.guaranteeThatElementInSignatureSpace(element,
                  Constants._TAG_X509DATA);
       } catch (XMLSignatureException ex) {
-         cat.debug("I can't");
+         log.debug("I can't");
 
          return false;
       }
@@ -130,13 +130,13 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
 
          if ((this._x509childNodes != null)
                  && (this._x509childNodes.getLength() > 0)) {
-            cat.debug("Yes Sir, I can");
+            log.debug("Yes Sir, I can");
 
             return true;
          }
       } catch (TransformerException ex) {}
 
-      cat.debug("I can't");
+      log.debug("I can't");
 
       return false;
    }
@@ -193,7 +193,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
                new KeyResolverException("KeyResolver.needStorageResolver",
                                         exArgs);
 
-            cat.info("", ex);
+            log.info("", ex);
 
             throw ex;
          }
@@ -212,25 +212,25 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
             XMLX509SubjectName certSN =
                new XMLX509SubjectName(element.getOwnerDocument(), cert);
 
-            cat.debug("Found Certificate SN: " + certSN.getSubjectName());
+            log.debug("Found Certificate SN: " + certSN.getSubjectName());
 
             for (int i = 0; i < this._x509childObject.length; i++) {
-               cat.debug("Found Element SN:     "
+               log.debug("Found Element SN:     "
                          + this._x509childObject[i].getSubjectName());
 
                if (certSN.equals(this._x509childObject[i])) {
-                  cat.debug("match !!! ");
+                  log.debug("match !!! ");
 
                   return cert;
                } else {
-                  cat.debug("no match...");
+                  log.debug("no match...");
                }
             }
          }
 
          return null;
       } catch (XMLSecurityException ex) {
-         cat.debug("XMLSecurityException", ex);
+         log.debug("XMLSecurityException", ex);
 
          throw new KeyResolverException("generic.EmptyMessage", ex);
       }

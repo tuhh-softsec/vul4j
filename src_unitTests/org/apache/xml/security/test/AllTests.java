@@ -73,9 +73,10 @@ import org.apache.xml.security.utils.XMLUtils;
  */
 public class AllTests extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(AllTests.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+			    AllTests.class.getName());
 
    public AllTests(String test) {
       super(test);
@@ -106,22 +107,22 @@ public class AllTests extends TestCase {
     */
    public static void main(String[] args) {
 
-      XMLUtils.spitOutVersions(cat);
-      cat.debug("java.class.path            : " + System.getProperty("java.class.path"));
-      cat.debug("java.library.path          : " + System.getProperty("java.library.path"));
-      cat.debug("java.runtime.name          : " + System.getProperty("java.runtime.name"));
-      cat.debug("java.runtime.version       : " + System.getProperty("java.runtime.version"));
-      cat.debug("java.specification.name    : " + System.getProperty("java.specification.name"));
-      cat.debug("java.specification.vendor  : " + System.getProperty("java.specification.vendor"));
-      cat.debug("java.specification.version : " + System.getProperty("java.specification.version"));
-      cat.debug("java.vendor                : " + System.getProperty("java.vendor"));
-      cat.debug("java.version               : " + System.getProperty("java.version"));
-      cat.debug("java.vm.info               : " + System.getProperty("java.vm.info"));
-      cat.debug("java.vm.name               : " + System.getProperty("java.vm.name"));
-      cat.debug("java.vm.version            : " + System.getProperty("java.vm.version"));
-      cat.debug("os.arch                    : " + System.getProperty("os.arch"));
-      cat.debug("os.name                    : " + System.getProperty("os.name"));
-      cat.debug("os.version                 : " + System.getProperty("os.version"));
+      XMLUtils.spitOutVersions(log);
+      log.debug("java.class.path            : " + System.getProperty("java.class.path"));
+      log.debug("java.library.path          : " + System.getProperty("java.library.path"));
+      log.debug("java.runtime.name          : " + System.getProperty("java.runtime.name"));
+      log.debug("java.runtime.version       : " + System.getProperty("java.runtime.version"));
+      log.debug("java.specification.name    : " + System.getProperty("java.specification.name"));
+      log.debug("java.specification.vendor  : " + System.getProperty("java.specification.vendor"));
+      log.debug("java.specification.version : " + System.getProperty("java.specification.version"));
+      log.debug("java.vendor                : " + System.getProperty("java.vendor"));
+      log.debug("java.version               : " + System.getProperty("java.version"));
+      log.debug("java.vm.info               : " + System.getProperty("java.vm.info"));
+      log.debug("java.vm.name               : " + System.getProperty("java.vm.name"));
+      log.debug("java.vm.version            : " + System.getProperty("java.vm.version"));
+      log.debug("os.arch                    : " + System.getProperty("os.arch"));
+      log.debug("os.name                    : " + System.getProperty("os.name"));
+      log.debug("os.version                 : " + System.getProperty("os.version"));
 
       boolean useTextUI = true;
 

@@ -81,10 +81,10 @@ import org.w3c.dom.Element;
  */
 public class X509IssuerSerialResolver extends KeyResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(X509IssuerSerialResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    X509IssuerSerialResolver.class.getName());
 
    /**
     * Method engineCanResolve
@@ -97,23 +97,23 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
 
-      cat.debug("Can I resolve " + element.getTagName() + "?");
+      log.debug("Can I resolve " + element.getTagName() + "?");
 
       X509Data x509data = null;
       try {
          x509data = new X509Data(element, BaseURI);
       } catch (XMLSignatureException ex) {
-         cat.debug("I can't");
+         log.debug("I can't");
 
          return false;
       } catch (XMLSecurityException ex) {
-         cat.debug("I can't");
+         log.debug("I can't");
 
          return false;
       }
 
       if (x509data == null) {
-         cat.debug("I can't");
+         log.debug("I can't");
          return false;
       }
 
@@ -121,7 +121,7 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
             return true;
       }
 
-      cat.debug("I can't");
+      log.debug("I can't");
       return false;
    }
 
@@ -168,7 +168,7 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
                new KeyResolverException("KeyResolver.needStorageResolver",
                                         exArgs);
 
-            cat.info("", ex);
+            log.info("", ex);
             throw ex;
          }
 
@@ -179,33 +179,33 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
             X509Certificate cert = storage.next();
             XMLX509IssuerSerial certSerial = new XMLX509IssuerSerial(element.getOwnerDocument(), cert);
 
-            cat.debug("Found Certificate Issuer: "
+            log.debug("Found Certificate Issuer: "
                       + certSerial.getIssuerName());
-            cat.debug("Found Certificate Serial: "
+            log.debug("Found Certificate Serial: "
                       + certSerial.getSerialNumber().toString());
 
             for (int i=0; i<noOfISS; i++) {
                XMLX509IssuerSerial xmliss = x509data.itemIssuerSerial(i);
 
-               cat.debug("Found Element Issuer:     "
+               log.debug("Found Element Issuer:     "
                          + xmliss.getIssuerName());
-               cat.debug("Found Element Serial:     "
+               log.debug("Found Element Serial:     "
                          + xmliss.getSerialNumber().toString());
 
 
                if (certSerial.equals(xmliss)) {
-                  cat.debug("match !!! ");
+                  log.debug("match !!! ");
 
                   return cert;
                } else {
-                  cat.debug("no match...");
+                  log.debug("no match...");
                }
             }
          }
 
          return null;
       } catch (XMLSecurityException ex) {
-         cat.debug("XMLSecurityException", ex);
+         log.debug("XMLSecurityException", ex);
 
          throw new KeyResolverException("generic.EmptyMessage", ex);
       }

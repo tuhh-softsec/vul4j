@@ -85,9 +85,9 @@ import org.w3c.dom.Element;
  */
 public class HereSigner {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(HereSigner.class.getName());
+    /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(HereSigner.class.getName());
 
    /**
     * Method main

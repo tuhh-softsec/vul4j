@@ -88,9 +88,10 @@ import org.w3c.dom.traversal.NodeIterator;
  */
 public class XalanBug1425Test extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(XalanBug1425Test.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    XalanBug1425Test.class.getName());
 
    /** Field xercesVerStr */
    static String xercesVerStr = XMLUtils.getXercesVersion();

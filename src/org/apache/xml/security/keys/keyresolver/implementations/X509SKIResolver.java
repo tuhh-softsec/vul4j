@@ -86,9 +86,9 @@ import org.w3c.dom.NodeList;
  */
 public class X509SKIResolver extends KeyResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(X509SKIResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(X509SKIResolver.class.getName());
 
    /** Field _x509childNodes */
    private NodeList _x509childNodes = null;
@@ -110,13 +110,13 @@ public class X509SKIResolver extends KeyResolverSpi {
    public boolean engineCanResolve(Element element, String BaseURI,
                                    StorageResolver storage) {
 
-      cat.debug("Can I resolve " + element.getTagName() + "?");
+      log.debug("Can I resolve " + element.getTagName() + "?");
 
       try {
          XMLUtils.guaranteeThatElementInSignatureSpace(element,
                  Constants._TAG_X509DATA);
       } catch (XMLSignatureException ex) {
-         cat.debug("I can't");
+         log.debug("I can't");
 
          return false;
       }
@@ -129,13 +129,13 @@ public class X509SKIResolver extends KeyResolverSpi {
 
          if ((this._x509childNodes != null)
                  && (this._x509childNodes.getLength() > 0)) {
-            cat.debug("Yes Sir, I can");
+            log.debug("Yes Sir, I can");
 
             return true;
          }
       } catch (TransformerException ex) {}
 
-      cat.debug("I can't");
+      log.debug("I can't");
 
       return false;
    }
@@ -192,7 +192,7 @@ public class X509SKIResolver extends KeyResolverSpi {
                new KeyResolverException("KeyResolver.needStorageResolver",
                                         exArgs);
 
-            cat.info("", ex);
+            log.info("", ex);
 
             throw ex;
          }
@@ -211,7 +211,7 @@ public class X509SKIResolver extends KeyResolverSpi {
 
             for (int i = 0; i < this._x509childObject.length; i++) {
                if (certSKI.equals(this._x509childObject[i])) {
-                  cat.debug("Return PublicKey from "
+                  log.debug("Return PublicKey from "
                             + cert.getSubjectDN().getName());
 
                   return cert;

@@ -83,9 +83,9 @@ import sun.security.util.DerValue;
 public class XMLX509SKI extends SignatureElementProxy
         implements XMLX509DataContent {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(XMLX509SKI.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(XMLX509SKI.class.getName());
 
    /**
     * <CODE>SubjectKeyIdentifier (id-ce-subjectKeyIdentifier) (2.5.29.14)</CODE>:
@@ -198,7 +198,7 @@ public class XMLX509SKI extends SignatureElementProxy
          byte abyte0[] = new byte[derEncodedValue.length - 4];
          System.arraycopy(derEncodedValue, 4, abyte0, 0, abyte0.length);
          */
-         cat.debug("Base64 of SKI is " + Base64.encode(abyte0));
+         log.debug("Base64 of SKI is " + Base64.encode(abyte0));
 
          return abyte0;
       } catch (IOException ex) {

@@ -74,10 +74,10 @@ import org.w3c.dom.Attr;
  */
 public class NullURIReferenceResolver extends ResourceResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(NullURIReferenceResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                NullURIReferenceResolver.class.getName());
 
    /** Field _data[] */
    byte _data[] = null;

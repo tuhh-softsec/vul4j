@@ -74,10 +74,10 @@ import org.w3c.dom.Attr;
  */
 public abstract class ResourceResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(ResourceResolverSpi.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    ResourceResolverSpi.class.getName());
 
    /** Field _properties */
    protected java.util.Map _properties = new java.util.HashMap(10);
@@ -329,7 +329,7 @@ public abstract class ResourceResolverSpi {
                                   && (ch3 != '/'));
 
          if (isDosFilename) {
-            cat.debug("Found DOS filename: " + str);
+            log.debug("Found DOS filename: " + str);
          }
       }
 

@@ -82,10 +82,9 @@ import org.w3c.dom.Document;
  */
 public class KeyWrapTest extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(KeyWrapTest.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(KeyWrapTest.class.getName());
 
    /** Field FAILURE_OK */
    static final int FAILURE_OK = 0;
@@ -196,7 +195,7 @@ public class KeyWrapTest extends TestCase {
 
       if (!MessageDigest.isEqual(result,
                                  HexDump.hexStringToByteArray(WrappedStr))) {
-         cat.info("Wrap failed: " + HexDump.byteArrayToHexString(result));
+         log.info("Wrap failed: " + HexDump.byteArrayToHexString(result));
          return FAILURE_WRAP;
       }
 
@@ -205,7 +204,7 @@ public class KeyWrapTest extends TestCase {
       SecretKeySpec unwrapped = (SecretKeySpec) kwa.unwrap(result, kek, cekURI);
 
       if (!MessageDigest.isEqual(unwrapped.getEncoded(), CEK)) {
-         cat.info("Unwrap failed: " + HexDump.byteArrayToHexString(unwrapped.getEncoded()));
+         log.info("Unwrap failed: " + HexDump.byteArrayToHexString(unwrapped.getEncoded()));
          return FAILURE_UNWRAP;
       }
 

@@ -90,9 +90,9 @@ import org.xml.sax.InputSource;
  */
 public class Base64 {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Base64.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Base64.class.getName());
 
    /** Field LINE_SEPARATOR */
    public static final String LINE_SEPARATOR = "\n";
@@ -352,9 +352,9 @@ public class Base64 {
 
       try {
          if (base64.length() < 30) {
-            cat.debug("I was asked to decode \"" + base64 + "\"");
+            log.debug("I was asked to decode \"" + base64 + "\"");
          } else {
-            cat.debug("I was asked to decode \"" + base64.substring(0, 20)
+            log.debug("I was asked to decode \"" + base64.substring(0, 20)
                       + "...\"");
          }
 

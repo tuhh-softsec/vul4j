@@ -90,9 +90,9 @@ import org.w3c.dom.Attr;
  */
 public class ResourceResolver {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(ResourceResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(ResourceResolver.class.getName());
 
    /** Field _alreadyInitialized */
    static boolean _alreadyInitialized = false;
@@ -157,7 +157,7 @@ public class ResourceResolver {
                                                 exArgs, e, uri, BaseURI);
          }
 
-         cat.debug("check resolvability by class " + currentClass);
+         log.debug("check resolvability by class " + currentClass);
 
          if ((resolver != null) && resolver.canResolve(uri, BaseURI)) {
             return resolver;
@@ -185,8 +185,8 @@ public class ResourceResolver {
            Attr uri, String BaseURI, Vector individualResolvers)
               throws ResourceResolverException {
 
-      cat.debug("I was asked to create a ResourceResolver and got " + individualResolvers.size());
-      cat.debug(" extra resolvers to my existing " + ResourceResolver._resolverVector.size() + " system-wide resolvers");
+      log.debug("I was asked to create a ResourceResolver and got " + individualResolvers.size());
+      log.debug(" extra resolvers to my existing " + ResourceResolver._resolverVector.size() + " system-wide resolvers");
 
       // first check the individual Resolvers
       if ((individualResolvers != null) && (individualResolvers.size() > 0)) {
@@ -197,7 +197,7 @@ public class ResourceResolver {
             if (resolver != null) {
                String currentClass = resolver._resolverSpi.getClass().getName();
 
-               cat.debug("check resolvability by class " + currentClass);
+               log.debug("check resolvability by class " + currentClass);
 
                if (resolver.canResolve(uri, BaseURI)) {
                   return resolver;
@@ -222,7 +222,7 @@ public class ResourceResolver {
                                                 exArgs, e, uri, BaseURI);
          }
 
-         cat.debug("check resolvability by class " + currentClass);
+         log.debug("check resolvability by class " + currentClass);
 
          if ((resolver != null) && resolver.canResolve(uri, BaseURI)) {
             return resolver;

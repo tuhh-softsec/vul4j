@@ -95,9 +95,9 @@ import org.w3c.dom.Text;
  */
 public class XMLUtils {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(XMLUtils.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(XMLUtils.class.getName());
 
    /**
     * Constructor XMLUtils
@@ -341,7 +341,7 @@ public class XMLUtils {
       }
    }
 
-   /**
+  /**
     * Method spitOutVersions
     *
     * @param cat
@@ -349,6 +349,16 @@ public class XMLUtils {
    public static void spitOutVersions(org.apache.log4j.Category cat) {
       cat.debug(XMLUtils.getXercesVersion());
       cat.debug(XMLUtils.getXalanVersion());
+   }
+   
+   /**
+    * Method spitOutVersions
+    *
+    * @param log
+    */
+   public static void spitOutVersions(org.apache.commons.logging.Log log) {
+      log.debug(XMLUtils.getXercesVersion());
+      log.debug(XMLUtils.getXalanVersion());
    }
 
    /** Field nodeTypeString */
@@ -931,7 +941,7 @@ public class XMLUtils {
            throws XMLSignatureException {
 
       /*
-      cat.debug("guaranteeThatElementInSignatureSpace(" + element + ", "
+      log.debug("guaranteeThatElementInSignatureSpace(" + element + ", "
                 + localName + ")");
       */
       if (element == null) {

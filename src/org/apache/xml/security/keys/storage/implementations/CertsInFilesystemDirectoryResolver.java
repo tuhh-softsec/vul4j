@@ -87,10 +87,10 @@ import org.apache.xml.security.utils.Base64;
  */
 public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
 
-   /** Field cat */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(CertsInFilesystemDirectoryResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    CertsInFilesystemDirectoryResolver.class.getName());
 
    /** Field _merlinsCertificatesDir */
    String _merlinsCertificatesDir = null;
@@ -169,19 +169,19 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
             dn = cert.getSubjectDN().getName();
             added = true;
          } catch (FileNotFoundException ex) {
-            cat.debug("Could not add certificate from file " + filename, ex);
+            log.debug("Could not add certificate from file " + filename, ex);
          } catch (IOException ex) {
-            cat.debug("Could not add certificate from file " + filename, ex);
+            log.debug("Could not add certificate from file " + filename, ex);
          } catch (CertificateNotYetValidException ex) {
-            cat.debug("Could not add certificate from file " + filename, ex);
+            log.debug("Could not add certificate from file " + filename, ex);
          } catch (CertificateExpiredException ex) {
-            cat.debug("Could not add certificate from file " + filename, ex);
+            log.debug("Could not add certificate from file " + filename, ex);
          } catch (CertificateException ex) {
-            cat.debug("Could not add certificate from file " + filename, ex);
+            log.debug("Could not add certificate from file " + filename, ex);
          }
 
          if (added) {
-            cat.debug("Added certificate: " + dn);
+            log.debug("Added certificate: " + dn);
          }
       }
    }

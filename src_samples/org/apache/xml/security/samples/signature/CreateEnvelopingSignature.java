@@ -82,9 +82,9 @@ import org.w3c.dom.Element;
  */
 public class CreateEnvelopingSignature {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(CreateSignature.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(CreateSignature.class.getName());
 
    /**
     * Method main

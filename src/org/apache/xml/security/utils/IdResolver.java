@@ -85,9 +85,9 @@ import org.w3c.dom.Element;
  */
 public class IdResolver {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(IdResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(IdResolver.class.getName());
 
    /**
     * Constructor IdResolver
@@ -136,7 +136,7 @@ public class IdResolver {
       result = IdResolver.getElementByIdType(doc, id);
 
       if (result != null) {
-         cat.debug(
+         log.debug(
             "I could find an Element using the simple getElementById method: "
             + result.getTagName());
 
@@ -146,7 +146,7 @@ public class IdResolver {
       result = IdResolver.getElementByIdInDSNamespace(doc, id);
 
       if (result != null) {
-         cat.debug(
+         log.debug(
             "I could find an Element using the advanced ds:Namespace searcher method: "
             + result.getTagName());
 
@@ -159,7 +159,7 @@ public class IdResolver {
       result = IdResolver.getElementByIdInXENCNamespace(doc, id);
 
       if (result != null) {
-         cat.debug(
+         log.debug(
             "I could find an Element using the advanced xenc:Namespace searcher method: "
             + result.getTagName());
 
@@ -172,7 +172,7 @@ public class IdResolver {
       result = IdResolver.getElementByIdInSOAPSignatureNamespace(doc, id);
 
       if (result != null) {
-         cat.debug(
+         log.debug(
             "I could find an Element using the advanced SOAP-SEC:id searcher method: "
             + result.getTagName());
 
@@ -185,7 +185,7 @@ public class IdResolver {
       result = IdResolver.getElementByIdInXKMSNamespace(doc, id);
 
       if (result != null) {
-         cat.debug("I could find an Element using the XKMS searcher method: "
+         log.debug("I could find an Element using the XKMS searcher method: "
                    + result.getTagName());
 
          // register the ID to speed up further queries on that ID
@@ -197,7 +197,7 @@ public class IdResolver {
       result = IdResolver.getElementByIdUnsafeMatchByIdName(doc, id);
 
       if (result != null) {
-         cat.warn(
+         log.warn(
             "I could find an Element using the totally stupid and insecure Id/ID/id searcher method: "
             + result.getTagName());
 
@@ -217,7 +217,7 @@ public class IdResolver {
     */
    private static Element getElementByIdType(Document doc, String id) {
 
-      cat.debug("getElementByIdType() Search for ID " + id);
+      log.debug("getElementByIdType() Search for ID " + id);
 
       return doc.getElementById(id);
    }
@@ -231,7 +231,7 @@ public class IdResolver {
     */
    private static Element getElementByIdInDSNamespace(Document doc, String id) {
 
-      cat.debug("getElementByIdInDSNamespace() Search for ID " + id);
+      log.debug("getElementByIdInDSNamespace() Search for ID " + id);
 
       try {
          Element nscontext = XMLUtils.createDSctx(doc, "ds",
@@ -245,7 +245,7 @@ public class IdResolver {
          NodeList dsElements = XPathAPI.selectNodeList(doc, "//ds:*",
                                   nscontext);
 
-         cat.debug("Found ds:Elements: " + dsElements.getLength());
+         log.debug("Found ds:Elements: " + dsElements.getLength());
 
          for (int i = 0; i < dsElements.getLength(); i++) {
             Element currentElem = (Element) dsElements.item(i);
@@ -259,7 +259,7 @@ public class IdResolver {
          }
          */
       } catch (TransformerException ex) {
-         cat.fatal("empty", ex);
+         log.fatal("empty", ex);
       }
 
       return null;
@@ -275,7 +275,7 @@ public class IdResolver {
    private static Element getElementByIdInXENCNamespace(Document doc,
            String id) {
 
-      cat.debug("getElementByIdInXENCNamespace() Search for ID " + id);
+      log.debug("getElementByIdInXENCNamespace() Search for ID " + id);
 
       try {
          Element nscontext =
@@ -287,7 +287,7 @@ public class IdResolver {
 
          return element;
       } catch (TransformerException ex) {
-         cat.fatal("empty", ex);
+         log.fatal("empty", ex);
       }
 
       return null;
@@ -303,7 +303,7 @@ public class IdResolver {
    private static Element getElementByIdInSOAPSignatureNamespace(Document doc,
            String id) {
 
-      cat.debug("getElementByIdInSOAPSignatureNamespace() Search for ID " + id);
+      log.debug("getElementByIdInSOAPSignatureNamespace() Search for ID " + id);
 
       try {
          Element nscontext = XMLUtils.createDSctx(
@@ -314,7 +314,7 @@ public class IdResolver {
 
          return element;
       } catch (TransformerException ex) {
-         cat.fatal("empty", ex);
+         log.fatal("empty", ex);
       }
 
       return null;
@@ -339,7 +339,7 @@ public class IdResolver {
       <attribute name="RequestID"         type="ID" use="optional"/>
       <attribute name="ResponseID"        type="ID" use="required"/>
       */
-      cat.debug("getElementByIdInXKMSNamespace() Search for ID " + id);
+      log.debug("getElementByIdInXKMSNamespace() Search for ID " + id);
 
       try {
          Element nscontext =
@@ -361,7 +361,7 @@ public class IdResolver {
 
          return null;
       } catch (TransformerException ex) {
-         cat.fatal("empty", ex);
+         log.fatal("empty", ex);
       }
 
       return null;
@@ -377,7 +377,7 @@ public class IdResolver {
    private static Element getElementByIdUnsafeMatchByIdName(Document doc,
            String id) {
 
-      cat.debug("getElementByIdUnsafeMatchByIdName() Search for ID " + id);
+      log.debug("getElementByIdUnsafeMatchByIdName() Search for ID " + id);
 
       try {
          Element element_Id = (Element) XPathAPI.selectSingleNode(doc,
@@ -401,7 +401,7 @@ public class IdResolver {
             return element_id;
          }
       } catch (TransformerException ex) {
-         cat.fatal("empty", ex);
+         log.fatal("empty", ex);
       }
 
       return null;

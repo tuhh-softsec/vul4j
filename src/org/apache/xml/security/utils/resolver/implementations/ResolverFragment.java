@@ -87,9 +87,10 @@ import org.w3c.dom.NodeList;
  */
 public class ResolverFragment extends ResourceResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(ResolverFragment.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                            ResolverFragment.class.getName());
 
    /**
     * Method engineResolve
@@ -121,7 +122,7 @@ public class ResolverFragment extends ResourceResolverSpi {
           * resource containing the signature
           */
 
-         cat.debug("ResolverFragment with empty URI (means complete document)");
+         log.debug("ResolverFragment with empty URI (means complete document)");
          try {
             resultNodes =
                cXPathAPI.selectNodeList(doc,
@@ -145,7 +146,7 @@ public class ResolverFragment extends ResourceResolverSpi {
          // Element selectedElem = doc.getElementById(id);
          Element selectedElem = IdResolver.getElementById(doc, id);
 
-         cat.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
+         log.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
          if (selectedElem == null) {
             resultNodes = new HelperNodeList();
          } else {
@@ -164,7 +165,7 @@ public class ResolverFragment extends ResourceResolverSpi {
       Set resultSet = XMLUtils.convertNodelistToSet(resultNodes);
       XMLSignatureInput result = new XMLSignatureInput(resultSet, cXPathAPI);
 
-      cat.debug("We return a nodeset with " + resultNodes.getLength() + " nodes");
+      log.debug("We return a nodeset with " + resultNodes.getLength() + " nodes");
       result.setMIMEType("text/xml");
 
       try {
@@ -188,7 +189,7 @@ public class ResolverFragment extends ResourceResolverSpi {
    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
       if (uri == null) {
-         cat.debug("Quick fail for null uri");
+         log.debug("Quick fail for null uri");
          return false;
       }
 
@@ -197,10 +198,10 @@ public class ResolverFragment extends ResourceResolverSpi {
       if (uriNodeValue.equals("")
               || (uriNodeValue.startsWith("#")
                   &&!uriNodeValue.startsWith("#xpointer("))) {
-         cat.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
+         log.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
          return true;
       }
-      cat.debug("Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
+      log.debug("Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
       return false;
    }
 
@@ -237,7 +238,7 @@ public class ResolverFragment extends ResourceResolverSpi {
     *          throws ResourceResolverException {
     *
     *  try {
-    *     cat.debug("Got " + input.getBytes().length
+    *     log.debug("Got " + input.getBytes().length
     *               + " bytes from source and  URI oif " + input.getSourceURI());
     *  } catch (Exception ex) {
     *     throw new ResourceResolverException("generic.EmptyMessage", ex, uri,
@@ -257,14 +258,14 @@ public class ResolverFragment extends ResourceResolverSpi {
     *     Document doc =
     *        db.parse(new java.io.ByteArrayInputStream(input.getBytes()));
     *
-    *     cat.debug("Owner Document " + doc.getDocumentElement().getTagName());
-    *     cat.debug("try to select fragment " + fragment);
+    *     log.debug("Owner Document " + doc.getDocumentElement().getTagName());
+    *     log.debug("try to select fragment " + fragment);
     *
     *     // Element selectedElem = doc.getElementById(fragment);
     *     Element selectedElem = IdResolver.getElementById(doc, fragment);
     *
     *     if (selectedElem != null) {
-    *        cat.debug("Selection hat geklappt!!!: "
+    *        log.debug("Selection hat geklappt!!!: "
     *                  + selectedElem.getTagName());
     *     }
     *

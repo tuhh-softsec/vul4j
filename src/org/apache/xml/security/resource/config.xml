@@ -515,7 +515,7 @@
           -->
         <root>
                 <priority value ="debug" />
-                <!-- <appender-ref ref="LOGTXT" /> -->
+                <!-- appender-ref ref="LOGTXT" /--> 
                 <appender-ref ref="NULL" />
                 <!-- <appender-ref ref="chainsaw" /> -->
         </root>

@@ -81,9 +81,9 @@ import org.w3c.dom.Node;
  */
 public class KeyResolver {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(KeyResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(KeyResolver.class.getName());
 
    /** Field _alreadyInitialized */
    static boolean _alreadyInitialized = false;
@@ -172,7 +172,7 @@ public class KeyResolver {
             throw new KeyResolverException("utils.resolver.noClass", exArgs, e);
          }
 
-         cat.debug("check resolvability by class " + currentClass);
+         log.debug("check resolvability by class " + currentClass);
 
          if ((resolver != null)
                  && resolver.canResolve(element, BaseURI, storage)) {

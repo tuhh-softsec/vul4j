@@ -97,10 +97,10 @@ import org.w3c.dom.Element;
  */
 public class RetrievalMethodResolver extends KeyResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(RetrievalMethodResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                        RetrievalMethodResolver.class.getName());
 
    /**
     * Method engineCanResolve
@@ -148,18 +148,18 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
          if (resRes != null) {
             XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
 
-            cat.debug("Before applying Transforms, resource has "
+            log.debug("Before applying Transforms, resource has "
                       + resource.getBytes().length + "bytes");
 
             if (transforms != null) {
-               cat.debug("We have Transforms");
+               log.debug("We have Transforms");
 
                resource = transforms.performTransforms(resource);
             }
 
-            cat.debug("After applying Transforms, resource has "
+            log.debug("After applying Transforms, resource has "
                       + resource.getBytes().length + "bytes");
-            cat.debug("Resolved to resource " + resource.getSourceURI());
+            log.debug("Resolved to resource " + resource.getSourceURI());
 
             byte inputBytes[] = resource.getBytes();
 
@@ -179,11 +179,11 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             } else {
 
                // otherwise, we parse the resource, create an Element and delegate
-               cat.debug("we have to parse " + inputBytes.length + " bytes");
+               log.debug("we have to parse " + inputBytes.length + " bytes");
 
                Element e = this.getDocFromBytes(inputBytes);
 
-               cat.debug("Now we have a {" + e.getNamespaceURI() + "}"
+               log.debug("Now we have a {" + e.getNamespaceURI() + "}"
                          + e.getLocalName() + " Element");
 
                if (e != null) {
@@ -198,11 +198,11 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             }
          }
       } catch (XMLSecurityException ex) {
-         cat.debug("XMLSecurityException", ex);
+         log.debug("XMLSecurityException", ex);
       } catch (CertificateException ex) {
-         cat.debug("CertificateException", ex);
+         log.debug("CertificateException", ex);
       } catch (IOException ex) {
-         cat.debug("IOException", ex);
+         log.debug("IOException", ex);
       }
 
       return null;
@@ -227,25 +227,25 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
          String type = rm.getType();
          Transforms transforms = rm.getTransforms();
 
-         cat.debug("Asked to resolve URI " + uri);
+         log.debug("Asked to resolve URI " + uri);
 
          ResourceResolver resRes = ResourceResolver.getInstance(uri, BaseURI);
 
          if (resRes != null) {
             XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
 
-            cat.debug("Before applying Transforms, resource has "
+            log.debug("Before applying Transforms, resource has "
                       + resource.getBytes().length + "bytes");
 
             if (transforms != null) {
-               cat.debug("We have Transforms");
+               log.debug("We have Transforms");
 
                resource = transforms.performTransforms(resource);
             }
 
-            cat.debug("After applying Transforms, resource has "
+            log.debug("After applying Transforms, resource has "
                       + resource.getBytes().length + "bytes");
-            cat.debug("Resolved to resource " + resource.getSourceURI());
+            log.debug("Resolved to resource " + resource.getSourceURI());
 
             byte inputBytes[] = resource.getBytes();
 
@@ -266,11 +266,11 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             } else {
 
                // otherwise, we parse the resource, create an Element and delegate
-               cat.debug("we have to parse " + inputBytes.length + " bytes");
+               log.debug("we have to parse " + inputBytes.length + " bytes");
 
                Element e = this.getDocFromBytes(inputBytes);
 
-               cat.debug("Now we have a {" + e.getNamespaceURI() + "}"
+               log.debug("Now we have a {" + e.getNamespaceURI() + "}"
                          + e.getLocalName() + " Element");
 
                if (e != null) {
@@ -285,11 +285,11 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             }
          }
       } catch (XMLSecurityException ex) {
-         cat.debug("XMLSecurityException", ex);
+         log.debug("XMLSecurityException", ex);
       } catch (CertificateException ex) {
-         cat.debug("CertificateException", ex);
+         log.debug("CertificateException", ex);
       } catch (IOException ex) {
-         cat.debug("IOException", ex);
+         log.debug("IOException", ex);
       }
 
       return null;

@@ -80,10 +80,9 @@ import org.bouncycastle.asn1.DEROutputStream;
  */
 public class SignatureDSATest extends TestCase{
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(SignatureDSATest.class.getName());
-
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(SignatureDSATest.class.getName());
 
    public SignatureDSATest(String name) {
      super(name);

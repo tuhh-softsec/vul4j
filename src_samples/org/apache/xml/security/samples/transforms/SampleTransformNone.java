@@ -72,10 +72,10 @@ import org.apache.xml.security.transforms.TransformSpi;
  */
 public class SampleTransformNone extends TransformSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(SampleTransformNone.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    SampleTransformNone.class.getName());
 
    /** Field implementedTransformURI */
    public static final String implementedTransformURI =

@@ -84,9 +84,9 @@ import org.w3c.dom.Text;
  */
 public abstract class ElementProxy {
 
-   /** Field cat */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(ElementProxy.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(ElementProxy.class.getName());
    //J-
    public static final int MODE_CREATE  = 0;
    public static final int MODE_PROCESS = 1;
@@ -206,7 +206,7 @@ public abstract class ElementProxy {
          throw new XMLSecurityException("ElementProxy.nullElement");
       }
 
-      cat.debug("setElement(" + element.getTagName() + ", \"" + BaseURI + "\"");
+      log.debug("setElement(" + element.getTagName() + ", \"" + BaseURI + "\"");
 
       this._doc = element.getOwnerDocument();
       this._state = ElementProxy.MODE_PROCESS;
@@ -230,7 +230,7 @@ public abstract class ElementProxy {
          throw new XMLSecurityException("ElementProxy.nullElement");
       }
 
-      cat.debug("setElement(\"" + element.getTagName() + "\", \"" + BaseURI
+      log.debug("setElement(\"" + element.getTagName() + "\", \"" + BaseURI
                 + "\")");
 
       this._doc = element.getOwnerDocument();

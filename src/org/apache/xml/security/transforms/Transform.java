@@ -97,9 +97,9 @@ import org.xml.sax.SAXException;
  */
 public final class Transform extends SignatureElementProxy {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Transform.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Transform.class.getName());
 
    /** Field _alreadyInitialized */
    static boolean _alreadyInitialized = false;
@@ -130,9 +130,9 @@ public final class Transform extends SignatureElementProxy {
          String implementingClass =
             Transform.getImplementingClass(algorithmURI);
 
-         cat.debug("Create URI \"" + algorithmURI + "\" class \""
+         log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
-         cat.debug("The NodeList is " + contextNodes);
+         log.debug("The NodeList is " + contextNodes);
 
          // create the custom Transform object
          this.transformSpi =

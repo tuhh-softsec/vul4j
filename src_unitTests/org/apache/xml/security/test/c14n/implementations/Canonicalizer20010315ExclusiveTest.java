@@ -100,10 +100,10 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
       org.apache.xml.security.Init.init();
    }
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(Canonicalizer20010315ExclusiveTest.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                Canonicalizer20010315ExclusiveTest.class.getName());
 
    /**
     * Method suite

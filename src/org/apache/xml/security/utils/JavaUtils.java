@@ -77,9 +77,9 @@ import java.util.Vector;
  */
 public class JavaUtils {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(JavaUtils.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(JavaUtils.class.getName());
 
    private JavaUtils() {
      // we don't allow instantiation
@@ -267,7 +267,7 @@ public class JavaUtils {
             fos.write(bytes);
             fos.close();
          } else {
-            cat.debug("writeBytesToFilename got null byte[] pointed");
+            log.debug("writeBytesToFilename got null byte[] pointed");
          }
       } catch (Exception ex) {}
    }
@@ -306,7 +306,7 @@ public class JavaUtils {
     */
    public static void runGC() {
 
-      cat.debug("<METHOD name=runGC()>");
+      log.debug("<METHOD name=runGC()>");
 
       Runtime runtime = Runtime.getRuntime();
       long lFreeMemBefore = runtime.freeMemory();
@@ -321,17 +321,17 @@ public class JavaUtils {
       long lFreeMemAfter = runtime.freeMemory();
       long lTotalMemAfter = runtime.totalMemory();
 
-      cat.debug("* Garbage collection took " + time + " seconds.");
-      cat.debug("* Memory before gc()... free:" + lFreeMemBefore + "= "
+      log.debug("* Garbage collection took " + time + " seconds.");
+      log.debug("* Memory before gc()... free:" + lFreeMemBefore + "= "
                 + lFreeMemBefore / 1024 + "KB,...total:" + lTotalMemBefore
                 + "= " + lTotalMemBefore / 1024 + "KB,...  used:"
                 + (lTotalMemBefore - lFreeMemBefore) + "= "
                 + (lTotalMemBefore - lFreeMemBefore) / 1024 + "KB");
-      cat.debug("* Memory after: gc()... free:" + lFreeMemAfter + "= "
+      log.debug("* Memory after: gc()... free:" + lFreeMemAfter + "= "
                 + lFreeMemAfter / 1024 + "KB,...total:" + lTotalMemAfter + "= "
                 + lTotalMemAfter / 1024 + "KB,...  used:"
                 + (lTotalMemAfter - lFreeMemAfter) + "= "
                 + (lTotalMemAfter - lFreeMemAfter) / 1024 + "KB");
-      cat.debug("</METHOD>");
+      log.debug("</METHOD>");
    }
 }

@@ -80,9 +80,10 @@ import org.xml.sax.InputSource;
  */
 public class TestVectorResolver implements EntityResolver {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(TestVectorResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+			TestVectorResolver.class.getName());
 
    /** Field _firstEntityResolved */
    boolean _firstEntityResolved = false;
@@ -160,7 +161,7 @@ public class TestVectorResolver implements EntityResolver {
 
       this._firstEntitySystemIdDirectory = getFilePath(systemId);
 
-      cat.debug("this._firstEntitySystemIdDirectory = "
+      log.debug("this._firstEntitySystemIdDirectory = "
                 + this._firstEntitySystemIdDirectory);
    }
 
@@ -172,14 +173,14 @@ public class TestVectorResolver implements EntityResolver {
     */
    private InputStream getInputStream(String systemId) {
 
-      cat.debug("getInputStream(" + systemId + ")");
+      log.debug("getInputStream(" + systemId + ")");
 
       // we don't use the file system but the ZIP resource
       // return new InputSource(new FileInputStream(systemId));
       byte result[] = (byte[]) TestVectorResolver.vectors.get(systemId);
 
       if (result == null) {
-         cat.fatal("requested " + systemId + " resulted in null");
+         log.fatal("requested " + systemId + " resulted in null");
       }
 
       return new ByteArrayInputStream(result);
@@ -201,7 +202,7 @@ public class TestVectorResolver implements EntityResolver {
 
          systemId = this.getFileName(systemId);
 
-         cat.debug("publicId=\"" + publicId + "\" systemId=\"" + systemId
+         log.debug("publicId=\"" + publicId + "\" systemId=\"" + systemId
                    + "\"");
 
          // InputStream result = this.getInputStream(systemId);
@@ -251,7 +252,7 @@ public class TestVectorResolver implements EntityResolver {
                         .getBytesFromStream(zis);
 
                   TestVectorResolver.vectors.put(ze.getName(), data);
-                  cat.debug("Contents of " + thisClass + "/" + testVectorFile
+                  log.debug("Contents of " + thisClass + "/" + testVectorFile
                             + "#" + ze.getName() + " " + data.length
                             + " bytes");
                }

@@ -70,11 +70,12 @@ import java.io.StringReader;
  */
 public class RFC2253Parser {
 
-   /** Field cat */
-
-   /*   static org.apache.log4j.Category cat =
-         org.apache.log4j.Category.getInstance(RFC2253Parser.class.getName());
+    
+   /** {@link org.apache.commons.logging} logging facility */
+   /* static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(RFC2253Parser.class.getName());
    */
+    
    static boolean _TOXML = true;
 
    /**

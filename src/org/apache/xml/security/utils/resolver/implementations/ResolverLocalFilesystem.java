@@ -76,10 +76,10 @@ import org.w3c.dom.Attr;
  */
 public class ResolverLocalFilesystem extends ResourceResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(ResolverLocalFilesystem.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                    ResolverLocalFilesystem.class.getName());
 
    /**
     * Method resolve
@@ -177,16 +177,16 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
       try {
          URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
 
-         cat.debug("I was asked whether I can resolve " + uriNew.toString());
+         log.debug("I was asked whether I can resolve " + uriNew.toString());
 
          if (uriNew.getScheme().equals("file")) {
-            cat.debug("I state that I can resolve " + uriNew.toString());
+            log.debug("I state that I can resolve " + uriNew.toString());
 
             return true;
          }
       } catch (Exception e) {}
 
-      cat.debug("But I can't");
+      log.debug("But I can't");
 
       return false;
    }

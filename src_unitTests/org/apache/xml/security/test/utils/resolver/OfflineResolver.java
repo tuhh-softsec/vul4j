@@ -87,9 +87,9 @@ import org.w3c.dom.Attr;
  */
 public class OfflineResolver extends ResourceResolverSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(OfflineResolver.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(OfflineResolver.class.getName());
 
    /**
     * Method engineResolve
@@ -108,11 +108,11 @@ public class OfflineResolver extends ResourceResolverSpi {
          if (OfflineResolver._uriMap.containsKey(URI)) {
             String newURI = (String) OfflineResolver._uriMap.get(URI);
 
-            cat.debug("Mapped " + URI + " to " + newURI);
+            log.debug("Mapped " + URI + " to " + newURI);
 
             InputStream is = new FileInputStream(newURI);
 
-            cat.debug("Available bytes = " + is.available());
+            log.debug("Available bytes = " + is.available());
 
             XMLSignatureInput result = new XMLSignatureInput(is);
 
@@ -153,12 +153,12 @@ public class OfflineResolver extends ResourceResolverSpi {
          URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
 
          if (uriNew.getScheme().equals("http")) {
-            cat.debug("I state that I can resolve " + uriNew.toString());
+            log.debug("I state that I can resolve " + uriNew.toString());
 
             return true;
          }
 
-         cat.debug("I state that I can't resolve " + uriNew.toString());
+         log.debug("I state that I can't resolve " + uriNew.toString());
       } catch (URI.MalformedURIException ex) {}
 
       return false;

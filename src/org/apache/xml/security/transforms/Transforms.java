@@ -91,9 +91,9 @@ import org.w3c.dom.NodeList;
  */
 public class Transforms extends SignatureElementProxy {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Transforms.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Transforms.class.getName());
    //J-
    /** Canonicalization - Required Canonical XML (omits comments) */
    public static final String TRANSFORM_C14N_OMIT_COMMENTS = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
@@ -171,7 +171,7 @@ public class Transforms extends SignatureElementProxy {
            throws TransformationException {
 
       try {
-         cat.debug("Transforms.addTransform(" + transformURI + ")");
+         log.debug("Transforms.addTransform(" + transformURI + ")");
 
          Transform transform = Transform.getInstance(this._doc, transformURI);
 
@@ -193,7 +193,7 @@ public class Transforms extends SignatureElementProxy {
            throws TransformationException {
 
       try {
-         cat.debug("Transforms.addTransform(" + transformURI + ")");
+         log.debug("Transforms.addTransform(" + transformURI + ")");
 
          Transform transform = Transform.getInstance(this._doc, transformURI,
                                                      contextElement);
@@ -232,7 +232,7 @@ public class Transforms extends SignatureElementProxy {
     */
    private void addTransform(Transform transform) {
 
-      cat.debug("Transforms.addTransform(" + transform.getURI() + ")");
+      log.debug("Transforms.addTransform(" + transform.getURI() + ")");
 
       Element transformElement = transform.getElement();
 
@@ -254,7 +254,7 @@ public class Transforms extends SignatureElementProxy {
          for (int i = 0; i < this.getLength(); i++) {
             Transform t = this.item(i);
 
-            cat.debug("Preform the (" + i + ")th " + t.getURI() + " transform");
+            log.debug("Preform the (" + i + ")th " + t.getURI() + " transform");
 
             xmlSignatureInput = t.performTransform(xmlSignatureInput);
          }

@@ -81,9 +81,9 @@ import org.w3c.dom.Element;
 public class RetrievalMethod extends SignatureElementProxy
         implements KeyInfoContent {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(RetrievalMethod.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(RetrievalMethod.class.getName());
    //J-
    public static final String TYPE_DSA     = Constants.SignatureSpecNS + "DSAKeyValue";
    public static final String TYPE_RSA     = Constants.SignatureSpecNS + "RSAKeyValue";

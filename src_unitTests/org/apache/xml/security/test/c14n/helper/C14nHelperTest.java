@@ -78,9 +78,9 @@ import org.apache.xml.security.c14n.helper.C14nHelper;
  */
 public class C14nHelperTest extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(C14nHelperTest.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(C14nHelperTest.class.getName());
 
    /**
     * Method suite

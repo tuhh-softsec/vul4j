@@ -76,9 +76,9 @@ import org.w3c.dom.NodeList;
  */
 public class HelperNodeList implements NodeList {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(HelperNodeList.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+    org.apache.commons.logging.LogFactory.getLog(HelperNodeList.class.getName());
 
    /** Field nodes */
    ArrayList nodes = new ArrayList(20);
@@ -101,7 +101,7 @@ public class HelperNodeList implements NodeList {
     */
    public Node item(int index) {
 
-      // cat.debug("item(" + index + ") of " + this.getLength() + " nodes");
+      // log.debug("item(" + index + ") of " + this.getLength() + " nodes");
 
       return (Node) nodes.get(index);
    }

@@ -73,10 +73,9 @@ import org.xml.sax.SAXParseException;
  */
 public class IgnoreAllErrorHandler implements ErrorHandler {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(IgnoreAllErrorHandler.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(IgnoreAllErrorHandler.class.getName());
 
    /** Field throwExceptions */
    static final boolean warnOnExceptions = true;
@@ -87,7 +86,7 @@ public class IgnoreAllErrorHandler implements ErrorHandler {
    //J-
     public void warning (SAXParseException ex) throws SAXException {
        if (IgnoreAllErrorHandler.warnOnExceptions) {
-          cat.warn("", ex);
+          log.warn("", ex);
        }
        if (IgnoreAllErrorHandler.throwExceptions) {
           throw ex;
@@ -95,7 +94,7 @@ public class IgnoreAllErrorHandler implements ErrorHandler {
     }
     public void error (SAXParseException ex) throws SAXException {
        if (IgnoreAllErrorHandler.warnOnExceptions) {
-          cat.error("", ex);
+          log.error("", ex);
        }
        if (IgnoreAllErrorHandler.throwExceptions) {
           throw ex;
@@ -103,7 +102,7 @@ public class IgnoreAllErrorHandler implements ErrorHandler {
     }
     public void fatalError (SAXParseException ex) throws SAXException {
        if (IgnoreAllErrorHandler.warnOnExceptions) {
-          cat.warn("", ex);
+          log.warn("", ex);
        }
        if (IgnoreAllErrorHandler.throwExceptions) {
           throw ex;

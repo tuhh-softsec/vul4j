@@ -14,9 +14,10 @@ import org.w3c.dom.Attr;
  * @author $Author$
  */
 public class ResolverAnonymous extends ResourceResolverSpi {
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(ResolverAnonymous.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                        ResolverAnonymous.class.getName());
 
    private XMLSignatureInput _input = null;
 

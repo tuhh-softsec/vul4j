@@ -106,10 +106,9 @@ import org.xml.sax.SAXException;
  */
 public class Canonicalizer20010315Test extends TestCase {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category
-         .getInstance(Canonicalizer20010315Test.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Canonicalizer20010315Test.class.getName());
 
    /**
     * Method suite
@@ -769,7 +768,7 @@ public class Canonicalizer20010315Test extends TestCase {
     *
     *  if (!equal) {
     *     JavaUtils.writeBytesToFilename(fileOut, c14nBytes);
-    *     cat.debug("Wrote malicious output from Test \"" + descri
+    *     log.debug("Wrote malicious output from Test \"" + descri
     *               + "\" to file " + fileOut);
     *  }
     *
@@ -832,7 +831,7 @@ public class Canonicalizer20010315Test extends TestCase {
       } catch (CanonicalizationException cex) {
 
          // if we reach this point - good.
-         cat.debug("We catched the C14nEx, that's good: " + cex.getMessage());
+         log.debug("We catched the C14nEx, that's good: " + cex.getMessage());
 
          weCatchedTheRelativeNS = true;
       }
@@ -1218,7 +1217,7 @@ public class Canonicalizer20010315Test extends TestCase {
          FileOutputStream fos = new FileOutputStream(f);
 
          fos.write(c14nBytes);
-         cat.debug("Wrote errornous result to file " + f.toURL().toString());
+         log.debug("Wrote errornous result to file " + f.toURL().toString());
       }
 
       return result;

@@ -94,9 +94,9 @@ import org.xml.sax.SAXException;
  */
 public class Manifest extends SignatureElementProxy {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(Manifest.class.getName());
+  /** {@link org.apache.commons.logging} logging facility */
+  static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Manifest.class.getName());
 
    /** Field _references */
    Vector _references;
@@ -327,11 +327,11 @@ public class Manifest extends SignatureElementProxy {
    public boolean verifyReferences(boolean followManifests)
            throws MissingResourceFailureException, XMLSecurityException {
 
-      cat.debug(
+      log.debug(
          "verify "
          + this.length(Constants.SignatureSpecNS, Constants._TAG_REFERENCE)
          + " References");
-      cat.debug("I am " + (followManifests
+      log.debug("I am " + (followManifests
                            ? ""
                            : "not") + " requested to follow nested Manifests");
 
@@ -366,12 +366,12 @@ public class Manifest extends SignatureElementProxy {
                verify = false;
             }
 
-            cat.debug("The Reference has Type " + currentRef.getType());
+            log.debug("The Reference has Type " + currentRef.getType());
 
             // was verification successful till now and do we want to verify the Manifest?
             if (verify && followManifests
                     && currentRef.typeIsReferenceToManifest()) {
-               cat.debug("We have to follow a nested Manifest");
+               log.debug("We have to follow a nested Manifest");
 
                try {
                   currentRef.dereferenceURIandPerformTransforms();
@@ -421,9 +421,9 @@ public class Manifest extends SignatureElementProxy {
                   if (!referencedManifestValid) {
                      verify = false;
 
-                     cat.warn("The nested Manifest was invalid (bad)");
+                     log.warn("The nested Manifest was invalid (bad)");
                   } else {
-                     cat.debug("The nested Manifest was valid (good)");
+                     log.debug("The nested Manifest was valid (good)");
                   }
                } catch (IOException ex) {
                   throw new ReferenceNotInitializedException("empty", ex);

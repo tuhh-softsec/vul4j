@@ -85,9 +85,9 @@ import org.w3c.dom.NodeList;
  */
 public class X509Data extends SignatureElementProxy implements KeyInfoContent {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(X509Data.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(X509Data.class.getName());
 
    /**
     * Constructor X509Data
@@ -157,12 +157,12 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
 
                this.add(crl);
             } else {
-               cat.warn("Found a " + currentElem.getTagName() + " element in "
+               log.warn("Found a " + currentElem.getTagName() + " element in "
                         + Constants._TAG_X509DATA);
                this.addUnknownElement(currentElem);
             }
          } else {
-            cat.warn("Found a " + currentElem.getTagName() + " element in "
+            log.warn("Found a " + currentElem.getTagName() + " element in "
                      + Constants._TAG_X509DATA);
             this.addUnknownElement(currentElem);
          }

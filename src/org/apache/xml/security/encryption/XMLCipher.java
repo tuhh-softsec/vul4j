@@ -88,7 +88,6 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.apache.log4j.*;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.EncryptionConstants;
@@ -122,12 +121,9 @@ import sun.misc.BASE64Decoder;
  * @author Christian Geuer-Pollmann
  */
 public class XMLCipher {
-    private static final Logger logger =
-        Logger.getLogger(XMLCipher.class.getName());
 
-    static {
-        BasicConfigurator.configure();
-    }
+    private static org.apache.commons.logging.Log logger = 
+        org.apache.commons.logging.LogFactory.getLog(XMLCipher.class.getName());
 
     public static final String TRIPLEDES =                   
         EncryptionConstants.ALGO_ID_BLOCKCIPHER_TRIPLEDES;
@@ -279,10 +275,10 @@ public class XMLCipher {
             XMLEncryptionException {
         // sanity checks
         logger.info("Getting XMLCipher...");
-        logger.assertLog(null != transformation,
-            "Transformation unexpectedly null...");
-        logger.assertLog(isValidEncryptionAlgorithm(transformation),
-            "Alogorithm unvalid, expected one of " + ENC_ALGORITHMS);
+        if (null == transformation)
+            logger.error("Transformation unexpectedly null...");
+        if(!isValidEncryptionAlgorithm(transformation))
+            logger.error("Alogorithm unvalid, expected one of " + ENC_ALGORITHMS);
 
         if (null == instance) {
             instance = new XMLCipher();
@@ -319,14 +315,14 @@ public class XMLCipher {
             throws XMLEncryptionException {
         // sanity checks
         logger.info("Getting XMLCipher...");
-        logger.assertLog(null != transformation,
-            "Transformation unexpectedly null...");
-        logger.assertLog(null != provider,
-            "Provider unexpectedly null..");
-        logger.assertLog("" != provider,
-            "Provider's value unexpectedly not specified...");
-        logger.assertLog(isValidEncryptionAlgorithm(transformation),
-            "Alogorithm unvalid, expected one of " + ENC_ALGORITHMS);
+        if (null == transformation)
+            logger.error("Transformation unexpectedly null...");
+        if(null == provider)
+            logger.error("Provider unexpectedly null..");
+        if("" == provider)
+            logger.error("Provider's value unexpectedly not specified...");
+        if(!isValidEncryptionAlgorithm(transformation))
+            logger.error("Alogorithm unvalid, expected one of " + ENC_ALGORITHMS);
 
         if (null == instance) {
             instance = new XMLCipher();
@@ -367,8 +363,8 @@ public class XMLCipher {
     public void init(int opmode, Key key) throws XMLEncryptionException {
         // sanity checks
         logger.info("Initializing XMLCipher...");
-        logger.assertLog(opmode == ENCRYPT_MODE || opmode == DECRYPT_MODE,
-            "Mode unexpectedly invalid...");
+        if (opmode != ENCRYPT_MODE && opmode != DECRYPT_MODE)
+            logger.error("Mode unexpectedly invalid...");
         logger.debug("opmode = " +
             ((opmode == ENCRYPT_MODE) ? "ENCRYPT_MODE" : "DECRYPT_MODE"));
 
@@ -394,9 +390,10 @@ public class XMLCipher {
     private Document encryptElement(Element element) throws
             XMLEncryptionException {
         logger.info("Encrypting element...");
-        logger.assertLog(null != element, "Element unexpectedly null...");
-        logger.assertLog((cipherMode == ENCRYPT_MODE),
-            "XMLCipher unexpectedly not in ENCRYPT_MODE...");
+        if(null == element) 
+            logger.error("Element unexpectedly null...");
+        if(cipherMode != ENCRYPT_MODE)
+            logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
         String serializedOctets = serializer.serialize(element);
         logger.debug("Serialized octets:\n" + serializedOctets);
@@ -461,9 +458,10 @@ public class XMLCipher {
     private Document encryptElementContent(Element element) throws
             XMLEncryptionException {
         logger.info("Encrypting element content...");
-        logger.assertLog(null != element, "Element unexpectedly null...");
-        logger.assertLog((cipherMode == ENCRYPT_MODE),
-            "XMLCipher unexpectedly not in ENCRYPT_MODE...");
+        if(null == element) 
+            logger.error("Element unexpectedly null...");
+        if(cipherMode != ENCRYPT_MODE)
+            logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
         NodeList children = element.getChildNodes();
         String serializedOctets = null;
@@ -530,10 +528,10 @@ public class XMLCipher {
     public Document doFinal(Document context, Document source) throws
             XMLEncryptionException {
         logger.info("Processing source document...");
-        logger.assertLog(null != context,
-            "Context document unexpectedly null...");
-        logger.assertLog(null != source,
-            "Source document unexpectedly null...");
+        if(null == context)
+            logger.error("Context document unexpectedly null...");
+        if(null == source)
+            logger.error("Source document unexpectedly null...");
 
         instance.contextDocument = context;
 
@@ -570,10 +568,10 @@ public class XMLCipher {
     public Document doFinal(Document context, Element element) throws
             XMLEncryptionException {
         logger.info("Processing source element...");
-        logger.assertLog(null != context,
-            "Context document unexpectedly null...");
-        logger.assertLog(null != element,
-            "Source element unexpectedly null...");
+        if(null == context)
+            logger.error("Context document unexpectedly null...");
+        if(null == element)
+            logger.error("Source element unexpectedly null...");
 
         instance.contextDocument = context;
 
@@ -612,10 +610,10 @@ public class XMLCipher {
     public Document doFinal(Document context, Element element, boolean content)
             throws XMLEncryptionException {
         logger.info("Processing source element...");
-        logger.assertLog(null != context,
-            "Context document unexpectedly null...");
-        logger.assertLog(null != element,
-            "Source element unexpectedly null...");
+        if(null == context)
+            logger.error("Context document unexpectedly null...");
+        if(null == element)
+            logger.error("Source element unexpectedly null...");
 
         instance.contextDocument = context;
 
@@ -704,11 +702,12 @@ public class XMLCipher {
     public EncryptedData encryptData(Document context, Element element) throws
             XMLEncryptionException {
         logger.info("Encrypting element...");
-        logger.assertLog(null != context,
-            "Context document unexpectedly null...");
-        logger.assertLog(null != element, "Element unexpectedly null...");
-        logger.assertLog((cipherMode == ENCRYPT_MODE),
-            "XMLCipher unexpectedly not in ENCRYPT_MODE...");
+        if(null == context)
+            logger.error("Context document unexpectedly null...");
+        if(null == element)
+            logger.error("Element unexpectedly null...");
+        if(cipherMode != ENCRYPT_MODE)
+            logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
         instance.contextDocument = context;
 
@@ -787,8 +786,8 @@ public class XMLCipher {
     private Document decryptElement(Element element) throws
             XMLEncryptionException {
         logger.info("Decrypting element...");
-        logger.assertLog((cipherMode == DECRYPT_MODE),
-            "XMLCipher unexpectedly not in DECRYPT_MODE...");
+        if(cipherMode != DECRYPT_MODE)
+            logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
 
         EncryptedData encryptedData = factory.newEncryptedData(element);
 

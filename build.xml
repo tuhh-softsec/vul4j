@@ -86,6 +86,7 @@
     <property name="lib.jce"               value="${dir.libs}/bc-${jce.download.file}" />
     <property name="lib.junit"             value="${dir.libs}/junit3.7.jar" />     
     <property name="lib.log4j"             value="${dir.libs}/jakarta-log4j-1.2.6.jar" />
+    <property name="lib.logging"           value="${dir.libs}/commons-logging-1.0.3.jar" />
     <property name="lib.styleApache"       value="${dir.libs}/style-apachexml.jar" />
     <property name="lib.stylebook"         value="${dir.libs}/stylebook-1.0-b3_xalan-2.jar" />
     <property name="lib.xalan.1"           value="${dir.libs}/xalan.jar" />
@@ -99,6 +100,7 @@
       <pathelement path="${lib.xalan.1}" />
       <pathelement path="${lib.xalan.2}" />
       <pathelement path="${lib.log4j}" />
+      <pathelement path="${lib.logging}" />
       <pathelement path="${lib.jce}" />
     </path>
 
@@ -648,6 +650,7 @@ org.apache.xml.security.utils.resolver
      <mkdir  dir="${build.bindist}/${dir.libs}" />
      <copy todir="${build.bindist}/${dir.libs}" file="${lib.junit}" />
      <copy todir="${build.bindist}/${dir.libs}" file="${lib.log4j}" />
+     <copy todir="${build.bindist}/${dir.libs}" file="${lib.logging}" />
      <copy todir="${build.bindist}/${dir.libs}" file="${lib.styleApache}" />
      <copy todir="${build.bindist}/${dir.libs}" file="${lib.stylebook}" />
      <copy todir="${build.bindist}/${dir.libs}" file="${lib.xerces.1}" />
@@ -729,6 +732,28 @@ org.apache.xml.security.utils.resolver
      <java classname="org.apache.xml.security.samples.signature.VerifySignature"
            fork="yes"
            taskname="VerifySignature"
+           failonerror="true">
+        <classpath refid="classpath.test" />
+     </java>
+  </target>
+  
+  <target name="axis-sign"
+          description="axis sign sample"
+          depends="compile">
+     <java classname="org.apache.xml.security.samples.AxisSigner"
+           fork="yes"
+           taskname="SignAxis"
+           failonerror="true">
+        <classpath refid="classpath.test" />
+     </java>
+  </target>
+  
+  <target name="axis-verify"
+          description="axis verify sample"
+          depends="compile">
+     <java classname="org.apache.xml.security.samples.AxisVerifier"
+           fork="yes"
+           taskname="VerifyAxis"
            failonerror="true">
         <classpath refid="classpath.test" />
      </java>

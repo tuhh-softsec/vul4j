@@ -58,8 +58,6 @@
  */
 package org.apache.xml.security.signature;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.IdResolver;
@@ -67,7 +65,6 @@ import org.apache.xml.security.utils.SignatureElementProxy;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 
 /**
  * Handles <code>&lt;ds:SignatureProperty&gt;</code> elements
@@ -78,9 +75,10 @@ import org.w3c.dom.Node;
  */
 public class SignatureProperty extends SignatureElementProxy {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(SignatureProperty.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(
+                            SignatureProperty.class.getName());
 
    /**
     * Constructs{@link SignatureProperty} using specified <code>Target</code> attribute

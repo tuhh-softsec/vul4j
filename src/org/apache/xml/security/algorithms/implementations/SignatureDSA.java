@@ -78,22 +78,15 @@ import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 
 
-/*
-import org.bouncycastle.asn1.DERConstructedSequence;
-import org.bouncycastle.asn1.DERInputStream;
-import org.bouncycastle.asn1.DERInteger;
-import org.bouncycastle.asn1.DEROutputStream;
-*/
-
 /**
  *
  * @author $Author$
  */
 public class SignatureDSA extends SignatureAlgorithmSpi {
 
-   /** {@link org.apache.log4j} logging facility */
-   static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(SignatureDSA.class.getName());
+   /** {@link org.apache.commons.logging} logging facility */
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(SignatureDSA.class.getName());
 
    /** Field _URI */
    public static final String _URI = Constants.SignatureSpecNS + "dsa-sha1";
@@ -120,7 +113,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
       JCEMapper.ProviderIdClass algorithmID =
          JCEMapper.translateURItoJCEID(SignatureDSA._URI);
 
-      cat.debug("Created SignatureDSA using " + algorithmID.getAlgorithmID()
+      log.debug("Created SignatureDSA using " + algorithmID.getAlgorithmID()
                 + " " + algorithmID.getProviderId());
 
       try {
@@ -169,7 +162,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
            throws XMLSignatureException {
 
       try {
-         cat.debug("Called DSA.verify() on " + Base64.encode(signature));
+         log.debug("Called DSA.verify() on " + Base64.encode(signature));
 
          byte[] jcebytes = SignatureDSA.convertXMLDSIGtoASN1(signature);
 
@@ -348,118 +341,6 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
       return this._signatureAlgorithm.getProvider().getName();
    }
 
-   /*
-    * Converts a XML Signature DSA Value to an ASN.1 DSA value.
-    *
-    * The JAVA JCE DSA Signature algorithm creates ASN.1 encoded (r,s) value
-    * pairs; the XML Signature requires the core BigInteger values.
-    *
-    * @param xmldsigbytes
-    *
-    * @throws IOException
-    * @see org.bouncycastle.jce.provider.JDKDSASigner#derEncode
-    * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
-   private static byte[] convertXMLDSIGtoASN1_BOUNCY(byte[] xmldsigbytes)
-           throws IOException {
-
-      byte rbytes[] = new byte[21];
-      byte sbytes[] = new byte[21];
-
-      rbytes[0] = (byte) 0x00;
-      sbytes[0] = (byte) 0x00;
-
-      System.arraycopy(xmldsigbytes, 0, rbytes, 1, 20);
-      System.arraycopy(xmldsigbytes, 20, sbytes, 1, 20);
-
-      BigInteger r = new BigInteger(rbytes);
-      BigInteger s = new BigInteger(sbytes);
-
-      cat.debug("Verify DSA r=" + r.toString());
-      cat.debug("Verify DSA s=" + s.toString());
-
-      ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-      DEROutputStream dOut = new DEROutputStream(bOut);
-      DERConstructedSequence seq = new DERConstructedSequence();
-
-      seq.addObject(new DERInteger(r));
-      seq.addObject(new DERInteger(s));
-      dOut.writeObject(seq);
-
-      return bOut.toByteArray();
-   }
-    */
-
-   /*
-    * Converts an ASN.1 DSA value to a XML Signature DSA Value.
-    *
-    * The JAVA JCE DSA Signature algorithm creates ASN.1 encoded (r,s) value
-    * pairs; the XML Signature requires the core BigInteger values.
-    *
-    * @param derbytes
-    *
-    * @throws IOException
-    * @see org.bouncycastle.jce.provider.JDKDSASigner#derDecode
-    * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
-   private static byte[] convertASN1toXMLDSIG_BOUNCY(byte derbytes[])
-           throws IOException {
-
-      cat.debug("Input convertASN1toXMLDSIG("
-                + HexDump.byteArrayToHexString(derbytes) + ")");
-
-      ByteArrayInputStream bIn = new ByteArrayInputStream(derbytes);
-      DERInputStream dIn = new DERInputStream(bIn);
-      DERConstructedSequence seq = (DERConstructedSequence) dIn.readObject();
-      BigInteger r = ((DERInteger) seq.getObjectAt(0)).getValue();
-      BigInteger s = ((DERInteger) seq.getObjectAt(1)).getValue();
-
-      cat.debug("Created DSA r=" + r.toString());
-      cat.debug("Created DSA s=" + s.toString());
-
-      byte rbytes[] = r.toByteArray();
-      byte sbytes[] = s.toByteArray();
-
-      cat.debug("r1=" + HexDump.byteArrayToHexString(rbytes));
-      cat.debug("s1=" + HexDump.byteArrayToHexString(sbytes));
-
-      rbytes = SignatureDSA.normalizeBigIntegerArray(rbytes);
-      sbytes = SignatureDSA.normalizeBigIntegerArray(sbytes);
-
-      cat.debug("r2=" + HexDump.byteArrayToHexString(rbytes));
-      cat.debug("s2=" + HexDump.byteArrayToHexString(sbytes));
-
-      byte result[] = new byte[40];
-
-      System.arraycopy(rbytes, 0, result, 0, 20);
-      System.arraycopy(sbytes, 0, result, 20, 20);
-
-      return result;
-   }
-    */
-
-   /*
-    *
-    * @see org.bouncycastle.jce.provider.JDKDSASigner#derEncode
-    * @param bigIntegerArray
-    *
-    * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
-   private static byte[] normalizeBigIntegerArray(byte bigIntegerArray[]) {
-
-      byte resultBytes[] = new byte[20];
-
-      for (int i = 0; i < 20; i++) {
-         resultBytes[i] = (byte) 0x00;
-      }
-
-      if (bigIntegerArray.length == 21) {
-         System.arraycopy(bigIntegerArray, 1, resultBytes, 0, 20);
-      } else {
-         System.arraycopy(bigIntegerArray, 0, resultBytes,
-                          20 - bigIntegerArray.length, bigIntegerArray.length);
-      }
-
-      return resultBytes;
-   }
-    */
 
    /**
     * Converts an ASN.1 DSA value to a XML Signature DSA Value.
