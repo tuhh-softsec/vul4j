@@ -19,7 +19,6 @@ package org.apache.xml.security.signature;
 
 
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
@@ -40,6 +39,7 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.DigesterOutputStream;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -684,7 +684,7 @@ public class Reference extends SignatureElementProxy {
 
          mda.reset();
          DigesterOutputStream diOs=new DigesterOutputStream(mda);
-         OutputStream os=new BufferedOutputStream(diOs);
+         OutputStream os=new UnsyncBufferedOutputStream(diOs);
          XMLSignatureInput output=this.dereferenceURIandPerformTransforms(os);         
          output.updateOutputStream(os);
          os.flush();
