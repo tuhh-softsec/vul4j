@@ -29,15 +29,10 @@ limitations under the License.
 	  <title>Obtaining the Libraries</title>
 	  <p>
 		Source and binrary distributions for both the Java and C++ libraries
-		are available from one of the Apache mirrors.
-	  </p>
-	  <p>
-		Click <jump href="http://www.apache.org/dyn/closer.cgi/xml/security/">
-		here</jump> to choose the mirror closest to you.
-	  </p>
-	  <p>
-		If all else fails, the source can be downloaded directly from
-		<jump href="http://www.apache.org/dist/xml/security/">Apache</jump>.
+		are available from from the 
+		<jump href="http://xml.apache.org/security/dist/">
+		  XML project site</jump> only.  Current
+		distributions are <em>not</em> available from the mirrors.
 	  </p>
 	</section>
     <section> 
@@ -50,10 +45,13 @@ limitations under the License.
 		  key file</jump> downloaded from the Apache site.
 	  </p>
 	  <p/>
+<!--
+	  This is not valid if the mirror is not available
 	  <warning>
 		You should always use a key file downloaded from the Apache site
 		directly rather than from a mirror.
 	  </warning>
+-->
 	  <p>
 		Verification can be performed using :
 	  </p>
