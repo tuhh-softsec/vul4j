@@ -1096,6 +1096,14 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSLocateRequestImpl.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\xkms\impl\XKMSLocateResultImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSLocateResultImpl.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\xkms\impl\XKMSMessageAbstractTypeImpl.cpp
 # End Source File
 # Begin Source File
@@ -1134,6 +1142,22 @@ SOURCE=..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.cpp
 
 SOURCE=..\..\..\..\src\xkms\impl\XKMSRespondWithImpl.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSResultTypeImpl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\impl\XKMSUnverifiedKeyBindingImpl.hpp
+# End Source File
 # End Group
 # Begin Source File
 
@@ -1150,6 +1174,10 @@ SOURCE=..\..\..\..\src\xkms\XKMSKeyBindingAbstractType.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSLocateRequest.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSLocateResult.hpp
 # End Source File
 # Begin Source File
 
@@ -1170,6 +1198,14 @@ SOURCE=..\..\..\..\src\xkms\XKMSRequestAbstractType.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\src\xkms\XKMSRespondWith.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSResultType.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\xkms\XKMSUnverifiedKeyBinding.hpp
 # End Source File
 # End Group
 # End Target
