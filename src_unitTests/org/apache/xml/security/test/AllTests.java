@@ -70,11 +70,15 @@ import org.apache.xml.security.utils.XMLUtils;
  *
  * @author Christian Geuer-Pollmann
  */
-public class AllTests {
+public class AllTests extends TestCase {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
       org.apache.log4j.Category.getInstance(AllTests.class.getName());
+
+   public AllTests(String test) {
+      super(test);
+   }
 
    /**
     * Method suite
@@ -87,40 +91,10 @@ public class AllTests {
          new TestSuite("All org.apache.xml.security.test JUnit Tests");
 
       //J-
-      suite.addTest(org.apache.xml.security.test.c14n.helper.AttrCompareTest.suite());
-      suite.addTest(org.apache.xml.security.test.c14n.helper.C14nHelperTest.suite());
-      suite.addTest(org.apache.xml.security.test.c14n.helper.NamespaceSearcherTest.suite());
-      suite.addTest(org.apache.xml.security.test.c14n.implementations.Canonicalizer20010315Test.suite());
-      suite.addTest(org.apache.xml.security.test.c14n.implementations.Canonicalizer20010315WithoutXPathSupportTest.suite());
-      suite.addTest(org.apache.xml.security.test.external.org.apache.xalan.XPathAPI.XalanBug1425Test.suite());
-      suite.addTest(org.apache.xml.security.test.external.org.apache.xalan.XPathAPI.AttributeAncestorOrSelf.suite());
-      suite.addTest(org.apache.xml.security.test.signature.XMLSignatureInputTest.suite());
-      suite.addTest(org.apache.xml.security.test.transforms.implementations.TransformBase64DecodeTest.suite());
-      suite.addTest(org.apache.xml.security.test.utils.resolver.ResourceResolverSpiTest.suite());
-      suite.addTest(org.apache.xml.security.test.utils.Base64Test.suite());
-
-      // interoperability tests using test vectors from other implementations
-      suite.addTest(org.apache.xml.security.test.interop.BaltimoreTest.suite());
-      suite.addTest(org.apache.xml.security.test.interop.IAIKTest.suite());
-
-      {
-         /*
-          * To make interop against the IBM xss4j examples, download the
-          * XSS4j from http://www.alphaworks.ibm.com/tech/xmlsecuritysuite
-          * and extract the test signatures from
-          * xss4j-20011029.zip#/xss4j/data/dsig
-          * in the directory
-          * data/com/ibm/xss4j-20011029/
-          * then the interop test is performed against these values, too.
-          */
-         String filename = "data/com/ibm/xss4j-20011029/enveloped-rsa.sig";
-         File f = new File(filename);
-         if (f.exists()) {
-            suite.addTest(org.apache.xml.security.test.interop.IBMTest.suite());
-         }
-      }
-
+      suite.addTest(org.apache.xml.security.test.ModuleTest.suite());
+      suite.addTest(org.apache.xml.security.test.InteropTest.suite());
       //J+
+
       return suite;
    }
 
