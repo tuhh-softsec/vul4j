@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/CallMethodRuleTestCase.java,v 1.12 2003/10/18 13:30:22 rdonkin Exp $
- * $Revision: 1.12 $
- * $Date: 2003/10/18 13:30:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/CallMethodRuleTestCase.java,v 1.13 2004/02/16 02:26:38 skitching Exp $
+ * $Revision: 1.13 $
+ * $Date: 2004/02/16 02:26:38 $
  *
  * ====================================================================
  * 
@@ -591,6 +591,88 @@ public class CallMethodRuleTestCase extends TestCase {
         
         assertEquals("Test alpha property setting", "main/alpha/beta" , bean.getAlpha());
         assertEquals("Test beta property setting", "main/beta/epsilon/gamma" , bean.getBeta());
+    }
+
+
+    /** 
+     * Test invoking an object which does not exist on the stack.
+     */
+    public void testCallInvalidTarget() throws Exception {
+    
+        Digester digester = new Digester();
+        digester.addObjectCreate("employee", HashMap.class);
+
+        // there should be only one object on the stack (index zero),
+        // so selecting a target object with index 1 on the object stack
+        // should result in an exception.
+        CallMethodRule r = new CallMethodRule(1, "put", 0);
+        digester.addRule("employee", r);
+        
+        try {
+            digester.parse(getInputStream("Test5.xml"));
+            fail("Exception should be thrown for invalid target offset");
+        }
+        catch(SAXException e) {
+            // ok, exception expected
+        }
+    }
+
+    /** 
+     * Test invoking an object which is at top-1 on the stack, like
+     * SetNextRule does...
+     */
+    public void testCallNext() throws Exception {
+    
+        Digester digester = new Digester();
+        digester.addObjectCreate("employee", HashMap.class);
+
+        digester.addObjectCreate("employee/address", Address.class);
+        digester.addSetNestedProperties("employee/address");
+        CallMethodRule r = new CallMethodRule(1, "put", 2);
+        digester.addRule("employee/address", r);
+        digester.addCallParam("employee/address/type", 0);
+        digester.addCallParam("employee/address", 1, 0);
+        
+        HashMap map = (HashMap) digester.parse(getInputStream("Test5.xml"));
+        
+        assertNotNull(map);
+        java.util.Set keys = map.keySet();
+        assertEquals(2, keys.size());
+        Address home = (Address) map.get("home");
+        assertNotNull(home);
+        assertEquals("HmZip", home.getZipCode());
+        Address office = (Address) map.get("office");
+        assertNotNull(office);
+        assertEquals("OfZip", office.getZipCode());
+    }
+
+    /** 
+     * Test invoking an object which is at the root of the stack, like
+     * SetRoot does...
+     */
+    public void testCallRoot() throws Exception {
+    
+        Digester digester = new Digester();
+        digester.addObjectCreate("employee", HashMap.class);
+
+        digester.addObjectCreate("employee/address", Address.class);
+        digester.addSetNestedProperties("employee/address");
+        CallMethodRule r = new CallMethodRule(-1, "put", 2);
+        digester.addRule("employee/address", r);
+        digester.addCallParam("employee/address/type", 0);
+        digester.addCallParam("employee/address", 1, 0);
+        
+        HashMap map = (HashMap) digester.parse(getInputStream("Test5.xml"));
+        
+        assertNotNull(map);
+        java.util.Set keys = map.keySet();
+        assertEquals(2, keys.size());
+        Address home = (Address) map.get("home");
+        assertNotNull(home);
+        assertEquals("HmZip", home.getZipCode());
+        Address office = (Address) map.get("office");
+        assertNotNull(office);
+        assertEquals("OfZip", office.getZipCode());
     }
 
     // ------------------------------------------------ Utility Support Methods
