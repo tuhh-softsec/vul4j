@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.19 2001/09/21 10:00:41 jstrachan Exp $
- * $Revision: 1.19 $
- * $Date: 2001/09/21 10:00:41 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.20 2001/10/11 00:28:42 craigmcc Exp $
+ * $Revision: 1.20 $
+ * $Date: 2001/10/11 00:28:42 $
  *
  * ====================================================================
  *
@@ -108,7 +108,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.19 $ $Date: 2001/09/21 10:00:41 $
+ * @version $Revision: 1.20 $ $Date: 2001/10/11 00:28:42 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1533,7 +1533,6 @@ public class Digester extends DefaultHandler {
         bodyTexts.clear();
         params.clear();
         stack.clear();
-        getRules().clear();
 
     }
 

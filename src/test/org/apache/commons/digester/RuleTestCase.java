@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.4 2001/08/26 22:13:44 craigmcc Exp $
- * $Revision: 1.4 $
- * $Date: 2001/08/26 22:13:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.5 2001/10/11 00:28:42 craigmcc Exp $
+ * $Revision: 1.5 $
+ * $Date: 2001/10/11 00:28:42 $
  *
  * ====================================================================
  *
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * XML documents to exercise the built-in rules.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.4 $ $Date: 2001/08/26 22:13:44 $
+ * @version $Revision: 1.5 $ $Date: 2001/10/11 00:28:42 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -287,6 +287,47 @@ public class RuleTestCase extends TestCase {
                      "Last Name",
                      employee.getLastName());
 
+
+    }
+
+
+    /**
+     * It should be possible to parse the same input twice, and get trees
+     * of objects that are isomorphic but not be identical object instances.
+     */
+    public void testRepeatedParse() {
+
+        // Configure the digester as required
+        digester.addObjectCreate("employee",
+                                 "org.apache.commons.digester.Employee");
+        digester.addSetProperties("employee");
+        digester.addObjectCreate("employee/address",
+                                 "org.apache.commons.digester.Address");
+        digester.addSetProperties("employee/address");
+        digester.addSetNext("employee/address",
+                            "addAddress");
+
+        // Parse our test input the first time
+        Object root1 = null;
+        try {
+            root1 = digester.parse(getInputStream("Test1.xml"));
+        } catch (Throwable t) {
+            fail("Digester #1 threw Exception:  " + t);
+        }
+        validateObjectCreate3(root1);
+
+        // Parse our test input the second time
+        Object root2 = null;
+        try {
+            root2 = digester.parse(getInputStream("Test1.xml"));
+        } catch (Throwable t) {
+            fail("Digester #2 threw Exception:  " + t);
+        }
+        validateObjectCreate3(root2);
+
+        // Make sure that it was a different root
+        assertTrue("Different tree instances were returned",
+                   root1 != root2);
 
     }
 
