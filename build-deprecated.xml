@@ -73,18 +73,9 @@
     <!-- To validate that the MD5 and SHA1 checksums are in sync, please see
          http://www.bouncycastle.org/checksums.html -->
 
-    <property name="jce.download.file" value="jce-jdk13-114.jar"/>
-    <property name="jce.download.md5" value="8a90f10826c0b8a4460231dcef0e0e45"/>
-    <property name="jce.download.sha1" value="f3cf2677ad8fa7a038ab3a62e05afef9615ea579"/>
-
-    <!--
-
-    The most recent one is this here
-
-    <property name="jce.download.file"     value="jce-jdk13-115.jar" />
-    <property name="jce.download.md5"      value="38c40aa5c386e3ba5fac70916bcc5b0d" />
-    <property name="jce.download.sha1"     value="15f5af7fc73e4ff5c059f83f47509b9720e129e7" />
-    -->
+    <property name="jce.download.file" value="jce-jdk13-124.jar"/>
+    <property name="jce.download.md5" value="2d93ce3dd5e7e3f598f324146d1e25d0"/>
+    <property name="jce.download.sha1" value="df189e1f018332468055dc2698f433349e449439"/>
 
     <property name="jce.download" value="http://www.bouncycastle.org/download/${jce.download.file}"/>
     <property name="lib.jce" value="${dir.libs}/bc-${jce.download.file}"/>

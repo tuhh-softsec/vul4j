@@ -4,7 +4,7 @@
 <!ENTITY packagedirectory "NOT USED ??">
 <!ENTITY packagedistname  "Apache-XML-Security-J">
 
-<!ENTITY jce_download_file "jce-jdk13-114.jar">
+<!ENTITY jce_download_file "jce-jdk13-124.jar">
 <!ENTITY lib_jce "./libs/bc-&jce_download_file;">
 
 <!-- ENTITY packagenamelong  "@@packagenamelong@@"-->

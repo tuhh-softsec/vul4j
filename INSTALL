@@ -92,7 +92,7 @@ make automated downloads or your firewall doesn't permit it, look in the
 
 <property 
      name="jce.download.file" 
-     value="jce-jdk13-112.jar" />
+     value="jce-jdk13-124.jar" />
 <property 
      name="jce.download" 
      value="http://www.bouncycastle.org/download/${jce.download.file}" />
