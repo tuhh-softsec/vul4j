@@ -9,7 +9,8 @@
   <about label="About">
     <index label="Index" href="index.html"/>
     <!--    <download label="Download" href="http://xml.apache.org/security/dist/"/> -->
-    <download label="Download" href="http://www.apache.org/dyn/closer.cgi/xml/security/"/>
+    <!-- <download label="Download" href="http://www.apache.org/dyn/closer.cgi/xml/security/"/> -->
+	<download label="Download" href="download.html"/>
     <faq label="FAQs" href="faq.html"/>
     <who label="Who we are" href="who.html"/>
     <todo label="Todo" href="todo.html"/>
