@@ -1108,6 +1108,7 @@ void DSIGReference::setHash(void) {
 								CRYPTO_MAX_HASH_SIZE * 2);
 	base64HashLen += b64->encodeFinish(&base64Hash[base64HashLen],
 										(CRYPTO_MAX_HASH_SIZE * 2) - base64HashLen);
+	delete b64;
 
 	// Ensure the string is terminated
 	if (base64Hash[base64HashLen-1] == '\n')

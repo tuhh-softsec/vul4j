@@ -124,6 +124,7 @@ bool compareBase64StringToRaw(safeBuffer &b64SB,
 	b64->decodeInit();
 	outputLen = b64->decode((unsigned char *) b64Str, strlen((char *) b64Str), outputStr, 1024);
 	outputLen += b64->decodeFinish(&outputStr[outputLen], 1024 - outputLen);
+	delete b64;
 
 	// Compare
 
@@ -223,6 +224,7 @@ void convertRawToBase64String(safeBuffer &b64SB,
 	b64->encodeInit();
 	outputLen = b64->encode((unsigned char *) raw, rawLen, b64Str, 1024);
 	outputLen += b64->encodeFinish(&b64Str[outputLen], 1024 - outputLen);
+	delete b64;
 
 	// Copy out
 
@@ -1099,7 +1101,7 @@ bool DSIGSignature::verify(void) {
 
 	// Check the signature
 
-	bool sigVfyResult = verifySignatureOnly();
+	bool sigVfyResult = verifySignatureOnlyInternal();
 
 	return sigVfyResult & referenceCheckResult;
 }

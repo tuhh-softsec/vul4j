@@ -79,22 +79,16 @@
 #include <xercesc/util/Mutexes.hpp>
 #include <xercesc/framework/StdOutFormatTarget.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
+#include <xercesc/framework/MemBufInputSource.hpp>
 
-#ifndef XSEC_NO_XALAN
-
-// XALAN
-
-#include <XPath/XPathEvaluator.hpp>
-#include <XalanTransformer/XalanTransformer.hpp>
-
-XALAN_USING_XALAN(XPathEvaluator)
-XALAN_USING_XALAN(XalanTransformer)
-
-#endif
 
 #include <strstream>
 #include <iostream>
 #include <queue>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winbase.h>
 
 using std::endl;
 using std::cerr;
@@ -103,21 +97,38 @@ using std::queue;
 using std::vector;
 using std::ostrstream;
 
+// --------------------------------------------------------------------------------
+//           Globals used and read by all threads
+// --------------------------------------------------------------------------------
+
+
 #define numThreads	5
 #define secretKey	"secret"
+#define sleepTime	30
 
 typedef queue<char *>	charQueueType; 
 
 XSECProvider			* g_provider;
-XMLMutex				g_providerMutex;
-
-unsigned int			g_initCount;
-XMLMutex				g_initCountMutex;
 
 HANDLE					g_toVerifyQueueSemaphore;
+HANDLE					g_toSignQueueSemaphore;
 XMLMutex				g_toVerifyQueueMutex;
 charQueueType			g_toVerifyQueue;
 
+// Control markers
+
+XMLMutex				g_initMutex;
+bool					g_completed;
+int						g_initVerifyCount;
+int						g_initSignCount;
+unsigned int			g_signCount[numThreads];
+unsigned int			g_verifyCount[numThreads];
+unsigned int			g_errors;
+
+
+// --------------------------------------------------------------------------------
+//           Document manipulation functions
+// --------------------------------------------------------------------------------
 
 void outputDoc (DOMImplementation *impl, DOMDocument * doc) {
 
@@ -162,7 +173,9 @@ void addDocToQueue (DOMImplementation *impl, DOMDocument * doc) {
 	memcpy(buf, formatTarget->getRawBuffer(), len);
 	buf[len] = '\0';
 
-	// Add to the queue
+	// Add to the queue (but wait for queue to be small enough)
+	WaitForSingleObject(g_toSignQueueSemaphore, INFINITE);
+
 	g_toVerifyQueueMutex.lock();
 	g_toVerifyQueue.push(buf);
 	g_toVerifyQueueMutex.unlock();
@@ -181,10 +194,12 @@ DOMText *createDocSkeleton(DOMImplementation *impl, char * tid) {
 	// Create a new document skeleton that can be used by the
 	// calling thread
 
+	//g_providerMutex.lock();
 	DOMDocument *doc = impl->createDocument(
                 0,
                 MAKE_UNICODE_STRING("Document"),             
                 NULL);  
+	//g_providerMutex.unlock();
 
     DOMElement *rootElem = doc->getDocumentElement();
 
@@ -205,38 +220,47 @@ DOMText *createDocSkeleton(DOMImplementation *impl, char * tid) {
 	return uniqueTextElem;
 }
 
+// --------------------------------------------------------------------------------
+//           Signing Thread
+// --------------------------------------------------------------------------------
+
+
 DWORD WINAPI doSignThread (LPVOID Param) {
 
 	// This is called to start up a new thread
 
-	int	theResult = 0;
+	int	myId;
 	ostrstream msg;
+	ostrstream tid;
 	DOMImplementation *impl;
 	DOMDocument * myDoc;
 	DOMElement * myRootElem;
 	DOMText * myText;
 
-	// unsigned int counter = 0;
-
-
 	impl = reinterpret_cast<DOMImplementation *>(Param);
 
 	const DWORD		theThreadID = GetCurrentThreadId();
-	msg << theThreadID << '\0';
-	msg.freeze(false);
-	msg.seekp(0);
+	tid << theThreadID << '\0';
 
-	myText = createDocSkeleton(impl, msg.str());
-	
-	myDoc = myText->getOwnerDocument();
-	myRootElem = myDoc->getDocumentElement();
+	// Obtain an thread number;
+	g_initMutex.lock();
+	myId = g_initSignCount++;
+	g_initMutex.unlock();
+
+	g_signCount[myId] = 0;	
 
 	// Sign
-	while (true) {
+	while (g_completed == false) {
 
-		g_providerMutex.lock();
+		// Create a document to sign
+		myText = createDocSkeleton(impl, tid.str());
+		myDoc = myText->getOwnerDocument();
+		myRootElem = myDoc->getDocumentElement();
+
+
+		// The provider object internally manages multiple threads
 		DSIGSignature * sig = g_provider->newSignature();
-		g_providerMutex.unlock();
+
 		DSIGReference * ref;
 		DOMElement * sigNode;
 
@@ -254,95 +278,257 @@ DWORD WINAPI doSignThread (LPVOID Param) {
 		sig->setSigningKey(hmacKey);
 		sig->sign();
 
-		g_providerMutex.lock();
 		g_provider->releaseSignature(sig);
-		g_providerMutex.unlock();
 		
-		// Output
+		// Serialise and add to verify queue
+
 		addDocToQueue(impl, myDoc);
+
+		myDoc->release();
+	
+		// Tell the control thread what we have done
+		g_signCount[myId] += 1;	
+
+		// Sleep for a while
+		Sleep (sleepTime + (rand() % sleepTime));
+	
 	}
-	
-	msg << "Sign - starting " << theThreadID << '\n' << '\0';
+		
+	msg << "Ending signing thread - " << theThreadID << endl << '\0';
 	cerr << msg.str();
 
-	msg.freeze(false); 
-	msg.seekp(0);
-	
-//	for (unsigned int i = 0; i < 10000000; ++i);
+	// Allow the output stream memory to be released.
 
-	msg << "Ending " << theThreadID << endl << '\0';
-	cerr << msg.str();
+	tid.freeze(false);
+	msg.freeze(false);
 
 	return 0;
 
 }
+
+// --------------------------------------------------------------------------------
+//           Verify Thread
+// --------------------------------------------------------------------------------
 
 DWORD WINAPI doVerifyThread (LPVOID Param) {
 
 	// This is called to start up a new thread
 
-	int	theResult = 0;
+	int	myId;
 	ostrstream msg;
 	DOMImplementation *impl;
 	DOMDocument * myDoc;
-	DOMText * myText;
-
 
 	impl = reinterpret_cast<DOMImplementation *>(Param);
 
 	const DWORD		theThreadID = GetCurrentThreadId();
-	msg << theThreadID << '\0';
-	msg.freeze(false);
-	msg.seekp(0);
 
-	//myText = createDocSkeleton(impl, msg.str());
+	// Find my ID
 	
-	//myDoc = myText->getOwnerDocument();
+	g_initMutex.lock();
+	myId = g_initVerifyCount++;
+	g_initMutex.unlock();
 
-	// Output
-	//outputDoc(impl, myDoc);
+	g_verifyCount[myId] = 0;
 
-	// Wait for a semaphore event
+	// Create a parser
+	XercesDOMParser * parser = new XercesDOMParser;
+	
+	parser->setDoNamespaces(true);
+	parser->setCreateEntityReferenceNodes(true);
+
+	// Wait for a semaphore event to tell us that there is a buffer to validate
+
 	WaitForSingleObject( 
-        g_toVerifyQueueSemaphore ,   // handle to semaphore
-        INFINITE);
+		g_toVerifyQueueSemaphore ,   // handle to semaphore
+		INFINITE);
 
-	msg << "Verify - starting " << theThreadID << '\n' << '\0';
-	cerr << msg.str();
+	while (g_completed == false) {
 
-	msg.freeze(false); 
-	msg.seekp(0);
+		// Get the buffer
+		g_toVerifyQueueMutex.lock();
+		char * buf = g_toVerifyQueue.front();
+		g_toVerifyQueue.pop();
+		g_toVerifyQueueMutex.unlock();
+
+		// Signal the signing proceses that there is room in the queue
+		ReleaseSemaphore(g_toSignQueueSemaphore, 1, NULL);
+
+		// Now parse and validate the signature
+		MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) buf, 
+															strlen(buf), "XSECMem");
+
+		parser->parse(*memIS);
+
+		delete(memIS);
+
+		myDoc = parser->adoptDocument();
+
+		if ((rand() % 5) == 1) {
+
+			// Reset the value of "UniqueData" to invalidate the signature
+
+			DOMNode * n = myDoc->getDocumentElement()->getFirstChild();
+			while (n != NULL && (n->getNodeType() != DOMNode::ELEMENT_NODE ||
+				!strEquals(n->getNodeName(), "UniqueData")))
+				n = n->getNextSibling();
+			if (n != NULL) {
+				n = n->getFirstChild();
+				if (n->getNodeType() == DOMNode::TEXT_NODE) {
+					n->setNodeValue(MAKE_UNICODE_STRING("bad unique data"));
+				}
+			}
+		}
+
+		DSIGSignature * sig = g_provider->newSignatureFromDOM(myDoc);
+
+		OpenSSLCryptoKeyHMAC *hmacKey = new OpenSSLCryptoKeyHMAC();
+		hmacKey->setKey((unsigned char *) secretKey, strlen(secretKey));
+		sig->setSigningKey(hmacKey);
+		sig->load();
+		if (sig->verify() != true) {
+			// Re-use the init Mutex to protect g_errors
+			g_initMutex.lock();
+			g_errors++;
+			g_initMutex.unlock();
+		}
+
+		g_provider->releaseSignature(sig);
+
+		// Delete the validated buffer
+		delete[] buf;
+
+		// Clean the doc
+		myDoc->release();
+
+		g_verifyCount[myId] += 1;
+
+		Sleep (sleepTime + (rand() % sleepTime));
+
+		// Wait for another object
+		WaitForSingleObject( 
+			g_toVerifyQueueSemaphore ,   // handle to semaphore
+			INFINITE);	
 	
-	// Get the buffer
-	g_toVerifyQueueMutex.lock();
-	char * buf = g_toVerifyQueue.front();
-	g_toVerifyQueue.pop();
-	g_toVerifyQueueMutex.unlock();
-	cerr << buf << endl;
-	delete[] buf;
+	}
 
 	msg << "Ending validate thread : " << theThreadID << endl << '\0';
 	cerr << msg.str();
 	msg.freeze(false);
 
+	delete parser;
+
 	return 0;
 
 }
 
+// --------------------------------------------------------------------------------
+//           Control thread - used to shut down program
+// --------------------------------------------------------------------------------
+
+
+DWORD WINAPI doControlThread (LPVOID Param) {
+
+	// Output stats and shutdown when done
+	using std::cin;
+	using std::cout;
+
+	// Quick and dirty
+	cin.peek();
+	
+	// Signal all other threads
+	g_completed = true;
+	ReleaseSemaphore(g_toVerifyQueueSemaphore, 5, NULL);
+	ReleaseSemaphore(g_toSignQueueSemaphore, 5, NULL);
+
+	return 0;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Output Thread
+// --------------------------------------------------------------------------------
+
+
+DWORD WINAPI doOutputThread (LPVOID Param) {
+
+	// Output stats
+
+	int i, total, lastSignTotal, lastVerifyTotal;
+
+	lastSignTotal = lastVerifyTotal = 0;
+
+	while (g_completed != true) {
+
+		// Output some info
+		cerr << "Signing Threads" << endl;
+		cerr << "---------------" << endl << endl;
+		total = 0;
+
+		for (i = 0; i < numThreads; ++ i) {
+
+			cerr << "Thread: " << g_signCount[i] << endl;
+			total += g_signCount[i];
+
+		}
+
+		cerr << endl << "Total: " << total << endl;
+		cerr << "Ops/Sec: " << total - lastSignTotal << endl << endl;
+		lastSignTotal = total;
+		
+		cerr << "Verify Threads" << endl;
+		cerr << "--------------" << endl << endl;
+		total = 0;
+		for (i = 0; i < numThreads; ++ i) {
+
+			cerr << "Thread: " << g_verifyCount[i] << endl;
+			total += g_verifyCount[i];
+
+		}
+
+		cerr << endl << "Total: " << total << endl;
+		cerr << "Ops/Sec: " << total - lastVerifyTotal << endl << endl;
+		lastVerifyTotal = total;
+		cerr << "Total Errors : " << g_errors << endl;
+		cerr << "Buffers in Queue : " << g_toVerifyQueue.size() << endl;
+		
+		// Go to sleep for a second
+
+		Sleep(1000);
+	}
+
+	return 0;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Start up threads
+// --------------------------------------------------------------------------------
 
 void runThreads(DOMImplementation * impl, int nThreads) {
 
 
 	// Set up the worker queue
-	g_toVerifyQueueSemaphore = CreateSemaphore(NULL, 0, 100, "verifyQueue");
+	g_toVerifyQueueSemaphore = CreateSemaphore(NULL, 0, 20, "verifyQueue");
+	g_toSignQueueSemaphore = CreateSemaphore(NULL, 20, 20, "signQueue");
 	
+	// Ensure nobody stops too soon
+	g_completed = false;
+
+	// How many signature errors do we have?
+	g_errors = 0;
+
+	int i;
+	for (i = 0; i < numThreads; ++i) {
+		g_signCount[i] = 0;
+		g_verifyCount[i] = 0;
+	}
+
 	vector<HANDLE>	hThreads;
 
 	hThreads.reserve(nThreads);
 
-	cerr << endl << "Clock before starting threads: " << clock() << endl;
-
-	int		i = 0;	
+	i = 0;	
 
 	for (; i < nThreads; ++i)
 	{
@@ -378,16 +564,57 @@ void runThreads(DOMImplementation * impl, int nThreads) {
 		hThreads.push_back(hThread);
 	}
 
+	// Start the control thread
+	DWORD  threadID;
+
+	const HANDLE	hThread = CreateThread(
+			0, 
+			4096,							// Stack size for thread.
+			doControlThread,				// pointer to thread function
+			reinterpret_cast<LPVOID>(impl),	// argument for new thread
+			0,								// creation flags
+			&threadID);
+
+	assert(hThread != 0);
+
+	hThreads.push_back(hThread);
+
+	// Start the output thread
+
+
+	const HANDLE h2Thread = CreateThread(
+			0, 
+			4096,							// Stack size for thread.
+			doOutputThread,					// pointer to thread function
+			reinterpret_cast<LPVOID>(impl),	// argument for new thread
+			0,								// creation flags
+			&threadID);
+
+	assert(h2Thread != 0);
+
+	hThreads.push_back(h2Thread);
 
 	WaitForMultipleObjects(hThreads.size(), &hThreads[0], TRUE, INFINITE);
-
-	cerr << endl << "Clock after threads: " << clock() << endl;
 
 	for (i = 0; i < nThreads; ++i)
 	{
 		CloseHandle(hThreads[i]);
 	}
+
+	// Clear out the unverified buffers
+	
+	while (g_toVerifyQueue.size() != 0) {
+		char * buf = g_toVerifyQueue.front();
+		g_toVerifyQueue.pop();
+		delete[] buf;
+	}
+
 }
+
+
+// --------------------------------------------------------------------------------
+//           Main
+// --------------------------------------------------------------------------------
 
 
 int main (int argc, char ** argv) {
@@ -398,10 +625,6 @@ int main (int argc, char ** argv) {
 	try {
 
 		XMLPlatformUtils::Initialize();
-#ifndef XSEC_NO_XALAN
-		XPathEvaluator::initialize();
-		XalanTransformer::initialize();
-#endif
 		XSECPlatformUtils::Initialise();
 
 	}
@@ -426,10 +649,6 @@ int main (int argc, char ** argv) {
 	delete g_provider;
 
 	XSECPlatformUtils::Terminate();
-#ifndef XSEC_NO_XALAN
-	XalanTransformer::terminate();
-	XPathEvaluator::terminate();
-#endif
 	XMLPlatformUtils::Terminate();
 
 	return 0;

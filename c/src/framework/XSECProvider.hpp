@@ -70,6 +70,8 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
+#include <xercesc/util/Mutexes.hpp>
+
 #include <vector>
 
 /**
@@ -219,7 +221,7 @@ private:
 
 	SignatureListVectorType			m_activeSignatures;
 	XSECURIResolver					* mp_URIResolver;
-
+	XMLMutex						m_providerMutex;
 };
 
 #endif /* XSECPROVIDER_INCLUDE */

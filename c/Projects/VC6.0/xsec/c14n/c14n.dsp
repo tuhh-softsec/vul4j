@@ -89,7 +89,7 @@ LINK32=link.exe
 # PROP BASE Intermediate_Dir "c14n___Win32_Debug_No_Xalan"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
-# PROP Use_MFC 0
+# PROP Use_MFC 2
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "../../../../Build/Win32/VC6/Debug"
 # PROP Intermediate_Dir "../../../../Build/Win32/VC6/Debug/obj"
@@ -97,16 +97,16 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GX /ZI /Od /I "%LIBWWW%\SRC" /I "../../../../src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
 # SUBTRACT BASE CPP /X
-# ADD CPP /nologo /MD /W3 /Gm /GX /ZI /Od /I "%LIBWWW%\SRC" /I "../../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "%LIBWWW%\SRC" /I "../../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "_AFXDLL" /FR /YX /FD /GZ /c
 # SUBTRACT CPP /X
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
-# ADD RSC /l 0xc09 /d "_DEBUG"
+# ADD RSC /l 0xc09 /d "_DEBUG" /d "_AFXDLL"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 ../../../../Build/Win32/VC6/Debug/xsec_lib_01D.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2D.lib Xalan-C_1D.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 ../../../../Build/Win32/VC6/Debug/xsec_lib_01D.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2D.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 ../../../../Build/Win32/VC6/Debug/xsec_lib_01D.lib xerces-c_2D.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 
 !ELSEIF  "$(CFG)" == "c14n - Win32 Release No Xalan"
 

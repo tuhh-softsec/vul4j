@@ -150,6 +150,7 @@ void XSECProvider::releaseSignature(DSIGSignature * toRelease) {
 
 	SignatureListVectorType::iterator i;
 
+	m_providerMutex.lock();
 	i = m_activeSignatures.begin();
 	while (i != m_activeSignatures.end() && *i != toRelease)
 		++i;
@@ -163,6 +164,7 @@ void XSECProvider::releaseSignature(DSIGSignature * toRelease) {
 	
 	// For now - remove from list.  Would be better to recycle
 	m_activeSignatures.erase(i);
+	m_providerMutex.unlock();
 	delete toRelease;
 
 }
@@ -190,7 +192,10 @@ void XSECProvider::setup(DSIGSignature *sig) {
 	// Called by all Signature creation methods to set up the sig
 
 	// Add to the active list
+	m_providerMutex.lock();
 	m_activeSignatures.push_back(sig);
+	m_providerMutex.unlock();
+
 	sig->setURIResolver(mp_URIResolver);
 
 }
