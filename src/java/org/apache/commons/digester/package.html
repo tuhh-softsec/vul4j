@@ -701,6 +701,21 @@ that:</p>
     creator can use any prefix that they like).</li>
 </ul>
 
+<p>One advanced <code>Rules</code> implementation,
+<a href="ExtendedBaseRules.html">ExtendedBaseRules</a>, is available.  This
+implementation adds some additional expression syntax for pattern matching
+than the default mechanism, but it also executes more slowly.  See the
+JavaDocs for more details on the new pattern matching syntax, and suggestions
+on when this implementation should be used.  To use it, simply do the
+following as part of your Digester initialization:</p>
+
+<pre>
+  Digester digester = ...
+  ...
+  digester.setRules(new ExtendedBaseRules());
+  ...
+</pre>
+
 <a name="doc.RuleSets"></a>
 <h3>Encapsulated Rule Sets</h3>
 

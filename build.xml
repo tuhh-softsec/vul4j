@@ -3,7 +3,7 @@
 
 <!--
         "Digester" component of the Jakarta Commons Subproject
-        $Id: build.xml,v 1.8 2001/09/05 03:33:26 craigmcc Exp $
+        $Id: build.xml,v 1.9 2001/09/20 20:42:04 craigmcc Exp $
 -->
 
 
@@ -225,6 +225,7 @@
   <target name="test" depends="compile.tests,
                                test.digester,
                                test.matching,
+                               test.matching.extended,
                                test.rule
                               "
    description="Run all unit test cases">
@@ -248,6 +249,17 @@
     <java classname="${test.runner}" fork="yes"
         failonerror="${test.failonerror}">
       <arg value="org.apache.commons.digester.RulesBaseTestCase"/>
+      <classpath refid="test.classpath"/>
+    </java>
+  </target>
+
+
+  <target name="test.matching.extended" depends="compile.tests"
+   description="Run rule Digester extended test cases">
+    <echo message="Running rule Digester tests for ExtendedBaseRules ..."/>
+    <java classname="${test.runner}" fork="yes"
+        failonerror="${test.failonerror}">
+      <arg value="org.apache.commons.digester.EBRTestCase"/>
       <classpath refid="test.classpath"/>
     </java>
   </target>
