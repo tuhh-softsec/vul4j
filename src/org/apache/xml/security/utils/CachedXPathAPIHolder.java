@@ -16,6 +16,10 @@
  */
 package org.apache.xml.security.utils;
 
+import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
+
 import org.apache.xpath.CachedXPathAPI;
 
 
@@ -23,7 +27,8 @@ import org.apache.xpath.CachedXPathAPI;
  * @author Raul Benito
  */
 public class CachedXPathAPIHolder {
-    static ThreadLocal  local=new ThreadLocal();
+    //static ThreadLocal  local=new ThreadLocal();
+    static WeakHashMap local=new WeakHashMap();
     	           
     CachedXPathAPI cx;
 	/**
@@ -38,11 +43,14 @@ public class CachedXPathAPIHolder {
      */
     public CachedXPathAPI getCachedXPathAPI() {
         if (cx==null) { 
-                  cx=(CachedXPathAPI)local.get();
+                  SoftReference sr=(SoftReference)local.get(Thread.currentThread());
+                  if (sr!=null) {
+                    cx=(CachedXPathAPI)sr.get();
+                  }
                   if (cx==null) {
                      cx=new CachedXPathAPI();
-                     local.set(cx);
-                  }
+                     local.put(Thread.currentThread(),new SoftReference(cx));
+                  }                 
                   //cx.getXPathContext().reset();//
                   //cx=new CachedXPathAPI();
         }
