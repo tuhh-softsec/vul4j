@@ -88,6 +88,7 @@ WinCAPICryptoSymmetricKey::WinCAPICryptoSymmetricKey(
 						HCRYPTPROV prov,
 						XSECCryptoSymmetricKey::SymmetricKeyType type) :
 m_keyType(type),
+m_keyMode(MODE_ECB),
 m_keyBuf(""),
 m_initialised(false),
 m_doPad(true),
@@ -192,45 +193,55 @@ int WinCAPICryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 
 	}
 
+	int ret = 0;
+
 	// Set up the context according to the required cipher type
 	DWORD cryptMode;
 	switch (m_keyType) {
 
-	case (XSECCryptoSymmetricKey::KEY_3DES_CBC_192) :
+	case (XSECCryptoSymmetricKey::KEY_3DES_192) :
 
 		// A 3DES CBC key
 
-		if (iv == NULL) {
+		if (m_keyMode == MODE_CBC) {
+			
+			if (iv == NULL) {
 
-			return 0;	// Cannot initialise without an IV
+				return 0;	// Cannot initialise without an IV
 
-		}
+			}
 
-		if (!CryptSetKeyParam(m_k, KP_IV, (unsigned char *) iv, 0)) {
+			if (!CryptSetKeyParam(m_k, KP_IV, (unsigned char *) iv, 0)) {
 
-			throw XSECCryptoException(XSECCryptoException::SymmetricError,
-			"WinCAPI:SymmetricKey - Error setting IV"); 
+				throw XSECCryptoException(XSECCryptoException::SymmetricError,
+				"WinCAPI:SymmetricKey - Error setting IV"); 
 
+			}
+
+			ret = 8;
 		}
 
 		m_blockSize = 8;
 		m_bytesInLastBlock = 0;
 		m_initialised = true;
 		
-		return 8;	// 3DEC_CBC uses a 64 bit IV
-
 		break;
 
-	case (XSECCryptoSymmetricKey::KEY_AES_ECB_128) :
+	case (XSECCryptoSymmetricKey::KEY_AES_128) :
 
-			// An 128bit AES key in ECB mode
+		// An 128bit AES key
 
-		cryptMode = CRYPT_MODE_ECB;
+		if (m_keyMode == MODE_ECB)
+			cryptMode = CRYPT_MODE_ECB;
+		else {
+			cryptMode = CRYPT_MODE_CBC;
+			ret = 16;
+		}
 
 		if (!CryptSetKeyParam(m_k, KP_MODE, (BYTE *) (&cryptMode), 0)) {
 
 			throw XSECCryptoException(XSECCryptoException::SymmetricError,
-			"WinCAPI:SymmetricKey - Error setting IV"); 
+			"WinCAPI:SymmetricKey - Error setting cipher mode"); 
 
 		}
 
@@ -238,8 +249,6 @@ int WinCAPICryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 		m_bytesInLastBlock = 0;
 		m_initialised = true;
 		
-		return 8;	// 3DEC_CBC uses a 64 bit IV
-
 		break;
 
 	default :
@@ -250,14 +259,17 @@ int WinCAPICryptoSymmetricKey::decryptCtxInit(const unsigned char * iv) {
 
 	}
 
-	return 0;
+	return ret;
 }
 
 
-bool WinCAPICryptoSymmetricKey::decryptInit(bool doPad, const unsigned char * iv) {
+bool WinCAPICryptoSymmetricKey::decryptInit(bool doPad, 
+											SymmetricKeyMode mode, 
+											const unsigned char * iv) {
 
 	m_initialised = false;
 	m_doPad = doPad;
+	m_keyMode = mode;
 	decryptCtxInit(iv);
 	return true;
 
@@ -376,30 +388,34 @@ void WinCAPICryptoSymmetricKey::encryptCtxInit(const unsigned char * iv) {
 
 	switch (m_keyType) {
 
-	case (XSECCryptoSymmetricKey::KEY_3DES_CBC_192) :
+	case (XSECCryptoSymmetricKey::KEY_3DES_192) :
 
 		// A 3DES key
 
-		if (iv == NULL) {
-			
-			BOOL res = CryptGenRandom(m_p, 256, genIV);
-			if (res == FALSE) {
-				throw XSECCryptoException(XSECCryptoException::SymmetricError,
-					"WinCAPI:SymmetricKey - Error generating random IV");
+		if (m_keyMode == MODE_CBC) {
+
+			if (iv == NULL) {
+				
+				BOOL res = CryptGenRandom(m_p, 256, genIV);
+				if (res == FALSE) {
+					throw XSECCryptoException(XSECCryptoException::SymmetricError,
+						"WinCAPI:SymmetricKey - Error generating random IV");
+				}
+
+				usedIV = genIV;
+				//return 0;	// Cannot initialise without an IV
+
 			}
+			else
+				usedIV = iv;
 
-			usedIV = genIV;
-			//return 0;	// Cannot initialise without an IV
+			// Set the IV parameter
+			if (!CryptSetKeyParam(m_k, KP_IV, (unsigned char *) usedIV, 0)) {
 
-		}
-		else
-			usedIV = iv;
+				throw XSECCryptoException(XSECCryptoException::SymmetricError,
+				"WinCAPI:SymmetricKey - Error setting IV"); 
 
-		// Set the IV parameter
-		if (!CryptSetKeyParam(m_k, KP_IV, (unsigned char *) usedIV, 0)) {
-
-			throw XSECCryptoException(XSECCryptoException::SymmetricError,
-			"WinCAPI:SymmetricKey - Error setting IV"); 
+			}
 
 		}
 
@@ -410,7 +426,7 @@ void WinCAPICryptoSymmetricKey::encryptCtxInit(const unsigned char * iv) {
 
 		break;
 
-	case (XSECCryptoSymmetricKey::KEY_AES_ECB_128) :
+	case (XSECCryptoSymmetricKey::KEY_AES_128) :
 
 		// An AES key
 
@@ -429,9 +445,12 @@ void WinCAPICryptoSymmetricKey::encryptCtxInit(const unsigned char * iv) {
 	}
 
 }
-bool WinCAPICryptoSymmetricKey::encryptInit(bool doPad, const unsigned char * iv) {
+bool WinCAPICryptoSymmetricKey::encryptInit(bool doPad, 
+											SymmetricKeyMode mode, 
+											const unsigned char * iv) {
 
 	m_doPad = doPad;
+	m_keyMode = mode;
 	m_initialised = false;
 	encryptCtxInit(iv);
 	return true;
@@ -629,11 +648,11 @@ HCRYPTKEY WinCAPICryptoSymmetricKey::createWindowsKey(
 
 	switch (type) {
 
-	case (XSECCryptoSymmetricKey::KEY_3DES_CBC_192) :
+	case (XSECCryptoSymmetricKey::KEY_3DES_192) :
 					blobHeader->aiKeyAlg = CALG_3DES;
 					expectedLength = 24;
 					break;
-	case (XSECCryptoSymmetricKey::KEY_AES_ECB_128) :
+	case (XSECCryptoSymmetricKey::KEY_AES_128) :
 					blobHeader->aiKeyAlg = CALG_AES_128;
 					expectedLength = 16;
 					break;

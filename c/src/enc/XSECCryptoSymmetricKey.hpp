@@ -107,13 +107,18 @@ public :
 	enum SymmetricKeyType {
 
 		KEY_NONE,
-		KEY_3DES_CBC_192,			/** 192 bit (3-Key) 3DES */
-		KEY_AES_CBC_128,			/** 128 bit AES in CBC mode */
-		KEY_AES_CBC_192,			/** 192 bit AES in CBC mode */
-		KEY_AES_CBC_256,			/** 256 bit AES in CBC mode */
-		KEY_AES_ECB_128,			/** 128 bit AES in ECB mode */
-		KEY_AES_ECB_192,			/** 192 bit AES in ECB mode */
-		KEY_AES_ECB_256				/** 256 bit AES in ECB mode */
+		KEY_3DES_192,			/** 192 bit (3-Key) 3DES */
+		KEY_AES_128,			/** 128 bit AES */
+		KEY_AES_192,			/** 192 bit AES */
+		KEY_AES_256				/** 256 bit AES */
+
+	};
+
+	enum SymmetricKeyMode {
+
+		MODE_NONE,					/** An error condition */
+		MODE_ECB,					/** Electronic Code Book */
+		MODE_CBC					/** Cipher Block Chaining */
 
 	};
 
@@ -201,12 +206,16 @@ public :
 	 * cipher text stream will in fact be the IV.
 	 *
 	 * @param doPad By default, we perform padding for last block
+	 * @param mode mode selection (Currently ECB or CBC mode only).
+	 * Default is CBC
 	 * @param iv Initialisation Vector to be used.  NULL if one is
 	 * not required, or if IV will be set from data stream
 	 * @returns true if the initialisation succeeded.
 	 */
 
-	virtual bool decryptInit(bool doPad = true, const unsigned char * iv = NULL) = 0;
+	virtual bool decryptInit(bool doPad = true,
+							 SymmetricKeyMode mode = MODE_CBC,
+							 const unsigned char * iv = NULL) = 0;
 
 	/**
 	 * \brief Continue an decrypt operation using this key.
@@ -260,12 +269,16 @@ public :
 	 * implementations are required to generate one.
 	 *
 	 * @param doPad By default, we perform padding for last block
+	 * @param mode What mode to handle blocks (Currently CBC or ECB)
+	 * Default is CBC.
 	 * @param iv Initialisation Vector to be used.  NULL if one is
 	 * not required, or if IV is to be generated
 	 * @returns true if the initialisation succeeded.
 	 */
 
-	virtual bool encryptInit(bool doPad = true, const unsigned char * iv = NULL) = 0;
+	virtual bool encryptInit(bool doPad = true, 
+							 SymmetricKeyMode mode = MODE_CBC,
+							 const unsigned char * iv = NULL) = 0;
 
 	/**
 	 * \brief Continue an encryption operation using this key.

@@ -252,7 +252,7 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 
 			if (strEquals(s_bobName, name)) {
 				XSECCryptoSymmetricKey * k = 
-					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
 				try {
 					k->setKey((unsigned char *) s_bobKey, strlen(s_bobKey));
 				} catch (...) {
@@ -263,7 +263,7 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 			}
 			if (strEquals(s_jobName, name)) {
 				XSECCryptoSymmetricKey * k = 
-					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_128);
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
 				try {
 					k->setKey((unsigned char *) s_jobKey, strlen(s_jobKey));
 				} catch(...) {
@@ -274,7 +274,7 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 			}
 			if (strEquals(s_jebName, name)) {
 				XSECCryptoSymmetricKey * k = 
-					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_192);
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
 				try {
 					k->setKey((unsigned char *) s_jebKey, strlen(s_jebKey));
 				} catch(...) {
@@ -285,7 +285,7 @@ XSECCryptoKey * MerlinFiveInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 			}
 			if (strEquals(s_jedName, name)) {
 				XSECCryptoSymmetricKey * k = 
-					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_ECB_256);
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
 				try {
 					k->setKey((unsigned char *) s_jedKey, strlen(s_jedKey));
 				} catch(...) {

@@ -182,15 +182,20 @@ public :
 	 *
 	 * Setup the key to get ready for a decryption session.
 	 * Callers can pass in an IV.  If one is not provided, 
-	 * then it is assumed that the algorithm will not require one.
+	 * but the algorithm requires one (e.g. 3DES_CBC), then 
+	 * implementations should assume that the start of the
+	 * cipher text stream will in fact be the IV.
 	 *
 	 * @param doPad By default, we perform padding for last block
+	 * @param mode mode selection (Currently ECB or CBC mode only)
 	 * @param iv Initialisation Vector to be used.  NULL if one is
-	 * not required.
+	 * not required, or if IV will be set from data stream
 	 * @returns true if the initialisation succeeded.
 	 */
 
-	virtual bool decryptInit(bool doPad = true, const unsigned char * iv = NULL);
+	virtual bool decryptInit(bool doPad = true,
+							 SymmetricKeyMode mode = MODE_CBC,
+							 const unsigned char * iv = NULL);
 
 	/**
 	 * \brief Continue an decrypt operation using this key.
@@ -252,12 +257,15 @@ public :
 	 * implementations are required to generate one.
 	 *
 	 * @param doPad By default, we perform padding for last block
+	 * @param mode What mode to handle blocks (Currently CBC or ECB)
 	 * @param iv Initialisation Vector to be used.  NULL if one is
 	 * not required, or if IV is to be generated
 	 * @returns true if the initialisation succeeded.
 	 */
 
-	virtual bool encryptInit(bool doPad = true, const unsigned char * iv = NULL);
+	virtual bool encryptInit(bool doPad = true, 
+							 SymmetricKeyMode mode = MODE_CBC,
+							 const unsigned char * iv = NULL);
 
 	/**
 	 * \brief Continue an encryption operation using this key.
@@ -351,6 +359,7 @@ private:
 
 	// Private variables
 	SymmetricKeyType				m_keyType;
+	SymmetricKeyMode				m_keyMode;		// ECB or CBC
 	safeBuffer						m_keyBuf;		// Holder of the key
 	unsigned int					m_keyLen;
 	bool							m_initialised;

@@ -151,21 +151,18 @@ void XENCAlgorithmHandlerDefault::mapURIToKey(const XMLCh * uri,
 
 			switch (skt) {
 
-			case XSECCryptoSymmetricKey::KEY_3DES_CBC_192 :
+			case XSECCryptoSymmetricKey::KEY_3DES_192 :
 				keyOK = strEquals(uri, DSIGConstants::s_unicodeStrURI3DES_CBC);
 				break;
-			case XSECCryptoSymmetricKey::KEY_AES_ECB_128 :
-			case XSECCryptoSymmetricKey::KEY_AES_CBC_128 :
+			case XSECCryptoSymmetricKey::KEY_AES_128 :
 				isSymmetricKeyWrap = strEquals(uri, DSIGConstants::s_unicodeStrURIKW_AES128);
 				keyOK =  isSymmetricKeyWrap || strEquals(uri, DSIGConstants::s_unicodeStrURIAES128_CBC);
 				break;
-			case XSECCryptoSymmetricKey::KEY_AES_ECB_192 :
-			case XSECCryptoSymmetricKey::KEY_AES_CBC_192 :
+			case XSECCryptoSymmetricKey::KEY_AES_192 :
 				isSymmetricKeyWrap = strEquals(uri, DSIGConstants::s_unicodeStrURIKW_AES192);
 				keyOK =  isSymmetricKeyWrap || strEquals(uri, DSIGConstants::s_unicodeStrURIAES192_CBC);
 				break;
-			case XSECCryptoSymmetricKey::KEY_AES_ECB_256 :
-			case XSECCryptoSymmetricKey::KEY_AES_CBC_256 :
+			case XSECCryptoSymmetricKey::KEY_AES_256 :
 				isSymmetricKeyWrap = strEquals(uri, DSIGConstants::s_unicodeStrURIKW_AES256);
 				keyOK =  isSymmetricKeyWrap || strEquals(uri, DSIGConstants::s_unicodeStrURIAES256_CBC);
 				break;
@@ -236,7 +233,7 @@ unsigned int XENCAlgorithmHandlerDefault::unwrapKeyAES(
 			aesBuf[7] ^= ((n * j) + i);
 
 			// do decrypt
-			sk->decryptInit(false);		// No padding
+			sk->decryptInit(false, XSECCryptoSymmetricKey::MODE_ECB);		// No padding
 			int sz = sk->decrypt(aesBuf, aesOutBuf, 16, 16);
 			sz += sk->decryptFinish(&aesOutBuf[sz], 16 - sz);
 
@@ -312,7 +309,7 @@ bool XENCAlgorithmHandlerDefault::wrapKeyAES(
 			memcpy(&aesBuf[8], &buf[8 * i], 8);
 
 			// do encrypt
-			sk->encryptInit(false);
+			sk->encryptInit(false, XSECCryptoSymmetricKey::MODE_ECB);
 			int sz = sk->encrypt(aesBuf, aesOutBuf, 16, 32);
 			sz += sk->encryptFinish(&aesOutBuf[sz], 32 - sz);
 
@@ -557,9 +554,9 @@ unsigned int XENCAlgorithmHandlerDefault::decryptToSafeBuffer(
 
 	if (isKeyWrap == true) {
 
-		if (skt == XSECCryptoSymmetricKey::KEY_AES_ECB_128 ||
-			skt == XSECCryptoSymmetricKey::KEY_AES_ECB_192 ||
-			skt == XSECCryptoSymmetricKey::KEY_AES_ECB_256) {
+		if (skt == XSECCryptoSymmetricKey::KEY_AES_128 ||
+			skt == XSECCryptoSymmetricKey::KEY_AES_192 ||
+			skt == XSECCryptoSymmetricKey::KEY_AES_256) {
 
 			return unwrapKeyAES(cipherText, key, result);
 
@@ -716,9 +713,9 @@ bool XENCAlgorithmHandlerDefault::encryptToSafeBuffer(
 
 	if (isKeyWrap == true) {
 
-		if (skt == XSECCryptoSymmetricKey::KEY_AES_ECB_128 ||
-			skt == XSECCryptoSymmetricKey::KEY_AES_ECB_192 ||
-			skt == XSECCryptoSymmetricKey::KEY_AES_ECB_256) {
+		if (skt == XSECCryptoSymmetricKey::KEY_AES_128 ||
+			skt == XSECCryptoSymmetricKey::KEY_AES_192 ||
+			skt == XSECCryptoSymmetricKey::KEY_AES_256) {
 
 			return wrapKeyAES(plainText, key, result);
 
@@ -763,16 +760,16 @@ XSECCryptoKey * XENCAlgorithmHandlerDefault::createKeyForURI(
 	XSECCryptoSymmetricKey * sk = NULL;
 
 	if (strEquals(uri, DSIGConstants::s_unicodeStrURI3DES_CBC)) {
-		sk = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
+		sk = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
 	}
 	else if (strEquals(uri, DSIGConstants::s_unicodeStrURIAES128_CBC)) {
-		sk = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_CBC_128);
+		sk = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
 	}
 	else if (strEquals(uri, DSIGConstants::s_unicodeStrURIAES192_CBC)) {
-		sk = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_CBC_192);
+		sk = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
 	}
 	else if (strEquals(uri, DSIGConstants::s_unicodeStrURIAES256_CBC)) {
-		sk = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_CBC_256);
+		sk = XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
 	}
 
 	if (sk != NULL) {

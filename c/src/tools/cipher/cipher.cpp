@@ -336,39 +336,36 @@ int evaluate(int argc, char ** argv) {
 				switch(argv[paramCount][4]) {
 				case '\0' :
 					keyLen = 24;
-					loadKeyAs = XSECCryptoSymmetricKey::KEY_3DES_CBC_192;
+					loadKeyAs = XSECCryptoSymmetricKey::KEY_3DES_192;
 					keyAlg = ENCRYPT_3DES_CBC;
 					break;
 				case '2' :
 					keyLen = 16;
+					loadKeyAs = XSECCryptoSymmetricKey::KEY_AES_128;
 					if (isKEK) {
-						loadKeyAs = XSECCryptoSymmetricKey::KEY_AES_ECB_128;
 						kekAlg = ENCRYPT_KW_AES128;
 					}
 					else {
-						loadKeyAs = XSECCryptoSymmetricKey::KEY_AES_CBC_128;
 						keyAlg = ENCRYPT_AES128_CBC;
 					}
 					break;
 				case '9' :
 					keyLen = 24;
+					loadKeyAs = XSECCryptoSymmetricKey::KEY_AES_192;
 					if (isKEK) {
-						loadKeyAs = XSECCryptoSymmetricKey::KEY_AES_ECB_192;
 						kekAlg = ENCRYPT_KW_AES192;
 					}
 					else {
-						loadKeyAs = XSECCryptoSymmetricKey::KEY_AES_CBC_192;
 						keyAlg = ENCRYPT_AES192_CBC;
 					}
 					break;
 				case '5' :
 					keyLen = 32;
+					loadKeyAs = XSECCryptoSymmetricKey::KEY_AES_256;
 					if (isKEK) {
-						loadKeyAs = XSECCryptoSymmetricKey::KEY_AES_ECB_256;
 						kekAlg = ENCRYPT_KW_AES256;
 					}
 					else {
-						loadKeyAs = XSECCryptoSymmetricKey::KEY_AES_CBC_256;
 						keyAlg = ENCRYPT_AES256_CBC;
 					}
 					break;
@@ -682,7 +679,7 @@ int evaluate(int argc, char ** argv) {
 			if (kek != NULL && key == NULL) {
 				XSECPlatformUtils::g_cryptoProvider->getRandom(keyBuf, 24);
 				XSECCryptoSymmetricKey * k = 
-					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_CBC_192);
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
 				k->setKey(keyBuf, 24);
 				cipher->setKey(k);
 				keyAlg = ENCRYPT_3DES_CBC;
