@@ -116,6 +116,8 @@ public class Commandline
     private Vector shellArgs = new Vector();
     protected String executable = null;
     protected Vector arguments = new Vector();
+    protected Vector envVars = new Vector();
+    private boolean newEnvironment = false;
     private File workingDir = null;
 
     public Commandline( String toProcess )
@@ -331,6 +333,38 @@ public class Commandline
         {
             createArgument().setValue( line[i] );
         }
+    }
+
+    /**
+     * Add an environment variable
+     */
+    public void addEnvironment(String name, String value)
+    {
+        envVars.add( name + "=" + value );
+        newEnvironment = true;
+    }
+
+    /**
+     * Return the list of environment variables
+     */
+    public String[] getEnvironments()
+    {
+        return (String[])envVars.toArray(new String[envVars.size()]);
+    }
+
+    /**
+     * Return the current list of environment variables or null if user
+     * doesn't have add any variable.
+     * @todo return the list of proc env variables with user env variables if user add some var.
+     */
+    public String[] getCurrentEnvironment()
+    {
+        if ( ! newEnvironment )
+        {
+            return null;
+        }
+
+        return getEnvironments();
     }
 
     /**
@@ -624,7 +658,7 @@ public class Commandline
         {
             if ( workingDir == null )
             {
-                process = Runtime.getRuntime().exec( getShellCommandline() );
+                process = Runtime.getRuntime().exec( getShellCommandline(), getCurrentEnvironment() );
             }
             else
             {
@@ -637,7 +671,7 @@ public class Commandline
                     throw new CommandLineException( "Path \"" + workingDir.getPath() + "\" does not specify a directory." );
                 }
 
-                process = Runtime.getRuntime().exec( getShellCommandline(), null, workingDir );
+                process = Runtime.getRuntime().exec( getShellCommandline(), getCurrentEnvironment(), workingDir );
             }
         }
         catch( IOException ex )
