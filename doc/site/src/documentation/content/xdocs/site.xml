@@ -44,6 +44,7 @@
     <programming label="Programming" href="programming.html"/>
     <cfaq label="FAQs" href="faq.html"/>
 	<external label="API Docs" href="apiDocs/index.html"/>
+	<external label="Nightly API build" href="http://nagoya.apache.org/~blautenb/xml-security-c/apiDocs/"/>
     <tools label="Tools" href="tools.html"/>
     <releases label="Release Information" href="releases.html"/>
     <credits label="Credits" href="credits.html"/>

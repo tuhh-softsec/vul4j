@@ -69,6 +69,19 @@
 		</p>
       </answer>
     </faq>
+	<faq id="oldXalanC">
+	  <question>
+		Are versions of Xalan prior to 1.6 supported?
+	  </question>
+	  <answer>
+		<p>
+		  No.  Whilst the functionality required is available in prior
+		  versions, the location of include files changed in 1.6.  A
+		  decision was made in version 1.0.0 of xml-security-c to
+		  update the source to support these new locations.
+		</p>
+	  </answer>
+	</faq>
   </part>
 </faqs>
 

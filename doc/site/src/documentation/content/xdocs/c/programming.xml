@@ -23,6 +23,11 @@
 		The rest of this section provides a very high level overview on how
 		to use the library for signing and verificataion of signatures.  
 	  </p>
+	  <note>
+		Full API documentation for the current official release can be found 
+		<link href="apiDocs/index.html">here</link>.  The API documentation is
+		also generated <jump href="http://nagoya.apache.org/~blautenb/xml-security-c/apiDocs/">nightly</jump> from the CVS repository.
+	  </note>
 	  <p>
 		Two samples are provided :
 	  </p>

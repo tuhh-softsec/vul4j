@@ -18,7 +18,7 @@
       </p>
 	  <p>
 		Version 1.00 of the library has been tested with version 2.2 and 2.3 of
-		Xerces-C, version 1.5 of Xalan-C and Version 0.9.7 (and above) of
+		Xerces-C, version 1.6 of Xalan-C and Version 0.9.7 (and above) of
 		OpenSSL.
 	  </p>
     </section>
@@ -52,9 +52,9 @@
     <section>
 	  <title>Building for UNIX</title>
 	  <p>
-		XML-Security-C is currently fully supported on Linux and 
+		XML-Security-C is currently fully supported on Linux, FreeBSD and 
 		Solaris.  It is partially supported (in cases where Xalan is not 
-		required) on NetBSD, FreeBSD and Cygwin.  It has been built and 
+		required) on NetBSD and Cygwin.  It has been built and 
 		tested using GNU gcc 3.2, gcc 2.95.4, Forte C++ 5.4 (Solaris) and 
 		GNU make.
 	  </p>
@@ -78,8 +78,8 @@
 		  For example (on my Debian Linux box under Bash) :
 		</p>
 		<source><![CDATA[
-export XERCESCROOT=~/prog/extlibs/xerces-c-src2_2_0
-export XALANCROOT=~/prog/extlibs/xalan-c-src1_5/c
+export XERCESCROOT=~/prog/extlibs/xerces-c-src2_3_0
+export XALANCROOT=~/prog/extlibs/xalan-c-src1_6/c
 export OPENSSL=~/prog/extlibs/openssl-0.9.7a
 		  ]]></source>
 		<p>

@@ -7,7 +7,7 @@
   
   <body>
     <section>
-      <title>News - July 2003</title>
+      <title>News - August 2003</title>
       <p>
 		Version 1.00 of the library has now been released.  It features :
 	  </p>
@@ -21,7 +21,9 @@
 	  </ul>
 	  <p>
 		Version 1.00 is has been tested with Xerces-C v2.2 and the newly 
-		released Xalan-C v1.5.  Xerces-C v2.3 is also supported.
+		released Xalan-C v1.6.  Xerces-C v2.3 is also supported.  Note that
+		versions of Xalan prior to v1.6 are not supported (due to the new
+		changed location of include files).
 	  </p>
     </section>
     <section>
