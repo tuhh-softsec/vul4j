@@ -174,6 +174,18 @@ const XMLCh XKMSConstants::s_tagKeyInfo[] = {
 	chNull
 };
 
+const XMLCh XKMSConstants::s_tagKeyName[] = {
+
+	chLatin_K,
+	chLatin_e,
+	chLatin_y,
+	chLatin_N,
+	chLatin_a,
+	chLatin_m,
+	chLatin_e,
+	chNull
+};
+
 const XMLCh XKMSConstants::s_tagKeyUsage[] = {
 
 	chLatin_K,

@@ -60,6 +60,7 @@ public:
 	static const XMLCh s_tagInvalidReason[];
 	static const XMLCh s_tagKeyBinding[];
 	static const XMLCh s_tagKeyInfo[];
+	static const XMLCh s_tagKeyName[];
 	static const XMLCh s_tagKeyUsage[];
 	static const XMLCh s_tagKeyValue[];
 	static const XMLCh s_tagLocateRequest[];
