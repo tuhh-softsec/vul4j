@@ -1,5 +1,7 @@
 package org.codehaus.plexus.util.dag;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -110,5 +112,64 @@ public class DAGTest extends TestCase
         
         assertTrue( d.getParentLabels().contains( "c" )  );
 
+    }
+    
+    
+    public void testGetPredessors()
+    {
+        DAG dag = new DAG();
+        
+        dag.addEdge( "a", "b" );
+        
+        //
+        //  a --> b --> c --> e
+        //        |     |     |
+        //        |     V     V
+        //          --> d <-- f  --> g
+        // result d, g, f, c, b, a
+        
+        //force order of nodes
+        
+        dag.addVertex( "c");
+        
+        dag.addVertex( "d" );
+        
+        dag.addEdge( "a", "b" );
+
+        dag.addEdge( "b", "c" );
+        
+        dag.addEdge( "b", "d" );
+        
+        dag.addEdge( "c", "d" );
+        
+        dag.addEdge( "c", "e" );
+        
+        dag.addEdge( "f", "d" );
+        
+        dag.addEdge( "e", "f" );
+        
+        dag.addEdge( "f", "g" );
+        
+        
+        List actual = dag.getPredessorLabels(  "b"  );
+        
+        List expected = new ArrayList();
+
+        expected.add( "d" );
+                
+        expected.add( "g" );
+        
+        expected.add( "f" );
+        
+        expected.add( "e" );
+        
+        expected.add( "c" );
+        
+        expected.add( "b" );
+        
+        assertEquals( actual, expected );
+        
+        
+        
     }
 }

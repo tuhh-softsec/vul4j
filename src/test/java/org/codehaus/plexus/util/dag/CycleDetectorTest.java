@@ -93,7 +93,7 @@ public class CycleDetectorTest extends TestCase
 
         assertEquals( "Cycle contains 'a'", "a", (String) cycle4.get( 0 ) );
 
-        assertEquals( "Cycle contains 'b'", "b", cycle4.get(1 ) );
+        assertEquals( "Cycle contains 'b'", "b", cycle4.get( 1 ) );
 
         assertEquals( "Cycle contains 'c'", "c", cycle4.get( 2 ) );
 
