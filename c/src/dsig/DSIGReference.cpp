@@ -76,6 +76,7 @@
 #include <xsec/transformers/TXFMDocObject.hpp>
 #include <xsec/transformers/TXFMOutputFile.hpp>
 #include <xsec/transformers/TXFMSHA1.hpp>
+#include <xsec/transformers/TXFMMD5.hpp>
 #include <xsec/transformers/TXFMBase64.hpp>
 #include <xsec/transformers/TXFMSB.hpp>
 #include <xsec/transformers/TXFMXPath.hpp>
@@ -654,6 +655,12 @@ void DSIGReference::load(void) {
 	if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURISHA1)) {
 
 		me_hashMethod = HASH_SHA1;
+
+	}
+
+	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURIMD5)) {
+
+		me_hashMethod = HASH_MD5;
 
 	}
 
@@ -1251,6 +1258,11 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 	case HASH_SHA1 :
 
 		XSECnew(currentTxfm, TXFMSHA1(d));
+		break;
+
+	case HASH_MD5 :
+
+		XSECnew(currentTxfm, TXFMMD5(d));
 		break;
 
 	default :

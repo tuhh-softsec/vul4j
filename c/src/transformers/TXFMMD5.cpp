@@ -60,132 +60,146 @@
 /*
  * XSEC
  *
- * OpenSSLCryptoHashHMAC := OpenSSL Implementation of HMAC
+ * TXFMMD5 := Class that performs a MD5 transform
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
-#include <xsec/enc/OpenSSL/OpenSSLCryptoHashHMAC.hpp>
-#include <xsec/enc/XSECCryptoException.hpp>
-#include <xsec/enc/XSECCryptoKeyHMAC.hpp>
+// XSEC
 
-#include <memory.h>
+#include <xsec/transformers/TXFMMD5.hpp>
+#include <xsec/utils/XSECPlatformUtils.hpp>
+#include <xsec/framework/XSECException.hpp>
 
-// Constructors/Destructors
+// Standarad includes 
 
-OpenSSLCryptoHashHMAC::OpenSSLCryptoHashHMAC(HashType alg) {
+TXFMMD5::TXFMMD5(DOMDocument *doc,
+									 XSECCryptoKey * key) : TXFMBase (doc) {
 
-	// Initialise the digest
+	toOutput = 0;					// Nothing yet to output
 
-	switch (alg) {
-
-	case (XSECCryptoHash::HASH_SHA1) :
-	
-		mp_md = EVP_get_digestbyname("SHA1");
-		break;
-
-	case (XSECCryptoHash::HASH_MD5) :
-	
-		mp_md = EVP_get_digestbyname("MD5");
-		break;
-
-	default :
-
-		mp_md = NULL;
+	if (key == NULL)
+		// Get a MD5 worker
+		mp_h = XSECPlatformUtils::g_cryptoProvider->hashMD5();
+	else {
+		// Get an HMAC MD5
+		
+		mp_h = XSECPlatformUtils::g_cryptoProvider->hashHMACMD5();
+		mp_h->setKey(key);
 
 	}
 
-	if(!mp_md) {
-
-		throw XSECCryptoException(XSECCryptoException::MDError,
-			"OpenSSL:HashHMAC - Error loading Message Digest"); 
-	}
-
-	m_initialised = false;
-	m_hashType = alg;
-
-}
-
-void OpenSSLCryptoHashHMAC::setKey(XSECCryptoKey *key) {
-
-	// Use this to initialise the HMAC Context
-
-	if (key->getKeyType() != XSECCryptoKey::KEY_HMAC) {
-
-		throw XSECCryptoException(XSECCryptoException::MDError,
-			"OpenSSL:HashHMAC - Non HMAC Key passed to OpenSSLHashHMAC");
-
-	}
-
-	unsigned int m_keyLen = ((XSECCryptoKeyHMAC *) key)->getKey(m_keyBuf);
-
-
-	HMAC_Init(&m_hctx, 
-		m_keyBuf.rawBuffer(),
-		m_keyLen,
-		mp_md);
-
-	m_initialised = true;
-
-}
-
-OpenSSLCryptoHashHMAC::~OpenSSLCryptoHashHMAC() {}
-
-
-
-// Hashing Activities
-
-void OpenSSLCryptoHashHMAC::reset(void) {
-
-
-	if (m_initialised)
-		HMAC_Init(&m_hctx, 
-			m_keyBuf.rawBuffer(),
-			m_keyLen,
-			mp_md);
-
-}
-
-void OpenSSLCryptoHashHMAC::hash(unsigned char * data, 
-								 unsigned int length) {
-
-	if (!m_initialised)
-		throw XSECCryptoException(XSECCryptoException::MDError,
-			"OpenSSL:HashHMAC - hash called prior to setKey");
-
-
-	HMAC_Update(&m_hctx, data, (int) length);
-
-}
-
-unsigned int OpenSSLCryptoHashHMAC::finish(unsigned char * hash,
-									   unsigned int maxLength) {
-
-	unsigned int retLen;
-
-	// Finish up and copy out hash, returning the length
-
-	HMAC_Final(&m_hctx, m_mdValue, &m_mdLen);
-
-	// Copy to output buffer
 	
-	retLen = (maxLength > m_mdLen ? m_mdLen : maxLength);
-	memcpy(hash, m_mdValue, retLen);
+	if (!mp_h) {
 
-	return retLen;
+		throw XSECException(XSECException::CryptoProviderError, 
+				"Error requesting MD5 object from Crypto Provider");
+
+	}
+									
+};
+
+TXFMMD5::~TXFMMD5() {
+
+	// Clean up
+	if (mp_h)
+		delete mp_h;
+
+};
+
+	// Methods to set the inputs
+
+//void TXFMMD5::setInput(TXFMBase *input);
+
+	// Methods to get tranform output type and input requirement
+
+TXFMBase::ioType TXFMMD5::getInputType(void) {
+
+	return TXFMBase::BYTE_STREAM;
+
+}
+TXFMBase::ioType TXFMMD5::getOutputType(void) {
+
+	return TXFMBase::BYTE_STREAM;
 
 }
 
-// Get information
 
-XSECCryptoHash::HashType OpenSSLCryptoHashHMAC::getHashType(void) {
+TXFMBase::nodeType TXFMMD5::getNodeType(void) {
 
-	return m_hashType;			// This could be any kind of hash
+	return TXFMBase::DOM_NODE_NONE;
 
 }
 
+	// Methods to set input data
+
+void TXFMMD5::setInput(TXFMBase * inputT) {
+
+	input = inputT;
+
+	keepComments = input->getCommentsStatus();
+
+	// Now run through the data
+	unsigned char buffer[1024];
+	unsigned int size;
+
+	while ((size = input->readBytes((XMLByte *) buffer, 1024)) != 0)
+		mp_h->hash(buffer, size);
+	
+	// Finalise
+
+	md_len = mp_h->finish(md_value, CRYPTO_MAX_HASH_SIZE);
+
+	toOutput = md_len;
+
+}
+
+
+unsigned int TXFMMD5::readBytes(XMLByte * const toFill, unsigned int maxToFill) {
+	
+	unsigned int ret;
+
+	if (toOutput == 0)
+		return 0;
+
+	// Check if we can just output everything left
+	if (toOutput <= maxToFill) {
+
+		memcpy((char *) toFill, &md_value[md_len - toOutput], toOutput);
+		ret = toOutput;
+		toOutput = 0;
+
+		return ret;
+
+	}
+
+	// Output just some
+
+	memcpy((char *) toFill, &md_value[md_len - toOutput], maxToFill);
+	ret = maxToFill;
+	toOutput -= maxToFill;
+
+	return ret;
+
+}
+
+DOMDocument * TXFMMD5::getDocument() {
+
+	return NULL;
+
+}
+
+DOMNode * TXFMMD5::getFragmentNode() {
+
+	return NULL;		// Return a null node
+
+};
+
+const XMLCh * TXFMMD5::getFragmentId() {
+
+	return NULL;	// Empty string
+
+}

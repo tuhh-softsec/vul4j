@@ -96,6 +96,8 @@ public :
 	// Hashing classes
 	virtual XSECCryptoHash			* hashSHA1();
 	virtual XSECCryptoHash			* hashHMACSHA1();
+	virtual XSECCryptoHash			* hashMD5();
+	virtual XSECCryptoHash			* hashHMACMD5();
 
 	// Encode/Decode
 	virtual XSECCryptoBase64		* base64();

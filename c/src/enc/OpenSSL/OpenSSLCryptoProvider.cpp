@@ -111,6 +111,26 @@ XSECCryptoHash * OpenSSLCryptoProvider::hashHMACSHA1() {
 
 }
 
+XSECCryptoHash	* OpenSSLCryptoProvider::hashMD5() {
+
+	OpenSSLCryptoHash * ret;
+
+	XSECnew(ret, OpenSSLCryptoHash(XSECCryptoHash::HASH_MD5));
+
+	return ret;
+
+}
+
+XSECCryptoHash * OpenSSLCryptoProvider::hashHMACMD5() {
+
+	OpenSSLCryptoHashHMAC * ret;
+
+	XSECnew(ret, OpenSSLCryptoHashHMAC(XSECCryptoHash::HASH_MD5));
+
+	return ret;
+
+}
+
 XSECCryptoKeyDSA * OpenSSLCryptoProvider::keyDSA() {
 	
 	OpenSSLCryptoKeyDSA * ret;

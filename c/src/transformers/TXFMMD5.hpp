@@ -60,132 +60,63 @@
 /*
  * XSEC
  *
- * OpenSSLCryptoHashHMAC := OpenSSL Implementation of HMAC
+ * TXFMMD5 := Class that performs a MD5 transform
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
-#include <xsec/enc/OpenSSL/OpenSSLCryptoHashHMAC.hpp>
-#include <xsec/enc/XSECCryptoException.hpp>
-#include <xsec/enc/XSECCryptoKeyHMAC.hpp>
+#ifndef TXFMMD5_INCLUDE
+#define TXFMMD5_INCLUDE
 
-#include <memory.h>
+// XSEC Includes
 
-// Constructors/Destructors
+#include <xsec/transformers/TXFMBase.hpp>
+#include <xsec/enc/XSECCryptoProvider.hpp>
 
-OpenSSLCryptoHashHMAC::OpenSSLCryptoHashHMAC(HashType alg) {
+/**
+ * \brief Transformer to handle create a MD5-1 hash from a chain
+ * @ingroup internal
+ */
 
-	// Initialise the digest
+class DSIG_EXPORT TXFMMD5 : public TXFMBase {
 
-	switch (alg) {
+private:
 
-	case (XSECCryptoHash::HASH_SHA1) :
+	XSECCryptoHash		* mp_h;							// To hold the hash
+	unsigned char		md_value[CRYPTO_MAX_HASH_SIZE];	// Final output
+	unsigned int		md_len;							// Length of digest
+
+	unsigned int		toOutput;						// Amount still to output
+
+public:
+
+	TXFMMD5(DOMDocument *doc, XSECCryptoKey * key = NULL);
+	~TXFMMD5();
+
+	// Methods to get tranform output type and input requirement
+
+	virtual TXFMBase::ioType getInputType(void);
+	virtual TXFMBase::ioType getOutputType(void);
+	virtual nodeType getNodeType(void);
+
+	// Methods to set input data
+
+	virtual void setInput(TXFMBase * inputT);
+
+	// Methods to get output data
+
+	virtual unsigned int readBytes(XMLByte * const toFill, const unsigned int maxToFill);
+	virtual DOMDocument *getDocument();
+	virtual DOMNode *getFragmentNode();
+	virtual const XMLCh * getFragmentId();
 	
-		mp_md = EVP_get_digestbyname("SHA1");
-		break;
-
-	case (XSECCryptoHash::HASH_MD5) :
-	
-		mp_md = EVP_get_digestbyname("MD5");
-		break;
-
-	default :
-
-		mp_md = NULL;
-
-	}
-
-	if(!mp_md) {
-
-		throw XSECCryptoException(XSECCryptoException::MDError,
-			"OpenSSL:HashHMAC - Error loading Message Digest"); 
-	}
-
-	m_initialised = false;
-	m_hashType = alg;
-
-}
-
-void OpenSSLCryptoHashHMAC::setKey(XSECCryptoKey *key) {
-
-	// Use this to initialise the HMAC Context
-
-	if (key->getKeyType() != XSECCryptoKey::KEY_HMAC) {
-
-		throw XSECCryptoException(XSECCryptoException::MDError,
-			"OpenSSL:HashHMAC - Non HMAC Key passed to OpenSSLHashHMAC");
-
-	}
-
-	unsigned int m_keyLen = ((XSECCryptoKeyHMAC *) key)->getKey(m_keyBuf);
-
-
-	HMAC_Init(&m_hctx, 
-		m_keyBuf.rawBuffer(),
-		m_keyLen,
-		mp_md);
-
-	m_initialised = true;
-
-}
-
-OpenSSLCryptoHashHMAC::~OpenSSLCryptoHashHMAC() {}
+private:
+	TXFMSHA1();
+};
 
 
 
-// Hashing Activities
-
-void OpenSSLCryptoHashHMAC::reset(void) {
-
-
-	if (m_initialised)
-		HMAC_Init(&m_hctx, 
-			m_keyBuf.rawBuffer(),
-			m_keyLen,
-			mp_md);
-
-}
-
-void OpenSSLCryptoHashHMAC::hash(unsigned char * data, 
-								 unsigned int length) {
-
-	if (!m_initialised)
-		throw XSECCryptoException(XSECCryptoException::MDError,
-			"OpenSSL:HashHMAC - hash called prior to setKey");
-
-
-	HMAC_Update(&m_hctx, data, (int) length);
-
-}
-
-unsigned int OpenSSLCryptoHashHMAC::finish(unsigned char * hash,
-									   unsigned int maxLength) {
-
-	unsigned int retLen;
-
-	// Finish up and copy out hash, returning the length
-
-	HMAC_Final(&m_hctx, m_mdValue, &m_mdLen);
-
-	// Copy to output buffer
-	
-	retLen = (maxLength > m_mdLen ? m_mdLen : maxLength);
-	memcpy(hash, m_mdValue, retLen);
-
-	return retLen;
-
-}
-
-// Get information
-
-XSECCryptoHash::HashType OpenSSLCryptoHashHMAC::getHashType(void) {
-
-	return m_hashType;			// This could be any kind of hash
-
-}
-
+#endif /* TXFMMD5 */

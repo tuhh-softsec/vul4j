@@ -111,6 +111,7 @@ public :
 
 		HASH_NONE			= 0,
 		HASH_SHA1			= 1,
+		HASH_MD5			= 2
 
 	};
 

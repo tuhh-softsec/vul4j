@@ -86,6 +86,7 @@ XSEC_USING_XERCES(XMLString);
 // Hashing Algorithms
 
 #define URI_ID_SHA1		"http://www.w3.org/2000/09/xmldsig#sha1"
+#define URI_ID_MD5		"http://www.w3.org/2001/04/xmldsig-more#md5"
 
 // Transforms
 
@@ -142,7 +143,8 @@ enum signatureMethod {
 enum hashMethod {
 
 	HASH_NONE					= 0,			// No method defined
-	HASH_SHA1					= 1 			// SHA1
+	HASH_SHA1					= 1, 			// SHA1
+	HASH_MD5					= 2,
 };
 
 enum transformType {
@@ -250,6 +252,11 @@ bool hashMethod2URI(safeBuffer &uri, hashMethod hm) {
 		uri = URI_ID_SHA1;
 		break;
 
+	case (HASH_MD5) :
+
+		uri = URI_ID_MD5;
+		break;
+
 	default:
 		return false;
 
@@ -279,6 +286,7 @@ public:
 	// URI_IDs
 	static const XMLCh * const & s_unicodeStrURIDSIG;
 	static const XMLCh * const & s_unicodeStrURISHA1;
+	static const XMLCh * const & s_unicodeStrURIMD5;		// Not recommended
 	static const XMLCh * const & s_unicodeStrURIBASE64;
 	static const XMLCh * const & s_unicodeStrURIXPATH;
 	static const XMLCh * const & s_unicodeStrURIXSLT;

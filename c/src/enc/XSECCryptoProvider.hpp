@@ -216,6 +216,36 @@ public :
 
 	virtual XSECCryptoHash			* hashHMACSHA1() = 0;
 
+	/**
+	 * \brief Return a MD5 implementation.
+	 *
+	 * Call used by the library to obtain a MD5 object from the 
+	 * provider.
+	 *
+	 * @returns A pointer to a Hash object that implements MD5
+	 * @see XSECCryptoHash
+	 */
+	 
+	virtual XSECCryptoHash			* hashMD5() = 0;
+
+	/**
+	 * \brief Return a HMAC MD5 implementation.
+	 *
+	 * Call used by the library to obtain a HMAC MD5 object from the 
+	 * provider.  The caller will need to set the key in the hash
+	 * object with an XSECCryptoKeyHMAC using XSECCryptoHash::setKey()
+	 *
+	 * @note The use of MD5 is explicitly marked as <b>not recommended</b> 
+	 * in the XML Digital Signature standard due to recent advances in
+	 * cryptography indicating there <em>may</em> be weaknesses in the 
+	 * algorithm.
+	 *
+	 * @returns A pointer to a Hash object that implements HMAC-MD5
+	 * @see XSECCryptoHash
+	 */
+
+	virtual XSECCryptoHash			* hashHMACMD5() = 0;
+
 	//@}
 
 	/** @name Encoding functions */

@@ -64,9 +64,7 @@
  *
  * Author(s): Berin Lautenbach
  *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *
  */
 
@@ -84,6 +82,7 @@ static XMLCh * s_unicodeStrAlgorithm;
 
 static XMLCh * s_unicodeStrURIDSIG;
 static XMLCh * s_unicodeStrURISHA1;
+static XMLCh * s_unicodeStrURIMD5;
 static XMLCh * s_unicodeStrURIBASE64;
 static XMLCh * s_unicodeStrURIXPATH;
 static XMLCh * s_unicodeStrURIXSLT;
@@ -111,6 +110,7 @@ const XMLCh * const & DSIGConstants::s_unicodeStrAlgorithm = ::s_unicodeStrAlgor
 
 const XMLCh * const & DSIGConstants::s_unicodeStrURIDSIG = ::s_unicodeStrURIDSIG;
 const XMLCh * const & DSIGConstants::s_unicodeStrURISHA1 = ::s_unicodeStrURISHA1;
+const XMLCh * const & DSIGConstants::s_unicodeStrURIMD5 = ::s_unicodeStrURIMD5;
 const XMLCh * const & DSIGConstants::s_unicodeStrURIBASE64 = ::s_unicodeStrURIBASE64;
 const XMLCh * const & DSIGConstants::s_unicodeStrURIXPATH = ::s_unicodeStrURIXPATH;
 const XMLCh * const & DSIGConstants::s_unicodeStrURIXSLT = ::s_unicodeStrURIXSLT;
@@ -142,6 +142,7 @@ void DSIGConstants::create() {
 
 	::s_unicodeStrURIDSIG = XMLString::transcode(URI_ID_DSIG);
 	::s_unicodeStrURISHA1 = XMLString::transcode(URI_ID_SHA1);
+	::s_unicodeStrURIMD5 = XMLString::transcode(URI_ID_MD5);
 	::s_unicodeStrURIBASE64 = XMLString::transcode(URI_ID_BASE64);
 	::s_unicodeStrURIXPATH = XMLString::transcode(URI_ID_XPATH);
 	::s_unicodeStrURIXSLT = XMLString::transcode(URI_ID_XSLT);
@@ -170,6 +171,7 @@ void DSIGConstants::destroy() {
 
 	delete[] ::s_unicodeStrURIDSIG;
 	delete[] ::s_unicodeStrURISHA1;
+	delete[] ::s_unicodeStrURIMD5;
 	delete[] ::s_unicodeStrURIBASE64;
 	delete[] ::s_unicodeStrURIXPATH;
 	delete[] ::s_unicodeStrURIXSLT;

@@ -740,5 +740,13 @@ SOURCE=..\..\..\..\src\transformers\TXFMXSL.hpp
 SOURCE=..\..\..\..\src\framework\version.rc
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\src\transformers\TXFMMD5.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\transformers\TXFMMD5.hpp
+# End Source File
 # End Target
 # End Project

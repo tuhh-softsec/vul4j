@@ -86,6 +86,11 @@ OpenSSLCryptoHash::OpenSSLCryptoHash(HashType alg) {
 		mp_md = EVP_get_digestbyname("SHA1");
 		break;
 
+	case (XSECCryptoHash::HASH_MD5) :
+	
+		mp_md = EVP_get_digestbyname("MD5");
+		break;
+
 	default :
 
 		mp_md = NULL;
