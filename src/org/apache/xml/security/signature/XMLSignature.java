@@ -138,32 +138,58 @@ public class XMLSignature extends SignatureElementProxy {
     * This creates a new <CODE>ds:Signature</CODE> Element and adds an empty
     * <CODE>ds:SignedInfo</CODE> to it.
     *
+    * @param doc
+    * @param BaseURI
+    * @param SignatureMethodURI the Signature method to be used.
+    * @throws XMLSecurityException
     */
-   public XMLSignature(
-           Document doc, String BaseURI, String SignatureMethodURI)
-              throws XMLSecurityException {
-
-      this(doc, BaseURI, SignatureMethodURI, 0, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+   public XMLSignature(Document doc, String BaseURI, String SignatureMethodURI)
+           throws XMLSecurityException {
+      this(doc, BaseURI, SignatureMethodURI, 0,
+           Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
    }
 
+   /**
+    * Constructor XMLSignature
+    *
+    * @param doc
+    * @param BaseURI
+    * @param SignatureMethodURI the Signature method to be used.
+    * @param HMACOutputLength
+    * @throws XMLSecurityException
+    */
    public XMLSignature(
            Document doc, String BaseURI, String SignatureMethodURI, int HMACOutputLength)
               throws XMLSecurityException {
-      this(doc, BaseURI, SignatureMethodURI, HMACOutputLength, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+      this(doc, BaseURI, SignatureMethodURI, HMACOutputLength,
+           Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
    }
 
-
+   /**
+    * Constructor XMLSignature
+    *
+    * @param doc
+    * @param BaseURI
+    * @param SignatureMethodURI the Signature method to be used.
+    * @param CanonicalizationMethodURI the canonicalization algorithm to be used to c14nize the SignedInfo element.
+    * @throws XMLSecurityException
+    */
    public XMLSignature(
            Document doc, String BaseURI, String SignatureMethodURI, String CanonicalizationMethodURI)
               throws XMLSecurityException {
       this(doc, BaseURI, SignatureMethodURI, 0, CanonicalizationMethodURI);
    }
 
-
    /**
     * This creates a new <CODE>ds:Signature</CODE> Element and adds an empty
     * <CODE>ds:SignedInfo</CODE> to it.
     *
+    * @param doc
+    * @param BaseURI
+    * @param SignatureMethodURI the Signature method to be used.
+    * @param HMACOutputLength
+    * @param CanonicalizationMethodURI the canonicalization algorithm to be used to c14nize the SignedInfo element.
+    * @throws XMLSecurityException
     */
    public XMLSignature(
            Document doc, String BaseURI, String SignatureMethodURI, int HMACOutputLength, String CanonicalizationMethodURI)
@@ -174,9 +200,9 @@ public class XMLSignature extends SignatureElementProxy {
       XMLUtils.addReturnToElement(this._constructionElement);
 
       this._baseURI = BaseURI;
-      this._signedInfo =
-         new SignedInfo(this._doc,
-                        SignatureMethodURI, HMACOutputLength, CanonicalizationMethodURI);
+      this._signedInfo = new SignedInfo(this._doc, SignatureMethodURI,
+                                        HMACOutputLength,
+                                        CanonicalizationMethodURI);
 
       this._constructionElement.appendChild(this._signedInfo.getElement());
       XMLUtils.addReturnToElement(this._constructionElement);
@@ -189,7 +215,6 @@ public class XMLSignature extends SignatureElementProxy {
       this._constructionElement.appendChild(signatureValueElement);
       XMLUtils.addReturnToElement(this._constructionElement);
    }
-
 
    /**
     * Constructor XMLSignature
@@ -211,8 +236,9 @@ public class XMLSignature extends SignatureElementProxy {
                                   Constants._TAG_SIGNEDINFO);
 
       if (signedInfoElem == null) {
-         Object exArgs[] = { "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNEDINFO,
-                             "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNATURE };
+         Object exArgs[] = {
+            "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNEDINFO,
+            "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNATURE };
 
          throw new XMLSignatureException("xml.WrongContent", exArgs);
       }
@@ -225,8 +251,10 @@ public class XMLSignature extends SignatureElementProxy {
                                          Constants._TAG_SIGNATUREVALUE);
 
       if (signatureValueElement == null) {
-         Object exArgs[] = { "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNATUREVALUE,
-                             "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNATURE };
+         Object exArgs[] = {
+            "{" + Constants.SignatureSpecNS + "}"
+            + Constants._TAG_SIGNATUREVALUE,
+            "{" + Constants.SignatureSpecNS + "}" + Constants._TAG_SIGNATURE };
 
          throw new XMLSignatureException("xml.WrongContent", exArgs);
       }
@@ -673,7 +701,6 @@ public class XMLSignature extends SignatureElementProxy {
     * @throws XMLSignatureException
     */
    public void addDocument(String referenceURI) throws XMLSignatureException {
-
       this._signedInfo.addDocument(this._baseURI, referenceURI, null,
                                    Constants.ALGO_ID_DIGEST_SHA1, null, null);
    }
