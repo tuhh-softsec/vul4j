@@ -869,6 +869,10 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 	case HASH_SHA1 :
 
 		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
+			if (mp_signingKey->getKeyType() != XSECCryptoKey::KEY_HMAC) {
+				throw XSECException(XSECException::SigVfyError,
+					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
+			}
 			XSECnew(txfm, TXFMSHA1(mp_doc, mp_signingKey));
 		}
 		else  {

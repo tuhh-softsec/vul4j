@@ -35,6 +35,7 @@
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
+#include <xsec/enc/XSECCryptoException.hpp>
 
 #if defined(_WIN32)
 #	include <xsec/utils/winutils/XSECURIResolverGenericWin32.hpp>
@@ -1253,6 +1254,13 @@ int main(int argc, char **argv) {
 		delete m;
 		errorsOccured = true;
 		exit (1);
+	}
+
+	catch (XSECCryptoException &e) {
+		cerr << "A cryptographic error occured during signature operation\n   Message: "
+		<< e.getMsg() << endl;
+		errorsOccured = true;
+		exit(1);
 	}
 
 	catch (NetAccessorException) {
