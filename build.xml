@@ -1,7 +1,7 @@
 <project name="Functor" default="test" basedir=".">
 <!--
   Commons-Functor Ant Build File
-  $Id: build.xml,v 1.9 2003/02/27 13:09:57 rwaldhoff Exp $
+  $Id: build.xml,v 1.10 2003/03/04 12:25:24 rwaldhoff Exp $
 -->
 
 <!-- ========== Initialize Properties ===================================== -->
@@ -133,10 +133,6 @@
            optimize="${compile.optimize}">
       <classpath refid="compile.classpath"/>
     </javac>
-    <copy todir="${build.home}/classes" filtering="off">
-      <fileset dir="${source.home}" excludes="**/*.java"/>
-      <fileset dir="${source.home}" excludes="**/*.html"/>
-    </copy>
   </target>
 
 
@@ -149,10 +145,6 @@
            optimize="${compile.optimize}">
       <classpath refid="test.classpath"/>
     </javac>
-    <copy todir="${build.home}/test-classes" filtering="off">
-      <fileset dir="${source.home}" excludes="**/*.java"/>
-      <fileset dir="${source.home}" excludes="**/*.html"/>
-    </copy>
   </target>
 
 
