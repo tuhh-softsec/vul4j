@@ -21,6 +21,9 @@ import org.apache.commons.logging.Log;
 /**
  * Simple utility class to assist in logging.
  * <p>
+ * This class is intended only for the use of the code in the
+ * plugins packages. No "user" code should use this package.
+ * <p>
  * The Digester module has an interesting approach to logging:
  * all logging should be done via the Log object stored on the
  * digester instance that the object *doing* the logging is associated
@@ -45,9 +48,11 @@ import org.apache.commons.logging.Log;
  * And it also implies that logging filtering can no longer be applied
  * to subcomponents of the Digester, because all logging is done via
  * a single Log object (a single Category). C'est la vie...
+ *
+ * @since 1.6
  */
 
-public class LogUtils {
+class LogUtils {
     
   /**
    * Get the Log object associated with the specified Digester instance,
@@ -56,7 +61,7 @@ public class LogUtils {
    * You should use this method instead of digester.getLogger() in
    * any situation where the digester might be null.
    */
-  public static Log getLogger(Digester digester) {
+  static Log getLogger(Digester digester) {
     if (digester == null) {
         return new org.apache.commons.logging.impl.NoOpLog();
     }
