@@ -91,7 +91,7 @@ SOURCE=..\..\..\..\src\tools\cipher\cipher.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\tools\cipher\MerlinFiveInteropResolver.cpp
+SOURCE=..\..\..\..\src\tools\cipher\XencInteropResolver.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -99,7 +99,7 @@ SOURCE=..\..\..\..\src\tools\cipher\MerlinFiveInteropResolver.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\..\..\src\tools\cipher\MerlinFiveInteropResolver.hpp
+SOURCE=..\..\..\..\src\tools\cipher\XencInteropResolver.hpp
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -228,6 +228,34 @@ my @xenc_array=(
 #decryption-transform-except.xml
 #decryption-transform.xml
 
+# PHAOS interop tests.  Commented out tests are currently
+# not supported
+# bad-alg-enc-element-aes128-kw-3des.xml
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-3des-kw-aes192.xml,-i -de",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-aes128-kw-3des.xml,-i -de",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-aes192-kw-aes256.xml,-i -de",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-content-aes256-kt-rsa1_5.xml,-i -de",
+# enc-element-3des-ka-dh.xml
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-3des-kt-rsa1_5.xml,-i -de",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-3des-kt-rsa_oaep_sha1.xml,-i -de",
+# enc-element-3des-kt-rsa_oaep_sha256.xml
+# enc-element-3des-kt-rsa_oaep_sha512.xml
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-3des-kw-3des.xml,-i -de",
+# enc-element-aes128-ka-dh.xml
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kt-rsa1_5.xml,-i -de",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kt-rsa_oaep_sha1.xml,-i -de",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kw-aes128.xml,-i -de",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes128-kw-aes256.xml,-i -de",
+# enc-element-aes192-ka-dh.xml
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes192-kt-rsa_oaep_sha1.xml,-i -de",
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes192-kw-aes192.xml,-i -de",
+# enc-element-aes256-ka-dh.xml
+"<Number>4019 2445 0277 5567</Number>,com/phaos/phaos-xmlenc-3/enc-element-aes256-kw-aes256.xml,-i -de",
+"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-3des-kw-aes256.xml,-i",
+"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-aes128-kw-aes192.xml,-i",
+"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-aes192-kt-rsa1_5.xml,-i",
+"4019 2445 0277 5567,com/phaos/phaos-xmlenc-3/enc-text-aes256-kt-rsa_oaep_sha1.xml,-i"
+
 );
 
 # Run the signature tests

@@ -60,8 +60,8 @@
 /*
  * XSEC
  *
- * InteropResolver := Class to resolve key elements into certificates for
- *						merlin-18 interop test
+ * XencInteropResolver := Class to resolve key elements into certificates for
+ *						interop test
  *
  * $Id$
  *
@@ -104,7 +104,7 @@ XERCES_CPP_NAMESPACE_USE
 
 
 // --------------------------------------------------------------------------------
-//           Strings and keys
+//           Merlin Xenc-Five keys and Strings
 // --------------------------------------------------------------------------------
 
 static XMLCh s_bobName[] = {
@@ -140,6 +140,141 @@ static char s_jobKey[] = "abcdefghijklmnop";
 static char s_jebKey[] = "abcdefghijklmnopqrstuvwx";
 static char s_jedKey[] = "abcdefghijklmnopqrstuvwxyz012345";
 
+// --------------------------------------------------------------------------------
+//           Phaos xenc-three strings and keys
+// --------------------------------------------------------------------------------
+
+static XMLCh s_phaosRSAName[] = {
+	chLatin_m,
+	chLatin_y,
+	chDash,
+	chLatin_r,
+	chLatin_s,
+	chLatin_a,
+	chDash,
+	chLatin_k,
+	chLatin_e,
+	chLatin_y,
+	chNull
+};
+
+static XMLCh s_phaosTripleDESName[] = {
+	chLatin_m,
+	chLatin_y,
+	chDash,
+	chLatin_t,
+	chLatin_r,
+	chLatin_i,
+	chLatin_p,
+	chLatin_l,
+	chLatin_e,
+	chLatin_d,
+	chLatin_e,
+	chLatin_s,
+	chDash,
+	chLatin_k,
+	chLatin_e,
+	chLatin_y,
+	chNull
+};
+
+static XMLCh s_phaos3DESName[] = {
+	chLatin_m,
+	chLatin_y,
+	chDash,
+	chDigit_3,
+	chLatin_d,
+	chLatin_e,
+	chLatin_s,
+	chDash,
+	chLatin_k,
+	chLatin_e,
+	chLatin_y,
+	chNull
+};
+
+static XMLCh s_phaosAES128Name[] = {
+	chLatin_m,
+	chLatin_y,
+	chDash,
+	chLatin_a,
+	chLatin_e,
+	chLatin_s,
+	chDigit_1,
+	chDigit_2,
+	chDigit_8,
+	chDash,
+	chLatin_k,
+	chLatin_e,
+	chLatin_y,
+	chNull
+};
+
+static XMLCh s_phaosAES192Name[] = {
+	chLatin_m,
+	chLatin_y,
+	chDash,
+	chLatin_a,
+	chLatin_e,
+	chLatin_s,
+	chDigit_1,
+	chDigit_9,
+	chDigit_2,
+	chDash,
+	chLatin_k,
+	chLatin_e,
+	chLatin_y,
+	chNull
+};
+
+static XMLCh s_phaosAES256Name[] = {
+	chLatin_m,
+	chLatin_y,
+	chDash,
+	chLatin_a,
+	chLatin_e,
+	chLatin_s,
+	chDigit_2,
+	chDigit_5,
+	chDigit_6,
+	chDash,
+	chLatin_k,
+	chLatin_e,
+	chLatin_y,
+	chNull
+};
+
+unsigned char s_phaos3DESKey[] = {
+
+	0xc8, 0x8f, 0x89, 0xd5, 0xfd, 0xe9, 0xb9, 0x80, 
+	0x04, 0x46, 0x32, 0x1c, 0x4f, 0xab, 0xdf, 0x83, 
+	0xa4, 0x62, 0xb6, 0x62, 0x97, 0xf2, 0x70, 0xf4
+
+};
+
+unsigned char s_phaosAES128Key[] = {
+
+	0xd3, 0x5f, 0xb2, 0xb9, 0x0d, 0xa1, 0xb8, 0xf4, 
+	0xb5, 0xf9, 0x0b, 0xf4, 0x2c, 0x7f, 0xb3, 0x69
+
+};
+
+unsigned char s_phaosAES192Key[] = {
+	
+	0x22, 0x57, 0xee, 0x4b, 0x8d, 0x0b, 0xbd, 0x2b, 
+	0x55, 0x53, 0x43, 0x23, 0xf1, 0xe3, 0xeb, 0xac, 
+	0x61, 0xd5, 0x84, 0x06, 0xf8, 0xf3, 0x2f, 0xbe
+
+};
+
+unsigned char s_phaosAES256Key[] = {
+	
+	0x66, 0x16, 0x78, 0xbf, 0x74, 0x65, 0xc1, 0x39, 
+	0x42, 0x10, 0xea, 0x48, 0xac, 0x77, 0xcb, 0x29, 
+	0x5c, 0x89, 0x38, 0x10, 0xed, 0x10, 0x93, 0x8e, 
+	0x40, 0x36, 0xad, 0xff, 0x8c, 0x51, 0xd5, 0xb0
+
+};
 
 // --------------------------------------------------------------------------------
 //           Construct/Destruct
@@ -299,6 +434,70 @@ XSECCryptoKey * XencInteropResolver::resolveKey(DSIGKeyInfoList * lst) {
 				}
 				return k;
 			}
+			// PHAOS Keys
+			if (strEquals(s_phaos3DESName, name) || strEquals(s_phaosTripleDESName, name)) {
+				XSECCryptoSymmetricKey * k = 
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_3DES_192);
+				try {
+					k->setKey(s_phaos3DESKey, 24);
+				} catch (...) {
+					delete k;
+					throw;
+				}
+				return k;
+			}
+			if (strEquals(s_phaosAES128Name, name)) {
+				XSECCryptoSymmetricKey * k = 
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_128);
+				try {
+					k->setKey(s_phaosAES128Key, 16);
+				} catch(...) {
+					delete k;
+					throw;
+				}
+				return k;
+			}
+			if (strEquals(s_phaosAES192Name, name)) {
+				XSECCryptoSymmetricKey * k = 
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_192);
+				try {
+					k->setKey(s_phaosAES192Key, 24);
+				} catch(...) {
+					delete k;
+					throw;
+				}
+				return k;
+			}
+			if (strEquals(s_phaosAES256Name, name)) {
+				XSECCryptoSymmetricKey * k = 
+					XSECPlatformUtils::g_cryptoProvider->keySymmetric(XSECCryptoSymmetricKey::KEY_AES_256);
+				try {
+					k->setKey(s_phaosAES256Key, 32);
+				} catch(...) {
+					delete k;
+					throw;
+				}
+				return k;
+			}
+
+			if (strEquals(s_phaosRSAName, name)) {
+
+				// This is the Phaos RSA key
+				BIO * rsaFile = createFileBIO(mp_baseURI, "rsa-priv-key.der");
+				if (rsaFile == NULL)
+					return NULL;
+
+				PKCS8_PRIV_KEY_INFO * p8inf;
+				p8inf = d2i_PKCS8_PRIV_KEY_INFO_bio(rsaFile, NULL);
+
+				EVP_PKEY * pk = EVP_PKCS82PKEY(p8inf);
+				OpenSSLCryptoKeyRSA * k = new OpenSSLCryptoKeyRSA(pk);
+				PKCS8_PRIV_KEY_INFO_free(p8inf);
+				BIO_free_all(rsaFile);
+				return k;
+
+			}
+
 
 			// If we get this far, we don't know it.  So look for EncryptedKey elements
 			// containing this name as a CarriedKeyName
