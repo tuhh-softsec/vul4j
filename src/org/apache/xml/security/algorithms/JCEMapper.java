@@ -172,13 +172,13 @@ public class JCEMapper {
             available = true;
          }
       } catch (TransformerException ex) {
-         ;
+		//do nothing
       } catch (ClassNotFoundException ex) {
-         ;
+		//do nothing
       } catch (IllegalAccessException ex) {
-         ;
+		//do nothing
       } catch (InstantiationException ex) {
-         ;
+		//do nothing
       }
 
       return available;

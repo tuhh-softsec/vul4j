@@ -759,9 +759,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
                         // boolean alreadyOutputted = ((Set)this._renderedPrefixesForElement.get(ancestorElement)).contains(xmlns.getName());
                         if (valueEquals) {
                            if (inNodeset) {
-                              ;    // do nothing
+							//do nothing
                            } else {
-                              ;
+							//do nothing
                            }
                         } else {
                            if (inNodeset) {
@@ -774,7 +774,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
                                     xmlns.getName());
                               }
                            } else {
-                              ;
+							//do nothing
                            }
                         }
 
