@@ -83,6 +83,10 @@ public:
 	virtual void setId(const XMLCh * id);
 	virtual void setService(const XMLCh * service);
 	virtual void setNonce(const XMLCh * uri);
+	virtual DSIGSignature * addSignature(
+		canonicalizationMethod cm = CANON_C14N_NOC,
+		signatureMethod	sm = SIGNATURE_DSA,
+		hashMethod hm = HASH_SHA1);
 
 protected:
 
@@ -132,6 +136,10 @@ private:
 		{XKMSMessageAbstractTypeImpl::setService(service);} \
 	virtual void setNonce(const XMLCh * uri) \
 		{XKMSMessageAbstractTypeImpl::setNonce(uri);} \
-
+	virtual DSIGSignature * addSignature( \
+		canonicalizationMethod cm = CANON_C14N_NOC, \
+		signatureMethod	sm = SIGNATURE_DSA, \
+		hashMethod hm = HASH_SHA1) \
+		{return XKMSMessageAbstractTypeImpl::addSignature(cm,sm,hm);}
 
 #endif /* XKMSMESSAGEABSTRACTTYPEIMPL_INCLUDE */

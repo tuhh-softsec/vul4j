@@ -78,6 +78,8 @@ public:
 	virtual messageType getMessageType(void) = 0;
 
 	/* Forced inheritance from XKMSMessageAbstractTypeImpl */
+	XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS
+#if 0
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const
 		{return XKMSMessageAbstractTypeImpl::getElement();}
 
@@ -97,7 +99,7 @@ public:
 		{XKMSMessageAbstractTypeImpl::setService(service);}
 	virtual void setNonce(const XMLCh * uri)
 		{XKMSMessageAbstractTypeImpl::setNonce(uri);}
-
+#endif
 
 private:
 

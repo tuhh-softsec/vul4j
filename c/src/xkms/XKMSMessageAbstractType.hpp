@@ -29,6 +29,7 @@
 // XSEC Includes
 
 #include <xsec/framework/XSECDefs.hpp>
+#include <xsec/dsig/DSIGConstants.hpp>
 
 class DSIGSignature;
 
@@ -219,6 +220,19 @@ public:
 	 */
 
 	virtual void setNonce(const XMLCh * uri) = 0;
+
+	/**
+	 * \brief Add a signature to the message
+	 *
+	 * Allows an application to sign the message
+	 *
+	 * @returns the new Signature structure
+	 */
+
+	virtual DSIGSignature * addSignature(
+		canonicalizationMethod cm = CANON_C14N_NOC,
+		signatureMethod	sm = SIGNATURE_DSA,
+		hashMethod hm = HASH_SHA1) = 0;
 
 	//@}
 

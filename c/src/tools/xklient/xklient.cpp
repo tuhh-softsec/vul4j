@@ -27,12 +27,14 @@
 
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECProvider.hpp>
+#include <xsec/framework/XSECError.hpp>
 #include <xsec/canon/XSECC14n20010315.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/dsig/DSIGKeyInfoX509.hpp>
 #include <xsec/dsig/DSIGKeyInfoValue.hpp>
 #include <xsec/framework/XSECException.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
+#include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/enc/XSECKeyInfoResolverDefault.hpp>
 
@@ -90,6 +92,16 @@ XALAN_USING_XALAN(XalanTransformer)
 // OpenSSL
 
 #	include <openssl/err.h>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyRSA.hpp>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoKeyHMAC.hpp>
+#	include <xsec/enc/OpenSSL/OpenSSLCryptoX509.hpp>
+
+#	include <openssl/bio.h>
+#	include <openssl/dsa.h>
+#	include <openssl/err.h>
+#	include <openssl/evp.h>
+#	include <openssl/pem.h>
 
 #endif
 
@@ -208,6 +220,40 @@ XSECCryptoX509 * loadX509(const char * infile) {
 
 }
 
+#if defined (HAVE_OPENSSL)
+
+XMLCh * BN2b64(BIGNUM * bn) {
+
+	int bytes = BN_num_bytes(bn);
+	unsigned char * binbuf = new unsigned char[bytes + 1];
+	ArrayJanitor<unsigned char> j_binbuf(binbuf);
+
+	bytes = BN_bn2bin(bn, binbuf);
+
+
+	int bufLen = bytes * 4;
+	int len = bufLen;
+	unsigned char * buf;
+	XSECnew(buf, unsigned char[bufLen]);
+	ArrayJanitor<unsigned char> j_buf(buf);
+
+	XSCryptCryptoBase64 *b64;
+	XSECnew(b64, XSCryptCryptoBase64);
+	Janitor<XSCryptCryptoBase64> j_b64(b64);
+
+	b64->encodeInit();
+	bufLen = b64->encode(binbuf, bytes, buf, bufLen);
+	bufLen += b64->encodeFinish(&buf[bufLen], len-bufLen);
+	buf[bufLen] = '\0';
+
+	// Now translate to a bignum
+	return XMLString::transcode((char *) buf);
+
+}
+
+#endif
+
+
 // --------------------------------------------------------------------------------
 //           Create a LocateRequest
 // --------------------------------------------------------------------------------
@@ -219,7 +265,9 @@ void printLocateRequestUsage(void) {
 	cerr << "   --add-cert/-a <filename> : add cert in filename as a KeyInfo\n";
 	cerr << "   --add-name/-n <name>     : Add name as a KeyInfoName\n\n";
 	cerr << "   --add-usekeywith/-u <Application URI> <Identifier>\n";
-	cerr << "                            : Add a UseKeyWith element\n\n";
+	cerr << "                            : Add a UseKeyWith element\n";
+	cerr << "   --sign-dsa/-sd <filename> <passphrase>\n";
+	cerr << "           : Sign using the DSA key in file protected by passphrase\n\n";
 
 }
 
@@ -288,6 +336,102 @@ XKMSMessageAbstractType * createLocateRequest(XSECProvider &prov, DOMDocument **
 			qkb->appendUseKeyWithItem(MAKE_UNICODE_STRING(argv[paramCount]), MAKE_UNICODE_STRING(argv[paramCount + 1]));
 			paramCount += 2;
 		}
+#if defined (HAVE_OPENSSL)
+		else if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0 ||
+				stricmp(argv[paramCount], "--sign-rsa") == 0 || stricmp(argv[paramCount], "-sr") == 0) {
+			if (paramCount >= argc + 2) {
+				printLocateRequestUsage();
+				delete lr;
+				return NULL;
+			}
+
+			// DSA or RSA OpenSSL Key
+			// For now just read a particular file
+
+			BIO * bioKey;
+			if ((bioKey = BIO_new(BIO_s_file())) == NULL) {
+
+				cerr << "Error opening private key file\n\n";
+				return NULL;
+
+			}
+
+			if (BIO_read_filename(bioKey, argv[paramCount+1]) <= 0) {
+
+				cerr << "Error opening private key file : " << argv[paramCount+1] << endl;
+				return NULL;
+
+			}
+
+			EVP_PKEY * pkey;
+			pkey = PEM_read_bio_PrivateKey(bioKey,NULL,NULL,argv[paramCount + 2]);
+
+			if (pkey == NULL) {
+
+				BIO * bio_err;
+	
+				if ((bio_err=BIO_new(BIO_s_file())) != NULL)
+					BIO_set_fp(bio_err,stderr,BIO_NOCLOSE|BIO_FP_TEXT);
+				cerr << "Error loading private key\n\n";
+				ERR_print_errors(bio_err);
+				return NULL;
+
+			}
+			XSECCryptoKey *key;
+			DSIGSignature * sig;
+			if (stricmp(argv[paramCount], "--sign-dsa") == 0 || stricmp(argv[paramCount], "-sd") == 0) {
+
+				// Check type is correct
+
+				if (pkey->type != EVP_PKEY_DSA) {
+					cerr << "DSA Key requested, but OpenSSL loaded something else\n";
+					return NULL;
+				}
+
+				sig = lr->addSignature(CANON_C14N_NOC, SIGNATURE_DSA, HASH_SHA1);
+				// Create the XSEC OpenSSL interface
+				key = new OpenSSLCryptoKeyDSA(pkey);
+
+				XMLCh * P = BN2b64(pkey->pkey.dsa->p);
+				XMLCh * Q = BN2b64(pkey->pkey.dsa->q);
+				XMLCh * G = BN2b64(pkey->pkey.dsa->g);
+				XMLCh * Y = BN2b64(pkey->pkey.dsa->pub_key);
+
+				sig->appendDSAKeyValue(P,Q,G,Y);
+
+				XMLString::release(&P);
+				XMLString::release(&Q);
+				XMLString::release(&G);
+				XMLString::release(&Y);
+			}
+			else {
+				if (pkey->type != EVP_PKEY_RSA) {
+					cerr << "RSA Key requested, but OpenSSL loaded something else\n";
+					exit (1);
+				}
+				sig = lr->addSignature(CANON_C14N_NOC, SIGNATURE_RSA, HASH_SHA1);
+				key = new OpenSSLCryptoKeyRSA(pkey);
+
+				XMLCh * mod = BN2b64(pkey->pkey.rsa->n);
+				XMLCh * exp = BN2b64(pkey->pkey.rsa->e);
+				sig->appendRSAKeyValue(mod, exp);
+				XMLString::release(&mod);
+				XMLString::release(&exp);
+
+			}
+
+			sig->setSigningKey(key);
+			sig->sign();
+
+			EVP_PKEY_free(pkey);
+			BIO_free(bioKey);
+
+			paramCount += 3;
+
+			
+		} /* argv[1] = "dsa/rsa" */
+
+#endif
 		else {
 			printLocateRequestUsage();
 			delete lr;

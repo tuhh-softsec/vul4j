@@ -28,6 +28,7 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/dsig/DSIGReference.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 
 #include <xercesc/dom/DOM.hpp>
@@ -248,4 +249,38 @@ const XMLCh * XKMSMessageAbstractTypeImpl::getNonce(void) const {
 void XKMSMessageAbstractTypeImpl::setId(const XMLCh * id) {}
 void XKMSMessageAbstractTypeImpl::setService(const XMLCh * service) {}
 void XKMSMessageAbstractTypeImpl::setNonce(const XMLCh * uri) {}
+
+DSIGSignature * XKMSMessageAbstractTypeImpl::addSignature(
+		canonicalizationMethod cm,
+		signatureMethod	sm,
+		hashMethod hm) {
+
+	DSIGSignature * ret = m_prov.newSignature();
+	DOMElement * elt = ret->createBlankSignature(mp_env->getParentDocument(), cm, sm, hm);
+
+	/* Create the enveloping reference */
+	safeBuffer sb;
+	sb.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
+	sb.sbXMLChAppendCh(chPound);
+	sb.sbXMLChCat(getId());
+
+	DSIGReference *ref = ret->createReference(sb.rawXMLChBuffer());
+	ref->appendEnvelopedSignatureTransform();
+	ref->appendCanonicalizationTransform(CANON_C14NE_COM);
+
+	/* Embed the signature in the document */
+	DOMNode * c = mp_messageAbstractTypeElement->getFirstChild();
+	if (c != NULL) {
+		if (mp_env->getPrettyPrintFlag() == true) {
+			mp_messageAbstractTypeElement->insertBefore(
+				mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL),
+				c);
+		}
+		mp_messageAbstractTypeElement->insertBefore(elt, c);
+	}
+	else
+		mp_messageAbstractTypeElement->appendChild(elt);
+
+	return ret;
+}
 
