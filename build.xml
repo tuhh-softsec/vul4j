@@ -63,6 +63,8 @@
     <property name="build.doc.xml"     value="${build.doc}/xml" />
     <property name="build.doc.html"    value="${build.doc}/html" />
     <property name="build.javadoc"     value="${build.doc.html}/api" />
+    <property name="build.junit.html"  value="${build.doc.html}/junit" />
+    <property name="build.junit.xml"   value="${build.doc.xml}/junit" />
     <property name="build.srcdist"     value="${build.dir}/${product.name}_${product_version}_src" />
     <property name="build.bindist"     value="${build.dir}/${product.name}_${product_version}_bin" />
 
@@ -511,6 +513,43 @@ org.apache.xml.security.utils.resolver
         <classpath refid="classpath.test" />
      </java>
   </target>
+  
+  <target name="test_junit"
+          depends="compile.tests"
+          if="junit.present"
+          description="Starts all Junit tests with optional Ant">
+    <delete dir="${build.junit.xml}" />
+    <delete dir="${build.junit.html}" />
+    <mkdir dir="${build.junit.xml}" />
+    <mkdir dir="${build.junit.html}" />
+    <available property="ibm.available" file="data/com/ibm/xss4j-20011029/enveloped-rsa.sig"/>
+    <junit printsummary="on"
+           fork="true"
+           filtertrace="true">
+       <classpath refid="classpath.test" />
+       <formatter type="xml"/>
+       <batchtest fork="yes" todir="${build.junit.xml}">
+         <fileset dir="${dir.src.unitTests}">
+           <include name="**/*Test*.java" />
+           <include name="org/apache/xml/security/test/c14n/implementations/ExclusiveC14NInterop.java" />
+           <exclude name="org/apache/xml/security/test/*Test*.java" />
+           <exclude name="org/apache/xml/security/test/interop/InteropTest.java" />
+           <exclude name="**/TestVectorResolver.java" />
+           <exclude name="**/IBMTest.java"/>
+         </fileset>
+       </batchtest>
+       <test name="org.apache.xml.security.test.interop.IBMTest"
+             if="ibm.available"/>
+    </junit>
+    <junitreport todir="${build.junit.xml}">
+      <fileset dir="${build.junit.xml}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${build.junit.html}"/>
+    </junitreport>
+  </target>
+
+
 
   <target name="testjar"
           depends="prepare,check-bc"
