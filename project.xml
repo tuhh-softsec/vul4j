@@ -4,7 +4,7 @@
   <extend>../project.xml</extend>
   <name>Digester</name>
   <id>commons-digester</id>
-  <currentVersion>1.5</currentVersion>
+  <currentVersion>1.6-dev</currentVersion>
   <inceptionYear>2001</inceptionYear>
   <shortDescription>Rule based XML->Java object mapping module</shortDescription>
   <description>The Digester package lets you configure an XML->Java object mapping module which triggers certain actions called rules whenever a particular pattern of nested XML elements is recognized.</description>
@@ -117,6 +117,14 @@
   </dependencies>
   
   <build>
+    <resources>
+      <resource>
+         <directory>${pom.build.sourceDirectory}</directory>
+         <includes>
+           <include>**/*.dtd</include>
+         </includes>
+      </resource>
+    </resources>
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
