@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 /**
@@ -31,6 +33,8 @@ import org.codehaus.plexus.util.DirectoryScanner;
 public abstract class AbstractArchiver extends AbstractLogEnabled
     implements Archiver
 {
+    private Logger logger;
+
     private String basedir;
 
     private String[] excludesPattern;
@@ -157,5 +161,22 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     {
         this.destFile = destFile;
         destFile.getParentFile().mkdirs();
+    }
+
+    protected Logger getLogger()
+    {
+        if ( logger == null )
+        {
+            if ( super.getLogger() != null )
+            {
+                logger = super.getLogger();
+            }
+            else
+            {
+                logger = new ConsoleLogger( Logger.LEVEL_INFO, "console" );
+            }
+        }
+
+        return logger;
     }
 }
