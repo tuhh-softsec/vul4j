@@ -82,43 +82,43 @@ public class ContentHandlerAlreadyRegisteredException
    /**
     * Constructor ContentHandlerAlreadyRegisteredException
     *
-    * @param msgID
+    * @param _msgID
     */
-   public ContentHandlerAlreadyRegisteredException(String msgID) {
-      super(msgID);
+   public ContentHandlerAlreadyRegisteredException(String _msgID) {
+      super(_msgID);
    }
 
    /**
     * Constructor ContentHandlerAlreadyRegisteredException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     */
-   public ContentHandlerAlreadyRegisteredException(String msgID,
+   public ContentHandlerAlreadyRegisteredException(String _msgID,
            Object exArgs[]) {
-      super(msgID, exArgs);
+      super(_msgID, exArgs);
    }
 
    /**
     * Constructor ContentHandlerAlreadyRegisteredException
     *
-    * @param msgID
+    * @param _msgID
     * @param originalException
     */
-   public ContentHandlerAlreadyRegisteredException(String msgID,
-           Exception originalException) {
-      super(msgID, originalException);
+   public ContentHandlerAlreadyRegisteredException(String _msgID,
+           Exception _originalException) {
+      super(_msgID, _originalException);
    }
 
    /**
     * Constructor ContentHandlerAlreadyRegisteredException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     * @param originalException
     */
-   public ContentHandlerAlreadyRegisteredException(String msgID,
-           Object exArgs[], Exception originalException) {
-      super(msgID, exArgs, originalException);
+   public ContentHandlerAlreadyRegisteredException(String _msgID,
+           Object exArgs[], Exception _originalException) {
+      super(_msgID, exArgs, _originalException);
    }
 }

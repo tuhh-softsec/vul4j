@@ -125,11 +125,11 @@ public class XMLSecurityException extends Exception {
     *
     * @param msgID
     */
-   public XMLSecurityException(String msgID) {
+   public XMLSecurityException(String _msgID) {
 
-      super(I18n.getExceptionMessage(msgID));
+      super(I18n.getExceptionMessage(_msgID));
 
-      this.msgID = msgID;
+      this.msgID = _msgID;
       this.originalException = null;
    }
 
@@ -139,11 +139,11 @@ public class XMLSecurityException extends Exception {
     * @param msgID
     * @param exArgs
     */
-   public XMLSecurityException(String msgID, Object exArgs[]) {
+   public XMLSecurityException(String _msgID, Object exArgs[]) {
 
-      super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
+      super(MessageFormat.format(I18n.getExceptionMessage(_msgID), exArgs));
 
-      this.msgID = msgID;
+      this.msgID = _msgID;
       this.originalException = null;
    }
 
@@ -152,15 +152,15 @@ public class XMLSecurityException extends Exception {
     *
     * @param originalException
     */
-   public XMLSecurityException(Exception originalException) {
+   public XMLSecurityException(Exception _originalException) {
 
       super("Missing message ID to locate message string in resource bundle \""
             + Constants.exceptionMessagesResourceBundleBase
             + "\". Original Exception was a "
-            + originalException.getClass().getName() + " and message "
-            + originalException.getMessage());
+            + _originalException.getClass().getName() + " and message "
+            + _originalException.getMessage());
 
-      this.originalException = originalException;
+      this.originalException = _originalException;
    }
 
    /**
@@ -169,12 +169,12 @@ public class XMLSecurityException extends Exception {
     * @param msgID
     * @param originalException
     */
-   public XMLSecurityException(String msgID, Exception originalException) {
+   public XMLSecurityException(String _msgID, Exception _originalException) {
 
-      super(I18n.getExceptionMessage(msgID, originalException));
+      super(I18n.getExceptionMessage(_msgID, _originalException));
 
-      this.msgID = msgID;
-      this.originalException = originalException;
+      this.msgID = _msgID;
+      this.originalException = _originalException;
    }
 
    /**
@@ -184,13 +184,13 @@ public class XMLSecurityException extends Exception {
     * @param exArgs
     * @param originalException
     */
-   public XMLSecurityException(String msgID, Object exArgs[],
-                               Exception originalException) {
+   public XMLSecurityException(String _msgID, Object exArgs[],
+                               Exception _originalException) {
 
-      super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
+      super(MessageFormat.format(I18n.getExceptionMessage(_msgID), exArgs));
 
-      this.msgID = msgID;
-      this.originalException = originalException;
+      this.msgID = _msgID;
+      this.originalException = _originalException;
    }
 
    /**

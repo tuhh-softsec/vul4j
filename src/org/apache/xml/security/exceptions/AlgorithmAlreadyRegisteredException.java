@@ -81,42 +81,42 @@ public class AlgorithmAlreadyRegisteredException extends XMLSecurityException {
    /**
     * Constructor AlgorithmAlreadyRegisteredException
     *
-    * @param msgID
+    * @param _msgID
     */
-   public AlgorithmAlreadyRegisteredException(String msgID) {
-      super(msgID);
+   public AlgorithmAlreadyRegisteredException(String _msgID) {
+      super(_msgID);
    }
 
    /**
     * Constructor AlgorithmAlreadyRegisteredException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     */
-   public AlgorithmAlreadyRegisteredException(String msgID, Object exArgs[]) {
-      super(msgID, exArgs);
+   public AlgorithmAlreadyRegisteredException(String _msgID, Object exArgs[]) {
+      super(_msgID, exArgs);
    }
 
    /**
     * Constructor AlgorithmAlreadyRegisteredException
     *
-    * @param msgID
+    * @param _msgID
     * @param originalException
     */
-   public AlgorithmAlreadyRegisteredException(String msgID,
-                                              Exception originalException) {
-      super(msgID, originalException);
+   public AlgorithmAlreadyRegisteredException(String _msgID,
+                                              Exception _originalException) {
+      super(_msgID, _originalException);
    }
 
    /**
     * Constructor AlgorithmAlreadyRegisteredException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     * @param originalException
     */
-   public AlgorithmAlreadyRegisteredException(String msgID, Object exArgs[],
-                                              Exception originalException) {
-      super(msgID, exArgs, originalException);
+   public AlgorithmAlreadyRegisteredException(String _msgID, Object exArgs[],
+                                              Exception _originalException) {
+      super(_msgID, exArgs, _originalException);
    }
 }

@@ -84,8 +84,8 @@ public class CanonicalizationException extends XMLSecurityException {
     *
     * @param msgID
     */
-   public CanonicalizationException(String msgID) {
-      super(msgID);
+   public CanonicalizationException(String _msgID) {
+      super(_msgID);
    }
 
    /**
@@ -94,8 +94,8 @@ public class CanonicalizationException extends XMLSecurityException {
     * @param msgID
     * @param exArgs
     */
-   public CanonicalizationException(String msgID, Object exArgs[]) {
-      super(msgID, exArgs);
+   public CanonicalizationException(String _msgID, Object exArgs[]) {
+      super(_msgID, exArgs);
    }
 
    /**
@@ -104,8 +104,8 @@ public class CanonicalizationException extends XMLSecurityException {
     * @param msgID
     * @param originalException
     */
-   public CanonicalizationException(String msgID, Exception originalException) {
-      super(msgID, originalException);
+   public CanonicalizationException(String _msgID, Exception _originalException) {
+      super(_msgID, _originalException);
    }
 
    /**
@@ -115,8 +115,8 @@ public class CanonicalizationException extends XMLSecurityException {
     * @param exArgs
     * @param originalException
     */
-   public CanonicalizationException(String msgID, Object exArgs[],
-                                    Exception originalException) {
-      super(msgID, exArgs, originalException);
+   public CanonicalizationException(String _msgID, Object exArgs[],
+                                    Exception _originalException) {
+      super(_msgID, exArgs, _originalException);
    }
 }
