@@ -310,11 +310,15 @@ within the document.</p>
 
 <p>It is quite possible that, when a particular XML element is being parsed,
 the pattern for more than one registered processing rule will be matched
-(either because you registered more than one processing rule with the same
+ either because you registered more than one processing rule with the same
 matching pattern, or because one more more exact pattern matches and wildcard
-pattern matches are satisfied by the same element.  When this occurs, the
-corresponding processing rules will all be fired, in the order that they were
-initially registered with the Digester.</p>
+pattern matches are satisfied by the same element.</p>
+
+<p>When this occurs, the corresponding processing rules will all be fired in order. 
+<code>begin</code> (and <code>body</code>) method calls are executed in the 
+order that the <code>Rules</code> where initially registered with the 
+<code>Digester</code>, whilst <code>end</code> method calls are execute in 
+reverse order. In other words - the order is first in, last out.</p>
 
 <a name="doc.Rules"></a>
 <h3>Processing Rules</h3>
