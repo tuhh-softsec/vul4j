@@ -62,8 +62,10 @@ package org.apache.xml.security.encryption;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.Integer;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
@@ -76,6 +78,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -92,9 +95,11 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.utils.ElementProxy;
+import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xml.utils.URI;
@@ -102,6 +107,7 @@ import org.apache.xml.utils.URI.MalformedURIException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -109,6 +115,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import sun.misc.BASE64Encoder;
 import sun.misc.BASE64Decoder;
+import org.apache.xml.security.utils.Base64;
 
 
 /**
@@ -189,11 +196,14 @@ public class XMLCipher {
 
     private Cipher contextCipher;
     private int cipherMode = Integer.MIN_VALUE;
-    private String algorithm;
+    private String algorithm = null;  // URI for requested algorithm
+	private String requestedJCEProvider = null;
     private Document contextDocument;
     private Factory factory;
     private Serializer serializer;
     private Map enc2JCE;
+	private Map enc2IV;
+	private Key localKey;
 
     /**
      * Creates a new <code>XMLCipher</code>.
@@ -207,10 +217,11 @@ public class XMLCipher {
         serializer = new Serializer();
         // block encryption
         enc2JCE = new HashMap();
-        enc2JCE.put(TRIPLEDES, "DESede");
-        enc2JCE.put(AES_128, "AES");
-        enc2JCE.put(AES_256, "AES");
-        enc2JCE.put(AES_192, "AES");
+        enc2JCE.put(TRIPLEDES, "DESede/CBC/NoPadding");
+        enc2JCE.put(AES_128, "AES/CBC/PKCS5Padding");
+        enc2JCE.put(AES_256, "AES/CBC/PKCS5Padding");
+        enc2JCE.put(AES_192, "AES/CBC/PKCS5Padding");
+
         // key encryption
         enc2JCE.put(RSA_v1dot5, "RSA/ECB/PKCS1Padding");
         enc2JCE.put(RSA_OAEP, "RSA/ECB/OAEPPadding");
@@ -329,6 +340,7 @@ public class XMLCipher {
         }
 
         instance.algorithm = transformation;
+		instance.requestedJCEProvider = provider;
 
         try {
             String jceAlgorithm = (String) instance.enc2JCE.get(transformation);
@@ -369,12 +381,8 @@ public class XMLCipher {
             ((opmode == ENCRYPT_MODE) ? "ENCRYPT_MODE" : "DECRYPT_MODE"));
 
         cipherMode = opmode;
+		localKey = key;
 
-        try {
-            contextCipher.init(opmode, key);
-        } catch (InvalidKeyException ike) {
-            throw new XMLEncryptionException("empty", ike);
-        }
     }
 
     /**
@@ -399,12 +407,47 @@ public class XMLCipher {
         logger.debug("Serialized octets:\n" + serializedOctets);
 
         byte[] encryptedBytes = null;
+		// Now create the working cipher
+
+		String jceAlgorithm =
+			JCEMapper.translateURItoJCEID(algorithm).getAlgorithmID();
+		String provider;
+
+		if (requestedJCEProvider == null)
+			provider =
+				JCEMapper.translateURItoJCEID(algorithm).getProviderId();
+		else
+			provider = requestedJCEProvider;
+
+		logger.debug("provider = " + provider + "alg = " + jceAlgorithm);
+
+		Cipher c;
+		try {
+			c = Cipher.getInstance(jceAlgorithm, provider);
+		} catch (NoSuchAlgorithmException nsae) {
+			throw new XMLEncryptionException("empty", nsae);
+		} catch (NoSuchProviderException nspre) {
+			throw new XMLEncryptionException("empty", nspre);
+		} catch (NoSuchPaddingException nspae) {
+			throw new XMLEncryptionException("empty", nspae);
+		}
+
+		// Now perform the encryption
+
+		try {
+			// Should internally generate an IV
+			// todo - allow user to set an IV
+			c.init(cipherMode, localKey);
+		} catch (InvalidKeyException ike) {
+			throw new XMLEncryptionException("empty", ike);
+		}
+
         try {
             encryptedBytes =
-                contextCipher.doFinal(serializedOctets.getBytes());
+                c.doFinal(serializedOctets.getBytes());
 
             logger.debug("Expected cipher.outputSize = " +
-                Integer.toString(contextCipher.getOutputSize(
+                Integer.toString(c.getOutputSize(
                     serializedOctets.getBytes().length)));
             logger.debug("Actual cipher.outputSize = " +
                 Integer.toString(encryptedBytes.length));
@@ -416,8 +459,20 @@ public class XMLCipher {
             throw new XMLEncryptionException("empty", bpe);
         }
 
+		// Now build up to a properly XML Encryption encoded octet stream
+		// IvParameterSpec iv;
+
+		byte[] iv = c.getIV();
+		byte[] finalEncryptedBytes = 
+			new byte[iv.length + encryptedBytes.length];
+		System.arraycopy(iv, 0, finalEncryptedBytes, 0,
+						 iv.length);
+		System.arraycopy(encryptedBytes, 0, finalEncryptedBytes, 
+						 iv.length,
+						 encryptedBytes.length);
+
         String base64EncodedEncryptedOctets = new BASE64Encoder().encode(
-            encryptedBytes);
+            finalEncryptedBytes);
 
         logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
         logger.debug("Encrypted octets length = " +
@@ -785,7 +840,9 @@ public class XMLCipher {
      */
     private Document decryptElement(Element element) throws
             XMLEncryptionException {
+
         logger.info("Decrypting element...");
+
         if(cipherMode != DECRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
 
@@ -793,6 +850,7 @@ public class XMLCipher {
 
         CipherData cipherData = encryptedData.getCipherData();
         String base64EncodedEncryptedOctets = null;
+
         if (cipherData.getDataType() == CipherData.REFERENCE_TYPE) {
             // retrieve the cipher text
         } else if (cipherData.getDataType() == CipherData.VALUE_TYPE) {
@@ -804,29 +862,91 @@ public class XMLCipher {
         logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
 
         byte[] encryptedBytes = null;
+
         try {
-            encryptedBytes = new BASE64Decoder().decodeBuffer(
-                base64EncodedEncryptedOctets);
-        } catch (IOException ioe) {
-            throw new XMLEncryptionException("empty", ioe);
+			encryptedBytes = Base64.decode(base64EncodedEncryptedOctets);
+        } catch (Base64DecodingException bde) {
+            throw new XMLEncryptionException("empty", bde);
         }
 
+		// Now create the working cipher
+
+		String jceAlgorithm = 
+			JCEMapper.translateURItoJCEID(encryptedData.getEncryptionMethod()
+										  .getAlgorithm()).getAlgorithmID();
+		String provider;
+
+		if (requestedJCEProvider == null)
+			provider =
+				JCEMapper.translateURItoJCEID(encryptedData
+											  .getEncryptionMethod()
+											  .getAlgorithm())
+				.getProviderId();
+		else
+			provider = requestedJCEProvider;
+
+		Cipher c;
+		try {
+			c = Cipher.getInstance(jceAlgorithm, provider);
+		} catch (NoSuchAlgorithmException nsae) {
+			throw new XMLEncryptionException("empty", nsae);
+		} catch (NoSuchProviderException nspre) {
+			throw new XMLEncryptionException("empty", nspre);
+		} catch (NoSuchPaddingException nspae) {
+			throw new XMLEncryptionException("empty", nspae);
+		}
+
+
+		// Calculate the IV length and copy out
+
+		// For now, we only work with Block ciphers, so this will work.
+		// This should probably be put into the JCE mapper.
+
+		int ivLen = c.getBlockSize();
+		byte[] ivBytes = new byte[ivLen];
+
+		// You may be able to pass the entire piece in to IvParameterSpec
+		// and it will only take the first x bytes, but no way to be certain
+		// that this will work for every JCE provider, so lets copy the
+		// necessary bytes into a dedicated array.
+
+		System.arraycopy(encryptedBytes, 0, ivBytes, 0, ivLen);
+		IvParameterSpec iv = new IvParameterSpec(ivBytes);		
+		
+		try {
+			c.init(cipherMode, localKey, iv);
+		} catch (InvalidKeyException ike) {
+			throw new XMLEncryptionException("empty", ike);
+		} catch (InvalidAlgorithmParameterException iape) {
+			throw new XMLEncryptionException("empty", iape);
+		}
+
         String octets = null;
+		byte[] plainBytes;
+
         try {
-            octets = new String(
-                contextCipher.doFinal(encryptedBytes));
+            octets = new String(c.doFinal(encryptedBytes, ivLen, 
+										  encryptedBytes.length - ivLen));
         } catch (IllegalBlockSizeException ibse) {
             throw new XMLEncryptionException("empty", ibse);
         } catch (BadPaddingException bpe) {
             throw new XMLEncryptionException("empty", bpe);
         }
+		
+		// Now remove any padding
+		//octets = new String(padder.dePad(plainBytes));
+	    
 
         logger.debug("Decrypted octets:\n" + octets);
 
-        Element decryptedElement = serializer.deserialize(octets);
+        Element sourceParent = (Element) element.getParentNode();
+        DocumentFragment decryptedFragment = 
+			serializer.deserialize(octets, sourceParent);
 
-        Node sourceParent = element.getParentNode();
-        sourceParent.replaceChild(decryptedElement, element);
+		// The de-serialiser returns a fragment whose children we need to
+		// take on.
+
+		sourceParent.replaceChild(decryptedFragment, element);
 
         return (contextDocument);
     }
@@ -982,22 +1102,80 @@ public class XMLCipher {
         /**
          *
          */
-        Element deserialize(String source) throws XMLEncryptionException {
-            Element result = null;
-
+        DocumentFragment deserialize(String source, Element ctx) throws XMLEncryptionException {
+			DocumentFragment result;
             final String tagname = "fragment";
-            String fragment = "<"+tagname+">" + source + "</"+tagname+">";
+
+			// Create the context to parse the document against
+			StringBuffer sb;
+			
+			sb = new StringBuffer();
+			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><"+tagname);
+			
+			// Run through each node up to the document node and find any
+			// xmlns: nodes
+
+			Node wk = ctx;
+			
+			while (wk != null) {
+
+				NamedNodeMap atts = wk.getAttributes();
+				int length;
+				if (atts != null)
+					length = atts.getLength();
+				else
+					length = 0;
+
+				for (int i = 0 ; i < length ; ++i) {
+					Node att = atts.item(i);
+					if (att.getNodeName().startsWith("xmlns:") ||
+						att.getNodeName() == "xmlns") {
+					
+						// Check to see if this node has already been found
+						Node p = ctx;
+						boolean found = false;
+						while (p != wk) {
+							NamedNodeMap tstAtts = p.getAttributes();
+							if (tstAtts != null && 
+								tstAtts.getNamedItem(att.getNodeName()) != null) {
+								found = true;
+								break;
+							}
+							p = p.getParentNode();
+						}
+						if (found == false) {
+							
+							// This is an attribute node
+							sb.append(" " + att.getNodeName() + "=\"" + 
+									  att.getNodeValue() + "\"");
+						}
+					}
+				}
+				wk = wk.getParentNode();
+			}
+			sb.append(">" + source + "</" + tagname + ">");
+			String fragment = sb.toString();
+
             try {
                 DocumentBuilderFactory dbf =
                     DocumentBuilderFactory.newInstance();
-                    DocumentBuilder db = dbf.newDocumentBuilder();
-                    Document d = db.parse(
-                        new InputSource(new StringReader(fragment)));
+				dbf.setNamespaceAware(true);
+				dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				Document d = db.parse(
+				    new InputSource(new StringReader(fragment)));
 
-                    Node n = contextDocument.importNode(
-                        d.getDocumentElement(), true);
+				Element fragElt = (Element) contextDocument.importNode(
+						 d.getDocumentElement(), true);
+				result = contextDocument.createDocumentFragment();
+				Node child = fragElt.getFirstChild();
+				while (child != null) {
+					fragElt.removeChild(child);
+					result.appendChild(child);
+					child = fragElt.getFirstChild();
+				}
+				String outp = serialize(d);
 
-                    result = (Element) n.getFirstChild();
             } catch (SAXException se) {
                 throw new XMLEncryptionException("empty", se);
             } catch (ParserConfigurationException pce) {
