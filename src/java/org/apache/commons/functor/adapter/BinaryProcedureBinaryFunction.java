@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BinaryProcedureBinaryFunction.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BinaryProcedureBinaryFunction.java,v 1.3 2003/02/18 20:35:40 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,7 +75,7 @@ import org.apache.commons.functor.BinaryProcedure;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/18 20:35:40 $
  * @author Rodney Waldhoff
  */
 public final class BinaryProcedureBinaryFunction implements BinaryFunction, Serializable {
@@ -112,6 +112,19 @@ public final class BinaryProcedureBinaryFunction implements BinaryFunction, Seri
         return "BinaryProcedureBinaryFunction<" + procedure + ">";
     }
 
+    /**
+     * Adapt the given, possibly-<code>null</code>, 
+     * {@link BinaryProcedure BinaryProcedure} to the
+     * {@link BinaryFunction BinaryFunction} interface.
+     * When the given <code>BinaryProcedure</code> is <code>null</code>,
+     * returns <code>null</code>.
+     * 
+     * @param procedure the possibly-<code>null</code> 
+     *        {@link BinaryFunction BinaryFunction} to adapt
+     * @return a <code>BinaryProcedureBinaryFunction</code> wrapping the given
+     *         {@link BinaryFunction BinaryFunction}, or <code>null</code>
+     *         if the given <code>BinaryFunction</code> is <code>null</code>
+     */
     public static BinaryProcedureBinaryFunction adapt(BinaryProcedure procedure) {
         return null == procedure ? null : new BinaryProcedureBinaryFunction(procedure);
     }

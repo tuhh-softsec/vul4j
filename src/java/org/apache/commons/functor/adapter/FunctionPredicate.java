@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/FunctionPredicate.java,v 1.1 2003/01/27 19:33:39 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/FunctionPredicate.java,v 1.2 2003/02/18 20:35:40 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -73,7 +73,7 @@ import org.apache.commons.functor.Predicate;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:39 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/18 20:35:40 $
  * @author Rodney Waldhoff
  */
 public final class FunctionPredicate implements Predicate, Serializable {
@@ -82,6 +82,10 @@ public final class FunctionPredicate implements Predicate, Serializable {
     }
  
     /**
+     * Returns the <code>boolean</code> value of the non-<code>null</code>
+     * <code>Boolean</code> returned by the {@link Function#evaluate evaluate}
+     * method of my underlying function.
+     * 
      * @throws NullPointerException if my underlying function returns <code>null</code>
      * @throws ClassCastException if my underlying function returns a non-<code>Boolean</code>
      */

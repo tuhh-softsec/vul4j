@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BinaryFunctionBinaryPredicate.java,v 1.1 2003/01/27 19:33:38 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BinaryFunctionBinaryPredicate.java,v 1.2 2003/02/18 20:35:40 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -74,7 +74,7 @@ import org.apache.commons.functor.BinaryPredicate;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * </p>
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:38 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/18 20:35:40 $
  * @author Rodney Waldhoff
  */
 public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Serializable {
@@ -88,6 +88,10 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
     }
  
     /**
+     * Returns the <code>boolean</code> value of the non-<code>null</code>
+     * <code>Boolean</code> returned by the {@link BinaryFunction#evaluate evaluate}
+     * method of my underlying function.
+     * 
      * @throws NullPointerException if my underlying function returns <code>null</code>
      * @throws ClassCastException if my underlying function returns a non-<code>Boolean</code>
      */
@@ -128,7 +132,7 @@ public final class BinaryFunctionBinaryPredicate implements BinaryPredicate, Ser
      * 
      * @param function the possibly-<code>null</code> 
      *        {@link BinaryFunction BinaryFunction} to adapt
-     * @return a {@link BinaryPredicate BinaryPredicate} wrapping the given
+     * @return a <code>BinaryFunctionBinaryPredicate</code> wrapping the given
      *         {@link BinaryFunction BinaryFunction}, or <code>null</code>
      *         if the given <code>BinaryFunction</code> is <code>null</code>
      */

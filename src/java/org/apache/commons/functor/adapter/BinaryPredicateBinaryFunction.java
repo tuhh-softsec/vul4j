@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BinaryPredicateBinaryFunction.java,v 1.2 2003/01/28 12:00:28 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BinaryPredicateBinaryFunction.java,v 1.3 2003/02/18 20:35:40 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -74,14 +74,21 @@ import org.apache.commons.functor.BinaryPredicate;
  * an instance whose delegate is not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/01/28 12:00:28 $
+ * @version $Revision: 1.3 $ $Date: 2003/02/18 20:35:40 $
  * @author Rodney Waldhoff
  */
 public final class BinaryPredicateBinaryFunction implements BinaryFunction, Serializable {
     public BinaryPredicateBinaryFunction(BinaryPredicate predicate) {
         this.predicate = predicate;
     }
- 
+
+    /**
+     * Returns <code>Boolean.TRUE</code> (<code>Boolean.FALSE</code>)
+     * when the {@link BinaryPredicate#test test} method of my underlying 
+     * predicate returns <code>true</code> (<code>false</code>).
+     * 
+     * @return a non-<code>null</code> <code>Boolean</code> instance
+     */
     public Object evaluate(Object left, Object right) {
         return predicate.test(left,right) ? Boolean.TRUE : Boolean.FALSE;
     }   
@@ -110,6 +117,20 @@ public final class BinaryPredicateBinaryFunction implements BinaryFunction, Seri
         return "BinaryPredicateBinaryFunction<" + predicate + ">";
     }
 
+    
+    /**
+     * Adapt the given, possibly-<code>null</code>, 
+     * {@link BinaryPredicate BinaryPredicate} to the
+     * {@link BinaryFunction BinaryFunction} interface.
+     * When the given <code>BinaryPredicate</code> is <code>null</code>,
+     * returns <code>null</code>.
+     * 
+     * @param predicate the possibly-<code>null</code> 
+     *        {@link BinaryPredicate BinaryPredicate} to adapt
+     * @return a <code>BinaryPredicateBinaryFunction</code> wrapping the given
+     *         {@link BinaryPredicate BinaryPredicate}, or <code>null</code>
+     *         if the given <code>BinaryPredicate</code> is <code>null</code>
+     */
     public static BinaryPredicateBinaryFunction adapt(BinaryPredicate predicate) {
         return null == predicate ? null : new BinaryPredicateBinaryFunction(predicate);
     }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BoundFunction.java,v 1.1 2003/01/28 23:37:49 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/adapter/BoundFunction.java,v 1.2 2003/02/18 20:35:40 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,7 +75,7 @@ import org.apache.commons.functor.UnaryFunction;
  * an instance whose delegates are not 
  * <code>Serializable</code> will result in an exception.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/01/28 23:37:49 $
+ * @version $Revision: 1.2 $ $Date: 2003/02/18 20:35:40 $
  * @author Rodney Waldhoff
  */
 public final class BoundFunction implements Function, Serializable {
@@ -125,6 +125,22 @@ public final class BoundFunction implements Function, Serializable {
         return "BoundFunction<" + function + "(" + param + ")>";
     }
 
+    /**
+     * Adapt the given, possibly-<code>null</code>, 
+     * {@link UnaryFunction UnaryFunction} to the
+     * {@link Function Function} interface by binding
+     * the specified <code>Object</code> as a constant
+     * argument.
+     * When the given <code>UnaryFunction</code> is <code>null</code>,
+     * returns <code>null</code>.
+     * 
+     * @param function the possibly-<code>null</code> 
+     *        {@link UnaryFunction UnaryFunction} to adapt
+     * @param arg the object to bind as a constant argument
+     * @return a <code>BoundFunction</code> wrapping the given
+     *         {@link UnaryFunction UnaryFunction}, or <code>null</code>
+     *         if the given <code>UnaryFunction</code> is <code>null</code>
+     */
     public static BoundFunction adapt(UnaryFunction function, Object arg) {
         return null == function ? null : new BoundFunction(function,arg);
     }
