@@ -63,6 +63,8 @@ package org.apache.xml.security.encryption;
 import java.security.Key;
 import org.w3c.dom.*;
 import org.apache.xml.security.algorithms.encryption.EncryptionMethod;
+import org.apache.xml.security.algorithms.encryption.params
+   .EncryptionMethodParams;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.*;
 import org.apache.xml.security.keys.KeyInfo;
@@ -118,6 +120,75 @@ public class EncryptedKey extends EncryptionElementProxy
          XMLUtils.addReturnToElement(this._constructionElement);
       }
       {
+         this._constructionElement.appendChild(cipherData.getElement());
+         XMLUtils.addReturnToElement(this._constructionElement);
+      }
+
+      if (encryptionProperties != null) {
+         this._constructionElement
+            .appendChild(encryptionProperties.getElement());
+         XMLUtils.addReturnToElement(this._constructionElement);
+      }
+
+      if (referenceList != null) {
+         this._constructionElement.appendChild(referenceList.getElement());
+         XMLUtils.addReturnToElement(this._constructionElement);
+      }
+
+      this.setCarriedKeyName(CarriedKeyName);
+      this.setId(Id);
+      this.setType(Type);
+      this.setRecipient(Recipient);
+   }
+
+   /**
+    * Constructor EncryptedKey
+    *
+    * @param doc
+    * @param encryptionMethodURI
+    * @param encryptionMethodParams
+    * @param keyInfo
+    * @param contentKey
+    * @param wrapKey
+    * @param encryptionProperties
+    * @param referenceList
+    * @param CarriedKeyName
+    * @param Id
+    * @param Type
+    * @param Recipient
+    * @throws XMLSecurityException
+    */
+   public EncryptedKey(
+           Document doc, String encryptionMethodURI,
+           EncryptionMethodParams encryptionMethodParams, KeyInfo keyInfo,
+           Key contentKey, Key wrapKey, EncryptionProperties encryptionProperties, ReferenceList referenceList, String CarriedKeyName, String Id, String Type, String Recipient)
+              throws XMLSecurityException {
+
+      super(doc);
+
+      XMLUtils.addReturnToElement(this._constructionElement);
+
+      EncryptionMethod encryptionMethod = new EncryptionMethod(doc,
+                                             encryptionMethodURI,
+                                             encryptionMethodParams);
+
+      if (!encryptionMethod.getUsableInEncryptedKey()) {
+         Object exArgs[] = { encryptionMethod.getAlgorithmURI() };
+
+         throw new XMLSecurityException(
+            "encryption.algorithmCannotBeUsedForEncryptedKey", exArgs);
+      }
+
+      this._constructionElement.appendChild(encryptionMethod.getElement());
+      XMLUtils.addReturnToElement(this._constructionElement);
+
+      if (keyInfo != null) {
+         this._constructionElement.appendChild(keyInfo.getElement());
+         XMLUtils.addReturnToElement(this._constructionElement);
+      }
+      {
+         byte wrappedKey[] = encryptionMethod.wrap(contentKey, wrapKey);
+         CipherData cipherData = new CipherData(doc, wrappedKey);
          this._constructionElement.appendChild(cipherData.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
       }
@@ -346,8 +417,10 @@ public class EncryptedKey extends EncryptionElementProxy
     * @param recipient
     */
    public void setRecipient(String recipient) {
+      if (this._state == MODE_CREATE && recipient != null && recipient.length() > 0) {
       this._constructionElement.setAttribute(EncryptionConstants._ATT_RECIPIENT,
                                              recipient);
+      }
    }
 
    /**
@@ -539,8 +612,18 @@ public class EncryptedKey extends EncryptionElementProxy
       return null;
    }
 
+   /**
+    * Method getBaseLocalName
+    *
+    * @return
+    */
    public String getBaseLocalName() {
       return EncryptionConstants._TAG_ENCRYPTEDKEY;
+   }
+
+   public Key unwrap(Key wrapKey, String wrappedKeyAlgoURI) throws XMLSecurityException {
+      byte[] wrappedKey = this.getCipherData().getCipherValue().getCipherText();
+      return this.getEncryptionMethod().unwrap(wrappedKey, wrapKey, wrappedKeyAlgoURI);
    }
 
    /**

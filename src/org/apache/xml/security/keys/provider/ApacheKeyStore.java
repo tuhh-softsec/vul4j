@@ -88,15 +88,11 @@ import org.xml.sax.*;
  */
 public class ApacheKeyStore extends KeyStoreSpi {
 
-   /** Field APACHEKEYSTORE_NAMESPACE */
-   public static final String APACHEKEYSTORE_NAMESPACE =
-      "http://xml.apache.org/security/#KeyStore";
+   /** Field PERMIT_EMPTY_STORE_PASSWORDS */
+   private static final boolean PERMIT_EMPTY_STORE_PASSWORDS = true;
 
-   /** Field APACHEKEYSTORE_PREFIX */
-   public static final String APACHEKEYSTORE_PREFIX = "";
-
-   /** Field _keyStoreElement */
-   KeyStoreElement _keyStoreElement;
+   /** Field PERMIT_STORE_WITHOUT_SIGNATURE */
+   private static final boolean PERMIT_STORE_WITHOUT_SIGNATURE = true;
 
    /**
     * Constructor ApacheKeyStore
@@ -106,19 +102,24 @@ public class ApacheKeyStore extends KeyStoreSpi {
 
       try {
          org.apache.xml.security.utils.ElementProxy
-            .setDefaultPrefix(APACHEKEYSTORE_NAMESPACE, APACHEKEYSTORE_PREFIX);
+            .setDefaultPrefix(ApacheKeyStoreConstants
+               .ApacheKeyStore_NAMESPACE, ApacheKeyStoreConstants
+               .ApacheKeyStore_PREFIX);
       } catch (XMLSecurityException ex) {}
    }
+
+   /** Field _keyStoreElement */
+   KeyStoreElement _keyStoreElement;
 
    /**
     *
     * @param is
-    * @param password
+    * @param integrityPassPhrase
     * @throws CertificateException
     * @throws IOException
     * @throws NoSuchAlgorithmException
     */
-   public void engineLoad(InputStream is, char[] password)
+   public void engineLoad(InputStream is, char[] integrityPassPhrase)
            throws IOException, NoSuchAlgorithmException, CertificateException {
 
       try {
@@ -128,7 +129,7 @@ public class ApacheKeyStore extends KeyStoreSpi {
 
          DocumentBuilder db = dbf.newDocumentBuilder();
 
-         if ((is == null) && (password == null)) {
+         if (is == null) {
             Document doc = db.newDocument();
 
             this._keyStoreElement = new KeyStoreElement(doc);
@@ -137,20 +138,26 @@ public class ApacheKeyStore extends KeyStoreSpi {
          } else {
             Document doc = db.parse(is);
 
+            // unfortunaltely, we have to use that stoopid memory:// URI
+            // because the JCA only gives us an InputStream and no way to
+            // determine what URI the InputStream has
             this._keyStoreElement =
                new KeyStoreElement(doc.getDocumentElement(), "memory://");
 
-            boolean verified = this._keyStoreElement.verify(password);
+            if (integrityPassPhrase != null) {
+               boolean verified =
+                  this._keyStoreElement.verify(integrityPassPhrase);
 
-            if (!verified) {
+               if (!verified) {
 
-               /*
-               java.io.FileOutputStream fos = new java.io.FileOutputStream("signed");
-               fos.write(signature.getSignedInfo().getSignedContentItem(0));
-               fos.close();
-               */
-               throw new IOException(
-                  "The integrity of the KeyStore is broken; maybe someone messed around in the KeyStore");
+                  /*
+                  java.io.FileOutputStream fos = new java.io.FileOutputStream("signed");
+                  fos.write(signature.getSignedInfo().getSignedContentItem(0));
+                  fos.close();
+                  */
+                  throw new IOException(
+                     "The integrity of the KeyStore is broken; maybe someone messed around in the KeyStore");
+               }
             }
          }
       } catch (ParserConfigurationException ex) {
@@ -165,18 +172,42 @@ public class ApacheKeyStore extends KeyStoreSpi {
    /**
     *
     * @param os
-    * @param password
+    * @param integrityPassPhrase
     * @throws CertificateException
     * @throws IOException
     * @throws NoSuchAlgorithmException
     */
-   public void engineStore(OutputStream os, char[] password)
+   public void engineStore(OutputStream os, char[] integrityPassPhrase)
            throws IOException, NoSuchAlgorithmException, CertificateException {
 
       try {
-         this._keyStoreElement.sign(password);
+         if (integrityPassPhrase != null) {
+            this._keyStoreElement.sign(integrityPassPhrase);
+         } else {
+            if (PERMIT_EMPTY_STORE_PASSWORDS) {
+               if (PERMIT_STORE_WITHOUT_SIGNATURE) {
+                  this._keyStoreElement.removeOldSignatures();
+               } else {
 
-         // System.out.println(new String(signature.getSignedInfo().getSignedContentItem(0)));
+                  /* If the user supplies no integrityPassPhrase, a passphrase is
+                   * generated at random. This prevents an attacker from knowing that
+                   * a particular keystore is unprotected.
+                   */
+                  byte bytes[] = PRNG.createBytes(100);
+                  char chars[] = new char[bytes.length];
+
+                  for (int i = 0; i < chars.length; i++) {
+                     chars[i] = (char) bytes[i];
+                  }
+
+                  this._keyStoreElement.sign(chars);
+               }
+            } else {
+               throw new IllegalArgumentException(
+                  "integrityPassPhrase can't be null");
+            }
+         }
+
          Canonicalizer c14nizer =
             Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
 
@@ -186,14 +217,6 @@ public class ApacheKeyStore extends KeyStoreSpi {
       } catch (CanonicalizationException ex) {
          throw new IOException(ex.getMessage());
       }
-   }
-
-   /**
-    *
-    * @return
-    */
-   public Enumeration engineAliases() {
-      return this._keyStoreElement.getAliases();
    }
 
    /**
@@ -226,6 +249,27 @@ public class ApacheKeyStore extends KeyStoreSpi {
 
    /**
     *
+    * @param cert
+    * @return
+    */
+   public String engineGetCertificateAlias(Certificate cert) {
+      Enumeration aliases = this.engineAliases();
+      while (aliases.hasMoreElements()) {
+         String alias = (String) aliases.nextElement();
+
+         if (this.engineIsCertificateEntry(alias)) {
+            Certificate currentCert = this.engineGetCertificate(alias);
+            if (cert.equals(currentCert)) {
+               return alias;
+            }
+         }
+      }
+
+      return null;
+   }
+
+   /**
+    *
     * @return
     */
    public int engineSize() {
@@ -235,130 +279,44 @@ public class ApacheKeyStore extends KeyStoreSpi {
 
    /**
     *
-    * @param alias
     * @return
     */
-   public Date engineGetCreationDate(String alias) {
-      return null;
+   public Enumeration engineAliases() {
+      return this._keyStoreElement.aliases();
    }
-
-   /**
-    *
-    * @param alias
-    * @throws KeyStoreException
-    */
-   public void engineDeleteEntry(String alias) throws KeyStoreException {}
-
-   /**
-    *
-    * @param alias
-    * @return
-    */
+   public Date engineGetCreationDate(String alias) {
+      return this._keyStoreElement.getCreationDate(alias);
+   }
+   public void engineDeleteEntry(String alias) throws KeyStoreException {
+      this._keyStoreElement.deleteEntry(alias);
+   }
    public boolean engineIsCertificateEntry(String alias) {
       return this._keyStoreElement.isCertificateEntry(alias);
    }
-
-   /**
-    *
-    * @param alias
-    * @param cert
-    * @throws KeyStoreException
-    */
    public void engineSetCertificateEntry(String alias, Certificate cert)
            throws KeyStoreException {
-
-      try {
-         CertificateElement certificateElement =
-            new CertificateElement(this._keyStoreElement.getDocument(), alias,
-                                   cert);
-
-         this._keyStoreElement.add(certificateElement);
-      } catch (XMLSecurityException ex) {
-         throw new KeyStoreException(ex.getMessage());
-      }
+      this._keyStoreElement.setCertificateEntry(alias, cert);
    }
-
-   /**
-    *
-    * @param alias
-    * @return
-    */
    public Certificate engineGetCertificate(String alias) {
       return this._keyStoreElement.getCertificate(alias);
    }
-
-   /**
-    *
-    * @param alias
-    * @return
-    */
    public Certificate[] engineGetCertificateChain(String alias) {
-      return null;
+      return this._keyStoreElement.getCertificateChain(alias);
    }
-
-   /**
-    *
-    * @param cert
-    * @return
-    */
-   public String engineGetCertificateAlias(Certificate cert) {
-      return null;
-   }
-
-   /**
-    *
-    * @param alias
-    * @return
-    */
    public boolean engineIsKeyEntry(String alias) {
-      return false;
+      return this._keyStoreElement.isCertificateEntry(alias);
    }
-
-   /**
-    *
-    * @param alias
-    * @param key
-    * @param chain
-    * @throws KeyStoreException
-    */
    public void engineSetKeyEntry(String alias, byte[] key, Certificate[] chain)
            throws KeyStoreException {
-
-      KeyElement keyElement =
-         new KeyElement(this._keyStoreElement.getDocument(), alias, key, chain);
-
-      this._keyStoreElement.add(keyElement);
+      this._keyStoreElement.setKeyEntry(alias, key, chain);
    }
-
-   /**
-    *
-    * @param alias
-    * @param k
-    * @param password
-    * @param chain
-    * @throws KeyStoreException
-    */
    public void engineSetKeyEntry(
            String alias, Key k, char[] password, Certificate[] chain)
               throws KeyStoreException {
-
-      KeyElement keyElement =
-         new KeyElement(this._keyStoreElement.getDocument(), alias, k,
-                        password, chain);
-
-      this._keyStoreElement.add(keyElement);
+      this._keyStoreElement.setKeyEntry(alias, k, password, chain);
    }
-
-   /**
-    *
-    * @param alias
-    * @param password
-    * @return
-    * @throws NoSuchAlgorithmException
-    * @throws UnrecoverableKeyException
-    */
    public Key engineGetKey(String alias, char[] password)
            throws NoSuchAlgorithmException, UnrecoverableKeyException {
-      return null;
+      return this._keyStoreElement.getKey(alias, password);
    }
 }

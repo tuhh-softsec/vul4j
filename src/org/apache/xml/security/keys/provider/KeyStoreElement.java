@@ -60,10 +60,16 @@ package org.apache.xml.security.keys.provider;
 
 
 
+import java.util.Date;
 import java.io.*;
+import java.security.KeyStoreException;
 import java.security.cert.*;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.*;
+import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.transforms.*;
@@ -111,7 +117,7 @@ public class KeyStoreElement extends ElementProxy {
     * @return
     */
    public String getBaseLocalName() {
-      return "KeyStore";
+      return ApacheKeyStoreConstants._TAG_KEYSTORE;
    }
 
    /**
@@ -120,7 +126,72 @@ public class KeyStoreElement extends ElementProxy {
     * @return
     */
    public String getBaseNamespace() {
-      return ApacheKeyStore.APACHEKEYSTORE_NAMESPACE;
+      return ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE;
+   }
+
+   /**
+    * This method removes all <CODE>ds:Signature</CODE> children from the
+    * KeyStore.
+    *
+    */
+   protected void removeOldSignatures() {
+
+      Element oldSignatureElement = null;
+
+      while ((oldSignatureElement =
+              this.getChildElementLocalName(0, Constants
+                 .SignatureSpecNS, Constants._TAG_SIGNATURE)) != null) {
+         if (oldSignatureElement != null) {
+            Node parent = oldSignatureElement.getParentNode();
+
+            {
+
+               // just beautifying; remove a possibly following return text node
+               Node nextSibl = oldSignatureElement.getNextSibling();
+
+               if ((nextSibl != null)
+                       && (nextSibl.getNodeType() == Node.TEXT_NODE)) {
+                  if (((Text) nextSibl).getData().equals("\n")) {
+                     parent.removeChild(nextSibl);
+                  }
+               }
+            }
+
+            parent.removeChild(oldSignatureElement);
+         }
+      }
+   }
+
+   /**
+    * Method sign
+    *
+    * @param password
+    * @throws IOException
+    */
+   public void sign(char[] password) throws IOException {
+
+      try {
+         this.removeOldSignatures();
+
+         XMLSignature signature =
+            new XMLSignature(this._doc, "", XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+
+         this._constructionElement.appendChild(signature.getElement());
+         XMLUtils.addReturnToElement(this);
+
+         Transforms enveloped = new Transforms(this._doc);
+
+         enveloped.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+         signature.addDocument("", enveloped);
+
+         SecretKey secretKey = this.generateKeyFromPass(signature, password);
+
+         signature.sign(secretKey);
+      } catch (XMLSignatureException ex) {
+         throw new IOException(ex.getMessage());
+      } catch (XMLSecurityException ex) {
+         throw new IOException(ex.getMessage());
+      }
    }
 
    /**
@@ -141,76 +212,6 @@ public class KeyStoreElement extends ElementProxy {
          return (Element) signatureElems.item(0);
       } else {
          throw new XMLSecurityException("empty");
-      }
-   }
-
-   /**
-    * Method addKey
-    *
-    * @param keyElement
-    */
-   public void add(KeyElement keyElement) {
-      this._constructionElement.appendChild(keyElement.getElement());
-      XMLUtils.addReturnToElement(this);
-   }
-
-   /**
-    * Method add
-    *
-    * @param certificateElement
-    */
-   public void add(CertificateElement certificateElement) {
-      this._constructionElement.appendChild(certificateElement.getElement());
-      XMLUtils.addReturnToElement(this);
-   }
-
-   /**
-    * Method sign
-    *
-    * @param password
-    * @throws IOException
-    */
-   public void sign(char[] password) throws IOException {
-
-      try {
-         XMLSignature signature =
-            new XMLSignature(this._doc, "", XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
-         Element oldSignatureElement = this.getSignatureElement();
-
-         if (oldSignatureElement != null) {
-            Node parent = oldSignatureElement.getParentNode();
-
-            {
-
-               // just beautifying
-               Node nextSibl = oldSignatureElement.getNextSibling();
-
-               if ((nextSibl != null)
-                       && (nextSibl.getNodeType() == Node.TEXT_NODE)) {
-                  if (((Text) nextSibl).getData().equals("\n")) {
-                     parent.removeChild(nextSibl);
-                  }
-               }
-            }
-
-            parent.removeChild(oldSignatureElement);
-         }
-
-         this._constructionElement.appendChild(signature.getElement());
-         XMLUtils.addReturnToElement(this);
-
-         Transforms enveloped = new Transforms(this._doc);
-
-         enveloped.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
-         signature.addDocument("", enveloped);
-
-         SecretKey secretKey = this.generateKeyFromPass(signature, password);
-
-         signature.sign(secretKey);
-      } catch (XMLSignatureException ex) {
-         throw new IOException(ex.getMessage());
-      } catch (XMLSecurityException ex) {
-         throw new IOException(ex.getMessage());
       }
    }
 
@@ -236,11 +237,29 @@ public class KeyStoreElement extends ElementProxy {
 
          if (signature.getSignedInfo().getLength() != 1) {
             throw new IOException(
-               "ds:Signature/ds:KeyInfo must contain exactly one ds:Reference");
+               "ds:Signature/ds:getSignedInfo must contain exactly one ds:Reference but it was "
+               + signature.getSignedInfo().getLength());
          }
 
-         if (!signature.getSignedInfo().item(0).getURI().equals("")) {
+         Reference reference = signature.getSignedInfo().item(0);
+
+         if (!reference.getURI().equals("")) {
             throw new IOException("ds:Reference/@URI!=\"\"");
+         }
+
+         Transforms transforms = reference.getTransforms();
+
+         if ((transforms == null) || (transforms.getLength() != 1)) {
+            throw new IOException(
+               "There must be exactly one EnvelopedSignature Transform");
+         }
+
+         Transform transform = transforms.item(0);
+
+         if (!transform.getURI()
+                 .equals(Transforms.TRANSFORM_ENVELOPED_SIGNATURE)) {
+            throw new IOException(
+               "There must be exactly one EnvelopedSignature Transform");
          }
 
          SecretKey secretKey = this.generateKeyFromPass(signature, password);
@@ -278,7 +297,8 @@ public class KeyStoreElement extends ElementProxy {
     * @return
     */
    public int getNumberOfKeys() {
-      return this.length(ApacheKeyStore.APACHEKEYSTORE_NAMESPACE, "Key");
+      return this.length(ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE,
+                         ApacheKeyStoreConstants._TAG_KEY);
    }
 
    /**
@@ -287,8 +307,8 @@ public class KeyStoreElement extends ElementProxy {
     * @return
     */
    public int getNumberOfCertificates() {
-      return this.length(ApacheKeyStore.APACHEKEYSTORE_NAMESPACE,
-                         "Certificate");
+      return this.length(ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE,
+                         ApacheKeyStoreConstants._TAG_CERTIFICATE);
    }
 
    /**
@@ -296,17 +316,21 @@ public class KeyStoreElement extends ElementProxy {
     *
     * @return
     */
-   public Enumeration getAliases() {
+   public Enumeration aliases() {
 
       try {
          CachedXPathAPI xpath = new CachedXPathAPI();
          Element nsctx = this._doc.createElement("nsctx");
 
-         nsctx.setAttribute("xmlns:x", ApacheKeyStore.APACHEKEYSTORE_NAMESPACE);
+         nsctx.setAttribute("xmlns:x",
+                            ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE);
 
          NodeList aliasNodes =
-            xpath.selectNodeList(this._doc, "/x:KeyStore/x:*/x:Alias/text()",
-                                 nsctx);
+            xpath.selectNodeList(this._doc,
+                                 "/x:" + ApacheKeyStoreConstants._TAG_KEYSTORE
+                                 + "/x:*/x:"
+                                 + ApacheKeyStoreConstants._TAG_ALIAS
+                                 + "/text()", nsctx);
          Vector result = new Vector(aliasNodes.getLength());
 
          for (int i = 0; i < aliasNodes.getLength(); i++) {
@@ -335,6 +359,19 @@ public class KeyStoreElement extends ElementProxy {
    }
 
    /**
+    * Method isKeyEntry
+    *
+    * @param alias
+    * @return
+    */
+   public boolean isKeyEntry(String alias) {
+
+      Element certElem = this.getKeyEntryElement(alias);
+
+      return (certElem != null);
+   }
+
+   /**
     * Method getCertificateEntryElement
     *
     * @param alias
@@ -346,10 +383,45 @@ public class KeyStoreElement extends ElementProxy {
          CachedXPathAPI xpath = new CachedXPathAPI();
          Element nsctx = this._doc.createElement("nsctx");
 
-         nsctx.setAttribute("xmlns:x", ApacheKeyStore.APACHEKEYSTORE_NAMESPACE);
+         nsctx.setAttribute("xmlns:x",
+                            ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE);
 
-         String searchExpr = "/x:KeyStore/x:Certificate[./x:Alias/text()=\""
-                             + alias + "\"]";
+         String searchExpr = "/x:" + ApacheKeyStoreConstants._TAG_KEYSTORE
+                             + "/x:" + ApacheKeyStoreConstants._TAG_CERTIFICATE
+                             + "[./x:" + ApacheKeyStoreConstants._TAG_ALIAS
+                             + "/text()=\"" + alias + "\"]";
+         NodeList aliasNodes = xpath.selectNodeList(this._doc, searchExpr,
+                                                    nsctx);
+
+         if (aliasNodes.getLength() == 1) {
+            return (Element) aliasNodes.item(0);
+         }
+      } catch (TransformerException ex) {
+         ex.printStackTrace();
+      }
+
+      return null;
+   }
+
+   /**
+    * Method getKeyEntryElement
+    *
+    * @param alias
+    * @return
+    */
+   public Element getKeyEntryElement(String alias) {
+
+      try {
+         CachedXPathAPI xpath = new CachedXPathAPI();
+         Element nsctx = this._doc.createElement("nsctx");
+
+         nsctx.setAttribute("xmlns:x",
+                            ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE);
+
+         String searchExpr = "/x:" + ApacheKeyStoreConstants._TAG_KEYSTORE
+                             + "/x:" + ApacheKeyStoreConstants._TAG_KEY
+                             + "[./x:" + ApacheKeyStoreConstants._TAG_ALIAS
+                             + "/text()=\"" + alias + "\"]";
          NodeList aliasNodes = xpath.selectNodeList(this._doc, searchExpr,
                                                     nsctx);
 
@@ -368,7 +440,6 @@ public class KeyStoreElement extends ElementProxy {
     *
     * @param alias
     * @return
-    * @throws XMLSecurityException
     */
    public Certificate getCertificate(String alias) {
 
@@ -387,6 +458,176 @@ public class KeyStoreElement extends ElementProxy {
          return null;
       } catch (XMLSecurityException ex) {
          return null;
+      }
+   }
+
+   /**
+    * Method getCreationDate
+    *
+    * @param alias
+    * @return
+    */
+   public Date getCreationDate(String alias) {
+
+      try {
+         Element certElem = this.getCertificateEntryElement(alias);
+
+         if (certElem != null) {
+            CertificateElement kbt = new CertificateElement(certElem,
+                                        this._baseURI);
+
+            return kbt.getDate();
+         }
+
+         Element keyElem = this.getKeyEntryElement(alias);
+
+         if (keyElem != null) {
+            KeyElement kbt = new KeyElement(keyElem, this._baseURI);
+
+            return kbt.getDate();
+         }
+      } catch (XMLSecurityException ex) {
+         ;
+      }
+
+      return null;
+   }
+
+   /**
+    * Method deleteEntry
+    *
+    * @param alias
+    * @throws KeyStoreException
+    */
+   public void deleteEntry(String alias) throws KeyStoreException {
+
+      Element element = this.getKeyEntryElement(alias);
+
+      if (element != null) {
+         Node parent = element.getParentNode();
+         Node following = element.getNextSibling();
+
+         if ((following != null) && (following.getNodeType() == Node.TEXT_NODE)
+                 && ((Text) following).getData().equals("\n")) {
+            parent.removeChild(following);
+         }
+
+         parent.removeChild(element);
+      }
+
+      element = this.getCertificateEntryElement(alias);
+
+      if (element != null) {
+         Node parent = element.getParentNode();
+         Node following = element.getNextSibling();
+
+         if ((following != null) && (following.getNodeType() == Node.TEXT_NODE)
+                 && ((Text) following).getData().equals("\n")) {
+            parent.removeChild(following);
+         }
+
+         parent.removeChild(element);
+      }
+   }
+
+   /**
+    * Method engineGetCertificateChain
+    *
+    * @param alias
+    * @return
+    */
+   public Certificate[] getCertificateChain(String alias) {
+
+      try {
+         Element keyElement = this.getKeyEntryElement(alias);
+
+         if (keyElement != null) {
+            KeyElement ke = new KeyElement(keyElement, this._baseURI);
+
+            return ke.getCertificateChain(alias);
+         }
+      } catch (XMLSecurityException ex) {
+         ex.printStackTrace();
+      }
+
+      return null;
+   }
+
+   /**
+    * Method setCertificateEntry
+    *
+    * @param alias
+    * @param cert
+    * @throws KeyStoreException
+    */
+   public void setCertificateEntry(String alias, Certificate cert)
+           throws KeyStoreException {
+
+      try {
+         CertificateElement certificateElement =
+            new CertificateElement(this._doc, alias, cert);
+
+         this._constructionElement.appendChild(certificateElement.getElement());
+         XMLUtils.addReturnToElement(this);
+      } catch (XMLSecurityException ex) {
+         throw new KeyStoreException(ex.getMessage());
+      }
+   }
+
+   /**
+    * Method setKeyEntry
+    *
+    * @param alias
+    * @param key
+    * @param chain
+    * @throws KeyStoreException
+    */
+   public void setKeyEntry(String alias, byte[] key, Certificate[] chain)
+           throws KeyStoreException {
+
+      KeyElement keyElement = new KeyElement(this._doc, alias, key, chain);
+
+      this._constructionElement.appendChild(keyElement.getElement());
+      XMLUtils.addReturnToElement(this);
+   }
+
+   /**
+    * Method setKeyEntry
+    *
+    * @param alias
+    * @param k
+    * @param password
+    * @param chain
+    * @throws KeyStoreException
+    */
+   public void setKeyEntry(
+           String alias, Key k, char[] password, Certificate[] chain)
+              throws KeyStoreException {
+
+      KeyElement keyElement = new KeyElement(this._doc, alias, k, password,
+                                             chain);
+
+      this._constructionElement.appendChild(keyElement.getElement());
+      XMLUtils.addReturnToElement(this);
+   }
+
+   /**
+    * Method getKey
+    *
+    * @param alias
+    * @param password
+    * @return
+    * @throws NoSuchAlgorithmException
+    * @throws UnrecoverableKeyException
+    */
+   public Key getKey(String alias, char[] password)
+           throws NoSuchAlgorithmException, UnrecoverableKeyException {
+      try {
+      KeyElement keyElement = new KeyElement(this.getKeyEntryElement(alias), this._baseURI);
+
+      return keyElement.unwrap(password);
+      } catch (XMLSecurityException ex) {
+         throw new UnrecoverableKeyException(ex.getMessage());
       }
    }
 

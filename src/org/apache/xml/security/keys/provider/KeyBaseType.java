@@ -60,6 +60,13 @@ package org.apache.xml.security.keys.provider;
 
 
 
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.Calendar;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.security.cert.*;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.*;
 import org.w3c.dom.*;
@@ -70,6 +77,11 @@ import org.w3c.dom.*;
  * @author $Author$
  */
 public abstract class KeyBaseType extends ElementProxy {
+
+   /** Field DATE_STR */
+
+   // static final String DATE_STR = "yyyy-MM-DD'T'hh:mm:ss.SSS'Z'";
+   static final String DATE_STR = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
    /**
     * Constructor KeyBaseType
@@ -86,9 +98,18 @@ public abstract class KeyBaseType extends ElementProxy {
       XMLUtils.addReturnToElement(this);
       this._constructionElement.appendChild(a.getElement());
       XMLUtils.addReturnToElement(this);
+      this.setDate(new Date(System.currentTimeMillis()));
    }
 
-   public KeyBaseType(Element element, String BaseURI) throws XMLSecurityException {
+   /**
+    * Constructor KeyBaseType
+    *
+    * @param element
+    * @param BaseURI
+    * @throws XMLSecurityException
+    */
+   public KeyBaseType(Element element, String BaseURI)
+           throws XMLSecurityException {
       super(element, BaseURI);
    }
 
@@ -98,6 +119,64 @@ public abstract class KeyBaseType extends ElementProxy {
     * @return
     */
    public String getBaseNamespace() {
-      return ApacheKeyStore.APACHEKEYSTORE_NAMESPACE;
+      return ApacheKeyStoreConstants.ApacheKeyStore_NAMESPACE;
+   }
+
+   /**
+    * Method setDate
+    *
+    * @param date
+    */
+   public void setDate(Date date) {
+
+      if (this._state == MODE_CREATE) {
+         DateFormat df = new SimpleDateFormat(DATE_STR);
+
+         df.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+         String dateString = df.format(date);
+
+         this._constructionElement
+            .setAttribute(ApacheKeyStoreConstants._ATT_DATE, dateString);
+      }
+   }
+
+   /**
+    * Method getDate
+    *
+    * @return
+    * @throws XMLSecurityException
+    */
+   public Date getDate() throws XMLSecurityException {
+
+      try {
+         String dateString =
+            this._constructionElement
+               .getAttribute(ApacheKeyStoreConstants._ATT_DATE);
+         DateFormat df = new SimpleDateFormat(DATE_STR);
+
+         df.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+         return df.parse(dateString.trim());
+      } catch (ParseException ex) {
+         throw new XMLSecurityException("empty", ex);
+      }
+   }
+
+   /**
+    * Method getAlias
+    *
+    * @return
+    * @throws XMLSecurityException
+    */
+   public String getAlias() throws XMLSecurityException {
+
+      Alias alias =
+         new Alias(this
+            .getChildElementLocalName(0, ApacheKeyStoreConstants
+            .ApacheKeyStore_NAMESPACE, ApacheKeyStoreConstants._TAG_ALIAS), this
+               ._baseURI);
+
+      return alias.getAlias();
    }
 }

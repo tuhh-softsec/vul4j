@@ -71,6 +71,7 @@ import org.w3c.dom.*;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import java.io.ByteArrayInputStream;
 
+
 /**
  *
  * @author $Author$
@@ -99,31 +100,70 @@ public class CertificateElement extends KeyBaseType {
       } catch (CertificateEncodingException ex) {
          throw new XMLSecurityException("empty", ex);
       }
+
       this.setJCAType(cert);
    }
 
-   public CertificateElement(Element element, String BaseURI) throws XMLSecurityException {
+   /**
+    * Constructor CertificateElement
+    *
+    * @param element
+    * @param BaseURI
+    * @throws XMLSecurityException
+    */
+   public CertificateElement(Element element, String BaseURI)
+           throws XMLSecurityException {
       super(element, BaseURI);
    }
 
+   /**
+    * Method setJCAType
+    *
+    * @param cert
+    */
    public void setJCAType(Certificate cert) {
+
       if (this._state == ElementProxy.MODE_CREATE) {
-         this._constructionElement.setAttribute("JCAType", cert.getType());
+         this._constructionElement
+            .setAttribute(ApacheKeyStoreConstants._ATT_JCATYPE, cert.getType());
       }
    }
 
+   /**
+    * Method getJCAType
+    *
+    * @return
+    */
    public String getJCAType() {
-      return this._constructionElement.getAttribute("JCAType");
+      return this._constructionElement
+         .getAttribute(ApacheKeyStoreConstants._ATT_JCATYPE);
    }
 
-   public Certificate getCertificate() throws XMLSecurityException, CertificateException {
-      Element certElem = this.getChildElementLocalName(0, Constants.SignatureSpecNS, Constants._TAG_X509CERTIFICATE);
+   /**
+    * Method getCertificate
+    *
+    * @return
+    * @throws CertificateException
+    * @throws XMLSecurityException
+    */
+   public Certificate getCertificate()
+           throws XMLSecurityException, CertificateException {
+
+      Element certElem = this.getChildElementLocalName(0,
+                            Constants.SignatureSpecNS,
+                            Constants._TAG_X509CERTIFICATE);
+
       if (certElem == null) {
          return null;
       }
-      XMLX509Certificate xCert = new XMLX509Certificate(certElem, this._baseURI);
+
+      XMLX509Certificate xCert = new XMLX509Certificate(certElem,
+                                    this._baseURI);
       CertificateFactory cf = CertificateFactory.getInstance(this.getJCAType());
-      Certificate cert = cf.generateCertificate(new ByteArrayInputStream(xCert.getCertificateBytes()));
+      Certificate cert =
+         cf.generateCertificate(new ByteArrayInputStream(xCert
+            .getCertificateBytes()));
+
       return cert;
    }
 
@@ -133,6 +173,6 @@ public class CertificateElement extends KeyBaseType {
     * @return
     */
    public String getBaseLocalName() {
-      return "Certificate";
+      return ApacheKeyStoreConstants._TAG_CERTIFICATE;
    }
 }

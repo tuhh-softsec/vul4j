@@ -412,7 +412,7 @@ public class Reference extends SignatureElementProxy {
       if (this._state == MODE_SIGN) {
          Element digestValueElement = this.getChildElementLocalName(0,
                                          Constants.SignatureSpecNS,
-                                         Constants._TAG_REFERENCE);
+                                         Constants._TAG_DIGESTVALUE);
          NodeList children = digestValueElement.getChildNodes();
 
          for (int i = 0; i < children.getLength(); i++) {
@@ -479,14 +479,9 @@ public class Reference extends SignatureElementProxy {
 
          this._transformsInput = resolver.resolve(URIAttr, this._baseURI);
 
-         Element transformsElement = this.getChildElementLocalName(0,
-                                        Constants.SignatureSpecNS,
-                                        Constants._TAG_TRANSFORMS);
+         Transforms transforms = this.getTransforms();
 
-         if (transformsElement != null) {
-            Transforms transforms = new Transforms(transformsElement,
-                                                   this._baseURI);
-
+         if (transforms != null) {
             this._transformsOutput =
                transforms.performTransforms(this._transformsInput);
          } else {
@@ -502,6 +497,33 @@ public class Reference extends SignatureElementProxy {
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (XMLSecurityException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
+      }
+   }
+
+   /**
+    * Method getTransforms
+    *
+    * @return
+    * @throws InvalidTransformException
+    * @throws TransformationException
+    * @throws XMLSecurityException
+    * @throws XMLSignatureException
+    */
+   public Transforms getTransforms()
+           throws XMLSignatureException, InvalidTransformException,
+                  TransformationException, XMLSecurityException {
+
+      Element transformsElement = this.getChildElementLocalName(0,
+                                     Constants.SignatureSpecNS,
+                                     Constants._TAG_TRANSFORMS);
+
+      if (transformsElement != null) {
+         Transforms transforms = new Transforms(transformsElement,
+                                                this._baseURI);
+
+         return transforms;
+      } else {
+         return null;
       }
    }
 

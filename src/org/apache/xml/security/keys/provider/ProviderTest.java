@@ -97,10 +97,25 @@ public class ProviderTest {
             .ApacheXMLProvider());
 
       KeyStore keyStore = KeyStore.getInstance("ApacheXML", "ApacheXML");
-      boolean createKeyStore = false;
+      boolean createKeyStore = true;
 
       if (createKeyStore) {
          keyStore.load(null, null);
+
+         {
+            String keystoreFile =
+               "data/org/apache/xml/security/samples/input/keystore.jks";
+            String keystorePass = "xmlsecurity";
+            String certificateAlias = "test";
+            KeyStore jks = KeyStore.getInstance("JKS");
+
+            jks.load(new FileInputStream(keystoreFile),
+                     keystorePass.toCharArray());
+
+            Certificate cert = jks.getCertificate(certificateAlias);
+
+            keyStore.setCertificateEntry(certificateAlias, cert);
+         }
 
          {
             Key secretKey = new SecretKeySpec(
@@ -122,15 +137,21 @@ public class ProviderTest {
                      keystorePass.toCharArray());
 
             Certificate cert = jks.getCertificate(certificateAlias);
+            Certificate chain[] = new Certificate[1];
 
-            keyStore.setCertificateEntry(certificateAlias, cert);
+            chain[0] = cert;
+
+            Key secretKey = new SecretKeySpec(
+               HexDump.hexStringToByteArray(
+               "0001020304050607 08090A0B0C0D0E0F"), "AES");
+
+            keyStore.setKeyEntry("alias2", secretKey, "pass".toCharArray(), chain);
          }
-
-         keyStore.store(new FileOutputStream(storeFilename),
-                        storePass.toCharArray());
       } else {
          keyStore.load(new FileInputStream(storeFilename),
                        storePass.toCharArray());
+
+         // keyStore.load(new FileInputStream(storeFilename), null);
          System.out.println("The keyStore contains " + keyStore.size()
                             + " keys");
       }
@@ -140,11 +161,19 @@ public class ProviderTest {
       while (aliases.hasMoreElements()) {
          String alias = (String) aliases.nextElement();
 
-         System.out.println("Alias = " + alias);
+         System.out.println("Alias = \"" + alias + "\"  "
+                            + keyStore.getCreationDate(alias).toString());
       }
 
-      System.out.println("keyStore.isCertificateEntry(\"test\") = " + keyStore.isCertificateEntry("test"));
-      Certificate cert = keyStore.getCertificate("test");
-      System.out.println(cert);
+      keyStore.deleteEntry("alias2");
+
+      // System.out.println("keyStore.isCertificateEntry(\"test\") = " + keyStore.isCertificateEntry("test"));
+      // Certificate cert = keyStore.getCertificate("test");
+      // System.out.println(cert);
+      keyStore.store(new FileOutputStream(storeFilename), storePass.toCharArray());
+
+      System.out.println(HexDump.byteArrayToHexString(keyStore.getKey("alias", "pass".toCharArray()).getEncoded()));
+
+      //  keyStore.store(new FileOutputStream(storeFilename), null);
    }
 }

@@ -69,13 +69,13 @@ import java.security.Provider;
  */
 public class ApacheXMLProvider extends Provider {
 
-   /** Field info           */
+   /** Field info */
    private static final String info = "Apache XML Security Provider";
 
-   /** Field version           */
+   /** Field version */
    private static final double version = 1.00;
 
-   /** Field PROVIDER_NAME           */
+   /** Field PROVIDER_NAME */
    private static final String PROVIDER_NAME = "ApacheXML";
 
    /**
