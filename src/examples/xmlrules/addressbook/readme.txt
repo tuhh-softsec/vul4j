@@ -26,6 +26,8 @@ Topics covered:
 * how to use the "object create" rule to create java objects
 * how to use the "set properties" rule (basic usage) to map xml attributes
   to java bean properties.
+* how to use the "set nested properties" rule (basic usage) to map nested
+  elements to java bean properties.
 * how to use the "set next" rule to build trees of java objects.
 * how to use the "call method rule" (basic usage)
 * how to use the "call parameter rule" to process the text contained
