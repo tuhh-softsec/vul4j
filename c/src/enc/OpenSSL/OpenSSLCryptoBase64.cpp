@@ -196,7 +196,7 @@ BIGNUM * OpenSSLCryptoBase64::b642BN(char * b64in, unsigned int len) {
 	bufLen += b64->decodeFinish(&buf[bufLen], len-bufLen);
 
 	// Now translate to a bignum
-	return BN_dup(BN_bin2bn(buf, bufLen, NULL));
+	return BN_bin2bn(buf, bufLen, NULL);
 
 }
 
