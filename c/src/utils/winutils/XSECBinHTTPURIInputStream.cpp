@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,6 +73,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.4  2003/07/05 10:30:38  blautenb
+ * Copyright update
+ *
  * Revision 1.3  2003/03/15 22:41:46  blautenb
  * Add 301 (permanently moved) support
  *

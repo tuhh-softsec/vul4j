@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,6 +71,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.5  2003/07/05 10:30:38  blautenb
+ * Copyright update
+ *
  * Revision 1.4  2003/05/22 11:42:06  blautenb
  * Updates so Windows version will compile with Xerces 2.3
  *
