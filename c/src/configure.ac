@@ -57,7 +57,7 @@
 
 # Process this file with autoconf to produce a configure script
 
-AC_INIT([[XML-Security-C]], [0.2.0], [berin@ozemail.com.au], [xml-security-c])
+AC_INIT([[XML-Security-C]], [1.0.0], [security-dev@xml.apache.org], [xml-security-c])
 
 # framework is a unique directory in src/ - allows configure to check
 # it is running in the correct directory
@@ -66,18 +66,18 @@ AC_CONFIG_SRCDIR(framework)
 
 # Define the files we wish to generate
 
-#AC_CONFIG_FILES([Makefile \
-#	canon/Makefile \
-#	transformers/Makefile \
-#	dsig/Makefile \
-#	enc/Makefile \
-#	enc/OpenSSL/Makefile \
-#	framework/Makefile \
-#	utils/Makefile \
-#	utils/unixutils/Makefile \
-#	tools/Makefile \
-#	samples/Makefile])
-AC_CONFIG_FILES([Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile samples/Makefile])
+AC_CONFIG_FILES([Makefile \
+	canon/Makefile \
+	transformers/Makefile \
+	dsig/Makefile \
+	enc/Makefile \
+	enc/OpenSSL/Makefile \
+	framework/Makefile \
+	utils/Makefile \
+	utils/unixutils/Makefile \
+	tools/Makefile \
+	samples/Makefile])
+# AC_CONFIG_FILES([Makefile canon/Makefile transformers/Makefile dsig/Makefile enc/Makefile enc/OpenSSL/Makefile framework/Makefile utils/Makefile utils/unixutils/Makefile tools/Makefile samples/Makefile])
 AC_CONFIG_HEADERS([framework/XSECConfig.hpp])
 
 # Get user options
