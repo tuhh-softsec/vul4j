@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<foo:employee firstName="First Name" lastName="Last Name"
+   xmlns:foo="http://jakarta.apache.org/digester/Foo"
+   xmlns:bar="http://jakarta.apache.org/digester/Bar">
+  <bar:address type="home" street="Home Street" city="Home City"
+                            state="HS" zipCode="HmZip"/>
+  <bar:address type="office" street="Office Street" city="Office City"
+                              state="OS" zipCode="OfZip"/>
+</foo:employee>

@@ -1,6 +1,6 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rule.java,v 1.4 2001/08/26 22:13:44 craigmcc Exp $
- * $Revision: 1.4 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RuleSetBase.java,v 1.1 2001/08/26 22:13:44 craigmcc Exp $
+ * $Revision: 1.1 $
  * $Date: 2001/08/26 22:13:44 $
  *
  * ====================================================================
@@ -63,47 +63,24 @@
 package org.apache.commons.digester;
 
 
-import org.xml.sax.Attributes;
-
-
 /**
- * Concrete implementations of this class implement actions to be taken when
- * a corresponding nested pattern of XML elements has been matched.
+ * <p>Convenience base class that implements the {@link RuleSet} interface.
+ * Concrete implementations should list all of their actual rule creation
+ * logic in the <code>addRuleSet()</code> implementation.</p>
  *
- * @author Craig McClanahan
- * @version $Revision: 1.4 $ $Date: 2001/08/26 22:13:44 $
+ * @author Craig R. McClanahan
+ * @version $Revision: 1.1 $ $Date: 2001/08/26 22:13:44 $
  */
 
-public abstract class Rule {
-
-
-    // ----------------------------------------------------------- Constructors
-
-
-    /**
-     * Default constructor sets only the the associated Digester.
-     *
-     * @param digester The digester with which this rule is associated
-     */
-    public Rule(Digester digester) {
-
-	super();
-	this.digester = digester;
-
-    }
+public abstract class RuleSetBase implements RuleSet {
 
 
     // ----------------------------------------------------- Instance Variables
 
 
     /**
-     * The Digester with which this Rule is associated.
-     */
-    protected Digester digester = null;
-
-
-    /**
-     * The namespace URI for which this Rule is relevant, if any.
+     * The namespace URI that all Rule instances created by this RuleSet
+     * will be associated with.
      */
     protected String namespaceURI = null;
 
@@ -112,17 +89,8 @@ public abstract class Rule {
 
 
     /**
-     * Return the Digester with which this Rule is associated.
-     */
-    public Digester getDigester() {
-
-        return (this.digester);
-
-    }
-
-
-    /**
-     * Return the namespace URI for which this Rule is relevant, if any.
+     * Return the namespace URI that will be applied to all Rule instances
+     * created from this RuleSet.
      */
     public String getNamespaceURI() {
 
@@ -131,70 +99,19 @@ public abstract class Rule {
     }
 
 
-    /**
-     * Set the namespace URI for which this Rule is relevant, if any.
-     *
-     * @param namespaceURI Namespace URI for which this Rule is relevant,
-     *  or <code>null</code> to match independent of namespace.
-     */
-    public void setNamespaceURI(String namespaceURI) {
-
-        this.namespaceURI = namespaceURI;
-
-    }
-
-
     // --------------------------------------------------------- Public Methods
 
 
     /**
-     * This method is called when the beginning of a matching XML element
-     * is encountered.
+     * Add the set of Rule instances defined in this RuleSet to the
+     * specified <code>Digester</code> instance, associating them with
+     * our namespace URI (if any).  This method should only be called
+     * by a Digester instance.
      *
-     * @param attributes The attribute list of this element
+     * @param digester Digester instance to which the new Rule instances
+     *  should be added.
      */
-    public void begin(Attributes attributes) throws Exception {
-
-	;	// The default implementation does nothing
-
-    }
-
-
-    /**
-     * This method is called when the body of a matching XML element
-     * is encountered.  If the element has no body, this method is
-     * not called at all.
-     *
-     * @param text The text of the body of this element
-     */
-    public void body(String text) throws Exception {
-
-	;	// The default implementation does nothing
-
-    }
-
-
-    /**
-     * This method is called when the end of a matching XML element
-     * is encountered.
-     */
-    public void end() throws Exception {
-
-	;	// The default implementation does nothing
-
-    }
-
-
-
-    /**
-     * This method is called after all parsing methods have been
-     * called, to allow Rules to remove temporary data.
-     */
-    public void finish() throws Exception {
-
-	;	// The default implementation does nothing
-
-    }
+    public abstract void addRuleInstances(Digester digester);
 
 
 }

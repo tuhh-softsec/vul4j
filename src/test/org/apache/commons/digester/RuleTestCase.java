@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.3 2001/08/20 22:12:02 craigmcc Exp $
- * $Revision: 1.3 $
- * $Date: 2001/08/20 22:12:02 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.4 2001/08/26 22:13:44 craigmcc Exp $
+ * $Revision: 1.4 $
+ * $Date: 2001/08/26 22:13:44 $
  *
  * ====================================================================
  *
@@ -70,13 +70,12 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 
-
 /**
  * <p>Test Case for the Digester class.  These tests perform parsing of
  * XML documents to exercise the built-in rules.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.3 $ $Date: 2001/08/20 22:12:02 $
+ * @version $Revision: 1.4 $ $Date: 2001/08/26 22:13:44 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -288,6 +287,120 @@ public class RuleTestCase extends TestCase {
                      "Last Name",
                      employee.getLastName());
 
+
+    }
+
+
+    /**
+     * Test object creation (and associated property setting) with nothing on
+     * the stack, which should cause an appropriate Employee object to be
+     * returned.  The processing rules will process the nested Address elements
+     * as well, but will not attempt to add them to the Employee.
+     */
+    public void testRuleSet1() {
+
+        // Configure the digester as required
+        RuleSet rs = new TestRuleSet();
+        digester.addRuleSet(rs);
+
+        // Parse our test input.
+        Object root = null;
+        try {
+            root = digester.parse(getInputStream("Test1.xml"));
+        } catch (Throwable t) {
+            fail("Digester threw IOException: " + t);
+        }
+
+        assertNotNull("Digester returned an object", root);
+        assertTrue("Digester returned an Employee",
+                   root instanceof Employee);
+        Employee employee = (Employee) root;
+        assertEquals("First name is correct",
+                     "First Name",
+                     employee.getFirstName());
+        assertEquals("Last name is correct",
+                     "Last Name",
+                     employee.getLastName());
+        assertNotNull("Can retrieve home address",
+                      employee.getAddress("home"));
+        assertNotNull("Can retrieve office address",
+                      employee.getAddress("office"));
+
+    }
+
+
+    /**
+     * Same as <code>testRuleSet1</code> except using a single namespace.
+     */
+    public void testRuleSet2() {
+
+        // Configure the digester as required
+        digester.setNamespaceAware(true);
+        RuleSet rs = new TestRuleSet(null,
+                                     "http://jakarta.apache.org/digester/Foo");
+        digester.addRuleSet(rs);
+
+        // Parse our test input.
+        Object root = null;
+        try {
+            root = digester.parse(getInputStream("Test2.xml"));
+        } catch (Throwable t) {
+            fail("Digester threw IOException: " + t);
+        }
+
+        assertNotNull("Digester returned an object", root);
+        assertTrue("Digester returned an Employee",
+                   root instanceof Employee);
+        Employee employee = (Employee) root;
+        assertEquals("First name is correct",
+                     "First Name",
+                     employee.getFirstName());
+        assertEquals("Last name is correct",
+                     "Last Name",
+                     employee.getLastName());
+        assertNotNull("Can retrieve home address",
+                      employee.getAddress("home"));
+        assertNotNull("Can retrieve office address",
+                      employee.getAddress("office"));
+
+    }
+
+
+    /**
+     * Same as <code>testRuleSet2</code> except using a namespace
+     * for employee that we should recognize, and a namespace for
+     * address that we should skip.
+     */
+    public void testRuleSet3() {
+
+        // Configure the digester as required
+        digester.setNamespaceAware(true);
+        RuleSet rs = new TestRuleSet(null,
+                                     "http://jakarta.apache.org/digester/Foo");
+        digester.addRuleSet(rs);
+
+        // Parse our test input.
+        Object root = null;
+        try {
+            root = digester.parse(getInputStream("Test3.xml"));
+        } catch (Throwable t) {
+            fail("Digester threw IOException: " + t);
+        }
+
+        assertNotNull("Digester returned an object", root);
+        assertTrue("Digester returned an Employee",
+                   root instanceof Employee);
+        Employee employee = (Employee) root;
+        assertEquals("First name is correct",
+                     "First Name",
+                     employee.getFirstName());
+        assertEquals("Last name is correct",
+                     "Last Name",
+                     employee.getLastName());
+        assertNull("Can not retrieve home address",
+                   employee.getAddress("home"));
+        assertNull("Can not retrieve office address",
+                   employee.getAddress("office"));
 
     }
 

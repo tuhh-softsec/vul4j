@@ -1,6 +1,6 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Rule.java,v 1.4 2001/08/26 22:13:44 craigmcc Exp $
- * $Revision: 1.4 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestRuleSet.java,v 1.1 2001/08/26 22:13:44 craigmcc Exp $
+ * $Revision: 1.1 $
  * $Date: 2001/08/26 22:13:44 $
  *
  * ====================================================================
@@ -63,32 +63,58 @@
 package org.apache.commons.digester;
 
 
-import org.xml.sax.Attributes;
-
-
 /**
- * Concrete implementations of this class implement actions to be taken when
- * a corresponding nested pattern of XML elements has been matched.
+ * RuleSet that mimics the rules set used for Employee and Address creation,
+ * optionally associated with a particular namespace URI.
  *
- * @author Craig McClanahan
- * @version $Revision: 1.4 $ $Date: 2001/08/26 22:13:44 $
+ * @author Craig R. McClanahan
+ * @version $Revision: 1.1 $ $Date: 2001/08/26 22:13:44 $
  */
 
-public abstract class Rule {
+public class TestRuleSet extends RuleSetBase {
 
 
     // ----------------------------------------------------------- Constructors
 
 
     /**
-     * Default constructor sets only the the associated Digester.
-     *
-     * @param digester The digester with which this rule is associated
+     * Construct an instance of this RuleSet with default values.
      */
-    public Rule(Digester digester) {
+    public TestRuleSet() {
 
-	super();
-	this.digester = digester;
+        this(null, null);
+
+    }
+
+
+    /**
+     * Construct an instance of this RuleSet associated with the specified
+     * prefix, associated with no namespace URI.
+     *
+     * @param prefix Matching pattern prefix (must end with '/') or null.
+     */
+    public TestRuleSet(String prefix) {
+
+        this(prefix, null);
+
+    }
+
+
+    /**
+     * Construct an instance of this RuleSet associated with the specified
+     * prefix and namespace URI.
+     *
+     * @param prefix Matching pattern prefix (must end with '/') or null.
+     * @param namespaceURI The namespace URI these rules belong to
+     */
+    public TestRuleSet(String prefix, String namespaceURI) {
+
+        super();
+        if (prefix == null)
+            this.prefix = "";
+        else
+            this.prefix = prefix;
+        this.namespaceURI = namespaceURI;
 
     }
 
@@ -97,102 +123,34 @@ public abstract class Rule {
 
 
     /**
-     * The Digester with which this Rule is associated.
+     * The prefix for each matching pattern added to the Digester instance,
+     * or an empty String for no prefix.
      */
-    protected Digester digester = null;
-
-
-    /**
-     * The namespace URI for which this Rule is relevant, if any.
-     */
-    protected String namespaceURI = null;
-
-
-    // ------------------------------------------------------------- Properties
-
-
-    /**
-     * Return the Digester with which this Rule is associated.
-     */
-    public Digester getDigester() {
-
-        return (this.digester);
-
-    }
-
-
-    /**
-     * Return the namespace URI for which this Rule is relevant, if any.
-     */
-    public String getNamespaceURI() {
-
-        return (this.namespaceURI);
-
-    }
-
-
-    /**
-     * Set the namespace URI for which this Rule is relevant, if any.
-     *
-     * @param namespaceURI Namespace URI for which this Rule is relevant,
-     *  or <code>null</code> to match independent of namespace.
-     */
-    public void setNamespaceURI(String namespaceURI) {
-
-        this.namespaceURI = namespaceURI;
-
-    }
+    protected String prefix = null;
 
 
     // --------------------------------------------------------- Public Methods
 
 
     /**
-     * This method is called when the beginning of a matching XML element
-     * is encountered.
+     * Add the set of Rule instances defined in this RuleSet to the
+     * specified <code>Digester</code> instance, associating them with
+     * our namespace URI (if any).  This method should only be called
+     * by a Digester instance.
      *
-     * @param attributes The attribute list of this element
+     * @param digester Digester instance to which the new Rule instances
+     *  should be added.
      */
-    public void begin(Attributes attributes) throws Exception {
+    public void addRuleInstances(Digester digester) {
 
-	;	// The default implementation does nothing
-
-    }
-
-
-    /**
-     * This method is called when the body of a matching XML element
-     * is encountered.  If the element has no body, this method is
-     * not called at all.
-     *
-     * @param text The text of the body of this element
-     */
-    public void body(String text) throws Exception {
-
-	;	// The default implementation does nothing
-
-    }
-
-
-    /**
-     * This method is called when the end of a matching XML element
-     * is encountered.
-     */
-    public void end() throws Exception {
-
-	;	// The default implementation does nothing
-
-    }
-
-
-
-    /**
-     * This method is called after all parsing methods have been
-     * called, to allow Rules to remove temporary data.
-     */
-    public void finish() throws Exception {
-
-	;	// The default implementation does nothing
+        digester.addObjectCreate(prefix + "employee",
+                                 "org.apache.commons.digester.Employee");
+        digester.addSetProperties(prefix + "employee");
+        digester.addObjectCreate("employee/address",
+                                 "org.apache.commons.digester.Address");
+        digester.addSetProperties(prefix + "employee/address");
+        digester.addSetNext(prefix + "employee/address",
+                            "addAddress");
 
     }
 

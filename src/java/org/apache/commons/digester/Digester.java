@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.15 2001/08/26 05:09:36 craigmcc Exp $
- * $Revision: 1.15 $
- * $Date: 2001/08/26 05:09:36 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.16 2001/08/26 22:13:44 craigmcc Exp $
+ * $Revision: 1.16 $
+ * $Date: 2001/08/26 22:13:44 $
  *
  * ====================================================================
  *
@@ -106,7 +106,7 @@ import org.xml.sax.SAXParseException;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.15 $ $Date: 2001/08/26 05:09:36 $
+ * @version $Revision: 1.16 $ $Date: 2001/08/26 22:13:44 $
  */
 
 public class Digester extends DefaultHandler {
@@ -835,15 +835,13 @@ public class Digester extends DefaultHandler {
         StringBuffer sb = new StringBuffer(match);
         if (match.length() > 0)
             sb.append('/');
-        if (namespaceAware)
-            sb.append(qName);
-        else if ((localName == null) || (localName.length() < 1))
+        if ((localName == null) || (localName.length() < 1))
             sb.append(qName);
         else
             sb.append(localName);
         match = sb.toString();
-	if (debug >= 3)
-	    log("startElement(" + match + ")");
+        if (debug >= 3)
+            log("  New match='" + match + "'");
 
 	// Fire "begin" events for all relevant rules
 	List rules = getRules().match(namespaceURI, match);
@@ -1165,6 +1163,29 @@ public class Digester extends DefaultHandler {
     public void addRule(String pattern, Rule rule) {
 
         getRules().add(pattern, rule);
+
+    }
+
+
+
+    /**
+     * Register a set of Rule instances defined in a RuleSet.
+     *
+     * @param ruleSet The RuleSet instance to configure from
+     */
+    public void addRuleSet(RuleSet ruleSet) {
+
+        String oldNamespaceURI = getRuleNamespaceURI();
+        String newNamespaceURI = ruleSet.getNamespaceURI();
+        if (debug >= 3) {
+            if (newNamespaceURI == null)
+                log("addRuleSet() with no namespace URI");
+            else
+                log("addRuleSet() with namespace URI " + newNamespaceURI);
+        }
+        setRuleNamespaceURI(newNamespaceURI);
+        ruleSet.addRuleInstances(this);
+        setRuleNamespaceURI(oldNamespaceURI);
 
     }
 

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.2 2001/08/26 05:09:36 craigmcc Exp $
- * $Revision: 1.2 $
- * $Date: 2001/08/26 05:09:36 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.3 2001/08/26 22:13:44 craigmcc Exp $
+ * $Revision: 1.3 $
+ * $Date: 2001/08/26 22:13:44 $
  *
  * ====================================================================
  *
@@ -86,7 +86,7 @@ import java.util.List;
  * </ul>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.2 $ $Date: 2001/08/26 05:09:36 $
+ * @version $Revision: 1.3 $ $Date: 2001/08/26 22:13:44 $
  */
 
 public class RulesBase implements Rules {
@@ -193,8 +193,8 @@ public class RulesBase implements Rules {
             cache.put(pattern, list);
         }
         list.add(rule);
-        rule.setNamespaceURI(namespaceURI);
         rules.add(rule);
+        rule.setNamespaceURI(this.namespaceURI);
 
     }
 
@@ -243,7 +243,7 @@ public class RulesBase implements Rules {
 
         // List rulesList = (List) this.cache.get(pattern);
         List rulesList = lookup(namespaceURI, pattern);
-	if (rulesList == null) {
+	if ((rulesList == null) || (rulesList.size() < 1)) {
             // Find the longest key, ie more discriminant
             String longKey = "";
 	    Iterator keys = this.cache.keySet().iterator();
@@ -295,18 +295,21 @@ public class RulesBase implements Rules {
 
         // Optimize when no namespace URI is specified
         List list = (List) this.cache.get(pattern);
-        if (list == null)
+        if (list == null) {
             return (null);
-        if ((namespaceURI == null) || (namespaceURI.length() == 0))
+        }
+        if ((namespaceURI == null) || (namespaceURI.length() == 0)) {
             return (list);
+        }
 
         // Select only Rules that match on the specified namespace URI
         ArrayList results = new ArrayList();
         Iterator items = list.iterator();
         while (items.hasNext()) {
             Rule item = (Rule) items.next();
-            if (namespaceURI.equals(item.getNamespaceURI()))
+            if (namespaceURI.equals(item.getNamespaceURI())) {
                 results.add(item);
+            }
         }
         return (results);
 
