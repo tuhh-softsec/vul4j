@@ -16,10 +16,6 @@
  */
 package org.apache.xml.security.utils;
 
-import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
-import java.util.WeakHashMap;
-
 import org.apache.xpath.CachedXPathAPI;
 
 
@@ -27,9 +23,10 @@ import org.apache.xpath.CachedXPathAPI;
  * @author Raul Benito
  */
 public class CachedXPathAPIHolder {
-    //static ThreadLocal  local=new ThreadLocal();
-    static WeakHashMap local=new WeakHashMap();
-    	           
+    static ThreadLocal  local=new ThreadLocal();
+    //Just to call reset after a time.
+    static final int RESET_NUMBER=10;
+    static int resetCounter=RESET_NUMBER;
     CachedXPathAPI cx;
 	/**
 	 * 
@@ -43,14 +40,17 @@ public class CachedXPathAPIHolder {
      */
     public CachedXPathAPI getCachedXPathAPI() {
         if (cx==null) { 
-                  SoftReference sr=(SoftReference)local.get(Thread.currentThread());
-                  if (sr!=null) {
-                    cx=(CachedXPathAPI)sr.get();
-                  }
+                  cx=(CachedXPathAPI)local.get();
                   if (cx==null) {
                      cx=new CachedXPathAPI();
-                     local.put(Thread.currentThread(),new SoftReference(cx));
-                  }                 
+                     local.set(cx);
+                  } else {
+                  	resetCounter--;
+                    if (resetCounter<0) {
+                    	cx.getXPathContext().reset();
+                        resetCounter=RESET_NUMBER;
+                    }
+                  }
                   //cx.getXPathContext().reset();//
                   //cx=new CachedXPathAPI();
         }
