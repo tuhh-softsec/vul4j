@@ -1,4 +1,4 @@
-$Id: RELEASE-NOTES.txt,v 1.12 2004/04/22 11:06:02 skitching Exp $
+$Id: RELEASE-NOTES.txt,v 1.13 2004/05/01 20:49:56 craigmcc Exp $
 
 
                           Commons Digester Package
@@ -27,7 +27,19 @@ modified classes to be recompiled. The affected classes are:
   Digester (members bodyTexts, params and stack)
   FactoryCreateRule
   xmlrules.DigesterRuleParser
-  
+
+RSS Example
+-----------
+Previously, Digester included example code for processing RSS (Really Simple
+Syndication) streams in the core commons-digester.jar distribution, with the
+code in package "org.apache.commons.digester.rss".  This code has been migrated
+to the new source directory "src/examples/rss", complete with a build.xml script
+that can recreate a new JAR file (commons-digester-rss.jar) containing this
+code.  The Java package name has not changed, so the only impact on applications
+actually using these classes will be the need to acquire the sources, build the
+new JAR file, and add it toyour classpath.
+
+
 NEW FEATURES:
 =============
 
@@ -174,6 +186,7 @@ RuleSetBase allows patterns ending in '/'
 -----------------------------------------
 The subject of this one says it all.
 
+
 OTHER IMPORTANT NOTES
 ======================
 
@@ -206,11 +219,13 @@ directory of the Digester CVS repository.
 
 All @version tags were removed as they were not considered to be useful.
 
+
 Commons Collections dependency
 ==============================
 The commons-collections library has recently undergone a major release (3.0).
 Digester has been tested with both commons-collections 2.1 and 3.0 and
 there are no known issues with using either version of this library.
+
 
 BUGS FROM PREVIOUS RELEASE
 ==========================
@@ -232,6 +247,7 @@ Bugs fixed with no bugzilla entry
 NodeCreateRule: r1.3 end method was not popping digester stack
 ExtendedBaseRules: r.11 (patternStart)
 ExtendedBaseRules: r.9 (findExactAncesterMatch(parentPattern))
+
 
 DEPRECATION:
 ============
