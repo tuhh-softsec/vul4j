@@ -122,9 +122,20 @@ org.apache.xml.security.utils.*
        <classpath refid="classpath.test" />
     </available>
 
+    <available property="bcprov.present" file="${lib.jce}" />
   </target>
 
-  <target name="compile.library" depends="prepare">
+  <target name="get-jce" 
+          depends="prepare" 
+          unless="bcprov.present">
+
+    <get src="http://www.bouncycastle.org/download/bcprov12.jar" 
+	 dest="${lib.jce}"
+	 verbose="true"
+	 usetimestamp="true"/>
+  </target>
+
+  <target name="compile.library" depends="prepare, get-jce">
     <!-- Compile the java code from ${src} into ${build} -->
     <javac srcdir="${src}" destdir="${build}">
       <classpath refid="classpath.library" />
