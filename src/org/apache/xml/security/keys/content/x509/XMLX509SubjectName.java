@@ -28,9 +28,6 @@ import org.apache.xml.security.utils.SignatureElementProxy;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import sun.security.x509.X500Name;
-
-
 /**
  *
  * @author $Author$
@@ -86,42 +83,6 @@ public class XMLX509SubjectName extends SignatureElementProxy
     */
    public String getSubjectName() {
       return RFC2253Parser.normalize(this.getTextFromTextChild());
-   }
-
-   /**
-    * Method createX500Name
-    *
-    * @param common
-    * @param orgUnit
-    * @param org
-    * @param country
-    * @return
-    *
-    * @throws IOException
-    */
-   public static X500Name createX500Name(
-           String common, String orgUnit, String org, String country)
-              throws IOException {
-      return new X500Name(common, orgUnit, org, country);
-   }
-
-   /**
-    * Method createX500Name
-    *
-    * @param common
-    * @param orgUnit
-    * @param org
-    * @param locality
-    * @param state
-    * @param country
-    * @return
-    *
-    * @throws IOException
-    */
-   public static X500Name createX500Name(
-           String common, String orgUnit, String org, String locality, String state, String country)
-              throws IOException {
-      return new X500Name(common, orgUnit, org, locality, state, country);
    }
 
    /** @inheritDoc */
