@@ -142,8 +142,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
                    + XMLUtils.getNodeTypeString(resultNodes.item(i)));
       }
 
-      XMLSignatureInput result = new XMLSignatureInput(resultNodes,
-                                    cXPathAPI.getXPathContext());
+      XMLSignatureInput result = new XMLSignatureInput(resultNodes, cXPathAPI);
 
       // result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
       result.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);

@@ -63,6 +63,7 @@ package org.apache.xml.security.keys.keyresolver;
 
 import java.security.cert.*;
 import java.security.PublicKey;
+import javax.crypto.SecretKey;
 import java.util.*;
 import org.w3c.dom.*;
 import org.apache.xml.security.exceptions.*;
@@ -275,6 +276,13 @@ public class KeyResolver {
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
       return this._resolverSpi.engineResolveX509Certificate(element, BaseURI,
+              storage);
+   }
+
+   public SecretKey resolveSecretKey(
+           Element element, String BaseURI, StorageResolver storage)
+              throws KeyResolverException {
+      return this._resolverSpi.engineResolveSecretKey(element, BaseURI,
               storage);
    }
 

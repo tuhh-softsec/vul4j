@@ -112,20 +112,10 @@ public class CachedXPathAPI {
       this.xpathSupport = new XPathContext();
    }
 
-   /**
-    * Constructor CachedXPathAPI
-    *
-    * @param xpathContext
-    */
-   public CachedXPathAPI(XPathContext xpathContext) {
-      this.xpathSupport = xpathContext;
+   public CachedXPathAPI(CachedXPathAPI previouslyCachedXPathAPI) {
+      this.xpathSupport = previouslyCachedXPathAPI.xpathSupport;
    }
 
-   /**
-    * Method getXPathContext
-    *
-    * @return
-    */
    public XPathContext getXPathContext() {
       return this.xpathSupport;
    }

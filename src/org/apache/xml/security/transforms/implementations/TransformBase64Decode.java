@@ -169,7 +169,7 @@ public class TransformBase64Decode extends TransformSpi {
                }
                */
                CachedXPathAPI myXPathAPI =
-                  new CachedXPathAPI(input.getXPathContext());
+                  new CachedXPathAPI(input.getCachedXPathAPI());
                NodeList resultNodeSet = myXPathAPI.selectNodeList(node,
                                            "self::text()");
                int resultNodeSetGetLength = resultNodeSet.getLength();

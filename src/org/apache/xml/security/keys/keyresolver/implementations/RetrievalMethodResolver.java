@@ -314,4 +314,19 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
          throw new KeyResolverException("empty", ex);
       }
    }
+
+   /**
+    * Method engineResolveSecretKey
+    *
+    * @param element
+    * @param BaseURI
+    * @param storage
+    * @return
+    * @throws KeyResolverException
+    */
+   public javax.crypto.SecretKey engineResolveSecretKey(
+           Element element, String BaseURI, StorageResolver storage)
+              throws KeyResolverException {
+      return null;
+   }
 }

@@ -59,6 +59,7 @@
 package org.apache.xml.security.keys.keyresolver.implementations;
 
 
+
 import java.security.*;
 import java.security.cert.*;
 import java.security.spec.*;
@@ -72,6 +73,7 @@ import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.*;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.*;
+
 
 /**
  *
@@ -161,9 +163,10 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
       try {
          DSAKeyValue dsaKeyValue = new DSAKeyValue(this._dsaKeyElement,
                                                    BaseURI);
-
          PublicKey pk = dsaKeyValue.getPublicKey();
+
          cat.debug("We return DSA: " + pk);
+
          return pk;
       } catch (XMLSecurityException ex) {
          cat.debug("XMLSecurityException", ex);
@@ -182,6 +185,21 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
     * @throws KeyResolverException
     */
    public X509Certificate engineResolveX509Certificate(
+           Element element, String BaseURI, StorageResolver storage)
+              throws KeyResolverException {
+      return null;
+   }
+
+   /**
+    * Method engineResolveSecretKey
+    *
+    * @param element
+    * @param BaseURI
+    * @param storage
+    * @return
+    * @throws KeyResolverException
+    */
+   public javax.crypto.SecretKey engineResolveSecretKey(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
       return null;

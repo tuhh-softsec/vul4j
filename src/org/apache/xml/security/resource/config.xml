@@ -48,6 +48,26 @@
                        JCEName="RIJNDAEL"
                        JAVACLASS="org.apache.xml.security.algorithms.encryption.implementations.Encryption_AES128_BC" />
       </EncryptionMethod>
+      <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#kw-tripledes">
+         <ProviderAlgo ProviderId="BC"
+                       JCEName="DESEDEWrap"
+                       JAVACLASS="" />
+      </EncryptionMethod>
+      <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#kw-aes128">
+         <ProviderAlgo ProviderId="BC"
+                       JCEName="AESWrap"
+                       JAVACLASS="" />
+      </EncryptionMethod>
+      <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#kw-aes192">
+         <ProviderAlgo ProviderId="BC"
+                       JCEName="AESWrap"
+                       JAVACLASS="" />
+      </EncryptionMethod>
+      <EncryptionMethod URI="http://www.w3.org/2001/04/xmlenc#kw-aes256">
+         <ProviderAlgo ProviderId="BC"
+                       JCEName="AESWrap"
+                       JAVACLASS="" />
+      </EncryptionMethod>
    </EncryptionMethods>
    <JCEAlgorithmMappings>
       <!-- Here, individual providers can be registered; each provider

@@ -118,8 +118,8 @@ public class XMLSignatureInput {
     */
    NodeList _inputNodeSet = null;
 
-   /** Field xpathSupport */
-   XPathContext xpathSupport;
+   /** Field _cxpathAPI */
+   CachedXPathAPI _cxpathAPI;
 
    /**
     *  If we serialize a NodeSet, will Comment nodes be included?
@@ -145,7 +145,7 @@ public class XMLSignatureInput {
     */
    public XMLSignatureInput(InputStream inputOctetStream) {
       this._inputOctetStream = inputOctetStream;
-      this.xpathSupport = new CachedXPathAPI().getXPathContext();
+      this._cxpathAPI = new CachedXPathAPI();
    }
 
    /**
@@ -157,7 +157,7 @@ public class XMLSignatureInput {
     */
    public XMLSignatureInput(byte[] inputOctets) {
       this._inputOctetStream = new ByteArrayInputStream(inputOctets);
-      this.xpathSupport = new CachedXPathAPI().getXPathContext();
+      this._cxpathAPI = new CachedXPathAPI();
    }
 
    /**
@@ -169,7 +169,7 @@ public class XMLSignatureInput {
     */
    public XMLSignatureInput(String inputStr) {
       this._inputOctetStream = new ByteArrayInputStream(inputStr.getBytes());
-      this.xpathSupport = new CachedXPathAPI().getXPathContext();
+      this._cxpathAPI = new CachedXPathAPI();
    }
 
    /**
@@ -186,7 +186,7 @@ public class XMLSignatureInput {
 
       this._inputOctetStream =
          new ByteArrayInputStream(inputStr.getBytes(encoding));
-      this.xpathSupport = new CachedXPathAPI().getXPathContext();
+      this._cxpathAPI = new CachedXPathAPI();
    }
 
    /**
@@ -197,7 +197,7 @@ public class XMLSignatureInput {
     */
    private XMLSignatureInput(NodeList inputNodeSet) {
       this._inputNodeSet = inputNodeSet;
-      this.xpathSupport = new CachedXPathAPI().getXPathContext();
+      this._cxpathAPI = new CachedXPathAPI();
    }
 
    /**
@@ -211,10 +211,8 @@ public class XMLSignatureInput {
 
       cat.debug("Start " + _xpathString + " on Node " + node.getNodeName());
 
-      CachedXPathAPI myXPathAPI = new CachedXPathAPI();
-
-      this.xpathSupport = myXPathAPI.getXPathContext();
-      this._inputNodeSet = myXPathAPI.selectNodeList(node,
+      this._cxpathAPI = new CachedXPathAPI();
+      this._inputNodeSet = this._cxpathAPI.selectNodeList(node,
               Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
    }
 
@@ -223,11 +221,12 @@ public class XMLSignatureInput {
     * <CODE>inputNodeSet</CODE> occur in the output.
     *
     * @param inputNodeSet is the node set
-    * @param xpathContext
+    * @param usedXPathAPI
     */
-   public XMLSignatureInput(NodeList inputNodeSet, XPathContext xpathContext) {
+   public XMLSignatureInput(NodeList inputNodeSet,
+                            CachedXPathAPI usedXPathAPI) {
       this._inputNodeSet = inputNodeSet;
-      this.xpathSupport = xpathContext;
+      this._cxpathAPI = usedXPathAPI;
    }
 
    /**
@@ -235,19 +234,16 @@ public class XMLSignatureInput {
     * and <I>all</I> his descendants in the output.
     *
     * @param node
-    * @param xpathContext
+    * @param usedXPathAPI
     * @throws TransformerException
     */
-   public XMLSignatureInput(Node node, XPathContext xpathContext)
+   public XMLSignatureInput(Node node, CachedXPathAPI usedXPathAPI)
            throws TransformerException {
 
       cat.debug("Start " + _xpathString + " on Node " + node.getNodeName());
 
-      this.xpathSupport = xpathContext;
-
-      CachedXPathAPI myXPathAPI = new CachedXPathAPI(xpathContext);
-
-      this._inputNodeSet = myXPathAPI.selectNodeList(node,
+      this._cxpathAPI = usedXPathAPI;
+      this._inputNodeSet = this._cxpathAPI.selectNodeList(node,
               Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);
    }
 
@@ -281,10 +277,7 @@ public class XMLSignatureInput {
             if (XMLSignatureInput.useFlatNodes) {
                return document.getChildNodes();
             } else {
-               CachedXPathAPI myXPathAPI =
-                  new CachedXPathAPI(this.xpathSupport);
-
-               return myXPathAPI.selectNodeList(document, _xpathString);
+               return this._cxpathAPI.selectNodeList(document, _xpathString);
             }
          } catch (TransformerException ex) {
             throw new CanonicalizationException("generic.EmptyMessage", ex);
@@ -315,10 +308,8 @@ public class XMLSignatureInput {
                   String xpathStr =
                      "(//. | //@* | //namespace::*)[not(self::comment()) and "
                      + noDocument + " and " + noDocumentElement + "]";
-                  CachedXPathAPI myXPathAPI =
-                     new CachedXPathAPI(this.xpathSupport);
-                  NodeList nodes = myXPathAPI.selectNodeList(document,
-                                                             xpathStr);
+                  NodeList nodes = this._cxpathAPI.selectNodeList(document,
+                                      xpathStr);
 
                   return nodes;
                } catch (TransformerException ex2) {
@@ -590,12 +581,14 @@ public class XMLSignatureInput {
    }
 
    /**
-    * Method getXPathContext
+    * This method gives access to an {@link org.apache.xpath.CachedXPathAPI}
+    * object which was used for creating the internal node set and which MUST be
+    * used for subsequent operations on this node set.
     *
-    * @return
+    * @return an existing {@link org.apache.xpath.CachedXPathAPI}
     */
-   public XPathContext getXPathContext() {
-      return this.xpathSupport;
+   public CachedXPathAPI getCachedXPathAPI() {
+      return this._cxpathAPI;
    }
 
    static {

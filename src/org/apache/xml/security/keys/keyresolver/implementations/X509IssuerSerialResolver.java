@@ -215,4 +215,19 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
          throw new KeyResolverException("generic.EmptyMessage", ex);
       }
    }
+
+   /**
+    * Method engineResolveSecretKey
+    *
+    * @param element
+    * @param BaseURI
+    * @param storage
+    * @return
+    * @throws KeyResolverException
+    */
+   public javax.crypto.SecretKey engineResolveSecretKey(
+           Element element, String BaseURI, StorageResolver storage)
+              throws KeyResolverException {
+      return null;
+   }
 }

@@ -1,4 +1,3 @@
-
 /*
  * The Apache Software License, Version 1.1
  *
@@ -63,6 +62,7 @@ package org.apache.xml.security.keys.keyresolver;
 
 import java.security.*;
 import java.security.cert.*;
+import javax.crypto.SecretKey;
 import org.w3c.dom.*;
 import java.util.ArrayList;
 import org.apache.xml.security.keys.storage.*;
@@ -122,6 +122,19 @@ public abstract class KeyResolverSpi {
     * @throws KeyResolverException
     */
    abstract public X509Certificate engineResolveX509Certificate(
+      Element element, String BaseURI, StorageResolver storage)
+         throws KeyResolverException;
+
+   /**
+    * Method engineResolveSecretKey
+    *
+    * @param element
+    * @param BaseURI
+    * @param storage
+    * @return
+    * @throws KeyResolverException
+    */
+   abstract public SecretKey engineResolveSecretKey(
       Element element, String BaseURI, StorageResolver storage)
          throws KeyResolverException;
 

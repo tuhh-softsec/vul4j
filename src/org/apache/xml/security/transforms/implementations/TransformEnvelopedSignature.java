@@ -174,7 +174,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
             this._transformObject.getElement()
                .getAttributeNode(Constants._ATT_ALGORITHM);
          FuncHereContext funcHereCtx = new FuncHereContext(algorithmAttr,
-                                          input.getXPathContext());
+                                          input.getCachedXPathAPI());
 
          funcHereCtx.setNamespaceContext(prefixResolver);
          cat.debug("Selected " + algorithmAttr
@@ -188,7 +188,8 @@ public class TransformEnvelopedSignature extends TransformSpi {
 
          funcHereCtx.pushContextNodeList(dtmIterator);
          */
-         DTMManager dtmManager = input.getXPathContext().getDTMManager();
+         DTMManager dtmManager =
+            input.getCachedXPathAPI().getXPathContext().getDTMManager();
          org.apache.xpath.NodeSetDTM dtmIterator =
             new org.apache.xpath.NodeSetDTM(dtmManager);
 
@@ -224,7 +225,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
          }
 
          XMLSignatureInput result = new XMLSignatureInput(resultNodes,
-                                       input.getXPathContext());
+                                       input.getCachedXPathAPI());
 
          cat.debug(
             "TransformsEnvelopedSignature finished processing and returns "

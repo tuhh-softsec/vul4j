@@ -93,7 +93,7 @@ public class CachedXPathFuncHereAPI {
     */
    FuncHereContext _funcHereContext = null;
 
-   /** Field _dtmManager           */
+   /** Field _dtmManager */
    DTMManager _dtmManager = null;
 
    /**

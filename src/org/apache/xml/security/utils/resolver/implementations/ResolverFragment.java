@@ -153,8 +153,7 @@ public class ResolverFragment extends ResourceResolverSpi {
          }
       }
 
-      XMLSignatureInput result = new XMLSignatureInput(resultNodes,
-                                    cXPathAPI.getXPathContext());
+      XMLSignatureInput result = new XMLSignatureInput(resultNodes, cXPathAPI);
 
       cat.debug("We return a nodeset with " + resultNodes.getLength()
                 + " nodes");

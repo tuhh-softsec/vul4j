@@ -143,9 +143,9 @@ public class TransformXPath extends TransformSpi {
 
          NodeList inputNodes = input.getNodeSet();
          CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(input.getXPathContext());
+            new CachedXPathFuncHereAPI(input.getCachedXPathAPI());
          CachedXPathAPI myXPathAPI =
-            new CachedXPathAPI(input.getXPathContext());
+            new CachedXPathAPI(input.getCachedXPathAPI());
 
          if (inputNodes.getLength() == 0) {
             Object exArgs[] = { "input node set contains no nodes" };
@@ -214,7 +214,7 @@ public class TransformXPath extends TransformSpi {
          }
 
          XMLSignatureInput result = new XMLSignatureInput(resultNodes,
-                                       input.getXPathContext());
+                                       input.getCachedXPathAPI());
 
          result.setSourceURI(input.getSourceURI());
 
