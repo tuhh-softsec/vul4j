@@ -168,12 +168,13 @@ unsigned int TXFMCipher::readBytes(XMLByte * const toFill, unsigned int maxToFil
 				memmove(m_outputBuffer, m_outputBuffer + fill, (m_remaining - fill));
 
 			m_remaining -= fill;
+			leftToFill -= fill;
 			ret += fill;
 		}
 
 		// Now do some crypting
 
-		if (m_complete == false) {
+		if (m_complete == false && m_remaining == 0) {
 
 			unsigned int sz = input->readBytes(m_inputBuffer, 2048);
 		
