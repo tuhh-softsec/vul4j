@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.13 2003/04/17 11:08:16 rdonkin Exp $
- * $Revision: 1.13 $
- * $Date: 2003/04/17 11:08:16 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.14 2003/08/02 09:54:06 rdonkin Exp $
+ * $Revision: 1.14 $
+ * $Date: 2003/08/02 09:54:06 $
  *
  * ====================================================================
  *
@@ -80,15 +80,16 @@ import org.apache.commons.collections.ArrayStack;
  * See {@link #CallParamRule(int paramIndex)}
  * <li>from the top object on the stack. 
  * See {@link #CallParamRule(int paramIndex, boolean fromStack)}
+ * <li>the current path being processed (separate <code>Rule</code>). 
+ * See {@link PathCallParamRule}
  * </ul>
  * </p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.13 $ $Date: 2003/04/17 11:08:16 $
+ * @version $Revision: 1.14 $ $Date: 2003/08/02 09:54:06 $
  */
 
 public class CallParamRule extends Rule {
-
 
     // ----------------------------------------------------------- Constructors
 

@@ -566,6 +566,31 @@ public class CallMethodRuleTestCase extends TestCase {
         assertEquals("Result not passed into hook", "The Other", rule.result);
     }
 
+    /** Test for the PathCallParamRule */
+    public void testPathCallParam() throws Exception {
+        String xml = "<?xml version='1.0'?><main>"
+            + "<alpha><beta>Ignore this</beta></alpha>"
+            + "<beta><epsilon><gamma>Ignore that</gamma></epsilon></beta>"
+            + "</main>";
+    
+        SimpleTestBean bean = new SimpleTestBean();
+        bean.setAlphaBeta("[UNSET]", "[UNSET]");
+        
+        StringReader in = new StringReader(xml);
+        Digester digester = new Digester();
+        digester.setRules(new ExtendedBaseRules());
+        digester.addCallParamPath("*/alpha/?", 0);
+        digester.addCallParamPath("*/epsilon/?", 1);
+        digester.addCallMethod("main", "setAlphaBeta", 2);
+        
+        digester.push(bean);
+        
+        digester.parse(in);
+        
+        assertEquals("Test alpha property setting", "main/alpha/beta" , bean.getAlpha());
+        assertEquals("Test beta property setting", "main/beta/epsilon/gamma" , bean.getBeta());
+    }
+
     // ------------------------------------------------ Utility Support Methods
 
 

@@ -1,4 +1,8 @@
 /*
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/PathCallParamRule.java,v 1.1 2003/08/02 09:54:07 rdonkin Exp $
+ * $Revision: 1.1 $
+ * $Date: 2003/08/02 09:54:07 $
+ *
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
@@ -59,67 +63,75 @@
 package org.apache.commons.digester;
 
 
+import org.xml.sax.Attributes;
+
 /**
- * <p> As it's name suggests just a simple bean used for testing.
+ * <p>Rule implementation that saves a parameter containing the <code>Digester</code> 
+ * matching path for use by a surrounding <code>CallMethodRule</code>.
+ * This Rule is most useful when using rule that allow extensive use of wildcards.</p>
+ *
+ * @author Robert Burrell Donkin
+ * @version $Revision: 1.1 $ $Date: 2003/08/02 09:54:07 $
  */
-public class SimpleTestBean {
 
-    private String alpha;
+public class PathCallParamRule extends Rule {
 
-    private String beta;
+    // ----------------------------------------------------------- Constructors
 
-    private String gamma;
+    /**
+     * Construct a "call parameter" rule that will save the body text of this
+     * element as the parameter value.
+     *
+     * @param paramIndex The zero-relative parameter number
+     */
+    public PathCallParamRule(int paramIndex) {
 
-    private String delta;
+        this.paramIndex = paramIndex;
 
-    public String getAlpha() {
-        return alpha;
+    }
+ 
+    // ----------------------------------------------------- Instance Variables
+
+    /**
+     * The zero-relative index of the parameter we are saving.
+     */
+    protected int paramIndex = 0;
+
+    // --------------------------------------------------------- Public Methods
+
+
+    /**
+     * Process the start of this element.
+     *
+     * @param namespace the namespace URI of the matching element, or an 
+     *   empty string if the parser is not namespace aware or the element has
+     *   no namespace
+     * @param name the local name if the parser is namespace aware, or just 
+     *   the element name otherwise
+     * @param attributes The attribute list for this element
+
+     */
+    public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+        String param = getDigester().getMatch();
+        
+        if(param != null) {
+            Object parameters[] = (Object[]) digester.peekParams();
+            parameters[paramIndex] = param;
+        }
+        
     }
 
-    public void setAlpha(String alpha) {
-        this.alpha = alpha;
-    }
-
-    public String getBeta() {
-        return beta;
-    }
-
-    public void setBeta(String beta) {
-        this.beta = beta;
-    }
-
-    public String getGamma() {
-        return gamma;
-    }
-
-    public void setGamma(String gamma) {
-        this.gamma = gamma;
-    }
-
-    public String getDeltaValue() {      // Retrieves "write only" value
-        return delta;
-    }
-
-    public void setDelta(String delta) { // "delta" is a write-only property
-        this.delta = delta;
-    }
-    
-    public void setAlphaBeta(String alpha, String beta) {
-        setAlpha(alpha);
-        setBeta(beta);
-    }
-
+    /**
+     * Render a printable version of this Rule.
+     */
     public String toString() {
-        StringBuffer sb = new StringBuffer("[SimpleTestBean]");
-        sb.append(" alpha=");
-        sb.append(alpha);
-        sb.append(" beta=");
-        sb.append(beta);
-        sb.append(" gamma=");
-        sb.append(gamma);
-        sb.append(" delta=");
-        sb.append(delta);
 
-        return sb.toString();
+        StringBuffer sb = new StringBuffer("PathCallParamRule[");
+        sb.append("paramIndex=");
+        sb.append(paramIndex);
+        sb.append("]");
+        return (sb.toString());
+
     }
 }

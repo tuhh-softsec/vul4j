@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.79 2003/07/29 15:31:22 sanders Exp $
- * $Revision: 1.79 $
- * $Date: 2003/07/29 15:31:22 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.80 2003/08/02 09:54:06 rdonkin Exp $
+ * $Revision: 1.80 $
+ * $Date: 2003/08/02 09:54:06 $
  *
  * ====================================================================
  *
@@ -119,7 +119,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Jean-Francois Arcand
- * @version $Revision: 1.79 $ $Date: 2003/07/29 15:31:22 $
+ * @version $Revision: 1.80 $ $Date: 2003/08/02 09:54:06 $
  */
 
 public class Digester extends DefaultHandler {
@@ -1851,6 +1851,19 @@ public class Digester extends DefaultHandler {
         addRule(pattern,
                 new CallParamRule(paramIndex, stackIndex));
       
+    }
+    
+    /**
+     * Add a "call parameter" rule that sets a parameter from the current 
+     * <code>Digester</code> matching path.
+     * This is sometimes useful when using rules that support wildcards.
+     *
+     * @param pattern the pattern that this rule should match
+     * @param paramIndex The zero-relative parameter number
+     * @see CallMethodRule
+     */
+    public void addCallParamPath(String pattern,int paramIndex) {
+        addRule(pattern, new PathCallParamRule(paramIndex));
     }
     
     /**
