@@ -45,7 +45,7 @@ XKMSKeyBindingImpl::XKMSKeyBindingImpl(
 		const XSECEnv * env 
 		) :
 XKMSKeyBindingAbstractTypeImpl(env) {
-
+	mp_status = NULL;
 }
 
 XKMSKeyBindingImpl::XKMSKeyBindingImpl(
@@ -54,9 +54,15 @@ XKMSKeyBindingImpl::XKMSKeyBindingImpl(
 		) :
 XKMSKeyBindingAbstractTypeImpl(env, node) {
 
+	mp_status = NULL;
 }
 
-XKMSKeyBindingImpl::~XKMSKeyBindingImpl() {}
+XKMSKeyBindingImpl::~XKMSKeyBindingImpl() {
+
+	if (mp_status != NULL)
+		delete mp_status;
+
+}
 
 // --------------------------------------------------------------------------------
 //           Load from DOM

@@ -394,10 +394,30 @@ XKMSUseKeyWith * XKMSKeyBindingAbstractTypeImpl::appendUseKeyWithItem(
 
 	DOMElement * e = u->createBlankUseKeyWith(application, identifier);
 
-	// Append the element
+	// Find where to append the element
+	DOMElement * t = findFirstElementChild(mp_keyBindingAbstractTypeElement);
+	while (t != NULL) {
+		if (!strEquals(getDSIGLocalName(t), XKMSConstants::s_tagKeyInfo) &&
+			!strEquals(getXKMSLocalName(t), XKMSConstants::s_tagKeyUsage) &&
+			!strEquals(getXKMSLocalName(t), XKMSConstants::s_tagUseKeyWith))
+			break;
 
-	mp_keyBindingAbstractTypeElement->appendChild(e);
-	mp_env->doPrettyPrint(mp_keyBindingAbstractTypeElement);
+		t = findNextElementChild(t);
+	}
+
+	// Append the element
+	if (t == NULL) {
+		mp_keyBindingAbstractTypeElement->appendChild(e);
+		mp_env->doPrettyPrint(mp_keyBindingAbstractTypeElement);
+	}
+	else {
+		mp_keyBindingAbstractTypeElement->insertBefore(e, t);
+		if (mp_env->getPrettyPrintFlag()) {
+			mp_keyBindingAbstractTypeElement->insertBefore(
+				mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL),
+				t);
+		}
+	}
 
 	return u;
 
