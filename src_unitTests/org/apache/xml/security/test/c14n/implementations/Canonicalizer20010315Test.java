@@ -1007,10 +1007,8 @@ public class Canonicalizer20010315Test extends TestCase {
       // throw away all warnings and errors
       documentBuilder.setErrorHandler(new IgnoreAllErrorHandler());
 
-      org.xml.sax.EntityResolver resolver = new TestVectorResolver();
-
-      documentBuilder.setEntityResolver(resolver);
-
+      // org.xml.sax.EntityResolver resolver = new TestVectorResolver();
+      // documentBuilder.setEntityResolver(resolver);
       // Document doc = documentBuilder.parse(resolver.resolveEntity(null, fileIn));
       Document doc = documentBuilder.parse(fileIn);
       Canonicalizer c14n = Canonicalizer.getInstance(c14nURI);
@@ -1022,8 +1020,10 @@ public class Canonicalizer20010315Test extends TestCase {
       cat.debug("Use the following String as XPath: " + c14n.getXPathString());
 
       byte c14nBytes[] = c14n.canonicalize(doc);
-      org.xml.sax.InputSource refIs = resolver.resolveEntity(null, fileRef);
-      byte refBytes[] = JavaUtils.getBytesFromStream(refIs.getByteStream());
+
+      // org.xml.sax.InputSource refIs = resolver.resolveEntity(null, fileRef);
+      // byte refBytes[] = JavaUtils.getBytesFromStream(refIs.getByteStream());
+      byte refBytes[] = JavaUtils.getBytesFromFile(fileRef);
 
       // if everything is OK, result is true; we do a binary compare, byte by byte
       boolean result = JavaUtils.binaryCompare(refBytes, c14nBytes);
