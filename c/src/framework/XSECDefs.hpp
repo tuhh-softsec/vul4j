@@ -108,7 +108,7 @@
 
 // Microsoft VC++
 
-#	pragma warning(disable: 4127 4251 4511 4512 4514 4702 4710 4711 4786 4097; error: 4150 4172 4238 4239 4715)
+#	pragma warning(disable: 4127 4251 4511 4503 4512 4514 4702 4710 4711 4786 4097; error: 4150 4172 4238 4239 4715)
 #	define XSEC_NO_COVARIANT_RETURN_TYPE
 /*
  * Removed to allow any compiler to compile - might not work, but ....

@@ -27,6 +27,11 @@
 
 #ifndef XSEC_NO_XPATH
 
+#if defined XSEC_XALAN_REQS_MEMORYMANAGER
+// Xalan 1.9 and above
+    XALAN_USING_XALAN(XalanCopyConstruct);
+#endif
+
 DSIGXPathHere::DSIGXPathHere() {
 
 	XalanHereNode = NULL;
