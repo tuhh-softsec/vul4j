@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/plugins/TestInline.java,v 1.3 2003/10/09 21:09:49 rdonkin Exp $
- * $Revision: 1.3 $
- * $Date: 2003/10/09 21:09:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/plugins/TestInline.java,v 1.4 2003/11/19 22:17:17 rdonkin Exp $
+ * $Revision: 1.4 $
+ * $Date: 2003/11/19 22:17:17 $
  *
  * ====================================================================
  * 
@@ -142,4 +142,51 @@ public class TestInline extends TestCase {
         assertEquals("L1", label2.getId());
         assertEquals("2", label2.getLabel());
     }
+    
+    public void testLeadingSlash() throws Exception {
+        // Tests that PluginRules handles patterns with a leading slash.
+        // 
+        // This test doesn't really belong in this class. If a separate test 
+        // case class is created for PluginRules, then this method should be
+        // moved there.
+
+        Digester digester = new Digester();
+        PluginRules rc = new PluginRules();
+        digester.setRules(rc);
+        
+        PluginCreateRule pcr = new PluginCreateRule(Widget.class);
+        digester.addRule("/root/widget", pcr);
+        digester.addSetNext("/root/widget", "addChild");
+
+        Container root = new Container();
+        digester.push(root);
+        
+        try {
+            digester.parse(
+                TestAll.getInputStream(this, "test1.xml"));
+        }
+        catch(Exception e) {
+            throw e;
+        }
+        
+        Object child;
+        List children = root.getChildren();
+        assertTrue(children != null);
+        assertEquals(2, children.size());
+        
+        child = children.get(0);
+        assertTrue(child != null);
+        assertEquals(TextLabel.class, child.getClass());
+        TextLabel label1 = (TextLabel) child;
+        assertEquals("anonymous", label1.getId());
+        assertEquals("1", label1.getLabel());
+        
+        child = children.get(1);
+        assertTrue(child != null);
+        assertEquals(TextLabel.class, child.getClass());
+        TextLabel label2 = (TextLabel) child;
+        assertEquals("L1", label2.getId());
+        assertEquals("2", label2.getLabel());
+    }
+    
 }
