@@ -107,13 +107,10 @@ public class XalanBug1425Test extends TestCase {
       org.apache.log4j.Category.getInstance(XalanBug1425Test.class.getName());
 
    /** Field xercesVerStr */
-   static String xercesVerStr = "Apache Xerces "
-                                + org.apache.xerces.framework.Version.fVersion;
+   static String xercesVerStr = XMLUtils.getXercesVersion();
 
    /** Field xalanVerStr */
-   static String xalanVerStr =
-      "Apache Xalan  "
-      + XMLUtils.getXalanVersion();
+   static String xalanVerStr = XMLUtils.getXalanVersion();
 
    /**
     * Method suite

@@ -96,8 +96,12 @@ public class XMLUtils {
       org.apache.log4j.Category.getInstance(XMLUtils.class.getName());
 
    public static String getXalanVersion() {
-      // return org.apache.xalan.processor.XSLProcessorVersion.S_VERSION;
-      return org.apache.xalan.Version.getVersion();
+      // return "Apache " + org.apache.xalan.processor.XSLProcessorVersion.S_VERSION;
+      return "Apache " + org.apache.xalan.Version.getVersion();
+   }
+
+   public static String getXercesVersion() {
+      return "Apache " + org.apache.xerces.framework.Version.fVersion;
    }
 
    /**
@@ -106,11 +110,8 @@ public class XMLUtils {
     * @param cat
     */
    public static void spitOutVersions(org.apache.log4j.Category cat) {
-
-      cat.debug("Apache Xerces "
-                + org.apache.xerces.framework.Version.fVersion);
-      cat.debug("Apache Xalan  "
-                + XMLUtils.getXalanVersion());
+      cat.debug(XMLUtils.getXercesVersion());
+      cat.debug(XMLUtils.getXalanVersion());
    }
 
    /** Field nodeTypeString */

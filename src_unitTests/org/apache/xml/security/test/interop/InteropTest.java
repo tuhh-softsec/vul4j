@@ -44,12 +44,11 @@ public class InteropTest extends TestCase {
       org.apache.log4j.Category.getInstance(BaltimoreTest.class.getName());
 
    /** Field xercesVerStr */
-   static String xercesVerStr = "Apache "
-                                + org.apache.xerces.framework.Version.fVersion;
+   static String xercesVerStr = XMLUtils.getXercesVersion();
 
    /** Field xalanVerStr */
-   static String xalanVerStr =
-      "Apache " + org.apache.xml.security.utils.XMLUtils.getXalanVersion();
+   static String xalanVerStr = XMLUtils.getXalanVersion();
+
    /** Field dbf */
    javax.xml.parsers.DocumentBuilderFactory dbf = null;
 

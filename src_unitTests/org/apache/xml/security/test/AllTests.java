@@ -113,14 +113,7 @@ public class AllTests {
     */
    public static void main(String[] args) {
 
-      String xercesVerStr = "Apache Xerces "
-                            + org.apache.xerces.framework.Version.fVersion;
-      String xalanVerStr =
-         "Apache Xalan  "
-         + XMLUtils.getXalanVersion();
-
-      cat.info(xercesVerStr);
-      cat.info(xalanVerStr);
+      XMLUtils.spitOutVersions(cat);
 
       boolean useTextUI = true;
 

@@ -70,6 +70,7 @@ import org.apache.xpath.objects.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.apache.xml.security.utils.XMLUtils;
 
 
 /**
@@ -86,11 +87,10 @@ public class AttributeAncestorOrSelf extends TestCase {
          .getInstance(AttributeAncestorOrSelf.class.getName());
 
    /** Field xercesVerStr */
-   static String xercesVerStr = "Apache Xerces "
-                                + org.apache.xerces.framework.Version.fVersion;
+   static String xercesVerStr = XMLUtils.getXercesVersion();
 
    /** Field xalanVerStr */
-   static String xalanVerStr = "Apache Xalan  " + org.apache.xalan.Version.getVersion();
+   static String xalanVerStr = XMLUtils.getXalanVersion();
 
    /**
     * Method suite
