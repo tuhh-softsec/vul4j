@@ -85,41 +85,41 @@ public class KeyResolverException extends XMLSecurityException {
    /**
     * Constructor KeyResolverException
     *
-    * @param msgID
+    * @param _msgID
     */
-   public KeyResolverException(String msgID) {
-      super(msgID);
+   public KeyResolverException(String _msgID) {
+      super(_msgID);
    }
 
    /**
     * Constructor KeyResolverException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     */
-   public KeyResolverException(String msgID, Object exArgs[]) {
-      super(msgID, exArgs);
+   public KeyResolverException(String _msgID, Object exArgs[]) {
+      super(_msgID, exArgs);
    }
 
    /**
     * Constructor KeyResolverException
     *
-    * @param msgID
+    * @param _msgID
     * @param originalException
     */
-   public KeyResolverException(String msgID, Exception originalException) {
-      super(msgID, originalException);
+   public KeyResolverException(String _msgID, Exception _originalException) {
+      super(_msgID, _originalException);
    }
 
    /**
     * Constructor KeyResolverException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     * @param originalException
     */
-   public KeyResolverException(String msgID, Object exArgs[],
-                               Exception originalException) {
-      super(msgID, exArgs, originalException);
+   public KeyResolverException(String _msgID, Object exArgs[],
+                               Exception _originalException) {
+      super(_msgID, exArgs, _originalException);
    }
 }

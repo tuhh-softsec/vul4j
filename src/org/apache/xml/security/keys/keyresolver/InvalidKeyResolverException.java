@@ -82,42 +82,42 @@ public class InvalidKeyResolverException extends XMLSecurityException {
    /**
     * Constructor InvalidKeyResolverException
     *
-    * @param msgID
+    * @param _msgID
     */
-   public InvalidKeyResolverException(String msgID) {
-      super(msgID);
+   public InvalidKeyResolverException(String _msgID) {
+      super(_msgID);
    }
 
    /**
     * Constructor InvalidKeyResolverException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     */
-   public InvalidKeyResolverException(String msgID, Object exArgs[]) {
-      super(msgID, exArgs);
+   public InvalidKeyResolverException(String _msgID, Object exArgs[]) {
+      super(_msgID, exArgs);
    }
 
    /**
     * Constructor InvalidKeyResolverException
     *
-    * @param msgID
+    * @param _msgID
     * @param originalException
     */
-   public InvalidKeyResolverException(String msgID,
-                                      Exception originalException) {
-      super(msgID, originalException);
+   public InvalidKeyResolverException(String _msgID,
+                                      Exception _originalException) {
+      super(_msgID, _originalException);
    }
 
    /**
     * Constructor InvalidKeyResolverException
     *
-    * @param msgID
+    * @param _msgID
     * @param exArgs
     * @param originalException
     */
-   public InvalidKeyResolverException(String msgID, Object exArgs[],
-                                      Exception originalException) {
-      super(msgID, exArgs, originalException);
+   public InvalidKeyResolverException(String _msgID, Object exArgs[],
+                                      Exception _originalException) {
+      super(_msgID, exArgs, _originalException);
    }
 }
