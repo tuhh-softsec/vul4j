@@ -62,6 +62,8 @@ package org.apache.xml.security.encryption;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayOutputStream;
 import java.lang.Integer;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -432,7 +434,7 @@ public class XMLCipher {
 
         try {
             encryptedBytes =
-                c.doFinal(serializedOctets.getBytes());
+                c.doFinal(serializedOctets.getBytes("UTF-8"));
 
             logger.debug("Expected cipher.outputSize = " +
                 Integer.toString(c.getOutputSize(
@@ -445,7 +447,9 @@ public class XMLCipher {
             throw new XMLEncryptionException("empty", ibse);
         } catch (BadPaddingException bpe) {
             throw new XMLEncryptionException("empty", bpe);
-        }
+        } catch (UnsupportedEncodingException uee) {
+		   	throw new XMLEncryptionException("empty", uee);
+		}
 
 		// Now build up to a properly XML Encryption encoded octet stream
 		// IvParameterSpec iv;
@@ -519,7 +523,7 @@ public class XMLCipher {
         byte[] encryptedBytes = null;
         try {
             encryptedBytes =
-                contextCipher.doFinal(serializedOctets.getBytes());
+                contextCipher.doFinal(serializedOctets.getBytes("UTF-8"));
 
             logger.debug("Expected cipher.outputSize = " +
                 Integer.toString(contextCipher.getOutputSize(
@@ -532,6 +536,8 @@ public class XMLCipher {
             throw new XMLEncryptionException("empty", ibse);
         } catch (BadPaddingException bpe) {
             throw new XMLEncryptionException("empty", bpe);
+        } catch (UnsupportedEncodingException uee) {
+		   	throw new XMLEncryptionException("empty", uee);
         }
 
         String base64EncodedEncryptedOctets = new BASE64Encoder().encode(
@@ -760,7 +766,7 @@ public class XMLCipher {
         byte[] encryptedBytes = null;
         try {
             encryptedBytes =
-                contextCipher.doFinal(serializedOctets.getBytes());
+                contextCipher.doFinal(serializedOctets.getBytes("UTF-8"));
 
             logger.debug("Expected cipher.outputSize = " +
                 Integer.toString(contextCipher.getOutputSize(
@@ -769,6 +775,8 @@ public class XMLCipher {
                 Integer.toString(encryptedBytes.length));
         } catch (IllegalStateException ise) {
             throw new XMLEncryptionException("empty", ise);
+		} catch (UnsupportedEncodingException uee) {
+			throw new XMLEncryptionException("empty", uee);
         } catch (IllegalBlockSizeException ibse) {
             throw new XMLEncryptionException("empty", ibse);
         } catch (BadPaddingException bpe) {
@@ -942,9 +950,12 @@ public class XMLCipher {
 
         try {
             octets = new String(c.doFinal(encryptedBytes, ivLen, 
-										  encryptedBytes.length - ivLen));
+										  encryptedBytes.length - ivLen),
+								"UTF-8");
         } catch (IllegalBlockSizeException ibse) {
             throw new XMLEncryptionException("empty", ibse);
+		} catch (UnsupportedEncodingException uee) {
+			throw new XMLEncryptionException("empty", uee);
         } catch (BadPaddingException bpe) {
             throw new XMLEncryptionException("empty", bpe);
         }
@@ -955,14 +966,27 @@ public class XMLCipher {
 
         logger.debug("Decrypted octets:\n" + octets);
 
-        Element sourceParent = (Element) element.getParentNode();
+        Node sourceParent =  element.getParentNode();
+
         DocumentFragment decryptedFragment = 
 			serializer.deserialize(octets, sourceParent);
+
 
 		// The de-serialiser returns a fragment whose children we need to
 		// take on.
 
-		sourceParent.replaceChild(decryptedFragment, element);
+		if (sourceParent instanceof Document) {
+			
+			// If this is a content decryption, this may have problems
+
+			contextDocument.removeChild(contextDocument.getDocumentElement());
+			contextDocument.appendChild(decryptedFragment);
+		}
+		else {
+
+			sourceParent.replaceChild(decryptedFragment, element);
+
+		}
 
         return (contextDocument);
     }
@@ -1092,10 +1116,11 @@ public class XMLCipher {
          * @param doc the <code>Element</code> to serialize.
          * @return the <code>String</code> representation of the serilaized
          *   <code>Element</code>.
-         * @throws
+         * @throws XMLEncryptionException
          */
         String serialize(Element element) throws XMLEncryptionException {
-            StringWriter output = new StringWriter();
+            // StringWriter output = new StringWriter();
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
             serializer = new XMLSerializer(output, format);
 
             try {
@@ -1104,7 +1129,14 @@ public class XMLCipher {
                 throw new XMLEncryptionException("empty", ioe);
             }
 
-            return (output.toString());
+
+			String ret = null;
+			try {
+				ret = output.toString("UTF-8");
+			} catch (UnsupportedEncodingException uee) {
+				throw new XMLEncryptionException("empty", uee);
+			}
+            return ret;
         }
 
         /**
@@ -1137,7 +1169,7 @@ public class XMLCipher {
         /**
          *
          */
-        DocumentFragment deserialize(String source, Element ctx) throws XMLEncryptionException {
+        DocumentFragment deserialize(String source, Node ctx) throws XMLEncryptionException {
 			DocumentFragment result;
             final String tagname = "fragment";
 
