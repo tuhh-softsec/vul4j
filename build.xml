@@ -1,7 +1,7 @@
 <project name="Functor" default="test" basedir=".">
 <!--
   Commons-Functor Ant Build File
-  $Id: build.xml,v 1.5 2003/02/02 21:46:18 rwaldhoff Exp $
+  $Id: build.xml,v 1.6 2003/02/08 23:24:58 rwaldhoff Exp $
 -->
 
 <!-- ========== Initialize Properties ===================================== -->
@@ -98,16 +98,14 @@
 <!-- ========== Executable Targets ======================================== -->
 
 
-  <target name="init"
-   description="Initialize and evaluate conditionals">
+  <target name="init" description="Initialize and evaluate conditionals">
     <echo message="-------- ${component.name} ${component.version} --------"/>
-    <filter  token="name"                  value="${component.package}"/>
-    <filter  token="version"               value="${component.version}"/>
+    <filter token="name"                  value="${component.package}"/>
+    <filter token="version"               value="${component.version}"/>
   </target>
 
 
-  <target name="prepare" depends="init"
-   description="Prepare build directory">
+  <target name="prepare" depends="init" description="Prepare build directory">
     <mkdir dir="${build.home}"/>
     <mkdir dir="${build.home}/classes"/>
     <mkdir dir="${build.home}/conf"/>
@@ -115,89 +113,86 @@
   </target>
 
 
-  <target name="static" depends="prepare"
-   description="Copy static files to build directory">
+  <target name="static" depends="prepare" description="Copy static files to build directory">
     <tstamp/>
-    <copy  todir="${build.home}/conf" filtering="on">
+    <copy todir="${build.home}/conf" filtering="on">
       <fileset dir="${conf.home}" includes="*.MF"/>
     </copy>
   </target>
 
 
-  <target name="compile" depends="static"
-   description="Compile shareable components">
-    <javac  srcdir="${source.home}"
+  <target name="compile" depends="static" description="Compile shareable components">
+    <javac srcdir="${source.home}"
            destdir="${build.home}/classes"
-             debug="${compile.debug}"
-       deprecation="${compile.deprecation}"
-          optimize="${compile.optimize}">
+           debug="${compile.debug}"
+           deprecation="${compile.deprecation}"
+           optimize="${compile.optimize}">
       <classpath refid="compile.classpath"/>
     </javac>
-    <copy    todir="${build.home}/classes" filtering="on">
+    <copy todir="${build.home}/classes" filtering="off">
       <fileset dir="${source.home}" excludes="**/*.java"/>
+      <fileset dir="${source.home}" excludes="**/*.html"/>
     </copy>
   </target>
 
 
   <target name="compile.tests" depends="compile"
    description="Compile unit test cases">
-    <javac  srcdir="${test.home}"
+    <javac srcdir="${test.home}"
            destdir="${build.home}/test-classes"
-             debug="${compile.debug}"
-       deprecation="${compile.deprecation}"
-          optimize="${compile.optimize}">
+           debug="${compile.debug}"
+           deprecation="${compile.deprecation}"
+           optimize="${compile.optimize}">
       <classpath refid="test.classpath"/>
     </javac>
-    <copy    todir="${build.home}/test-classes" filtering="on">
-      <fileset dir="${test.home}" excludes="**/*.java"/>
+    <copy todir="${build.home}/test-classes" filtering="off">
+      <fileset dir="${source.home}" excludes="**/*.java"/>
+      <fileset dir="${source.home}" excludes="**/*.html"/>
     </copy>
   </target>
 
 
-  <target name="clean"
-   description="Clean build and distribution directories">
-    <delete    dir="${build.home}"/>
-    <delete    dir="${dist.home}"/>
+  <target name="clean" description="Clean build and distribution directories">
+    <delete dir="${build.home}"/>
+    <delete dir="${dist.home}"/>
   </target>
 
 
-  <target name="javadoc" depends="compile"
-   description="Create component Javadoc documentation">
-    <mkdir      dir="${dist.home}"/>
-    <mkdir      dir="${dist.home}/docs"/>
-    <mkdir      dir="${dist.home}/docs/api"/>
+  <target name="javadoc" depends="compile" description="Create component Javadoc documentation">
+    <mkdir dir="${dist.home}"/>
+    <mkdir dir="${dist.home}/docs"/>
+    <mkdir dir="${dist.home}/docs/api"/>
+    <echo message="[debug] value of $${source.home} is ${source.home}"/>
     <javadoc sourcepath="${source.home}"
-                destdir="${dist.home}/docs/api"
-           packagenames="org.apache.commons.*"
-                 author="true"
-                private="true"
-                version="true"
-               doctitle="&lt;h1&gt;${component.title} (Version ${component.version})&lt;/h1&gt;"
-            windowtitle="${component.title} (Version ${component.version})"
-                 bottom="Copyright (c) 2003 - Apache Software Foundation">
+             destdir="${dist.home}/docs/api"
+             packagenames="org.apache.commons.*"
+             author="false"
+             private="true"
+             version="true"
+             doctitle="&lt;h1&gt;${component.title} (Version ${component.version})&lt;/h1&gt;"
+             windowtitle="${component.title} (Version ${component.version})"
+             bottom="Copyright (c) 2003 - Apache Software Foundation">
 <!--
-               overview="src/java/overview.html"
+             overview="src/java/overview.html"
 -->
-      <classpath  refid="compile.classpath"/>
+      <classpath refid="compile.classpath"/>
     </javadoc>
   </target>
 
 
-  <target name="dist" depends="test,javadoc"
-   description="Create binary distribution">
-    <mkdir      dir="${dist.home}"/>
-    <copy      file="LICENSE.txt"
-              todir="${dist.home}"/>
-    <mkdir      dir="${build.home}/classes/META-INF"/>
-    <copy      file="LICENSE.txt"
-             tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
+  <target name="dist" depends="clean,test,javadoc" description="Create binary distribution">
+    <mkdir dir="${dist.home}"/>
+    <copy file="LICENSE.txt" 
+          todir="${dist.home}"/>
+    <mkdir dir="${build.home}/classes/META-INF"/>
+    <copy file="LICENSE.txt" 
+          tofile="${build.home}/classes/META-INF/LICENSE.txt"/>
 <!--
-    <copy      file="RELEASE-NOTES.txt"
-              todir="${dist.home}"/>
+    <copy file="RELEASE-NOTES.txt"
+          todir="${dist.home}"/>
 -->              
-    <jar    jarfile="${dist.home}/commons-${component.name}.jar"
-            basedir="${build.home}/classes"
-            excludes="**/*.html"/>
+    <jar jarfile="${dist.home}/commons-${component.name}.jar"
+         basedir="${build.home}/classes"/>
   </target>
 
 
