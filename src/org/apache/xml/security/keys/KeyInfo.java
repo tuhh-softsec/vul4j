@@ -609,6 +609,7 @@ public class KeyInfo extends SignatureElementProxy {
 
 		if (e != null) {
 			XMLCipher cipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+			cipher.init(XMLCipher.UNWRAP_MODE, null);
 			return cipher.loadEncryptedKey(e);
 		}
 		else {

@@ -170,7 +170,6 @@ public class XMLCipher {
     public static final int UNWRAP_MODE  = Cipher.UNWRAP_MODE;
     public static final int WRAP_MODE    = Cipher.WRAP_MODE;
 
-    private static XMLCipher instance = null;
     private static final String ENC_ALGORITHMS = TRIPLEDES + "\n" +
         AES_128 + "\n" + AES_256 + "\n" + AES_192 + "\n" + RSA_v1dot5 + "\n" +
         RSA_OAEP + "\n" + TRIPLEDES_KeyWrap + "\n" + AES_128_KeyWrap + "\n" +
@@ -284,9 +283,7 @@ public class XMLCipher {
         if(!isValidEncryptionAlgorithm(transformation))
             logger.error("Alogorithm unvalid, expected one of " + ENC_ALGORITHMS);
 
-        if (null == instance) {
-            instance = new XMLCipher();
-        }
+		XMLCipher instance = new XMLCipher();
 
         instance.algorithm = transformation;
 		instance.localKey = null;
@@ -330,9 +327,7 @@ public class XMLCipher {
         if(!isValidEncryptionAlgorithm(transformation))
             logger.error("Alogorithm unvalid, expected one of " + ENC_ALGORITHMS);
 
-        if (null == instance) {
-            instance = new XMLCipher();
-        }
+		XMLCipher instance = new XMLCipher();
 
         instance.algorithm = transformation;
 		instance.requestedJCEProvider = provider;
@@ -608,7 +603,7 @@ public class XMLCipher {
         if(null == source)
             logger.error("Source document unexpectedly null...");
 
-        instance.contextDocument = context;
+        contextDocument = context;
 
         Document result = null;
 
@@ -648,7 +643,7 @@ public class XMLCipher {
         if(null == element)
             logger.error("Source element unexpectedly null...");
 
-        instance.contextDocument = context;
+        contextDocument = context;
 
         Document result = null;
 
@@ -690,7 +685,7 @@ public class XMLCipher {
         if(null == element)
             logger.error("Source element unexpectedly null...");
 
-        instance.contextDocument = context;
+        contextDocument = context;
 
         Document result = null;
 
@@ -784,7 +779,7 @@ public class XMLCipher {
         if(cipherMode != ENCRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in ENCRYPT_MODE...");
 
-        instance.contextDocument = context;
+        contextDocument = context;
 
         String serializedOctets = serializer.serialize(element);
         logger.debug("Serialized octets:\n" + serializedOctets);
@@ -849,7 +844,7 @@ public class XMLCipher {
         if(cipherMode != DECRYPT_MODE)
             logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
 
-        instance.contextDocument = context;
+        contextDocument = context;
         EncryptedData encryptedData = factory.newEncryptedData(element);
 
 		return (encryptedData);
@@ -872,10 +867,10 @@ public class XMLCipher {
             logger.error("Context document unexpectedly null...");
         if(null == element)
             logger.error("Element unexpectedly null...");
-        if(cipherMode != DECRYPT_MODE)
-            logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+        if(cipherMode != UNWRAP_MODE && cipherMode != DECRYPT_MODE)
+            logger.error("XMLCipher unexpectedly not in UNWRAP_MODE or DECRYPT_MODE...");
 
-        instance.contextDocument = context;
+        contextDocument = context;
         EncryptedKey encryptedKey = factory.newEncryptedKey(element);
 
 		return (encryptedKey);
@@ -910,11 +905,12 @@ public class XMLCipher {
     /**
      * Encrypts a key to an EncryptedKey structure
 	 *
+	 * @param doc the Context document that will be used to general DOM
 	 * @param key Key to encrypt (will use previously set KEK to 
 	 * perform encryption
      */
 
-    public EncryptedKey encryptKey(Key key) throws
+    public EncryptedKey encryptKey(Document doc, Key key) throws
             XMLEncryptionException {
 
         logger.debug("Encrypting key ...");
@@ -923,6 +919,8 @@ public class XMLCipher {
             logger.error("Key unexpectedly null...");
         if(cipherMode != WRAP_MODE)
             logger.error("XMLCipher unexpectedly not in WRAP_MODE...");
+
+		contextDocument = doc;
 
         byte[] encryptedBytes = null;
 		// Now create the working cipher
@@ -1276,6 +1274,7 @@ public class XMLCipher {
      * </EncryptedData>
      * -->
      */
+
     private EncryptedData createEncryptedData(int type, String value) throws
             XMLEncryptionException {
         EncryptedData result = null;

@@ -278,6 +278,7 @@ public class BaltimoreEncTest extends TestCase {
 		// Need to pre-load the Encrypted Data so we can get the key info
 
 		ee = (Element) doc.getElementsByTagName("EncryptedData").item(0);
+		cipher.init(XMLCipher.DECRYPT_MODE, null);
 		EncryptedData encryptedData = cipher.loadEncryptedData(doc, ee);
 		KeyInfo ki = encryptedData.getKeyInfo();
    

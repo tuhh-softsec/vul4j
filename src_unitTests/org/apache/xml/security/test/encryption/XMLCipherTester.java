@@ -178,12 +178,12 @@ public class XMLCipherTester extends TestCase {
 
             cipher = XMLCipher.getInstance(XMLCipher.AES_192_KeyWrap);
 			cipher.init(XMLCipher.WRAP_MODE, kek);
-			EncryptedKey encryptedKey = cipher.encryptKey(key);
-			cipher.addEncryptedKey(encryptedKey);
+			EncryptedKey encryptedKey = cipher.encryptKey(d, key);
 
             // encrypt
             cipher = XMLCipher.getInstance(XMLCipher.AES_128);
             cipher.init(XMLCipher.ENCRYPT_MODE, key);
+			cipher.addEncryptedKey(encryptedKey);
             ed = cipher.doFinal(d, e);
 
             //decrypt
@@ -192,6 +192,13 @@ public class XMLCipherTester extends TestCase {
             cipher = XMLCipher.getInstance(XMLCipher.AES_128);
             cipher.init(XMLCipher.DECRYPT_MODE, null);
 			EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
+
+			if(encryptedData == null) {
+				System.out.println("ed is null");
+			}
+			else if (encryptedData.getKeyInfo() == null) {
+				System.out.println("ki is null");
+			}
 			EncryptedKey ek = encryptedData.getKeyInfo().itemEncryptedKey(0);
 
 			if (ek != null) {
@@ -202,6 +209,8 @@ public class XMLCipherTester extends TestCase {
 			}
 
             cipher.init(XMLCipher.DECRYPT_MODE, key);
+			XMLCipher cipher3 = XMLCipher.getInstance(XMLCipher.AES_128);
+			cipher3.init(XMLCipher.WRAP_MODE, null);
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
