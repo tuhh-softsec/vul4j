@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.10 2002/01/09 20:22:49 sanders Exp $
- * $Revision: 1.10 $
- * $Date: 2002/01/09 20:22:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.11 2002/01/23 21:25:22 sanders Exp $
+ * $Revision: 1.11 $
+ * $Date: 2002/01/23 21:25:22 $
  *
  * ====================================================================
  *
@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.10 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.11 $ $Date: 2002/01/23 21:25:22 $
  */
 
 public class ObjectCreateRule extends Rule {
@@ -179,7 +179,8 @@ public class ObjectCreateRule extends Rule {
             }
         }
         if (digester.log.isDebugEnabled()) {
-            digester.log.debug("New " + realClassName);
+            digester.log.debug("[ObjectCreateRule]{" + digester.match +
+                    "}New " + realClassName);
         }
 
         // Instantiate the new object and push it on the context stack
@@ -197,7 +198,8 @@ public class ObjectCreateRule extends Rule {
 
         Object top = digester.pop();
         if (digester.log.isDebugEnabled()) {
-            digester.log.debug("Pop " + top.getClass().getName());
+            digester.log.debug("[ObjectCreateRule]{" + digester.match +
+                    "} Pop " + top.getClass().getName());
         }
 
     }

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.10 2002/01/09 20:22:49 sanders Exp $
- * $Revision: 1.10 $
- * $Date: 2002/01/09 20:22:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.11 2002/01/23 21:25:22 sanders Exp $
+ * $Revision: 1.11 $
+ * $Date: 2002/01/23 21:25:22 $
  *
  * ====================================================================
  *
@@ -76,7 +76,7 @@ import org.apache.commons.beanutils.MethodUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.10 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.11 $ $Date: 2002/01/23 21:25:22 $
  */
 
 public class SetTopRule extends Rule {
@@ -148,10 +148,12 @@ public class SetTopRule extends Rule {
         Object parent = digester.peek(0);
         if (digester.log.isDebugEnabled()) {
             if (parent == null) {
-                digester.log.debug("Call [NULL PARENT]." +
+                digester.log.debug("[SetTopRule]{" + digester.match +
+                        "} Call [NULL PARENT]." +
                         methodName + "(" + child + ")");
             } else {
-                digester.log.debug("Call " + parent.getClass().getName() + "." +
+                digester.log.debug("[SetTopRule]{" + digester.match +
+                        "} Call " + parent.getClass().getName() + "." +
                         methodName + "(" + child + ")");
             }
         }

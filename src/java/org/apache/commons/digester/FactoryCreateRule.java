@@ -73,7 +73,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.7 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.8 $ $Date: 2002/01/23 21:25:22 $
  */
 
 public class FactoryCreateRule extends Rule {
@@ -204,7 +204,8 @@ public class FactoryCreateRule extends Rule {
 
         Object instance = getFactory(attributes).createObject(attributes);
         if (digester.log.isDebugEnabled()) {
-            digester.log.debug("New " + instance.getClass().getName());
+            digester.log.debug("[FactoryCreateRule]{" + digester.match +
+                    "} New " + instance.getClass().getName());
         }
         digester.push(instance);
 
@@ -218,7 +219,8 @@ public class FactoryCreateRule extends Rule {
 
         Object top = digester.pop();
         if (digester.log.isDebugEnabled()) {
-            digester.log.debug("Pop " + top.getClass().getName());
+            digester.log.debug("[FactoryCreateRule]{" + digester.match +
+                    "} Pop " + top.getClass().getName());
         }
 
     }
@@ -279,7 +281,8 @@ public class FactoryCreateRule extends Rule {
                 }
             }
             if (digester.log.isDebugEnabled()) {
-                digester.log.debug("New factory " + realClassName);
+                digester.log.debug("[FactoryCreateRule]{" + digester.match +
+                        "} New factory " + realClassName);
             }
             Class clazz = digester.getClassLoader().loadClass(realClassName);
             creationFactory = (ObjectCreationFactory)

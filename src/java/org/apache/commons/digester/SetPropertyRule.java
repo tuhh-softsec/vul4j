@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.6 2002/01/09 20:22:49 sanders Exp $
- * $Revision: 1.6 $
- * $Date: 2002/01/09 20:22:49 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.7 2002/01/23 21:25:22 sanders Exp $
+ * $Revision: 1.7 $
+ * $Date: 2002/01/23 21:25:22 $
  *
  * ====================================================================
  *
@@ -74,7 +74,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * top of the stack, based on attributes with specified names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.6 $ $Date: 2002/01/09 20:22:49 $
+ * @version $Revision: 1.7 $ $Date: 2002/01/23 21:25:22 $
  */
 
 public class SetPropertyRule extends Rule {
@@ -149,7 +149,8 @@ public class SetPropertyRule extends Rule {
         // Populate the corresponding property of the top object
         Object top = digester.peek();
         if (digester.log.isDebugEnabled()) {
-            digester.log.debug("Set " + top.getClass().getName() + " property " +
+            digester.log.debug("[SetPropertyRule]{" + digester.match +
+                    "} Set " + top.getClass().getName() + " property " +
                     actualName + " to " + actualValue);
         }
         BeanUtils.populate(top, values);

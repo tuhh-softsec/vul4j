@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.2 2002/01/11 01:22:13 sanders Exp $
- * $Revision: 1.2 $
- * $Date: 2002/01/11 01:22:13 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.3 2002/01/23 21:25:22 sanders Exp $
+ * $Revision: 1.3 $
+ * $Date: 2002/01/23 21:25:22 $
  *
  * ====================================================================
  *
@@ -75,7 +75,7 @@ import org.apache.commons.beanutils.MethodUtils;
  * passing the top object (child) as an argument.
  *
  * @author Scott Sanders
- * @version $Revision: 1.2 $ $Date: 2002/01/11 01:22:13 $
+ * @version $Revision: 1.3 $ $Date: 2002/01/23 21:25:22 $
  */
 
 public class SetRootRule extends Rule {
@@ -147,10 +147,12 @@ public class SetRootRule extends Rule {
         Object parent = digester.root;
         if (digester.log.isDebugEnabled()) {
             if (parent == null) {
-                digester.log.debug("Call [NULL ROOT]." +
+                digester.log.debug("[SetRootRule]{" + digester.match +
+                        "} Call [NULL ROOT]." +
                         methodName + "(" + child + ")");
             } else {
-                digester.log.debug("Call " + parent.getClass().getName() + "." +
+                digester.log.debug("[SetRootRule]{" + digester.match +
+                        "} Call " + parent.getClass().getName() + "." +
                         methodName + "(" + child + ")");
             }
         }
