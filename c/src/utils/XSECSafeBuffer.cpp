@@ -98,6 +98,10 @@ void safeBuffer::checkAndExpand(unsigned int size) {
 	unsigned char * newBuffer = new unsigned char[newBufferSize];
 	memcpy(newBuffer, buffer, bufferSize);
 
+	// If we are sensitive, clean the old buffer
+	if (m_isSensitive == true) 
+		cleanseBuffer();
+
 	// clean up
 	bufferSize = newBufferSize;
 	delete[] buffer;
@@ -135,6 +139,7 @@ safeBuffer::safeBuffer(int initialSize) {
 	bufferSize = initialSize;
 	buffer = new unsigned char[initialSize];
 	mp_XMLCh = NULL;
+	m_isSensitive = false;
 
 }
 
@@ -144,6 +149,7 @@ safeBuffer::safeBuffer() {
 	buffer = new unsigned char[bufferSize];
 	mp_XMLCh = NULL;
 	m_bufferType = BUFFER_UNKNOWN;
+	m_isSensitive = false;
 
 }
 
@@ -156,6 +162,7 @@ safeBuffer::safeBuffer(const char * inStr, unsigned int initialSize) {
 	strcpy((char *) buffer, inStr);
 	mp_XMLCh = NULL;
 	m_bufferType = BUFFER_CHAR;
+	m_isSensitive = false;
 
 }
 
@@ -180,13 +187,18 @@ safeBuffer::safeBuffer(const safeBuffer & other) {
 	}
 
 	m_bufferType = other.m_bufferType;
+	m_isSensitive = other.m_isSensitive;
 
 }
 	
 safeBuffer::~safeBuffer() {
 
-	if (buffer != NULL)
+
+	if (buffer != NULL) {
+		if (m_isSensitive == true)
+			cleanseBuffer();
 		delete[] buffer;
+	}
 
 	if (mp_XMLCh != NULL)
 		delete[] mp_XMLCh;
@@ -511,8 +523,13 @@ safeBuffer & safeBuffer::operator= (const safeBuffer & cpy) {
 
 	if (bufferSize != cpy.bufferSize) {
 
-		if (bufferSize != 0)
+		if (bufferSize != 0) {
+			
+			if (m_isSensitive == true)
+				cleanseBuffer();
+
 			delete [] buffer;
+		}
 
 		buffer = new unsigned char [cpy.bufferSize];
 		bufferSize = cpy.bufferSize;
@@ -521,6 +538,8 @@ safeBuffer & safeBuffer::operator= (const safeBuffer & cpy) {
 
 	memcpy(buffer, cpy.buffer, bufferSize);
 	m_bufferType = cpy.m_bufferType;
+	// Once we are sensitive, we are always sensitive
+	m_isSensitive = m_isSensitive || cpy.m_isSensitive;
 
 	return *this;
 }
@@ -681,5 +700,21 @@ const char * safeBuffer::rawCharBuffer() const {
 const XMLCh * safeBuffer::rawXMLChBuffer() const {
 
 	return (XMLCh *) buffer;
+
+}
+
+// Sensitive data functions
+
+void safeBuffer::isSensitive(void) {
+
+	m_isSensitive = true;
+
+}
+
+void safeBuffer::cleanseBuffer(void) {
+
+	// Cleanse the main buffer
+	for (unsigned int i = 0; i < bufferSize; ++i)
+		buffer[i] = 0;
 
 }

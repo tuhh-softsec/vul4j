@@ -440,17 +440,17 @@ DSIGSignature::~DSIGSignature() {
 	}
 
 	if (mp_prefixNS != NULL) {
-		delete mp_prefixNS;
+		delete[] mp_prefixNS;
 		mp_prefixNS = NULL;
 	}
 
 	if (mp_ecPrefixNS != NULL) {
-		delete mp_ecPrefixNS;
+		delete[] mp_ecPrefixNS;
 		mp_ecPrefixNS = NULL;
 	}
 	
 	if (mp_xpfPrefixNS != NULL) {
-		delete mp_xpfPrefixNS;
+		delete[] mp_xpfPrefixNS;
 		mp_xpfPrefixNS = NULL;
 	}
 
@@ -779,6 +779,9 @@ void DSIGSignature::load(void) {
 	m_loaded = true;
 
 	// Find the prefix being used so that we can later use it to manipulate the signature
+	if (mp_prefixNS != NULL)
+		delete[] mp_prefixNS;
+
 	mp_prefixNS = XMLString::replicate(mp_sigNode->getPrefix());
 
 	// Now check for SignedInfo

@@ -183,6 +183,9 @@ public:
 	void sbXMLChCat(const XMLCh *str);			// Append a UTF-16 string to the buffer
 	void sbXMLChCat(const char * str);			// Append a (transcoded) local string to the buffer
 
+	// Sensitive data functions
+	void isSensitive(void);
+	void cleanseBuffer(void);
 
 private:
 
@@ -199,6 +202,9 @@ private:
 
 	// For XMLCh manipulation
 	static size_t	size_XMLCh;
+
+	// For sensitive data
+	bool			m_isSensitive;
 };
 
 /** @} */
