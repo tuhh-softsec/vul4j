@@ -17,11 +17,11 @@
       <item name="Overview (Current)"
             href="/index.html"/>
       <item name="Guide (Current)"
-            href="http://jakarta.apache.org/commons/digester/commons-digester-1.6/apidocs/org/apache/commons/digester/package-summary.html"/>
+            href="http://jakarta.apache.org/commons/digester/apidocs/org/apache/commons/digester/package-summary.html"/>
     </menu>
     <menu name="Release Documentation">
       <item name="Digester 1.6"
-            href="/index.html"/>
+            href="http://jakarta.apache.org/commons/digester/commons-digester-1.6/docs/api/org/apache/commons/digester/package-summary.html"/>
       <item name="Digester 1.5"
             href="http://jakarta.apache.org/commons/digester/commons-digester-1.5/docs/api"/>
     </menu>
