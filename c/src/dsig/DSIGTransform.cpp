@@ -68,6 +68,7 @@
 
 #include <xsec/dsig/DSIGTransform.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -78,9 +79,9 @@ DOMElement * DSIGTransform::createTransformNode() {
 	safeBuffer str;
 	const XMLCh * prefix;
 	DOMElement *ret;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
+	DOMDocument *doc = mp_env->getParentDocument();
 
-	prefix = mp_parentSignature->getDSIGNSPrefix();
+	prefix = mp_env->getDSIGNSPrefix();
 	
 	// Create the transform node
 	makeQName(str, prefix, "Transform");

@@ -70,6 +70,7 @@
 #include <xsec/dsig/DSIGSignedInfo.hpp>
 #include <xsec/dsig/DSIGReference.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
@@ -81,14 +82,14 @@ XERCES_CPP_NAMESPACE_USE
 
 DSIGSignedInfo::DSIGSignedInfo(DOMDocument *doc, 
 		XSECSafeBufferFormatter * pFormatter, 
-		DOMNode *signedInfoNode, DSIGSignature * parentSignature) {
+		DOMNode *signedInfoNode, const XSECEnv * env) {
 
 	mp_doc = doc;
 	m_HMACOutputLength = 0;
 	mp_formatter = pFormatter;
 	mp_signedInfoNode = signedInfoNode;
 	m_signatureMethod = SIGNATURE_NONE;
-	mp_parentSignature = parentSignature;
+	mp_env = env;
 	mp_referenceList = NULL;
 	m_loaded = false;
 
@@ -96,14 +97,14 @@ DSIGSignedInfo::DSIGSignedInfo(DOMDocument *doc,
 
 DSIGSignedInfo::DSIGSignedInfo(DOMDocument *doc, 
 		XSECSafeBufferFormatter * pFormatter, 
-		DSIGSignature * parentSignature) {
+		const XSECEnv * env) {
 
 	mp_doc = doc;
 	m_HMACOutputLength = 0;
 	mp_formatter = pFormatter;
 	mp_signedInfoNode = NULL;
 	m_signatureMethod = SIGNATURE_NONE;
-	mp_parentSignature = parentSignature;
+	mp_env = env;
 	mp_referenceList = NULL;
 	m_loaded = false;
 
@@ -112,7 +113,7 @@ DSIGSignedInfo::DSIGSignedInfo(DOMDocument *doc,
 DSIGSignedInfo::~DSIGSignedInfo() {
 
 	mp_formatter = NULL;
-	mp_parentSignature = NULL;
+	mp_env = NULL;
 	if (mp_referenceList != NULL) {
 
 		delete mp_referenceList;
@@ -186,7 +187,7 @@ DSIGReference * DSIGSignedInfo::createReference(const XMLCh * URI,
 								char * type) {
 
 	DSIGReference * ref;
-	XSECnew(ref, DSIGReference(mp_parentSignature));
+	XSECnew(ref, DSIGReference(mp_env));
 	Janitor<DSIGReference> j_ref(ref);
 
 	DOMNode *refNode = ref->createBlankReference(URI, hm, type);
@@ -211,7 +212,7 @@ DOMElement *DSIGSignedInfo::createBlankSignedInfo(canonicalizationMethod cm,
 			hashMethod hm) {
 
 	safeBuffer str;
-	const XMLCh * prefixNS = mp_parentSignature->getDSIGNSPrefix();
+	const XMLCh * prefixNS = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefixNS, "SignedInfo");
 
@@ -442,7 +443,7 @@ void DSIGSignedInfo::load(void) {
 
 		// Have an element node - should be a reference, so let's load the list
 
-		mp_referenceList = DSIGReference::loadReferenceListFromXML(mp_parentSignature, tmpSI);
+		mp_referenceList = DSIGReference::loadReferenceListFromXML(mp_env, tmpSI);
 
 	}
 

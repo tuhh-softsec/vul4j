@@ -62,11 +62,7 @@
  *
  * DSIG_Reference := Class for checking and setting up reference nodes in a DSIG signature
  *
- * Author(s): Berin Lautenbach
- *
- * $ID$
- *
- * $LOG$
+ * $Id$
  *					 
  */
 
@@ -97,6 +93,7 @@ class TXFMBase;
 class TXFMChain;
 class XSECBinTXFMInputStream;
 class XSECURIResolver;
+class XSECEnv;
 
 /**
  * @ingroup pubsig
@@ -128,13 +125,13 @@ public:
 	 * @note DSIGReference structures should only ever be created via calls to a
 	 * DSIGSignature object.
 	 *
-	 * @param sig The signature in which the reference is embedded.
+	 * @param env The operating environment in which the Reference is operating
 	 * @param dom The DOM node (within doc) that is to be used as the base of the reference.
 	 * @see #load
 	 * @see DSIGSignature#createReference
 	 */
 
-	DSIGReference(DSIGSignature * sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *dom);
+	DSIGReference(const XSECEnv * env, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *dom);
 
     /**
 	 * \brief Contructor for use when creating new Reference structures.
@@ -150,7 +147,7 @@ public:
 	 * @see DSIGSignature#createReference
 	 */
 	
-	DSIGReference(DSIGSignature * sig);
+	DSIGReference(const XSECEnv * env);
 
 	/**
 	 * \brief Destructor.
@@ -450,7 +447,7 @@ public:
 	static DSIGTransformList * loadTransforms(
 							XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *transformsNode,
 							XSECSafeBufferFormatter * formatter,
-							DSIGSignature * sig);
+							const XSECEnv * env);
 
 	/**
 	 * \brief Create a starting point for a TXFM Chain.
@@ -482,7 +479,7 @@ public:
 	 * @returns the created list.
 	 */
 
-	static DSIGReferenceList *loadReferenceListFromXML(DSIGSignature * sig, 
+	static DSIGReferenceList *loadReferenceListFromXML(const XSECEnv * env, 
 													   XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *firstReference);
 
 	/**
@@ -540,7 +537,7 @@ private:
 	hashMethod					me_hashMethod;			// What form of digest?
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
 								* mp_hashValueNode;		// Node where the Hash value is stored
-	DSIGSignature				* mp_parentSignature;	// Owner signature
+	const XSECEnv				* mp_env;
 	DSIGTransformList			* mp_transformList;		// List of transforms
 	
 	bool                        m_loaded;

@@ -80,7 +80,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMDocument);
 
 #include <stdio.h>
 
-class DSIGSignature;
+class XSECEnv;
 class TXFMChain;
 
 /**
@@ -118,14 +118,14 @@ public:
 	 * @note DSIGTransform structures should only ever be created via calls to a
 	 * DSIGTransformList object.
 	 *
-	 * @param sig The Signature structure in which this transform exists.
+	 * @param env The environment in which this transform operates
 	 * @param node The DOM node (within doc) that is to be used as the base of the Transform.
 	 * @see #load
 	 */
 
-	DSIGTransform(DSIGSignature *sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node) : 
+	DSIGTransform(const XSECEnv * env, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node) : 
 		  mp_txfmNode(node),
-		  mp_parentSignature(sig) {};
+		  mp_env(env) {};
 
     /**
 	 * \brief Contructor used for new signatures.
@@ -139,9 +139,9 @@ public:
 	 *
 	 */
 
-	DSIGTransform(DSIGSignature *sig) : 
+	DSIGTransform(const XSECEnv * env) : 
 		  mp_txfmNode(NULL),
-		  mp_parentSignature(sig) {};
+		  mp_env(env) {};
 
 		  
 	/**
@@ -215,7 +215,7 @@ protected:
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode					
 							* mp_txfmNode;			// The node that we read from
-	DSIGSignature			* mp_parentSignature;	// Owning signature
+	const XSECEnv			* mp_env;	// Owning signature
 
 private:
 

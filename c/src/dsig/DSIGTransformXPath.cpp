@@ -73,6 +73,7 @@
 #include <xsec/transformers/TXFMC14n.hpp>
 #include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
 #include <xercesc/util/Janitor.hpp>
@@ -83,8 +84,8 @@ XERCES_CPP_NAMESPACE_USE
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------
 
-DSIGTransformXPath::DSIGTransformXPath(DSIGSignature *sig, DOMNode * node) :
-DSIGTransform(sig, node) {
+DSIGTransformXPath::DSIGTransformXPath(const XSECEnv * env, DOMNode * node) :
+DSIGTransform(env, node) {
 
 	mp_exprTextNode = NULL;
 	mp_xpathNode = NULL;
@@ -94,8 +95,8 @@ DSIGTransform(sig, node) {
 }
 	
 
-DSIGTransformXPath::DSIGTransformXPath(DSIGSignature *sig) :
-DSIGTransform(sig) {
+DSIGTransformXPath::DSIGTransformXPath(const XSECEnv * env) :
+DSIGTransform(env) {
 
 	mp_exprTextNode = NULL;
 	mp_xpathNode = NULL;
@@ -144,9 +145,9 @@ DOMElement * DSIGTransformXPath::createBlankTransform(DOMDocument * parentDoc) {
 	safeBuffer str;
 	const XMLCh * prefix;
 	DOMElement *ret;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
+	DOMDocument *doc = mp_env->getParentDocument();
 
-	prefix = mp_parentSignature->getDSIGNSPrefix();
+	prefix = mp_env->getDSIGNSPrefix();
 	
 	// Create the transform node
 	makeQName(str, prefix, "Transform");
@@ -202,9 +203,9 @@ void DSIGTransformXPath::load(void) {
 
 		gatherChildrenText(mp_xpathNode, exprSB);
 
-		m_expr << (*(mp_parentSignature->getSBFormatter()) << exprSB.rawXMLChBuffer());
+		m_expr << (*(mp_env->getSBFormatter()) << exprSB.rawXMLChBuffer());
 
-		//m_expr << (*(mp_parentSignature->getSBFormatter()) << mp_exprTextNode->getNodeValue());
+		//m_expr << (*(mp_env->getSBFormatter()) << mp_exprTextNode->getNodeValue());
 				
 	}
 

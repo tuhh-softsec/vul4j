@@ -188,6 +188,20 @@ public:
 
 	bool addXMLKeyInfo(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *ki);
 
+	/**
+	 * \brief Read full list from DOM
+	 *
+	 * Will take the starting node of a KeyInfo list and read into the
+	 * list structure.  This is a bit different from other "load"
+	 * functions, in that it takes a node as a parameter.
+	 *
+	 * @note This is an internal functions and should not be called directly
+	 *
+	 * @param node The <KeyInfo> element node to read from
+	 */
+
+	bool loadListFromXML(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);
+
 	/*
 	 * \brief Remove a KeyInfo from the list
 	 *

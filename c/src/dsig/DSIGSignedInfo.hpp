@@ -87,7 +87,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
 #include <vector>
 
-class DSIGSignature;
+class XSECEnv;
 
 /**
  * @ingroup pubsig
@@ -121,13 +121,13 @@ public:
 	 * @param doc The document containing the structure to be loaded
 	 * @param pFormatter A safeBuffer formatter that will translate to UTF-8
 	 * @param signedInfoNode The node at the top of the SignedInfo tree fragment
-	 * @param parentSignature The signature that owns me
+	 * @param env Operating environment
 	 */
 
 	DSIGSignedInfo(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc, 
 		XSECSafeBufferFormatter * pFormatter, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *signedInfoNode,
-		DSIGSignature * parentSignature);
+		const XSECEnv * env);
 
 
 	/**
@@ -138,15 +138,15 @@ public:
 	 *
 	 * @param doc The document to use to construct
 	 * @param pFormatter Formatter to use to translate to UTF-8
-	 * @param parentSignature The owning Signature
+	 * @param env Operating environment
 	 */
 
 	DSIGSignedInfo(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
 				XSECSafeBufferFormatter * pFormatter, 
-				DSIGSignature * parentSignature);
+				const XSECEnv * env);
 
 	/**
-	 * \brief Destructur
+	 * \brief Destructor
 	 * 
 	 * Delete - but does not destroy the DOM Nodes
 	 *
@@ -294,7 +294,7 @@ private:
 	hashMethod					m_hashMethod;
 	DSIGReferenceList			* mp_referenceList;
 	int							m_HMACOutputLength;
-	DSIGSignature				* mp_parentSignature;
+	const XSECEnv				* mp_env;
 
 	// Not implemented constructors
 

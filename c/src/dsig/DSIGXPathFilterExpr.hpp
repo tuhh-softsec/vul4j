@@ -78,7 +78,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMNamedNodeMap);
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
-class DSIGSignature;
+class XSECEnv;
 
 /**
  * @ingroup pubsig
@@ -106,21 +106,21 @@ public:
 	 *
 	 * Node already exists and is part of an existing XPathFilter tree
 	 *
-	 * @param sig The owning signature
+	 * @param env The operating environment
 	 * @param node The node that will be used to read the expression in
 	 */
 
-	DSIGXPathFilterExpr(DSIGSignature * sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);
+	DSIGXPathFilterExpr(const XSECEnv * env, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);
 
 	/**
 	 * \brief Builder constructor
 	 *
 	 * Used to create the DOM structure and DSIGSignature elements
 	 *
-	 * @param sig The owning signature
+	 * @param env The operating Environment
 	 */
 
-	DSIGXPathFilterExpr(DSIGSignature * sig);
+	DSIGXPathFilterExpr(const XSECEnv * env);
 
 	/**
 	 * \brief Destructor.
@@ -228,7 +228,7 @@ private:
 	DSIGXPathFilterExpr();
 	DSIGXPathFilterExpr(const DSIGXPathFilterExpr& theOther);
 
-	DSIGSignature				* mp_sig;
+	const XSECEnv				* mp_env;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						
 								* mp_xpathFilterNode;
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode						

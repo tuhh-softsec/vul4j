@@ -528,7 +528,7 @@ DOMElement *DSIGSignature::createBlankSignature(DOMDocument *doc,
 	mp_sigNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
 
 	// Create the skeleton SignedInfo
-	XSECnew(mp_signedInfo, DSIGSignedInfo(mp_doc, mp_formatter, this));
+	XSECnew(mp_signedInfo, DSIGSignedInfo(mp_doc, mp_formatter, mp_env));
 	
 	mp_sigNode->appendChild(mp_signedInfo->createBlankSignedInfo(cm, sm, hm));
 	mp_sigNode->appendChild(mp_doc->createTextNode(DSIGConstants::s_unicodeStrNL));
@@ -792,7 +792,7 @@ void DSIGSignature::load(void) {
 
 	// Have a signed info
 
-	XSECnew(mp_signedInfo, DSIGSignedInfo(mp_doc, mp_formatter, tmpElt, this));
+	XSECnew(mp_signedInfo, DSIGSignedInfo(mp_doc, mp_formatter, tmpElt, mp_env));
 	mp_signedInfo->load();
 
 	// Look at Signature Value
@@ -837,198 +837,7 @@ void DSIGSignature::load(void) {
 
 		mp_KeyInfoNode = tmpElt;		// In case we later want to manipulate it
 
-		DOMNode *tmpKI = tmpElt->getFirstChild();
-
-		while (tmpKI != 0 && (tmpKI->getNodeType() != DOMNode::ELEMENT_NODE))
-			tmpKI = tmpKI->getNextSibling();
-
-
-		while (tmpKI != 0) {
-
-			// Find out what kind of KeyInfo child it is
-
-			if (tmpKI != 0 && strEquals(getDSIGLocalName(tmpKI), "RetrievalMethod")) {
-
-				// A reference to key information held elsewhere
-
-				const XMLCh * URI = NULL;
-				TXFMBase * currentTxfm;
-				bool isRawX509 = false;
-
-				DOMNamedNodeMap *atts = tmpKI->getAttributes();
-				const XMLCh * name;
-				unsigned int size;
-
-				if (atts == 0 || (size = atts->getLength()) == 0)
-					return;
-
-				for (unsigned int i = 0; i < size; ++i) {
-
-					name = atts->item(i)->getNodeName();
-
-					if (strEquals(name, "URI")) {
-						URI  = atts->item(i)->getNodeValue();
-					}
-
-					else if (strEquals(name, "Type")) {
-
-						// Check if this is a raw X509 cert
-						if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURIRawX509)) {
-							isRawX509 = true;
-						}
-
-					}
-
-					else if (strEquals(name, "Id")) {
-
-						// For now ignore
-
-					}
-
-					else {
-						safeBuffer tmp, error;
-
-						error << (*mp_formatter << name);
-						tmp.sbStrcpyIn("Unknown attribute in <RetrievalMethod> Element : ");
-						tmp.sbStrcatIn(error);
-
-						throw XSECException(XSECException::UnknownDSIGAttribute, tmp.rawCharBuffer());
-
-					}
-
-				}
-
-				if (isRawX509 == true) {
-
-					if (URI == NULL) {
-
-						throw XSECException(XSECException::ExpectedDSIGChildNotFound,
-							"Expected to find a URI attribute in a rawX509RetrievalMethod KeyInfo");
-
-					}
-
-					DSIGKeyInfoX509 * x509;
-					XSECnew(x509, DSIGKeyInfoX509(mp_env));
-					x509->setRawRetrievalURI(URI);
-
-					this->m_keyInfoList.addKeyInfo(x509);
-
-				}
-
-				else {
-
-					// Find base transform using the base URI
-					currentTxfm = DSIGReference::getURIBaseTXFM(mp_doc, URI, mp_env->getURIResolver());
-					TXFMChain * chain;
-					XSECnew(chain, TXFMChain(currentTxfm));
-					Janitor<TXFMChain> j_chain(chain);
-
-					// Now check for transforms
-					tmpKI = tmpKI->getFirstChild();
-
-					while (tmpKI != 0 && (tmpKI->getNodeType() != DOMNode::ELEMENT_NODE))
-						// Skip text and comments
-						tmpKI = tmpKI->getNextSibling();
-
-					if (tmpKI == 0) {
-
-						throw XSECException(XSECException::ExpectedDSIGChildNotFound, 
-								"Expected <Transforms> within <KeyInfo>");
-
-					}
-
-					if (strEquals(getDSIGLocalName(tmpKI), "Transforms")) {
-
-
-						// Process the transforms using the static function.
-						// For the moment we don't really support remote KeyInfos, so
-						// Just built the transform list, process it and then destroy it.
-
-						DSIGTransformList * l = DSIGReference::loadTransforms(
-							tmpKI,
-							mp_formatter,
-							this);
-
-						DSIGTransformList::TransformListVectorType::size_type size, i;
-						size = l->getSize();
-						for (i = 0; i < size; ++ i) {
-							try {
-								l->item(i)->appendTransformer(chain);
-							}
-							catch (...) {
-								delete l;
-								throw;
-							}
-						}
-
-						delete l;
-
-					}
-
-					// Find out the type of the final transform and process accordingly
-					
-					TXFMBase::nodeType type = chain->getLastTxfm()->getNodeType();
-
-					XSECXPathNodeList lst;
-					const DOMNode * element;
-
-					switch (type) {
-
-					case TXFMBase::DOM_NODE_DOCUMENT :
-
-						break;
-
-					case TXFMBase::DOM_NODE_DOCUMENT_FRAGMENT :
-
-						break;
-
-					case TXFMBase::DOM_NODE_XPATH_NODESET :
-
-						lst = chain->getLastTxfm()->getXPathNodeList();
-						element = lst.getFirstNode();
-
-						while (element != NULL) {
-
-							// Try to add each element - just call KeyInfoList add as it will
-							// do the check to see if it is a valud KeyInfo
-
-							m_keyInfoList.addXMLKeyInfo((DOMNode *) element);
-							element = lst.getNextNode();
-
-						}
-
-						break;
-
-					default :
-
-						throw XSECException(XSECException::XPathError);
-
-					}
-
-					// Delete the transform chain
-					chain->getLastTxfm()->deleteExpandedNameSpaces();
-
-					// Janitor will clean up chain
-				}
-
-			} /* if getNodeName == Retrieval Method */
-
-			// Now just run through each node type in turn to process "local" KeyInfos
-
-			else if (!m_keyInfoList.addXMLKeyInfo(tmpKI)) {
-
-				throw XSECException(XSECException::KeyInfoError,
-					"Unknown KeyInfo element found");
-
-			}
-
-			tmpKI = tmpKI->getNextSibling();
-
-			while (tmpKI != 0 && (tmpKI->getNodeType() != DOMNode::ELEMENT_NODE))
-				tmpKI = tmpKI->getNextSibling();
-
-		}
-
+		m_keyInfoList.loadListFromXML(tmpElt);
 	}
 
 }

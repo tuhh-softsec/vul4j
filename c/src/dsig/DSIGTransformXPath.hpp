@@ -104,12 +104,12 @@ public:
 	 *
 	 * The Node structure already exists, so read the nodes in.
 	 *
-	 * @param sig The Signature structure in which this transform exists.
+	 * @param env The operating environment
 	 * @param node The DOM node (within doc) that is to be used as the base of the Transform.
 	 * @see #load
 	 */
 
-	DSIGTransformXPath(DSIGSignature *sig, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);
+	DSIGTransformXPath(const XSECEnv * env, XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);
 
     /**
 	 * \brief Contructor used for new signatures.
@@ -119,11 +119,11 @@ public:
 	 * @note DSIGTransform structures should only ever be created via calls to a
 	 * DSIGTransformList object.
 	 *
-	 * @param sig The Signature structure in which this transform exists.
+	 * @param env The operating environment
 	 * @see createBlankTransform
 	 */
 
-	DSIGTransformXPath(DSIGSignature *sig);
+	DSIGTransformXPath(const XSECEnv * env);
 		  
 	/**
 	 * \brief Destructor.

@@ -73,6 +73,7 @@
 #include <xsec/dsig/DSIGXPathFilterExpr.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/transformers/TXFMXPathFilter.hpp>
 #include <xsec/transformers/TXFMChain.hpp>
 
@@ -84,16 +85,16 @@ XERCES_CPP_NAMESPACE_USE
 //           Construct/Destruct
 // --------------------------------------------------------------------------------
 
-DSIGTransformXPathFilter::DSIGTransformXPathFilter(DSIGSignature *sig, DOMNode * node) :
-DSIGTransform(sig, node),
+DSIGTransformXPathFilter::DSIGTransformXPathFilter(const XSECEnv * env, DOMNode * node) :
+DSIGTransform(env, node),
 m_loaded(false) {
 
 
 }
 
 
-DSIGTransformXPathFilter::DSIGTransformXPathFilter(DSIGSignature *sig) :
-DSIGTransform(sig),
+DSIGTransformXPathFilter::DSIGTransformXPathFilter(const XSECEnv * env) :
+DSIGTransform(env),
 m_loaded(false) {
 
 }
@@ -158,9 +159,9 @@ DOMElement * DSIGTransformXPathFilter::createBlankTransform(DOMDocument * parent
 	safeBuffer str;
 	const XMLCh * prefix;
 	DOMElement *ret;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
+	DOMDocument *doc = mp_env->getParentDocument();
 
-	prefix = mp_parentSignature->getDSIGNSPrefix();
+	prefix = mp_env->getDSIGNSPrefix();
 	
 	// Create the transform node
 	makeQName(str, prefix, "Transform");
@@ -181,13 +182,13 @@ DSIGXPathFilterExpr * DSIGTransformXPathFilter::appendFilter(xpathFilterType fil
 
 	DSIGXPathFilterExpr * e;
 
-	XSECnew(e, DSIGXPathFilterExpr(mp_parentSignature));
+	XSECnew(e, DSIGXPathFilterExpr(mp_env));
 
 	DOMNode * elt = e->setFilter(filterType, filterExpr);
 	m_exprs.push_back(e);
 
 	mp_txfmNode->appendChild(elt);
-	mp_txfmNode->appendChild(mp_parentSignature->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL));
+	mp_txfmNode->appendChild(mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL));
 
 	return e;
 
@@ -217,7 +218,7 @@ void DSIGTransformXPathFilter::load(void) {
 			strEquals(getXPFLocalName(n), "XPath")) {
 
 			DSIGXPathFilterExpr * xpf;
-			XSECnew(xpf, DSIGXPathFilterExpr(mp_parentSignature, n));
+			XSECnew(xpf, DSIGXPathFilterExpr(mp_env, n));
 
 			// Add it to the vector prior to load to ensure deleted if
 			// anything throws an exception

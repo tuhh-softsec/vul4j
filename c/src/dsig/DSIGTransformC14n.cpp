@@ -71,6 +71,7 @@
 #include <xsec/transformers/TXFMC14n.hpp>
 #include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 
 #include <xercesc/util/Janitor.hpp>
@@ -81,8 +82,8 @@ XERCES_CPP_NAMESPACE_USE
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------
 
-DSIGTransformC14n::DSIGTransformC14n(DSIGSignature *sig, DOMNode * node) :
-DSIGTransform(sig, node) {
+DSIGTransformC14n::DSIGTransformC14n(const XSECEnv * env, DOMNode * node) :
+DSIGTransform(env, node) {
 
 	m_cMethod = CANON_NONE;
 	mp_inclNSNode = NULL;
@@ -90,8 +91,8 @@ DSIGTransform(sig, node) {
 }
 	
 
-DSIGTransformC14n::DSIGTransformC14n(DSIGSignature *sig) :
-DSIGTransform(sig) {
+DSIGTransformC14n::DSIGTransformC14n(const XSECEnv * env) :
+DSIGTransform(env) {
 
 	m_cMethod = CANON_NONE;
 	mp_inclNSNode = NULL;
@@ -146,7 +147,7 @@ void DSIGTransformC14n::appendTransformer(TXFMChain * input) {
 		else {
 
 			safeBuffer incl;
-			incl << (*(mp_parentSignature->getSBFormatter()) << mp_inclNSStr);
+			incl << (*(mp_env->getSBFormatter()) << mp_inclNSStr);
 			c->setExclusive(incl);
 
 		}
@@ -160,9 +161,9 @@ DOMElement * DSIGTransformC14n::createBlankTransform(DOMDocument * parentDoc) {
 	safeBuffer str;
 	const XMLCh * prefix;
 	DOMElement *ret;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
+	DOMDocument *doc = mp_env->getParentDocument();
 
-	prefix = mp_parentSignature->getDSIGNSPrefix();
+	prefix = mp_env->getDSIGNSPrefix();
 	
 	// Create the transform node
 	makeQName(str, prefix, "Transform");
@@ -307,10 +308,10 @@ void DSIGTransformC14n::createInclusiveNamespaceNode(void) {
 
 	safeBuffer str;
 	const XMLCh * prefix;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
+	DOMDocument *doc = mp_env->getParentDocument();
 
 	// Use the Exclusive Canonicalisation prefix
-	prefix = mp_parentSignature->getECNSPrefix();
+	prefix = mp_env->getECNSPrefix();
 
 	// Create the transform node
 	makeQName(str, prefix, "InclusiveNamespaces");
@@ -388,7 +389,7 @@ void DSIGTransformC14n::addInclusiveNamespace(const char * ns) {
 		// More tricky
 		safeBuffer str;
 
-		str << (*(mp_parentSignature->getSBFormatter()) << mp_inclNSStr);
+		str << (*(mp_env->getSBFormatter()) << mp_inclNSStr);
 		str.sbStrcatIn(" ");
 		str.sbStrcatIn((char *) ns);
 		mp_inclNSNode->setAttribute(MAKE_UNICODE_STRING("PrefixList"), str.sbStrToXMLCh());

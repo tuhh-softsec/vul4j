@@ -92,6 +92,7 @@
 #include <xsec/dsig/DSIGTransformC14n.hpp>
 
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/utils/XSECBinTXFMInputStream.hpp>
@@ -145,10 +146,10 @@ static const XMLCh s_unicodeStrRootNode[] =
 // --------------------------------------------------------------------------------
 
 
-DSIGReference::DSIGReference(DSIGSignature * sig, DOMNode *dom) {
+DSIGReference::DSIGReference(const XSECEnv * env, DOMNode *dom) {
 
 	mp_referenceNode = dom;
-	mp_parentSignature = sig;
+	mp_env = env;
 
 	// Should throw an exception if the node is not a REFERENCE element
 
@@ -166,9 +167,9 @@ DSIGReference::DSIGReference(DSIGSignature * sig, DOMNode *dom) {
 
 }
 
-DSIGReference::DSIGReference(DSIGSignature *sig) {
+DSIGReference::DSIGReference(const XSECEnv * env) {
 
-	mp_parentSignature = sig;
+	mp_env = env;
 	mp_referenceNode = NULL;
 	mp_transformsNode = NULL;
 	mp_transformList = NULL;
@@ -213,9 +214,9 @@ void DSIGReference::createTransformList(void) {
 	// Creates the transforms list
 	safeBuffer str;
 	const XMLCh * prefix;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
+	DOMDocument *doc = mp_env->getParentDocument();
 
-	prefix = mp_parentSignature->getDSIGNSPrefix();
+	prefix = mp_env->getDSIGNSPrefix();
 	
 	if (mp_transformsNode == NULL) {
 
@@ -234,7 +235,7 @@ void DSIGReference::createTransformList(void) {
 
 void DSIGReference::addTransform(DSIGTransform * txfm, DOMElement * txfmElt) {
 
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
+	DOMDocument *doc = mp_env->getParentDocument();
 
 	if (mp_transformList == NULL)
 		createTransformList();
@@ -251,8 +252,8 @@ DSIGTransformEnvelope * DSIGReference::appendEnvelopedSignatureTransform() {
 	DOMElement *txfmElt;
 	DSIGTransformEnvelope * txfm;
 
-	XSECnew(txfm, DSIGTransformEnvelope(mp_parentSignature));
-	txfmElt = txfm->createBlankTransform(mp_parentSignature->getParentDocument());
+	XSECnew(txfm, DSIGTransformEnvelope(mp_env));
+	txfmElt = txfm->createBlankTransform(mp_env->getParentDocument());
 
 	addTransform(txfm, txfmElt);
 
@@ -265,8 +266,8 @@ DSIGTransformBase64 * DSIGReference::appendBase64Transform() {
 	DOMElement *txfmElt;
 	DSIGTransformBase64 * txfm;
 
-	XSECnew(txfm, DSIGTransformBase64(mp_parentSignature));
-	txfmElt = txfm->createBlankTransform(mp_parentSignature->getParentDocument());
+	XSECnew(txfm, DSIGTransformBase64(mp_env));
+	txfmElt = txfm->createBlankTransform(mp_env->getParentDocument());
 
 	addTransform(txfm, txfmElt);
 
@@ -279,8 +280,8 @@ DSIGTransformXSL * DSIGReference::appendXSLTransform(DOMNode * stylesheet) {
 	DOMElement *txfmElt;
 	DSIGTransformXSL * txfm;
 
-	XSECnew(txfm, DSIGTransformXSL(mp_parentSignature));
-	txfmElt = txfm->createBlankTransform(mp_parentSignature->getParentDocument());
+	XSECnew(txfm, DSIGTransformXSL(mp_env));
+	txfmElt = txfm->createBlankTransform(mp_env->getParentDocument());
 	txfm->setStylesheet(stylesheet);
 
 	addTransform(txfm, txfmElt);
@@ -294,8 +295,8 @@ DSIGTransformC14n * DSIGReference::appendCanonicalizationTransform(canonicalizat
 	DOMElement *txfmElt;
 	DSIGTransformC14n * txfm;
 
-	XSECnew(txfm, DSIGTransformC14n(mp_parentSignature));
-	txfmElt = txfm->createBlankTransform(mp_parentSignature->getParentDocument());
+	XSECnew(txfm, DSIGTransformC14n(mp_env));
+	txfmElt = txfm->createBlankTransform(mp_env->getParentDocument());
 	txfm->setCanonicalizationMethod(cm);
 
 	addTransform(txfm, txfmElt);
@@ -309,8 +310,8 @@ DSIGTransformXPath * DSIGReference::appendXPathTransform(const char * expr) {
 	DOMElement *txfmElt;
 	DSIGTransformXPath * txfm;
 
-	XSECnew(txfm, DSIGTransformXPath(mp_parentSignature));
-	txfmElt = txfm->createBlankTransform(mp_parentSignature->getParentDocument());
+	XSECnew(txfm, DSIGTransformXPath(mp_env));
+	txfmElt = txfm->createBlankTransform(mp_env->getParentDocument());
 	txfm->setExpression(expr);
 
 	addTransform(txfm, txfmElt);
@@ -323,11 +324,11 @@ DSIGTransformXPathFilter * DSIGReference::appendXPathFilterTransform(void) {
 	DOMElement *txfmElt;
 	DSIGTransformXPathFilter * txfm;
 
-	XSECnew(txfm, DSIGTransformXPathFilter(mp_parentSignature));
-	txfmElt = txfm->createBlankTransform(mp_parentSignature->getParentDocument());
+	XSECnew(txfm, DSIGTransformXPathFilter(mp_env));
+	txfmElt = txfm->createBlankTransform(mp_env->getParentDocument());
 
 	addTransform(txfm, txfmElt);
-	txfmElt->appendChild(mp_parentSignature->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL));
+	txfmElt->appendChild(mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL));
 
 	return txfm;
 }
@@ -351,8 +352,8 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 	mp_transformList = NULL;
 
 	safeBuffer str;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
-	const XMLCh * prefix = mp_parentSignature->getDSIGNSPrefix();
+	DOMDocument *doc = mp_env->getParentDocument();
+	const XMLCh * prefix = mp_env->getDSIGNSPrefix();
 
 	makeQName(str, prefix, "Reference");
 
@@ -633,7 +634,7 @@ void DSIGReference::load(void) {
 		mp_transformsNode = tmpElt;
 
 		// Load the transforms
-		mp_transformList = loadTransforms(tmpElt, mp_formatter, mp_parentSignature);
+		mp_transformList = loadTransforms(tmpElt, mp_formatter, mp_env);
 
 		// Find next node
 		tmpElt = tmpElt->getNextSibling();
@@ -723,7 +724,7 @@ void DSIGReference::load(void) {
 		DOMNode					* manifestNode, * referenceNode;
 
 		docObject = getURIBaseTXFM(mp_referenceNode->getOwnerDocument(), mp_URI, 
-			mp_parentSignature->getURIResolver());
+			mp_env->getURIResolver());
 
 		manifestNode = docObject->getFragmentNode();
 		delete docObject;
@@ -761,7 +762,7 @@ void DSIGReference::load(void) {
 			"Expected <Reference> as child of <Manifest>");
 
 		// Have reference node, so lets create a list!
-		mp_manifestList = DSIGReference::loadReferenceListFromXML(mp_parentSignature, referenceNode);
+		mp_manifestList = DSIGReference::loadReferenceListFromXML(mp_env, referenceNode);
 
 	} /* m_isManifest */
 
@@ -773,7 +774,7 @@ void DSIGReference::load(void) {
 //           createReferenceListFromXML
 // --------------------------------------------------------------------------------
 
-DSIGReferenceList *DSIGReference::loadReferenceListFromXML(DSIGSignature * sig, DOMNode *firstReference) {
+DSIGReferenceList *DSIGReference::loadReferenceListFromXML(const XSECEnv * env, DOMNode *firstReference) {
 
 	// Have the first reference element in the document, 
 	// so want to find and load them all
@@ -797,7 +798,7 @@ DSIGReferenceList *DSIGReference::loadReferenceListFromXML(DSIGSignature * sig, 
 
 		}
 
-		XSECnew(r, DSIGReference(sig, tmpRef));
+		XSECnew(r, DSIGReference(env, tmpRef));
 
 		refList->addReference(r);
 
@@ -836,7 +837,7 @@ XSECBinTXFMInputStream * DSIGReference::makeBinInputStream(void) const {
 
 	// Find base transform
 	currentTxfm = getURIBaseTXFM(mp_referenceNode->getOwnerDocument(), mp_URI,
-		mp_parentSignature->getURIResolver());
+		mp_env->getURIResolver());
 
 	// Set up the transform chain
 
@@ -1009,7 +1010,7 @@ TXFMChain * DSIGReference::createTXFMChainFromList(TXFMBase * input,
 DSIGTransformList * DSIGReference::loadTransforms( 
 							DOMNode *transformsNode,
 							XSECSafeBufferFormatter * formatter,
-							DSIGSignature * sig) {
+							const XSECEnv * env) {
 
 	// This is defined as a static function, not because it makes use of any static variables
 	// in the DSIGReference class, but to neatly link it to the other users
@@ -1071,7 +1072,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 		if (algorithm.sbStrcmp(URI_ID_BASE64) == 0) {
 			
 			DSIGTransformBase64 * b;
-			XSECnew(b, DSIGTransformBase64(sig, transforms));
+			XSECnew(b, DSIGTransformBase64(env, transforms));
 			lst->addTransform(b);
 			b->load();
 		}
@@ -1079,7 +1080,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 		else if (algorithm.sbStrcmp(URI_ID_XPATH) == 0) {
 
 			DSIGTransformXPath * x;
-			XSECnew(x, DSIGTransformXPath(sig, transforms));
+			XSECnew(x, DSIGTransformXPath(env, transforms));
 			lst->addTransform(x);
 			x->load();
 		}
@@ -1088,7 +1089,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 
 			DSIGTransformXPathFilter * xpf;
 
-			XSECnew(xpf, DSIGTransformXPathFilter(sig, transforms));
+			XSECnew(xpf, DSIGTransformXPathFilter(env, transforms));
 			lst->addTransform(xpf);
 			xpf->load();
 
@@ -1097,7 +1098,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 		else if (algorithm.sbStrcmp(URI_ID_ENVELOPE) == 0) {
 
 			DSIGTransformEnvelope * e;
-			XSECnew(e, DSIGTransformEnvelope(sig, transforms));
+			XSECnew(e, DSIGTransformEnvelope(env, transforms));
 			lst->addTransform(e);
 			e->load();
 		}
@@ -1105,7 +1106,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 		else if (algorithm.sbStrcmp(URI_ID_XSLT) == 0) {
 			
 			DSIGTransformXSL * x;
-			XSECnew(x, DSIGTransformXSL(sig, transforms));
+			XSECnew(x, DSIGTransformXSL(env, transforms));
 			lst->addTransform(x);
 			x->load();
 
@@ -1118,7 +1119,7 @@ DSIGTransformList * DSIGReference::loadTransforms(
 				 algorithm.sbStrcmp(URI_ID_EXC_C14N_NOC) == 0) {
 			
 			DSIGTransformC14n * c;
-			XSECnew(c, DSIGTransformC14n(sig, transforms));
+			XSECnew(c, DSIGTransformC14n(env, transforms));
 			lst->addTransform(c);
 			c->load();
 
@@ -1244,7 +1245,7 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 
 	// Find base transform
 	currentTxfm = getURIBaseTXFM(mp_referenceNode->getOwnerDocument(), mp_URI,
-		mp_parentSignature->getURIResolver());
+		mp_env->getURIResolver());
 
 	// Now build the transforms list
 	// Note this passes ownership of currentTxfm to the function, so it is the

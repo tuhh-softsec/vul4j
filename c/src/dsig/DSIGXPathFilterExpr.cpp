@@ -72,6 +72,7 @@
 #include <xsec/dsig/DSIGXPathFilterExpr.hpp>
 #include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/framework/XSECException.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 
 #include <xercesc/dom/DOMNode.hpp>
@@ -98,15 +99,15 @@ XMLCh filterStr[] = {
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------
 
-DSIGXPathFilterExpr::DSIGXPathFilterExpr(DSIGSignature * sig, DOMNode * node) :
-mp_sig(sig),
+DSIGXPathFilterExpr::DSIGXPathFilterExpr(const XSECEnv * env, DOMNode * node) :
+mp_env(env),
 mp_xpathFilterNode(node),
 mp_NSMap(NULL) {
 
 }
 
-DSIGXPathFilterExpr::DSIGXPathFilterExpr(DSIGSignature * sig) :
-mp_sig(sig),
+DSIGXPathFilterExpr::DSIGXPathFilterExpr(const XSECEnv * env) :
+mp_env(env),
 mp_xpathFilterNode(NULL),
 mp_NSMap(NULL) {
 
@@ -197,17 +198,17 @@ DOMElement * DSIGXPathFilterExpr::setFilter(xpathFilterType filterType,
 
 	safeBuffer str;
 	const XMLCh * prefix;
-	DOMDocument *doc = mp_sig->getParentDocument();
+	DOMDocument *doc = mp_env->getParentDocument();
 	DOMElement * xe;
 
 	// Create the XPath element
-	prefix = mp_sig->getXPFNSPrefix();
+	prefix = mp_env->getXPFNSPrefix();
 	makeQName(str, prefix, "XPath");
 	xe = doc->createElementNS(DSIGConstants::s_unicodeStrURIXPF, str.rawXMLChBuffer());
 	mp_xpathFilterNode = xe;
 
 	// Put in correct namespace
-	prefix = mp_sig->getXPFNSPrefix();
+	prefix = mp_env->getXPFNSPrefix();
 
 	// Set the namespace attribute
 	if (prefix[0] == '\0') {

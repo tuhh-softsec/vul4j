@@ -91,6 +91,9 @@ XSEC_USING_XERCES(XMLString);
 #define URI_ID_SHA1		"http://www.w3.org/2000/09/xmldsig#sha1"
 #define URI_ID_MD5		"http://www.w3.org/2001/04/xmldsig-more#md5"
 
+// Encryption Algorithms
+#define URI_ID_3DES_CBC	"http://www.w3.org/2001/04/xmlenc#tripledes-cbc"
+
 // Transforms
 
 #define URI_ID_BASE64			"http://www.w3.org/2000/09/xmldsig#base64"
@@ -173,6 +176,13 @@ enum xpathFilterType {
 	FILTER_UNION			= 0,	/** Results should be added to previous nodeset */
 	FILTER_INTERSECT		= 1,	/** Results should be included if in prev nodeset */
 	FILTER_SUBTRACT			= 2		/** Results should be subtracted from prev nodeset */
+
+};
+
+enum encryptionMethod {
+
+	ENCRYPT_NONE			= 0,				// No method defined
+	ENCRYPT_3DES_CBC		= 1					// Use 3DES
 
 };
 
@@ -286,6 +296,26 @@ bool hashMethod2URI(safeBuffer &uri, hashMethod hm) {
 
 }
 
+inline
+bool encryptionMethod2URI(safeBuffer &uri, encryptionMethod em) {
+
+	switch (em) {
+
+	case (ENCRYPT_3DES_CBC) :
+
+		uri = URI_ID_3DES_CBC;
+		break;
+
+	default:
+
+		return false;
+
+	}
+
+	return true;
+
+}
+
 // --------------------------------------------------------------------------------
 //           Constant Strings Class
 // --------------------------------------------------------------------------------
@@ -325,6 +355,9 @@ public:
 	static const XMLCh * s_unicodeStrURIHMAC_SHA1;
 	static const XMLCh * s_unicodeStrURIXMLNS;
 	static const XMLCh * s_unicodeStrURIMANIFEST;
+
+	// URIs for Encryption
+	static const XMLCh * s_unicodeStrURI3DES_CBC;
 
 	// Internal Crypto Providers
 	static const XMLCh * s_unicodeStrPROVOpenSSL;

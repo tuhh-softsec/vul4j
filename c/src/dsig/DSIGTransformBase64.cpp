@@ -75,6 +75,7 @@
 #include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/transformers/TXFMXPath.hpp>
 #include <xsec/framework/XSECException.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 
@@ -84,12 +85,12 @@ XERCES_CPP_NAMESPACE_USE
 //           Constructors and Destructors
 // --------------------------------------------------------------------------------
 
-DSIGTransformBase64::DSIGTransformBase64(DSIGSignature *sig, DOMNode * node) :
-DSIGTransform(sig, node) {};
+DSIGTransformBase64::DSIGTransformBase64(const XSECEnv * env, DOMNode * node) :
+DSIGTransform(env, node) {};
 
 
-DSIGTransformBase64::DSIGTransformBase64(DSIGSignature *sig) :
-DSIGTransform(sig) {};
+DSIGTransformBase64::DSIGTransformBase64(const XSECEnv * env) :
+DSIGTransform(env) {};
 		  
 
 DSIGTransformBase64::~DSIGTransformBase64() {};
@@ -151,9 +152,9 @@ DOMElement * DSIGTransformBase64::createBlankTransform(DOMDocument * parentDoc) 
 	safeBuffer str;
 	const XMLCh * prefix;
 	DOMElement *ret;
-	DOMDocument *doc = mp_parentSignature->getParentDocument();
+	DOMDocument *doc = mp_env->getParentDocument();
 
-	prefix = mp_parentSignature->getDSIGNSPrefix();
+	prefix = mp_env->getDSIGNSPrefix();
 	
 	// Create the transform node
 	makeQName(str, prefix, "Transform");
