@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundProcedure.java,v 1.4 2003/03/04 23:11:12 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestRightBoundProcedure.java,v 1.5 2003/12/02 16:38:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -61,11 +61,11 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryProcedure;
-import org.apache.commons.functor.core.LeftIdentityFunction;
+import org.apache.commons.functor.core.LeftIdentity;
 import org.apache.commons.functor.core.NoOp;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/03/04 23:11:12 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/02 16:38:45 $
  * @author Rodney Waldhoff
  */
 public class TestRightBoundProcedure extends BaseFunctorTest {
@@ -103,7 +103,7 @@ public class TestRightBoundProcedure extends BaseFunctorTest {
     // ------------------------------------------------------------------------    
 
     public void testRun() throws Exception {
-        UnaryProcedure p = new RightBoundProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentityFunction()),"foo");
+        UnaryProcedure p = new RightBoundProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentity()),"foo");
         p.run(Boolean.TRUE);
         p.run(Boolean.FALSE);
     }
@@ -113,7 +113,7 @@ public class TestRightBoundProcedure extends BaseFunctorTest {
         assertEquals(f,f);
         assertObjectsAreEqual(f,new RightBoundProcedure(new NoOp(),"xyzzy"));
         assertObjectsAreNotEqual(f,new NoOp());
-        assertObjectsAreNotEqual(f,new RightBoundProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentityFunction()),"xyzzy"));
+        assertObjectsAreNotEqual(f,new RightBoundProcedure(new BinaryFunctionBinaryProcedure(new LeftIdentity()),"xyzzy"));
         assertObjectsAreNotEqual(f,new RightBoundProcedure(new NoOp(),"foo"));
         assertObjectsAreNotEqual(f,new RightBoundProcedure(null,"xyzzy"));
         assertObjectsAreNotEqual(f,new RightBoundProcedure(new NoOp(),null));

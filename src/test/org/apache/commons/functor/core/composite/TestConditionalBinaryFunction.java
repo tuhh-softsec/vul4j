@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalBinaryFunction.java,v 1.2 2003/01/29 23:24:52 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestConditionalBinaryFunction.java,v 1.3 2003/12/02 16:38:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,10 +62,10 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.core.ConstantFunction;
 import org.apache.commons.functor.core.ConstantPredicate;
-import org.apache.commons.functor.core.LeftIdentityPredicate;
+import org.apache.commons.functor.core.LeftIdentity;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/01/29 23:24:52 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 16:38:45 $
  * @author Rodney Waldhoff
  */
 public class TestConditionalBinaryFunction extends BaseFunctorTest {
@@ -107,7 +107,7 @@ public class TestConditionalBinaryFunction extends BaseFunctorTest {
     
     public void testEvaluate() throws Exception {
         ConditionalBinaryFunction f = new ConditionalBinaryFunction(
-            new LeftIdentityPredicate(),
+            new LeftIdentity(),
             new ConstantFunction("left"),
             new ConstantFunction("right"));
         assertEquals("left",f.evaluate(Boolean.TRUE,null));
@@ -116,16 +116,16 @@ public class TestConditionalBinaryFunction extends BaseFunctorTest {
     
     public void testEquals() throws Exception {
         ConditionalBinaryFunction f = new ConditionalBinaryFunction(
-            new LeftIdentityPredicate(),
+            new LeftIdentity(),
             new ConstantFunction("left"),
             new ConstantFunction("right"));
         assertEquals(f,f);
         assertObjectsAreEqual(f,new ConditionalBinaryFunction(
-            new LeftIdentityPredicate(),
+            new LeftIdentity(),
             new ConstantFunction("left"),
             new ConstantFunction("right")));
         assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(
-            new LeftIdentityPredicate(),
+            new LeftIdentity(),
             new ConstantFunction(null),
             new ConstantFunction("right")));
         assertObjectsAreNotEqual(f,new ConditionalBinaryFunction(

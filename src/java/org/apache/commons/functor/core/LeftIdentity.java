@@ -1,5 +1,5 @@
-/*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestLeftBoundFunction.java,v 1.4 2003/12/02 16:38:45 rwaldhoff Exp $
+/* 
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/core/LeftIdentity.java,v 1.1 2003/12/02 16:38:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,78 +54,66 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.adapter;
+package org.apache.commons.functor.core;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Serializable;
 
-import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.LeftIdentity;
-import org.apache.commons.functor.core.RightIdentityFunction;
+import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 16:38:45 $
+ * {@link #evaluate Evaluates} to its first argument.
+ * 
+ * {@link #test Tests} to the <code>boolean</code>
+ * value of the <code>Boolean</code>-valued first
+ * argument. The {@link #test test} method 
+ * throws an exception if the parameter isn't a 
+ * non-<code>null</code> <code>Boolean</code>.
+ * 
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 16:38:45 $
  * @author Rodney Waldhoff
  */
-public class TestLeftBoundFunction extends BaseFunctorTest {
-
-    // Conventional
+public final class LeftIdentity implements BinaryPredicate, BinaryFunction, Serializable {
+    
+    // constructor
+    // ------------------------------------------------------------------------
+    public LeftIdentity() {
+    }
+ 
+    // functor interface
     // ------------------------------------------------------------------------
 
-    public TestLeftBoundFunction(String testName) {
-        super(testName);
+    public Object evaluate(Object left, Object right) {
+        return left;
     }
 
-    public static Test suite() {
-        return new TestSuite(TestLeftBoundFunction.class);
+    public boolean test(Object left, Object right) {
+        return test((Boolean)left);
     }
 
-    // Functor Testing Framework
-    // ------------------------------------------------------------------------
-
-    protected Object makeFunctor() {
-        return new LeftBoundFunction(new RightIdentityFunction(),"xyzzy");
+    private boolean test(Boolean bool) {
+        return bool.booleanValue();
     }
 
-    // Lifecycle
-    // ------------------------------------------------------------------------
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    // Tests
-    // ------------------------------------------------------------------------    
-
-    public void testEvaluate() throws Exception {
-        UnaryFunction f = new LeftBoundFunction(new RightIdentityFunction(),"foo");
-        assertEquals("xyzzy",f.evaluate("xyzzy"));
+    public boolean equals(Object that) {
+        return (that instanceof LeftIdentity);
     }
     
-    public void testEquals() throws Exception {
-        UnaryFunction f = new LeftBoundFunction(new RightIdentityFunction(),"xyzzy");
-        assertEquals(f,f);
-        assertObjectsAreEqual(f,new LeftBoundFunction(new RightIdentityFunction(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new ConstantFunction("xyzzy"));
-        assertObjectsAreNotEqual(f,new LeftBoundFunction(new LeftIdentity(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new LeftBoundFunction(new RightIdentityFunction(),"bar"));
-        assertObjectsAreNotEqual(f,new LeftBoundFunction(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new LeftBoundFunction(new RightIdentityFunction(),null));
-        assertObjectsAreEqual(new LeftBoundFunction(null,null),new LeftBoundFunction(null,null));
+    public int hashCode() {
+        return "LeftIdentity".hashCode();
     }
-
-    public void testAdaptNull() throws Exception {
-        assertNull(LeftBoundFunction.bind(null,"xyzzy"));
+    
+    public String toString() {
+        return "LeftIdentity";
     }
-
-    public void testAdapt() throws Exception {
-        assertNotNull(LeftBoundFunction.bind(new RightIdentityFunction(),"xyzzy"));
-        assertNotNull(LeftBoundFunction.bind(new RightIdentityFunction(),null));
+    
+    // static methods
+    // ------------------------------------------------------------------------
+    public static LeftIdentity instance() {
+        return INSTANCE;
     }
+    
+    // static attributes
+    // ------------------------------------------------------------------------
+    private static final LeftIdentity INSTANCE = new LeftIdentity();
 }

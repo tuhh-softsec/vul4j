@@ -1,5 +1,5 @@
-/*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/adapter/TestLeftBoundFunction.java,v 1.4 2003/12/02 16:38:45 rwaldhoff Exp $
+/* 
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/TestLeftIdentity.java,v 1.1 2003/12/02 16:38:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -54,41 +54,39 @@
  * <http://www.apache.org/>.
  *
  */
-package org.apache.commons.functor.adapter;
+package org.apache.commons.functor.core;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.functor.BaseFunctorTest;
-import org.apache.commons.functor.UnaryFunction;
-import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.LeftIdentity;
-import org.apache.commons.functor.core.RightIdentityFunction;
+import org.apache.commons.functor.BinaryFunction;
+import org.apache.commons.functor.BinaryPredicate;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/02 16:38:45 $
+ * @version $Revision: 1.1 $ $Date: 2003/12/02 16:38:45 $
  * @author Rodney Waldhoff
  */
-public class TestLeftBoundFunction extends BaseFunctorTest {
+public class TestLeftIdentity extends BaseFunctorTest {
 
     // Conventional
     // ------------------------------------------------------------------------
 
-    public TestLeftBoundFunction(String testName) {
+    public TestLeftIdentity(String testName) {
         super(testName);
     }
 
     public static Test suite() {
-        return new TestSuite(TestLeftBoundFunction.class);
+        return new TestSuite(TestLeftIdentity.class);
     }
 
     // Functor Testing Framework
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new LeftBoundFunction(new RightIdentityFunction(),"xyzzy");
+        return new LeftIdentity();
     }
-
+    
     // Lifecycle
     // ------------------------------------------------------------------------
 
@@ -101,31 +99,49 @@ public class TestLeftBoundFunction extends BaseFunctorTest {
     }
 
     // Tests
-    // ------------------------------------------------------------------------    
-
+    // ------------------------------------------------------------------------
+    
     public void testEvaluate() throws Exception {
-        UnaryFunction f = new LeftBoundFunction(new RightIdentityFunction(),"foo");
-        assertEquals("xyzzy",f.evaluate("xyzzy"));
+        BinaryFunction f = new LeftIdentity();
+        assertNull(f.evaluate(null,null));
+        assertNull(f.evaluate(null,"xyzzy"));
+        assertEquals("xyzzy",f.evaluate("xyzzy","abcdefg"));
+        assertEquals("xyzzy",f.evaluate("xyzzy",null));
+        assertEquals(new Integer(3),f.evaluate(new Integer(3),null));
+        Object obj = new Long(12345L);
+        assertSame(obj,f.evaluate(obj,null));
+        assertSame(obj,f.evaluate(obj,obj));
+    }
+    
+    public void testTest() throws Exception {
+        BinaryPredicate p = new LeftIdentity();
+        assertTrue(p.test(Boolean.TRUE,null));
+        assertTrue(!p.test(Boolean.FALSE,null));
+        try {
+            p.test("true",null);
+            fail("Expected ClassCastException");
+        } catch(ClassCastException e) {
+            // expected
+        }
+        try {
+            p.test(null,null);
+            fail("Expected NullPointerException");
+        } catch(NullPointerException e) {
+            // expected
+        }
     }
     
     public void testEquals() throws Exception {
-        UnaryFunction f = new LeftBoundFunction(new RightIdentityFunction(),"xyzzy");
+        BinaryFunction f = new LeftIdentity();
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new LeftBoundFunction(new RightIdentityFunction(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new ConstantFunction("xyzzy"));
-        assertObjectsAreNotEqual(f,new LeftBoundFunction(new LeftIdentity(),"xyzzy"));
-        assertObjectsAreNotEqual(f,new LeftBoundFunction(new RightIdentityFunction(),"bar"));
-        assertObjectsAreNotEqual(f,new LeftBoundFunction(null,"xyzzy"));
-        assertObjectsAreNotEqual(f,new LeftBoundFunction(new RightIdentityFunction(),null));
-        assertObjectsAreEqual(new LeftBoundFunction(null,null),new LeftBoundFunction(null,null));
+        assertObjectsAreEqual(f,new LeftIdentity());
+        assertObjectsAreEqual(f,LeftIdentity.instance());
+        assertObjectsAreNotEqual(f,new ConstantFunction("abcde"));
+        assertObjectsAreNotEqual(f,new ConstantPredicate(true));
     }
-
-    public void testAdaptNull() throws Exception {
-        assertNull(LeftBoundFunction.bind(null,"xyzzy"));
-    }
-
-    public void testAdapt() throws Exception {
-        assertNotNull(LeftBoundFunction.bind(new RightIdentityFunction(),"xyzzy"));
-        assertNotNull(LeftBoundFunction.bind(new RightIdentityFunction(),null));
+    
+    public void testConstant() throws Exception {
+        assertEquals(LeftIdentity.instance(),LeftIdentity.instance());
+        assertSame(LeftIdentity.instance(),LeftIdentity.instance());
     }
 }

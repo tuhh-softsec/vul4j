@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.2 2003/12/02 16:36:11 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/DataMunger.java,v 1.3 2003/12/02 16:38:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -71,7 +71,7 @@ import org.apache.commons.functor.adapter.IgnoreRightPredicate;
 import org.apache.commons.functor.adapter.UnaryFunctionUnaryPredicate;
 import org.apache.commons.functor.adapter.UnaryPredicateUnaryFunction;
 import org.apache.commons.functor.core.IsNull;
-import org.apache.commons.functor.core.LeftIdentityFunction;
+import org.apache.commons.functor.core.LeftIdentity;
 import org.apache.commons.functor.core.RightIdentityFunction;
 import org.apache.commons.functor.core.comparator.IsLessThan;
 import org.apache.commons.functor.core.composite.BinaryCompositeBinaryFunction;
@@ -83,7 +83,7 @@ import org.apache.commons.functor.example.kata.one.Subtract;
 import org.apache.commons.functor.example.lines.Lines;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/12/02 16:36:11 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/02 16:38:45 $
  * @author Rodney Waldhoff
  */
 public class DataMunger {
@@ -119,7 +119,7 @@ public class DataMunger {
                         BinaryPredicateBinaryFunction.adapt(IsLessThan.instance()),
                         IgnoreRightFunction.adapt(absSpread(col1,col2)),
                         IgnoreLeftFunction.adapt(absSpread(col1,col2)))),
-                LeftIdentityFunction.instance(),
+                LeftIdentity.instance(),
                 RightIdentityFunction.instance()
             )
         );

@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestTransposedFunction.java,v 1.1 2003/01/27 19:33:43 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/composite/TestTransposedFunction.java,v 1.2 2003/12/02 16:38:45 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -62,11 +62,11 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.BinaryFunction;
 import org.apache.commons.functor.core.ConstantFunction;
-import org.apache.commons.functor.core.LeftIdentityFunction;
+import org.apache.commons.functor.core.LeftIdentity;
 import org.apache.commons.functor.core.RightIdentityFunction;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/01/27 19:33:43 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/02 16:38:45 $
  * @author Rodney Waldhoff
  */
 public class TestTransposedFunction extends BaseFunctorTest {
@@ -86,7 +86,7 @@ public class TestTransposedFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
 
     protected Object makeFunctor() {
-        return new TransposedFunction(new LeftIdentityFunction());
+        return new TransposedFunction(new LeftIdentity());
     }
 
     // Lifecycle
@@ -104,15 +104,15 @@ public class TestTransposedFunction extends BaseFunctorTest {
     // ------------------------------------------------------------------------
     
     public void testEvaluate() throws Exception {
-        BinaryFunction f = new TransposedFunction(new LeftIdentityFunction());
+        BinaryFunction f = new TransposedFunction(new LeftIdentity());
         assertEquals("xyzzy",f.evaluate(null,"xyzzy"));
         assertNull(f.evaluate("xyzzy",null));
     }
         
     public void testEquals() throws Exception {
-        BinaryFunction f = new TransposedFunction(new LeftIdentityFunction());
+        BinaryFunction f = new TransposedFunction(new LeftIdentity());
         assertEquals(f,f);
-        assertObjectsAreEqual(f,new TransposedFunction(new LeftIdentityFunction()));
+        assertObjectsAreEqual(f,new TransposedFunction(new LeftIdentity()));
         assertObjectsAreNotEqual(f,new TransposedFunction(new RightIdentityFunction()));
         assertObjectsAreNotEqual(f,new TransposedFunction(null));
         assertObjectsAreNotEqual(f,new ConstantFunction("y"));
