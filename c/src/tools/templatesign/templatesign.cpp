@@ -1302,6 +1302,7 @@ int main(int argc, char **argv) {
 
 	delete [] gEncodingName;
 	XMLString::release((XMLCh **) &encNameStr);   // Cast to allow delete[] const
+	delete gFormatter;
 	delete formatTarget;
 
 #if defined (_WIN32) && defined (HAVE_WINCAPI)
