@@ -1,6 +1,6 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/NamedBean.java,v 1.2 2003/04/17 11:08:17 rdonkin Exp $
- * $Revision: 1.2 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/ParamBean.java,v 1.1 2003/04/17 11:08:17 rdonkin Exp $
+ * $Revision: 1.1 $
  * $Date: 2003/04/17 11:08:17 $
  *
  * ====================================================================
@@ -59,38 +59,41 @@
  *
  */
 
-
 package org.apache.commons.digester;
 
 
-/**
- * Very simple test bean
+/** 
+ * This bean is used to replicate a reasonably complex use case 
+ * whose behaviour has changed from Digester 1.3 to 1.4.
  *
- * @author Robert Burrell Donkin
- * @version $Revision: 1.2 $ $Date: 2003/04/17 11:08:17 $
+ * @author robert burrell donkin
  */
-
-public class NamedBean {
+public class ParamBean {
     
-    private String name = "**UNSET**";
+    private boolean cool;
+    private String that;
+    private String _this;
     
-    public NamedBean() {}
+    public ParamBean() {}
     
-    public NamedBean(String name) {}
+    public boolean isCool() {
+        return cool;
+    }	
     
-    public String getName() {
-        return name;
+    public void setCool(boolean cool) {
+        this.cool = cool;
     }
     
-    public void setName(String name) {
-        this.name = name;
+    public String getThis() {
+        return _this;
     }
     
-    public void test(String name, String ignored) {
-        setName(name);
+    public String getThat() {
+        return that;
     }
     
-    public String toString() {
-        return "NamedBean[" + getName() + "]";
+    public void setThisAndThat(String _this, String that) {
+        this._this = _this;
+        this.that = that;
     }
 }

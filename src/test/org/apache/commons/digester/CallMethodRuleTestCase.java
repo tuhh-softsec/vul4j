@@ -72,6 +72,7 @@ import junit.framework.TestSuite;
 
 import org.xml.sax.SAXException;
 
+//import org.apache.commons.logging.impl.SimpleLog;
 
 /**
  * <p>Tests for the <code>CallMethodRule</code> and associated 
@@ -431,6 +432,101 @@ public class CallMethodRuleTestCase extends TestCase {
         assertEquals("Out of stack not set to null", null , bean.getName());
     }
     
+    public void testTwoCalls() throws Exception {
+        
+    
+        StringReader reader = new StringReader(
+            "<?xml version='1.0' ?><root>"
+            + "<param class='int' coolness='true'>25</param>"
+            + "<param class='long'>50</param>"
+            + "<param class='float' coolness='false'>90</param></root>");
+            
+        Digester digester = new Digester();
+        //SimpleLog log = new SimpleLog("{testTwoCalls:Digester]");
+        //log.setLevel(SimpleLog.LOG_LEVEL_TRACE);
+        //digester.setLogger(log);
+        
+        digester.addObjectCreate( "root/param", ParamBean.class );
+        digester.addSetNext( "root/param", "add" );
+        digester.addCallMethod( "root/param", "setThisAndThat", 2 );
+        digester.addCallParam( "root/param", 0, "class" );
+        digester.addCallParam( "root/param", 1 );
+        digester.addCallMethod( "root/param", "setCool", 1, new Class[] {boolean.class } );
+        digester.addCallParam( "root/param", 0, "coolness" );
+        
+        ArrayList list = new ArrayList();
+        digester.push(list);
+        digester.parse(reader);
+    
+        assertEquals("Wrong number of objects created", 3, list.size());
+        ParamBean bean = (ParamBean) list.get(0);
+        assertEquals("Coolness wrong (1)", true, bean.isCool());
+        assertEquals("This wrong (1)", "int", bean.getThis());
+        assertEquals("That wrong (1)", "25", bean.getThat());
+        bean = (ParamBean) list.get(1);
+        assertEquals("Coolness wrong (2)", false, bean.isCool());
+        assertEquals("This wrong (2)", "long", bean.getThis());
+        assertEquals("That wrong (2)", "50", bean.getThat());
+        bean = (ParamBean) list.get(2);
+        assertEquals("Coolness wrong (3)", false, bean.isCool());
+        assertEquals("This wrong (3)", "float", bean.getThis());
+        assertEquals("That wrong (3)", "90", bean.getThat());
+    }
+
+    public void testNestedBody() throws Exception {
+        
+        StringReader reader = new StringReader(
+            "<?xml version='1.0' ?><root>"
+            + "<spam>Simple</spam>"
+            + "<spam>Complex<spam>Deep<spam>Deeper<spam>Deepest</spam></spam></spam></spam>"
+            + "</root>");
+            
+        Digester digester = new Digester();        
+
+        //SimpleLog log = new SimpleLog("[testPrimitiveReading:Digester]");
+        //log.setLevel(SimpleLog.LOG_LEVEL_TRACE);
+        //digester.setLogger(log);
+        
+        
+        digester.addObjectCreate("root/spam", NamedBean.class);
+        digester.addSetRoot("root/spam", "add");
+        digester.addCallMethod( "root/spam", "setName", 1 );
+        digester.addCallParam( "root/spam", 0);
+        
+        digester.addObjectCreate("root/spam/spam", NamedBean.class);
+        digester.addSetRoot("root/spam/spam", "add");
+        digester.addCallMethod( "root/spam/spam", "setName", 1 );
+        digester.addCallParam( "root/spam/spam", 0);        
+        
+        digester.addObjectCreate("root/spam/spam/spam", NamedBean.class);
+        digester.addSetRoot("root/spam/spam/spam", "add");
+        digester.addCallMethod( "root/spam/spam/spam", "setName", 1 );
+        digester.addCallParam( "root/spam/spam/spam", 0);      
+
+        
+        digester.addObjectCreate("root/spam/spam/spam/spam", NamedBean.class);
+        digester.addSetRoot("root/spam/spam/spam/spam", "add");
+        digester.addCallMethod( "root/spam/spam/spam/spam", "setName", 1 );
+        digester.addCallParam( "root/spam/spam/spam/spam", 0);   
+        
+        ArrayList list = new ArrayList();
+        digester.push(list);
+        digester.parse(reader);
+        
+        System.out.println(list);
+        
+        NamedBean bean = (NamedBean) list.get(0);
+        assertEquals("Wrong name (1)", "Simple", bean.getName());
+        // these are added in deepest first order by the addRootRule
+        bean = (NamedBean) list.get(4);
+        assertEquals("Wrong name (2)", "Complex", bean.getName());
+        bean = (NamedBean) list.get(3);
+        assertEquals("Wrong name (3)", "Deep", bean.getName());
+        bean = (NamedBean) list.get(2);
+        assertEquals("Wrong name (4)", "Deeper", bean.getName());
+        bean = (NamedBean) list.get(1);
+        assertEquals("Wrong name (5)", "Deepest", bean.getName());
+    }
 
     // ------------------------------------------------ Utility Support Methods
 

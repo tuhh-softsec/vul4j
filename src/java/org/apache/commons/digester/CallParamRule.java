@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.12 2003/04/16 11:23:50 jstrachan Exp $
- * $Revision: 1.12 $
- * $Date: 2003/04/16 11:23:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.13 2003/04/17 11:08:16 rdonkin Exp $
+ * $Revision: 1.13 $
+ * $Date: 2003/04/17 11:08:16 $
  *
  * ====================================================================
  *
@@ -65,6 +65,8 @@ package org.apache.commons.digester;
 
 import org.xml.sax.Attributes;
 
+import org.apache.commons.collections.ArrayStack;
+
 
 /**
  * <p>Rule implementation that saves a parameter for use by a surrounding 
@@ -82,7 +84,7 @@ import org.xml.sax.Attributes;
  * </p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.12 $ $Date: 2003/04/16 11:23:50 $
+ * @version $Revision: 1.13 $ $Date: 2003/04/17 11:08:16 $
  */
 
 public class CallParamRule extends Rule {
@@ -208,6 +210,11 @@ public class CallParamRule extends Rule {
      */
     protected int stackIndex = 0;
 
+    /** 
+     * Stack is used to allow nested body text to be processed.
+     * Lazy creation.
+     */
+    protected ArrayStack bodyTextStack;
 
     // --------------------------------------------------------- Public Methods
 
@@ -260,10 +267,26 @@ public class CallParamRule extends Rule {
     public void body(String bodyText) throws Exception {
 
         if (attributeName == null && !fromStack) {
-            Object parameters[] = (Object[]) digester.peekParams();
-            parameters[paramIndex] = bodyText.trim();
+            // We must wait to set the parameter until end
+            // so that we can make sure that the right set of parameters
+            // is at the top of the stack
+            if (bodyTextStack == null) {
+                bodyTextStack = new ArrayStack();
+            }
+            bodyTextStack.push(bodyText.trim());
         }
 
+    }
+    
+    /**
+     * Process any body texts now.
+     */
+    public void end(String namespace, String name) {
+        if (bodyTextStack != null && !bodyTextStack.empty()) {
+            // what we do now is push one parameter onto the top set of parameters
+            Object parameters[] = (Object[]) digester.peekParams();
+            parameters[paramIndex] = bodyTextStack.pop();
+        }
     }
 
     /**
