@@ -280,27 +280,23 @@ public class Transforms extends SignatureElementProxy {
     * @throws TransformationException
     */
    public Transform item(int i) throws TransformationException {
-
-      try {
-         Element nscontext = XMLUtils.createDSctx(this._doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         Element transformElem =
-            (Element) XPathAPI.selectSingleNode(this._constructionElement,
-                                                "./ds:"
-                                                + Constants._TAG_TRANSFORM
-                                                + "[" + (i + 1) + "]",
-                                                nscontext);
-
-         if (transformElem == null) {
-            return null;
-         } else {
-            return new Transform(transformElem, this._baseURI);
-         }
-      } catch (TransformerException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (XMLSecurityException ex) {
-         throw new TransformationException("empty", ex);
-      }
+   	
+	   	try {
+	   		Node sibling= this._constructionElement.getFirstChild();
+	   		while (sibling!=null) {
+	   			if ("Transform".equals(sibling.getLocalName())
+	   					&& Constants.SignatureSpecNS.equals(sibling.getNamespaceURI())) {
+	   				if (i==0){
+	   					return new Transform((Element)sibling, this._baseURI);
+	   				}
+	   				i--;
+	   			}
+	   			sibling=sibling.getNextSibling();
+	   		}
+	   		return null;                                                                     
+	   	} catch (XMLSecurityException ex) {
+	   		throw new TransformationException("empty", ex);
+	   	}
    }
 
    public String getBaseLocalName() {

@@ -52,6 +52,7 @@ public class JCEMapper {
    private static Element _nscontext = null;
    
    private static Map uriToProvider = new HashMap();
+   private static Map cacheProviderIsInClassPath = new HashMap();
 
    /**
     * Method init
@@ -119,6 +120,14 @@ public class JCEMapper {
    public static boolean getProviderIsInClassPath(String providerId) {
 
       boolean available = false;
+      Boolean isInClassPath=(Boolean) cacheProviderIsInClassPath.get(providerId);
+      if ((isInClassPath!=null) && isInClassPath.booleanValue()) {
+      	//Don't cache the negatives one, in case that latter are added
+      	//To the classpath
+      	//FIXME: Can the above happend?
+      	return true;
+      }
+
 
       try {
 		  /* Allow for mulitple provider entries with same Id */
@@ -149,7 +158,8 @@ public class JCEMapper {
       } catch (TransformerException ex) {
 		//do nothing
       }
-
+      
+      cacheProviderIsInClassPath.put(providerId,new Boolean(available));
       return available;
    }
 
@@ -182,14 +192,14 @@ public class JCEMapper {
 
       log.debug("Request for URI " + AlgorithmURI);
 
-      try {
-      	
-      	ProviderIdClass prov=(ProviderIdClass)
-		uriToProvider.get(AlgorithmURI);
-		          if (prov!=null) {
-		              return prov;
-		          }
+      ProviderIdClass prov=(ProviderIdClass) uriToProvider.get(AlgorithmURI);
+      if (prov!=null) {
+      	return prov;
+      }
 
+
+      try {
+ 
          NodeList providers = XPathAPI.selectNodeList(JCEMapper._providerList,
                                  "./x:Algorithms/x:Algorithm[@URI='"
                                  + AlgorithmURI + "']/x:ProviderAlgo",
