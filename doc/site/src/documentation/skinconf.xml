@@ -20,53 +20,14 @@ Skin configuration file. This file contains details of your project, which will
 be used to configure the chosen Forrest skin.
 -->
 
-<!DOCTYPE skinconfig [
-
-  <!ENTITY % links.att 'name CDATA #REQUIRED'>
-  <!ENTITY % link.att 'name CDATA #REQUIRED href CDATA #REQUIRED'>
-  <!ELEMENT skinconfig (disable-search?, disable-compliance-links?, searchsite-domain?, searchsite-name?,
-  project-name, project-url, project-logo, group-name?, group-url?, group-logo?,
-  host-url?, host-logo?, year?, vendor?, trail?, credits?)*>
-  <!ELEMENT credits (credit*)>
-  <!ELEMENT credit (name, url, image?, width?, height?)>
-  <!-- id uniquely identifies the tool, and role indicates its function -->
-  <!ATTLIST credit id   CDATA #IMPLIED
-                   role CDATA #IMPLIED>
-  <!ELEMENT disable-search (#PCDATA)>
-  <!ELEMENT disable-compliance-links (#PCDATA)>
-  <!ELEMENT searchsite-domain (#PCDATA)>
-  <!ELEMENT searchsite-name (#PCDATA)>  
-  <!ELEMENT project-name (#PCDATA)>
-  <!ELEMENT project-url (#PCDATA)>
-  <!ELEMENT project-logo (#PCDATA)>
-  <!ELEMENT group-name (#PCDATA)>
-  <!ELEMENT group-url (#PCDATA)>
-  <!ELEMENT group-logo (#PCDATA)>
-  <!ELEMENT host-url (#PCDATA)>
-  <!ELEMENT host-logo (#PCDATA)>
-  <!ELEMENT year (#PCDATA)>
-  <!ELEMENT vendor (#PCDATA)>
-  <!ELEMENT trail (link1, link2, link3)>
-  <!ELEMENT link1 EMPTY>
-  <!-- Seems we can't use param entity refs until this is DTDified -->
-  <!ATTLIST link1 name CDATA #REQUIRED href CDATA #IMPLIED>
-  <!ELEMENT link2 EMPTY>
-  <!ATTLIST link2 name CDATA #REQUIRED href CDATA #IMPLIED>
-  <!ELEMENT link3 EMPTY>
-  <!ATTLIST link3 name CDATA #REQUIRED href CDATA #IMPLIED>
-  <!ELEMENT name (#PCDATA)>
-  <!ELEMENT url (#PCDATA)>
-  <!ELEMENT image (#PCDATA)>
-  <!ELEMENT width (#PCDATA)>
-  <!ELEMENT height (#PCDATA)>
-  ]>
+ <!DOCTYPE skinconfig PUBLIC
+        "-//APACHE//DTD Skin Configuration V0.6-1//EN"
+        "skinconfig-v06-2.dtd">
 
 <skinconfig>
   <!-- Do we want to disable the Google search box? -->
-  <disable-search>false</disable-search>
+  <search name="Apache XML Security" domain="xml.apache.org/security" provider="google" />
   <disable-compliance-links>false</disable-compliance-links>
-  <searchsite-domain>xml.apache.org/security</searchsite-domain>
-  <searchsite-name>XML Security</searchsite-name>  
 
   <!-- mandatory project logo
        skin: forrest-site renders it at the top -->
@@ -97,6 +58,44 @@ be used to configure the chosen Forrest skin.
     <link2 name="xml.apache" href="http://xml.apache.org/"/>
     <link3 name="" href=""/>
   </trail>
+
+  <!-- Setup Colours - required as of V 0.6 -->
+  <colors>
+    <color name="header"    value="#294563"/>
+
+    <color name="tab-selected" value="#4a6d8c" link="#0F3660" vlink="#0F3660" hlink="#000066"/>
+    <color name="tab-unselected" value="#b5c7e7" link="#0F3660" vlink="#0F3660" hlink="#000066"/>
+    <color name="subtab-selected" value="#4a6d8c" link="#0F3660" vlink="#0F3660" hlink="#000066"/>
+    <color name="subtab-unselected" value="#4a6d8c" link="#0F3660" vlink="#0F3660" hlink="#000066"/>
+
+    <color name="heading" value="#294563"/>
+    <color name="subheading" value="#4a6d8c"/>
+        
+    <color name="published" value="#4C6C8F" font="#FFFFFF"/>
+    <color name="feedback" value="#4C6C8F" font="#FFFFFF" />
+	        
+    <color name="navstrip" value="#4a6d8c" font="#ffffff" link="#0F3660" vlink="#0F3660" hlink="#000066"/>
+    <color name="toolbox" value="#4a6d8c"/>
+    <color name="border" value="#294563"/>
+    
+    <color name="menu" value="#4a6d8c" font="#cedfef" link="#ffffff" vlink="#ffffff" hlink="#ffcf00"/>   
+    
+    <color name="menuheading" value="#cfdced" font="#000000" />
+    <color name="searchbox" value="#E5E4D9" font="#000000"/>
+         
+    <color name="dialog" value="#4a6d8c"/>
+    <color name="body" value="#ffffff"  link="#0F3660" vlink="#009999" hlink="#000066"/>
+    
+    <color name="table" value="#7099C5"/>    
+    <color name="table-cell" value="#f0f0ff"/>    
+    <color name="highlight" value="#ffff00"/>
+    <color name="fixme" value="#cc6600"/>
+    <color name="note" value="#006699"/>
+    <color name="warning" value="#990000"/>
+    <color name="code" value="#CFDCED"/>
+        
+    <color name="footer" value="#cedfef"/>
+  </colors>
 
   <!-- Credits are typically rendered as a set of small clickable images in the
   page footer -->
