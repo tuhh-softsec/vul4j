@@ -80,6 +80,9 @@ import org.w3c.dom.*;
 
 
 /**
+ * This is the representation of an <CODE>xenc:EncryptionMethod</CODE>
+ * element. It's additionally the factory for encryption/wrap/transport
+ * algorithms.
  *
  * @author $Author$
  */

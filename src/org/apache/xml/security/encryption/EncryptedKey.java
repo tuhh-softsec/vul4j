@@ -566,12 +566,12 @@ public class EncryptedKey extends EncryptionElementProxy
       byte ciphertext[] = em.wrap(contentKey, wrapKey);
       KeyInfo ki = new KeyInfo(doc);
 
-      ki.add(new org.apache.xml.security.keys.content.KeyName(doc, "Christian Geuer-Pollmann"));
+      ki.add(new org.apache.xml.security.keys.content.KeyName(doc,
+              "Christian Geuer-Pollmann"));
 
       EncryptedKey ed = new EncryptedKey(doc, em, ki,
                                          new CipherData(doc, ciphertext), null,
-                                         null,
-                                         "Christian Geuer-Pollmann", "",
+                                         null, "Christian Geuer-Pollmann", "",
                                          EncryptionConstants.TYPE_CONTENT,
                                          "Ed Simon");
 
@@ -597,7 +597,9 @@ public class EncryptedKey extends EncryptionElementProxy
       System.out.println("Decrypted: '"
                          + HexDump.byteArrayToHexString(unwrapped.getEncoded())
                          + "'");
-      System.out.println("Match: " + ed.getCarriedKeyName().matchesAgainstKeyInfo(ed.getKeyInfo()));
-
+      System.out
+         .println("Match: "
+                  + ed.getCarriedKeyName()
+                     .matchesAgainstKeyInfo(ed.getKeyInfo()));
    }
 }

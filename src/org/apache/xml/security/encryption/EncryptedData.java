@@ -836,10 +836,9 @@ public class EncryptedData extends EncryptionElementProxy
       javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
       Document doc = db.newDocument();
       Element root = doc.createElement("root");
-
       int NonceLength = 32;
       String realContent = "1 USD           ";
-      String desired     = "999.999.999 EUR ";
+      String desired = "999.999.999 EUR ";
       String estimated = realContent;
 
       {
@@ -920,7 +919,8 @@ public class EncryptedData extends EncryptionElementProxy
          int blockSize = ed2.getEncryptionMethod().getBlockSize();
          int ivSize = ed2.getEncryptionMethod().getIvLength();
          int modifyableBytes = ed2.getEncryptionMethod().getBlockSize()
-                               - (ed2.getNonce() % ed2.getEncryptionMethod().getBlockSize());
+                               - (ed2.getNonce()
+                                  % ed2.getEncryptionMethod().getBlockSize());
          byte estimatedBytes[] = estimated.getBytes("UTF-8");
          byte desiredBytes[] = desired.getBytes("UTF-8");
          int differenceSize = min(modifyableBytes, estimatedBytes.length,
@@ -944,7 +944,6 @@ public class EncryptedData extends EncryptionElementProxy
          }
 
          System.out.println(HexDump.byteArrayToHexString(ciphertext));
-
          ed2.getCipherData().getCipherValue().setCipherText(ciphertext);
          XMLUtils.outputDOMc14nWithComments(doc, System.out);
          System.out.println();

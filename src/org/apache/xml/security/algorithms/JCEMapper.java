@@ -354,7 +354,7 @@ public class JCEMapper {
    }
 
    /**
-    * Method getKeyLengthFromURI
+    * Returns the keylength in bit for a particular algorithm.
     *
     * @param AlgorithmURI
     * @return
@@ -378,13 +378,22 @@ public class JCEMapper {
       return 0;
    }
 
-   public static String getJCEKeyAlgorithmFromURI(String AlgorithmURI, String ProviderId) {
+   /**
+    * Method getJCEKeyAlgorithmFromURI
+    *
+    * @param AlgorithmURI
+    * @param ProviderId
+    * @return
+    */
+   public static String getJCEKeyAlgorithmFromURI(String AlgorithmURI,
+           String ProviderId) {
 
       try {
          Attr algoclassAttr =
             (Attr) XPathAPI.selectSingleNode(JCEMapper._providerList,
                                              "./x:Algorithms/x:Algorithm[@URI='"
-                                             + AlgorithmURI + "']/x:ProviderAlgo[@ProviderId='"
+                                             + AlgorithmURI
+                                             + "']/x:ProviderAlgo[@ProviderId='"
                                              + ProviderId + "']/@RequiredKey",
                                              JCEMapper._nscontext);
 
@@ -398,20 +407,40 @@ public class JCEMapper {
       return null;
    }
 
+   /** Field KEYTYPE_SYMMETRIC_KEY_WRAP           */
    public static final String KEYTYPE_SYMMETRIC_KEY_WRAP = "SymmetricKeyWrap";
+
+   /** Field KEYTYPE_BLOCK_ENCRYPTION           */
    public static final String KEYTYPE_BLOCK_ENCRYPTION = "BlockEncryption";
+
+   /** Field KEYTYPE_KEY_TRANSPORT           */
    public static final String KEYTYPE_KEY_TRANSPORT = "KeyTransport";
 
+   /**
+    * This takes a {@link Key} and one of the <CODE>JCEMapper.KEYTYPE_XXX</CODE>
+    * Strings and returns the algorithm for which this key is.
+    * <BR />
+    * Example: If you enter an AES Key of length 128 bit and the
+    * <CODE>JCEMapper.KEYTYPE_SYMMETRIC_KEY_WRAP</CODE>, the result is
+    * <CODE>EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128</CODE>.
+    *
+    *
+    * @param key
+    * @param type
+    * @return
+    */
    public static String getURIfromKey(Key key, String type) {
+
       String JCEalgo = key.getAlgorithm();
-      String keyLength = new Integer(key.getEncoded().length*8).toString();
+      String keyLength = new Integer(key.getEncoded().length * 8).toString();
 
       try {
          Attr URI = (Attr) XPathAPI.selectSingleNode(
             JCEMapper._providerList,
             "./x:Algorithms/x:Algorithm[@KeyLength='" + keyLength
-            + "' and @AlgorithmClass='" + type + "']/x:ProviderAlgo[@RequiredKey='"
-            + JCEalgo + "']/../@URI", JCEMapper._nscontext);
+            + "' and @AlgorithmClass='" + type
+            + "']/x:ProviderAlgo[@RequiredKey='" + JCEalgo + "']/../@URI",
+            JCEMapper._nscontext);
 
          if (URI != null) {
             return URI.getNodeValue();

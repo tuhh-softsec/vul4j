@@ -73,6 +73,7 @@ import org.apache.xml.security.utils.XMLUtils;
  * @author $Author$
  */
 public class CipherData extends EncryptionElementProxy {
+
    /*
    public CipherData(Document doc, CipherValue cipherValue) {
       this(doc, cipherValue, 0);
@@ -105,29 +106,68 @@ public class CipherData extends EncryptionElementProxy {
       }
    }
    */
+
+   /**
+    * Constructor CipherData
+    *
+    * @param doc
+    */
    public CipherData(Document doc) {
+
       super(doc, EncryptionConstants._TAG_CIPHERDATA);
 
       this._constructionElement.appendChild(this._doc.createTextNode("\n"));
    }
+
+   /**
+    * Constructor CipherData
+    *
+    * @param doc
+    * @param cipherValue
+    */
    public CipherData(Document doc, CipherValue cipherValue) {
+
       super(doc, EncryptionConstants._TAG_CIPHERDATA);
 
       this._constructionElement.appendChild(this._doc.createTextNode("\n"));
       this._constructionElement.appendChild(cipherValue.getElement());
       this._constructionElement.appendChild(this._doc.createTextNode("\n"));
    }
+
+   /**
+    * Constructor CipherData
+    *
+    * @param doc
+    * @param cipherReference
+    */
    public CipherData(Document doc, CipherReference cipherReference) {
+
       super(doc, EncryptionConstants._TAG_CIPHERDATA);
 
       this._constructionElement.appendChild(this._doc.createTextNode("\n"));
       this._constructionElement.appendChild(cipherReference.getElement());
       this._constructionElement.appendChild(this._doc.createTextNode("\n"));
    }
-   public CipherData(Document doc, byte ciphertext[]) {
+
+   /**
+    * Constructor CipherData
+    *
+    * @param doc
+    * @param ciphertext
+    * @throws XMLSecurityException
+    */
+   public CipherData(Document doc, byte ciphertext[])
+           throws XMLSecurityException {
       this(doc, new CipherValue(doc, ciphertext));
    }
 
+   /**
+    * Constructor CipherData
+    *
+    * @param element
+    * @param BaseURI
+    * @throws XMLSecurityException
+    */
    public CipherData(Element element, String BaseURI)
            throws XMLSecurityException {
       super(element, BaseURI, EncryptionConstants._TAG_CIPHERDATA);
@@ -137,8 +177,10 @@ public class CipherData extends EncryptionElementProxy {
     * Method getCipherValue
     *
     * @return
+    * @throws XMLSecurityException
     */
    public CipherValue getCipherValue() throws XMLSecurityException {
+
       Element cipherValue = XMLUtils.getDirectChild(this._constructionElement,
                                EncryptionConstants._TAG_CIPHERVALUE,
                                EncryptionConstants.EncryptionSpecNS);
@@ -154,11 +196,14 @@ public class CipherData extends EncryptionElementProxy {
     * Method getCipherReference
     *
     * @return
+    * @throws XMLSecurityException
     */
    public CipherReference getCipherReference() throws XMLSecurityException {
-      Element cipherReference = XMLUtils.getDirectChild(this._constructionElement,
-                               EncryptionConstants._TAG_CIPHERREFERENCE,
-                               EncryptionConstants.EncryptionSpecNS);
+
+      Element cipherReference =
+         XMLUtils.getDirectChild(this._constructionElement,
+                                 EncryptionConstants._TAG_CIPHERREFERENCE,
+                                 EncryptionConstants.EncryptionSpecNS);
 
       if (cipherReference == null) {
          return null;
@@ -203,18 +248,39 @@ public class CipherData extends EncryptionElementProxy {
       }
    }
 
+   /**
+    * Method isNotYetFilled
+    *
+    * @return
+    */
    public boolean isNotYetFilled() {
-      return (!this.isCipherReference() && !this.isCipherValue());
+      return (!this.isCipherReference() &&!this.isCipherValue());
    }
 
-   public void setCipherValue(CipherValue cipherValue) throws XMLSecurityException {
+   /**
+    * Method setCipherValue
+    *
+    * @param cipherValue
+    * @throws XMLSecurityException
+    */
+   public void setCipherValue(CipherValue cipherValue)
+           throws XMLSecurityException {
+
       if (this.isNotYetFilled()) {
          this._constructionElement.appendChild(cipherValue.getElement());
          this._constructionElement.appendChild(this._doc.createTextNode("\n"));
       }
    }
 
-   public void setCipherReference(CipherReference cipherReference) throws XMLSecurityException {
+   /**
+    * Method setCipherReference
+    *
+    * @param cipherReference
+    * @throws XMLSecurityException
+    */
+   public void setCipherReference(CipherReference cipherReference)
+           throws XMLSecurityException {
+
       if (this.isNotYetFilled()) {
          this._constructionElement.appendChild(cipherReference.getElement());
          this._constructionElement.appendChild(this._doc.createTextNode("\n"));
