@@ -79,6 +79,8 @@
 
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
+#define _XSEC_NODELIST_DEFAULT_SIZE	100
+
 /**
  * @ingroup internal
  */
@@ -98,30 +100,12 @@ XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
 class DSIG_EXPORT XSECXPathNodeList {
 
-
-private:
-
-	/**
-	 * \brief Element holder.
-	 *
-	 * Currently the list is implemented as a simple doubly linked list.
-	 */
-
-	struct XSECXPathNodeListElt {
-
-		const DOMNode			* element;	// Element referred to
-
-		XSECXPathNodeListElt	* next,
-								* last;		// For the list
-
-	};
-
 public:
 
 	/** @name Constructors, Destructors and operators */
 	//@{
 
-	XSECXPathNodeList();
+	XSECXPathNodeList(unsigned int initialSize = _XSEC_NODELIST_DEFAULT_SIZE);
 
 	/**
 	 * \brief Copy Constructor
@@ -219,15 +203,32 @@ public:
 
 	//@}
 
+	/** @name Manipulating Nodesets */
+	//@{
+
+	/**
+	 *\brief Intersect with nodeset
+	 *
+	 * Delete any nodes in my list that are not in the intersect list
+	 *
+	 * @param toIntersect The list to intersect with.
+	 */
+
+	void intersect(const XSECXPathNodeList &toIntersect);
+
+	//@}
+
 private:
 
 	// Internal functions
-	XSECXPathNodeListElt * findNode(const DOMNode * n);
+	unsigned int findNodeIndex(const DOMNode * n);
 
-	XSECXPathNodeListElt			* mp_first;			// First node in list
-	XSECXPathNodeListElt			* mp_last;			// Last node in list
-	XSECXPathNodeListElt			* mp_search;		// Where we are in the return
+	const DOMNode					** mp_elts;			// The current list of elements
 
+	unsigned int					m_size;				// How big is the current array
+	unsigned int					m_num;				// Number of elements in the array
+
+	unsigned int					m_current;			// current point in list for getNextNode
 };
 
 

@@ -84,9 +84,12 @@
 //           Constructors and Destructors.
 // --------------------------------------------------------------------------------
 
-XSECXPathNodeList::XSECXPathNodeList() {
+XSECXPathNodeList::XSECXPathNodeList(unsigned int initialSize) {
 
-	mp_first = mp_last = NULL;
+	mp_elts = new const DOMNode *[initialSize];
+	m_size = initialSize;
+	m_current = 0;
+	m_num = 0;
 
 }
 
@@ -94,20 +97,13 @@ XSECXPathNodeList::XSECXPathNodeList(const XSECXPathNodeList &other) {
 
 	// Copy Constructor
 
-	// For now simply delete the old list and set with the new
-	// Large overhead as we call other functions, but simplest way to
-	// implement for now
+	mp_elts = new const DOMNode *[other.m_size];
+	m_size = other.m_size;
+	m_num = other.m_num;
 
-	mp_first = mp_last = NULL;
+	for (unsigned int i = 0; i < m_num; ++i) {
 
-	XSECXPathNodeListElt *cpyTmp;
-
-	cpyTmp = other.mp_first;
-
-	while (cpyTmp != NULL) {
-
-		addNode(cpyTmp->element);
-		cpyTmp = cpyTmp->next;
+		mp_elts[i] = other.mp_elts[i];
 
 	}
 
@@ -117,7 +113,7 @@ XSECXPathNodeList::~XSECXPathNodeList() {
 
 	// Delete all the elements in the node list
 
-	clear();
+	delete[] mp_elts;
 
 }
 
@@ -127,16 +123,15 @@ XSECXPathNodeList & XSECXPathNodeList::operator= (const XSECXPathNodeList & toCo
 	// Large overhead as we call other functions, but simplest way to
 	// implement for now
 
-	clear();
+	delete[] mp_elts;
 
-	XSECXPathNodeListElt *cpyTmp;
+	mp_elts = new const DOMNode *[toCopy.m_size];
+	m_size = toCopy.m_size;
+	m_num = toCopy.m_num;
 
-	cpyTmp = toCopy.mp_first;
+	for (unsigned int i = 0; i < m_num; ++i) {
 
-	while (cpyTmp != NULL) {
-
-		addNode(cpyTmp->element);
-		cpyTmp = cpyTmp->next;
+		mp_elts[i] = toCopy.mp_elts[i];
 
 	}
 
@@ -148,22 +143,42 @@ XSECXPathNodeList & XSECXPathNodeList::operator= (const XSECXPathNodeList & toCo
 //           Utility Functions.
 // --------------------------------------------------------------------------------
 
-XSECXPathNodeList::XSECXPathNodeListElt * XSECXPathNodeList::findNode(const DOMNode *n) {
+unsigned int XSECXPathNodeList::findNodeIndex(const DOMNode *n) {
 
-	XSECXPathNodeListElt * tmp;
+	// Check default values
+	if (m_num == 0 || mp_elts[0] >= n)
+		return 0;
 
-	tmp = mp_first;
+	// Binary search through the list to find where this node should be
 
-	while (tmp != NULL) {
+	unsigned int l = 0;				// Low
+	unsigned int h = m_num;			// High
 
-		if (tmp->element == n)
-			return tmp;
+	unsigned int i;
 
-		tmp = tmp->next;
+	while (true) {
+
+		i = l + ((h - l) / 2);
+
+		if (l == i)
+			return i + 1; // Insert point is the next element
+
+		if (mp_elts[i] == n) {
+			return i;		// Found and in list
+		}
+
+		if (n > mp_elts[i]) {
+
+			// In top half of search space
+			l = i;
+
+		}
+
+		else 
+			// In bottom half of search space
+			h = i;
 
 	}
-
-	return NULL;
 
 }
 
@@ -174,90 +189,77 @@ XSECXPathNodeList::XSECXPathNodeListElt * XSECXPathNodeList::findNode(const DOMN
 
 void XSECXPathNodeList::addNode(const DOMNode *n) {
 
-	XSECXPathNodeListElt *tmp;
+	if (m_num == 0) {
+		mp_elts[0] = n;
+		m_num = 1;
+		return;
+	}
+
+	unsigned int i = findNodeIndex(n);
+
+	if (i != m_num && mp_elts[i] == n)
+		return;
+#if 0
+	if (m_num == m_size) {
+
+		// need to re-create the list with a bigger aray
+		m_size *= 10;
+
+		const DOMNode ** newElts = new const DOMNode*[m_size];
+		for (unsigned j = 0; j < m_num; ++j) {
+			newElts[j] = mp_elts[j];
+		}
+		delete mp_elts;
+		mp_elts = newElts;
+
+	}
+
+	for (unsigned int j = m_num; j > i; --j) {
+
+		mp_elts[j] = mp_elts[j - 1];
 	
-	if (findNode(n) != NULL)
-		return;			// Allready exists
+	}
+#endif
+	if (m_num == m_size) {
 
-	XSECnew(tmp, XSECXPathNodeListElt);
-	tmp->element = n;
+		// Need to create the list with a bigger array
+		m_size *= 10;
 
-	if (mp_first == NULL) {
+		const DOMNode ** newElts = new const DOMNode*[m_size];
+		memcpy(newElts, mp_elts, sizeof(DOMNode *) * m_num);
 
-		tmp->next = NULL;
-		tmp->last = NULL;
-
-		mp_first = tmp;
-		mp_last = tmp;
+		delete mp_elts;
+		mp_elts = newElts;
 
 	}
 
-	else if (mp_last == NULL) {
+	memmove(&(mp_elts[i+1]), &(mp_elts[i]), (m_num - i) * sizeof(DOMNode *));
 
-		delete tmp;
 
-		throw XSECException(XSECException::InternalError,
-			"XSECXPathNodeList has an element that is incorrectly linked");
-
-	}
-
-	else {
-
-		mp_last->next = tmp;
-		tmp->last = mp_last;
-		tmp->next = NULL;
-		mp_last = tmp;
-
-	}
+	mp_elts[i] = n;
+	++m_num;
 
 }
 
 void XSECXPathNodeList::removeNode(const DOMNode *n) {
 
-	XSECXPathNodeListElt * tmp;
+	unsigned int i = findNodeIndex(n);
 
-	tmp = findNode(n);
-
-	if (tmp == NULL)
+	if (i == m_num || mp_elts[i] != n)
+		// not found
 		return;
 
-	if (tmp->last != NULL) {
+	for (unsigned int j = i; j < m_num; ++j)
+		mp_elts[j] = mp_elts[j+1];
 
-		tmp->last->next = tmp->next;
+	m_num--;
 
-	}
-
-	if (tmp->next != NULL) {
-
-		tmp->next->last = tmp->last;
-
-	}
-
-	if (mp_first == tmp)
-		mp_first = tmp->next;
-	if (mp_last == tmp)
-		mp_last = tmp->last;
-
-	delete tmp;
 
 }
 
 void XSECXPathNodeList::clear() {
 
-	XSECXPathNodeListElt * tmp;
-
-	tmp = mp_first;
-
-	while (tmp != NULL) {
-
-		mp_first = tmp->next;
-		delete tmp;
-
-		tmp = mp_first;
-
-	}
-
-	mp_last = NULL;
+	m_num = 0;
 
 }
 
@@ -268,33 +270,63 @@ void XSECXPathNodeList::clear() {
 
 bool XSECXPathNodeList::hasNode(const DOMNode *n) {
 
-	return (findNode(n) != NULL);
+	unsigned int i = findNodeIndex(n);
+
+	return (i != m_num && mp_elts[i] == n);
 
 }
 
 const DOMNode *XSECXPathNodeList::getFirstNode(void) {
 
-	if (mp_first == NULL)
-		return NULL;
 
-	mp_search = mp_first->next;
-
-	return mp_first->element;
+	m_current = 0;
+	return getNextNode();
 
 }
 
 const DOMNode *XSECXPathNodeList::getNextNode(void) {
 
-	if (mp_search == NULL)
+	if (m_current == m_num)
 		return NULL;
 
-	XSECXPathNodeListElt * tmp;
-
-	tmp = mp_search;
-	mp_search = mp_search->next;
-	
-	return tmp->element;
+	return mp_elts[m_current++];
 
 }
+	
+// --------------------------------------------------------------------------------
+//           Intersect with another list
+// --------------------------------------------------------------------------------
 
+void XSECXPathNodeList::intersect(const XSECXPathNodeList &toIntersect) {
+
+	const DOMNode ** newList = new const DOMNode *[m_size];
+
+	unsigned int i = 0;
+	unsigned int j = 0;
+	unsigned int k = 0;
+
+	while (true) {
+
+		if (mp_elts[i] == toIntersect.mp_elts[j]) {
+
+			newList[k++] = mp_elts[i++];
+			j++;
+		}
+
+		else if (mp_elts[i] < toIntersect.mp_elts[j]) {
+			++i;
+		}
+		else 
+			++j;
+
+		if (i == m_num || j == toIntersect.m_num)
+			break;
+
+	}
+
+	m_num = k;
+	delete[] mp_elts;
+	mp_elts = newList;
+
+}
 

@@ -437,19 +437,22 @@ bool TXFMXPathFilter::checkNodeInScope(DOMNode * n) {
 	return true;
 
 }
-#if 0
+#if 1
 void TXFMXPathFilter::walkDocument(DOMNode * n) {
 
+	// Non-recursive version
 
 	DOMNode * current = n;
 	DOMNode * next;
+	DOMNode * attParent;
 	bool done = false;
 	bool treeUp = false;
 	DOMNamedNodeMap * atts = n->getAttributes();
 	int attsSize = -1;
 	int currentAtt = -1;
+	lstsVectorType::iterator lstsIter;
 
-	while (done == false) {
+	while (done == false && current != NULL) {
 
 		if (treeUp == true) {
 
@@ -461,6 +464,15 @@ void TXFMXPathFilter::walkDocument(DOMNode * n) {
 			}
 
 			else {
+
+				// Remove this node from the ancestor lists
+				for (lstsIter = m_lsts.begin(); lstsIter < m_lsts.end(); ++lstsIter) {
+
+					if ((*lstsIter)->ancestorInScope == current) {
+						(*lstsIter)->ancestorInScope = NULL;
+					}
+				}
+
 
 				// Check for another sibling
 				next = current->getNextSibling();
@@ -485,7 +497,6 @@ void TXFMXPathFilter::walkDocument(DOMNode * n) {
 		else {
 
 			// Check if the current node is in the result set.  The walk the children
-			lstsVectorType::iterator lstsIter;
 
 			// First check if this node is in any lists, and if so,
 			// set the appropriate ancestor nodes (if necessary)
@@ -505,9 +516,9 @@ void TXFMXPathFilter::walkDocument(DOMNode * n) {
 			// Now that the ancestor setup is done, check to see if this node is 
 			// in scope.
 
-			if (checkNodeInScope(n) && checkNodeInInput(n)) {
+			if (checkNodeInScope(current) && checkNodeInInput(current)) {
 
-				m_xpathFilterMap.addNode(n);
+				m_xpathFilterMap.addNode(current);
 
 			}
 
@@ -522,8 +533,14 @@ void TXFMXPathFilter::walkDocument(DOMNode * n) {
 
 					// Attribute list complete
 					atts = NULL;
-					current = current->getParentNode();
-					treeUp = true;
+					current = attParent;
+					next = current->getFirstChild();
+					if (next == NULL)
+						treeUp = true;
+					else {
+						current = next;
+						treeUp = false;
+					}
 
 				}
 
@@ -537,23 +554,33 @@ void TXFMXPathFilter::walkDocument(DOMNode * n) {
 
 			else {
 				// Working on an element or other non-attribute node
-				atts = n->getAttributes();
+				atts = current->getAttributes();
+
 				if (atts != NULL && ((attsSize = atts->getLength()) > 0)) {
 
 					currentAtt = 0;
+					attParent = current;
 					current = atts->item(0);
+					treeUp = false;
 
 				}
 
 				else {
 
-					next = current->getNextSibling();
-					if (next == NULL) {
-						current = current->getParentNode();
-						treeUp = true;
-					}
-					else
+					atts = NULL;
+
+					next = current->getFirstChild();
+
+					if (next != NULL) {
 						current = next;
+						treeUp = false;
+					}
+
+					else {
+
+						treeUp = true;
+
+					}
 
 				}
 			} /* ! atts == NULL */
@@ -561,7 +588,7 @@ void TXFMXPathFilter::walkDocument(DOMNode * n) {
 	} /* while */
 }
 #endif
-#if 1
+#if 0
 
 void TXFMXPathFilter::walkDocument(DOMNode * n) {
 
