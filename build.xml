@@ -338,6 +338,12 @@ org.apache.xml.security.test.interop.*
         <classpath refid="classpath.doc" />
     </java>
     
+    <copy todir="${build.doc.html}">
+        <fileset
+            dir="${doc.xml}"
+            includes="**/*.txt" />
+    </copy>
+
     <delete dir="${doc.style}" />
   </target>
 

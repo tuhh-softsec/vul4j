@@ -7,7 +7,7 @@
                 <p>Note that there is no standard API avaliable at the moment. SUN is working on a JAVA Specification Request <jump href="http://jcp.org/jsr/detail/105.jsp">JSR-105: XML Digital Signature APIs</jump> on an API for XML Signature and <jump href="http://jcp.org/jsr/detail/106.jsp">JSR-106: XML Digital Encryption APIs</jump>, but until no, nothing has been published. So, this software does <em>not</em> conform to any of these specifications.</p>
 	</s2>
 	<s2 title="License Information">
-		<p>The XML Security package is available in both source code and precompiled binary (JAR files) form. Both  packages are made available under the <jump href='../../../LICENSE.txt'>Apache Software License</jump>.</p>
+		<p>The XML Security package is available in both source code and precompiled binary (JAR files) form. Both  packages are made available under the <jump href='LICENSE.txt'>Apache Software License</jump>.</p>
 	</s2>
 	<s2 title="Download">
 		<p>You can download the source and binary packages in the <jump href='http://xml.apache.org/security/dist/'>dist</jump> directory.</p>
