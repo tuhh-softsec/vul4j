@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/Attic/BaseDataMunger.java,v 1.1 2003/12/02 01:01:59 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/four/Attic/BaseDataMunger.java,v 1.2 2003/12/02 01:03:23 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,7 +68,7 @@ import org.apache.commons.functor.core.composite.CompositeUnaryFunction;
 import org.apache.commons.functor.example.lines.Lines;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/12/02 01:01:59 $
+ * @version $Revision: 1.2 $ $Date: 2003/12/02 01:03:23 $
  * @author Rodney Waldhoff
  */
 public abstract class BaseDataMunger implements UnaryFunction {
@@ -80,11 +80,7 @@ public abstract class BaseDataMunger implements UnaryFunction {
                     Algorithms.inject(
                         Lines.from(resource(obj)).where(nthColumnIsInteger(0)), 
                         null,
-                        new BinaryFunction() {
-                            public Object evaluate(Object left, Object right) {
-                                return lesserSpread(col1,col2).evaluate(left,right);
-                            }
-                        }));
+                        lesserSpread(col1,col2)));
             }
         };
     }
