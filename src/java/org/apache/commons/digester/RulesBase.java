@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.11 2003/02/02 16:09:53 rdonkin Exp $
- * $Revision: 1.11 $
- * $Date: 2003/02/02 16:09:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RulesBase.java,v 1.12 2003/07/31 21:59:00 rdonkin Exp $
+ * $Revision: 1.12 $
+ * $Date: 2003/07/31 21:59:00 $
  *
  * ====================================================================
  *
@@ -86,7 +86,7 @@ import java.util.List;
  * </ul>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.11 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/31 21:59:00 $
  */
 
 public class RulesBase implements Rules {
@@ -191,7 +191,13 @@ public class RulesBase implements Rules {
      * @param rule Rule instance to be registered
      */
     public void add(String pattern, Rule rule) {
-
+        // to help users who accidently add '/' to the end of their patterns
+        int patternLength = pattern.length();
+        if (patternLength>1 && pattern.endsWith("/")) {
+            pattern = pattern.substring(0, patternLength-1);
+        }
+        
+        
         List list = (List) cache.get(pattern);
         if (list == null) {
             list = new ArrayList();

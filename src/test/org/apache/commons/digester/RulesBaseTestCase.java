@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RulesBaseTestCase.java,v 1.7 2003/02/02 15:52:14 rdonkin Exp $
- * $Revision: 1.7 $
- * $Date: 2003/02/02 15:52:14 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RulesBaseTestCase.java,v 1.8 2003/07/31 21:59:00 rdonkin Exp $
+ * $Revision: 1.8 $
+ * $Date: 2003/07/31 21:59:00 $
  *
  * ====================================================================
  *
@@ -79,7 +79,7 @@ import junit.framework.TestSuite;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.7 $ $Date: 2003/02/02 15:52:14 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/31 21:59:00 $
  */
 
 public class RulesBaseTestCase extends TestCase {
@@ -328,5 +328,30 @@ public class RulesBaseTestCase extends TestCase {
         // clean up
         digester.getRules().clear();
 
+    }
+    
+    /** Tests the behaviour when a rule is added with a trailing slash*/
+    public void testTrailingSlash() {
+        // clear any existing rules
+        digester.getRules().clear();
+
+        assertEquals("Initial rules list is empty",
+                0, digester.getRules().rules().size());
+
+        // Set up rules
+        digester.addRule("alpha/beta/gamma/", new TestRule("one"));
+        digester.addRule("alpha/beta/", new TestRule("two"));
+        digester.addRule("beta/gamma/alpha", new TestRule("three"));
+
+        // test that rules are returned in set order
+        List list = digester.getRules().match(null, "alpha/beta/gamma");
+
+        assertEquals("Testing number of matches", 1, list.size());
+
+        Iterator it = list.iterator();
+        assertEquals("Testing ordering (A)", "one", ((TestRule) it.next()).getIdentifier());
+
+        // clean up
+        digester.getRules().clear();  
     }
 }
