@@ -2,7 +2,16 @@
 <!DOCTYPE s1 SYSTEM "./dtd/document.dtd">
 
 <s1 title="Installation">
-	<s2 title="Unpacking the files">
+	<s2 title="Getting the source">
+		<p>This project's CVS repository can be checked out through anonymous (pserver) CVS with the following instruction set. The module you wish to check out must be specified as the modulename. When prompted for a password for anonymous, simply enter "anoncvs" without quotes: </p>
+<source>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
+password: anoncvs
+
+cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout xml-security</source>
+		<p>A HTTP interface to browse the sources online is available via <jump href="http://cvs.apache.org/viewcvs.cgi/xml-security/">http://cvs.apache.org/viewcvs.cgi/xml-security/</jump></p>
+</s2>
+
+<!--	<s2 title="Unpacking the files">
 		<p>&packagename; is packaged as a ZIP file for all
 		platforms and operating systems.  You can run the Java
 		<ref>jar</ref> command to unpack the distribution.</p>
@@ -15,28 +24,34 @@
 	<s2 title="Files in the binary package release">
 		<table>
 			<tr><td>LICENSE</td><td>License for &packagename;</td></tr>
-			<!--<tr><td>README</td><td>Build instructions</td></tr>-->
 			<tr><td>Readme.html</td><td>Web page redirect to docs/html/index.html</td></tr>
-			<!--<tr><td>STATUS</td><td>Project status list</td></tr>-->
 			<tr><td>xerces.jar</td><td>Jar file containing all the parser class files</td></tr>
 			<tr><td>xercesSamples.jar</td><td>Jar file containing all sample class files</td></tr>
 			<tr><td>data/</td><td>Directory containing sample XML data files</td></tr>
-			<tr><td>docs/html/</td><td>Directory containing documentation</td></tr>
-			<tr><td>docs/html/apiDocs/</td><td>Directory containing Javadoc API for parser framework</td></tr>
+			<tr><td>doc/html/</td><td>Directory containing documentation</td></tr>
+			<tr><td>doc/html/api/</td><td>Directory containing Javadoc API</td></tr>
 		</table>
 		<note>To use &packagename; you do not need the source files.</note>
 	</s2>
+-->
+	<s2 title="Testing the distibution">
+		<p>The first way to ensure that everything is in place is to run the unit tests. This is simply done by typing <code>ant test</code>. This starts the included JUnit test cases. Actually, we do not have complete test coverage, but as a first start, it works.</p>
+	</s2>
+	<s2 title="Playing around with the examples">
+		<p>To see how the distribution works, simply run <code>ant mega-sample</code> to let ant execute several examples from the <code>src_samples/</code> directory. </p>
+	</s2>
 	<s2 title="Files in the source package release">
 		<table>
-			<tr><td>LICENSE</td><td>License for &packagename;</td></tr>
-			<tr><td>Makefile</td><td>Top level Makefile -- read README file before building</td></tr>
+			<tr><td>build.xml</td><td>Top level <jump href="http://jakarta.apache.org/ant/index.html">Ant</jump> Makefile -- read README file before building</td></tr>
+			<tr><td>LICENSE.txt</td><td>License for &packagename;</td></tr>
 			<tr><td>README</td><td>Build instructions</td></tr>
 			<tr><td>Readme.html</td><td>Web page redirect required for building documentation</td></tr>
 			<tr><td>STATUS</td><td>Current source code status information</td></tr>
-			<tr><td>data/</td><td>Directory containing sample XML data files</td></tr>
-			<tr><td>docs/</td><td>Directory containing documentation, in XML form</td></tr>
-			<tr><td>samples/</td><td>Directory containing source code for samples</td></tr>
-			<tr><td>src/</td><td>Directory containing source code for parser and supplemental APIs</td></tr>
+			<tr><td>data/</td><td>Directory containing sample data files and test vectors for the unit tests</td></tr>
+			<tr><td>doc/xml/</td><td>Directory containing documentation, in XML form</td></tr>
+			<tr><td>src/</td><td>Directory containing source code for the core library</td></tr>
+			<tr><td>src_samples/</td><td>Directory containing source code for samples</td></tr>
+			<tr><td>src_unitTests/</td><td>Directory containing source code for unit tests</td></tr>
 		</table>
 	</s2>
 </s1>

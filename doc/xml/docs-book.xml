@@ -13,14 +13,24 @@
   <document label="Installation" 
             id="install"     
             source="install.xml" />
+  <document label="Resolver-Mania" 
+            id="resolvermania"     
+            source="resolvermania.xml" />
+
+  <!-- 
   <group    label="FAQs"
             id="faqs"
             title="Frequently Asked Questions">
     <entry  id="faq-resolvers"
             source="faq-resolvers.xml" />
   </group>
+  -->
   <separator />
   <document label="API Docs"     
             id="api"         
             source="api.xml" />
+  <separator />
+  <document label="History" 
+            id="history"     
+            source="history.xml" />
 </book>
