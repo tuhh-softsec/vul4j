@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.6 2003/12/01 07:33:47 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/util/Attic/BinarySearch.java,v 1.7 2003/12/01 07:43:41 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -68,7 +68,7 @@ import java.util.List;
  * the {@link org.apache.commons.functor.Algorithms#recurse} call to execute the
  * search.
  *
- * @version $Revision: 1.6 $ $Date: 2003/12/01 07:33:47 $
+ * @version $Revision: 1.7 $ $Date: 2003/12/01 07:43:41 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
@@ -83,7 +83,7 @@ public class BinarySearch extends RecursiveFunction {
         this(list,item,0,list.size());
     }
 
-    public BinarySearch(List list, Comparable item, int lower, int upper) {
+    private BinarySearch(List list, Comparable item, int lower, int upper) {
         this.list = list; 
         this.item = item;
         this.lower = lower; 
@@ -98,18 +98,20 @@ public class BinarySearch extends RecursiveFunction {
      * when it is found. If the item is not found -1 (as Integer) is returned.
      */
     public Object evaluate() {
-        // TODO: should be using compareTo instead of equals
-        if (lower == upper) {
+        if (lower >= upper) {
             if(upper >= list.size()) {
-                return new Integer(-1);
-            } else if(list.get(upper).equals(item)) {
+                return NEGATIVE_ONE;
+            } else if(item.compareTo(list.get(upper)) == 0) {
                 return new Integer(upper);
             } else {
-                return new Integer(-1);
+                return NEGATIVE_ONE;
             }
         } else {
             int middle = (lower + upper) / 2;
-            if (item.compareTo(list.get(middle)) > 0) {
+            int compare = item.compareTo(list.get(middle));
+            if(compare == 0) {
+                return new Integer(middle);
+            } else if(compare > 0) {
                 return new BinarySearch(list, item, middle+1, upper);
             } else {
                 return new BinarySearch(list, item, lower, middle);
@@ -131,4 +133,6 @@ public class BinarySearch extends RecursiveFunction {
     private Comparable item = null;
     private int lower = 0;
     private int upper = 0;
+    
+    private static final Integer NEGATIVE_ONE = new Integer(-1);
 }
