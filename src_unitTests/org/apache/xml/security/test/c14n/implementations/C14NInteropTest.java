@@ -86,11 +86,11 @@ import org.w3c.dom.Node;
  *
  * @author Christian Geuer-Pollmann
  */
-public class C14NInterop extends InteropTest {
+public class C14NInteropTest extends InteropTest {
 
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(C14NInterop.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(C14NInteropTest.class.getName());
 
    /**
     * Method suite
@@ -98,7 +98,7 @@ public class C14NInterop extends InteropTest {
     *
     */
    public static Test suite() {
-      return new TestSuite(C14NInterop.class);
+      return new TestSuite(C14NInteropTest.class);
    }
 
    /**
@@ -106,7 +106,7 @@ public class C14NInterop extends InteropTest {
     *
     *  @param Name_
     */
-   public C14NInterop(String Name_) {
+   public C14NInteropTest(String Name_) {
       super(Name_);
    }
 
@@ -117,7 +117,7 @@ public class C14NInterop extends InteropTest {
     */
    public static void main_(String[] args) {
 
-      String[] testCaseName = { "-noloading", C14NInterop.class.getName() };
+      String[] testCaseName = { "-noloading", C14NInteropTest.class.getName() };
 
       org.apache.xml.security.Init.init();
       junit.textui.TestRunner.main(testCaseName);
@@ -128,7 +128,7 @@ public class C14NInterop extends InteropTest {
     *
     * @throws Exception
     */
-   public void _test_Y1() throws Exception {
+   public void test_Y1() throws Exception {
 
       boolean success = t("data/interop/c14n/Y1", "exc-signature.xml");
 
@@ -140,7 +140,7 @@ public class C14NInterop extends InteropTest {
     *
     * @throws Exception
     */
-   public void _test_Y2() throws Exception {
+   public void test_Y2() throws Exception {
 
       boolean success = t("data/interop/c14n/Y2", "signature-joseph-exc.xml");
 
@@ -152,7 +152,7 @@ public class C14NInterop extends InteropTest {
     *
     * @throws Exception
     */
-   public void _test_Y3() throws Exception {
+   public void test_Y3() throws Exception {
 
       boolean success = t("data/interop/c14n/Y3", "signature.xml");
 
@@ -164,7 +164,7 @@ public class C14NInterop extends InteropTest {
     *
     * @throws Exception
     */
-   public void _test_Y4() throws Exception {
+   public void test_Y4() throws Exception {
 
       boolean success = t("data/interop/c14n/Y4", "signature.xml");
 
@@ -192,8 +192,14 @@ public class C14NInterop extends InteropTest {
     *
     * @throws Exception
     */
-   public boolean t(String directory, String file) throws Exception {
+   public boolean t(String directory, String file) throws Exception
+   {
 
+   	  String basedir = System.getProperty("basedir");
+   	  if(basedir != null && !"".equals(basedir)) {
+   		directory = basedir + "/" + directory;
+   	  }
+   	
       File f = new File(directory + "/" + file);
       javax.xml.parsers.DocumentBuilderFactory dbf =
          javax.xml.parsers.DocumentBuilderFactory.newInstance();
