@@ -1,4 +1,4 @@
-/* $Id: CallMethodRule.java,v 1.35 2004/05/10 06:30:06 skitching Exp $
+/* $Id: CallMethodRule.java,v 1.36 2004/11/30 03:08:55 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -42,7 +42,7 @@ import org.xml.sax.Attributes;
  * This increases the kinds of methods successfully and allows primitives
  * to be matched by passing in wrapper classes.
  * There are rare cases when {@link MethodUtils#invokeExactMethod} 
- * (the old defualt) is required.
+ * (the old default) is required.
  * This method is much stricter in it's reflection.
  * Setting the <code>UseExactMatch</code> to true reverts to the use of this 
  * method.</p>
@@ -60,12 +60,19 @@ import org.xml.sax.Attributes;
  * not be invoked. If a CallMethodRule is expecting more than one parameter,
  * then it is always invoked, regardless of whether the parameters were
  * available or not (missing parameters are passed as null values).</p>
+ *
+ * <p>Note that when a constructor is used with paramCount=0, indicating that
+ * the body of the element is to be passed to the target method, an empty 
+ * element will cause an <i>empty string</i> to be passed to the target method,
+ * not null. And if automatic type conversion is being applied (ie if the 
+ * target function takes something other than a string as a parameter) then 
+ * the conversion will fail if the converter class does not accept an empty 
+ * string as valid input.</p>
  */
 
 public class CallMethodRule extends Rule {
 
     // ----------------------------------------------------------- Constructors
-
 
     /**
      * Construct a "call method" rule with the specified method name.  The

@@ -1,4 +1,4 @@
-/* $Id: CallParamRule.java,v 1.22 2004/09/09 20:38:21 rdonkin Exp $
+/* $Id: CallParamRule.java,v 1.23 2004/11/30 03:08:55 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -51,6 +51,12 @@ public class CallParamRule extends Rule {
      * Construct a "call parameter" rule that will save the body text of this
      * element as the parameter value.
      *
+     * <p>Note that if the element is empty the an <i>empty string</i> is 
+     * passed to the target method, not null. And if automatic type conversion
+     * is being applied (ie if the target function takes something other than 
+     * a string as a parameter) then the conversion will fail if the converter
+     * class does not accept an empty string as valid input.</p>
+     *
      * @param digester The associated Digester
      * @param paramIndex The zero-relative parameter number
      *
@@ -85,6 +91,12 @@ public class CallParamRule extends Rule {
     /**
      * Construct a "call parameter" rule that will save the body text of this
      * element as the parameter value.
+     *
+     * <p>Note that if the element is empty the an <i>empty string</i> is 
+     * passed to the target method, not null. And if automatic type conversion
+     * is being applied (ie if the target function takes something other than 
+     * a string as a parameter) then the conversion will fail if the converter
+     * class does not accept an empty string as valid input.</p>
      *
      * @param paramIndex The zero-relative parameter number
      */
