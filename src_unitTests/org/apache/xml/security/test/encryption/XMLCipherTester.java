@@ -736,7 +736,7 @@ public class XMLCipherTester extends TestCase {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Canonicalizer c14n = Canonicalizer.getInstance
-			(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+			(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
 
 		byte[] serBytes = c14n.canonicalizeSubtree(n);
 		baos.write(serBytes);
