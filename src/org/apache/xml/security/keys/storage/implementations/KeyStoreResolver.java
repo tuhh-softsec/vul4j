@@ -51,7 +51,7 @@ public class KeyStoreResolver extends StorageResolverSpi {
     */
    public KeyStoreResolver(KeyStore keyStore) throws StorageResolverException {
       this._keyStore = keyStore;
-      this._iterator = new KeyStoreIterator(this, this._keyStore);
+      this._iterator = new KeyStoreIterator(this._keyStore);
    }
 
    /** @inheritDoc */
@@ -76,11 +76,10 @@ public class KeyStoreResolver extends StorageResolverSpi {
       /**
        * Constructor KeyStoreIterator
        *
-       * @param ksresolver
        * @param keyStore
        * @throws StorageResolverException
        */
-      public KeyStoreIterator(KeyStoreResolver ksresolver, KeyStore keyStore)
+      public KeyStoreIterator(KeyStore keyStore)
               throws StorageResolverException {
 
          try {
