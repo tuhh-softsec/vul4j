@@ -14,8 +14,10 @@
  * limitations under the License.
  */ 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * See Main.java.
@@ -25,6 +27,7 @@ public class Person {
   private String category;
   private String name;
   private HashMap emails = new HashMap();
+  private List addresses = new ArrayList();
   
   /** 
    * A unique id for this person. Note that the Digester automatically
@@ -46,6 +49,10 @@ public class Person {
   public void addEmail(String type, String address) {
       emails.put(type, address);
   }
+  
+  public void addAddress( Address addr ) {
+     addresses.add( addr );
+  }
 
   public void print() {
       System.out.println("Person #" + id);
@@ -58,5 +65,8 @@ public class Person {
           
           System.out.println("  email (type " + type + ") : " + address);
       }
+      
+      System.out.println( addresses );
+      
   }
 }

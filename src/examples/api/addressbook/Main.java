@@ -129,6 +129,20 @@ public class Main {
         d.addCallMethod("address-book/person/email", "addEmail", 2);
         d.addCallParam("address-book/person/email", 0, "type");
         d.addCallParam("address-book/person/email", 1);
+        
+        //--------------------------------------------------        
+        // When we encounter an "address" tag, create an instance of class
+        // Address and push it on the digester stack of objects. After
+        // doing that, call addAddress on the second-to-top object on the
+        // digester stack (a "Person" object), passing the top object on
+        // the digester stack (the "Address" object). And also set things
+        // up so that for each child xml element encountered between the start
+        // of the address tag and the end of the address tag, the text 
+        // contained in that element is passed to a setXXX method on the 
+        // Address object where XXX is the name of the xml element found.
+        d.addObjectCreate("address-book/person/address", Address.class);
+        d.addSetNext("address-book/person/address", "addAddress");
+        d.addSetNestedProperties("address-book/person/address");
     }
 
     private static void usage() {
