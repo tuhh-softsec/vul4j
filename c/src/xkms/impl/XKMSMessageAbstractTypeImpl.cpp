@@ -329,7 +329,7 @@ void XKMSMessageAbstractTypeImpl::setNonce(const XMLCh * uri) {
 	}
 
 	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagNonce, uri);
-	mp_serviceAttr = 
+	mp_nonceAttr = 
 		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagNonce);
 
 }

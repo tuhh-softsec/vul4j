@@ -88,6 +88,11 @@ void XKMSStatusRequestImpl::load() {
 	mp_responseIdAttr = 
 		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseId);
 
+	if (mp_responseIdAttr == NULL) {
+		throw XSECException(XSECException::XKMSError,
+			"XKMSStatusRequest::load - responseId not found!");
+	}
+
 }
 
 // --------------------------------------------------------------------------------

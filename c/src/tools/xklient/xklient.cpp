@@ -1338,14 +1338,18 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 
 void printPendingRequestUsage(void) {
 
-	cerr << "\nUsage PendingRequest [--help|-h] <service URI> <OriginalRequestId> [ResponseId]\n";
-	cerr << "   --help/-h                : print this screen and exit\n\n";
+	cerr << "\nUsage PendingRequest [--help|-h] <service URI> [options]\n";
+	cerr << "   --help/-h                : print this screen and exit\n";
+	cerr << "   --original-request-id/-o <id>\n";
+	cerr << "                            : Set original request ID\n";
+	cerr << "   --response-id/-r <id>\n";
+	cerr << "                            : Set Response ID\n\n";
 
 }
 
 XKMSMessageAbstractType * createPendingRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
 
-	if (paramCount +1 >= argc || 
+	if (paramCount  >= argc || 
 		(stricmp(argv[paramCount], "--help") == 0) ||
 		(stricmp(argv[paramCount], "-h") == 0)) {
 
@@ -1359,9 +1363,31 @@ XKMSMessageAbstractType * createPendingRequest(XSECProvider &prov, DOMDocument *
 	XKMSPendingRequest * pr = 
 		factory->createPendingRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
 
-	pr->setOriginalRequestId(MAKE_UNICODE_STRING(argv[paramCount++]));
-	if (paramCount != argc)
-		pr->setResponseId(MAKE_UNICODE_STRING(argv[paramCount++]));
+	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+
+		if (stricmp(argv[paramCount], "--original-request-id") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+			if (++paramCount >= argc) {
+				printPendingRequestUsage();
+				delete pr;
+				return NULL;
+			}
+
+			pr->setOriginalRequestId(MAKE_UNICODE_STRING(argv[paramCount++]));
+		}
+		else if (stricmp(argv[paramCount], "--response-id") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+			if (++paramCount >= argc) {
+				printPendingRequestUsage();
+				delete pr;
+				return NULL;
+			}
+			pr->setResponseId(MAKE_UNICODE_STRING(argv[paramCount++]));
+		}
+		else {
+			printPendingRequestUsage();
+			delete pr;
+			return NULL;
+		}
+	}
 
 	return pr;
 }
@@ -1372,14 +1398,18 @@ XKMSMessageAbstractType * createPendingRequest(XSECProvider &prov, DOMDocument *
 
 void printStatusRequestUsage(void) {
 
-	cerr << "\nUsage StatusRequest [--help|-h] <service URI> <OriginalRequestId> <ResponseId>\n";
-	cerr << "   --help/-h                : print this screen and exit\n\n";
+	cerr << "\nUsage StatusRequest [--help|-h] <service URI> [options]\n";
+	cerr << "   --help/-h                : print this screen and exit\n";
+	cerr << "   --original-request-id/-o <id>\n";
+	cerr << "                            : Set original request ID\n";
+	cerr << "   --response-id/-r <id>\n";
+	cerr << "                            : Set Response ID\n\n";
 
 }
 
 XKMSMessageAbstractType * createStatusRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int paramCount) {
 
-	if (paramCount +1 >= argc || 
+	if (paramCount  >= argc || 
 		(stricmp(argv[paramCount], "--help") == 0) ||
 		(stricmp(argv[paramCount], "-h") == 0)) {
 
@@ -1393,8 +1423,31 @@ XKMSMessageAbstractType * createStatusRequest(XSECProvider &prov, DOMDocument **
 	XKMSStatusRequest * sr = 
 		factory->createStatusRequest(MAKE_UNICODE_STRING(argv[paramCount++]), doc);
 
-	sr->setOriginalRequestId(MAKE_UNICODE_STRING(argv[paramCount++]));
-	sr->setResponseId(MAKE_UNICODE_STRING(argv[paramCount++]));
+	while (paramCount < argc && stricmp(argv[paramCount], "--") != 0) {
+
+		if (stricmp(argv[paramCount], "--original-request-id") == 0 || stricmp(argv[paramCount], "-o") == 0) {
+			if (++paramCount >= argc) {
+				printStatusRequestUsage();
+				delete sr;
+				return NULL;
+			}
+
+			sr->setOriginalRequestId(MAKE_UNICODE_STRING(argv[paramCount++]));
+		}
+		else if (stricmp(argv[paramCount], "--response-id") == 0 || stricmp(argv[paramCount], "-r") == 0) {
+			if (++paramCount >= argc) {
+				printStatusRequestUsage();
+				delete sr;
+				return NULL;
+			}
+			sr->setResponseId(MAKE_UNICODE_STRING(argv[paramCount++]));
+		}
+		else {
+			printStatusRequestUsage();
+			delete sr;
+			return NULL;
+		}
+	}
 
 	return sr;
 }
@@ -2229,6 +2282,10 @@ void printDoRequestUsage(void) {
 	cerr << "\nUsage request [options] {RequestType} [msg specific options]\n";
 	cerr << "   --help/-h       : Print this screen and exit\n";
 	cerr << "   --two-phase/-t  : Indicate Two-Phase support in the request message\n";
+	cerr << "   --nonce/-n [nonce]\n";
+	cerr << "                   : Set two phase nonce value\n";
+	cerr << "   --original-requestid/-o [id]\n";
+	cerr << "                   : set OriginalRequestId attribute in request\n";
 	cerr << "   --envelope-type/-e [NONE|SOAP11|SOAP12]\n";
     cerr << "                   : Set envelope wrapper for request\n";
 	cerr << "                         NONE   = No wrapper - straight HTTP request\n";
@@ -2253,6 +2310,9 @@ int doRequest(int argc, char ** argv, int paramCount) {
 	bool twoPhase = false;
 	bool parmsDone = false;
 
+	char * nonce = NULL;
+	char * originalRequestId = NULL;
+
 	if (paramCount >= argc || 
 		(stricmp(argv[paramCount], "--help") == 0) ||
 		(stricmp(argv[paramCount], "-h") == 0)) {
@@ -2268,7 +2328,29 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			paramCount++;
 
 		}
-		if ((stricmp(argv[paramCount], "--envelope") == 0) ||
+		else if ((stricmp(argv[paramCount], "--nonce") == 0) ||
+			(stricmp(argv[paramCount], "-n") == 0)) {
+
+			paramCount++;
+			if (paramCount == argc) {
+				printDoRequestUsage();
+				return -1;
+			}
+
+			nonce=argv[paramCount++];
+		}
+		else if ((stricmp(argv[paramCount], "--original-requestid") == 0) ||
+			(stricmp(argv[paramCount], "-o") == 0)) {
+
+			paramCount++;
+			if (paramCount == argc) {
+				printDoRequestUsage();
+				return -1;
+			}
+
+			originalRequestId=argv[paramCount++];
+		}		
+		else if ((stricmp(argv[paramCount], "--envelope") == 0) ||
 			(stricmp(argv[paramCount], "-e") == 0)) {
 
 			// Set the wrapper envelope type
@@ -2294,7 +2376,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			}
 			paramCount++;
 		}
-		if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
+		else if ((stricmp(argv[paramCount], "LocateRequest") == 0) ||
 			(stricmp(argv[paramCount], "lr") == 0)) {
 
 			paramCount++;
@@ -2404,6 +2486,14 @@ int doRequest(int argc, char ** argv, int paramCount) {
 		}
 	}
 
+	XKMSMessageFactory * f = prov.getXKMSMessageFactory();
+	XKMSRequestAbstractType * request = f->toRequestAbstractType(msg);
+
+	if (nonce != NULL)
+		request->setNonce(MAKE_UNICODE_STRING(nonce));
+	if (originalRequestId != NULL)
+		request->setOriginalRequestId(MAKE_UNICODE_STRING(originalRequestId));
+
 	try {
 		if (g_txtOut) {
 			outputDoc(doc);
@@ -2442,12 +2532,11 @@ int doRequest(int argc, char ** argv, int paramCount) {
 			seconds++;
 		}
 
-		cout << "Time takend for request = " << seconds << " seconds, " << useconds << " useconds" << endl;
+		cout << "Time taken for request = " << seconds << " seconds, " << useconds << " useconds" << endl;
 #endif
 		/* If two-phase - re-do the request */
 		if (twoPhase) {
 
-			XKMSMessageFactory * f = prov.getXKMSMessageFactory();
 			XKMSResultType * r = f->toResultType(f->newMessageFromDOM(responseDoc->getDocumentElement()));
 			if (r->getResultMajor() == XKMSResultType::Represent) {
 
@@ -2458,7 +2547,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 				}
 				doParsedMsgDump(responseDoc);
 
-				XKMSRequestAbstractType * request = f->toRequestAbstractType(msg);
+				//XKMSRequestAbstractType * request = f->toRequestAbstractType(msg);
 				for (int k = 0; k < request->getResponseMechanismSize(); ++k) {
 					if (strEquals(request->getResponseMechanismItemStr(k),
 								  XKMSConstants::s_tagRepresent)) {
@@ -2468,6 +2557,11 @@ int doRequest(int argc, char ** argv, int paramCount) {
 				}
 
 				request->setNonce(r->getNonce());
+				request->setOriginalRequestId(request->getId());
+				XMLCh * myId = generateId();
+				ArrayJanitor<XMLCh> j_myId(myId);
+
+				request->setId(myId);
 
 				responseDoc->release();
 				responseDoc = req.doRequest(doc);

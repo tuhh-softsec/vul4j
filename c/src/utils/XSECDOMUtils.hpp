@@ -127,7 +127,7 @@ XMLCh * decodeDName(const XMLCh * toDecode);
 //           Generate Ids
 // --------------------------------------------------------------------------------
 
-XMLCh * generateId(unsigned int bytes = 16);
+XMLCh DSIG_EXPORT * generateId(unsigned int bytes = 16);
 
 // --------------------------------------------------------------------------------
 //           String Functions 
