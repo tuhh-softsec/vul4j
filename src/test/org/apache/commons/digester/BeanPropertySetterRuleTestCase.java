@@ -61,7 +61,8 @@ package org.apache.commons.digester;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringBufferInputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -173,7 +174,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
 
 
         try {
-            digester.parse(xmlTestStream());
+            digester.parse(xmlTestReader());
 
         } catch (Throwable t) {
             fail("Exception prevented test execution: " + t);
@@ -264,7 +265,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
         digester.addRule("root/gamma", gammaRule);
 
         try {
-            digester.parse(xmlTestStream());
+            digester.parse(xmlTestReader());
 
         } catch (Throwable t) {
             fail("Exception prevented test execution: " + t);
@@ -315,7 +316,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
 
         SimpleTestBean bean = null;
         try {
-            bean = (SimpleTestBean) digester.parse(xmlTestStream());
+            bean = (SimpleTestBean) digester.parse(xmlTestReader());
 
         } catch (Throwable t) {
             fail("Exception prevented test execution: " + t);
@@ -356,7 +357,7 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
 
         SimpleTestBean bean = null;
         try {
-            bean = (SimpleTestBean) digester.parse(xmlTestStream());
+            bean = (SimpleTestBean) digester.parse(xmlTestReader());
 
         } catch (Throwable t) {
             fail("Exception prevented test execution: " + t);
@@ -385,8 +386,8 @@ public class BeanPropertySetterRuleTestCase extends TestCase {
     /**
      * Get input stream from {@link #TEST_XML}.
      */
-    private InputStream xmlTestStream() throws IOException {
-        return new StringBufferInputStream(TEST_XML);
+    private Reader xmlTestReader() throws IOException {
+        return new StringReader(TEST_XML);
     }
 
 }
