@@ -60,9 +60,6 @@
  */
 package org.codehaus.plexus.util;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,13 +67,16 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.Arrays;
 
-// Note: jdk1.2 dependency
+import junit.framework.AssertionFailedError;
+import junit.framework.TestCase;
 
 /**
  * This is used to test IOUtil for correctness. The following checks are performed:
@@ -421,10 +421,134 @@ public final class IOUtilTest
         deleteFile( destination );
     }
 
+    // ----------------------------------------------------------------------
+    // Test closeXXX()
+    // ----------------------------------------------------------------------
 
-    //////////////////////////////////////////////////////
-    // xxxxxxxxx
+    public void testCloseInputStream()
+        throws Exception
+    {
+        IOUtil.close( (InputStream) null );
 
+        TestInputStream inputStream = new TestInputStream();
+
+        IOUtil.close( inputStream );
+
+        assertTrue( inputStream.closed );
+    }
+
+    public void testCloseOutputStream()
+        throws Exception
+    {
+        IOUtil.close( (OutputStream) null );
+
+        TestOutputStream outputStream = new TestOutputStream();
+
+        IOUtil.close( outputStream );
+
+        assertTrue( outputStream.closed );
+    }
+
+    public void testCloseReader()
+        throws Exception
+    {
+        IOUtil.close( (Reader) null );
+
+        TestReader reader = new TestReader();
+
+        IOUtil.close( reader );
+
+        assertTrue( reader.closed );
+    }
+
+    public void testCloseWriter()
+        throws Exception
+    {
+        IOUtil.close( (Writer) null );
+
+        TestWriter writer = new TestWriter();
+
+        IOUtil.close( writer );
+
+        assertTrue( writer.closed );
+    }
+
+    private class TestInputStream
+        extends InputStream
+    {
+        boolean closed;
+
+        public void close()
+        {
+            closed = true;
+        }
+
+        public int read()
+        {
+            fail( "This method shouldn't be called" );
+
+            return 0;
+        }
+    }
+
+    private class TestOutputStream
+        extends OutputStream
+    {
+        boolean closed;
+
+        public void close()
+        {
+            closed = true;
+        }
+
+        public void write( int value )
+        {
+            fail( "This method shouldn't be called" );
+        }
+    }
+
+    private class TestReader
+        extends Reader
+    {
+        boolean closed;
+
+        public void close()
+        {
+            closed = true;
+        }
+
+        public int read( char cbuf[], int off, int len )
+        {
+            fail( "This method shouldn't be called" );
+
+            return 0;
+        }
+    }
+
+    private class TestWriter
+        extends Writer
+    {
+        boolean closed;
+
+        public void close()
+        {
+            closed = true;
+        }
+
+        public void write( char cbuf[], int off, int len )
+        {
+            fail( "This method shouldn't be called" );
+        }
+
+        public void flush()
+        {
+            fail( "This method shouldn't be called" );
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    // Utility methods
+    // ----------------------------------------------------------------------
 
     private File newFile( String filename )
         throws Exception
