@@ -143,13 +143,20 @@ public class XMLSignature extends SignatureElementProxy {
            Document doc, String BaseURI, String SignatureMethodURI)
               throws XMLSecurityException {
 
-      this(doc, BaseURI, SignatureMethodURI, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+      this(doc, BaseURI, SignatureMethodURI, 0, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
    }
+
+   public XMLSignature(
+           Document doc, String BaseURI, String SignatureMethodURI, int HMACOutputLength)
+              throws XMLSecurityException {
+      this(doc, BaseURI, SignatureMethodURI, HMACOutputLength, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+   }
+
 
    public XMLSignature(
            Document doc, String BaseURI, String SignatureMethodURI, String CanonicalizationMethodURI)
               throws XMLSecurityException {
-      this(doc, BaseURI, SignatureMethodURI, 0, Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+      this(doc, BaseURI, SignatureMethodURI, 0, CanonicalizationMethodURI);
    }
 
 
