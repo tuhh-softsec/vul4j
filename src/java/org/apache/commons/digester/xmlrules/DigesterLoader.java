@@ -64,8 +64,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import org.apache.commons.digester.RuleSet;
 import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.RuleSet;
 import org.xml.sax.SAXException;
 
 

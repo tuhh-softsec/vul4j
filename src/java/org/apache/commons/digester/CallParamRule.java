@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.11 2003/04/13 20:46:03 rdonkin Exp $
- * $Revision: 1.11 $
- * $Date: 2003/04/13 20:46:03 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallParamRule.java,v 1.12 2003/04/16 11:23:50 jstrachan Exp $
+ * $Revision: 1.12 $
+ * $Date: 2003/04/16 11:23:50 $
  *
  * ====================================================================
  *
@@ -63,8 +63,6 @@
 package org.apache.commons.digester;
 
 
-import java.lang.reflect.Method;
-
 import org.xml.sax.Attributes;
 
 
@@ -84,7 +82,7 @@ import org.xml.sax.Attributes;
  * </p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.11 $ $Date: 2003/04/13 20:46:03 $
+ * @version $Revision: 1.12 $ $Date: 2003/04/16 11:23:50 $
  */
 
 public class CallParamRule extends Rule {

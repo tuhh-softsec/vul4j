@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RegexRulesTestCase.java,v 1.1 2003/04/02 19:04:58 rdonkin Exp $
- * $Revision: 1.1 $
- * $Date: 2003/04/02 19:04:58 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RegexRulesTestCase.java,v 1.2 2003/04/16 11:23:49 jstrachan Exp $
+ * $Revision: 1.2 $
+ * $Date: 2003/04/16 11:23:49 $
  *
  * ====================================================================
  *
@@ -63,17 +63,13 @@ package org.apache.commons.digester;
 
 import java.util.List;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.apache.commons.logging.impl.SimpleLog;
 
 /**
  * Test case for RegexRules
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.1 $ $Date: 2003/04/02 19:04:58 $
+ * @version $Revision: 1.2 $ $Date: 2003/04/16 11:23:49 $
  */
 
 public class RegexRulesTestCase extends TestCase {

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.10 2003/02/02 16:09:53 rdonkin Exp $
- * $Revision: 1.10 $
- * $Date: 2003/02/02 16:09:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertiesRule.java,v 1.11 2003/04/16 11:23:50 jstrachan Exp $
+ * $Revision: 1.11 $
+ * $Date: 2003/04/16 11:23:50 $
  *
  * ====================================================================
  *
@@ -65,8 +65,8 @@ package org.apache.commons.digester;
 
 import java.util.HashMap;
 
-import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.BeanUtils;
+import org.xml.sax.Attributes;
 
 
 /**
@@ -80,7 +80,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * Certain attributes can also be marked to be ignored.</p>
  *
  * @author Craig McClanahan
- * @version $Revision: 1.10 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.11 $ $Date: 2003/04/16 11:23:50 $
  */
 
 public class SetPropertiesRule extends Rule {

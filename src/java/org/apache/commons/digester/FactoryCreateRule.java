@@ -59,7 +59,6 @@
 package org.apache.commons.digester;
 
 import org.apache.commons.collections.ArrayStack;
-
 import org.xml.sax.Attributes;
 
 
@@ -74,7 +73,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.11 $ $Date: 2003/03/15 18:37:51 $
+ * @version $Revision: 1.12 $ $Date: 2003/04/16 11:23:50 $
  */
 
 public class FactoryCreateRule extends Rule {

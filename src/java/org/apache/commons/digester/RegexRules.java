@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RegexRules.java,v 1.1 2003/04/02 19:04:30 rdonkin Exp $
- * $Revision: 1.1 $
- * $Date: 2003/04/02 19:04:30 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/RegexRules.java,v 1.2 2003/04/16 11:23:50 jstrachan Exp $
+ * $Revision: 1.2 $
+ * $Date: 2003/04/16 11:23:50 $
  *
  * ====================================================================
  *
@@ -61,9 +61,9 @@
 
 package org.apache.commons.digester;
 
-import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * <p>Rules implementation that uses regular expression matching for paths.</p>
@@ -74,7 +74,7 @@ import java.util.ArrayList;
  * All those that do are return in the order which the rules were added.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.1 $ $Date: 2003/04/02 19:04:30 $
+ * @version $Revision: 1.2 $ $Date: 2003/04/16 11:23:50 $
  */
 
 public class RegexRules extends AbstractRulesImpl {

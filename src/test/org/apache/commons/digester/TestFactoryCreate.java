@@ -58,17 +58,15 @@
 
 package org.apache.commons.digester;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import java.io.StringReader;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Test case for factory create rules.

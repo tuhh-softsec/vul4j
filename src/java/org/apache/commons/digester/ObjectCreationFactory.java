@@ -58,8 +58,6 @@
 package org.apache.commons.digester;
 
 
-import java.lang.ClassLoader;
-
 import org.xml.sax.Attributes;
 
 /**
@@ -73,7 +71,7 @@ import org.xml.sax.Attributes;
  * <code>ObjectCreationFactory</code> implementations.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.6 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.7 $ $Date: 2003/04/16 11:23:50 $
  */
 public interface ObjectCreationFactory {
 

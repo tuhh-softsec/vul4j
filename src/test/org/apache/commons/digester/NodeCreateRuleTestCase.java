@@ -73,14 +73,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 
@@ -88,7 +84,7 @@ import org.xml.sax.SAXException;
  * <p>Test case for the <code>NodeCreateRule</code>.
  * 
  * @author Christopher Lenz
- * @version $Revision: 1.2 $ $Date: 2003/02/02 15:52:14 $
+ * @version $Revision: 1.3 $ $Date: 2003/04/16 11:23:49 $
  */
 
 public class NodeCreateRuleTestCase extends TestCase {

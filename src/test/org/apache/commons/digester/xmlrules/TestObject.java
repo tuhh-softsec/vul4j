@@ -59,8 +59,8 @@ package org.apache.commons.digester.xmlrules;
 
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 /**

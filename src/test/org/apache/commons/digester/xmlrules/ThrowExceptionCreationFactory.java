@@ -56,14 +56,10 @@
  */
 
 
-package org.apache.commons.digester;
+package org.apache.commons.digester.xmlrules;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import org.apache.commons.digester.AbstractObjectCreationFactory;
 import org.xml.sax.Attributes;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Object creation factory used for testing exception propagation.

@@ -64,13 +64,12 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.Address;
-
-import org.apache.commons.digester.TestObjectCreationFactory;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.apache.commons.digester.Address;
+import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.TestObjectCreationFactory;
 
 
 /**

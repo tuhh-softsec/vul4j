@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.16 2003/02/02 16:09:53 rdonkin Exp $
- * $Revision: 1.16 $
- * $Date: 2003/02/02 16:09:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetTopRule.java,v 1.17 2003/04/16 11:23:50 jstrachan Exp $
+ * $Revision: 1.17 $
+ * $Date: 2003/04/16 11:23:50 $
  *
  * ====================================================================
  *
@@ -63,10 +63,6 @@
 package org.apache.commons.digester;
 
 
-import java.lang.ClassLoader;
-import java.lang.reflect.Method;
-
-import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.MethodUtils;
 
 
@@ -82,7 +78,7 @@ import org.apache.commons.beanutils.MethodUtils;
  * @author Craig McClanahan
  * @author Scott Sanders
  * @author Janek Bogucki
- * @version $Revision: 1.16 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.17 $ $Date: 2003/04/16 11:23:50 $
  */
 
 public class SetTopRule extends Rule {

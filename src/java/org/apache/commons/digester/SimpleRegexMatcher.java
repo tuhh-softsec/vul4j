@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SimpleRegexMatcher.java,v 1.1 2003/04/02 19:04:42 rdonkin Exp $
- * $Revision: 1.1 $
- * $Date: 2003/04/02 19:04:42 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SimpleRegexMatcher.java,v 1.2 2003/04/16 11:23:50 jstrachan Exp $
+ * $Revision: 1.2 $
+ * $Date: 2003/04/16 11:23:50 $
  *
  * ====================================================================
  *
@@ -61,8 +61,6 @@
 
 package org.apache.commons.digester;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -77,7 +75,7 @@ import org.apache.commons.logging.LogFactory;
  * Escaping these wildcards is not supported .</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.1 $ $Date: 2003/04/02 19:04:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/04/16 11:23:50 $
  */
 
 public class SimpleRegexMatcher extends RegexMatcher {

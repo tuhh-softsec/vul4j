@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.11 2003/02/02 15:53:57 rdonkin Exp $
- * $Revision: 1.11 $
- * $Date: 2003/02/02 15:53:57 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.12 2003/04/16 11:23:49 jstrachan Exp $
+ * $Revision: 1.12 $
+ * $Date: 2003/04/16 11:23:49 $
  *
  * ====================================================================
  *
@@ -71,6 +71,7 @@ import java.util.Map;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.xml.sax.ErrorHandler;
 
 
@@ -80,7 +81,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.11 $ $Date: 2003/02/02 15:53:57 $
+ * @version $Revision: 1.12 $ $Date: 2003/04/16 11:23:49 $
  */
 
 public class DigesterTestCase extends TestCase {

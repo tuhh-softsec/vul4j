@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/Channel.java,v 1.5 2003/03/27 19:06:56 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2003/03/27 19:06:56 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/rss/Attic/Channel.java,v 1.6 2003/04/16 11:23:51 jstrachan Exp $
+ * $Revision: 1.6 $
+ * $Date: 2003/04/16 11:23:51 $
  *
  * ====================================================================
  *
@@ -62,11 +62,10 @@
 
 package org.apache.commons.digester.rss;
 
-import java.io.Serializable;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -79,7 +78,7 @@ import java.util.ArrayList;
  *
  * @author Craig R. McClanahan
  * @author Ted Husted
- * @version $Revision: 1.5 $ $Date: 2003/03/27 19:06:56 $
+ * @version $Revision: 1.6 $ $Date: 2003/04/16 11:23:51 $
  */
 
 public class Channel implements Serializable {

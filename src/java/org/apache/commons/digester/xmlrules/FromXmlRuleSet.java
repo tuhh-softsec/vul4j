@@ -59,24 +59,10 @@
 package org.apache.commons.digester.xmlrules;
 
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.RuleSetBase;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * A Digester rule set where the rules come from an XML file.

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.5 2003/03/12 22:10:50 rdonkin Exp $
- * $Revision: 1.5 $
- * $Date: 2003/03/12 22:10:50 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ExtendedBaseRules.java,v 1.6 2003/04/16 11:23:50 jstrachan Exp $
+ * $Revision: 1.6 $
+ * $Date: 2003/04/16 11:23:50 $
  * ====================================================================
  *
  * The Apache Software License, Version 1.1
@@ -63,12 +63,12 @@ package org.apache.commons.digester;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -171,7 +171,7 @@ import java.util.Comparator;
  * these additions should not break your existing rules.</p>
  *
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
- * @version $Revision: 1.5 $ $Date: 2003/03/12 22:10:50 $
+ * @version $Revision: 1.6 $ $Date: 2003/04/16 11:23:50 $
  */
 
 

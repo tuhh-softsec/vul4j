@@ -61,7 +61,6 @@ package org.apache.commons.digester.xmlrules;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -70,7 +69,20 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.commons.collections.ArrayStack;
-import org.apache.commons.digester.*;
+import org.apache.commons.digester.AbstractObjectCreationFactory;
+import org.apache.commons.digester.BeanPropertySetterRule;
+import org.apache.commons.digester.CallMethodRule;
+import org.apache.commons.digester.CallParamRule;
+import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.FactoryCreateRule;
+import org.apache.commons.digester.ObjectCreateRule;
+import org.apache.commons.digester.Rule;
+import org.apache.commons.digester.RuleSetBase;
+import org.apache.commons.digester.Rules;
+import org.apache.commons.digester.SetNextRule;
+import org.apache.commons.digester.SetPropertiesRule;
+import org.apache.commons.digester.SetPropertyRule;
+import org.apache.commons.digester.SetTopRule;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.11 2003/02/05 01:47:42 craigmcc Exp $
- * $Revision: 1.11 $
- * $Date: 2003/02/05 01:47:42 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/BeanPropertySetterRule.java,v 1.12 2003/04/16 11:23:50 jstrachan Exp $
+ * $Revision: 1.12 $
+ * $Date: 2003/04/16 11:23:50 $
  *
  * ====================================================================
  *
@@ -64,7 +64,6 @@ package org.apache.commons.digester;
 
 
 import java.beans.PropertyDescriptor;
-import java.util.HashMap;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.DynaBean;
@@ -85,7 +84,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * on the parent object.</p>
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.11 $ $Date: 2003/02/05 01:47:42 $
+ * @version $Revision: 1.12 $ $Date: 2003/04/16 11:23:50 $
  */
 
 public class BeanPropertySetterRule extends Rule {

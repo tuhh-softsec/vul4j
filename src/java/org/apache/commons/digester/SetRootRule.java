@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.7 2003/02/02 16:09:53 rdonkin Exp $
- * $Revision: 1.7 $
- * $Date: 2003/02/02 16:09:53 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetRootRule.java,v 1.8 2003/04/16 11:23:50 jstrachan Exp $
+ * $Revision: 1.8 $
+ * $Date: 2003/04/16 11:23:50 $
  *
  * ====================================================================
  *
@@ -63,10 +63,6 @@
 package org.apache.commons.digester;
 
 
-import java.lang.ClassLoader;
-import java.lang.reflect.Method;
-
-import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.MethodUtils;
 
 
@@ -81,7 +77,7 @@ import org.apache.commons.beanutils.MethodUtils;
  * See {@link #isExactMatch()} for more details.</p>
  *
  * @author Scott Sanders
- * @version $Revision: 1.7 $ $Date: 2003/02/02 16:09:53 $
+ * @version $Revision: 1.8 $ $Date: 2003/04/16 11:23:50 $
  */
 
 public class SetRootRule extends Rule {

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.10 2003/02/05 01:47:42 craigmcc Exp $
- * $Revision: 1.10 $
- * $Date: 2003/02/05 01:47:42 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/SetPropertyRule.java,v 1.11 2003/04/16 11:23:50 jstrachan Exp $
+ * $Revision: 1.11 $
+ * $Date: 2003/04/16 11:23:50 $
  *
  * ====================================================================
  *
@@ -64,13 +64,12 @@ package org.apache.commons.digester;
 
 
 import java.beans.PropertyDescriptor;
-import java.util.HashMap;
 
-import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.xml.sax.Attributes;
 
 
 /**
@@ -78,7 +77,7 @@ import org.apache.commons.beanutils.PropertyUtils;
  * top of the stack, based on attributes with specified names.
  *
  * @author Craig McClanahan
- * @version $Revision: 1.10 $ $Date: 2003/02/05 01:47:42 $
+ * @version $Revision: 1.11 $ $Date: 2003/04/16 11:23:50 $
  */
 
 public class SetPropertyRule extends Rule {

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.21 2003/04/14 21:31:03 rdonkin Exp $
- * $Revision: 1.21 $
- * $Date: 2003/04/14 21:31:03 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/CallMethodRule.java,v 1.22 2003/04/16 11:23:50 jstrachan Exp $
+ * $Revision: 1.22 $
+ * $Date: 2003/04/16 11:23:50 $
  *
  * ====================================================================
  *
@@ -63,12 +63,9 @@
 package org.apache.commons.digester;
 
 
-import java.lang.reflect.Method;
-import java.lang.ClassLoader;
-
-import org.xml.sax.Attributes;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.MethodUtils;
+import org.xml.sax.Attributes;
 
 
 /**
@@ -91,7 +88,7 @@ import org.apache.commons.beanutils.MethodUtils;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.21 $ $Date: 2003/04/14 21:31:03 $
+ * @version $Revision: 1.22 $ $Date: 2003/04/16 11:23:50 $
  */
 
 public class CallMethodRule extends Rule {
