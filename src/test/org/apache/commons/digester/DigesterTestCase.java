@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.1 2001/05/22 04:19:11 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/05/22 04:19:11 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/DigesterTestCase.java,v 1.2 2001/05/22 04:57:02 craigmcc Exp $
+ * $Revision: 1.2 $
+ * $Date: 2001/05/22 04:57:02 $
  *
  * ====================================================================
  *
@@ -63,8 +63,12 @@
 package org.apache.commons.digester;
 
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -79,7 +83,7 @@ import org.xml.sax.ErrorHandler;
  * </p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/05/22 04:19:11 $
+ * @version $Revision: 1.2 $ $Date: 2001/05/22 04:57:02 $
  */
 
 public class DigesterTestCase extends TestCase {
@@ -160,6 +164,31 @@ public class DigesterTestCase extends TestCase {
 
 
     /**
+     * Test the ability to redirect logging to an alternate destination.
+     */
+    public void testLogging() {
+
+        assertNull("Initial writer is null", digester.getWriter());
+
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        digester.setWriter(pw);
+        digester.log("This is line 1");
+        digester.log("And this is line 2");
+        String value = "This is line 1" +
+            System.getProperty("line.separator") +
+            "And this is line 2" +
+            System.getProperty("line.separator");
+        pw.flush();
+        assertEquals("Logged output identical", value, sw.toString());
+
+        digester.setWriter(null);
+        assertNull("Reset writer is null", digester.getWriter());
+
+    }
+
+
+    /**
      * Test the basic property getters and setters.
      */
     public void testProperties() {
@@ -234,6 +263,32 @@ public class DigesterTestCase extends TestCase {
         for (int i = 0; i < n; i++)
             assertEquals("Count for key " + registrations[i*2],
                          1, count[i]);
+
+    }
+
+
+
+    /**
+     * Test rule creation and matching.
+     */
+    public void testRules() {
+
+        List list = null;
+
+        assertNull("Initial rules list is empty",
+                   digester.getRules("a"));
+        digester.addSetProperties("a");
+        assertEquals("Add a matching rule",
+                     1, digester.getRules("a").size());
+        digester.addSetProperties("b");
+        assertEquals("Add a non-matching rule",
+                     1, digester.getRules("a").size());
+        digester.addSetProperties("a/b");
+        assertEquals("Add a non-matching nested rule",
+                     1, digester.getRules("a").size());
+        digester.addSetProperties("a/b");
+        assertEquals("Add a second matching rule",
+                     2, digester.getRules("a/b").size());
 
     }
 
