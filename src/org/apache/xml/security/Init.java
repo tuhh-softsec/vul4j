@@ -441,9 +441,11 @@ private static void registerHereFunction() {
 	                }
 	            }
 	        }
-	    } catch (Exception e) {
-	        log.info("Unable to patch xalan function table.", e);
-	    }
+	    } catch (java.lang.NoSuchFieldException e) {
+	    	log.info("Unable to patch xalan function table.", e);
+        } catch (Exception e) {
+            log.info("Unable to patch xalan function table.", e);
+        } 
 	}
 }
 
