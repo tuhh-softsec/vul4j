@@ -1,129 +1,87 @@
 <?xml version="1.0"?>
 
-<!-- This file is intended for ANT, a Java based build tool.
+<!-- 
+     This file is intended for ANT, a Java based build tool.
      ANT is availale from http://jakarta.apache.org/ant/index.html
 
      This build file is intended to build the org.apache.xml.security package,
      available from http://www.xmlsecurity.org/src/ and
                     http://xml.apache.org/
-
 -->
 
 <project name="The org.apache.xml.security Package" default="usage" basedir=".">
-
-  <target name="usage" >
-    <echo message=""/>
-    <echo message=""/>
-    <echo message="${product.Name} Build instructions"/>
-    <echo message="-------------------------------------------------------------"/>
-    <echo message=""/>
-    <echo message=" available targets are:"/>
-    <echo message=""/>
-    <echo message="   compile         --> compiles everything"/>
-    <echo message="   compile.library --> compiles the source code"/>
-    <echo message="   compile.samples --> compiles the samples source code"/>
-    <echo message="   compile.tests   --> compiles the tests source code"/>
-    <echo message="   docs            --> generates the HTML documentation"/>
-    <echo message="   javadocs        --> generates the API documentation (needs Java 1.2 or higher)"/>
-    <echo message="   test            --> runs the defined JUnit tests"/>
-    <echo message="   clean           --> cleans up all generated files and directories"/>
-    <echo message="   usage           --> provides help on using the build tool (default)"/>
-    <echo message="   jar             --> creates the JAR file"/>
-    <echo message=""/>
-    <echo message=" See comments inside the build.xml file for more details."/>
-    <echo message="-------------------------------------------------------------"/>
-    <echo message=""/>
-    <echo message=""/>
-  </target>
-
   <target name="init">
-    <property name='product.Name' value='Apache-XML-Security-J'/>
-    <property name='product.name' value='xml-security'/>
+    <property name='product.Name'      value='Apache-XML-Security-J'/>
+    <property name='product.name'      value='xml-security'/>
     <property name='product.shortname' value='xmlsec'/>
-    <property name='product.Version' value='1.0.0'/>
-    <property name='product.version' value='1.0.0'/>
-    <property name='product_version' value='1_0_0'/>
+    
+    <property name='product.version.major' value='1'/>
+    <property name='product.version.minor' value='0'/>
+    <property name='product.version.level' value='1'/>
+    <property name='product.Version'   value='${product.version.major}.${product.version.minor}.${product.version.level}'/>
+    <property name='product.version'   value='${product.version.major}.${product.version.minor}.${product.version.level}'/>
+    <property name='product_version'   value='${product.version.major}_${product.version.minor}_${product.version.level}'/>
+    <property name="year"              value="2000-2002" />
+    <property name="copyright"         value="Copyright &#169; ${year} Apache XML Project. All Rights Reserved." />
 
-    <property name="year" value="2000-2002"/>
-    <property name="copyright" value="Copyright &#169; ${year} Apache XML Project. All Rights Reserved."/>
+    <property name="build.compiler" value="classic" />
+<!--<property name="build.compiler" value="jikes" /> -->
 
-    <echo message= "---------------- ${product.Name} v${product.Version} [${year}] ---------------"/>
+    <property name="dir.src"           value="./src" />
+    <property name="dir.src.samples"   value="./src_samples" />
+    <property name="dir.src.unitTests" value="./src_unitTests" />
+    <property name="dir.tools"         value="./tools" />
+    <property name="dir.data"          value="./data" />
+    <property name="dir.libs"          value="./libs" />
+    <property name="dir.doc"           value="./doc" />
 
-    <property name="build.compiler" value="classic"/>
-    <!--
-    <property name="build.compiler" value="jikes" />
-    -->
+    <property name="build.dir"         value="./build" />
+    <property name="build.src"         value="${build.dir}/src" />
+    <property name="build.classes"     value="${build.dir}/classes" />
+    <property name="build.samples"     value="${build.dir}/samples" />
+    <property name="build.tests"       value="${build.dir}/tests" />
+    <property name="build.data"        value="${build.dir}/data" />
+    <property name="build.doc"         value="${build.dir}/doc" />
+    <property name="build.doc.xml"     value="${build.doc}/xml" />
+    <property name="build.doc.html"    value="${build.doc}/html" />
+    <property name="build.javadoc"     value="${build.doc.html}/api" />
+    <property name="build.srcdist"     value="${build.dir}/${product.name}_${product_version}_src" />
+    <property name="build.bindist"     value="${build.dir}/${product.name}_${product_version}_bin" />
 
-    <property name="src" value="src" />
-    <property name="src.samples" value="src_samples" />
-    <property name="src.unitTests" value="src_unitTests" />
-    <property name="src.JCE.BC" value="src_JCE_BC" />
+    <property name="jar.library"       value="${product.shortname}.jar" />
+    <property name="jar.samples"       value="${product.shortname}Samples.jar" />
+    <property name="jar.tests"         value="${product.shortname}Tests.jar" />
 
-    <property name="build.dir" value="./build"/>
-    <property name="build.src" value="${build.dir}/src"/>
-    <property name="build.dest" value="${build.dir}/classes"/>
-    <property name="build.samples" value="${build.dir}/samples"/>
-    <property name="build.tests" value="${build.dir}/tests"/>
-    <property name="build.data" value="${build.dir}/data"/>
-    <property name="build.docs" value="${build.dir}/docs"/>
-    <property name="build.javadocs" value="${build.docs}/javadocs"/>
-    <property name="build.srcdist" value="${build.dir}/dist_src"/>
-    <property name="build.bindist" value="${build.dir}/dist_bin"/>
+    <property name="cvs.server"        value="cvs.apache.org" />
+    <property name="cvs.path"          value="/home/cvs" />
+    <property name="cvs.package"       value="xml-security" />
 
-    <property name="jar.library" value="${product.shortname}.jar" />
-    <property name="jar.samples" value="${product.shortname}Samples.jar" />
-    <property name="jar.tests"   value="${product.shortname}Tests.jar" />
-
-    <property name="cvs.server" value="cvs.apache.org" />
-    <property name="cvs.path" value="/home/cvs" />
-    <property name="cvs.package" value="xml-security" />
-
-    <property name="cvs.user.developer" value="geuerp" />
-    <property name="cvs.user.anonymous" value="anonymous" />
+    <property name="cvs.user.developer"    value="geuerp" />
+    <property name="cvs.user.anonymous"    value="anonymous" />
     <property name="cvs.cvsRoot.developer" value=":ext:${cvs.user.developer}@${cvs.server}:${cvs.path}" />
     <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}" />
 
-    <property name="tools.dir" value="./tools"/>
-    <property name="doc.xml" value="${doc}/xml"/>
-    <property name="doc.html" value="${doc}/html"/>
-    <property name="doc.book" value="${doc.xml}/docs-book.xml"/>
-    <property name="doc.style" value="${doc.xml}/style-apachexml"/>
-    <property name="doc.style.jar" value="${tools.dir}/style-apachexml.jar"/>
-    <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
-    <property name="doc.generator.package" value="${tools.dir}/stylebook-1.0-b2.jar"/>
+    <property name="doc.xml"           value="${dir.doc}/xml" />
+    <property name="doc.book"          value="${build.doc.xml}/docs-book.xml" />
+    <property name="doc.style"         value="${build.doc.xml}/style-apachexml" />
+    <property name="doc.style.jar"     value="${dir.tools}/style-apachexml.jar" />
+    <property name="doc.generator"     value="org.apache.stylebook.StyleBook" />
+    <property name="doc.generator.package" value="${dir.tools}/stylebook-1.0-b2.jar" />
 
-    <property name="libs"         value="libs" />
-
-    <!--
-    Date: Sat, 26 Jan 2002 16:22:07 +1100
-    From: David Hook <dgh@wumpus.com.au>
-    To: Christian Geuer-Pollmann <geuer-pollmann@nue.et-inf.uni-siegen.de>
-    Subject: Re: "New" HMAC and Signature algorithms ?
-
-    It's ready to go, you can find the beta's at:
-
-    basic signed jar - http://www.bouncycastle.org/bcprov-jdk13-112b.jar
-    signed jar with JCE as well- http://www.bouncycastle.org/jce-jdk13-112b.jar
-    source - http://www.bouncycastle.org/crypto.tar.gz
-
-    Regards,
-    David.
-    -->
     <property name="jce.download.file" value="jce-jdk13-112.jar" />
-    <property name="jce.download" value="http://www.bouncycastle.org/download/${jce.download.file}" />
-    <property name="lib.jce"      value="${libs}/bc-${jce.download.file}" />
+    <property name="jce.download"      value="http://www.bouncycastle.org/download/${jce.download.file}" />
+    <property name="lib.jce"           value="${dir.libs}/bc-${jce.download.file}" />
 
     <!-- http://download.sourceforge.net/junit/junit3.7.zip -->
-    <property name="lib.junit"    value="${libs}/junit3.7.jar" />
+    <property name="lib.junit"    value="${dir.libs}/junit3.7.jar" />
 
-    <property name="lib.xerces.1" value="${libs}/xercesImpl.jar" />
-    <property name="lib.xerces.2" value="${libs}/xmlParserAPIs.jar" />
-    <property name="lib.xalan.1"  value="${libs}/xalan.jar" />
-    <property name="lib.xalan.2"  value="${libs}/xml-apis.jar" />
-    <property name="lib.log4j"    value="${libs}/jakarta-log4j-1.2alpha5.jar" />
+    <property name="lib.xerces.1" value="${dir.libs}/xercesImpl.jar" />
+    <property name="lib.xerces.2" value="${dir.libs}/xmlParserAPIs.jar" />
+    <property name="lib.xalan.1"  value="${dir.libs}/xalan.jar" />
+    <property name="lib.xalan.2"  value="${dir.libs}/xml-apis.jar" />
+    <property name="lib.log4j"    value="${dir.libs}/jakarta-log4j-1.2beta2.jar" />
 
-    <path id="classpath.library">
-      <pathelement path="${build.dest}" />
+    <path id="classpath.libraries">
       <pathelement path="${lib.xerces.1}" />
       <pathelement path="${lib.xerces.2}" />
       <pathelement path="${lib.xalan.1}" />
@@ -132,17 +90,59 @@
       <pathelement path="${lib.jce}" />
     </path>
 
+    <path id="classpath.library">
+      <pathelement path="${build.classes}" />
+      <path refid="classpath.libraries" />
+    </path>
+
     <path id="classpath.test">
-      <!-- classpath for test is librarypath plus log4j -->
+      <!-- classpath for test is librarypath plus junit -->
       <path refid="classpath.library" />
       <pathelement path="${lib.junit}" />
     </path>
-  </target>
 
-    <property name="doc" value="./doc" />
-    <property name="doc.html" value="${doc}/html" />
-    <property name="doc.pdf" value="${doc}/pdf" />
-    <property name="doc.html.api" value="${doc.html}/api" />
+    <path id="classpath.test.jar">
+      <!-- classpath for test is librarypath plus junit -->
+      <path refid="classpath.library" />
+      <pathelement path="${build.dir}/${jar.library}" />
+      <pathelement path="${build.dir}/${jar.tests}" />
+    </path>
+
+    <patternset id="distFiles">
+       <include name="build.xml" />
+       <include name="INSTALL" />
+       <include name="keys.asc" />
+       <include name="LICENSE.txt" />
+       <include name="README" />
+       <include name="Readme.html" />
+       <include name="TODO" />
+    </patternset>
+
+    <patternset id="dataFiles">
+       <include name="data/**" />
+       <exclude name="data/de/uni-siegen/**" />
+       <exclude name="data/com/ibm/xss4j-20011029/**" />
+    </patternset>
+
+    <patternset id="srcFiles">
+       <!-- for some strange reasons, I can't use ${src} but must use src -->
+       <include name="src/**/*" />
+       <include name="src/org/apache/xml/security/**/*.java" />
+       <include name="src/org/apache/xml/security/**/*.xml" />
+       <include name="src/org/apache/xml/security/**/*.html" />
+       <include name="src/org/apache/xml/security/resource/**/*" />
+    </patternset>
+
+    <patternset id="srcSamplesFiles">
+       <include name="src_samples/org/apache/xml/security/samples/**/*" />
+       <include name="src_samples/org/apache/xml/security/samples/**/*.html" />
+    </patternset>
+
+    <patternset id="srcUnitTestsFiles">
+       <include name="src_unitTests/org/apache/xml/security/test/**/*" />
+       <include name="src_unitTests/org/apache/xml/security/test/**/*.html" />
+    </patternset>
+
     <property name="javadoc.packages"
               value="
 org.apache.xml.security.Init,
@@ -177,37 +177,193 @@ org.apache.xml.security.utils.resolver.*,
 org.apache.xml.security.utils.resolver.implementations.*
 " />
 
-  <target name="prepare" depends="init">
+    <echo message="-------------------------------------------------------------------" />
+    <echo message="--------- ${product.Name} v${product.Version} [${year}] ----------------" />
+    <echo message="-------------------------------------------------------------------" />
+  </target>
+
+  <target name="usage" depends="init">
+    <echo message="                                                                   " />
+    <echo message="                                                                   " />
+    <echo message=" Build instructions                                                " />
+    <echo message="-------------------------------------------------------------------" />
+    <echo message="                                                                   " />
+    <echo message=" available targets are:                                            " />
+    <echo message="                                                                   " />
+    <echo message="   compile         --> compiles everything                         " />
+    <echo message="   compile.library --> compiles the source code                    " />
+    <echo message="   compile.samples --> compiles the samples source code            " />
+    <echo message="   compile.tests   --> compiles the tests source code              " />
+    <echo message="   doc             --> generates the HTML documentation            " />
+    <echo message="   javadoc         --> generates the API documentation             " />
+    <echo message="                       (needs Java > 1.2)                          " />
+    <echo message="   test            --> runs the defined JUnit tests                " />
+    <echo message="   clean           --> cleans up all generated files and           " />
+    <echo message="                       directories                                 " />
+    <echo message="   usage           --> provides help on using the build tool       " />
+    <echo message="                       (default)                                   " />
+    <echo message="   jar             --> creates the JAR file                        " />
+    <echo message="                                                                   " />
+    <echo message=" See comments inside the build.xml file for more details.          " />
+    <echo message="-------------------------------------------------------------------" />
+    <echo message="                                                                   " />
+  </target>
+
+  <target name="clean" depends="init" description="Clean up all temporary build files">
+    <delete dir="${build.dir}" />
+    <delete dir="./bak" />
+    <delete file="log.txt" />
+  </target>
+
+  <target name="prepare" depends="init" description="This target generates a first build directory and checks for some libraries">
     <tstamp />
     <mkdir dir="${build.dir}" />
-    <!-- check whether JUnit is available -->
+    
     <available property="junit.present" classname="junit.framework.TestCase">
+       <!-- check whether JUnit is available -->
        <classpath refid="classpath.test" />
     </available>
 
     <available property="bcprov.present"
-               classname="org.bouncycastle.asn1.DERInputStream">
+               classname="org.bouncycastle.jce.provider.BouncyCastleProvider">
+       <!-- check whether BouncyCastle JCE is available -->
+       <classpath refid="classpath.library" />
+    </available>
+
+    <available property="xmlsec.jar.present" 
+               file="${jar.library}" />
+
+    <available property="xmlsec.build.present" 
+               classname="org.apache.xml.security.Init">
        <classpath refid="classpath.library" />
     </available>
   </target>
 
-  <target name="prepare-src" depends="prepare">
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+
+  <target name="prepare-src" depends="prepare" description="This target copies the Java sources and brands the version information">
     <!-- create directories -->
-    <mkdir dir="${build.src}"/>
-    <mkdir dir="${build.dest}"/>
+    <mkdir dir="${build.src}" />
+    <mkdir dir="${build.classes}" />
 
     <!-- copy src files -->
     <copy todir="${build.src}">
         <fileset
-            dir="${src}"
+            dir="${dir.src}"
             includes="org/**" />
     </copy>
 
     <!-- substitute tokens as needed -->
     <replace file="${build.src}/org/apache/xml/security/utils/Version.java"
-             token="@@VERSION@@" value="${product.Name} ${product.Version}"/>
+             token="@@VERSION@@" value="${product.Name} ${product.Version}" />
   </target>
 
+  <target name="prepare-doc" depends="prepare" description="This target copies the XML documentation sources and brands the version information">
+    <!-- create directories -->
+    <mkdir dir="${build.doc}" />
+    <mkdir dir="${build.doc.xml}" />
+    <mkdir dir="${build.doc.html}" />
+
+    <!-- copy xml files -->
+    <copy todir="${build.doc.xml}">
+        <fileset dir="${doc.xml}" />
+    </copy>
+
+    <!-- substitute tokens as needed -->
+    <replace file="${build.doc.xml}/dtd/entities.ent" 
+             token="@@packagenamelong@@" value="${product.Name}" />
+    <replace file="${build.doc.xml}/dtd/entities.ent" 
+             token="@@packagename@@" value="${product.name}" />
+    <replace file="${build.doc.xml}/dtd/entities.ent" 
+             token="@@packageversion@@" value="${product.Version}" />
+    <replace file="${build.doc.xml}/dtd/entities.ent" 
+             token="@@packagedistname@@" value="${product.Name}" />
+    <replace file="${build.doc.xml}/install.xml" 
+             token="@@jce.download@@" value="${jce.download}" />
+    <replace file="${build.doc.xml}/install.xml" 
+             token="@@lib.jce@@" value="${lib.jce}" />
+    <replace file="${build.doc.xml}/install.xml" 
+             token="@@jce.download.file@@" value="${jce.download.file}" />
+  </target>
+
+  <target name="javadoc"
+          depends="prepare-src, prepare-doc"
+          description="Generates javadoc from all .java files; this is done on the 'branded' files">
+    <mkdir dir="${build.doc}" />
+    <mkdir dir="${build.doc.html}" />
+    <mkdir dir="${build.javadoc}" />
+
+    <javadoc sourcepath="${build.src}"
+             destdir="${build.javadoc}"
+             packagenames="${javadoc.packages}"
+             classpathref="classpath.test" />
+  </target>
+
+  <target name="doc" depends="prepare-doc">
+    <unjar src="${doc.style.jar}" dest="${doc.style}" />
+
+    <path id="classpath.doc">
+      <pathelement path="${doc.generator.package}" />
+      <pathelement path="${dir.tools}/xerces.jar" />
+      <pathelement path="${dir.tools}/xalan.jar" />
+      <pathelement path="${dir.tools}/optional.jar" />
+    </path>
+
+    <java fork="yes"
+          classname="${doc.generator}">
+        <arg value="targetDirectory=${build.doc.html}" />
+        <arg value="${doc.book}" />
+        <arg value="${doc.style}" />
+        <classpath refid="classpath.doc" />
+    </java>
+    
+    <delete dir="${doc.style}" />
+  </target>
+
+  <target name="javadoc-pdf"
+          description="Generates javadoc in Adobe (c) MakerInterchangeFormat (.mif) from all .java files; for Adobe FrameMaker">
+     <property name="lib.doclet.mif" value="${dir.tools}/mifdoclet.jar" />
+     <path id="classpath.doclet.mif">
+        <path refid="classpath.library" />
+        <pathelement path="${lib.doclet.mif}" />
+     </path>
+
+     <mkdir dir="${doc.pdf}" />
+     <javadoc sourcepath="${dir.src}"
+              destdir="${doc.pdf}"
+              packagenames="${javadoc.packages}"
+              doclet="com.sun.tools.doclets.mif.MIFDoclet"
+              docletpath="${lib.doclet.mif}"
+              additionalparam="-book data/websigMiflet.xml -batch dzbatcher -print pdf"
+              classpathref="classpath.doclet.mif" />
+  </target>
+
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+
+  <!-- Aliases -->
+  <target name="javadocs" depends="javadoc" />
+  <target name="docs" depends="doc" />
+  <target name="jars" depends="jar" />
+
+  <!-- Collections -->
+  <target name="dist" depends="srcdist,bindist" />
+  <target name="gump" depends="clean,javadoc,jar,test" description="Target for the gump run" />
+  <target name="compile" depends="compile.library, compile.samples, compile.tests" description="compile everything" />
+
+
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
 
   <target name="get-jce"
           depends="prepare"
@@ -215,125 +371,155 @@ org.apache.xml.security.utils.resolver.implementations.*
     <get src="${jce.download}"
 	 dest="${lib.jce}"
 	 verbose="true"
-	 usetimestamp="true"/>
+	 usetimestamp="true" />
   </target>
 
   <target name="compile.library" depends="prepare-src, get-jce">
-    <!-- Compile the java code from ${src} into ${build} -->
-    <javac srcdir="${build.src}" destdir="${build.dest}">
+    <!-- Compile the branded java code from ${build.src} into ${build.classes} -->
+    <javac srcdir="${build.src}" destdir="${build.classes}">
       <classpath refid="classpath.library" />
     </javac>
     <!-- Copy Property files -->
-    <copy todir="${build.dest}" >
-      <fileset dir="${src}" includes="**/*.properties"/>
-      <fileset dir="${src}" includes="**/*.xml"/>
-      <fileset dir="${src}" includes="**/*.zip"/>
+    <copy todir="${build.classes}" >
+      <fileset dir="${build.src}" includes="**/*.properties" />
+      <fileset dir="${build.src}" includes="**/*.xml" />
+      <fileset dir="${build.src}" includes="**/*.zip" />
     </copy>
   </target>
 
   <target name="compile.tests"
           depends="compile.library"
           if="junit.present">
-    <!-- Compile the java code from ${src} into ${build.dest} -->
-    <javac srcdir="${src.unitTests}" destdir="${build.dest}">
+    <!-- Compile the java code from ${dir.src} into ${build.classes} -->
+    <javac srcdir="${dir.src.unitTests}" destdir="${build.classes}">
       <classpath refid="classpath.test" />
     </javac>
     <!-- Copy Property files -->
-    <copy todir="${build.dest}" >
-      <fileset dir="${src.unitTests}" includes="**/*.properties"/>
-      <fileset dir="${src.unitTests}" includes="**/*.xml"/>
-      <fileset dir="${src.unitTests}" includes="**/*.zip"/>
+    <copy todir="${build.classes}" >
+      <fileset dir="${dir.src.unitTests}" includes="**/*.properties" />
+      <fileset dir="${dir.src.unitTests}" includes="**/*.xml" />
+      <fileset dir="${dir.src.unitTests}" includes="**/*.zip" /> 
     </copy>
   </target>
 
   <target name="compile.samples"
           depends="compile.library">
-    <!-- Compile the java code from ${src} into ${build.dest} -->
-    <javac srcdir="${src.samples}"
-           destdir="${build.dest}">
-      <classpath refid="classpath.library" />
-    </javac>
-    <!-- Copy Property files -->
-    <copy todir="${build.dest}" >
-      <fileset dir="${src.samples}" includes="**/*.properties"/>
-      <fileset dir="${src.samples}" includes="**/*.xml"/>
-      <fileset dir="${src.samples}" includes="**/*.zip"/>
-    </copy>
-  </target>
-
-  <target name="compile.JCE.BC"
-          depends="prepare"
-          if="bcprov.present">
-    <javac srcdir="${src.JCE.BC}"
-           destdir="${build.dest}">
+    <!-- Compile the java code from ${dir.src} into ${build.classes} -->
+    <javac srcdir="${dir.src.samples}"
+           destdir="${build.classes}">
       <classpath refid="classpath.library" />
     </javac>
   </target>
-
-  <target name="compile"
-          depends="compile.library, compile.samples, compile.tests"
-          description="compile everything" />
 
   <target name="test"
-          depends="init, compile.tests"
+          depends="compile.tests"
           if="junit.present"
           description="Starts all JUnit test cases">
      <java classname="junit.textui.TestRunner"
            fork="yes"
            taskname="junit"
            failonerror="true">
-        <arg value="org.apache.xml.security.test.AllTests"/>
+        <arg value="org.apache.xml.security.test.AllTests" />
         <classpath refid="classpath.test" />
      </java>
   </target>
 
-  <target name="clean"
-          description="Clean up all temporary build files">
-    <delete dir="${build.dest}" />
-    <delete file="${build.jar}" />
-    <delete dir="bak" />
-    <delete dir="{$doc.html.api}" />
-    <delete file="log.txt" />
-  </target>
-
-  <target name="javadocs"
-          depends="compile"
-          description="generates javadoc from all .java files">
-    <mkdir dir="${build.docs}"/>
-    <mkdir dir="${build.javadocs}"/>
-
-    <javadoc sourcepath="${src}"
-             destdir="${build.javadocs}"
-             packagenames="${javadoc.packages}"
-             classpathref="classpath.test"/>
-  </target>
-
-<!--
-    <property name="jar.library" value="{product.shortname}.jar" />
-    <property name="jar.samples" value="{product.shortname}Samples.jar" />
-    <property name="jar.tests"   value="{product.shortname}Tests.jar" />
--->
-
+  <target name="testjar"
+          depends="prepare"
+          if="xmlsec.jar.present"
+          description="Starts all JUnit test cases and uses the compiled JARs">
+     <java classname="junit.textui.TestRunner"
+           fork="yes"
+           taskname="junit"
+           failonerror="true">
+        <arg value="org.apache.xml.security.test.AllTests" />
+        <classpath refid="classpath.test.jar" />
+     </java>
+  </target>  
+    
   <target name="jar"
           depends="compile"
-          description="Creates the ${build.jar} JAR file">
+          description="Creates the ${jar.library}, ${jar.samples} and ${jar.samples} JAR file in ${build.dir}">
      <jar jarfile="${build.dir}/${jar.library}"
-          basedir="${build.dest}"
-          includes="org/apache/**,META-INF/**"
+          basedir="${build.classes}"
+          includes="org/apache/**, META-INF/**"
           excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**" />
      <jar jarfile="${build.dir}/${jar.samples}"
-          basedir="${build.dest}"
-          includes="org/apache/xml/security/samples/**,META-INF/**" />
+          basedir="${build.classes}"
+          includes="org/apache/xml/security/samples/**, META-INF/**"
+          excludes="org/apache/xml/security/temp/**" />
      <jar jarfile="${build.dir}/${jar.tests}"
-          basedir="${build.dest}"
-          includes="org/apache/xml/security/test/**,META-INF/**" />
+          basedir="${build.classes}"
+          includes="org/apache/xml/security/test/**, META-INF/**"
+          excludes="org/apache/xml/security/temp/**" />
     <!--  compress="false" -->
   </target>
 
+  <target name="srcdist" depends="prepare" description="Creates the source distribution">
+     <mkdir dir="${build.srcdist}" />
 
-  <target name="gump"
-          description="Target for the gump run"
-          depends="clean,javadocs,jar,test" />
+     <copy todir="${build.srcdist}">
+        <fileset dir=".">
+           <patternset refid="distFiles" />
+           <patternset refid="srcFiles" />
+           <patternset refid="srcUnitTestsFiles" />
+           <patternset refid="srcSamplesFiles" />
+           <patternset refid="dataFiles" />
+
+           <include name="doc/xml/**/*" />
+           <exclude name="**/CVS/**" />
+       </fileset>
+    </copy>
+
+    <mkdir dir="${build.srcdist}/libs" 
+            description="create an empty libs so that people know where to put the 3rd party jars"/>
+
+    <zip zipfile="${build.dir}/${product.name}-src-${product_version}.zip" 
+         basedir="${build.srcdist}" />
+  </target>
+
+  <!--
+  <target name="bindist" depends="jar" description="Creates the binary distribution">
+  -->
+  <target name="bindist" depends="compile,jar,doc,javadoc" description="Creates the binary distribution">
+     <mkdir dir="${build.bindist}" />
+     <copy todir="${build.bindist}">
+      <fileset dir=".">
+        <patternset refid="distFiles" />
+        <patternset refid="dataFiles" />
+        <patternset refid="srcSamplesFiles" />
+
+        <exclude name="**/CVS/**" />
+      </fileset>
+    </copy>
+
+    <mkdir  dir="${build.bindist}/${dir.libs}" />
+    <copy todir="${build.bindist}/${dir.libs}" file="${lib.junit}" />
+    <copy todir="${build.bindist}/${dir.libs}" file="${lib.xerces.1}" />
+    <copy todir="${build.bindist}/${dir.libs}" file="${lib.xerces.2}" />
+    <copy todir="${build.bindist}/${dir.libs}" file="${lib.xalan.1}" />
+    <copy todir="${build.bindist}/${dir.libs}" file="${lib.xalan.2}" />
+    <copy todir="${build.bindist}/${dir.libs}" file="${lib.log4j}" />
+
+    <mkdir  dir="${build.bindist}/${build.dir}" />
+    <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.library}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
+    <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.samples}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
+    <copy todir="${build.bindist}/${build.dir}" file="${build.dir}/${jar.tests}" description="copy xmlsec JARs from ./build to ./build/${build.bindist}/build/" />
+
+    <mkdir dir="${build.bindist}/${build.doc}" />
+    <copy todir="${build.bindist}/${build.doc}">
+      <fileset dir="${build.doc.html}" />
+    </copy>
+
+    <zip zipfile="${build.dir}/${product.name}-bin-${product_version}.zip" 
+         basedir="${build.bindist}" />
+  </target>
+  
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
+  <!-- #################################################################### -->
 
   <target name="generate-keys">
      <genkey alias="test2"
@@ -343,10 +529,10 @@ org.apache.xml.security.utils.resolver.implementations.*
              keystore="data/keystoreAnt.jks"
              validity="2000" >
        <dname>
-         <param name="CN" value="Christian Geuer-Pollmann"/>
-         <param name="OU" value="FB12NUE"/>
-         <param name="O"  value="University of Siegen"/>
-         <param name="C"  value="DE"/>
+         <param name="CN" value="Christian Geuer-Pollmann" />
+         <param name="OU" value="FB12NUE" />
+         <param name="O"  value="University of Siegen" />
+         <param name="C"  value="DE" />
       </dname>
     </genkey>
   </target>
@@ -378,47 +564,22 @@ org.apache.xml.security.utils.resolver.implementations.*
           description="creates and verifies a signature"
           depends="sign, verify" />
 
-  <target name="docs">
-    <mkdir dir="${doc.html}"/>
-    <unjar src="${doc.style.jar}" dest="${doc.style}"/>
-    <java fork="yes"
-          classname="${doc.generator}">
-        <arg value="targetDirectory=${doc.html}"/>
-        <arg value="${doc.book}"/>
-        <arg value="${doc.style}"/>
-        <classpath>
-           <pathelement path="${doc.generator.package}" />
-           <pathelement path="${tools.dir}/xerces.jar" />
-           <pathelement path="${tools.dir}/xalan.jar" />
-        </classpath>
-    </java>
-    <delete dir="${doc.style}"/>
-  </target>
-
   <target name="mega-sample" depends="compile.samples">
-    <echo message="Now I'll try to verify merlins example fifteen-HMAC"/>
+    <echo message="Now I'll try to verify merlins example fifteen-HMAC" />
     <java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesFifteen"
           fork="yes">
         <classpath refid="classpath.library" />
     </java>
 
-    <echo message=""/>
-    <echo message=""/>
-    <echo message=""/>
-    <echo message=""/>
-    <echo message=""/>
-    <echo message="Now I'll try to verify merlins example sixteen"/>
+    <echo message="" />
+    <echo message="Now I'll try to verify merlins example sixteen" />
     <java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesSixteen"
           fork="yes">
         <classpath refid="classpath.library" />
     </java>
 
-    <echo message=""/>
-    <echo message=""/>
-    <echo message=""/>
-    <echo message=""/>
-    <echo message=""/>
-    <echo message="Now I'll create a signature in signature.xml and verify it"/>
+    <echo message="" />
+    <echo message="Now I'll create a signature in signature.xml and verify it" />
     <java classname="org.apache.xml.security.samples.signature.CreateSignature"
           fork="yes">
         <classpath refid="classpath.library" />
@@ -428,38 +589,15 @@ org.apache.xml.security.utils.resolver.implementations.*
         <classpath refid="classpath.library" />
     </java>
 
-    <echo message=""/>
-    <echo message=""/>
-    <echo message=""/>
-    <echo message=""/>
-    <echo message=""/>
-    <echo message="Now I'll create a signature like merlin-16 but without XSLT"/>
+    <echo message="" />
+    <echo message="Now I'll create a signature like merlin-16 but without XSLT" />
     <java classname="org.apache.xml.security.samples.signature.CreateMerlinsExampleSixteen"
           fork="yes">
         <classpath refid="classpath.library" />
     </java>
 
-    <echo message=""/>
-    <echo message=""/>
-    <echo message="Please look into log.txt, merlinsSixteenRecreated.xml and signature.xml"/>
-  </target>
-
-
-  <property name="lib.doclet.mif" value="${tools.dir}/mifdoclet.jar" />
-  <path id="classpath.doclet.mif">
-    <path refid="classpath.library" />
-    <pathelement path="${lib.doclet.mif}"/>
-  </path>
-  <target name="javadoc-pdf"
-          description="Generates javadoc in Adobe MakerInterchangeFormat (.mif) from all .java files">
-    <mkdir dir="${doc.pdf}"/>
-    <javadoc sourcepath="${src}"
-             destdir="${doc.pdf}"
-             packagenames="${javadoc.packages}"
-             doclet="com.sun.tools.doclets.mif.MIFDoclet"
-             docletpath="${lib.doclet.mif}"
-             additionalparam="-book data/websigMiflet.xml -batch dzbatcher -print pdf"
-             classpathref="classpath.doclet.mif" />
+    <echo message="" />
+    <echo message="Please look into log.txt, merlinsSixteenRecreated.xml and signature.xml" />
   </target>
 
   <target name="createEnvelopingSignature" depends="compile.samples">
@@ -468,95 +606,4 @@ org.apache.xml.security.utils.resolver.implementations.*
         <classpath refid="classpath.library" />
     </java>
   </target>
-
-  <!-- =================================================================== -->
-  <!-- Creates the source distribution                                     -->
-  <!-- =================================================================== -->
-  <target name="srcdist" depends="init" >
-     <mkdir dir="${build.dir}"/>
-     <mkdir dir="${build.srcdist}"/>
-     <mkdir dir="${build.srcdist}/libs"/>
-     <copy todir="${build.srcdist}">
-      <fileset dir=".">
-
-        <include name="build.xml"/>
-        <include name="README"/>
-        <include name="INSTALL"/>
-        <include name="LICENSE.txt"/>
-        <include name="TODO"/>
-        <include name="keys.asc"/>
-
-        <include name="data/**"/>
-        <exclude name="data/de/uni-siegen/**"/>
-        <exclude name="data/com/ibm/xss4j-20011029/**"/>
-
-        <include name="${src}/**" />
-        <include name="${src.samples}/**" />
-        <include name="${src.unitTests}/**" />
-        <include name="doc/xml/**" />
-
-        <exclude name="**/CVS/**"/>
-      </fileset>
-    </copy>
-
-    <zip zipfile="${product.name}-src-${product_version}.zip" 
-         basedir="${build.srcdist}"
-         />
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Creates the binary distribution                                     -->
-  <!-- =================================================================== -->
-  <target name="bindist" depends="javadocs, docs, compile" >
-     <mkdir dir="${build.bindist}"/>
-     <mkdir dir="${build.bindist}/${libs}"/>
-     <copy todir="${build.bindist}">
-      <fileset dir=".">
-
-        <include name="build.xml"/>
-        <include name="README"/>
-        <include name="INSTALL"/>
-        <include name="LICENSE.txt"/>
-        <include name="TODO"/>
-        <include name="keys.asc"/>
-
-        <include name="data/**"/>
-        <exclude name="data/de/uni-siegen/**"/>
-        <exclude name="data/com/ibm/xss4j-20011029/**"/>
-
-        <include name="${lib.junit}" />
-        <include name="${lib.xerces.1}" />
-        <include name="${lib.xerces.2}" />
-        <include name="${lib.xalan.1}" />
-        <include name="${lib.xalan.2}" />
-        <include name="${lib.log4j}" />
-
-        <include name="${src.samples}/**" />
-
-        <exclude name="**/CVS/**"/>
-      </fileset>
-    </copy>
-    <jar jarfile="${build.bindist}/${libs}/${jar.library}"
-         basedir="${build.dest}"
-         includes="org/apache/**,META-INF/**"
-         excludes="org/apache/xml/security/temp/**, org/apache/xml/security/samples/**, org/apache/xml/security/test/**" />
-    <jar jarfile="${build.bindist}/${libs}/${jar.samples}"
-         basedir="${build.dest}"
-         includes="org/apache/xml/security/samples/**,META-INF/**" />
-    <jar jarfile="${build.bindist}/${libs}/${jar.tests}"
-         basedir="${build.dest}"
-         includes="org/apache/xml/security/test/**,META-INF/**" />
-    <copy todir="${build.bindist}/doc/api">
-      <fileset dir="${build.javadocs}"/>
-    </copy>
-    <copy todir="${build.bindist}/doc">
-      <fileset dir="${doc.html}"/>
-    </copy>
-
-    <zip zipfile="${product.name}-bin-${product_version}.zip" 
-         basedir="${build.bindist}"
-         />
-  </target>
-  
-  <target name="dist" depends="srcdist, bindist" />
 </project>
