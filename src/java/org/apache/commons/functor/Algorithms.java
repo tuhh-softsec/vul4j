@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.9 2003/11/25 18:34:13 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/Algorithms.java,v 1.10 2003/11/25 19:21:43 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -60,6 +60,9 @@ package org.apache.commons.functor;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.functor.core.collection.FilteredIterator;
+import org.apache.commons.functor.core.collection.TransformedIterator;
+import org.apache.commons.functor.core.composite.UnaryNot;
 import org.apache.commons.functor.generator.BaseGenerator;
 import org.apache.commons.functor.generator.Generator;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
@@ -80,18 +83,18 @@ import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
  * </pre>
  *
  * @since 1.0
- * @version $Revision: 1.9 $ $Date: 2003/11/25 18:34:13 $
+ * @version $Revision: 1.10 $ $Date: 2003/11/25 19:21:43 $
  * @author Jason Horman (jason@jhorman.org)
  * @author Rodney Waldhoff
  */
 public class Algorithms {
 
     /**
-     * Equivalent to 
-     * <code>{@link #apply(Generator,UnaryFunction) apply}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),func).toCollection().iterator()</code>.
+     * Returns an {@link Iterator} that will apply the given {@link UnaryFunction} to each
+     * element when accessed.
      */
     public static final Iterator apply(Iterator iter, UnaryFunction func) {
-        return apply(new IteratorToGeneratorAdapter(iter),func).toCollection().iterator();
+        return TransformedIterator.transform(iter,func);
     }
 
     /**
@@ -259,13 +262,12 @@ public class Algorithms {
         return result[0];
     }
 
-
     /**
-     * Equivalent to 
-     * <code>{@link #reject(Generator,UnaryPredicate) reject}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred).toCollection().iterator()</code>.
+     * Returns an {@link Iterator} that will only return elements that DO
+     * NOT match the given predicate.
      */
     public static Iterator reject(Iterator iter, UnaryPredicate pred) {
-        return reject(new IteratorToGeneratorAdapter(iter), pred).toCollection().iterator();
+        return FilteredIterator.filter(iter,UnaryNot.not(pred));
     }
 
     /**
@@ -287,11 +289,11 @@ public class Algorithms {
     }
 
     /**
-     * Equivalent to 
-     * <code>{@link #select(Generator,UnaryPredicate) select}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred).toCollection().iterator()</code>.
+     * Returns an {@link Iterator} that will only return elements that DO
+     * match the given predicate.
      */
     public static final Iterator select(Iterator iter, UnaryPredicate pred) {
-        return select(new IteratorToGeneratorAdapter(iter), pred).toCollection().iterator();
+        return FilteredIterator.filter(iter,pred);
     }
 
     /**
@@ -314,24 +316,24 @@ public class Algorithms {
 
     /**
      * Equivalent to 
-     * <code>{@link #until(Generator,UnaryPredicate) until}(new {@link org.apache.commons.functor.generator.IteratorToGeneratorAdapter IteratorToGeneratorAdapter}(iter),pred).toCollection().iterator()</code>.
+     * <code>{@link #reject(Iterator,UnaryPredicate) reject}(iter,pred)</code>.
      */
-    public static final Iterator until(Iterator iter, UnaryPredicate pred) {
-        return until(new IteratorToGeneratorAdapter(iter), pred).toCollection().iterator();
+    public static final Iterator until(final Iterator iter, final UnaryPredicate pred) {
+        return reject(iter,pred);
     }
 
     /**
-     * Returns a {@link Generator} that will stop when the predicate becomes
-     * true. This is useful for imposing {@link Generator} limits. For example:
-     *
-     * <pre>
-     *  EachLine.open(file).until(new Offset(1));
-     * </pre>
-     *
-     * Would only "generate" 1 line from the file before {@link Generator#stop
-     * stopping} the generator.
+     * Equivalent to 
+     * <code>{@link #reject(Generator,UnaryPredicate) reject}(gen,pred)</code>.
      */
     public static final Generator until(final Generator gen, final UnaryPredicate pred) {
+        return reject(gen,pred);
+        // here's the old version of this code
+        // reject(gen,pred) doesn't call stop()
+        // like this version does.
+        // should reject call stop?  
+        // is the stop call signficant here?
+        /*
         return new BaseGenerator(gen) {
             public void run(final UnaryProcedure proc) {
                 gen.run(new UnaryProcedure() {
@@ -345,6 +347,7 @@ public class Algorithms {
                 });
             }
         };
+        */
     }
 
     /**

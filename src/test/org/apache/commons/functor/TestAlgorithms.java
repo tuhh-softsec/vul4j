@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.5 2003/11/25 18:34:13 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/TestAlgorithms.java,v 1.6 2003/11/25 19:21:43 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -75,7 +75,7 @@ import org.apache.commons.functor.core.Offset;
 import org.apache.commons.functor.generator.IteratorToGeneratorAdapter;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2003/11/25 18:34:13 $
+ * @version $Revision: 1.6 $ $Date: 2003/11/25 19:21:43 $
  * @author Rodney Waldhoff
  */
 public class TestAlgorithms extends TestCase {
@@ -218,7 +218,6 @@ public class TestAlgorithms extends TestCase {
 
     public void testLimit() {
         Collection col = IteratorToGeneratorAdapter.adapt(Algorithms.until(list.iterator(), new Offset(2))).toCollection();
-        System.out.println(col);
         assertEquals("[0, 1]", col.toString());
     }
 
