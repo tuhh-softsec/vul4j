@@ -1,5 +1,5 @@
 /* 
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.6 2003/12/01 20:27:20 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/example/kata/two/TestBinaryChop.java,v 1.7 2003/12/01 21:14:46 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -109,7 +109,7 @@ import org.apache.commons.functor.generator.util.IntegerRange;
  * See http://pragprog.com/pragdave/Practices/Kata/KataTwo.rdoc,v
  * for more information on this Kata.
  * 
- * @version $Revision: 1.6 $ $Date: 2003/12/01 20:27:20 $
+ * @version $Revision: 1.7 $ $Date: 2003/12/01 21:14:46 $
  * @author Rodney Waldhoff
  */
 public class TestBinaryChop extends TestCase {
@@ -240,7 +240,7 @@ public class TestBinaryChop extends TestCase {
      *   assert(INV.test());
      * is valid, then so is:
      *   assert(INV.test()); 
-     *   do { BODY.run(); } while(! TERM.test() ); 
+     *   while(! TERM.test() ) { BODY.run(); } 
      *   assert(INV.test());
      *   assert(TERM.test());
      * 
@@ -316,7 +316,7 @@ public class TestBinaryChop extends TestCase {
      * Now we can use the Algorithms.dountil method to 
      * execute that loop: 
      */
-    public void testIterative2() {
+    public void testIterativeWithInvariants() {
         chopTest(new BaseBinaryChop() {
             
             public int find(final Object seeking, final List list) {
@@ -331,13 +331,11 @@ public class TestBinaryChop extends TestCase {
                     
                     /** Our loop body. */
                     public void run() {
-                        {
-                            int mid = (high + low) / 2;
-                            if(greaterThan(list,mid,seeking)) {
-                                high = mid;
-                            } else {
-                                low = mid;
-                            }
+                        int mid = (high + low) / 2;
+                        if(greaterThan(list,mid,seeking)) {
+                            high = mid;
+                        } else {
+                            low = mid;
                         }
                     }
                     
@@ -359,6 +357,91 @@ public class TestBinaryChop extends TestCase {
         });
     }
 
+    /*
+     * Jim Weirich notes how Eiffel is very explict about loop invariants:
+     * 
+     *   from
+     *     low := list.lower
+     *     high := list.upper + 1
+     *   invariant
+     *     lower_limit: -- low <= result (this is just a comment)
+     *     upper_limit: -- high < result (this is just a comment)
+     *   variant
+     *     high - low
+     *   until
+     *     (high - low) <= 1
+     *   loop
+     *     mid := (high + low) // 2
+     *     if list.at(mid) > seeking then
+     *       high := mid
+     *     else 
+     *       low := mid
+     *     end
+     *   end
+     * 
+     * We can do that too, see EiffelStyleLoop.
+     */
+    class BinarySearchLoop extends EiffelStyleLoop {
+        BinarySearchLoop(Object aSeeking, List aList) {
+            seeking = aSeeking;
+            list = aList;
+            
+            from(new Procedure() {
+                public void run() {
+                    low = 0;
+                    high = list.size();
+                }
+            });
+
+            invariant(new Predicate() {
+                public boolean test() {
+                    return high == 0 || low < high;
+                }
+            });
+
+            variant(new Function() {
+                public Object evaluate() {
+                    return new Integer(high - low);
+                }
+            });
+
+            until(new Predicate() {
+                public boolean test() {
+                    return high - low <= 1;
+                }
+            });
+
+            loop(new Procedure() {
+                public void run() {
+                    int mid = (high + low) / 2;
+                    if(BaseBinaryChop.greaterThan(list,mid,seeking)) {
+                        high = mid;
+                    } else {
+                        low = mid;
+                    }
+                }
+            });
+        }
+        
+        int getResult() {
+            return list.isEmpty() ? -1 : BaseBinaryChop.equals(list,low,seeking) ? low : -1;
+        }
+        
+        private int high;
+        private int low;
+        private final Object seeking;
+        private final List list;
+    }
+    
+    public void testIterativeWithInvariantsAndAssertions() {
+        chopTest(new BaseBinaryChop() {            
+            public int find(Object seeking, List list) {
+                BinarySearchLoop loop = new BinarySearchLoop(seeking,list);
+                loop.run();
+                return loop.getResult();
+            }});
+    }
+    
     /**
      * A recursive version of that implementation uses 
      * method parameters to track the upper and 
