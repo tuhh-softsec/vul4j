@@ -290,3 +290,128 @@ unsigned int OpenSSLCryptoSymmetricKey::decryptFinish(unsigned char * plainBuf,
 
 }
 
+// --------------------------------------------------------------------------------
+//           Encrypt
+// --------------------------------------------------------------------------------
+
+bool OpenSSLCryptoSymmetricKey::encryptInit(const unsigned char * iv) {
+
+	if (m_initialised == true)
+		return true;
+	
+	if (m_keyLen == 0) {
+
+		throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			"OpenSSL:SymmetricKey - Cannot initialise without key"); 
+
+	}
+
+	m_initialised = true;
+
+	// Set up the context according to the required cipher type
+
+	const unsigned char * usedIV;
+	const unsigned char tstIV[] = "abcdefghijklmnopqrstuvwxyz";
+
+	// Tell the library that the IV still has to be sent
+	m_ivSent = false;
+
+	switch (m_keyType) {
+
+	case (XSECCryptoSymmetricKey::KEY_3DES_CBC_192) :
+
+		// A 3DES key
+
+		if (iv == NULL) {
+			
+			usedIV = tstIV;
+			//return 0;	// Cannot initialise without an IV
+
+		}
+		else
+			usedIV = iv;
+
+		EVP_EncryptInit_ex(&m_ctx, EVP_des_ede3_cbc(), NULL, m_keyBuf.rawBuffer(), usedIV);
+		// Turn off padding
+		// EVP_CIPHER_CTX_set_padding(&m_ctx, 0);
+
+		// That means we have to handle padding, so we always hold back
+		// 8 bytes of data.
+		m_blockSize = 8;
+		m_ivSize = 8;
+		memcpy(m_lastBlock, usedIV, m_ivSize);
+		m_bytesInLastBlock = 0;
+
+		break;
+
+	default :
+
+		// Cannot do this without an IV
+		throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			"OpenSSL:SymmetricKey - Unknown key type"); 
+
+	}
+
+	return true;
+
+}
+
+unsigned int OpenSSLCryptoSymmetricKey::encrypt(const unsigned char * inBuf, 
+								 unsigned char * cipherBuf, 
+								 unsigned int inLength,
+								 unsigned int maxOutLength) {
+
+	if (m_initialised == false) {
+
+		encryptInit();
+
+	}
+
+	// NOTE: This won't actually stop OpenSSL blowing the buffer, so the onus is
+	// on the caller.
+
+	unsigned int offset = 0;
+	if (m_ivSent == false && m_ivSize > 0) {
+
+		memcpy(cipherBuf, m_lastBlock, m_ivSize);
+		m_ivSent = true;
+
+		offset = m_ivSize;
+
+	}
+
+	int outl = maxOutLength - offset;
+
+	if (inLength + offset > maxOutLength) {
+
+		throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			"OpenSSL:SymmetricKey - Not enough space in output buffer for encrypt"); 
+
+	}
+
+	if (EVP_EncryptUpdate(&m_ctx, &cipherBuf[offset], &outl, inBuf, inLength) == 0) {
+
+		throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			"OpenSSL:SymmetricKey - Error during OpenSSL encrypt"); 
+
+	}
+
+	return outl + offset;
+
+}
+
+unsigned int OpenSSLCryptoSymmetricKey::encryptFinish(unsigned char * cipherBuf,
+													  unsigned int maxOutLength) {
+
+	int outl = maxOutLength;
+
+	if (EVP_EncryptFinal_ex(&m_ctx, cipherBuf, &outl) == 0) {
+
+		throw XSECCryptoException(XSECCryptoException::SymmetricError,
+			"OpenSSL:SymmetricKey - Error during OpenSSL decrypt finalisation"); 
+
+	}
+
+	return outl;
+
+}

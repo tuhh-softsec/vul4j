@@ -73,6 +73,10 @@
 #include <xsec/enc/XSECCryptoKey.hpp>
 #include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/transformers/TXFMBase.hpp>
+#include <xsec/transformers/TXFMBase64.hpp>
+#include <xsec/transformers/TXFMC14n.hpp>
+#include <xsec/transformers/TXFMCipher.hpp>
+#include <xsec/transformers/TXFMDocObject.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 
 #include "XENCCipherImpl.hpp"
@@ -110,6 +114,15 @@ const XMLCh s_tagname[] = {
 	XERCES_CPP_NAMESPACE :: chNull
 };
 
+const XMLCh s_defaultXENCPrefix[] = {
+
+	XERCES_CPP_NAMESPACE :: chLatin_x,
+	XERCES_CPP_NAMESPACE :: chLatin_e,
+	XERCES_CPP_NAMESPACE :: chLatin_n,
+	XERCES_CPP_NAMESPACE :: chLatin_c,
+	XERCES_CPP_NAMESPACE :: chNull
+
+};
 
 // --------------------------------------------------------------------------------
 //			Constructors
@@ -120,6 +133,8 @@ mp_doc(doc),
 mp_encryptedData(NULL),
 mp_key(NULL) {
 
+	mp_xencPrefixNS = XMLString::replicate(s_defaultXENCPrefix);
+
 }
 
 XENCCipherImpl::~XENCCipherImpl() {
@@ -129,6 +144,30 @@ XENCCipherImpl::~XENCCipherImpl() {
 
 	if (mp_key != NULL)
 		delete mp_key;
+
+	if (mp_xencPrefixNS != NULL)
+		delete mp_xencPrefixNS;
+
+}
+
+// --------------------------------------------------------------------------------
+//			Set/get the namespace prefix to be used when creating nodes
+// --------------------------------------------------------------------------------
+
+void XENCCipherImpl::setXENCNSPrefix(const XMLCh * prefix) {
+
+	if (mp_xencPrefixNS != NULL)
+		delete mp_xencPrefixNS;
+
+	// Copy in new one
+	mp_xencPrefixNS = XMLString::replicate(prefix);
+
+}
+
+const XMLCh * XENCCipherImpl::getXENCNSPrefix(void) const {
+
+	return mp_xencPrefixNS;
+
 }
 
 // --------------------------------------------------------------------------------
@@ -262,6 +301,38 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
     return result;
 }
 
+// --------------------------------------------------------------------------------
+//			Build a set of decryption transforms
+// --------------------------------------------------------------------------------
+
+TXFMChain * XENCCipherImpl::createDecryptionTXFMChain(void) {
+
+	// First obtain the raw encrypted data
+	if (mp_key == NULL) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCCipherImpl::createDecryptionTXFMChain - No key set");
+	}
+
+	if (mp_encryptedData == NULL) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCCipherImpl::createDecryptionTXFMChain - Encrypted Data");
+	}
+
+	// Get the raw encrypted data
+	TXFMChain * c = mp_encryptedData->createCipherTXFMChain();
+
+	Janitor<TXFMChain> j_c(c);
+
+	// Now add the decryption TXFM
+	TXFMCipher * tcipher;
+	XSECnew(tcipher, TXFMCipher(mp_doc, mp_key, false));
+
+	c->appendTxfm(tcipher);
+
+	j_c.release();
+	return c;
+
+}
 
 // --------------------------------------------------------------------------------
 //			Decrypt an Element and replace in original document
@@ -285,11 +356,9 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 	// Load
 	mp_encryptedData->load();
 
-	// Do the decrypt
-	mp_encryptedData->setKey(mp_key);
-	TXFMChain * c = mp_encryptedData->createDecryptionTXFMChain();
+	// Get the raw encrypted data
+	TXFMChain * c = createDecryptionTXFMChain();
 	Janitor<TXFMChain> j_c(c);
-
 	TXFMBase * b = c->getLastTxfm();
 
 	// Read the result into a safeBuffer
@@ -321,5 +390,94 @@ DOMDocument * XENCCipherImpl::decryptElement(DOMElement * element) {
 	}
 
 	return NULL;
+
+}
+
+// --------------------------------------------------------------------------------
+//			Create an EncryptedData element
+// --------------------------------------------------------------------------------
+
+XENCEncryptedData * XENCCipherImpl::createEncryptedData(
+						XENCCipherData::XENCCipherDataType type, 
+						XMLCh * value) {
+
+	// Clean out anything currently being used
+	if (mp_encryptedData != NULL) {
+		delete mp_encryptedData;
+		mp_encryptedData = NULL;
+	}
+	// Create a new EncryptedData element
+
+	XSECnew(mp_encryptedData, XENCEncryptedDataImpl(this));
+	mp_encryptedData->createBlankEncryptedData(type, value);
+
+	return mp_encryptedData;
+}
+
+// --------------------------------------------------------------------------------
+//			Encrypt an element
+// --------------------------------------------------------------------------------
+
+DOMDocument * XENCCipherImpl::encryptElement(DOMElement * element) {
+
+	// Make sure we have a key before we do anything too drastic
+	if (mp_key == NULL) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCCipherImpl::encryptElement - No key set");
+	}
+
+	// Create a transform chain to do the encryption
+	TXFMDocObject * tdocObj;
+	XSECnew(tdocObj, TXFMDocObject(mp_doc));
+	TXFMChain * c;
+	XSECnew(c, TXFMChain(tdocObj));
+
+	Janitor<TXFMChain> j_c(c);
+
+	tdocObj->setInput(mp_doc, element);
+
+	// Now need to serialise the element - easiest to just use a canonicaliser
+	TXFMC14n *tc14n;
+	XSECnew(tc14n, TXFMC14n(mp_doc));
+	c->appendTxfm(tc14n);
+
+	tc14n->activateComments();
+	tc14n->setExclusive();
+
+	// Do the encryption
+	TXFMCipher *tcipher;
+	XSECnew(tcipher, TXFMCipher(mp_doc, mp_key, true));
+	c->appendTxfm(tcipher);
+
+	// Transform to Base64
+	TXFMBase64 * tb64;
+	XSECnew(tb64, TXFMBase64(mp_doc, false));
+	c->appendTxfm(tb64);
+
+	// Read into a safeBuffer
+	safeBuffer sb;
+	sb << c->getLastTxfm();
+
+	// Create the element!
+
+	if (mp_encryptedData != NULL) {
+		delete mp_encryptedData;
+		mp_encryptedData = NULL;
+	}
+	
+	XSECnew(mp_encryptedData, XENCEncryptedDataImpl(this));
+	mp_encryptedData->createBlankEncryptedData(XENCCipherData::VALUE_TYPE, sb.sbStrToXMLCh());
+
+	// Replace original element
+	DOMNode * p = element->getParentNode();
+	
+	if (p == NULL) {
+		throw XSECException(XSECException::CipherError, 
+			"XENCCipherImpl::encryptElement - Passed in element has no parent");
+	}
+
+	p->replaceChild(mp_encryptedData->getDOMNode(), element);
+
+	return mp_doc;
 
 }

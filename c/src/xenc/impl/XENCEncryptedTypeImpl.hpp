@@ -95,19 +95,27 @@ public:
 	// Load elements
 	void load();
 
-	virtual void setKey(XSECCryptoKey * key);
+	// Create from scratch.  LocalName is the name of the owning element
+
+	DOMElement * createBlankEncryptedType(
+						XMLCh * localName,
+						XENCCipherData::XENCCipherDataType type, 
+						const XMLCh * value);
+
+	// Interface Methods
+	virtual XENCCipherData * getCipherData(void);
+	virtual DOMElement * getDOMNode();
 
 protected:
 
 	// Create the txfm list - gives as output a TXFM chain with
-	// the output being the decrypted data
+	// the output being the raw encrypted data
 
-	TXFMChain * createDecryptionTXFMChain(void);
+	TXFMChain * createCipherTXFMChain(void);
 
 	XENCCipherImpl			* mp_cipher;
 	DOMNode					* mp_encryptedTypeNode;		// Node at head of structure
 	XENCCipherDataImpl		* mp_cipherData;
-	XSECCryptoKey			* mp_key;
 
 	friend XENCCipherImpl;
 };

@@ -91,6 +91,9 @@ public:
 
 	// Load elements
 	void load();
+	// Create
+	DOMElement * createBlankCipherData(XENCCipherData::XENCCipherDataType type, const XMLCh * value);
+
 
 	// Interface methods
 	virtual XENCCipherDataType getCipherDataType(void);

@@ -76,7 +76,7 @@
 
 #include <xsec/framework/XSECDefs.hpp>
 
-class XSECCryptoKey;
+class XENCCipherData;
 
 /**
  * @ingroup xenc
@@ -116,15 +116,26 @@ public:
 	//@{
 
 	/**
-	 * \brief Set the encryption key to be used to decrypt
+	 * \brief Retrieve the CipherData element
 	 *
-	 * The decrypt functions use this key to decrypt the cipher data.
+	 * CipherData elements are the sub part of the EncryptedData
+	 * that hold the actual enciphered information.
 	 *
-	 * @param key The key to use for encryption/decryption
-	 * @note The object will take a copy of the key (using XSECCryptoKey::clone()).
+	 * @returns The CipherData object
 	 */
 
-	virtual void setKey(XSECCryptoKey * key) = 0;
+	virtual XENCCipherData * getCipherData(void) = 0;
+
+	/**
+	 * \brief Retrieve the DOM Node that heads up the structure
+	 *
+	 * If this object has been fully created, this call will provide
+	 * the element node that heads up this structure
+	 *
+	 * @returns the DOMNode that heads up this structure
+	 */
+
+	virtual DOMElement * getDOMNode() = 0;
 
 	//@}
 

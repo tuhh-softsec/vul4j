@@ -261,6 +261,20 @@ safeBuffer &makeQName(safeBuffer & qname, const XMLCh *prefix, const char * loca
 	return qname;
 }
 
+safeBuffer &makeQName(safeBuffer & qname, const XMLCh *prefix, const XMLCh * localName) {
+
+	if (prefix == NULL || prefix[0] == 0) {
+		qname.sbXMLChIn(localName);
+	}
+	else {
+		qname.sbXMLChIn(prefix);
+		qname.sbXMLChAppendCh(XERCES_CPP_NAMESPACE_QUALIFIER chColon);
+		qname.sbXMLChCat(localName);
+	}
+
+	return qname;
+}
+
 // --------------------------------------------------------------------------------
 //           "Quick" Transcode (low performance)
 // --------------------------------------------------------------------------------

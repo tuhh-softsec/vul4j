@@ -243,6 +243,70 @@ public :
 	virtual unsigned int decryptFinish(unsigned char * plainBuf,
 									   unsigned int maxOutLength) = 0;
 
+	/**
+	 * \brief Initialise an encryption process
+	 *
+	 * Setup the key to get ready for a decryption session.
+	 * Callers can pass in an IV.  If one is not provided, 
+	 * but the algorithm requires one (e.g. 3DES_CBC), then
+	 * implementations are required to generate one.
+	 *
+	 * @param iv Initialisation Vector to be used.  NULL if one is
+	 * not required, or if IV is to be generated
+	 * @returns true if the initialisation succeeded.
+	 */
+
+	virtual bool encryptInit(const unsigned char * iv = NULL) = 0;
+
+	/**
+	 * \brief Continue an encryption operation using this key.
+	 *
+	 * Encryption must have been set up using an encryptInit
+	 * call.  Takes the inBuf and continues a encryption operation,
+	 * writing the output to outBuf.
+	 *
+	 * This function does not have to guarantee that all input
+	 * will be encrypted.  In cases where the input is not a length
+	 * of the block size, the implementation will need to hold back
+	 * plain-text to be handled during the next operation.
+	 *
+	 * @param inBuf Octets to be encrypted
+	 * @param cipherBuf Buffer to place output in
+	 * @param inLength Number of bytes to encrypt
+	 * @param maxOutLength Maximum number of bytes to place in output 
+	 * buffer
+	 * @returns Bytes placed in output Buffer
+	 */
+
+	virtual unsigned int encrypt(const unsigned char * inBuf, 
+								 unsigned char * cipherBuf, 
+								 unsigned int inLength,
+								 unsigned int maxOutLength) = 0;
+
+	/**
+	 * \brief Finish a encryption operation
+	 *
+	 * Complete a encryption process.  No plain text is passed in,
+	 * as this should simply be removing any remaining text from
+	 * the plain storage buffer and creating a final padded block.
+	 *
+	 * Padding is performed by taking the remaining block, and
+	 * setting the last byte to equal the number of bytes of
+	 * padding.  If the plain was an exact multiple of the block size,
+	 * then an extra block of padding will be used.  For example, if 
+	 * the block size is 8 bytes, and there were three remaining plain
+	 * text bytes (0x01, 0x02 and 0x03), the final block will be :
+	 *
+	 * 0x010203????????05
+	 *
+	 * @param cipherBuf Buffer to place final block of cipher text in
+	 * @param maxOutLength Maximum number of bytes to pace in output
+	 * @returns Bytes placed in output buffer
+	 */
+
+	virtual unsigned int encryptFinish(unsigned char * plainBuf,
+									   unsigned int maxOutLength) = 0;
+
 	//@}
 
 };

@@ -103,13 +103,15 @@ static XMLCh s_CipherValue[] = {
 
 XENCCipherValueImpl::XENCCipherValueImpl(XENCCipherImpl * cipher) :
 mp_cipher(cipher),
-mp_cipherValueNode(NULL) {
+mp_cipherValueNode(NULL),
+mp_cipherString(NULL) {
 
 }
 
 XENCCipherValueImpl::XENCCipherValueImpl(XENCCipherImpl * cipher, DOMNode * node) :
 mp_cipher(cipher),
-mp_cipherValueNode(node) {
+mp_cipherValueNode(node),
+mp_cipherString(NULL) {
 
 }
 
@@ -149,6 +151,38 @@ void XENCCipherValueImpl::load(void) {
 
 	// Get a copy
 	mp_cipherString = XMLString::replicate(txt.rawXMLChBuffer());
+
+}
+
+// --------------------------------------------------------------------------------
+//			Create a blank structure
+// --------------------------------------------------------------------------------
+
+DOMElement * XENCCipherValueImpl::createBlankCipherValue(
+						const XMLCh * value) {
+
+	// Rest
+	if (mp_cipherString != NULL) {
+		delete[] mp_cipherString;
+		mp_cipherString = NULL;
+	}
+
+	// Get some setup values
+	safeBuffer str;
+	DOMDocument *doc = mp_cipher->getDocument();
+	const XMLCh * prefix = mp_cipher->getXENCNSPrefix();
+
+	makeQName(str, prefix, s_CipherValue);
+
+	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
+	mp_cipherValueNode = ret;
+
+	// Append the value
+	ret->appendChild(doc->createTextNode(value));
+	
+	mp_cipherString = XMLString::replicate(value);;
+
+	return ret;
 
 }
 

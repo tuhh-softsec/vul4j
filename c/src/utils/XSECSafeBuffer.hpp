@@ -75,6 +75,8 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xercesc/util/XMLString.hpp>
 
+class TXFMBase;
+
 /** 
  * \addtogroup internal
  * @{
@@ -160,6 +162,7 @@ public:
 	unsigned char & operator[](int n);
 	safeBuffer & operator= (const safeBuffer & cpy);
 	safeBuffer & operator= (const XMLCh * inStr);
+	safeBuffer & operator << (TXFMBase * t);
 
 	// Get functions
 

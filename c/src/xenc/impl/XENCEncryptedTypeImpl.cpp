@@ -76,7 +76,6 @@
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/transformers/TXFMBase64.hpp>
-#include <xsec/transformers/TXFMCipher.hpp>
 #include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/transformers/TXFMSB.hpp>
 
@@ -146,8 +145,7 @@ static XMLCh s_CipherData[] = {
 XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(XENCCipherImpl * cipher) :
 mp_cipher(cipher),
 mp_encryptedTypeNode(NULL),
-mp_cipherData(NULL),
-mp_key(NULL) {
+mp_cipherData(NULL) {
 
 }
 
@@ -155,8 +153,7 @@ mp_key(NULL) {
 XENCEncryptedTypeImpl::XENCEncryptedTypeImpl(XENCCipherImpl * cipher, DOMNode * node) :
 mp_cipher(cipher),
 mp_encryptedTypeNode(node),
-mp_cipherData(NULL),
-mp_key(NULL) {
+mp_cipherData(NULL) {
 
 }
 
@@ -164,9 +161,6 @@ XENCEncryptedTypeImpl::~XENCEncryptedTypeImpl() {
 
 	if (mp_cipherData != NULL)
 		delete mp_cipherData;
-
-	if (mp_key != NULL)
-		delete mp_key;
 
 }
 
@@ -225,18 +219,49 @@ void XENCEncryptedTypeImpl::load() {
 }
 
 // --------------------------------------------------------------------------------
-//			Create a txfm chain for this transform list
+//			Create a blank structure
 // --------------------------------------------------------------------------------
 
-void XENCEncryptedTypeImpl::setKey(XSECCryptoKey * key) {
+DOMElement * XENCEncryptedTypeImpl::createBlankEncryptedType(
+						XMLCh * localName,
+						XENCCipherData::XENCCipherDataType type, 
+						const XMLCh * value) {
 
-	if (key == NULL)
-		return;
+	// Reset
+	mp_cipherData = NULL;
 
-	if (mp_key != NULL)
-		delete mp_key;
+	// Get some setup values
+	safeBuffer str;
+	DOMDocument *doc = mp_cipher->getDocument();
+	const XMLCh * prefix = mp_cipher->getXENCNSPrefix();
 
-	mp_key = key->clone();
+	makeQName(str, prefix, localName);
+
+	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
+	mp_encryptedTypeNode = ret;
+
+	// Set namespace
+	if (prefix[0] == XERCES_CPP_NAMESPACE::chNull) {
+		str.sbTranscodeIn("xmlns");
+	}
+	else {
+		str.sbTranscodeIn("xmlns:");
+		str.sbXMLChCat(prefix);
+	}
+
+	ret->setAttributeNS(DSIGConstants::s_unicodeStrURIXMLNS, 
+							str.rawXMLChBuffer(), 
+							DSIGConstants::s_unicodeStrURIXENC);
+
+
+	// Create the cipher Data
+	XSECnew(mp_cipherData, XENCCipherDataImpl(mp_cipher));
+	DOMNode * cipherDataNode = mp_cipherData->createBlankCipherData(type, value);
+
+	// Add to EncryptedType
+	ret->appendChild(cipherDataNode);
+
+	return ret;
 
 }
 
@@ -244,11 +269,11 @@ void XENCEncryptedTypeImpl::setKey(XSECCryptoKey * key) {
 //			Create a txfm chain for this transform list
 // --------------------------------------------------------------------------------
 
-TXFMChain * XENCEncryptedTypeImpl::createDecryptionTXFMChain(void) {
+TXFMChain * XENCEncryptedTypeImpl::createCipherTXFMChain(void) {
 
-	TXFMChain * chain;
+	if (mp_cipherData->getCipherDataType() == XENCCipherData::VALUE_TYPE) {
 
-	if (mp_cipherData->getCipherDataType() == XENCCipherData::CipherValue) {
+		TXFMChain * chain;
 
 		// Given we already have this in memory, we transcode to
 		// local code page and then transform
@@ -270,6 +295,8 @@ TXFMChain * XENCEncryptedTypeImpl::createDecryptionTXFMChain(void) {
 
 		chain->appendTxfm(tb64);
 
+		return chain;
+
 	}
 
 	else {
@@ -279,17 +306,23 @@ TXFMChain * XENCEncryptedTypeImpl::createDecryptionTXFMChain(void) {
 
 	}
 
-	Janitor<TXFMChain> j_chain(chain);
-
-	// Now add the decryption TXFM
-	TXFMCipher * tcipher;
-	XSECnew(tcipher, TXFMCipher(mp_cipher->getDocument(), mp_key, false));
-
-	chain->appendTxfm(tcipher);
-
-	j_chain.release();
-
-	return chain;
 
 }
 
+// --------------------------------------------------------------------------------
+//			Get Methods
+// --------------------------------------------------------------------------------
+
+XENCCipherData * XENCEncryptedTypeImpl::getCipherData(void) {
+
+	return mp_cipherData;
+
+}
+
+DOMElement * XENCEncryptedTypeImpl::getDOMNode() {
+
+	if (mp_encryptedTypeNode->getNodeType() == DOMNode::ELEMENT_NODE)
+		return static_cast<DOMElement*>(mp_encryptedTypeNode);
+
+	return NULL;
+}

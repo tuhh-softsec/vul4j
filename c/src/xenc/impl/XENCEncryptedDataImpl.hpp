@@ -79,7 +79,7 @@
 
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
-class XENCEncryptedDataImpl : public XENCEncryptedTypeImpl, XENCEncryptedData {
+class XENCEncryptedDataImpl : public XENCEncryptedData, public XENCEncryptedTypeImpl {
 
 public:
 
@@ -89,11 +89,18 @@ public:
 
 	void load(void);
 
+	// Create a blank EncryptedData DOM structure
+
+	DOMElement * createBlankEncryptedData(XENCCipherData::XENCCipherDataType type, const XMLCh * value);
+
 	// Interface methods
 
-	virtual XENCCipherData * getCipherData(void);
+	// Inherited from XENCEncryptedData - need to re-implement
+	virtual XENCCipherData * getCipherData(void) 
+		{return XENCEncryptedTypeImpl::getCipherData();}
+	virtual DOMElement * getDOMNode()
+		{return XENCEncryptedTypeImpl::getDOMNode();}
 
-	virtual void setKey(XSECCryptoKey * key) {XENCEncryptedTypeImpl::setKey(key);}
 
 private:
 

@@ -145,6 +145,7 @@ DOMNode DSIG_EXPORT * findNextChildOfType(DOMNode *n, DOMNode::NodeType t);
 
 safeBuffer DSIG_EXPORT &makeQName(safeBuffer & qname, safeBuffer &prefix, const char * localName);
 safeBuffer DSIG_EXPORT &makeQName(safeBuffer & qname, const XMLCh *prefix, const char * localName);
+safeBuffer DSIG_EXPORT &makeQName(safeBuffer & qname, const XMLCh *prefix, const XMLCh * localName);
 
 // --------------------------------------------------------------------------------
 //           Gather text from children

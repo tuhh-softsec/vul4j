@@ -72,6 +72,7 @@
 // XSEC Includes
 
 #include <xsec/framework/XSECDefs.hpp>
+#include <xsec/xenc/XENCCipherData.hpp>
 
 // Xerces
 
@@ -79,6 +80,7 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
 XSEC_DECLARE_XERCES_CLASS(DOMDocument);
 
 class XSECCryptoKey;
+class XENCEncryptedData;
 
 /**
  * @defgroup xenc XML Encryption Implementation
@@ -99,6 +101,10 @@ class XSECCryptoKey;
  * the XML Encryption standard.  It is a control class used by the
  * library to generate encrypted XML information and to decrypt
  * information held in XML Encryption structures.
+ *
+ * All encryption and decryption work performed by the library is
+ * handled within this class.  The other XENC classes simply
+ * handle marshalling and unmarshalling of the DOM data.
  *
  */
 
@@ -140,6 +146,24 @@ public:
 
 	//@}
 
+	/** @name Encryption Functions */
+	//@{
+
+	/**
+	 * \brief Encrypt the nominated element.
+	 * 
+	 * Encrypts the passed in element and all children.  The element
+	 * is replaced with an EncryptedData element
+	 *
+	 * @param element Element (and children) to encrypt
+	 * @returns The owning document with the element replaced, or NULL
+	 * if the decryption fails for some reason (normally an exception).
+	 * @throws XSECException if the encryption fails.
+	 */
+
+	virtual DOMDocument * encryptElement(DOMElement * element) = 0;
+
+	//@}
 	/** @name Getter Functions */
 	//@{
 
@@ -154,6 +178,17 @@ public:
 
 	virtual DOMDocument * getDocument(void) = 0;
 
+	/**
+	 * \brief Get namespace prefix for XENC nodes
+	 *
+	 * Find the string being used by the library to prefix nodes in the 
+	 * xenc: namespace.
+	 *
+	 * @returns XENC namespace prefix
+	 */
+
+	virtual const XMLCh * getXENCNSPrefix(void) const = 0;
+
 	//@}
 
 	/** @name Setter Functions */
@@ -166,11 +201,46 @@ public:
 	 * operation.
 	 *
 	 * @param key Key to use
-	 * @note Unlike the EncryptedType element and its derivatives, this
-	 * function will take ownership of the key and delete it when done.
+	 * @note This function will take ownership of the key and delete it when done.
 	 */
 
 	virtual void setKey(XSECCryptoKey * key) = 0;
+
+	/**
+	 * \brief Set prefix for XENC nodes
+	 *
+	 * Set the namespace prefix the library will use when creating
+	 * nodes in the XENC namespace
+	 */
+
+	virtual void setXENCNSPrefix(const XMLCh * prefix) = 0;
+
+	//@}
+
+	/** @name Creation Functions */
+	//@{
+
+	/**
+	 * \brief Create a new EncryptedData element
+	 *
+	 * Method for creating a basic Encrypted Data element.  Can be used
+	 * in cases where an application needs to build this from scratch.
+	 *
+	 * In general, applications should use the higher level methods such
+	 * as #encryptElement or #encryptElementContent.
+	 *
+	 * @note The Cipher object will take on this new object as the current
+	 * EncryptedData and delete any currently being held.
+	 *
+	 * @param type Should this set up a CipherReference or a CipherValue
+	 * @param value String to set the cipher data to if the type is VALUE_TYPE
+	 * @returns An XENCEncryptedData object
+	 */
+
+	virtual XENCEncryptedData * createEncryptedData(XENCCipherData::XENCCipherDataType type, 
+													XMLCh * value) = 0;
+
+	//@}
 
 };
 

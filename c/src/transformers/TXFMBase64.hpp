@@ -80,17 +80,11 @@
 
 class DSIG_EXPORT TXFMBase64 : public TXFMBase {
 
-private:
-
-	bool				m_complete;					// Is the work done
-	unsigned char		m_base64Buffer[2050];		// Always keep 2K of data
-	XSECCryptoBase64 *	mp_b64;
-	
 public:
 
 	// Constructors and destructors
 
-	TXFMBase64(DOMDocument *doc);
+	TXFMBase64(DOMDocument *doc, bool decode = true);
 	~TXFMBase64();
 
 	// Methods to get tranform output type and input requirement
@@ -112,5 +106,10 @@ public:
 	
 private:
 	TXFMBase64();
+
+	bool				m_complete;					// Is the work done
+	unsigned char		m_base64Buffer[2050];		// Always keep 2K of data
+	XSECCryptoBase64 *	mp_b64;
+	bool				m_doDecode;					// Are we encoding or decoding?
 };
 

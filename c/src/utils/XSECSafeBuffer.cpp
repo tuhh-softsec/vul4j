@@ -73,6 +73,7 @@
 #include <xsec/utils/XSECSafeBuffer.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/transformers/TXFMBase.hpp>
 
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/util/Janitor.hpp>
@@ -554,6 +555,27 @@ safeBuffer & safeBuffer::operator= (const XMLCh * inStr) {
 	m_bufferType = BUFFER_UNICODE;
 	return *this;
 
+}
+
+safeBuffer & safeBuffer::operator << (TXFMBase * t) {
+
+	// Read into buffer the output of the transform
+	unsigned offset = 0;
+	unsigned char inBuf[2048];
+	unsigned int bytesRead;
+
+	while ((bytesRead = t->readBytes(inBuf, 2000)) > 0) {
+
+		checkAndExpand(offset + bytesRead + 1);
+		memcpy(&buffer[offset], inBuf, bytesRead);
+		offset += bytesRead;
+
+	}
+
+	m_bufferType = BUFFER_CHAR;
+	buffer[offset] = '\0';
+
+	return *this;
 }
 
 

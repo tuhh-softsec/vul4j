@@ -77,6 +77,7 @@
 class safeBuffer;
 class XSECProvider;
 class XENCEncryptedDataImpl;
+class TXFMChain;
 
 XSEC_DECLARE_XERCES_CLASS(DOMNode);
 XSEC_DECLARE_XERCES_CLASS(DOMDocumentFragment);
@@ -91,17 +92,29 @@ public:
 
 	DOMDocument * decryptElement(DOMElement * element);
 
+	// Implementation for encryption Elements
+	DOMDocument * encryptElement(DOMElement * element);
+
 	// Getter methods
 	DOMDocument * getDocument(void) {return mp_doc;}
+	const XMLCh * getXENCNSPrefix(void) const;
 
 	// Setter methods
 	void setKey(XSECCryptoKey * key) {mp_key = key;}
+	void setXENCNSPrefix(const XMLCh * prefix);
+	
+	// Creation methods
+	XENCEncryptedData * createEncryptedData(XENCCipherData::XENCCipherDataType type, 
+											XMLCh * value);
+
 
 protected:
 
 	// Protected to prevent direct creation of objects
 	XENCCipherImpl(DOMDocument * doc);
 
+	// Creates a transform chain that gives the decrypted data
+	TXFMChain * createDecryptionTXFMChain(void);
 private:
 
 	// Internal functions
@@ -117,6 +130,10 @@ private:
 
 	// Key
 	XSECCryptoKey			* mp_key;
+
+	// Prefix
+	XMLCh					* mp_xencPrefixNS;
+
 
 	friend XSECProvider;
 

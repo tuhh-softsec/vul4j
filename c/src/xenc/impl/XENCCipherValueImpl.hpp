@@ -90,6 +90,8 @@ public:
 
 	// Load
 	void load(void);
+	// Create
+	DOMElement * createBlankCipherValue(const XMLCh * value);
 
 	// Interface methods
 

@@ -144,14 +144,20 @@ void XENCEncryptedDataImpl::load(void) {
 	XENCEncryptedTypeImpl::load();
 
 }
+// --------------------------------------------------------------------------------
+//			Create from scratch
+// --------------------------------------------------------------------------------
+
+DOMElement * XENCEncryptedDataImpl::createBlankEncryptedData(
+									XENCCipherData::XENCCipherDataType type, 
+									const XMLCh * value) {
+
+	return createBlankEncryptedType(s_EncryptedData, type, value);
+
+}
 
 // --------------------------------------------------------------------------------
 //			Interface Methods
 // --------------------------------------------------------------------------------
 
-XENCCipherData * XENCEncryptedDataImpl::getCipherData(void) {
-
-	return mp_cipherData;
-
-}
 

@@ -184,7 +184,7 @@ void XENCCipherDataImpl::load() {
 
 	if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_CipherValue)) {
 
-		m_cipherDataType = CipherValue;
+		m_cipherDataType = VALUE_TYPE;
 		XSECnew(mp_cipherValue, XENCCipherValueImpl(mp_cipher, tmpElt));
 		mp_cipherValue->load();
 
@@ -192,7 +192,7 @@ void XENCCipherDataImpl::load() {
 
 	else if (tmpElt != NULL && strEquals(getXENCLocalName(tmpElt), s_CipherReference)) {
 
-		m_cipherDataType = CipherNone;
+		m_cipherDataType = NO_TYPE;
 
 	}
 
@@ -205,8 +205,48 @@ void XENCCipherDataImpl::load() {
 
 }
 
+// --------------------------------------------------------------------------------
+//			Create a blank structure
+// --------------------------------------------------------------------------------
 
+DOMElement * XENCCipherDataImpl::createBlankCipherData(
+						XENCCipherData::XENCCipherDataType type, 
+						const XMLCh * value) {
 
+	// Reset
+	if (mp_cipherValue != NULL) {
+		delete mp_cipherValue;
+		mp_cipherValue = NULL;
+	}
+
+	m_cipherDataType = NO_TYPE;
+
+	// Get some setup values
+	safeBuffer str;
+	DOMDocument *doc = mp_cipher->getDocument();
+	const XMLCh * prefix = mp_cipher->getXENCNSPrefix();
+
+	makeQName(str, prefix, s_CipherData);
+
+	DOMElement *ret = doc->createElementNS(DSIGConstants::s_unicodeStrURIXENC, str.rawXMLChBuffer());
+	mp_cipherDataNode = ret;
+
+	// Set the type
+	if (type == VALUE_TYPE) {
+		
+		// Should set the type attribute
+
+		// Create the Cipher Value
+		XSECnew(mp_cipherValue, XENCCipherValueImpl(mp_cipher));
+		DOMNode * cipherValueNode = mp_cipherValue->createBlankCipherValue(value);
+
+		ret->appendChild(cipherValueNode);
+
+	}
+
+	return ret;
+
+}
 
 // --------------------------------------------------------------------------------
 //			Constructors and Destructors

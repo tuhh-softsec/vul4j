@@ -74,9 +74,10 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECException.hpp>
 
-TXFMBase64::TXFMBase64(DOMDocument *doc) : TXFMBase(doc) {
+TXFMBase64::TXFMBase64(DOMDocument *doc, bool decode) : TXFMBase(doc) {
 
 	m_complete = false;					// Nothing yet to output
+	m_doDecode = decode;
 
 	mp_b64 = XSECPlatformUtils::g_cryptoProvider->base64();
 	
@@ -86,8 +87,10 @@ TXFMBase64::TXFMBase64(DOMDocument *doc) : TXFMBase(doc) {
 				"Error requesting Base64 object from Crypto Provider");
 
 	}
-
-	mp_b64->decodeInit();
+	if (decode)
+		mp_b64->decodeInit();
+	else
+		mp_b64->encodeInit();
 
 };
 
@@ -142,13 +145,24 @@ unsigned int TXFMBase64::readBytes(XMLByte * const toFill, unsigned int maxToFil
 
 	unsigned int sz = input->readBytes(m_base64Buffer, fill);
 
-	if (sz == 0)
-		ret = mp_b64->decodeFinish((unsigned char *) toFill, maxToFill);
-	else
-		ret = mp_b64->decode(m_base64Buffer, sz, (unsigned char *) toFill, maxToFill);
+	if (m_doDecode) {
+		if (sz == 0)
+			ret = mp_b64->decodeFinish((unsigned char *) toFill, maxToFill);
+		else
+			ret = mp_b64->decode(m_base64Buffer, sz, (unsigned char *) toFill, maxToFill);
 
-	if (ret == 0)
-		m_complete = true;
+		if (ret == 0)
+			m_complete = true;
+	}
+	else {
+		if (sz == 0)
+			ret = mp_b64->encodeFinish((unsigned char *) toFill, maxToFill);
+		else 
+			ret = mp_b64->encode(m_base64Buffer, sz, (unsigned char *) toFill, maxToFill);
+
+		if (ret == 0)
+			m_complete = true;
+	}
 
 	return ret;
 

@@ -104,9 +104,9 @@ public:
 
 	enum XENCCipherDataType {
 
-		CipherNone      = 0,    /** Not Set */
-		CipherValue		= 1,
-		CipherReference	= 2,
+		NO_TYPE			= 0,    /** Not Set */
+		VALUE_TYPE		= 1,
+		REFERENCE_TYPE	= 2,
 
 	};
 

@@ -110,16 +110,6 @@ public:
 	/** @name Get Interface Methods */
 	//@{
 
-	/**
-	 * \brief Retrieve the CipherData element
-	 *
-	 * CipherData elements are the sub part of the EncryptedData
-	 * that hold the actual enciphered information.
-	 *
-	 * @returns The CipherData object
-	 */
-
-	virtual XENCCipherData * getCipherData(void) = 0;
 
 	//@}
 
