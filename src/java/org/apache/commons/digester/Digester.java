@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.45 2002/02/14 07:04:01 craigmcc Exp $
- * $Revision: 1.45 $
- * $Date: 2002/02/14 07:04:01 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.46 2002/02/27 18:06:09 craigmcc Exp $
+ * $Revision: 1.46 $
+ * $Date: 2002/02/27 18:06:09 $
  *
  * ====================================================================
  *
@@ -112,7 +112,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.45 $ $Date: 2002/02/14 07:04:01 $
+ * @version $Revision: 1.46 $ $Date: 2002/02/27 18:06:09 $
  */
 
 public class Digester extends DefaultHandler {
@@ -726,14 +726,12 @@ public class Digester extends DefaultHandler {
      */
     public void endDocument() throws SAXException {
 
-        boolean info = saxLog.isInfoEnabled();
-        if (info) {
-            saxLog.info("endDocument()");
-        }
-
-        if (getCount() > 1 && info) {
-            if (log.isDebugEnabled()) {
-                log.debug("endDocument():  " + getCount() + " elements left");
+        if (saxLog.isDebugEnabled()) {
+            if (getCount() > 1) {
+                saxLog.debug("endDocument():  " + getCount() +
+                             " elements left");
+            } else {
+                saxLog.debug("endDocument()");
             }
         }
 
@@ -963,8 +961,8 @@ public class Digester extends DefaultHandler {
      */
     public void startDocument() throws SAXException {
 
-        if (saxLog.isInfoEnabled()) {
-            saxLog.info("startDocument()");
+        if (saxLog.isDebugEnabled()) {
+            saxLog.debug("startDocument()");
         }
 
         ; // No processing required
