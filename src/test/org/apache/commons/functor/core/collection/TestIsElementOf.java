@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsElementOf.java,v 1.5 2003/11/24 20:31:20 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/core/collection/TestIsElementOf.java,v 1.6 2003/11/24 21:56:43 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -66,7 +66,7 @@ import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.ConstantPredicate;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2003/11/24 20:31:20 $
+ * @version $Revision: 1.6 $ $Date: 2003/11/24 21:56:43 $
  * @author Rodney Waldhoff
  * @author Jason Horman
  */
@@ -96,7 +96,7 @@ public class TestIsElementOf extends BaseFunctorTest {
     // Tests
     // ------------------------------------------------------------------------
 
-    public void testTest() throws Exception {
+    public void testTestCollection() throws Exception {
         ArrayList list = new ArrayList();
         list.add(new Integer(5));
         list.add(new Integer(10));
@@ -112,12 +112,57 @@ public class TestIsElementOf extends BaseFunctorTest {
 
     }
 
-    public void testNullWrapper() {
+    public void testTestArray() throws Exception {
+        int[] list = new int[] { 5, 10, 15 };
+
+        UnaryPredicate p = IsElementOf.instance(list);
+        assertTrue(p.test(new Integer(5)));
+        assertTrue(p.test(new Integer(10)));
+        assertTrue(p.test(new Integer(15)));
+
+        assertTrue(!p.test(new Integer(4)));
+        assertTrue(!p.test(new Integer(11)));
+    }
+
+    public void testTestArrayWithNull() throws Exception {
+        assertTrue(! IsElementOf.instance().test(null,new int[] { 5, 10, 15 }));
+        assertTrue(IsElementOf.instance().test(null,new Integer[] { new Integer(5), null, new Integer(15) }));
+        assertTrue(IsElementOf.instance().test(new Integer(15),new Integer[] { new Integer(5), null, new Integer(15) }));
+    }
+
+    public void testWrapNull() {
         try {
             IsElementOf.instance(null);
+            fail("expected NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    public void testWrapNonCollection() {
+        try {
+            IsElementOf.instance(new Integer(3));
             fail("expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
-            // good
+            // expected
+        }
+    }
+
+    public void testTestNull() {
+        try {
+            IsElementOf.instance().test(new Integer(5),null);
+            fail("expected NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    public void testTestNonCollection() {
+        try {
+            IsElementOf.instance().test(new Integer(5),new Long(5));
+            fail("expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
         }
     }
 
