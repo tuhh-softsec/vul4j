@@ -586,95 +586,7 @@ public class XMLCipher {
 			throw new XMLEncryptionException("XMLCipher instance without transformation specified");
 		}
 
-        String serializedOctets = _serializer.serialize(element);
-        logger.debug("Serialized octets:\n" + serializedOctets);
-
-        byte[] encryptedBytes = null;
-		// Now create the working cipher
-
-		String jceAlgorithm =
-			JCEMapper.translateURItoJCEID(_algorithm).getAlgorithmID();
-		String provider;
-
-		if (_requestedJCEProvider == null)
-			provider =
-				JCEMapper.translateURItoJCEID(_algorithm).getProviderId();
-		else
-			provider = _requestedJCEProvider;
-
-		logger.debug("provider = " + provider + "alg = " + jceAlgorithm);
-
-		Cipher c;
-		try {
-			c = Cipher.getInstance(jceAlgorithm, provider);
-		} catch (NoSuchAlgorithmException nsae) {
-			throw new XMLEncryptionException("empty", nsae);
-		} catch (NoSuchProviderException nspre) {
-			throw new XMLEncryptionException("empty", nspre);
-		} catch (NoSuchPaddingException nspae) {
-			throw new XMLEncryptionException("empty", nspae);
-		}
-
-		// Now perform the encryption
-
-		try {
-			// Should internally generate an IV
-			// todo - allow user to set an IV
-			c.init(_cipherMode, _key);
-		} catch (InvalidKeyException ike) {
-			throw new XMLEncryptionException("empty", ike);
-		}
-
-        try {
-            encryptedBytes =
-                c.doFinal(serializedOctets.getBytes("UTF-8"));
-
-            logger.debug("Expected cipher.outputSize = " +
-                Integer.toString(c.getOutputSize(
-                    serializedOctets.getBytes().length)));
-            logger.debug("Actual cipher.outputSize = " +
-                Integer.toString(encryptedBytes.length));
-        } catch (IllegalStateException ise) {
-            throw new XMLEncryptionException("empty", ise);
-        } catch (IllegalBlockSizeException ibse) {
-            throw new XMLEncryptionException("empty", ibse);
-        } catch (BadPaddingException bpe) {
-            throw new XMLEncryptionException("empty", bpe);
-        } catch (UnsupportedEncodingException uee) {
-		   	throw new XMLEncryptionException("empty", uee);
-		}
-
-		// Now build up to a properly XML Encryption encoded octet stream
-		// IvParameterSpec iv;
-
-		byte[] iv = c.getIV();
-		byte[] finalEncryptedBytes = 
-			new byte[iv.length + encryptedBytes.length];
-		System.arraycopy(iv, 0, finalEncryptedBytes, 0,
-						 iv.length);
-		System.arraycopy(encryptedBytes, 0, finalEncryptedBytes, 
-						 iv.length,
-						 encryptedBytes.length);
-
-        String base64EncodedEncryptedOctets = new BASE64Encoder().encode(
-            finalEncryptedBytes);
-
-        logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
-        logger.debug("Encrypted octets length = " +
-            base64EncodedEncryptedOctets.length());
-
-        try {
-			CipherData cd = _ed.getCipherData();
-			CipherValue cv = cd.getCipherValue();
-			cv.setValue(base64EncodedEncryptedOctets.getBytes());
-
-            _ed.setType(new URI(EncryptionConstants.TYPE_ELEMENT).toString());
-            EncryptionMethod method = _factory.newEncryptionMethod(
-                new URI(_algorithm).toString());
-            _ed.setEncryptionMethod(method);
-        } catch (URI.MalformedURIException mfue) {
-            throw new XMLEncryptionException("empty", mfue);
-        }
+		encryptData(_contextDocument, element);
 
         Element encryptedElement = _factory.toElement(_ed);
 
@@ -946,6 +858,8 @@ public class XMLCipher {
      * Returns an <code>EncryptedData</code> interface. Use this operation if
      * you want to have full control over the contents of the
      * <code>EncryptedData</code> structure.
+	 *
+	 * This does not change the source document in any way.
      *
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> that will be encrypted.
@@ -972,27 +886,74 @@ public class XMLCipher {
         logger.debug("Serialized octets:\n" + serializedOctets);
 
         byte[] encryptedBytes = null;
+		// Now create the working cipher
+
+		String jceAlgorithm =
+			JCEMapper.translateURItoJCEID(_algorithm).getAlgorithmID();
+		String provider;
+
+		if (_requestedJCEProvider == null)
+			provider =
+				JCEMapper.translateURItoJCEID(_algorithm).getProviderId();
+		else
+			provider = _requestedJCEProvider;
+
+		logger.debug("provider = " + provider + "alg = " + jceAlgorithm);
+
+		Cipher c;
+		try {
+			c = Cipher.getInstance(jceAlgorithm, provider);
+		} catch (NoSuchAlgorithmException nsae) {
+			throw new XMLEncryptionException("empty", nsae);
+		} catch (NoSuchProviderException nspre) {
+			throw new XMLEncryptionException("empty", nspre);
+		} catch (NoSuchPaddingException nspae) {
+			throw new XMLEncryptionException("empty", nspae);
+		}
+
+		// Now perform the encryption
+
+		try {
+			// Should internally generate an IV
+			// todo - allow user to set an IV
+			c.init(_cipherMode, _key);
+		} catch (InvalidKeyException ike) {
+			throw new XMLEncryptionException("empty", ike);
+		}
+
         try {
             encryptedBytes =
-                _contextCipher.doFinal(serializedOctets.getBytes("UTF-8"));
+                c.doFinal(serializedOctets.getBytes("UTF-8"));
 
             logger.debug("Expected cipher.outputSize = " +
-                Integer.toString(_contextCipher.getOutputSize(
+                Integer.toString(c.getOutputSize(
                     serializedOctets.getBytes().length)));
             logger.debug("Actual cipher.outputSize = " +
                 Integer.toString(encryptedBytes.length));
         } catch (IllegalStateException ise) {
             throw new XMLEncryptionException("empty", ise);
-		} catch (UnsupportedEncodingException uee) {
-			throw new XMLEncryptionException("empty", uee);
         } catch (IllegalBlockSizeException ibse) {
             throw new XMLEncryptionException("empty", ibse);
         } catch (BadPaddingException bpe) {
             throw new XMLEncryptionException("empty", bpe);
-        }
+        } catch (UnsupportedEncodingException uee) {
+		   	throw new XMLEncryptionException("empty", uee);
+		}
+
+		// Now build up to a properly XML Encryption encoded octet stream
+		// IvParameterSpec iv;
+
+		byte[] iv = c.getIV();
+		byte[] finalEncryptedBytes = 
+			new byte[iv.length + encryptedBytes.length];
+		System.arraycopy(iv, 0, finalEncryptedBytes, 0,
+						 iv.length);
+		System.arraycopy(encryptedBytes, 0, finalEncryptedBytes, 
+						 iv.length,
+						 encryptedBytes.length);
 
         String base64EncodedEncryptedOctets = new BASE64Encoder().encode(
-            encryptedBytes);
+            finalEncryptedBytes);
 
         logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
         logger.debug("Encrypted octets length = " +
@@ -1189,26 +1150,9 @@ public class XMLCipher {
 			throw new XMLEncryptionException("Unable to decrypt without a KEK");
 		}
 
-		CipherData cipherData = encryptedKey.getCipherData();
-        String base64EncodedEncryptedOctets = null;
-
-        if (cipherData.getDataType() == CipherData.REFERENCE_TYPE) {
-            // retrieve the cipher text
-        } else if (cipherData.getDataType() == CipherData.VALUE_TYPE) {
-            CipherValue cipherValue = cipherData.getCipherValue();
-            base64EncodedEncryptedOctets = new String(cipherValue.getValue());
-        } else {
-            // complain...
-        }
-        logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
-
-        byte[] encryptedBytes = null;
-
-        try {
-			encryptedBytes = Base64.decode(base64EncodedEncryptedOctets);
-        } catch (Base64DecodingException bde) {
-            throw new XMLEncryptionException("empty", bde);
-        }
+		// Obtain the encrypted octets 
+		XMLCipherInput cipherInput = new XMLCipherInput(encryptedKey);
+		byte [] encryptedBytes = cipherInput.getBytes();
 
 		// Now create the working cipher
 
@@ -1228,6 +1172,8 @@ public class XMLCipher {
 
 		String jceKeyAlgorithm = 
 			JCEMapper.getJCEKeyAlgorithmFromURI(algorithm, provider);
+		logger.debug("JCE Provider = " + provider);
+		logger.debug("JCE Algorithm = " + jceAlgorithm);
 
 		Cipher c;
 		try {
@@ -1295,99 +1241,13 @@ public class XMLCipher {
 			throw new XMLEncryptionException("Unable to decrypt without a key");
 		}
 
-        EncryptedData encryptedData = _factory.newEncryptedData(element);
-
-        CipherData cipherData = encryptedData.getCipherData();
-        String base64EncodedEncryptedOctets = null;
-
-        if (cipherData.getDataType() == CipherData.REFERENCE_TYPE) {
-            // retrieve the cipher text
-        } else if (cipherData.getDataType() == CipherData.VALUE_TYPE) {
-            CipherValue cipherValue = cipherData.getCipherValue();
-            base64EncodedEncryptedOctets = new String(cipherValue.getValue());
-        } else {
-            // complain...
-        }
-        logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
-
-        byte[] encryptedBytes = null;
-
-        try {
-			encryptedBytes = Base64.decode(base64EncodedEncryptedOctets);
-        } catch (Base64DecodingException bde) {
-            throw new XMLEncryptionException("empty", bde);
-        }
-
-		// Now create the working cipher
-
-		String jceAlgorithm = 
-			JCEMapper.translateURItoJCEID(encryptedData.getEncryptionMethod()
-										  .getAlgorithm()).getAlgorithmID();
-		String provider;
-
-		if (_requestedJCEProvider == null)
-			provider =
-				JCEMapper.translateURItoJCEID(encryptedData
-											  .getEncryptionMethod()
-											  .getAlgorithm())
-				.getProviderId();
-		else
-			provider = _requestedJCEProvider;
-
-		Cipher c;
+		String octets;
 		try {
-			c = Cipher.getInstance(jceAlgorithm, provider);
-		} catch (NoSuchAlgorithmException nsae) {
-			throw new XMLEncryptionException("empty", nsae);
-		} catch (NoSuchProviderException nspre) {
-			throw new XMLEncryptionException("empty", nspre);
-		} catch (NoSuchPaddingException nspae) {
-			throw new XMLEncryptionException("empty", nspae);
-		}
-
-
-		// Calculate the IV length and copy out
-
-		// For now, we only work with Block ciphers, so this will work.
-		// This should probably be put into the JCE mapper.
-
-		int ivLen = c.getBlockSize();
-		byte[] ivBytes = new byte[ivLen];
-
-		// You may be able to pass the entire piece in to IvParameterSpec
-		// and it will only take the first x bytes, but no way to be certain
-		// that this will work for every JCE provider, so lets copy the
-		// necessary bytes into a dedicated array.
-
-		System.arraycopy(encryptedBytes, 0, ivBytes, 0, ivLen);
-		IvParameterSpec iv = new IvParameterSpec(ivBytes);		
-		
-		try {
-			c.init(_cipherMode, _key, iv);
-		} catch (InvalidKeyException ike) {
-			throw new XMLEncryptionException("empty", ike);
-		} catch (InvalidAlgorithmParameterException iape) {
-			throw new XMLEncryptionException("empty", iape);
-		}
-
-        String octets = null;
-		byte[] plainBytes;
-
-        try {
-            octets = new String(c.doFinal(encryptedBytes, ivLen, 
-										  encryptedBytes.length - ivLen),
-								"UTF-8");
-        } catch (IllegalBlockSizeException ibse) {
-            throw new XMLEncryptionException("empty", ibse);
+			octets = new String(decryptToByteArray(element), "UTF-8");
 		} catch (UnsupportedEncodingException uee) {
 			throw new XMLEncryptionException("empty", uee);
-        } catch (BadPaddingException bpe) {
-            throw new XMLEncryptionException("empty", bpe);
-        }
-		
-		// Now remove any padding
-		//octets = new String(padder.dePad(plainBytes));
-	    
+		}
+
 
         logger.debug("Decrypted octets:\n" + octets);
 
@@ -1433,6 +1293,104 @@ public class XMLCipher {
     	
     	return (decryptElement(e));
     }
+
+	/**
+	 * Decrypt an EncryptedData element to a byte array
+	 *
+	 * When passed in an EncryptedData node, returns the decryption
+	 * as a byte array.
+	 *
+	 * Does not modify the source document
+	 */
+
+	public byte[] decryptToByteArray(Element element) 
+		throws XMLEncryptionException {
+		
+        logger.debug("Decrypting to ByteArray...");
+
+        if(_cipherMode != DECRYPT_MODE)
+            logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+
+		if (_key == null) {
+			// For now take the easy apprach and just throw
+			logger.error("XMLCipher::decryptToByteArray called without a key");
+			throw new XMLEncryptionException("Unable to decrypt without a key");
+		}
+
+        EncryptedData encryptedData = _factory.newEncryptedData(element);
+
+		// Obtain the encrypted octets 
+		XMLCipherInput cipherInput = new XMLCipherInput(encryptedData);
+		byte [] encryptedBytes = cipherInput.getBytes();
+
+		// Now create the working cipher
+
+		String jceAlgorithm = 
+			JCEMapper.translateURItoJCEID(encryptedData.getEncryptionMethod()
+										  .getAlgorithm()).getAlgorithmID();
+		String provider;
+
+		if (_requestedJCEProvider == null)
+			provider =
+				JCEMapper.translateURItoJCEID(encryptedData
+											  .getEncryptionMethod()
+											  .getAlgorithm())
+				.getProviderId();
+		else
+			provider = _requestedJCEProvider;
+
+		Cipher c;
+		try {
+			c = Cipher.getInstance(jceAlgorithm, provider);
+		} catch (NoSuchAlgorithmException nsae) {
+			throw new XMLEncryptionException("empty", nsae);
+		} catch (NoSuchProviderException nspre) {
+			throw new XMLEncryptionException("empty", nspre);
+		} catch (NoSuchPaddingException nspae) {
+			throw new XMLEncryptionException("empty", nspae);
+		}
+
+		// Calculate the IV length and copy out
+
+		// For now, we only work with Block ciphers, so this will work.
+		// This should probably be put into the JCE mapper.
+
+		int ivLen = c.getBlockSize();
+		byte[] ivBytes = new byte[ivLen];
+
+		// You may be able to pass the entire piece in to IvParameterSpec
+		// and it will only take the first x bytes, but no way to be certain
+		// that this will work for every JCE provider, so lets copy the
+		// necessary bytes into a dedicated array.
+
+		System.arraycopy(encryptedBytes, 0, ivBytes, 0, ivLen);
+		IvParameterSpec iv = new IvParameterSpec(ivBytes);		
+		
+		try {
+			c.init(_cipherMode, _key, iv);
+		} catch (InvalidKeyException ike) {
+			throw new XMLEncryptionException("empty", ike);
+		} catch (InvalidAlgorithmParameterException iape) {
+			throw new XMLEncryptionException("empty", iape);
+		}
+
+        String octets = null;
+		byte[] plainBytes;
+
+        try {
+            plainBytes = c.doFinal(encryptedBytes, 
+								   ivLen, 
+								   encryptedBytes.length - ivLen);
+
+        } catch (IllegalBlockSizeException ibse) {
+            throw new XMLEncryptionException("empty", ibse);
+        } catch (BadPaddingException bpe) {
+            throw new XMLEncryptionException("empty", bpe);
+        }
+		
+        return (plainBytes);
+    }
+		
 
 
     /**
