@@ -26,11 +26,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.apache.xerces.util.URI;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xml.utils.URI;
 import org.w3c.dom.Attr;
 
 
@@ -254,7 +254,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
       String uriNodeValue = uri.getNodeValue();
 
-      if (uriNodeValue.equals("") || uriNodeValue.startsWith("#")) {
+      if (uriNodeValue.equals("") || (uriNodeValue.charAt(0)=='#')) {
          log.debug("quick fail for empty URIs and local ones");
 
          return false;

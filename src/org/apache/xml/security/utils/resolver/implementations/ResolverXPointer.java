@@ -23,7 +23,6 @@ import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xml.utils.URI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -90,18 +89,11 @@ public class ResolverXPointer extends ResourceResolverSpi {
       
 
       //Set resultSet = XMLUtils.convertNodelistToSet(resultNode); 
-      CachedXPathAPIHolder.setDoc(doc);
+      //CachedXPathAPIHolder.setDoc(doc);
       XMLSignatureInput result = new XMLSignatureInput(resultNode);
 
       result.setMIMEType("text/xml");
-
-      try {
-         URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
-
-         result.setSourceURI(uriNew.toString());
-      } catch (URI.MalformedURIException ex) {
-         result.setSourceURI(BaseURI);
-      }
+	  result.setSourceURI(BaseURI.concat(uri.getNodeValue()));      
 
       return result;
    }
