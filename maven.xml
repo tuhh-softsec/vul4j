@@ -11,6 +11,7 @@
 <postGoal name="xdoc:register-reports"> 
   <attainGoal name="maven-checkstyle-plugin:deregister"/> 
   <attainGoal name="maven-linkcheck-plugin:deregister"/> 
+  <attainGoal name="maven-clover-plugin:register"/> 
 </postGoal> 
 
 </project>
