@@ -329,7 +329,6 @@ public class CreateMerlinsExampleSixteen {
          //J+
          transforms.addTransform(Transforms.TRANSFORM_XPATH,
                                  xpathC.getElementPlusReturns());
-         transforms.addTransform(Transforms.TRANSFORM_BASE64_DECODE);
          sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1, null,
                          "http://www.w3.org/2000/09/xmldsig#Object");
       }
@@ -453,6 +452,13 @@ public class CreateMerlinsExampleSixteen {
       XMLUtils.outputDOMc14nWithComments(doc, f);
       f.close();
       System.out.println("Wrote signature to " + BaseURI);
+
+      SignedInfo s = sig.getSignedInfo();
+      for (int i=0; i<s.getSignedContentLength(); i++) {
+         System.out.println("################ Signed Resource " + i + " ################");
+         System.out.println(new String(s.getSignedContentItem(i)));
+         System.out.println();
+      }
    }
 
    /**

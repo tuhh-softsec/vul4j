@@ -502,13 +502,15 @@ public class Reference extends ElementProxy {
    }
 
    /**
-    * Method getReferencedXMLSignatureInput
+    * This method returns the {@link XMLSignatureInput} which is referenced by the
+    * <CODE>URI</CODE> Attribute.
     *
     * @return
     * @throws ReferenceNotInitializedException
     * @throws XMLSignatureException
+    * @ see Manifest#verifyReferences
     */
-   public XMLSignatureInput getReferencedXMLSignatureInput()
+   protected XMLSignatureInput getReferencedXMLSignatureInput()
            throws ReferenceNotInitializedException, XMLSignatureException {
 
       try {
@@ -587,7 +589,9 @@ public class Reference extends ElementProxy {
            throws ReferenceNotInitializedException, XMLSignatureException {
 
       try {
-         return this.getReferencedXMLSignatureInput().getBytes();
+         byte[] signedBytes = this.getReferencedXMLSignatureInput().getBytes();
+         this._manifest.addSignedContent(signedBytes);
+         return signedBytes;
       } catch (IOException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (CanonicalizationException ex) {

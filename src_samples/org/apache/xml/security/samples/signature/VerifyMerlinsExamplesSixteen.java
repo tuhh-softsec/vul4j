@@ -136,7 +136,8 @@ public class VerifyMerlinsExamplesSixteen {
       dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
 
       //J-
-      String filenames[] = { "16signature.xml"
+      String filenames[] = { // "16signature.xml"
+                             "data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen/signature.xml"
                              };
       //J+
       int start = 0;
@@ -245,6 +246,14 @@ public class VerifyMerlinsExamplesSixteen {
          }
       } else {
          System.out.println("Did not find a KeyInfo");
+      }
+
+
+      SignedInfo s = signature.getSignedInfo();
+      for (int i=0; i<s.getSignedContentLength(); i++) {
+         System.out.println("################ Signed Resource " + i + " ################");
+         System.out.println(new String(s.getSignedContentItem(i)));
+         System.out.println();
       }
    }
 

@@ -398,6 +398,8 @@ public class Manifest extends ElementProxy {
                      throw new MissingResourceFailureException("empty",
                                                                currentRef);
                   }
+                  referencedManifest._perManifestResolvers = this._perManifestResolvers;
+                  referencedManifest._resolverProperties = this._resolverProperties;
 
                   boolean referencedManifestValid =
                      referencedManifest.verifyReferences(true);
@@ -557,6 +559,18 @@ public class Manifest extends ElementProxy {
 
       return (String) this._resolverProperties.get(key);
    }
+
+   Vector _signedContents = new Vector();
+   protected void addSignedContent(byte signedBytes[]) {
+      this._signedContents.add(signedBytes);
+   }
+   public byte[] getSignedContentItem(int i) {
+      return (byte[]) this._signedContents.get(i);
+   }
+   public int getSignedContentLength() {
+      return this._signedContents.size();
+   }
+
 
    static {
       org.apache.xml.security.Init.init();

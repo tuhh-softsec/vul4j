@@ -185,6 +185,11 @@ public class HereSigner {
          System.out.println("Finished signing");
       }
 
+      SignedInfo s = sig.getSignedInfo();
+      for (int i=0; i<s.getSignedContentLength(); i++) {
+         System.out.println(new String(s.getSignedContentItem(i)));
+      }
+
       FileOutputStream f = new FileOutputStream(signatureFile);
 
       XMLUtils.outputDOMc14nWithComments(doc, f);

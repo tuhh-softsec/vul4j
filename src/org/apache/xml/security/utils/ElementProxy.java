@@ -180,6 +180,19 @@ public class ElementProxy {
    }
 
    /**
+    * Returns the Element plus a leading and a trailing CarriageReturn Text node.
+    *
+    * @return the Element which was constructed by the Object.
+    */
+   public final NodeList getElementPlusReturns() {
+      HelperNodeList nl = new HelperNodeList();
+      nl.appendChild(this._doc.createTextNode("\n"));
+      nl.appendChild(this.getElement());
+      nl.appendChild(this._doc.createTextNode("\n"));
+      return nl;
+   }
+
+   /**
     * Method getBaseURI
     *
     * @return
