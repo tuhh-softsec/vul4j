@@ -178,7 +178,7 @@ public class IBMTest extends InteropTest {
     */
    public void test_detached_dsa() throws Exception {
       String filename = kentsDir + "detached-dsa.sig";
-      ResourceResolverSpi resolver = new OfflineResolver();;
+      ResourceResolverSpi resolver = new OfflineResolver();
       boolean followManifests = false;
       boolean verify = false;
 
@@ -328,6 +328,10 @@ public class IBMTest extends InteropTest {
     */
    public void test_enveloping_dsa_soaped_broken() throws Exception {
       String filename = kentsDir + "enveloping-dsa-soaped-broken.sig";
+      if(!new File(filename).exists() ) {
+        System.err.println("Couldn't find: " + filename + " and couldn't do the test");
+        return;
+      }
       ResourceResolverSpi resolver = null;
       boolean followManifests = false;
       boolean verify = true;
