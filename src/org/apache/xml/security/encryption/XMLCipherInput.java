@@ -27,19 +27,7 @@ import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.TransformationException;
-//import org.apache.xml.serialize.OutputFormat;
-//import org.apache.xml.serialize.XMLSerializer;
-//import org.apache.xml.utils.URI;
 import org.w3c.dom.Attr;
-//import org.w3c.dom.Document;
-//import org.w3c.dom.DocumentFragment;
-//import org.w3c.dom.NamedNodeMap;
-//import org.w3c.dom.Element;
-//import org.w3c.dom.Node;
-//import org.w3c.dom.NodeList;
-//import org.xml.sax.InputSource;
-//import org.xml.sax.SAXException;
-//import sun.misc.BASE64Encoder;
 import org.apache.xml.security.utils.Base64;
 
 
