@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/Transformer.java,v 1.2 2003/11/25 19:55:02 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/BaseTransformer.java,v 1.1 2003/11/25 19:55:02 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,17 +57,15 @@
 
 package org.apache.commons.functor.generator;
 
-import org.apache.commons.functor.UnaryFunction;
-
 /**
- * Transformers are used to change a {@link Generator} into something else,
- * such as a {@link java.util.Collection}.
- *
  * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/11/25 19:55:02 $
- * @author  Jason Horman (jason@jhorman.org)
+ * @version $Revision: 1.1 $ $Date: 2003/11/25 19:55:02 $
+ * @author Rodney Waldhoff
  */
+public abstract class BaseTransformer implements Transformer {
+    public abstract Object transform(Generator gen);
 
-public interface Transformer extends UnaryFunction {
-    Object transform(Generator generator);
+    public Object evaluate(Object obj) {
+        return transform((Generator)obj);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/java/org/apache/commons/functor/generator/Transformer.java,v 1.2 2003/11/25 19:55:02 rwaldhoff Exp $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons-sandbox//functor/src/test/org/apache/commons/functor/generator/TestBaseTransformer.java,v 1.1 2003/11/25 19:55:03 rwaldhoff Exp $
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -57,17 +57,48 @@
 
 package org.apache.commons.functor.generator;
 
-import org.apache.commons.functor.UnaryFunction;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
- * Transformers are used to change a {@link Generator} into something else,
- * such as a {@link java.util.Collection}.
- *
- * @since 1.0
- * @version $Revision: 1.2 $ $Date: 2003/11/25 19:55:02 $
- * @author  Jason Horman (jason@jhorman.org)
+ * @version $Revision: 1.1 $ $Date: 2003/11/25 19:55:03 $
+ * @author Rodney Waldhoff
  */
+public class TestBaseTransformer extends TestCase {
 
-public interface Transformer extends UnaryFunction {
-    Object transform(Generator generator);
+    // Conventional
+    // ------------------------------------------------------------------------
+
+    public TestBaseTransformer(String name) {
+        super(name);
+    }
+
+    public static Test suite() {
+        return new TestSuite(TestBaseTransformer.class);
+    }
+
+    // Lifecycle
+    // ------------------------------------------------------------------------
+
+    // Tests
+    // ------------------------------------------------------------------------
+
+    public void testEvaluateDelegatesToTransform() {
+        Transformer t = new MockTransformer();
+        assertEquals(new Integer(1),t.evaluate(null));
+        assertEquals(new Integer(2),t.evaluate(null));
+        assertEquals(new Integer(3),t.evaluate(null));
+    }
+    
+    // Classes
+    // ------------------------------------------------------------------------
+
+    static class MockTransformer extends BaseTransformer {
+        public Object transform(Generator gen) {
+            return new Integer(++timesCalled);
+        }
+        
+        public int timesCalled = 0;
+    }
 }
