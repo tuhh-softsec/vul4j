@@ -245,7 +245,7 @@ org.apache.xml.security.utils.*
 
   <target name="gump"
           description="Target for the gump run"
-          depends="clean,jar,test" />
+          depends="clean,javadocs,jar,test" />
 
   <target name="generate-keys">
      <genkey alias="test2"
