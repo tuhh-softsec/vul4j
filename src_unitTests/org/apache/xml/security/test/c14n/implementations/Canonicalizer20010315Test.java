@@ -144,7 +144,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @throws SAXException
     * @throws TransformerException
     */
-   public static void test31withComments()
+   public static void test31withCommentsSubtree()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -164,6 +164,37 @@ public class Canonicalizer20010315Test extends TestCase {
                  c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
                                 xpath));
    }
+   /**
+    * 3.1 PIs, Comments, and Outside of Document Element
+    *
+    * @throws CanonicalizationException
+    * @throws FileNotFoundException
+    * @throws IOException
+    * @throws InvalidCanonicalizerException
+    * @throws ParserConfigurationException
+    * @throws SAXException
+    * @throws TransformerException
+    */
+   public static void test31withCommentsSubset()
+           throws IOException, FileNotFoundException, SAXException,
+                  ParserConfigurationException, CanonicalizationException,
+                  InvalidCanonicalizerException, TransformerException {
+
+      String descri =
+         "3.1: PIs, Comments, and Outside of Document Element. (commented)";
+
+
+      String fileIn = prefix + "in/31_input.xml";
+      String fileRef = prefix + "in/31_c14n-comments.xml";
+      String fileOut = prefix + "out/xpath_31_output-comments.xml";
+      String c14nURI = Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS;
+      boolean validating = true;
+      String xpath = Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE;
+
+      assertTrue(descri,
+                 c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
+                                xpath));
+   }
 
    /**
     * 3.1 PIs, Comments, and Outside of Document Element
@@ -177,7 +208,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-OutsideDoc">the example from the spec</A>
     * @throws TransformerException
     */
-   public static void test31()
+   public static void test31subtree()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -187,6 +218,66 @@ public class Canonicalizer20010315Test extends TestCase {
       String fileIn = prefix + "in/31_input.xml";
       String fileRef = prefix + "in/31_c14n.xml";
       String fileOut = prefix + "out/xpath_31_output.xml";
+      String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+      boolean validating = true;
+      String xpath = null;
+
+      assertTrue(descri,
+                 c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
+                                xpath));
+   }
+   /**
+    * 3.1 PIs, Comments, and Outside of Document Element
+    *
+    * @throws CanonicalizationException
+    * @throws FileNotFoundException
+    * @throws IOException
+    * @throws InvalidCanonicalizerException
+    * @throws ParserConfigurationException
+    * @throws SAXException
+    * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-OutsideDoc">the example from the spec</A>
+    * @throws TransformerException
+    */
+   public static void test31subset()
+           throws IOException, FileNotFoundException, SAXException,
+                  ParserConfigurationException, CanonicalizationException,
+                  InvalidCanonicalizerException, TransformerException {
+
+      String descri =
+         "3.1: PIs, Comments, and Outside of Document Element. (uncommented)";
+      String fileIn = prefix + "in/31_input.xml";
+      String fileRef = prefix + "in/31_c14n.xml";
+      String fileOut = prefix + "out/xpath_31_output.xml";
+      String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+      boolean validating = true;
+      String xpath = Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE;
+
+      assertTrue(descri,
+                 c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
+                                xpath));
+   }
+
+   /**
+    * 3.2 Whitespace in Document Content
+    *
+    * @throws CanonicalizationException
+    * @throws FileNotFoundException
+    * @throws IOException
+    * @throws InvalidCanonicalizerException
+    * @throws ParserConfigurationException
+    * @throws SAXException
+    * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-WhitespaceInContent">the example from the spec</A>
+    * @throws TransformerException
+    */
+   public static void test32subtree()
+           throws IOException, FileNotFoundException, SAXException,
+                  ParserConfigurationException, CanonicalizationException,
+                  InvalidCanonicalizerException, TransformerException {
+
+      String descri = "3.2 Whitespace in Document Content. (uncommented)";
+      String fileIn = prefix + "in/32_input.xml";
+      String fileRef = prefix + "in/32_c14n.xml";
+      String fileOut = prefix + "out/xpath_32_output.xml";
       String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
       boolean validating = true;
       String xpath = null;
@@ -208,7 +299,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-WhitespaceInContent">the example from the spec</A>
     * @throws TransformerException
     */
-   public static void test32()
+   public static void test32subset()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -219,7 +310,7 @@ public class Canonicalizer20010315Test extends TestCase {
       String fileOut = prefix + "out/xpath_32_output.xml";
       String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
       boolean validating = true;
-      String xpath = null;
+      String xpath = Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE;
 
       assertTrue(descri,
                  c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
@@ -238,7 +329,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-SETags">the example from the spec</A>
     * @throws TransformerException
     */
-   public static void test33()
+   public static void test33subtree()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -250,6 +341,24 @@ public class Canonicalizer20010315Test extends TestCase {
       String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
       boolean validating = true;
       String xpath = null;    // Canonicalizer.XPATH_C14N_OMIT_COMMENTS_SINGLE_NODE;
+
+      assertTrue(descri,
+                 c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
+                                xpath));
+   }
+
+   public static void test33subset()
+           throws IOException, FileNotFoundException, SAXException,
+                  ParserConfigurationException, CanonicalizationException,
+                  InvalidCanonicalizerException, TransformerException {
+
+      String descri = "3.3 Start and End Tags. (uncommented)";
+      String fileIn = prefix + "in/33_input.xml";
+      String fileRef = prefix + "in/33_c14n.xml";
+      String fileOut = prefix + "out/xpath_33_output.xml";
+      String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+      boolean validating = true;
+      String xpath = Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE;
 
       assertTrue(descri,
                  c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
@@ -309,7 +418,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Chars">the example from the spec</A>
     * @throws TransformerException
     */
-   public static void test34validatingParser()
+   public static void test34subtree()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -322,6 +431,44 @@ public class Canonicalizer20010315Test extends TestCase {
       String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
       boolean validating = true;
       String xpath = null;
+
+      assertTrue(descri,
+                 c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
+                                xpath));
+   }
+   /**
+    * 3.4 Character Modifications and Character References (patched to run on validating Parsers)
+    * <P>
+    * <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119"> The spec</A> states that:
+    * <P>
+    * Note: The last element, normId, is well-formed but violates a validity
+    * constraint for attributes of type ID. For testing canonical XML
+    * implementations based on validating processors, remove the line
+    * containing this element from the input and canonical form. In general,
+    * XML consumers should be discouraged from using this feature of XML.
+    *
+    * @throws CanonicalizationException
+    * @throws FileNotFoundException
+    * @throws IOException
+    * @throws InvalidCanonicalizerException
+    * @throws ParserConfigurationException
+    * @throws SAXException
+    * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Chars">the example from the spec</A>
+    * @throws TransformerException
+    */
+   public static void test34subset()
+           throws IOException, FileNotFoundException, SAXException,
+                  ParserConfigurationException, CanonicalizationException,
+                  InvalidCanonicalizerException, TransformerException {
+
+      String descri =
+         "3.4 Character Modifications and Character References. (uncommented, patched to run on validating Parsers)";
+      String fileIn = prefix + "in/34_input_validatingParser.xml";
+      String fileRef = prefix + "in/34_c14n_validatingParser.xml";
+      String fileOut = prefix + "out/xpath_34_output_validatingParser.xml";
+      String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+      boolean validating = true;
+      String xpath = Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE;
 
       assertTrue(descri,
                  c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
@@ -340,7 +487,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Entities">the example from the spec</A>
     * @throws TransformerException
     */
-   public static void test35()
+   public static void test35subtree()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -352,6 +499,35 @@ public class Canonicalizer20010315Test extends TestCase {
       String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
       boolean validating = true;
       String xpath = null;
+
+      assertTrue(descri,
+                 c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
+                                xpath));
+   }
+   /**
+    * 3.5 Entity References
+    *
+    * @throws CanonicalizationException
+    * @throws FileNotFoundException
+    * @throws IOException
+    * @throws InvalidCanonicalizerException
+    * @throws ParserConfigurationException
+    * @throws SAXException
+    * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Entities">the example from the spec</A>
+    * @throws TransformerException
+    */
+   public static void test35subset()
+           throws IOException, FileNotFoundException, SAXException,
+                  ParserConfigurationException, CanonicalizationException,
+                  InvalidCanonicalizerException, TransformerException {
+
+      String descri = "3.5 Entity References. (uncommented)";
+      String fileIn = prefix + "in/35_input.xml";
+      String fileRef = prefix + "in/35_c14n.xml";
+      String fileOut = prefix + "out/xpath_35_output.xml";
+      String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+      boolean validating = true;
+      String xpath = Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE;
 
       assertTrue(descri,
                  c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
@@ -370,7 +546,7 @@ public class Canonicalizer20010315Test extends TestCase {
     * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-UTF8">the example from the spec</A>
     * @throws TransformerException
     */
-   public static void test36()
+   public static void test36subtree()
            throws IOException, FileNotFoundException, SAXException,
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException {
@@ -382,6 +558,35 @@ public class Canonicalizer20010315Test extends TestCase {
       String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
       boolean validating = true;
       String xpath = null;
+
+      assertTrue(descri,
+                 c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
+                                xpath));
+   }
+   /**
+    * 3.6 UTF-8 Encoding
+    *
+    * @throws CanonicalizationException
+    * @throws FileNotFoundException
+    * @throws IOException
+    * @throws InvalidCanonicalizerException
+    * @throws ParserConfigurationException
+    * @throws SAXException
+    * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-UTF8">the example from the spec</A>
+    * @throws TransformerException
+    */
+   public static void test36subset()
+           throws IOException, FileNotFoundException, SAXException,
+                  ParserConfigurationException, CanonicalizationException,
+                  InvalidCanonicalizerException, TransformerException {
+
+      String descri = "3.6 UTF-8 Encoding. (uncommented)";
+      String fileIn = prefix + "in/36_input.xml";
+      String fileRef = prefix + "in/36_c14n.xml";
+      String fileOut = prefix + "out/xpath_36_output.xml";
+      String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+      boolean validating = true;
+      String xpath = Canonicalizer.XPATH_C14N_WITH_COMMENTS_SINGLE_NODE;
 
       assertTrue(descri,
                  c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating,
