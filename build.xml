@@ -554,8 +554,10 @@
 
      <mkdir dir="${build.bindist}/${dir.libs}"/>
      <copy file="${lib.junit}" todir="${build.bindist}/${dir.libs}"/>
+     <!--
      <copy file="${lib.log4j}" todir="${build.bindist}/${dir.libs}"/>
      <copy file="${lib.logging}" todir="${build.bindist}/${dir.libs}"/>
+     -->
      <copy file="${lib.styleApache}" todir="${build.bindist}/${dir.libs}"/>
      <copy file="${lib.stylebook}" todir="${build.bindist}/${dir.libs}"/>
      <copy file="${lib.xerces.1}" todir="${build.bindist}/${dir.libs}"/>
