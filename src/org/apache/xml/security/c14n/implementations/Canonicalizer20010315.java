@@ -369,6 +369,21 @@ public abstract class Canonicalizer20010315 extends CanonicalizerSpi {
          if (engineVisible(currentNode)) {
             printwriter
                .print(C14nHelper.normalizeText(currentNode.getNodeValue()));
+
+            Node nextSibling = currentNode.getNextSibling();
+
+            /**
+             * see http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6329
+             */
+            while ((nextSibling != null)
+                   && ((nextSibling.getNodeType() == Node.TEXT_NODE)
+                       || (nextSibling.getNodeType()
+                           == Node.CDATA_SECTION_NODE))) {
+               printwriter
+                  .print(C14nHelper.normalizeText(nextSibling.getNodeValue()));
+
+               nextSibling = nextSibling.getNextSibling();
+            }
          } else {
             cat.error(currentNode + " not visible");
          }
