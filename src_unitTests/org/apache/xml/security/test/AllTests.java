@@ -98,8 +98,10 @@ public class AllTests {
       suite.addTest(org.apache.xml.security.test.utils.resolver.ResourceResolverSpiTest.suite());
       suite.addTest(org.apache.xml.security.test.utils.Base64Test.suite());
 
+      // interoperability tests using test vectors from other implementations
       suite.addTest(org.apache.xml.security.test.interop.BaltimoreTest.suite());
       suite.addTest(org.apache.xml.security.test.interop.IAIKTest.suite());
+      suite.addTest(org.apache.xml.security.test.interop.IBMTest.suite());
       //J+
       return suite;
    }

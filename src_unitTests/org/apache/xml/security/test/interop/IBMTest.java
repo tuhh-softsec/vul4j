@@ -93,21 +93,21 @@ import org.xml.sax.SAXException;
 
 
 /**
- * This test is to ensure interoperability with the examples provided by the IAIK
- * XML Signature implementation. Thanks to Gregor Karlinger who provided these
- * test vectors. They are located in the directory <CODE>data/at/iaik/ixsil/</CODE>.
+ * This test is to ensure interoperability with the examples provided by the IBM
+ * XML Security Suite. They are located in the directory
+ * <CODE>data/com/ibm/xss4j-20011029/</CODE>.
  *
  * @author $Author$
- * @see <A HREF="http://jcewww.iaik.at/products/ixsil/index.php">The IAIK IXSIL Website</A>
+ * @see <A HREF="http://www.alphaworks.ibm.com/tech/xmlsecuritysuite">The IBM alphaWorks Website</A>
  */
-public class IAIKTest extends InteropTest {
+public class IBMTest extends InteropTest {
 
    /** {@link org.apache.log4j} logging facility */
    static org.apache.log4j.Category cat =
-      org.apache.log4j.Category.getInstance(IAIKTest.class.getName());
+      org.apache.log4j.Category.getInstance(IBMTest.class.getName());
 
-   /** Field gregorsDir */
-   static final String gregorsDir = "data/at/iaik/ixsil/";
+   /** Field kentsDir           */
+   static final String kentsDir = "data/com/ibm/xss4j-20011029/";
 
    /**
     * Method suite
@@ -116,17 +116,17 @@ public class IAIKTest extends InteropTest {
     */
    public static Test suite() {
 
-      TestSuite suite = new TestSuite(IAIKTest.class);
+      TestSuite suite = new TestSuite(IBMTest.class);
 
       return suite;
    }
 
    /**
-    * Constructor IAIKTest
+    * Constructor IBMTest
     *
     * @param Name_
     */
-   public IAIKTest(String Name_) {
+   public IBMTest(String Name_) {
       super(Name_);
    }
 
@@ -137,24 +137,22 @@ public class IAIKTest extends InteropTest {
     */
    public static void main(String[] args) {
 
-      String[] testCaseName = { "-noloading", IAIKTest.class.getName() };
+      String[] testCaseName = { "-noloading", IBMTest.class.getName() };
 
       junit.textui.TestRunner.main(testCaseName);
    }
 
    /**
-    * Method test_signatureAlgorithms_signatures_hMACShortSignature
+    * Method test_enveloping_hmac
     *
     * @throws Exception
     */
-   public void test_signatureAlgorithms_signatures_hMACShortSignature()
-           throws Exception {
+   public void test_enveloping_hmac() throws Exception {
 
-      String filename =
-         gregorsDir + "signatureAlgorithms/signatures/hMACShortSignature.xml";
+      String filename = kentsDir + "enveloping-hmac.sig";
       ResourceResolverSpi resolver = new OfflineResolver();
       boolean followManifests = false;
-      byte[] hmacKey = "secret".getBytes("ASCII");
+      byte[] hmacKey = JavaUtils.getBytesFromFile(kentsDir + "enveloping-hmac.key");
       boolean verify = false;
 
       try {
@@ -172,72 +170,12 @@ public class IAIKTest extends InteropTest {
    }
 
    /**
-    * Method test_signatureAlgorithms_signatures_hMACSignature
+    * Method test_detached_dsa
     *
     * @throws Exception
     */
-   public void test_signatureAlgorithms_signatures_hMACSignature()
-           throws Exception {
-
-      String filename = gregorsDir
-                        + "signatureAlgorithms/signatures/hMACSignature.xml";
-      ResourceResolverSpi resolver = new OfflineResolver();
-      boolean followManifests = false;
-      byte[] hmacKey = "secret".getBytes("ASCII");
-      boolean verify = false;
-
-      try {
-         verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
-      } catch (RuntimeException ex) {
-         cat.error("Verification crashed for " + filename);
-         throw ex;
-      }
-
-      if (!verify) {
-         cat.error("Verification failed for " + filename);
-      }
-
-      assertTrue(filename, verify);
-   }
-
-   /**
-    * Method test_coreFeatures_signatures_manifestSignature
-    *
-    * @throws Exception
-    */
-   public void test_coreFeatures_signatures_manifestSignature()
-           throws Exception {
-
-      String filename = gregorsDir
-                        + "coreFeatures/signatures/manifestSignature.xml";
-      ResourceResolverSpi resolver = null;
-      boolean followManifests = true;
-      boolean verify = false;
-
-      try {
-         verify = this.verify(filename, resolver, followManifests);
-      } catch (RuntimeException ex) {
-         cat.error("Verification crashed for " + filename);
-         throw ex;
-      }
-
-      if (!verify) {
-         cat.error("Verification failed for " + filename);
-      }
-
-      assertTrue(filename, verify);
-   }
-
-   /**
-    * Method test_coreFeatures_signatures_signatureTypesSignature
-    *
-    * @throws Exception
-    */
-   public void test_coreFeatures_signatures_signatureTypesSignature()
-           throws Exception {
-
-      String filename = gregorsDir
-                        + "coreFeatures/signatures/signatureTypesSignature.xml";
+   public void test_detached_dsa() throws Exception {
+      String filename = kentsDir + "detached-dsa.sig";
       ResourceResolverSpi resolver = null;
       boolean followManifests = false;
       boolean verify = false;
@@ -257,45 +195,12 @@ public class IAIKTest extends InteropTest {
    }
 
    /**
-    * Method test_coreFeatures_signatures_anonymousReferenceSignature
+    * Method test_detached_rsa
     *
     * @throws Exception
     */
-   public void test_coreFeatures_signatures_anonymousReferenceSignature()
-           throws Exception {
-
-      String filename =
-         gregorsDir + "coreFeatures/signatures/anonymousReferenceSignature.xml";
-      String anonymousRef =
-         gregorsDir + "coreFeatures/samples/anonymousReferenceContent.xml";
-      ResourceResolverSpi resolver = new ResolverAnonymous(anonymousRef);
-      boolean followManifests = false;
-      boolean verify = false;
-
-      try {
-         verify = this.verify(filename, resolver, followManifests);
-      } catch (RuntimeException ex) {
-         cat.error("Verification crashed for " + filename);
-         throw ex;
-      }
-
-      if (!verify) {
-         cat.error("Verification failed for " + filename);
-      }
-
-      assertTrue(filename, verify);
-   }
-
-   /**
-    * Method test_signatureAlgorithms_signatures_dSASignature
-    *
-    * @throws Exception
-    */
-   public void test_signatureAlgorithms_signatures_dSASignature()
-           throws Exception {
-
-      String filename = gregorsDir
-                        + "signatureAlgorithms/signatures/dSASignature.xml";
+   public void test_detached_rsa() throws Exception {
+      String filename = kentsDir + "detached-rsa.sig";
       ResourceResolverSpi resolver = null;
       boolean followManifests = false;
       boolean verify = false;
@@ -315,15 +220,12 @@ public class IAIKTest extends InteropTest {
    }
 
    /**
-    * Method test_signatureAlgorithms_signatures_rSASignature
+    * Method test_enveloped_dsa
     *
     * @throws Exception
     */
-   public void test_signatureAlgorithms_signatures_rSASignature()
-           throws Exception {
-
-      String filename = gregorsDir
-                        + "signatureAlgorithms/signatures/rSASignature.xml";
+   public void test_enveloped_dsa() throws Exception {
+      String filename = kentsDir + "enveloped-dsa.sig";
       ResourceResolverSpi resolver = null;
       boolean followManifests = false;
       boolean verify = false;
@@ -343,15 +245,12 @@ public class IAIKTest extends InteropTest {
    }
 
    /**
-    * Method test_transforms_signatures_base64DecodeSignature
+    * Method test_enveloped_rsa
     *
     * @throws Exception
     */
-   public void test_transforms_signatures_base64DecodeSignature()
-           throws Exception {
-
-      String filename = gregorsDir
-                        + "transforms/signatures/base64DecodeSignature.xml";
+   public void test_enveloped_rsa() throws Exception {
+      String filename = kentsDir + "enveloped-rsa.sig";
       ResourceResolverSpi resolver = null;
       boolean followManifests = false;
       boolean verify = false;
@@ -371,13 +270,12 @@ public class IAIKTest extends InteropTest {
    }
 
    /**
-    * Method test_transforms_signatures_c14nSignature
+    * Method test_enveloping_dsa
     *
     * @throws Exception
     */
-   public void test_transforms_signatures_c14nSignature() throws Exception {
-
-      String filename = gregorsDir + "transforms/signatures/c14nSignature.xml";
+   public void test_enveloping_dsa() throws Exception {
+      String filename = kentsDir + "enveloping-dsa.sig";
       ResourceResolverSpi resolver = null;
       boolean followManifests = false;
       boolean verify = false;
@@ -397,15 +295,12 @@ public class IAIKTest extends InteropTest {
    }
 
    /**
-    * Method test_transforms_signatures_envelopedSignatureSignature
+    * Method test_enveloping_rsa
     *
     * @throws Exception
     */
-   public void test_transforms_signatures_envelopedSignatureSignature()
-           throws Exception {
-
-      String filename =
-         gregorsDir + "transforms/signatures/envelopedSignatureSignature.xml";
+   public void test_enveloping_rsa() throws Exception {
+      String filename = kentsDir + "enveloping-rsa.sig";
       ResourceResolverSpi resolver = null;
       boolean followManifests = false;
       boolean verify = false;
@@ -425,16 +320,15 @@ public class IAIKTest extends InteropTest {
    }
 
    /**
-    * Method test_transforms_signatures_xPathSignature
+    * Method test_enveloping_dsa_soaped_broken
     *
     * @throws Exception
     */
-   public void test_transforms_signatures_xPathSignature() throws Exception {
-
-      String filename = gregorsDir + "transforms/signatures/xPathSignature.xml";
+   public void test_enveloping_dsa_soaped_broken() throws Exception {
+      String filename = kentsDir + "enveloping-dsa-soaped-broken.sig";
       ResourceResolverSpi resolver = null;
       boolean followManifests = false;
-      boolean verify = false;
+      boolean verify = true;
 
       try {
          verify = this.verify(filename, resolver, followManifests);
@@ -443,11 +337,31 @@ public class IAIKTest extends InteropTest {
          throw ex;
       }
 
-      if (!verify) {
-         cat.error("Verification failed for " + filename);
+      if (verify) {
+         cat.error("Verification failed for " + filename + ", had to be broken but was successful");
       }
 
-      assertTrue(filename, verify);
+      assertTrue(filename, !verify);
+   }
+
+   /**
+    * Method test_enveloping_exclusive
+    *
+    * @throws Exception
+    * @todo implement exclusive-c14n
+    */
+   public void _not_active_test_enveloping_exclusive() throws Exception {
+     // exclusive c14n not supported yet
+   }
+
+   /**
+    * Method test_enveloping_exclusive_soaped
+    *
+    * @throws Exception
+    * @todo implement exclusive-c14n
+    */
+   public void _not_active_test_enveloping_exclusive_soaped() throws Exception {
+     // exclusive c14n not supported yet
    }
 
    static {

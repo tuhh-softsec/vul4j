@@ -168,8 +168,17 @@ public class BaltimoreTest extends InteropTest {
    public void test_fifteen_enveloping_hmac_sha1_40() throws Exception {
 
       String filename = merlinsDir15 + "signature-enveloping-hmac-sha1-40.xml";
-      boolean verify = this.verifyHMAC(filename, new OfflineResolver(), false,
-                                       "secret".getBytes("ASCII"));
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      byte[] hmacKey = "secret".getBytes("ASCII");
+      boolean verify = false;
+
+      try {
+         verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
+      } catch (RuntimeException ex) {
+         cat.error("Verification crashed for " + filename);
+         throw ex;
+      }
 
       if (!verify) {
          cat.error("Verification failed for " + filename);
@@ -186,7 +195,17 @@ public class BaltimoreTest extends InteropTest {
    public void test_fifteen_enveloped_dsa() throws Exception {
 
       String filename = merlinsDir15 + "signature-enveloped-dsa.xml";
-      boolean verify = this.verify(filename, new OfflineResolver(), false);
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      byte[] hmacKey = "secret".getBytes("ASCII");
+      boolean verify = false;
+
+      try {
+         verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
+      } catch (RuntimeException ex) {
+         cat.error("Verification crashed for " + filename);
+         throw ex;
+      }
 
       if (!verify) {
          cat.error("Verification failed for " + filename);
@@ -203,7 +222,16 @@ public class BaltimoreTest extends InteropTest {
    public void test_fifteen_enveloping_b64_dsa() throws Exception {
 
       String filename = merlinsDir15 + "signature-enveloping-b64-dsa.xml";
-      boolean verify = this.verify(filename, new OfflineResolver(), false);
+      ResourceResolverSpi resolver = null;
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         cat.error("Verification crashed for " + filename);
+         throw ex;
+      }
 
       if (!verify) {
          cat.error("Verification failed for " + filename);
@@ -220,7 +248,16 @@ public class BaltimoreTest extends InteropTest {
    public void test_fifteen_enveloping_dsa() throws Exception {
 
       String filename = merlinsDir15 + "signature-enveloping-dsa.xml";
-      boolean verify = this.verify(filename, new OfflineResolver(), false);
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         cat.error("Verification crashed for " + filename);
+         throw ex;
+      }
 
       if (!verify) {
          cat.error("Verification failed for " + filename);
@@ -237,7 +274,16 @@ public class BaltimoreTest extends InteropTest {
    public void test_fifteen_enveloping_rsa() throws Exception {
 
       String filename = merlinsDir15 + "signature-enveloping-rsa.xml";
-      boolean verify = this.verify(filename, new OfflineResolver(), false);
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         cat.error("Verification crashed for " + filename);
+         throw ex;
+      }
 
       if (!verify) {
          cat.error("Verification failed for " + filename);
@@ -254,7 +300,16 @@ public class BaltimoreTest extends InteropTest {
    public void test_fifteen_external_b64_dsa() throws Exception {
 
       String filename = merlinsDir15 + "signature-external-b64-dsa.xml";
-      boolean verify = this.verify(filename, new OfflineResolver(), false);
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         cat.error("Verification crashed for " + filename);
+         throw ex;
+      }
 
       if (!verify) {
          cat.error("Verification failed for " + filename);
@@ -271,7 +326,16 @@ public class BaltimoreTest extends InteropTest {
    public void test_fifteen_external_dsa() throws Exception {
 
       String filename = merlinsDir15 + "signature-external-dsa.xml";
-      boolean verify = this.verify(filename, new OfflineResolver(), false);
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         cat.error("Verification crashed for " + filename);
+         throw ex;
+      }
 
       if (!verify) {
          cat.error("Verification failed for " + filename);
@@ -289,7 +353,16 @@ public class BaltimoreTest extends InteropTest {
 
       String filename =
          "data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen/signature.xml";
-      boolean verify = this.verify(filename, new OfflineResolver(), false);
+      ResourceResolverSpi resolver = new OfflineResolver();
+      boolean followManifests = false;
+      boolean verify = false;
+
+      try {
+         verify = this.verify(filename, resolver, followManifests);
+      } catch (RuntimeException ex) {
+         cat.error("Verification crashed for " + filename);
+         throw ex;
+      }
 
       if (!verify) {
          cat.error("Verification failed for " + filename);
