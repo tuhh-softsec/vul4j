@@ -65,7 +65,7 @@ package org.apache.commons.digester;
  * at the identifier.</p>
  *
  * @author Robert Burrell Donkin
- * @revision $Revision: 1.1 $ $Date: 2001/08/08 03:21:17 $
+ * @revision $Revision: 1.2 $ $Date: 2001/09/05 03:33:26 $
  */
 
 public class TestRule extends Rule {
@@ -82,7 +82,7 @@ public class TestRule extends Rule {
      * Base constructor.
      *
      * @param digester The digester with which this rule is associated
-     * @param identifier Used to tell which TestRule is which.
+     * @param identifier Used to tell which TestRule is which
      */
     public TestRule(Digester digester, String identifier) {
 
@@ -90,7 +90,22 @@ public class TestRule extends Rule {
         this.identifier=identifier;
     }
     
-    
+
+    /**
+     * Constructor sets namespace URI.
+     *
+     * @param digester The digester with which this rule is associated
+     * @param identifier Used to tell which TestRule is which
+     * @param namespaceURI Set rule namespace
+     */
+    public TestRule(Digester digester, String identifier,
+                    String namespaceURI) {
+
+        super(digester);
+        this.identifier = identifier;
+        setNamespaceURI(namespaceURI);
+
+    }
     
 
     // ------------------------------------------------ Methods
