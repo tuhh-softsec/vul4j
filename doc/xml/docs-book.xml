@@ -13,6 +13,12 @@
   <document label="Installation" 
             id="install"     
             source="install.xml" />
+  <group    label="FAQs"
+            id="faqs"
+            title="Frequently Asked Questions">
+    <entry  id="faq-resolvers"
+            source="faq-resolvers.xml" />
+  </group>
   <separator />
   <document label="API Docs"     
             id="api"         

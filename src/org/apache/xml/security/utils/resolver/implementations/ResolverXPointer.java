@@ -167,6 +167,9 @@ public class ResolverXPointer extends ResourceResolverSpi {
     * @return
     */
    public boolean engineCanResolve(Attr uri, String BaseURI) {
+      if (uri == null) {
+         return false;
+      }
 
       String uriNodeValue = uri.getNodeValue();
 

@@ -104,6 +104,8 @@ public class CreateSignature {
     * @throws Exception
     */
    public static void main(String unused[]) throws Exception {
+      Constants.setSignatureSpecNSprefix("");
+
       //J-
       String keystoreType = "JKS";
       String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";

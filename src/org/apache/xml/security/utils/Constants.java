@@ -94,7 +94,7 @@ public class Constants {
 
    /** Field exceptionMessagesResourceBundleDir */
    public static final String exceptionMessagesResourceBundleDir =
-      "org.apache.xml.security/resource";
+      "org/apache/xml/security/resource";
 
    /** Field exceptionMessagesResourceBundleBase is the location of the <CODE>ResourceBundle</CODE> */
    public static final String exceptionMessagesResourceBundleBase =
@@ -225,15 +225,16 @@ public class Constants {
    //J+
 
    /**
-    * The namespace prefix which is currently used.
+    * The namespace prefix which is used by default is <CODE>ds</CODE>.
+    * Others prefer <CODE>dsig</CODE> or <CODE>digsig</CODE>.
     *
     * @see #setSignatureSpecNSprefix
     * @see #getSignatureSpecNSprefix
     */
-   static final String defaultSignatureSpecNSprefix = "ds";
+   static final String DEFAULTSIGNATURENSPREFIX = "ds";
 
    /** Field SignatureSpecNSprefix */
-   static String SignatureSpecNSprefix = defaultSignatureSpecNSprefix;
+   static String _signatureSpecNSprefix = DEFAULTSIGNATURENSPREFIX;
 
    /**
     * Sets the namespace prefix which will be used to identify elements in the
@@ -248,7 +249,7 @@ public class Constants {
     * @todo Add consistency checking for valid prefix
     */
    public static void setSignatureSpecNSprefix(String newPrefix) {
-      SignatureSpecNSprefix = newPrefix;
+      _signatureSpecNSprefix = newPrefix;
    }
 
    /**
@@ -262,7 +263,7 @@ public class Constants {
     * @see #setSignatureSpecNSprefix
     */
    public static String getSignatureSpecNSprefix() {
-      return SignatureSpecNSprefix;
+      return _signatureSpecNSprefix;
    }
 
    static {

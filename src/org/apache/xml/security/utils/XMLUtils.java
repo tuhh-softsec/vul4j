@@ -888,7 +888,8 @@ public class XMLUtils {
     * @return
     */
    public static Element createDSctx(Document doc) {
-      return XMLUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+      return XMLUtils.createDSctx(doc, Constants.DEFAULTSIGNATURENSPREFIX,
+                                  Constants.SignatureSpecNS);
    }
 
    static {

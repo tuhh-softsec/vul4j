@@ -288,7 +288,7 @@ public class Reference extends ElementProxy {
     *
     * @param element <code>Reference</code> element
     * @param BaseURI the URI of the resource where the XML instance was stored
-    * @param manifest
+    * @param manifest is the {@link Manifest} of {@link SignedInfo} in which the Reference occurs. We need this because the Manifest has the individual {@link ResourceResolver}s whcih have been set by the user
     * @throws XMLSecurityException
     */
    protected Reference(Element element, String BaseURI, Manifest manifest)
