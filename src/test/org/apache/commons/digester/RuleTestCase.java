@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.5 2001/10/11 00:28:42 craigmcc Exp $
- * $Revision: 1.5 $
- * $Date: 2001/10/11 00:28:42 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/RuleTestCase.java,v 1.6 2002/01/04 02:34:08 sanders Exp $
+ * $Revision: 1.6 $
+ * $Date: 2002/01/04 02:34:08 $
  *
  * ====================================================================
  *
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * XML documents to exercise the built-in rules.</p>
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.5 $ $Date: 2001/10/11 00:28:42 $
+ * @version $Revision: 1.6 $ $Date: 2002/01/04 02:34:08 $
  */
 
 public class RuleTestCase extends TestCase {
@@ -185,8 +185,7 @@ public class RuleTestCase extends TestCase {
     public void testObjectCreate2() {
 
         // Configure the digester as required
-        digester.addObjectCreate("employee",
-                                 "org.apache.commons.digester.Employee");
+        digester.addObjectCreate("employee", Employee.class);
         digester.addSetProperties("employee");
         digester.addObjectCreate("employee/address",
                                  "org.apache.commons.digester.Address");
@@ -223,8 +222,7 @@ public class RuleTestCase extends TestCase {
     public void testObjectCreate3() {
 
         // Configure the digester as required
-        digester.addObjectCreate("employee",
-                                 "org.apache.commons.digester.Employee");
+        digester.addObjectCreate("employee", Employee.class);
         digester.addSetProperties("employee");
         digester.addObjectCreate("employee/address",
                                  "org.apache.commons.digester.Address");
@@ -259,8 +257,7 @@ public class RuleTestCase extends TestCase {
     public void testObjectCreate4() {
 
         // Configure the digester as required
-        digester.addObjectCreate("employee",
-                                 "org.apache.commons.digester.Employee");
+        digester.addObjectCreate("employee", Employee.class);
         digester.addCallMethod("employee",
                                "setFirstName", 1);
         digester.addCallParam("employee", 0, "firstName");
@@ -298,8 +295,7 @@ public class RuleTestCase extends TestCase {
     public void testRepeatedParse() {
 
         // Configure the digester as required
-        digester.addObjectCreate("employee",
-                                 "org.apache.commons.digester.Employee");
+        digester.addObjectCreate("employee", Employee.class);
         digester.addSetProperties("employee");
         digester.addObjectCreate("employee/address",
                                  "org.apache.commons.digester.Address");

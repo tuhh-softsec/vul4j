@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.29 2001/12/04 17:11:08 jstrachan Exp $
- * $Revision: 1.29 $
- * $Date: 2001/12/04 17:11:08 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.30 2002/01/04 02:34:08 sanders Exp $
+ * $Revision: 1.30 $
+ * $Date: 2002/01/04 02:34:08 $
  *
  * ====================================================================
  *
@@ -109,7 +109,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.29 $ $Date: 2001/12/04 17:11:08 $
+ * @version $Revision: 1.30 $ $Date: 2002/01/04 02:34:08 $
  */
 
 public class Digester extends DefaultHandler {
@@ -123,7 +123,7 @@ public class Digester extends DefaultHandler {
      */
     public Digester() {
 
-	super();
+        super();
 
     }
 
@@ -137,7 +137,7 @@ public class Digester extends DefaultHandler {
      */
     public Digester(SAXParser parser) {
 
-	super();
+        super();
 
         this.parser = parser;
 
@@ -153,7 +153,7 @@ public class Digester extends DefaultHandler {
      */
     public Digester(XMLReader reader) {
 
-	super();
+        super();
 
         this.reader = reader;
 
@@ -353,7 +353,7 @@ public class Digester extends DefaultHandler {
             return (this.classLoader);
         if (this.useContextClassLoader) {
             ClassLoader classLoader =
-                Thread.currentThread().getContextClassLoader();
+                    Thread.currentThread().getContextClassLoader();
             if (classLoader != null)
                 return (classLoader);
         }
@@ -381,7 +381,7 @@ public class Digester extends DefaultHandler {
      */
     public int getCount() {
 
-	return (stack.size());
+        return (stack.size());
 
     }
 
@@ -405,7 +405,7 @@ public class Digester extends DefaultHandler {
      */
     public int getDebug() {
 
-	return (this.debug);
+        return (this.debug);
 
     }
 
@@ -417,7 +417,7 @@ public class Digester extends DefaultHandler {
      */
     public void setDebug(int debug) {
 
-	this.debug = debug;
+        this.debug = debug;
 
     }
 
@@ -509,11 +509,11 @@ public class Digester extends DefaultHandler {
      */
     public SAXParser getParser() {
 
-	// Return the parser we already created (if any)
-	if (parser != null)
-	    return (parser);
+        // Return the parser we already created (if any)
+        if (parser != null)
+            return (parser);
 
-	// Create and return a new parser
+        // Create and return a new parser
         synchronized (this) {
             try {
                 if (factory == null)
@@ -554,9 +554,6 @@ public class Digester extends DefaultHandler {
     }
 
 
-
-
-
     /**
      * Return the <code>Rules</code> implementation object containing our
      * rules collection and associated matching policy.  If none has been
@@ -592,7 +589,7 @@ public class Digester extends DefaultHandler {
      */
     public boolean getValidating() {
 
-	return (this.validating);
+        return (this.validating);
 
     }
 
@@ -605,7 +602,7 @@ public class Digester extends DefaultHandler {
      */
     public void setValidating(boolean validating) {
 
-	this.validating = validating;
+        this.validating = validating;
 
     }
 
@@ -656,7 +653,7 @@ public class Digester extends DefaultHandler {
 
         useContextClassLoader = use;
 
-     }
+    }
 
 
     // ------------------------------------------------- ContentHandler Methods
@@ -673,12 +670,12 @@ public class Digester extends DefaultHandler {
      * @exception SAXException if a parsing error is to be reported
      */
     public void characters(char buffer[], int start, int length)
-      throws SAXException {
+            throws SAXException {
 
         if (debug >= 3)
             log("characters(" + new String(buffer, start, length) + ")");
 
-	bodyText.append(buffer, start, length);
+        bodyText.append(buffer, start, length);
 
     }
 
@@ -690,15 +687,15 @@ public class Digester extends DefaultHandler {
      */
     public void endDocument() throws SAXException {
 
- 	if (debug >= 3)
+        if (debug >= 3)
             log("endDocument()");
 
-	if (getCount() > 1)
-	    log("endDocument():  " + getCount() + " elements left");
-	while (getCount() > 1)
-	    pop();
+        if (getCount() > 1)
+            log("endDocument():  " + getCount() + " elements left");
+        while (getCount() > 1)
+            pop();
 
-	// Fire "finish" events for all defined rules
+        // Fire "finish" events for all defined rules
         Iterator rules = getRules().rules().iterator();
         while (rules.hasNext()) {
             Rule rule = (Rule) rules.next();
@@ -711,10 +708,10 @@ public class Digester extends DefaultHandler {
                 log("Finish event threw exception", t);
                 throw createSAXException(t.getMessage());
             }
-	}
+        }
 
-	// Perform final cleanup
-	clear();
+        // Perform final cleanup
+        clear();
 
     }
 
@@ -736,64 +733,64 @@ public class Digester extends DefaultHandler {
 
         if (debug >= 3) {
             log("endElement(" + namespaceURI + "," + localName +
-                "," + qName + ")");
+                    "," + qName + ")");
             log("  match='" + match + "'");
             log("  bodyText='" + bodyText + "'");
         }
 
-	// Fire "body" events for all relevant rules
-	List rules = getRules().match(namespaceURI, match);
-	if ((rules != null) && (rules.size() > 0)) {
-	    String bodyText = this.bodyText.toString().trim();
-	    for (int i = 0; i < rules.size(); i++) {
-		try {
+        // Fire "body" events for all relevant rules
+        List rules = getRules().match(namespaceURI, match);
+        if ((rules != null) && (rules.size() > 0)) {
+            String bodyText = this.bodyText.toString().trim();
+            for (int i = 0; i < rules.size(); i++) {
+                try {
                     Rule rule = (Rule) rules.get(i);
                     if (debug >= 4)
                         log("  Fire body() for " + rule);
                     rule.body(bodyText);
-		} catch (Exception e) {
-		    log("Body event threw exception", e);
-		    throw createSAXException(e);
-		} catch (Throwable t) {
+                } catch (Exception e) {
+                    log("Body event threw exception", e);
+                    throw createSAXException(e);
+                } catch (Throwable t) {
                     log("Body event threw exception", t);
-		    throw createSAXException(t.getMessage());
+                    throw createSAXException(t.getMessage());
                 }
-	    }
-	} else {
+            }
+        } else {
             if (debug >= 3)
                 log("  No rules found matching '" + match + "'.");
         }
 
-	// Recover the body text from the surrounding element
-	bodyText = (StringBuffer) bodyTexts.pop();
+        // Recover the body text from the surrounding element
+        bodyText = (StringBuffer) bodyTexts.pop();
         if (debug >= 4)
             log("  Popping body text '" + bodyText.toString() + "'");
 
-	// Fire "end" events for all relevant rules in reverse order
-	if (rules != null) {
-	    for (int i = 0; i < rules.size(); i++) {
-		int j = (rules.size() - i) - 1;
-		try {
+        // Fire "end" events for all relevant rules in reverse order
+        if (rules != null) {
+            for (int i = 0; i < rules.size(); i++) {
+                int j = (rules.size() - i) - 1;
+                try {
                     Rule rule = (Rule) rules.get(j);
                     if (debug >= 4)
                         log("  Fire end() for " + rule);
                     rule.end();
-		} catch (Exception e) {
-		    log("End event threw exception", e);
-		    throw createSAXException(e);
-		} catch (Throwable t) {
-		    log("End event threw exception", t);
-		    throw createSAXException(t.getMessage());
+                } catch (Exception e) {
+                    log("End event threw exception", e);
+                    throw createSAXException(e);
+                } catch (Throwable t) {
+                    log("End event threw exception", t);
+                    throw createSAXException(t.getMessage());
                 }
-	    }
-	}
+            }
+        }
 
-	// Recover the previous match expression
-	int slash = match.lastIndexOf('/');
-	if (slash >= 0)
-	    match = match.substring(0, slash);
-	else
-	    match = "";
+        // Recover the previous match expression
+        int slash = match.lastIndexOf('/');
+        if (slash >= 0)
+            match = match.substring(0, slash);
+        else
+            match = "";
 
     }
 
@@ -836,13 +833,13 @@ public class Digester extends DefaultHandler {
      * @exception SAXException if a parsing error is to be reported
      */
     public void ignorableWhitespace(char buffer[], int start, int len)
-      throws SAXException {
+            throws SAXException {
 
         if (debug >= 3)
             log("ignorableWhitespace(" +
-       		new String(buffer, start, len) + ")");
+                    new String(buffer, start, len) + ")");
 
-	;	// No processing required
+        ;	// No processing required
 
     }
 
@@ -856,12 +853,12 @@ public class Digester extends DefaultHandler {
      * @exception SAXException if a parsing error is to be reported
      */
     public void processingInstruction(String target, String data)
-      throws SAXException {
+            throws SAXException {
 
         if (debug >= 3)
-	    log("processingInstruction('" + target + "','" + data + "')");
+            log("processingInstruction('" + target + "','" + data + "')");
 
-	;	// No processing is required
+        ;	// No processing is required
 
     }
 
@@ -874,9 +871,9 @@ public class Digester extends DefaultHandler {
     public void setDocumentLocator(Locator locator) {
 
         if (debug >= 3)
-	    log("setDocumentLocator(" + locator + ")");
+            log("setDocumentLocator(" + locator + ")");
 
-	this.locator = locator;
+        this.locator = locator;
 
     }
 
@@ -928,19 +925,19 @@ public class Digester extends DefaultHandler {
      */
     public void startElement(String namespaceURI, String localName,
                              String qName, Attributes list)
-        throws SAXException {
+            throws SAXException {
 
         if (debug >= 3)
             log("startElement(" + namespaceURI + "," + localName + "," +
-                qName + ")");
+                    qName + ")");
 
-	// Save the body text accumulated for our surrounding element
-	bodyTexts.push(bodyText);
+        // Save the body text accumulated for our surrounding element
+        bodyTexts.push(bodyText);
         if (debug >= 4)
             log("  Pushing body text '" + bodyText.toString() + "'");
-	bodyText = new StringBuffer();
+        bodyText = new StringBuffer();
 
-	// Compute the current matching rule
+        // Compute the current matching rule
         StringBuffer sb = new StringBuffer(match);
         if (match.length() > 0)
             sb.append('/');
@@ -952,25 +949,25 @@ public class Digester extends DefaultHandler {
         if (debug >= 3)
             log("  New match='" + match + "'");
 
-	// Fire "begin" events for all relevant rules
-	List rules = getRules().match(namespaceURI, match);
-	if ((rules != null) && (rules.size() > 0)) {
-	    String bodyText = this.bodyText.toString();
-	    for (int i = 0; i < rules.size(); i++) {
-		try {
+        // Fire "begin" events for all relevant rules
+        List rules = getRules().match(namespaceURI, match);
+        if ((rules != null) && (rules.size() > 0)) {
+            String bodyText = this.bodyText.toString();
+            for (int i = 0; i < rules.size(); i++) {
+                try {
                     Rule rule = (Rule) rules.get(i);
                     if (debug >= 4)
                         log("  Fire begin() for " + rule);
                     rule.begin(list);
-		} catch (Exception e) {
-		    log("Begin event threw exception", e);
-		    throw createSAXException(e);
-		} catch (Throwable t) {
-		    log("Begin event threw exception", t);
-		    throw createSAXException(t.getMessage());
-		}
-	    }
-	} else {
+                } catch (Exception e) {
+                    log("Begin event threw exception", e);
+                    throw createSAXException(e);
+                } catch (Throwable t) {
+                    log("Begin event threw exception", t);
+                    throw createSAXException(t.getMessage());
+                }
+            }
+        } else {
             if (debug >= 3)
                 log("  No rules found matching '" + match + "'.");
         }
@@ -987,7 +984,7 @@ public class Digester extends DefaultHandler {
      * @exception SAXException if a parsing error is to be reported
      */
     public void startPrefixMapping(String prefix, String namespaceURI)
-        throws SAXException {
+            throws SAXException {
 
         if (debug >= 3)
             log("startPrefixMapping(" + prefix + "," + namespaceURI + ")");
@@ -1015,9 +1012,9 @@ public class Digester extends DefaultHandler {
      */
     public void notationDecl(String name, String publicId, String systemId) {
 
-	if (debug >= 3)
-	    log("notationDecl(" + name + "," + publicId + "," +
-		systemId + ")");
+        if (debug >= 3)
+            log("notationDecl(" + name + "," + publicId + "," +
+                    systemId + ")");
 
     }
 
@@ -1031,11 +1028,11 @@ public class Digester extends DefaultHandler {
      * @param notation The name of the associated notation
      */
     public void unparsedEntityDecl(String name, String publicId,
-				   String systemId, String notation) {
+                                   String systemId, String notation) {
 
-	if (debug >= 3)
-	    log("unparsedEntityDecl(" + name + "," + publicId + "," +
-		systemId + "," + notation + ")");
+        if (debug >= 3)
+            log("unparsedEntityDecl(" + name + "," + publicId + "," +
+                    systemId + "," + notation + ")");
 
     }
 
@@ -1052,25 +1049,25 @@ public class Digester extends DefaultHandler {
      * @exception SAXException if a parsing exception occurs
      */
     public InputSource resolveEntity(String publicId, String systemId)
-	throws SAXException {
+            throws SAXException {
 
-	if (debug >= 1)
-	    log("resolveEntity('" + publicId + "', '" + systemId + "')");
+        if (debug >= 1)
+            log("resolveEntity('" + publicId + "', '" + systemId + "')");
         this.publicId = publicId;
 
-	// Has this system identifier been registered?
-	String dtdURL = null;
+        // Has this system identifier been registered?
+        String dtdURL = null;
         if (publicId != null)
             dtdURL = (String) dtds.get(publicId);
-	if (dtdURL == null) {
-	    if (debug >= 1)
-		log(" Not registered, use system identifier");
-	    return (null);
-	}
+        if (dtdURL == null) {
+            if (debug >= 1)
+                log(" Not registered, use system identifier");
+            return (null);
+        }
 
-	// Return an input source to our alternative URL
-	if (debug >= 1)
-	    log(" Resolving to alternate DTD '" + dtdURL + "'");
+        // Return an input source to our alternative URL
+        if (debug >= 1)
+            log(" Resolving to alternate DTD '" + dtdURL + "'");
         try {
             URL url = new URL(dtdURL);
             InputStream stream = url.openStream();
@@ -1095,9 +1092,9 @@ public class Digester extends DefaultHandler {
      */
     public void error(SAXParseException exception) throws SAXException {
 
-	log("Parse Error at line " + exception.getLineNumber() +
-	    " column " + exception.getColumnNumber() + ": " +
-	    exception.getMessage(), exception);
+        log("Parse Error at line " + exception.getLineNumber() +
+                " column " + exception.getColumnNumber() + ": " +
+                exception.getMessage(), exception);
         if (errorHandler != null)
             errorHandler.error(exception);
 
@@ -1114,9 +1111,9 @@ public class Digester extends DefaultHandler {
      */
     public void fatalError(SAXParseException exception) throws SAXException {
 
-	log("Parse Fatal Error at line " + exception.getLineNumber() +
-	    " column " + exception.getColumnNumber() + ": " +
-	    exception.getMessage(), exception);
+        log("Parse Fatal Error at line " + exception.getLineNumber() +
+                " column " + exception.getColumnNumber() + ": " +
+                exception.getMessage(), exception);
         if (errorHandler != null)
             errorHandler.fatalError(exception);
 
@@ -1133,9 +1130,9 @@ public class Digester extends DefaultHandler {
      */
     public void warning(SAXParseException exception) throws SAXException {
 
-	log("Parse Warning at line " + exception.getLineNumber() +
-	    " column " + exception.getColumnNumber() + ": " +
-	    exception.getMessage(), exception);
+        log("Parse Warning at line " + exception.getLineNumber() +
+                " column " + exception.getColumnNumber() + ": " +
+                exception.getMessage(), exception);
         if (errorHandler != null)
             errorHandler.warning(exception);
 
@@ -1195,8 +1192,8 @@ public class Digester extends DefaultHandler {
     public Object parse(File file) throws IOException, SAXException {
 
         configure();
-	getReader().parse(new InputSource(new FileReader(file)));
-	return (root);
+        getReader().parse(new InputSource(new FileReader(file)));
+        return (root);
 
     }
 
@@ -1213,8 +1210,8 @@ public class Digester extends DefaultHandler {
     public Object parse(InputSource input) throws IOException, SAXException {
 
         configure();
-	getReader().parse(input);
-	return (root);
+        getReader().parse(input);
+        return (root);
 
     }
 
@@ -1231,8 +1228,8 @@ public class Digester extends DefaultHandler {
     public Object parse(InputStream input) throws IOException, SAXException {
 
         configure();
-	getReader().parse(new InputSource(input));
-	return (root);
+        getReader().parse(new InputSource(input));
+        return (root);
 
     }
 
@@ -1249,8 +1246,8 @@ public class Digester extends DefaultHandler {
     public Object parse(Reader reader) throws IOException, SAXException {
 
         configure();
-	getReader().parse(new InputSource(reader));
-	return (root);
+        getReader().parse(new InputSource(reader));
+        return (root);
 
     }
 
@@ -1267,8 +1264,8 @@ public class Digester extends DefaultHandler {
     public Object parse(String uri) throws IOException, SAXException {
 
         configure();
-	getReader().parse(uri);
-	return (root);
+        getReader().parse(uri);
+        return (root);
 
     }
 
@@ -1284,7 +1281,7 @@ public class Digester extends DefaultHandler {
 
         if (debug >= 1)
             log("register('" + publicId + "', '" + dtdURL + "'");
-	dtds.put(publicId, dtdURL);
+        dtds.put(publicId, dtdURL);
 
     }
 
@@ -1303,7 +1300,6 @@ public class Digester extends DefaultHandler {
         getRules().add(pattern, rule);
 
     }
-
 
 
     /**
@@ -1365,10 +1361,10 @@ public class Digester extends DefaultHandler {
      *  for a single parameter from the body of this element)
      */
     public void addCallMethod(String pattern, String methodName,
-    			      int paramCount) {
+                              int paramCount) {
 
-	addRule(pattern,
-	        new CallMethodRule(this, methodName, paramCount));
+        addRule(pattern,
+                new CallMethodRule(this, methodName, paramCount));
 
     }
 
@@ -1387,11 +1383,11 @@ public class Digester extends DefaultHandler {
      *  for a <code>boolean</code> parameter)
      */
     public void addCallMethod(String pattern, String methodName,
-    			      int paramCount, String paramTypes[]) {
+                              int paramCount, String paramTypes[]) {
 
-	addRule(pattern,
-	        new CallMethodRule(this, methodName,
-	        		   paramCount, paramTypes));
+        addRule(pattern,
+                new CallMethodRule(this, methodName,
+                        paramCount, paramTypes));
 
     }
 
@@ -1409,11 +1405,11 @@ public class Digester extends DefaultHandler {
      *  for a <code>boolean</code> parameter)
      */
     public void addCallMethod(String pattern, String methodName,
-    			      int paramCount, Class paramTypes[]) {
+                              int paramCount, Class paramTypes[]) {
 
-	addRule(pattern,
-	        new CallMethodRule(this, methodName,
-	        		   paramCount, paramTypes));
+        addRule(pattern,
+                new CallMethodRule(this, methodName,
+                        paramCount, paramTypes));
 
     }
 
@@ -1427,8 +1423,8 @@ public class Digester extends DefaultHandler {
      */
     public void addCallParam(String pattern, int paramIndex) {
 
-	addRule(pattern,
-	        new CallParamRule(this, paramIndex));
+        addRule(pattern,
+                new CallParamRule(this, paramIndex));
 
     }
 
@@ -1443,10 +1439,10 @@ public class Digester extends DefaultHandler {
      *  parameter value
      */
     public void addCallParam(String pattern, int paramIndex,
-    			      String attributeName) {
+                             String attributeName) {
 
-	addRule(pattern,
-	        new CallParamRule(this, paramIndex, attributeName));
+        addRule(pattern,
+                new CallParamRule(this, paramIndex, attributeName));
 
     }
 
@@ -1469,6 +1465,20 @@ public class Digester extends DefaultHandler {
      * Add a "factory create" rule for the specified parameters.
      *
      * @param pattern Element matching pattern
+     * @param clazz Java class of the object creation factory class
+     */
+    public void addFactoryCreate(String pattern, Class clazz) {
+
+        addRule(pattern,
+                new FactoryCreateRule(this, clazz));
+
+    }
+
+
+    /**
+     * Add a "factory create" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
      * @param className Java class name of the object creation factory class
      * @param attributeName Attribute name which, if present, overrides the
      *  value specified by <code>className</code>
@@ -1478,6 +1488,23 @@ public class Digester extends DefaultHandler {
 
         addRule(pattern,
                 new FactoryCreateRule(this, className, attributeName));
+
+    }
+
+
+    /**
+     * Add a "factory create" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param clazz Java class of the object creation factory class
+     * @param attributeName Attribute name which, if present, overrides the
+     *  value specified by <code>className</code>
+     */
+    public void addFactoryCreate(String pattern, Class clazz,
+                                 String attributeName) {
+
+        addRule(pattern,
+                new FactoryCreateRule(this, clazz, attributeName));
 
     }
 
@@ -1507,8 +1534,22 @@ public class Digester extends DefaultHandler {
      */
     public void addObjectCreate(String pattern, String className) {
 
-	addRule(pattern,
-	        new ObjectCreateRule(this, className));
+        addRule(pattern,
+                new ObjectCreateRule(this, className));
+
+    }
+
+
+    /**
+     * Add an "object create" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param clazz Java class to be created
+     */
+    public void addObjectCreate(String pattern, Class clazz) {
+
+        addRule(pattern,
+                new ObjectCreateRule(this, clazz));
 
     }
 
@@ -1522,10 +1563,27 @@ public class Digester extends DefaultHandler {
      *  the default Java class name to be created
      */
     public void addObjectCreate(String pattern, String className,
-    				String attributeName) {
+                                String attributeName) {
 
-	addRule(pattern,
-	        new ObjectCreateRule(this, className, attributeName));
+        addRule(pattern,
+                new ObjectCreateRule(this, className, attributeName));
+
+    }
+
+
+    /**
+     * Add an "object create" rule for the specified parameters.
+     *
+     * @param pattern Element matching pattern
+     * @param clazz Default Java class to be created
+     * @param attributeName Attribute name that optionally overrides
+     *  the default Java class name to be created
+     */
+    public void addObjectCreate(String pattern, Class clazz,
+                                String attributeName) {
+
+        addRule(pattern,
+                new ObjectCreateRule(this, clazz, attributeName));
 
     }
 
@@ -1538,8 +1596,8 @@ public class Digester extends DefaultHandler {
      */
     public void addSetNext(String pattern, String methodName) {
 
-	addRule(pattern,
-	        new SetNextRule(this, methodName));
+        addRule(pattern,
+                new SetNextRule(this, methodName));
 
     }
 
@@ -1555,10 +1613,10 @@ public class Digester extends DefaultHandler {
      *  for a <code>boolean</code> parameter)
      */
     public void addSetNext(String pattern, String methodName,
-    			   String paramType) {
+                           String paramType) {
 
-	addRule(pattern,
-	        new SetNextRule(this, methodName, paramType));
+        addRule(pattern,
+                new SetNextRule(this, methodName, paramType));
 
     }
 
@@ -1570,8 +1628,8 @@ public class Digester extends DefaultHandler {
      */
     public void addSetProperties(String pattern) {
 
-	addRule(pattern,
-	        new SetPropertiesRule(this));
+        addRule(pattern,
+                new SetPropertiesRule(this));
 
     }
 
@@ -1585,8 +1643,8 @@ public class Digester extends DefaultHandler {
      */
     public void addSetProperty(String pattern, String name, String value) {
 
-	addRule(pattern,
-		new SetPropertyRule(this, name, value));
+        addRule(pattern,
+                new SetPropertyRule(this, name, value));
 
     }
 
@@ -1599,8 +1657,8 @@ public class Digester extends DefaultHandler {
      */
     public void addSetTop(String pattern, String methodName) {
 
-	addRule(pattern,
-	        new SetTopRule(this, methodName));
+        addRule(pattern,
+                new SetTopRule(this, methodName));
 
     }
 
@@ -1616,10 +1674,10 @@ public class Digester extends DefaultHandler {
      *  for a <code>boolean</code> parameter)
      */
     public void addSetTop(String pattern, String methodName,
-    			  String paramType) {
+                          String paramType) {
 
-	addRule(pattern,
-	        new SetTopRule(this, methodName, paramType));
+        addRule(pattern,
+                new SetTopRule(this, methodName, paramType));
 
     }
 
@@ -1632,7 +1690,7 @@ public class Digester extends DefaultHandler {
      */
     public void clear() {
 
-	match = "";
+        match = "";
         bodyTexts.clear();
         params.clear();
         publicId = null;
@@ -1647,13 +1705,13 @@ public class Digester extends DefaultHandler {
      */
     public Object peek() {
 
-	try {
-	    return (stack.peek());
-	} catch (EmptyStackException e) {
+        try {
+            return (stack.peek());
+        } catch (EmptyStackException e) {
             if (debug >= 1)
                 log("Empty stack (returning null)");
-	    return (null);
-	}
+            return (null);
+        }
 
     }
 
@@ -1668,13 +1726,13 @@ public class Digester extends DefaultHandler {
      */
     public Object peek(int n) {
 
-	try {
-	    return (stack.peek(n));
-	} catch (EmptyStackException e) {
+        try {
+            return (stack.peek(n));
+        } catch (EmptyStackException e) {
             if (debug >= 1)
                 log("Empty stack (returning null)");
-	    return (null);
-	}
+            return (null);
+        }
 
     }
 
@@ -1685,13 +1743,13 @@ public class Digester extends DefaultHandler {
      */
     public Object pop() {
 
-	try {
-	    return (stack.pop());
-	} catch (EmptyStackException e) {
+        try {
+            return (stack.pop());
+        } catch (EmptyStackException e) {
             if (debug >= 1)
                 log("Empty stack (returning null)");
-	    return (null);
-	}
+            return (null);
+        }
 
     }
 
@@ -1705,7 +1763,7 @@ public class Digester extends DefaultHandler {
 
         if (stack.size() == 0)
             root = object;
-	stack.push(object);
+        stack.push(object);
 
     }
 
@@ -1775,11 +1833,11 @@ public class Digester extends DefaultHandler {
      */
     Object peekParams() {
 
-	try {
-	    return (params.peek());
-	} catch (EmptyStackException e) {
-	    return (null);
-	}
+        try {
+            return (params.peek());
+        } catch (EmptyStackException e) {
+            return (null);
+        }
 
     }
 
@@ -1794,11 +1852,11 @@ public class Digester extends DefaultHandler {
      */
     Object peekParams(int n) {
 
-	try {
-	    return (params.peek(n));
-	} catch (EmptyStackException e) {
-	    return (null);
-	}
+        try {
+            return (params.peek(n));
+        } catch (EmptyStackException e) {
+            return (null);
+        }
 
     }
 
@@ -1809,11 +1867,11 @@ public class Digester extends DefaultHandler {
      */
     Object popParams() {
 
-	try {
-	    return (params.pop());
-	} catch (EmptyStackException e) {
-	    return (null);
-	}
+        try {
+            return (params.pop());
+        } catch (EmptyStackException e) {
+            return (null);
+        }
 
     }
 
@@ -1825,7 +1883,7 @@ public class Digester extends DefaultHandler {
      */
     void pushParams(Object object) {
 
-	params.push(object);
+        params.push(object);
 
     }
 
@@ -1836,25 +1894,23 @@ public class Digester extends DefaultHandler {
      * @return the new exception
      */
     protected SAXException createSAXException(String message, Exception e) {
-        if ( locator != null ) {
-            String error = "Error at (" + locator.getLineNumber() + ", " 
-                + locator.getColumnNumber() + ": " + message;
-            if ( e != null ) {
-                return new SAXParseException( error, locator, e );
-            }
-            else {
-                return new SAXParseException( error, locator );
+        if (locator != null) {
+            String error = "Error at (" + locator.getLineNumber() + ", "
+                    + locator.getColumnNumber() + ": " + message;
+            if (e != null) {
+                return new SAXParseException(error, locator, e);
+            } else {
+                return new SAXParseException(error, locator);
             }
         }
-        System.out.println( "No Locator!" );
-        if ( e != null ) {
+        System.out.println("No Locator!");
+        if (e != null) {
             return new SAXException(message, e);
-        }
-        else {
+        } else {
             return new SAXException(message);
         }
     }
-    
+
     /**
      * Create a SAX exception which also understands about the location in
      * the digester file where the exception occurs
@@ -1864,7 +1920,7 @@ public class Digester extends DefaultHandler {
     protected SAXException createSAXException(Exception e) {
         return createSAXException(e.getMessage(), e);
     }
-    
+
     /**
      * Create a SAX exception which also understands about the location in
      * the digester file where the exception occurs

@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestRuleSet.java,v 1.1 2001/08/26 22:13:44 craigmcc Exp $
- * $Revision: 1.1 $
- * $Date: 2001/08/26 22:13:44 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/test/org/apache/commons/digester/TestRuleSet.java,v 1.2 2002/01/04 02:34:08 sanders Exp $
+ * $Revision: 1.2 $
+ * $Date: 2002/01/04 02:34:08 $
  *
  * ====================================================================
  *
@@ -68,7 +68,7 @@ package org.apache.commons.digester;
  * optionally associated with a particular namespace URI.
  *
  * @author Craig R. McClanahan
- * @version $Revision: 1.1 $ $Date: 2001/08/26 22:13:44 $
+ * @version $Revision: 1.2 $ $Date: 2002/01/04 02:34:08 $
  */
 
 public class TestRuleSet extends RuleSetBase {
@@ -143,8 +143,7 @@ public class TestRuleSet extends RuleSetBase {
      */
     public void addRuleInstances(Digester digester) {
 
-        digester.addObjectCreate(prefix + "employee",
-                                 "org.apache.commons.digester.Employee");
+        digester.addObjectCreate(prefix + "employee", Employee.class);
         digester.addSetProperties(prefix + "employee");
         digester.addObjectCreate("employee/address",
                                  "org.apache.commons.digester.Address");

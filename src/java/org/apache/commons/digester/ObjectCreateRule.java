@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.6 2001/08/20 18:28:40 craigmcc Exp $
- * $Revision: 1.6 $
- * $Date: 2001/08/20 18:28:40 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/ObjectCreateRule.java,v 1.7 2002/01/04 02:34:08 sanders Exp $
+ * $Revision: 1.7 $
+ * $Date: 2002/01/04 02:34:08 $
  *
  * ====================================================================
  *
@@ -63,7 +63,6 @@
 package org.apache.commons.digester;
 
 
-import java.lang.ClassLoader;
 import org.xml.sax.Attributes;
 
 
@@ -74,7 +73,7 @@ import org.xml.sax.Attributes;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.6 $ $Date: 2001/08/20 18:28:40 $
+ * @version $Revision: 1.7 $ $Date: 2002/01/04 02:34:08 $
  */
 
 public class ObjectCreateRule extends Rule {
@@ -91,7 +90,20 @@ public class ObjectCreateRule extends Rule {
      */
     public ObjectCreateRule(Digester digester, String className) {
 
-	this(digester, className, null);
+        this(digester, className, null);
+
+    }
+
+
+    /**
+     * Construct an object create rule with the specified class.
+     *
+     * @param digester The associated Digester
+     * @param clazz Java class name of the object to be created
+     */
+    public ObjectCreateRule(Digester digester, Class clazz) {
+
+        this(digester, clazz.getName(), null);
 
     }
 
@@ -106,11 +118,28 @@ public class ObjectCreateRule extends Rule {
      *  override of the class name to create
      */
     public ObjectCreateRule(Digester digester, String className,
-        String attributeName) {
+                            String attributeName) {
 
-	super(digester);
-	this.className = className;
-	this.attributeName = attributeName;
+        super(digester);
+        this.className = className;
+        this.attributeName = attributeName;
+
+    }
+
+
+    /**
+     * Construct an object create rule with the specified class and an
+     * optional attribute name containing an override.
+     *
+     * @param digester The associated Digester
+     * @param clazz Java class name of the object to be created
+     * @param attributeName Attribute name which, if present, contains an
+     *  override of the class name to create
+     */
+    public ObjectCreateRule(Digester digester, Class clazz,
+                            String attributeName) {
+
+        this(digester, clazz.getName(), attributeName);
 
     }
 
@@ -140,20 +169,20 @@ public class ObjectCreateRule extends Rule {
      */
     public void begin(Attributes attributes) throws Exception {
 
-	// Identify the name of the class to instantiate
-	String realClassName = className;
-	if (attributeName != null) {
-	    String value = attributes.getValue(attributeName);
-	    if (value != null)
-	        realClassName = value;
-	}
-	if (digester.getDebug() >= 1)
-	    digester.log("New " + realClassName);
+        // Identify the name of the class to instantiate
+        String realClassName = className;
+        if (attributeName != null) {
+            String value = attributes.getValue(attributeName);
+            if (value != null)
+                realClassName = value;
+        }
+        if (digester.getDebug() >= 1)
+            digester.log("New " + realClassName);
 
-	// Instantiate the new object and push it on the context stack
+        // Instantiate the new object and push it on the context stack
         Class clazz = digester.getClassLoader().loadClass(realClassName);
         Object instance = clazz.newInstance();
-	digester.push(instance);
+        digester.push(instance);
 
     }
 
@@ -163,9 +192,9 @@ public class ObjectCreateRule extends Rule {
      */
     public void end() throws Exception {
 
-	Object top = digester.pop();
-	if (digester.getDebug() >= 1)
-	    digester.log("Pop " + top.getClass().getName());
+        Object top = digester.pop();
+        if (digester.getDebug() >= 1)
+            digester.log("Pop " + top.getClass().getName());
 
     }
 

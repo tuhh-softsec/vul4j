@@ -59,7 +59,6 @@
 package org.apache.commons.digester;
 
 
-import java.lang.ClassLoader;
 import org.xml.sax.Attributes;
 
 
@@ -74,7 +73,7 @@ import org.xml.sax.Attributes;
  * in a call to either a factory method or to a non-empty constructor.
  *
  * @author Robert Burrell Donkin
- * @version $Revision: 1.4 $ $Date: 2001/08/20 18:28:40 $
+ * @version $Revision: 1.5 $ $Date: 2002/01/04 02:34:08 $
  */
 
 public class FactoryCreateRule extends Rule {
@@ -100,6 +99,21 @@ public class FactoryCreateRule extends Rule {
 
     /**
      * Construct a factory create rule that will use the specified
+     * class to create an {@link ObjectCreationFactory} which will
+     * then be used to create an object and push it on the stack.
+     *
+     * @param digester The associated Digester
+     * @param clazz Java class name of the object creation factory class
+     */
+    public FactoryCreateRule(Digester digester, Class clazz) {
+
+        this(digester, clazz, null);
+
+    }
+
+
+    /**
+     * Construct a factory create rule that will use the specified
      * class name (possibly overridden by the specified attribute if present)
      * to create an {@link ObjectCreationFactory}, which will then be used
      * to instantiate an object instance and push it onto the stack.
@@ -115,6 +129,25 @@ public class FactoryCreateRule extends Rule {
         super(digester);
         this.className = className;
         this.attributeName = attributeName;
+
+    }
+
+
+    /**
+     * Construct a factory create rule that will use the specified
+     * class (possibly overridden by the specified attribute if present)
+     * to create an {@link ObjectCreationFactory}, which will then be used
+     * to instantiate an object instance and push it onto the stack.
+     *
+     * @param digester The associated Digester
+     * @param clazz Default Java class name of the factory class
+     * @param attributeName Attribute name which, if present, contains an
+     *  override of the class name of the object creation factory to create.
+     */
+    public FactoryCreateRule(Digester digester,
+                             Class clazz, String attributeName) {
+
+        this(digester, clazz.getName(), attributeName);
 
     }
 
@@ -232,7 +265,7 @@ public class FactoryCreateRule extends Rule {
      * @exception Exception if any error occurs
      */
     protected ObjectCreationFactory getFactory(Attributes attributes)
-        throws Exception {
+            throws Exception {
 
         if (creationFactory == null) {
             String realClassName = className;
@@ -245,7 +278,7 @@ public class FactoryCreateRule extends Rule {
                 digester.log("New factory " + realClassName);
             Class clazz = digester.getClassLoader().loadClass(realClassName);
             creationFactory = (ObjectCreationFactory)
-                clazz.newInstance();
+                    clazz.newInstance();
             creationFactory.setDigester(digester);
         }
         return (creationFactory);
