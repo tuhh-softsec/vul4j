@@ -9,4 +9,11 @@
   <artifactId>plexus-archiver</artifactId>
   <name>Plexus Archiver Component</name>
   <version>1.0-alpha-1-SNAPSHOT</version>
+  <dependencies>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <version>1.0-alpha-2-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 </project>
