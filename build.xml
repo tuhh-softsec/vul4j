@@ -69,11 +69,12 @@
     <property name="cvs.cvsRoot.anonymous" value=":pserver:${cvs.user.anonymous}@${cvs.server}:${cvs.path}" />
 
     <property name="libs"         value="libs" />
-    <property name="lib.xerces"   value="${libs}/xerces-1_4_3.jar" />
-    <property name="lib.xalan"    value="${libs}/xalan-j_2_2_D10.jar" />
-    <property name="lib.log4j"    value="${libs}/jakarta-log4j-1.1.3.jar" />
+    <property name="lib.xerces"   value="${libs}/xerces-1_4_4.jar" />
+    <property name="lib.xalan.1"  value="${libs}/xalan-j_2_2_D13_xalan.jar" />
+    <property name="lib.xalan.2"  value="${libs}/xalan-j_2_2_D13_xml-apis.jar" />
+    <property name="lib.log4j"    value="${libs}/jakarta-log4j-1.2alpha5.jar" />
     <property name="lib.junit"    value="${libs}/junit3.7.jar" />
-    
+
     <property name="jce.download.file" value="jce-jdk13-110.jar" />
     <property name="jce.download" value="http://www.bouncycastle.org/download/${jce.download.file}" />
     <property name="lib.jce"      value="${libs}/bc-${jce.download.file}" />
@@ -108,7 +109,8 @@ org.apache.xml.security.utils.*
     <path id="classpath.library">
       <pathelement path="${build}" />
       <pathelement path="${lib.xerces}" />
-      <pathelement path="${lib.xalan}" />
+      <pathelement path="${lib.xalan.1}" />
+      <pathelement path="${lib.xalan.2}" />
       <pathelement path="${lib.log4j}" />
       <pathelement path="${lib.jce}" />
     </path>
@@ -155,8 +157,8 @@ org.apache.xml.security.utils.*
     </copy>
   </target>
 
-  <target name="compile.tests" 
-          depends="compile.library" 
+  <target name="compile.tests"
+          depends="compile.library"
           if="junit.present">
     <!-- Compile the java code from ${src} into ${build} -->
     <javac srcdir="${src.unitTests}" destdir="${build}">
@@ -202,7 +204,7 @@ org.apache.xml.security.utils.*
      </java>
   </target>
 
-  <target name="clean" 
+  <target name="clean"
           description="Clean up all temporary build files">
     <delete dir="${build}" />
     <delete file="${build.jar}" />
@@ -220,19 +222,19 @@ org.apache.xml.security.utils.*
              packagenames="${javadoc.packages}"
              classpathref="classpath.test"/>
   </target>
-  
-  <target name="jar" 
-          depends="compile" 
+
+  <target name="jar"
+          depends="compile"
           description="Creates the ${build.jar} JAR file">
-     <jar jarfile="${build.jar}" 
-          basedir="${build}" 
-          compress="false" 
+     <jar jarfile="${build.jar}"
+          basedir="${build}"
+          compress="false"
           includes="org/apache/**,META-INF/**"
           excludes="org/apache/xml/security/temp/**" />
   </target>
 
-  <target name="gump" 
-          description="Target for the gump run" 
+  <target name="gump"
+          description="Target for the gump run"
           depends="jar,javadocs,test" />
 
   <target name="generate-keys">
