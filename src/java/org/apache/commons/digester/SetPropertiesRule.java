@@ -1,4 +1,4 @@
-/* $Id: SetPropertiesRule.java,v 1.20 2004/09/20 21:59:23 rdonkin Exp $
+/* $Id: SetPropertiesRule.java,v 1.21 2004/09/27 06:20:38 skitching Exp $
  *
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -206,6 +206,25 @@ public class SetPropertiesRule extends Rule {
             }
             
             if ((!ignoreMissingProperty) && (name != null)) {
+                // The BeanUtils.populate method silently ignores items in
+                // the map (ie xml entities) which have no corresponding
+                // setter method, so here we check whether each xml attribute
+                // does have a corresponding property before calling the
+                // BeanUtils.populate method.
+                //
+                // Yes having the test and set as separate steps is ugly and 
+                // inefficient. But BeanUtils.populate doesn't provide the 
+                // functionality we need here, and changing the algorithm which 
+                // determines the appropriate setter method to invoke is 
+                // considered too risky.
+                //
+                // Using two different classes (PropertyUtils vs BeanUtils) to
+                // do the test and the set is also ugly; the codepaths
+                // are different which could potentially lead to trouble.
+                // However the BeanUtils/ProperyUtils code has been carefully 
+                // compared and the PropertyUtils functionality does appear 
+                // compatible so we'll accept the risk here.
+                
                 Object top = digester.peek();
                 boolean test =  PropertyUtils.isWriteable(top, name);
                 if (!test)
