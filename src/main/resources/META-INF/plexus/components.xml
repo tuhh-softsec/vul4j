@@ -21,11 +21,11 @@
       <role-hint>jar</role-hint>
       <implementation>org.codehaus.plexus.archiver.jar.JarArchiver</implementation>
     </component>
-    <!-- component>
+    <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>tar</role-hint>
       <implementation>org.codehaus.plexus.archiver.tar.TarArchiver</implementation>
-    </component -->
+    </component>
     <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>war</role-hint>

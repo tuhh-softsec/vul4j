@@ -38,10 +38,16 @@ public class TarLongFileMode extends EnumeratedAttribute {
 
     /** Constructor, defaults to "warn" */
     public TarLongFileMode()
-        throws ArchiverException
     {
         super();
-        setValue(WARN);
+        try
+        {
+            setValue(WARN);
+        }
+        catch ( ArchiverException ae )
+        {
+            //Do nothing
+        }
     }
 
     /**
