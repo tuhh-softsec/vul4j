@@ -1,4 +1,4 @@
-$Id: RELEASE-NOTES.txt,v 1.6 2003/02/02 15:34:21 rdonkin Exp $
+$Id: RELEASE-NOTES.txt,v 1.7 2003/02/02 16:30:29 rdonkin Exp $
 
                           Commons Digester Package
                                 Version 1.4
@@ -22,9 +22,9 @@ Digester Enhancements:
 
 New begin, body and end methods were added that include namespace information. This is an important change since it allows more sophisticated Rules to be created. The old versions of these methods have been deprecated (see below) but existing Rules that override these methods will continue to function correctly.
 
-Improved support for XML schema. Scope of schema related variable has been change from private to protected. The entity resolver used can now be configured through a property.
+Improved support for XML schema. The scope of schema related variables has been changed from private to protected. The entity resolver used can now be configured through a property.
 
-Improved support for Public ID. The property now has a setter (as well as a getter). Digester now will not set a public ID to null.
+Improved support for Public ID. The property now has a setter (as well as a getter). Digester will no longer set a public ID to null.
 
 
 Rules Enhancements:
