@@ -980,16 +980,19 @@ int main(int argc, char **argv) {
 		
 		// Code provided by Milan Tomic
 
+		//Please note that this example below use CryptAcquireCertificatePrivateKey() function
+		//which is not declared in wincrypt.h that ships with VC++ 6. If you would like to run
+		//this example you'll need to replace your old wincrypt.h and crypt32.lib with new versions.
+		//This example below is compatible with Windows 98/IE 5 and above OS/IE versions.
+
 		else if (stricmp(argv[paramCount], "--wincer") == 0 || stricmp(argv[paramCount], "-wc") == 0) {
 			WinCAPICryptoProvider * cp;
 			PCCERT_CONTEXT          pSignerCert = NULL;
 			DWORD                   dwKeySpec;
 			HCERTSTORE				hStoreHandle;
-			HCRYPTPROV				hCryptProv;
-
 			#define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 
-			// Obtain default PROV_DSS and PROV_RSA_FULL, with default user key containers
+			// Obtain default PROV_DSS with default user key container
 			if (!CryptAcquireContext(&win32DSSCSP,
 				NULL,
 				NULL,
@@ -998,18 +1001,6 @@ int main(int argc, char **argv) {
 					cerr << "Error acquiring DSS Crypto Service Provider" << endl;
 					return 2;
 			}//*/
-
-			if (!CryptAcquireContext(&win32RSACSP,
-				NULL,
-				NULL,
-				PROV_RSA_FULL,
-				0)) {
-					cerr << "Error acquiring RSA Crypto Service Provider" << endl;
-					return 2;
-			}//*/
-
-			cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
-			XSECPlatformUtils::SetCryptoProvider(cp);
 
 			// Open 'Personal' certificate store 
 			if (!(hStoreHandle = CertOpenStore(CERT_STORE_PROV_SYSTEM,
@@ -1036,24 +1027,20 @@ int main(int argc, char **argv) {
 			if (!CryptAcquireCertificatePrivateKey(pSignerCert,
 				0,
 				NULL,
-				&hCryptProv,
+				&win32RSACSP,
 				&dwKeySpec,
 				NULL)) {
 					cerr << "Can't acquire private key of '" << argv[paramCount+1] << "' certificate." << endl;
 					exit(1);
 			}
 
-#if 0
-			//Added just for debugging
-			if (dwKeySpec == AT_SIGNATURE)
-			cerr << "Your key is AT_SIGNATURE" << endl;
-			else if (dwKeySpec == AT_KEYEXCHANGE)
-			cerr << "Your key is AT_KEYEXCHANGE" << endl;
-#endif
+			cp = new WinCAPICryptoProvider(win32DSSCSP, win32RSACSP);
+			XSECPlatformUtils::SetCryptoProvider(cp);
+
 			HCRYPTKEY k;
 			BOOL fResult = CryptGetUserKey(
-				hCryptProv,
-				dwKeySpec,//AT_SIGNATURE,
+				win32RSACSP,
+				dwKeySpec,
 				&k);
 
 			if (!fResult || k == 0) {
@@ -1064,6 +1051,9 @@ int main(int argc, char **argv) {
 			winKeyRSA = new WinCAPICryptoKeyRSA(cp, k, true);
 			key = winKeyRSA;
 			paramCount += 2;
+
+			CertFreeCertificateContext(pSignerCert);
+			CertCloseStore(hStoreHandle, 0);
 		}
 
 #endif /* CRYPT_ACQUIRE_CACHE_FLAG */
