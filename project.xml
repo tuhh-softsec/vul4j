@@ -99,12 +99,54 @@
       <id>tobrien</id>
       <email>tobrien@apache.org</email>
     </developer>
+    <developer>
+      <name>Jean-Francois Arcand</name>
+      <id>jfarcand</id>
+      <email>jfarcand@apache.org</email>
+    </developer>
+    <developer>
+      <name>Stephen Colebourne</name>
+      <id>scolebourne</id>
+      <email>scolebourne@apache.org</email>
+    </developer>
+    <developer>
+      <name>Simon Kitching</name>
+      <id>skitching</id>
+      <email>skitching@apache.org</email>
+    </developer>
   </developers>
 
   <contributors>
     <contributor>
       <name>Bradley M. Handy</name>
       <email>bhandy@users.sf.net</email>
+    </contributor>
+    <contributor>
+      <name>Christopher Lenz</name>
+    </contributor>
+    <contributor>
+      <name>Ted Husted</name>
+    </contributor>
+    <contributor>
+      <name>David H. Martin</name>
+    </contributor>
+    <contributor>
+      <name>Henri Chen</name>
+    </contributor>
+    <contributor>
+      <name>Janek Bogucki</name>
+    </contributor>
+    <contributor>
+      <name>Mark Huisman</name>
+    </contributor>
+    <contributor>
+      <name>Paul Jack</name>
+    </contributor>
+    <contributor>
+      <name>Anton Maslovsky</name>
+    </contributor>
+    <contributor>
+      <name>Matt Cleveland</name>
     </contributor>
   </contributors>
   
