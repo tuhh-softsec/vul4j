@@ -409,7 +409,7 @@ DSIGReferenceList * DSIGReference::getManifestReferenceList() {
 
 TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc, 
 										 const XMLCh * URI,
-										 XSECURIResolver * resolver) {
+										 const XSECEnv * env) {
 
 	// Determine if this is a full URL or a pointer to a URL
 
@@ -420,7 +420,7 @@ TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 
 		// Have a URL!
 
-		XSECnew(retTransform, TXFMURL(doc, resolver));
+		XSECnew(retTransform, TXFMURL(doc, env->getURIResolver()));
 			
 		try {
 			((TXFMURL *) retTransform)->setInput(URI);
@@ -440,6 +440,7 @@ TXFMBase * DSIGReference::getURIBaseTXFM(DOMDocument * doc,
 	TXFMDocObject * to;
 	XSECnew(to, TXFMDocObject(doc));
 	Janitor<TXFMDocObject> j_to(to);
+	to->setEnv(env);
 	
 	// Find out what sort of object pointer this is.
 	
@@ -682,7 +683,7 @@ void DSIGReference::load(void) {
 		DOMNode					* manifestNode, * referenceNode;
 
 		docObject = getURIBaseTXFM(mp_referenceNode->getOwnerDocument(), mp_URI, 
-			mp_env->getURIResolver());
+			mp_env);
 
 		manifestNode = docObject->getFragmentNode();
 		delete docObject;
@@ -795,7 +796,7 @@ XSECBinTXFMInputStream * DSIGReference::makeBinInputStream(void) const {
 
 	// Find base transform
 	currentTxfm = getURIBaseTXFM(mp_referenceNode->getOwnerDocument(), mp_URI,
-		mp_env->getURIResolver());
+		mp_env);
 
 	// Set up the transform chain
 
@@ -1204,7 +1205,7 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 
 	// Find base transform
 	currentTxfm = getURIBaseTXFM(mp_referenceNode->getOwnerDocument(), mp_URI,
-		mp_env->getURIResolver());
+		mp_env);
 
 	// Now build the transforms list
 	// Note this passes ownership of currentTxfm to the function, so it is the

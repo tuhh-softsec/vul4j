@@ -27,6 +27,7 @@
 
 #include <xsec/transformers/TXFMBase.hpp>
 #include <xsec/utils/XSECSafeBuffer.hpp>
+#include <xsec/framework/XSECEnv.hpp>
 
 // Xerces
 
@@ -58,6 +59,11 @@ public:
 	);
 	void setInput(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc);
 
+	// Environment - when searching for IDs we need to know about the user
+	// environment (namely - how to handle ID attribute names)
+
+	void setEnv(const XSECEnv * env);
+
 	// Methods to get tranform output type and input requirement
 
 	TXFMBase::ioType getInputType(void);
@@ -79,6 +85,8 @@ private:
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode 
 			* fragmentObject;			// The object that contains the doc fragment to use
 	TXFMBase::nodeType type;			// The type of nodes this holds
+
+	const XSECEnv * mp_env;
 
 	
 	TXFMDocObject();

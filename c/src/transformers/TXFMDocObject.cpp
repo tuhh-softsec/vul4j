@@ -36,6 +36,7 @@ TXFMDocObject::TXFMDocObject(DOMDocument *doc) : TXFMBase(doc) {
 	input = NULL;
 	fragmentId = NULL;
 	type = TXFMBase::DOM_NODE_NONE;	// No nodes currently held
+	mp_env = NULL;
 
 }
 
@@ -56,9 +57,7 @@ void TXFMDocObject::setInput(TXFMBase *newInput) {
 
 }
 
-DOMNode * findDSIGId(DOMNode *current, const XMLCh * newFragmentId) {
-
-	XSEC_USING_XERCES(DOMNamedNodeMap);
+DOMNode * findDSIGId(DOMNode *current, const XMLCh * newFragmentId, const XSECEnv * env) {
 
 	DOMNode *tmp, *ret;
 	DOMNamedNodeMap *atts;
@@ -67,12 +66,16 @@ DOMNode * findDSIGId(DOMNode *current, const XMLCh * newFragmentId) {
 
 		atts = current->getAttributes();
 		if (atts != NULL) {
-			tmp = atts->getNamedItem(MAKE_UNICODE_STRING("Id"));
-			if (tmp != 0 && strEquals(tmp->getNodeValue(), newFragmentId)) {
+			int sz = env->getIdAttributeNameListSize();
+			for (int i = 0; i < sz ; ++i) {
+				tmp = atts->getNamedItem(env->getIdAttributeNameListItem(i));
+				if (tmp != 0 && strEquals(tmp->getNodeValue(), newFragmentId)) {
 
-				// Found it!
+					// Found it!
 
-				return current;
+					return current;
+
+				}
 
 			}
 
@@ -85,7 +88,7 @@ DOMNode * findDSIGId(DOMNode *current, const XMLCh * newFragmentId) {
 	tmp = current->getFirstChild();
 	while (tmp != NULL) {
 
-		if ((ret = findDSIGId(tmp, newFragmentId)) != 0)
+		if ((ret = findDSIGId(tmp, newFragmentId, env)) != 0)
 			return ret;
 
 		tmp = tmp->getNextSibling();
@@ -104,22 +107,33 @@ void TXFMDocObject::setInput(DOMDocument *doc, const XMLCh * newFragmentId) {
 
 	fragmentObject = doc->getElementById(newFragmentId);
 
-	if (fragmentObject == 0) {
+	if ((fragmentObject == NULL) && (mp_env != NULL) && (mp_env->getIdByAttributeName())) {
 
 		// It might be that no DSIG DTD was attached and that the ID is in a
-		// DSIG element
+		// DSIG element and the application is permitting attribute name based
+		// Id searches
 
-		fragmentObject = findDSIGId(doc, newFragmentId);
-
-		if (fragmentObject == 0)
-
-			throw XSECException(XSECException::IDNotFoundInDOMDoc);
+		fragmentObject = findDSIGId(doc, newFragmentId, mp_env);
 
 	}
+
+	if (fragmentObject == 0)
+
+		throw XSECException(XSECException::IDNotFoundInDOMDoc);
 
 	document = doc;
 	fragmentId = XMLString::replicate(newFragmentId);
 	type = TXFMBase::DOM_NODE_DOCUMENT_FRAGMENT;
+
+}
+
+// --------------------------------------------------------------------------------
+//           Env Handling
+// --------------------------------------------------------------------------------
+
+void TXFMDocObject::setEnv(const XSECEnv * env) {
+
+	mp_env = env;
 
 }
 

@@ -31,6 +31,8 @@
 #include <xsec/framework/XSECDefs.hpp>
 #include <xsec/utils/XSECSafeBufferFormatter.hpp>
 
+#include <vector>
+
 // Xerces Includes
 
 #include <xercesc/dom/DOM.hpp>
@@ -275,6 +277,105 @@ public:
 
 	//@}
 
+	/** @name ID handling */
+	
+	//@{
+
+	/**
+	 * \brief Set Id finding behaviour
+	 *
+	 * The library de-references "#obj" URI references to ID attributes within
+	 * a DOM document.  Currently, the library first uses DOM calls to find if
+	 * the Id has been properly set within the document via the parser or one
+	 * of the DOM Level 3 calls to set an Id.
+	 *
+	 * If no Id is found of the correct name, the library then starts searching
+	 * for attributes of a given name with the required value.  This list defaults
+	 * to "id" and "Id", but can be modified via a call to addIdAttributeName()
+	 *
+	 * The setIdByAttributeName call enables or disables the second part of the Id
+	 * search.  I.e. when the Id doesn't exist as an attribute of Type=ID, whether or
+	 * not to search for an attribute of a name in the list of names.  By default
+	 * this behaviour is enabled.
+	 *
+	 * @warning This is currently enabled by default for backwards compatibility
+	 * reasons only.  Future version may reverse this and ship disabled by default, as
+	 * this behaviour is a potential security risk.
+	 *
+	 * @param flag Enable (true) or Disable (false) searching for Id attributes by name
+	 */
+
+	void setIdByAttributeName(bool flag);
+
+	/**
+	 * \brief Determine Id finding behaviour
+	 *
+	 * Allows a caller to determine whether the library is currently searching for
+	 * Id attributes by name
+	 *
+	 * @returns The value of the IdByAttributeName flag
+	 */
+
+	bool getIdByAttributeName(void) const;
+
+	/**
+	 * \brief Add an attribute name to be searched for when looking for Id attributes
+	 *
+	 * This allows a user to add an attribute name to be used to identify Id attributes
+	 * when they are not set to be of Type=ID in the DOM
+	 *
+	 * @note Two names are registered by default - "Id" and "id".  These can be
+	 * removed by calling deregisterIdAttributeName
+	 *
+	 * @param idName Name to append to the list of those used to find Id attributes
+	 */
+
+	void registerIdAttributeName(const XMLCh * name);
+
+	/**
+	 * \brief Remove an attribute name to be searched for when looking for Id attributes
+	 *
+	 * This allows a user to de-register a particular name to be used to identify Id
+	 * attributes.
+	 *
+	 * @param idName Name to remove from the list of those used to find Id attributes
+	 * @returns true if found and removed, false if was not in the list
+	 */
+
+	bool deregisterIdAttributeName(const XMLCh * name);
+
+	/**
+	 * \brief Determine if an attribute name is registered as an Id name
+	 *
+	 * @param name String to check in the idAttributeName list
+	 * @returns true if the passed in name is registered as an Attribute name
+	 */
+
+	bool isRegisteredIdAttributeName(const XMLCh * name) const;
+
+	/**
+	 * \brief Get number of Attribute Names registered as Id attributes
+	 *
+	 * @returns the number of elements in the list
+	 */
+
+	int getIdAttributeNameListSize() const;
+
+	/*
+	 * \brief Get an indexed attribute name to use as an Id
+	 *
+	 * Returns the item at index point in the list
+	 *
+	 * @note This is an internal function and should not be called directly
+	 *
+	 * @param index Pointer into the list
+	 * @returns The indicated element or NULL if it does not exist.
+	 */
+
+	const XMLCh * getIdAttributeNameListItem(int index) const;
+
+	//@}
+	
 	/** @name Formatters */
 	//@{
 
@@ -288,8 +389,15 @@ public:
 
 	XSECSafeBufferFormatter * getSBFormatter(void) const {return mp_formatter;}
 
+	//@}
 
 private:
+
+#if defined(XSEC_NO_NAMESPACES)
+	typedef vector<XMLCh *>					IdNameVectorType;
+#else
+	typedef std::vector<XMLCh *>			IdNameVectorType;
+#endif
 
 	// Internal functions
 
@@ -307,6 +415,10 @@ private:
 
 	// Flags
 	bool						m_prettyPrintFlag;
+	bool						m_idByAttributeNameFlag;
+
+	// Id handling
+	IdNameVectorType			m_idAttributeNameList;	
 
 	XSECEnv();
 

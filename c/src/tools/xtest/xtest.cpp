@@ -629,6 +629,7 @@ void unitTestBase64NodeSignature(DOMImplementation * impl) {
 		sig = prov.newSignature();
 		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
 		sig->setPrettyPrint(true);
+		sig->setIdByAttributeName(false);		// Do not search by name
 
 		sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA1);
 

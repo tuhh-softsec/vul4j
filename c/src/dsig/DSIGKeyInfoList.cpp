@@ -274,7 +274,7 @@ bool DSIGKeyInfoList::loadListFromXML(DOMNode * node) {
 			else {
 
 				// Find base transform using the base URI
-				currentTxfm = DSIGReference::getURIBaseTXFM(mp_env->getParentDocument(), URI, mp_env->getURIResolver());
+				currentTxfm = DSIGReference::getURIBaseTXFM(mp_env->getParentDocument(), URI, mp_env);
 				TXFMChain * chain;
 				XSECnew(chain, TXFMChain(currentTxfm));
 				Janitor<TXFMChain> j_chain(chain);

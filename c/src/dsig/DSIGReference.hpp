@@ -414,14 +414,13 @@ public:
 	 *
 	 * @param doc The document that the signature is based on (used for local URIs)
 	 * @param URI The URI to build the base from
-	 * @param resolver The (user provided) resolver that is used to translate the URI
-	 * into a byte stream (for non relative URIs).
+	 * @param env The environment the signature is operating in
 	 * @returns A base TXFM element.
 	 */
 
 	static TXFMBase * getURIBaseTXFM(XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc, 
 									const XMLCh * URI, 
-									XSECURIResolver * resolver);
+									const XSECEnv * env);
 
 	/**
 	 * \brief Load a series of references.

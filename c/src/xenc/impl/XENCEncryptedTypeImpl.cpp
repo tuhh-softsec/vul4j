@@ -347,7 +347,7 @@ TXFMChain * XENCEncryptedTypeImpl::createCipherTXFMChain(void) {
 	else if (mp_cipherData->getCipherDataType() == XENCCipherData::REFERENCE_TYPE) {
 
 		TXFMChain * chain;
-		TXFMBase * b = DSIGReference::getURIBaseTXFM(mp_env->getParentDocument(), mp_cipherData->getCipherReference()->getURI(), mp_env->getURIResolver());
+		TXFMBase * b = DSIGReference::getURIBaseTXFM(mp_env->getParentDocument(), mp_cipherData->getCipherReference()->getURI(), mp_env);
 
 		chain = DSIGReference::createTXFMChainFromList(b, mp_cipherData->getCipherReference()->getTransforms());
 		Janitor<TXFMChain> j_chain(chain);

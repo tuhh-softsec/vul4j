@@ -687,6 +687,75 @@ public:
 
 	//@}
 
+	/** @name ID handling */
+	
+	//@{
+
+	/**
+	 * \brief Set Id finding behaviour
+	 *
+	 * The library de-references "#obj" URI references to ID attributes within
+	 * a DOM document.  Currently, the library first uses DOM calls to find if
+	 * the Id has been properly set within the document via the parser or one
+	 * of the DOM Level 3 calls to set an Id.
+	 *
+	 * If no Id is found of the correct name, the library then starts searching
+	 * for attributes of a given name with the required value.  This list defaults
+	 * to "id" and "Id", but can be modified via a call to addIdAttributeName()
+	 *
+	 * The setIdByAttributeName call enables or disables the second part of the Id
+	 * search.  I.e. when the Id doesn't exist as an attribute of Type=ID, whether or
+	 * not to search for an attribute of a name in the list of names.  By default
+	 * this behaviour is enabled.
+	 *
+	 * @warning This is currently enabled by default for backwards compatibility
+	 * reasons only.  Future version may reverse this and ship disabled by default, as
+	 * this behaviour is a potential security risk.
+	 *
+	 * @param flag Enable (true) or Disable (false) searching for Id attributes by name
+	 */
+
+	void setIdByAttributeName(bool flag);
+
+	/**
+	 * \brief Determine Id finding behaviour
+	 *
+	 * Allows a caller to determine whether the library is currently searching for
+	 * Id attributes by name
+	 *
+	 * @returns The value of the IdByAttributeName flag
+	 */
+
+	bool getIdByAttributeName(void);
+
+	/**
+	 * \brief Add an attribute name to be searched for when looking for Id attributes
+	 *
+	 * This allows a user to add an attribute name to be used to identify Id attributes
+	 * when they are not set to be of Type=ID in the DOM
+	 *
+	 * @note Two names are registered by default - "Id" and "id".  These can be
+	 * removed by calling deregisterIdAttributeName
+	 *
+	 * @param idName Name to append to the list of those used to find Id attributes
+	 */
+
+	void registerIdAttributeName(const XMLCh * name);
+
+	/**
+	 * \brief Remove an attribute name to be searched for when looking for Id attributes
+	 *
+	 * This allows a user to de-register a particular name to be used to identify Id
+	 * attributes.
+	 *
+	 * @param idName Name to remove from the list of those used to find Id attributes
+	 * @returns true if found and removed, false if was not in the list
+	 */
+
+	bool deregisterIdAttributeName(const XMLCh * name);
+
+	//@}
+
 	friend class XSECProvider;
 
 private:

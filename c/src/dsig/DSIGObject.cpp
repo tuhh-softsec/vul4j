@@ -213,6 +213,8 @@ void DSIGObject::setId(const XMLCh * id) {
 	else {
 
 		((DOMElement *) mp_objectNode)->setAttributeNS(NULL, s_Id, id);
+		// Mark as an ID
+		((DOMElement *) mp_objectNode)->setIdAttributeNS(NULL, s_Id);
 		mp_idAttr = ((DOMElement *) mp_objectNode)->getAttributeNodeNS(NULL, s_Id);
 
 	}

@@ -1231,3 +1231,36 @@ void DSIGSignature::setSigningKey(XSECCryptoKey *k) {
 
 }
 
+// --------------------------------------------------------------------------------
+//           ID Handling
+// --------------------------------------------------------------------------------
+
+/*
+ * ID handling is really all done within the environment object - just pass the
+ * calls straight through
+ */
+
+void DSIGSignature::setIdByAttributeName(bool flag) {
+
+	mp_env->setIdByAttributeName(flag);
+
+}
+
+bool DSIGSignature::getIdByAttributeName(void) {
+
+	return mp_env->getIdByAttributeName();
+
+}
+
+
+void DSIGSignature::registerIdAttributeName(const XMLCh * name) {
+
+	mp_env->registerIdAttributeName(name);
+
+}
+
+bool DSIGSignature::deregisterIdAttributeName(const XMLCh * name) {
+
+	return mp_env->deregisterIdAttributeName(name);
+
+}
