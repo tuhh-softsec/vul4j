@@ -2459,9 +2459,14 @@ int doRequest(int argc, char ** argv, int paramCount) {
 				doParsedMsgDump(responseDoc);
 
 				XKMSRequestAbstractType * request = f->toRequestAbstractType(msg);
-				// Cheat - we know it's the first thing added
-				request->removeResponseMechanismItem(0);
-				request->setOriginalRequestId(request->getId());
+				for (int k = 0; k < request->getResponseMechanismSize(); ++k) {
+					if (strEquals(request->getResponseMechanismItemStr(k),
+								  XKMSConstants::s_tagRepresent)) {
+						request->removeResponseMechanismItem(k);
+						break;
+					}
+				}
+
 				request->setNonce(r->getNonce());
 
 				responseDoc->release();
