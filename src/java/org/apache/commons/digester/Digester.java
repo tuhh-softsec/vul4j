@@ -1,7 +1,7 @@
 /*
- * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.34 2002/01/05 19:48:39 craigmcc Exp $
- * $Revision: 1.34 $
- * $Date: 2002/01/05 19:48:39 $
+ * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//digester/src/java/org/apache/commons/digester/Digester.java,v 1.35 2002/01/05 23:02:53 craigmcc Exp $
+ * $Revision: 1.35 $
+ * $Date: 2002/01/05 23:02:53 $
  *
  * ====================================================================
  *
@@ -82,7 +82,6 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogSource;
-import org.apache.commons.logging.NoOpLog;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
@@ -112,7 +111,7 @@ import org.xml.sax.XMLReader;
  *
  * @author Craig McClanahan
  * @author Scott Sanders
- * @version $Revision: 1.34 $ $Date: 2002/01/05 19:48:39 $
+ * @version $Revision: 1.35 $ $Date: 2002/01/05 23:02:53 $
  */
 
 public class Digester extends DefaultHandler {
@@ -307,7 +306,7 @@ public class Digester extends DefaultHandler {
      * The Log to which all logging calls will be made.  By default a NoOpLog
      * is used, which means no output is done at all.
      */
-    protected Log log = new NoOpLog();
+    protected Log log = LogSource.getInstance("org.apache.commons.digester");
 
 
     // ----------------------------------------------------------- Properties
