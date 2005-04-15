@@ -52,8 +52,13 @@ import org.apache.commons.logging.LogFactory;
  *   [/widget]
  * </pre>
  *
- * <p>This rule supports custom mapping of attribute names to property names.
- * The default mapping for particular attributes can be overridden by using 
+ * <p>For each child element of [widget], a corresponding setter method is 
+ * located on the object on the top of the digester stack, the body text of
+ * the child element is converted to the type specified for the (sole) 
+ * parameter to the setter method, then the setter method is invoked.</p>
+ *
+ * <p>This rule supports custom mapping of xml element names to property names.
+ * The default mapping for particular elements can be overridden by using 
  * {@link #SetNestedPropertiesRule(String[] elementNames,
  *                                 String[] propertyNames)}.
  * This allows child elements to be mapped to properties with different names.
@@ -63,6 +68,13 @@ import org.apache.commons.logging.LogFactory;
  * <code>BeanPropertySetterRule</code> and the <code>ExtendedBaseRules</code> 
  * rules manager; this <code>Rule</code>, however, works fine with the default 
  * <code>RulesBase</code> rules manager.</p>
+ *
+ * <p>Note that this rule is designed to be used to set only "primitive"
+ * bean properties, eg String, int, boolean. If some of the child xml elements
+ * match ObjectCreateRule rules (ie cause objects to be created) then you must
+ * use one of the more complex constructors to this rule to explicitly skip
+ * processing of that xml element, and define a SetNextRule (or equivalent) to
+ * handle assigning the child object to the appropriate property instead.</p>
  *
  * <p><b>Implementation Notes</b></p>
  *
@@ -91,12 +103,6 @@ import org.apache.commons.logging.LogFactory;
 
 public class SetNestedPropertiesRule extends Rule {
 
-    /**
-     * Dummy object that can be placed in collections to indicate an
-     * ignored property when null cannot be used for that purpose.
-     */
-    private static final String PROP_IGNORE = "ignore-me";
-    
     private Log log = null;
     
     private boolean trimData = true;
@@ -107,59 +113,71 @@ public class SetNestedPropertiesRule extends Rule {
     // ----------------------------------------------------------- Constructors
 
     /**
-     * Base constructor.
+     * Base constructor, which maps every child element into a bean property
+     * with the same name as the xml element.
+     *
+     * <p>It is an error if a child xml element exists but the target java 
+     * bean has no such property (unless setAllowUnknownChildElements has been
+     * set to true).</p>
      */
     public SetNestedPropertiesRule() {
         // nothing to set up 
     }
     
     /** 
-     * <p>Convenience constructor overrides the mapping for just one property.</p>
+     * <p>Convenience constructor which overrides the default mappings for 
+     * just one property.</p>
      *
      * <p>For details about how this works, see
      * {@link #SetNestedPropertiesRule(String[] elementNames, 
      * String[] propertyNames)}.</p>
      *
-     * @param elementName map the child element to match 
-     * @param propertyName to a property with this name
+     * @param elementName is the child xml element to match 
+     * @param propertyName is the java bean property to be assigned the value 
+     * of the specified xml element. This may be null, in which case the 
+     * specified xml element will be ignored.
      */
     public SetNestedPropertiesRule(String elementName, String propertyName) {
         elementNames.put(elementName, propertyName);
     }
     
     /** 
-     * <p>Constructor allows element->property mapping to be overriden.</p>
+     * <p>Constructor which allows element->property mapping to be overridden.
+     * </p>
      *
-     * <p>Two arrays are passed in. 
-     * One contains the element names and the other the property names.
-     * The element name / property name pairs are match by position
-     * In order words, the first string in the element name list matches
-     * to the first string in the property name list and so on.</p>
+     * <p>Two arrays are passed in. One contains xml element names and the 
+     * other java bean property names. The element name / property name pairs
+     * are matched by position; in order words, the first string in the element
+     * name array corresponds to the first string in the property name array 
+     * and so on.</p>
      *
-     * <p>If a property name is null or the element name has no matching
-     * property name, then this indicates that the element should be ignored.</p>
+     * <p>If a property name is null or the xml element name has no matching
+     * property name due to the arrays being of different lengths then this
+     * indicates that the xml element should be ignored.</p>
      * 
      * <h5>Example One</h5>
      * <p> The following constructs a rule that maps the <code>alt-city</code>
      * element to the <code>city</code> property and the <code>alt-state</code>
-     * to the <code>state</code> property. 
-     * All other child elements are mapped as usual using exact name matching.
+     * to the <code>state</code> property. All other child elements are mapped
+     * as usual using exact name matching.
      * <code><pre>
      *      SetNestedPropertiesRule(
      *                new String[] {"alt-city", "alt-state"}, 
      *                new String[] {"city", "state"});
      * </pre></code>
+     * </p>
      *
      * <h5>Example Two</h5>
      * <p> The following constructs a rule that maps the <code>class</code>
-     * element to the <code>className</code> property.
-     * The element <code>ignore-me</code> is not mapped.
-     * All other elements are mapped as usual using exact name matching.
+     * xml element to the <code>className</code> property. The xml element 
+     * <code>ignore-me</code> is not mapped, ie is ignored. All other elements 
+     * are mapped as usual using exact name matching.
      * <code><pre>
      *      SetPropertiesRule(
      *                new String[] {"class", "ignore-me"}, 
      *                new String[] {"className"});
      * </pre></code>
+     * </p>
      *
      * @param elementNames names of elements to map
      * @param propertyNames names of properties mapped to
@@ -171,12 +189,7 @@ public class SetNestedPropertiesRule extends Rule {
                 propName = propertyNames[i];
             }
             
-            if (propName == null) {
-                this.elementNames.put(elementNames[i], PROP_IGNORE);
-            }
-            else {
-                this.elementNames.put(elementNames[i], propName);
-            }
+            this.elementNames.put(elementNames[i], propName);
         }
     }
         
@@ -253,16 +266,15 @@ public class SetNestedPropertiesRule extends Rule {
     }
 
     /**
-     * <p>Add an additional element name to property name mapping.
-     * This is intended to be used from the xml rules.
+     * Add an additional custom xml-element -> property mapping.
+     * <p>
+     * This is primarily intended to be used from the xml rules module
+     * (as it is not possible there to pass the necessary parameters to the
+     * constructor for this class). However it is valid to use this method
+     * directly if desired.
      */
     public void addAlias(String elementName, String propertyName) {
-        if (propertyName == null) {
-            elementNames.put(elementName, PROP_IGNORE);
-        }
-        else {
-            elementNames.put(elementName, propertyName);
-        }
+        elementNames.put(elementName, propertyName);
     }
   
     /**
@@ -371,13 +383,14 @@ public class SetNestedPropertiesRule extends Rule {
         public void body(String value) throws Exception {
             boolean debug = log.isDebugEnabled();
 
-            String propName = (String) elementNames.get(currChildElementName);
-            if (propName == PROP_IGNORE) {
-                // note: above deliberately tests for IDENTITY, not EQUALITY
-                return;
-            }
-            if (propName == null) {
-                propName = currChildElementName;
+            String propName = currChildElementName;
+            if (elementNames.containsKey(currChildElementName)) {
+                // overide propName
+                propName = (String) elementNames.get(currChildElementName);
+                if (propName == null) {
+                    // user wants us to ignore this element
+                    return;
+                }
             }
     
             if (digester.log.isDebugEnabled()) {
