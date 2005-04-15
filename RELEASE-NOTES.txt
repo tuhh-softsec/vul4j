@@ -2,240 +2,135 @@ $Id$
 
 
                           Commons Digester Package
-                                Version 1.6
+                                Version 1.7
                                Release Notes
 
 
-INTRODUCTION:
+INTRODUCTION
 ============
 
-This is mostly a feature release. A few minor bugs have been fixed (as listed
-below) but Digester 1.5 proved to be a very stable release.
+This is a minor bugfix and maintenance release. A few small features have been added.
+New projects are encouraged to use this release of digester, but there is no urgency
+for existing projects to upgrade; Digester 1.6 has proven to be a stable release.
+
+This release is 100% binary and source compatible with the previous release.
+
+RELEASE TODO
+============
+* update xdocs/index.xml
+* xdocs/navigation.xml
+* project.xml
+* build.xml
+* src/conf/MANIFEST.MF
+* verify package.html is correct html.
+* decide on javadoc license text in footer
+* run clirr to check for changes between releases.
+
 
 IMPORTANT NOTES
 ===============
-
-New License
------------
-This release is done under version 2.0 of the Apache License.
-Please see the LICENSE.txt and NOTICE.txt files in the distribution.
-
-RSS Support
------------
-The RSS package present in previous distributions of Digester was only ever 
-intended to be a "worked example", so the code has been moved to the
-"src/examples/api/rss" directory within the CVS repository, and is no
-longer part of the standard Digester binary distribution. However
-the same package structure has been preserved, so any users who were using the
-rss code in production should just have to compile the example code and
-include that additional jar in the classpath. These classes are still contained
-in the source distribution and so (for those for which such things matter)
-are still officially released (though no longer distributed in the binary).
-
-Examples Added
---------------
-Several examples have been added to CVS at src/examples, for the enlightenment
-of new Digester users. They can be access either through CVS or by grabbing the
-source distribution.
-
-Author and Version javadoc tags removed
----------------------------------------
-All @author tags were removed, as per Apache Foundation policy. A list of
-all the developers and contributors involved in Digester can still be
-found via the Digester website, or in the "project.xml" file in the base
-directory of the Digester CVS repository.
-
-All @version tags were removed as they were not considered to be useful.
+* The jakarta commons project has migrated to the Subversion version control system
+  (previously, CVS was used). There should be no effect on users of the Digester
+  library, but obviously the process of examining the latest source code, and of
+  creating patches for Digester has now changed. Please see the jakarta commons
+  website for details (http://jakarta.apache.org/commons).
 
 Dependencies
-------------
-The 1.6 Digester release supports greater choice for the user in terms of it's
-dependencies. By choosing the correct combination of dependencies, Digester
-can be used with either (incompatible) series of commons-collection releases
-or none at all.
+=============
+Release 1.7 has the same dependencies as release 1.6.
 
 Compatible Dependency Sets:
-   Digester 1.6 + Logging 1.0.x + BeanUtils 1.x + Collections 2.x
-   Digester 1.6 + Logging 1.0.x + BeanUtils 1.x + Collections 3.x
-   Digester 1.6 + Logging 1.0.x + BeanUtils 1.7
+   Digester 1.7 + Logging 1.0.x + BeanUtils 1.x + Collections 2.x
+   Digester 1.7 + Logging 1.0.x + BeanUtils 1.x + Collections 3.x
+   Digester 1.7 + Logging 1.0.x + BeanUtils 1.7
 
-NEW FEATURES:
+NEW FEATURES
 =============
 
-Improved Java Docs
-------------------
+Improved Documentation
+----------------------
 As usual, documentation has improved in this release. 
 
-Plugins
--------
-There is a new package org.apache.commons.digester.plugins which provides
-the facility for rules to declare "plugin points" in the parsed xml at
-which users can specify their own classes to be instantiated and potentially
-configured via the same xml file. This allows xml configuration files to
-be "user extendable", in the manner that log4j, ant, etc. are (though with
-even more flexibility in many ways). See the package documentation for
-more information.
+Minor Javadoc improvements occur in the following classes:
+   Rule, RulesBase, ExtendedBaseRules,
+   NodeCreateRule, CallMethodRule, CallParamRule, SetNextRule
 
-Substitution and Variable Expansion
------------------------------------
-Via the Substitutor class and the Digester.setSubstitutor method, xml
-attributes and element data can be manipulated before being seen by any
-Rule instances. Taking advantage of this framework, a VariableSubstitutor
-class is provided which allows the parsing app to set up a table of values
-that can be referenced via "${varname}" syntax (and variants thereof) in 
-the input xml. See the package documentation for 
-org.apache.commons.digester.substitution for more information. 
+The javadoc package documentation (package.html) has also had minor
+updates to the following topics:
+  * How Digester can be used as a SAX content handler.
+  * How wildcard rules are ignored if non-wildcard matches
+    are available.
 
-Parser Feature Setter
------------------------------------
-The ParserFeatureSetterFactory class (plus the helper classes in the
-new org.apache.commons.digester.parser package) provides a portable
-mechanism for setting some parser features which have not yet been
-standardised by JAXP or similar specifications. See the package
-documentation for more information.
+Digester
+--------
+Named stacks are now cleared by the clear() method. Note that it is recommended
+that a new Digester instance be created for each document parsed, hence this
+should not be necessary.
 
-PathCallParamRule
------------------
-This new Rule class allows the "path" to the current xml node, or 
-just the name of the current xml node, to be passed as a parameter
-of a CallMethodRule.
+Method resetRoot has been added. Again, this should only be relevant for programs
+that attempt to reuse a single Digester instance to process multiple documents
+(which is not recommended).
 
+Method peek(String stackname, int n) has been added for consistency, to allow
+access to arbitrary objects on named stacks. Thanks to Brian Hanafee for the
+suggestion (bugzilla #33873).
+     
 SetNestedPropertiesRule
 ------------------------
-Allows child elements to be mapped to bean properties, like the
-SetPropertiesRule maps attributes to bean properties. Example:
-  <widget>
-    <width>1</width>
-    <height>2</height>
-    <label>Hello, World</label>
-  </widget>
-This could previously be done via the BeanPropertySetterRule and the
-ExtendedBaseRules engine with trailing-wildcard support, but this
-Rule can be used with the default Rules class.
+The toString method has been improved, for better logging diagnostics.
+Patch provided by Wendy Smoak.
 
-WithDefaultsRulesWrapper
-------------------------
-A Rules class which wraps any other Rules implementation and enhances it
-so that if no rules are matched for an element in the input then a default
-set of Rule instances are returned.
+The addressbook sample now demonstrates use of SetNestedPropertiesRule.
 
-CallMethodRule target offset
-----------------------------
-Constructors now exist on this rule to allow the target object on which the
-method is invoked to be specified as an offset on the digester object stack.
-Previously, CallMethodRule always targetted the top object on the stack. Note
-that at the current time, factory methods for these constructors do not
-exist on the Digester class; the Rule needs to be constructed directly then
-added to the digester to access this (not commonly needed) functionality. 
-
-CallMethodRule handling of return value from invoked method
-------------------------------------------------------------
-A protected method "processMethodCallResult" on the CallMethodRule has
-been created so that it is simple to subclass this Rule and override this
-method to implement special checks or other processing of the return value
-of a method invoked via this rule.
-
-Digester lazy initialization
-----------------------------
-A new "initialize" method has been added that subclasses of Digester can
-override to perform any initialization they wish to do before parsing
-commences, but do not wish to do in the constructor.
-
-Digester new Rule factory methods
----------------------------------
-Factory methods have been added for the new CallParamPathRule and
-SetNestedPropertiesRule. A factory method for the pre-existing
-ObjectParamRule class has also been added.
-
-Note that the new Plugin rules do not have factory methods, nor do the
-new variants on the CallMethodRule which take an "offset" parameter. Use of
-these rules is considered rare enough that a factory method is not
-necessary. This may be revised at a later time.
-
-Named Stacks
-------------
-The digester now provides push, pop, peek and isEmpty methods that take
-a stack name as a parameter. These can be used for any purpose that new
-Rule classes find useful. 
-
-Param stack access now public
-------------------------------
-The previously package-scope methods for accessing the digester's parameter
-stack are now public. This makes it possible for users to implement new
-"call param" rules in their own namespace.
-
-The createSAXException methods are now public
-----------------------------------------------
-These previously protected methods are now public, so that Rule classes
-(both user-implemented and in subpackages of Digester) can call them when
-errors are encountered.
-
-SAXLogger access
+SetPropertiesRule
 -----------------
-Since Digester 1.2, messages have been logged about SAX events handled by
-the Digester during parsing via a "saxLog" logging object which is different 
-from the Log object that is used for "higher-level" digester messages.
-The new methods getSAXLogger and setSAXLogger on the Digester class allow 
-access to this separate Log instance.
+A new ignoreMissingProperty flag can be set false to cause
+an exception to be generated when the xml contains an
+attribute not available on the target bean. Patch contributed
+by Gabriele Carcassi.
 
-Matched rules stack
--------------------
-New member "matches" on class Digester holds a stack where each element is a 
-list of matching rules. When a child xml element is entered, the list of
-matches is pushed onto the stack, and at end it is popped off. This
-yields performance benefits, and potentially useful info for use by
-rule classes.
+Xmlrules Enhancements
+----------------------
+The xmlrules module has had a number of minor updates to provide access
+to functionality that was previously accessable only via the digester
+API:
+     -- add set-nested-properties-rule tag. Much of this
+        patch provided by Wendy Smoak.
 
-Entity Resolver changes
------------------------
-The digester's default entity resolver behaviour is now to try resolving via
-the SYSTEM id if the PUBLIC id is not present.
+     -- add targetoffset attribute to call-method-rule tag,
+        to allow the target object whose method is invoked
+	to be any object on the digester stack. Patch by
+	Wendy Smoak (bugzilla #33550).
 
-XMLRules new features
------------------------
-The ability to load rules from an InputSource has been added.
-Support has been added for SetRootRule and ObjectParamRule.
-The "context class loader" will be used, if one exists, when
-resolving "include" statements in xmlrules files.
-FromXmlRuleSet rulesets can now be added to a Digester instance 
-starting at a base pattern specified by the caller.
-A getCause() method has been added to the XmlLoadException class.
+     -- add stack-index attribute to call-param-rule tag,
+        to allow passing any object on the digester stack
+	as a parameter to a target method. Patch by
+	Kris Nuttycombe, inspired by Blake Meike.
 
-RuleSetBase allows patterns ending in '/'
------------------------------------------
-The subject of this one says it all.
+The digester-rules.dtd file has also been slightly cleaned up to
+remove unnecessary duplication.
 
-Commons Collections dependency
-==============================
-The commons-collections library has recently undergone a major release (3.0).
-Digester has been tested with both commons-collections 2.1 and 3.0 and
-there are no known issues with using either version of this library. See above
-for the list of compatible dependency sets.
-
+Plugins Enhancements
+--------------------
+PluginCreateRule can now have an associated "factory" object for the Rules
+object created at each "plugin point". This allows Rules implementations
+other than RulesBase to be used with plugins. It also gives user code the
+chance to set up default Rule objects within the Rules object which will
+apply to all plugins. This change affects classes PluginRules,
+PluginCreateRule and (new class) RulesFactory.
 
 BUGS FROM PREVIOUS RELEASE
 ==========================
 
 Reports Addressed
 ------------------
-#22131 SetPropertiesRule: Avoid NPE when debugging enabled and no top object
-#24613 xmlrules DTD does not provide SetRootRule
-#25112 Cannot find digester-rules.dtd [DOCTYPE incorrect]
-#28486 ExtendedBaseRules: Match can compute "longest match" incorrectly.
+#31393 SetNestedPropertiesRule causes StackOverflowError
+       -- thanks to James Pine
 
-Outstanding Reports:
---------------------
-#20903 ENH New rule for the digester (CallFactoryMethodRule)
-#21903 ENH Include filename or uri if Digester.parse throws an exception
+#28739 Problem with parse(File) on windows machines
+       -- thanks to John Taylor
 
-Bugs fixed with no bugzilla entry
-----------------------------------
-NodeCreateRule: r1.3 end method was not popping digester stack
-ExtendedBaseRules: r.11 (patternStart)
-ExtendedBaseRules: r.9 (findExactAncesterMatch(parentPattern))
-
-
-DEPRECATION:
+DEPRECATIONS
 ============
 None
 
