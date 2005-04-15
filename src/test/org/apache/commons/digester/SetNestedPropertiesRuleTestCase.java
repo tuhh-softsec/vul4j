@@ -145,51 +145,102 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
                 "GAMMA BODY",
                 bean.getGamma());
 
-
+        assertEquals(
+                "Property delta not set correctly",
+                "DELTA BODY",
+                bean.getDeltaValue());
     }
 
     /**
-     * Test that you can customise the property mappings.
+     * Test that it is an error when a child element exists but no corresponding
+     * java property exists.
      */
-    public void testCustomisedProperties()
+    public void testMandatoryProperties()
         throws SAXException, IOException {
+
+        String TEST_XML =
+            "<?xml version='1.0'?>" +
+            "<root>ROOT BODY" +
+            "<badprop>ALPHA BODY</badprop>" +
+            "</root>";
 
         // going to be setting properties on a SimpleTestBean
         digester.addObjectCreate("root",
                                  "org.apache.commons.digester.SimpleTestBean");
 
-        // ignorethe "alpha" element
-        // map the "beta" element into the gamma property
-        // map the gamma element into the delta property
-        // ignore the delta element
+        // match all children of root with this rule
+        digester.addRule("root", new SetNestedPropertiesRule());
+
+        try {
+            SimpleTestBean bean = (SimpleTestBean) digester.parse(
+                new StringReader(TEST_XML));
+
+            // we should never get here...
+            fail("No exception thrown by parse when unknown child element found.");
+        } catch(org.xml.sax.SAXParseException e) {
+            String msg = e.getMessage();
+            if (msg.contains("badprop")) {
+                // ok, this is expected; there is no "setBadprop" method on the
+                // SimpleTestBean class...
+            } else {
+                fail("Unexpected parse exception:" + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Test that you can customise the property mappings using the
+     * constructor which takes arrays-of-strings.
+     */
+    public void testCustomisedProperties1()
+        throws SAXException, IOException {
+
+        String TEST_XML =
+            "<?xml version='1.0'?>" +
+            "<root>ROOT BODY" +
+            "<alpha>ALPHA BODY</alpha>" +
+            "<beta>BETA BODY</beta>" +
+            "<gamma-alt>GAMMA BODY</gamma-alt>" +
+            "<delta>DELTA BODY</delta>" +
+            "</root>";
+
+        // going to be setting properties on a SimpleTestBean
+        digester.addObjectCreate("root",
+                                 "org.apache.commons.digester.SimpleTestBean");
+
+        // ignore the "alpha" element (target=null)
+        // don't remap the "beta" element
+        // map the gamma-alt element into the gamma property
+        // ignore the delta element (no matching element in array)
         
         Rule rule = new SetNestedPropertiesRule(
-            new String[]{"alpha", "beta", "gamma", "delta"},
-            new String[]{null, "gamma", "delta"});
+            new String[]{"alpha", "gamma-alt", "delta"},
+            new String[]{null, "gamma"});
             
         digester.addRule("root", rule);
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(xmlTestReader());
+        SimpleTestBean bean = (SimpleTestBean) digester.parse(
+            new StringReader(TEST_XML));
 
         // check properties are set correctly
         assertEquals(
-                "Property alpha not set correctly",
+                "Property alpha was not ignored (it should be)",
                 null,
                 bean.getAlpha());
 
         assertEquals(
                 "Property beta not set correctly",
-                null,
+                "BETA BODY",
                 bean.getBeta());
 
         assertEquals(
                 "Property gamma not set correctly",
-                "BETA BODY",
+                "GAMMA BODY",
                 bean.getGamma());
 
         assertEquals(
-                "Property delta not set correctly",
-                "GAMMA BODY",
+                "Property delta was not ignored (it should be)",
+                null,
                 bean.getDeltaValue());
                 
          // check no bad rules object is left
@@ -198,6 +249,114 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
             RulesBase.class, digester.getRules().getClass());
     }
 
+    /**
+     * Test that you can ignore a single input xml element using the
+     * constructor which takes a single remapping.
+     */
+    public void testCustomisedProperties2a()
+        throws SAXException, IOException {
+
+        String TEST_XML =
+            "<?xml version='1.0'?>" +
+            "<root>ROOT BODY" +
+            "<alpha>ALPHA BODY</alpha>" +
+            "<beta>BETA BODY</beta>" +
+            "<gamma>GAMMA BODY</gamma>" +
+            "<delta>DELTA BODY</delta>" +
+            "</root>";
+
+        // going to be setting properties on a SimpleTestBean
+        digester.addObjectCreate("root",
+                                 "org.apache.commons.digester.SimpleTestBean");
+
+        // ignore the "alpha" element (target=null)
+        Rule rule = new SetNestedPropertiesRule("alpha", null);
+        digester.addRule("root", rule);
+
+        SimpleTestBean bean = (SimpleTestBean) digester.parse(
+            new StringReader(TEST_XML));
+
+        // check properties are set correctly
+        assertEquals(
+                "Property alpha was not ignored (it should be)",
+                null,
+                bean.getAlpha());
+
+        assertEquals(
+                "Property beta not set correctly",
+                "BETA BODY",
+                bean.getBeta());
+
+        assertEquals(
+                "Property gamma not set correctly",
+                "GAMMA BODY",
+                bean.getGamma());
+
+        assertEquals(
+                "Property delta not set correctly",
+                "DELTA BODY",
+                bean.getDeltaValue());
+
+        // check no bad rules object is left
+        assertEquals(
+            "Digester rules object not reset.",
+            RulesBase.class, digester.getRules().getClass());
+    }
+
+    /**
+     * Test that you can customise the property mappings using the
+     * constructor which takes a single remapping.
+     */
+    public void testCustomisedProperties2b()
+        throws SAXException, IOException {
+
+        String TEST_XML =
+            "<?xml version='1.0'?>" +
+            "<root>ROOT BODY" +
+            "<alpha-alt>ALPHA BODY</alpha-alt>" +
+            "<beta>BETA BODY</beta>" +
+            "<gamma>GAMMA BODY</gamma>" +
+            "<delta>DELTA BODY</delta>" +
+            "</root>";
+
+        // going to be setting properties on a SimpleTestBean
+        digester.addObjectCreate("root",
+                                 "org.apache.commons.digester.SimpleTestBean");
+
+        // map the contents of the alpha-alt xml child into the
+        // "alpha" java property.
+        Rule rule = new SetNestedPropertiesRule("alpha-alt", "alpha");
+        digester.addRule("root", rule);
+
+        SimpleTestBean bean = (SimpleTestBean) digester.parse(
+            new StringReader(TEST_XML));
+
+        // check properties are set correctly
+        assertEquals(
+                "Property alpha not set correctly",
+                "ALPHA BODY",
+                bean.getAlpha());
+
+        assertEquals(
+                "Property beta not set correctly",
+                "BETA BODY",
+                bean.getBeta());
+
+        assertEquals(
+                "Property gamma not set correctly",
+                "GAMMA BODY",
+                bean.getGamma());
+
+        assertEquals(
+                "Property delta not set correctly",
+                "DELTA BODY",
+                bean.getDeltaValue());
+                
+         // check no bad rules object is left
+         assertEquals(
+            "Digester rules object not reset.",
+            RulesBase.class, digester.getRules().getClass());
+    }
 
     /**
      * Test that:
