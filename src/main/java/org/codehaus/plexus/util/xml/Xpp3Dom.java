@@ -34,7 +34,7 @@ public class Xpp3Dom
 
     public Xpp3Dom( Xpp3Dom src )
     {
-        name = src.getName();
+        this( src.getName() );
         setValue( src.getValue() );
 
         String[] attributeNames = src.getAttributeNames();
