@@ -32,6 +32,25 @@ public class Xpp3Dom
         childMap = new HashMap();
     }
 
+    public Xpp3Dom( Xpp3Dom src )
+    {
+        name = src.getName();
+        setValue( src.getValue() );
+
+        String[] attributeNames = src.getAttributeNames();
+        for ( int i = 0; i < attributeNames.length; i++ )
+        {
+            String attributeName = attributeNames[i];
+            setAttribute( attributeName, src.getAttribute( attributeName ) );
+        }
+
+        Xpp3Dom[] children = src.getChildren();
+        for ( int i = 0; i < children.length; i++ )
+        {
+            addChild( new Xpp3Dom( children[i] ) );
+        }
+    }
+
     // ----------------------------------------------------------------------
     // Name handling
     // ----------------------------------------------------------------------
@@ -190,6 +209,41 @@ public class Xpp3Dom
         {
             throw (IOException) xmlWriter.getExceptions().get( 0 );
         }
+    }
+
+    private static void mergeIntoXpp3Dom( Xpp3Dom dominant, Xpp3Dom recessive )
+    {
+        // TODO: how to mergeXpp3Dom lists rather than override?
+        // TODO: share this as some sort of assembler, implement a walk interface?
+        if ( recessive == null )
+        {
+            return;
+        }
+
+        Xpp3Dom[] children = recessive.getChildren();
+        for ( int i = 0; i < children.length; i++ )
+        {
+            Xpp3Dom child = children[i];
+            Xpp3Dom childDom = dominant.getChild( child.getName() );
+            if ( childDom != null )
+            {
+                mergeIntoXpp3Dom( childDom, child );
+            }
+            else
+            {
+                dominant.addChild( new Xpp3Dom( child ) );
+            }
+        }
+    }
+
+    public static Xpp3Dom mergeXpp3Dom( Xpp3Dom dominant, Xpp3Dom recessive )
+    {
+        if ( dominant != null )
+        {
+            mergeIntoXpp3Dom( dominant, recessive );
+            return dominant;
+        }
+        return recessive;
     }
 
     // ----------------------------------------------------------------------
