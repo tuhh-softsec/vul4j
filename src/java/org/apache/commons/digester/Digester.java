@@ -2831,7 +2831,7 @@ public class Digester extends DefaultHandler {
             }
         }
         if (locator != null) {
-            String error = "Error at (" + locator.getLineNumber() + ", " +
+            String error = "Error at line " + locator.getLineNumber() + " char " +
                     locator.getColumnNumber() + ": " + message;
             if (e != null) {
                 return new SAXParseException(error, locator, e);
