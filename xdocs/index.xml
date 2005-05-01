@@ -134,6 +134,12 @@ The dependencies neccessary for Digester 1.6 can be summarized as follows:
  <ul>
   <!-- newest first sounds like a reasonable rule -->
   <li>
+   <a href="http://wiki.apache.org/jakarta-commons/Digester">The Apache wiki page for the commons digester component<a>.
+  </li>
+  <li>
+   Jan 6, 2005 - <a href="http://www.onjava.com/pub/a/onjava/2004/12/22/jakarta-gems-1.html">O&apos;Reilly article</a> by Timothy M. O&apos;Brien about jakarta commons in general, including info on Digester.
+  </li>
+  <li>
    Jun 2, 2003 - <a href="http://www-106.ibm.com/developerworks/java/library/j-lucene/">IBM developerWorks article</a> by Otis Gospodnetic about parsing, indexing and searching XML with Digester and Lucene.
   </li>
   <li>
