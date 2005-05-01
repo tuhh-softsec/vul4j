@@ -39,69 +39,100 @@ import java.util.Map;
  *
  * <h4>When should you use this rather than the original?</h4>
  *
- * <p>These rules are complex and slower but offer more functionality.
- * The <code>RulesBase</code> matching set allows interaction between patterns.
- * This allows sophisticated matching schema to be created
- * but it also means that it can be hard to create and debug mappings
- * for complex schema.
- * This extension introduces <em>universal</em> versions of these patterns
- * that always act independently.</p>
+ * <p>
+ * This pattern-matching engine is complex and slower than the basic
+ * default RulesBase class, but offers more functionality:
+ * <ul>
+ * <li>Universal patterns allow patterns to be specified which will match
+ *  regardless of whether there are "better matching" patterns available.</li>
+ * <li>Parent-match patterns (eg "a/b/?") allow matching for all direct
+ *  children of a specified element.</li>
+ * <li>Ancestor-match patterns (eg "a/b/*") allow matching all elements
+ *  nested within a specified element to any nesting depth.</li>
+ * <li>Completely-wild patterns ("*" or "!*") allow matching all elements.</li>
+ * </ul>
+ * </p>
  *
- * <p>Another three kinds of matching pattern are also introduced.
- * The parent matchs allow common method to be easily called for children.
- * The wildcard match allows rules to be specified for all elements.</p>
+ * <h4>Universal Match Patterns</h4>
+ * 
+ * <p>The default RulesBase pattern-matching engine always attempts to find
+ * the "best matching pattern", and will ignore rules associated with other
+ * patterns that match but are not "as good". As an example, if the pattern
+ * "a/b/c" is associated with rules 1 and 2, and "*&#47;c" is associated with
+ * rules 3 and 4 then element "a/b/c" will cause only rules 1 and 2 to execute.
+ * Rules 3 and 4 do have matching patterns, but because the patterns are shorter
+ * and include wildcard characters they are regarded as being "not as good" as
+ * a direct match. In general, exact patterns are better than wildcard patterns,
+ * and among multiple patterns with wildcards, the longest is preferred.
+ * See the RulesBase class for more information.</p>
  *
- * <h4>The additional matching patterns:</h4>
+ * <p>This feature of preferring "better" patterns can be a powerful tool.
+ * However it also means that patterns can interact in unexpected ways.</p>
+ *
+ * <p>When using the ExtendedBaseRules, any pattern prefixed with '!' bypasses 
+ * the "best match" feature. Even if there is an exact match or a longer 
+ * wildcard match, patterns prefixed by '!' will still be tested to see if 
+ * they match, and if so their associated Rule objects will be included in
+ * the set of rules to be executed in the normal manner.</p>
  *
  * <ul>
- * <li><em>Parent Match </em> - Will match child elements of a particular
- *     kind of parent.  This is useful if a parent has a particular method
- *     to call.
- *     <ul>
- *     <li><code>"a/b/c/?"</code> matches any child whose parent matches
- *         <code>"a/b/c"</code>.  Exact parent rules take precedence over
- *         standard wildcard tail endings.</li>
- *     <li><code>"*&#47;a/b/c/?"</code> matches any child whose parent matches
- *         "*&#47;a/b/c"</code>.  The longest matching still applies to parent
- *         matches but the length excludes the '?', which effectively means
- *         that standard wildcard matches with the same level of depth are
- *         chosen in preference.</li>
- *     </ul></li>
- * <li><em>Ancester Match</em> - Will match elements who parentage includes 
- * 	a particular sequence of elements.
- * 	<ul>
- *      <li><code>"a/b/*"</code> matches any element whose parentage path starts with
- *	    'a' then 'b'. Exact parent and parent match rules take precedence. The longest
- *           ancester match will take precedence.</li>
- *	<li><code>"*&#47;a/b/*"</code> matches any elements whose parentage path contains
- *           an element 'a' followed by an element 'b'. The longest matching still applies
- *           but the length excludes the '*' at the end.</li>
- *      </ul>
- * </li>
- * <li><em>Universal Wildcard Match</em> -  Any pattern prefixed with '!'
- *     bypasses the longest matching rule.  Even if there is an exact match
- *     or a longer wildcard match,  patterns prefixed by '!' will still be
- *     tested to see if they match.  This can be used for example to specify
- *     universal construction rules.
- *     <ul>
- *     <li>Pattern <code>"!*&#47;a/b"</code> matches whenever an 'b' element
- *         is inside an 'a'.</li>
- *     <li>Pattern <code>"!a/b/?"</code> matches any child of a parent
- *         matching <code>"a/b"</code>.</li>
- *     <li>Pattern <code>"!*&#47;a/b/?"</code> matches any child of a parent
- *         matching <code>"!*&#47;a/b"</code></li>
- *     <li>Pattern <code>"!a/b/*"</code> matches any element whose parentage path starts with
- *	    "a" then "b".</li>
- *     <li>Pattern <code>"!*&#47;a/b/*"</code> matches any elements whose parentage path contains
- *          'a/b'</li>
- *    </ul></li>
- * <li><em>Wild Match</em>
- *     <ul>
- *     <li>Pattern <code>"*"</code> matches every pattern that isn't matched
- *         by any other basic rule.</li>
- *     <li>Pattern <code>"!*"</code> matches every pattern.</li>
- *     </ul></li>
+ * <li>Pattern <code>"!*&#47;a/b"</code> matches whenever an 'b' element
+ *     is inside an 'a'.</li>
+ * <li>Pattern <code>"!a/b/?"</code> matches any child of a parent
+ *     matching <code>"a/b"</code> (see "Parent Match Patterns").</li>
+ * <li>Pattern <code>"!*&#47;a/b/?"</code> matches any child of a parent
+ *     matching <code>"!*&#47;a/b"</code> (see "Parent Match Patterns").</li>
+ * <li>Pattern <code>"!a/b/*"</code> matches any element whose path
+ *     starts with "a" then "b" (see "Ancestor Match Patterns").</li>
+ * <li>Pattern <code>"!*&#47;a/b/*"</code> matches any elements whose path
+ *     contains 'a/b' (see "Ancestor Match Patterns").</li>
  * </ul>
+ *
+ * <h4>Parent Match Patterns</h4>
+ *
+ * <p>
+ * These will match direct child elements of a particular parent element.
+ * <ul>
+ * <li>
+ *  <code>"a/b/c/?"</code> matches any child whose parent matches
+ *  <code>"a/b/c"</code>.  Exact parent rules take precedence over Ancestor
+ *  Match patterns.
+ * </li>
+ * <li>
+ *  <code>"*&#47;a/b/c/?"</code> matches any child whose parent matches
+ *  <code>"*&#47;a/b/c"</code>.  The longest matching still applies to parent
+ *  matches but the length excludes the '?', which effectively means
+ *  that standard wildcard matches with the same level of depth are
+ *  chosen in preference.
+ * </li>
+ * </ul>
+ * </p>
+ *
+ * <h4>Ancestor Match Patterns</h4>
+ *
+ * <p>
+ * These will match elements whose parentage includes a particular sequence
+ * of elements.
+ * <ul>
+ * <li>
+ *  <code>"a/b/*"</code> matches any element whose path starts with
+ *	'a' then 'b'. Exact parent and parent match rules take precedence. 
+ *  The longest ancestor match will take precedence.
+ * </li>
+ * <li>
+ *  <code>"*&#47;a/b/*"</code> matches any elements whose path contains
+ *  an element 'a' followed by an element 'b'. The longest matching still 
+ *  applies but the length excludes the '*' at the end.
+ * </li>
+ * </ul>
+ * </p>
+ *
+ * <h4>Completely Wild Patterns</h4>
+ *
+ * <p>Pattern <code>"*"</code> matches every pattern that isn't matched by
+ * any other basic rule.</p>
+ *
+ * <p>Pattern <code>"!*"</code> matches every pattern.</p>
  *
  * <h4>Using The Extended Rules</h4>
  *
