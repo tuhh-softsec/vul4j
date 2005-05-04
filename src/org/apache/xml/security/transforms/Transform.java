@@ -88,6 +88,13 @@ public final class Transform extends SignatureElementProxy {
 
          Class implementingClass =
             Transform.getImplementingClass(algorithmURI);
+		 
+         if(implementingClass == null) {
+             Object exArgs[] = { algorithmURI };
+
+             throw new InvalidTransformException(
+                "signature.Transform.UnknownTransform", exArgs);
+         }
          if (log.isDebugEnabled()) {
          	log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
