@@ -16,7 +16,10 @@
  */
 package org.apache.xml.security.c14n.implementations;
 
+import java.lang.reflect.Array;
+import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,6 +32,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 
 
+
 /**
  * A stack based Symble Table.
  *<br>For speed reasons all the symbols are introduced in the same map,
@@ -38,7 +42,7 @@ import org.w3c.dom.Node;
 public class NameSpaceSymbTable {
 	
 	/**The map betwen prefix-> entry table. */
-	HashMap symb = new HashMap();
+	SymbMap symb = new SymbMap();
 	/**The level of nameSpaces (for Inclusive visibility).*/
 	int nameSpaces=0;
 	/**The stacks for removing the definitions when doing pop.*/
@@ -64,7 +68,7 @@ public class NameSpaceSymbTable {
 	   //List result=new ArrayList();
 	   Iterator it=symb.entrySet().iterator();
 	   while (it.hasNext()) {	   	   
-	   		NameSpaceSymbEntry n=(NameSpaceSymbEntry)((Map.Entry)it.next()).getValue();
+	   		NameSpaceSymbEntry n=(NameSpaceSymbEntry)(it.next());
 	   		//put them rendered?
 	   		if ((!n.rendered) && (n.n!=null)) {
 	   			result.add(n.n);
@@ -112,7 +116,7 @@ public class NameSpaceSymbTable {
         int size=level.size()-1;
         Object ob= level.remove(size);
         if (ob!=null) {
-        	symb=(HashMap)ob;
+        	symb=(SymbMap)ob;
             if (size==0) {
                cloned=false;   
             } else
@@ -128,7 +132,7 @@ public class NameSpaceSymbTable {
 		if (!cloned) {
             level.remove(level.size()-1);
             level.add(symb);
-			symb=(HashMap) symb.clone();
+			symb=(SymbMap) symb.clone();
             cloned=true;
         }
     }
@@ -141,7 +145,7 @@ public class NameSpaceSymbTable {
      * definition.
      **/
 	public Attr getMapping(String prefix) {					
-		NameSpaceSymbEntry entry=(NameSpaceSymbEntry) symb.get(prefix);
+		NameSpaceSymbEntry entry=symb.get(prefix);
 		if (entry==null) {
 			//There is no definition for the prefix(a bug?).
 			return null;
@@ -168,7 +172,7 @@ public class NameSpaceSymbTable {
      * @return the attr to render, null if there is no need to render
      **/
 	public Attr getMappingWithoutRendered(String prefix) {					
-		NameSpaceSymbEntry entry=(NameSpaceSymbEntry) symb.get(prefix);
+		NameSpaceSymbEntry entry= symb.get(prefix);
 		if (entry==null) {		   
 			return null;
 		}
@@ -186,7 +190,7 @@ public class NameSpaceSymbTable {
      * @return true if there is already defined.
      **/
 	public boolean addMapping(String prefix, String uri,Attr n) {						
-		NameSpaceSymbEntry ob = (NameSpaceSymbEntry)symb.get(prefix);		
+		NameSpaceSymbEntry ob = symb.get(prefix);		
 		if ((ob!=null) && uri.equals(ob.uri)) {
 			//If we have it previously defined. Don't keep working.
 			return false;
@@ -216,7 +220,7 @@ public class NameSpaceSymbTable {
      * @return the attr to render, null if there is no need to render
      **/
     public Node addMappingAndRender(String prefix, String uri,Attr n) {                     
-        NameSpaceSymbEntry ob = (NameSpaceSymbEntry)symb.get(prefix);
+        NameSpaceSymbEntry ob = symb.get(prefix);
         
         if ((ob!=null) && uri.equals(ob.uri)) {
             if (!ob.rendered) {                 
@@ -255,7 +259,7 @@ public class NameSpaceSymbTable {
      * definition.     
      **/
 	public Node addMappingAndRenderXNodeSet(String prefix, String uri,Attr n,boolean outputNode) {						
-		NameSpaceSymbEntry ob = (NameSpaceSymbEntry)symb.get(prefix);
+		NameSpaceSymbEntry ob = symb.get(prefix);
 		int visibleNameSpaces=nameSpaces;		
 		if ((ob!=null) && uri.equals(ob.uri)) {
 			if (!ob.rendered) {					
@@ -321,3 +325,92 @@ class NameSpaceSymbEntry implements Cloneable {
     /**The attribute to include.*/
     Attr n;        
 };
+
+class SymbMap implements Cloneable{	
+	int free=23;
+	NameSpaceSymbEntry[] entries=new NameSpaceSymbEntry[free];
+	String[] keys=new String[free];
+	
+	void put(String key, NameSpaceSymbEntry value) {		
+        int index = index(key);
+		Object oldKey = keys[index];
+		keys[index] = key;
+		entries[index] = value;
+        if (oldKey==null || !oldKey.equals(key)) {	        	        
+	        if (--free == 0) {
+				free=entries.length;
+	            int newCapacity = free<<2;				
+	            rehash(newCapacity);			
+	        }
+        }
+    }
+	
+    List entrySet() {
+		List a=new ArrayList();
+		for (int i=0;i<entries.length;i++) {
+			if ((entries[i]!=null) && !("".equals(entries[i]))) {
+				a.add(entries[i]);
+			}
+		}
+		return a;		
+	}
+
+
+	protected int index(Object obj) {		
+        Object[] set = keys;
+		int length = set.length;
+		//abs of index
+        int index = (obj.hashCode() & 0x7fffffff) %  length;
+        Object cur = set[index];
+
+        if (cur == null || (cur.equals( obj))) {
+			return index;
+        }
+        do {
+			index=index==length? 0:++index;
+			cur = set[index];
+        } while (cur != null && (!cur.equals(obj)));       
+        return index;
+    }
+	 /**
+     * rehashes the map to the new capacity.
+     *
+     * @param newCapacity an <code>int</code> value
+     */
+    protected void rehash(int newCapacity) {
+        int oldCapacity = keys.length;
+        String oldKeys[] = keys;
+		NameSpaceSymbEntry oldVals[] = entries;
+
+		keys = new String[newCapacity];        
+		entries = new NameSpaceSymbEntry[newCapacity];
+
+        for (int i = oldCapacity; i-- > 0;) {
+            if(oldKeys[i] != null) {
+                String o = oldKeys[i];
+                int index = index(o);
+				keys[index] = o;
+				entries[index] = oldVals[i];
+            }
+        }
+    }
+	 NameSpaceSymbEntry get(String key) {
+	        return  entries[index(key)];
+	    }
+	 protected Object clone()  {
+		// TODO Auto-generated method stub
+		try {
+			SymbMap copy=(SymbMap) super.clone();
+			copy.entries=new NameSpaceSymbEntry[entries.length];
+			System.arraycopy(entries,0,copy.entries,0,entries.length);
+			copy.keys=new String[keys.length];
+			System.arraycopy(keys,0,copy.keys,0,keys.length);
+			
+			return copy;
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+}
