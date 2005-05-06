@@ -59,7 +59,14 @@ import org.xml.sax.Attributes;
  * attribute name but the attribute does not exist) then the method will
  * not be invoked. If a CallMethodRule is expecting more than one parameter,
  * then it is always invoked, regardless of whether the parameters were
- * available or not (missing parameters are passed as null values).</p>
+ * available or not; missing parameters are converted to the appropriate target
+ * type by calling ConvertUtils.convert. Note that the default ConvertUtils
+ * converters for the String type returns a null when passed a null, meaning
+ * that CallMethodRule will passed null for all String parameters for which
+ * there is no parameter info available from the XML. However parameters of
+ * type Float and Integer will be passed a real object containing a zero value
+ * as that is the output of the default ConvertUtils converters for those
+ * types when passed a null. See the beautils documentation for more info.</p>
  *
  * <p>Note that when a constructor is used with paramCount=0, indicating that
  * the body of the element is to be passed to the target method, an empty 
@@ -485,20 +492,27 @@ public class CallMethodRule extends Rule {
                 }
             }
             
-            // In the case where the parameter for the method
-            // is taken from an attribute, and that attribute
-            // isn't actually defined in the source XML file,
-            // skip the method call
+            // In the case where the target method takes a single parameter
+            // and that parameter does not exist (the CallParamRule never
+            // executed or the CallParamRule was intended to set the parameter
+            // from an attribute but the attribute wasn't present etc) then
+            // skip the method call.
+            //
+            // This is useful when a class has a "default" value that should
+            // only be overridden if data is present in the XML. I don't
+            // know why this should only apply to methods taking *one*
+            // parameter, but it always has been so we can't change it now.
             if (paramCount == 1 && parameters[0] == null) {
                 return;
             }
 
         } else if (paramTypes != null && paramTypes.length != 0) {
+            // Having paramCount == 0 and paramTypes.length == 1 indicates
+            // that we have the special case where the target method has one
+            // parameter being the body text of the current element.
 
-            // In the case where the parameter for the method
-            // is taken from the body text, but there is no
-            // body text included in the source XML file,
-            // skip the method call
+            // There is no body text included in the source XML file,
+            // so skip the method call
             if (bodyText == null) {
                 return;
             }
@@ -510,6 +524,11 @@ public class CallMethodRule extends Rule {
                 paramTypes[0] = "abc".getClass();
             }
 
+        } else {
+            // When paramCount is zero and paramTypes.length is zero it
+            // means that we truly are calling a method with no parameters.
+            // Nothing special needs to be done here.
+            ;
         }
 
         // Construct the parameter values array we will need
