@@ -160,8 +160,7 @@ public final class Transform extends SignatureElementProxy {
       }
 
       try {
-         Class implementingClass = (Class) _transformHash.get(AlgorithmURI);
-
+         Class implementingClass = (Class) _transformHash.get(AlgorithmURI);		 
          this.transformSpi =
             (TransformSpi) implementingClass.newInstance();
 
@@ -176,7 +175,12 @@ public final class Transform extends SignatureElementProxy {
 
          throw new InvalidTransformException(
             "signature.Transform.UnknownTransform", exArgs);
-      }
+      } catch (NullPointerException e) {
+		  Object exArgs[] = { AlgorithmURI };
+
+	         throw new InvalidTransformException(
+	            "signature.Transform.UnknownTransform", exArgs);
+	}
    }
 
    /**
