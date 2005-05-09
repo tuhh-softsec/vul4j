@@ -44,6 +44,35 @@ m_DERX509(""), mp_certContext(NULL), m_pRSA(provRSA), m_pDSS(provDSS) {
 
 }
 
+WinCAPICryptoX509::WinCAPICryptoX509(PCCERT_CONTEXT pCertContext) {
+
+	// Build this from an existing PCCERT_CONTEXT structure
+
+	mp_certContext = pCertContext;
+
+	unsigned char * encCert;
+	unsigned long len = mp_certContext->cbCertEncoded * 2;
+	XSECnew(encCert, unsigned char [len]);
+	ArrayJanitor<unsigned char> j_encCert(encCert);
+
+	// Base64 Encode
+	XSCryptCryptoBase64 b64;
+
+	b64.encodeInit();
+	unsigned long encCertLen = b64.encode(mp_certContext->pbCertEncoded, mp_certContext->cbCertEncoded, encCert, len);
+	encCertLen += b64.encodeFinish(&encCert[encCertLen], len - encCertLen);
+
+	// Check the result
+	if (encCert == NULL) {
+		throw XSECCryptoException(XSECCryptoException::X509Error,
+			"WinCAPIX509:WinCAPIX509 - Error encoding certificate");
+	}
+
+	m_DERX509.sbMemcpyIn(encCert, encCertLen);
+	m_DERX509[encCertLen] = '\0';
+
+}
+
 WinCAPICryptoX509::~WinCAPICryptoX509() {
 
 	if (mp_certContext != NULL)

@@ -64,6 +64,15 @@ public :
 	 */
 
 	WinCAPICryptoX509(HCRYPTPROV provRSA, HCRYPTPROV provDSS);
+
+	/**
+	 * \brief Constructor for X509 objects
+	 *
+	 * @param pCertContext A certificate handle
+	 */
+
+	WinCAPICryptoX509(PCCERT_CONTEXT pCertContext);
+
 	virtual ~WinCAPICryptoX509();
 
 	//@}
