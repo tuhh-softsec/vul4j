@@ -36,6 +36,8 @@
 class XENCCipherData;
 class DSIGKeyInfoList;
 class DSIGKeyInfoName;
+class DSIGKeyInfoValue;
+class DSIGKeyInfoX509;
 class XENCEncryptionMethod;
 class XENCEncryptedKey;
 
@@ -262,6 +264,49 @@ public:
 	 */
 
 	virtual void clearKeyInfo(void) = 0;
+
+	/**
+	 * \brief Append a DSA KeyValue element 
+	 *
+	 * Add a new KeyInfo element for a DSA Value
+	 *
+	 * @param P Base64 encoded value of P
+	 * @param Q Base64 encoded value of Q
+	 * @param G Base64 encoded value of G
+	 * @param Y Base64 encoded value of Y
+	 * @returns A pointer to the created object.
+	 */
+
+	virtual DSIGKeyInfoValue * appendDSAKeyValue(const XMLCh * P, 
+						   const XMLCh * Q, 
+						   const XMLCh * G, 
+						   const XMLCh * Y) = 0;
+
+	/**
+	 * \brief Append a RSA KeyValue element 
+	 *
+	 * Add a new KeyInfo element for a RSA Value
+	 *
+	 * @param modulus Base64 encoded value of the modulus
+	 * @param exponent Base64 encoded value of exponent
+	 * @returns A pointer to the created object.
+	 */
+
+	virtual DSIGKeyInfoValue * appendRSAKeyValue(const XMLCh * modulus, 
+						   const XMLCh * exponent) = 0;
+
+	/**
+	 * \brief Append a X509Data element.
+	 *
+	 * Add a new KeyInfo element for X509 data.
+	 *
+	 * @note The added element is empty.  The caller must make use of the
+	 * returned object to set the required values.
+	 *
+	 * @returns A pointer to the created object.
+	 */
+
+	virtual DSIGKeyInfoX509 * appendX509Data(void) = 0;
 
 	/**
 	 * \brief Append a KeyName element.

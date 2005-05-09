@@ -457,6 +457,31 @@ void XENCEncryptedTypeImpl::createKeyInfoElement(void) {
 
 }
 
+DSIGKeyInfoValue * XENCEncryptedTypeImpl::appendDSAKeyValue(const XMLCh * P, 
+						   const XMLCh * Q, 
+						   const XMLCh * G, 
+						   const XMLCh * Y) {
+
+	createKeyInfoElement();
+	return m_keyInfoList.appendDSAKeyValue(P, Q, G, Y);
+
+}
+
+DSIGKeyInfoValue * XENCEncryptedTypeImpl::appendRSAKeyValue(const XMLCh * modulus, 
+						   const XMLCh * exponent) {
+
+	createKeyInfoElement();
+	return m_keyInfoList.appendRSAKeyValue(modulus, exponent);
+
+}
+
+
+DSIGKeyInfoX509 * XENCEncryptedTypeImpl::appendX509Data(void) {
+
+	createKeyInfoElement();
+	return m_keyInfoList.appendX509Data();
+
+}
 
 DSIGKeyInfoName * XENCEncryptedTypeImpl::appendKeyName(const XMLCh * name, bool isDName) {
 

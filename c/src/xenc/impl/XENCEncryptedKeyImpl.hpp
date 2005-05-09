@@ -70,6 +70,16 @@ public:
 		{return XENCEncryptedTypeImpl::getEncryptionMethod();}
 	virtual void clearKeyInfo(void)
 		{XENCEncryptedTypeImpl::clearKeyInfo();}
+	virtual DSIGKeyInfoValue * appendDSAKeyValue(const XMLCh * P, 
+							   const XMLCh * Q, 
+							   const XMLCh * G, 
+							   const XMLCh * Y)
+	    {return XENCEncryptedTypeImpl::appendDSAKeyValue(P, Q, G, Y);}
+	virtual DSIGKeyInfoValue * appendRSAKeyValue(const XMLCh * modulus, 
+							   const XMLCh * exponent)
+	    {return XENCEncryptedTypeImpl::appendRSAKeyValue(modulus, exponent);}
+	virtual DSIGKeyInfoX509 * appendX509Data(void)
+	    {return XENCEncryptedTypeImpl::appendX509Data();}
 	virtual DSIGKeyInfoName * appendKeyName(const XMLCh * name, bool isDName = false)
 		{return XENCEncryptedTypeImpl::appendKeyName(name, isDName);}
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const
