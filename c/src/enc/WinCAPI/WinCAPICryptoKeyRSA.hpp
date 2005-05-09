@@ -323,6 +323,16 @@ public :
 
 	unsigned int getModulusBase64BigNums(char * b64, unsigned int len);
 
+	/**
+	 * \brief Import key and return it
+	 *
+	 * Retrieves the RSA key as HCRYPTKEY
+	 *
+	 * @returns The key
+	 */
+
+	HCRYPTKEY importKey(void);
+
 	//@}
 
 private:
@@ -339,7 +349,6 @@ private:
 
 	// Instruct to import from parameters
 
-	void importKey(void);
 	void loadParamsFromKey(void);
 
 };

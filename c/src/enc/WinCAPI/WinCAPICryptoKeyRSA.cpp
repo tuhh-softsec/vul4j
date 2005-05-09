@@ -185,13 +185,13 @@ void WinCAPICryptoKeyRSA::loadPublicExponentBase64BigNums(const char * b64, unsi
 
 }
 
-void WinCAPICryptoKeyRSA::importKey(void) {
+HCRYPTKEY WinCAPICryptoKeyRSA::importKey(void) {
 	
 	if (m_key != 0 ||
 		mp_exponent == NULL ||
 		mp_modulus == NULL)
 
-		return;
+		return m_key;
 
 
 	// Create a RSA Public-Key blob
@@ -242,6 +242,8 @@ void WinCAPICryptoKeyRSA::importKey(void) {
 			"WinCAPI:RSA Error attempting to import key parameters");
 
 	}
+
+	return m_key;
 
 }
 
