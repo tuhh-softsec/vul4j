@@ -7,6 +7,6 @@
   </parent>
   <groupId>plexus</groupId>
   <artifactId>plexus-utils</artifactId>
-  <version>1.0-alpha-3-SNAPSHOT</version>
+  <version>1.0-alpha-3</version>
   <name>Plexus Common Utilities</name>
 </project>
