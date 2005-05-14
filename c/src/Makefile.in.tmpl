@@ -74,8 +74,8 @@ distclean:
 	rm -f Makefile
 
 install:
-	$(INSTALL) -d $(INSTALL_DIR)
-	$(INSTALL_DATA) $(INCLUDE_FILES) $(INSTALL_DIR)
+	$(INSTALL) -d $(DESTDIR)$(INSTALL_DIR)
+	$(INSTALL_DATA) $(INCLUDE_FILES) $(DESTDIR)$(INSTALL_DIR)
 
 # Include Library pattern rules
 

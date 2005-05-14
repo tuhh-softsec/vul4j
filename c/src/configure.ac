@@ -174,9 +174,9 @@ case "${host}" in
 						LINK=["${CXX} ${CXXFLAGS} -DSOLARIS ${PIC}"]
 						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
 						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
-						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${libdir}"]
-						INSTALL_COMMAND_2=["\$(RM) \${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBMAJORNAME}"]
-						INSTALL_COMMAND_3=["\$(RM) \${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBSHORTNAME}"]
+						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
+						INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
+						INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
 
 						;;
 
@@ -196,9 +196,9 @@ case "${host}" in
 						LINK=["${CXX} ${CXXFLAGS} -DNETBSD ${PIC}"]
 						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
 						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
-						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${libdir}"]
-						INSTALL_COMMAND_2=["\$(RM) \${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBMAJORNAME}"]
-						INSTALL_COMMAND_3=["\$(RM) \${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBSHORTNAME}"]
+						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
+						INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
+						INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
 
 						;;
 
@@ -218,9 +218,9 @@ case "${host}" in
 						LINK=["${CXX} ${CXXFLAGS} -DFREEBSD ${PIC} -pthread -lc_r"]
 						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
 						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
-						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${libdir}"]
-						INSTALL_COMMAND_2=["\$(RM) \${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBMAJORNAME}"]
-						INSTALL_COMMAND_3=["\$(RM) \${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBSHORTNAME}"]
+						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
+						INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
+						INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
 
 						;;
 
@@ -246,9 +246,9 @@ case "${host}" in
 						LINK=["${CXX} ${CXXFLAGS} -DLINUX -ldl ${PIC}"]
 						LINK_COMMAND_1=["(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"]
 						LINK_COMMAND_2=["(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"]
-						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${libdir}"]
-						INSTALL_COMMAND_2=["\$(RM) \${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBMAJORNAME}"]
-						INSTALL_COMMAND_3=["\$(RM) \${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \${libdir}/\${LIBSHORTNAME}"]
+						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \$(DESTDIR)\${libdir}"]
+						INSTALL_COMMAND_2=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"]
+						INSTALL_COMMAND_3=["\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"]
 
 						;;
 
@@ -267,8 +267,8 @@ case "${host}" in
 						MAKE_SHARED=["${CXX} ${CXXFLAGS} -Wl,-soname,\$(LIBNAME) -DCYGWIN -shared -Xlinker --warn-once -Xlinker -Map -Xlinker ../lib/lib${PACKAGE_TARNAME}.map -Xlinker --output-def -Xlinker ../lib/lib${PACKAGE_TARNAME}.def -Xlinker --out-implib -Xlinker ../lib/\$(LIBMAJORNAME)"]
 						LINK=["${CXX} ${CXXFLAGS} -DCYGWIN"]
 
-						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \${bindir}"]
-						INSTALL_COMMAND_2=["\$(INSTALL) \$(LIB_DIR)/\$(LIBMAJORNAME) \${libdir}"]
+						INSTALL_COMMAND_1=["\$(INSTALL) \${THISLIB} \$(DESTDIR)\${bindir}"]
+						INSTALL_COMMAND_2=["\$(INSTALL) \$(LIB_DIR)/\$(LIBMAJORNAME) \$(DESTDIR)\${libdir}"]
 
 						;;
 						
