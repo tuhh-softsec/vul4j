@@ -197,7 +197,7 @@ bool OpenSSLCryptoKeyRSA::verifySHA1PKCS1Base64Signature(const unsigned char * h
 			"OpenSSL:RSA - Attempt to validate signature with empty key");
 	}
 
-	unsigned char sigVal[512];
+	unsigned char sigVal[1024];
 	int sigValLen;
 
 	EVP_ENCODE_CTX m_dctx;
