@@ -61,7 +61,11 @@ OpenSSLCryptoProvider::~OpenSSLCryptoProvider() {
 
 	EVP_cleanup();
 	ERR_free_strings();
-
+	/* As suggested by Jesse Pelton */
+	CRYPTO_cleanup_all_ex_data();
+	RAND_cleanup();
+	X509_TRUST_cleanup();
+	ERR_remove_state(0);
 }
 
 
