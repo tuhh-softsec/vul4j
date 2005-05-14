@@ -115,7 +115,7 @@ BINTARGETDIR = ../bin
 
 all: lib alltools allsamples
 
-lib: prepare ${THISLIB}
+lib: ${THISLIB}
 
 ${THISLIB}: $(LIB_OBJ_FILES)
 	$(MAKE_SHARED) $(LDFLAGS) $(LIB_OBJ_FILES) $(LIBS) -o $@
@@ -124,7 +124,7 @@ ${THISLIB}: $(LIB_OBJ_FILES)
 
 $(LIB_OBJ_FILES): compile
 
-compile:
+compile: prepare
 	$(MAKE) -C ${CANON_DIR} compile
 	$(MAKE) -C ${TRANSFORMERS_DIR} compile
 	$(MAKE) -C ${DSIG_DIR} compile
