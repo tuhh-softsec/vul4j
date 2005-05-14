@@ -55,18 +55,18 @@ XERCES_CPP_NAMESPACE_USE
 #include <xsec/utils/winutils/XSECBinHTTPURIInputStream.hpp>
 #include <xsec/framework/XSECError.hpp>
 
-HMODULE gWinsockLib = NULL;
-LPFN_GETHOSTBYNAME gWSgethostbyname = NULL;
-LPFN_INET_ADDR gWSinet_addr = NULL;
-LPFN_GETHOSTBYADDR gWSgethostbyaddr = NULL;
-LPFN_HTONS gWShtons = NULL;
-LPFN_SOCKET gWSsocket = NULL;
-LPFN_CONNECT gWSconnect = NULL;
-LPFN_SEND gWSsend = NULL;
-LPFN_RECV gWSrecv = NULL;
-LPFN_SHUTDOWN gWSshutdown = NULL;
-LPFN_CLOSESOCKET gWSclosesocket = NULL;
-LPFN_WSACLEANUP gWSACleanup = NULL;
+static HMODULE gWinsockLib = NULL;
+static LPFN_GETHOSTBYNAME gWSgethostbyname = NULL;
+static LPFN_INET_ADDR gWSinet_addr = NULL;
+static LPFN_GETHOSTBYADDR gWSgethostbyaddr = NULL;
+static LPFN_HTONS gWShtons = NULL;
+static LPFN_SOCKET gWSsocket = NULL;
+static LPFN_CONNECT gWSconnect = NULL;
+static LPFN_SEND gWSsend = NULL;
+static LPFN_RECV gWSrecv = NULL;
+static LPFN_SHUTDOWN gWSshutdown = NULL;
+static LPFN_CLOSESOCKET gWSclosesocket = NULL;
+static LPFN_WSACLEANUP gWSACleanup = NULL;
 
 bool XSECBinHTTPURIInputStream::fInitialized = false;
 XMLMutex* XSECBinHTTPURIInputStream::fInitMutex = 0;
