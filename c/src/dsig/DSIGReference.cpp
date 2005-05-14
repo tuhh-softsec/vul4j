@@ -899,7 +899,7 @@ bool DSIGReference::verifyReferenceList(DSIGReferenceList * lst, safeBuffer &err
 	DSIGReference * r;
 	bool res = true;
 
-	int size = (int) lst->getSize();
+	int size = (lst ? (int) lst->getSize() : 0);
 
 	for (int i = 0; i < size; ++i) {
 
