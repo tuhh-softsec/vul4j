@@ -967,6 +967,15 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 
 }
 
+unsigned int DSIGSignature::calculateSignedInfoAndReferenceHash(unsigned char * hashBuf, 
+													unsigned int hashBufLen) {
+
+	// Set up the reference list hashes - including any manifests
+	mp_signedInfo->hash();
+	// calculaet signed InfoHash
+	return calculateSignedInfoHash(hashBuf,hashBufLen);
+}
+
 // --------------------------------------------------------------------------------
 //           Verify a signature
 // --------------------------------------------------------------------------------

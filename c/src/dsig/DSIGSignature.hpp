@@ -344,6 +344,22 @@ public:
 	 * 
 	 * Function to calculate and return the hash of the \<SignedInfo\>
 	 * structures (after the canonicalization defined by
+	 * \<CanonicalizationMethod\> and the reference hashes have been performed).
+	 *
+	 * @param hashBuf Buffer to place the raw hash in.
+	 * @param hashBufLen The length of the buffer
+	 * @returns The length of the hash that was placed in hashBuf
+	 *
+	 */
+
+	unsigned int calculateSignedInfoAndReferenceHash(unsigned char * hashBuf, 
+													unsigned int hashBufLen);
+
+	/**
+	 * \brief Get the hash of the Signed Value
+	 * 
+	 * Function to calculate and return the hash of the \<SignedInfo\>
+	 * structures (after the canonicalization defined by
 	 * \<CanonicalizationMethod\> has been performed).
 	 *
 	 * @param hashBuf Buffer to place the raw hash in.
