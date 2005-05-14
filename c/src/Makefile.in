@@ -169,10 +169,10 @@ prepare:
 	$(MAKE) -C ${XENC_DIR} includes
 	$(MAKE) -C ${XKMS_DIR} includes
 
-alltools:
+alltools: lib
 	$(MAKE) -C ${TOOLS_DIR} alltools
 
-allsamples:
+allsamples: lib
 	$(MAKE) -C ${SAMPLES_DIR} allsamples
 
 
