@@ -537,6 +537,8 @@ void printUsage(void) {
 	cerr << "\nUsage: templatesign <key options> <file to sign>\n\n";
 #if defined (HAVE_OPENSSL)
 	cerr << "    Where <key options> are one of :\n\n";
+	cerr << "        --x509subjectname/-s <distinguished name>\n";
+	cerr << "                     <distinguished name> will be set as SubjectName in x509\n";
 	cerr << "        --dsakey/-d  <dsa private key file> <password>\n";
 	cerr << "                     <dsa private key file> contains a PEM encoded private key\n";
 	cerr << "                     <password> is the password used to decrypt the key file\n";
@@ -580,6 +582,7 @@ int main(int argc, char **argv) {
 
 	XSECCryptoKey				* key = NULL;
 	DSIGKeyInfoX509				* keyInfoX509 = NULL;
+	const char					* x509SubjectName = NULL;
 #if defined (HAVE_OPENSSL)
 	OpenSSLCryptoX509			* certs[128];
 #endif
@@ -639,9 +642,23 @@ int main(int argc, char **argv) {
 
 		// Run through all parameters
 
+		if (stricmp(argv[paramCount], "--x509subjectname") == 0 || stricmp(argv[paramCount], "-s") == 0) {
+
+			if (paramCount +2 >= argc) {
+
+				printUsage();
+				exit(1);
+			}
+
+			// Get the subject name
+
+			x509SubjectName = argv[paramCount + 1];
+			paramCount += 2;
+		}
+
 #if defined (HAVE_OPENSSL)
 
-		if (stricmp(argv[paramCount], "--dsakey") == 0 || stricmp(argv[paramCount], "-d") == 0 ||
+		else if (stricmp(argv[paramCount], "--dsakey") == 0 || stricmp(argv[paramCount], "-d") == 0 ||
 			stricmp(argv[paramCount], "--rsakey") == 0 || stricmp(argv[paramCount], "-r") == 0) {
 
 			// DSA or RSA OpenSSL Key
@@ -1242,6 +1259,31 @@ int main(int argc, char **argv) {
 
 		} /* certCount > 0 */
 #endif
+		if (x509SubjectName != NULL) {
+
+			int i;
+			// Have some certificates - see if there is already an X509 list
+			DSIGKeyInfoList * kiList = sig->getKeyInfoList();
+			int kiSize = (int) kiList->getSize();
+
+			for (i = 0; i < kiSize; ++i) {
+
+				if (kiList->item(i)->getKeyInfoType() == DSIGKeyInfo::KEYINFO_X509) {
+					keyInfoX509 = (DSIGKeyInfoX509 *) kiList->item(i);
+					break;
+				}
+			}
+
+			if (keyInfoX509 == 0) {
+
+				// Not found - need to create
+				keyInfoX509 = sig->appendX509Data();
+
+			}
+
+			keyInfoX509->setX509SubjectName(MAKE_UNICODE_STRING(x509SubjectName));
+
+		} /* certCount > 0 */
 	}
 
 	catch (XSECException &e) {
