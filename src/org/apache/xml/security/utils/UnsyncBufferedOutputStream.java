@@ -28,13 +28,14 @@ public class UnsyncBufferedOutputStream extends OutputStream {
 	
 	/** @inheritDoc */
 	public void write(byte[] arg0, int arg1, int len) throws IOException {
-		final int newLen=pointer+len;
+		int newLen=pointer+len;
 		if (newLen> size) {
 			flushBuffer();		
 			if (len>size) {
 				out.write(arg0,arg1,len);
 				return;
 			}
+			newLen=len;
 		}
 		System.arraycopy(arg0,arg1,buf,pointer,len);
 		pointer=newLen;
