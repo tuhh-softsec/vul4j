@@ -19,10 +19,11 @@ package org.apache.xml.security.signature;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -57,20 +58,20 @@ public class Manifest extends SignatureElementProxy {
         org.apache.commons.logging.LogFactory.getLog(Manifest.class.getName());
 
    /** Field _references */
-   Vector _references;
+   List _references;
    Element[] _referencesEl;
 
    /** Field verificationResults[] */
    private boolean verificationResults[] = null;
 
    /** Field _signedContents */
-   Vector _signedContents = new Vector();
+   List _signedContents = new ArrayList();
 
    /** Field _resolverProperties */
    HashMap _resolverProperties = new HashMap(10);
 
    /** Field _perManifestResolvers */
-   Vector _perManifestResolvers = new Vector();
+   List _perManifestResolvers = new ArrayList();
 
    //CachedXPathAPIHolder cx=new CachedXPathAPIHolder();
    /**
@@ -84,7 +85,7 @@ public class Manifest extends SignatureElementProxy {
 
       XMLUtils.addReturnToElement(this._constructionElement);
 
-      this._references = new Vector();
+      this._references = new ArrayList();
    }
 
    /**
@@ -116,7 +117,7 @@ public class Manifest extends SignatureElementProxy {
       }
 
       // create Vector
-      this._references = new Vector(le);
+      this._references = new ArrayList(le);
 
       for (int i = 0; i < le; i++) {
          this._references.add(null);
@@ -178,7 +179,7 @@ public class Manifest extends SignatureElementProxy {
          for (int i = 0; i < this.getLength(); i++) {
 
             // update the cached Reference object, the Element content is automatically updated
-            Reference currentRef = (Reference) this._references.elementAt(i);
+            Reference currentRef = (Reference) this._references.get(i);
 
             currentRef.generateDigestValue();
          }
@@ -207,9 +208,9 @@ public class Manifest extends SignatureElementProxy {
       if (this._state == MODE_SIGN) {
 
          // we already have real objects
-         return (Reference) this._references.elementAt(i);
+         return (Reference) this._references.get(i);
       } 
-         if (this._references.elementAt(i) == null) {
+         if (this._references.get(i) == null) {
 
             // not yet constructed, so _we_ have to            
             Reference ref = new Reference(_referencesEl[i], this._baseURI, this);
@@ -217,7 +218,7 @@ public class Manifest extends SignatureElementProxy {
             this._references.set(i, ref);
          }
 
-         return (Reference) this._references.elementAt(i);
+         return (Reference) this._references.get(i);
       
    }
 

@@ -22,7 +22,6 @@ package org.apache.xml.security.utils.resolver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.w3c.dom.Attr;
@@ -132,7 +131,7 @@ public class ResourceResolver {
     * @throws ResourceResolverException
     */
    public static final ResourceResolver getInstance(
-           Attr uri, String BaseURI, Vector individualResolvers)
+           Attr uri, String BaseURI, List individualResolvers)
               throws ResourceResolverException {
       if (log.isDebugEnabled()) {
       	log.debug("I was asked to create a ResourceResolver and got " + individualResolvers.size());
@@ -144,7 +143,7 @@ public class ResourceResolver {
       if ((individualResolvers != null) && ((size=individualResolvers.size()) > 0)) {
          for (int i = 0; i < size; i++) {
             ResourceResolver resolver =
-               (ResourceResolver) individualResolvers.elementAt(i);
+               (ResourceResolver) individualResolvers.get(i);
 
             if (resolver != null) {
                String currentClass = resolver._resolverSpi.getClass().getName();

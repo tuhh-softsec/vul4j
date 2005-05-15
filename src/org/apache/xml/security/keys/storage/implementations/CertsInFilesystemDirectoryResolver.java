@@ -30,7 +30,7 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import org.apache.xml.security.keys.storage.StorageResolverException;
 import org.apache.xml.security.keys.storage.StorageResolverSpi;
@@ -54,7 +54,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
    String _merlinsCertificatesDir = null;
 
    /** Field _certs */
-   private Vector _certs = new Vector();
+   private List _certs = new ArrayList();
 
    /** Field _iterator */
    Iterator _iterator = null;
@@ -159,7 +159,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
    class FilesystemIterator implements Iterator {
 
       /** Field _certs */
-      Vector _certs = null;
+      List _certs = null;
 
       /** Field _i */
       int _i;
@@ -169,7 +169,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
        *
        * @param certs
        */
-      public FilesystemIterator(Vector certs) {
+      public FilesystemIterator(List certs) {
          this._certs = certs;
          this._i = 0;
       }
@@ -181,7 +181,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
 
       /** @inheritDoc */
       public Object next() {
-         return this._certs.elementAt(this._i++);
+         return this._certs.get(this._i++);
       }
 
       /**

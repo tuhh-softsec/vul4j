@@ -21,8 +21,8 @@ package org.apache.xml.security.keys.keyresolver;
 
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.crypto.SecretKey;
 
@@ -146,7 +146,7 @@ public class KeyResolver {
    public static void init() {
 
       if (!KeyResolver._alreadyInitialized) {
-         KeyResolver._resolverVector = new Vector(10);
+         KeyResolver._resolverVector = new ArrayList(10);
          _alreadyInitialized = true;
       }
    }
