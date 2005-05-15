@@ -297,7 +297,7 @@ void XKMSStatusImpl::setStatusReason(StatusValue status, StatusReason reason, bo
 	m_statusValue = XKMSStatus::StatusUndefined;
 
 	StatusValue i;
-	StatusReason j;
+	StatusReason j = XKMSStatus::Signature;
 
 	/* Clean out status codes */
 	for (i = Indeterminate ; i > StatusUndefined && !(i == status && j == reason); i = (StatusValue)(i-1)) {

@@ -968,7 +968,7 @@ void printRegisterRequestUsage(void) {
 XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument **doc, int argc, char ** argv, int &paramCount, XKMSCompoundRequest * cr = NULL) {
 
 	XSECCryptoKey *proofOfPossessionKey = NULL;
-	signatureMethod proofOfPossessionSm;
+	signatureMethod proofOfPossessionSm = SIGNATURE_DSA;
 
 	if (paramCount >= argc || 
 		(stricmp(argv[paramCount], "--help") == 0) ||
@@ -2304,7 +2304,7 @@ int doRequest(int argc, char ** argv, int paramCount) {
 
 	XSECProvider prov;
 	DOMDocument * doc;
-	XKMSMessageAbstractType *msg;
+	XKMSMessageAbstractType *msg = NULL;
 	XSECSOAPRequestorSimple::envelopeType et = XSECSOAPRequestorSimple::ENVELOPE_SOAP11;
 
 	bool twoPhase = false;

@@ -427,7 +427,7 @@ bool XSECEnv::getIdAttributeNameListItemIsNS(int index) const {
 	if (index >= 0 && index < (int) m_idAttributeNameList.size())
 		return m_idAttributeNameList[index]->m_useNamespace;
 
-	return NULL;
+	return false;
 
 }
 

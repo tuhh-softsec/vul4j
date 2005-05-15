@@ -52,8 +52,8 @@ mp_idAttr(NULL),
 mp_serviceAttr(NULL),
 mp_nonceAttr(NULL),
 mp_signatureElement(NULL),
-mp_signature(NULL),
-mp_opaqueClientDataElement(NULL) {
+mp_opaqueClientDataElement(NULL),
+mp_signature(NULL) {
 
 	m_opaqueClientDataSize = 0;
 }
@@ -68,8 +68,8 @@ mp_idAttr(NULL),
 mp_serviceAttr(NULL),
 mp_nonceAttr(NULL),
 mp_signatureElement(NULL),
-mp_signature(NULL),
-mp_opaqueClientDataElement(NULL) {
+mp_opaqueClientDataElement(NULL),
+mp_signature(NULL) {
 
 	m_opaqueClientDataSize = 0;
 }

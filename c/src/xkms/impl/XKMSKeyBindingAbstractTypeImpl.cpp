@@ -46,12 +46,12 @@ XERCES_CPP_NAMESPACE_USE
 XKMSKeyBindingAbstractTypeImpl::XKMSKeyBindingAbstractTypeImpl(
 		const XSECEnv * env) :
 mp_keyBindingAbstractTypeElement(NULL),
+mp_env(env),
 mp_idAttr(NULL),
-mp_keyUsageEncryptionElement(NULL),
 mp_keyUsageSignatureElement(NULL),
+mp_keyUsageEncryptionElement(NULL),
 mp_keyUsageExchangeElement(NULL),
-mp_keyInfoElement(NULL),
-mp_env(env) {
+mp_keyInfoElement(NULL) {
 
 	XSECnew(mp_keyInfoList, DSIGKeyInfoList(mp_env));
 
@@ -61,12 +61,12 @@ XKMSKeyBindingAbstractTypeImpl::XKMSKeyBindingAbstractTypeImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
 mp_keyBindingAbstractTypeElement(node),
+mp_env(env),
 mp_idAttr(NULL),
-mp_keyUsageEncryptionElement(NULL),
 mp_keyUsageSignatureElement(NULL),
+mp_keyUsageEncryptionElement(NULL),
 mp_keyUsageExchangeElement(NULL),
-mp_keyInfoElement(NULL),
-mp_env(env) {
+mp_keyInfoElement(NULL) {
 
 	XSECnew(mp_keyInfoList, DSIGKeyInfoList(mp_env));
 

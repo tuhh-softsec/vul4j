@@ -1,0 +1,36 @@
+Changes between version 1.1 and 1.2
+===================================
+
+* Started a changelog :>
+* Remove MFC dependency and clean up memory debugging
+* Remove dynamic_casts and RTTI requirement
+* Implemented XKMS Message generation and processing
+* Implemented command line XKMS tool for generating and dumping XKMS messages
+* Support for DESTDIR as provided by ville.skytta@iki.fi in Bugzilla 28520
+* Update to Apache licence 2.0.
+* Add support for SHA224/256/384/512 (requires OpenSSL 0.9.8 Beta)
+* Patch for Mac OS X compile - provided by Scott Cantor - cantor.2@osu.edu - See Bugzilla #34920
+* Updates to compile against Xalan 1.9
+* Backport to compile with Xerces 2.1
+* Fix bug with NULL pointer when validating or signing empty reference lists - fix as suggested by Jesse Pelton <jsp@PKC.com> on 23 March 2005 on security-dev@xml
+* Provided support for nominating namespace based Id attributes
+* Change to allow apps to calculate and obtain signed info hash - from Eckehard.Hermann@softwareag.com - see email of 2 March 2005 on security-dev@xml
+* Patch for long RSA keys provided by Michael Braunoeder - michael@mib.priv.at to security-dev@xml on 16 Nov 2005
+* Memory leak in OpenSSLCryptoBase64 reported by Jesse Pelton fixed.
+* Move to internal Base64 decoder in a number of methods to handle non-wrapping data
+* Resize buffer in OpenSSLCryptoKeyRSA for larger RSA keys - as submitted by Vadim Ismailov <worndown@gmail.com> 3 December 2005
+* Remove redundant m_keyType class variable from OpenSSLCryptoKeyRSA as reported by Jesse Pelton (jsp@pkc.com) on security-dev@xml
+* Don't throw an exception when an RSA decrypt fails during sig validation - this is a failed validate, not an error
+* Shutdown OpenSSL properly - as suggested by Jesse Pelton <jsp@PKC.com> in e-mail to security-dev@xml on 9 March 2005
+* Changed scope of WinCapiCryptoKey::importKey() from private to public. It returns key now, instead of void.
+* Fix problem in Windows CAPI where XSEC doesn't work if user doesn't have admin rights.
+* Bug fix in Windows CAPI code for some W2K machines - reported by Andrzej Matejko 4/5/2004
+* Fix build on non WINCAPI systems, as reported by Milan Tomic on 22/4/2004
+* New constructor added to WinCapiX509
+* Fixed Bug in encode() XSCryptCryptoBase64.
+* Fix bug in XPathFilter transform when checking if an attribute is in the input node set.
+* Fix bug in in UTF transcoder for counting of transcoded characters (count characters not bytes) reported by Milan Tomic
+* Move function definitions in the Windows BinInput stream class to static to avoid conflicts with Xerces.  As suggested by Jesse Pelton <jsp@PKC.com> on 2 Feb 2005 in security-dev@xml
+* Added complete KeyInfo handling for XENCEncryptedType
+* Fix to stop re-use of derived key encrypting key when decrypting multiple elements in a document
+* Fix to ignore encryption exceptions during a private key decrypt

@@ -654,7 +654,7 @@ int evaluate(int argc, char ** argv) {
 		}
 		else {
 
-			XENCEncryptedData *xenc;
+			XENCEncryptedData *xenc = NULL;
 
 			// Encrypting
 			if (kek != NULL && key == NULL) {
