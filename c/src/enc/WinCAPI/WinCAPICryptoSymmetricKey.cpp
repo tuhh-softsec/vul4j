@@ -98,7 +98,7 @@ XSECCryptoKey * WinCAPICryptoSymmetricKey::clone() {
 							  &(ret->m_k)) == 0 ) {
 
 			throw XSECCryptoException(XSECCryptoException::SymmetricError,
-				"WinCAPI:KeyHMAC Error attempting to clone key parameters");
+				"WinCAPI:SymmetricKey Error attempting to clone key parameters");
 
 		}
 #else
