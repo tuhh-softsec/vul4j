@@ -1151,7 +1151,7 @@ void DSIGSignature::sign(void) {
 	if (mp_signingKey == NULL) {
 
 		throw XSECException(XSECException::SigVfyError,
-			"DSIGSignature::verify() - no signing key loaded");
+			"DSIGSignature::sign() - no signing key loaded");
 		
 
 	}
