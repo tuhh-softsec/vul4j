@@ -18,10 +18,7 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
-import java.io.IOException;
 import java.io.OutputStream;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclWithComments;
@@ -32,7 +29,6 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -84,39 +80,18 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
         }
 
         Canonicalizer20010315ExclWithComments c14n =
-            new Canonicalizer20010315ExclWithComments();
-         c14n.set_includeComments(!input.isExcludeComments());
+            new Canonicalizer20010315ExclWithComments();        
         if (os!=null) {
            c14n.setWriter( os);
         }
-        byte []result;
-        if (input.isOctetStream()) {
-           result=c14n.engineCanonicalize(input.getBytes());
-        } else if (input.isElement()) {
-                org.w3c.dom.Node excl=input.getExcludeNode();
-                result =c14n
-                           .engineCanonicalizeSubTree(input
-                              .getSubNode(), inclusiveNamespaces
-                              ,excl);
-          }    else {
-              result = c14n
-                 .engineCanonicalizeXPathNodeSet(input
-                    .getNodeSet(), inclusiveNamespaces
-                    );      
-          }
+        input.setNeedsToBeExpanded(true);
+        byte []result;  
+        result =c14n.engineCanonicalize(input, inclusiveNamespaces);
         XMLSignatureInput output=new XMLSignatureInput(result);
-        if (os!=null) {
-           output.setOutputStream(os);
-        }
+        
         return output;
-     } catch (IOException ex) {
-        throw new CanonicalizationException("empty", ex);
-     } catch (ParserConfigurationException ex) {
-        throw new CanonicalizationException("empty", ex);
      } catch (XMLSecurityException ex) {
         throw new CanonicalizationException("empty", ex);
-     } catch (SAXException ex) {
-        throw new CanonicalizationException("empty", ex);
-     }
+     } 
    }
 }

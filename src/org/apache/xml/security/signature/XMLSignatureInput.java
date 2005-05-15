@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -96,7 +97,27 @@ public class XMLSignatureInput {
     */
    private String _SourceURI = null;
 
+   /**
+    * Node Filter list.
+    */
+   List nodeFilters;
    
+   boolean needsToBeExpanded=false;
+   /**
+    * Check if the structured is needed to be circumbented.
+    * @return true if so.
+    */
+   public boolean isNeedsToBeExpanded() {
+	   return needsToBeExpanded;
+   }
+   
+   /**
+    * Set if the structured is needed to be circumbented.
+    * @param needsToBeExpanded true if so.
+    */
+   public void setNeedsToBeExpanded(boolean needsToBeExpanded) {
+	this.needsToBeExpanded = needsToBeExpanded;
+   }
    OutputStream outputStream=null;
 
    /**
@@ -319,31 +340,11 @@ public class XMLSignatureInput {
             bytes=JavaUtils.getBytesFromStream(is);
    	  	} 	  	
    	  	return bytes;   	  	      
-      } else if (this.isElement()) {                    
+      }                    
          Canonicalizer20010315OmitComments c14nizer =
          		new Canonicalizer20010315OmitComments();                  
-        bytes=c14nizer.engineCanonicalizeSubTree(this._subNode,this.excludeNode);         
+        bytes=c14nizer.engineCanonicalize(this);         
         return bytes;
-      } else if (this.isNodeSet()) {      	
-         /* If we have a node set but an octet stream is needed, we MUST c14nize
-          * without any comments.
-          *
-          * We don't use the factory because direct instantiation should be a
-          * little bit faster...
-          */
-         Canonicalizer20010315OmitComments c14nizer =
-            new Canonicalizer20010315OmitComments();         
-
-         if (this._inputNodeSet.size() == 0) {
-            // empty nodeset
-            return null;
-         }              
-         bytes = c14nizer.engineCanonicalizeXPathNodeSet(_inputNodeSet);
-          return bytes;         
-      }
-
-      throw new RuntimeException(
-         "getBytes() called but no input data present");
    }
 
 
@@ -536,28 +537,12 @@ public class XMLSignatureInput {
         if (bytes!=null) {
             diOs.write(bytes);
             return;      
-         }else if (this.isElement()) {                    
+         }else if (_inputOctetStreamProxy==null) {                    
              Canonicalizer20010315OmitComments c14nizer =
                     new Canonicalizer20010315OmitComments();       
              c14nizer.setWriter(diOs);
-            c14nizer.engineCanonicalizeSubTree(this._subNode,this.excludeNode); 
-            return;
-          } else if (this.isNodeSet()) {        
-             /* If we have a node set but an octet stream is needed, we MUST c14nize
-              * without any comments.
-              *
-              * We don't use the factory because direct instantiation should be a
-              * little bit faster...
-              */
-             Canonicalizer20010315OmitComments c14nizer =
-                new Canonicalizer20010315OmitComments();         
-             c14nizer.setWriter(diOs);
-             if (this._inputNodeSet.size() == 0) {
-                // empty nodeset
-                return;
-             }                              
-             c14nizer.engineCanonicalizeXPathNodeSet(this._inputNodeSet);                
-             return;             
+            c14nizer.engineCanonicalize(this); 
+            return;                  
           } else {
             InputStream is = getResetableInputStream();
             if (bytes!=null) {

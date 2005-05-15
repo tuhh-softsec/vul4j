@@ -29,10 +29,12 @@ import java.util.ListIterator;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.CanonicalizerSpi;
 import org.apache.xml.security.c14n.helper.AttrCompare;
+import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.UnsyncByteArrayOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
@@ -42,6 +44,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -114,12 +117,56 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    }
    /**
     * Canonicalizes a Subtree node.
-    * @param rootNode the root of the subtree to canicalize
-    * @param excludeNode a node to be excluded from the canicalize operation
+    * @param input the root of the subtree to canicalize
     * @return The canonicalize stream.
     * @throws CanonicalizationException
     */
-    public byte[] engineCanonicalizeSubTree(Node rootNode,Node excludeNode)
+    public byte[] engineCanonicalize(XMLSignatureInput input)
+    throws CanonicalizationException {
+    	try {
+    		if (input.isExcludeComments())
+    			_includeComments = false;
+			byte[] bytes;
+			if (input.isOctetStream()) {
+				return engineCanonicalize(input.getBytes());
+			}
+			if (input.isElement()) {
+				bytes = engineCanonicalizeSubTree(input.getSubNode(), input
+						.getExcludeNode());
+				return bytes;
+			} else if (input.isNodeSet()) {
+				Set inputNodeSet;
+				inputNodeSet = input.getNodeSet(input.isNeedsToBeExpanded());
+				if (inputNodeSet.size() == 0) {
+					// empty nodeset
+					return null;
+				}
+				bytes = engineCanonicalizeXPathNodeSetInternal(inputNodeSet);
+				return bytes;
+
+			}
+			return null;
+		} catch (CanonicalizationException ex) {
+			throw new CanonicalizationException("empty", ex);
+		} catch (ParserConfigurationException ex) {
+			throw new CanonicalizationException("empty", ex);
+		} catch (IOException ex) {
+			throw new CanonicalizationException("empty", ex);
+		} catch (SAXException ex) {
+			throw new CanonicalizationException("empty", ex);
+		}
+   }
+   /**
+	 * Canonicalizes a Subtree node.
+	 * 
+	 * @param rootNode
+	 *            the root of the subtree to canicalize
+	 * @param excludeNode
+	 *            a node to be excluded from the canicalize operation
+	 * @return The canonicalize stream.
+	 * @throws CanonicalizationException
+	 */
+    byte[] engineCanonicalizeSubTree(Node rootNode,Node excludeNode)
     throws CanonicalizationException {
     	this._excludeNode = excludeNode;
         try {
@@ -271,6 +318,10 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     */
    public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet)
            throws CanonicalizationException {
+	   return engineCanonicalizeXPathNodeSetInternal(xpathNodeSet);
+   }
+   private  byte[] engineCanonicalizeXPathNodeSetInternal(Set xpathNodeSet)
+           throws CanonicalizationException {   
       if (xpathNodeSet.size() == 0) {
         return new byte[0];
       }
@@ -737,18 +788,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
    throws CanonicalizationException;
 
 
-   /**
-    * @return Returns the _includeComments.
-    */
-   final public boolean is_includeComments() {
-	 return _includeComments;
-   }
-   /**
-    * @param comments The _includeComments to set.
-    */
-    final public void set_includeComments(boolean comments) {
-	    _includeComments = comments;
-    }
     
     /**
      * @param _writer The _writer to set.

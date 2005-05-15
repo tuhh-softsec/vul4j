@@ -24,6 +24,7 @@ import java.util.TreeSet;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.helper.C14nHelper;
+import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 import org.apache.xml.security.utils.Constants;
 import org.w3c.dom.Attr;
@@ -96,10 +97,22 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 	 */
 	public byte[] engineCanonicalizeSubTree(Node rootNode,
 			String inclusiveNamespaces,Node excl) throws CanonicalizationException {
-
 			this._inclusiveNSSet = (TreeSet)InclusiveNamespaces
 					.prefixStr2Set(inclusiveNamespaces);			
 			return super.engineCanonicalizeSubTree(rootNode,excl);
+	}
+	/**
+	 * 
+	 * @param rootNode
+	 * @param inclusiveNamespaces
+	 * @return the rootNode c14n.
+	 * @throws CanonicalizationException
+	 */
+	public byte[] engineCanonicalize(XMLSignatureInput rootNode,
+			String inclusiveNamespaces) throws CanonicalizationException {
+			this._inclusiveNSSet = (TreeSet)InclusiveNamespaces
+					.prefixStr2Set(inclusiveNamespaces);			
+			return super.engineCanonicalize(rootNode);
 	}
  
 	/**
@@ -188,13 +201,11 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 	public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet,
 			String inclusiveNamespaces) throws CanonicalizationException {
 		
-		try {
+		
 			this._inclusiveNSSet = (TreeSet)InclusiveNamespaces
 					.prefixStr2Set(inclusiveNamespaces);
 			return super.engineCanonicalizeXPathNodeSet(xpathNodeSet);
-		} finally {
-			this._inclusiveNSSet = null;
-		}
+		
 	}
 	
     /** @inheritDoc */
