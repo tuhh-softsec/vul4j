@@ -53,6 +53,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
       */
     TreeSet _inclusiveNSSet = null;
     static final String XMLNS_URI=Constants.NamespaceSpecNS;
+    final SortedSet result = new TreeSet(COMPARE);
 	/**
 	 * Constructor Canonicalizer20010315Excl
 	 * 
@@ -112,7 +113,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 		// System.out.println("During the traversal, I encountered " +
 		// XMLUtils.getXPath(E));
 		// result will contain the attrs which have to be outputted
-		SortedSet result = new TreeSet(COMPARE);
+		SortedSet result = this.result;       
+	    result.clear();
 		NamedNodeMap attrs=null;
         
 		int attrsLength = 0;
@@ -209,7 +211,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 	final Iterator handleAttributes(Element E, NameSpaceSymbTable ns)
 			throws CanonicalizationException {
 		// result will contain the attrs which have to be outputted
-		SortedSet result = new TreeSet(COMPARE);
+		SortedSet result = this.result;       
+	    result.clear();
 		NamedNodeMap attrs = null;
 		int attrsLength = 0;
         if (E.hasAttributes()) {

@@ -44,6 +44,7 @@ import org.w3c.dom.Node;
  */
 public abstract class Canonicalizer20010315 extends CanonicalizerBase {
 	boolean firstCall=true;
+	final SortedSet result= new TreeSet(COMPARE);
     static final String XMLNS_URI=Constants.NamespaceSpecNS;
     static final String XML_LANG_URI=Constants.XML_LANG_SPACE_SpecNS;
    /**
@@ -74,8 +75,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
    	  if (!E.hasAttributes() && !firstCall) {
          return null; 
       }
-      // result will contain the attrs which have to be outputted
-      SortedSet result = new TreeSet(COMPARE);      
+      // result will contain the attrs which have to be outputted   	  
+      final SortedSet result = this.result;       
+      result.clear();
       NamedNodeMap attrs = E.getAttributes();
       int attrsLength = attrs.getLength();      
             
@@ -196,7 +198,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     }
     
     
-    SortedSet result = new TreeSet(COMPARE);
+    SortedSet result = this.result;       
+    result.clear();
     
             
     for (int i = 0; i < attrsLength; i++) {
