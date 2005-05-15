@@ -375,6 +375,48 @@ public:
 	bool isRegisteredIdAttributeName(const XMLCh * name) const;
 
 	/**
+	 * \brief Add an attribute name and namespace to be searched for when looking for 
+	 * Id attributes
+	 *
+	 * This allows a user to add an attribute name in a parcicular namespace to 
+	 * be used to identify Id attributes
+	 * when they are not set to be of Type=ID in the DOM
+	 *
+	 * @note Two names are registered by default - "Id" and "id".  These can be
+	 * removed by calling deregisterIdAttributeName
+	 *
+	 * @param ns Namespace URI in which attribute appears
+	 * @param name Name to append to the list of those used to find Id attributes
+	 */
+
+	void registerIdAttributeNameNS(const XMLCh * ns, const XMLCh * name);
+
+	/**
+	 * \brief Remove an attribute name and namespace to be searched for when 
+	 * looking for Id attributes
+	 *
+	 * This allows a user to de-register a particular name to be used to identify Id
+	 * attributes.
+	 *
+	 * @param ns Namespace in which attribute resides
+	 * @param idName Name to remove from the list of those used to find Id attributes
+	 * @returns true if found and removed, false if was not in the list
+	 */
+
+	bool deregisterIdAttributeNameNS(const XMLCh *ns, const XMLCh * name);
+
+	/**
+	 * \brief Determine if an attribute name and namespace is registered 
+	 * as an Id name
+	 *
+	 * @param ns Namespace in which attribute resides
+	 * @param name String to check in the idAttributeName list
+	 * @returns true if the passed in name is registered as an Attribute name
+	 */
+
+	bool isRegisteredIdAttributeNameNS(const XMLCh * ns, const XMLCh * name) const;
+
+	/**
 	 * \brief Get number of Attribute Names registered as Id attributes
 	 *
 	 * @returns the number of elements in the list
@@ -395,6 +437,32 @@ public:
 
 	const XMLCh * getIdAttributeNameListItem(int index) const;
 
+	/*
+	 * \brief Get an indexed attribute Namespace to use as an Id
+	 *
+	 * Returns the item at index point in the list
+	 *
+	 * @note This is an internal function and should not be called directly
+	 *
+	 * @param index Pointer into the list
+	 * @returns The indicated element or NULL if it does not exist.
+	 */
+
+	const XMLCh * getIdAttributeNameListItemNS(int index) const;
+
+	/*
+	 * \brief Determine whether the indexed item is namespace aware
+	 *
+	 * Returns the item at index point in the list
+	 *
+	 * @note This is an internal function and should not be called directly
+	 *
+	 * @param index Pointer into the list
+	 * @returns The indicated element or NULL if it does not exist.
+	 */
+
+	bool getIdAttributeNameListItemIsNS(int index) const;
+
 	//@}
 	
 	/** @name Formatters */
@@ -414,10 +482,14 @@ public:
 
 private:
 
+	struct IdAttributeStruct;
+	typedef struct IdAttributeStruct IdAttributeType;
+
+
 #if defined(XSEC_NO_NAMESPACES)
-	typedef vector<XMLCh *>					IdNameVectorType;
+	typedef vector<IdAttributeType *>		IdNameVectorType;
 #else
-	typedef std::vector<XMLCh *>			IdNameVectorType;
+	typedef std::vector<IdAttributeType *>	IdNameVectorType;
 #endif
 
 	// Internal functions

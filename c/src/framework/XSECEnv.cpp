@@ -33,7 +33,14 @@
 
 #include <xercesc/util/XMLUniDefs.hpp>
 
+struct XSECEnv::IdAttributeStruct {
+	bool		m_useNamespace;		/* Was this defined with a namespace? */
+	XMLCh		* mp_namespace;		/* Namespace of attribute */
+	XMLCh		* mp_name;			/* Name of attribute */
+};
+
 XERCES_CPP_NAMESPACE_USE
+
 
 // --------------------------------------------------------------------------------
 //           Default prefix strings
@@ -193,7 +200,13 @@ XSECEnv::~XSECEnv() {
 	IdNameVectorType::iterator it;
 
 	for (it = m_idAttributeNameList.begin(); it != m_idAttributeNameList.end(); it++) {
-		XSEC_RELEASE_XMLCH((*it));
+		IdAttributeType * i = *it;
+		if (i->mp_namespace != NULL)
+			XSEC_RELEASE_XMLCH((i->mp_namespace));
+		if (i->mp_name)
+			XSEC_RELEASE_XMLCH((i->mp_name));
+
+		delete *it;
 	}
 
 	m_idAttributeNameList.empty();
@@ -291,7 +304,8 @@ bool XSECEnv::isRegisteredIdAttributeName(const XMLCh * name) const {
 	int sz = (int) m_idAttributeNameList.size();
 
 	for (int i = 0; i < sz; ++i) {
-		if (strEquals(m_idAttributeNameList[i], name))
+		if (!m_idAttributeNameList[i]->m_useNamespace &&
+			strEquals(m_idAttributeNameList[i]->mp_name, name))
 			return true;
 	}
 
@@ -304,7 +318,14 @@ void XSECEnv::registerIdAttributeName(const XMLCh * name) {
 	if (isRegisteredIdAttributeName(name))
 		return;
 
-	m_idAttributeNameList.push_back(XMLString::replicate(name));
+	IdAttributeType * iat;
+
+	iat = new IdAttributeType;
+	m_idAttributeNameList.push_back(iat);
+
+	iat->m_useNamespace = false;
+	iat->mp_namespace = NULL;
+	iat->mp_name = XMLString::replicate(name);
 
 }
 
@@ -313,10 +334,62 @@ bool XSECEnv::deregisterIdAttributeName(const XMLCh * name) {
 	IdNameVectorType::iterator it;
 
 	for (it = m_idAttributeNameList.begin(); it != m_idAttributeNameList.end(); it++) {
-		if (strEquals(*it, name)) {
+		if (!((*it)->m_useNamespace) && strEquals((*it)->mp_name, name)) {
 
 			// Remove this item
-			XSEC_RELEASE_XMLCH((*it));
+			XSEC_RELEASE_XMLCH(((*it)->mp_name));
+			delete *it;
+			m_idAttributeNameList.erase(it);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool XSECEnv::isRegisteredIdAttributeNameNS(const XMLCh * ns, const XMLCh * name) const {
+
+	int sz = (int) m_idAttributeNameList.size();
+
+	for (int i = 0; i < sz; ++i) {
+		if (m_idAttributeNameList[i]->m_useNamespace &&
+			strEquals(m_idAttributeNameList[i]->mp_namespace, ns) &&
+			strEquals(m_idAttributeNameList[i]->mp_name, name))
+			return true;
+	}
+
+	return false;
+
+}
+
+void XSECEnv::registerIdAttributeNameNS(const XMLCh * ns, const XMLCh * name) {
+
+	if (isRegisteredIdAttributeNameNS(ns, name))
+		return;
+
+	IdAttributeType * iat;
+
+	iat = new IdAttributeType;
+	m_idAttributeNameList.push_back(iat);
+
+	iat->m_useNamespace = true;
+	iat->mp_namespace = XMLString::replicate(ns);;
+	iat->mp_name = XMLString::replicate(name);
+
+}
+
+bool XSECEnv::deregisterIdAttributeNameNS(const XMLCh * ns, const XMLCh * name) {
+
+	IdNameVectorType::iterator it;
+
+	for (it = m_idAttributeNameList.begin(); it != m_idAttributeNameList.end(); it++) {
+		if (((*it)->m_useNamespace) && 
+			strEquals((*it)->mp_namespace, ns) &&
+			strEquals((*it)->mp_name, name)) {
+
+			// Remove this item
+			XSEC_RELEASE_XMLCH(((*it)->mp_name));
+			delete *it;
 			m_idAttributeNameList.erase(it);
 			return true;
 		}
@@ -334,7 +407,25 @@ int XSECEnv::getIdAttributeNameListSize() const {
 const XMLCh * XSECEnv::getIdAttributeNameListItem(int index) const {
 
 	if (index >= 0 && index < (int) m_idAttributeNameList.size())
-		return m_idAttributeNameList[index];
+		return m_idAttributeNameList[index]->mp_name;
+
+	return NULL;
+
+}
+
+const XMLCh * XSECEnv::getIdAttributeNameListItemNS(int index) const {
+
+	if (index >= 0 && index < (int) m_idAttributeNameList.size())
+		return m_idAttributeNameList[index]->mp_namespace;
+
+	return NULL;
+
+}
+
+bool XSECEnv::getIdAttributeNameListItemIsNS(int index) const {
+
+	if (index >= 0 && index < (int) m_idAttributeNameList.size())
+		return m_idAttributeNameList[index]->m_useNamespace;
 
 	return NULL;
 

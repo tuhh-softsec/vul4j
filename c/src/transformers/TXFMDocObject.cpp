@@ -68,12 +68,23 @@ DOMNode * findDSIGId(DOMNode *current, const XMLCh * newFragmentId, const XSECEn
 		if (atts != NULL) {
 			int sz = env->getIdAttributeNameListSize();
 			for (int i = 0; i < sz ; ++i) {
-				tmp = atts->getNamedItem(env->getIdAttributeNameListItem(i));
-				if (tmp != 0 && strEquals(tmp->getNodeValue(), newFragmentId)) {
+				if (env->getIdAttributeNameListItemIsNS(i) == false) {
+					tmp = atts->getNamedItem(env->getIdAttributeNameListItem(i));
+					if (tmp != 0 && strEquals(tmp->getNodeValue(), newFragmentId)) {
 
-					// Found it!
+						// Found it!
 
-					return current;
+						return current;
+					}
+				}
+
+				else {
+					// This is a namespace aware Id
+					tmp = atts->getNamedItemNS(env->getIdAttributeNameListItemNS(i),
+											   env->getIdAttributeNameListItem(i));
+					if (tmp != 0 && strEquals(tmp->getNodeValue(), newFragmentId)) {
+						return current;
+					}
 
 				}
 

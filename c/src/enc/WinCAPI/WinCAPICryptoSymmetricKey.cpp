@@ -47,13 +47,11 @@ WinCAPICryptoSymmetricKey::WinCAPICryptoSymmetricKey(
 						XSECCryptoSymmetricKey::SymmetricKeyType type) :
 m_keyType(type),
 m_keyMode(MODE_ECB),
-m_keyBuf(""),
 m_initialised(false),
 m_doPad(true),
 m_p(prov),
 m_k(0) {
 
-	m_keyBuf.isSensitive();
 
 }
 

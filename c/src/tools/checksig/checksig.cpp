@@ -137,6 +137,8 @@ void printUsage(void) {
 	cerr << "         Set an hmac key using the <string>\n\n";
 	cerr << "     --xsecresolver/-x\n";
 	cerr << "         Use the xml-security test XMLDSig URI resolver\n\n";
+	cerr << "     --idns/-d <ns uri> <name>\n";
+	cerr << "         Define an attribute Id by namespace URI and name\n\n";
 #if defined (HAVE_OPENSSL)
 	cerr << "     --interop/-i\n";
 	cerr << "         Use the interop resolver for Baltimore interop examples\n\n";
@@ -161,6 +163,8 @@ int evaluate(int argc, char ** argv) {
 	
 	char					* filename = NULL;
 	char					* hmacKeyStr = NULL;
+	char					* useIdAttributeNS = NULL;
+	char					* useIdAttributeName = NULL;
 	XSECCryptoKey			* key = NULL;
 	bool					useXSECURIResolver = false;
 	bool                    useAnonymousResolver = false;
@@ -193,6 +197,15 @@ int evaluate(int argc, char ** argv) {
 		else if (stricmp(argv[paramCount], "--xsecresolver") == 0 || stricmp(argv[paramCount], "-x") == 0) {
 			useXSECURIResolver = true;
 			paramCount++;
+		}
+		else if (stricmp(argv[paramCount], "--idns") == 0 || stricmp(argv[paramCount], "-d") == 0) {
+			if (paramCount +2 >= argc) {
+				printUsage();
+				return 2;
+			}
+			paramCount++;
+			useIdAttributeNS = argv[paramCount++];
+			useIdAttributeName = argv[paramCount++];
 		}
 #if defined (HAVE_OPENSSL)
 		else if (stricmp(argv[paramCount], "--interop") == 0 || stricmp(argv[paramCount], "-i") == 0) {
@@ -377,6 +390,11 @@ int evaluate(int argc, char ** argv) {
 
 	sig->setKeyInfoResolver(&theKeyInfoResolver);
 	sig->registerIdAttributeName(MAKE_UNICODE_STRING("ID"));
+
+	// Register defined attribute name
+	if (useIdAttributeName != NULL)
+		sig->registerIdAttributeNameNS(MAKE_UNICODE_STRING(useIdAttributeNS), 
+									   MAKE_UNICODE_STRING(useIdAttributeName));
 
 	// Check whether we should use the internal resolver
 

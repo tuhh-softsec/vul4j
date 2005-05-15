@@ -1334,6 +1334,18 @@ bool DSIGSignature::deregisterIdAttributeName(const XMLCh * name) {
 
 }
 
+void DSIGSignature::registerIdAttributeNameNS(const XMLCh * ns, const XMLCh * name) {
+
+	mp_env->registerIdAttributeNameNS(ns, name);
+
+}
+
+bool DSIGSignature::deregisterIdAttributeNameNS(const XMLCh * ns, const XMLCh * name) {
+
+	return mp_env->deregisterIdAttributeNameNS(ns, name);
+
+}
+
 // --------------------------------------------------------------------------------
 //           Other functions
 // --------------------------------------------------------------------------------

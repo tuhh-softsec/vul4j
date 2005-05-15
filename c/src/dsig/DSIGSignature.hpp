@@ -780,6 +780,35 @@ public:
 
 	bool deregisterIdAttributeName(const XMLCh * name);
 
+	/**
+	 * \brief Add an attribute name within a particular Namespace
+	 * to be searched for when looking for Id attributes
+	 *
+	 * This allows a user to add an attribute name to be used to identify Id attributes
+	 * when they are not set to be of Type=ID in the DOM
+	 *
+	 * @note Two names are registered by default - "Id" and "id".  These can be
+	 * removed by calling deregisterIdAttributeName
+	 *
+	 * @param ns Namespace in which attribute will reside
+	 * @param name Name to append to the list of those used to find Id attributes
+	 */
+
+	void registerIdAttributeNameNS(const XMLCh * ns, const XMLCh * name);
+
+	/**
+	 * \brief Remove an attribute name and ns to be searched for when looking for Id attributes
+	 *
+	 * This allows a user to de-register a particular name to be used to identify Id
+	 * attributes.
+	 *
+	 * @param ns Namespace in which attribute will reside
+	 * @param name Name to remove from the list of those used to find Id attributes
+	 * @returns true if found and removed, false if was not in the list
+	 */
+
+	bool deregisterIdAttributeNameNS(const XMLCh * ns, const XMLCh * name);
+
 	//@}
 
 	friend class XSECProvider;
