@@ -563,7 +563,7 @@ public class Base64 {
 
        byte     decodedData[]      = null;
        byte     b1=0,b2=0,b3=0, b4=0;
-       byte     d1=0,d2=0,d3=0,d4=0;
+
 
        int i = 0;
        int encodedIndex = 0;
@@ -573,25 +573,24 @@ public class Base64 {
        dataIndex=(numberQuadruple-1)*4;
        encodedIndex=(numberQuadruple-1)*3;
        //first last bits.
-       if (!isData( (d1 = base64Data[dataIndex++]) ) ||
-            !isData( (d2 = base64Data[dataIndex++]) )) {
+       b1 = base64Alphabet[base64Data[dataIndex++]];
+       b2 = base64Alphabet[base64Data[dataIndex++]];
+       if ((b1==-1) || (b2==-1)) {
                 throw new Base64DecodingException("decoding.general");//if found "no data" just return null
         }
 
-        b1 = base64Alphabet[d1];
-        b2 = base64Alphabet[d2];
-
-        d3 = base64Data[dataIndex++];
-        d4 = base64Data[dataIndex++];
-        if (!isData( (d3 ) ) ||
-            !isData( (d4 ) )) {//Check if they are PAD characters
+        
+        byte d3,d4;
+        b3 = base64Alphabet[d3=base64Data[dataIndex++]];
+        b4 = base64Alphabet[d4=base64Data[dataIndex++]];
+        if ((b3==-1 ) || (b4==-1) ) {
+        	//Check if they are PAD characters
             if (isPad( d3 ) && isPad( d4)) {               //Two PAD e.g. 3c[Pad][Pad]
                 if ((b2 & 0xf) != 0)//last 4 bits should be zero
                         throw new Base64DecodingException("decoding.general");
                 decodedData = new byte[ encodedIndex + 1 ];                
                 decodedData[encodedIndex]   = (byte)(  b1 <<2 | b2>>4 ) ;                
-            } else if (!isPad( d3) && isPad(d4)) {               //One PAD  e.g. 3cQ[Pad]
-                b3 = base64Alphabet[ d3 ];
+            } else if (!isPad( d3) && isPad(d4)) {               //One PAD  e.g. 3cQ[Pad]                
                 if ((b3 & 0x3 ) != 0)//last 2 bits should be zero
                         throw new Base64DecodingException("decoding.general");
                 decodedData = new byte[ encodedIndex + 2 ];                
@@ -603,8 +602,6 @@ public class Base64 {
         } else {
             //No PAD e.g 3cQl
             decodedData = new byte[encodedIndex+3];
-            b3 = base64Alphabet[ d3 ];
-            b4 = base64Alphabet[ d4 ];
             decodedData[encodedIndex++] = (byte)(  b1 <<2 | b2>>4 ) ;
             decodedData[encodedIndex++] = (byte)(((b2 & 0xf)<<4 ) |( (b3>>2) & 0xf) );
             decodedData[encodedIndex++] = (byte)( b3<<6 | b4 );
@@ -612,19 +609,19 @@ public class Base64 {
         encodedIndex=0;
         dataIndex=0;
        //the begin
-       for (; i<numberQuadruple-1; i++) {
+       for (i=numberQuadruple-1; i>0; i--) {
+    	   b1 = base64Alphabet[base64Data[dataIndex++]];
+           b2 = base64Alphabet[base64Data[dataIndex++]];
+           b3 = base64Alphabet[base64Data[dataIndex++]];
+           b4 = base64Alphabet[base64Data[dataIndex++]];
 
-           if (!isData( (d1 = base64Data[dataIndex++]) )||
-               !isData( (d2 = base64Data[dataIndex++]) )||
-               !isData( (d3 = base64Data[dataIndex++]) )||
-               !isData( (d4 = base64Data[dataIndex++]) ))
-            throw new Base64DecodingException("decoding.general");//if found "no data" just return null
-
-           b1 = base64Alphabet[d1];
-           b2 = base64Alphabet[d2];
-           b3 = base64Alphabet[d3];
-           b4 = base64Alphabet[d4];
-
+           if ( (b1==-1) ||
+        		(b2==-1) ||
+        		(b3==-1) ||
+        		(b4==-1) ) {        	  
+        	   throw new Base64DecodingException("decoding.general");//if found "no data" just return null   
+           }
+                       
            decodedData[encodedIndex++] = (byte)(  b1 <<2 | b2>>4 ) ;
            decodedData[encodedIndex++] = (byte)(((b2 & 0xf)<<4 ) |( (b3>>2) & 0xf) );
            decodedData[encodedIndex++] = (byte)( b3<<6 | b4 );
@@ -641,7 +638,7 @@ public class Base64 {
     * @throws Base64DecodingException
     */
    public final static void decode(byte[] base64Data,
-        OutputStream os) throws Base64DecodingException, IOException {
+        OutputStream os) throws Base64DecodingException, IOException {	    
     // remove white spaces
     int len = removeWhiteSpace(base64Data);
     
@@ -657,49 +654,48 @@ public class Base64 {
 
     //byte     decodedData[]      = null;
     byte     b1=0,b2=0,b3=0, b4=0;
-    byte     d1=0,d2=0,d3=0,d4=0;
 
     int i = 0;
 
     int dataIndex    = 0;    
     
     //the begin
-    for (; i<numberQuadruple-1; i++) {
-
-        if (!isData( (d1 = base64Data[dataIndex++]) )||
-            !isData( (d2 = base64Data[dataIndex++]) )||
-            !isData( (d3 = base64Data[dataIndex++]) )||
-            !isData( (d4 = base64Data[dataIndex++]) ))
+    for (i=numberQuadruple-1; i>0; i--) {
+    	b1 = base64Alphabet[base64Data[dataIndex++]];
+        b2 = base64Alphabet[base64Data[dataIndex++]];
+        b3 = base64Alphabet[base64Data[dataIndex++]];
+        b4 = base64Alphabet[base64Data[dataIndex++]];
+        if ( (b1==-1) ||
+        	(b2==-1) ||
+        	(b3==-1) ||
+        	(b4==-1) )
          throw new Base64DecodingException("decoding.general");//if found "no data" just return null
 
-        b1 = base64Alphabet[d1];
-        b2 = base64Alphabet[d2];
-        b3 = base64Alphabet[d3];
-        b4 = base64Alphabet[d4];
+        
 
         os.write((byte)(  b1 <<2 | b2>>4 ) );
         os.write((byte)(((b2 & 0xf)<<4 ) |( (b3>>2) & 0xf) ));
         os.write( (byte)( b3<<6 | b4 ));
-    }       
-//  first last bits.
-    if (!isData( (d1 = base64Data[dataIndex++]) ) ||
-         !isData( (d2 = base64Data[dataIndex++]) )) {
+    }   
+    b1 = base64Alphabet[base64Data[dataIndex++]];
+    b2 = base64Alphabet[base64Data[dataIndex++]];
+    
+    //  first last bits.
+    if ((b1==-1) ||
+        (b2==-1) ){
              throw new Base64DecodingException("decoding.general");//if found "no data" just return null
      }
 
-     b1 = base64Alphabet[d1];
-     b2 = base64Alphabet[d2];
-
-     d3 = base64Data[dataIndex++];
-     d4 = base64Data[dataIndex++];
-     if (!isData( (d3 ) ) ||
-         !isData( (d4 ) )) {//Check if they are PAD characters
+     byte d3,d4;
+     b3= base64Alphabet[d3 = base64Data[dataIndex++]];
+     b4= base64Alphabet[d4 = base64Data[dataIndex++]];
+     if ((b3==-1 ) ||
+          (b4==-1) ) {//Check if they are PAD characters
          if (isPad( d3 ) && isPad( d4)) {               //Two PAD e.g. 3c[Pad][Pad]
              if ((b2 & 0xf) != 0)//last 4 bits should be zero
                      throw new Base64DecodingException("decoding.general");                             
              os.write( (byte)(  b1 <<2 | b2>>4 ) );                
-         } else if (!isPad( d3) && isPad(d4)) {               //One PAD  e.g. 3cQ[Pad]
-             b3 = base64Alphabet[ d3 ];
+         } else if (!isPad( d3) && isPad(d4)) {               //One PAD  e.g. 3cQ[Pad]             
              if ((b3 & 0x3 ) != 0)//last 2 bits should be zero
                      throw new Base64DecodingException("decoding.general");                            
              os.write( (byte)(  b1 <<2 | b2>>4 ));
@@ -709,8 +705,6 @@ public class Base64 {
          }
      } else {
          //No PAD e.g 3cQl         
-         b3 = base64Alphabet[ d3 ];
-         b4 = base64Alphabet[ d4 ];
          os.write((byte)(  b1 <<2 | b2>>4 ) );
          os.write( (byte)(((b2 & 0xf)<<4 ) |( (b3>>2) & 0xf) ));
          os.write((byte)( b3<<6 | b4 ));
@@ -728,11 +722,7 @@ public class Base64 {
     */
    public final static void decode(InputStream is,
         OutputStream os) throws Base64DecodingException, IOException {
-    // remove white spaces
-
-
-
-    //byte     decodedData[]      = null;
+	//byte     decodedData[]      = null;
     byte     b1=0,b2=0,b3=0, b4=0;    
 
     int index=0;
