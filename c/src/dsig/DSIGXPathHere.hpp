@@ -55,7 +55,7 @@ XALAN_USING_XALAN(XalanNode);
 XALAN_USING_XALAN(XPathExecutionContext);
 XALAN_USING_XALAN(XalanDOMString);
 XALAN_USING_XALAN(XObjectPtr);
-XALAN_USING_XALAN(StaticStringToDOMString);
+//XALAN_USING_XALAN(StaticStringToDOMString);
 
 #if defined XSEC_XALAN_REQS_MEMORYMANAGER
 // Xalan 1.9 and above

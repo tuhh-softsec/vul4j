@@ -387,7 +387,9 @@ if test "$use_xalan" = "yes" ; then
     AC_MSG_CHECKING([for Xalan headers in XALANCROOT])
 
     OLD_CPPFLAGS=$CPPFLAGS
-    CPPFLAGS=["${CPPFLAGS} -I${XALANCROOT}/src"]
+    # Updated to include nls/include as this is generally needed for
+    # compilation against non-installed xalan
+    CPPFLAGS=["${CPPFLAGS} -I${XALANCROOT}/src -I${XALANCROOT}/nls/include"]
 
     AC_TRY_CPP([#include <xalanc/Include/XalanVersion.hpp>], 
       xalan_found=yes 

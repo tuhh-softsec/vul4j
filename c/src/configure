@@ -4427,7 +4427,9 @@ if test "$use_xalan" = "yes" ; then
 echo $ECHO_N "checking for Xalan headers in XALANCROOT... $ECHO_C" >&6
 
     OLD_CPPFLAGS=$CPPFLAGS
-    CPPFLAGS="${CPPFLAGS} -I${XALANCROOT}/src"
+    # Updated to include nls/include as this is generally needed for
+    # compilation against non-installed xalan
+    CPPFLAGS="${CPPFLAGS} -I${XALANCROOT}/src -I${XALANCROOT}/nls/include"
 
     cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
