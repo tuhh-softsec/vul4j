@@ -166,7 +166,7 @@ public :
 	 * of the block size, the implementation will need to hold back
 	 * cipher-text to be handles during the next operation.
 	 *
-	 * @note While maxOutLength is defined, the OpenSSL libraries will
+	 * @note While maxOutLength is defined, the WinCAPI library will
 	 * not read the value, so the onus is on the caller to ensure the
 	 * buffer is long enough to hold the output!
 	 *
@@ -193,7 +193,7 @@ public :
 	 * May throw an exception if there is some stored cipher text
 	 * that is not the length of the block size for block algorithms.
 	 *
-	 * @note While maxOutLength is defined, the OpenSSL libraries will
+	 * @note While maxOutLength is defined, the WinCAPI library will
 	 * not read the value, so the onus is on the caller to ensure the
 	 * buffer is long enough to hold the output!
 	 *
