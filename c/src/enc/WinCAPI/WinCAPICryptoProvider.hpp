@@ -119,7 +119,7 @@ public :
 	 * Call used by the library to obtain a SHA1 object from the 
 	 * provider.
 	 *
-	 * @returns A pointer to an OpenSSL Hash object that implements SHA1
+	 * @returns A pointer to an WinCAPI Hash object that implements SHA1
 	 * @see WinCAPICryptoHash
 	 */
 
@@ -169,7 +169,7 @@ public :
 	 * \brief Return a MD5 implementation.
 	 *
 	 * Call used by the library to obtain a MD5 object from the 
-	 * OpenSSL provider.
+	 * WiNCAPI provider.
 	 *
 	 * @returns A pointer to a Hash object that implements MD5
 	 * @see WinCAPICryptoHash
@@ -247,7 +247,7 @@ public :
 	/**
 	 * \brief Return an RSA key implementation object.
 	 * 
-	 * Call used by the library to obtain an OpenSSL RSA key object.
+	 * Call used by the library to obtain an WinCAPI RSA key object.
 	 *
 	 * @returns Pointer to the new RSA key
 	 * @see WinCAPICryptoKeyRSA
