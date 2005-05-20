@@ -93,7 +93,7 @@ public :
 	 * \brief Get a copy of the public key.
 	 *
 	 * Extracts the public key from the certificate and returns the appropriate
-	 * OpenSSLCryrptoKey (DSA or RSA) object
+	 * WinCAPICryrptoKey (DSA or RSA) object
 	 *
 	 */
 
