@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
  *
  */
 public class UnsyncByteArrayOutputStream extends ByteArrayOutputStream {
-	int size=1024;
+	int size=4*1024;
 	byte []buf=new byte[size];
 	int pos;
 	/** @inheritDoc */
