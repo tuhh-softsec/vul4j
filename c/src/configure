@@ -4122,8 +4122,8 @@ case "${host}" in
                         LINK_COMMAND_1="(cd \$(LIB_DIR) ; rm -f \$(LIBMAJORNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBMAJORNAME))"
                         LINK_COMMAND_2="(cd \$(LIB_DIR) ; rm -f \$(LIBSHORTNAME) ; \$(LN_S) \$(LIBNAME) \$(LIBSHORTNAME))"
                         INSTALL_COMMAND_1="\$(INSTALL) \${THISLIB} \${DESTDIR}\${libdir}"
-                        INSTALL_COMMAND_2="\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \${LIBNAME}\$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"
-                        INSTALL_COMMAND_3="\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \${LIBNAME}\$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"
+                        INSTALL_COMMAND_2="\$(RM) \$(DESTDIR)\${libdir}/\${LIBMAJORNAME} && \$(LN_S) \$(DESTDIR)\${libdir}/\${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBMAJORNAME}"
+                        INSTALL_COMMAND_3="\$(RM) \$(DESTDIR)\${libdir}/\${LIBSHORTNAME} && \$(LN_S) \$(DESTDIR)\${libdir}/\${LIBNAME} \$(DESTDIR)\${libdir}/\${LIBSHORTNAME}"
                         ;;
 
         *)              platform=UNKNOWN ;
