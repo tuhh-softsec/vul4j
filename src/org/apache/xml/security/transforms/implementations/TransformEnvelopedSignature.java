@@ -18,12 +18,7 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
-import java.io.IOException;
-import java.util.Set;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
@@ -32,7 +27,6 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -62,7 +56,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input)
            throws TransformationException {
 
-      try {
+
 
          /**
           * If the actual input is an octet stream, then the application MUST
@@ -86,36 +80,14 @@ public class TransformEnvelopedSignature extends TransformSpi {
          Node signatureElement = transformElement;
          
 
-         signatureElement = searchSignatureElement(signatureElement);
-         if (input.isElement()) {
-         	XMLSignatureInput result = new XMLSignatureInput(input.getSubNode());
-         	result.setExcludeNode(signatureElement);
-         	result.setExcludeComments(input.isExcludeComments());
-         	return result;
-         }
-         //
-         Set inputSet = input.getNodeSet();
-
-         if (inputSet.isEmpty()) {
-            Object exArgs[] = { "input node set contains no nodes" };
-
-            throw new TransformationException("generic.EmptyMessage", exArgs);
-         }
+         signatureElement = searchSignatureElement(signatureElement);        
+         	input.setExcludeNode(signatureElement);   
+         	input.addNodeFilter(new EnvelopedNodeFilter(signatureElement));
+         	return input;
          
-         Set resultSet=XMLUtils.excludeNodeFromSet(signatureElement, inputSet);
-
-         XMLSignatureInput result = new XMLSignatureInput(resultSet);
-
-         return result;
-      } catch (IOException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (SAXException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (ParserConfigurationException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (CanonicalizationException ex) {
-         throw new TransformationException("empty", ex);
-      } 
+         //
+         
+      
    }
 
    /**
@@ -147,5 +119,19 @@ public class TransformEnvelopedSignature extends TransformSpi {
 	       "envelopedSignatureTransformNotInSignatureElement");
 	    }
 	    return signatureElement;
+    }
+    class EnvelopedNodeFilter implements NodeFilter {
+    	Node exclude;    	
+    	EnvelopedNodeFilter(Node n) {
+    		exclude=n;
+    	}
+		/**
+		 * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
+		 */
+		public boolean isNodeInclude(Node n) {
+			// TODO Optimize me.
+			return !XMLUtils.isDescendantOrSelf(exclude,n);
+		}
+    	
     }
 }

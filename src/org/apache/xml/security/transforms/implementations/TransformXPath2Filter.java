@@ -18,19 +18,15 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
@@ -38,15 +34,12 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer;
 import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
-import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -67,20 +60,10 @@ public class TransformXPath2Filter extends TransformSpi {
    public static final String implementedTransformURI =
       Transforms.TRANSFORM_XPATH2FILTER;
    //J-
-   // contains the type of the filter
-   List _filterTypes = new ArrayList();
+   // contains the type of the filter   
 
    // contains the node set
-   List _filterNodes = new ArrayList();
-
-   Set _F = null;
-   List _ancestors = null;
-
-   private static final String FUnion = "union";
-   private static final String FSubtract = "subtract";
-   private static final String FIntersect = "intersect";
-
-
+  
    /**
     * Method engineGetURI
     *
@@ -90,7 +73,7 @@ public class TransformXPath2Filter extends TransformSpi {
       return implementedTransformURI;
    }
 
-   Set _inputSet = null;
+
 
    /**
     * Method enginePerformTransform
@@ -103,18 +86,13 @@ public class TransformXPath2Filter extends TransformSpi {
            throws TransformationException {
 	  CachedXPathAPIHolder.setDoc(this._transformObject.getElement().getOwnerDocument());
       try {
-
-         this._inputSet = input.getNodeSet(true);
-
-         if (this._inputSet.size() == 0) {
-
-            // input node set contains no nodes
-            return input;
-         }
+    	  List unionNodes=new ArrayList();
+    	   List substractNodes=new ArrayList();
+    	   List intersectNodes=new ArrayList();
 
          CachedXPathFuncHereAPI xPathFuncHereAPI =
             new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());
-         Document inputDoc = XMLUtils.getOwnerDocument(_inputSet);
+
          
          Element []xpathElements =XMLUtils.selectNodes(
                 this._transformObject.getElement().getFirstChild(),
@@ -129,15 +107,8 @@ public class TransformXPath2Filter extends TransformSpi {
             throw new TransformationException("xml.WrongContent", exArgs);
          }
 
-         if (true) {
-            _filterTypes.add(FUnion);
+            Document inputDoc = XMLUtils.getOwnerDocument(input.getSubNode());
 
-            // Set root = new HashSet(); root.add(inputDoc);
-            HelperNodeList root = new HelperNodeList();
-
-            root.appendChild(inputDoc);
-            _filterNodes.add(root);
-         }
 
          for (int i = 0; i < noOfSteps; i++) {
             Element xpathElement =XMLUtils.selectNode(
@@ -147,185 +118,91 @@ public class TransformXPath2Filter extends TransformSpi {
             XPath2FilterContainer xpathContainer =
                XPath2FilterContainer.newInstance(xpathElement,
                                                    input.getSourceURI());
-
-            if (xpathContainer.isIntersect()) {
-               _filterTypes.add(FIntersect);
-            } else if (xpathContainer.isSubtract()) {
-               _filterTypes.add(FSubtract);
-            } else if (xpathContainer.isUnion()) {
-               _filterTypes.add(FUnion);
-            } else {
-               _filterTypes.add(null);
-            }
+           
 
             NodeList subtreeRoots = xPathFuncHereAPI.selectNodeList(inputDoc,
                                        xpathContainer.getXPathFilterTextNode(),
                                        CachedXPathFuncHereAPI.getStrFromNode(xpathContainer.getXPathFilterTextNode()),
                                        xpathContainer.getElement());
-
-            // _filterNodes.add(XMLUtils.convertNodelistToSet(subtreeRoots));
-            _filterNodes.add(subtreeRoots);
+            if (xpathContainer.isIntersect()) {
+                intersectNodes.add(subtreeRoots);
+             } else if (xpathContainer.isSubtract()) {
+            	 substractNodes.add(subtreeRoots);
+             } else if (xpathContainer.isUnion()) {
+                unionNodes.add(subtreeRoots);
+             } 
          }
 
-         this._F = new HashSet();
-         this._ancestors = new ArrayList();
-
-         this.traversal(inputDoc);
-
-         Set resultSet = new HashSet();
-         Iterator it = this._inputSet.iterator();
-         while (it.hasNext()) {
-            Object n = it.next();
-            if (this._F.contains(n)) {
-               resultSet.add(n);
-            }
-         }
-
-         XMLSignatureInput result = new XMLSignatureInput(resultSet);
-
-
-         result.setSourceURI(input.getSourceURI());
-
-         return result;
+         input.setNeedsToBeExpanded(true);
+         
+         input.addNodeFilter(new XPath2NodeFilter(unionNodes,substractNodes,intersectNodes));
+         input.setNodeSet(true);
+         return input;
       } catch (TransformerException ex) {
          throw new TransformationException("empty", ex);
       } catch (DOMException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (IOException ex) {
          throw new TransformationException("empty", ex);
       } catch (CanonicalizationException ex) {
          throw new TransformationException("empty", ex);
       } catch (InvalidCanonicalizerException ex) {
          throw new TransformationException("empty", ex);
-      } catch (ParserConfigurationException ex) {
-         throw new TransformationException("empty", ex);
       } catch (XMLSecurityException ex) {
          throw new TransformationException("empty", ex);
-      } catch (SAXException ex) {
-         throw new TransformationException("empty", ex);
-      }
+      } 
    }
+}
+
+class XPath2NodeFilter implements NodeFilter {
+	XPath2NodeFilter(List unionNodes, List substractNodes,
+			List intersectNodes) {
+		this.unionNodes=unionNodes;
+		this.substractNodes=substractNodes;
+		this.intersectNodes=intersectNodes;
+	}
+	List unionNodes=new ArrayList();
+	List substractNodes=new ArrayList();
+	List intersectNodes=new ArrayList();
+
 
    /**
-    * Method traversal
-    *
-    * @param currentNode
+    * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
     */
-   private void traversal(Node currentNode) {
+   public boolean isNodeInclude(Node currentNode) {	 
+	   boolean notIncluded=false;
+	   if (rooted(currentNode,substractNodes)) {
+		   notIncluded=true;
+	   } else if (!rooted(currentNode,intersectNodes)) {
+		   notIncluded=true;
+	   }
+	   if (notIncluded && rooted(currentNode,unionNodes)) {
+		   notIncluded=false;
+	   }
 
-      this._ancestors.add(currentNode);
+      return !notIncluded;
 
-      if (this._inputSet.contains(currentNode)) {
-
-      int iMax = this._filterTypes.size();
-      int i = 0;
-
-      searchFirstUnionWhichContainsNode: for (i = iMax - 1; i >= 0; i--) {
-         NodeList rootNodes = (NodeList) this._filterNodes.get(i);
-         String type = (String) this._filterTypes.get(i);
-
-         if ((type == FUnion)
-                 && rooted(/*currentNode,*/ this._ancestors, rootNodes)) {
-
-            /*
-            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-               log.debug(i + " " + ((Element) currentNode).getTagName()
-                         + " is " + type + " of " + rootNode.getNodeName());
-            }
-            */
-            break searchFirstUnionWhichContainsNode;
-         }
-      }
-
-      int IStart = i;
-
-      if (IStart == -1) {
-         IStart = 0;
-      }
-
-      boolean include = true;
-
-      // search in the subsequent steps for
-      for (int I = IStart; I < iMax; I++) {
-         NodeList rootNodes = (NodeList) this._filterNodes.get(I);
-         String type = (String) this._filterTypes.get(I);
-         boolean rooted = rooted(/*currentNode,*/ this._ancestors, rootNodes);
-
-         if ((type == FIntersect) &&!rooted) {
-
-            /*
-            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-               log.debug("The intersect operation from step " + I
-                         + " does not include " + currentNode.getNodeName());
-            }
-            */
-            include = false;
-
-            break;
-         } else if ((type == FSubtract) && rooted) {
-
-            /*
-            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-               log.debug("The subtract operation from step " + I
-                         + " does subtract " + currentNode.getNodeName());
-            }
-            */
-            include = false;
-
-            break;
-         } else {
-			//do nothing
-         }
-      }
-
-      if (include) {
-         this._F.add(currentNode);
-      }
-      }
-
-      {
-
-         // here we do the traversal
-         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-            NamedNodeMap attributes = ((Element) currentNode).getAttributes();
-            int attributesLength = attributes.getLength();
-
-            for (int x = 0; x < attributesLength; x++) {
-               Node attr = attributes.item(x);
-
-               traversal(attr);
-            }
-         }
-
-         for (Node currentChild = currentNode.getFirstChild();
-                 currentChild != null;
-                 currentChild = currentChild.getNextSibling()) {
-            traversal(currentChild);
-         }
-      }
-
-      this._ancestors.remove(currentNode);
    }
 
    /**
     * Method rooted
+    * @param currentNode 
+    * @param nodeList 
     *
-    * @param ancestors
-    * @param rootNodes
     * @return if rooted bye the rootnodes
     */
-   boolean rooted(/*Node currentNode,*/ List ancestors, NodeList rootNodes) {
-
+   boolean rooted(Node currentNode, List nodeList ) {
+	   for (int j=0;j<nodeList.size();j++) {
+		   NodeList rootNodes=(NodeList) nodeList.get(j);	   
       int length = rootNodes.getLength();
 
       for (int i = 0; i < length; i++) {
          Node rootNode = rootNodes.item(i);
 
-         if (ancestors.contains(rootNode)) {
+         if (XMLUtils.isDescendantOrSelf(rootNode,currentNode)) {
             return true;
          }
       }
-
-      return false;
+   
+	   }
+	   return false;
    }
 }

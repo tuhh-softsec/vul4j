@@ -18,16 +18,9 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
@@ -41,7 +34,6 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -99,8 +91,6 @@ public class TransformXPath extends TransformSpi {
           */
 		  CachedXPathAPIHolder.setDoc(this._transformObject.getElement().getOwnerDocument());
          
-         CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());
          
 
          Element xpathElement =XMLUtils.selectDsNode(
@@ -114,99 +104,60 @@ public class TransformXPath extends TransformSpi {
          }
          Node xpathnode = xpathElement.getChildNodes().item(0);
          String str=CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
-         boolean circumvent=needsCircunvent(str);
-         Set inputSet = input.getNodeSet(circumvent);
-         if (inputSet.size() == 0) {
-            Object exArgs[] = { "input node set contains no nodes" };
-
-            throw new TransformationException("empty", exArgs);
-         }
-         
-         /**
-          * The transform output is also an XPath node-set. The XPath expression
-          * appearing in the XPath parameter is evaluated once for each node in
-          * the input node-set. The result is converted to a boolean. If the
-          * boolean is true, then the node is included in the output node-set.
-          * If the boolean is false, then the node is omitted from the output
-          * node-set.
-          */
-         Set resultNodes = new HashSet();
-
-         /**
-          * precompile XPath for evaluation; this is taken from {@link XPathAPI#eval}
-          */
-         PrefixResolverDefault prefixResolver =
-            new PrefixResolverDefault(xpathElement);
-         
-         
+         input.setNeedsToBeExpanded(needsCircunvent(str));
          if (xpathnode == null) {
-            throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR,
-                                   "Text must be in ds:Xpath");
-         }
+     	    throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR,
+     	                           "Text must be in ds:Xpath");
+     	 }
 
-         Iterator iterator = inputSet.iterator();
-//		 if (iterator.hasNext()) {
-//			 System.err.println(str);
-//			 Node n1=(Node)iterator.next();		 
-//			 XObject objects=xPathFuncHereAPI.selectNodeList(XMLUtils.getOwnerDocument(n1),
-//                 xpathnode, str,prefixResolver);
-//			 NodeList nl=objects.nodelist();
-//			 int length=nl.getLength();
-//			 for (int i=0;i<length; i++) {
-//				 Node n=nl.item(i);
-//				 if (inputSet.contains(n)) {
-//					 resultNodes.add(n);
-//				 }			 				 
-//			 }
-//		 }
-				 
-         while (iterator.hasNext()) {
-            Node currentNode = (Node) iterator.next();
 
-            /* Same solution as in TransformBase64 ?
-            if (currentNode.getClass().getName().equals(
-               "org.apache.xml.dtm.ref.dom2dtm.DOM2DTM$defaultNamespaceDeclarationNode")) {
-               continue;
-            }
-            */            
-            XObject includeInResult = xPathFuncHereAPI.eval(currentNode,
-                                         xpathnode, str,prefixResolver);
-           
-            if (includeInResult.bool()) {
-               resultNodes.add(currentNode);
-               // log.debug("    Added " + org.apache.xml.security.c14n.implementations.Canonicalizer20010315.getXPath(currentNode));
-             } else {
-               // log.debug("Not added " + org.apache.xml.security.c14n.implementations.Canonicalizer20010315.getXPath(currentNode));
-            }
-         }
-
-         XMLSignatureInput result = new XMLSignatureInput(resultNodes);
-
-         result.setSourceURI(input.getSourceURI());
-
-         return result;
-      } catch (TransformerException ex) {
-         throw new TransformationException("empty", ex);
+         input.addNodeFilter(new XPathNodeFilter( xpathElement, xpathnode, str));
+         input.setNodeSet(true);
+         return input;
       } catch (DOMException ex) {
          throw new TransformationException("empty", ex);
-      } catch (IOException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (CanonicalizationException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (ParserConfigurationException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (XMLSecurityException ex) {
-         throw new TransformationException("empty", ex);
-      } catch (SAXException ex) {
-         throw new TransformationException("empty", ex);
-      }
+      } 
    }
+
    /**
     *  @param str
     * @return true if needs to be circunvent for bug.
     */
     private boolean needsCircunvent(String str) {
-    	return true; //str.indexOf("namespace")>0;
+    	return true;
+    	//return str.contains("namespace");
     	
+    }
+    class XPathNodeFilter implements NodeFilter {
+    	 PrefixResolverDefault prefixResolver;
+    	 CachedXPathFuncHereAPI xPathFuncHereAPI =
+             new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());
+          ;
+    	Node xpathnode; 
+    	String str;
+    	XPathNodeFilter(Element xpathElement,
+    			Node xpathnode, String str) {
+    		this.xpathnode=xpathnode;
+    		this.str=str;
+    		prefixResolver =new PrefixResolverDefault(xpathElement);
+    	}
+    	    
+
+		/**
+		 * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
+		 */
+		public boolean isNodeInclude(Node currentNode) {			
+			XObject includeInResult;
+			try {
+				includeInResult = xPathFuncHereAPI.eval(currentNode,
+				        xpathnode, str,prefixResolver);
+				return includeInResult.bool();
+			} catch (TransformerException e) {				
+				throw new RuntimeException("currentNode:"+currentNode,e);
+			}	
+			catch (Exception e) {
+				throw new RuntimeException("currentNode:"+currentNode+",type:"+currentNode.getNodeType(),e);
+			}
+		}
     }
 }
