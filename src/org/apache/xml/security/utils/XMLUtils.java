@@ -654,7 +654,7 @@ public class XMLUtils {
     * @param descendantOrSelf
     * @return true if the node is descendant
     */
-   static boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
+   static public boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
 
       if (ctx == descendantOrSelf) {
          return true;
