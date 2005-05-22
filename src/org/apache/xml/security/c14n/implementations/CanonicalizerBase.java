@@ -178,8 +178,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
          if (rootNode instanceof Element) {
          	//Fills the nssymbtable with the definitions of the parent of the root subnode
          	getParentNameSpaces((Element)rootNode,ns);
-         }
-         this.canonicalizeSubTree(rootNode,ns);
+         }         
+         this.canonicalizeSubTree(rootNode,ns,rootNode);
          this._writer.close();
          if (this._writer instanceof ByteArrayOutputStream) {
             byte []result=((ByteArrayOutputStream)this._writer).toByteArray();
@@ -196,93 +196,110 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
          throw new CanonicalizationException("empty", ex);
       } 
    }
-
+ 
    
    /**
     * Method canonicalizeSubTree, this function is a recursive one.
     *    
     * @param currentNode
     * @param ns 
+    * @param endnode 
     * @throws CanonicalizationException
     * @throws IOException
     */
-   final void canonicalizeSubTree(Node currentNode, NameSpaceSymbTable ns)
-           throws CanonicalizationException, IOException {
-
-      switch (currentNode.getNodeType()) {
-
-      case Node.DOCUMENT_TYPE_NODE :
-      default :
-         break;
-
-      case Node.ENTITY_NODE :
-      case Node.NOTATION_NODE :
-      case Node.DOCUMENT_FRAGMENT_NODE :
-      case Node.ATTRIBUTE_NODE :
-         // illegal node type during traversal
-         throw new CanonicalizationException("empty");
-      case Node.DOCUMENT_NODE :
-         for (Node currentChild = currentNode.getFirstChild();
-                 currentChild != null;
-                 currentChild = currentChild.getNextSibling()) {
-            canonicalizeSubTree(currentChild,ns);
-         }
-         break;
-
-      case Node.COMMENT_NODE :
-         if (this._includeComments) {
-            outputCommentToWriter((Comment) currentNode, this._writer);
-         }
-         break;
-
-      case Node.PROCESSING_INSTRUCTION_NODE :
-         outputPItoWriter((ProcessingInstruction) currentNode, this._writer);
-         break;
-
-      case Node.TEXT_NODE :
-      case Node.CDATA_SECTION_NODE :
-         outputTextToWriter(currentNode.getNodeValue(), this._writer);
-         break;
-
-      case Node.ELEMENT_NODE :        
-      	if (currentNode==this._excludeNode) {
-      		return;
-      	}
-        OutputStream writer=this._writer;
-         Element currentElement = (Element) currentNode;
-         //Add a level to the nssymbtable. So latter can be pop-back.
-      	 ns.outputNodePush();
-         writer.write('<');
-         String tagName=currentElement.getTagName();
-         writeStringToUtf8(tagName,writer);
-         
-         Iterator attrs = this.handleAttributesSubtree(currentElement,ns);
-         if (attrs!=null) {
-         	//we output all Attrs which are available
-         	while (attrs.hasNext()) {
-         		Attr attr = (Attr) attrs.next();
-         		outputAttrToWriter(attr.getNodeName(),
-                                    attr.getNodeValue(), writer);
-         	}
-         }
-
-         writer.write('>');
-
-         // traversal
-         for (Node currentChild = currentNode.getFirstChild();
-                 currentChild != null;
-                 currentChild = currentChild.getNextSibling()) {
-            canonicalizeSubTree(currentChild,ns);
-         }
-
-         writer.write(_END_TAG);
-         writeStringToUtf8(tagName,writer);        
-         writer.write('>');
-         //We fineshed with this level, pop to the previous definitions.
-         ns.outputNodePop();
-         break;
-      }
-   }
+    final void canonicalizeSubTree(Node currentNode, NameSpaceSymbTable ns,Node endnode)
+    throws CanonicalizationException, IOException {
+    	Node sibling=null;
+    	Node parentNode=null;
+    	OutputStream writer=this._writer;
+    	do {
+    		switch (currentNode.getNodeType()) {
+    		
+    		case Node.DOCUMENT_TYPE_NODE :
+    		default :
+    			break;
+    		
+    		case Node.ENTITY_NODE :
+    		case Node.NOTATION_NODE :
+    		case Node.DOCUMENT_FRAGMENT_NODE :
+    		case Node.ATTRIBUTE_NODE :
+    			// illegal node type during traversal
+    			throw new CanonicalizationException("empty");
+    			
+    		case Node.DOCUMENT_NODE :
+    			ns.outputNodePush();
+    			//currentNode = currentNode.getFirstChild();  
+    			sibling= currentNode.getFirstChild();
+    			break;
+    			
+    		case Node.COMMENT_NODE :
+    			if (this._includeComments) {
+    				outputCommentToWriter((Comment) currentNode, writer);
+    			}
+    			break;
+    			
+    		case Node.PROCESSING_INSTRUCTION_NODE :
+    			outputPItoWriter((ProcessingInstruction) currentNode, writer);
+    			break;
+    			
+    		case Node.TEXT_NODE :
+    		case Node.CDATA_SECTION_NODE :
+    			outputTextToWriter(currentNode.getNodeValue(), writer);
+    			break;
+    			
+    		case Node.ELEMENT_NODE :        
+    			if (currentNode==this._excludeNode) {
+    				break;
+    			}      
+    			Element currentElement = (Element) currentNode;
+    			//Add a level to the nssymbtable. So latter can be pop-back.
+    			ns.outputNodePush();
+    			writer.write('<');
+    			String name=currentElement.getTagName();
+    			writeStringToUtf8(name,writer);
+    			
+    			Iterator attrs = this.handleAttributesSubtree(currentElement,ns);
+    			if (attrs!=null) {
+    				//we output all Attrs which are available
+    				while (attrs.hasNext()) {
+    					Attr attr = (Attr) attrs.next();
+    					outputAttrToWriter(attr.getNodeName(),attr.getNodeValue(), writer);
+    				}
+    			}
+    			writer.write('>');        
+    			sibling= currentNode.getFirstChild(); 
+    			if (sibling==null) {
+    				writer.write(_END_TAG);
+        			writeStringToUtf8(name,writer);        
+        			writer.write('>');
+        			//We fineshed with this level, pop to the previous definitions.
+        			ns.outputNodePop();
+        			sibling= currentNode.getNextSibling();
+    			} else {
+    				parentNode=currentElement;
+    			}
+    			break;
+    		}
+    		while (sibling==null  && parentNode!=null) {    		      		      			
+    			writer.write(_END_TAG);
+    			writeStringToUtf8(((Element)parentNode).getTagName(),writer);        
+    			writer.write('>');
+    			//We fineshed with this level, pop to the previous definitions.
+    			ns.outputNodePop();
+    			if (parentNode==endnode)
+    				return;
+    			sibling=parentNode.getNextSibling();
+    			parentNode=parentNode.getParentNode();   
+    			if (!(parentNode instanceof Element)) {
+    				parentNode=null;
+    			}    			
+    		}      
+    		if (sibling==null)
+    			return;
+    		currentNode=sibling;      
+    		sibling=currentNode.getNextSibling();  
+    	} while(true);
+    }
 
    /**
     * Checks whether a Comment or ProcessingInstruction is before or after the
@@ -329,7 +346,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
            throws CanonicalizationException {   
       
       try { 
-         this.canonicalizeXPathNodeSet(doc,new  NameSpaceSymbTable());
+         this.canonicalizeXPathNodeSet(doc,doc);
          this._writer.close();
          if (this._writer instanceof ByteArrayOutputStream) {
             byte [] sol=((ByteArrayOutputStream)this._writer).toByteArray();
@@ -351,53 +368,53 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 	* _xpathNodeSet field.
     *
     * @param currentNode
-	* @param ns
+	* @param endnode
     * @throws CanonicalizationException
     * @throws IOException
     */
-   final void canonicalizeXPathNodeSet(Node currentNode, NameSpaceSymbTable ns )
+   final void canonicalizeXPathNodeSet(Node currentNode,Node endnode )
            throws CanonicalizationException, IOException {
-	   boolean currentNodeIsVisible = false;
-	  if (currentNode.getNodeType()!=Node.DOCUMENT_TYPE_NODE)
-		  currentNodeIsVisible = isVisible(currentNode);
-
-      switch (currentNode.getNodeType()) {
-
-      case Node.DOCUMENT_TYPE_NODE :
-      default :
-         break;
-
-      case Node.ENTITY_NODE :
-      case Node.NOTATION_NODE :
-      case Node.DOCUMENT_FRAGMENT_NODE :
-      case Node.ATTRIBUTE_NODE :
-         throw new CanonicalizationException("empty");
-      case Node.DOCUMENT_NODE :
-         for (Node currentChild = currentNode.getFirstChild();
-                 currentChild != null;
-                 currentChild = currentChild.getNextSibling()) {
-            canonicalizeXPathNodeSet(currentChild,ns);
-         }
-         break;
-
-      case Node.COMMENT_NODE :
-         if (currentNodeIsVisible && this._includeComments) {           
-            outputCommentToWriter((Comment) currentNode, this._writer);           
-         }
-         break;
-
-      case Node.PROCESSING_INSTRUCTION_NODE :
-         if (currentNodeIsVisible) {            
-            outputPItoWriter((ProcessingInstruction) currentNode, this._writer);            
-         }
-         break;
-
-      case Node.TEXT_NODE :
-      case Node.CDATA_SECTION_NODE :
-         if (currentNodeIsVisible) {
-            outputTextToWriter(currentNode.getNodeValue(), this._writer);
-
-            for (Node nextSibling = currentNode.getNextSibling();
+	   boolean currentNodeIsVisible = false;	  
+	   NameSpaceSymbTable ns=new  NameSpaceSymbTable();
+  	Node sibling=null;
+	Node parentNode=null;	
+	OutputStream writer=this._writer;
+	do {
+		switch (currentNode.getNodeType()) {
+		
+		case Node.DOCUMENT_TYPE_NODE :
+		default :
+			break;
+		
+		case Node.ENTITY_NODE :
+		case Node.NOTATION_NODE :
+		case Node.DOCUMENT_FRAGMENT_NODE :
+		case Node.ATTRIBUTE_NODE :
+			// illegal node type during traversal
+			throw new CanonicalizationException("empty");
+			
+		case Node.DOCUMENT_NODE :
+			ns.outputNodePush();
+			//currentNode = currentNode.getFirstChild();  
+			sibling= currentNode.getFirstChild();
+			break;
+			
+		case Node.COMMENT_NODE :			
+			if (this._includeComments && isVisible(currentNode)) {
+				outputCommentToWriter((Comment) currentNode, writer);
+			}
+			break;
+			
+		case Node.PROCESSING_INSTRUCTION_NODE :
+			if (isVisible(currentNode))
+				outputPItoWriter((ProcessingInstruction) currentNode, writer);
+			break;
+			
+		case Node.TEXT_NODE :
+		case Node.CDATA_SECTION_NODE :
+			if (isVisible(currentNode)) {
+			outputTextToWriter(currentNode.getNodeValue(), writer);
+			for (Node nextSibling = currentNode.getNextSibling();
                     (nextSibling != null)
                     && ((nextSibling.getNodeType() == Node.TEXT_NODE)
                         || (nextSibling.getNodeType()
@@ -409,54 +426,80 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 *
                 * @see http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6329
                 */
-               outputTextToWriter(nextSibling.getNodeValue(), this._writer);
+               outputTextToWriter(nextSibling.getNodeValue(), writer);
+               currentNode=nextSibling;
+               sibling=currentNode.getNextSibling();
             }
-         }
-         break;
-
-      case Node.ELEMENT_NODE :
-         Element currentElement = (Element) currentNode;
-      	 OutputStream writer=this._writer;
-         String tagName=currentElement.getTagName();
-         if (currentNodeIsVisible) {
-            //This is an outputNode.
-         	ns.outputNodePush();
-            writer.write('<');
-            writeStringToUtf8(tagName,writer);
-         } else {
-           //Not an outputNode.
-         	ns.push(); 	
-         }
-
-         // we output all Attrs which are available
-         Iterator attrs = handleAttributes(currentElement,ns);
-         while (attrs.hasNext()) {
-            Attr attr = (Attr) attrs.next();
-            outputAttrToWriter(attr.getNodeName(), attr.getNodeValue(), writer);
-         }
-
-         if (currentNodeIsVisible) {
-            writer.write('>');
-         }
-
-         // traversal
-         for (Node currentChild = currentNode.getFirstChild();
-                 currentChild != null;
-                 currentChild = currentChild.getNextSibling()) {
-            canonicalizeXPathNodeSet(currentChild,ns);
-         }
-
-         if (currentNodeIsVisible) {
-            writer.write(_END_TAG);
-            writeStringToUtf8(tagName,writer);
-            //this._writer.write(currentElement.getTagName().getBytes("UTF8"));
-            writer.write('>');
-            ns.outputNodePop();
-         } else {
-         	ns.pop();
-         }
-         break;
-      }
+			
+			}
+			break;
+			
+		case Node.ELEMENT_NODE :             
+			Element currentElement = (Element) currentNode;
+			//Add a level to the nssymbtable. So latter can be pop-back.
+			String name=null;
+			currentNodeIsVisible=isVisible(currentNode);
+			if (currentNodeIsVisible) {
+				ns.outputNodePush();
+				writer.write('<');
+				name=currentElement.getTagName();
+				writeStringToUtf8(name,writer);
+			} else {
+				ns.push();
+			}
+			
+			Iterator attrs = handleAttributes(currentElement,ns);
+			if (attrs!=null) {
+				//we output all Attrs which are available
+				while (attrs.hasNext()) {
+					Attr attr = (Attr) attrs.next();
+					outputAttrToWriter(attr.getNodeName(),attr.getNodeValue(), writer);
+				}
+			}
+			if (currentNodeIsVisible) {
+				writer.write('>');
+			}
+			sibling= currentNode.getFirstChild(); 
+		
+			if (sibling==null) {
+				if (currentNodeIsVisible) {
+					writer.write(_END_TAG);
+					writeStringToUtf8(name,writer);        
+					writer.write('>');
+					//We fineshed with this level, pop to the previous definitions.
+					ns.outputNodePop();
+				} else {
+					ns.pop();
+				}				
+    			sibling= currentNode.getNextSibling();
+			} else {
+				parentNode=currentElement;
+			}
+			break;
+		}
+		while (sibling==null  && parentNode!=null) {    
+			if (isVisible(parentNode)) {
+				writer.write(_END_TAG);
+				writeStringToUtf8(((Element)parentNode).getTagName(),writer);        
+				writer.write('>');
+				//We fineshed with this level, pop to the previous definitions.
+				ns.outputNodePop();
+			} else {
+				ns.pop();
+			}
+			if (parentNode==endnode)
+				return;
+			sibling=parentNode.getNextSibling();
+			parentNode=parentNode.getParentNode();   
+			if (!(parentNode instanceof Element)) {
+				parentNode=null;
+			}    			
+		}      
+		if (sibling==null)
+			return;
+		currentNode=sibling;      
+		sibling=currentNode.getNextSibling();  
+	} while(true);
    }
 
    boolean isVisible(Node currentNode) {
