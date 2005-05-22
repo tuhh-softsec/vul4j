@@ -14,6 +14,17 @@ New in v1.2.1-99
 	Minor speedups in b64, Halved the table lookups.
 	Reduce Object creation during c14n, from one to level to one per c14n.
 	Change all Vector to List(ArrayList), we don't need synchronization safety.
+	*Refactor the way we handle c14n of nodesets:
+	    Before this patch every transformation creates a set with the nodes that should
+	    be outputed. Every set is obtaining visiting the whole dom tree every time,
+	    and then do it other time at c14n time. So it does <number of transformations>+1
+	    visitings, very slow and memory costly.
+	    Now every transformation just return a NodeFilter that tells if the node is included or not.
+	    So only one visiting is done.
+	Unified http://www.w3.org/2002/06/xmldsig-filter2 and http://www.w3.org/2002/04/xmldsig-filter2 transformation implementations.
+	Removed http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter transformation
+	    
+	
 
 New in v1.2.1
  * Fix the memory leak when using xpath or using ResourceResolver and not hitting 
