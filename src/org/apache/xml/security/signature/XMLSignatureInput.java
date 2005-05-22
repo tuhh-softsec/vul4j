@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +40,6 @@ import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
  * @author Christian Geuer-Pollmann
  * $todo$ check whether an XMLSignatureInput can be _both_, octet stream _and_ node set?
  */
-public class XMLSignatureInput {
+public class XMLSignatureInput  implements Cloneable {
 	 static org.apache.commons.logging.Log log = 
 	        org.apache.commons.logging.LogFactory.getLog(XMLSignatureInput.class.getName());
 
@@ -82,6 +82,8 @@ public class XMLSignatureInput {
     * 
     */
    boolean excludeComments=false;
+   
+   boolean isNodeSet=false;
    /**
     * A cached bytes
     */
@@ -100,7 +102,7 @@ public class XMLSignatureInput {
    /**
     * Node Filter list.
     */
-   List nodeFilters;
+   List nodeFilters=new ArrayList();
    
    boolean needsToBeExpanded=false;
    /**
@@ -187,25 +189,9 @@ public class XMLSignatureInput {
    }
 
    
-   /**
-    * Constructor XMLSignatureInput
-    *
-    * @param inputNodeSet
-    */
-   public XMLSignatureInput(Set inputNodeSet) {
-   	    this._inputNodeSet = inputNodeSet;
-    }
 
 
-   /**
-    * Constructor XMLSignatureInput
-    *
-    * @param inputNodeSet
-    * @deprecated Use {@link Set}s instead of {@link NodeList}s.
-    */
-   public XMLSignatureInput(NodeList inputNodeSet) {   	  
-      this(XMLUtils.convertNodelistToSet(inputNodeSet));
-   }
+
 
    
    /**
@@ -255,46 +241,11 @@ public class XMLSignatureInput {
    	  	    return this._inputNodeSet;
    	  }
        else if (this.isOctetStream()) {
-         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-         dfactory.setValidating(false);
-         dfactory.setNamespaceAware(true);
-         DocumentBuilder db = dfactory.newDocumentBuilder();
-         // select all nodes, also the comments.        
-         try {
-            db.setErrorHandler(new org.apache.xml.security.utils
-               .IgnoreAllErrorHandler());
-
-            Document doc = db.parse(this.getOctetStream());
-            
-            XMLUtils.circumventBug2650(doc);
-            HashSet result=new HashSet();
-            XMLUtils.getSet(doc.getDocumentElement(), result,null,false); 
+         convertToNodes();
+         HashSet result=new HashSet();
+         XMLUtils.getSet(_subNode, result,null,false); 
             //this._inputNodeSet=result;
             return result;         
-         } catch (SAXException ex) {
-
-            // if a not-wellformed nodeset exists, put a container around it...
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            baos.write("<container>".getBytes());
-            baos.write(this.getBytes());
-            baos.write("</container>".getBytes());
-
-            byte result[] = baos.toByteArray();
-            Document document = db.parse(new ByteArrayInputStream(result));
-
-            //XMLUtils.circumventBug2650(document);
-            
-				Set set = new HashSet();
-				XMLUtils.getSet(
-						document.getDocumentElement().getFirstChild().getFirstChild(),
-						set,null,true);
-              // NodeList nodeList = CachedXPathAPIHolder.getCachedXPathAPI().selectNodeList(
-              //    document,
-              //    "(//. | //@* | //namespace::*)[not(self::node()=/) and not(self::node=/container)]");
-
-               return set;
-         }
       }
 
       throw new RuntimeException(
@@ -354,8 +305,8 @@ public class XMLSignatureInput {
     * @return true is the object has been set up with a Node set
     */
    public boolean isNodeSet() {
-      return ( (this._inputOctetStreamProxy == null)
-              && (this._inputNodeSet != null) );
+      return (( (this._inputOctetStreamProxy == null)
+              && (this._inputNodeSet != null) ) || isNodeSet);
    }
    /**
     * Determines if the object has been set up with an Element
@@ -364,7 +315,7 @@ public class XMLSignatureInput {
     */
    public boolean isElement() {
    		return ((this._inputOctetStreamProxy==null)&& (this._subNode!=null)
-   				&& (this._inputNodeSet==null)
+   				&& (this._inputNodeSet==null) && !isNodeSet
    				);
    }
    
@@ -590,4 +541,66 @@ public class XMLSignatureInput {
         return _inputOctetStreamProxy;
     }
         
+
+	/**
+	 * @param filter
+	 */
+	public void addNodeFilter(NodeFilter filter) {	
+		if (isOctetStream()) {
+			try {
+				convertToNodes();
+			} catch (Exception e) {
+				throw new RuntimeException("Unable to convert to nodeset the reference",e);
+			}
+		}
+		nodeFilters.add(filter);
+		
+	}
+
+	/**
+	 * @return the node filters
+	 */
+	public List getNodeFilters() {
+		// TODO Auto-generated method stub
+		return nodeFilters;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setNodeSet(boolean b) {
+		isNodeSet=b;
+		
+	}
+	
+	void convertToNodes() throws CanonicalizationException, ParserConfigurationException, IOException, SAXException{
+		DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+        dfactory.setValidating(false);        
+        dfactory.setNamespaceAware(true);
+        DocumentBuilder db = dfactory.newDocumentBuilder();
+        // select all nodes, also the comments.        
+        try {
+           db.setErrorHandler(new org.apache.xml.security.utils
+              .IgnoreAllErrorHandler());
+
+           Document doc = db.parse(this.getOctetStream());
+           
+           XMLUtils.circumventBug2650(doc);
+           this._subNode=doc.getDocumentElement();                    
+        } catch (SAXException ex) {
+
+           // if a not-wellformed nodeset exists, put a container around it...
+           ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+           baos.write("<container>".getBytes());
+           baos.write(this.getBytes());
+           baos.write("</container>".getBytes());
+
+           byte result[] = baos.toByteArray();
+           Document document = db.parse(new ByteArrayInputStream(result));
+           this._subNode=document.getDocumentElement().getFirstChild().getFirstChild();				
+        }
+        this._inputOctetStreamProxy=null;
+        this.bytes=null;
+	}
 }
