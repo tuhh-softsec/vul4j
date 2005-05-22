@@ -34,12 +34,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.CanonicalizerSpi;
 import org.apache.xml.security.c14n.helper.AttrCompare;
+import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.UnsyncByteArrayOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -86,6 +88,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         throw new RuntimeException("Unable to create nullNode"/*,*/+e);
     }
    }
+   
+   List nodeFilter;
    
    boolean _includeComments;
    Set _xpathNodeSet = null;
@@ -135,13 +139,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 						.getExcludeNode());
 				return bytes;
 			} else if (input.isNodeSet()) {
-				Set inputNodeSet;
-				inputNodeSet = input.getNodeSet(input.isNeedsToBeExpanded());
-				if (inputNodeSet.size() == 0) {
-					// empty nodeset
-					return null;
+				nodeFilter=input.getNodeFilters();
+				Document  doc=XMLUtils.getOwnerDocument(input.getSubNode());
+				if (input.isNeedsToBeExpanded()) {
+					XMLUtils.circumventBug2650(doc);
 				}
-				bytes = engineCanonicalizeXPathNodeSetInternal(inputNodeSet);
+
+				bytes = engineCanonicalizeXPathNodeSetInternal(input.getSubNode());
 				return bytes;
 
 			}
@@ -318,17 +322,14 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     */
    public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet)
            throws CanonicalizationException {
-	   return engineCanonicalizeXPathNodeSetInternal(xpathNodeSet);
+	   this._xpathNodeSet = xpathNodeSet;
+	   return engineCanonicalizeXPathNodeSetInternal(XMLUtils.getOwnerDocument(this._xpathNodeSet));
    }
-   private  byte[] engineCanonicalizeXPathNodeSetInternal(Set xpathNodeSet)
+   private  byte[] engineCanonicalizeXPathNodeSetInternal(Node doc)
            throws CanonicalizationException {   
-      if (xpathNodeSet.size() == 0) {
-        return new byte[0];
-      }
-      this._xpathNodeSet = xpathNodeSet;
+      
       try { 
-         Node rootNodeOfC14n = XMLUtils.getOwnerDocument(this._xpathNodeSet);
-         this.canonicalizeXPathNodeSet(rootNodeOfC14n,new  NameSpaceSymbTable());
+         this.canonicalizeXPathNodeSet(doc,new  NameSpaceSymbTable());
          this._writer.close();
          if (this._writer instanceof ByteArrayOutputStream) {
             byte [] sol=((ByteArrayOutputStream)this._writer).toByteArray();
@@ -356,7 +357,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     */
    final void canonicalizeXPathNodeSet(Node currentNode, NameSpaceSymbTable ns )
            throws CanonicalizationException, IOException {
-      boolean currentNodeIsVisible = this._xpathNodeSet.contains(currentNode);
+	   boolean currentNodeIsVisible = false;
+	  if (currentNode.getNodeType()!=Node.DOCUMENT_TYPE_NODE)
+		  currentNodeIsVisible = isVisible(currentNode);
 
       switch (currentNode.getNodeType()) {
 
@@ -456,7 +459,20 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
       }
    }
 
-   	/**
+   boolean isVisible(Node currentNode) {
+	   if (nodeFilter!=null) {
+   		Iterator it=nodeFilter.iterator();
+   		while (it.hasNext()) {
+   			if (!((NodeFilter)it.next()).isNodeInclude(currentNode))
+   				return false;
+   		}
+	   }
+   		if ((this._xpathNodeSet!=null) && !this._xpathNodeSet.contains(currentNode))
+   			return false;
+   		return true;
+   	}
+
+	/**
 	 * Adds to ns the definitons from the parent elements of el
    	 * @param el
    	 * @param ns
