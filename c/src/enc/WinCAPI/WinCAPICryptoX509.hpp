@@ -69,9 +69,14 @@ public :
 	 * \brief Constructor for X509 objects
 	 *
 	 * @param pCertContext A certificate handle
+	 * @param provRSA A handle to the PROV_RSA_FULL type provider that the
+	 * interface should use when importing keys and manipulating certs
+	 * @param provDSS A handle to the PROV_DSS type provider that the
+	 * interface should use when importing keys and manipulating certs
 	 */
 
-	WinCAPICryptoX509(PCCERT_CONTEXT pCertContext);
+	WinCAPICryptoX509(PCCERT_CONTEXT pCertContext,
+			HCRYPTPROV provRSA, HCRYPTPROV provDSS);
 
 	virtual ~WinCAPICryptoX509();
 

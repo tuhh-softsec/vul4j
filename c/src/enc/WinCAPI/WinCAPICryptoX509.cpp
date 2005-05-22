@@ -44,7 +44,9 @@ m_DERX509(""), mp_certContext(NULL), m_pRSA(provRSA), m_pDSS(provDSS) {
 
 }
 
-WinCAPICryptoX509::WinCAPICryptoX509(PCCERT_CONTEXT pCertContext) {
+WinCAPICryptoX509::WinCAPICryptoX509(PCCERT_CONTEXT pCertContext,
+									 HCRYPTPROV provRSA, HCRYPTPROV provDSS) :
+m_pRSA(provRSA), m_pDSS(provDSS) {
 
 	// Build this from an existing PCCERT_CONTEXT structure
 
