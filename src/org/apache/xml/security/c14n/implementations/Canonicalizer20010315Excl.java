@@ -233,7 +233,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 		//The prefix visibly utilized(in the attribute or in the name) in the element
 		Set visiblyUtilized =null;
 		//It's the output selected.
-		boolean isOutputElement = this._xpathNodeSet.contains(E);			
+		boolean isOutputElement = isVisible(E);			
 		if (isOutputElement) {
 			visiblyUtilized =  (Set) this._inclusiveNSSet.clone();
 		}
@@ -242,7 +242,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 			Attr N = (Attr) attrs.item(i);
 			String NName=N.getLocalName();
 			String NNodeValue=N.getNodeValue();
-			if ( !this._xpathNodeSet.contains(N) )  {
+			if ( !isVisible(N) )  {
 				//The node is not in the nodeset(if there is a nodeset)
 				continue;
 			}			
@@ -276,7 +276,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 		if (isOutputElement) {	               
            //The element is visible, handle the xmlns definition    
            Attr xmlns = E.getAttributeNodeNS(XMLNS_URI, XMLNS);
-           if ((xmlns!=null) &&  (!this._xpathNodeSet.contains(xmlns))) {
+           if ((xmlns!=null) &&  (!isVisible(xmlns))) {
               //There is a definition but the xmlns is not selected by the xpath.
               //then xmlns=""
               ns.addMapping(XMLNS,"",nullNode);                               

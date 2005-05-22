@@ -189,7 +189,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     */
    Iterator handleAttributes(Element E,  NameSpaceSymbTable ns ) throws CanonicalizationException {    
     // result will contain the attrs which have to be outputted
-    boolean isRealVisible=this._xpathNodeSet.contains(E);    
+    boolean isRealVisible=isVisible(E);    
     NamedNodeMap attrs = null;
     int attrsLength = 0;
     if (E.hasAttributes()) {
@@ -228,7 +228,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
        }
        //add the prefix binding to the ns symb table.
        //ns.addInclusiveMapping(NName,NValue,N,isRealVisible);          
-	    if  (this._xpathNodeSet.contains(N))  {
+	    if  (isVisible(N))  {
 			    //The xpath select this node output it if needed.
 	    		Node n=ns.addMappingAndRenderXNodeSet(NName,NValue,N,isRealVisible); 	    		
 		 	 	if (n!=null) {
@@ -248,7 +248,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
         if (xmlns == null) {
         	//No xmlns def just get the already defined.
         	n=ns.getMapping(XMLNS);        		
-        } else if ( !this._xpathNodeSet.contains(xmlns)) {
+        } else if ( !isVisible(xmlns)) {
         	//There is a definition but the xmlns is not selected by the xpath.
         	//then xmlns=""
         	n=ns.addMappingAndRenderXNodeSet(XMLNS,"",nullNode,true);        	    		      	
@@ -288,7 +288,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
          Map loa = new HashMap();
 
          if ((parent != null) && (parent.getNodeType() == Node.ELEMENT_NODE)
-                 &&!this._xpathNodeSet.contains(parent)) {
+                 &&!isVisible(parent)) {
 
             // parent element is not in node set
             for (Node ancestor = parent;
