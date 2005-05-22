@@ -2021,7 +2021,7 @@ void testEncrypt(DOMImplementation *impl) {
 // --------------------------------------------------------------------------------
 //           Test XKMS basics
 // --------------------------------------------------------------------------------
-
+#if 0
 void testXKMS(DOMImplementation *impl) {
 
 	// This is really a place holder
@@ -2041,7 +2041,7 @@ void testXKMS(DOMImplementation *impl) {
 
 	doc->release();
 }
-
+#endif
 	
 // --------------------------------------------------------------------------------
 //           Print usage instructions
@@ -2067,8 +2067,8 @@ void printUsage(void) {
 	cerr << "         Only run basic encryption test\n\n";
 	cerr << "     --encryption-unit-only/-u\n";
 	cerr << "         Only run encryption unit tests\n\n";
-	cerr << "     --xkms-only/-x\n";
-	cerr << "         Only run basic XKMS test\n\n";
+//	cerr << "     --xkms-only/-x\n";
+//	cerr << "         Only run basic XKMS test\n\n";
 
 }
 // --------------------------------------------------------------------------------
@@ -2136,13 +2136,13 @@ int main(int argc, char **argv) {
 			doXKMSTest = false;
 			paramCount++;
 		}
-		else if (stricmp(argv[paramCount], "--xkms-only") == 0 || stricmp(argv[paramCount], "-x") == 0) {
+/*		else if (stricmp(argv[paramCount], "--xkms-only") == 0 || stricmp(argv[paramCount], "-x") == 0) {
 			doEncryptionTest = false;
 			doSignatureTest = false;
 			doEncryptionUnitTests = false;
 			doSignatureUnitTests = false;
 			paramCount++;
-		}
+            }*/
 		else {
 			printUsage();
 			return 2;
@@ -2250,7 +2250,7 @@ int main(int argc, char **argv) {
 
 			unitTestEncrypt(impl);
 		}
-
+/*
 		// Running XKMS Base test
 		if (doXKMSTest) {
 			cerr << endl << "====================================";
@@ -2260,7 +2260,7 @@ int main(int argc, char **argv) {
 
 			testXKMS(impl);
 		}
-
+*/
 		cerr << endl << "All tests passed" << endl;
 
 	}
