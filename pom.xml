@@ -8,5 +8,5 @@
   <groupId>plexus</groupId>
   <artifactId>plexus-archiver</artifactId>
   <name>Plexus Archiver Component</name>
-  <version>1.0-alpha-1</version>
+  <version>1.0-alpha-2-SNAPSHOT</version>
 </project>
