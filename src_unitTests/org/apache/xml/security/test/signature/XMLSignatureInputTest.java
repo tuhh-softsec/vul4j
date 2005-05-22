@@ -226,38 +226,7 @@ public class XMLSignatureInputTest extends TestCase {
       return XMLUtils.convertNodelistToSet(nl);
    }
 
-   /**
-    * Method testSetNodeSetGetOctetStream1
-    *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws InvalidCanonicalizerException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws TransformerException
-    * @throws UnsupportedEncodingException
-    */
-   public static void testSetNodeSetGetOctetStream1()
-           throws IOException, UnsupportedEncodingException,
-                  ParserConfigurationException, SAXException,
-                  CanonicalizationException, InvalidCanonicalizerException,
-                  TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
-      String definedWithoutComments =
-         "<RootElement><Element1></Element1><Element2></Element2><Element3>Text in Element3</Element3></RootElement>";
-
-      {
-
-         // input.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-         String resultWithoutComments = new String(input.getBytes(), "UTF-8");
-
-         /* FileOutputStream fos = new FileOutputStream ("xResult.xml");
-            fos.write(resultWithoutComments.getBytes()); */
-         assertTrue("testSetNodeSetGetOctetStream(false)",
-                    resultWithoutComments.equals(definedWithoutComments));
-      }
-   }
 
    /**
     * Method testIsInitialized
@@ -301,65 +270,11 @@ public class XMLSignatureInputTest extends TestCase {
       assertTrue("Input is not node set", !input.isNodeSet());
    }
 
-   /**
-    * Method testIsInitializedWithNodeSet
-    *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws TransformerException
-    * @throws UnsupportedEncodingException
-    */
-   public static void testIsInitializedWithNodeSet()
-           throws IOException, UnsupportedEncodingException,
-                  ParserConfigurationException, SAXException,
-                  CanonicalizationException, TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
 
-      assertTrue("Input is initialized", input.isInitialized());
-   }
 
-   /**
-    * Method testNodeSetIsNotOctetStream
-    *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws TransformerException
-    * @throws UnsupportedEncodingException
-    */
-   public static void testNodeSetIsNotOctetStream()
-           throws IOException, UnsupportedEncodingException,
-                  ParserConfigurationException, SAXException,
-                  CanonicalizationException, TransformerException {
 
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
 
-      assertTrue("Input is not octet stream", !input.isOctetStream());
-   }
-
-   /**
-    * Method testNodeSetIsNodeSet
-    *
-    * @throws CanonicalizationException
-    * @throws IOException
-    * @throws ParserConfigurationException
-    * @throws SAXException
-    * @throws TransformerException
-    * @throws UnsupportedEncodingException
-    */
-   public static void testNodeSetIsNodeSet()
-           throws IOException, UnsupportedEncodingException,
-                  ParserConfigurationException, SAXException,
-                  CanonicalizationException, TransformerException {
-
-      XMLSignatureInput input = new XMLSignatureInput(getNodeSet1());
-
-      assertTrue("Input is node set", input.isNodeSet());
-   }
 
    static {
       org.apache.xml.security.Init.init();
