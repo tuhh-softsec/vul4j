@@ -66,7 +66,8 @@ import org.xml.sax.Attributes;
  * there is no parameter info available from the XML. However parameters of
  * type Float and Integer will be passed a real object containing a zero value
  * as that is the output of the default ConvertUtils converters for those
- * types when passed a null. See the beautils documentation for more info.</p>
+ * types when passed a null. You can register custom converters to change
+ * this behaviour; see the beautils library documentation for more info.</p>
  *
  * <p>Note that when a constructor is used with paramCount=0, indicating that
  * the body of the element is to be passed to the target method, an empty 
