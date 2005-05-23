@@ -551,7 +551,7 @@ unsigned int WinCAPICryptoKeyRSA::privateDecrypt(const unsigned char * inBuf,
 	default :
 
 		throw XSECCryptoException(XSECCryptoException::RSAError,
-			"OpenSSL:RSA - Unknown padding method");
+			"WiNCAPI:RSA - Unknown padding method");
 
 	}
 

@@ -116,7 +116,7 @@ public :
 	virtual XSECCryptoKey::KeyType getKeyType();
 
 	/**
-	 *\brief Return the OpenSSL string identifier
+	 *\brief Return the WiNCAPI string identifier
 	 */
 
 	virtual const XMLCh * getProviderName() {return DSIGConstants::s_unicodeStrPROVWinCAPI;}
@@ -172,7 +172,7 @@ public :
 
 	/** @name Optional Interface methods
 	 * 
-	 * Have been fully implemented in the OpenSSL interface to allow interop
+	 * Have been fully implemented in the WinCAPI interface to allow interop
 	 * testing to occur.
 	 *
 	 */
