@@ -127,7 +127,7 @@ XSECCryptoKey::KeyType WinCAPICryptoX509::getPublicKeyType() {
 
 	if (mp_certContext == NULL) {
 		throw XSECCryptoException(XSECCryptoException::X509Error,
-			"WinCAPI:X509 - getSigningKeyType called before X509 loaded");
+			"WinCAPI:X509 - getPublicKeyType called before X509 loaded");
 	}
 
 	if (lstrcmp(mp_certContext->pCertInfo->SubjectPublicKeyInfo.Algorithm.pszObjId, CRYPTO_OID_DSA) == 0)
@@ -147,7 +147,7 @@ XSECCryptoKey * WinCAPICryptoX509::clonePublicKey() {
 
 	if (mp_certContext == NULL) {
 		throw XSECCryptoException(XSECCryptoException::X509Error,
-			"WinCAPI:X509 - getSigningKeyType called before X509 loaded");
+			"WinCAPI:X509 - clonePublicKey called before X509 loaded");
 	}
 
 	// Import the key into the provider to get a pointer to the key

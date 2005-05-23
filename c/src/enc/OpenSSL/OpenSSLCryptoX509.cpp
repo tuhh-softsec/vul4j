@@ -173,7 +173,7 @@ XSECCryptoKey::KeyType OpenSSLCryptoX509::getPublicKeyType() {
 
 	if (mp_X509 == NULL) {
 		throw XSECCryptoException(XSECCryptoException::X509Error,
-			"OpenSSL:X509 - getSigningKeyType called before X509 loaded");
+			"OpenSSL:X509 - getPublicKeyType called before X509 loaded");
 	}
 
 	EVP_PKEY *pkey;
@@ -217,7 +217,7 @@ XSECCryptoKey * OpenSSLCryptoX509::clonePublicKey() {
 
 	if (mp_X509 == NULL) {
 		throw XSECCryptoException(XSECCryptoException::X509Error,
-			"OpenSSL:X509 - getSigningKey called before X509 loaded");
+			"OpenSSL:X509 - clonePublicKey called before X509 loaded");
 	}
 
 	EVP_PKEY *pkey;
