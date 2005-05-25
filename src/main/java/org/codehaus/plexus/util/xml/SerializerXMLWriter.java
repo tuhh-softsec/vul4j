@@ -25,6 +25,10 @@ public class SerializerXMLWriter
 
     private List exceptions;
 
+    private boolean documentStarted;
+
+    private String encoding;
+
     public SerializerXMLWriter( String namespace, XmlSerializer serializer )
     {
         this.serializer = serializer;
@@ -35,8 +39,45 @@ public class SerializerXMLWriter
     {
         try
         {
+            if ( !documentStarted )
+            {
+                documentStarted = true;
+                serializer.startDocument( encoding, null );
+            }
+        }
+        catch ( IOException e )
+        {
+            storeException( e );
+        }
+        try
+        {
             serializer.startTag( namespace, name );
             elements.push( name );
+        }
+        catch ( IOException e )
+        {
+            storeException( e );
+        }
+    }
+
+    public void setEncoding( String encoding )
+        throws IllegalStateException
+    {
+        this.encoding = encoding;
+    }
+
+    public void setDocType( String docType )
+        throws IllegalStateException
+    {
+        if ( documentStarted )
+        {
+            throw new IllegalStateException( "docType should be set before starting writing the document." );
+        }
+        try
+        {
+            documentStarted = true;
+            serializer.startDocument( encoding, null );
+            serializer.docdecl( docType );
         }
         catch ( IOException e )
         {

@@ -825,7 +825,7 @@ public class MXSerializer implements XmlSerializer {
     {
         if(startTagIncomplete || setPrefixCalled || seenBracket) closeStartTag();
         if(doIndent && seenTag) seenTag = false;
-        out.write("<!DOCTYPE");
+        out.write("<!DOCTYPE ");
         out.write(text); //escape?
         out.write(">");
     }

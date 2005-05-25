@@ -4,16 +4,29 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.LinkedList;
 
-public class PrettyPrintXMLWriter implements XMLWriter
+public class PrettyPrintXMLWriter
+    implements XMLWriter
 {
 
     private PrintWriter writer;
+
     private LinkedList elementStack = new LinkedList();
+
     private boolean tagInProgress;
+
     private int depth;
+
     private String lineIndenter;
+
     private boolean readyForNewLine;
+
     private boolean tagIsEmpty;
+
+    private boolean documentStarted;
+
+    private String encoding;
+
+    private String docType;
 
     public PrettyPrintXMLWriter( PrintWriter writer, String lineIndenter )
     {
@@ -36,8 +49,32 @@ public class PrettyPrintXMLWriter implements XMLWriter
         this( new PrintWriter( writer ) );
     }
 
+    public void setEncoding( String encoding )
+    {
+        if ( documentStarted )
+        {
+            throw new IllegalStateException( "encoding should be set before starting writing the document." );
+        }
+        this.encoding = encoding;
+    }
+
+    public void setDocType( String docType )
+    {
+        if ( documentStarted )
+        {
+            throw new IllegalStateException( "docType should be set before starting writing the document." );
+        }
+        this.docType = docType;
+
+    }
+
     public void startElement( String name )
     {
+        if ( !documentStarted )
+        {
+            writeDocumentHeaders();
+            documentStarted = true;
+        }
         tagIsEmpty = false;
         finishTag();
         write( "<" );
@@ -126,6 +163,25 @@ public class PrettyPrintXMLWriter implements XMLWriter
         for ( int i = 0; i < depth; i++ )
         {
             write( lineIndenter );
+        }
+    }
+
+    private void writeDocumentHeaders()
+    {
+        write( "<?xml version=\"1.0\"" );
+        if ( encoding != null )
+        {
+            write( " encoding=\"" + encoding + "\"" );
+        }
+        write( "?>" );
+        //
+        endOfLine();
+        if ( docType != null )
+        {
+            write( "<!DOCTYPE " );
+            write( docType );
+            write( ">" );
+            endOfLine();
         }
     }
 }
