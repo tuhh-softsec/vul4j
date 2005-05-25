@@ -2062,6 +2062,11 @@ public class StringUtils
 
             Object obj = namespace.get( key );
 
+            if ( obj == null )
+            {
+                throw new NullPointerException( "The value of " + key + "key is null." );
+            }
+
             String value = obj.toString();
 
             text = StringUtils.replace( text, "${" + key + "}", value );
