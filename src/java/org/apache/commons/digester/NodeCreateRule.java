@@ -111,7 +111,7 @@ public class NodeCreateRule extends Rule {
             this.root = root;
             this.top = root;
             
-            oldContentHandler = digester.getXMLReader().getContentHandler();
+            oldContentHandler = digester.getCustomContentHandler();
 
         }
 
@@ -191,8 +191,7 @@ public class NodeCreateRule extends Rule {
             
             try {
                 if (depth == 0) {
-                    getDigester().getXMLReader().setContentHandler(
-                        oldContentHandler);
+                    getDigester().setCustomContentHandler(oldContentHandler);
                     getDigester().push(root);
                     getDigester().endElement(namespaceURI, localName, qName);
                 }
@@ -372,11 +371,12 @@ public class NodeCreateRule extends Rule {
 
 
     /**
-     * When this method fires, the content handler object used by the
-     * xml parser is replaced by a custom one, resulting in a DOM being
+     * When this method fires, the digester is told to forward all SAX
+     * ContentHandler events to the builder object, resulting in a DOM being
      * built instead of normal digester rule-handling occurring. When the
      * end of the current xml element is encountered, the original content 
-     * handler is restored, allowing Digester operations to continue.
+     * handler is restored (expected to be NULL, allowing normal Digester
+     * operations to continue).
      * 
      * @param namespaceURI the namespace URI of the matching element, or an 
      *   empty string if the parser is not namespace aware or the element has
@@ -389,7 +389,6 @@ public class NodeCreateRule extends Rule {
     public void begin(String namespaceURI, String name, Attributes attributes)
         throws Exception {
 
-        XMLReader xmlReader = getDigester().getXMLReader();
         Document doc = documentBuilder.newDocument();
         NodeBuilder builder = null;
         if (nodeType == Node.ELEMENT_NODE) {
@@ -413,8 +412,11 @@ public class NodeCreateRule extends Rule {
         } else {
             builder = new NodeBuilder(doc, doc.createDocumentFragment());
         }
-        xmlReader.setContentHandler(builder);
-
+        // the NodeBuilder constructor has already saved the original
+        // value of the digester's custom content handler (expected to
+        // be null, but we save it just in case). So now we just
+        // need to tell the digester to forward events to the builder.
+        getDigester().setCustomContentHandler(builder);
     }
 
 

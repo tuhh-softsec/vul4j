@@ -40,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.collections.ArrayStack;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -326,6 +327,17 @@ public class Digester extends DefaultHandler {
     /** Stacks used for interrule communication, indexed by name String */
     private HashMap stacksByName = new HashMap();
     
+    /**
+     * If not null, then calls by the parser to this object's characters, 
+     * startElement, endElement and processingInstruction methods are 
+     * forwarded to the specified object. This is intended to allow rules
+     * to temporarily "take control" of the sax events. In particular, 
+     * this is used by NodeCreateRule.
+     * <p>
+     * See setCustomContentHandler.
+     */
+    private ContentHandler customContentHandler = null;
+
     // ------------------------------------------------------------- Properties
 
     /**
@@ -921,6 +933,53 @@ public class Digester extends DefaultHandler {
         this.substitutor = substitutor;
     }
 
+    /*
+     * See setCustomContentHandler.
+     * 
+     * @since 1.7 
+     */
+    public ContentHandler getCustomContentHandler() {
+        return customContentHandler;
+    }
+
+    /** 
+     * Redirects (or cancels redirecting) of SAX ContentHandler events to an
+     * external object.
+     * <p>
+     * When this object's customContentHandler is non-null, any SAX events
+     * received from the parser will simply be passed on to the specified 
+     * object instead of this object handling them. This allows Rule classes 
+     * to take control of the SAX event stream for a while in order to do 
+     * custom processing. Such a rule should save the old value before setting
+     * a new one, and restore the old value in order to resume normal digester
+     * processing.
+     * <p>
+     * An example of a Rule which needs this feature is NodeCreateRule.
+     * <p>
+     * Note that saving the old value is probably not needed as it should always
+     * be null; a custom rule that wants to take control could only have been 
+     * called when there was no custom content handler. But it seems cleaner
+     * to properly save/restore the value and maybe some day this will come in
+     * useful.
+     * <p>
+     * Note also that this is not quite equivalent to
+     * <pre>
+     * digester.getXMLReader().setContentHandler(handler)
+     * </pre>
+     * for these reasons:
+     * <ul>
+     * <li>Some xml parsers don't like having setContentHandler called after
+     * parsing has started. The Aelfred parser is one example.</li>
+     * <li>Directing the events via the Digester object potentially allows
+     * us to log information about those SAX events at the digester level.</li>
+     * </ul>
+     * 
+     * @since 1.7 
+     */
+    public void setCustomContentHandler(ContentHandler handler) {
+        customContentHandler = handler;
+    }
+
     // ------------------------------------------------- ContentHandler Methods
 
 
@@ -936,6 +995,12 @@ public class Digester extends DefaultHandler {
      */
     public void characters(char buffer[], int start, int length)
             throws SAXException {
+
+        if (customContentHandler != null) {
+            // forward calls instead of handling them here
+            customContentHandler.characters(buffer, start, length);
+            return;
+        }
 
         if (saxLog.isDebugEnabled()) {
             saxLog.debug("characters(" + new String(buffer, start, length) + ")");
@@ -997,6 +1062,12 @@ public class Digester extends DefaultHandler {
      */
     public void endElement(String namespaceURI, String localName,
                            String qName) throws SAXException {
+
+        if (customContentHandler != null) {
+            // forward calls instead of handling them here
+            customContentHandler.endElement(namespaceURI, localName, qName);
+            return;
+        }
 
         boolean debug = log.isDebugEnabled();
 
@@ -1145,6 +1216,12 @@ public class Digester extends DefaultHandler {
     public void processingInstruction(String target, String data)
             throws SAXException {
 
+        if (customContentHandler != null) {
+            // forward calls instead of handling them here
+            customContentHandler.processingInstruction(target, data);
+            return;
+        }
+
         if (saxLog.isDebugEnabled()) {
             saxLog.debug("processingInstruction('" + target + "','" + data + "')");
         }
@@ -1235,6 +1312,12 @@ public class Digester extends DefaultHandler {
             throws SAXException {
         boolean debug = log.isDebugEnabled();
         
+        if (customContentHandler != null) {
+            // forward calls instead of handling them here
+            customContentHandler.startElement(namespaceURI, localName, qName, list);
+            return;
+        }
+
         if (saxLog.isDebugEnabled()) {
             saxLog.debug("startElement(" + namespaceURI + "," + localName + "," +
                     qName + ")");
@@ -2416,6 +2499,7 @@ public class Digester extends DefaultHandler {
         publicId = null;
         stack.clear();
         stacksByName.clear();
+        customContentHandler = null;
     }
 
 
@@ -2637,6 +2721,8 @@ public class Digester extends DefaultHandler {
      * to parse multiple xml documents. However if you are determined to
      * do so, then you should call both clear() and resetRoot() before
      * each parse.
+     *
+     * @since 1.7
      */
     public void resetRoot() {
         root = null;
