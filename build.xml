@@ -71,7 +71,7 @@
   <property name="component.title"         value="Digester - XML to Java Object Configuration"/>
 
   <!-- The current version number of this component -->
-  <property name="component.version"       value="1.7-dev"/>
+  <property name="component.version"       value="1.7"/>
 
   <!-- The base directory for compilation targets -->
   <property name="build.home"              value="target"/>
@@ -235,7 +235,7 @@
                overview="src/java/overview.html"
                doctitle="&lt;h1&gt;${component.title} (Version ${component.version})&lt;/h1&gt;"
             windowtitle="${component.title} (Version ${component.version})"
-                 bottom='Copyright 2001-2005 The Apache Software Foundation or its licensors, as applicable.'>
+                 bottom='Copyright 2001-2005 The Apache Software Foundation.'>
       <link     offline="true" packagelistLoc="${commons-beanutils.api}"
                    href="http://jakarta.apache.org/commons/beanutils/api/"/>
       <link     offline="true" packagelistLoc="${commons-collections.api}"
