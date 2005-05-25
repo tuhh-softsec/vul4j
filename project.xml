@@ -19,7 +19,7 @@
   
   <id>commons-digester</id>
   <inceptionYear>2001</inceptionYear>
-  <currentVersion>1.7-dev</currentVersion>
+  <currentVersion>1.7-RC1</currentVersion>
   <name>Digester</name>
   <shortDescription>Rule based XML->Java object mapping module</shortDescription>
   <description>The Digester package lets you configure an XML->Java object mapping module which triggers certain actions called rules whenever a particular pattern of nested XML elements is recognized.</description>
@@ -44,12 +44,11 @@
   
   <gumpRepositoryId>jakarta</gumpRepositoryId>
   <issueTrackingUrl>http://issues.apache.org/bugzilla/</issueTrackingUrl>
-  <siteAddress>cvs.apache.org</siteAddress>
+  <siteAddress>people.apache.org</siteAddress>
   <siteDirectory>/www/jakarta.apache.org/commons/${pom.artifactId.substring(8)}/</siteDirectory>
   <distributionDirectory>/www/jakarta.apache.org/builds/jakarta-commons/${pom.artifactId.substring(8)}/</distributionDirectory>
   
   <repository>
-    <!--<connection>scm:cvs:${digester.cvs}:jakarta-commons/digester/</connection>-->
     <connection>scm:svn:http://svn.apache.org/repos/asf/jakarta/commons/proper/${pom.artifactId.substring(8)}/trunk</connection>
     <url>http://svn.apache.org/repos/asf/jakarta/commons/proper/${pom.artifactId.substring(8)}/trunk</url>
   </repository>
@@ -70,6 +69,16 @@
   </mailingLists>
 
   <versions>
+    <version>
+      <id>1.7</id>
+      <name>1.7</name>
+      <tag>DIGESTER_1_7</tag>
+    </version>
+    <version>
+      <id>1.6</id>
+      <name>1.6</name>
+      <tag>DIGESTER_1_6</tag>
+    </version>
     <version>
       <id>1.5</id>
       <name>1.5</name>
@@ -231,6 +240,12 @@
            <include>**/*.dtd</include>
          </includes>
       </resource>
+      <resource>
+         <directory>${basedir}</directory>
+         <includes>
+           <include>LICENSE.txt</include>
+         </includes>
+      </resource>
     </resources>
     <unitTest>
       <includes>
@@ -255,10 +270,17 @@
   </build>
 
   <reports>
+  <!-- 
+    - changelog, developer-activity and file-activity plugins are all date-based, and
+    - date selection is broken in subversion, so exclude them. They're not actually
+    - much use anyway unless they go back to the date of the previous release.
+
    <report>maven-changelog-plugin</report>
-   <report>maven-checkstyle-plugin</report>
    <report>maven-developer-activity-plugin</report>
    <report>maven-file-activity-plugin</report>
+   -->
+
+   <report>maven-checkstyle-plugin</report>
    <report>maven-javadoc-plugin</report>
    <report>maven-jdepend-plugin</report>
    <report>maven-junit-report-plugin</report>
