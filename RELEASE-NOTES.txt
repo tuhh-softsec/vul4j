@@ -15,18 +15,6 @@ for existing projects to upgrade; Digester 1.6 has proven to be a stable release
 
 This release is 100% binary and source compatible with the previous release.
 
-RELEASE TODO
-============
-* update xdocs/index.xml
-* xdocs/navigation.xml
-* project.xml
-* build.xml
-* src/conf/MANIFEST.MF
-* verify package.html is correct html.
-* decide on javadoc license text in footer
-* run clirr to check for changes between releases.
-
-
 IMPORTANT NOTES
 ===============
 * The jakarta commons project has migrated to the Subversion version control system
