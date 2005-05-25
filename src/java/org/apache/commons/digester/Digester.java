@@ -499,8 +499,7 @@ public class Digester extends DefaultHandler {
     /**
      * Returns a flag indicating whether the requested feature is supported
      * by the underlying implementation of <code>org.xml.sax.XMLReader</code>.
-     * See <a href="http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description"
-     * http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description</a>
+     * See <a href="http://www.saxproject.org">the saxproject website</a>
      * for information about the standard SAX2 feature flags.
      *
      * @param feature Name of the feature to inquire about
@@ -524,8 +523,7 @@ public class Digester extends DefaultHandler {
     /**
      * Sets a flag indicating whether the requested feature is supported
      * by the underlying implementation of <code>org.xml.sax.XMLReader</code>.
-     * See <a href="http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description"
-     * http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description</a>
+     * See <a href="http://www.saxproject.org">the saxproject website</a>
      * for information about the standard SAX2 feature flags.  In order to be
      * effective, this method must be called <strong>before</strong> the
      * <code>getParser()</code> method is called for the first time, either
@@ -707,8 +705,7 @@ public class Digester extends DefaultHandler {
     /**
      * Return the current value of the specified property for the underlying
      * <code>XMLReader</code> implementation.
-     * See <a href="http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description"
-     * http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description</a>
+     * See <a href="http://www.saxproject.org">the saxproject website</a>
      * for information about the standard SAX2 properties.
      *
      * @param property Property name to be retrieved
@@ -729,8 +726,7 @@ public class Digester extends DefaultHandler {
     /**
      * Set the current value of the specified property for the underlying
      * <code>XMLReader</code> implementation.
-     * See <a href="http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description"
-     * http://www.saxproject.org/apidoc/xml/sax/package-summary.html#package-description</a>
+     * See <a href="http://www.saxproject.org">the saxproject website</a>
      * for information about the standard SAX2 properties.
      *
      * @param property Property name to be set
