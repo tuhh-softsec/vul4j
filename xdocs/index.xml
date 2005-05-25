@@ -39,38 +39,42 @@ include:</p>
 <section name="Documentation">
 
 <p>User documentation is available as package descriptions within the 
-<a href="http://jakarta.apache.org/commons/digester/api/index.html">JavaDoc
+<a href="http://jakarta.apache.org/commons/digester/current/docs/apidocs/index.html">JavaDoc
 API documents</a>.  In particular, you should read the package description for 
 the <code>org.apache.commons.digester</code> package for detailed information 
 on using the package.</p>
 
-<p>The <a href="http://jakarta.apache.org/commons/digester/RELEASE-NOTES.txt">
+<p>The <a href="http://jakarta.apache.org/commons/digester/current/RELEASE-NOTES.txt">
 Release Notes</a> document the new features and bug fixes that have been
 included in this release.</p>
 
-<p>The "examples" directory in the CVS repository contains code which 
+<p>The "examples" directory in the source code repository contains code which 
 demonstrates the basic functionality. In particular, you should read the 
 AddressBook example in the "api" subdirectory. You can view the examples
-directly from the CVS repository via <a
-href="http://cvs.apache.org/viewcvs.cgi/jakarta-commons/digester/src/examples/">
-the ViewCVS</a> web site, or can use CVS to download the files.
+directly from the Subversion repository via <a
+href="http://svn.apache.org/viewcvs/jakarta/commons/proper/digester/trunk/src/examples/">
+the web-based repository browser</a> web site, or can use subversion to 
+download the files.
 </p>
 
 </section>
 
 
 <section name="Releases">
-    <subsection name='Digester 1.6 Release (9th September 2004)'>
+    <subsection name='Digester 1.7 Release (1 June 2005)'>
         <p>
-Digester 1.6 is an important release adding extra functionality 
-as well as fixes for bugs. It represents an important milestone in the evolution
-of the Digester 1 design codebase.
+Digester 1.7 is a minor bugfix and maintenance release. A few small features have been added.
+New projects are encouraged to use this release of digester, but there is no urgency
+for existing projects to upgrade; Digester 1.6 has proven to be a stable release. See
+the release notes for more details.
+        </p>
+        <p>
+The dependencies for Digester 1.7 are identical to the dependencies for Digester 1.6.
         </p>
         <p>
 Digester has a dependency on
 <a href='http://jakarta.apache.org/commons/collections'>Commons Collections</a>.
-This threatens to raise compatibility issues 
-now that two incompatible series of releases exist.
+This threatens to raise compatibility issues now that two incompatible series of releases exist.
 Fortunately, this dependency is only upon a single mature class (ArrayStack) and the versions
 of this class to be found in different versions of the library are binary compatible. 
 Therefore a release from the 2.x series or from the 3.x series of commons collections
@@ -79,7 +83,7 @@ alternatively be satisfied by including the latest BeanUtils release (1.7)
 (which includes the class). 
         </p>
         <p>
-The dependencies neccessary for Digester 1.6 can be summarized as follows:
+The dependencies neccessary for Digester 1.7 can be summarized as follows:
         </p>
 <table>
 <tr>
@@ -112,16 +116,14 @@ The dependencies neccessary for Digester 1.6 can be summarized as follows:
     </subsection>
     <subsection name='Older Releases'>
  <ul>
+  <li>Version 1.6 (from mirror) - 9 Septemper 2004
+   <a href="http://jakarta.apache.org/site/binindex.cgi">binary</a>
+   <a href="http://jakarta.apache.org/site/sourceindex.cgi">source</a></li>
   <li>Version 1.5 (from mirror) - 27 Apr 2003
    <a href="http://jakarta.apache.org/site/binindex.cgi">binary</a>
    <a href="http://jakarta.apache.org/site/sourceindex.cgi">source</a></li>
-  <li>Version 1.4.1 (from mirror)
-   <a href="http://jakarta.apache.org/site/binindex.cgi">binary</a>
-   <a href="http://jakarta.apache.org/site/sourceindex.cgi">source</a></li>
-  <li>Version 1.4 (from mirror)
-    <a href="http://jakarta.apache.org/site/binindex.cgi">binary</a>
-    <a href="http://jakarta.apache.org/site/sourceindex.cgi">source</a> 
-  </li>
+  <li><a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-digester/v1.4.1/">Version 1.4.1</a></li>
+  <li><a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-digester/v1.4/">Version 1.4</a></li>
   <li><a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-digester/v1.3/">Version 1.3</a></li>
   <li><a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-digester/v1.2/">Version 1.2</a></li>
   <li><a href="http://jakarta.apache.org/builds/jakarta-commons/release/commons-digester/v1.1.1/">Version 1.1.1</a></li>
