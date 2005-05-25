@@ -26,10 +26,12 @@ import org.xml.sax.Attributes;
  *
  * <p>This parameter may be:
  * <ul>
- * <li>an arbitrary Object defined programatically, assigned when the element pattern associated with the Rule is matched
- * See {@link #ObjectParamRule(int paramIndex, Object param)}
- * <li>an arbitrary Object defined programatically, assigned if the element pattern AND specified attribute name are matched
- * See {@link #ObjectParamRule(int paramIndex, String attributeName, Object param)}
+ * <li>an arbitrary Object defined programatically, assigned when the element 
+ *  pattern associated with the Rule is matched. See 
+ * {@link #ObjectParamRule(int paramIndex, Object param)}.
+ * <li>an arbitrary Object defined programatically, assigned if the element 
+ * pattern AND specified attribute name are matched. See 
+ * {@link #ObjectParamRule(int paramIndex, String attributeName, Object param)}.
  * </ul>
  * </p>
  *
