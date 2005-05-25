@@ -286,7 +286,14 @@
    <report>maven-junit-report-plugin</report>
    <report>maven-jxr-plugin</report>
    <report>maven-license-plugin</report>
+   
+   <!--
+    - This report is useful to enable when preparing release candidates
+    - but should not be included in the final release as the info isn't
+    - relevant to end users. And it should not be enabled in normal use
+    - as it takes a very long time to run.
    <report>maven-linkcheck-plugin</report>
+   -->
    <report>maven-pmd-plugin</report>
    <report>maven-tasklist-plugin</report>
 <!--   <report>maven-clover-plugin</report> -->
