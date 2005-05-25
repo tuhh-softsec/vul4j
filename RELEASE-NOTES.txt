@@ -74,6 +74,11 @@ that attempt to reuse a single Digester instance to process multiple documents
 Method peek(String stackname, int n) has been added for consistency, to allow
 access to arbitrary objects on named stacks. Thanks to Brian Hanafee for the
 suggestion (bugzilla #33873).
+
+Method setCustomContentHandler/getCustomContentHandler have been added so
+rule classes can redirect SAX events without setting the parser's
+contentHandler method during a parse. This new feature was then used to
+resolve bug#34819.
      
 SetNestedPropertiesRule
 ------------------------
@@ -129,6 +134,8 @@ Reports Addressed
 
 #28739 Problem with parse(File) on windows machines
        -- thanks to John Taylor
+
+#34819 NodeCreateRule fails with Aelfred xml parser
 
 DEPRECATIONS
 ============
