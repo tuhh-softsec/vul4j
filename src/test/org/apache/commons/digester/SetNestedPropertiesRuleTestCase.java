@@ -179,7 +179,7 @@ public class SetNestedPropertiesRuleTestCase extends TestCase {
             fail("No exception thrown by parse when unknown child element found.");
         } catch(org.xml.sax.SAXParseException e) {
             String msg = e.getMessage();
-            if (msg.contains("badprop")) {
+            if (msg.indexOf("badprop") >= 0) {
                 // ok, this is expected; there is no "setBadprop" method on the
                 // SimpleTestBean class...
             } else {
