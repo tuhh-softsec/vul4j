@@ -29,9 +29,9 @@
 
 #include <xercesc/util/XercesVersion.hpp>
 
-#define XSEC_VERSION	     "1.1.0"
+#define XSEC_VERSION	     "1.2.0"
 #define XSEC_VERSION_MAJOR   1
-#define XSEC_VERSION_MEDIUM  1
+#define XSEC_VERSION_MEDIUM  2
 #define XSEC_VERSION_MINOR   0
 
 /*
