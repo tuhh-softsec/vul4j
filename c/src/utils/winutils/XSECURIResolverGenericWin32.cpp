@@ -28,6 +28,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.12  2005/05/29 00:06:55  blautenb
+ * Update localhost check to include an empty hostname - reported by Vincent Finn <vincent.finn@automsoft.com> on security-dev@xml 27/5/2005
+ *
  * Revision 1.11  2005/02/03 13:56:22  milan
  * Apache licence fix.
  *
@@ -197,7 +200,8 @@ BinInputStream * XSECURIResolverGenericWin32::resolveURI(const XMLCh * uri) {
 		// This is a file.  We only really understand if this is localhost
         
 		if (xmluri->getHost() == NULL || xmluri->getHost()[0] == chNull ||
-			!XMLString::compareIString(xmluri->getHost(), XMLUni::fgLocalHostString)) {
+			!XMLString::compareIString(xmluri->getHost(), XMLUni::fgLocalHostString) ||
+			!XMLString::compareIString(xmluri->getHost(), XMLUni::fgEmptyString)) {
 
 			// Clean hex escapes
 			XMLCh * realPath = cleanURIEscapes(xmluri->getPath());
