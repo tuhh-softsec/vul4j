@@ -23,6 +23,7 @@ New in v1.2.1-99
 	    So only one visiting is done.
 	Unified http://www.w3.org/2002/06/xmldsig-filter2 and http://www.w3.org/2002/04/xmldsig-filter2 transformation implementations.
 	Removed http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter transformation
+	Canonicalization tree travesing is not recursive. it gives better memory handling and performance.
 	    
 	
 
