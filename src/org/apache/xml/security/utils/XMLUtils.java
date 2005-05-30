@@ -433,7 +433,7 @@ public class XMLUtils {
          documentElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", "");
       }
 
-      XMLUtils.circumventBug2650recurse(doc);
+      XMLUtils.circumventBug2650internal(doc);
    }
 
    /**
@@ -442,49 +442,61 @@ public class XMLUtils {
     * @param node
     * @see <A HREF="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2650">Namespace axis resolution is not XPath compliant </A>
     */
-   private static void circumventBug2650recurse(Node node) {
-
-      if (node.getNodeType() == Node.ELEMENT_NODE) {
-         Element element = (Element) node;
-         if (element.hasChildNodes() && element.hasAttributes()) {
-         	NamedNodeMap attributes = element.getAttributes();
-         	int attributesLength = attributes.getLength();         
-
-         	for (Node child = element.getFirstChild(); child!=null; 
-                 child=child.getNextSibling()) {            
-
-         		if (child.getNodeType() == Node.ELEMENT_NODE) {
-         			Element childElement = (Element) child;
-
-         			for (int i = 0; i < attributesLength; i++) {
-         				Attr currentAttr = (Attr) attributes.item(i);                  
-         				if (Constants.NamespaceSpecNS.equals(
-         						currentAttr.getNamespaceURI())) {                     
-                        
-         					if (!childElement.hasAttributeNS(
-         							Constants.NamespaceSpecNS,
-									currentAttr.getLocalName())) {
-         						childElement.setAttributeNS(Constants.NamespaceSpecNS,
-                                                    currentAttr.getName(),
-                                                    currentAttr.getNodeValue());
-         					}
-         				}
-         			}
-         		}
-            }
-         }  
-      }
-
-      for (Node child = node.getFirstChild(); child != null;
-              child = child.getNextSibling()) {
-         switch (child.getNodeType()) {
-
+   private static void circumventBug2650internal(Node node) {
+	   Node parent=null;
+	   Node sibling=null;
+	   final String namespaceNs=Constants.NamespaceSpecNS;
+	   do {
+         switch (node.getNodeType()) {
          case Node.ELEMENT_NODE :
+        	 Element element = (Element) node;
+             if (!element.hasChildNodes())
+            	 break;
+             if (element.hasAttributes()) {            	 
+             NamedNodeMap attributes = element.getAttributes();         	
+             int attributesLength = attributes.getLength();    
+             
+             for (Node child = element.getFirstChild(); child!=null; 
+             	child=child.getNextSibling()) {            
+
+             	if (child.getNodeType() != Node.ELEMENT_NODE) {
+             		continue;
+             	}
+             	Element childElement = (Element) child;
+
+             	for (int i = 0; i < attributesLength; i++) {
+             		Attr currentAttr = (Attr) attributes.item(i); 
+             		if (!namespaceNs.equals(currentAttr.getNamespaceURI()))
+             			continue;
+             		if (childElement.hasAttributeNS(namespaceNs,
+    							currentAttr.getLocalName())) {
+             				continue;
+             		}
+             		childElement.setAttributeNS(namespaceNs,
+                                                currentAttr.getName(),
+                                                currentAttr.getNodeValue());         					
+             				
+             			
+             	}
+             }            
+             }
          case Node.ENTITY_REFERENCE_NODE :
          case Node.DOCUMENT_NODE :
-            circumventBug2650recurse(child);
+        	 parent=node;
+        	 sibling=node.getFirstChild();
+             break;
          }
-      }
+         while ((sibling==null) && (parent!=null)) {
+        		 sibling=parent.getNextSibling();
+        		 parent=parent.getParentNode();
+        	 };
+       if (sibling==null) {
+        		 return;
+        	 }
+       	
+         node=sibling;
+         sibling=node.getNextSibling();
+	   } while (true);
    }
 
    /**
