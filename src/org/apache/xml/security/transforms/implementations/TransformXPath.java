@@ -20,6 +20,7 @@ package org.apache.xml.security.transforms.implementations;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
@@ -152,11 +153,13 @@ public class TransformXPath extends TransformSpi {
 				includeInResult = xPathFuncHereAPI.eval(currentNode,
 				        xpathnode, str,prefixResolver);
 				return includeInResult.bool();
-			} catch (TransformerException e) {				
-				throw new RuntimeException("currentNode:"+currentNode,e);
+			} catch (TransformerException e) {
+                Object[] eArgs = {currentNode};
+				throw new XMLSecurityRuntimeException("signature.Transform.node", eArgs, e);
 			}	
 			catch (Exception e) {
-				throw new RuntimeException("currentNode:"+currentNode+",type:"+currentNode.getNodeType(),e);
+                Object[] eArgs = {currentNode, new Short(currentNode.getNodeType())};
+				throw new XMLSecurityRuntimeException("signature.Transform.nodeAndType",eArgs, e);
 			}
 		}
     }

@@ -36,6 +36,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments;
+import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -550,7 +551,7 @@ public class XMLSignatureInput  implements Cloneable {
 			try {
 				convertToNodes();
 			} catch (Exception e) {
-				throw new RuntimeException("Unable to convert to nodeset the reference",e);
+				throw new XMLSecurityRuntimeException("signature.XMLSignatureInput.nodesetReference",e);
 			}
 		}
 		nodeFilters.add(filter);
