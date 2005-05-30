@@ -387,9 +387,6 @@ public class Base64 {
        return (octect == PAD);
    }
 
-   protected static final boolean isData(byte octect) {
-       return (base64Alphabet[octect] != -1);
-   }
 
    /**
     * Encodes hex octects into Base64
@@ -740,11 +737,11 @@ public class Base64 {
                 data[index++]=(byte)is.read();
             break;   
         }
-        if (!isData(readed)) {
-         throw new Base64DecodingException("decoding.general");//if found "no data" just return null
-        } 
         
-        data[index++]=readed;
+        
+        if ((data[index++]=readed)==-1) {
+            throw new Base64DecodingException("decoding.general");//if found "no data" just return null
+           } 
         
         if (index!=4) {
         	continue;
@@ -764,8 +761,10 @@ public class Base64 {
     byte     d1=data[0],d2=data[1],d3=data[2], d4=data[3];
     b1 = base64Alphabet[d1];
     b2 = base64Alphabet[d2];
-     if (!isData( (d3 ) ) ||
-         !isData( (d4 ) )) {//Check if they are PAD characters
+    b3 = base64Alphabet[ d3 ];
+    b4 = base64Alphabet[ d4 ];
+     if ((b3==-1 ) ||
+         (b4==-1) ) {//Check if they are PAD characters
          if (isPad( d3 ) && isPad( d4)) {               //Two PAD e.g. 3c[Pad][Pad]
              if ((b2 & 0xf) != 0)//last 4 bits should be zero
                      throw new Base64DecodingException("decoding.general");                             
@@ -781,8 +780,7 @@ public class Base64 {
          }
      } else {
          //No PAD e.g 3cQl         
-         b3 = base64Alphabet[ d3 ];
-         b4 = base64Alphabet[ d4 ];
+         
          os.write((byte)(  b1 <<2 | b2>>4 ) );
          os.write( (byte)(((b2 & 0xf)<<4 ) |( (b3>>2) & 0xf) ));
          os.write((byte)( b3<<6 | b4 ));
