@@ -108,11 +108,6 @@ The dependencies neccessary for Digester 1.7 can be summarized as follows:
 <td>-</td>
 </tr>
 </table>
-        <p>
-   <a href="http://jakarta.apache.org/site/binindex.cgi#commons-digester">Binary</a> and
-   <a href="http://jakarta.apache.org/site/sourceindex.cgi#commons-digester">source</a>
-   downloads are available. Please remember to verify the MD5 check sums.
-        </p>
     </subsection>
     <subsection name='Downloading'>
  <ul>
@@ -127,6 +122,7 @@ The dependencies neccessary for Digester 1.7 can be summarized as follows:
   <a href="http://archive.apache.org/dist/jakarta/commons/digester/old">
   on the archive site</a>.</li>
  </ul>
+   <p>Please remember to verify the MD5 check sums.</p>
     </subsection>
 </section>
 
