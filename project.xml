@@ -14,19 +14,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
+
+<!--
+  - Maven Project Object Model (POM) for commons-digester.
+  -->
+
 <project>
   <pomVersion>3</pomVersion>
-  
+
+  <!-- id is also known as artifactId -->
   <id>commons-digester</id>
-  <inceptionYear>2001</inceptionYear>
-  <currentVersion>1.7-RC1</currentVersion>
   <name>Digester</name>
-  <shortDescription>Rule based XML->Java object mapping module</shortDescription>
-  <description>The Digester package lets you configure an XML->Java object mapping module which triggers certain actions called rules whenever a particular pattern of nested XML elements is recognized.</description>
-  <logo>/images/logo.png</logo>
-  
-  <url>http://jakarta.apache.org/commons/${pom.artifactId.substring(8)}/</url>
-  <package>org.apache.commons.${pom.artifactId.substring(8)}</package>
+
+  <currentVersion>1.7-RC1</currentVersion>
 
   <organization>
     <name>The Apache Software Foundation</name>
@@ -34,39 +34,29 @@
     <logo>http://jakarta.apache.org/images/original-jakarta-logo.gif</logo>
   </organization>
 
-  <licenses>
-	<license>
-    	<name>The Apache Software License, Version 2.0</name>
-    	<url>/LICENSE.txt</url>
-    	<distribution>repo</distribution>
-	</license>
-  </licenses>
-  
+  <inceptionYear>2001</inceptionYear>
+
+  <package>org.apache.commons.digester</package>
+  <logo>/images/logo.png</logo>
   <gumpRepositoryId>jakarta</gumpRepositoryId>
+
+  <description>
+    The Digester package lets you configure an XML->Java object mapping module
+    which triggers certain actions called rules whenever a particular 
+    pattern of nested XML elements is recognized.
+  </description>
+  <shortDescription>Rule based XML->Java object mapping module</shortDescription>
+
+  <url>http://jakarta.apache.org/commons/digester/</url>
   <issueTrackingUrl>http://issues.apache.org/bugzilla/</issueTrackingUrl>
   <siteAddress>people.apache.org</siteAddress>
-  <siteDirectory>/www/jakarta.apache.org/commons/${pom.artifactId.substring(8)}/</siteDirectory>
-  <distributionDirectory>/www/jakarta.apache.org/builds/jakarta-commons/${pom.artifactId.substring(8)}/</distributionDirectory>
-  
+  <siteDirectory>/www/jakarta.apache.org/commons/digester/</siteDirectory>
+  <distributionDirectory>/www/jakarta.apache.org/builds/jakarta-commons/digester/</distributionDirectory>
+
   <repository>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jakarta/commons/proper/${pom.artifactId.substring(8)}/trunk</connection>
-    <url>http://svn.apache.org/repos/asf/jakarta/commons/proper/${pom.artifactId.substring(8)}/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/jakarta/commons/proper/digester/trunk</connection>
+    <url>http://svn.apache.org/repos/asf/jakarta/commons/proper/digester/trunk</url>
   </repository>
-  
-  <mailingLists>
-    <mailingList>
-      <name>Commons Dev List</name>
-      <subscribe>commons-dev-subscribe@jakarta.apache.org</subscribe>
-      <unsubscribe>commons-dev-unsubscribe@jakarta.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=commons-dev@jakarta.apache.org</archive>
-    </mailingList>
-    <mailingList>
-      <name>Commons User List</name>
-      <subscribe>commons-user-subscribe@jakarta.apache.org</subscribe>
-      <unsubscribe>commons-user-unsubscribe@jakarta.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=commons-user@jakarta.apache.org</archive>
-    </mailingList>
-  </mailingLists>
 
   <versions>
     <version>
@@ -121,6 +111,21 @@
     </version>
   </versions>
 
+  <mailingLists>
+    <mailingList>
+      <name>Commons Dev List</name>
+      <subscribe>commons-dev-subscribe@jakarta.apache.org</subscribe>
+      <unsubscribe>commons-dev-unsubscribe@jakarta.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=commons-dev@jakarta.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>Commons User List</name>
+      <subscribe>commons-user-subscribe@jakarta.apache.org</subscribe>
+      <unsubscribe>commons-user-unsubscribe@jakarta.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=commons-user@jakarta.apache.org</archive>
+    </mailingList>
+  </mailingLists>
+
   <developers>
     <developer>
       <name>Craig McClanahan</name>
@@ -172,40 +177,58 @@
     </contributor>
     <contributor>
       <name>Christopher Lenz</name>
+      <email>commons-user@jakarta.apache.org</email>
     </contributor>
     <contributor>
       <name>Ted Husted</name>
+      <email>commons-user@jakarta.apache.org</email>
     </contributor>
     <contributor>
       <name>David H. Martin</name>
+      <email>commons-user@jakarta.apache.org</email>
     </contributor>
     <contributor>
       <name>Henri Chen</name>
+      <email>commons-user@jakarta.apache.org</email>
     </contributor>
     <contributor>
       <name>Janek Bogucki</name>
+      <email>commons-user@jakarta.apache.org</email>
     </contributor>
     <contributor>
       <name>Mark Huisman</name>
+      <email>commons-user@jakarta.apache.org</email>
     </contributor>
     <contributor>
       <name>Paul Jack</name>
+      <email>commons-user@jakarta.apache.org</email>
     </contributor>
     <contributor>
       <name>Anton Maslovsky</name>
+      <email>commons-user@jakarta.apache.org</email>
     </contributor>
     <contributor>
       <name>Matt Cleveland</name>
+      <email>commons-user@jakarta.apache.org</email>
     </contributor>
     <contributor>
       <name>Gabriele Carcassi</name>
+      <email>commons-user@jakarta.apache.org</email>
     </contributor>
     <contributor>
       <name>Wendy Smoak</name>
       <email>java@wendysmoak.com</email>
     </contributor>
   </contributors>
-  
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>/LICENSE.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
   <dependencies>
     <dependency> 
       <id>commons-beanutils</id>
@@ -228,25 +251,11 @@
       <version>3.8.1</version>
     </dependency>
   </dependencies>
-  
+
   <build>
     <nagEmailAddress>commons-dev@jakarta.apache.org</nagEmailAddress>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
-    <resources>
-      <resource>
-         <directory>${pom.build.sourceDirectory}</directory>
-         <includes>
-           <include>**/*.dtd</include>
-         </includes>
-      </resource>
-      <resource>
-         <directory>${basedir}</directory>
-         <includes>
-           <include>LICENSE.txt</include>
-         </includes>
-      </resource>
-    </resources>
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
@@ -267,6 +276,20 @@
         </resource>
       </resources>
     </unitTest>
+    <resources>
+      <resource>
+         <directory>${pom.build.sourceDirectory}</directory>
+         <includes>
+           <include>**/*.dtd</include>
+         </includes>
+      </resource>
+      <resource>
+         <directory>${basedir}</directory>
+         <includes>
+           <include>LICENSE.txt</include>
+         </includes>
+      </resource>
+    </resources>
   </build>
 
   <reports>
