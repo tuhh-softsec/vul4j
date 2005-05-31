@@ -125,6 +125,13 @@ Reports Addressed
 
 #34819 NodeCreateRule fails with Aelfred xml parser
 
+Fixes without Bugzilla entries
+------------------------------
+* SetNestedPropertiesRule
+     new SetNestedPropertiesRule("foo", null)
+  was not ignoring element "foo".
+
+
 DEPRECATIONS
 ============
 None
