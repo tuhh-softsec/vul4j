@@ -67,6 +67,11 @@
     -  The source and binary distributions must also have the
     -  NOTICE.txt and RELEASE-NOTES.txt files in them, so here we
     -  copy those manually into the assembly directories.
+    -
+    -  And finally, by default the src build unpacks into a directory
+    -  name that is the same as the bin distribution. But traditionally
+    -  src distros from apache unpack into a -src directory, so we
+    -  arrange for that too.
     ================================================================== -->
   
   <preGoal name="dist:build-bin">
@@ -91,6 +96,10 @@
             <include name="RELEASE-NOTES.txt"/>
         </fileset>
     </copy>
+      
+    <move todir="${maven.dist.src.assembly.dir}-src">
+      <fileset dir="${maven.dist.src.assembly.dir}"/>
+    </move>
   </preGoal>
     
 </project>
