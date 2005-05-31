@@ -13,13 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project default="jar:jar">
+<project default="jar:jar" xmlns:j="jelly:core">
 
-  <!-- ================================================================== -->
-  <!-- START : C O M M O N S - B U I L D                                  -->
-  <!-- ================================================================== -->
-  <!-- Required: Look and Feel for documentation within distributions     -->
-  <!-- ================================================================== -->
+  <!-- ==================================================================
+    -   COMMONS-BUILD TWEAKS
+    -
+    -  Ensure commons-build stylesheets are copied into target directory
+    -  when executing the xdoc goal (part of the site goal), so that the
+    -  resulting website has the correct look-and-feel.
+    -
+    -  This goal assumes that commons-build is checked out as a sibling
+    -  to the directory we are doing the build in. 
+    ================================================================== -->
+
   <postGoal name="xdoc:copy-resources">  
     <copy todir="${basedir}/target/docs/style/" failonerror="false">
       <fileset dir="${basedir}/../commons-build/xdocs/style">
@@ -28,18 +34,63 @@
       </fileset>
     </copy>
   </postGoal>
-  <!-- ================================================================== -->
-  <!-- END: C O M M O N S - B U I L D                                     -->
-  <!-- ================================================================== -->
+
+  <!-- ==================================================================
+    -   src compilation tweaks
+    -
+    -  The LICENSE.txt file gets copied to the META-INF dir of the jar
+    -  due to some kind of Maven magic, but we need to copy the
+    -  NOTICE.txt file manually.
+    ================================================================== -->
   
   <postGoal name="java:compile">
-    
-    <copy todir="${maven.build.dir}/test-classes/org/apache/commons/digester">
-      <fileset dir="src/test/org/apache/commons/digester">
-        <include name="*.xml"/>
+    <copy todir="${maven.build.dest}/META-INF">
+      <fileset dir="${basedir}">
+        <include name="NOTICE.txt"/>
       </fileset>
     </copy>
-    
   </postGoal>
 
+  <!-- ==================================================================
+    -  distribution-building tweaks
+    -
+    -  By default, the "dist" target builds a binary distribution that contains
+    -  the output of all the maven reports. We don't want this; the output
+    -  is huge and not relevant for most users. So before the build-bin
+    -  goal tars/zips the archive dir it has build, we delete the unwanted
+    -  information from it, leaving just the javadoc API info behind.
+    -
+    -  Yes, it would be more elegant to skip the reports completely
+    -  when running the dist target, but I don't know
+    -  how to do that; if you do, then please fix this file. 
+    -
+    -  The source and binary distributions must also have the
+    -  NOTICE.txt and RELEASE-NOTES.txt files in them, so here we
+    -  copy those manually into the assembly directories.
+    ================================================================== -->
+  
+  <preGoal name="dist:build-bin">
+    <delete includeEmptyDirs="true">
+      <fileset dir="${maven.dist.bin.assembly.dir}/docs">
+        <exclude name="apidocs/**"/>
+      </fileset>
+    </delete>
+      
+    <copy todir="${maven.dist.bin.assembly.dir}">
+        <fileset dir="${basedir}">
+            <include name="NOTICE.txt"/>
+            <include name="RELEASE-NOTES.txt"/>
+        </fileset>
+    </copy>
+  </preGoal>
+  
+  <preGoal name="dist:build-src">
+    <copy todir="${maven.dist.src.assembly.dir}">
+        <fileset dir="${basedir}">
+            <include name="NOTICE.txt"/>
+            <include name="RELEASE-NOTES.txt"/>
+        </fileset>
+    </copy>
+  </preGoal>
+    
 </project>
