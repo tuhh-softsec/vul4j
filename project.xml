@@ -177,43 +177,43 @@
     </contributor>
     <contributor>
       <name>Christopher Lenz</name>
-      <email>commons-user@jakarta.apache.org</email>
+      <email/>
     </contributor>
     <contributor>
       <name>Ted Husted</name>
-      <email>commons-user@jakarta.apache.org</email>
+      <email/>
     </contributor>
     <contributor>
       <name>David H. Martin</name>
-      <email>commons-user@jakarta.apache.org</email>
+      <email/>
     </contributor>
     <contributor>
       <name>Henri Chen</name>
-      <email>commons-user@jakarta.apache.org</email>
+      <email/>
     </contributor>
     <contributor>
       <name>Janek Bogucki</name>
-      <email>commons-user@jakarta.apache.org</email>
+      <email/>
     </contributor>
     <contributor>
       <name>Mark Huisman</name>
-      <email>commons-user@jakarta.apache.org</email>
+      <email/>
     </contributor>
     <contributor>
       <name>Paul Jack</name>
-      <email>commons-user@jakarta.apache.org</email>
+      <email/>
     </contributor>
     <contributor>
       <name>Anton Maslovsky</name>
-      <email>commons-user@jakarta.apache.org</email>
+      <email/>
     </contributor>
     <contributor>
       <name>Matt Cleveland</name>
-      <email>commons-user@jakarta.apache.org</email>
+      <email/>
     </contributor>
     <contributor>
       <name>Gabriele Carcassi</name>
-      <email>commons-user@jakarta.apache.org</email>
+      <email/>
     </contributor>
     <contributor>
       <name>Wendy Smoak</name>
@@ -256,6 +256,7 @@
     <nagEmailAddress>commons-dev@jakarta.apache.org</nagEmailAddress>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
@@ -276,17 +277,12 @@
         </resource>
       </resources>
     </unitTest>
+
     <resources>
       <resource>
          <directory>${pom.build.sourceDirectory}</directory>
          <includes>
            <include>**/*.dtd</include>
-         </includes>
-      </resource>
-      <resource>
-         <directory>${basedir}</directory>
-         <includes>
-           <include>LICENSE.txt</include>
          </includes>
       </resource>
     </resources>
