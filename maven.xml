@@ -94,6 +94,9 @@
         <fileset dir="${basedir}">
             <include name="NOTICE.txt"/>
             <include name="RELEASE-NOTES.txt"/>
+            <include name="build.properties.sample"/>
+            <include name="checkstyle.xml"/>
+            <include name="file-header.txt"/>
         </fileset>
     </copy>
       
