@@ -76,6 +76,19 @@ import org.xml.sax.Attributes;
  * target function takes something other than a string as a parameter) then 
  * the conversion will fail if the converter class does not accept an empty 
  * string as valid input.</p>
+ * 
+ * <p>CallMethodRule has a design flaw which can cause it to fail under
+ * certain rule configurations. All CallMethodRule instances share a single
+ * parameter stack, and all CallParamRule instances simply store their data
+ * into the parameter-info structure that is on the top of the stack. This
+ * means that two CallMethodRule instances cannot be associated with the
+ * same pattern without getting scrambled parameter data. This same issue
+ * also applies when a CallMethodRule matches some element X, a different 
+ * CallMethodRule matches a child element Y and some of the CallParamRules 
+ * associated with the first CallMethodRule match element Y or one of its 
+ * child elements. This issue has been present since the very first release
+ * of Digester. Note, however, that this configuration of CallMethodRule
+ * instances is not commonly required.</p>
  */
 
 public class CallMethodRule extends Rule {
