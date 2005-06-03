@@ -25,8 +25,8 @@ import org.apache.commons.logging.LogFactory;
  * 
  * <p>This uses just two wildcards:
  * <ul>
- * 	<li><code>*</code> matches any sequence of none, one or more characters
- * 	<li><code>?</code> matches any one character 
+ *  <li><code>*</code> matches any sequence of none, one or more characters
+ *  <li><code>?</code> matches any one character 
  * </ul>
  * Escaping these wildcards is not supported .</p>
  *

@@ -73,7 +73,7 @@ public class RegexRules extends AbstractRulesImpl {
             throw new IllegalArgumentException("RegexMatcher must not be null.");
         }
         this.matcher = matcher;
-    }	
+    }
     
     // --------------------------------------------------------- Public Methods
 

@@ -116,7 +116,7 @@ import java.util.Map;
  * <ul>
  * <li>
  *  <code>"a/b/*"</code> matches any element whose path starts with
- *	'a' then 'b'. Exact parent and parent match rules take precedence. 
+ *  'a' then 'b'. Exact parent and parent match rules take precedence. 
  *  The longest ancestor match will take precedence.
  * </li>
  * <li>

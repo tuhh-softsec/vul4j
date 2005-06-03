@@ -404,7 +404,7 @@ public class FactoryCreateRule extends Rule {
         
         // check if object was created 
         // this only happens if an exception was thrown and we're ignoring them
-        if (	
+        if (
                 ignoreCreateExceptions &&
                 exceptionIgnoredStack != null &&
                 !(exceptionIgnoredStack.empty())) {

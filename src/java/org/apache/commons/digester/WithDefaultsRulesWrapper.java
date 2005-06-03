@@ -102,13 +102,13 @@ public class WithDefaultsRulesWrapper implements Rules {
     /** Gets Rule's which will be fired when the wrapped implementation returns no matches */
     public List getDefaults() {
         return defaultRules;
-    }	
+    }
     
     // --------------------------------------------------------- Public Methods
     
     public List match(String pattern) {
         return match("", pattern);
-    }	
+    }
     
     /**
      * Return list of rules matching given pattern.
@@ -117,7 +117,7 @@ public class WithDefaultsRulesWrapper implements Rules {
      */
     public List match(String namespaceURI, String pattern) {
         List matches = wrappedRules.match(namespaceURI, pattern);
-        if (matches ==  null || matches.isEmpty()) {	
+        if (matches ==  null || matches.isEmpty()) {
             // a little bit of defensive programming
             return new ArrayList(defaultRules);
         }
@@ -159,5 +159,5 @@ public class WithDefaultsRulesWrapper implements Rules {
     public void add(String pattern, Rule rule) {
         wrappedRules.add(pattern, rule);
         allRules.add(rule);
-    }	
+    }
 }
