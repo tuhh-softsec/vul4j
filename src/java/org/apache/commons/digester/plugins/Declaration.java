@@ -16,9 +16,7 @@
  */ 
 package org.apache.commons.digester.plugins;
 
-import java.io.IOException;
 import java.util.Properties;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.digester.Digester;

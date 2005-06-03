@@ -19,14 +19,12 @@
 package org.apache.commons.digester.plugins;
 
 import java.util.List;
-import java.util.Iterator;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.digester.*;
-import org.apache.commons.digester.plugins.*;
+import org.apache.commons.digester.Digester;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.impl.NoOpLog;

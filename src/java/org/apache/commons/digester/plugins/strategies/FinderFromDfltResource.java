@@ -24,7 +24,6 @@ import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.plugins.RuleFinder;
 import org.apache.commons.digester.plugins.RuleLoader;
 import org.apache.commons.digester.plugins.PluginException;
-import org.apache.commons.logging.Log;
 
 /**
  * A rule-finding algorithm which looks for a resource file in the classpath

@@ -18,17 +18,12 @@
 package org.apache.commons.digester.xmlrules;
 
 
-import java.io.InputStream;
 import java.io.StringReader;
-import java.net.URL;
-import java.util.ArrayList;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.digester.Address;
 import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.TestObjectCreationFactory;
 
 import org.xml.sax.InputSource;
 

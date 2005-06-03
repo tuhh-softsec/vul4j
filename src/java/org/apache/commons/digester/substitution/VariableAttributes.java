@@ -20,7 +20,6 @@ package org.apache.commons.digester.substitution;
 
 import org.xml.sax.Attributes;
 
-import java.util.Map;
 import java.util.ArrayList;
 
 

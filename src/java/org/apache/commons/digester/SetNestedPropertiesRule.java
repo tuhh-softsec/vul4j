@@ -22,8 +22,6 @@ package org.apache.commons.digester;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.HashMap;
 import java.beans.PropertyDescriptor;
 
@@ -35,7 +33,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.xml.sax.Attributes;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**

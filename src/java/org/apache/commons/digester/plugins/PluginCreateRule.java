@@ -17,14 +17,9 @@
  
 package org.apache.commons.digester.plugins;
 
-import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.List;
-import java.io.File;
 
-import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.Rule;
-import org.apache.commons.digester.Rules;
 import org.apache.commons.logging.Log;
 
 /**

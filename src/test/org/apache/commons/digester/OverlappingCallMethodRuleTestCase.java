@@ -19,11 +19,7 @@ package org.apache.commons.digester;
 
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

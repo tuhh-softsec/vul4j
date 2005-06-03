@@ -21,7 +21,6 @@ import java.util.Properties;
 
 import org.apache.commons.digester.Rule;
 import org.apache.commons.digester.Digester;
-import org.apache.commons.beanutils.MethodUtils;
 
 import org.apache.commons.logging.Log;
 

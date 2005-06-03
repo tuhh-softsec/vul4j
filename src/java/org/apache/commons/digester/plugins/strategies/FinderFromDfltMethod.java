@@ -17,7 +17,6 @@
  
 package org.apache.commons.digester.plugins.strategies;
 
-import java.io.InputStream;
 import java.util.Properties;
 import java.lang.reflect.Method;
 

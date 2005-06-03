@@ -22,9 +22,6 @@ package org.apache.commons.digester;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -18,14 +18,10 @@
 package org.apache.commons.digester.plugins.strategies;
 
 import java.util.Properties;
-import java.io.InputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.plugins.RuleFinder;
 import org.apache.commons.digester.plugins.RuleLoader;
-import org.apache.commons.digester.plugins.PluginException;
 
 /**
  * A rule-finding algorithm which expects the user to specify whether

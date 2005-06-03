@@ -18,12 +18,10 @@
 
 package org.apache.commons.digester;
 
-import java.lang.reflect.Method;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.digester.parser.GenericParser;
 import org.apache.commons.digester.parser.XercesParser;

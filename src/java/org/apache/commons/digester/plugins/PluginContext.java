@@ -16,14 +16,17 @@
  */ 
 package org.apache.commons.digester.plugins;
 
-import java.io.IOException;
-import java.util.Properties;
 import java.util.List;
 import java.util.LinkedList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.plugins.strategies.*;
+import org.apache.commons.digester.plugins.strategies.FinderFromFile;
+import org.apache.commons.digester.plugins.strategies.FinderFromResource;
+import org.apache.commons.digester.plugins.strategies.FinderFromClass;
+import org.apache.commons.digester.plugins.strategies.FinderFromMethod;
+import org.apache.commons.digester.plugins.strategies.FinderFromDfltMethod;
+import org.apache.commons.digester.plugins.strategies.FinderFromDfltClass;
+import org.apache.commons.digester.plugins.strategies.FinderFromDfltResource;
+import org.apache.commons.digester.plugins.strategies.FinderSetProperties;
 
 /**
  * Provides data and services which should exist only once per digester.

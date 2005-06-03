@@ -25,8 +25,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.digester.*;
-import org.apache.commons.digester.plugins.*;
+import org.apache.commons.digester.Digester;
 
 /**
  * Test cases for plugins with custom rules which include PluginCreateRule

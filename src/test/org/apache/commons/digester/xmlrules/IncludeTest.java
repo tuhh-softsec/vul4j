@@ -18,13 +18,10 @@
 package org.apache.commons.digester.xmlrules;
 
 import java.util.ArrayList;
-
 import java.io.StringReader;
+import org.xml.sax.InputSource;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.xml.sax.InputSource;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.Rule;
