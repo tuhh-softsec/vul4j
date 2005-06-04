@@ -330,6 +330,15 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				RelativePath="..\..\..\..\src\enc\XSECCryptoSymmetricKey.hpp">
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\enc\XSECCryptoUtils.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\enc\XSECCryptoUtils.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\enc\XSECCryptoX509.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\enc\XSECCryptoX509.hpp">
 			</File>
 			<File
@@ -490,6 +499,15 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				RelativePath="..\..\..\..\src\utils\XSECPlatformUtils.hpp">
 			</File>
 			<File
+				RelativePath="..\..\..\..\src\utils\XSECSOAPRequestor.hpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\utils\XSECSOAPRequestorSimple.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\src\utils\XSECSOAPRequestorSimple.hpp">
+			</File>
+			<File
 				RelativePath="..\..\..\..\src\utils\XSECSafeBuffer.cpp">
 			</File>
 			<File
@@ -521,6 +539,9 @@ xcopy /I /s /f ..\..\..\..\src\*.hpp ..\..\..\..\include\xsec
 				</File>
 				<File
 					RelativePath="..\..\..\..\src\utils\winutils\XSECBinHTTPURIInputStream.hpp">
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\utils\winutils\XSECSOAPRequestorSimpleWin32.cpp">
 				</File>
 				<File
 					RelativePath="..\..\..\..\src\utils\winutils\XSECURIResolverGenericWin32.cpp">

@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "threadTest", "threadTest\th
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "txfmout", "txfmout\txfmout.vcproj", "{E1A95507-B3E4-4075-8C31-A24C9460BF68}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xklient", "xklient\xklient.vcproj", "{48346695-1496-4881-8709-E5C02392930A}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -31,6 +33,7 @@ Global
 		{10CE0E86-DF94-4244-9D81-C1D5CDDA6AD8}.0 = {D5B5A007-E873-4D12-B4AF-60811AFD9EF1}
 		{5EE9A0C7-72C8-48F3-A6DB-6E5BF0715DC3}.0 = {D5B5A007-E873-4D12-B4AF-60811AFD9EF1}
 		{E1A95507-B3E4-4075-8C31-A24C9460BF68}.0 = {D5B5A007-E873-4D12-B4AF-60811AFD9EF1}
+		{48346695-1496-4881-8709-E5C02392930A}.0 = {D5B5A007-E873-4D12-B4AF-60811AFD9EF1}
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{D5B5A007-E873-4D12-B4AF-60811AFD9EF1}.Debug.ActiveCfg = Debug|Win32
@@ -69,6 +72,10 @@ Global
 		{E1A95507-B3E4-4075-8C31-A24C9460BF68}.Debug.Build.0 = Debug|Win32
 		{E1A95507-B3E4-4075-8C31-A24C9460BF68}.Release.ActiveCfg = Release|Win32
 		{E1A95507-B3E4-4075-8C31-A24C9460BF68}.Release.Build.0 = Release|Win32
+		{48346695-1496-4881-8709-E5C02392930A}.Debug.ActiveCfg = Debug|Win32
+		{48346695-1496-4881-8709-E5C02392930A}.Debug.Build.0 = Debug|Win32
+		{48346695-1496-4881-8709-E5C02392930A}.Release.ActiveCfg = Release|Win32
+		{48346695-1496-4881-8709-E5C02392930A}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
