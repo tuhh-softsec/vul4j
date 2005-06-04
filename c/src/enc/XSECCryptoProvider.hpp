@@ -197,7 +197,7 @@ public :
 	 * object with an XSECCryptoKeyHMAC using XSECCryptoHash::setKey()
 	 *
 	 * @returns A pointer to a Hash object that implements HMAC-SHA1
-	 * @length Length of hash output (160 = SHA1, 256, 512 etc)
+	 * @param length Length of hash output (160 = SHA1, 256, 512 etc)
 	 * @see XSECCryptoHash
 	 */
 

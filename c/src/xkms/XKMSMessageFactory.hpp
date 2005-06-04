@@ -58,7 +58,8 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
  * XKMS messages) and the XKMSClient class (for actually
  * performing XKMS calls to a server)</p>
  *
- *\@{*/
+ */
+/*@{*/
 
 /**
  * @brief Interface definition for the XKMSMessageFactory class
@@ -326,6 +327,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSLocateResponse structure
 	 */
 
@@ -347,6 +350,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSLocateResponse structure
 	 * @note Like all the xsec library functions, the document is owned by
 	 * the calling application.  Deleteing the LocateRequest object will not
@@ -371,6 +376,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSLocateResponse structure
 	 */
 
@@ -392,6 +399,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSValidateResponse structure
 	 * @note Like all the xsec library functions, the document is owned by
 	 * the calling application.  Deleteing the ValidateRequest object will not
@@ -416,6 +425,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSLocateResponse structure
 	 */
 
@@ -437,6 +448,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSCompoundResponse structure
 	 * @note Like all the xsec library functions, the document is owned by
 	 * the calling application.  Deleteing the ValidateRequest object will not
@@ -461,6 +474,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSResult structure
 	 */
 
@@ -482,6 +497,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new Response structure
 	 * @note Like all the xsec library functions, the document is owned by
 	 * the calling application.  Deleting the Request object will not
@@ -506,6 +523,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSStatusRessult structure
 	 */
 
@@ -527,6 +546,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSStatusResult structure
 	 * @note Like all the xsec library functions, the document is owned by
 	 * the calling application.  Deleting the StatusResult object will not
@@ -597,6 +618,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSRegisterResponse structure
 	 */
 
@@ -618,6 +641,8 @@ public:
 	 * @param doc Will be used to return the newly created document element in.
 	 * @param id Value to set in the Id field.  If NULL, the library will
 	 * generate a new Unique Id value.
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * @returns the new XKMSRegisterResponse structure
 	 * @note Like all the xsec library functions, the document is owned by
 	 * the calling application.  Deleting the RegisterRequest object will not

@@ -348,7 +348,7 @@ public:
 	 * @note Two names are registered by default - "Id" and "id".  These can be
 	 * removed by calling deregisterIdAttributeName
 	 *
-	 * @param idName Name to append to the list of those used to find Id attributes
+	 * @param name Name to append to the list of those used to find Id attributes
 	 */
 
 	void registerIdAttributeName(const XMLCh * name);
@@ -359,7 +359,7 @@ public:
 	 * This allows a user to de-register a particular name to be used to identify Id
 	 * attributes.
 	 *
-	 * @param idName Name to remove from the list of those used to find Id attributes
+	 * @param name Name to remove from the list of those used to find Id attributes
 	 * @returns true if found and removed, false if was not in the list
 	 */
 
@@ -399,7 +399,7 @@ public:
 	 * attributes.
 	 *
 	 * @param ns Namespace in which attribute resides
-	 * @param idName Name to remove from the list of those used to find Id attributes
+	 * @param name Name to remove from the list of those used to find Id attributes
 	 * @returns true if found and removed, false if was not in the list
 	 */
 

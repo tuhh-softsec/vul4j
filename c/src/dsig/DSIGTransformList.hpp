@@ -39,7 +39,6 @@ class DSIGTransform;
 
 /**
  * @ingroup internal
- * @{
  */
 
 /**
@@ -69,7 +68,7 @@ public:
 	typedef size_t			size_type;
 #endif
 
-	/** name Constructors and Destructors */
+	/** @name Constructors and Destructors */
 	//@{
 
 	/**
@@ -91,7 +90,7 @@ public:
 
 	//@}
 
-	/** name Manipulate existing structures */
+	/** @name Manipulate existing structures */
 	//@{
 
 	/**

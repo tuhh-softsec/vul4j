@@ -100,6 +100,8 @@ public:
 	 * @param key The key that has been provided by the calling 
 	 * application to perform the encryption.
 	 *
+     * @param doc Document in which to operate
+     * @param result SafeBuffer object to place result into
 	 * @note This is not quite the symmetric opposite of decryptToSafeBuffer
 	 * because of the way the library uses transformers.  It is expected
 	 * that this method will create a safeBuffer with <b>base64</b> encoded
@@ -137,6 +139,8 @@ public:
 	 * @param encryptionMethod Information about the algorithm to use
 	 * @param key The key that has been determined via a resolver or
 	 * that has been provided by the calling application.
+     * @param doc Document in which to operate
+     * @param result SafeBuffer object to place result into
 	 * @returns The number of plain bytes placed in the safeBuffer
 	 */
 
@@ -166,6 +170,7 @@ public:
 	 * @param encryptionMethod Information about the algorithm to use
 	 * @param key The key that has been determined via a resolver or
 	 * that has been provided by the calling application.
+     * @param doc Document from which to create XML Nodes
 	 * @returns The resulting BinInputStream
 	 */
 

@@ -40,7 +40,6 @@
 
 /**
  * @ingroup opensslcrypto
- * @{
  */
 
 /**

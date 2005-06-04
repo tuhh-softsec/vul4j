@@ -44,7 +44,6 @@
 
 /**
  * \ingroup opensslcrypto
- * @{
  */
 
 /**
@@ -258,7 +257,7 @@ public :
 	 *
 	 * 0x010203????????05
 	 *
-	 * @param cipherBuf Buffer to place final block of cipher text in
+	 * @param plainBuf Buffer to place final block of cipher text in
 	 * @param maxOutLength Maximum number of bytes to pace in output
 	 * @returns Bytes placed in output buffer
 	 */

@@ -43,7 +43,6 @@ XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
 /**
  * @ingroup xenc
- * @{
  */
 
 /**
@@ -114,7 +113,7 @@ public:
 	/**
 	 * \brief Get the DOM Node of this structure
 	 *
-	 * @returns the DOM Node representing the <CipherValue> element
+	 * @returns the DOM Node representing the \<CipherValue\> element
 	 */
 
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) const = 0;

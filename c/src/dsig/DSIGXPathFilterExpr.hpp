@@ -39,7 +39,6 @@ class XSECEnv;
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**

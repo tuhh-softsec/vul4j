@@ -37,7 +37,6 @@ XSEC_DECLARE_XERCES_CLASS(DOMElement);
 
 /**
  * @ingroup xkms
- * @{
  */
 
 /**
@@ -230,7 +229,7 @@ public:
 	 * Allows the application to set a new Nonce value (overwriting any
 	 * that is currently set).
 	 *
-	 * @param nonce String (base64 encoded data) to set in the Nonce attribute.
+	 * @param uri String (base64 encoded data) to set in the Nonce attribute.
 	 * @note no checking of this string is done by the library - it
 	 * is assumed that it is a valid base64 encoding.
 	 */

@@ -35,7 +35,6 @@
 
 /**
  * @ingroup xenc
- * @{
  */
 
 /**
@@ -125,7 +124,7 @@ public:
 	/**
 	 * \brief Get the DOM Node of this structure
 	 *
-	 * @returns the DOM Node representing the <CipherData> element
+	 * @returns the DOM Node representing the \<CipherData\> element
 	 */
 
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * getElement(void) = 0;

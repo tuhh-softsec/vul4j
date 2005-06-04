@@ -37,7 +37,6 @@ class XSECEnv;
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**
@@ -155,7 +154,7 @@ public:
 	/**
 	 * \brief Set the Id attribute for this Object
 	 *
-	 * @id String to use for the Id attribute
+	 * @param id String to use for the Id attribute
 	 */
 
 	void setId(const XMLCh * id);
@@ -163,7 +162,7 @@ public:
 	/**
 	 * \brief Set the Id attribute for this Object
 	 *
-	 * @type String to use for the MimeType attribute
+	 * @param type String to use for the MimeType attribute
 	 */
 
 	void setMimeType(const XMLCh * type);
@@ -171,7 +170,7 @@ public:
 	/**
 	 * \brief Set the Encoding attribute for this Object
 	 *
-	 * @encoding String to use for the Encoding attribute
+	 * @param encoding String to use for the Encoding attribute
 	 */
 
 	void setEncoding(const XMLCh * encoding);

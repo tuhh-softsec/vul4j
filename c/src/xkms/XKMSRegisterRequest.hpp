@@ -37,7 +37,6 @@ class XKMSPrototypeKeyBinding;
 
 /**
  * @ingroup xkms
- * @{
  */
 
 /**

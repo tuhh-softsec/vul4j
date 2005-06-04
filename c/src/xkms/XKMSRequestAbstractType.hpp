@@ -36,7 +36,6 @@ class XKMSResponseMechanism;
 
 /**
  * @ingroup xkms
- * @{
  */
 
 /**

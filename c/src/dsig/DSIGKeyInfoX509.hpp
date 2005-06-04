@@ -37,7 +37,6 @@ XSEC_USING_XERCES(DOMElement);
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**

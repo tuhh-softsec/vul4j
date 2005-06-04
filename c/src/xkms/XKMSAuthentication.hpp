@@ -36,7 +36,6 @@ class XKMSNotBoundAuthentication;
 
 /**
  * @ingroup xkms
- * @{
  */
 
 /**
@@ -85,7 +84,7 @@ public:
 	/**
 	 * \brief Get KeyBindingAuthentication signature construct
 	 *
-	 * A \<XKMSAuthentication\> can have a <\KeyBindingAuthentication\>
+	 * A \<XKMSAuthentication\> can have a \<KeyBindingAuthentication\>
 	 * element as an immediate child.  This element is used to hold a 
 	 * XML-Signature over the PrototypeKeyBinding.
 	 *

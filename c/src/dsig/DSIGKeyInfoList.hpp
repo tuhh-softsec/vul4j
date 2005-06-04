@@ -50,7 +50,6 @@ class DSIGSignature;
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**
@@ -176,7 +175,7 @@ public:
 	 *
 	 * @note This is an internal functions and should not be called directly
 	 *
-	 * @param node The <KeyInfo> element node to read from
+	 * @param node The \<KeyInfo\> element node to read from
 	 */
 
 	bool loadListFromXML(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * node);

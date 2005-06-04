@@ -37,7 +37,6 @@ class XKMSRegisterRequest;
 
 /**
  * @ingroup xkms
- * @{
  */
 
 /**

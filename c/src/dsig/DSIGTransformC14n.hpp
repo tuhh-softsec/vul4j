@@ -27,7 +27,6 @@
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**

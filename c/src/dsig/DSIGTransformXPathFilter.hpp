@@ -40,7 +40,6 @@ class DSIGXPathFilterExpr;
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**

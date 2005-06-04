@@ -685,7 +685,7 @@ public:
 	/**
 	 * \brief Append an object container
 	 *
-	 * Create a new Object (i.e. a Signature <Object> which is a container
+	 * Create a new Object (i.e. a Signature \<Object\> which is a container
 	 * element used to hold information that needs to be signed within the
 	 * signature - i.e. in enveloping mode
 	 *
@@ -763,7 +763,7 @@ public:
 	 * @note Two names are registered by default - "Id" and "id".  These can be
 	 * removed by calling deregisterIdAttributeName
 	 *
-	 * @param idName Name to append to the list of those used to find Id attributes
+	 * @param name Name to append to the list of those used to find Id attributes
 	 */
 
 	void registerIdAttributeName(const XMLCh * name);
@@ -774,7 +774,7 @@ public:
 	 * This allows a user to de-register a particular name to be used to identify Id
 	 * attributes.
 	 *
-	 * @param idName Name to remove from the list of those used to find Id attributes
+	 * @param name Name to remove from the list of those used to find Id attributes
 	 * @returns true if found and removed, false if was not in the list
 	 */
 

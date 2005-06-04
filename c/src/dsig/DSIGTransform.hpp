@@ -42,7 +42,6 @@ class TXFMChain;
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**
@@ -92,7 +91,7 @@ public:
 	 * @note DSIGTransform structures should only ever be created via calls to a
 	 * DSIGTransformList object.
 	 *
-	 * @param sig The Signature structure in which this transform exists.
+	 * @param env The environment descriptor for the object
 	 *
 	 */
 

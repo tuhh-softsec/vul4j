@@ -35,7 +35,6 @@ class XKMSValidityInterval;
 
 /**
  * @ingroup xkms
- * @{
  */
 
 /**

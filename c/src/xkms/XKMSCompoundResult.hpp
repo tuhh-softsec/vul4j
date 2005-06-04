@@ -44,7 +44,6 @@ class XKMSRequestAbstractType;
 
 /**
  * @ingroup xkms
- * @{
  */
 
 /**
@@ -136,6 +135,8 @@ public:
 	 *
 	 * @param request Request to base response on
 	 * @param id Value to set in the Id field.  If NULL, the library will
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * generate a new Unique Id value.
 	 * @returns the new XKMSLocateResponse structure
 	 */
@@ -155,6 +156,8 @@ public:
 	 *
 	 * @param request Request to base response on
 	 * @param id Value to set in the Id field.  If NULL, the library will
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * generate a new Unique Id value.
 	 * @returns the new XKMSLocateResponse structure
 	 */
@@ -174,6 +177,8 @@ public:
 	 *
 	 * @param request Request to base response on
 	 * @param id Value to set in the Id field.  If NULL, the library will
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * generate a new Unique Id value.
 	 * @returns the new XKMSStatusResponse structure
 	 */
@@ -194,6 +199,8 @@ public:
 	 *
 	 * @param request Request to base response on
 	 * @param id Value to set in the Id field.  If NULL, the library will
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * generate a new Unique Id value.
 	 * @returns the new XKMSRegisterResult structure
 	 */
@@ -213,6 +220,8 @@ public:
 	 *
 	 * @param request Request to base response on
 	 * @param id Value to set in the Id field.  If NULL, the library will
+     * @param rmaj Major result code
+     * @param rmin Minor result code
 	 * generate a new Unique Id value.
 	 * @returns the new XKMSResult structure
 	 */

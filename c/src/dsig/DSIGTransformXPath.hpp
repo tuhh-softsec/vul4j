@@ -35,7 +35,6 @@ XSEC_DECLARE_XERCES_CLASS(DOMNode);
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**

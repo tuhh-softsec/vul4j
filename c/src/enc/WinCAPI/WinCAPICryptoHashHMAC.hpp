@@ -40,8 +40,7 @@
 class WinCAPICryptoProvider;
 
 /**
- * @ingroup wincapilcrypto
- * @{
+ * @ingroup wincapicrypto
  */
 
 /**

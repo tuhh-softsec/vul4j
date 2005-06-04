@@ -54,7 +54,6 @@ class XSECEnv;
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**
@@ -99,7 +98,7 @@ public:
 	 * @note DSIGReference structures should only ever be created via calls to a
 	 * DSIGSignature object.
 	 *
-	 * @param sig The signature in which the reference is embedded.
+	 * @param env The environment object for this reference.
 	 * @see #load
 	 * @see DSIGSignature#createReference
 	 */
@@ -397,7 +396,7 @@ public:
 	 *
 	 * @param transformsNode Starting node in the DOM
 	 * @param formatter The formatter to be used to move from XMLCh to strings
-	 * @param sig The signature that will own the list
+	 * @param env Environment in which to operate
 	 * @returns A pointer to the created list.
 	 */
 
@@ -430,7 +429,7 @@ public:
 	 *
 	 * @note Internal function - meant for use by the library
 	 *
-	 * @param sig DSIGSignature object that will own the list
+	 * @param env The environment in which this reference resides
 	 * @param firstReference First reference in DOM structure
 	 * @returns the created list.
 	 */

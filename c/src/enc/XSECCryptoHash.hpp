@@ -36,7 +36,6 @@
 
 /**
  * @ingroup crypto
- * @{
  */
 
 /**

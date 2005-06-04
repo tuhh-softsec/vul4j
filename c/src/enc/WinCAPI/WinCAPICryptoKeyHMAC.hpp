@@ -38,7 +38,6 @@
 
 /**
  * \ingroup wincapicrypto
- * @{
  */
 
 /**

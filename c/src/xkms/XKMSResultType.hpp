@@ -33,7 +33,6 @@
 
 /**
  * @ingroup xkms
- * @{
  */
 
 /**
@@ -171,18 +170,18 @@ public:
 	/**
 	 * \brief Set a new value for the ResultMajor of this response
 	 *
-	 * @param New value for ResultMajor for this messag
+	 * @param rmaj New value for ResultMajor for this messag
 	 */
 
-	virtual void setResultMajor(ResultMajor) = 0;
+	virtual void setResultMajor(ResultMajor rmaj) = 0;
 
 	/**
 	 * \brief Set a new value for the ResultMinor of this response
 	 *
-	 * @param New value for ResultMajor for this message
+	 * @param rmin New value for ResultMajor for this message
 	 */
 
-	virtual void setResultMinor(ResultMinor) = 0;
+	virtual void setResultMinor(ResultMinor rmin) = 0;
 
 	/**
 	 * \brief Set the Request Id for the Message

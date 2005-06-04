@@ -38,7 +38,6 @@ class DSIGReference;
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**

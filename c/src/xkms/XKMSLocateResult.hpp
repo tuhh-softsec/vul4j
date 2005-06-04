@@ -36,7 +36,6 @@ class XKMSUnverifiedKeyBinding;
 
 /**
  * @ingroup xkms
- * @{
  */
 
 /**

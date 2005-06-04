@@ -43,7 +43,6 @@ class XENCEncryptedKey;
 
 /**
  * @ingroup xenc
- * @{
  */
 
 /**
@@ -225,7 +224,7 @@ public:
 	 * The XML-Security-C library makes no use of this attribute, but
 	 * it provides these functions to allow applications to set and get.
 	 *
-	 * @param encoding String (URI) to set in the Encoding attribute.
+	 * @param uri String (URI) to set in the Encoding attribute.
 	 * @note no checking of this string is done by the library - it
 	 * simply sets the value of the Encoding attribute to this value.
 	 */

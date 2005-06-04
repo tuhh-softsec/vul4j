@@ -31,7 +31,6 @@
 
 /**
  * @ingroup pubsig
- * @{
  */
 
 /**
