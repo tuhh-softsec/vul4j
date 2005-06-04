@@ -41,14 +41,16 @@ XERCES_CPP_NAMESPACE_USE
 
 XKMSStatusRequestImpl::XKMSStatusRequestImpl(
 		const XSECEnv * env) :
-XKMSRequestAbstractTypeImpl(env),
+m_request(env),
+m_msg(m_request.m_msg),
 mp_responseIdAttr(NULL) {
 }
 
 XKMSStatusRequestImpl::XKMSStatusRequestImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
-XKMSRequestAbstractTypeImpl(env, node),
+m_request(env, node),
+m_msg(m_request.m_msg),
 mp_responseIdAttr(NULL) {
 
 }
@@ -65,7 +67,7 @@ XKMSStatusRequestImpl::~XKMSStatusRequestImpl() {
 // Load elements
 void XKMSStatusRequestImpl::load() {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt to load an empty element
 		throw XSECException(XSECException::XKMSError,
@@ -73,7 +75,7 @@ void XKMSStatusRequestImpl::load() {
 
 	}
 
-	if (!strEquals(getXKMSLocalName(mp_messageAbstractTypeElement), 
+	if (!strEquals(getXKMSLocalName(m_msg.mp_messageAbstractTypeElement), 
 									XKMSConstants::s_tagStatusRequest)) {
 	
 		throw XSECException(XSECException::XKMSError,
@@ -82,11 +84,11 @@ void XKMSStatusRequestImpl::load() {
 	}
 
 	// Load the base message
-	XKMSRequestAbstractTypeImpl::load();
+	m_request.load();
 
 	// Now check for ResponseId attribute
 	mp_responseIdAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseId);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseId);
 
 	if (mp_responseIdAttr == NULL) {
 		throw XSECException(XSECException::XKMSError,
@@ -102,7 +104,7 @@ DOMElement * XKMSStatusRequestImpl::createBlankStatusRequest(
 		const XMLCh * service,
 		const XMLCh * id) {
 
-	return XKMSRequestAbstractTypeImpl::createBlankMessageAbstractType(
+	return m_request.createBlankRequestAbstractType(
 		XKMSConstants::s_tagStatusRequest, service, id);
 //	return XKMSRequestAbstractTypeImpl::createBlankMessageAbstractType(
 //		MAKE_UNICODE_STRING("ValidateRequest"), service, id);
@@ -139,7 +141,7 @@ const XMLCh * XKMSStatusRequestImpl::getResponseId(void) const {
 
 void XKMSStatusRequestImpl::setResponseId(const XMLCh * responseId) {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt update when not initialised
 		throw XSECException(XSECException::MessageAbstractTypeError,
@@ -147,9 +149,9 @@ void XKMSStatusRequestImpl::setResponseId(const XMLCh * responseId) {
 
 	}
 
-	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagResponseId, responseId);
+	m_msg.mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagResponseId, responseId);
 	mp_responseIdAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseId);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseId);
 
 }
 

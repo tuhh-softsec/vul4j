@@ -44,14 +44,16 @@ XERCES_CPP_NAMESPACE_USE
 
 XKMSCompoundRequestImpl::XKMSCompoundRequestImpl(
 		const XSECEnv * env) :
-XKMSRequestAbstractTypeImpl(env) {
+m_request(env),
+m_msg(m_request.m_msg) {
 
 }
 
 XKMSCompoundRequestImpl::XKMSCompoundRequestImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
-XKMSRequestAbstractTypeImpl(env, node) {
+m_request(env, node),
+m_msg(m_request.m_msg) {
 
 }
 
@@ -76,7 +78,7 @@ XKMSCompoundRequestImpl::~XKMSCompoundRequestImpl() {
 // Load elements
 void XKMSCompoundRequestImpl::load() {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt to load an empty element
 		throw XSECException(XSECException::XKMSError,
@@ -84,7 +86,7 @@ void XKMSCompoundRequestImpl::load() {
 
 	}
 
-	if (!strEquals(getXKMSLocalName(mp_messageAbstractTypeElement), 
+	if (!strEquals(getXKMSLocalName(m_msg.mp_messageAbstractTypeElement), 
 									XKMSConstants::s_tagCompoundRequest)) {
 	
 		throw XSECException(XSECException::XKMSError,
@@ -93,10 +95,10 @@ void XKMSCompoundRequestImpl::load() {
 	}
 
 	// Load the base message
-	XKMSRequestAbstractTypeImpl::load();
+	m_request.load();
 
 	// Now find all Request elements
-	DOMElement * e = findFirstElementChild(mp_messageAbstractTypeElement);
+	DOMElement * e = findFirstElementChild(m_msg.mp_messageAbstractTypeElement);
 
 	while (e != NULL) {
 
@@ -124,7 +126,7 @@ DOMElement * XKMSCompoundRequestImpl::createBlankCompoundRequest(
 		const XMLCh * service,
 		const XMLCh * id) {
 
-	return XKMSRequestAbstractTypeImpl::createBlankMessageAbstractType(
+	return m_request.createBlankRequestAbstractType(
 		XKMSConstants::s_tagCompoundRequest, service, id);
 
 }
@@ -166,11 +168,11 @@ XKMSLocateRequest * XKMSCompoundRequestImpl::createLocateRequest(
 		const XMLCh * service,
 		const XMLCh * id) {
 
-	XKMSLocateRequest * r = m_factory.createLocateRequest(service, mp_env->getParentDocument(), id);
+	XKMSLocateRequest * r = m_factory.createLocateRequest(service, m_msg.mp_env->getParentDocument(), id);
 	m_requestList.push_back((XKMSRequestAbstractTypeImpl*) r);
 
-	mp_messageAbstractTypeElement->appendChild(r->getElement());
-	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 
 	return r;
 
@@ -180,11 +182,11 @@ XKMSValidateRequest * XKMSCompoundRequestImpl::createValidateRequest(
 		const XMLCh * service,
 		const XMLCh * id) {
 
-	XKMSValidateRequest * r = m_factory.createValidateRequest(service, mp_env->getParentDocument(), id);
+	XKMSValidateRequest * r = m_factory.createValidateRequest(service, m_msg.mp_env->getParentDocument(), id);
 	m_requestList.push_back((XKMSRequestAbstractTypeImpl*) r);
 
-	mp_messageAbstractTypeElement->appendChild(r->getElement());
-	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 
 	return r;
 }
@@ -193,11 +195,11 @@ XKMSRegisterRequest * XKMSCompoundRequestImpl::createRegisterRequest(
 		const XMLCh * service,
 		const XMLCh * id) {
 
-	XKMSRegisterRequest * r = m_factory.createRegisterRequest(service, mp_env->getParentDocument(), id);
+	XKMSRegisterRequest * r = m_factory.createRegisterRequest(service, m_msg.mp_env->getParentDocument(), id);
 	m_requestList.push_back((XKMSRequestAbstractTypeImpl*) r);
 
-	mp_messageAbstractTypeElement->appendChild(r->getElement());
-	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 
 	return r;
 }

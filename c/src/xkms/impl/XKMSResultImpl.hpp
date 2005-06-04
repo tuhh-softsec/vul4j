@@ -33,8 +33,11 @@
 
 #include "XKMSResultTypeImpl.hpp"
 
-class XKMSResultImpl : public XKMSResultTypeImpl, public XKMSResult {
+class XKMSResultImpl : public XKMSResult {
 
+public:
+	XKMSResultTypeImpl m_result;
+	XKMSMessageAbstractTypeImpl &m_msg;
 public:
 
 	XKMSResultImpl(

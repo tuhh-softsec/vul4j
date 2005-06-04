@@ -34,7 +34,12 @@
 #include "XKMSResultTypeImpl.hpp"
 #include "XKMSMessageFactoryImpl.hpp"
 
-class XKMSCompoundResultImpl : public XKMSResultTypeImpl, public XKMSCompoundResult {
+class XKMSCompoundResultImpl : public XKMSCompoundResult {
+
+public:
+
+	XKMSResultTypeImpl m_result;
+	XKMSMessageAbstractTypeImpl &m_msg;
 
 public:
 

@@ -46,14 +46,16 @@ XERCES_CPP_NAMESPACE_USE
 
 XKMSCompoundResultImpl::XKMSCompoundResultImpl(
 		const XSECEnv * env) :
-XKMSResultTypeImpl(env) {
+m_result(env),
+m_msg(m_result.m_msg) {
 
 }
 
 XKMSCompoundResultImpl::XKMSCompoundResultImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
-XKMSResultTypeImpl(env, node) {
+m_result(env, node),
+m_msg(m_result.m_msg){
 
 }
 
@@ -78,7 +80,7 @@ XKMSCompoundResultImpl::~XKMSCompoundResultImpl() {
 // Load elements
 void XKMSCompoundResultImpl::load() {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt to load an empty element
 		throw XSECException(XSECException::XKMSError,
@@ -86,7 +88,7 @@ void XKMSCompoundResultImpl::load() {
 
 	}
 
-	if (!strEquals(getXKMSLocalName(mp_messageAbstractTypeElement), 
+	if (!strEquals(getXKMSLocalName(m_msg.mp_messageAbstractTypeElement), 
 									XKMSConstants::s_tagCompoundResult)) {
 	
 		throw XSECException(XSECException::XKMSError,
@@ -95,10 +97,10 @@ void XKMSCompoundResultImpl::load() {
 	}
 
 	// Load the base message
-	XKMSResultTypeImpl::load();
+	m_result.load();
 
 	// Now find all Result elements
-	DOMElement * e = findFirstElementChild(mp_messageAbstractTypeElement);
+	DOMElement * e = findFirstElementChild(m_msg.mp_messageAbstractTypeElement);
 
 	while (e != NULL) {
 
@@ -128,7 +130,7 @@ DOMElement * XKMSCompoundResultImpl::createBlankCompoundResult(
 		ResultMajor rmaj,
 		ResultMinor rmin) {
 
-	return XKMSResultTypeImpl::createBlankResultType(
+	return m_result.createBlankResultType(
 		XKMSConstants::s_tagCompoundResult, service, id, rmaj, rmin);
 
 }
@@ -172,11 +174,11 @@ XKMSLocateResult * XKMSCompoundResultImpl::createLocateResult(
 		ResultMinor rmin,
 		const XMLCh * id) {
 
-	XKMSLocateResult * r = m_factory.createLocateResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
+	XKMSLocateResult * r = m_factory.createLocateResult(request, m_msg.mp_env->getParentDocument(), rmaj, rmin, id);
 	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
-	mp_messageAbstractTypeElement->appendChild(r->getElement());
-	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 
 	return r;
 
@@ -188,11 +190,11 @@ XKMSValidateResult * XKMSCompoundResultImpl::createValidateResult(
 		ResultMinor rmin,
 		const XMLCh * id) {
 
-	XKMSValidateResult * r = m_factory.createValidateResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
+	XKMSValidateResult * r = m_factory.createValidateResult(request, m_msg.mp_env->getParentDocument(), rmaj, rmin, id);
 	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
-	mp_messageAbstractTypeElement->appendChild(r->getElement());
-	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 
 	return r;
 
@@ -204,11 +206,11 @@ XKMSStatusResult * XKMSCompoundResultImpl::createStatusResult(
 		ResultMinor rmin,
 		const XMLCh * id) {
 
-	XKMSStatusResult * r = m_factory.createStatusResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
+	XKMSStatusResult * r = m_factory.createStatusResult(request, m_msg.mp_env->getParentDocument(), rmaj, rmin, id);
 	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
-	mp_messageAbstractTypeElement->appendChild(r->getElement());
-	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 
 	return r;
 
@@ -220,11 +222,11 @@ XKMSRegisterResult * XKMSCompoundResultImpl::createRegisterResult(
 		ResultMinor rmin,
 		const XMLCh * id) {
 
-	XKMSRegisterResult * r = m_factory.createRegisterResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
+	XKMSRegisterResult * r = m_factory.createRegisterResult(request, m_msg.mp_env->getParentDocument(), rmaj, rmin, id);
 	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
-	mp_messageAbstractTypeElement->appendChild(r->getElement());
-	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 
 	return r;
 
@@ -236,11 +238,11 @@ XKMSResult * XKMSCompoundResultImpl::createResult(
 		ResultMinor rmin,
 		const XMLCh * id) {
 
-	XKMSResult * r = m_factory.createResult(request, mp_env->getParentDocument(), rmaj, rmin, id);
+	XKMSResult * r = m_factory.createResult(request, m_msg.mp_env->getParentDocument(), rmaj, rmin, id);
 	m_resultList.push_back((XKMSResultTypeImpl*) r);
 
-	mp_messageAbstractTypeElement->appendChild(r->getElement());
-	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	m_msg.mp_messageAbstractTypeElement->appendChild(r->getElement());
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 
 	return r;
 

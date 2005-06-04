@@ -37,8 +37,11 @@
 
 class XKMSKeyBindingImpl;
 
-class XKMSValidateResultImpl : public XKMSResultTypeImpl, public XKMSValidateResult {
+class XKMSValidateResultImpl : public XKMSValidateResult {
 
+public:
+	XKMSResultTypeImpl m_result;
+	XKMSMessageAbstractTypeImpl &m_msg;
 public:
 
 	XKMSValidateResultImpl(

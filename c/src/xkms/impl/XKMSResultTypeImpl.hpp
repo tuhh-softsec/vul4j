@@ -36,8 +36,10 @@
 XSEC_DECLARE_XERCES_CLASS(DOMElement);
 XSEC_DECLARE_XERCES_CLASS(DOMAttr);
 
-class XKMSResultTypeImpl : public XKMSResultType, public XKMSMessageAbstractTypeImpl {
+class XKMSResultTypeImpl : public XKMSResultType {
 
+public:
+	XKMSMessageAbstractTypeImpl m_msg;
 public:
 
 	XKMSResultTypeImpl(const XSECEnv * env);
@@ -60,7 +62,7 @@ public:
 
 
 	/* Note yet implemented from MessageAbstractType */
-	virtual messageType getMessageType(void) = 0;
+	virtual messageType getMessageType(void) {return XKMSMessageAbstractType::None;}
 	
 	// Getter interface
 
@@ -101,21 +103,21 @@ private:
 
 #define XKMS_RESULTTYPE_IMPL_METHODS \
 virtual ResultMajor getResultMajor(void) const \
-	{return XKMSResultTypeImpl::getResultMajor();} \
+	{return m_result.getResultMajor();} \
 virtual ResultMinor getResultMinor(void) const \
-	{return XKMSResultTypeImpl::getResultMinor();} \
+	{return m_result.getResultMinor();} \
 virtual const XMLCh * getRequestId(void) const \
-	{return XKMSResultTypeImpl::getRequestId();} \
+	{return m_result.getRequestId();} \
 virtual const XMLCh * getRequestSignatureValue(void) const \
-	{return XKMSResultTypeImpl::getRequestSignatureValue();} \
+	{return m_result.getRequestSignatureValue();} \
 virtual void setResultMajor(ResultMajor r) \
-	{XKMSResultTypeImpl::setResultMajor(r);} \
+	{m_result.setResultMajor(r);} \
 virtual void setResultMinor(ResultMinor r) \
-	{XKMSResultTypeImpl::setResultMinor(r);} \
+	{m_result.setResultMinor(r);} \
 virtual void setRequestId(const XMLCh * id) \
-	{XKMSResultTypeImpl::setRequestId(id);} \
+	{m_result.setRequestId(id);} \
 virtual void setRequestSignatureValue(const XMLCh * value) \
-	{XKMSResultTypeImpl::setRequestSignatureValue(value);}
+	{m_result.setRequestSignatureValue(value);}
 
 
 

@@ -33,8 +33,11 @@
 
 #include "XKMSRequestAbstractTypeImpl.hpp"
 
-class XKMSPendingRequestImpl : public XKMSRequestAbstractTypeImpl, public XKMSPendingRequest {
+class XKMSPendingRequestImpl : public XKMSPendingRequest {
 
+public: 
+	XKMSRequestAbstractTypeImpl m_request;
+	XKMSMessageAbstractTypeImpl &m_msg;
 public:
 
 	XKMSPendingRequestImpl(

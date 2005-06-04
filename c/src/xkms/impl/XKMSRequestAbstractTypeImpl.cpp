@@ -45,7 +45,7 @@ XERCES_CPP_NAMESPACE_USE
 
 XKMSRequestAbstractTypeImpl::XKMSRequestAbstractTypeImpl(
 	const XSECEnv * env) :
-XKMSMessageAbstractTypeImpl(env)
+m_msg(env)
 {
 	mp_originalRequestIdAttr = NULL;
 	mp_responseLimitAttr = NULL;
@@ -54,7 +54,7 @@ XKMSMessageAbstractTypeImpl(env)
 XKMSRequestAbstractTypeImpl::XKMSRequestAbstractTypeImpl(
 	const XSECEnv * env, 
 	DOMElement * node) :
-XKMSMessageAbstractTypeImpl(env, node)
+m_msg(env, node)
 {
 	mp_originalRequestIdAttr = NULL;
 	mp_responseLimitAttr = NULL;
@@ -81,7 +81,7 @@ XKMSRequestAbstractTypeImpl::~XKMSRequestAbstractTypeImpl() {
 
 void XKMSRequestAbstractTypeImpl::load(void) {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt to load an empty element
 		throw XSECException(XSECException::RequestAbstractTypeError,
@@ -90,7 +90,7 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 	}
 
 	// Get any respond with elements
-	DOMNodeList * nl = mp_messageAbstractTypeElement->getElementsByTagNameNS(
+	DOMNodeList * nl = m_msg.mp_messageAbstractTypeElement->getElementsByTagNameNS(
 		XKMSConstants::s_unicodeStrURIXKMS,
 		XKMSConstants::s_tagRespondWith);
 
@@ -99,7 +99,7 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 		XKMSRespondWithImpl * rw;
 		for (unsigned int i = 0; i < nl->getLength() ; ++ i) {
 
-			XSECnew(rw, XKMSRespondWithImpl(mp_env, (DOMElement *) nl->item(i)));
+			XSECnew(rw, XKMSRespondWithImpl(m_msg.mp_env, (DOMElement *) nl->item(i)));
 			rw->load();
 			m_respondWithList.push_back(rw);
 
@@ -108,7 +108,7 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 	}
 
 	// Get any ResponseMechanism elements
-	nl = mp_messageAbstractTypeElement->getElementsByTagNameNS(
+	nl = m_msg.mp_messageAbstractTypeElement->getElementsByTagNameNS(
 		XKMSConstants::s_unicodeStrURIXKMS,
 		XKMSConstants::s_tagResponseMechanism);
 
@@ -117,7 +117,7 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 		XKMSResponseMechanismImpl * rm;
 		for (unsigned int i = 0; i < nl->getLength() ; ++ i) {
 
-			XSECnew(rm, XKMSResponseMechanismImpl(mp_env, (DOMElement *) nl->item(i)));
+			XSECnew(rm, XKMSResponseMechanismImpl(m_msg.mp_env, (DOMElement *) nl->item(i)));
 			rm->load();
 			m_responseMechanismList.push_back(rm);
 
@@ -126,13 +126,13 @@ void XKMSRequestAbstractTypeImpl::load(void) {
 	}
 
 	mp_originalRequestIdAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagOriginalRequestId);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagOriginalRequestId);
 
 	mp_responseLimitAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseLimit);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseLimit);
 	
 		
-	XKMSMessageAbstractTypeImpl::load();
+	m_msg.load();
 
 }
 
@@ -145,7 +145,7 @@ DOMElement * XKMSRequestAbstractTypeImpl::createBlankRequestAbstractType(
 		const XMLCh * service,
 		const XMLCh * id) {
 
-	return XKMSMessageAbstractTypeImpl::createBlankMessageAbstractType(tag, service, id);
+	return m_msg.createBlankMessageAbstractType(tag, service, id);
 
 }
 
@@ -163,7 +163,7 @@ const XMLCh * XKMSRequestAbstractTypeImpl::getOriginalRequestId(void) const {
 
 void XKMSRequestAbstractTypeImpl::setOriginalRequestId(const XMLCh * id) {
 	
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt update when not initialised
 		throw XSECException(XSECException::MessageAbstractTypeError,
@@ -171,9 +171,9 @@ void XKMSRequestAbstractTypeImpl::setOriginalRequestId(const XMLCh * id) {
 
 	}
 
-	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagOriginalRequestId, id);
+	m_msg.mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagOriginalRequestId, id);
 	mp_originalRequestIdAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagOriginalRequestId);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagOriginalRequestId);
 
 }
 
@@ -192,7 +192,7 @@ unsigned int XKMSRequestAbstractTypeImpl::getResponseLimit(void) const {
 
 void XKMSRequestAbstractTypeImpl::setResponseLimit(unsigned int limit) {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt update when not initialised
 		throw XSECException(XSECException::MessageAbstractTypeError,
@@ -204,9 +204,9 @@ void XKMSRequestAbstractTypeImpl::setResponseLimit(unsigned int limit) {
 	XMLCh limitStr[10];
 	XMLString::binToText(limit, limitStr, 9, 10);
 
-	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagResponseLimit, limitStr);
+	m_msg.mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagResponseLimit, limitStr);
 	mp_responseLimitAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseLimit);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResponseLimit);
 
 }
 
@@ -253,13 +253,13 @@ void XKMSRequestAbstractTypeImpl::appendRespondWithItem(XKMSRespondWith * item) 
 void XKMSRequestAbstractTypeImpl::appendRespondWithItem(const XMLCh * item) {
 
 	XKMSRespondWithImpl * rw;
-	XSECnew(rw, XKMSRespondWithImpl(mp_env));
+	XSECnew(rw, XKMSRespondWithImpl(m_msg.mp_env));
 
 	// Create the RespondWith object
 	DOMElement * elt = rw->createBlankRespondWith(item);
 
 	// Add to the item
-	DOMElement * c = findFirstElementChild(mp_messageAbstractTypeElement);
+	DOMElement * c = findFirstElementChild(m_msg.mp_messageAbstractTypeElement);
 	while (c != NULL) {
 
 		if (!strEquals(getXKMSLocalName(c), XKMSConstants::s_tagResponseMechanism))
@@ -268,15 +268,15 @@ void XKMSRequestAbstractTypeImpl::appendRespondWithItem(const XMLCh * item) {
 	}
 
 	if (c != NULL) {
-		mp_messageAbstractTypeElement->insertBefore(elt, c);
-		if (mp_env->getPrettyPrintFlag()) {
-			mp_messageAbstractTypeElement->insertBefore(
-				mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), c);
+		m_msg.mp_messageAbstractTypeElement->insertBefore(elt, c);
+		if (m_msg.mp_env->getPrettyPrintFlag()) {
+			m_msg.mp_messageAbstractTypeElement->insertBefore(
+				m_msg.mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), c);
 		}
 	}
 	else {
-		mp_messageAbstractTypeElement->appendChild(elt);
-		mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+		m_msg.mp_messageAbstractTypeElement->appendChild(elt);
+		m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 	}
 
 	// Add to the list
@@ -328,13 +328,13 @@ void XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(XKMSResponseMechan
 void XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(const XMLCh * item) {
 
 	XKMSResponseMechanismImpl * rw;
-	XSECnew(rw, XKMSResponseMechanismImpl(mp_env));
+	XSECnew(rw, XKMSResponseMechanismImpl(m_msg.mp_env));
 
 	// Create the ResponseMechanism object
 	DOMElement * elt = rw->createBlankResponseMechanism(item);
 
 	// Add to the item
-	DOMElement * c = findFirstElementChild(mp_messageAbstractTypeElement);
+	DOMElement * c = findFirstElementChild(m_msg.mp_messageAbstractTypeElement);
 	while (c != NULL) {
 
 		if (!strEquals(getXKMSLocalName(c), XKMSConstants::s_tagResponseMechanism))
@@ -345,15 +345,15 @@ void XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(const XMLCh * item
 	}
 
 	if (c != NULL) {
-		mp_messageAbstractTypeElement->insertBefore(elt, c);
-		if (mp_env->getPrettyPrintFlag()) {
-			mp_messageAbstractTypeElement->insertBefore(
-				mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), c);
+		m_msg.mp_messageAbstractTypeElement->insertBefore(elt, c);
+		if (m_msg.mp_env->getPrettyPrintFlag()) {
+			m_msg.mp_messageAbstractTypeElement->insertBefore(
+				m_msg.mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), c);
 		}
 	}
 	else {
-		mp_messageAbstractTypeElement->appendChild(elt);
-		mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+		m_msg.mp_messageAbstractTypeElement->appendChild(elt);
+		m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 	}
 
 	// Add to the list

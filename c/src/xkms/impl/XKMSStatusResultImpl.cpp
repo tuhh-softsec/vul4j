@@ -42,7 +42,8 @@ XERCES_CPP_NAMESPACE_USE
 
 XKMSStatusResultImpl::XKMSStatusResultImpl(
 		const XSECEnv * env) :
-XKMSResultTypeImpl(env) {
+m_result(env),
+m_msg(m_result.m_msg) {
 
 	mp_successAttr = NULL;
 	mp_failureAttr = NULL;
@@ -53,7 +54,8 @@ XKMSResultTypeImpl(env) {
 XKMSStatusResultImpl::XKMSStatusResultImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
-XKMSResultTypeImpl(env, node) {
+m_result(env, node),
+m_msg(m_result.m_msg) {
 
 	mp_successAttr = NULL;
 	mp_failureAttr = NULL;
@@ -73,7 +75,7 @@ XKMSStatusResultImpl::~XKMSStatusResultImpl() {
 // Load elements
 void XKMSStatusResultImpl::load() {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt to load an empty element
 		throw XSECException(XSECException::XKMSError,
@@ -81,7 +83,7 @@ void XKMSStatusResultImpl::load() {
 
 	}
 
-	if (!strEquals(getXKMSLocalName(mp_messageAbstractTypeElement), 
+	if (!strEquals(getXKMSLocalName(m_msg.mp_messageAbstractTypeElement), 
 									XKMSConstants::s_tagStatusResult)) {
 	
 		throw XSECException(XSECException::XKMSError,
@@ -90,7 +92,7 @@ void XKMSStatusResultImpl::load() {
 	}
 
 	// Load the base message
-	XKMSResultTypeImpl::load();
+	m_result.load();
 
 }
 
@@ -103,7 +105,7 @@ DOMElement * XKMSStatusResultImpl::createBlankStatusResult(
 		ResultMajor rmaj,
 		ResultMinor rmin) {
 
-	return XKMSResultTypeImpl::createBlankResultType(
+	return m_result.createBlankResultType(
 		XKMSConstants::s_tagStatusResult, service, id, rmaj, rmin);
 
 }
@@ -160,7 +162,7 @@ int XKMSStatusResultImpl::getPendingCount(void) const {
 
 void XKMSStatusResultImpl::setSuccessCount(int count) {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt update when not initialised
 		throw XSECException(XSECException::MessageAbstractTypeError,
@@ -171,15 +173,15 @@ void XKMSStatusResultImpl::setSuccessCount(int count) {
 	XMLCh val[16];
 	XMLString::binToText(count, val, 16, 10);
 
-	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagSuccess, val);
+	m_msg.mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagSuccess, val);
 	mp_successAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagSuccess);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagSuccess);
 
 }
 
 void XKMSStatusResultImpl::setFailureCount(int count) {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt update when not initialised
 		throw XSECException(XSECException::MessageAbstractTypeError,
@@ -190,15 +192,15 @@ void XKMSStatusResultImpl::setFailureCount(int count) {
 	XMLCh val[16];
 	XMLString::binToText(count, val, 16, 10);
 
-	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagFailure, val);
+	m_msg.mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagFailure, val);
 	mp_failureAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagFailure);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagFailure);
 
 }
 
 void XKMSStatusResultImpl::setPendingCount(int count) {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt update when not initialised
 		throw XSECException(XSECException::MessageAbstractTypeError,
@@ -209,9 +211,9 @@ void XKMSStatusResultImpl::setPendingCount(int count) {
 	XMLCh val[16];
 	XMLString::binToText(count, val, 16, 10);
 
-	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagPending, val);
+	m_msg.mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagPending, val);
 	mp_pendingAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagPending);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagPending);
 
 }
 

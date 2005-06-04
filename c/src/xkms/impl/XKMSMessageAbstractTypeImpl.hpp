@@ -67,7 +67,9 @@ public:
 
 	/* Message Manipulation Methods */
 
-	virtual XKMSMessageAbstractType::messageType getMessageType(void) = 0;
+	virtual XKMSMessageAbstractType::messageType getMessageType(void) {
+		return XKMSMessageAbstractType::None;
+	}
 
 	/* Getter Interface Methods */
 
@@ -93,7 +95,7 @@ public:
 	virtual const XMLCh * getOpaqueClientDataItemStr(int item);
 	virtual void appendOpaqueClientDataItem(const XMLCh * item);
 
-protected:
+public:
 
 	const XSECEnv		* mp_env;		// NOTE: Owned by the base message class
 
@@ -128,33 +130,33 @@ private:
 #define XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS \
 	virtual XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * \
 		getElement(void) const \
-		{return XKMSMessageAbstractTypeImpl::getElement();} \
+		{return m_msg.getElement();} \
 	virtual bool isSigned(void) const \
-		{return XKMSMessageAbstractTypeImpl::isSigned();} \
+		{return m_msg.isSigned();} \
 	virtual DSIGSignature * getSignature(void) const \
-		{return XKMSMessageAbstractTypeImpl::getSignature();} \
+		{return m_msg.getSignature();} \
 	virtual const XMLCh * getId(void) const \
-		{return XKMSMessageAbstractTypeImpl::getId();} \
+		{return m_msg.getId();} \
 	virtual const XMLCh * getService(void) const \
-		{return XKMSMessageAbstractTypeImpl::getService();} \
+		{return m_msg.getService();} \
 	virtual const XMLCh * getNonce(void) const \
-		{return XKMSMessageAbstractTypeImpl::getNonce();} \
+		{return m_msg.getNonce();} \
 	virtual void setId(const XMLCh * id) \
-		{XKMSMessageAbstractTypeImpl::setId(id);} \
+		{m_msg.setId(id);} \
 	virtual void setService(const XMLCh * service) \
-		{XKMSMessageAbstractTypeImpl::setService(service);} \
+		{m_msg.setService(service);} \
 	virtual void setNonce(const XMLCh * uri) \
-		{XKMSMessageAbstractTypeImpl::setNonce(uri);} \
+		{m_msg.setNonce(uri);} \
 	virtual DSIGSignature * addSignature( \
 		canonicalizationMethod cm = CANON_C14N_NOC, \
 		signatureMethod	sm = SIGNATURE_DSA, \
 		hashMethod hm = HASH_SHA1) \
-		{return XKMSMessageAbstractTypeImpl::addSignature(cm,sm,hm);} \
+		{return m_msg.addSignature(cm,sm,hm);} \
 	virtual int getOpaqueClientDataSize(void) \
-		{return XKMSMessageAbstractTypeImpl::getOpaqueClientDataSize();} \
+		{return m_msg.getOpaqueClientDataSize();} \
 	virtual const XMLCh * getOpaqueClientDataItemStr(int item) \
-		{return XKMSMessageAbstractTypeImpl::getOpaqueClientDataItemStr(item);} \
+		{return m_msg.getOpaqueClientDataItemStr(item);} \
 	virtual void appendOpaqueClientDataItem(const XMLCh * item) \
-		{XKMSMessageAbstractTypeImpl::appendOpaqueClientDataItem(item);}
+		{m_msg.appendOpaqueClientDataItem(item);}
 
 #endif /* XKMSMESSAGEABSTRACTTYPEIMPL_INCLUDE */

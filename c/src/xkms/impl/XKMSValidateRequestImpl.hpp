@@ -36,8 +36,11 @@
 
 class XKMSQueryKeyRequestImpl;
 
-class XKMSValidateRequestImpl : public XKMSRequestAbstractTypeImpl, public XKMSValidateRequest {
+class XKMSValidateRequestImpl : public XKMSValidateRequest {
 
+public: 
+	XKMSRequestAbstractTypeImpl m_request;
+	XKMSMessageAbstractTypeImpl &m_msg;
 public:
 
 	XKMSValidateRequestImpl(

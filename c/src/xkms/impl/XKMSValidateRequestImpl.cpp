@@ -41,7 +41,8 @@ XERCES_CPP_NAMESPACE_USE
 
 XKMSValidateRequestImpl::XKMSValidateRequestImpl(
 		const XSECEnv * env) :
-XKMSRequestAbstractTypeImpl(env),
+m_request(env),
+m_msg(m_request.m_msg),
 mp_queryKeyBindingElement(NULL),
 mp_queryKeyBinding(NULL) {
 
@@ -50,7 +51,8 @@ mp_queryKeyBinding(NULL) {
 XKMSValidateRequestImpl::XKMSValidateRequestImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
-XKMSRequestAbstractTypeImpl(env, node),
+m_request(env, node),
+m_msg(m_request.m_msg),
 mp_queryKeyBinding(NULL) {
 
 }
@@ -70,7 +72,7 @@ XKMSValidateRequestImpl::~XKMSValidateRequestImpl() {
 // Load elements
 void XKMSValidateRequestImpl::load() {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt to load an empty element
 		throw XSECException(XSECException::XKMSError,
@@ -78,7 +80,7 @@ void XKMSValidateRequestImpl::load() {
 
 	}
 
-	if (!strEquals(getXKMSLocalName(mp_messageAbstractTypeElement), 
+	if (!strEquals(getXKMSLocalName(m_msg.mp_messageAbstractTypeElement), 
 									XKMSConstants::s_tagValidateRequest)) {
 	
 		throw XSECException(XSECException::XKMSError,
@@ -87,17 +89,17 @@ void XKMSValidateRequestImpl::load() {
 	}
 
 	// Load the base message
-	XKMSRequestAbstractTypeImpl::load();
+	m_request.load();
 
 	// Now check for any QueryKeyBinding elements
-	DOMElement * tmpElt = findFirstElementChild(mp_messageAbstractTypeElement);
+	DOMElement * tmpElt = findFirstElementChild(m_msg.mp_messageAbstractTypeElement);
 	while (tmpElt != NULL && 
 		!strEquals(getXKMSLocalName(tmpElt), XKMSConstants::s_tagQueryKeyBinding)) 
 		tmpElt = findNextElementChild(tmpElt);
 
 	if (tmpElt != NULL) {
 
-		XSECnew(mp_queryKeyBinding, XKMSQueryKeyBindingImpl(mp_env, tmpElt));
+		XSECnew(mp_queryKeyBinding, XKMSQueryKeyBindingImpl(m_msg.mp_env, tmpElt));
 		mp_queryKeyBinding->load();
 		mp_queryKeyBindingElement = tmpElt;
 
@@ -112,7 +114,7 @@ DOMElement * XKMSValidateRequestImpl::createBlankValidateRequest(
 		const XMLCh * service,
 		const XMLCh * id) {
 
-	return XKMSRequestAbstractTypeImpl::createBlankMessageAbstractType(
+	return m_request.createBlankRequestAbstractType(
 		XKMSConstants::s_tagValidateRequest, service, id);
 //	return XKMSRequestAbstractTypeImpl::createBlankMessageAbstractType(
 //		MAKE_UNICODE_STRING("ValidateRequest"), service, id);
@@ -148,14 +150,14 @@ XKMSQueryKeyBinding * XKMSValidateRequestImpl::addQueryKeyBinding(void) {
 
 	// OK - Nothing exists, so we need to create from scratch
 
-	XSECnew(mp_queryKeyBinding, XKMSQueryKeyBindingImpl(mp_env));
+	XSECnew(mp_queryKeyBinding, XKMSQueryKeyBindingImpl(m_msg.mp_env));
 	mp_queryKeyBindingElement = mp_queryKeyBinding->createBlankQueryKeyBinding();
 
-	if (mp_messageAbstractTypeElement->getFirstChild() == NULL) {
-		mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	if (m_msg.mp_messageAbstractTypeElement->getFirstChild() == NULL) {
+		m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 	}
-	mp_messageAbstractTypeElement->appendChild(mp_queryKeyBindingElement);
-	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	m_msg.mp_messageAbstractTypeElement->appendChild(mp_queryKeyBindingElement);
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 
 	return mp_queryKeyBinding;
 

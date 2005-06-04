@@ -41,14 +41,16 @@ XERCES_CPP_NAMESPACE_USE
 
 XKMSResultImpl::XKMSResultImpl(
 		const XSECEnv * env) :
-XKMSResultTypeImpl(env) {
+m_result(env),
+m_msg(m_result.m_msg) {
 
 }
 
 XKMSResultImpl::XKMSResultImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
-XKMSResultTypeImpl(env, node) {
+m_result(env, node),
+m_msg(m_result.m_msg) {
 
 }
 
@@ -65,7 +67,7 @@ XKMSResultImpl::~XKMSResultImpl() {
 // Load elements
 void XKMSResultImpl::load() {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt to load an empty element
 		throw XSECException(XSECException::XKMSError,
@@ -73,7 +75,7 @@ void XKMSResultImpl::load() {
 
 	}
 
-	if (!strEquals(getXKMSLocalName(mp_messageAbstractTypeElement), 
+	if (!strEquals(getXKMSLocalName(m_msg.mp_messageAbstractTypeElement), 
 									XKMSConstants::s_tagResult)) {
 	
 		throw XSECException(XSECException::XKMSError,
@@ -82,7 +84,7 @@ void XKMSResultImpl::load() {
 	}
 
 	// Load the base message
-	XKMSResultTypeImpl::load();
+	m_result.load();
 
 }
 
@@ -95,7 +97,7 @@ DOMElement * XKMSResultImpl::createBlankResult(
 		ResultMajor rmaj,
 		ResultMinor rmin) {
 
-	return XKMSResultTypeImpl::createBlankResultType(
+	return m_result.createBlankResultType(
 		XKMSConstants::s_tagResult, service, id, rmaj, rmin);
 
 }

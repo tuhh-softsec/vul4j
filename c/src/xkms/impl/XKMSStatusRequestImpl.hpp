@@ -33,8 +33,11 @@
 
 #include "XKMSRequestAbstractTypeImpl.hpp"
 
-class XKMSStatusRequestImpl : public XKMSRequestAbstractTypeImpl, public XKMSStatusRequest {
+class XKMSStatusRequestImpl : public XKMSStatusRequest {
 
+public:
+	XKMSRequestAbstractTypeImpl m_request;
+	XKMSMessageAbstractTypeImpl &m_msg;
 public:
 
 	XKMSStatusRequestImpl(

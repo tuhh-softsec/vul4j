@@ -36,8 +36,11 @@ class XKMSAuthenticationImpl;
 class XKMSPrototypeKeyBindingImpl;
 class DSIGSignature;
 
-class XKMSRegisterRequestImpl : public XKMSRequestAbstractTypeImpl, public XKMSRegisterRequest {
+class XKMSRegisterRequestImpl : public XKMSRegisterRequest {
 
+public: 
+	XKMSRequestAbstractTypeImpl m_request;
+	XKMSMessageAbstractTypeImpl &m_msg;
 public:
 
 	XKMSRegisterRequestImpl(

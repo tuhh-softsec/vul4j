@@ -42,14 +42,16 @@ XERCES_CPP_NAMESPACE_USE
 
 XKMSLocateResultImpl::XKMSLocateResultImpl(
 		const XSECEnv * env) :
-XKMSResultTypeImpl(env) {
+m_result(env),
+m_msg(m_result.m_msg) {
 
 }
 
 XKMSLocateResultImpl::XKMSLocateResultImpl(
 		const XSECEnv * env, 
 		XERCES_CPP_NAMESPACE_QUALIFIER DOMElement * node) :
-XKMSResultTypeImpl(env, node) {
+m_result(env, node),
+m_msg(m_result.m_msg) {
 
 }
 
@@ -73,7 +75,7 @@ XKMSLocateResultImpl::~XKMSLocateResultImpl() {
 // Load elements
 void XKMSLocateResultImpl::load() {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt to load an empty element
 		throw XSECException(XSECException::XKMSError,
@@ -81,7 +83,7 @@ void XKMSLocateResultImpl::load() {
 
 	}
 
-	if (!strEquals(getXKMSLocalName(mp_messageAbstractTypeElement), 
+	if (!strEquals(getXKMSLocalName(m_msg.mp_messageAbstractTypeElement), 
 									XKMSConstants::s_tagLocateResult)) {
 	
 		throw XSECException(XSECException::XKMSError,
@@ -90,7 +92,7 @@ void XKMSLocateResultImpl::load() {
 	}
 
 	// Get any UnverifiedKeyBinding elements
-	DOMNodeList * nl = mp_messageAbstractTypeElement->getElementsByTagNameNS(
+	DOMNodeList * nl = m_msg.mp_messageAbstractTypeElement->getElementsByTagNameNS(
 		XKMSConstants::s_unicodeStrURIXKMS,
 		XKMSConstants::s_tagUnverifiedKeyBinding);
 
@@ -99,7 +101,7 @@ void XKMSLocateResultImpl::load() {
 		XKMSUnverifiedKeyBindingImpl * ukb;
 		for (unsigned int i = 0; i < nl->getLength() ; ++ i) {
 
-			XSECnew(ukb, XKMSUnverifiedKeyBindingImpl(mp_env, (DOMElement *) nl->item(i)));
+			XSECnew(ukb, XKMSUnverifiedKeyBindingImpl(m_msg.mp_env, (DOMElement *) nl->item(i)));
 			m_unverifiedKeyBindingList.push_back(ukb);
 			ukb->load();
 
@@ -109,7 +111,7 @@ void XKMSLocateResultImpl::load() {
 
 
 	// Load the base message
-	XKMSResultTypeImpl::load();
+	m_result.load();
 
 }
 
@@ -122,7 +124,7 @@ DOMElement * XKMSLocateResultImpl::createBlankLocateResult(
 		ResultMajor rmaj,
 		ResultMinor rmin) {
 
-	return XKMSResultTypeImpl::createBlankResultType(
+	return m_result.createBlankResultType(
 		XKMSConstants::s_tagLocateResult, service, id, rmaj, rmin);
 
 }
@@ -163,7 +165,7 @@ XKMSUnverifiedKeyBinding * XKMSLocateResultImpl::appendUnverifiedKeyBindingItem(
 
 	XKMSUnverifiedKeyBindingImpl * u;
 
-	XSECnew(u, XKMSUnverifiedKeyBindingImpl(mp_env));
+	XSECnew(u, XKMSUnverifiedKeyBindingImpl(m_msg.mp_env));
 
 	m_unverifiedKeyBindingList.push_back(u);
 
@@ -171,8 +173,8 @@ XKMSUnverifiedKeyBinding * XKMSLocateResultImpl::appendUnverifiedKeyBindingItem(
 
 	// Append the element
 
-	mp_messageAbstractTypeElement->appendChild(e);
-	mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+	m_msg.mp_messageAbstractTypeElement->appendChild(e);
+	m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 
 	return u;
 

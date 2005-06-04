@@ -36,7 +36,12 @@
 
 class XKMSQueryKeyRequestImpl;
 
-class XKMSCompoundRequestImpl : public XKMSRequestAbstractTypeImpl, public XKMSCompoundRequest {
+class XKMSCompoundRequestImpl : public XKMSCompoundRequest {
+
+public:
+
+	XKMSRequestAbstractTypeImpl m_request;
+	XKMSMessageAbstractTypeImpl &m_msg;
 
 public:
 
@@ -82,7 +87,7 @@ public:
 		const XMLCh * id = NULL);
 
 	/* Forced inheritance from XKMSMessageAbstractTypeImpl */
-	XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS
+	XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS 
 
 	/* Forced inheritance from RequestAbstractType */
 	XKMS_REQUESTABSTRACTYPE_IMPL_METHODS

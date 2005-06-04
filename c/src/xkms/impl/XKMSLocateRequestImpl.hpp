@@ -36,8 +36,11 @@
 
 class XKMSQueryKeyRequestImpl;
 
-class XKMSLocateRequestImpl : public XKMSRequestAbstractTypeImpl, public XKMSLocateRequest {
+class XKMSLocateRequestImpl : public XKMSLocateRequest {
 
+public: 
+	XKMSRequestAbstractTypeImpl m_request;
+	XKMSMessageAbstractTypeImpl &m_msg;
 public:
 
 	XKMSLocateRequestImpl(

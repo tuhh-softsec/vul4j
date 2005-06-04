@@ -38,8 +38,11 @@
 class XKMSUnverifiedKeyBindingImpl;
 
 
-class XKMSLocateResultImpl : public XKMSResultTypeImpl, public XKMSLocateResult {
+class XKMSLocateResultImpl : public XKMSLocateResult {
 
+public:
+	XKMSResultTypeImpl m_result;
+	XKMSMessageAbstractTypeImpl &m_msg;
 public:
 
 	XKMSLocateResultImpl(

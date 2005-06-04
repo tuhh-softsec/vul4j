@@ -41,7 +41,7 @@ XERCES_CPP_NAMESPACE_USE
 
 XKMSResultTypeImpl::XKMSResultTypeImpl(
 	const XSECEnv * env) :
-XKMSMessageAbstractTypeImpl(env),
+m_msg(env),
 mp_resultMajorAttr(NULL),
 mp_resultMinorAttr(NULL),
 mp_requestSignatureValueElement(NULL)
@@ -52,7 +52,7 @@ mp_requestSignatureValueElement(NULL)
 XKMSResultTypeImpl::XKMSResultTypeImpl(
 	const XSECEnv * env, 
 	DOMElement * node) :
-XKMSMessageAbstractTypeImpl(env, node),
+m_msg(env, node),
 mp_requestSignatureValueElement(NULL)
 {
 
@@ -68,7 +68,7 @@ XKMSResultTypeImpl::~XKMSResultTypeImpl() {
 
 void XKMSResultTypeImpl::load(void) {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt to load an empty element
 		throw XSECException(XSECException::ResultTypeError,
@@ -76,16 +76,16 @@ void XKMSResultTypeImpl::load(void) {
 
 	}
 
-	XKMSMessageAbstractTypeImpl::load();
+	m_msg.load();
 
 	/* Now load the result attributes */
 
 	mp_resultMajorAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResultMajor);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResultMajor);
 	mp_resultMinorAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResultMinor);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResultMinor);
 	mp_requestIdAttr =
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagRequestId);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagRequestId);
 
 	/* Decode responses */
 	if (mp_resultMajorAttr == NULL) {
@@ -142,7 +142,7 @@ void XKMSResultTypeImpl::load(void) {
 		m_resultMinor = XKMSResultType::NoneMinor;
 
 	/* Check to see if there is a RequestSignatureValue node */
-	mp_requestSignatureValueElement = (DOMElement *) findFirstChildOfType(mp_messageAbstractTypeElement, DOMNode::ELEMENT_NODE);
+	mp_requestSignatureValueElement = (DOMElement *) findFirstChildOfType(m_msg.mp_messageAbstractTypeElement, DOMNode::ELEMENT_NODE);
 	while (mp_requestSignatureValueElement != NULL && 
 		!strEquals(getXKMSLocalName(mp_requestSignatureValueElement), XKMSConstants::s_tagRequestSignatureValue)) {
 
@@ -172,7 +172,7 @@ DOMElement * XKMSResultTypeImpl::createBlankResultType(
 		ResultMinor rmin) {
 
 	DOMElement * ret = 
-		XKMSMessageAbstractTypeImpl::createBlankMessageAbstractType(tag, service, id);
+		m_msg.createBlankMessageAbstractType(tag, service, id);
 
 	safeBuffer s;
 
@@ -197,9 +197,9 @@ DOMElement * XKMSResultTypeImpl::createBlankResultType(
 	m_resultMinor = rmin;
 
 	mp_resultMajorAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResultMajor);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResultMajor);
 	mp_resultMinorAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResultMinor);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagResultMinor);
 
 	return ret;
 }
@@ -248,7 +248,7 @@ void XKMSResultTypeImpl::setResultMinor(ResultMinor) {}
 
 void XKMSResultTypeImpl::setRequestId(const XMLCh * id) {
 
-	if (mp_messageAbstractTypeElement == NULL) {
+	if (m_msg.mp_messageAbstractTypeElement == NULL) {
 
 		// Attempt update when not initialised
 		throw XSECException(XSECException::MessageAbstractTypeError,
@@ -256,9 +256,9 @@ void XKMSResultTypeImpl::setRequestId(const XMLCh * id) {
 
 	}
 
-	mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagRequestId, id);
+	m_msg.mp_messageAbstractTypeElement->setAttributeNS(NULL, XKMSConstants::s_tagRequestId, id);
 	mp_requestIdAttr = 
-		mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagRequestId);
+		m_msg.mp_messageAbstractTypeElement->getAttributeNodeNS(NULL, XKMSConstants::s_tagRequestId);
 
 }
 
@@ -271,8 +271,8 @@ void XKMSResultTypeImpl::setRequestSignatureValue(const XMLCh * value) {
 
 	// Get some setup values
 	safeBuffer str;
-	DOMDocument *doc = mp_env->getParentDocument();
-	const XMLCh * prefix = mp_env->getXKMSNSPrefix();
+	DOMDocument *doc = m_msg.mp_env->getParentDocument();
+	const XMLCh * prefix = m_msg.mp_env->getXKMSNSPrefix();
 
 	makeQName(str, prefix, XKMSConstants::s_tagRequestSignatureValue);
 
@@ -282,7 +282,7 @@ void XKMSResultTypeImpl::setRequestSignatureValue(const XMLCh * value) {
 	mp_requestSignatureValueElement->appendChild(doc->createTextNode(value));
 
 	/* Find where this sits, and insert */
-	DOMElement * c = findFirstElementChild(mp_messageAbstractTypeElement);
+	DOMElement * c = findFirstElementChild(m_msg.mp_messageAbstractTypeElement);
 	while (c != NULL) {
 
 		if (!(strEquals(getXKMSLocalName(c), XKMSConstants::s_tagMessageExtension) ||
@@ -294,15 +294,15 @@ void XKMSResultTypeImpl::setRequestSignatureValue(const XMLCh * value) {
 	}
 
 	if (c != NULL) {
-		mp_messageAbstractTypeElement->insertBefore(mp_requestSignatureValueElement, c);
-		if (mp_env->getPrettyPrintFlag()) {
-			mp_messageAbstractTypeElement->insertBefore(
-				mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), c);
+		m_msg.mp_messageAbstractTypeElement->insertBefore(mp_requestSignatureValueElement, c);
+		if (m_msg.mp_env->getPrettyPrintFlag()) {
+			m_msg.mp_messageAbstractTypeElement->insertBefore(
+				m_msg.mp_env->getParentDocument()->createTextNode(DSIGConstants::s_unicodeStrNL), c);
 		}
 	}
 	else {
-		mp_messageAbstractTypeElement->appendChild(mp_requestSignatureValueElement);
-		mp_env->doPrettyPrint(mp_messageAbstractTypeElement);
+		m_msg.mp_messageAbstractTypeElement->appendChild(mp_requestSignatureValueElement);
+		m_msg.mp_env->doPrettyPrint(m_msg.mp_messageAbstractTypeElement);
 	}
 
 }

@@ -37,8 +37,11 @@
 
 class XKMSKeyBindingImpl;
 
-class XKMSRegisterResultImpl : public XKMSResultTypeImpl, public XKMSRegisterResult {
+class XKMSRegisterResultImpl : public XKMSRegisterResult {
 
+public:
+	XKMSResultTypeImpl m_result;
+	XKMSMessageAbstractTypeImpl &m_msg;
 public:
 
 	XKMSRegisterResultImpl(

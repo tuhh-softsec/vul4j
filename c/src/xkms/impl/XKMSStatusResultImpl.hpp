@@ -38,8 +38,11 @@
 class XKMSUnverifiedKeyBindingImpl;
 
 
-class XKMSStatusResultImpl : public XKMSResultTypeImpl, public XKMSStatusResult {
+class XKMSStatusResultImpl : public XKMSStatusResult {
 
+public:
+	XKMSResultTypeImpl m_result;
+	XKMSMessageAbstractTypeImpl &m_msg;
 public:
 
 	XKMSStatusResultImpl(

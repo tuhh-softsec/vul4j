@@ -38,7 +38,11 @@
 class XKMSRespondWithImpl;
 class XKMSResponseMechanismImpl;
 
-class XKMSRequestAbstractTypeImpl : public XKMSRequestAbstractType, public XKMSMessageAbstractTypeImpl {
+class XKMSRequestAbstractTypeImpl : public XKMSRequestAbstractType {
+
+public:
+
+	XKMSMessageAbstractTypeImpl m_msg;
 
 public:
 
@@ -89,7 +93,7 @@ public:
 
 
 	/* Inherited from XKMSMessageType */
-	virtual messageType getMessageType(void) = 0;
+	virtual messageType getMessageType(void) {return XKMSMessageAbstractType::None;}
 
 	/* Forced inheritance from XKMSMessageAbstractTypeImpl */
 	XKMS_MESSAGEABSTRACTYPE_IMPL_METHODS
@@ -147,34 +151,34 @@ private:
 
 #define	XKMS_REQUESTABSTRACTYPE_IMPL_METHODS \
 	virtual const XMLCh * getOriginalRequestId(void) const \
-		{return XKMSRequestAbstractTypeImpl::getOriginalRequestId();} \
+		{return m_request.getOriginalRequestId();} \
 	virtual void setOriginalRequestId(const XMLCh * id) \
-		{XKMSRequestAbstractTypeImpl::setOriginalRequestId(id);} \
+		{m_request.setOriginalRequestId(id);} \
 	virtual int getRespondWithSize(void) \
-		{return XKMSRequestAbstractTypeImpl::getRespondWithSize();}	\
+		{return m_request.getRespondWithSize();}	\
 	virtual XKMSRespondWith * getRespondWithItem(int item) \
-		{return XKMSRequestAbstractTypeImpl::getRespondWithItem(item);}	\
+		{return m_request.getRespondWithItem(item);}	\
 	virtual const XMLCh * getRespondWithItemStr(int item) \
-		{return XKMSRequestAbstractTypeImpl::getRespondWithItemStr(item);}	\
+		{return m_request.getRespondWithItemStr(item);}	\
 	virtual void appendRespondWithItem(XKMSRespondWith * item) \
-		{XKMSRequestAbstractTypeImpl::appendRespondWithItem(item);} \
+		{m_request.appendRespondWithItem(item);} \
 	virtual void appendRespondWithItem(const XMLCh * item) \
-		{XKMSRequestAbstractTypeImpl::appendRespondWithItem(item);} \
+		{m_request.appendRespondWithItem(item);} \
 	virtual int getResponseMechanismSize(void) \
-		{return XKMSRequestAbstractTypeImpl::getResponseMechanismSize();}	\
+		{return m_request.getResponseMechanismSize();}	\
 	virtual XKMSResponseMechanism * getResponseMechanismItem(int item) \
-		{return XKMSRequestAbstractTypeImpl::getResponseMechanismItem(item);}	\
+		{return m_request.getResponseMechanismItem(item);}	\
 	virtual const XMLCh * getResponseMechanismItemStr(int item) \
-		{return XKMSRequestAbstractTypeImpl::getResponseMechanismItemStr(item);}	\
+		{return m_request.getResponseMechanismItemStr(item);}	\
 	virtual void appendResponseMechanismItem(XKMSResponseMechanism * item) \
-		{XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(item);} \
+		{m_request.appendResponseMechanismItem(item);} \
 	virtual void appendResponseMechanismItem(const XMLCh * item) \
-		{XKMSRequestAbstractTypeImpl::appendResponseMechanismItem(item);} \
+		{m_request.appendResponseMechanismItem(item);} \
 	virtual void removeResponseMechanismItem(int item) \
-		{XKMSRequestAbstractTypeImpl::removeResponseMechanismItem(item);} \
+		{m_request.removeResponseMechanismItem(item);} \
 	virtual unsigned int getResponseLimit(void) const \
-		{return XKMSRequestAbstractTypeImpl::getResponseLimit();} \
+		{return m_request.getResponseLimit();} \
 	virtual void setResponseLimit(unsigned int limit) \
-		{XKMSRequestAbstractTypeImpl::setResponseLimit(limit);}
+		{m_request.setResponseLimit(limit);}
 
 #endif /* XKMSREQUESTABSTRACTTYPEIMPL_INCLUDE */
