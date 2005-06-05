@@ -81,7 +81,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2.lib crypt32.lib libeay32.lib "
+				AdditionalDependencies="xerces-c_2.lib crypt32.lib libeay32.lib  Xalan-C_1.lib"
 				OutputFile="$(OutDir)/xtest.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
