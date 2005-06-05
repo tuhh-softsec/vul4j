@@ -227,12 +227,12 @@ XSECCryptoX509 * loadX509(const char * infile) {
 	safeBuffer sb;
 	char buf[1024];
 
-	int i = fread(buf, 1, 1024, f);
+	int i = (int) fread(buf, 1, 1024, f);
 	int j = 0;
 	while (i != 0) {
 		sb.sbMemcpyIn(j, buf, i);
 		j += i;
-		i = fread(buf, 1, 1024, f);
+		i = (int) fread(buf, 1, 1024, f);
 	}
 
 	sb[j] = '\0';
@@ -284,7 +284,7 @@ DSIGKeyInfoX509 * findX509Data(DSIGKeyInfoList * lst) {
 	if (lst == NULL)
 		return NULL;
 
-	int sz = lst->getSize();
+	int sz = (int) lst->getSize();
 	for (int i = 0; i < sz; ++i) {
 
 		DSIGKeyInfo *ki = lst->item(i);
@@ -1076,7 +1076,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 
 			// Create the RevocationCodeIdentifier
 			unsigned char rciBuf[XSEC_MAX_HASH_SIZE];
-			int len = CalculateXKMSRevocationCodeIdentifierEncoding2((unsigned char *) argv[paramCount], strlen(argv[paramCount]), rciBuf, XSEC_MAX_HASH_SIZE);
+			int len = CalculateXKMSRevocationCodeIdentifierEncoding2((unsigned char *) argv[paramCount], (int) strlen(argv[paramCount]), rciBuf, XSEC_MAX_HASH_SIZE);
 
 			if (len <= 0) {
 				cerr << "Error creating revocation code!\n";
@@ -1100,7 +1100,7 @@ XKMSMessageAbstractType * createRegisterRequest(XSECProvider &prov, DOMDocument 
 			// Create the signature
 
 			unsigned char keyBuf[XSEC_MAX_HASH_SIZE];
-			int len = CalculateXKMSAuthenticationKey((unsigned char *) argv[paramCount], strlen(argv[paramCount]), keyBuf, XSEC_MAX_HASH_SIZE);
+			int len = CalculateXKMSAuthenticationKey((unsigned char *) argv[paramCount], (int) strlen(argv[paramCount]), keyBuf, XSEC_MAX_HASH_SIZE);
 			if (len <= 0) {
 				cout << "Error creating key from pass phrase" << endl;
 				delete rr;
@@ -1622,7 +1622,7 @@ void doResultTypeDump(XKMSResultType *msg, int level) {
 void doKeyInfoDump(DSIGKeyInfoList * l, int level) {
 
 
-	int size = l->getSize();
+	int size = (int) l->getSize();
 
 	for (int i = 0 ; i < size ; ++ i) {
 
@@ -1826,7 +1826,7 @@ void doAuthenticationDump(XKMSAuthentication *a, int level) {
 
 		// Create the key
 		unsigned char keyBuf[XSEC_MAX_HASH_SIZE];
-		int len = CalculateXKMSAuthenticationKey((unsigned char *) g_authPassPhrase, strlen(g_authPassPhrase), keyBuf, XSEC_MAX_HASH_SIZE);
+		int len = CalculateXKMSAuthenticationKey((unsigned char *) g_authPassPhrase, (int) strlen(g_authPassPhrase), keyBuf, XSEC_MAX_HASH_SIZE);
 		if (len <= 0) {
 			cout << "Error creating key from pass phrase" << endl;
 			return;

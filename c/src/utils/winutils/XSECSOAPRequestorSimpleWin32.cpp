@@ -206,7 +206,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 
 	strcat(fBuffer, "Content-Length: ");
     int i = (int) strlen(fBuffer);
-    _itoa(strlen(content), fBuffer+i, 10);
+    _itoa((int) strlen(content), fBuffer+i, 10);
 	strcat(fBuffer, "\r\n");
 	strcat(fBuffer, "SOAPAction: \"\"\r\n");
 
@@ -380,7 +380,7 @@ DOMDocument * XSECSOAPRequestorSimple::doRequest(DOMDocument * request) {
 	}
 
 	safeBuffer responseBuffer;
-	lent = fBufferEnd - fBufferPos;
+	lent = (int) (fBufferEnd - fBufferPos);
 	responseBuffer.sbMemcpyIn(fBufferPos, lent);
 
 	while (responseLength == -1 || lent < responseLength) {
