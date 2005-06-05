@@ -31,7 +31,106 @@ limitations under the License.
   <changes>
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
-    
+
+    <release version="C++ 1.2.0" date="May 2005">
+      <action dev="BL" type="fix" context="c_rel"> 
+        Remove MFC dependency and clean up memory debugging
+      </action>
+      <action dev="BL" type="update" context="c_rel"> 
+        Remove dynamic_casts and RTTI requirement
+      </action>
+      <action dev="BL" type="add" context="c_rel"> 
+        Implemented XKMS Message generation and processing
+      </action>
+      <action dev="BL" type="add" context="c_rel"> 
+        Implemented command line XKMS tool for generating and dumping XKMS messages
+      </action>
+      <action dev="BL" fixes-bug="28520" type="fix" context="c_rel"> 
+        Support for DESTDIR as provided by Ville Skytta in Bugzilla 28520
+      </action>
+      <action dev="MT" type="fix" context="c_rel"> 
+        Update to Apache licence 2.0.
+      </action>
+      <action dev="BL" type="add" context="c_rel"> 
+        Add support for SHA224/256/384/512 (requires OpenSSL 0.9.8 Beta)
+      </action>
+      <action dev="BL" type="add" fixes-bug="34920" context="c_rel"> 
+        Patch for Mac OS X compile - provided by Scott Cantor - See Bugzilla #34920
+      </action>
+      <action dev="BL" type="update" context="c_rel"> 
+        Updates to compile against Xalan 1.9
+      </action>
+      <action dev="BL" type="update" context="c_rel"> 
+        Backport to compile with Xerces 2.1
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Fix bug with NULL pointer when validating or signing empty reference lists - fix as suggested by Jesse Pelton on 23 March 2005 on security-dev
+      </action>
+      <action dev="BL" type="update" context="c_rel"> 
+        Provided support for nominating namespace based Id attributes
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Change to allow apps to calculate and obtain signed info hash - from Eckehard Hermann - see email of 2 March 2005 on security-dev
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Patch for long RSA keys provided by Michael Braunoeder to security-dev on 16 Nov 2005
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Memory leak in OpenSSLCryptoBase64 reported by Jesse Pelton fixed.
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Move to internal Base64 decoder in a number of methods to handle non-wrapping data
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Resize buffer in OpenSSLCryptoKeyRSA for larger RSA keys - as submitted by Vadim Ismailov 3 December 2005
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Remove redundant m_keyType class variable from OpenSSLCryptoKeyRSA as reported by Jesse Pelton on security-dev
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Don't throw an exception when an RSA decrypt fails during sig validation - this is a failed validate, not an error
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Shutdown OpenSSL properly - as suggested by Jesse Pelton in e-mail to security-dev on 9 March 2005
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Changed scope of WinCapiCryptoKey::importKey() from private to public. It returns key now, instead of void.
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Fix problem in Windows CAPI where XSEC doesn't work if user doesn't have admin rights.
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Bug fix in Windows CAPI code for some W2K machines - reported by Andrzej Matejko 4/5/2004
+      </action>
+      <action dev="MT" type="fix" context="c_rel"> 
+        Fix build on non WINCAPI systems, as reported by Milan Tomic on 22/4/2004
+      </action>
+      <action dev="MT" type="fix" context="c_rel"> 
+        New constructor added to WinCapiX509
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Fixed Bug in encode() XSCryptCryptoBase64.
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Fix bug in XPathFilter transform when checking if an attribute is in the input node set.
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Fix bug in in UTF transcoder for counting of transcoded characters (count characters not bytes) reported by Milan Tomic
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Move function definitions in the Windows BinInput stream class to static to avoid conflicts with Xerces.  As suggested by Jesse Pelton on 2 Feb 2005 in security-dev
+      </action>
+      <action dev="MT" type="add" context="c_rel"> 
+        Added complete KeyInfo handling for XENCEncryptedType
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Fix to stop re-use of derived key encrypting key when decrypting multiple elements in a document
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Fix to ignore encryption exceptions during a private key decrypt
+      </action>
+    </release>    
+
     <release version="Java 1.2.1" date="February 2005">
     	<action dev="RB" type="fix" fixes-bug="32836" context="java_general" due-to="Sylvain Dusart">
     	Fix a memory leak when using xpath or using ResourceResolver and not hitting getElementByIdUsingDOM()
@@ -146,20 +245,11 @@ limitations under the License.
   
   <todo>
     <actions priority="high">
-      <action context="Java-code" dev="AXL">
-	Finish XML Encryption.
-      </action>
       <action context="C++ code" dev="BL">
-        Create MD5 transform.
+        Implement XKMS client
       </action>
-      <action context="C++ code" dev="BL">
-        Create XPath-Filter Transform.
-      </action>
-      <action context="C++ code" dev="BL">
-        Release a "1.00" version.
-      </action>
-      <action context="C++ code" dev="BL">
-        Implement XML Encryption. 
+      <action context="C++ code" dev="MT">
+        Implement NSS Crypto interface
       </action>
     </actions>
     <actions priority="medium">
@@ -169,13 +259,10 @@ limitations under the License.
       <action context="C++ code" dev="BL">
         Build a PGP/GPG signature capability.
       </action>
-      <action context="C++ code" dev="BL">
-        Implement interface for Windows CAPI.
-      </action>
     </actions>
     <actions priority="low">
       <action context="docs" dev="KW">
-	Polish the ported docs. Add more content. Todo and changes are in <code>status.xml</code>
+        Polish the ported docs. Add more content. Todo and changes are in <code>status.xml</code>
       </action>
       <action context="Java-code and C++ code" dev="open">
         Implement an XKMS client.

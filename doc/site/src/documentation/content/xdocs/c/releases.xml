@@ -28,6 +28,26 @@ limitations under the License.
 		various releases of the library
 	  </p>
 	  <section>
+		<title>Version 1.2.0</title>
+		<p>
+		  Version 1.2 provides bug fixes to signature and encryption, and
+          provides support for XKMS message generation and processing.
+		</p>
+		<p>
+		  Changes from version 1.1.0 include :
+		</p>
+		<ul>
+          <li>Classes to generate and process XKMS messages</li>
+          <li>A client tool - <em>xklient</em> - to communicate
+            queries to an XKMS server and print the results to stdout.
+          </li>
+          <li>Multiple bug fixes</li>
+          <li>Support for SHA-512/384 when using a beta of OpenSSL
+            0.9.8</li>
+		  <li>Updated to support Xerces 2.6 and Xalan 1.8/9</li>
+		</ul>
+	  </section>
+	  <section>
 		<title>Version 1.1.0</title>
 		<p>
 		  Version 1.1 provides bug fixes to signature functionality +

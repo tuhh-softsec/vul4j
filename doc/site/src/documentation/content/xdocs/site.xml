@@ -71,8 +71,9 @@ limitations under the License.
   </cprog>
 
   <references label="References">
-    <xmldsig label="W3C XML DSig" href="http://www.w3c.org/Signature"/>
-    <xmlenc label="W3C XML Enc" href="http://www.w3c.org/Encryption"/>
+    <xmldsig label="W3C XML DSig" href="http://www.w3c.org/Signature/"/>
+    <xmlenc label="W3C XML Enc" href="http://www.w3c.org/Encryption/"/>
+    <xmlxkms label="W3C XML XKMS" href="http://www.w3c.org/2001/XKMS/"/>
   </references>
 
   <external-refs>

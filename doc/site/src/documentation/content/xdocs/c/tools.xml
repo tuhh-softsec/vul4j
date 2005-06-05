@@ -51,6 +51,10 @@ limitations under the License.
 		</li>
 		<li><em>cipher</em> - A tool to encrypt and decrypt XML documents.
 		</li>
+		<li><em>xklient</em> - A tool to generate and process XKMS messages.
+          Can be used to send XKMS requests to XKMS servers over SOAP 1.1/1.2
+          and HTML and to dump the results to screen.
+		</li>
 	  </ul>
 	  <p>
 		The tools can all be run with no command line arguments to see their

@@ -23,13 +23,23 @@ limitations under the License.
     <section>
       <title>News</title>
       <section>
+      	<title>May 2005</title>
+		<p>
+		  Version 1.2 of the C++ library has been released. 
+		  This version includes a number of bug fixes, together with
+          a beta release of code to process and generate XKMS messages.
+          See the 
+		  <link href="site:changes">changelog</link> for more information.
+		</p>
+      </section>
+      <section>
       	<title>February 2005</title>
 		<p>
 		  Version 1.2.1 of the Java library has been released. 
 		  This is a bugfix version, for more detail information see the
 		  <link href="site:changes">changelog</link>.
 		</p>
-	  	</section>
+      </section>
       <section>
 		<title>December 2004</title>
 		<p>

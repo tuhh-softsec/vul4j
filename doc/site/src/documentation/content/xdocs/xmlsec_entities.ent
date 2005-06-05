@@ -16,6 +16,7 @@
 <!ENTITY xmlsec  "Apache-XML-Security-J">
 <!ENTITY xmldsig "W3C XML-Signature Syntax and Processing">
 <!ENTITY xmlenc  "W3C XML Encryption Syntax and Processing">
+<!ENTITY xmlxkms  "W3C XML Key Management Specification">
 <!ENTITY hac     "Handbook of Applied Cryptography">
 <!ENTITY christpage     "The XML Security Page">
 <!ENTITY supp_java_dsig "XML-Signature Syntax and Processing,  W3C Recommendation 12 February 2002">

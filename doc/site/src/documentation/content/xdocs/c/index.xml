@@ -21,19 +21,30 @@ limitations under the License.
   </header>
   
   <body>
-	<section>
-	  <title>News - March 2004</title>
-	  <p>
-		Version 1.1 of the C++ library has been released.  Supporting
-		Xerces 2.5, 2.4 and 2.3 together with Xalan 1.6 and 1.7, this
-		version provides :
-	  </p>
-	  <ul>
-		<li>Beta implementation of XML Encryption</li>
-		<li>Improved support for Windows Crypto API</li>
-		<li>Bug fixes to Signature implementation</li>
-	  </ul>
-	</section>
+    <section>
+      <title>Version 1.2 Released</title>
+      <p>
+        The Apache XML Security team are proud to announce the release
+        of version 1.2 of the xml-security-c library.  This is the first
+        version of the library to provide processing and handling of 
+        <link href="http://www.w3.org/2001/XKMS/">XML Key Management
+          Specification (XKMS)</link> (currently XML Key Information Service
+        Specification - XKISS - only) messages together with a command
+        line client for performing XKMS requests and reading/dumping
+        XKMS messages.
+      </p>
+      <p>
+        The team were involved in <link href="http://www.w3c.org">World Wide
+          Web Consortium (w3c)</link> interoperability testing with
+        a reference XKMS server built using the xml-security-c library.
+      </p>
+      <p>
+        This version also includes a number of other changes and bugfixes,
+        including updates to support Xerces 2.6 with Xalan 1.9.
+        See <link href="../changes.html">changes.html</link> for more
+        information.
+      </p>
+    </section>
     <section>
       <title>Overview of the C++ Library</title>
       <p>
@@ -57,6 +68,19 @@ limitations under the License.
     </section>
 	<section>
 	  <title>Old News</title>
+      <section>
+        <title>News - March 2004</title>
+        <p>
+          Version 1.1 of the C++ library has been released.  Supporting
+          Xerces 2.5, 2.4 and 2.3 together with Xalan 1.6 and 1.7, this
+          version provides :
+        </p>
+        <ul>
+          <li>Beta implementation of XML Encryption</li>
+          <li>Improved support for Windows Crypto API</li>
+          <li>Bug fixes to Signature implementation</li>
+        </ul>
+      </section>
 	  <section>
 		<title>May 2003</title>
 		<p>

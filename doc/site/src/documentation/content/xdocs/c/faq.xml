@@ -149,6 +149,16 @@ limitations under the License.
 		  "id" with the appropriate value.  The first one found will be used
 		  as document fragment identifier.
 		</p>
+        <p>
+          As of version 1.2, the library also provides methods to allow
+          callers to set additional Id attribute names.  This can be
+          done in one of two ways.  
+          <em>DSIGSignature::registerIdAttributeName()</em> will register
+          a new name that will not be matched to a namespace.
+          <em>DSIGDSignature::registerIdAttribiteNameNS()</em> will
+          register an attribute name together with the namespace in
+          which the attribute resides.
+        </p>
 		<p>
 		  As this is a potential security exposure, this behaviour can be
 		  disabled using a call to 
@@ -158,11 +168,40 @@ limitations under the License.
 		  used, and DOM attributes of Type=ID be used.
 		</p>
 		<warning>
-		  In version 1.1, the library defaults to searching for Id
+		  In version 1.1 and above, the library defaults to searching for Id
 		  attributes by name if a search by Id fails.  As this is a potential
 		  security risk, this behaviour may be changed in a future version
 		  of the library.
 		</warning>
+	  </answer>
+	</faq>
+    <faq id="xkms_support">
+      <question>
+        What parts of the XKMS specification does the library support?
+      </question>
+      <answer>
+        <p>
+          The library currently supports X-KISS (XML Key Information
+          Service Specification) message generation and processing.
+          Support for X-KRSS (XML Key Registration Service Specification)
+          will be provided in version 1.3 of the library.
+        </p>
+      </answer>
+    </faq>
+	<faq id="xkms_client">
+	  <question>
+		Does the library provide a programmatic XKMS client?
+	  </question>
+	  <answer>
+		<p>
+          Not yet.  A command line tool <em>xklient</em> is provided for 
+          generating and processing messages.  This can be used as an
+          example for processing XKMS messages.
+        </p>
+        <p>
+          A programmatic client will be provided in version 1.3 of the C++
+          library.
+		</p>
 	  </answer>
 	</faq>
   </part>

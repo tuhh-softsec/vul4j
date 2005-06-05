@@ -32,8 +32,8 @@ limitations under the License.
 		is also required if XPath and/or XSLT transformations are required.
       </p>
 	  <p>
-		Version 1.00 of the library has been tested with version 2.2 and 2.3 of
-		Xerces-C, version 1.6 of Xalan-C and Version 0.9.7 (and above) of
+		Version 1.2.0 of the library has been tested with version 2.5 and 2.6 
+        of Xerces-C, version 1.9 of Xalan-C and Version 0.9.6 (and above) of
 		OpenSSL.
 	  </p>
     </section>
@@ -70,7 +70,7 @@ limitations under the License.
 		XML-Security-C is currently fully supported on Linux, FreeBSD and 
 		Solaris.  It is partially supported (in cases where Xalan is not 
 		required) on NetBSD and Cygwin.  It has been built and 
-		tested using GNU gcc 3.2, gcc 2.95.4, Forte C++ 5.4 (Solaris) and 
+		tested using GNU gcc 3.x, gcc 2.95.4, Forte C++ 5.4 (Solaris) and 
 		GNU make.
 	  </p>
 	  <note>
@@ -93,9 +93,9 @@ limitations under the License.
 		  For example (on my Debian Linux box under Bash) :
 		</p>
 		<source><![CDATA[
-export XERCESCROOT=~/prog/extlibs/xerces-c-src2_3_0
-export XALANCROOT=~/prog/extlibs/xalan-c-src1_6/c
-export OPENSSL=~/prog/extlibs/openssl-0.9.7a
+export XERCESCROOT=~/prog/extlibs/xerces-c-src2_6_0
+export XALANCROOT=~/prog/extlibs/xalan-c-src1_9/c
+export OPENSSL=~/prog/extlibs/openssl-0.9.7g
 		  ]]></source>
 		<p>
 		  If these environment variables are not set, configure will try to
