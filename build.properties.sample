@@ -1,12 +1,43 @@
+#------------------------------------------------------------------------
+# Ant configuration file
+#
+# When building Digester using Ant it is necessary to provide Ant with
+# some configuration information about the setup of the host machine on
+# which the build is happening. 
+#
+# Copy this file (build.properties.sample) to "build.properties" then edit
+# entries below as appropriate before running any Ant commands.
+#
+#------------------------------------------------------------------------
+
+# Specify a base directory where required jar files can be found.
+# Alternatively, provide complete paths to all of the needed libaries below.
+
 root=/java/jars
+
+# When using java 1.3 or earlier, JAXP is not included in the standard
+# libraries, so external jar files are required. If you are using Java
+# 1.4 or later, you can omit these libraries
+
 jaxp.home=${root}
 jaxp.jaxp.jar=${jaxp.home}/jaxp.jar
 jaxp.parser.jar=${jaxp.home}/crimson.jar
 
-# Commons projects -- correct if 'ant dist' is run on each project in the
-# default CVS directory layout.  Note that Digester no longer depends on
-# commons-collections itself; there is a runtime dependency currently
-# inherited from commons-beanutils, however.
+# Digester depends upon several other commons projects. 
+#
+# If you are building Digester from a checkout of the "trunks-proper" directory
+# and have already built the latest code for each of the dependent projects 
+# then these paths are automatically correct. 
+#
+# In other circumstances, provide direct paths (possibly based on ${root}
+# to all these required libraries.
+#
+# Note that Digester no longer depends on commons-collections itself; there is
+# a runtime dependency currently inherited from commons-beanutils, however.
+#
+# See file maven.xml or RELEASE-NOTES.txt for the specific versions of these
+# files which are required.
+
 commons-beanutils.home=../beanutils/dist
 commons-beanutils.jar=${commons-beanutils.home}/commons-beanutils.jar
 commons-collections.home=../collections/dist
@@ -14,7 +45,8 @@ commons-collections.jar=${commons-collections.home}/commons-collections.jar
 commons-logging.home=../logging/dist
 commons-logging.jar=${commons-logging.home}/commons-logging.jar
 
-# junit.jar - JUnit 3.7+ Classpath
+# JUnit is required if compiling/running the unit tests
+
 junit.jar=${root}/junit.jar
 
 # The digester tests output logging information (including Exceptions) 
@@ -22,10 +54,3 @@ junit.jar=${root}/junit.jar
 # This output is suppressed by default but can be re-enabled by
 #suppressLogOutputDuringTests=false 
 suppressLogOutputDuringTests=true
-
-# Maven Properties
-#
-# Committers using agents may need to fill in and enable the following:
-#digester.cvs=scm:cvs:lserver:rdonkin@cvs.apache.org:/home/cvs:jakarta-commons/digester/
-#maven.username=rdonkin
-
