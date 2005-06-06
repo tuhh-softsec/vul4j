@@ -17,9 +17,9 @@
 -->
 
 <toplevel>
-	<element name="A">
-		<element name="B">
-			<element name="C"/>
-		</element>
-	</element>
+    <element name="A">
+        <element name="B">
+            <element name="C"/>
+        </element>
+    </element>
 </toplevel>

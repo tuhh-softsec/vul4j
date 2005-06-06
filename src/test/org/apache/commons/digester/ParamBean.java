@@ -34,7 +34,7 @@ public class ParamBean {
     
     public boolean isCool() {
         return cool;
-    }	
+    }
     
     public void setCool(boolean cool) {
         this.cool = cool;

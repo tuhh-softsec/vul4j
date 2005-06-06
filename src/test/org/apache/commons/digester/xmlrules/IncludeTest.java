@@ -50,7 +50,7 @@ public class IncludeTest extends TestCase {
         String rulesXml = "<?xml version='1.0'?>"
                 + "<digester-rules>"
                 + " <pattern value='root/foo'>"
-		+ "   <include class='org.apache.commons.digester.xmlrules.IncludeTest$TestDigesterRuleSource'/>"
+                + "   <include class='org.apache.commons.digester.xmlrules.IncludeTest$TestDigesterRuleSource'/>"
                 + " </pattern>"
                 + "</digester-rules>";
                 
@@ -63,5 +63,5 @@ public class IncludeTest extends TestCase {
                                                                         
         assertEquals("Number of entries", 1, list.size());
         assertEquals("Entry value", "short", list.get(0));
-    }	
+    }
 }

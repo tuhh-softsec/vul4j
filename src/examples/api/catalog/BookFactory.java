@@ -57,8 +57,8 @@ import org.apache.commons.digester.AbstractObjectCreationFactory;
  * overhead of using this functionality in many cases. 
  */
 public class BookFactory extends AbstractObjectCreationFactory {
-	
-	public Object createObject(org.xml.sax.Attributes attributes) 
+
+    public Object createObject(org.xml.sax.Attributes attributes) 
     throws Exception {
         String isbn = attributes.getValue("isbn");
         
@@ -68,5 +68,5 @@ public class BookFactory extends AbstractObjectCreationFactory {
         }
         
         return new Book(isbn);
-	}
+    }
 }

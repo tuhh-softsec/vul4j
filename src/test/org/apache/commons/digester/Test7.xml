@@ -17,8 +17,8 @@
 -->
 
 <toplevel>
-	<one street='New Street' city='Las Vegas' state='Nevada'/>
-	<two alt-street='Old Street' alt-city='Portland' alt-state='Oregon'/>
- 	<three street='4th Street' aCity='Dayton' state='Ignore Me' />      
-        <four street='6th Street' alt-city='Cleveland' state='Ohio'/>
+    <one street='New Street' city='Las Vegas' state='Nevada'/>
+    <two alt-street='Old Street' alt-city='Portland' alt-state='Oregon'/>
+    <three street='4th Street' aCity='Dayton' state='Ignore Me' />      
+    <four street='6th Street' alt-city='Cleveland' state='Ohio'/>
 </toplevel>

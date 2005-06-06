@@ -36,7 +36,7 @@
   <baz value="baz2"/>
   <foo value="foo3">
     <bar>
-	  <baz value="baz3"/>
+      <baz value="baz3"/>
       <foo value="foo4"/>
     </bar>
     <property>I am a property!</property>

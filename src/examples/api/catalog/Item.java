@@ -18,5 +18,5 @@
  * See Main.java.
  */
 public interface Item {
-	public void print();
+    public void print();
 }

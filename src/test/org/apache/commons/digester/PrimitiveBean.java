@@ -34,11 +34,11 @@ public class PrimitiveBean {
     
     public boolean getBoolean() {
         return booleanValue;
-    }	
+    }
     
     public boolean getSetBooleanCalled() {
         return setBooleanCalled;
-    }	
+    }
 
     public void setBoolean(boolean booleanValue) {
         this.booleanValue = booleanValue;

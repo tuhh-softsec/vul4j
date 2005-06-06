@@ -18,14 +18,14 @@
  * See Main.java.
  */
 public class Book implements Item {
-	
+
   private String isbn;
   private String title;
   private String author;
   private String desc;
 
   public Book(String isbn) {
-	  this.isbn = isbn;
+      this.isbn = isbn;
   }
   
   public void setTitle(String title) {

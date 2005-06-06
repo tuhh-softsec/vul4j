@@ -17,12 +17,12 @@
 -->
 
 <toplevel>
-	<element>
-		<field1>Value 1</field1>
-		<field2>Value 2</field2>
-	</element>
-	<element>
-		<field1>Value 3</field1>
-		<field2>Value 4</field2>
-	</element>
+    <element>
+        <field1>Value 1</field1>
+        <field2>Value 2</field2>
+    </element>
+    <element>
+        <field1>Value 3</field1>
+        <field2>Value 4</field2>
+    </element>
 </toplevel>

@@ -122,26 +122,26 @@ The other method is to nest rules elements inside a
 defined for a group of rules. The following example has the same effect as the
 previous example:
 <pre>
-	   &lt;digester-rules&gt;
-		 &lt;pattern value="*/foo"&gt;
-		   &lt;object-create-rule classname="Foo"/&gt;
-		   &lt;set-properties-rule/&gt;
-		 &lt;/pattern&gt;
-	   &lt;/digester-rules&gt;
+       &lt;digester-rules&gt;
+         &lt;pattern value="*/foo"&gt;
+           &lt;object-create-rule classname="Foo"/&gt;
+           &lt;set-properties-rule/&gt;
+         &lt;/pattern&gt;
+       &lt;/digester-rules&gt;
 </pre>
 <br />
 <br />
-Pattern elements can be recursively nested. If patterns are nested,	the pattern
+Pattern elements can be recursively nested. If patterns are nested, the pattern
 string is formed by concatenating all the patterns together. Example:
 <pre>
        &lt;digester-rules&gt;
-		 &lt;pattern value="*/foo"&gt;
-		   &lt;pattern value="bar"&gt;
-			 &lt;object-create-rule classname="Foobar"/&gt;
-			 &lt;set-properties-rule/&gt;
-		   &lt;/pattern&gt;
-		 &lt;/pattern&gt;
-	   &lt;/digester-rules&gt;
+         &lt;pattern value="*/foo"&gt;
+           &lt;pattern value="bar"&gt;
+             &lt;object-create-rule classname="Foobar"/&gt;
+             &lt;set-properties-rule/&gt;
+           &lt;/pattern&gt;
+         &lt;/pattern&gt;
+       &lt;/digester-rules&gt;
 </pre>
 <br />
 In the above example, an <code>ObjectCreateRule</code> and a
@@ -152,12 +152,12 @@ The use of pattern elements and the use of the pattern attribute inside rules
 elements can be freely mixed. The next example has the same effect as the
 previous example:
 <pre>
-	   &lt;digester-rules&gt;
-		 &lt;pattern value="*/foo"&gt;
-		   &lt;object-create-rule pattern="bar" classname="Foobar"/&gt;
-		   &lt;set-properties-rule pattern="bar"/&gt;
-		 &lt;/pattern&gt;
-	   &lt;/digester-rules&gt;
+       &lt;digester-rules&gt;
+         &lt;pattern value="*/foo"&gt;
+           &lt;object-create-rule pattern="bar" classname="Foobar"/&gt;
+           &lt;set-properties-rule pattern="bar"/&gt;
+         &lt;/pattern&gt;
+       &lt;/digester-rules&gt;
 </pre>
 </p>
 
@@ -171,7 +171,7 @@ behaves as if the include file was 'macro-expanded'. Example:
 <pre>
       File rules1.xml:
          &lt;?xml version="1.0"?&gt;
-		 &lt;!DOCTYPE digester-rules SYSTEM "digester-rules.dtd"&gt;
+         &lt;!DOCTYPE digester-rules SYSTEM "digester-rules.dtd"&gt;
 
          &lt;digester-rules&gt;
            &lt;pattern value="root/foo"&gt;
@@ -184,7 +184,7 @@ behaves as if the include file was 'macro-expanded'. Example:
 
       File rules2.xml:
          &lt;?xml version="1.0"?&gt;
-		 &lt;!DOCTYPE digester-rules SYSTEM "digester-rules.dtd"&gt;
+         &lt;!DOCTYPE digester-rules SYSTEM "digester-rules.dtd"&gt;
 
          &lt;digester-rules&gt;
            &lt;pattern value="bar"&gt;
@@ -226,7 +226,7 @@ works exactly as if the rules had been included from an XML file. Example:
 <pre>
       File rules3.xml:
          &lt;?xml version="1.0"?&gt;
-		 &lt;!DOCTYPE digester-rules SYSTEM "digester-rules.dtd"&gt;
+         &lt;!DOCTYPE digester-rules SYSTEM "digester-rules.dtd"&gt;
 
          &lt;digester-rules&gt;
            &lt;pattern value="root/foo"&gt;
