@@ -35,7 +35,7 @@ jaxp.parser.jar=${jaxp.home}/crimson.jar
 # Note that Digester no longer depends on commons-collections itself; there is
 # a runtime dependency currently inherited from commons-beanutils, however.
 #
-# See file maven.xml or RELEASE-NOTES.txt for the specific versions of these
+# See file project.xml or RELEASE-NOTES.txt for the specific versions of these
 # files which are required.
 
 commons-beanutils.home=../beanutils/dist
