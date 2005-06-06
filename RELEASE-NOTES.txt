@@ -92,13 +92,13 @@ API:
 
      -- add targetoffset attribute to call-method-rule tag,
         to allow the target object whose method is invoked
-	to be any object on the digester stack. Patch by
-	Wendy Smoak (bugzilla #33550).
+        to be any object on the digester stack. Patch by
+        Wendy Smoak (bugzilla #33550).
 
      -- add stack-index attribute to call-param-rule tag,
         to allow passing any object on the digester stack
-	as a parameter to a target method. Patch by
-	Kris Nuttycombe, inspired by Blake Meike.
+        as a parameter to a target method. Patch by
+        Kris Nuttycombe, inspired by Blake Meike.
 
 The digester-rules.dtd file has also been slightly cleaned up to
 remove unnecessary duplication.
