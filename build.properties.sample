@@ -18,6 +18,9 @@ root=/java/jars
 # When using java 1.3 or earlier, JAXP is not included in the standard
 # libraries, so external jar files are required. If you are using Java
 # 1.4 or later, you can omit these libraries
+#
+# Note that when using xerces parser, the bundled xml-apis.jar provides the
+# same classes as Sun's jaxp.jar.
 
 jaxp.home=${root}
 jaxp.jaxp.jar=${jaxp.home}/jaxp.jar
