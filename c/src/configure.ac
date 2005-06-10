@@ -667,6 +667,10 @@ AC_CHECK_DECL(EVP_CIPHER_CTX_set_padding(NULL,0),
 	[AC_DEFINE(XSEC_OPENSSL_CANSET_PADDING)],
 	,[#include <openssl/evp.h>])
 
+AC_CHECK_DECL(CRYPTO_cleanup_all_ex_data,
+	[AC_DEFINE(XSEC_OPENSSL_HAVE_CRYPTO_CLEANUP_ALL_EX_DATA)],
+	,[#include <openssl/crypto.h>])
+
 AC_MSG_CHECKING([for const input buffer in loadX509Base64Bin])
 AC_TRY_COMPILE([#include <openssl/x509.h>],
 	[ const unsigned char * buf;
