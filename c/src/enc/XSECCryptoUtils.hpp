@@ -59,6 +59,15 @@ int DSIG_EXPORT CalculateXKMSKEK(unsigned char * input, int inputLen, unsigned c
 
 XMLCh DSIG_EXPORT * EncodeToBase64XMLCh(unsigned char * input, int inputLen);
 
+// --------------------------------------------------------------------------------
+//           Some stuff to help with wierd signatures
+// --------------------------------------------------------------------------------
+
+// Convert an ASN.1 format DSA signature (!!!) to the two component integers
+// NOTE - both r and s must be at least 20 bytes long
+
+bool DSIG_EXPORT ASN2DSASig(const unsigned char * input, unsigned char * r, unsigned char * s);
+
 #endif /* XSECCRYPTOUTILS_INCLUDE */
 
 

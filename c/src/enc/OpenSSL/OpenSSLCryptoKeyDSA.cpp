@@ -30,6 +30,7 @@
 #include <xsec/enc/OpenSSL/OpenSSLCryptoKeyDSA.hpp>
 #include <xsec/enc/OpenSSL/OpenSSLCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
+#include <xsec/enc/XSECCryptoUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 
 #include <openssl/dsa.h>
@@ -185,15 +186,33 @@ bool OpenSSLCryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 
 	sigValLen += t;
 
-	if (sigValLen != 40) {
-
-		throw XSECCryptoException(XSECCryptoException::DSAError,
-			"OpenSSL:DSA - Signature Length incorrect");
-	}
-
 	// Translate to BNs and thence to DSA_SIG
-	BIGNUM * R = BN_bin2bn(sigVal, 20, NULL);
-	BIGNUM * S = BN_bin2bn(&sigVal[20], 20, NULL);
+	BIGNUM * R;
+	BIGNUM * S;
+
+	if (sigValLen == 40) {
+
+		R = BN_bin2bn(sigVal, 20, NULL);
+		S = BN_bin2bn(&sigVal[20], 20, NULL);
+	}
+	else {
+
+		unsigned char rb[20];
+		unsigned char sb[20];
+
+		if (sigValLen == 46 && ASN2DSASig(sigVal, rb, sb) == true) {
+
+			R = BN_bin2bn(rb, 20, NULL);
+			S = BN_bin2bn(sb, 20, NULL);
+
+		}
+
+		else {
+
+			throw XSECCryptoException(XSECCryptoException::DSAError,
+				"OpenSSL:DSA - Signature Length incorrect");
+		}
+	}
 
 	DSA_SIG * dsa_sig = DSA_SIG_new();
 

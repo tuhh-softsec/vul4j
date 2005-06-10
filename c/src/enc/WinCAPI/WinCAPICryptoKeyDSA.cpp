@@ -29,6 +29,7 @@
 #include <xsec/enc/WinCAPI/WinCAPICryptoProvider.hpp>
 #include <xsec/enc/XSCrypt/XSCryptCryptoBase64.hpp>
 #include <xsec/enc/XSECCryptoException.hpp>
+#include <xsec/enc/XSECCryptoUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 
 #include <xercesc/util/Janitor.hpp>
@@ -309,17 +310,31 @@ bool WinCAPICryptoKeyDSA::verifyBase64Signature(unsigned char * hashBuf,
 	rawSigLen = b64.decode((unsigned char *) base64Signature, sigLen, rawSig, sigLen);
 	rawSigLen += b64.decodeFinish(&rawSig[rawSigLen], sigLen - rawSigLen);
 
-	if (rawSigLen != 40) {
-		throw XSECCryptoException(XSECCryptoException::DSAError,
-			"WinCAPI:DSA::VerifyBase64Signature - Expect 40 bytes in a DSA signature");
-	}
 	// Reverse the sig - Windows stores integers as octet streams in little endian
 	// order.  The I2OSP algorithm used by XMLDSig to store integers is big endian
 
 	BYTE rawSigFinal[40];
 	BYTE * j, *k, *l, *m;
-	j = rawSig;
-	k = rawSig + 20;
+
+	unsigned char rb[20];
+	unsigned char sb[20];
+
+	if (rawSigLen == 40) {
+
+		j = rawSig;
+		k = rawSig + 20;
+
+	} else if (rawSigLen == 46 && ASN2DSASig(rawSig, rb, sb) == true) {
+
+		j = rb;
+		k = sb;
+
+	} else {
+
+		throw XSECCryptoException(XSECCryptoException::DSAError,
+			"WinCAPI:DSA::VerifyBase64Signature - Expect 40 bytes in a DSA signature");
+	}
+
 	l = rawSigFinal + 19;
 	m = rawSigFinal + 39;
 	

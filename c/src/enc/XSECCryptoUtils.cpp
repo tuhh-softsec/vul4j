@@ -181,6 +181,28 @@ XMLCh DSIG_EXPORT * EncodeToBase64XMLCh(unsigned char * input, int inputLen) {
 }
 
 
+// --------------------------------------------------------------------------------
+//           Some stuff to help with wierd signatures
+// --------------------------------------------------------------------------------
+
+const unsigned char ASNDSAProlog[] = {0x30, 0x2c, 0x02, 0x14};
+const unsigned char ASNDSAMiddle[] = {0x02, 0x14};
+
+bool ASN2DSASig(const unsigned char * input, unsigned char * r, unsigned char * s) {
+
+	if (memcmp(ASNDSAProlog, input, 4) != 0 ||
+		memcmp(ASNDSAMiddle, &input[24], 2) != 0)
+
+		return false;
+
+	memcpy(r, &input[4], 20);
+	memcpy(s, &input[26], 20);
+
+	return true;
+
+}
+
+
 
 
 
