@@ -15,7 +15,7 @@
       <property name="ignoreLines" value="1,3"/>
     </module>
 
-	<!-- no tabs allowed in files -->
+    <!-- no tabs allowed in files -->
     <module name="TabCharacter"/>
     
     <!-- check sane import statements -->
