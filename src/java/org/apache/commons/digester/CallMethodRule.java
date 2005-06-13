@@ -287,7 +287,7 @@ public class CallMethodRule extends Rule {
         if (paramTypes == null) {
             this.paramTypes = new Class[paramCount];
             for (int i = 0; i < this.paramTypes.length; i++) {
-                this.paramTypes[i] = "abc".getClass();
+                this.paramTypes[i] = String.class;
             }
         } else {
             // copy the parameter class names into an array
@@ -355,7 +355,7 @@ public class CallMethodRule extends Rule {
         if (paramTypes == null) {
             this.paramTypes = new Class[paramCount];
             for (int i = 0; i < this.paramTypes.length; i++) {
-                this.paramTypes[i] = "abc".getClass();
+                this.paramTypes[i] = String.class;
             }
         } else {
             this.paramTypes = new Class[paramTypes.length];
@@ -535,7 +535,7 @@ public class CallMethodRule extends Rule {
             parameters[0] = bodyText;
             if (paramTypes.length == 0) {
                 paramTypes = new Class[1];
-                paramTypes[0] = "abc".getClass();
+                paramTypes[0] = String.class;
             }
 
         } else {
