@@ -202,7 +202,7 @@ public class Xpp3Dom
     public void writeToSerializer( String namespace, XmlSerializer serializer )
         throws IOException
     {
-        // TODO: Xpp3DomWriter?
+        // TODO: WARNING! Later versions of plexus-utils psit out an <?xml ?> header due to thinking this is a new document - not the desired behaviour!
         SerializerXMLWriter xmlWriter = new SerializerXMLWriter( namespace, serializer );
         Xpp3DomWriter.write( xmlWriter, this );
         if ( xmlWriter.getExceptions().size() > 0 )
@@ -298,6 +298,7 @@ public class Xpp3Dom
 
     public String toString()
     {
+        // TODO: WARNING! Later versions of plexus-utils psit out an <?xml ?> header due to thinking this is a new document - not the desired behaviour!
         StringWriter writer = new StringWriter();
         XMLWriter xmlWriter = new PrettyPrintXMLWriter( writer );
         Xpp3DomWriter.write( xmlWriter, this );
