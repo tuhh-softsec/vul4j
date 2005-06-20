@@ -36,17 +36,67 @@ public class InterpolationFilterReaderTest
     /*
      * Added and commented by jdcasey@03-Feb-2005 because it is a bug in the
      * InterpolationFilterReader.
+     * kenneyw@15-04-2005 fixed the bug.
      */
-//    public void testShouldNotInterpolateExpressionAtEndOfDataWithInvalidEndToken()
-//        throws Exception
-//    {
-//        Map m = new HashMap();
-//        m.put( "test", "TestValue" );
-//
-//        String testStr = "This is a ${test";
-//
-//        assertEquals( "This is a ${test", interpolate( testStr, m ) );
-//    }
+    public void testShouldNotInterpolateExpressionAtEndOfDataWithInvalidEndToken()
+        throws Exception
+    {
+        Map m = new HashMap();
+        m.put( "test", "TestValue" );
+
+        String testStr = "This is a ${test";
+
+        assertEquals( "This is a ${test", interpolate( testStr, m ) );
+    }
+
+    /*
+     * kenneyw@14-04-2005 Added test to check above fix.
+     */
+    public void testShouldNotInterpolateExpressionWithMissingEndToken()
+        throws Exception
+    {
+        Map m = new HashMap();
+        m.put( "test", "TestValue" );
+
+        String testStr = "This is a ${test, really";
+
+        assertEquals( "This is a ${test, really", interpolate( testStr, m ) );
+    }
+
+    public void testShouldNotInterpolateWithMalformedStartToken()
+        throws Exception
+    {
+        Map m = new HashMap();
+        m.put( "test", "testValue" );
+
+        String foo = "This is a $!test} again";
+
+        assertEquals( "This is a $!test} again", interpolate( foo, m ) );
+    }
+
+    public void testShouldNotInterpolateWithMalformedEndToken()
+        throws Exception
+    {
+        Map m = new HashMap();
+        m.put( "test", "testValue" );
+
+        String foo = "This is a ${test!} again";
+
+        assertEquals( "This is a ${test!} again", interpolate( foo, m, "${", "$}" ) );
+    }
+
+    public void testInterpolationWithMulticharDelimiters()
+        throws Exception
+    {
+        Map m = new HashMap();
+        m.put( "test", "testValue" );
+
+        String foo = "This is a ${test$} again";
+
+        assertEquals( "This is a testValue again", interpolate( foo, m, "${", "$}" ) );
+    }
+
+
 
     public void testDefaultInterpolationWithNonInterpolatedValueAtEnd()
         throws Exception

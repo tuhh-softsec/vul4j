@@ -65,17 +65,11 @@ import java.util.Map;
 public class InterpolationFilterReader
     extends FilterReader
 {
-    /** Data to be used before reading from stream again */
-    private String queuedData = null;
-
     /** replacement text from a token */
     private String replaceData = null;
 
     /** Index into replacement data */
     private int replaceIndex = -1;
-
-    /** Index into queue data */
-    private int queueIndex = -1;
 
     /** Hashtable to hold the replacee-replacer pairs (String to String). */
     private Map variables = new HashMap();
@@ -113,21 +107,6 @@ public class InterpolationFilterReader
     public InterpolationFilterReader( Reader in, Map variables )
     {
         this( in, variables, DEFAULT_BEGIN_TOKEN, DEFAULT_END_TOKEN );
-    }
-
-    private int getNextChar() throws IOException
-    {
-        if ( queueIndex != -1 )
-        {
-            int ch = queuedData.charAt( queueIndex++ );
-            if ( queueIndex >= queuedData.length() )
-            {
-                queueIndex = -1;
-            }
-            return ch;
-        }
-
-        return in.read();
     }
 
     /**
@@ -219,18 +198,27 @@ public class InterpolationFilterReader
             return ch;
         }
 
-        int ch = getNextChar();
+        int ch = in.read();
 
         if ( ch == beginToken.charAt( 0 ) )
         {
             StringBuffer key = new StringBuffer();
 
+            int beginTokenMatchPos = 1;
+
             do
             {
-                ch = getNextChar();
+                ch = in.read();
                 if ( ch != -1 )
                 {
                     key.append( (char) ch );
+
+                    if ( ( beginTokenMatchPos < beginTokenLength ) &&
+                            ( ch != beginToken.charAt( beginTokenMatchPos++ ) ) )
+                    {
+                        ch = -1; // not really EOF but to trigger code below
+                        break;
+                    }
                 }
                 else
                 {
@@ -239,12 +227,42 @@ public class InterpolationFilterReader
             }
             while ( ch != endToken.charAt( 0 ) );
 
+            // now test endToken
+            if ( ch != -1 && endTokenLength > 1 )
+            {
+                int endTokenMatchPos = 1;
+
+                do
+                {
+                    ch = in.read();
+                    
+                    if ( ch != -1 )
+                    {
+                        key.append( (char) ch );
+
+                        if ( ch != endToken.charAt( endTokenMatchPos++ ) )
+                        {
+                            ch = -1; // not really EOF but to trigger code below
+                            break;
+                        }
+
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                while ( endTokenMatchPos < endTokenLength );
+            }
+
             // There is nothing left to read so we have the situation where the begin/end token
             // are in fact the same and as there is nothing left to read we have got ourselves
             // end of a token boundary so let it pass through.
             if ( ch == -1 )
             {
-                return endToken.charAt( 0 );
+                replaceData = key.toString();
+                replaceIndex = 0;
+                return beginToken.charAt( 0 );
             }
 
             String variableKey = key.substring( beginTokenLength - 1, key.length() - endTokenLength );
@@ -261,20 +279,9 @@ public class InterpolationFilterReader
             }
             else
             {
-                String newData = key.toString();
-
-                if ( queuedData == null || queueIndex == -1 )
-                {
-                    queuedData = newData;
-                }
-                else
-                {
-                    queuedData = newData + queuedData.substring( queueIndex );
-                }
-
-                queueIndex = 0;
-
-                return beginToken.charAt( 0 );
+                replaceData = key.toString();
+                replaceIndex = 0;
+                return beginToken.charAt(0);
             }
         }
 
