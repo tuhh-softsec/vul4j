@@ -7,7 +7,6 @@ import java.util.LinkedList;
 public class PrettyPrintXMLWriter
     implements XMLWriter
 {
-
     private PrintWriter writer;
 
     private LinkedList elementStack = new LinkedList();
@@ -18,20 +17,17 @@ public class PrettyPrintXMLWriter
 
     private String lineIndenter;
 
-    private boolean readyForNewLine;
-
-    private boolean tagIsEmpty;
-
-    private boolean documentStarted;
-
     private String encoding;
 
     private String docType;
 
+    private boolean readyForNewLine;
+
+    private boolean tagIsEmpty;
+
     public PrettyPrintXMLWriter( PrintWriter writer, String lineIndenter )
     {
-        this.writer = writer;
-        this.lineIndenter = lineIndenter;
+        this( writer, lineIndenter, null, null );
     }
 
     public PrettyPrintXMLWriter( Writer writer, String lineIndenter )
@@ -41,7 +37,7 @@ public class PrettyPrintXMLWriter
 
     public PrettyPrintXMLWriter( PrintWriter writer )
     {
-        this( writer, "  " );
+        this( writer, null, null );
     }
 
     public PrettyPrintXMLWriter( Writer writer )
@@ -49,40 +45,55 @@ public class PrettyPrintXMLWriter
         this( new PrintWriter( writer ) );
     }
 
-    public void setEncoding( String encoding )
+    public PrettyPrintXMLWriter( PrintWriter writer, String lineIndenter, String encoding, String doctype )
     {
-        if ( documentStarted )
-        {
-            throw new IllegalStateException( "encoding should be set before starting writing the document." );
-        }
+        this.writer = writer;
+
+        this.lineIndenter = lineIndenter;
+
         this.encoding = encoding;
+
+        this.docType = doctype;
+
+        if ( docType != null || encoding != null )
+        {
+            writeDocumentHeaders();
+        }
     }
 
-    public void setDocType( String docType )
+    public PrettyPrintXMLWriter( Writer writer, String lineIndenter, String encoding, String doctype )
     {
-        if ( documentStarted )
-        {
-            throw new IllegalStateException( "docType should be set before starting writing the document." );
-        }
-        this.docType = docType;
+        this( new PrintWriter( writer ), lineIndenter, encoding, doctype );
+    }
 
+    public PrettyPrintXMLWriter( PrintWriter writer, String encoding, String doctype )
+    {
+        this( writer, "  ", encoding, doctype );
+    }
+
+    public PrettyPrintXMLWriter( Writer writer, String encoding, String doctype )
+    {
+        this( new PrintWriter( writer ), encoding, doctype );
     }
 
     public void startElement( String name )
     {
-        if ( !documentStarted )
-        {
-            writeDocumentHeaders();
-            documentStarted = true;
-        }
         tagIsEmpty = false;
+
         finishTag();
+
         write( "<" );
+
         write( name );
+
         elementStack.addLast( name );
+
         tagInProgress = true;
+
         depth++;
+
         readyForNewLine = true;
+
         tagIsEmpty = true;
     }
 
@@ -99,41 +110,57 @@ public class PrettyPrintXMLWriter
     private void writeText( String text, boolean escapeHtml )
     {
         readyForNewLine = false;
+
         tagIsEmpty = false;
+
         finishTag();
+
         if ( escapeHtml )
         {
             text = text.replaceAll( "&", "&amp;" );
+
             text = text.replaceAll( "<", "&lt;" );
+
             text = text.replaceAll( ">", "&gt;" );
         }
+
         write( text );
     }
 
     public void addAttribute( String key, String value )
     {
         write( " " );
+
         write( key );
+
         write( "=\"" );
+
         write( value );
+
         write( "\"" );
     }
 
     public void endElement()
     {
         depth--;
+
         if ( tagIsEmpty )
         {
             write( "/" );
+
             readyForNewLine = false;
+
             finishTag();
+
             elementStack.removeLast();
         }
         else
         {
             finishTag();
+
             write( "</" + elementStack.removeLast() + ">" );
         }
+
         readyForNewLine = true;
     }
 
@@ -148,18 +175,22 @@ public class PrettyPrintXMLWriter
         {
             write( ">" );
         }
+
         tagInProgress = false;
+
         if ( readyForNewLine )
         {
             endOfLine();
         }
         readyForNewLine = false;
+
         tagIsEmpty = false;
     }
 
     protected void endOfLine()
     {
         write( "\n" );
+
         for ( int i = 0; i < depth; i++ )
         {
             write( lineIndenter );
@@ -169,18 +200,24 @@ public class PrettyPrintXMLWriter
     private void writeDocumentHeaders()
     {
         write( "<?xml version=\"1.0\"" );
+
         if ( encoding != null )
         {
             write( " encoding=\"" + encoding + "\"" );
         }
+
         write( "?>" );
-        //
+
         endOfLine();
+
         if ( docType != null )
         {
             write( "<!DOCTYPE " );
+
             write( docType );
+
             write( ">" );
+
             endOfLine();
         }
     }
