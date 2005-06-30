@@ -211,7 +211,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     throws CanonicalizationException, IOException {
     	Node sibling=null;
     	Node parentNode=null;
-    	OutputStream writer=this._writer;
+    	final OutputStream writer=this._writer;
+    	final Node excludeNode=this._excludeNode;
+    	final boolean includeComments=this._includeComments;
     	do {
     		switch (currentNode.getNodeType()) {
     		
@@ -233,7 +235,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			break;
     			
     		case Node.COMMENT_NODE :
-    			if (this._includeComments) {
+    			if (includeComments) {
     				outputCommentToWriter((Comment) currentNode, writer);
     			}
     			break;
@@ -248,7 +250,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     			break;
     			
     		case Node.ELEMENT_NODE :        
-    			if (currentNode==this._excludeNode) {
+    			if (currentNode==excludeNode) {
     				break;
     			}      
     			Element currentElement = (Element) currentNode;
@@ -640,62 +642,68 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 
    final static void writeCharToUtf8(final char c,final OutputStream out) throws IOException{
    	char ch;
-    if (/*(c >= 0x0001) &&*/ (c <= 0x007F)) {
-   		out.write(c);
-   		return;
-   	} else if (c > 0x07FF) {
-        ch=(char)(c>>>12);
+   	if (/*(c >= 0x0001) &&*/ (c <= 0x007F)) {
+        out.write(c);
+        return;
+    }
+    int bias;
+    int write;
+    if (c > 0x07FF) {
+        ch=(char)(c>>>12);      
+        write=0xE0;
         if (ch>0) {
-        	out.write(0xE0 | ( ch & 0x0F));
-        } else {
-        	out.write(0xE0);
-        }
-        out.write(0x80 | ((c >>>  6) & 0x3F));
-   		out.write(0x80 | ((c) & 0x3F));
-   		return;
-   		
-   	} else {
-        ch=(char)(c>>>6);
-        if (ch>0) {
-        	out.write(0xC0 | (ch & 0x1F));
-        } else {
-        	out.write(0xC0);
-        }
-   		out.write(0x80 | ((c) & 0x3F));
-   		return;   		
-   	}
+            write |= ( ch & 0x0F);
+        } 
+        out.write(write);
+        write=0x80;
+        bias=0x3F;        
+    } else {
+    	write=0xC0;
+    	bias=0x1F;
+    }
+    ch=(char)(c>>>6);
+    if (ch>0) {
+         write|= (ch & bias);
+    } 
+    out.write(write);
+    out.write(0x80 | ((c) & 0x3F));    
    	
    }
    
    final static void writeStringToUtf8(final String str,final OutputStream out) throws IOException{
    	final int length=str.length();
    	int i=0;
-    char ch,c;
+    char c;    
    	while (i<length) {
    		c=str.charAt(i++);        
         if (/*(c >= 0x0001) &&*/ (c <= 0x007F)) {
             out.write(c);
             continue;
-        } else if (c > 0x07FF) {
-            ch=(char)(c>>>12);
+        }
+        char ch;
+        int bias;
+        int write;
+        if (c > 0x07FF) {
+            ch=(char)(c>>>12);      
+            write=0xE0;
             if (ch>0) {
-                out.write(0xE0 | ( ch & 0x0F));
-            } else {
-                out.write(0xE0);
-            }
-            out.write(0x80 | ((c >>>  6) & 0x3F));
-            out.write(0x80 | ((c) & 0x3F));
-            continue;            
+                write |= ( ch & 0x0F);
+            } 
+            out.write(write);
+            write=0x80;
+            bias=0x3F;        
         } else {
-            ch=(char)(c>>>6);
-            if (ch>0) {
-                out.write(0xC0 | (ch & 0x1F));
-            } else {
-                out.write(0xC0);
-            }
-            out.write(0x80 | ((c) & 0x3F));
-            continue;         
-        }   		
+        	write=0xC0;
+        	bias=0x1F;
+        }
+        ch=(char)(c>>>6);
+        if (ch>0) {
+             write|= (ch & bias);
+        } 
+        out.write(write);
+        out.write(0x80 | ((c) & 0x3F));
+        continue;         
+           		
    	}
     
    }
