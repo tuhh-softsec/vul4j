@@ -23,7 +23,15 @@ limitations under the License.
     <section>
       <title>News</title>
       <section>
-      	<title>May 2005</title>
+      	<title>July 2005</title>
+		<p>
+		  Version 1.2.1 of the C++ library has been released. This minor
+          release fixes versioning problems in the Windows project files.  See the 
+		  <link href="site:changes">changelog</link> for more information.
+		</p>
+      </section>
+      <section>
+      	<title>June 2005</title>
 		<p>
 		  Version 1.2 of the C++ library has been released. 
 		  This version includes a number of bug fixes, together with

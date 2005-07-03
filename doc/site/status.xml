@@ -32,7 +32,18 @@ limitations under the License.
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
 
-    <release version="C++ 1.2.0" date="May 2005">
+    <release version="C++ 1.2.1" date="July 2005">
+      <action dev="BL" type="fix" context="c_rel"> 
+        Add xklient "No Xalan" builds in VC 6.0 project files
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Fix version suffixes on DLL files in VC 6.0 "No Xalan" build.
+      </action>
+      <action dev="BL" type="fix" context="c_rel"> 
+        Add "No Xalan" support into VC 7.0 project files.
+      </action>
+    </release>
+    <release version="C++ 1.2.0" date="June 2005">
       <action dev="BL" type="fix" context="c_rel"> 
         Remove MFC dependency and clean up memory debugging
       </action>
