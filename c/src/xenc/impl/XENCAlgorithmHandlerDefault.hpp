@@ -77,6 +77,37 @@ public:
 
 	virtual XSECAlgorithmHandler * clone(void) const;
 
+	// Unsupported Signature ops
+
+	virtual unsigned int signToSafeBuffer(
+		TXFMChain * inputBytes,
+		const XMLCh * URI,
+		XSECCryptoKey * key,
+		unsigned int outputLength,
+		safeBuffer & result
+	);
+
+	virtual bool appendSignatureHashTxfm(
+		TXFMChain * inputBytes,
+		const XMLCh * URI,
+		XSECCryptoKey * key
+	);
+
+	virtual bool verifyBase64Signature(
+		TXFMChain * inputBytes,
+		const XMLCh * URI,
+		const char * sig,
+		unsigned int outputLength,
+		XSECCryptoKey * key
+	);
+
+	virtual bool appendHashTxfm(
+		TXFMChain * inputBytes,
+		const XMLCh * URI
+	);
+
+
+	
 private:
 
 	void mapURIToKey(const XMLCh * uri, 

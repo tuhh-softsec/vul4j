@@ -174,6 +174,14 @@ SOURCE=..\..\..\..\src\canon\XSECCanon.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\dsig\DSIGAlgorithmHandlerDefault.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\dsig\DSIGConstants.cpp
 # End Source File
 # Begin Source File

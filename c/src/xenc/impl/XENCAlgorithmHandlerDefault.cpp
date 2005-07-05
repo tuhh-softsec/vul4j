@@ -968,5 +968,51 @@ XSECAlgorithmHandler * XENCAlgorithmHandlerDefault::clone(void) const {
 
 }
 
+// --------------------------------------------------------------------------------
+//			Unsupported operations
+// --------------------------------------------------------------------------------
 
+unsigned int XENCAlgorithmHandlerDefault::signToSafeBuffer(
+		TXFMChain * inputBytes,
+		const XMLCh * URI,
+		XSECCryptoKey * key,
+		unsigned int outputLength,
+		safeBuffer & result) {
+
+	throw XSECException(XSECException::AlgorithmMapperError, 
+			"XENCAlgorithmHandlerDefault - Signature operations not supported");
+
+}
+
+
+bool XENCAlgorithmHandlerDefault::appendSignatureHashTxfm(
+		TXFMChain * inputBytes,
+		const XMLCh * URI,
+		XSECCryptoKey * key) {
+
+	throw XSECException(XSECException::AlgorithmMapperError, 
+			"XENCAlgorithmHandlerDefault - Signature operations not supported");
+
+}
+
+bool XENCAlgorithmHandlerDefault::verifyBase64Signature(
+		TXFMChain * inputBytes,
+		const XMLCh * URI,
+		const char * sig,
+		unsigned int outputLength,
+		XSECCryptoKey * key) {
+
+	throw XSECException(XSECException::AlgorithmMapperError, 
+			"XENCAlgorithmHandlerDefault - Signature operations not supported");
+
+}
+
+bool XENCAlgorithmHandlerDefault::appendHashTxfm(
+		TXFMChain * inputBytes,
+		const XMLCh * URI) {
+
+	throw XSECException(XSECException::AlgorithmMapperError, 
+			"XENCAlgorithmHandlerDefault - Hash operations not supported");
+
+}
 
