@@ -39,6 +39,8 @@
 #include <xsec/transformers/TXFMC14n.hpp>
 #include <xsec/transformers/TXFMChain.hpp>
 #include <xsec/framework/XSECError.hpp>
+#include <xsec/framework/XSECAlgorithmHandler.hpp>
+#include <xsec/framework/XSECAlgorithmMapper.hpp>
 #include <xsec/enc/XSECCryptoKeyDSA.hpp>
 #include <xsec/enc/XSECCryptoKeyRSA.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
@@ -51,6 +53,7 @@
 #include <xsec/dsig/DSIGKeyInfoPGPData.hpp>
 #include <xsec/dsig/DSIGKeyInfoSPKIData.hpp>
 #include <xsec/dsig/DSIGKeyInfoMgmtData.hpp>
+#include <xsec/dsig/DSIGAlgorithmHandlerDefault.hpp>
 #include <xsec/framework/XSECEnv.hpp>
 
 // Xerces includes
@@ -61,9 +64,45 @@
 XERCES_CPP_NAMESPACE_USE
 
 // --------------------------------------------------------------------------------
+//           Init
+// --------------------------------------------------------------------------------
+
+
+void DSIGSignature::Initialise(void) {
+
+	DSIGAlgorithmHandlerDefault def;
+	
+	// Register default signature algorithm handlers
+
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_SHA1, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_SHA224, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_SHA256, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_SHA384, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIRSA_SHA512, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIDSA_SHA1, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIHMAC_SHA1, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIHMAC_SHA224, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIHMAC_SHA256, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIHMAC_SHA384, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIHMAC_SHA512, def);
+
+	// Register default hashing algorithm handlers
+
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURISHA1, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURISHA224, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURISHA256, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURISHA384, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURISHA512, def);
+	XSECPlatformUtils::registerAlgorithmHandler(DSIGConstants::s_unicodeStrURIMD5, def);
+
+}
+
+// --------------------------------------------------------------------------------
 //           Some useful utility functions
 // --------------------------------------------------------------------------------
 
+
+#if 0
 
 bool compareBase64StringToRaw(safeBuffer &b64SB, 
 							  unsigned char * raw, 
@@ -202,6 +241,9 @@ void convertRawToBase64String(safeBuffer &b64SB,
 	b64SB.sbStrcpyIn((char *) b64Str);
 
 }
+
+#endif /* 0 */
+
 // --------------------------------------------------------------------------------
 //           Get the Canonicalised BYTE_STREAM of the SignedInfo
 // --------------------------------------------------------------------------------
@@ -509,11 +551,43 @@ const XMLCh * DSIGSignature::getXPFNSPrefix() {
 
 }
 
+// --------------------------------------------------------------------------------
+//           Creating Blank Signature
+// --------------------------------------------------------------------------------
 
 DOMElement *DSIGSignature::createBlankSignature(DOMDocument *doc,
 			canonicalizationMethod cm,
 			signatureMethod	sm,
 			hashMethod hm) {
+
+	// This is now deprecated.  Because this is so, we go the long way - translate
+	// to URI and then call the "standard" method, which will translate back to 
+	// internal enums if possible
+
+	const XMLCh * cURI;
+	safeBuffer sURI;
+
+	if ((cURI = canonicalizationMethod2UNICODEURI(cm)) == NULL) {
+		throw XSECException(XSECException::UnknownCanonicalization,
+			"DSIGSignature::createBlankSignature - Canonicalisation method unknown");
+	}
+
+	if (signatureHashMethod2URI(sURI, sm, hm) == false) {
+		throw XSECException(XSECException::UnknownSignatureAlgorithm,
+			"DSIGSignature::createBlankSignature - Signature/Hash method unknown");
+	}
+
+	return createBlankSignature(doc, cURI, sURI.sbStrToXMLCh());
+
+}
+
+
+DOMElement *DSIGSignature::createBlankSignature(
+		DOMDocument *doc,
+		const XMLCh * canonicalizationAlgorithmURI,
+		const XMLCh * signatureAlgorithmURI) {
+
+	// "New" method to create a blank signature, based on URIs.
 
 	mp_doc = doc;
 	mp_env->setParentDocument(doc);
@@ -545,7 +619,8 @@ DOMElement *DSIGSignature::createBlankSignature(DOMDocument *doc,
 	// Create the skeleton SignedInfo
 	XSECnew(mp_signedInfo, DSIGSignedInfo(mp_doc, mp_formatter, mp_env));
 	
-	mp_sigNode->appendChild(mp_signedInfo->createBlankSignedInfo(cm, sm, hm));
+	mp_sigNode->appendChild(mp_signedInfo->createBlankSignedInfo(
+		canonicalizationAlgorithmURI, signatureAlgorithmURI));
 	mp_env->doPrettyPrint(mp_sigNode);
 
 	// Create a dummy signature value (dummy until signed)
@@ -565,6 +640,8 @@ DOMElement *DSIGSignature::createBlankSignature(DOMDocument *doc,
 	return sigNode;
 }
 
+
+
 // --------------------------------------------------------------------------------
 //           Creating References
 // --------------------------------------------------------------------------------
@@ -574,6 +651,15 @@ DSIGReference * DSIGSignature::createReference(const XMLCh * URI,
 								char * type) {
 
 	return mp_signedInfo->createReference(URI, hm, type);
+
+}
+
+DSIGReference * DSIGSignature::createReference(
+		const XMLCh * URI,
+		const XMLCh * hashAlgorithmURI, 
+		const XMLCh * type) {
+
+	return mp_signedInfo->createReference(URI, hashAlgorithmURI, type);
 
 }
 
@@ -802,10 +888,7 @@ void DSIGSignature::load(void) {
 */
 }
 
-unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf, 
-													unsigned int hashBufLen) {
-
-	// Calculate the hash and store in the hashBuf
+TXFMChain * DSIGSignature::getSignedInfoInput(void) {
 
 	TXFMBase * txfm;
 	TXFMChain * chain;
@@ -861,92 +944,40 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 			"Canonicalisation method unknown in DSIGSignature::calculateSignedInfoHash()");
 
 	}
+	
+	j_chain.release();
+	return chain;
+
+}
+
+unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf, 
+													unsigned int hashBufLen) {
+
+	// Get the SignedInfo input bytes
+	TXFMChain * chain = getSignedInfoInput();
+	Janitor<TXFMChain> j_chain(chain);
 
 	// Setup Hash
+	// First find the appropriate handler for the URI
+	XSECAlgorithmHandler * handler = 
+		XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
+					mp_signedInfo->getAlgorithmURI());
 
-	switch (mp_signedInfo->getHashMethod()) {
+	if (handler == NULL) {
 
-	case HASH_SHA1 :
-
-		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
-			if (mp_signingKey->getKeyType() != XSECCryptoKey::KEY_HMAC) {
-				throw XSECException(XSECException::SigVfyError,
-					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
-			}
-			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA1, mp_signingKey));
-		}
-		else  {
-			XSECnew(txfm, TXFMSHA1(mp_doc));
-		}
-
-		break;
-
-	case HASH_SHA224 :
-
-		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
-			if (mp_signingKey->getKeyType() != XSECCryptoKey::KEY_HMAC) {
-				throw XSECException(XSECException::SigVfyError,
-					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
-			}
-			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA224, mp_signingKey));
-		}
-		else  {
-			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA224));
-		}
-
-		break;
-
-	case HASH_SHA256 :
-
-		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
-			if (mp_signingKey->getKeyType() != XSECCryptoKey::KEY_HMAC) {
-				throw XSECException(XSECException::SigVfyError,
-					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
-			}
-			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA256, mp_signingKey));
-		}
-		else  {
-			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA256));
-		}
-
-		break;
-
-	case HASH_SHA384 :
-
-		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
-			if (mp_signingKey->getKeyType() != XSECCryptoKey::KEY_HMAC) {
-				throw XSECException(XSECException::SigVfyError,
-					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
-			}
-			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA384, mp_signingKey));
-		}
-		else  {
-			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA384));
-		}
-
-		break;
-
-	case HASH_SHA512 :
-
-		if (mp_signedInfo->getSignatureMethod() == SIGNATURE_HMAC){
-			if (mp_signingKey->getKeyType() != XSECCryptoKey::KEY_HMAC) {
-				throw XSECException(XSECException::SigVfyError,
-					"DSIGSignature::calculateSignedInfoHash - non HMAC key passed in to HMAC signature");
-			}
-			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA512, mp_signingKey));
-		}
-		else  {
-			XSECnew(txfm, TXFMSHA1(mp_doc, HASH_SHA512));
-		}
-
-		break;
-
-	default :
 
 		throw XSECException(XSECException::SigVfyError,
 			"Hash method unknown in DSIGSignature::calculateSignedInfoHash()");
 
 	}
+
+	if (!handler->appendSignatureHashTxfm(chain, mp_signedInfo->getAlgorithmURI(), mp_signingKey)) {
+
+		throw XSECException(XSECException::SigVfyError,
+			"Unexpected error in handler whilst appending Signature Hash transform");
+
+	}
+
 
 #if 0
 	TXFMOutputFile * of = new TXFMOutputFile(mp_doc);
@@ -955,8 +986,6 @@ unsigned int DSIGSignature::calculateSignedInfoHash(unsigned char * hashBuf,
 	of->setInput(hashVal);
 	hashVal=of;
 #endif
-
-	chain->appendTxfm(txfm);
 
 	// Write hash to the buffer
 	int hashLen;
@@ -1018,77 +1047,33 @@ bool DSIGSignature::verifySignatureOnlyInternal(void) {
 
 	}
 
+	// Get the SignedInfo input bytes
+	TXFMChain * chain = getSignedInfoInput();
+	Janitor<TXFMChain> j_chain(chain);
 
 	hashLen = calculateSignedInfoHash(hash, 4096);
 
 	// Now set up to verify
-	bool sigVfyRet = false;
+	// First find the appropriate handler for the URI
+	XSECAlgorithmHandler * handler = 
+		XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
+					mp_signedInfo->getAlgorithmURI());
 
-	switch (mp_signingKey->getKeyType()) {
-
-	case (XSECCryptoKey::KEY_DSA_PUBLIC) :
-	case (XSECCryptoKey::KEY_DSA_PAIR) :
-
-		if (mp_signedInfo == NULL || mp_signedInfo->getSignatureMethod() != SIGNATURE_DSA) {
-
-			throw XSECException(XSECException::SigVfyError,
-				"Key type does not match <SignedInfo> signature type");
-
-		}
-
-		sigVfyRet = ((XSECCryptoKeyDSA *) mp_signingKey)->verifyBase64Signature(
-			hash, 
-			hashLen,
-			(char *) m_signatureValueSB.rawBuffer(), 
-			m_signatureValueSB.sbStrlen());
-
-		if (!sigVfyRet)
-			m_errStr.sbXMLChCat("DSA Validation of <SignedInfo> failed");
-
-		break;
-
-	case (XSECCryptoKey::KEY_RSA_PUBLIC) :
-	case (XSECCryptoKey::KEY_RSA_PAIR) :
-
-		if (mp_signedInfo == NULL || mp_signedInfo->getSignatureMethod() != SIGNATURE_RSA) {
-		
-			throw XSECException(XSECException::SigVfyError,
-				"Key type does not match <SignedInfo> signature type");
-
-		}
-
-		sigVfyRet = ((XSECCryptoKeyRSA *) mp_signingKey)->verifySHA1PKCS1Base64Signature(
-			hash,
-			hashLen,
-			m_signatureValueSB.rawCharBuffer(),
-			m_signatureValueSB.sbStrlen());
-
-		if (sigVfyRet == false) {
-
-			m_errStr.sbXMLChCat("RSA Validation of <SignedInfo> failed");
-
-		}
-
-		break;
-
-	case (XSECCryptoKey::KEY_HMAC) :
-
-		// Already done - just compare calculated value with read value
-		sigVfyRet = compareBase64StringToRaw(m_signatureValueSB, 
-			hash, 
-			hashLen,
-			mp_signedInfo->getHMACOutputLength());
-		if (!sigVfyRet)
-			m_errStr.sbXMLChCat("HMAC Validation of <SignedInfo> failed");
-
-		break;
-
-	default :
+	if (handler == NULL) {
 
 		throw XSECException(XSECException::SigVfyError,
-			"Key found, but don't know how to check the signature using it");
+			"Hash method unknown in DSIGSignature::verifySignatureOnlyInternal()");
 
 	}
+
+	bool sigVfyRet = handler->verifyBase64Signature(chain, 
+		mp_signedInfo->getAlgorithmURI(), 
+		m_signatureValueSB.rawCharBuffer(), 
+		mp_signedInfo->getHMACOutputLength(),
+		mp_signingKey);
+
+	if (!sigVfyRet)
+		m_errStr.sbXMLChCat("Validation of <SignedInfo> failed");
 
 	return sigVfyRet;
 
@@ -1162,106 +1147,31 @@ void DSIGSignature::sign(void) {
 	// Set up the reference list hashes - including any manifests
 	mp_signedInfo->hash();
 
+	// Get the SignedInfo input bytes
+	TXFMChain * chain = getSignedInfoInput();
+	Janitor<TXFMChain> j_chain(chain);
+
 	// Calculate the hash to be signed
 
-	unsigned char hash[4096];
-	int hashLen;
+	safeBuffer b64Buf;
 
-	hashLen = calculateSignedInfoHash(hash, 4096);
-	
-	// Now check the calculated hash
+	XSECAlgorithmHandler * handler = 
+		XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(
+					mp_signedInfo->getAlgorithmURI());
 
-	char b64Buf[1024];
-	unsigned int b64Len;
-	safeBuffer b64SB;
-	
-	switch (mp_signingKey->getKeyType()) {
+	if (handler == NULL) {
 
-	case (XSECCryptoKey::KEY_DSA_PRIVATE) :
-	case (XSECCryptoKey::KEY_DSA_PAIR) :
-
-		if (mp_signedInfo == NULL || mp_signedInfo->getSignatureMethod() != SIGNATURE_DSA) {
-
-			throw XSECException(XSECException::SigningError,
-				"Key type does not match <SignedInfo> signature type");
-
-		}
-
-		b64Len = ((XSECCryptoKeyDSA *) mp_signingKey)->signBase64Signature(
-			hash, 
-			hashLen,
-			(char *) b64Buf, 
-			1024);
-
-		if (b64Len <= 0) {
-
-			throw XSECException(XSECException::SigningError,
-				"Unknown error occured during a DSA Signing operation");
-
-		}
-
-		if (b64Buf[b64Len-1] == '\n')
-			b64Buf[b64Len-1] = '\0';
-		else
-			b64Buf[b64Len] = '\0';
-
-		break;
-
-	case (XSECCryptoKey::KEY_RSA_PRIVATE) :
-	case (XSECCryptoKey::KEY_RSA_PAIR) :
-
-		if (mp_signedInfo == NULL || mp_signedInfo->getSignatureMethod() != SIGNATURE_RSA) {
-
-			throw XSECException(XSECException::SigningError,
-				"Key type does not match <SignedInfo> signature type");
-
-		}
-
-		b64Len = ((XSECCryptoKeyRSA *) mp_signingKey)->signSHA1PKCS1Base64Signature(
-			hash, 
-			hashLen,
-			(char *) b64Buf, 
-			1024);
-
-		if (b64Len <= 0) {
-
-			throw XSECException(XSECException::SigningError,
-				"Unknown error occured during a RSA Signing operation");
-
-		}
-
-		// Clean up some "funnies" and make sure the string is NULL terminated
-
-		if (b64Buf[b64Len-1] == '\n')
-			b64Buf[b64Len-1] = '\0';
-		else
-			b64Buf[b64Len] = '\0';
-
-		break;
-
-	case (XSECCryptoKey::KEY_HMAC) :
-
-		if (mp_signedInfo == NULL || mp_signedInfo->getSignatureMethod() != SIGNATURE_HMAC) {
-
-			throw XSECException(XSECException::SigningError,
-				"Key type does not match <SignedInfo> signature type");
-
-		}
-
-		// Signature already created, so just translate to base 64 and enter string
-		
-		convertRawToBase64String(b64SB, 
-								hash, 
-								hashLen, 
-								mp_signedInfo->getHMACOutputLength());
-		
-		strncpy(b64Buf, (char *) b64SB.rawBuffer(), 1024);
-		break;
-
-	default :
 
 		throw XSECException(XSECException::SigVfyError,
-			"Key found, but don't know how to sign the document using it");
+			"Hash method unknown in DSIGSignature::sign()");
+
+	}
+
+	if (!handler->signToSafeBuffer(chain, mp_signedInfo->getAlgorithmURI(), 
+								   mp_signingKey, mp_signedInfo->getHMACOutputLength(), b64Buf)) {
+
+		throw XSECException(XSECException::SigVfyError,
+			"Unexpected error in handler whilst appending Signature Hash transform");
 
 	}
 
@@ -1275,11 +1185,11 @@ void DSIGSignature::sign(void) {
 	if (tmpElt == NULL) {
 		// Need to create the underlying TEXT_NODE
 		DOMDocument * doc = mp_signatureValueNode->getOwnerDocument();
-		tmpElt = doc->createTextNode(MAKE_UNICODE_STRING(b64Buf));
+		tmpElt = doc->createTextNode(b64Buf.sbStrToXMLCh());
 		mp_signatureValueNode->appendChild(tmpElt);
 	}
 	else {
-		tmpElt->setNodeValue(MAKE_UNICODE_STRING(b64Buf));
+		tmpElt->setNodeValue(b64Buf.sbStrToXMLCh());
 	}
 
 	// And copy to the local buffer

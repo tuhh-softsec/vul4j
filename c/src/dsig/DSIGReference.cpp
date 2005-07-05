@@ -50,6 +50,8 @@
 
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/framework/XSECEnv.hpp>
+#include <xsec/framework/XSECAlgorithmHandler.hpp>
+#include <xsec/framework/XSECAlgorithmMapper.hpp>
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/utils/XSECDOMUtils.hpp>
 #include <xsec/utils/XSECBinTXFMInputStream.hpp>
@@ -261,6 +263,16 @@ DSIGTransformC14n * DSIGReference::appendCanonicalizationTransform(canonicalizat
 
 }	
 
+DSIGTransformC14n * DSIGReference::appendCanonicalizationTransform(
+		const XMLCh * canonicalizationAlgorithmURI) {
+	
+	canonicalizationMethod cm;
+	XSECmapURIToCanonicalizationMethod(canonicalizationAlgorithmURI, cm);
+
+	return appendCanonicalizationTransform(cm);
+
+}	
+
 DSIGTransformXPath * DSIGReference::appendXPathTransform(const char * expr) {
 
 	DOMElement *txfmElt;
@@ -298,14 +310,32 @@ DSIGTransformXPathFilter * DSIGReference::appendXPathFilterTransform(void) {
 
 DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm, char * type) {
 
+	// Deprecated - use the algorithm URI based method instead
+
+	safeBuffer hURI;
+
+	if (hashMethod2URI(hURI, hm) == false) {
+		throw XSECException(XSECException::UnknownSignatureAlgorithm,
+			"DSIGReference::createBlankReference - Hash method unknown");
+	}
+
+	return createBlankReference(URI, hURI.sbStrToXMLCh(), MAKE_UNICODE_STRING(type));
+
+}
+
+DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, 
+												const XMLCh * hashAlgorithmURI, 
+												const XMLCh * type) {
+
 	// Reset this Reference just in case
 	
-	me_hashMethod = hm;
 	m_isManifest = false;
 	mp_preHash = NULL;
 	mp_manifestList = NULL;
 	mp_transformsNode = NULL;
 	mp_transformList = NULL;
+
+	XSECmapURIToHashMethod(hashAlgorithmURI, me_hashMethod);
 
 	safeBuffer str;
 	DOMDocument *doc = mp_env->getParentDocument();
@@ -318,8 +348,7 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 
 	// Set type
 	if (type != NULL)
-		ret->setAttributeNS(NULL, MAKE_UNICODE_STRING("Type"),
-			MAKE_UNICODE_STRING(type));
+		ret->setAttributeNS(NULL, MAKE_UNICODE_STRING("Type"), type);
 
 	// Set URI
 	if (URI != NULL) {
@@ -338,14 +367,13 @@ DOMElement *DSIGReference::createBlankReference(const XMLCh * URI, hashMethod hm
 	ret->appendChild(digestMethod);
 	mp_env->doPrettyPrint(ret);
 
-	if (!hashMethod2URI(str, hm)) {
-	
-		throw XSECException(XSECException::SignatureCreationError,
-			"Attempt to use undefined Digest Method in SignedInfo Creation");
+	digestMethod->setAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm, 
+		hashAlgorithmURI);
 
-	}
+	// Retrieve the attribute value for later use
+	mp_algorithmURI = 
+		digestMethod->getAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm);
 
-	digestMethod->setAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm, str.sbStrToXMLCh());
 
 	// DigestValue
 
@@ -627,58 +655,10 @@ void DSIGReference::load(void) {
 
 	}
 
+	mp_algorithmURI = atts->item(i)->getNodeValue();
+
 	// Determine hashing algorithm
-
-	if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURISHA1)) {
-
-		me_hashMethod = HASH_SHA1;
-
-	}
-
-	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURISHA224)) {
-
-		me_hashMethod = HASH_SHA224;
-
-	}
-
-	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURISHA256)) {
-
-		me_hashMethod = HASH_SHA256;
-
-	}
-
-	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURISHA384)) {
-
-		me_hashMethod = HASH_SHA384;
-
-	}
-
-	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURISHA512)) {
-
-		me_hashMethod = HASH_SHA512;
-
-	}
-
-	else if (strEquals(atts->item(i)->getNodeValue(), DSIGConstants::s_unicodeStrURIMD5)) {
-
-		me_hashMethod = HASH_MD5;
-
-	}
-
-	else {
-
-		safeBuffer tmp, error;
-
-		error << (*mp_formatter << atts->item(0)->getNodeValue());
-
-		tmp.sbStrcpyIn("Unknown DigestMethod Algorithm : '");
-		tmp.sbStrcatIn(error);
-		tmp.sbStrcatIn("'.");
-
-		throw XSECException(XSECException::UnknownTransform, tmp.rawCharBuffer());
-
-	}
-
+	XSECmapURIToHashMethod(mp_algorithmURI, me_hashMethod);
 
 	// Find the hash value node
 
@@ -1265,34 +1245,28 @@ unsigned int DSIGReference::calculateHash(XMLByte *toFill, unsigned int maxToFil
 #endif
 
 	
-	// Determine what the digest method actually is
+	// Get the mapping for the hash transform
 
-	switch (me_hashMethod) {
+	XSECAlgorithmHandler * handler = 
+		XSECPlatformUtils::g_algorithmMapper->mapURIToHandler(mp_algorithmURI);
 
-	case HASH_SHA1 :
-	case HASH_SHA224 :
-	case HASH_SHA256 :
-	case HASH_SHA384 :
-	case HASH_SHA512 :
+	if (handler == NULL) {
 
-		XSECnew(currentTxfm, TXFMSHA1(d, me_hashMethod));
-		break;
-	
-	case HASH_MD5 :
 
-		XSECnew(currentTxfm, TXFMMD5(d));
-		break;
+		throw XSECException(XSECException::SigVfyError,
+			"Hash method unknown in DSIGReference::calculateHash()");
 
-	default :
+	}
 
-		throw XSECException(XSECException::UnknownTransform, 
-			"Unknown Hash type in <Reference> node");
+	if (!handler->appendHashTxfm(chain, mp_algorithmURI)) {
+
+		throw XSECException(XSECException::SigVfyError,
+			"Unexpected error in handler whilst appending Hash transform");
 
 	}
 
 	// Now we have the hashing transform, run it.
 
-	chain->appendTxfm(currentTxfm);
 	size = chain->getLastTxfm()->readBytes(toFill, maxToFill);
 
 	// Clean out document if necessary

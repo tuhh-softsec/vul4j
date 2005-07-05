@@ -155,9 +155,29 @@ public:
 	 * Builds the DOM structures and sets the control
 	 * structures of the SignedInfo
 	 *
+	 * @param canonicalizationAlgorithmURI The canonicalisation method to set the SignedInfo as
+	 * @param signatureAlgorithmURI Signature Method to use
+	 * @param hm Hash method to use (for the SignedInfo, not the references)
+	 */
+
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *
+		createBlankSignedInfo(
+			const XMLCh * canonicalizationAlgorithmURI,
+			const XMLCh * signatureAlgorithmURI
+		);
+
+	/**
+	 * \brief Create an empty SignedInfo
+	 *
+	 * Creates the DOM structure for a SignedInfo
+	 *
+	 * Builds the DOM structures and sets the control
+	 * structures of the SignedInfo
+	 *
 	 * @param cm The canonicalisation method to set the SignedInfo as
 	 * @param sm Signature Method to use
 	 * @param hm Hash method to use (for the SignedInfo, not the references)
+	 * @deprecated Use URI based creation method instead
 	 */
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *
@@ -174,10 +194,28 @@ public:
 	 * @param URI What the reference references
 	 * @param hm Digest method to use for the reference
 	 * @param type Reference type
+	 * @deprecated Use the algorithmURI based call instead
 	 */
 
 	DSIGReference * createReference(const XMLCh * URI,
 		hashMethod hm, char * type);
+
+
+	/**
+	 * \brief Create a reference to add to the SignedInfo
+	 *
+	 * Called by DSIGSignature to create and enter a new reference element
+	 *
+	 * @param URI What the reference references
+	 * @param hashAlgorithmURI Digest method to use for the reference
+	 * @param type Reference type
+	 */
+
+	DSIGReference * createReference(
+		const XMLCh * URI,
+		const XMLCh * hashAlgorithmURI, 
+		const XMLCh * type
+	);
 
 	//@}
 
@@ -191,6 +229,15 @@ public:
 	 */
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getDOMNode(void);
+
+	/**
+	 * \brief Get the Algorithm URI
+	 *
+	 * @returns the URI associated with the Algorithm used to generate
+	 * the signature
+	 */
+
+	const XMLCh * getAlgorithmURI() {return mp_algorithmURI;}
 
 	/**
 	 * \brief Get the canonicalisation method 
@@ -250,6 +297,7 @@ private:
 	hashMethod					m_hashMethod;
 	DSIGReferenceList			* mp_referenceList;
 	int							m_HMACOutputLength;
+	const XMLCh					* mp_algorithmURI;
 	const XSECEnv				* mp_env;
 
 	// Not implemented constructors

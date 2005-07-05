@@ -294,11 +294,41 @@ public:
 	 * Different hash methods can be used for reference elements.
 	 *
 	 * @param doc The document the Signature DOM structure will be inserted into.
+	 * @param canonicalizationAlgorithmURI The canonicalisation method to use.
+	 * @param signatureAlgorithmURI The Signature algorithm (defined by URI) to use
+	 * @returns The newly created \<Signature\> element that the caller should insert in
+	 * the document.
+	 */
+
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *createBlankSignature(
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *doc,
+		const XMLCh * canonicalizationAlgorithmURI,
+		const XMLCh * signatureAlgorithmURI
+	);
+
+	/**
+	 * \brief Create a \<Signature\> DOM structure.
+	 *
+	 * <p>The DOM structure created is still divorced from the document.  The callee
+	 * needs to take the returned \<Signature\> Element node and insert it at the
+	 * appropriate place in their document.</p>
+	 *
+	 * <p>The signature is a skeleton only.  There are no references or KeyInfo
+	 * elements inserted.  However the DSIGSignature structures are set up with the
+	 * new information, so once an element has been created and a signing key has been
+	 * set, a call to #sign will sign appropriately.
+	 *
+	 * @note The digest method (hash method) set here is for the signing function only.
+	 * Different hash methods can be used for reference elements.
+	 *
+	 * @param doc The document the Signature DOM structure will be inserted into.
 	 * @param cm The canonicalisation method to use.
 	 * @param sm The signature algorithm to be used.
 	 * @param hm The Digest function to be used for the actual signatures.
 	 * @returns The newly created \<Signature\> element that the caller should insert in
 	 * the document.
+	 * @deprecated Use the URI based creation method instead, as this supports 
+	 * signature algorithms that are not known to the library directly.
 	 */
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *createBlankSignature(
@@ -324,6 +354,7 @@ public:
 	 * @param hm The hashing (digest) method to be used for this reference
 	 * @param type A "type" string (as defined in XML Signature).
 	 * @returns The newly created DSIGReference element.
+	 * @deprecated Use the URI based creation method instead
 	 *
 	 */
 
@@ -334,6 +365,31 @@ public:
 		char * type = NULL
 	);
 
+	/**
+	 * \brief Add a new reference to the end of the list of \<Reference\> nodes.
+	 *
+	 * <p>Creates a new DSIGReference, adds it to the list of references handled
+	 * by the owning DSIGSignature and also creates the skeleton DOM structure into
+	 * the document.</p>
+	 *
+	 * @note The XSEC Library currently makes very little use of <em>type</em>
+	 * attributes in \<Reference\> Elements.  However this may of use to calling
+	 * applications.
+	 *
+	 * @see DSIGReference
+	 * @param URI The Data that this Reference node refers to.
+	 * @param hm The hashing (digest) method to be used for this reference
+	 * @param type A "type" string (as defined in XML Signature).
+	 * @returns The newly created DSIGReference element.
+	 * @deprecated Use the URI based creation method instead
+	 *
+	 */
+
+	DSIGReference * createReference(
+		const XMLCh * URI,
+		const XMLCh * hashAlgorithmURI, 
+		const XMLCh * type = NULL
+	);
 	//@}
 
 	/** @name General and Information functions. */
@@ -826,6 +882,10 @@ private:
 	// Internal functions
 	void createKeyInfoElement(void);
 	bool verifySignatureOnlyInternal(void);
+	TXFMChain * getSignedInfoInput(void);
+
+	// Initialisation
+	static void Initialise(void);
 
 	XSECSafeBufferFormatter		* mp_formatter;
 	bool						m_loaded;				// Have we already loaded?
@@ -858,6 +918,8 @@ private:
 	// Not implemented constructors
 
 	DSIGSignature();
+	
+	friend class XSECPlatformUtils;
 
 	/*\@}*/
 };

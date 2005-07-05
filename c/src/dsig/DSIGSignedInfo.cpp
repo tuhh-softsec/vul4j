@@ -143,11 +143,26 @@ DSIGReference * DSIGSignedInfo::createReference(const XMLCh * URI,
 								hashMethod hm, 
 								char * type) {
 
+	safeBuffer hURI;
+
+	if (hashMethod2URI(hURI, hm) == false) {
+		throw XSECException(XSECException::UnknownSignatureAlgorithm,
+			"DSIGSignedInfo::createReference - Hash method unknown");
+	}
+	
+	return createReference(URI, hURI.sbStrToXMLCh(), MAKE_UNICODE_STRING(type));;
+}
+
+DSIGReference * DSIGSignedInfo::createReference(
+		const XMLCh * URI,
+		const XMLCh * hashAlgorithmURI, 
+		const XMLCh * type) {
+
 	DSIGReference * ref;
 	XSECnew(ref, DSIGReference(mp_env));
 	Janitor<DSIGReference> j_ref(ref);
 
-	DOMNode *refNode = ref->createBlankReference(URI, hm, type);
+	DOMNode *refNode = ref->createBlankReference(URI, hashAlgorithmURI, type);
 
 	// Add the node to the end of the childeren
 	mp_signedInfoNode->appendChild(refNode);
@@ -160,13 +175,41 @@ DSIGReference * DSIGSignedInfo::createReference(const XMLCh * URI,
 	return ref;
 }
 
+
 // --------------------------------------------------------------------------------
 //           Create an empty SignedInfo
 // --------------------------------------------------------------------------------
 
+// deprecated
+
 DOMElement *DSIGSignedInfo::createBlankSignedInfo(canonicalizationMethod cm,
 			signatureMethod	sm,
 			hashMethod hm) {
+
+	// This is now deprecated.  Because this is so, we go the long way - translate
+	// to URI and then call the "standard" method, which will translate back to 
+	// internal enums if possible
+
+	const XMLCh * cURI;
+	safeBuffer sURI;
+
+	if ((cURI = canonicalizationMethod2UNICODEURI(cm)) == NULL) {
+		throw XSECException(XSECException::UnknownCanonicalization,
+			"DSIGSignature::createBlankSignature - Canonicalisation method unknown");
+	}
+
+	if (signatureHashMethod2URI(sURI, sm, hm) == false) {
+		throw XSECException(XSECException::UnknownSignatureAlgorithm,
+			"DSIGSignature::createBlankSignature - Signature/Hash method unknown");
+	}
+
+	return createBlankSignedInfo(cURI, sURI.sbStrToXMLCh());
+
+}
+
+DOMElement * DSIGSignedInfo::createBlankSignedInfo(
+			const XMLCh * canonicalizationAlgorithmURI,
+			const XMLCh * signatureAlgorithmURI) {
 
 	safeBuffer str;
 	const XMLCh * prefixNS = mp_env->getDSIGNSPrefix();
@@ -179,9 +222,8 @@ DOMElement *DSIGSignedInfo::createBlankSignedInfo(canonicalizationMethod cm,
 	mp_signedInfoNode = ret;
 
 	// Now create the algorithm parts
-	m_canonicalizationMethod = cm;
-	m_signatureMethod = sm;
-	m_hashMethod = hm;
+	XSECmapURIToCanonicalizationMethod(canonicalizationAlgorithmURI, m_canonicalizationMethod);
+	XSECmapURIToSignatureMethods(signatureAlgorithmURI, m_signatureMethod, m_hashMethod);
 
 	// Canonicalisation
 
@@ -192,14 +234,8 @@ DOMElement *DSIGSignedInfo::createBlankSignedInfo(canonicalizationMethod cm,
 	mp_signedInfoNode->appendChild(canMeth);
 	mp_env->doPrettyPrint(mp_signedInfoNode);
 
-	if (!canonicalizationMethod2URI(str, cm)) {
-	
-		throw XSECException(XSECException::SignatureCreationError,
-			"Attempt to use undefined Canonicalisation Algorithm in SignedInfo Creation");
-
-	}
-
-	canMeth->setAttribute(DSIGConstants::s_unicodeStrAlgorithm, str.sbStrToXMLCh());
+	canMeth->setAttribute(DSIGConstants::s_unicodeStrAlgorithm,
+		canonicalizationAlgorithmURI);
 
 	// Now the SignatureMethod
 
@@ -209,14 +245,11 @@ DOMElement *DSIGSignedInfo::createBlankSignedInfo(canonicalizationMethod cm,
 	mp_signedInfoNode->appendChild(sigMeth);
 	mp_env->doPrettyPrint(mp_signedInfoNode);
 
-	if (!signatureHashMethod2URI(str, sm, hm)) {
-	
-		throw XSECException(XSECException::SignatureCreationError,
-			"Attempt to use undefined Signature/Algorithm combination in SignedInfo Creation");
+	sigMeth->setAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm, 
+		signatureAlgorithmURI);
 
-	}
-
-	sigMeth->setAttribute(DSIGConstants::s_unicodeStrAlgorithm, str.sbStrToXMLCh());
+	// Store the algorithm URI internally
+	mp_algorithmURI = sigMeth->getAttributeNS(NULL, DSIGConstants::s_unicodeStrAlgorithm);
 
 	// Create an empty reference list
 
@@ -225,6 +258,7 @@ DOMElement *DSIGSignedInfo::createBlankSignedInfo(canonicalizationMethod cm,
 	return ret;
 
 }
+
 
 // --------------------------------------------------------------------------------
 //           Load the SignedInfo
@@ -332,9 +366,10 @@ void DSIGSignedInfo::load(void) {
 					"Expected Algorithm attribute in <SignatureMethod>");
 
 	}
+	
+	mp_algorithmURI = algorithm->getNodeValue();
 
-
-	tmpSB << (*mp_formatter << algorithm->getNodeValue());
+	tmpSB << (*mp_formatter << mp_algorithmURI);
 
 	if (tmpSB.sbStrcmp(URI_ID_DSA_SHA1) == 0) {
 
