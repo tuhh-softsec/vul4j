@@ -548,7 +548,9 @@ void unitTestEnvelopingSignature(DOMImplementation * impl) {
 		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
 		sig->setPrettyPrint(true);
 
-		sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA1);
+		sigNode = sig->createBlankSignature(doc, 
+			DSIGConstants::s_unicodeStrURIC14N_COM,
+			DSIGConstants::s_unicodeStrURIHMAC_SHA1);
 
 		doc->appendChild(sigNode);
 
@@ -561,7 +563,8 @@ void unitTestEnvelopingSignature(DOMImplementation * impl) {
 		obj->appendChild(txt);
 
 		// Add a Reference
-		sig->createReference(MAKE_UNICODE_STRING("#ObjectId"));
+		sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), 
+			DSIGConstants::s_unicodeStrURISHA1);
 
 		// Get a key
 		cerr << "signing ... ";
@@ -656,7 +659,9 @@ void unitTestBase64NodeSignature(DOMImplementation * impl) {
 #if defined (XSEC_XERCES_HAS_SETIDATTRIBUTE)
 		sig->setIdByAttributeName(false);		// Do not search by name
 #endif
-		sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA1);
+		sigNode = sig->createBlankSignature(doc, 
+			DSIGConstants::s_unicodeStrURIC14N_COM,
+			DSIGConstants::s_unicodeStrURIHMAC_SHA1);
 
 		doc->appendChild(sigNode);
 
@@ -669,7 +674,8 @@ void unitTestBase64NodeSignature(DOMImplementation * impl) {
 		obj->appendChild(txt);
 
 		// Add a Reference
-		DSIGReference * ref = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"));
+		DSIGReference * ref = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"),
+			DSIGConstants::s_unicodeStrURISHA1);
 		// Add a Base64 transform
 		ref->appendBase64Transform();
 
@@ -766,7 +772,9 @@ void unitTestLongSHA(DOMImplementation * impl) {
 		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
 		sig->setPrettyPrint(true);
 
-		sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA512);
+		sigNode = sig->createBlankSignature(doc, 
+			DSIGConstants::s_unicodeStrURIC14N_COM,
+			DSIGConstants::s_unicodeStrURIHMAC_SHA512);
 
 		doc->appendChild(sigNode);
 
@@ -780,13 +788,17 @@ void unitTestLongSHA(DOMImplementation * impl) {
 
 		// Add a Reference
 		cerr << "224 ... ";
-		ref[0] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), HASH_SHA224);
+		ref[0] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), 
+			DSIGConstants::s_unicodeStrURISHA224);
 		cerr << "256 ... ";
-		ref[1] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), HASH_SHA256);
+		ref[1] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), 
+			DSIGConstants::s_unicodeStrURISHA256);
 		cerr << "384 ... ";
-		ref[2] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), HASH_SHA384);
+		ref[2] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"),
+			DSIGConstants::s_unicodeStrURISHA384);
 		cerr << "512 ... ";
-		ref[3] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"), HASH_SHA512);
+		ref[3] = sig->createReference(MAKE_UNICODE_STRING("#ObjectId"),
+			DSIGConstants::s_unicodeStrURISHA512);
 
 		// Get a key
 		cerr << "signing ... ";
@@ -950,7 +962,9 @@ void testSignature(DOMImplementation *impl) {
 		sig->setDSIGNSPrefix(MAKE_UNICODE_STRING("ds"));
 		sig->setPrettyPrint(true);
 
-		sigNode = sig->createBlankSignature(doc, CANON_C14N_COM, SIGNATURE_HMAC, HASH_SHA1);
+		sigNode = sig->createBlankSignature(doc, 
+			DSIGConstants::s_unicodeStrURIC14N_COM,
+			DSIGConstants::s_unicodeStrURIHMAC_SHA1);
 		DOMElement * rootElem = doc->getDocumentElement();
 		DOMNode * prodElem = rootElem->getFirstChild();
 
@@ -963,34 +977,43 @@ void testSignature(DOMImplementation *impl) {
 		 * Add some test references
 		 */
 
-		ref[0] = sig->createReference(MAKE_UNICODE_STRING(""));
+		ref[0] = sig->createReference(MAKE_UNICODE_STRING(""),
+			DSIGConstants::s_unicodeStrURISHA1);
 		ref[0]->appendEnvelopedSignatureTransform();
 
-		ref[1] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+		ref[1] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"),
+			DSIGConstants::s_unicodeStrURISHA1);
 		ref[1]->appendEnvelopedSignatureTransform();
-		ref[1]->appendCanonicalizationTransform(CANON_C14N_NOC);
+		ref[1]->appendCanonicalizationTransform(DSIGConstants::s_unicodeStrURIC14N_NOC);
 
-		ref[2] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+		ref[2] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"),
+			DSIGConstants::s_unicodeStrURISHA1);
 		ref[2]->appendEnvelopedSignatureTransform();
-		ref[2]->appendCanonicalizationTransform(CANON_C14N_COM);
+		ref[2]->appendCanonicalizationTransform(DSIGConstants::s_unicodeStrURIC14N_COM);
 
-		ref[3] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+		ref[3] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"),
+			DSIGConstants::s_unicodeStrURISHA1);
 		ref[3]->appendEnvelopedSignatureTransform();
-		ref[3]->appendCanonicalizationTransform(CANON_C14NE_NOC);
+		ref[3]->appendCanonicalizationTransform(DSIGConstants::s_unicodeStrURIEXC_C14N_NOC);
 
-		ref[4] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+		ref[4] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"),
+			DSIGConstants::s_unicodeStrURISHA1);
 		ref[4]->appendEnvelopedSignatureTransform();
-		ref[4]->appendCanonicalizationTransform(CANON_C14NE_COM);
+		ref[4]->appendCanonicalizationTransform(DSIGConstants::s_unicodeStrURIEXC_C14N_COM);
 
-		ref[5] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+		ref[5] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"),
+			DSIGConstants::s_unicodeStrURISHA1);
 		ref[5]->appendEnvelopedSignatureTransform();
-		DSIGTransformC14n * ce = ref[5]->appendCanonicalizationTransform(CANON_C14NE_COM);
+		DSIGTransformC14n * ce = ref[5]->appendCanonicalizationTransform(
+			DSIGConstants::s_unicodeStrURIEXC_C14N_COM);
 		ce->addInclusiveNamespace("foo");
 
 		sig->setECNSPrefix(MAKE_UNICODE_STRING("ec"));
-		ref[6] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"));
+		ref[6] = sig->createReference(MAKE_UNICODE_STRING("#xpointer(/)"),
+			DSIGConstants::s_unicodeStrURISHA1);
 		ref[6]->appendEnvelopedSignatureTransform();
-		ce = ref[6]->appendCanonicalizationTransform(CANON_C14NE_COM);
+		ce = ref[6]->appendCanonicalizationTransform(
+			DSIGConstants::s_unicodeStrURIEXC_C14N_COM);
 		ce->addInclusiveNamespace("foo");
 
 #ifdef XSEC_NO_XALAN
@@ -1004,12 +1027,14 @@ void testSignature(DOMImplementation *impl) {
 		 */
 
 
-		ref[7] = sig->createReference(MAKE_UNICODE_STRING(""));
+		ref[7] = sig->createReference(MAKE_UNICODE_STRING(""),
+			DSIGConstants::s_unicodeStrURISHA1);
 		sig->setXPFNSPrefix(MAKE_UNICODE_STRING("xpf"));
 		DSIGTransformXPathFilter * xpf = ref[7]->appendXPathFilterTransform();
 		xpf->appendFilter(FILTER_INTERSECT, MAKE_UNICODE_STRING("//ADoc/category"));
 
-		ref[8] = sig->createReference(MAKE_UNICODE_STRING(""));
+		ref[8] = sig->createReference(MAKE_UNICODE_STRING(""),
+			DSIGConstants::s_unicodeStrURISHA1);
 		/*		ref[5]->appendXPathTransform("ancestor-or-self::dsig:Signature", 
 				"xmlns:dsig=http://www.w3.org/2000/09/xmldsig#"); */
 
