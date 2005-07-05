@@ -30,6 +30,7 @@
 #include <xsec/utils/XSECPlatformUtils.hpp>
 #include <xsec/framework/XSECError.hpp>
 #include <xsec/dsig/DSIGConstants.hpp>
+#include <xsec/dsig/DSIGSignature.hpp>
 #include <xsec/xkms/XKMSConstants.hpp>
 #include <xsec/framework/XSECAlgorithmMapper.hpp>
 
@@ -94,6 +95,9 @@ void XSECPlatformUtils::Initialise(XSECCryptoProvider * p) {
 
 	// Initialise the XENCCipherImpl class
 	XENCCipherImpl::Initialise();
+
+	// Initialise the DSIGSignature class
+	DSIGSignature::Initialise();
 
 };
 
