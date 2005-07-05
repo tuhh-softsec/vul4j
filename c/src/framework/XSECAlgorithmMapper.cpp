@@ -114,8 +114,12 @@ XSECAlgorithmHandler * XSECAlgorithmMapper::mapURIToHandler(const XMLCh * URI) c
 	MapperEntry * entry = findEntry(URI);
 
 	if (entry == NULL) {
+		safeBuffer output;
+		output.sbTranscodeIn("XSECAlgorithmMapper::mapURIToHandler - URI ");
+		output.sbXMLChCat(URI);
+		output.sbXMLChCat(" not found");
 		throw XSECException(XSECException::AlgorithmMapperError,
-			"XSECAlgorithmMapper::mapURIToHandler - URI not found");
+			output.rawXMLChBuffer());
 	}
 
 	return entry->mp_handler;

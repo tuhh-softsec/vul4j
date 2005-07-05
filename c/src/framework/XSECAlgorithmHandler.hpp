@@ -49,14 +49,14 @@ XSEC_DECLARE_XERCES_CLASS(DOMDocument);
 
 /**
  * @brief Interface class to provide handlers for processing different
- * encryption types.
+ * encryption, signature and hashing types.
  *
  * The XENCCipher class allows users and callers to register algorithm
- * handlers for different Type URIs, as defined in the EncryptionMethod
- * element within XML Encryption.
+ * handlers for different Type URIs, as used in the various XML Signature
+ * or Encryption elements.
  *
- * A default handler (XENCAlgorithmHandlerDefault) is provided by the
- * library, and is used to process all algorithms defined as mandatory
+ * Default handlers are provided by the
+ * library, and are used to process all algorithms defined as mandatory
  * (and many optional) within the standard.
  *
  * Users can extend this class to provide custom algorithm handlers
@@ -184,6 +184,109 @@ public:
 
 	//@}
 
+	/** @name SigningMethods */
+	//@{
+
+	/**
+	 * \brief Sign an input TXFMChain.
+	 *
+	 * This method takes a TXFMChain that will provide the plain
+	 * text data, and places a (null terminated) base64 encoded 
+	 * hash into a result safeBuffer.
+	 *
+	 * Unlike the encryption methods, the URI must also be passed in,
+	 * as a single AlgorithmHandler might be used to support multiple
+	 * different signing algorithms, but the overhead of passing in the
+	 * entire SignedInfo is not required.
+	 *
+	 * @param plainText Chain that will provide the plain bytes.  Ownership
+	 * remains with the caller - do not delete.
+	 * @param URI Algorithm URI to use for the signing operation.
+	 * @param key The key that has been provided by the calling 
+	 * application to perform the signature.
+	 * @param outputLength Max length of an HMAC signature to use in output
+     * @param result SafeBuffer object to place result into
+	 * @returns the number of bytes placed in the output safeBuffer
+	 */
+
+	virtual unsigned int signToSafeBuffer(
+		TXFMChain * inputBytes,
+		const XMLCh * URI,
+		XSECCryptoKey * key,
+		unsigned int outputLength,
+		safeBuffer & result
+	) = 0;
+
+	/**
+	 * \brief Validate a signature using an input TXFMChain
+	 *
+	 * Using the input plain text bytes (in the form of a transform chain)
+	 * validate the associated base64 encoded signature using the supplied
+	 * key.
+	 *
+	 * The URI value is used to determine the algorithm to be called upon to
+	 * validate the signature.
+	 *
+	 * @param plainText Chain that will provide the plain bytes.  Ownership
+	 * remains with the caller - do not delete.
+	 * @param URI Algorithm URI to use for the signing operation.
+	 * @param sig Base64 encoded signature value
+	 * @param key The key that has been provided by the calling 
+	 * application to perform the signature.
+	 * @returns true if successful validate, false otherwise
+	 */
+	 
+	virtual bool verifyBase64Signature(
+		TXFMChain * inputBytes,
+		const XMLCh * URI,
+		const char * sig,
+		unsigned int outputLength,
+		XSECCryptoKey * key
+	) = 0;
+
+	//@}
+
+	/** @name Hash appending */
+	//@{
+
+	/**
+	 * \brief Append a signature hash to a TXFM Chain based on URI
+	 *
+	 * Given a URI string create the appropriate hash TXFM.  NOTE the
+	 * input URI should be a SIGNATURE URI - e.g. #hash-sha1
+	 *
+	 * @param inputBytes the Input TXFMChain to append the hash to
+	 * @param uri URI string to match hash against
+	 * @param key The key for this signature (in case of an HMAC hash)
+	 * @returns true if a match was found and a hash was appended
+	 */
+
+	virtual bool appendSignatureHashTxfm(
+		TXFMChain * inputBytes,
+		const XMLCh * URI,
+		XSECCryptoKey * key
+	) = 0;
+
+	/**
+	 * \brief Append a hash to a TXFM Chain based on URI
+	 *
+	 * Given a URI string create the appropriate hash TXFM.  NOTE the
+	 * input URI should be a "stright" (i.e. non-signature) hash
+	 * algorithm URI - e.g. #sha1
+	 *
+	 * @param inputBytes the Input TXFMChain to append the hash to
+	 * @param uri URI string to match hash against
+	 * @returns true if a match was found and a hash was appended
+	 */
+
+	virtual bool appendHashTxfm(
+		TXFMChain * inputBytes,
+		const XMLCh * URI
+	) = 0;
+
+	//@}
+
+	
 	/** @name Key handling */
 	//@{
 
