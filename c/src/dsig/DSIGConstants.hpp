@@ -438,6 +438,9 @@ public:
 	static const XMLCh * s_unicodeStrURIXPF;
 	static const XMLCh * s_unicodeStrURIXENC;
 
+	static const XMLCh * s_unicodeStrURISIGBASE;
+	static const XMLCh * s_unicodeStrURISIGBASEMORE;
+
 	static const XMLCh * s_unicodeStrURIRawX509;
 	static const XMLCh * s_unicodeStrURISHA1;
 	static const XMLCh * s_unicodeStrURISHA224;
@@ -454,8 +457,19 @@ public:
 	static const XMLCh * s_unicodeStrURIEXC_C14N_NOC;
 	static const XMLCh * s_unicodeStrURIEXC_C14N_COM;
 	static const XMLCh * s_unicodeStrURIDSA_SHA1;
+
 	static const XMLCh * s_unicodeStrURIRSA_SHA1;
+	static const XMLCh * s_unicodeStrURIRSA_SHA224;
+	static const XMLCh * s_unicodeStrURIRSA_SHA256;
+	static const XMLCh * s_unicodeStrURIRSA_SHA384;
+	static const XMLCh * s_unicodeStrURIRSA_SHA512;
+
 	static const XMLCh * s_unicodeStrURIHMAC_SHA1;
+	static const XMLCh * s_unicodeStrURIHMAC_SHA224;
+	static const XMLCh * s_unicodeStrURIHMAC_SHA256;
+	static const XMLCh * s_unicodeStrURIHMAC_SHA384;
+	static const XMLCh * s_unicodeStrURIHMAC_SHA512;
+	
 	static const XMLCh * s_unicodeStrURIXMLNS;
 	static const XMLCh * s_unicodeStrURIMANIFEST;
 
@@ -522,6 +536,25 @@ const XMLCh * canonicalizationMethod2UNICODEURI(canonicalizationMethod cm) {
 	return DSIGConstants::s_unicodeStrEmpty;
 
 }
+
+// --------------------------------------------------------------------------------
+//			URI Inverse Mappings
+// --------------------------------------------------------------------------------
+
+/* Map URIs to internal enums, if the URIs are known to the library.
+   If they aren't, all these calls will set the Method variables to 
+   *_NONE, signifying we don't know them.  Note this is not necessarily
+   an error - the calling application may have installed handlers to handle
+   these URIs, it's just we don't have an internal enum mapping
+*/
+
+bool DSIG_EXPORT XSECmapURIToSignatureMethods(const XMLCh * URI, 
+												  signatureMethod & sm, 
+												  hashMethod & hm);
+bool DSIG_EXPORT XSECmapURIToHashMethod(const XMLCh * URI, 
+												  hashMethod & hm);
+bool DSIG_EXPORT XSECmapURIToCanonicalizationMethod(const XMLCh * URI, 
+							canonicalizationMethod & cm);
 
 #endif /* DSIGCONSTANTS_HEADER */
 

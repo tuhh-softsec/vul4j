@@ -26,6 +26,11 @@
  */
 
 #include <xsec/dsig/DSIGConstants.hpp>
+#include <xsec/utils/XSECDOMUtils.hpp>
+
+#include <xercesc/util/XMLUniDefs.hpp>
+
+XERCES_CPP_NAMESPACE_USE
 
 // We need a special version of XSEC_RELEASE_XMLCH
 
@@ -37,6 +42,96 @@
 #    define XSEC_RELEASE_XMLCH(x) delete[] x;
 #endif
 
+// --------------------------------------------------------------------------------
+//			Some useful defines
+// --------------------------------------------------------------------------------
+
+
+static XMLCh s_dsa[] = {
+
+	chLatin_d,
+	chLatin_s,
+	chLatin_a,
+	chNull
+};
+
+static XMLCh s_rsa[] = {
+
+	chLatin_r,
+	chLatin_s,
+	chLatin_a,
+	chNull
+};
+
+static XMLCh s_hmac[] = {
+
+	chLatin_h,
+	chLatin_m,
+	chLatin_a,
+	chLatin_c,
+	chNull
+};
+
+static XMLCh s_sha1[] = {
+
+	chLatin_s,
+	chLatin_h,
+	chLatin_a,
+	chDigit_1,
+	chNull
+};
+
+static XMLCh s_sha224[] = {
+
+	chLatin_s,
+	chLatin_h,
+	chLatin_a,
+	chDigit_2,
+	chDigit_2,
+	chDigit_4,
+	chNull
+};
+
+static XMLCh s_sha256[] = {
+
+	chLatin_s,
+	chLatin_h,
+	chLatin_a,
+	chDigit_2,
+	chDigit_5,
+	chDigit_6,
+	chNull
+};
+
+static XMLCh s_sha384[] = {
+
+	chLatin_s,
+	chLatin_h,
+	chLatin_a,
+	chDigit_3,
+	chDigit_8,
+	chDigit_4,
+	chNull
+};
+
+static XMLCh s_sha512[] = {
+
+	chLatin_s,
+	chLatin_h,
+	chLatin_a,
+	chDigit_5,
+	chDigit_1,
+	chDigit_2,
+	chNull
+};
+
+static XMLCh s_md5[] = {
+
+	chLatin_m,
+	chLatin_d,
+	chDigit_5,
+	chNull
+};
 
 // --------------------------------------------------------------------------------
 //           Constant Strings Storage
@@ -54,6 +149,10 @@ const XMLCh * DSIGConstants::s_unicodeStrURIEC;
 const XMLCh * DSIGConstants::s_unicodeStrURIXPF;
 const XMLCh * DSIGConstants::s_unicodeStrURIXENC;
 
+const XMLCh * DSIGConstants::s_unicodeStrURISIGBASE;
+const XMLCh * DSIGConstants::s_unicodeStrURISIGBASEMORE;
+
+
 const XMLCh * DSIGConstants::s_unicodeStrURIRawX509;
 const XMLCh * DSIGConstants::s_unicodeStrURISHA1;
 const XMLCh * DSIGConstants::s_unicodeStrURISHA224;
@@ -70,8 +169,19 @@ const XMLCh * DSIGConstants::s_unicodeStrURIC14N_COM;
 const XMLCh * DSIGConstants::s_unicodeStrURIEXC_C14N_NOC;
 const XMLCh * DSIGConstants::s_unicodeStrURIEXC_C14N_COM;
 const XMLCh * DSIGConstants::s_unicodeStrURIDSA_SHA1;
+
 const XMLCh * DSIGConstants::s_unicodeStrURIRSA_SHA1;
+const XMLCh * DSIGConstants::s_unicodeStrURIRSA_SHA224;
+const XMLCh * DSIGConstants::s_unicodeStrURIRSA_SHA256;
+const XMLCh * DSIGConstants::s_unicodeStrURIRSA_SHA384;
+const XMLCh * DSIGConstants::s_unicodeStrURIRSA_SHA512;
+
 const XMLCh * DSIGConstants::s_unicodeStrURIHMAC_SHA1;
+const XMLCh * DSIGConstants::s_unicodeStrURIHMAC_SHA224;
+const XMLCh * DSIGConstants::s_unicodeStrURIHMAC_SHA256;
+const XMLCh * DSIGConstants::s_unicodeStrURIHMAC_SHA384;
+const XMLCh * DSIGConstants::s_unicodeStrURIHMAC_SHA512;
+
 const XMLCh * DSIGConstants::s_unicodeStrURIXMLNS;
 const XMLCh * DSIGConstants::s_unicodeStrURIMANIFEST;
 
@@ -113,6 +223,9 @@ void DSIGConstants::create() {
 	s_unicodeStrURIXPF = XMLString::transcode(URI_ID_XPF);
 	s_unicodeStrURIXENC = XMLString::transcode(URI_ID_XENC);
 
+	s_unicodeStrURISIGBASE = XMLString::transcode(URI_ID_SIG_BASE);
+	s_unicodeStrURISIGBASEMORE = XMLString::transcode(URI_ID_SIG_BASEMORE);
+
 	s_unicodeStrURISHA1 = XMLString::transcode(URI_ID_SHA1);
 	s_unicodeStrURISHA224 = XMLString::transcode(URI_ID_SHA224);
 	s_unicodeStrURISHA256 = XMLString::transcode(URI_ID_SHA256);
@@ -129,7 +242,15 @@ void DSIGConstants::create() {
 	s_unicodeStrURIEXC_C14N_COM = XMLString::transcode(URI_ID_EXC_C14N_COM);
 	s_unicodeStrURIDSA_SHA1 = XMLString::transcode(URI_ID_DSA_SHA1);
 	s_unicodeStrURIRSA_SHA1 = XMLString::transcode(URI_ID_RSA_SHA1);
+	s_unicodeStrURIRSA_SHA224 = XMLString::transcode(URI_ID_RSA_SHA224);
+	s_unicodeStrURIRSA_SHA256 = XMLString::transcode(URI_ID_RSA_SHA256);
+	s_unicodeStrURIRSA_SHA384 = XMLString::transcode(URI_ID_RSA_SHA384);
+	s_unicodeStrURIRSA_SHA512 = XMLString::transcode(URI_ID_RSA_SHA512);
 	s_unicodeStrURIHMAC_SHA1 = XMLString::transcode(URI_ID_HMAC_SHA1);
+	s_unicodeStrURIHMAC_SHA224 = XMLString::transcode(URI_ID_HMAC_SHA224);
+	s_unicodeStrURIHMAC_SHA256 = XMLString::transcode(URI_ID_HMAC_SHA256);
+	s_unicodeStrURIHMAC_SHA384 = XMLString::transcode(URI_ID_HMAC_SHA384);
+	s_unicodeStrURIHMAC_SHA512 = XMLString::transcode(URI_ID_HMAC_SHA512);
 	s_unicodeStrURIXMLNS = XMLString::transcode(URI_ID_XMLNS);
 	s_unicodeStrURIMANIFEST = XMLString::transcode(URI_ID_MANIFEST);
 	
@@ -168,6 +289,10 @@ void DSIGConstants::destroy() {
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIEC);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIXPF);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIXENC);
+
+	XSEC_RELEASE_XMLCH(s_unicodeStrURISIGBASE);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURISIGBASEMORE);
+	
 	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA1);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA224);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURISHA256);
@@ -184,7 +309,15 @@ void DSIGConstants::destroy() {
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIEXC_C14N_COM);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIDSA_SHA1);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIRSA_SHA1);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIRSA_SHA224);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIRSA_SHA256);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIRSA_SHA384);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIRSA_SHA512);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIHMAC_SHA1);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIHMAC_SHA224);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIHMAC_SHA256);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIHMAC_SHA384);
+	XSEC_RELEASE_XMLCH(s_unicodeStrURIHMAC_SHA512);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIXMLNS);
 	XSEC_RELEASE_XMLCH(s_unicodeStrURIMANIFEST);
 
@@ -204,4 +337,183 @@ void DSIGConstants::destroy() {
 	XSEC_RELEASE_XMLCH(s_unicodeStrPROVOpenSSL);
 	XSEC_RELEASE_XMLCH(s_unicodeStrPROVWinCAPI);
 
+}
+
+// --------------------------------------------------------------------------------
+//			URI Mappings
+// --------------------------------------------------------------------------------
+
+bool getHashMethod(const XMLCh * URI, hashMethod & hm) {
+
+	if (strEquals(URI, s_md5)) {
+
+		hm = HASH_MD5;
+		return true;
+
+	}
+
+	if (strEquals(URI, s_sha1)) {
+
+		hm = HASH_SHA1;
+		return true;
+	}
+
+	if (strEquals(URI, s_sha224)) {
+
+		hm = HASH_SHA224;
+		return true;
+	}
+
+	if (strEquals(URI, s_sha256)) {
+
+		hm = HASH_SHA256;
+		return true;
+	}
+
+	if (strEquals(URI, s_sha384)) {
+
+		hm = HASH_SHA384;
+		return true;
+	}
+
+	if (strEquals(URI, s_sha512)) {
+
+		hm = HASH_SHA512;
+		return true;
+	}
+
+	hm = HASH_NONE;
+	return false;
+
+}
+
+bool XSECmapURIToSignatureMethods(const XMLCh * URI, 
+								  signatureMethod & sm, 
+								  hashMethod & hm) {
+
+
+	// The easy ones!
+
+	if (strEquals(URI, DSIGConstants::s_unicodeStrURIDSA_SHA1)) {
+
+		sm = SIGNATURE_DSA;
+		hm = HASH_SHA1;
+
+		return true;
+
+	}
+
+	if (strEquals(URI, DSIGConstants::s_unicodeStrURIRSA_SHA1)) {
+
+		sm = SIGNATURE_RSA;
+		hm = HASH_SHA1;
+
+		return true;
+
+	}
+
+	if (strEquals(URI, DSIGConstants::s_unicodeStrURIHMAC_SHA1)) {
+
+		sm = SIGNATURE_HMAC;
+		hm = HASH_SHA1;
+
+		return true;
+
+	}
+
+	/* Check to see if we are one of the more exotic RSA signatures */
+
+	unsigned int cnt = XMLString::stringLen(DSIGConstants::s_unicodeStrURISIGBASEMORE);
+	
+	if (XMLString::compareNString(URI, DSIGConstants::s_unicodeStrURISIGBASEMORE, cnt) == 0) {
+
+		// Have an "new" algorithm
+		if (XMLString::compareNString(&URI[cnt], s_hmac, 4) == 0) {
+
+			// Some kind of HMAC
+			sm = SIGNATURE_HMAC;
+		
+			// Determine a trailing hash method
+			if (URI[cnt+4] != chDash)
+				return false;
+			return getHashMethod(&(URI[cnt+5]), hm);
+
+		}
+
+		if (XMLString::compareNString(&URI[cnt], s_rsa, 3) == 0) {
+
+			sm = SIGNATURE_RSA;
+			if (URI[cnt+3] != chDash)
+				return false;
+			return getHashMethod(&(URI[cnt+4]), hm);
+		}
+
+	}
+
+	sm = SIGNATURE_NONE;
+	hm = HASH_NONE;
+	return false;
+
+}
+
+bool XSECmapURIToHashMethod(const XMLCh * URI, 
+							hashMethod & hm) {
+
+
+	// Check this is a known prefix on the URI.
+	unsigned int blen = XMLString::stringLen(DSIGConstants::s_unicodeStrURISIGBASE);
+	unsigned int bmlen = XMLString::stringLen(DSIGConstants::s_unicodeStrURISIGBASEMORE);
+	unsigned int belen = XMLString::stringLen(DSIGConstants::s_unicodeStrURIXENC);
+	if (XMLString::compareNString(URI, DSIGConstants::s_unicodeStrURISIGBASE, blen) == 0) {
+
+		// This is actually cheating - this will return SHA256 (as an example), even if
+		// the base URI is the original DSIG uri (ie not base-more)
+		return getHashMethod(&URI[blen], hm);
+
+	}
+
+	if (XMLString::compareNString(URI, DSIGConstants::s_unicodeStrURISIGBASEMORE, bmlen) == 0) {
+
+		return getHashMethod(&URI[bmlen], hm);
+
+	}
+
+	if (XMLString::compareNString(URI, DSIGConstants::s_unicodeStrURIXENC, belen) == 0) {
+
+		return getHashMethod(&URI[belen], hm);
+
+	}
+
+	hm = HASH_NONE;
+	return false;
+
+}
+
+bool XSECmapURIToCanonicalizationMethod(const XMLCh * URI, 
+							canonicalizationMethod & cm) {
+
+	// Quick and dirty but inefficient
+	if (strEquals(URI, DSIGConstants::s_unicodeStrURIC14N_NOC)) {
+		cm = CANON_C14N_NOC;
+	}
+	else if (strEquals(URI, DSIGConstants::s_unicodeStrURIC14N_COM)) {
+		cm = CANON_C14N_COM;
+	}
+
+	else if (strEquals(URI, DSIGConstants::s_unicodeStrURIEXC_C14N_COM)) {
+		cm = CANON_C14NE_COM;
+	}
+
+	else if (strEquals(URI, DSIGConstants::s_unicodeStrURIEXC_C14N_NOC)) {
+		cm = CANON_C14NE_NOC;
+	}
+
+	else {
+
+		// Unknown
+		cm = CANON_NONE;
+		return false;
+	}
+
+	return true;
 }
