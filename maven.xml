@@ -99,10 +99,6 @@
             <include name="file-header.txt"/>
         </fileset>
     </copy>
-      
-    <move todir="${maven.dist.src.assembly.dir}-src">
-      <fileset dir="${maven.dist.src.assembly.dir}"/>
-    </move>
   </preGoal>
     
 </project>
