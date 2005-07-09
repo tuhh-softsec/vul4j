@@ -136,7 +136,7 @@ public:
 	 * @param n The node to find in the list.
 	 */
 
-	bool hasNode(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *n);
+	bool hasNode(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *n) const;
 
 	/**
 	 * \brief Get the first node in the list.
@@ -146,7 +146,7 @@ public:
 	 * @returns The first node in the list or NULL if none exist
 	 */
 
-	const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getFirstNode(void);
+	const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * getFirstNode(void) const;
 
 	/**
 	 * \brief Get the next node in the list
@@ -156,7 +156,7 @@ public:
 	 * @returns The next node in the list of NULL if none exist
 	 */
 
-	const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getNextNode(void);
+	const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *getNextNode(void) const;
 
 	//@}
 
@@ -177,16 +177,29 @@ public:
 
 private:
 
+	/* Implement an unbalanced binary search tree */
+	typedef struct s_btn {
+		struct s_btn * l;		// Left
+		struct s_btn * r;		// Right
+		struct s_btn * p;		// Parent
+		const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode
+					 * v;		// Value
+		long           h;		// Height
+	} btn;
+
 	// Internal functions
-	unsigned int findNodeIndex(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);
+	btn * findNodeIndex(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n) const;
+	void delete_tree(btn * t);
+	btn * copy_tree(btn * t) const ;
+	long balance_count(btn * t) const;
+	void rotate_left(btn * t);
+	void rotate_right(btn * t);
+	long calc_height(btn * t);
 
-	const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode	
-									** mp_elts;			// The current list of elements
+	btn								* mp_tree;			// The tree
+	unsigned int					m_num;				// Number of elements in the tree
 
-	unsigned int					m_size;				// How big is the current array
-	unsigned int					m_num;				// Number of elements in the array
-
-	unsigned int					m_current;			// current point in list for getNextNode
+	mutable btn						* mp_current;		// current point in list for getNextNode
 };
 
 

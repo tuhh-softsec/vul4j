@@ -39,34 +39,23 @@ XERCES_CPP_NAMESPACE_USE
 
 XSECXPathNodeList::XSECXPathNodeList(unsigned int initialSize) {
 
-	mp_elts = new const DOMNode *[initialSize];
-	m_size = initialSize;
-	m_current = 0;
 	m_num = 0;
+	mp_tree = NULL;
 
 }
 
 XSECXPathNodeList::XSECXPathNodeList(const XSECXPathNodeList &other) {
 
-	// Copy Constructor
-
-	mp_elts = new const DOMNode *[other.m_size];
-	m_size = other.m_size;
 	m_num = other.m_num;
-
-	for (unsigned int i = 0; i < m_num; ++i) {
-
-		mp_elts[i] = other.mp_elts[i];
-
-	}
+	mp_tree = copy_tree(other.mp_tree);
+	mp_current = NULL;
 
 }
 
 XSECXPathNodeList::~XSECXPathNodeList() {
 
 	// Delete all the elements in the node list
-
-	delete[] mp_elts;
+	delete_tree(mp_tree);
 
 }
 
@@ -76,18 +65,9 @@ XSECXPathNodeList & XSECXPathNodeList::operator= (const XSECXPathNodeList & toCo
 	// Large overhead as we call other functions, but simplest way to
 	// implement for now
 
-	delete[] mp_elts;
-
-	mp_elts = new const DOMNode *[toCopy.m_size];
-	m_size = toCopy.m_size;
+	mp_tree = copy_tree(toCopy.mp_tree);
 	m_num = toCopy.m_num;
-
-	for (unsigned int i = 0; i < m_num; ++i) {
-
-		mp_elts[i] = toCopy.mp_elts[i];
-
-	}
-
+	mp_current = NULL;
 	return *this;
 
 }
@@ -96,123 +76,549 @@ XSECXPathNodeList & XSECXPathNodeList::operator= (const XSECXPathNodeList & toCo
 //           Utility Functions.
 // --------------------------------------------------------------------------------
 
-unsigned int XSECXPathNodeList::findNodeIndex(const DOMNode *n) {
+XSECXPathNodeList::btn * XSECXPathNodeList::findNodeIndex(const DOMNode *n) const {
 
-	// Check default values
-	if (m_num == 0 || mp_elts[0] >= n)
-		return 0;
+	btn * t = mp_tree;
 
-	// Binary search through the list to find where this node should be
+	while (t != NULL && t->v != n) {
 
-	unsigned int l = 0;				// Low
-	unsigned int h = m_num;			// High
+		if (n > t->v)
+			t = t->r;
+		else
+			t = t->l;
+	}
 
-	unsigned int i;
+	return t;
 
-	while (true) {
+}
 
-		i = l + ((h - l) / 2);
+void XSECXPathNodeList::delete_tree(btn * t) {
 
-		if (l == i)
-			return i + 1; // Insert point is the next element
+	if (t == NULL)
+		return;
 
-		if (mp_elts[i] == n) {
-			return i;		// Found and in list
+	btn * parent, * n;
+
+	n = t;
+	while (n != NULL) {
+
+		if (n->l)
+			n = n->l;
+		else if (n->r)
+			n = n->r;
+
+		else {
+			parent = n->p;
+			if (parent != NULL) {
+				if (parent->l == n)
+					parent->l = NULL;
+				else 
+					parent->r = NULL;
+			}
+			// Delete this node
+			delete n;
+			n = parent;
 		}
-
-		if (n > mp_elts[i]) {
-
-			// In top half of search space
-			l = i;
-
-		}
-
-		else 
-			// In bottom half of search space
-			h = i;
-
 	}
 
 }
+
+XSECXPathNodeList::btn * XSECXPathNodeList::copy_tree(btn * t) const {
+
+	if (t == NULL)
+		return NULL;
+
+	btn * n, *c, *cp, *ret;
+
+	n = t;
+	bool create = true;
+	ret = NULL;
+	while (n != NULL) {
+
+		if (create) {
+			XSECnew(c, btn);
+			c->l = NULL;
+			c->r = NULL;
+			c->v = n->v;
+
+			// R we at top?
+			if (ret == NULL) {
+				ret = c;
+				c->p = NULL;
+				cp = NULL;
+			}
+
+			else {
+				c->p = cp;
+				if (cp != NULL) {
+					if (n->p->l == n)
+						cp->l = c;
+					else
+						cp->r = c;
+				}
+			}
+		}
+
+		// Go down!
+		if (c->l == NULL && n->l != NULL) {
+			cp = c;
+			n = n->l;
+			create = true;
+		}
+		else if (c->r == NULL && n->r != NULL) {
+			cp = c;
+			n = n->r;
+			create = true;
+		}
+		else {
+
+			// Go Back Up!
+			n = n->p;
+			c = cp;
+			if (cp != NULL)
+				cp = cp->p;
+			create = false;
+		}
+	}
+
+	return ret;
+}
+
 
 // --------------------------------------------------------------------------------
 //           Adding and Deleting Nodes.
 // --------------------------------------------------------------------------------
 
+long XSECXPathNodeList::balance_count(btn * t) const {
+
+	if (t == NULL)
+		return 0;
+
+	long r = (t->r == NULL ? 0 : t->r->h);
+	long l = (t->l == NULL ? 0 : t->l->h);
+
+	return r - l;
+
+}
+
+long XSECXPathNodeList::calc_height(btn * t) {
+
+	if (t == NULL)
+		return 0;
+	if (t->l == NULL) {
+		if (t->r == NULL)
+			return 1;
+		return t->r->h + 1;
+	}
+	else {
+		if (t->r == NULL)
+			return t->l->h + 1;
+	}
+
+	return ((t->l->h > t->r->h ? t->l->h : t->r->h) + 1);
+}
+
+void XSECXPathNodeList::rotate_right(btn * t) {
+
+	// Rotate me right!
+	btn * lc = t->l;
+
+	// First - are we at the root?
+	if (t == mp_tree) {
+		lc->p = NULL;
+		mp_tree = lc;
+	}
+	else {
+		if (t->p->l == t) {
+			t->p->l = lc;
+		}
+		else {
+			t->p->r = lc;
+		}
+
+		lc->p = t->p;
+	}
+
+	// Do the rotate
+	t->l = lc->r;
+	if (t->l)
+		t->l->p = t;
+	lc->r = t;
+	t->p = lc;
+
+	// Recalculate heights
+	lc = t;
+	while (lc != NULL) {
+		lc->h = calc_height(lc);
+		lc = lc->p;
+	}
+
+}
+
+
+void XSECXPathNodeList::rotate_left(btn * t) {
+
+	// Rotate me left!
+	btn * rc = t->r;
+
+	// First - are we at the root?
+	if (t == mp_tree) {
+		rc->p = NULL;
+		mp_tree = rc;
+	}
+	else {
+		if (t->p->r == t) {
+			t->p->r = rc;
+		}
+		else {
+			t->p->l = rc;
+		}
+
+		rc->p = t->p;
+	}
+
+	// Do the rotate
+	t->r = rc->l;
+	if (t->r)
+		t->r->p = t;
+	rc->l = t;
+	t->p = rc;
+
+	// Recalculate heights
+	rc = t;
+	while (rc != NULL) {
+		rc->h = calc_height(rc);
+		rc = rc->p;
+	}
+
+}
 
 void XSECXPathNodeList::addNode(const DOMNode *n) {
 
+	btn * v;
+
 	if (m_num == 0) {
-		mp_elts[0] = n;
+		XSECnew(mp_tree, btn);
+		mp_tree->l = mp_tree->r = NULL;
+		mp_tree->v = n;
+		mp_tree->p = NULL;
+		mp_tree->h = 1;
 		m_num = 1;
 		return;
 	}
 
-	unsigned int i = findNodeIndex(n);
+	// Find the node
+	btn * t = mp_tree;
+	btn * last = NULL;
 
-	if (i != m_num && mp_elts[i] == n)
+	while (t != NULL && t->v != n) {
+		last = t;
+		if (n > t->v)
+			t = t->r;
+		else
+			t = t->l;
+	}
+
+	if (t != NULL)
+		// Node already exists in tree!
 		return;
-#if 0
-	if (m_num == m_size) {
 
-		// need to re-create the list with a bigger aray
-		m_size *= 10;
+	// Work out the insertion.
+	XSECnew(v, btn);
+	v->v = n;
+	v->r = v->l = NULL;
+	v->h = 1;
+	v->p = last;
 
-		const DOMNode ** newElts = new const DOMNode*[m_size];
-		for (unsigned j = 0; j < m_num; ++j) {
-			newElts[j] = mp_elts[j];
+	// Determine on which leg to place the new value
+	if (n > last->v)
+		last->r = v;
+	else
+		last->l = v;
+
+	// Recalculate heights
+	t = last;
+	long newh;
+	while (t != NULL) {
+		newh = calc_height(t);
+		if (newh > t->h) {
+			t->h = newh;
+			t = t->p;
 		}
-		delete[] mp_elts;
-		mp_elts = newElts;
-
+		else
+			// If the height is the same here, then nothing will have changed above
+			t = NULL;
 	}
 
-	for (unsigned int j = m_num; j > i; --j) {
-
-		mp_elts[j] = mp_elts[j - 1];
+	// Rebalance!
 	
+	t = last;
+	while (t != NULL) {		
+		long bal = balance_count(t);
+		long balrc = balance_count(t->r);
+		long ballc = balance_count(t->l);
+
+		// Case 1 - Balance is OK
+		if (bal <= 1 && bal >= -1) {
+			// Do nothing!
+		}
+
+		// Case 2a - Balance is -2 and LC = -1
+		else if (bal == -2 && ballc == -1) {
+
+			// Rotate current node right
+			rotate_right(t);
+		}
+		// Or balance is +2 and RC = +1
+		else if (bal == 2 && balrc  == 1) {
+
+			// Rotate current node left
+			rotate_left(t);
+		}
+		// Case 2b = Balance is -2 and LC = +1
+		else if (bal == -2 && ballc == 1) {
+
+			// Double Right rotation
+			rotate_left(t->l);
+			rotate_right(t);
+		}
+
+		else {
+			rotate_right(t->r);
+			rotate_left(t);
+
+		}
+
+		t = t->p;
+
 	}
-#endif
-	if (m_num == m_size) {
-
-		// Need to create the list with a bigger array
-		m_size *= 10;
-
-		const DOMNode ** newElts = new const DOMNode*[m_size];
-		memcpy(newElts, mp_elts, sizeof(DOMNode *) * m_num);
-
-		delete[] mp_elts;
-		mp_elts = newElts;
-
-	}
-
-	memmove(&(mp_elts[i+1]), &(mp_elts[i]), (m_num - i) * sizeof(DOMNode *));
-
-
-	mp_elts[i] = n;
-	++m_num;
 
 }
 
 void XSECXPathNodeList::removeNode(const DOMNode *n) {
 
-	unsigned int i = findNodeIndex(n);
+	btn * t, * last;
+	btn * i = findNodeIndex(n);
 
-	if (i == m_num || mp_elts[i] != n)
-		// not found
+	if (i == NULL)
+		// Not found!
 		return;
 
-	for (unsigned int j = i; j < m_num; ++j)
-		mp_elts[j] = mp_elts[j+1];
+	// Delete from tree
+	if (i == mp_tree) {
+		// Bugger - we are at the top of the tree
+
+		// OK - No children?
+		if (i->l == NULL && i->r == NULL) {
+			// WooHoo!  Easy!
+			delete mp_tree;
+			mp_tree = NULL;
+		}
+
+		// One Child?
+		if (i->l != NULL && i->r == NULL) {
+
+			// WooHoo! Easy!
+			mp_tree = i->l;
+			mp_tree->p = NULL;
+			delete i;
+		}
+		if (i->r != NULL && i->l == NULL) {
+
+			// WooHoo! Easy!
+			mp_tree = i->r;
+			mp_tree->p = NULL;
+			delete i;
+		}
+
+		// Oh dear = we have two children and now some heartache
+		if (i->r->l == NULL && i->r->r == NULL) {
+
+			// No subtree on right hand side.
+			mp_tree = mp_tree->l;
+			mp_tree->p = NULL;
+			t = mp_tree->r;
+			last = mp_tree;
+			while (t != NULL) {
+				last = t;
+				if (i->r->v < t->v)
+					t = t->l;
+				else
+					t = t->r;
+			}
+
+			if (i->r->v < last->v) {
+				last->l = i->r;
+				i->r->p = last;
+			}
+			else {
+				last->r = i->r;
+				i->r->p = last;
+			}
+		}
+
+		else {
+
+			// Need to find the "in-order" successor
+			t = i->r;
+
+			while (t != NULL) {
+				last = t;
+				t=t->l;
+			}
+
+			if (last == i->r) {
+				// can't have been a left hand leg on the next node!)
+				last->l = i->l;
+				if (last->l != NULL)
+					last->l->p = last;
+
+				mp_tree = last;
+				last->p = NULL;
+
+				delete i;
+			}
+			else {
+			
+				// OK - Last is now the next biggest node, and it doesn;t
+				// have anything on it's left (otherwise there would be something smaller)
+
+				last->p->l = last->r;
+				last->r->p = last->p;
+				last->l = i->l;
+				last->r = i->r;
+				if (last->r != NULL)
+					last->r->p = last;
+				if (last->l != NULL)
+					last->l->p = last;
+
+				mp_tree = last;
+				last->p = NULL;
+				
+				delete i;
+
+			}
+		}
+	}
+
+	else { 
+		
+		/* i != mp_tree */
+		// OK - No children?
+		if (i->l == NULL && i->r == NULL) {
+			// WooHoo!  Easy!
+			if (i->p->l == i)
+				i->p->l = NULL;
+			else
+				i->p->r = NULL;
+
+			delete i;
+		}
+
+		// One Child?
+		if (i->l != NULL && i->r == NULL) {
+
+			// WooHoo! Easy!
+			if (i->p->l == i) {
+				i->p->l = i->l;
+				i->l->p = i->p;
+			}
+			else {
+				i->p->r = i->l;
+				i->r->p = i->p;
+			}
+			delete i;
+		}
+		if (i->r != NULL && i->l == NULL) {
+
+			// WooHoo! Easy!
+			if (i->p->l == i) {
+				i->p->l = i->r;
+				i->r->p = i->p;
+			}
+			else {
+				i->p->r = i->r;
+				i->r->p = i->p;
+			}
+			delete i;
+		}
+
+		// Oh dear = we have two children and now some heartache
+		if (i->r->l == NULL && i->r->r == NULL) {
+
+			// No subtree on right hand side.
+			if (i->p->l == i) {
+				// Was left hand child
+				i->p->l = i->l;
+				i->l->p = i->p;
+				t = i->l;
+
+				// Find insertion point for dangling node
+				while (t != NULL) {
+					last = t;
+					t = t->r;
+				}
+
+				last->r = i->r;
+				i->r->p = last;
+			}
+			else {
+				// Was right hand child
+				i->p->r = i->l;
+				i->l->p = i->p;
+				t = i->l;
+
+				// Find insertion point for dangling node
+				while (t != NULL) {
+					last = t;
+					t = t->r;
+				}
+
+				last->r = i->r;
+				i->r->p = last;
+			}
+
+
+		}
+
+		else {
+
+			// Subtree - so need to find the "in-order" successor
+			t = i->r;
+
+			while (t != NULL) {
+				last = t;
+				t=t->l;
+			}
+
+			// OK - Last is now the next biggest node, and it doesn;t
+			// have anything on it's left (otherwise there would be something smaller)
+
+			last->p->l = last->r;
+			last->r->p = last->p;
+			last->l = i->l;
+			last->r = i->r;
+			if (last->r != NULL)
+				last->r->p = last;
+			if (last->l != NULL)
+				last->l->p = last;
+
+			mp_tree = last;
+			last->p = NULL;
+			
+			delete i;
+
+		}
+	}
 
 	m_num--;
-
-
 }
 
 void XSECXPathNodeList::clear() {
 
 	m_num = 0;
+	delete_tree(mp_tree);
+	mp_tree = NULL;
 
 }
 
@@ -221,28 +627,59 @@ void XSECXPathNodeList::clear() {
 // --------------------------------------------------------------------------------
 
 
-bool XSECXPathNodeList::hasNode(const DOMNode *n) {
+bool XSECXPathNodeList::hasNode(const DOMNode *n) const {
 
-	unsigned int i = findNodeIndex(n);
+	btn * i = findNodeIndex(n);
 
-	return (i != m_num && mp_elts[i] == n);
-
-}
-
-const DOMNode *XSECXPathNodeList::getFirstNode(void) {
-
-
-	m_current = 0;
-	return getNextNode();
+	return (i != NULL);
 
 }
 
-const DOMNode *XSECXPathNodeList::getNextNode(void) {
+const DOMNode *XSECXPathNodeList::getFirstNode(void) const {
 
-	if (m_current == m_num)
+
+	if (mp_tree == NULL) 
 		return NULL;
 
-	return mp_elts[m_current++];
+	// Find the smallest node
+	mp_current = mp_tree;
+	while (mp_current->l != NULL)
+		mp_current = mp_current->l;
+
+	return mp_current->v;
+
+}
+
+const DOMNode *XSECXPathNodeList::getNextNode(void) const {
+
+	if (mp_current == NULL)
+		return NULL;
+
+	btn * t = mp_current;
+
+	if (t->r != NULL) {
+		// Find next biggest node
+		t = t->r;
+		while (t->l != NULL)
+			t = t->l;
+		mp_current = t;
+	}
+	else {
+		// Go backwards!
+		t = mp_current->p;
+		while (t != NULL && t->r == mp_current) {
+			mp_current = t;
+			t = t->p;
+		}
+
+		if (t == NULL) {
+			mp_current = NULL;
+			return NULL;
+		}
+		mp_current = t;
+	}
+
+	return t->v;
 
 }
 	
@@ -252,34 +689,26 @@ const DOMNode *XSECXPathNodeList::getNextNode(void) {
 
 void XSECXPathNodeList::intersect(const XSECXPathNodeList &toIntersect) {
 
-	const DOMNode ** newList = new const DOMNode *[m_size];
+	// Create a new list
+	XSECXPathNodeList ret;
 
-	unsigned int i = 0;
-	unsigned int j = 0;
-	unsigned int k = 0;
+	const DOMNode * n = getFirstNode();
+	while (n != NULL) {
 
-	while (true) {
+		if (toIntersect.hasNode(n))
+			ret.addNode(n);
 
-		if (mp_elts[i] == toIntersect.mp_elts[j]) {
-
-			newList[k++] = mp_elts[i++];
-			j++;
-		}
-
-		else if (mp_elts[i] < toIntersect.mp_elts[j]) {
-			++i;
-		}
-		else 
-			++j;
-
-		if (i == m_num || j == toIntersect.m_num)
-			break;
+		n = getNextNode();
 
 	}
 
-	m_num = k;
-	delete[] mp_elts;
-	mp_elts = newList;
+	// Swap lists
+	btn * t = mp_tree;
+	mp_tree = ret.mp_tree;
+	ret.mp_tree = t;
+	m_num = ret.m_num;
+
+	return;
 
 }
 
