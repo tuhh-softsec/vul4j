@@ -34,6 +34,7 @@
 #include <xsec/utils/XSECSafeBuffer.hpp>
 #include <xsec/utils/XSECXPathNodeList.hpp>
 #include <xsec/canon/XSECCanon.hpp>
+#include <xsec/canon/XSECXMLNSStack.hpp>
 
 #include <xercesc/framework/XMLFormatter.hpp>
 
@@ -114,6 +115,9 @@ public:
 	void setExclusive(void);
 	void setExclusive(char * xmlnsList);
 
+	// Namespace processing
+	void setUseNamespaceStack(bool flag) {m_useNamespaceStack = flag;}
+
 protected:
 
 	// Implementation of virtual function
@@ -127,6 +131,7 @@ private:
 	void XSECC14n20010315::init();
 	bool checkRenderNameSpaceNode(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *e, 
 								  XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *a);
+	void stackInit(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode * n);
 
 	// For formatting the buffers
 	XSECSafeBufferFormatter		* mp_formatter;
@@ -153,6 +158,14 @@ private:
 	CharListVectorType		m_exclNSList;
 	bool					m_exclusive;
 	bool					m_exclusiveDefault;
+
+	// How do we handle namespaces?
+	// Use the namespace stack if name space expansion has not been run on the document.
+	// NOTE : Using the name space stack *will* cause problems if a full XPath expression
+	// has been run to select the input nodeset.  Otherwise we should be fine.
+
+	bool					m_useNamespaceStack;
+	XSECXMLNSStack			m_nsStack;
 
 
 

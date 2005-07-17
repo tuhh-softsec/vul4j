@@ -81,7 +81,7 @@ void TXFMC14n::setInput(TXFMBase *newInput) {
 
 		XSECnew(mp_c14n, XSECC14n20010315(input->getDocument()));
 		// Expand name spaces
-		input->expandNameSpaces();
+		//input->expandNameSpaces();
 
 		break;
 
@@ -89,7 +89,7 @@ void TXFMC14n::setInput(TXFMBase *newInput) {
 	case TXFMBase::DOM_NODE_DOCUMENT_FRAGMENT :
 
 		XSECnew(mp_c14n, XSECC14n20010315(input->getDocument(), input->getFragmentNode()));
-		input->expandNameSpaces();
+		//input->expandNameSpaces();
 		break;
 
 	case TXFMBase::DOM_NODE_XPATH_NODESET :
@@ -105,6 +105,8 @@ void TXFMC14n::setInput(TXFMBase *newInput) {
 	}
 
 	mp_c14n->setCommentsProcessing(keepComments);			// By default we strip comments
+	// Do we use the namespace map?
+	mp_c14n->setUseNamespaceStack(!input->nameSpacesExpanded());
 
 }
 	

@@ -283,6 +283,38 @@ void XSECC14n20010315::setExclusive(char * xmlnsList) {
 //           XSECC14n20010315 methods
 // --------------------------------------------------------------------------------
 
+
+void XSECC14n20010315::stackInit(DOMNode * n) {
+
+	if (n == NULL)
+		return;
+
+	stackInit(n->getParentNode());
+	m_nsStack.pushElement(n);
+	int size;
+
+	DOMNamedNodeMap *tmpAtts = n->getAttributes();
+	safeBuffer currentName;
+
+	if (tmpAtts != NULL)
+		size = tmpAtts->getLength();
+	else 
+		size = 0;
+
+	int i;
+
+	for (i = 0; i < size; ++i) {
+
+		currentName << (*mp_formatter << tmpAtts->item(i)->getNodeName());
+
+		if (currentName.sbStrncmp("xmlns", 5) == 0)
+			m_nsStack.addNamespace(tmpAtts->item(i));
+
+	}
+
+}
+			
+	
 // Constructors
 
 void XSECC14n20010315::init() {
@@ -316,6 +348,14 @@ void XSECC14n20010315::init() {
 	m_exclNSList.clear();
 	m_exclusive = false;
 	m_exclusiveDefault = false;
+
+	// Namespace handling
+	m_useNamespaceStack = true;
+
+	// INitialise the stack - even if we don't use it later, at least this sets us up
+	if (mp_startNode != NULL) {
+		stackInit(mp_startNode->getParentNode());
+	}
 
 }
 
@@ -735,18 +775,30 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 				if (visiblyUtilises(parent, localName)) {
 
 					// Have a hit!
-					atts = parent->getAttributes();
-					att = atts->getNamedItem(a->getNodeName());
-					if (att != NULL && (!m_XPathSelection || m_XPathMap.hasNode(att))) {
+					while (parent != NULL) {
+						atts = parent->getAttributes();
+						att = atts->getNamedItem(a->getNodeName());
+						if (att != NULL && (!m_XPathSelection || m_XPathMap.hasNode(att))) {
 
-						// Check URI is the same
-						if (strEquals(att->getNodeValue(), a->getNodeValue()))
-							return false;
+							// Check URI is the same
+							if (strEquals(att->getNodeValue(), a->getNodeValue()))
+								return false;
 
-						return true;
+							return true;
 
+						}
+
+						// If we are using the namespace stack, we need to go up until
+						// we found the defining attribute for this node
+						if (m_useNamespaceStack) {
+							parent = parent->getParentNode();
+						}
+						else
+
+							return true;
 					}
-
+					// Even if we are using the namespace stack, we have never
+					// printed this namespace
 					return true;
 				}
 			}
@@ -773,6 +825,39 @@ bool XSECC14n20010315::checkRenderNameSpaceNode(DOMNode *e, DOMNode *a) {
 	// Otherwise, of node is at base of selected document, then print
 	if (e == mp_firstElementNode)
 		return true;
+
+	if (m_useNamespaceStack) {
+
+		// In this case, we need to go up until we find the namespace definition 
+		// in question
+
+		parent = e->getParentNode();
+		while (parent != NULL) {
+
+			DOMNamedNodeMap *pmap = parent->getAttributes();
+			DOMNode *pns;
+			if (pmap)
+				pns = pmap->getNamedItem(a->getNodeName());
+			else
+				pns = NULL;
+
+			if (pns != NULL) {
+
+				// Note we don't check XPath inclusion, as we shouldn't be
+				// using the namespace stack for XPath expressions
+
+				if (strEquals(pns->getNodeValue(), a->getNodeValue()))
+					return false;
+				else
+					return true;		// Was defined but differently
+			}
+			parent = parent->getParentNode();
+
+		}
+
+		// Obviously we haven't found it!
+		return true;
+	}
 
 	// Find the parent and check if the node is already defined or if the node
 	// was out of scope
@@ -988,6 +1073,9 @@ int XSECC14n20010315::processNextNode() {
 				m_buffer.sbStrcatIn(">");
 			}
 
+			if (m_useNamespaceStack)
+				m_nsStack.popElement();
+
 			break;
 		}
 
@@ -999,6 +1087,9 @@ int XSECC14n20010315::processNextNode() {
 		}
 
 		// We now set up for attributes and name spaces
+		if (m_useNamespaceStack)
+			m_nsStack.pushElement(mp_nextNode);
+
 		mp_attributes = NULL;
 		tmpAtts = mp_nextNode->getAttributes();
 		next = mp_nextNode;
@@ -1030,33 +1121,41 @@ int XSECC14n20010315::processNextNode() {
 				
 				if ((next == mp_nextNode) && currentName.sbStrncmp("xmlns", 5) == 0) {
 
-					// Is this the default?
-					if (currentName.sbStrcmp("xmlns") == 0 &&
-						(!m_XPathSelection || m_XPathMap.hasNode(tmpAtts->item(i))) &&
-						!currentValue.sbStrcmp("") == 0)
-						xmlnsFound = true;
+					// Are we using the namespace stack?  If so - store this for later
+					// processing
+					if (m_useNamespaceStack) {
+						m_nsStack.addNamespace(tmpAtts->item(i));
+					}
+					else {
 
-					// A namespace node - See if we need to output
-					if (checkRenderNameSpaceNode(mp_nextNode, tmpAtts->item(i))) {
+						// Is this the default?
+						if (currentName.sbStrcmp("xmlns") == 0 &&
+							(!m_XPathSelection || m_XPathMap.hasNode(tmpAtts->item(i))) &&
+							!currentValue.sbStrcmp("") == 0)
+							xmlnsFound = true;
 
-						// Add to the list
-				
-						m_formatBuffer << (*mp_formatter << tmpAtts->item(i)->getNodeName());
-						if (m_formatBuffer[5] == ':')
-							currentName.sbStrcpyIn((char *) &m_formatBuffer[6]);
-						else
-							currentName.sbStrcpyIn("");
-				
-						toIns = new XSECNodeListElt;
-						toIns->element = tmpAtts->item(i);
-				
-						// Build and insert name space node
-						toIns->sortString.sbStrcpyIn(XMLNS_PREFIX);
-						toIns->sortString.sbStrcatIn(currentName);
-				
-						// Insert node
-						mp_attributes = insertNodeIntoList(mp_attributes, toIns);
-				
+						// A namespace node - See if we need to output
+						if (checkRenderNameSpaceNode(mp_nextNode, tmpAtts->item(i))) {
+
+							// Add to the list
+					
+							m_formatBuffer << (*mp_formatter << tmpAtts->item(i)->getNodeName());
+							if (m_formatBuffer[5] == ':')
+								currentName.sbStrcpyIn((char *) &m_formatBuffer[6]);
+							else
+								currentName.sbStrcpyIn("");
+					
+							toIns = new XSECNodeListElt;
+							toIns->element = tmpAtts->item(i);
+					
+							// Build and insert name space node
+							toIns->sortString.sbStrcpyIn(XMLNS_PREFIX);
+							toIns->sortString.sbStrcatIn(currentName);
+					
+							// Insert node
+							mp_attributes = insertNodeIntoList(mp_attributes, toIns);
+					
+						}
 					}
 
 				}
@@ -1167,6 +1266,53 @@ int XSECC14n20010315::processNextNode() {
 
 		} /* while tmpAtts != NULL */
 
+		// Now add namespace nodes - but only if we are using the namespace stack
+		// (They have already been added otherwise
+		if (m_useNamespaceStack) {
+
+			DOMNode * nsnode = m_nsStack.getFirstNamespace();
+			while (nsnode != NULL) {
+				// Get the name and value of the attribute
+				currentName << (*mp_formatter << nsnode->getNodeName());
+				currentValue << (*mp_formatter << nsnode->getNodeValue());
+
+				// Is this the default?
+				if (currentName.sbStrcmp("xmlns") == 0 &&
+					(!m_XPathSelection || m_XPathMap.hasNode(nsnode)) &&
+					!currentValue.sbStrcmp("") == 0)
+					xmlnsFound = true;
+
+				// A namespace node - See if we need to output
+				if (checkRenderNameSpaceNode(mp_nextNode, nsnode)) {
+
+					// Add to the list
+					XSECNodeListElt *toIns;
+			
+					m_formatBuffer << (*mp_formatter << nsnode->getNodeName());
+					if (m_formatBuffer[5] == ':')
+						currentName.sbStrcpyIn((char *) &m_formatBuffer[6]);
+					else
+						currentName.sbStrcpyIn("");
+			
+					toIns = new XSECNodeListElt;
+					toIns->element = nsnode;
+			
+					// Build and insert name space node
+					toIns->sortString.sbStrcpyIn(XMLNS_PREFIX);
+					toIns->sortString.sbStrcatIn(currentName);
+			
+					// Insert node
+					mp_attributes = insertNodeIntoList(mp_attributes, toIns);
+
+					// Mark as printed in the NS Stack
+					m_nsStack.printNamespace(nsnode, mp_nextNode);
+			
+				}
+				nsnode = m_nsStack.getNextNamespace();
+			}
+		} /* if (m_useNamespaceStack) */
+
+
 		// Check to see if we add xmlns=""
 		if (processNode && !xmlnsFound && mp_nextNode != mp_firstElementNode) {
 
@@ -1183,33 +1329,47 @@ int XSECC14n20010315::processNextNode() {
 
 					while (next != NULL) {
 
-						if (!m_XPathSelection || m_XPathMap.hasNode(next)) {
+						if (!m_XPathSelection || m_useNamespaceStack || m_XPathMap.hasNode(next)) {
 
 							DOMNode *tmpAtt;
 				
 							// An output ancestor
 							if (visiblyUtilises(next, sbLocalName)) {
+								DOMNode * nextAttParent = next;
 
-							// Have a hit!
-								tmpAtts = next->getAttributes();
-								if (tmpAtts != NULL)
-									tmpAtt = tmpAtts->getNamedItem(DSIGConstants::s_unicodeStrXmlns);
-								if (tmpAtts != NULL && tmpAtt != NULL && (!m_XPathSelection || m_XPathMap.hasNode(tmpAtt))) {
+								while (nextAttParent != NULL) {
+									// Have a hit!
+									tmpAtts = nextAttParent->getAttributes();
+									if (tmpAtts != NULL)
+										tmpAtt = tmpAtts->getNamedItem(DSIGConstants::s_unicodeStrXmlns);
+									if (tmpAtts != NULL && tmpAtt != NULL && (!m_XPathSelection || m_useNamespaceStack || m_XPathMap.hasNode(tmpAtt))) {
 
-									// Check URI is the same
-									if (!strEquals(tmpAtt->getNodeValue(), "")) {
-										xmlnsFound = true;
+										// Check URI is the same
+										if (!strEquals(tmpAtt->getNodeValue(), "")) {
+											xmlnsFound = true;
+											nextAttParent = NULL;
+										}
 									}
-								}
-								else {
+									else {
 
-									// Doesn't have a default namespace in the node-set
-									break;
+										// Doesn't have a default namespace in the node-set
+										next = nextAttParent = NULL;
+										break;
+
+									}
+
+									if (m_useNamespaceStack && nextAttParent)
+										nextAttParent = nextAttParent->getParentNode();
+									else
+										nextAttParent = NULL;
 								}
+
+
 							}
 						}
 
-						next = next->getParentNode();
+						if (next)
+							next = next->getParentNode();
 					}
 
 				}
@@ -1220,28 +1380,40 @@ int XSECC14n20010315::processNextNode() {
 				//DOM_Node next;
 
 				next = mp_nextNode->getParentNode();
-				while (next != NULL && (m_XPathSelection && !m_XPathMap.hasNode(next)))
-					next = next->getParentNode();
+				while (!xmlnsFound && next != NULL) {
+					while (next != NULL && !m_useNamespaceStack && (m_XPathSelection && !m_XPathMap.hasNode(next)))
+						next = next->getParentNode();
 
-				int size;
-				if (next != NULL)
-					tmpAtts = next->getAttributes();
-				
-				if (next != NULL && tmpAtts != NULL)
-					size = tmpAtts->getLength();
-				else
-					size = 0;
+					int size;
+					if (next != NULL)
+						tmpAtts = next->getAttributes();
+					
+					if (next != NULL && tmpAtts != NULL)
+						size = tmpAtts->getLength();
+					else
+						size = 0;
 
-				for (int i = 0; i < size; ++i) {
+					for (int i = 0; i < size; ++i) {
 
-					currentName << (*mp_formatter << tmpAtts->item(i)->getNodeName());
-					currentValue << (*mp_formatter << tmpAtts->item(i)->getNodeValue());
+						currentName << (*mp_formatter << tmpAtts->item(i)->getNodeName());
+						currentValue << (*mp_formatter << tmpAtts->item(i)->getNodeValue());
 
-					if ((currentName.sbStrcmp("xmlns") == 0) &&
-						(currentValue.sbStrcmp("") != 0) &&
-						(!m_XPathSelection || m_XPathMap.hasNode(tmpAtts->item(i))))
-						xmlnsFound = true;
+						if ((currentName.sbStrcmp("xmlns") == 0) &&
+							(m_useNamespaceStack || !m_XPathSelection || m_XPathMap.hasNode(tmpAtts->item(i)))) {
+							if (currentValue.sbStrcmp("") != 0) {
+								xmlnsFound = true;
+							}
+							else {
+								xmlnsFound = false;
+								next = NULL;
+							}
+						}
 
+					}
+					if (m_useNamespaceStack && next != NULL)
+						next = next->getParentNode();
+					else 
+						next = NULL;
 				}
 			}
 

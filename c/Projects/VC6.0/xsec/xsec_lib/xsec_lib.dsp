@@ -168,6 +168,14 @@ SOURCE=..\..\..\..\src\canon\XSECCannon.cpp
 
 SOURCE=..\..\..\..\src\canon\XSECCanon.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\canon\XSECXMLNSStack.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\canon\XSECXMLNSStack.hpp
+# End Source File
 # End Group
 # Begin Group "dsig"
 

@@ -53,7 +53,7 @@ void TXFMEnvelope::setInput(TXFMBase *newInput) {
 	}
 
 	// Expand if necessary
-	this->expandNameSpaces();
+	//this->expandNameSpaces();
 
 	keepComments = input->getCommentsStatus();
 
