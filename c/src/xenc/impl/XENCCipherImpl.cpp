@@ -302,6 +302,7 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 	sb.sbXMLChAppendCh(chCloseAngle);
 
 	char * trailer = transcodeToUTF8(sb.rawXMLChBuffer());
+	ArrayJanitor<char> j_trailer(trailer);
 	sbt.sbStrcatIn(trailer);
 
 	// Now we need to parse the document
