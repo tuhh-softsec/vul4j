@@ -79,6 +79,7 @@ const XMLCh DSIG_EXPORT * getXKMSLocalName(const XERCES_CPP_NAMESPACE_QUALIFIER 
 // --------------------------------------------------------------------------------
 
 XMLCh DSIG_EXPORT * transcodeFromUTF8(const unsigned char * src);
+char DSIG_EXPORT * transcodeToUTF8(const XMLCh * src);
 
 // --------------------------------------------------------------------------------
 //           Find a nominated DSIG/XENC node in a document

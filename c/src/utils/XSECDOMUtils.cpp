@@ -383,6 +383,59 @@ XMLCh * transcodeFromUTF8(const unsigned char * src) {
 
 }
 
+char DSIG_EXPORT * transcodeToUTF8(const XMLCh * src) {
+
+	// Take a UTF-16 buffer and transcode to UTF-8
+
+	safeBuffer fullDest("");
+	unsigned char outputBuf[2050];
+
+	// Grab a transcoder
+	XMLTransService::Codes failReason;
+
+#if defined(XSEC_XERCES_REQUIRES_MEMMGR)
+	XMLTranscoder* t = 
+		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8", 
+															   failReason, 
+															   2*1024, 
+															   XMLPlatformUtils::fgMemoryManager);
+#else
+	XMLTranscoder* t = 
+		XMLPlatformUtils::fgTransService->makeNewTranscoderFor("UTF-8", 
+															   failReason, 
+															   2*1024);
+#endif
+	Janitor<XMLTranscoder> j_t(t);
+
+	// Need to loop through, 2K at a time
+	unsigned int charactersEaten, charactersOutput;
+	unsigned int totalCharsEaten = 0;
+	unsigned int charsToEat = XMLString::stringLen(src);
+
+	while (totalCharsEaten < charsToEat) {
+
+		int toEat = charsToEat - totalCharsEaten;
+
+		if (toEat > 2048)
+			toEat = 2048;
+
+		charactersOutput = t->transcodeTo(&src[totalCharsEaten], 
+						toEat, 
+						(unsigned char * const) outputBuf, 
+						2048, 
+						charactersEaten, 
+						XMLTranscoder::UnRep_RepChar);
+
+		outputBuf[charactersOutput] = '\0';
+		fullDest.sbStrcatIn((char *) outputBuf);
+		totalCharsEaten += charactersEaten;
+	}
+
+	// Dup and output
+	return XMLString::replicate(fullDest.rawCharBuffer());
+
+}
+
 // --------------------------------------------------------------------------------
 //           String decode/encode
 // --------------------------------------------------------------------------------

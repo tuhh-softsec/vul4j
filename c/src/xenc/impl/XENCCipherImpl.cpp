@@ -228,9 +228,9 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 	DOMDocumentFragment * result;
 
 	// Create the context to parse the document against
-	safeBuffer sb;
+	safeBuffer sb, sbt;
 	sb.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
-	sb.sbXMLChAppendCh(chUnicodeMarker);
+	//sb.sbXMLChAppendCh(chUnicodeMarker);
 	//sb.sbXMLChCat8("<?xml version=\"1.0\" encoding=\"UTF-16\"?><");
 	sb.sbXMLChAppendCh(chOpenAngle);
 	sb.sbXMLChCat(s_tagname);
@@ -283,16 +283,26 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 		wk = wk->getParentNode();
 	}
 	sb.sbXMLChAppendCh(chCloseAngle);
+	
+	char * prefix = transcodeToUTF8(sb.rawXMLChBuffer());
+	ArrayJanitor<char> j_prefix(prefix);
+
+	sbt = prefix;
+	sbt.sbStrcatIn(content.rawCharBuffer());
 
 	// Now transform the content to UTF-8
-	sb.sbXMLChCat8(content.rawCharBuffer());
+	//sb.sbXMLChCat8(content.rawCharBuffer());
 
 	// Terminate the string
 
+	sb.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
 	sb.sbXMLChAppendCh(chOpenAngle);
 	sb.sbXMLChAppendCh(chForwardSlash);
 	sb.sbXMLChCat(s_tagname);
 	sb.sbXMLChAppendCh(chCloseAngle);
+
+	char * trailer = transcodeToUTF8(sb.rawXMLChBuffer());
+	sbt.sbStrcatIn(trailer);
 
 	// Now we need to parse the document
 
@@ -305,8 +315,8 @@ DOMDocumentFragment * XENCCipherImpl::deSerialise(safeBuffer &content, DOMNode *
 
 	// Create an input source
 
-	unsigned int bytes = XMLString::stringLen(sb.rawXMLChBuffer()) * sizeof(XMLCh);
-	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) sb.rawBuffer(), bytes, "XSECMem");
+	unsigned int bytes = XMLString::stringLen(sbt.rawCharBuffer());
+	MemBufInputSource* memIS = new MemBufInputSource ((const XMLByte*) sbt.rawBuffer(), bytes, "XSECMem");
 	Janitor<MemBufInputSource> j_memIS(memIS);
 
 	int errorCount = 0;
