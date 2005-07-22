@@ -158,14 +158,11 @@ int main(int argc, char **argv) {
 	doc = parser->getDocument();
 	DOMDocument *theDOM = parser->getDocument();
 
-	// Expand name spaces so that c14n will work correctly
-	XSECNameSpaceExpander nse(theDOM);
-	nse.expandNameSpaces();
-
 	// Creat the canonicalizer
 
 	XSECC14n20010315 canon(theDOM);
 	canon.setCommentsProcessing(printComments);
+	canon.setUseNamespaceStack(true);
 
 	// canon.XPathSelectNodes("(/descendant-or-self::node() | /descendant-or-self::node()/attribute::* | /descendant-or-self::node()/namespace::*)[ self::ietf:e1 or (parent::ietf:e1 and not(self::text() or self::e2)) or count (id(\"E3\") | ancestor-or-self::node()) = count (ancestor-or-self::node())]");
 
