@@ -569,6 +569,49 @@ public:
 
 	XSECSafeBufferFormatter * getSBFormatter(void) {return mp_formatter;}
 
+	/**
+	 * \brief Set the interlocking references flag
+	 *
+	 * This flag controls whether the library will cater for "interlocking"
+	 * Reference nodes - where the hash of one reference depends on the
+	 * hash of another.
+	 *
+	 * As of Version 1.3, this is, by default, set to false, as it is 
+	 * fairly unusual to find a Reference node that has as an input the
+	 * digest value of another reference node.  By setting this value to
+	 * true, the library will first calculate all hash values, and then
+	 * verify the hash values.  If any are incorrect (caused by one 
+	 * the value of one reference being changed *after* it was used as 
+	 * the input to another), then the hash values are recalculated.  This
+	 * is repeated until the reference list "settles".
+	 *
+	 * @param flag true for interlocking references, false for standalone
+	 */
+
+	void setInterlockingReferences(bool flag) {m_interlockingReferences = flag;}
+
+
+	/**
+	 * \brief Get the interlocking references flag
+	 *
+	 * This flag controls whether the library will cater for "interlocking"
+	 * Reference nodes - where the hash of one reference depends on the
+	 * hash of another.
+	 *
+	 * As of Version 1.3, this is, by default, set to false, as it is 
+	 * fairly unusual to find a Reference node that has as an input the
+	 * digest value of another reference node.  By setting this value to
+	 * true, the library will first calculate all hash values, and then
+	 * verify the hash values.  If any are incorrect (caused by one 
+	 * the value of one reference being changed *after* it was used as 
+	 * the input to another), then the hash values are recalculated.  This
+	 * is repeated until the reference list "settles".
+	 *
+	 * @return Value of flag - true for interlocking references, false for standalone
+	 */
+
+	bool getInterlockingReferences(void) {return m_interlockingReferences;}
+
 	//@}
 
 	/** @name Resolver manipulation */
@@ -914,6 +957,9 @@ private:
 	// Objects
 
 	ObjectVectorType			m_objects;
+
+	// Interlocking references
+	bool						m_interlockingReferences;
 
 	// Not implemented constructors
 

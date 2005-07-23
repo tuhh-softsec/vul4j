@@ -143,9 +143,12 @@ public:
 	 * Goes through each reference in the SignedInfo (including referenced
 	 * manifests), performs the digest operation and adds the digest
 	 * to the reference element
+	 *
+	 * @param interlockingReferences Set to true if any references depend on other
+	 * references
 	 */
 
-	void hash(void);				// Setup hashes for each Reference element
+	void hash(bool interlockingReferences);
 
 	/**
 	 * \brief Create an empty SignedInfo

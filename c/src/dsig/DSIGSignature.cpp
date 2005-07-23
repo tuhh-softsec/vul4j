@@ -413,6 +413,7 @@ m_errStr("") {
 	mp_KeyInfoResolver = NULL;
 	mp_KeyInfoNode = NULL;
 	m_loaded = false;
+	m_interlockingReferences = false;
 
 	// Set up our formatter
 	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
@@ -435,6 +436,7 @@ m_errStr("") {
 	mp_KeyInfoResolver = NULL;
 	mp_KeyInfoNode = NULL;
 	m_loaded = false;
+	m_interlockingReferences = false;
 
 	// Set up our formatter
 	XSECnew(mp_formatter, XSECSafeBufferFormatter("UTF-8",XMLFormatter::NoEscapes, 
@@ -1000,7 +1002,7 @@ unsigned int DSIGSignature::calculateSignedInfoAndReferenceHash(unsigned char * 
 													unsigned int hashBufLen) {
 
 	// Set up the reference list hashes - including any manifests
-	mp_signedInfo->hash();
+	mp_signedInfo->hash(m_interlockingReferences);
 	// calculaet signed InfoHash
 	return calculateSignedInfoHash(hashBuf,hashBufLen);
 }
@@ -1145,7 +1147,7 @@ void DSIGSignature::sign(void) {
 	m_errStr.sbXMLChIn(DSIGConstants::s_unicodeStrEmpty);
 
 	// Set up the reference list hashes - including any manifests
-	mp_signedInfo->hash();
+	mp_signedInfo->hash(m_interlockingReferences);
 
 	// Get the SignedInfo input bytes
 	TXFMChain * chain = getSignedInfoInput();
