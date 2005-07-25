@@ -107,12 +107,18 @@ OpenSSLCryptoHash::OpenSSLCryptoHash(HashType alg) {
 }
 
 
-OpenSSLCryptoHash::~OpenSSLCryptoHash() {}
+OpenSSLCryptoHash::~OpenSSLCryptoHash() {
+
+	EVP_MD_CTX_cleanup(&m_mdctx);
+
+}
 
 
 
 // Hashing Activities
 void OpenSSLCryptoHash::reset(void) {
+
+	EVP_MD_CTX_cleanup(&m_mdctx);
 
 	EVP_DigestInit(&m_mdctx, mp_md);
 

@@ -133,7 +133,12 @@ void OpenSSLCryptoHashHMAC::setKey(XSECCryptoKey *key) {
 
 }
 
-OpenSSLCryptoHashHMAC::~OpenSSLCryptoHashHMAC() {}
+OpenSSLCryptoHashHMAC::~OpenSSLCryptoHashHMAC() {
+
+	if (m_initialised)
+		HMAC_CTX_cleanup(&m_hctx);
+
+}
 
 
 
@@ -141,12 +146,16 @@ OpenSSLCryptoHashHMAC::~OpenSSLCryptoHashHMAC() {}
 
 void OpenSSLCryptoHashHMAC::reset(void) {
 
+	if (m_initialised) {
 
-	if (m_initialised)
+		HMAC_CTX_cleanup(&m_hctx);
+
 		HMAC_Init(&m_hctx, 
 			m_keyBuf.rawBuffer(),
 			m_keyLen,
 			mp_md);
+
+	}
 
 }
 
