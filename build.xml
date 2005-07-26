@@ -689,7 +689,7 @@
 			if="has.forrest">
 		<!-- Call Forrest externally -->
 		<exec executable="forrest"
-			  os="Linux"
+			  os="Linux SunOS"
 			  dir="${dir.docs}" />
 		<exec executable="forrest.bat"
 			  os="Windows"
