@@ -140,7 +140,12 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 				return bytes;
 			} else if (input.isNodeSet()) {
 				nodeFilter=input.getNodeFilters();
-				Document  doc=XMLUtils.getOwnerDocument(input.getSubNode());
+                                Document doc = null;
+                                if (input.getSubNode() != null) {
+                                    doc=XMLUtils.getOwnerDocument(input.getSubNode());
+                                } else {
+                                    doc=XMLUtils.getOwnerDocument(input.getNodeSet());
+                                }
 				if (input.isNeedsToBeExpanded()) {
 					XMLUtils.circumventBug2650(doc);
 				}
