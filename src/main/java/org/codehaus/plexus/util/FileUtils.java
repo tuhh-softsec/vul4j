@@ -1292,7 +1292,36 @@ public class FileUtils
 
     public static String FS = System.getProperty( "file.separator" );
 
+    /**
+     * Return a list of files as String depending options.
+     * This method use case sensitive file name.
+     * 
+     * @param directory the directory to scan
+     * @param includes the includes pattern, comma separated
+     * @param excludes the excludes pattern, comma separated
+     * @param includeBasedir true to include the base dir in each String of file
+     * @return a list of files as String
+     * @throws IOException
+     */
     public static List getFileNames( File directory, String includes, String excludes, boolean includeBasedir )
+        throws IOException
+    {
+        return getFileNames( directory, includes, excludes, includeBasedir, true );
+    }
+
+    /**
+     * Return a list of files as String depending options.
+     * 
+     * @param directory the directory to scan
+     * @param includes the includes pattern, comma separated
+     * @param excludes the excludes pattern, comma separated
+     * @param includeBasedir true to include the base dir in each String of file
+     * @param isCaseSensitive true if case sensitive
+     * @return a list of files as String
+     * @throws IOException
+     */
+    public static List getFileNames( File directory, String includes, String excludes, boolean includeBasedir,
+                                     boolean isCaseSensitive )
         throws IOException
     {
         DirectoryScanner scanner = new DirectoryScanner();
@@ -1309,6 +1338,8 @@ public class FileUtils
             scanner.setExcludes( StringUtils.split( excludes, "," ) );
         }
 
+        scanner.setCaseSensitive( isCaseSensitive );
+
         scanner.scan();
 
         String[] files = scanner.getIncludedFiles();
@@ -1319,7 +1350,7 @@ public class FileUtils
         {
             if ( includeBasedir )
             {
-                list.add( directory + FS + files[i] );
+                list.add( directory + FileUtils.FS + files[i] );
             }
             else
             {
