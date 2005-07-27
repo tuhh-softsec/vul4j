@@ -189,11 +189,15 @@ public class XMLSignatureInput  implements Cloneable {
       this._subNode = rootNode;
    }
 
-   
-
-
-
-
+   /**
+    * Constructor XMLSignatureInput
+    *
+    * @param inputNodeSet
+    * @param usedXPathAPI
+    */
+   public XMLSignatureInput(Set inputNodeSet) {
+       this._inputNodeSet = inputNodeSet;
+   }
    
    /**
     * Returns the node set from input which was specified as the parameter of {@link XMLSignatureInput} constructor
