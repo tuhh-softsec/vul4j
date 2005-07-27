@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -284,8 +285,33 @@ public class Canonicalizer {
               inclusiveNamespaces);
    } 
 
+   /**
+    * Canonicalizes an XPath node set.
+    *
+    * @param xpathNodeSet
+    * @return the result of the c14n.
+    * @throws CanonicalizationException
+    */
+   public byte[] canonicalizeXPathNodeSet(Set xpathNodeSet)
+           throws CanonicalizationException {
+       return this.canonicalizerSpi.engineCanonicalizeXPathNodeSet(xpathNodeSet);
+   }
 
-   
+   /**
+    * Canonicalizes an XPath node set.
+    *
+    * @param xpathNodeSet
+    * @param inclusiveNamespaces
+    * @return the result of the c14n.
+    * @throws CanonicalizationException
+    */
+   public byte[] canonicalizeXPathNodeSet(
+           Set xpathNodeSet, String inclusiveNamespaces)
+              throws CanonicalizationException {
+       return this.canonicalizerSpi.engineCanonicalizeXPathNodeSet(xpathNodeSet,
+              inclusiveNamespaces);
+   }
+
    /**
     * Sets the writter where the cannocalization ends. ByteArrayOutputStream if 
     * none is setted.
