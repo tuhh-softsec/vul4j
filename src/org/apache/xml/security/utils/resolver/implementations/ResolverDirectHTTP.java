@@ -259,22 +259,19 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
          return false;
       }
 
-      URI uriNew = null;
-
-	  //URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
       if (log.isDebugEnabled())
-      	log.debug("I was asked whether I can resolve " + uriNodeValue/*uriNew.toString()*/);
+      	log.debug("I was asked whether I can resolve " + uriNodeValue);
 
       if ( uriNodeValue.startsWith("http:") ||
-				 BaseURI.startsWith("http:")/*uriNew.getScheme().equals("file")*/) {
+				 BaseURI.startsWith("http:")) {
          if (log.isDebugEnabled())
-         	log.debug("I state that I can resolve " + uriNodeValue/*uriNew.toString()*/);
+         	log.debug("I state that I can resolve " + uriNodeValue);
 
          return true;
       }
 
       if (log.isDebugEnabled())
-      	log.debug("I state that I can't resolve " + uriNew.toString());
+      	log.debug("I state that I can't resolve " + uriNodeValue);
 
       return false;
    }
