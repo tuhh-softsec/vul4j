@@ -92,7 +92,11 @@ public class ResolverXPointer extends ResourceResolverSpi {
       XMLSignatureInput result = new XMLSignatureInput(resultNode);
 
       result.setMIMEType("text/xml");
+      if (BaseURI != null && BaseURI.length() > 0) {
 	  result.setSourceURI(BaseURI.concat(uri.getNodeValue()));      
+      } else {
+	  result.setSourceURI(uri.getNodeValue());      
+      }
 
       return result;
    }
