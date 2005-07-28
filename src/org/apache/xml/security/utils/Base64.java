@@ -549,7 +549,7 @@ public class Base64 {
        int len = removeWhiteSpace(base64Data);
        
        if (len%FOURBYTE != 0) {
-           throw new Base64DecodingException("It should be dived by four");
+           throw new Base64DecodingException("decoding.divisible.four");
            //should be divisible by four
        }
 
@@ -640,7 +640,7 @@ public class Base64 {
     int len = removeWhiteSpace(base64Data);
     
     if (len%FOURBYTE != 0) {
-        throw new Base64DecodingException("It should be dived by four");
+        throw new Base64DecodingException("decoding.divisible.four");
         //should be divisible by four
     }
 
