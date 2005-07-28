@@ -1272,7 +1272,7 @@ public class XMLCipher {
 			throw new XMLEncryptionException("empty", nsae);
 		}
 
-		logger.info("Decryption of key type " + algorithm + " OK");
+		logger.debug("Decryption of key type " + algorithm + " OK");
 
 		return ret;
 
