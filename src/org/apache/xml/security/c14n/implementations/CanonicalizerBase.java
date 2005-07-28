@@ -150,7 +150,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 					XMLUtils.circumventBug2650(doc);
 				}
 
-				bytes = engineCanonicalizeXPathNodeSetInternal(input.getSubNode());
+				if (input.getSubNode() != null) {
+				    bytes = engineCanonicalizeXPathNodeSetInternal(input.getSubNode());
+				} else {
+				    bytes = engineCanonicalizeXPathNodeSet(input.getNodeSet());
+				}
 				return bytes;
 
 			}
