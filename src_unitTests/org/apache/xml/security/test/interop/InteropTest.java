@@ -25,8 +25,10 @@ import java.security.cert.X509Certificate;
 import junit.framework.TestCase;
 
 import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xpath.XPathAPI;
@@ -125,17 +127,17 @@ public class InteropTest extends TestCase {
 
 
       KeyInfo ki = signature.getKeyInfo();
-
+      boolean result=false;
       if (ki != null) {
          X509Certificate cert = ki.getX509Certificate();
 
          if (cert != null) {
-            return signature.checkSignatureValue(cert);
+        	 result=signature.checkSignatureValue(cert);
          } else {
             PublicKey pk = ki.getPublicKey();
 
             if (pk != null) {
-               return signature.checkSignatureValue(pk);
+            	result=signature.checkSignatureValue(pk);
             } else {
                throw new RuntimeException(
                   "Did not find a public key, so I can't check the signature");
@@ -144,5 +146,26 @@ public class InteropTest extends TestCase {
       } else {
          throw new RuntimeException("Did not find a KeyInfo");
       }
+      if (!result) {
+    	  StringBuffer sb = new StringBuffer();
+
+          for (int i = 0; i < signature.getSignedInfo().getLength(); i++) {
+             boolean refVerify =
+                signature.getSignedInfo().getVerificationResult(i);             
+
+             if (refVerify) {
+                log.debug("Reference " + i + " was OK");
+             } else {
+                sb.append(i + " ");
+                JavaUtils.writeBytesToFilename(filename + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());                
+                
+                
+                log.debug("Reference " + i );
+             }
+          }
+          throw new RuntimeException("Falle:"+sb.toString());
+      }
+      
+      return result;
    }
 }
