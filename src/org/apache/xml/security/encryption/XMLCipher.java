@@ -3249,11 +3249,13 @@ public class XMLCipher {
                         getReferenceList()).toElement());
                 }
                 if (null != carriedName) {
-                    result.appendChild(
-                        ElementProxy.createElementForFamily(_contextDocument, 
-                            EncryptionConstants.EncryptionSpecNS, 
-                            EncryptionConstants._TAG_CARRIEDKEYNAME).appendChild(
-                            _contextDocument.createTextNode(carriedName)));
+                    Element element = ElementProxy.createElementForFamily(
+			_contextDocument, 
+                        EncryptionConstants.EncryptionSpecNS, 
+                        EncryptionConstants._TAG_CARRIEDKEYNAME);
+                    Node node = _contextDocument.createTextNode(carriedName);
+                    element.appendChild(node);
+                    result.appendChild(element);
                 }
 
                 return (result);
