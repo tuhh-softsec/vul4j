@@ -57,14 +57,16 @@ import org.xml.sax.SAXException;
  */
 public class UnknownAlgoSignatureTest extends TestCase {
 
+    private static final String BASEDIR = System.getProperty("basedir");
+    private static final String SEP = System.getProperty("file.separator");
+
     protected static final String KEYSTORE_TYPE = "JKS";
 
     protected static final String KEYSTORE_FILE = "data/org/apache/xml/security/samples/input/keystore.jks";
 
     protected static final String CERT_ALIAS = "test";
 
-    protected static final File SIGNATURE_SOURCE_PATH = new File(
-            "data/org/apache/xml/security/temp/signature");
+    protected static final String SIGNATURE_SOURCE_PATH = "data/org/apache/xml/security/temp/signature";
 
     protected PublicKey publicKey;
 
@@ -88,8 +90,13 @@ public class UnknownAlgoSignatureTest extends TestCase {
 
     public void setUp() throws KeyStoreException, NoSuchAlgorithmException,
             CertificateException, IOException {
-        KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
-        FileInputStream fis = new FileInputStream(KEYSTORE_FILE);
+	FileInputStream fis = null;
+	if (BASEDIR != null && !"".equals(BASEDIR)) {
+            fis = new FileInputStream(BASEDIR + SEP + KEYSTORE_FILE);
+	} else {
+            fis = new FileInputStream(KEYSTORE_FILE);
+	}
+	KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
         keyStore.load(fis, null);
         X509Certificate cert = (X509Certificate) keyStore
                 .getCertificate(CERT_ALIAS);
@@ -99,16 +106,14 @@ public class UnknownAlgoSignatureTest extends TestCase {
     public void testGood() throws ParserConfigurationException, SAXException,
             IOException, TransformerException, XMLSignatureException,
             XMLSecurityException {
-        assertTrue(checkSignature(new File(SIGNATURE_SOURCE_PATH,
-                "signature-good.xml")));
+        assertTrue(checkSignature("signature-good.xml"));
     }
 
     public void testBadC14NAlgo() throws ParserConfigurationException,
             SAXException, IOException, TransformerException,
             XMLSecurityException {
         try {
-            assertTrue(checkSignature(new File(SIGNATURE_SOURCE_PATH,
-                    "signature-bad-c14n-algo.xml")));
+            assertTrue(checkSignature("signature-bad-c14n-algo.xml"));
             fail("Exception not caught");
         } catch (InvalidCanonicalizerException e) {
             // succeed
@@ -119,8 +124,7 @@ public class UnknownAlgoSignatureTest extends TestCase {
             SAXException, IOException, TransformerException,
             XMLSecurityException {
         try {
-            assertTrue(checkSignature(new File(SIGNATURE_SOURCE_PATH,
-                    "signature-bad-sig-algo.xml")));
+            assertTrue(checkSignature("signature-bad-sig-algo.xml"));
             fail("Exception not caught");
         } catch (XMLSignatureException e) {
             // succeed
@@ -131,17 +135,22 @@ public class UnknownAlgoSignatureTest extends TestCase {
             SAXException, IOException, TransformerException,
             XMLSecurityException {
         try {
-            assertTrue(checkSignature(new File(SIGNATURE_SOURCE_PATH,
-                    "signature-bad-transform-algo.xml")));
+            assertTrue(checkSignature("signature-bad-transform-algo.xml"));
             fail("Exception not caught");
         } catch (XMLSignatureException e) {
             // succeed
         }
     }
 
-    protected boolean checkSignature(File file)
+    protected boolean checkSignature(String fileName)
             throws ParserConfigurationException, SAXException, IOException,
             TransformerException, XMLSecurityException {
+	File file = null;
+	if (BASEDIR != null && !"".equals(BASEDIR)) {
+            file = new File(BASEDIR + SEP + SIGNATURE_SOURCE_PATH, fileName);
+	} else {
+            file = new File(SIGNATURE_SOURCE_PATH, fileName);
+	}
         Document doc = getDocument(file);
         Element nscontext = XMLUtils.createDSctx(doc, "ds",
                 Constants.SignatureSpecNS);
