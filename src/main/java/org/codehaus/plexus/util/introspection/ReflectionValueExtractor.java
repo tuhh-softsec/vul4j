@@ -68,6 +68,11 @@ public class ReflectionValueExtractor
         {
             String token = parser.nextToken();
 
+            if ( value == null )
+            {
+                return null;
+            }
+
             classMap = getClassMap( value.getClass() );
 
             String methodName = "get" + StringUtils.capitalizeFirstLetter( token );
