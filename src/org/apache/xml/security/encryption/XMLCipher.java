@@ -892,21 +892,34 @@ public class XMLCipher {
      * Returns an <code>EncryptedData</code> interface. Use this operation if
      * you want to have full control over the contents of the
      * <code>EncryptedData</code> structure.
-	 *
-	 * This does not change the source document in any way.
+     *
+     * this does not change the source document in any way.
      *
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> that will be encrypted.
-     * @return
+     * @return the <code>EncryptedData</code>
      * @throws Exception
      */
-
     public EncryptedData encryptData(Document context, Element element) throws 
             /* XMLEncryption */Exception {
 	return encryptData(context, element, false);
     }
 
-    private EncryptedData encryptData(Document context, Element element, boolean contentMode) throws
+    /**
+     * Returns an <code>EncryptedData</code> interface. Use this operation if
+     * you want to have full control over the contents of the
+     * <code>EncryptedData</code> structure.
+     *
+     * this does not change the source document in any way.
+     *
+     * @param context the context <code>Document</code>.
+     * @param element the <code>Element</code> that will be encrypted.
+     * @param contentMode <code>true</code> to encrypt element's content only,
+     *    <code>false</code> otherwise
+     * @return the <code>EncryptedData</code>
+     * @throws Exception
+     */
+    public EncryptedData encryptData(Document context, Element element, boolean contentMode) throws
             /* XMLEncryption */ Exception {
 		logger.debug("Encrypting element...");
 		if (null == context)
