@@ -285,7 +285,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         			writer.write('>');
         			//We fineshed with this level, pop to the previous definitions.
         			ns.outputNodePop();
-        			sibling= currentNode.getNextSibling();
+				if (parentNode != null) {
+       			    		sibling= currentNode.getNextSibling();
+				}
     			} else {
     				parentNode=currentElement;
     			}
@@ -482,7 +484,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 				} else {
 					ns.pop();
 				}				
-    			sibling= currentNode.getNextSibling();
+				if (parentNode != null) {
+    					sibling= currentNode.getNextSibling();
+				}
 			} else {
 				parentNode=currentElement;
 			}
