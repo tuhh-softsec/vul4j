@@ -18,9 +18,11 @@ package org.apache.xml.security.transforms.implementations;
 
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -40,7 +42,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
+import org.xml.sax.SAXException;
 
 /**
  * Implements the <I>XML Signature XPath Filter v2.0</I>
@@ -107,8 +109,12 @@ public class TransformXPath2Filter extends TransformSpi {
             throw new TransformationException("xml.WrongContent", exArgs);
          }
 
-            Document inputDoc = XMLUtils.getOwnerDocument(input.getSubNode());
-
+         Document inputDoc = null;
+	 if (input.getSubNode() != null) {   
+            inputDoc = XMLUtils.getOwnerDocument(input.getSubNode());
+	 } else {
+            inputDoc = XMLUtils.getOwnerDocument(input.getNodeSet());
+	 }
 
          for (int i = 0; i < noOfSteps; i++) {
             Element xpathElement =XMLUtils.selectNode(
@@ -147,6 +153,12 @@ public class TransformXPath2Filter extends TransformSpi {
       } catch (InvalidCanonicalizerException ex) {
          throw new TransformationException("empty", ex);
       } catch (XMLSecurityException ex) {
+         throw new TransformationException("empty", ex);
+      } catch (SAXException ex) {
+         throw new TransformationException("empty", ex);
+      } catch (IOException ex) {
+         throw new TransformationException("empty", ex);
+      } catch (ParserConfigurationException ex) {
          throw new TransformationException("empty", ex);
       } 
    }
