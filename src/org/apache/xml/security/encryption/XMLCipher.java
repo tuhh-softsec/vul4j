@@ -2565,30 +2565,21 @@ public class XMLCipher {
             ReferenceList result = new ReferenceListImpl(type);
             NodeList list = null;
             switch (type) {
-                case ReferenceList.DATA_REFERENCE:
+            case ReferenceList.DATA_REFERENCE:
                 list = element.getElementsByTagNameNS(
                     EncryptionConstants.EncryptionSpecNS, 
                     EncryptionConstants._TAG_DATAREFERENCE);
                 for (int i = 0; i < list.getLength() ; i++) {
-                    String uri = null;
-                    try {
-                        uri = new URI(
-                            ((Element) list.item(0)).getNodeValue()).toString();
-                    } catch (URI.MalformedURIException mfue) {
-                    }
+		    String uri = ((Element) list.item(i)).getAttribute("URI");
                     result.add(result.newDataReference(uri));
                 }
-                case ReferenceList.KEY_REFERENCE:
+		break;
+            case ReferenceList.KEY_REFERENCE:
                 list = element.getElementsByTagNameNS(
                     EncryptionConstants.EncryptionSpecNS, 
                     EncryptionConstants._TAG_KEYREFERENCE);
                 for (int i = 0; i < list.getLength() ; i++) {
-                    String uri = null;
-                    try {
-                        uri = new URI(
-                            ((Element) list.item(0)).getNodeValue()).toString();
-                    } catch (URI.MalformedURIException mfue) {
-                    }
+                    String uri = ((Element) list.item(i)).getAttribute("URI");
                     result.add(result.newKeyReference(uri));
                 }
             }
