@@ -266,7 +266,7 @@ public abstract class ElementProxy {
       String localnameIS = this._constructionElement.getLocalName();
       String namespaceIS = this._constructionElement.getNamespaceURI();
       if ( !localnameSHOULDBE.equals(localnameIS) ||
-        !namespaceSHOULDBE.equals(namespaceSHOULDBE)) {      
+        !namespaceSHOULDBE.equals(namespaceIS)) {      
          Object exArgs[] = { namespaceIS +":"+ localnameIS, 
            namespaceSHOULDBE +":"+ localnameSHOULDBE};
          throw new XMLSecurityException("xml.WrongElement", exArgs);
