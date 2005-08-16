@@ -542,6 +542,7 @@ public class XMLSignatureInput  implements Cloneable {
             log.info("Mark Suported but not used as reset");
         }
     	bytes=JavaUtils.getBytesFromStream(_inputOctetStreamProxy);
+    	_inputOctetStreamProxy.close();
     	_inputOctetStreamProxy=new ByteArrayInputStream(bytes);
         return _inputOctetStreamProxy;
     }
