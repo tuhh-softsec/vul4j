@@ -156,9 +156,13 @@ public class CachedXPathAPIHolder {
 		            }
 		        }
 		    } catch (java.lang.NoSuchFieldException e) {
-		    	log.info("Unable to patch xalan function table.", e);
+	            if (log.isDebugEnabled()) {
+		    	    log.debug("Unable to patch xalan function table.", e);
+                }
 	        } catch (Exception e) {
-	            log.info("Unable to patch xalan function table.", e);
+	            if (log.isDebugEnabled()) {
+		    	    log.debug("Unable to patch xalan function table.", e);
+                }
 	        } 
 		}
 	}
