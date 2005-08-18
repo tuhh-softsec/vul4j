@@ -108,6 +108,15 @@ WinCAPICryptoProvider::WinCAPICryptoProvider(
 		m_provRSAType,
 		dwFlags)) 
 	{
+		if (GetLastError() == NTE_BAD_KEYSET) {
+
+		      CryptAcquireContext(&m_provApacheKeyStore,
+			                    s_xsecKeyStoreName,
+			                    provRSAName,
+			                    m_provRSAType,
+			                    CRYPT_DELETEKEYSET);
+
+		}
 
 		// Try to create
 		if (!CryptAcquireContext(&m_provApacheKeyStore,
