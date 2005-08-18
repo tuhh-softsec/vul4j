@@ -54,6 +54,10 @@ extern const char * XSECExceptionStrings [];
 			throw XSECException (XSECException::MemoryAllocationFail); \
 		}
 	} \
+	catch (XSECException &e) \
+	{\
+		throw XSECException (XSECException::InternalError, e.getMsg()); \
+	} \
 	catch (...) { \
 		throw XSECException (XSECException::MemoryAllocationFail); \
 	}
@@ -65,6 +69,10 @@ extern const char * XSECExceptionStrings [];
 		if ((a = new b) == NULL) { \
 			throw XSECException (XSECException::MemoryAllocationFail); \
 		} \
+	} \
+	catch (XSECException &e) \
+	{\
+		throw XSECException (XSECException::InternalError, e.getMsg()); \
 	} \
 	catch (...) { \
 		throw XSECException (XSECException::MemoryAllocationFail); \
