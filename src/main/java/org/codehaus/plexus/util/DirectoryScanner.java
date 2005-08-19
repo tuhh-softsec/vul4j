@@ -460,7 +460,7 @@ public class DirectoryScanner
             for ( int i = 0; i < includes.length; i++ )
             {
                 String pattern;
-                pattern = includes[i].replace( '/', File.separatorChar ).replace(
+                pattern = includes[i].trim().replace( '/', File.separatorChar ).replace(
                     '\\', File.separatorChar );
                 if ( pattern.endsWith( File.separator ) )
                 {
@@ -496,7 +496,7 @@ public class DirectoryScanner
             for ( int i = 0; i < excludes.length; i++ )
             {
                 String pattern;
-                pattern = excludes[i].replace( '/', File.separatorChar ).replace(
+                pattern = excludes[i].trim().replace( '/', File.separatorChar ).replace(
                     '\\', File.separatorChar );
                 if ( pattern.endsWith( File.separator ) )
                 {
