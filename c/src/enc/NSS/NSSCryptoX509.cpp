@@ -120,8 +120,10 @@ void NSSCryptoX509::loadX509Base64Bin(const char * buf, unsigned int len) {
   i.len = rawCertLen;
 
 	mp_cert = __CERT_DecodeDERCertificate(&i, PR_TRUE, NULL);
-  // Since __CERT_DecodeDERCertificate is a private function we might consider using
-  // __CERT_NewTempCertificate() or CERT_ImportCerts() instead
+  // 1. If you got an compiler error here add into "nss/cert.h" delacarion for
+  // CERT_DecodeDERCertificate() (the same parameters as for __CERT_DecodeDERCertificate())
+  // 2. Since __CERT_DecodeDERCertificate is a private function we might consider using
+  // __CERT_NewTempCertificate() or CERT_ImportCerts() instead.
 
   if (mp_cert == 0) {
 
