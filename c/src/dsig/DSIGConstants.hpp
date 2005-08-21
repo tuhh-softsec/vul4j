@@ -123,6 +123,7 @@ XSEC_USING_XERCES(XMLString);
 
 #define PROV_OPENSSL	"OpenSSL Provider"
 #define PROV_WINCAPI	"WinCAPI Provider"
+#define PROV_NSS	    "NSS Provider"
 
 // Enumerated Types
 
@@ -491,6 +492,7 @@ public:
 	// Internal Crypto Providers
 	static const XMLCh * s_unicodeStrPROVOpenSSL;
 	static const XMLCh * s_unicodeStrPROVWinCAPI;
+  static const XMLCh * s_unicodeStrPROVNSS;
 
 
 	DSIGConstants();

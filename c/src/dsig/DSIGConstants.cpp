@@ -201,6 +201,7 @@ const XMLCh * DSIGConstants::s_unicodeStrURIXENC_CONTENT;
 
 const XMLCh * DSIGConstants::s_unicodeStrPROVOpenSSL;
 const XMLCh * DSIGConstants::s_unicodeStrPROVWinCAPI;
+const XMLCh * DSIGConstants::s_unicodeStrPROVNSS;
 
 // --------------------------------------------------------------------------------
 //           Constant Strings Creation and Deletion
@@ -270,6 +271,7 @@ void DSIGConstants::create() {
 
 	s_unicodeStrPROVOpenSSL = XMLString::transcode(PROV_OPENSSL);
 	s_unicodeStrPROVWinCAPI = XMLString::transcode(PROV_WINCAPI);
+  s_unicodeStrPROVNSS = XMLString::transcode(PROV_NSS);
 
 
 }
@@ -336,6 +338,7 @@ void DSIGConstants::destroy() {
 
 	XSEC_RELEASE_XMLCH(s_unicodeStrPROVOpenSSL);
 	XSEC_RELEASE_XMLCH(s_unicodeStrPROVWinCAPI);
+  XSEC_RELEASE_XMLCH(s_unicodeStrPROVNSS);
 
 }
 
