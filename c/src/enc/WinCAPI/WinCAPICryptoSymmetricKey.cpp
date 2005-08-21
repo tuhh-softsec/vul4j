@@ -682,7 +682,7 @@ HCRYPTKEY WinCAPICryptoSymmetricKey::createWindowsKey(
 	// Check key length - otherwise the user could get some very cryptic error messages
 	if (keyLen != expectedLength) {
 		throw XSECCryptoException(XSECCryptoException::SymmetricError,
-			"WinCAPI:SymmetricKey::createWindowsKey - Keylength incorrect for algorithm");
+			"WinCAPI:SymmetricKey::createWindowsKey - Key length incorrect for algorithm");
 	}
 
 	DWORD * algId = (DWORD *) (simpleBlob + sizeof(BLOBHEADER));
