@@ -76,7 +76,7 @@
  * Activate this #define if Xalan is not required (or desired)
  */
 
-#define XSEC_NO_XALAN
+//  #define XSEC_NO_XALAN
 
 #if !defined (XSEC_NO_XALAN)
 
@@ -137,7 +137,7 @@
  * Define presence of cryptographic providers
  */
 
-//#define HAVE_OPENSSL 1
+#define HAVE_OPENSSL 1
 
 #define HAVE_WINCAPI 1
 
