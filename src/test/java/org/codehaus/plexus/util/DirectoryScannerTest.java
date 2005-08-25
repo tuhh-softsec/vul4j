@@ -61,10 +61,10 @@ public class DirectoryScannerTest
 
         List fileNames = FileUtils.getFiles( new File ( testDir ), includes, excludes, false );
         
-        assertEquals( 3, fileNames.size() );
-        assertEquals( "scanner3.dat", fileNames.get(0).toString() );
-        assertEquals( "scanner4.dat", fileNames.get(1).toString() );
-        assertEquals( "scanner5.dat", fileNames.get(2).toString() );
+        assertEquals( "Wrong number of results.", 3, fileNames.size() );
+        assertTrue( "3 not found.", fileNames.contains( new File( "scanner3.dat" ) ) );
+        assertTrue( "4 not found.", fileNames.contains( new File( "scanner4.dat" ) ) );
+        assertTrue( "5 not found.", fileNames.contains( new File( "scanner5.dat" ) ) );
         
     }
     
@@ -79,9 +79,9 @@ public class DirectoryScannerTest
 
         List fileNames = FileUtils.getFiles( new File ( testDir ), includes, excludes, false );
         
-        assertEquals( 3, fileNames.size() );
-        assertEquals( "scanner3.dat", fileNames.get(0).toString() );
-        assertEquals( "scanner4.dat", fileNames.get(1).toString() );
-        assertEquals( "scanner5.dat", fileNames.get(2).toString() );
+        assertEquals( "Wrong number of results.", 3, fileNames.size() );
+        assertTrue( "3 not found.", fileNames.contains( new File( "scanner3.dat" ) ) );
+        assertTrue( "4 not found.", fileNames.contains( new File( "scanner4.dat" ) ) );
+        assertTrue( "5 not found.", fileNames.contains( new File( "scanner5.dat" ) ) );
     }
 }
