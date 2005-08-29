@@ -484,7 +484,14 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
 
             addParentDirs(base, name, zOut, "", dirMode);
 
-            zipFile(resource, zOut, name, fileMode);
+            if ( resource.isFile() )
+            {
+                zipFile(resource, zOut, name, fileMode);
+            }
+            else
+            {
+                zipDir( resource, zOut, name, dirMode );
+            }
         }
     }
 

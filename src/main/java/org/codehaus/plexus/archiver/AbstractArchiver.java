@@ -44,8 +44,12 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     private File destFile;
 
     private Map filesMap = new HashMap();
+    
+    private Map dirsMap = new HashMap();
 
     private String prefix;
+    
+    private boolean includeEmptyDirs = true;
 
     public void addDirectory( File directory )
         throws ArchiverException
@@ -64,7 +68,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     {
         addDirectory( directory, "", includes, excludes );
     }
-
+    
     public void addDirectory( File directory, String prefix, String[] includes, String[] excludes )
         throws ArchiverException
     {
@@ -133,6 +137,23 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
                 filesMap.put( file, new File( basedir, file ) );
             }
         }
+        
+        if ( includeEmptyDirs )
+        {
+            String[] dirs = scanner.getIncludedDirectories();
+            for ( int i = 0; i < dirs.length; i++ ) {
+                String dir = dirs[i];
+                dir = dir.replace( '\\', '/' );
+                if ( prefix != null )
+                {
+                    getDirs().put( prefix + dir, new File( basedir, dir ) );
+                }
+                else
+                {
+                    getDirs().put( dir, new File( basedir, dir ) );
+                }
+            }
+        }
     }
 
     public void addFile( File inputFile, String destFileName )
@@ -149,7 +170,15 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
 
     protected Map getFiles()
     {
-        return filesMap;
+        if ( !includeEmptyDirs ) return filesMap;
+        
+        Map resources = new HashMap();
+
+        resources.putAll( filesMap );
+
+        resources.putAll( getDirs() );
+        
+        return resources;
     }
 
     public File getDestFile()
@@ -178,5 +207,20 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
         }
 
         return logger;
+    }
+
+    public boolean getIncludeEmptyDirs()
+    {
+        return includeEmptyDirs;
+    }
+
+    public void setIncludeEmptyDirs(boolean includeEmptyDirs)
+    {
+        this.includeEmptyDirs = includeEmptyDirs;
+    }
+
+    public Map getDirs()
+    {
+        return dirsMap;
     }
 }
