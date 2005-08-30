@@ -23,7 +23,7 @@ import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -48,9 +48,9 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
 
     private File destFile;
 
-    private Map filesMap = new HashMap();
+    private Map filesMap = new LinkedHashMap();
     
-    private Map dirsMap = new HashMap();
+    private Map dirsMap = new LinkedHashMap();
 
     private int defaultFileMode = DEFAULT_FILE_MODE;
     
@@ -155,6 +155,22 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
         String basedir = directory.getAbsolutePath();
         scanner.setBasedir( basedir );
         scanner.scan();
+
+        if ( includeEmptyDirs )
+        {
+            String [] dirs = scanner.getIncludedDirectories();
+
+            for ( int i = 0; i < dirs.length; i++ )
+            {
+                String sourceDir = dirs[i].replace( '\\', '/' );
+                
+                String targetDir = ( prefix == null ? "" : prefix ) + sourceDir;
+
+                getDirs().put( targetDir, ArchiveEntry.createEntry( targetDir,
+                        new File( basedir, sourceDir ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
+            }
+        }
+
         String[] files = scanner.getIncludedFiles();
         
         for ( int i = 0; i < files.length; i++ )
@@ -167,20 +183,6 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
                 new File( basedir, sourceFile ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
         }
         
-        if ( includeEmptyDirs )
-        {
-            String [] dirs = scanner.getIncludedDirectories();
-
-            for ( int i = 0; i < dirs.length; i++ )
-            {
-                String sourceDir = dirs[i].replace( '\\', '/' );
-                
-                String targetDir = ( prefix == null ? "" : prefix ) + sourceDir;
-                
-                getDirs().put( targetDir, ArchiveEntry.createEntry( targetDir,
-                        new File( basedir, sourceDir ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
-            }
-        }
     }
 
     public void addFile( File inputFile, String destFileName )
@@ -208,13 +210,16 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     // the Name of the ArchiveEntry..?
     protected Map getFiles()
     {
-        if ( !includeEmptyDirs ) return filesMap;
+        if ( !includeEmptyDirs )
+        {
+        	return filesMap;
+        }
         
-        Map resources = new HashMap();
-
-        resources.putAll( filesMap );
+        Map resources = new LinkedHashMap();
 
         resources.putAll( getDirs() );
+        
+        resources.putAll( filesMap );
         
         return resources;
     }

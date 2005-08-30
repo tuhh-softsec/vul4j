@@ -24,7 +24,6 @@ package org.codehaus.plexus.archiver.zip;
  * SOFTWARE.
  */
 
-import java.util.Date;
 import java.util.Enumeration;
 
 import org.codehaus.plexus.PlexusTestCase;
@@ -42,41 +41,46 @@ public class ZipArchiverTest
         throws Exception
     {
         ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        
         archiver.setDefaultDirectoryMode( 0500 );
         archiver.setDefaultFileMode( 0400 );
         archiver.addDirectory( getTestFile( "src" ) );
+        
         archiver.setDefaultFileMode( 0640 );
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), "one.txt" );
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ), "two.txt", 0664 );
-        archiver.setDefaultDirectoryMode( 0777 );
         
         // reset default file mode for files included from now on
         archiver.setDefaultFileMode( 0400 );
-        archiver.addDirectory( getTestFile( "src/test/resources/manifests/" ), "worldwritable" );
+        archiver.setDefaultDirectoryMode( 0777 );
+        archiver.addDirectory( getTestFile( "src/test/resources/ww/" ), "worldwritable/" );
+        
         archiver.setDefaultDirectoryMode( 0070 );
-        archiver.addDirectory( getTestFile( "src/test/resources/manifests/" ), "groupwritable" );
+        archiver.addDirectory( getTestFile( "src/test/resources/gw/" ), "groupwritable/" );
+        
         archiver.setDestFile( getTestFile( "target/output/archive.zip" ) );
         archiver.createArchive();
         
         ZipFile zf = new ZipFile( archiver.getDestFile() );
         
         Enumeration e = zf.getEntries();
+
         while ( e.hasMoreElements() )
         {
             ZipEntry ze = (ZipEntry) e.nextElement();
             if ( ze.isDirectory() )
             {
-            	if ( ze.getName().equals( "worldwritable") )
+            	if ( ze.getName().startsWith( "worldwritable") )
             	{
             		assertEquals( 0777, UnixStat.PERM_MASK & ze.getUnixMode() );
             	}
-            	if ( ze.getName().equals( "groupwritable") )
+            	else if ( ze.getName().startsWith( "groupwritable") )
             	{
             		assertEquals( 0070, UnixStat.PERM_MASK & ze.getUnixMode() );
             	}
             	else
             	{
-            		//assertEquals( 0500, UnixStat.PERM_MASK & ze.getUnixMode() );
+            		assertEquals( 0500, UnixStat.PERM_MASK & ze.getUnixMode() );
             	}
             }
             else

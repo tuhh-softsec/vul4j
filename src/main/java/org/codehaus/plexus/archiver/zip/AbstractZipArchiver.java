@@ -501,7 +501,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
                                        ZipOutputStream zOut, String prefix)
         throws IOException
     {
-        if ( !doFilesonly )
+        if ( !doFilesonly && getIncludeEmptyDirs() )
         {
             Stack directories = new Stack();
             
