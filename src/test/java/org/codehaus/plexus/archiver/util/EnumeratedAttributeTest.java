@@ -20,7 +20,6 @@ package org.codehaus.plexus.archiver.util;
 import org.codehaus.plexus.archiver.ArchiverException;
 
 import junit.framework.TestCase;
-import junit.framework.AssertionFailedError;
 
 /**
  * JUnit 3 testcases for org.apache.tools.ant.EnumeratedAttribute.

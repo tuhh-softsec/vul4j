@@ -18,7 +18,9 @@ package org.codehaus.plexus.archiver.zip;
  */
 
 import org.codehaus.plexus.archiver.AbstractArchiver;
+import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -26,9 +28,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -42,17 +44,6 @@ import java.util.zip.CRC32;
  */
 public abstract class AbstractZipArchiver extends AbstractArchiver
 {
-    /**
-     * Default value for the dirmode attribute.
-     */
-    public static final int DEFAULT_DIR_MODE =
-        UnixStat.DIR_FLAG  | UnixStat.DEFAULT_DIR_PERM;
-
-    /**
-     * Default value for the filemode attribute.
-     */
-    public static final int DEFAULT_FILE_MODE =
-        UnixStat.FILE_FLAG | UnixStat.DEFAULT_FILE_PERM;
 
     private String comment;
 
@@ -71,15 +62,11 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
 
     protected String archiveType = "zip";
 
-    /**
+    /*
      * Whether the original compression of entries coming from a ZIP
      * archive should be kept (for example when updating an archive).
      */
-    private boolean keepCompression = false;
-
-    private int fileMode = DEFAULT_FILE_MODE;
-
-    private int dirMode = DEFAULT_DIR_MODE;
+    //not used: private boolean keepCompression = false;
 
     private boolean doFilesonly = false;
 
@@ -154,37 +141,40 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
      * A 3 digit octal string, specify the user, group and
      * other modes in the standard Unix fashion;
      * optional, default=0644
+     * 
+     * @deprecated use AbstractArchiver.setDefaultFileMode(int) instead.
      */
-    public void setFileMode( String octalString ) {
-        this.fileMode =
-            UnixStat.FILE_FLAG | Integer.parseInt(octalString, 8);
+    public void setFileMode( String octalString )
+    {
+       	setDefaultFileMode( Integer.parseInt( octalString, 8 ) );
     }
 
     /**
-     *
+     * @deprecated use AbstractArchiver.getDefaultFileMode() instead.
      */
     public int getFileMode()
     {
-        return fileMode;
+        return getDefaultFileMode();
     }
 
     /**
      * A 3 digit octal string, specify the user, group and
      * other modes in the standard Unix fashion;
      * optional, default=0755
+     * 
+     * @deprecated use AbstractArchiver.setDefaultDirectoryMode(int).
      */
     public void setDirMode( String octalString )
     {
-        this.dirMode =
-            UnixStat.DIR_FLAG | Integer.parseInt(octalString, 8);
+    	setDefaultDirectoryMode( Integer.parseInt( octalString, 8 ) );
     }
 
     /**
-     *
+     * @deprecated use AbstractArchiver.getDefaultDirectoryMode() instead.
      */
     public int getDirMode()
     {
-        return dirMode;
+        return getDefaultDirectoryMode();
     }
 
     /**
@@ -238,23 +228,28 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
         }
     }
 
-    private void createArchiveMain() throws ArchiverException, IOException
+    private void createArchiveMain()
+    	throws ArchiverException, IOException
     {
-        Map listFiles = getFiles();
-        if ( listFiles == null || listFiles.size() == 0 )
+        Map archiveEntries = getFiles();
+        
+        if ( archiveEntries == null || archiveEntries.size() == 0 )
         {
             new ArchiverException( "You must set at least one file." );
         }
         
         File zipFile = getDestFile();
+        
         if ( zipFile == null )
         {
             new ArchiverException( "You must set the destination " + archiveType + "file." );
         }
+        
         if ( zipFile.exists() && !zipFile.isFile() )
         {
             new ArchiverException( zipFile + " isn't a file." );
         }
+        
         if ( zipFile.exists() && !zipFile.canWrite() )
         {
             new ArchiverException( zipFile + " is read-only." );
@@ -266,7 +261,9 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
         // we don't need to update if the original file doesn't exist
 
         addingNewFiles = true;
-        if (doUpdate && !zipFile.exists()) {
+        
+        if (doUpdate && !zipFile.exists())
+        {
             doUpdate = false;
             getLogger().debug( "ignoring update attribute as " + archiveType + " doesn't exist." );
         }
@@ -382,17 +379,17 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
                 + ioe.getMessage();
 
             // delete a bogus ZIP file (but only if it's not the original one)
-            if ((!doUpdate || renamedFile != null) && !zipFile.delete())
+            if ( ( !doUpdate || renamedFile != null ) && !zipFile.delete() )
             {
                 msg += " (and the archive is probably corrupt but I could not "
                     + "delete it)";
             }
 
-            if (doUpdate && renamedFile != null)
+            if ( doUpdate && renamedFile != null )
             {
                 try
                 {
-                    FileUtils.rename(renamedFile, zipFile);
+                    FileUtils.rename( renamedFile, zipFile );
                 }
                 catch (IOException e)
                 {
@@ -422,7 +419,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
 
         for ( Iterator iter = getFiles().keySet().iterator(); iter.hasNext(); )
         {
-            String fileName = (String)iter.next();
+            String fileName = (String) iter.next();
             if ( zipFile.getEntry( fileName ) == null )
             {
                 result.put( fileName, getFiles().get( fileName ) );
@@ -440,12 +437,13 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
             ZipFile zipFile = new ZipFile( file );
             for ( Iterator iter = getFiles().keySet().iterator(); iter.hasNext(); )
             {
-                String fileName = (String)iter.next();
+                String fileName = (String) iter.next();
                 ZipEntry zipEntry;
+                
                 if ( ( zipEntry = zipFile.getEntry( fileName ) ) != null )
                 {
-                    File currentFile = (File)getFiles().get( fileName );
-                    if ( zipEntry.getTime() < currentFile.lastModified() )
+                    ArchiveEntry currentEntry = (ArchiveEntry) getFiles().get( fileName );
+                    if ( zipEntry.getTime() < currentEntry.getFile().lastModified() )
                     {
                         result.put( fileName, getFiles().get( fileName ) );
                     }
@@ -469,28 +467,28 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
 
         for ( Iterator iter = resources.keySet().iterator(); iter.hasNext(); )
         {
-            String name = (String)iter.next();
-            File resource = (File)resources.get( name );
+            String name = (String) iter.next();
+            ArchiveEntry entry = (ArchiveEntry) resources.get( name );
             name = name.replace(File.separatorChar, '/');
 
-            if ("".equals(name))
+            if ( "".equals(name) )
             {
                 continue;
             }
-            if (resource.isDirectory() && !name.endsWith("/"))
+            if ( entry.getFile().isDirectory() && !name.endsWith("/") )
             {
                 name = name + "/";
             }
 
-            addParentDirs(base, name, zOut, "", dirMode);
+            addParentDirs( base, name, zOut, "" );
 
-            if ( resource.isFile() )
+            if ( entry.getFile().isFile() )
             {
-                zipFile(resource, zOut, name, fileMode);
+                zipFile( entry, zOut, name );
             }
             else
             {
-                zipDir( resource, zOut, name, dirMode );
+                zipDir( entry.getFile(), zOut, name, entry.getMode() );
             }
         }
     }
@@ -499,8 +497,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
      * Ensure all parent dirs of a given entry have been added.
      */
     protected final void addParentDirs(File baseDir, String entry,
-                                       ZipOutputStream zOut, String prefix,
-                                       int dirMode)
+                                       ZipOutputStream zOut, String prefix)
         throws IOException
     {
         if ( !doFilesonly )
@@ -530,7 +527,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
                 {
                     f = new File( dir );
                 }
-                zipDir( f, zOut, prefix + dir, dirMode );
+                zipDir( f, zOut, prefix + dir, getDefaultDirectoryMode() );
             }
         }
     }
@@ -550,21 +547,28 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
                            long lastModified, File fromArchive, int mode)
         throws IOException, ArchiverException
     {
-        if (entries.contains(vPath)) {
-
-            if (duplicate.equals("preserve")) {
+        if (entries.contains(vPath))
+        {
+            if (duplicate.equals("preserve"))
+            {
                 getLogger().info( vPath + " already added, skipping" );
                 return;
-            } else if (duplicate.equals("fail")) {
+            }
+            else if (duplicate.equals("fail"))
+            {
                 throw new ArchiverException("Duplicate file " + vPath
                                          + " was found and the duplicate "
                                          + "attribute is 'fail'.");
-            } else {
+            }
+            else
+            {
                 // duplicate equal to add, so we continue
                 getLogger().debug( "duplicate file " + vPath
                     + " found, adding." );
             }
-        } else {
+        }
+        else
+        {
             getLogger().debug( "adding entry " + vPath );
         }
 
@@ -582,50 +586,65 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
             *
             * This forces us to process the data twice.
             */
-            if (!zOut.isSeekable() && !doCompress) {
+            if (!zOut.isSeekable() && !doCompress)
+            {
                 long size = 0;
                 CRC32 cal = new CRC32();
-                if (!in.markSupported()) {
+                if (!in.markSupported())
+                {
                     // Store data into a byte[]
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
                     byte[] buffer = new byte[8 * 1024];
                     int count = 0;
-                    do {
+                    
+                    do
+                    {
                         size += count;
                         cal.update(buffer, 0, count);
                         bos.write(buffer, 0, count);
                         count = in.read(buffer, 0, buffer.length);
-                    } while (count != -1);
+                    }
+                    while ( count != -1 );
+                    
                     in = new ByteArrayInputStream(bos.toByteArray());
-
-                } else {
+                }
+                else
+                {
                     in.mark(Integer.MAX_VALUE);
                     byte[] buffer = new byte[8 * 1024];
                     int count = 0;
-                    do {
+                    
+                    do
+                    {
                         size += count;
                         cal.update(buffer, 0, count);
                         count = in.read(buffer, 0, buffer.length);
-                    } while (count != -1);
+                    }
+                    while ( count != -1 );
+                    
                     in.reset();
                 }
-                ze.setSize(size);
-                ze.setCrc(cal.getValue());
+                ze.setSize( size );
+                ze.setCrc( cal.getValue() );
             }
 
-            ze.setUnixMode(mode);
-            zOut.putNextEntry(ze);
+            ze.setUnixMode( UnixStat.FILE_FLAG | mode );
+            zOut.putNextEntry( ze );
 
             byte[] buffer = new byte[8 * 1024];
             int count = 0;
-            do {
-                if (count != 0) {
+            do
+            {
+                if (count != 0)
+                {
                     zOut.write(buffer, 0, count);
                 }
                 count = in.read(buffer, 0, buffer.length);
-            } while (count != -1);
+            }
+            while (count != -1);
         }
+        
         addedFiles.addElement(vPath);
     }
 
@@ -634,24 +653,24 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
      *
      * <p>This implementation delegates to the six-arg version.</p>
      *
-     * @param file the file to add to the archive
+     * @param entry the file to add to the archive
      * @param zOut the stream to write to
      * @param vPath the name this entry shall have in the archive
      * @param mode the Unix permissions to set.
      */
-    protected void zipFile(File file, ZipOutputStream zOut, String vPath, int mode)
+    protected void zipFile(ArchiveEntry entry, ZipOutputStream zOut, String vPath)
         throws IOException, ArchiverException
     {
-        if (file.equals(getDestFile()))
+        if (entry.equals(getDestFile()))
         {
             throw new ArchiverException( "A zip file cannot include itself" );
         }
 
-        FileInputStream fIn = new FileInputStream(file);
+        FileInputStream fIn = new FileInputStream( entry.getFile() );
         try
         {
             // ZIPs store time with a granularity of 2 seconds, round up
-            zipFile(fIn, zOut, vPath, file.lastModified() + (roundUp ? 1999 : 0), null, mode);
+            zipFile(fIn, zOut, vPath, entry.getFile().lastModified() + (roundUp ? 1999 : 0), null, entry.getMode() );
         }
         finally
         {
@@ -664,7 +683,8 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
      */
     protected void zipDir(File dir, ZipOutputStream zOut, String vPath,
                           int mode)
-        throws IOException {
+        throws IOException
+    {
         if (addedDirs.get(vPath) != null) {
             // don't add directories we've already added.
             // no warning if we try, it is harmless in and of itself
@@ -674,20 +694,25 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
         getLogger().debug( "adding directory " + vPath );
         addedDirs.put(vPath, vPath);
 
-        if (!skipWriting) {
-            ZipEntry ze = new ZipEntry (vPath);
-            if (dir != null && dir.exists()) {
+        if ( !skipWriting )
+        {
+            ZipEntry ze = new ZipEntry( vPath );
+            
+            if ( dir != null && dir.exists() )
+            {
                 // ZIPs store time with a granularity of 2 seconds, round up
-                ze.setTime(dir.lastModified() + (roundUp ? 1999 : 0));
-            } else {
-                // ZIPs store time with a granularity of 2 seconds, round up
-                ze.setTime(System.currentTimeMillis() + (roundUp ? 1999 : 0));
+                ze.setTime( dir.lastModified() + (roundUp ? 1999 : 0) );
             }
-            ze.setSize (0);
-            ze.setMethod (ZipEntry.STORED);
+            else
+            {
+                // ZIPs store time with a granularity of 2 seconds, round up
+                ze.setTime( System.currentTimeMillis() + (roundUp ? 1999 : 0) );
+            }
+            ze.setSize( 0 );
+            ze.setMethod( ZipEntry.STORED );
             // This is faintly ridiculous:
-            ze.setCrc (EMPTY_CRC);
-            ze.setUnixMode(mode);
+            ze.setCrc( EMPTY_CRC );
+            ze.setUnixMode( mode );
 
             zOut.putNextEntry (ze);
         }

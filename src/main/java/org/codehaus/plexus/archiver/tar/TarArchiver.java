@@ -17,23 +17,24 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  */
 
+import org.codehaus.plexus.archiver.AbstractArchiver;
+import org.codehaus.plexus.archiver.ArchiveEntry;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.UnixStat;
+import org.codehaus.plexus.archiver.bzip2.CBZip2OutputStream;
+import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
+import org.codehaus.plexus.util.StringUtils;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
-
-
-import org.codehaus.plexus.archiver.AbstractArchiver;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.bzip2.CBZip2OutputStream;
-import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
-import org.codehaus.plexus.archiver.zip.UnixStat;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -67,8 +68,42 @@ public class TarArchiver extends AbstractArchiver
     public void setOptions( TarOptions options )
     {
         this.options = options;
+        
+        // FIXME: do these options have precedence over
+        // setDefaultFileMode / setDefaultDirMode
+        // or the other way around? Assuming these
+        // take precedende since they're more specific.
+        // Better refactor this when usage is known.
+        
+        setDefaultFileMode( options.getMode() );
+        
+        setDefaultDirectoryMode( options.getMode() );
     }
 
+    /**
+     * Override AbstractArchiver.setDefaultFileMode to
+     * update TarOptions.
+     */
+    public void setDefaultFileMode( int mode )
+    {
+    	super.setDefaultFileMode( mode );
+    	
+    	options.setMode( mode );
+    }
+
+    /**
+     * Override AbstractArchiver.setDefaultDirectoryMode to
+     * update TarOptions.
+     */
+    public void setDefaultDirectoryMode( int mode )
+    {
+    	super.setDefaultDirectoryMode( mode );
+    	System.err.println("TarArchiver: setDefaultDirectoryMode!!");
+    	
+    	options.setDirMode( mode );
+    }
+
+    
     /**
      * Set how to handle long files, those with a path&gt;100 chars.
      * Optional, default=warn.
@@ -83,7 +118,8 @@ public class TarArchiver extends AbstractArchiver
      * </ul>
      * @param mode the mode to handle long file names.
      */
-    public void setLongfile(TarLongFileMode mode) {
+    public void setLongfile( TarLongFileMode mode )
+    {
         this.longFileMode = mode;
     }
 
@@ -97,41 +133,40 @@ public class TarArchiver extends AbstractArchiver
      * </ul>
      * @param mode the compression method.
      */
-    public void setCompression(TarCompressionMethod mode) {
+    public void setCompression(TarCompressionMethod mode)
+    {
         this.compression = mode;
     }
 
-    public void createArchive() throws ArchiverException, IOException
+    public void createArchive()
+    	throws ArchiverException, IOException
     {
-        Map listFiles = getFiles();
-        if ( listFiles == null || listFiles.size() == 0 )
+        Map archiveEntries = getFiles();
+        
+        if ( archiveEntries == null || archiveEntries.size() == 0 )
         {
-            new ArchiverException( "You must set at least one file." );
+            throw new ArchiverException( "You must set at least one file." );
         }
         
         File tarFile = getDestFile();
+        
         if ( tarFile == null )
         {
-            new ArchiverException( "You must set the destination tar file." );
+            throw new ArchiverException( "You must set the destination tar file." );
         }
         if ( tarFile.exists() && !tarFile.isFile() )
         {
-            new ArchiverException( tarFile + " isn't a file." );
+            throw new ArchiverException( tarFile + " isn't a file." );
         }
         if ( tarFile.exists() && !tarFile.canWrite() )
         {
-            new ArchiverException( tarFile + " is read-only." );
+            throw new ArchiverException( tarFile + " is read-only." );
         }
 
         // Check if we don't add tar file in inself
-        for ( Iterator iter = getFiles().keySet().iterator(); iter.hasNext(); )
+        if ( containsFile( tarFile, archiveEntries.values() ) )
         {
-            String fileName = (String)iter.next();
-            File fileToAdd = (File)getFiles().get( fileName );
-            if (tarFile.equals( fileToAdd ) )
-            {
-                throw new ArchiverException( "A tar file cannot include itself.");
-            }
+            throw new ArchiverException( "A tar file cannot include itself.");
         }
 
         getLogger().info( "Building tar : " + tarFile.getAbsolutePath() );
@@ -156,12 +191,14 @@ public class TarArchiver extends AbstractArchiver
             }
 
             longWarningGiven = false;
-            for ( Iterator iter = getFiles().keySet().iterator(); iter.hasNext(); )
+            for ( Iterator iter = archiveEntries.keySet().iterator(); iter.hasNext(); )
             {
-                String fileName = (String)iter.next();
-                File f = (File)getFiles().get( fileName );
+                String fileName = (String) iter.next();
                 String name = StringUtils.replace( fileName, File.separatorChar, '/' );
-                tarFile(f, tOut, fileName);
+                
+                ArchiveEntry entry = (ArchiveEntry) archiveEntries.get( fileName );
+
+                tarFile(entry, tOut, name);
             }
         }
         catch ( IOException ioe )
@@ -186,14 +223,30 @@ public class TarArchiver extends AbstractArchiver
         }
     }
 
+    // TODO: use Collection.contains; need to create suitable compare
+    // method in ArchiveEntry.
+    private static boolean containsFile( File file, Collection list )
+    {
+	    for ( Iterator i = list.iterator(); i.hasNext(); )
+	    {
+	        File fileToAdd = ( (ArchiveEntry) i.next() ).getFile();
+	        
+	        if ( file.equals( fileToAdd ) )
+	        {
+	        	return true;
+	        }
+	    }
+	    return false;
+    }
+    
     /**
      * tar a file
-     * @param file the file to tar
+     * @param entry the file to tar
      * @param tOut the output stream
      * @param vPath the path name of the file to tar
      * @throws IOException on error
      */
-    protected void tarFile( File file, TarOutputStream tOut, String vPath ) throws ArchiverException, IOException
+    protected void tarFile( ArchiveEntry entry, TarOutputStream tOut, String vPath ) throws ArchiverException, IOException
     {
         FileInputStream fIn = null;
 
@@ -203,7 +256,7 @@ public class TarArchiver extends AbstractArchiver
             return;
         }
 
-        if ( file.isDirectory() && !vPath.endsWith( "/" ) )
+        if ( entry.getFile().isDirectory() && !vPath.endsWith( "/" ) )
         {
             vPath += "/";
         }
@@ -247,15 +300,16 @@ public class TarArchiver extends AbstractArchiver
             }
 
             TarEntry te = new TarEntry( vPath );
-            te.setModTime( file.lastModified() );
-            if ( !file.isDirectory() )
+            te.setModTime( entry.getFile().lastModified() );
+            
+            if ( !entry.getFile().isDirectory() )
             {
-                te.setSize( file.length() );
-                te.setMode( options.getMode() );
+                te.setSize( entry.getFile().length() );
+                te.setMode( entry.getMode() );
             }
             else
             {
-                te.setMode( options.getDirMode() );
+                te.setMode( entry.getMode() );
             }
             te.setUserName( options.getUserName() );
             te.setGroupName( options.getGroup() );
@@ -264,9 +318,9 @@ public class TarArchiver extends AbstractArchiver
 
             tOut.putNextEntry( te );
 
-            if ( !file.isDirectory() )
+            if ( !entry.getFile().isDirectory() )
             {
-                fIn = new FileInputStream( file );
+                fIn = new FileInputStream( entry.getFile() );
 
                 byte[] buffer = new byte[8 * 1024];
                 int count = 0;
@@ -295,14 +349,20 @@ public class TarArchiver extends AbstractArchiver
      */
     public class TarOptions
     {
+    	/**
+    	 * @deprecated
+    	 */
         private int fileMode = UnixStat.FILE_FLAG | UnixStat.DEFAULT_FILE_PERM;
+        
+    	/**
+    	 * @deprecated
+    	 */
         private int dirMode = UnixStat.DIR_FLAG | UnixStat.DEFAULT_DIR_PERM;
 
         private String userName = "";
         private String groupName = "";
         private int uid;
         private int gid;
-        private String prefix = "";
         private boolean preserveLeadingSlashes = false;
 
         /**
@@ -310,14 +370,25 @@ public class TarArchiver extends AbstractArchiver
          * other modes in the standard Unix fashion;
          * optional, default=0644
          * @param octalString a 3 digit octal string.
+         * @deprecated use AbstractArchiver.setDefaultFileMode(int)
          */
         public void setMode( String octalString )
         {
-            this.fileMode = UnixStat.FILE_FLAG | Integer.parseInt(octalString, 8);
+        	setMode( Integer.parseInt( octalString, 8 ) );
+        }
+        
+        /**
+         * @param mode unix file mode
+         * @deprecated use AbstractArchiver.setDefaultFileMode(int)
+         */
+        public void setMode( int mode )
+        {
+            this.fileMode = UnixStat.FILE_FLAG | ( mode & UnixStat.PERM_MASK );
         }
 
         /**
          * @return the current mode.
+         * @deprecated use AbstractArchiver.getDefaultFileMode()
          */
         public int getMode()
         {
@@ -330,16 +401,27 @@ public class TarArchiver extends AbstractArchiver
          * optional, default=0755
          *
          * @param octalString a 3 digit octal string.
-         * @since Ant 1.6
+         * @since Ant 1.6 
+         * @deprecated use AbstractArchiver.setDefaultDirectoryMode(int)
          */
         public void setDirMode( String octalString )
         {
-            this.dirMode = UnixStat.DIR_FLAG | Integer.parseInt(octalString, 8);
+            setDirMode( Integer.parseInt(octalString, 8) );
+        }
+
+        /**
+         * @param mode unix directory mode
+         * @deprecated use AbstractArchiver.setDefaultDirectoryMode(int)
+         */
+        public void setDirMode( int mode )
+        {
+            this.dirMode = UnixStat.DIR_FLAG | ( mode & UnixStat.PERM_MASK );
         }
 
         /**
          * @return the current directory mode
          * @since Ant 1.6
+         * @deprecated use AbstractArchiver.getDefaultDirectoryMode()
          */
         public int getDirMode()
         {

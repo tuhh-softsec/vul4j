@@ -19,6 +19,8 @@ package org.codehaus.plexus.archiver.ear;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.zip.ZipOutputStream;
@@ -91,8 +93,8 @@ public class EarArchiver extends JarArchiver
     /**
      * Overridden from ZipArchiver class to deal with application.xml
      */
-    protected void zipFile(File file, ZipOutputStream zOut, String vPath,
-        int mode)
+    protected void zipFile( ArchiveEntry entry, ZipOutputStream zOut, String vPath,
+        int mode )
         throws IOException, ArchiverException
     {
         // If the file being added is META-INF/application.xml, we
@@ -103,7 +105,7 @@ public class EarArchiver extends JarArchiver
         if (vPath.equalsIgnoreCase("META-INF/application.xml"))
         {
             if (deploymentDescriptor == null
-                || !deploymentDescriptor.getAbsolutePath().equals( file.getAbsolutePath() )
+                || !deploymentDescriptor.getCanonicalPath().equals( entry.getFile().getCanonicalPath() )
                 || descriptorAdded) {
                 getLogger().warn("Warning: selected " + archiveType
                     + " files include a META-INF/application.xml which will"
@@ -112,13 +114,13 @@ public class EarArchiver extends JarArchiver
             }
             else
             {
-                super.zipFile(file, zOut, vPath, mode);
+                super.zipFile( entry, zOut, vPath );
                 descriptorAdded = true;
             }
         }
         else
         {
-            super.zipFile(file, zOut, vPath, mode);
+            super.zipFile( entry, zOut, vPath );
         }
     }
 

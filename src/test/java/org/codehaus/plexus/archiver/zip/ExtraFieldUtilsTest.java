@@ -17,6 +17,8 @@ package org.codehaus.plexus.archiver.zip;
  *
  */
 
+import org.codehaus.plexus.archiver.UnixStat;
+
 import junit.framework.TestCase;
 
 /**

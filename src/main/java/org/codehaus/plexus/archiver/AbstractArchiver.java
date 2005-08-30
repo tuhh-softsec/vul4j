@@ -17,15 +17,14 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.DirectoryScanner;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @version $Revision$ $Date$
@@ -33,24 +32,54 @@ import org.codehaus.plexus.util.DirectoryScanner;
 public abstract class AbstractArchiver extends AbstractLogEnabled
     implements Archiver
 {
+    /**
+     * Default value for the dirmode attribute.
+     */
+    public static final int DEFAULT_DIR_MODE =
+        UnixStat.DIR_FLAG  | UnixStat.DEFAULT_DIR_PERM;
+
+    /**
+     * Default value for the filemode attribute.
+     */
+    public static final int DEFAULT_FILE_MODE =
+        UnixStat.FILE_FLAG | UnixStat.DEFAULT_FILE_PERM;
+
     private Logger logger;
 
-    private String basedir;
-
-    private String[] excludesPattern;
-
-    private String[] includesPattern;
-    
     private File destFile;
 
     private Map filesMap = new HashMap();
     
     private Map dirsMap = new HashMap();
 
-    private String prefix;
+	private int defaultFileMode = DEFAULT_FILE_MODE;
     
     private boolean includeEmptyDirs = true;
 
+	private int defaultDirectoryMode = DEFAULT_DIR_MODE;
+	
+	
+    public void setDefaultFileMode( int mode )
+    {
+        defaultFileMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.FILE_FLAG;
+    }
+
+    public int getDefaultFileMode()
+    {
+    	return defaultFileMode;
+    }
+    
+    public void setDefaultDirectoryMode( int mode )
+    {
+    	System.err.println("AbstractArchiver: setDefaultDirectoryMode!!");
+        defaultDirectoryMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.DIR_FLAG;
+    }
+
+    public int getDefaultDirectoryMode()
+    {
+    	return defaultDirectoryMode;
+    }
+    
     public void addDirectory( File directory )
         throws ArchiverException
     {
@@ -125,17 +154,15 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
         scanner.setBasedir( basedir );
         scanner.scan();
         String[] files = scanner.getIncludedFiles();
-        for ( int i = 0; i < files.length; i++ ) {
-            String file = files[i];
-            file = file.replace( '\\', '/' );
-            if ( prefix != null )
-            {
-                filesMap.put( prefix + file, new File( basedir, file ) );
-            }
-            else
-            {
-                filesMap.put( file, new File( basedir, file ) );
-            }
+        
+        for ( int i = 0; i < files.length; i++ )
+        {
+            String targetFile = files[i];
+            targetFile = targetFile.replace( '\\', '/' );
+            
+            targetFile = ( prefix == null ? "" : prefix ) + targetFile;
+            filesMap.put( targetFile, ArchiveEntry.createEntry( targetFile,
+            	new File( basedir, targetFile ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
         }
         
         if ( includeEmptyDirs )
@@ -144,19 +171,22 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
             for ( int i = 0; i < dirs.length; i++ ) {
                 String dir = dirs[i];
                 dir = dir.replace( '\\', '/' );
-                if ( prefix != null )
-                {
-                    getDirs().put( prefix + dir, new File( basedir, dir ) );
-                }
-                else
-                {
-                    getDirs().put( dir, new File( basedir, dir ) );
-                }
+                
+                dir = ( prefix == null ? "" : prefix ) + dir;
+                
+            	getDirs().put( dir, ArchiveEntry.createEntry( dir,
+                    	new File( basedir, dir ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
             }
         }
     }
 
     public void addFile( File inputFile, String destFileName )
+        throws ArchiverException
+    {
+        addFile( inputFile, destFileName, getDefaultFileMode() );
+    }
+
+    public void addFile( File inputFile, String destFileName, int permissions )
         throws ArchiverException
     {
         if ( !inputFile.isFile() || !inputFile.exists() )
@@ -165,9 +195,14 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
         }
 
         destFileName = destFileName.replace( '\\', '/' );
-        filesMap.put( destFileName, inputFile );
+        filesMap.put( destFileName, ArchiveEntry.createFileEntry(
+        	destFileName, inputFile, permissions ) );
     }
 
+    // TODO: convert this to Collection?
+    // Only con is that some archivers change the filename
+    // to contain just forward slashes; they could update
+    // the Name of the ArchiveEntry..?
     protected Map getFiles()
     {
         if ( !includeEmptyDirs ) return filesMap;

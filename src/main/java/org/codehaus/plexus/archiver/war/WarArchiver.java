@@ -19,6 +19,8 @@ package org.codehaus.plexus.archiver.war;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.zip.ZipOutputStream;
@@ -142,7 +144,7 @@ public class WarArchiver extends JarArchiver
     /**
      * Overridden from ZipArchiver class to deal with web.xml
      */
-    protected void zipFile(File file, ZipOutputStream zOut, String vPath, int mode)
+    protected void zipFile(ArchiveEntry entry, ZipOutputStream zOut, String vPath, int mode)
         throws IOException, ArchiverException
     {
         // If the file being added is WEB-INF/web.xml, we warn if it's
@@ -152,7 +154,7 @@ public class WarArchiver extends JarArchiver
         if (vPath.equalsIgnoreCase("WEB-INF/web.xml"))
         {
             if ( deploymentDescriptor == null
-                || !deploymentDescriptor.getAbsolutePath().equals( file.getAbsolutePath() )
+                || !deploymentDescriptor.getCanonicalPath().equals( entry.getFile().getCanonicalPath() )
                 || descriptorAdded )
             {
                 getLogger().warn("Warning: selected " + archiveType
@@ -162,13 +164,13 @@ public class WarArchiver extends JarArchiver
             }
             else
             {
-                super.zipFile(file, zOut, vPath, mode);
+                super.zipFile( entry, zOut, vPath );
                 descriptorAdded = true;
             }
         }
         else
         {
-            super.zipFile(file, zOut, vPath, mode);
+            super.zipFile( entry, zOut, vPath );
         }
     }
 

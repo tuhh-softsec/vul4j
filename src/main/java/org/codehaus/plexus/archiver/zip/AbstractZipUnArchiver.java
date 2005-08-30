@@ -17,10 +17,6 @@ package org.codehaus.plexus.archiver.zip;
  *  limitations under the License.
  */
 
-import org.codehaus.plexus.archiver.AbstractUnArchiver;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.util.FileUtils;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
@@ -28,7 +24,10 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Vector;
+
+import org.codehaus.plexus.archiver.AbstractUnArchiver;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>

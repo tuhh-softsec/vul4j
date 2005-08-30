@@ -24,8 +24,12 @@ package org.codehaus.plexus.archiver.zip;
  * SOFTWARE.
  */
 
+import java.util.Date;
+import java.util.Enumeration;
+
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.archiver.UnixStat;
 
 /**
  * @author Emmanuel Venisse
@@ -38,8 +42,41 @@ public class ZipArchiverTest
         throws Exception
     {
         ZipArchiver archiver = (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        archiver.setDefaultDirectoryMode( 0500 );
+        archiver.setDefaultFileMode( 0400 );
         archiver.addDirectory( getTestFile( "src" ) );
+        archiver.setDefaultFileMode( 0640 );
+        archiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), "one.txt" );
+        archiver.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ), "two.txt", 0664 );
         archiver.setDestFile( getTestFile( "target/output/archive.zip" ) );
         archiver.createArchive();
+        
+        ZipFile zf = new ZipFile( archiver.getDestFile() );
+        
+        Enumeration e = zf.getEntries();
+        while ( e.hasMoreElements() )
+        {
+            ZipEntry ze = (ZipEntry) e.nextElement();
+            if ( ze.isDirectory() )
+            {
+            	assertEquals( 0500, UnixStat.PERM_MASK & ze.getUnixMode() );
+            }
+            else
+            {
+            	if ( ze.getName().equals("one.txt"))
+            	{
+            		assertEquals( 0640, UnixStat.PERM_MASK & ze.getUnixMode() );
+            	}
+            	else if ( ze.getName().equals("two.txt"))
+            	{
+            		assertEquals( 0664, UnixStat.PERM_MASK & ze.getUnixMode() );
+            	}
+            	else
+            	{
+            		assertEquals( 0400, UnixStat.PERM_MASK & ze.getUnixMode() );
+            	}
+            }
+            
+        }        
     }
 }

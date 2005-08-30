@@ -17,8 +17,6 @@ package org.codehaus.plexus.archiver.zip;
  *  limitations under the License.
  */
 
-import java.io.File;
-
 /**
  * @version $Revision$ $Date$
  */

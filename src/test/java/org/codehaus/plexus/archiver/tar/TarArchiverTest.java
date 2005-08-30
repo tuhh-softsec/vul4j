@@ -24,8 +24,12 @@ package org.codehaus.plexus.archiver.tar;
  * SOFTWARE.
  */
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.archiver.UnixStat;
 
 /**
  * @author Emmanuel Venisse
@@ -38,8 +42,50 @@ public class TarArchiverTest
         throws Exception
     {
         TarArchiver archiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+        
+        archiver.setDefaultDirectoryMode( 0500 );
+        archiver.getOptions().setDirMode( 0500 );
+        
+        archiver.setDefaultFileMode( 0400 );
+        archiver.getOptions().setMode( 0400 );
+        
         archiver.addDirectory( getTestFile( "src" ) );
+        archiver.setDefaultFileMode( 0640 );
+        archiver.getOptions().setMode( 0640 );
+        
+        archiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), "one.txt" );
+        archiver.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ), "two.txt", 0664 );
         archiver.setDestFile( getTestFile( "target/output/archive.tar" ) );
         archiver.createArchive();
+        
+        TarInputStream tis = null;
+
+        tis = new TarInputStream(new BufferedInputStream( new FileInputStream( archiver.getDestFile() ) ) );
+        TarEntry te = null;
+
+        while ( ( te = tis.getNextEntry() ) != null )
+        {
+        	if ( te.isDirectory() )
+        	{
+        		assertEquals( 0500, te.getMode() & UnixStat.PERM_MASK );
+        	}
+        	else
+        	{
+	        	if ( te.getName().equals( "one.txt" ) )
+	        	{
+	        		assertEquals( 0640, te.getMode() & UnixStat.PERM_MASK );
+	        	}
+	        	else if ( te.getName().equals( "two.txt" ) )
+	        	{
+	        		assertEquals( 0664, te.getMode() & UnixStat.PERM_MASK );
+	        	}
+	        	else
+	        	{
+	        		assertEquals( 0400, te.getMode() & UnixStat.PERM_MASK );
+	        	}
+
+        	}
+        }
+
     }
 }

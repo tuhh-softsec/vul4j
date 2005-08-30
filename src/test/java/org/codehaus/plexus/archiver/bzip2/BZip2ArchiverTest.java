@@ -24,8 +24,6 @@ package org.codehaus.plexus.archiver.bzip2;
  * SOFTWARE.
  */
 
-import java.io.File;
-
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;

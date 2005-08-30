@@ -17,6 +17,8 @@ package org.codehaus.plexus.archiver.zip;
  *
  */
 
+import org.codehaus.plexus.archiver.UnixStat;
+
 import java.util.zip.CRC32;
 import java.util.zip.ZipException;
 

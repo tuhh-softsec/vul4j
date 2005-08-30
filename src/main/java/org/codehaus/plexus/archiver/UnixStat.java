@@ -1,4 +1,4 @@
-package org.codehaus.plexus.archiver.zip;
+package org.codehaus.plexus.archiver;
 
 /*
  * Copyright  2001,2004 The Apache Software Foundation

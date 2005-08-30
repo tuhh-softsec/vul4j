@@ -39,7 +39,17 @@ public interface Archiver
 
     void addFile( File inputFile, String destFileName ) throws ArchiverException;
 
+    void addFile( File inputFile, String destFileName, int permissions ) throws ArchiverException;
+
     File getDestFile();
 
     void setDestFile( File destFile );
+    
+    void setDefaultFileMode( int mode );
+
+    int getDefaultFileMode();
+    
+    void setDefaultDirectoryMode( int mode );
+        
+    int getDefaultDirectoryMode();
 }
