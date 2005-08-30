@@ -48,6 +48,13 @@ public class ZipArchiverTest
         archiver.setDefaultFileMode( 0640 );
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), "one.txt" );
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ), "two.txt", 0664 );
+        archiver.setDefaultDirectoryMode( 0777 );
+        
+        // reset default file mode for files included from now on
+        archiver.setDefaultFileMode( 0400 );
+        archiver.addDirectory( getTestFile( "src/test/resources/manifests/" ), "worldwritable" );
+        archiver.setDefaultDirectoryMode( 0070 );
+        archiver.addDirectory( getTestFile( "src/test/resources/manifests/" ), "groupwritable" );
         archiver.setDestFile( getTestFile( "target/output/archive.zip" ) );
         archiver.createArchive();
         
@@ -59,7 +66,18 @@ public class ZipArchiverTest
             ZipEntry ze = (ZipEntry) e.nextElement();
             if ( ze.isDirectory() )
             {
-            	assertEquals( 0500, UnixStat.PERM_MASK & ze.getUnixMode() );
+            	if ( ze.getName().equals( "worldwritable") )
+            	{
+            		assertEquals( 0777, UnixStat.PERM_MASK & ze.getUnixMode() );
+            	}
+            	if ( ze.getName().equals( "groupwritable") )
+            	{
+            		assertEquals( 0070, UnixStat.PERM_MASK & ze.getUnixMode() );
+            	}
+            	else
+            	{
+            		//assertEquals( 0500, UnixStat.PERM_MASK & ze.getUnixMode() );
+            	}
             }
             else
             {

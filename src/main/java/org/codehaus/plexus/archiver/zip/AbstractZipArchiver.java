@@ -475,6 +475,7 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
             {
                 continue;
             }
+
             if ( entry.getFile().isDirectory() && !name.endsWith("/") )
             {
                 name = name + "/";
@@ -503,15 +504,20 @@ public abstract class AbstractZipArchiver extends AbstractArchiver
         if ( !doFilesonly )
         {
             Stack directories = new Stack();
-            int slashPos = entry.length();
+            
+            // Don't include the last entry itself if it's
+            // a dir; it will be added on its own.
+            int slashPos = entry.length() - ( entry.endsWith( "/" ) ? 1 : 0 );
 
             while ( ( slashPos = entry.lastIndexOf( '/', slashPos - 1 ) ) != -1 )
             {
                 String dir = entry.substring( 0, slashPos + 1 );
-                if ( addedDirs.get( prefix + dir ) != null)
+                
+                if ( addedDirs.contains( prefix + dir ) )
                 {
                     break;
                 }
+                
                 directories.push( dir );
             }
 
