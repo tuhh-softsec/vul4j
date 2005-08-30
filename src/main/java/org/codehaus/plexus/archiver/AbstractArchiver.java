@@ -52,13 +52,13 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     
     private Map dirsMap = new HashMap();
 
-	private int defaultFileMode = DEFAULT_FILE_MODE;
+    private int defaultFileMode = DEFAULT_FILE_MODE;
     
     private boolean includeEmptyDirs = true;
 
-	private int defaultDirectoryMode = DEFAULT_DIR_MODE;
-	
-	
+    private int defaultDirectoryMode = DEFAULT_DIR_MODE;
+    
+    
     public void setDefaultFileMode( int mode )
     {
         defaultFileMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.FILE_FLAG;
@@ -66,18 +66,17 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
 
     public int getDefaultFileMode()
     {
-    	return defaultFileMode;
+        return defaultFileMode;
     }
     
     public void setDefaultDirectoryMode( int mode )
     {
-    	System.err.println("AbstractArchiver: setDefaultDirectoryMode!!");
         defaultDirectoryMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.DIR_FLAG;
     }
 
     public int getDefaultDirectoryMode()
     {
-    	return defaultDirectoryMode;
+        return defaultDirectoryMode;
     }
     
     public void addDirectory( File directory )
@@ -103,6 +102,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
     {
         String[] includesPattern = null;
         String[] excludesPattern = null;
+
         if ( includes != null )
         {
             includesPattern = new String[includes.length];
@@ -118,6 +118,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
                 includesPattern[i] = pattern;
             }
         }
+
         if ( excludes != null )
         {
             excludesPattern = new String[excludes.length];
@@ -135,6 +136,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
         }
         
         DirectoryScanner scanner = new DirectoryScanner();
+
         if ( includes != null )
         {
             scanner.setIncludes( includesPattern );
@@ -157,25 +159,26 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
         
         for ( int i = 0; i < files.length; i++ )
         {
-            String targetFile = files[i];
-            targetFile = targetFile.replace( '\\', '/' );
+            String sourceFile = files[i].replace( '\\', '/' );
             
-            targetFile = ( prefix == null ? "" : prefix ) + targetFile;
+            String targetFile = ( prefix == null ? "" : prefix ) + sourceFile;
+
             filesMap.put( targetFile, ArchiveEntry.createEntry( targetFile,
-            	new File( basedir, targetFile ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
+                new File( basedir, sourceFile ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
         }
         
         if ( includeEmptyDirs )
         {
-            String[] dirs = scanner.getIncludedDirectories();
-            for ( int i = 0; i < dirs.length; i++ ) {
-                String dir = dirs[i];
-                dir = dir.replace( '\\', '/' );
+            String [] dirs = scanner.getIncludedDirectories();
+
+            for ( int i = 0; i < dirs.length; i++ )
+            {
+                String sourceDir = dirs[i].replace( '\\', '/' );
                 
-                dir = ( prefix == null ? "" : prefix ) + dir;
+                String targetDir = ( prefix == null ? "" : prefix ) + sourceDir;
                 
-            	getDirs().put( dir, ArchiveEntry.createEntry( dir,
-                    	new File( basedir, dir ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
+                getDirs().put( targetDir, ArchiveEntry.createEntry( targetDir,
+                        new File( basedir, sourceDir ), getDefaultFileMode(), getDefaultDirectoryMode() ) );
             }
         }
     }
@@ -196,7 +199,7 @@ public abstract class AbstractArchiver extends AbstractLogEnabled
 
         destFileName = destFileName.replace( '\\', '/' );
         filesMap.put( destFileName, ArchiveEntry.createFileEntry(
-        	destFileName, inputFile, permissions ) );
+            destFileName, inputFile, permissions ) );
     }
 
     // TODO: convert this to Collection?

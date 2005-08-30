@@ -98,7 +98,6 @@ public class TarArchiver extends AbstractArchiver
     public void setDefaultDirectoryMode( int mode )
     {
     	super.setDefaultDirectoryMode( mode );
-    	System.err.println("TarArchiver: setDefaultDirectoryMode!!");
     	
     	options.setDirMode( mode );
     }
