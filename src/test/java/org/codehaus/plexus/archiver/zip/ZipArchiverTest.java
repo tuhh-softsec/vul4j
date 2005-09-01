@@ -53,10 +53,10 @@ public class ZipArchiverTest
         // reset default file mode for files included from now on
         archiver.setDefaultFileMode( 0400 );
         archiver.setDefaultDirectoryMode( 0777 );
-        archiver.addDirectory( getTestFile( "src/test/resources/ww/" ), "worldwritable/" );
+        archiver.addDirectory( getTestFile( "src/test/resources/world-writable/" ), "worldwritable/" );
         
         archiver.setDefaultDirectoryMode( 0070 );
-        archiver.addDirectory( getTestFile( "src/test/resources/gw/" ), "groupwritable/" );
+        archiver.addDirectory( getTestFile( "src/test/resources/group-writable/" ), "groupwritable/" );
         
         archiver.setDestFile( getTestFile( "target/output/archive.zip" ) );
         archiver.createArchive();
