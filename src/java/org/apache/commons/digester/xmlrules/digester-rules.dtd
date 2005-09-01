@@ -126,9 +126,6 @@
     attrname  
            - an arbitrary Object defined programatically, assigned if the 
              element pattern AND specified attribute name are matched
-    param 
-           - an arbitrary Object defined programatically, assigned when the 
-             element pattern associated with the Rule is matched
     type 
            - class name for object
     value 
@@ -138,7 +135,6 @@
 <!ATTLIST object-param-rule
     pattern  CDATA #IMPLIED
     paramnumber CDATA #REQUIRED
-    param CDATA #REQUIRED
     attrname CDATA #IMPLIED
     type CDATA #REQUIRED
     value CDATA #IMPLIED>
